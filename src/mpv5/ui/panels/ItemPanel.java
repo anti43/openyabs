@@ -913,7 +913,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
 
     private void button_remindersActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button_remindersActionPerformed
          if (dataOwner != null && dataOwner.isExisting()) {
-            BigPopup.showPopup(MPView.identifierFrame.getRootPane(), new RemindPanel(dataOwner), Messages.REMINDERS.toString());
+            BigPopup.showPopup(MPView.identifierFrame.getRootPane(), new RemindPanel(dataOwner), Messages.REMINDERS.toString(), true);
         }
     }//GEN-LAST:event_button_remindersActionPerformed
     // Variables declaration - do not modify//GEN-BEGIN:variables

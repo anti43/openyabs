@@ -433,6 +433,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject> {
     public boolean delete() {
         boolean result = false;
         String message = null;
+        uncacheObject(this);
         if (!this.getType().equals(new HistoryItem().getType())) {
             message = this.__getCName() + Messages.TRASHED;
         }

@@ -22,6 +22,8 @@ import mpv5.db.objects.ItemMessage;
 import mpv5.db.objects.MailMessage;
 import mpv5.db.objects.Product;
 import mpv5.db.objects.ProductGroup;
+import mpv5.db.objects.Reminder;
+import mpv5.db.objects.Stage;
 import mpv5.db.objects.SubItem;
 import mpv5.db.objects.Template;
 import mpv5.pluginhandling.Plugin;
@@ -78,7 +80,6 @@ public class Context {
     public static String IDENTITY_TEMPLATES = "templates";
     public static String IDENTITY_REMINDERS = "reminders";
     public static String IDENTITY_STAGES = "stages";
-
     //********** identity classes **********************************************
     private static Class IDENTITY_CONTACTS_CLASS = Contact.class;
     private static Class IDENTITY_ADDRESS_CLASS = Address.class;
@@ -102,6 +103,8 @@ public class Context {
     private static Class IDENTITY_PRODUCTS_FILES_CLASS = FileToProduct.class;
     private static Class IDENTITY_WEBSHOP_CLASS = WebShop.class;
     private static Class IDENTITY_TEMPLATE_CLASS = Template.class;
+    private static Class IDENTITY_REMINDER_CLASS = Reminder.class;
+    private static Class IDENTITY_STAGE_CLASS = Stage.class;
     //********** unique constraints *******************************************
     public static String UNIQUECOLUMNS_USER = "cname";
     public static String UNIQUECOLUMNS_ITEMS = "cname";
@@ -340,8 +343,6 @@ public class Context {
         list.add(getAccounts());
         return list;
     }
-
-
 
     /**
      *
@@ -1462,7 +1463,7 @@ public class Context {
         return c;
     }
 
-     public static Context getTemplatesToUsers() {
+    public static Context getTemplatesToUsers() {
         Context c = new Context();
         c.setSubID(DEFAULT_SUBID);
         c.setDbIdentity(IDENTITY_TEMPLATES_TO_USERS);
@@ -1471,19 +1472,19 @@ public class Context {
         return c;
     }
 
-     public static Context getReminders() {
+    public static Context getReminders() {
         Context c = new Context();
         c.setSubID(DEFAULT_SUBID);
-        c.setDbIdentity(IDENTITY_REMINDERS);
+        c.setDbIdentity(IDENTITY_REMINDERS);c.setIdentityClass(IDENTITY_REMINDER_CLASS);
         c.setId(45);
 
         return c;
     }
 
-     public static Context getStages() {
+    public static Context getStages() {
         Context c = new Context();
         c.setSubID(DEFAULT_SUBID);
-        c.setDbIdentity(IDENTITY_STAGES);
+        c.setDbIdentity(IDENTITY_STAGES);c.setIdentityClass(IDENTITY_STAGE_CLASS);
         c.setId(46);
 
         return c;

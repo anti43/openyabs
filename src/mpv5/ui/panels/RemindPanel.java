@@ -60,19 +60,33 @@ public class RemindPanel extends javax.swing.JPanel {
     public RemindPanel() {
         initComponents();
         labeledTextField1.set_ValueClass(Double.class);
+
         labeledCombobox1.setSearchOnEnterEnabled(true);
         labeledCombobox1.setContext(Context.getItems());
+
         labeledCombobox3.setSearchOnEnterEnabled(true);
         labeledCombobox3.setContext(Context.getStages());
-        labeledCombobox1.triggerSearch();
-        labeledCombobox3.triggerSearch();
+        
         labeledCombobox1.getComboBox().addActionListener(new ActionListener() {
 
             public void actionPerformed(ActionEvent e) {
                 try {
                     refresh((Item) DatabaseObject.getObject(Context.getItems(), Integer.valueOf(labeledCombobox1.getSelectedItem().getId())));
                 } catch (Exception ex) {
-                    Log.Debug(this, ex.getMessage());
+                    Log.Debug(this, ex);
+                }
+            }
+        });
+
+        labeledCombobox3.getComboBox().addActionListener(new ActionListener() {
+
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    Stage s = (Stage) DatabaseObject.getObject(Context.getStages(), Integer.valueOf(labeledCombobox3.getSelectedItem().getId()));
+                    jTextPane1.setText(s.__getDescription());
+                    labeledTextField1.setText(s.__getExtravalue());
+                } catch (Exception ex) {
+                    Log.Debug(this, ex);
                 }
             }
         });
@@ -281,8 +295,12 @@ public class RemindPanel extends javax.swing.JPanel {
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
-
         dataOwner.delete();
+        try {
+            refresh((Item) Item.getObject(Context.getItems(), dataOwner.__getItemsids()));
+        } catch (NodataFoundException ex) {
+            refresh(null);
+        }
     }//GEN-LAST:event_jButton5ActionPerformed
 
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
@@ -375,8 +393,9 @@ public class RemindPanel extends javax.swing.JPanel {
             dataOwner.setStagesids(s.__getIDS());
             dataOwner.setCName(s + "@" + i);
             dataOwner.save();
+            refresh(i);
         } catch (Exception ex) {
-            Log.Debug(this, ex.getMessage());
+            Log.Debug(this, ex);
         }
     }
 
@@ -395,8 +414,11 @@ public class RemindPanel extends javax.swing.JPanel {
     }
 
     private void expose(Reminder r) {
-        labeledCombobox1.setModel(r);
-        labeledTextField1.setText(r.__getExtravalue());
-        jTextPane1.setText(r.__getDescription());
+        try {
+            labeledCombobox1.setModel(Item.getObject(Context.getItems(), r.__getItemsids()));
+        } catch (NodataFoundException ex) {
+            labeledTextField1.setText(r.__getExtravalue());
+            jTextPane1.setText(r.__getDescription());
+        }
     }
 }
