@@ -27,10 +27,10 @@
   <Layout>
     <DimensionLayout dim="0">
       <Group type="103" groupAlignment="0" attributes="0">
-          <Component id="jToolBar1" alignment="0" pref="448" max="32767" attributes="0"/>
+          <Component id="jToolBar1" alignment="0" max="32767" attributes="0"/>
           <Component id="jPanel1" alignment="0" max="32767" attributes="0"/>
-          <Component id="jLabel1" alignment="1" pref="448" max="32767" attributes="0"/>
-          <Component id="jScrollPane2" alignment="0" pref="448" max="32767" attributes="0"/>
+          <Component id="jLabel1" alignment="1" pref="454" max="32767" attributes="0"/>
+          <Component id="jScrollPane2" alignment="0" pref="454" max="32767" attributes="0"/>
       </Group>
     </DimensionLayout>
     <DimensionLayout dim="1">
@@ -64,6 +64,9 @@
             </Property>
             <Property name="name" type="java.lang.String" value="jButton1" noResource="true"/>
           </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButton1ActionPerformed"/>
+          </Events>
         </Component>
         <Component class="javax.swing.JButton" name="jButton2">
           <Properties>
@@ -171,13 +174,13 @@
               <Group type="102" alignment="0" attributes="0">
                   <EmptySpace min="-2" pref="2" max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="0" attributes="0">
-                      <Component id="jScrollPane1" alignment="0" pref="436" max="32767" attributes="0"/>
+                      <Component id="jScrollPane1" alignment="0" pref="442" max="32767" attributes="0"/>
                       <Group type="102" alignment="0" attributes="0">
                           <Group type="103" groupAlignment="1" max="-2" attributes="0">
                               <Component id="labeledCombobox3" alignment="0" max="32767" attributes="1"/>
                               <Component id="labeledCombobox1" alignment="0" pref="270" max="32767" attributes="1"/>
                           </Group>
-                          <EmptySpace pref="166" max="32767" attributes="0"/>
+                          <EmptySpace pref="172" max="32767" attributes="0"/>
                       </Group>
                   </Group>
               </Group>
@@ -190,7 +193,7 @@
                   <EmptySpace max="-2" attributes="0"/>
                   <Component id="labeledCombobox3" min="-2" max="-2" attributes="1"/>
                   <EmptySpace max="-2" attributes="0"/>
-                  <Component id="jScrollPane1" pref="98" max="32767" attributes="0"/>
+                  <Component id="jScrollPane1" pref="96" max="32767" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
                   <Component id="labeledTextField1" min="-2" max="-2" attributes="0"/>
               </Group>

@@ -66,14 +66,14 @@ public class RemindPanel extends javax.swing.JPanel {
 
         labeledCombobox3.setSearchOnEnterEnabled(true);
         labeledCombobox3.setContext(Context.getStages());
-        
+
         labeledCombobox1.getComboBox().addActionListener(new ActionListener() {
 
             public void actionPerformed(ActionEvent e) {
                 try {
                     refresh((Item) DatabaseObject.getObject(Context.getItems(), Integer.valueOf(labeledCombobox1.getSelectedItem().getId())));
                 } catch (Exception ex) {
-                    Log.Debug(this, ex);
+                    Log.Debug(this, ex.getMessage());
                 }
             }
         });
@@ -86,7 +86,7 @@ public class RemindPanel extends javax.swing.JPanel {
                     jTextPane1.setText(s.__getDescription());
                     labeledTextField1.setText(s.__getExtravalue());
                 } catch (Exception ex) {
-                    Log.Debug(this, ex);
+                    Log.Debug(this, ex.getMessage());
                 }
             }
         });
@@ -94,6 +94,29 @@ public class RemindPanel extends javax.swing.JPanel {
 
     public RemindPanel(Item bill) {
         initComponents();
+        labeledCombobox1.getComboBox().addActionListener(new ActionListener() {
+
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    refresh((Item) DatabaseObject.getObject(Context.getItems(), Integer.valueOf(labeledCombobox1.getSelectedItem().getId())));
+                } catch (Exception ex) {
+                    Log.Debug(this, ex.getMessage());
+                }
+            }
+        });
+
+        labeledCombobox3.getComboBox().addActionListener(new ActionListener() {
+
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    Stage s = (Stage) DatabaseObject.getObject(Context.getStages(), Integer.valueOf(labeledCombobox3.getSelectedItem().getId()));
+                    jTextPane1.setText(s.__getDescription());
+                    labeledTextField1.setText(s.__getExtravalue());
+                } catch (Exception ex) {
+                    Log.Debug(this, ex.getMessage());
+                }
+            }
+        });
         labeledTextField1.set_ValueClass(Double.class);
         labeledCombobox3.setSearchOnEnterEnabled(true);
         labeledCombobox3.setContext(Context.getStages());
@@ -141,6 +164,11 @@ public class RemindPanel extends javax.swing.JPanel {
 
         jButton1.setText(bundle.getString("RemindPanel.jButton1.text")); // NOI18N
         jButton1.setName("jButton1"); // NOI18N
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
         jToolBar1.add(jButton1);
 
         jButton2.setText(bundle.getString("RemindPanel.jButton2.text")); // NOI18N
@@ -234,12 +262,12 @@ public class RemindPanel extends javax.swing.JPanel {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGap(2, 2, 2)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 436, Short.MAX_VALUE)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 442, Short.MAX_VALUE)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                             .addComponent(labeledCombobox3, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(labeledCombobox1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 270, Short.MAX_VALUE))
-                        .addContainerGap(166, Short.MAX_VALUE))))
+                        .addContainerGap(172, Short.MAX_VALUE))))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -248,7 +276,7 @@ public class RemindPanel extends javax.swing.JPanel {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(labeledCombobox3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 98, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 96, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(labeledTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
@@ -271,10 +299,10 @@ public class RemindPanel extends javax.swing.JPanel {
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jToolBar1, javax.swing.GroupLayout.DEFAULT_SIZE, 448, Short.MAX_VALUE)
+            .addComponent(jToolBar1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(jLabel1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 448, Short.MAX_VALUE)
-            .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 448, Short.MAX_VALUE)
+            .addComponent(jLabel1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 454, Short.MAX_VALUE)
+            .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 454, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -320,6 +348,7 @@ public class RemindPanel extends javax.swing.JPanel {
         try {
             Stage s = (Stage) DatabaseObject.getObject(Context.getStages(), Integer.valueOf(labeledCombobox3.getSelectedItem().getId()));
             s.delete();
+            labeledCombobox3.triggerSearch();
         } catch (NodataFoundException ex) {
             Log.Debug(this, ex.getMessage());
         }
@@ -327,31 +356,38 @@ public class RemindPanel extends javax.swing.JPanel {
     }//GEN-LAST:event_jButton6ActionPerformed
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
-        save();
+
         PreviewPanel pr;
         if (dataOwner != null && dataOwner.isExisting()) {
-            Exportable t = Template.loadTemplate(dataOwner).getExFile();
+            Template t = Template.loadTemplate(dataOwner);
             if (t != null) {
+                Exportable te = Template.loadTemplate(dataOwner).getExFile();
                 HashMap<String, String> hm1 = new FormFieldsHandler(dataOwner).getFormattedFormFields(null);
                 File f2 = FileDirectoryHandler.getTempFile("pdf");
                 Export ex = new Export();
                 ex.putAll(hm1);
-                ex.setTemplate(t);
+                ex.setTemplate(te);
                 ex.setTargetFile(f2);
                 try {
-                    ex.put("stage", DatabaseObject.getObject(Context.getStages(), dataOwner.__getStagesids()));
+                    Stage g = (Stage) DatabaseObject.getObject(Context.getStages(), dataOwner.__getStagesids());
+                    ex.put("reminder.stage", g.__getCName());
                 } catch (NodataFoundException ex1) {
                     Log.Debug(ex1);
+                }
+                try {
+                    Item i = (Item) DatabaseObject.getObject(Context.getItems(), dataOwner.__getItemsids());
+                    ex.put("reminder.count", Reminder.getRemindersOf(i).size());
+                } catch (NodataFoundException nodataFoundException) {
+                    Log.Debug(nodataFoundException);
                 }
 
                 pr = new PreviewPanel();
                 pr.setDataOwner(dataOwner);
                 new Job(ex, pr).execute();
             } else {
-                Popup.notice(Messages.NO_TEMPLATE_LOADED);
+                Popup.notice(Messages.NO_TEMPLATE_DEFINDED);
             }
         }
-
     }//GEN-LAST:event_jButton3ActionPerformed
 
     private void jList1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jList1MouseClicked
@@ -360,6 +396,12 @@ public class RemindPanel extends javax.swing.JPanel {
         } catch (Exception e) {
         }
     }//GEN-LAST:event_jList1MouseClicked
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+
+        save();
+    }//GEN-LAST:event_jButton1ActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
@@ -414,11 +456,12 @@ public class RemindPanel extends javax.swing.JPanel {
     }
 
     private void expose(Reminder r) {
+        dataOwner = r;
         try {
             labeledCombobox1.setModel(Item.getObject(Context.getItems(), r.__getItemsids()));
         } catch (NodataFoundException ex) {
-            labeledTextField1.setText(r.__getExtravalue());
-            jTextPane1.setText(r.__getDescription());
         }
+        labeledTextField1.setText(r.__getExtravalue());
+        jTextPane1.setText(r.__getDescription());
     }
 }

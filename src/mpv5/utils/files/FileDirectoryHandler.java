@@ -185,27 +185,20 @@ public abstract class FileDirectoryHandler {
             File[] files = src.listFiles();
             Log.Debug(FileDirectoryHandler.class, "Dateien analysieren...");
             lstFiles = new ArrayList<java.io.File>();
-
-            for (int i = 0, k = 0; i < files.length; i++) {
+            if (files != null && files.length > 0) {
+                for (int i = 0, k = 0; i < files.length; i++) {
 //                Log.Debug(this,"Datei analysieren: " + files[i].getName());
-                if (files[i].isFile() && (identifier == null || files[i].toString().contains(identifier))) {
-                    try {
-//                        String[] fileinfo = new String[3];
-//                        fileinfo[0] = String.valueOf(k);
-//                        fileinfo[1] = files[i].getName();
-//                        fileinfo[2] = files[i].getCanonicalPath();
-                        lstFiles.add(files[i]);
-                        Log.Debug(FileDirectoryHandler.class, "Datei gefunden: " + files[i].getName());
-                        k++;
-                    } catch (Exception ex) {
-                        Log.Debug(FileDirectoryHandler.class, ex.getMessage());
+                    if (files[i].isFile() && (identifier == null || files[i].toString().contains(identifier))) {
+                        try {
+                            lstFiles.add(files[i]);
+                            Log.Debug(FileDirectoryHandler.class, "Datei gefunden: " + files[i].getName());
+                            k++;
+                        } catch (Exception ex) {
+                            Log.Debug(FileDirectoryHandler.class, ex.getMessage());
+                        }
                     }
                 }
-            }
-            if (files.length == 0) {
-//                String[] fileinfo = new String[3];
-//                fileinfo [2] = "Keine Datei vorhanden";
-//                lstFiles.add(fileinfo);
+            } else {
                 Log.Debug(FileDirectoryHandler.class, "Keine Datei gefunden.");
             }
         } catch (Exception exception) {
