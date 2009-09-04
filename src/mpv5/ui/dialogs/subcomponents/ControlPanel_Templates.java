@@ -576,7 +576,7 @@ public class ControlPanel_Templates extends javax.swing.JPanel implements Contro
 
             templates.setModel(new MPTableModel(data, Headers.TEMPLATES.getValue()));
         } catch (NodataFoundException ex) {
-            Log.Debug(ex);
+            Log.Debug(this, ex.getMessage());
         }
 //        Context c1 = Context.getTemplatesToUsers();
 //        c1.addReference(Context.getGroup());

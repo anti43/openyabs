@@ -305,25 +305,29 @@ public class DocumentHandler {
      * @param data
      * @throws TextException
      */
-    public synchronized void fillTables(HashMap<String, Object> data) throws TextException {
+    public synchronized void fillTables(HashMap<String, Object> data) {
 
         Log.Debug(this, "Looking for tables in: " + document);
-        for (Iterator<String> it = data.keySet().iterator(); it.hasNext();) {
-            String key = it.next();
-            if (key.startsWith(TableHandler.KEY_TABLE)) {//Table found
-                @SuppressWarnings("unchecked")
-                List<String[]> value = (List<String[]>) data.get(key);
-                if (tablehandler == null) {
-                    tablehandler = new TableHandler((ITextDocument) document, key);
-                }
-                for (int i = 0; i < value.size(); i++) {
-                    String[] strings = value.get(i);
-                    for (int j = 0; j < strings.length; j++) {
-                        String cellValue = strings[j];
-                        tablehandler.setValueAt(cellValue, j, i);
+        try {
+            for (Iterator<String> it = data.keySet().iterator(); it.hasNext();) {
+                String key = it.next();
+                if (key.startsWith(TableHandler.KEY_TABLE)) {//Table found
+                    @SuppressWarnings("unchecked")
+                    List<String[]> value = (List<String[]>) data.get(key);
+                    if (tablehandler == null) {
+                        tablehandler = new TableHandler((ITextDocument) document, key);
+                    }
+                    for (int i = 0; i < value.size(); i++) {
+                        String[] strings = value.get(i);
+                        for (int j = 0; j < strings.length; j++) {
+                            String cellValue = strings[j];
+                            tablehandler.setValueAt(cellValue, j, i);
+                        }
                     }
                 }
             }
+        } catch (Exception textException) {
+            Log.Debug(this, textException.getMessage());
         }
     }
 

@@ -69,13 +69,13 @@ public class NoaConnection {
             if (Connection == null) {
                 try {
 //                    if (LocalSettings.getBooleanProperty(LocalSettings.OFFICE_REMOTE)) {
-                        Connection = new NoaConnection(LocalSettings.getProperty(LocalSettings.OFFICE_HOST), Integer.valueOf(LocalSettings.getProperty(LocalSettings.OFFICE_PORT)));
+                    Connection = new NoaConnection(LocalSettings.getProperty(LocalSettings.OFFICE_HOST), Integer.valueOf(LocalSettings.getProperty(LocalSettings.OFFICE_PORT)));
 //                    } else {
 //                        Connection = new NoaConnection(LocalSettings.getProperty(LocalSettings.OFFICE_HOST), 0);
 //                    }
                 } catch (Exception ex) {
                     mpv5.logging.Log.Debug(ex);//Logger.getLogger(NoaConnection.class.getName()).log(Level.SEVERE, null, ex);
-               Popup.error(MPView.identifierFrame, Messages.OOCONNERROR + "\n" + ex);
+                    Popup.error(MPView.identifierFrame, Messages.OOCONNERROR + "\n" + ex);
                 }
             }
             return Connection;
@@ -126,7 +126,6 @@ public class NoaConnection {
                 try {
                     Thread.sleep(3333);
                 } catch (InterruptedException ex) {
-                    
                 }
                 officeAplication.activate();
             }
@@ -150,7 +149,7 @@ public class NoaConnection {
      * @throws NOAException
      * @throws InvalidArgumentException
      */
-    private synchronized  boolean createLocalConnection(String OOOPath) throws OfficeApplicationException, NOAException, InvalidArgumentException {
+    private synchronized boolean createLocalConnection(String OOOPath) throws OfficeApplicationException, NOAException, InvalidArgumentException {
         if (OOOPath != null) {
             Map<String, String> configuration = new HashMap<String, String>();
             configuration.put(IOfficeApplication.APPLICATION_HOME_KEY, OOOPath);
@@ -179,28 +178,28 @@ public class NoaConnection {
      *  -1 indicates no connection.
      * @return the type
      */
-    public synchronized  int getType() {
+    public synchronized int getType() {
         return type;
     }
 
     /**
      * @param type the type to set
      */
-    private  synchronized void setType(int type) {
+    private synchronized void setType(int type) {
         this.type = type;
     }
 
     /**
      * @return the documentService
      */
-    public synchronized  IDocumentService getDocumentService() {
+    public synchronized IDocumentService getDocumentService() {
         return documentService;
     }
 
     /**
      * @return the desktopService
      */
-    public  synchronized IDesktopService getDesktopService() {
+    public synchronized IDesktopService getDesktopService() {
         return desktopService;
     }
 
@@ -255,11 +254,10 @@ public class NoaConnection {
     /**
      * Stops all OOO servers instances started by this instance
      */
-    public  synchronized static void stopOOOServer() {
+    public synchronized static void stopOOOServer() {
         for (int i = 0; i < OOOServers.size(); i++) {
             Process process = OOOServers.get(i);
             process.destroy();
         }
     }
-
 }

@@ -36,6 +36,16 @@ import mpv5.utils.jobs.Waiter;
 public class DialogForFile extends JFileChooser implements Waiter {
 
     private static final long serialVersionUID = 1L;
+    public static FileFilter DIRECTORIES = new FileFilter() {
+
+        public boolean accept(File f) {
+            return f.isDirectory();
+        }
+
+        public String getDescription() {
+            return "Directories";
+        }
+    };
     public static FileFilter TEMPLATE_FILES = new FileFilter() {
 
         public boolean accept(File f) {

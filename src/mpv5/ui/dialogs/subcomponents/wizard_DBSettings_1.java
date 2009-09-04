@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.JFileChooser;
 import mpv5.Main;
 import mpv5.db.common.ConnectionTypeHandler;
 import mpv5.db.common.DatabaseConnection;
@@ -22,6 +23,7 @@ import mpv5.globals.Messages;
 
 import mpv5.logging.Log;
 import mpv5.logging.LogConsole;
+import mpv5.ui.dialogs.DialogForFile;
 import mpv5.ui.dialogs.Popup;
 import mpv5.ui.dialogs.Wizard;
 import mpv5.ui.dialogs.WizardMaster;
@@ -40,6 +42,7 @@ public class wizard_DBSettings_1 extends javax.swing.JPanel implements Wizardabl
     public wizard_DBSettings_1(Wizard w, Integer forConnId) {
         this.master = w;
         initComponents();
+        labeledTextChooser2.setMode(JFileChooser.DIRECTORIES_ONLY);
         jComboBox1.setModel(new DefaultComboBoxModel(ConnectionTypeHandler.DRIVERS));
         load();
         this.forConnId = forConnId;
@@ -52,47 +55,60 @@ public class wizard_DBSettings_1 extends javax.swing.JPanel implements Wizardabl
         if (labeledTextChooser1.get_Text(false) != null && labeledTextChooser1.get_Text(false).length() > 0) {
             master.getStore().changeProperty("driver", jComboBox1.getSelectedItem().toString());
             master.getStore().changeProperty("url", labeledTextChooser1.get_Text(false));
-            master.getStore().changeProperty("user", labeledTextField2.get_Text());
-            master.getStore().changeProperty("password", labeledTextField1.get_Text());
+            master.getStore().changeProperty("user", labeledTextField4.get_Text());
+            master.getStore().changeProperty("password", labeledTextField5.get_Text());
             master.getStore().changeProperty("dbname", labeledTextField3.get_Text());
             master.setMessage(Messages.CONNECTION_PROBE + master.getStore().getProperty("driver"));
             conn = new DatabaseConnection();
             try {
-
                 LocalSettings.setProperty(LocalSettings.DBPATH, master.getStore().getProperty("url"));
                 LocalSettings.setProperty(LocalSettings.DBDRIVER, master.getStore().getProperty("driver"));
                 LocalSettings.setProperty(LocalSettings.DBUSER, master.getStore().getProperty("user"));
                 LocalSettings.setProperty(LocalSettings.DBPASSWORD, master.getStore().getProperty("password"));
                 LocalSettings.setProperty(LocalSettings.DBNAME, master.getStore().getProperty("dbname"));
+                if (!jCheckBox3.isSelected() && labeledTextChooser2.hasText()) {
+                    LocalSettings.setProperty(LocalSettings.OFFICE_HOME, labeledTextChooser2.get_Text(true));
+                    LocalSettings.setProperty(LocalSettings.OFFICE_USE, "true");
+                    LocalSettings.setProperty(LocalSettings.OFFICE_REMOTE, "false");
+                } else if (labeledTextField1.getText().length() > 0 && labeledTextField2.getText().length() > 0) {
+                    LocalSettings.setProperty(LocalSettings.OFFICE_HOST, labeledTextField1.getText());
+                    LocalSettings.setProperty(LocalSettings.OFFICE_PORT, labeledTextField2.getText());
+                    LocalSettings.setProperty(LocalSettings.OFFICE_USE, "true");
+                    LocalSettings.setProperty(LocalSettings.OFFICE_REMOTE, "true");
+                } else {
+                    LocalSettings.setProperty(LocalSettings.OFFICE_USE, "false");
+                    Popup.notice(Messages.OO_LATER);
+                }
                 if (jCheckBox2.isSelected()) {
                     LocalSettings.setProperty(LocalSettings.DBTYPE, "network");
                 } else {
                     LocalSettings.setProperty(LocalSettings.DBTYPE, "single");
                 }
 
-                if (conn.connect(master.getStore().getProperty("driver"),
-                        master.getStore().getProperty("user"),
-                        master.getStore().getProperty("password"),
-                        master.getStore().getProperty("url"),
-                        master.getStore().getProperty("dbname"),
-                        true)) {
-                    master.setMessage(Messages.CONNECTION_VERIFIED.toString());
-                    LocalSettings.save(forConnId);
-                    LocalSettings.apply();
+                    if (conn.connect(master.getStore().getProperty("driver"),
+                            master.getStore().getProperty("user"),
+                            master.getStore().getProperty("password"),
+                            master.getStore().getProperty("url"),
+                            master.getStore().getProperty("dbname"),
+                            true)) {
+                        master.setMessage(Messages.CONNECTION_VERIFIED.toString());
+                        LocalSettings.save(forConnId);
+                        LocalSettings.apply();
 
-                    if (!jCheckBox1.isSelected()) {
-                        master.setMessage(Messages.CREATING_DATABASE.toString());
-                        if (conn.runQueries(new DatabaseInstallation().getStructure())) {
-                            master.setMessage(Messages.CONNECTION_VERIFIED.toString());
-                        } else {
-                            master.setMessage(Messages.CREATING_DATABASE_FAILED.toString());
-                            return false;
+                        if (!jCheckBox1.isSelected()) {
+                            master.setMessage(Messages.CREATING_DATABASE.toString());
+                            if (conn.runQueries(new DatabaseInstallation().getStructure())) {
+                                master.setMessage(Messages.CONNECTION_VERIFIED.toString());
+                            } else {
+                                master.setMessage(Messages.CREATING_DATABASE_FAILED.toString());
+                                return false;
+                            }
                         }
+                        master.isEnd(true);
+                    } else {
+                        master.setMessage(Messages.CONNECTION_FAILED.toString());
                     }
-                    master.isEnd(true);
-                } else {
-                    master.setMessage(Messages.CONNECTION_FAILED.toString());
-                }
+                
             } catch (Exception ex) {
                 master.setMessage(Messages.CONNECTION_FAILED.toString());
                 this.master.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
@@ -129,9 +145,11 @@ public class wizard_DBSettings_1 extends javax.swing.JPanel implements Wizardabl
     private void initComponents() {
 
         jPanel1 = new javax.swing.JPanel();
-        labeledTextField2 = new mpv5.ui.beans.LabeledTextField();
+        labeledTextChooser2 = new mpv5.ui.beans.LabeledTextChooser();
+        jCheckBox3 = new javax.swing.JCheckBox();
         labeledTextField1 = new mpv5.ui.beans.LabeledTextField();
-        jButton1 = new javax.swing.JButton();
+        labeledTextField2 = new mpv5.ui.beans.LabeledTextField();
+        jLabel3 = new javax.swing.JLabel();
         jPanel2 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         jComboBox1 = new javax.swing.JComboBox();
@@ -140,34 +158,44 @@ public class wizard_DBSettings_1 extends javax.swing.JPanel implements Wizardabl
         jCheckBox1 = new javax.swing.JCheckBox();
         jLabel2 = new javax.swing.JLabel();
         jCheckBox2 = new javax.swing.JCheckBox();
+        jPanel4 = new javax.swing.JPanel();
+        labeledTextField4 = new mpv5.ui.beans.LabeledTextField();
+        labeledTextField5 = new mpv5.ui.beans.LabeledTextField();
+        jButton2 = new javax.swing.JButton();
         jPanel3 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         jTextArea1 = new javax.swing.JTextArea();
 
         setBackground(new java.awt.Color(255, 255, 255));
-        java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle(); // NOI18N
+        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("mpv5/resources/languages/Panels"); // NOI18N
         setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("wizard_DBSettings_1.border.title"))); // NOI18N
         setName("Form"); // NOI18N
 
         jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("wizard_DBSettings_1.jPanel1.border.title"))); // NOI18N
         jPanel1.setName("jPanel1"); // NOI18N
 
+        labeledTextChooser2.set_Label(bundle.getString("wizard_DBSettings_1.labeledTextChooser2._Label")); // NOI18N
+        labeledTextChooser2.setName("labeledTextChooser2"); // NOI18N
+
+        jCheckBox3.setText(bundle.getString("wizard_DBSettings_1.jCheckBox3.text")); // NOI18N
+        jCheckBox3.setName("jCheckBox3"); // NOI18N
+        jCheckBox3.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                jCheckBox3ItemStateChanged(evt);
+            }
+        });
+
+        labeledTextField1.set_Label(bundle.getString("wizard_DBSettings_1.labeledTextField1._Label")); // NOI18N
+        labeledTextField1.set_Text(bundle.getString("wizard_DBSettings_1.labeledTextField1._Text")); // NOI18N
+        labeledTextField1.setEnabled(false);
+        labeledTextField1.setName("labeledTextField1"); // NOI18N
+
         labeledTextField2.set_Label(bundle.getString("wizard_DBSettings_1.labeledTextField2._Label")); // NOI18N
         labeledTextField2.setEnabled(false);
         labeledTextField2.setName("labeledTextField2"); // NOI18N
 
-        labeledTextField1.set_Label(bundle.getString("wizard_DBSettings_1.labeledTextField1._Label")); // NOI18N
-        labeledTextField1.setEnabled(false);
-        labeledTextField1.setName("labeledTextField1"); // NOI18N
-
-        jButton1.setFont(new java.awt.Font("Dialog", 0, 12));
-        jButton1.setText(bundle.getString("wizard_DBSettings_1.jButton1.text")); // NOI18N
-        jButton1.setName("jButton1"); // NOI18N
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
-            }
-        });
+        jLabel3.setText(bundle.getString("wizard_DBSettings_1.jLabel3.text")); // NOI18N
+        jLabel3.setName("jLabel3"); // NOI18N
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -175,22 +203,28 @@ public class wizard_DBSettings_1 extends javax.swing.JPanel implements Wizardabl
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(labeledTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(labeledTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 13, Short.MAX_VALUE)
-                .addComponent(jButton1)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(labeledTextChooser2, javax.swing.GroupLayout.DEFAULT_SIZE, 609, Short.MAX_VALUE)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(jCheckBox3, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(labeledTextField1, javax.swing.GroupLayout.DEFAULT_SIZE, 308, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(labeledTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, 157, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jLabel3))
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(12, 12, 12)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(labeledTextField1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                        .addComponent(labeledTextField2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jButton1, 0, 0, Short.MAX_VALUE)))
+                .addComponent(labeledTextChooser2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel3)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 6, Short.MAX_VALUE)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
+                    .addComponent(labeledTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jCheckBox3)
+                    .addComponent(labeledTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap())
         );
 
@@ -228,26 +262,72 @@ public class wizard_DBSettings_1 extends javax.swing.JPanel implements Wizardabl
         jCheckBox2.setText(bundle.getString("wizard_DBSettings_1.jCheckBox2.text")); // NOI18N
         jCheckBox2.setName("jCheckBox2"); // NOI18N
 
+        jPanel4.setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("wizard_DBSettings_1.jPanel4.border.title"))); // NOI18N
+        jPanel4.setName("jPanel4"); // NOI18N
+
+        labeledTextField4.set_Label(bundle.getString("wizard_DBSettings_1.labeledTextField4._Label")); // NOI18N
+        labeledTextField4.setEnabled(false);
+        labeledTextField4.setName("labeledTextField4"); // NOI18N
+
+        labeledTextField5.set_Label(bundle.getString("wizard_DBSettings_1.labeledTextField5._Label")); // NOI18N
+        labeledTextField5.setEnabled(false);
+        labeledTextField5.setName("labeledTextField5"); // NOI18N
+
+        jButton2.setFont(new java.awt.Font("Dialog", 0, 12));
+        jButton2.setText(bundle.getString("wizard_DBSettings_1.jButton2.text")); // NOI18N
+        jButton2.setName("jButton2"); // NOI18N
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
+        jPanel4.setLayout(jPanel4Layout);
+        jPanel4Layout.setHorizontalGroup(
+            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel4Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(labeledTextField4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(labeledTextField5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 118, Short.MAX_VALUE)
+                .addComponent(jButton2)
+                .addContainerGap())
+        );
+        jPanel4Layout.setVerticalGroup(
+            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel4Layout.createSequentialGroup()
+                .addGap(17, 17, 17)
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(labeledTextField5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                        .addComponent(labeledTextField4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jButton2, 0, 0, Short.MAX_VALUE)))
+                .addContainerGap())
+        );
+
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(labeledTextChooser1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 506, Short.MAX_VALUE)
+                    .addComponent(labeledTextChooser1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 621, Short.MAX_VALUE)
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addComponent(labeledTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jCheckBox1, javax.swing.GroupLayout.DEFAULT_SIZE, 311, Short.MAX_VALUE))
+                        .addComponent(jCheckBox1, javax.swing.GroupLayout.DEFAULT_SIZE, 426, Short.MAX_VALUE))
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                             .addComponent(jLabel2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(jLabel1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 183, Short.MAX_VALUE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(jCheckBox2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jComboBox1, javax.swing.GroupLayout.Alignment.LEADING, 0, 311, Short.MAX_VALUE))))
+                            .addComponent(jCheckBox2, javax.swing.GroupLayout.DEFAULT_SIZE, 426, Short.MAX_VALUE)
+                            .addComponent(jComboBox1, javax.swing.GroupLayout.Alignment.LEADING, 0, 426, Short.MAX_VALUE))))
                 .addContainerGap())
+            .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -267,7 +347,9 @@ public class wizard_DBSettings_1 extends javax.swing.JPanel implements Wizardabl
                         .addGap(1, 1, 1)
                         .addComponent(jCheckBox1, 0, 0, Short.MAX_VALUE))
                     .addComponent(labeledTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(15, 15, 15))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         jPanel3.setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("wizard_DBSettings_1.jPanel3.border.title"))); // NOI18N
@@ -293,36 +375,30 @@ public class wizard_DBSettings_1 extends javax.swing.JPanel implements Wizardabl
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 518, Short.MAX_VALUE)
+            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 633, Short.MAX_VALUE)
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 98, Short.MAX_VALUE)
+            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 83, Short.MAX_VALUE)
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 138, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 204, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, 0)
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
-
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        labeledTextField1.setEnabled(true);
-        labeledTextField2.setEnabled(true);
-    }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jComboBox1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBox1ActionPerformed
         if (jComboBox1.getSelectedItem().toString().contains("mysql")) {
@@ -330,26 +406,42 @@ public class wizard_DBSettings_1 extends javax.swing.JPanel implements Wizardabl
         } else if (jComboBox1.getSelectedItem().toString().contains("custom")) {
             labeledTextChooser1.set_Text("jdbc:sql://<path>:port");
         } else if (jComboBox1.getSelectedItem().toString().contains("derby")) {
-             labeledTextChooser1.set_Text(Main.MPPATH);
+            labeledTextChooser1.set_Text(Main.MPPATH);
         }
 
     }//GEN-LAST:event_jComboBox1ActionPerformed
+
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jButton2ActionPerformed
+
+    private void jCheckBox3ItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_jCheckBox3ItemStateChanged
+        labeledTextField1.setEnabled(jCheckBox3.isSelected());
+        labeledTextField2.setEnabled(jCheckBox3.isSelected());
+        labeledTextChooser2.setEnabled(!jCheckBox3.isSelected());
+    }//GEN-LAST:event_jCheckBox3ItemStateChanged
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton1;
+    private javax.swing.JButton jButton2;
     private javax.swing.JCheckBox jCheckBox1;
     private javax.swing.JCheckBox jCheckBox2;
+    private javax.swing.JCheckBox jCheckBox3;
     private javax.swing.JComboBox jComboBox1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
+    private javax.swing.JPanel jPanel4;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTextArea jTextArea1;
     private mpv5.ui.beans.LabeledTextChooser labeledTextChooser1;
+    private mpv5.ui.beans.LabeledTextChooser labeledTextChooser2;
     private mpv5.ui.beans.LabeledTextField labeledTextField1;
     private mpv5.ui.beans.LabeledTextField labeledTextField2;
     private mpv5.ui.beans.LabeledTextField labeledTextField3;
+    private mpv5.ui.beans.LabeledTextField labeledTextField4;
+    private mpv5.ui.beans.LabeledTextField labeledTextField5;
     // End of variables declaration//GEN-END:variables
 
     public boolean next() {
