@@ -48,7 +48,7 @@ public class Template extends DatabaseObject {
     /**
      * The cache of the templates
      */
-    public static HashMap<Context, Template> templateCache = new HashMap<Context, Template>();
+    public static HashMap<String, Template> templateCache = new HashMap<String, Template>();
 
     /**
      * 
@@ -56,10 +56,7 @@ public class Template extends DatabaseObject {
      * @return
      */
     public static Template loadTemplate(DatabaseObject dataOwner) {
-        if (templateCache.containsKey(dataOwner.getContext())) {
-            return templateCache.get(dataOwner.getContext());
-        } else {
-            String type = "";
+       String type = "";
             if (dataOwner instanceof Item) {
                 type = Item.getTypeString(((Item) dataOwner).__getInttype());
             } else if (dataOwner instanceof Product) {
@@ -67,6 +64,10 @@ public class Template extends DatabaseObject {
             } else if (dataOwner instanceof Reminder) {
                 type = Reminder.getTypeString();
             }
+       String key = MPView.getUser() + "@" + type + "@" + dataOwner.__getGroupsids();
+       if (templateCache.containsKey(key)) {
+            return templateCache.get(key);
+        } else {
 
             ReturnValue data = QueryHandler.getConnection().freeQuery(
                     "SELECT templatesids FROM templatestousers  LEFT OUTER JOIN templates AS templates0 ON " +
@@ -74,7 +75,8 @@ public class Template extends DatabaseObject {
                     MPView.getUser().__getIDS() +
                     " AND " +
                     "templates0.mimetype='" + type +
-                    "' AND templatestousers.IDS>0", MPSecurityManager.VIEW, null);
+                    "' AND templatestousers.IDS>0 " +
+                    "AND (templates0.groupsids =" + dataOwner.__getGroupsids() + " OR templates0.groupsids =" + 1 + ")", MPSecurityManager.VIEW, null);
             Template preloadedTemplate = null;
             if (data.hasData()) {
                 try {
@@ -84,7 +86,7 @@ public class Template extends DatabaseObject {
                     } else {
                         preloadedTemplate.exFile = new PDFFile(preloadedTemplate.getFile().getPath());
                     }
-                    templateCache.put(dataOwner.getContext(), preloadedTemplate);
+                    templateCache.put(key, preloadedTemplate);
                 } catch (NodataFoundException ex) {
                     return null;
                 }
@@ -276,10 +278,6 @@ public class Template extends DatabaseObject {
         for (int i = 0; i < l.size(); i++) {
             DatabaseObject databaseObject = l.get(i);
             Template t = loadTemplate(databaseObject);
-            if (t!=null) {
-                templateCache.put(databaseObject.getContext(), t);
-                Log.Debug(Template.class, "Template cached: " + t);
-            }
         }
     }
 

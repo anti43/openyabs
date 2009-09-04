@@ -504,4 +504,12 @@ public class AddressPanel extends javax.swing.JPanel implements DataPanel {
     @Override
     public void actionAfterCreate() {
     }
+
+    public void actionBeforeCreate() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public void actionBeforeSave() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
 }

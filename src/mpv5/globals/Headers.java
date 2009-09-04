@@ -17,7 +17,7 @@ public enum Headers {
     TRASHBIN(new String[]{"Type", "Internal ID", "Description"}),
     PRODUCT_DEFAULT(new String[]{"Internal ID", "Name", "Number", "Description"}),
     SUBITEMS(new String[]{"Internal ID", "", "Count", "Measure", "Description", "Netto Price", "Tax Rate", "Total Price", "Tax value", "Net 2", "Product ID"}),
-    TEMPLATES(new String[]{ "Internal ID", "Name" ,"Date","Description", "Size", "Type"}),
+    TEMPLATES(new String[]{ "Name" ,"Type", "Group"}),
     SCHEDULE_LIST(new String[]{ "Item ID", "Interval (Months)" ,"End date","Added by"});
 
     private Headers(String[] header) {

@@ -582,4 +582,12 @@ public class ControlPanel_ProductGroups extends javax.swing.JPanel implements Co
         w.addPanel(new wizard_CSV_ProductGroups_Import_1(w));
         w.showWiz();
     }
+
+    public void actionBeforeCreate() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public void actionBeforeSave() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
 }

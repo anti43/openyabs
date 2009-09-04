@@ -52,6 +52,7 @@ public enum Messages {
      * Actions
      */
     ACTION_CREATE("Create"),
+    ACTION_PREVIEW("Preview"),
     ACTION_EDIT("Edit"),
     ACTION_EXPORT("Export"),
     ACTION_VIEW("View"),
@@ -146,7 +147,7 @@ public enum Messages {
     TYPE_SERVICE("Service"),
     TYPE_ORDER("Order"),
     TYPE_DELIVERY("Delivery Note"),
-    TYPE_REMINDER("Delivery Note"),
+    TYPE_REMINDER("Reminder"),
     STATUS_PAID("Paid"),
     TRASHBIN("Trashbin"),
     DELETE("Delete"),
@@ -165,7 +166,7 @@ public enum Messages {
     REMINDER("Reminder"),
     OO_DONE_LOADING("OpenOffice loaded"),
     OOCONNERROR("Could not open a connection to OpenOffice."),
-    OO_NOT_CONFIGURED("OO not configured"),
+    OO_NOT_CONFIGURED("Template/OO NA"),
     SET_AS_DEFAULT("Set as default"),
     NO_ACCOUNTS("No accounts or companies are configured for you."),
     CONTACTS_TRANSMITTED("contacts have been transmitted to"),

@@ -6,13 +6,11 @@ package mpv5.ui.panels;
 
 import mpv5.db.common.DatabaseObject;
 
-
 /**
  *Represents a view for {@link DatabaseObject}s
  *  
  */
 public interface DataPanel {
-
 
     /**
      * Collect the view data
@@ -60,13 +58,22 @@ public interface DataPanel {
     public void showSearchBar(boolean show);
 
     /**
-     * Callt his after saving the dataowner of the panel
+     * Call this after saving the dataowner of the panel
      */
     public void actionAfterSave();
 
-       /**
-     * Callt his after creating a new dataowner on the panel
+    /**
+     * Call this after creating a new dataowner on the panel
      */
     public void actionAfterCreate();
 
+    /**
+     * Call this before creating a new dataowner on the panel
+     */
+    public void actionBeforeCreate();
+
+    /**
+     * Call this before saving the dataowner of the panel
+     */
+    public void actionBeforeSave();
 }

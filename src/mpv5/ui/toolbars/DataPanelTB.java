@@ -314,6 +314,7 @@ public class DataPanelTB extends javax.swing.JPanel {
 
         boolean d = dato.getPanelData(parents);
         dato.setIDS(-1);
+        parents.actionBeforeCreate();
 
         if (d && dato.save()) {
             try {

@@ -499,4 +499,12 @@ public class ControlPanel_Groups extends javax.swing.JPanel implements ControlAp
 
         return path1;
     }
+
+    public void actionBeforeCreate() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public void actionBeforeSave() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
 }

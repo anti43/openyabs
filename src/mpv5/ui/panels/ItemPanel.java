@@ -27,35 +27,24 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Vector;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
-import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTable;
 import javax.swing.JViewport;
 import javax.swing.SwingUtilities;
 import javax.swing.table.TableCellRenderer;
-import javax.swing.table.TableModel;
 import mpv5.db.common.*;
-import mpv5.db.objects.Account;
 import mpv5.db.objects.Product;
 import mpv5.globals.Headers;
 import mpv5.globals.Messages;
 import mpv5.db.objects.Contact;
-import mpv5.db.common.DataNotCachedException;
 import mpv5.db.objects.Favourite;
 import mpv5.db.objects.Item;
 import mpv5.db.objects.SubItem;
@@ -72,23 +61,14 @@ import mpv5.handler.FormFieldsHandler;
 import mpv5.ui.beans.MPCBSelectionChangeReceiver;
 import mpv5.ui.dialogs.DialogForFile;
 import mpv5.ui.dialogs.ScheduleDayEvent;
-import mpv5.ui.panels.calendar.JCalendar;
-import mpv5.usermanagement.MPSecurityManager;
 import mpv5.utils.arrays.ArrayUtilities;
-import mpv5.utils.date.DateConverter;
 import mpv5.utils.export.Export;
 import mpv5.utils.export.Exportable;
-import mpv5.utils.export.ODTFile;
-import mpv5.utils.export.PDFFile;
-import mpv5.utils.export.PDFFile;
 import mpv5.utils.files.FileDirectoryHandler;
 import mpv5.utils.jobs.Job;
 import mpv5.utils.models.MPComboBoxModelItem;
 import mpv5.utils.models.MPTableModel;
-import mpv5.utils.models.MPTableModelRow;
-import mpv5.utils.models.NativeModeNotSupportedException;
 import mpv5.utils.numberformat.FormatNumber;
-import mpv5.utils.ooo.OOOPanel;
 import mpv5.utils.tables.TableCalculator;
 import mpv5.utils.renderer.CellRendererWithMPComboBox;
 import mpv5.utils.renderer.TableCellRendererForDezimal;
@@ -1240,6 +1220,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
                         preloadedExportFile = preloadedTemplate.getExFile();
                         preload = true;
                         button_preview.setEnabled(preload);
+                        button_preview.setText(Messages.ACTION_PREVIEW.getValue());
                     } catch (Exception e) {
                         Log.Debug(e);
                     }
@@ -1250,5 +1231,16 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
             }
         };
         new Thread(runnable).start();
+    }
+
+    public void actionBeforeCreate() {
+         status.setSelectedIndex(Item.STATUS_IN_PROGRESS);
+         date1.setDate(new Date());
+         date2.setDate(new Date());
+         date3.setDate(new Date());
+    }
+
+    public void actionBeforeSave() {
+        
     }
 }

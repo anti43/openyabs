@@ -24,7 +24,8 @@ import mpv5.db.common.QueryData;
 import mpv5.db.common.QueryHandler;
 import mpv5.db.common.SaveString;
 import mpv5.db.objects.Contact;
-import mpv5.db.objects.Item;
+
+import mpv5.db.objects.*;
 import mpv5.db.objects.SubItem;
 import mpv5.db.objects.Template;
 import mpv5.globals.Headers;
@@ -80,6 +81,9 @@ public class ControlPanel_Templates extends javax.swing.JPanel implements Contro
                         Messages.TYPE_DELIVERY.toString(),
                         Messages.TYPE_REMINDER.toString()}));
             refresh();
+            groupname.setModel(new DefaultComboBoxModel(
+                    MPComboBoxModelItem.toItems(new DatabaseSearch(Context.getGroup()).getValuesFor(Context.getGroup().getSubID(), null, ""))));
+
             setVisible(true);
         }
     }
@@ -87,12 +91,20 @@ public class ControlPanel_Templates extends javax.swing.JPanel implements Contro
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jScrollPane1 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
+        jPanel6 = new javax.swing.JPanel();
+        jButton6 = new javax.swing.JButton();
+        jButton5 = new javax.swing.JButton();
+        jButton1 = new javax.swing.JButton();
+        jSeparator1 = new javax.swing.JSeparator();
+        jSeparator2 = new javax.swing.JSeparator();
+        jButton4 = new javax.swing.JButton();
+        jButton3 = new javax.swing.JButton();
+        jButton2 = new javax.swing.JButton();
+        jButton7 = new javax.swing.JButton();
+        jPanel1 = new javax.swing.JPanel();
         jPanel2 = new javax.swing.JPanel();
         jPanel4 = new javax.swing.JPanel();
         fullname = new mpv5.ui.beans.LabeledTextField();
-        size = new mpv5.ui.beans.LabeledTextField();
         jLabel3 = new javax.swing.JLabel();
         groupname = new javax.swing.JComboBox();
         jLabel6 = new javax.swing.JLabel();
@@ -103,15 +115,8 @@ public class ControlPanel_Templates extends javax.swing.JPanel implements Contro
         jList1 = new javax.swing.JList();
         type = new mpv5.ui.beans.LabeledCombobox();
         format = new mpv5.ui.beans.LabeledTextField();
-        jPanel6 = new javax.swing.JPanel();
-        jButton6 = new javax.swing.JButton();
-        jButton5 = new javax.swing.JButton();
-        jButton1 = new javax.swing.JButton();
-        jSeparator1 = new javax.swing.JSeparator();
-        jSeparator2 = new javax.swing.JSeparator();
-        jButton4 = new javax.swing.JButton();
-        jButton3 = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
+        jScrollPane4 = new javax.swing.JScrollPane();
+        templates = new javax.swing.JTable();
 
         setBackground(new java.awt.Color(255, 255, 255));
         java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("mpv5/resources/languages/Panels"); // NOI18N
@@ -119,150 +124,6 @@ public class ControlPanel_Templates extends javax.swing.JPanel implements Contro
         setName("Form"); // NOI18N
         setPreferredSize(new java.awt.Dimension(495, 183));
         setLayout(new java.awt.BorderLayout());
-
-        jScrollPane1.setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("ControlPanel_Templates.jScrollPane1.border.title"))); // NOI18N
-        jScrollPane1.setName("jScrollPane1"); // NOI18N
-
-        jTable1.setAutoCreateRowSorter(true);
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-                {},
-                {},
-                {},
-                {}
-            },
-            new String [] {
-
-            }
-        ));
-        jTable1.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_ALL_COLUMNS);
-        jTable1.setDragEnabled(true);
-        jTable1.setFillsViewportHeight(true);
-        jTable1.setName("jTable1"); // NOI18N
-        jTable1.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                jTable1MouseClicked(evt);
-            }
-        });
-        jScrollPane1.setViewportView(jTable1);
-
-        add(jScrollPane1, java.awt.BorderLayout.CENTER);
-
-        jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("ControlPanel_Templates.jPanel2.border.title"))); // NOI18N
-        jPanel2.setName("jPanel2"); // NOI18N
-        jPanel2.setPreferredSize(new java.awt.Dimension(425, 100));
-
-        jPanel4.setBackground(new java.awt.Color(255, 255, 255));
-        jPanel4.setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("ControlPanel_Templates.jPanel4.border.title"))); // NOI18N
-        jPanel4.setName("jPanel4"); // NOI18N
-
-        fullname.set_Label(bundle.getString("ControlPanel_Templates.fullname._Label")); // NOI18N
-        fullname.setFont(fullname.getFont());
-        fullname.setName("fullname"); // NOI18N
-
-        size.set_Label(bundle.getString("ControlPanel_Templates.size._Label")); // NOI18N
-        size.setName("size"); // NOI18N
-
-        jLabel3.setFont(new java.awt.Font("Dialog", 0, 12));
-        jLabel3.setText(bundle.getString("ControlPanel_Templates.jLabel3.text")); // NOI18N
-        jLabel3.setName("jLabel3"); // NOI18N
-
-        groupname.setName("groupname"); // NOI18N
-
-        jLabel6.setFont(new java.awt.Font("Dialog", 0, 12));
-        jLabel6.setText(bundle.getString("ControlPanel_Templates.jLabel6.text")); // NOI18N
-        jLabel6.setName("jLabel6"); // NOI18N
-
-        jLabel1.setFont(jLabel1.getFont());
-        jLabel1.setText(bundle.getString("ControlPanel_Templates.jLabel1.text")); // NOI18N
-        jLabel1.setName("jLabel1"); // NOI18N
-
-        jScrollPane2.setName("jScrollPane2"); // NOI18N
-
-        descr.setColumns(20);
-        descr.setRows(5);
-        descr.setName("descr"); // NOI18N
-        jScrollPane2.setViewportView(descr);
-
-        jScrollPane3.setName("jScrollPane3"); // NOI18N
-
-        jList1.setName("jList1"); // NOI18N
-        jScrollPane3.setViewportView(jList1);
-
-        type.set_Label(bundle.getString("ControlPanel_Templates.type._Label")); // NOI18N
-        type.setName("type"); // NOI18N
-
-        format.set_Label(bundle.getString("ControlPanel_Templates.format._Label")); // NOI18N
-        format.set_Text(bundle.getString("ControlPanel_Templates.format._Text")); // NOI18N
-        format.setName("format"); // NOI18N
-
-        javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
-        jPanel4.setLayout(jPanel4Layout);
-        jPanel4Layout.setHorizontalGroup(
-            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel4Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(format, javax.swing.GroupLayout.DEFAULT_SIZE, 381, Short.MAX_VALUE)
-                    .addGroup(jPanel4Layout.createSequentialGroup()
-                        .addComponent(jLabel3, javax.swing.GroupLayout.DEFAULT_SIZE, 72, Short.MAX_VALUE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 297, Short.MAX_VALUE))
-                    .addComponent(fullname, javax.swing.GroupLayout.DEFAULT_SIZE, 381, Short.MAX_VALUE)
-                    .addGroup(jPanel4Layout.createSequentialGroup()
-                        .addComponent(size, javax.swing.GroupLayout.PREFERRED_SIZE, 159, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 20, Short.MAX_VALUE)
-                        .addComponent(type, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createSequentialGroup()
-                        .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jPanel4Layout.createSequentialGroup()
-                                .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, 72, Short.MAX_VALUE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED))
-                            .addGroup(jPanel4Layout.createSequentialGroup()
-                                .addComponent(jLabel6)
-                                .addGap(48, 48, 48)))
-                        .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(groupname, 0, 297, Short.MAX_VALUE)
-                            .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 297, Short.MAX_VALUE))))
-                .addContainerGap())
-        );
-        jPanel4Layout.setVerticalGroup(
-            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel4Layout.createSequentialGroup()
-                .addComponent(fullname, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
-                    .addComponent(type, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(size, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel1)
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(format, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(groupname, javax.swing.GroupLayout.PREFERRED_SIZE, 18, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel6))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jLabel3, javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 41, Short.MAX_VALUE))
-                .addContainerGap())
-        );
-
-        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
-        jPanel2.setLayout(jPanel2Layout);
-        jPanel2Layout.setHorizontalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-        );
-        jPanel2Layout.setVerticalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel4, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-        );
-
-        add(jPanel2, java.awt.BorderLayout.EAST);
 
         jPanel6.setBackground(new java.awt.Color(255, 255, 255));
         jPanel6.setName("jPanel6"); // NOI18N
@@ -328,7 +189,172 @@ public class ControlPanel_Templates extends javax.swing.JPanel implements Contro
         });
         jPanel6.add(jButton2);
 
+        jButton7.setText(bundle.getString("ControlPanel_Templates.jButton7.text")); // NOI18N
+        jButton7.setName("jButton7"); // NOI18N
+        jButton7.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton7ActionPerformed(evt);
+            }
+        });
+        jPanel6.add(jButton7);
+
         add(jPanel6, java.awt.BorderLayout.PAGE_END);
+
+        jPanel1.setName("jPanel1"); // NOI18N
+
+        jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("ControlPanel_Templates.jPanel2.border.title"))); // NOI18N
+        jPanel2.setName("jPanel2"); // NOI18N
+        jPanel2.setPreferredSize(new java.awt.Dimension(425, 100));
+
+        jPanel4.setBackground(new java.awt.Color(255, 255, 255));
+        jPanel4.setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("ControlPanel_Templates.jPanel4.border.title"))); // NOI18N
+        jPanel4.setName("jPanel4"); // NOI18N
+
+        fullname.set_Label(bundle.getString("ControlPanel_Templates.fullname._Label")); // NOI18N
+        fullname.setFont(fullname.getFont());
+        fullname.setName("fullname"); // NOI18N
+
+        jLabel3.setFont(new java.awt.Font("Dialog", 0, 12));
+        jLabel3.setText(bundle.getString("ControlPanel_Templates.jLabel3.text")); // NOI18N
+        jLabel3.setName("jLabel3"); // NOI18N
+
+        groupname.setName("groupname"); // NOI18N
+
+        jLabel6.setFont(new java.awt.Font("Dialog", 0, 12));
+        jLabel6.setText(bundle.getString("ControlPanel_Templates.jLabel6.text")); // NOI18N
+        jLabel6.setName("jLabel6"); // NOI18N
+
+        jLabel1.setFont(jLabel1.getFont());
+        jLabel1.setText(bundle.getString("ControlPanel_Templates.jLabel1.text")); // NOI18N
+        jLabel1.setName("jLabel1"); // NOI18N
+
+        jScrollPane2.setName("jScrollPane2"); // NOI18N
+
+        descr.setColumns(20);
+        descr.setRows(5);
+        descr.setName("descr"); // NOI18N
+        jScrollPane2.setViewportView(descr);
+
+        jScrollPane3.setName("jScrollPane3"); // NOI18N
+
+        jList1.setName("jList1"); // NOI18N
+        jScrollPane3.setViewportView(jList1);
+
+        type.set_Label(bundle.getString("ControlPanel_Templates.type._Label")); // NOI18N
+        type.setName("type"); // NOI18N
+
+        format.set_Label(bundle.getString("ControlPanel_Templates.format._Label")); // NOI18N
+        format.set_Text(bundle.getString("ControlPanel_Templates.format._Text")); // NOI18N
+        format.setName("format"); // NOI18N
+
+        javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
+        jPanel4.setLayout(jPanel4Layout);
+        jPanel4Layout.setHorizontalGroup(
+            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel4Layout.createSequentialGroup()
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(jPanel4Layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(type, javax.swing.GroupLayout.PREFERRED_SIZE, 322, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel4Layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                            .addComponent(format, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 322, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(fullname, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 322, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(jPanel4Layout.createSequentialGroup()
+                                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(jPanel4Layout.createSequentialGroup()
+                                        .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED))
+                                    .addGroup(jPanel4Layout.createSequentialGroup()
+                                        .addComponent(jLabel6)
+                                        .addGap(48, 48, 48))
+                                    .addGroup(jPanel4Layout.createSequentialGroup()
+                                        .addComponent(jLabel3, javax.swing.GroupLayout.DEFAULT_SIZE, 62, Short.MAX_VALUE)
+                                        .addGap(22, 22, 22)))
+                                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 238, Short.MAX_VALUE)
+                                    .addComponent(groupname, 0, 238, Short.MAX_VALUE)
+                                    .addComponent(jScrollPane3, 0, 0, Short.MAX_VALUE))))))
+                .addGap(16, 16, 16))
+        );
+        jPanel4Layout.setVerticalGroup(
+            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel4Layout.createSequentialGroup()
+                .addComponent(fullname, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(type, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel1)
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(format, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(groupname, javax.swing.GroupLayout.PREFERRED_SIZE, 18, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel6))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel4Layout.createSequentialGroup()
+                        .addComponent(jLabel3)
+                        .addContainerGap(31, Short.MAX_VALUE))
+                    .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 46, Short.MAX_VALUE)))
+        );
+
+        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
+        jPanel2.setLayout(jPanel2Layout);
+        jPanel2Layout.setHorizontalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, 345, javax.swing.GroupLayout.PREFERRED_SIZE)
+        );
+        jPanel2Layout.setVerticalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jPanel4, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        );
+
+        jScrollPane4.setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("ControlPanel_Templates.jScrollPane4.border.title"))); // NOI18N
+        jScrollPane4.setName("jScrollPane4"); // NOI18N
+
+        templates.setAutoCreateRowSorter(true);
+        templates.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {},
+                {},
+                {},
+                {}
+            },
+            new String [] {
+
+            }
+        ));
+        templates.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_ALL_COLUMNS);
+        templates.setDragEnabled(true);
+        templates.setFillsViewportHeight(true);
+        templates.setName("templates"); // NOI18N
+        templates.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                templatesMouseClicked(evt);
+            }
+        });
+        jScrollPane4.setViewportView(templates);
+
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 222, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 355, javax.swing.GroupLayout.PREFERRED_SIZE))
+        );
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jPanel2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 250, Short.MAX_VALUE)
+            .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 250, Short.MAX_VALUE)
+        );
+
+        add(jPanel1, java.awt.BorderLayout.CENTER);
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
@@ -360,19 +386,6 @@ public class ControlPanel_Templates extends javax.swing.JPanel implements Contro
         }
 }//GEN-LAST:event_jButton1ActionPerformed
 
-    private void jTable1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable1MouseClicked
-        Selection s = new Selection(jTable1);
-        DatabaseObject obj;
-        if (s.checkID()) {
-            try {
-                obj = DatabaseObject.getObject(Context.getTemplate(), s.getId());
-                setDataOwner(obj, true);
-            } catch (NodataFoundException ex) {
-                Log.Debug(this, ex);
-            }
-        }
-    }//GEN-LAST:event_jTable1MouseClicked
-
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
         if (Popup.Y_N_dialog(Messages.REALLY_DELETE)) {
             if (dataOwner != null) {
@@ -396,6 +409,29 @@ public class ControlPanel_Templates extends javax.swing.JPanel implements Contro
             Log.Debug(ex);
         }
     }//GEN-LAST:event_jButton6ActionPerformed
+
+    private void jButton7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton7ActionPerformed
+
+        if (dataOwner == null) {
+            jButton1ActionPerformed(evt);
+        }
+
+        if (dataOwner != null) {
+            dataOwner.getPanelData(this);
+            dataOwner.setIDS(-1);
+            dataOwner.save();
+        }
+
+        refresh();
+    }//GEN-LAST:event_jButton7ActionPerformed
+
+    private void templatesMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_templatesMouseClicked
+        try {
+            setDataOwner((DatabaseObject) templates.getValueAt(templates.getSelectedRow(), 0), true);
+        } catch (Exception e) {
+            Log.Debug(e);
+        }
+    }//GEN-LAST:event_templatesMouseClicked
 
     public void setValues(PropertyStore values) {
     }
@@ -424,20 +460,21 @@ public class ControlPanel_Templates extends javax.swing.JPanel implements Contro
     private javax.swing.JButton jButton4;
     private javax.swing.JButton jButton5;
     private javax.swing.JButton jButton6;
+    private javax.swing.JButton jButton7;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JList jList1;
+    private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel4;
     private javax.swing.JPanel jPanel6;
-    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
+    private javax.swing.JScrollPane jScrollPane4;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JSeparator jSeparator2;
-    private javax.swing.JTable jTable1;
-    private mpv5.ui.beans.LabeledTextField size;
+    private javax.swing.JTable templates;
     private mpv5.ui.beans.LabeledCombobox type;
     // End of variables declaration//GEN-END:variables
     public String description_ = "";
@@ -472,11 +509,9 @@ public class ControlPanel_Templates extends javax.swing.JPanel implements Contro
 
         try {
             groupname.setSelectedIndex(MPComboBoxModelItem.getItemID(String.valueOf(groupsids_), groupname.getModel()));
-
             fullname.setText(cname_);
             descr.setText(description_);
             type.getComboBox().setSelectedItem(mimetype_);
-            size.setText(String.valueOf(intsize_));
             format.setText(format_);
 
             DefaultListModel m = new DefaultListModel();
@@ -527,19 +562,35 @@ public class ControlPanel_Templates extends javax.swing.JPanel implements Contro
 
     public void refresh() {
         format.setText(Template.DEFAULT_FORMAT);
-        Context c = Context.getTemplate();
-        c.addReference(Context.getFiles().getDbIdentity(), "cname", "filename");
-        jTable1.setModel(new MPTableModel(new Class[]{Integer.class, String.class, String.class, String.class, String.class, Long.class, String.class},
-                QueryHandler.instanceOf().clone(c).
-                select(Context.DETAILS_FILES_TO_TEMPLATES, (String[]) null),
-                Headers.TEMPLATES.getValue()));
+        ArrayList<DatabaseObject> temps;
+        try {
+            temps = DatabaseObject.getObjects(Context.getTemplate());
+            Object[][] data = new Object[temps.size()][3];
 
-        groupname.setModel(new DefaultComboBoxModel(
-                MPComboBoxModelItem.toItems(new DatabaseSearch(Context.getGroup()).getValuesFor(Context.getGroup().getSubID(), null, ""))));
+            for (int i = 0; i < temps.size(); i++) {
+                Template t = (Template) temps.get(i);
+                data[i][0] = t;
+                data[i][1] = t.__getMimetype();
+                data[i][2] = Group.getObject(Context.getGroup(), t.__getGroupsids());
+            }
 
-        TableFormat.stripFirstColumn(jTable1);
-        TableFormat.format(jTable1, 1, 120);
-        TableFormat.format(jTable1, 5, 120);
+            templates.setModel(new MPTableModel(data, Headers.TEMPLATES.getValue()));
+        } catch (NodataFoundException ex) {
+            Log.Debug(ex);
+        }
+//        Context c1 = Context.getTemplatesToUsers();
+//        c1.addReference(Context.getGroup());
+//        c1.addReference(Context.getTemplate());
+//        jTable1.setModel(new MPTableModel(new Class[]{Integer.class, String.class, String.class, String.class, String.class, String.class, String.class},
+//                QueryHandler.instanceOf().clone(c1).
+//                select(Context.DETAILS_TEMPLATES, (String[]) null),
+//                Headers.TEMPLATES.getValue()));
+//
+//        TableFormat.stripFirstColumn(jTable1);
+//        TableFormat.format(jTable1, 1, 120);
+//        TableFormat.format(jTable1, 5, 80);
+//        TableFormat.format(jTable1, 6, 150);
+
     }
 
     public void paste(DatabaseObject dbo) {
@@ -567,17 +618,25 @@ public class ControlPanel_Templates extends javax.swing.JPanel implements Contro
     @Override
     public void actionAfterSave() {
         Object[] selectedValues = jList1.getSelectedValues();
+        Integer groups;
+        if (groupname.getSelectedItem() != null) {
+            groups = Integer.valueOf(((MPComboBoxModelItem) groupname.getSelectedItem()).getId());
+        } else {
+            groups = 1;
+        }
+
         for (int i = 0; i < selectedValues.length; i++) {
             User object = (User) selectedValues[i];
 
             QueryCriteria d = new QueryCriteria();
-            d.add("cname", dataOwner.__getIDS() + "@" + object.__getIDS());
+            d.add("cname", dataOwner.__getIDS() + "@" + object.__getIDS() + "@" + groups);
             QueryHandler.instanceOf().clone(Context.getTemplatesToUsers()).delete(d);
 
             QueryData c = new QueryData();
             c.add("usersids", object.__getIDS());
             c.add("templatesids", dataOwner.__getIDS());
-            c.add("cname", dataOwner.__getIDS() + "@" + object.__getIDS());
+            c.add("groupsids", groups.intValue());
+            c.add("cname", dataOwner.__getIDS() + "@" + object.__getIDS() + "@" + groups);
             QueryHandler.instanceOf().clone(Context.getTemplatesToUsers()).insert(c, null);
         }
     }
@@ -631,5 +690,13 @@ public class ControlPanel_Templates extends javax.swing.JPanel implements Contro
                 Popup.error(ex1);
             }
         }
+    }
+
+    public void actionBeforeCreate() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public void actionBeforeSave() {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 }

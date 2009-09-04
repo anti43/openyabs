@@ -638,4 +638,12 @@ public class ControlPanel_Accounts extends javax.swing.JPanel implements Control
     @Override
     public void actionAfterCreate() {
     }
+
+    public void actionBeforeCreate() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public void actionBeforeSave() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
 }
