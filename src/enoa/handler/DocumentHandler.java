@@ -195,22 +195,29 @@ public class DocumentHandler {
         Log.Debug(this, "Looking for placeholder fields in: " + document);
         Iterator<String> keys = data.keySet().iterator();
         String key = null;
+        String[] placehrepr = new String[0];
         if (textFieldService == null || placeholders == null) {
             textFieldService = ((ITextDocument) document).getTextFieldService();
             placeholders = textFieldService.getPlaceholderFields();
+            placehrepr = new String[placeholders.length];
+            for (int i = 0; i < placeholders.length; i++) {
+                placehrepr[i] = placeholders[i].getDisplayText();
+            }
         }
+
         while (keys.hasNext()) {
-            //                    Log.Debug(this, "Found placeholder: " + placeholderDisplayText);  // get column name
             key = keys.next();
             try {
-                for (int i = 0; i < placeholders.length; i++) {
-                    String placeholderDisplayText = placeholders[i].getDisplayText();
+                for (int i = 0; i < placehrepr.length; i++) {
+                    String placeholderDisplayText = placehrepr[i];
+//                    Log.Debug(this, "Check placeholder key: " + placeholderDisplayText);
                     if (placeholderDisplayText.equalsIgnoreCase(key) || placeholderDisplayText.equalsIgnoreCase("<" + key + ">")) {
                         Log.Debug(this, "Found placeholder key: " + key + " [" + data.get(key) + "]");
                         placeholders[i].getTextRange().setText(String.valueOf(data.get(key)));
                     }
                 }
             } catch (java.lang.Exception ex) {
+                Log.Debug(ex);
             }
         }
     }
@@ -336,6 +343,5 @@ public class DocumentHandler {
      * @param data
      */
     public void setImages(HashMap<String, Object> data) {
-        throw new UnsupportedOperationException("Set images in ODT files::Not yet implemented");
     }
 }

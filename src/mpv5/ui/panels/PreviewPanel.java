@@ -409,7 +409,7 @@ public class PreviewPanel extends javax.swing.JPanel implements Waiter {
      */
     public void showInNewFrame(String title) {
         BigPopup p = new BigPopup();
-        BigPopup.showPopup(this, jPanel1, title, JFrame.MAXIMIZED_BOTH);
+        BigPopup.showPopup(this, jPanel1, title, JFrame.MAXIMIZED_VERT, 800);
     }
 
     /**
@@ -465,6 +465,7 @@ public class PreviewPanel extends javax.swing.JPanel implements Waiter {
         } else if (extension.equalsIgnoreCase(".odt")) {
             try {
                 FileDirectoryHandler.open(file);
+                makeToolBar();
             } catch (Exception ex) {
                 Log.Debug(ex);
             }
@@ -476,6 +477,7 @@ public class PreviewPanel extends javax.swing.JPanel implements Waiter {
             }
         } else {
             FileDirectoryHandler.open(file);
+            makeToolBar();
         }
     }
 
@@ -484,5 +486,12 @@ public class PreviewPanel extends javax.swing.JPanel implements Waiter {
      */
     public void setParent(DataPanel parent) {
         this.parent = parent;
+    }
+
+    private void makeToolBar() {
+        jPanel1.remove(ppanel);
+        validate();
+        BigPopup.pack(this);
+        BigPopup.setOnTop(this);
     }
 }

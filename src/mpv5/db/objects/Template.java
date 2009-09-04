@@ -62,7 +62,7 @@ public class Template extends DatabaseObject {
             } else if (dataOwner instanceof Product) {
                 type = Product.getTypeString(((Product) dataOwner).__getInttype());
             } else if (dataOwner instanceof Reminder) {
-                type = Reminder.getTypeString();
+                type = Reminder.getTypeString(Reminder.TYPE_REMINDER);
             }
        String key = MPView.getUser() + "@" + type + "@" + dataOwner.__getGroupsids();
        if (templateCache.containsKey(key)) {
@@ -274,6 +274,10 @@ public class Template extends DatabaseObject {
         Product it6 = new Product();
         it6.setInttype(Product.TYPE_SERVICE);
         l.add(it6);
+
+        Reminder it7 = new Reminder();
+        it6.setInttype(Reminder.TYPE_REMINDER);
+        l.add(it7);
 
         for (int i = 0; i < l.size(); i++) {
             DatabaseObject databaseObject = l.get(i);

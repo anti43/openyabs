@@ -191,6 +191,7 @@ public class Item extends DatabaseObject implements Formattable {
     private double netvalue;
     private double taxvalue;
     private double shippingvalue;
+    private double discountvalue;
     private Date datetodo;
     private Date dateend;
     private int intreminders;
@@ -514,25 +515,29 @@ public class Item extends DatabaseObject implements Formattable {
 
         if (map.containsKey("taxids")) {
             try {
-                map.put("tax", FormatNumber.formatPercent(Item.getTaxValue(Integer.valueOf(map.get("taxids").toString()))));
+                map.put("item.tax", FormatNumber.formatPercent(Item.getTaxValue(Integer.valueOf(map.get("taxids").toString()))));
                 map.remove("taxids");
             } catch (NumberFormatException numberFormatException) {
                 Log.Debug(numberFormatException);
             }
         }
+//
+//        ArrayList<SubItem> data;
+//        try {
+//            data = DatabaseObject.getReferencedObjects(this, Context.getSubItem(), new SubItem());
+//            for (int i = 0; i < data.size(); i++) {
+//                map.put("row" + i, data.get(i));
+//            }
+//        } catch (NodataFoundException ex) {
+//            Logger.getLogger(Contact.class.getName()).log(Level.SEVERE, null, ex);
+//        }
 
-        ArrayList<SubItem> data;
-        try {
-            data = DatabaseObject.getReferencedObjects(this, Context.getSubItem(), new SubItem());
-            for (int i = 0; i < data.size(); i++) {
-                map.put("row" + i, data.get(i));
-            }
-        } catch (NodataFoundException ex) {
-            Logger.getLogger(Contact.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        map.put("grosvalue", __getTaxvalue() + __getNetvalue());
+        map.put("discountgrosvalue", (__getTaxvalue() + __getNetvalue()) * ((__getDiscountvalue() / 100 - 1) * -1));
+        map.put("discounttaxvalue", __getTaxvalue() * ((__getDiscountvalue() / 100 - 1) * -1));
+        map.put("shippedgrosvalue", __getTaxvalue() + __getNetvalue() + __getShippingvalue());
 
         return map;
-
     }
 
     /**
@@ -547,5 +552,19 @@ public class Item extends DatabaseObject implements Formattable {
      */
     public void setShippingvalue(double shippingvalue) {
         this.shippingvalue = shippingvalue;
+    }
+
+    /**
+     * @return the discountvalue
+     */
+    public double __getDiscountvalue() {
+        return discountvalue;
+    }
+
+    /**
+     * @param discountvalue the discountvalue to set
+     */
+    public void setDiscountvalue(double discountvalue) {
+        this.discountvalue = discountvalue;
     }
 }

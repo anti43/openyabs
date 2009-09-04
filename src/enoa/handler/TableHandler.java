@@ -128,7 +128,7 @@ public class TableHandler {
         if (value != null && value instanceof Double) {
             getTable().getCell(column, row).setValue(Double.valueOf(value.toString()));
         } else {
-            getTable().getCell(column, row).getTextService().getText().setText(value.toString());
+            getTable().getCell(column, row).getTextService().getText().setText(value.toString().replace("\\n", "0x0D 0x0A"));
         }
     }
 

@@ -33,7 +33,8 @@ import mpv5.utils.images.MPIcon;
  */
 public class Reminder extends DatabaseObject {
 
-    static String getTypeString() {
+    public static int TYPE_REMINDER = 0;
+    static String getTypeString(int typ) {
         return Messages.TYPE_REMINDER.toString();
     }
     private String description = "";

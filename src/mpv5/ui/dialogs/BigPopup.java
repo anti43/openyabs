@@ -5,6 +5,7 @@
 package mpv5.ui.dialogs;
 
 import java.awt.BorderLayout;
+import java.awt.Dimension;
 import java.awt.Point;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
@@ -14,6 +15,7 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JRootPane;
 import mpv5.ui.misc.Position;
+import mpv5.ui.panels.PreviewPanel;
 import mpv5.ui.panels.RemindPanel;
 
 /**
@@ -57,7 +59,6 @@ public class BigPopup {
 
             @Override
             public void keyReleased(KeyEvent e) {
-
             }
         });
 
@@ -72,8 +73,9 @@ public class BigPopup {
      * @param content
      * @param title
      * @param state
+     * @param width optional
      */
-    public static void showPopup(JComponent parent, JPanel content, String title, int state) {
+    public static void showPopup(JComponent parent, JPanel content, String title, int state, Integer width) {
 
         final JFrame window = new JFrame();
         window.getContentPane().setLayout(new BorderLayout());
@@ -101,12 +103,16 @@ public class BigPopup {
 
             @Override
             public void keyReleased(KeyEvent e) {
-
             }
         });
 
         new Position(window);
         window.setExtendedState(state);
+        if (width != null) {
+            window.setPreferredSize(new Dimension(width, window.getHeight()));
+            window.setSize(new Dimension(width, window.getHeight()));
+        }
+
         window.setVisible(true);
 
         contents.put(content, window);
@@ -147,7 +153,6 @@ public class BigPopup {
 
             @Override
             public void keyReleased(KeyEvent e) {
-
             }
         });
 
@@ -173,5 +178,17 @@ public class BigPopup {
     public static void close(JPanel panel) {
         contents.get(panel).dispose();
         contents.remove(panel);
+    }
+
+    /**
+     * 
+     * @param panel
+     */
+    public static void pack(JPanel panel) {
+        contents.get(panel).pack();
+    }
+
+    public static void setOnTop(JPanel panel) {
+        contents.get(panel).setAlwaysOnTop(true);
     }
 }

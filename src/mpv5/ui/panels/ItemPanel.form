@@ -35,22 +35,21 @@
               <Component id="leftpane" min="-2" max="-2" attributes="0"/>
               <EmptySpace min="-2" pref="0" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
-                  <Group type="102" attributes="0">
-                      <Component id="toolbarpane" pref="696" max="32767" attributes="2"/>
-                      <EmptySpace min="-2" max="-2" attributes="0"/>
-                  </Group>
                   <Component id="rightpane" max="32767" attributes="0"/>
+                  <Component id="toolbarpane" alignment="0" pref="696" max="32767" attributes="2"/>
               </Group>
           </Group>
       </Group>
     </DimensionLayout>
     <DimensionLayout dim="1">
       <Group type="103" groupAlignment="0" attributes="0">
-          <Component id="leftpane" alignment="0" pref="399" max="32767" attributes="1"/>
           <Group type="102" alignment="0" attributes="0">
               <Component id="toolbarpane" min="-2" max="-2" attributes="0"/>
               <EmptySpace min="-2" pref="0" max="-2" attributes="0"/>
-              <Component id="rightpane" max="32767" attributes="2"/>
+              <Group type="103" groupAlignment="0" attributes="0">
+                  <Component id="rightpane" max="32767" attributes="2"/>
+                  <Component id="leftpane" alignment="0" pref="380" max="32767" attributes="1"/>
+              </Group>
           </Group>
       </Group>
     </DimensionLayout>
@@ -78,59 +77,54 @@
       <Layout>
         <DimensionLayout dim="0">
           <Group type="103" groupAlignment="0" attributes="0">
+              <Component id="jPanel4" alignment="0" max="32767" attributes="3"/>
+              <Component id="jPanel1" alignment="0" max="32767" attributes="2"/>
               <Group type="102" alignment="1" attributes="0">
-                  <Group type="103" groupAlignment="1" attributes="0">
-                      <Component id="jPanel4" alignment="0" max="32767" attributes="3"/>
-                      <Component id="jPanel1" alignment="0" max="32767" attributes="2"/>
-                      <Group type="102" alignment="0" attributes="0">
-                          <Component id="jToolBar1" min="-2" max="-2" attributes="1"/>
-                          <EmptySpace pref="99" max="32767" attributes="0"/>
-                          <Component id="prinitingComboBox1" min="-2" max="-2" attributes="0"/>
-                      </Group>
-                      <Component id="jPanel2" alignment="0" max="32767" attributes="2"/>
-                      <Component id="jPanel5" alignment="0" min="0" max="32767" attributes="2"/>
-                      <Group type="102" alignment="1" attributes="0">
-                          <Component id="jScrollPane1" pref="375" max="32767" attributes="0"/>
-                          <EmptySpace min="-2" max="-2" attributes="0"/>
-                          <Component id="jScrollPane2" pref="275" max="32767" attributes="0"/>
-                          <EmptySpace max="-2" attributes="0"/>
-                          <Group type="103" groupAlignment="1" attributes="0">
-                              <Component id="removefile" min="-2" pref="24" max="-2" attributes="0"/>
-                              <Component id="addfile" min="-2" pref="24" max="-2" attributes="0"/>
-                          </Group>
-                      </Group>
-                      <Component id="jToolBar2" alignment="1" pref="686" max="32767" attributes="0"/>
-                  </Group>
-                  <EmptySpace min="-2" max="-2" attributes="0"/>
+                  <Component id="jToolBar1" pref="512" max="32767" attributes="1"/>
+                  <EmptySpace max="-2" attributes="0"/>
+                  <Component id="prinitingComboBox1" min="-2" max="-2" attributes="0"/>
               </Group>
+              <Component id="jPanel2" alignment="0" max="32767" attributes="2"/>
+              <Component id="jPanel5" alignment="0" min="0" max="32767" attributes="2"/>
+              <Group type="102" alignment="1" attributes="0">
+                  <Component id="jScrollPane1" pref="375" max="32767" attributes="0"/>
+                  <EmptySpace max="-2" attributes="0"/>
+                  <Component id="jScrollPane2" pref="275" max="32767" attributes="0"/>
+                  <EmptySpace max="-2" attributes="0"/>
+                  <Group type="103" groupAlignment="1" attributes="0">
+                      <Component id="removefile" min="-2" pref="24" max="-2" attributes="0"/>
+                      <Component id="addfile" min="-2" pref="24" max="-2" attributes="0"/>
+                  </Group>
+              </Group>
+              <Component id="jToolBar2" alignment="1" pref="686" max="32767" attributes="0"/>
           </Group>
         </DimensionLayout>
         <DimensionLayout dim="1">
           <Group type="103" groupAlignment="0" attributes="0">
               <Group type="102" alignment="0" attributes="0">
                   <Group type="103" groupAlignment="1" attributes="0">
-                      <Component id="jToolBar1" min="-2" pref="25" max="-2" attributes="0"/>
                       <Component id="prinitingComboBox1" min="-2" max="-2" attributes="0"/>
+                      <Component id="jToolBar1" min="-2" pref="25" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace max="-2" attributes="0"/>
                   <Component id="jPanel1" min="-2" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
                   <Component id="jPanel2" min="-2" max="-2" attributes="0"/>
                   <EmptySpace min="-2" pref="0" max="-2" attributes="0"/>
-                  <Component id="jPanel5" min="-2" max="-2" attributes="0"/>
+                  <Component id="jPanel5" min="-2" pref="44" max="-2" attributes="0"/>
                   <EmptySpace min="-2" pref="0" max="-2" attributes="0"/>
                   <Component id="jPanel4" max="32767" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
                   <Component id="jToolBar2" min="-2" pref="25" max="-2" attributes="0"/>
                   <EmptySpace min="-2" pref="1" max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                      <Component id="jScrollPane1" max="32767" attributes="1"/>
+                      <Component id="jScrollPane2" alignment="0" min="0" pref="0" max="32767" attributes="1"/>
                       <Group type="102" alignment="0" attributes="0">
                           <Component id="addfile" min="-2" max="-2" attributes="1"/>
                           <EmptySpace max="-2" attributes="0"/>
                           <Component id="removefile" min="-2" max="-2" attributes="1"/>
                       </Group>
-                      <Component id="jScrollPane2" alignment="0" pref="84" max="32767" attributes="1"/>
-                      <Component id="jScrollPane1" alignment="0" max="32767" attributes="1"/>
                   </Group>
               </Group>
           </Group>
@@ -317,7 +311,7 @@
             </DimensionLayout>
             <DimensionLayout dim="1">
               <Group type="103" groupAlignment="0" attributes="0">
-                  <Component id="jScrollPane3" alignment="1" pref="30" max="32767" attributes="0"/>
+                  <Component id="jScrollPane3" alignment="1" pref="36" max="32767" attributes="0"/>
               </Group>
             </DimensionLayout>
           </Layout>
@@ -402,6 +396,21 @@
                 <Property name="name" type="java.lang.String" value="jSeparator4" noResource="true"/>
               </Properties>
             </Component>
+            <Component class="javax.swing.JButton" name="button_elevate">
+              <Properties>
+                <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
+                  <ResourceString bundle="mpv5/resources/languages/Panels.properties" key="ItemPanel.button_elevate.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+                </Property>
+                <Property name="enabled" type="boolean" value="false"/>
+                <Property name="focusable" type="boolean" value="false"/>
+                <Property name="horizontalTextPosition" type="int" value="0"/>
+                <Property name="name" type="java.lang.String" value="button_elevate" noResource="true"/>
+                <Property name="verticalTextPosition" type="int" value="3"/>
+              </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="button_elevateActionPerformed"/>
+              </Events>
+            </Component>
             <Component class="javax.swing.JLabel" name="typelabel">
               <Properties>
                 <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
@@ -428,6 +437,7 @@
                 <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
                   <ResourceString bundle="mpv5/resources/languages/Panels.properties" key="ItemPanel.button_reminders.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
                 </Property>
+                <Property name="enabled" type="boolean" value="false"/>
                 <Property name="focusable" type="boolean" value="false"/>
                 <Property name="horizontalTextPosition" type="int" value="0"/>
                 <Property name="name" type="java.lang.String" value="button_reminders" noResource="true"/>
@@ -456,19 +466,20 @@
                 <Property name="name" type="java.lang.String" value="jSeparator7" noResource="true"/>
               </Properties>
             </Component>
-            <Component class="javax.swing.JButton" name="jButton1">
+            <Component class="javax.swing.JButton" name="button_schedule">
               <Properties>
                 <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
                   <Image iconType="3" name="/mpv5/resources/images/16/kalarm.png"/>
                 </Property>
                 <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-                  <ResourceString bundle="mpv5/resources/languages/Panels.properties" key="ItemPanel.jButton1.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+                  <ResourceString bundle="mpv5/resources/languages/Panels.properties" key="ItemPanel.button_schedule.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
                 </Property>
-                <Property name="name" type="java.lang.String" value="jButton1" noResource="true"/>
+                <Property name="enabled" type="boolean" value="false"/>
+                <Property name="name" type="java.lang.String" value="button_schedule" noResource="true"/>
               </Properties>
               <Events>
-                <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="jButton1MouseClicked"/>
-                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButton1ActionPerformed"/>
+                <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="button_scheduleMouseClicked"/>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="button_scheduleActionPerformed"/>
               </Events>
             </Component>
             <Component class="javax.swing.JButton" name="button_preview">
