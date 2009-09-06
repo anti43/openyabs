@@ -22,9 +22,11 @@ import java.awt.Component;
 import javax.swing.BorderFactory;
 import javax.swing.JLabel;
 import javax.swing.JTable;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableCellRenderer;
+import mpv5.db.common.DatabaseObject;
 import mpv5.logging.Log;
 import mpv5.utils.models.MPTableModel;
 
@@ -167,7 +169,6 @@ public class TableFormat {
         } catch (Exception e) {
         }
     }
-
 
     /**
      *  Hide the columns

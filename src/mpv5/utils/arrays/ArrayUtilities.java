@@ -19,6 +19,8 @@ along with YaBS.  If not, see <http://www.gnu.org/licenses/>.
  */
 package mpv5.utils.arrays;
 
+import java.awt.Color;
+import java.awt.Component;
 import javax.swing.tree.TreeNode;
 import mpv5.utils.numbers.Ip;
 import java.util.Hashtable;
@@ -37,6 +39,7 @@ import java.util.Set;
 import java.util.Vector;
 import javax.swing.JTable;
 import javax.swing.JTree;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableModel;
@@ -630,6 +633,8 @@ public class ArrayUtilities {
 
         return keyz;
     }
+
+
 
     /**
      * Converts a HashMap to a 2-column array {key, value}

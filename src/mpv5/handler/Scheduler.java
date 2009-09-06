@@ -1,7 +1,9 @@
 package mpv5.handler;
 
+import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Vector;
 
@@ -34,8 +36,8 @@ public class Scheduler extends Thread {
     public void run() {
 
         while (true) {
-            try {
-                Thread.sleep(1000);
+          try {
+                Thread.sleep(3000);
             } catch (InterruptedException ignore) {
             }
             checkForOverdueEvents();
@@ -106,6 +108,7 @@ public class Scheduler extends Thread {
 
         List<Item> warnings = new Vector<Item>();
         List<Item> alerts = new Vector<Item>();
+        List<Item> waitings = new Vector<Item>();
         try {
             if (MPView.getUser().getProperties().hasProperty("bills.warn.days")) {
                 Integer warn = Integer.valueOf(MPView.getUser().getProperties().getProperty("bills.warn.days"));
@@ -156,30 +159,59 @@ public class Scheduler extends Thread {
             Log.Debug(this, "No alert treshold for bills defined.");
         }
 
+        String sql = "SELECT ids FROM items WHERE intstatus <> " + Item.STATUS_PAID;
+        ReturnValue data = QueryHandler.getConnection().freeSelectQuery(sql, MPSecurityManager.VIEW, null);
+
+        if (data.hasData()) {
+            Object[][] d = data.getData();
+            for (int i = 0; i < d.length; i++) {
+                int id = Integer.valueOf(d[i][0].toString());
+                try {
+                    Item it = (Item) Item.getObject(Context.getItems(), id);
+                    waitings.add(it);
+                } catch (NodataFoundException ex) {
+                    Log.Debug(ex);
+                }
+            }
+        }
+
         for (Item i : alerts) {//Remove dupes
             if (warnings.contains(i)) {
                 warnings.remove(i);
             }
-        }
-
-        if (!warnings.isEmpty()) {
-            if (Popup.Y_N_dialog(warnings.size() + " " + Messages.SCHEDULE_NEW_WARNINGS, Messages.WARNING)) {
-//                for (int i = 0; i < warnings.size(); i++) {
-//                    Item item = warnings.get(i);
-//                    MPView.identifierView.addTab(item);
-//                }
-                 MPView.identifierView.addTab(new GeneralListPanel(warnings), Messages.UNPAID_BILLS.toString());
+            if (waitings.contains(i)) {
+                waitings.remove(i);
             }
         }
 
-        if (!alerts.isEmpty()) {
-            if (Popup.Y_N_dialog(alerts.size() + " " + Messages.SCHEDULE_NEW_ALERTS, Messages.WARNING)) {
-//                for (int i = 0; i < alerts.size(); i++) {
-//                    Item item = alerts.get(i);
-//                    MPView.identifierView.addTab(item);
-//                }
-               MPView.identifierView.addTab(new GeneralListPanel(alerts), Messages.UNPAID_BILLS_OVERDUE.toString());
+        for (Item i : warnings) {//Remove dupes
+            if (waitings.contains(i)) {
+                waitings.remove(i);
             }
+        }
+
+
+        HashMap<Color, List<Item>> map = new HashMap<Color, List<Item>>();
+        map.put(Color.red, alerts);
+        map.put(Color.yellow, warnings);
+        map.put(Color.green, waitings);
+//
+//        if (!warnings.isEmpty()) {
+////            if (Popup.Y_N_dialog(warnings.size() + " " + Messages.SCHEDULE_NEW_WARNINGS, Messages.WARNING)) {
+//        for (int i = 0; i < warnings.size(); i++) {
+//            Item item = warnings.get(i);
+//            MPView.identifierView.addTab(item);
+//        }
+//                 MPView.identifierView.addTab(new GeneralListPanel(warnings), Messages.UNPAID_BILLS.toString());
+////            }
+//        }
+
+        if (!alerts.isEmpty() || !warnings.isEmpty() || !waitings.isEmpty()) {
+//            alerts.addAll(warnings);
+//            if (Popup.Y_N_dialog(alerts.size() + " " + Messages.SCHEDULE_NEW_ALERTS, Messages.WARNING)) {
+
+            MPView.identifierView.addTab(new GeneralListPanel(map), Messages.UNPAID_BILLS_OVERDUE.toString());
+//            }
         }
     }
 }

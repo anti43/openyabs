@@ -29,6 +29,7 @@ import mpv5.utils.files.FileDirectoryHandler;
 import mpv5.utils.files.FileReaderWriter;
 import mpv5.utils.files.Zip;
 import mpv5.utils.models.MPComboBoxModelItem;
+import mpv5.utils.text.Base64Encoder;
 import mpv5.utils.text.RandomStringUtils;
 import mpv5.utils.text.RandomText;
 import mpv5.webshopinterface.WSConnectionClient;
@@ -516,7 +517,7 @@ public class ControlPanel_WebShopManager extends javax.swing.JPanel implements C
         String pwdir = new RandomText(8).getString();
         String user = new RandomText(8).getString();
         String password = new RandomText(8).getString();
-        String crypt = "{SHA}" + new sun.misc.BASE64Encoder().encode(java.security.MessageDigest.getInstance("SHA1").digest(password.getBytes()));
+        String crypt = "{SHA}" + Base64Encoder.encode(java.security.MessageDigest.getInstance("SHA1").digest(password.getBytes()));
         String content1 =
                 "AuthUserFile " + pwdir + "/.htpasswd\n" +
                 "AuthGroupFile /dev/null\n" +

@@ -18,4 +18,13 @@
         <exec dir="${dist.dir}/../security" executable="./signjars.sh" os="Linux" failonerror="false" />
     </target>
 -->
+
+<!--
+Build a .deb:
+
+apt-get install alien
+alien paketname.rpm
+dpkg -i paketname.deb
+
+-->
 </project>
