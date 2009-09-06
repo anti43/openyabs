@@ -5,13 +5,13 @@
     <import file="nbproject/build-impl.xml"/>
     <import file="nbproject/profiler-build-impl.xml"/>
     <import file="nbproject/profiler-build-impl.xml"/>
-  <!-- Uncomment this section to build the rpm   -->
+  <!-- Uncomment this section to build the rpm   
   <rpm
         specFile="yabs1.spec"
         topDir="install/rpm"
         cleanBuildDir="true"
         failOnError="true"/>
-
+ -->
   <!-- Uncomment this section to sign the jars
     <target name="-post-jar">
         <exec dir="${dist.dir}/../security" executable="./generate_key.sh" os="Linux" failonerror="false"/>
