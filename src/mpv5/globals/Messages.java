@@ -167,7 +167,6 @@ public enum Messages {
     OO_DONE_LOADING("OpenOffice loaded"),
     OOCONNERROR("Could not open a connection to OpenOffice."),
     OO_NOT_CONFIGURED("Not available"),
-    OO_LATER("You can configure the OpenOffice connection later within the YaBS control panel."),
     SET_AS_DEFAULT("Set as default"),
     NO_ACCOUNTS("No accounts or companies are configured for you."),
     CONTACTS_TRANSMITTED("contacts have been transmitted to"),
@@ -182,7 +181,9 @@ public enum Messages {
     SCHEDULE_NEW_WARNINGS("unpaid bills have reached the warning treshold. Open now?"),
     SCHEDULE_NEW_ALERTS("unpaid bills have reached the alert treshold. Open now?"),
     SCHEDULE_ITEM_REMOVED("Scheduled item reached end-date:"),
-    WELCOME("Welcome");
+    WELCOME("Welcome"),
+    UNPAID_BILLS("Unpaid bills"),
+    UNPAID_BILLS_OVERDUE("Overdues");
 
     private Messages(String message) {
         this.message = message;

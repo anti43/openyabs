@@ -3,9 +3,14 @@ package mpv5.ui.dialogs.subcomponents;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.DefaultListModel;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
@@ -18,8 +23,14 @@ import mpv5.db.objects.WebShop;
 import mpv5.globals.Messages;
 import mpv5.logging.Log;
 import mpv5.ui.dialogs.ControlApplet;
+import mpv5.ui.dialogs.DialogForFile;
 import mpv5.usermanagement.MPSecurityManager;
+import mpv5.utils.files.FileDirectoryHandler;
+import mpv5.utils.files.FileReaderWriter;
+import mpv5.utils.files.Zip;
 import mpv5.utils.models.MPComboBoxModelItem;
+import mpv5.utils.text.RandomStringUtils;
+import mpv5.utils.text.RandomText;
 import mpv5.webshopinterface.WSConnectionClient;
 import mpv5.webshopinterface.WSDaemon;
 import mpv5.webshopinterface.WSIManager;
@@ -116,6 +127,7 @@ public class ControlPanel_WebShopManager extends javax.swing.JPanel implements C
         jScrollPane1 = new javax.swing.JScrollPane();
         list = new javax.swing.JList();
         jPanel2 = new javax.swing.JPanel();
+        jButton2 = new javax.swing.JButton();
         jButton4 = new javax.swing.JButton();
         jButton1 = new javax.swing.JButton();
 
@@ -199,45 +211,37 @@ public class ControlPanel_WebShopManager extends javax.swing.JPanel implements C
                 .addContainerGap()
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel5Layout.createSequentialGroup()
-                        .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel5Layout.createSequentialGroup()
-                                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                    .addComponent(groupselect, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 343, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(urls, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 343, Short.MAX_VALUE))
-                                .addGap(10, 10, 10)
-                                .addComponent(jButton3))
-                            .addGroup(jPanel5Layout.createSequentialGroup()
-                                .addComponent(intervals, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, 69, Short.MAX_VALUE)
-                                .addGap(140, 140, 140)))
-                        .addGap(136, 136, 136))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel5Layout.createSequentialGroup()
-                        .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel5Layout.createSequentialGroup()
-                                .addGap(84, 84, 84)
-                                .addComponent(jCheckBox1)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 228, Short.MAX_VALUE))
-                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel5Layout.createSequentialGroup()
-                                .addGap(84, 84, 84)
-                                .addComponent(isrequestCompression)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 208, Short.MAX_VALUE))
-                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel5Layout.createSequentialGroup()
-                                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel5Layout.createSequentialGroup()
-                                        .addComponent(jLabel1)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(jScrollPane2))
-                                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel5Layout.createSequentialGroup()
-                                        .addGap(84, 84, 84)
-                                        .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 86, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 78, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(jLabel5)))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jPasswordField1, javax.swing.GroupLayout.PREFERRED_SIZE, 77, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGap(117, 117, 117))))
+                        .addComponent(jLabel1)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 340, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(groupselect, javax.swing.GroupLayout.PREFERRED_SIZE, 343, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(jPanel5Layout.createSequentialGroup()
+                        .addComponent(urls, javax.swing.GroupLayout.DEFAULT_SIZE, 357, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jButton3))
+                    .addGroup(jPanel5Layout.createSequentialGroup()
+                        .addComponent(intervals, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, 219, Short.MAX_VALUE)))
+                .addContainerGap())
+            .addGroup(jPanel5Layout.createSequentialGroup()
+                .addGap(96, 96, 96)
+                .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 86, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 78, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel5)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jPasswordField1, javax.swing.GroupLayout.PREFERRED_SIZE, 77, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGroup(jPanel5Layout.createSequentialGroup()
+                .addGap(96, 96, 96)
+                .addComponent(isrequestCompression)
+                .addContainerGap(220, Short.MAX_VALUE))
+            .addGroup(jPanel5Layout.createSequentialGroup()
+                .addGap(96, 96, 96)
+                .addComponent(jCheckBox1)
+                .addContainerGap(240, Short.MAX_VALUE))
         );
         jPanel5Layout.setVerticalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -245,11 +249,11 @@ public class ControlPanel_WebShopManager extends javax.swing.JPanel implements C
                 .addContainerGap()
                 .addComponent(groupselect, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(12, 12, 12)
-                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
-                    .addComponent(jLabel2)
-                    .addComponent(intervals, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(intervals, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel2))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
+                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(urls, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 19, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -265,9 +269,7 @@ public class ControlPanel_WebShopManager extends javax.swing.JPanel implements C
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel1)
-                    .addGroup(jPanel5Layout.createSequentialGroup()
-                        .addGap(1, 1, 1)
-                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap())
         );
 
@@ -299,7 +301,7 @@ public class ControlPanel_WebShopManager extends javax.swing.JPanel implements C
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 427, Short.MAX_VALUE)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 424, Short.MAX_VALUE)
                     .addComponent(jLabel3))
                 .addContainerGap())
         );
@@ -309,7 +311,7 @@ public class ControlPanel_WebShopManager extends javax.swing.JPanel implements C
                 .addContainerGap()
                 .addComponent(jLabel3)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 132, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 31, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -318,6 +320,16 @@ public class ControlPanel_WebShopManager extends javax.swing.JPanel implements C
         jPanel2.setBackground(new java.awt.Color(255, 255, 255));
         jPanel2.setName("jPanel2"); // NOI18N
         jPanel2.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.RIGHT));
+
+        jButton2.setText(bundle.getString("ControlPanel_WebShopManager.jButton2.text")); // NOI18N
+        jButton2.setEnabled(false);
+        jButton2.setName("jButton2"); // NOI18N
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
+        jPanel2.add(jButton2);
 
         jButton4.setText(bundle.getString("ControlPanel_WebShopManager.jButton4.text")); // NOI18N
         jButton4.setName("jButton4"); // NOI18N
@@ -377,10 +389,11 @@ public class ControlPanel_WebShopManager extends javax.swing.JPanel implements C
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
         try {
             if (jCheckBox1.isSelected()) {
-                        mpv5.ui.dialogs.Popup.notice(new WSConnectionClient(new URL(urls.getText()), isrequestCompression.isSelected(), jTextField1.getText(), new String(jPasswordField1.getPassword())).test());
-                    } else {
-                        mpv5.ui.dialogs.Popup.notice(new WSConnectionClient(new URL(urls.getText()), isrequestCompression.isSelected(), null, null).test());
-                    }} catch (Exception x) {
+                mpv5.ui.dialogs.Popup.notice(new WSConnectionClient(new URL(urls.getText()), isrequestCompression.isSelected(), jTextField1.getText(), new String(jPasswordField1.getPassword())).test());
+            } else {
+                mpv5.ui.dialogs.Popup.notice(new WSConnectionClient(new URL(urls.getText()), isrequestCompression.isSelected(), null, null).test());
+            }
+        } catch (Exception x) {
             Log.Debug(x);
             mpv5.ui.dialogs.Popup.error(x);
         }
@@ -404,7 +417,16 @@ public class ControlPanel_WebShopManager extends javax.swing.JPanel implements C
         jTextField1.setEnabled(jCheckBox1.isSelected());
         jLabel5.setEnabled(jCheckBox1.isSelected());
         jLabel4.setEnabled(jCheckBox1.isSelected());
+        jButton2.setEnabled(jCheckBox1.isSelected());
     }//GEN-LAST:event_jCheckBox1ItemStateChanged
+
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        try {
+            generate();
+        } catch (Exception ex) {
+            Log.Debug(ex);
+        }
+    }//GEN-LAST:event_jButton2ActionPerformed
 
     @Override
     public void setValues(PropertyStore values) {
@@ -426,6 +448,7 @@ public class ControlPanel_WebShopManager extends javax.swing.JPanel implements C
     private mpv5.ui.beans.LabeledSpinner intervals;
     private javax.swing.JCheckBox isrequestCompression;
     private javax.swing.JButton jButton1;
+    private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
     private javax.swing.JButton jButton4;
     private javax.swing.JCheckBox jCheckBox1;
@@ -487,5 +510,46 @@ public class ControlPanel_WebShopManager extends javax.swing.JPanel implements C
         }
         ws.save();
         refresh();
+    }
+
+    private void generate() throws NoSuchAlgorithmException, IOException {
+        String pwdir = new RandomText(8).getString();
+        String user = new RandomText(8).getString();
+        String password = new RandomText(8).getString();
+        String crypt = "{SHA}" + new sun.misc.BASE64Encoder().encode(java.security.MessageDigest.getInstance("SHA1").digest(password.getBytes()));
+        String content1 =
+                "AuthUserFile " + pwdir + "/.htpasswd\n" +
+                "AuthGroupFile /dev/null\n" +
+                "AuthName \"" + user + "\"\n" +
+                "AuthType Basic\n" +
+                "<Limit GET POST>\n" +
+                "require valid-user\n" +
+                "</Limit>\n" +
+                "<Files *.ini>\n" +
+                "Order Deny,Allow\n" +
+                "Deny from all\n" +
+                "</Files>\n";
+
+        String content2 = user + ":" + crypt;
+        String tmp = FileDirectoryHandler.getTempDir() + RandomText.getText();
+        File f1 = new File(tmp + File.separator + ".htaccess");
+        f1.getParentFile().mkdirs();
+        f1.createNewFile();
+        File f2 = new File(tmp + File.separator + pwdir + File.separator + ".htpasswd");
+        f2.getParentFile().mkdirs();
+        f2.createNewFile();
+        FileReaderWriter htacc = new FileReaderWriter(f1);
+        FileReaderWriter htpw = new FileReaderWriter(f2);
+
+        if (htacc.write0(content1) && htpw.write0(content2)) {
+            DialogForFile d = new DialogForFile(DialogForFile.FILES_ONLY);
+            d.setSelectedFile(new File("generated.zip"));
+            if (d.saveFile()) {
+                Zip.zip(tmp, d.getFile().getPath());
+            }
+
+            jTextField1.setText(user);
+            jPasswordField1.setText(password);
+        }
     }
 }

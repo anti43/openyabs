@@ -23,12 +23,21 @@ package mpv5.ui.panels;
 
 import java.awt.Component;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Vector;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JComponent;
 import javax.swing.JTable;
 import javax.swing.table.TableCellRenderer;
 import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
 import mpv5.db.common.NodataFoundException;
+import mpv5.db.objects.Group;
+import mpv5.db.objects.User;
+import mpv5.logging.Log;
+import mpv5.ui.frames.MPView;
+import mpv5.utils.date.vTimeframe;
 import mpv5.utils.models.MPTableModel;
 
 /**
@@ -36,40 +45,82 @@ import mpv5.utils.models.MPTableModel;
  *  
  */
 public class GeneralListPanel extends javax.swing.JPanel {
+
     private static final long serialVersionUID = 1L;
-    
-    private static GeneralListPanel ident;
+    List odata;
 
-    private static GeneralListPanel instanceOf() {
-        if (ident == null) {
-            ident = new GeneralListPanel();
-        }
-        return ident;
-    }
-
-    /** Creates new form GeneralListPanel */
-    private GeneralListPanel() {
+    /** Creates new form GeneralListPanel
+     * @param <T>
+     * @param list
+     */
+    public <T extends DatabaseObject> GeneralListPanel(List<T> list) {
         initComponents();
+        labeledCombobox1.setSearchOnEnterEnabled(true);
+        labeledCombobox1.setContext(Context.getGroup());
+        labeledCombobox1.triggerSearch();
+        setData(list);
+        odata = list;
     }
 
-    public void setData(ArrayList<DatabaseObject> list){
+    /**
+     * Set the data of the list
+     * @param <T>
+     * @param list
+     */
+    public <T extends DatabaseObject> void setData(List<T> list) {
 
-        Object[][] data = new Object[list.size()][3];
+        Object[][] data = new Object[list.size()][4];
 
         for (int i = 0; i < list.size(); i++) {
             DatabaseObject databaseObject = list.get(i);
-            data[i][0] = databaseObject.__getIDS();
-            data[i][1] = databaseObject.getDbIdentity();
-            data[i][2] = databaseObject.__getCName();
-            data[i][3] = databaseObject.__getDateadded();
+            data[i][0] = databaseObject;
+            data[i][1] = User.getUsername(databaseObject.__getIntaddedby());
+            data[i][2] = databaseObject.__getDateadded();
             try {
-                data[i][4] = DatabaseObject.getObject(Context.getGroup(), databaseObject.__getGroupsids());
+                data[i][3] = DatabaseObject.getObject(Context.getGroup(), databaseObject.__getGroupsids());
             } catch (NodataFoundException ex) {
-                data[i][4] = "Error";
+                data[i][3] = "N/A";
             }
         }
 
         jTable1.setModel(new MPTableModel(data));
+    }
+
+    /**
+     * Filter by group
+     * @param g
+     */
+    @SuppressWarnings("unchecked")
+    public void filterByGroup(Group g) {
+        setData(odata);
+        Object[][] data = ((MPTableModel) jTable1.getModel()).getData();
+        List<DatabaseObject> list = new Vector<DatabaseObject>();
+        for (int i = 0; i < data.length; i++) {
+            DatabaseObject d = (DatabaseObject) data[i][0];
+            if (d.__getGroupsids() == g.__getIDS()) {
+                list.add(d);
+            }
+        }
+
+        setData(list);
+    }
+
+    /**
+     * Filter by group
+     * @param g
+     */
+    @SuppressWarnings("unchecked")
+    public void filterByTimeframe(vTimeframe g) {
+        setData(odata);
+        Object[][] data = ((MPTableModel) jTable1.getModel()).getData();
+        List<DatabaseObject> list = new Vector<DatabaseObject>();
+        for (int i = 0; i < data.length; i++) {
+            DatabaseObject d = (DatabaseObject) data[i][0];
+            if (g.contains(d.__getDateadded())) {
+                list.add(d);
+            }
+        }
+        setData(list);
     }
 
     /** This method is called from within the constructor to
@@ -93,13 +144,18 @@ public class GeneralListPanel extends javax.swing.JPanel {
                 return c;
             }
         };
+        timeframeChooser1 = new mpv5.ui.beans.TimeframeChooser();
+        labeledCombobox1 = new mpv5.ui.beans.LabeledCombobox();
+        jButton1 = new javax.swing.JButton();
+        jButton2 = new javax.swing.JButton();
 
-        java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle(); // NOI18N
+        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("mpv5/resources/languages/Panels"); // NOI18N
         setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("GeneralListPanel.border.title"))); // NOI18N
         setName("Form"); // NOI18N
 
         jScrollPane1.setName("jScrollPane1"); // NOI18N
 
+        jTable1.setAutoCreateRowSorter(true);
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {},
@@ -112,21 +168,93 @@ public class GeneralListPanel extends javax.swing.JPanel {
             }
         ));
         jTable1.setName("jTable1"); // NOI18N
+        jTable1.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jTable1MouseClicked(evt);
+            }
+        });
         jScrollPane1.setViewportView(jTable1);
+
+        timeframeChooser1.setName("timeframeChooser1"); // NOI18N
+
+        labeledCombobox1.set_Label(bundle.getString("GeneralListPanel.labeledCombobox1._Label")); // NOI18N
+        labeledCombobox1.setName("labeledCombobox1"); // NOI18N
+
+        jButton1.setText(bundle.getString("GeneralListPanel.jButton1.text")); // NOI18N
+        jButton1.setName("jButton1"); // NOI18N
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
+
+        jButton2.setText(bundle.getString("GeneralListPanel.jButton2.text")); // NOI18N
+        jButton2.setName("jButton2"); // NOI18N
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 399, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                    .addComponent(labeledCombobox1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(timeframeChooser1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jButton1)
+                    .addComponent(jButton2))
+                .addGap(33, 33, 33))
+            .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 451, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 289, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jButton1, 0, 0, Short.MAX_VALUE)
+                        .addGap(1, 1, 1))
+                    .addComponent(timeframeChooser1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(labeledCombobox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 238, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+
+        filterByTimeframe(timeframeChooser1.getTime());
+    }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        try {
+            filterByGroup((Group) Group.getObject(Context.getGroup(), Integer.valueOf(labeledCombobox1.getSelectedItem().getId())));
+        } catch (NodataFoundException ex) {
+            Log.Debug(ex);
+        }
+    }//GEN-LAST:event_jButton2ActionPerformed
+
+    private void jTable1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable1MouseClicked
+        if (evt.getClickCount() > 1) {
+            try {
+                MPView.identifierView.addTab((DatabaseObject) jTable1.getModel().getValueAt(jTable1.getSelectedRow(), 0));
+            } catch (Exception e) {
+            }
+        }
+    }//GEN-LAST:event_jTable1MouseClicked
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton jButton1;
+    private javax.swing.JButton jButton2;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable jTable1;
+    private mpv5.ui.beans.LabeledCombobox labeledCombobox1;
+    private mpv5.ui.beans.TimeframeChooser timeframeChooser1;
     // End of variables declaration//GEN-END:variables
 }

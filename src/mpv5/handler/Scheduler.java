@@ -19,6 +19,7 @@ import mpv5.globals.Messages;
 import mpv5.logging.Log;
 import mpv5.ui.dialogs.Popup;
 import mpv5.ui.frames.MPView;
+import mpv5.ui.panels.GeneralListPanel;
 import mpv5.usermanagement.MPSecurityManager;
 import mpv5.utils.arrays.ArrayUtilities;
 import mpv5.utils.date.DateConverter;
@@ -34,7 +35,7 @@ public class Scheduler extends Thread {
 
         while (true) {
             try {
-                Thread.sleep(5000);
+                Thread.sleep(1000);
             } catch (InterruptedException ignore) {
             }
             checkForOverdueEvents();
@@ -163,19 +164,21 @@ public class Scheduler extends Thread {
 
         if (!warnings.isEmpty()) {
             if (Popup.Y_N_dialog(warnings.size() + " " + Messages.SCHEDULE_NEW_WARNINGS, Messages.WARNING)) {
-                for (int i = 0; i < warnings.size(); i++) {
-                    Item item = warnings.get(i);
-                    MPView.identifierView.addTab(item);
-                }
+//                for (int i = 0; i < warnings.size(); i++) {
+//                    Item item = warnings.get(i);
+//                    MPView.identifierView.addTab(item);
+//                }
+                 MPView.identifierView.addTab(new GeneralListPanel(warnings), Messages.UNPAID_BILLS.toString());
             }
         }
 
         if (!alerts.isEmpty()) {
             if (Popup.Y_N_dialog(alerts.size() + " " + Messages.SCHEDULE_NEW_ALERTS, Messages.WARNING)) {
-                for (int i = 0; i < alerts.size(); i++) {
-                    Item item = alerts.get(i);
-                    MPView.identifierView.addTab(item);
-                }
+//                for (int i = 0; i < alerts.size(); i++) {
+//                    Item item = alerts.get(i);
+//                    MPView.identifierView.addTab(item);
+//                }
+               MPView.identifierView.addTab(new GeneralListPanel(alerts), Messages.UNPAID_BILLS_OVERDUE.toString());
             }
         }
     }

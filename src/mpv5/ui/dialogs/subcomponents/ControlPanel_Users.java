@@ -675,8 +675,11 @@ public class ControlPanel_Users extends javax.swing.JPanel implements ControlApp
             groupname.setSelectedIndex(MPComboBoxModelItem.getItemID(String.valueOf(groupsids_), groupname.getModel()));
             accountlist.setSelectedIndex(MPComboBoxModelItem.getItemID(String.valueOf(intdefaultaccount_), accountlist.getModel()));
             statuslist.setSelectedIndex(MPComboBoxModelItem.getItemIDfromValue(Item.getStatusString(intdefaultstatus_), statuslist.getModel()));
-            companyselect.setSelectedIndex(MPComboBoxModelItem.getItemID(String.valueOf(compsids_), companyselect.getModel()));
-
+            try {
+                companyselect.setSelectedIndex(MPComboBoxModelItem.getItemID(String.valueOf(compsids_), companyselect.getModel()));
+            } catch (Exception e) {
+                //No companies defined
+            }
         } catch (Exception e) {
             Log.Debug(this, e);
         }

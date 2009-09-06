@@ -22,6 +22,7 @@ import java.net.URI;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
+import mpv5.globals.LocalSettings;
 import mpv5.globals.Messages;
 import mpv5.logging.Log;
 import mpv5.ui.dialogs.DialogForFile;
@@ -269,7 +270,7 @@ public abstract class FileDirectoryHandler {
      */
     public static File tempFileClone(File file, String suffix) {
         try {
-            File fil = new File(copyFile(file, new File(System.getProperty("java.io.tmpdir")), new RandomText().getString() + "." + suffix, true));
+            File fil = new File(copyFile(file, new File(LocalSettings.getProperty(LocalSettings.CACHE_DIR)), new RandomText().getString() + "." + suffix, true));
             fil.deleteOnExit();
             return fil;
         } catch (IOException ex) {
@@ -302,7 +303,7 @@ public abstract class FileDirectoryHandler {
      * @return A temporay file with the given name
      */
     public static File getTempFile(String filename, String suffix) {
-        File fil = new File(System.getProperty("java.io.tmpdir") + File.separator + filename + "." + suffix);
+        File fil = new File(LocalSettings.getProperty(LocalSettings.CACHE_DIR) + File.separator + filename + "." + suffix);
         fil.deleteOnExit();
         return fil;
     }
@@ -312,7 +313,7 @@ public abstract class FileDirectoryHandler {
      * @return The temporary directory + File.separator
      */
     public static String getTempDir() {
-        return System.getProperty("java.io.tmpdir") + File.separator;
+        return LocalSettings.getProperty(LocalSettings.CACHE_DIR) + File.separator;
     }
 
     /**
@@ -320,7 +321,7 @@ public abstract class FileDirectoryHandler {
      * @return The temporary directory
      */
     public static String getTempDir2() {
-        return System.getProperty("java.io.tmpdir");
+        return LocalSettings.getProperty(LocalSettings.CACHE_DIR);
     }
 
     /**

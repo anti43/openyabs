@@ -110,7 +110,7 @@ public class MPTableModel extends DefaultTableModel {
     public MPTableModel(Object[][] datstr, String[] header) {
         super();
 
-        setDataVector(datstr,header);
+        setDataVector(datstr, header);
         setEditable(false);
 
         setTypes(new Class[]{Object.class, Object.class, Object.class, Object.class, Object.class, Object.class, Object.class,
@@ -193,9 +193,11 @@ public class MPTableModel extends DefaultTableModel {
         super();
         int width = 0;
         for (int i = 0; i < list.size(); i++) {
-                Object[] objects = list.get(i);
-                if(objects.length > width)width = objects.length;
+            Object[] objects = list.get(i);
+            if (objects.length > width) {
+                width = objects.length;
             }
+        }
 
         if (list.size() > 0) {
             if (header == null) {
@@ -398,7 +400,7 @@ public class MPTableModel extends DefaultTableModel {
             boolean valid = true;
             for (int i = 0; i < columns.length; i++) {
                 int j = columns[i];
-                if (getValueAt(ki, j) == null || getValueAt(ki, j).toString().length()==0) {
+                if (getValueAt(ki, j) == null || getValueAt(ki, j).toString().length() == 0) {
                     valid = false;
                 }
             }
@@ -434,6 +436,21 @@ public class MPTableModel extends DefaultTableModel {
      */
     public void setAutoCountColumn(int column) {
         autoCountColumn = column;
+    }
+
+    /**
+     * Returns the data as array
+     * @return
+     */
+    @SuppressWarnings("unchecked")
+    public Object[][] getData() {
+        Object[][] k = new Object[getRowCount()][getColumnCount()];
+        for (int i = 0; i < k.length; i++) {
+            for (int j = 0; j < k[i].length; j++) {
+                k[i][j] = getValueAt(i, j);
+            }
+        }
+        return k;
     }
 
     /**

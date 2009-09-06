@@ -87,10 +87,11 @@ public class Wizard extends javax.swing.JFrame implements WizardMaster {
         cancel = new javax.swing.JButton();
         back = new javax.swing.JButton();
         next = new javax.swing.JButton();
-        message = new javax.swing.JLabel();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        message = new javax.swing.JTextPane();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-        java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle(); // NOI18N
+        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("mpv5/resources/languages/Panels"); // NOI18N
         setTitle(bundle.getString("Wizard.title")); // NOI18N
         setBackground(new java.awt.Color(255, 255, 255));
         setName("Form"); // NOI18N
@@ -135,8 +136,13 @@ public class Wizard extends javax.swing.JFrame implements WizardMaster {
             }
         });
 
-        message.setText(bundle.getString("Wizard.message.text")); // NOI18N
+        jScrollPane2.setBorder(null);
+        jScrollPane2.setName("jScrollPane2"); // NOI18N
+
+        message.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
+        message.setEditable(false);
         message.setName("message"); // NOI18N
+        jScrollPane2.setViewportView(message);
 
         javax.swing.GroupLayout controlLayout = new javax.swing.GroupLayout(control);
         control.setLayout(controlLayout);
@@ -146,7 +152,7 @@ public class Wizard extends javax.swing.JFrame implements WizardMaster {
                 .addContainerGap()
                 .addComponent(cancel)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(message, javax.swing.GroupLayout.DEFAULT_SIZE, 146, Short.MAX_VALUE)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 158, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(back)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -155,14 +161,16 @@ public class Wizard extends javax.swing.JFrame implements WizardMaster {
         );
         controlLayout.setVerticalGroup(
             controlLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, controlLayout.createSequentialGroup()
-                .addContainerGap(13, Short.MAX_VALUE)
-                .addGroup(controlLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(next)
-                    .addComponent(back)
-                    .addComponent(cancel)
-                    .addComponent(message, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap())
+            .addGroup(controlLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(controlLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, controlLayout.createSequentialGroup()
+                        .addGroup(controlLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(next)
+                            .addComponent(back)
+                            .addComponent(cancel))
+                        .addContainerGap())
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 38, Short.MAX_VALUE)))
         );
 
         getContentPane().add(control);
@@ -283,7 +291,8 @@ public class Wizard extends javax.swing.JFrame implements WizardMaster {
     private javax.swing.JPanel content;
     private javax.swing.JPanel control;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JLabel message;
+    private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JTextPane message;
     private javax.swing.JButton next;
     // End of variables declaration//GEN-END:variables
 
