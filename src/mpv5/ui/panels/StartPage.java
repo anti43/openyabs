@@ -3,11 +3,13 @@ package mpv5.ui.panels;
 import java.io.File;
 import java.util.Arrays;
 import javax.swing.DefaultListModel;
+import javax.swing.ListModel;
 import mpv5.Main;
 import mpv5.globals.Constants;
 import mpv5.logging.Log;
 import mpv5.utils.files.FileDirectoryHandler;
 import mpv5.utils.files.JarFinder;
+import mpv5.utils.images.MPIcon;
 
 /**
  *
@@ -114,7 +116,7 @@ public class StartPage extends javax.swing.JPanel {
                 .addContainerGap()
                 .addComponent(jLabel1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 142, Short.MAX_VALUE)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 143, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 131, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
@@ -132,7 +134,7 @@ public class StartPage extends javax.swing.JPanel {
         images.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         images.setFont(new java.awt.Font("Dialog", 0, 12)); // NOI18N
         images.setModel(new javax.swing.AbstractListModel() {
-            String[] strings = { "KDE Crystal Diamond Icons by Paolo Campitelli", " ", "(Based on \"Crystal Project\", \"Human Kanpio Mod\", \"Vista Inspirate\", ", "\"Crystal Clear\", \"Nuove XT\", \"OSX\"  ", "\"SnowIsh\", \"Debian Icon\", \"Firefox Alternative\" )", " ", " ", "YaBS Logo by  Jean-Christoph von Oertzen" };
+            String[] strings = { "KDE Crystal Diamond Icons set compiled by Paolo Campitelli:", " ", "(Based on \"Crystal Project\", \"Human Kanpio Mod\", \"Vista Inspirate\",  \"Crystal Clear\", \"Nuove XT\", \"OSX\" , \"SnowIsh\", \"Debian Icon\", \"Firefox Alternative\" )", " ", " ", "YaBS Logo by  Jean-Christoph von Oertzen" };
             public int getSize() { return strings.length; }
             public Object getElementAt(int i) { return strings[i]; }
         });
@@ -155,13 +157,17 @@ public class StartPage extends javax.swing.JPanel {
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
+            .addGroup(jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jScrollPane5, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 459, Short.MAX_VALUE)
-                    .addComponent(jScrollPane4, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 459, Short.MAX_VALUE)
-                    .addComponent(jLabel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addGap(22, 22, 22))
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel3Layout.createSequentialGroup()
+                        .addComponent(jLabel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGap(22, 22, 22))
+                    .addGroup(jPanel3Layout.createSequentialGroup()
+                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(jScrollPane5, javax.swing.GroupLayout.Alignment.LEADING, 0, 0, Short.MAX_VALUE)
+                            .addComponent(jScrollPane4, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 450, Short.MAX_VALUE))
+                        .addGap(13, 13, 13))))
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -169,7 +175,7 @@ public class StartPage extends javax.swing.JPanel {
                 .addContainerGap()
                 .addComponent(jLabel3)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane5, javax.swing.GroupLayout.DEFAULT_SIZE, 142, Short.MAX_VALUE)
+                .addComponent(jScrollPane5, javax.swing.GroupLayout.DEFAULT_SIZE, 143, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 131, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
@@ -184,7 +190,7 @@ public class StartPage extends javax.swing.JPanel {
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jTabbedPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 339, Short.MAX_VALUE)
+            .addComponent(jTabbedPane1, javax.swing.GroupLayout.Alignment.TRAILING)
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -228,6 +234,14 @@ public class StartPage extends javax.swing.JPanel {
                             m.addElement(files[i]);
                         }
                         libraries.setModel(m);
+                        DefaultListModel d = new DefaultListModel();
+                        ListModel list = images.getModel();
+
+                        for (int i = 0; i < list.getSize(); i++) {
+                            d.addElement(list.getElementAt(i));
+                        }
+                        d.addElement(new MPIcon("/mpv5/resources/images/icon.png"));
+                        images.setModel(d);
                     } catch (Exception exception) {
                         Log.Debug(exception);
                     }
