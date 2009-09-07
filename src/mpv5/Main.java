@@ -320,7 +320,7 @@ public class Main extends SingleFrameApplication {
         Option license = obuilder.withShortName("license").withShortName("li").withDescription("print license").create();
         Option version = obuilder.withShortName("version").withDescription("print the version information and exit").create();
         Option verbose = obuilder.withShortName("verbose").withDescription("be extra verbose").create();
-        Option nolf = obuilder.withShortName("nolf").withDescription("use system L&F instead of Tiny L&F").create();
+        Option nolf = obuilder.withShortName("nolf").withDescription("use metal L&F").create();
         Option debug = obuilder.withShortName("debug").withDescription("debug logging").create();
         Option removeplugins = obuilder.withShortName("removeplugins").withDescription("remove all plugins which would be loaded").create();
         Option logfile = obuilder.withShortName("logfile").withShortName("l").withDescription("use file for log").withArgument(filearg).create();
@@ -411,7 +411,7 @@ public class Main extends SingleFrameApplication {
             }
 
             if (cl.hasOption(nolf)) {
-                setLaF(null);
+                setLaF(UIManager.getCrossPlatformLookAndFeelClassName());
             }
 
             if (cl.hasOption(netbook)) {
