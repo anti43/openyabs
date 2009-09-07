@@ -512,4 +512,12 @@ public class AddressPanel extends javax.swing.JPanel implements DataPanel {
     public void actionBeforeSave() {
         throw new UnsupportedOperationException("Not supported yet.");
     }
+
+    public void mail() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public void print() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
 }

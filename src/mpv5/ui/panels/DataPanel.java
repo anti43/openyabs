@@ -14,6 +14,7 @@ public interface DataPanel {
 
     /**
      * Collect the view data
+     * @return 
      */
     public boolean collectData();
 
@@ -76,4 +77,14 @@ public interface DataPanel {
      * Call this before saving the dataowner of the panel
      */
     public void actionBeforeSave();
+
+    /**
+     * Mail the current data
+     */
+    public void mail();
+
+    /**
+     * Print the current data
+     */
+    public void print();
 }

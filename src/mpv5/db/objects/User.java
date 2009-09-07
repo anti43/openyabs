@@ -41,6 +41,7 @@ import mpv5.globals.LocalSettings;
 import mpv5.globals.Messages;
 import mpv5.db.objects.Property;
 import mpv5.logging.Log;
+import mpv5.mail.MailConfiguration;
 import mpv5.pluginhandling.MP5Plugin;
 import mpv5.pluginhandling.MPPLuginLoader;
 import mpv5.ui.dialogs.Popup;
@@ -73,6 +74,7 @@ public class User extends DatabaseObject {
     public static User DEFAULT = new User("Default User", "nobody", -1, 4343);
     public static HashMap<String, String> userCache = new HashMap<String, String>();
     private static PropertyStore properties = new PropertyStore();
+    private MailConfiguration mailConfiguration;
 
     /**
      * Caches all available usernames and IDs
@@ -217,6 +219,7 @@ public class User extends DatabaseObject {
                 Locale.setDefault(TypeConversion.stringToLocale(__getLocale()));
                 ControlPanel_Fonts.applyFont(Font.decode(LocalSettings.getProperty(LocalSettings.DEFAULT_FONT)));
                 Main.setLaF(__getLaf());
+                defineMailConfig();
             } catch (Exception e) {
                 Log.Debug(e);
             }
@@ -498,6 +501,7 @@ public class User extends DatabaseObject {
 //            if (Log.getLoglevel() == Log.LOGLEVEL_DEBUG) {
 //                properties.print();
 //            }
+                    defineMailConfig();
                 } catch (NodataFoundException ex) {
                     Log.Debug(this, ex.getMessage());
                 }
@@ -590,5 +594,35 @@ public class User extends DatabaseObject {
      */
     public void setCompsids(int compsids) {
         this.compsids = compsids;
+    }
+
+    /**
+     * Define the mail config
+     */
+    public void defineMailConfig() {
+        if (getProperties().hasProperty("smtp.host")) {
+            defineMailConfiguration(new MailConfiguration());
+            getMailConfiguration().setSmtpHost(getProperties().getProperty("smtp.host"));
+            getMailConfiguration().setSenderAddress(mail);
+            getMailConfiguration().setUsername(getProperties().getProperty("smtp.host.user"));
+            getMailConfiguration().setPassword(getProperties().getProperty("smtp.host.password"));
+            getMailConfiguration().setUseTls(Boolean.valueOf(getProperties().getProperty("smtp.host.usetls")));
+        } else {
+            Log.Debug(this, "Mail configuration not set.");
+        }
+    }
+
+    /**
+     * @return the mailConfiguration
+     */
+    public MailConfiguration getMailConfiguration() {
+        return mailConfiguration;
+    }
+
+    /**
+     * @param mailConfiguration the mailConfiguration to set
+     */
+    public void defineMailConfiguration(MailConfiguration mailConfiguration) {
+        this.mailConfiguration = mailConfiguration;
     }
 }

@@ -185,7 +185,10 @@ public enum Messages {
     SCHEDULE_ITEM_REMOVED("Scheduled item reached end-date:"),
     WELCOME("Welcome"),
     UNPAID_BILLS("Unpaid bills"),
-    UNPAID_BILLS_OVERDUE("Overdues");
+    UNPAID_BILLS_OVERDUE("Overdues"),
+    NO_MAIL_CONFIG("Mail not properly configured."),
+    MAIL_SENT("Mail sent to:"),
+    NO_MAIL_DEFINED("Either you or the contact you want to send the mail to (or both) have no valid mail adress defined.");
 
     private Messages(String message) {
         this.message = message;

@@ -16,38 +16,19 @@
  */
 package mpv5.db.objects;
 
-import java.util.ArrayList;
 import javax.swing.JComponent;
 
 import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
-import mpv5.db.common.NodataFoundException;
-import mpv5.db.common.QueryHandler;
 
 /**
  *
- *  Messages to be printed on Bills etc
+ *  Messages
  */
 public class MailMessage extends DatabaseObject {
 
-    private int intstatus;
     private int usersids;
-    private String mailid;
-
-    /**
-     * A mail which is sent but not yet received
-     */
-    public static final int STATUS_QUEUED = 0;
-    /**
-     * After a mail has been sent and is received,
-     * it enters this status as long as it is not marked as <b>READ</b>
-     */
-    public static final int STATUS_SENT = 1;
-    /**
-     * After a mail has been read, it enters this status
-     */
-    public static final int STATUS_READ = 2;
-
+    private String description;
 
     public MailMessage() {
         context.setDbIdentity(Context.IDENTITY_MAIL);
@@ -59,52 +40,9 @@ public class MailMessage extends DatabaseObject {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    /**
-     * Get all Items which are assigned to this message
-     * @return
-     * @throws mpv5.db.common.NodataFoundException
-     */
-    public ArrayList<Item> getItemsWithMessage() throws NodataFoundException {
-        ArrayList<Item> tmp = DatabaseObject.getReferencedObjects((Item) DatabaseObject.getObject(Context.getItems()), Context.getMessagesToItems());
-
-        return tmp;
-    }
-//
-//    /**
-//     * Get all messages where the given item is currently assigned to
-//     * @param item
-//     * @return
-//     * @throws mpv5.db.common.NodataFoundException
-//     */
-//    public static ArrayList<MailMessage> getMessagesOfItem(Item item) throws NodataFoundException {
-//        Object[][] tmp = QueryHandler.instanceOf().clone(Context.getMessagesToItems()).select("messagesids", new String[]{"itemsids", item.__getIDS().toString(), ""});
-//        ArrayList<MailMessage> l = new ArrayList<MailMessage>();
-//
-//        for (int i = 0; i < tmp.length; i++) {
-//            int id = Integer.valueOf(tmp[i][0].toString());
-//            l.add((MailMessage) DatabaseObject.getObject(Context.getMessages(), id));
-//        }
-//
-//        return l;
-//    }
-
-  @Override
+    @Override
     public mpv5.utils.images.MPIcon getIcon() {
         return null;
-    }
-
-    /**
-     * @return the intstatus
-     */
-    public int __getIntstatus() {
-        return intstatus;
-    }
-
-    /**
-     * @param intstatus the intstatus to set
-     */
-    public void setIntstatus(int intstatus) {
-        this.intstatus = intstatus;
     }
 
     /**
@@ -122,16 +60,16 @@ public class MailMessage extends DatabaseObject {
     }
 
     /**
-     * @return the mailid
+     * @return the description
      */
-    public String __getMailid() {
-        return mailid;
+    public String __getDescription() {
+        return description;
     }
 
     /**
-     * @param mailid the mailid to set
+     * @param description the description to set
      */
-    public void setMailid(String mailid) {
-        this.mailid = mailid;
+    public void setDescription(String description) {
+        this.description = description;
     }
 }

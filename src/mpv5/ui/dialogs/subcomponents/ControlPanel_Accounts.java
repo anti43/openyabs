@@ -646,4 +646,12 @@ public class ControlPanel_Accounts extends javax.swing.JPanel implements Control
     public void actionBeforeSave() {
         throw new UnsupportedOperationException("Not supported yet.");
     }
+
+    public void mail() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public void print() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
 }

@@ -16,22 +16,10 @@
  */
 package mpv5.webshopinterface.wsdjobs;
 
-import java.util.Date;
-import java.util.List;
-import mpv5.db.common.Context;
-import mpv5.db.common.DatabaseObject;
-import mpv5.db.common.NodataFoundException;
-import mpv5.db.objects.Item;
-import mpv5.db.objects.ItemMessage;
-import mpv5.db.objects.SubItem;
-import mpv5.db.objects.WSItemsMapping;
 import mpv5.logging.Log;
-import mpv5.ui.dialogs.Popup;
-import mpv5.ui.frames.MPView;
 import mpv5.webshopinterface.WSConnectionClient;
 import mpv5.webshopinterface.WSDaemon;
 import mpv5.webshopinterface.WSDaemonJob;
-import mpv5.webshopinterface.WSIManager;
 import org.apache.xmlrpc.XmlRpcException;
 
 /**
@@ -63,14 +51,15 @@ public class newSystemMessages implements WSDaemonJob {
     public void work(WSConnectionClient client) {
         Object itd = "0";
         try {
-            Object d = client.getClient().invokeGetCommand(WSConnectionClient.COMMANDS.GET_NEW_SYSTEM_MESSAGES.toString(),  new Object[]{itd}, new Object());
-            List<ItemMessage> obs = WSIManager.createObjects(d, new ItemMessage());
-
-            for (ItemMessage itemMessage : obs) {
-                Popup.notice(itemMessage);
-            }
+            Object d = client.getClient().invokeGetCommand(WSConnectionClient.COMMANDS.GET_NEW_SYSTEM_MESSAGES.toString(), new Object[]{itd}, new Object());
+            Log.Debug(this, d);
+            //            List<ItemMessage> obs = WSIManager.createObjects(d, new ItemMessage());
+//
+//            for (ItemMessage itemMessage : obs) {
+//                Popup.notice(itemMessage);
+//            }
         } catch (XmlRpcException ex) {
-           Log.Debug(this, ex.getMessage());
+            Log.Debug(this, ex.getMessage());
         }
     }
 }

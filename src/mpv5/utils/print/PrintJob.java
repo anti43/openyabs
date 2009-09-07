@@ -41,6 +41,8 @@ import mpv5.db.common.DatabaseObject;
 import mpv5.globals.LocalSettings;
 import mpv5.globals.Messages;
 import mpv5.logging.Log;
+import mpv5.utils.export.Export;
+import mpv5.utils.export.Exportable;
 import mpv5.utils.files.FileDirectoryHandler;
 import mpv5.utils.files.FileReaderWriter;
 import mpv5.utils.jobs.Waiter;
@@ -250,7 +252,11 @@ public class PrintJob implements Waiter {
             try {
                 print((Printable) object);
             } catch (ClassCastException ex) {
-                print((File) object);
+                try {
+                    print(((Export) object).getTargetFile());
+                } catch (ClassCastException fileNotFoundException) {
+                    print((File) object);
+                }
             }
         } catch (FileNotFoundException fileNotFoundException) {
             Log.Debug(this, fileNotFoundException);

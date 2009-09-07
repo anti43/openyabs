@@ -30,9 +30,11 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.File;
+import java.net.InetAddress;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Vector;
+import javax.print.DocFlavor;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JTabbedPane;
@@ -58,6 +60,7 @@ import mpv5.ui.popups.FileTablePopUp;
 import mpv5.ui.toolbars.DataPanelTB;
 import mpv5.db.objects.User;
 import mpv5.handler.FormFieldsHandler;
+import mpv5.mail.SimpleMail;
 import mpv5.ui.beans.MPCBSelectionChangeReceiver;
 import mpv5.ui.dialogs.DialogForFile;
 import mpv5.ui.dialogs.ScheduleDayEvent;
@@ -66,9 +69,11 @@ import mpv5.utils.export.Export;
 import mpv5.utils.export.Exportable;
 import mpv5.utils.files.FileDirectoryHandler;
 import mpv5.utils.jobs.Job;
+import mpv5.utils.jobs.Waiter;
 import mpv5.utils.models.MPComboBoxModelItem;
 import mpv5.utils.models.MPTableModel;
 import mpv5.utils.numberformat.FormatNumber;
+import mpv5.utils.print.PrintJob;
 import mpv5.utils.tables.TableCalculator;
 import mpv5.utils.renderer.CellRendererWithMPComboBox;
 import mpv5.utils.renderer.TableCellRendererForDezimal;
@@ -216,7 +221,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
             this.exposeData();
 
             setTitle();
-            
+
             prinitingComboBox1.init(dataOwner);
 
             tb.setFavourite(Favourite.isFavourite(object));
@@ -1138,10 +1143,11 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
     @Override
     public void paste(DatabaseObject dbo) {
         if (dbo.getDbIdentity().equals(Context.getItems().getDbIdentity())) {
-            ((Item)dbo).setIntstatus(Item.STATUS_IN_PROGRESS);
-            ((Item)dbo).setInttype(inttype_);
-            
-            setDataOwner(dbo, true);dbo.setIDS(-1);
+            ((Item) dbo).setIntstatus(Item.STATUS_IN_PROGRESS);
+            ((Item) dbo).setInttype(inttype_);
+
+            setDataOwner(dbo, true);
+            dbo.setIDS(-1);
         } else {
             MPView.addMessage(Messages.NOT_POSSIBLE.toString() + Messages.ACTION_PASTE.toString());
         }
@@ -1258,5 +1264,79 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
     }
 
     public void actionBeforeSave() {
+    }
+
+    public void mail() {
+        if (preloadedTemplate != null && preload) {
+            if (dataOwner != null && dataOwner.isExisting()) {
+                if (itemtable.getCellEditor() != null) {
+                    itemtable.getCellEditor().stopCellEditing();
+                }
+
+                HashMap<String, String> hm1 = new FormFieldsHandler(dataOwner).getFormattedFormFields(null);
+                File f2 = FileDirectoryHandler.getTempFile(cname_, "pdf");
+                Export ex = new Export();
+                ex.putAll(hm1);
+
+                Vector<String[]> l = SubItem.convertModel(dataOwner, (MPTableModel) itemtable.getModel(), preloadedTemplate);
+
+                ex.put(TableHandler.KEY_TABLE + "1", l);
+                ex.setTemplate(preloadedExportFile);
+                ex.setTargetFile(f2);
+
+
+                try {
+                    Contact cont = ((Contact) Contact.getObject(Context.getContact(), dataOwner.__getContactsids()));
+                    if (MPView.getUser().__getMail().contains("@") && MPView.getUser().__getMail().contains(".") && cont.__getMailaddress().contains("@") && cont.__getMailaddress().contains(".")) {
+                        SimpleMail pr = new SimpleMail();
+                        pr.setMailConfiguration(MPView.getUser().getMailConfiguration());
+                        pr.setRecipientsAddress(cont.__getMailaddress());
+                        pr.setSubject(cname_);
+                        pr.setText(cname_);
+                        new Job(ex, (Waiter) pr).execute();
+                        saveSubItems();
+                    } else {
+                        Popup.notice(Messages.NO_MAIL_DEFINED);
+                    }
+                } catch (NodataFoundException nodataFoundException) {
+                    Log.Debug(nodataFoundException);
+                } catch (UnsupportedOperationException unsupportedOperationException) {
+                    Popup.notice(Messages.NO_MAIL_CONFIG);
+                }
+
+            }
+
+        } else {
+            Popup.notice(Messages.NO_TEMPLATE_LOADED);
+        }
+    }
+
+    public void print() {
+        if (preloadedTemplate != null && preload) {
+            if (dataOwner != null && dataOwner.isExisting()) {
+                if (itemtable.getCellEditor() != null) {
+                    itemtable.getCellEditor().stopCellEditing();
+                }
+
+                HashMap<String, String> hm1 = new FormFieldsHandler(dataOwner).getFormattedFormFields(null);
+                File f2 = FileDirectoryHandler.getTempFile("pdf");
+                Export ex = new Export();
+                ex.putAll(hm1);
+
+                Vector<String[]> l = SubItem.convertModel(dataOwner, (MPTableModel) itemtable.getModel(), preloadedTemplate);
+
+                ex.put(TableHandler.KEY_TABLE + "1", l);
+                ex.setTemplate(preloadedExportFile);
+                ex.setTargetFile(f2);
+
+                new Job(ex, (Waiter) new PrintJob()).execute();
+                saveSubItems();
+
+            }
+
+
+        } else {
+            Popup.notice(Messages.NO_TEMPLATE_LOADED);
+        }
     }
 }

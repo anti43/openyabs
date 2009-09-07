@@ -767,4 +767,12 @@ public class ControlPanel_Users extends javax.swing.JPanel implements ControlApp
     public void actionBeforeSave() {
         throw new UnsupportedOperationException("Not supported yet.");
     }
+
+    public void mail() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public void print() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
 }

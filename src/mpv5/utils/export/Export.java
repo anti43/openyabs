@@ -34,6 +34,7 @@ public class Export extends HashMap<String, Object> implements Waitable {
     private Exportable file;
 //    private Thread t;
     private File toFile;
+    private String targetName;
 
     /**
      * Add the data, must be key - value pairs
@@ -114,4 +115,5 @@ public class Export extends HashMap<String, Object> implements Waitable {
     public File getTargetFile() {
         return toFile;
     }
+
 }

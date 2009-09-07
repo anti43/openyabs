@@ -507,4 +507,12 @@ public class ControlPanel_Groups extends javax.swing.JPanel implements ControlAp
     public void actionBeforeSave() {
         throw new UnsupportedOperationException("Not supported yet.");
     }
+
+    public void mail() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public void print() {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
 }

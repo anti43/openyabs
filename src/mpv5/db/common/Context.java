@@ -19,7 +19,6 @@ import mpv5.db.objects.FileToProduct;
 import mpv5.db.objects.Item;
 
 import mpv5.db.objects.ItemsList;
-import mpv5.db.objects.ItemMessage;
 import mpv5.db.objects.MailMessage;
 import mpv5.db.objects.Product;
 import mpv5.db.objects.ProductGroup;
@@ -67,8 +66,6 @@ public class Context {
     public static String IDENTITY_PROPERTIES_TO_USERS = "userproperties";
     public static String IDENTITY_ACCOUNTS = "accounts";
     public static String IDENTITY_ITEMS_TO_ACCOUNTS = "itemstoaccounts";
-    public static String IDENTITY_MESSAGES = "messages";
-    public static String IDENTITY_MESSAGES_TO_ITEMS = "messagestoitems";
     public static String IDENTITY_ITEMSLIST = "itemslists";
     public static String IDENTITY_FORMATS_T_USERS = "formatstousers";
     public static String IDENTITY_FILES_TO_ITEMS = "filestoitems";
@@ -97,7 +94,6 @@ public class Context {
     private static Class IDENTITY_PLUGINS_CLASS = Plugin.class;
     private static Class IDENTITY_PROPERTIES_CLASS = Property.class;
     private static Class IDENTITY_ACCOUNTS_CLASS = Account.class;
-    private static Class IDENTITY_MESSAGES_CLASS = ItemMessage.class;
     private static Class IDENTITY_ITEMSLIST_CLASS = ItemsList.class;
     private static Class IDENTITY_MAILS_CLASS = MailMessage.class;
     private static Class IDENTITY_PRODUCTS_CLASS = Product.class;
@@ -389,7 +385,6 @@ public class Context {
                 getAccounts(),
                 getItemsToAccounts(),
                 getMessages(),
-                getMessagesToItems(),
                 getItemsList(),
                 getFormats(),
                 getMail(),
@@ -1323,22 +1318,14 @@ public class Context {
     public static Context getMessages() {
         Context c = new Context();
         c.setSubID(DEFAULT_SUBID);
-        c.setDbIdentity(IDENTITY_MESSAGES);
-        c.setIdentityClass(IDENTITY_MESSAGES_CLASS);
+        c.setDbIdentity(IDENTITY_MAIL);
+        c.setIdentityClass(MailMessage.class);
         c.setId(30);
         c.uniqueColumns = UNIQUECOLUMNS_DEFAULT;
 
         return c;
     }
 
-    public static Context getMessagesToItems() {
-        Context c = new Context();
-        c.setSubID(DEFAULT_SUBID);
-        c.setDbIdentity(IDENTITY_MESSAGES_TO_ITEMS);
-        c.setId(31);
-
-        return c;
-    }
 
     public static Context getItemsList() {
         Context c = new Context();

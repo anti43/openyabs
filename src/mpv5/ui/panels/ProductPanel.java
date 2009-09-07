@@ -24,6 +24,7 @@ package mpv5.ui.panels;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
+
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
@@ -59,6 +60,7 @@ import mpv5.ui.popups.FileTablePopUp;
 import mpv5.ui.toolbars.DataPanelTB;
 import mpv5.db.objects.User;
 import mpv5.handler.FormFieldsHandler;
+import mpv5.mail.SimpleMail;
 import mpv5.ui.beans.MPCBSelectionChangeReceiver;
 import mpv5.ui.dialogs.DialogForFile;
 import mpv5.utils.export.Export;
@@ -66,9 +68,11 @@ import mpv5.utils.export.Exportable;
 import mpv5.utils.files.FileDirectoryHandler;
 import mpv5.utils.images.MPIcon;
 import mpv5.utils.jobs.Job;
+import mpv5.utils.jobs.Waiter;
 import mpv5.utils.models.MPComboBoxModelItem;
 import mpv5.utils.models.MPTableModel;
 import mpv5.utils.numberformat.FormatNumber;
+import mpv5.utils.print.PrintJob;
 import mpv5.utils.tables.TableFormat;
 import mpv5.utils.ui.TextFieldUtils;
 
@@ -1194,7 +1198,7 @@ public class ProductPanel extends javax.swing.JPanel implements DataPanel, MPCBS
             if (dataOwner != null && dataOwner.isExisting()) {
 
                 HashMap<String, String> hm1 = new FormFieldsHandler(dataOwner).getFormattedFormFields(null);
-                File f2 = FileDirectoryHandler.getTempFile("pdf");
+                File f2 = FileDirectoryHandler.getTempFile(cname_, "pdf");
                 Export ex = new Export();
                 ex.putAll(hm1);
 
@@ -1249,5 +1253,36 @@ public class ProductPanel extends javax.swing.JPanel implements DataPanel, MPCBS
 
     public void actionBeforeSave() {
         throw new UnsupportedOperationException("Not supported yet.");
+    }
+   public void mail() {
+
+    }
+
+    public void print() {
+        if (preloadedTemplate != null && preload) {
+            if (dataOwner != null && dataOwner.isExisting()) {
+                HashMap<String, String> hm1 = new FormFieldsHandler(dataOwner).getFormattedFormFields(null);
+                File f2 = FileDirectoryHandler.getTempFile(cname_, "pdf");
+                Export ex = new Export();
+                ex.putAll(hm1);
+
+                for (int i = 0; i < dataTable.getRowCount(); i++) {
+                    try {
+                        String fname = dataTable.getModel().getValueAt(i, 0).toString();
+                        File f = QueryHandler.instanceOf().clone(Context.getFiles()).retrieveFile(fname, new File(FileDirectoryHandler.getTempDir() + dataTable.getModel().getValueAt(dataTable.getSelectedRow(), 1).toString()));
+                        ex.put("image" + i, new MPIcon(f.toURI().toURL()));
+                    } catch (Exception mal) {
+                        Log.Debug(this, mal.getMessage());
+                    }
+                }
+
+                ex.setTemplate(preloadedExportFile);
+                ex.setTargetFile(f2);
+
+                new Job(ex, (Waiter) new PrintJob()).execute();
+            }
+        } else {
+            Popup.notice(Messages.NO_TEMPLATE_LOADED);
+        }
     }
 }
