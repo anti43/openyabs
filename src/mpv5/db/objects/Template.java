@@ -30,7 +30,10 @@ import mpv5.db.common.NodataFoundException;
 import mpv5.db.common.QueryCriteria;
 import mpv5.db.common.QueryHandler;
 import mpv5.db.common.ReturnValue;
+import mpv5.globals.LocalSettings;
+import mpv5.globals.Messages;
 import mpv5.logging.Log;
+import mpv5.ui.dialogs.Popup;
 import mpv5.ui.frames.MPView;
 import mpv5.usermanagement.MPSecurityManager;
 import mpv5.utils.export.Exportable;
@@ -56,16 +59,16 @@ public class Template extends DatabaseObject {
      * @return
      */
     public static Template loadTemplate(DatabaseObject dataOwner) {
-       String type = "";
-            if (dataOwner instanceof Item) {
-                type = Item.getTypeString(((Item) dataOwner).__getInttype());
-            } else if (dataOwner instanceof Product) {
-                type = Product.getTypeString(((Product) dataOwner).__getInttype());
-            } else if (dataOwner instanceof Reminder) {
-                type = Reminder.getTypeString(Reminder.TYPE_REMINDER);
-            }
-       String key = MPView.getUser() + "@" + type + "@" + dataOwner.__getGroupsids();
-       if (templateCache.containsKey(key)) {
+        String type = "";
+        if (dataOwner instanceof Item) {
+            type = Item.getTypeString(((Item) dataOwner).__getInttype());
+        } else if (dataOwner instanceof Product) {
+            type = Product.getTypeString(((Product) dataOwner).__getInttype());
+        } else if (dataOwner instanceof Reminder) {
+            type = Reminder.getTypeString(Reminder.TYPE_REMINDER);
+        }
+        String key = MPView.getUser() + "@" + type + "@" + dataOwner.__getGroupsids();
+        if (templateCache.containsKey(key)) {
             return templateCache.get(key);
         } else {
 
@@ -82,7 +85,12 @@ public class Template extends DatabaseObject {
                 try {
                     preloadedTemplate = (Template) DatabaseObject.getObject(Context.getTemplate(), Integer.valueOf(data.getData()[data.getData().length - 1][0].toString()));
                     if (preloadedTemplate.getFile().getName().endsWith("odt")) {
-                        preloadedTemplate.exFile = new ODTFile(preloadedTemplate.getFile().getPath());
+                        if (LocalSettings.getBooleanProperty(LocalSettings.OFFICE_USE)) {
+                            preloadedTemplate.exFile = new ODTFile(preloadedTemplate.getFile().getPath());
+                        } else {
+                            Popup.notice(Messages.NOT_POSSIBLE + "\n" + Messages.OO_NOT_CONFIGURED);
+                            return null;
+                        }
                     } else {
                         preloadedTemplate.exFile = new PDFFile(preloadedTemplate.getFile().getPath());
                     }
@@ -91,7 +99,7 @@ public class Template extends DatabaseObject {
                     return null;
                 }
             }
-             return preloadedTemplate;
+            return preloadedTemplate;
         }
     }
     private String description = "";

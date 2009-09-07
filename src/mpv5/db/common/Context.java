@@ -7,6 +7,7 @@ import mpv5.db.objects.Account;
 import mpv5.db.objects.Address;
 import mpv5.db.objects.Company;
 import mpv5.db.objects.Contact;
+import mpv5.db.objects.Expense;
 import mpv5.db.objects.Favourite;
 import mpv5.db.objects.FileToContact;
 import mpv5.db.objects.Group;
@@ -23,6 +24,7 @@ import mpv5.db.objects.MailMessage;
 import mpv5.db.objects.Product;
 import mpv5.db.objects.ProductGroup;
 import mpv5.db.objects.Reminder;
+import mpv5.db.objects.Revenue;
 import mpv5.db.objects.Stage;
 import mpv5.db.objects.SubItem;
 import mpv5.db.objects.Template;
@@ -80,6 +82,8 @@ public class Context {
     public static String IDENTITY_TEMPLATES = "templates";
     public static String IDENTITY_REMINDERS = "reminders";
     public static String IDENTITY_STAGES = "stages";
+    public static String IDENTITY_REVENUE = "revenues";
+    public static String IDENTITY_EXPENSE = "expenses";
     //********** identity classes **********************************************
     private static Class IDENTITY_CONTACTS_CLASS = Contact.class;
     private static Class IDENTITY_ADDRESS_CLASS = Address.class;
@@ -1476,7 +1480,8 @@ public class Context {
     public static Context getReminders() {
         Context c = new Context();
         c.setSubID(DEFAULT_SUBID);
-        c.setDbIdentity(IDENTITY_REMINDERS);c.setIdentityClass(IDENTITY_REMINDER_CLASS);
+        c.setDbIdentity(IDENTITY_REMINDERS);
+        c.setIdentityClass(IDENTITY_REMINDER_CLASS);
         c.setId(45);
 
         return c;
@@ -1485,8 +1490,29 @@ public class Context {
     public static Context getStages() {
         Context c = new Context();
         c.setSubID(DEFAULT_SUBID);
-        c.setDbIdentity(IDENTITY_STAGES);c.setIdentityClass(IDENTITY_STAGE_CLASS);
+        c.setDbIdentity(IDENTITY_STAGES);
+        c.setIdentityClass(IDENTITY_STAGE_CLASS);
         c.setId(46);
+
+        return c;
+    }
+
+    public static Context getRevenues() {
+        Context c = new Context();
+        c.setSubID(DEFAULT_SUBID);
+        c.setDbIdentity(IDENTITY_REVENUE);
+        c.setIdentityClass(Revenue.class);
+        c.setId(47);
+
+        return c;
+    }
+
+    public static Context getExpenses() {
+        Context c = new Context();
+        c.setSubID(DEFAULT_SUBID);
+        c.setDbIdentity(IDENTITY_EXPENSE);
+        c.setIdentityClass(Expense.class);
+        c.setId(48);
 
         return c;
     }

@@ -207,7 +207,10 @@ public class LocalSettings {
      * @return
      */
     public static PropertyStore getPropertyStore() {
-        return cookie;
+        PropertyStore p = new PropertyStore();
+        p.addAll(predefinedSettings.getList().toArray(new String[][]{}));
+        p.addAll(cookie.getList().toArray(new String[][]{}));
+        return p;
     }
 
     /**

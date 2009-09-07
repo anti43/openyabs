@@ -272,6 +272,7 @@ public class Main extends SingleFrameApplication {
      * A shortcut to the user desktop
      */
     public static String DESKTOP = null;
+    private static boolean nolf = false;
 
     private static void getOS() {
         if (System.getProperty("os.name").contains("Windows")) {
@@ -411,7 +412,8 @@ public class Main extends SingleFrameApplication {
             }
 
             if (cl.hasOption(nolf)) {
-                setLaF(UIManager.getCrossPlatformLookAndFeelClassName());
+                setLaF("javax.swing.plaf.metal.MetalLookAndFeel");
+                Main.nolf = true;
             }
 
             if (cl.hasOption(netbook)) {
@@ -433,7 +435,7 @@ public class Main extends SingleFrameApplication {
             LogConsole.setLogStreams(cl.hasOption(logfile), cl.hasOption(consolelog), cl.hasOption(windowlog));
         }
 
-        if (cl!=null) {
+        if (cl != null) {
             Log.Print("\nOptions used:");
             for (int idx = 0; idx < cl.getOptions().size(); idx++) {
                 Log.Print(cl.getOptions().get(idx));
@@ -455,25 +457,27 @@ public class Main extends SingleFrameApplication {
      * @param lafname 
      */
     public static void setLaF(String lafname) {
-        try {
-            if (lafname != null) {
-                UIManager.setLookAndFeel(lafname);
-            } else {
-                UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-            }
-            LookAndFeelAddons.setAddon(LookAndFeelAddons.getBestMatchAddonClassName());
-            if (MPView.identifierFrame != null && MPView.identifierFrame.isShowing()) {
-                MPView.identifierFrame.setVisible(false);
-                SwingUtilities.updateComponentTreeUI(MPView.identifierFrame);
-                MPView.identifierFrame.setVisible(true);
-            }
-        } catch (Exception exe) {
+        if (!Main.nolf) {
             try {
-                UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
-            } catch (Exception ex) {
-                Log.Debug(Main.class, ex.getMessage());
+                if (lafname != null) {
+                    UIManager.setLookAndFeel(lafname);
+                } else {
+                    UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+                }
+                LookAndFeelAddons.setAddon(LookAndFeelAddons.getBestMatchAddonClassName());
+                if (MPView.identifierFrame != null && MPView.identifierFrame.isShowing()) {
+                    MPView.identifierFrame.setVisible(false);
+                    SwingUtilities.updateComponentTreeUI(MPView.identifierFrame);
+                    MPView.identifierFrame.setVisible(true);
+                }
+            } catch (Exception exe) {
+                try {
+                    UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
+                } catch (Exception ex) {
+                    Log.Debug(Main.class, ex);
+                }
+                Log.Debug(Main.class, exe);
             }
-            Log.Debug(Main.class, exe.getMessage());
         }
     }
 
@@ -529,6 +533,7 @@ public class Main extends SingleFrameApplication {
                     @Override
                     public void run() {
                         try {
+                            Log.Debug(Main.class, "Starting OpenOffice as background service..");
                             NoaConnection.startOOServer(LocalSettings.getProperty(LocalSettings.OFFICE_HOME), LocalSettings.getIntegerProperty(LocalSettings.OFFICE_PORT));
                         } catch (Exception n) {
                             Log.Debug(Main.class, n.getMessage());

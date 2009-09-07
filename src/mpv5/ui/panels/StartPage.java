@@ -2,6 +2,7 @@ package mpv5.ui.panels;
 
 import java.io.File;
 import java.util.Arrays;
+import java.util.List;
 import javax.swing.DefaultListModel;
 import javax.swing.ListModel;
 import mpv5.Main;
@@ -202,7 +203,6 @@ public class StartPage extends javax.swing.JPanel {
             }
         }
 }//GEN-LAST:event_librariesMouseClicked
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JList images;
     private javax.swing.JLabel jLabel1;
@@ -223,13 +223,14 @@ public class StartPage extends javax.swing.JPanel {
 
     private void fillFiles() {
         if (Main.INSTANTIATED) {
+            final DefaultListModel m = new DefaultListModel();
             Runnable runnable = new Runnable() {
 
                 public void run() {
                     try {
                         File[] files = FileDirectoryHandler.getFilesOfDirectory(JarFinder.getPathOfJar(Constants.JAR_NAME) + File.separator + "lib", null);
                         Arrays.sort(files);
-                        DefaultListModel m = new DefaultListModel();
+
                         for (int i = 0; i < files.length; i++) {
                             m.addElement(files[i]);
                         }
@@ -243,10 +244,16 @@ public class StartPage extends javax.swing.JPanel {
                         d.addElement(new MPIcon("/mpv5/resources/images/icon.png"));
                         images.setModel(d);
                     } catch (Exception exception) {
-                        Log.Debug(exception);
+                        m.addElement(exception);
+                        List<String> l = JarFinder.getClassPath();
+                        for (String s : l) {
+                            m.addElement(s);
+                        }
+                        libraries.setModel(m);
                     }
                 }
-            };new Thread(runnable).start();
+            };
+            new Thread(runnable).start();
         }
 
     }

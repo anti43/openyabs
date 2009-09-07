@@ -7,14 +7,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Vector;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import mpv5.db.common.Context;
 import mpv5.db.common.NodataFoundException;
-import mpv5.db.common.QueryCriteria;
 import mpv5.db.common.QueryHandler;
 import mpv5.db.common.ReturnValue;
-import mpv5.db.objects.HistoryItem;
 import mpv5.db.objects.Item;
 import mpv5.db.objects.Schedule;
 import mpv5.globals.Messages;
@@ -23,7 +19,6 @@ import mpv5.ui.dialogs.Popup;
 import mpv5.ui.frames.MPView;
 import mpv5.ui.panels.GeneralListPanel;
 import mpv5.usermanagement.MPSecurityManager;
-import mpv5.utils.arrays.ArrayUtilities;
 import mpv5.utils.date.DateConverter;
 import mpv5.utils.date.vTimeframe;
 
@@ -37,7 +32,7 @@ public class Scheduler extends Thread {
 
         while (true) {
           try {
-                Thread.sleep(3000);
+                Thread.sleep(500);
             } catch (InterruptedException ignore) {
             }
             checkForOverdueEvents();

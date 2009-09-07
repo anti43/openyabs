@@ -196,8 +196,11 @@ public class MPView extends FrameView {
      */
     public static void showError() {
         if (Main.INSTANTIATED) {
-            staterrorlabel.setIcon(new javax.swing.ImageIcon(MPView.class.getResource("/mpv5/resources/images/16/remove.png"))); // NOI18N
-            identifierFrame.validate();
+            try {
+                staterrorlabel.setIcon(new javax.swing.ImageIcon(MPView.class.getResource("/mpv5/resources/images/16/remove.png"))); // NOI18N
+                identifierFrame.validate();
+            } catch (Exception e) {
+            }
         }
     }
 

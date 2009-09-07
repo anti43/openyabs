@@ -32,8 +32,10 @@ import mpv5.db.common.QueryCriteria;
 import mpv5.db.common.QueryHandler;
 import mpv5.db.common.ReturnValue;
 import mpv5.db.objects.Contact;
+import mpv5.db.objects.Expense;
 import mpv5.db.objects.Item;
 import mpv5.db.objects.Product;
+import mpv5.db.objects.Revenue;
 import mpv5.globals.Messages;
 import mpv5.logging.Log;
 import mpv5.ui.frames.MPView;
@@ -53,6 +55,8 @@ public class FormatHandler {
     public static final int TYPE_SUPPLIER = 6;
     public static final int TYPE_PRODUCT = 7;
     public static final int TYPE_SERVICE = 8;
+    public static final int TYPE_EXPENSE = 9;
+    public static final int TYPE_REVENUE = 10;
 
     public static enum TYPES implements MPEnum {
 
@@ -64,7 +68,9 @@ public class FormatHandler {
         TYPE_MANUFACTURER(FormatHandler.TYPE_MANUFACTURER, Messages.TYPE_MANUFACTURER.getValue()),
         TYPE_SUPPLIER(FormatHandler.TYPE_SUPPLIER, Messages.TYPE_SUPPLIER.getValue()),
         TYPE_PRODUCT(FormatHandler.TYPE_PRODUCT, Messages.TYPE_PRODUCT.getValue()),
-        TYPE_SERVICE(FormatHandler.TYPE_SERVICE, Messages.TYPE_SERVICE.getValue());
+        TYPE_SERVICE(FormatHandler.TYPE_SERVICE, Messages.TYPE_SERVICE.getValue()),
+        TYPE_REVENUE(FormatHandler.TYPE_REVENUE, Messages.TYPE_REVENUE.getValue()),
+        TYPE_EXPENSE(FormatHandler.TYPE_EXPENSE, Messages.TYPE_EXPENSE.getValue());
         int ids;
         String names;
 
@@ -125,6 +131,10 @@ public class FormatHandler {
             } else {
                 return TYPE_SERVICE;
             }
+        } else if (obj instanceof Revenue) {
+            return TYPE_REVENUE;
+        } else if (obj instanceof Expense) {
+            return TYPE_EXPENSE;
         }
         return -1;
     }

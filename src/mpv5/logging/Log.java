@@ -89,7 +89,10 @@ public class Log {
         }
 
         if (message instanceof Exception) {
-            ExceptionHandler.add((Exception) message);
+            try {
+                ExceptionHandler.add((Exception) message);
+            } catch (Exception e) {
+            }
         }
 
         switch (loglevel) {

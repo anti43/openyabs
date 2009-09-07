@@ -18,17 +18,24 @@
  */
 package mpv5.utils.files;
 
+import java.util.List;
 import java.util.StringTokenizer;
+import java.util.Vector;
 import mpv5.logging.Log;
-
 
 public class JarFinder {
 
+    /**
+     * Tries to localize a jar file
+     * @param nameOfJar
+     * @return
+     * @throws Exception
+     */
     public static String getPathOfJar(String nameOfJar) throws Exception {
         //System.setProperties("java.class.path");
         StringTokenizer st = new StringTokenizer(System.getProperty("java.class.path"), System.getProperty("path.separator"));
         String jarfile = "";
-        Log.Debug(JarFinder.class, System.getProperty("java.class.path"));
+//        Log.Debug(JarFinder.class, System.getProperty("java.class.path"));
         while (st.hasMoreTokens()) {
 
             String token = st.nextToken();
@@ -38,11 +45,23 @@ public class JarFinder {
             }
         }
         if (jarfile.equals("")) {
-            System.err.println("Jar not found in classpath");
+            throw new Exception("Jar not found in classpath: " + nameOfJar);
         } else {
             String path = jarfile.substring(0, jarfile.indexOf(nameOfJar));
             return path;
         }
-        return null;
+    }
+
+    /**
+     *
+     * @return Th ecurrent classpath entries as list
+     */
+    public static List<String> getClassPath() {
+        StringTokenizer st = new StringTokenizer(System.getProperty("java.class.path"), System.getProperty("path.separator"));
+        List<String> list = new Vector<String>();
+        while (st.hasMoreTokens()) {
+            list.add(st.nextToken());
+        }
+        return list;
     }
 }

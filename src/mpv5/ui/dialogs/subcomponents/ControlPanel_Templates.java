@@ -392,8 +392,11 @@ public class ControlPanel_Templates extends javax.swing.JPanel implements Contro
                 Template.templateCache.clear();
                 DatabaseObject dato = dataOwner;
                 dato.getPanelData(this);
-                dato.delete();
+                dato.delete() ;
             }
+            try {
+                Thread.sleep(333);
+            } catch (InterruptedException ex) {}
             refresh();
         }
     }//GEN-LAST:event_jButton4ActionPerformed
