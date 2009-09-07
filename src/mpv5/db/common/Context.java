@@ -253,7 +253,6 @@ public class Context {
         list.add(getAccounts());
         list.add(getMessages());
         list.add(getItemsList());
-        list.add(getMail());
         list.add(getSearchIndex());
         list.add(getGlobalSettings());
         list.add(getCompanies());
@@ -387,7 +386,6 @@ public class Context {
                 getMessages(),
                 getItemsList(),
                 getFormats(),
-                getMail(),
                 getTaxes(),
                 getGlobalSettings(),
                 getCompanies(),
@@ -1356,15 +1354,6 @@ public class Context {
         return c;
     }
 
-    public static Context getMail() {
-        Context c = new Context();
-        c.setSubID(DEFAULT_SUBID);
-        c.setDbIdentity(IDENTITY_MAIL);
-        c.setIdentityClass(IDENTITY_MAILS_CLASS);
-        c.setId(35);
-
-        return c;
-    }
 
     public static Context getTaxes() {
         Context c = new Context();

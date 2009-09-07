@@ -184,6 +184,7 @@ public enum Messages {
     SCHEDULE_NEW_ALERTS("unpaid bills have reached the alert treshold. Open now?"),
     SCHEDULE_ITEM_REMOVED("Scheduled item reached end-date:"),
     WELCOME("Welcome"),
+    SELECT_A_TEMPLATE("Select a template:"),
     UNPAID_BILLS("Unpaid bills"),
     UNPAID_BILLS_OVERDUE("Overdues"),
     NO_MAIL_CONFIG("Mail not properly configured."),

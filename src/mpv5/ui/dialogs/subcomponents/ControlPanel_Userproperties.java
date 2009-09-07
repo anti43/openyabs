@@ -11,6 +11,7 @@ import mpv5.logging.Log;
 import mpv5.ui.beans.LightMPComboBox;
 import mpv5.ui.dialogs.ControlApplet;
 import mpv5.ui.frames.MPView;
+import mpv5.ui.panels.MPControlPanel;
 
 /**
  *
@@ -68,6 +69,7 @@ public class ControlPanel_Userproperties extends javax.swing.JPanel implements C
         smtppw = new javax.swing.JPasswordField();
         smtptls = new javax.swing.JCheckBox();
         jPanel6 = new javax.swing.JPanel();
+        jButton4 = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
         jButton1 = new javax.swing.JButton();
 
@@ -345,7 +347,7 @@ public class ControlPanel_Userproperties extends javax.swing.JPanel implements C
                 .addComponent(jPanel8, javax.swing.GroupLayout.PREFERRED_SIZE, 78, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel9, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(14, Short.MAX_VALUE))
+                .addContainerGap(13, Short.MAX_VALUE))
         );
 
         add(jPanel1, java.awt.BorderLayout.CENTER);
@@ -353,6 +355,15 @@ public class ControlPanel_Userproperties extends javax.swing.JPanel implements C
         jPanel6.setBackground(new java.awt.Color(255, 255, 255));
         jPanel6.setName("jPanel6"); // NOI18N
         jPanel6.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.RIGHT));
+
+        jButton4.setText(bundle.getString("ControlPanel_Userproperties.jButton4.text")); // NOI18N
+        jButton4.setName("jButton4"); // NOI18N
+        jButton4.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton4ActionPerformed(evt);
+            }
+        });
+        jPanel6.add(jButton4);
 
         jButton2.setText(bundle.getString("ControlPanel_Userproperties.jButton2.text")); // NOI18N
         jButton2.setName("jButton2"); // NOI18N
@@ -390,6 +401,10 @@ public class ControlPanel_Userproperties extends javax.swing.JPanel implements C
         generate();
     }//GEN-LAST:event_jButton3ActionPerformed
 
+    private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
+        MPControlPanel.instanceOf().openDetails(new ControlPanel_MailTemplates());
+    }//GEN-LAST:event_jButton4ActionPerformed
+
     @Override
     public void setValues(PropertyStore values) {
         oldvalues = values;
@@ -416,6 +431,7 @@ public class ControlPanel_Userproperties extends javax.swing.JPanel implements C
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
+    private javax.swing.JButton jButton4;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;

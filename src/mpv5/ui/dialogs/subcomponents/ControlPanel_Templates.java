@@ -214,13 +214,13 @@ public class ControlPanel_Templates extends javax.swing.JPanel implements Contro
         fullname.setFont(fullname.getFont());
         fullname.setName("fullname"); // NOI18N
 
-        jLabel3.setFont(new java.awt.Font("Dialog", 0, 12));
+        jLabel3.setFont(new java.awt.Font("Dialog", 0, 12)); // NOI18N
         jLabel3.setText(bundle.getString("ControlPanel_Templates.jLabel3.text")); // NOI18N
         jLabel3.setName("jLabel3"); // NOI18N
 
         groupname.setName("groupname"); // NOI18N
 
-        jLabel6.setFont(new java.awt.Font("Dialog", 0, 12));
+        jLabel6.setFont(new java.awt.Font("Dialog", 0, 12)); // NOI18N
         jLabel6.setText(bundle.getString("ControlPanel_Templates.jLabel6.text")); // NOI18N
         jLabel6.setName("jLabel6"); // NOI18N
 
@@ -344,7 +344,7 @@ public class ControlPanel_Templates extends javax.swing.JPanel implements Contro
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 222, Short.MAX_VALUE)
+                .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 79, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 355, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
@@ -375,17 +375,6 @@ public class ControlPanel_Templates extends javax.swing.JPanel implements Contro
         }
 }//GEN-LAST:event_jButton2ActionPerformed
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        DialogForFile d = new DialogForFile(DialogForFile.FILES_ONLY);
-        d.setFileFilter(DialogForFile.TEMPLATE_FILES);
-
-        if (d.chooseFile()) {
-            Template t = new Template();
-            if (QueryHandler.instanceOf().clone(Context.getFiles(), this).insertFile(d.getFile(), t, new SaveString(d.getFile().getName(), true))) {
-            }
-        }
-}//GEN-LAST:event_jButton1ActionPerformed
-
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
         if (Popup.Y_N_dialog(Messages.REALLY_DELETE)) {
             if (dataOwner != null) {
@@ -400,18 +389,6 @@ public class ControlPanel_Templates extends javax.swing.JPanel implements Contro
             refresh();
         }
     }//GEN-LAST:event_jButton4ActionPerformed
-
-    private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
-        test();
-    }//GEN-LAST:event_jButton5ActionPerformed
-
-    private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
-        try {
-            Desktop.getDesktop().browse(new URI(Constants.WEBSITE));
-        } catch (Exception ex) {
-            Log.Debug(ex);
-        }
-    }//GEN-LAST:event_jButton6ActionPerformed
 
     private void jButton7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton7ActionPerformed
 
@@ -435,6 +412,29 @@ public class ControlPanel_Templates extends javax.swing.JPanel implements Contro
             Log.Debug(e);
         }
     }//GEN-LAST:event_templatesMouseClicked
+
+    private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
+        try {
+            Desktop.getDesktop().browse(new URI(Constants.WEBSITE));
+        } catch (Exception ex) {
+            Log.Debug(ex);
+        }
+}//GEN-LAST:event_jButton6ActionPerformed
+
+    private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
+        test();
+}//GEN-LAST:event_jButton5ActionPerformed
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        DialogForFile d = new DialogForFile(DialogForFile.FILES_ONLY);
+        d.setFileFilter(DialogForFile.TEMPLATE_FILES);
+
+        if (d.chooseFile()) {
+            Template t = new Template();
+            if (QueryHandler.instanceOf().clone(Context.getFiles(), this).insertFile(d.getFile(), t, new SaveString(d.getFile().getName(), true))) {
+            }
+        }
+}//GEN-LAST:event_jButton1ActionPerformed
 
     public void setValues(PropertyStore values) {
     }

@@ -20,11 +20,20 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Frame;
 import java.awt.GraphicsEnvironment;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.util.ArrayList;
+import javax.swing.Icon;
+import javax.swing.JComboBox;
+import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.border.EmptyBorder;
+import mpv5.db.common.DatabaseObject;
+import mpv5.db.objects.MailMessage;
 import mpv5.globals.Messages;
+import mpv5.ui.beans.LabeledCombobox;
 
 /**
  *
@@ -155,7 +164,7 @@ public class Popup {
      * @param boxLength
      */
     public static void notice(Object text, int boxWidth, int boxLength) {
-         JOptionPane.showMessageDialog(identifier, prepareText(text.toString(), boxWidth, boxLength), Popup.NOTICE, JOptionPane.INFORMATION_MESSAGE);
+        JOptionPane.showMessageDialog(identifier, prepareText(text.toString(), boxWidth, boxLength), Popup.NOTICE, JOptionPane.INFORMATION_MESSAGE);
     }
 
     /**
@@ -171,7 +180,7 @@ public class Popup {
         return prepareText(s, 300, 80);
     }
 
-      private static Object prepareText(String s, int boxWidth, int boxLength) {
+    private static Object prepareText(String s, int boxWidth, int boxLength) {
         JTextArea text = new JTextArea(s);
         JScrollPane scroll = new JScrollPane(text);
         text.setLineWrap(true);
@@ -185,6 +194,16 @@ public class Popup {
         return scroll;
     }
 
+    /**
+     * Show a selection box
+     * @param objects
+     * @param message
+     * @return the selected object or null
+     */
+    public static DatabaseObject SelectValue(ArrayList<DatabaseObject> objects, Object message) {
+        return  (DatabaseObject) JOptionPane.showInputDialog(identifier, message.toString(), "",
+                JOptionPane.PLAIN_MESSAGE, (Icon) null, objects.toArray(), objects.get(0));
+    }
 
     private Popup() {
     }

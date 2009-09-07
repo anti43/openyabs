@@ -18,6 +18,7 @@ public enum Headers {
     PRODUCT_DEFAULT(new String[]{"Internal ID", "Name", "Number", "Description"}),
     SUBITEMS(new String[]{"Internal ID", "", "Count", "Measure", "Description", "Netto Price", "Tax Rate", "Total Price", "Tax value", "Net 2", "Product ID"}),
     TEMPLATES(new String[]{ "Name" ,"Type", "Group"}),
+    MAILTEMPLATES(new String[]{ "Name" ,"Description", "Group"}),
     SCHEDULE_LIST(new String[]{ "Item ID", "Interval (Months)" ,"End date","Added by"});
 
     private Headers(String[] header) {

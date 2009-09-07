@@ -34,6 +34,8 @@ import java.net.InetAddress;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Vector;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.print.DocFlavor;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
@@ -49,6 +51,7 @@ import mpv5.globals.Messages;
 import mpv5.db.objects.Contact;
 import mpv5.db.objects.Favourite;
 import mpv5.db.objects.Item;
+import mpv5.db.objects.MailMessage;
 import mpv5.db.objects.SubItem;
 import mpv5.db.objects.Template;
 import mpv5.logging.Log;
@@ -1204,7 +1207,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
                 }
 
                 HashMap<String, String> hm1 = new FormFieldsHandler(dataOwner).getFormattedFormFields(null);
-                File f2 = FileDirectoryHandler.getTempFile("pdf");
+                File f2 = FileDirectoryHandler.getTempFile(cname_, "pdf");
                 Export ex = new Export();
                 ex.putAll(hm1);
 
@@ -1267,10 +1270,17 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
     }
 
     public void mail() {
+        MailMessage m = null;
         if (preloadedTemplate != null && preload) {
             if (dataOwner != null && dataOwner.isExisting()) {
                 if (itemtable.getCellEditor() != null) {
                     itemtable.getCellEditor().stopCellEditing();
+                }
+                QueryCriteria c = new QueryCriteria("usersids", MPView.getUser().__getIDS());
+                try {
+                m = (MailMessage) Popup.SelectValue(DatabaseObject.getObjects(Context.getMessages(), c), Messages.SELECT_A_TEMPLATE);
+                } catch (Exception ex) {
+                    Log.Debug(this, ex.getMessage());
                 }
 
                 HashMap<String, String> hm1 = new FormFieldsHandler(dataOwner).getFormattedFormFields(null);
@@ -1291,8 +1301,10 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
                         SimpleMail pr = new SimpleMail();
                         pr.setMailConfiguration(MPView.getUser().getMailConfiguration());
                         pr.setRecipientsAddress(cont.__getMailaddress());
-                        pr.setSubject(cname_);
-                        pr.setText(cname_);
+                        if (m!=null) {
+                            pr.setSubject(m.__getCName());
+                            pr.setText(m.__getDescription());
+                        }
                         new Job(ex, (Waiter) pr).execute();
                         saveSubItems();
                     } else {
@@ -1319,7 +1331,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
                 }
 
                 HashMap<String, String> hm1 = new FormFieldsHandler(dataOwner).getFormattedFormFields(null);
-                File f2 = FileDirectoryHandler.getTempFile("pdf");
+                File f2 = FileDirectoryHandler.getTempFile(cname_, "pdf");
                 Export ex = new Export();
                 ex.putAll(hm1);
 
