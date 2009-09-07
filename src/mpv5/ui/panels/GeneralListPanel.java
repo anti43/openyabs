@@ -35,7 +35,6 @@ import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
 import mpv5.db.common.NodataFoundException;
 import mpv5.db.objects.Group;
-import mpv5.db.objects.Item;
 import mpv5.db.objects.User;
 import mpv5.logging.Log;
 import mpv5.ui.frames.MPView;
@@ -93,6 +92,9 @@ public class GeneralListPanel extends javax.swing.JPanel {
 
         setData(ndata);
         odata = ndata;
+        labeledCombobox1.setSearchOnEnterEnabled(true);
+        labeledCombobox1.setContext(Context.getGroup());
+        labeledCombobox1.triggerSearch();
     }
 
     class coloredObject extends DatabaseObject {
@@ -140,13 +142,13 @@ public class GeneralListPanel extends javax.swing.JPanel {
         Object[][] data = new Object[list.size()][5];
 
         for (int i = 0; i < list.size(); i++) {
-            DatabaseObject databaseObject = null;
+            coloredObject databaseObject = null;
             Color c = null;
             if (list.get(i) instanceof coloredObject) {
-                databaseObject = ((coloredObject) list.get(i)).getObject();
+                databaseObject = ((coloredObject) list.get(i));
                 c = ((coloredObject) list.get(i)).getColor();
             } else {
-                databaseObject = (DatabaseObject) list.get(i);
+                databaseObject = new coloredObject(Color.white, (DatabaseObject) list.get(i));
             }
             if (databaseObject != null) {
                 data[i][0] = databaseObject;
@@ -181,13 +183,13 @@ public class GeneralListPanel extends javax.swing.JPanel {
      * Filter by group
      * @param g
      */
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({"unchecked"})
     public void filterByGroup(Group g) {
         setData(odata);
         Object[][] data = ((MPTableModel) jTable1.getModel()).getData();
         List<coloredObject> list = new Vector<coloredObject>();
         for (int i = 0; i < data.length; i++) {
-            DatabaseObject d = (DatabaseObject) data[i][0];
+            coloredObject d = (coloredObject) data[i][0];
             if (d.__getGroupsids() == g.__getIDS()) {
                 list.add(new coloredObject(((coloredObject) d).getColor(), d));
             }
@@ -205,9 +207,9 @@ public class GeneralListPanel extends javax.swing.JPanel {
         Object[][] data = ((MPTableModel) jTable1.getModel()).getData();
         List<coloredObject> list = new Vector<coloredObject>();
         for (int i = 0; i < data.length; i++) {
-            DatabaseObject d = (DatabaseObject) data[i][0];
+            coloredObject d = (coloredObject) data[i][0];
             if (g.contains(d.__getDateadded())) {
-                list.add(new coloredObject(((coloredObject) d).getColor(), d));
+                list.add(new coloredObject(d.getColor(), d));
             }
         }
         setData(list);

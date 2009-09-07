@@ -16,12 +16,10 @@
  */
 package mpv5.db.objects;
 
-import java.util.ArrayList;
 import javax.swing.JComponent;
 import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
 import mpv5.db.common.Formattable;
-import mpv5.db.common.NodataFoundException;
 import mpv5.handler.FormatHandler;
 
 /**
