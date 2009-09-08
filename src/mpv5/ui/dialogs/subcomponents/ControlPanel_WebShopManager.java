@@ -513,11 +513,12 @@ public class ControlPanel_WebShopManager extends javax.swing.JPanel implements C
         refresh();
     }
 
+  
     private void generate() throws NoSuchAlgorithmException, IOException {
         String pwdir = new RandomText(8).getString();
         String user = new RandomText(8).getString();
         String password = new RandomText(8).getString();
-        String crypt = "{SHA}" + new sun.misc.BASE64Encoder().encode(java.security.MessageDigest.getInstance("SHA1").digest(password.getBytes()));
+        String crypt = "{SHA}" + org.apache.commons.codec.binary.Base64.encodeBase64(java.security.MessageDigest.getInstance("SHA1").digest(password.getBytes()));
         String content1 =
                 "AuthUserFile " + pwdir + "/.htpasswd\n" +
                 "AuthGroupFile /dev/null\n" +
