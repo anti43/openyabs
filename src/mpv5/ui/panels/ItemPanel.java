@@ -773,6 +773,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
         jToolBar2.setName("jToolBar2"); // NOI18N
 
         shipping.set_Label(bundle.getString("ItemPanel.shipping._Label")); // NOI18N
+        shipping.setMaximumSize(new java.awt.Dimension(200, 20));
         shipping.setName("shipping"); // NOI18N
         jToolBar2.add(shipping);
 
@@ -781,6 +782,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
         jToolBar2.add(jSeparator11);
 
         discountpercent.set_Label(bundle.getString("ItemPanel.discountpercent._Label")); // NOI18N
+        discountpercent.setMaximumSize(new java.awt.Dimension(200, 20));
         discountpercent.setName("discountpercent"); // NOI18N
         jToolBar2.add(discountpercent);
 
@@ -789,6 +791,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
         jToolBar2.add(jSeparator8);
 
         calculator.set_Label(bundle.getString("ItemPanel.calculator._Label")); // NOI18N
+        calculator.setMaximumSize(new java.awt.Dimension(200, 20));
         calculator.setName("calculator"); // NOI18N
         jToolBar2.add(calculator);
 
