@@ -37,6 +37,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import mpv5.globals.LocalSettings;
 import mpv5.globals.Messages;
+import mpv5.logging.Log;
 import mpv5.ui.dialogs.Popup;
 import mpv5.ui.frames.MPView;
 import ooo.connector.server.OOoServer;
@@ -214,19 +215,25 @@ public class NoaConnection {
                 path.replace("\\", "\\\\") + File.separator + "program" + File.separator + "soffice",
                 "-headless",
                 "-nofirststartwizard",
+                "-invisible", 
+                "-norestore",
+                "-nolockcheck",
+                "-nocrashreport",
+                "-nodefault",
                 "-accept=socket,host=0.0.0.0,port=" + port + ";urp;StarOffice.Service");
 
         Map<String, String> environment = builder.environment();
         environment.put("path", ";"); // Clearing the path variable;
         environment.put("path", path.replace("\\", "\\\\") + File.pathSeparator);
 
+        String command ="";
         for (int i = 0; i <
                 builder.command().size(); i++) {
             Object object = builder.command().get(i);
-            System.out.print(object + " ");
+            command+=object + " ";
         }
 
-        System.out.print("\n");
+        Log.Debug(NoaConnection.class, command);
         Runnable runnable = new Runnable() {
 
             @Override
