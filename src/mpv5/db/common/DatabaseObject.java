@@ -553,7 +553,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject> {
                 } catch (Exception ex) {
                     mpv5.logging.Log.Debug(this, this.getClass().getMethods()[i].getName());
                     mpv5.logging.Log.Debug(ex);//Logger.getLogger(DatabaseObject.class.getName()).log(Level.SEVERE, null, ex);
-                } 
+                }
             }
 //            else if (this.getClass().getMethods()[i].getName().startsWith("is")) {
 //                try {
@@ -869,6 +869,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject> {
     public static <T extends DatabaseObject> ArrayList<T> getObjects(Context context, QueryCriteria criterias) throws NodataFoundException {
         return (ArrayList<T>) getObjects(DatabaseObject.getObject(context), criterias);
     }
+
 
     /**
      *  Returns objects within the given context which match the criterias in the given QueryCriteria object<br/>

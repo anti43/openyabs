@@ -21,6 +21,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Vector;
 import javax.swing.JComponent;
+import javax.swing.JTable;
 import javax.swing.SwingUtilities;
 import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
@@ -85,7 +86,7 @@ public class SubItem extends DatabaseObject {
     }
 
     /**
-     *
+     * Convert the model to a list of String arrays
      * @param dataOwner
      * @param model
      * @param t
@@ -138,6 +139,62 @@ public class SubItem extends DatabaseObject {
         }
 
         return rowsk;
+    }
+
+    /**
+     * Add some value
+     * @param table 
+     * @param percentValue
+     * @param panel dirty dirty
+     */
+    public static void changeValueFields(JTable table, Integer percentValue, ItemPanel panel) {
+        List<Object[]> rowsl = ((MPTableModel) table.getModel()).getValidRows(new int[]{4});
+        Log.Debug(SubItem.class, "Rows found: " + rowsl.size());
+        SubItem[] items = new SubItem[rowsl.size()];
+        for (int i = 0; i < rowsl.size(); i++) {
+            Object[] row = rowsl.get(i);
+            for (int j = 0; j < row.length; j++) {
+                if (row[j] == null) {
+                    row[j] = "";
+                }
+            }
+            SubItem it = new SubItem();
+            try {
+                if (row[0] != null && Integer.valueOf(row[0].toString()).intValue() > 0) {
+                    it.setIDS(Integer.valueOf(row[0].toString()).intValue());
+                } else {
+                    it.setIDS(-1);
+                }
+            } catch (Exception e) {
+                Log.Debug(SubItem.class, e.getMessage());
+            }
+            it.setCName(row[4].toString());
+//            it.setItemsids(dataOwner.__getIDS());
+            it.setCountvalue(Double.valueOf(row[1].toString()));
+//            it.setDatedelivery(dataOwner.__getDatetodo());
+            it.setDescription(row[4].toString());
+            it.setExternalvalue(Double.valueOf(row[5].toString()) * (((Double.valueOf(percentValue) / 100) + 1)));
+            it.setInternalvalue(Double.valueOf(row[5].toString()) * (((Double.valueOf(percentValue) / 100) + 1)));//not supported yet
+            it.setMeasure(row[3].toString());
+            it.setOriginalproductsids(Integer.valueOf(row[10].toString()));
+            it.setQuantityvalue(Double.valueOf(row[2].toString()));
+            it.setTaxpercentvalue(Double.valueOf(row[6].toString()));
+            calculate(it);
+            items[i] = it;
+            
+//
+//            if (!it.isExisting()) {
+//                it.setDateadded(new Date());
+//                it.setGroupsids(dataOwner.__getGroupsids());
+//            }
+//            it.save(true);
+        }
+
+        table.setModel(toModel(items));
+        
+        if (panel != null) {
+            panel.formatTable();
+        }
     }
     private int itemsids;
     private int originalproductsids;

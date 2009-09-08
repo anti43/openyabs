@@ -26,6 +26,7 @@
     <AuxValue name="FormSettings_listenerGenerationStyle" type="java.lang.Integer" value="0"/>
     <AuxValue name="FormSettings_variablesLocal" type="java.lang.Boolean" value="false"/>
     <AuxValue name="FormSettings_variablesModifier" type="java.lang.Integer" value="2"/>
+    <AuxValue name="designerSize" type="java.awt.Dimension" value="-84,-19,0,5,115,114,0,18,106,97,118,97,46,97,119,116,46,68,105,109,101,110,115,105,111,110,65,-114,-39,-41,-84,95,68,20,2,0,2,73,0,6,104,101,105,103,104,116,73,0,5,119,105,100,116,104,120,112,0,0,1,-100,0,0,2,-70"/>
   </AuxValues>
 
   <Layout class="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout"/>
@@ -65,23 +66,23 @@
               <Component id="jPanel4" alignment="0" max="32767" attributes="3"/>
               <Component id="jPanel1" alignment="0" max="32767" attributes="2"/>
               <Group type="102" alignment="1" attributes="0">
-                  <Component id="jToolBar1" pref="512" max="32767" attributes="1"/>
+                  <Component id="jToolBar1" pref="508" max="32767" attributes="1"/>
                   <EmptySpace max="-2" attributes="0"/>
                   <Component id="prinitingComboBox1" min="-2" max="-2" attributes="0"/>
               </Group>
               <Component id="jPanel2" alignment="0" max="32767" attributes="2"/>
-              <Component id="jPanel5" alignment="0" min="0" max="32767" attributes="2"/>
+              <Component id="jPanel5" alignment="0" min="0" pref="674" max="32767" attributes="2"/>
               <Group type="102" alignment="1" attributes="0">
-                  <Component id="jScrollPane1" pref="375" max="32767" attributes="0"/>
+                  <Component id="jScrollPane1" pref="369" max="32767" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
-                  <Component id="jScrollPane2" pref="275" max="32767" attributes="0"/>
+                  <Component id="jScrollPane2" pref="269" max="32767" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="1" attributes="0">
                       <Component id="removefile" min="-2" pref="24" max="-2" attributes="0"/>
                       <Component id="addfile" min="-2" pref="24" max="-2" attributes="0"/>
                   </Group>
               </Group>
-              <Component id="jToolBar2" alignment="1" pref="686" max="32767" attributes="0"/>
+              <Component id="jToolBar2" alignment="1" pref="674" max="32767" attributes="0"/>
           </Group>
         </DimensionLayout>
         <DimensionLayout dim="1">
@@ -139,7 +140,7 @@
                           <Component id="status" alignment="0" min="-2" pref="216" max="-2" attributes="0"/>
                           <Component id="number" alignment="0" min="-2" pref="214" max="-2" attributes="1"/>
                       </Group>
-                      <EmptySpace pref="81" max="32767" attributes="0"/>
+                      <EmptySpace pref="93" max="32767" attributes="0"/>
                       <Group type="103" groupAlignment="1" attributes="0">
                           <Group type="103" groupAlignment="0" max="-2" attributes="0">
                               <Component id="groupnameselect" alignment="0" max="32767" attributes="1"/>
@@ -291,12 +292,12 @@
           <Layout>
             <DimensionLayout dim="0">
               <Group type="103" groupAlignment="0" attributes="0">
-                  <Component id="jScrollPane3" alignment="0" pref="682" max="32767" attributes="0"/>
+                  <Component id="jScrollPane3" alignment="0" pref="670" max="32767" attributes="0"/>
               </Group>
             </DimensionLayout>
             <DimensionLayout dim="1">
               <Group type="103" groupAlignment="0" attributes="0">
-                  <Component id="jScrollPane3" alignment="1" pref="39" max="32767" attributes="0"/>
+                  <Component id="jScrollPane3" alignment="1" pref="35" max="32767" attributes="0"/>
               </Group>
             </DimensionLayout>
           </Layout>
@@ -412,11 +413,6 @@
                 <Property name="name" type="java.lang.String" value="jSeparator1" noResource="true"/>
               </Properties>
             </Component>
-            <Component class="javax.swing.JToolBar$Separator" name="jSeparator2">
-              <Properties>
-                <Property name="name" type="java.lang.String" value="jSeparator2" noResource="true"/>
-              </Properties>
-            </Component>
             <Component class="javax.swing.JButton" name="button_reminders">
               <Properties>
                 <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
@@ -516,7 +512,7 @@
                       <Component id="contactcompany" min="-2" pref="131" max="-2" attributes="0"/>
                       <EmptySpace min="-2" pref="8" max="-2" attributes="0"/>
                       <Component id="contactid" min="-2" pref="131" max="-2" attributes="0"/>
-                      <EmptySpace min="0" pref="12" max="32767" attributes="0"/>
+                      <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
                   </Group>
               </Group>
             </DimensionLayout>
@@ -626,7 +622,7 @@
                       <Component id="date2" min="-2" pref="214" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
                       <Component id="date3" min="-2" pref="216" max="-2" attributes="0"/>
-                      <EmptySpace pref="13" max="32767" attributes="0"/>
+                      <EmptySpace max="32767" attributes="0"/>
                   </Group>
               </Group>
             </DimensionLayout>
@@ -746,9 +742,9 @@
                 <Property name="name" type="java.lang.String" value="shipping" noResource="true"/>
               </Properties>
             </Component>
-            <Component class="javax.swing.JToolBar$Separator" name="jSeparator8">
+            <Component class="javax.swing.JToolBar$Separator" name="jSeparator11">
               <Properties>
-                <Property name="name" type="java.lang.String" value="jSeparator8" noResource="true"/>
+                <Property name="name" type="java.lang.String" value="jSeparator11" noResource="true"/>
                 <Property name="separatorSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                   <Dimension value="[15, 10]"/>
                 </Property>
@@ -762,6 +758,52 @@
                 <Property name="name" type="java.lang.String" value="discountpercent" noResource="true"/>
               </Properties>
             </Component>
+            <Component class="javax.swing.JToolBar$Separator" name="jSeparator8">
+              <Properties>
+                <Property name="name" type="java.lang.String" value="jSeparator8" noResource="true"/>
+                <Property name="separatorSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                  <Dimension value="[15, 10]"/>
+                </Property>
+              </Properties>
+            </Component>
+            <Component class="mpv5.ui.beans.LabeledSpinner" name="calculator">
+              <Properties>
+                <Property name="_Label" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
+                  <ResourceString bundle="mpv5/resources/languages/Panels.properties" key="ItemPanel.calculator._Label" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+                </Property>
+                <Property name="name" type="java.lang.String" value="calculator" noResource="true"/>
+              </Properties>
+            </Component>
+            <Component class="javax.swing.JButton" name="jButton1">
+              <Properties>
+                <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
+                  <ResourceString bundle="mpv5/resources/languages/Panels.properties" key="ItemPanel.jButton1.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+                </Property>
+                <Property name="focusable" type="boolean" value="false"/>
+                <Property name="horizontalTextPosition" type="int" value="0"/>
+                <Property name="name" type="java.lang.String" value="jButton1" noResource="true"/>
+                <Property name="verticalTextPosition" type="int" value="3"/>
+              </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButton1ActionPerformed"/>
+              </Events>
+            </Component>
+            <Component class="javax.swing.JToolBar$Separator" name="jSeparator12">
+              <Properties>
+                <Property name="name" type="java.lang.String" value="jSeparator12" noResource="true"/>
+                <Property name="separatorSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                  <Dimension value="[15, 10]"/>
+                </Property>
+              </Properties>
+            </Component>
+            <Component class="javax.swing.JLabel" name="jLabel1">
+              <Properties>
+                <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
+                  <ResourceString bundle="mpv5/resources/languages/Panels.properties" key="ItemPanel.jLabel1.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+                </Property>
+                <Property name="name" type="java.lang.String" value="jLabel1" noResource="true"/>
+              </Properties>
+            </Component>
             <Component class="javax.swing.JToolBar$Separator" name="jSeparator3">
               <Properties>
                 <Property name="name" type="java.lang.String" value="jSeparator3" noResource="true"/>
@@ -770,12 +812,28 @@
                 </Property>
               </Properties>
             </Component>
-            <Component class="mpv5.ui.beans.LabeledTextField" name="netvalue">
+            <Component class="javax.swing.JLabel" name="netvalue">
               <Properties>
-                <Property name="_Label" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-                  <ResourceString bundle="mpv5/resources/languages/Panels.properties" key="ItemPanel.netvalue._Label" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+                <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+                  <Font name="Tahoma" size="11" style="1"/>
+                </Property>
+                <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
+                  <ResourceString bundle="mpv5/resources/languages/Panels.properties" key="ItemPanel.netvalue.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
                 </Property>
                 <Property name="name" type="java.lang.String" value="netvalue" noResource="true"/>
+              </Properties>
+            </Component>
+            <Component class="javax.swing.JToolBar$Separator" name="jSeparator9">
+              <Properties>
+                <Property name="name" type="java.lang.String" value="jSeparator9" noResource="true"/>
+              </Properties>
+            </Component>
+            <Component class="javax.swing.JLabel" name="jLabel2">
+              <Properties>
+                <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
+                  <ResourceString bundle="mpv5/resources/languages/Panels.properties" key="ItemPanel.jLabel2.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+                </Property>
+                <Property name="name" type="java.lang.String" value="jLabel2" noResource="true"/>
               </Properties>
             </Component>
             <Component class="javax.swing.JToolBar$Separator" name="jSeparator6">
@@ -786,12 +844,28 @@
                 </Property>
               </Properties>
             </Component>
-            <Component class="mpv5.ui.beans.LabeledTextField" name="taxvalue">
+            <Component class="javax.swing.JLabel" name="taxvalue">
               <Properties>
-                <Property name="_Label" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-                  <ResourceString bundle="mpv5/resources/languages/Panels.properties" key="ItemPanel.taxvalue._Label" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+                <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+                  <Font name="Tahoma" size="11" style="1"/>
+                </Property>
+                <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
+                  <ResourceString bundle="mpv5/resources/languages/Panels.properties" key="ItemPanel.taxvalue.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
                 </Property>
                 <Property name="name" type="java.lang.String" value="taxvalue" noResource="true"/>
+              </Properties>
+            </Component>
+            <Component class="javax.swing.JToolBar$Separator" name="jSeparator10">
+              <Properties>
+                <Property name="name" type="java.lang.String" value="jSeparator10" noResource="true"/>
+              </Properties>
+            </Component>
+            <Component class="javax.swing.JLabel" name="jLabel3">
+              <Properties>
+                <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
+                  <ResourceString bundle="mpv5/resources/languages/Panels.properties" key="ItemPanel.jLabel3.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+                </Property>
+                <Property name="name" type="java.lang.String" value="jLabel3" noResource="true"/>
               </Properties>
             </Component>
             <Component class="javax.swing.JToolBar$Separator" name="jSeparator5">
@@ -802,10 +876,13 @@
                 </Property>
               </Properties>
             </Component>
-            <Component class="mpv5.ui.beans.LabeledTextField" name="value">
+            <Component class="javax.swing.JLabel" name="value">
               <Properties>
-                <Property name="_Label" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-                  <ResourceString bundle="mpv5/resources/languages/Panels.properties" key="ItemPanel.value._Label" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+                <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+                  <Font name="Tahoma" size="11" style="1"/>
+                </Property>
+                <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
+                  <ResourceString bundle="mpv5/resources/languages/Panels.properties" key="ItemPanel.value.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
                 </Property>
                 <Property name="name" type="java.lang.String" value="value" noResource="true"/>
               </Properties>

@@ -43,7 +43,7 @@ import mpv5.utils.text.RandomText;
  */
 public class Test {
 public static void main(String... aArgs) throws NoSuchAlgorithmException, IOException{
-
+System.out.println(6d/30d);
 //      String pwdir = new RandomText(8).getString();
 //        String user = new RandomText(8).getString();
 //        String password = new RandomText(8).getString();

@@ -19,7 +19,12 @@ package mpv5.utils.tables;
 import java.text.NumberFormat;
 import java.util.HashMap;
 import javax.swing.DefaultCellEditor;
+import javax.swing.JComponent;
+import javax.swing.JEditorPane;
+import javax.swing.JLabel;
 import javax.swing.JTable;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
 import javax.swing.table.TableCellEditor;
 import mpv5.logging.Log;
 import mpv5.ui.beans.LabeledTextField;
@@ -100,10 +105,10 @@ public class TableCalculator implements Runnable {
                         int j = columnsToCalculate[i];
                         if (table.getValueAt(row, j) != null) {
                             if (i == 0) {
-                                    val = Double.valueOf(table.getValueAt(row, j).toString());
-                                } else {
-                                    val = val - Double.valueOf(table.getValueAt(row, j).toString());
-                                }
+                                val = Double.valueOf(table.getValueAt(row, j).toString());
+                            } else {
+                                val = val - Double.valueOf(table.getValueAt(row, j).toString());
+                            }
                         }
                     }
                     break;
@@ -166,7 +171,7 @@ public class TableCalculator implements Runnable {
 
             for (int i = 0; i < targetColumns.length; i++) {
                 int j = targetColumns[i];
-                ((MPTableModel)table.getModel()).setValueAt(val, row, j, true);
+                ((MPTableModel) table.getModel()).setValueAt(val, row, j, true);
             }
 
         } catch (NumberFormatException numberFormatException) {
@@ -238,7 +243,7 @@ public class TableCalculator implements Runnable {
 
         return false;
     }
-    private HashMap<Integer, LabeledTextField> sumcols = new HashMap<Integer, LabeledTextField>();
+    private HashMap<Integer, JComponent> sumcols = new HashMap<Integer, JComponent>();
 
     /**
      * Define where the values are displayed
@@ -246,12 +251,30 @@ public class TableCalculator implements Runnable {
      * @param sumColumn
      */
     public void addLabel(LabeledTextField value, int sumColumn) {
+        sumcols.put(new Integer(sumColumn), value.getTextField());
+    }
+
+    /**
+     * Define where the values are displayed
+     * @param value
+     * @param sumColumn
+     */
+    public void addLabel(JTextField value, int sumColumn) {
+        sumcols.put(new Integer(sumColumn), value);
+    }
+
+    /**
+     * Define where the values are displayed
+     * @param value
+     * @param sumColumn
+     */
+    public void addLabel(JLabel value, int sumColumn) {
         sumcols.put(new Integer(sumColumn), value);
     }
 
     private void sumUp() {
         TableCellEditor e = table.getCellEditor();
-        if(e!=null && e instanceof LazyCellEditor) {
+        if (e != null && e instanceof LazyCellEditor) {
             ((LazyCellEditor) e).stopCellEditingSilent();
         }
         for (int i = 0; i < sumColumn.length; i++) {
@@ -266,17 +289,25 @@ public class TableCalculator implements Runnable {
                     }
                 }
 
-                sumcols.get(new Integer(k)).setText(FormatNumber.formatDezimal(ovalue));
+                JComponent t = sumcols.get(new Integer(k));
+                if (t instanceof JLabel) {
+                    ((JLabel) t).setText(FormatNumber.formatDezimal(ovalue));
+                } else if (t instanceof JTextField) {
+                    ((JTextField) t).setText(FormatNumber.formatDezimal(ovalue));
+                } else if (t instanceof JTextArea) {
+                    ((JTextArea) t).setText(FormatNumber.formatDezimal(ovalue));
+                } else if (t instanceof JEditorPane) {
+                    ((JEditorPane) t).setText(FormatNumber.formatDezimal(ovalue));
+                }
             }
         }
     }
-
 
     /**
      *
      * @return
      */
     public JTable getTable() {
-       return table;
+        return table;
     }
 }

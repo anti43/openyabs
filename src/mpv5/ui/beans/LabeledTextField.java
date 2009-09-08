@@ -14,6 +14,7 @@ import java.awt.Color;
 import java.awt.Font;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JLabel;
 import javax.swing.JTextField;
 import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
@@ -44,8 +45,20 @@ public class LabeledTextField extends javax.swing.JPanel {
 
     }
 
+    /**
+     *
+     * @return
+     */
     public JTextField getTextField() {
         return jTextField1;
+    }
+
+    /**
+     *
+     * @return
+     */
+    public JLabel getLabelField() {
+        return jLabel1;
     }
 
     /**
