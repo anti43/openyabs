@@ -17,11 +17,10 @@ import mpv5.db.objects.Schedule;
 import mpv5.db.objects.FileToItem;
 import mpv5.db.objects.FileToProduct;
 import mpv5.db.objects.Item;
-
-import mpv5.db.objects.ProductListItem;
 import mpv5.db.objects.MailMessage;
 import mpv5.db.objects.Product;
 import mpv5.db.objects.ProductGroup;
+import mpv5.db.objects.ProductlistSubItem;
 import mpv5.db.objects.Reminder;
 import mpv5.db.objects.Revenue;
 import mpv5.db.objects.Stage;
@@ -66,7 +65,7 @@ public class Context {
     public static String IDENTITY_PROPERTIES_TO_USERS = "userproperties";
     public static String IDENTITY_ACCOUNTS = "accounts";
     public static String IDENTITY_ITEMS_TO_ACCOUNTS = "itemstoaccounts";
-    public static String IDENTITY_ITEMSLIST = "productlistitems";
+    public static String IDENTITY_PRODUCTSLIST = "productlistitems";
     public static String IDENTITY_FORMATS_T_USERS = "formatstousers";
     public static String IDENTITY_FILES_TO_ITEMS = "filestoitems";
     public static String IDENTITY_MAIL = "mails";
@@ -94,7 +93,7 @@ public class Context {
     private static Class IDENTITY_PLUGINS_CLASS = Plugin.class;
     private static Class IDENTITY_PROPERTIES_CLASS = Property.class;
     private static Class IDENTITY_ACCOUNTS_CLASS = Account.class;
-    private static Class IDENTITY_ITEMSLIST_CLASS = ProductListItem.class;
+    private static Class IDENTITY_ITEMSLIST_CLASS = ProductlistSubItem.class;
     private static Class IDENTITY_MAILS_CLASS = MailMessage.class;
     private static Class IDENTITY_PRODUCTS_CLASS = Product.class;
     private static Class IDENTITY_GROUPS_CLASS = Group.class;
@@ -187,14 +186,11 @@ public class Context {
         list.add(getBill());
         list.add(getOrder());
         list.add(getOffer());
-        list.add(getSubItem());
         list.add(getSchedule());
         list.add(getCountries());
         list.add(getContact());
         list.add(getProducts());
         list.add(getAccounts());
-        list.add(getMessages());
-        list.add(getProductListItems());
         list.add(getCompanies());
         list.add(getWebShops());
         list.add(getTemplate());
@@ -281,9 +277,6 @@ public class Context {
         list.add(getContact());
         list.add(getProducts());
         list.add(getFiles());
-        list.add(getMessages());
-        list.add(getProductListItems());
-
         return list;
     }
 
@@ -1328,7 +1321,7 @@ public class Context {
     public static Context getProductListItems() {
         Context c = new Context();
         c.setSubID(DEFAULT_SUBID);
-        c.setDbIdentity(IDENTITY_ITEMSLIST);
+        c.setDbIdentity(IDENTITY_PRODUCTSLIST);
         c.setIdentityClass(IDENTITY_ITEMSLIST_CLASS);
         c.setId(32);
 

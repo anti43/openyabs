@@ -513,11 +513,11 @@ public class ControlPanel_WebShopManager extends javax.swing.JPanel implements C
         refresh();
     }
 
-  
     private void generate() throws NoSuchAlgorithmException, IOException {
         String pwdir = new RandomText(8).getString();
         String user = new RandomText(8).getString();
         String password = new RandomText(8).getString();
+        Log.Debug(this, "The SUPER SECRET password for the generated .htaccess file is: " + password);
         String crypt = "{SHA}" + org.apache.commons.codec.binary.Base64.encodeBase64(java.security.MessageDigest.getInstance("SHA1").digest(password.getBytes()));
         String content1 =
                 "AuthUserFile " + pwdir + "/.htpasswd\n" +

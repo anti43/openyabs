@@ -47,6 +47,7 @@ public enum Messages {
     NEW_PRODUCT("New Product"),
     NEW_SERVICE("New Service"),
     NEW_COMPANY("New Company"),
+    NEW_LIST("New Product List"),
     ACCESS_DENIED("Access denied."),
     /**
      * Actions
