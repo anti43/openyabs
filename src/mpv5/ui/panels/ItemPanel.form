@@ -319,6 +319,7 @@
                     </Property>
                     <Property name="cellSelectionEnabled" type="boolean" value="true"/>
                     <Property name="name" type="java.lang.String" value="itemtable" noResource="true"/>
+                    <Property name="rowHeight" type="int" value="20"/>
                     <Property name="surrendersFocusOnKeystroke" type="boolean" value="true"/>
                   </Properties>
                   <Events>

@@ -84,17 +84,33 @@ public class ProductListsPanel extends javax.swing.JPanel implements DataPanel, 
 
             @Override
             public void mouseClicked(MouseEvent e) {
-                MPTableModel m = (MPTableModel) itemtable.getModel();
-                if (m.getRowCount() > 0) {
-                    m.addRow(5);
-                } else {
-                    itemtable.setModel(ProductlistSubItem.toModel(new ProductlistSubItem[]{
-                                ProductlistSubItem.getDefaultItem(), ProductlistSubItem.getDefaultItem(),
-                                ProductlistSubItem.getDefaultItem(), ProductlistSubItem.getDefaultItem(),
-                                ProductlistSubItem.getDefaultItem(), ProductlistSubItem.getDefaultItem()
-                            }));
+                if (e.getButton() == MouseEvent.BUTTON1) {
+                    MPTableModel m = (MPTableModel) itemtable.getModel();
+                    if (m.getRowCount() > 0) {
+                        m.addRow(5);
+                    } else {
+                        itemtable.setModel(ProductlistSubItem.toModel(new ProductlistSubItem[]{
+                                    ProductlistSubItem.getDefaultItem(), ProductlistSubItem.getDefaultItem(),
+                                    ProductlistSubItem.getDefaultItem(), ProductlistSubItem.getDefaultItem(),
+                                    ProductlistSubItem.getDefaultItem(), ProductlistSubItem.getDefaultItem()
+                                }));
 
-                    formatTable();
+
+                        formatTable();
+                    }
+                } else {
+                    try {
+                        MPTableModel m = (MPTableModel) itemtable.getModel();
+                        Product p = (Product) Popup.SelectValue(DatabaseObject.getObjects(Context.getProducts(), true), null);
+                        if (p != null) {
+                            int row = m.getLastValidRow(new int[]{4});
+//                            m.addRow(1);
+                            m.setRowAt(new ProductlistSubItem(p).getRowData(row), row + 1, 1);
+//                            m.insertRow(0, new SubItem(p).getRowData(0));
+                        }
+                    } catch (NodataFoundException ex) {
+                        Log.Debug(this, ex.getMessage());
+                    }
                 }
             }
 
@@ -275,6 +291,7 @@ public class ProductListsPanel extends javax.swing.JPanel implements DataPanel, 
         ));
         itemtable.setCellSelectionEnabled(true);
         itemtable.setName("itemtable"); // NOI18N
+        itemtable.setRowHeight(20);
         itemtable.setSurrendersFocusOnKeystroke(true);
         itemtable.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -439,26 +456,13 @@ public class ProductListsPanel extends javax.swing.JPanel implements DataPanel, 
     @Override
     public boolean collectData() {
         cname_ = listname.getText();
-        boolean exists = false;
-        try {
-            ProductlistSubItem.getList(dataOwner.__getIDS());
-            exists = true;
-        } catch (NodataFoundException nodataFoundException) {
-            exists = false;
-        }
-        if (!exists && cname_.length() > 0) {
-            description_ = notes.getText();
-            if (groupnameselect.getSelectedItem() != null) {
-                groupsids_ = Integer.valueOf(groupnameselect.getSelectedItem().getId());
-                Log.Debug(this, groupnameselect.getSelectedItem().getId());
-            } else {
-                groupsids_ = 1;
-            }
+        description_ = notes.getText();
+        if (groupnameselect.getSelectedItem() != null) {
+            groupsids_ = Integer.valueOf(groupnameselect.getSelectedItem().getId());
+            Log.Debug(this, groupnameselect.getSelectedItem().getId());
         } else {
-            showRequiredFields();
-            return false;
+            groupsids_ = 1;
         }
-
         return true;
     }
 
@@ -527,7 +531,7 @@ public class ProductListsPanel extends javax.swing.JPanel implements DataPanel, 
         }
     }
 
-     @Override
+    @Override
     public void showSearchBar(boolean show) {
         leftpane.removeAll();
         if (show) {

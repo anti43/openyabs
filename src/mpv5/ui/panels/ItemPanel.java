@@ -31,8 +31,10 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.File;
 import java.net.InetAddress;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -56,6 +58,8 @@ import mpv5.db.objects.Contact;
 import mpv5.db.objects.Favourite;
 import mpv5.db.objects.Item;
 import mpv5.db.objects.MailMessage;
+import mpv5.db.objects.ProductList;
+import mpv5.db.objects.ProductlistSubItem;
 import mpv5.db.objects.SubItem;
 import mpv5.db.objects.Template;
 import mpv5.logging.Log;
@@ -164,18 +168,33 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
 
             @Override
             public void mouseClicked(MouseEvent e) {
-                MPTableModel m = (MPTableModel) itemtable.getModel();
-                if (m.getRowCount() > 0) {
-                    m.addRow(5);
-                } else {
-                    itemtable.setModel(SubItem.toModel(new SubItem[]{
-                                SubItem.getDefaultItem(), SubItem.getDefaultItem(),
-                                SubItem.getDefaultItem(), SubItem.getDefaultItem(),
-                                SubItem.getDefaultItem(), SubItem.getDefaultItem()
-                            }));
+                if (e.getButton() == MouseEvent.BUTTON1) {
+                    MPTableModel m = (MPTableModel) itemtable.getModel();
+                    if (m.getRowCount() > 0) {
+                        m.addRow(5);
+                    } else {
+                        itemtable.setModel(SubItem.toModel(new SubItem[]{
+                                    SubItem.getDefaultItem(), SubItem.getDefaultItem(),
+                                    SubItem.getDefaultItem(), SubItem.getDefaultItem(),
+                                    SubItem.getDefaultItem(), SubItem.getDefaultItem()
+                                }));
 
-                   
-                    formatTable();
+
+                        formatTable();
+                    }
+                } else {
+                    try {
+                        MPTableModel m = (MPTableModel) itemtable.getModel();
+                        Product p = (Product) Popup.SelectValue(DatabaseObject.getObjects(Context.getProducts(), true), null);
+                        if (p != null) {
+                            int row = m.getLastValidRow(new int[]{4});
+//                            m.addRow(1);
+                            m.setRowAt(new SubItem(p).getRowData(row), row + 1, 1);
+//                            m.insertRow(0, new SubItem(p).getRowData(0));
+                        }
+                    } catch (NodataFoundException ex) {
+                        Log.Debug(this, ex.getMessage());
+                    }
                 }
             }
 
@@ -240,7 +259,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
 
             itemtable.setModel(SubItem.toModel(((Item) object).getSubitems()));
             omodel = (MPTableModel) itemtable.getModel();
-            
+
             formatTable();
             ((MPTableModel) itemtable.getModel()).fireTableCellUpdated(0, 0);
             if (object.isReadOnly()) {
@@ -527,6 +546,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
         ));
         itemtable.setCellSelectionEnabled(true);
         itemtable.setName("itemtable"); // NOI18N
+        itemtable.setRowHeight(20);
         itemtable.setSurrendersFocusOnKeystroke(true);
         itemtable.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -819,7 +839,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
         jSeparator3.setSeparatorSize(new java.awt.Dimension(15, 10));
         jToolBar2.add(jSeparator3);
 
-        netvalue.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
+        netvalue.setFont(new java.awt.Font("Tahoma", 1, 11));
         netvalue.setText(bundle.getString("ItemPanel.netvalue.text")); // NOI18N
         netvalue.setName("netvalue"); // NOI18N
         jToolBar2.add(netvalue);
@@ -835,7 +855,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
         jSeparator6.setSeparatorSize(new java.awt.Dimension(15, 10));
         jToolBar2.add(jSeparator6);
 
-        taxvalue.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
+        taxvalue.setFont(new java.awt.Font("Tahoma", 1, 11));
         taxvalue.setText(bundle.getString("ItemPanel.taxvalue.text")); // NOI18N
         taxvalue.setName("taxvalue"); // NOI18N
         jToolBar2.add(taxvalue);
@@ -851,7 +871,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
         jSeparator5.setSeparatorSize(new java.awt.Dimension(15, 10));
         jToolBar2.add(jSeparator5);
 
-        value.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
+        value.setFont(new java.awt.Font("Tahoma", 1, 11));
         value.setText(bundle.getString("ItemPanel.value.text")); // NOI18N
         value.setName("value"); // NOI18N
         jToolBar2.add(value);
@@ -943,8 +963,10 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
     private void itemtableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_itemtableMouseClicked
 
         MPTableModel m = (MPTableModel) itemtable.getModel();
-        if (!m.hasEmptyRows(new int[]{4})) {
-            m.addRow(2);
+        if (evt.getButton() != MouseEvent.BUTTON1) {
+            if (!m.hasEmptyRows(new int[]{4})) {
+                m.addRow(2);
+            }
         }
     }//GEN-LAST:event_itemtableMouseClicked
 
@@ -1189,7 +1211,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
                                 SubItem.getDefaultItem(), SubItem.getDefaultItem()
                             }));
 
-                    
+
                     formatTable();
                     shipping.setText(FormatNumber.formatDezimal(0d));
                 } catch (Exception e) {
@@ -1214,12 +1236,25 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
 
     @Override
     public void paste(DatabaseObject dbo) {
-        if (dbo.getDbIdentity().equals(Context.getItems().getDbIdentity())) {
+        if (dbo.getContext().equals(Context.getItems())) {
             ((Item) dbo).setIntstatus(Item.STATUS_IN_PROGRESS);
             ((Item) dbo).setInttype(inttype_);
 
             setDataOwner(dbo, true);
             dbo.setIDS(-1);
+        } else if (dbo.getContext().equals(Context.getContact())) {
+            dataOwner.setContactsids(((Contact) dbo).__getIDS());
+            setDataOwner(dataOwner, true);
+        } else if (dbo.getContext().equals(Context.getProductlist())) {
+            try {
+                ArrayList<ProductlistSubItem> l = ProductList.getReferencedObjects(dbo, Context.getProductListItems(), new ProductlistSubItem());
+                itemtable.setModel(ProductlistSubItem.toModel(l.toArray(new ProductlistSubItem[0])));
+                omodel = (MPTableModel) itemtable.getModel();
+                formatTable();
+                ((MPTableModel) itemtable.getModel()).fireTableCellUpdated(0, 0);
+            } catch (NodataFoundException ex) {
+                Log.Debug(this, ex.getMessage());
+            }
         } else {
             MPView.addMessage(Messages.NOT_POSSIBLE.toString() + Messages.ACTION_PASTE.toString());
         }
@@ -1443,3 +1478,5 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
         netCalculator2.addLabel(netvalue, 9);
     }
 }
+
+

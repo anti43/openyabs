@@ -32,6 +32,7 @@ import mpv5.db.objects.User;
 import mpv5.db.objects.WSContactsMapping;
 import mpv5.db.objects.WSItemsMapping;
 import mpv5.db.objects.WebShop;
+import mpv5.logging.Log;
 import mpv5.pluginhandling.UserPlugin;
 import mpv5.ui.frames.MPView;
 
@@ -389,7 +390,8 @@ public class Context {
                 getWebShopContactMapping(),
                 getTemplate(),
                 getReminders(),
-                getStages()
+                getStages(),
+                getProductlist()
             }));
     private String[] searchHeaders;
     private ArrayList<String[]> references = new ArrayList<String[]>();
@@ -1511,6 +1513,7 @@ public class Context {
                 return context;
             }
         }
+        Log.Debug(Context.class, "Context not found for name: " + contextdbidentity);
         return null;
     }
 

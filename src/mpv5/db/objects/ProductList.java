@@ -20,6 +20,7 @@ import javax.swing.JComponent;
 
 import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
+import mpv5.ui.panels.ProductListsPanel;
 
 /**
  *
@@ -35,7 +36,7 @@ public class ProductList extends DatabaseObject {
 
     @Override
     public JComponent getView() {
-        throw new UnsupportedOperationException("Not supported yet.");
+       return new ProductListsPanel();
     }
 
     @Override

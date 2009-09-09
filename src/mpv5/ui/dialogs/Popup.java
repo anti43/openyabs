@@ -201,7 +201,7 @@ public class Popup {
      * @return the selected object or null
      */
     public static DatabaseObject SelectValue(ArrayList<DatabaseObject> objects, Object message) {
-        return  (DatabaseObject) JOptionPane.showInputDialog(identifier, message.toString(), "",
+        return  (DatabaseObject) JOptionPane.showInputDialog(identifier, message, "",
                 JOptionPane.PLAIN_MESSAGE, (Icon) null, objects.toArray(), objects.get(0));
     }
 

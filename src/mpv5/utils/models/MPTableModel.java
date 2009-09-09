@@ -422,10 +422,17 @@ public class MPTableModel extends DefaultTableModel {
      * @param columnToIgnore
      */
     public synchronized void setRowAt(Object[] rowData, int row, int columnToIgnore) {
+
+        if (getRowCount() <= row) {
+            addRow(1);
+        }
         for (int i = 0; i < rowData.length; i++) {
             if (i != columnToIgnore) {
                 Object object = rowData[i];
-                setValueAt(object, row, i);
+                try {
+                    setValueAt(object, row, i);
+                } catch (Exception e) {
+                }
             }
         }
     }
@@ -451,6 +458,26 @@ public class MPTableModel extends DefaultTableModel {
             }
         }
         return k;
+    }
+
+    /**
+     * Returns the last valid row in a table whereas "valid" is defined as "all columns in columns are not null"
+     * @param columns 
+     * @return
+     */
+    public int getLastValidRow(int[] columns) {
+
+        int row = 0;
+        for (int ki = 0; ki < getRowCount(); ki++) {
+            for (int i = 0; i < columns.length; i++) {
+                int j = columns[i];
+                if (getValueAt(ki, j) == null || getValueAt(ki, j).toString().length() == 0) {
+                } else {
+                    row = ki;
+                }
+            }
+        }
+        return row;
     }
 
     /**
