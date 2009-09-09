@@ -131,4 +131,8 @@ public class Expense extends DatabaseObject implements Formattable {
         }
         return formatHandler;
     }
+
+    public static Object[][] getExpenses(){
+    return null;
+    }
 }

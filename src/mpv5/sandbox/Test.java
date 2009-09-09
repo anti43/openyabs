@@ -20,10 +20,6 @@ import java.awt.BorderLayout;
 import java.awt.Component;
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
 import javax.swing.DefaultCellEditor;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComboBox;
@@ -32,9 +28,11 @@ import javax.swing.JLabel;
 import javax.swing.JTable;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
+import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
-import mpv5.utils.models.MPTableModel;
+import javax.swing.table.TableModel;
+
 
 /**
  *
@@ -109,7 +107,7 @@ public class Test {
 
 
         try {
-            UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
+            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
         } catch (ClassNotFoundException classNotFoundException) {
         } catch (InstantiationException instantiationException) {
         } catch (IllegalAccessException illegalAccessException) {
@@ -118,8 +116,13 @@ public class Test {
 
         JFrame p = new JFrame();
         JTable t = new JTable();
-        MPTableModel m = new MPTableModel(new Object[][]{new Object[]{1, 2, 3, 4, 5, 6, 7}, new Object[]{1, 2, 3, 4, 5, 6, 7}, new Object[]{1, 2, 3, 4, 5, 6, 7}, new Object[]{1, 2, 3, 4, 5, 6, 7}, new Object[]{1, 2, 3, 4, 5, 6, 7}});
-        m.setEditable(true);
+        TableModel m = new DefaultTableModel(new Object[][]{
+                    new Object[]{1, 2, 3, 4, 5, 6, 7},
+                    new Object[]{1, 2, 3, 4, 5, 6, 7},
+                    new Object[]{1, 2, 3, 4, 5, 6, 7},
+                    new Object[]{1, 2, 3, 4, 5, 6, 7},
+                    new Object[]{1, 2, 3, 4, 5, 6, 7}},
+                new Object[]{1, 2, 3, 4, 5, 6, 7});
         t.setModel(m);
 
         Test.CellRendererWithComboBox f = new CellRendererWithComboBox();
@@ -130,18 +133,4 @@ public class Test {
         p.setVisible(true);
     }
 
-    private static void sortList(List<String> aItems) {
-        Collections.sort(aItems, String.CASE_INSENSITIVE_ORDER);
-    }
-
-    private static void log(Object aObject) {
-        System.out.println(String.valueOf(aObject));
-    }
-
-    private static Map<String, String> sortMapByKey(Map<String, String> aItems) {
-        TreeMap<String, String> result =
-                new TreeMap<String, String>(String.CASE_INSENSITIVE_ORDER);
-        result.putAll(aItems);
-        return result;
-    }
 }
