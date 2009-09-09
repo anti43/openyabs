@@ -157,12 +157,13 @@ public class ExpensePanel extends javax.swing.JPanel implements DataPanel {
         itemtable = new javax.swing.JTable();
         toolbarpane = new javax.swing.JPanel();
 
+        setBackground(javax.swing.UIManager.getDefaults().getColor("PropSheet.disabledForeground"));
         java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("mpv5/resources/languages/Panels"); // NOI18N
         setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("ExpensePanel.border.title_1"))); // NOI18N
         setName("Form"); // NOI18N
         setLayout(new java.awt.BorderLayout());
 
-        rightpane.setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("ExpensePanel.rightpane.border.title"))); // NOI18N
+        rightpane.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         rightpane.setName("rightpane"); // NOI18N
 
         jPanel1.setBackground(new java.awt.Color(227, 219, 202));
@@ -270,7 +271,7 @@ public class ExpensePanel extends javax.swing.JPanel implements DataPanel {
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(accountselect, javax.swing.GroupLayout.PREFERRED_SIZE, 355, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(number, javax.swing.GroupLayout.PREFERRED_SIZE, 214, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 66, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 70, Short.MAX_VALUE)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addComponent(jLabel4)
@@ -278,7 +279,7 @@ public class ExpensePanel extends javax.swing.JPanel implements DataPanel {
                                 .addComponent(button_order2)
                                 .addGap(19, 19, 19)
                                 .addComponent(addedby, javax.swing.GroupLayout.PREFERRED_SIZE, 97, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addComponent(groupnameselect, javax.swing.GroupLayout.DEFAULT_SIZE, 203, Short.MAX_VALUE))))
+                            .addComponent(groupnameselect, javax.swing.GroupLayout.DEFAULT_SIZE, 207, Short.MAX_VALUE))))
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
@@ -329,12 +330,12 @@ public class ExpensePanel extends javax.swing.JPanel implements DataPanel {
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel4Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 624, Short.MAX_VALUE)
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 632, Short.MAX_VALUE)
                 .addContainerGap())
         );
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane3, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 27, Short.MAX_VALUE)
+            .addComponent(jScrollPane3, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 46, Short.MAX_VALUE)
         );
 
         javax.swing.GroupLayout rightpaneLayout = new javax.swing.GroupLayout(rightpane);
@@ -354,6 +355,7 @@ public class ExpensePanel extends javax.swing.JPanel implements DataPanel {
 
         add(rightpane, java.awt.BorderLayout.CENTER);
 
+        toolbarpane.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         toolbarpane.setName("toolbarpane"); // NOI18N
         toolbarpane.setLayout(new java.awt.BorderLayout());
         add(toolbarpane, java.awt.BorderLayout.NORTH);

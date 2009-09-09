@@ -6,6 +6,9 @@
     </Component>
   </NonVisualComponents>
   <Properties>
+    <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+      <Color blue="92" green="a1" id="PropSheet.disabledForeground" palette="3" red="a1" type="palette"/>
+    </Property>
     <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
       <Border info="org.netbeans.modules.form.compat2.border.TitledBorderInfo">
         <TitledBorder title="Expense Details">
@@ -34,10 +37,8 @@
     <Container class="javax.swing.JPanel" name="rightpane">
       <Properties>
         <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
-          <Border info="org.netbeans.modules.form.compat2.border.TitledBorderInfo">
-            <TitledBorder title="Data">
-              <ResourceString PropertyName="titleX" bundle="mpv5/resources/languages/Panels.properties" key="ExpensePanel.rightpane.border.title" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
-            </TitledBorder>
+          <Border info="org.netbeans.modules.form.compat2.border.EtchedBorderInfo">
+            <EtchetBorder/>
           </Border>
         </Property>
         <Property name="name" type="java.lang.String" value="rightpane" noResource="true"/>
@@ -91,7 +92,7 @@
                                   <Component id="accountselect" min="-2" pref="355" max="-2" attributes="1"/>
                                   <Component id="number" alignment="0" min="-2" pref="214" max="-2" attributes="1"/>
                               </Group>
-                              <EmptySpace pref="66" max="32767" attributes="0"/>
+                              <EmptySpace pref="70" max="32767" attributes="0"/>
                               <Group type="103" groupAlignment="0" attributes="0">
                                   <Group type="102" attributes="0">
                                       <Component id="jLabel4" min="-2" max="-2" attributes="0"/>
@@ -100,7 +101,7 @@
                                       <EmptySpace min="-2" pref="19" max="-2" attributes="0"/>
                                       <Component id="addedby" min="-2" pref="97" max="-2" attributes="0"/>
                                   </Group>
-                                  <Component id="groupnameselect" pref="203" max="32767" attributes="1"/>
+                                  <Component id="groupnameselect" pref="207" max="32767" attributes="1"/>
                               </Group>
                           </Group>
                       </Group>
@@ -337,14 +338,14 @@
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" alignment="0" attributes="0">
                       <EmptySpace max="-2" attributes="0"/>
-                      <Component id="jScrollPane3" pref="624" max="32767" attributes="0"/>
+                      <Component id="jScrollPane3" pref="632" max="32767" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
                   </Group>
               </Group>
             </DimensionLayout>
             <DimensionLayout dim="1">
               <Group type="103" groupAlignment="0" attributes="0">
-                  <Component id="jScrollPane3" alignment="1" pref="27" max="32767" attributes="0"/>
+                  <Component id="jScrollPane3" alignment="1" pref="46" max="32767" attributes="0"/>
               </Group>
             </DimensionLayout>
           </Layout>
@@ -381,6 +382,11 @@
     </Container>
     <Container class="javax.swing.JPanel" name="toolbarpane">
       <Properties>
+        <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
+          <Border info="org.netbeans.modules.form.compat2.border.EtchedBorderInfo">
+            <EtchetBorder/>
+          </Border>
+        </Property>
         <Property name="name" type="java.lang.String" value="toolbarpane" noResource="true"/>
       </Properties>
       <Constraints>
