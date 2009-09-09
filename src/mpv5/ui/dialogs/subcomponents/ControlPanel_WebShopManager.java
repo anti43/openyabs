@@ -24,6 +24,7 @@ import mpv5.globals.Messages;
 import mpv5.logging.Log;
 import mpv5.ui.dialogs.ControlApplet;
 import mpv5.ui.dialogs.DialogForFile;
+import mpv5.ui.dialogs.Popup;
 import mpv5.usermanagement.MPSecurityManager;
 import mpv5.utils.files.FileDirectoryHandler;
 import mpv5.utils.files.FileReaderWriter;
@@ -514,45 +515,49 @@ public class ControlPanel_WebShopManager extends javax.swing.JPanel implements C
     }
 
     private void generate() throws NoSuchAlgorithmException, IOException {
-        String pwdir = new RandomText(8).getString();
-        String user = new RandomText(8).getString();
-//        String password = new RandomText(8).getString();
-        String password ="llaWws9q";
-        Log.Debug(this, "The SUPER SECRET password for the generated .htaccess file is: " + password);
-        String crypt = "{SHA}" + new sun.misc.BASE64Encoder().encode(java.security.MessageDigest.getInstance("SHA1").digest(password.getBytes()));
-        String content1 =
-                "AuthUserFile " + pwdir + "/.htpasswd\n" +
-                "AuthGroupFile /dev/null\n" +
-                "AuthName \"" + user + "\"\n" +
-                "AuthType Basic\n" +
-                "<Limit GET POST>\n" +
-                "require valid-user\n" +
-                "</Limit>\n" +
-                "<Files *.ini>\n" +
-                "Order Deny,Allow\n" +
-                "Deny from all\n" +
-                "</Files>\n";
+        try {
+            String pwdir = new RandomText(8).getString();
+            String user = new RandomText(8).getString();
+            String password = new RandomText(8).getString();
+            Log.Debug(this, "The SUPER SECRET password for the generated .htaccess file is: " + password);
+            String crypt = "{SHA}" + new sun.misc.BASE64Encoder().encode(java.security.MessageDigest.getInstance("SHA1").digest(password.getBytes()));
+            String content1 =
+                    "AuthUserFile " + pwdir + "/.htpasswd\n" +
+                    "AuthGroupFile /dev/null\n" +
+                    "AuthName \"" + user + "\"\n" +
+                    "AuthType Basic\n" +
+                    "<Limit GET POST>\n" +
+                    "require valid-user\n" +
+                    "</Limit>\n" +
+                    "<Files *.ini>\n" +
+                    "Order Deny,Allow\n" +
+                    "Deny from all\n" +
+                    "</Files>\n";
 
-        String content2 = user + ":" + crypt;
-        String tmp = FileDirectoryHandler.getTempDir() + RandomText.getText();
-        File f1 = new File(tmp + File.separator + ".htaccess");
-        f1.getParentFile().mkdirs();
-        f1.createNewFile();
-        File f2 = new File(tmp + File.separator + pwdir + File.separator + ".htpasswd");
-        f2.getParentFile().mkdirs();
-        f2.createNewFile();
-        FileReaderWriter htacc = new FileReaderWriter(f1);
-        FileReaderWriter htpw = new FileReaderWriter(f2);
+            String content2 = user + ":" + crypt;
+            String tmp = FileDirectoryHandler.getTempDir() + RandomText.getText();
+            File f1 = new File(tmp + File.separator + ".htaccess");
+            f1.getParentFile().mkdirs();
+            f1.createNewFile();
+            File f2 = new File(tmp + File.separator + pwdir + File.separator + ".htpasswd");
+            f2.getParentFile().mkdirs();
+            f2.createNewFile();
+            FileReaderWriter htacc = new FileReaderWriter(f1);
+            FileReaderWriter htpw = new FileReaderWriter(f2);
 
-        if (htacc.write0(content1) && htpw.write0(content2)) {
-            DialogForFile d = new DialogForFile(DialogForFile.FILES_ONLY);
-            d.setSelectedFile(new File("generated.zip"));
-            if (d.saveFile()) {
-                Zip.zip(tmp, d.getFile().getPath());
+            if (htacc.write0(content1) && htpw.write0(content2)) {
+                DialogForFile d = new DialogForFile(DialogForFile.FILES_ONLY);
+                d.setSelectedFile(new File("generated.zip"));
+                if (d.saveFile()) {
+                    Zip.zip(tmp, d.getFile().getPath());
+                }
+
+                jTextField1.setText(user);
+                jPasswordField1.setText(password);
             }
-
-            jTextField1.setText(user);
-            jPasswordField1.setText(password);
+        } catch (Exception e) {
+            Popup.error(e);
+            Log.Debug(e);
         }
     }
 }

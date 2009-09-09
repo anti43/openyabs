@@ -1,158 +1,186 @@
 package mpv5.utils.text;
 
-// Copyright 2003-2009 Christian d'Heureuse, Inventec Informatik AG, Zurich, Switzerland
-// www.source-code.biz, www.inventec.ch/chdh
-//
-// This module is multi-licensed and may be used under the terms
-// of any of the following licenses:
-//
-//  EPL, Eclipse Public License, http://www.eclipse.org/legal
-//  LGPL, GNU Lesser General Public License, http://www.gnu.org/licenses/lgpl.html
-//  AL, Apache License, http://www.apache.org/licenses
-//
-// Please contact the author if you need another license.
-// This module is provided "as is", without warranties of any kind.
+/* BASE.java --
+   Copyright (C) 2003, 2004 Free Software Foundation, Inc.
+
+This file is part of GNU Classpath.
+
+GNU Classpath is free software; you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation; either version 2, or (at your option)
+any later version.
+
+GNU Classpath is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with GNU Classpath; see the file COPYING.  If not, write to the
+Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+02111-1307 USA.
+
+Linking this library statically or dynamically with other modules is
+making a combined work based on this library.  Thus, the terms and
+conditions of the GNU General Public License cover the whole
+combination.
+
+As a special exception, the copyright holders of this library give you
+permission to link this library with independent modules to produce an
+executable, regardless of the license terms of these independent
+modules, and to copy and distribute the resulting executable under
+terms of your choice, provided that you also meet, for each linked
+independent module, the terms and conditions of the license of that
+module.  An independent module is a module which is not derived from
+or based on this library.  If you modify this library, you may extend
+this exception to your version of the library, but you are not
+obligated to do so.  If you do not wish to do so, delete this
+exception statement from your version. */
+
+
+
 
 /**
-* A Base64 Encoder/Decoder.
-*
-* <p>
-* This class is used to encode and decode data in Base64 format as described in RFC 1521.
-*
-* <p>
-* Home page: <a href="http://www.source-code.biz">www.source-code.biz</a><br>
-* Author: Christian d'Heureuse, Inventec Informatik AG, Zurich, Switzerland<br>
-* Multi-licensed: EPL/LGPL/AL.
-*
-* <p>
-* Version history:<br>
-* 2003-07-22 Christian d'Heureuse (chdh): Module created.<br>
-* 2005-08-11 chdh: Lincense changed from GPL to LGPL.<br>
-* 2006-11-21 chdh:<br>
-*  &nbsp; Method encode(String) renamed to encodeString(String).<br>
-*  &nbsp; Method decode(String) renamed to decodeString(String).<br>
-*  &nbsp; New method encode(byte[],int) added.<br>
-*  &nbsp; New method decode(String) added.<br>
-* 2009-07-16: Additional licenses (EPL/AL) added.<br>
-*/
+ * Encodes and decodes text according to the BASE64 encoding.
+ *
+ * @author Chris Burdess (dog@gnu.org)
+ */
+public final class Base64Encoder
+{
+  private static final byte[] src = {
+    0x41, 0x42, 0x43, 0x44, 0x45, 0x46, 0x47, 0x48, 0x49, 0x4a,
+    0x4b, 0x4c, 0x4d, 0x4e, 0x4f, 0x50, 0x51, 0x52, 0x53, 0x54,
+    0x55, 0x56, 0x57, 0x58, 0x59, 0x5a, 0x61, 0x62, 0x63, 0x64,
+    0x65, 0x66, 0x67, 0x68, 0x69, 0x6a, 0x6b, 0x6c, 0x6d, 0x6e,
+    0x6f, 0x70, 0x71, 0x72, 0x73, 0x74, 0x75, 0x76, 0x77, 0x78,
+    0x79, 0x7a, 0x30, 0x31, 0x32, 0x33, 0x34, 0x35, 0x36, 0x37,
+    0x38, 0x39, 0x2b, 0x2f
+  };
 
-public class Base64Encoder {
+  private static final byte[] dst;
+  static
+  {
+    dst = new byte[0x100];
+    for (int i = 0x0; i < 0xff; i++)
+      {
+        dst[i] = -1;
+      }
+    for (int i = 0; i < src.length; i++)
+      {
+        dst[src[i]] = (byte) i;
+      }
+  }
 
-// Mapping table from 6-bit nibbles to Base64 characters.
-private static char[]    map1 = new char[64];
-   static {
-      int i=0;
-      for (char c='A'; c<='Z'; c++) map1[i++] = c;
-      for (char c='a'; c<='z'; c++) map1[i++] = c;
-      for (char c='0'; c<='9'; c++) map1[i++] = c;
-      map1[i++] = '+'; map1[i++] = '/'; }
+  private Base64Encoder()
+  {
+  }
 
-// Mapping table from Base64 characters to 6-bit nibbles.
-private static byte[]    map2 = new byte[128];
-   static {
-      for (int i=0; i<map2.length; i++) map2[i] = -1;
-      for (int i=0; i<64; i++) map2[map1[i]] = (byte)i; }
+  /**
+   * Encode the specified byte array using the BASE64 algorithm.
+   *
+   * @param bs the source byte array
+   */
+  public static byte[] encode(byte[] bs)
+  {
+    int si = 0, ti = 0;         // source/target array indices
+    byte[] bt = new byte[((bs.length + 2) * 4) / 3];     // target byte array
+    for (; si < bs.length; si += 3)
+      {
+        int buflen = bs.length - si;
+        if (buflen == 1)
+          {
+            byte b = bs[si];
+            int i = 0;
+            bt[ti++] = src[b >>> 2 & 0x3f];
+            bt[ti++] = src[(b << 4 & 0x30) + (i >>> 4 & 0xf)];
+          }
+        else if (buflen == 2)
+          {
+            byte b1 = bs[si], b2 = bs[si + 1];
+            int i = 0;
+            bt[ti++] = src[b1 >>> 2 & 0x3f];
+            bt[ti++] = src[(b1 << 4 & 0x30) + (b2 >>> 4 & 0xf)];
+            bt[ti++] = src[(b2 << 2 & 0x3c) + (i >>> 6 & 0x3)];
+          }
+        else
+          {
+            byte b1 = bs[si], b2 = bs[si + 1], b3 = bs[si + 2];
+            bt[ti++] = src[b1 >>> 2 & 0x3f];
+            bt[ti++] = src[(b1 << 4 & 0x30) + (b2 >>> 4 & 0xf)];
+            bt[ti++] = src[(b2 << 2 & 0x3c) + (b3 >>> 6 & 0x3)];
+            bt[ti++] = src[b3 & 0x3f];
+          }
+      }
+    /*while (ti < bt.length)
+      {
+        bt[ti++] = 0x3d;
+      }*/
+    return bt;
+  }
 
-/**
-* Encodes a string into Base64 format.
-* No blanks or line breaks are inserted.
-* @param s  a String to be encoded.
-* @return   A String with the Base64 encoded data.
-*/
-public static String encodeString (String s) {
-   return new String(encode(s.getBytes())); }
+  /**
+   * Decode the specified byte array using the BASE64 algorithm.
+   *
+   * @param bs the source byte array
+   */
+  public static byte[] decode(byte[] bs)
+  {
+    int srclen = bs.length;
+    while (srclen > 0 && bs[srclen - 1] == 0x3d)
+      {
+        srclen--; /* strip padding character */
+      }
+    byte[] buffer = new byte[srclen];
+    int buflen = 0;
+    int si = 0;
+    int len = srclen - si;
+    while (len > 0)
+      {
+        byte b0 = dst[bs[si++] & 0xff];
+        byte b2 = dst[bs[si++] & 0xff];
+        buffer[buflen++] = (byte) (b0 << 2 & 0xfc | b2 >>> 4 & 0x3);
+        if (len > 2)
+          {
+            b0 = b2;
+            b2 = dst[bs[si++] & 0xff];
+            buffer[buflen++] = (byte) (b0 << 4 & 0xf0 | b2 >>> 2 & 0xf);
+            if (len > 3)
+              {
+                b0 = b2;
+                b2 = dst[bs[si++] & 0xff];
+                buffer[buflen++] = (byte) (b0 << 6 & 0xc0 | b2 & 0x3f);
+              }
+          }
+        len = srclen - si;
+      }
+    byte[] bt = new byte[buflen];
+    System.arraycopy(buffer, 0, bt, 0, buflen);
+    return bt;
+  }
 
-/**
-* Encodes a byte array into Base64 format.
-* No blanks or line breaks are inserted.
-* @param in  an array containing the data bytes to be encoded.
-* @return    A character array with the Base64 encoded data.
-*/
-public static char[] encode (byte[] in) {
-   return encode(in,in.length); }
-
-/**
-* Encodes a byte array into Base64 format.
-* No blanks or line breaks are inserted.
-* @param in   an array containing the data bytes to be encoded.
-* @param iLen number of bytes to process in <code>in</code>.
-* @return     A character array with the Base64 encoded data.
-*/
-public static char[] encode (byte[] in, int iLen) {
-   int oDataLen = (iLen*4+2)/3;       // output length without padding
-   int oLen = ((iLen+2)/3)*4;         // output length including padding
-   char[] out = new char[oLen];
-   int ip = 0;
-   int op = 0;
-   while (ip < iLen) {
-      int i0 = in[ip++] & 0xff;
-      int i1 = ip < iLen ? in[ip++] & 0xff : 0;
-      int i2 = ip < iLen ? in[ip++] & 0xff : 0;
-      int o0 = i0 >>> 2;
-      int o1 = ((i0 &   3) << 4) | (i1 >>> 4);
-      int o2 = ((i1 & 0xf) << 2) | (i2 >>> 6);
-      int o3 = i2 & 0x3F;
-      out[op++] = map1[o0];
-      out[op++] = map1[o1];
-      out[op] = op < oDataLen ? map1[o2] : '='; op++;
-      out[op] = op < oDataLen ? map1[o3] : '='; op++; }
-   return out; }
-
-/**
-* Decodes a string from Base64 format.
-* @param s  a Base64 String to be decoded.
-* @return   A String containing the decoded data.
-* @throws   IllegalArgumentException if the input is not valid Base64 encoded data.
-*/
-public static String decodeString (String s) {
-   return new String(decode(s)); }
-
-/**
-* Decodes a byte array from Base64 format.
-* @param s  a Base64 String to be decoded.
-* @return   An array containing the decoded data bytes.
-* @throws   IllegalArgumentException if the input is not valid Base64 encoded data.
-*/
-public static byte[] decode (String s) {
-   return decode(s.toCharArray()); }
-
-/**
-* Decodes a byte array from Base64 format.
-* No blanks or line breaks are allowed within the Base64 encoded data.
-* @param in  a character array containing the Base64 encoded data.
-* @return    An array containing the decoded data bytes.
-* @throws    IllegalArgumentException if the input is not valid Base64 encoded data.
-*/
-public static byte[] decode (char[] in) {
-   int iLen = in.length;
-   if (iLen%4 != 0) throw new IllegalArgumentException ("Length of Base64 encoded input string is not a multiple of 4.");
-   while (iLen > 0 && in[iLen-1] == '=') iLen--;
-   int oLen = (iLen*3) / 4;
-   byte[] out = new byte[oLen];
-   int ip = 0;
-   int op = 0;
-   while (ip < iLen) {
-      int i0 = in[ip++];
-      int i1 = in[ip++];
-      int i2 = ip < iLen ? in[ip++] : 'A';
-      int i3 = ip < iLen ? in[ip++] : 'A';
-      if (i0 > 127 || i1 > 127 || i2 > 127 || i3 > 127)
-         throw new IllegalArgumentException ("Illegal character in Base64 encoded data.");
-      int b0 = map2[i0];
-      int b1 = map2[i1];
-      int b2 = map2[i2];
-      int b3 = map2[i3];
-      if (b0 < 0 || b1 < 0 || b2 < 0 || b3 < 0)
-         throw new IllegalArgumentException ("Illegal character in Base64 encoded data.");
-      int o0 = ( b0       <<2) | (b1>>>4);
-      int o1 = ((b1 & 0xf)<<4) | (b2>>>2);
-      int o2 = ((b2 &   3)<<6) |  b3;
-      out[op++] = (byte)o0;
-      if (op<oLen) out[op++] = (byte)o1;
-      if (op<oLen) out[op++] = (byte)o2; }
-   return out; }
-
-// Dummy constructor.
-private Base64Encoder() {}
-
-} // end class Base64Coder
+  public static void main(String[] args)
+  {
+    boolean decode = false;
+    for (int i = 0; i < args.length; i++)
+      {
+        if (args[i].equals("-d"))
+          {
+            decode = true;
+          }
+        else
+          {
+            try
+              {
+                byte[] in = args[i].getBytes("US-ASCII");
+                byte[] out = decode ? decode(in) : encode(in);
+                System.out.println(args[i] + " = " +
+                                   new String(out, "US-ASCII"));
+              }
+            catch (java.io.UnsupportedEncodingException e)
+              {
+                e.printStackTrace(System.err);
+              }
+          }
+      }
+  }
+}
