@@ -25,18 +25,16 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import javax.swing.JFrame;
-import javax.swing.JTabbedPane;
-import javax.swing.JViewport;
+import java.util.Date;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingUtilities;
 import mpv5.db.common.*;
 import mpv5.db.objects.Product;
 import mpv5.globals.Messages;
 import mpv5.db.objects.Favourite;
-
-
+import mpv5.db.objects.ProductList;
 import mpv5.db.objects.ProductlistSubItem;
+import mpv5.db.objects.User;
 import mpv5.logging.Log;
 import mpv5.ui.dialogs.Popup;
 import mpv5.ui.frames.MPView;
@@ -59,20 +57,24 @@ import mpv5.utils.ui.TextFieldUtils;
 public class ProductListsPanel extends javax.swing.JPanel implements DataPanel, MPCBSelectionChangeReceiver {
 
     private static final long serialVersionUID = 1L;
-    private ProductlistSubItem dataOwner;
+    private ProductList dataOwner;
     private DataPanelTB tb;
     private TableCalculator itemMultiplier;
     private TableCalculator netCalculator;
     private TableCalculator netCalculator2;
+    private final SearchPanel sp;
 
     /** Creates new form ContactPanel
+     * @param type
      */
     public ProductListsPanel() {
         initComponents();
 
+        sp = new SearchPanel(Context.getProductlist(), this);
+        sp.setVisible(true);
         tb = new mpv5.ui.toolbars.DataPanelTB(this);
         toolbarpane.add(tb, BorderLayout.CENTER);
-        dataOwner = new ProductlistSubItem();
+        dataOwner = new ProductList();
 
         refresh();
         addedby.setText(MPView.getUser().getName());
@@ -122,45 +124,22 @@ public class ProductListsPanel extends javax.swing.JPanel implements DataPanel, 
         ((SpinnerNumberModel) calculator.getSpinner().getModel()).setMaximum(1000);
     }
 
-
     @Override
     public DatabaseObject getDataOwner() {
         return dataOwner;
     }
 
-     private void setTitle() {
-        if (this.getParent() instanceof JViewport || this.getParent() instanceof JTabbedPane) {
-            JTabbedPane jTabbedPane = null;
-            String title1 = listname_;
-            //this->viewport->scrollpane->tabbedpane
-            if (this.getParent().getParent().getParent() instanceof JTabbedPane) {
-                jTabbedPane = (JTabbedPane) this.getParent().getParent().getParent();
-            } else {
-                try {
-                    jTabbedPane = (JTabbedPane) this.getParent();
-                } catch (Exception e) {
-                    //Free floating window
-                    ((JFrame) this.getRootPane().getParent()).setTitle(title1);
-                }
-            }
-            if (jTabbedPane != null) {
-                jTabbedPane.setTitleAt(jTabbedPane.getSelectedIndex(), title1);
-            }
-        }
-    }
-
     @Override
     public void setDataOwner(DatabaseObject object, boolean populate) {
-        dataOwner = (ProductlistSubItem) object;
+        dataOwner = (ProductList) object;
         if (populate) {
             dataOwner.setPanelData(this);
             this.exposeData();
-            setTitle();
             prinitingComboBox1.init(dataOwner);
             tb.setFavourite(Favourite.isFavourite(object));
             tb.setEditable(!object.isReadOnly());
             try {
-                itemtable.setModel(ProductlistSubItem.toModel(ProductlistSubItem.getList(dataOwner.__getListname()).toArray(new ProductlistSubItem[0])));
+                itemtable.setModel(ProductlistSubItem.toModel(ProductlistSubItem.getList(dataOwner.__getIDS()).toArray(new ProductlistSubItem[0])));
             } catch (NodataFoundException ex) {
                 Log.Debug(this, ex.getMessage());
             }
@@ -200,6 +179,8 @@ public class ProductListsPanel extends javax.swing.JPanel implements DataPanel, 
         jPanel4 = new javax.swing.JPanel();
         jScrollPane3 = new javax.swing.JScrollPane();
         itemtable = new javax.swing.JTable();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        notes = new javax.swing.JTextPane();
         jToolBar2 = new javax.swing.JToolBar();
         calculator = new mpv5.ui.beans.LabeledSpinner();
         jButton1 = new javax.swing.JButton();
@@ -310,8 +291,17 @@ public class ProductListsPanel extends javax.swing.JPanel implements DataPanel, 
         );
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 36, Short.MAX_VALUE)
+            .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 134, Short.MAX_VALUE)
         );
+
+        jScrollPane1.setBorder(null);
+        jScrollPane1.setName("jScrollPane1"); // NOI18N
+
+        notes.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+        notes.setText(bundle.getString("ProductListsPanel.notes.text")); // NOI18N
+        notes.setDragEnabled(true);
+        notes.setName("notes"); // NOI18N
+        jScrollPane1.setViewportView(notes);
 
         jToolBar2.setBackground(new java.awt.Color(255, 255, 255));
         jToolBar2.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(0, 102, 102), 1, true));
@@ -371,8 +361,9 @@ public class ProductListsPanel extends javax.swing.JPanel implements DataPanel, 
         rightpaneLayout.setHorizontalGroup(
             rightpaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jPanel1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(jToolBar2, javax.swing.GroupLayout.DEFAULT_SIZE, 454, Short.MAX_VALUE)
+            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 454, Short.MAX_VALUE)
             .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(jToolBar2, javax.swing.GroupLayout.DEFAULT_SIZE, 454, Short.MAX_VALUE)
         );
         rightpaneLayout.setVerticalGroup(
             rightpaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -381,7 +372,9 @@ public class ProductListsPanel extends javax.swing.JPanel implements DataPanel, 
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jToolBar2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addComponent(jToolBar2, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 47, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
         add(rightpane, java.awt.BorderLayout.CENTER);
@@ -418,6 +411,7 @@ public class ProductListsPanel extends javax.swing.JPanel implements DataPanel, 
     private javax.swing.JButton jButton1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel4;
+    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JToolBar.Separator jSeparator10;
     private javax.swing.JToolBar.Separator jSeparator12;
@@ -428,27 +422,41 @@ public class ProductListsPanel extends javax.swing.JPanel implements DataPanel, 
     private javax.swing.JPanel leftpane;
     private mpv5.ui.beans.LabeledTextField listname;
     private mpv5.ui.beans.LabeledTextField netvalue;
+    private javax.swing.JTextPane notes;
     private mpv5.ui.beans.PrinitingComboBox prinitingComboBox1;
     private javax.swing.JPanel rightpane;
     private mpv5.ui.beans.LabeledTextField taxvalue;
     private javax.swing.JPanel toolbarpane;
     private mpv5.ui.beans.LabeledTextField value;
     // End of variables declaration//GEN-END:variables
-    public String listname_;
+    public String cname_;
+    public String description_;
+    public int intaddedby_;
+    public int ids_;
+    public Date dateadded_;
+    public int groupsids_ = 1;
 
     @Override
     public boolean collectData() {
-        listname_ = listname.getText();
+        cname_ = listname.getText();
         boolean exists = false;
         try {
-            ProductlistSubItem.getList(listname_);
+            ProductlistSubItem.getList(dataOwner.__getIDS());
             exists = true;
         } catch (NodataFoundException nodataFoundException) {
+            exists = false;
         }
-        if (!exists && listname_.length() > 0) {
-           
+        if (!exists && cname_.length() > 0) {
+            description_ = notes.getText();
+            if (groupnameselect.getSelectedItem() != null) {
+                groupsids_ = Integer.valueOf(groupnameselect.getSelectedItem().getId());
+                Log.Debug(this, groupnameselect.getSelectedItem().getId());
+            } else {
+                groupsids_ = 1;
+            }
         } else {
             showRequiredFields();
+            return false;
         }
 
         return true;
@@ -456,7 +464,15 @@ public class ProductListsPanel extends javax.swing.JPanel implements DataPanel, 
 
     @Override
     public void exposeData() {
-        listname.setText(dataOwner.__getListname());
+        listname.setText(cname_);
+        notes.setText(description_);
+        try {
+            groupnameselect.setModel(DatabaseObject.getObject(Context.getGroup(), groupsids_));
+        } catch (NodataFoundException ex) {
+            Log.Debug(this, ex.getMessage());
+        }
+
+        addedby.setText(User.getUsername(intaddedby_));
     }
 
     @Override
@@ -469,6 +485,9 @@ public class ProductListsPanel extends javax.swing.JPanel implements DataPanel, 
                     groupnameselect.setModel(MPComboBoxModelItem.toModel(DatabaseObject.getObject(Context.getGroup(), MPView.getUser().__getGroupsids())));
                     groupnameselect.setSelectedIndex(0);
                     itemtable.setModel(ProductlistSubItem.toModel(new ProductlistSubItem[]{
+                                ProductlistSubItem.getDefaultItem(), ProductlistSubItem.getDefaultItem(),
+                                ProductlistSubItem.getDefaultItem(), ProductlistSubItem.getDefaultItem(),
+                                ProductlistSubItem.getDefaultItem(), ProductlistSubItem.getDefaultItem(),
                                 ProductlistSubItem.getDefaultItem(), ProductlistSubItem.getDefaultItem(),
                                 ProductlistSubItem.getDefaultItem(), ProductlistSubItem.getDefaultItem(),
                                 ProductlistSubItem.getDefaultItem(), ProductlistSubItem.getDefaultItem()
@@ -498,19 +517,24 @@ public class ProductListsPanel extends javax.swing.JPanel implements DataPanel, 
     public void paste(DatabaseObject dbo) {
         if (dbo.getContext().equals(Context.getProducts())) {
             MPTableModel m = (MPTableModel) itemtable.getModel();
-            m.addRow(ProductlistSubItem.toRow((Product)dbo).getRowData(m.getValidRows(new int[]{4}).size()));
+            m.addRow(ProductlistSubItem.toRow((Product) dbo).getRowData(m.getValidRows(new int[]{4}).size()));
             itemtable.setModel(m);
             omodel = m;
-        } else if (dbo.getContext().equals(Context.getItems())) {
+        } else if (dbo.getContext().equals(Context.getProductlist())) {
             setDataOwner(dbo, true);
-
         } else {
             MPView.addMessage(Messages.NOT_POSSIBLE.toString() + Messages.ACTION_PASTE.toString());
         }
     }
 
-    @Override
+     @Override
     public void showSearchBar(boolean show) {
+        leftpane.removeAll();
+        if (show) {
+            leftpane.add(sp, BorderLayout.CENTER);
+            sp.search();
+        }
+        validate();
     }
 
     @Override
@@ -530,7 +554,7 @@ public class ProductListsPanel extends javax.swing.JPanel implements DataPanel, 
         if (itemtable.getCellEditor() != null) {
             itemtable.getCellEditor().stopCellEditing();
         }
-        ProductlistSubItem.saveModel((MPTableModel) itemtable.getModel(), listname_);
+        ProductlistSubItem.saveModel((MPTableModel) itemtable.getModel(), dataOwner.__getIDS());
     }
 
     @Override
@@ -545,7 +569,6 @@ public class ProductListsPanel extends javax.swing.JPanel implements DataPanel, 
         }
     }
 
- 
     public void actionBeforeCreate() {
     }
 

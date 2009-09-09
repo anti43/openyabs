@@ -20,6 +20,7 @@ import mpv5.db.objects.Item;
 import mpv5.db.objects.MailMessage;
 import mpv5.db.objects.Product;
 import mpv5.db.objects.ProductGroup;
+import mpv5.db.objects.ProductList;
 import mpv5.db.objects.ProductlistSubItem;
 import mpv5.db.objects.Reminder;
 import mpv5.db.objects.Revenue;
@@ -65,7 +66,8 @@ public class Context {
     public static String IDENTITY_PROPERTIES_TO_USERS = "userproperties";
     public static String IDENTITY_ACCOUNTS = "accounts";
     public static String IDENTITY_ITEMS_TO_ACCOUNTS = "itemstoaccounts";
-    public static String IDENTITY_PRODUCTSLIST = "productlistitems";
+    public static String IDENTITY_PRODUCTSLISTITEMS = "productlistitems";
+    public static String IDENTITY_PRODUCTSLIST = "productlists";
     public static String IDENTITY_FORMATS_T_USERS = "formatstousers";
     public static String IDENTITY_FILES_TO_ITEMS = "filestoitems";
     public static String IDENTITY_MAIL = "mails";
@@ -1321,7 +1323,7 @@ public class Context {
     public static Context getProductListItems() {
         Context c = new Context();
         c.setSubID(DEFAULT_SUBID);
-        c.setDbIdentity(IDENTITY_PRODUCTSLIST);
+        c.setDbIdentity(IDENTITY_PRODUCTSLISTITEMS);
         c.setIdentityClass(IDENTITY_ITEMSLIST_CLASS);
         c.setId(32);
 
@@ -1481,6 +1483,16 @@ public class Context {
         c.setSubID(DEFAULT_SUBID);
         c.setDbIdentity(IDENTITY_EXPENSE);
         c.setIdentityClass(Expense.class);
+        c.setId(48);
+
+        return c;
+    }
+
+    public static Context getProductlist() {
+        Context c = new Context();
+        c.setSubID(DEFAULT_SUBID);
+        c.setDbIdentity(IDENTITY_PRODUCTSLIST);
+        c.setIdentityClass(ProductList.class);
         c.setId(48);
 
         return c;

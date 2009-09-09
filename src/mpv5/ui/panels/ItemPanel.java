@@ -1121,6 +1121,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
 
         } else {
             showRequiredFields();
+            return false;
         }
 
         return true;
@@ -1413,10 +1414,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
 
                 new Job(ex, (Waiter) new PrintJob()).execute();
                 saveSubItems();
-
             }
-
-
         } else {
             Popup.notice(Messages.NO_TEMPLATE_LOADED);
         }

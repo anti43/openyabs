@@ -38,8 +38,6 @@ public class CellRendererWithMPComboBox extends JLabel implements TableCellRende
 
     private final Context c;
     private final JTable table;
-    private Vector<JLabel> labels = new Vector<JLabel>();
-    private DefaultTableCellRenderer rend = new DefaultTableCellRenderer();
     private JLabel label = new JLabel();
 
     /**
@@ -59,6 +57,16 @@ public class CellRendererWithMPComboBox extends JLabel implements TableCellRende
      * @param r 
      */
     public void setRendererTo(int column, MPCBSelectionChangeReceiver r) {
+        setRendererTo(column, r, true);
+    }
+
+    /**
+     * Set this renderer to the given column
+     * @param column
+     * @param r
+     * @param editable 
+     */
+    public void setRendererTo(int column, MPCBSelectionChangeReceiver r, boolean editable) {
         TableColumn col = table.getColumnModel().getColumn(column);
         LightMPComboBox xc = new LightMPComboBox(c, table);
         if (r != null) {
@@ -66,6 +74,7 @@ public class CellRendererWithMPComboBox extends JLabel implements TableCellRende
         }
         col.setCellEditor(new MPComboBoxEditor(xc));
         col.setCellRenderer(this);
+        xc.setEditable(editable);
     }
 
     @Override

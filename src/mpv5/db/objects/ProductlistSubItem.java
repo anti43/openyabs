@@ -46,7 +46,7 @@ public class ProductlistSubItem extends DatabaseObject {
      * @param dataOwner
      * @param model
      */
-    public static void saveModel(MPTableModel model, String listname) {
+    public static void saveModel(MPTableModel model, int listid) {
         List<Object[]> rowsl = model.getValidRows(new int[]{4});
         Log.Debug(ProductlistSubItem.class, "Rows found: " + rowsl.size());
         for (int i = 0; i < rowsl.size(); i++) {
@@ -67,7 +67,7 @@ public class ProductlistSubItem extends DatabaseObject {
                 Log.Debug(ProductlistSubItem.class, e.getMessage());
             }
             it.setCName(row[4].toString());
-            it.setListname(listname);
+            it.setProductlistsids(listid);
             it.setCountvalue(Double.valueOf(row[1].toString()));
             it.setDescription(row[4].toString());
             it.setExternalvalue(Double.valueOf(row[5].toString()));
@@ -93,7 +93,7 @@ public class ProductlistSubItem extends DatabaseObject {
      * @param t
      * @return
      */
-    public static Vector<String[]> convertModel(MPTableModel model, Template t, String listname) {
+    public static Vector<String[]> convertModel(MPTableModel model, Template t, int listid) {
         List<Object[]> rowsl = model.getValidRows(new int[]{4});
         Vector<String[]> rowsk = new Vector<String[]>();
         final List<ProductlistSubItem> its = new Vector<ProductlistSubItem>();
@@ -118,7 +118,7 @@ public class ProductlistSubItem extends DatabaseObject {
                 Log.Debug(ProductlistSubItem.class, e.getMessage());
             }
             it.setCName(row[4].toString());
-            it.setListname(listname);
+            it.setProductlistsids(listid);
             it.setCountvalue(Double.valueOf(row[1].toString()));
             it.setDescription(row[4].toString());
             it.setExternalvalue(Double.valueOf(row[5].toString()));
@@ -196,7 +196,7 @@ public class ProductlistSubItem extends DatabaseObject {
     public static ProductlistSubItem toRow(Product product) {
         return new ProductlistSubItem(product);
     }
-    private String listname = "";
+    private int productlistsids;
     private int originalproductsids;
     private double countvalue;
     private double quantityvalue;
@@ -210,7 +210,7 @@ public class ProductlistSubItem extends DatabaseObject {
     private double totaltaxvalue;
 
     public ProductlistSubItem() {
-        context.setDbIdentity(Context.IDENTITY_SUBITEMS);
+        context.setDbIdentity(Context.IDENTITY_PRODUCTSLISTITEMS);
         context.setIdentityClass(ProductlistSubItem.class);
     }
 
@@ -593,44 +593,29 @@ public class ProductlistSubItem extends DatabaseObject {
 
     /**
      * Get the items of this list
+     * @param listid
      * @param listname
      * @return
      * @throws NodataFoundException
      */
-    public static List<ProductlistSubItem> getList(String listname) throws NodataFoundException {
-        QueryCriteria c = new QueryCriteria("cname", listname);
+    public static List<ProductlistSubItem> getList(int listid) throws NodataFoundException {
+        QueryCriteria c = new QueryCriteria("productlistsids", listid);
         ArrayList<ProductlistSubItem> data = getObjects(new ProductlistSubItem(), c);
         return data;
     }
 
+
     /**
-     * Delete a whole list (all its entries)
-     * @param listname
+     * @return the productlistsids
      */
-    public static void deleteList(String listname) {
-        QueryCriteria c = new QueryCriteria("cname", listname);
-        try {
-            ArrayList<ProductlistSubItem> data = getObjects(new ProductlistSubItem(), c);
-            for (int i = 0; i < data.size(); i++) {
-                ProductlistSubItem productListItem = data.get(i);
-                productListItem.delete();
-            }
-        } catch (NodataFoundException ex) {
-            Log.Debug(ProductlistSubItem.class, ex.getMessage());
-        }
+    public int __getProductlistsids() {
+        return productlistsids;
     }
 
     /**
-     * @return the listname
+     * @param productlistsids the productlistsids to set
      */
-    public String __getListname() {
-        return listname;
-    }
-
-    /**
-     * @param listname the listname to set
-     */
-    public void setListname(String listname) {
-        this.listname = listname;
+    public void setProductlistsids(int productlistsids) {
+        this.productlistsids = productlistsids;
     }
 }

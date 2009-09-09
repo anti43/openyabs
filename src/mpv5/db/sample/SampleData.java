@@ -170,6 +170,7 @@ public class SampleData {
                             it.setGroupsids(group);
                             it.setExternalnetvalue(value * 1.3);
                             it.setInternalnetvalue(value);
+                            it.setProductgroupsids(1);
                             it.setInttype(Product.TYPE_PRODUCT);
                             it.setTaxids(2);
                             it.setManufacturersids(c.__getIDS());
@@ -190,6 +191,7 @@ public class SampleData {
                             it1.setCName("PS" + seed + "-19-" + k);
                             it1.setCnumber("PS" + seed + "-19-" + k);
                             it1.setDateadded(date);
+                            it1.setProductgroupsids(1);
                             it1.setDescription("sample product");
                             it1.setEan("1234567891011");
                             it1.setGroupsids(group);
