@@ -23,10 +23,13 @@ package mpv5.ui.panels;
 
 import java.awt.Color;
 import java.awt.Component;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JComponent;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableCellRenderer;
@@ -105,6 +108,15 @@ public class GeneralListPanel extends javax.swing.JPanel {
         public coloredObject(Color color, DatabaseObject object) {
             this.object = object;
             this.color = color;
+            ArrayList<Object[]> data = object.getValues2();
+            for (int i = 0; i < data.size(); i++) {
+                Object[] objects = data.get(i);
+                try {
+                    super.parse(objects[0].toString(), objects[1]);
+                } catch (Exception ex) {
+                    Log.Debug(ex);
+                }
+            }
         }
 
         /**
@@ -151,6 +163,7 @@ public class GeneralListPanel extends javax.swing.JPanel {
                 databaseObject = new coloredObject(Color.white, (DatabaseObject) list.get(i));
             }
             if (databaseObject != null) {
+              
                 data[i][0] = databaseObject;
                 data[i][1] = User.getUsername(databaseObject.__getIntaddedby());
                 data[i][2] = databaseObject.__getDateadded();
@@ -336,8 +349,9 @@ public class GeneralListPanel extends javax.swing.JPanel {
     private void jTable1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable1MouseClicked
         if (evt.getClickCount() > 1) {
             try {
-                MPView.identifierView.addTab((DatabaseObject) jTable1.getModel().getValueAt(jTable1.getSelectedRow(), 0));
+                MPView.identifierView.addTab(((coloredObject) jTable1.getModel().getValueAt(jTable1.getSelectedRow(), 0)).getObject());
             } catch (Exception e) {
+                Log.Debug(e);
             }
         }
     }//GEN-LAST:event_jTable1MouseClicked

@@ -21,6 +21,7 @@ import java.awt.Component;
 import javax.swing.JTextField;
 import javax.swing.SwingWorker;
 import mpv5.ui.beans.LabeledTextField;
+import sun.java2d.pipe.ValidatePipe;
 
 /**
  *
@@ -54,11 +55,7 @@ public class TextFieldUtils {
      * @param color
      */
     public static void blink(Component component, Color color) {
-        if (component instanceof LabeledTextField) {
-            new blinker((LabeledTextField)component, 2, color).execute();
-        } else {
-            new blinker(component, 2, color).execute();
-        }
+        new blinker(component, 2, color).execute();
     }
 
     public static void blinker(JTextField jTextField1, Color color) {
@@ -81,9 +78,11 @@ public class TextFieldUtils {
         protected Void doInBackground() throws Exception {
             for (int i = 0; i < count; i++) {
                 fi.setBackground(color);
+                fi.validate();
                 Thread.sleep(550);
                 fi.setBackground(Color.LIGHT_GRAY);
                 Thread.sleep(550);
+                fi.validate();
             }
             return null;
         }

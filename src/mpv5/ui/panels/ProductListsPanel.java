@@ -172,7 +172,7 @@ public class ProductListsPanel extends javax.swing.JPanel implements DataPanel, 
 
     @Override
     public void showRequiredFields() {
-        TextFieldUtils.blink(listname, Color.RED);
+        TextFieldUtils.blinkerRed(listname);
     }
 
     /** This method is called from within the constructor to
@@ -456,14 +456,19 @@ public class ProductListsPanel extends javax.swing.JPanel implements DataPanel, 
     @Override
     public boolean collectData() {
         cname_ = listname.getText();
-        description_ = notes.getText();
-        if (groupnameselect.getSelectedItem() != null) {
-            groupsids_ = Integer.valueOf(groupnameselect.getSelectedItem().getId());
-            Log.Debug(this, groupnameselect.getSelectedItem().getId());
+        if (cname_.length() > 0) {
+            description_ = notes.getText();
+            if (groupnameselect.getSelectedItem() != null) {
+                groupsids_ = Integer.valueOf(groupnameselect.getSelectedItem().getId());
+                Log.Debug(this, groupnameselect.getSelectedItem().getId());
+            } else {
+                groupsids_ = 1;
+            }
+            return true;
         } else {
-            groupsids_ = 1;
+            showRequiredFields();
+            return false;
         }
-        return true;
     }
 
     @Override
