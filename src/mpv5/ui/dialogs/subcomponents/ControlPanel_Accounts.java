@@ -130,7 +130,7 @@ public class ControlPanel_Accounts extends javax.swing.JPanel implements Control
         jButton2 = new javax.swing.JButton();
         jButton1 = new javax.swing.JButton();
 
-        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("mpv5/resources/languages/Panels"); // NOI18N
+        java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle();
         setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("ControlPanel_Accounts.border.title"))); // NOI18N
         setName("Form"); // NOI18N
         setLayout(new java.awt.BorderLayout());

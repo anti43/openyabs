@@ -91,7 +91,7 @@ public class Wizard extends javax.swing.JFrame implements WizardMaster {
         message = new javax.swing.JTextPane();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("mpv5/resources/languages/Panels"); // NOI18N
+        java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle();
         setTitle(bundle.getString("Wizard.title")); // NOI18N
         setBackground(new java.awt.Color(255, 255, 255));
         setName("Form"); // NOI18N

@@ -139,7 +139,7 @@ public class CompanyInfo extends javax.swing.JDialog {
         nameField2.setName("comp_business"); // NOI18N
 
         jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.TRAILING);
-        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("mpv5/resources/languages/Panels"); // NOI18N
+        java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle();
         jLabel1.setText(bundle.getString("TaxAddressDialog.compname")); // NOI18N
 
         nameField1.setToolTipText("Name des Unternehmers/Firma");

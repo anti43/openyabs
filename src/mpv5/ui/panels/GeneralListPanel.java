@@ -254,7 +254,7 @@ public class GeneralListPanel extends javax.swing.JPanel {
         jButton1 = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
 
-        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("mpv5/resources/languages/Panels"); // NOI18N
+        java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle();
         setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("GeneralListPanel.border.title"))); // NOI18N
         setName("Form"); // NOI18N
 

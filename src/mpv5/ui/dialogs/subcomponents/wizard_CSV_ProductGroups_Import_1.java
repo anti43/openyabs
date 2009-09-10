@@ -168,7 +168,7 @@ public class wizard_CSV_ProductGroups_Import_1 extends javax.swing.JPanel implem
         setLayout(new java.awt.BorderLayout());
 
         jPanel1.setBackground(new java.awt.Color(255, 255, 255));
-        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("mpv5/resources/languages/Panels"); // NOI18N
+        java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle();
         jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("wizard_CSV_ProductGroups_Import_1.jPanel1.border.title"))); // NOI18N
         jPanel1.setName("jPanel1"); // NOI18N
 

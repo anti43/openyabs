@@ -74,7 +74,7 @@ public class ScheduleDayEvents extends javax.swing.JFrame {
         jButton1 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("mpv5/resources/languages/Panels"); // NOI18N
+        java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle();
         setTitle(bundle.getString("ScheduleDayEvents.title")); // NOI18N
         setName("Form"); // NOI18N
 
