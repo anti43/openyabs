@@ -21,6 +21,7 @@ import javax.swing.JComponent;
 import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
 import mpv5.ui.panels.ProductListsPanel;
+import mpv5.utils.images.MPIcon;
 
 /**
  *
@@ -41,7 +42,7 @@ public class ProductList extends DatabaseObject {
 
     @Override
     public mpv5.utils.images.MPIcon getIcon() {
-        return null;
+       return new MPIcon("/mpv5/resources/images/22/playlist.png");
     }
 
     /**

@@ -45,7 +45,7 @@ import mpv5.utils.arrays.ArrayUtilities;
 import mpv5.utils.models.MPComboBoxModelItem;
 import mpv5.utils.models.MPTableModel;
 import mpv5.utils.tables.TableCalculator;
-import mpv5.utils.renderer.CellRendererWithMPComboBox;
+import mpv5.utils.renderer.CellEditorWithMPComboBox;
 import mpv5.utils.renderer.TableCellRendererForDezimal;
 import mpv5.utils.tables.TableFormat;
 import mpv5.utils.ui.TextFieldUtils;
@@ -64,8 +64,9 @@ public class ProductListsPanel extends javax.swing.JPanel implements DataPanel, 
     private TableCalculator netCalculator2;
     private final SearchPanel sp;
 
-    /** Creates new form ContactPanel
-     * @param type
+
+    /**
+     *
      */
     public ProductListsPanel() {
         initComponents();
@@ -73,6 +74,9 @@ public class ProductListsPanel extends javax.swing.JPanel implements DataPanel, 
         sp = new SearchPanel(Context.getProductlist(), this);
         sp.setVisible(true);
         tb = new mpv5.ui.toolbars.DataPanelTB(this);
+        tb.disableButton(1);
+        tb.disableButton(8);
+        tb.disableButton(9);
         toolbarpane.add(tb, BorderLayout.CENTER);
         dataOwner = new ProductList();
 
@@ -293,7 +297,7 @@ public class ProductListsPanel extends javax.swing.JPanel implements DataPanel, 
         ));
         itemtable.setCellSelectionEnabled(true);
         itemtable.setName("itemtable"); // NOI18N
-        itemtable.setRowHeight(20);
+        itemtable.setRowHeight(18);
         itemtable.setSurrendersFocusOnKeystroke(true);
         itemtable.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -601,8 +605,8 @@ public class ProductListsPanel extends javax.swing.JPanel implements DataPanel, 
         TableCellRendererForDezimal tc = new TableCellRendererForDezimal(itemtable, Color.LIGHT_GRAY);
         tc.setRendererTo(7);
 
-        CellRendererWithMPComboBox r = new CellRendererWithMPComboBox(Context.getProducts(), itemtable);
-        r.setRendererTo(4, this);
+        CellEditorWithMPComboBox r = new CellEditorWithMPComboBox(Context.getProducts(), itemtable);
+        r.setEditorTo(4, this, false);
         itemMultiplier = new TableCalculator(itemtable, new int[]{2, 5, 6}, new int[]{7}, new int[]{6}, TableCalculator.ACTION_MULTIPLY, new int[]{7});
         ((MPTableModel) itemtable.getModel()).addCalculator(itemMultiplier);
         itemMultiplier.addLabel(value, 7);

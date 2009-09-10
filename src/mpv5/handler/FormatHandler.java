@@ -196,7 +196,7 @@ public class FormatHandler {
      * Contains all formattable Contexts
      */
     public static List<Context> FORMATTABLE_CONTEXTS = new Vector<Context>(Arrays.asList(new Context[]{
-                Context.getContact(), Context.getProducts(), Context.getItems()
+                Context.getContact(), Context.getProducts(), Context.getItems(), Context.getExpenses(), Context.getRevenues()
             }));
 
     /**
@@ -220,7 +220,7 @@ public class FormatHandler {
                     return 1;
                 }
             } else {
-                throw new UnsupportedOperationException("FormatHandler#getNextNumber is not defined for " + forThis);
+                throw new UnsupportedOperationException("FormatHandler#getNextNumber is not defined for " + forThis.getContext());
             }
         } else {
             int tmp = startCount.intValue();

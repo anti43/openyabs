@@ -21,7 +21,9 @@
  */
 package mpv5.ui.toolbars;
 
+import java.awt.Component;
 import java.awt.event.ActionListener;
+import javax.swing.JButton;
 import mpv5.db.common.DatabaseObject;
 import mpv5.globals.LocalSettings;
 import mpv5.globals.Messages;
@@ -41,11 +43,13 @@ public class DataPanelTB extends javax.swing.JPanel {
     private static final long serialVersionUID = -8215471082724735228L;
     private DataPanel parents;
     private final ActionListener action1 = new java.awt.event.ActionListener() {
+
         public void actionPerformed(java.awt.event.ActionEvent evt) {
             favAdd(evt);
         }
     };
     private final ActionListener action2 = new java.awt.event.ActionListener() {
+
         public void actionPerformed(java.awt.event.ActionEvent evt) {
             favRemover(evt);
         }
@@ -59,18 +63,22 @@ public class DataPanelTB extends javax.swing.JPanel {
         initComponents();
         parents = panel;
         parents.showSearchBar(!MPView.getUser().getProperties().getProperty(this, "jToggleButton1"));
-        jToggleButton1.setSelected(MPView.getUser().getProperties().getProperty(this, "jToggleButton1"));
-        jButton21.setEnabled(!DatabaseObject.isAutoLockEnabled());
+        but1.setSelected(MPView.getUser().getProperties().getProperty(this, "jToggleButton1"));
+        but6.setEnabled(!DatabaseObject.isAutoLockEnabled());
     }
 
     /**
-     *
-     * @param on
+     * Disable the button with the given number (from left to right)
+     * @param button
      */
-    public void setMinimalFunctionality(boolean on) {
-        jButton21.setEnabled(!on);
-        jButton23.setEnabled(!on);
-        jButton24.setEnabled(!on);
+    public void disableButton(int button) {
+        Component[] c = commonActionsToolbar.getComponents();
+        for (int i = 0; i < c.length; i++) {
+            Component component = c[i];
+            if (component.getName().equals("but" + button)) {
+                (component).setEnabled(false);
+            }
+        }
     }
 
     /**
@@ -78,9 +86,9 @@ public class DataPanelTB extends javax.swing.JPanel {
      * @param on
      */
     public void setEditable(boolean on) {
-        jButton25.setEnabled(on);
-        jButton26.setEnabled(on);
-        jButton21.setEnabled(on);
+        but3.setEnabled(on);
+        but5.setEnabled(on);
+        but6.setEnabled(on);
     }
 
     /**
@@ -89,21 +97,21 @@ public class DataPanelTB extends javax.swing.JPanel {
      */
     public void setFavourite(boolean favourite) {
         if (!favourite) {
-            jButton24.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/bookmark_add.png"))); // NOI18N
-            jButton24.setFocusable(false);
-            jButton24.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-            jButton24.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-            jButton24.removeActionListener(action2);
-            jButton24.removeActionListener(action1);
-            jButton24.addActionListener(action1);
+            but7.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/bookmark_add.png"))); // NOI18N
+            but7.setFocusable(false);
+            but7.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+            but7.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+            but7.removeActionListener(action2);
+            but7.removeActionListener(action1);
+            but7.addActionListener(action1);
         } else {
-            jButton24.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/bookmark.png"))); // NOI18N
-            jButton24.setFocusable(false);
-            jButton24.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-            jButton24.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-            jButton24.removeActionListener(action1);
-            jButton24.removeActionListener(action2);
-            jButton24.addActionListener(action2);
+            but7.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/bookmark.png"))); // NOI18N
+            but7.setFocusable(false);
+            but7.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+            but7.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+            but7.removeActionListener(action1);
+            but7.removeActionListener(action2);
+            but7.addActionListener(action2);
         }
         this.validate();
     }
@@ -118,159 +126,179 @@ public class DataPanelTB extends javax.swing.JPanel {
     private void initComponents() {
 
         commonActionsToolbar = new javax.swing.JToolBar();
-        jToggleButton1 = new javax.swing.JToggleButton();
+        but1 = new javax.swing.JToggleButton();
         jSeparator4 = new javax.swing.JToolBar.Separator();
-        jButton22 = new javax.swing.JButton();
-        jButton25 = new javax.swing.JButton();
-        jButton4 = new javax.swing.JButton();
+        but2 = new javax.swing.JButton();
+        but3 = new javax.swing.JButton();
+        but4 = new javax.swing.JButton();
         jSeparator1 = new javax.swing.JToolBar.Separator();
-        jButton26 = new javax.swing.JButton();
+        but5 = new javax.swing.JButton();
         jSeparator3 = new javax.swing.JToolBar.Separator();
-        jButton21 = new javax.swing.JButton();
-        jButton24 = new javax.swing.JButton();
+        but6 = new javax.swing.JButton();
+        but7 = new javax.swing.JButton();
         jSeparator2 = new javax.swing.JToolBar.Separator();
-        jButton23 = new javax.swing.JButton();
-        jButton27 = new javax.swing.JButton();
+        but8 = new javax.swing.JButton();
+        but9 = new javax.swing.JButton();
+
+        setName("Form"); // NOI18N
 
         commonActionsToolbar.setFloatable(false);
         commonActionsToolbar.setRollover(true);
+        commonActionsToolbar.setName("commonActionsToolbar"); // NOI18N
         commonActionsToolbar.setPreferredSize(new java.awt.Dimension(342, 41));
 
-        jToggleButton1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/viewmag.png"))); // NOI18N
+        but1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/viewmag.png"))); // NOI18N
         java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("mpv5/resources/languages/Panels"); // NOI18N
-        jToggleButton1.setText(bundle.getString("DataPanelTB.jToggleButton1.text")); // NOI18N
-        jToggleButton1.setToolTipText(bundle.getString("DataPanelTB.jToggleButton1.toolTipText")); // NOI18N
-        jToggleButton1.setContentAreaFilled(false);
-        jToggleButton1.setFocusable(false);
-        jToggleButton1.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        jToggleButton1.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        jToggleButton1.addItemListener(new java.awt.event.ItemListener() {
+        but1.setText(bundle.getString("DataPanelTB.but1.text")); // NOI18N
+        but1.setToolTipText(bundle.getString("DataPanelTB.but1.toolTipText")); // NOI18N
+        but1.setContentAreaFilled(false);
+        but1.setFocusable(false);
+        but1.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        but1.setName("but1"); // NOI18N
+        but1.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        but1.addItemListener(new java.awt.event.ItemListener() {
             public void itemStateChanged(java.awt.event.ItemEvent evt) {
-                jToggleButton1ItemStateChanged(evt);
+                but1ItemStateChanged(evt);
             }
         });
-        jToggleButton1.addActionListener(new java.awt.event.ActionListener() {
+        but1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jToggleButton1ActionPerformed(evt);
+                but1ActionPerformed(evt);
             }
         });
-        commonActionsToolbar.add(jToggleButton1);
+        commonActionsToolbar.add(but1);
+
+        jSeparator4.setName("jSeparator4"); // NOI18N
         commonActionsToolbar.add(jSeparator4);
 
-        jButton22.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/revert.png"))); // NOI18N
-        jButton22.setText(bundle.getString("MPV5View.jButton22.text")); // NOI18N
-        jButton22.setToolTipText(bundle.getString("MPV5View.jButton22.toolTipText")); // NOI18N
-        jButton22.setContentAreaFilled(false);
-        jButton22.setFocusable(false);
-        jButton22.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        jButton22.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        jButton22.addActionListener(new java.awt.event.ActionListener() {
+        but2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/revert.png"))); // NOI18N
+        but2.setText(bundle.getString("MPV5View.jButton22.text")); // NOI18N
+        but2.setToolTipText(bundle.getString("MPV5View.jButton22.toolTipText")); // NOI18N
+        but2.setContentAreaFilled(false);
+        but2.setFocusable(false);
+        but2.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        but2.setName("but2"); // NOI18N
+        but2.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        but2.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton22ActionPerformed(evt);
+                but2ActionPerformed(evt);
             }
         });
-        commonActionsToolbar.add(jButton22);
+        commonActionsToolbar.add(but2);
 
-        jButton25.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/3floppy_unmount.png"))); // NOI18N
-        jButton25.setText(bundle.getString("MPV5View.jButton25.text")); // NOI18N
-        jButton25.setToolTipText(bundle.getString("MPV5View.jButton25.toolTipText")); // NOI18N
-        jButton25.setContentAreaFilled(false);
-        jButton25.setFocusable(false);
-        jButton25.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        jButton25.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        jButton25.addActionListener(new java.awt.event.ActionListener() {
+        but3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/3floppy_unmount.png"))); // NOI18N
+        but3.setText(bundle.getString("MPV5View.jButton25.text")); // NOI18N
+        but3.setToolTipText(bundle.getString("MPV5View.jButton25.toolTipText")); // NOI18N
+        but3.setContentAreaFilled(false);
+        but3.setFocusable(false);
+        but3.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        but3.setName("but3"); // NOI18N
+        but3.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        but3.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton25ActionPerformed(evt);
+                but3ActionPerformed(evt);
             }
         });
-        commonActionsToolbar.add(jButton25);
+        commonActionsToolbar.add(but3);
 
-        jButton4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/filenew.png"))); // NOI18N
-        jButton4.setText(bundle.getString("MPV5View.jButton4.text")); // NOI18N
-        jButton4.setToolTipText(bundle.getString("MPV5View.jButton4.toolTipText")); // NOI18N
-        jButton4.setContentAreaFilled(false);
-        jButton4.setFocusable(false);
-        jButton4.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        jButton4.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        jButton4.addActionListener(new java.awt.event.ActionListener() {
+        but4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/filenew.png"))); // NOI18N
+        but4.setText(bundle.getString("MPV5View.jButton4.text")); // NOI18N
+        but4.setToolTipText(bundle.getString("MPV5View.jButton4.toolTipText")); // NOI18N
+        but4.setContentAreaFilled(false);
+        but4.setFocusable(false);
+        but4.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        but4.setName("but4"); // NOI18N
+        but4.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        but4.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton4ActionPerformed(evt);
+                but4ActionPerformed(evt);
             }
         });
-        commonActionsToolbar.add(jButton4);
+        commonActionsToolbar.add(but4);
+
+        jSeparator1.setName("jSeparator1"); // NOI18N
         commonActionsToolbar.add(jSeparator1);
 
-        jButton26.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/edittrash.png"))); // NOI18N
-        jButton26.setText(bundle.getString("MPV5View.jButton26.text")); // NOI18N
-        jButton26.setToolTipText(bundle.getString("MPV5View.jButton26.toolTipText")); // NOI18N
-        jButton26.setContentAreaFilled(false);
-        jButton26.setFocusable(false);
-        jButton26.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        jButton26.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        jButton26.addActionListener(new java.awt.event.ActionListener() {
+        but5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/edittrash.png"))); // NOI18N
+        but5.setText(bundle.getString("MPV5View.jButton26.text")); // NOI18N
+        but5.setToolTipText(bundle.getString("MPV5View.jButton26.toolTipText")); // NOI18N
+        but5.setContentAreaFilled(false);
+        but5.setFocusable(false);
+        but5.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        but5.setName("but5"); // NOI18N
+        but5.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        but5.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton26ActionPerformed(evt);
+                but5ActionPerformed(evt);
             }
         });
-        commonActionsToolbar.add(jButton26);
+        commonActionsToolbar.add(but5);
+
+        jSeparator3.setName("jSeparator3"); // NOI18N
         commonActionsToolbar.add(jSeparator3);
 
-        jButton21.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/password.png"))); // NOI18N
-        jButton21.setText(bundle.getString("MPV5View.jButton21.text")); // NOI18N
-        jButton21.setToolTipText(bundle.getString("MPV5View.jButton21.toolTipText")); // NOI18N
-        jButton21.setContentAreaFilled(false);
-        jButton21.setFocusable(false);
-        jButton21.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        jButton21.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        jButton21.addActionListener(new java.awt.event.ActionListener() {
+        but6.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/password.png"))); // NOI18N
+        but6.setText(bundle.getString("MPV5View.jButton21.text")); // NOI18N
+        but6.setToolTipText(bundle.getString("MPV5View.jButton21.toolTipText")); // NOI18N
+        but6.setContentAreaFilled(false);
+        but6.setFocusable(false);
+        but6.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        but6.setName("but6"); // NOI18N
+        but6.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        but6.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton21ActionPerformed(evt);
+                but6ActionPerformed(evt);
             }
         });
-        commonActionsToolbar.add(jButton21);
+        commonActionsToolbar.add(but6);
 
-        jButton24.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/bookmark_add.png"))); // NOI18N
-        jButton24.setText(bundle.getString("MPV5View.jButton24.text")); // NOI18N
-        jButton24.setToolTipText(bundle.getString("MPV5View.jButton24.toolTipText")); // NOI18N
-        jButton24.setContentAreaFilled(false);
-        jButton24.setFocusable(false);
-        jButton24.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        jButton24.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        jButton24.addActionListener(new java.awt.event.ActionListener() {
+        but7.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/bookmark_add.png"))); // NOI18N
+        but7.setText(bundle.getString("MPV5View.jButton24.text")); // NOI18N
+        but7.setToolTipText(bundle.getString("MPV5View.jButton24.toolTipText")); // NOI18N
+        but7.setContentAreaFilled(false);
+        but7.setFocusable(false);
+        but7.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        but7.setName("but7"); // NOI18N
+        but7.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        but7.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton24ActionPerformed(evt);
+                but7ActionPerformed(evt);
             }
         });
-        commonActionsToolbar.add(jButton24);
+        commonActionsToolbar.add(but7);
+
+        jSeparator2.setName("jSeparator2"); // NOI18N
         commonActionsToolbar.add(jSeparator2);
 
-        jButton23.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/printer.png"))); // NOI18N
-        jButton23.setText(bundle.getString("MPV5View.jButton23.text")); // NOI18N
-        jButton23.setToolTipText(bundle.getString("MPV5View.jButton23.toolTipText")); // NOI18N
-        jButton23.setContentAreaFilled(false);
-        jButton23.setFocusable(false);
-        jButton23.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        jButton23.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        jButton23.addActionListener(new java.awt.event.ActionListener() {
+        but8.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/printer.png"))); // NOI18N
+        but8.setText(bundle.getString("MPV5View.jButton23.text")); // NOI18N
+        but8.setToolTipText(bundle.getString("MPV5View.jButton23.toolTipText")); // NOI18N
+        but8.setContentAreaFilled(false);
+        but8.setFocusable(false);
+        but8.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        but8.setName("but8"); // NOI18N
+        but8.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        but8.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton23ActionPerformed(evt);
+                but8ActionPerformed(evt);
             }
         });
-        commonActionsToolbar.add(jButton23);
+        commonActionsToolbar.add(but8);
 
-        jButton27.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/mail_reply.png"))); // NOI18N
-        jButton27.setText(bundle.getString("DataPanelTB.jButton27.text")); // NOI18N
-        jButton27.setToolTipText(bundle.getString("DataPanelTB.jButton27.toolTipText")); // NOI18N
-        jButton27.setContentAreaFilled(false);
-        jButton27.setFocusable(false);
-        jButton27.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        jButton27.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        jButton27.addActionListener(new java.awt.event.ActionListener() {
+        but9.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/mail_reply.png"))); // NOI18N
+        but9.setText(bundle.getString("DataPanelTB.but9.text")); // NOI18N
+        but9.setToolTipText(bundle.getString("DataPanelTB.but9.toolTipText")); // NOI18N
+        but9.setContentAreaFilled(false);
+        but9.setFocusable(false);
+        but9.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        but9.setName("but9"); // NOI18N
+        but9.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        but9.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton27ActionPerformed(evt);
+                but9ActionPerformed(evt);
             }
         });
-        commonActionsToolbar.add(jButton27);
+        commonActionsToolbar.add(but9);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -284,21 +312,21 @@ public class DataPanelTB extends javax.swing.JPanel {
         );
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jButton22ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton22ActionPerformed
+    private void but2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_but2ActionPerformed
         DatabaseObject dato = parents.getDataOwner();
 
         if (dato.isExisting()) {
             dato.getPanelData((parents));
             dato.reset();
-            parents.setDataOwner(dato,true);
+            parents.setDataOwner(dato, true);
         }
-}//GEN-LAST:event_jButton22ActionPerformed
+}//GEN-LAST:event_but2ActionPerformed
 
-    private void jButton25ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton25ActionPerformed
+    private void but3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_but3ActionPerformed
         DatabaseObject dato = parents.getDataOwner();
 
         if (dato.getPanelData(parents) && dato.save()) {
-             try {
+            try {
                 parents.actionAfterSave();
                 parents.setDataOwner(dato, true);
             } catch (Exception e) {
@@ -307,9 +335,9 @@ public class DataPanelTB extends javax.swing.JPanel {
         } else {
             parents.showRequiredFields();
         }
-    }//GEN-LAST:event_jButton25ActionPerformed
+    }//GEN-LAST:event_but3ActionPerformed
 
-    private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
+    private void but4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_but4ActionPerformed
         DatabaseObject dato = parents.getDataOwner();
 
         boolean d = dato.getPanelData(parents);
@@ -326,9 +354,9 @@ public class DataPanelTB extends javax.swing.JPanel {
         } else {
             parents.showRequiredFields();
         }
-}//GEN-LAST:event_jButton4ActionPerformed
+}//GEN-LAST:event_but4ActionPerformed
 
-    private void jButton21ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton21ActionPerformed
+    private void but6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_but6ActionPerformed
         DatabaseObject dato = parents.getDataOwner();
         if (MPView.getUser().isDefault()) {
             Popup.notice(Messages.DEFAULT_USER);
@@ -341,62 +369,61 @@ public class DataPanelTB extends javax.swing.JPanel {
         } else {
             Popup.notice(Messages.NOT_SAVED_YET);
         }
-}//GEN-LAST:event_jButton21ActionPerformed
+}//GEN-LAST:event_but6ActionPerformed
 
-    private void jButton23ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton23ActionPerformed
+    private void but8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_but8ActionPerformed
 
         DatabaseObject dato = parents.getDataOwner();
         if (dato.isExisting()) {
             parents.print();
         }
-}//GEN-LAST:event_jButton23ActionPerformed
+}//GEN-LAST:event_but8ActionPerformed
 
-    private void jButton26ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton26ActionPerformed
+    private void but5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_but5ActionPerformed
 
         DatabaseObject dato = parents.getDataOwner();
         if (dato.isExisting()) {
             dato.getPanelData(parents);
             dato.delete();
             parents.refresh();
-            parents.setDataOwner(dato,true);
+            parents.setDataOwner(dato, true);
         }
-    }//GEN-LAST:event_jButton26ActionPerformed
+    }//GEN-LAST:event_but5ActionPerformed
 
-    private void jButton24ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton24ActionPerformed
-    }//GEN-LAST:event_jButton24ActionPerformed
+    private void but7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_but7ActionPerformed
+    }//GEN-LAST:event_but7ActionPerformed
 
-    private void jToggleButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jToggleButton1ActionPerformed
+    private void but1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_but1ActionPerformed
 
-        parents.showSearchBar(!jToggleButton1.isSelected());
-    }//GEN-LAST:event_jToggleButton1ActionPerformed
+        parents.showSearchBar(!but1.isSelected());
+    }//GEN-LAST:event_but1ActionPerformed
 
-    private void jToggleButton1ItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_jToggleButton1ItemStateChanged
-        MPView.getUser().getProperties().changeProperty(this, "jToggleButton1", jToggleButton1.isSelected());
-    }//GEN-LAST:event_jToggleButton1ItemStateChanged
+    private void but1ItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_but1ItemStateChanged
+        MPView.getUser().getProperties().changeProperty(this, "jToggleButton1", but1.isSelected());
+    }//GEN-LAST:event_but1ItemStateChanged
 
-    private void jButton27ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton27ActionPerformed
+    private void but9ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_but9ActionPerformed
 
-       DatabaseObject dato = parents.getDataOwner();
+        DatabaseObject dato = parents.getDataOwner();
         if (dato.isExisting()) {
-          parents.mail();
+            parents.mail();
         }
-    }//GEN-LAST:event_jButton27ActionPerformed
-
+    }//GEN-LAST:event_but9ActionPerformed
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JToggleButton but1;
+    private javax.swing.JButton but2;
+    private javax.swing.JButton but3;
+    private javax.swing.JButton but4;
+    private javax.swing.JButton but5;
+    private javax.swing.JButton but6;
+    private javax.swing.JButton but7;
+    private javax.swing.JButton but8;
+    private javax.swing.JButton but9;
     private javax.swing.JToolBar commonActionsToolbar;
-    private javax.swing.JButton jButton21;
-    private javax.swing.JButton jButton22;
-    private javax.swing.JButton jButton23;
-    private javax.swing.JButton jButton24;
-    private javax.swing.JButton jButton25;
-    private javax.swing.JButton jButton26;
-    private javax.swing.JButton jButton27;
-    private javax.swing.JButton jButton4;
     private javax.swing.JToolBar.Separator jSeparator1;
     private javax.swing.JToolBar.Separator jSeparator2;
     private javax.swing.JToolBar.Separator jSeparator3;
     private javax.swing.JToolBar.Separator jSeparator4;
-    private javax.swing.JToggleButton jToggleButton1;
     // End of variables declaration//GEN-END:variables
 
     private void favRemover(java.awt.event.ActionEvent evt) {
@@ -407,7 +434,7 @@ public class DataPanelTB extends javax.swing.JPanel {
             if (dato.save()) {
                 Favourite.removeFavourite(dato);
                 MPView.identifierView.refreshFavouritesMenu();
-                parents.setDataOwner(dato,true);
+                parents.setDataOwner(dato, true);
             } else {
                 parents.showRequiredFields();
             }
@@ -425,7 +452,7 @@ public class DataPanelTB extends javax.swing.JPanel {
                     fav.save();
                     MPView.identifierView.refreshFavouritesMenu();
                     MPView.addMessage(Messages.ADDED_TO_FAVOURITES + dato.__getCName());
-                    parents.setDataOwner(dato,true);
+                    parents.setDataOwner(dato, true);
                 } else {
                     parents.showRequiredFields();
                 }

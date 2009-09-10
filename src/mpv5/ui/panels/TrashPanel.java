@@ -102,7 +102,7 @@ public class TrashPanel extends javax.swing.JPanel {
 
         jPopupMenu1.setName("jPopupMenu1"); // NOI18N
 
-        java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle(); // NOI18N
+        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("mpv5/resources/languages/Panels"); // NOI18N
         setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("TrashPanel.border.title"))); // NOI18N
         setName("Form"); // NOI18N
 
@@ -120,7 +120,6 @@ public class TrashPanel extends javax.swing.JPanel {
 
             }
         ));
-        jTable1.setCellSelectionEnabled(true);
         jTable1.setDragEnabled(true);
         jTable1.setFillsViewportHeight(true);
         jTable1.setName("jTable1"); // NOI18N
@@ -140,7 +139,7 @@ public class TrashPanel extends javax.swing.JPanel {
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 287, Short.MAX_VALUE)
+            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 288, Short.MAX_VALUE)
         );
     }// </editor-fold>//GEN-END:initComponents
 

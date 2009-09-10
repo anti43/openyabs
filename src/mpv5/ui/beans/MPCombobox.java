@@ -84,6 +84,7 @@ public class MPCombobox extends javax.swing.JPanel {
 //                    }
 //                }
             }
+
             @Override
             public void keyReleased(KeyEvent e) {
             }
@@ -104,7 +105,7 @@ public class MPCombobox extends javax.swing.JPanel {
                     }
                     search();
 //                    if (table != null) {
-                        jComboBox1.showPopup();
+                    jComboBox1.showPopup();
 //                    }
                 }
             }
@@ -149,7 +150,7 @@ public class MPCombobox extends javax.swing.JPanel {
      * Triggers the search functionality
      */
     public void search() {
-       search(false);
+        search(false);
     }
 
     /**
@@ -167,10 +168,12 @@ public class MPCombobox extends javax.swing.JPanel {
                 Object[][] data = new DatabaseSearch(context, 50).getValuesFor("ids, cname", "cname", jComboBox1.getSelectedItem().toString(), true);
                 jComboBox1.setModel(MPComboBoxModelItem.toModel(MPComboBoxModelItem.toItems(data, true, true)));
                 if (data.length > 1) {
-                   if(table!=null) {
+                    if (table != null) {
                         table.editCellAt(table.getSelectedRow(), 4);
                     }
-                    if(!hidePopup)jComboBox1.showPopup();
+                    if (!hidePopup) {
+                        jComboBox1.showPopup();
+                    }
                 }
             }
         };
@@ -238,6 +241,14 @@ public class MPCombobox extends javax.swing.JPanel {
     }
 
     /**
+     * The textual representation of the seleceted item
+     * @return
+     */
+    public String getSelectedValue() {
+        return String.valueOf(jComboBox1.getSelectedItem());
+    }
+
+    /**
      * Set the model. Should contain only {@link MPComboBoxModelItem}s
      * @param model
      */
@@ -288,7 +299,7 @@ public class MPCombobox extends javax.swing.JPanel {
      * @param ID
      */
     public void setSelectedItem(Object ID) {
-            jComboBox1.setSelectedIndex(MPComboBoxModelItem.getItemID(ID, jComboBox1.getModel()));  
+        jComboBox1.setSelectedIndex(MPComboBoxModelItem.getItemID(ID, jComboBox1.getModel()));
     }
 
     /**
@@ -400,5 +411,10 @@ public class MPCombobox extends javax.swing.JPanel {
         setModel(new Vector<DatabaseObject>());
     }
 
- 
+    /**
+     * Trigger a search on the combo box
+     */
+    public void triggerSearch() {
+        search(true);
+    }
 }

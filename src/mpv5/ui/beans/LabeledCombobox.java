@@ -214,10 +214,21 @@ public class LabeledCombobox extends javax.swing.JPanel {
     // End of variables declaration//GEN-END:variables
 
     /**
-     * @return the _text
+     * Gives a {@link MPComboBoxModelItem} or null if nothing is selected
+     * @return the combobox item
+     * @throws ClassCastException
      */
-    public MPComboBoxModelItem getValue() {
-        return (MPComboBoxModelItem) mPCombobox1.getSelectedItem();
+    public MPComboBoxModelItem getValue(){
+        return mPCombobox1.getSelectedItem();
+    }
+    
+    
+    /**
+     * The textual representation of the seleceted item
+     * @return the text of the combobox
+     */
+    public String getText() {
+        return mPCombobox1.getSelectedValue();
     }
 
     /**
@@ -266,4 +277,5 @@ public class LabeledCombobox extends javax.swing.JPanel {
     public void triggerSearch() {
         mPCombobox1.search(true);
     }
+
 }

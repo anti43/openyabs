@@ -16,11 +16,17 @@
  */
 package mpv5.db.objects;
 
+import java.util.ArrayList;
 import javax.swing.JComponent;
 import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
 import mpv5.db.common.Formattable;
+import mpv5.db.common.NodataFoundException;
 import mpv5.handler.FormatHandler;
+import mpv5.logging.Log;
+import mpv5.ui.panels.ExpensePanel;
+import mpv5.utils.images.MPIcon;
+import mpv5.utils.numberformat.FormatNumber;
 
 /**
  *
@@ -32,6 +38,7 @@ public class Expense extends DatabaseObject implements Formattable {
     private double netvalue;
     private double taxpercentvalue;
     private double brutvalue;
+    private String cnumber;
     private int accountsids;
     private FormatHandler formatHandler;
 
@@ -61,12 +68,12 @@ public class Expense extends DatabaseObject implements Formattable {
 
     @Override
     public JComponent getView() {
-        return null;
+        return new ExpensePanel();
     }
 
     @Override
     public mpv5.utils.images.MPIcon getIcon() {
-        return null;
+        return new MPIcon("/mpv5/resources/images/22/1downarrow.png");
     }
 
     /**
@@ -126,13 +133,62 @@ public class Expense extends DatabaseObject implements Formattable {
     }
 
     public FormatHandler getFormatHandler() {
-         if (formatHandler == null) {
+        if (formatHandler == null) {
             formatHandler = new FormatHandler(this);
         }
         return formatHandler;
     }
 
-    public static Object[][] getExpenses(){
-    return null;
+    @Override
+    public void ensureUniqueness() {
+        setCnumber(getFormatHandler().toString(getFormatHandler().getNextNumber()));
+        setCName(__getCnumber());
+    }
+
+    /**
+     * Create a table model's data from all expenses
+     * @return
+     * @throws NodataFoundException
+     */
+    public static Object[][] getExpenses() throws NodataFoundException {
+        ArrayList<DatabaseObject> data = getObjects(Context.getExpenses());
+        Object[][] obj = new Object[data.size()][];
+        for (int i = 0; i < data.size(); i++) {
+            Expense e = (Expense) data.get(i);
+            obj[i] = e.toArray();
+        }
+        return obj;
+    }
+
+    /**
+     * Turn this expense into a table row
+     * @return
+     */
+    public Object[] toArray() {
+        Object[] o = new Object[5];
+        o[0] = this;
+        o[1] = description;
+        try {
+            o[2] = getObject(Context.getAccounts(), accountsids);
+        } catch (NodataFoundException ex) {
+            Log.Debug(this, ex.getMessage());
+        }
+        o[3] = FormatNumber.formatDezimal(brutvalue);
+        o[4] = FormatNumber.formatPercent(taxpercentvalue);
+        return o;
+    }
+
+    /**
+     * @return the cnumber
+     */
+    public String __getCnumber() {
+        return cnumber;
+    }
+
+    /**
+     * @param cnumber the cnumber to set
+     */
+    public void setCnumber(String cnumber) {
+        this.cnumber = cnumber;
     }
 }

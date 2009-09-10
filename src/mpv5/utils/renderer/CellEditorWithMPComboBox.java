@@ -16,16 +16,8 @@
  */
 package mpv5.utils.renderer;
 
-import java.awt.Component;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
-import java.util.Vector;
-import javax.swing.DefaultCellEditor;
 import javax.swing.JLabel;
 import javax.swing.JTable;
-import javax.swing.table.DefaultTableCellRenderer;
-import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 import mpv5.db.common.Context;
 import mpv5.ui.beans.LightMPComboBox;
@@ -34,7 +26,7 @@ import mpv5.ui.beans.MPCBSelectionChangeReceiver;
 /**
  *
  */
-public class CellRendererWithMPComboBox extends JLabel implements TableCellRenderer {
+public class CellEditorWithMPComboBox  {
 
     private final Context c;
     private final JTable table;
@@ -45,7 +37,7 @@ public class CellRendererWithMPComboBox extends JLabel implements TableCellRende
      * @param c
      * @param table
      */
-    public CellRendererWithMPComboBox(Context c, JTable table) {
+    public CellEditorWithMPComboBox(Context c, JTable table) {
         super();
         this.c = c;
         this.table = table;
@@ -56,8 +48,8 @@ public class CellRendererWithMPComboBox extends JLabel implements TableCellRende
      * @param column
      * @param r 
      */
-    public void setRendererTo(int column, MPCBSelectionChangeReceiver r) {
-        setRendererTo(column, r, true);
+    public void setEditorTo(int column, MPCBSelectionChangeReceiver r) {
+        setEditorTo(column, r, true);
     }
 
     /**
@@ -66,34 +58,14 @@ public class CellRendererWithMPComboBox extends JLabel implements TableCellRende
      * @param r
      * @param editable 
      */
-    public void setRendererTo(int column, MPCBSelectionChangeReceiver r, boolean editable) {
+    public void setEditorTo(int column, MPCBSelectionChangeReceiver r, boolean editable) {
         TableColumn col = table.getColumnModel().getColumn(column);
         LightMPComboBox xc = new LightMPComboBox(c, table);
         if (r != null) {
             xc.addSelectionChangeReceiver(r);
         }
         col.setCellEditor(new MPComboBoxEditor(xc));
-        col.setCellRenderer(this);
         xc.setEditable(editable);
-    }
-
-    @Override
-    public Component getTableCellRendererComponent(JTable table, Object value,
-            boolean isSelected, boolean hasFocus, int row, int column) {
-        if (hasFocus && isSelected) {
-            if (isSelected) {
-                label.setForeground(table.getSelectionForeground());
-                label.setBackground(table.getSelectionBackground());
-            } else {
-                label.setForeground(table.getForeground());
-                label.setBackground(table.getBackground());
-            }
-            label.setText((value == null) ? "" : value.toString());
-            return label;
-        } else {
-            label.setText((value == null) ? "" : value.toString());
-            return label;
-        }
     }
 
     class MPComboBoxEditor extends LazyCellEditor {
@@ -104,25 +76,6 @@ public class CellRendererWithMPComboBox extends JLabel implements TableCellRende
             super(b);
             this.box = b;
             b.setLightWeightPopupEnabled(false);
-//            b.addKeyListener(new KeyListener() {
-//
-//                @Override
-//                public void keyTyped(KeyEvent e) {
-//                   if(e.getKeyCode() == e.VK_DOWN){
-//
-//                   }
-//                }
-//
-//                @Override
-//                public void keyPressed(KeyEvent e) {
-//
-//                }
-//
-//                @Override
-//                public void keyReleased(KeyEvent e) {
-//
-//                }
-//            });
         }
     }
 }

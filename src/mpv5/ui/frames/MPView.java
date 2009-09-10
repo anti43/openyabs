@@ -80,8 +80,10 @@ import mpv5.ui.dialogs.subcomponents.wizard_XMLImport_1;
 import mpv5.ui.dialogs.subcomponents.wizard_XMLImport_2;
 import mpv5.ui.panels.ItemPanel;
 import mpv5.ui.dialogs.subcomponents.ControlPanel_Advanced;
+import mpv5.ui.panels.ExpensePanel;
 import mpv5.ui.panels.ProductListsPanel;
 import mpv5.ui.panels.ProductPanel;
+import mpv5.ui.panels.RevenuePanel;
 import mpv5.ui.panels.StartPage;
 import mpv5.ui.panels.TrashPanel;
 import mpv5.utils.files.TextDatFile;
@@ -301,8 +303,11 @@ public class MPView extends FrameView {
             try {
                 return (DataPanel) ((JScrollPane) tabPane.getSelectedComponent()).getComponent(0);
             } catch (ClassCastException e) {
-                return (DataPanel) ((JViewport) ((JScrollPane) tabPane.getSelectedComponent()).getComponent(0)).getComponent(0);
-
+                try {
+                    return (DataPanel) ((JViewport) ((JScrollPane) tabPane.getSelectedComponent()).getComponent(0)).getComponent(0);
+                } catch (Exception ek) {
+                    return null;
+                }
             }
         } else {
             return null;
@@ -429,6 +434,7 @@ public class MPView extends FrameView {
                 final DataPanel p = ((DataPanel) item.getView());
                 addTab((JComponent) p, item.__getCName());
                 Runnable runnable = new Runnable() {
+
                     public void run() {
                         p.setDataOwner(item, true);
                     }
@@ -438,6 +444,7 @@ public class MPView extends FrameView {
                 final DataPanel p = ((DataPanel) item.getView());
                 addTab((JComponent) p, tabTitle + ": " + item.__getCName());
                 Runnable runnable = new Runnable() {
+
                     public void run() {
                         p.setDataOwner(item, true);
                     }
@@ -473,6 +480,7 @@ public class MPView extends FrameView {
                         addTab((JComponent) p, tabTitle + ": " + item.__getCName());
                     }
                     Runnable runnable = new Runnable() {
+
                         public void run() {
                             p.setDataOwner(item, true);
                         }
@@ -502,7 +510,7 @@ public class MPView extends FrameView {
      * @param instanceOf
      * @param label
      */
-    public void addOrShowTab(JComponent instanceOf, String label) {
+    public void addOrShowTab(JComponent instanceOf, Object label) {
         Component[] tabs = tabPane.getComponents();
         boolean found = false;
         JScrollPane scroll = null;
@@ -512,18 +520,22 @@ public class MPView extends FrameView {
                 scroll = (JScrollPane) component;
                 component = (JComponent) ((JScrollPane) component).getComponent(0);
             }
-            if (component.getComponent(0).equals(instanceOf)) {
-                if (scroll == null) {
-                    tabPane.setSelectedComponent(instanceOf);
-                } else {
-                    tabPane.setSelectedComponent(scroll);
+            try {
+                if (component.getComponent(0).equals(instanceOf)) {
+                    if (scroll == null) {
+                        tabPane.setSelectedComponent(instanceOf);
+                    } else {
+                        tabPane.setSelectedComponent(scroll);
+                    }
+                    found = true;
                 }
-                found = true;
+            } catch (Exception e) {
+                Log.Debug(this, e.getMessage());
             }
         }
 
         if (!found) {
-            addTab(instanceOf, label);
+            addTab(instanceOf, label.toString());
         }
     }
 
@@ -601,9 +613,10 @@ public class MPView extends FrameView {
         jButton18 = new javax.swing.JButton();
         jPanel3 = new javax.swing.JPanel();
         jButton8 = new javax.swing.JButton();
-        jButton9 = new javax.swing.JButton();
         jButton10 = new javax.swing.JButton();
         jButton11 = new javax.swing.JButton();
+        jButton15 = new javax.swing.JButton();
+        jButton16 = new javax.swing.JButton();
         jPanel4 = new javax.swing.JPanel();
         jButton12 = new javax.swing.JButton();
         jButton13 = new javax.swing.JButton();
@@ -801,20 +814,6 @@ public class MPView extends FrameView {
             }
         });
 
-        jButton9.setFont(new java.awt.Font("Tahoma", 0, 10));
-        jButton9.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/news_subscribe.png"))); // NOI18N
-        jButton9.setText(bundle.getString("MPView.jButton9.text")); // NOI18N
-        jButton9.setToolTipText(bundle.getString("MPView.jButton9.toolTipText")); // NOI18N
-        jButton9.setEnabled(false);
-        jButton9.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        jButton9.setName("jButton9"); // NOI18N
-        jButton9.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        jButton9.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton9ActionPerformed(evt);
-            }
-        });
-
         jButton10.setFont(new java.awt.Font("Tahoma", 0, 10));
         jButton10.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/folder_grey.png"))); // NOI18N
         jButton10.setText(bundle.getString("MPView.jButton10.text")); // NOI18N
@@ -828,7 +827,7 @@ public class MPView extends FrameView {
             }
         });
 
-        jButton11.setFont(new java.awt.Font("Tahoma", 0, 10));
+        jButton11.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
         jButton11.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/folder_green.png"))); // NOI18N
         jButton11.setText(bundle.getString("MPView.jButton11.text")); // NOI18N
         jButton11.setToolTipText(bundle.getString("MPView.jButton11.toolTipText")); // NOI18N
@@ -841,6 +840,32 @@ public class MPView extends FrameView {
             }
         });
 
+        jButton15.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
+        jButton15.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/folder_red.png"))); // NOI18N
+        jButton15.setText(bundle.getString("MPView.jButton15.text")); // NOI18N
+        jButton15.setToolTipText(bundle.getString("MPView.jButton15.toolTipText")); // NOI18N
+        jButton15.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        jButton15.setName("jButton15"); // NOI18N
+        jButton15.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        jButton15.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton15ActionPerformed(evt);
+            }
+        });
+
+        jButton16.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
+        jButton16.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/folder_yellow.png"))); // NOI18N
+        jButton16.setText(bundle.getString("MPView.jButton16.text")); // NOI18N
+        jButton16.setToolTipText(bundle.getString("MPView.jButton16.toolTipText")); // NOI18N
+        jButton16.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        jButton16.setName("jButton16"); // NOI18N
+        jButton16.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        jButton16.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton16ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
@@ -849,17 +874,20 @@ public class MPView extends FrameView {
                 .addContainerGap()
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addComponent(jButton8, javax.swing.GroupLayout.DEFAULT_SIZE, 77, Short.MAX_VALUE)
+                        .addComponent(jButton8, javax.swing.GroupLayout.DEFAULT_SIZE, 90, Short.MAX_VALUE)
                         .addGap(10, 10, 10))
                     .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addComponent(jButton10, javax.swing.GroupLayout.DEFAULT_SIZE, 77, Short.MAX_VALUE)
+                        .addComponent(jButton10, javax.swing.GroupLayout.DEFAULT_SIZE, 90, Short.MAX_VALUE)
                         .addGap(10, 10, 10))
                     .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addComponent(jButton11, javax.swing.GroupLayout.DEFAULT_SIZE, 77, Short.MAX_VALUE)
+                        .addComponent(jButton11, javax.swing.GroupLayout.DEFAULT_SIZE, 90, Short.MAX_VALUE)
                         .addContainerGap())
                     .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addComponent(jButton9, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addGap(10, 10, 10))))
+                        .addComponent(jButton15, javax.swing.GroupLayout.DEFAULT_SIZE, 90, Short.MAX_VALUE)
+                        .addContainerGap())
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
+                        .addComponent(jButton16, javax.swing.GroupLayout.DEFAULT_SIZE, 90, Short.MAX_VALUE)
+                        .addContainerGap())))
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -871,8 +899,10 @@ public class MPView extends FrameView {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jButton11)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jButton9)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(jButton15)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jButton16)
+                .addContainerGap(93, Short.MAX_VALUE))
         );
 
         jOutlookBar1.addTab(bundle.getString("MPView.jPanel3.TabConstraints.tabTitle_1"), jPanel3); // NOI18N
@@ -894,7 +924,7 @@ public class MPView extends FrameView {
             }
         });
 
-        jButton13.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
+        jButton13.setFont(new java.awt.Font("Tahoma", 0, 10));
         jButton13.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/external.png"))); // NOI18N
         jButton13.setText(bundle.getString("MPView.jButton13.text")); // NOI18N
         jButton13.setToolTipText(bundle.getString("MPView.jButton13.toolTipText")); // NOI18N
@@ -907,7 +937,7 @@ public class MPView extends FrameView {
             }
         });
 
-        jButton14.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
+        jButton14.setFont(new java.awt.Font("Tahoma", 0, 10));
         jButton14.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/lists.png"))); // NOI18N
         jButton14.setText(bundle.getString("MPView.jButton14.text")); // NOI18N
         jButton14.setToolTipText(bundle.getString("MPView.jButton14.toolTipText")); // NOI18N
@@ -927,9 +957,9 @@ public class MPView extends FrameView {
             .addGroup(jPanel4Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jButton13, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 90, Short.MAX_VALUE)
-                    .addComponent(jButton12, javax.swing.GroupLayout.DEFAULT_SIZE, 90, Short.MAX_VALUE)
-                    .addComponent(jButton14, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 90, Short.MAX_VALUE))
+                    .addComponent(jButton13, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jButton12, javax.swing.GroupLayout.DEFAULT_SIZE, 73, Short.MAX_VALUE)
+                    .addComponent(jButton14, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 73, Short.MAX_VALUE))
                 .addContainerGap())
         );
         jPanel4Layout.setVerticalGroup(
@@ -941,7 +971,7 @@ public class MPView extends FrameView {
                 .addComponent(jButton12)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jButton14)
-                .addContainerGap(223, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         jOutlookBar1.addTab(bundle.getString("MPView.jPanel4.TabConstraints.tabTitle_1"), jPanel4); // NOI18N
@@ -1526,14 +1556,14 @@ public class MPView extends FrameView {
 
     private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
         DatabaseObject d = DatabaseObject.getObject(Context.getCustomer());
-        ((mpv5.db.objects.Contact)d).setisCustomer(true);
+        ((mpv5.db.objects.Contact) d).setisCustomer(true);
         addTab(d, Messages.NEW_CUSTOMER);
     }//GEN-LAST:event_jButton5ActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        
+
         DatabaseObject d = DatabaseObject.getObject(Context.getSupplier());
-        ((mpv5.db.objects.Contact)d).setisSupplier(true);
+        ((mpv5.db.objects.Contact) d).setisSupplier(true);
         addTab(d, Messages.NEW_SUPPLIER);
 }//GEN-LAST:event_jButton1ActionPerformed
 
@@ -1547,7 +1577,7 @@ public class MPView extends FrameView {
     static ContactsList clisttab;
     private void jButton18ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton18ActionPerformed
         DatabaseObject d = DatabaseObject.getObject(Context.getManufacturer());
-        ((mpv5.db.objects.Contact)d).setisManufacturer(true);
+        ((mpv5.db.objects.Contact) d).setisManufacturer(true);
         addTab(d, Messages.NEW_MANUFACTURER);
     }//GEN-LAST:event_jButton18ActionPerformed
 
@@ -1779,9 +1809,9 @@ public class MPView extends FrameView {
             } catch (NumberFormatException numberFormatException) {
             }
             try {
-                new mpv5.db.sample.SampleData(Integer.valueOf(Popup.Enter_Value("Enter a valid Integer value [3]")), x, true, true);
+                new mpv5.db.sample.SampleData(Integer.valueOf(Popup.Enter_Value("Enter a valid Integer value [1]")), x, true, true);
             } catch (NumberFormatException numberFormatException) {
-                new mpv5.db.sample.SampleData(3, 1, true, true);
+                new mpv5.db.sample.SampleData(1, 1, true, true);
             }
         }
     }//GEN-LAST:event_jMenuItem22ActionPerformed
@@ -1809,10 +1839,6 @@ public class MPView extends FrameView {
         LocalSettings.save();
         Popup.notice(Messages.RESTART_REQUIRED);
     }//GEN-LAST:event_jMenuItem25ActionPerformed
-
-    private void jButton9ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton9ActionPerformed
-        addOrShowTab(new mpv5.ui.panels.hn.ProfitPanel(), Messages.COST.toString());
-    }//GEN-LAST:event_jButton9ActionPerformed
 
     private void jMenuItem26ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem26ActionPerformed
 
@@ -1857,7 +1883,7 @@ public class MPView extends FrameView {
 
     private void jMenuItem27ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem27ActionPerformed
 
-         try {
+        try {
             java.awt.Desktop.getDesktop().browse(new URI(Constants.WEBSITE));
         } catch (Exception ex) {
             Log.Debug(ex);
@@ -1869,6 +1895,14 @@ public class MPView extends FrameView {
 
     }//GEN-LAST:event_jButton14ActionPerformed
 
+    private void jButton15ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton15ActionPerformed
+        addOrShowTab(ExpensePanel.instanceOf(), Messages.EXPENSE);
+    }//GEN-LAST:event_jButton15ActionPerformed
+
+    private void jButton16ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton16ActionPerformed
+        addOrShowTab(RevenuePanel.instanceOf(), Messages.REVENUE);
+        
+    }//GEN-LAST:event_jButton16ActionPerformed
     // Variables declaration - do not modify//GEN-BEGIN:variables
     public javax.swing.JMenu clipboardMenu;
     private javax.swing.JLabel errorlabel;
@@ -1879,6 +1913,8 @@ public class MPView extends FrameView {
     private javax.swing.JButton jButton12;
     private javax.swing.JButton jButton13;
     private javax.swing.JButton jButton14;
+    private javax.swing.JButton jButton15;
+    private javax.swing.JButton jButton16;
     private javax.swing.JButton jButton18;
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton24;
@@ -1888,7 +1924,6 @@ public class MPView extends FrameView {
     private javax.swing.JButton jButton6;
     private javax.swing.JButton jButton7;
     private javax.swing.JButton jButton8;
-    private javax.swing.JButton jButton9;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu10;
     private javax.swing.JMenu jMenu11;

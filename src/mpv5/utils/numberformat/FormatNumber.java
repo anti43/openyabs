@@ -9,6 +9,7 @@ import java.math.BigInteger;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.text.ParseException;
+import java.util.Currency;
 import java.util.Locale;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
@@ -97,6 +98,13 @@ public class FormatNumber {
             for (int i = 0; i < Locales.length; i++) {
                 Locale locale = Locales[i];
                 try {
+                    try {
+                        number = number.replace(Currency.getInstance(locale).getSymbol(), "").trim();
+                    } catch (Exception e) {
+//                        To avoid this (why does a locale have no country??):
+//                        Exception in thread "AWT-EventQueue-0" java.lang.IllegalArgumentException
+//                        at java.util.Currency.getInstance(Currency.java:244)
+                    }
                     Number result = NumberFormat.getNumberInstance(locale).parse(number);
                     return result.doubleValue();
                 } catch (ParseException parseException) {
@@ -104,7 +112,6 @@ public class FormatNumber {
             }
             return null;
         }
-
     }
 
     /**

@@ -280,6 +280,8 @@ public class Context {
         list.add(getContact());
         list.add(getProducts());
         list.add(getFiles());
+        list.add(getExpenses());
+        list.add(getRevenues());
         return list;
     }
 
@@ -391,7 +393,9 @@ public class Context {
                 getTemplate(),
                 getReminders(),
                 getStages(),
-                getProductlist()
+                getProductlist(),
+                getExpenses(),
+                getRevenues()
             }));
     private String[] searchHeaders;
     private ArrayList<String[]> references = new ArrayList<String[]>();
@@ -1515,6 +1519,7 @@ public class Context {
         }
         Log.Debug(Context.class, "Context not found for name: " + contextdbidentity);
         return null;
+//        throw new UnsupportedOperationException("Context not found for name: " + contextdbidentity);
     }
 
     public void setSearchFields(String fields) {

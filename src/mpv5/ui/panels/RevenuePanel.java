@@ -32,7 +32,7 @@ import javax.swing.JTabbedPane;
 import javax.swing.JViewport;
 import javax.swing.SwingUtilities;
 import mpv5.db.common.*;
-import mpv5.db.objects.Expense;
+import mpv5.db.objects.Revenue;
 import mpv5.globals.Messages;
 import mpv5.db.objects.Favourite;
 import mpv5.db.objects.Item;
@@ -57,34 +57,34 @@ import mpv5.utils.ui.TextFieldUtils;
  *
  * 
  */
-public class ExpensePanel extends javax.swing.JPanel implements DataPanel {
+public class RevenuePanel extends javax.swing.JPanel implements DataPanel {
 
     private static final long serialVersionUID = 1L;
-    private static ExpensePanel me;
+    private static RevenuePanel me;
 
     /**
      * Singleton
      * @return
      */
-    public static ExpensePanel instanceOf() {
+    public static RevenuePanel instanceOf() {
         if (me == null) {
-            me = new ExpensePanel();
+            me = new RevenuePanel();
         }
         return me;
     }
-    private Expense dataOwner;
+    private Revenue dataOwner;
     private DataPanelTB tb;
 
     /** Creates new form ContactPanel
      */
-    public ExpensePanel() {
+    public RevenuePanel() {
         initComponents();
         tb = new mpv5.ui.toolbars.DataPanelTB(this);
         tb.disableButton(1);
         tb.disableButton(8);
         tb.disableButton(9);
         toolbarpane.add(tb, BorderLayout.CENTER);
-        dataOwner = new Expense();
+        dataOwner = new Revenue();
 
         addedby.setText(MPView.getUser().getName());
         accountselect.setSearchOnEnterEnabled(true);
@@ -105,7 +105,7 @@ public class ExpensePanel extends javax.swing.JPanel implements DataPanel {
 
     @Override
     public void setDataOwner(DatabaseObject object, boolean populate) {
-        dataOwner = (Expense) object;
+        dataOwner = (Revenue) object;
         if (populate) {
             dataOwner.setPanelData(this);
 
@@ -182,9 +182,9 @@ public class ExpensePanel extends javax.swing.JPanel implements DataPanel {
         itemtable = new javax.swing.JTable();
         toolbarpane = new javax.swing.JPanel();
 
-        setBackground(new java.awt.Color(176, 158, 158));
+        setBackground(new java.awt.Color(155, 175, 155));
         java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("mpv5/resources/languages/Panels"); // NOI18N
-        setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("ExpensePanel.border.title_1"))); // NOI18N
+        setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("RevenuePanel.border.title_1"))); // NOI18N
         setName("Form"); // NOI18N
         setLayout(new java.awt.BorderLayout());
 
@@ -195,25 +195,25 @@ public class ExpensePanel extends javax.swing.JPanel implements DataPanel {
         jPanel1.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         jPanel1.setName("jPanel1"); // NOI18N
 
-        number.set_Label(bundle.getString("ExpensePanel.number._Label")); // NOI18N
+        number.set_Label(bundle.getString("RevenuePanel.number._Label")); // NOI18N
         number.setEnabled(false);
         number.setFocusable(false);
         number.setFont(number.getFont());
         number.setName("number"); // NOI18N
 
         addedby.setFont(addedby.getFont());
-        addedby.setText(bundle.getString("ExpensePanel.addedby.text")); // NOI18N
-        addedby.setToolTipText(bundle.getString("ExpensePanel.addedby.toolTipText")); // NOI18N
+        addedby.setText(bundle.getString("RevenuePanel.addedby.text")); // NOI18N
+        addedby.setToolTipText(bundle.getString("RevenuePanel.addedby.toolTipText")); // NOI18N
         addedby.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         addedby.setEnabled(false);
         addedby.setName("addedby"); // NOI18N
 
         jLabel4.setFont(jLabel4.getFont());
-        jLabel4.setText(bundle.getString("ExpensePanel.jLabel4.text")); // NOI18N
+        jLabel4.setText(bundle.getString("RevenuePanel.jLabel4.text")); // NOI18N
         jLabel4.setName("jLabel4"); // NOI18N
 
         button_order2.setFont(button_order2.getFont().deriveFont(button_order2.getFont().getStyle() & ~java.awt.Font.BOLD, button_order2.getFont().getSize()-2));
-        button_order2.setText(bundle.getString("ExpensePanel.button_order2.text")); // NOI18N
+        button_order2.setText(bundle.getString("RevenuePanel.button_order2.text")); // NOI18N
         button_order2.setFocusable(false);
         button_order2.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         button_order2.setName("button_order2"); // NOI18N
@@ -224,7 +224,7 @@ public class ExpensePanel extends javax.swing.JPanel implements DataPanel {
             }
         });
 
-        accountselect.set_Label(bundle.getString("ExpensePanel.accountselect._Label")); // NOI18N
+        accountselect.set_Label(bundle.getString("RevenuePanel.accountselect._Label")); // NOI18N
         accountselect.setName("accountselect"); // NOI18N
         accountselect.setSearchOnEnterEnabled(false);
 
@@ -233,16 +233,16 @@ public class ExpensePanel extends javax.swing.JPanel implements DataPanel {
         jPanel2.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         jPanel2.setName("jPanel2"); // NOI18N
 
-        value.set_Label(bundle.getString("ExpensePanel.value._Label")); // NOI18N
-        value.set_Text(bundle.getString("ExpensePanel.value._Text")); // NOI18N
+        value.set_Label(bundle.getString("RevenuePanel.value._Label")); // NOI18N
+        value.set_Text(bundle.getString("RevenuePanel.value._Text")); // NOI18N
         value.setName("value"); // NOI18N
 
-        netvalue.set_Label(bundle.getString("ExpensePanel.netvalue._Label")); // NOI18N
-        netvalue.set_Text(bundle.getString("ExpensePanel.netvalue._Text")); // NOI18N
+        netvalue.set_Label(bundle.getString("RevenuePanel.netvalue._Label")); // NOI18N
+        netvalue.set_Text(bundle.getString("RevenuePanel.netvalue._Text")); // NOI18N
         netvalue.setEnabled(false);
         netvalue.setName("netvalue"); // NOI18N
 
-        jLabel1.setText(bundle.getString("ExpensePanel.jLabel1.text")); // NOI18N
+        jLabel1.setText(bundle.getString("RevenuePanel.jLabel1.text")); // NOI18N
         jLabel1.setName("jLabel1"); // NOI18N
 
         jScrollPane1.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
@@ -251,7 +251,7 @@ public class ExpensePanel extends javax.swing.JPanel implements DataPanel {
         notes.setName("notes"); // NOI18N
         jScrollPane1.setViewportView(notes);
 
-        taxrate.set_Label(bundle.getString("ExpensePanel.taxrate._Label")); // NOI18N
+        taxrate.set_Label(bundle.getString("RevenuePanel.taxrate._Label")); // NOI18N
         taxrate.setName("taxrate"); // NOI18N
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
@@ -504,7 +504,7 @@ public class ExpensePanel extends javax.swing.JPanel implements DataPanel {
                     accountselect.triggerSearch();
                     groupnameselect.triggerSearch();
                     taxrate.triggerSearch();
-                    itemtable.setModel(new MPTableModel(Expense.getExpenses(), Headers.EXPENSE));
+                    itemtable.setModel(new MPTableModel(Revenue.getRevenues(), Headers.EXPENSE));
                     formatTable();
                 } catch (Exception e) {
                     Log.Debug(this, e.getMessage());
