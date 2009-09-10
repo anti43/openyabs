@@ -31,6 +31,7 @@ tar -cf %{_builddir}/yabs%{Version}.%{Release}.tar *
 %install
 pwd
 rm -rf $RPM_BUILD_ROOT
+rm -rf $RPM_BUILD_ROOT%{install_dir}/yabs/yabs%{Version}
 mkdir -p $RPM_BUILD_ROOT%{install_dir}/yabs/yabs%{Version}
 cd $RPM_BUILD_ROOT%{install_dir}/yabs/yabs%{Version}
 tar -xf $RPM_BUILD_ROOT/../yabs%{Version}.%{Release}.tar

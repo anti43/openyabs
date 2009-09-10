@@ -237,6 +237,7 @@ public class Main extends SingleFrameApplication {
     public static void main(String[] args) throws Exception {
 
         INSTANTIATED = true;
+        LanguageManager.getBundle();
         try {
             splash = new SplashScreen(new ImageIcon(Main.class.getResource(mpv5.globals.Constants.SPLASH_IMAGE)));
             splash.init(8);

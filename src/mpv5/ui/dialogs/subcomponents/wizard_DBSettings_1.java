@@ -9,6 +9,7 @@ import java.awt.Cursor;
 import java.awt.Desktop;
 import java.io.File;
 import java.io.IOException;
+import java.net.URISyntaxException;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JFileChooser;
 import mpv5.Main;
@@ -19,12 +20,15 @@ import mpv5.globals.Constants;
 import mpv5.globals.LocalSettings;
 import mpv5.globals.Messages;
 
+import mpv5.i18n.LanguageManager;
 import mpv5.logging.Log;
 import mpv5.logging.LogConsole;
 import mpv5.ui.dialogs.Popup;
 import mpv5.ui.dialogs.Wizard;
 import mpv5.ui.dialogs.WizardMaster;
 import mpv5.ui.dialogs.Wizardable;
+import mpv5.utils.files.FileDirectoryHandler;
+import mpv5.utils.files.JarFinder;
 
 /**
  *
@@ -94,6 +98,16 @@ public class wizard_DBSettings_1 extends javax.swing.JPanel implements Wizardabl
                     if (!jCheckBox1.isSelected()) {
                         master.setMessage(Messages.CREATING_DATABASE.toString());
                         if (conn.runQueries(new DatabaseInstallation().getStructure())) {
+                            try {
+                                Log.Debug(this, "Importing languages..");
+                                File[] langfiles = new File(this.getClass().getResource("/mpv5/resources/languagefiles").toURI()).listFiles();
+                                for (int i = 0; i < langfiles.length; i++) {
+                                    File file = langfiles[i];
+                                    LanguageManager.importLanguage(file.getName(), file);
+                                }
+                            } catch (Exception uRISyntaxException) {
+                                Log.Debug(uRISyntaxException);
+                            }
                             master.setMessage(Messages.CONNECTION_VERIFIED.toString());
                         } else {
                             master.setMessage(Messages.CREATING_DATABASE_FAILED.toString());

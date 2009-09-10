@@ -9,19 +9,22 @@ import mpv5.i18n.LanguageManager;
 
 /**
  * This enum holds all messages for the mp5 main application
+ *Start with -license for details.\nStart with -help for command line options.
+ *  :
+ * YaBS (@version) (C) 2006-2009 Openyabs.org
  *
- *  
+ * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version.\n\nThis program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details.\n\nYou should have received a copy of the GNU General Public License along with this program; if not, write to the Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA\n\nStart with -license for details.\nStart with -help for command line options.
  */
 public enum Messages {
 
     START_MESSAGE(
     "\n" +
-    "\n  YaBS " + Constants.VERSION + " Copyright (C) 2006-2009 A. Weber\n" +
-    "\n  This program comes with ABSOLUTELY NO WARRANTY." +
-    "\n  YaBS is free software, and you are welcome to redistribute it " +
-    "\n  under certain conditions;" +
-    "\n  Start with -license for details.\n" +
-    "\n  Start with -help for command line options.\n" +
+    "YaBS " + Constants.VERSION + " (C) 2006-2009 Openyabs.org\n\n" +
+    "This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version.\n\n" +
+    "This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details.\n\n" +
+    "You should have received a copy of the GNU General Public License along with this program; if not, write to the Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA\n\n" +
+    "Start with -license for details.\n" +
+    "Start with -help for command line options.\n" +
     "*****************************************************************"),
     CONTACT("Contact: "),
     /**
@@ -67,12 +70,12 @@ public enum Messages {
     SECURITYMANAGER_ALLOWED("The Security Manager has ALLOWED your request.\nAction "),
     THE_RESULT("The resulting value will look like:\n\n"),
     CONTEXT(", in context: "),
-    INSERTED(" created"),
-    UPDATED(" updated"),
-    SAVED(" saved"),
-    IMPORTED(" imported"),
-    DELETED(" removed from database"),
-    TRASHED(" moved to trashbin"),
+    INSERTED(": created"),
+    UPDATED(": updated"),
+    SAVED(": saved"),
+    IMPORTED(": imported"),
+    DELETED(": removed from database"),
+    TRASHED(": moved to trashbin"),
     CNAME_CANNOT_BE_NULL("You must set a NAME for this item."),
     FILE_SAVED("File saved: "),
     ERROR_OCCURED("An error occurred\n"),
@@ -203,11 +206,14 @@ public enum Messages {
 
     @Override
     public String toString() {
+
         try {
             message = LanguageManager.getBundle().getString(this.name());
         } catch (Exception e) {
             Log.Debug(this, e.getMessage());
+
         }
+
         if (message == null) {
             return super.toString();
         } else {

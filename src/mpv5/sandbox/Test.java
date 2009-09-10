@@ -32,6 +32,7 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableModel;
+import mpv5.globals.Headers;
 
 
 /**
@@ -39,98 +40,14 @@ import javax.swing.table.TableModel;
  */
 public class Test {
 
-    static class CellRendererWithComboBox extends JLabel implements TableCellRenderer {
-
-        JLabel label = new JLabel();
-
-        /**
-         * Set this renderer to the given column
-         * @param column
-         * @param r
-         * @param editable
-         */
-        public void setRendererTo(JTable table, int column, boolean editable) {
-            TableColumn col = table.getColumnModel().getColumn(column);
-            JComboBox xc = new JComboBox(new DefaultComboBoxModel(new Object[]{1, 2, 3, 4, 5, 6, 7}));
-            col.setCellEditor(new ComboBoxEditor(xc));
-            col.setCellRenderer(this);
-            xc.setEditable(editable);
-        }
-
-        @Override
-        public Component getTableCellRendererComponent(JTable table, Object value,
-                boolean isSelected, boolean hasFocus, int row, int column) {
-            if (hasFocus && isSelected) {
-                if (isSelected) {
-                    label.setForeground(table.getSelectionForeground());
-                    label.setBackground(table.getSelectionBackground());
-                } else {
-                    label.setForeground(table.getForeground());
-                    label.setBackground(table.getBackground());
-                }
-                label.setText((value == null) ? "" : value.toString());
-                return label;
-            } else {
-                label.setText((value == null) ? "" : value.toString());
-                return label;
-            }
-        }
-
-        class ComboBoxEditor extends DefaultCellEditor {
-
-            private final JComboBox box;
-            private boolean fire = true;
-
-            public ComboBoxEditor(JComboBox b) {
-                super(b);
-                this.box = b;
-                b.setLightWeightPopupEnabled(false);
-            }
-
-            @Override
-            public boolean stopCellEditing() {
-                if (fire) {
-                    super.stopCellEditing();
-                }
-                return true;
-            }
-
-            public void stopCellEditingSilent() {
-                fire = false;
-                stopCellEditing();
-                fire = true;
-            }
-        }
-    }
+  
 
     public static void main(String... aArgs) throws NoSuchAlgorithmException, IOException {
+        Headers.BABELFISH.printValues();
 
 
-        try {
-            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-        } catch (ClassNotFoundException classNotFoundException) {
-        } catch (InstantiationException instantiationException) {
-        } catch (IllegalAccessException illegalAccessException) {
-        } catch (UnsupportedLookAndFeelException unsupportedLookAndFeelException) {
-        }
 
-        JFrame p = new JFrame();
-        JTable t = new JTable();
-        TableModel m = new DefaultTableModel(new Object[][]{
-                    new Object[]{1, 2, 3, 4, 5, 6, 7},
-                    new Object[]{1, 2, 3, 4, 5, 6, 7},
-                    new Object[]{1, 2, 3, 4, 5, 6, 7},
-                    new Object[]{1, 2, 3, 4, 5, 6, 7},
-                    new Object[]{1, 2, 3, 4, 5, 6, 7}},
-                new Object[]{1, 2, 3, 4, 5, 6, 7});
-        t.setModel(m);
 
-        Test.CellRendererWithComboBox f = new CellRendererWithComboBox();
-        f.setRendererTo(t, 1, true);
-        p.setLayout(new BorderLayout());
-        p.add(t, BorderLayout.CENTER);
-        p.pack();
-        p.setVisible(true);
     }
 
 }

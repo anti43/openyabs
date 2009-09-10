@@ -7,6 +7,7 @@ import javax.swing.DefaultListModel;
 import javax.swing.ListModel;
 import mpv5.Main;
 import mpv5.globals.Constants;
+import mpv5.globals.Messages;
 import mpv5.logging.Log;
 import mpv5.utils.files.FileDirectoryHandler;
 import mpv5.utils.files.JarFinder;
@@ -22,7 +23,7 @@ public class StartPage extends javax.swing.JPanel {
     public StartPage() {
         initComponents();
         fillFiles();
-        jTextArea1.setText(jTextArea1.getText().replace("@version", Constants.VERSION));
+        jTextArea1.setText(Messages.START_MESSAGE.getValue());
     }
 
     /** This method is called from within the constructor to
@@ -50,7 +51,7 @@ public class StartPage extends javax.swing.JPanel {
         jScrollPane4 = new javax.swing.JScrollPane();
         jTextArea3 = new javax.swing.JTextArea();
 
-        java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle();
+        java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle(); // NOI18N
         setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("StartPage.border.title"))); // NOI18N
         setName("Form"); // NOI18N
 
@@ -133,7 +134,7 @@ public class StartPage extends javax.swing.JPanel {
         jScrollPane5.setName("jScrollPane5"); // NOI18N
 
         images.setBorder(javax.swing.BorderFactory.createEtchedBorder());
-        images.setFont(new java.awt.Font("Dialog", 0, 12)); // NOI18N
+        images.setFont(new java.awt.Font("Dialog", 0, 12));
         images.setModel(new javax.swing.AbstractListModel() {
             String[] strings = { "KDE Crystal Diamond Icons set compiled by Paolo Campitelli:", " ", "(Based on \"Crystal Project\", \"Human Kanpio Mod\", \"Vista Inspirate\",  \"Crystal Clear\", \"Nuove XT\", \"OSX\" , \"SnowIsh\", \"Debian Icon\", \"Firefox Alternative\" )", " ", " ", "YaBS Logo by  Jean-Christoph von Oertzen" };
             public int getSize() { return strings.length; }
@@ -167,7 +168,7 @@ public class StartPage extends javax.swing.JPanel {
                     .addGroup(jPanel3Layout.createSequentialGroup()
                         .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addComponent(jScrollPane5, javax.swing.GroupLayout.Alignment.LEADING, 0, 0, Short.MAX_VALUE)
-                            .addComponent(jScrollPane4, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 450, Short.MAX_VALUE))
+                            .addComponent(jScrollPane4, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 468, Short.MAX_VALUE))
                         .addGap(13, 13, 13))))
         );
         jPanel3Layout.setVerticalGroup(
@@ -191,7 +192,7 @@ public class StartPage extends javax.swing.JPanel {
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jTabbedPane1, javax.swing.GroupLayout.Alignment.TRAILING)
+            .addComponent(jTabbedPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 340, Short.MAX_VALUE)
         );
     }// </editor-fold>//GEN-END:initComponents
 

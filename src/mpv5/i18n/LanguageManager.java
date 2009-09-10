@@ -67,6 +67,7 @@ public class LanguageManager {
     private static final String defLanguageBundle = "mpv5/resources/languages/Panels";
     private static String[][] defLanguage = new String[][]{{"buildin_en", "English"}};
     private static Hashtable<String, ResourceBundle> cachedLanguages = new Hashtable<String, ResourceBundle>();
+    private static boolean cached = false;
 
     /**
      * Flushes the Language Cache so that it contains no Languages.
@@ -91,9 +92,9 @@ public class LanguageManager {
                     } catch (Exception ex) {
                         Log.Debug(ex);
                     }
-                    String[][] countries = r.toArray(r.getSubRootElement("countries"));
-                    for (int i = 0; i < countries.length; i++) {
-                        String[] country = countries[i];
+                    String[][] countries1 = r.toArray(r.getSubRootElement("countries"));
+                    for (int i = 0; i < countries1.length; i++) {
+                        String[] country = countries1[i];
                         QueryData t = new QueryData();
                         t.add("cname", country[1]);
                         t.add("iso", Integer.valueOf(country[2]));
@@ -171,12 +172,11 @@ public class LanguageManager {
                                 if (hasNeededKeys(bundlefile)) {
                                     Log.Debug(LanguageManager.class, "File has needed keys for language: " + langid);
                                     ClasspathTools.addPath(new File(LocalSettings.getProperty(LocalSettings.CACHE_DIR)));//Add the files parent to classpath to be found
-//                            FileDirectoryHandler.deleteTreeOnExit(new File(LocalSettings.getProperty(LocalSettings.CACHE_DIR)));
-
                                     Log.Debug(LanguageManager.class, "Created language file at: " + newfile);
                                     try {
                                         ResourceBundle bundle = ResourceBundleUtf8.getBundle(tempname);
                                         cachelanguage(langid, bundle);
+                                        cached = true;
                                         return bundle;
                                     } catch (Exception e) {
                                         failed = true;
@@ -374,5 +374,13 @@ public class LanguageManager {
             }
         }
         return true;
+    }
+
+    /**
+     * Returns the status of the language manager
+     * @return true if at least one language is cached
+     */
+    public static boolean isReady() {
+        return cached;
     }
 }

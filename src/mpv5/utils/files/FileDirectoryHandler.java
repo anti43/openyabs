@@ -169,6 +169,47 @@ public abstract class FileDirectoryHandler {
         }
         path.deleteOnExit();
     }
+   /**
+     *
+     * @param directory
+     * @param identifier
+     * @return A File array with the files (not directories) within the given directory
+     */
+    @SuppressWarnings("unchecked")
+    public static File[] getFilesOfDirectory(File directory) {
+        File src;
+        ArrayList<File> lstFiles = new ArrayList<File>();
+        if (directory.isDirectory()) {
+            try {
+                src = directory;
+                Log.Debug(FileDirectoryHandler.class, "Verzeichnis: " + src);
+                File[] files = src.listFiles();
+                Log.Debug(FileDirectoryHandler.class, "Dateien analysieren...");
+                lstFiles = new ArrayList<java.io.File>();
+                if (files != null && files.length > 0) {
+                    for (int i = 0, k = 0; i < files.length; i++) {
+//                Log.Debug(this,"Datei analysieren: " + files[i].getName());
+                        if (files[i].isFile()) {
+                            try {
+                                lstFiles.add(files[i]);
+                                Log.Debug(FileDirectoryHandler.class, "Datei gefunden: " + files[i].getName());
+                                k++;
+                            } catch (Exception ex) {
+                                Log.Debug(FileDirectoryHandler.class, ex.getMessage());
+                            }
+                        }
+                    }
+                } else {
+                    Log.Debug(FileDirectoryHandler.class, "Keine Datei gefunden.");
+                }
+            } catch (Exception exception) {
+                Log.Debug(FileDirectoryHandler.class, exception);
+                Log.Debug(FileDirectoryHandler.class, exception.getMessage());
+            }
+        }
+        return lstFiles.toArray(new File[0]);
+    }
+
 
     /**
      *
@@ -179,6 +220,7 @@ public abstract class FileDirectoryHandler {
     @SuppressWarnings("unchecked")
     public static File[] getFilesOfDirectory(String directory, String identifier) {
         File src;
+        ArrayList<File> lstFiles = null;
         try {
             lstFiles = new ArrayList<java.io.File>();
             src = new File(directory);
@@ -208,7 +250,7 @@ public abstract class FileDirectoryHandler {
         }
         return lstFiles.toArray(new File[0]);
     }
-    private static ArrayList<File> lstFiles;
+
 
     /**
      * Open a file in default app or as "save as" dialog, depending on the platform
