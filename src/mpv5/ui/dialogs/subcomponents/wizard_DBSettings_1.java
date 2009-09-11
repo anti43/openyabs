@@ -45,8 +45,8 @@ public class wizard_DBSettings_1 extends javax.swing.JPanel implements Wizardabl
         initComponents();
         labeledTextChooser2.setMode(JFileChooser.DIRECTORIES_ONLY);
         jComboBox1.setModel(new DefaultComboBoxModel(ConnectionTypeHandler.DRIVERS));
-        load();
         this.forConnId = forConnId;
+        load();
     }
 
     private boolean DBVerification() {
@@ -476,7 +476,7 @@ public class wizard_DBSettings_1 extends javax.swing.JPanel implements Wizardabl
 
     public void load() {
         labeledTextChooser1.set_Text(Main.MPPATH);
-        labeledTextField3.set_Text(Constants.DATABASENAME);
+        labeledTextField3.set_Text(Constants.DATABASENAME + forConnId);
         labeledTextField1.requestFocusInWindow();
     }
 }
