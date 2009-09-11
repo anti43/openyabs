@@ -17,8 +17,12 @@
 package mpv5.data;
 
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JComponent;
 import mpv5.logging.Log;
+import mpv5.utils.date.DateConverter;
 
 /**
  * PropertyStores is used to store key-value pairs
@@ -90,80 +94,110 @@ public class PropertyStore {
         return null;
     }
 
-    /**
-     * Return a double property. Will return NULL if the property is not parseable as double
-     * @param key
-     * @param desiredClass
-     * @return
-     */
-    public synchronized double getProperty(String key, double desiredClass) {
-        String t = getProperty(key);
-        if (t == null) {
-            return 0d;
-        } else {
-            try {
-                return Double.valueOf(t);
-            } catch (NumberFormatException numberFormatException) {
-                return 0d;
-            }
-        }
-    }
-
-    /**
-     * Convenience method to retrieve visual component properties stored as
-     * <br/>comp.getClass().getName() + "$" + source
-     * @param comp
-     * @param source
-     * @param b
-     * @return
-     */
-    public synchronized double getProperty(JComponent comp, String source, double b) {
-        return getProperty(comp.getClass().getName() + "$" + source, b);
-    }
-
-    /**
-     * Return a Integer property. Will return 0 if the property is not parseable as Integer
-     * @param key
-     * @param desiredClass
-     * @return
-     */
-    public synchronized int getProperty(String key, int desiredClass) {
-        String t = getProperty(key);
-        if (t == null) {
-            return 0;
-        } else {
-            try {
-                return Integer.valueOf(t);
-            } catch (NumberFormatException numberFormatException) {
-                return 0;
-            }
-        }
-    }
-
-    /**
-     * Convenience method to retrieve visual component properties stored as
-     * <br/>comp.getClass().getName() + "$" + source
-     * @param comp
-     * @param source
-     * @param b
-     * @return
-     */
-    public synchronized int getProperty(JComponent comp, String source, int b) {
-        return getProperty(comp.getClass().getName() + "$" + source, b);
-    }
-
+//    /**
+//     * Return a double property. Will return NULL if the property is not parseable as double
+//     * @param key
+//     * @param desiredClass
+//     * @return
+//     */
+//    public synchronized double getProperty(String key, double desiredClass) {
+//        String t = getProperty(key);
+//        if (t == null) {
+//            return 0d;
+//        } else {
+//            try {
+//                return Double.valueOf(t);
+//            } catch (NumberFormatException numberFormatException) {
+//                return 0d;
+//            }
+//        }
+//    }
+//    /**
+//     * Convenience method to retrieve visual component properties stored as
+//     * <br/>comp.getClass().getName() + "$" + source
+//     * @param comp
+//     * @param source
+//     * @param b
+//     * @return
+//     */
+//    public synchronized double getProperty(JComponent comp, String source, double b) {
+//        return getProperty(comp.getClass().getName() + "$" + source, b);
+//    }
+//    /**
+//     * Return a Integer property. Will return 0 if the property is not parseable as Integer
+//     * @param key
+//     * @param desiredClass
+//     * @return
+//     */
+//    public synchronized int getProperty(String key, int desiredClass) {
+//        String t = getProperty(key);
+//        if (t == null) {
+//            return 0;
+//        } else {
+//            try {
+//                return Integer.valueOf(t);
+//            } catch (NumberFormatException numberFormatException) {
+//                return 0;
+//            }
+//        }
+//    }
+//
+//    /**
+//     * Convenience method to retrieve visual component properties stored as
+//     * <br/>comp.getClass().getName() + "$" + source
+//     * @param comp
+//     * @param source
+//     * @param b
+//     * @return
+//     */
+//    public synchronized int getProperty(JComponent comp, String source, int b) {
+//        return getProperty(comp.getClass().getName() + "$" + source, b);
+//    }
+//    /**
+//     * Return a boolean property. Will return false if the property is not parseable as boolean
+//     * @param key
+//     * @param desiredClass
+//     * @return
+//     */
+//    public synchronized boolean getProperty(String key, boolean desiredClass) {
+//        String t = getProperty(key);
+//        if (t == null) {
+//            return false;
+//        } else {
+//            return Boolean.parseBoolean(t);
+//        }
+//    }
     /**
      * Return a boolean property. Will return false if the property is not parseable as boolean
+     * @param <T>
      * @param key
      * @param desiredClass
-     * @return
+     * @return A value or a new instance of T
      */
-    public synchronized boolean getProperty(String key, boolean desiredClass) {
+    @SuppressWarnings("unchecked")
+    public synchronized <T extends Object> T getProperty(String key, T desiredClass) {
         String t = getProperty(key);
-        if (t == null) {
-            return false;
+
+        if (desiredClass instanceof Number) {
+            if (t == null) {
+                return (T) new Double(0);
+            } else {
+                return (T) Double.valueOf(t);
+            }
+        } else if (desiredClass instanceof Boolean) {
+            if (t == null) {
+                return (T) Boolean.FALSE;
+            } else {
+                return (T) Boolean.valueOf(t);
+            }
+        } else if (desiredClass instanceof Date) {
+            if (t == null) {
+                return (T) new Date();
+            } else {
+                return (T) DateConverter.getDate(t);
+            }
         } else {
-            return Boolean.parseBoolean(t);
+            return (T) t;
         }
     }
 
@@ -176,6 +210,19 @@ public class PropertyStore {
      */
     public synchronized boolean getProperty(JComponent comp, String source) {
         return getProperty(comp.getClass().getName() + "$" + source, true);
+    }
+
+    /**
+     * Convenience method to retrieve (boolean) visual component properties stored as
+     * <br/>comp.getClass().getName() + "$" + source
+     * @param <T>
+     * @param comp
+     * @param source
+     * @param type
+     * @return
+     */
+    public synchronized <T extends Object> T getProperty(JComponent comp, String source, T type) {
+        return getProperty(comp.getClass().getName() + "$" + source, type);
     }
 
     /**
