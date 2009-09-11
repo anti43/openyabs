@@ -23,6 +23,8 @@ package mpv5.ui.panels;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.util.Date;
 import java.util.logging.Level;
@@ -95,7 +97,41 @@ public class ExpensePanel extends javax.swing.JPanel implements DataPanel {
         taxrate.setSearchOnEnterEnabled(true);
         taxrate.setContext(Context.getTaxes());
 
-        new calc().start();
+//        new calc().start();
+        value.getTextField().addKeyListener(new KeyListener() {
+
+            public void keyTyped(KeyEvent e) {
+                calculate();
+            }
+
+            public void keyPressed(KeyEvent ek) {
+                calculate();
+            }
+
+            public void keyReleased(KeyEvent e) {
+                calculate();
+            }
+
+            private void calculate() {
+                double tax = 0;
+                try {
+                    MPComboBoxModelItem t = taxrate.getValue();
+                    tax = Item.getTaxValue(Integer.valueOf(t.getId()));
+                } catch (Exception e) {
+                    try {
+                        tax = Integer.valueOf(taxrate.getText());
+                    } catch (NumberFormatException numberFormatException) {
+                        tax = 0d;
+                    }
+                }
+
+                try {
+                    netvalue.setText(FormatNumber.formatLokalCurrency(FormatNumber.parseDezimal(value.getText()) * ((tax / 100) + 1)));
+                } catch (Exception e) {
+                    netvalue.setText(FormatNumber.formatLokalCurrency(0d));
+                }
+            }
+        });
         refresh();
     }
 

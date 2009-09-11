@@ -18,8 +18,6 @@ package mpv5.data;
 
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JComponent;
 import mpv5.logging.Log;
 import mpv5.utils.date.DateConverter;

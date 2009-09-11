@@ -68,7 +68,7 @@ public class Expense extends DatabaseObject implements Formattable {
 
     @Override
     public JComponent getView() {
-        return new ExpensePanel();
+        return ExpensePanel.instanceOf();
     }
 
     @Override

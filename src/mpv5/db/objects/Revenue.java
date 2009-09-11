@@ -69,7 +69,7 @@ public class Revenue extends DatabaseObject implements Formattable {
 
     @Override
     public JComponent getView() {
-        return new RevenuePanel();
+        return RevenuePanel.instanceOf();
     }
 
     @Override
