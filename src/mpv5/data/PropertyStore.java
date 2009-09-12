@@ -176,11 +176,17 @@ public class PropertyStore {
     public synchronized <T extends Object> T getProperty(String key, T desiredClass) {
         String t = getProperty(key);
 
-        if (desiredClass instanceof Number) {
+        if (desiredClass instanceof Double) {
             if (t == null) {
                 return (T) new Double(0);
             } else {
                 return (T) Double.valueOf(t);
+            }
+        } else if (desiredClass instanceof Integer) {
+            if (t == null) {
+                return (T) new Integer(0);
+            } else {
+                return (T) Integer.valueOf(t);
             }
         } else if (desiredClass instanceof Boolean) {
             if (t == null) {

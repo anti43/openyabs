@@ -227,7 +227,7 @@ public class SubItem extends DatabaseObject {
         }
         Double deftax = 0d;
         if (MPView.getUser().getProperties().hasProperty("deftax")) {
-            int taxid = MPView.getUser().getProperties().getProperty("deftax", 0);
+            int taxid = MPView.getUser().getProperties().getProperty("deftax", new Integer(0));
             deftax = Item.getTaxValue(taxid);
             i.setTaxpercentvalue(deftax);
         }
