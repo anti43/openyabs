@@ -177,7 +177,9 @@ public class MPCombobox extends javax.swing.JPanel {
                 }
             }
         };
-        SwingUtilities.invokeLater(runnable);
+        if (context!=null) {
+            SwingUtilities.invokeLater(runnable);
+        }
     }
 
     /**

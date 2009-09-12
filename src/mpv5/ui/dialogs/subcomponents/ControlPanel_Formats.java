@@ -453,7 +453,7 @@ public class ControlPanel_Formats extends javax.swing.JPanel implements ControlA
     }
 
     private boolean test() {
-        if (!labeledTextField1.getText().contains(FormatHandler.INTEGERPART_IDENTIFIER)) {
+        if (!labeledTextField1.getText().contains(FormatHandler.INTEGERPART_IDENTIFIER.substring(0, 3))) {
             labeledTextField1.set_Text(labeledTextField1.getText() + FormatHandler.INTEGERPART_IDENTIFIER);
         }
 
@@ -463,7 +463,7 @@ public class ControlPanel_Formats extends javax.swing.JPanel implements ControlA
 
         FormatHandler fh = new FormatHandler(b);
         fh.setFormat(labeledTextField1.getText());
-        str = fh.toString(1000);
+        str = fh.toString(Integer.valueOf(labeledSpinner1.get_Value().toString()));
         str = Messages.THE_RESULT + str;
         return Popup.OK_dialog(str, Messages.NOTICE.getValue());
     }
