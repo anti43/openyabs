@@ -475,8 +475,12 @@ public class wizard_DBSettings_1 extends javax.swing.JPanel implements Wizardabl
     }
 
     public void load() {
+        String dbn = Constants.DATABASENAME;
+        if (forConnId != null) {
+            dbn += forConnId;
+        }
         labeledTextChooser1.set_Text(Main.MPPATH);
-        labeledTextField3.set_Text(Constants.DATABASENAME + forConnId);
+        labeledTextField3.set_Text(dbn);
         labeledTextField1.requestFocusInWindow();
     }
 }
