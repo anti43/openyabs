@@ -28,7 +28,7 @@ public interface Constants {
      * 
      * Full Version number
      */
-    public static final String VERSION = "Yabs-1.0-beta-1";
+    public static final String VERSION = "Yabs-1.0-beta-preview-1";
     /**
      * The minimal Database Version which is compatible with this release
      */
@@ -41,7 +41,7 @@ public interface Constants {
      *
      * The Release version
      */
-    public static final String RELEASE_VERSION = "1";
+    public static final String RELEASE_VERSION = "0";
     /**
      *
      * Alias

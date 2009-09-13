@@ -108,7 +108,7 @@ public class MPControlPanel extends javax.swing.JPanel {
         jScrollPane1.setPreferredSize(new java.awt.Dimension(343, 303));
 
         buttons.setBackground(new java.awt.Color(255, 255, 255));
-        java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle();
+        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("mpv5/resources/languages/Panels"); // NOI18N
         buttons.setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("MPControlPanel.buttons.border.title"))); // NOI18N
         buttons.setAutoscrolls(true);
         buttons.setMaximumSize(new java.awt.Dimension(32767, 400));
@@ -216,7 +216,7 @@ public class MPControlPanel extends javax.swing.JPanel {
         });
         buttons.add(jButton6);
 
-        jButton7.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
+        jButton7.setFont(new java.awt.Font("Tahoma", 0, 10));
         jButton7.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/48/openofficeorg-20.png"))); // NOI18N
         jButton7.setText(bundle.getString("MPControlPanel.jButton7.text")); // NOI18N
         jButton7.setToolTipText(bundle.getString("MPControlPanel.jButton7.toolTipText")); // NOI18N
@@ -477,7 +477,7 @@ public class MPControlPanel extends javax.swing.JPanel {
         });
         buttons.add(jButton19);
 
-        jButton20.setFont(new java.awt.Font("Tahoma", 0, 10));
+        jButton20.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
         jButton20.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/48/advancedsettings.png"))); // NOI18N
         jButton20.setText(bundle.getString("MPControlPanel.jButton20.text")); // NOI18N
         jButton20.setToolTipText(bundle.getString("MPControlPanel.jButton20.toolTipText")); // NOI18N

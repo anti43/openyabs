@@ -77,6 +77,7 @@ public class Main extends SingleFrameApplication {
      */
     public static boolean INSTANTIATED = false;
     private static Integer FORCE_INSTALLER;
+    private static boolean CLEAR_LOCK = false;
 
     /**
      * Use this method to (re) cache data from the database to avoid uneccessary db queries
@@ -316,13 +317,14 @@ public class Main extends SingleFrameApplication {
         Argument number = abuilder.withName("number").withMinimum(1).withMaximum(1).create();
 
         Option server = obuilder.withShortName("server").withShortName("serv").withDescription("start built-in server component").create();
+        Option clear = obuilder.withShortName("clear").withDescription("clear the status of the yabs lock file").create();
         Option showenv = obuilder.withShortName("showenv").withShortName("se").withDescription("show environmental variables").create();
         Option netbook = obuilder.withShortName("netbook").withShortName("net").withDescription("use netbook size optimizations").create();
         Option help = obuilder.withShortName("help").withShortName("h").withDescription("print this message").create();
         Option license = obuilder.withShortName("license").withShortName("li").withDescription("print license").create();
         Option version = obuilder.withShortName("version").withDescription("print the version information and exit").create();
         Option verbose = obuilder.withShortName("verbose").withDescription("be extra verbose").create();
-        Option nolf = obuilder.withShortName("nolf").withDescription("use metal L&F").create();
+        Option nolfs = obuilder.withShortName("nolf").withDescription("use metal L&F").create();
         Option debug = obuilder.withShortName("debug").withDescription("debug logging").create();
         Option removeplugins = obuilder.withShortName("removeplugins").withDescription("remove all plugins which would be loaded").create();
         Option logfile = obuilder.withShortName("logfile").withShortName("l").withDescription("use file for log").withArgument(filearg).create();
@@ -338,7 +340,7 @@ public class Main extends SingleFrameApplication {
                 withOption(verbose).
                 withOption(debug).
                 withOption(license).
-                withOption(nolf).
+                withOption(nolfs).
                 withOption(netbook).
                 withOption(showenv).
                 withOption(removeplugins).
@@ -348,6 +350,7 @@ public class Main extends SingleFrameApplication {
                 withOption(windowlog).
                 withOption(consolelog).
                 withOption(mpdir).
+                withOption(clear).
                 create();
 
         HelpFormatter hf = new HelpFormatter();
@@ -412,7 +415,7 @@ public class Main extends SingleFrameApplication {
                 }
             }
 
-            if (cl.hasOption(nolf)) {
+            if (cl.hasOption(nolfs)) {
                 setLaF("javax.swing.plaf.metal.MetalLookAndFeel");
                 Main.nolf = true;
             }
@@ -431,6 +434,10 @@ public class Main extends SingleFrameApplication {
 
             if (cl.hasOption(server)) {
                 START_SERVER = true;
+            }
+
+            if (cl.hasOption(clear)) {
+                CLEAR_LOCK = true;
             }
 
             LogConsole.setLogStreams(cl.hasOption(logfile), cl.hasOption(consolelog), cl.hasOption(windowlog));
@@ -634,30 +641,45 @@ public class Main extends SingleFrameApplication {
     private static final String instanceIdentifier = ". Instance[";
 
     private boolean firstInstance() {
-        try {
-            FileReaderWriter x = new FileReaderWriter(lockfile);
-            if (lockfile.exists()) {
-                String[] xc = x.readLines();
-                for (int i = 0; i < xc.length; i++) {
-                    String line = xc[i];
-                    try {
-                        if (line.length() > 0 && line.substring(line.lastIndexOf(instanceIdentifier) + instanceIdentifier.length(), line.lastIndexOf("]")).equals(String.valueOf(LocalSettings.getConnectionID()))) {
-                            Log.Debug(this, "Application already running. \nYou might want to delete " + lockfile);
-                            return false;
+        if (!CLEAR_LOCK) {
+            try {
+                FileReaderWriter x = new FileReaderWriter(lockfile);
+                if (lockfile.exists()) {
+                    String[] xc = x.readLines();
+                    for (int i = 0; i < xc.length; i++) {
+                        String line = xc[i];
+                        try {
+                            if (line.length() > 0 && line.substring(line.lastIndexOf(instanceIdentifier) + instanceIdentifier.length(), line.lastIndexOf("]")).equals(String.valueOf(LocalSettings.getConnectionID()))) {
+                                String message =
+                                        "It looks like the application is already running.\n" +
+                                        "\nThis may be caused by" +
+                                        "\n\t- another instance of YaBS started with the same connection id (" + LocalSettings.getConnectionID() + ") (or no connection id at all)" +
+                                        "\n\t- a previously crashed YaBS instance" +
+                                        "\n\t- a manually killed YaBS instance" +
+                                        "\n\t- a crash or kill of the JVM\n" +
+                                        "\nYou might want to start YaBS once with the option -clear or to delete " + lockfile + " to get rid of this message.";
+                                Log.Debug(this, message);
+                                if (Log.getLoglevel() != Log.LOGLEVEL_DEBUG) {
+                                    System.err.println(message);
+                                }
+                                return false;
+                            }
+                        } catch (Exception e) {
+                            Log.Debug(this, line);
+                            Log.Debug(e);
                         }
-                    } catch (Exception e) {
-                        Log.Debug(this, line);
-                        Log.Debug(e);
                     }
+                    return writeLockFile(x);
+                } else {
+                    return writeLockFile(x);
                 }
-                return writeLockFile(x);
-            } else {
-                return writeLockFile(x);
+            } catch (Exception e) {
+                Log.Debug(e);
+                Log.Debug(this, "Application encountered some problem. Will try to continue anyway.");
+                return true;
             }
-        } catch (Exception e) {
-            Log.Debug(e);
-            Log.Debug(this, "Application encountered some problem. Will try to continue anyway.");
-            return true;
+        } else {
+            return lockfile.delete();
         }
     }
 

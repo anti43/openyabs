@@ -1867,11 +1867,11 @@ public class MPView extends FrameView {
     }//GEN-LAST:event_jButton11ActionPerformed
 
     private void jButton12ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton12ActionPerformed
-        addTab(new ProductPanel(Context.getProducts(), Product.TYPE_PRODUCT), Messages.NEW_PRODUCT);
+        addTab(new ProductPanel(Context.getProducts(), Product.TYPE_SERVICE), Messages.NEW_PRODUCT);
     }//GEN-LAST:event_jButton12ActionPerformed
 
     private void jButton13ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton13ActionPerformed
-        addTab(new ProductPanel(Context.getProducts(), Product.TYPE_SERVICE), Messages.NEW_SERVICE);
+        addTab(new ProductPanel(Context.getProducts(), Product.TYPE_PRODUCT), Messages.NEW_SERVICE);
     }//GEN-LAST:event_jButton13ActionPerformed
 
     private void errorlabelMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_errorlabelMouseClicked

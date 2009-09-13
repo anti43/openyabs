@@ -23,7 +23,7 @@ public class StartPage extends javax.swing.JPanel {
     public StartPage() {
         initComponents();
         fillFiles();
-        jTextArea1.setText(Messages.START_MESSAGE.getValue());
+        jTextArea1.setText(Messages.START_MESSAGE.getValue().replace("*", ""));
     }
 
     /** This method is called from within the constructor to

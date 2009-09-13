@@ -77,7 +77,7 @@
                   <EmptySpace min="-2" max="-2" attributes="1"/>
                   <Component id="cancel" min="-2" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
-                  <Component id="jScrollPane2" pref="158" max="32767" attributes="0"/>
+                  <Component id="jScrollPane2" pref="187" max="32767" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
                   <Component id="back" min="-2" max="-2" attributes="0"/>
                   <EmptySpace min="-2" max="-2" attributes="0"/>
@@ -99,7 +99,7 @@
                           </Group>
                           <EmptySpace max="-2" attributes="0"/>
                       </Group>
-                      <Component id="jScrollPane2" alignment="0" pref="38" max="32767" attributes="0"/>
+                      <Component id="jScrollPane2" alignment="0" pref="39" max="32767" attributes="0"/>
                   </Group>
               </Group>
           </Group>
