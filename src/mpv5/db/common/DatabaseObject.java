@@ -1222,10 +1222,8 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject> {
     @Override
     public int hashCode() {
         int hash = 7;
-        hash =
-                83 * hash + (this.context != null ? this.context.hashCode() : 0);
-        hash =
-                83 * hash + (this.ids != null ? this.ids.hashCode() : 0);
+        hash = 83 * hash + (this.context != null ? this.context.hashCode() : 0);
+        hash = 83 * hash + (this.ids != null ? this.ids.hashCode() : 0);
         return hash;
     }
 
@@ -1239,9 +1237,8 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject> {
         if (databaseObject == null || !(databaseObject instanceof DatabaseObject)) {
             return false;
         } else {
-            return hashCode() == databaseObject.hashCode();
+            return (context.equals(((DatabaseObject)databaseObject).getContext()) && ids == ((DatabaseObject)databaseObject).__getIDS());
         }
-
     }
 
     @Override

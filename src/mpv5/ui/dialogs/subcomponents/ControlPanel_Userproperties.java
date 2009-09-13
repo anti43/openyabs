@@ -57,6 +57,7 @@ public class ControlPanel_Userproperties extends javax.swing.JPanel implements C
         format = new mpv5.ui.beans.LabeledTextField();
         jPanel3 = new javax.swing.JPanel();
         tabs = new javax.swing.JCheckBox();
+        views = new javax.swing.JCheckBox();
         jPanel8 = new javax.swing.JPanel();
         labeledTextField1 = new mpv5.ui.beans.LabeledTextField();
         jLabel1 = new javax.swing.JLabel();
@@ -218,18 +219,25 @@ public class ControlPanel_Userproperties extends javax.swing.JPanel implements C
         tabs.setText(bundle.getString("ControlPanel_Userproperties.tabs.text")); // NOI18N
         tabs.setName("tabs"); // NOI18N
 
+        views.setText(bundle.getString("ControlPanel_Userproperties.views.text")); // NOI18N
+        views.setName("views"); // NOI18N
+
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
+            .addGroup(jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(tabs, javax.swing.GroupLayout.DEFAULT_SIZE, 520, Short.MAX_VALUE)
-                .addContainerGap())
+                .addComponent(tabs, javax.swing.GroupLayout.PREFERRED_SIZE, 148, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(views, javax.swing.GroupLayout.PREFERRED_SIZE, 211, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(167, Short.MAX_VALUE))
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(tabs)
+            .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addComponent(tabs)
+                .addComponent(views))
         );
 
         jPanel8.setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("ControlPanel_Userproperties.jPanel8.border.title"))); // NOI18N
@@ -344,7 +352,7 @@ public class ControlPanel_Userproperties extends javax.swing.JPanel implements C
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel8, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jPanel8, javax.swing.GroupLayout.PREFERRED_SIZE, 81, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel9, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
@@ -451,6 +459,7 @@ public class ControlPanel_Userproperties extends javax.swing.JPanel implements C
     private javax.swing.JCheckBox smtptls;
     private mpv5.ui.beans.LabeledTextField smtpuser;
     private javax.swing.JCheckBox tabs;
+    private javax.swing.JCheckBox views;
     // End of variables declaration//GEN-END:variables
 
     private void setSettings() {
@@ -463,6 +472,7 @@ public class ControlPanel_Userproperties extends javax.swing.JPanel implements C
             MPView.getUser().getProperties().changeProperty(defcount.getName(), defcount.getText());
             MPView.getUser().getProperties().changeProperty(defunit.getName(), defunit.getText());
             MPView.getUser().getProperties().changeProperty(MPView.tabPane, "norecycletabs", tabs.isSelected());
+            MPView.getUser().getProperties().changeProperty(MPView.tabPane, "avoidmultipleviews", views.isSelected());
             if (deftax.getSelectedItem() != null) {
                 MPView.getUser().getProperties().changeProperty(deftax.getName(), deftax.getSelectedItem().getId());
             }
@@ -488,6 +498,7 @@ public class ControlPanel_Userproperties extends javax.swing.JPanel implements C
 
     private void loadSettings() {
         tabs.setSelected(MPView.getUser().getProperties().getProperty(MPView.tabPane, "norecycletabs"));
+        views.setSelected(MPView.getUser().getProperties().getProperty(MPView.tabPane, "avoidmultipleviews"));
         Component[] t = productstobillsproperties.getComponents();
         for (int i = 0; i < t.length; i++) {
             Component component = t[i];

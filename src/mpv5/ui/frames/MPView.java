@@ -429,56 +429,32 @@ public class MPView extends FrameView {
      */
     public void addTab(final DatabaseObject item, Object tabTitle) {
         boolean found = false;
-        if (item.getView() != null && MPView.getUser().getProperties().getProperty(MPView.tabPane, "norecycletabs")) {
-            if (tabTitle == null) {
-                final DataPanel p = ((DataPanel) item.getView());
-                addTab((JComponent) p, item.__getCName());
-                Runnable runnable = new Runnable() {
-
-                    public void run() {
-                        p.setDataOwner(item, true);
-                    }
-                };
-                SwingUtilities.invokeLater(runnable);
-            } else {
-                final DataPanel p = ((DataPanel) item.getView());
-                addTab((JComponent) p, tabTitle + ": " + item.__getCName());
-                Runnable runnable = new Runnable() {
-
-                    public void run() {
-                        p.setDataOwner(item, true);
-                    }
-                };
-                SwingUtilities.invokeLater(runnable);
-            }
-            getCurrentTab().setDataOwner(item, true);
-        } else if (item.getView() != null) {
+        boolean proceed = true;
+        if (MPView.getUser().getProperties().getProperty(MPView.tabPane, "avoidmultipleviews")) {
+            Log.Debug(this, "Looking for an existing view for: " + item);
             int count = tabPane.getTabCount();
             for (int i = 0; i < count; i++) {
                 if (getTabAt(i) != null) {
                     DataPanel panel = getTabAt(i);
-                    if (!panel.getDataOwner().isExisting() && panel.getDataOwner().getContext().equals(item.getContext())) {
+                    if (item.equals(panel.getDataOwner())) {
                         tabPane.setSelectedIndex(i);
-                        panel.setDataOwner(item, true);
                         if (tabTitle == null) {
                             tabPane.setTitleAt(i, item.__getCName());
                         } else {
                             tabPane.setTitleAt(i, tabTitle + ": " + item.__getCName());
                         }
-                        found = true;
+                        proceed = false;
                         break;
                     }
                 }
             }
-            if (!found) {
-                try {
-                    final DataPanel p = (DataPanel) item.getView();
+        }
 
-                    if (tabTitle == null) {
-                        addTab((JComponent) p, item.__getCName());
-                    } else {
-                        addTab((JComponent) p, tabTitle + ": " + item.__getCName());
-                    }
+        if (proceed) {
+            if (item.getView() != null && MPView.getUser().getProperties().getProperty(MPView.tabPane, "norecycletabs")) {
+                if (tabTitle == null) {
+                    final DataPanel p = ((DataPanel) item.getView());
+                    addTab((JComponent) p, item.__getCName());
                     Runnable runnable = new Runnable() {
 
                         public void run() {
@@ -486,11 +462,58 @@ public class MPView extends FrameView {
                         }
                     };
                     SwingUtilities.invokeLater(runnable);
-                } catch (ClassCastException e) {
-                    if (tabTitle == null) {
-                        addTab(item.getView(), item.__getCName());
-                    } else {
-                        addTab(item.getView(), tabTitle + ": " + item.__getCName());
+                } else {
+                    final DataPanel p = ((DataPanel) item.getView());
+                    addTab((JComponent) p, tabTitle + ": " + item.__getCName());
+                    Runnable runnable = new Runnable() {
+
+                        public void run() {
+                            p.setDataOwner(item, true);
+                        }
+                    };
+                    SwingUtilities.invokeLater(runnable);
+                }
+                getCurrentTab().setDataOwner(item, true);
+            } else if (item.getView() != null) {
+                int count = tabPane.getTabCount();
+                for (int i = 0; i < count; i++) {
+                    if (getTabAt(i) != null) {
+                        DataPanel panel = getTabAt(i);
+                        if (!panel.getDataOwner().isExisting() && panel.getDataOwner().getContext().equals(item.getContext())) {
+                            tabPane.setSelectedIndex(i);
+                            panel.setDataOwner(item, true);
+                            if (tabTitle == null) {
+                                tabPane.setTitleAt(i, item.__getCName());
+                            } else {
+                                tabPane.setTitleAt(i, tabTitle + ": " + item.__getCName());
+                            }
+                            found = true;
+                            break;
+                        }
+                    }
+                }
+                if (!found) {
+                    try {
+                        final DataPanel p = (DataPanel) item.getView();
+
+                        if (tabTitle == null) {
+                            addTab((JComponent) p, item.__getCName());
+                        } else {
+                            addTab((JComponent) p, tabTitle + ": " + item.__getCName());
+                        }
+                        Runnable runnable = new Runnable() {
+
+                            public void run() {
+                                p.setDataOwner(item, true);
+                            }
+                        };
+                        SwingUtilities.invokeLater(runnable);
+                    } catch (ClassCastException e) {
+                        if (tabTitle == null) {
+                            addTab(item.getView(), item.__getCName());
+                        } else {
+                            addTab(item.getView(), tabTitle + ": " + item.__getCName());
+                        }
                     }
                 }
             }
@@ -1901,7 +1924,7 @@ public class MPView extends FrameView {
 
     private void jButton16ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton16ActionPerformed
         addOrShowTab(RevenuePanel.instanceOf(), Messages.REVENUE);
-        
+
     }//GEN-LAST:event_jButton16ActionPerformed
     // Variables declaration - do not modify//GEN-BEGIN:variables
     public javax.swing.JMenu clipboardMenu;
