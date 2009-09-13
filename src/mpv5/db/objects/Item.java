@@ -515,7 +515,7 @@ public class Item extends DatabaseObject implements Formattable {
 
         if (map.containsKey("taxids")) {
             try {
-                map.put("item.tax", FormatNumber.formatPercent(Item.getTaxValue(Integer.valueOf(map.get("taxids").toString()))));
+                map.put("tax", FormatNumber.formatPercent(Item.getTaxValue(Integer.valueOf(map.get("taxids").toString()))));
                 map.remove("taxids");
             } catch (NumberFormatException numberFormatException) {
                 Log.Debug(numberFormatException);

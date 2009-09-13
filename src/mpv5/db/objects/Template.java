@@ -41,6 +41,8 @@ import mpv5.utils.export.ODTFile;
 import mpv5.utils.export.PDFFile;
 import mpv5.utils.files.FileDirectoryHandler;
 import mpv5.utils.images.MPIcon;
+import mpv5.utils.text.RandomText;
+import org.xhtmlrenderer.layout.TextUtil;
 
 /**
  * This class represents Yabs Templates
@@ -210,7 +212,8 @@ public class Template extends DatabaseObject {
             try {
                 file = QueryHandler.instanceOf().clone(Context.getFiles()).
                         retrieveFile(filename,
-                        new File(FileDirectoryHandler.getTempDir() + cname));
+                        new File(FileDirectoryHandler.getTempDir() + "~" + RandomText.getText() + "_"+ cname));
+                file.deleteOnExit();
             } catch (Exception e) {
                 Log.Debug(e);
             }

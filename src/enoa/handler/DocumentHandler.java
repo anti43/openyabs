@@ -336,7 +336,11 @@ public class DocumentHandler {
      * @throws DocumentException
      */
     public void clear() throws DocumentException {
-        document = connection.getDocumentService().loadDocument(file.getPath());
+        try {
+            document = connection.getDocumentService().loadDocument(file.getPath(), descriptor);
+        } catch (NOAException ex) {
+            Log.Debug(ex);
+        }
         textFieldService = null;
         placeholders = null;
         tablehandler = null;
