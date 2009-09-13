@@ -13,10 +13,8 @@ import java.util.HashMap;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
-import javax.swing.JRootPane;
+import mpv5.ui.frames.MPView;
 import mpv5.ui.misc.Position;
-import mpv5.ui.panels.PreviewPanel;
-import mpv5.ui.panels.RemindPanel;
 
 /**
  *
@@ -37,26 +35,21 @@ public class BigPopup {
         window.getContentPane().setLayout(new BorderLayout());
         window.getContentPane().add(content, BorderLayout.CENTER);
         window.pack();
-//        window.setAlwaysOnTop(true);
         window.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         window.setTitle(title);
-
         window.addKeyListener(new KeyListener() {
-
             @Override
             public void keyTyped(KeyEvent e) {
                 if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
                     window.dispose();
                 }
             }
-
             @Override
             public void keyPressed(KeyEvent e) {
                 if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
                     window.dispose();
                 }
             }
-
             @Override
             public void keyReleased(KeyEvent e) {
             }
@@ -81,40 +74,32 @@ public class BigPopup {
         window.getContentPane().setLayout(new BorderLayout());
         window.getContentPane().add(content, BorderLayout.CENTER);
         window.pack();
-//        window.setAlwaysOnTop(true);
         window.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         window.setTitle(title);
-
         window.addKeyListener(new KeyListener() {
-
             @Override
             public void keyTyped(KeyEvent e) {
                 if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
                     window.dispose();
                 }
             }
-
             @Override
             public void keyPressed(KeyEvent e) {
                 if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
                     window.dispose();
                 }
             }
-
             @Override
             public void keyReleased(KeyEvent e) {
             }
         });
-
-        new Position(window);
-        window.setExtendedState(state);
         if (width != null) {
-            window.setPreferredSize(new Dimension(width, window.getHeight()));
-            window.setSize(new Dimension(width, window.getHeight()));
+            window.setPreferredSize(new Dimension(width, MPView.identifierFrame.getHeight()));
+            window.setSize(new Dimension(width, MPView.identifierFrame.getHeight()));
         }
-
+        window.setExtendedState(state);
+        new Position(window);
         window.setVisible(true);
-
         contents.put(content, window);
     }
 
@@ -134,7 +119,6 @@ public class BigPopup {
         window.setAlwaysOnTop(alwaysOnTop);
         window.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         window.setTitle(title);
-
         window.addKeyListener(new KeyListener() {
 
             @Override
@@ -155,7 +139,6 @@ public class BigPopup {
             public void keyReleased(KeyEvent e) {
             }
         });
-
         new Position(window);
         window.setVisible(true);
         contents.put(content, window);

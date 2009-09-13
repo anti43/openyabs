@@ -408,7 +408,6 @@ public class PreviewPanel extends javax.swing.JPanel implements Waiter {
      * @param title
      */
     public void showInNewFrame(String title) {
-        BigPopup p = new BigPopup();
         BigPopup.showPopup(this, jPanel1, title, JFrame.MAXIMIZED_VERT, 800);
     }
 

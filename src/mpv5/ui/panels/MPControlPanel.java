@@ -3,22 +3,16 @@ package mpv5.ui.panels;
 import de.muntjak.tinylookandfeel.TinyLookAndFeel;
 import java.awt.BorderLayout;
 import java.awt.Component;
-import java.awt.FlowLayout;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.Icon;
 import javax.swing.JButton;
-import javax.swing.JComponent;
 import javax.swing.JPanel;
 import mpv5.Main;
 import mpv5.db.common.Context;
 import mpv5.globals.LocalSettings;
 import mpv5.globals.Messages;
 import mpv5.logging.Log;
-import mpv5.i18n.LanguageManager;
 import mpv5.ui.dialogs.ControlApplet;
 import mpv5.ui.dialogs.Popup;
-import mpv5.ui.dialogs.hn.CompanyInfo;
 import mpv5.ui.dialogs.subcomponents.ControlPanel_Accounts;
 import mpv5.ui.dialogs.subcomponents.ControlPanel_Advanced;
 import mpv5.ui.dialogs.subcomponents.ControlPanel_Fonts;
@@ -36,7 +30,6 @@ import mpv5.ui.dialogs.subcomponents.ControlPanel_Users;
 import mpv5.ui.dialogs.subcomponents.ControlPanel_WebShopManager;
 import mpv5.ui.frames.MPBabelFish;
 import mpv5.ui.frames.MPView;
-import mpv5.ui.panels.hn.ProfitPanel;
 import mpv5.utils.files.FileDirectoryHandler;
 
 /**
@@ -608,10 +601,7 @@ public class MPControlPanel extends javax.swing.JPanel {
 
     private void jButton18ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton18ActionPerformed
 
-          CompanyInfo taxformDialog = new CompanyInfo(MPView.identifierFrame,
-          java.util.ResourceBundle.getBundle("mpv5/resources/languages/Panels").
-          getString("TaxAddressDialog.companydata"), new ProfitPanel().map);
-          taxformDialog.setVisible(true);
+ 
     }//GEN-LAST:event_jButton18ActionPerformed
 
     private void jButton19ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton19ActionPerformed
