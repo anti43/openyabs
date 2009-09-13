@@ -516,12 +516,17 @@
                     <Property name="lineWrap" type="boolean" value="true"/>
                     <Property name="rows" type="int" value="5"/>
                     <Property name="wrapStyleWord" type="boolean" value="true"/>
-                    <Property name="focusCycleRoot" type="boolean" value="true"/>
+                    <Property name="focusTraversalPolicyProvider" type="boolean" value="true"/>
                     <Property name="highlighter" type="javax.swing.text.Highlighter" editor="org.netbeans.modules.form.ComponentChooserEditor">
                       <ComponentRef name="null"/>
                     </Property>
                     <Property name="name" type="java.lang.String" value="description" noResource="true"/>
+                    <Property name="requestFocusEnabled" type="boolean" value="false"/>
                   </Properties>
+                  <AuxValues>
+                    <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new NoTabTextArea()&#xa;"/>
+                    <AuxValue name="JavaCodeGenerator_CreateCodePre" type="java.lang.String" value="class NoTabTextArea extends JTextArea {&#xa; protected void processComponentKeyEvent( KeyEvent e ) {  &#xa;        if ( e.getID() == KeyEvent.KEY_PRESSED &amp;&amp;   &#xa;                 e.getKeyCode() == KeyEvent.VK_TAB ) {  &#xa;             e.consume();  &#xa;             if (e.isShiftDown()) {  &#xa;                 transferFocusBackward();  &#xa;             } else {  &#xa;                 transferFocus();  &#xa;             }    &#xa;         } else {  &#xa;             super.processComponentKeyEvent( e );  &#xa;         }  &#xa;     }   &#xa;}"/>
+                  </AuxValues>
                 </Component>
               </SubComponents>
             </Container>

@@ -46,7 +46,7 @@
     </DimensionLayout>
     <DimensionLayout dim="1">
       <Group type="103" groupAlignment="0" attributes="0">
-          <Component id="leftpane" alignment="0" pref="640" max="32767" attributes="1"/>
+          <Component id="leftpane" alignment="0" pref="642" max="32767" attributes="1"/>
           <Group type="102" alignment="0" attributes="0">
               <Component id="toolbarpane" min="-2" max="-2" attributes="0"/>
               <EmptySpace min="-2" pref="0" max="-2" attributes="0"/>
@@ -84,7 +84,7 @@
                       <Component id="jPanel4" alignment="0" min="0" max="32767" attributes="2"/>
                       <Component id="jPanel1" alignment="0" max="32767" attributes="2"/>
                       <Group type="102" alignment="1" attributes="0">
-                          <Component id="jToolBar1" pref="560" max="32767" attributes="0"/>
+                          <Component id="jToolBar1" pref="568" max="32767" attributes="0"/>
                           <EmptySpace max="-2" attributes="0"/>
                           <Component id="prinitingComboBox1" min="-2" max="-2" attributes="0"/>
                       </Group>
@@ -174,7 +174,7 @@
                           <Component id="company" min="-2" pref="127" max="-2" attributes="1"/>
                           <Component id="manufacturer" alignment="0" min="-2" max="-2" attributes="1"/>
                       </Group>
-                      <EmptySpace pref="135" max="32767" attributes="0"/>
+                      <EmptySpace pref="193" max="32767" attributes="0"/>
                       <Group type="103" groupAlignment="1" max="-2" attributes="0">
                           <Component id="groupnameselect" max="32767" attributes="1"/>
                           <Component id="dateadded" alignment="1" min="-2" pref="97" max="-2" attributes="0"/>
@@ -491,6 +491,10 @@
                     <Property name="dragEnabled" type="boolean" value="true"/>
                     <Property name="name" type="java.lang.String" value="notes" noResource="true"/>
                   </Properties>
+                  <AuxValues>
+                    <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new NoTabTextArea()"/>
+                    <AuxValue name="JavaCodeGenerator_CreateCodePre" type="java.lang.String" value="class NoTabTextArea extends JTextPane {&#xa;            protected void processComponentKeyEvent( KeyEvent e ) {&#xa;                if ( e.getID() == KeyEvent.KEY_PRESSED &amp;&amp;&#xa;                    e.getKeyCode() == KeyEvent.VK_TAB ) {&#xa;                    e.consume();&#xa;                    if (e.isShiftDown()) {&#xa;                        transferFocusBackward();&#xa;                    } else {&#xa;                        transferFocus();&#xa;                    }&#xa;                } else {&#xa;                    super.processComponentKeyEvent( e );&#xa;                }&#xa;            }&#xa;        }"/>
+                  </AuxValues>
                 </Component>
               </SubComponents>
             </Container>
@@ -528,7 +532,7 @@
                           <Component id="mobilephone" pref="201" max="32767" attributes="1"/>
                           <Component id="website" pref="201" max="32767" attributes="1"/>
                       </Group>
-                      <EmptySpace pref="119" max="32767" attributes="0"/>
+                      <EmptySpace pref="121" max="32767" attributes="0"/>
                   </Group>
               </Group>
             </DimensionLayout>
@@ -661,7 +665,7 @@
                   <Group type="102" alignment="0" attributes="0">
                       <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="jScrollPane2" alignment="1" pref="706" max="32767" attributes="0"/>
+                          <Component id="jScrollPane2" alignment="1" pref="710" max="32767" attributes="0"/>
                           <Group type="102" alignment="0" attributes="0">
                               <Component id="button_bills" min="-2" max="-2" attributes="0"/>
                               <EmptySpace max="-2" attributes="0"/>
@@ -670,7 +674,7 @@
                               <Component id="button_products" min="-2" max="-2" attributes="0"/>
                               <EmptySpace max="-2" attributes="0"/>
                               <Component id="button_orders" min="-2" max="-2" attributes="0"/>
-                              <EmptySpace pref="267" max="32767" attributes="0"/>
+                              <EmptySpace pref="327" max="32767" attributes="0"/>
                               <Component id="jButton1" min="-2" max="-2" attributes="0"/>
                               <EmptySpace max="-2" attributes="0"/>
                               <Component id="addfile" min="-2" pref="24" max="-2" attributes="0"/>
@@ -1026,7 +1030,7 @@
                                   </Group>
                               </Group>
                           </Group>
-                          <EmptySpace pref="118" max="32767" attributes="0"/>
+                          <EmptySpace pref="124" max="32767" attributes="0"/>
                       </Group>
                   </Group>
                 </DimensionLayout>

@@ -27,6 +27,7 @@ import java.awt.Component;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.io.File;
 import java.net.MalformedURLException;
@@ -35,11 +36,14 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.AbstractAction;
+import javax.swing.Action;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JMenuItem;
 import javax.swing.JTabbedPane;
 import javax.swing.JTable;
+import javax.swing.JTextArea;
 import javax.swing.JViewport;
 import javax.swing.SwingUtilities;
 import javax.swing.table.TableCellRenderer;
@@ -346,7 +350,23 @@ public class ProductPanel extends javax.swing.JPanel implements DataPanel, MPCBS
         currencylabel1 = new javax.swing.JLabel();
         currencylabel2 = new javax.swing.JLabel();
         jScrollPane3 = new javax.swing.JScrollPane();
-        description = new javax.swing.JTextArea();
+        class NoTabTextArea extends JTextArea {
+            protected void processComponentKeyEvent( KeyEvent e ) {
+                if ( e.getID() == KeyEvent.KEY_PRESSED &&
+                    e.getKeyCode() == KeyEvent.VK_TAB ) {
+                    e.consume();
+                    if (e.isShiftDown()) {
+                        transferFocusBackward();
+                    } else {
+                        transferFocus();
+                    }
+                } else {
+                    super.processComponentKeyEvent( e );
+                }
+            }
+        }
+        description = new NoTabTextArea()
+        ;
         jToolBar1 = new javax.swing.JToolBar();
         button_preview = new javax.swing.JButton();
         prinitingComboBox1 = new mpv5.ui.beans.PrinitingComboBox();
@@ -519,9 +539,10 @@ public class ProductPanel extends javax.swing.JPanel implements DataPanel, MPCBS
         description.setLineWrap(true);
         description.setRows(5);
         description.setWrapStyleWord(true);
-        description.setFocusCycleRoot(true);
+        description.setFocusTraversalPolicyProvider(true);
         description.setHighlighter(null);
         description.setName("description"); // NOI18N
+        description.setRequestFocusEnabled(false);
         jScrollPane3.setViewportView(description);
 
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
