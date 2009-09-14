@@ -26,6 +26,7 @@ import mpv5.utils.numbers.Ip;
 import java.util.Hashtable;
 import mpv5.utils.tables.*;
 import java.io.File;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -1041,4 +1042,30 @@ public class ArrayUtilities {
 
         return list3;
     }
+
+    /**
+     * Create an Enumeration from an Array
+     * @param obj
+     * @return
+     */
+    public static Enumeration arrayToEnumeration(final Object obj) {
+    Class type = obj.getClass();
+    if (!type.isArray()) {
+      throw new IllegalArgumentException(obj.getClass().toString());
+    } else {
+      return (new Enumeration() {
+        int size = Array.getLength(obj);
+
+        int cursor;
+
+        public boolean hasMoreElements() {
+          return (cursor < size);
+        }
+
+        public Object nextElement() {
+          return Array.get(obj, cursor++);
+        }
+      });
+    }
+  }
 }

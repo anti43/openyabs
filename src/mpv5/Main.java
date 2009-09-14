@@ -114,13 +114,8 @@ public class Main extends SingleFrameApplication {
         oap.add(officeApplication);
     }
     private static List<IOfficeApplication> oap = new Vector<IOfficeApplication>();
-    private File lockfile = new File(MPPATH + File.separator + "." + Constants.PROG_NAME + "." + "lck");
 
-    /**
-     * Read in local settings and launch the application
-     */
-    public static void start() {
-
+    private static void readLocalSettings() {
         splash.nextStep(Messages.LOCAL_SETTINGS.toString());
         try {
             LocalSettings.read();
@@ -129,6 +124,13 @@ public class Main extends SingleFrameApplication {
             Log.Debug(Main.class, ex.getMessage());
             Log.Debug(Main.class, "Local settings file not readable: " + LocalSettings.getLocalFile());
         }
+    }
+    private File lockfile = new File(MPPATH + File.separator + "." + Constants.PROG_NAME + "." + "lck");
+
+    /**
+     * Launch the application
+     */
+    public static void start() {
 
         splash.nextStep(Messages.LAUNCH.toString());
         Runnable runnable = new Runnable() {
@@ -248,6 +250,7 @@ public class Main extends SingleFrameApplication {
             getOS();
             setEnv(null);
             parseArgs(args);
+            readLocalSettings();
             setDerbyLog();
             start();
         } catch (Exception e) {
@@ -457,7 +460,8 @@ public class Main extends SingleFrameApplication {
      */
     public static void setDerbyLog() {
         Properties p = System.getProperties();
-        p.put("derby.stream.error.file", FileDirectoryHandler.getTempFile());
+        File d = FileDirectoryHandler.getTempFile();
+        p.put("derby.stream.error.file", d.getPath());
     }
 
     /**

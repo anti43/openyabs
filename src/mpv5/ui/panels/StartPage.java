@@ -2,13 +2,21 @@ package mpv5.ui.panels;
 
 import java.io.File;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Properties;
+import java.util.Vector;
 import javax.swing.DefaultListModel;
 import javax.swing.ListModel;
 import mpv5.Main;
 import mpv5.globals.Constants;
+import mpv5.globals.LocalSettings;
 import mpv5.globals.Messages;
 import mpv5.logging.Log;
+import mpv5.utils.arrays.ArrayUtilities;
 import mpv5.utils.files.FileDirectoryHandler;
 import mpv5.utils.files.JarFinder;
 import mpv5.utils.images.MPIcon;
@@ -24,6 +32,7 @@ public class StartPage extends javax.swing.JPanel {
         initComponents();
         fillFiles();
         jTextArea1.setText(Messages.START_MESSAGE.getValue().replace("*", ""));
+        syst.setModel(getSysInfo());
     }
 
     /** This method is called from within the constructor to
@@ -50,8 +59,11 @@ public class StartPage extends javax.swing.JPanel {
         images = new javax.swing.JList();
         jScrollPane4 = new javax.swing.JScrollPane();
         jTextArea3 = new javax.swing.JTextArea();
+        jPanel1 = new javax.swing.JPanel();
+        jScrollPane6 = new javax.swing.JScrollPane();
+        syst = new javax.swing.JList();
 
-        java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle(); // NOI18N
+        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("mpv5/resources/languages/Panels"); // NOI18N
         setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("StartPage.border.title"))); // NOI18N
         setName("Form"); // NOI18N
 
@@ -107,9 +119,9 @@ public class StartPage extends javax.swing.JPanel {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jScrollPane3, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 456, Short.MAX_VALUE)
-                    .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 456, Short.MAX_VALUE))
+                    .addComponent(jScrollPane3, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 458, Short.MAX_VALUE)
+                    .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, 458, Short.MAX_VALUE)
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 458, Short.MAX_VALUE))
                 .addGap(7, 7, 7))
         );
         jPanel2Layout.setVerticalGroup(
@@ -118,7 +130,7 @@ public class StartPage extends javax.swing.JPanel {
                 .addContainerGap()
                 .addComponent(jLabel1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 143, Short.MAX_VALUE)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 144, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 131, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
@@ -163,12 +175,12 @@ public class StartPage extends javax.swing.JPanel {
                 .addContainerGap()
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addComponent(jLabel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jLabel3, javax.swing.GroupLayout.DEFAULT_SIZE, 443, Short.MAX_VALUE)
                         .addGap(22, 22, 22))
                     .addGroup(jPanel3Layout.createSequentialGroup()
                         .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addComponent(jScrollPane5, javax.swing.GroupLayout.Alignment.LEADING, 0, 0, Short.MAX_VALUE)
-                            .addComponent(jScrollPane4, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 468, Short.MAX_VALUE))
+                            .addComponent(jScrollPane4, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 452, Short.MAX_VALUE))
                         .addGap(13, 13, 13))))
         );
         jPanel3Layout.setVerticalGroup(
@@ -177,12 +189,38 @@ public class StartPage extends javax.swing.JPanel {
                 .addContainerGap()
                 .addComponent(jLabel3)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane5, javax.swing.GroupLayout.DEFAULT_SIZE, 143, Short.MAX_VALUE)
+                .addComponent(jScrollPane5, javax.swing.GroupLayout.DEFAULT_SIZE, 144, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 131, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
         jTabbedPane1.addTab(bundle.getString("StartPage.jPanel3.TabConstraints.tabTitle"), jPanel3); // NOI18N
+
+        jPanel1.setName("jPanel1"); // NOI18N
+
+        jScrollPane6.setName("jScrollPane6"); // NOI18N
+
+        syst.setName("syst"); // NOI18N
+        jScrollPane6.setViewportView(syst);
+
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane6, javax.swing.GroupLayout.DEFAULT_SIZE, 455, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane6, javax.swing.GroupLayout.DEFAULT_SIZE, 290, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+
+        jTabbedPane1.addTab(bundle.getString("StartPage.jPanel1.TabConstraints.tabTitle"), jPanel1); // NOI18N
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -208,6 +246,7 @@ public class StartPage extends javax.swing.JPanel {
     private javax.swing.JList images;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel3;
+    private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JScrollPane jScrollPane1;
@@ -215,12 +254,43 @@ public class StartPage extends javax.swing.JPanel {
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JScrollPane jScrollPane4;
     private javax.swing.JScrollPane jScrollPane5;
+    private javax.swing.JScrollPane jScrollPane6;
     private javax.swing.JTabbedPane jTabbedPane1;
     private javax.swing.JTextArea jTextArea1;
     private javax.swing.JTextArea jTextArea2;
     private javax.swing.JTextArea jTextArea3;
     private javax.swing.JList libraries;
+    private javax.swing.JList syst;
     // End of variables declaration//GEN-END:variables
+
+    @SuppressWarnings("unchecked")
+    private ListModel getSysInfo() {
+
+        DefaultListModel m = new DefaultListModel();
+        m.addElement("YaBS Version: " + Constants.VERSION + " " + Constants.TITLE);
+        m.addElement("Database: " + LocalSettings.getProperty(LocalSettings.DBPATH));
+        m.addElement("Database type: " + LocalSettings.getProperty(LocalSettings.DBTYPE));
+        m.addElement("Database driver: " + LocalSettings.getProperty(LocalSettings.DBDRIVER));
+        m.addElement("Database minimal version: " + Constants.DATABASE_VERSION);
+        m.addElement("Cache directory: " + LocalSettings.getProperty(LocalSettings.CACHE_DIR));
+        m.addElement("Use OpenOffice: " + LocalSettings.getProperty(LocalSettings.OFFICE_USE));
+        m.addElement("");
+        m.addElement("");
+        m.addElement("");
+
+        Properties sysprops = System.getProperties();
+        Enumeration propn = sysprops.propertyNames();
+        List v = Collections.list(propn);
+        Collections.sort(v);
+        Enumeration p = Collections.enumeration(v);
+
+        while (p.hasMoreElements()) {
+            String propname = (String) p.nextElement();
+            m.addElement("System env: " + propname.toLowerCase() + ": " + System.getProperty(propname));
+        }
+
+        return m;
+    }
 
     private void fillFiles() {
         if (Main.INSTANTIATED) {
