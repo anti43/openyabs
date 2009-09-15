@@ -30,7 +30,7 @@ import mpv5.utils.numberformat.FormatNumber;
 
 public class TableCellRendererForDezimal extends DefaultTableCellRenderer {
 
-    public static NumberFormat DECIMALFORMAT = FormatNumber.getDefaultDecimalFormat();
+    public static NumberFormat DECIMALFORMAT = FormatNumber.getShortDecimalFormat();
     private final JTable t;
     private Color color;
 

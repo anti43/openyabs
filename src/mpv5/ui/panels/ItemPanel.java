@@ -70,12 +70,14 @@ import mpv5.ui.frames.MPView;
 import mpv5.ui.popups.FileTablePopUp;
 import mpv5.ui.toolbars.DataPanelTB;
 import mpv5.db.objects.User;
+import mpv5.globals.LocalSettings;
 import mpv5.handler.FormFieldsHandler;
 import mpv5.mail.SimpleMail;
 import mpv5.ui.beans.MPCBSelectionChangeReceiver;
 import mpv5.ui.dialogs.DialogForFile;
 import mpv5.ui.dialogs.ScheduleDayEvent;
 import mpv5.utils.arrays.ArrayUtilities;
+import mpv5.utils.date.DateConverter;
 import mpv5.utils.export.Export;
 import mpv5.utils.export.Exportable;
 import mpv5.utils.files.FileDirectoryHandler;
@@ -87,6 +89,7 @@ import mpv5.utils.numberformat.FormatNumber;
 import mpv5.utils.print.PrintJob;
 import mpv5.utils.tables.TableCalculator;
 import mpv5.utils.renderer.CellEditorWithMPComboBox;
+import mpv5.utils.renderer.LazyCellEditor;
 import mpv5.utils.renderer.TableCellRendererForDezimal;
 import mpv5.utils.tables.TableFormat;
 import mpv5.utils.ui.TextFieldUtils;
@@ -161,14 +164,18 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
         groupnameselect.setSearchOnEnterEnabled(true);
 
         date1.setDate(new Date());
-        date2.setDate(new Date());
-        date3.setDate(new Date());
-
+        try {
+            date3.setDate(DateConverter.addDays(new Date(), Integer.valueOf(MPView.getUser().getProperties().getProperty("bills.warn.days"))));
+            date2.setDate(new Date());
+        } catch (Exception e) {
+            date3.setDate(DateConverter.addDays(new Date(), 14));
+            date2.setDate(new Date());
+        }
         itemtable.getTableHeader().addMouseListener(new MouseListener() {
 
             @Override
             public void mouseClicked(MouseEvent e) {
-                if (e.getButton() == MouseEvent.BUTTON1) {
+                if (e.getButton() == MouseEvent.BUTTON2) {
                     MPTableModel m = (MPTableModel) itemtable.getModel();
                     if (m.getRowCount() > 0) {
                         m.addRow(5);
@@ -182,7 +189,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
 
                         formatTable();
                     }
-                } else {
+                } else if (e.getButton() == MouseEvent.BUTTON3) {
                     try {
                         MPTableModel m = (MPTableModel) itemtable.getModel();
                         Product p = (Product) Popup.SelectValue(DatabaseObject.getObjects(Context.getProducts(), true), null);
@@ -970,11 +977,12 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
     }//GEN-LAST:event_dataTableMouseClicked
 
     private void itemtableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_itemtableMouseClicked
-
-        MPTableModel m = (MPTableModel) itemtable.getModel();
-        if (evt.getButton() != MouseEvent.BUTTON1) {
-            if (!m.hasEmptyRows(new int[]{4})) {
-                m.addRow(2);
+        if (evt != null) {
+            MPTableModel m = (MPTableModel) itemtable.getModel();
+            if (evt.getButton() != MouseEvent.BUTTON1) {
+                if (!m.hasEmptyRows(new int[]{4})) {
+                    m.addRow(2);
+                }
             }
         }
     }//GEN-LAST:event_itemtableMouseClicked
@@ -1321,6 +1329,15 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
 
     @Override
     public void actionAfterCreate() {
+        if (itemtable.getCellEditor() != null) {
+            itemtable.getCellEditor().stopCellEditing();
+        }
+
+        try {
+            itemtable.changeSelection(7, 0, true, false);
+        } catch (Exception e) {
+            Log.Debug(e);
+        }
         ArrayUtilities.replaceColumn(itemtable, 0, null);
         saveSubItems();
         omodel = (MPTableModel) itemtable.getModel();
@@ -1329,6 +1346,19 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
     private void saveSubItems() {
         if (itemtable.getCellEditor() != null) {
             itemtable.getCellEditor().stopCellEditing();
+        }
+
+        try {
+            itemtable.changeSelection(7, 0, true, false);
+        } catch (Exception e) {
+            Log.Debug(e);
+        }
+
+        TableModel m = itemtable.getModel();
+        for (int i = 0; i < m.getRowCount(); i++) {
+            if ((m.getValueAt(i, 4) == null || m.getValueAt(i, 4).toString().length() == 0) && Double.valueOf(String.valueOf(m.getValueAt(i, 5))).doubleValue() > 0) {
+                m.setValueAt("  ", i, 4);
+            }
         }
         SubItem.saveModel(dataOwner, (MPTableModel) itemtable.getModel());
     }
@@ -1511,13 +1541,14 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
         ((MPTableModel) itemtable.getModel()).addCalculator(itemMultiplier);
         itemMultiplier.addLabel(value, 7);
 
-        netCalculator = new TableCalculator(itemtable, new int[]{7, 5}, new int[]{8}, new int[]{}, TableCalculator.ACTION_SUBSTRACT, new int[]{8});
+        netCalculator2 = new TableCalculator(itemtable, new int[]{2, 5}, new int[]{9}, new int[]{}, TableCalculator.ACTION_MULTIPLY, new int[]{9});
+        ((MPTableModel) itemtable.getModel()).addCalculator(netCalculator2);
+        netCalculator2.addLabel(netvalue, 9);
+
+        netCalculator = new TableCalculator(itemtable, new int[]{7, 9}, new int[]{8}, new int[]{}, TableCalculator.ACTION_SUBSTRACT, new int[]{8});
         ((MPTableModel) itemtable.getModel()).addCalculator(netCalculator);
         netCalculator.addLabel(taxvalue, 8);
 
-        netCalculator2 = new TableCalculator(itemtable, new int[]{5}, new int[]{9}, new int[]{}, TableCalculator.ACTION_SUM, new int[]{9});
-        ((MPTableModel) itemtable.getModel()).addCalculator(netCalculator2);
-        netCalculator2.addLabel(netvalue, 9);
     }
 }
 

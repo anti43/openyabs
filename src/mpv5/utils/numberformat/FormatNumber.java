@@ -22,10 +22,18 @@ import mpv5.logging.Log;
 public class FormatNumber {
 
     /**
-     * Represents the default decimal format used in MP
+     * Represents the default decimal format
      */
     public static String FORMAT_DECIMAL = "#,###,##0.00";
 
+    /**
+     * Represents a short decimal format
+     */
+    public static String FORMAT_DECIMAL_SHORT = "#0.0#;(#0.0#)";
+
+    public static NumberFormat getShortDecimalFormat() {
+       return new DecimalFormat(FORMAT_DECIMAL_SHORT);
+    }
     /**
      * Check whether a text can be parsed to be a decimal number
      * @param text
@@ -193,4 +201,5 @@ public class FormatNumber {
             return 0d;
         }
     }
+
 }

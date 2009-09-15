@@ -388,7 +388,7 @@ public class MPTableModel extends DefaultTableModel {
     }
 
     /**
-     * Returns all rows where the specified columns are not NULL. <br/>
+     * Returns all rows where all of the specified columns are not NULL. <br/>
      * 
      * @param columns
      * @return

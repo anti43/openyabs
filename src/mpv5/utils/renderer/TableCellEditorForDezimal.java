@@ -26,31 +26,19 @@ import javax.swing.SwingConstants;
 import mpv5.logging.Log;
 import mpv5.utils.numberformat.FormatNumber;
 
-
 /**
  *
  * 
  */
 public class TableCellEditorForDezimal extends LazyCellEditor {
-    private static final long serialVersionUID = 1L;
-//
-//    /**
-//        * Stops editing and
-//        * returns true to indicate that editing has stopped.
-//        * This method does NOT call <code>fireEditingStopped</code>.
-//        *
-//        * @return  true
-//        */
-//        @Override
-//        public boolean stopCellEditing() {
-//	    return true;
-//	}
+
     /**
      *
      * @param tf
      */
     public TableCellEditorForDezimal(final JFormattedTextField tf) {
         super(tf);
+        super.setClickCountToStart(1);
 
         tf.setFocusLostBehavior(JFormattedTextField.COMMIT);
         tf.setHorizontalAlignment(SwingConstants.LEFT);
@@ -59,18 +47,27 @@ public class TableCellEditorForDezimal extends LazyCellEditor {
 
             @Override
             public void setValue(Object param) {
-                if (param !=null) {
-                    Double _value = FormatNumber.parseNumber(value);
-                    if (_value == null) {
-                        tf.setValue(FormatNumber.formatDezimal(0.0));
-                    } else {
-                        double _d = _value.doubleValue();
-                        String _format = FormatNumber.formatDezimal(_d);
-                        tf.setValue(_format);
-                    }
+//                if (param !=null) {
+//                    Double _value = FormatNumber.parseNumber(param);
+//                    if (_value == null) {
+//                        tf.setValue(FormatNumber.formatDezimal(0.0));
+//                    } else {
+//                        double _d = _value.doubleValue();
+//                        String _format = FormatNumber.formatDezimal(_d);
+//                        tf.setValue(_format);
+//                    }
+//                } else {
+//                    tf.setValue(FormatNumber.formatDezimal(0.0));
+//                }
+//                if (param != null) {
+//                    tf.setText(String.valueOf(param));
+//                } else
+                if (String.valueOf(param).equals("0.0") || tf.getText().equals("0.0")) {
+                    tf.setText("");
                 } else {
-                    tf.setValue(FormatNumber.formatDezimal(0.0));
+                    tf.setText(String.valueOf(param));
                 }
+
             }
 
             @Override
@@ -85,7 +82,7 @@ public class TableCellEditorForDezimal extends LazyCellEditor {
                         tf.setBackground(Color.white);
                         return d;
                     } else {
-                         tf.setBackground(Color.white);
+                        tf.setBackground(Color.white);
                         return new Double(0.0);
                     }
                 } catch (Exception e) {

@@ -25,8 +25,6 @@ import javax.swing.JTextField;
  */
 public class LazyCellEditor extends DefaultCellEditor {
 
-    private boolean fire = true;
-
     public LazyCellEditor(JComboBox c) {
         super(c);
     }
@@ -35,17 +33,7 @@ public class LazyCellEditor extends DefaultCellEditor {
         super(tf);
     }
 
-    @Override
-    public boolean stopCellEditing() {
-        if (fire) {
-            super.stopCellEditing();
-        }
+    public boolean stopCellEditingSilent() {
         return true;
-    }
-
-    public void stopCellEditingSilent() {
-        fire = false;
-        stopCellEditing();
-        fire = true;
     }
 }
