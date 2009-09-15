@@ -27,4 +27,10 @@ public interface Formattable {
      * @return
      */
     public FormatHandler getFormatHandler();
+
+    /**
+     *
+     * @param handler
+     */
+    public void defineFormatHandler(FormatHandler handler);
 }

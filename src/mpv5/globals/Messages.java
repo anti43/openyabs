@@ -112,6 +112,7 @@ public enum Messages {
     WIPED_LOCALSETTINGS("Local settings have been marked for deletion. Please close MP now."),
     NO_DB_CONNECTION("Could not connect to database, start configuration wizard?"),
     REALLY_CHANGE("Do you really want to alter the selected dataset? This may affect all users!"),
+    REALLY_CHANGE2("Do you really want to change the type of selected dataset? This is irreversible!"),
     DONE("Task finished successfully."),
     PROCESSING("Processing: "),
     LOCKED(" is now locked"),

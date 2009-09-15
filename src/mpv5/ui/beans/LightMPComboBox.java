@@ -214,7 +214,7 @@ public class LightMPComboBox extends JComboBox {
      * @param compareMode
      */
     public void setModel(MPEnum[] values, int compareMode) {
-        setModel(MPComboBoxModelItem.toModel(values, compareMode));
+        setModel(MPComboBoxModelItem.toModel(values, compareMode, new java.util.Vector<Integer>()));
     }
 
     /**

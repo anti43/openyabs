@@ -191,4 +191,9 @@ public class Expense extends DatabaseObject implements Formattable {
     public void setCnumber(String cnumber) {
         this.cnumber = cnumber;
     }
+
+
+    public void defineFormatHandler(FormatHandler handler) {
+        formatHandler = handler;
+    }
 }

@@ -438,6 +438,11 @@ public class Contact extends DatabaseObject implements Formattable {
 
         return map;
     }
+
+
+    public void defineFormatHandler(FormatHandler handler) {
+        formatHandler = handler;
+    }
 }
 
 

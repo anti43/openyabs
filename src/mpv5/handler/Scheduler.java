@@ -109,7 +109,7 @@ public class Scheduler extends Thread {
                 Integer warn = Integer.valueOf(MPView.getUser().getProperties().getProperty("bills.warn.days"));
                 String sql = "SELECT ids FROM items WHERE dateadded <= '" +
                         DateConverter.getSQLDateString(DateConverter.addDays(new Date(), warn * -1)) +
-                        "' AND intstatus <> " + Item.STATUS_PAID;
+                        "' AND intstatus <> " + Item.STATUS_PAID + " AND inttype="+ Item.TYPE_BILL;
                 ReturnValue data = QueryHandler.getConnection().freeSelectQuery(sql, MPSecurityManager.VIEW, null);
 
                 if (data.hasData()) {
@@ -135,7 +135,7 @@ public class Scheduler extends Thread {
             Integer alert = Integer.valueOf(MPView.getUser().getProperties().getProperty("bills.alert.days"));
             String sql = "SELECT ids FROM items WHERE dateadded <= '" +
                     DateConverter.getSQLDateString(DateConverter.addDays(new Date(), alert * -1)) +
-                    "' AND intstatus <> " + Item.STATUS_PAID;
+                    "' AND intstatus <> " + Item.STATUS_PAID + " AND inttype="+ Item.TYPE_BILL;;
             ReturnValue data = QueryHandler.getConnection().freeSelectQuery(sql, MPSecurityManager.VIEW, null);
 
             if (data.hasData()) {
@@ -154,7 +154,7 @@ public class Scheduler extends Thread {
             Log.Debug(this, "No alert treshold for bills defined.");
         }
 
-        String sql = "SELECT ids FROM items WHERE intstatus <> " + Item.STATUS_PAID;
+        String sql = "SELECT ids FROM items WHERE intstatus <> " + Item.STATUS_PAID + " AND inttype="+ Item.TYPE_BILL;;
         ReturnValue data = QueryHandler.getConnection().freeSelectQuery(sql, MPSecurityManager.VIEW, null);
 
         if (data.hasData()) {
@@ -165,7 +165,7 @@ public class Scheduler extends Thread {
                     Item it = (Item) Item.getObject(Context.getItems(), id);
                     waitings.add(it);
                 } catch (NodataFoundException ex) {
-                    Log.Debug(ex);
+                    Log.Debug(this, ex.getMessage());
                 }
             }
         }

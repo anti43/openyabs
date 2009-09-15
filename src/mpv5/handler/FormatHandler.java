@@ -208,9 +208,21 @@ public class FormatHandler {
             int newN = 0;
             DatabaseObject forThis = source;
             if (FORMATTABLE_CONTEXTS.contains(forThis.getContext())) {
+
+                String query = "";
+                if (forThis.getContext().equals(Context.getItems())) {
+                    query = "SELECT cnumber FROM " + forThis.getDbIdentity() + " WHERE ids = (SELECT MAX(ids) from " + forThis.getDbIdentity() + " WHERE inttype =" +
+                            ((Item) forThis).__getInttype() + ")";
+                } else if (forThis.getContext().equals(Context.getProducts())) {
+                    query = "SELECT cnumber FROM " + forThis.getDbIdentity() + " WHERE ids = (SELECT MAX(ids) from " + forThis.getDbIdentity() + " WHERE inttype =" +
+                            ((Product) forThis).__getInttype() + ")";
+                } else {
+                    query = "SELECT cnumber FROM " + forThis.getDbIdentity() + " WHERE ids = (SELECT MAX(ids) from " + forThis.getDbIdentity() + ")";
+                }
+
                 ReturnValue val = QueryHandler.getConnection().freeQuery(
-                        //                    "LOCK TABLE " + forThis.getDbIdentity() + " IN EXCLUSIVE MODE;" +
-                        "SELECT cnumber FROM " + forThis.getDbIdentity() + " WHERE ids = (SELECT MAX(ids) from " + forThis.getDbIdentity() + ")", MPSecurityManager.VIEW, null);
+                        query, MPSecurityManager.VIEW, null);
+
                 if (val.hasData()) {
                     Log.Debug(FormatHandler.class, "Last number found: " + val.getData()[0][0]);
                     newN = ((Formattable) forThis).getFormatHandler().getIntegerPartOf(val.getData()[0][0].toString());
@@ -231,7 +243,20 @@ public class FormatHandler {
 
     private synchronized int getNextNumber(int lastNumber) {
         DatabaseObject forThis = source;
-        ReturnValue val2 = QueryHandler.getConnection().freeQuery("SELECT cnumber FROM " + forThis.getDbIdentity() + " WHERE cnumber = '" + toString(lastNumber + 1) + "' ", MPSecurityManager.VIEW, null);
+
+        String query = "";
+        if (forThis.getContext().equals(Context.getItems())) {
+            query = "SELECT cnumber FROM " + forThis.getDbIdentity() + " WHERE cnumber = '" + toString(lastNumber + 1) + "' AND inttype =" +
+                    ((Item) forThis).__getInttype();
+        } else if (forThis.getContext().equals(Context.getProducts())) {
+            query = "SELECT cnumber FROM " + forThis.getDbIdentity() + " WHERE cnumber = '" + toString(lastNumber + 1) + "' AND inttype =" +
+                    ((Product) forThis).__getInttype();
+        } else {
+            query = "SELECT cnumber FROM " + forThis.getDbIdentity() + " WHERE cnumber = '" + toString(lastNumber + 1) + "'";
+        }
+
+        ReturnValue val2 = QueryHandler.getConnection().freeQuery(
+                query, MPSecurityManager.VIEW, null);
         if (val2.hasData()) {
             Log.Debug(FormatHandler.class, "Already existing..: " + val2.getData()[0][0]);
             return getNextNumber(lastNumber + 1);

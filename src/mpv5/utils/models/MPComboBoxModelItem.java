@@ -280,7 +280,7 @@ public class MPComboBoxModelItem extends DefaultComboBoxModel implements Compara
      * @return
      */
     public static MPComboBoxModelItem[] toItems(MPEnum[] items) {
-        return toItems(items, COMPARE_BY_VALUE);
+        return toItems(items, COMPARE_BY_VALUE, new Vector<Integer>());
     }
 
     /**
@@ -288,15 +288,18 @@ public class MPComboBoxModelItem extends DefaultComboBoxModel implements Compara
      * {id (hidden), value (shown in the list)}
      * @param items
      * @param compareMode
+     * @param skip
      * @return
      */
-    public static MPComboBoxModelItem[] toItems(MPEnum[] items, int compareMode) {
+    public static MPComboBoxModelItem[] toItems(MPEnum[] items, int compareMode, List<Integer> skip) {
 //        Log.PrintArray(items);
-
-        MPComboBoxModelItem[] array = new MPComboBoxModelItem[items.length];
-        for (int i = 0; i < array.length; i++) {
-            array[i] = new MPComboBoxModelItem(items[i].getId(), items[i].getName());
-            array[i].setCompareMode(compareMode);
+        MPComboBoxModelItem[] array = new MPComboBoxModelItem[items.length - skip.size()];
+        for (int i = 0, z = 0; i < items.length; i++) {
+            if (!skip.contains(new Integer(i))) {
+                array[z] = new MPComboBoxModelItem(items[i].getId(), items[i].getName());
+                array[z].setCompareMode(compareMode);
+                z++;
+            } 
         }
         return array;
     }
@@ -344,10 +347,11 @@ public class MPComboBoxModelItem extends DefaultComboBoxModel implements Compara
      * {enum id (hidden), value (shown in the list)}
      * @param data
      * @param compareMode
+     * @param skip
      * @return
      */
-    public static MPComboboxModel toModel(MPEnum[] data, int compareMode) {
-        return new MPComboboxModel(toItems(data, compareMode));
+    public static MPComboboxModel toModel(MPEnum[] data, int compareMode, List<Integer> skip) {
+        return new MPComboboxModel(toItems(data, compareMode, skip));
     }
 
     /**

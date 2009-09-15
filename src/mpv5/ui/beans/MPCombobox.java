@@ -204,7 +204,7 @@ public class MPCombobox extends javax.swing.JPanel {
      * @param compareMode
      */
     public void setModel(MPEnum[] values, int compareMode) {
-        jComboBox1.setModel(MPComboBoxModelItem.toModel(values, compareMode));
+        jComboBox1.setModel(MPComboBoxModelItem.toModel(values, compareMode, new java.util.Vector<Integer>()));
     }
 
     /**

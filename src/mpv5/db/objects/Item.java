@@ -391,26 +391,20 @@ public class Item extends DatabaseObject implements Formattable {
 
     @Override
     public mpv5.utils.images.MPIcon getIcon() {
-        if (__getInttype() == TYPE_BILL) {
-            if (__getIntstatus() == STATUS_QUEUED) {
-                return new MPIcon("/mpv5/resources/images/22/kontact_mail.png");
-            } else if (__getIntstatus() == STATUS_IN_PROGRESS) {
-                return new MPIcon("/mpv5/resources/images/22/run.png");
-            } else if (__getIntstatus() == STATUS_PAUSED) {
-                return new MPIcon("/mpv5/resources/images/22/kalarm.png");
-            } else if (__getIntstatus() == STATUS_FINISHED) {
-                return new MPIcon("/mpv5/resources/images/22/alarmd.png");
-            } else if (__getIntstatus() == STATUS_PAID) {
-                return new MPIcon("/mpv5/resources/images/22/ok.png");
-            } else if (__getIntstatus() == STATUS_CANCELLED) {
-                return new MPIcon("/mpv5/resources/images/22/file_temporary.png");
-            } else {
-                return new MPIcon("/mpv5/resources/images/22/kontact_mail.png");
-            }
-        } else if (__getInttype() == TYPE_OFFER) {
-            return new MPIcon("/mpv5/resources/images/22/forward.png");
+        if (__getIntstatus() == STATUS_QUEUED) {
+            return new MPIcon("/mpv5/resources/images/22/kontact_mail.png");
+        } else if (__getIntstatus() == STATUS_IN_PROGRESS) {
+            return new MPIcon("/mpv5/resources/images/22/run.png");
+        } else if (__getIntstatus() == STATUS_PAUSED) {
+            return new MPIcon("/mpv5/resources/images/22/kalarm.png");
+        } else if (__getIntstatus() == STATUS_FINISHED) {
+            return new MPIcon("/mpv5/resources/images/22/knewstuff.png");
+        } else if (__getIntstatus() == STATUS_PAID) {
+            return new MPIcon("/mpv5/resources/images/22/ok.png");
+        } else if (__getIntstatus() == STATUS_CANCELLED) {
+            return new MPIcon("/mpv5/resources/images/22/file_temporary.png");
         } else {
-            return new MPIcon("/mpv5/resources/images/22/previous.png");
+            return new MPIcon("/mpv5/resources/images/22/kontact_mail.png");
         }
     }
 
@@ -566,5 +560,9 @@ public class Item extends DatabaseObject implements Formattable {
      */
     public void setDiscountvalue(double discountvalue) {
         this.discountvalue = discountvalue;
+    }
+
+    public void defineFormatHandler(FormatHandler handler) {
+        formatHandler = handler;
     }
 }

@@ -59,9 +59,10 @@ public class LabeledCombobox extends javax.swing.JPanel {
      * 
      * @param values
      * @param compareMode
+     * @param skip
      */
-    public void setModel(MPEnum[] values, int compareMode) {
-        mPCombobox1.setModel(MPComboBoxModelItem.toModel(values, compareMode));
+    public void setModel(MPEnum[] values, int compareMode, List<Integer> skip) {
+        mPCombobox1.setModel(MPComboBoxModelItem.toModel(values, compareMode, skip));
     }
 
     /**

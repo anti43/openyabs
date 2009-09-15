@@ -1122,7 +1122,7 @@ public class ProductPanel extends javax.swing.JPanel implements DataPanel, MPCBS
                     }
                     fillFiles();
 
-                    stype.setModel(Item.getStatusStrings(), MPComboBoxModelItem.COMPARE_BY_ID);
+                    stype.setModel(Item.getStatusStrings(), MPComboBoxModelItem.COMPARE_BY_ID, new java.util.Vector<Integer>());
                     stype.setSelectedIndex(MPView.getUser().__getIntdefaultstatus());
 
                     selecttax.setSearchOnEnterEnabled(true);
