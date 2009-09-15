@@ -425,7 +425,8 @@ public class Item extends DatabaseObject implements Formattable {
     }
 
     /**
-     * Fetches all related {@link Subitem}s to this {@link Item}
+     * Fetches all related {@link Subitem}s to this {@link Item}<br/>
+     * If no subitems are assigned, returns an empty default list of default subitems
      * @return
      */
     public SubItem[] getSubitems() {
@@ -433,7 +434,9 @@ public class Item extends DatabaseObject implements Formattable {
         try {
             data = DatabaseObject.getReferencedObjects(this, Context.getSubItem(), DatabaseObject.getObject(Context.getSubItem()));
         } catch (NodataFoundException ex) {
-            Log.Debug(ex);
+            for (int i = 0; i < 6; i++) {
+                data.add(SubItem.getDefaultItem());
+            }
         }
         SubItem[] t = new SubItem[data.size()];
         for (int i = 0; i < data.size(); i++) {

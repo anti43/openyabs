@@ -916,6 +916,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject> {
     public static <T extends DatabaseObject> ArrayList<T> getReferencedObjects(DatabaseObject dataOwner, Context inReference, T targetType) throws NodataFoundException {
 
         Object[][] allIds = QueryHandler.instanceOf().clone(inReference).select("ids", new String[]{dataOwner.getDbIdentity() + "ids", dataOwner.__getIDS().toString(), ""});
+        if(allIds.length==0)throw new NodataFoundException(inReference);
         ArrayList<T> list = new ArrayList<T>();
 
         for (int i = 0; i < allIds.length; i++) {

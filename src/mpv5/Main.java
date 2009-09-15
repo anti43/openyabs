@@ -17,7 +17,10 @@
 package mpv5;
 
 import ag.ion.bion.officelayer.application.IOfficeApplication;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import mpv5.db.common.NodataFoundException;
 import mpv5.ui.frames.MPView;
 import mpv5.logging.*;
@@ -461,6 +464,9 @@ public class Main extends SingleFrameApplication {
     public static void setDerbyLog() {
         Properties p = System.getProperties();
         File d = FileDirectoryHandler.getTempFile();
+        try {
+            d.createNewFile();
+        } catch (IOException ex) {}
         p.put("derby.stream.error.file", d.getPath());
     }
 

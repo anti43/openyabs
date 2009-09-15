@@ -12,10 +12,12 @@ import java.util.Vector;
 import javax.swing.DefaultListModel;
 import javax.swing.ListModel;
 import mpv5.Main;
+import mpv5.db.common.QueryHandler;
 import mpv5.globals.Constants;
 import mpv5.globals.LocalSettings;
 import mpv5.globals.Messages;
 import mpv5.logging.Log;
+import mpv5.usermanagement.MPSecurityManager;
 import mpv5.utils.arrays.ArrayUtilities;
 import mpv5.utils.files.FileDirectoryHandler;
 import mpv5.utils.files.JarFinder;
@@ -32,7 +34,13 @@ public class StartPage extends javax.swing.JPanel {
         initComponents();
         fillFiles();
         jTextArea1.setText(Messages.START_MESSAGE.getValue().replace("*", ""));
-        syst.setModel(getSysInfo());
+        Runnable runnable = new Runnable() {
+
+            public void run() {
+                syst.setModel(getSysInfo());
+            }
+        };
+        new Thread(runnable).start();
     }
 
     /** This method is called from within the constructor to
@@ -274,6 +282,11 @@ public class StartPage extends javax.swing.JPanel {
         m.addElement("Database minimal version: " + Constants.DATABASE_VERSION);
         m.addElement("Cache directory: " + LocalSettings.getProperty(LocalSettings.CACHE_DIR));
         m.addElement("Use OpenOffice: " + LocalSettings.getProperty(LocalSettings.OFFICE_USE));
+        m.addElement("");
+        m.addElement("");
+        m.addElement("Contact count: " + QueryHandler.getConnection().freeQuery("select count(ids) from contacts", MPSecurityManager.VIEW, null).getData()[0][0]);
+        m.addElement("Bill count: " + QueryHandler.getConnection().freeQuery("select count(ids) from items where inttype = 0", MPSecurityManager.VIEW, null).getData()[0][0]);
+        m.addElement("Product count: " + QueryHandler.getConnection().freeQuery("select count(ids) from products", MPSecurityManager.VIEW, null).getData()[0][0]);
         m.addElement("");
         m.addElement("");
         m.addElement("");
