@@ -165,7 +165,13 @@ public class MPCombobox extends javax.swing.JPanel {
                 ComboBoxEditor cbField = jComboBox1.getEditor();
                 Object value = cbField.getItem();
                 jComboBox1.setSelectedItem(new MPComboBoxModelItem(-1, value.toString()));
-                Object[][] data = new DatabaseSearch(context, 50).getValuesFor("ids, cname", "cname", jComboBox1.getSelectedItem().toString(), true);
+                Object[][] data = null;
+                if (getComboBox().isEditable()) {
+                    data = new DatabaseSearch(context, 50).getValuesFor("ids, cname", "cname", jComboBox1.getSelectedItem().toString(), true);
+                } else {
+                    data = new DatabaseSearch(context, 50).getValuesFor("ids, cname", "cname", "", true);
+                }
+
                 jComboBox1.setModel(MPComboBoxModelItem.toModel(MPComboBoxModelItem.toItems(data, true, true)));
                 if (data.length > 1) {
                     if (table != null) {
@@ -177,7 +183,7 @@ public class MPCombobox extends javax.swing.JPanel {
                 }
             }
         };
-        if (context!=null) {
+        if (context != null) {
             SwingUtilities.invokeLater(runnable);
         }
     }

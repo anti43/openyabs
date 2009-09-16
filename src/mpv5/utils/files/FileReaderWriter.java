@@ -138,7 +138,7 @@ public class FileReaderWriter {
 
         for (int i = 0; i < text.length; i++) {
             String string = text[i];
-            if (string!=null) {
+            if (string != null) {
                 if (!write(string)) {
                     return false;
                 }
@@ -177,9 +177,9 @@ public class FileReaderWriter {
      * @return
      */
     public boolean write0(String[] lines) {
-       for (int i = 0; i < lines.length; i++) {
+        for (int i = 0; i < lines.length; i++) {
             String string = lines[i];
-            if (string!=null && string.length()>0) {
+            if (string != null && string.length() > 0) {
                 if (!write0(string)) {
                     return false;
                 }
@@ -195,7 +195,7 @@ public class FileReaderWriter {
      * @return
      */
     public boolean write0(String text) {
-       FileWriter out;
+        FileWriter out;
         try {
             String[] txt = this.readLines();
         } catch (Exception e) {
@@ -295,6 +295,32 @@ public class FileReaderWriter {
             return false;
         }
         return true;
+    }
+
+    /**
+     * Write a file representing the given array
+     * @param text
+     * @param sep The separator between the array columns
+     * @param quoted "?
+     * @return
+     */
+    public boolean write(Object[][] text, String sep, boolean quoted) {
+
+        boolean result = true;
+        for (int i = 0; i < text.length; i++) {
+            String string = "";
+            for (int j = 0; j < text[i].length; j++) {
+                Object[] t = text[i];
+                if (quoted) {
+                    string += "\"" + String.valueOf(t[j]).replaceAll("\\<.*?\\>", "") + "\"" + sep;
+                } else {
+                    string += String.valueOf(t[j]).replaceAll("\\<.*?\\>", "") + sep;
+                }
+            }
+            result = write(string);
+            string = null;
+        }
+        return result;
     }
 
     /**

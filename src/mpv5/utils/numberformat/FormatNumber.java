@@ -95,6 +95,8 @@ public class FormatNumber {
         if (number == null || number.trim().length() == 0) {
             return 0d;
         }
+        number = number.replace("%", "");
+
         java.text.DecimalFormat n = (DecimalFormat) getDefaultDecimalFormat();
         n.setMaximumFractionDigits(2);
         Locale[] Locales;

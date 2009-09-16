@@ -46,7 +46,7 @@ public class Account extends DatabaseObject {
     private static ArrayList<DatabaseObject> accounts;
 
     /**
-     *
+     * ANLAGEGUT KOSTEN Eigenkapital UNKOSTEN EINKOMMEN HAFTUNG
      * @param type
      * @return
      */
@@ -170,7 +170,7 @@ public class Account extends DatabaseObject {
         Object[][] tmp = QueryHandler.instanceOf().clone(Context.getItemsToAccounts()).select("accountsids", new String[]{"itemsids", item.__getIDS().toString(), ""});
         ArrayList<Account> l = new ArrayList<Account>();
 
-        l.add((Account) DatabaseObject.getObject(Context.getAccounts(), item.__getDefaultaccountsids()));
+        l.add((Account) DatabaseObject.getObject(Context.getAccounts(), item.__getAccountsids()));
 
         for (int i = 0; i < tmp.length; i++) {
             int id = Integer.valueOf(tmp[i][0].toString());

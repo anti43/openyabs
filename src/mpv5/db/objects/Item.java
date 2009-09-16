@@ -189,8 +189,22 @@ public class Item extends DatabaseObject implements Formattable {
             return 0.0;
         }
     }
+
+    /**
+     * Tries to fetch the value for the given tax id
+     * @param value
+     * @return A value or 0d if not found
+     */
+    public static int getTaxId(Double value) {
+        try {
+            int v = Integer.valueOf(QueryHandler.instanceOf().clone(Context.getTaxes()).select("ids", new String[]{"taxvalue", value.toString(), ""})[0][0].toString());
+            return v;
+        } catch (NumberFormatException numberFormatException) {
+            return 0;
+        }
+    }
     private int contactsids;
-    private int defaultaccountsids;
+    private int accountsids;
     private double netvalue;
     private double taxvalue;
     private double shippingvalue;
@@ -212,7 +226,6 @@ public class Item extends DatabaseObject implements Formattable {
     public static final int TYPE_ORDER = 1;
     public static final int TYPE_OFFER = 2;
     public static final int TYPE_DELIVERY_NOTE = 3;
-
     private FormatHandler formatHandler;
 
     public Item() {
@@ -312,15 +325,15 @@ public class Item extends DatabaseObject implements Formattable {
     /**
      * @return the defaultaccountsids
      */
-    public int __getDefaultaccountsids() {
-        return defaultaccountsids;
+    public int __getAccountsids() {
+        return accountsids;
     }
 
     /**
      * @param defaultaccountsids the defaultaccountsids to set
      */
-    public void setDefaultaccountsids(int defaultaccountsids) {
-        this.defaultaccountsids = defaultaccountsids;
+    public void setAccountsids(int defaultaccountsids) {
+        this.accountsids = defaultaccountsids;
     }
 
     /**
@@ -524,7 +537,7 @@ public class Item extends DatabaseObject implements Formattable {
         }
 
         ArrayList<SubItem> data;
-        ArrayList<String[]> data2; 
+        ArrayList<String[]> data2;
         Vector<String[]> list = new Vector<String[]>();
 
         try {
@@ -541,7 +554,7 @@ public class Item extends DatabaseObject implements Formattable {
             Log.Debug(this, ex.getMessage());
         }
 
-       
+
         map.put(TableHandler.KEY_TABLE + "1", list);
         map.put("grosvalue", __getTaxvalue() + __getNetvalue());
         map.put("discountgrosvalue", (__getTaxvalue() + __getNetvalue()) * ((__getDiscountvalue() / 100 - 1) * -1));

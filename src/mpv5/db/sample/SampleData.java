@@ -107,7 +107,7 @@ public class SampleData {
                             it.setContactsids(c.__getIDS());
                             it.setDateend(date);
                             it.setDatetodo(date);
-                            it.setDefaultaccountsids(defAccountID);
+                            it.setAccountsids(defAccountID);
                             it.setGroupsids(group);
                             it.setIntreminders(0);
                             it.setInttype(Item.TYPE_BILL);

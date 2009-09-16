@@ -288,7 +288,7 @@ public class SearchPanel extends javax.swing.JPanel {
 
                     String sf = context.getSearchFields();
                     if (sf == null) {
-                        sf = "ids,cname";
+                        sf = "ids,cname,cnumber";
                     }
 
                     lasttype = searchtype;

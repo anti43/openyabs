@@ -32,8 +32,10 @@ import mpv5.db.common.DatabaseObject;
 import mpv5.db.objects.Contact;
 import mpv5.logging.Log;
 import mpv5.ui.dialogs.DialogForFile;
+import mpv5.utils.arrays.ArrayUtilities;
 import mpv5.utils.date.DateConverter;
 import mpv5.utils.files.FileActionHandler;
+import mpv5.utils.files.FileReaderWriter;
 import mpv5.utils.files.TableHtmlWriter;
 import mpv5.utils.models.MPComboBoxModelItem;
 import mpv5.utils.print.FilePrintJob;
@@ -73,6 +75,7 @@ public class PrinitingComboBox extends javax.swing.JPanel {
         } else if (dataowner instanceof JTable) {
             jComboBox1.setModel(new DefaultComboBoxModel(new Object[]{new MPComboBoxModelItem(-1, ""),
                         new MPComboBoxModelItem(0, "Printer"),
+                        new MPComboBoxModelItem(2, "CSV File"),
                         new MPComboBoxModelItem(1, "HTML File")}));
             mode = MODE_TABLE;
         }
@@ -163,8 +166,24 @@ public class PrinitingComboBox extends javax.swing.JPanel {
                         case 1:
                             DialogForFile dialog = new DialogForFile(DialogForFile.FILES_ONLY, "export-" + DateConverter.getTodayDefDate() + ".html");
                             if (dialog.saveFile()) {
-                                File f = new TableHtmlWriter(((DefaultTableModel) ((JTable) dataowner).getModel()), dialog.getFile(),  ((JTable) dataowner).getShowHorizontalLines(),((JTable) dataowner).getShowVerticalLines()).createHtml();
+                                File f = new TableHtmlWriter(((DefaultTableModel) ((JTable) dataowner).getModel()), dialog.getFile(), ((JTable) dataowner).getShowHorizontalLines(), ((JTable) dataowner).getShowVerticalLines()).createHtml();
                                 FileActionHandler.open(f);
+                            }
+                            break;
+                        case 2:
+                            DialogForFile dialog2 = new DialogForFile(DialogForFile.FILES_ONLY, "export-" + DateConverter.getTodayDefDate() + ".csv");
+                            if (dialog2.saveFile()) {
+                                FileReaderWriter r = new FileReaderWriter(dialog2.getFile());
+                                String title = "";
+                                for (int i = 0; i < ((JTable) dataowner).getColumnCount(); i++) {
+                                    title += ((JTable) dataowner).getColumnName(i) + ",";
+                                }
+                                title = title.substring(0, title.length() - 1);
+                                title += "\n";
+                                Object[][] ar = ArrayUtilities.tableModelToArray((JTable) dataowner);
+                                r.writeOnce(title);
+                                boolean write = r.write(ar, ",", true);
+                                FileActionHandler.open(dialog2.getSelectedFile());
                             }
                             break;
                     }
@@ -173,7 +192,6 @@ public class PrinitingComboBox extends javax.swing.JPanel {
         }
 
     }//GEN-LAST:event_jComboBox1ItemStateChanged
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JComboBox jComboBox1;
     private javax.swing.JLabel jLabel1;

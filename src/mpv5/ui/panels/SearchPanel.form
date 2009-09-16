@@ -63,12 +63,12 @@
                   </Group>
                   <EmptySpace max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="1" attributes="0">
-                      <Component id="searchbutton1" alignment="0" pref="68" max="32767" attributes="0"/>
+                      <Component id="searchbutton1" alignment="0" pref="80" max="32767" attributes="0"/>
                       <Group type="102" alignment="1" attributes="0">
                           <Group type="103" groupAlignment="0" attributes="0">
-                              <Component id="searchfield3" pref="44" max="32767" attributes="1"/>
-                              <Component id="searchfield2" pref="44" max="32767" attributes="1"/>
-                              <Component id="searchfield1" alignment="1" pref="44" max="32767" attributes="1"/>
+                              <Component id="searchfield3" pref="56" max="32767" attributes="1"/>
+                              <Component id="searchfield2" pref="56" max="32767" attributes="1"/>
+                              <Component id="searchfield1" alignment="1" pref="56" max="32767" attributes="1"/>
                           </Group>
                           <EmptySpace min="-2" max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="1" attributes="0">

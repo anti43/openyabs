@@ -1124,7 +1124,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
     public Date dateadded_;
     public int groupsids_ = 1;
     public int contactsids_;
-    public int defaultaccountsids_;
+    public int accountsids_;
     public double netvalue_;
     public double taxvalue_;
     public double shippingvalue_;
@@ -1144,10 +1144,10 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
         }
         if (contactsids_ > 0) {
             try {
-                defaultaccountsids_ = Integer.valueOf(accountselect.getSelectedItem().getId());
+                accountsids_ = Integer.valueOf(accountselect.getSelectedItem().getId());
             } catch (Exception e) {
                 Log.Debug(e);
-                defaultaccountsids_ = 1;
+                accountsids_ = 1;
             }
 
             if (groupnameselect.getSelectedItem() != null) {
@@ -1205,7 +1205,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
         status.setSelectedItem(intstatus_);
         staus_icon.setIcon(dataOwner.getIcon());
         try {
-            accountselect.setModel(DatabaseObject.getObject(Context.getAccounts(), defaultaccountsids_));
+            accountselect.setModel(DatabaseObject.getObject(Context.getAccounts(), accountsids_));
         } catch (NodataFoundException ex) {
             Log.Debug(this, ex.getMessage());
         }

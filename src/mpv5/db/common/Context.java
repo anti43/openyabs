@@ -160,6 +160,7 @@ public class Context {
     public static String DETAILS_JOURNAL = IDENTITY_ITEMS + "." + "IDS," +
             IDENTITY_ITEMS + "." + "dateadded," +
             IDENTITY_GROUPS + "0." + "CNAME," +
+            IDENTITY_ACCOUNTS + "1." + "cname," +
             IDENTITY_ITEMS + "." + "CNAME," +
             IDENTITY_ITEMS + "." + "inttype," +
             IDENTITY_ITEMS + "." + "intstatus," +
@@ -168,6 +169,7 @@ public class Context {
     public static String DETAILS_JOURNAL2 = IDENTITY_REVENUE + "." + "IDS," +
             IDENTITY_REVENUE + "." + "dateadded," +
             IDENTITY_GROUPS + "0." + "CNAME," +
+            IDENTITY_ACCOUNTS + "1." + "cname," +
             IDENTITY_REVENUE + "." + "CNAME," +
             IDENTITY_REVENUE + "." + "ids," +
             IDENTITY_REVENUE + "." + "ids," +
@@ -176,6 +178,7 @@ public class Context {
     public static String DETAILS_JOURNAL3 = IDENTITY_EXPENSE + "." + "IDS," +
             IDENTITY_EXPENSE + "." + "dateadded," +
             IDENTITY_GROUPS + "0." + "CNAME," +
+            IDENTITY_ACCOUNTS + "1." + "cname," +
             IDENTITY_EXPENSE + "." + "CNAME," +
             IDENTITY_EXPENSE + "." + "ids," +
             IDENTITY_EXPENSE + "." + "ids," +
@@ -551,7 +554,7 @@ public class Context {
         }
 
         if (getTrashableContexts().contains(this)) {
-            cond += " AND invisible = 0 ";
+            cond += " AND " + getDbIdentity() + ".invisible = 0 ";
         }
 
         exclusiveCondition = cond;
@@ -622,7 +625,7 @@ public class Context {
                 }
             }
             if (getTrashableContexts().contains(this)) {
-                cond += " AND invisible = 0 ";
+                cond += " AND " + dbIdentity + ".invisible = 0 ";
             }
             return cond;
         } else {

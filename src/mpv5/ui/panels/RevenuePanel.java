@@ -23,6 +23,8 @@ package mpv5.ui.panels;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
@@ -34,6 +36,7 @@ import javax.swing.JTabbedPane;
 import javax.swing.JViewport;
 import javax.swing.SwingUtilities;
 import mpv5.db.common.*;
+import mpv5.db.objects.Account;
 import mpv5.db.objects.Revenue;
 import mpv5.globals.Messages;
 import mpv5.db.objects.Favourite;
@@ -90,8 +93,7 @@ public class RevenuePanel extends javax.swing.JPanel implements DataPanel {
         dataOwner = new Revenue();
 
         addedby.setText(MPView.getUser().getName());
-        accountselect.setSearchOnEnterEnabled(true);
-        accountselect.setContext(Context.getAccounts());
+
         groupnameselect.setSearchOnEnterEnabled(true);
         groupnameselect.setContext(Context.getGroup());
         taxrate.setSearchOnEnterEnabled(true);
@@ -101,7 +103,7 @@ public class RevenuePanel extends javax.swing.JPanel implements DataPanel {
         value.getTextField().addKeyListener(new KeyListener() {
 
             public void keyTyped(KeyEvent e) {
-                 calculate();
+                calculate();
             }
 
             public void keyPressed(KeyEvent ek) {
@@ -111,28 +113,35 @@ public class RevenuePanel extends javax.swing.JPanel implements DataPanel {
             public void keyReleased(KeyEvent e) {
                 calculate();
             }
+        });
+        taxrate.getComboBox().addActionListener(new ActionListener() {
 
-            private void calculate() {
-                double tax = 0;
-                    try {
-                        MPComboBoxModelItem t = taxrate.getValue();
-                        tax = Item.getTaxValue(Integer.valueOf(t.getId()));
-                    } catch (Exception e) {
-                        try {
-                            tax = Integer.valueOf(taxrate.getText());
-                        } catch (NumberFormatException numberFormatException) {
-                            tax = 0d;
-                        }
-                    }
-
-                    try {
-                        netvalue.setText(FormatNumber.formatLokalCurrency(FormatNumber.parseDezimal(value.getText()) * ((tax / 100) + 1)));
-                    } catch (Exception e) {
-                        netvalue.setText(FormatNumber.formatLokalCurrency(0d));
-                    }
+            public void actionPerformed(ActionEvent e) {
+                calculate();
             }
         });
+        taxrate.getComboBox().setEditable(false);
         refresh();
+    }
+
+    private void calculate() {
+        double tax = 0;
+        try {
+            MPComboBoxModelItem t = taxrate.getValue();
+            tax = Item.getTaxValue(Integer.valueOf(t.getId()));
+        } catch (Exception e) {
+            try {
+                tax = Integer.valueOf(taxrate.getText());
+            } catch (NumberFormatException numberFormatException) {
+                tax = 0d;
+            }
+        }
+
+        try {
+            netvalue.setText(FormatNumber.formatLokalCurrency(FormatNumber.parseDezimal(value.getText()) / ((tax / 100) + 1)));
+        } catch (Exception e) {
+            netvalue.setText(FormatNumber.formatLokalCurrency(0d));
+        }
     }
 
     @Override
@@ -160,7 +169,7 @@ public class RevenuePanel extends javax.swing.JPanel implements DataPanel {
 
                 validate();
             }
-        } else if (object instanceof Item){
+        } else if (object instanceof Item) {
         }
     }
     Exportable preloadedExportFile;
@@ -485,6 +494,7 @@ public class RevenuePanel extends javax.swing.JPanel implements DataPanel {
 
     @Override
     public boolean collectData() {
+        calculate();
 
         try {
             accountsids_ = Integer.valueOf(accountselect.getSelectedItem().getId());
@@ -542,7 +552,7 @@ public class RevenuePanel extends javax.swing.JPanel implements DataPanel {
         }
         addedby.setText(User.getUsername(intaddedby_));
         dateadded.setText(DateConverter.getDefDateString(dateadded_));
-        taxrate.setValue(FormatNumber.formatPercent(taxpercentvalue_));
+        taxrate.setSelectedItem(Item.getTaxId(taxpercentvalue_));
     }
 
     @Override
@@ -552,7 +562,7 @@ public class RevenuePanel extends javax.swing.JPanel implements DataPanel {
             @Override
             public void run() {
                 try {
-                    accountselect.triggerSearch();
+                    accountselect.setModel(DatabaseObject.getObjects(Context.getAccounts(), new QueryCriteria("intaccounttype", Account.INCOME)));
                     groupnameselect.triggerSearch();
                     taxrate.triggerSearch();
                     itemtable.setModel(new MPTableModel(Revenue.getRevenues(), Headers.EXPENSE));
@@ -584,12 +594,10 @@ public class RevenuePanel extends javax.swing.JPanel implements DataPanel {
 
     @Override
     public void actionAfterSave() {
-        refresh();
     }
 
     @Override
     public void actionAfterCreate() {
-        refresh();
     }
 
     public void actionBeforeCreate() {

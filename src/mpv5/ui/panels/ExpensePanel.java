@@ -23,6 +23,8 @@ package mpv5.ui.panels;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
@@ -34,6 +36,7 @@ import javax.swing.JTabbedPane;
 import javax.swing.JViewport;
 import javax.swing.SwingUtilities;
 import mpv5.db.common.*;
+import mpv5.db.objects.Account;
 import mpv5.db.objects.Expense;
 import mpv5.globals.Messages;
 import mpv5.db.objects.Favourite;
@@ -90,12 +93,12 @@ public class ExpensePanel extends javax.swing.JPanel implements DataPanel {
         dataOwner = new Expense();
 
         addedby.setText(MPView.getUser().getName());
-        accountselect.setSearchOnEnterEnabled(true);
-        accountselect.setContext(Context.getAccounts());
+
         groupnameselect.setSearchOnEnterEnabled(true);
         groupnameselect.setContext(Context.getGroup());
         taxrate.setSearchOnEnterEnabled(true);
         taxrate.setContext(Context.getTaxes());
+
 
 //        new calc().start();
         value.getTextField().addKeyListener(new KeyListener() {
@@ -111,28 +114,36 @@ public class ExpensePanel extends javax.swing.JPanel implements DataPanel {
             public void keyReleased(KeyEvent e) {
                 calculate();
             }
+        });
 
-            private void calculate() {
-                double tax = 0;
-                try {
-                    MPComboBoxModelItem t = taxrate.getValue();
-                    tax = Item.getTaxValue(Integer.valueOf(t.getId()));
-                } catch (Exception e) {
-                    try {
-                        tax = Integer.valueOf(taxrate.getText());
-                    } catch (NumberFormatException numberFormatException) {
-                        tax = 0d;
-                    }
-                }
+        taxrate.getComboBox().addActionListener(new ActionListener() {
 
-                try {
-                    netvalue.setText(FormatNumber.formatLokalCurrency(FormatNumber.parseDezimal(value.getText()) * ((tax / 100) + 1)));
-                } catch (Exception e) {
-                    netvalue.setText(FormatNumber.formatLokalCurrency(0d));
-                }
+            public void actionPerformed(ActionEvent e) {
+                calculate();
             }
         });
+        taxrate.getComboBox().setEditable(false);
         refresh();
+    }
+
+    private void calculate() {
+        double tax = 0;
+        try {
+            MPComboBoxModelItem t = taxrate.getValue();
+            tax = Item.getTaxValue(Integer.valueOf(t.getId()));
+        } catch (Exception e) {
+            try {
+                tax = Integer.valueOf(taxrate.getText());
+            } catch (NumberFormatException numberFormatException) {
+                tax = 0d;
+            }
+        }
+
+        try {
+            netvalue.setText(FormatNumber.formatLokalCurrency(FormatNumber.parseDezimal(value.getText()) / ((tax / 100) + 1)));
+        } catch (Exception e) {
+            netvalue.setText(FormatNumber.formatLokalCurrency(0d));
+        }
     }
 
     @Override
@@ -482,6 +493,7 @@ public class ExpensePanel extends javax.swing.JPanel implements DataPanel {
 
     @Override
     public boolean collectData() {
+        calculate();
 
         try {
             accountsids_ = Integer.valueOf(accountselect.getSelectedItem().getId());
@@ -539,7 +551,7 @@ public class ExpensePanel extends javax.swing.JPanel implements DataPanel {
         }
         addedby.setText(User.getUsername(intaddedby_));
         dateadded.setText(DateConverter.getDefDateString(dateadded_));
-        taxrate.setValue(FormatNumber.formatPercent(taxpercentvalue_));
+        taxrate.setSelectedItem(Item.getTaxId(taxpercentvalue_));
     }
 
     @Override
@@ -549,7 +561,7 @@ public class ExpensePanel extends javax.swing.JPanel implements DataPanel {
             @Override
             public void run() {
                 try {
-                    accountselect.triggerSearch();
+                    accountselect.setModel(DatabaseObject.getObjects(Context.getAccounts(), new QueryCriteria("intaccounttype", Account.EXPENSE)));
                     groupnameselect.triggerSearch();
                     taxrate.triggerSearch();
                     itemtable.setModel(new MPTableModel(Expense.getExpenses(), Headers.EXPENSE));
@@ -581,12 +593,12 @@ public class ExpensePanel extends javax.swing.JPanel implements DataPanel {
 
     @Override
     public void actionAfterSave() {
-        refresh();
+        
     }
 
     @Override
     public void actionAfterCreate() {
-        refresh();
+       
     }
 
     public void actionBeforeCreate() {
