@@ -35,6 +35,7 @@ import mpv5.utils.numberformat.FormatNumber;
  */
 public class Revenue extends DatabaseObject implements Formattable {
 
+    public static int TYPE_REVENUE = 42;
     private String description = "";
     private double netvalue;
     private double taxpercentvalue;
@@ -192,7 +193,6 @@ public class Revenue extends DatabaseObject implements Formattable {
     public void setCnumber(String cnumber) {
         this.cnumber = cnumber;
     }
-
 
     public void defineFormatHandler(FormatHandler handler) {
         formatHandler = handler;

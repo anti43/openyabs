@@ -142,22 +142,25 @@ public class RevenuePanel extends javax.swing.JPanel implements DataPanel {
 
     @Override
     public void setDataOwner(DatabaseObject object, boolean populate) {
-        dataOwner = (Revenue) object;
-        if (populate) {
-            dataOwner.setPanelData(this);
+        if (object instanceof Revenue) {
+            dataOwner = (Revenue) object;
+            if (populate) {
+                dataOwner.setPanelData(this);
 
-            this.exposeData();
-            setTitle();
+                this.exposeData();
+                setTitle();
 
-            tb.setFavourite(Favourite.isFavourite(object));
-            tb.setEditable(!object.isReadOnly());
+                tb.setFavourite(Favourite.isFavourite(object));
+                tb.setEditable(!object.isReadOnly());
 
-            formatTable();
-            if (object.isReadOnly()) {
-                Popup.notice(Messages.LOCKED_BY);
+                formatTable();
+                if (object.isReadOnly()) {
+                    Popup.notice(Messages.LOCKED_BY);
+                }
+
+                validate();
             }
-
-            validate();
+        } else if (object instanceof Item){
         }
     }
     Exportable preloadedExportFile;

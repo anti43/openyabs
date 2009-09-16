@@ -165,6 +165,22 @@ public class Context {
             IDENTITY_ITEMS + "." + "intstatus," +
             IDENTITY_ITEMS + "." + "netvalue," +
             IDENTITY_ITEMS + "." + "taxvalue";
+    public static String DETAILS_JOURNAL2 = IDENTITY_REVENUE + "." + "IDS," +
+            IDENTITY_REVENUE + "." + "dateadded," +
+            IDENTITY_GROUPS + "0." + "CNAME," +
+            IDENTITY_REVENUE + "." + "CNAME," +
+            IDENTITY_REVENUE + "." + "ids," +
+            IDENTITY_REVENUE + "." + "ids," +
+            IDENTITY_REVENUE + "." + "brutvalue," +
+            IDENTITY_REVENUE + "." + "brutvalue";
+    public static String DETAILS_JOURNAL3 = IDENTITY_EXPENSE + "." + "IDS," +
+            IDENTITY_EXPENSE + "." + "dateadded," +
+            IDENTITY_GROUPS + "0." + "CNAME," +
+            IDENTITY_EXPENSE + "." + "CNAME," +
+            IDENTITY_EXPENSE + "." + "ids," +
+            IDENTITY_EXPENSE + "." + "ids," +
+            IDENTITY_EXPENSE + "." + "brutvalue," +
+            IDENTITY_EXPENSE + "." + "brutvalue";
     public static String DETAILS_HISTORY = getHistory().getDbIdentity() + ".ids, " + getHistory().getDbIdentity() + ".cname, " + getHistory().getDbIdentity() + ".username, " + Context.getGroup().getDbIdentity() + "0.cname," + Context.getHistory().getDbIdentity() + ".dateadded";
     public static String DETAILS_FILES_TO_CONTACTS = Context.getFiles().getDbIdentity() + "0.cname," + getFilesToContacts().getDbIdentity() + ".cname, " + Context.getFiles().getDbIdentity() + "0.dateadded," + Context.getFilesToContacts().getDbIdentity() + ".description," + Context.getFilesToContacts().getDbIdentity() + ".intsize," + Context.getFilesToContacts().getDbIdentity() + ".mimetype";
     public static String DETAILS_FILES_TO_ITEMS = Context.getFiles().getDbIdentity() + "0.cname," + getFilesToItems().getDbIdentity() + ".cname, " + Context.getFiles().getDbIdentity() + "0.dateadded," + Context.getFilesToItems().getDbIdentity() + ".description," + Context.getFilesToItems().getDbIdentity() + ".intsize," + Context.getFilesToItems().getDbIdentity() + ".mimetype";
@@ -1325,7 +1341,6 @@ public class Context {
         return c;
     }
 
-
     public static Context getProductListItems() {
         Context c = new Context();
         c.setSubID(DEFAULT_SUBID);
@@ -1354,7 +1369,6 @@ public class Context {
 
         return c;
     }
-
 
     public static Context getTaxes() {
         Context c = new Context();

@@ -109,7 +109,7 @@ public class MPTreeModel extends DefaultTreeModel {
                         itemnode.add(new DefaultMutableTreeNode(ifile));
                     }
                 } catch (NodataFoundException ex) {
-                    Log.Debug(ex);
+                    Log.Debug(MPTreeModel.class, ex.getMessage());
                 }
 
                 (groups.get(item.__getGroupsids())).add(itemnode);
@@ -131,10 +131,10 @@ public class MPTreeModel extends DefaultTreeModel {
                 }
                 rootNode.add(ifil);
             } catch (NodataFoundException ex) {
-                Log.Debug(ex);
+                 Log.Debug(MPTreeModel.class, ex.getMessage());
             }
         } catch (NodataFoundException ex) {
-            Log.Debug(ex);
+            Log.Debug(MPTreeModel.class, ex.getMessage());
         }
         return rootNode;
     }

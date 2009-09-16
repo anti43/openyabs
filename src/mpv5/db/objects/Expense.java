@@ -34,6 +34,7 @@ import mpv5.utils.numberformat.FormatNumber;
  */
 public class Expense extends DatabaseObject implements Formattable {
 
+    public static int TYPE_EXPENSE = 43;
     private String description = "";
     private double netvalue;
     private double taxpercentvalue;

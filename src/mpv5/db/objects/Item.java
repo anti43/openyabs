@@ -212,6 +212,7 @@ public class Item extends DatabaseObject implements Formattable {
     public static final int TYPE_ORDER = 1;
     public static final int TYPE_OFFER = 2;
     public static final int TYPE_DELIVERY_NOTE = 3;
+
     private FormatHandler formatHandler;
 
     public Item() {
@@ -533,7 +534,7 @@ public class Item extends DatabaseObject implements Formattable {
                 data2 = data.get(i).getValues3();
                 for (int j = 0; j < data2.size(); j++) {
                     String[] strings = data2.get(j);
-                    map.put("subitem" + i + "." + strings[0], strings[1]);
+                    map.put("subitem" + i + "." + strings[0].toLowerCase(), strings[1]);
                 }
             }
         } catch (NodataFoundException ex) {
