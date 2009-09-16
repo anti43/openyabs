@@ -42,6 +42,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import mpv5.db.objects.Template;
 import mpv5.logging.Log;
 
 /**
@@ -306,19 +307,31 @@ public class DocumentHandler {
      * @throws TextException
      */
     public synchronized void fillTables(HashMap<String, Object> data) {
+        fillTables(data, null);
+    }
+
+    public void fillTables(HashMap<String, Object> data, Template template) {
 
         Log.Debug(this, "Looking for tables in: " + document);
         try {
             for (Iterator<String> it = data.keySet().iterator(); it.hasNext();) {
                 String key = it.next();
-                if (key.startsWith(TableHandler.KEY_TABLE)) {//Table found
+                if (key.contains(TableHandler.KEY_TABLE)) {//Table found
+                    Log.Debug(this, "Table: " + key);
                     @SuppressWarnings("unchecked")
                     List<String[]> value = (List<String[]>) data.get(key);
                     if (tablehandler == null) {
+                        if (key.contains(".")) {
+                            key = key.substring(key.lastIndexOf(".")+1);
+                        }
+                        Log.Debug(this, "Table identifier: " + key);
                         tablehandler = new TableHandler((ITextDocument) document, key);
                     }
                     for (int i = 0; i < value.size(); i++) {
                         String[] strings = value.get(i);
+                        if (template != null) {
+                            strings = refactorRow(template, strings);
+                        }
                         for (int j = 0; j < strings.length; j++) {
                             String cellValue = strings[j];
                             tablehandler.setValueAt(cellValue, j, i);
@@ -327,8 +340,10 @@ public class DocumentHandler {
                 }
             }
         } catch (Exception textException) {
-            Log.Debug(this, textException.getMessage());
+            Log.Debug(this, textException);
         }
+
+
     }
 
     /**
@@ -351,5 +366,37 @@ public class DocumentHandler {
      * @param data
      */
     public void setImages(HashMap<String, Object> data) {
+    }
+
+    private void refactorRow() {
+    }
+
+    private String[] refactorRow(Template template, String[] possibleCols) {
+        String format = template.__getFormat();
+        int[] intcols;
+        try {
+            String[] cols = format.split(",");
+            intcols = new int[cols.length];
+            for (int i = 0; i < intcols.length; i++) {
+                String string = cols[i];
+                intcols[i] = Integer.valueOf(string).intValue();
+            }
+        } catch (Exception ex) {
+            Log.Debug(this, "An error occured, using default format now. " + ex.getMessage());
+            intcols = new int[possibleCols.length];
+            for (int i = 0; i < intcols.length; i++) {
+                intcols[i] = i + 1;
+            }
+        }
+        String[] form = new String[intcols.length];
+        for (int i = 0; i < intcols.length; i++) {
+            try {
+                form[i] = possibleCols[intcols[i] - 1];
+            } catch (Exception e) {
+                Log.Debug(this, "To much columns in the format definition: " + e);
+            }
+        }
+
+        return form;
     }
 }

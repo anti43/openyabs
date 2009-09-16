@@ -169,13 +169,13 @@
               <Group type="102" alignment="0" attributes="0">
                   <EmptySpace min="-2" pref="2" max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="0" attributes="0">
-                      <Component id="jScrollPane1" alignment="0" pref="442" max="32767" attributes="0"/>
+                      <Component id="jScrollPane1" alignment="0" pref="444" max="32767" attributes="0"/>
                       <Group type="102" alignment="0" attributes="0">
                           <Group type="103" groupAlignment="1" max="-2" attributes="0">
                               <Component id="labeledCombobox3" alignment="0" max="32767" attributes="1"/>
                               <Component id="labeledCombobox1" alignment="0" pref="270" max="32767" attributes="1"/>
                           </Group>
-                          <EmptySpace pref="172" max="32767" attributes="0"/>
+                          <EmptySpace pref="174" max="32767" attributes="0"/>
                       </Group>
                   </Group>
               </Group>
@@ -188,7 +188,7 @@
                   <EmptySpace max="-2" attributes="0"/>
                   <Component id="labeledCombobox3" min="-2" max="-2" attributes="1"/>
                   <EmptySpace max="-2" attributes="0"/>
-                  <Component id="jScrollPane1" pref="96" max="32767" attributes="0"/>
+                  <Component id="jScrollPane1" pref="98" max="32767" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
                   <Component id="labeledTextField1" min="-2" max="-2" attributes="0"/>
               </Group>

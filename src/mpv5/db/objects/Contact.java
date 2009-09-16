@@ -16,6 +16,7 @@ import mpv5.db.common.DatabaseObject;
 import mpv5.db.common.Formattable;
 import mpv5.db.common.NodataFoundException;
 import mpv5.handler.FormatHandler;
+import mpv5.logging.Log;
 import mpv5.ui.panels.AddressPanel;
 import mpv5.ui.panels.ContactPanel;
 import mpv5.utils.images.MPIcon;
@@ -433,7 +434,7 @@ public class Contact extends DatabaseObject implements Formattable {
                 map.put("address" + i, data.get(i));
             }
         } catch (NodataFoundException ex) {
-            Logger.getLogger(Contact.class.getName()).log(Level.SEVERE, null, ex);
+           Log.Debug(this, ex.getMessage());
         }
 
         return map;

@@ -16,9 +16,12 @@
  */
 package mpv5.db.objects;
 
+import enoa.handler.TableHandler;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Stack;
+import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JComponent;
@@ -518,17 +521,27 @@ public class Item extends DatabaseObject implements Formattable {
                 Log.Debug(numberFormatException);
             }
         }
-//
-//        ArrayList<SubItem> data;
-//        try {
-//            data = DatabaseObject.getReferencedObjects(this, Context.getSubItem(), new SubItem());
-//            for (int i = 0; i < data.size(); i++) {
-//                map.put("row" + i, data.get(i));
-//            }
-//        } catch (NodataFoundException ex) {
-//            Logger.getLogger(Contact.class.getName()).log(Level.SEVERE, null, ex);
-//        }
 
+        ArrayList<SubItem> data;
+        ArrayList<String[]> data2; 
+        Vector<String[]> list = new Vector<String[]>();
+
+        try {
+            data = DatabaseObject.getReferencedObjects(this, Context.getSubItem(), new SubItem());
+            for (int i = 0; i < data.size(); i++) {
+                list.add(data.get(i).toStringArray());
+                data2 = data.get(i).getValues3();
+                for (int j = 0; j < data2.size(); j++) {
+                    String[] strings = data2.get(j);
+                    map.put("subitem" + i + "." + strings[0], strings[1]);
+                }
+            }
+        } catch (NodataFoundException ex) {
+            Log.Debug(this, ex.getMessage());
+        }
+
+       
+        map.put(TableHandler.KEY_TABLE + "1", list);
         map.put("grosvalue", __getTaxvalue() + __getNetvalue());
         map.put("discountgrosvalue", (__getTaxvalue() + __getNetvalue()) * ((__getDiscountvalue() / 100 - 1) * -1));
         map.put("discounttaxvalue", __getTaxvalue() * ((__getDiscountvalue() / 100 - 1) * -1));

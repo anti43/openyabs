@@ -21,6 +21,7 @@ import java.io.FileNotFoundException;
 import java.util.HashMap;
 import javax.swing.SwingUtilities;
 import mpv5.db.common.NodataFoundException;
+import mpv5.db.objects.Template;
 import mpv5.logging.Log;
 import mpv5.utils.jobs.Waitable;
 
@@ -35,6 +36,16 @@ public class Export extends HashMap<String, Object> implements Waitable {
 //    private Thread t;
     private File toFile;
     private String targetName;
+    private final Template t;
+
+    /**
+     *
+     * @param t
+     */
+    public Export(Template t) {
+        super();
+        this.t = t;
+    }
 
     /**
      * Add the data, must be key - value pairs
@@ -84,6 +95,7 @@ public class Export extends HashMap<String, Object> implements Waitable {
             file.setTarget(toFile);
         }
         file.setData(this);
+        file.setTemplate(t);
 
         try {
             SwingUtilities.invokeAndWait(file);// we need to wait for OO to perform the task
@@ -115,5 +127,4 @@ public class Export extends HashMap<String, Object> implements Waitable {
     public File getTargetFile() {
         return toFile;
     }
-
 }

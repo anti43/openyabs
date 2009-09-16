@@ -98,7 +98,7 @@ public class Log {
         switch (loglevel) {
             case LOGLEVEL_DEBUG:
                 write(sourcen + ": " + message);
-                if (message != null && message.toString().contains("Exception")) {
+                if (message != null && message instanceof Exception) {
                     ((Exception) message).printStackTrace();
                     write(getStackTrace(((Exception) message)));
                     write("\nCaused by:\n");

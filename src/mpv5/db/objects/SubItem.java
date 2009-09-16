@@ -135,7 +135,7 @@ public class SubItem extends DatabaseObject {
             }
 
 //            it.save();
-            rowsk.add(it.toStringArray(t));
+            rowsk.add(it.toStringArray());
         }
 
         return rowsk;
@@ -290,7 +290,8 @@ public class SubItem extends DatabaseObject {
      * @param template
      * @return
      */
-    public String[] toStringArray(Template template) {
+    public String[] toStringArray() {
+        calculate(this);
         String[] possibleCols = new String[]{
             ////////////////// The exported columns///////////////////////////////////////
             String.valueOf(FormatNumber.formatInteger(this.__getCountvalue())),
@@ -305,28 +306,7 @@ public class SubItem extends DatabaseObject {
         ///////////////////////////////////////////////////////////////////////////////
         };
 
-        String format = template.__getFormat();
-        int[] intcols;
-        try {
-            String[] cols = format.split(",");
-            intcols = new int[cols.length];
-            for (int i = 0; i < intcols.length; i++) {
-                String string = cols[i];
-                intcols[i] = Integer.valueOf(string).intValue();
-            }
-        } catch (Exception ex) {
-            Log.Debug(this, "An error occured, using default format now. " + ex.getMessage());
-            intcols = new int[possibleCols.length];
-            for (int i = 0; i < intcols.length; i++) {
-                intcols[i] = i + 1;
-            }
-        }
-        String[] form = new String[intcols.length];
-        for (int i = 0; i < intcols.length; i++) {
-            form[i] = possibleCols[intcols[i] - 1];
-        }
-
-        return form;
+        return possibleCols;
     }
 
     @Override

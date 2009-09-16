@@ -127,7 +127,7 @@ public class TableHandler {
 
         if (value != null && value instanceof Double) {
             getTable().getCell(column, row).setValue(Double.valueOf(value.toString()));
-        } else {
+        } else if(value!=null){
             getTable().getCell(column, row).getTextService().getText().setText(value.toString().replace("\\n", "\n"));
         }
     }

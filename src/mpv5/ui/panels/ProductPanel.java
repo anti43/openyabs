@@ -1176,9 +1176,9 @@ public class ProductPanel extends javax.swing.JPanel implements DataPanel, MPCBS
         if (preloadedTemplate != null && preload) {
             if (dataOwner != null && dataOwner.isExisting()) {
 
-                HashMap<String, String> hm1 = new FormFieldsHandler(dataOwner).getFormattedFormFields(null);
+                HashMap<String, Object> hm1 = new FormFieldsHandler(dataOwner).getFormattedFormFields(null);
                 File f2 = FileDirectoryHandler.getTempFile(cname_, "pdf");
-                Export ex = new Export();
+                Export ex = new Export(preloadedTemplate);
                 ex.putAll(hm1);
 
                 for (int i = 0; i < dataTable.getRowCount(); i++) {
@@ -1237,9 +1237,9 @@ public class ProductPanel extends javax.swing.JPanel implements DataPanel, MPCBS
     public void print() {
         if (preloadedTemplate != null && preload) {
             if (dataOwner != null && dataOwner.isExisting()) {
-                HashMap<String, String> hm1 = new FormFieldsHandler(dataOwner).getFormattedFormFields(null);
+                HashMap<String, Object> hm1 = new FormFieldsHandler(dataOwner).getFormattedFormFields(null);
                 File f2 = FileDirectoryHandler.getTempFile(cname_, "pdf");
-                Export ex = new Export();
+                Export ex = new Export(preloadedTemplate);
                 ex.putAll(hm1);
 
                 for (int i = 0; i < dataTable.getRowCount(); i++) {

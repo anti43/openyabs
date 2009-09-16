@@ -1388,29 +1388,17 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
                     itemtable.getCellEditor().stopCellEditing();
                 }
 
-                HashMap<String, String> hm1 = new FormFieldsHandler(dataOwner).getFormattedFormFields(null);
+                HashMap<String, Object> hm1 = new FormFieldsHandler(dataOwner).getFormattedFormFields(null);
                 File f2 = FileDirectoryHandler.getTempFile(cname_, "pdf");
-                Export ex = new Export();
+                Export ex = new Export(preloadedTemplate);
                 ex.putAll(hm1);
-
-                Vector<String[]> l = SubItem.convertModel(dataOwner, (MPTableModel) itemtable.getModel(), preloadedTemplate);
-
-                ex.put(TableHandler.KEY_TABLE + "1", l);
                 ex.setTemplate(preloadedExportFile);
                 ex.setTargetFile(f2);
 
                 pr = new PreviewPanel();
                 pr.setDataOwner(dataOwner);
                 new Job(ex, pr).execute();
-                saveSubItems();
-//
-//                arr=ex.keySet().toArray(new String[]{});
-//                Arrays.sort(arr);
-//                for (int i = 0; i < arr.length; i++) {
-//                    String string = arr[i];
-//                    System.err.println(string);
-//                }
-
+          
             }
         } else {
             Popup.notice(Messages.NO_TEMPLATE_LOADED);
@@ -1465,17 +1453,13 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
                     Log.Debug(this, ex.getMessage());
                 }
 
-                HashMap<String, String> hm1 = new FormFieldsHandler(dataOwner).getFormattedFormFields(null);
+                HashMap<String, Object> hm1 = new FormFieldsHandler(dataOwner).getFormattedFormFields(null);
                 File f2 = FileDirectoryHandler.getTempFile(cname_, "pdf");
-                Export ex = new Export();
+                Export ex = new Export(preloadedTemplate);
                 ex.putAll(hm1);
 
-                Vector<String[]> l = SubItem.convertModel(dataOwner, (MPTableModel) itemtable.getModel(), preloadedTemplate);
-
-                ex.put(TableHandler.KEY_TABLE + "1", l);
                 ex.setTemplate(preloadedExportFile);
                 ex.setTargetFile(f2);
-
 
                 try {
                     Contact cont = ((Contact) Contact.getObject(Context.getContact(), dataOwner.__getContactsids()));
@@ -1488,7 +1472,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
                             pr.setText(m.__getDescription());
                         }
                         new Job(ex, (Waiter) pr).execute();
-                        saveSubItems();
+                
                     } else {
                         Popup.notice(Messages.NO_MAIL_DEFINED);
                     }
@@ -1512,14 +1496,11 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
                     itemtable.getCellEditor().stopCellEditing();
                 }
 
-                HashMap<String, String> hm1 = new FormFieldsHandler(dataOwner).getFormattedFormFields(null);
+                HashMap<String, Object> hm1 = new FormFieldsHandler(dataOwner).getFormattedFormFields(null);
                 File f2 = FileDirectoryHandler.getTempFile(cname_, "pdf");
-                Export ex = new Export();
+                Export ex = new Export(preloadedTemplate);
                 ex.putAll(hm1);
 
-                Vector<String[]> l = SubItem.convertModel(dataOwner, (MPTableModel) itemtable.getModel(), preloadedTemplate);
-
-                ex.put(TableHandler.KEY_TABLE + "1", l);
                 ex.setTemplate(preloadedExportFile);
                 ex.setTargetFile(f2);
 

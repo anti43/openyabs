@@ -70,9 +70,9 @@ public class FormFieldsHandler {
      * @param identifier or NULL
      * @return A HashMap<key,value/>
      */
-    public synchronized HashMap<String, String> getFormattedFormFields(final String identifier) {
+    public synchronized HashMap<String, Object> getFormattedFormFields(final String identifier) {
         HashMap<String, Object> map = getFormFields();
-        HashMap<String, String> maps = new HashMap<String, String>();
+        HashMap<String, Object> maps = new HashMap<String, Object>();
         List l = new Vector();
 
         for (Iterator<String> it = map.keySet().iterator(); it.hasNext();) {
@@ -97,7 +97,7 @@ public class FormFieldsHandler {
             } else if (o instanceof Date) {
                 maps.put(skey, DateConverter.getDefDateString((Date) o));
             } else {
-                maps.put(skey, String.valueOf(o));
+                maps.put(skey, o);
             }
         }
         return maps;

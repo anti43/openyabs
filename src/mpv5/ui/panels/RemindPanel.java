@@ -358,9 +358,9 @@ public class RemindPanel extends javax.swing.JPanel {
             Template t = Template.loadTemplate(dataOwner);
             if (t != null) {
                 Exportable te = Template.loadTemplate(dataOwner).getExFile();
-                HashMap<String, String> hm1 = new FormFieldsHandler(dataOwner).getFormattedFormFields(null);
+                HashMap<String, Object> hm1 = new FormFieldsHandler(dataOwner).getFormattedFormFields(null);
                 File f2 = FileDirectoryHandler.getTempFile("pdf");
-                Export ex = new Export();
+                Export ex = new Export(null);
                 ex.putAll(hm1);
                 ex.setTemplate(te);
                 ex.setTargetFile(f2);

@@ -4,14 +4,11 @@ import enoa.handler.TableHandler;
 import java.awt.Component;
 import java.awt.Desktop;
 import java.io.File;
-import java.io.IOException;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Vector;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListModel;
 import mpv5.data.PropertyStore;
@@ -23,7 +20,6 @@ import mpv5.db.common.QueryCriteria;
 import mpv5.db.common.QueryData;
 import mpv5.db.common.QueryHandler;
 import mpv5.db.common.SaveString;
-import mpv5.db.objects.Contact;
 
 import mpv5.db.objects.*;
 import mpv5.db.objects.SubItem;
@@ -49,8 +45,6 @@ import mpv5.utils.files.FileDirectoryHandler;
 import mpv5.utils.jobs.Job;
 import mpv5.utils.models.MPComboBoxModelItem;
 import mpv5.utils.models.MPTableModel;
-import mpv5.utils.tables.Selection;
-import mpv5.utils.tables.TableFormat;
 import mpv5.utils.ui.TextFieldUtils;
 
 /**
@@ -119,7 +113,7 @@ public class ControlPanel_Templates extends javax.swing.JPanel implements Contro
         templates = new javax.swing.JTable();
 
         setBackground(new java.awt.Color(255, 255, 255));
-        java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle();
+        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("mpv5/resources/languages/Panels"); // NOI18N
         setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("ControlPanel_Templates.border.title"))); // NOI18N
         setName("Form"); // NOI18N
         setPreferredSize(new java.awt.Dimension(495, 183));
@@ -214,13 +208,13 @@ public class ControlPanel_Templates extends javax.swing.JPanel implements Contro
         fullname.setFont(fullname.getFont());
         fullname.setName("fullname"); // NOI18N
 
-        jLabel3.setFont(new java.awt.Font("Dialog", 0, 12)); // NOI18N
+        jLabel3.setFont(new java.awt.Font("Dialog", 0, 12));
         jLabel3.setText(bundle.getString("ControlPanel_Templates.jLabel3.text")); // NOI18N
         jLabel3.setName("jLabel3"); // NOI18N
 
         groupname.setName("groupname"); // NOI18N
 
-        jLabel6.setFont(new java.awt.Font("Dialog", 0, 12)); // NOI18N
+        jLabel6.setFont(new java.awt.Font("Dialog", 0, 12));
         jLabel6.setText(bundle.getString("ControlPanel_Templates.jLabel6.text")); // NOI18N
         jLabel6.setName("jLabel6"); // NOI18N
 
@@ -243,8 +237,9 @@ public class ControlPanel_Templates extends javax.swing.JPanel implements Contro
         type.set_Label(bundle.getString("ControlPanel_Templates.type._Label")); // NOI18N
         type.setName("type"); // NOI18N
 
+        format.setToolTipText(bundle.getString("ControlPanel_Templates.format.toolTipText")); // NOI18N
         format.set_Label(bundle.getString("ControlPanel_Templates.format._Label")); // NOI18N
-        format.set_Text(bundle.getString("ControlPanel_Templates.format._Text")); // NOI18N
+        format.set_Text("1,2,3,4,5,6,7,8,9"); // NOI18N
         format.setName("format"); // NOI18N
 
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
@@ -298,8 +293,8 @@ public class ControlPanel_Templates extends javax.swing.JPanel implements Contro
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel4Layout.createSequentialGroup()
                         .addComponent(jLabel3)
-                        .addContainerGap(31, Short.MAX_VALUE))
-                    .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 46, Short.MAX_VALUE)))
+                        .addContainerGap(28, Short.MAX_VALUE))
+                    .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 43, Short.MAX_VALUE)))
         );
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
@@ -344,14 +339,14 @@ public class ControlPanel_Templates extends javax.swing.JPanel implements Contro
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 79, Short.MAX_VALUE)
+                .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 222, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 355, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 250, Short.MAX_VALUE)
-            .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 250, Short.MAX_VALUE)
+            .addComponent(jPanel2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 249, Short.MAX_VALUE)
+            .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 249, Short.MAX_VALUE)
         );
 
         add(jPanel1, java.awt.BorderLayout.CENTER);
@@ -664,17 +659,17 @@ public class ControlPanel_Templates extends javax.swing.JPanel implements Contro
             }
 
             try {
-                HashMap<String, String> hm1 = new FormFieldsHandler(t).getFormattedFormFields(null);
+                HashMap<String, Object> hm1 = new FormFieldsHandler(t).getFormattedFormFields(null);
                 Log.Print(hm1.entrySet().toArray());
                 File f = dataOwner.getFile();
                 File f2 = FileDirectoryHandler.getTempFile("pdf");
-                Export ex = new Export();
+                Export ex = new Export(dataOwner);
                 ex.putAll(hm1);
 
                 Vector<String[]> l = new Vector<String[]>();
 
                 for (int i = 0; i < 20; i++) {
-                    l.add(SubItem.getRandomItem().toStringArray(dataOwner));
+                    l.add(SubItem.getRandomItem().toStringArray());
                 }
 
                 ex.put(TableHandler.KEY_TABLE + "1", l);

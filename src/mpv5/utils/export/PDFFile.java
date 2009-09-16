@@ -31,6 +31,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import mpv5.db.objects.Template;
 import mpv5.logging.Log;
 import mpv5.utils.images.MPIcon;
 
@@ -49,6 +50,13 @@ public class PDFFile extends Exportable {
 
     @Override
     public void run() {
+
+
+        Log.Debug(this, "All fields:");
+        for (Iterator<String> it = getData().keySet().iterator(); it.hasNext();) {
+            String k = it.next();
+            Log.Debug(this, "Key: " + k + " [" + getData().get(k) + "]");
+        }
         try {
             Log.Debug(this, "Running export for template file: " + getPath() + "  to file: " + getTarget());
             try {
@@ -77,7 +85,7 @@ public class PDFFile extends Exportable {
                 if (getData().get(keyt.replace("_", ".")) != null) {
                     Log.Debug(this, "Filling Field: " + object + " [" + getData().get(keyt) + "]");
                     if (!keyt.startsWith("image")) {
-                       acroFields.setField(keyt, String.valueOf(getData().get(keyt.replace("_", "."))));
+                        acroFields.setField(keyt, String.valueOf(getData().get(keyt.replace("_", "."))));
                     } else {
                         setImage(pdfStamper, keyt, ((MPIcon) getData().get(keyt)).getImage());
                     }
@@ -87,11 +95,14 @@ public class PDFFile extends Exportable {
             Log.Debug(this, "Looking for tables in: " + getName());
             for (Iterator<String> it = getData().keySet().iterator(); it.hasNext();) {
                 String key = it.next();
-                if (key.startsWith(TableHandler.KEY_TABLE)) {//Table found
+                if (key.contains(TableHandler.KEY_TABLE)) {//Table found
                     @SuppressWarnings("unchecked")
                     List<String[]> value = (List<String[]>) getData().get(key);
                     for (int i = 0; i < value.size(); i++) {
                         String[] strings = value.get(i);
+                        if (getTemplate() != null) {
+                            strings = refactorRow(getTemplate(), strings);
+                        }
                         for (int j = 0; j < strings.length; j++) {
                             String cellValue = strings[j];
                             String fieldname = "col" + j + "row" + i;
@@ -122,5 +133,34 @@ public class PDFFile extends Exportable {
         } catch (Exception iOException) {
             Log.Debug(iOException);
         }
+    }
+
+    private String[] refactorRow(Template template, String[] possibleCols) {
+        String format = template.__getFormat();
+        int[] intcols;
+        try {
+            String[] cols = format.split(",");
+            intcols = new int[cols.length];
+            for (int i = 0; i < intcols.length; i++) {
+                String string = cols[i];
+                intcols[i] = Integer.valueOf(string).intValue();
+            }
+        } catch (Exception ex) {
+            Log.Debug(this, "An error occured, using default format now. " + ex.getMessage());
+            intcols = new int[possibleCols.length];
+            for (int i = 0; i < intcols.length; i++) {
+                intcols[i] = i + 1;
+            }
+        }
+        String[] form = new String[intcols.length];
+        for (int i = 0; i < intcols.length; i++) {
+            try {
+                form[i] = possibleCols[intcols[i] - 1];
+            } catch (Exception e) {
+                Log.Debug(this, "To much columns in the format definition: " + e);
+            }
+        }
+
+        return form;
     }
 }

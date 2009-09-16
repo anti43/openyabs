@@ -21,6 +21,8 @@ import ag.ion.bion.officelayer.text.ITextDocument;
 import enoa.connection.NoaConnection;
 import enoa.handler.DocumentHandler;
 import java.io.IOException;
+import java.util.Iterator;
+import java.util.Set;
 import mpv5.logging.Log;
 import mpv5.ui.frames.MPView;
 
@@ -55,14 +57,21 @@ public class ODTFile extends Exportable {
 
     @Override
     public void run() {
-        
+
         Log.Debug(this, "run: ");
         MPView.setWaiting(true);
+
+        Log.Debug(this, "All fields:");
+        for (Iterator<String> it = getData().keySet().iterator(); it.hasNext();) {
+            String k = it.next();
+            Log.Debug(this, "Key: " + k + " [" + getData().get(k) + "]");
+        }
+
         try {
             dh.clear();
             dh.fillPlaceholderFields(getData());
 //            dh.fillTextVariableFields((ITextDocument) df, getData());//Omitted for performance reasons
-            dh.fillTables(getData());
+            dh.fillTables(getData(), getTemplate());
             dh.setImages(getData());
             dh.saveAs(getTarget());
             dh.close();
@@ -70,7 +79,7 @@ public class ODTFile extends Exportable {
             Log.Debug(ex);
         } finally {
             MPView.setWaiting(false);
-            
+
         }
     }
 }
