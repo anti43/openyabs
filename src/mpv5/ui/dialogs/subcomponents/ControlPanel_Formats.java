@@ -6,6 +6,7 @@ import java.awt.event.ActionListener;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.Locale;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.DefaultComboBoxModel;
@@ -100,6 +101,8 @@ public class ControlPanel_Formats extends javax.swing.JPanel implements ControlA
         labeledCombobox3 = new mpv5.ui.beans.LabeledCombobox();
         labeledSpinner1 = new mpv5.ui.beans.LabeledSpinner();
         jLabel2 = new javax.swing.JLabel();
+        locales = new javax.swing.JComboBox();
+        jLabel3 = new javax.swing.JLabel();
         jPanel6 = new javax.swing.JPanel();
         jButton3 = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
@@ -170,9 +173,15 @@ public class ControlPanel_Formats extends javax.swing.JPanel implements ControlA
         labeledSpinner1.set_Label(bundle.getString("ControlPanel_Formats.labeledSpinner1._Label")); // NOI18N
         labeledSpinner1.setName("labeledSpinner1"); // NOI18N
 
-        jLabel2.setFont(new java.awt.Font("Dialog", 0, 12));
+        jLabel2.setFont(new java.awt.Font("Dialog", 0, 12)); // NOI18N
         jLabel2.setText(bundle.getString("ControlPanel_Formats.jLabel2.text")); // NOI18N
         jLabel2.setName("jLabel2"); // NOI18N
+
+        locales.setName("locales"); // NOI18N
+
+        jLabel3.setFont(new java.awt.Font("Dialog", 0, 12)); // NOI18N
+        jLabel3.setText(bundle.getString("ControlPanel_Formats.jLabel3.text")); // NOI18N
+        jLabel3.setName("jLabel3"); // NOI18N
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -181,27 +190,34 @@ public class ControlPanel_Formats extends javax.swing.JPanel implements ControlA
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 194, Short.MAX_VALUE)
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 197, Short.MAX_VALUE)
                         .addGap(2, 2, 2))
                     .addComponent(jComboBox1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 196, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                        .addGroup(jPanel2Layout.createSequentialGroup()
+                            .addGap(0, 0, 0)
+                            .addComponent(jButton5, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                            .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                .addComponent(labeledTextField1, javax.swing.GroupLayout.DEFAULT_SIZE, 347, Short.MAX_VALUE)
+                                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(labeledCombobox2, javax.swing.GroupLayout.PREFERRED_SIZE, 298, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(labeledCombobox1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 298, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGroup(jPanel2Layout.createSequentialGroup()
+                                    .addComponent(jLabel1)
+                                    .addGap(96, 96, 96))
+                                .addComponent(labeledSpinner1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 344, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGroup(jPanel2Layout.createSequentialGroup()
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                            .addComponent(labeledCombobox3, javax.swing.GroupLayout.PREFERRED_SIZE, 298, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGroup(jPanel2Layout.createSequentialGroup()
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                            .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 344, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addGap(0, 0, 0)
-                        .addComponent(jButton5, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(labeledTextField1, javax.swing.GroupLayout.DEFAULT_SIZE, 344, Short.MAX_VALUE)
-                            .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                .addComponent(labeledCombobox2, javax.swing.GroupLayout.PREFERRED_SIZE, 298, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addComponent(labeledCombobox1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 298, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(jPanel2Layout.createSequentialGroup()
-                                .addComponent(jLabel1)
-                                .addGap(96, 96, 96))
-                            .addComponent(labeledSpinner1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 344, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(labeledCombobox3, javax.swing.GroupLayout.PREFERRED_SIZE, 298, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(locales, javax.swing.GroupLayout.PREFERRED_SIZE, 176, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
         jPanel2Layout.setVerticalGroup(
@@ -228,8 +244,12 @@ public class ControlPanel_Formats extends javax.swing.JPanel implements ControlA
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(jLabel2)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(labeledSpinner1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 207, Short.MAX_VALUE))))
+                                .addComponent(labeledSpinner1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jLabel3)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(locales, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 256, Short.MAX_VALUE))))
                 .addContainerGap())
         );
 
@@ -241,9 +261,7 @@ public class ControlPanel_Formats extends javax.swing.JPanel implements ControlA
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGap(43, 43, 43))
+            .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
 
         add(jPanel1, java.awt.BorderLayout.CENTER);
@@ -289,6 +307,13 @@ public class ControlPanel_Formats extends javax.swing.JPanel implements ControlA
     private void jComboBox1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBox1ActionPerformed
 
         currentUser = Integer.valueOf(((MPComboBoxModelItem) jComboBox1.getSelectedItem()).getId());
+         try {
+            if (((User) User.getObject(Context.getUser(), currentUser)).getProperties().hasProperty("item.date.locale")) {
+                locales.setSelectedIndex(MPComboBoxModelItem.getItemID(((User) User.getObject(Context.getUser(), currentUser)).getProperties().getProperty("item.date.locale"), locales.getModel()));
+            }
+        } catch (Exception e) {
+            Log.Debug(e);
+        }
         setTable();
     }//GEN-LAST:event_jComboBox1ActionPerformed
 
@@ -314,6 +339,7 @@ public class ControlPanel_Formats extends javax.swing.JPanel implements ControlA
     private javax.swing.JComboBox jComboBox1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel6;
@@ -324,6 +350,7 @@ public class ControlPanel_Formats extends javax.swing.JPanel implements ControlA
     private mpv5.ui.beans.LabeledCombobox labeledCombobox3;
     private mpv5.ui.beans.LabeledSpinner labeledSpinner1;
     private mpv5.ui.beans.LabeledTextField labeledTextField1;
+    private javax.swing.JComboBox locales;
     // End of variables declaration//GEN-END:variables
     public String laf_;
     public String language_ = "buildin_en";
@@ -346,6 +373,15 @@ public class ControlPanel_Formats extends javax.swing.JPanel implements ControlA
 
     public void refresh() {
 
+        locales.setModel(LanguageManager.getLocalesAsComboBoxModel());
+
+        if (MPView.getUser().getProperties().hasProperty("item.date.locale")) {
+            locales.setSelectedIndex(MPComboBoxModelItem.getItemID(MPView.getUser().getProperties().getProperty("item.date.locale"), locales.getModel()));
+        } else {
+            locales.setSelectedIndex(MPComboBoxModelItem.getItemID(Locale.getDefault().toString(),
+                    locales.getModel()));
+        }
+
         labeledSpinner1.getSpinner().setModel(new SpinnerNumberModel(0, 0, Integer.MAX_VALUE, 1));
         labeledSpinner1.getSpinner().setEditor(new JSpinner.NumberEditor(labeledSpinner1.getSpinner()));
         labeledSpinner1.getSpinner().updateUI();
@@ -364,6 +400,7 @@ public class ControlPanel_Formats extends javax.swing.JPanel implements ControlA
 
         setUser();
         setTable();
+
     }
 
     @Override
@@ -388,6 +425,13 @@ public class ControlPanel_Formats extends javax.swing.JPanel implements ControlA
         what.add("cname", labeledTextField1.getText());
         what.add("usersids", Integer.valueOf(((MPComboBoxModelItem) jComboBox1.getSelectedItem()).getId()));
         QueryHandler.instanceOf().clone(Context.getFormats()).insert(what, null);
+        try {
+            User u = (User) User.getObject(Context.getUser(), Integer.valueOf(((MPComboBoxModelItem) jComboBox1.getSelectedItem()).getId()));
+            u.getProperties().changeProperty("item.date.locale", ((MPComboBoxModelItem) locales.getSelectedItem()).getId());
+            u.save();
+        } catch (Exception ex) {
+            Log.Debug(ex);
+        }
 
         setTable();
         labeledTextField1.setText("");
@@ -420,6 +464,9 @@ public class ControlPanel_Formats extends javax.swing.JPanel implements ControlA
             if (currentUser == null) {
                 currentUser = MPView.getUser().getID();
                 jComboBox1.setSelectedIndex(MPComboBoxModelItem.getItemID(String.valueOf(currentUser), jComboBox1.getModel()));
+                if (MPView.getUser().getProperties().hasProperty("item.date.locale")) {
+            locales.setSelectedIndex(MPComboBoxModelItem.getItemID(MPView.getUser().getProperties().getProperty("item.date.locale"), locales.getModel()));
+        }
             } else {
                 currentUser = Integer.valueOf(((MPComboBoxModelItem) jComboBox1.getSelectedItem()).getId());
             }
@@ -448,12 +495,21 @@ public class ControlPanel_Formats extends javax.swing.JPanel implements ControlA
 
     private void setdata(User user) {
         jComboBox1.setSelectedIndex(MPComboBoxModelItem.getItemID(String.valueOf(user.getID()), jComboBox1.getModel()));
-
+        if (user.getProperties().hasProperty("item.date.locale")) {
+            locales.setSelectedIndex(MPComboBoxModelItem.getItemID(user.getProperties().getProperty("item.date.locale"), locales.getModel()));
+        }
     }
 
     private boolean test() {
         if (!labeledTextField1.getText().contains(FormatHandler.INTEGERPART_IDENTIFIER.substring(0, 3))) {
             labeledTextField1.set_Text(labeledTextField1.getText() + FormatHandler.INTEGERPART_IDENTIFIER);
+        }
+        try {
+            User u = (User) User.getObject(Context.getUser(), Integer.valueOf(((MPComboBoxModelItem) jComboBox1.getSelectedItem()).getId()));
+            u.getProperties().changeProperty("item.date.locale", ((MPComboBoxModelItem) locales.getSelectedItem()).getId());
+            u.save();
+        } catch (Exception ex) {
+            Log.Debug(ex);
         }
 
         String str = "";
