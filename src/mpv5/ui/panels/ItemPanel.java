@@ -39,6 +39,7 @@ import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.print.DocFlavor;
+import javax.swing.JCheckBox;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JTabbedPane;
@@ -88,6 +89,8 @@ import mpv5.utils.models.MPComboBoxModelItem;
 import mpv5.utils.models.MPTableModel;
 import mpv5.utils.numberformat.FormatNumber;
 import mpv5.utils.print.PrintJob;
+import mpv5.utils.renderer.ButtonEditor;
+import mpv5.utils.renderer.ButtonRenderer;
 import mpv5.utils.tables.TableCalculator;
 import mpv5.utils.renderer.CellEditorWithMPComboBox;
 import mpv5.utils.renderer.LazyCellEditor;
@@ -1265,8 +1268,6 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
                                 SubItem.getDefaultItem(), SubItem.getDefaultItem(),
                                 SubItem.getDefaultItem(), SubItem.getDefaultItem()
                             }));
-
-
                     formatTable();
                     shipping.setText(FormatNumber.formatDezimal(0d));
                 } catch (Exception e) {
@@ -1284,9 +1285,8 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
     public void formatTable() {
 
         prepareTable();
-        TableFormat.resizeCols(itemtable, new Integer[]{0, 23, 53, 63, 100, 83, 63, 63, 0, 0, 0}, new Boolean[]{true, true, true, true, false, true, true, true, true, true, true});
+        TableFormat.resizeCols(itemtable, new Integer[]{0, 23, 53, 63, 100, 83, 63, 63, 0, 0, 0, 20, 20, 20}, new Boolean[]{true, true, true, true, false, true, true, true, true, true, true, true, true, true});
         TableFormat.changeBackground(itemtable, 1, Color.LIGHT_GRAY);
-
     }
 
     @Override
@@ -1399,7 +1399,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
                 pr = new PreviewPanel();
                 pr.setDataOwner(dataOwner);
                 new Job(ex, pr).execute();
-          
+
             }
         } else {
             Popup.notice(Messages.NO_TEMPLATE_LOADED);
@@ -1468,12 +1468,12 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
                         SimpleMail pr = new SimpleMail();
                         pr.setMailConfiguration(MPView.getUser().getMailConfiguration());
                         pr.setRecipientsAddress(cont.__getMailaddress());
-                        if (m != null && m.__getCName()!=null) {
+                        if (m != null && m.__getCName() != null) {
                             pr.setSubject(m.__getCName());
                             pr.setText(VariablesHandler.parse(m.__getDescription(), dataOwner));
                         }
                         new Job(ex, (Waiter) pr).execute();
-                
+
                     } else {
                         Popup.notice(Messages.NO_MAIL_DEFINED);
                     }
@@ -1534,6 +1534,13 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
         netCalculator = new TableCalculator(itemtable, new int[]{7, 9}, new int[]{8}, new int[]{}, TableCalculator.ACTION_SUBSTRACT, new int[]{8});
         ((MPTableModel) itemtable.getModel()).addCalculator(netCalculator);
         netCalculator.addLabel(taxvalue, 8);
+
+        itemtable.getColumnModel().getColumn(11).setCellRenderer(new ButtonRenderer());
+        itemtable.getColumnModel().getColumn(11).setCellEditor(new ButtonEditor(new JCheckBox()));
+        itemtable.getColumnModel().getColumn(12).setCellRenderer(new ButtonRenderer());
+        itemtable.getColumnModel().getColumn(12).setCellEditor(new ButtonEditor(new JCheckBox()));
+        itemtable.getColumnModel().getColumn(12+1).setCellRenderer(new ButtonRenderer());
+        itemtable.getColumnModel().getColumn(12+1).setCellEditor(new ButtonEditor(new JCheckBox()));
 
     }
 }

@@ -20,6 +20,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Vector;
+import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JTable;
 import javax.swing.SwingUtilities;
@@ -456,15 +457,17 @@ public class SubItem extends DatabaseObject {
      */
     public static MPTableModel toModel(SubItem[] items) {
         //"Internal ID", "ID", "Count", "Measure", "Description", "Netto Price", "Tax Value", "Total Price"
-        Object[][] data = new Object[items.length][11];
+        Object[][] data = new Object[items.length][];
         for (int i = 0; i < data.length; i++) {
             data[i] = items[i].getRowData(i);
         }
+
         MPTableModel model = new MPTableModel(
-                new Class[]{Integer.class, Integer.class, Double.class, String.class, String.class, Double.class, Double.class, Double.class, Double.class, Double.class, Integer.class},
-                new boolean[]{false, false, true, true, true, true, true, false, false, false, false},
+                new Class[]{Integer.class, Integer.class, Double.class, String.class, String.class, Double.class, Double.class, Double.class, Double.class, Double.class, Integer.class, JButton.class, JButton.class, JButton.class},
+                new boolean[]{false, false, true, true, true, true, true, false, false, false, false, true, true, true},
                 data,
                 Headers.SUBITEMS.getValue());
+   
         model.setContext(Context.getSubItem());
         String defunit = null;
         if (MPView.getUser().getProperties().hasProperty("defunit")) {
@@ -479,7 +482,7 @@ public class SubItem extends DatabaseObject {
         if (MPView.getUser().getProperties().hasProperty("defcount")) {
             defcount = MPView.getUser().getProperties().getProperty("defcount", 0d);
         }
-        model.defineRow(new Object[]{0, 0, defcount, defunit, null, 0.0, deftax, 0.0, 0.0, 0.0, 0});
+        model.defineRow(new Object[]{0, 0, defcount, defunit, null, 0.0, deftax, 0.0, 0.0, 0.0, 0, "A", "E", "C"});
         model.setAutoCountColumn(1);
 
         return model;
@@ -491,7 +494,7 @@ public class SubItem extends DatabaseObject {
      * @return
      */
     public synchronized Object[] getRowData(int row) {
-        Object[] data = new Object[11];
+        Object[] data = new Object[14];
         for (int i = 0; i < data.length; i++) {
             data[0] = __getIDS();
             data[1] = Integer.valueOf(row);
@@ -504,6 +507,9 @@ public class SubItem extends DatabaseObject {
             data[8] = 0.0;
             data[9] = 0.0;
             data[10] = Integer.valueOf(__getOriginalproductsids());
+            data[11] = "A";
+            data[12] = "E";
+            data[12+1] = "C";
         }
         return data;
     }

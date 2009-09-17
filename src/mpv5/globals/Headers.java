@@ -7,7 +7,7 @@ public enum Headers {
 
     SEARCH_DEFAULT(new String[]{"Internal ID", "", ""}),
     CONTACT_DEFAULT(new String[]{"Internal ID", "ID", "Name", "City"}),
-    CONTACT_DETAILS(new String[]{"Internal ID", "ID", "Title", "Prename", "Name", "Street", "Zip", "City", "Mainphone", "Fax", "Mobilephone", "Workphone", "Mailaddress", "Company", "Website", "Notes", "Taxnumber"}),
+    CONTACT_DETAILS(new String[]{"Internal ID", "ID", "Title", "Prename", "Name", "Street", "Zip", "City", "Mainphone", "Fax", "Mobilephone", "Workphone", "Company", "Mailaddress", "Website", "Notes", "Taxnumber"}),
     USER_DEFAULT(new String[]{"Internal ID", "ID", "User Name", "Mail", "Last logged in"}),
     USER_DETAILS(new String[]{"Internal ID", "User Name", "Fullname", "Mail", "Enabled", "Logged in"}),
     BABELFISH(new String[]{"Component", "Language Value", "New Value"}),
@@ -19,7 +19,7 @@ public enum Headers {
     JOURNAL(new String[]{"Internal ID", "Date", "Group", "Account", "Number", "Type", "Status", "Volume", "Revenue"}),
     TRASHBIN(new String[]{"Type", "Internal ID", "Description"}),
     PRODUCT_DEFAULT(new String[]{"Internal ID", "Name", "Number", "Description"}),
-    SUBITEMS(new String[]{"Internal ID", "", "Count", "Measure", "Description", "Netto Price", "Tax Rate", "Total Price", "Tax value", "Net 2", "Product ID"}),
+    SUBITEMS(new String[]{"Internal ID", "", "Count", "Measure", "Description", "Netto Price", "Tax Rate", "Total Price", "Tax value", "Net 2", "Product ID", "", "", ""}),
     TEMPLATES(new String[]{"Name", "Type", "Group"}),
     MAILTEMPLATES(new String[]{"Name", "Description", "Group"}),
     SCHEDULE_LIST(new String[]{"Item ID", "Interval (Months)", "End date", "Added by"}),

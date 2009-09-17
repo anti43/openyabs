@@ -121,12 +121,12 @@ public class TableFormat {
     public static void resizeCols(JTable table, Integer[] desiredColSizes, boolean fixed) {
         for (int i = 0; i < desiredColSizes.length; i++) {
             if (desiredColSizes[i] != null) {
-                table.getColumn(table.getColumnName(i)).setMinWidth(desiredColSizes[i]);
-                table.getColumn(table.getColumnName(i)).setPreferredWidth(desiredColSizes[i]);
+                table.getColumnModel().getColumn(i).setMinWidth(desiredColSizes[i]);
+                table.getColumnModel().getColumn(i).setPreferredWidth(desiredColSizes[i]);
                 if (fixed) {
-                    table.getColumn(table.getColumnName(i)).setMaxWidth(desiredColSizes[i]);
+                    table.getColumnModel().getColumn(i).setMaxWidth(desiredColSizes[i]);
                 } else {
-                    table.getColumn(table.getColumnName(i)).setMaxWidth(1000);
+                    table.getColumnModel().getColumn(i).setMaxWidth(1000);
                 }
             }
         }
@@ -160,10 +160,10 @@ public class TableFormat {
      */
     public static void stripColumn(JTable table, int columnToHide) {
         try {
-            table.getColumn(table.getColumnName(columnToHide)).setWidth(0);
-            table.getColumn(table.getColumnName(columnToHide)).setPreferredWidth(0);
-            table.getColumn(table.getColumnName(columnToHide)).setMinWidth(0);
-            table.getColumn(table.getColumnName(columnToHide)).setMaxWidth(0);
+            table.getColumnModel().getColumn(columnToHide).setWidth(0);
+            table.getColumnModel().getColumn(columnToHide).setPreferredWidth(0);
+            table.getColumnModel().getColumn(columnToHide).setMinWidth(0);
+            table.getColumnModel().getColumn(columnToHide).setMaxWidth(0);
 
             table.doLayout();
         } catch (Exception e) {
@@ -201,10 +201,10 @@ public class TableFormat {
      */
     public static void format(JTable table, int column, int width) {
         try {
-            table.getColumn(table.getColumnName(column)).setWidth(width);
-            table.getColumn(table.getColumnName(column)).setPreferredWidth(width);
-            table.getColumn(table.getColumnName(column)).setMinWidth(width);
-            table.getColumn(table.getColumnName(column)).setMaxWidth(width);
+            table.getColumnModel().getColumn(column).setWidth(width);
+            table.getColumnModel().getColumn(column).setPreferredWidth(width);
+            table.getColumnModel().getColumn(column).setMinWidth(width);
+            table.getColumnModel().getColumn(column).setMaxWidth(width);
         } catch (Exception e) {
         }
     }
@@ -218,12 +218,12 @@ public class TableFormat {
     public static void resizeCols(JTable table, Integer[] desiredColSizes, Boolean[] fixedCols) {
         for (int i = 0; i < desiredColSizes.length; i++) {
             if (desiredColSizes[i] != null) {
-                table.getColumn(table.getColumnName(i)).setMinWidth(desiredColSizes[i]);
-                table.getColumn(table.getColumnName(i)).setPreferredWidth(desiredColSizes[i]);
+                table.getColumnModel().getColumn(i).setMinWidth(desiredColSizes[i]);
+                table.getColumnModel().getColumn(i).setPreferredWidth(desiredColSizes[i]);
                 if (fixedCols[i] != null && fixedCols[i]) {
-                    table.getColumn(table.getColumnName(i)).setMaxWidth(desiredColSizes[i]);
+                    table.getColumnModel().getColumn(i).setMaxWidth(desiredColSizes[i]);
                 } else {
-                    table.getColumn(table.getColumnName(i)).setMaxWidth(1000);
+                    table.getColumnModel().getColumn(i).setMaxWidth(1000);
                 }
             }
         }
@@ -253,7 +253,7 @@ public class TableFormat {
                 return this;
             }
         }
-        table.getColumn(table.getColumnName(column)).setCellRenderer(new ColorRenderer());
+        table.getColumnModel().getColumn(column).setCellRenderer(new ColorRenderer());
     }
 
 }
