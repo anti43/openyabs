@@ -72,6 +72,7 @@ import mpv5.ui.toolbars.DataPanelTB;
 import mpv5.db.objects.User;
 import mpv5.globals.LocalSettings;
 import mpv5.handler.FormFieldsHandler;
+import mpv5.handler.VariablesHandler;
 import mpv5.mail.SimpleMail;
 import mpv5.ui.beans.MPCBSelectionChangeReceiver;
 import mpv5.ui.dialogs.DialogForFile;
@@ -1467,9 +1468,9 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
                         SimpleMail pr = new SimpleMail();
                         pr.setMailConfiguration(MPView.getUser().getMailConfiguration());
                         pr.setRecipientsAddress(cont.__getMailaddress());
-                        if (m != null) {
+                        if (m != null && m.__getCName()!=null) {
                             pr.setSubject(m.__getCName());
-                            pr.setText(m.__getDescription());
+                            pr.setText(VariablesHandler.parse(m.__getDescription(), dataOwner));
                         }
                         new Job(ex, (Waiter) pr).execute();
                 

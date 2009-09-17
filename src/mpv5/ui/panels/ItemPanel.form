@@ -66,23 +66,23 @@
               <Component id="jPanel4" alignment="0" max="32767" attributes="3"/>
               <Component id="jPanel1" alignment="0" max="32767" attributes="2"/>
               <Group type="102" alignment="1" attributes="0">
-                  <Component id="jToolBar1" pref="518" max="32767" attributes="1"/>
+                  <Component id="jToolBar1" pref="514" max="32767" attributes="1"/>
                   <EmptySpace max="-2" attributes="0"/>
                   <Component id="prinitingComboBox1" min="-2" max="-2" attributes="0"/>
               </Group>
               <Component id="jPanel2" alignment="0" max="32767" attributes="2"/>
               <Component id="jPanel5" alignment="0" min="0" max="32767" attributes="2"/>
               <Group type="102" alignment="1" attributes="0">
-                  <Component id="jScrollPane1" pref="374" max="32767" attributes="0"/>
+                  <Component id="jScrollPane1" pref="376" max="32767" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
-                  <Component id="jScrollPane2" pref="274" max="32767" attributes="0"/>
+                  <Component id="jScrollPane2" pref="276" max="32767" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="1" attributes="0">
                       <Component id="removefile" min="-2" pref="24" max="-2" attributes="0"/>
                       <Component id="addfile" min="-2" pref="24" max="-2" attributes="0"/>
                   </Group>
               </Group>
-              <Component id="jToolBar2" alignment="1" pref="684" max="32767" attributes="0"/>
+              <Component id="jToolBar2" alignment="1" pref="688" max="32767" attributes="0"/>
           </Group>
         </DimensionLayout>
         <DimensionLayout dim="1">
@@ -144,7 +144,7 @@
                           </Group>
                           <Component id="number" alignment="0" min="-2" pref="214" max="-2" attributes="1"/>
                       </Group>
-                      <EmptySpace pref="103" max="32767" attributes="0"/>
+                      <EmptySpace pref="83" max="32767" attributes="0"/>
                       <Group type="103" groupAlignment="1" attributes="0">
                           <Group type="103" groupAlignment="0" max="-2" attributes="0">
                               <Component id="groupnameselect" alignment="0" max="32767" attributes="1"/>
@@ -307,12 +307,12 @@
           <Layout>
             <DimensionLayout dim="0">
               <Group type="103" groupAlignment="0" attributes="0">
-                  <Component id="jScrollPane3" alignment="0" pref="680" max="32767" attributes="0"/>
+                  <Component id="jScrollPane3" alignment="0" pref="684" max="32767" attributes="0"/>
               </Group>
             </DimensionLayout>
             <DimensionLayout dim="1">
               <Group type="103" groupAlignment="0" attributes="0">
-                  <Component id="jScrollPane3" alignment="1" pref="27" max="32767" attributes="0"/>
+                  <Component id="jScrollPane3" alignment="1" pref="37" max="32767" attributes="0"/>
               </Group>
             </DimensionLayout>
           </Layout>
@@ -529,7 +529,7 @@
                       <Component id="contactcompany" min="-2" pref="131" max="-2" attributes="0"/>
                       <EmptySpace min="-2" pref="8" max="-2" attributes="0"/>
                       <Component id="contactid" min="-2" pref="131" max="-2" attributes="0"/>
-                      <EmptySpace min="0" pref="10" max="32767" attributes="0"/>
+                      <EmptySpace min="0" pref="14" max="32767" attributes="0"/>
                   </Group>
               </Group>
             </DimensionLayout>
@@ -639,7 +639,7 @@
                       <Component id="date2" min="-2" pref="214" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
                       <Component id="date3" min="-2" pref="216" max="-2" attributes="0"/>
-                      <EmptySpace pref="11" max="32767" attributes="0"/>
+                      <EmptySpace pref="15" max="32767" attributes="0"/>
                   </Group>
               </Group>
             </DimensionLayout>

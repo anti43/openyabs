@@ -47,13 +47,13 @@ import mpv5.utils.jobs.Waiter;
  */
 public class SimpleMail implements Waiter {
 
-    private String smtpHost;
-    private String username;
-    private String password;
-    private String senderAddress;
-    private String recipientsAddress;
-    private String subject;
-    private String text;
+    private String smtpHost ="";
+    private String username ="";
+    private String password ="";
+    private String senderAddress ="";
+    private String recipientsAddress ="";
+    private String subject ="";
+    private String text ="";
     private boolean useTls;
     private File attachment;
 

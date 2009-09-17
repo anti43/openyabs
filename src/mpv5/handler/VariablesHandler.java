@@ -21,6 +21,7 @@ import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
 import mpv5.db.common.NodataFoundException;
 import mpv5.db.objects.Group;
+import mpv5.db.objects.SubItem;
 import mpv5.db.objects.User;
 import mpv5.logging.Log;
 import mpv5.ui.frames.MPView;
@@ -56,7 +57,6 @@ public abstract class VariablesHandler {
         }
     }
 
-
     //special
     /**
      * Determines the specific variables for the given {@link DatabaseObject}
@@ -66,10 +66,13 @@ public abstract class VariablesHandler {
     public static String[] getSpecialVarsOf(DatabaseObject target) {
         ArrayList<String[]> vars = target.getValues();
         String[] svars = new String[vars.size()];
-        for (int i = 0; i < vars.size(); i++) {
-            String[] method = vars.get(i);
-            svars[i] = "[" + method[0].toUpperCase() + "]";
-//            Log.Debug(VariablesHandler.class, "Found var " + svars[i] );
+        if (!(target instanceof SubItem)) {//No subitems, takes ages
+            for (int i = 0; i < vars.size(); i++) {
+                String[] method = vars.get(i);
+                svars[i] = "[" + method[0].toUpperCase() + "]";
+            }
+        } else {
+            return new String[0];
         }
         return svars;
     }
@@ -114,7 +117,7 @@ public abstract class VariablesHandler {
             vals = target.getValues();
             for (int k = 0; k < vals.size(); k++) {
                 String[] value = vals.get(k);
-                if (value[0].equalsIgnoreCase(variable.substring(1, variable.length()-1))) {
+                if (value[0].equalsIgnoreCase(variable.substring(1, variable.length() - 1))) {
                     vars[i + j][1] = value[1];
                 }
             }
@@ -133,7 +136,7 @@ public abstract class VariablesHandler {
         String[][] c = resolveVarsFor(source);
         for (int i = 0; i < c.length; i++) {
             String[] data = c[i];
-//            Log.Debug(VariablesHandler.class, source + ": replacing key: " + data[0] + " with value: " + data[1]);
+            Log.Debug(VariablesHandler.class, source + ": replacing key: " + data[0] + " with value: " + data[1]);
             if (data[1] != null) {
                 text = text.replace(data[0], data[1]);
             }
