@@ -73,7 +73,7 @@ public class User extends DatabaseObject {
     private Date datelastlog = new Date();
     public static User DEFAULT = new User("Default User", "nobody", -1, 4343);
     public static HashMap<String, String> userCache = new HashMap<String, String>();
-    private static PropertyStore properties = new PropertyStore();
+    private PropertyStore properties = new PropertyStore();
     private MailConfiguration mailConfiguration;
 
     /**
@@ -150,6 +150,7 @@ public class User extends DatabaseObject {
         context.setDbIdentity(Context.IDENTITY_USERS);
         context.setIdentityClass(User.class);
         this.fetchDataOf(userid);
+        setProperties();
     }
 
     public User() {
@@ -164,6 +165,7 @@ public class User extends DatabaseObject {
         this.cname = userid;
         this.inthighestright = highright;
         this.setIDS(IDS);
+
     }
 
     public Integer getID() {
@@ -489,10 +491,7 @@ public class User extends DatabaseObject {
     }
 
     private void setProperties() {
-        Runnable runnable = new Runnable() {
-
-            @Override
-            public void run() {
+        
                 QueryCriteria criteria = new QueryCriteria();
                 criteria.add("usersids", ids);
                 properties = new PropertyStore();
@@ -504,11 +503,7 @@ public class User extends DatabaseObject {
                     defineMailConfig();
                 } catch (NodataFoundException ex) {
                     Log.Debug(this, ex.getMessage());
-                }
-            }
-        };
-
-        SwingUtilities.invokeLater(runnable);
+                }    
     }
 
     /**

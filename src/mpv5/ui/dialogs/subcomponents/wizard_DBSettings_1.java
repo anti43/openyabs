@@ -422,7 +422,10 @@ public class wizard_DBSettings_1 extends javax.swing.JPanel implements Wizardabl
     }//GEN-LAST:event_jComboBox1ActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        // TODO add your handling code here:
+
+        labeledTextField4.setEnabled(true);
+        labeledTextField5.setEnabled(true);
+
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void jCheckBox3ItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_jCheckBox3ItemStateChanged

@@ -500,7 +500,6 @@ public class RevenuePanel extends javax.swing.JPanel implements DataPanel {
             accountsids_ = Integer.valueOf(accountselect.getSelectedItem().getId());
             MPView.getUser().getProperties().changeProperty(me, "accountselect", accountsids_);
         } catch (Exception e) {
-            Log.Debug(e);
             accountsids_ = 1;
         }
 

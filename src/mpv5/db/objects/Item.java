@@ -17,9 +17,11 @@
 package mpv5.db.objects;
 
 import enoa.handler.TableHandler;
+import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Stack;
 import java.util.Vector;
 import java.util.logging.Level;
@@ -33,10 +35,14 @@ import mpv5.db.common.QueryHandler;
 import mpv5.globals.Messages;
 import mpv5.handler.FormatHandler;
 import mpv5.handler.MPEnum;
+import mpv5.i18n.LanguageManager;
 import mpv5.logging.Log;
+import mpv5.ui.frames.MPView;
 import mpv5.ui.panels.ItemPanel;
+import mpv5.utils.date.DateConverter;
 import mpv5.utils.images.MPIcon;
 import mpv5.utils.numberformat.FormatNumber;
+import mpv5.utils.text.TypeConversion;
 
 /**
  *
@@ -559,6 +565,20 @@ public class Item extends DatabaseObject implements Formattable {
         map.put("discountgrosvalue", (__getTaxvalue() + __getNetvalue()) * ((__getDiscountvalue() / 100 - 1) * -1));
         map.put("discounttaxvalue", __getTaxvalue() * ((__getDiscountvalue() / 100 - 1) * -1));
         map.put("shippedgrosvalue", __getTaxvalue() + __getNetvalue() + __getShippingvalue());
+
+        //date format localization
+        if (MPView.getUser().getProperties().hasProperty("item.date.locale")) {
+            Locale l = null;
+            try {
+                l = TypeConversion.stringToLocale(MPView.getUser().getProperties().getProperty("item.date.locale"));
+            } catch (Exception e) {
+            }
+            if (l != null) {
+                map.put("dateadded", DateFormat.getDateInstance(DateFormat.SHORT, l).format(__getDateadded()));
+            } else {
+                Log.Debug(this, "Error while using item.date.locale");
+            }
+        }
 
         return super.resolveReferences(map);
     }

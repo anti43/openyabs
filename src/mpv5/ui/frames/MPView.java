@@ -1850,7 +1850,7 @@ public class MPView extends FrameView {
             try {
                 x = Integer.valueOf(Popup.Enter_Value("Enter a default account ID for bills."));
             } catch (NumberFormatException numberFormatException) {
-                Log.Debug(numberFormatException);
+               
             }
             try {
                 new mpv5.db.sample.SampleData(Integer.valueOf(Popup.Enter_Value("Enter a valid Integer value [1]")), x, true, true);

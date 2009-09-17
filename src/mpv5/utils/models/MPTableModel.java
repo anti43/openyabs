@@ -348,6 +348,27 @@ public class MPTableModel extends DefaultTableModel {
     }
 
     /**
+     * Checks if the model has empty rows
+     * @param columnsToCheck The columns to be checked for emptyness
+     * @return the count of rows in the model with a NULL or empty "" value at the specified columns
+     */
+    public int getEmptyRows(int[] columnsToCheck) {
+        int count = 0;
+        for (int j = 0; j < getRowCount(); j++) {
+            boolean found = false;
+            for (int i = 0; i < columnsToCheck.length; i++) {
+                if (getValueAt(j, columnsToCheck[i]) == null || String.valueOf(getValueAt(j, columnsToCheck[i])).length() == 0) {
+                    found = true;
+                }
+            }
+            if (found) {
+                count++;
+            }
+        }
+        return count;
+    }
+
+    /**
      * Adds rows to the end of the model. The new rows will contain null values.<br/>
      * If this.context is defined, Context specific values may be added.
      * @param count
