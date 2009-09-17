@@ -16,6 +16,8 @@
  */
 package mpv5.db.common;
 
+import java.util.HashMap;
+
 /**
  * Any {@link DatabaseObject} will be passed through all DatabaseObjectModifiers <br/>
  * registered with loaded {@link mpv5.pluginhandling.MP5Plugin}s on loading time of the DatabaseObject.
@@ -29,5 +31,21 @@ public interface DatabaseObjectModifier {
      * @param object
      * @return
      */
-    DatabaseObject modify(DatabaseObject object);
+    DatabaseObject modifyOnExplode(DatabaseObject object);
+
+    /**
+     * This method will be called during saving of any {@link DatabaseObject} if this <br/>
+     * {@link DatabaseObjectModifier} is registered with a loaded  {@link mpv5.pluginhandling.MP5Plugin}
+     * @param object
+     * @return
+     */
+    DatabaseObject modifyOnSave(DatabaseObject object);
+
+    /**
+     * This method will be called during reference-resolving any {@link DatabaseObject} if this <br/>
+     * {@link DatabaseObjectModifier} is registered with a loaded  {@link mpv5.pluginhandling.MP5Plugin}
+     * @param map
+     * @return
+     */
+    HashMap<String, Object> modifyOnResolve(HashMap<String, Object> map);
 }

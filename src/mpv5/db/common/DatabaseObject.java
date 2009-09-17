@@ -341,6 +341,16 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject> {
         String message = null;
         uncacheObject(this);
 
+         List<DatabaseObjectModifier> mods = MPPLuginLoader.registeredModifiers;
+            for (int ik = 0; ik < mods.size(); ik++) {
+                DatabaseObjectModifier databaseObjectModifier = mods.get(ik);
+                try {
+                    databaseObjectModifier.modifyOnSave(this);
+                } catch (Exception e) {
+                    Log.Debug(DatabaseObject.class, "Error while modificationg Object " + this + " within Modifier " + databaseObjectModifier);
+                }
+            }
+
         try {
             if (ids <= 0) {
                 ensureUniqueness();
@@ -471,19 +481,6 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject> {
         }
         setIDS(-1);
         return result;
-    }
-
-    private static synchronized DatabaseObject checkModification(DatabaseObject dbo) {
-        List<DatabaseObjectModifier> mods = MPPLuginLoader.registeredModifiers;
-        for (int i = 0; i < mods.size(); i++) {
-            DatabaseObjectModifier databaseObjectModifier = mods.get(i);
-            try {
-                dbo = databaseObjectModifier.modify(dbo);
-            } catch (Exception e) {
-                Log.Debug(DatabaseObject.class, "Error while modificationg Object " + dbo + " within Modifier " + databaseObjectModifier);
-            }
-        }
-        return dbo;
     }
 
     /**
@@ -870,7 +867,6 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject> {
         return (ArrayList<T>) getObjects(DatabaseObject.getObject(context), criterias);
     }
 
-
     /**
      *  Returns objects within the given context which match the criterias in the given QueryCriteria object<br/>
      *  May get very <b>slow</b> with some hundreds objects.
@@ -916,7 +912,9 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject> {
     public static <T extends DatabaseObject> ArrayList<T> getReferencedObjects(DatabaseObject dataOwner, Context inReference, T targetType) throws NodataFoundException {
 
         Object[][] allIds = QueryHandler.instanceOf().clone(inReference).select("ids", new String[]{dataOwner.getDbIdentity() + "ids", dataOwner.__getIDS().toString(), ""});
-        if(allIds.length==0)throw new NodataFoundException(inReference);
+        if (allIds.length == 0) {
+            throw new NodataFoundException(inReference);
+        }
         ArrayList<T> list = new ArrayList<T>();
 
         for (int i = 0; i < allIds.length; i++) {
@@ -1099,7 +1097,15 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject> {
                 Log.Debug(DatabaseObject.class, "Locking was: " + lck);
             }
 
-            dbo = checkModification(dbo);
+            List<DatabaseObjectModifier> mods = MPPLuginLoader.registeredModifiers;
+            for (int ik = 0; ik < mods.size(); ik++) {
+                DatabaseObjectModifier databaseObjectModifier = mods.get(ik);
+                try {
+                    dbo = databaseObjectModifier.modifyOnExplode(dbo);
+                } catch (Exception e) {
+                    Log.Debug(DatabaseObject.class, "Error while modificationg Object " + dbo + " within Modifier " + databaseObjectModifier);
+                }
+            }
         }
 
         return dos;
@@ -1238,7 +1244,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject> {
         if (databaseObject == null || !(databaseObject instanceof DatabaseObject)) {
             return false;
         } else {
-            return (context.equals(((DatabaseObject)databaseObject).getContext()) && ids == ((DatabaseObject)databaseObject).__getIDS());
+            return (context.equals(((DatabaseObject) databaseObject).getContext()) && ids == ((DatabaseObject) databaseObject).__getIDS());
         }
     }
 
@@ -1386,6 +1392,16 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject> {
         } catch (NumberFormatException numberFormatException) {
             //already resolved?
         }
+         List<DatabaseObjectModifier> mods = MPPLuginLoader.registeredModifiers;
+            for (int ik = 0; ik < mods.size(); ik++) {
+                DatabaseObjectModifier databaseObjectModifier = mods.get(ik);
+                try {
+                 map= databaseObjectModifier.modifyOnResolve(map);
+                } catch (Exception e) {
+                    Log.Debug(DatabaseObject.class, "Error while modificationg object map if " + this + " within Modifier " + databaseObjectModifier);
+                }
+            }
+
         return map;
     }
 

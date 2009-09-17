@@ -74,11 +74,17 @@ public class GeneralListPanel extends javax.swing.JPanel {
 
     /**
      * 
-     * @param <T> 
+     */
+    public GeneralListPanel() {
+        initComponents();
+    }
+
+    /**
+     * Show the data
+     * @param <T>
      * @param map
      */
-    public <T extends DatabaseObject> GeneralListPanel(HashMap<Color, List<T>> map) {
-        initComponents();
+    public <T extends DatabaseObject> void show(HashMap<Color, List<T>> map) {
         jTable1.setDefaultRenderer(String.class, new ccr());
         jTable1.setDefaultRenderer(Object.class, new ccr());
         jTable1.setDefaultRenderer(DatabaseObject.class, new ccr());
@@ -163,7 +169,7 @@ public class GeneralListPanel extends javax.swing.JPanel {
                 databaseObject = new coloredObject(Color.white, (DatabaseObject) list.get(i));
             }
             if (databaseObject != null) {
-              
+
                 data[i][0] = databaseObject;
                 data[i][1] = User.getUsername(databaseObject.__getIntaddedby());
                 data[i][2] = databaseObject.__getDateadded();

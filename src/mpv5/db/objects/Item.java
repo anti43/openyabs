@@ -478,7 +478,6 @@ public class Item extends DatabaseObject implements Formattable {
 
     @Override
     public HashMap<String, Object> resolveReferences(HashMap<String, Object> map) {
-        super.resolveReferences(map);
 
         try {
             if (map.containsKey("intstatus")) {
@@ -561,7 +560,7 @@ public class Item extends DatabaseObject implements Formattable {
         map.put("discounttaxvalue", __getTaxvalue() * ((__getDiscountvalue() / 100 - 1) * -1));
         map.put("shippedgrosvalue", __getTaxvalue() + __getNetvalue() + __getShippingvalue());
 
-        return map;
+        return super.resolveReferences(map);
     }
 
     /**

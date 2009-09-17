@@ -26,7 +26,7 @@ import mpv5.utils.date.vTimeframe;
  * This class handles the scheduled events
  */
 public class Scheduler extends Thread {
-
+private static GeneralListPanel g =new GeneralListPanel();
     @Override
     public void run() {
 
@@ -205,7 +205,8 @@ public class Scheduler extends Thread {
 //            alerts.addAll(warnings);
 //            if (Popup.Y_N_dialog(alerts.size() + " " + Messages.SCHEDULE_NEW_ALERTS, Messages.WARNING)) {
 
-            MPView.identifierView.addTab(new GeneralListPanel(map), Messages.UNPAID_BILLS_OVERDUE.toString());
+            g.show(map);
+            MPView.identifierView.addOrShowTab(g, Messages.UNPAID_BILLS_OVERDUE.toString());
 //            }
         }
     }

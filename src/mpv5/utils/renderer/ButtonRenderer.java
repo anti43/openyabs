@@ -13,6 +13,7 @@ public class ButtonRenderer extends JButton implements TableCellRenderer {
 
   public ButtonRenderer() {
     setOpaque(true);
+    setMargin(new Insets(0,0,0,0));
   }
 
   public Component getTableCellRendererComponent(JTable table, Object value,

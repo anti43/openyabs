@@ -39,9 +39,12 @@ import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.print.DocFlavor;
+import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
+import javax.swing.JOptionPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTable;
 import javax.swing.JViewport;
@@ -78,6 +81,7 @@ import mpv5.mail.SimpleMail;
 import mpv5.ui.beans.MPCBSelectionChangeReceiver;
 import mpv5.ui.dialogs.DialogForFile;
 import mpv5.ui.dialogs.ScheduleDayEvent;
+import mpv5.ui.dialogs.subcomponents.ProductSelectDialog;
 import mpv5.utils.arrays.ArrayUtilities;
 import mpv5.utils.date.DateConverter;
 import mpv5.utils.export.Export;
@@ -1285,7 +1289,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
     public void formatTable() {
 
         prepareTable();
-        TableFormat.resizeCols(itemtable, new Integer[]{0, 23, 53, 63, 100, 83, 63, 63, 0, 0, 0, 20, 20, 20}, new Boolean[]{true, true, true, true, false, true, true, true, true, true, true, true, true, true});
+        TableFormat.resizeCols(itemtable, new Integer[]{0, 23, 53, 63, 100, 83, 63, 63, 0, 0, 0, 20, 20}, new Boolean[]{true, true, true, true, false, true, true, true, true, true, true, true, true});
         TableFormat.changeBackground(itemtable, 1, Color.LIGHT_GRAY);
     }
 
@@ -1382,7 +1386,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
 
     private void preview() {
         PreviewPanel pr;
-//        String[] arr;
+
         if (preloadedTemplate != null && preload) {
             if (dataOwner != null && dataOwner.isExisting()) {
                 if (itemtable.getCellEditor() != null) {
@@ -1535,13 +1539,41 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
         ((MPTableModel) itemtable.getModel()).addCalculator(netCalculator);
         netCalculator.addLabel(taxvalue, 8);
 
-        itemtable.getColumnModel().getColumn(11).setCellRenderer(new ButtonRenderer());
-        itemtable.getColumnModel().getColumn(11).setCellEditor(new ButtonEditor(new JCheckBox()));
-        itemtable.getColumnModel().getColumn(12).setCellRenderer(new ButtonRenderer());
-        itemtable.getColumnModel().getColumn(12).setCellEditor(new ButtonEditor(new JCheckBox()));
-        itemtable.getColumnModel().getColumn(12+1).setCellRenderer(new ButtonRenderer());
-        itemtable.getColumnModel().getColumn(12+1).setCellEditor(new ButtonEditor(new JCheckBox()));
+        JButton b1 = new JButton();
+        b1.addMouseListener(new MouseListener() {
 
+            public void mouseClicked(MouseEvent e) {
+            }
+
+            public void mousePressed(MouseEvent e) {
+            }
+
+            public void mouseReleased(MouseEvent e) {
+                ProductSelectDialog.instanceOf((MPTableModel) itemtable.getModel(), itemtable.getSelectedRow(), e, Integer.valueOf(itemtable.getValueAt(itemtable.getSelectedRow(), 10).toString()));
+                ((MPTableModel) itemtable.getModel()).addRow(1);
+            }
+
+            public void mouseEntered(MouseEvent e) {
+            }
+
+            public void mouseExited(MouseEvent e) {
+            }
+        });
+
+        JButton b2 = new JButton();
+        b2.addActionListener(new ActionListener() {
+
+            public void actionPerformed(ActionEvent e) {
+                MPTableModel m = (MPTableModel) itemtable.getModel();
+                int row = itemtable.getSelectedRow();
+                m.setRowAt(SubItem.getDefaultItem().getRowData(row), row, 1);
+            }
+        });
+
+        itemtable.getColumnModel().getColumn(11).setCellRenderer(new ButtonRenderer());
+        itemtable.getColumnModel().getColumn(11).setCellEditor(new ButtonEditor(b1));
+        itemtable.getColumnModel().getColumn(12).setCellRenderer(new ButtonRenderer());
+        itemtable.getColumnModel().getColumn(12).setCellEditor(new ButtonEditor(b2));
     }
 }
 

@@ -298,7 +298,6 @@ public class Product extends DatabaseObject implements Formattable {
 
     @Override
     public HashMap<String, Object> resolveReferences(HashMap<String, Object> map) {
-        super.resolveReferences(map);
 
         if (map.containsKey("productgroupsids")) {
             try {
@@ -363,7 +362,7 @@ public class Product extends DatabaseObject implements Formattable {
             Log.Debug(numberFormatException);
         }
 
-        return map;
+         return super.resolveReferences(map);
     }
 
 

@@ -459,7 +459,7 @@ public class SubItem extends DatabaseObject {
         //"Internal ID", "ID", "Count", "Measure", "Description", "Netto Price", "Tax Value", "Total Price"
         Object[][] data = new Object[items.length][];
         for (int i = 0; i < data.length; i++) {
-            data[i] = items[i].getRowData(i);
+            data[i] = items[i].getRowData(i+1);
         }
 
         MPTableModel model = new MPTableModel(
@@ -482,7 +482,7 @@ public class SubItem extends DatabaseObject {
         if (MPView.getUser().getProperties().hasProperty("defcount")) {
             defcount = MPView.getUser().getProperties().getProperty("defcount", 0d);
         }
-        model.defineRow(new Object[]{0, 0, defcount, defunit, null, 0.0, deftax, 0.0, 0.0, 0.0, 0, "A", "E", "C"});
+        model.defineRow(new Object[]{0, 0, defcount, defunit, null, 0.0, deftax, 0.0, 0.0, 0.0, 0, "A", "C"});
         model.setAutoCountColumn(1);
 
         return model;
@@ -494,7 +494,7 @@ public class SubItem extends DatabaseObject {
      * @return
      */
     public synchronized Object[] getRowData(int row) {
-        Object[] data = new Object[14];
+        Object[] data = new Object[12+1];
         for (int i = 0; i < data.length; i++) {
             data[0] = __getIDS();
             data[1] = Integer.valueOf(row);
@@ -508,8 +508,7 @@ public class SubItem extends DatabaseObject {
             data[9] = 0.0;
             data[10] = Integer.valueOf(__getOriginalproductsids());
             data[11] = "A";
-            data[12] = "E";
-            data[12+1] = "C";
+            data[12] = "C";
         }
         return data;
     }
@@ -544,7 +543,6 @@ public class SubItem extends DatabaseObject {
 
     @Override
     public HashMap<String, Object> resolveReferences(HashMap<String, Object> map) {
-        super.resolveReferences(map);
 
         if (map.containsKey("originalproductsids")) {
             try {
@@ -559,7 +557,7 @@ public class SubItem extends DatabaseObject {
             }
         }
 
-        return map;
+        return super.resolveReferences(map);
     }
 
     /**
