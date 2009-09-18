@@ -635,7 +635,23 @@ public class ArrayUtilities {
         return keyz;
     }
 
-
+    /**
+     * Remove certain rows out of an array
+     * @param array
+     * @param column
+     * @param removeTrigger
+     * @return
+     */
+    public static Object[][] removeRows(Object[][] array, int column, Object removeTrigger) {
+        List<Object[]> list = new Vector<Object[]>();
+        for (int i = 0; i < array.length; i++) {
+            Object[] objects = array[i];
+            if (objects[column] != removeTrigger && !removeTrigger.equals(objects[column])) {
+                list.add(objects);
+            }
+        }
+        return list.toArray(new Object[][]{});
+    }
 
     /**
      * Converts a HashMap to a 2-column array {key, value}
@@ -668,38 +684,24 @@ public class ArrayUtilities {
         } else if (array2 != null && array2.length > 0) {
             z = array2[0].length;
         } else {
-
             z = 0;
         }
-
 
         Object[][] mergedArray = new Object[array1.length + array2.length][z];
         int i = 0;
 
         for (i = 0; i < array1.length; i++) {
-
             for (int k = 0; k < array1[i].length; k++) {
-
                 mergedArray[i][k] = array1[i][k];
-
-
             }
-
         }
 
         for (int l = 0; l < array2.length; l++) {
-
             for (int k = 0; k < array2[l].length; k++) {
-
                 mergedArray[i + l][k] = array2[l][k];
-
-
             }
-
         }
-
         return mergedArray;
-
     }
 
     public static Object[][] merge(Object[] array1, Object[][] array2) {
@@ -1049,23 +1051,23 @@ public class ArrayUtilities {
      * @return
      */
     public static Enumeration arrayToEnumeration(final Object obj) {
-    Class type = obj.getClass();
-    if (!type.isArray()) {
-      throw new IllegalArgumentException(obj.getClass().toString());
-    } else {
-      return (new Enumeration() {
-        int size = Array.getLength(obj);
+        Class type = obj.getClass();
+        if (!type.isArray()) {
+            throw new IllegalArgumentException(obj.getClass().toString());
+        } else {
+            return (new Enumeration() {
 
-        int cursor;
+                int size = Array.getLength(obj);
+                int cursor;
 
-        public boolean hasMoreElements() {
-          return (cursor < size);
+                public boolean hasMoreElements() {
+                    return (cursor < size);
+                }
+
+                public Object nextElement() {
+                    return Array.get(obj, cursor++);
+                }
+            });
         }
-
-        public Object nextElement() {
-          return Array.get(obj, cursor++);
-        }
-      });
     }
-  }
 }

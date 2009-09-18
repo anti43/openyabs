@@ -17,6 +17,7 @@
 package mpv5.db.common;
 
 import javax.swing.UIManager;
+import mpv5.db.objects.Account;
 import mpv5.globals.Constants;
 import mpv5.globals.Messages;
 
@@ -132,8 +133,6 @@ public class DatabaseInstallation {
 "CREATE TRIGGER products_indexer2 AFTER UPDATE ON products REFERENCING NEW AS newdata FOR EACH ROW DELETE FROM searchindex WHERE dbidentity = 'products' AND  rowid = newdata.ids",
 "CREATE TRIGGER products_indexer3 AFTER UPDATE ON products REFERENCING NEW AS newdata FOR EACH ROW INSERT INTO searchindex  (groupsids, dbidentity, rowid, text) VALUES (newdata.groupsids,'products',newdata.ids,newdata.cname||' '||newdata.cnumber||' '||newdata.description||' '||newdata.dateadded)",
 "CREATE TRIGGER products_indexer4 AFTER DELETE ON products REFERENCING OLD AS newdata FOR EACH ROW DELETE FROM searchindex WHERE dbidentity = 'products' AND  rowid = newdata.ids",
-
-
 "CREATE TRIGGER products_trash1 AFTER UPDATE ON products REFERENCING NEW AS newdata FOR EACH ROW INSERT INTO trashbin (deleteme, cname, rowid, description) VALUES (newdata.invisible, 'products',newdata.ids,newdata.cnumber||' ('|| newdata.cname||')')",
 "CREATE TRIGGER products_trash2 AFTER DELETE ON products REFERENCING OLD AS newdata FOR EACH ROW DELETE FROM trashbin WHERE cname = 'products' AND  rowid = newdata.ids",
 
@@ -145,12 +144,14 @@ public class DatabaseInstallation {
 "INSERT INTO tax(cname, dateadded, identifier, taxvalue) VALUES ('Default 19%', '2009-04-03 09:31:33', 'Default 19%', 19.0)",
 "INSERT INTO tax(cname, dateadded, identifier, taxvalue) VALUES ('Default 7%', '2009-04-03 09:31:33', 'Default 7%', 7.0)",
 
-"INSERT INTO groups (cname,description, dateadded) VALUES ('" + Messages.GROUPNAMES + "','This group is visible to everyone.', '2009-04-03 09:31:33')",
-"INSERT INTO productgroups (cname,description, dateadded) VALUES ('" + Messages.PRODUCTGROUPNAMES +"','This product group is visible to everyone.', '2009-04-03 09:31:33')",
-"INSERT INTO accounts (cname,description, dateadded, taxvalue, intaccounttype, frame, intprofitfid, inttaxfid, inttaxuid) VALUES ('"+Messages.ACCOUNTNAMES+"','This account is the parent account of all account frames.', '2009-04-03 09:31:33', 0.0, 0, 'builtin',0,0,0)",
-"INSERT INTO users (fullname,password,cname,laf,locale,mail,language,inthighestright,datelastlog,isenabled, dateadded ) VALUES ('Administrator','5f4dcc3b5aa765d61d8327deb882cf99','admin','" + UIManager.getSystemLookAndFeelClassName() + "','en_GB','','buildin_en',0,'2009-04-03 09:31:33',1,'2009-04-03 09:31:33')",
-"INSERT INTO countries (iso, cname ) VALUES (276,'Deutschland')",
-"INSERT INTO globalsettings (cname, groupsids, value ) VALUES ('yabs_dbversion', 1, '" + Constants.DATABASE_VERSION + "')"
+        "INSERT INTO groups (cname,description, dateadded) VALUES ('" + Messages.GROUPNAMES + "','This group is visible to everyone.', '2009-04-03 09:31:33')",
+        "INSERT INTO productgroups (cname,description, dateadded) VALUES ('" + Messages.PRODUCTGROUPNAMES + "','This product group is visible to everyone.', '2009-04-03 09:31:33')",
+        "INSERT INTO accounts (cname,description, dateadded, taxvalue, intaccounttype, frame, intprofitfid, inttaxfid, inttaxuid) VALUES ('" + Messages.ACCOUNTNAMES + "','This account is the parent account of all account frames.', '2009-04-03 09:31:33', 0.0, 0, 'builtin',0,0,0)",
+        "INSERT INTO accounts (cname,description, dateadded, taxvalue, intaccounttype, frame, intprofitfid, inttaxfid, inttaxuid, intparentaccount) VALUES ('" + Messages.EXPENSE + "','', '2009-04-03 09:31:33', 0.0, " + Account.EXPENSE + ", 'builtin',0,0,0,1)",
+        "INSERT INTO accounts (cname,description, dateadded, taxvalue, intaccounttype, frame, intprofitfid, inttaxfid, inttaxuid, intparentaccount) VALUES ('" + Messages.INCOME + "','', '2009-04-03 09:31:33', 0.0, " + Account.INCOME + ", 'builtin',0,0,0,1)",
+        "INSERT INTO users (fullname,password,cname,laf,locale,mail,language,inthighestright,datelastlog,isenabled, dateadded ) VALUES ('Administrator','5f4dcc3b5aa765d61d8327deb882cf99','admin','" + UIManager.getSystemLookAndFeelClassName() + "','en_GB','','buildin_en',0,'2009-04-03 09:31:33',1,'2009-04-03 09:31:33')",
+        "INSERT INTO countries (iso, cname ) VALUES (276,'Deutschland')",
+        "INSERT INTO globalsettings (cname, groupsids, value ) VALUES ('yabs_dbversion', 1, '" + Constants.DATABASE_VERSION + "')"
 
     };
 

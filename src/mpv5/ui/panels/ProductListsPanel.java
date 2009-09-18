@@ -23,9 +23,13 @@ package mpv5.ui.panels;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.Date;
+import javax.swing.JButton;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingUtilities;
 import mpv5.db.common.*;
@@ -34,6 +38,7 @@ import mpv5.globals.Messages;
 import mpv5.db.objects.Favourite;
 import mpv5.db.objects.ProductList;
 import mpv5.db.objects.ProductlistSubItem;
+import mpv5.db.objects.SubItem;
 import mpv5.db.objects.User;
 import mpv5.logging.Log;
 import mpv5.ui.dialogs.Popup;
@@ -41,9 +46,12 @@ import mpv5.ui.frames.MPView;
 import mpv5.ui.toolbars.DataPanelTB;
 import mpv5.ui.beans.MPCBSelectionChangeReceiver;
 import mpv5.ui.dialogs.DialogForFile;
+import mpv5.ui.dialogs.subcomponents.ProductSelectDialog;
 import mpv5.utils.arrays.ArrayUtilities;
 import mpv5.utils.models.MPComboBoxModelItem;
 import mpv5.utils.models.MPTableModel;
+import mpv5.utils.renderer.ButtonEditor;
+import mpv5.utils.renderer.ButtonRenderer;
 import mpv5.utils.tables.TableCalculator;
 import mpv5.utils.renderer.CellEditorWithMPComboBox;
 import mpv5.utils.renderer.TableCellRendererForDezimal;
@@ -63,7 +71,6 @@ public class ProductListsPanel extends javax.swing.JPanel implements DataPanel, 
     private TableCalculator netCalculator;
     private TableCalculator netCalculator2;
     private final SearchPanel sp;
-
 
     /**
      *
@@ -88,7 +95,7 @@ public class ProductListsPanel extends javax.swing.JPanel implements DataPanel, 
 
             @Override
             public void mouseClicked(MouseEvent e) {
-                if (e.getButton() == MouseEvent.BUTTON1) {
+                if (e.getButton() == MouseEvent.BUTTON2) {
                     MPTableModel m = (MPTableModel) itemtable.getModel();
                     if (m.getRowCount() > 0) {
                         m.addRow(5);
@@ -102,7 +109,7 @@ public class ProductListsPanel extends javax.swing.JPanel implements DataPanel, 
 
                         formatTable();
                     }
-                } else {
+                } else if (e.getButton() == MouseEvent.BUTTON3) {
                     try {
                         MPTableModel m = (MPTableModel) itemtable.getModel();
                         Product p = (Product) Popup.SelectValue(DatabaseObject.getObjects(Context.getProducts(), true), null);
@@ -162,6 +169,9 @@ public class ProductListsPanel extends javax.swing.JPanel implements DataPanel, 
                 itemtable.setModel(ProductlistSubItem.toModel(ProductlistSubItem.getList(dataOwner.__getIDS()).toArray(new ProductlistSubItem[0])));
             } catch (NodataFoundException ex) {
                 Log.Debug(this, ex.getMessage());
+            }
+            if (((MPTableModel) itemtable.getModel()).getEmptyRows(new int[]{4}) < 2) {
+                ((MPTableModel) itemtable.getModel()).addRow(1);
             }
             omodel = (MPTableModel) itemtable.getModel();
 
@@ -424,6 +434,7 @@ public class ProductListsPanel extends javax.swing.JPanel implements DataPanel, 
             itemtable.setModel(omodel);
             ProductlistSubItem.changeValueFields(itemtable, Integer.valueOf(calculator.get_Value().toString()), this);
             ((MPTableModel) itemtable.getModel()).fireTableCellUpdated(0, 0);
+            ((MPTableModel) itemtable.getModel()).addRow(1);
         }
     }//GEN-LAST:event_jButton1ActionPerformed
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -618,5 +629,43 @@ public class ProductListsPanel extends javax.swing.JPanel implements DataPanel, 
         netCalculator2 = new TableCalculator(itemtable, new int[]{5}, new int[]{9}, new int[]{}, TableCalculator.ACTION_SUM, new int[]{9});
         ((MPTableModel) itemtable.getModel()).addCalculator(netCalculator2);
         netCalculator2.addLabel(netvalue, 9);
+
+        JButton b1 = new JButton();
+        b1.addMouseListener(new MouseListener() {
+
+            public void mouseClicked(MouseEvent e) {
+            }
+
+            public void mousePressed(MouseEvent e) {
+            }
+
+            public void mouseReleased(MouseEvent e) {
+                ProductSelectDialog.instanceOf((MPTableModel) itemtable.getModel(), itemtable.getSelectedRow(), e, Integer.valueOf(itemtable.getValueAt(itemtable.getSelectedRow(), 10).toString()));
+                if (((MPTableModel) itemtable.getModel()).getEmptyRows(new int[]{4}) < 2) {
+                    ((MPTableModel) itemtable.getModel()).addRow(1);
+                }
+            }
+
+            public void mouseEntered(MouseEvent e) {
+            }
+
+            public void mouseExited(MouseEvent e) {
+            }
+        });
+
+        JButton b2 = new JButton();
+        b2.addActionListener(new ActionListener() {
+
+            public void actionPerformed(ActionEvent e) {
+                MPTableModel m = (MPTableModel) itemtable.getModel();
+                int row = itemtable.getSelectedRow();
+                m.setRowAt(ProductlistSubItem.getDefaultItem().getRowData(row), row, 1);
+            }
+        });
+
+        itemtable.getColumnModel().getColumn(11).setCellRenderer(new ButtonRenderer());
+        itemtable.getColumnModel().getColumn(11).setCellEditor(new ButtonEditor(b1));
+        itemtable.getColumnModel().getColumn(12).setCellRenderer(new ButtonRenderer());
+        itemtable.getColumnModel().getColumn(12).setCellEditor(new ButtonEditor(b2));
     }
 }

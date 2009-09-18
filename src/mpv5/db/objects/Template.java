@@ -61,7 +61,7 @@ public class Template extends DatabaseObject {
      * @return
      */
     public static Template loadTemplate(DatabaseObject dataOwner) {
-        String type = "";
+        String type = null;
         if (dataOwner instanceof Item) {
             type = Item.getTypeString(((Item) dataOwner).__getInttype());
         } else if (dataOwner instanceof Product) {
@@ -74,34 +74,47 @@ public class Template extends DatabaseObject {
             return templateCache.get(key);
         } else {
 
-            ReturnValue data = QueryHandler.getConnection().freeQuery(
-                    "SELECT templatesids FROM templatestousers  LEFT OUTER JOIN templates AS templates0 ON " +
-                    "templates0.ids = templatestousers.templatesids WHERE templatestousers.usersids=" +
-                    MPView.getUser().__getIDS() +
-                    " AND " +
-                    "templates0.mimetype='" + type +
-                    "' AND templatestousers.IDS>0 " +
-                    "AND (templates0.groupsids =" + dataOwner.__getGroupsids() + " OR templates0.groupsids =" + 1 + ")", MPSecurityManager.VIEW, null);
-            Template preloadedTemplate = null;
-            if (data.hasData()) {
-                try {
-                    preloadedTemplate = (Template) DatabaseObject.getObject(Context.getTemplate(), Integer.valueOf(data.getData()[data.getData().length - 1][0].toString()));
-                    if (preloadedTemplate.getFile().getName().endsWith("odt")) {
-                        if (LocalSettings.getBooleanProperty(LocalSettings.OFFICE_USE)) {
-                            preloadedTemplate.exFile = new ODTFile(preloadedTemplate.getFile().getPath());
+            if (type != null) {
+                ReturnValue data = QueryHandler.getConnection().freeQuery(
+                        "SELECT templatesids FROM templatestousers  LEFT OUTER JOIN templates AS templates0 ON " +
+                        "templates0.ids = templatestousers.templatesids WHERE templatestousers.usersids=" +
+                        MPView.getUser().__getIDS() +
+                        " AND " +
+                        "templates0.mimetype='" + type +
+                        "' AND templatestousers.IDS>0 " +
+                        "AND (templates0.groupsids =" + dataOwner.__getGroupsids() + " OR templates0.groupsids =" + 1 + ")", MPSecurityManager.VIEW, null);
+                Template preloadedTemplate = null;
+                if (data.hasData()) {
+                    try {
+                        preloadedTemplate = (Template) DatabaseObject.getObject(Context.getTemplate(), Integer.valueOf(data.getData()[data.getData().length - 1][0].toString()));
+                        if (preloadedTemplate.getFile().getName().endsWith("odt")) {
+                            if (LocalSettings.getBooleanProperty(LocalSettings.OFFICE_USE)) {
+                                preloadedTemplate.exFile = new ODTFile(preloadedTemplate.getFile().getPath());
+                                Log.Debug(Template.class, "Loaded template: " + preloadedTemplate);
+                            } else {
+                                Popup.notice(Messages.NOT_POSSIBLE + "\n" + Messages.OOCONNERROR);
+                                return null;
+                            }
                         } else {
-                            Popup.notice(Messages.NOT_POSSIBLE + "\n" + Messages.OO_NOT_CONFIGURED);
-                            return null;
+                            preloadedTemplate.exFile = new PDFFile(preloadedTemplate.getFile().getPath());
                         }
-                    } else {
-                        preloadedTemplate.exFile = new PDFFile(preloadedTemplate.getFile().getPath());
+                        templateCache.put(key, preloadedTemplate);
+                    } catch (NodataFoundException ex) {
+                        Log.Debug(Template.class, "Invalid template: " + data.getData()[data.getData().length - 1][0].toString());
+                        return null;
                     }
-                    templateCache.put(key, preloadedTemplate);
-                } catch (NodataFoundException ex) {
-                    return null;
+                } else {
+                    try {
+                        MPView.addMessage(Messages.OO_NO_TEMPLATE + ": " + type + " [" + MPView.getUser() + "] [" + Group.getObject(Context.getGroup(), dataOwner.__getGroupsids()) + "]");
+                        Log.Debug(Template.class, "No template found for " + type + " for user: " + MPView.getUser() + " in GROUP " + Group.getObject(Context.getGroup(), dataOwner.__getGroupsids()));
+                    } catch (NodataFoundException nodataFoundException) {
+                        Log.Debug(nodataFoundException);
+                    }
                 }
+                return preloadedTemplate;
+            } else {
+                return null;
             }
-            return preloadedTemplate;
         }
     }
     private String description = "";
@@ -212,7 +225,7 @@ public class Template extends DatabaseObject {
             try {
                 file = QueryHandler.instanceOf().clone(Context.getFiles()).
                         retrieveFile(filename,
-                        new File(FileDirectoryHandler.getTempDir() + "~" + RandomText.getText() + "_"+ cname));
+                        new File(FileDirectoryHandler.getTempDir() + "~" + RandomText.getText() + "_" + cname));
                 file.deleteOnExit();
             } catch (Exception e) {
                 Log.Debug(e);

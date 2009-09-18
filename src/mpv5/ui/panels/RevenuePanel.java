@@ -540,6 +540,7 @@ public class RevenuePanel extends javax.swing.JPanel implements DataPanel {
         value.setText(FormatNumber.formatDezimal(brutvalue_));
         netvalue.setText(FormatNumber.formatDezimal(netvalue_));
         try {
+            refresh();
             accountselect.setModel(DatabaseObject.getObject(Context.getAccounts(), accountsids_));
         } catch (NodataFoundException ex) {
             Log.Debug(this, ex.getMessage());
@@ -561,11 +562,11 @@ public class RevenuePanel extends javax.swing.JPanel implements DataPanel {
             @Override
             public void run() {
                 try {
-                    accountselect.setModel(DatabaseObject.getObjects(Context.getAccounts(), new QueryCriteria("intaccounttype", Account.INCOME)));
                     groupnameselect.triggerSearch();
                     taxrate.triggerSearch();
                     itemtable.setModel(new MPTableModel(Revenue.getRevenues(), Headers.EXPENSE));
                     formatTable();
+                    accountselect.setModel(DatabaseObject.getObjects(Context.getAccounts(), new QueryCriteria("intaccounttype", Account.INCOME)));
                     accountselect.setSelectedItem(MPView.getUser().getProperties().getProperty(me, "accountselect", 1));
                 } catch (Exception e) {
                     Log.Debug(this, e.getMessage());
@@ -593,10 +594,12 @@ public class RevenuePanel extends javax.swing.JPanel implements DataPanel {
 
     @Override
     public void actionAfterSave() {
+        refresh();
     }
 
     @Override
     public void actionAfterCreate() {
+        refresh();
     }
 
     public void actionBeforeCreate() {

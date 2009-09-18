@@ -284,13 +284,12 @@ public class QueryHandler implements Cloneable {
 
             if ((i + 1) != criterias.getValues().length) {
                 query += " AND ";
-            } else {
-                query += " AND " + context.getConditions().substring(6, context.getConditions().length());
-            }
+            } 
         }
         if (criterias.getKeys().length > 0 && !query.endsWith("AND ")) {
             query += " AND ";
         }
+        query += context.getConditions().substring(6, context.getConditions().length()) + " AND ";
         query += dateCriterium;
         query += criterias.getOrder();
 

@@ -440,11 +440,11 @@ public class ProductlistSubItem extends DatabaseObject {
         //"Internal ID", "ID", "Count", "Measure", "Description", "Netto Price", "Tax Value", "Total Price"
         Object[][] data = new Object[items.length][11];
         for (int i = 0; i < data.length; i++) {
-            data[i] = items[i].getRowData(i);
+            data[i] = items[i].getRowData(i+1);
         }
         MPTableModel model = new MPTableModel(
-                new Class[]{Integer.class, Integer.class, Double.class, String.class, String.class, Double.class, Double.class, Double.class, Double.class, Double.class, Integer.class},
-                new boolean[]{false, false, true, true, true, true, true, false, false, false, false},
+                new Class[]{Integer.class, Integer.class, Double.class, String.class, String.class, Double.class, Double.class, Double.class, Double.class, Double.class, Integer.class, Object.class, Object.class, Object.class},
+                new boolean[]{false, false, true, true, true, true, true, false, false, false, false, true, true},
                 data,
                 Headers.SUBITEMS.getValue());
         model.setContext(Context.getSubItem());
@@ -461,12 +461,11 @@ public class ProductlistSubItem extends DatabaseObject {
         if (MPView.getUser().getProperties().hasProperty("defcount")) {
             defcount = MPView.getUser().getProperties().getProperty("defcount", 0d);
         }
-        model.defineRow(new Object[]{0, 0, defcount, defunit, null, 0.0, deftax, 0.0, 0.0, 0.0, 0});
+        model.defineRow(new Object[]{0, 0, defcount, defunit, null, 0.0, deftax, 0.0, 0.0, 0.0, 0, "A", "C"});
         model.setAutoCountColumn(1);
 
         return model;
     }
-
 
     /**
      * Turn this SubItem into table row data
@@ -474,7 +473,7 @@ public class ProductlistSubItem extends DatabaseObject {
      * @return
      */
     public synchronized Object[] getRowData(int row) {
-        Object[] data = new Object[11];
+        Object[] data = new Object[12 + 1];
         for (int i = 0; i < data.length; i++) {
             data[0] = __getIDS();
             data[1] = Integer.valueOf(row);
@@ -487,6 +486,8 @@ public class ProductlistSubItem extends DatabaseObject {
             data[8] = 0.0;
             data[9] = 0.0;
             data[10] = Integer.valueOf(__getOriginalproductsids());
+            data[11] = "A";
+            data[12] = "C";
         }
         return data;
     }
@@ -603,7 +604,6 @@ public class ProductlistSubItem extends DatabaseObject {
         ArrayList<ProductlistSubItem> data = getObjects(new ProductlistSubItem(), c);
         return data;
     }
-
 
     /**
      * @return the productlistsids

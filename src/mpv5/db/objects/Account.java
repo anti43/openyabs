@@ -320,7 +320,7 @@ public class Account extends DatabaseObject {
                 }
             }
         } catch (NodataFoundException ex) {
-            Log.Debug(ex);
+            Log.Debug(this, ex.getMessage());
         }
         try {
             return super.delete();

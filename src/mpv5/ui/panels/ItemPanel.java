@@ -273,6 +273,9 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
             tb.setEditable(!object.isReadOnly());
 
             itemtable.setModel(SubItem.toModel(((Item) object).getSubitems()));
+            if (((MPTableModel) itemtable.getModel()).getEmptyRows(new int[]{4})<2) {
+                    ((MPTableModel) itemtable.getModel()).addRow(1);
+                }
             omodel = (MPTableModel) itemtable.getModel();
 
             formatTable();
@@ -1058,6 +1061,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
             itemtable.setModel(omodel);
             SubItem.changeValueFields(itemtable, Integer.valueOf(calculator.get_Value().toString()), this);
             ((MPTableModel) itemtable.getModel()).fireTableCellUpdated(0, 0);
+            ((MPTableModel) itemtable.getModel()).addRow(1);
         }
     }//GEN-LAST:event_jButton1ActionPerformed
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -1426,7 +1430,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
                         Log.Debug(e);
                     }
                 } else {
-                    button_preview.setText(Messages.OO_NOT_CONFIGURED.getValue());
+                    button_preview.setText(Messages.OO_NO_TEMPLATE.getValue());
                     button_preview.setEnabled(false);
                 }
             }

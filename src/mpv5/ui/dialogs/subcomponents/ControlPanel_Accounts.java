@@ -604,7 +604,7 @@ public class ControlPanel_Accounts extends javax.swing.JPanel implements Control
             groupnameselect.setSelectedIndex(MPComboBoxModelItem.getItemID(groupsids_, groupnameselect.getModel()));
             typeselect.setSelectedIndex(MPComboBoxModelItem.getItemID(intaccounttype_, typeselect.getModel()));
         } catch (NodataFoundException ex) {
-            Log.Debug(this, ex);
+            Log.Debug(this, ex.getMessage());
         }
 
         tax.setText(taxvalue_);

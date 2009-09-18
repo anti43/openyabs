@@ -171,5 +171,6 @@ public class QueryCriteria {
     public String getOrder() {
         return order;
     }
+
 }
 

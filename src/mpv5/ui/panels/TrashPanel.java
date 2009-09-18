@@ -55,24 +55,28 @@ public class TrashPanel extends javax.swing.JPanel {
         tablePopUp = new TablePopUp(jTable1, new String[]{Messages.DELETE.toString(), Messages.RESTORE.toString(), null, Messages.RELOAD.getValue()}, new ActionListener[]{new ActionListener() {
 
                 public void actionPerformed(ActionEvent e) {
-                    try {
-                        int id = Integer.valueOf(jTable1.getModel().getValueAt(jTable1.getSelectedRow(), 1).toString());
-                        String type = String.valueOf(jTable1.getModel().getValueAt(jTable1.getSelectedRow(), 0).toString());
-                        TrashHandler.delete(type, id,String.valueOf(jTable1.getModel().getValueAt(jTable1.getSelectedRow(), 2).toString()) + Messages.DELETED );
-                        setData();
-                    } catch (Exception numberFormatException) {
-                    }
+                    for (int i = 0; i < jTable1.getSelectedRows().length; i++) {
+                        try {
+                            int id = Integer.valueOf(jTable1.getModel().getValueAt(jTable1.getSelectedRows()[i], 1).toString());
+                            String type = String.valueOf(jTable1.getModel().getValueAt(jTable1.getSelectedRows()[i], 0).toString());
+                            TrashHandler.delete(type, id, String.valueOf(jTable1.getModel().getValueAt(jTable1.getSelectedRows()[i], 2).toString()) + Messages.DELETED);
+                           
+                        } catch (Exception numberFormatException) {
+                        }
+                    } setData();
                 }
             }, new ActionListener() {
 
                 public void actionPerformed(ActionEvent e) {
-                    try {
-                        int id = Integer.valueOf(jTable1.getModel().getValueAt(jTable1.getSelectedRow(), 1).toString());
-                        String type = String.valueOf(jTable1.getModel().getValueAt(jTable1.getSelectedRow(), 0).toString());
-                        TrashHandler.restore(type, id, String.valueOf(jTable1.getModel().getValueAt(jTable1.getSelectedRow(), 2).toString()) + Messages.RESTORED);
-                        setData();
-                    } catch (Exception numberFormatException) {
-                    }
+                    for (int i = 0; i < jTable1.getSelectedRows().length; i++) {
+                        try {
+                            int id = Integer.valueOf(jTable1.getModel().getValueAt(jTable1.getSelectedRows()[i], 1).toString());
+                            String type = String.valueOf(jTable1.getModel().getValueAt(jTable1.getSelectedRows()[i], 0).toString());
+                            TrashHandler.restore(type, id, String.valueOf(jTable1.getModel().getValueAt(jTable1.getSelectedRows()[i], 2).toString()) + Messages.RESTORED);
+                            
+                        } catch (Exception numberFormatException) {
+                        }
+                    }setData();
                 }
             }, null, new ActionListener() {
 
@@ -144,10 +148,8 @@ public class TrashPanel extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jTable1MouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable1MouseReleased
-
 //tablePopUp.show(jTable1, evt.getX(),evt.getY());
     }//GEN-LAST:event_jTable1MouseReleased
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPopupMenu jPopupMenu1;
     private javax.swing.JScrollPane jScrollPane1;

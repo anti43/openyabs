@@ -22,15 +22,11 @@ along with YaBS.  If not, see <http://www.gnu.org/licenses/>.
 package mpv5.ui.panels;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.awt.event.MouseEvent;
 import java.util.Date;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JFrame;
 import javax.swing.JTabbedPane;
 import javax.swing.JViewport;
@@ -50,13 +46,11 @@ import mpv5.ui.frames.MPView;
 import mpv5.ui.toolbars.DataPanelTB;
 import mpv5.db.objects.User;
 import mpv5.globals.Headers;
-import mpv5.utils.arrays.ArrayUtilities;
 import mpv5.utils.date.DateConverter;
 import mpv5.utils.export.Exportable;
 import mpv5.utils.models.MPComboBoxModelItem;
 import mpv5.utils.models.MPTableModel;
 import mpv5.utils.numberformat.FormatNumber;
-import mpv5.utils.tables.TableFormat;
 import mpv5.utils.ui.TextFieldUtils;
 
 /**
@@ -560,10 +554,10 @@ public class ExpensePanel extends javax.swing.JPanel implements DataPanel {
             @Override
             public void run() {
                 try {
-                    accountselect.setModel(DatabaseObject.getObjects(Context.getAccounts(), new QueryCriteria("intaccounttype", Account.EXPENSE)));
                     groupnameselect.triggerSearch();
                     taxrate.triggerSearch();
                     itemtable.setModel(new MPTableModel(Expense.getExpenses(), Headers.EXPENSE));
+                    accountselect.setModel(DatabaseObject.getObjects(Context.getAccounts(), new QueryCriteria("intaccounttype", Account.EXPENSE)));
                     accountselect.setSelectedItem(MPView.getUser().getProperties().getProperty(me, "accountselect", 1));
                     formatTable();
                 } catch (Exception e) {
@@ -592,12 +586,12 @@ public class ExpensePanel extends javax.swing.JPanel implements DataPanel {
 
     @Override
     public void actionAfterSave() {
-        
+        refresh();
     }
 
     @Override
     public void actionAfterCreate() {
-       
+        refresh();
     }
 
     public void actionBeforeCreate() {

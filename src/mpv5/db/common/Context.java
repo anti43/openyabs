@@ -278,6 +278,8 @@ public class Context {
         list.add(getTemplate());
         list.add(getReminders());
         list.add(getStages());
+        list.add(getExpenses());
+        list.add(getRevenues());
 
         return list;
     }
@@ -1515,6 +1517,7 @@ public class Context {
         Context c = new Context();
         c.setSubID(DEFAULT_SUBID);
         c.setDbIdentity(IDENTITY_PRODUCTSLIST);
+        c.setSearchFields("DISTINCT ids,cname,description");
         c.setIdentityClass(ProductList.class);
         c.setId(48);
 

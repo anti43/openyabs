@@ -137,7 +137,7 @@ public enum Messages {
     NEW_TAB("New Tab"),
     CALENDAR("Calendar"),
     USER_DISABLED("The user is disabled. Contact your Administrator."),
-    HISTORY_OF("History of "),
+    HISTORY_OF("History of :"),
     ASSET("Asset"),
     COST("Cost"),
     EQUITY("Equity"),
@@ -166,6 +166,7 @@ public enum Messages {
     TYPE_REVENUE("Revenue"),
     TYPE_EXPENSE("Expense"),
     STATUS_PAID("Paid"),
+    STATUS_UNPAID("Not Paid"),
     TRASHBIN("Trashbin"),
     DELETE("Delete"),
     RESTORE("Restore"),
@@ -183,7 +184,7 @@ public enum Messages {
     REMINDER("Reminder"),
     OO_DONE_LOADING("OpenOffice loaded"),
     OOCONNERROR("Could not open a connection to OpenOffice."),
-    OO_NOT_CONFIGURED("OO not available"),
+    OO_NO_TEMPLATE("No template"),
     SET_AS_DEFAULT("Set as default"),
     NO_ACCOUNTS("No accounts or companies are configured for you."),
     CONTACTS_TRANSMITTED("contacts have been transmitted to"),
@@ -204,6 +205,8 @@ public enum Messages {
     UNPAID_BILLS_OVERDUE("Overdues"),
     NO_MAIL_CONFIG("Mail not properly configured."),
     MAIL_SENT("Mail sent to:"),
+    CHANGE_STATUS("Change status"),
+    ALL("All"),
     NO_MAIL_DEFINED("Either you or the contact you want to send the mail to (or both) have no valid mail adress defined.");
 
     private Messages(String message) {

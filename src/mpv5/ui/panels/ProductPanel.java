@@ -1218,7 +1218,7 @@ public class ProductPanel extends javax.swing.JPanel implements DataPanel, MPCBS
                         Log.Debug(e);
                     }
                 } else {
-                    button_preview.setText(Messages.OO_NOT_CONFIGURED.getValue());
+                    button_preview.setText(Messages.OO_NO_TEMPLATE.getValue());
                     button_preview.setEnabled(false);
                 }
             }

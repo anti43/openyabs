@@ -16,7 +16,7 @@ public enum Headers {
     FILE_REFERENCES(new String[]{"Internal ID", "Filename", "Date", "Description", "Size", "Type"}),
     HISTORY(new String[]{"Internal ID", "Description", "User", "Group", "Date"}),
     IMPORT(new String[]{"Internal ID", "Import", "Type", "Name", "Data"}),
-    JOURNAL(new String[]{"Internal ID", "Date", "Group", "Account", "Number", "Type", "Status", "Volume", "Revenue"}),
+    JOURNAL(new String[]{"Internal ID", "Date", "Group", "Account", "Number", "Type", "Status", "Volume", "Revenue", "Context"}),
     TRASHBIN(new String[]{"Type", "Internal ID", "Description"}),
     PRODUCT_DEFAULT(new String[]{"Internal ID", "Name", "Number", "Description"}),
     SUBITEMS(new String[]{"Internal ID", "", "Count", "Measure", "Description", "Netto Price", "Tax Rate", "Total Price", "Tax value", "Net 2", "Product ID", "", ""}),
