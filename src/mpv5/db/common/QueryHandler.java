@@ -284,7 +284,7 @@ public class QueryHandler implements Cloneable {
 
             if ((i + 1) != criterias.getValues().length) {
                 query += " AND ";
-            } 
+            }
         }
         if (criterias.getKeys().length > 0 && !query.endsWith("AND ")) {
             query += " AND ";
@@ -292,8 +292,12 @@ public class QueryHandler implements Cloneable {
         query += context.getConditions().substring(6, context.getConditions().length()) + " AND ";
         query += dateCriterium;
         query += criterias.getOrder();
-
-        return freeSelectQuery(query, mpv5.usermanagement.MPSecurityManager.VIEW, null).getData();
+        ReturnValue p = freeSelectQuery(query, mpv5.usermanagement.MPSecurityManager.VIEW, null);
+        if (p.hasData()) {
+            return p.getData();
+        } else {
+            throw new NodataFoundException(context);
+        }
     }
 
     /**

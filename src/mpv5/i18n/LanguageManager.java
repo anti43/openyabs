@@ -184,11 +184,13 @@ public class LanguageManager {
                                     }
                                 } else {
                                     Log.Debug(LanguageManager.class, "Failed language: " + langid);
+                                    Log.Debug(LanguageManager.class, "Error loading additional languages. Using default now.");
                                     failed = true;
                                 }
                             }
                         } catch (Exception e) {
                             failed = true;
+                            Log.Debug(LanguageManager.class, "Error loading additional languages. Using default now.");
                             Log.Debug(LanguageManager.class, e);
                         }
 
@@ -197,7 +199,6 @@ public class LanguageManager {
                     }
                 } else {
                     failed = true;
-                    Log.Debug(LanguageManager.class, "Error loading additional languages. Using default now.");
                     return java.util.ResourceBundle.getBundle(defLanguageBundle);
                 }
             }

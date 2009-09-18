@@ -127,7 +127,7 @@
                 <DimensionLayout dim="0">
                   <Group type="103" groupAlignment="0" attributes="0">
                       <Group type="102" alignment="1" attributes="0">
-                          <EmptySpace pref="148" max="32767" attributes="0"/>
+                          <EmptySpace pref="176" max="32767" attributes="0"/>
                           <Component id="jLabel1" min="-2" pref="61" max="-2" attributes="0"/>
                           <EmptySpace type="unrelated" max="-2" attributes="0"/>
                           <Component id="volume" min="-2" max="-2" attributes="0"/>
@@ -144,7 +144,7 @@
                       <Group type="102" alignment="0" attributes="0">
                           <Component id="jPanel2" min="-2" pref="166" max="-2" attributes="0"/>
                           <EmptySpace max="-2" attributes="0"/>
-                          <Component id="jScrollPane1" pref="34" max="32767" attributes="0"/>
+                          <Component id="jScrollPane1" pref="33" max="32767" attributes="0"/>
                           <EmptySpace max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="2" attributes="0">
                               <Component id="jLabel1" alignment="2" min="-2" pref="17" max="-2" attributes="0"/>
@@ -173,8 +173,11 @@
                         <Property name="model" type="javax.swing.table.TableModel" editor="org.netbeans.modules.form.editors2.TableModelEditor">
                           <Table columnCount="0" rowCount="0"/>
                         </Property>
+                        <Property name="cellSelectionEnabled" type="boolean" value="true"/>
                         <Property name="name" type="java.lang.String" value="jTable1" noResource="true"/>
-                        <Property name="showHorizontalLines" type="boolean" value="false"/>
+                        <Property name="selectionModel" type="javax.swing.ListSelectionModel" editor="org.netbeans.modules.form.editors2.JTableSelectionModelEditor">
+                          <JTableSelectionModel selectionMode="2"/>
+                        </Property>
                       </Properties>
                       <Events>
                         <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="jTable1MouseClicked"/>
@@ -219,13 +222,13 @@
                                       </Group>
                                       <EmptySpace max="-2" attributes="0"/>
                                       <Group type="103" groupAlignment="1" attributes="0">
-                                          <Component id="timeframeChooser1" alignment="0" pref="471" max="32767" attributes="1"/>
+                                          <Component id="timeframeChooser1" alignment="0" pref="479" max="32767" attributes="1"/>
                                           <Group type="102" alignment="0" attributes="0">
                                               <EmptySpace min="-2" pref="2" max="-2" attributes="0"/>
                                               <Group type="103" groupAlignment="0" attributes="0">
                                                   <Group type="102" attributes="0">
                                                       <Component id="statusc" min="-2" pref="141" max="-2" attributes="1"/>
-                                                      <EmptySpace pref="264" max="32767" attributes="0"/>
+                                                      <EmptySpace pref="281" max="32767" attributes="0"/>
                                                       <Component id="jButton1" min="-2" max="-2" attributes="0"/>
                                                   </Group>
                                                   <Group type="103" alignment="0" groupAlignment="1" max="-2" attributes="0">

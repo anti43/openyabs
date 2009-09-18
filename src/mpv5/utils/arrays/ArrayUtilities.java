@@ -287,11 +287,14 @@ public class ArrayUtilities {
     /**
      *
      * @param table
+     * @param columns
      * @param separator
+     * @param filename
+     * @param suffix
      * @return
      */
-    public static File tableModelToFile(JTable table, String separator) {
-        File file = FileDirectoryHandler.getTempFile();
+    public static File tableModelToFile(JTable table, int[] columns, String separator, String filename, String suffix) {
+        File file = FileDirectoryHandler.getTempFile(filename, suffix);
         FileReaderWriter rw = new FileReaderWriter(file);
         TableModel model = table.getModel();
         String[] data = new String[model.getRowCount()];
@@ -300,7 +303,15 @@ public class ArrayUtilities {
         for (int idx = 0; idx < model.getRowCount(); idx++) {
             line = "";
             for (int i = 0; i < model.getColumnCount(); i++) {
-                line += model.getValueAt(idx, i) + separator;
+                for (int j = 0; j < columns.length; j++) {
+                    if (i == columns[j]) {
+                        if (model.getValueAt(idx, i) != null) {
+                            line += model.getValueAt(idx, i) + separator;
+                        } else {
+                            line += separator;
+                        }
+                    }
+                }
             }
             data[idx] = line.substring(0, line.length() - separator.length());
         }
@@ -539,7 +550,7 @@ public class ArrayUtilities {
      * @return
      */
     public static Object[][] inserValue(Object[][] original_array, Object value, Integer place) {
-        Object[][] array_formatiert = null;
+        Object[][] array_formatiert = new Object[0][0];
         if (original_array.length > 0) {
             array_formatiert = new Object[original_array.length][original_array[0].length + 1];
             for (int zeile = 0; zeile < array_formatiert.length; zeile++) {

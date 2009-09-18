@@ -561,10 +561,18 @@ public class Item extends DatabaseObject implements Formattable {
 
 
         map.put(TableHandler.KEY_TABLE + "1", list);
+        map.put("netvalue", __getNetvalue());
+        map.put("taxvalue", __getTaxvalue());
         map.put("grosvalue", __getTaxvalue() + __getNetvalue());
         map.put("discountgrosvalue", (__getTaxvalue() + __getNetvalue()) * ((__getDiscountvalue() / 100 - 1) * -1));
         map.put("discounttaxvalue", __getTaxvalue() * ((__getDiscountvalue() / 100 - 1) * -1));
         map.put("shippedgrosvalue", __getTaxvalue() + __getNetvalue() + __getShippingvalue());
+        map.put("netvaluef", FormatNumber.formatLokalCurrency(__getNetvalue()));
+        map.put("taxvaluef", FormatNumber.formatLokalCurrency(__getTaxvalue()));
+        map.put("grosvaluef", FormatNumber.formatLokalCurrency(__getTaxvalue() + __getNetvalue()));
+        map.put("discountgrosvaluef", FormatNumber.formatLokalCurrency((__getTaxvalue() + __getNetvalue()) * ((__getDiscountvalue() / 100 - 1) * -1)));
+        map.put("discounttaxvaluef", FormatNumber.formatLokalCurrency(__getTaxvalue() * ((__getDiscountvalue() / 100 - 1) * -1)));
+        map.put("shippedgrosvaluef", FormatNumber.formatLokalCurrency(__getTaxvalue() + __getNetvalue() + __getShippingvalue()));
 
         //date format localization
         if (MPView.getUser().getProperties().hasProperty("item.date.locale")) {

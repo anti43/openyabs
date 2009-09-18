@@ -1,4 +1,3 @@
-
 package mpv5.utils.tables;
 
 import java.awt.*;
@@ -16,7 +15,7 @@ import java.util.*;
  */
 public class ExcelAdapter implements ActionListener {
 
-    private String rowstring,  value;
+    private String rowstring, value;
     private Clipboard system;
     private StringSelection stsel;
     private JTable jTable1;
@@ -78,7 +77,11 @@ public class ExcelAdapter implements ActionListener {
             }
             for (int i = 0; i < numrows; i++) {
                 for (int j = 0; j < numcols; j++) {
-                    sbf.append(jTable1.getValueAt(rowsselected[i], colsselected[j]));
+                    String s = String.valueOf(jTable1.getValueAt(rowsselected[i], colsselected[j])).replaceAll("\\<.*?\\>", "");
+                    if (s.equals("null")) {
+                        s = "";
+                    }
+                    sbf.append(s);
                     if (j < numcols - 1) {
                         sbf.append("\t");
                     }
