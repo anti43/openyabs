@@ -568,7 +568,7 @@ public class Item extends DatabaseObject implements Formattable {
         map.put("discounttaxvalue", __getTaxvalue() * ((__getDiscountvalue() / 100 - 1) * -1));
         map.put("shippedgrosvalue", __getTaxvalue() + __getNetvalue() + __getShippingvalue());
         map.put("shippingvalue", __getShippingvalue());
-        map.put("sgippingvaluef", FormatNumber.formatLokalCurrency(__getShippingvalue()));
+        map.put("shippingvaluef", FormatNumber.formatLokalCurrency(__getShippingvalue()));
         map.put("netvaluef", FormatNumber.formatLokalCurrency(__getNetvalue()));
         map.put("taxvaluef", FormatNumber.formatLokalCurrency(__getTaxvalue()));
         map.put("grosvaluef", FormatNumber.formatLokalCurrency(__getTaxvalue() + __getNetvalue()));
