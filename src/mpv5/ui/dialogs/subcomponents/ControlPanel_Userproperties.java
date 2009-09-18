@@ -7,9 +7,11 @@ import javax.swing.SwingUtilities;
 import mpv5.data.PropertyStore;
 import mpv5.db.common.Context;
 import mpv5.globals.LocalSettings;
+import mpv5.globals.Messages;
 import mpv5.logging.Log;
 import mpv5.ui.beans.LightMPComboBox;
 import mpv5.ui.dialogs.ControlApplet;
+import mpv5.ui.dialogs.Popup;
 import mpv5.ui.frames.MPView;
 import mpv5.ui.panels.MPControlPanel;
 
@@ -403,6 +405,7 @@ public class ControlPanel_Userproperties extends javax.swing.JPanel implements C
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         setSettings();
         MPView.getUser().saveProperties();
+        Popup.notice(Messages.RESTART_REQUIRED);
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed

@@ -471,6 +471,7 @@ public class ControlPanel_Users extends javax.swing.JPanel implements ControlApp
                 if (MPView.getUser().equalTo((User) dato)) {
                     MPView.getUser().reset();
                 }
+                Popup.notice(Messages.RESTART_REQUIRED);
             } else {
                 showRequiredFields();
             }

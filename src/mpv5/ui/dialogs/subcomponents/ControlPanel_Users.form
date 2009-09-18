@@ -135,8 +135,8 @@
                               </Group>
                               <EmptySpace max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="0" attributes="0">
-                                  <Component id="statuslist" pref="211" max="32767" attributes="1"/>
-                                  <Component id="accountlist" alignment="0" pref="211" max="32767" attributes="1"/>
+                                  <Component id="statuslist" pref="224" max="32767" attributes="1"/>
+                                  <Component id="accountlist" alignment="0" pref="224" max="32767" attributes="1"/>
                               </Group>
                           </Group>
                           <Group type="102" alignment="0" attributes="0">
@@ -148,10 +148,10 @@
                               </Group>
                               <EmptySpace max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="0" attributes="0">
-                                  <Component id="laf" alignment="0" pref="212" max="32767" attributes="1"/>
-                                  <Component id="countrylist" pref="212" max="32767" attributes="1"/>
-                                  <Component id="locale" alignment="1" pref="212" max="32767" attributes="1"/>
-                                  <Component id="language" alignment="0" pref="212" max="32767" attributes="1"/>
+                                  <Component id="laf" alignment="0" pref="225" max="32767" attributes="1"/>
+                                  <Component id="countrylist" pref="225" max="32767" attributes="1"/>
+                                  <Component id="locale" alignment="1" pref="225" max="32767" attributes="1"/>
+                                  <Component id="language" alignment="0" pref="225" max="32767" attributes="1"/>
                               </Group>
                           </Group>
                       </Group>
@@ -341,24 +341,24 @@
                           <Group type="102" alignment="0" attributes="0">
                               <Component id="jLabel2" min="-2" max="-2" attributes="0"/>
                               <EmptySpace min="-2" pref="24" max="-2" attributes="0"/>
-                              <Component id="password" pref="212" max="32767" attributes="1"/>
+                              <Component id="password" pref="218" max="32767" attributes="1"/>
                           </Group>
                           <Group type="102" alignment="1" attributes="0">
-                              <Component id="rgroups" pref="222" max="32767" attributes="1"/>
+                              <Component id="rgroups" pref="233" max="32767" attributes="1"/>
                               <EmptySpace max="-2" attributes="0"/>
                               <Component id="enabled" min="-2" max="-2" attributes="0"/>
                           </Group>
                           <Group type="102" alignment="1" attributes="0">
                               <Group type="103" groupAlignment="1" attributes="0">
-                                  <Component id="jLabel6" pref="81" max="32767" attributes="0"/>
-                                  <Component id="jLabel10" alignment="0" pref="81" max="32767" attributes="0"/>
-                                  <Component id="jLabel3" alignment="0" pref="81" max="32767" attributes="0"/>
+                                  <Component id="jLabel6" pref="85" max="32767" attributes="0"/>
+                                  <Component id="jLabel10" alignment="0" pref="85" max="32767" attributes="0"/>
+                                  <Component id="jLabel3" alignment="0" pref="85" max="32767" attributes="0"/>
                               </Group>
                               <EmptySpace max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="0" attributes="0">
-                                  <Component id="groupname" pref="203" max="32767" attributes="1"/>
-                                  <Component id="companyselect" alignment="0" pref="203" max="32767" attributes="1"/>
-                                  <Component id="inthighestright" alignment="0" pref="203" max="32767" attributes="1"/>
+                                  <Component id="groupname" pref="207" max="32767" attributes="1"/>
+                                  <Component id="companyselect" alignment="0" pref="207" max="32767" attributes="1"/>
+                                  <Component id="inthighestright" alignment="0" pref="207" max="32767" attributes="1"/>
                               </Group>
                           </Group>
                       </Group>
@@ -550,7 +550,7 @@
             <DimensionLayout dim="0">
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" alignment="0" attributes="0">
-                      <EmptySpace pref="63" max="32767" attributes="0"/>
+                      <EmptySpace pref="98" max="32767" attributes="0"/>
                       <Component id="jLabel1" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">

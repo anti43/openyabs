@@ -410,6 +410,7 @@ public class ControlPanel_Formats extends javax.swing.JPanel implements ControlA
         labeledTextField1.setText("");
         labeledSpinner1.getSpinner().setValue(0);
         labeledCombobox1.setModel(QueryHandler.instanceOf().clone(Context.getFormats()).select("inttype,cname", (String[]) null));
+        Popup.notice(Messages.RESTART_REQUIRED);
     }
 
     private void setTable() {
