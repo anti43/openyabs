@@ -197,26 +197,6 @@
                 <Property name="name" type="java.lang.String" value="jSeparator1" noResource="true"/>
               </Properties>
             </Component>
-            <Component class="javax.swing.JToolBar$Separator" name="jSeparator2">
-              <Properties>
-                <Property name="name" type="java.lang.String" value="jSeparator2" noResource="true"/>
-              </Properties>
-            </Component>
-            <Component class="javax.swing.JToolBar$Separator" name="jSeparator3">
-              <Properties>
-                <Property name="name" type="java.lang.String" value="jSeparator3" noResource="true"/>
-              </Properties>
-            </Component>
-            <Component class="javax.swing.JToolBar$Separator" name="jSeparator6">
-              <Properties>
-                <Property name="name" type="java.lang.String" value="jSeparator6" noResource="true"/>
-              </Properties>
-            </Component>
-            <Component class="javax.swing.JToolBar$Separator" name="jSeparator4">
-              <Properties>
-                <Property name="name" type="java.lang.String" value="jSeparator4" noResource="true"/>
-              </Properties>
-            </Component>
             <Component class="javax.swing.JButton" name="jButton1">
               <Properties>
                 <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">

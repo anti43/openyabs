@@ -125,10 +125,6 @@ public class PreviewPanel extends javax.swing.JPanel implements Waiter {
         jButton31 = new javax.swing.JButton();
         jButton32 = new javax.swing.JButton();
         jSeparator1 = new javax.swing.JToolBar.Separator();
-        jSeparator2 = new javax.swing.JToolBar.Separator();
-        jSeparator3 = new javax.swing.JToolBar.Separator();
-        jSeparator6 = new javax.swing.JToolBar.Separator();
-        jSeparator4 = new javax.swing.JToolBar.Separator();
         jButton1 = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
 
@@ -136,7 +132,7 @@ public class PreviewPanel extends javax.swing.JPanel implements Waiter {
 
         setName("Form"); // NOI18N
 
-        java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle();
+        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("mpv5/resources/languages/Panels"); // NOI18N
         jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("PreviewPanel.jPanel1.border.title"))); // NOI18N
         jPanel1.setName("jPanel1"); // NOI18N
 
@@ -225,18 +221,6 @@ public class PreviewPanel extends javax.swing.JPanel implements Waiter {
         jSeparator1.setName("jSeparator1"); // NOI18N
         toolbar.add(jSeparator1);
 
-        jSeparator2.setName("jSeparator2"); // NOI18N
-        toolbar.add(jSeparator2);
-
-        jSeparator3.setName("jSeparator3"); // NOI18N
-        toolbar.add(jSeparator3);
-
-        jSeparator6.setName("jSeparator6"); // NOI18N
-        toolbar.add(jSeparator6);
-
-        jSeparator4.setName("jSeparator4"); // NOI18N
-        toolbar.add(jSeparator4);
-
         jButton1.setText(bundle.getString("PreviewPanel.jButton1.text")); // NOI18N
         jButton1.setFocusable(false);
         jButton1.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
@@ -273,7 +257,7 @@ public class PreviewPanel extends javax.swing.JPanel implements Waiter {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addComponent(toolbar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(ppanel, javax.swing.GroupLayout.DEFAULT_SIZE, 43, Short.MAX_VALUE))
+                .addComponent(ppanel, javax.swing.GroupLayout.DEFAULT_SIZE, 44, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
@@ -330,7 +314,16 @@ public class PreviewPanel extends javax.swing.JPanel implements Waiter {
         } else {
             d.setSelectedFile(new File(dataOwner.__getCName() + ".pdf"));
         }
-        d.saveFile(file);
+        if (d.chooseFile()) {
+            d.getFile().delete();
+            if (file.renameTo(d.getFile())) {
+                try {
+                    MPView.addMessage(Messages.FILE_SAVED + file.getCanonicalPath());
+                } catch (IOException ex) {
+                    Log.Debug(ex);
+                }
+            }
+        }
     }//GEN-LAST:event_jButton32ActionPerformed
 
     private void jButton30ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton30ActionPerformed
@@ -346,7 +339,6 @@ public class PreviewPanel extends javax.swing.JPanel implements Waiter {
             panel.showPage(p);
         } catch (Exception e) {
             //No pdf loaded
-
         }
     }//GEN-LAST:event_jButton2ActionPerformed
 
@@ -359,7 +351,6 @@ public class PreviewPanel extends javax.swing.JPanel implements Waiter {
             panel.showPage(p);
         } catch (Exception e) {
             //No pdf loaded
-
         }
     }//GEN-LAST:event_jButton1ActionPerformed
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -372,11 +363,7 @@ public class PreviewPanel extends javax.swing.JPanel implements Waiter {
     private javax.swing.JButton jButton32;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JToolBar.Separator jSeparator1;
-    private javax.swing.JToolBar.Separator jSeparator2;
-    private javax.swing.JToolBar.Separator jSeparator3;
-    private javax.swing.JToolBar.Separator jSeparator4;
     private javax.swing.JSeparator jSeparator5;
-    private javax.swing.JToolBar.Separator jSeparator6;
     private javax.swing.JPanel ppanel;
     private javax.swing.JToolBar toolbar;
     // End of variables declaration//GEN-END:variables
