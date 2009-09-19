@@ -1668,10 +1668,10 @@ public class MPView extends FrameView {
     }//GEN-LAST:event_jMenuItem5ActionPerformed
 
     private void jMenuItem6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem6ActionPerformed
-        Component pane = tabPane.getSelectedComponent();
-        if (pane instanceof DataPanel) {
+        DataPanel pane = getCurrentTab();
+        if (pane!=null) {
             try {
-                new PrintJob().print((((DataPanel) pane)).getDataOwner());
+                new PrintJob().print(((pane)).getDataOwner());
             } catch (Exception e) {
                 Log.Debug(this, e);
             }
@@ -1724,19 +1724,17 @@ public class MPView extends FrameView {
     }//GEN-LAST:event_jMenuItem12ActionPerformed
 
     private void jMenuItem13ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem13ActionPerformed
-
-        Component pane = tabPane.getSelectedComponent();
-        if (pane instanceof DataPanel) {
+        DataPanel pane = getCurrentTab();
+        if (pane!=null) {
+            pane.actionBeforeSave();
             try {
-
-                DatabaseObject dato = ((DataPanel) pane).getDataOwner();
-
-                dato.getPanelData(((DataPanel) pane));
+                DatabaseObject dato = (pane).getDataOwner();
+                dato.getPanelData((pane));
                 if (dato.save()) {
-                    ((DataPanel) pane).refresh();
-                    ((DataPanel) pane).setDataOwner(dato, true);
+                    (pane).actionAfterSave();
+                    (pane).setDataOwner(dato, true);
                 } else {
-                    ((DataPanel) pane).showRequiredFields();
+                    (pane).showRequiredFields();
                 }
             } catch (Exception e) {
                 Log.Debug(this, e);
@@ -1746,18 +1744,18 @@ public class MPView extends FrameView {
 
     private void jMenuItem14ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem14ActionPerformed
 
-        Component pane = tabPane.getSelectedComponent();
-        if (pane instanceof DataPanel) {
+        DataPanel pane = getCurrentTab();
+        if (pane!=null) {
             try {
-
-                DatabaseObject dato = ((DataPanel) pane).getDataOwner();
-                dato.getPanelData(((DataPanel) pane));
+                pane.actionBeforeCreate();
+                DatabaseObject dato = (pane).getDataOwner();
+                dato.getPanelData((pane));
                 dato.setIDS(-1);
                 if (dato.save()) {
-                    ((DataPanel) pane).refresh();
-                    ((DataPanel) pane).setDataOwner(dato, true);
+                    pane.actionAfterSave();
+                    (pane).setDataOwner(dato, true);
                 } else {
-                    ((DataPanel) pane).showRequiredFields();
+                    (pane).showRequiredFields();
                 }
             } catch (Exception e) {
                 Log.Debug(this, e);
