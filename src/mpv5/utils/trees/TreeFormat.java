@@ -16,18 +16,20 @@
  */
 package mpv5.utils.trees;
 
-
-
-
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.print.PrinterException;
+import javax.swing.JTable;
 import javax.swing.JTree;
-
+import javax.swing.table.DefaultTableModel;
+import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.TreePath;
 
 /**
  *
  *  
  */
 public class TreeFormat {
-
 
     /**
      * Expands a given node in a JTree.
@@ -74,7 +76,10 @@ public class TreeFormat {
         return row;
     } // expandJTreeNode()
 
-
+    /**
+     * Expand the tree
+     * @param tree
+     */
     public static void expandTree(JTree tree) {
         int rc = 0;
         do {
@@ -83,5 +88,42 @@ public class TreeFormat {
                 tree.expandRow(x);
             }
         } while (rc != tree.getRowCount());
+    }
+
+    /**
+     * Print the tree
+     * @param treeWidth
+     * @param tree
+     */
+    public static void print(final int treeWidth, final JTree tree) {
+        final int MAX_HEIGHT = 20000;
+        JTable printTree = new JTable(0, 1);
+        printTree.setFont(Font.decode(Font.MONOSPACED));
+
+        printTree.setSize(treeWidth, MAX_HEIGHT);
+        printTree.getColumnModel().getColumn(0).setWidth(treeWidth);
+        printTree.setGridColor(Color.WHITE);
+        DefaultTableModel printModel = (DefaultTableModel) printTree.getModel();
+        StringBuffer rowElement = new StringBuffer();
+        for (int i = 0; i < tree.getRowCount(); i++) {
+            TreePath path = tree.getPathForRow(i);
+            int level = path.getPathCount();
+            rowElement.delete(0, rowElement.length());
+            for (int j = 0; j < level; j++) {
+                rowElement.append("      ");
+            }
+            DefaultMutableTreeNode node = (DefaultMutableTreeNode) path.getLastPathComponent();
+            if (!node.isLeaf()) {
+                rowElement.append(tree.isCollapsed(i) ? "+ " : "-> ");
+            }
+            rowElement.append(node.toString());
+            Object[] rowData = new Object[]{rowElement.toString()};
+            printModel.addRow(rowData);
+        }
+        try {
+            printTree.print();// since 1.5
+        } catch (PrinterException ex) {
+            ex.printStackTrace();
+        }
     }
 }

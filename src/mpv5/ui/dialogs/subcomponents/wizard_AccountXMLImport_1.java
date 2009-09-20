@@ -5,6 +5,10 @@ import java.io.File;
 import java.util.ArrayList;
 
 
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Vector;
 import java.util.concurrent.ExecutionException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -12,6 +16,7 @@ import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
 import javax.swing.text.TableView.TableRow;
 import mpv5.db.common.DatabaseObject;
+import mpv5.db.objects.Account;
 import mpv5.globals.Messages;
 import mpv5.logging.Log;
 import mpv5.ui.dialogs.Popup;
@@ -25,13 +30,13 @@ import mpv5.utils.xml.XMLReader;
  *
  * 
  */
-public class wizard_XMLImport_2 extends javax.swing.JPanel implements Wizardable {
+public class wizard_AccountXMLImport_1 extends javax.swing.JPanel implements Wizardable {
 
     private static final long serialVersionUID = -8347532498124147821L;
     private WizardMaster master;
     private boolean isConsumed = false;
 
-    public wizard_XMLImport_2(WizardMaster w) {
+    public wizard_AccountXMLImport_1(WizardMaster w) {
         this.master = w;
         initComponents();
 
@@ -49,10 +54,10 @@ public class wizard_XMLImport_2 extends javax.swing.JPanel implements Wizardable
             try {
                 x.newDoc(new File(master.getStore().getProperty("file")), true);
                 objs = x.getObjects();
-                jTable1.setModel(ImportTableModel.getModel(objs, !master.getStore().getProperty("overwrite", true)));
+                jTable1.setModel(ImportTableModel.getModel(objs, false));
                 jLabel2.setText(jLabel2.getText() + " " + master.getStore().getProperty("file") + " (" + jTable1.getRowCount() + ")");
                 TableFormat.format(jTable1, 0, 0);
-                TableFormat.format(jTable1, 1, 33);
+                TableFormat.format(jTable1, 1, 0);
                 TableFormat.format(jTable1, 2, 100);
             } catch (Exception ex) {
                 Popup.error(ex);
@@ -67,37 +72,73 @@ public class wizard_XMLImport_2 extends javax.swing.JPanel implements Wizardable
         jProgressBar1.setMinimum(0);
         jProgressBar1.setMaximum(jTable1.getRowCount());
 
+        final List<Account> accs = new Vector<Account>();
+        final HashMap<Integer, Account> daccs = new HashMap<Integer, Account>();
         Runnable runnable = new Runnable() {
 
             public void run() {
                 int imp = 0;
+                String val = null;
                 for (int i = 0; i < jTable1.getRowCount(); i++) {
-                    if ((Boolean) jTable1.getValueAt(i, 1)) {
-                        master.setCursor(new Cursor(Cursor.WAIT_CURSOR));
-                        final int p = i;
+                    master.setCursor(new Cursor(Cursor.WAIT_CURSOR));
+                    final int p = i;
+                    try {
+                        DatabaseObject dog = ((DatabaseObject) jTable1.getValueAt(p, 0));
+                        accs.add((Account) dog);
 
-                        String val = "";
-                        try {
-                            DatabaseObject dog = ((DatabaseObject) jTable1.getValueAt(p, 0));
-                            if (!dog.saveImport()) {
-                                val = "<html><p><font color =red>" + Messages.ERROR_OCCURED;
-                            } else {
-                                val = "<html><p><font color =green>" + Messages.IMPORTED + " ID: " + dog.__getIDS();
-                                imp++;
-                            }
-                        } catch (Exception e) {
-                            val = "<html><p><font color =red>" + Messages.ERROR_OCCURED + ": " + e.getMessage();
-                        } finally {
-                            jTable1.setValueAt(val, p, 4);
-                            jProgressBar1.setValue(p);
-
-                            master.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
-                        }
+                        val = "<html><p><font color =green>Analysed ID: " + dog.__getIDS();
+                        imp++;
+                    } catch (Exception e) {
+                        val = "<html><p><font color =red>" + Messages.ERROR_OCCURED + ": " + e.getMessage();
+                    } finally {
+                        jTable1.setValueAt(val, p, 4);
+                        jProgressBar1.setValue(p);
+                        master.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
                     }
                 }
-                jProgressBar1.setString( imp + " " + Messages.IMPORTED);
+
+                jProgressBar1.setValue(0);
+                 master.setCursor(new Cursor(Cursor.WAIT_CURSOR));
+                //find lowest parents (children of all accounts)
+                for (int j = 0; j < accs.size(); j++) {
+                    Account account = accs.get(j);
+                    daccs.put(account.__getIDS(), account);
+                    account.setIDS(-1);
+                }
+
+                for (int i = 0; i < accs.size(); i++) {
+                    Account account = accs.get(i);
+                    account.setIntparentaccount(findParentAccount(account));
+                    account.saveImport();
+                    try {
+                        val = "<html><p><font color =green>Saved account " + account + " [" + account.__getIDS() +"]";
+                    } catch (Exception e) {
+                        val = "<html><p><font color =red>" + Messages.ERROR_OCCURED + ": " + e.getMessage();
+                    } finally {
+                        jTable1.setValueAt(val, i, 4);
+                        jProgressBar1.setValue(i);
+                        master.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+                    }
+                }
+
+                jProgressBar1.setString(imp + " " + Messages.IMPORTED);
             }
-        }; new Thread(runnable).start();
+
+            //recursion is a powerful, but slow beast..
+            private int findParentAccount(Account account) {
+                Account pa = daccs.get(account.__getIntparentaccount());
+                if (pa == null) {
+                    return 1;
+                } else if (pa.isExisting()) {
+                    return pa.__getIDS();
+                } else {
+                    pa.setIntparentaccount(findParentAccount(pa));
+                    pa.saveImport();
+                    return pa.__getIDS();
+                }
+            }
+        };
+        new Thread(runnable).start();
 
         master.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
         master.isEnd(true);
@@ -117,11 +158,11 @@ public class wizard_XMLImport_2 extends javax.swing.JPanel implements Wizardable
         setLayout(new java.awt.BorderLayout());
 
         jPanel1.setBackground(new java.awt.Color(255, 255, 255));
-        java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle(); // NOI18N
-        jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("wizard_XMLImport_2.jPanel1.border.title"))); // NOI18N
+        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("mpv5/resources/languages/Panels"); // NOI18N
+        jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("wizard_AccountXMLImport_1.jPanel1.border.title"))); // NOI18N
         jPanel1.setName("jPanel1"); // NOI18N
 
-        jLabel2.setText(bundle.getString("wizard_XMLImport_2.jLabel2.text")); // NOI18N
+        jLabel2.setText(bundle.getString("wizard_AccountXMLImport_1.jLabel2.text")); // NOI18N
         jLabel2.setName("jLabel2"); // NOI18N
 
         jScrollPane1.setName("jScrollPane1"); // NOI18N

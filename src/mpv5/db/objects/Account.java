@@ -35,6 +35,7 @@ import mpv5.db.common.QueryHandler;
 import mpv5.globals.Messages;
 import mpv5.logging.Log;
 import mpv5.ui.frames.MPView;
+import mpv5.utils.arrays.ArrayUtilities;
 import mpv5.utils.images.MPIcon;
 
 /**
@@ -253,7 +254,6 @@ public class Account extends DatabaseObject {
             try {
                 MPView.setWaiting(true);
                 node1 = addToParents(node1, data);
-
             } catch (Exception e) {
                 Log.Debug(e);
             } finally {
@@ -266,24 +266,24 @@ public class Account extends DatabaseObject {
 
     @SuppressWarnings("unchecked")
     private static DefaultMutableTreeNode addToParents(DefaultMutableTreeNode firstnode, ArrayList<Account> dobjlist) {
-
         for (int i = 0; i < dobjlist.size(); i++) {
             Account dobj = dobjlist.get(i);
-
             if (dobj.__getIntparentaccount() <= 0 && firstnode.isRoot()) {
-//                Log.Debug(ArrayUtilities.class, "Node is root child, adding it to root and removing it from the list.");
+//                Log.Debug(Account.class, "Node is root child, adding it to root and removing it from the list.");
                 firstnode.add(new DefaultMutableTreeNode(dobj));
+//                Log.Debug(Account.class, "Added 1st " + dobj);
                 dobjlist.remove(dobj);//First level groups
                 i--;
             } else {
+//                Log.Debug(Account.class, "Check " + dobj);
                 int parentid = dobj.__getIntparentaccount();
                 if (((Account) firstnode.getUserObject()).__getIDS().intValue() == parentid) {
-//                    Log.Debug(ArrayUtilities.class, "Node is child of parentnode, adding and removing it from the list.");
                     firstnode.add(new DefaultMutableTreeNode(dobj));
+//                    Log.Debug(Account.class, "       Parent " + firstnode);
+//                    Log.Debug(Account.class, "             Added " + dobj);
                     dobjlist.remove(dobj);
                     i--;
                 } else {
-//                    Log.Debug(ArrayUtilities.class, "Node is no child of parentnode, iterating over the parent node..");
                     @SuppressWarnings("unchecked")
                     Enumeration<DefaultMutableTreeNode> nodes = firstnode.children();
                     while (nodes.hasMoreElements()) {
@@ -410,7 +410,7 @@ public class Account extends DatabaseObject {
 
         try {
             if (map.containsKey("intaccounttype")) {
-                map.put("type", getTypeString(Integer.valueOf(map.get("intaccounttype").toString()))); 
+                map.put("type", getTypeString(Integer.valueOf(map.get("intaccounttype").toString())));
                 map.remove("intaccounttype");
             }
         } catch (NumberFormatException numberFormatException) {
@@ -433,5 +433,26 @@ public class Account extends DatabaseObject {
         }
 
         return map;
+    }
+
+    /**
+     * Safely import a database object from external sources (xml, csv etc)<br/>
+     * Override this for ensuring the existance of DObject specific mandatory values.
+     * @return
+     */
+    @Override
+    public boolean saveImport() {
+        Log.Debug(this, "Starting import..");
+        Log.Debug(this, "Setting IDS to -1");
+        ids = -1;
+        Log.Debug(this, "Setting intaddedby to " + MPView.getUser().__getIDS());
+        setIntaddedby(MPView.getUser().__getIDS());
+
+        if (__getGroupsids() <= 0 || !DatabaseObject.exists(Context.getGroup(), __getGroupsids())) {
+            Log.Debug(this, "Setting groups to users group.");
+            setGroupsids(MPView.getUser().__getGroupsids());
+        }
+
+        return save();
     }
 }

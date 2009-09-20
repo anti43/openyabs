@@ -44,6 +44,7 @@ import mpv5.globals.Messages;
 import mpv5.logging.Log;
 import mpv5.ui.dialogs.ControlApplet;
 import mpv5.ui.dialogs.Popup;
+import mpv5.ui.dialogs.Wizard;
 import mpv5.ui.frames.MPView;
 import mpv5.ui.panels.DataPanel;
 import mpv5.usermanagement.MPSecurityManager;
@@ -125,6 +126,9 @@ public class ControlPanel_Accounts extends javax.swing.JPanel implements Control
         classv = new mpv5.ui.beans.LabeledSpinner();
         idtf = new mpv5.ui.beans.LabeledTextField();
         jPanel6 = new javax.swing.JPanel();
+        count = new javax.swing.JLabel();
+        jButton6 = new javax.swing.JButton();
+        jButton5 = new javax.swing.JButton();
         jButton4 = new javax.swing.JButton();
         jButton3 = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
@@ -304,6 +308,28 @@ public class ControlPanel_Accounts extends javax.swing.JPanel implements Control
         jPanel6.setName("jPanel6"); // NOI18N
         jPanel6.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.RIGHT));
 
+        count.setText(bundle.getString("ControlPanel_Accounts.count.text")); // NOI18N
+        count.setName("count"); // NOI18N
+        jPanel6.add(count);
+
+        jButton6.setText(bundle.getString("ControlPanel_Accounts.jButton6.text")); // NOI18N
+        jButton6.setName("jButton6"); // NOI18N
+        jButton6.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton6ActionPerformed(evt);
+            }
+        });
+        jPanel6.add(jButton6);
+
+        jButton5.setText(bundle.getString("ControlPanel_Accounts.jButton5.text")); // NOI18N
+        jButton5.setName("jButton5"); // NOI18N
+        jButton5.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton5ActionPerformed(evt);
+            }
+        });
+        jPanel6.add(jButton5);
+
         jButton4.setText(bundle.getString("ControlPanel_Accounts.jButton4.text")); // NOI18N
         jButton4.setName("jButton4"); // NOI18N
         jButton4.addActionListener(new java.awt.event.ActionListener() {
@@ -413,10 +439,22 @@ public class ControlPanel_Accounts extends javax.swing.JPanel implements Control
         } catch (Exception e) {
         }
     }//GEN-LAST:event_treeMouseClicked
+
+    private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
+        TreeFormat.print(700, tree);
+    }//GEN-LAST:event_jButton5ActionPerformed
+
+    private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
+        Wizard w = new Wizard(false);
+        w.addPanel(new wizard_XMLImport_1(w));
+        w.addPanel(new wizard_AccountXMLImport_1(w));
+        w.showWiz();
+    }//GEN-LAST:event_jButton6ActionPerformed
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.ButtonGroup buttonGroup1;
     private mpv5.ui.beans.LabeledSpinner classv;
     private mpv5.ui.beans.LabeledTextField cname;
+    private javax.swing.JLabel count;
     private javax.swing.JTextArea desc;
     private javax.swing.JComboBox groupnameselect;
     private mpv5.ui.beans.LabeledTextField idtf;
@@ -424,6 +462,8 @@ public class ControlPanel_Accounts extends javax.swing.JPanel implements Control
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
     private javax.swing.JButton jButton4;
+    private javax.swing.JButton jButton5;
+    private javax.swing.JButton jButton6;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
@@ -487,10 +527,9 @@ public class ControlPanel_Accounts extends javax.swing.JPanel implements Control
     }
 
     public void refresh() {
-
-
         try {
             data = DatabaseObject.getObjects(Context.getAccounts());
+            count.setText(data.size() + "");
         } catch (NodataFoundException ex) {
             Log.Debug(this, ex.getMessage());
             data = new ArrayList<Account>();
@@ -504,10 +543,9 @@ public class ControlPanel_Accounts extends javax.swing.JPanel implements Control
             } catch (NodataFoundException ex) {
                 g = (Account) DatabaseObject.getObject(Context.getAccounts());
                 g.setCName(Messages.ACCOUNTNAMES.toString());
-                g.setIDS(-1);
+                g.setIDS(1);
             }
         } else {
-
             if (data.size() == 0) {
                 g = new Account();
                 g.setCName(MPView.getUser().__getCName());
@@ -516,7 +554,6 @@ public class ControlPanel_Accounts extends javax.swing.JPanel implements Control
             } else {
                 g = data.get(0);
             }
-
         }
 
         try {
@@ -570,7 +607,7 @@ public class ControlPanel_Accounts extends javax.swing.JPanel implements Control
         taxvalue_ = Double.valueOf(tax.getText());
         intaccountclass_ = Integer.valueOf(String.valueOf(classv.getSpinner().getValue()));
         intaccounttype_ = Integer.valueOf(((MPComboBoxModelItem) typeselect.getSelectedItem()).getId());
-    return true;
+        return true;
     }
 
     public DatabaseObject getDataOwner() {
