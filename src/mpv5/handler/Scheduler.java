@@ -38,7 +38,7 @@ private static GeneralListPanel g =new GeneralListPanel();
             checkForOverdueEvents();
             checkForCreateBillEvents();
             try {
-                Thread.sleep(600000);
+                Thread.sleep(21600000);
             } catch (InterruptedException ignore) {
             }
         }

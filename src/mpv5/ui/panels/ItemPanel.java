@@ -21,7 +21,6 @@ along with YaBS.  If not, see <http://www.gnu.org/licenses/>.
  */
 package mpv5.ui.panels;
 
-import enoa.handler.TableHandler;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
@@ -30,28 +29,19 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.File;
-import java.net.InetAddress;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Vector;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.print.DocFlavor;
 import javax.swing.JButton;
-import javax.swing.JCheckBox;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
-import javax.swing.JOptionPane;
-import javax.swing.JOptionPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTable;
 import javax.swing.JViewport;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingUtilities;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableModel;
 import mpv5.db.common.*;
@@ -74,7 +64,6 @@ import mpv5.ui.frames.MPView;
 import mpv5.ui.popups.FileTablePopUp;
 import mpv5.ui.toolbars.DataPanelTB;
 import mpv5.db.objects.User;
-import mpv5.globals.LocalSettings;
 import mpv5.handler.FormFieldsHandler;
 import mpv5.handler.VariablesHandler;
 import mpv5.mail.SimpleMail;
@@ -97,7 +86,6 @@ import mpv5.utils.renderer.ButtonEditor;
 import mpv5.utils.renderer.ButtonRenderer;
 import mpv5.utils.tables.TableCalculator;
 import mpv5.utils.renderer.CellEditorWithMPComboBox;
-import mpv5.utils.renderer.LazyCellEditor;
 import mpv5.utils.renderer.TableCellRendererForDezimal;
 import mpv5.utils.tables.TableFormat;
 import mpv5.utils.ui.TextFieldUtils;
@@ -123,6 +111,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
      */
     public ItemPanel(Context context, int type) {
         initComponents();
+        itemtable.getTableHeader().setReorderingAllowed(false);
         inttype_ = type;
         sp = new SearchPanel(context, this);
         sp.setVisible(true);
@@ -273,9 +262,9 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
             tb.setEditable(!object.isReadOnly());
 
             itemtable.setModel(SubItem.toModel(((Item) object).getSubitems()));
-            if (((MPTableModel) itemtable.getModel()).getEmptyRows(new int[]{4})<2) {
-                    ((MPTableModel) itemtable.getModel()).addRow(1);
-                }
+            if (((MPTableModel) itemtable.getModel()).getEmptyRows(new int[]{4}) < 2) {
+                ((MPTableModel) itemtable.getModel()).addRow(1);
+            }
             omodel = (MPTableModel) itemtable.getModel();
 
             formatTable();
@@ -1259,9 +1248,9 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
                     List<Integer> skip = new Vector<Integer>();
                     if (inttype_ == Item.TYPE_BILL) {
                         skip.add(new Integer(0));
-                        skip.add(new Integer(1));
+//                        skip.add(new Integer(1));
                         skip.add(new Integer(2));
-                        skip.add(new Integer(5));
+//                        skip.add(new Integer(5));
                     } else {
                         skip.add(new Integer(3));
                         skip.add(new Integer(4));
@@ -1441,8 +1430,13 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
     public void actionBeforeCreate() {
         status.setSelectedIndex(Item.STATUS_IN_PROGRESS);
         date1.setDate(new Date());
-        date2.setDate(new Date());
-        date3.setDate(new Date());
+        try {
+            date3.setDate(DateConverter.addDays(new Date(), Integer.valueOf(MPView.getUser().getProperties().getProperty("bills.warn.days"))));
+            date2.setDate(new Date());
+        } catch (Exception e) {
+            date3.setDate(DateConverter.addDays(new Date(), 14));
+            date2.setDate(new Date());
+        }
     }
 
     public void actionBeforeSave() {
@@ -1554,7 +1548,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
 
             public void mouseReleased(MouseEvent e) {
                 ProductSelectDialog.instanceOf((MPTableModel) itemtable.getModel(), itemtable.getSelectedRow(), e, Integer.valueOf(itemtable.getValueAt(itemtable.getSelectedRow(), 10).toString()));
-                if (((MPTableModel) itemtable.getModel()).getEmptyRows(new int[]{4})<2) {
+                if (((MPTableModel) itemtable.getModel()).getEmptyRows(new int[]{4}) < 2) {
                     ((MPTableModel) itemtable.getModel()).addRow(1);
                 }
             }

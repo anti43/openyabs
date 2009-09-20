@@ -26,13 +26,19 @@ import javax.swing.JTable;
 import javax.swing.SwingUtilities;
 import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
+import mpv5.db.common.DatabaseSearch;
 import mpv5.db.common.NodataFoundException;
+import mpv5.db.common.QueryCriteria;
+import mpv5.db.common.QueryHandler;
 import mpv5.globals.Headers;
+import mpv5.handler.VariablesHandler;
 import mpv5.logging.Log;
 import mpv5.ui.frames.MPView;
 import mpv5.ui.panels.ItemPanel;
+import mpv5.utils.models.MPComboBoxModelItem;
 import mpv5.utils.models.MPTableModel;
 import mpv5.utils.numberformat.FormatNumber;
+import sun.swing.UIAction;
 
 /**
  *
@@ -182,7 +188,7 @@ public class SubItem extends DatabaseObject {
             it.setTaxpercentvalue(Double.valueOf(row[6].toString()));
             calculate(it);
             items[i] = it;
-            
+
 //
 //            if (!it.isExisting()) {
 //                it.setDateadded(new Date());
@@ -192,7 +198,7 @@ public class SubItem extends DatabaseObject {
         }
 
         table.setModel(toModel(items));
-        
+
         if (panel != null) {
             panel.formatTable();
         }
@@ -242,22 +248,74 @@ public class SubItem extends DatabaseObject {
 
     /**
      *
-     * @param o
+     * @param product 
      */
-    public SubItem(Product o) {
+    public SubItem(Product product) {
         this();
-        setCName(o.__getCName());
+        setCName(product.__getCName());
         setDateadded(new Date());
         setDatedelivery(new Date());
-        setDescription(o.__getDescription());
-        setExternalvalue(o.__getExternalnetvalue());
+
+////////////////format///////////////////////////////////////////////////////////
+        Context contextl = product.getContext();
+        String params = "cname";
+        String vars = null;
+        if (MPView.getUser().getProperties().hasProperty(contextl + mpv5.ui.beans.LightMPComboBox.VALUE_SEARCHFIELDS)) {
+            try {
+                params = "ids";
+                vars = MPView.getUser().getProperties().getProperty(contextl + mpv5.ui.beans.LightMPComboBox.VALUE_SEARCHFIELDS);
+                String[] vaars = vars.split("_\\$");
+
+                for (int i = 0; i < vaars.length; i++) {
+                    try {
+                        if (vaars[i] != null && vaars[i].contains("$_")) {
+                            params += "," + vaars[i].split("\\$_")[0].replace(",", "").replace("'", "`");
+                        }
+                    } catch (Exception e) {
+                        Log.Debug(e);
+                    }
+                }
+
+                QueryCriteria qc = new QueryCriteria("ids", product.__getIDS());
+                Object[][] result = QueryHandler.instanceOf().clone(Context.getProducts()).select(params, qc);
+
+                String formatString = vars;
+                if (formatString != null) {
+                    vaars = formatString.split("_\\$");
+                    Log.Debug(MPComboBoxModelItem.class, "Length of var string: " + vaars.length);
+                }
+                String x = "";
+                String format = formatString;
+                for (int j = 1; j < result[0].length; j++) {
+                    String k = String.valueOf(result[0][j]);
+                    if (format == null) {
+                        x += k;
+                    } else {
+                        try {
+                            format = format.replaceFirst("_\\$(.*?)\\$_", k);
+                        } catch (Exception e) {
+                            Log.Debug(e);
+                        }
+                        x = format;
+                    }
+                }
+
+                setDescription(VariablesHandler.parse(x, product));
+            } catch (NodataFoundException nodataFoundException) {
+                setDescription(VariablesHandler.parse(product.__getCName(), product));
+            }
+        } else {
+            setDescription(VariablesHandler.parse(product.__getCName(), product));
+        }
+///////////////end format////////////////////////////////////////////////////////
+        setExternalvalue(product.__getExternalnetvalue());
         setGroupsids(MPView.getUser().__getGroupsids());
         setIntaddedby(MPView.getUser().__getIDS());
-        setInternalvalue(o.__getInternalnetvalue());
-        setMeasure(o.__getMeasure());
-        setOriginalproductsids(o.__getIDS());
+        setInternalvalue(product.__getInternalnetvalue());
+        setMeasure(product.__getMeasure());
+        setOriginalproductsids(product.__getIDS());
         setQuantityvalue(1);
-        setTaxpercentvalue(Item.getTaxValue(o.__getTaxids()));
+        setTaxpercentvalue(Item.getTaxValue(product.__getTaxids()));
         calculate(this);
     }
 
@@ -459,15 +517,15 @@ public class SubItem extends DatabaseObject {
         //"Internal ID", "ID", "Count", "Measure", "Description", "Netto Price", "Tax Value", "Total Price"
         Object[][] data = new Object[items.length][];
         for (int i = 0; i < data.length; i++) {
-            data[i] = items[i].getRowData(i+1);
+            data[i] = items[i].getRowData(i + 1);
         }
 
         MPTableModel model = new MPTableModel(
-                new Class[]{Integer.class, Integer.class, Double.class, String.class, String.class, Double.class, Double.class, Double.class, Double.class, Double.class, Integer.class, JButton.class, JButton.class, JButton.class},
+                new Class[]{Integer.class, Integer.class, Double.class, String.class, Object.class, Double.class, Double.class, Double.class, Double.class, Double.class, Integer.class, JButton.class, JButton.class, JButton.class},
                 new boolean[]{false, false, true, true, true, true, true, false, false, false, false, true, true, true},
                 data,
                 Headers.SUBITEMS.getValue());
-   
+
         model.setContext(Context.getSubItem());
         String defunit = null;
         if (MPView.getUser().getProperties().hasProperty("defunit")) {
@@ -494,7 +552,7 @@ public class SubItem extends DatabaseObject {
      * @return
      */
     public synchronized Object[] getRowData(int row) {
-        Object[] data = new Object[12+1];
+        Object[] data = new Object[12 + 1];
         for (int i = 0; i < data.length; i++) {
             data[0] = __getIDS();
             data[1] = Integer.valueOf(row);

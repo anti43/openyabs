@@ -54,6 +54,7 @@ public class Template extends DatabaseObject {
      * The cache of the templates
      */
     public static HashMap<String, Template> templateCache = new HashMap<String, Template>();
+    public static HashMap<String, Group> notification = new HashMap<String, Group>();
 
     /**
      * 
@@ -105,8 +106,12 @@ public class Template extends DatabaseObject {
                     }
                 } else {
                     try {
-                        MPView.addMessage(Messages.OO_NO_TEMPLATE + ": " + type + " [" + MPView.getUser() + "] [" + Group.getObject(Context.getGroup(), dataOwner.__getGroupsids()) + "]");
-                        Log.Debug(Template.class, "No template found for " + type + " for user: " + MPView.getUser() + " in GROUP " + Group.getObject(Context.getGroup(), dataOwner.__getGroupsids()));
+                        if (!(notification.containsKey(type) && notification.get(type).equals(Group.getObject(Context.getGroup(), dataOwner.__getGroupsids())))) {
+                            MPView.addMessage(Messages.OO_NO_TEMPLATE + ": " + type + " [" + MPView.getUser() + "] [" + Group.getObject(Context.getGroup(), dataOwner.__getGroupsids()) + "]");
+                            Log.Debug(Template.class, "No template found for " + type + " for user: " + MPView.getUser() + " in GROUP " + Group.getObject(Context.getGroup(), dataOwner.__getGroupsids()));
+                            notification.put(type, (Group) Group.getObject(Context.getGroup(), dataOwner.__getGroupsids()));
+                        }
+
                     } catch (NodataFoundException nodataFoundException) {
                         Log.Debug(nodataFoundException);
                     }

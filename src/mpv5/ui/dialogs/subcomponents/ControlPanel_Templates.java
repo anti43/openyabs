@@ -376,11 +376,12 @@ public class ControlPanel_Templates extends javax.swing.JPanel implements Contro
                 Template.templateCache.clear();
                 DatabaseObject dato = dataOwner;
                 dato.getPanelData(this);
-                dato.delete() ;
+                dato.delete();
             }
             try {
                 Thread.sleep(333);
-            } catch (InterruptedException ex) {}
+            } catch (InterruptedException ex) {
+            }
             refresh();
         }
     }//GEN-LAST:event_jButton4ActionPerformed
@@ -421,12 +422,24 @@ public class ControlPanel_Templates extends javax.swing.JPanel implements Contro
 }//GEN-LAST:event_jButton5ActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        DialogForFile d = new DialogForFile(DialogForFile.FILES_ONLY);
-        d.setFileFilter(DialogForFile.TEMPLATE_FILES);
+        DialogForFile di = new DialogForFile(DialogForFile.FILES_ONLY);
+        di.setFileFilter(DialogForFile.TEMPLATE_FILES);
 
-        if (d.chooseFile()) {
+        if (di.chooseFile()) {
             Template t = new Template();
-            if (QueryHandler.instanceOf().clone(Context.getFiles(), this).insertFile(d.getFile(), t, new SaveString(d.getFile().getName(), true))) {
+            if (QueryHandler.instanceOf().clone(Context.getFiles(), this).insertFile(di.getFile(), t, new SaveString(di.getFile().getName(), true))) {
+                User object = MPView.getUser();
+
+                QueryCriteria d = new QueryCriteria();
+                d.add("cname", dataOwner.__getIDS() + "@" + object.__getIDS() + "@" + MPView.getUser().__getGroupsids());
+                QueryHandler.instanceOf().clone(Context.getTemplatesToUsers()).delete(d);
+
+                QueryData c = new QueryData();
+                c.add("usersids", object.__getIDS());
+                c.add("templatesids", dataOwner.__getIDS());
+                c.add("groupsids", MPView.getUser().__getGroupsids());
+                c.add("cname", dataOwner.__getIDS() + "@" + object.__getIDS() + "@" + MPView.getUser().__getGroupsids());
+                QueryHandler.instanceOf().clone(Context.getTemplatesToUsers()).insert(c, null);
             }
         }
 }//GEN-LAST:event_jButton1ActionPerformed
