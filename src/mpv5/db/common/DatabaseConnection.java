@@ -5,13 +5,13 @@
 package mpv5.db.common;
 
 import java.sql.Driver;
+import javax.swing.JProgressBar;
 import mpv5.logging.Log;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
 import mpv5.globals.LocalSettings;
-import mpv5.logging.LogConsole;
 import mpv5.ui.dialogs.Popup;
 
 /**
@@ -39,7 +39,12 @@ public class DatabaseConnection {
         return connector;
     }
     private Statement statement;
+    private JProgressBar prog;
 
+    /**
+     *
+     * @return
+     */
     public java.sql.Connection getConnection() {
         return conn;
     }
@@ -159,6 +164,12 @@ public class DatabaseConnection {
     }
 
     public boolean runQueries(String[] queries) throws SQLException {
+        if (prog != null) {
+            prog.setStringPainted(true);
+            prog.setMaximum(queries.length);
+            prog.setMinimum(0);
+            prog.setValue(0);
+        }
         Statement stm = this.getConnection().createStatement();
 //        for (int i = 0; i < queries.length; i++) {
 //            stm.addBatch(queries[i]);
@@ -171,6 +182,9 @@ public class DatabaseConnection {
                     String string = queries[i];
                     Log.Print(string);
                     stm.execute(string);
+                    if (prog != null) {
+                        prog.setValue(i);
+                    }
                     Thread.sleep(100);
                 } catch (Exception ex) {
                     Log.Debug(ex);
@@ -182,6 +196,18 @@ public class DatabaseConnection {
             Log.Debug(sQLException);
             sQLException.printStackTrace();
             return false;
+        } finally {
+            if (prog != null) {
+                prog.setValue(0);
+            }
         }
+    }
+
+    /**
+     * Set a progressbar
+     * @param progressbar
+     */
+    public void setProgressbar(JProgressBar progressbar) {
+        prog = progressbar;
     }
 }

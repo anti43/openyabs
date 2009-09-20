@@ -18,6 +18,7 @@
 package mpv5.ui.dialogs;
 
 import java.awt.Cursor;
+import javax.swing.JProgressBar;
 import mpv5.data.PropertyStore;
 
 
@@ -36,4 +37,5 @@ public interface WizardMaster {
     public void setCursor(int DEFAULT_CURSOR);
     public void setCursor(Cursor cursor);
     public void setMessage(String message);
+    public JProgressBar getProgressbar();
 }

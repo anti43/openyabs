@@ -16,6 +16,7 @@
  */
 package mpv5.db.common;
 
+import javax.swing.JProgressBar;
 import javax.swing.UIManager;
 import mpv5.db.objects.Account;
 import mpv5.globals.Constants;
@@ -158,6 +159,7 @@ public class DatabaseInstallation {
     public final static String[] MYSQL_STRUCTURE = new String[]{};
 
     private String[] CUSTOM_STRUCTURE;
+
 
     public String[] getStructure() {
         if (ConnectionTypeHandler.getDriverType() == ConnectionTypeHandler.DERBY) {

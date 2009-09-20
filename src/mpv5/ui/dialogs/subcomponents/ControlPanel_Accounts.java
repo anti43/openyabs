@@ -130,7 +130,7 @@ public class ControlPanel_Accounts extends javax.swing.JPanel implements Control
         jButton2 = new javax.swing.JButton();
         jButton1 = new javax.swing.JButton();
 
-        java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle();
+        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("mpv5/resources/languages/Panels"); // NOI18N
         setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("ControlPanel_Accounts.border.title"))); // NOI18N
         setName("Form"); // NOI18N
         setLayout(new java.awt.BorderLayout());
@@ -162,7 +162,7 @@ public class ControlPanel_Accounts extends javax.swing.JPanel implements Control
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 121, Short.MAX_VALUE)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 125, Short.MAX_VALUE)
                     .addComponent(jLabel1))
                 .addContainerGap())
         );
@@ -172,7 +172,7 @@ public class ControlPanel_Accounts extends javax.swing.JPanel implements Control
                 .addContainerGap()
                 .addComponent(jLabel1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 333, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 355, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -545,17 +545,6 @@ public class ControlPanel_Accounts extends javax.swing.JPanel implements Control
                     {Account.INCOME, Messages.INCOME},
                     {Account.LIABILITY, Messages.LIABILITY}
                 })));
-//        try {
-//            classv.getSpinner().setModel(new SpinnerListModel(QueryHandler.getConnection().clone(Context.getAccounts()).getColumn("intaccountclass", -1)));
-//        } catch (NodataFoundException ex) {
-//            Log.Debug(this, ex.getMessage());
-//            classv.getSpinner().setModel(new SpinnerListModel());
-//        }
-//
-//        try {
-//            classv.getSpinner().setValue(0);
-//        } catch (Exception e) {
-//        }
 
     }
 

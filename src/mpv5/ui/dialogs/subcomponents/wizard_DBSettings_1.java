@@ -97,6 +97,7 @@ public class wizard_DBSettings_1 extends javax.swing.JPanel implements Wizardabl
 
                     if (!jCheckBox1.isSelected()) {
                         master.setMessage(Messages.CREATING_DATABASE.toString());
+                        conn.setProgressbar(master.getProgressbar());
                         if (conn.runQueries(new DatabaseInstallation().getStructure())) {
                             try {
                                 Log.Debug(this, "Importing languages..");
@@ -460,11 +461,6 @@ public class wizard_DBSettings_1 extends javax.swing.JPanel implements Wizardabl
     public boolean next() {
         if (DBVerification() & DirectoryCreate()) {
             Main.getApplication().go(true);
-//              try {
-//                Log.setLogLevel(Log.LOGLEVEL_NONE);
-//                LogConsole.setLogFile(null);
-//            } catch (Exception ignore) {
-//            }
             this.master.dispose();
             return true;
         } else {

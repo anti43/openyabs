@@ -89,9 +89,10 @@ public class Wizard extends javax.swing.JFrame implements WizardMaster {
         next = new javax.swing.JButton();
         jScrollPane2 = new javax.swing.JScrollPane();
         message = new javax.swing.JTextPane();
+        progressbar = new javax.swing.JProgressBar();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-        java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle();
+        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("mpv5/resources/languages/Panels"); // NOI18N
         setTitle(bundle.getString("Wizard.title")); // NOI18N
         setBackground(new java.awt.Color(255, 255, 255));
         setName("Form"); // NOI18N
@@ -141,8 +142,11 @@ public class Wizard extends javax.swing.JFrame implements WizardMaster {
 
         message.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
         message.setEditable(false);
+        message.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
         message.setName("message"); // NOI18N
         jScrollPane2.setViewportView(message);
+
+        progressbar.setName("progressbar"); // NOI18N
 
         javax.swing.GroupLayout controlLayout = new javax.swing.GroupLayout(control);
         control.setLayout(controlLayout);
@@ -152,25 +156,26 @@ public class Wizard extends javax.swing.JFrame implements WizardMaster {
                 .addContainerGap()
                 .addComponent(cancel)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 158, Short.MAX_VALUE)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 187, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(back)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(next)
                 .addContainerGap())
+            .addComponent(progressbar, javax.swing.GroupLayout.DEFAULT_SIZE, 400, Short.MAX_VALUE)
         );
         controlLayout.setVerticalGroup(
             controlLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(controlLayout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(controlLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, controlLayout.createSequentialGroup()
-                        .addGroup(controlLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(next)
-                            .addComponent(back)
-                            .addComponent(cancel))
-                        .addContainerGap())
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 38, Short.MAX_VALUE)))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, controlLayout.createSequentialGroup()
+                .addComponent(progressbar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(controlLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(controlLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(next)
+                        .addComponent(back)
+                        .addComponent(cancel))
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 23, Short.MAX_VALUE))
+                .addContainerGap())
         );
 
         getContentPane().add(control);
@@ -188,27 +193,31 @@ public class Wizard extends javax.swing.JFrame implements WizardMaster {
 
     private void nextActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_nextActionPerformed
 
-        if (isEnded && standalone) {
-            System.exit(0);
-        } else if (isEnded) {
-            dispose();
-        }
+        Runnable runnable = new Runnable() {
+            public void run() {
+                if (isEnded && standalone) {
+                    System.exit(0);
+                } else if (isEnded) {
+                    dispose();
+                }
 
-        try {
-            lastpanel = content.getComponent(0);
-            if (!isEnded && ((Wizardable) lastpanel).next()) {
-                content.remove(lastpanel);
-                back.setEnabled(true);
-                content.add(contentlist.get(level + 1), BorderLayout.CENTER);
-                ((Wizardable) contentlist.get(level + 1)).load();
+                try {
+                    lastpanel = content.getComponent(0);
+                    if (!isEnded && ((Wizardable) lastpanel).next()) {
+                        content.remove(lastpanel);
+                        back.setEnabled(true);
+                        content.add(contentlist.get(level + 1), BorderLayout.CENTER);
+                        ((Wizardable) contentlist.get(level + 1)).load();
+                    }
+
+                    level++;
+                } catch (Exception e) {
+                    next.setEnabled(false);
+                }
+
+                pack();
             }
-
-            level++;
-        } catch (Exception e) {
-            next.setEnabled(false);
-        }
-
-        pack();
+        };new Thread(runnable).start();
 }//GEN-LAST:event_nextActionPerformed
 
     private void backActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_backActionPerformed
@@ -294,6 +303,7 @@ public class Wizard extends javax.swing.JFrame implements WizardMaster {
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JTextPane message;
     private javax.swing.JButton next;
+    private javax.swing.JProgressBar progressbar;
     // End of variables declaration//GEN-END:variables
 
     /**
@@ -302,5 +312,12 @@ public class Wizard extends javax.swing.JFrame implements WizardMaster {
      */
     public Wizardable getNext() {
         return (Wizardable) contentlist.get(level + 1);
+    }
+
+    /**
+     * @return the progressbar
+     */
+    public javax.swing.JProgressBar getProgressbar() {
+        return progressbar;
     }
 }
