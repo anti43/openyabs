@@ -106,40 +106,7 @@ public class QueryCriteria {
         list.put(key, new SaveString(string, true));
     }
 
-        /**
-     * Adds a key with a value
-     * @param <T>
-     * @param key
-     * @param value
-     */
-    public <T extends Number> void addOrCondition(String key, T value) {
-        String string = String.valueOf(value);
-        list.put(key, new SaveString(string, false));
-    }
-
-    /**
-     * Adds a key with a value
-     * @param key
-     * @param value
-     */
-    public void addOrCondition(String key, boolean value) {
-        if (value) {
-            list.put(key, new SaveString("1", false));
-        } else {
-            list.put(key, new SaveString("0", false));
-        }
-    }
-
-    /**
-     * Adds a key with a value
-     * @param key
-     * @param value
-     */
-    public void addOrCondition(String key, String value) {
-        String string = String.valueOf(value);
-        list.put(key, new SaveString(string, true));
-    }
-
+    
     /**
      *
      * @return An array of keys

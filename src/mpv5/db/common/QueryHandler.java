@@ -301,6 +301,32 @@ public class QueryHandler implements Cloneable {
     }
 
     /**
+     *
+     * @param columns
+     * @param criterias
+     * @param time
+     * @return
+     * @throws NodataFoundException
+     */
+    public ReturnValue select(String columns, QueryCriteria2 criterias, vTimeframe time) throws NodataFoundException {
+        String dateCriterium = table + ".dateadded >= '" + DateConverter.getSQLDateString(time.getStart()) + "' AND " + table + ".dateadded <= '" + DateConverter.getSQLDateString(time.getEnd()) + "'";
+        String query = "SELECT " + columns + " FROM " + table + " " + context.getReferences() + " WHERE ";
+
+        if (criterias.getQuery().length() > 6) {
+            query += criterias.getQuery() + " AND ";
+        }
+        query += context.getConditions().substring(6, context.getConditions().length()) + " AND ";
+        query += dateCriterium;
+        query += criterias.getOrder();
+        ReturnValue p = freeSelectQuery(query, mpv5.usermanagement.MPSecurityManager.VIEW, null);
+        if (p.hasData()) {
+            return p;
+        } else {
+            throw new NodataFoundException(context);
+        }
+    }
+
+    /**
      * Convenience method to retrieve * from where the criterias match
      * @param criterias
      * @return
