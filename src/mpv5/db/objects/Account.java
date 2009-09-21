@@ -153,7 +153,7 @@ public class Account extends DatabaseObject {
         ArrayList<Item> tmp = DatabaseObject.getReferencedObjects((Item) DatabaseObject.getObject(Context.getItems()), Context.getItemsToAccounts());
 
         QueryCriteria c = new QueryCriteria();
-        c.add("defaultaccountsids", this.__getIDS());
+        c.addAndCondition("defaultaccountsids", this.__getIDS());
         ArrayList<Item> tmp2 = DatabaseObject.getObjects(new Item(), c);
 
         tmp.addAll(tmp2);
@@ -289,10 +289,44 @@ public class Account extends DatabaseObject {
                     while (nodes.hasMoreElements()) {
                         addToParents(nodes.nextElement(), dobjlist);
                     }
+
+
                 }
             }
         }
         return firstnode;
+    }
+
+    /**
+     * Create a tree model
+     * @param data
+     * @param rootaccount
+     * @return
+     */
+    public static DefaultTreeModel toTreeModel2(ArrayList<Account> data, Account rootaccount) {
+
+        HashMap<Account, DefaultMutableTreeNode> map = new HashMap<Account, DefaultMutableTreeNode>();
+        for (Account c : data) {
+            map.put(c, new DefaultMutableTreeNode(c));
+        }
+
+        DefaultMutableTreeNode root = new DefaultMutableTreeNode(rootaccount);
+        getChildrenOf(root, data, map);
+        DefaultTreeModel model = new DefaultTreeModel(root);
+        return model;
+    }
+
+    private static synchronized void getChildrenOf(DefaultMutableTreeNode node, ArrayList<Account> data, HashMap<Account, DefaultMutableTreeNode> map) {
+        for (int i = 0; i < data.size(); i++) {
+            Account account = data.get(i);
+            DefaultMutableTreeNode anode = map.get(account);
+            if(account.__getIntparentaccount() == ((Account)node.getUserObject()).__getIDS()){
+                node.add(anode);
+                data.remove(account);
+                i--;
+                getChildrenOf(anode, data, map);
+            }
+        }
     }
 
     /**

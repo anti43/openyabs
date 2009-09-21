@@ -486,20 +486,17 @@ public class User extends DatabaseObject {
      */
     public void deleteProperties() {
         QueryCriteria c = new QueryCriteria();
-        c.add("usersids", __getIDS());
+        c.addAndCondition("usersids", __getIDS());
         QueryHandler.instanceOf().clone(Context.getProperties()).delete(c);
     }
 
     private void setProperties() {
         
                 QueryCriteria criteria = new QueryCriteria();
-                criteria.add("usersids", ids);
+                criteria.addAndCondition("usersids", ids);
                 properties = new PropertyStore();
                 try {
                     properties.addAll(QueryHandler.instanceOf().clone(Context.getProperties()).select("cname, value", criteria));
-//            if (Log.getLoglevel() == Log.LOGLEVEL_DEBUG) {
-//                properties.print();
-//            }
                     defineMailConfig();
                 } catch (NodataFoundException ex) {
                     Log.Debug(this, ex.getMessage());

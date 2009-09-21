@@ -45,7 +45,7 @@ public class QueryCriteria {
      * @param value
      */
     public <T extends Number> QueryCriteria(String string, T value) {
-        add(string, value);
+        addAndCondition(string, value);
     }
 
     /**
@@ -54,7 +54,7 @@ public class QueryCriteria {
      * @param value
      */
     public QueryCriteria(String string, String value) {
-        add(string, value);
+        addAndCondition(string, value);
     }
 
     /**
@@ -64,11 +64,11 @@ public class QueryCriteria {
      */
     public QueryCriteria(String string, Object value) {
         if (value instanceof Boolean) {
-            add(string, (Boolean) value);
+            addAndCondition(string, (Boolean) value);
         } else if (value instanceof Number) {
-            add(string, (Number) value);
+            addAndCondition(string, (Number) value);
         } else {
-            add(string, value.toString());
+            addAndCondition(string, value.toString());
         }
     }
 
@@ -78,7 +78,7 @@ public class QueryCriteria {
      * @param key
      * @param value
      */
-    public <T extends Number> void add(String key, T value) {
+    public <T extends Number> void addAndCondition(String key, T value) {
         String string = String.valueOf(value);
         list.put(key, new SaveString(string, false));
     }
@@ -88,7 +88,7 @@ public class QueryCriteria {
      * @param key
      * @param value
      */
-    public void add(String key, boolean value) {
+    public void addAndCondition(String key, boolean value) {
         if (value) {
             list.put(key, new SaveString("1", false));
         } else {
@@ -101,7 +101,41 @@ public class QueryCriteria {
      * @param key
      * @param value
      */
-    public void add(String key, String value) {
+    public void addAndCondition(String key, String value) {
+        String string = String.valueOf(value);
+        list.put(key, new SaveString(string, true));
+    }
+
+        /**
+     * Adds a key with a value
+     * @param <T>
+     * @param key
+     * @param value
+     */
+    public <T extends Number> void addOrCondition(String key, T value) {
+        String string = String.valueOf(value);
+        list.put(key, new SaveString(string, false));
+    }
+
+    /**
+     * Adds a key with a value
+     * @param key
+     * @param value
+     */
+    public void addOrCondition(String key, boolean value) {
+        if (value) {
+            list.put(key, new SaveString("1", false));
+        } else {
+            list.put(key, new SaveString("0", false));
+        }
+    }
+
+    /**
+     * Adds a key with a value
+     * @param key
+     * @param value
+     */
+    public void addOrCondition(String key, String value) {
         String string = String.valueOf(value);
         list.put(key, new SaveString(string, true));
     }
@@ -171,6 +205,7 @@ public class QueryCriteria {
     public String getOrder() {
         return order;
     }
+
 
 }
 

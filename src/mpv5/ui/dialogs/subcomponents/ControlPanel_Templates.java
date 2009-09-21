@@ -428,18 +428,21 @@ public class ControlPanel_Templates extends javax.swing.JPanel implements Contro
         if (di.chooseFile()) {
             Template t = new Template();
             if (QueryHandler.instanceOf().clone(Context.getFiles(), this).insertFile(di.getFile(), t, new SaveString(di.getFile().getName(), true))) {
-                User object = MPView.getUser();
+//
+                Popup.notice(Messages.ASSIGN_TEMPLATE);
 
-                QueryCriteria d = new QueryCriteria();
-                d.add("cname", dataOwner.__getIDS() + "@" + object.__getIDS() + "@" + MPView.getUser().__getGroupsids());
-                QueryHandler.instanceOf().clone(Context.getTemplatesToUsers()).delete(d);
-
-                QueryData c = new QueryData();
-                c.add("usersids", object.__getIDS());
-                c.add("templatesids", dataOwner.__getIDS());
-                c.add("groupsids", MPView.getUser().__getGroupsids());
-                c.add("cname", dataOwner.__getIDS() + "@" + object.__getIDS() + "@" + MPView.getUser().__getGroupsids());
-                QueryHandler.instanceOf().clone(Context.getTemplatesToUsers()).insert(c, null);
+//                User object = MPView.getUser();
+//
+//                QueryCriteria d = new QueryCriteria();
+//                d.add("cname", dataOwner.__getIDS() + "@" + object.__getIDS() + "@" + MPView.getUser().__getGroupsids());
+//                QueryHandler.instanceOf().clone(Context.getTemplatesToUsers()).delete(d);
+//
+//                QueryData c = new QueryData();
+//                c.add("usersids", object.__getIDS());
+//                c.add("templatesids", dataOwner.__getIDS());
+//                c.add("groupsids", MPView.getUser().__getGroupsids());
+//                c.add("cname", dataOwner.__getIDS() + "@" + object.__getIDS() + "@" + MPView.getUser().__getGroupsids());
+//                QueryHandler.instanceOf().clone(Context.getTemplatesToUsers()).insert(c, null);
             }
         }
 }//GEN-LAST:event_jButton1ActionPerformed
@@ -640,7 +643,7 @@ public class ControlPanel_Templates extends javax.swing.JPanel implements Contro
             User object = (User) selectedValues[i];
 
             QueryCriteria d = new QueryCriteria();
-            d.add("cname", dataOwner.__getIDS() + "@" + object.__getIDS() + "@" + groups);
+            d.addAndCondition("cname", dataOwner.__getIDS() + "@" + object.__getIDS() + "@" + groups);
             QueryHandler.instanceOf().clone(Context.getTemplatesToUsers()).delete(d);
 
             QueryData c = new QueryData();

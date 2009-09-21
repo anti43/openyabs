@@ -300,10 +300,10 @@ public class HistoryPanel extends javax.swing.JPanel implements ListPanel {
         if (forUser != null && !forUser.equals(User.DEFAULT)) {
             try {
  
-                dh.add(forUser.getType() + "name", forUser.getName());
+                dh.addAndCondition(forUser.getType() + "name", forUser.getName());
 
                 if (forGroup != null && !forGroup.__getCName().equals("")) {
-                    dh.add( forGroup.getDbIdentity() + "ids", forGroup.__getIDS());
+                    dh.addAndCondition( forGroup.getDbIdentity() + "ids", forGroup.__getIDS());
                 }
                 Context c = Context.getHistory();
                 c.addReference(Context.getGroup());
@@ -315,7 +315,7 @@ public class HistoryPanel extends javax.swing.JPanel implements ListPanel {
         } else if (forGroup != null && !forGroup.__getCName().equals("")) {
             try {
               
-                dh.add( forGroup.getDbIdentity() + "ids", forGroup.__getIDS());
+                dh.addAndCondition( forGroup.getDbIdentity() + "ids", forGroup.__getIDS());
 
                 Context c = Context.getHistory();
                 c.addReference(Context.getGroup());

@@ -86,9 +86,9 @@ public class updatedContactsJob implements WSDaemonJob {
                 for (Address address : aobs) {
                     try {
                         QueryCriteria qs = new QueryCriteria();
-                        qs.add("cname", address.__getCName());
-                        qs.add("prename", address.__getPrename());
-                        qs.add("contactsids", address.__getContactsids());
+                        qs.addAndCondition("cname", address.__getCName());
+                        qs.addAndCondition("prename", address.__getPrename());
+                        qs.addAndCondition("contactsids", address.__getContactsids());
                         List<DatabaseObject> old = DatabaseObject.getObjects(Context.getAddress(), qs);
                         for (int ix = 0; ix < old.size(); ix++) {
                             old.get(ix).delete();

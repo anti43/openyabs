@@ -16,17 +16,18 @@
  */
 package mpv5.db.objects;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Vector;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JTable;
-import javax.swing.SwingUtilities;
 import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
-import mpv5.db.common.DatabaseSearch;
 import mpv5.db.common.NodataFoundException;
 import mpv5.db.common.QueryCriteria;
 import mpv5.db.common.QueryHandler;
@@ -52,6 +53,7 @@ public class SubItem extends DatabaseObject {
      */
     public static void saveModel(Item dataOwner, MPTableModel model) {
         List<Object[]> rowsl = model.getValidRows(new int[]{4});
+        List<SubItem> items = new Vector<SubItem>();
         Log.Debug(SubItem.class, "Rows found: " + rowsl.size());
         for (int i = 0; i < rowsl.size(); i++) {
             Object[] row = rowsl.get(i);
@@ -79,6 +81,7 @@ public class SubItem extends DatabaseObject {
             it.setInternalvalue(Double.valueOf(row[5].toString()));//not supported yet
             it.setMeasure(row[3].toString());
             it.setOriginalproductsids(Integer.valueOf(row[10].toString()));
+            it.setLinkurl((row[12 + 1].toString()));
             it.setQuantityvalue(Double.valueOf(row[2].toString()));
             it.setTaxpercentvalue(Double.valueOf(row[6].toString()));
             calculate(it);
@@ -88,7 +91,16 @@ public class SubItem extends DatabaseObject {
                 it.setGroupsids(dataOwner.__getGroupsids());
             }
             it.save(true);
+            items.add(it);
         }
+
+        for (int i = 0; i < deletionQueue.size(); i++) {
+            try {
+                SubItem.getObject(Context.getSubItem(), deletionQueue.get(i)).delete();
+            } catch (NodataFoundException ex) {
+            }
+        }
+        deletionQueue.clear();
     }
 
     /**
@@ -133,6 +145,7 @@ public class SubItem extends DatabaseObject {
             it.setOriginalproductsids(Integer.valueOf(row[10].toString()));
             it.setQuantityvalue(Double.valueOf(row[2].toString()));
             it.setTaxpercentvalue(Double.valueOf(row[6].toString()));
+            it.setLinkurl((row[12 + 1].toString()));
             calculate(it);
 
             if (!it.isExisting()) {
@@ -185,6 +198,7 @@ public class SubItem extends DatabaseObject {
             it.setOriginalproductsids(Integer.valueOf(row[10].toString()));
             it.setQuantityvalue(Double.valueOf(row[2].toString()));
             it.setTaxpercentvalue(Double.valueOf(row[6].toString()));
+            it.setLinkurl((row[12 + 1].toString()));
             calculate(it);
             items[i] = it;
 
@@ -202,12 +216,28 @@ public class SubItem extends DatabaseObject {
             panel.formatTable();
         }
     }
+    private static List<Integer> deletionQueue = new Vector<Integer>();
+
+    /**
+     * Mark a subitem for deletion
+     * @param valueAt
+     */
+    public static void addToDeletionQueue(Object valueAt) {
+        if (valueAt != null) {
+            try {
+                int isd = Integer.valueOf(valueAt.toString());
+                deletionQueue.add(isd);
+            } catch (NumberFormatException numberFormatException) {
+            }
+        }
+    }
     private int itemsids;
     private int originalproductsids;
     private double countvalue;
     private double quantityvalue;
     private String measure = "";
     private String description = "";
+    private String linkurl = "";
     private double internalvalue;
     private double externalvalue;
     private double taxpercentvalue;
@@ -227,6 +257,7 @@ public class SubItem extends DatabaseObject {
      */
     public static SubItem getDefaultItem() {
         SubItem i = new SubItem();
+
         if (MPView.getUser().getProperties().hasProperty("defunit")) {
             String defunit = MPView.getUser().getProperties().getProperty("defunit");
             i.setMeasure(defunit);
@@ -315,6 +346,7 @@ public class SubItem extends DatabaseObject {
         setOriginalproductsids(product.__getIDS());
         setQuantityvalue(1);
         setTaxpercentvalue(Item.getTaxValue(product.__getTaxids()));
+        setLinkurl(product.__getUrl());
         calculate(this);
     }
 
@@ -345,11 +377,11 @@ public class SubItem extends DatabaseObject {
 
     /**
      * Generates a String array out of this SubItem
-     * @param template
      * @return
      */
     public String[] toStringArray() {
         calculate(this);
+
         String[] possibleCols = new String[]{
             ////////////////// The exported columns///////////////////////////////////////
             String.valueOf(FormatNumber.formatInteger(this.__getCountvalue())),
@@ -360,7 +392,8 @@ public class SubItem extends DatabaseObject {
             String.valueOf(FormatNumber.formatLokalCurrency(this.__getTotalnetvalue())),
             String.valueOf(FormatNumber.formatPercent(this.__getTaxpercentvalue())),
             String.valueOf(FormatNumber.formatLokalCurrency(this.getTotalTaxValue())),
-            String.valueOf(FormatNumber.formatLokalCurrency(this.__getTotalbrutvalue()))
+            String.valueOf(FormatNumber.formatLokalCurrency(this.__getTotalbrutvalue())),
+            __getLinkurl()
         ///////////////////////////////////////////////////////////////////////////////
         };
 
@@ -520,8 +553,8 @@ public class SubItem extends DatabaseObject {
         }
 
         MPTableModel model = new MPTableModel(
-                new Class[]{Integer.class, Integer.class, Double.class, String.class, Object.class, Double.class, Double.class, Double.class, Double.class, Double.class, Integer.class, JButton.class, JButton.class, JButton.class},
-                new boolean[]{false, false, true, true, true, true, true, false, false, false, false, true, true, true},
+                new Class[]{Integer.class, Integer.class, Double.class, String.class, Object.class, Double.class, Double.class, Double.class, Double.class, Double.class, Integer.class, JButton.class, JButton.class, JButton.class, String.class},
+                new boolean[]{false, false, true, true, true, true, true, false, false, false, false, true, true, true, true},
                 data,
                 Headers.SUBITEMS.getValue());
 
@@ -539,7 +572,7 @@ public class SubItem extends DatabaseObject {
         if (MPView.getUser().getProperties().hasProperty("defcount")) {
             defcount = MPView.getUser().getProperties().getProperty("defcount", 0d);
         }
-        model.defineRow(new Object[]{0, 0, defcount, defunit, null, 0.0, deftax, 0.0, 0.0, 0.0, 0, "A", "C"});
+        model.defineRow(new Object[]{0, 0, defcount, defunit, null, 0.0, deftax, 0.0, 0.0, 0.0, 0, "A", "C", ""});
         model.setAutoCountColumn(1);
 
         return model;
@@ -551,7 +584,7 @@ public class SubItem extends DatabaseObject {
      * @return
      */
     public synchronized Object[] getRowData(int row) {
-        Object[] data = new Object[12 + 1];
+        Object[] data = new Object[14];
         for (int i = 0; i < data.length; i++) {
             data[0] = __getIDS();
             data[1] = Integer.valueOf(row);
@@ -566,6 +599,7 @@ public class SubItem extends DatabaseObject {
             data[10] = Integer.valueOf(__getOriginalproductsids());
             data[11] = "A";
             data[12] = "C";
+            data[12 + 1] = __getLinkurl();
         }
         return data;
     }
@@ -667,5 +701,19 @@ public class SubItem extends DatabaseObject {
      */
     public double getTotalTaxValue() {
         return totaltaxvalue;
+    }
+
+    /**
+     * @return the linkurl
+     */
+    public String __getLinkurl() {
+        return linkurl;
+    }
+
+    /**
+     * @param linkurl the linkurl to set
+     */
+    public void setLinkurl(String linkurl) {
+        this.linkurl = linkurl;
     }
 }

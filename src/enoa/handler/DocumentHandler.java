@@ -37,6 +37,8 @@ import com.sun.star.uno.UnoRuntime;
 import enoa.connection.NoaConnection;
 import java.io.File;
 import java.io.FileFilter;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -44,6 +46,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import mpv5.db.objects.Template;
 import mpv5.logging.Log;
+import mpv5.utils.files.FileDirectoryHandler;
 
 /**
  * This class OpenOffice Documents IO
@@ -322,7 +325,7 @@ public class DocumentHandler {
                     List<String[]> value = (List<String[]>) data.get(key);
                     if (tablehandler == null) {
                         if (key.contains(".")) {
-                            key = key.substring(key.lastIndexOf(".")+1);
+                            key = key.substring(key.lastIndexOf(".") + 1);
                         }
                         Log.Debug(this, "Table identifier: " + key);
                         tablehandler = new TableHandler((ITextDocument) document, key);
@@ -334,7 +337,11 @@ public class DocumentHandler {
                         }
                         for (int j = 0; j < strings.length; j++) {
                             String cellValue = strings[j];
-                            tablehandler.setValueAt(cellValue, j, i);
+                            if (!cellValue.contains("://")) {
+                                tablehandler.setValueAt(cellValue, j, i);
+                            } else {
+                                tablehandler.setHyperlinkAt("Link", cellValue, j, i);
+                            }
                         }
                     }
                 }
@@ -345,6 +352,8 @@ public class DocumentHandler {
 
 
     }
+    public static final String linkstartidentifier = "[url]";
+    public static final String linkendidentifier = "[/url]";
 
     /**
      * Reset the doc
@@ -366,9 +375,6 @@ public class DocumentHandler {
      * @param data
      */
     public void setImages(HashMap<String, Object> data) {
-    }
-
-    private void refactorRow() {
     }
 
     private String[] refactorRow(Template template, String[] possibleCols) {

@@ -127,6 +127,7 @@ public class ControlPanel_Accounts extends javax.swing.JPanel implements Control
         idtf = new mpv5.ui.beans.LabeledTextField();
         jPanel6 = new javax.swing.JPanel();
         count = new javax.swing.JLabel();
+        jButton7 = new javax.swing.JButton();
         jButton6 = new javax.swing.JButton();
         jButton5 = new javax.swing.JButton();
         jButton4 = new javax.swing.JButton();
@@ -166,7 +167,7 @@ public class ControlPanel_Accounts extends javax.swing.JPanel implements Control
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 125, Short.MAX_VALUE)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 253, Short.MAX_VALUE)
                     .addComponent(jLabel1))
                 .addContainerGap())
         );
@@ -176,7 +177,7 @@ public class ControlPanel_Accounts extends javax.swing.JPanel implements Control
                 .addContainerGap()
                 .addComponent(jLabel1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 355, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 352, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -299,7 +300,7 @@ public class ControlPanel_Accounts extends javax.swing.JPanel implements Control
                 .addGroup(rightpaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel5)
                     .addComponent(typeselect, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(31, Short.MAX_VALUE))
         );
 
         add(rightpane, java.awt.BorderLayout.EAST);
@@ -311,6 +312,15 @@ public class ControlPanel_Accounts extends javax.swing.JPanel implements Control
         count.setText(bundle.getString("ControlPanel_Accounts.count.text")); // NOI18N
         count.setName("count"); // NOI18N
         jPanel6.add(count);
+
+        jButton7.setText(bundle.getString("ControlPanel_Accounts.jButton7.text")); // NOI18N
+        jButton7.setName("jButton7"); // NOI18N
+        jButton7.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton7ActionPerformed(evt);
+            }
+        });
+        jPanel6.add(jButton7);
 
         jButton6.setText(bundle.getString("ControlPanel_Accounts.jButton6.text")); // NOI18N
         jButton6.setName("jButton6"); // NOI18N
@@ -450,6 +460,12 @@ public class ControlPanel_Accounts extends javax.swing.JPanel implements Control
         w.addPanel(new wizard_AccountXMLImport_1(w));
         w.showWiz();
     }//GEN-LAST:event_jButton6ActionPerformed
+
+    private void jButton7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton7ActionPerformed
+
+
+    }//GEN-LAST:event_jButton7ActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.ButtonGroup buttonGroup1;
     private mpv5.ui.beans.LabeledSpinner classv;
@@ -464,6 +480,7 @@ public class ControlPanel_Accounts extends javax.swing.JPanel implements Control
     private javax.swing.JButton jButton4;
     private javax.swing.JButton jButton5;
     private javax.swing.JButton jButton6;
+    private javax.swing.JButton jButton7;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
@@ -557,7 +574,7 @@ public class ControlPanel_Accounts extends javax.swing.JPanel implements Control
         }
 
         try {
-            tree.setModel(Account.toTreeModel(data, g));
+            tree.setModel(Account.toTreeModel2(data, g));
             TreeFormat.expandTree(tree);
         } catch (Exception e) {
             Log.Debug(this, e.getMessage());

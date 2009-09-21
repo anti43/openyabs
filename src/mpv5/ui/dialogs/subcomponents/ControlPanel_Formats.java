@@ -390,8 +390,8 @@ public class ControlPanel_Formats extends javax.swing.JPanel implements ControlA
         }
 
         QueryCriteria c = new QueryCriteria();
-        c.add("inttype", Integer.valueOf(labeledCombobox3.getSelectedItem().getId()));
-        c.add("usersids", Integer.valueOf(((MPComboBoxModelItem) jComboBox1.getSelectedItem()).getId()));
+        c.addAndCondition("inttype", Integer.valueOf(labeledCombobox3.getSelectedItem().getId()));
+        c.addAndCondition("usersids", Integer.valueOf(((MPComboBoxModelItem) jComboBox1.getSelectedItem()).getId()));
         QueryHandler.instanceOf().clone(Context.getFormats()).delete(c);
         QueryData what = new QueryData();
         what.add("inttype", Integer.valueOf(labeledCombobox3.getSelectedItem().getId()));

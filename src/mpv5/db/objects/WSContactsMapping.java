@@ -46,8 +46,8 @@ public class WSContactsMapping extends DatabaseObject {
      */
     public static WSContactsMapping getMapping(int webShopID, int contactsids) throws NodataFoundException {
         QueryCriteria qs = new QueryCriteria();
-        qs.add("webshopid", webShopID);
-        qs.add("contactsids", contactsids);
+        qs.addAndCondition("webshopid", webShopID);
+        qs.addAndCondition("contactsids", contactsids);
         List old = DatabaseObject.getObjects(Context.getWebShopContactMapping(), qs);
         return (WSContactsMapping) old.get(0);
     }

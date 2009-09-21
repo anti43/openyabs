@@ -93,7 +93,7 @@ public class MPPLuginLoader {
             list = new ArrayList<MP5Plugin>();
             ArrayList<File> jars = new ArrayList<File>();
             QueryCriteria criterias = new QueryCriteria();
-            criterias.add("usersids", MPView.getUser().__getIDS());
+            criterias.addAndCondition("usersids", MPView.getUser().__getIDS());
             try {
                 ArrayList<UserPlugin> data = DatabaseObject.getObjects(Context.getPluginsToUsers(), criterias);
                 for (int i = 0; i < data.size(); i++) {

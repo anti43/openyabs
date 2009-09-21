@@ -49,12 +49,12 @@
       <Layout>
         <DimensionLayout dim="0">
           <Group type="103" groupAlignment="0" attributes="0">
-              <Component id="jTabbedPane1" alignment="0" pref="664" max="32767" attributes="0"/>
+              <Component id="jTabbedPane1" alignment="0" pref="639" max="32767" attributes="0"/>
           </Group>
         </DimensionLayout>
         <DimensionLayout dim="1">
           <Group type="103" groupAlignment="0" attributes="0">
-              <Component id="jTabbedPane1" alignment="0" pref="358" max="32767" attributes="0"/>
+              <Component id="jTabbedPane1" alignment="0" pref="276" max="32767" attributes="0"/>
           </Group>
         </DimensionLayout>
       </Layout>
@@ -126,30 +126,27 @@
               <Layout>
                 <DimensionLayout dim="0">
                   <Group type="103" groupAlignment="0" attributes="0">
-                      <Group type="102" alignment="1" attributes="0">
+                      <Group type="102" attributes="0">
                           <EmptySpace max="-2" attributes="0"/>
                           <Component id="prinitingComboBox1" min="-2" pref="168" max="-2" attributes="0"/>
-                          <EmptySpace max="32767" attributes="0"/>
-                          <Component id="jLabel1" min="-2" pref="61" max="-2" attributes="0"/>
-                          <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                          <EmptySpace pref="28" max="32767" attributes="0"/>
                           <Component id="volume" min="-2" max="-2" attributes="0"/>
                           <EmptySpace type="unrelated" max="-2" attributes="0"/>
                           <Component id="revenue" min="-2" max="-2" attributes="0"/>
                           <EmptySpace max="-2" attributes="0"/>
                       </Group>
-                      <Component id="jScrollPane1" alignment="0" pref="659" max="32767" attributes="1"/>
-                      <Component id="jPanel2" alignment="0" pref="659" max="32767" attributes="1"/>
+                      <Component id="jPanel2" alignment="0" pref="634" max="32767" attributes="1"/>
+                      <Component id="jScrollPane1" alignment="0" pref="634" max="32767" attributes="1"/>
                   </Group>
                 </DimensionLayout>
                 <DimensionLayout dim="1">
                   <Group type="103" groupAlignment="0" attributes="0">
                       <Group type="102" alignment="0" attributes="0">
-                          <Component id="jPanel2" min="-2" max="-2" attributes="0"/>
+                          <Component id="jPanel2" min="-2" pref="167" max="-2" attributes="0"/>
                           <EmptySpace max="-2" attributes="0"/>
-                          <Component id="jScrollPane1" pref="136" max="32767" attributes="0"/>
+                          <Component id="jScrollPane1" pref="38" max="32767" attributes="0"/>
                           <EmptySpace max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="2" attributes="0">
-                              <Component id="jLabel1" alignment="2" min="-2" pref="17" max="-2" attributes="0"/>
                               <Component id="volume" alignment="2" min="-2" max="-2" attributes="0"/>
                               <Component id="revenue" alignment="2" min="-2" max="-2" attributes="0"/>
                               <Component id="prinitingComboBox1" alignment="2" min="-2" max="-2" attributes="1"/>
@@ -209,7 +206,7 @@
                           <Group type="102" attributes="0">
                               <EmptySpace max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="0" attributes="0">
-                                  <Group type="102" attributes="0">
+                                  <Group type="102" alignment="0" attributes="0">
                                       <Group type="103" groupAlignment="0" max="-2" attributes="0">
                                           <Component id="jLabel6" max="32767" attributes="1"/>
                                           <Component id="jLabel2" alignment="0" max="32767" attributes="1"/>
@@ -219,7 +216,6 @@
                                       <EmptySpace max="-2" attributes="0"/>
                                       <Group type="103" groupAlignment="0" attributes="0">
                                           <Component id="groups" alignment="0" min="-2" pref="237" max="-2" attributes="1"/>
-                                          <Component id="statusc" alignment="0" min="-2" pref="141" max="-2" attributes="1"/>
                                           <Group type="103" alignment="0" groupAlignment="1" attributes="0">
                                               <Group type="102" alignment="1" attributes="0">
                                                   <Component id="timeframeChooser1" min="-2" max="-2" attributes="1"/>
@@ -227,23 +223,20 @@
                                               </Group>
                                               <Component id="jLabel4" alignment="0" min="-2" pref="269" max="-2" attributes="1"/>
                                           </Group>
+                                          <Component id="statusc" alignment="0" min="-2" pref="141" max="-2" attributes="1"/>
                                       </Group>
-                                      <EmptySpace min="-2" pref="468" max="-2" attributes="0"/>
                                   </Group>
-                                  <Group type="102" alignment="1" attributes="1">
-                                      <Component id="account1" min="-2" pref="391" max="-2" attributes="0"/>
+                                  <Group type="102" alignment="0" attributes="1">
+                                      <Component id="accountsp" min="-2" pref="391" max="-2" attributes="0"/>
                                       <EmptySpace max="-2" attributes="0"/>
                                       <Component id="jButton2" min="-2" max="-2" attributes="0"/>
                                       <EmptySpace max="-2" attributes="0"/>
                                       <Component id="jButton3" min="-2" max="-2" attributes="0"/>
-                                      <EmptySpace max="32767" attributes="0"/>
-                                      <Component id="jButton1" min="-2" max="-2" attributes="0"/>
-                                      <EmptySpace max="-2" attributes="0"/>
-                                      <Component id="jPanel3" min="-2" pref="391" max="-2" attributes="0"/>
-                                      <EmptySpace min="-2" pref="319" max="-2" attributes="0"/>
+                                      <EmptySpace type="separate" max="-2" attributes="0"/>
+                                      <Component id="jButton1" min="-2" pref="83" max="-2" attributes="0"/>
                                   </Group>
                               </Group>
-                              <EmptySpace min="-2" max="-2" attributes="0"/>
+                              <EmptySpace min="-2" pref="151" max="-2" attributes="0"/>
                           </Group>
                       </Group>
                     </DimensionLayout>
@@ -270,13 +263,15 @@
                                   <Component id="statusc" alignment="2" min="-2" max="-2" attributes="0"/>
                               </Group>
                               <EmptySpace max="-2" attributes="0"/>
-                              <Group type="103" groupAlignment="2" attributes="0">
-                                  <Component id="jPanel3" alignment="2" min="-2" max="-2" attributes="0"/>
-                                  <Component id="account1" alignment="2" min="-2" max="-2" attributes="0"/>
-                                  <Component id="jButton2" alignment="2" min="-2" max="-2" attributes="0"/>
-                                  <Component id="jButton3" alignment="2" min="-2" max="-2" attributes="0"/>
-                                  <Component id="jButton1" alignment="2" min="-2" max="-2" attributes="1"/>
+                              <Group type="103" groupAlignment="0" attributes="0">
+                                  <Group type="103" groupAlignment="2" attributes="0">
+                                      <Component id="jButton2" alignment="2" min="-2" max="-2" attributes="0"/>
+                                      <Component id="jButton3" alignment="2" min="-2" max="-2" attributes="0"/>
+                                      <Component id="jButton1" alignment="2" min="-2" max="-2" attributes="1"/>
+                                  </Group>
+                                  <Component id="accountsp" min="-2" max="-2" attributes="0"/>
                               </Group>
+                              <EmptySpace min="-2" max="-2" attributes="0"/>
                           </Group>
                       </Group>
                     </DimensionLayout>
@@ -375,14 +370,28 @@
                         <Property name="name" type="java.lang.String" value="statusc" noResource="true"/>
                       </Properties>
                     </Component>
-                    <Container class="javax.swing.JPanel" name="jPanel3">
+                    <Container class="javax.swing.JPanel" name="accountsp">
                       <Properties>
-                        <Property name="name" type="java.lang.String" value="jPanel3" noResource="true"/>
+                        <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
+                          <Border info="org.netbeans.modules.form.compat2.border.TitledBorderInfo">
+                            <TitledBorder title="Accounts">
+                              <ResourceString PropertyName="titleX" bundle="mpv5/resources/languages/Panels.properties" key="JournalPanel.accountsp.border.title" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+                            </TitledBorder>
+                          </Border>
+                        </Property>
+                        <Property name="name" type="java.lang.String" value="accountsp" noResource="true"/>
                       </Properties>
 
                       <Layout class="org.netbeans.modules.form.compat2.layouts.DesignBoxLayout">
                         <Property name="axis" type="int" value="3"/>
                       </Layout>
+                      <SubComponents>
+                        <Component class="mpv5.ui.beans.MPCombobox" name="account1">
+                          <Properties>
+                            <Property name="name" type="java.lang.String" value="account1" noResource="true"/>
+                          </Properties>
+                        </Component>
+                      </SubComponents>
                     </Container>
                     <Component class="javax.swing.JButton" name="jButton2">
                       <Properties>
@@ -406,14 +415,6 @@
                         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButton3ActionPerformed"/>
                       </Events>
                     </Component>
-                    <Component class="mpv5.ui.beans.LabeledCombobox" name="account1">
-                      <Properties>
-                        <Property name="_Label" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-                          <ResourceString bundle="mpv5/resources/languages/Panels.properties" key="JournalPanel.account1._Label" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
-                        </Property>
-                        <Property name="name" type="java.lang.String" value="account1" noResource="true"/>
-                      </Properties>
-                    </Component>
                   </SubComponents>
                 </Container>
                 <Component class="mpv5.ui.beans.LabeledTextField" name="volume">
@@ -430,19 +431,6 @@
                       <ResourceString bundle="mpv5/resources/languages/Panels.properties" key="JournalPanel.revenue._Label" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
                     </Property>
                     <Property name="name" type="java.lang.String" value="revenue" noResource="true"/>
-                  </Properties>
-                </Component>
-                <Component class="javax.swing.JLabel" name="jLabel1">
-                  <Properties>
-                    <Property name="font" type="java.awt.Font" editor="org.netbeans.modules.form.editors2.FontEditor">
-                      <FontInfo relative="true">
-                        <Font bold="true" component="jLabel1" property="font" relativeSize="true" size="3"/>
-                      </FontInfo>
-                    </Property>
-                    <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-                      <ResourceString bundle="mpv5/resources/languages/Panels.properties" key="JournalPanel.jLabel1.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
-                    </Property>
-                    <Property name="name" type="java.lang.String" value="jLabel1" noResource="true"/>
                   </Properties>
                 </Component>
                 <Component class="mpv5.ui.beans.PrinitingComboBox" name="prinitingComboBox1">

@@ -16,10 +16,19 @@
  */
 package enoa.handler;
 
+import ag.ion.bion.officelayer.text.IText;
 import ag.ion.bion.officelayer.text.ITextDocument;
 import ag.ion.bion.officelayer.text.ITextTable;
 import ag.ion.bion.officelayer.text.ITextTableService;
 import ag.ion.bion.officelayer.text.TextException;
+import com.sun.star.beans.PropertyVetoException;
+import com.sun.star.beans.UnknownPropertyException;
+import com.sun.star.beans.XPropertySet;
+import com.sun.star.lang.IllegalArgumentException;
+import com.sun.star.lang.WrappedTargetException;
+import com.sun.star.text.XText;
+import com.sun.star.text.XTextCursor;
+import com.sun.star.uno.UnoRuntime;
 import mpv5.webshopinterface.wsdjobs.addContactJob;
 
 /**
@@ -53,8 +62,9 @@ public class TableHandler {
      * @param doc
      * @param tableName
      * @throws TextException
+     * @throws IllegalArgumentException
      */
-    public TableHandler(ITextDocument doc, String tableName) throws TextException {
+    public TableHandler(ITextDocument doc, String tableName) throws TextException, IllegalArgumentException {
         this.doc = doc;
         this.tableService = doc.getTextTableService();
         try {
@@ -89,7 +99,7 @@ public class TableHandler {
         getTable().addRow(count);
     }
 
-      /**
+    /**
      * Append the specified amount of cols to the table
      * @param count
      * @throws TextException
@@ -97,7 +107,6 @@ public class TableHandler {
     public void addColumns(int count) throws TextException {
         getTable().addColumn(count);
     }
-
 
     /**
      * Specify how many lines shall be formatted in header style
@@ -127,9 +136,38 @@ public class TableHandler {
 
         if (value != null && value instanceof Double) {
             getTable().getCell(column, row).setValue(Double.valueOf(value.toString()));
-        } else if(value!=null){
+        } else if (value != null) {
             getTable().getCell(column, row).getTextService().getText().setText(value.toString().replace("\\n", "\n"));
         }
+    }
+
+    /**
+     * Set the link at the given position. If the given row exceeds the current number of rows, the rows are appended to the end of the table.
+     * @param value
+     * @param link
+     * @param column
+     * @param row
+     * @throws TextException
+     * @throws UnknownPropertyException
+     * @throws PropertyVetoException
+     * @throws IllegalArgumentException
+     * @throws WrappedTargetException
+     */
+    public synchronized void setHyperlinkAt(Object value, String link, int column, int row) throws TextException, UnknownPropertyException, PropertyVetoException, IllegalArgumentException, WrappedTargetException {
+
+        if (getRowCount() <= row) {
+            addRows(row - getRowCount() + 1);
+        }
+
+        if (getColumnCount() <= column) {
+            addColumns(column - getColumnCount() + 1);
+        }
+        IText text = getTable().getCell(column, row).getTextService().getText();
+        XText xText = text.getXText();
+        XTextCursor xTextCursor = xText.createTextCursor();
+        xText.insertString(xTextCursor, value.toString(), true);
+        XPropertySet xPropertySet = (XPropertySet) UnoRuntime.queryInterface(XPropertySet.class, xTextCursor);
+        xPropertySet.setPropertyValue("HyperLinkURL", link);
     }
 
     /**

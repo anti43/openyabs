@@ -63,8 +63,8 @@ public class Property extends DatabaseObject {
     @Override
     public boolean save() {
         QueryCriteria c = new QueryCriteria();
-        c.add("usersids", MPView.getUser().__getIDS());
-        c.add("cname", cname);
+        c.addAndCondition("usersids", MPView.getUser().__getIDS());
+        c.addAndCondition("cname", cname);
         QueryHandler.instanceOf().clone(Context.getProperties()).delete(c);
         return super.save();
     }

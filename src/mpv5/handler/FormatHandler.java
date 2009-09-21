@@ -163,8 +163,8 @@ public class FormatHandler {
      */
     public synchronized MessageFormat getFormat() {
         QueryCriteria c = new QueryCriteria();
-        c.add("usersids", MPView.getUser().__getIDS());
-        c.add("inttype", this.getType());
+        c.addAndCondition("usersids", MPView.getUser().__getIDS());
+        c.addAndCondition("inttype", this.getType());
         try {
             Object[][] frm = QueryHandler.instanceOf().clone(Context.getFormats()).select("cname, ids", c);
             if (frm.length > 0) {

@@ -17,12 +17,10 @@
 package mpv5.utils.export;
 
 import ag.ion.bion.officelayer.document.IDocument;
-import ag.ion.bion.officelayer.text.ITextDocument;
 import enoa.connection.NoaConnection;
 import enoa.handler.DocumentHandler;
 import java.io.IOException;
 import java.util.Iterator;
-import java.util.Set;
 import mpv5.logging.Log;
 import mpv5.ui.frames.MPView;
 

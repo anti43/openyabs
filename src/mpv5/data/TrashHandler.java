@@ -69,8 +69,8 @@ public class TrashHandler {
         QueryHandler.instanceOf().clone(type).update(q, id, message);
         try {
             QueryCriteria qu = new QueryCriteria();
-            qu.add("rowid", id);
-            qu.add("cname", type.toLowerCase());
+            qu.addAndCondition("rowid", id);
+            qu.addAndCondition("cname", type.toLowerCase());
             QueryHandler.instanceOf().clone("trashbin").delete(qu);
         } catch (Exception ignore) {
         }

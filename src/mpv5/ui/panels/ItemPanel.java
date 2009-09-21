@@ -1282,7 +1282,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
     public void formatTable() {
 
         prepareTable();
-        TableFormat.resizeCols(itemtable, new Integer[]{0, 23, 53, 63, 100, 83, 63, 63, 0, 0, 0, 20, 20}, new Boolean[]{true, true, true, true, false, true, true, true, true, true, true, true, true});
+        TableFormat.resizeCols(itemtable, new Integer[]{0, 23, 53, 63, 100, 83, 63, 63, 0, 0, 0, 20, 20, 0}, new Boolean[]{true, true, true, true, false, true, true, true, true, true, true, true, true, true});
         TableFormat.changeBackground(itemtable, 1, Color.LIGHT_GRAY);
     }
 
@@ -1325,21 +1325,14 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
 
     @Override
     public void actionAfterSave() {
+        
         saveSubItems();
         omodel = (MPTableModel) itemtable.getModel();
     }
 
     @Override
     public void actionAfterCreate() {
-        if (itemtable.getCellEditor() != null) {
-            itemtable.getCellEditor().stopCellEditing();
-        }
-
-        try {
-            itemtable.changeSelection(7, 0, true, false);
-        } catch (Exception e) {
-            Log.Debug(e);
-        }
+    
         ArrayUtilities.replaceColumn(itemtable, 0, null);
         saveSubItems();
         omodel = (MPTableModel) itemtable.getModel();
@@ -1351,17 +1344,17 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
         }
 
         try {
-            itemtable.changeSelection(7, 0, true, false);
+            itemtable.changeSelection(0, 0, true, false);
         } catch (Exception e) {
             Log.Debug(e);
         }
 
-        TableModel m = itemtable.getModel();
-        for (int i = 0; i < m.getRowCount(); i++) {
-            if ((m.getValueAt(i, 4) == null || m.getValueAt(i, 4).toString().length() == 0) && Double.valueOf(String.valueOf(m.getValueAt(i, 5))).doubleValue() > 0) {
-                m.setValueAt("  ", i, 4);
-            }
-        }
+//        TableModel m = itemtable.getModel();
+//        for (int i = 0; i < m.getRowCount(); i++) {
+//            if ((m.getValueAt(i, 4) == null || m.getValueAt(i, 4).toString().length() == 0) && Double.valueOf(String.valueOf(m.getValueAt(i, 5))).doubleValue() > 0) {
+//                m.setValueAt("  ", i, 4);
+//            }
+//        }
         SubItem.saveModel(dataOwner, (MPTableModel) itemtable.getModel());
     }
 
@@ -1566,6 +1559,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
             public void actionPerformed(ActionEvent e) {
                 MPTableModel m = (MPTableModel) itemtable.getModel();
                 int row = itemtable.getSelectedRow();
+                SubItem.addToDeletionQueue(m.getValueAt(row, 0));
                 m.setRowAt(SubItem.getDefaultItem().getRowData(row), row, 1);
             }
         });
