@@ -161,8 +161,8 @@
         </DimensionLayout>
         <DimensionLayout dim="1">
           <Group type="103" groupAlignment="0" attributes="0">
-              <Component id="jPanel2" alignment="1" pref="250" max="32767" attributes="2"/>
-              <Component id="jScrollPane4" alignment="0" pref="250" max="32767" attributes="0"/>
+              <Component id="jPanel2" alignment="1" pref="249" max="32767" attributes="2"/>
+              <Component id="jScrollPane4" alignment="0" pref="249" max="32767" attributes="0"/>
           </Group>
         </DimensionLayout>
       </Layout>
@@ -274,9 +274,9 @@
                           <Group type="103" groupAlignment="0" attributes="0">
                               <Group type="102" attributes="0">
                                   <Component id="jLabel3" min="-2" max="-2" attributes="0"/>
-                                  <EmptySpace pref="31" max="32767" attributes="0"/>
+                                  <EmptySpace pref="28" max="32767" attributes="0"/>
                               </Group>
-                              <Component id="jScrollPane3" pref="46" max="32767" attributes="0"/>
+                              <Component id="jScrollPane3" pref="43" max="32767" attributes="0"/>
                           </Group>
                       </Group>
                   </Group>
@@ -388,6 +388,9 @@
                 </Component>
                 <Component class="mpv5.ui.beans.LabeledTextField" name="format">
                   <Properties>
+                    <Property name="toolTipText" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
+                      <ResourceString bundle="mpv5/resources/languages/Panels.properties" key="ControlPanel_Templates.format.toolTipText_1" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+                    </Property>
                     <Property name="_Label" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
                       <ResourceString bundle="mpv5/resources/languages/Panels.properties" key="ControlPanel_Templates.format._Label" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
                     </Property>

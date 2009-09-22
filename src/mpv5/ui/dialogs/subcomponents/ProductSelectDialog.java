@@ -3,10 +3,13 @@ package mpv5.ui.dialogs.subcomponents;
 import java.awt.BorderLayout;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JFrame;
+import javax.swing.JSpinner.NumberEditor;
+import javax.swing.SpinnerNumberModel;
 import mpv5.db.common.Context;
 import mpv5.db.common.NodataFoundException;
 import mpv5.db.objects.Item;
@@ -54,6 +57,7 @@ public class ProductSelectDialog extends javax.swing.JPanel {
         } catch (Exception e) {
         }
         frame.setLocation(evt.getLocationOnScreen().x - me.getWidth(), evt.getLocationOnScreen().y);
+        frame.setResizable(false);
         frame.setVisible(true);
         return me;
     }
@@ -67,11 +71,14 @@ public class ProductSelectDialog extends javax.swing.JPanel {
         jButton1.getInsets().set(0, 0, 0, 0);
         jButton2.getInsets().set(0, 0, 0, 0);
         validate();
+        link.getTextField().setToolTipText("Google@http://www.google.de");
         taxrate.getComboBox().setEditable(false);
         taxrate.setSearchOnEnterEnabled(true);
         taxrate.setContext(Context.getTaxes());
         taxrate.triggerSearch();
         value.set_ValueClass(Double.class);
+
+        measure1.set_ValueClass(Double.class);
         labeledCombobox1.setContext(Context.getProducts());
 
         labeledCombobox1.getComboBox().addItemListener(new ItemListener() {
@@ -87,7 +94,6 @@ public class ProductSelectDialog extends javax.swing.JPanel {
     private void initComponents() {
 
         jPanel1 = new javax.swing.JPanel();
-        labeledSpinner1 = new mpv5.ui.beans.LabeledSpinner();
         labeledCombobox1 = new mpv5.ui.beans.LabeledCombobox();
         jButton1 = new javax.swing.JButton();
         measure = new mpv5.ui.beans.LabeledTextField();
@@ -95,6 +101,7 @@ public class ProductSelectDialog extends javax.swing.JPanel {
         value = new mpv5.ui.beans.LabeledTextField();
         jButton2 = new javax.swing.JButton();
         link = new mpv5.ui.beans.LabeledTextField();
+        measure1 = new mpv5.ui.beans.LabeledTextField();
 
         setBackground(new java.awt.Color(255, 255, 255));
         setName("Form"); // NOI18N
@@ -104,10 +111,11 @@ public class ProductSelectDialog extends javax.swing.JPanel {
         java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("mpv5/resources/languages/Panels"); // NOI18N
         jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("ProductSelectDialog.jPanel1.border.title"))); // NOI18N
         jPanel1.setName("jPanel1"); // NOI18N
-
-        labeledSpinner1.set_Label(bundle.getString("ProductSelectDialog.labeledSpinner1._Label")); // NOI18N
-        labeledSpinner1.set_Value(1);
-        labeledSpinner1.setName("labeledSpinner1"); // NOI18N
+        jPanel1.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                jPanel1KeyPressed(evt);
+            }
+        });
 
         labeledCombobox1.set_Label(bundle.getString("ProductSelectDialog.labeledCombobox1._Label")); // NOI18N
         labeledCombobox1.setName("labeledCombobox1"); // NOI18N
@@ -143,38 +151,42 @@ public class ProductSelectDialog extends javax.swing.JPanel {
         link.set_Label(bundle.getString("ProductSelectDialog.link._Label")); // NOI18N
         link.setName("link"); // NOI18N
 
+        measure1.set_Label(bundle.getString("ProductSelectDialog.measure1._Label")); // NOI18N
+        measure1.set_Text(bundle.getString("ProductSelectDialog.measure1._Text")); // NOI18N
+        measure1.setName("measure1"); // NOI18N
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(link, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 476, Short.MAX_VALUE)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                    .addComponent(link, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 476, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(labeledSpinner1, javax.swing.GroupLayout.DEFAULT_SIZE, 144, Short.MAX_VALUE)
-                            .addComponent(measure, javax.swing.GroupLayout.DEFAULT_SIZE, 144, Short.MAX_VALUE))
+                            .addComponent(measure, javax.swing.GroupLayout.DEFAULT_SIZE, 144, Short.MAX_VALUE)
+                            .addComponent(measure1, javax.swing.GroupLayout.DEFAULT_SIZE, 144, Short.MAX_VALUE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addComponent(taxrate, javax.swing.GroupLayout.PREFERRED_SIZE, 152, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(value, javax.swing.GroupLayout.DEFAULT_SIZE, 168, Short.MAX_VALUE))
-                            .addComponent(labeledCombobox1, javax.swing.GroupLayout.DEFAULT_SIZE, 326, Short.MAX_VALUE))))
+                            .addComponent(labeledCombobox1, javax.swing.GroupLayout.PREFERRED_SIZE, 326, javax.swing.GroupLayout.PREFERRED_SIZE))))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jButton1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 52, Short.MAX_VALUE)
-                    .addComponent(jButton2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 52, Short.MAX_VALUE))
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, 52, Short.MAX_VALUE)
+                    .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 52, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
-                    .addComponent(jButton1, 0, 0, Short.MAX_VALUE)
+                    .addComponent(measure1, javax.swing.GroupLayout.PREFERRED_SIZE, 19, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(labeledCombobox1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(labeledSpinner1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
                     .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 19, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -183,7 +195,7 @@ public class ProductSelectDialog extends javax.swing.JPanel {
                     .addComponent(measure, javax.swing.GroupLayout.PREFERRED_SIZE, 19, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(link, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(11, 11, 11))
+                .addGap(13, 13, 13))
         );
 
         add(jPanel1, java.awt.BorderLayout.CENTER);
@@ -202,17 +214,19 @@ public class ProductSelectDialog extends javax.swing.JPanel {
             taxrate.setSelectedItem(0);
         }
     }
-    
+
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         SubItem s;
         try {
             s = new SubItem((Product) Product.getObject(Context.getProducts(), Integer.valueOf(labeledCombobox1.getSelectedItem().getId())));
         } catch (Exception ex) {
             s = SubItem.getDefaultItem();
-            s.setDescription(labeledCombobox1.getText());
+            if (labeledCombobox1.getText()!=null) {
+                s.setDescription(labeledCombobox1.getText());
+            }
         }
         s.setCountvalue(row);
-        s.setQuantityvalue(Integer.valueOf(labeledSpinner1.get_Value().toString()));
+        s.setQuantityvalue(Double.valueOf(measure1.get_Text()));
         s.setLinkurl(link.getText());
 
         if (measure.getText().length() > 0) {
@@ -231,14 +245,20 @@ public class ProductSelectDialog extends javax.swing.JPanel {
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         frame.setVisible(false);
     }//GEN-LAST:event_jButton2ActionPerformed
+
+    private void jPanel1KeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jPanel1KeyPressed
+        if (evt.getKeyCode() == KeyEvent.VK_ESCAPE) {
+            frame.setVisible(false);
+        }
+    }//GEN-LAST:event_jPanel1KeyPressed
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
     private javax.swing.JPanel jPanel1;
     private mpv5.ui.beans.LabeledCombobox labeledCombobox1;
-    private mpv5.ui.beans.LabeledSpinner labeledSpinner1;
     private mpv5.ui.beans.LabeledTextField link;
     private mpv5.ui.beans.LabeledTextField measure;
+    private mpv5.ui.beans.LabeledTextField measure1;
     private mpv5.ui.beans.LabeledCombobox taxrate;
     private mpv5.ui.beans.LabeledTextField value;
     // End of variables declaration//GEN-END:variables

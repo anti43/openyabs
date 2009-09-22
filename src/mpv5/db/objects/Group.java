@@ -17,14 +17,11 @@
 package mpv5.db.objects;
 
 import java.util.ArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JComponent;
 import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
 import mpv5.db.common.NodataFoundException;
 import mpv5.ui.dialogs.subcomponents.ControlPanel_Groups;
-import mpv5.ui.panels.MPControlPanel;
 
 /**
  *
@@ -35,6 +32,7 @@ public class Group extends DatabaseObject {
     private String description = "";
     private String defaults = "";
     private String hierarchypath = "";
+    public static String GROUPSEPARATOR = " > ";
 
     public Group() {
         context.setDbIdentity(Context.IDENTITY_GROUPS);
@@ -107,7 +105,7 @@ public class Group extends DatabaseObject {
         return new ControlPanel_Groups(this);
     }
 
-     @Override
+    @Override
     public mpv5.utils.images.MPIcon getIcon() {
         return null;
     }
@@ -116,7 +114,20 @@ public class Group extends DatabaseObject {
      * @return the hierarchypath
      */
     public String __getHierarchypath() {
-        return hierarchypath;
+        if (hierarchypath == null || hierarchypath.equals("")) {
+            int intp = __getIDS();
+            do {
+                try {
+                    Group p = (Group) getObject(Context.getGroup(), intp);
+                    hierarchypath = Group.GROUPSEPARATOR + p;
+                    intp = p.__getGroupsids();
+                } catch (NodataFoundException ex) {
+                    ex.printStackTrace();
+                    break;
+                }
+            } while (intp > 1);
+        }
+        return hierarchypath.replaceFirst(Group.GROUPSEPARATOR, "");
     }
 
     /**

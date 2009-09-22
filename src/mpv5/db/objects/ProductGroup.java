@@ -121,7 +121,20 @@ public class ProductGroup extends DatabaseObject {
      * @return the hierarchypath
      */
     public String __getHierarchypath() {
-        return hierarchypath;
+        if (hierarchypath == null || hierarchypath.equals("")) {
+            int intp = __getIDS();
+            do {
+                try {
+                    ProductGroup p = (ProductGroup) getObject(Context.getProductGroup(), intp);
+                    hierarchypath = Group.GROUPSEPARATOR + p;
+                    intp = p.__getProductgroupsids();
+                } catch (NodataFoundException ex) {
+                    ex.printStackTrace();
+                    break;
+                }
+            } while (intp > 1);
+        }
+        return hierarchypath.replaceFirst(Group.GROUPSEPARATOR, "");
     }
 
     /**

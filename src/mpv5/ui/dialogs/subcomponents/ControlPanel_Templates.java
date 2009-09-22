@@ -77,7 +77,9 @@ public class ControlPanel_Templates extends javax.swing.JPanel implements Contro
             refresh();
             groupname.setModel(new DefaultComboBoxModel(
                     MPComboBoxModelItem.toItems(new DatabaseSearch(Context.getGroup()).getValuesFor(Context.getGroup().getSubID(), null, ""))));
-
+            java.util.ResourceBundle bundle1 = java.util.ResourceBundle.getBundle("mpv5/resources/languages/Panels"); // NOI18N
+            format.setText(Template.DEFAULT_FORMAT);
+            format.getTextField().setToolTipText(bundle1.getString("ControlPanel_Templates.format.toolTipText_1")); // NOI18N
             setVisible(true);
         }
     }
@@ -113,7 +115,7 @@ public class ControlPanel_Templates extends javax.swing.JPanel implements Contro
         templates = new javax.swing.JTable();
 
         setBackground(new java.awt.Color(255, 255, 255));
-        java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle();
+        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("mpv5/resources/languages/Panels"); // NOI18N
         setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("ControlPanel_Templates.border.title"))); // NOI18N
         setName("Form"); // NOI18N
         setPreferredSize(new java.awt.Dimension(495, 183));
@@ -237,7 +239,7 @@ public class ControlPanel_Templates extends javax.swing.JPanel implements Contro
         type.set_Label(bundle.getString("ControlPanel_Templates.type._Label")); // NOI18N
         type.setName("type"); // NOI18N
 
-        format.setToolTipText(bundle.getString("ControlPanel_Templates.format.toolTipText")); // NOI18N
+        format.setToolTipText(bundle.getString("ControlPanel_Templates.format.toolTipText_1")); // NOI18N
         format.set_Label(bundle.getString("ControlPanel_Templates.format._Label")); // NOI18N
         format.set_Text("1,2,3,4,5,6,7,8,9"); // NOI18N
         format.setName("format"); // NOI18N
@@ -364,6 +366,7 @@ public class ControlPanel_Templates extends javax.swing.JPanel implements Contro
             if (dato.save()) {
                 actionAfterSave();
                 refresh();
+                Template.cacheTemplates();
             } else {
                 showRequiredFields();
             }
@@ -396,6 +399,7 @@ public class ControlPanel_Templates extends javax.swing.JPanel implements Contro
             dataOwner.getPanelData(this);
             dataOwner.setIDS(-1);
             dataOwner.save();
+            Template.cacheTemplates();
         }
 
         refresh();
@@ -575,7 +579,7 @@ public class ControlPanel_Templates extends javax.swing.JPanel implements Contro
     }
 
     public void refresh() {
-        format.setText(Template.DEFAULT_FORMAT);
+
         ArrayList<DatabaseObject> temps;
         try {
             temps = DatabaseObject.getObjects(Context.getTemplate());

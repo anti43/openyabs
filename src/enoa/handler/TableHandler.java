@@ -162,6 +162,7 @@ public class TableHandler {
         if (getColumnCount() <= column) {
             addColumns(column - getColumnCount() + 1);
         }
+
         IText text = getTable().getCell(column, row).getTextService().getText();
         XText xText = text.getXText();
         XTextCursor xTextCursor = xText.createTextCursor();

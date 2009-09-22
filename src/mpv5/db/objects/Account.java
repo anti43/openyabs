@@ -428,7 +428,20 @@ public class Account extends DatabaseObject {
      * @return the hierarchypath
      */
     public String __getHierarchypath() {
-        return hierarchypath;
+         if (hierarchypath == null || hierarchypath.equals("")) {
+            int intp = __getIDS();
+            do {
+                try {
+                    Account p = (Account) getObject(Context.getAccounts(), intp);
+                    hierarchypath = Group.GROUPSEPARATOR + p;
+                    intp = p.__getIntparentaccount();
+                } catch (NodataFoundException ex) {
+                    ex.printStackTrace();
+                    break;
+                }
+            } while (intp > 1);
+        }
+        return hierarchypath.replaceFirst(Group.GROUPSEPARATOR, "");
     }
 
     /**

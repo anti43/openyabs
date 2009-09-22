@@ -279,6 +279,7 @@ public class Template extends DatabaseObject {
      * Preload the template files
      */
     public static void cacheTemplates() {
+        templateCache.clear();
         List<DatabaseObject> l = new Vector<DatabaseObject>();
         Item it1 = new Item();
         it1.setInttype(Item.TYPE_BILL);

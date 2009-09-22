@@ -337,10 +337,16 @@ public class DocumentHandler {
                         }
                         for (int j = 0; j < strings.length; j++) {
                             String cellValue = strings[j];
-                            if (!cellValue.contains("://")) {
+                            if (!cellValue.contains("://")) {//lets say its a valid url
                                 tablehandler.setValueAt(cellValue, j, i);
                             } else {
-                                tablehandler.setHyperlinkAt("Link", cellValue, j, i);
+                                String linkname = "Link";
+                                if (cellValue.contains("@")) {
+                                    String link1 = cellValue.split("@")[1];
+                                    linkname = cellValue.split("@")[0];
+                                    cellValue = link1;
+                                }
+                                tablehandler.setHyperlinkAt(linkname, cellValue, j, i);
                             }
                         }
                     }
