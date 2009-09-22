@@ -756,22 +756,22 @@ public class Context {
         exclusiveConditionsAvailable = bool;
     }
 
-    /**
-     * Add a self-table reference to this context
-     * @param referencekey
-     * @param referenceidkey
-     */
-    public void addReference(String referencekey, String referenceidkey) {
-        String alias = this.getDbIdentity();
-        references.add(new String[]{this.getDbIdentity(), referencekey, referenceidkey, alias});
-    }
+//    /**
+//     * Add a self-table reference to this context
+//     * @param referencekey
+//     * @param referenceidkey
+//     */
+//    public void addReference(String referencekey, String referenceidkey) {
+//        String alias = this.getDbIdentity();
+//        references.add(new String[]{this.getDbIdentity(), referencekey, referenceidkey, alias});
+//    }
 
     /**
-     *
-     * @param group
+     * Add a foreign table reference to this context
+     * @param c
      */
-    public void addReference(Context group) {
-        String alias = group.getDbIdentity();
+    public void addReference(Context c) {
+        String alias = c.getDbIdentity();
         references.add(new String[]{alias, "ids", alias + "ids", alias, this.getDbIdentity()});
     }
 
