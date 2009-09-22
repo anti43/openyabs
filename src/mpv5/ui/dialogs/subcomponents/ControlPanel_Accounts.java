@@ -462,10 +462,20 @@ public class ControlPanel_Accounts extends javax.swing.JPanel implements Control
     }//GEN-LAST:event_jButton6ActionPerformed
 
     private void jButton7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton7ActionPerformed
-
-
+        try {
+            ArrayList<DatabaseObject> l = DatabaseObject.getObjects(Context.getAccounts());
+            for (int i = 0; i < l.size(); i++) {
+                DatabaseObject databaseObject = l.get(i);
+                try {
+                    databaseObject.delete();
+                } catch (Exception e) {
+                }
+            }
+        } catch (NodataFoundException ex) {
+        } finally {
+            refresh();
+        }
     }//GEN-LAST:event_jButton7ActionPerformed
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.ButtonGroup buttonGroup1;
     private mpv5.ui.beans.LabeledSpinner classv;

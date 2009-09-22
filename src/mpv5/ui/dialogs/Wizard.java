@@ -32,6 +32,7 @@ import javax.swing.JLayeredPane;
 import javax.swing.JPanel;
 import mpv5.data.PropertyStore;
 import mpv5.globals.Messages;
+import mpv5.ui.frames.MPView;
 import mpv5.ui.misc.Position;
 
 /**
@@ -67,8 +68,8 @@ public class Wizard extends javax.swing.JFrame implements WizardMaster {
         back.setEnabled(false);
         content.add(contentlist.get(level), BorderLayout.CENTER);
         pack();
-        new Position(this);
-        setAlwaysOnTop(false);
+        setLocationRelativeTo(MPView.identifierFrame);
+        setAlwaysOnTop(!standalone);
         setVisible(true);
     }
 
