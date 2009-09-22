@@ -530,10 +530,8 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
                 } else {
                     d[i][8] = "<html><p align=center>" + mpv5.utils.numberformat.FormatNumber.formatDezimal(0d);
                 }
-
                 d[i][7] = "<html><p align=center>" + mpv5.utils.numberformat.FormatNumber.formatDezimal(brutto);
                 val1 += brutto;
-
             }
         } catch (Exception numberFormatException) {
             Log.Debug(numberFormatException);
@@ -556,7 +554,7 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
                     Object[][] d2 = new Object[0][0];
 
                     if (forGroup != null && !forGroup.__getCName().equals("")) {
-                        dh.and(new QueryParameter(forGroup.getDbIdentity() + "ids", forGroup.__getIDS(), QueryParameter.EQUALS));
+                        dh.and(new QueryParameter(forGroup.getContext(), forGroup.getDbIdentity() + "ids", forGroup.__getIDS(), QueryParameter.EQUALS));
                     }
                     List<QueryParameter> l = new Vector<QueryParameter>();
                     for (int i = 0; i < accountsp.getComponentCount(); i++) {
@@ -564,9 +562,8 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
                         MPComboBoxModelItem acc = b.getSelectedItem();
 
                         if (acc != null && acc.isValid() && Integer.valueOf(acc.getId()).intValue() >0) {
-                            l.add(new QueryParameter("accountsids", Integer.valueOf(acc.getId()).intValue(), QueryParameter.EQUALS));
+                            l.add(new QueryParameter(Context.getItems(), "accountsids", Integer.valueOf(acc.getId()).intValue(), QueryParameter.EQUALS));
                         }
-
                     }
                     if (l.size() > 1) {
                         dh.or(l.toArray(new QueryParameter[0]));
@@ -575,12 +572,12 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
                     }
 
                     if (dataowner != null) {
-                        dh.and(new QueryParameter(dataowner.getDbIdentity() + "ids", dataowner.__getIDS(), QueryParameter.EQUALS));
+                        dh.and(new QueryParameter(dataowner.getContext(), dataowner.getDbIdentity() + "ids", dataowner.__getIDS(), QueryParameter.EQUALS));
                     }
 
                     boolean additional = true;
                     if (statusc.getComboBox().getSelectedItem().equals(Messages.STATUS_PAID)) {
-                        dh.and(new QueryParameter("intstatus", Item.STATUS_PAID, QueryParameter.EQUALS));
+                        dh.and(new QueryParameter(Context.getItems(),"intstatus", Item.STATUS_PAID, QueryParameter.EQUALS));
                     } else if (statusc.getComboBox().getSelectedItem().equals(Messages.STATUS_UNPAID)) {
                         additional = false;
                     }
@@ -614,7 +611,7 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
                                 MPCombobox b = (MPCombobox) accountsp.getComponent(i);
                                 MPComboBoxModelItem acc = b.getSelectedItem();
                                 if (acc != null && acc.isValid() && Integer.valueOf(acc.getId()).intValue() > 0) {
-                                    l1.add(new QueryParameter("accountsids", Integer.valueOf(acc.getId()).intValue(), QueryParameter.EQUALS));
+                                    l1.add(new QueryParameter(c,"accountsids", Integer.valueOf(acc.getId()).intValue(), QueryParameter.EQUALS));
                                 }
                             }
                             if (l1.size() > 1) {
@@ -623,7 +620,7 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
                                 dd.and(l1.toArray(new QueryParameter[0]));
                             }
                             if (forGroup != null && !forGroup.__getCName().equals("")) {
-                                dd.and(new QueryParameter(forGroup.getDbIdentity() + "ids", forGroup.__getIDS(), QueryParameter.EQUALS));
+                                dd.and(new QueryParameter(forGroup.getContext(), forGroup.getDbIdentity() + "ids", forGroup.__getIDS(), QueryParameter.EQUALS));
                             }
                             try {
                                 d1 = QueryHandler.instanceOf().clone(c).select(Context.DETAILS_JOURNAL3, dd, timeframeChooser1.getTime()).getData();
@@ -650,7 +647,7 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
                                 MPCombobox b = (MPCombobox) accountsp.getComponent(i);
                                 MPComboBoxModelItem acc = b.getSelectedItem();
                                 if (acc != null && acc.isValid() && Integer.valueOf(acc.getId()).intValue() > 0) {
-                                    l2.add(new QueryParameter("accountsids", Integer.valueOf(acc.getId()).intValue(), QueryParameter.EQUALS));
+                                    l2.add(new QueryParameter(c,"accountsids", Integer.valueOf(acc.getId()).intValue(), QueryParameter.EQUALS));
                                 }
                             }
                             if (l2.size() > 1) {
@@ -659,7 +656,7 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
                                 dd.and(l2.toArray(new QueryParameter[0]));
                             }
                             if (forGroup != null && !forGroup.__getCName().equals("")) {
-                                dd.and(new QueryParameter(forGroup.getDbIdentity() + "ids", forGroup.__getIDS(), QueryParameter.EQUALS));
+                                dd.and(new QueryParameter(forGroup.getContext(), forGroup.getDbIdentity() + "ids", forGroup.__getIDS(), QueryParameter.EQUALS));
                             }
                             try {
                                 d1 = QueryHandler.instanceOf().clone(c).select(Context.DETAILS_JOURNAL2, dd, timeframeChooser1.getTime()).getData();

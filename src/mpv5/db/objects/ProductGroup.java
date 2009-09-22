@@ -129,7 +129,6 @@ public class ProductGroup extends DatabaseObject {
                     hierarchypath = Group.GROUPSEPARATOR + p;
                     intp = p.__getProductgroupsids();
                 } catch (NodataFoundException ex) {
-                    ex.printStackTrace();
                     break;
                 }
             } while (intp > 1);

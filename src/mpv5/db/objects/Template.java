@@ -113,7 +113,7 @@ public class Template extends DatabaseObject {
                         }
 
                     } catch (NodataFoundException nodataFoundException) {
-                        Log.Debug(nodataFoundException);
+                        Log.Debug(Template.class, nodataFoundException.getMessage());
                     }
                 }
                 return preloadedTemplate;

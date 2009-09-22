@@ -25,11 +25,20 @@ public class QueryParameter {
     public static final int EQUALS = 0;
     public static final int NOTEQUAL = 1;
     public static final int LIKE = 2;
+    private Context context;
     private String key;
     private Object value;
     private int condition;
 
-    public QueryParameter(String key, Object value, int condition) {
+    /**
+     * 
+     * @param context
+     * @param key
+     * @param value
+     * @param condition
+     */
+    public QueryParameter(Context context, String key, Object value, int condition) {
+        this.context = context;
         this.key = key;
         this.value = value;
         this.condition = condition;
@@ -39,7 +48,7 @@ public class QueryParameter {
      * @return the key
      */
     public String getKey() {
-        return key;
+        return getContext().getDbIdentity() + "." + key;
     }
 
     /**
@@ -60,7 +69,7 @@ public class QueryParameter {
      * @param value the value to set
      */
     public void setValue(String value) {
-        this.value = value;
+        this.setValue(value);
     }
 
     /**
@@ -79,5 +88,26 @@ public class QueryParameter {
 
     public String toString() {
         return getKey() + ": " + getValue();
+    }
+
+    /**
+     * @return the context
+     */
+    public Context getContext() {
+        return context;
+    }
+
+    /**
+     * @param context the context to set
+     */
+    public void setContext(Context context) {
+        this.context = context;
+    }
+
+    /**
+     * @param value the value to set
+     */
+    public void setValue(Object value) {
+        this.value = value;
     }
 }

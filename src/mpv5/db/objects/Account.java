@@ -436,7 +436,6 @@ public class Account extends DatabaseObject {
                     hierarchypath = Group.GROUPSEPARATOR + p;
                     intp = p.__getIntparentaccount();
                 } catch (NodataFoundException ex) {
-                    ex.printStackTrace();
                     break;
                 }
             } while (intp > 1);

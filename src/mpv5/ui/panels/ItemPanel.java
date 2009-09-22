@@ -163,10 +163,10 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
         date1.setDate(new Date());
         try {
             date3.setDate(DateConverter.addDays(new Date(), Integer.valueOf(MPView.getUser().getProperties().getProperty("bills.warn.days"))));
-            date2.setDate(new Date());
+            date2.setDate(DateConverter.addDays(new Date(), Integer.valueOf(MPView.getUser().getProperties().getProperty("bills.alert.days"))));
         } catch (Exception e) {
             date3.setDate(DateConverter.addDays(new Date(), 14));
-            date2.setDate(new Date());
+            date2.setDate(DateConverter.addDays(new Date(), 30));
         }
         itemtable.getTableHeader().addMouseListener(new MouseListener() {
 
@@ -1147,7 +1147,6 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
             try {
                 accountsids_ = Integer.valueOf(accountselect.getSelectedItem().getId());
             } catch (Exception e) {
-                Log.Debug(e);
                 accountsids_ = 1;
             }
 
@@ -1242,7 +1241,11 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
                     groupnameselect.setSelectedIndex(0);
                     sp.refresh();
 
-                    accountselect.setModel(DatabaseObject.getObject(Context.getAccounts(), MPView.getUser().__getIntdefaultaccount()));
+                    try {
+                        accountselect.setModel(DatabaseObject.getObject(Context.getAccounts(), MPView.getUser().__getIntdefaultaccount()));
+                    } catch (NodataFoundException nodataFoundException) {
+                        Log.Debug(this, nodataFoundException.getMessage());
+                    }
                     fillFiles();
 
                     List<Integer> skip = new Vector<Integer>();
@@ -1325,14 +1328,14 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
 
     @Override
     public void actionAfterSave() {
-        
+
         saveSubItems();
         omodel = (MPTableModel) itemtable.getModel();
     }
 
     @Override
     public void actionAfterCreate() {
-    
+
         ArrayUtilities.replaceColumn(itemtable, 0, null);
         saveSubItems();
         omodel = (MPTableModel) itemtable.getModel();

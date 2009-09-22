@@ -1947,7 +1947,7 @@ public class MPView extends FrameView {
     }//GEN-LAST:event_jButton16ActionPerformed
 
     private void jButton17ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton17ActionPerformed
-         MPView.identifierView.addOrShowTab(JournalPanel.instanceOf(), Messages.HISTORY_OF);
+         MPView.identifierView.addOrShowTab(JournalPanel.instanceOf(), Messages.OVERVIEW);
     }//GEN-LAST:event_jButton17ActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

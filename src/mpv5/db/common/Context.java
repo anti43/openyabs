@@ -159,8 +159,8 @@ public class Context {
             IDENTITY_ITEMS + "." + "datetodo";
     public static String DETAILS_JOURNAL = IDENTITY_ITEMS + "." + "IDS," +
             IDENTITY_ITEMS + "." + "dateadded," +
-            IDENTITY_GROUPS + "0." + "CNAME," +
-            IDENTITY_ACCOUNTS + "1." + "cname," +
+            IDENTITY_GROUPS + "." + "CNAME," +
+            IDENTITY_ACCOUNTS + "." + "cname," +
             IDENTITY_ITEMS + "." + "CNAME," +
             IDENTITY_ITEMS + "." + "inttype," +
             IDENTITY_ITEMS + "." + "intstatus," +
@@ -168,8 +168,8 @@ public class Context {
             IDENTITY_ITEMS + "." + "taxvalue";
     public static String DETAILS_JOURNAL2 = IDENTITY_REVENUE + "." + "IDS," +
             IDENTITY_REVENUE + "." + "dateadded," +
-            IDENTITY_GROUPS + "0." + "CNAME," +
-            IDENTITY_ACCOUNTS + "1." + "cname," +
+            IDENTITY_GROUPS + "." + "CNAME," +
+            IDENTITY_ACCOUNTS + "." + "cname," +
             IDENTITY_REVENUE + "." + "CNAME," +
             IDENTITY_REVENUE + "." + "ids," +
             IDENTITY_REVENUE + "." + "ids," +
@@ -177,17 +177,17 @@ public class Context {
             IDENTITY_REVENUE + "." + "brutvalue";
     public static String DETAILS_JOURNAL3 = IDENTITY_EXPENSE + "." + "IDS," +
             IDENTITY_EXPENSE + "." + "dateadded," +
-            IDENTITY_GROUPS + "0." + "CNAME," +
-            IDENTITY_ACCOUNTS + "1." + "cname," +
+            IDENTITY_GROUPS + "." + "CNAME," +
+            IDENTITY_ACCOUNTS + "." + "cname," +
             IDENTITY_EXPENSE + "." + "CNAME," +
             IDENTITY_EXPENSE + "." + "ids," +
             IDENTITY_EXPENSE + "." + "ids," +
             IDENTITY_EXPENSE + "." + "brutvalue," +
             IDENTITY_EXPENSE + "." + "brutvalue";
-    public static String DETAILS_HISTORY = getHistory().getDbIdentity() + ".ids, " + getHistory().getDbIdentity() + ".cname, " + getHistory().getDbIdentity() + ".username, " + Context.getGroup().getDbIdentity() + "0.cname," + Context.getHistory().getDbIdentity() + ".dateadded";
-    public static String DETAILS_FILES_TO_CONTACTS = Context.getFiles().getDbIdentity() + "0.cname," + getFilesToContacts().getDbIdentity() + ".cname, " + Context.getFiles().getDbIdentity() + "0.dateadded," + Context.getFilesToContacts().getDbIdentity() + ".description," + Context.getFilesToContacts().getDbIdentity() + ".intsize," + Context.getFilesToContacts().getDbIdentity() + ".mimetype";
-    public static String DETAILS_FILES_TO_ITEMS = Context.getFiles().getDbIdentity() + "0.cname," + getFilesToItems().getDbIdentity() + ".cname, " + Context.getFiles().getDbIdentity() + "0.dateadded," + Context.getFilesToItems().getDbIdentity() + ".description," + Context.getFilesToItems().getDbIdentity() + ".intsize," + Context.getFilesToItems().getDbIdentity() + ".mimetype";
-    public static String DETAILS_FILES_TO_PRODUCTS = Context.getFiles().getDbIdentity() + "0.cname," + getFilesToProducts().getDbIdentity() + ".cname, " + Context.getFiles().getDbIdentity() + "0.dateadded," + Context.getFilesToProducts().getDbIdentity() + ".description," + Context.getFilesToProducts().getDbIdentity() + ".intsize," + Context.getFilesToProducts().getDbIdentity() + ".mimetype";
+    public static String DETAILS_HISTORY = getHistory().getDbIdentity() + ".ids, " + getHistory().getDbIdentity() + ".cname, " + getHistory().getDbIdentity() + ".username, " + Context.getGroup().getDbIdentity() + ".cname," + Context.getHistory().getDbIdentity() + ".dateadded";
+    public static String DETAILS_FILES_TO_CONTACTS = Context.getFiles().getDbIdentity() + ".cname," + getFilesToContacts().getDbIdentity() + ".cname, " + Context.getFiles().getDbIdentity() + ".dateadded," + Context.getFilesToContacts().getDbIdentity() + ".description," + Context.getFilesToContacts().getDbIdentity() + ".intsize," + Context.getFilesToContacts().getDbIdentity() + ".mimetype";
+    public static String DETAILS_FILES_TO_ITEMS = Context.getFiles().getDbIdentity() + ".cname," + getFilesToItems().getDbIdentity() + ".cname, " + Context.getFiles().getDbIdentity() + ".dateadded," + Context.getFilesToItems().getDbIdentity() + ".description," + Context.getFilesToItems().getDbIdentity() + ".intsize," + Context.getFilesToItems().getDbIdentity() + ".mimetype";
+    public static String DETAILS_FILES_TO_PRODUCTS = Context.getFiles().getDbIdentity() + ".cname," + getFilesToProducts().getDbIdentity() + ".cname, " + Context.getFiles().getDbIdentity() + ".dateadded," + Context.getFilesToProducts().getDbIdentity() + ".description," + Context.getFilesToProducts().getDbIdentity() + ".intsize," + Context.getFilesToProducts().getDbIdentity() + ".mimetype";
 //    public static String DETAILS_FILES_TO_TEMPLATES = Context.getTemplate().getDbIdentity() + ".ids," + getTemplate().getDbIdentity() + ".cname, " + Context.getTemplate().getDbIdentity() + ".dateadded," + Context.getTemplate().getDbIdentity() + ".intsize," + Context.getTemplate().getDbIdentity() + ".mimetype";
 //    public static String DETAILS_TEMPLATES = Context.getTemplate().getDbIdentity() + ".ids," + getTemplate().getDbIdentity() + ".cname, " + Context.getTemplate().getDbIdentity() + ".mimetype," + " groups0.cname";
 
@@ -840,9 +840,9 @@ public class Context {
         if (references.size() > 0) {
             for (int i = 0; i < references.size(); i++) {
                 if (references.get(i).length == 4) {
-                    cond += " LEFT OUTER JOIN " + references.get(i)[0] + " AS " + references.get(i)[3] + i + " ON " + references.get(i)[3] + i + "." + references.get(i)[1] + " = " + references.get(i)[3] + "." + references.get(i)[2];
+                    cond += " LEFT OUTER JOIN " + references.get(i)[0] + " AS " + references.get(i)[3] + " ON " + references.get(i)[3] + "." + references.get(i)[1] + " = " + references.get(i)[3] + "." + references.get(i)[2];
                 } else if (references.get(i).length == 5) {
-                    cond += " LEFT OUTER JOIN " + references.get(i)[0] + " AS " + references.get(i)[3] + i + " ON " + references.get(i)[3] + i + "." + references.get(i)[1] + " = " + references.get(i)[4] + "." + references.get(i)[2];
+                    cond += " LEFT OUTER JOIN " + references.get(i)[0] + " AS " + references.get(i)[3]  + " ON " + references.get(i)[3] + "." + references.get(i)[1] + " = " + references.get(i)[4] + "." + references.get(i)[2];
                 }
             }
         }

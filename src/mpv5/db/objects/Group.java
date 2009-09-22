@@ -122,7 +122,6 @@ public class Group extends DatabaseObject {
                     hierarchypath = Group.GROUPSEPARATOR + p;
                     intp = p.__getGroupsids();
                 } catch (NodataFoundException ex) {
-                    ex.printStackTrace();
                     break;
                 }
             } while (intp > 1);

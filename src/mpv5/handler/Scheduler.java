@@ -206,7 +206,7 @@ private static GeneralListPanel g =new GeneralListPanel();
 //            if (Popup.Y_N_dialog(alerts.size() + " " + Messages.SCHEDULE_NEW_ALERTS, Messages.WARNING)) {
 
             g.show(map);
-            MPView.identifierView.addOrShowTab(g, Messages.UNPAID_BILLS_OVERDUE.toString());
+            MPView.identifierView.addOrShowTab(g, Messages.UNPAID_BILLS.toString());
 //            }
         }
     }

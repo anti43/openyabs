@@ -23,8 +23,12 @@ package mpv5.ui.panels;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.WindowEvent;
@@ -104,6 +108,24 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
         groupnameselect.setContext(Context.getGroup());
         companyselect.setSearchOnEnterEnabled(true);
         companyselect.setContext(Context.getContactsCompanies());
+        companyselect.getComboBox().addActionListener(new ActionListener() {
+
+            public void actionPerformed(ActionEvent e) {
+                String t = title.getText();
+                String s = cname.getText();
+                String p = prename.getText();
+                try {
+                    Contact a = (Contact) DatabaseObject.getObject(Context.getContact(), Integer.valueOf(companyselect.getSelectedItem().getId()));
+                    setDataOwner(a, true);
+                    companyselect.setModel(a);
+                    title.setText(t);
+                    cname.setText(s);
+                    prename.setText(p);
+                    company.setSelected(false);
+                } catch (NodataFoundException ex) {
+                }
+            }
+        });
 
         number.setSearchOnEnterEnabled(true);
         number.setParent(this);
