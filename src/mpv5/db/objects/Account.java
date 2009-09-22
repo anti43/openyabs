@@ -433,12 +433,12 @@ public class Account extends DatabaseObject {
             do {
                 try {
                     Account p = (Account) getObject(Context.getAccounts(), intp);
-                    hierarchypath = Group.GROUPSEPARATOR + p;
+                    hierarchypath = Group.GROUPSEPARATOR + p + hierarchypath;
                     intp = p.__getIntparentaccount();
                 } catch (NodataFoundException ex) {
                     break;
                 }
-            } while (intp > 1);
+            } while (intp >= 1);
         }
         return hierarchypath.replaceFirst(Group.GROUPSEPARATOR, "");
     }

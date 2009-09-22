@@ -119,12 +119,12 @@ public class Group extends DatabaseObject {
             do {
                 try {
                     Group p = (Group) getObject(Context.getGroup(), intp);
-                    hierarchypath = Group.GROUPSEPARATOR + p;
+                    hierarchypath = Group.GROUPSEPARATOR + p + hierarchypath;
                     intp = p.__getGroupsids();
                 } catch (NodataFoundException ex) {
                     break;
                 }
-            } while (intp > 1);
+            } while (intp >= 1);
         }
         return hierarchypath.replaceFirst(Group.GROUPSEPARATOR, "");
     }

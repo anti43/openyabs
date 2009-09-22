@@ -126,12 +126,12 @@ public class ProductGroup extends DatabaseObject {
             do {
                 try {
                     ProductGroup p = (ProductGroup) getObject(Context.getProductGroup(), intp);
-                    hierarchypath = Group.GROUPSEPARATOR + p;
+                    hierarchypath = Group.GROUPSEPARATOR + p + hierarchypath;
                     intp = p.__getProductgroupsids();
                 } catch (NodataFoundException ex) {
                     break;
                 }
-            } while (intp > 1);
+            } while (intp >= 1);
         }
         return hierarchypath.replaceFirst(Group.GROUPSEPARATOR, "");
     }
