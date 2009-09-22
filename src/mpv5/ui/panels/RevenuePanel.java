@@ -37,6 +37,7 @@ import javax.swing.JViewport;
 import javax.swing.SwingUtilities;
 import mpv5.db.common.*;
 import mpv5.db.objects.Account;
+import mpv5.db.objects.Expense;
 import mpv5.db.objects.Revenue;
 import mpv5.globals.Messages;
 import mpv5.db.objects.Favourite;
@@ -548,7 +549,6 @@ public class RevenuePanel extends javax.swing.JPanel implements DataPanel {
         value.setText(FormatNumber.formatDezimal(brutvalue_));
         netvalue.setText(FormatNumber.formatDezimal(netvalue_));
         try {
-            refresh();
             Account a =(Account) DatabaseObject.getObject(Context.getAccounts(), accountsids_);
             accountselect.setModel(a);
             path.setText(a.__getHierarchypath());
@@ -604,12 +604,28 @@ public class RevenuePanel extends javax.swing.JPanel implements DataPanel {
 
     @Override
     public void actionAfterSave() {
-        refresh();
+        Runnable runnable = new Runnable() {
+
+            public void run() {
+                try {
+                    itemtable.setModel(new MPTableModel(Revenue.getRevenues(),Headers.EXPENSE));
+                } catch (NodataFoundException ex) {
+                }
+            }
+        };SwingUtilities.invokeLater(runnable);
     }
 
     @Override
     public void actionAfterCreate() {
-        refresh();
+        Runnable runnable = new Runnable() {
+
+            public void run() {
+                try {
+                    itemtable.setModel(new MPTableModel(Revenue.getRevenues(), Headers.EXPENSE));
+                } catch (NodataFoundException ex) {
+                }
+            }
+        };SwingUtilities.invokeLater(runnable);
     }
 
     public void actionBeforeCreate() {

@@ -27,6 +27,8 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.util.Date;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JFrame;
 import javax.swing.JTabbedPane;
 import javax.swing.JViewport;
@@ -596,12 +598,28 @@ public class ExpensePanel extends javax.swing.JPanel implements DataPanel {
 
     @Override
     public void actionAfterSave() {
-        refresh();
+        Runnable runnable = new Runnable() {
+
+            public void run() {
+                try {
+                    itemtable.setModel(new MPTableModel(Expense.getExpenses(), Headers.EXPENSE));
+                } catch (NodataFoundException ex) {
+                }
+            }
+        };SwingUtilities.invokeLater(runnable);
     }
 
     @Override
     public void actionAfterCreate() {
-        refresh();
+       Runnable runnable = new Runnable() {
+
+            public void run() {
+                try {
+                    itemtable.setModel(new MPTableModel(Expense.getExpenses(), Headers.EXPENSE));
+                } catch (NodataFoundException ex) {
+                }
+            }
+        };SwingUtilities.invokeLater(runnable);
     }
 
     public void actionBeforeCreate() {
