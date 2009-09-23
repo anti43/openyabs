@@ -17,6 +17,7 @@
 package mpv5.db.objects;
 
 import java.util.ArrayList;
+import java.util.List;
 import javax.swing.JComponent;
 import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
@@ -134,5 +135,19 @@ public class Group extends DatabaseObject {
      */
     public void setHierarchypath(String hierarchypath) {
         this.hierarchypath = hierarchypath;
+    }
+
+    /**
+     * Find the children and sub-children of this group
+     * @return
+     * @throws NodataFoundException 
+     */
+    public List<Group> getChildGroups() throws NodataFoundException {
+        ArrayList<Group> childs = DatabaseObject.getReferencedObjects(this, Context.getGroup());
+        for (int i = 0; i < childs.size(); i++) {
+            Group databaseObject = childs.get(i);
+            childs.addAll(databaseObject.getChildGroups());
+        }
+        return childs;
     }
 }

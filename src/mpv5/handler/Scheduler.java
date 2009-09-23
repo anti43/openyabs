@@ -13,6 +13,7 @@ import mpv5.db.common.QueryHandler;
 import mpv5.db.common.ReturnValue;
 import mpv5.db.objects.Item;
 import mpv5.db.objects.Schedule;
+import mpv5.db.objects.SubItem;
 import mpv5.globals.Messages;
 import mpv5.logging.Log;
 import mpv5.ui.dialogs.Popup;
@@ -26,12 +27,14 @@ import mpv5.utils.date.vTimeframe;
  * This class handles the scheduled events
  */
 public class Scheduler extends Thread {
-private static GeneralListPanel g =new GeneralListPanel();
+
+    private static GeneralListPanel g = new GeneralListPanel();
+
     @Override
     public void run() {
 
         while (true) {
-          try {
+            try {
                 Thread.sleep(500);
             } catch (InterruptedException ignore) {
             }
@@ -48,15 +51,22 @@ private static GeneralListPanel g =new GeneralListPanel();
     private void checkForCreateBillEvents() {
         ArrayList<Schedule> data = Schedule.getEvents(new vTimeframe(DateConverter.addYears(new Date(), -2), new Date()));
         List<Item> list = new Vector<Item>();
+
         for (int i = 0; i < data.size(); i++) {
             Schedule schedule = data.get(i);
             if (!schedule.__getIsdone()) {
                 try {
                     Item item = schedule.getItem();
+                    SubItem[] subs = item.getSubitems();
                     item.setIDS(-1);
                     item.setDateadded(new Date());
-                    item.setDatetodo(new Date());
-                    item.setDateend(new Date());
+                    try {
+                        item.setDatetodo(DateConverter.addDays(new Date(), Integer.valueOf(MPView.getUser().getProperties().getProperty("bills.warn.days"))));
+                        item.setDateend(DateConverter.addDays(new Date(), Integer.valueOf(MPView.getUser().getProperties().getProperty("bills.alert.days"))));
+                    } catch (Exception e) {
+                        item.setDatetodo(DateConverter.addDays(new Date(), 14));
+                        item.setDateend(DateConverter.addDays(new Date(), 30));
+                    }
                     item.setIntreminders(0);
                     item.setIntstatus(item.STATUS_IN_PROGRESS);
                     item.setDescription(item.__getDescription() +
@@ -65,6 +75,12 @@ private static GeneralListPanel g =new GeneralListPanel();
                             "\n" +
                             item.__getCName());
                     item.save();
+                    for (int j = 0; j < subs.length; j++) {
+                        SubItem subItem = subs[j];
+                        subItem.setItemsids(item.__getIDS());
+                        subItem.setIDS(-1);
+                        subItem.save(true);
+                    }
 
                     Date olddate = schedule.__getNextdate();
                     schedule.setNextdate(DateConverter.addMonths(schedule.__getNextdate(), schedule.__getIntervalmonth()));
@@ -109,7 +125,7 @@ private static GeneralListPanel g =new GeneralListPanel();
                 Integer warn = Integer.valueOf(MPView.getUser().getProperties().getProperty("bills.warn.days"));
                 String sql = "SELECT ids FROM items WHERE dateadded <= '" +
                         DateConverter.getSQLDateString(DateConverter.addDays(new Date(), warn * -1)) +
-                        "' AND intstatus <> " + Item.STATUS_PAID + " AND inttype="+ Item.TYPE_BILL;
+                        "' AND intstatus <> " + Item.STATUS_PAID + " AND inttype=" + Item.TYPE_BILL;
                 ReturnValue data = QueryHandler.getConnection().freeSelectQuery(sql, MPSecurityManager.VIEW, null);
 
                 if (data.hasData()) {
@@ -135,7 +151,8 @@ private static GeneralListPanel g =new GeneralListPanel();
             Integer alert = Integer.valueOf(MPView.getUser().getProperties().getProperty("bills.alert.days"));
             String sql = "SELECT ids FROM items WHERE dateadded <= '" +
                     DateConverter.getSQLDateString(DateConverter.addDays(new Date(), alert * -1)) +
-                    "' AND intstatus <> " + Item.STATUS_PAID + " AND inttype="+ Item.TYPE_BILL;;
+                    "' AND intstatus <> " + Item.STATUS_PAID + " AND inttype=" + Item.TYPE_BILL;
+            ;
             ReturnValue data = QueryHandler.getConnection().freeSelectQuery(sql, MPSecurityManager.VIEW, null);
 
             if (data.hasData()) {
@@ -154,22 +171,24 @@ private static GeneralListPanel g =new GeneralListPanel();
             Log.Debug(this, "No alert treshold for bills defined.");
         }
 
-        String sql = "SELECT ids FROM items WHERE intstatus <> " + Item.STATUS_PAID + " AND inttype="+ Item.TYPE_BILL;;
-        ReturnValue data = QueryHandler.getConnection().freeSelectQuery(sql, MPSecurityManager.VIEW, null);
+        String sql = "SELECT ids FROM items WHERE intstatus <> " + Item.STATUS_PAID + " AND inttype=" + Item.TYPE_BILL;
+        
+        if (!MPView.getUser().getProperties().getProperty(MPView.tabPane, "hideunpaidbills")) {
+            ReturnValue data = QueryHandler.getConnection().freeSelectQuery(sql, MPSecurityManager.VIEW, null);
 
-        if (data.hasData()) {
-            Object[][] d = data.getData();
-            for (int i = 0; i < d.length; i++) {
-                int id = Integer.valueOf(d[i][0].toString());
-                try {
-                    Item it = (Item) Item.getObject(Context.getItems(), id);
-                    waitings.add(it);
-                } catch (NodataFoundException ex) {
-                    Log.Debug(this, ex.getMessage());
+            if (data.hasData()) {
+                Object[][] d = data.getData();
+                for (int i = 0; i < d.length; i++) {
+                    int id = Integer.valueOf(d[i][0].toString());
+                    try {
+                        Item it = (Item) Item.getObject(Context.getItems(), id);
+                        waitings.add(it);
+                    } catch (NodataFoundException ex) {
+                        Log.Debug(this, ex.getMessage());
+                    }
                 }
             }
         }
-
         for (Item i : alerts) {//Remove dupes
             if (warnings.contains(i)) {
                 warnings.remove(i);
