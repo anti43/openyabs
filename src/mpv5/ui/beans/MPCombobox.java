@@ -48,6 +48,7 @@ public class MPCombobox extends javax.swing.JPanel {
     private Context context;
     private int sortmode = 0;
     private JTable table;
+    private boolean instantiated;
 
     /**
      * If this combobox is within a table cell, set the table here
@@ -72,9 +73,9 @@ public class MPCombobox extends javax.swing.JPanel {
                 if (SEARCH_ON_ENTER && (e.getKeyCode() == KeyEvent.VK_ENTER) && context != null) {
                     search();
                 }
-                if (table != null) {
-                    jComboBox1.showPopup();
-                }
+//                if (table != null) {
+                jComboBox1.showPopup();
+//                }
 //                if (table != null) {
 //                    JComboBox combobox = getComboBox();
 //                    if (!combobox.isPopupVisible()) {
@@ -99,7 +100,7 @@ public class MPCombobox extends javax.swing.JPanel {
 
             @Override
             public void mousePressed(MouseEvent e) {
-                if (SEARCH_ON_ENTER) {
+                if (SEARCH_ON_ENTER&&!instantiated) {
                     if (table == null) {
                         jComboBox1.setModel(new DefaultComboBoxModel(new String[]{""}));
                     }
@@ -158,6 +159,7 @@ public class MPCombobox extends javax.swing.JPanel {
      * @param hidePopup
      */
     public void search(final boolean hidePopup) {
+        instantiated = true;
         Runnable runnable = new Runnable() {
 
             @Override
@@ -167,9 +169,13 @@ public class MPCombobox extends javax.swing.JPanel {
                 jComboBox1.setSelectedItem(new MPComboBoxModelItem(-1, value.toString()));
                 Object[][] data = null;
                 if (getComboBox().isEditable()) {
-                    data = new DatabaseSearch(context,100).getValuesFor("ids, cname", "cname", jComboBox1.getSelectedItem().toString(), true);
+                    if (context.equals(Context.getProducts())) {
+                        data = new DatabaseSearch(context, 200).getValuesFor2("ids, cname", new String[]{"cname", "description", "ean", "cnumber", "reference"}, String.valueOf(value), true);
+                    } else {
+                        data = new DatabaseSearch(context, 200).getValuesFor("ids, cname", "cname", jComboBox1.getSelectedItem().toString(), true);
+                    }
                 } else {
-                    data = new DatabaseSearch(context,100).getValuesFor("ids, cname", "cname", "", true);
+                    data = new DatabaseSearch(context, 200).getValuesFor("ids, cname", "cname", "", true);
                 }
 
                 jComboBox1.setModel(MPComboBoxModelItem.toModel(MPComboBoxModelItem.toItems(data, true, true)));

@@ -61,7 +61,7 @@
               <Group type="102" attributes="0">
                   <Component id="toolbar" min="-2" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
-                  <Component id="ppanel" pref="44" max="32767" attributes="0"/>
+                  <Component id="ppanel" pref="45" max="32767" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>

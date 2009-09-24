@@ -3,13 +3,9 @@ package mpv5.ui.panels;
 import com.sun.pdfview.PDFFile;
 import com.sun.pdfview.PDFPage;
 import com.sun.pdfview.PagePanel;
-import enoa.connection.NoaConnection;
-import enoa.handler.DocumentHandler;
 import java.awt.BorderLayout;
 import java.awt.Cursor;
-import java.awt.Frame;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.nio.ByteBuffer;
@@ -21,10 +17,16 @@ import javax.swing.JFrame;
 import javax.swing.JScrollPane;
 import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
+import mpv5.db.common.NodataFoundException;
 import mpv5.db.common.QueryCriteria;
 import mpv5.db.common.QueryHandler;
+import mpv5.db.objects.Contact;
+import mpv5.db.objects.Item;
+import mpv5.db.objects.MailMessage;
 import mpv5.globals.Messages;
+import mpv5.handler.VariablesHandler;
 import mpv5.logging.Log;
+import mpv5.mail.SimpleMail;
 import mpv5.ui.dialogs.BigPopup;
 import mpv5.ui.dialogs.DialogForFile;
 import mpv5.ui.dialogs.Popup;
@@ -32,8 +34,8 @@ import mpv5.ui.frames.MPView;
 import mpv5.utils.export.Export;
 import mpv5.utils.files.FileDirectoryHandler;
 import mpv5.utils.files.FileReaderWriter;
+import mpv5.utils.jobs.Job;
 import mpv5.utils.jobs.Waiter;
-import mpv5.utils.ooo.OOOPanel;
 import mpv5.utils.print.PrintJob;
 
 /**
@@ -283,6 +285,46 @@ public class PreviewPanel extends javax.swing.JPanel implements Waiter {
 }//GEN-LAST:event_jButton27ActionPerformed
 
     private void jButton28ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton28ActionPerformed
+
+        MailMessage m = null;
+        if (dataOwner != null && dataOwner.isExisting()) {
+
+            QueryCriteria c = new QueryCriteria("usersids", MPView.getUser().__getIDS());
+            try {
+                m = (MailMessage) Popup.SelectValue(DatabaseObject.getObjects(Context.getMessages(), c), Messages.SELECT_A_TEMPLATE);
+            } catch (Exception ex) {
+                Log.Debug(this, ex.getMessage());
+            }
+
+            if (dataOwner instanceof Item) {
+                try {
+                    Contact cont = ((Contact) Contact.getObject(Context.getContact(), ((Item) dataOwner).__getContactsids()));
+                    if (MPView.getUser().__getMail().contains("@") && MPView.getUser().__getMail().contains(".") && cont.__getMailaddress().contains("@") && cont.__getMailaddress().contains(".")) {
+                        SimpleMail pr = new SimpleMail();
+                        pr.setMailConfiguration(MPView.getUser().getMailConfiguration());
+                        pr.setRecipientsAddress(cont.__getMailaddress());
+                        if (m != null && m.__getCName() != null) {
+                            pr.setSubject(m.__getCName());
+                            pr.setText(VariablesHandler.parse(m.__getDescription(), dataOwner));
+                        }
+                        try {
+                            pr.set(file, null);
+                        } catch (Exception ex) {
+                            Log.Debug(ex);
+                        }
+
+                    } else {
+                        Popup.notice(Messages.NO_MAIL_DEFINED);
+                    }
+                } catch (NodataFoundException nodataFoundException) {
+                    Log.Debug(nodataFoundException);
+                } catch (UnsupportedOperationException unsupportedOperationException) {
+                    Popup.notice(Messages.NO_MAIL_CONFIG);
+                }
+            }
+        } else {
+            Popup.notice(Messages.NO_TEMPLATE_LOADED);
+        }
     }//GEN-LAST:event_jButton28ActionPerformed
 
     private void jButton31ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton31ActionPerformed

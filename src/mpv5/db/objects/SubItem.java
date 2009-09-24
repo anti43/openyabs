@@ -292,7 +292,8 @@ public class SubItem extends DatabaseObject {
         Context contextl = product.getContext();
         String params = "cname";
         String vars = null;
-        if (MPView.getUser().getProperties().hasProperty(contextl + mpv5.ui.beans.LightMPComboBox.VALUE_SEARCHFIELDS)) {
+        if (MPView.getUser().getProperties().hasProperty(contextl + mpv5.ui.beans.LightMPComboBox.VALUE_SEARCHFIELDS)&&
+                MPView.getUser().getProperties().getProperty(contextl + mpv5.ui.beans.LightMPComboBox.VALUE_SEARCHFIELDS).contains("_$")) {
             try {
                 params = "ids";
                 vars = MPView.getUser().getProperties().getProperty(contextl + mpv5.ui.beans.LightMPComboBox.VALUE_SEARCHFIELDS);
@@ -337,6 +338,7 @@ public class SubItem extends DatabaseObject {
                 setDescription(VariablesHandler.parse(product.__getCName(), product));
             }
         } else {
+            Log.Debug(SubItem.class, "No format defined..");
             setDescription(VariablesHandler.parse(product.__getCName(), product));
         }
 ///////////////end format////////////////////////////////////////////////////////

@@ -227,7 +227,11 @@ public class LabeledTextField extends javax.swing.JPanel {
                 jTextField1.setText("0.0");
             }
         }
-        return jTextField1.getText();
+        String txt = jTextField1.getText();
+        if (txt == null) {
+            txt = "";
+        }
+        return txt;
     }
 
     /**

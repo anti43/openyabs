@@ -257,8 +257,6 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
 
             setTitle();
 
-            prinitingComboBox1.init(dataOwner);
-
             tb.setFavourite(Favourite.isFavourite(object));
             tb.setEditable(!object.isReadOnly());
 
@@ -279,11 +277,10 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
             preload = false;
             button_preview.setEnabled(preload);
             preloadTemplate();
+            preloadTemplate2();
             validate();
         }
     }
-    Exportable preloadedExportFile;
-    Template preloadedTemplate;
 
     private void setTitle() {
         if (this.getParent() instanceof JViewport || this.getParent() instanceof JTabbedPane) {
@@ -399,7 +396,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
         jSeparator7 = new javax.swing.JToolBar.Separator();
         button_schedule = new javax.swing.JButton();
         button_preview = new javax.swing.JButton();
-        prinitingComboBox1 = new mpv5.ui.beans.PrinitingComboBox();
+        button_deliverynote = new javax.swing.JButton();
         jPanel2 = new javax.swing.JPanel();
         contactname = new mpv5.ui.beans.LabeledCombobox();
         contactcity = new javax.swing.JTextField();
@@ -516,7 +513,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(staus_icon, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(number, javax.swing.GroupLayout.PREFERRED_SIZE, 214, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 83, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 81, Short.MAX_VALUE)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                         .addComponent(groupnameselect, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -580,11 +577,11 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
         jPanel4.setLayout(jPanel4Layout);
         jPanel4Layout.setHorizontalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 684, Short.MAX_VALUE)
+            .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 682, Short.MAX_VALUE)
         );
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane3, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 35, Short.MAX_VALUE)
+            .addComponent(jScrollPane3, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 34, Short.MAX_VALUE)
         );
 
         jToolBar1.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
@@ -682,7 +679,18 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
         });
         jToolBar1.add(button_preview);
 
-        prinitingComboBox1.setName("prinitingComboBox1"); // NOI18N
+        button_deliverynote.setText(bundle.getString("ItemPanel.button_deliverynote.text")); // NOI18N
+        button_deliverynote.setEnabled(false);
+        button_deliverynote.setFocusable(false);
+        button_deliverynote.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        button_deliverynote.setName("button_deliverynote"); // NOI18N
+        button_deliverynote.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        button_deliverynote.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                button_deliverynoteActionPerformed(evt);
+            }
+        });
+        jToolBar1.add(button_deliverynote);
 
         jPanel2.setBackground(new java.awt.Color(255, 255, 255));
         jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("ItemPanel.jPanel2.border.title"))); // NOI18N
@@ -716,7 +724,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
                 .addComponent(contactcompany, javax.swing.GroupLayout.PREFERRED_SIZE, 131, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(8, 8, 8)
                 .addComponent(contactid, javax.swing.GroupLayout.PREFERRED_SIZE, 131, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 14, Short.MAX_VALUE))
+                .addGap(0, 12, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -762,7 +770,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
                 .addComponent(date2, javax.swing.GroupLayout.PREFERRED_SIZE, 214, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(date3, javax.swing.GroupLayout.PREFERRED_SIZE, 216, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(15, Short.MAX_VALUE))
+                .addContainerGap(13, Short.MAX_VALUE))
         );
         jPanel5Layout.setVerticalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -903,28 +911,23 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
             rightpaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, rightpaneLayout.createSequentialGroup()
-                .addComponent(jToolBar1, javax.swing.GroupLayout.DEFAULT_SIZE, 514, Short.MAX_VALUE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(prinitingComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
             .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addComponent(jPanel5, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, rightpaneLayout.createSequentialGroup()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 376, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 375, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 276, Short.MAX_VALUE)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 275, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(rightpaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(removefile, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(addfile, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)))
-            .addComponent(jToolBar2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 688, Short.MAX_VALUE)
+            .addComponent(jToolBar2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 686, Short.MAX_VALUE)
+            .addComponent(jToolBar1, javax.swing.GroupLayout.DEFAULT_SIZE, 686, Short.MAX_VALUE)
         );
         rightpaneLayout.setVerticalGroup(
             rightpaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(rightpaneLayout.createSequentialGroup()
-                .addGroup(rightpaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(prinitingComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jToolBar1, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addComponent(jToolBar1, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -1054,11 +1057,17 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
             ((MPTableModel) itemtable.getModel()).addRow(1);
         }
     }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void button_deliverynoteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button_deliverynoteActionPerformed
+
+        delivery();
+    }//GEN-LAST:event_button_deliverynoteActionPerformed
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private mpv5.ui.beans.LabeledCombobox accountselect;
     private javax.swing.JLabel addedby;
     private javax.swing.JButton addfile;
     private javax.swing.ButtonGroup buttonGroup1;
+    private javax.swing.JButton button_deliverynote;
     private javax.swing.JButton button_elevate;
     private javax.swing.JButton button_order2;
     private javax.swing.JButton button_preview;
@@ -1106,7 +1115,6 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
     private javax.swing.JLabel netvalue;
     private javax.swing.JTextPane notes;
     private mpv5.ui.beans.LabeledTextField number;
-    private mpv5.ui.beans.PrinitingComboBox prinitingComboBox1;
     private javax.swing.JButton removefile;
     private javax.swing.JPanel rightpane;
     private mpv5.ui.beans.LabeledTextField shipping;
@@ -1359,13 +1367,11 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
             Log.Debug(e);
         }
 
-//        TableModel m = itemtable.getModel();
-//        for (int i = 0; i < m.getRowCount(); i++) {
-//            if ((m.getValueAt(i, 4) == null || m.getValueAt(i, 4).toString().length() == 0) && Double.valueOf(String.valueOf(m.getValueAt(i, 5))).doubleValue() > 0) {
-//                m.setValueAt("  ", i, 4);
-//            }
-//        }
-        Product.createProducts(SubItem.saveModel(dataOwner, (MPTableModel) itemtable.getModel()), dataOwner);
+        if (dataOwner.__getInttype() != Item.TYPE_BILL) {
+            Product.createProducts(SubItem.saveModel(dataOwner, (MPTableModel) itemtable.getModel()), dataOwner);
+        } else {
+            SubItem.saveModel(dataOwner, (MPTableModel) itemtable.getModel());
+        }
     }
 
     @Override
@@ -1405,7 +1411,6 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
             Popup.notice(Messages.NO_TEMPLATE_LOADED);
         }
     }
-    private boolean preload = false;
 
     private void preloadTemplate() {
         Runnable runnable = new Runnable() {
@@ -1424,6 +1429,38 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
                 } else {
                     button_preview.setText(Messages.OO_NO_TEMPLATE.getValue());
                     button_preview.setEnabled(false);
+                }
+            }
+        };
+        new Thread(runnable).start();
+    }
+    private Template preloadedTemplate2;
+    private Exportable preloadedExportFile2;
+    private Exportable preloadedExportFile;
+    private Template preloadedTemplate;
+    private boolean preload2;
+    private boolean preload = false;
+
+    private void preloadTemplate2() {
+        Runnable runnable = new Runnable() {
+
+            public void run() {
+                int ot = dataOwner.__getInttype();
+                dataOwner.setInttype(Item.TYPE_DELIVERY_NOTE);
+                preloadedTemplate2 = Template.loadTemplate(dataOwner);
+                dataOwner.setInttype(ot);
+                if (preloadedTemplate2 != null) {
+                    try {
+                        preloadedExportFile2 = preloadedTemplate2.getExFile();
+                        preload2 = true;
+                        button_deliverynote.setEnabled(preload);
+//                        button_deliverynote.setText(Messages.ACTION_PREVIEW.getValue());
+                    } catch (Exception e) {
+                        Log.Debug(e);
+                    }
+                } else {
+//                    button_preview.setText(Messages.OO_NO_TEMPLATE.getValue());
+                    button_deliverynote.setEnabled(false);
                 }
             }
         };
@@ -1578,6 +1615,32 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
         itemtable.getColumnModel().getColumn(11).setCellEditor(new ButtonEditor(b1));
         itemtable.getColumnModel().getColumn(12).setCellRenderer(new ButtonRenderer());
         itemtable.getColumnModel().getColumn(12).setCellEditor(new ButtonEditor(b2));
+    }
+
+    private void delivery() {
+        PreviewPanel pr;
+
+        if (preloadedTemplate2 != null && preload2) {
+            if (dataOwner != null && dataOwner.isExisting()) {
+                if (itemtable.getCellEditor() != null) {
+                    itemtable.getCellEditor().stopCellEditing();
+                }
+
+                HashMap<String, Object> hm1 = new FormFieldsHandler(dataOwner).getFormattedFormFields(null);
+                File f2 = FileDirectoryHandler.getTempFile(cname_, "pdf");
+                Export ex = new Export(preloadedTemplate2);
+                ex.putAll(hm1);
+                ex.setTemplate(preloadedExportFile2);
+                ex.setTargetFile(f2);
+
+                pr = new PreviewPanel();
+                pr.setDataOwner(dataOwner);
+                new Job(ex, pr).execute();
+
+            }
+        } else {
+            Popup.notice(Messages.NO_TEMPLATE_LOADED);
+        }
     }
 }
 

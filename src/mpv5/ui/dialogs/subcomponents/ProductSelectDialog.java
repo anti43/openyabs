@@ -18,6 +18,7 @@ import mpv5.db.objects.SubItem;
 import mpv5.globals.Messages;
 import mpv5.logging.Log;
 import mpv5.utils.models.MPTableModel;
+import mpv5.utils.numberformat.FormatNumber;
 
 /**
  *
@@ -205,7 +206,7 @@ public class ProductSelectDialog extends javax.swing.JPanel {
         try {
             Product p = (Product) Product.getObject(Context.getProducts(), Integer.valueOf(labeledCombobox1.getSelectedItem().getId()));
             measure.setText(p.__getMeasure());
-            value.setText(p.__getExternalnetvalue());
+            value.setText(FormatNumber.formatDezimal(p.__getExternalnetvalue()));
             taxrate.setSelectedItem(p.__getTaxids());
             link.setText(p.__getUrl());
         } catch (NodataFoundException ex) {
@@ -226,12 +227,12 @@ public class ProductSelectDialog extends javax.swing.JPanel {
             }
         }
         s.setCountvalue(row);
-        s.setQuantityvalue(Double.valueOf(measure1.get_Text()));
+        s.setQuantityvalue(FormatNumber.parseDezimal(measure1.get_Text()));
         s.setLinkurl(link.getText());
 
         if (measure.getText().length() > 0) {
             s.setMeasure(measure.getText());
-            s.setExternalvalue(Double.valueOf(value.getText()));
+            s.setExternalvalue(FormatNumber.parseDezimal(value.getText()));
             try {
                 s.setTaxpercentvalue(Item.getTaxValue(Integer.valueOf(taxrate.getSelectedItem().getId())));
             } catch (Exception numberFormatException) {

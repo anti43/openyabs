@@ -167,6 +167,8 @@ public class Item extends DatabaseObject implements Formattable {
                 return Messages.TYPE_OFFER.toString();
             case (TYPE_ORDER):
                 return Messages.TYPE_ORDER.toString();
+            case (TYPE_DELIVERY_NOTE):
+                return Messages.TYPE_DELIVERY.toString();
         }
         return "";
     }
@@ -204,9 +206,11 @@ public class Item extends DatabaseObject implements Formattable {
     public static int getTaxId(Double value) {
         try {
             int v = Integer.valueOf(QueryHandler.instanceOf().clone(Context.getTaxes()).select("ids", new String[]{"taxvalue", value.toString(), ""})[0][0].toString());
+            Log.Debug(Item.class, "Found tax id: " + v);
             return v;
         } catch (NumberFormatException numberFormatException) {
-            return 0;
+            Log.Debug(Item.class, "Found NO tax id: " + numberFormatException);
+            return 1;
         }
     }
     private int contactsids;

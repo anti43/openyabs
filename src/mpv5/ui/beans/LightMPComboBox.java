@@ -73,7 +73,7 @@ public class LightMPComboBox extends JComboBox {
 
             @Override
             public void keyPressed(KeyEvent e) {
-                if (SEARCH_ON_ENTER && (e.getKeyCode() == KeyEvent.VK_CONTROL) && context != null) {
+                if (SEARCH_ON_ENTER && (e.getKeyCode() == KeyEvent.VK_F2) && context != null) {
                     search();
                 }
 //                  if (SEARCH_ON_ENTER && (e.getKeyCode() == KeyEvent.VK_DOWN) && context != null) {
@@ -100,9 +100,9 @@ public class LightMPComboBox extends JComboBox {
                         setModel(new DefaultComboBoxModel(new String[]{""}));
                     }
                     search();
-                    if (table != null) {
-                        showPopup();
-                    }
+//                    if (table != null) {
+//                        showPopup();
+////                    }
                 }
             }
 
@@ -183,9 +183,12 @@ public class LightMPComboBox extends JComboBox {
                     }
                 }
 
-                Object[][] data = new DatabaseSearch(context, 50).getValuesFor2(params, new String[]{"cname", "description", "ean", "cnumber"}, String.valueOf(value), true);
+                Object[][] data = new DatabaseSearch(context, 200).getValuesFor2(params, new String[]{"cname", "description", "ean", "cnumber", "reference"}, String.valueOf(value), true);
                 setModel(MPComboBoxModelItem.toModel(MPComboBoxModelItem.toItems(data, true, MPComboBoxModelItem.COMPARE_BY_VALUE, vars)));
-                table.editCellAt(table.getSelectedRow(), 4);
+                try {
+                    table.editCellAt(table.getSelectedRow(), 4);
+                } catch (Exception e) {
+                }
 //                   showPopup();//avoid flickering
             }
         };

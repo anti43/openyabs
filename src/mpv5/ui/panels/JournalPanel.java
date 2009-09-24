@@ -572,7 +572,7 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
                     }
 
                     if (dataowner != null) {
-                        dh.and(new QueryParameter(dataowner.getContext(), dataowner.getDbIdentity() + "ids", dataowner.__getIDS(), QueryParameter.EQUALS));
+                        dh.and(new QueryParameter(dataowner.getContext(),"ids", dataowner.__getIDS(), QueryParameter.EQUALS));
                     }
 
                     boolean additional = true;
