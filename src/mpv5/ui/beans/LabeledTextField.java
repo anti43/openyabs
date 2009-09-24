@@ -22,6 +22,7 @@ import mpv5.db.common.NodataFoundException;
 import mpv5.globals.LocalSettings;
 import mpv5.logging.Log;
 import mpv5.ui.panels.DataPanel;
+import mpv5.utils.numberformat.FormatNumber;
 import mpv5.utils.ui.TextFieldUtils;
 
 /**
@@ -219,7 +220,7 @@ public class LabeledTextField extends javax.swing.JPanel {
             }
         } else if (clazz == Double.class) {
             try {
-                Double.valueOf(jTextField1.getText());
+                FormatNumber.parseDezimal(jTextField1.getText());
                 jTextField1.setBackground(Color.WHITE);
             } catch (NumberFormatException numberFormatException) {
                 TextFieldUtils.blinker(jTextField1, Color.gray);

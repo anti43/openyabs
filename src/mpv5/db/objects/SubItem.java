@@ -50,8 +50,9 @@ public class SubItem extends DatabaseObject {
      * Save the model of SubItems
      * @param dataOwner
      * @param model
+     * @return
      */
-    public static void saveModel(Item dataOwner, MPTableModel model) {
+    public static List<SubItem> saveModel(Item dataOwner, MPTableModel model) {
         List<Object[]> rowsl = model.getValidRows(new int[]{4});
         List<SubItem> items = new Vector<SubItem>();
         Log.Debug(SubItem.class, "Rows found: " + rowsl.size());
@@ -101,6 +102,7 @@ public class SubItem extends DatabaseObject {
             }
         }
         deletionQueue.clear();
+        return items;
     }
 
     /**

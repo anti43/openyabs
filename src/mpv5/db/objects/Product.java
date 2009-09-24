@@ -18,6 +18,8 @@ package mpv5.db.objects;
 
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Vector;
 import javax.swing.JComponent;
 import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
@@ -362,11 +364,46 @@ public class Product extends DatabaseObject implements Formattable {
             Log.Debug(numberFormatException);
         }
 
-         return super.resolveReferences(map);
+        return super.resolveReferences(map);
     }
-
 
     public void defineFormatHandler(FormatHandler handler) {
         formatHandler = handler;
     }
+
+    /**
+     * Creates products from subitems which contain the trackid identifier - "tid#"
+     * @param saveModel
+     * @param dataowner
+     */
+    public static void createProducts(List<SubItem> saveModel, Item dataowner) {
+        List<String> refs = new Vector<String>();
+        for (SubItem i : saveModel) {
+            if (i.__getDescription().contains(TRACKID_END_IDENTIFIER) && i.__getDescription().contains(TRACKID_START_IDENTIFIER)) {
+                Product p = new Product();
+                p.setReference(i.__getDescription().substring(i.__getDescription().indexOf(TRACKID_START_IDENTIFIER), i.__getDescription().indexOf(TRACKID_END_IDENTIFIER)));
+                p.setCName(i.__getDescription().substring(i.__getDescription().indexOf(TRACKID_END_IDENTIFIER)));
+                p.setExternalnetvalue(i.__getExternalvalue());
+                p.setDescription(Messages.AUTO_GENERATED_VALUE.getValue());
+                p.setInttype(Product.TYPE_SERVICE);
+                p.setGroupsids(i.__getGroupsids());
+                p.setTaxids(Item.getTaxId(i.__getTaxpercentvalue()));
+                p.setMeasure(i.__getMeasure());
+                p.setUrl(i.__getLinkurl());
+                p.save(true);
+                refs.add(p.__getReference());
+            }
+        }
+
+        String r = "";
+        for (int i = 0; i < refs.size(); i++) {
+            String string = refs.get(i);
+            r += string + ", ";
+        }
+
+        dataowner.setDescription(dataowner.__getDescription() + "\n" + r.substring(0, r.length() - 2));
+        dataowner.save(true);
+    }
+    public static String TRACKID_START_IDENTIFIER = "tid#";
+    public static String TRACKID_END_IDENTIFIER = "#tid";
 }

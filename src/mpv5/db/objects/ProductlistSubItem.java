@@ -443,8 +443,8 @@ public class ProductlistSubItem extends DatabaseObject {
             data[i] = items[i].getRowData(i+1);
         }
         MPTableModel model = new MPTableModel(
-                new Class[]{Integer.class, Integer.class, Double.class, String.class, String.class, Double.class, Double.class, Double.class, Double.class, Double.class, Integer.class, Object.class, Object.class, Object.class},
-                new boolean[]{false, false, true, true, true, true, true, false, false, false, false, true, true},
+                new Class[]{Integer.class, Integer.class, Double.class, String.class, String.class, Double.class, Double.class, Double.class, Double.class, Double.class, Integer.class, Object.class, Object.class, Object.class, String.class},
+                new boolean[]{false, false, true, true, true, true, true, false, false, false, false, true, true, false, false},
                 data,
                 Headers.SUBITEMS.getValue());
         model.setContext(Context.getSubItem());

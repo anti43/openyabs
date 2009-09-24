@@ -536,8 +536,11 @@ public class ProductListsPanel extends javax.swing.JPanel implements DataPanel, 
     public void formatTable() {
 
         prepareTable();
-        TableFormat.resizeCols(itemtable, new Integer[]{0, 23, 53, 63, 100, 83, 63, 63, 0, 0, 0, 20, 20}, new Boolean[]{true, true, true, true, false, true, true, true, true, true, true, true, true});
+        TableFormat.resizeCols(itemtable, new Integer[]{0, 23, 53, 63, 100, 83, 63, 63, 0, 0, 0, 20, 20, 100}, new Boolean[]{true, true, true, true, false, true, true, true, true, true, true, true, true, true});
         TableFormat.changeBackground(itemtable, 1, Color.LIGHT_GRAY);
+        if(MPView.getUser().getProperties().getProperty(MPView.tabPane, "hidecolumnquantity"))TableFormat.stripColumn(itemtable, 2);
+        if(MPView.getUser().getProperties().getProperty(MPView.tabPane, "hidecolumnmeasure"))TableFormat.stripColumn(itemtable, 3);
+
 
     }
 

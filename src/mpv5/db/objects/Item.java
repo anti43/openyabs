@@ -559,7 +559,6 @@ public class Item extends DatabaseObject implements Formattable {
             Log.Debug(this, ex.getMessage());
         }
 
-
         map.put(TableHandler.KEY_TABLE + "1", list);
         map.put("netvalue", __getNetvalue());
         map.put("taxvalue", __getTaxvalue());

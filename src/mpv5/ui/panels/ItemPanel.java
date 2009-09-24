@@ -226,6 +226,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
 
         ((SpinnerNumberModel) calculator.getSpinner().getModel()).setMinimum(-1000);
         ((SpinnerNumberModel) calculator.getSpinner().getModel()).setMaximum(1000);
+
     }
 
     /**
@@ -446,7 +447,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
         value = new javax.swing.JLabel();
         toolbarpane = new javax.swing.JPanel();
 
-        java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle(); 
+        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("mpv5/resources/languages/Panels"); // NOI18N
         setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("ItemPanel.border.title_1"))); // NOI18N
         setName("Form"); // NOI18N
         setLayout(new java.awt.BorderLayout());
@@ -927,7 +928,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, 0)
                 .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, 0)
@@ -1287,6 +1288,12 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
         prepareTable();
         TableFormat.resizeCols(itemtable, new Integer[]{0, 23, 53, 63, 100, 83, 63, 63, 0, 0, 0, 20, 20, 0}, new Boolean[]{true, true, true, true, false, true, true, true, true, true, true, true, true, true});
         TableFormat.changeBackground(itemtable, 1, Color.LIGHT_GRAY);
+        if (MPView.getUser().getProperties().getProperty(MPView.tabPane, "hidecolumnquantity")) {
+            TableFormat.stripColumn(itemtable, 2);
+        }
+        if (MPView.getUser().getProperties().getProperty(MPView.tabPane, "hidecolumnmeasure")) {
+            TableFormat.stripColumn(itemtable, 3);
+        }
     }
 
     @Override
@@ -1358,7 +1365,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
 //                m.setValueAt("  ", i, 4);
 //            }
 //        }
-        SubItem.saveModel(dataOwner, (MPTableModel) itemtable.getModel());
+        Product.createProducts(SubItem.saveModel(dataOwner, (MPTableModel) itemtable.getModel()), dataOwner);
     }
 
     @Override

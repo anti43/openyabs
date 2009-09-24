@@ -61,6 +61,8 @@ public class ControlPanel_Userproperties extends javax.swing.JPanel implements C
         tabs = new javax.swing.JCheckBox();
         views = new javax.swing.JCheckBox();
         unpaidbills = new javax.swing.JCheckBox();
+        columnquantity = new javax.swing.JCheckBox();
+        columnmeasure = new javax.swing.JCheckBox();
         jPanel8 = new javax.swing.JPanel();
         labeledTextField1 = new mpv5.ui.beans.LabeledTextField();
         jLabel1 = new javax.swing.JLabel();
@@ -82,7 +84,7 @@ public class ControlPanel_Userproperties extends javax.swing.JPanel implements C
         setLayout(new java.awt.BorderLayout());
 
         jPanel1.setBackground(new java.awt.Color(255, 255, 255));
-        java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle(); 
+        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("mpv5/resources/languages/Panels"); // NOI18N
         jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("ControlPanel_Userproperties.jPanel1.border.title"))); // NOI18N
         jPanel1.setName("jPanel1"); // NOI18N
 
@@ -218,19 +220,48 @@ public class ControlPanel_Userproperties extends javax.swing.JPanel implements C
 
         jPanel3.setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("ControlPanel_Userproperties.jPanel3.border.title"))); // NOI18N
         jPanel3.setName("jPanel3"); // NOI18N
-        jPanel3.setLayout(new javax.swing.BoxLayout(jPanel3, javax.swing.BoxLayout.LINE_AXIS));
 
         tabs.setText(bundle.getString("ControlPanel_Userproperties.tabs.text")); // NOI18N
         tabs.setName("tabs"); // NOI18N
-        jPanel3.add(tabs);
 
         views.setText(bundle.getString("ControlPanel_Userproperties.views.text")); // NOI18N
         views.setName("views"); // NOI18N
-        jPanel3.add(views);
 
         unpaidbills.setText(bundle.getString("ControlPanel_Userproperties.unpaidbills.text")); // NOI18N
         unpaidbills.setName("unpaidbills"); // NOI18N
-        jPanel3.add(unpaidbills);
+
+        columnquantity.setText(bundle.getString("ControlPanel_Userproperties.columnquantity.text")); // NOI18N
+        columnquantity.setName("columnquantity"); // NOI18N
+
+        columnmeasure.setText(bundle.getString("ControlPanel_Userproperties.columnmeasure.text")); // NOI18N
+        columnmeasure.setName("columnmeasure"); // NOI18N
+
+        javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
+        jPanel3.setLayout(jPanel3Layout);
+        jPanel3Layout.setHorizontalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addComponent(tabs)
+                .addComponent(views)
+                .addComponent(unpaidbills))
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addComponent(columnquantity)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(columnmeasure))
+        );
+        jPanel3Layout.setVerticalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(tabs)
+                    .addComponent(views)
+                    .addComponent(unpaidbills))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(columnquantity)
+                    .addComponent(columnmeasure))
+                .addContainerGap(24, Short.MAX_VALUE))
+        );
 
         jPanel8.setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("ControlPanel_Userproperties.jPanel8.border.title"))); // NOI18N
         jPanel8.setName("jPanel8"); // NOI18N
@@ -274,7 +305,7 @@ public class ControlPanel_Userproperties extends javax.swing.JPanel implements C
                 .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
                     .addComponent(labeledTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(labeledTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(14, 14, 14))
+                .addGap(15, 15, 15))
         );
 
         jPanel9.setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("ControlPanel_Userproperties.jPanel9.border.title"))); // NOI18N
@@ -333,9 +364,9 @@ public class ControlPanel_Userproperties extends javax.swing.JPanel implements C
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(jPanel3, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addComponent(jPanel8, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addComponent(jPanel9, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(jPanel3, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -344,10 +375,10 @@ public class ControlPanel_Userproperties extends javax.swing.JPanel implements C
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel8, javax.swing.GroupLayout.PREFERRED_SIZE, 78, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jPanel8, javax.swing.GroupLayout.PREFERRED_SIZE, 79, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel9, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(17, Short.MAX_VALUE))
+                .addContainerGap(14, Short.MAX_VALUE))
         );
 
         add(jPanel1, java.awt.BorderLayout.CENTER);
@@ -423,6 +454,8 @@ public class ControlPanel_Userproperties extends javax.swing.JPanel implements C
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JCheckBox cname;
     private javax.swing.JCheckBox cnumber;
+    private javax.swing.JCheckBox columnmeasure;
+    private javax.swing.JCheckBox columnquantity;
     private mpv5.ui.beans.LabeledTextField defcount;
     private javax.swing.JPanel defs;
     private mpv5.ui.beans.LabeledCombobox deftax;
@@ -468,6 +501,9 @@ public class ControlPanel_Userproperties extends javax.swing.JPanel implements C
             MPView.getUser().getProperties().changeProperty(MPView.tabPane, "norecycletabs", tabs.isSelected());
             MPView.getUser().getProperties().changeProperty(MPView.tabPane, "avoidmultipleviews", views.isSelected());
             MPView.getUser().getProperties().changeProperty(MPView.tabPane, "hideunpaidbills", unpaidbills.isSelected());
+            MPView.getUser().getProperties().changeProperty(MPView.tabPane, "hidecolumnquantity", columnquantity.isSelected());
+            MPView.getUser().getProperties().changeProperty(MPView.tabPane, "hidecolumnmeasure", columnmeasure.isSelected());
+
             if (deftax.getSelectedItem() != null) {
                 MPView.getUser().getProperties().changeProperty(deftax.getName(), deftax.getSelectedItem().getId());
             }
@@ -495,6 +531,8 @@ public class ControlPanel_Userproperties extends javax.swing.JPanel implements C
         tabs.setSelected(MPView.getUser().getProperties().getProperty(MPView.tabPane, "norecycletabs"));
         views.setSelected(MPView.getUser().getProperties().getProperty(MPView.tabPane, "avoidmultipleviews"));
         unpaidbills.setSelected(MPView.getUser().getProperties().getProperty(MPView.tabPane, "hideunpaidbills"));
+        columnquantity.setSelected(MPView.getUser().getProperties().getProperty(MPView.tabPane, "hidecolumnquantity"));
+        columnmeasure.setSelected(MPView.getUser().getProperties().getProperty(MPView.tabPane, "hidecolumnmeasure"));
 
 
         Component[] t = productstobillsproperties.getComponents();
@@ -565,7 +603,7 @@ public class ControlPanel_Userproperties extends javax.swing.JPanel implements C
             SwingUtilities.invokeLater(runnable);
         } catch (Exception e) {
         }
-        
+
     }
 
     private void generate() {

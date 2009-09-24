@@ -13,6 +13,8 @@ import java.util.Currency;
 import java.util.Locale;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import mpv5.logging.Log;
 
 /**
@@ -24,16 +26,16 @@ public class FormatNumber {
     /**
      * Represents the default decimal format
      */
-    public static String FORMAT_DECIMAL = "#,###,##0.00";
-
+    public static String FORMAT_DECIMAL = "######0.00";
     /**
      * Represents a short decimal format
      */
-    public static String FORMAT_DECIMAL_SHORT = "#0.0#;(#0.0#)";
+    public static String FORMAT_DECIMAL_SHORT = "#0.0#";
 
     public static NumberFormat getShortDecimalFormat() {
-       return new DecimalFormat(FORMAT_DECIMAL_SHORT);
+        return new DecimalFormat(FORMAT_DECIMAL_SHORT);
     }
+
     /**
      * Check whether a text can be parsed to be a decimal number
      * @param text
@@ -96,10 +98,10 @@ public class FormatNumber {
             return 0d;
         }
         number = number.replace("%", "");
-
         java.text.DecimalFormat n = (DecimalFormat) getDefaultDecimalFormat();
         n.setMaximumFractionDigits(2);
         Locale[] Locales;
+        Log.Debug(FormatNumber.class, "Parsing " + number);
         try {
             return n.parse(number).doubleValue();
         } catch (ParseException ex) {
@@ -116,11 +118,22 @@ public class FormatNumber {
 //                        at java.util.Currency.getInstance(Currency.java:244)
                     }
                     Number result = NumberFormat.getNumberInstance(locale).parse(number);
+                    Log.Debug(FormatNumber.class, locale);
                     return result.doubleValue();
-                } catch (ParseException parseException) {
+                } catch (Exception en) {
                 }
             }
-            return null;
+
+            try { //last rescue
+                
+                String decsign = ("" + new java.text.DecimalFormat(".").format(0)).substring(1);
+                number = number.replace(decsign, ".");
+                Log.Debug(FormatNumber.class, number);
+                return n.parse(number).doubleValue();
+            } catch (ParseException ex1) {
+                Log.Debug(FormatNumber.class, "Parse decimal error: " + ex1.getMessage());
+                return null;
+            }
         }
     }
 
@@ -203,5 +216,4 @@ public class FormatNumber {
             return 0d;
         }
     }
-
 }

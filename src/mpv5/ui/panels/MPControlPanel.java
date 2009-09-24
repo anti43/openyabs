@@ -57,7 +57,10 @@ public class MPControlPanel extends javax.swing.JPanel {
     /** Creates new form ListPanel */
     private MPControlPanel() {
         initComponents();
-       
+        removeAll();
+        add(jScrollPane1, BorderLayout.CENTER);
+        validate();
+        repaint();
     }
 
     /** This me4thod is called from within the constructor to
@@ -92,16 +95,19 @@ public class MPControlPanel extends javax.swing.JPanel {
         jButton20 = new javax.swing.JButton();
         details = new javax.swing.JPanel();
         scroller = new javax.swing.JScrollPane();
+        jToolBar1 = new javax.swing.JToolBar();
+        jButton4 = new javax.swing.JButton();
         actions = new javax.swing.JPanel();
 
         setName("Form"); // NOI18N
+        setLayout(new java.awt.BorderLayout());
 
         jScrollPane1.setAutoscrolls(true);
         jScrollPane1.setName("jScrollPane1"); // NOI18N
         jScrollPane1.setPreferredSize(new java.awt.Dimension(343, 303));
 
         buttons.setBackground(new java.awt.Color(255, 255, 255));
-        java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle();
+        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("mpv5/resources/languages/Panels"); // NOI18N
         buttons.setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("MPControlPanel.buttons.border.title"))); // NOI18N
         buttons.setAutoscrolls(true);
         buttons.setMaximumSize(new java.awt.Dimension(32767, 400));
@@ -470,7 +476,7 @@ public class MPControlPanel extends javax.swing.JPanel {
         });
         buttons.add(jButton19);
 
-        jButton20.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
+        jButton20.setFont(new java.awt.Font("Tahoma", 0, 10));
         jButton20.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/48/advancedsettings.png"))); // NOI18N
         jButton20.setText(bundle.getString("MPControlPanel.jButton20.text")); // NOI18N
         jButton20.setToolTipText(bundle.getString("MPControlPanel.jButton20.toolTipText")); // NOI18N
@@ -492,6 +498,8 @@ public class MPControlPanel extends javax.swing.JPanel {
 
         jScrollPane1.setViewportView(buttons);
 
+        add(jScrollPane1, java.awt.BorderLayout.NORTH);
+
         details.setBackground(new java.awt.Color(255, 255, 255));
         details.setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("MPControlPanel.details.border.title"))); // NOI18N
         details.setMinimumSize(new java.awt.Dimension(300, 400));
@@ -503,26 +511,31 @@ public class MPControlPanel extends javax.swing.JPanel {
         scroller.setName("scroller"); // NOI18N
         details.add(scroller, java.awt.BorderLayout.CENTER);
 
+        jToolBar1.setFloatable(false);
+        jToolBar1.setRollover(true);
+        jToolBar1.setName("jToolBar1"); // NOI18N
+
+        jButton4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/adept_keep.png"))); // NOI18N
+        jButton4.setText(bundle.getString("MPControlPanel.jButton4.text")); // NOI18N
+        jButton4.setToolTipText(bundle.getString("MPControlPanel.jButton4.toolTipText")); // NOI18N
+        jButton4.setFocusable(false);
+        jButton4.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        jButton4.setName("jButton4"); // NOI18N
+        jButton4.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        jButton4.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton4ActionPerformed(evt);
+            }
+        });
+        jToolBar1.add(jButton4);
+
+        details.add(jToolBar1, java.awt.BorderLayout.NORTH);
+
+        add(details, java.awt.BorderLayout.CENTER);
+
         actions.setName("actions"); // NOI18N
         actions.setLayout(new java.awt.BorderLayout());
-
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
-        this.setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 593, Short.MAX_VALUE)
-            .addComponent(actions, javax.swing.GroupLayout.DEFAULT_SIZE, 593, Short.MAX_VALUE)
-            .addComponent(details, javax.swing.GroupLayout.DEFAULT_SIZE, 593, Short.MAX_VALUE)
-        );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 195, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(details, javax.swing.GroupLayout.PREFERRED_SIZE, 207, Short.MAX_VALUE)
-                .addGap(0, 0, 0)
-                .addComponent(actions, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))
-        );
+        add(actions, java.awt.BorderLayout.SOUTH);
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
@@ -592,7 +605,7 @@ public class MPControlPanel extends javax.swing.JPanel {
     }//GEN-LAST:event_jButton15ActionPerformed
 
     private void jButton16ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton16ActionPerformed
-         openDetails(new ControlPanel_Userproperties());
+        openDetails(new ControlPanel_Userproperties());
     }//GEN-LAST:event_jButton16ActionPerformed
 
     private void jButton17ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton17ActionPerformed
@@ -600,8 +613,6 @@ public class MPControlPanel extends javax.swing.JPanel {
     }//GEN-LAST:event_jButton17ActionPerformed
 
     private void jButton18ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton18ActionPerformed
-
- 
     }//GEN-LAST:event_jButton18ActionPerformed
 
     private void jButton19ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton19ActionPerformed
@@ -615,6 +626,12 @@ public class MPControlPanel extends javax.swing.JPanel {
     private void jButton7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton7ActionPerformed
         openDetails(new ControlPanel_OO());
     }//GEN-LAST:event_jButton7ActionPerformed
+
+    private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
+        removeAll();
+        add(jScrollPane1, BorderLayout.CENTER);
+        validate();repaint();
+    }//GEN-LAST:event_jButton4ActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel actions;
@@ -634,12 +651,14 @@ public class MPControlPanel extends javax.swing.JPanel {
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton20;
     private javax.swing.JButton jButton3;
+    private javax.swing.JButton jButton4;
     private javax.swing.JButton jButton5;
     private javax.swing.JButton jButton6;
     private javax.swing.JButton jButton7;
     private javax.swing.JButton jButton8;
     private javax.swing.JButton jButton9;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JToolBar jToolBar1;
     private javax.swing.JScrollPane scroller;
     // End of variables declaration//GEN-END:variables
 
@@ -687,7 +706,7 @@ public class MPControlPanel extends javax.swing.JPanel {
      * @param text
      * @param panel 
      */
-    public void addShortcut(Icon icon, String text, final JPanel panel) {
+    public void addShortcut(Icon icon, String text, final ControlApplet panel) {
         JButton button = new JButton(text, icon);
         button.setToolTipText(text); // NOI18N
         button.setFont(new java.awt.Font(LocalSettings.getProperty("defaultfont"), 0, 10)); // NOI18N
@@ -698,14 +717,12 @@ public class MPControlPanel extends javax.swing.JPanel {
         button.setMinimumSize(new java.awt.Dimension(90, 80));
         button.setPreferredSize(new java.awt.Dimension(90, 80));
         button.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-
         button.addActionListener(new java.awt.event.ActionListener() {
 
             @Override
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 try {
-                    details.removeAll();
-                    details.add(panel, BorderLayout.CENTER);
+                    openDetails(panel);
                 } catch (Exception ex) {
                     Log.Debug(this, ex);
                 }
@@ -713,13 +730,14 @@ public class MPControlPanel extends javax.swing.JPanel {
         });
 
         buttons.add(button);
+        validate();repaint();
     }
 
     /**
      *  Show a Control Panel Applet
      * @param panel
      */
-    public synchronized  void openDetails(ControlApplet panel) {
+    public synchronized void openDetails(ControlApplet panel) {
         MPView.setWaiting(true);
 
         actions.removeAll();
@@ -727,6 +745,12 @@ public class MPControlPanel extends javax.swing.JPanel {
         actions.validate();
         scroller.add((Component) panel);
         scroller.setViewportView((Component) panel);
+
+        removeAll();
+        add(details, BorderLayout.CENTER);
+        add(actions, BorderLayout.SOUTH);
+        validate();
+        repaint();
 
         ((Component) panel).validate();
         MPView.setWaiting(false);
