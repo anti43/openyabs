@@ -1019,6 +1019,9 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
     private void button_elevateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button_elevateActionPerformed
 
         if (Popup.OK_dialog(Messages.REALLY_CHANGE2, Messages.ARE_YOU_SURE.getValue())) {
+            dataOwner.setIntstatus(Item.STATUS_FINISHED);
+            dataOwner.save();
+
             if (dataOwner.__getInttype() == Item.TYPE_OFFER) {
                 dataOwner.setInttype(Item.TYPE_ORDER);
                 dataOwner.defineFormatHandler(null);
@@ -1391,21 +1394,9 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
 
         if (preloadedTemplate != null && preload) {
             if (dataOwner != null && dataOwner.isExisting()) {
-                if (itemtable.getCellEditor() != null) {
-                    itemtable.getCellEditor().stopCellEditing();
-                }
-
-                HashMap<String, Object> hm1 = new FormFieldsHandler(dataOwner).getFormattedFormFields(null);
-                File f2 = FileDirectoryHandler.getTempFile(cname_, "pdf");
-                Export ex = new Export(preloadedTemplate);
-                ex.putAll(hm1);
-                ex.setTemplate(preloadedExportFile);
-                ex.setTargetFile(f2);
-
                 pr = new PreviewPanel();
                 pr.setDataOwner(dataOwner);
-                new Job(ex, pr).execute();
-
+                new Job(Export.createFile(preloadedTemplate, dataOwner), pr).execute();
             }
         } else {
             Popup.notice(Messages.NO_TEMPLATE_LOADED);
@@ -1486,47 +1477,8 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
         MailMessage m = null;
         if (preloadedTemplate != null && preload) {
             if (dataOwner != null && dataOwner.isExisting()) {
-                if (itemtable.getCellEditor() != null) {
-                    itemtable.getCellEditor().stopCellEditing();
-                }
-                QueryCriteria c = new QueryCriteria("usersids", MPView.getUser().__getIDS());
-                try {
-                    m = (MailMessage) Popup.SelectValue(DatabaseObject.getObjects(Context.getMessages(), c), Messages.SELECT_A_TEMPLATE);
-                } catch (Exception ex) {
-                    Log.Debug(this, ex.getMessage());
-                }
-
-                HashMap<String, Object> hm1 = new FormFieldsHandler(dataOwner).getFormattedFormFields(null);
-                File f2 = FileDirectoryHandler.getTempFile(cname_, "pdf");
-                Export ex = new Export(preloadedTemplate);
-                ex.putAll(hm1);
-
-                ex.setTemplate(preloadedExportFile);
-                ex.setTargetFile(f2);
-
-                try {
-                    Contact cont = ((Contact) Contact.getObject(Context.getContact(), dataOwner.__getContactsids()));
-                    if (MPView.getUser().__getMail().contains("@") && MPView.getUser().__getMail().contains(".") && cont.__getMailaddress().contains("@") && cont.__getMailaddress().contains(".")) {
-                        SimpleMail pr = new SimpleMail();
-                        pr.setMailConfiguration(MPView.getUser().getMailConfiguration());
-                        pr.setRecipientsAddress(cont.__getMailaddress());
-                        if (m != null && m.__getCName() != null) {
-                            pr.setSubject(m.__getCName());
-                            pr.setText(VariablesHandler.parse(m.__getDescription(), dataOwner));
-                        }
-                        new Job(ex, (Waiter) pr).execute();
-
-                    } else {
-                        Popup.notice(Messages.NO_MAIL_DEFINED);
-                    }
-                } catch (NodataFoundException nodataFoundException) {
-                    Log.Debug(nodataFoundException);
-                } catch (UnsupportedOperationException unsupportedOperationException) {
-                    Popup.notice(Messages.NO_MAIL_CONFIG);
-                }
-
+                Export.mail(preloadedTemplate, dataOwner);
             }
-
         } else {
             Popup.notice(Messages.NO_TEMPLATE_LOADED);
         }
@@ -1535,20 +1487,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
     public void print() {
         if (preloadedTemplate != null && preload) {
             if (dataOwner != null && dataOwner.isExisting()) {
-                if (itemtable.getCellEditor() != null) {
-                    itemtable.getCellEditor().stopCellEditing();
-                }
-
-                HashMap<String, Object> hm1 = new FormFieldsHandler(dataOwner).getFormattedFormFields(null);
-                File f2 = FileDirectoryHandler.getTempFile(cname_, "pdf");
-                Export ex = new Export(preloadedTemplate);
-                ex.putAll(hm1);
-
-                ex.setTemplate(preloadedExportFile);
-                ex.setTargetFile(f2);
-
-                new Job(ex, (Waiter) new PrintJob()).execute();
-                saveSubItems();
+                Export.print(preloadedTemplate, dataOwner);
             }
         } else {
             Popup.notice(Messages.NO_TEMPLATE_LOADED);
@@ -1622,21 +1561,9 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
 
         if (preloadedTemplate2 != null && preload2) {
             if (dataOwner != null && dataOwner.isExisting()) {
-                if (itemtable.getCellEditor() != null) {
-                    itemtable.getCellEditor().stopCellEditing();
-                }
-
-                HashMap<String, Object> hm1 = new FormFieldsHandler(dataOwner).getFormattedFormFields(null);
-                File f2 = FileDirectoryHandler.getTempFile(cname_, "pdf");
-                Export ex = new Export(preloadedTemplate2);
-                ex.putAll(hm1);
-                ex.setTemplate(preloadedExportFile2);
-                ex.setTargetFile(f2);
-
                 pr = new PreviewPanel();
                 pr.setDataOwner(dataOwner);
-                new Job(ex, pr).execute();
-
+                new Job(Export.createFile(preloadedTemplate2, dataOwner), pr).execute();
             }
         } else {
             Popup.notice(Messages.NO_TEMPLATE_LOADED);

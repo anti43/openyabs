@@ -20,10 +20,26 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.HashMap;
 import javax.swing.SwingUtilities;
+import mpv5.db.common.Context;
+import mpv5.db.common.DatabaseObject;
 import mpv5.db.common.NodataFoundException;
+import mpv5.db.common.QueryCriteria;
+import mpv5.db.objects.Contact;
+import mpv5.db.objects.Item;
+import mpv5.db.objects.MailMessage;
 import mpv5.db.objects.Template;
+import mpv5.globals.Messages;
+import mpv5.handler.FormFieldsHandler;
+import mpv5.handler.VariablesHandler;
 import mpv5.logging.Log;
+import mpv5.mail.SimpleMail;
+import mpv5.ui.dialogs.Popup;
+import mpv5.ui.frames.MPView;
+import mpv5.utils.files.FileDirectoryHandler;
+import mpv5.utils.jobs.Job;
 import mpv5.utils.jobs.Waitable;
+import mpv5.utils.jobs.Waiter;
+import mpv5.utils.print.PrintJob;
 
 /**
  * The Export class handles the export of data using templatefiles to PDF
@@ -32,8 +48,82 @@ import mpv5.utils.jobs.Waitable;
 public class Export extends HashMap<String, Object> implements Waitable {
 
     private static final long serialVersionUID = 1L;
+
+    /**
+     * Mail a template
+     * @param preloadedTemplate
+     * @param dataOwner 
+     */
+    public static void mail(Template preloadedTemplate, Item dataOwner) {
+        QueryCriteria c = new QueryCriteria("usersids", MPView.getUser().__getIDS());
+        MailMessage m = null;
+        try {
+            m = (MailMessage) Popup.SelectValue(DatabaseObject.getObjects(Context.getMessages(), c), Messages.SELECT_A_TEMPLATE);
+        } catch (Exception ex) {
+            Log.Debug(ex);
+        }
+
+        HashMap<String, Object> hm1 = new FormFieldsHandler(dataOwner).getFormattedFormFields(null);
+        File f2 = FileDirectoryHandler.getTempFile(dataOwner.__getCName(), "pdf");
+        Export ex = new Export(preloadedTemplate);
+        ex.putAll(hm1);
+
+        ex.setTemplate(preloadedTemplate.getExFile());
+        ex.setTargetFile(f2);
+
+        try {
+            Contact cont = (Contact) (Contact.getObject(Context.getContact(), dataOwner.__getContactsids()));
+            if (MPView.getUser().__getMail().contains("@") && MPView.getUser().__getMail().contains(".") && cont.__getMailaddress().contains("@") && cont.__getMailaddress().contains(".")) {
+                SimpleMail pr = new SimpleMail();
+                pr.setMailConfiguration(MPView.getUser().getMailConfiguration());
+                pr.setRecipientsAddress(cont.__getMailaddress());
+                if (m != null && m.__getCName() != null) {
+                    pr.setSubject(m.__getCName());
+                    pr.setText(VariablesHandler.parse(m.__getDescription(), dataOwner));
+                }
+                new Job(ex, (Waiter) pr).execute();
+
+            } else {
+                Popup.notice(Messages.NO_MAIL_DEFINED);
+            }
+        } catch (NodataFoundException nodataFoundException) {
+            Log.Debug(nodataFoundException);
+        } catch (UnsupportedOperationException unsupportedOperationException) {
+            Popup.notice(Messages.NO_MAIL_CONFIG);
+        }
+    }
+
+    /**
+     * Print a template
+     * @param preloadedTemplate
+     * @param dataOwner
+     */
+    public static void print(Template preloadedTemplate, Item dataOwner) {
+        HashMap<String, Object> hm1 = new FormFieldsHandler(dataOwner).getFormattedFormFields(null);
+        File f2 = FileDirectoryHandler.getTempFile(dataOwner.__getCName(), "pdf");
+        Export ex = new Export(preloadedTemplate);
+        ex.putAll(hm1);
+        ex.setTemplate(preloadedTemplate.getExFile());
+        ex.setTargetFile(f2);
+        new Job(ex, (Waiter) new PrintJob()).execute();
+    }
+
+    /**
+     * Create a {@link Waitable} which is able to create a file
+     * @param preloadedTemplate
+     * @param dataOwner
+     * @return
+     */
+    public static Waitable createFile(Template preloadedTemplate, Item dataOwner) {
+        HashMap<String, Object> hm1 = new FormFieldsHandler(dataOwner).getFormattedFormFields(null);
+        File f2 = FileDirectoryHandler.getTempFile(dataOwner.__getCName(), "pdf");
+        Export ex = new Export(preloadedTemplate);
+        ex.putAll(hm1);
+        ex.setTemplate(preloadedTemplate.getExFile());
+        ex.setTargetFile(f2);
+        return ex;
+    }
     private Exportable file;
-//    private Thread t;
     private File toFile;
     private String targetName;
     private final Template t;
