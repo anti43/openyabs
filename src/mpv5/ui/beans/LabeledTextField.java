@@ -19,9 +19,11 @@ import javax.swing.JTextField;
 import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
 import mpv5.db.common.NodataFoundException;
+import mpv5.db.common.QueryData;
 import mpv5.globals.LocalSettings;
 import mpv5.logging.Log;
 import mpv5.ui.panels.DataPanel;
+import mpv5.utils.models.MPComboBoxModelItem;
 import mpv5.utils.numberformat.FormatNumber;
 import mpv5.utils.ui.TextFieldUtils;
 
@@ -39,6 +41,7 @@ public class LabeledTextField extends javax.swing.JPanel {
     private Context context;
     private String searchField;
     private boolean searchOnEnterEnabled;
+    private Object displayingObject;
 
     /** Creates new form LabeledTextField */
     public LabeledTextField() {
@@ -275,5 +278,42 @@ public class LabeledTextField extends javax.swing.JPanel {
      */
     public void setSearchField(String string) {
         searchField = string;
+    }
+
+    /**
+     * Set the object displayed by this text field for later use
+     * @param selectedItem
+     */
+    public void setDisplayingObject(Object selectedItem) {
+        this.displayingObject = selectedItem;
+        setText(selectedItem);
+    }
+
+    /**
+     * @return the displayingObject
+     */
+    public Object getDisplayingObject() {
+        return displayingObject;
+    }
+
+    @SuppressWarnings("unchecked")
+    public <T extends Object> T getValue(T classtemplate) {
+        if (clazz != classtemplate.getClass()) {
+            throw new IllegalArgumentException("Classtemplate must match value class!");
+        }
+        if (clazz == Integer.class) {
+            try {
+                return (T) Integer.valueOf(jTextField1.getText());
+            } catch (NumberFormatException numberFormatException) {
+                return (T) new Integer(0);
+            }
+        } else if (clazz == Double.class) {
+            try {
+                return (T) FormatNumber.parseDezimal(jTextField1.getText());
+            } catch (NumberFormatException numberFormatException) {
+                return (T) new Double(0);
+            }
+        }
+        return null;
     }
 }

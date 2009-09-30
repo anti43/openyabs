@@ -11,6 +11,8 @@
 package mpv5.ui.beans;
 
 import java.awt.Font;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Vector;
@@ -29,6 +31,7 @@ public class LabeledCombobox extends javax.swing.JPanel {
     private static final long serialVersionUID = 1L;
     private String _text;
     private String _label;
+    private LabeledTextField receiver;
 
     /** Creates new form LabeledTextField */
     public LabeledCombobox() {
@@ -219,11 +222,10 @@ public class LabeledCombobox extends javax.swing.JPanel {
      * @return the combobox item
      * @throws ClassCastException
      */
-    public MPComboBoxModelItem getValue(){
+    public MPComboBoxModelItem getValue() {
         return mPCombobox1.getSelectedItem();
     }
-    
-    
+
     /**
      * The textual representation of the seleceted item
      * @return the text of the combobox
@@ -279,4 +281,16 @@ public class LabeledCombobox extends javax.swing.JPanel {
         mPCombobox1.search(true);
     }
 
+    /**
+     * Define a textfield wich displays selection changes
+     * @param receiver 
+     */
+    public void setReceiver(final LabeledTextField receiver) {
+        this.receiver = receiver;
+        getComboBox().addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                receiver.setDisplayingObject(getSelectedItem());
+            }
+        });
+    }
 }
