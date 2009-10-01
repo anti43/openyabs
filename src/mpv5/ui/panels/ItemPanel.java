@@ -34,6 +34,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Vector;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
@@ -244,41 +246,51 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
 
     @Override
     public void setDataOwner(DatabaseObject object, boolean populate) {
-        dataOwner = (Item) object;
-        if (populate) {
-            dataOwner.setPanelData(this);
-            inttype_ = dataOwner.__getInttype();
-            button_reminders.setEnabled(inttype_ == Item.TYPE_BILL);
-            button_schedule.setEnabled(inttype_ == Item.TYPE_BILL);
-            button_elevate.setEnabled(inttype_ != Item.TYPE_BILL);
-            type.setText(Item.getTypeString(inttype_));
+        if (object instanceof Item) {
+            dataOwner = (Item) object;
+            if (populate) {
+                dataOwner.setPanelData(this);
+                inttype_ = dataOwner.__getInttype();
+                button_reminders.setEnabled(inttype_ == Item.TYPE_BILL);
+                button_schedule.setEnabled(inttype_ == Item.TYPE_BILL);
+                button_elevate.setEnabled(inttype_ != Item.TYPE_BILL);
+                type.setText(Item.getTypeString(inttype_));
 //            typelabel.setIcon(dataOwner.getIcon());
-            this.exposeData();
+                this.exposeData();
 
-            setTitle();
+                setTitle();
 
-            tb.setFavourite(Favourite.isFavourite(object));
-            tb.setEditable(!object.isReadOnly());
+                tb.setFavourite(Favourite.isFavourite(object));
+                tb.setEditable(!object.isReadOnly());
 
-            itemtable.setModel(SubItem.toModel(((Item) object).getSubitems()));
-            if (((MPTableModel) itemtable.getModel()).getEmptyRows(new int[]{4}) < 2) {
-                ((MPTableModel) itemtable.getModel()).addRow(1);
+                itemtable.setModel(SubItem.toModel(((Item) object).getSubitems()));
+                if (((MPTableModel) itemtable.getModel()).getEmptyRows(new int[]{4}) < 2) {
+                    ((MPTableModel) itemtable.getModel()).addRow(1);
+                }
+                omodel = (MPTableModel) itemtable.getModel();
+
+                formatTable();
+                try {
+                    ((MPTableModel) itemtable.getModel()).fireTableCellUpdated(0, 0);
+                } catch (Exception e) {
+                }
+                if (object.isReadOnly()) {
+                    Popup.notice(Messages.LOCKED_BY);
+                }
+                preload = false;
+                button_preview.setEnabled(preload);
+                preloadTemplate();
+                preloadTemplate2();
+                validate();
             }
-            omodel = (MPTableModel) itemtable.getModel();
-
-            formatTable();
+        } else if (object instanceof SubItem) {
+            Item i;
             try {
-                ((MPTableModel) itemtable.getModel()).fireTableCellUpdated(0, 0);
-            } catch (Exception e) {
+                i = (Item) DatabaseObject.getObject(Context.getItems(), ((SubItem) object).__getItemsids());
+                setDataOwner(i, populate);
+            } catch (NodataFoundException ex) {
+                Log.Debug(ex);
             }
-            if (object.isReadOnly()) {
-                Popup.notice(Messages.LOCKED_BY);
-            }
-            preload = false;
-            button_preview.setEnabled(preload);
-            preloadTemplate();
-            preloadTemplate2();
-            validate();
         }
     }
 
@@ -1297,7 +1309,8 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
     public void formatTable() {
 
         prepareTable();
-        TableFormat.resizeCols(itemtable, new Integer[]{0, 23, 53, 63, 100, 83, 63, 63, 0, 0, 0, 20, 20, 0}, new Boolean[]{true, true, true, true, false, true, true, true, true, true, true, true, true, true});
+        TableFormat.resizeCols(itemtable, new Integer[]{0, 23, 53, 63, 100, 83, 63, 63, 0, 0, 0, 20, 20, 0, 0},
+                new Boolean[]{true, true, true, true, false, true, true, true, true, true, true, true, true, true, true});
         TableFormat.changeBackground(itemtable, 1, Color.LIGHT_GRAY);
         if (MPView.getUser().getProperties().getProperty(MPView.tabPane, "hidecolumnquantity")) {
             TableFormat.stripColumn(itemtable, 2);
@@ -1526,7 +1539,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
             }
 
             public void mouseReleased(MouseEvent e) {
-                ProductSelectDialog.instanceOf((MPTableModel) itemtable.getModel(), itemtable.getSelectedRow(), e, Integer.valueOf(itemtable.getValueAt(itemtable.getSelectedRow(), 10).toString()));
+                ProductSelectDialog.instanceOf((MPTableModel) itemtable.getModel(), itemtable.getSelectedRow(), e, Integer.valueOf(itemtable.getValueAt(itemtable.getSelectedRow(), 10).toString()), itemtable.getValueAt(itemtable.getSelectedRow(), 12 + 1).toString(), itemtable.getValueAt(itemtable.getSelectedRow(), 14).toString());
                 if (((MPTableModel) itemtable.getModel()).getEmptyRows(new int[]{4}) < 2) {
                     ((MPTableModel) itemtable.getModel()).addRow(1);
                 }

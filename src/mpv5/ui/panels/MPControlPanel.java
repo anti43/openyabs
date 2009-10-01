@@ -652,13 +652,13 @@ public class MPControlPanel extends javax.swing.JPanel {
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
         removeAll();
         add(jScrollPane1, BorderLayout.CENTER);
-        validate();repaint();
+        validate();
+        repaint();
     }//GEN-LAST:event_jButton4ActionPerformed
 
     private void jButton21ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton21ActionPerformed
         openDetails(new ControlPanel_Taxes());
     }//GEN-LAST:event_jButton21ActionPerformed
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel actions;
     private javax.swing.JPanel buttons;
@@ -757,7 +757,8 @@ public class MPControlPanel extends javax.swing.JPanel {
         });
 
         buttons.add(button);
-        validate();repaint();
+        validate();
+        repaint();
     }
 
     /**
@@ -767,20 +768,26 @@ public class MPControlPanel extends javax.swing.JPanel {
     public synchronized void openDetails(ControlApplet panel) {
         MPView.setWaiting(true);
 
-        actions.removeAll();
-        actions.add(((JPanel) panel.getAndRemoveActionPanel()));
-        actions.validate();
-        scroller.add((Component) panel);
-        scroller.setViewportView((Component) panel);
+        try {
+            actions.removeAll();
+            actions.add(((JPanel) panel.getAndRemoveActionPanel()));
+            actions.validate();
+            scroller.add((Component) panel);
+            scroller.setViewportView((Component) panel);
 
-        removeAll();
-        add(details, BorderLayout.CENTER);
-        add(actions, BorderLayout.SOUTH);
-        validate();
-        repaint();
+            removeAll();
+            add(details, BorderLayout.CENTER);
+            add(actions, BorderLayout.SOUTH);
+            validate();
+            repaint();
 
-        ((Component) panel).validate();
-        MPView.setWaiting(false);
-        MPView.identifierFrame.validate();
+            ((Component) panel).validate();
+
+        } catch (Exception e) {
+            //No rights for this!
+        } finally {
+            MPView.setWaiting(false);
+            MPView.identifierFrame.validate();
+        }
     }
 }

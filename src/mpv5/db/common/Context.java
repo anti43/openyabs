@@ -2,6 +2,8 @@ package mpv5.db.common;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
+import java.util.Vector;
 import mpv5.globals.Headers;
 import mpv5.db.objects.Account;
 import mpv5.db.objects.Address;
@@ -218,7 +220,7 @@ public class Context {
         list.add(getWebShops());
         list.add(getTemplate());
         list.add(getReminders());
-        list.add(getTaxes());
+        list.add(getSubItem());
 
         return list;
     }
@@ -324,7 +326,7 @@ public class Context {
     public static ArrayList<Context> getSearchableContexts() {
         ArrayList<Context> list = new ArrayList<Context>();
         list.add(getUser());
-//        list.add(getAddress());
+        list.add(getSubItem());
         list.add(getItem(null, null));
         list.add(getSchedule());
         list.add(getContact());
@@ -773,9 +775,13 @@ public class Context {
      * @param c
      */
     public void addReference(Context c) {
-        String alias = c.getDbIdentity();
-        references.add(new String[]{alias, "ids", alias + "ids", alias, this.getDbIdentity()});
+        if (!refs.contains(c)) {
+            String alias = c.getDbIdentity();
+            refs.add(c);
+            references.add(new String[]{alias, "ids", alias + "ids", alias, this.getDbIdentity()});
+        }
     }
+    List<Context> refs = new Vector<Context>();
 
     /**
      * Add a foreign table reference to this context<br/><br/>
@@ -842,9 +848,9 @@ public class Context {
         if (references.size() > 0) {
             for (int i = 0; i < references.size(); i++) {
                 if (references.get(i).length == 4) {
-                    cond += " LEFT OUTER JOIN " + references.get(i)[0] + " AS " + references.get(i)[3] + " ON " + references.get(i)[3] + "." + references.get(i)[1] + " = " + references.get(i)[3] + "." + references.get(i)[2];
+                    cond += " LEFT OUTER JOIN " + references.get(i)[0] + " ON " + references.get(i)[3] + "." + references.get(i)[1] + " = " + references.get(i)[3] + "." + references.get(i)[2];
                 } else if (references.get(i).length == 5) {
-                    cond += " LEFT OUTER JOIN " + references.get(i)[0] + " AS " + references.get(i)[3] + " ON " + references.get(i)[3] + "." + references.get(i)[1] + " = " + references.get(i)[4] + "." + references.get(i)[2];
+                    cond += " LEFT OUTER JOIN " + references.get(i)[0] + " ON " + references.get(i)[3] + "." + references.get(i)[1] + " = " + references.get(i)[4] + "." + references.get(i)[2];
                 }
             }
         }

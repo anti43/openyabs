@@ -271,7 +271,7 @@ public class Search extends javax.swing.JFrame {
             lastContext = (Context) scope.getSelectedItem();
             lastContext.addReference(Context.getGroup());
             DatabaseSearch s = new DatabaseSearch(lastContext);
-            data = s.getValuesFor(lastContext.getDbIdentity() + ".ids," + lastContext.getDbIdentity() + ".cname," + "groups0.cname," + lastContext.getDbIdentity() + ".dateadded", new String[]{"cname"}, newSelection, !jCheckBox1.isSelected());
+            data = s.getValuesFor(lastContext.getDbIdentity() + ".ids," + lastContext.getDbIdentity() + ".cname," + "groups.cname," + lastContext.getDbIdentity() + ".dateadded", new String[]{"cname"}, newSelection, !jCheckBox1.isSelected());
             jTable1.setModel(new MPTableModel(data));
         } else {
             lastContext = null;

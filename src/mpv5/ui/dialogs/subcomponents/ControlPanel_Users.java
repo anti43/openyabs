@@ -747,9 +747,12 @@ public class ControlPanel_Users extends javax.swing.JPanel implements ControlApp
     }
 
     public Component getAndRemoveActionPanel() {
-        this.remove(jPanel6);
-        validate();
-        return jPanel6;
+        if (MPSecurityManager.checkAdminAccess()) {
+            this.remove(jPanel6);
+            validate();
+            return jPanel6;
+        }
+        return null;
     }
 
     @Override

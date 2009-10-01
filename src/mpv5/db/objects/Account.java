@@ -114,7 +114,8 @@ public class Account extends DatabaseObject {
 
     @Override
     public JComponent getView() {
-        throw new UnsupportedOperationException("Not supported yet.");
+//        throw new UnsupportedOperationException("Not supported yet.");
+        return null;
     }
 
     /**

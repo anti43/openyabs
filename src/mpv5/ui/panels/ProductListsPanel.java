@@ -644,7 +644,7 @@ public class ProductListsPanel extends javax.swing.JPanel implements DataPanel, 
             }
 
             public void mouseReleased(MouseEvent e) {
-                ProductSelectDialog.instanceOf((MPTableModel) itemtable.getModel(), itemtable.getSelectedRow(), e, Integer.valueOf(itemtable.getValueAt(itemtable.getSelectedRow(), 10).toString()));
+                ProductSelectDialog.instanceOf((MPTableModel) itemtable.getModel(), itemtable.getSelectedRow(), e, Integer.valueOf(itemtable.getValueAt(itemtable.getSelectedRow(), 10).toString()),itemtable.getValueAt(itemtable.getSelectedRow(), 12+1).toString(),itemtable.getValueAt(itemtable.getSelectedRow(), 14).toString());
                 if (((MPTableModel) itemtable.getModel()).getEmptyRows(new int[]{4}) < 2) {
                     ((MPTableModel) itemtable.getModel()).addRow(1);
                 }

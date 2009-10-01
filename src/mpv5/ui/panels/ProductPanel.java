@@ -105,12 +105,13 @@ public class ProductPanel extends javax.swing.JPanel implements DataPanel, MPCBS
         tb = new mpv5.ui.toolbars.DataPanelTB(this);
         toolbarpane.add(tb, BorderLayout.CENTER);
         dataOwner = new Product();
+        dataOwner.setInttype(type);
 
         refresh();
 
         addedby.setText(MPView.getUser().getName());
         contactname.setSearchOnEnterEnabled(true);
-        contactname.setContext(Context.getContact());
+        contactname.setContext(Context.getSupplier());
         contactname.getComboBox().addActionListener(new ActionListener() {
 
             @Override
@@ -136,7 +137,7 @@ public class ProductPanel extends javax.swing.JPanel implements DataPanel, MPCBS
         });
 
         contactname1.setSearchOnEnterEnabled(true);
-        contactname1.setContext(Context.getContact());
+        contactname1.setContext(Context.getManufacturer());
         contactname1.getComboBox().addActionListener(new ActionListener() {
 
             @Override
@@ -1139,9 +1140,7 @@ public class ProductPanel extends javax.swing.JPanel implements DataPanel, MPCBS
                     }
                     fillFiles();
 
-                    stype.setModel(Item.getStatusStrings(), MPComboBoxModelItem.COMPARE_BY_ID, new java.util.Vector<Integer>());
-                    stype.setSelectedIndex(MPView.getUser().__getIntdefaultstatus());
-
+                    stype.setModel(Product.getTypes(), MPComboBoxModelItem.COMPARE_BY_ID, new java.util.Vector<Integer>());
                     selecttax.triggerSearch();
                 } catch (Exception e) {
                     Log.Debug(this, e);

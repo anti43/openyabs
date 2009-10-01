@@ -138,10 +138,12 @@ public class LabeledCombobox extends javax.swing.JPanel {
      * @param itemindex
      */
     public void setSelectedIndex(int itemindex) {
-        if (itemindex < getComboBox().getItemCount()) {
-            getComboBox().setSelectedIndex(itemindex);
-        } else {
-            throw new IndexOutOfBoundsException(itemindex + " must be lower than " + getComboBox().getItemCount());
+        if (getComboBox().getItemCount() > 0) {
+            if (itemindex < getComboBox().getItemCount()) {
+                getComboBox().setSelectedIndex(itemindex);
+            } else {
+                throw new IndexOutOfBoundsException(itemindex + " must be lower than " + getComboBox().getItemCount());
+            }
         }
     }
 
@@ -290,6 +292,7 @@ public class LabeledCombobox extends javax.swing.JPanel {
     public void setReceiver(final LabeledTextField receiver) {
         this.receiver = receiver;
         getComboBox().addActionListener(new ActionListener() {
+
             public void actionPerformed(ActionEvent e) {
                 receiver.setDisplayingObject(getSelectedItem());
             }

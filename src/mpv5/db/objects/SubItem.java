@@ -73,7 +73,7 @@ public class SubItem extends DatabaseObject {
             } catch (Exception e) {
                 Log.Debug(SubItem.class, e.getMessage());
             }
-            it.setCName(row[4].toString());
+            it.setCName(row[14].toString());
             it.setItemsids(dataOwner.__getIDS());
             it.setCountvalue(Double.valueOf(row[1].toString()));
             it.setDatedelivery(dataOwner.__getDatetodo());
@@ -136,7 +136,7 @@ public class SubItem extends DatabaseObject {
             } catch (Exception e) {
                 Log.Debug(SubItem.class, e.getMessage());
             }
-            it.setCName(row[4].toString());
+            it.setCName(row[14].toString());
             it.setItemsids(dataOwner.__getIDS());
             it.setCountvalue(Double.valueOf(row[1].toString()));
             it.setDatedelivery(dataOwner.__getDatetodo());
@@ -189,7 +189,7 @@ public class SubItem extends DatabaseObject {
             } catch (Exception e) {
                 Log.Debug(SubItem.class, e.getMessage());
             }
-            it.setCName(row[4].toString());
+            it.setCName(row[14].toString());
 //            it.setItemsids(dataOwner.__getIDS());
             it.setCountvalue(Double.valueOf(row[1].toString()));
 //            it.setDatedelivery(dataOwner.__getDatetodo());
@@ -397,7 +397,9 @@ public class SubItem extends DatabaseObject {
             String.valueOf(FormatNumber.formatPercent(this.__getTaxpercentvalue())),
             String.valueOf(FormatNumber.formatLokalCurrency(this.getTotalTaxValue())),
             String.valueOf(FormatNumber.formatLokalCurrency(this.__getTotalbrutvalue())),
-            __getLinkurl()
+            __getLinkurl(),
+            __getCName()
+
         ///////////////////////////////////////////////////////////////////////////////
         };
 
@@ -531,7 +533,6 @@ public class SubItem extends DatabaseObject {
         try {
             Item dos = (Item) DatabaseObject.getObject(Context.getItems(), __getItemsids());
             ItemPanel ip = new ItemPanel(Context.getItems(), dos.__getInttype());
-            ip.setDataOwner(dos, true);
             return ip;
         } catch (Exception ex) {
             Log.Debug(ex);
@@ -557,8 +558,8 @@ public class SubItem extends DatabaseObject {
         }
 
         MPTableModel model = new MPTableModel(
-                new Class[]{Integer.class, Integer.class, Double.class, String.class, Object.class, Double.class, Double.class, Double.class, Double.class, Double.class, Integer.class, JButton.class, JButton.class, JButton.class, String.class},
-                new boolean[]{false, false, true, true, true, true, true, false, false, false, false, true, true, true, true},
+                new Class[]{Integer.class, Integer.class, Double.class, String.class, Object.class, Double.class, Double.class, Double.class, Double.class, Double.class, Integer.class, JButton.class, JButton.class, JButton.class, String.class, String.class},
+                new boolean[]{false, false, true, true, true, true, true, false, false, false, false, true, true, true, true, true},
                 data,
                 Headers.SUBITEMS.getValue());
 
@@ -576,7 +577,7 @@ public class SubItem extends DatabaseObject {
         if (MPView.getUser().getProperties().hasProperty("defcount")) {
             defcount = MPView.getUser().getProperties().getProperty("defcount", 0d);
         }
-        model.defineRow(new Object[]{0, 0, defcount, defunit, null, 0.0, deftax, 0.0, 0.0, 0.0, 0, "A", "C", ""});
+        model.defineRow(new Object[]{0, 0, defcount, defunit, null, 0.0, deftax, 0.0, 0.0, 0.0, 0, "A", "C", "", ""});
         model.setAutoCountColumn(1);
 
         return model;
@@ -588,7 +589,7 @@ public class SubItem extends DatabaseObject {
      * @return
      */
     public synchronized Object[] getRowData(int row) {
-        Object[] data = new Object[14];
+        Object[] data = new Object[15];
         for (int i = 0; i < data.length; i++) {
             data[0] = __getIDS();
             data[1] = Integer.valueOf(row);
@@ -604,6 +605,7 @@ public class SubItem extends DatabaseObject {
             data[11] = "A";
             data[12] = "C";
             data[12 + 1] = __getLinkurl();
+            data[14] = __getCName();
         }
         return data;
     }

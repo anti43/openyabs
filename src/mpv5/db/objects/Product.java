@@ -28,6 +28,7 @@ import mpv5.db.common.NodataFoundException;
 import mpv5.db.common.QueryHandler;
 import mpv5.globals.Messages;
 import mpv5.handler.FormatHandler;
+import mpv5.handler.MPEnum;
 import mpv5.logging.Log;
 import mpv5.ui.panels.ProductPanel;
 import mpv5.utils.numberformat.FormatNumber;
@@ -51,6 +52,41 @@ public class Product extends DatabaseObject implements Formattable {
                 return Messages.TYPE_SERVICE.toString();
         }
         return null;
+    }
+
+    /**
+     * Returns all possible Types
+     * @return
+     */
+    public static MPEnum[] getTypes() {
+        MPEnum[] en = new MPEnum[2];
+        en[0] = new MPEnum() {
+
+            @Override
+            public Integer getId() {
+                return new Integer(TYPE_PRODUCT);
+            }
+
+            @Override
+            public String getName() {
+                return getTypeString(TYPE_PRODUCT);
+            }
+        };
+        en[1] = new MPEnum() {
+
+            @Override
+            public Integer getId() {
+                return new Integer(TYPE_SERVICE);
+            }
+
+            @Override
+            public String getName() {
+                return getTypeString(TYPE_SERVICE);
+            }
+        };
+
+        return en;
+
     }
     private int taxids;
     private int inttype;
