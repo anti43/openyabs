@@ -20,6 +20,8 @@ import javax.swing.JComboBox;
 import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
 import mpv5.handler.MPEnum;
+import mpv5.ui.dialogs.subcomponents.ControlPanel_Taxes;
+import mpv5.ui.panels.DataPanel;
 import mpv5.utils.models.*;
 
 /**
@@ -165,7 +167,7 @@ public class LabeledCombobox extends javax.swing.JPanel {
      * @param enabled
      */
     public void setSearchOnEnterEnabled(boolean enabled) {
-        mPCombobox1.setSearchOnEnterEnabled(enabled);
+        mPCombobox1.setSearchEnabled(enabled);
     }
 
     /**
@@ -292,5 +294,13 @@ public class LabeledCombobox extends javax.swing.JPanel {
                 receiver.setDisplayingObject(getSelectedItem());
             }
         });
+    }
+
+    /**
+     * 
+     * @param panel
+     */
+    public void setReceiver(DataPanel panel) {
+        mPCombobox1.setReceiver(panel);
     }
 }

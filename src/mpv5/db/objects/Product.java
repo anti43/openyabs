@@ -347,7 +347,7 @@ public class Product extends DatabaseObject implements Formattable {
 
         if (map.containsKey("taxids")) {
             try {
-                map.put("tax", FormatNumber.formatPercent(Item.getTaxValue(Integer.valueOf(map.get("taxids").toString()))));
+                map.put("tax", FormatNumber.formatPercent(Tax.getTaxValue(Integer.valueOf(map.get("taxids").toString()))));
                 map.remove("taxids");
             } catch (NumberFormatException numberFormatException) {
                 Log.Debug(numberFormatException);
@@ -389,7 +389,7 @@ public class Product extends DatabaseObject implements Formattable {
                     p.setInttype(Product.TYPE_SERVICE);
                     p.setProductgroupsids(1);
                     p.setGroupsids(i.__getGroupsids());
-                    p.setTaxids(Item.getTaxId(i.__getTaxpercentvalue()));
+                    p.setTaxids(Tax.getTaxId(i.__getTaxpercentvalue()));
                     p.setMeasure(i.__getMeasure());
                     p.setUrl(i.__getLinkurl());
                     p.save(true);

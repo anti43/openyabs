@@ -106,7 +106,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
         addedby.setText(MPView.getUser().getName());
         groupnameselect.setSearchOnEnterEnabled(true);
         groupnameselect.setContext(Context.getGroup());
-        companyselect.setSearchOnEnterEnabled(true);
+        companyselect.setSearchEnabled(true);
         companyselect.setContext(Context.getContactsCompanies());
         companyselect.getComboBox().addActionListener(new ActionListener() {
 

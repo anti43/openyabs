@@ -172,47 +172,7 @@ public class Item extends DatabaseObject implements Formattable {
         }
         return "";
     }
-    private static HashMap<Integer, Double> taxes = new HashMap<Integer, Double>();
 
-    /**
-     * Tries to fetch the value for the given tax id
-     * @param taxid
-     * @return A value or 0d if not found
-     */
-    public static Double getTaxValue(Integer taxid) {
-
-        if (taxid.intValue() > 0) {
-            if (taxes.containsKey(taxid)) {
-                return taxes.get(taxid);
-            } else {
-                try {
-                    double v = Double.valueOf(QueryHandler.instanceOf().clone(Context.getTaxes()).select("taxvalue", new String[]{"ids", taxid.toString(), ""})[0][0].toString());
-                    taxes.put(taxid, v);
-                    return v;
-                } catch (NumberFormatException numberFormatException) {
-                    return 0d;
-                }
-            }
-        } else {
-            return 0.0;
-        }
-    }
-
-    /**
-     * Tries to fetch the value for the given tax id
-     * @param value
-     * @return A value or 0d if not found
-     */
-    public static int getTaxId(Double value) {
-        try {
-            int v = Integer.valueOf(QueryHandler.instanceOf().clone(Context.getTaxes()).select("ids", new String[]{"taxvalue", value.toString(), ""})[0][0].toString());
-            Log.Debug(Item.class, "Found tax id: " + v);
-            return v;
-        } catch (NumberFormatException numberFormatException) {
-            Log.Debug(Item.class, "Found NO tax id: " + numberFormatException);
-            return 1;
-        }
-    }
     private int contactsids;
     private int accountsids;
     private double netvalue;
@@ -538,7 +498,7 @@ public class Item extends DatabaseObject implements Formattable {
 
         if (map.containsKey("taxids")) {
             try {
-                map.put("tax", FormatNumber.formatPercent(Item.getTaxValue(Integer.valueOf(map.get("taxids").toString()))));
+                map.put("tax", FormatNumber.formatPercent(Tax.getTaxValue(Integer.valueOf(map.get("taxids").toString()))));
                 map.remove("taxids");
             } catch (NumberFormatException numberFormatException) {
                 Log.Debug(numberFormatException);

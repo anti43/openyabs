@@ -42,6 +42,7 @@ import mpv5.db.objects.Revenue;
 import mpv5.globals.Messages;
 import mpv5.db.objects.Favourite;
 import mpv5.db.objects.Item;
+import mpv5.db.objects.Tax;
 import mpv5.db.objects.Template;
 import mpv5.logging.Log;
 import mpv5.ui.dialogs.BigPopup;
@@ -95,7 +96,7 @@ public class RevenuePanel extends javax.swing.JPanel implements DataPanel {
 
         addedby.setText(MPView.getUser().getName());
 
-        groupnameselect.setSearchOnEnterEnabled(true);
+        groupnameselect.setSearchEnabled(true);
         groupnameselect.setContext(Context.getGroup());
         taxrate.setSearchOnEnterEnabled(true);
         taxrate.setContext(Context.getTaxes());
@@ -129,7 +130,7 @@ public class RevenuePanel extends javax.swing.JPanel implements DataPanel {
         double tax = 0;
         try {
             MPComboBoxModelItem t = taxrate.getValue();
-            tax = Item.getTaxValue(Integer.valueOf(t.getId()));
+            tax = Tax.getTaxValue(Integer.valueOf(t.getId()));
         } catch (Exception e) {
             try {
                 tax = Integer.valueOf(taxrate.getText());
@@ -535,7 +536,7 @@ public class RevenuePanel extends javax.swing.JPanel implements DataPanel {
             brutvalue_ = 0d;
         }
         try {
-            taxpercentvalue_ = Item.getTaxValue(Integer.valueOf(taxrate.getSelectedItem().getId()));
+            taxpercentvalue_ = Tax.getTaxValue(Integer.valueOf(taxrate.getSelectedItem().getId()));
         } catch (Exception numberFormatException) {
             taxpercentvalue_ = 0d;
         }
@@ -562,7 +563,7 @@ public class RevenuePanel extends javax.swing.JPanel implements DataPanel {
         }
         addedby.setText(User.getUsername(intaddedby_));
         dateadded.setText(DateConverter.getDefDateString(dateadded_));
-        taxrate.setSelectedItem(Item.getTaxId(taxpercentvalue_));
+        taxrate.setSelectedItem(Tax.getTaxId(taxpercentvalue_));
     }
 
     @Override
@@ -649,7 +650,7 @@ public class RevenuePanel extends javax.swing.JPanel implements DataPanel {
                     double tax = 0;
                     try {
                         MPComboBoxModelItem t = taxrate.getValue();
-                        tax = Item.getTaxValue(Integer.valueOf(t.getId()));
+                        tax = Tax.getTaxValue(Integer.valueOf(t.getId()));
                     } catch (Exception e) {
                         try {
                             tax = Integer.valueOf(taxrate.getText());

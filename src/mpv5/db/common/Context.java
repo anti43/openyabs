@@ -26,6 +26,7 @@ import mpv5.db.objects.Reminder;
 import mpv5.db.objects.Revenue;
 import mpv5.db.objects.Stage;
 import mpv5.db.objects.SubItem;
+import mpv5.db.objects.Tax;
 import mpv5.db.objects.Template;
 import mpv5.pluginhandling.Plugin;
 import mpv5.db.objects.User;
@@ -217,6 +218,7 @@ public class Context {
         list.add(getWebShops());
         list.add(getTemplate());
         list.add(getReminders());
+        list.add(getTaxes());
 
         return list;
     }
@@ -248,7 +250,8 @@ public class Context {
                 getWebShops(),
                 getTemplate(),
                 getReminders(),
-                getStages()
+                getStages(),
+                getTaxes()
             }));
 
     /**
@@ -280,7 +283,7 @@ public class Context {
         list.add(getStages());
         list.add(getExpenses());
         list.add(getRevenues());
-
+        list.add(getTaxes());
         return list;
     }
 
@@ -765,7 +768,6 @@ public class Context {
 //        String alias = this.getDbIdentity();
 //        references.add(new String[]{this.getDbIdentity(), referencekey, referenceidkey, alias});
 //    }
-
     /**
      * Add a foreign table reference to this context
      * @param c
@@ -842,7 +844,7 @@ public class Context {
                 if (references.get(i).length == 4) {
                     cond += " LEFT OUTER JOIN " + references.get(i)[0] + " AS " + references.get(i)[3] + " ON " + references.get(i)[3] + "." + references.get(i)[1] + " = " + references.get(i)[3] + "." + references.get(i)[2];
                 } else if (references.get(i).length == 5) {
-                    cond += " LEFT OUTER JOIN " + references.get(i)[0] + " AS " + references.get(i)[3]  + " ON " + references.get(i)[3] + "." + references.get(i)[1] + " = " + references.get(i)[4] + "." + references.get(i)[2];
+                    cond += " LEFT OUTER JOIN " + references.get(i)[0] + " AS " + references.get(i)[3] + " ON " + references.get(i)[3] + "." + references.get(i)[1] + " = " + references.get(i)[4] + "." + references.get(i)[2];
                 }
             }
         }
@@ -1379,6 +1381,7 @@ public class Context {
         Context c = new Context();
         c.setSubID(DEFAULT_SUBID);
         c.setDbIdentity(IDENTITY_TAX);
+        c.setIdentityClass(Tax.class);
         c.setId(36);
 
         return c;

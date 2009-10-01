@@ -97,11 +97,11 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
         validate();
         timeframeChooser1.setTime(new vTimeframe(DateConverter.getDate(DateConverter.getYear()), new Date()));
 
-        groups.setSearchOnEnterEnabled(true);
+        groups.setSearchEnabled(true);
         groups.setContext(Context.getGroup());
         groups.triggerSearch();
 
-        account1.setSearchOnEnterEnabled(true);
+        account1.setSearchEnabled(true);
         account1.setContext(Context.getAccounts());
 
         statusc.getComboBox().setModel(new DefaultComboBoxModel(new Object[]{Messages.ALL, Messages.STATUS_PAID, Messages.STATUS_UNPAID}));
@@ -118,11 +118,11 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
         prinitingComboBox1.init(jTable1);
 
         dataowner = dataOwner;
-        groups.setSearchOnEnterEnabled(true);
+        groups.setSearchEnabled(true);
         groups.setContext(Context.getGroup());
         groups.triggerSearch();
 
-        account1.setSearchOnEnterEnabled(true);
+        account1.setSearchEnabled(true);
         account1.setContext(Context.getAccounts());
 
         statusc.getComboBox().setModel(new DefaultComboBoxModel(new Object[]{Messages.ALL, Messages.STATUS_PAID, Messages.STATUS_UNPAID}));
@@ -429,7 +429,7 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         MPCombobox b = new MPCombobox();
-        b.setSearchOnEnterEnabled(true);
+        b.setSearchEnabled(true);
         b.setContext(Context.getAccounts());
         accountsp.add(b);
         validate();

@@ -158,7 +158,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
         accountselect.setContext(Context.getAccounts());
         accountselect.setSearchOnEnterEnabled(true);
         groupnameselect.setContext(Context.getGroup());
-        groupnameselect.setSearchOnEnterEnabled(true);
+        groupnameselect.setSearchEnabled(true);
 
         date1.setDate(new Date());
         try {

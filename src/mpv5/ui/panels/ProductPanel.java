@@ -164,7 +164,7 @@ public class ProductPanel extends javax.swing.JPanel implements DataPanel, MPCBS
         familyselect.setContext(Context.getProductGroup());
         familyselect.setSearchOnEnterEnabled(true);
         groupnameselect.setContext(Context.getGroup());
-        groupnameselect.setSearchOnEnterEnabled(true);
+        groupnameselect.setSearchEnabled(true);
 
         currencylabel1.setText(NumberFormat.getCurrencyInstance().getCurrency().getSymbol());
         currencylabel2.setText(NumberFormat.getCurrencyInstance().getCurrency().getSymbol());

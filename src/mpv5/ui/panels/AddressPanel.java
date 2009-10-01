@@ -53,7 +53,7 @@ public class AddressPanel extends javax.swing.JPanel implements DataPanel {
     public AddressPanel() {
         initComponents();
         refresh();
-        companyselect.setSearchOnEnterEnabled(true);
+        companyselect.setSearchEnabled(true);
         companyselect.setContext(Context.getContactsCompanies());
     }
 

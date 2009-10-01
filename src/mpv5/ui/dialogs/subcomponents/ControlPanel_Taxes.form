@@ -85,14 +85,13 @@
       <Layout>
         <DimensionLayout dim="0">
           <Group type="103" groupAlignment="0" attributes="0">
-              <Group type="102" alignment="0" attributes="0">
+              <Group type="102" attributes="0">
                   <EmptySpace max="-2" attributes="0"/>
-                  <Group type="103" groupAlignment="0" attributes="0">
-                      <Component id="labeledTextField1" alignment="0" min="-2" max="-2" attributes="0"/>
-                      <Group type="103" alignment="0" groupAlignment="1" max="-2" attributes="0">
-                          <Component id="cname" alignment="0" max="32767" attributes="1"/>
-                          <Component id="selecttax" alignment="0" pref="244" max="32767" attributes="1"/>
-                      </Group>
+                  <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                      <Component id="value" alignment="0" min="-2" max="-2" attributes="0"/>
+                      <Component id="cname" alignment="0" max="32767" attributes="1"/>
+                      <Component id="selecttax" alignment="0" pref="244" max="32767" attributes="1"/>
+                      <Component id="countries" alignment="0" max="32767" attributes="1"/>
                   </Group>
                   <EmptySpace pref="407" max="32767" attributes="0"/>
               </Group>
@@ -106,8 +105,10 @@
                   <EmptySpace type="separate" max="-2" attributes="0"/>
                   <Component id="cname" min="-2" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
-                  <Component id="labeledTextField1" min="-2" max="-2" attributes="0"/>
-                  <EmptySpace pref="309" max="32767" attributes="0"/>
+                  <Component id="value" min="-2" max="-2" attributes="0"/>
+                  <EmptySpace type="separate" max="-2" attributes="0"/>
+                  <Component id="countries" min="-2" max="-2" attributes="0"/>
+                  <EmptySpace pref="271" max="32767" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
@@ -129,12 +130,20 @@
             <Property name="name" type="java.lang.String" value="cname" noResource="true"/>
           </Properties>
         </Component>
-        <Component class="mpv5.ui.beans.LabeledTextField" name="labeledTextField1">
+        <Component class="mpv5.ui.beans.LabeledTextField" name="value">
           <Properties>
             <Property name="_Label" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-              <ResourceString bundle="mpv5/resources/languages/Panels.properties" key="ControlPanel_Taxes.labeledTextField1._Label" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+              <ResourceString bundle="mpv5/resources/languages/Panels.properties" key="ControlPanel_Taxes.value._Label" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
             </Property>
-            <Property name="name" type="java.lang.String" value="labeledTextField1" noResource="true"/>
+            <Property name="name" type="java.lang.String" value="value" noResource="true"/>
+          </Properties>
+        </Component>
+        <Component class="mpv5.ui.beans.LabeledCombobox" name="countries">
+          <Properties>
+            <Property name="_Label" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
+              <ResourceString bundle="mpv5/resources/languages/Panels.properties" key="ControlPanel_Taxes.countries._Label" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+            </Property>
+            <Property name="name" type="java.lang.String" value="countries" noResource="true"/>
           </Properties>
         </Component>
       </SubComponents>

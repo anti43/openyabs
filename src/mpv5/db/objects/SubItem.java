@@ -267,7 +267,7 @@ public class SubItem extends DatabaseObject {
         Double deftax = 0d;
         if (MPView.getUser().getProperties().hasProperty("deftax")) {
             int taxid = MPView.getUser().getProperties().getProperty("deftax", new Integer(0));
-            deftax = Item.getTaxValue(taxid);
+            deftax = Tax.getTaxValue(taxid);
             i.setTaxpercentvalue(deftax);
         }
         Double defcount = 1d;
@@ -349,7 +349,7 @@ public class SubItem extends DatabaseObject {
         setMeasure(product.__getMeasure());
         setOriginalproductsids(product.__getIDS());
         setQuantityvalue(1);
-        setTaxpercentvalue(Item.getTaxValue(product.__getTaxids()));
+        setTaxpercentvalue(Tax.getTaxValue(product.__getTaxids()));
         setLinkurl(product.__getUrl());
         calculate(this);
     }
@@ -368,7 +368,7 @@ public class SubItem extends DatabaseObject {
         Double deftax = 0d;
         if (MPView.getUser().getProperties().hasProperty("deftax")) {
             int taxid = MPView.getUser().getProperties().getProperty("deftax", 0);
-            deftax = Item.getTaxValue(taxid);
+            deftax = Tax.getTaxValue(taxid);
             i.setTaxpercentvalue(deftax);
         }
         Double defcount = 1d;
@@ -570,7 +570,7 @@ public class SubItem extends DatabaseObject {
         Double deftax = 0d;
         if (MPView.getUser().getProperties().hasProperty("deftax")) {
             int taxid = MPView.getUser().getProperties().getProperty("deftax", 0);
-            deftax = Item.getTaxValue(taxid);
+            deftax = Tax.getTaxValue(taxid);
         }
         Double defcount = 1d;
         if (MPView.getUser().getProperties().hasProperty("defcount")) {

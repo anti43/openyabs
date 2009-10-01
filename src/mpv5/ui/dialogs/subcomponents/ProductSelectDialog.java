@@ -15,6 +15,7 @@ import mpv5.db.common.NodataFoundException;
 import mpv5.db.objects.Item;
 import mpv5.db.objects.Product;
 import mpv5.db.objects.SubItem;
+import mpv5.db.objects.Tax;
 import mpv5.globals.Messages;
 import mpv5.logging.Log;
 import mpv5.utils.models.MPTableModel;
@@ -234,7 +235,7 @@ public class ProductSelectDialog extends javax.swing.JPanel {
             s.setMeasure(measure.getText());
             s.setExternalvalue(FormatNumber.parseDezimal(value.getText()));
             try {
-                s.setTaxpercentvalue(Item.getTaxValue(Integer.valueOf(taxrate.getSelectedItem().getId())));
+                s.setTaxpercentvalue(Tax.getTaxValue(Integer.valueOf(taxrate.getSelectedItem().getId())));
             } catch (Exception numberFormatException) {
             }
         }
