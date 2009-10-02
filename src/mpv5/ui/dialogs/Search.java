@@ -36,22 +36,26 @@ public class Search extends javax.swing.JDialog {
 
     public static Search instanceOf() {
         if (f == null) {
-            f = new Search();
+            f = new Search(true);
         }
         f.setVisible(true);
         f.requestFocus();
         return f;
     }
     private static String oldSelection;
-//
-//    public static DatabaseObject showSearchFor(Context t) {
-//        Search s = new Search();
-//        s.scope.setSelectedItem(t);
-//        s.scope.setEnabled(false);
-//        JOptionPane.showInputDialog(s, s, oldSelection, WIDTH, null, selectionValues, oldSelection)
-//    }
+
+    public static DatabaseObject showSearchFor(Context t) {
+        Search s = new Search(false);
+        s.scope.setSelectedItem(t);
+        s.scope.setEnabled(false);
+        s.setVisible(true);
+        s.requestFocus();
+        return s.getSelectedObject();
+    }
     private Context lastContext;
     private boolean firtsmove = true;
+    private DatabaseObject selection;
+    private boolean addTabs;
 
     @Override
     public void dispose() {
@@ -59,9 +63,13 @@ public class Search extends javax.swing.JDialog {
     }
 
     /** Creates new form SplashScreen
+     * @param addtabs Add the selected Object to the main tab pane
      */
-    public Search() {
+    public Search(boolean addtabs) {
+        super(MPView.identifierFrame);
         initComponents();
+        this.addTabs = addtabs;
+        setModalityType(ModalityType.APPLICATION_MODAL);
         scope.setModel(new DefaultComboBoxModel(Context.getSearchableContexts().toArray()));
         new Position(this);
     }
@@ -220,6 +228,7 @@ public class Search extends javax.swing.JDialog {
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void jTable1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable1MouseClicked
+
         if (evt.getClickCount() > 1) {
             if (jCheckBox2.isSelected()) {
                 Selection s = new Selection(jTable1);
@@ -227,7 +236,10 @@ public class Search extends javax.swing.JDialog {
             }
             if (lastContext != null) {
                 try {
-                    MPView.identifierView.addTab(DatabaseObject.getObject(lastContext, Integer.valueOf(jTable1.getValueAt(jTable1.getSelectedRow(), 0).toString())));
+                    selection = DatabaseObject.getObject(lastContext, Integer.valueOf(jTable1.getValueAt(jTable1.getSelectedRow(), 0).toString()));
+                    if (addTabs) {
+                        MPView.identifierView.addTab(selection);
+                    }
                 } catch (NodataFoundException ex) {
                     mpv5.logging.Log.Debug(ex);
                 }
@@ -247,7 +259,6 @@ public class Search extends javax.swing.JDialog {
     private void keyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_keyActionPerformed
         search();
 }//GEN-LAST:event_keyActionPerformed
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
@@ -290,5 +301,9 @@ public class Search extends javax.swing.JDialog {
 
         TableFormat.stripFirstColumn(jTable1);
         TableFormat.format(jTable1, 1, 100);
+    }
+
+    private DatabaseObject getSelectedObject() {
+        return selection;
     }
 }

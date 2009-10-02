@@ -212,8 +212,8 @@ public class Popup {
      * @return the selected object or null
      */
     public static DatabaseObject SelectValue(Context t) {
-//        return  Search.showSearchFor(t);
-        return null;
+        return  Search.showSearchFor(t);
+//        return null;
     }
 
     private Popup() {

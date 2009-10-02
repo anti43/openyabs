@@ -35,6 +35,7 @@ import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
 import mpv5.db.common.NodataFoundException;
 import mpv5.db.objects.Item;
+import mpv5.db.objects.ProductlistSubItem;
 import mpv5.db.objects.SubItem;
 import mpv5.globals.Headers;
 import mpv5.logging.Log;
@@ -499,6 +500,26 @@ public class MPTableModel extends DefaultTableModel {
             }
         }
         return row;
+    }
+
+    /**
+     * Add all rows
+     * @param rowsl
+     */
+    public void addRows(List<Object[]> rowsl) {
+        for (Object[] obj : rowsl) {
+            addRow(obj);
+        }
+    }
+
+    /**
+     * Adds all rows using the toArray() method of {@link DatabaseObject}
+     * @param l
+     */
+    public void addRows(ArrayList<DatabaseObject> l) {
+        for (DatabaseObject b : l) {
+            addRow(b.toArray());
+        }
     }
 
     /**

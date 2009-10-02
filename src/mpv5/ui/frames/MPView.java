@@ -427,8 +427,10 @@ public class MPView extends FrameView {
      * Add a tab to the main tab pane, automatically determines the needed View
      * @param item
      * @param tabTitle
+     * @return The added tab
      */
-    public void addTab(final DatabaseObject item, Object tabTitle) {
+    public DataPanel addTab(final DatabaseObject item, Object tabTitle) {
+        setWaiting(true);
         boolean found = false;
         boolean proceed = true;
         if (MPView.getUser().getProperties().getProperty(MPView.tabPane, "avoidmultipleviews")) {
@@ -519,14 +521,17 @@ public class MPView extends FrameView {
                 }
             }
         }
+
+        setWaiting(false);
+        return getCurrentTab();
     }
 
     /**
      * Add a tab to the main tab pane, automatically determines the needed View
      * @param item
      */
-    public void addTab(DatabaseObject item) {
-        addTab(item, null);
+    public DataPanel addTab(DatabaseObject item) {
+        return addTab(item, null);
     }
 
     /**

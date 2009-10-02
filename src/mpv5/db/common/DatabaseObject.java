@@ -341,15 +341,15 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject> {
         String message = null;
         uncacheObject(this);
 
-         List<DatabaseObjectModifier> mods = MPPLuginLoader.registeredModifiers;
-            for (int ik = 0; ik < mods.size(); ik++) {
-                DatabaseObjectModifier databaseObjectModifier = mods.get(ik);
-                try {
-                    databaseObjectModifier.modifyOnSave(this);
-                } catch (Exception e) {
-                    Log.Debug(DatabaseObject.class, "Error while modificationg Object " + this + " within Modifier " + databaseObjectModifier);
-                }
+        List<DatabaseObjectModifier> mods = MPPLuginLoader.registeredModifiers;
+        for (int ik = 0; ik < mods.size(); ik++) {
+            DatabaseObjectModifier databaseObjectModifier = mods.get(ik);
+            try {
+                databaseObjectModifier.modifyOnSave(this);
+            } catch (Exception e) {
+                Log.Debug(DatabaseObject.class, "Error while modificationg Object " + this + " within Modifier " + databaseObjectModifier);
             }
+        }
 
         try {
             if (ids <= 0) {
@@ -1392,15 +1392,15 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject> {
         } catch (NumberFormatException numberFormatException) {
             //already resolved?
         }
-         List<DatabaseObjectModifier> mods = MPPLuginLoader.registeredModifiers;
-            for (int ik = 0; ik < mods.size(); ik++) {
-                DatabaseObjectModifier databaseObjectModifier = mods.get(ik);
-                try {
-                 map= databaseObjectModifier.modifyOnResolve(map);
-                } catch (Exception e) {
-                    Log.Debug(DatabaseObject.class, "Error while modificationg object map if " + this + " within Modifier " + databaseObjectModifier);
-                }
+        List<DatabaseObjectModifier> mods = MPPLuginLoader.registeredModifiers;
+        for (int ik = 0; ik < mods.size(); ik++) {
+            DatabaseObjectModifier databaseObjectModifier = mods.get(ik);
+            try {
+                map = databaseObjectModifier.modifyOnResolve(map);
+            } catch (Exception e) {
+                Log.Debug(DatabaseObject.class, "Error while modificationg object map if " + this + " within Modifier " + databaseObjectModifier);
             }
+        }
 
         return map;
     }
@@ -1443,5 +1443,20 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject> {
             } catch (InvocationTargetException invocationTargetException) {
             }
         }
+    }
+
+    /**
+     * Generate an array out of the getValues2()
+     * @return
+     */
+    public Object[] toArray() {
+        ArrayList<Object[]> a = getValues2();
+        Object[] b = new Object[a.size()];
+        for (int i = 0; i < a.size(); i++) {
+            Object[] objects = a.get(i);
+            b[i] = a.get(i)[1];
+        }
+
+        return b;
     }
 }

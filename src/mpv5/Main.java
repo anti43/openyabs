@@ -663,12 +663,14 @@ public class Main extends SingleFrameApplication {
                                 String message =
                                         "It looks like the application is already running.\n" +
                                         "\nThis may be caused by" +
-                                        "\n\t- another instance of YaBS started with the same connection id (" + LocalSettings.getConnectionID() + ") (or no connection id at all)" +
+                                        "\n\t- another instance of YaBS started with the same connection id (" + LocalSettings.getConnectionID() + ") " +
+                                        "\n\t  (or no connection id at all)" +
                                         "\n\t- a previously crashed YaBS instance" +
                                         "\n\t- a manually killed YaBS instance" +
                                         "\n\t- a crash or kill of the JVM\n" +
                                         "\nYou might want to start YaBS once with the option -clear or to delete " + lockfile + " to get rid of this message.";
                                 Log.Debug(this, message);
+                                Popup.notice(message, 800, 200);
                                 if (Log.getLoglevel() != Log.LOGLEVEL_DEBUG) {
                                     System.err.println(message);
                                 }

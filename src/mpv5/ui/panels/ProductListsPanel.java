@@ -38,6 +38,7 @@ import mpv5.db.common.*;
 import mpv5.db.objects.Product;
 import mpv5.globals.Messages;
 import mpv5.db.objects.Favourite;
+import mpv5.db.objects.Item;
 import mpv5.db.objects.ProductList;
 import mpv5.db.objects.ProductlistSubItem;
 import mpv5.db.objects.SubItem;
@@ -113,17 +114,12 @@ public class ProductListsPanel extends javax.swing.JPanel implements DataPanel, 
                         formatTable();
                     }
                 } else if (e.getButton() == MouseEvent.BUTTON3) {
-                    try {
-                        MPTableModel m = (MPTableModel) itemtable.getModel();
-                        Product p = (Product) Popup.SelectValue(DatabaseObject.getObjects(Context.getProducts(), true), null);
-                        if (p != null) {
-                            int row = m.getLastValidRow(new int[]{4});
-//                            m.addRow(1);
-                            m.setRowAt(new ProductlistSubItem(p).getRowData(row), row + 1, 1);
-//                            m.insertRow(0, new SubItem(p).getRowData(0));
-                        }
-                    } catch (NodataFoundException ex) {
-                        Log.Debug(this, ex.getMessage());
+
+                    MPTableModel m = (MPTableModel) itemtable.getModel();
+                    Product p = (Product) Popup.SelectValue(Context.getProducts());
+                    if (p != null) {
+                        int row = m.getLastValidRow(new int[]{4});
+                        m.setRowAt(new ProductlistSubItem(p).getRowData(row), row + 1, 1);
                     }
                 }
             }
@@ -312,6 +308,7 @@ public class ProductListsPanel extends javax.swing.JPanel implements DataPanel, 
 
         jScrollPane3.setName("jScrollPane3"); // NOI18N
 
+        itemtable.setAutoCreateRowSorter(true);
         itemtable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
@@ -454,11 +451,18 @@ public class ProductListsPanel extends javax.swing.JPanel implements DataPanel, 
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        
-            DatabaseObject p = Popup.SelectValue(Context.getItems());
-        
-    }//GEN-LAST:event_jButton2ActionPerformed
 
+        if (dataOwner != null) {
+            Item p = (Item) Popup.SelectValue(Context.getItems());
+            final DataPanel d = MPView.identifierView.addTab(p);
+            Runnable runnable = new Runnable() {
+                public void run() {
+                    d.paste(dataOwner);
+                }
+            };
+            SwingUtilities.invokeLater(runnable);
+        }
+    }//GEN-LAST:event_jButton2ActionPerformed
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel addedby;
     private javax.swing.ButtonGroup buttonGroup1;
@@ -558,10 +562,14 @@ public class ProductListsPanel extends javax.swing.JPanel implements DataPanel, 
     public void formatTable() {
 
         prepareTable();
-        TableFormat.resizeCols(itemtable, new Integer[]{0, 23, 53, 63, 100, 83, 63, 63, 0, 0, 0, 20, 20, 0,0}, new Boolean[]{true, true, true, true, false, true, true, true, true, true, true, true, true, true, true, true});
+        TableFormat.resizeCols(itemtable, new Integer[]{0, 23, 53, 63, 100, 83, 63, 63, 0, 0, 0, 20, 20, 0, 0}, new Boolean[]{true, true, true, true, false, true, true, true, true, true, true, true, true, true, true, true});
         TableFormat.changeBackground(itemtable, 1, Color.LIGHT_GRAY);
-        if(MPView.getUser().getProperties().getProperty(MPView.tabPane, "hidecolumnquantity"))TableFormat.stripColumn(itemtable, 2);
-        if(MPView.getUser().getProperties().getProperty(MPView.tabPane, "hidecolumnmeasure"))TableFormat.stripColumn(itemtable, 3);
+        if (MPView.getUser().getProperties().getProperty(MPView.tabPane, "hidecolumnquantity")) {
+            TableFormat.stripColumn(itemtable, 2);
+        }
+        if (MPView.getUser().getProperties().getProperty(MPView.tabPane, "hidecolumnmeasure")) {
+            TableFormat.stripColumn(itemtable, 3);
+        }
 
 
     }
@@ -666,7 +674,7 @@ public class ProductListsPanel extends javax.swing.JPanel implements DataPanel, 
             }
 
             public void mouseReleased(MouseEvent e) {
-                ProductSelectDialog.instanceOf((MPTableModel) itemtable.getModel(), itemtable.getSelectedRow(), e, Integer.valueOf(itemtable.getValueAt(itemtable.getSelectedRow(), 10).toString()),itemtable.getValueAt(itemtable.getSelectedRow(), 12+1).toString(),itemtable.getValueAt(itemtable.getSelectedRow(), 14).toString());
+                ProductSelectDialog.instanceOf((MPTableModel) itemtable.getModel(), itemtable.getSelectedRow(), e, Integer.valueOf(itemtable.getValueAt(itemtable.getSelectedRow(), 10).toString()), itemtable.getValueAt(itemtable.getSelectedRow(), 12 + 1).toString(), itemtable.getValueAt(itemtable.getSelectedRow(), 14).toString());
                 if (((MPTableModel) itemtable.getModel()).getEmptyRows(new int[]{4}) < 2) {
                     ((MPTableModel) itemtable.getModel()).addRow(1);
                 }

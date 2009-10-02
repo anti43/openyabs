@@ -184,22 +184,14 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
                                     SubItem.getDefaultItem(), SubItem.getDefaultItem(),
                                     SubItem.getDefaultItem(), SubItem.getDefaultItem()
                                 }));
-
-
                         formatTable();
                     }
                 } else if (e.getButton() == MouseEvent.BUTTON3) {
-                    try {
-                        MPTableModel m = (MPTableModel) itemtable.getModel();
-                        Product p = (Product) Popup.SelectValue(DatabaseObject.getObjects(Context.getProducts(), true), null);
-                        if (p != null) {
-                            int row = m.getLastValidRow(new int[]{4});
-//                            m.addRow(1);
-                            m.setRowAt(new SubItem(p).getRowData(row), row + 1, 1);
-//                            m.insertRow(0, new SubItem(p).getRowData(0));
-                        }
-                    } catch (NodataFoundException ex) {
-                        Log.Debug(this, ex.getMessage());
+                    MPTableModel m = (MPTableModel) itemtable.getModel();
+                    Product p = (Product) Popup.SelectValue(Context.getProducts());
+                    if (p != null) {
+                        int row = m.getLastValidRow(new int[]{4});
+                        m.setRowAt(new SubItem(p).getRowData(row), row + 1, 1);
                     }
                 }
             }
@@ -1321,6 +1313,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public void paste(DatabaseObject dbo) {
         if (dbo.getContext().equals(Context.getItems())) {
             ((Item) dbo).setIntstatus(Item.STATUS_IN_PROGRESS);
@@ -1333,8 +1326,18 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
             setDataOwner(dataOwner, true);
         } else if (dbo.getContext().equals(Context.getProductlist())) {
             try {
+                SubItem[] subs = new SubItem[0];
+                if (dataOwner != null) {
+                    subs = dataOwner.getSubitems();
+                }
                 ArrayList<ProductlistSubItem> l = ProductList.getReferencedObjects(dbo, Context.getProductListItems(), new ProductlistSubItem());
-                itemtable.setModel(ProductlistSubItem.toModel(l.toArray(new ProductlistSubItem[0])));
+                MPTableModel t = SubItem.toModel(subs);
+                int count = t.getRowCount();
+                for (int i = 0; i < l.size(); i++) {
+                    ProductlistSubItem productlistSubItem = l.get(i);
+                    t.addRow(productlistSubItem.getRowData(i + count+1));
+                }
+                itemtable.setModel(t);
                 omodel = (MPTableModel) itemtable.getModel();
                 formatTable();
                 ((MPTableModel) itemtable.getModel()).fireTableCellUpdated(0, 0);
