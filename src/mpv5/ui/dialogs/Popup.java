@@ -30,6 +30,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.border.EmptyBorder;
+import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
 import mpv5.db.objects.MailMessage;
 import mpv5.globals.Messages;
@@ -203,6 +204,16 @@ public class Popup {
     public static DatabaseObject SelectValue(ArrayList<DatabaseObject> objects, Object message) {
         return  (DatabaseObject) JOptionPane.showInputDialog(identifier, message, "",
                 JOptionPane.PLAIN_MESSAGE, (Icon) null, objects.toArray(), objects.get(0));
+    }
+
+     /**
+     * Show a search box
+     * @param t
+     * @return the selected object or null
+     */
+    public static DatabaseObject SelectValue(Context t) {
+//        return  Search.showSearchFor(t);
+        return null;
     }
 
     private Popup() {

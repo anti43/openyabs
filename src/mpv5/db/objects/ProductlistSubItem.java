@@ -66,7 +66,7 @@ public class ProductlistSubItem extends DatabaseObject {
             } catch (Exception e) {
                 Log.Debug(ProductlistSubItem.class, e.getMessage());
             }
-            it.setCName(row[4].toString());
+            it.setCName(row[14].toString());
             it.setProductlistsids(listid);
             it.setCountvalue(Double.valueOf(row[1].toString()));
             it.setDescription(row[4].toString());
@@ -76,6 +76,7 @@ public class ProductlistSubItem extends DatabaseObject {
             it.setOriginalproductsids(Integer.valueOf(row[10].toString()));
             it.setQuantityvalue(Double.valueOf(row[2].toString()));
             it.setTaxpercentvalue(Double.valueOf(row[6].toString()));
+            it.setLinkurl((row[12 + 1].toString()));
             calculate(it);
 
             if (!it.isExisting()) {
@@ -117,7 +118,7 @@ public class ProductlistSubItem extends DatabaseObject {
             } catch (Exception e) {
                 Log.Debug(ProductlistSubItem.class, e.getMessage());
             }
-            it.setCName(row[4].toString());
+            it.setCName(row[14].toString());
             it.setProductlistsids(listid);
             it.setCountvalue(Double.valueOf(row[1].toString()));
             it.setDescription(row[4].toString());
@@ -127,6 +128,7 @@ public class ProductlistSubItem extends DatabaseObject {
             it.setOriginalproductsids(Integer.valueOf(row[10].toString()));
             it.setQuantityvalue(Double.valueOf(row[2].toString()));
             it.setTaxpercentvalue(Double.valueOf(row[6].toString()));
+            it.setLinkurl((row[12 + 1].toString()));
             calculate(it);
 
             if (!it.isExisting()) {
@@ -167,7 +169,7 @@ public class ProductlistSubItem extends DatabaseObject {
             } catch (Exception e) {
                 Log.Debug(ProductlistSubItem.class, e.getMessage());
             }
-            it.setCName(row[4].toString());
+            it.setCName(row[14].toString());
             it.setCountvalue(Double.valueOf(row[1].toString()));
             it.setDescription(row[4].toString());
             it.setExternalvalue(Double.valueOf(row[5].toString()) * (((Double.valueOf(percentValue) / 100) + 1)));
@@ -176,6 +178,7 @@ public class ProductlistSubItem extends DatabaseObject {
             it.setOriginalproductsids(Integer.valueOf(row[10].toString()));
             it.setQuantityvalue(Double.valueOf(row[2].toString()));
             it.setTaxpercentvalue(Double.valueOf(row[6].toString()));
+            it.setLinkurl((row[12 + 1].toString()));
             calculate(it);
             items[i] = it;
 
@@ -208,6 +211,7 @@ public class ProductlistSubItem extends DatabaseObject {
     private double totalnetvalue;
     private double totalbrutvalue;
     private double totaltaxvalue;
+    private String linkurl = "";
 
     public ProductlistSubItem() {
         context.setDbIdentity(Context.IDENTITY_PRODUCTSLISTITEMS);
@@ -255,6 +259,7 @@ public class ProductlistSubItem extends DatabaseObject {
         setOriginalproductsids(o.__getIDS());
         setQuantityvalue(1);
         setTaxpercentvalue(Tax.getTaxValue(o.__getTaxids()));
+        setLinkurl(o.__getUrl());
         calculate(this);
     }
 
@@ -299,7 +304,9 @@ public class ProductlistSubItem extends DatabaseObject {
             String.valueOf(FormatNumber.formatLokalCurrency(this.__getTotalnetvalue())),
             String.valueOf(FormatNumber.formatPercent(this.__getTaxpercentvalue())),
             String.valueOf(FormatNumber.formatLokalCurrency(this.getTotalTaxValue())),
-            String.valueOf(FormatNumber.formatLokalCurrency(this.__getTotalbrutvalue()))
+            String.valueOf(FormatNumber.formatLokalCurrency(this.__getTotalbrutvalue())),
+            __getLinkurl(),
+            __getCName()
         ///////////////////////////////////////////////////////////////////////////////
         };
 
@@ -440,11 +447,11 @@ public class ProductlistSubItem extends DatabaseObject {
         //"Internal ID", "ID", "Count", "Measure", "Description", "Netto Price", "Tax Value", "Total Price"
         Object[][] data = new Object[items.length][11];
         for (int i = 0; i < data.length; i++) {
-            data[i] = items[i].getRowData(i+1);
+            data[i] = items[i].getRowData(i + 1);
         }
         MPTableModel model = new MPTableModel(
-                new Class[]{Integer.class, Integer.class, Double.class, String.class, String.class, Double.class, Double.class, Double.class, Double.class, Double.class, Integer.class, Object.class, Object.class, Object.class, String.class},
-                new boolean[]{false, false, true, true, true, true, true, false, false, false, false, true, true, false, false},
+                new Class[]{Integer.class, Integer.class, Double.class, String.class, String.class, Double.class, Double.class, Double.class, Double.class, Double.class, Integer.class, Object.class, Object.class, Object.class, String.class, String.class, String.class},
+                new boolean[]{false, false, true, true, true, true, true, false, false, false, false, true, true, false, false, true, true},
                 data,
                 Headers.SUBITEMS.getValue());
         model.setContext(Context.getSubItem());
@@ -461,7 +468,7 @@ public class ProductlistSubItem extends DatabaseObject {
         if (MPView.getUser().getProperties().hasProperty("defcount")) {
             defcount = MPView.getUser().getProperties().getProperty("defcount", 0d);
         }
-        model.defineRow(new Object[]{0, 0, defcount, defunit, null, 0.0, deftax, 0.0, 0.0, 0.0, 0, "A", "C"});
+        model.defineRow(new Object[]{0, 0, defcount, defunit, null, 0.0, deftax, 0.0, 0.0, 0.0, 0, "A", "C", "", ""});
         model.setAutoCountColumn(1);
 
         return model;
@@ -473,7 +480,7 @@ public class ProductlistSubItem extends DatabaseObject {
      * @return
      */
     public synchronized Object[] getRowData(int row) {
-        Object[] data = new Object[12 + 1];
+        Object[] data = new Object[15];
         for (int i = 0; i < data.length; i++) {
             data[0] = __getIDS();
             data[1] = Integer.valueOf(row);
@@ -488,6 +495,9 @@ public class ProductlistSubItem extends DatabaseObject {
             data[10] = Integer.valueOf(__getOriginalproductsids());
             data[11] = "A";
             data[12] = "C";
+            data[12 + 1] = __getLinkurl();
+            data[14] = __getCName();
+
         }
         return data;
     }
@@ -617,5 +627,19 @@ public class ProductlistSubItem extends DatabaseObject {
      */
     public void setProductlistsids(int productlistsids) {
         this.productlistsids = productlistsids;
+    }
+
+    /**
+     * @return the linkurl
+     */
+    public String __getLinkurl() {
+        return linkurl;
+    }
+
+    /**
+     * @param linkurl the linkurl to set
+     */
+    public void setLinkurl(String linkurl) {
+        this.linkurl = linkurl;
     }
 }
