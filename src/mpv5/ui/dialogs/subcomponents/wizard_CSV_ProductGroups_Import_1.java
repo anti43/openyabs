@@ -2,7 +2,6 @@ package mpv5.ui.dialogs.subcomponents;
 
 import java.awt.Cursor;
 import java.io.File;
-import java.util.ArrayList;
 
 
 import java.util.List;
@@ -18,10 +17,7 @@ import mpv5.ui.dialogs.WizardMaster;
 import mpv5.ui.dialogs.Wizardable;
 import mpv5.utils.arrays.ArrayUtilities;
 import mpv5.utils.csv.CSVReaderWriter;
-import mpv5.utils.models.ImportTableModel;
 import mpv5.utils.models.MPTableModel;
-import mpv5.utils.tables.TableFormat;
-import mpv5.utils.xml.XMLReader;
 
 /**
  *

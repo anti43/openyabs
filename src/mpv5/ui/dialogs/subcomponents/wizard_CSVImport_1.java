@@ -1,6 +1,5 @@
 package mpv5.ui.dialogs.subcomponents;
 
-import mpv5.data.PropertyStore;
 import mpv5.ui.dialogs.DialogForFile;
 import mpv5.ui.dialogs.WizardMaster;
 import mpv5.ui.dialogs.Wizardable;

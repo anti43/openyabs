@@ -23,6 +23,7 @@ import java.awt.GraphicsEnvironment;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
+import java.util.List;
 import javax.swing.Icon;
 import javax.swing.JComboBox;
 import javax.swing.JDialog;
@@ -202,18 +203,27 @@ public class Popup {
      * @return the selected object or null
      */
     public static DatabaseObject SelectValue(ArrayList<DatabaseObject> objects, Object message) {
-        return  (DatabaseObject) JOptionPane.showInputDialog(identifier, message, "",
+        return (DatabaseObject) JOptionPane.showInputDialog(identifier, message, "",
                 JOptionPane.PLAIN_MESSAGE, (Icon) null, objects.toArray(), objects.get(0));
     }
 
-     /**
+    /**
      * Show a search box
      * @param t
      * @return the selected object or null
      */
     public static DatabaseObject SelectValue(Context t) {
-        return  Search.showSearchFor(t);
+        return Search.showSearchFor(t);
 //        return null;
+    }
+
+    public static void notice(List<DatabaseObject> list, Object message) {
+        String t = message.toString() + "\n";
+        for (int i = 0; i < list.size(); i++) {
+            DatabaseObject databaseObject = list.get(i);
+            t += databaseObject.__getCName() + " [" + databaseObject.getDbIdentity() + "]" + "\n";
+        }
+        Popup.notice(t, 300, list.size()*5 + 100);
     }
 
     private Popup() {

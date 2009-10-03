@@ -90,7 +90,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject> {
                         }
                         if (cacheable) {
                             ReturnValue data = QueryHandler.instanceOf().clone(context, LocalSettings.getIntegerProperty(LocalSettings.CACHE_SIZE), true).select();
-                            DatabaseObject[] dos = explode(data, DatabaseObject.getObject(context), false);
+                            DatabaseObject[] dos = explode(data, DatabaseObject.getObject(context), false, true);
                             for (int i = 0; i < dos.length; i++) {
                                 DatabaseObject databaseObject = dos[i];
                                 cacheObject(databaseObject);
@@ -365,6 +365,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject> {
                     Log.Debug(this, "The inserted row has id: " + ids);
                 } else {
                     Popup.notice(Messages.CNAME_CANNOT_BE_NULL);
+                    Log.Debug(this, Messages.CNAME_CANNOT_BE_NULL + " [" + context + "]");
                     return false;
                 }
             } else {
@@ -416,6 +417,11 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject> {
             Log.Debug(this, "Setting groups to users group.");
             groupsids = MPView.getUser().__getGroupsids();
         }
+
+        if (__getCName() == null || __getCName().length() == 0) {
+            setCName(RandomText.getText());
+        }
+
         return save();
     }
 
@@ -887,7 +893,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject> {
         ArrayList<T> list = new ArrayList<T>(0);
 
         if (data.hasData()) {
-            DatabaseObject[] f = explode(data, template, false);
+            DatabaseObject[] f = explode(data, template, false, true);
             for (int i = 0; i < f.length; i++) {
                 DatabaseObject databaseObject = f[i];
                 list.add((T) databaseObject);
@@ -963,7 +969,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject> {
      * @throws NodataFoundException
      */
     public boolean fetchDataOf(int id) throws NodataFoundException {
-        explode(QueryHandler.instanceOf().clone(context).select(id), this, true);
+        explode(QueryHandler.instanceOf().clone(context).select(id), this, true, true);
         return true;
     }
 
@@ -976,7 +982,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject> {
      */
     public boolean fetchDataOf(String column, Object value) throws NodataFoundException {
         QueryCriteria c = new QueryCriteria(column, value);
-        explode(QueryHandler.instanceOf().clone(context).select(c), this, true);
+        explode(QueryHandler.instanceOf().clone(context).select(c), this, true, true);
         return true;
     }
 
@@ -1012,7 +1018,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject> {
             return false;
         }
         if (data.getData() != null && data.getData().length > 0) {
-            explode(data, this, true);
+            explode(data, this, true, true);
             return true;
         } else {
             return false;
@@ -1022,7 +1028,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject> {
     /**
      * Fills the return value's data (rows) into an array of dos if singleExplode is false, if not fills target with the first row
      */
-    private static DatabaseObject[] explode(ReturnValue select, DatabaseObject target, boolean singleExplode) {
+    public static DatabaseObject[] explode(ReturnValue select, DatabaseObject target, boolean singleExplode, boolean lock) {
 
         DatabaseObject[] dos = null;
         if (!singleExplode) {
@@ -1090,11 +1096,13 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject> {
                 }
             }
 
-            if (AUTO_LOCK && Context.getLockableContexts().contains(dbo.getContext())) {
-                Log.Debug(DatabaseObject.class, "Preparing to lock: " + dbo);
-                boolean lck = dbo.lock();
-                dbo.ReadOnly(!lck);
-                Log.Debug(DatabaseObject.class, "Locking was: " + lck);
+            if (lock) {
+                if (AUTO_LOCK && Context.getLockableContexts().contains(dbo.getContext())) {
+                    Log.Debug(DatabaseObject.class, "Preparing to lock: " + dbo);
+                    boolean lck = dbo.lock();
+                    dbo.ReadOnly(!lck);
+                    Log.Debug(DatabaseObject.class, "Locking was: " + lck);
+                }
             }
 
             List<DatabaseObjectModifier> mods = MPPLuginLoader.registeredModifiers;

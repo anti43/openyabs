@@ -124,6 +124,20 @@ public class QueryHandler implements Cloneable {
         }
     }
 
+    /**
+     *
+     * @param c
+     */
+    public QueryHandler(DatabaseConnection c) {
+        try {
+            conn = c;
+            sqlConn = conn.getConnection();
+        } catch (Exception ex) {
+            Log.Debug(ex);
+            Popup.error(ex);
+        }
+    }
+
     private void setLimit(int limit) {
         if (limit > this.limit || limit < this.limit) {
             Log.Debug(QueryHandler.class, "Setting row limit for this connection to: " + limit);
@@ -246,6 +260,21 @@ public class QueryHandler implements Cloneable {
         ReturnValue data = freeSelectQuery("SELECT * FROM " + table + " WHERE " + table + ".ids = " + id + " AND " + context.getConditions().substring(6, context.getConditions().length()), mpv5.usermanagement.MPSecurityManager.VIEW, null);
         if (data.getData().length == 0) {
             throw new NodataFoundException(context, id);
+        } else {
+            return data;
+        }
+    }
+
+    /**
+     * No condition checking!
+     * @param columns
+     * @return
+     * @throws NodataFoundException
+     */
+    public ReturnValue freeSelect(String columns) throws NodataFoundException {
+        ReturnValue data = freeSelectQuery("SELECT " + columns + " FROM " + table , mpv5.usermanagement.MPSecurityManager.VIEW, null);
+        if (data.getData().length == 0) {
+            throw new NodataFoundException(context);
         } else {
             return data;
         }
@@ -581,6 +610,19 @@ public class QueryHandler implements Cloneable {
      */
     public void setTable(String newTable) {
         this.table = newTable;
+    }
+
+    /**
+     * Sets the table and the context.. dont use this.
+     * @param newTable
+     */
+    public void setTable2(String newTable) {
+        this.table = newTable;
+        this.context = Context.getMatchingContext(newTable);
+        if (this.context == null) {
+            this.context = new Context(null);
+            this.context.setDbIdentity(newTable);
+        }
     }
 
     /**
