@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 
 /*
  * LabeledTextField.java
@@ -10,11 +6,8 @@
  */
 package mpv5.ui.beans;
 
-import java.awt.Color;
 import java.awt.Font;
 import javax.swing.JSpinner;
-import javax.swing.JTextField;
-import mpv5.globals.LocalSettings;
 
 /**
  *
@@ -146,7 +139,7 @@ public class LabeledSpinner extends javax.swing.JPanel {
      *
      * @param i
      */
-    public void setValue(int i) {
+    public void setValue(Number i) {
         set_Value(i);
     }
 

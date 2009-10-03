@@ -1188,6 +1188,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
 
             netvalue_ = FormatNumber.parseDezimal(netvalue.getText());
             taxvalue_ = FormatNumber.parseDezimal(taxvalue.getText());
+            discountvalue_ = FormatNumber.parseDezimal(discountpercent.get_Value().toString());
             try {
                 shippingvalue_ = FormatNumber.parseDezimal(shipping.getText());
             } catch (Exception e) {
@@ -1217,6 +1218,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
 
         shipping.setText(FormatNumber.formatDezimal(shippingvalue_));
         button_reminders.setToolTipText(Messages.REMINDERS + String.valueOf(intreminders_));
+        discountpercent.setValue(discountvalue_);
 
         status.setSelectedItem(intstatus_);
         staus_icon.setIcon(dataOwner.getIcon());
