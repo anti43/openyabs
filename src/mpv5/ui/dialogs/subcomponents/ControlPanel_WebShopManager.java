@@ -56,7 +56,7 @@ public class ControlPanel_WebShopManager extends javax.swing.JPanel implements C
         initComponents();
         addPopupMenu();
 
-        groupselect.setSearchOnEnterEnabled(true);
+        groupselect.setSearchEnabled(true);
         groupselect.setContext(Context.getGroup());
         refresh();
 

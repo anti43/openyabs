@@ -56,7 +56,7 @@ public class ControlPanel_Taxes extends javax.swing.JPanel implements ControlApp
             selecttax.setContext(Context.getTaxes());
             selecttax.setReceiver(this);
             selecttax.getComboBox().setEditable(false);
-            selecttax.setSearchOnEnterEnabled(false);
+            selecttax.setSearchEnabled(false);
             refresh();
         }
     }

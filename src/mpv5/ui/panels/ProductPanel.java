@@ -110,7 +110,7 @@ public class ProductPanel extends javax.swing.JPanel implements DataPanel, MPCBS
         refresh();
 
         addedby.setText(MPView.getUser().getName());
-        contactname.setSearchOnEnterEnabled(true);
+        contactname.setSearchEnabled(true);
         contactname.setContext(Context.getSupplier());
         contactname.getComboBox().addActionListener(new ActionListener() {
 
@@ -136,7 +136,7 @@ public class ProductPanel extends javax.swing.JPanel implements DataPanel, MPCBS
             }
         });
 
-        contactname1.setSearchOnEnterEnabled(true);
+        contactname1.setSearchEnabled(true);
         contactname1.setContext(Context.getManufacturer());
         contactname1.getComboBox().addActionListener(new ActionListener() {
 
@@ -163,7 +163,7 @@ public class ProductPanel extends javax.swing.JPanel implements DataPanel, MPCBS
         });
 
         familyselect.setContext(Context.getProductGroup());
-        familyselect.setSearchOnEnterEnabled(true);
+        familyselect.setSearchEnabled(true);
         groupnameselect.setContext(Context.getGroup());
         groupnameselect.setSearchEnabled(true);
 
@@ -206,7 +206,7 @@ public class ProductPanel extends javax.swing.JPanel implements DataPanel, MPCBS
         cname.setContext(Context.getProducts());
 
 
-        selecttax.setSearchOnEnterEnabled(true);
+        selecttax.setSearchEnabled(true);
         selecttax.setContext(Context.getTaxes());
         selecttax.getComboBox().setEditable(false);
     }

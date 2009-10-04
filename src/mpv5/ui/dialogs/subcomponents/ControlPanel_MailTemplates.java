@@ -43,7 +43,7 @@ public class ControlPanel_MailTemplates extends javax.swing.JPanel implements Co
     public ControlPanel_MailTemplates() {
         initComponents();
         refresh();
-        groupname.setSearchOnEnterEnabled(true);
+        groupname.setSearchEnabled(true);
         groupname.setContext(Context.getGroup());
         groupname.triggerSearch();
         setVisible(true);

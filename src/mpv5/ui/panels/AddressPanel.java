@@ -53,8 +53,6 @@ public class AddressPanel extends javax.swing.JPanel implements DataPanel {
     public AddressPanel() {
         initComponents();
         refresh();
-        companyselect.setSearchEnabled(true);
-        companyselect.setContext(Context.getContactsCompanies());
     }
 
     /** This method is called from within the constructor to
@@ -66,99 +64,48 @@ public class AddressPanel extends javax.swing.JPanel implements DataPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jToolBar1 = new javax.swing.JToolBar();
-        jButton2 = new javax.swing.JButton();
-        jButton1 = new javax.swing.JButton();
-        jSeparator1 = new javax.swing.JToolBar.Separator();
-        badress = new javax.swing.JCheckBox();
-        dadress = new javax.swing.JCheckBox();
         jPanel2 = new javax.swing.JPanel();
-        title = new mpv5.ui.beans.LabeledTextField();
-        street = new mpv5.ui.beans.LabeledTextField();
-        cname = new mpv5.ui.beans.LabeledTextField();
-        prename = new mpv5.ui.beans.LabeledTextField();
-        city = new mpv5.ui.beans.LabeledTextField();
-        jLabel3 = new javax.swing.JLabel();
-        zip = new mpv5.ui.beans.LabeledTextField();
-        male = new javax.swing.JRadioButton();
-        female = new javax.swing.JRadioButton();
-        taxnumber = new mpv5.ui.beans.LabeledTextField();
         department = new mpv5.ui.beans.LabeledTextField();
         jLabel5 = new javax.swing.JLabel();
         countryselect = new javax.swing.JComboBox();
-        companyselect = new mpv5.ui.beans.MPCombobox();
+        title = new mpv5.ui.beans.LabeledTextField();
+        male = new javax.swing.JRadioButton();
+        female = new javax.swing.JRadioButton();
+        street = new mpv5.ui.beans.LabeledTextField();
+        prename = new mpv5.ui.beans.LabeledTextField();
+        city = new mpv5.ui.beans.LabeledTextField();
+        zip = new mpv5.ui.beans.LabeledTextField();
+        cname = new mpv5.ui.beans.LabeledTextField();
+        dadress = new javax.swing.JCheckBox();
+        badress = new javax.swing.JCheckBox();
+        jButton2 = new javax.swing.JButton();
+        jButton1 = new javax.swing.JButton();
 
         setBackground(new java.awt.Color(227, 219, 202));
         setName("Address#"); // NOI18N
-
-        jToolBar1.setFloatable(false);
-        jToolBar1.setRollover(true);
-        jToolBar1.setName("jToolBar1"); // NOI18N
-        jToolBar1.setOpaque(false);
-
-        jButton2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/16/filesave.png"))); // NOI18N
-        java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle(); // NOI18N
-        jButton2.setText(bundle.getString("AddressPanel.jButton2.text")); // NOI18N
-        jButton2.setToolTipText(bundle.getString("AddressPanel.jButton2.toolTipText")); // NOI18N
-        jButton2.setName("jButton2"); // NOI18N
-        jButton2.setOpaque(true);
-        jButton2.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton2ActionPerformed(evt);
-            }
-        });
-        jToolBar1.add(jButton2);
-
-        jButton1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/16/remove.png"))); // NOI18N
-        jButton1.setText(bundle.getString("AddressPanel.jButton1.text")); // NOI18N
-        jButton1.setToolTipText(bundle.getString("AddressPanel.jButton1.toolTipText")); // NOI18N
-        jButton1.setName("jButton1"); // NOI18N
-        jButton1.setOpaque(true);
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
-            }
-        });
-        jToolBar1.add(jButton1);
-
-        jSeparator1.setName("jSeparator1"); // NOI18N
-        jToolBar1.add(jSeparator1);
-
-        badress.setText(bundle.getString("AddressPanel.badress.text")); // NOI18N
-        badress.setName("badress"); // NOI18N
-        badress.setOpaque(false);
-        jToolBar1.add(badress);
-
-        dadress.setText(bundle.getString("AddressPanel.dadress.text")); // NOI18N
-        dadress.setName("dadress"); // NOI18N
-        dadress.setOpaque(false);
-        jToolBar1.add(dadress);
 
         jPanel2.setBackground(new java.awt.Color(227, 219, 202));
         jPanel2.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
         jPanel2.setName("jPanel2"); // NOI18N
 
+        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("mpv5/resources/languages/Panels"); // NOI18N
+        department.set_Label(bundle.getString("AddressPanel.department._Label")); // NOI18N
+        department.setFont(department.getFont().deriveFont(department.getFont().getStyle() | java.awt.Font.BOLD));
+        department.setName("department"); // NOI18N
+
+        jLabel5.setFont(new java.awt.Font("Dialog", 0, 11)); // NOI18N
+        jLabel5.setText(bundle.getString("AddressPanel.jLabel5.text")); // NOI18N
+        jLabel5.setName("jLabel5"); // NOI18N
+
+        countryselect.setName("countryselect"); // NOI18N
+        countryselect.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                countryselectActionPerformed(evt);
+            }
+        });
+
         title.set_Label(bundle.getString("AddressPanel.title._Label")); // NOI18N
         title.setName("title"); // NOI18N
-
-        street.set_Label(bundle.getString("AddressPanel.street._Label")); // NOI18N
-        street.setName("street"); // NOI18N
-
-        cname.set_Label(bundle.getString("AddressPanel.cname._Label")); // NOI18N
-        cname.setName("cname"); // NOI18N
-
-        prename.set_Label(bundle.getString("AddressPanel.prename._Label")); // NOI18N
-        prename.setName("prename"); // NOI18N
-
-        city.set_Label(bundle.getString("AddressPanel.city._Label")); // NOI18N
-        city.setName("city"); // NOI18N
-
-        jLabel3.setFont(new java.awt.Font("Dialog", 0, 12)); // NOI18N
-        jLabel3.setText(bundle.getString("AddressPanel.jLabel3.text")); // NOI18N
-        jLabel3.setName("jLabel3"); // NOI18N
-
-        zip.set_Label(bundle.getString("AddressPanel.zip._Label")); // NOI18N
-        zip.setName("zip"); // NOI18N
 
         male.setFont(male.getFont().deriveFont(male.getFont().getStyle() & ~java.awt.Font.BOLD));
         male.setSelected(true);
@@ -171,114 +118,137 @@ public class AddressPanel extends javax.swing.JPanel implements DataPanel {
         female.setName("female"); // NOI18N
         female.setOpaque(false);
 
-        taxnumber.set_Label(bundle.getString("AddressPanel.taxnumber._Label")); // NOI18N
-        taxnumber.setFont(taxnumber.getFont().deriveFont(taxnumber.getFont().getStyle() | java.awt.Font.BOLD));
-        taxnumber.setName("taxnumber"); // NOI18N
+        street.set_Label(bundle.getString("AddressPanel.street._Label")); // NOI18N
+        street.setName("street"); // NOI18N
 
-        department.set_Label(bundle.getString("AddressPanel.department._Label")); // NOI18N
-        department.setFont(department.getFont().deriveFont(department.getFont().getStyle() | java.awt.Font.BOLD));
-        department.setName("department"); // NOI18N
+        prename.set_Label(bundle.getString("AddressPanel.prename._Label")); // NOI18N
+        prename.setName("prename"); // NOI18N
 
-        jLabel5.setFont(new java.awt.Font("Dialog", 0, 12));
-        jLabel5.setText(bundle.getString("AddressPanel.jLabel5.text")); // NOI18N
-        jLabel5.setName("jLabel5"); // NOI18N
+        city.set_Label(bundle.getString("AddressPanel.city._Label")); // NOI18N
+        city.setName("city"); // NOI18N
 
-        countryselect.setName("countryselect"); // NOI18N
-        countryselect.addActionListener(new java.awt.event.ActionListener() {
+        zip.set_Label(bundle.getString("AddressPanel.zip._Label")); // NOI18N
+        zip.setName("zip"); // NOI18N
+
+        cname.set_Label(bundle.getString("AddressPanel.cname._Label")); // NOI18N
+        cname.setName("cname"); // NOI18N
+
+        dadress.setText(bundle.getString("AddressPanel.dadress.text")); // NOI18N
+        dadress.setName("dadress"); // NOI18N
+        dadress.setOpaque(false);
+
+        badress.setText(bundle.getString("AddressPanel.badress.text")); // NOI18N
+        badress.setName("badress"); // NOI18N
+        badress.setOpaque(false);
+
+        jButton2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/16/filesave.png"))); // NOI18N
+        jButton2.setText(bundle.getString("AddressPanel.jButton2.text")); // NOI18N
+        jButton2.setToolTipText(bundle.getString("AddressPanel.jButton2.toolTipText")); // NOI18N
+        jButton2.setName("jButton2"); // NOI18N
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                countryselectActionPerformed(evt);
+                jButton2ActionPerformed(evt);
             }
         });
 
-        companyselect.setName("companyselect"); // NOI18N
+        jButton1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/16/remove.png"))); // NOI18N
+        jButton1.setText(bundle.getString("AddressPanel.jButton1.text")); // NOI18N
+        jButton1.setToolTipText(bundle.getString("AddressPanel.jButton1.toolTipText")); // NOI18N
+        jButton1.setName("jButton1"); // NOI18N
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
-                .addContainerGap()
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(street, javax.swing.GroupLayout.PREFERRED_SIZE, 221, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 89, Short.MAX_VALUE)
-                                .addComponent(male)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(female)
-                                .addGap(52, 52, 52))
-                            .addComponent(title, javax.swing.GroupLayout.PREFERRED_SIZE, 182, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(83, 83, 83)
+                        .addComponent(male)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(female))
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addGroup(jPanel2Layout.createSequentialGroup()
+                                .addContainerGap()
+                                .addComponent(department, javax.swing.GroupLayout.PREFERRED_SIZE, 221, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel2Layout.createSequentialGroup()
+                                .addContainerGap()
+                                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(street, javax.swing.GroupLayout.PREFERRED_SIZE, 221, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(title, javax.swing.GroupLayout.PREFERRED_SIZE, 182, javax.swing.GroupLayout.PREFERRED_SIZE))))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(prename, javax.swing.GroupLayout.Alignment.TRAILING, 0, 0, Short.MAX_VALUE)
-                            .addComponent(city, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 182, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(cname, 0, 0, Short.MAX_VALUE)
-                            .addComponent(zip, javax.swing.GroupLayout.DEFAULT_SIZE, 174, Short.MAX_VALUE)))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(department, javax.swing.GroupLayout.DEFAULT_SIZE, 267, Short.MAX_VALUE)
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                                .addComponent(jLabel3, javax.swing.GroupLayout.DEFAULT_SIZE, 69, Short.MAX_VALUE)
+                            .addGroup(jPanel2Layout.createSequentialGroup()
+                                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addComponent(prename, javax.swing.GroupLayout.Alignment.TRAILING, 0, 0, Short.MAX_VALUE)
+                                    .addComponent(city, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 182, javax.swing.GroupLayout.PREFERRED_SIZE))
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(companyselect, javax.swing.GroupLayout.DEFAULT_SIZE, 201, Short.MAX_VALUE)))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                                .addComponent(jLabel5, javax.swing.GroupLayout.DEFAULT_SIZE, 69, Short.MAX_VALUE)
+                                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addComponent(cname, 0, 0, Short.MAX_VALUE)
+                                    .addComponent(zip, javax.swing.GroupLayout.PREFERRED_SIZE, 174, javax.swing.GroupLayout.PREFERRED_SIZE))
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(countryselect, javax.swing.GroupLayout.PREFERRED_SIZE, 222, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addComponent(taxnumber, javax.swing.GroupLayout.DEFAULT_SIZE, 244, Short.MAX_VALUE))))
+                                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(badress)
+                                    .addComponent(dadress)))
+                            .addGroup(jPanel2Layout.createSequentialGroup()
+                                .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 73, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(countryselect, javax.swing.GroupLayout.PREFERRED_SIZE, 182, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jButton2)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jButton1)))))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 121, Short.MAX_VALUE)
             .addGroup(jPanel2Layout.createSequentialGroup()
-                .addGap(13, 13, 13)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                        .addComponent(countryselect, javax.swing.GroupLayout.PREFERRED_SIZE, 19, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(jLabel5)
-                        .addComponent(jLabel3))
-                    .addComponent(companyselect, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                .addContainerGap(12, Short.MAX_VALUE)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
                     .addComponent(department, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(taxnumber, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(countryselect, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel5)
+                    .addComponent(jButton2)
+                    .addComponent(jButton1))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(male)
                     .addComponent(female))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(prename, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(cname, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(title, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(city, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(zip, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(street, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap())
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addComponent(badress)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(dadress))
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(prename, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(cname, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(title, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(city, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(zip, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(street, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                .addGap(13, 13, 13))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
-            .addComponent(jToolBar1, javax.swing.GroupLayout.DEFAULT_SIZE, 635, Short.MAX_VALUE)
+            .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, 0)
-                .addComponent(jToolBar1, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE))
+            .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -298,22 +268,17 @@ public class AddressPanel extends javax.swing.JPanel implements DataPanel {
     private javax.swing.JCheckBox badress;
     private mpv5.ui.beans.LabeledTextField city;
     private mpv5.ui.beans.LabeledTextField cname;
-    private mpv5.ui.beans.MPCombobox companyselect;
     private javax.swing.JComboBox countryselect;
     private javax.swing.JCheckBox dadress;
     private mpv5.ui.beans.LabeledTextField department;
     private javax.swing.JRadioButton female;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
-    private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JPanel jPanel2;
-    private javax.swing.JToolBar.Separator jSeparator1;
-    private javax.swing.JToolBar jToolBar1;
     private javax.swing.JRadioButton male;
     private mpv5.ui.beans.LabeledTextField prename;
     private mpv5.ui.beans.LabeledTextField street;
-    private mpv5.ui.beans.LabeledTextField taxnumber;
     private mpv5.ui.beans.LabeledTextField title;
     private mpv5.ui.beans.LabeledTextField zip;
     // End of variables declaration//GEN-END:variables
@@ -341,21 +306,9 @@ public class AddressPanel extends javax.swing.JPanel implements DataPanel {
         }
         city_ = city.get_Text();
         cname_ = cname.get_Text();
-        taxnumber_ = taxnumber.get_Text();
-
-        if (companyselect.getSelectedItem() != null) {
-            company_ = String.valueOf(((MPComboBoxModelItem) companyselect.getSelectedItem()).getValue());
-        } else {
-            company_ = "";
-        }
-
-        if (countryselect.getSelectedItem() != null) {
-            country_ = String.valueOf(((MPComboBoxModelItem) countryselect.getSelectedItem()).getValue());
-        } else {
-            country_ = "";
-        }
-
-
+        taxnumber_ = dataParent.__getTaxnumber();
+        company_ = dataParent.__getCompany();
+        country_ = dataParent.__getCountry();
         ismale_ = male.isSelected();
         prename_ = prename.get_Text();
         street_ = street.get_Text();
@@ -372,27 +325,22 @@ public class AddressPanel extends javax.swing.JPanel implements DataPanel {
             inttype_ = 1;
         }
 
+        if (countryselect.getSelectedItem() != null) {
+            country_ = String.valueOf(((MPComboBoxModelItem) countryselect.getSelectedItem()).getValue());
+        } else {
+            country_ = "";
+        }
+
         return true;
     }
 
     public void exposeData() {
         city.set_Text(city_);
-        cname.set_Text(cname_);
-        taxnumber.set_Text(taxnumber_);
-        try {
-            companyselect.setSelectedIndex(MPComboBoxModelItem.getItemIDfromValue(company_, companyselect.getModel()));
-        } catch (Exception e) {
-        }
-
-        try {
-            countryselect.setSelectedIndex(MPComboBoxModelItem.getItemIDfromValue(country_, countryselect.getModel()));
-        } catch (Exception e) {
-        }
-
         male.setSelected(ismale_);
         female.setSelected(!ismale_);
         prename.set_Text(prename_);
         street.set_Text(street_);
+        cname.setText(cname_);
         title.set_Text(title_);
         zip.set_Text(zip_);
         department.set_Text(department_);
@@ -401,10 +349,16 @@ public class AddressPanel extends javax.swing.JPanel implements DataPanel {
         } catch (NodataFoundException ex) {
             Log.Debug(this, ex.getMessage());
         }
-
+        try {
+            countryselect.setSelectedIndex(MPComboBoxModelItem.getItemIDfromValue(country_, countryselect.getModel()));
+        } catch (Exception e) {
+            try {
+                countryselect.setSelectedIndex(MPComboBoxModelItem.getItemIDfromValue(dataParent.__getCountry(), countryselect.getModel()));
+            } catch (Exception ex) {
+            }
+        }
         badress.setSelected(inttype_ == 0 || inttype_ == 2);
         dadress.setSelected(inttype_ == 1 || inttype_ == 2);
-
     }
 
     public DatabaseObject getDataOwner() {
@@ -425,20 +379,11 @@ public class AddressPanel extends javax.swing.JPanel implements DataPanel {
     }
 
     public void refresh() {
-
-        Runnable runnable = new Runnable() {
-
-            public void run() {
-                try {
-                    countryselect.setModel(LanguageManager.getCountriesAsComboBoxModel());
-                    countryselect.setSelectedIndex(MPComboBoxModelItem.getItemIDfromValue(MPView.getUser().__getDefcountry(), countryselect.getModel()));
-                } catch (Exception e) {
-                    Log.Debug(this, e);
-                }
-            }
-        };
-
-        SwingUtilities.invokeLater(runnable);
+        try {
+            countryselect.setModel(LanguageManager.getCountriesAsComboBoxModel());
+            countryselect.setSelectedIndex(MPComboBoxModelItem.getItemIDfromValue(MPView.getUser().__getDefcountry(), countryselect.getModel()));
+        } catch (Exception e) {
+        }
     }
 
     public void paste(DatabaseObject dbo) {

@@ -131,7 +131,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
         shipping.set_ValueClass(Double.class);
 
         addedby.setText(MPView.getUser().getName());
-        contactname.setSearchOnEnterEnabled(true);
+        contactname.setSearchEnabled(true);
         contactname.setContext(Context.getContact());
         contactname.getComboBox().addActionListener(new ActionListener() {
 
@@ -158,7 +158,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
         });
 
         accountselect.setContext(Context.getAccounts());
-        accountselect.setSearchOnEnterEnabled(true);
+        accountselect.setSearchEnabled(true);
         groupnameselect.setContext(Context.getGroup());
         groupnameselect.setSearchEnabled(true);
 

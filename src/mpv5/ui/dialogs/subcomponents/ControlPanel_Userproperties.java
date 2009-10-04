@@ -33,7 +33,7 @@ public class ControlPanel_Userproperties extends javax.swing.JPanel implements C
         initComponents();
 
         defcount.set_ValueClass(Double.class);
-        deftax.setSearchOnEnterEnabled(true);
+        deftax.setSearchEnabled(true);
         deftax.setContext(Context.getTaxes());
         deftax.triggerSearch();
 

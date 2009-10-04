@@ -26,7 +26,7 @@
     <AuxValue name="FormSettings_listenerGenerationStyle" type="java.lang.Integer" value="0"/>
     <AuxValue name="FormSettings_variablesLocal" type="java.lang.Boolean" value="false"/>
     <AuxValue name="FormSettings_variablesModifier" type="java.lang.Integer" value="2"/>
-    <AuxValue name="designerSize" type="java.awt.Dimension" value="-84,-19,0,5,115,114,0,18,106,97,118,97,46,97,119,116,46,68,105,109,101,110,115,105,111,110,65,-114,-39,-41,-84,95,68,20,2,0,2,73,0,6,104,101,105,103,104,116,73,0,5,119,105,100,116,104,120,112,0,0,2,54,0,0,2,-89"/>
+    <AuxValue name="designerSize" type="java.awt.Dimension" value="-84,-19,0,5,115,114,0,18,106,97,118,97,46,97,119,116,46,68,105,109,101,110,115,105,111,110,65,-114,-39,-41,-84,95,68,20,2,0,2,73,0,6,104,101,105,103,104,116,73,0,5,119,105,100,116,104,120,112,0,0,2,89,0,0,2,-81"/>
   </AuxValues>
 
   <Layout class="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout"/>
@@ -65,15 +65,15 @@
           <Group type="103" groupAlignment="0" attributes="0">
               <Group type="102" alignment="1" attributes="0">
                   <Group type="103" groupAlignment="1" attributes="0">
-                      <Component id="jPanel9" alignment="0" max="32767" attributes="3"/>
+                      <Component id="addresspanel" alignment="0" pref="645" max="32767" attributes="3"/>
                       <Component id="jPanel4" alignment="0" max="32767" attributes="3"/>
+                      <Component id="jPanel1" alignment="0" max="32767" attributes="2"/>
+                      <Component id="jPanel9" alignment="0" max="32767" attributes="3"/>
                       <Component id="jToolBar1" alignment="0" pref="645" max="32767" attributes="2"/>
                       <Component id="button_order1" alignment="0" min="-2" max="-2" attributes="0"/>
-                      <Component id="addresspanel" alignment="0" pref="645" max="32767" attributes="3"/>
-                      <Component id="jPanel3" alignment="0" pref="645" max="32767" attributes="3"/>
-                      <Component id="jPanel1" alignment="0" max="32767" attributes="2"/>
+                      <Component id="jPanel3" alignment="1" pref="645" max="32767" attributes="3"/>
                   </Group>
-                  <EmptySpace min="-2" max="-2" attributes="0"/>
+                  <EmptySpace max="-2" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
@@ -87,7 +87,7 @@
                   <Component id="button_order1" min="-2" pref="15" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
                   <Component id="addresspanel" min="-2" max="-2" attributes="0"/>
-                  <EmptySpace max="-2" attributes="0"/>
+                  <EmptySpace min="-2" pref="2" max="-2" attributes="0"/>
                   <Component id="jPanel3" min="-2" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
                   <Component id="jPanel4" min="-2" max="-2" attributes="0"/>
@@ -124,15 +124,21 @@
                           </Group>
                           <Group type="102" alignment="0" attributes="0">
                               <EmptySpace max="-2" attributes="0"/>
-                              <Component id="number" min="-2" pref="215" max="-2" attributes="1"/>
+                              <Group type="103" groupAlignment="1" max="-2" attributes="0">
+                                  <Component id="taxnumber" alignment="0" max="32767" attributes="1"/>
+                                  <Component id="number" alignment="0" pref="215" max="32767" attributes="1"/>
+                              </Group>
                               <EmptySpace max="-2" attributes="0"/>
-                              <Component id="groupnameselect" min="-2" pref="299" max="-2" attributes="0"/>
+                              <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                                  <Component id="companyselect" max="32767" attributes="1"/>
+                                  <Component id="groupnameselect" alignment="0" pref="299" max="32767" attributes="1"/>
+                              </Group>
                           </Group>
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="dateadded" alignment="0" min="-2" pref="97" max="-2" attributes="0"/>
-                          <Component id="addedby" alignment="0" min="-2" pref="97" max="-2" attributes="0"/>
+                          <Component id="dateadded" min="-2" pref="97" max="-2" attributes="0"/>
+                          <Component id="addedby" min="-2" pref="97" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace max="32767" attributes="0"/>
                   </Group>
@@ -142,23 +148,30 @@
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" attributes="0">
                       <EmptySpace max="-2" attributes="0"/>
-                      <Group type="103" groupAlignment="2" attributes="0">
-                          <Component id="jLabel1" alignment="2" min="-2" max="-2" attributes="0"/>
-                          <Component id="jToolBar2" alignment="2" min="-2" pref="25" max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="1" attributes="0">
+                          <Group type="102" attributes="0">
+                              <Group type="103" groupAlignment="2" attributes="0">
+                                  <Component id="jLabel1" alignment="2" min="-2" max="-2" attributes="0"/>
+                                  <Component id="jToolBar2" alignment="2" min="-2" pref="25" max="-2" attributes="0"/>
+                              </Group>
+                              <EmptySpace min="-2" pref="7" max="-2" attributes="0"/>
+                          </Group>
+                          <Group type="102" alignment="1" attributes="0">
+                              <Component id="addedby" min="-2" pref="19" max="-2" attributes="0"/>
+                              <EmptySpace max="-2" attributes="0"/>
+                          </Group>
                       </Group>
-                      <EmptySpace min="-2" pref="7" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="2" attributes="0">
                           <Component id="groupnameselect" alignment="2" min="-2" max="-2" attributes="0"/>
                           <Component id="number" alignment="2" min="-2" max="-2" attributes="0"/>
+                          <Component id="dateadded" alignment="2" min="-2" pref="19" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
-                  </Group>
-                  <Group type="102" alignment="1" attributes="0">
-                      <EmptySpace pref="20" max="32767" attributes="0"/>
-                      <Component id="addedby" min="-2" pref="19" max="-2" attributes="0"/>
-                      <EmptySpace max="-2" attributes="0"/>
-                      <Component id="dateadded" min="-2" pref="19" max="-2" attributes="0"/>
-                      <EmptySpace max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="1" attributes="0">
+                          <Component id="taxnumber" min="-2" max="-2" attributes="0"/>
+                          <Component id="companyselect" min="-2" max="-2" attributes="0"/>
+                      </Group>
+                      <EmptySpace pref="15" max="32767" attributes="0"/>
                   </Group>
               </Group>
             </DimensionLayout>
@@ -328,6 +341,27 @@
                 <Property name="name" type="java.lang.String" value="addedby" noResource="true"/>
               </Properties>
             </Component>
+            <Component class="mpv5.ui.beans.LabeledTextField" name="taxnumber">
+              <Properties>
+                <Property name="_Label" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
+                  <ResourceString bundle="mpv5/resources/languages/Panels.properties" key="ContactPanel.taxnumber._Label" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+                </Property>
+                <Property name="font" type="java.awt.Font" editor="org.netbeans.modules.form.editors2.FontEditor">
+                  <FontInfo relative="true">
+                    <Font bold="true" component="taxnumber" property="font" relativeSize="true" size="0"/>
+                  </FontInfo>
+                </Property>
+                <Property name="name" type="java.lang.String" value="taxnumber" noResource="true"/>
+              </Properties>
+            </Component>
+            <Component class="mpv5.ui.beans.LabeledCombobox" name="companyselect">
+              <Properties>
+                <Property name="_Label" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
+                  <ResourceString bundle="mpv5/resources/languages/Panels.properties" key="ContactPanel.companyselect._Label" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+                </Property>
+                <Property name="name" type="java.lang.String" value="companyselect" noResource="true"/>
+              </Properties>
+            </Component>
           </SubComponents>
         </Container>
         <Container class="javax.swing.JPanel" name="jPanel4">
@@ -351,7 +385,7 @@
             </DimensionLayout>
             <DimensionLayout dim="1">
               <Group type="103" groupAlignment="0" attributes="0">
-                  <Component id="jScrollPane1" min="-2" max="-2" attributes="0"/>
+                  <Component id="jScrollPane1" alignment="0" pref="53" max="32767" attributes="0"/>
               </Group>
             </DimensionLayout>
           </Layout>
@@ -838,49 +872,46 @@
               <Layout>
                 <DimensionLayout dim="0">
                   <Group type="103" groupAlignment="0" attributes="0">
-                      <Group type="102" max="-2" attributes="0">
-                          <EmptySpace min="-2" max="-2" attributes="0"/>
+                      <Group type="102" attributes="0">
                           <Group type="103" groupAlignment="0" max="-2" attributes="0">
                               <Group type="102" alignment="0" attributes="0">
-                                  <Group type="103" groupAlignment="0" attributes="0">
-                                      <Component id="street" alignment="0" min="-2" pref="221" max="-2" attributes="1"/>
-                                      <Group type="102" alignment="1" attributes="0">
-                                          <EmptySpace pref="89" max="32767" attributes="0"/>
-                                          <Component id="male" min="-2" max="-2" attributes="0"/>
+                                  <EmptySpace min="-2" pref="83" max="-2" attributes="0"/>
+                                  <Component id="male" min="-2" max="-2" attributes="0"/>
+                                  <EmptySpace max="-2" attributes="0"/>
+                                  <Component id="female" min="-2" max="-2" attributes="0"/>
+                              </Group>
+                              <Group type="102" alignment="0" attributes="0">
+                                  <Group type="103" groupAlignment="1" attributes="0">
+                                      <Group type="102" alignment="1" max="-2" attributes="1">
                                           <EmptySpace max="-2" attributes="0"/>
-                                          <Component id="female" min="-2" max="-2" attributes="0"/>
-                                          <EmptySpace min="-2" pref="52" max="-2" attributes="0"/>
+                                          <Component id="department" min="-2" pref="221" max="-2" attributes="1"/>
                                       </Group>
-                                      <Component id="title" alignment="0" min="-2" pref="182" max="-2" attributes="1"/>
+                                      <Group type="102" alignment="0" attributes="0">
+                                          <EmptySpace max="-2" attributes="0"/>
+                                          <Group type="103" groupAlignment="0" attributes="0">
+                                              <Component id="street" alignment="0" min="-2" pref="221" max="-2" attributes="1"/>
+                                              <Component id="title" alignment="0" min="-2" pref="182" max="-2" attributes="1"/>
+                                          </Group>
+                                      </Group>
                                   </Group>
                                   <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                                  <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                                      <Component id="prename" alignment="1" min="0" pref="0" max="32767" attributes="1"/>
-                                      <Component id="city" alignment="1" min="-2" pref="182" max="-2" attributes="1"/>
-                                  </Group>
-                                  <EmptySpace max="-2" attributes="0"/>
-                                  <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                                      <Component id="cname" min="0" pref="0" max="32767" attributes="1"/>
-                                      <Component id="zip" alignment="0" pref="174" max="32767" attributes="1"/>
-                                  </Group>
-                              </Group>
-                              <Group type="102" alignment="1" max="-2" attributes="0">
                                   <Group type="103" groupAlignment="0" attributes="0">
-                                      <Component id="department" alignment="0" pref="267" max="32767" attributes="1"/>
-                                      <Group type="102" alignment="1" attributes="0">
-                                          <Component id="jLabel3" pref="69" max="32767" attributes="0"/>
+                                      <Group type="102" alignment="0" attributes="0">
+                                          <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                                              <Component id="prename" alignment="1" min="0" pref="0" max="32767" attributes="1"/>
+                                              <Component id="city" alignment="1" min="-2" pref="182" max="-2" attributes="1"/>
+                                          </Group>
                                           <EmptySpace max="-2" attributes="0"/>
-                                          <Component id="companyselect" pref="201" max="32767" attributes="0"/>
+                                          <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                                              <Component id="cname" min="0" pref="0" max="32767" attributes="1"/>
+                                              <Component id="zip" alignment="0" min="-2" pref="174" max="-2" attributes="1"/>
+                                          </Group>
                                       </Group>
-                                  </Group>
-                                  <EmptySpace max="-2" attributes="0"/>
-                                  <Group type="103" groupAlignment="0" attributes="0">
-                                      <Group type="102" alignment="1" attributes="0">
-                                          <Component id="jLabel5" pref="69" max="32767" attributes="0"/>
+                                      <Group type="102" alignment="0" attributes="0">
+                                          <Component id="jLabel5" min="-2" pref="73" max="-2" attributes="0"/>
                                           <EmptySpace max="-2" attributes="0"/>
-                                          <Component id="countryselect" min="-2" pref="222" max="-2" attributes="0"/>
+                                          <Component id="countryselect" min="-2" pref="182" max="-2" attributes="0"/>
                                       </Group>
-                                      <Component id="taxnumber" pref="244" max="32767" attributes="1"/>
                                   </Group>
                               </Group>
                           </Group>
@@ -891,26 +922,18 @@
                 <DimensionLayout dim="1">
                   <Group type="103" groupAlignment="0" attributes="0">
                       <Group type="102" alignment="0" attributes="0">
-                          <EmptySpace min="13" pref="13" max="-2" attributes="0"/>
-                          <Group type="103" groupAlignment="0" attributes="0">
-                              <Group type="103" groupAlignment="1" attributes="0">
-                                  <Component id="countryselect" alignment="1" min="-2" pref="19" max="-2" attributes="0"/>
-                                  <Component id="jLabel5" min="-2" max="-2" attributes="0"/>
-                                  <Component id="jLabel3" alignment="1" min="-2" max="-2" attributes="0"/>
-                              </Group>
-                              <Component id="companyselect" min="-2" pref="20" max="-2" attributes="0"/>
-                          </Group>
-                          <EmptySpace max="-2" attributes="0"/>
-                          <Group type="103" groupAlignment="1" attributes="0">
-                              <Component id="department" min="-2" max="-2" attributes="0"/>
-                              <Component id="taxnumber" min="-2" max="-2" attributes="0"/>
+                          <EmptySpace min="-2" pref="12" max="-2" attributes="0"/>
+                          <Group type="103" groupAlignment="2" attributes="0">
+                              <Component id="department" alignment="2" min="-2" max="-2" attributes="0"/>
+                              <Component id="countryselect" alignment="2" min="-2" max="-2" attributes="0"/>
+                              <Component id="jLabel5" alignment="2" min="-2" max="-2" attributes="0"/>
                           </Group>
                           <EmptySpace max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="3" attributes="0">
                               <Component id="male" alignment="3" min="-2" max="-2" attributes="0"/>
                               <Component id="female" alignment="3" min="-2" max="-2" attributes="0"/>
                           </Group>
-                          <EmptySpace min="-2" max="-2" attributes="0"/>
+                          <EmptySpace max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="0" attributes="0">
                               <Component id="prename" min="-2" max="-2" attributes="0"/>
                               <Component id="cname" min="-2" max="-2" attributes="0"/>
@@ -968,17 +991,6 @@
                     <Property name="name" type="java.lang.String" value="city" noResource="true"/>
                   </Properties>
                 </Component>
-                <Component class="javax.swing.JLabel" name="jLabel3">
-                  <Properties>
-                    <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-                      <Font name="Dialog" size="12" style="0"/>
-                    </Property>
-                    <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-                      <ResourceString bundle="mpv5/resources/languages/Panels.properties" key="ContactPanel.jLabel3.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
-                    </Property>
-                    <Property name="name" type="java.lang.String" value="jLabel3" noResource="true"/>
-                  </Properties>
-                </Component>
                 <Component class="mpv5.ui.beans.LabeledTextField" name="zip">
                   <Properties>
                     <Property name="_Label" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
@@ -1022,19 +1034,6 @@
                     <Property name="opaque" type="boolean" value="false"/>
                   </Properties>
                 </Component>
-                <Component class="mpv5.ui.beans.LabeledTextField" name="taxnumber">
-                  <Properties>
-                    <Property name="_Label" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-                      <ResourceString bundle="mpv5/resources/languages/Panels.properties" key="ContactPanel.taxnumber._Label" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
-                    </Property>
-                    <Property name="font" type="java.awt.Font" editor="org.netbeans.modules.form.editors2.FontEditor">
-                      <FontInfo relative="true">
-                        <Font bold="true" component="taxnumber" property="font" relativeSize="true" size="0"/>
-                      </FontInfo>
-                    </Property>
-                    <Property name="name" type="java.lang.String" value="taxnumber" noResource="true"/>
-                  </Properties>
-                </Component>
                 <Component class="mpv5.ui.beans.LabeledTextField" name="department">
                   <Properties>
                     <Property name="_Label" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
@@ -1051,7 +1050,7 @@
                 <Component class="javax.swing.JLabel" name="jLabel5">
                   <Properties>
                     <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-                      <Font name="Dialog" size="12" style="0"/>
+                      <Font name="Dialog" size="11" style="0"/>
                     </Property>
                     <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
                       <ResourceString bundle="mpv5/resources/languages/Panels.properties" key="ContactPanel.jLabel5.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
@@ -1069,11 +1068,6 @@
                   <Events>
                     <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="countryselectActionPerformed"/>
                   </Events>
-                </Component>
-                <Component class="mpv5.ui.beans.MPCombobox" name="companyselect">
-                  <Properties>
-                    <Property name="name" type="java.lang.String" value="companyselect" noResource="true"/>
-                  </Properties>
                 </Component>
               </SubComponents>
             </Container>

@@ -64,7 +64,7 @@ public class GeneralListPanel extends javax.swing.JPanel {
         jTable1.setDefaultRenderer(String.class, new ccr());
         jTable1.setDefaultRenderer(Object.class, new ccr());
         jTable1.setDefaultRenderer(DatabaseObject.class, new ccr());
-        labeledCombobox1.setSearchOnEnterEnabled(true);
+        labeledCombobox1.setSearchEnabled(true);
         labeledCombobox1.setContext(Context.getGroup());
         labeledCombobox1.triggerSearch();
         setData(list);
@@ -101,7 +101,7 @@ public class GeneralListPanel extends javax.swing.JPanel {
 
         setData(ndata);
         odata = ndata;
-        labeledCombobox1.setSearchOnEnterEnabled(true);
+        labeledCombobox1.setSearchEnabled(true);
         labeledCombobox1.setContext(Context.getGroup());
         labeledCombobox1.triggerSearch();
     }

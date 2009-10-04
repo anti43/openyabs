@@ -61,10 +61,10 @@ public class RemindPanel extends javax.swing.JPanel {
         initComponents();
         labeledTextField1.set_ValueClass(Double.class);
 
-        labeledCombobox1.setSearchOnEnterEnabled(true);
+        labeledCombobox1.setSearchEnabled(true);
         labeledCombobox1.setContext(Context.getItems());
 
-        labeledCombobox3.setSearchOnEnterEnabled(true);
+        labeledCombobox3.setSearchEnabled(true);
         labeledCombobox3.setContext(Context.getStages());
 
         labeledCombobox1.getComboBox().addActionListener(new ActionListener() {
@@ -118,7 +118,7 @@ public class RemindPanel extends javax.swing.JPanel {
             }
         });
         labeledTextField1.set_ValueClass(Double.class);
-        labeledCombobox3.setSearchOnEnterEnabled(true);
+        labeledCombobox3.setSearchEnabled(true);
         labeledCombobox3.setContext(Context.getStages());
         labeledCombobox1.setModel(bill);
         labeledCombobox3.triggerSearch();

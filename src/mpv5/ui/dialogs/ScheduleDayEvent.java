@@ -52,7 +52,7 @@ public class ScheduleDayEvent extends javax.swing.JFrame {
         initComponents();
         text = jLabel3.getText();
         refresh(null);
-        labeledCombobox1.setSearchOnEnterEnabled(true);
+        labeledCombobox1.setSearchEnabled(true);
         labeledCombobox1.setContext(Context.getBill());
         setAlwaysOnTop(true);
         new Position(this);

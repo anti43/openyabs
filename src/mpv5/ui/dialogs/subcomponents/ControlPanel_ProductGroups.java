@@ -75,7 +75,7 @@ public class ControlPanel_ProductGroups extends javax.swing.JPanel implements Co
             initComponents();
             tree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
             
-            gcombobox.setSearchOnEnterEnabled(true);
+            gcombobox.setSearchEnabled(true);
             gcombobox.setContext(Context.getGroup());
             
             refresh();
@@ -87,7 +87,7 @@ public class ControlPanel_ProductGroups extends javax.swing.JPanel implements Co
             initComponents();
             tree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
                 
-            gcombobox.setSearchOnEnterEnabled(true);
+            gcombobox.setSearchEnabled(true);
             gcombobox.setContext(Context.getGroup());
             
             refresh();

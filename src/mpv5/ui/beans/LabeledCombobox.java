@@ -61,6 +61,13 @@ public class LabeledCombobox extends javax.swing.JPanel {
     }
 
     /**
+     * Sets an empty model
+     */
+    public void setModel() {
+        mPCombobox1.setModel();
+    }
+
+    /**
      * 
      * @param values
      * @param compareMode
@@ -168,7 +175,7 @@ public class LabeledCombobox extends javax.swing.JPanel {
      * <br/>{@link LabeledCombobox#setContext(Context)} must be called before this can work.
      * @param enabled
      */
-    public void setSearchOnEnterEnabled(boolean enabled) {
+    public void setSearchEnabled(boolean enabled) {
         mPCombobox1.setSearchEnabled(enabled);
     }
 
@@ -305,5 +312,13 @@ public class LabeledCombobox extends javax.swing.JPanel {
      */
     public void setReceiver(DataPanel panel) {
         mPCombobox1.setReceiver(panel);
+    }
+
+    /**
+     * 
+     * @param b
+     */
+    public void setSearchOnEnterEnabled(boolean b) {
+        setSearchEnabled(b);
     }
 }

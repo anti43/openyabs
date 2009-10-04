@@ -94,7 +94,7 @@ public class ExpensePanel extends javax.swing.JPanel implements DataPanel {
 
         groupnameselect.setSearchEnabled(true);
         groupnameselect.setContext(Context.getGroup());
-        taxrate.setSearchOnEnterEnabled(true);
+        taxrate.setSearchEnabled(true);
         taxrate.setContext(Context.getTaxes());
 
 

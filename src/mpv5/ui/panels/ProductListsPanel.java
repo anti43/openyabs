@@ -94,7 +94,7 @@ public class ProductListsPanel extends javax.swing.JPanel implements DataPanel, 
         refresh();
         addedby.setText(MPView.getUser().getName());
         groupnameselect.setContext(Context.getGroup());
-        groupnameselect.setSearchOnEnterEnabled(true);
+        groupnameselect.setSearchEnabled(true);
         itemtable.getTableHeader().addMouseListener(new MouseListener() {
 
             @Override

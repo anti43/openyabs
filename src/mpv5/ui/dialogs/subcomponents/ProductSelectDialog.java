@@ -79,7 +79,7 @@ public class ProductSelectDialog extends javax.swing.JPanel {
         validate();
         link.getTextField().setToolTipText("Google@http://www.google.de");
         taxrate.getComboBox().setEditable(false);
-        taxrate.setSearchOnEnterEnabled(true);
+        taxrate.setSearchEnabled(true);
         taxrate.setContext(Context.getTaxes());
         taxrate.triggerSearch();
         value.set_ValueClass(Double.class);
