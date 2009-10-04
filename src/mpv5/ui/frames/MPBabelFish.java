@@ -334,7 +334,8 @@ public class MPBabelFish extends javax.swing.JFrame {
                             setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
                         }
                     }
-                };new Thread(runnable).start();
+                };
+                new Thread(runnable).start();
             } else {
                 TextFieldUtils.blinkerRed(langName.getTextField());
             }
@@ -493,10 +494,12 @@ public class MPBabelFish extends javax.swing.JFrame {
                 try {
                     for (int j = 0; j < imported.length; j++) {
                         String string = imported[j];
-                        if (string.split("=")[0].equals(component)) {
-                            originallanguage[i] = string.split("=")[1];
-                            MPView.setProgressValue(i + 1);
-                            progress.setValue(i + 1);
+                        if (string.split("=").length == 2) {
+                            if (string.split("=")[0].equals(component)) {
+                                originallanguage[i] = string.split("=")[1];
+                                MPView.setProgressValue(i + 1);
+                                progress.setValue(i + 1);
+                            }
                         }
                     }
                 } catch (Exception ex) {
