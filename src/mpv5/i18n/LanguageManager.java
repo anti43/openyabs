@@ -306,6 +306,11 @@ public class LanguageManager {
         if (hasNeededKeys(file)) {
             try {
                 String dbname = QueryHandler.instanceOf().clone(Context.getFiles()).insertFile(file);
+                try {
+                    Thread.sleep(3333);
+                } catch (InterruptedException ex) {
+                    Logger.getLogger(LanguageManager.class.getName()).log(Level.SEVERE, null, ex);
+                }
                 QueryData t = new QueryData();
                 t.add("cname", langid);
                 t.add("longname", langname);

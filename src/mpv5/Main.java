@@ -204,7 +204,7 @@ public class Main extends SingleFrameApplication {
     }
 
     @Override
-    protected void shutdown() {
+    public void shutdown() {
         MPView.setWaiting(true);
         MPView.setProgressRunning(true);
         DatabaseObjectLock.releaseAllObjectsFor(MPView.getUser());

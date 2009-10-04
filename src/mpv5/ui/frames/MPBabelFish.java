@@ -321,10 +321,20 @@ public class MPBabelFish extends javax.swing.JFrame {
         if (MPSecurityManager.checkAdminAccess() &&
                 QueryHandler.instanceOf().clone(Context.getLanguage()).checkUniqueness("longname", new JTextField[]{langName.getTextField()})) {
             if (langName.hasText()) {
-//            MPTableModel mpdel = DataModelUtils.getModelCopy(data);
-                LanguageManager.importLanguage(langName.get_Text(), ArrayUtilities.tableModelToFile(data, new int[]{0, 2}, "=", RandomText.getText() + "language", "yabs"));
-//            data.setModel(mpdel);
-                setLanguageSelection();
+                Runnable runnable = new Runnable() {
+
+                    public void run() {
+                        try {
+                            setCursor(new Cursor(Cursor.WAIT_CURSOR));
+                            LanguageManager.importLanguage(langName.get_Text(), ArrayUtilities.tableModelToFile(data, new int[]{0, 2}, "=", RandomText.getText() + "language", "yabs"));
+                            setLanguageSelection();
+                        } catch (Exception e) {
+                            Log.Debug(e);
+                        } finally {
+                            setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+                        }
+                    }
+                };new Thread(runnable).start();
             } else {
                 TextFieldUtils.blinkerRed(langName.getTextField());
             }

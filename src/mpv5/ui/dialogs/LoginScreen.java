@@ -49,12 +49,11 @@ public class LoginScreen extends javax.swing.JFrame {
             }
 
             private void close() {
-                if (Popup.Y_N_dialog(Messages.REALLY_CLOSE)) {
-                    LocalSettings.setProperty(LocalSettings.LAST_USER, null);
-                    LocalSettings.setProperty(LocalSettings.LAST_USER_PW, null);
-                    LocalSettings.save();
-                    Main.cache();
-                }
+                LocalSettings.setProperty(LocalSettings.LAST_USER, null);
+                LocalSettings.setProperty(LocalSettings.LAST_USER_PW, null);
+                LocalSettings.save();
+                Main.getApplication().exit();
+               
             }
         });
 
@@ -80,9 +79,10 @@ public class LoginScreen extends javax.swing.JFrame {
         jLabel3 = new javax.swing.JLabel();
         jCheckBox1 = new javax.swing.JCheckBox();
         jCheckBox2 = new javax.swing.JCheckBox();
+        jLabel4 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
-        java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle(); // NOI18N
+        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("mpv5/resources/languages/Panels"); // NOI18N
         setTitle(bundle.getString("LoginScreen.title")); // NOI18N
         setAlwaysOnTop(true);
         setFocusTraversalPolicyProvider(true);
@@ -113,6 +113,9 @@ public class LoginScreen extends javax.swing.JFrame {
 
         jCheckBox2.setText(bundle.getString("LoginScreen.jCheckBox2.text")); // NOI18N
 
+        jLabel4.setFont(new java.awt.Font("Tahoma", 2, 11)); // NOI18N
+        jLabel4.setText(bundle.getString("LoginScreen.jLabel4.text")); // NOI18N
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -126,19 +129,24 @@ public class LoginScreen extends javax.swing.JFrame {
                         .addComponent(jCheckBox1)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jCheckBox2)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 13, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 70, Short.MAX_VALUE)
                         .addComponent(jButton1))
                     .addComponent(jPasswordField1, javax.swing.GroupLayout.DEFAULT_SIZE, 323, Short.MAX_VALUE)
                     .addComponent(jTextField1, javax.swing.GroupLayout.DEFAULT_SIZE, 323, Short.MAX_VALUE)
-                    .addComponent(jLabel1)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(jLabel1)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 194, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(jLabel2))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jLabel1)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel1)
+                    .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 14, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -185,6 +193,7 @@ private void jPasswordField1ActionPerformed(java.awt.event.ActionEvent evt) {//G
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPasswordField jPasswordField1;
     private javax.swing.JTextField jTextField1;
@@ -209,7 +218,7 @@ private void jPasswordField1ActionPerformed(java.awt.event.ActionEvent evt) {//G
             }
             this.dispose();
         } else {
-            Popup.notice(Messages.ACCESS_DENIED);
+            jLabel4.setText(Messages.ACCESS_DENIED.getValue());
         }
     }
 }
