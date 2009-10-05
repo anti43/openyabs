@@ -93,7 +93,7 @@ public class Template extends DatabaseObject {
                                 preloadedTemplate.exFile = new ODTFile(preloadedTemplate.getFile().getPath());
                                 Log.Debug(Template.class, "Loaded template: " + preloadedTemplate);
                             } else {
-                                Popup.notice(Messages.NOT_POSSIBLE + "\n" + Messages.OOCONNERROR);
+//                                Popup.notice(Messages.NOT_POSSIBLE + "\n" + Messages.OOCONNERROR);
                                 return null;
                             }
                         } else {

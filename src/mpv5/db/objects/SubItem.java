@@ -292,7 +292,7 @@ public class SubItem extends DatabaseObject {
         Context contextl = product.getContext();
         String params = "cname";
         String vars = null;
-        if (MPView.getUser().getProperties().hasProperty(contextl + mpv5.ui.beans.LightMPComboBox.VALUE_SEARCHFIELDS)&&
+        if (MPView.getUser().getProperties().hasProperty(contextl + mpv5.ui.beans.LightMPComboBox.VALUE_SEARCHFIELDS) &&
                 MPView.getUser().getProperties().getProperty(contextl + mpv5.ui.beans.LightMPComboBox.VALUE_SEARCHFIELDS).contains("_$")) {
             try {
                 params = "ids";
@@ -399,7 +399,6 @@ public class SubItem extends DatabaseObject {
             String.valueOf(FormatNumber.formatLokalCurrency(this.__getTotalbrutvalue())),
             __getLinkurl(),
             __getCName()
-
         ///////////////////////////////////////////////////////////////////////////////
         };
 
@@ -721,5 +720,13 @@ public class SubItem extends DatabaseObject {
      */
     public void setLinkurl(String linkurl) {
         this.linkurl = linkurl;
+    }
+
+    @Override
+    public boolean save(boolean b) {
+        if (cname.length() == 0) {
+            cname = "   ";
+        }
+        return super.save(b);
     }
 }

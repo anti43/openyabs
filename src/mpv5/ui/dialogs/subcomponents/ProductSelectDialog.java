@@ -92,6 +92,7 @@ public class ProductSelectDialog extends javax.swing.JPanel {
             }
         });
         labeledCombobox1.triggerSearch();
+        labeledCombobox1.getComboBox().setEditable(true);
     }
 
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
