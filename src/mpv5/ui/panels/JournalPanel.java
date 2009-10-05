@@ -572,7 +572,7 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
                     }
 
                     if (dataowner != null) {
-                        dh.and(new QueryParameter(dataowner.getContext(),"ids", dataowner.__getIDS(), QueryParameter.EQUALS));
+                        dh.and(new QueryParameter(dataowner.getContext(), "ids", dataowner.__getIDS(), QueryParameter.EQUALS));
                     }
 
                     boolean additional = true;
@@ -587,6 +587,9 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
                         dh.setOrder("accountsids", true);
                         c.addReference(Context.getGroup());
                         c.addReference(Context.getAccounts());
+                        if (dataowner != null) {
+                            c.addReference(Context.getContact());
+                        }
                         try {
                             d = QueryHandler.instanceOf().clone(c).select(Context.DETAILS_JOURNAL, dh, timeframeChooser1.getTime()).getData();
                         } catch (NodataFoundException nodataFoundException) {
@@ -775,7 +778,7 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
     private void setData() {
         try {
             if (groups.getSelectedItem().isValid()) {
-                refresh((Group) Group.getObject(Context.getGroup(),Integer.valueOf(groups.getSelectedItem().getId())));
+                refresh((Group) Group.getObject(Context.getGroup(), Integer.valueOf(groups.getSelectedItem().getId())));
             } else {
                 refresh(null);
             }

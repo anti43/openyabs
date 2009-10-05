@@ -405,7 +405,7 @@ public class ControlPanel_Templates extends javax.swing.JPanel implements Contro
         try {
             setDataOwner((DatabaseObject) templates.getValueAt(templates.getSelectedRow(), 0), true);
         } catch (Exception e) {
-            Log.Debug(e);
+//            Log.Debug(e);
         }
     }//GEN-LAST:event_templatesMouseClicked
 

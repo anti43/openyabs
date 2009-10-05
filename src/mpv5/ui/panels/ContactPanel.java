@@ -108,24 +108,25 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
         groupnameselect.setContext(Context.getGroup());
         companyselect.setSearchEnabled(true);
         companyselect.setContext(Context.getContactsCompanies());
-        companyselect.getComboBox().addActionListener(new ActionListener() {
-
-            public void actionPerformed(ActionEvent e) {
-                String t = title.getText();
-                String s = cname.getText();
-                String p = prename.getText();
-                try {
-                    Contact a = (Contact) DatabaseObject.getObject(Context.getContact(), Integer.valueOf(companyselect.getSelectedItem().getId()));
-                    setDataOwner(a, true);
-                    companyselect.setModel(a);
-                    title.setText(t);
-                    cname.setText(s);
-                    prename.setText(p);
-                    company.setSelected(false);
-                } catch (NodataFoundException ex) {
-                }
-            }
-        });
+        companyselect.getComboBox().setEditable(true);
+//        companyselect.getComboBox().addActionListener(new ActionListener() {
+//
+//            public void actionPerformed(ActionEvent e) {
+//                String t = title.getText();
+//                String s = cname.getText();
+//                String p = prename.getText();
+//                try {
+//                    Contact a = (Contact) DatabaseObject.getObject(Context.getContact(), companyselect.getSelectedItem().getValue());
+//                    setDataOwner(a, true);
+//                    companyselect.setModel(a);
+//                    title.setText(t);
+//                    cname.setText(s);
+//                    prename.setText(p);
+//                    company.setSelected(false);
+//                } catch (NodataFoundException ex) {
+//                }
+//            }
+//        });
 
         number.setSearchOnEnterEnabled(true);
         number.setParent(this);
@@ -859,7 +860,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
         department.setFont(department.getFont().deriveFont(department.getFont().getStyle() | java.awt.Font.BOLD));
         department.setName("department"); // NOI18N
 
-        jLabel5.setFont(new java.awt.Font("Dialog", 0, 11)); // NOI18N
+        jLabel5.setFont(new java.awt.Font("Dialog", 0, 11));
         jLabel5.setText(bundle.getString("ContactPanel.jLabel5.text")); // NOI18N
         jLabel5.setName("jLabel5"); // NOI18N
 
@@ -987,7 +988,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void companyItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_companyItemStateChanged
-        isCompany(company.isSelected());
+//        isCompany(company.isSelected());
 }//GEN-LAST:event_companyItemStateChanged
 
     private void manufacturerItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_manufacturerItemStateChanged
@@ -1269,13 +1270,13 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
         taxnumber_ = taxnumber.get_Text();
         iscompany_ = company.isSelected();
         if (companyselect.getSelectedItem() != null) {
-            company_ = String.valueOf(((MPComboBoxModelItem) companyselect.getSelectedItem()).getValue());
+            company_ = String.valueOf((companyselect.getComboBox().getSelectedItem()));
         } else {
             company_ = "";
         }
 
         if (groupnameselect.getSelectedItem() != null) {
-            groupsids_ = Integer.valueOf(((MPComboBoxModelItem) groupnameselect.getSelectedItem()).getId());
+            groupsids_ = Integer.valueOf((groupnameselect.getSelectedItem()).getId());
         } else {
             groupsids_ = 1;
         }
@@ -1323,15 +1324,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
         taxnumber.set_Text(taxnumber_);
         company.setSelected(iscompany_);
         try {
-            try {
-                if (company_ != null && company_.length() > 0) {
-                    companyselect.setModel(DatabaseObject.getObject(Context.getContactsCompanies(), company_));
-                } else {
-                    companyselect.setModel();
-                }
-            } catch (NodataFoundException nodataFoundException) {
-                companyselect.setModel();
-            }
+            companyselect.setModel(new String[][]{{company_, company_}});
             groupnameselect.setModel(DatabaseObject.getObject(Context.getGroup(), groupsids_));
             countryselect.setSelectedIndex(MPComboBoxModelItem.getItemIDfromValue(country_, countryselect.getModel()));
         } catch (Exception e) {
@@ -1409,23 +1402,22 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
         button_products.setEnabled(b);
     }
 
-    public void isCompany(boolean selected) {
-        try {
-            if (selected) {
-                companyselect.setSelectedIndex(0);
-            }
-        } catch (Exception e) {
-        }
-        company.setSelected(selected);
-        companyselect.setEnabled(!selected);
-        title.setEnabled(!selected);
-        male.setEnabled(!selected);
-        female.setEnabled(!selected);
-        prename.setEnabled(!selected);
-        department.setEnabled(!selected);
-
-    }
-
+//    public void isCompany(boolean selected) {
+//        try {
+//            if (selected) {
+//                companyselect.setSelectedIndex(0);
+//            }
+//        } catch (Exception e) {
+//        }
+//        company.setSelected(selected);
+//        companyselect.setEnabled(!selected);
+//        title.setEnabled(!selected);
+//        male.setEnabled(!selected);
+//        female.setEnabled(!selected);
+//        prename.setEnabled(!selected);
+//        department.setEnabled(!selected);
+//
+//    }
     @Override
     public void paste(DatabaseObject dbo) {
         if (dbo.getDbIdentity().equals(Context.getContact().getDbIdentity())) {

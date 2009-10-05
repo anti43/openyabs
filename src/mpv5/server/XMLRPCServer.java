@@ -16,10 +16,10 @@
  */
 package mpv5.server;
 
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import mpv5.db.common.Context;
+import mpv5.globals.LocalSettings;
 import mpv5.logging.Log;
 import mpv5.usermanagement.MPSecurityManager;
 import org.apache.xmlrpc.XmlRpcException;
@@ -31,7 +31,6 @@ import org.apache.xmlrpc.server.XmlRpcHandlerMapping;
 import org.apache.xmlrpc.server.XmlRpcServer;
 import org.apache.xmlrpc.server.XmlRpcServerConfigImpl;
 import org.apache.xmlrpc.webserver.WebServer;
-
 
 //Client-Side:
 //XmlRpcClientConfigImpl config = new XmlRpcClientConfigImpl();
@@ -45,7 +44,7 @@ import org.apache.xmlrpc.webserver.WebServer;
  */
 public class XMLRPCServer {
 
-    private static final int port = 8484;
+    private static int port = 8484;
     private WebServer webServer;
 
     /**
@@ -67,6 +66,9 @@ public class XMLRPCServer {
      * @throws Exception
      */
     public XMLRPCServer() throws Exception {
+        if (LocalSettings.hasProperty(LocalSettings.SERVER_PORT)) {
+            port = Integer.valueOf(LocalSettings.getProperty(LocalSettings.SERVER_PORT));
+        }
         webServer = new WebServer(getPort());
         XmlRpcServer xmlRpcServer = webServer.getXmlRpcServer();
         PropertyHandlerMapping phm = new XPropertyHandlerMapping();
@@ -88,7 +90,7 @@ public class XMLRPCServer {
         webServer.start();
         Log.Debug(this, "XML RPC Server started! Listening port: " + port);
 
-        if(Log.getLoglevel() == Log.LOGLEVEL_DEBUG){
+        if (Log.getLoglevel() == Log.LOGLEVEL_DEBUG) {
             Log.Debug(this, "XML RPC Server handler: ");
             String[] lm = phm.getListMethods();
             for (int i = 0; i < lm.length; i++) {
@@ -98,10 +100,11 @@ public class XMLRPCServer {
         }
     }
 }
+
 class XPropertyHandlerMapping extends PropertyHandlerMapping {
 
     private boolean isAuthenticated(String pUserName, String pPassword) {
-        return MPSecurityManager.checkAuth(pUserName, pPassword)!=null;
+        return MPSecurityManager.checkAuth(pUserName, pPassword) != null;
     }
 
     protected XmlRpcHandlerMapping newXmlRpcHandlerMapping() throws XmlRpcException {
@@ -116,6 +119,7 @@ class XPropertyHandlerMapping extends PropertyHandlerMapping {
                         return isAuthenticated(config.getBasicUserName(),
                                 config.getBasicPassword());
                     }
+
                     ;
                 };
         mapping.setAuthenticationHandler(handler);
