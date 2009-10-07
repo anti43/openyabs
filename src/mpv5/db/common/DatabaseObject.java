@@ -730,6 +730,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject> {
                 try {
                     Object obj = context.getIdentityClass().newInstance();
                     ((DatabaseObject) obj).fetchDataOf(id);
+                    ((DatabaseObject) obj).context = context;
                     cacheObject((DatabaseObject) obj);
                     return (DatabaseObject) obj;
                 } catch (InstantiationException ex) {
@@ -758,6 +759,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject> {
             Object obj = context.getIdentityClass().newInstance();
             if (((DatabaseObject) obj).fetchDataOf(cname)) {
                 cacheObject((DatabaseObject) obj);
+                ((DatabaseObject) obj).context = context;
                 return (DatabaseObject) obj;
             } else {
                 throw new NodataFoundException(context);
@@ -784,6 +786,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject> {
             Object obj = context.getIdentityClass().newInstance();
             if (((DatabaseObject) obj).fetchDataOf(column, value)) {
                 cacheObject((DatabaseObject) obj);
+                ((DatabaseObject) obj).context = context;
                 return (DatabaseObject) obj;
             } else {
                 throw new NodataFoundException(context);
@@ -807,6 +810,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject> {
         if (context.getIdentityClass() != null) {
             try {
                 Object obj = context.getIdentityClass().newInstance();
+                ((DatabaseObject) obj).context = context;
                 return (DatabaseObject) obj;
             } catch (InstantiationException ex) {
                 mpv5.logging.Log.Debug(ex);//Logger.getLogger(DatabaseObject.class.getName()).log(Level.SEVERE, null, ex);

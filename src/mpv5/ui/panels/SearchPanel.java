@@ -292,9 +292,7 @@ public class SearchPanel extends javax.swing.JPanel {
                     lastneedle = value;
                     Log.Debug(this, "Search parameters: " + searchtype + " " + value);
                     switch (searchtype) {
-
                         case 1:
-
                             if (!context.equals(Context.getContact())) {
                                 resulttable.setModel(new MPTableModel(new DatabaseSearch(context, 500).getValuesFor(sf, "cname", value, true), Headers.SEARCH_DEFAULT.getValue()));
                             } else {
@@ -324,15 +322,12 @@ public class SearchPanel extends javax.swing.JPanel {
                             break;
                         default:
                             Log.Debug(this, "Invalid parameters!");
-                            ;
-
                     }
                     TableFormat.makeUneditable(resulttable);
                     TableFormat.stripColumns(resulttable, new int[]{0, 3, 4, 5, 6, 7, 8, 9});
                 }
             };
             Log.Debug(this, "Starting search..");
-//            new Thread(runnable).start();
             SwingUtilities.invokeLater(runnable);
         }
 

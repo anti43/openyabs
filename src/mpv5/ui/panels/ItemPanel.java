@@ -31,11 +31,8 @@ import java.awt.event.MouseListener;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Vector;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
@@ -45,7 +42,6 @@ import javax.swing.JViewport;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingUtilities;
 import javax.swing.table.TableCellRenderer;
-import javax.swing.table.TableModel;
 import mpv5.db.common.*;
 import mpv5.db.objects.Product;
 import mpv5.globals.Headers;
@@ -66,9 +62,6 @@ import mpv5.ui.frames.MPView;
 import mpv5.ui.popups.FileTablePopUp;
 import mpv5.ui.toolbars.DataPanelTB;
 import mpv5.db.objects.User;
-import mpv5.handler.FormFieldsHandler;
-import mpv5.handler.VariablesHandler;
-import mpv5.mail.SimpleMail;
 import mpv5.ui.beans.MPCBSelectionChangeReceiver;
 import mpv5.ui.dialogs.DialogForFile;
 import mpv5.ui.dialogs.ScheduleDayEvent;
@@ -79,11 +72,9 @@ import mpv5.utils.export.Export;
 import mpv5.utils.export.Exportable;
 import mpv5.utils.files.FileDirectoryHandler;
 import mpv5.utils.jobs.Job;
-import mpv5.utils.jobs.Waiter;
 import mpv5.utils.models.MPComboBoxModelItem;
 import mpv5.utils.models.MPTableModel;
 import mpv5.utils.numberformat.FormatNumber;
-import mpv5.utils.print.PrintJob;
 import mpv5.utils.renderer.ButtonEditor;
 import mpv5.utils.renderer.ButtonRenderer;
 import mpv5.utils.tables.TableCalculator;
@@ -1303,14 +1294,17 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
     public void formatTable() {
 
         prepareTable();
-        TableFormat.resizeCols(itemtable, new Integer[]{0, 23, 53, 63, 100, 83, 63, 63, 0, 0, 0, 20, 20, 0, 0},
-                new Boolean[]{true, true, true, true, false, true, true, true, true, true, true, true, true, true, true});
+        TableFormat.resizeCols(itemtable, new Integer[]{0, 23, 53, 63, 100, 83, 63, 63, 0, 0, 0, 20, 20, 0, 100},
+                new Boolean[]{true, true, true, true, false, true, true, true, true, true, true, true, true, true, false});
         TableFormat.changeBackground(itemtable, 1, Color.LIGHT_GRAY);
         if (MPView.getUser().getProperties().getProperty(MPView.tabPane, "hidecolumnquantity")) {
             TableFormat.stripColumn(itemtable, 2);
         }
         if (MPView.getUser().getProperties().getProperty(MPView.tabPane, "hidecolumnmeasure")) {
             TableFormat.stripColumn(itemtable, 3);
+        }
+        if (!MPView.getUser().getProperties().getProperty(MPView.tabPane, "showoptionalcolumn")) {
+            TableFormat.stripColumn(itemtable, 14);
         }
     }
 
@@ -1337,7 +1331,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
                 int count = t.getRowCount();
                 for (int i = 0; i < l.size(); i++) {
                     ProductlistSubItem productlistSubItem = l.get(i);
-                    t.addRow(productlistSubItem.getRowData(i + count+1));
+                    t.addRow(productlistSubItem.getRowData(i + count + 1));
                 }
                 itemtable.setModel(t);
                 omodel = (MPTableModel) itemtable.getModel();

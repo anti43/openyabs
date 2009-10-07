@@ -14,6 +14,7 @@ import java.util.Locale;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 import mpv5.logging.Log;
+import mpv5.ui.frames.MPView;
 
 /**
  *
@@ -25,15 +26,15 @@ public class FormatNumber {
      * Represents the default decimal format
      */
     public static String FORMAT_DECIMAL = "#,###,##0.00";
-
     /**
      * Represents a short decimal format
      */
     public static String FORMAT_DECIMAL_SHORT = "#0.0#";
 
     public static NumberFormat getShortDecimalFormat() {
-       return new DecimalFormat(FORMAT_DECIMAL_SHORT);
+        return new DecimalFormat(FORMAT_DECIMAL_SHORT);
     }
+
     /**
      * Check whether a text can be parsed to be a decimal number
      * @param text
@@ -141,10 +142,13 @@ public class FormatNumber {
      * @param betrag
      * @return
      */
-    public synchronized static String formatLokalCurrency(
-            Double betrag) {
+    public synchronized static String formatLokalCurrency(Double betrag) {
         NumberFormat n = NumberFormat.getCurrencyInstance();
-        return n.format(round(betrag));
+        String d = n.format(round(betrag));
+        if (MPView.getUser().getProperties().getProperty(MPView.tabPane, "supresscurrencysymbols")) {
+            d = d.replace(n.getCurrency().getSymbol(), "");
+        }
+        return d;
     }
 
     /**
@@ -203,5 +207,4 @@ public class FormatNumber {
             return 0d;
         }
     }
-
 }
