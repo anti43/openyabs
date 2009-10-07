@@ -84,8 +84,9 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
         tb = new mpv5.ui.toolbars.DataPanelTB(this);
         toolbarpane.add(tb, BorderLayout.CENTER);
         dataOwner = new Contact();
+        dataOwner.setCountry(MPView.getUser().__getDefcountry());
 //        showSearchBar(true);
-        refresh();
+
         dateadded.setText(DateConverter.getTodayDefDate());
         addedby.setText(MPView.getUser().getName());
         groupnameselect.setSearchEnabled(true);
@@ -121,6 +122,11 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
         cname.setParent(this);
         cname.setSearchField("cname");
         cname.setContext(Context.getContact());
+
+        countryselect.setModel(LanguageManager.getCountriesAsComboBoxModel());
+//        countryselect.setSelectedIndex(9);
+
+        refresh();
     }
 
     @Override
@@ -1246,9 +1252,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
 
     @Override
     public boolean collectData() {
-        if (cname.getText().length() == 0) {
-            return false;
-        }
+
         city_ = city.get_Text();
         cname_ = cname.get_Text();
         taxnumber_ = taxnumber.get_Text();
@@ -1259,6 +1263,15 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
             company_ = "";
         }
 
+        if (company_.length() == 0) {
+            company_ = cname_;
+        } else {
+            cname_ = company_;
+        }
+
+        if (company_.length() == 0 && cname_.length() == 0) {
+            return false;
+        }
         if (groupnameselect.getSelectedItem() != null) {
             groupsids_ = Integer.valueOf((groupnameselect.getSelectedItem()).getId());
         } else {
@@ -1266,7 +1279,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
         }
 
         if (countryselect.getSelectedItem() != null) {
-            country_ = String.valueOf(((MPComboBoxModelItem) countryselect.getSelectedItem()).getValue());
+            country_ = String.valueOf(((MPComboBoxModelItem) countryselect.getSelectedItem()).getId());
         } else {
             country_ = "";
         }
@@ -1307,12 +1320,24 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
         cname.set_Text(cname_);
         taxnumber.set_Text(taxnumber_);
         company.setSelected(iscompany_);
+
         try {
             companyselect.setModel(new String[][]{{company_, company_}});
-            groupnameselect.setModel(DatabaseObject.getObject(Context.getGroup(), groupsids_));
-            countryselect.setSelectedIndex(MPComboBoxModelItem.getItemIDfromValue(country_, countryselect.getModel()));
         } catch (Exception e) {
-            Log.Debug(this, e.getMessage());
+            Log.Debug(e);
+        }
+        try {
+            groupnameselect.setModel(DatabaseObject.getObject(Context.getGroup(), groupsids_));
+        } catch (NodataFoundException e) {
+            Log.Debug(e);
+        }
+        try {
+            if (country_.length() == 0) {
+                country_ = MPView.getUser().__getDefcountry();
+            }
+            countryselect.setSelectedIndex(MPComboBoxModelItem.getItemID(country_, countryselect.getModel()));
+        } catch (Exception e) {
+            Log.Debug(e);
         }
         customer.setSelected(iscustomer_);
 //        enabled.setSelected(isenabled_);
@@ -1353,8 +1378,6 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
                         fillFiles();
                     }
 
-                    countryselect.setModel(LanguageManager.getCountriesAsComboBoxModel());
-                    countryselect.setSelectedIndex(MPComboBoxModelItem.getItemIDfromValue(MPView.getUser().__getDefcountry(), countryselect.getModel()));
                 } catch (Exception e) {
                     Log.Debug(this, e);
                 }

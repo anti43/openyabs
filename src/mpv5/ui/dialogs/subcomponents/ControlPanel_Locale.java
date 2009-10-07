@@ -5,13 +5,18 @@ import java.util.Locale;
 import javax.swing.ComboBoxModel;
 import javax.swing.DefaultComboBoxModel;
 
+import javax.swing.JTextField;
 import mpv5.data.PropertyStore;
+import mpv5.db.common.Context;
+import mpv5.db.common.QueryHandler;
 import mpv5.globals.Messages;
 import mpv5.i18n.LanguageManager;
+import mpv5.logging.Log;
 import mpv5.ui.dialogs.ControlApplet;
 import mpv5.ui.dialogs.Popup;
 import mpv5.ui.frames.MPView;
 
+import mpv5.utils.arrays.ArrayUtilities;
 import mpv5.utils.models.MPComboBoxModelItem;
 import mpv5.utils.text.TypeConversion;
 import mpv5.utils.ui.TextFieldUtils;
@@ -51,7 +56,7 @@ public class ControlPanel_Locale extends javax.swing.JPanel implements ControlAp
         jLabel6 = new javax.swing.JLabel();
         labeledTextChooser1 = new mpv5.ui.beans.LabeledTextChooser();
         jButton3 = new javax.swing.JButton();
-        labeledTextField1 = new mpv5.ui.beans.LabeledTextField();
+        langName = new mpv5.ui.beans.LabeledTextField();
         jLabel7 = new javax.swing.JLabel();
         jPanel3 = new javax.swing.JPanel();
         jLabel3 = new javax.swing.JLabel();
@@ -66,7 +71,7 @@ public class ControlPanel_Locale extends javax.swing.JPanel implements ControlAp
         jButton1 = new javax.swing.JButton();
 
         setBackground(new java.awt.Color(255, 255, 255));
-        java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle(); // NOI18N
+        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("mpv5/resources/languages/Panels"); // NOI18N
         setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("ControlPanel_Locale.border.title"))); // NOI18N
         setName("Form"); // NOI18N
         setLayout(new javax.swing.BoxLayout(this, javax.swing.BoxLayout.PAGE_AXIS));
@@ -78,7 +83,7 @@ public class ControlPanel_Locale extends javax.swing.JPanel implements ControlAp
         jLabel8.setText(bundle.getString("ControlPanel_Locale.jLabel8.text")); // NOI18N
         jLabel8.setName("jLabel8"); // NOI18N
 
-        jLabel9.setFont(new java.awt.Font("Dialog", 0, 11)); // NOI18N
+        jLabel9.setFont(new java.awt.Font("Dialog", 0, 11));
         jLabel9.setText(bundle.getString("ControlPanel_Locale.jLabel9.text")); // NOI18N
         jLabel9.setName("jLabel9"); // NOI18N
 
@@ -101,7 +106,7 @@ public class ControlPanel_Locale extends javax.swing.JPanel implements ControlAp
             .addGroup(jPanel5Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel9, javax.swing.GroupLayout.DEFAULT_SIZE, 354, Short.MAX_VALUE)
+                    .addComponent(jLabel9, javax.swing.GroupLayout.DEFAULT_SIZE, 352, Short.MAX_VALUE)
                     .addComponent(jLabel8)
                     .addGroup(jPanel5Layout.createSequentialGroup()
                         .addComponent(labeledTextChooser2, javax.swing.GroupLayout.PREFERRED_SIZE, 264, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -116,7 +121,7 @@ public class ControlPanel_Locale extends javax.swing.JPanel implements ControlAp
                 .addComponent(jLabel8)
                 .addGap(7, 7, 7)
                 .addComponent(jLabel9)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 8, Short.MAX_VALUE)
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jButton4, javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(labeledTextChooser2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -132,7 +137,7 @@ public class ControlPanel_Locale extends javax.swing.JPanel implements ControlAp
         jLabel5.setText(bundle.getString("ControlPanel_Locale.jLabel5.text")); // NOI18N
         jLabel5.setName("jLabel5"); // NOI18N
 
-        jLabel6.setFont(new java.awt.Font("Dialog", 0, 11)); // NOI18N
+        jLabel6.setFont(new java.awt.Font("Dialog", 0, 11));
         jLabel6.setText(bundle.getString("ControlPanel_Locale.jLabel6.text")); // NOI18N
         jLabel6.setName("jLabel6"); // NOI18N
 
@@ -148,11 +153,11 @@ public class ControlPanel_Locale extends javax.swing.JPanel implements ControlAp
             }
         });
 
-        labeledTextField1.set_Label(bundle.getString("ControlPanel_Locale.labeledTextField1._Label")); // NOI18N
-        labeledTextField1.set_LabelFont(new java.awt.Font("Dialog", 0, 11));
-        labeledTextField1.setName("labeledTextField1"); // NOI18N
+        langName.set_Label(bundle.getString("ControlPanel_Locale.langName._Label")); // NOI18N
+        langName.set_LabelFont(new java.awt.Font("Dialog", 0, 11)); // NOI18N
+        langName.setName("langName"); // NOI18N
 
-        jLabel7.setFont(new java.awt.Font("Dialog", 0, 11)); // NOI18N
+        jLabel7.setFont(new java.awt.Font("Dialog", 0, 11));
         jLabel7.setText(bundle.getString("ControlPanel_Locale.jLabel7.text")); // NOI18N
         jLabel7.setName("jLabel7"); // NOI18N
 
@@ -163,9 +168,9 @@ public class ControlPanel_Locale extends javax.swing.JPanel implements ControlAp
             .addGroup(jPanel4Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel6, javax.swing.GroupLayout.DEFAULT_SIZE, 354, Short.MAX_VALUE)
+                    .addComponent(jLabel6, javax.swing.GroupLayout.DEFAULT_SIZE, 352, Short.MAX_VALUE)
                     .addComponent(jLabel5)
-                    .addComponent(labeledTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 149, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(langName, javax.swing.GroupLayout.PREFERRED_SIZE, 149, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(jPanel4Layout.createSequentialGroup()
                         .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                             .addComponent(labeledTextChooser1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -182,8 +187,8 @@ public class ControlPanel_Locale extends javax.swing.JPanel implements ControlAp
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabel7)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(labeledTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(langName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 8, Short.MAX_VALUE)
                 .addComponent(jLabel6)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -201,7 +206,7 @@ public class ControlPanel_Locale extends javax.swing.JPanel implements ControlAp
         jLabel3.setText(bundle.getString("ControlPanel_Locale.jLabel3.text")); // NOI18N
         jLabel3.setName("jLabel3"); // NOI18N
 
-        jLabel4.setFont(new java.awt.Font("Dialog", 0, 11)); // NOI18N
+        jLabel4.setFont(new java.awt.Font("Dialog", 0, 11));
         jLabel4.setText(bundle.getString("ControlPanel_Locale.jLabel4.text")); // NOI18N
         jLabel4.setName("jLabel4"); // NOI18N
 
@@ -214,7 +219,7 @@ public class ControlPanel_Locale extends javax.swing.JPanel implements ControlAp
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel4, javax.swing.GroupLayout.DEFAULT_SIZE, 354, Short.MAX_VALUE)
+                    .addComponent(jLabel4, javax.swing.GroupLayout.DEFAULT_SIZE, 352, Short.MAX_VALUE)
                     .addComponent(jLabel3)
                     .addComponent(languages, javax.swing.GroupLayout.PREFERRED_SIZE, 177, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap())
@@ -228,7 +233,7 @@ public class ControlPanel_Locale extends javax.swing.JPanel implements ControlAp
                 .addComponent(jLabel4)
                 .addGap(18, 18, 18)
                 .addComponent(languages, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(13, Short.MAX_VALUE))
         );
 
         add(jPanel3);
@@ -240,7 +245,7 @@ public class ControlPanel_Locale extends javax.swing.JPanel implements ControlAp
         jLabel2.setText(bundle.getString("ControlPanel_Locale.jLabel2.text")); // NOI18N
         jLabel2.setName("jLabel2"); // NOI18N
 
-        jLabel1.setFont(new java.awt.Font("Dialog", 0, 11)); // NOI18N
+        jLabel1.setFont(new java.awt.Font("Dialog", 0, 11));
         jLabel1.setText(bundle.getString("ControlPanel_Locale.jLabel1.text")); // NOI18N
         jLabel1.setName("jLabel1"); // NOI18N
 
@@ -253,7 +258,7 @@ public class ControlPanel_Locale extends javax.swing.JPanel implements ControlAp
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, 354, Short.MAX_VALUE)
+                    .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, 352, Short.MAX_VALUE)
                     .addComponent(jLabel2)
                     .addComponent(locales, javax.swing.GroupLayout.PREFERRED_SIZE, 176, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap())
@@ -267,7 +272,7 @@ public class ControlPanel_Locale extends javax.swing.JPanel implements ControlAp
                 .addComponent(jLabel1)
                 .addGap(18, 18, 18)
                 .addComponent(locales, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(13, Short.MAX_VALUE))
         );
 
         add(jPanel2);
@@ -308,17 +313,32 @@ public class ControlPanel_Locale extends javax.swing.JPanel implements ControlAp
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
-        if (labeledTextChooser1.hasText() &&
-                labeledTextField1.hasText()) {
-            LanguageManager.importLanguage(labeledTextField1.get_Text(), new File(labeledTextChooser1.get_Text(true)));
-            setLanguageSelection();
-        } else {
-            TextFieldUtils.blinkerRed(labeledTextField1.getTextField());
+
+        if (QueryHandler.instanceOf().clone(Context.getLanguage()).checkUniqueness("longname", new JTextField[]{langName.getTextField()})) {
+            if (langName.hasText()) {
+                Runnable runnable = new Runnable() {
+
+                    public void run() {
+                        try {
+                            MPView.setWaiting(true);
+                            LanguageManager.importLanguage(langName.get_Text(), new File(labeledTextChooser1.get_Text(true)));
+                            setLanguageSelection();
+                        } catch (Exception e) {
+                            Log.Debug(e);
+                        } finally {
+                            MPView.setWaiting(false);
+                        }
+                    }
+                };
+                new Thread(runnable).start();
+            } else {
+                TextFieldUtils.blinkerRed(langName.getTextField());
+            }
         }
     }//GEN-LAST:event_jButton3ActionPerformed
 
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
-         if (labeledTextChooser2.hasText() ) {
+        if (labeledTextChooser2.hasText()) {
             LanguageManager.importCountries(new File(labeledTextChooser2.get_Text(true)));
         }
     }//GEN-LAST:event_jButton4ActionPerformed
@@ -355,14 +375,12 @@ public class ControlPanel_Locale extends javax.swing.JPanel implements ControlAp
     private javax.swing.JPanel jPanel6;
     private mpv5.ui.beans.LabeledTextChooser labeledTextChooser1;
     private mpv5.ui.beans.LabeledTextChooser labeledTextChooser2;
-    private mpv5.ui.beans.LabeledTextField labeledTextField1;
+    private mpv5.ui.beans.LabeledTextField langName;
     private javax.swing.JComboBox languages;
     private javax.swing.JComboBox locales;
     // End of variables declaration//GEN-END:variables
 
-  
     // End of variables declaration
-
     private void setLanguageSelection() {
         languages.setModel(getLanguages());
         languages.setSelectedIndex(MPComboBoxModelItem.getItemID(MPView.getUser().__getLanguage(),
@@ -388,13 +406,13 @@ public class ControlPanel_Locale extends javax.swing.JPanel implements ControlAp
         return LanguageManager.getLanguagesAsComboBoxModel();
     }
 
-
     private ComboBoxModel getCountries() {
-       return LanguageManager.getCountriesAsComboBoxModel();
+        return LanguageManager.getCountriesAsComboBoxModel();
     }
 
     public java.awt.Component getAndRemoveActionPanel() {
-         this.remove(jPanel6);validate();
+        this.remove(jPanel6);
+        validate();
         return jPanel6;
     }
 }

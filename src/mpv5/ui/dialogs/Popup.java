@@ -20,22 +20,17 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Frame;
 import java.awt.GraphicsEnvironment;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Vector;
 import javax.swing.Icon;
-import javax.swing.JComboBox;
-import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.border.EmptyBorder;
 import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
-import mpv5.db.objects.MailMessage;
 import mpv5.globals.Messages;
-import mpv5.ui.beans.LabeledCombobox;
 
 /**
  *
@@ -217,11 +212,29 @@ public class Popup {
 //        return null;
     }
 
+    /**
+     *
+     * @param list
+     * @param message
+     */
     public static void notice(List<DatabaseObject> list, Object message) {
         String t = message.toString() + "\n";
         for (int i = 0; i < list.size(); i++) {
             DatabaseObject databaseObject = list.get(i);
             t += databaseObject.__getCName() + " [" + databaseObject.getDbIdentity() + "]" + "\n";
+        }
+        Popup.notice(t, 300, list.size()*5 + 100);
+    }
+
+    /**
+     * 
+     * @param list
+     * @param message
+     */
+    public static void notice(Vector list, Object message) {
+        String t = message.toString() + "\n";
+        for (int i = 0; i < list.size(); i++) {
+            t += list.get(i) + "\n";
         }
         Popup.notice(t, 300, list.size()*5 + 100);
     }

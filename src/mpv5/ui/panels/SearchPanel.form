@@ -53,13 +53,8 @@
               <Group type="102" alignment="0" attributes="0">
                   <Group type="103" groupAlignment="0" attributes="0">
                       <Component id="label1" min="-2" pref="47" max="-2" attributes="0"/>
-                      <Group type="102" alignment="0" attributes="0">
-                          <EmptySpace min="-2" pref="2" max="-2" attributes="0"/>
-                          <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                              <Component id="label3" alignment="0" max="32767" attributes="1"/>
-                              <Component id="label2" alignment="0" max="32767" attributes="1"/>
-                          </Group>
-                      </Group>
+                      <Component id="label2" alignment="0" min="-2" pref="39" max="-2" attributes="1"/>
+                      <Component id="label3" alignment="0" min="-2" pref="31" max="-2" attributes="1"/>
                   </Group>
                   <EmptySpace max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="1" attributes="0">

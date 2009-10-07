@@ -605,11 +605,7 @@ public class ControlPanel_Users extends javax.swing.JPanel implements ControlApp
         if (language.getSelectedItem() != null) {
             language_ = String.valueOf(((MPComboBoxModelItem) language.getSelectedItem()).getId());
         }
-
-//        if (countrylist.getSelectedItem() != null) {
-        defcountry_ = String.valueOf(countrylist.getSelectedItem());
-//        }
-
+        defcountry_ = ((MPComboBoxModelItem)countrylist.getSelectedItem()).getId();
         if (locale.getSelectedItem() != null) {
             locale_ = String.valueOf(((MPComboBoxModelItem) locale.getSelectedItem()).getId());
         }
@@ -666,7 +662,7 @@ public class ControlPanel_Users extends javax.swing.JPanel implements ControlApp
             laf.setSelectedItem(laf_);
             language.setSelectedIndex(MPComboBoxModelItem.getItemID(language_, language.getModel()));
             locale.setSelectedIndex(MPComboBoxModelItem.getItemID(locale_, locale.getModel()));
-            countrylist.setSelectedIndex(MPComboBoxModelItem.getItemIDfromValue(defcountry_, countrylist.getModel()));
+            countrylist.setSelectedIndex(MPComboBoxModelItem.getItemID(defcountry_, countrylist.getModel()));
             fullname.set_Text(fullname_);
 //        password.setText(password_);
             mail.set_Text(mail_);

@@ -169,7 +169,7 @@ public class LanguageManager {
                             }
                             if (bundlefile != null) {
                                 newfile = FileDirectoryHandler.copyFile(bundlefile, new File(LocalSettings.getProperty(LocalSettings.CACHE_DIR)), tempname + ".properties", true);
-                                if (hasNeededKeys(bundlefile)) {
+                                if (hasNeededKeys(bundlefile, false)) {
                                     Log.Debug(LanguageManager.class, "File has needed keys for language: " + langid);
                                     ClasspathTools.addPath(new File(LocalSettings.getProperty(LocalSettings.CACHE_DIR)));//Add the files parent to classpath to be found
                                     Log.Debug(LanguageManager.class, "Created language file at: " + newfile);
@@ -262,9 +262,9 @@ public class LanguageManager {
                 Object[][] data = QueryHandler.instanceOf().clone(Context.getCountries()).getColumns(new String[]{"iso", "cname"}, 0);
                 for (int i = 0; i < data.length; i++) {
                     Object[] objects = data[i];
-                    countries.add(new MPComboBoxModelItem(objects[0], objects[1].toString()));
+                    countries.add(new MPComboBoxModelItem(objects[0].toString(), objects[1].toString()));
                 }
-                Log.Debug(LanguageManager.class, "Cached countries: " +countries.size());
+                Log.Debug(LanguageManager.class, "Cached countries: " + countries.size());
                 return MPComboBoxModelItem.toModel(countries);
             } catch (NodataFoundException ex) {
                 Log.Debug(LanguageManager.class, ex);
@@ -303,7 +303,7 @@ public class LanguageManager {
     public static void importLanguage(String langname, File file) {
         String langid = new RandomText(10).getString();
 
-        if (hasNeededKeys(file)) {
+        if (hasNeededKeys(file, true)) {
             try {
                 String dbname = QueryHandler.instanceOf().clone(Context.getFiles()).insertFile(file);
                 try {
@@ -354,13 +354,15 @@ public class LanguageManager {
         }
     }
 
-    private static boolean hasNeededKeys(File file) {
+    private static boolean hasNeededKeys(File file, boolean popupOnError) {
         synchronized (new LanguageManager()) {
+            Vector<String> failures = new Vector<String>();
             Enumeration<String> keys = ResourceBundleUtf8.getBundle(defLanguageBundle).getKeys();
             File impFile = file;
             FileReaderWriter frw = new FileReaderWriter(impFile);
             String[] lines = frw.readLines();
 
+            
             while (keys.hasMoreElements()) {
                 String string = keys.nextElement();
                 boolean found = false;
@@ -373,13 +375,19 @@ public class LanguageManager {
                 if (!found) {
                     failed = true;
                     Log.Debug(LanguageManager.class, "Key '" + string + "' not found in file " + file);
-                    MPView.addMessage(Messages.ERROR_OCCURED.toString());
-
-                    return false;
+                    if (!popupOnError) {
+                        MPView.addMessage(Messages.ERROR_OCCURED.toString());
+                        return false;
+                    } else {
+                        failures.add(string + "=???");
+                    }
                 }
             }
+            if(popupOnError && !failures.isEmpty()) {
+                Popup.notice(failures, "Import not possible.\nMissing keys in " + file +":\n");
+            }
+            return failures.isEmpty();
         }
-        return true;
     }
 
     /**

@@ -48,7 +48,7 @@
               <Group type="102" alignment="0" attributes="0">
                   <EmptySpace max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="0" attributes="0">
-                      <Component id="jLabel9" alignment="0" pref="356" max="32767" attributes="0"/>
+                      <Component id="jLabel9" alignment="0" pref="352" max="32767" attributes="0"/>
                       <Component id="jLabel8" alignment="0" min="-2" max="-2" attributes="0"/>
                       <Group type="102" alignment="0" attributes="0">
                           <Component id="labeledTextChooser2" min="-2" pref="264" max="-2" attributes="0"/>
@@ -140,9 +140,9 @@
               <Group type="102" alignment="0" attributes="0">
                   <EmptySpace min="-2" max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="0" attributes="0">
-                      <Component id="jLabel6" alignment="0" pref="356" max="32767" attributes="0"/>
+                      <Component id="jLabel6" alignment="0" pref="352" max="32767" attributes="0"/>
                       <Component id="jLabel5" min="-2" max="-2" attributes="0"/>
-                      <Component id="labeledTextField1" alignment="0" min="-2" pref="149" max="-2" attributes="0"/>
+                      <Component id="langName" alignment="0" min="-2" pref="149" max="-2" attributes="0"/>
                       <Group type="102" alignment="0" attributes="0">
                           <Group type="103" groupAlignment="1" max="-2" attributes="0">
                               <Component id="labeledTextChooser1" alignment="1" max="32767" attributes="1"/>
@@ -164,7 +164,7 @@
                   <EmptySpace max="-2" attributes="0"/>
                   <Component id="jLabel7" min="-2" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
-                  <Component id="labeledTextField1" min="-2" max="-2" attributes="0"/>
+                  <Component id="langName" min="-2" max="-2" attributes="0"/>
                   <EmptySpace pref="8" max="32767" attributes="0"/>
                   <Component id="jLabel6" min="-2" max="-2" attributes="0"/>
                   <EmptySpace min="-2" max="-2" attributes="0"/>
@@ -222,15 +222,15 @@
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButton3ActionPerformed"/>
           </Events>
         </Component>
-        <Component class="mpv5.ui.beans.LabeledTextField" name="labeledTextField1">
+        <Component class="mpv5.ui.beans.LabeledTextField" name="langName">
           <Properties>
             <Property name="_Label" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-              <ResourceString bundle="mpv5/resources/languages/Panels.properties" key="ControlPanel_Locale.labeledTextField1._Label" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+              <ResourceString bundle="mpv5/resources/languages/Panels.properties" key="ControlPanel_Locale.langName._Label" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
             </Property>
             <Property name="_LabelFont" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
               <Font name="Dialog" size="11" style="0"/>
             </Property>
-            <Property name="name" type="java.lang.String" value="labeledTextField1" noResource="true"/>
+            <Property name="name" type="java.lang.String" value="langName" noResource="true"/>
           </Properties>
         </Component>
         <Component class="javax.swing.JLabel" name="jLabel7">
@@ -262,7 +262,7 @@
               <Group type="102" alignment="0" attributes="0">
                   <EmptySpace max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="0" attributes="0">
-                      <Component id="jLabel4" alignment="0" pref="356" max="32767" attributes="1"/>
+                      <Component id="jLabel4" alignment="0" pref="352" max="32767" attributes="1"/>
                       <Component id="jLabel3" alignment="0" min="-2" max="-2" attributes="0"/>
                       <Component id="languages" alignment="0" min="-2" pref="177" max="-2" attributes="1"/>
                   </Group>
@@ -333,7 +333,7 @@
               <Group type="102" alignment="0" attributes="0">
                   <EmptySpace max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="0" attributes="0">
-                      <Component id="jLabel1" alignment="0" pref="356" max="32767" attributes="1"/>
+                      <Component id="jLabel1" alignment="0" pref="352" max="32767" attributes="1"/>
                       <Component id="jLabel2" alignment="0" min="-2" max="-2" attributes="0"/>
                       <Component id="locales" alignment="0" min="-2" pref="176" max="-2" attributes="1"/>
                   </Group>
