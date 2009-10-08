@@ -1166,35 +1166,34 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject> {
      * Tries to reflect the {@link SimpleDatabaseObject} into this do.
      * The simple objects name must match the DatabaseObjects's {@link Context#getDbIdentity()}
      * @param sdo
+     * @return
      * @throws Exception
      */
-    public void parse(SimpleDatabaseObject sdo) throws Exception {
+    public static DatabaseObject parse(SimpleDatabaseObject sdo) throws Exception {
+        Log.Debug(DatabaseObject.class, "Parsing " + sdo);
+        DatabaseObject newd = DatabaseObject.getObject(Context.getMatchingContext(sdo.getContext()));
+        Hashtable<String, Object> data = new Hashtable<String, Object>();
+        Method[] m = sdo.getClass().getMethods();
 
-        Log.Debug(this, "Parsing " + sdo);
-        if (sdo.getClass().getSimpleName().equalsIgnoreCase(getType())) {
-            Hashtable<String, Object> data = new Hashtable<String, Object>();
-            Method[] m = sdo.getClass().getMethods();
-
-            for (int i = 0; i < m.length; i++) {
-                Method method = m[i];
-                if (method.getName().startsWith("get")) {
-                    Object o = method.invoke(sdo, new Object[]{});
-                    if (o != null) {
-                        data.put(method.getName().substring(3), o);
-                    }
+        for (int i = 0; i < m.length; i++) {
+            Method method = m[i];
+            if (method.getName().startsWith("get")) {
+                Object o = method.invoke(sdo, new Object[]{});
+                if (o != null) {
+                    data.put(method.getName().substring(3), o);
                 }
             }
-
-            parse(data);
-        } else {
-            throw new IllegalArgumentException(sdo.getClass().getSimpleName() + " does not equal " + getType());
         }
+        newd.parse(data);
+        return newd;
     }
 
     /**
      * @return the groupsids
      */
     public int __getGroupsids() {
+
+
         return groupsids;
     }
 

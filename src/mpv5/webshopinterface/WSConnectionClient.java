@@ -38,11 +38,17 @@ public class WSConnectionClient {
     }
 
     /**
-     * Test the shop
+     * Test the shop & runs system.listMethods
      * @return The shop impl version
      * @throws XmlRpcException If the test fails
      */
     public String test() throws XmlRpcException {
+         Object[] params1 = new Object[]{};
+         String[] result = (String[]) getClient().execute("system.listMethods", params1);
+         for (int i = 0; i < result.length; i++) {
+            String string = result[i];
+            Log.Debug(this, string);
+        }
          Object[] params = new Object[]{Constants.RELEASE_VERSION};
          Integer v = (Integer) getClient().execute(COMMANDS.GETVERSION.toString(), params);
          return "Server XML RPC Yabs Version : " + v;

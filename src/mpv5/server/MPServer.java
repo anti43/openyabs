@@ -17,7 +17,10 @@
 package mpv5.server;
 
 import java.util.Vector;
+import mpv5.globals.Messages;
 import mpv5.logging.Log;
+import mpv5.ui.dialogs.Popup;
+import mpv5.ui.frames.MPView;
 
 /**
  *This is a listening server which starts a new {@link MPServerRunner} on each connection.
@@ -40,9 +43,14 @@ public class MPServer extends Thread {
 
     @Override
     public void run() {
-       if (xmlrpcs == null) {
+        MPView.setWaiting(true);
+        MPView.setProgressRunning(true);
+        if (xmlrpcs == null) {
             try {
-                xmlrpcs = new XMLRPCServer();//Conveniently start the XML RPC server along the native MP server
+                xmlrpcs = new XMLRPCServer();
+                MPView.setWaiting(false);
+                MPView.setProgressRunning(false);
+                Popup.notice(Messages.DONE + "\n" + "Port: " + XMLRPCServer.getPort());
             } catch (Exception ex) {
                 Log.Debug(ex);
             }

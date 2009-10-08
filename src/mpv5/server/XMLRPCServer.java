@@ -18,18 +18,26 @@ package mpv5.server;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import mpv5.db.common.Context;
+import mpv5.db.common.DatabaseObject;
 import mpv5.globals.LocalSettings;
+import mpv5.handler.SDBObjectGenerator;
+import mpv5.handler.SimpleDatabaseObject;
 import mpv5.logging.Log;
 import mpv5.usermanagement.MPSecurityManager;
 import org.apache.xmlrpc.XmlRpcException;
 import org.apache.xmlrpc.XmlRpcRequest;
 import org.apache.xmlrpc.common.XmlRpcHttpRequestConfig;
+import org.apache.xmlrpc.metadata.XmlRpcSystemImpl;
 import org.apache.xmlrpc.server.AbstractReflectiveHandlerMapping;
 import org.apache.xmlrpc.server.PropertyHandlerMapping;
+import org.apache.xmlrpc.server.XmlRpcErrorLogger;
 import org.apache.xmlrpc.server.XmlRpcHandlerMapping;
 import org.apache.xmlrpc.server.XmlRpcServer;
 import org.apache.xmlrpc.server.XmlRpcServerConfigImpl;
+import org.apache.xmlrpc.server.XmlRpcStreamServer;
 import org.apache.xmlrpc.webserver.WebServer;
 
 //Client-Side:
@@ -71,13 +79,28 @@ public class XMLRPCServer {
         }
         webServer = new WebServer(getPort());
         XmlRpcServer xmlRpcServer = webServer.getXmlRpcServer();
+        ((XmlRpcStreamServer) xmlRpcServer).setErrorLogger(new XmlRpcErrorLogger() {
+
+            @Override
+            public void log(java.lang.String pMessage) {
+                Log.Debug(this, pMessage);
+            }
+
+            @Override
+            public void log(java.lang.String pMessage, java.lang.Throwable pThrowable) {
+                Log.Debug(this, pMessage);
+                Log.Debug(pThrowable);
+            }
+        });
+
         PropertyHandlerMapping phm = new XPropertyHandlerMapping();
 
-//        ArrayList<Context> cx = Context.getImportableContexts();
-//        for (int i = 0; i < cx.size(); i++) {
-//            Context context = cx.get(i);
-//            phm.addHandler(context.getDbIdentity(), context.getIdentityClass());
-//        }
+        ArrayList<Context> cx = Context.getImportableContexts();
+        for (int i = 0; i < cx.size(); i++) {
+            Context context = cx.get(i);
+            SimpleDatabaseObject s = SDBObjectGenerator.getObjectFrom(DatabaseObject.getObject(context));
+            phm.addHandler(s.getClass().getName(), s.getClass());
+        }
 
         xmlRpcServer.setHandlerMapping(phm);
 
@@ -86,6 +109,10 @@ public class XMLRPCServer {
         serverConfig.setEnabledForExtensions(true);
         serverConfig.setEnabledForExceptions(true);
         serverConfig.setContentLengthOptional(false);
+
+
+        PropertyHandlerMapping mapping = (PropertyHandlerMapping)((XmlRpcStreamServer) xmlRpcServer).getHandlerMapping();
+        XmlRpcSystemImpl.addSystemHandler(mapping);
 
         webServer.start();
         Log.Debug(this, "XML RPC Server started! Listening port: " + port);

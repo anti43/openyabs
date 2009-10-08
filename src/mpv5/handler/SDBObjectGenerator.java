@@ -22,9 +22,6 @@ import mpv5.compiler.RuntimeCompiler;
 import mpv5.db.common.DatabaseObject;
 import mpv5.logging.Log;
 
-
-
-
 /**
  * This class generates simplified Beans from DatabaseObjects which do only contain their getter/setter Methods
  */
@@ -44,11 +41,11 @@ public abstract class SDBObjectGenerator {
                 "import java.util.Date;\n" +
                 "\n" +
                 "\n" +
-                "public final class " + dos.getType() + " implements mpv5.handler.SimpleDatabaseObject{\n\n";
+                "public final class " + dos.getDbIdentity() + " implements mpv5.handler.SimpleDatabaseObject{\n\n";
 
         for (int i = 0; i < m.size(); i++) {
             Method method = m.get(i);
-            classTemplate += 
+            classTemplate +=
                     "private " + method.getParameterTypes()[0].getCanonicalName() + "  " + method.getName().substring(3).toLowerCase() + ";\n" +
                     "public " + method.getParameterTypes()[0].getCanonicalName() + "  get" + method.getName().substring(3) + "(){\n" +
                     "return " + "this." + method.getName().substring(3).toLowerCase() + ";\n" +
@@ -59,10 +56,20 @@ public abstract class SDBObjectGenerator {
                     "\n\n";
         }
 
-        classTemplate += "}\n";
+        classTemplate += "" +
+                "public boolean persist() throws Exception {" +
+                "return DatabaseObject.parse(this).saveImport();" +
+                "}" +
+
+                "" +
+                "public String getContext(){" +
+                "return getClass().getSimpleName();" +
+                "}" +
+
+                "}\n";
         try {
 //            Log.Debug(SDBObjectGenerator.class, classTemplate);
-            return (SimpleDatabaseObject) RuntimeCompiler.getObjectFor(RuntimeCompiler.getClassFor(dos.getType(), classTemplate, PACKAGE_NAME));
+            return (SimpleDatabaseObject) RuntimeCompiler.getObjectFor(RuntimeCompiler.getClassFor(dos.getDbIdentity(), classTemplate, PACKAGE_NAME));
         } catch (Exception ex) {
             Log.Debug(ex);
             return null;

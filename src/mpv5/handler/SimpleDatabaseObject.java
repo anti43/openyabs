@@ -21,4 +21,11 @@ package mpv5.handler;
  */
 public interface SimpleDatabaseObject {
 
+    /**
+     * Persist the DatabaseObject 
+     * @return true if no error occoured
+     * @throws Exception 
+     */
+    public boolean persist() throws Exception;
+    public String getContext();
 }

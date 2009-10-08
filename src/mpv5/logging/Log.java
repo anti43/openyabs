@@ -226,9 +226,10 @@ public class Log {
      * Debug an Exception
      * @param ex
      */
-    public static void Debug(Exception ex) {
+    public static void Debug(Throwable ex) {
         Debug(Log.class, ex);
     }
+
 
     /**
      *

@@ -1907,6 +1907,7 @@ public class MPView extends FrameView {
         MPServer serv = new MPServer();
         serv.start();
         MPView.identifierView.showServerStatus(serv.isAlive());
+        jMenuItem24.setEnabled(!serv.isAlive());
     }//GEN-LAST:event_jMenuItem24ActionPerformed
 
     private void jMenuItem25ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem25ActionPerformed
