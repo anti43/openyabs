@@ -19,6 +19,7 @@ package mpv5.handler;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import mpv5.compiler.RuntimeCompiler;
+import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
 import mpv5.logging.Log;
 
@@ -27,14 +28,19 @@ import mpv5.logging.Log;
  */
 public abstract class SDBObjectGenerator {
 
-    public static String PACKAGE_NAME = "gen.ram.simpleobject";
 
-    public static SimpleDatabaseObject getObjectFrom(DatabaseObject dos) {
+    /**
+     * Create an SimpleObject
+     * @param dos
+     * @param packagename
+     * @return
+     */
+    public static SimpleDatabaseObject getObjectFrom(DatabaseObject dos, String packagename) {
 
-        ArrayList<Method> m = dos.setVars();
+        ArrayList<Method> methods = dos.setVars();
 
         String classTemplate =
-                "package " + PACKAGE_NAME + ";\n" +
+                "package " + packagename + ";\n" +
                 "import mpv5.db.common.Context;\n" +
                 "import mpv5.db.common.DatabaseObject;\n" +
                 "import mpv5.utils.images.MPIcon;\n" +
@@ -43,15 +49,16 @@ public abstract class SDBObjectGenerator {
                 "\n" +
                 "public final class " + dos.getDbIdentity() + " implements mpv5.handler.SimpleDatabaseObject{\n\n";
 
-        for (int i = 0; i < m.size(); i++) {
-            Method method = m.get(i);
+        for (int i = 0; i < methods.size(); i++) {
+            Method method = methods.get(i);
             classTemplate +=
                     "private " + method.getParameterTypes()[0].getCanonicalName() + "  " + method.getName().substring(3).toLowerCase() + ";\n" +
                     "public " + method.getParameterTypes()[0].getCanonicalName() + "  get" + method.getName().substring(3) + "(){\n" +
                     "return " + "this." + method.getName().substring(3).toLowerCase() + ";\n" +
                     "}\n" +
-                    "public void " + method.getName().toString() + "(" + method.getParameterTypes()[0].getCanonicalName() + " arg){\n" +
+                    "public boolean " + method.getName().toString() + "(" + method.getParameterTypes()[0].getCanonicalName() + " arg){\n" +
                     "this." + method.getName().substring(3).toLowerCase() + " = arg;\n" +
+                    "return true;\n" +
                     "}" +
                     "\n\n";
         }
@@ -62,14 +69,25 @@ public abstract class SDBObjectGenerator {
                 "}" +
 
                 "" +
+                "public boolean fetch(int id) throws Exception {" +
+                "DatabaseObject.getObject(Context.getMatchingContext(getContext()), id).inject(this);" +
+                "return true;" +
+                "}" +
+
+                "" +
+                "public boolean fetch(String cname) throws Exception {" +
+                "DatabaseObject.getObject(Context.getMatchingContext(getContext()), cname).inject(this);" +
+                "return true;" +
+                "}" +
+
+                "" +
                 "public String getContext(){" +
                 "return getClass().getSimpleName();" +
                 "}" +
 
                 "}\n";
         try {
-//            Log.Debug(SDBObjectGenerator.class, classTemplate);
-            return (SimpleDatabaseObject) RuntimeCompiler.getObjectFor(RuntimeCompiler.getClassFor(dos.getDbIdentity(), classTemplate, PACKAGE_NAME));
+            return (SimpleDatabaseObject) RuntimeCompiler.getObjectFor(RuntimeCompiler.getClassFor(dos.getDbIdentity(), classTemplate, packagename));
         } catch (Exception ex) {
             Log.Debug(ex);
             return null;

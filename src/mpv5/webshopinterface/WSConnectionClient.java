@@ -17,8 +17,12 @@
 package mpv5.webshopinterface;
 
 import java.net.URL;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Vector;
 import mpv5.globals.Constants;
 import mpv5.logging.Log;
+import mpv5.ui.dialogs.Popup;
 import mpv5.utils.xml.XMLRpcClient;
 import org.apache.xmlrpc.XmlRpcException;
 
@@ -42,18 +46,18 @@ public class WSConnectionClient {
      * @return The shop impl version
      * @throws XmlRpcException If the test fails
      */
+    @SuppressWarnings("unchecked")
     public String test() throws XmlRpcException {
-         Object[] params1 = new Object[]{};
-         String[] result = (String[]) getClient().execute("system.listMethods", params1);
-         for (int i = 0; i < result.length; i++) {
-            String string = result[i];
-            Log.Debug(this, string);
-        }
-         Object[] params = new Object[]{Constants.RELEASE_VERSION};
-         Integer v = (Integer) getClient().execute(COMMANDS.GETVERSION.toString(), params);
-         return "Server XML RPC Yabs Version : " + v;
-    }
+        Object o = client.execute("system.listMethods", new Object[0]);
+        Object[] methodList = (Object[]) o;
 
+        Arrays.sort(methodList);
+        Popup.notice(Arrays.asList(methodList), "Supported methods:\n");
+
+        Object[] params = new Object[]{Constants.RELEASE_VERSION};
+        Integer v = (Integer) getClient().execute(COMMANDS.GETVERSION.toString(), params);
+        return "Server XML RPC Yabs Version : " + v;
+    }
 
     /**
      * Contains all known xml-rpc commands
@@ -103,7 +107,7 @@ public class WSConnectionClient {
      * @throws NoCompatibleHostFoundException
      */
     public WSConnectionClient(final URL host, boolean requCompression, String user, String pw) throws NoCompatibleHostFoundException {
-        if (!connect(host,requCompression, user, pw)) {
+        if (!connect(host, requCompression, user, pw)) {
             throw new NoCompatibleHostFoundException(host);
         }
     }

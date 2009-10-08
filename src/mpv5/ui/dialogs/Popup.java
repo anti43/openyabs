@@ -213,30 +213,22 @@ public class Popup {
     }
 
     /**
-     *
-     * @param list
-     * @param message
-     */
-    public static void notice(List<DatabaseObject> list, Object message) {
-        String t = message.toString() + "\n";
-        for (int i = 0; i < list.size(); i++) {
-            DatabaseObject databaseObject = list.get(i);
-            t += databaseObject.__getCName() + " [" + databaseObject.getDbIdentity() + "]" + "\n";
-        }
-        Popup.notice(t, 300, list.size()*5 + 100);
-    }
-
-    /**
      * 
      * @param list
      * @param message
      */
-    public static void notice(Vector list, Object message) {
+    public static void notice(List list, Object message) {
         String t = message.toString() + "\n";
         for (int i = 0; i < list.size(); i++) {
-            t += list.get(i) + "\n";
+            Object l = list.get(i);
+            if (l instanceof DatabaseObject) {
+                DatabaseObject databaseObject = (DatabaseObject) l;
+                t += databaseObject.__getCName() + " [" + databaseObject.getDbIdentity() + "]" + "\n";
+            } else {
+                t += list.get(i) + "\n";
+            }
         }
-        Popup.notice(t, 300, list.size()*5 + 100);
+        Popup.notice(t, 300, list.size() * 5 + 100);
     }
 
     private Popup() {

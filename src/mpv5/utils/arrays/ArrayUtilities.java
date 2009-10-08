@@ -664,12 +664,13 @@ public class ArrayUtilities {
         return list.toArray(new Object[][]{});
     }
 
+
     /**
      * Converts a HashMap to a 2-column array {key, value}
      * @param map
      * @return
      */
-    public Object[][] hashMapToArray(HashMap<String, String> map) {
+    public static Object[][] hashMapToArray(HashMap<String, Object> map) {
         Object[][] data = new Object[map.size()][2];
         String[] arr = map.keySet().toArray(new String[]{});
 

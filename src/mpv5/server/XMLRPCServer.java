@@ -16,10 +16,8 @@
  */
 package mpv5.server;
 
+import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
 import mpv5.globals.LocalSettings;
@@ -98,8 +96,8 @@ public class XMLRPCServer {
         ArrayList<Context> cx = Context.getImportableContexts();
         for (int i = 0; i < cx.size(); i++) {
             Context context = cx.get(i);
-            SimpleDatabaseObject s = SDBObjectGenerator.getObjectFrom(DatabaseObject.getObject(context));
-            phm.addHandler(s.getClass().getName(), s.getClass());
+            
+            phm.addHandler("remote", XMLRPCHandler.class);
         }
 
         xmlRpcServer.setHandlerMapping(phm);

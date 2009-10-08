@@ -17,7 +17,7 @@
 package mpv5.handler;
 
 /**
- *  this interface represents simplified DatabaseObjects which do only contain getter/setter Methods
+ *  This interface represents simplified DatabaseObjects which do only contain getter/setter Methods
  */
 public interface SimpleDatabaseObject {
 
@@ -28,4 +28,6 @@ public interface SimpleDatabaseObject {
      */
     public boolean persist() throws Exception;
     public String getContext();
+    public boolean fetch(int id) throws Exception;
+    public boolean fetch(String cname) throws Exception;
 }

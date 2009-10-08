@@ -1162,8 +1162,47 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject> {
         }
     }
 
+     /**
+     * Tries to reflect the hash table into this do.
+     * The hashtable's keys must match the methods retrieved by do.setVars()
+     * @param values
+     * @throws Exception
+     */
+    public void parse(HashMap<String, Object> values) throws Exception {
+        ArrayList<Method> vars = setVars();
+//        Log.Debug(this, " ?? : " +  toHashTable.size());
+        Object[][] data = ArrayUtilities.hashMapToArray(values);
+//        Log.Debug(this, " ?? : " +  data[0]);
+        for (int row = 0; row < data.length; row++) {
+            String name = data[row][0].toString().toLowerCase();
+// Log.Debug(this, name + " ?? : " + " = " + data[row][1]);
+            for (int k = 0; k < vars.size(); k++) {
+//                Log.Debug(this, name + " ?? : " + vars.get(k).getName() + " = " + data[row][1]);
+                if (vars.get(k).getName().toLowerCase().substring(3).equals(name)) {
+//                    Log.Debug(this, name + " ?? : " + vars.get(k).getName() + " = " + data[row][1]);
+
+                    if (name.startsWith("is") || name.toUpperCase().startsWith("BOOL")) {
+                        if (String.valueOf(data[row][1]).equals("1") || String.valueOf(data[row][1]).toUpperCase().equals("TRUE")) {
+                            vars.get(k).invoke(this, new Object[]{true});
+                        } else {
+                            vars.get(k).invoke(this, new Object[]{false});
+                        }
+                    } else if (name.toUpperCase().startsWith("INT") || name.endsWith("uid") || name.endsWith("ids") || name.equals("ids")) {
+                        vars.get(k).invoke(this, new Object[]{Integer.valueOf(String.valueOf(data[row][1]))});
+                    } else if (name.toUpperCase().startsWith("DATE") || name.toUpperCase().endsWith("DATE")) {
+                        vars.get(k).invoke(this, new Object[]{DateConverter.getDate(data[row][1])});
+                    } else if (name.toUpperCase().startsWith("VALUE") || name.toUpperCase().endsWith("VALUE")) {
+                        vars.get(k).invoke(this, new Object[]{Double.valueOf(String.valueOf(data[row][1]))});
+                    } else {
+                        vars.get(k).invoke(this, new Object[]{String.valueOf(data[row][1])});
+                    }
+                }
+            }
+        }
+    }
+
     /**
-     * Tries to reflect the {@link SimpleDatabaseObject} into this do.
+     * Tries to reflect the {@link SimpleDatabaseObject} into a new do.
      * The simple objects name must match the DatabaseObjects's {@link Context#getDbIdentity()}
      * @param sdo
      * @return
@@ -1187,6 +1226,26 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject> {
         newd.parse(data);
         return newd;
     }
+
+
+     /**
+     * Tries to inject the dos data into the given {@link SimpleDatabaseObject}.
+     * The simple objects name must match the DatabaseObjects's {@link Context#getDbIdentity()}
+     * @param sdo
+     * @throws Exception
+     */
+    public void inject(SimpleDatabaseObject sdo) throws Exception {
+        Log.Debug(DatabaseObject.class, "Injecting " + sdo);
+        Method[] m = sdo.getClass().getMethods();
+
+        for (int i = 0; i < m.length; i++) {
+            Method method = m[i];
+            if (method.getName().startsWith("set")) {
+                Object o = method.invoke(sdo, new Object[]{this.getClass().getMethod(method.getName().replace("set", "get"), (Class[])null).invoke(this, new Object[0])});
+            }
+        }
+    }
+
 
     /**
      * @return the groupsids
