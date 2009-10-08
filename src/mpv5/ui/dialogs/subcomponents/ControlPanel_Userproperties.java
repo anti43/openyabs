@@ -37,6 +37,10 @@ public class ControlPanel_Userproperties extends javax.swing.JPanel implements C
         deftax.setContext(Context.getTaxes());
         deftax.triggerSearch();
 
+        shiptax.setSearchEnabled(true);
+        shiptax.setContext(Context.getTaxes());
+        shiptax.triggerSearch();
+
         loadSettings();
     }
 
@@ -56,6 +60,7 @@ public class ControlPanel_Userproperties extends javax.swing.JPanel implements C
         defcount = new mpv5.ui.beans.LabeledTextField();
         defunit = new mpv5.ui.beans.LabeledTextField();
         deftax = new mpv5.ui.beans.LabeledCombobox();
+        shiptax = new mpv5.ui.beans.LabeledCombobox();
         format = new mpv5.ui.beans.LabeledTextField();
         jPanel3 = new javax.swing.JPanel();
         tabs = new javax.swing.JCheckBox();
@@ -125,13 +130,13 @@ public class ControlPanel_Userproperties extends javax.swing.JPanel implements C
             .addGroup(productstobillspropertiesLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(productstobillspropertiesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(cnumber, javax.swing.GroupLayout.DEFAULT_SIZE, 220, Short.MAX_VALUE)
-                    .addComponent(description, javax.swing.GroupLayout.DEFAULT_SIZE, 220, Short.MAX_VALUE)
-                    .addComponent(cname, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 220, Short.MAX_VALUE))
+                    .addComponent(cnumber, javax.swing.GroupLayout.DEFAULT_SIZE, 216, Short.MAX_VALUE)
+                    .addComponent(description, javax.swing.GroupLayout.DEFAULT_SIZE, 216, Short.MAX_VALUE)
+                    .addComponent(cname, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 216, Short.MAX_VALUE))
                 .addGap(8, 8, 8)
                 .addGroup(productstobillspropertiesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(ean, javax.swing.GroupLayout.DEFAULT_SIZE, 294, Short.MAX_VALUE)
-                    .addComponent(reference, javax.swing.GroupLayout.DEFAULT_SIZE, 294, Short.MAX_VALUE)
+                    .addComponent(ean, javax.swing.GroupLayout.DEFAULT_SIZE, 290, Short.MAX_VALUE)
+                    .addComponent(reference, javax.swing.GroupLayout.DEFAULT_SIZE, 290, Short.MAX_VALUE)
                     .addComponent(jButton3))
                 .addContainerGap())
         );
@@ -166,6 +171,9 @@ public class ControlPanel_Userproperties extends javax.swing.JPanel implements C
         deftax.set_Label(bundle.getString("ControlPanel_Userproperties.deftax._Label")); // NOI18N
         deftax.setName("deftax"); // NOI18N
 
+        shiptax.set_Label(bundle.getString("ControlPanel_Userproperties.shiptax._Label")); // NOI18N
+        shiptax.setName("shiptax"); // NOI18N
+
         javax.swing.GroupLayout defsLayout = new javax.swing.GroupLayout(defs);
         defs.setLayout(defsLayout);
         defsLayout.setHorizontalGroup(
@@ -176,7 +184,9 @@ public class ControlPanel_Userproperties extends javax.swing.JPanel implements C
                 .addGap(18, 18, 18)
                 .addComponent(defcount, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(deftax, javax.swing.GroupLayout.DEFAULT_SIZE, 190, Short.MAX_VALUE))
+                .addGroup(defsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(shiptax, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 190, Short.MAX_VALUE)
+                    .addComponent(deftax, javax.swing.GroupLayout.DEFAULT_SIZE, 190, Short.MAX_VALUE)))
         );
         defsLayout.setVerticalGroup(
             defsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -187,6 +197,8 @@ public class ControlPanel_Userproperties extends javax.swing.JPanel implements C
                     .addGroup(defsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                         .addComponent(defunit, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addComponent(defcount, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(shiptax, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -201,7 +213,7 @@ public class ControlPanel_Userproperties extends javax.swing.JPanel implements C
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addGap(24, 24, 24)
-                        .addComponent(format, javax.swing.GroupLayout.DEFAULT_SIZE, 520, Short.MAX_VALUE))
+                        .addComponent(format, javax.swing.GroupLayout.DEFAULT_SIZE, 512, Short.MAX_VALUE))
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addContainerGap()
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -262,7 +274,7 @@ public class ControlPanel_Userproperties extends javax.swing.JPanel implements C
                         .addComponent(showoptionalcolumn)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(supresscurrencysymbols)))
-                .addContainerGap(20, Short.MAX_VALUE))
+                .addContainerGap(12, Short.MAX_VALUE))
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -305,12 +317,12 @@ public class ControlPanel_Userproperties extends javax.swing.JPanel implements C
                 .addContainerGap()
                 .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(labeledTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, 199, Short.MAX_VALUE))
+                    .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, 195, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(labeledTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 220, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(119, Short.MAX_VALUE))
+                .addContainerGap(115, Short.MAX_VALUE))
         );
         jPanel8Layout.setVerticalGroup(
             jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -359,7 +371,7 @@ public class ControlPanel_Userproperties extends javax.swing.JPanel implements C
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(smtppw, javax.swing.GroupLayout.PREFERRED_SIZE, 131, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(smtpuser, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 216, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(75, Short.MAX_VALUE))
+                .addContainerGap(67, Short.MAX_VALUE))
         );
         jPanel9Layout.setVerticalGroup(
             jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -497,6 +509,7 @@ public class ControlPanel_Userproperties extends javax.swing.JPanel implements C
     private mpv5.ui.beans.LabeledTextField labeledTextField2;
     private javax.swing.JPanel productstobillsproperties;
     private javax.swing.JCheckBox reference;
+    private mpv5.ui.beans.LabeledCombobox shiptax;
     private javax.swing.JCheckBox showoptionalcolumn;
     private mpv5.ui.beans.LabeledTextField smtphost;
     private javax.swing.JPasswordField smtppw;
@@ -528,6 +541,10 @@ public class ControlPanel_Userproperties extends javax.swing.JPanel implements C
             if (deftax.getSelectedItem() != null) {
                 MPView.getUser().getProperties().changeProperty(deftax.getName(), deftax.getSelectedItem().getId());
             }
+            if (shiptax.getSelectedItem() != null) {
+                MPView.getUser().getProperties().changeProperty(shiptax.getName(), shiptax.getSelectedItem().getId());
+            }
+
             MPView.getUser().getProperties().changeProperty("bills.warn.days", labeledTextField1.getText());
             MPView.getUser().getProperties().changeProperty("bills.alert.days", labeledTextField2.getText());
             MPView.getUser().getProperties().changeProperty("smtp.host", smtphost.getText());
@@ -620,6 +637,10 @@ public class ControlPanel_Userproperties extends javax.swing.JPanel implements C
                 public void run() {
                     try {
                         deftax.setSelectedItem(Integer.valueOf(MPView.getUser().getProperties().getProperty(deftax.getName())));
+                    } catch (NumberFormatException numberFormatException) {
+                    }
+                    try {
+                        shiptax.setSelectedItem(Integer.valueOf(MPView.getUser().getProperties().getProperty(shiptax.getName())));
                     } catch (NumberFormatException numberFormatException) {
                     }
                 }
