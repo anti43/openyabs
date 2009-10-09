@@ -35,6 +35,7 @@ public class ProductSelectDialog extends javax.swing.JPanel {
      * @param row
      * @param evt
      * @param productid
+     * @param link
      * @return
      */
     public static ProductSelectDialog instanceOf(MPTableModel model, int row, MouseEvent evt, int productid, String link, String optional) {
@@ -224,11 +225,6 @@ public class ProductSelectDialog extends javax.swing.JPanel {
                 link.setText(p.__getUrl());
             } else {
                 link.setText(linkt);
-            }
-            if (optionalt == null || optionalt.length() == 0) {
-                opt.setText(p.__getCName());
-            } else {
-                opt.setText(optionalt);
             }
         } catch (NodataFoundException ex) {
             measure.setText("");

@@ -268,27 +268,27 @@
                               <EmptySpace max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="0" attributes="0">
                                   <Group type="102" alignment="0" attributes="0">
-                                      <Component id="jButton8" pref="83" max="32767" attributes="1"/>
+                                      <Component id="jButton8" pref="90" max="32767" attributes="1"/>
                                       <EmptySpace min="-2" pref="10" max="-2" attributes="0"/>
                                   </Group>
                                   <Group type="102" alignment="0" attributes="0">
-                                      <Component id="jButton10" pref="83" max="32767" attributes="1"/>
+                                      <Component id="jButton10" pref="90" max="32767" attributes="1"/>
                                       <EmptySpace min="-2" pref="10" max="-2" attributes="0"/>
                                   </Group>
                                   <Group type="102" alignment="0" attributes="0">
-                                      <Component id="jButton11" pref="83" max="32767" attributes="1"/>
+                                      <Component id="jButton11" pref="90" max="32767" attributes="1"/>
                                       <EmptySpace max="-2" attributes="0"/>
                                   </Group>
                                   <Group type="102" alignment="0" attributes="0">
-                                      <Component id="jButton15" pref="83" max="32767" attributes="1"/>
+                                      <Component id="jButton15" pref="90" max="32767" attributes="1"/>
                                       <EmptySpace max="-2" attributes="0"/>
                                   </Group>
                                   <Group type="102" alignment="0" attributes="0">
-                                      <Component id="jButton16" max="32767" attributes="1"/>
+                                      <Component id="jButton16" pref="90" max="32767" attributes="1"/>
                                       <EmptySpace max="-2" attributes="0"/>
                                   </Group>
                                   <Group type="102" alignment="0" attributes="0">
-                                      <Component id="jButton17" pref="83" max="32767" attributes="1"/>
+                                      <Component id="jButton17" pref="90" max="32767" attributes="1"/>
                                       <EmptySpace max="-2" attributes="0"/>
                                   </Group>
                               </Group>
@@ -310,7 +310,7 @@
                               <Component id="jButton16" min="-2" max="-2" attributes="0"/>
                               <EmptySpace max="-2" attributes="0"/>
                               <Component id="jButton17" min="-2" max="-2" attributes="0"/>
-                              <EmptySpace max="32767" attributes="0"/>
+                              <EmptySpace pref="35" max="32767" attributes="0"/>
                           </Group>
                       </Group>
                     </DimensionLayout>
@@ -476,9 +476,9 @@
                           <Group type="102" attributes="0">
                               <EmptySpace max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="0" attributes="0">
-                                  <Component id="jButton13" alignment="1" max="32767" attributes="1"/>
-                                  <Component id="jButton12" alignment="0" pref="73" max="32767" attributes="1"/>
-                                  <Component id="jButton14" alignment="1" pref="73" max="32767" attributes="1"/>
+                                  <Component id="jButton13" alignment="1" pref="90" max="32767" attributes="1"/>
+                                  <Component id="jButton12" alignment="0" pref="90" max="32767" attributes="1"/>
+                                  <Component id="jButton14" alignment="1" pref="90" max="32767" attributes="1"/>
                               </Group>
                               <EmptySpace max="-2" attributes="0"/>
                           </Group>
@@ -493,7 +493,7 @@
                               <Component id="jButton12" min="-2" max="-2" attributes="0"/>
                               <EmptySpace max="-2" attributes="0"/>
                               <Component id="jButton14" min="-2" max="-2" attributes="0"/>
-                              <EmptySpace max="32767" attributes="0"/>
+                              <EmptySpace pref="223" max="32767" attributes="0"/>
                           </Group>
                       </Group>
                     </DimensionLayout>
@@ -593,8 +593,8 @@
                           <Group type="102" attributes="0">
                               <EmptySpace max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="0" attributes="0">
-                                  <Component id="jButton6" alignment="1" max="32767" attributes="1"/>
-                                  <Component id="jButton7" alignment="1" max="32767" attributes="0"/>
+                                  <Component id="jButton6" alignment="1" pref="90" max="32767" attributes="1"/>
+                                  <Component id="jButton7" alignment="1" pref="90" max="32767" attributes="0"/>
                               </Group>
                               <EmptySpace max="-2" attributes="0"/>
                           </Group>
@@ -607,7 +607,7 @@
                               <Component id="jButton6" min="-2" max="-2" attributes="0"/>
                               <EmptySpace type="unrelated" max="-2" attributes="0"/>
                               <Component id="jButton7" min="-2" max="-2" attributes="0"/>
-                              <EmptySpace max="32767" attributes="0"/>
+                              <EmptySpace pref="281" max="32767" attributes="0"/>
                           </Group>
                       </Group>
                     </DimensionLayout>
