@@ -80,7 +80,7 @@ public class ControlPanel_Templates extends javax.swing.JPanel implements Contro
                     MPComboBoxModelItem.toItems(new DatabaseSearch(Context.getGroup()).getValuesFor(Context.getGroup().getSubID(), null, ""))));
             java.util.ResourceBundle bundle1 = mpv5.i18n.LanguageManager.getBundle(); 
             format.setText(Template.DEFAULT_FORMAT);
-            format.getTextField().setEditable(false);
+//            format.getTextField().setEditable(false);
             format.getTextField().setToolTipText(bundle1.getString("ControlPanel_Templates.format.toolTipText_1")); // NOI18N
             setVisible(true);
         }
