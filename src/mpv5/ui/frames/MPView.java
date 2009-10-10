@@ -484,7 +484,10 @@ public class MPView extends FrameView {
                 for (int i = 0; i < count; i++) {
                     if (getTabAt(i) != null) {
                         DataPanel panel = getTabAt(i);
-                        if (!panel.getDataOwner().isExisting() && panel.getDataOwner().getContext().equals(item.getContext())) {
+                        if (!panel.getDataOwner().isExisting() &&
+                                panel.getDataOwner().getContext().equals(item.getContext()) &&
+                                panel.getClass() == item.getView().getClass()) {
+//                        if (!panel.getDataOwner().isExisting() && panel.getDataOwner().getContext().equals(item.getContext())) {
                             tabPane.setSelectedIndex(i);
                             panel.setDataOwner(item, true);
                             if (tabTitle == null) {
@@ -1702,7 +1705,7 @@ public class MPView extends FrameView {
 
     private void jMenuItem6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem6ActionPerformed
         DataPanel pane = getCurrentTab();
-        if (pane!=null) {
+        if (pane != null) {
             try {
                 new PrintJob().print(((pane)).getDataOwner());
             } catch (Exception e) {
@@ -1758,7 +1761,7 @@ public class MPView extends FrameView {
 
     private void jMenuItem13ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem13ActionPerformed
         DataPanel pane = getCurrentTab();
-        if (pane!=null) {
+        if (pane != null) {
             pane.actionBeforeSave();
             try {
                 DatabaseObject dato = (pane).getDataOwner();
@@ -1778,7 +1781,7 @@ public class MPView extends FrameView {
     private void jMenuItem14ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem14ActionPerformed
 
         DataPanel pane = getCurrentTab();
-        if (pane!=null) {
+        if (pane != null) {
             try {
                 pane.actionBeforeCreate();
                 DatabaseObject dato = (pane).getDataOwner();
@@ -1881,7 +1884,6 @@ public class MPView extends FrameView {
             try {
                 x = Integer.valueOf(Popup.Enter_Value("Enter a default account ID for bills."));
             } catch (NumberFormatException numberFormatException) {
-               
             }
             try {
                 new mpv5.db.sample.SampleData(Integer.valueOf(Popup.Enter_Value("Enter a valid Integer value [1]")), x, true, true);
@@ -1981,7 +1983,7 @@ public class MPView extends FrameView {
     }//GEN-LAST:event_jButton16ActionPerformed
 
     private void jButton17ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton17ActionPerformed
-         MPView.identifierView.addOrShowTab(JournalPanel.instanceOf(), Messages.OVERVIEW);
+        MPView.identifierView.addOrShowTab(JournalPanel.instanceOf(), Messages.OVERVIEW);
     }//GEN-LAST:event_jButton17ActionPerformed
 
     private void jMenuItem28ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem28ActionPerformed
@@ -1997,7 +1999,6 @@ public class MPView extends FrameView {
         w.addPanel(new wizard_MP45_Import(w));
         w.showWiz();
     }//GEN-LAST:event_jMenuItem29ActionPerformed
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     public javax.swing.JMenu clipboardMenu;
     private javax.swing.JLabel errorlabel;
