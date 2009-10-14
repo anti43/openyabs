@@ -42,11 +42,11 @@ public class WSDaemon extends Thread {
      */
     public WSDaemon(WebShop webShop) throws NoCompatibleHostFoundException, MalformedURLException {
         if (webShop.__getIsauthenticated()) {
-            client = new WSConnectionClient(new URL(webShop.__getUrl()), webShop.__getIsrequestCompression(), webShop.__getUsername(), webShop.__getPassword());
+            client = new WSConnectionClient(new URL(webShop.__getUrl()), webShop.__getIsrequestCompression(), webShop.__getUsername(), webShop.__getPassw());
         } else {
             client = new WSConnectionClient(new URL(webShop.__getUrl()), webShop.__getIsrequestCompression(), null, null);
         }
-        setWaitTime(webShop.__getInterval());
+        setWaitTime(webShop.__getInterv());
         wes = webShop;
         running = true;
     }

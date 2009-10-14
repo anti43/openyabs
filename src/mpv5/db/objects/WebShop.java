@@ -32,12 +32,12 @@ import mpv5.utils.text.RandomText;
 public class WebShop extends DatabaseObject {
 
     private String description = "";
-    private int interval;
+    private int interv;
     private String url = "";
     private boolean isrequestCompression;
     private boolean isauthenticated;
     private String username = "";
-    private String password = "";
+    private String passw = "";
 
     public WebShop() {
         context.setIdentityClass(this.getClass());
@@ -71,15 +71,15 @@ public class WebShop extends DatabaseObject {
     /**
      * @return the interval
      */
-    public int __getInterval() {
-        return interval;
+    public int __getInterv() {
+        return interv;
     }
 
     /**
      * @param interval the interval to set
      */
-    public void setInterval(int interval) {
-        this.interval = interval;
+    public void setInterv(int interval) {
+        this.interv = interval;
     }
 
     /**
@@ -146,15 +146,15 @@ public class WebShop extends DatabaseObject {
     /**
      * @return the password
      */
-    public String __getPassword() {
-        return password;
+    public String __getPassw() {
+        return passw;
     }
 
     /**
      * @param password the password to set
      */
-    public void setPassword(String password) {
-        this.password = password;
+    public void setPassw(String password) {
+        this.passw = password;
     }
 
 

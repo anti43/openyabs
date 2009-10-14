@@ -74,8 +74,8 @@ public class TemplateFormatEditor extends javax.swing.JPanel {
         jTable1.setName("jTable1"); // NOI18N
         jScrollPane1.setViewportView(jTable1);
 
-        org.jdesktop.application.ResourceMap resourceMap = org.jdesktop.application.Application.getInstance(mpv5.Main.class).getContext().getResourceMap(TemplateFormatEditor.class);
-        jButton1.setText(resourceMap.getString("jButton1.text")); // NOI18N
+        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("mpv5/ui/dialogs/subcomponents/Bundle"); // NOI18N
+        jButton1.setText(bundle.getString("TemplateFormatEditor.jButton1.text")); // NOI18N
         jButton1.setName("jButton1"); // NOI18N
         jButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {

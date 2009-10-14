@@ -365,14 +365,14 @@ public class ControlPanel_WebShopManager extends javax.swing.JPanel implements C
         } else if (evt.getClickCount() >= 1) {
             if (list.getSelectedValue() != null) {
                 WebShop ws = (WebShop) list.getSelectedValue();
-                intervals.set_Value(Integer.valueOf(ws.__getInterval()));
+                intervals.set_Value(Integer.valueOf(ws.__getInterv()));
                 descr.setText(ws.__getDescription());
                 urls.setText(ws.__getUrl());
                 groupselect.setSelectedIndex(MPComboBoxModelItem.getItemID(String.valueOf(ws.__getGroupsids()), groupselect.getModel()));
                 isrequestCompression.setSelected(ws.__getIsrequestCompression());
                 jCheckBox1.setSelected(ws.__getIsauthenticated());
                 jTextField1.setText(ws.__getUsername());
-                jPasswordField1.setText(ws.__getPassword());
+                jPasswordField1.setText(ws.__getPassw());
             }
         }
 }//GEN-LAST:event_listMouseClicked
@@ -488,11 +488,11 @@ public class ControlPanel_WebShopManager extends javax.swing.JPanel implements C
         new URL(urls.getText());//test 
         ws.setUrl(urls.getText());
         ws.setDescription(descr.getText());
-        ws.setInterval(Integer.valueOf(intervals.getSpinner().getValue().toString()));
+        ws.setInterv(Integer.valueOf(intervals.getSpinner().getValue().toString()));
         ws.setIsrequestCompression(isrequestCompression.isSelected());
         ws.setIsauthenticated(jCheckBox1.isSelected());
         ws.setUsername(jTextField1.getText());
-        ws.setPassword(new String(jPasswordField1.getPassword()));
+        ws.setPassw(new String(jPasswordField1.getPassword()));
         if (groupselect.getSelectedItem() != null) {
             ws.setGroupsids(Integer.valueOf((groupselect.getSelectedItem()).getId()));
         } else {
