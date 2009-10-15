@@ -367,7 +367,8 @@ public class DocumentHandler {
      */
     public void clear() throws DocumentException {
         try {
-            document = connection.getDocumentService().loadDocument(file.getPath(), descriptor);
+            Log.Debug(this, file.getPath());
+            document = connection.getDocumentService().loadDocument(file.getPath().replace("\\", "/"), descriptor);
         } catch (NOAException ex) {
             Log.Debug(ex);
         }

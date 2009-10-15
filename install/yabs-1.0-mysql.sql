@@ -309,7 +309,7 @@ CREATE TABLE pluginstousers  (
 	groupsids 	BIGINT(20) UNSIGNED NOT NULL DEFAULT 1
 )ENGINE=MyISAM  DEFAULT CHARSET=utf8;
 
-CREATE TABLE productsgroups  (
+CREATE TABLE productgroups  (
 	ids             	BIGINT(20) UNSIGNED NOT NULL PRIMARY KEY auto_increment,
 	cname           	VARCHAR(250) NOT NULL,
 	description     	VARCHAR(750) DEFAULT NULL,
@@ -448,7 +448,7 @@ CREATE TABLE stages  (
 	groupsids  	BIGINT(20) UNSIGNED NOT NULL DEFAULT 1
 )ENGINE=MyISAM  DEFAULT CHARSET=utf8;
 
-CREATE TABLE subitmes  (
+CREATE TABLE subitems  (
 	ids                	BIGINT(20) UNSIGNED NOT NULL PRIMARY KEY auto_increment,
 	cname              	VARCHAR(5000) DEFAULT NULL,
 	itemsids           	BIGINT(20) UNSIGNED NOT NULL ,
@@ -615,10 +615,10 @@ CREATE UNIQUE INDEX SQL091006084310820
 	ON groups(ids);
 
 CREATE UNIQUE INDEX SQL091006084311391
-	ON productsgroups(cname, groupsids);
+	ON productgroups(cname, groupsids);
 
 CREATE UNIQUE INDEX SQL091006084311390
-	ON productsgroups(ids);
+	ON productgroups(ids);
 
 CREATE UNIQUE INDEX SQL091006084311800
 	ON history(ids);
@@ -711,13 +711,13 @@ CREATE INDEX SQL091006084316860
 	ON items(contactsids);
 
 CREATE UNIQUE INDEX SQL091006084317902
-	ON subitmes(ids);
+	ON subitems(ids);
 
 CREATE INDEX SQL091006084317900
-	ON subitmes(itemsids);
+	ON subitems(itemsids);
 
 CREATE INDEX SQL091006084317901
-	ON subitmes(groupsids);
+	ON subitems(groupsids);
 
 CREATE UNIQUE INDEX SQL091006084318483
 	ON schedule(ids);
@@ -994,7 +994,7 @@ ALTER TABLE languages
 	ADD CONSTRAINT CONST6
 	 UNIQUE (cname, groupsids) ;
 
-ALTER TABLE productsgroups
+ALTER TABLE productgroups
 	ADD CONSTRAINT CONST1
 	 UNIQUE (cname, groupsids) ;
 
@@ -1282,12 +1282,12 @@ ALTER TABLE stages
 	FOREIGN KEY(groupsids)
 	REFERENCES groups(ids);
 
-ALTER TABLE subitmes
+ALTER TABLE subitems
 	ADD CONSTRAINT SQL0910060843179011
 	FOREIGN KEY(groupsids)
 	REFERENCES groups(ids);
 
-ALTER TABLE subitmes
+ALTER TABLE subitems
 	ADD CONSTRAINT SQL0910060843179001
 	FOREIGN KEY(itemsids)
 	REFERENCES items(ids)
@@ -1558,15 +1558,15 @@ CREATE TRIGGER revenues_INDEXER4
 	DELETE FROM trashbin WHERE cname = 'revenues' AND  rowid = OLD.ids;
 END;
 %
-CREATE TRIGGER subitmes_INDEXER1
-	AFTER INSERT ON subitmes
+CREATE TRIGGER subitems_INDEXER1
+	AFTER INSERT ON subitems
 
 	FOR EACH ROW BEGIN
 	INSERT INTO searchindex  (groupsids, dbidentity, rowid, text) VALUES (NEW.groupsids,'subitems',NEW.ids,NEW.cname||' '||NEW.description||' '||NEW.dateadded);
 END;
 	%
-CREATE TRIGGER subitmes_INDEXER2
-	AFTER UPDATE ON subitmes
+CREATE TRIGGER subitems_INDEXER2
+	AFTER UPDATE ON subitems
 
 	FOR EACH ROW BEGIN
 	DELETE FROM searchindex WHERE dbidentity = 'subitems' AND  rowid = NEW.ids;
@@ -1574,8 +1574,8 @@ CREATE TRIGGER subitmes_INDEXER2
 END;
 	%
 
-CREATE TRIGGER subitmes_INDEXER4
-	AFTER DELETE ON subitmes
+CREATE TRIGGER subitems_INDEXER4
+	AFTER DELETE ON subitems
 
 	FOR EACH ROW BEGIN
 	DELETE FROM searchindex WHERE dbidentity = 'subitems' AND  rowid = OLD.ids;
@@ -1604,7 +1604,7 @@ INSERT INTO countries(cname, iso, groupsids, reserve1, reserve2)
   VALUES( 'Deutschland', 276, 1, NULL, NULL);
 INSERT INTO globalsettings(cname, groupsids, VALUE)
   VALUES( 'yabs_dbversion', 1, '1.0');
-INSERT INTO productsgroups(cname, description, defaults, groupsids, productgroupsids, dateadded, hierarchypath, reserve1, intaddedby, reserve2)
+INSERT INTO productgroups(cname, description, defaults, groupsids, productgroupsids, dateadded, hierarchypath, reserve1, intaddedby, reserve2)
   VALUES( 'All Products', 'This product group is visible to everyone.', NULL, 0, 0, '2009-04-03', NULL, NULL, 0, NULL);
 INSERT INTO searchindex(dbidentity, groupsids, rowid, text)
   VALUES( 'groups', 0, 1, 'All Groups This group is visible to everyone. 2009-04-03');

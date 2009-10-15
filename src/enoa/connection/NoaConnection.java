@@ -92,6 +92,7 @@ public class NoaConnection {
      * @throws Exception If any Exception is thrown during the connection attempt
      */
     public NoaConnection(String connectionString, int port) throws Exception {
+        Log.Debug(this, connectionString);
         if (connectionString != null && connectionString.length() > 1 && port <= 0) {
             createLocalConnection(connectionString);
         } else if (connectionString != null && connectionString.length() > 1 && port > 0 && port < 9999) {
@@ -215,7 +216,7 @@ public class NoaConnection {
                 path.replace("\\", "\\\\") + File.separator + "program" + File.separator + "soffice",
                 "-headless",
                 "-nofirststartwizard",
-                "-invisible", 
+//                "-invisible", 
                 "-norestore",
                 "-nolockcheck",
                 "-nocrashreport",
