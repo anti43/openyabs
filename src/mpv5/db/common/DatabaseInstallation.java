@@ -151,9 +151,9 @@ public class DatabaseInstallation {
 "INSERT INTO globalsettings (cname, groupsids, value ) VALUES ('yabs_dbversion', 1, '" + Constants.DATABASE_VERSION + "')"
     };
 
-    public final static String[] MYSQL_STRUCTURE = new String[]{};
+    public static String[] MYSQL_STRUCTURE = new String[]{};
 
-    private String[] CUSTOM_STRUCTURE;
+    public static String[] CUSTOM_STRUCTURE;
 
 
     public String[] getStructure() {

@@ -41,7 +41,6 @@ public class ConnectionTypeHandler {
      * Use custom database driver
      */
     public static final int CUSTOM = 2;
-
     //Available Drivers
     public static String CUSTOM_DRIVER = "custom.driver";// (specify path with type declaration jdbc:sql://<path>:port)
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -50,8 +49,6 @@ public class ConnectionTypeHandler {
     public static File DERBY_FILE = null;
     public static File MYSQL_FILE = null;
     public static File CUSTOM_FILE = null;
-
-
 
     public static String getDriverName() {
         return CONNECTION_STRING;
@@ -62,10 +59,9 @@ public class ConnectionTypeHandler {
     }
     private static String CONNECTION_STRING = null;
     private static Integer PREDEFINED_DRVER = null;
-
     private static String URL;
     private static String DBNAME;
-
+    private static String DBPREFIX = "";
 
     /**
      * Constructs a new ConnHandler
@@ -73,8 +69,8 @@ public class ConnectionTypeHandler {
     public ConnectionTypeHandler() {
 
         setDRIVER(LocalSettings.getProperty(LocalSettings.DBDRIVER));
-        ConnectionTypeHandler.URL = LocalSettings.getProperty( LocalSettings.DBPATH);
-        ConnectionTypeHandler.DBNAME = LocalSettings.getProperty( LocalSettings.DBNAME);
+        ConnectionTypeHandler.URL = LocalSettings.getProperty(LocalSettings.DBPATH);
+        ConnectionTypeHandler.DBNAME = LocalSettings.getProperty(LocalSettings.DBNAME);
     }
 
     /**
@@ -212,6 +208,14 @@ public class ConnectionTypeHandler {
     }
 
     public void setDBName(String dbname) {
-       ConnectionTypeHandler.DBNAME = dbname;
+        ConnectionTypeHandler.DBNAME = dbname;
+    }
+
+    public void setPrefix(String prefix) {
+        DBPREFIX = prefix;
+    }
+
+    public String getPrefix() {
+        return DBPREFIX;
     }
 }

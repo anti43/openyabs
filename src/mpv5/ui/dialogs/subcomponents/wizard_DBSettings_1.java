@@ -59,6 +59,7 @@ public class wizard_DBSettings_1 extends javax.swing.JPanel implements Wizardabl
             master.getStore().changeProperty("user", labeledTextField4.get_Text());
             master.getStore().changeProperty("password", labeledTextField5.get_Text());
             master.getStore().changeProperty("dbname", labeledTextField3.get_Text());
+            master.getStore().changeProperty("dbprefix", prefix.get_Text());
             master.setMessage(Messages.CONNECTION_PROBE + master.getStore().getProperty("driver"));
             conn = new DatabaseConnection();
             try {
@@ -67,6 +68,7 @@ public class wizard_DBSettings_1 extends javax.swing.JPanel implements Wizardabl
                 LocalSettings.setProperty(LocalSettings.DBUSER, master.getStore().getProperty("user"));
                 LocalSettings.setProperty(LocalSettings.DBPASSWORD, master.getStore().getProperty("password"));
                 LocalSettings.setProperty(LocalSettings.DBNAME, master.getStore().getProperty("dbname"));
+                LocalSettings.setProperty(LocalSettings.DBPREFIX, master.getStore().getProperty("dbprefix"));
                 if (!jCheckBox3.isSelected() && labeledTextChooser2.hasText()) {
                     LocalSettings.setProperty(LocalSettings.OFFICE_HOME, labeledTextChooser2.get_Text(true));
                     LocalSettings.setProperty(LocalSettings.OFFICE_USE, "true");
@@ -90,6 +92,7 @@ public class wizard_DBSettings_1 extends javax.swing.JPanel implements Wizardabl
                         master.getStore().getProperty("password"),
                         master.getStore().getProperty("url"),
                         master.getStore().getProperty("dbname"),
+                        master.getStore().getProperty("dbprefix"),
                         true)) {
                     master.setMessage(Messages.CONNECTION_VERIFIED.toString());
                     LocalSettings.save(forConnId);
@@ -173,12 +176,13 @@ public class wizard_DBSettings_1 extends javax.swing.JPanel implements Wizardabl
         labeledTextField4 = new mpv5.ui.beans.LabeledTextField();
         labeledTextField5 = new mpv5.ui.beans.LabeledTextField();
         jButton2 = new javax.swing.JButton();
+        prefix = new mpv5.ui.beans.LabeledTextField();
         jPanel3 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         jTextArea1 = new javax.swing.JTextArea();
 
         setBackground(new java.awt.Color(255, 255, 255));
-        java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle(); // NOI18N
+        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("mpv5/resources/languages/Panels"); // NOI18N
         setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("wizard_DBSettings_1.border.title"))); // NOI18N
         setName("Form"); // NOI18N
 
@@ -296,6 +300,9 @@ public class wizard_DBSettings_1 extends javax.swing.JPanel implements Wizardabl
         });
         jPanel4.add(jButton2);
 
+        prefix.set_Label(bundle.getString("wizard_DBSettings_1.prefix._Label")); // NOI18N
+        prefix.setName("prefix"); // NOI18N
+
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
@@ -314,9 +321,10 @@ public class wizard_DBSettings_1 extends javax.swing.JPanel implements Wizardabl
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addComponent(jCheckBox2, javax.swing.GroupLayout.DEFAULT_SIZE, 328, Short.MAX_VALUE)
-                            .addComponent(jComboBox1, javax.swing.GroupLayout.Alignment.LEADING, 0, 328, Short.MAX_VALUE))))
+                            .addComponent(jComboBox1, javax.swing.GroupLayout.Alignment.LEADING, 0, 328, Short.MAX_VALUE)))
+                    .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, 515, Short.MAX_VALUE)
+                    .addComponent(prefix, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap())
-            .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, 525, Short.MAX_VALUE)
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -337,8 +345,9 @@ public class wizard_DBSettings_1 extends javax.swing.JPanel implements Wizardabl
                         .addComponent(jCheckBox1, 0, 0, Short.MAX_VALUE))
                     .addComponent(labeledTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, 56, Short.MAX_VALUE)
-                .addContainerGap())
+                .addComponent(prefix, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 9, Short.MAX_VALUE)
+                .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, 61, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
         jPanel3.setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("wizard_DBSettings_1.jPanel3.border.title"))); // NOI18N
@@ -349,10 +358,10 @@ public class wizard_DBSettings_1 extends javax.swing.JPanel implements Wizardabl
         jScrollPane1.setVerticalScrollBarPolicy(javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER);
         jScrollPane1.setName("jScrollPane1"); // NOI18N
 
-        jTextArea1.setBackground(new java.awt.Color(238, 238, 238));
+        jTextArea1.setBackground(new java.awt.Color(236, 233, 216));
         jTextArea1.setColumns(20);
         jTextArea1.setEditable(false);
-        jTextArea1.setFont(new java.awt.Font("Tahoma", 0, 12));
+        jTextArea1.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
         jTextArea1.setLineWrap(true);
         jTextArea1.setRows(5);
         jTextArea1.setText(bundle.getString("wizard_DBSettings_1.jTextArea1.text")); // NOI18N
@@ -368,7 +377,9 @@ public class wizard_DBSettings_1 extends javax.swing.JPanel implements Wizardabl
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 115, Short.MAX_VALUE)
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 112, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
@@ -382,8 +393,8 @@ public class wizard_DBSettings_1 extends javax.swing.JPanel implements Wizardabl
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, 0)
+                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 227, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 100, Short.MAX_VALUE)
                 .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
@@ -434,6 +445,7 @@ public class wizard_DBSettings_1 extends javax.swing.JPanel implements Wizardabl
     private mpv5.ui.beans.LabeledTextField labeledTextField3;
     private mpv5.ui.beans.LabeledTextField labeledTextField4;
     private mpv5.ui.beans.LabeledTextField labeledTextField5;
+    private mpv5.ui.beans.LabeledTextField prefix;
     // End of variables declaration//GEN-END:variables
 
     public boolean next() {

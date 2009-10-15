@@ -63,13 +63,14 @@ public class wizard_MP45_Import extends javax.swing.JPanel implements Wizardable
         dbname = new mpv5.ui.beans.LabeledTextField();
         dbuser = new mpv5.ui.beans.LabeledTextField();
         dbpassword = new mpv5.ui.beans.LabeledTextField();
+        dbprefix = new mpv5.ui.beans.LabeledTextField();
 
         setBackground(new java.awt.Color(255, 255, 255));
         setName("Form"); // NOI18N
         setLayout(new java.awt.BorderLayout());
 
         jPanel1.setBackground(new java.awt.Color(255, 255, 255));
-        java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle(); // NOI18N
+        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("mpv5/resources/languages/Panels"); // NOI18N
         jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("wizard_MP45_Import.jPanel1.border.title"))); // NOI18N
         jPanel1.setName("jPanel1"); // NOI18N
 
@@ -125,6 +126,9 @@ public class wizard_MP45_Import extends javax.swing.JPanel implements Wizardable
         dbpassword.set_Label(bundle.getString("wizard_MP45_Import.dbpassword._Label")); // NOI18N
         dbpassword.setName("dbpassword"); // NOI18N
 
+        dbprefix.set_Label(bundle.getString("wizard_MP45_Import.dbprefix._Label")); // NOI18N
+        dbprefix.setName("dbprefix"); // NOI18N
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -146,7 +150,10 @@ public class wizard_MP45_Import extends javax.swing.JPanel implements Wizardable
                         .addComponent(dbuser, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 119, Short.MAX_VALUE)
                         .addComponent(dbname, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(dbpassword, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(dbpassword, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 119, Short.MAX_VALUE)
+                        .addComponent(dbprefix, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
@@ -174,7 +181,10 @@ public class wizard_MP45_Import extends javax.swing.JPanel implements Wizardable
                         .addComponent(dbuser, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(dbpassword, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(dbname, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(dbname, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(dbprefix, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
 
@@ -187,6 +197,7 @@ public class wizard_MP45_Import extends javax.swing.JPanel implements Wizardable
     private javax.swing.JCheckBox customers;
     private mpv5.ui.beans.LabeledTextField dbname;
     private mpv5.ui.beans.LabeledTextField dbpassword;
+    private mpv5.ui.beans.LabeledTextField dbprefix;
     private mpv5.ui.beans.LabeledTextField dbuser;
     private javax.swing.JComboBox jComboBox1;
     private javax.swing.JLabel jLabel1;
@@ -232,7 +243,7 @@ public class wizard_MP45_Import extends javax.swing.JPanel implements Wizardable
                                 dbuser.getText(),
                                 dbpassword.getText(),
                                 path.get_Text(false),
-                                dbname.getText(),
+                                dbname.getText(), dbprefix.getText(),
                                 false);
                         conn.setProgressbar(master.getProgressbar());
 

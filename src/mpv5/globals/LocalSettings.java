@@ -47,6 +47,7 @@ public class LocalSettings {
     public static final String PRINT_DEVAPP = "devappprint";
     public static final String PROXYUSE = "useproxy";
     public static final String DBNAME = "dbname";
+    public static final String DBPREFIX = "dbprefix";
     public static final String DBROW_LIMIT = "dbrowlimit";
     public static final String DBAUTOLOCK = "dbautolock";
     public static final String DBTYPE = "dbtype";

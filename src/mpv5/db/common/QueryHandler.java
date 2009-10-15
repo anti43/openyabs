@@ -246,6 +246,9 @@ public class QueryHandler implements Cloneable {
      */
     public QueryHandler setContext(Context context) {
         table = context.getDbIdentity();
+        if (DatabaseConnection.getPrefix() != null && DatabaseConnection.getPrefix().equals("null")) {
+            table = DatabaseConnection.getPrefix() + table;
+        }
         this.context = context;
         return this;
     }
@@ -272,7 +275,7 @@ public class QueryHandler implements Cloneable {
      * @throws NodataFoundException
      */
     public ReturnValue freeSelect(String columns) throws NodataFoundException {
-        ReturnValue data = freeSelectQuery("SELECT " + columns + " FROM " + table , mpv5.usermanagement.MPSecurityManager.VIEW, null);
+        ReturnValue data = freeSelectQuery("SELECT " + columns + " FROM " + table, mpv5.usermanagement.MPSecurityManager.VIEW, null);
         if (data.getData().length == 0) {
             throw new NodataFoundException(context);
         } else {
@@ -610,6 +613,9 @@ public class QueryHandler implements Cloneable {
      */
     public void setTable(String newTable) {
         this.table = newTable;
+        if (DatabaseConnection.getPrefix() != null && DatabaseConnection.getPrefix().equals("null")) {
+            this.table = DatabaseConnection.getPrefix() + table;
+        }
     }
 
     /**
@@ -618,6 +624,9 @@ public class QueryHandler implements Cloneable {
      */
     public void setTable2(String newTable) {
         this.table = newTable;
+        if (DatabaseConnection.getPrefix() != null && DatabaseConnection.getPrefix().equals("null")) {
+            this.table = DatabaseConnection.getPrefix() + table;
+        }
         this.context = Context.getMatchingContext(newTable);
         if (this.context == null) {
             this.context = new Context(null);

@@ -28,6 +28,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -82,6 +83,7 @@ public class RevenuePanel extends javax.swing.JPanel implements DataPanel {
     }
     private Revenue dataOwner;
     private DataPanelTB tb;
+    private ArrayList<DatabaseObject> accmod;
 
     /** Creates new form ContactPanel
      */
@@ -100,6 +102,8 @@ public class RevenuePanel extends javax.swing.JPanel implements DataPanel {
         groupnameselect.setContext(Context.getGroup());
         taxrate.setSearchEnabled(true);
         taxrate.setContext(Context.getTaxes());
+
+
 
 //        new calc().start();
         value.getTextField().addKeyListener(new KeyListener() {
@@ -550,8 +554,8 @@ public class RevenuePanel extends javax.swing.JPanel implements DataPanel {
         value.setText(FormatNumber.formatDezimal(brutvalue_));
         netvalue.setText(FormatNumber.formatDezimal(netvalue_));
         try {
-            Account a =(Account) DatabaseObject.getObject(Context.getAccounts(), accountsids_);
-            accountselect.setModel(a);
+            Account a = (Account) DatabaseObject.getObject(Context.getAccounts(), accountsids_);
+            accountselect.setSelectedItem(a.__getIDS());
             path.setText(a.__getHierarchypath());
         } catch (NodataFoundException ex) {
             Log.Debug(this, ex.getMessage());
@@ -572,15 +576,24 @@ public class RevenuePanel extends javax.swing.JPanel implements DataPanel {
 
             @Override
             public void run() {
+                groupnameselect.triggerSearch();
+                taxrate.triggerSearch();
                 try {
-                    groupnameselect.triggerSearch();
-                    taxrate.triggerSearch();
-                    itemtable.setModel(new MPTableModel(Revenue.getRevenues(), Headers.EXPENSE));
-                    formatTable();
-                    accountselect.setModel(DatabaseObject.getObjects(Context.getAccounts(), new QueryCriteria("intaccounttype", Account.INCOME)));
+                    itemtable.setModel(new MPTableModel(Expense.getExpenses(), Headers.EXPENSE));
+                } catch (NodataFoundException e) {
+                    Log.Debug(e);
+                }
+                try {
+                    accmod = DatabaseObject.getObjects(Context.getAccounts(), new QueryCriteria("intaccounttype", Account.EXPENSE));
+                    accountselect.setModel(accmod);
+                } catch (NodataFoundException e) {
+                    Log.Debug(e);
+                }
+                try {
                     accountselect.setSelectedItem(MPView.getUser().getProperties().getProperty(me, "accountselect", 1));
+                    formatTable();
                 } catch (Exception e) {
-                    Log.Debug(this, e.getMessage());
+                    Log.Debug(e);
                 }
             }
         };
@@ -609,11 +622,12 @@ public class RevenuePanel extends javax.swing.JPanel implements DataPanel {
 
             public void run() {
                 try {
-                    itemtable.setModel(new MPTableModel(Revenue.getRevenues(),Headers.EXPENSE));
+                    itemtable.setModel(new MPTableModel(Revenue.getRevenues(), Headers.EXPENSE));
                 } catch (NodataFoundException ex) {
                 }
             }
-        };SwingUtilities.invokeLater(runnable);
+        };
+        SwingUtilities.invokeLater(runnable);
     }
 
     @Override
@@ -626,7 +640,8 @@ public class RevenuePanel extends javax.swing.JPanel implements DataPanel {
                 } catch (NodataFoundException ex) {
                 }
             }
-        };SwingUtilities.invokeLater(runnable);
+        };
+        SwingUtilities.invokeLater(runnable);
     }
 
     public void actionBeforeCreate() {
