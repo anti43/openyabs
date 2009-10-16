@@ -526,24 +526,42 @@ public class Item extends DatabaseObject implements Formattable {
         map.put("netvalue", __getNetvalue());
         map.put("taxvalue", __getTaxvalue());
         map.put("grosvalue", __getTaxvalue() + __getNetvalue());
+        map.put("discountnetvalue", __getNetvalue() * ((__getDiscountvalue() / 100 - 1) * -1));
+        map.put("discountnetdifference", __getNetvalue() * (__getDiscountvalue() / 100));
         map.put("discountgrosvalue", (__getTaxvalue() + __getNetvalue()) * ((__getDiscountvalue() / 100 - 1) * -1));
+        map.put("discountgrosdifferenence", (__getTaxvalue() + __getNetvalue()) * (__getDiscountvalue() / 100));
         map.put("discounttaxvalue", __getTaxvalue() * ((__getDiscountvalue() / 100 - 1) * -1));
-        map.put("shippedgrosvalue", (__getTaxvalue() + __getNetvalue() + __getShippingvalue()) * ((__getDiscountvalue() / 100 - 1) * -1));
+        map.put("shippednetvalue", __getNetvalue() * ((__getDiscountvalue() / 100 - 1) * -1) + __getShippingvalue());
+
+        map.put("shippedtaxvalue", __getTaxvalue() * ((__getDiscountvalue() / 100 - 1) * -1));
+        map.put("shippedgrosvalue", (__getTaxvalue() + __getNetvalue()) * ((__getDiscountvalue() / 100 - 1) * -1) + __getShippingvalue());
         map.put("shippingvalue", __getShippingvalue());
         map.put("shippingvaluef", FormatNumber.formatLokalCurrency(__getShippingvalue()));
         map.put("netvaluef", FormatNumber.formatLokalCurrency(__getNetvalue()));
         map.put("taxvaluef", FormatNumber.formatLokalCurrency(__getTaxvalue()));
         map.put("grosvaluef", FormatNumber.formatLokalCurrency(__getTaxvalue() + __getNetvalue()));
+        map.put("discountvaluef", FormatNumber.formatPercent(__getDiscountvalue()));
+        map.put("discountnetvaluef", FormatNumber.formatLokalCurrency(__getNetvalue() * ((__getDiscountvalue() / 100 - 1) * -1)));
+        map.put("discountnetdifferencef", FormatNumber.formatLokalCurrency(__getNetvalue() * (__getDiscountvalue() / 100)));
         map.put("discountgrosvaluef", FormatNumber.formatLokalCurrency((__getTaxvalue() + __getNetvalue()) * ((__getDiscountvalue() / 100 - 1) * -1)));
+        map.put("discountgrosdifferenencef", FormatNumber.formatLokalCurrency((__getTaxvalue() + __getNetvalue()) * (__getDiscountvalue() / 100)));
         map.put("discounttaxvaluef", FormatNumber.formatLokalCurrency(__getTaxvalue() * ((__getDiscountvalue() / 100 - 1) * -1)));
+        map.put("shippednetvaluef", FormatNumber.formatLokalCurrency(__getNetvalue() * ((__getDiscountvalue() / 100 - 1) * -1) + __getShippingvalue()));
+        map.put("shippedtaxvaluef", FormatNumber.formatLokalCurrency(__getTaxvalue() * ((__getDiscountvalue() / 100 - 1) * -1)));
         map.put("shippedgrosvaluef", FormatNumber.formatLokalCurrency(((__getTaxvalue() + __getNetvalue()) * ((__getDiscountvalue() / 100 - 1) * -1)) + __getShippingvalue()));
 
         if (MPView.getUser().getProperties().hasProperty("shiptax")) {
             int taxid = MPView.getUser().getProperties().getProperty("shiptax", new Integer(0));
             Double shiptax = Tax.getTaxValue(taxid);
-            map.put("shippingtaxvalue", (__getShippingvalue() - ((100 * __getShippingvalue()) / (shiptax + 100))));
-            map.put("shippingtaxvaluef", FormatNumber.formatLokalCurrency(__getShippingvalue() - ((100 * __getShippingvalue()) / (shiptax + 100))));
+            map.put("shippingtaxvalue", __getShippingvalue() * (shiptax / 100));
+            map.put("shippingtaxvaluef", FormatNumber.formatLokalCurrency(__getShippingvalue() * (shiptax / 100)));
             map.put("shippingtaxpercentvaluef", FormatNumber.formatPercent(shiptax));
+            map.put("shippinggrosvalue", __getShippingvalue() * (shiptax / 100) + __getShippingvalue());
+            map.put("shippinggrosvaluef", FormatNumber.formatLokalCurrency(__getShippingvalue() * (shiptax / 100) + __getShippingvalue()));
+            map.put("shippedtaxvalue", __getTaxvalue() * ((__getDiscountvalue() / 100 - 1) * -1) + __getShippingvalue() * (shiptax / 100));
+            map.put("shippedtaxvaluef", FormatNumber.formatLokalCurrency(__getTaxvalue() * ((__getDiscountvalue() / 100 - 1) * -1) + __getShippingvalue() * (shiptax / 100)));
+            map.put("shippedgrosvalue", (__getTaxvalue() + __getNetvalue()) * ((__getDiscountvalue() / 100 - 1) * -1) + __getShippingvalue() * (shiptax / 100) + __getShippingvalue());
+            map.put("shippedgrosvaluef", FormatNumber.formatLokalCurrency(((__getTaxvalue() + __getNetvalue()) * ((__getDiscountvalue() / 100 - 1) * -1)) + __getShippingvalue() * (shiptax / 100) + __getShippingvalue()));
         }
         //date format localization
         if (MPView.getUser().getProperties().hasProperty("item.date.locale")) {
