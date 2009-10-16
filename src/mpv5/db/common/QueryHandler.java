@@ -42,6 +42,7 @@ import mpv5.db.objects.User;
 import mpv5.globals.Messages;
 import mpv5.db.objects.Contact;
 import mpv5.globals.Constants;
+import mpv5.globals.LocalSettings;
 import mpv5.logging.Log;
 import mpv5.ui.frames.MPView;
 import mpv5.ui.dialogs.Popup;
@@ -53,6 +54,7 @@ import mpv5.utils.date.DateConverter;
 import mpv5.utils.date.vTimeframe;
 import mpv5.utils.files.FileDirectoryHandler;
 import mpv5.utils.text.RandomText;
+import mpv5.utils.text.TypeConversion;
 import mpv5.utils.ui.TextFieldUtils;
 
 /**
@@ -765,6 +767,18 @@ public class QueryHandler implements Cloneable {
             map.put(cols[i], String.valueOf(data[0][i]));
         }
         return map;
+    }
+    /**
+     * This string is used to replace backslashes in sql queries (if escaping is enabled)
+     */
+    public static String BACKSLASH_REPLACEMENT_STRING = "<removedbackslash>";
+
+    private String escapeBackslashes(String query) {
+        return query.replace("\\", BACKSLASH_REPLACEMENT_STRING);
+    }
+
+    private String revertEscapeBackslashes(String query) {
+        return query.replace(BACKSLASH_REPLACEMENT_STRING, "\\");
     }
 
     class Watchdog implements Runnable {
@@ -1578,6 +1592,10 @@ public class QueryHandler implements Cloneable {
             return new ReturnValue(-1, new Object[0][0], new String[0]);
         }
 
+        if (TypeConversion.stringToBoolean(LocalSettings.getProperty(LocalSettings.DBESCAPE))) {
+            query = escapeBackslashes(query);
+        }
+
         updateStatistics(query);
 
         start();
@@ -1625,7 +1643,11 @@ public class QueryHandler implements Cloneable {
                 while (resultSet.next()) {
                     spalten = new ArrayList();
                     for (int i = 1; i <= rsmd.getColumnCount(); i++) {
-                        spalten.add(resultSet.getObject(i));
+                        Object object = resultSet.getObject(i);
+                        if (object instanceof String && TypeConversion.stringToBoolean(LocalSettings.getProperty(LocalSettings.DBESCAPE))) {
+                            object = escapeBackslashes((String) object);
+                        }
+                        spalten.add(object);
                     }
                     zeilen.add(spalten);
                 }
@@ -1733,6 +1755,10 @@ public class QueryHandler implements Cloneable {
         updateStatistics(query);
         start();
 
+        if (TypeConversion.stringToBoolean(LocalSettings.getProperty(LocalSettings.DBESCAPE))) {
+            query = escapeBackslashes(query);
+        }
+
         if (table != null) {
             query = query.replace("%%tablename%%", table);
         }
@@ -1839,6 +1865,10 @@ public class QueryHandler implements Cloneable {
         }
         updateStatistics(query);
         start();
+
+        if (TypeConversion.stringToBoolean(LocalSettings.getProperty(LocalSettings.DBESCAPE))) {
+            query = escapeBackslashes(query);
+        }
         String message = "Database Error (selectFreeQuery) :";
 
         stm = null;
@@ -1888,7 +1918,11 @@ public class QueryHandler implements Cloneable {
             while (resultSet.next()) {
                 spalten = new ArrayList();
                 for (int i = 1; i <= rsmd.getColumnCount(); i++) {
-                    spalten.add(resultSet.getObject(i));
+                    Object object = resultSet.getObject(i);
+                    if (object instanceof String && TypeConversion.stringToBoolean(LocalSettings.getProperty(LocalSettings.DBESCAPE))) {
+                        object = escapeBackslashes((String) object);
+                    }
+                    spalten.add(object);
                 }
                 zeilen.add(spalten);
             }

@@ -56,6 +56,7 @@ public class LocalSettings {
     public static final String CACHE_SIZE = "cachesize";
     public static final String LAST_USER = "lastuser";
     public static final String LAST_USER_PW = "lastuserpw";
+    public static final String DBESCAPE = "dbescape";
 
 
     private static PropertyStore predefinedSettings = new PropertyStore(new String[][]{
@@ -71,7 +72,8 @@ public class LocalSettings {
                 {OFFICE_HOST, "127.0.0.1"},
                 {OFFICE_REMOTE, "false"},
                 {OFFICE_USE, "true"},
-                {CACHE_DIR, "Cache"}
+                {CACHE_DIR, "Cache"},
+                {DBESCAPE, "false"}
             });
     private static Vector<PropertyStore> cookies;
 
