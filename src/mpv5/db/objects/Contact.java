@@ -426,15 +426,15 @@ public class Contact extends DatabaseObject implements Formattable {
             for (int i = 0; i < data.size(); i++) {
                 map.put("address" + i, data.get(i));
             }
-        } catch (NodataFoundException ex) {
+        } catch (Exception ex) {
            Log.Debug(this, ex.getMessage());
         }
 
          if (map.containsKey("country")) {
             try {
-                map.put("country", LanguageManager.getCountryName(Integer.valueOf(map.get("taxids").toString())));
-            } catch (NumberFormatException numberFormatException) {
-                Log.Debug(numberFormatException);
+                map.put("country", LanguageManager.getCountryName(Integer.valueOf(map.get("country").toString())));
+            } catch (Exception numberFormatException) {
+                Log.Debug(this, numberFormatException.getMessage());
             }
         }
 
