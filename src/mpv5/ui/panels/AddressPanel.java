@@ -423,6 +423,8 @@ public class AddressPanel extends javax.swing.JPanel implements DataPanel {
         }
     }
 
+
+
     /**
      * @return the dataParent
      */
@@ -451,11 +453,11 @@ public class AddressPanel extends javax.swing.JPanel implements DataPanel {
     }
 
     public void actionBeforeCreate() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        
     }
 
     public void actionBeforeSave() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        
     }
 
     public void mail() {

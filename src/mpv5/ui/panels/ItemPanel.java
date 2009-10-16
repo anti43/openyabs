@@ -156,10 +156,10 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
         date1.setDate(new Date());
         try {
             date3.setDate(DateConverter.addDays(new Date(), Integer.valueOf(MPView.getUser().getProperties().getProperty("bills.warn.days"))));
-            date2.setDate(DateConverter.addDays(new Date(), Integer.valueOf(MPView.getUser().getProperties().getProperty("bills.alert.days"))));
+            date2.setDate(new Date());
         } catch (Exception e) {
             date3.setDate(DateConverter.addDays(new Date(), 14));
-            date2.setDate(DateConverter.addDays(new Date(), 30));
+            date2.setDate(new Date());
         }
         itemtable.getTableHeader().addMouseListener(new MouseListener() {
 
