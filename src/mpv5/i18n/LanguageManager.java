@@ -77,6 +77,21 @@ public class LanguageManager {
     }
 
     /**
+     * Get a country name by id
+     * @param id
+     * @return
+     */
+    public static String getCountryName(int id) {
+        for (int i = 0; i < countries.size(); i++) {
+            MPComboBoxModelItem mPComboBoxModelItem = countries.get(i);
+            if (mPComboBoxModelItem.getId().equals(String.valueOf(id))) {
+                return mPComboBoxModelItem.getValue();
+            }
+        }
+        return "---";
+    }
+
+    /**
      * Import & replace the country list
      * @param file
      */
@@ -362,7 +377,7 @@ public class LanguageManager {
             FileReaderWriter frw = new FileReaderWriter(impFile);
             String[] lines = frw.readLines();
 
-            
+
             while (keys.hasMoreElements()) {
                 String string = keys.nextElement();
                 boolean found = false;
@@ -383,8 +398,8 @@ public class LanguageManager {
                     }
                 }
             }
-            if(popupOnError && !failures.isEmpty()) {
-                Popup.notice(failures, "Import not possible.\nMissing keys in " + file +":\n");
+            if (popupOnError && !failures.isEmpty()) {
+                Popup.notice(failures, "Import not possible.\nMissing keys in " + file + ":\n");
             }
             return failures.isEmpty();
         }

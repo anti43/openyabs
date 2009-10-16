@@ -1,23 +1,16 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
+
 package mpv5.db.objects;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.swing.Icon;
 import javax.swing.JComponent;
 import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
 import mpv5.db.common.Formattable;
 import mpv5.db.common.NodataFoundException;
 import mpv5.handler.FormatHandler;
+import mpv5.i18n.LanguageManager;
 import mpv5.logging.Log;
-import mpv5.ui.panels.AddressPanel;
 import mpv5.ui.panels.ContactPanel;
 import mpv5.utils.images.MPIcon;
 
@@ -435,6 +428,14 @@ public class Contact extends DatabaseObject implements Formattable {
             }
         } catch (NodataFoundException ex) {
            Log.Debug(this, ex.getMessage());
+        }
+
+         if (map.containsKey("country")) {
+            try {
+                map.put("country", LanguageManager.getCountryName(Integer.valueOf(map.get("taxids").toString())));
+            } catch (NumberFormatException numberFormatException) {
+                Log.Debug(numberFormatException);
+            }
         }
 
         return map;
