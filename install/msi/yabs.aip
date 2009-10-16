@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<DOCUMENT type="Advanced Installer" CreateVersion="7.2.1" version="7.2.1" modules="freeware" RootPath="." Language="en">
+  <COMPONENT cid="caphyon.advinst.msicomp.MsiPropsComponent">
+    <ROW Property="ALLUSERS" Value="2"/>
+    <ROW Property="ARPCOMMENTS" Value="This installer database contains the logic and data required to install [|ProductName]." ValueLocId="*"/>
+    <ROW Property="ARPHELPLINK" Value="http://openyabs.org"/>
+    <ROW Property="ARPURLINFOABOUT" Value="http://openyabs.org"/>
+    <ROW Property="BannerBitmap" MultiBuildValue="DefaultBuild:banner_image.jpg" Type="1"/>
+    <ROW Property="DialogBitmap" MultiBuildValue="DefaultBuild:dialog_image.jpg" Type="1"/>
+    <ROW Property="Manufacturer" Value="openyabs.org" ValueLocId="*"/>
+    <ROW Property="ProductCode" Value="1033:{ACB6D056-D2E1-45AF-99AF-0634DACDBA5B} " Type="16"/>
+    <ROW Property="ProductLanguage" Value="1033"/>
+    <ROW Property="ProductName" Value="YaBS 1.0" ValueLocId="*"/>
+    <ROW Property="ProductVersion" Value="1.0.0"/>
+    <ROW Property="SecureCustomProperties" Value="OLDPRODUCTS;AI_NEWERPRODUCTFOUND"/>
+    <ROW Property="UpgradeCode" Value="{3819336C-D83F-4F03-AC5B-B74E216B56F6}"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.MsiDirsComponent">
+    <ROW Directory="APPDIR" Directory_Parent="TARGETDIR" DefaultDir="APPDIR:." IsPseudoRoot="1"/>
+    <ROW Directory="DesktopFolder" Directory_Parent="TARGETDIR" DefaultDir="Deskto~1|DesktopFolder" IsPseudoRoot="1"/>
+    <ROW Directory="SHORTCUTDIR" Directory_Parent="TARGETDIR" DefaultDir="SHORTC~1|SHORTCUTDIR" IsPseudoRoot="1"/>
+    <ROW Directory="TARGETDIR" DefaultDir="SourceDir"/>
+    <ROW Directory="lib_DIR" Directory_Parent="APPDIR" DefaultDir="lib"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.MsiCompsComponent">
+    <ROW Component="SHORTCUTDIR" ComponentId="{7EF5D270-2EA7-4CC5-89D8-5857A7A5C597}" Directory_="SHORTCUTDIR" Attributes="0"/>
+    <ROW Component="appframework_1.0.3.jar" ComponentId="{BCF54F8E-0A08-4D0E-9946-65F7DAF763A4}" Directory_="lib_DIR" Attributes="0" KeyPath="appframework_1.0.3.jar" Type="0"/>
+    <ROW Component="license.txt" ComponentId="{0DB1813D-D215-4B4D-8A68-B438A508C317}" Directory_="APPDIR" Attributes="0" KeyPath="license.txt" Type="0"/>
+    <ROW Component="yabs.exe" ComponentId="{CAA61986-5AC9-4D23-B170-A48B90EE25F5}" Directory_="APPDIR" Attributes="0" KeyPath="yabs.exe"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.MsiFeatsComponent">
+    <ROW Feature="MainFeature" Title="MainFeature" Description="Description" Display="1" Level="1" Directory_="APPDIR" Attributes="0" Components="appframework_1.0.3.jar license.txt yabs.exe SHORTCUTDIR"/>
+    <ATTRIBUTE name="CurrentFeature" value="MainFeature"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.MsiFilesComponent">
+    <ROW File="MPCalendar.jar" Component_="appframework_1.0.3.jar" FileName="MPCale~1.jar|MPCalendar.jar" Attributes="0" SourcePath="..\..\dist\lib\MPCalendar.jar" SelfReg="false" Sequence="27"/>
+    <ROW File="PDFRenderer.jar" Component_="appframework_1.0.3.jar" FileName="PDFRen~1.jar|PDFRenderer.jar" Attributes="0" SourcePath="..\..\dist\lib\PDFRenderer.jar" SelfReg="false" Sequence="32"/>
+    <ROW File="appframework_1.0.3.jar" Component_="appframework_1.0.3.jar" FileName="appfra~1.jar|appframework-1.0.3.jar" Attributes="0" SourcePath="..\..\dist\lib\appframework-1.0.3.jar" SelfReg="false" Sequence="1"/>
+    <ROW File="bootstrapconnector.jar" Component_="appframework_1.0.3.jar" FileName="bootst~1.jar|bootstrapconnector.jar" Attributes="0" SourcePath="..\..\dist\lib\bootstrapconnector.jar" SelfReg="false" Sequence="2"/>
+    <ROW File="commons_cli_20070823.jar" Component_="appframework_1.0.3.jar" FileName="common~1.jar|commons-cli-20070823.jar" Attributes="0" SourcePath="..\..\dist\lib\commons-cli-20070823.jar" SelfReg="false" Sequence="3"/>
+    <ROW File="commons_codec_1.3.jar" Component_="appframework_1.0.3.jar" FileName="common~2.jar|commons-codec-1.3.jar" Attributes="0" SourcePath="..\..\dist\lib\commons-codec-1.3.jar" SelfReg="false" Sequence="4"/>
+    <ROW File="commons_logging_1.1.jar" Component_="appframework_1.0.3.jar" FileName="common~3.jar|commons-logging-1.1.jar" Attributes="0" SourcePath="..\..\dist\lib\commons-logging-1.1.jar" SelfReg="false" Sequence="5"/>
+    <ROW File="core_renderer.jar" Component_="appframework_1.0.3.jar" FileName="core-r~1.jar|core-renderer.jar" Attributes="0" SourcePath="..\..\dist\lib\core-renderer.jar" SelfReg="false" Sequence="6"/>
+    <ROW File="derby.jar" Component_="appframework_1.0.3.jar" FileName="derby.jar" Attributes="0" SourcePath="..\..\dist\lib\derby.jar" SelfReg="false" Sequence="7"/>
+    <ROW File="derbyclient.jar" Component_="appframework_1.0.3.jar" FileName="derbyc~1.jar|derbyclient.jar" Attributes="0" SourcePath="..\..\dist\lib\derbyclient.jar" SelfReg="false" Sequence="8"/>
+    <ROW File="dtdparser121.jar" Component_="appframework_1.0.3.jar" FileName="dtdpar~1.jar|dtdparser121.jar" Attributes="0" SourcePath="..\..\dist\lib\dtdparser121.jar" SelfReg="false" Sequence="9"/>
+    <ROW File="enum.jar" Component_="appframework_1.0.3.jar" FileName="enum.jar" Attributes="0" SourcePath="..\..\dist\lib\enum.jar" SelfReg="false" Sequence="10"/>
+    <ROW File="httpcore_4.0.1.jar" Component_="appframework_1.0.3.jar" FileName="httpco~1.jar|httpcore-4.0.1.jar" Attributes="0" SourcePath="..\..\dist\lib\httpcore-4.0.1.jar" SelfReg="false" Sequence="11"/>
+    <ROW File="httpcore_nio_4.0.1.jar" Component_="appframework_1.0.3.jar" FileName="httpco~2.jar|httpcore-nio-4.0.1.jar" Attributes="0" SourcePath="..\..\dist\lib\httpcore-nio-4.0.1.jar" SelfReg="false" Sequence="12"/>
+    <ROW File="iText_2.1.7.jar" Component_="appframework_1.0.3.jar" FileName="iText-~1.jar|iText-2.1.7.jar" Attributes="0" SourcePath="..\..\dist\lib\iText-2.1.7.jar" SelfReg="false" Sequence="13"/>
+    <ROW File="jOpenDocument_1.1_jdk5.jar" Component_="appframework_1.0.3.jar" FileName="jOpenD~1.jar|jOpenDocument-1.1-jdk5.jar" Attributes="0" SourcePath="..\..\dist\lib\jOpenDocument-1.1-jdk5.jar" SelfReg="false" Sequence="19"/>
+    <ROW File="java_uno.jar" Component_="appframework_1.0.3.jar" FileName="java_uno.jar" Attributes="0" SourcePath="..\..\dist\lib\java_uno.jar" SelfReg="false" Sequence="14"/>
+    <ROW File="java_uno_accessbridge.jar" Component_="appframework_1.0.3.jar" FileName="java_u~1.jar|java_uno_accessbridge.jar" Attributes="0" SourcePath="..\..\dist\lib\java_uno_accessbridge.jar" SelfReg="false" Sequence="15"/>
+    <ROW File="jdom.jar" Component_="appframework_1.0.3.jar" FileName="jdom.jar" Attributes="0" SourcePath="..\..\dist\lib\jdom.jar" SelfReg="false" Sequence="16"/>
+    <ROW File="jodconverter_2.2.2.jar" Component_="appframework_1.0.3.jar" FileName="jodcon~1.jar|jodconverter-2.2.2.jar" Attributes="0" SourcePath="..\..\dist\lib\jodconverter-2.2.2.jar" SelfReg="false" Sequence="17"/>
+    <ROW File="jodconverter_cli_2.2.2.jar" Component_="appframework_1.0.3.jar" FileName="jodcon~2.jar|jodconverter-cli-2.2.2.jar" Attributes="0" SourcePath="..\..\dist\lib\jodconverter-cli-2.2.2.jar" SelfReg="false" Sequence="18"/>
+    <ROW File="juh.jar" Component_="appframework_1.0.3.jar" FileName="juh.jar" Attributes="0" SourcePath="..\..\dist\lib\juh.jar" SelfReg="false" Sequence="20"/>
+    <ROW File="junit_3.8.1.jar" Component_="appframework_1.0.3.jar" FileName="junit-~1.jar|junit-3.8.1.jar" Attributes="0" SourcePath="..\..\dist\lib\junit-3.8.1.jar" SelfReg="false" Sequence="21"/>
+    <ROW File="jurt.jar" Component_="appframework_1.0.3.jar" FileName="jurt.jar" Attributes="0" SourcePath="..\..\dist\lib\jurt.jar" SelfReg="false" Sequence="22"/>
+    <ROW File="jut.jar" Component_="appframework_1.0.3.jar" FileName="jut.jar" Attributes="0" SourcePath="..\..\dist\lib\jut.jar" SelfReg="false" Sequence="23"/>
+    <ROW File="l2fprod_common_all.jar" Component_="appframework_1.0.3.jar" FileName="l2fpro~1.jar|l2fprod-common-all.jar" Attributes="0" SourcePath="..\..\dist\lib\l2fprod-common-all.jar" SelfReg="false" Sequence="24"/>
+    <ROW File="license.txt" Component_="license.txt" FileName="license.txt" Attributes="0" SourcePath="..\..\dist\license.txt" SelfReg="false" Sequence="49"/>
+    <ROW File="mail.jar" Component_="appframework_1.0.3.jar" FileName="mail.jar" Attributes="0" SourcePath="..\..\dist\lib\mail.jar" SelfReg="false" Sequence="25"/>
+    <ROW File="microba_0.4.4.2.jar" Component_="appframework_1.0.3.jar" FileName="microb~1.jar|microba-0.4.4.2.jar" Attributes="0" SourcePath="..\..\dist\lib\microba-0.4.4.2.jar" SelfReg="false" Sequence="26"/>
+    <ROW File="mysql_connector_java_5.0.8_bin.jar" Component_="appframework_1.0.3.jar" FileName="mysql-~1.jar|mysql-connector-java-5.0.8-bin.jar" Attributes="0" SourcePath="..\..\dist\lib\mysql-connector-java-5.0.8-bin.jar" SelfReg="false" Sequence="28"/>
+    <ROW File="noa_mp.jar" Component_="appframework_1.0.3.jar" FileName="noa-mp.jar" Attributes="0" SourcePath="..\..\dist\lib\noa-mp.jar" SelfReg="false" Sequence="29"/>
+    <ROW File="officebean.jar" Component_="appframework_1.0.3.jar" FileName="office~1.jar|officebean.jar" Attributes="0" SourcePath="..\..\dist\lib\officebean.jar" SelfReg="false" Sequence="30"/>
+    <ROW File="org.json.jar" Component_="appframework_1.0.3.jar" FileName="orgjso~1.jar|org.json.jar" Attributes="0" SourcePath="..\..\dist\lib\org.json.jar" SelfReg="false" Sequence="31"/>
+    <ROW File="registry_3.1.3.jar" Component_="appframework_1.0.3.jar" FileName="regist~1.jar|registry-3.1.3.jar" Attributes="0" SourcePath="..\..\dist\lib\registry-3.1.3.jar" SelfReg="false" Sequence="33"/>
+    <ROW File="resolver.jar" Component_="appframework_1.0.3.jar" FileName="resolver.jar" Attributes="0" SourcePath="..\..\dist\lib\resolver.jar" SelfReg="false" Sequence="34"/>
+    <ROW File="ridl.jar" Component_="appframework_1.0.3.jar" FileName="ridl.jar" Attributes="0" SourcePath="..\..\dist\lib\ridl.jar" SelfReg="false" Sequence="35"/>
+    <ROW File="sandbox.jar" Component_="appframework_1.0.3.jar" FileName="sandbox.jar" Attributes="0" SourcePath="..\..\dist\lib\sandbox.jar" SelfReg="false" Sequence="36"/>
+    <ROW File="serializer.jar" Component_="appframework_1.0.3.jar" FileName="serial~1.jar|serializer.jar" Attributes="0" SourcePath="..\..\dist\lib\serializer.jar" SelfReg="false" Sequence="37"/>
+    <ROW File="swing_layout_1.0.3.jar" Component_="appframework_1.0.3.jar" FileName="swing-~1.jar|swing-layout-1.0.3.jar" Attributes="0" SourcePath="..\..\dist\lib\swing-layout-1.0.3.jar" SelfReg="false" Sequence="38"/>
+    <ROW File="swing_worker_1.1.jar" Component_="appframework_1.0.3.jar" FileName="swing-~2.jar|swing-worker-1.1.jar" Attributes="0" SourcePath="..\..\dist\lib\swing-worker-1.1.jar" SelfReg="false" Sequence="39"/>
+    <ROW File="tinylaf.jar" Component_="appframework_1.0.3.jar" FileName="tinylaf.jar" Attributes="0" SourcePath="..\..\dist\lib\tinylaf.jar" SelfReg="false" Sequence="40"/>
+    <ROW File="unoil.jar" Component_="appframework_1.0.3.jar" FileName="unoil.jar" Attributes="0" SourcePath="..\..\dist\lib\unoil.jar" SelfReg="false" Sequence="41"/>
+    <ROW File="unoloader.jar" Component_="appframework_1.0.3.jar" FileName="unoloa~1.jar|unoloader.jar" Attributes="0" SourcePath="..\..\dist\lib\unoloader.jar" SelfReg="false" Sequence="42"/>
+    <ROW File="ws_commons_util_1.0.2.jar" Component_="appframework_1.0.3.jar" FileName="ws-com~1.jar|ws-commons-util-1.0.2.jar" Attributes="0" SourcePath="..\..\dist\lib\ws-commons-util-1.0.2.jar" SelfReg="false" Sequence="43"/>
+    <ROW File="xercesImpl.jar" Component_="appframework_1.0.3.jar" FileName="xerces~1.jar|xercesImpl.jar" Attributes="0" SourcePath="..\..\dist\lib\xercesImpl.jar" SelfReg="false" Sequence="44"/>
+    <ROW File="xml_apis.jar" Component_="appframework_1.0.3.jar" FileName="xml-apis.jar" Attributes="0" SourcePath="..\..\dist\lib\xml-apis.jar" SelfReg="false" Sequence="45"/>
+    <ROW File="xmlrpc_client_3.1.2.jar" Component_="appframework_1.0.3.jar" FileName="xmlrpc~1.jar|xmlrpc-client-3.1.2.jar" Attributes="0" SourcePath="..\..\dist\lib\xmlrpc-client-3.1.2.jar" SelfReg="false" Sequence="46"/>
+    <ROW File="xmlrpc_common_3.1.2.jar" Component_="appframework_1.0.3.jar" FileName="xmlrpc~2.jar|xmlrpc-common-3.1.2.jar" Attributes="0" SourcePath="..\..\dist\lib\xmlrpc-common-3.1.2.jar" SelfReg="false" Sequence="47"/>
+    <ROW File="xmlrpc_server_3.1.2.jar" Component_="appframework_1.0.3.jar" FileName="xmlrpc~3.jar|xmlrpc-server-3.1.2.jar" Attributes="0" SourcePath="..\..\dist\lib\xmlrpc-server-3.1.2.jar" SelfReg="false" Sequence="48"/>
+    <ROW File="yabs.exe" Component_="yabs.exe" FileName="yabs.exe" Attributes="0" SourcePath="..\..\dist\yabs.exe" SelfReg="false" Sequence="50"/>
+    <ROW File="yabs.jar" Component_="license.txt" FileName="yabs.jar" Attributes="0" SourcePath="..\..\dist\yabs.jar" SelfReg="false" Sequence="51"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.BuildComponent">
+    <ROW BuildKey="DefaultBuild" BuildName="DefaultBuild" BuildOrder="1" BuildType="0" Languages="en" InstallationType="4"/>
+    <ATTRIBUTE name="CurrentBuild" value="DefaultBuild"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.DictionaryComponent">
+    <ROW Path="&lt;AI_DICTS&gt;ui.ail"/>
+    <ROW Path="&lt;AI_DICTS&gt;ui_en.ail"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.FragmentComponent">
+    <ROW Fragment="FolderDlg.aip" Path="&lt;AI_FRAGS&gt;FolderDlg.aip"/>
+    <ROW Fragment="Sequences.aip" Path="&lt;AI_FRAGS&gt;Sequences.aip"/>
+    <ROW Fragment="StaticUIStrings.aip" Path="&lt;AI_FRAGS&gt;StaticUIStrings.aip"/>
+    <ROW Fragment="UI.aip" Path="&lt;AI_FRAGS&gt;UI.aip"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.MsiBinaryComponent">
+    <ROW Name="aicustact.dll" SourcePath="&lt;AI_CUSTACTS&gt;aicustact.dll"/>
+    <ROW Name="banner_image.jpg" SourcePath="&lt;AI_RES&gt;banner-image.jpg"/>
+    <ROW Name="dialog_image.jpg" SourcePath="&lt;AI_RES&gt;dialog-image.jpg"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.MsiControlComponent">
+    <ATTRIBUTE name="FixedSizeBitmaps" value="0"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.MsiControlEventComponent">
+    <ROW Dialog_="FolderDlg" Control_="Back" Event="NewDialog" Argument="WelcomeDlg" Condition="AI_INSTALL" Ordering="1"/>
+    <ROW Dialog_="WelcomeDlg" Control_="Next" Event="NewDialog" Argument="FolderDlg" Condition="AI_INSTALL" Ordering="1"/>
+    <ROW Dialog_="VerifyReadyDlg" Control_="Back" Event="NewDialog" Argument="FolderDlg" Condition="AI_INSTALL" Ordering="1"/>
+    <ROW Dialog_="FolderDlg" Control_="Next" Event="NewDialog" Argument="VerifyReadyDlg" Condition="AI_INSTALL" Ordering="3"/>
+    <ROW Dialog_="MaintenanceTypeDlg" Control_="Back" Event="NewDialog" Argument="MaintenanceWelcomeDlg" Condition="AI_MAINT" Ordering="1"/>
+    <ROW Dialog_="MaintenanceWelcomeDlg" Control_="Next" Event="NewDialog" Argument="MaintenanceTypeDlg" Condition="AI_MAINT" Ordering="2"/>
+    <ROW Dialog_="VerifyReadyDlg" Control_="Back" Event="NewDialog" Argument="PatchWelcomeDlg" Condition="AI_PATCH" Ordering="1"/>
+    <ROW Dialog_="PatchWelcomeDlg" Control_="Next" Event="NewDialog" Argument="VerifyReadyDlg" Condition="AI_PATCH" Ordering="3"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.MsiCreateFolderComponent">
+    <ROW Directory_="SHORTCUTDIR" Component_="SHORTCUTDIR"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.MsiCustActComponent">
+    <ROW Action="AI_DOWNGRADE" Type="19" Target="4010"/>
+    <ROW Action="AI_PREPARE_UPGRADE" Type="65" Source="aicustact.dll" Target="PrepareUpgrade"/>
+    <ROW Action="AI_RESTORE_LOCATION" Type="65" Source="aicustact.dll" Target="RestoreLocation"/>
+    <ROW Action="AI_STORE_LOCATION" Type="51" Source="ARPINSTALLLOCATION" Target="[APPDIR]"/>
+    <ROW Action="SET_APPDIR" Type="307" Source="APPDIR" Target="[ProgramFilesFolder][Manufacturer]\[ProductName]"/>
+    <ROW Action="SET_SHORTCUTDIR" Type="307" Source="SHORTCUTDIR" Target="[ProgramMenuFolder][ProductName]"/>
+    <ROW Action="SET_TARGETDIR_TO_APPDIR" Type="51" Source="TARGETDIR" Target="[APPDIR]"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.MsiInstExSeqComponent">
+    <ROW Action="AI_DOWNGRADE" Condition="AI_NEWERPRODUCTFOUND AND (UILevel &lt;&gt; 5)" Sequence="210"/>
+    <ROW Action="AI_RESTORE_LOCATION" Condition="APPDIR=&quot;&quot;" Sequence="749"/>
+    <ROW Action="AI_STORE_LOCATION" Condition="Not Installed" Sequence="1501"/>
+    <ROW Action="AI_PREPARE_UPGRADE" Condition="AI_UPGRADE=&quot;No&quot; AND (Not Installed)" Sequence="1399"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.MsiInstallUISequenceComponent">
+    <ROW Action="AI_RESTORE_LOCATION" Condition="APPDIR=&quot;&quot;" Sequence="749"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.MsiShortsComponent">
+    <ROW Shortcut="yabs.exe" Directory_="SHORTCUTDIR" Name="yabs.exe" Component_="yabs.exe" Target="[#yabs.exe]" Description="yabs.exe" Hotkey="0" IconIndex="0" ShowCmd="1" WkDir="APPDIR"/>
+    <ROW Shortcut="yabs.exe_1" Directory_="DesktopFolder" Name="yabs.exe" Component_="yabs.exe" Target="[#yabs.exe]" Description="yabs.exe" Hotkey="0" IconIndex="0" ShowCmd="1" WkDir="APPDIR"/>
+  </COMPONENT>
+  <COMPONENT cid="caphyon.advinst.msicomp.MsiUpgradeComponent">
+    <ROW UpgradeCode="[|UpgradeCode]" VersionMax="[|ProductVersion]" Attributes="1025" ActionProperty="OLDPRODUCTS"/>
+    <ROW UpgradeCode="[|UpgradeCode]" VersionMin="[|ProductVersion]" Attributes="2" ActionProperty="AI_NEWERPRODUCTFOUND"/>
+  </COMPONENT>
+</DOCUMENT>
