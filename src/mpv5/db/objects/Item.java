@@ -614,7 +614,7 @@ public class Item extends DatabaseObject implements Formattable {
         Revenue r = new Revenue();
         r.setAccountsids(accountsids);
         r.setNetvalue(netvalue);
-        r.setTaxpercentvalue(taxvalue);
+//        r.setTaxpercentvalue(taxvalue);
         r.setBrutvalue(netvalue + taxvalue);
         if (description != null && description.length() > 0) {
             r.setDescription(description);

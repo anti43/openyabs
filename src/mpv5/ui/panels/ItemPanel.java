@@ -99,6 +99,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
     private TableCalculator itemMultiplier;
     private TableCalculator netCalculator;
     private TableCalculator netCalculator2;
+    private boolean loading = true;
 
     /** Creates new form ContactPanel
      * @param context
@@ -215,11 +216,14 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
         ((SpinnerNumberModel) calculator.getSpinner().getModel()).setMaximum(1000);
         final DataPanel p = this;
         status.getComboBox().addActionListener(new ActionListener() {
-
+        Item dato = (Item) getDataOwner();
             public void actionPerformed(ActionEvent e) {
-                if (dataOwner.isExisting() && Integer.valueOf(status.getSelectedItem().getId()) == Item.STATUS_PAID) {
+                if (dato.__getInttype() == Item.TYPE_BILL &&
+                        !loading && dataOwner.isExisting() &&
+                        Integer.valueOf(status.getSelectedItem().getId()) == Item.STATUS_PAID &&
+                        MPView.getUser().getProperties().getProperty(MPView.tabPane, "autocreaterevenue")) {
                     if (Popup.Y_N_dialog(Messages.BOOK_NOW)) {
-                        Item dato = (Item) getDataOwner();
+                        
                         if (dato.getPanelData(p) && dato.save()) {
                             try {
                                 actionAfterSave();
@@ -251,6 +255,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
 
     @Override
     public void setDataOwner(DatabaseObject object, boolean populate) {
+        loading = true;
         if (object instanceof Item) {
             dataOwner = (Item) object;
             if (populate) {
@@ -297,6 +302,8 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
                 Log.Debug(ex);
             }
         }
+
+        loading = false;
     }
 
     private void setTitle() {
