@@ -79,6 +79,7 @@ public class RevenuePanel extends javax.swing.JPanel implements DataPanel {
         if (me == null) {
             me = new RevenuePanel();
         }
+        me.refresh();
         return me;
     }
     private Revenue dataOwner;
@@ -127,7 +128,7 @@ public class RevenuePanel extends javax.swing.JPanel implements DataPanel {
             }
         });
         taxrate.getComboBox().setEditable(false);
-        refresh();
+//        refresh();
     }
 
     private void calculate() {
@@ -218,6 +219,9 @@ public class RevenuePanel extends javax.swing.JPanel implements DataPanel {
 
         buttonGroup1 = new javax.swing.ButtonGroup();
         rightpane = new javax.swing.JPanel();
+        jPanel4 = new javax.swing.JPanel();
+        jScrollPane3 = new javax.swing.JScrollPane();
+        itemtable = new javax.swing.JTable();
         jPanel1 = new javax.swing.JPanel();
         number = new mpv5.ui.beans.LabeledTextField();
         addedby = new javax.swing.JLabel();
@@ -233,20 +237,53 @@ public class RevenuePanel extends javax.swing.JPanel implements DataPanel {
         notes = new javax.swing.JEditorPane();
         taxrate = new mpv5.ui.beans.LabeledCombobox();
         path = new javax.swing.JLabel();
-        dateadded = new javax.swing.JLabel();
-        jPanel4 = new javax.swing.JPanel();
-        jScrollPane3 = new javax.swing.JScrollPane();
-        itemtable = new javax.swing.JTable();
+        labeledDateChooser1 = new mpv5.ui.beans.LabeledDateChooser();
         toolbarpane = new javax.swing.JPanel();
 
         setBackground(new java.awt.Color(155, 175, 155));
-        java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle(); 
+        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("mpv5/resources/languages/Panels"); // NOI18N
         setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("RevenuePanel.border.title_1"))); // NOI18N
         setName("Form"); // NOI18N
         setLayout(new java.awt.BorderLayout());
 
         rightpane.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         rightpane.setName("rightpane"); // NOI18N
+
+        jPanel4.setBackground(new java.awt.Color(204, 204, 204));
+        jPanel4.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+        jPanel4.setName("jPanel4"); // NOI18N
+
+        jScrollPane3.setName("jScrollPane3"); // NOI18N
+
+        itemtable.setAutoCreateRowSorter(true);
+        itemtable.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+
+            }
+        ));
+        itemtable.setName("itemtable"); // NOI18N
+        itemtable.setRowHeight(18);
+        itemtable.setSurrendersFocusOnKeystroke(true);
+        itemtable.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                itemtableMouseClicked(evt);
+            }
+        });
+        jScrollPane3.setViewportView(itemtable);
+
+        javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
+        jPanel4.setLayout(jPanel4Layout);
+        jPanel4Layout.setHorizontalGroup(
+            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jScrollPane3, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 688, Short.MAX_VALUE)
+        );
+        jPanel4Layout.setVerticalGroup(
+            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jScrollPane3, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 63, Short.MAX_VALUE)
+        );
 
         jPanel1.setBackground(new java.awt.Color(227, 219, 202));
         jPanel1.setBorder(javax.swing.BorderFactory.createEtchedBorder());
@@ -322,14 +359,14 @@ public class RevenuePanel extends javax.swing.JPanel implements DataPanel {
                 .addContainerGap()
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(path, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 664, Short.MAX_VALUE)
                     .addComponent(jLabel1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 99, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel2Layout.createSequentialGroup()
                         .addComponent(value, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(taxrate, javax.swing.GroupLayout.PREFERRED_SIZE, 190, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
-                        .addComponent(netvalue, javax.swing.GroupLayout.PREFERRED_SIZE, 189, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(path, javax.swing.GroupLayout.DEFAULT_SIZE, 610, Short.MAX_VALUE))
+                        .addComponent(netvalue, javax.swing.GroupLayout.PREFERRED_SIZE, 189, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
         jPanel2Layout.setVerticalGroup(
@@ -343,18 +380,14 @@ public class RevenuePanel extends javax.swing.JPanel implements DataPanel {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabel1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 29, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 24, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(path, javax.swing.GroupLayout.PREFERRED_SIZE, 19, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, 0))
         );
 
-        dateadded.setFont(dateadded.getFont());
-        dateadded.setText(bundle.getString("RevenuePanel.dateadded.text")); // NOI18N
-        dateadded.setToolTipText(bundle.getString("RevenuePanel.dateadded.toolTipText")); // NOI18N
-        dateadded.setBorder(javax.swing.BorderFactory.createEtchedBorder());
-        dateadded.setEnabled(false);
-        dateadded.setName("dateadded"); // NOI18N
+        labeledDateChooser1.set_Label(bundle.getString("RevenuePanel.labeledDateChooser1._Label")); // NOI18N
+        labeledDateChooser1.setName("labeledDateChooser1"); // NOI18N
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -362,22 +395,22 @@ public class RevenuePanel extends javax.swing.JPanel implements DataPanel {
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(number, javax.swing.GroupLayout.PREFERRED_SIZE, 214, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(dateadded, javax.swing.GroupLayout.PREFERRED_SIZE, 97, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(accountselect, javax.swing.GroupLayout.DEFAULT_SIZE, 371, Short.MAX_VALUE))
-                .addGap(18, 18, 18)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(labeledDateChooser1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(accountselect, javax.swing.GroupLayout.DEFAULT_SIZE, 458, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(jLabel4)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(button_order2)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 22, Short.MAX_VALUE)
-                        .addComponent(addedby, javax.swing.GroupLayout.PREFERRED_SIZE, 97, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(groupnameselect, javax.swing.GroupLayout.DEFAULT_SIZE, 225, Short.MAX_VALUE))
-                .addContainerGap())
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(addedby, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(groupnameselect, javax.swing.GroupLayout.PREFERRED_SIZE, 187, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(27, Short.MAX_VALUE))
             .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         jPanel1Layout.setVerticalGroup(
@@ -390,57 +423,20 @@ public class RevenuePanel extends javax.swing.JPanel implements DataPanel {
                     .addComponent(button_order2, javax.swing.GroupLayout.PREFERRED_SIZE, 15, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(addedby, javax.swing.GroupLayout.PREFERRED_SIZE, 19, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                        .addComponent(groupnameselect, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(number, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addComponent(dateadded, javax.swing.GroupLayout.PREFERRED_SIZE, 19, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(groupnameselect, javax.swing.GroupLayout.DEFAULT_SIZE, 21, Short.MAX_VALUE)
+                    .addComponent(labeledDateChooser1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(number, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
-
-        jPanel4.setBackground(new java.awt.Color(204, 204, 204));
-        jPanel4.setBorder(javax.swing.BorderFactory.createEtchedBorder());
-        jPanel4.setName("jPanel4"); // NOI18N
-
-        jScrollPane3.setName("jScrollPane3"); // NOI18N
-
-        itemtable.setAutoCreateRowSorter(true);
-        itemtable.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-
-            },
-            new String [] {
-
-            }
-        ));
-        itemtable.setName("itemtable"); // NOI18N
-        itemtable.setRowHeight(18);
-        itemtable.setSurrendersFocusOnKeystroke(true);
-        itemtable.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                itemtableMouseClicked(evt);
-            }
-        });
-        jScrollPane3.setViewportView(itemtable);
-
-        javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
-        jPanel4.setLayout(jPanel4Layout);
-        jPanel4Layout.setHorizontalGroup(
-            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane3, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 638, Short.MAX_VALUE)
-        );
-        jPanel4Layout.setVerticalGroup(
-            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane3, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 55, Short.MAX_VALUE)
         );
 
         javax.swing.GroupLayout rightpaneLayout = new javax.swing.GroupLayout(rightpane);
         rightpane.setLayout(rightpaneLayout);
         rightpaneLayout.setHorizontalGroup(
             rightpaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         rightpaneLayout.setVerticalGroup(
             rightpaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -458,10 +454,6 @@ public class RevenuePanel extends javax.swing.JPanel implements DataPanel {
         add(toolbarpane, java.awt.BorderLayout.NORTH);
     }// </editor-fold>//GEN-END:initComponents
 
-    private void button_order2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button_order2ActionPerformed
-        BigPopup.showPopup(this, new ControlPanel_Groups(), null);
-}//GEN-LAST:event_button_order2ActionPerformed
-
     private void itemtableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_itemtableMouseClicked
         try {
             setDataOwner((DatabaseObject) itemtable.getValueAt(itemtable.getSelectedRow(), 0), true);
@@ -469,13 +461,16 @@ public class RevenuePanel extends javax.swing.JPanel implements DataPanel {
             Log.Debug(this, e.getMessage());
         }
     }//GEN-LAST:event_itemtableMouseClicked
+
+    private void button_order2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button_order2ActionPerformed
+        BigPopup.showPopup(this, new ControlPanel_Groups(), null);
+}//GEN-LAST:event_button_order2ActionPerformed
     MPTableModel omodel = null;
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private mpv5.ui.beans.LabeledCombobox accountselect;
     private javax.swing.JLabel addedby;
     private javax.swing.ButtonGroup buttonGroup1;
     private javax.swing.JButton button_order2;
-    private javax.swing.JLabel dateadded;
     private mpv5.ui.beans.MPCombobox groupnameselect;
     private javax.swing.JTable itemtable;
     private javax.swing.JLabel jLabel1;
@@ -485,6 +480,7 @@ public class RevenuePanel extends javax.swing.JPanel implements DataPanel {
     private javax.swing.JPanel jPanel4;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane3;
+    private mpv5.ui.beans.LabeledDateChooser labeledDateChooser1;
     private mpv5.ui.beans.LabeledTextField netvalue;
     private javax.swing.JEditorPane notes;
     private mpv5.ui.beans.LabeledTextField number;
@@ -524,9 +520,8 @@ public class RevenuePanel extends javax.swing.JPanel implements DataPanel {
             groupsids_ = 1;
         }
 
-        if (dateadded_ == null) {
-            dateadded_ = new Date();
-        }
+        dateadded_ = labeledDateChooser1.getDate();
+        
         intaddedby_ = User.getUserId(addedby.getText());
         description_ = notes.getText();
         try {
@@ -566,7 +561,7 @@ public class RevenuePanel extends javax.swing.JPanel implements DataPanel {
             Log.Debug(this, ex.getMessage());
         }
         addedby.setText(User.getUsername(intaddedby_));
-        dateadded.setText(DateConverter.getDefDateString(dateadded_));
+        labeledDateChooser1.setDate((dateadded_));
         taxrate.setSelectedItem(Tax.getTaxId(taxpercentvalue_));
     }
 
@@ -579,7 +574,7 @@ public class RevenuePanel extends javax.swing.JPanel implements DataPanel {
                 groupnameselect.triggerSearch();
                 taxrate.triggerSearch();
                 try {
-                    itemtable.setModel(new MPTableModel(Expense.getExpenses(), Headers.EXPENSE));
+                    itemtable.setModel(new MPTableModel(Revenue.getRevenues(), Headers.EXPENSE));
                 } catch (NodataFoundException e) {
                     Log.Debug(e);
                 }

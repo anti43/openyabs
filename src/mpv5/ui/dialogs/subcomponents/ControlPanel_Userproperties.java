@@ -61,6 +61,7 @@ public class ControlPanel_Userproperties extends javax.swing.JPanel implements C
         defunit = new mpv5.ui.beans.LabeledTextField();
         deftax = new mpv5.ui.beans.LabeledCombobox();
         shiptax = new mpv5.ui.beans.LabeledCombobox();
+        autorev = new javax.swing.JCheckBox();
         format = new mpv5.ui.beans.LabeledTextField();
         jPanel3 = new javax.swing.JPanel();
         tabs = new javax.swing.JCheckBox();
@@ -91,7 +92,7 @@ public class ControlPanel_Userproperties extends javax.swing.JPanel implements C
         setLayout(new java.awt.BorderLayout());
 
         jPanel1.setBackground(new java.awt.Color(255, 255, 255));
-         java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle(); // NOI18N
+        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("mpv5/resources/languages/Panels"); // NOI18N
         jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("ControlPanel_Userproperties.jPanel1.border.title"))); // NOI18N
         jPanel1.setName("jPanel1"); // NOI18N
 
@@ -174,16 +175,22 @@ public class ControlPanel_Userproperties extends javax.swing.JPanel implements C
         shiptax.set_Label(bundle.getString("ControlPanel_Userproperties.shiptax._Label")); // NOI18N
         shiptax.setName("shiptax"); // NOI18N
 
+        autorev.setText(bundle.getString("ControlPanel_Userproperties.autorev.text")); // NOI18N
+        autorev.setName("autorev"); // NOI18N
+
         javax.swing.GroupLayout defsLayout = new javax.swing.GroupLayout(defs);
         defs.setLayout(defsLayout);
         defsLayout.setHorizontalGroup(
             defsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(defsLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(defunit, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(defcount, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(defsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(defsLayout.createSequentialGroup()
+                        .addComponent(defunit, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(defcount, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(autorev))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(defsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(shiptax, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 190, Short.MAX_VALUE)
                     .addComponent(deftax, javax.swing.GroupLayout.DEFAULT_SIZE, 190, Short.MAX_VALUE)))
@@ -198,7 +205,9 @@ public class ControlPanel_Userproperties extends javax.swing.JPanel implements C
                         .addComponent(defunit, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addComponent(defcount, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(shiptax, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(defsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(shiptax, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(autorev))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -481,6 +490,7 @@ public class ControlPanel_Userproperties extends javax.swing.JPanel implements C
         setValues(oldvalues);
     }
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JCheckBox autorev;
     private javax.swing.JCheckBox cname;
     private javax.swing.JCheckBox cnumber;
     private javax.swing.JCheckBox columnmeasure;
@@ -537,6 +547,8 @@ public class ControlPanel_Userproperties extends javax.swing.JPanel implements C
             MPView.getUser().getProperties().changeProperty(MPView.tabPane, "hidecolumnmeasure", columnmeasure.isSelected());
             MPView.getUser().getProperties().changeProperty(MPView.tabPane, "showoptionalcolumn", showoptionalcolumn.isSelected());
             MPView.getUser().getProperties().changeProperty(MPView.tabPane, "supresscurrencysymbols", supresscurrencysymbols.isSelected());
+            MPView.getUser().getProperties().changeProperty(MPView.tabPane, "autocreaterevenue", autorev.isSelected());
+            MPView.getUser().getProperties().changeProperty(MPView.tabPane, "propertiesdefined", true);
 
             if (deftax.getSelectedItem() != null) {
                 MPView.getUser().getProperties().changeProperty(deftax.getName(), deftax.getSelectedItem().getId());
@@ -573,6 +585,7 @@ public class ControlPanel_Userproperties extends javax.swing.JPanel implements C
         columnmeasure.setSelected(MPView.getUser().getProperties().getProperty(MPView.tabPane, "hidecolumnmeasure"));
         showoptionalcolumn.setSelected(MPView.getUser().getProperties().getProperty(MPView.tabPane, "showoptionalcolumn"));
         supresscurrencysymbols.setSelected(MPView.getUser().getProperties().getProperty(MPView.tabPane, "supresscurrencysymbols"));
+        autorev.setSelected(MPView.getUser().getProperties().getProperty(MPView.tabPane, "autocreaterevenue"));
 
         Component[] t = productstobillsproperties.getComponents();
         for (int i = 0; i < t.length; i++) {
@@ -589,6 +602,8 @@ public class ControlPanel_Userproperties extends javax.swing.JPanel implements C
         String s = MPView.getUser().getProperties().getProperty(Context.getProducts() + LightMPComboBox.VALUE_SEARCHFIELDS);
         if (s != null) {
             format.setText(s);
+        } else {
+            format.setText("_$cname$_ ");
         }
 
         if (MPView.getUser().getProperties().hasProperty(defcount.getName())) {

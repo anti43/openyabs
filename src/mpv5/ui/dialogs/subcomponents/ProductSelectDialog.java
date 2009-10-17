@@ -38,7 +38,7 @@ public class ProductSelectDialog extends javax.swing.JPanel {
      * @param link
      * @return
      */
-    public static ProductSelectDialog instanceOf(MPTableModel model, int row, MouseEvent evt, int productid, String link, String optional) {
+    public static ProductSelectDialog instanceOf(MPTableModel model, int row, MouseEvent evt, int productid, Object link, Object optional) {
         if (me == null) {
             me = new ProductSelectDialog();
             frame = new JFrame();
@@ -54,8 +54,12 @@ public class ProductSelectDialog extends javax.swing.JPanel {
         me.setEvent(evt);
         me.setRow(row);
         me.setProductid(productid);
-        me.setOptional(optional);
-        me.setLink(link);
+        if (optional != null) {
+            me.setOptional(optional.toString());
+        }
+        if (link != null) {
+            me.setLink(link.toString());
+        }
         try {
             me.labeledCombobox1.setSelectedItem(Integer.valueOf(productid));
             me.statech();
@@ -300,9 +304,11 @@ public class ProductSelectDialog extends javax.swing.JPanel {
 
     private void setOptional(String optional) {
         this.optionalt = optional;
+        opt.setText(optional);
     }
 
-    private void setLink(String link) {
-        this.linkt = link;
+    private void setLink(String links) {
+        this.linkt = links;
+        link.setText(links);
     }
 }

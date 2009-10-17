@@ -227,10 +227,15 @@
                   <Group type="103" groupAlignment="0" attributes="0">
                       <Group type="102" alignment="0" attributes="0">
                           <EmptySpace max="-2" attributes="0"/>
-                          <Component id="defunit" min="-2" pref="140" max="-2" attributes="1"/>
-                          <EmptySpace type="separate" max="-2" attributes="0"/>
-                          <Component id="defcount" min="-2" pref="140" max="-2" attributes="1"/>
-                          <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                          <Group type="103" groupAlignment="0" attributes="0">
+                              <Group type="102" attributes="0">
+                                  <Component id="defunit" min="-2" pref="140" max="-2" attributes="1"/>
+                                  <EmptySpace type="separate" max="-2" attributes="0"/>
+                                  <Component id="defcount" min="-2" pref="140" max="-2" attributes="1"/>
+                              </Group>
+                              <Component id="autorev" min="-2" max="-2" attributes="0"/>
+                          </Group>
+                          <EmptySpace max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="0" attributes="0">
                               <Component id="shiptax" alignment="1" pref="190" max="32767" attributes="1"/>
                               <Component id="deftax" alignment="0" pref="190" max="32767" attributes="1"/>
@@ -250,7 +255,10 @@
                               </Group>
                           </Group>
                           <EmptySpace max="-2" attributes="0"/>
-                          <Component id="shiptax" min="-2" max="-2" attributes="0"/>
+                          <Group type="103" groupAlignment="0" attributes="0">
+                              <Component id="shiptax" min="-2" max="-2" attributes="0"/>
+                              <Component id="autorev" min="-2" max="-2" attributes="0"/>
+                          </Group>
                           <EmptySpace max="32767" attributes="0"/>
                       </Group>
                   </Group>
@@ -293,6 +301,14 @@
                       <ResourceString bundle="mpv5/resources/languages/Panels.properties" key="ControlPanel_Userproperties.shiptax._Label" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
                     </Property>
                     <Property name="name" type="java.lang.String" value="shiptax" noResource="true"/>
+                  </Properties>
+                </Component>
+                <Component class="javax.swing.JCheckBox" name="autorev">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
+                      <ResourceString bundle="mpv5/resources/languages/Panels.properties" key="ControlPanel_Userproperties.autorev.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+                    </Property>
+                    <Property name="name" type="java.lang.String" value="autorev" noResource="true"/>
                   </Properties>
                 </Component>
               </SubComponents>

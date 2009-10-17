@@ -26,6 +26,8 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.File;
@@ -211,7 +213,27 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
 
         ((SpinnerNumberModel) calculator.getSpinner().getModel()).setMinimum(-1000);
         ((SpinnerNumberModel) calculator.getSpinner().getModel()).setMaximum(1000);
+        final DataPanel p = this;
+        status.getComboBox().addActionListener(new ActionListener() {
 
+            public void actionPerformed(ActionEvent e) {
+                if (dataOwner.isExisting() && Integer.valueOf(status.getSelectedItem().getId()) == Item.STATUS_PAID) {
+                    if (Popup.Y_N_dialog(Messages.BOOK_NOW)) {
+                        Item dato = (Item) getDataOwner();
+                        if (dato.getPanelData(p) && dato.save()) {
+                            try {
+                                actionAfterSave();
+                                dato.createRevenue();
+                            } catch (Exception ef) {
+                                Log.Debug(this, ef);
+                            }
+                        } else {
+                            showRequiredFields();
+                        }
+                    }
+                }
+            }
+        });
     }
 
     /**
@@ -1395,7 +1417,9 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
             DatabaseObject o = DatabaseObject.getObject(c, Integer.valueOf(to.getId()));
             int i = itemtable.getSelectedRow();
             if (i >= 0) {
+                Object opt = itemtable.getValueAt(i, 14);
                 ((MPTableModel) itemtable.getModel()).setRowAt(new SubItem((Product) o).getRowData(i), i, 4);
+                itemtable.setValueAt(opt, i, 14);
             }
         } catch (Exception ex) {
         }
@@ -1538,7 +1562,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
             }
 
             public void mouseReleased(MouseEvent e) {
-                ProductSelectDialog.instanceOf((MPTableModel) itemtable.getModel(), itemtable.getSelectedRow(), e, Integer.valueOf(itemtable.getValueAt(itemtable.getSelectedRow(), 10).toString()), itemtable.getValueAt(itemtable.getSelectedRow(), 12 + 1).toString(), itemtable.getValueAt(itemtable.getSelectedRow(), 14).toString());
+                ProductSelectDialog.instanceOf((MPTableModel) itemtable.getModel(), itemtable.getSelectedRow(), e, Integer.valueOf(itemtable.getValueAt(itemtable.getSelectedRow(), 10).toString()), itemtable.getValueAt(itemtable.getSelectedRow(), 12 + 1), itemtable.getValueAt(itemtable.getSelectedRow(), 14));
                 if (((MPTableModel) itemtable.getModel()).getEmptyRows(new int[]{4}) < 2) {
                     ((MPTableModel) itemtable.getModel()).addRow(1);
                 }

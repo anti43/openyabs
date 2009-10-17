@@ -210,7 +210,8 @@ public enum Messages {
     OVERVIEW("Overview"),
     ASSIGN_TEMPLATE("Please assign at least one user to the imported template."),
     NO_MAIL_DEFINED("Either you or the contact you want to send the mail to (or both) have no valid mail adress defined."),
-    AUTO_GENERATED_VALUE("Auto generated value");
+    AUTO_GENERATED_VALUE("Auto generated value"),
+    BOOK_NOW("Save & book now?");
 
     private Messages(String message) {
         this.message = message;

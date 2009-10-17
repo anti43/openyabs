@@ -22,24 +22,19 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Locale;
-import java.util.Stack;
 import java.util.Vector;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JComponent;
 import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
 import mpv5.db.common.Formattable;
 import mpv5.db.common.NodataFoundException;
-import mpv5.db.common.QueryHandler;
+import mpv5.globals.LocalSettings;
 import mpv5.globals.Messages;
 import mpv5.handler.FormatHandler;
 import mpv5.handler.MPEnum;
-import mpv5.i18n.LanguageManager;
 import mpv5.logging.Log;
 import mpv5.ui.frames.MPView;
 import mpv5.ui.panels.ItemPanel;
-import mpv5.utils.date.DateConverter;
 import mpv5.utils.images.MPIcon;
 import mpv5.utils.numberformat.FormatNumber;
 import mpv5.utils.text.TypeConversion;
@@ -611,4 +606,29 @@ public class Item extends DatabaseObject implements Formattable {
     public void defineFormatHandler(FormatHandler handler) {
         formatHandler = handler;
     }
+
+    /**
+     * Create a revenue entry out of this item
+     */
+    public void createRevenue() {
+        Revenue r = new Revenue();
+        r.setAccountsids(accountsids);
+        r.setNetvalue(netvalue);
+        r.setTaxpercentvalue(taxvalue);
+        r.setBrutvalue(netvalue + taxvalue);
+        if (description != null && description.length() > 0) {
+            r.setDescription(description);
+        } else {
+            r.setDescription(Messages.AUTO_GENERATED_VALUE + " " + cnumber);
+        }
+        r.save();
+    }
+//    @Override
+//    public boolean save() {
+//        boolean saved = super.save();
+//        if (intstatus == STATUS_PAID && inttype == TYPE_BILL && saved && MPView.getUser().getProperties().getProperty(MPView.tabPane, "autocreaterevenue")) {
+//            createRevenue();
+//        }
+//        return saved;
+//    }
 }
