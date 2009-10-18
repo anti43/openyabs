@@ -1264,7 +1264,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
         }
 
         if (company_.length() == 0) {
-            company_ = cname_;
+//            company_ = cname_;
         } else {
             cname_ = company_;
         }
