@@ -454,13 +454,16 @@ public class ProductListsPanel extends javax.swing.JPanel implements DataPanel, 
 
         if (dataOwner != null) {
             Item p = (Item) Popup.SelectValue(Context.getItems());
-            final DataPanel d = MPView.identifierView.addTab(p);
-            Runnable runnable = new Runnable() {
-                public void run() {
-                    d.paste(dataOwner);
-                }
-            };
-            SwingUtilities.invokeLater(runnable);
+            if (p!=null) {
+                final DataPanel d = MPView.identifierView.addTab(p);
+                Runnable runnable = new Runnable() {
+
+                    public void run() {
+                        d.paste(dataOwner);
+                    }
+                };
+                SwingUtilities.invokeLater(runnable);
+            }
         }
     }//GEN-LAST:event_jButton2ActionPerformed
     // Variables declaration - do not modify//GEN-BEGIN:variables

@@ -576,7 +576,7 @@ public class RevenuePanel extends javax.swing.JPanel implements DataPanel {
                 try {
                     itemtable.setModel(new MPTableModel(Revenue.getRevenues(), Headers.EXPENSE));
                 } catch (NodataFoundException e) {
-                    Log.Debug(e);
+//                    Log.Debug(e);
                 }
                 try {
                     accmod = DatabaseObject.getObjects(Context.getAccounts(), new QueryCriteria("intaccounttype", Account.INCOME));

@@ -80,7 +80,7 @@ public class MPTableModel extends DefaultTableModel {
         if (data.length > 0) {
             String[] header = new String[data[0].length];
             for (int i = 0; i < header.length; i++) {
-                header[i] = String.valueOf(i);
+                header[i] = "";
             }
             setDataVector(data, header);
         }

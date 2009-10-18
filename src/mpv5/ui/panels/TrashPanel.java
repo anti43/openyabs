@@ -23,7 +23,7 @@ package mpv5.ui.panels;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import mpv5.data.TrashHandler;
+import mpv5.handler.TrashHandler;
 import mpv5.globals.Headers;
 import mpv5.globals.Messages;
 import mpv5.ui.popups.TablePopUp;

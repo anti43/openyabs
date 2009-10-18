@@ -37,6 +37,7 @@ import java.util.List;
 import java.util.Properties;
 import java.util.Vector;
 import javax.swing.ImageIcon;
+import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import mpv5.db.common.Context;
@@ -530,7 +531,7 @@ public class Main extends SingleFrameApplication {
         super.show(new MPView(this));
         firstStart = firststart;
         if (Main.firstStart) {
-            getApplication().getMainFrame().setSize(MPView.initialSize);
+            getApplication().getMainFrame().setExtendedState(JFrame.MAXIMIZED_BOTH);
         }
         SwingUtilities.updateComponentTreeUI(MPView.identifierFrame);
         Main.splash.nextStep(Messages.INIT_PLUGINS.toString());

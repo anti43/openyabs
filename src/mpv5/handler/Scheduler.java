@@ -125,7 +125,7 @@ public class Scheduler extends Thread {
                 Integer warn = Integer.valueOf(MPView.getUser().getProperties().getProperty("bills.warn.days"));
                 String sql = "SELECT ids FROM items WHERE dateadded <= '" +
                         DateConverter.getSQLDateString(DateConverter.addDays(new Date(), warn * -1)) +
-                        "' AND intstatus <> " + Item.STATUS_PAID + " AND inttype=" + Item.TYPE_BILL;
+                        "' AND (intstatus = " + Item.STATUS_IN_PROGRESS + " OR intstatus = " + Item.STATUS_FINISHED + ") AND inttype=" + Item.TYPE_BILL;
                 ReturnValue data = QueryHandler.getConnection().freeSelectQuery(sql, MPSecurityManager.VIEW, null);
 
                 if (data.hasData()) {
@@ -151,7 +151,7 @@ public class Scheduler extends Thread {
             Integer alert = Integer.valueOf(MPView.getUser().getProperties().getProperty("bills.alert.days"));
             String sql = "SELECT ids FROM items WHERE dateadded <= '" +
                     DateConverter.getSQLDateString(DateConverter.addDays(new Date(), alert * -1)) +
-                    "' AND intstatus <> " + Item.STATUS_PAID + " AND inttype=" + Item.TYPE_BILL;
+                    "' AND (intstatus = " + Item.STATUS_IN_PROGRESS + " OR intstatus = " + Item.STATUS_FINISHED + ") AND inttype=" + Item.TYPE_BILL;
             ;
             ReturnValue data = QueryHandler.getConnection().freeSelectQuery(sql, MPSecurityManager.VIEW, null);
 
@@ -172,7 +172,7 @@ public class Scheduler extends Thread {
         }
 
         String sql = "SELECT ids FROM items WHERE intstatus <> " + Item.STATUS_PAID + " AND inttype=" + Item.TYPE_BILL;
-        
+
         if (!MPView.getUser().getProperties().getProperty(MPView.tabPane, "hideunpaidbills")) {
             ReturnValue data = QueryHandler.getConnection().freeSelectQuery(sql, MPSecurityManager.VIEW, null);
 

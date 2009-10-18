@@ -36,7 +36,7 @@ import javax.swing.JComponent;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.table.DefaultTableModel;
-import mpv5.data.TrashHandler;
+import mpv5.handler.TrashHandler;
 import mpv5.db.common.Context;
 
 import mpv5.db.common.DatabaseObject;
@@ -175,7 +175,7 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
 
         setName("Form"); // NOI18N
 
-        java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle(); 
+        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("mpv5/resources/languages/Panels"); // NOI18N
         jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("JournalPanel.jPanel1.border.title"))); // NOI18N
         jPanel1.setName("jPanel1"); // NOI18N
 
@@ -278,6 +278,7 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
             }
         });
 
+        includechildgroups.setSelected(true);
         includechildgroups.setText(bundle.getString("JournalPanel.includechildgroups.text")); // NOI18N
         includechildgroups.setName("includechildgroups"); // NOI18N
         includechildgroups.setOpaque(false);
@@ -341,7 +342,7 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
                             .addComponent(jLabel6)
                             .addComponent(statusc, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(accountsp, javax.swing.GroupLayout.DEFAULT_SIZE, 44, Short.MAX_VALUE))
+                        .addComponent(accountsp, javax.swing.GroupLayout.PREFERRED_SIZE, 44, Short.MAX_VALUE))
                     .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
                         .addComponent(jButton1)
                         .addComponent(jButton3)
@@ -365,7 +366,7 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
             .addGroup(jPanel4Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(prinitingComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 168, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 28, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 50, Short.MAX_VALUE)
                 .addComponent(volume, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(revenue, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -378,7 +379,7 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
             .addGroup(jPanel4Layout.createSequentialGroup()
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 75, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 70, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
                     .addComponent(volume, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -541,7 +542,7 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
                             dh.and(new QueryParameter(Context.getItems(), forGroup.getDbIdentity() + "ids", forGroup.__getIDS(), QueryParameter.EQUALS));
                         }
                     } else {
-                        List<Group> gs = forGroup.getChildGroups();
+                       if (forGroup != null && !forGroup.__getCName().equals("")) { List<Group> gs = forGroup.getChildGroups();
                         QueryParameter[] params = new QueryParameter[gs.size() + 1];
                         params[0] = (new QueryParameter(Context.getItems(), forGroup.getDbIdentity() + "ids", forGroup.__getIDS(), QueryParameter.EQUALS));
                         if (gs.size() >= 1) {
@@ -552,7 +553,7 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
                             dh.or(params);
                         } else {
                             dh.and(new QueryParameter(Context.getItems(), forGroup.getDbIdentity() + "ids", forGroup.__getIDS(), QueryParameter.EQUALS));
-                        }
+                        }}
                     }
 
 

@@ -14,7 +14,7 @@
  *      You should have received a copy of the GNU General Public License
  *      along with YaBS.  If not, see <http://www.gnu.org/licenses/>.
  */
-package mpv5.data;
+package mpv5.handler;
 
 import javax.swing.SwingUtilities;
 import mpv5.db.common.Context;
