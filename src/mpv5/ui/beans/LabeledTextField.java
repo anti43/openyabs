@@ -309,7 +309,7 @@ public class LabeledTextField extends javax.swing.JPanel {
             }
         } else if (clazz == Double.class) {
             try {
-                return (T) FormatNumber.parseDezimal(jTextField1.getText());
+                return (T) Double.valueOf(jTextField1.getText());
             } catch (NumberFormatException numberFormatException) {
                 return (T) new Double(0);
             }
