@@ -165,6 +165,7 @@ public class Expense extends DatabaseObject implements Formattable {
      * Turn this expense into a table row
      * @return
      */
+    @Override
     public Object[] toArray() {
         Object[] o = new Object[5];
         o[0] = this;
