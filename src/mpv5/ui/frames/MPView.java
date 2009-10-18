@@ -745,9 +745,9 @@ public class MPView extends FrameView {
         jPanel2.setName("jPanel2"); // NOI18N
         jPanel2.setPreferredSize(new java.awt.Dimension(110, 400));
 
-        jButton5.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
+        jButton5.setFont(new java.awt.Font("Tahoma", 0, 10));
         jButton5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/agt_family.png"))); // NOI18N
-         java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle(); // NOI18N
+        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("mpv5/resources/languages/Panels"); // NOI18N
         jButton5.setText(bundle.getString("MPView.jButton5.text_1")); // NOI18N
         jButton5.setToolTipText(bundle.getString("MPView.jButton5.toolTipText_1")); // NOI18N
         jButton5.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
@@ -759,7 +759,7 @@ public class MPView extends FrameView {
             }
         });
 
-        jButton1.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
+        jButton1.setFont(new java.awt.Font("Tahoma", 0, 10));
         jButton1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/edit_group.png"))); // NOI18N
         jButton1.setText(bundle.getString("MPView.jButton1.text_1")); // NOI18N
         jButton1.setToolTipText(bundle.getString("MPView.jButton1.toolTipText_1")); // NOI18N
@@ -772,7 +772,7 @@ public class MPView extends FrameView {
             }
         });
 
-        jButton2.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
+        jButton2.setFont(new java.awt.Font("Tahoma", 0, 10));
         jButton2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/edit_user.png"))); // NOI18N
         jButton2.setText(bundle.getString("MPView.jButton2.text_1")); // NOI18N
         jButton2.setToolTipText(bundle.getString("MPView.jButton2.toolTipText_1")); // NOI18N
@@ -785,7 +785,7 @@ public class MPView extends FrameView {
             }
         });
 
-        jButton18.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
+        jButton18.setFont(new java.awt.Font("Tahoma", 0, 10));
         jButton18.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/edit_group.png"))); // NOI18N
         jButton18.setText(bundle.getString("MPView.jButton18.text_1")); // NOI18N
         jButton18.setToolTipText(bundle.getString("MPView.jButton18.toolTipText_1")); // NOI18N
@@ -839,7 +839,7 @@ public class MPView extends FrameView {
         jPanel3.setName("jPanel3"); // NOI18N
         jPanel3.setPreferredSize(new java.awt.Dimension(110, 400));
 
-        jButton8.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
+        jButton8.setFont(new java.awt.Font("Tahoma", 0, 10));
         jButton8.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/folder_blue.png"))); // NOI18N
         jButton8.setText(bundle.getString("MPView.jButton8.text")); // NOI18N
         jButton8.setToolTipText(bundle.getString("MPView.jButton8.toolTipText")); // NOI18N
@@ -852,7 +852,7 @@ public class MPView extends FrameView {
             }
         });
 
-        jButton10.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
+        jButton10.setFont(new java.awt.Font("Tahoma", 0, 10));
         jButton10.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/folder_grey.png"))); // NOI18N
         jButton10.setText(bundle.getString("MPView.jButton10.text")); // NOI18N
         jButton10.setToolTipText(bundle.getString("MPView.jButton10.toolTipText")); // NOI18N
@@ -865,7 +865,7 @@ public class MPView extends FrameView {
             }
         });
 
-        jButton11.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
+        jButton11.setFont(new java.awt.Font("Tahoma", 0, 10));
         jButton11.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/folder_green.png"))); // NOI18N
         jButton11.setText(bundle.getString("MPView.jButton11.text")); // NOI18N
         jButton11.setToolTipText(bundle.getString("MPView.jButton11.toolTipText")); // NOI18N
@@ -878,7 +878,7 @@ public class MPView extends FrameView {
             }
         });
 
-        jButton15.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
+        jButton15.setFont(new java.awt.Font("Tahoma", 0, 10));
         jButton15.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/folder_red.png"))); // NOI18N
         jButton15.setText(bundle.getString("MPView.jButton15.text")); // NOI18N
         jButton15.setToolTipText(bundle.getString("MPView.jButton15.toolTipText")); // NOI18N
@@ -891,7 +891,7 @@ public class MPView extends FrameView {
             }
         });
 
-        jButton16.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
+        jButton16.setFont(new java.awt.Font("Tahoma", 0, 10));
         jButton16.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/folder_yellow.png"))); // NOI18N
         jButton16.setText(bundle.getString("MPView.jButton16.text")); // NOI18N
         jButton16.setToolTipText(bundle.getString("MPView.jButton16.toolTipText")); // NOI18N
@@ -967,7 +967,7 @@ public class MPView extends FrameView {
         jPanel4.setName("jPanel4"); // NOI18N
         jPanel4.setPreferredSize(new java.awt.Dimension(110, 400));
 
-        jButton12.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
+        jButton12.setFont(new java.awt.Font("Tahoma", 0, 10));
         jButton12.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/gear.png"))); // NOI18N
         jButton12.setText(bundle.getString("MPView.jButton12.text")); // NOI18N
         jButton12.setToolTipText(bundle.getString("MPView.jButton12.toolTipText")); // NOI18N
@@ -980,7 +980,7 @@ public class MPView extends FrameView {
             }
         });
 
-        jButton13.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
+        jButton13.setFont(new java.awt.Font("Tahoma", 0, 10));
         jButton13.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/external.png"))); // NOI18N
         jButton13.setText(bundle.getString("MPView.jButton13.text")); // NOI18N
         jButton13.setToolTipText(bundle.getString("MPView.jButton13.toolTipText")); // NOI18N
@@ -993,7 +993,7 @@ public class MPView extends FrameView {
             }
         });
 
-        jButton14.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
+        jButton14.setFont(new java.awt.Font("Tahoma", 0, 10));
         jButton14.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/lists.png"))); // NOI18N
         jButton14.setText(bundle.getString("MPView.jButton14.text")); // NOI18N
         jButton14.setToolTipText(bundle.getString("MPView.jButton14.toolTipText")); // NOI18N
@@ -1013,9 +1013,9 @@ public class MPView extends FrameView {
             .addGroup(jPanel4Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jButton13, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 90, Short.MAX_VALUE)
-                    .addComponent(jButton12, javax.swing.GroupLayout.DEFAULT_SIZE, 90, Short.MAX_VALUE)
-                    .addComponent(jButton14, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 90, Short.MAX_VALUE))
+                    .addComponent(jButton13, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jButton12, javax.swing.GroupLayout.DEFAULT_SIZE, 73, Short.MAX_VALUE)
+                    .addComponent(jButton14, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 73, Short.MAX_VALUE))
                 .addContainerGap())
         );
         jPanel4Layout.setVerticalGroup(
@@ -1027,7 +1027,7 @@ public class MPView extends FrameView {
                 .addComponent(jButton12)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jButton14)
-                .addContainerGap(223, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         jOutlookBar1.addTab(bundle.getString("MPView.jPanel4.TabConstraints.tabTitle_1"), jPanel4); // NOI18N
@@ -1036,7 +1036,7 @@ public class MPView extends FrameView {
         jPanel6.setName("jPanel6"); // NOI18N
         jPanel6.setPreferredSize(new java.awt.Dimension(110, 400));
 
-        jButton6.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
+        jButton6.setFont(new java.awt.Font("Tahoma", 0, 10));
         jButton6.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/kservices.png"))); // NOI18N
         jButton6.setText(bundle.getString("MPView.jButton6.text")); // NOI18N
         jButton6.setToolTipText(bundle.getString("MPView.jButton6.toolTipText")); // NOI18N
@@ -1049,7 +1049,7 @@ public class MPView extends FrameView {
             }
         });
 
-        jButton7.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
+        jButton7.setFont(new java.awt.Font("Tahoma", 0, 10));
         jButton7.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/edittrash.png"))); // NOI18N
         jButton7.setText(bundle.getString("MPView.jButton7.text")); // NOI18N
         jButton7.setToolTipText(bundle.getString("MPView.jButton7.toolTipText")); // NOI18N
@@ -1069,8 +1069,8 @@ public class MPView extends FrameView {
             .addGroup(jPanel6Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jButton6, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 90, Short.MAX_VALUE)
-                    .addComponent(jButton7, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 90, Short.MAX_VALUE))
+                    .addComponent(jButton6, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jButton7, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
         jPanel6Layout.setVerticalGroup(
@@ -1080,7 +1080,7 @@ public class MPView extends FrameView {
                 .addComponent(jButton6)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jButton7)
-                .addContainerGap(281, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         jOutlookBar1.addTab(bundle.getString("MPView.jPanel6.TabConstraints.tabTitle"), jPanel6); // NOI18N

@@ -53,18 +53,18 @@ public class Account extends DatabaseObject {
      */
     public static String getTypeString(int type) {
         switch (type) {
-            case Account.ASSET:
-                return Messages.ASSET.toString();
+            case Account.OTHER:
+                return Messages.MISC.toString();
             case Account.COST:
                 return Messages.COST.toString();
-            case Account.EQUITY:
-                return Messages.EQUITY.toString();
             case Account.EXPENSE:
                 return Messages.EXPENSE.toString();
             case Account.INCOME:
                 return Messages.INCOME.toString();
-            case Account.LIABILITY:
-                return Messages.LIABILITY.toString();
+            case Account.TAXES:
+                return Messages.TAXES.toString();
+            case Account.RESERVE:
+                return Messages.RESERVE.toString();
             default:
                 return "N/A";
         }
@@ -97,12 +97,13 @@ public class Account extends DatabaseObject {
     }
     private int intparentaccount;
     private int intaccountclass;
-    public final static int ASSET = 0;
-    public final static int COST = 1;
-    public final static int EXPENSE = 2;
-    public final static int INCOME = 3;
-    public final static int LIABILITY = 4;
-    public final static int EQUITY = 5;
+    public final static int OTHER = 0;
+    public final static int COST = 1;//Direkte Kosten (Wareneinkauf),
+    public final static int EXPENSE = 2;//Sonstige Kosten, Aufwandskonto
+    public final static int INCOME = 3;//Ertragskonto
+    public final static int TAXES = 4;//Steuern
+    public final static int RESERVE = 5;
+
     private String description = "";
     private double taxvalue;
     private int intaccounttype;

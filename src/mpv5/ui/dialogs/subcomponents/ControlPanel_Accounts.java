@@ -135,7 +135,7 @@ public class ControlPanel_Accounts extends javax.swing.JPanel implements Control
         jButton2 = new javax.swing.JButton();
         jButton1 = new javax.swing.JButton();
 
-        java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle(); 
+        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("mpv5/resources/languages/Panels"); // NOI18N
         setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("ControlPanel_Accounts.border.title"))); // NOI18N
         setName("Form"); // NOI18N
         setLayout(new java.awt.BorderLayout());
@@ -167,7 +167,7 @@ public class ControlPanel_Accounts extends javax.swing.JPanel implements Control
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 253, Short.MAX_VALUE)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 249, Short.MAX_VALUE)
                     .addComponent(jLabel1))
                 .addContainerGap())
         );
@@ -177,7 +177,7 @@ public class ControlPanel_Accounts extends javax.swing.JPanel implements Control
                 .addContainerGap()
                 .addComponent(jLabel1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 352, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 358, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -187,6 +187,7 @@ public class ControlPanel_Accounts extends javax.swing.JPanel implements Control
         rightpane.setName("rightpane"); // NOI18N
 
         cname.set_Label(bundle.getString("ControlPanel_Accounts.cname._Label")); // NOI18N
+        cname.set_LabelFont(new java.awt.Font("Arial", 0, 11)); // NOI18N
         cname.setName("cname"); // NOI18N
 
         parents.set_Label(bundle.getString("ControlPanel_Accounts.parents._Label")); // NOI18N
@@ -199,6 +200,7 @@ public class ControlPanel_Accounts extends javax.swing.JPanel implements Control
         jTextArea2.setBackground(new java.awt.Color(238, 238, 238));
         jTextArea2.setColumns(20);
         jTextArea2.setEditable(false);
+        jTextArea2.setFont(new java.awt.Font("Monospaced", 0, 11)); // NOI18N
         jTextArea2.setLineWrap(true);
         jTextArea2.setRows(5);
         jTextArea2.setText(bundle.getString("ControlPanel_Accounts.jTextArea2.text")); // NOI18N
@@ -208,7 +210,7 @@ public class ControlPanel_Accounts extends javax.swing.JPanel implements Control
         jTextArea2.setOpaque(false);
         jScrollPane3.setViewportView(jTextArea2);
 
-        jLabel2.setFont(new java.awt.Font("Dialog", 0, 12));
+        jLabel2.setFont(new java.awt.Font("Dialog", 0, 11)); // NOI18N
         jLabel2.setText(bundle.getString("ControlPanel_Accounts.jLabel2.text")); // NOI18N
         jLabel2.setName("jLabel2"); // NOI18N
 
@@ -219,7 +221,7 @@ public class ControlPanel_Accounts extends javax.swing.JPanel implements Control
         desc.setName("desc"); // NOI18N
         jScrollPane2.setViewportView(desc);
 
-        jLabel3.setFont(new java.awt.Font("Dialog", 0, 12));
+        jLabel3.setFont(new java.awt.Font("Dialog", 0, 11)); // NOI18N
         jLabel3.setText(bundle.getString("ControlPanel_Accounts.jLabel3.text")); // NOI18N
         jLabel3.setName("jLabel3"); // NOI18N
 
@@ -300,7 +302,7 @@ public class ControlPanel_Accounts extends javax.swing.JPanel implements Control
                 .addGroup(rightpaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel5)
                     .addComponent(typeselect, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(31, Short.MAX_VALUE))
+                .addContainerGap(12, Short.MAX_VALUE))
         );
 
         add(rightpane, java.awt.BorderLayout.EAST);
@@ -602,14 +604,13 @@ public class ControlPanel_Accounts extends javax.swing.JPanel implements Control
 
         typeselect.setModel(new DefaultComboBoxModel(MPComboBoxModelItem.toItems(
                 new Object[][]{
-                    {Account.ASSET, Messages.ASSET},
                     {Account.COST, Messages.COST},
-                    {Account.EQUITY, Messages.EQUITY},
                     {Account.EXPENSE, Messages.EXPENSE},
                     {Account.INCOME, Messages.INCOME},
-                    {Account.LIABILITY, Messages.LIABILITY}
+                    {Account.TAXES, Messages.TAXES},
+                    {Account.OTHER, Messages.MISC},
+                    {Account.RESERVE, Messages.RESERVE}
                 })));
-
     }
 
     public boolean collectData() {
