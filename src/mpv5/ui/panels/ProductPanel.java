@@ -1177,6 +1177,7 @@ public class ProductPanel extends javax.swing.JPanel implements DataPanel, MPCBS
 
     @Override
     public void actionAfterCreate() {
+        sp.refresh();
     }
 
     @Override

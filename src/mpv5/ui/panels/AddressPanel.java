@@ -21,12 +21,10 @@
  */
 package mpv5.ui.panels;
 
-import javax.swing.DefaultComboBoxModel;
 import javax.swing.JTabbedPane;
 import javax.swing.SwingUtilities;
 import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
-import mpv5.db.common.DatabaseSearch;
 import mpv5.db.common.NodataFoundException;
 import mpv5.globals.Messages;
 import mpv5.db.objects.Address;
@@ -34,8 +32,6 @@ import mpv5.db.objects.Contact;
 import mpv5.logging.Log;
 import mpv5.i18n.LanguageManager;
 import mpv5.ui.frames.MPView;
-import mpv5.db.objects.User;
-import mpv5.utils.arrays.ArrayUtilities;
 import mpv5.utils.models.MPComboBoxModelItem;
 import mpv5.utils.ui.TextFieldUtils;
 
@@ -52,6 +48,7 @@ public class AddressPanel extends javax.swing.JPanel implements DataPanel {
     /** Creates new form AddressPanel */
     public AddressPanel() {
         initComponents();
+        dataOwner.setCountry(MPView.getUser().__getDefcountry());
         refresh();
     }
 
@@ -381,7 +378,13 @@ public class AddressPanel extends javax.swing.JPanel implements DataPanel {
     public void refresh() {
         try {
             countryselect.setModel(LanguageManager.getCountriesAsComboBoxModel());
-            countryselect.setSelectedIndex(MPComboBoxModelItem.getItemIDfromValue(MPView.getUser().__getDefcountry(), countryselect.getModel()));
+            Runnable runnable = new Runnable() {
+
+                public void run() {
+                    countryselect.setSelectedIndex(MPComboBoxModelItem.getItemID(MPView.getUser().__getDefcountry(), countryselect.getModel()));
+                }
+            };
+            SwingUtilities.invokeLater(runnable);
         } catch (Exception e) {
         }
     }
@@ -423,8 +426,6 @@ public class AddressPanel extends javax.swing.JPanel implements DataPanel {
         }
     }
 
-
-
     /**
      * @return the dataParent
      */
@@ -453,11 +454,9 @@ public class AddressPanel extends javax.swing.JPanel implements DataPanel {
     }
 
     public void actionBeforeCreate() {
-        
     }
 
     public void actionBeforeSave() {
-        
     }
 
     public void mail() {

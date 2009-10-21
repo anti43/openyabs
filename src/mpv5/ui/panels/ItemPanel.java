@@ -126,7 +126,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
 
         addedby.setText(MPView.getUser().getName());
         contactname.setSearchEnabled(true);
-        contactname.setContext(Context.getContact());
+        contactname.setContext(Context.getCustomer());
         contactname.getComboBox().addActionListener(new ActionListener() {
 
             @Override
@@ -1394,7 +1394,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
 
     @Override
     public void actionAfterCreate() {
-
+        sp.refresh();
         ArrayUtilities.replaceColumn(itemtable, 0, null);
         saveSubItems();
         omodel = (MPTableModel) itemtable.getModel();

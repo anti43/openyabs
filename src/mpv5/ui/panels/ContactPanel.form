@@ -888,9 +888,12 @@
                                       </Group>
                                       <Group type="102" alignment="0" attributes="0">
                                           <EmptySpace max="-2" attributes="0"/>
-                                          <Group type="103" groupAlignment="0" attributes="0">
-                                              <Component id="street" alignment="0" min="-2" pref="221" max="-2" attributes="1"/>
-                                              <Component id="title" alignment="0" min="-2" pref="182" max="-2" attributes="1"/>
+                                          <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                                              <Component id="street" alignment="0" max="32767" attributes="1"/>
+                                              <Group type="102" alignment="0" attributes="0">
+                                                  <Component id="title" min="-2" pref="182" max="-2" attributes="1"/>
+                                                  <EmptySpace min="-2" pref="39" max="-2" attributes="0"/>
+                                              </Group>
                                           </Group>
                                       </Group>
                                   </Group>
@@ -908,14 +911,14 @@
                                           </Group>
                                           <EmptySpace max="-2" attributes="0"/>
                                           <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                                              <Component id="city" min="0" pref="0" max="32767" attributes="1"/>
-                                              <Component id="cname" alignment="0" pref="177" max="32767" attributes="1"/>
+                                              <Component id="city" max="32767" attributes="1"/>
+                                              <Component id="cname" alignment="0" max="32767" attributes="1"/>
                                           </Group>
                                       </Group>
                                   </Group>
                               </Group>
                           </Group>
-                          <EmptySpace pref="32" max="32767" attributes="0"/>
+                          <EmptySpace pref="16" max="32767" attributes="0"/>
                       </Group>
                   </Group>
                 </DimensionLayout>
@@ -941,9 +944,9 @@
                           </Group>
                           <EmptySpace max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="0" attributes="0">
-                              <Component id="street" min="-2" max="-2" attributes="0"/>
                               <Component id="zip" min="-2" max="-2" attributes="0"/>
                               <Component id="city" min="-2" max="-2" attributes="0"/>
+                              <Component id="street" min="-2" max="-2" attributes="0"/>
                           </Group>
                           <EmptySpace max="32767" attributes="0"/>
                       </Group>
