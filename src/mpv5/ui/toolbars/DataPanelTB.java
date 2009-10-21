@@ -148,13 +148,15 @@ public class DataPanelTB extends javax.swing.JPanel {
         commonActionsToolbar.setPreferredSize(new java.awt.Dimension(342, 41));
 
         but1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/viewmag.png"))); // NOI18N
-        java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle();
+        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("mpv5/resources/languages/Panels"); // NOI18N
         but1.setText(bundle.getString("DataPanelTB.but1.text")); // NOI18N
         but1.setToolTipText(bundle.getString("DataPanelTB.but1.toolTipText")); // NOI18N
         but1.setContentAreaFilled(false);
         but1.setFocusable(false);
         but1.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         but1.setName("but1"); // NOI18N
+        but1.setPressedIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/xclock.png"))); // NOI18N
+        but1.setRolloverIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/bright_viewmag.png"))); // NOI18N
         but1.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         but1.addItemListener(new java.awt.event.ItemListener() {
             public void itemStateChanged(java.awt.event.ItemEvent evt) {
@@ -178,6 +180,8 @@ public class DataPanelTB extends javax.swing.JPanel {
         but2.setFocusable(false);
         but2.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         but2.setName("but2"); // NOI18N
+        but2.setPressedIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/xclock.png"))); // NOI18N
+        but2.setRolloverIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/bright_revert.png"))); // NOI18N
         but2.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         but2.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -193,6 +197,8 @@ public class DataPanelTB extends javax.swing.JPanel {
         but3.setFocusable(false);
         but3.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         but3.setName("but3"); // NOI18N
+        but3.setPressedIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/xclock.png"))); // NOI18N
+        but3.setRolloverIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/bright_3floppy_unmount.png"))); // NOI18N
         but3.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         but3.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -208,6 +214,8 @@ public class DataPanelTB extends javax.swing.JPanel {
         but4.setFocusable(false);
         but4.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         but4.setName("but4"); // NOI18N
+        but4.setPressedIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/xclock.png"))); // NOI18N
+        but4.setRolloverIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/bright_filenew.png"))); // NOI18N
         but4.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         but4.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -226,6 +234,8 @@ public class DataPanelTB extends javax.swing.JPanel {
         but5.setFocusable(false);
         but5.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         but5.setName("but5"); // NOI18N
+        but5.setPressedIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/xclock.png"))); // NOI18N
+        but5.setRolloverIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/bright_edittrash.png"))); // NOI18N
         but5.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         but5.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -244,6 +254,8 @@ public class DataPanelTB extends javax.swing.JPanel {
         but6.setFocusable(false);
         but6.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         but6.setName("but6"); // NOI18N
+        but6.setPressedIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/xclock.png"))); // NOI18N
+        but6.setRolloverIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/bright_password.png"))); // NOI18N
         but6.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         but6.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -259,6 +271,8 @@ public class DataPanelTB extends javax.swing.JPanel {
         but7.setFocusable(false);
         but7.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         but7.setName("but7"); // NOI18N
+        but7.setPressedIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/xclock.png"))); // NOI18N
+        but7.setRolloverIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/bright_bookmark_add.png"))); // NOI18N
         but7.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         but7.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -277,6 +291,8 @@ public class DataPanelTB extends javax.swing.JPanel {
         but8.setFocusable(false);
         but8.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         but8.setName("but8"); // NOI18N
+        but8.setPressedIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/xclock.png"))); // NOI18N
+        but8.setRolloverIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/bright_printer.png"))); // NOI18N
         but8.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         but8.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -292,6 +308,8 @@ public class DataPanelTB extends javax.swing.JPanel {
         but9.setFocusable(false);
         but9.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         but9.setName("but9"); // NOI18N
+        but9.setPressedIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/xclock.png"))); // NOI18N
+        but9.setRolloverIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/bright_mail_reply.png"))); // NOI18N
         but9.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         but9.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {

@@ -347,7 +347,7 @@ public class MPView extends FrameView {
             try {
                 favMenu.add(new FavouritesMenuItem(Favourite.getObject(fav.getFavContext(), fav.__getItemsids())));
             } catch (NodataFoundException ex) {
-                Log.Debug(ex);
+//                Log.Debug(this, ex.getMessage());
             }
         }
     }
