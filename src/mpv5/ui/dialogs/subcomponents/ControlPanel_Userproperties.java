@@ -176,6 +176,7 @@ public class ControlPanel_Userproperties extends javax.swing.JPanel implements C
         shiptax.setName("shiptax"); // NOI18N
 
         autorev.setText(bundle.getString("ControlPanel_Userproperties.autorev.text")); // NOI18N
+        autorev.setEnabled(false);
         autorev.setName("autorev"); // NOI18N
 
         javax.swing.GroupLayout defsLayout = new javax.swing.GroupLayout(defs);

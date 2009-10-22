@@ -301,6 +301,7 @@ public class AddressPanel extends javax.swing.JPanel implements DataPanel {
         if (cname.getText().length() == 0) {
             return false;
         }
+        ids_ = dataOwner.__getIDS();
         city_ = city.get_Text();
         cname_ = cname.get_Text();
         taxnumber_ = dataParent.__getTaxnumber();
