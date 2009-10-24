@@ -196,7 +196,7 @@ public class FormatHandler {
      * Contains all formattable Contexts
      */
     public static List<Context> FORMATTABLE_CONTEXTS = new Vector<Context>(Arrays.asList(new Context[]{
-                Context.getContact(), Context.getProducts(), Context.getItems(), Context.getExpenses(), Context.getRevenues()
+                Context.getContact(), Context.getCustomer(), Context.getManufacturer(), Context.getSupplier(), Context.getProducts(), Context.getItems(), Context.getExpenses(), Context.getRevenues(), Context.getOffer(), Context.getOrder(), Context.getBill()
             }));
 
     /**

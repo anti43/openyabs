@@ -209,7 +209,7 @@ public enum Messages {
     CHANGE_STATUS("Change status"),
     ALL("All"),
     OVERVIEW("Overview"),
-    ASSIGN_TEMPLATE("Please assign at least one user to the imported template."),
+    ASSIGN_TEMPLATE("Please assign at least one user to the imported template by selecting one or more users from the list, and the press 'Save'. The template will not be usable otherwise."),
     NO_MAIL_DEFINED("Either you or the contact you want to send the mail to (or both) have no valid mail adress defined."),
     AUTO_GENERATED_VALUE("Auto generated value"),
     BOOK_NOW("Save & book now?");

@@ -113,7 +113,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
         sp.setVisible(true);
         tb = new mpv5.ui.toolbars.DataPanelTB(this);
         toolbarpane.add(tb, BorderLayout.CENTER);
-        dataOwner = new Item();
+        dataOwner = (Item) DatabaseObject.getObject(context);
         if (type >= 0) {
             dataOwner.setInttype(type);
             this.type.setText(Item.getTypeString(type));
@@ -216,14 +216,16 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
         ((SpinnerNumberModel) calculator.getSpinner().getModel()).setMaximum(1000);
         final DataPanel p = this;
         status.getComboBox().addActionListener(new ActionListener() {
-        Item dato = (Item) getDataOwner();
+
+            Item dato = (Item) getDataOwner();
+
             public void actionPerformed(ActionEvent e) {
                 if (dato.__getInttype() == Item.TYPE_BILL &&
                         !loading && dataOwner.isExisting() &&
                         Integer.valueOf(status.getSelectedItem().getId()) == Item.STATUS_PAID &&
                         MPView.getUser().getProperties().getProperty(MPView.tabPane, "autocreaterevenue")) {
                     if (Popup.Y_N_dialog(Messages.BOOK_NOW)) {
-                        
+
                         if (dato.getPanelData(p) && dato.save()) {
                             try {
                                 actionAfterSave();
@@ -329,7 +331,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
 
     @Override
     public void showRequiredFields() {
-        TextFieldUtils.blink(contactname.getComboBox().getEditor().getEditorComponent(), Color.RED);
+        TextFieldUtils.blink(contactname.getComboBox(), Color.RED);
         contactname.requestFocus();
     }
 
@@ -1389,6 +1391,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
     public void actionAfterSave() {
 
         saveSubItems();
+
         omodel = (MPTableModel) itemtable.getModel();
     }
 
@@ -1415,6 +1418,12 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
             Product.createProducts(SubItem.saveModel(dataOwner, (MPTableModel) itemtable.getModel()), dataOwner);
         } else {
             SubItem.saveModel(dataOwner, (MPTableModel) itemtable.getModel());
+        }
+
+        for (int i = 0; i < usedOrders.size(); i++) {
+            Item o= usedOrders.get(i);
+            o.setIntstatus(Item.STATUS_FINISHED);
+            o.save(true);
         }
     }
 
@@ -1537,6 +1546,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
         }
     }
 
+    List<Item> usedOrders = new Vector<Item>();
     private void prepareTable() {
         TableCellRendererForDezimal t = new TableCellRendererForDezimal(itemtable);
         t.setRendererTo(6);
@@ -1569,7 +1579,25 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
             }
 
             public void mouseReleased(MouseEvent e) {
-                ProductSelectDialog.instanceOf((MPTableModel) itemtable.getModel(), itemtable.getSelectedRow(), e, Integer.valueOf(itemtable.getValueAt(itemtable.getSelectedRow(), 10).toString()), itemtable.getValueAt(itemtable.getSelectedRow(), 12 + 1), itemtable.getValueAt(itemtable.getSelectedRow(), 14));
+                if (!MPView.getUser().getProperties().getProperty(MPView.tabPane, "ordersoverproducts")) {
+                    ProductSelectDialog.instanceOf((MPTableModel) itemtable.getModel(), itemtable.getSelectedRow(), e, Integer.valueOf(itemtable.getValueAt(itemtable.getSelectedRow(), 10).toString()), itemtable.getValueAt(itemtable.getSelectedRow(), 12 + 1), itemtable.getValueAt(itemtable.getSelectedRow(), 14));
+                } else {
+                    SubItem s = new SubItem();
+                    Item o = (Item) Popup.SelectValue(Context.getOrder());
+                    if (o!=null) {
+                        s.setQuantityvalue(1);
+                        s.setItemsids(o.__getIDS());
+                        s.setExternalvalue(o.__getNetvalue() + o.__getTaxvalue());
+                        s.setTotalnetvalue(o.__getNetvalue());
+                        s.setCName(o.__getCName());
+                        s.setDescription(Messages.TYPE_ORDER + " " + o.__getCnumber() + " " + DateConverter.getDefDateString(o.__getDateadded()));
+
+                        ((MPTableModel) itemtable.getModel()).setRowAt(s.getRowData(itemtable.getSelectedRow()), itemtable.getSelectedRow(), 1);
+
+                        usedOrders.add(o);
+                    }
+                }
+
                 if (((MPTableModel) itemtable.getModel()).getEmptyRows(new int[]{4}) < 2) {
                     ((MPTableModel) itemtable.getModel()).addRow(1);
                 }

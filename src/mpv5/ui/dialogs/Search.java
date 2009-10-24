@@ -10,10 +10,8 @@
  */
 package mpv5.ui.dialogs;
 
-import java.util.ArrayList;
 
 import javax.swing.DefaultComboBoxModel;
-import javax.swing.JOptionPane;
 import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
 import mpv5.db.common.DatabaseSearch;
@@ -33,6 +31,7 @@ public class Search extends javax.swing.JDialog {
 
     private static final long serialVersionUID = 1L;
     private static Search f;
+    private String additionalSearchCondition = "";
 
     public static Search instanceOf() {
         if (f == null) {
@@ -45,6 +44,7 @@ public class Search extends javax.swing.JDialog {
     private static String oldSelection;
 
     public static DatabaseObject showSearchFor(Context t) {
+
         Search s = new Search(false);
         s.scope.setSelectedItem(t);
         s.scope.setEnabled(false);
@@ -305,5 +305,19 @@ public class Search extends javax.swing.JDialog {
 
     private DatabaseObject getSelectedObject() {
         return selection;
+    }
+
+    /**
+     * @return the additionalSearchCondition
+     */
+    public String getAdditionalSearchCondition() {
+        return additionalSearchCondition;
+    }
+
+    /**
+     * @param additionalSearchCondition the additionalSearchCondition to set
+     */
+    public void setAdditionalSearchCondition(String additionalSearchCondition) {
+        this.additionalSearchCondition = additionalSearchCondition;
     }
 }

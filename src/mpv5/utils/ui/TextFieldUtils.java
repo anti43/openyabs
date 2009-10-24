@@ -18,6 +18,7 @@ package mpv5.utils.ui;
 
 import java.awt.Color;
 import java.awt.Component;
+import javax.swing.JComponent;
 import javax.swing.JTextField;
 import javax.swing.SwingWorker;
 import mpv5.ui.beans.LabeledTextField;
@@ -54,7 +55,7 @@ public class TextFieldUtils {
      * @param component
      * @param color
      */
-    public static void blink(Component component, Color color) {
+    public static void blink(JComponent component, Color color) {
         new blinker(component, 2, color).execute();
     }
 
@@ -64,11 +65,11 @@ public class TextFieldUtils {
 
     private static class blinker extends SwingWorker<Void, Void> {
 
-        private Component fi;
+        private JComponent fi;
         private int count;
         private Color color;
 
-        private blinker(Component field, int i, Color col) {
+        private blinker(JComponent field, int i, Color col) {
             fi = field;
             count = i;
             color = col;
@@ -76,7 +77,9 @@ public class TextFieldUtils {
 
         @Override
         protected Void doInBackground() throws Exception {
+            fi.setOpaque(true);
             for (int i = 0; i < count; i++) {
+
                 fi.setBackground(color);
                 fi.validate();
                 Thread.sleep(550);

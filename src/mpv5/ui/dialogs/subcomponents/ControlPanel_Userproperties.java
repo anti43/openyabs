@@ -71,6 +71,7 @@ public class ControlPanel_Userproperties extends javax.swing.JPanel implements C
         columnmeasure = new javax.swing.JCheckBox();
         showoptionalcolumn = new javax.swing.JCheckBox();
         supresscurrencysymbols = new javax.swing.JCheckBox();
+        ordersoverproducts = new javax.swing.JCheckBox();
         jPanel8 = new javax.swing.JPanel();
         labeledTextField1 = new mpv5.ui.beans.LabeledTextField();
         jLabel1 = new javax.swing.JLabel();
@@ -92,7 +93,7 @@ public class ControlPanel_Userproperties extends javax.swing.JPanel implements C
         setLayout(new java.awt.BorderLayout());
 
         jPanel1.setBackground(new java.awt.Color(255, 255, 255));
-         java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle(); // NOI18N
+        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("mpv5/resources/languages/Panels"); // NOI18N
         jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("ControlPanel_Userproperties.jPanel1.border.title"))); // NOI18N
         jPanel1.setName("jPanel1"); // NOI18N
 
@@ -200,15 +201,15 @@ public class ControlPanel_Userproperties extends javax.swing.JPanel implements C
             defsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(defsLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(defsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(deftax, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(defsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addComponent(defunit, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(defcount, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(defsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(shiptax, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(autorev))
+                    .addGroup(defsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                        .addComponent(deftax, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(defcount, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(defunit, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(defsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
+                    .addComponent(autorev)
+                    .addComponent(shiptax, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -266,6 +267,9 @@ public class ControlPanel_Userproperties extends javax.swing.JPanel implements C
         supresscurrencysymbols.setText(bundle.getString("ControlPanel_Userproperties.supresscurrencysymbols.text")); // NOI18N
         supresscurrencysymbols.setName("supresscurrencysymbols"); // NOI18N
 
+        ordersoverproducts.setText(bundle.getString("ControlPanel_Userproperties.ordersoverproducts.text")); // NOI18N
+        ordersoverproducts.setName("ordersoverproducts"); // NOI18N
+
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
@@ -283,7 +287,8 @@ public class ControlPanel_Userproperties extends javax.swing.JPanel implements C
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(showoptionalcolumn)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(supresscurrencysymbols)))
+                        .addComponent(supresscurrencysymbols))
+                    .addComponent(ordersoverproducts))
                 .addContainerGap(12, Short.MAX_VALUE))
         );
         jPanel3Layout.setVerticalGroup(
@@ -299,7 +304,9 @@ public class ControlPanel_Userproperties extends javax.swing.JPanel implements C
                     .addComponent(columnmeasure)
                     .addComponent(showoptionalcolumn)
                     .addComponent(supresscurrencysymbols))
-                .addContainerGap(24, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(ordersoverproducts)
+                .addContainerGap(10, Short.MAX_VALUE))
         );
 
         jPanel8.setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("ControlPanel_Userproperties.jPanel8.border.title"))); // NOI18N
@@ -518,6 +525,7 @@ public class ControlPanel_Userproperties extends javax.swing.JPanel implements C
     private javax.swing.JPanel jPanel9;
     private mpv5.ui.beans.LabeledTextField labeledTextField1;
     private mpv5.ui.beans.LabeledTextField labeledTextField2;
+    private javax.swing.JCheckBox ordersoverproducts;
     private javax.swing.JPanel productstobillsproperties;
     private javax.swing.JCheckBox reference;
     private mpv5.ui.beans.LabeledCombobox shiptax;
@@ -549,6 +557,7 @@ public class ControlPanel_Userproperties extends javax.swing.JPanel implements C
             MPView.getUser().getProperties().changeProperty(MPView.tabPane, "showoptionalcolumn", showoptionalcolumn.isSelected());
             MPView.getUser().getProperties().changeProperty(MPView.tabPane, "supresscurrencysymbols", supresscurrencysymbols.isSelected());
             MPView.getUser().getProperties().changeProperty(MPView.tabPane, "autocreaterevenue", autorev.isSelected());
+            MPView.getUser().getProperties().changeProperty(MPView.tabPane, "ordersoverproducts", ordersoverproducts.isSelected());
             MPView.getUser().getProperties().changeProperty(MPView.tabPane, "propertiesdefined", true);
 
             if (deftax.getSelectedItem() != null) {
@@ -587,6 +596,7 @@ public class ControlPanel_Userproperties extends javax.swing.JPanel implements C
         showoptionalcolumn.setSelected(MPView.getUser().getProperties().getProperty(MPView.tabPane, "showoptionalcolumn"));
         supresscurrencysymbols.setSelected(MPView.getUser().getProperties().getProperty(MPView.tabPane, "supresscurrencysymbols"));
         autorev.setSelected(MPView.getUser().getProperties().getProperty(MPView.tabPane, "autocreaterevenue"));
+        ordersoverproducts.setSelected(MPView.getUser().getProperties().getProperty(MPView.tabPane, "ordersoverproducts"));
 
         Component[] t = productstobillsproperties.getComponents();
         for (int i = 0; i < t.length; i++) {

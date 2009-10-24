@@ -328,6 +328,8 @@ public class Context {
         list.add(getUser());
         list.add(getSubItem());
         list.add(getItem(null, null));
+        list.add(getOffer());
+        list.add(getOrder());
         list.add(getSchedule());
         list.add(getContact());
         list.add(getProducts());
@@ -1568,7 +1570,7 @@ public class Context {
 
     @Override
     public String toString() {
-        return dbIdentity.toUpperCase();
+        return dbIdentity.toUpperCase() + " [" + id + "]";
     }
 
     /**
@@ -1580,7 +1582,10 @@ public class Context {
 
     @Override
     public boolean equals(Object o) {
-        if (((Context) o).getDbIdentity().equals(getDbIdentity())) {
+        if (!(o instanceof Context) || o == null) {
+            return false;
+        }
+        if (((Context) o).getDbIdentity().equals(getDbIdentity()) && ((Context) o).getId() == getId()) {
             return true;
         } else {
             return false;
@@ -1589,8 +1594,10 @@ public class Context {
 
     @Override
     public int hashCode() {
-        int hash = 3;
-        hash = 89 * hash + (this.dbIdentity != null ? this.dbIdentity.hashCode() : 0);
+        int hash = 7;
+        hash = 47 * hash + this.id;
+        hash = 47 * hash + (this.dbIdentity != null ? this.dbIdentity.hashCode() : 0);
         return hash;
     }
+
 }
