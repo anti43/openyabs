@@ -249,8 +249,7 @@ public class SubItem extends DatabaseObject {
     private double totaltaxvalue;
 
     public SubItem() {
-        context.setDbIdentity(Context.IDENTITY_SUBITEMS);
-        context.setIdentityClass(SubItem.class);
+       context = Context.getSubItem();
     }
 
     /**
@@ -310,7 +309,7 @@ public class SubItem extends DatabaseObject {
                 }
 
                 QueryCriteria qc = new QueryCriteria("ids", product.__getIDS());
-                Object[][] result = QueryHandler.instanceOf().clone(Context.getProducts()).select(params, qc);
+                Object[][] result = QueryHandler.instanceOf().clone(Context.getProduct()).select(params, qc);
 
                 String formatString = vars;
                 if (formatString != null) {
@@ -530,8 +529,8 @@ public class SubItem extends DatabaseObject {
     @Override
     public JComponent getView() {
         try {
-            Item dos = (Item) DatabaseObject.getObject(Context.getItems(), __getItemsids());
-            ItemPanel ip = new ItemPanel(Context.getItems(), dos.__getInttype());
+            Item dos = (Item) DatabaseObject.getObject(Context.getItem(), __getItemsids());
+            ItemPanel ip = new ItemPanel(Context.getItem(), dos.__getInttype());
             return ip;
         } catch (Exception ex) {
             Log.Debug(ex);
@@ -643,7 +642,7 @@ public class SubItem extends DatabaseObject {
         if (map.containsKey("originalproductsids")) {
             try {
                 try {
-                    map.put("originalproduct", DatabaseObject.getObject(Context.getProducts(), Integer.valueOf(map.get("originalproductsids").toString())));
+                    map.put("originalproduct", DatabaseObject.getObject(Context.getProduct(), Integer.valueOf(map.get("originalproductsids").toString())));
                     map.remove("originalproductsids");
                 } catch (NodataFoundException ex) {
                     map.put("originalproduct", null);

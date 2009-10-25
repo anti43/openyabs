@@ -214,8 +214,7 @@ public class ProductlistSubItem extends DatabaseObject {
     private String linkurl = "";
 
     public ProductlistSubItem() {
-        context.setDbIdentity(Context.IDENTITY_PRODUCTSLISTITEMS);
-        context.setIdentityClass(ProductlistSubItem.class);
+        context = Context.getProductListItems();
     }
 
     /**
@@ -538,7 +537,7 @@ public class ProductlistSubItem extends DatabaseObject {
         if (map.containsKey("originalproductsids")) {
             try {
                 try {
-                    map.put("originalproduct", DatabaseObject.getObject(Context.getProducts(), Integer.valueOf(map.get("originalproductsids").toString())));
+                    map.put("originalproduct", DatabaseObject.getObject(Context.getProduct(), Integer.valueOf(map.get("originalproductsids").toString())));
                     map.remove("originalproductsids");
                 } catch (NodataFoundException ex) {
                     map.put("originalproduct", null);

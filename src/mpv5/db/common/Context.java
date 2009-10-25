@@ -214,12 +214,12 @@ public class Context {
         list.add(getSchedule());
         list.add(getCountries());
         list.add(getContact());
-        list.add(getProducts());
+        list.add(getProduct());
         list.add(getAccounts());
-        list.add(getCompanies());
-        list.add(getWebShops());
+        list.add(getCompany());
+        list.add(getWebShop());
         list.add(getTemplate());
-        list.add(getReminders());
+        list.add(getReminder());
         list.add(getSubItem());
 
         return list;
@@ -234,7 +234,7 @@ public class Context {
     }
     private static ArrayList<Context> cacheableContexts = new ArrayList<Context>(Arrays.asList(new Context[]{
                 getContact(),
-                getFavourites(),
+                getFavourite(),
                 getUser(),
                 getAddress(),
                 getItem(null, null),
@@ -244,15 +244,15 @@ public class Context {
                 getFilesToContacts(),
                 getFilesToItems(),
                 getFilesToProducts(),
-                getProducts(),
+                getProduct(),
                 getAccounts(),
-                getMessages(),
+                getMessage(),
                 getProductListItems(),
-                getCompanies(),
-                getWebShops(),
+                getCompany(),
+                getWebShop(),
                 getTemplate(),
-                getReminders(),
-                getStages(),
+                getReminder(),
+                getStage(),
                 getTaxes()
             }));
 
@@ -272,19 +272,19 @@ public class Context {
         list.add(getOffer());
         list.add(getSchedule());
         list.add(getContact());
-        list.add(getProducts());
+        list.add(getProduct());
         list.add(getAccounts());
-        list.add(getMessages());
+        list.add(getMessage());
         list.add(getProductListItems());
         list.add(getSearchIndex());
         list.add(getGlobalSettings());
-        list.add(getCompanies());
-        list.add(getWebShops());
+        list.add(getCompany());
+        list.add(getWebShop());
         list.add(getTemplate());
-        list.add(getReminders());
-        list.add(getStages());
-        list.add(getExpenses());
-        list.add(getRevenues());
+        list.add(getReminder());
+        list.add(getStage());
+        list.add(getExpense());
+        list.add(getRevenue());
         list.add(getTaxes());
         return list;
     }
@@ -304,10 +304,10 @@ public class Context {
         list.add(getOrder());
         list.add(getOffer());
         list.add(getContact());
-        list.add(getProducts());
+        list.add(getProduct());
         list.add(getFiles());
-        list.add(getExpenses());
-        list.add(getRevenues());
+        list.add(getExpense());
+        list.add(getRevenue());
         return list;
     }
 
@@ -332,7 +332,7 @@ public class Context {
         list.add(getOrder());
         list.add(getSchedule());
         list.add(getContact());
-        list.add(getProducts());
+        list.add(getProduct());
         list.add(getAccounts());
         return list;
     }
@@ -347,12 +347,12 @@ public class Context {
         list.add(getItem(null, null));
         list.add(getSchedule());
         list.add(getContact());
-        list.add(getProducts());
+        list.add(getProduct());
         list.add(getContactsCompanies());
         list.add(getCustomer());
         list.add(getSupplier());
         list.add(getManufacturer());
-        list.add(getWebShops());
+        list.add(getWebShop());
         return list;
     }
 
@@ -365,7 +365,7 @@ public class Context {
         list.add(getItem(null, null));
         list.add(getSchedule());
         list.add(getContact());
-        list.add(getProducts());
+        list.add(getProduct());
         list.add(getAccounts());
         return list;
     }
@@ -384,7 +384,7 @@ public class Context {
                 getContactsCompanies(),
                 getContact(),
                 getCustomer(),
-                getFavourites(),
+                getFavourite(),
                 getFiles(),
                 getLanguage(),
                 getLock(),
@@ -402,28 +402,28 @@ public class Context {
                 getFilesToContacts(),
                 getHistory(),
                 getCountries(),
-                getProducts(),
+                getProduct(),
                 getPlugins(),
                 getPluginsToUsers(),
                 getTemplatesToUsers(),
                 getProperties(),
                 getAccounts(),
                 getItemsToAccounts(),
-                getMessages(),
+                getMessage(),
                 getProductListItems(),
                 getFormats(),
                 getTaxes(),
                 getGlobalSettings(),
-                getCompanies(),
-                getWebShops(),
+                getCompany(),
+                getWebShop(),
                 getWebShopItemMapping(),
                 getWebShopContactMapping(),
                 getTemplate(),
-                getReminders(),
-                getStages(),
+                getReminder(),
+                getStage(),
                 getProductlist(),
-                getExpenses(),
-                getRevenues()
+                getExpense(),
+                getRevenue()
             }));
 //    private String[] searchHeaders;
     private ArrayList<String[]> references = new ArrayList<String[]>();
@@ -433,14 +433,14 @@ public class Context {
     private int id = -1;
 
     /**
-     * Create a new Context instance with the given do as owner
-     * @param parentobject
+     * Constructor now private
      */
-    public Context(DatabaseObject parentobject) {
-        if (parentobject != null) {
-            setOwner(parentobject);
-        }
+    private Context() {
     }
+    /**
+     * A default, empty Context without id
+     */
+    public static Context DEFAULT = new Context();
     private Class identityClass = null;
     /*
      * The DB Identity name - usually the table
@@ -456,10 +456,6 @@ public class Context {
      * The search default result columns
      */
     private String defResultFields = null;
-    private DatabaseObject parent;
-
-    private Context() {
-    }
 
     /**
      *
@@ -747,14 +743,13 @@ public class Context {
         return query;
     }
 
-    /**
-     * Define the owner of this Context
-     * @param parentobject
-     */
-    public void setOwner(DatabaseObject parentobject) {
-        this.parent = parentobject;
-    }
-
+//    /**
+//     * Define the owner of this Context
+//     * @param parentobject
+//     */
+//    public void setOwner(DatabaseObject parentobject) {
+//        this.parent = parentobject;
+//    }
     /**
      * Remove all exclusive conditions or reuse them
      * @param bool
@@ -812,10 +807,10 @@ public class Context {
 //    public String[] getSearchHeaders() {
 //        return searchHeaders;
 //    }
-
-    public DatabaseObject getParent() {
-        return parent;
-    }
+//
+//    public DatabaseObject getParent() {
+//        return parent;
+//    }
 
     /**
      * @param dbIdentity the dbIdentity to set
@@ -1016,7 +1011,7 @@ public class Context {
 //        this.isOffer = isOffer;
 //    }
     public static Context getContactsCompanies() {
-        Context c = new Context(new Contact());
+        Context c = new Context();
         c.setCompany(true);
         c.setSubID(DEFAULT_SUBID);
         c.setDbIdentity(IDENTITY_CONTACTS);
@@ -1035,7 +1030,7 @@ public class Context {
      * @return
      */
     public static Context getItem(Integer type, Integer status) {
-        Context c = new Context(new Item());
+        Context c = new Context();
         c.setSubID(DEFAULT_SUBID);
         c.setDbIdentity(IDENTITY_ITEMS);
         c.setSearchFields(DEFAULT_ITEM_SEARCH);
@@ -1052,12 +1047,12 @@ public class Context {
         return c;
     }
 
-    public static Context getItems() {
+    public static Context getItem() {
         return getItem(null, null);
     }
 
     public static Context getSubItem() {
-        Context c = new Context(new SubItem());
+        Context c = new Context();
         c.setSubID(DEFAULT_SUBID);
         c.setDbIdentity(IDENTITY_SUBITEMS);
         c.setIdentityClass(IDENTITY_SUBITEMS_CLASS);
@@ -1067,7 +1062,7 @@ public class Context {
     }
 
     public static Context getCustomer() {
-        Context c = new Context(new Contact());
+        Context c = new Context();
         c.setCustomer(true);
         c.setSubID(DEFAULT_SUBID);
         c.setDbIdentity(IDENTITY_CONTACTS);
@@ -1080,7 +1075,7 @@ public class Context {
     }
 
     public static Context getManufacturer() {
-        Context c = new Context(new Contact());
+        Context c = new Context();
         c.setManufacturer(true);
         c.setSubID(DEFAULT_SUBID);
         c.setDbIdentity(IDENTITY_CONTACTS);
@@ -1093,7 +1088,7 @@ public class Context {
     }
 
     public static Context getSupplier() {
-        Context c = new Context(new Contact());
+        Context c = new Context();
         c.setSupplier(true);
         c.setSubID(DEFAULT_SUBID);
         c.setDbIdentity(IDENTITY_CONTACTS);
@@ -1106,7 +1101,7 @@ public class Context {
     }
 
     public static Context getContact() {
-        Context c = new Context(new Contact());
+        Context c = new Context();
         c.setSubID(DEFAULT_SUBID);
         c.setDbIdentity(IDENTITY_CONTACTS);
         c.setSearchFields(DEFAULT_CONTACT_SEARCH);
@@ -1118,7 +1113,7 @@ public class Context {
     }
 
     public static Context getUser() {
-        Context c = new Context(new User());
+        Context c = new Context();
         c.setSubID(DEFAULT_SUBID);
         c.setDbIdentity(IDENTITY_USERS);
         c.setSearchFields(DEFAULT_USER_SEARCH);
@@ -1187,7 +1182,7 @@ public class Context {
         return c;
     }
 
-    public static Context getFavourites() {
+    public static Context getFavourite() {
         Context c = new Context();
         c.setSubID(DEFAULT_SUBID);
         c.setDbIdentity(IDENTITY_FAVS);
@@ -1208,7 +1203,7 @@ public class Context {
     }
 
     public static Context getBill() {
-        Context c = new Context(new Item());
+        Context c = new Context();
         c.setSubID(DEFAULT_SUBID);
         c.setDbIdentity(IDENTITY_ITEMS);
         c.setSearchFields(DEFAULT_ITEM_SEARCH);
@@ -1221,7 +1216,7 @@ public class Context {
     }
 
     public static Context getOrder() {
-        Context c = new Context(new Item());
+        Context c = new Context();
         c.setSubID(DEFAULT_SUBID);
         c.setDbIdentity(IDENTITY_ITEMS);
         c.setSearchFields(DEFAULT_ITEM_SEARCH);
@@ -1234,7 +1229,7 @@ public class Context {
     }
 
     public static Context getOffer() {
-        Context c = new Context(new Item());
+        Context c = new Context();
         c.setSubID(DEFAULT_SUBID);
         c.setDbIdentity(IDENTITY_ITEMS);
         c.setSearchFields(DEFAULT_ITEM_SEARCH);
@@ -1275,7 +1270,7 @@ public class Context {
         return c;
     }
 
-    public static Context getProducts() {
+    public static Context getProduct() {
         Context c = new Context();
         c.setSubID(DEFAULT_SUBID);
         c.setDbIdentity(IDENTITY_PRODUCTS);
@@ -1345,7 +1340,7 @@ public class Context {
         return c;
     }
 
-    public static Context getMessages() {
+    public static Context getMessage() {
         Context c = new Context();
         c.setSubID(DEFAULT_SUBID);
         c.setDbIdentity(IDENTITY_MAIL);
@@ -1425,7 +1420,7 @@ public class Context {
         return c;
     }
 
-    public static Context getCompanies() {
+    public static Context getCompany() {
         Context c = new Context();
         c.setSubID(DEFAULT_SUBID);
         c.setDbIdentity(IDENTITY_COMPANIES);
@@ -1435,7 +1430,7 @@ public class Context {
         return c;
     }
 
-    public static Context getWebShops() {
+    public static Context getWebShop() {
         Context c = new Context();
         c.setSubID(DEFAULT_SUBID);
         c.setDbIdentity(IDENTITY_WEBSHOPS);
@@ -1484,7 +1479,7 @@ public class Context {
         return c;
     }
 
-    public static Context getReminders() {
+    public static Context getReminder() {
         Context c = new Context();
         c.setSubID(DEFAULT_SUBID);
         c.setDbIdentity(IDENTITY_REMINDERS);
@@ -1494,7 +1489,7 @@ public class Context {
         return c;
     }
 
-    public static Context getStages() {
+    public static Context getStage() {
         Context c = new Context();
         c.setSubID(DEFAULT_SUBID);
         c.setDbIdentity(IDENTITY_STAGES);
@@ -1504,7 +1499,7 @@ public class Context {
         return c;
     }
 
-    public static Context getRevenues() {
+    public static Context getRevenue() {
         Context c = new Context();
         c.setSubID(DEFAULT_SUBID);
         c.setDbIdentity(IDENTITY_REVENUE);
@@ -1514,7 +1509,7 @@ public class Context {
         return c;
     }
 
-    public static Context getExpenses() {
+    public static Context getExpense() {
         Context c = new Context();
         c.setSubID(DEFAULT_SUBID);
         c.setDbIdentity(IDENTITY_EXPENSE);
@@ -1599,5 +1594,4 @@ public class Context {
         hash = 47 * hash + (this.dbIdentity != null ? this.dbIdentity.hashCode() : 0);
         return hash;
     }
-
 }

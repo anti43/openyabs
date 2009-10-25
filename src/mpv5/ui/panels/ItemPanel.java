@@ -182,7 +182,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
                     }
                 } else if (e.getButton() == MouseEvent.BUTTON3) {
                     MPTableModel m = (MPTableModel) itemtable.getModel();
-                    Product p = (Product) Popup.SelectValue(Context.getProducts());
+                    Product p = (Product) Popup.SelectValue(Context.getProduct());
                     if (p != null) {
                         int row = m.getLastValidRow(new int[]{4});
                         m.setRowAt(new SubItem(p).getRowData(row), row + 1, 1);
@@ -210,7 +210,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
         number.setSearchOnEnterEnabled(true);
         number.setParent(this);
         number.setSearchField("cname");
-        number.setContext(Context.getItems());
+        number.setContext(Context.getItem());
 
         ((SpinnerNumberModel) calculator.getSpinner().getModel()).setMinimum(-1000);
         ((SpinnerNumberModel) calculator.getSpinner().getModel()).setMaximum(1000);
@@ -298,7 +298,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
         } else if (object instanceof SubItem) {
             Item i;
             try {
-                i = (Item) DatabaseObject.getObject(Context.getItems(), ((SubItem) object).__getItemsids());
+                i = (Item) DatabaseObject.getObject(Context.getItem(), ((SubItem) object).__getItemsids());
                 setDataOwner(i, populate);
             } catch (NodataFoundException ex) {
                 Log.Debug(ex);
@@ -1342,7 +1342,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
     @Override
     @SuppressWarnings("unchecked")
     public void paste(DatabaseObject dbo) {
-        if (dbo.getContext().equals(Context.getItems())) {
+        if (dbo.getContext().equals(Context.getItem())) {
             ((Item) dbo).setIntstatus(Item.STATUS_IN_PROGRESS);
             ((Item) dbo).setInttype(inttype_);
 
@@ -1555,7 +1555,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
         TableCellRendererForDezimal tc = new TableCellRendererForDezimal(itemtable, Color.LIGHT_GRAY);
         tc.setRendererTo(7);
 
-        CellEditorWithMPComboBox r = new CellEditorWithMPComboBox(Context.getProducts(), itemtable);
+        CellEditorWithMPComboBox r = new CellEditorWithMPComboBox(Context.getProduct(), itemtable);
         r.setEditorTo(4, this);
         itemMultiplier = new TableCalculator(itemtable, new int[]{2, 5, 6}, new int[]{7}, new int[]{6}, TableCalculator.ACTION_MULTIPLY, new int[]{7});
         ((MPTableModel) itemtable.getModel()).addCalculator(itemMultiplier);

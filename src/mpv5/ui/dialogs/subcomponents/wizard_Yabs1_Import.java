@@ -283,7 +283,7 @@ public class wizard_Yabs1_Import extends javax.swing.JPanel implements Wizardabl
                 }
 
                 if (products.isSelected()) {
-                    importObjects(Context.getProducts());
+                    importObjects(Context.getProduct());
                 }
             }
 

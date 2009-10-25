@@ -546,7 +546,7 @@ public class ControlPanel_Userproperties extends javax.swing.JPanel implements C
             generate();
         }
         try {
-            MPView.getUser().getProperties().changeProperty(Context.getProducts() + LightMPComboBox.VALUE_SEARCHFIELDS, format.getText());
+            MPView.getUser().getProperties().changeProperty(Context.getProduct() + LightMPComboBox.VALUE_SEARCHFIELDS, format.getText());
             MPView.getUser().getProperties().changeProperty(defcount.getName(), defcount.getText());
             MPView.getUser().getProperties().changeProperty(defunit.getName(), defunit.getText());
             MPView.getUser().getProperties().changeProperty(MPView.tabPane, "norecycletabs", tabs.isSelected());
@@ -601,16 +601,16 @@ public class ControlPanel_Userproperties extends javax.swing.JPanel implements C
         Component[] t = productstobillsproperties.getComponents();
         for (int i = 0; i < t.length; i++) {
             Component component = t[i];
-            if (MPView.getUser().getProperties().hasProperty(Context.getProducts() + LightMPComboBox.VALUE_SEARCHFIELDS)) {
+            if (MPView.getUser().getProperties().hasProperty(Context.getProduct() + LightMPComboBox.VALUE_SEARCHFIELDS)) {
                 if (component instanceof JCheckBox) {
                     try {
-                        ((JCheckBox) component).setSelected(MPView.getUser().getProperties().getProperty(Context.getProducts() + LightMPComboBox.VALUE_SEARCHFIELDS).contains(component.getName()));
+                        ((JCheckBox) component).setSelected(MPView.getUser().getProperties().getProperty(Context.getProduct() + LightMPComboBox.VALUE_SEARCHFIELDS).contains(component.getName()));
                     } catch (Exception e) {
                     }
                 }
             }
         }
-        String s = MPView.getUser().getProperties().getProperty(Context.getProducts() + LightMPComboBox.VALUE_SEARCHFIELDS);
+        String s = MPView.getUser().getProperties().getProperty(Context.getProduct() + LightMPComboBox.VALUE_SEARCHFIELDS);
         if (s != null) {
             format.setText(s);
         } else {

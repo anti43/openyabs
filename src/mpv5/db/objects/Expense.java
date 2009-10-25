@@ -44,8 +44,7 @@ public class Expense extends DatabaseObject implements Formattable {
     private FormatHandler formatHandler;
 
     public Expense() {
-        context.setDbIdentity(Context.IDENTITY_EXPENSE);
-        context.setIdentityClass(this.getClass());
+        context = Context.getExpense();
     }
 
     /**
@@ -152,7 +151,7 @@ public class Expense extends DatabaseObject implements Formattable {
      * @throws NodataFoundException
      */
     public static Object[][] getExpenses() throws NodataFoundException {
-        ArrayList<DatabaseObject> data = getObjects(Context.getExpenses());
+        ArrayList<DatabaseObject> data = getObjects(Context.getExpense());
         Object[][] obj = new Object[data.size()][];
         for (int i = 0; i < data.size(); i++) {
             Expense e = (Expense) data.get(i);

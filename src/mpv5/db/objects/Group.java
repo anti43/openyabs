@@ -36,8 +36,7 @@ public class Group extends DatabaseObject {
     public static String GROUPSEPARATOR = " > ";
 
     public Group() {
-        context.setDbIdentity(Context.IDENTITY_GROUPS);
-        context.setIdentityClass(this.getClass());
+        context = Context.getGroup();
     }
 
     public Group(String name) {

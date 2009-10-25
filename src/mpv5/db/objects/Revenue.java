@@ -45,8 +45,7 @@ public class Revenue extends DatabaseObject implements Formattable {
     private FormatHandler formatHandler;
 
     public Revenue() {
-        context.setDbIdentity(Context.IDENTITY_REVENUE);
-        context.setIdentityClass(this.getClass());
+        context = Context.getRevenue();
     }
 
     /**
@@ -153,7 +152,7 @@ public class Revenue extends DatabaseObject implements Formattable {
      * @throws NodataFoundException
      */
     public static Object[][] getRevenues() throws NodataFoundException {
-        ArrayList<DatabaseObject> data = getObjects(Context.getRevenues());
+        ArrayList<DatabaseObject> data = getObjects(Context.getRevenue());
         Object[][] obj = new Object[data.size()][];
         for (int i = 0; i < data.size(); i++) {
             Revenue e = (Revenue) data.get(i);

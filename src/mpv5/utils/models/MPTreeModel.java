@@ -89,7 +89,7 @@ public class MPTreeModel extends DefaultTreeModel {
         ArrayList<DatabaseObject> items = null;
 
         try {
-            items = DatabaseObject.getReferencedObjects(obj, Context.getItems(), DatabaseObject.getObject(Context.getItems()));
+            items = DatabaseObject.getReferencedObjects(obj, Context.getItem(), DatabaseObject.getObject(Context.getItem()));
 
             for (int i = 0; i < items.size(); i++) {
                 Item item = (Item) items.get(i);

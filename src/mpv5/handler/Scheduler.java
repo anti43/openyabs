@@ -133,7 +133,7 @@ public class Scheduler extends Thread {
                     for (int i = 0; i < d.length; i++) {
                         int id = Integer.valueOf(d[i][0].toString());
                         try {
-                            Item it = (Item) Item.getObject(Context.getItems(), id);
+                            Item it = (Item) Item.getObject(Context.getItem(), id);
                             warnings.add(it);
                         } catch (NodataFoundException ex) {
                             Log.Debug(ex);
@@ -160,7 +160,7 @@ public class Scheduler extends Thread {
                 for (int i = 0; i < d.length; i++) {
                     int id = Integer.valueOf(d[i][0].toString());
                     try {
-                        Item it = (Item) Item.getObject(Context.getItems(), id);
+                        Item it = (Item) Item.getObject(Context.getItem(), id);
                         alerts.add(it);
                     } catch (NodataFoundException ex) {
                         Log.Debug(ex);
@@ -181,7 +181,7 @@ public class Scheduler extends Thread {
                 for (int i = 0; i < d.length; i++) {
                     int id = Integer.valueOf(d[i][0].toString());
                     try {
-                        Item it = (Item) Item.getObject(Context.getItems(), id);
+                        Item it = (Item) Item.getObject(Context.getItem(), id);
                         waitings.add(it);
                     } catch (NodataFoundException ex) {
                         Log.Debug(this, ex.getMessage());

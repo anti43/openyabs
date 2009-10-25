@@ -125,8 +125,7 @@ public class WSContactsMapping extends DatabaseObject {
      * Create a new mapping
      */
     public WSContactsMapping() {
-        context.setIdentityClass(this.getClass());
-        context.setDbIdentity(Context.IDENTITY_WSMAPPING);
+        context = Context.getWebShopContactMapping();
     }
 
     @Override

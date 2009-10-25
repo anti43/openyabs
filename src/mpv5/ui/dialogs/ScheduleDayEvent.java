@@ -307,7 +307,7 @@ public class ScheduleDayEvent extends javax.swing.JFrame {
 
     private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
         try {
-            MPView.identifierView.addTab(DatabaseObject.getObject(Context.getItems(), Integer.valueOf(labeledCombobox1.getSelectedItem().getId())));
+            MPView.identifierView.addTab(DatabaseObject.getObject(Context.getItem(), Integer.valueOf(labeledCombobox1.getSelectedItem().getId())));
         } catch (Exception ex) {
             Log.Debug(this, ex.getMessage());
         }
@@ -351,7 +351,7 @@ public class ScheduleDayEvent extends javax.swing.JFrame {
     private void save(Schedule s) {
         if (s != null) {
             try {
-                Item i = (Item) DatabaseObject.getObject(Context.getItems(),
+                Item i = (Item) DatabaseObject.getObject(Context.getItem(),
                         Integer.valueOf(labeledCombobox1.getSelectedItem().getId()));
                 s.setCName("(" + Messages.SCHEDULE + ") " + i.toString());
                 s.setItemsids(i.__getIDS());

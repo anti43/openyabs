@@ -484,7 +484,7 @@ public class ControlPanel_Formats extends javax.swing.JPanel implements ControlA
         }
 
         String str = "";
-        Item b = (Item) DatabaseObject.getObject(Context.getItems());
+        Item b = (Item) DatabaseObject.getObject(Context.getItem());
         b.avoidNulls();
 
         FormatHandler fh = new FormatHandler(b);

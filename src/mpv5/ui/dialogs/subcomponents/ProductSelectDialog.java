@@ -89,7 +89,7 @@ public class ProductSelectDialog extends javax.swing.JPanel {
         taxrate.triggerSearch();
         value.set_ValueClass(Double.class);
         measure1.set_ValueClass(Double.class);
-        labeledCombobox1.setContext(Context.getProducts());
+        labeledCombobox1.setContext(Context.getProduct());
         labeledCombobox1.getComboBox().addItemListener(new ItemListener() {
 
             public void itemStateChanged(ItemEvent e) {
@@ -221,7 +221,7 @@ public class ProductSelectDialog extends javax.swing.JPanel {
 
     private void statech() {
         try {
-            Product p = (Product) Product.getObject(Context.getProducts(), Integer.valueOf(labeledCombobox1.getSelectedItem().getId()));
+            Product p = (Product) Product.getObject(Context.getProduct(), Integer.valueOf(labeledCombobox1.getSelectedItem().getId()));
             measure.setText(p.__getMeasure());
             value.setText(FormatNumber.formatDezimal(p.__getExternalnetvalue()));
             taxrate.setSelectedItem(p.__getTaxids());
@@ -240,7 +240,7 @@ public class ProductSelectDialog extends javax.swing.JPanel {
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         SubItem s;
         try {
-            s = new SubItem((Product) Product.getObject(Context.getProducts(), Integer.valueOf(labeledCombobox1.getSelectedItem().getId())));
+            s = new SubItem((Product) Product.getObject(Context.getProduct(), Integer.valueOf(labeledCombobox1.getSelectedItem().getId())));
         } catch (Exception ex) {
             s = SubItem.getDefaultItem();
             if (labeledCombobox1.getText() != null) {

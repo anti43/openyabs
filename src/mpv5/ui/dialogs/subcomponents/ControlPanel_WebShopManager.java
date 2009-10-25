@@ -464,7 +464,7 @@ public class ControlPanel_WebShopManager extends javax.swing.JPanel implements C
         list.setModel(new DefaultListModel());
         list.validate();
         try {
-            ArrayList<DatabaseObject> data = DatabaseObject.getObjects(Context.getWebShops());
+            ArrayList<DatabaseObject> data = DatabaseObject.getObjects(Context.getWebShop());
             DefaultListModel xl = new DefaultListModel();
             Log.Debug(this, "Shops found: " + data.size());
             for (int i = 0; i < data.size(); i++) {

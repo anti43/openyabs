@@ -713,7 +713,7 @@ public class ControlPanel_Users extends javax.swing.JPanel implements ControlApp
         groupname.setModel(new DefaultComboBoxModel(
                 MPComboBoxModelItem.toItems(new DatabaseSearch(Context.getGroup()).getValuesFor(Context.getGroup().getSubID(), null, ""))));
         companyselect.setModel(new DefaultComboBoxModel(
-                MPComboBoxModelItem.toItems(new DatabaseSearch(Context.getCompanies()).getValuesFor(Context.getCompanies().getSubID(), null, ""))));
+                MPComboBoxModelItem.toItems(new DatabaseSearch(Context.getCompany()).getValuesFor(Context.getCompany().getSubID(), null, ""))));
         accountlist.setModel(new DefaultComboBoxModel(
                 MPComboBoxModelItem.toItems(new DatabaseSearch(Context.getAccounts()).getValuesFor(Context.getAccounts().getSubID(), null, ""))));
         statuslist.setModel(MPComboBoxModelItem.toModel(Item.getStatusStrings()));

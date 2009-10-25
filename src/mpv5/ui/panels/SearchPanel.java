@@ -60,11 +60,11 @@ public class SearchPanel extends javax.swing.JPanel {
     public void refresh() {
         search(lasttype, lastneedle);
     }
-
-    public void setContextOwner(DatabaseObject object) {
-        context.setOwner(object);
-        refresh();
-    }
+//
+//    public void setContextOwner(DatabaseObject object) {
+//        context.setOwner(object);
+//        refresh();
+//    }
 
     /** This me4thod is called from within the constructor to
      * initialize the form.

@@ -66,8 +66,7 @@ public class Tax extends DatabaseObject {
     }
 
     public Tax() {
-        context.setDbIdentity(Context.IDENTITY_TAX);
-        context.setIdentityClass(this.getClass());
+        context = Context.getTaxes();
     }
 
     @Override

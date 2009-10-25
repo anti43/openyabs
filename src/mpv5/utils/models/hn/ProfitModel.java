@@ -42,7 +42,7 @@ public class ProfitModel extends AccountCalcModel {
     String end = dates.getEndDay();
 
     if (!(start.equals(super.getStart()) || end.equals(super.getEnd()))) {
-      String query = Context.getItems().prepareSQLString(
+      String query = Context.getItem().prepareSQLString(
           "select a.INTACCOUNTCLASS, a.CNAME, sum(i.NETVALUE), a.intprofitfid " +
           "from items i, accounts a where i.inttype = 0 and i.intstatus = 4 " +
           "and i.DATEEND between '" + start + "' and '" + end +

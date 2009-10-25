@@ -42,8 +42,7 @@ public class Address extends DatabaseObject {
     private int inttype = 2;// [0 = billing adress, 1 = delivery adress, 2 = both, 3 = undefined]
 
     public Address(){
-        context.setDbIdentity(Context.IDENTITY_ADDRESS);
-        context.setIdentityClass(this.getClass());
+        context = Context.getAddress();
     }
 
 

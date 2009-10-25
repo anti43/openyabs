@@ -147,20 +147,17 @@ public class User extends DatabaseObject {
      * @throws mpv5.db.common.NodataFoundException
      */
     public User(int userid) throws NodataFoundException {
-        context.setDbIdentity(Context.IDENTITY_USERS);
-        context.setIdentityClass(User.class);
+        this();
         this.fetchDataOf(userid);
         setProperties();
     }
 
     public User() {
-        context.setDbIdentity(Context.IDENTITY_USERS);
-        context.setIdentityClass(User.class);
+        context = Context.getUser();
     }
 
     private User(String fullname, String userid, int highright, int IDS) {
-        context.setDbIdentity(Context.IDENTITY_USERS);
-        context.setIdentityClass(User.class);
+        this();
         this.fullname = fullname;
         this.cname = userid;
         this.inthighestright = highright;

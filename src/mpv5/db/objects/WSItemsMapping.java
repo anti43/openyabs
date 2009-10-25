@@ -94,8 +94,7 @@ public class WSItemsMapping extends DatabaseObject {
      * Create a new mapping
      */
     public WSItemsMapping() {
-        context.setIdentityClass(this.getClass());
-        context.setDbIdentity(Context.IDENTITY_WSMAPPING);
+        context = Context.getWebShopItemMapping();
     }
 
     @Override

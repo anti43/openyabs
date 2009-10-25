@@ -107,8 +107,7 @@ public class Product extends DatabaseObject implements Formattable {
     private FormatHandler formatHandler;
 
     public Product() {
-        context.setDbIdentity(Context.IDENTITY_PRODUCTS);
-        context.setIdentityClass(Product.class);
+        context = Context.getProduct();
     }
 
     @Override

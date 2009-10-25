@@ -193,8 +193,7 @@ public class Item extends DatabaseObject implements Formattable {
     private FormatHandler formatHandler;
 
     public Item() {
-        context.setDbIdentity(Context.IDENTITY_ITEMS);
-        context.setIdentityClass(Item.class);
+        context = Context.getItem();
     }
 
     /**
@@ -282,7 +281,7 @@ public class Item extends DatabaseObject implements Formattable {
 
     @Override
     public JComponent getView() {
-        ItemPanel p = new ItemPanel(Context.getItems(), __getInttype());
+        ItemPanel p = new ItemPanel(Context.getItem(), __getInttype());
         return p;
     }
 

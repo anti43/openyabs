@@ -39,8 +39,7 @@ public class FileToProduct extends DatabaseObject {
     private File file;
 
     public FileToProduct() {
-        context.setDbIdentity(Context.IDENTITY_FILES_TO_PRODUCTS);
-        context.setIdentityClass(this.getClass());
+        context = Context.getFilesToProducts();
     }
 
     @Override

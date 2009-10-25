@@ -30,7 +30,7 @@ public class DatabaseSearch {
      * @param obj The DBOBJ the search will rely on
      */
     public DatabaseSearch(DatabaseObject obj) {
-        this.context = new Context(obj);
+        this.context = obj.getContext();
         context.setDbIdentity(obj.getDbIdentity());
         context.setSubID(Context.DEFAULT_SUBID);
     }

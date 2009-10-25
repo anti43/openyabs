@@ -22,7 +22,7 @@ public class TaxModel extends AccountCalcModel {
     String start = dates.getStartDay();
     String end = dates.getEndDay();
     if (!(start.equals(super.getStart())) || (end.equals(super.getEnd()))) {
-      String query = Context.getItems().prepareSQLString("select a.INTPROFITFID, sum(i.TAXVALUE) " +
+      String query = Context.getItem().prepareSQLString("select a.INTPROFITFID, sum(i.TAXVALUE) " +
           "from items i, accounts a where i.DATEEND between '" + start +
           "' and '" + end + "' and i.DEFAULTACCOUNTSIDS = " +
           "a.IDS and a.INTACCOUNTCLASS > 0 and a.frame = '" +

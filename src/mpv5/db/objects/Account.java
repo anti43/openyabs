@@ -92,8 +92,7 @@ public class Account extends DatabaseObject {
     }
 
     public Account() {
-        context.setDbIdentity(Context.IDENTITY_ACCOUNTS);
-        context.setIdentityClass(this.getClass());
+        context = Context.getAccounts();
     }
     private int intparentaccount;
     private int intaccountclass;
@@ -152,7 +151,7 @@ public class Account extends DatabaseObject {
      * @throws mpv5.db.common.NodataFoundException
      */
     public ArrayList<Item> getItemsInAccount() throws NodataFoundException {
-        ArrayList<Item> tmp = DatabaseObject.getReferencedObjects((Item) DatabaseObject.getObject(Context.getItems()), Context.getItemsToAccounts());
+        ArrayList<Item> tmp = DatabaseObject.getReferencedObjects((Item) DatabaseObject.getObject(Context.getItem()), Context.getItemsToAccounts());
 
         QueryCriteria c = new QueryCriteria();
         c.addAndCondition("defaultaccountsids", this.__getIDS());

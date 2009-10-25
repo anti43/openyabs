@@ -366,7 +366,7 @@ public class ControlPanel_MailTemplates extends javax.swing.JPanel implements Co
         ArrayList<DatabaseObject> temps;
         try {
             QueryCriteria c = new QueryCriteria("usersids", MPView.getUser().__getIDS());
-            temps = DatabaseObject.getObjects(Context.getMessages());
+            temps = DatabaseObject.getObjects(Context.getMessage());
             Object[][] data = new Object[temps.size()][3];
 
             for (int i = 0; i < temps.size(); i++) {

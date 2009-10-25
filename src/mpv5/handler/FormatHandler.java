@@ -196,7 +196,7 @@ public class FormatHandler {
      * Contains all formattable Contexts
      */
     public static List<Context> FORMATTABLE_CONTEXTS = new Vector<Context>(Arrays.asList(new Context[]{
-                Context.getContact(), Context.getCustomer(), Context.getManufacturer(), Context.getSupplier(), Context.getProducts(), Context.getItems(), Context.getExpenses(), Context.getRevenues(), Context.getOffer(), Context.getOrder(), Context.getBill()
+                Context.getContact(), Context.getCustomer(), Context.getManufacturer(), Context.getSupplier(), Context.getProduct(), Context.getItem(), Context.getExpense(), Context.getRevenue(), Context.getOffer(), Context.getOrder(), Context.getBill()
             }));
 
     /**
@@ -210,10 +210,10 @@ public class FormatHandler {
             if (FORMATTABLE_CONTEXTS.contains(forThis.getContext())) {
 
                 String query = "";
-                if (forThis.getContext().equals(Context.getItems())) {
+                if (forThis.getContext().equals(Context.getItem())) {
                     query = "SELECT cnumber FROM " + forThis.getDbIdentity() + " WHERE ids = (SELECT MAX(ids) from " + forThis.getDbIdentity() + " WHERE inttype =" +
                             ((Item) forThis).__getInttype() + ")";
-                } else if (forThis.getContext().equals(Context.getProducts())) {
+                } else if (forThis.getContext().equals(Context.getProduct())) {
                     query = "SELECT cnumber FROM " + forThis.getDbIdentity() + " WHERE ids = (SELECT MAX(ids) from " + forThis.getDbIdentity() + " WHERE inttype =" +
                             ((Product) forThis).__getInttype() + ")";
                 } else {
@@ -245,10 +245,10 @@ public class FormatHandler {
         DatabaseObject forThis = source;
 
         String query = "";
-        if (forThis.getContext().equals(Context.getItems())) {
+        if (forThis.getContext().equals(Context.getItem())) {
             query = "SELECT cnumber FROM " + forThis.getDbIdentity() + " WHERE cnumber = '" + toString(lastNumber + 1) + "' AND inttype =" +
                     ((Item) forThis).__getInttype();
-        } else if (forThis.getContext().equals(Context.getProducts())) {
+        } else if (forThis.getContext().equals(Context.getProduct())) {
             query = "SELECT cnumber FROM " + forThis.getDbIdentity() + " WHERE cnumber = '" + toString(lastNumber + 1) + "' AND inttype =" +
                     ((Product) forThis).__getInttype();
         } else {

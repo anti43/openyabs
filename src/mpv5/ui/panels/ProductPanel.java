@@ -198,12 +198,12 @@ public class ProductPanel extends javax.swing.JPanel implements DataPanel, MPCBS
         cnumber.setSearchOnEnterEnabled(true);
         cnumber.setParent(this);
         cnumber.setSearchField("cnumber");
-        cnumber.setContext(Context.getProducts());
+        cnumber.setContext(Context.getProduct());
 
         cname.setSearchOnEnterEnabled(true);
         cname.setParent(this);
         cname.setSearchField("cname");
-        cname.setContext(Context.getProducts());
+        cname.setContext(Context.getProduct());
 
 
         selecttax.setSearchEnabled(true);
@@ -1153,7 +1153,7 @@ public class ProductPanel extends javax.swing.JPanel implements DataPanel, MPCBS
 
     @Override
     public void paste(DatabaseObject dbo) {
-        if (dbo.getDbIdentity().equals(Context.getProducts().getDbIdentity())) {
+        if (dbo.getDbIdentity().equals(Context.getProduct().getDbIdentity())) {
             setDataOwner(dbo, true);
         } else {
             MPView.addMessage(Messages.NOT_POSSIBLE.toString() + Messages.ACTION_PASTE.toString());

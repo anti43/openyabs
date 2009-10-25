@@ -31,8 +31,7 @@ public class ProductList extends DatabaseObject {
     private String description;
 
     public ProductList() {
-        context.setDbIdentity(Context.IDENTITY_PRODUCTSLIST);
-        context.setIdentityClass(this.getClass());
+        context = Context.getProductlist();
     }
 
     @Override

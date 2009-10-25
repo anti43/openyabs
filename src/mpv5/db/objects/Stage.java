@@ -16,16 +16,9 @@
  */
 package mpv5.db.objects;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JComponent;
 import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
-import mpv5.db.common.NodataFoundException;
-import mpv5.logging.Log;
 import mpv5.utils.images.MPIcon;
 
 /**
@@ -38,8 +31,7 @@ public class Stage extends DatabaseObject {
     private double extravalue;
 
     public Stage() {
-        context.setDbIdentity(Context.IDENTITY_STAGES);
-        context.setIdentityClass(this.getClass());
+        context = Context.getStage();
     }
 
     @Override

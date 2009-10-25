@@ -34,7 +34,7 @@ public class Favourite extends DatabaseObject {
     private int itemsids;
 
     public Favourite() {
-        context.setDbIdentity(Context.IDENTITY_FAVS);
+        context = Context.getFavourite();
     }
 
     public Favourite(DatabaseObject dato) {
@@ -80,7 +80,7 @@ public class Favourite extends DatabaseObject {
      * @return
      */
     public static boolean isFavourite(DatabaseObject dato) {
-        if (!mpv5.db.common.QueryHandler.instanceOf().clone(Context.getFavourites()).
+        if (!mpv5.db.common.QueryHandler.instanceOf().clone(Context.getFavourite()).
                 checkConstraint(new String[]{"cname", "usersids", "itemsids"},
                     new Object[]{dato.getDbIdentity(), MPView.getUser().__getIDS(),dato.__getIDS()})) {
             return true;
@@ -96,7 +96,7 @@ public class Favourite extends DatabaseObject {
      */
     public static void removeFavourite(DatabaseObject dato) {
         
-            mpv5.db.common.QueryHandler.instanceOf().clone(Context.getFavourites()).
+            mpv5.db.common.QueryHandler.instanceOf().clone(Context.getFavourite()).
                     delete(new String[]{"cname", "usersids", "itemsids"},
                     new Object[]{dato.getDbIdentity(), MPView.getUser().__getIDS(),dato.__getIDS()}, Messages.DONE.toString());
         
@@ -108,7 +108,7 @@ public class Favourite extends DatabaseObject {
      */
     public static Favourite[] getUserFavourites() {
 
-        Object[][] data = mpv5.db.common.QueryHandler.instanceOf().clone(Context.getFavourites()).select("cname, usersids, itemsids", new String[]{"usersids", MPView.getUser().__getIDS().toString(), ""});
+        Object[][] data = mpv5.db.common.QueryHandler.instanceOf().clone(Context.getFavourite()).select("cname, usersids, itemsids", new String[]{"usersids", MPView.getUser().__getIDS().toString(), ""});
         Favourite[] favs = new Favourite[data.length];
 
         for (int i = 0; i < favs.length; i++) {
@@ -137,7 +137,7 @@ public class Favourite extends DatabaseObject {
      * @param user
      */
     public static void flush(User user) {
-       mpv5.db.common.QueryHandler.instanceOf().clone(Context.getFavourites()).delete(new String[][]{{"usersids",user.__getIDS().toString(),""}},
+       mpv5.db.common.QueryHandler.instanceOf().clone(Context.getFavourite()).delete(new String[][]{{"usersids",user.__getIDS().toString(),""}},
                Messages.DONE.toString());
     }
 

@@ -44,13 +44,11 @@ public class ProductGroup extends DatabaseObject {
     private int productgroupsids;
 
     public ProductGroup() {
-        context.setDbIdentity(Context.IDENTITY_PGROUPS);
-        context.setIdentityClass(this.getClass());
+        context = Context.getProductGroup();
     }
 
     public ProductGroup(String name) {
-        context.setDbIdentity(Context.IDENTITY_PGROUPS);
-        context.setIdentityClass(this.getClass());
+        this();
         cname = name;
     }
 

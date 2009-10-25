@@ -44,8 +44,7 @@ public class Company extends DatabaseObject {
     private String taxadvmandant ="";
 
         public Company(){
-        context.setDbIdentity(Context.IDENTITY_COMPANIES);
-        context.setIdentityClass(this.getClass());
+        context = Context.getCompany();
     }
 
 

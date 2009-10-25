@@ -291,7 +291,7 @@ public class PreviewPanel extends javax.swing.JPanel implements Waiter {
 
             QueryCriteria c = new QueryCriteria("usersids", MPView.getUser().__getIDS());
             try {
-                m = (MailMessage) Popup.SelectValue(DatabaseObject.getObjects(Context.getMessages(), c), Messages.SELECT_A_TEMPLATE);
+                m = (MailMessage) Popup.SelectValue(DatabaseObject.getObjects(Context.getMessage(), c), Messages.SELECT_A_TEMPLATE);
             } catch (Exception ex) {
                 Log.Debug(this, ex.getMessage());
             }

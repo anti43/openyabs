@@ -16,14 +16,10 @@
  */
 package mpv5.db.objects;
 
-import java.util.ArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JComponent;
 
 import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
-import mpv5.db.common.NodataFoundException;
 import mpv5.db.common.QueryCriteria;
 import mpv5.db.common.QueryHandler;
 import mpv5.ui.frames.MPView;
@@ -35,8 +31,7 @@ import mpv5.ui.frames.MPView;
 public class Property extends DatabaseObject {
 
     public Property() {
-        context.setDbIdentity(Context.IDENTITY_PROPERTIES_TO_USERS);
-        context.setIdentityClass(this.getClass());
+        context = Context.getProperties();
     }
     private String value = "";
     private int usersids;

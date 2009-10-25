@@ -46,8 +46,7 @@ public class Contact extends DatabaseObject implements Formattable {
     private FormatHandler formatHandler;
 
     public Contact() {
-        context.setDbIdentity(Context.IDENTITY_CONTACTS);
-        context.setIdentityClass(this.getClass());
+        context = Context.getContact();
     }
 
     /**

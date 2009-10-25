@@ -47,8 +47,7 @@ public class Schedule extends DatabaseObject {
     private boolean isdone;
 
     public Schedule() {
-        context.setDbIdentity(Context.IDENTITY_SCHEDULE);
-        context.setIdentityClass(this.getClass());
+        context = Context.getSchedule();
     }
 
     /**
@@ -70,7 +69,7 @@ public class Schedule extends DatabaseObject {
      */
     public Item getItem() throws NodataFoundException {
         if (item == null) {
-            item = (Item) DatabaseObject.getObject(Context.getItems(), __getItemsids());
+            item = (Item) DatabaseObject.getObject(Context.getItem(), __getItemsids());
         }
         return item;
     }
@@ -106,7 +105,7 @@ public class Schedule extends DatabaseObject {
             String query =
                     "SELECT ids FROM " + Context.getSchedule().getDbIdentity() +
                     " WHERE itemsids IN (SELECT ids FROM " +
-                    Context.getItems().getDbIdentity() +
+                    Context.getItem().getDbIdentity() +
                     " WHERE contactsids = " + dataOwner.__getIDS() + ")";
             Object[][] data = QueryHandler.instanceOf().clone(Context.getSchedule()).freeSelectQuery(query, MPSecurityManager.VIEW, null).getData();
 

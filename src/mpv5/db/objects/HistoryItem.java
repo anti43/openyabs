@@ -34,8 +34,7 @@ public class HistoryItem extends DatabaseObject {
   private int intitem;
 
   public HistoryItem() {
-        context.setDbIdentity(Context.IDENTITY_HISTORY);
-        context.setIdentityClass(this.getClass());
+        context = Context.getHistory();
     }
 
 

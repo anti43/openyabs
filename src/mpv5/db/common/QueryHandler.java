@@ -631,7 +631,7 @@ public class QueryHandler implements Cloneable {
         }
         this.context = Context.getMatchingContext(newTable);
         if (this.context == null) {
-            this.context = new Context(null);
+            this.context = Context.DEFAULT;
             this.context.setDbIdentity(newTable);
         }
     }
@@ -1195,7 +1195,7 @@ public class QueryHandler implements Cloneable {
                 conds += " AND " + context.getGroupRestrictionSQLString();
             }
             if (context.getNoTrashSQLString() != null) {
-                conds += " AND " + mpv5.db.common.Context.getItems().getNoTrashSQLString();
+                conds += " AND " + mpv5.db.common.Context.getItem().getNoTrashSQLString();
             }
         }
         String query = "SELECT " + cols + " FROM " + table + conds;
@@ -1347,7 +1347,7 @@ public class QueryHandler implements Cloneable {
         QueryHandler theClone = null;
         this.context = Context.getMatchingContext(tablename);
         if (context == null) {
-            context = new Context(null);
+            context = Context.DEFAULT;
         }
         try {
             theClone = (QueryHandler) this.clone();
@@ -1367,7 +1367,7 @@ public class QueryHandler implements Cloneable {
         QueryHandler qh = null;
         try {
             qh = (QueryHandler) QueryHandler.instanceOf().clone();
-            qh.setContext(new Context(null));
+            qh.setContext(Context.DEFAULT);
             qh.runInBackground = false;
             return qh;
         } catch (CloneNotSupportedException ex) {
@@ -2170,9 +2170,9 @@ public class QueryHandler implements Cloneable {
             Context tc = null;
             if (dataOwner.getContext().equals(Context.getContact())) {
                 tc = Context.getFilesToContacts();
-            } else if (dataOwner.getContext().equals(Context.getItems())) {
+            } else if (dataOwner.getContext().equals(Context.getItem())) {
                 tc = Context.getFilesToItems();
-            } else if (dataOwner.getContext().equals(Context.getProducts())) {
+            } else if (dataOwner.getContext().equals(Context.getProduct())) {
                 tc = Context.getFilesToProducts();
             } else if (dataOwner.getContext().equals(Context.getTemplate())) {
                 tc = Context.getTemplate();

@@ -43,8 +43,7 @@ public class Reminder extends DatabaseObject {
     private int stagesids;
 
     public Reminder() {
-        context.setDbIdentity(Context.IDENTITY_REMINDERS);
-        context.setIdentityClass(this.getClass());
+        context = Context.getReminder();
     }
 
     @Override
@@ -118,7 +117,7 @@ public class Reminder extends DatabaseObject {
     public static List<Reminder> getRemindersOf(Item bill) {
         ArrayList<Reminder> data = new ArrayList<Reminder>();
         try {
-            data.addAll(DatabaseObject.getReferencedObjects(bill, Context.getReminders(), new Reminder()));
+            data.addAll(DatabaseObject.getReferencedObjects(bill, Context.getReminder(), new Reminder()));
         } catch (NodataFoundException ex) {
             Log.Debug(Reminder.class, ex.getMessage());
         }
@@ -131,7 +130,7 @@ public class Reminder extends DatabaseObject {
         if (map.containsKey("itemsids")) {
             try {
                 try {
-                    map.put("contact", DatabaseObject.getObject(Context.getItems(), Integer.valueOf(map.get("itemsids").toString())));
+                    map.put("contact", DatabaseObject.getObject(Context.getItem(), Integer.valueOf(map.get("itemsids").toString())));
                     map.remove("itemsids");
                 } catch (NodataFoundException ex) {
                     map.put("contact", null);

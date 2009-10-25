@@ -39,8 +39,7 @@ public class FileToItem extends DatabaseObject {
     private File file;
 
     public FileToItem() {
-        context.setDbIdentity(Context.IDENTITY_FILES_TO_ITEMS);
-        context.setIdentityClass(this.getClass());
+        context = Context.getFilesToItems();
     }
 
     @Override

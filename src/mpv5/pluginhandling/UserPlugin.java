@@ -31,8 +31,7 @@ public class UserPlugin extends DatabaseObject {
     private int usersids;
 
     public UserPlugin() {
-        context.setDbIdentity(Context.IDENTITY_PLUGINS_TO_USERS);
-        context.setIdentityClass(this.getClass());
+        context = Context.getPluginsToUsers();
     }
 
     @Override

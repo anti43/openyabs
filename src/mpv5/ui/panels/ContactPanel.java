@@ -243,7 +243,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
     private void itemTableClicked(MouseEvent evt) {
         if (evt.getClickCount() > 1) {
             try {
-                MPView.identifierView.addTab(DatabaseObject.getObject(Context.getItems(), Integer.valueOf(dataTable.getModel().getValueAt(dataTable.getSelectedRow(), 0).toString())));
+                MPView.identifierView.addTab(DatabaseObject.getObject(Context.getItem(), Integer.valueOf(dataTable.getModel().getValueAt(dataTable.getSelectedRow(), 0).toString())));
             } catch (NodataFoundException ex) {
                 Log.Debug(ex);
             }
@@ -253,7 +253,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
     private void productTableClicked(MouseEvent evt) {
         if (evt.getClickCount() > 1) {
             try {
-                MPView.identifierView.addTab(DatabaseObject.getObject(Context.getProducts(), Integer.valueOf(dataTable.getModel().getValueAt(dataTable.getSelectedRow(), 0).toString())));
+                MPView.identifierView.addTab(DatabaseObject.getObject(Context.getProduct(), Integer.valueOf(dataTable.getModel().getValueAt(dataTable.getSelectedRow(), 0).toString())));
             } catch (NodataFoundException ex) {
                 Log.Debug(ex);
             }
@@ -1096,7 +1096,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
     }//GEN-LAST:event_button_ordersActionPerformed
 
     private void button_productsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button_productsActionPerformed
-        Context c = Context.getProducts();
+        Context c = Context.getProduct();
 
         Object[][] data1 = new DatabaseSearch(c).getValuesFor(Context.DEFAULT_PRODUCT_SEARCH, "manufacturersids", dataOwner.__getIDS());
         Object[][] data2 = new DatabaseSearch(c).getValuesFor(Context.DEFAULT_PRODUCT_SEARCH, "suppliersids", dataOwner.__getIDS());
@@ -1144,7 +1144,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
 
     private void button_productActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button_productActionPerformed
         if (dataOwner.isExisting()) {
-            Product i = (Product) DatabaseObject.getObject(Context.getProducts());
+            Product i = (Product) DatabaseObject.getObject(Context.getProduct());
             i.setSuppliersids(dataOwner.__getIDS());
             i.setManufacturersids(dataOwner.__getIDS());
             i.setCName(Messages.NEW_PRODUCT.getValue());

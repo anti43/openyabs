@@ -24,8 +24,6 @@ import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Random;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.SwingUtilities;
 import mpv5.globals.Messages;
 import mpv5.db.objects.HistoryItem;
@@ -45,7 +43,6 @@ import mpv5.pluginhandling.MPPLuginLoader;
 import mpv5.utils.date.RandomDate;
 import mpv5.utils.images.MPIcon;
 import mpv5.utils.numberformat.FormatNumber;
-import mpv5.utils.text.RandomStringUtils;
 import mpv5.utils.text.RandomText;
 
 /**
@@ -139,11 +136,10 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject> {
         }
     }
     /**
-     * The db context of this do
+     * The db context of this do. To be defined by the child class!
      * 
      */
-    public Context context = new Context(this) {
-    };
+    public Context context = Context.DEFAULT;
     /**
      * The unique id, or 0 if it is a new do
      */

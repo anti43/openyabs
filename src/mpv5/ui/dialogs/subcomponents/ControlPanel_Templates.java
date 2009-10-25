@@ -679,7 +679,7 @@ public class ControlPanel_Templates extends javax.swing.JPanel implements Contro
         DatabaseObject t;
         if (dataOwner != null) {
             try {
-                t = DatabaseObject.getObject(Context.getItems(), 1);
+                t = DatabaseObject.getObject(Context.getItem(), 1);
             } catch (NodataFoundException ex) {
                 t = new Item();
                 Contact k = new Contact();

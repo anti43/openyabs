@@ -58,7 +58,7 @@ public class Export extends HashMap<String, Object> implements Waitable {
         QueryCriteria c = new QueryCriteria("usersids", MPView.getUser().__getIDS());
         MailMessage m = null;
         try {
-            m = (MailMessage) Popup.SelectValue(DatabaseObject.getObjects(Context.getMessages(), c), Messages.SELECT_A_TEMPLATE);
+            m = (MailMessage) Popup.SelectValue(DatabaseObject.getObjects(Context.getMessage(), c), Messages.SELECT_A_TEMPLATE);
         } catch (Exception ex) {
             Log.Debug(ex);
         }

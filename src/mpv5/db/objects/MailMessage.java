@@ -31,8 +31,7 @@ public class MailMessage extends DatabaseObject {
     private String description;
 
     public MailMessage() {
-        context.setDbIdentity(Context.IDENTITY_MAIL);
-        context.setIdentityClass(this.getClass());
+        context = Context.getMessage();
     }
 
     @Override

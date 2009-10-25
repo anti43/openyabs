@@ -1925,8 +1925,8 @@ public class MPView extends FrameView {
             try {
                 XMLWriter xmlw = new XMLWriter();
                 xmlw.newDoc(true);
-                String name = Context.getItems().getDbIdentity();
-                ArrayList<DatabaseObject> dbobjarr = DatabaseObject.getObjects(Context.getItems());
+                String name = Context.getItem().getDbIdentity();
+                ArrayList<DatabaseObject> dbobjarr = DatabaseObject.getObjects(Context.getItem());
                 xmlw.add(dbobjarr);
                 showFilesaveDialogFor(xmlw.createFile(name));
             } catch (NodataFoundException ex) {
@@ -1945,11 +1945,11 @@ public class MPView extends FrameView {
     }//GEN-LAST:event_jButton11ActionPerformed
 
     private void jButton12ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton12ActionPerformed
-        addTab(new ProductPanel(Context.getProducts(), Product.TYPE_SERVICE), Messages.NEW_SERVICE);
+        addTab(new ProductPanel(Context.getProduct(), Product.TYPE_SERVICE), Messages.NEW_SERVICE);
     }//GEN-LAST:event_jButton12ActionPerformed
 
     private void jButton13ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton13ActionPerformed
-        addTab(new ProductPanel(Context.getProducts(), Product.TYPE_PRODUCT), Messages.NEW_PRODUCT);
+        addTab(new ProductPanel(Context.getProduct(), Product.TYPE_PRODUCT), Messages.NEW_PRODUCT);
     }//GEN-LAST:event_jButton13ActionPerformed
 
     private void errorlabelMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_errorlabelMouseClicked

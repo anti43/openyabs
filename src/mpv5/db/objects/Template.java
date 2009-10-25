@@ -135,8 +135,7 @@ public class Template extends DatabaseObject {
     public static String DEFAULT_FORMAT = "1,2,3,4,5,6,7,8,9,10,11";
 
     public Template() {
-        context.setDbIdentity(Context.IDENTITY_TEMPLATES);
-        context.setIdentityClass(this.getClass());
+        context = Context.getTemplate();
     }
 
     @Override
