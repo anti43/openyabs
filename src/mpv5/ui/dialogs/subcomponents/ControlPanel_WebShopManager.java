@@ -398,7 +398,7 @@ public class ControlPanel_WebShopManager extends javax.swing.JPanel implements C
             WSIManager.instanceOf().reset();
             WSIManager.instanceOf().start();
         } catch (Exception x) {
-            Log.Debug(x);
+//            Log.Debug(x);
             mpv5.ui.dialogs.Popup.error(x);
         }
 }//GEN-LAST:event_jButton4ActionPerformed

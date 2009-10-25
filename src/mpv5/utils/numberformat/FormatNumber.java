@@ -88,38 +88,38 @@ public class FormatNumber {
     }
 
     /**
-     * Tries to parse the given text to a number, using all available Locales
-     * @param number
-     * @return A double number or null if no matching number instance can be found
+     * Tries to parse the given text to a number, using the default Locale.
+     * Removes percent & currency signs from the given string before parsing.
+     * @param number A string representing a number
+     * @return A double number or null if string is not parseable
      */
     public synchronized static Double parseDezimal(String number) {
         if (number == null || number.trim().length() == 0) {
             return 0d;
         }
-        number = number.replace("%", "");
-
+        number = number.replace("%", "");//Remove percent symbol
         java.text.DecimalFormat n = (DecimalFormat) getDefaultDecimalFormat();
         n.setMaximumFractionDigits(2);
-        Locale[] Locales;
         try {
             return n.parse(number).doubleValue();
         } catch (ParseException ex) {
             Log.Debug(FormatNumber.class, ex.getMessage());
-            Locales = Locale.getAvailableLocales();
+            Locale[] Locales = Locale.getAvailableLocales();
             for (int i = 0; i < Locales.length; i++) {
                 Locale locale = Locales[i];
                 try {
-                    try {
-                        number = number.replace(Currency.getInstance(locale).getSymbol(), "").trim();
-                    } catch (Exception e) {
+                    number = number.replace(Currency.getInstance(locale).getSymbol(), "").trim();
+                } catch (Exception e) {
 //                        To avoid this (why does a locale have no country??):
 //                        Exception in thread "AWT-EventQueue-0" java.lang.IllegalArgumentException
 //                        at java.util.Currency.getInstance(Currency.java:244)
                     }
-                    Number result = NumberFormat.getNumberInstance(locale).parse(number);
-                    return result.doubleValue();
-                } catch (ParseException parseException) {
-                }
+            }
+            try {
+                //Try to parse the String with the default locale, but with removed currency signs
+                Number result = NumberFormat.getNumberInstance().parse(number);
+                return result.doubleValue();
+            } catch (ParseException parseException) {
             }
             return null;
         }
