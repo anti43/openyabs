@@ -110,7 +110,7 @@ public enum Messages {
     NO_DATA_FOUND("Sorry, but there was no matching data in the database."),
     REALLY_WIPE("Do you really want to wipe all data?"),
     WIPED_LOCALSETTINGS("Local settings have been marked for deletion. Please close Yabs now."),
-    NO_DB_CONNECTION("Could not connect to database, start configuration wizard?"),
+    NO_DB_CONNECTION("Welcome to Yabs!\nYou need to set up the database connection before you can use the application, start wizard now?"),
     REALLY_CHANGE("Do you really want to alter the selected dataset? This may affect all users!"),
     REALLY_CHANGE2("Do you really want to change the type of selected dataset? This is irreversible!"),
     DONE("Task finished successfully."),
@@ -212,7 +212,8 @@ public enum Messages {
     ASSIGN_TEMPLATE("Please assign at least one user to the imported template by selecting one or more users from the list, and the press 'Save'. The template will not be usable otherwise."),
     NO_MAIL_DEFINED("Either you or the contact you want to send the mail to (or both) have no valid mail adress defined."),
     AUTO_GENERATED_VALUE("Auto generated value"),
-    BOOK_NOW("Save & book now?");
+    BOOK_NOW("Save & book now?"), 
+    FIRST_START("This seems to be the first start");
 
     private Messages(String message) {
         this.message = message;

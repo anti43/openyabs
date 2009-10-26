@@ -19,8 +19,6 @@ package mpv5;
 import ag.ion.bion.officelayer.application.IOfficeApplication;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import mpv5.db.common.NodataFoundException;
 import mpv5.ui.frames.MPView;
 import mpv5.logging.*;
@@ -61,6 +59,7 @@ import mpv5.i18n.LanguageManager;
 import mpv5.pluginhandling.UserPlugin;
 import mpv5.server.MPServer;
 import mpv5.ui.dialogs.subcomponents.ControlPanel_Fonts;
+import mpv5.ui.dialogs.subcomponents.wizard_DBSettings_simple_1;
 import mpv5.utils.files.FileDirectoryHandler;
 import mpv5.utils.files.FileReaderWriter;
 import mpv5.webshopinterface.WSIManager;
@@ -175,7 +174,7 @@ public class Main extends SingleFrameApplication {
         if (FORCE_INSTALLER == null) {
             if (probeDatabaseConnection()) {
                 go(false);
-            } else if (Popup.Y_N_dialog(splash, Messages.NO_DB_CONNECTION, Messages.ERROR_OCCURED.toString())) {
+            } else if (Popup.Y_N_dialog(splash, Messages.NO_DB_CONNECTION, Messages.FIRST_START.toString())) {
                 splash.dispose();
                 showDbWiz(null);
             } else {
@@ -705,7 +704,7 @@ public class Main extends SingleFrameApplication {
             mpv5.logging.Log.Debug(ex);//Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
         }
         Wizard w = new Wizard(true);
-        w.addPanel(new wizard_DBSettings_1(w, forConnId));
+        w.addPanel(new wizard_DBSettings_simple_1(w, forConnId));
         w.showWiz();
     }
 
