@@ -2,13 +2,10 @@ package mpv5.ui.panels;
 
 import java.io.File;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Enumeration;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Properties;
-import java.util.Vector;
 import javax.swing.DefaultListModel;
 import javax.swing.ListModel;
 import mpv5.Main;
@@ -18,10 +15,9 @@ import mpv5.globals.LocalSettings;
 import mpv5.globals.Messages;
 import mpv5.logging.Log;
 import mpv5.usermanagement.MPSecurityManager;
-import mpv5.utils.arrays.ArrayUtilities;
-import mpv5.utils.files.FileDirectoryHandler;
-import mpv5.utils.files.JarFinder;
+import mpv5.utils.files.FileReaderWriter;
 import mpv5.utils.images.MPIcon;
+import mpv5.utils.models.MPTableModel;
 
 /**
  *
@@ -57,10 +53,10 @@ public class StartPage extends javax.swing.JPanel {
         jTextArea1 = new javax.swing.JTextArea();
         jPanel2 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
-        jScrollPane2 = new javax.swing.JScrollPane();
-        libraries = new javax.swing.JList();
         jScrollPane3 = new javax.swing.JScrollPane();
         jTextArea2 = new javax.swing.JTextArea();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        jTable1 = new javax.swing.JTable();
         jPanel3 = new javax.swing.JPanel();
         jLabel3 = new javax.swing.JLabel();
         jScrollPane5 = new javax.swing.JScrollPane();
@@ -71,7 +67,7 @@ public class StartPage extends javax.swing.JPanel {
         jScrollPane6 = new javax.swing.JScrollPane();
         syst = new javax.swing.JList();
 
-        java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle();
+        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("mpv5/resources/languages/Panels"); // NOI18N
         setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("StartPage.border.title"))); // NOI18N
         setName("Form"); // NOI18N
 
@@ -92,21 +88,11 @@ public class StartPage extends javax.swing.JPanel {
         jTabbedPane1.addTab(bundle.getString("StartPage.jScrollPane1.TabConstraints.tabTitle"), jScrollPane1); // NOI18N
 
         jPanel2.setName("jPanel2"); // NOI18N
+        jPanel2.setLayout(new java.awt.BorderLayout());
 
         jLabel1.setText(bundle.getString("StartPage.jLabel1.text")); // NOI18N
         jLabel1.setName("jLabel1"); // NOI18N
-
-        jScrollPane2.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
-        jScrollPane2.setName("jScrollPane2"); // NOI18N
-
-        libraries.setBorder(javax.swing.BorderFactory.createEtchedBorder());
-        libraries.setName("libraries"); // NOI18N
-        libraries.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                librariesMouseClicked(evt);
-            }
-        });
-        jScrollPane2.setViewportView(libraries);
+        jPanel2.add(jLabel1, java.awt.BorderLayout.PAGE_START);
 
         jScrollPane3.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
         jScrollPane3.setName("jScrollPane3"); // NOI18N
@@ -120,28 +106,23 @@ public class StartPage extends javax.swing.JPanel {
         jTextArea2.setName("jTextArea2"); // NOI18N
         jScrollPane3.setViewportView(jTextArea2);
 
-        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
-        jPanel2.setLayout(jPanel2Layout);
-        jPanel2Layout.setHorizontalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jScrollPane3, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 458, Short.MAX_VALUE)
-                    .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, 458, Short.MAX_VALUE)
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 458, Short.MAX_VALUE))
-                .addGap(7, 7, 7))
-        );
-        jPanel2Layout.setVerticalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel2Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jLabel1)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 144, Short.MAX_VALUE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 131, javax.swing.GroupLayout.PREFERRED_SIZE))
-        );
+        jPanel2.add(jScrollPane3, java.awt.BorderLayout.PAGE_END);
+
+        jScrollPane2.setName("jScrollPane2"); // NOI18N
+
+        jTable1.setAutoCreateRowSorter(true);
+        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+
+            }
+        ));
+        jTable1.setName("jTable1"); // NOI18N
+        jScrollPane2.setViewportView(jTable1);
+
+        jPanel2.add(jScrollPane2, java.awt.BorderLayout.CENTER);
 
         jTabbedPane1.addTab(bundle.getString("StartPage.jPanel2.TabConstraints.tabTitle"), jPanel2); // NOI18N
 
@@ -197,7 +178,7 @@ public class StartPage extends javax.swing.JPanel {
                 .addContainerGap()
                 .addComponent(jLabel3)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane5, javax.swing.GroupLayout.DEFAULT_SIZE, 144, Short.MAX_VALUE)
+                .addComponent(jScrollPane5, javax.swing.GroupLayout.DEFAULT_SIZE, 203, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 131, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
@@ -224,7 +205,7 @@ public class StartPage extends javax.swing.JPanel {
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane6, javax.swing.GroupLayout.DEFAULT_SIZE, 290, Short.MAX_VALUE)
+                .addComponent(jScrollPane6, javax.swing.GroupLayout.DEFAULT_SIZE, 349, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -238,18 +219,9 @@ public class StartPage extends javax.swing.JPanel {
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jTabbedPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 340, Short.MAX_VALUE)
+            .addComponent(jTabbedPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 399, Short.MAX_VALUE)
         );
     }// </editor-fold>//GEN-END:initComponents
-
-    private void librariesMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_librariesMouseClicked
-        if (evt.getClickCount() > 1) {
-            try {
-                FileDirectoryHandler.edit((File) libraries.getSelectedValue());
-            } catch (Exception e) {
-            }
-        }
-}//GEN-LAST:event_librariesMouseClicked
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JList images;
     private javax.swing.JLabel jLabel1;
@@ -264,10 +236,10 @@ public class StartPage extends javax.swing.JPanel {
     private javax.swing.JScrollPane jScrollPane5;
     private javax.swing.JScrollPane jScrollPane6;
     private javax.swing.JTabbedPane jTabbedPane1;
+    private javax.swing.JTable jTable1;
     private javax.swing.JTextArea jTextArea1;
     private javax.swing.JTextArea jTextArea2;
     private javax.swing.JTextArea jTextArea3;
-    private javax.swing.JList libraries;
     private javax.swing.JList syst;
     // End of variables declaration//GEN-END:variables
 
@@ -312,13 +284,20 @@ public class StartPage extends javax.swing.JPanel {
 
                 public void run() {
                     try {
-                        File[] files = FileDirectoryHandler.getFilesOfDirectory(JarFinder.getPathOfJar(Constants.JAR_NAME) + File.separator + "lib", null);
-                        Arrays.sort(files);
+                        try {
+                            String[] data = (new FileReaderWriter(new File(Main.class.getResource("/mpv5/resources/license/licenses-list").toURI())).readLines());
+                            Arrays.sort(data);
+                            String[][] model = new String[data.length][];
+                            for (int i = 0; i < data.length; i++) {
+                                String string = data[i];
+                                model[i] = string.split(";");
+                            }
 
-                        for (int i = 0; i < files.length; i++) {
-                            m.addElement(files[i]);
+                            jTable1.setModel(new MPTableModel(model));
+                        } catch (Exception ex) {
+                            Log.Debug(ex);
                         }
-                        libraries.setModel(m);
+
                         DefaultListModel d = new DefaultListModel();
                         ListModel list = images.getModel();
 
@@ -328,12 +307,7 @@ public class StartPage extends javax.swing.JPanel {
                         d.addElement(new MPIcon("/mpv5/resources/images/icon.png"));
                         images.setModel(d);
                     } catch (Exception exception) {
-                        m.addElement(exception);
-                        List<String> l = JarFinder.getClassPath();
-                        for (String s : l) {
-                            m.addElement(s);
-                        }
-                        libraries.setModel(m);
+                        Log.Debug(exception);
                     }
                 }
             };
