@@ -360,6 +360,7 @@ public class SubItem extends DatabaseObject {
     public static SubItem getRandomItem() {
         SubItem i = new SubItem();
         i.fillSampleData();
+        i.setGroupsids(1);
         if (MPView.getUser().getProperties().hasProperty("defunit")) {
             String defunit = MPView.getUser().getProperties().getProperty("defunit");
             i.setMeasure(defunit);

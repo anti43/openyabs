@@ -126,7 +126,7 @@ public class SampleData {
                                 p.setDatedelivery(date);
                                 p.setDescription("no description!");
                                 p.setExternalvalue(100);value+=100d;
-                                p.setGroupsids(group);
+                                p.setGroupsids(1);
                                 p.setIntaddedby(MPView.getUser().ids);
                                 p.setInternalvalue(100);
                                 p.setMeasure("h");

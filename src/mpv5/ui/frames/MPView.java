@@ -1880,16 +1880,7 @@ public class MPView extends FrameView {
 
     private void jMenuItem22ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem22ActionPerformed
         if (Popup.Y_N_dialog("Fill database with sample data?")) {
-            int x = 1;
-            try {
-                x = Integer.valueOf(Popup.Enter_Value("Enter a default account ID for bills."));
-            } catch (NumberFormatException numberFormatException) {
-            }
-            try {
-                new mpv5.db.sample.SampleData(Integer.valueOf(Popup.Enter_Value("Enter a valid Integer value [1]")), x, true, true);
-            } catch (NumberFormatException numberFormatException) {
-                new mpv5.db.sample.SampleData(1, 1, true, true);
-            }
+            new mpv5.db.sample.SampleData(1, 1, true, true);
         }
     }//GEN-LAST:event_jMenuItem22ActionPerformed
 

@@ -127,8 +127,8 @@ public class DateConverter {
         Calendar d2 = Calendar.getInstance();
         d2.setTime(date2);
 
-        int days = d2.get(java.util.Calendar.DAY_OF_YEAR) -
-                d1.get(java.util.Calendar.DAY_OF_YEAR);
+        int days = d2.get(java.util.Calendar.DAY_OF_YEAR)
+                - d1.get(java.util.Calendar.DAY_OF_YEAR);
         int y2 = d2.get(java.util.Calendar.YEAR);
         if (d1.get(java.util.Calendar.YEAR) != y2) {
             d1 = (java.util.Calendar) d1.clone();
@@ -463,5 +463,13 @@ public class DateConverter {
                         DateFormat.getDateTimeInstance(DateFormat.FULL, DateFormat.FULL, locale)
                     }));
         }
+    }
+
+    /**
+     * Generates a random date
+     * @return
+     */
+    public static Date getRandomDate() {
+        return new RandomDate(new vTimeframe(new Date(0), new Date()));
     }
 }
