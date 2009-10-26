@@ -109,7 +109,7 @@ public enum Messages {
     USER_NOT_FOUND("User not found: "),
     NO_DATA_FOUND("Sorry, but there was no matching data in the database."),
     REALLY_WIPE("Do you really want to wipe all data?"),
-    WIPED_LOCALSETTINGS("Local settings have been marked for deletion. Please close MP now."),
+    WIPED_LOCALSETTINGS("Local settings have been marked for deletion. Please close Yabs now."),
     NO_DB_CONNECTION("Could not connect to database, start configuration wizard?"),
     REALLY_CHANGE("Do you really want to alter the selected dataset? This may affect all users!"),
     REALLY_CHANGE2("Do you really want to change the type of selected dataset? This is irreversible!"),
