@@ -26,6 +26,7 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.net.URLStreamHandlerFactory;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -147,10 +148,23 @@ public class MPPLuginLoader {
      * @param pluginCandidate
      * @return the plugin if <code>Constants.PLUGIN_LOAD_CLASS<code/> could be instantiated from this file
      */
+//    public MP5Plugin checkPlugin(File pluginCandidate) {
+//        try {
+//            URL[] urls = {new URL("jar:file:" + pluginCandidate + "!/")};
+//            URLClassLoader loader = URLClassLoader.newInstance(urls);
+//            Class c = loader.loadClass(Constants.PLUGIN_LOAD_CLASS);
+//            Object o = c.newInstance();
+//            return (MP5Plugin) o;
+//        } catch (Exception malformedURLException) {
+//            Log.Debug(malformedURLException);
+//            return null;
+//        }
+//    }
+
     public MP5Plugin checkPlugin(File pluginCandidate) {
         try {
             URL[] urls = {new URL("jar:file:" + pluginCandidate + "!/")};
-            URLClassLoader loader = URLClassLoader.newInstance(urls);
+            URLClassLoader loader = new AddURLClassLoader(urls,this.getClass().getClassLoader());
             Class c = loader.loadClass(Constants.PLUGIN_LOAD_CLASS);
             Object o = c.newInstance();
             return (MP5Plugin) o;
@@ -158,6 +172,29 @@ public class MPPLuginLoader {
             Log.Debug(malformedURLException);
             return null;
         }
+    }
+
+
+    public class AddURLClassLoader extends URLClassLoader{
+
+        public AddURLClassLoader(URL[] urls,ClassLoader parent){
+            super(urls,parent);
+        }
+
+        public AddURLClassLoader(URL[] urls){
+            super(urls);
+        }
+
+        public AddURLClassLoader(URL[] urls,ClassLoader parent,URLStreamHandlerFactory factory){
+            super(urls,parent,factory);
+        }
+
+
+        @Override
+        public void addURL(URL url){
+            super.addURL(url);
+        }
+
     }
 
     /**
