@@ -85,7 +85,6 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
         toolbarpane.add(tb, BorderLayout.CENTER);
         dataOwner = new Contact();
         dataOwner.setCountry(MPView.getUser().__getDefcountry());
-//        showSearchBar(true);
 
         dateadded.setText(DateConverter.getTodayDefDate());
         addedby.setText(MPView.getUser().getName());
@@ -94,24 +93,6 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
         companyselect.setSearchEnabled(true);
         companyselect.setContext(Context.getContactsCompanies());
         companyselect.getComboBox().setEditable(true);
-//        companyselect.getComboBox().addActionListener(new ActionListener() {
-//
-//            public void actionPerformed(ActionEvent e) {
-//                String t = title.getText();
-//                String s = cname.getText();
-//                String p = prename.getText();
-//                try {
-//                    Contact a = (Contact) DatabaseObject.getObject(Context.getContact(), companyselect.getSelectedItem().getValue());
-//                    setDataOwner(a, true);
-//                    companyselect.setModel(a);
-//                    title.setText(t);
-//                    cname.setText(s);
-//                    prename.setText(p);
-//                    company.setSelected(false);
-//                } catch (NodataFoundException ex) {
-//                }
-//            }
-//        });
 
         number.setSearchOnEnterEnabled(true);
         number.setParent(this);
@@ -122,9 +103,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
         cname.setParent(this);
         cname.setSearchField("cname");
         cname.setContext(Context.getContact());
-
         countryselect.setModel(LanguageManager.getCountriesAsComboBoxModel());
-
         refresh();
     }
 

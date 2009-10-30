@@ -62,7 +62,7 @@ public class DataPanelTB extends javax.swing.JPanel {
     public DataPanelTB(DataPanel panel) {
         initComponents();
         parents = panel;
-        parents.showSearchBar(!MPView.getUser().getProperties().getProperty(this, "jToggleButton1"));
+        parents.showSearchBar(MPView.getUser().getProperties().getProperty(this, "jToggleButton1"));
         but1.setSelected(MPView.getUser().getProperties().getProperty(this, "jToggleButton1"));
         but6.setEnabled(!DatabaseObject.isAutoLockEnabled());
     }
@@ -148,14 +148,13 @@ public class DataPanelTB extends javax.swing.JPanel {
         commonActionsToolbar.setPreferredSize(new java.awt.Dimension(342, 41));
 
         but1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/viewmag.png"))); // NOI18N
-         java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle(); // NOI18N
+        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("mpv5/resources/languages/Panels"); // NOI18N
         but1.setText(bundle.getString("DataPanelTB.but1.text")); // NOI18N
         but1.setToolTipText(bundle.getString("DataPanelTB.but1.toolTipText")); // NOI18N
         but1.setContentAreaFilled(false);
         but1.setFocusable(false);
         but1.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         but1.setName("but1"); // NOI18N
-        but1.setPressedIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/xclock.png"))); // NOI18N
         but1.setRolloverIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/bright_viewmag.png"))); // NOI18N
         but1.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         but1.addItemListener(new java.awt.event.ItemListener() {
@@ -413,7 +412,7 @@ public class DataPanelTB extends javax.swing.JPanel {
 
     private void but1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_but1ActionPerformed
 
-        parents.showSearchBar(!but1.isSelected());
+        parents.showSearchBar(but1.isSelected());
     }//GEN-LAST:event_but1ActionPerformed
 
     private void but1ItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_but1ItemStateChanged

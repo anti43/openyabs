@@ -8,6 +8,7 @@ import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
 import mpv5.db.common.DatabaseSearch;
 import mpv5.db.common.NodataFoundException;
+import mpv5.db.objects.Contact;
 import mpv5.globals.Headers;
 import mpv5.logging.Log;
 import mpv5.ui.frames.MPView;
@@ -346,5 +347,12 @@ public class ContactsList extends javax.swing.JPanel implements ListPanel {
 
     public void flush() {
         listTable.setModel(null);
+    }
+
+    public void showType(Contact d) {
+        jCheckBox1.setSelected(d.__getIscustomer());
+        jCheckBox2.setSelected(d.__getIssupplier());
+        jCheckBox3.setSelected(d.__getIsmanufacturer());
+        jCheckBox4.setSelected(d.__getisCompany());
     }
 }

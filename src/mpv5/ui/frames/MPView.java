@@ -44,6 +44,7 @@ import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
 import mpv5.db.common.NodataFoundException;
 import mpv5.db.common.QueryHandler;
+import mpv5.db.objects.Contact;
 import mpv5.globals.Messages;
 import mpv5.db.objects.Favourite;
 import mpv5.db.objects.Item;
@@ -643,7 +644,6 @@ public class MPView extends FrameView {
         jPanel2 = new javax.swing.JPanel();
         jButton5 = new javax.swing.JButton();
         jButton1 = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
         jButton18 = new javax.swing.JButton();
         jPanel3 = new javax.swing.JPanel();
         jButton8 = new javax.swing.JButton();
@@ -747,7 +747,7 @@ public class MPView extends FrameView {
 
         jButton5.setFont(new java.awt.Font("Tahoma", 0, 10));
         jButton5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/agt_family.png"))); // NOI18N
-         java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle(); // NOI18N
+        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("mpv5/resources/languages/Panels"); // NOI18N
         jButton5.setText(bundle.getString("MPView.jButton5.text_1")); // NOI18N
         jButton5.setToolTipText(bundle.getString("MPView.jButton5.toolTipText_1")); // NOI18N
         jButton5.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
@@ -769,19 +769,6 @@ public class MPView extends FrameView {
         jButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton1ActionPerformed(evt);
-            }
-        });
-
-        jButton2.setFont(new java.awt.Font("Tahoma", 0, 10));
-        jButton2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/edit_user.png"))); // NOI18N
-        jButton2.setText(bundle.getString("MPView.jButton2.text_1")); // NOI18N
-        jButton2.setToolTipText(bundle.getString("MPView.jButton2.toolTipText_1")); // NOI18N
-        jButton2.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        jButton2.setName("jButton2"); // NOI18N
-        jButton2.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        jButton2.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton2ActionPerformed(evt);
             }
         });
 
@@ -814,10 +801,6 @@ public class MPView extends FrameView {
                 .addContainerGap()
                 .addComponent(jButton18, 0, 0, Short.MAX_VALUE)
                 .addGap(11, 11, 11))
-            .addGroup(jPanel2Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jButton2, javax.swing.GroupLayout.DEFAULT_SIZE, 89, Short.MAX_VALUE)
-                .addGap(11, 11, 11))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -828,9 +811,7 @@ public class MPView extends FrameView {
                 .addComponent(jButton1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jButton18)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jButton2)
-                .addGap(131, 131, 131))
+                .addGap(199, 199, 199))
         );
 
         jOutlookBar1.addTab(bundle.getString("MPView.jPanel2.TabConstraints.tabTitle_1"), jPanel2); // NOI18N
@@ -904,7 +885,7 @@ public class MPView extends FrameView {
             }
         });
 
-        jButton17.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
+        jButton17.setFont(new java.awt.Font("Tahoma", 0, 10));
         jButton17.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/reload.png"))); // NOI18N
         jButton17.setText(bundle.getString("MPView.jButton17.text")); // NOI18N
         jButton17.setToolTipText(bundle.getString("MPView.jButton17.toolTipText")); // NOI18N
@@ -1013,9 +994,9 @@ public class MPView extends FrameView {
             .addGroup(jPanel4Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jButton13, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jButton12, javax.swing.GroupLayout.DEFAULT_SIZE, 73, Short.MAX_VALUE)
-                    .addComponent(jButton14, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 73, Short.MAX_VALUE))
+                    .addComponent(jButton13, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 90, Short.MAX_VALUE)
+                    .addComponent(jButton12, javax.swing.GroupLayout.DEFAULT_SIZE, 90, Short.MAX_VALUE)
+                    .addComponent(jButton14, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 90, Short.MAX_VALUE))
                 .addContainerGap())
         );
         jPanel4Layout.setVerticalGroup(
@@ -1027,7 +1008,7 @@ public class MPView extends FrameView {
                 .addComponent(jButton12)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jButton14)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(223, Short.MAX_VALUE))
         );
 
         jOutlookBar1.addTab(bundle.getString("MPView.jPanel4.TabConstraints.tabTitle_1"), jPanel4); // NOI18N
@@ -1634,30 +1615,47 @@ public class MPView extends FrameView {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
+//        DatabaseObject d = DatabaseObject.getObject(Context.getCustomer());
+//        ((mpv5.db.objects.Contact) d).setisCustomer(true);
+//        addTab(d, Messages.NEW_CUSTOMER);
         DatabaseObject d = DatabaseObject.getObject(Context.getCustomer());
         ((mpv5.db.objects.Contact) d).setisCustomer(true);
-        addTab(d, Messages.NEW_CUSTOMER);
+//        addTab(d, Messages.NEW_SUPPLIER);
+        if (clisttab == null) {
+            clisttab = new ContactsList();
+        }
+        clisttab.setContext(Context.getCustomer());
+        clisttab.showType((Contact) d);
+        addOrShowTab(clisttab, Messages.CONTACTS_LIST.toString());
     }//GEN-LAST:event_jButton5ActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
 
         DatabaseObject d = DatabaseObject.getObject(Context.getSupplier());
         ((mpv5.db.objects.Contact) d).setisSupplier(true);
-        addTab(d, Messages.NEW_SUPPLIER);
-}//GEN-LAST:event_jButton1ActionPerformed
-
-    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-
+//        addTab(d, Messages.NEW_SUPPLIER);
         if (clisttab == null) {
-            clisttab = new ContactsList(Context.getContact());
+            clisttab = new ContactsList();
         }
+        clisttab.setContext(Context.getSupplier());
+        clisttab.showType((Contact) d);
         addOrShowTab(clisttab, Messages.CONTACTS_LIST.toString());
-}//GEN-LAST:event_jButton2ActionPerformed
+
+}//GEN-LAST:event_jButton1ActionPerformed
     static ContactsList clisttab;
     private void jButton18ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton18ActionPerformed
+//        DatabaseObject d = DatabaseObject.getObject(Context.getManufacturer());
+//        ((mpv5.db.objects.Contact) d).setisManufacturer(true);
+//        addTab(d, Messages.NEW_MANUFACTURER);
         DatabaseObject d = DatabaseObject.getObject(Context.getManufacturer());
         ((mpv5.db.objects.Contact) d).setisManufacturer(true);
-        addTab(d, Messages.NEW_MANUFACTURER);
+//        addTab(d, Messages.NEW_SUPPLIER);
+        if (clisttab == null) {
+            clisttab = new ContactsList();
+        }
+        clisttab.setContext(Context.getManufacturer());
+        clisttab.showType((Contact) d);
+        addOrShowTab(clisttab, Messages.CONTACTS_LIST.toString());
     }//GEN-LAST:event_jButton18ActionPerformed
 
     private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
@@ -2004,7 +2002,6 @@ public class MPView extends FrameView {
     private javax.swing.JButton jButton16;
     private javax.swing.JButton jButton17;
     private javax.swing.JButton jButton18;
-    private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton24;
     private javax.swing.JButton jButton25;
     private javax.swing.JButton jButton26;
