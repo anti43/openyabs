@@ -645,7 +645,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
             }
         });
 
-        upItem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/16/up.png"))); // NOI18N
+        upItem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/16/arrow-up.png"))); // NOI18N
         upItem.setName("upItem"); // NOI18N
         upItem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -653,7 +653,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
             }
         });
 
-        upItem1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/16/down.png"))); // NOI18N
+        upItem1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/16/arrow-down.png"))); // NOI18N
         upItem1.setName("upItem1"); // NOI18N
         upItem1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -1445,9 +1445,9 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
         prepareTable();
 
         //"Internal ID", Position, "Count", "Measure", "Text", "Netto Price", "Tax Rate", "Total Price", "Tax value", "Net 2", "Product ID", "", "", "Link", "Optional"
-        TableFormat.resizeCols(itemtable, new Integer[]{0, 23, 53, 63, 100, 63, 63, 63, 0, 0, 63, 0, 0, 0, 100},
+        TableFormat.resizeCols(itemtable, new Integer[]{0, 23, 53, 63, 100, 63, 63, 63, 0, 0, 63, 20, 0, 0, 100},
                 new Boolean[]{true, true, true, true, false, true, true, true, true, true, true, true, true, true, false});
-        ((MPTableModel) itemtable.getModel()).setCanEdits(new boolean[]{false,false,true,true,true,true,true,false,false,false,true,false,false,false,true});
+        ((MPTableModel) itemtable.getModel()).setCanEdits(new boolean[]{false,false,true,true,true,true,true,false,false,false,true,true,false,false,true});
         TableFormat.changeBackground(itemtable, 1, Color.LIGHT_GRAY);
         if (MPView.getUser().getProperties().getProperty(MPView.tabPane, "hidecolumnquantity")) {
             TableFormat.stripColumn(itemtable, 2);

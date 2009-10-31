@@ -406,7 +406,7 @@
                 <Component class="javax.swing.JButton" name="upItem">
                   <Properties>
                     <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                      <Image iconType="3" name="/mpv5/resources/images/16/up.png"/>
+                      <Image iconType="3" name="/mpv5/resources/images/16/arrow-up.png"/>
                     </Property>
                     <Property name="name" type="java.lang.String" value="upItem" noResource="true"/>
                   </Properties>
@@ -417,7 +417,7 @@
                 <Component class="javax.swing.JButton" name="upItem1">
                   <Properties>
                     <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                      <Image iconType="3" name="/mpv5/resources/images/16/down.png"/>
+                      <Image iconType="3" name="/mpv5/resources/images/16/arrow-down.png"/>
                     </Property>
                     <Property name="name" type="java.lang.String" value="upItem1" noResource="true"/>
                   </Properties>
