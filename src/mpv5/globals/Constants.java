@@ -76,13 +76,23 @@ public interface Constants {
      * Name of databasedir 
      */
     public static final String DATABASENAME = "yabs" + Constants.RELEASE_VERSION + "db";
-
     public static String ICON_NAME_LIN = "yabs.desktop";
     public static String ICON_NAME_WIN = "YaBS.url";
     public static String XML_ROOT = "mpv5";
     public static String XML_DOCTYPE_ID = "-//http://code.google.com/p/mp-rechnungs-und-kundenverwaltung//DTD mpv5 V 1.0//EN";
     public static String XML_DOCTYPE_URL = "http://yabs.copy-left.de/files/yabs_import_1.0.dtd";
     public static String SPLASH_IMAGE = "/mpv5/resources/images/background_a.png";
+    public static String ABOUT_IMAGE = "/mpv5/resources/images/about1.png";
     public static String WEBSITE = "http://openyabs.org";
-    
+    public static final String[] CONTRIBUTORS = new String[]{
+        "Andreas Weber",
+        "peser",
+        "Christian Gabel",
+        "Daniel Lang",
+        "Daniel Kulesz",
+        "Michael Stibane",
+        "Sven Lindenhahn",
+        "Uwe Stark",
+        "Peter Heller",
+        "Jean-Christoph von Oertzen"};
 }

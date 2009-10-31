@@ -24,8 +24,43 @@ public class BigPopup {
 
     static HashMap<JPanel, JFrame> contents = new HashMap<JPanel, JFrame>();
 
+
     /**
-     *  Creates a new popup FRAME
+     * Creates a new popup FRAME
+     * @param content
+     */
+    public static void showPopup(JPanel content) {
+         final JFrame window = new JFrame();
+        window.getContentPane().setLayout(new BorderLayout());
+        window.getContentPane().add(content, BorderLayout.CENTER);
+        window.pack();
+        window.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        window.setTitle("");
+        window.addKeyListener(new KeyListener() {
+            @Override
+            public void keyTyped(KeyEvent e) {
+                if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
+                    window.dispose();
+                }
+            }
+            @Override
+            public void keyPressed(KeyEvent e) {
+                if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
+                    window.dispose();
+                }
+            }
+            @Override
+            public void keyReleased(KeyEvent e) {
+            }
+        });
+
+        window.setLocationRelativeTo(MPView.identifierFrame);
+        window.setVisible(true);
+        contents.put(content, window);
+    }
+
+    /**
+     * Creates a new popup FRAME
      * @param content
      * @param title
      * @param locationOnScreen
@@ -174,4 +209,5 @@ public class BigPopup {
     public static void setOnTop(JPanel panel) {
         contents.get(panel).setAlwaysOnTop(true);
     }
+
 }
