@@ -630,7 +630,6 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
         itemPanel.setOpaque(false);
 
         addItem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/16/add.png"))); // NOI18N
-        addItem.setText(bundle.getString("ItemPanel.addItem.text")); // NOI18N
         addItem.setName("addItem"); // NOI18N
         addItem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -639,7 +638,6 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
         });
 
         delItem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/16/remove.png"))); // NOI18N
-        delItem.setText(bundle.getString("ItemPanel.delItem.text")); // NOI18N
         delItem.setName("delItem"); // NOI18N
         delItem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -648,7 +646,6 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
         });
 
         upItem.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/16/up.png"))); // NOI18N
-        upItem.setText(bundle.getString("ItemPanel.upItem.text")); // NOI18N
         upItem.setName("upItem"); // NOI18N
         upItem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -657,7 +654,6 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
         });
 
         upItem1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/16/down.png"))); // NOI18N
-        upItem1.setText(bundle.getString("ItemPanel.upItem1.text")); // NOI18N
         upItem1.setName("upItem1"); // NOI18N
         upItem1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -684,7 +680,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
                 .addComponent(upItem)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(upItem1)
-                .addContainerGap(14, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
@@ -699,7 +695,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(itemPanel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(jScrollPane3, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 136, Short.MAX_VALUE)
+            .addComponent(jScrollPane3, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 134, Short.MAX_VALUE)
         );
 
         jToolBar1.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
@@ -1051,7 +1047,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, 0)
-                .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, 0)
                 .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -1451,7 +1447,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
         //"Internal ID", Position, "Count", "Measure", "Text", "Netto Price", "Tax Rate", "Total Price", "Tax value", "Net 2", "Product ID", "", "", "Link", "Optional"
         TableFormat.resizeCols(itemtable, new Integer[]{0, 23, 53, 63, 100, 63, 63, 63, 0, 0, 63, 0, 0, 0, 100},
                 new Boolean[]{true, true, true, true, false, true, true, true, true, true, true, true, true, true, false});
-        ((MPTableModel) itemtable.getModel()).setCanEdits(new boolean[]{false,false,true,true,true,true,true,false,false,false,true,false,false,false,false});
+        ((MPTableModel) itemtable.getModel()).setCanEdits(new boolean[]{false,false,true,true,true,true,true,false,false,false,true,false,false,false,true});
         TableFormat.changeBackground(itemtable, 1, Color.LIGHT_GRAY);
         if (MPView.getUser().getProperties().getProperty(MPView.tabPane, "hidecolumnquantity")) {
             TableFormat.stripColumn(itemtable, 2);
