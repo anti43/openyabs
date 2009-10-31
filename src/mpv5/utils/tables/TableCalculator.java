@@ -95,19 +95,19 @@ public class TableCalculator implements Runnable {
                 case ACTION_SUM:
                     for (int i = 0; i < columnsToCalculate.length; i++) {
                         int j = columnsToCalculate[i];
-                        if (table.getValueAt(row, j) != null) {
-                            val += Double.valueOf(table.getValueAt(row, j).toString());
+                        if (table.getModel().getValueAt(row, j) != null) {
+                            val += Double.valueOf(table.getModel().getValueAt(row, j).toString());
                         }
                     }
                     break;
                 case ACTION_SUBSTRACT:
                     for (int i = 0; i < columnsToCalculate.length; i++) {
                         int j = columnsToCalculate[i];
-                        if (table.getValueAt(row, j) != null) {
+                        if (table.getModel().getValueAt(row, j) != null) {
                             if (i == 0) {
-                                val = Double.valueOf(table.getValueAt(row, j).toString());
+                                val = Double.valueOf(table.getModel().getValueAt(row, j).toString());
                             } else {
-                                val = val - Double.valueOf(table.getValueAt(row, j).toString());
+                                val = val - Double.valueOf(table.getModel().getValueAt(row, j).toString());
                             }
                         }
                     }
@@ -115,7 +115,7 @@ public class TableCalculator implements Runnable {
                 case ACTION_DIVIDE:
                     for (int i = 0; i < columnsToCalculate.length; i++) {
                         int j = columnsToCalculate[i];
-                        if (table.getValueAt(row, j) != null) {
+                        if (table.getModel().getValueAt(row, j) != null) {
                             boolean percentagec = false;
                             for (int k = 0; k < percentageColumns.length; k++) {
                                 int l = percentageColumns[k];
@@ -125,15 +125,15 @@ public class TableCalculator implements Runnable {
                             }
                             if (!percentagec) {
                                 if (i == 0) {
-                                    val = Double.valueOf(table.getValueAt(row, j).toString());
+                                    val = Double.valueOf(table.getModel().getValueAt(row, j).toString());
                                 } else {
-                                    val = val / Double.valueOf(table.getValueAt(row, j).toString());
+                                    val = val / Double.valueOf(table.getModel().getValueAt(row, j).toString());
                                 }
                             } else {
                                 if (i == 0) {
-                                    val = ((Double.valueOf(table.getValueAt(row, j).toString()) / 100) + 1);
+                                    val = ((Double.valueOf(table.getModel().getValueAt(row, j).toString()) / 100) + 1);
                                 } else {
-                                    val = val / ((Double.valueOf(table.getValueAt(row, j).toString()) / 100) + 1);
+                                    val = val / ((Double.valueOf(table.getModel().getValueAt(row, j).toString()) / 100) + 1);
                                 }
                             }
                         }
@@ -142,7 +142,7 @@ public class TableCalculator implements Runnable {
                 case ACTION_MULTIPLY:
                     for (int i = 0; i < columnsToCalculate.length; i++) {
                         int j = columnsToCalculate[i];
-                        if (table.getValueAt(row, j) != null) {
+                        if (table.getModel().getValueAt(row, j) != null) {
                             boolean percentagec = false;
                             for (int k = 0; k < percentageColumns.length; k++) {
                                 int l = percentageColumns[k];
@@ -152,15 +152,15 @@ public class TableCalculator implements Runnable {
                             }
                             if (!percentagec) {
                                 if (i == 0) {
-                                    val = Double.valueOf(table.getValueAt(row, j).toString());
+                                    val = Double.valueOf(table.getModel().getValueAt(row, j).toString());
                                 } else {
-                                    val = val * Double.valueOf(table.getValueAt(row, j).toString());
+                                    val = val * Double.valueOf(table.getModel().getValueAt(row, j).toString());
                                 }
                             } else {
                                 if (i == 0) {
-                                    val = ((Double.valueOf(table.getValueAt(row, j).toString()) / 100) + 1);
+                                    val = ((Double.valueOf(table.getModel().getValueAt(row, j).toString()) / 100) + 1);
                                 } else {
-                                    val = val * ((Double.valueOf(table.getValueAt(row, j).toString()) / 100) + 1);
+                                    val = val * ((Double.valueOf(table.getModel().getValueAt(row, j).toString()) / 100) + 1);
 
                                 }
                             }

@@ -387,6 +387,38 @@ public class MPTableModel extends DefaultTableModel {
         }
     }
 
+
+    @Override
+    public void removeRow(int row){
+        super.removeRow(row);
+        rearrangeAutocountColumn();
+    }
+
+    public void insertRow(int row){
+        if (predefinedRow == null) {
+            super.insertRow(row, (Object[]) null);
+        }else{
+            super.insertRow(row, predefinedRow);
+        }
+        rearrangeAutocountColumn();
+    }
+
+    @Override
+    public void moveRow(int start, int end, int to) {
+        super.moveRow(start, end, to);
+        rearrangeAutocountColumn();
+    }
+
+    @SuppressWarnings("unchecked")
+    private void rearrangeAutocountColumn(){
+        if (autoCountColumn == null) return;
+        int index=0;
+        for(Object rowVector : dataVector){
+            ((Vector)rowVector).setElementAt(index+1, autoCountColumn);
+            fireTableCellUpdated(index++, autoCountColumn);
+        }
+    }
+
     /**
      * @return the context
      */
