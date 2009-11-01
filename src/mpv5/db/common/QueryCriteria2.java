@@ -34,7 +34,7 @@ public class QueryCriteria2 {
     public void and(QueryParameter... params) {
         for (QueryParameter p : params) {
 
-             Log.Debug(this, "Adding AND param " + p);
+            Log.Debug(this, "Adding AND param " + p);
             if ((p.getValue() instanceof Number || p.getValue() instanceof Boolean) && p.getCondition() == QueryParameter.LIKE) {
                 throw new IllegalArgumentException("You cannot mix LIKE and boolean/number values!");
             }
@@ -76,6 +76,7 @@ public class QueryCriteria2 {
         }
 
         query += " AND (";
+        boolean firstrun = true;
         for (QueryParameter p : params) {
 
             Log.Debug(this, "Adding OR param " + p);
@@ -99,17 +100,29 @@ public class QueryCriteria2 {
 
             switch (p.getCondition()) {
                 case QueryParameter.EQUALS:
-                    query += " OR " + p.getKey() + " = " + val + " ";
+                    if (!firstrun) {
+                        query += " OR " + p.getKey() + " = " + val + " ";
+                    } else {
+                        query += " " + p.getKey() + " = " + val + " ";
+                    }
                     break;
                 case QueryParameter.NOTEQUAL:
-                    query += " OR " + p.getKey() + " <> " + val + " ";
+                    if (!firstrun) {
+                        query += " OR " + p.getKey() + " <> " + val + " ";
+                    } else {
+                        query += " " + p.getKey() + " <> " + val + " ";
+                    }
                     break;
                 case QueryParameter.LIKE:
-                    query += " OR UPPER(" + p.getKey() + ") LIKE %" + val.toUpperCase() + "%" + " ";
+                    if (!firstrun) {
+                        query += " OR UPPER(" + p.getKey() + ") LIKE %" + val.toUpperCase() + "%" + " ";
+                    } else {
+                        query += " UPPER(" + p.getKey() + ") LIKE %" + val.toUpperCase() + "%" + " ";
+                    }
                     break;
             }
+            firstrun = false;
         }
-        query = query.replaceFirst("OR", "");
         query += ") ";
     }
 
