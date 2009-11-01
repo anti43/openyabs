@@ -213,7 +213,8 @@ public enum Messages {
     NO_MAIL_DEFINED("Either you or the contact you want to send the mail to (or both) have no valid mail adress defined."),
     AUTO_GENERATED_VALUE("Auto generated value"),
     BOOK_NOW("Save & book now?"), 
-    FIRST_START("This seems to be the first start");
+    FIRST_START("This seems to be the first start"),
+    ALL_PRODUCTS("All Products");
 
     private Messages(String message) {
         this.message = message;

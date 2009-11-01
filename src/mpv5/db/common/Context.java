@@ -148,6 +148,14 @@ public class Context {
             IDENTITY_CONTACTS + "." + "WORKPHONE," + IDENTITY_CONTACTS + "." + "COMPANY," + IDENTITY_CONTACTS + "." + "MAILADDRESS," +
             IDENTITY_CONTACTS + "." + "WEBSITE," + IDENTITY_CONTACTS + "." + "NOTES," +
             IDENTITY_CONTACTS + "." + "TAXNUMBER";
+     public static String DETAILS_PRODUCTS =
+            IDENTITY_PRODUCTS + "." + "ids," +
+            IDENTITY_PRODUCTS + "." + "cnumber," +
+            IDENTITY_PRODUCTS + "." + "cname," +
+            IDENTITY_PRODUCTS + "." + "ean," +
+            IDENTITY_PRODUCTS + "." + "reference," +
+            IDENTITY_CONTACTS + "." + "cname,"+
+            IDENTITY_GROUPS + "." + "cname";
     public static String DETAILS_USERS = IDENTITY_USERS + "." + "IDS," + IDENTITY_USERS + "." + "CNAME," +
             IDENTITY_USERS + "." + "fullname," +
             IDENTITY_USERS + "." + "mail," +
