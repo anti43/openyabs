@@ -60,7 +60,7 @@ public class QueryCriteria2 {
                     query += " AND " + p.getKey() + " <> " + val + " ";
                     break;
                 case QueryParameter.LIKE:
-                    query += " AND " + p.getKey() + " LIKE %" + val + "%" + " ";
+                    query += " AND " + p.getKey() + " LIKE '%" + val.replace("'", "") + "%'" + " ";
                     break;
             }
         }
