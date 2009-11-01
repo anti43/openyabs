@@ -28,6 +28,7 @@ import java.awt.event.ItemListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.beans.PropertyChangeListener;
+import java.util.Date;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.InputMap;
@@ -38,11 +39,17 @@ import javax.swing.JTextField;
 import javax.swing.KeyStroke;
 import mpv5.db.common.Context;
 import mpv5.db.common.NodataFoundException;
+import mpv5.db.common.QueryCriteria2;
+import mpv5.db.common.QueryHandler;
+import mpv5.db.common.QueryParameter;
+import mpv5.db.common.ReturnValue;
 import mpv5.db.objects.Product;
 import mpv5.db.objects.SubItem;
 import mpv5.logging.Log;
 import mpv5.ui.panels.DataPanel;
+import mpv5.utils.date.vTimeframe;
 import mpv5.utils.models.MPComboBoxModelItem;
+import mpv5.utils.models.MPComboboxModel;
 import mpv5.utils.models.MPTableModel;
 
 public class ProductSelectDialog2 extends javax.swing.JDialog  {
@@ -56,9 +63,9 @@ public class ProductSelectDialog2 extends javax.swing.JDialog  {
         setResizable(false);
         setUndecorated(true);
         initComponents();   
-        InputMap inputMap = ((JComponent)getContentPane()).getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
+        InputMap inputMap = getIDTextField().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
         KeyStroke enter = KeyStroke.getKeyStroke(KeyEvent.VK_ENTER,0);
-        ((JComponent)getContentPane()).getActionMap().put(inputMap.get(enter),new AbstractAction(){
+        getIDTextField().getActionMap().put(inputMap.get(enter),new AbstractAction(){
             public void actionPerformed(ActionEvent e) {
                 ActionListener[] listeners = okButton.getActionListeners();
                 ActionEvent actionEvent = new ActionEvent(okButton, ActionEvent.ACTION_PERFORMED, okButton.getActionCommand());
@@ -68,7 +75,8 @@ public class ProductSelectDialog2 extends javax.swing.JDialog  {
             }
         });
         KeyStroke esc = KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE,0);
-        ((JComponent)getContentPane()).getActionMap().put(inputMap.get(esc),new AbstractAction(){
+        inputMap.put(esc, "escape");
+        ((JComponent)getRootPane()).getActionMap().put(inputMap.get(esc),new AbstractAction(){
             public void actionPerformed(ActionEvent e) {
                 ActionListener[] listeners = cancelButton.getActionListeners();
                 ActionEvent actionEvent = new ActionEvent(cancelButton, ActionEvent.ACTION_PERFORMED, cancelButton.getActionCommand());
@@ -91,14 +99,11 @@ public class ProductSelectDialog2 extends javax.swing.JDialog  {
             }
         });
 
-        productCombobox.setContext(Context.getProduct());
         productCombobox.getComboBox().addItemListener(new ItemListener() {
             public void itemStateChanged(ItemEvent e) {
                 productComboboxStateChanged(e);
             }
         });
-        productCombobox.triggerSearch();
-        productCombobox.getComboBox().setEditable(true);
 
         familyselect.setContext(Context.getProductGroup());
         familyselect.setSearchEnabled(true);
@@ -127,6 +132,7 @@ public class ProductSelectDialog2 extends javax.swing.JDialog  {
         try {
             Product p = (Product) Product.getObject(Context.getProduct(), Integer.valueOf(productCombobox.getSelectedItem().getId()));
             cnumber.setText(p.__getCnumber());
+            description.setText(p.__getDescription());
         } catch (NodataFoundException ex) {
         }
     }
@@ -218,6 +224,11 @@ public class ProductSelectDialog2 extends javax.swing.JDialog  {
 
         searchButton.setText(bundle.getString("searchButton")); // NOI18N
         searchButton.setName("searchButton"); // NOI18N
+        searchButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                searchButtonActionPerformed(evt);
+            }
+        });
 
         resetButton.setText(bundle.getString("resetButton")); // NOI18N
         resetButton.setName("resetButton"); // NOI18N
@@ -230,6 +241,7 @@ public class ProductSelectDialog2 extends javax.swing.JDialog  {
         jScrollPane3.setName("jScrollPane3"); // NOI18N
 
         description.setColumns(20);
+        description.setEditable(false);
         description.setLineWrap(true);
         description.setRows(5);
         description.setWrapStyleWord(true);
@@ -311,15 +323,49 @@ public class ProductSelectDialog2 extends javax.swing.JDialog  {
             return;
         }
         try {
-            SubItem s = new SubItem((Product) Product.getObject(Context.getProduct(), Integer.valueOf(cnumber.getText())));
-            ((MPTableModel)table.getModel()).setRowAt(s.getRowData(row), row, 1);
+            MPComboBoxModelItem item = productCombobox.getSelectedItem();
+            if(item!=null){
+                SubItem s = new SubItem((Product) Product.getObject(Context.getProduct(), Integer.valueOf(item.getId())));
+                ((MPTableModel)table.getModel()).setRowAt(s.getRowData(row), row, 1);
+            }
         } catch (Exception ex) {
         }
     }//GEN-LAST:event_okButtonActionPerformed
 
     private void resetButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_resetButtonActionPerformed
-
+        cnumber.setText("");
+        suppliername.setSelectedItem(null);
+        manufacturername.setSelectedItem(null);
+        cname.setText("");
     }//GEN-LAST:event_resetButtonActionPerformed
+
+    private void searchButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchButtonActionPerformed
+        QueryCriteria2 qc = new QueryCriteria2();
+        String cnametext = cname.getText();
+        if(cnametext!=null && !cnametext.equals("")){
+            qc.and(new QueryParameter(Context.getProduct(), "cname",cnametext, QueryParameter.LIKE));
+        }
+        qc.and(new QueryParameter(Context.getProduct(), "inttype",Integer.parseInt(stype.getSelectedItem().getId()), QueryParameter.EQUALS));
+        MPComboBoxModelItem item = familyselect.getSelectedItem();
+        if(item!=null){
+            qc.and(new QueryParameter(Context.getProduct(), "productgroupsids",Integer.parseInt(item.getId()), QueryParameter.EQUALS));
+        }
+        item = suppliername.getSelectedItem();
+        if(item!=null){
+            qc.and(new QueryParameter(Context.getProduct(), "suppliersids",Integer.parseInt(item.getId()), QueryParameter.EQUALS));
+        }
+        item = manufacturername.getSelectedItem();
+        if(item!=null){
+            qc.and(new QueryParameter(Context.getProduct(), "manufacturersids",Integer.parseInt(item.getId()), QueryParameter.EQUALS));
+        }
+
+        try{
+            ReturnValue data = QueryHandler.instanceOf().clone(Context.getProduct()).select("ids, cname", qc, new vTimeframe(new Date(0), new Date()));
+            productCombobox.setModel(new MPComboboxModel(MPComboBoxModelItem.toItems(data.getData())));
+        }catch(Exception e){
+            Log.Debug(this,e);
+        }
+    }//GEN-LAST:event_searchButtonActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     public javax.swing.JButton cancelButton;
