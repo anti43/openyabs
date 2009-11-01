@@ -222,11 +222,18 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
 
         InputMap inputMap = itemtable.getInputMap(JTable.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
         KeyStroke tab = KeyStroke.getKeyStroke(KeyEvent.VK_TAB,0);
-        Action oldTabAction = itemtable.getActionMap().get(inputMap.get(tab));
-        itemtable.getActionMap().put(inputMap.get(tab),new TableTabAction(notes, oldTabAction));
+        Action oldAction = itemtable.getActionMap().get(inputMap.get(tab));
+        itemtable.getActionMap().put(inputMap.get(tab),new TableTabAction(notes, oldAction,false));
         KeyStroke shifttab = KeyStroke.getKeyStroke(KeyEvent.VK_TAB,InputEvent.SHIFT_MASK);
-        Action oldShiftTabAction = itemtable.getActionMap().get(inputMap.get(shifttab));
-        itemtable.getActionMap().put(inputMap.get(shifttab),new TableTabAction(date3, oldShiftTabAction));
+        oldAction = itemtable.getActionMap().get(inputMap.get(shifttab));
+        itemtable.getActionMap().put(inputMap.get(shifttab),new TableTabAction(date3, oldAction,true));
+
+        KeyStroke right = KeyStroke.getKeyStroke(KeyEvent.VK_RIGHT,0);
+        oldAction = itemtable.getActionMap().get(inputMap.get(right));
+        itemtable.getActionMap().put(inputMap.get(right),new TableTabAction(notes, oldAction,false));
+        KeyStroke left = KeyStroke.getKeyStroke(KeyEvent.VK_LEFT,0);
+        oldAction = itemtable.getActionMap().get(inputMap.get(left));
+        itemtable.getActionMap().put(inputMap.get(left),new TableTabAction(date3, oldAction,true));
 
         number.setSearchOnEnterEnabled(true);
         number.setParent(this);
@@ -1447,22 +1454,26 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
         //"Internal ID", Position, "Count", "Measure", "Text", "Netto Price", "Tax Rate", "Total Price", "Tax value", "Net 2", "Product ID", "", "", "Link", "Optional"
         TableFormat.resizeCols(itemtable, new Integer[]{0, 23, 53, 63, 100, 63, 63, 63, 0, 0, 63, 20, 0, 0, 100},
                 new Boolean[]{true, true, true, true, false, true, true, true, true, true, true, true, true, true, false});
-        ((MPTableModel) itemtable.getModel()).setCanEdits(new boolean[]{false,false,true,true,true,true,true,false,false,false,true,true,false,false,true});
+        MPTableModel model = (MPTableModel) itemtable.getModel();
+        model.setCanEdits(new boolean[]{false,false,true,true,true,true,true,false,false,false,true,true,false,false,true});
         TableFormat.changeBackground(itemtable, 1, Color.LIGHT_GRAY);
         if (MPView.getUser().getProperties().getProperty(MPView.tabPane, "hidecolumnquantity")) {
             TableFormat.stripColumn(itemtable, 2);
+            model.setCellEditable(0, 2, false);
         }
         if (MPView.getUser().getProperties().getProperty(MPView.tabPane, "hidecolumnmeasure")) {
             TableFormat.stripColumn(itemtable, 3);
+            model.setCellEditable(0, 3, false);
         }
         if (!MPView.getUser().getProperties().getProperty(MPView.tabPane, "showoptionalcolumn")) {
             TableFormat.stripColumn(itemtable, 14);
+            model.setCellEditable(0, 14, false);
         }
 
         TextAreaCellEditor r = new TextAreaCellEditor(itemtable);
         ProductSelectDialog2 productSelectDialog = new ProductSelectDialog2(MPView.identifierFrame, true,itemtable);
         productSelectDialog.okButton.addActionListener(r); productSelectDialog.cancelButton.addActionListener(r);
-        r.setDialog(productSelectDialog, productSelectDialog.IDTextField);
+        r.setDialog(productSelectDialog, productSelectDialog.getIDTextField());
         r.setEditorTo(10);
         itemtable.moveColumn(10, 3);
     }

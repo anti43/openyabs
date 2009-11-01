@@ -237,6 +237,11 @@ public class MPTableModel extends DefaultTableModel {
         return getCanEdits()[columnIndex];
     }
 
+    public void setCellEditable(int rowIndex, int columnIndex,boolean editable) {
+        new Boolean(getCanEdits()[columnIndex]).toString();//Check for non-null
+        getCanEdits()[columnIndex] = editable;
+    }
+
     /**
      * 
      * @return

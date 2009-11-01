@@ -30,11 +30,13 @@ public class TableTabAction extends AbstractAction {
 
     private JComponent componentToFocus;
     private Action originalTabAction;
+    private boolean backward;
 
-    public TableTabAction(JComponent c, Action a) {
+    public TableTabAction(JComponent c, Action a,boolean backward) {
         super("TableTabAction");
         componentToFocus = c;
         originalTabAction = a;
+        this.backward = backward;
     }
 
 
@@ -63,7 +65,7 @@ public class TableTabAction extends AbstractAction {
         int originalRow = row;
         int column = table.getSelectedColumn();
         int originalColumn = column;
-        if ((e.getModifiers() & InputEvent.SHIFT_MASK) != 0) {
+        if (backward) {
             if (origRow == 0 && isFirstEditableColumn(table,origColumn)) {
                 componentToFocus.requestFocus();
             } else {
@@ -77,8 +79,8 @@ public class TableTabAction extends AbstractAction {
                     }
                 }
             }
-        } else if(e.getModifiers() == 0){
-            if (origRow == table.getRowCount() - 1 && isLastEditableColumn(table,origColumn                                                                                                 )) {
+        } else {
+            if (origRow == table.getRowCount() - 1 && isLastEditableColumn(table,origColumn)) {
                 table.changeSelection(0, 0, false, false);
                 componentToFocus.requestFocus();
             }else{

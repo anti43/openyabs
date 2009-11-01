@@ -69,7 +69,9 @@
     </Container>
     <Component class="javax.swing.JButton" name="okButton">
       <Properties>
-        <Property name="text" type="java.lang.String" resourceKey="okButton.text"/>
+        <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
+          <ResourceString bundle="mpv5/resources/languages/Panels.properties" key="okButton" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+        </Property>
         <Property name="name" type="java.lang.String" value="okButton" noResource="true"/>
       </Properties>
       <AuxValues>
@@ -78,8 +80,10 @@
     </Component>
     <Component class="javax.swing.JButton" name="cancelButton">
       <Properties>
-        <Property name="text" type="java.lang.String" resourceKey="cancelButton.text"/>
-        <Property name="actionCommand" type="java.lang.String" resourceKey="cancelButton.actionCommand"/>
+        <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
+          <ResourceString bundle="mpv5/resources/languages/Panels.properties" key="cancelButton" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+        </Property>
+        <Property name="actionCommand" type="java.lang.String" value="CANCEL" noResource="true"/>
         <Property name="name" type="java.lang.String" value="cancelButton" noResource="true"/>
       </Properties>
       <AuxValues>

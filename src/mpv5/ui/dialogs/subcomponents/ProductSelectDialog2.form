@@ -24,44 +24,74 @@
     <DimensionLayout dim="0">
       <Group type="103" groupAlignment="0" attributes="0">
           <Group type="102" alignment="1" attributes="0">
-              <EmptySpace pref="245" max="32767" attributes="0"/>
-              <Component id="okButton" min="-2" pref="71" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
-              <Component id="cancelButton" min="-2" max="-2" attributes="0"/>
-              <EmptySpace min="-2" pref="12" max="-2" attributes="0"/>
-          </Group>
-          <Group type="102" alignment="0" attributes="0">
-              <EmptySpace max="-2" attributes="0"/>
-              <Component id="labeledTextField1" min="-2" max="-2" attributes="0"/>
-              <EmptySpace pref="196" max="32767" attributes="0"/>
-          </Group>
-          <Group type="103" rootIndex="1" groupAlignment="0" attributes="0">
-              <Group type="102" alignment="0" attributes="0">
-                  <EmptySpace max="-2" attributes="0"/>
-                  <Component id="jPanel1" min="-2" max="-2" attributes="0"/>
-                  <EmptySpace pref="196" max="32767" attributes="0"/>
+              <Group type="103" groupAlignment="1" attributes="0">
+                  <Component id="productCombobox" alignment="0" pref="433" max="32767" attributes="0"/>
+                  <Group type="102" alignment="1" attributes="0">
+                      <Component id="okButton" min="-2" pref="71" max="-2" attributes="0"/>
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Component id="cancelButton" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace max="-2" attributes="0"/>
+                  </Group>
+                  <Group type="102" alignment="0" attributes="0">
+                      <Component id="cnumber" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace max="32767" attributes="0"/>
+                      <Component id="stype" min="-2" pref="226" max="-2" attributes="0"/>
+                  </Group>
+                  <Component id="familyselect" alignment="0" pref="433" max="32767" attributes="1"/>
+                  <Group type="102" alignment="1" attributes="0">
+                      <Component id="suppliername" pref="189" max="32767" attributes="0"/>
+                      <EmptySpace min="-2" pref="18" max="-2" attributes="0"/>
+                      <Component id="manufacturername" min="-2" pref="226" max="-2" attributes="0"/>
+                      <EmptySpace max="-2" attributes="0"/>
+                  </Group>
+                  <Group type="102" alignment="0" attributes="0">
+                      <EmptySpace min="-2" pref="82" max="-2" attributes="0"/>
+                      <Component id="searchButton" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Component id="resetButton" min="-2" max="-2" attributes="0"/>
+                  </Group>
+                  <Component id="jScrollPane3" alignment="0" pref="433" max="32767" attributes="0"/>
+                  <Component id="cname" alignment="0" pref="433" max="32767" attributes="1"/>
               </Group>
+              <EmptySpace min="-2" pref="42" max="-2" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
     <DimensionLayout dim="1">
       <Group type="103" groupAlignment="0" attributes="0">
-          <Group type="102" alignment="0" attributes="0">
-              <EmptySpace min="-2" pref="40" max="-2" attributes="0"/>
-              <Component id="labeledTextField1" min="-2" max="-2" attributes="0"/>
-              <EmptySpace min="-2" pref="59" max="-2" attributes="0"/>
+          <Group type="102" attributes="0">
+              <EmptySpace min="-2" pref="13" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
-                  <Component id="cancelButton" min="-2" max="-2" attributes="0"/>
-                  <Component id="okButton" min="-2" max="-2" attributes="0"/>
+                  <Component id="cnumber" min="-2" max="-2" attributes="0"/>
+                  <Component id="stype" min="-2" max="-2" attributes="0"/>
               </Group>
-              <EmptySpace max="32767" attributes="0"/>
-          </Group>
-          <Group type="103" rootIndex="1" groupAlignment="0" attributes="0">
-              <Group type="102" alignment="0" attributes="0">
-                  <EmptySpace max="-2" attributes="0"/>
-                  <Component id="jPanel1" min="-2" max="-2" attributes="0"/>
-                  <EmptySpace pref="124" max="32767" attributes="0"/>
+              <EmptySpace max="-2" attributes="0"/>
+              <Component id="cname" min="-2" max="-2" attributes="0"/>
+              <EmptySpace max="-2" attributes="0"/>
+              <Component id="familyselect" min="-2" max="-2" attributes="0"/>
+              <EmptySpace max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="0" attributes="0">
+                  <Group type="102" attributes="0">
+                      <Component id="suppliername" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="3" attributes="0">
+                          <Component id="searchButton" alignment="3" min="-2" pref="19" max="-2" attributes="0"/>
+                          <Component id="resetButton" alignment="3" min="-2" pref="19" max="-2" attributes="0"/>
+                      </Group>
+                  </Group>
+                  <Component id="manufacturername" min="-2" max="-2" attributes="0"/>
               </Group>
+              <EmptySpace min="-2" pref="12" max="-2" attributes="0"/>
+              <Component id="productCombobox" min="-2" max="-2" attributes="1"/>
+              <EmptySpace max="-2" attributes="0"/>
+              <Component id="jScrollPane3" min="-2" pref="70" max="-2" attributes="0"/>
+              <EmptySpace max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="3" attributes="0">
+                  <Component id="cancelButton" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="okButton" alignment="3" min="-2" max="-2" attributes="0"/>
+              </Group>
+              <EmptySpace max="-2" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -69,7 +99,9 @@
   <SubComponents>
     <Component class="javax.swing.JButton" name="okButton">
       <Properties>
-        <Property name="text" type="java.lang.String" resourceKey="okButton.text"/>
+        <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
+          <ResourceString bundle="mpv5/resources/languages/Panels.properties" key="okButton" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+        </Property>
         <Property name="name" type="java.lang.String" value="okButton" noResource="true"/>
       </Properties>
       <Events>
@@ -81,77 +113,121 @@
     </Component>
     <Component class="javax.swing.JButton" name="cancelButton">
       <Properties>
-        <Property name="text" type="java.lang.String" resourceKey="cancelButton.text"/>
-        <Property name="actionCommand" type="java.lang.String" resourceKey="cancelButton.actionCommand"/>
+        <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
+          <ResourceString bundle="mpv5/resources/languages/Panels.properties" key="cancelButton" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+        </Property>
+        <Property name="actionCommand" type="java.lang.String" value="CANCEL" noResource="true"/>
         <Property name="name" type="java.lang.String" value="cancelButton" noResource="true"/>
       </Properties>
       <AuxValues>
         <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="1"/>
       </AuxValues>
     </Component>
-    <Container class="javax.swing.JPanel" name="jPanel1">
+    <Component class="mpv5.ui.beans.LabeledTextField" name="cnumber">
       <Properties>
-        <Property name="name" type="java.lang.String" value="jPanel1" noResource="true"/>
-        <Property name="opaque" type="boolean" value="false"/>
-        <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-          <Dimension value="[201, 19]"/>
+        <Property name="_Label" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
+          <ResourceString bundle="mpv5/resources/languages/Panels.properties" key="ProductPanel.contactid.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
         </Property>
+        <Property name="name" type="java.lang.String" value="cnumber" noResource="true"/>
       </Properties>
+    </Component>
+    <Component class="mpv5.ui.beans.LabeledCombobox" name="productCombobox">
+      <Properties>
+        <Property name="_Label" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
+          <ResourceString bundle="mpv5/resources/languages/Panels.properties" key="ProductSelectDialog.labeledCombobox1._Label" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+        </Property>
+        <Property name="name" type="java.lang.String" value="productCombobox" noResource="true"/>
+        <Property name="searchOnEnterEnabled" type="boolean" value="true"/>
+      </Properties>
+    </Component>
+    <Component class="mpv5.ui.beans.LabeledTextField" name="cname">
+      <Properties>
+        <Property name="_Label" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
+          <ResourceString bundle="mpv5/resources/languages/Panels.properties" key="ProductPanel.cname._Label_1" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+        </Property>
+        <Property name="name" type="java.lang.String" value="cname" noResource="true"/>
+      </Properties>
+    </Component>
+    <Component class="mpv5.ui.beans.LabeledCombobox" name="stype">
+      <Properties>
+        <Property name="_Label" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
+          <ResourceString bundle="mpv5/resources/languages/Panels.properties" key="ProductPanel.stype._Label" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+        </Property>
+        <Property name="name" type="java.lang.String" value="stype" noResource="true"/>
+      </Properties>
+    </Component>
+    <Component class="mpv5.ui.beans.LabeledCombobox" name="familyselect">
+      <Properties>
+        <Property name="_Label" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
+          <ResourceString bundle="mpv5/resources/languages/Panels.properties" key="ProductPanel.familyselect._Label" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+        </Property>
+        <Property name="name" type="java.lang.String" value="familyselect" noResource="true"/>
+        <Property name="searchOnEnterEnabled" type="boolean" value="false"/>
+      </Properties>
+    </Component>
+    <Component class="mpv5.ui.beans.LabeledCombobox" name="suppliername">
+      <Properties>
+        <Property name="_Label" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
+          <ResourceString bundle="mpv5/resources/languages/Panels.properties" key="ProductSelectDialog.suppliername._Label" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+        </Property>
+        <Property name="name" type="java.lang.String" value="suppliername" noResource="true"/>
+      </Properties>
+    </Component>
+    <Component class="mpv5.ui.beans.LabeledCombobox" name="manufacturername">
+      <Properties>
+        <Property name="_Label" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
+          <ResourceString bundle="mpv5/resources/languages/Panels.properties" key="ProductSelectDialog.manufacturername._Label" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+        </Property>
+        <Property name="name" type="java.lang.String" value="manufacturername" noResource="true"/>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JButton" name="searchButton">
+      <Properties>
+        <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
+          <ResourceString bundle="mpv5/resources/languages/Panels.properties" key="searchButton" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+        </Property>
+        <Property name="name" type="java.lang.String" value="searchButton" noResource="true"/>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JButton" name="resetButton">
+      <Properties>
+        <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
+          <ResourceString bundle="mpv5/resources/languages/Panels.properties" key="resetButton" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+        </Property>
+        <Property name="name" type="java.lang.String" value="resetButton" noResource="true"/>
+      </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="resetButtonActionPerformed"/>
+      </Events>
+    </Component>
+    <Container class="javax.swing.JScrollPane" name="jScrollPane3">
+      <Properties>
+        <Property name="name" type="java.lang.String" value="jScrollPane3" noResource="true"/>
+      </Properties>
+      <AuxValues>
+        <AuxValue name="autoScrollPane" type="java.lang.Boolean" value="true"/>
+      </AuxValues>
 
-      <Layout>
-        <DimensionLayout dim="0">
-          <Group type="103" groupAlignment="0" attributes="0">
-              <Group type="102" alignment="0" attributes="0">
-                  <Component id="jLabel1" min="-2" pref="70" max="-2" attributes="0"/>
-                  <EmptySpace max="-2" attributes="0"/>
-                  <Component id="IDTextField" pref="119" max="32767" attributes="0"/>
-              </Group>
-          </Group>
-        </DimensionLayout>
-        <DimensionLayout dim="1">
-          <Group type="103" groupAlignment="0" attributes="0">
-              <Group type="103" alignment="0" groupAlignment="3" attributes="0">
-                  <Component id="jLabel1" alignment="3" min="-2" max="-2" attributes="0"/>
-                  <Component id="IDTextField" alignment="3" min="-2" max="-2" attributes="0"/>
-              </Group>
-          </Group>
-        </DimensionLayout>
-      </Layout>
+      <Layout class="org.netbeans.modules.form.compat2.layouts.support.JScrollPaneSupportLayout"/>
       <SubComponents>
-        <Component class="javax.swing.JLabel" name="jLabel1">
+        <Component class="javax.swing.JTextArea" name="description">
           <Properties>
-            <Property name="font" type="java.awt.Font" noResource="true" editor="org.netbeans.modules.form.editors2.FontEditor">
-              <FontInfo relative="true">
-                <Font component="jLabel1" property="font" relativeSize="true" size="0"/>
-              </FontInfo>
+            <Property name="columns" type="int" value="20"/>
+            <Property name="lineWrap" type="boolean" value="true"/>
+            <Property name="rows" type="int" value="5"/>
+            <Property name="wrapStyleWord" type="boolean" value="true"/>
+            <Property name="focusTraversalPolicyProvider" type="boolean" value="true"/>
+            <Property name="highlighter" type="javax.swing.text.Highlighter" editor="org.netbeans.modules.form.ComponentChooserEditor">
+              <ComponentRef name="null"/>
             </Property>
-            <Property name="text" type="java.lang.String" resourceKey="jLabel1.text"/>
-            <Property name="name" type="java.lang.String" value="jLabel1" noResource="true"/>
+            <Property name="name" type="java.lang.String" value="description" noResource="true"/>
           </Properties>
-        </Component>
-        <Component class="javax.swing.JTextField" name="IDTextField">
-          <Properties>
-            <Property name="font" type="java.awt.Font" noResource="true" editor="org.netbeans.modules.form.editors2.FontEditor">
-              <FontInfo relative="true">
-                <Font component="IDTextField" property="font" relativeSize="true" size="0"/>
-              </FontInfo>
-            </Property>
-            <Property name="disabledTextColor" type="java.awt.Color" resourceKey="IDTextField.disabledTextColor"/>
-            <Property name="name" type="java.lang.String" value="IDTextField" noResource="true"/>
-          </Properties>
-          <Events>
-            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="IDTextFieldActionPerformed"/>
-          </Events>
           <AuxValues>
-            <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="1"/>
+            <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new NoTabTextArea()&#xa;"/>
+            <AuxValue name="JavaCodeGenerator_CreateCodePre" type="java.lang.String" value="class NoTabTextArea extends JTextArea {&#xa; protected void processComponentKeyEvent( KeyEvent e ) {  &#xa;        if ( e.getID() == KeyEvent.KEY_PRESSED &amp;&amp;   &#xa;                 e.getKeyCode() == KeyEvent.VK_TAB ) {  &#xa;             e.consume();  &#xa;             if (e.isShiftDown()) {  &#xa;                 transferFocusBackward();  &#xa;             } else {  &#xa;                 transferFocus();  &#xa;             }    &#xa;         } else {  &#xa;             super.processComponentKeyEvent( e );  &#xa;         }  &#xa;     }   &#xa;}"/>
           </AuxValues>
         </Component>
       </SubComponents>
     </Container>
-    <Component class="mpv5.ui.beans.LabeledTextField" name="labeledTextField1">
-      <Properties>
-        <Property name="name" type="java.lang.String" value="labeledTextField1" noResource="true"/>
-      </Properties>
-    </Component>
   </SubComponents>
 </Form>

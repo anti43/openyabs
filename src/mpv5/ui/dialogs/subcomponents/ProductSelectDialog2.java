@@ -16,19 +16,36 @@
  */
 package mpv5.ui.dialogs.subcomponents;
 
+
+import java.awt.ComponentOrientation;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.beans.PropertyChangeListener;
+import javax.swing.AbstractAction;
+import javax.swing.Action;
+import javax.swing.InputMap;
+import javax.swing.JComponent;
 import javax.swing.JTable;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
+import javax.swing.KeyStroke;
 import mpv5.db.common.Context;
-import mpv5.db.common.DatabaseObject;
+import mpv5.db.common.NodataFoundException;
 import mpv5.db.objects.Product;
 import mpv5.db.objects.SubItem;
 import mpv5.logging.Log;
+import mpv5.ui.panels.DataPanel;
+import mpv5.utils.models.MPComboBoxModelItem;
 import mpv5.utils.models.MPTableModel;
 
-public class ProductSelectDialog2 extends javax.swing.JDialog implements KeyListener {
+public class ProductSelectDialog2 extends javax.swing.JDialog  {
 
     protected JTable table;
 
@@ -38,14 +55,87 @@ public class ProductSelectDialog2 extends javax.swing.JDialog implements KeyList
         this.table = table;
         setResizable(false);
         setUndecorated(true);
-        initComponents();
-        IDTextField.addKeyListener(this);
+        initComponents();   
+        InputMap inputMap = ((JComponent)getContentPane()).getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
+        KeyStroke enter = KeyStroke.getKeyStroke(KeyEvent.VK_ENTER,0);
+        ((JComponent)getContentPane()).getActionMap().put(inputMap.get(enter),new AbstractAction(){
+            public void actionPerformed(ActionEvent e) {
+                ActionListener[] listeners = okButton.getActionListeners();
+                ActionEvent actionEvent = new ActionEvent(okButton, ActionEvent.ACTION_PERFORMED, okButton.getActionCommand());
+                for (int i = 0; i < listeners.length; i++) {
+                    listeners[i].actionPerformed(actionEvent);
+                }
+            }
+        });
+        KeyStroke esc = KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE,0);
+        ((JComponent)getContentPane()).getActionMap().put(inputMap.get(esc),new AbstractAction(){
+            public void actionPerformed(ActionEvent e) {
+                ActionListener[] listeners = cancelButton.getActionListeners();
+                ActionEvent actionEvent = new ActionEvent(cancelButton, ActionEvent.ACTION_PERFORMED, cancelButton.getActionCommand());
+                for (int i = 0; i < listeners.length; i++) {
+                    listeners[i].actionPerformed(actionEvent);
+                }
+            }
+        });
+
+        getIDTextField().addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                cnumberActionPerformed(e);
+            }
+        });
+        getIDTextField().addComponentListener(new ComponentAdapter() {
+            @Override
+            public void componentShown(ComponentEvent e) {
+                getIDTextField().selectAll();
+                getIDTextField().requestFocusInWindow();
+            }
+        });
+
+        productCombobox.setContext(Context.getProduct());
+        productCombobox.getComboBox().addItemListener(new ItemListener() {
+            public void itemStateChanged(ItemEvent e) {
+                productComboboxStateChanged(e);
+            }
+        });
+        productCombobox.triggerSearch();
+        productCombobox.getComboBox().setEditable(true);
+
+        familyselect.setContext(Context.getProductGroup());
+        familyselect.setSearchEnabled(true);
+        suppliername.setSearchEnabled(true);
+        suppliername.setContext(Context.getSupplier());
+        manufacturername.setSearchEnabled(true);
+        manufacturername.setContext(Context.getManufacturer());
+        stype.setModel(Product.getTypes(), MPComboBoxModelItem.COMPARE_BY_ID, new java.util.Vector<Integer>());
+
     }
+
+
+    public JTextField getIDTextField(){
+        return cnumber.getTextField();
+    }
+
+    private void cnumberActionPerformed(ActionEvent e){
+        try {
+            productCombobox.setSelectedItem(Integer.valueOf(cnumber.getText()));
+            Product p = (Product) Product.getObject(Context.getProduct(), Integer.valueOf(productCombobox.getSelectedItem().getId()));
+        } catch (Exception ex) {
+        }
+    }
+
+    private void productComboboxStateChanged(ItemEvent e){
+        try {
+            Product p = (Product) Product.getObject(Context.getProduct(), Integer.valueOf(productCombobox.getSelectedItem().getId()));
+            cnumber.setText(p.__getCnumber());
+        } catch (NodataFoundException ex) {
+        }
+    }
+
 
     @Override
     public void setVisible(boolean visible) {
         super.setVisible(visible);
-        IDTextField.grabFocus();
+        cnumber.grabFocus();
     }
 
     /** This method is called from within the constructor to
@@ -59,16 +149,39 @@ public class ProductSelectDialog2 extends javax.swing.JDialog implements KeyList
 
         okButton = new javax.swing.JButton();
         cancelButton = new javax.swing.JButton();
-        jPanel1 = new javax.swing.JPanel();
-        jLabel1 = new javax.swing.JLabel();
-        IDTextField = new javax.swing.JTextField();
-        labeledTextField1 = new mpv5.ui.beans.LabeledTextField();
+        cnumber = new mpv5.ui.beans.LabeledTextField();
+        productCombobox = new mpv5.ui.beans.LabeledCombobox();
+        cname = new mpv5.ui.beans.LabeledTextField();
+        stype = new mpv5.ui.beans.LabeledCombobox();
+        familyselect = new mpv5.ui.beans.LabeledCombobox();
+        suppliername = new mpv5.ui.beans.LabeledCombobox();
+        manufacturername = new mpv5.ui.beans.LabeledCombobox();
+        searchButton = new javax.swing.JButton();
+        resetButton = new javax.swing.JButton();
+        jScrollPane3 = new javax.swing.JScrollPane();
+        class NoTabTextArea extends JTextArea {
+            protected void processComponentKeyEvent( KeyEvent e ) {
+                if ( e.getID() == KeyEvent.KEY_PRESSED &&
+                    e.getKeyCode() == KeyEvent.VK_TAB ) {
+                    e.consume();
+                    if (e.isShiftDown()) {
+                        transferFocusBackward();
+                    } else {
+                        transferFocus();
+                    }
+                } else {
+                    super.processComponentKeyEvent( e );
+                }
+            }
+        }
+        description = new NoTabTextArea()
+        ;
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setName("Form"); // NOI18N
 
-        org.jdesktop.application.ResourceMap resourceMap = org.jdesktop.application.Application.getInstance(mpv5.Main.class).getContext().getResourceMap(ProductSelectDialog2.class);
-        okButton.setText(resourceMap.getString("okButton.text")); // NOI18N
+        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("mpv5/resources/languages/Panels"); // NOI18N
+        okButton.setText(bundle.getString("okButton")); // NOI18N
         okButton.setName("okButton"); // NOI18N
         okButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -76,87 +189,120 @@ public class ProductSelectDialog2 extends javax.swing.JDialog implements KeyList
             }
         });
 
-        cancelButton.setText(resourceMap.getString("cancelButton.text")); // NOI18N
-        cancelButton.setActionCommand(resourceMap.getString("cancelButton.actionCommand")); // NOI18N
+        cancelButton.setText(bundle.getString("cancelButton")); // NOI18N
+        cancelButton.setActionCommand("CANCEL"); // NOI18N
         cancelButton.setName("cancelButton"); // NOI18N
 
-        jPanel1.setName("jPanel1"); // NOI18N
-        jPanel1.setOpaque(false);
-        jPanel1.setPreferredSize(new java.awt.Dimension(201, 19));
+        cnumber.set_Label(bundle.getString("ProductPanel.contactid.text")); // NOI18N
+        cnumber.setName("cnumber"); // NOI18N
 
-        jLabel1.setFont(jLabel1.getFont());
-        jLabel1.setText(resourceMap.getString("jLabel1.text")); // NOI18N
-        jLabel1.setName("jLabel1"); // NOI18N
+        productCombobox.set_Label(bundle.getString("ProductSelectDialog.labeledCombobox1._Label")); // NOI18N
+        productCombobox.setName("productCombobox"); // NOI18N
+        productCombobox.setSearchOnEnterEnabled(true);
 
-        IDTextField.setFont(IDTextField.getFont());
-        IDTextField.setDisabledTextColor(resourceMap.getColor("IDTextField.disabledTextColor")); // NOI18N
-        IDTextField.setName("IDTextField"); // NOI18N
-        IDTextField.addActionListener(new java.awt.event.ActionListener() {
+        cname.set_Label(bundle.getString("ProductPanel.cname._Label_1")); // NOI18N
+        cname.setName("cname"); // NOI18N
+
+        stype.set_Label(bundle.getString("ProductPanel.stype._Label")); // NOI18N
+        stype.setName("stype"); // NOI18N
+
+        familyselect.set_Label(bundle.getString("ProductPanel.familyselect._Label")); // NOI18N
+        familyselect.setName("familyselect"); // NOI18N
+        familyselect.setSearchOnEnterEnabled(false);
+
+        suppliername.set_Label(bundle.getString("ProductSelectDialog.suppliername._Label")); // NOI18N
+        suppliername.setName("suppliername"); // NOI18N
+
+        manufacturername.set_Label(bundle.getString("ProductSelectDialog.manufacturername._Label")); // NOI18N
+        manufacturername.setName("manufacturername"); // NOI18N
+
+        searchButton.setText(bundle.getString("searchButton")); // NOI18N
+        searchButton.setName("searchButton"); // NOI18N
+
+        resetButton.setText(bundle.getString("resetButton")); // NOI18N
+        resetButton.setName("resetButton"); // NOI18N
+        resetButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                IDTextFieldActionPerformed(evt);
+                resetButtonActionPerformed(evt);
             }
         });
 
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(IDTextField, javax.swing.GroupLayout.DEFAULT_SIZE, 119, Short.MAX_VALUE))
-        );
-        jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                .addComponent(jLabel1)
-                .addComponent(IDTextField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-        );
+        jScrollPane3.setName("jScrollPane3"); // NOI18N
 
-        labeledTextField1.setName("labeledTextField1"); // NOI18N
+        description.setColumns(20);
+        description.setLineWrap(true);
+        description.setRows(5);
+        description.setWrapStyleWord(true);
+        description.setFocusTraversalPolicyProvider(true);
+        description.setHighlighter(null);
+        description.setName("description"); // NOI18N
+        jScrollPane3.setViewportView(description);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(245, Short.MAX_VALUE)
-                .addComponent(okButton, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(cancelButton)
-                .addGap(12, 12, 12))
-            .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(labeledTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(196, Short.MAX_VALUE))
-            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(layout.createSequentialGroup()
-                    .addContainerGap()
-                    .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addContainerGap(196, Short.MAX_VALUE)))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(productCombobox, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 433, Short.MAX_VALUE)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(okButton, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(cancelButton)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED))
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                        .addComponent(cnumber, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(stype, javax.swing.GroupLayout.PREFERRED_SIZE, 226, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(familyselect, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 433, Short.MAX_VALUE)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(suppliername, javax.swing.GroupLayout.DEFAULT_SIZE, 189, Short.MAX_VALUE)
+                        .addGap(18, 18, 18)
+                        .addComponent(manufacturername, javax.swing.GroupLayout.PREFERRED_SIZE, 226, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED))
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                        .addGap(82, 82, 82)
+                        .addComponent(searchButton)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(resetButton))
+                    .addComponent(jScrollPane3, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 433, Short.MAX_VALUE)
+                    .addComponent(cname, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 433, Short.MAX_VALUE))
+                .addGap(42, 42, 42))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(40, 40, 40)
-                .addComponent(labeledTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(59, 59, 59)
+                .addGap(13, 13, 13)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(cnumber, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(stype, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(cname, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(familyselect, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(suppliername, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(searchButton, javax.swing.GroupLayout.PREFERRED_SIZE, 19, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(resetButton, javax.swing.GroupLayout.PREFERRED_SIZE, 19, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addComponent(manufacturername, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(12, 12, 12)
+                .addComponent(productCombobox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(cancelButton)
                     .addComponent(okButton))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(layout.createSequentialGroup()
-                    .addContainerGap()
-                    .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addContainerGap(124, Short.MAX_VALUE)))
+                .addContainerGap())
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-
-    private void IDTextFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_IDTextFieldActionPerformed
-    }//GEN-LAST:event_IDTextFieldActionPerformed
 
     private void okButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_okButtonActionPerformed
         int row = table.getSelectedRow();
@@ -165,39 +311,30 @@ public class ProductSelectDialog2 extends javax.swing.JDialog implements KeyList
             return;
         }
         try {
-            SubItem s = new SubItem((Product) Product.getObject(Context.getProduct(), Integer.valueOf(IDTextField.getText())));
+            SubItem s = new SubItem((Product) Product.getObject(Context.getProduct(), Integer.valueOf(cnumber.getText())));
             ((MPTableModel)table.getModel()).setRowAt(s.getRowData(row), row, 1);
         } catch (Exception ex) {
         }
     }//GEN-LAST:event_okButtonActionPerformed
+
+    private void resetButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_resetButtonActionPerformed
+
+    }//GEN-LAST:event_resetButtonActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    public javax.swing.JTextField IDTextField;
     public javax.swing.JButton cancelButton;
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JPanel jPanel1;
-    private mpv5.ui.beans.LabeledTextField labeledTextField1;
+    private mpv5.ui.beans.LabeledTextField cname;
+    private mpv5.ui.beans.LabeledTextField cnumber;
+    private javax.swing.JTextArea description;
+    private mpv5.ui.beans.LabeledCombobox familyselect;
+    private javax.swing.JScrollPane jScrollPane3;
+    private mpv5.ui.beans.LabeledCombobox manufacturername;
     public javax.swing.JButton okButton;
+    private mpv5.ui.beans.LabeledCombobox productCombobox;
+    private javax.swing.JButton resetButton;
+    private javax.swing.JButton searchButton;
+    private mpv5.ui.beans.LabeledCombobox stype;
+    private mpv5.ui.beans.LabeledCombobox suppliername;
     // End of variables declaration//GEN-END:variables
 
-    public void keyTyped(KeyEvent e) {
-    }
-
-    public void keyPressed(KeyEvent e) {
-        if (e.isControlDown() && e.getKeyCode() == e.VK_ENTER) {
-            ActionListener[] listeners = okButton.getActionListeners();
-            ActionEvent actionEvent = new ActionEvent(okButton, ActionEvent.ACTION_PERFORMED, okButton.getActionCommand());
-            for (int i = 0; i < listeners.length; i++) {
-                listeners[i].actionPerformed(actionEvent);
-            }
-        } else if (e.getKeyCode() == e.VK_ESCAPE) {
-            ActionListener[] listeners = cancelButton.getActionListeners();
-            ActionEvent actionEvent = new ActionEvent(cancelButton, ActionEvent.ACTION_PERFORMED, cancelButton.getActionCommand());
-            for (int i = 0; i < listeners.length; i++) {
-                listeners[i].actionPerformed(actionEvent);
-            }
-        }
-    }
-
-    public void keyReleased(KeyEvent e) {
-    }
 }
