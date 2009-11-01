@@ -1,6 +1,9 @@
 package mpv5.ui.panels;
 
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Enumeration;
@@ -285,7 +288,20 @@ public class StartPage extends javax.swing.JPanel {
                 public void run() {
                     try {
                         try {
-                            String[] data = (new FileReaderWriter(new File(Main.class.getResource("/mpv5/resources/license/licenses-list").toURI())).readLines());
+                            File licenses = new File("licenses-list.txt");
+                            if (!licenses.exists()) {
+                                InputStream inputStream = Main.class.getResourceAsStream("/mpv5/resources/license/licenses-list");
+                                OutputStream out = new FileOutputStream(licenses);
+                                byte buf[] = new byte[1024];
+                                int len;
+                                while ((len = inputStream.read(buf)) > 0) {
+                                    out.write(buf, 0, len);
+                                }
+                                out.close();
+                                inputStream.close();
+                            }
+
+                            String[] data = (new FileReaderWriter(licenses).readLines());
                             Arrays.sort(data);
                             String[][] model = new String[data.length][];
                             for (int i = 0; i < data.length; i++) {
