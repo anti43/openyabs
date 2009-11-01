@@ -86,13 +86,13 @@ public interface Constants {
     public static String WEBSITE = "http://openyabs.org";
     public static final String[] CONTRIBUTORS = new String[]{
         "Andreas Weber",
-        "peser",
+        "P.Eser",
         "Christian Gabel",
         "Daniel Lang",
         "Daniel Kulesz",
         "Michael Stibane",
         "Sven Lindenhahn",
         "Uwe Stark",
-        "Peter Heller",
+        "P.Heller",
         "Jean-Christoph von Oertzen"};
 }
