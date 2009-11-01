@@ -60,7 +60,7 @@ public class QueryCriteria2 {
                     query += " AND " + p.getKey() + " <> " + val + " ";
                     break;
                 case QueryParameter.LIKE:
-                    query += " AND " + p.getKey() + " LIKE '%" + val.replace("'", "") + "%'" + " ";
+                    query += " AND UPPER(" + p.getKey() + ") LIKE '%" + val.replace("'", "").toUpperCase() + "%'" + " ";
                     break;
             }
         }
@@ -105,7 +105,7 @@ public class QueryCriteria2 {
                     query += " OR " + p.getKey() + " <> " + val + " ";
                     break;
                 case QueryParameter.LIKE:
-                    query += " OR " + p.getKey() + " LIKE %" + val + "%" + " ";
+                    query += " OR UPPER(" + p.getKey() + ") LIKE %" + val.toUpperCase() + "%" + " ";
                     break;
             }
         }

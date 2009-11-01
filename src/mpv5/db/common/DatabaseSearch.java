@@ -99,23 +99,29 @@ public class DatabaseSearch {
      * @param possibleColumns Which columns do you like to take for the condition?
      * @param where And what value should the column value have?
      * @param searchForLike Shall we search with "like" condition?
-     * @param withIds If true, the first column is alway the IDS field
      * @return
      */
     public Object[][] getValuesFor2(String resultingFieldNames, String[] possibleColumns, String where, boolean searchForLike) {
-        String w = "";
-        String like = "LIKE '%";
-        String like2 = "%'";
         if (!searchForLike) {
-            like = "'";
-            like2 = "'";
+            String w = "";
+            String quote = "'";
+            for (int i = 0; i < possibleColumns.length; i++) {
+                w += possibleColumns[i] + " " + quote + where + quote +
+                        " OR ";
+            }
+            return QueryHandler.instanceOf().clone(context, ROWLIMIT).freeSelectQuery(context.prepareSQLString(
+                    "SELECT " + resultingFieldNames + " FROM " + context.getDbIdentity() + " WHERE " + w.substring(0, w.length() - 4)), MPSecurityManager.VIEW, null).getData();
+        } else {
+            String w = "";
+            String like = "LIKE '%";
+            String like2 = "%'";
+            for (int i = 0; i < possibleColumns.length; i++) {
+                w += " UPPER(" + possibleColumns[i] + ") " + like + where.toUpperCase() + like2 +
+                        " OR ";
+            }
+            return QueryHandler.instanceOf().clone(context, ROWLIMIT).freeSelectQuery(context.prepareSQLString(
+                    "SELECT " + resultingFieldNames + " FROM " + context.getDbIdentity() + " WHERE " + w.substring(0, w.length() - 4)), MPSecurityManager.VIEW, null).getData();
         }
-        for (int i = 0; i < possibleColumns.length; i++) {
-            w += possibleColumns[i] + " " + like + where + like2 +
-                    " OR ";
-        }
-        return QueryHandler.instanceOf().clone(context, ROWLIMIT).freeSelectQuery(context.prepareSQLString(
-                "SELECT " + resultingFieldNames + " FROM " + context.getDbIdentity() + " WHERE " + w.substring(0, w.length() - 4)), MPSecurityManager.VIEW, null).getData();
     }
 
 //    /**
@@ -140,7 +146,6 @@ public class DatabaseSearch {
 //            return getValuesFor(resultingFieldNames, possibleColumns, where, searchForLike);
 //        }
 //    }
-
     /**
      * Get multiple values from a search
      * @param resultingFieldNames What do you like to get (columns, comma separated)?

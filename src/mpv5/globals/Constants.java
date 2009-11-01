@@ -28,7 +28,7 @@ public interface Constants {
      * 
      * Full Version number
      */
-    public static final String VERSION = "Yabs-1.0-Beta";
+    public static final String VERSION = "Yabs-1.0-Beta-10";
     /**
      * The minimal Database Version which is compatible with this release
      */
@@ -36,7 +36,7 @@ public interface Constants {
     /**
      * Will be dynamically changed by SVN.
      */
-    public static final String REVISION = "$Rev: 1161 $";
+    public static final String REVISION = "$Rev: 1235 $";
     /**
      *
      * The Release version
@@ -46,7 +46,7 @@ public interface Constants {
      *
      * Alias
      */
-    public static final String TITLE = "[Foxy YaBS BETA]";
+    public static final String TITLE = "[Arann Islands]";
     /**
      *
      * Name of the main JAR

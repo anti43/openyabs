@@ -65,7 +65,7 @@ public class ItemTextAreaDialog extends javax.swing.JDialog implements KeyListen
         textArea.setName("textArea"); // NOI18N
         jScrollPane1.setViewportView(textArea);
 
-        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("mpv5/resources/languages/Panels"); // NOI18N
+         java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle(); // NOI18N
         okButton.setText(bundle.getString("okButton")); // NOI18N
         okButton.setName("okButton"); // NOI18N
 

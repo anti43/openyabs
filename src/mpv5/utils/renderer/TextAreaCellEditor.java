@@ -17,6 +17,7 @@
 package mpv5.utils.renderer;
 
 import java.awt.Component;
+import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.DefaultCellEditor;
@@ -28,6 +29,7 @@ import javax.swing.SwingUtilities;
 import javax.swing.table.TableColumn;
 import javax.swing.text.JTextComponent;
 import mpv5.logging.Log;
+import mpv5.ui.frames.MPView;
 
 public class TextAreaCellEditor extends DefaultCellEditor implements ActionListener {
 
@@ -84,7 +86,9 @@ public class TextAreaCellEditor extends DefaultCellEditor implements ActionListe
         dialogsTextComponent.setText(value.toString());
         SwingUtilities.invokeLater(new Runnable(){
             public void run(){
-                dialog.setLocation(textArea.getLocationOnScreen());
+                Point p =textArea.getLocationOnScreen();
+                p.move((int)p.getX(),MPView.identifierFrame.getY() + MPView.identifierFrame.getHeight() - 310);
+                dialog.setLocation(p);
                 dialog.setVisible(true);
             }
         });

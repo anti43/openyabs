@@ -40,6 +40,8 @@ public class ProductList extends javax.swing.JPanel implements ListPanel {
         labeledCombobox1.setSearchEnabled(true);
         labeledCombobox2.setContext(Context.getManufacturer());
         labeledCombobox2.setSearchEnabled(true);
+        labeledCombobox1.setEditable(true);
+        labeledCombobox2.setEditable(true);
         prinitingComboBox1.init(listTable);
         context.addReference(Context.getContact().getDbIdentity(), "ids", "suppliersids");
         context.addReference(Context.getGroup());
@@ -107,7 +109,7 @@ public class ProductList extends javax.swing.JPanel implements ListPanel {
 
         setName("Form"); // NOI18N
 
-        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("mpv5/resources/languages/Panels"); // NOI18N
+         java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle(); // NOI18N
         jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("ProductList.jPanel1.border.title"))); // NOI18N
         jPanel1.setName("jPanel1"); // NOI18N
 

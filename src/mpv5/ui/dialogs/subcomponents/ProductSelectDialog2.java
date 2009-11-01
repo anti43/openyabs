@@ -113,6 +113,16 @@ public class ProductSelectDialog2 extends javax.swing.JDialog  {
         manufacturername.setContext(Context.getManufacturer());
         stype.setModel(Product.getTypes(), MPComboBoxModelItem.COMPARE_BY_ID, new java.util.Vector<Integer>());
 
+        cname.getTextField().addKeyListener(new KeyListener() {
+            public void keyTyped(KeyEvent e) {}
+            public void keyPressed(KeyEvent e) {
+            int key = e.getKeyCode();
+            if (key == KeyEvent.VK_ENTER) {
+              search();
+             }
+            }
+            public void keyReleased(KeyEvent e) {}
+        });
     }
 
 
@@ -186,7 +196,7 @@ public class ProductSelectDialog2 extends javax.swing.JDialog  {
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setName("Form"); // NOI18N
 
-        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("mpv5/resources/languages/Panels"); // NOI18N
+         java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle(); // NOI18N
         okButton.setText(bundle.getString("okButton")); // NOI18N
         okButton.setName("okButton"); // NOI18N
         okButton.addActionListener(new java.awt.event.ActionListener() {
@@ -204,7 +214,8 @@ public class ProductSelectDialog2 extends javax.swing.JDialog  {
 
         productCombobox.set_Label(bundle.getString("ProductSelectDialog.labeledCombobox1._Label")); // NOI18N
         productCombobox.setName("productCombobox"); // NOI18N
-        productCombobox.setSearchOnEnterEnabled(true);
+        productCombobox.setSearchEnabled(false);
+        productCombobox.setSearchOnEnterEnabled(false);
 
         cname.set_Label(bundle.getString("ProductPanel.cname._Label_1")); // NOI18N
         cname.setName("cname"); // NOI18N
@@ -257,7 +268,7 @@ public class ProductSelectDialog2 extends javax.swing.JDialog  {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(productCombobox, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 433, Short.MAX_VALUE)
+                    .addComponent(productCombobox, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 425, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(okButton, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -267,9 +278,9 @@ public class ProductSelectDialog2 extends javax.swing.JDialog  {
                         .addComponent(cnumber, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(stype, javax.swing.GroupLayout.PREFERRED_SIZE, 226, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(familyselect, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 433, Short.MAX_VALUE)
+                    .addComponent(familyselect, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 425, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(suppliername, javax.swing.GroupLayout.DEFAULT_SIZE, 189, Short.MAX_VALUE)
+                        .addComponent(suppliername, javax.swing.GroupLayout.DEFAULT_SIZE, 181, Short.MAX_VALUE)
                         .addGap(18, 18, 18)
                         .addComponent(manufacturername, javax.swing.GroupLayout.PREFERRED_SIZE, 226, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED))
@@ -278,8 +289,8 @@ public class ProductSelectDialog2 extends javax.swing.JDialog  {
                         .addComponent(searchButton)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(resetButton))
-                    .addComponent(jScrollPane3, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 433, Short.MAX_VALUE)
-                    .addComponent(cname, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 433, Short.MAX_VALUE))
+                    .addComponent(jScrollPane3, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 425, Short.MAX_VALUE)
+                    .addComponent(cname, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 425, Short.MAX_VALUE))
                 .addGap(42, 42, 42))
         );
         layout.setVerticalGroup(
@@ -340,6 +351,26 @@ public class ProductSelectDialog2 extends javax.swing.JDialog  {
     }//GEN-LAST:event_resetButtonActionPerformed
 
     private void searchButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchButtonActionPerformed
+        search();
+    }//GEN-LAST:event_searchButtonActionPerformed
+
+    // Variables declaration - do not modify//GEN-BEGIN:variables
+    public javax.swing.JButton cancelButton;
+    private mpv5.ui.beans.LabeledTextField cname;
+    private mpv5.ui.beans.LabeledTextField cnumber;
+    private javax.swing.JTextArea description;
+    private mpv5.ui.beans.LabeledCombobox familyselect;
+    private javax.swing.JScrollPane jScrollPane3;
+    private mpv5.ui.beans.LabeledCombobox manufacturername;
+    public javax.swing.JButton okButton;
+    private mpv5.ui.beans.LabeledCombobox productCombobox;
+    private javax.swing.JButton resetButton;
+    private javax.swing.JButton searchButton;
+    private mpv5.ui.beans.LabeledCombobox stype;
+    private mpv5.ui.beans.LabeledCombobox suppliername;
+    // End of variables declaration//GEN-END:variables
+
+    private void search() {
         QueryCriteria2 qc = new QueryCriteria2();
         String cnametext = cname.getText();
         if(cnametext!=null && !cnametext.equals("")){
@@ -363,24 +394,8 @@ public class ProductSelectDialog2 extends javax.swing.JDialog  {
             ReturnValue data = QueryHandler.instanceOf().clone(Context.getProduct()).select("ids, cname", qc, new vTimeframe(new Date(0), new Date()));
             productCombobox.setModel(new MPComboboxModel(MPComboBoxModelItem.toItems(data.getData())));
         }catch(Exception e){
-            Log.Debug(this,e);
+            Log.Debug(this,e.getMessage());
         }
-    }//GEN-LAST:event_searchButtonActionPerformed
-
-    // Variables declaration - do not modify//GEN-BEGIN:variables
-    public javax.swing.JButton cancelButton;
-    private mpv5.ui.beans.LabeledTextField cname;
-    private mpv5.ui.beans.LabeledTextField cnumber;
-    private javax.swing.JTextArea description;
-    private mpv5.ui.beans.LabeledCombobox familyselect;
-    private javax.swing.JScrollPane jScrollPane3;
-    private mpv5.ui.beans.LabeledCombobox manufacturername;
-    public javax.swing.JButton okButton;
-    private mpv5.ui.beans.LabeledCombobox productCombobox;
-    private javax.swing.JButton resetButton;
-    private javax.swing.JButton searchButton;
-    private mpv5.ui.beans.LabeledCombobox stype;
-    private mpv5.ui.beans.LabeledCombobox suppliername;
-    // End of variables declaration//GEN-END:variables
+    }
 
 }

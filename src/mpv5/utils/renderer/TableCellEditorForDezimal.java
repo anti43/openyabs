@@ -62,10 +62,16 @@ public class TableCellEditorForDezimal extends LazyCellEditor {
 //                if (param != null) {
 //                    tf.setText(String.valueOf(param));
 //                } else
-                if (String.valueOf(param).equals("0.0") || tf.getText().equals("0.0")) {
+                if (String.valueOf(param).equals("0.0") || tf.getText().equals("0.0") ||
+                        String.valueOf(param).equals("0,0") || tf.getText().equals("0,0")) {
                     tf.setText("");
                 } else {
-                    tf.setText(String.valueOf(param));
+                    try {
+                        tf.setText(FormatNumber.formatDezimal(Double.valueOf(String.valueOf(param))));
+                    } catch (NumberFormatException numberFormatException) {
+                        Log.Debug(this, numberFormatException.getMessage());
+                        tf.setText(String.valueOf(param));
+                    }
                 }
 
             }

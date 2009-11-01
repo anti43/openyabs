@@ -321,4 +321,12 @@ public class LabeledCombobox extends javax.swing.JPanel {
     public void setSearchOnEnterEnabled(boolean b) {
         setSearchEnabled(b);
     }
+
+    /**
+     * Enable/disable editing of the combobox
+     * @param b
+     */
+    public void setEditable(boolean b) {
+        getComboBox().setEditable(b);
+    }
 }

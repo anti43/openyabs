@@ -1,6 +1,7 @@
 package mpv5.ui.dialogs.subcomponents;
 
 import java.awt.BorderLayout;
+import java.awt.Point;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.event.KeyEvent;
@@ -18,6 +19,7 @@ import mpv5.db.objects.SubItem;
 import mpv5.db.objects.Tax;
 import mpv5.globals.Messages;
 import mpv5.logging.Log;
+import mpv5.ui.frames.MPView;
 import mpv5.utils.models.MPTableModel;
 import mpv5.utils.numberformat.FormatNumber;
 
@@ -65,6 +67,10 @@ public class ProductSelectDialog extends javax.swing.JPanel {
             me.statech();
         } catch (Exception e) {
         }
+//        Point p = evt.getLocationOnScreen();
+//                  p.move(evt.getLocationOnScreen().x - me.getWidth(),
+//                        MPView.identifierFrame.getY() + MPView.identifierFrame.getHeight() - 310);
+//                  frame.setLocation(p);
         frame.setLocation(evt.getLocationOnScreen().x - me.getWidth(), evt.getLocationOnScreen().y);
         frame.setResizable(false);
         frame.setVisible(true);
@@ -118,8 +124,7 @@ public class ProductSelectDialog extends javax.swing.JPanel {
         setName("Form"); // NOI18N
         setLayout(new java.awt.BorderLayout());
 
-        jPanel1.setBackground(new java.awt.Color(182, 201, 201));
-        java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle(); // NOI18N
+         java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle(); // NOI18N
         jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("ProductSelectDialog.jPanel1.border.title"))); // NOI18N
         jPanel1.setName("jPanel1"); // NOI18N
         jPanel1.addKeyListener(new java.awt.event.KeyAdapter() {
@@ -132,7 +137,7 @@ public class ProductSelectDialog extends javax.swing.JPanel {
         labeledCombobox1.setName("labeledCombobox1"); // NOI18N
         labeledCombobox1.setSearchOnEnterEnabled(true);
 
-        jButton1.setFont(new java.awt.Font("Dialog", 0, 10)); // NOI18N
+        jButton1.setFont(new java.awt.Font("Dialog", 0, 10));
         jButton1.setText(bundle.getString("ProductSelectDialog.jButton1.text")); // NOI18N
         jButton1.setName("jButton1"); // NOI18N
         jButton1.addActionListener(new java.awt.event.ActionListener() {
@@ -150,7 +155,7 @@ public class ProductSelectDialog extends javax.swing.JPanel {
         value.set_Label(bundle.getString("ProductSelectDialog.value._Label")); // NOI18N
         value.setName("value"); // NOI18N
 
-        jButton2.setFont(new java.awt.Font("Dialog", 0, 10)); // NOI18N
+        jButton2.setFont(new java.awt.Font("Dialog", 0, 10));
         jButton2.setText(bundle.getString("ProductSelectDialog.jButton2.text")); // NOI18N
         jButton2.setName("jButton2"); // NOI18N
         jButton2.addActionListener(new java.awt.event.ActionListener() {
