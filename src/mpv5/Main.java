@@ -62,6 +62,7 @@ import mpv5.ui.dialogs.subcomponents.ControlPanel_Fonts;
 import mpv5.ui.dialogs.subcomponents.wizard_DBSettings_simple_1;
 import mpv5.utils.files.FileDirectoryHandler;
 import mpv5.utils.files.FileReaderWriter;
+import mpv5.utils.text.RandomText;
 import mpv5.webshopinterface.WSIManager;
 import org.apache.commons.cli2.*;
 import org.apache.commons.cli2.builder.*;
@@ -463,11 +464,11 @@ public class Main extends SingleFrameApplication {
      */
     public static void setDerbyLog() {
         Properties p = System.getProperties();
-        File d = FileDirectoryHandler.getTempFile();
-        try {
+         try {
+            File d = File.createTempFile(RandomText.getText(), ".~mp");
             d.createNewFile();
+            p.put("derby.stream.error.file", d.getPath());
         } catch (IOException ex) {}
-        p.put("derby.stream.error.file", d.getPath());
     }
 
     /**
