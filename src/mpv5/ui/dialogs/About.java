@@ -79,10 +79,10 @@ public class About extends javax.swing.JFrame {
         jScrollPane1 = new javax.swing.JScrollPane();
         jList1 = new javax.swing.JList();
         jLabel2 = new javax.swing.JLabel();
-        website = new javax.swing.JTextField();
+        website = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-         java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle(); // NOI18N
+        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("mpv5/resources/languages/Panels"); // NOI18N
         setTitle(bundle.getString("About.title")); // NOI18N
         setResizable(false);
 
@@ -98,7 +98,7 @@ public class About extends javax.swing.JFrame {
         jLabel1.setFont(new java.awt.Font("DejaVu Sans", 0, 11)); // NOI18N
         jLabel1.setText(bundle.getString("About.jLabel1.text")); // NOI18N
 
-        jList1.setFont(new java.awt.Font("DejaVu Sans", 0, 11)); // NOI18N
+        jList1.setFont(new java.awt.Font("DejaVu Sans", 0, 11));
         jList1.setForeground(new java.awt.Color(0, 0, 51));
         jScrollPane1.setViewportView(jList1);
 
@@ -106,11 +106,8 @@ public class About extends javax.swing.JFrame {
         jLabel2.setForeground(new java.awt.Color(255, 255, 204));
         jLabel2.setText(bundle.getString("About.jLabel2.text")); // NOI18N
 
-        website.setFont(new java.awt.Font("DejaVu Sans", 0, 11)); // NOI18N
         website.setForeground(new java.awt.Color(255, 255, 204));
         website.setText(bundle.getString("About.website.text")); // NOI18N
-        website.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
-        website.setOpaque(false);
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -126,9 +123,9 @@ public class About extends javax.swing.JFrame {
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                         .addGap(71, 71, 71)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(website, javax.swing.GroupLayout.DEFAULT_SIZE, 187, Short.MAX_VALUE)
-                            .addComponent(jLabel2))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 35, Short.MAX_VALUE)
+                            .addComponent(jLabel2)
+                            .addComponent(website, javax.swing.GroupLayout.DEFAULT_SIZE, 218, Short.MAX_VALUE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 163, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                         .addContainerGap(381, Short.MAX_VALUE)
@@ -149,7 +146,8 @@ public class About extends javax.swing.JFrame {
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                         .addComponent(jLabel2)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(website, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(website)
+                        .addGap(2, 2, 2))
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 215, Short.MAX_VALUE))
                 .addContainerGap())
         );
@@ -170,7 +168,7 @@ public class About extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JLabel title;
-    private javax.swing.JTextField website;
+    private javax.swing.JLabel website;
     // End of variables declaration//GEN-END:variables
 
 
