@@ -308,6 +308,17 @@ public class DateConverter {
         return months[cal.get(Calendar.MONTH)];
     }
 
+     /**
+     *
+     * @param date
+     * @return
+     */
+    public static synchronized String getYearName(Date date) {
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(date);
+        return String.valueOf(cal.get(Calendar.YEAR));
+    }
+
     /**
      *
      * @param date

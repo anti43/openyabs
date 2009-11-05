@@ -42,6 +42,8 @@ public abstract class VariablesHandler {
         MONTH("[MONTH]"),
         QUARTER("[QUARTER]"),
         MONTH_NAME("[MONTH_NAME]"),
+        OBJECT_MONTH("[OBJECT_MONTH]"),
+        OBJECT_YEAR("[OBJECT_YEAR]"),
         GROUP("[GROUP_NAME]"),
         CREATE_USER("[CREATE_USER]"),
         CURRENT_USER("[CURRENT_USER]");
@@ -104,6 +106,10 @@ public abstract class VariablesHandler {
                     vars[i][1] = String.valueOf(DateConverter.getQuarter());
                 } else if (vars[i][0].equals(GENERIC_VARS.YEAR.toString())) {
                     vars[i][1] = DateConverter.getYear();
+                } else if (vars[i][0].equals(GENERIC_VARS.OBJECT_MONTH.toString())) {
+                    vars[i][1] = DateConverter.getMonthName(target.__getDateadded());
+                } else if (vars[i][0].equals(GENERIC_VARS.OBJECT_YEAR.toString())) {
+                    vars[i][1] = DateConverter.getYearName(target.__getDateadded());
                 }
             } catch (NodataFoundException nodataFoundException) {
             }

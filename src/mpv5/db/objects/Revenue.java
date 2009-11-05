@@ -24,7 +24,6 @@ import mpv5.db.common.Formattable;
 import mpv5.db.common.NodataFoundException;
 import mpv5.handler.FormatHandler;
 import mpv5.logging.Log;
-import mpv5.ui.panels.ExpensePanel;
 import mpv5.ui.panels.RevenuePanel;
 import mpv5.utils.images.MPIcon;
 import mpv5.utils.numberformat.FormatNumber;
