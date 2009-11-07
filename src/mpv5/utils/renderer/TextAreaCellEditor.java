@@ -16,15 +16,23 @@
  */
 package mpv5.utils.renderer;
 
+import java.awt.AWTEvent;
 import java.awt.Component;
+import java.awt.KeyboardFocusManager;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+import java.lang.Exception;
+import java.lang.reflect.Field;
 import javax.swing.DefaultCellEditor;
 import javax.swing.JDialog;
 import javax.swing.JTable;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 import javax.swing.table.TableColumn;
 import javax.swing.text.JTextComponent;
@@ -43,7 +51,16 @@ public class TextAreaCellEditor extends DefaultCellEditor implements ActionListe
     public TextAreaCellEditor(JTable table) {
         super(new JTextField());
         this.table = table;
-        textArea = new JTextArea();
+        textArea = new JTextArea(){
+            @Override
+            protected boolean processKeyBinding(KeyStroke ks, KeyEvent e,int condition, boolean pressed) {
+        	boolean retValue = super.processKeyBinding(ks, e, condition, pressed);
+                if(dialogsTextComponent!=null){
+                    simulateKey(e, dialogsTextComponent);
+                }
+                return retValue;
+            }
+        };
         textArea.setWrapStyleWord(true);
         textArea.setLineWrap(true);
         editorComponent = textArea;
@@ -62,6 +79,13 @@ public class TextAreaCellEditor extends DefaultCellEditor implements ActionListe
         };
     }
 
+public void simulateKey(KeyEvent e, Component c){
+    try{
+        KeyboardFocusManager.getCurrentKeyboardFocusManager().redispatchEvent(c, e);
+    }catch(Exception ex){
+        Log.Debug(this,ex);
+    }
+}
 
     /**
      * Set this renderer to the given column
