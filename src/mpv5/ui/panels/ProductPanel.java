@@ -205,10 +205,12 @@ public class ProductPanel extends javax.swing.JPanel implements DataPanel, MPCBS
         cname.setSearchField("cname");
         cname.setContext(Context.getProduct());
 
-
         selecttax.setSearchEnabled(true);
         selecttax.setContext(Context.getTaxes());
         selecttax.getComboBox().setEditable(false);
+
+        contactname.setEditable(true);
+        contactname1.setEditable(true);
     }
 
     /**

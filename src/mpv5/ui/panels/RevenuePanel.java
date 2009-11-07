@@ -241,7 +241,7 @@ public class RevenuePanel extends javax.swing.JPanel implements DataPanel {
         toolbarpane = new javax.swing.JPanel();
 
         setBackground(new java.awt.Color(155, 175, 155));
-         java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle(); // NOI18N
+        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("mpv5/resources/languages/Panels"); // NOI18N
         setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("RevenuePanel.border.title_1"))); // NOI18N
         setName("Form"); // NOI18N
         setLayout(new java.awt.BorderLayout());
@@ -264,6 +264,7 @@ public class RevenuePanel extends javax.swing.JPanel implements DataPanel {
 
             }
         ));
+        itemtable.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_OFF);
         itemtable.setName("itemtable"); // NOI18N
         itemtable.setRowHeight(18);
         itemtable.setSurrendersFocusOnKeystroke(true);

@@ -85,7 +85,7 @@ public class LabeledDateChooser extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void dateChooser1PropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_dateChooser1PropertyChange
-        // TODO add your handling code here:
+       
     }//GEN-LAST:event_dateChooser1PropertyChange
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private mpv5.ui.beans.DateChooser dateChooser1;

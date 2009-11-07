@@ -1501,6 +1501,11 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
             model.setCellEditable(0, 10, false);
         }
 
+        if(MPView.getUser().getProperties().getProperty(MPView.tabPane, "hidetaxcolumn")){
+            TableFormat.stripColumn(itemtable, 6);
+            model.setCellEditable(0, 6, false);
+        }
+
         TextAreaCellEditor r = new TextAreaCellEditor(itemtable);
         ProductSelectDialog2 productSelectDialog = new ProductSelectDialog2(MPView.identifierFrame, true,itemtable);
         productSelectDialog.okButton.addActionListener(r); productSelectDialog.cancelButton.addActionListener(r);
