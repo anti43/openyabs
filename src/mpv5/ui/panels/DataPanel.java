@@ -45,7 +45,7 @@ public interface DataPanel {
      * Paste a dbo into this panel and let the panel decide what to do with it
      * @param dbo
      */
-    public void paste(DatabaseObject dbo);
+    public void paste(DatabaseObject... dbo);
 
     /**
      * Show the user the fields which are mandatory to fill in

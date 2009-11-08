@@ -596,7 +596,7 @@ public class ExpensePanel extends javax.swing.JPanel implements DataPanel {
     }
 
     @Override
-    public void paste(DatabaseObject dbo) {
+    public void paste(DatabaseObject... dbo) {
         MPView.addMessage(Messages.NOT_POSSIBLE.toString() + Messages.ACTION_PASTE.toString());
     }
 

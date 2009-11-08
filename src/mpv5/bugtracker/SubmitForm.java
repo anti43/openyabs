@@ -26,6 +26,8 @@ import java.net.URI;
 import java.net.URLEncoder;
 import java.util.List;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import mpv5.globals.Constants;
 import mpv5.logging.Log;
 import mpv5.ui.dialogs.BigPopup;
@@ -220,7 +222,9 @@ public class SubmitForm extends javax.swing.JPanel {
             message += "\n\n" + steps.getText() + "\n\n" + trace.getText();
             Popup.notice("Please send this message to mp-rechnungs-und-kundenverwaltung@googlegroups.com: \n\nThank you!\n\n" +
                     message, 500, 500);
-            BigPopup.close(this);
+            try {
+                BigPopup.close(this);
+            } catch (Exception ex) {}
         }
     }//GEN-LAST:event_jButton1ActionPerformed
     // Variables declaration - do not modify//GEN-BEGIN:variables

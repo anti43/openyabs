@@ -23,16 +23,13 @@ package mpv5.ui.toolbars;
 
 import java.awt.Component;
 import java.awt.event.ActionListener;
-import javax.swing.JButton;
 import mpv5.db.common.DatabaseObject;
-import mpv5.globals.LocalSettings;
 import mpv5.globals.Messages;
 import mpv5.db.objects.Favourite;
 import mpv5.logging.Log;
 import mpv5.ui.dialogs.Popup;
 import mpv5.ui.frames.MPView;
 import mpv5.ui.panels.DataPanel;
-import mpv5.utils.print.PrintJob;
 
 /**
  *
@@ -136,6 +133,7 @@ public class DataPanelTB extends javax.swing.JPanel {
         jSeparator3 = new javax.swing.JToolBar.Separator();
         but6 = new javax.swing.JButton();
         but7 = new javax.swing.JButton();
+        but10 = new javax.swing.JButton();
         jSeparator2 = new javax.swing.JToolBar.Separator();
         but8 = new javax.swing.JButton();
         but9 = new javax.swing.JButton();
@@ -148,7 +146,7 @@ public class DataPanelTB extends javax.swing.JPanel {
         commonActionsToolbar.setPreferredSize(new java.awt.Dimension(342, 41));
 
         but1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/viewmag.png"))); // NOI18N
-         java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle(); // NOI18N
+        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("mpv5/resources/languages/Panels"); // NOI18N
         but1.setText(bundle.getString("DataPanelTB.but1.text")); // NOI18N
         but1.setToolTipText(bundle.getString("DataPanelTB.but1.toolTipText")); // NOI18N
         but1.setContentAreaFilled(false);
@@ -279,6 +277,22 @@ public class DataPanelTB extends javax.swing.JPanel {
             }
         });
         commonActionsToolbar.add(but7);
+
+        but10.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/add.png"))); // NOI18N
+        but10.setText(bundle.getString("DataPanelTB.but10.text")); // NOI18N
+        but10.setToolTipText(bundle.getString("DataPanelTB.but10.toolTipText")); // NOI18N
+        but10.setContentAreaFilled(false);
+        but10.setFocusable(false);
+        but10.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        but10.setName("but10"); // NOI18N
+        but10.setPressedIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/xclock.png"))); // NOI18N
+        but10.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        but10.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                but10ActionPerformed(evt);
+            }
+        });
+        commonActionsToolbar.add(but10);
 
         jSeparator2.setName("jSeparator2"); // NOI18N
         commonActionsToolbar.add(jSeparator2);
@@ -426,8 +440,20 @@ public class DataPanelTB extends javax.swing.JPanel {
             parents.mail();
         }
     }//GEN-LAST:event_but9ActionPerformed
+
+    private void but10ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_but10ActionPerformed
+
+        DatabaseObject dato = parents.getDataOwner();
+        if (dato.isExisting()) {
+            MPView.currentList.add(dato);
+            MPView.showCurrentList();
+        } else {
+            MPView.showCurrentList();
+        }
+    }//GEN-LAST:event_but10ActionPerformed
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JToggleButton but1;
+    private javax.swing.JButton but10;
     private javax.swing.JButton but2;
     private javax.swing.JButton but3;
     private javax.swing.JButton but4;

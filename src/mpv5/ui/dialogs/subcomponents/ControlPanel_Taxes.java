@@ -225,7 +225,8 @@ public class ControlPanel_Taxes extends javax.swing.JPanel implements ControlApp
     public void refresh() {
         try {
             selecttax.setModel(DatabaseObject.getObjects(Context.getTaxes()));
-        } catch (NodataFoundException ex) {}
+        } catch (NodataFoundException ex) {
+        }
         countries.setModel(LanguageManager.getCountriesAsComboBoxModel());
     }
 
@@ -264,8 +265,10 @@ public class ControlPanel_Taxes extends javax.swing.JPanel implements ControlApp
         countries.getComboBox().setSelectedItem(country_);
     }
 
-    public void paste(DatabaseObject dbo) {
-        setDataOwner(dbo, true);
+    public void paste(DatabaseObject... dbos) {
+        for (DatabaseObject dbo : dbos) {
+            setDataOwner(dbo, true);
+        }
     }
 
     public void showSearchBar(boolean show) {

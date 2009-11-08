@@ -56,7 +56,6 @@ import mpv5.utils.models.MPTreeModel;
 import mpv5.utils.trees.TreeFormat;
 import mpv5.utils.ui.TextFieldUtils;
 
-
 /**
  *
  * 
@@ -74,10 +73,10 @@ public class ControlPanel_ProductGroups extends javax.swing.JPanel implements Co
         if (MPSecurityManager.checkAdminAccess()) {
             initComponents();
             tree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
-            
+
             gcombobox.setSearchEnabled(true);
             gcombobox.setContext(Context.getGroup());
-            
+
             refresh();
         }
     }
@@ -86,15 +85,14 @@ public class ControlPanel_ProductGroups extends javax.swing.JPanel implements Co
         if (MPSecurityManager.checkAdminAccess()) {
             initComponents();
             tree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
-                
+
             gcombobox.setSearchEnabled(true);
             gcombobox.setContext(Context.getGroup());
-            
+
             refresh();
-            setDataOwner(aThis,true);
+            setDataOwner(aThis, true);
         }
     }
-
 
     @Override
     public void showRequiredFields() {
@@ -329,7 +327,7 @@ public class ControlPanel_ProductGroups extends javax.swing.JPanel implements Co
             if (dataOwner != null) {
                 DatabaseObject dato = dataOwner;
                 dato.getPanelData(this);
-                if (dato.__getIDS().intValue() == 1|| !dato.delete()) {
+                if (dato.__getIDS().intValue() == 1 || !dato.delete()) {
                     Popup.notice(Messages.NOT_POSSIBLE + "\n" + Messages.IN_USE);
                 }
             }
@@ -393,9 +391,8 @@ public class ControlPanel_ProductGroups extends javax.swing.JPanel implements Co
     }//GEN-LAST:event_treeMouseClicked
 
     private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
-      importf();
+        importf();
     }//GEN-LAST:event_jButton5ActionPerformed
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.ButtonGroup buttonGroup1;
     private mpv5.ui.beans.LabeledTextField cname;
@@ -448,10 +445,9 @@ public class ControlPanel_ProductGroups extends javax.swing.JPanel implements Co
 
             dato.getPanelData(this);
             dato.reset();
-            setDataOwner(dato,true);
+            setDataOwner(dato, true);
         }
     }
-
 
     @Override
     public void refresh() {
@@ -473,12 +469,14 @@ public class ControlPanel_ProductGroups extends javax.swing.JPanel implements Co
 
         tree.setModel(ProductGroup.toTreeModel(data, g));
         Runnable runnable = new Runnable() {
+
             @Override
-            public void run() {   
+            public void run() {
                 gcombobox.triggerSearch();
                 TreeFormat.expandTree(tree);
             }
-        };SwingUtilities.invokeLater(runnable);
+        };
+        SwingUtilities.invokeLater(runnable);
     }
 
     @Override
@@ -537,11 +535,13 @@ public class ControlPanel_ProductGroups extends javax.swing.JPanel implements Co
     }
 
     @Override
-    public void paste(DatabaseObject dbo) {
-        if (dbo.getDbIdentity().equals(Context.getGroup().getDbIdentity())) {
-            setDataOwner(dbo,true);
-        } else {
-            MPView.addMessage(Messages.NOT_POSSIBLE.toString() + Messages.ACTION_PASTE);
+    public void paste(DatabaseObject... dbos) {
+        for (DatabaseObject dbo : dbos) {
+            if (dbo.getDbIdentity().equals(Context.getGroup().getDbIdentity())) {
+                setDataOwner(dbo, true);
+            } else {
+                MPView.addMessage(Messages.NOT_POSSIBLE.toString() + Messages.ACTION_PASTE);
+            }
         }
     }
 
@@ -550,10 +550,10 @@ public class ControlPanel_ProductGroups extends javax.swing.JPanel implements Co
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-
     @Override
     public Component getAndRemoveActionPanel() {
-         this.remove(jPanel2);validate();
+        this.remove(jPanel2);
+        validate();
         return jPanel2;
     }
 
@@ -561,14 +561,15 @@ public class ControlPanel_ProductGroups extends javax.swing.JPanel implements Co
     public void actionAfterSave() {
         throw new UnsupportedOperationException("Not supported yet.");
     }
-        @Override
+
+    @Override
     public void actionAfterCreate() {
     }
 
-           private String getPath(DefaultMutableTreeNode node, int shift) {
+    private String getPath(DefaultMutableTreeNode node, int shift) {
         TreeNode[] p = node.getPath();
         String path1 = "";
-        for (int i = 0; i < p.length-shift; i++) {
+        for (int i = 0; i < p.length - shift; i++) {
             TreeNode treeNode = p[i];
             path1 += treeNode.toString() + File.separator;
         }

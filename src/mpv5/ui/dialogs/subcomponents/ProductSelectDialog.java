@@ -38,6 +38,7 @@ public class ProductSelectDialog extends javax.swing.JPanel {
      * @param evt
      * @param productid
      * @param link
+     * @param optional
      * @return
      */
     public static ProductSelectDialog instanceOf(MPTableModel model, int row, MouseEvent evt, int productid, Object link, Object optional) {

@@ -605,7 +605,7 @@ public class ControlPanel_Users extends javax.swing.JPanel implements ControlApp
         if (language.getSelectedItem() != null) {
             language_ = String.valueOf(((MPComboBoxModelItem) language.getSelectedItem()).getId());
         }
-        defcountry_ = ((MPComboBoxModelItem)countrylist.getSelectedItem()).getId();
+        defcountry_ = ((MPComboBoxModelItem) countrylist.getSelectedItem()).getId();
         if (locale.getSelectedItem() != null) {
             locale_ = String.valueOf(((MPComboBoxModelItem) locale.getSelectedItem()).getId());
         }
@@ -726,11 +726,13 @@ public class ControlPanel_Users extends javax.swing.JPanel implements ControlApp
         TableFormat.format(jTable1, 5, 80);
     }
 
-    public void paste(DatabaseObject dbo) {
-        if (dbo.getDbIdentity().equals(Context.getUser().getDbIdentity())) {
-            setDataOwner(dbo, true);
-        } else {
-            MPView.addMessage(Messages.NOT_POSSIBLE.toString() + Messages.ACTION_PASTE);
+    public void paste(DatabaseObject... dbos) {
+        for (DatabaseObject dbo : dbos) {
+            if (dbo.getDbIdentity().equals(Context.getUser().getDbIdentity())) {
+                setDataOwner(dbo, true);
+            } else {
+                MPView.addMessage(Messages.NOT_POSSIBLE.toString() + Messages.ACTION_PASTE);
+            }
         }
     }
 

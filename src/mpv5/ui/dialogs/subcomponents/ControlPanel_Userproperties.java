@@ -1,12 +1,10 @@
 package mpv5.ui.dialogs.subcomponents;
 
 import java.awt.Component;
-import java.awt.Font;
 import javax.swing.JCheckBox;
 import javax.swing.SwingUtilities;
 import mpv5.data.PropertyStore;
 import mpv5.db.common.Context;
-import mpv5.globals.LocalSettings;
 import mpv5.globals.Messages;
 import mpv5.logging.Log;
 import mpv5.ui.beans.LightMPComboBox;
@@ -531,18 +529,18 @@ public class ControlPanel_Userproperties extends javax.swing.JPanel implements C
             MPView.getUser().getProperties().changeProperty(Context.getProduct() + LightMPComboBox.VALUE_SEARCHFIELDS, format.getText());
             MPView.getUser().getProperties().changeProperty(defcount.getName(), defcount.getText());
             MPView.getUser().getProperties().changeProperty(defunit.getName(), defunit.getText());
-            MPView.getUser().getProperties().changeProperty(MPView.tabPane, "norecycletabs", tabs.isSelected());
-            MPView.getUser().getProperties().changeProperty(MPView.tabPane, "avoidmultipleviews", views.isSelected());
-            MPView.getUser().getProperties().changeProperty(MPView.tabPane, "hideunpaidbills", unpaidbills.isSelected());
-            MPView.getUser().getProperties().changeProperty(MPView.tabPane, "hidecolumnquantity", columnquantity.isSelected());
-            MPView.getUser().getProperties().changeProperty(MPView.tabPane, "hideproductscolumn", hideproductscolumn.isSelected());
-            MPView.getUser().getProperties().changeProperty(MPView.tabPane, "hidecolumnmeasure", columnmeasure.isSelected());
-            MPView.getUser().getProperties().changeProperty(MPView.tabPane, "hidetaxcolumn", hidetaxcolumn.isSelected());
-            MPView.getUser().getProperties().changeProperty(MPView.tabPane, "showoptionalcolumn", showoptionalcolumn.isSelected());
-            MPView.getUser().getProperties().changeProperty(MPView.tabPane, "supresscurrencysymbols", supresscurrencysymbols.isSelected());
-            MPView.getUser().getProperties().changeProperty(MPView.tabPane, "autocreaterevenue", autorev.isSelected());
-            MPView.getUser().getProperties().changeProperty(MPView.tabPane, "ordersoverproducts", ordersoverproducts.isSelected());
-            MPView.getUser().getProperties().changeProperty(MPView.tabPane, "propertiesdefined", true);
+            MPView.getUser().getProperties().changeProperty(MPView.getTabPane(), "norecycletabs", tabs.isSelected());
+            MPView.getUser().getProperties().changeProperty(MPView.getTabPane(), "avoidmultipleviews", views.isSelected());
+            MPView.getUser().getProperties().changeProperty(MPView.getTabPane(), "hideunpaidbills", unpaidbills.isSelected());
+            MPView.getUser().getProperties().changeProperty(MPView.getTabPane(), "hidecolumnquantity", columnquantity.isSelected());
+            MPView.getUser().getProperties().changeProperty(MPView.getTabPane(), "hideproductscolumn", hideproductscolumn.isSelected());
+            MPView.getUser().getProperties().changeProperty(MPView.getTabPane(), "hidecolumnmeasure", columnmeasure.isSelected());
+            MPView.getUser().getProperties().changeProperty(MPView.getTabPane(), "hidetaxcolumn", hidetaxcolumn.isSelected());
+            MPView.getUser().getProperties().changeProperty(MPView.getTabPane(), "showoptionalcolumn", showoptionalcolumn.isSelected());
+            MPView.getUser().getProperties().changeProperty(MPView.getTabPane(), "supresscurrencysymbols", supresscurrencysymbols.isSelected());
+            MPView.getUser().getProperties().changeProperty(MPView.getTabPane(), "autocreaterevenue", autorev.isSelected());
+            MPView.getUser().getProperties().changeProperty(MPView.getTabPane(), "ordersoverproducts", ordersoverproducts.isSelected());
+            MPView.getUser().getProperties().changeProperty(MPView.getTabPane(), "propertiesdefined", true);
 
             if (deftax.getSelectedItem() != null) {
                 MPView.getUser().getProperties().changeProperty(deftax.getName(), deftax.getSelectedItem().getId());
@@ -572,17 +570,17 @@ public class ControlPanel_Userproperties extends javax.swing.JPanel implements C
     }
 
     private void loadSettings() {
-        tabs.setSelected(MPView.getUser().getProperties().getProperty(MPView.tabPane, "norecycletabs"));
-        views.setSelected(MPView.getUser().getProperties().getProperty(MPView.tabPane, "avoidmultipleviews"));
-        unpaidbills.setSelected(MPView.getUser().getProperties().getProperty(MPView.tabPane, "hideunpaidbills"));
-        columnquantity.setSelected(MPView.getUser().getProperties().getProperty(MPView.tabPane, "hidecolumnquantity"));
-        columnmeasure.setSelected(MPView.getUser().getProperties().getProperty(MPView.tabPane, "hidecolumnmeasure"));
-        hideproductscolumn.setSelected(MPView.getUser().getProperties().getProperty(MPView.tabPane, "hideproductscolumn"));
-        showoptionalcolumn.setSelected(MPView.getUser().getProperties().getProperty(MPView.tabPane, "showoptionalcolumn"));
-        supresscurrencysymbols.setSelected(MPView.getUser().getProperties().getProperty(MPView.tabPane, "supresscurrencysymbols"));
-        autorev.setSelected(MPView.getUser().getProperties().getProperty(MPView.tabPane, "autocreaterevenue"));
-        ordersoverproducts.setSelected(MPView.getUser().getProperties().getProperty(MPView.tabPane, "ordersoverproducts"));
-        hidetaxcolumn.setSelected(MPView.getUser().getProperties().getProperty(MPView.tabPane, "hidetaxcolumn"));
+        tabs.setSelected(MPView.getUser().getProperties().getProperty(MPView.getTabPane(), "norecycletabs"));
+        views.setSelected(MPView.getUser().getProperties().getProperty(MPView.getTabPane(), "avoidmultipleviews"));
+        unpaidbills.setSelected(MPView.getUser().getProperties().getProperty(MPView.getTabPane(), "hideunpaidbills"));
+        columnquantity.setSelected(MPView.getUser().getProperties().getProperty(MPView.getTabPane(), "hidecolumnquantity"));
+        columnmeasure.setSelected(MPView.getUser().getProperties().getProperty(MPView.getTabPane(), "hidecolumnmeasure"));
+        hideproductscolumn.setSelected(MPView.getUser().getProperties().getProperty(MPView.getTabPane(), "hideproductscolumn"));
+        showoptionalcolumn.setSelected(MPView.getUser().getProperties().getProperty(MPView.getTabPane(), "showoptionalcolumn"));
+        supresscurrencysymbols.setSelected(MPView.getUser().getProperties().getProperty(MPView.getTabPane(), "supresscurrencysymbols"));
+        autorev.setSelected(MPView.getUser().getProperties().getProperty(MPView.getTabPane(), "autocreaterevenue"));
+        ordersoverproducts.setSelected(MPView.getUser().getProperties().getProperty(MPView.getTabPane(), "ordersoverproducts"));
+        hidetaxcolumn.setSelected(MPView.getUser().getProperties().getProperty(MPView.getTabPane(), "hidetaxcolumn"));
 
         Component[] t = productstobillsproperties.getComponents();
         for (int i = 0; i < t.length; i++) {

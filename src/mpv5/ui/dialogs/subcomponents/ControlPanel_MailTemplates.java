@@ -382,11 +382,13 @@ public class ControlPanel_MailTemplates extends javax.swing.JPanel implements Co
         }
     }
 
-    public void paste(DatabaseObject dbo) {
-        if (dbo.getContext().equals(Context.getTemplate())) {
-            setDataOwner(dbo, true);
-        } else {
-            MPView.addMessage(Messages.NOT_POSSIBLE.toString() + Messages.ACTION_PASTE);
+    public void paste(DatabaseObject... dbos) {
+        for (DatabaseObject dbo : dbos) {
+            if (dbo.getContext().equals(Context.getTemplate())) {
+                setDataOwner(dbo, true);
+            } else {
+                MPView.addMessage(Messages.NOT_POSSIBLE.toString() + Messages.ACTION_PASTE);
+            }
         }
     }
 

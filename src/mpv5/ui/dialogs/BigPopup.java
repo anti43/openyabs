@@ -24,39 +24,49 @@ public class BigPopup {
 
     static HashMap<JPanel, JFrame> contents = new HashMap<JPanel, JFrame>();
 
-
     /**
      * Creates a new popup FRAME
      * @param content
      */
     public static void showPopup(JPanel content) {
-         final JFrame window = new JFrame();
-        window.getContentPane().setLayout(new BorderLayout());
-        window.getContentPane().add(content, BorderLayout.CENTER);
-        window.pack();
-        window.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        window.setTitle("");
-        window.addKeyListener(new KeyListener() {
-            @Override
-            public void keyTyped(KeyEvent e) {
-                if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
-                    window.dispose();
-                }
-            }
-            @Override
-            public void keyPressed(KeyEvent e) {
-                if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
-                    window.dispose();
-                }
-            }
-            @Override
-            public void keyReleased(KeyEvent e) {
-            }
-        });
+        if (!contents.containsKey(content)) {
+            final JFrame window = new JFrame();
+            window.getContentPane().setLayout(new BorderLayout());
+            window.getContentPane().add(content, BorderLayout.CENTER);
+            window.pack();
+            window.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+            window.setTitle("");
+            window.addKeyListener(new KeyListener() {
 
-        window.setLocationRelativeTo(MPView.identifierFrame);
-        window.setVisible(true);
-        contents.put(content, window);
+                @Override
+                public void keyTyped(KeyEvent e) {
+                    if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
+                        window.dispose();
+                    }
+                }
+
+                @Override
+                public void keyPressed(KeyEvent e) {
+                    if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
+                        window.dispose();
+                    }
+                }
+
+                @Override
+                public void keyReleased(KeyEvent e) {
+                }
+            });
+
+            window.setLocationRelativeTo(MPView.identifierFrame);
+            window.setVisible(true);
+            contents.put(content, window);
+        } else {
+            try {
+                show(content);
+                setOnTop(content);
+            } catch (Exception exception) {
+            }
+        }
     }
 
     /**
@@ -66,33 +76,44 @@ public class BigPopup {
      * @param locationOnScreen
      */
     public static void showPopup(JPanel content, String title, Point locationOnScreen) {
-        final JFrame window = new JFrame();
-        window.getContentPane().setLayout(new BorderLayout());
-        window.getContentPane().add(content, BorderLayout.CENTER);
-        window.pack();
-        window.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        window.setTitle(title);
-        window.addKeyListener(new KeyListener() {
-            @Override
-            public void keyTyped(KeyEvent e) {
-                if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
-                    window.dispose();
-                }
-            }
-            @Override
-            public void keyPressed(KeyEvent e) {
-                if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
-                    window.dispose();
-                }
-            }
-            @Override
-            public void keyReleased(KeyEvent e) {
-            }
-        });
+        if (!contents.containsKey(content)) {
+            final JFrame window = new JFrame();
+            window.getContentPane().setLayout(new BorderLayout());
+            window.getContentPane().add(content, BorderLayout.CENTER);
+            window.pack();
+            window.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+            window.setTitle(title);
+            window.addKeyListener(new KeyListener() {
 
-        window.setLocation(locationOnScreen);
-        window.setVisible(true);
-        contents.put(content, window);
+                @Override
+                public void keyTyped(KeyEvent e) {
+                    if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
+                        window.dispose();
+                    }
+                }
+
+                @Override
+                public void keyPressed(KeyEvent e) {
+                    if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
+                        window.dispose();
+                    }
+                }
+
+                @Override
+                public void keyReleased(KeyEvent e) {
+                }
+            });
+
+            window.setLocation(locationOnScreen);
+            window.setVisible(true);
+            contents.put(content, window);
+        } else {
+            try {
+                show(content);
+                setOnTop(content);
+            } catch (Exception exception) {
+            }
+        }
     }
 
     /**
@@ -104,38 +125,48 @@ public class BigPopup {
      * @param width optional
      */
     public static void showPopup(JComponent parent, JPanel content, String title, int state, Integer width) {
+        if (!contents.containsKey(content)) {
+            final JFrame window = new JFrame();
+            window.getContentPane().setLayout(new BorderLayout());
+            window.getContentPane().add(content, BorderLayout.CENTER);
+            window.pack();
+            window.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+            window.setTitle(title);
+            window.addKeyListener(new KeyListener() {
 
-        final JFrame window = new JFrame();
-        window.getContentPane().setLayout(new BorderLayout());
-        window.getContentPane().add(content, BorderLayout.CENTER);
-        window.pack();
-        window.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        window.setTitle(title);
-        window.addKeyListener(new KeyListener() {
-            @Override
-            public void keyTyped(KeyEvent e) {
-                if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
-                    window.dispose();
+                @Override
+                public void keyTyped(KeyEvent e) {
+                    if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
+                        window.dispose();
+                    }
                 }
-            }
-            @Override
-            public void keyPressed(KeyEvent e) {
-                if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
-                    window.dispose();
+
+                @Override
+                public void keyPressed(KeyEvent e) {
+                    if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
+                        window.dispose();
+                    }
                 }
+
+                @Override
+                public void keyReleased(KeyEvent e) {
+                }
+            });
+            if (width != null) {
+                window.setPreferredSize(new Dimension(width, MPView.identifierFrame.getHeight()));
+                window.setSize(new Dimension(width, MPView.identifierFrame.getHeight()));
             }
-            @Override
-            public void keyReleased(KeyEvent e) {
+            window.setExtendedState(state);
+            new Position(window);
+            window.setVisible(true);
+            contents.put(content, window);
+        } else {
+            try {
+                show(content);
+                setOnTop(content);
+            } catch (Exception exception) {
             }
-        });
-        if (width != null) {
-            window.setPreferredSize(new Dimension(width, MPView.identifierFrame.getHeight()));
-            window.setSize(new Dimension(width, MPView.identifierFrame.getHeight()));
         }
-        window.setExtendedState(state);
-        new Position(window);
-        window.setVisible(true);
-        contents.put(content, window);
     }
 
     /**
@@ -147,36 +178,44 @@ public class BigPopup {
      */
     public static void showPopup(JComponent parent, JPanel content, String title, boolean alwaysOnTop) {
 
-        final JFrame window = new JFrame();
-        window.getContentPane().setLayout(new BorderLayout());
-        window.getContentPane().add(content, BorderLayout.CENTER);
-        window.pack();
-        window.setAlwaysOnTop(alwaysOnTop);
-        window.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        window.setTitle(title);
-        window.addKeyListener(new KeyListener() {
+        if (!contents.containsKey(content)) {
+            final JFrame window = new JFrame();
+            window.getContentPane().setLayout(new BorderLayout());
+            window.getContentPane().add(content, BorderLayout.CENTER);
+            window.pack();
+            window.setAlwaysOnTop(alwaysOnTop);
+            window.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+            window.setTitle(title);
+            window.addKeyListener(new KeyListener() {
 
-            @Override
-            public void keyTyped(KeyEvent e) {
-                if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
-                    window.dispose();
+                @Override
+                public void keyTyped(KeyEvent e) {
+                    if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
+                        window.dispose();
+                    }
                 }
-            }
 
-            @Override
-            public void keyPressed(KeyEvent e) {
-                if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
-                    window.dispose();
+                @Override
+                public void keyPressed(KeyEvent e) {
+                    if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
+                        window.dispose();
+                    }
                 }
-            }
 
-            @Override
-            public void keyReleased(KeyEvent e) {
+                @Override
+                public void keyReleased(KeyEvent e) {
+                }
+            });
+            new Position(window);
+            window.setVisible(true);
+            contents.put(content, window);
+        } else {
+            try {
+                show(content);
+                setOnTop(content);
+            } catch (Exception exception) {
             }
-        });
-        new Position(window);
-        window.setVisible(true);
-        contents.put(content, window);
+        }
     }
 
     /**
@@ -192,22 +231,67 @@ public class BigPopup {
     /**
      * Closes the popup with the given content
      * @param panel
+     *   @throws Exception If the panel is not known
      */
-    public static void close(JPanel panel) {
-        contents.get(panel).dispose();
-        contents.remove(panel);
+    public static void close(JPanel panel) throws Exception {
+        if (contents.containsKey(panel)) {
+            contents.get(panel).dispose();
+            contents.remove(panel);
+        } else {
+            throw new Exception("Can not use a panel which has never been shown before.");
+        }
     }
 
     /**
-     * 
+     * Pack the popup with the given content
      * @param panel
+     *  @throws Exception If the panel is not known
      */
-    public static void pack(JPanel panel) {
-        contents.get(panel).pack();
+    public static void pack(JPanel panel) throws Exception {
+        if (contents.containsKey(panel)) {
+            contents.get(panel).pack();
+        } else {
+            throw new Exception("Can not use a panel which has never been shown before.");
+        }
     }
 
-    public static void setOnTop(JPanel panel) {
-        contents.get(panel).setAlwaysOnTop(true);
+    /**
+     * Sets the popup with the given content on top
+     * @param panel
+     *  @throws Exception If the panel is not known
+     */
+    public static void setOnTop(JPanel panel) throws Exception {
+
+        if (contents.containsKey(panel)) {
+            contents.get(panel).setAlwaysOnTop(true);
+        } else {
+            throw new Exception("Can not use a panel which has never been shown before.");
+        }
     }
 
+    /**
+     * Hides the popup with the given content
+     * @param panel
+     *  @throws Exception If the panel is not known
+     */
+    public static void hide(JPanel panel) throws Exception {
+        if (contents.containsKey(panel)) {
+            contents.get(panel).setVisible(false);
+        } else {
+            throw new Exception("Can not use a panel which has never been shown before.");
+        }
+    }
+
+    /**
+     * Shows the popup with the given content
+     * @param panel
+     * @throws Exception If the panel is not known
+     */
+    public static void show(JPanel panel) throws Exception {
+        if (contents.containsKey(panel)) {
+            contents.get(panel).setVisible(true);
+        } else {
+            throw new Exception("Can not use a panel which has never been shown before.");
+        }
+    }
 }

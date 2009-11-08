@@ -567,10 +567,10 @@ public class ProductListsPanel extends javax.swing.JPanel implements DataPanel, 
         prepareTable();
         TableFormat.resizeCols(itemtable, new Integer[]{0, 23, 53, 63, 100, 83, 63, 63, 0, 0, 0, 20, 20, 0, 0}, new Boolean[]{true, true, true, true, false, true, true, true, true, true, true, true, true, true, true, true});
         TableFormat.changeBackground(itemtable, 1, Color.LIGHT_GRAY);
-        if (MPView.getUser().getProperties().getProperty(MPView.tabPane, "hidecolumnquantity")) {
+        if (MPView.getUser().getProperties().getProperty(MPView.getTabPane(), "hidecolumnquantity")) {
             TableFormat.stripColumn(itemtable, 2);
         }
-        if (MPView.getUser().getProperties().getProperty(MPView.tabPane, "hidecolumnmeasure")) {
+        if (MPView.getUser().getProperties().getProperty(MPView.getTabPane(), "hidecolumnmeasure")) {
             TableFormat.stripColumn(itemtable, 3);
         }
 
@@ -578,7 +578,8 @@ public class ProductListsPanel extends javax.swing.JPanel implements DataPanel, 
     }
 
     @Override
-    public void paste(DatabaseObject dbo) {
+    public void paste(DatabaseObject... dbos) {
+        for (DatabaseObject dbo : dbos) {
         if (dbo.getContext().equals(Context.getProduct())) {
             MPTableModel m = (MPTableModel) itemtable.getModel();
             m.addRow(ProductlistSubItem.toRow((Product) dbo).getRowData(m.getValidRows(new int[]{4}).size()));
@@ -588,7 +589,7 @@ public class ProductListsPanel extends javax.swing.JPanel implements DataPanel, 
             setDataOwner(dbo, true);
         } else {
             MPView.addMessage(Messages.NOT_POSSIBLE.toString() + Messages.ACTION_PASTE.toString());
-        }
+        }}
     }
 
     @Override

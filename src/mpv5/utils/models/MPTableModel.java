@@ -237,7 +237,7 @@ public class MPTableModel extends DefaultTableModel {
         return getCanEdits()[columnIndex];
     }
 
-    public void setCellEditable(int rowIndex, int columnIndex,boolean editable) {
+    public void setCellEditable(int rowIndex, int columnIndex, boolean editable) {
         new Boolean(getCanEdits()[columnIndex]).toString();//Check for non-null
         getCanEdits()[columnIndex] = editable;
     }
@@ -375,6 +375,20 @@ public class MPTableModel extends DefaultTableModel {
     }
 
     /**
+     * Removes the invalid rows
+     * @param columnsToCheck The columns to be checked for emptyness
+     */
+    public void removeEmptyRows(int[] columnsToCheck) {
+        for (int j = 0; j < getRowCount(); j++) {
+            for (int i = 0; i < columnsToCheck.length; i++) {
+                if (getValueAt(j, columnsToCheck[i]) == null || String.valueOf(getValueAt(j, columnsToCheck[i])).length() == 0) {
+                   removeRow(j);
+                }
+            }
+        }
+    }
+
+    /**
      * Adds rows to the end of the model. The new rows will contain null values.<br/>
      * If this.context is defined, Context specific values may be added.
      * @param count
@@ -392,17 +406,16 @@ public class MPTableModel extends DefaultTableModel {
         }
     }
 
-
     @Override
-    public void removeRow(int row){
+    public void removeRow(int row) {
         super.removeRow(row);
         rearrangeAutocountColumn();
     }
 
-    public void insertRow(int row){
+    public void insertRow(int row) {
         if (predefinedRow == null) {
             super.insertRow(row, (Object[]) null);
-        }else{
+        } else {
             super.insertRow(row, predefinedRow);
         }
         rearrangeAutocountColumn();
@@ -415,11 +428,13 @@ public class MPTableModel extends DefaultTableModel {
     }
 
     @SuppressWarnings("unchecked")
-    private void rearrangeAutocountColumn(){
-        if (autoCountColumn == null) return;
-        int index=0;
-        for(Object rowVector : dataVector){
-            ((Vector)rowVector).setElementAt(index+1, autoCountColumn);
+    private void rearrangeAutocountColumn() {
+        if (autoCountColumn == null) {
+            return;
+        }
+        int index = 0;
+        for (Object rowVector : dataVector) {
+            ((Vector) rowVector).setElementAt(index + 1, autoCountColumn);
             fireTableCellUpdated(index++, autoCountColumn);
         }
     }

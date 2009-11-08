@@ -78,7 +78,7 @@ public class ControlPanel_Templates extends javax.swing.JPanel implements Contro
             refresh();
             groupname.setModel(new DefaultComboBoxModel(
                     MPComboBoxModelItem.toItems(new DatabaseSearch(Context.getGroup()).getValuesFor(Context.getGroup().getSubID(), null, ""))));
-            java.util.ResourceBundle bundle1 = mpv5.i18n.LanguageManager.getBundle(); 
+            java.util.ResourceBundle bundle1 = mpv5.i18n.LanguageManager.getBundle();
             format.setText(Template.DEFAULT_FORMAT);
 //            format.getTextField().setEditable(false);
             format.getTextField().setToolTipText(bundle1.getString("ControlPanel_Templates.format.toolTipText_1")); // NOI18N
@@ -459,7 +459,7 @@ public class ControlPanel_Templates extends javax.swing.JPanel implements Contro
 }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton8ActionPerformed
-       BigPopup.showPopup(this, TemplateFormatEditor.instanceOf(format.getTextField()), "", true);
+        BigPopup.showPopup(this, TemplateFormatEditor.instanceOf(format.getTextField()), "", true);
     }//GEN-LAST:event_jButton8ActionPerformed
 
     public void setValues(PropertyStore values) {
@@ -623,11 +623,13 @@ public class ControlPanel_Templates extends javax.swing.JPanel implements Contro
 
     }
 
-    public void paste(DatabaseObject dbo) {
-        if (dbo.getContext().equals(Context.getTemplate())) {
-            setDataOwner(dbo, true);
-        } else {
-            MPView.addMessage(Messages.NOT_POSSIBLE.toString() + Messages.ACTION_PASTE);
+    public void paste(DatabaseObject... dbos) {
+        for (DatabaseObject dbo : dbos) {
+            if (dbo.getContext().equals(Context.getTemplate())) {
+                setDataOwner(dbo, true);
+            } else {
+                MPView.addMessage(Messages.NOT_POSSIBLE.toString() + Messages.ACTION_PASTE);
+            }
         }
     }
 

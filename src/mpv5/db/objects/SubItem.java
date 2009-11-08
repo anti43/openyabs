@@ -249,7 +249,7 @@ public class SubItem extends DatabaseObject {
     private double totaltaxvalue;
 
     public SubItem() {
-       context = Context.getSubItem();
+        context = Context.getSubItem();
     }
 
     /**

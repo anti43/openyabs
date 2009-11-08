@@ -463,11 +463,13 @@ public class ControlPanel_Groups extends javax.swing.JPanel implements ControlAp
 //        defaults.set_Text(defaults_);
     }
 
-    public void paste(DatabaseObject dbo) {
-        if (dbo.getDbIdentity().equals(Context.getGroup().getDbIdentity())) {
-            setDataOwner(dbo, true);
-        } else {
-            MPView.addMessage(Messages.NOT_POSSIBLE.toString() + Messages.ACTION_PASTE);
+    public void paste(DatabaseObject... dbos) {
+        for (DatabaseObject dbo : dbos) {
+            if (dbo.getDbIdentity().equals(Context.getGroup().getDbIdentity())) {
+                setDataOwner(dbo, true);
+            } else {
+                MPView.addMessage(Messages.NOT_POSSIBLE.toString() + Messages.ACTION_PASTE);
+            }
         }
     }
 
@@ -492,7 +494,7 @@ public class ControlPanel_Groups extends javax.swing.JPanel implements ControlAp
     private String getPath(DefaultMutableTreeNode node, int shift) {
         TreeNode[] p = node.getPath();
         String path1 = "";
-        for (int i = 0; i < p.length-shift; i++) {
+        for (int i = 0; i < p.length - shift; i++) {
             TreeNode treeNode = p[i];
             path1 += treeNode.toString() + File.separator;
         }

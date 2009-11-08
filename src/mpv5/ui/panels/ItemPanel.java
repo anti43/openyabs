@@ -221,19 +221,19 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
 //        });
 
         InputMap inputMap = itemtable.getInputMap(JTable.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
-        KeyStroke tab = KeyStroke.getKeyStroke(KeyEvent.VK_TAB,0);
+        KeyStroke tab = KeyStroke.getKeyStroke(KeyEvent.VK_TAB, 0);
         Action oldAction = itemtable.getActionMap().get(inputMap.get(tab));
-        itemtable.getActionMap().put(inputMap.get(tab),new TableTabAction(notes, oldAction,false));
-        KeyStroke shifttab = KeyStroke.getKeyStroke(KeyEvent.VK_TAB,InputEvent.SHIFT_MASK);
+        itemtable.getActionMap().put(inputMap.get(tab), new TableTabAction(notes, oldAction, false));
+        KeyStroke shifttab = KeyStroke.getKeyStroke(KeyEvent.VK_TAB, InputEvent.SHIFT_MASK);
         oldAction = itemtable.getActionMap().get(inputMap.get(shifttab));
-        itemtable.getActionMap().put(inputMap.get(shifttab),new TableTabAction(date3, oldAction,true));
+        itemtable.getActionMap().put(inputMap.get(shifttab), new TableTabAction(date3, oldAction, true));
 
-        KeyStroke right = KeyStroke.getKeyStroke(KeyEvent.VK_RIGHT,0);
+        KeyStroke right = KeyStroke.getKeyStroke(KeyEvent.VK_RIGHT, 0);
         oldAction = itemtable.getActionMap().get(inputMap.get(right));
-        itemtable.getActionMap().put(inputMap.get(right),new TableTabAction(notes, oldAction,false));
-        KeyStroke left = KeyStroke.getKeyStroke(KeyEvent.VK_LEFT,0);
+        itemtable.getActionMap().put(inputMap.get(right), new TableTabAction(notes, oldAction, false));
+        KeyStroke left = KeyStroke.getKeyStroke(KeyEvent.VK_LEFT, 0);
         oldAction = itemtable.getActionMap().get(inputMap.get(left));
-        itemtable.getActionMap().put(inputMap.get(left),new TableTabAction(date3, oldAction,true));
+        itemtable.getActionMap().put(inputMap.get(left), new TableTabAction(date3, oldAction, true));
 
         number.setSearchOnEnterEnabled(true);
         number.setParent(this);
@@ -248,10 +248,10 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
             Item dato = (Item) getDataOwner();
 
             public void actionPerformed(ActionEvent e) {
-                if (dato.__getInttype() == Item.TYPE_BILL &&
-                        !loading && dataOwner.isExisting() &&
-                        Integer.valueOf(status.getSelectedItem().getId()) == Item.STATUS_PAID &&
-                        MPView.getUser().getProperties().getProperty(MPView.tabPane, "autocreaterevenue")) {
+                if (dato.__getInttype() == Item.TYPE_BILL
+                        && !loading && dataOwner.isExisting()
+                        && Integer.valueOf(status.getSelectedItem().getId()) == Item.STATUS_PAID
+                        && MPView.getUser().getProperties().getProperty(MPView.getTabPane(), "autocreaterevenue")) {
                     if (Popup.Y_N_dialog(Messages.BOOK_NOW)) {
 
                         if (dato.getPanelData(p) && dato.save()) {
@@ -573,7 +573,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(staus_icon, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(number, javax.swing.GroupLayout.PREFERRED_SIZE, 214, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 195, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 172, Short.MAX_VALUE)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                         .addComponent(groupnameselect, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -688,7 +688,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
                 .addComponent(upItem)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(upItem1)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(29, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
@@ -698,12 +698,12 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
             .addGroup(jPanel4Layout.createSequentialGroup()
                 .addComponent(itemPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 742, Short.MAX_VALUE))
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 719, Short.MAX_VALUE))
         );
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(itemPanel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(jScrollPane3, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 129, Short.MAX_VALUE)
+            .addComponent(jScrollPane3, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 147, Short.MAX_VALUE)
         );
 
         jToolBar1.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
@@ -856,7 +856,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
                 .addComponent(contactid, javax.swing.GroupLayout.PREFERRED_SIZE, 131, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jButton3)
-                .addContainerGap(33, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -875,6 +875,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
 
         notes.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         notes.setText(bundle.getString("ItemPanel.notes.text")); // NOI18N
+        notes.setToolTipText(bundle.getString("ItemPanel.notes.toolTipText")); // NOI18N
         notes.setDragEnabled(true);
         notes.setName("notes"); // NOI18N
         jScrollPane1.setViewportView(notes);
@@ -903,7 +904,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
                 .addComponent(date2, javax.swing.GroupLayout.PREFERRED_SIZE, 214, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(date3, javax.swing.GroupLayout.PREFERRED_SIZE, 216, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(99, Short.MAX_VALUE))
+                .addContainerGap(76, Short.MAX_VALUE))
         );
         jPanel5Layout.setVerticalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -923,6 +924,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
 
             }
         ));
+        dataTable.setToolTipText(bundle.getString("ItemPanel.dataTable.toolTipText")); // NOI18N
         dataTable.setName("dataTable"); // NOI18N
         dataTable.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -933,6 +935,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
 
         addfile.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/16/add.png"))); // NOI18N
         addfile.setText(bundle.getString("ItemPanel.addfile.text")); // NOI18N
+        addfile.setToolTipText(bundle.getString("ItemPanel.addfile.toolTipText")); // NOI18N
         addfile.setName("addfile"); // NOI18N
         addfile.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -942,6 +945,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
 
         removefile.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/16/remove.png"))); // NOI18N
         removefile.setText(bundle.getString("ItemPanel.removefile.text")); // NOI18N
+        removefile.setToolTipText(bundle.getString("ItemPanel.removefile.toolTipText")); // NOI18N
         removefile.setName("removefile"); // NOI18N
         removefile.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -1046,17 +1050,17 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
             .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(jPanel5, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, rightpaneLayout.createSequentialGroup()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 419, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 407, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 321, Short.MAX_VALUE)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 310, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(rightpaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(removefile, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(addfile, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)))
-            .addComponent(jToolBar2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 776, Short.MAX_VALUE)
-            .addComponent(jToolBar1, javax.swing.GroupLayout.DEFAULT_SIZE, 776, Short.MAX_VALUE)
+            .addComponent(jToolBar2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 753, Short.MAX_VALUE)
+            .addComponent(jToolBar1, javax.swing.GroupLayout.DEFAULT_SIZE, 753, Short.MAX_VALUE)
+            .addComponent(jPanel5, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         rightpaneLayout.setVerticalGroup(
             rightpaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1064,10 +1068,10 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
                 .addComponent(jToolBar1, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGap(0, 0, 0)
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, 0)
-                .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, 0)
                 .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -1201,33 +1205,39 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
     }//GEN-LAST:event_button_deliverynoteActionPerformed
 
     private void addItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addItemActionPerformed
-        ((MPTableModel)itemtable.getModel()).addRow(1);
+        ((MPTableModel) itemtable.getModel()).addRow(1);
     }//GEN-LAST:event_addItemActionPerformed
 
     private void delItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_delItemActionPerformed
         int index = itemtable.getSelectedRow();
-        if(index<0)return;
-        ((MPTableModel)itemtable.getModel()).removeRow(index);
+        if (index < 0) {
+            return;
+        }
+        ((MPTableModel) itemtable.getModel()).removeRow(index);
     }//GEN-LAST:event_delItemActionPerformed
 
     private void upItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_upItemActionPerformed
         int index = itemtable.getSelectedRow();
-        if(index<=0)return;
-        ((MPTableModel)itemtable.getModel()).moveRow(index,index,index-1);
-        itemtable.changeSelection(index-1, itemtable.getSelectedColumn(), false, false);
+        if (index <= 0) {
+            return;
+        }
+        ((MPTableModel) itemtable.getModel()).moveRow(index, index, index - 1);
+        itemtable.changeSelection(index - 1, itemtable.getSelectedColumn(), false, false);
     }//GEN-LAST:event_upItemActionPerformed
 
     private void upItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_upItem1ActionPerformed
         int index = itemtable.getSelectedRow();
-        if(index<0 || index>=itemtable.getRowCount()-1)return;
-        ((MPTableModel)itemtable.getModel()).moveRow(index,index,index+1);  
-        itemtable.changeSelection(index+1, itemtable.getSelectedColumn(), false, false);
+        if (index < 0 || index >= itemtable.getRowCount() - 1) {
+            return;
+        }
+        ((MPTableModel) itemtable.getModel()).moveRow(index, index, index + 1);
+        itemtable.changeSelection(index + 1, itemtable.getSelectedColumn(), false, false);
     }//GEN-LAST:event_upItem1ActionPerformed
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
 
 
-         try {
+        try {
             int cid = Integer.valueOf(contactname.getSelectedItem().getId());
             Contact c = (Contact) DatabaseObject.getObject(Context.getContact(), cid);
             MPView.identifierView.addTab(c);
@@ -1235,7 +1245,6 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
             //Nothing to show
         }
     }//GEN-LAST:event_jButton3ActionPerformed
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private mpv5.ui.beans.LabeledCombobox accountselect;
     private javax.swing.JButton addItem;
@@ -1481,34 +1490,35 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
         TableFormat.resizeCols(itemtable, new Integer[]{0, 23, 53, 63, 100, 63, 63, 63, 0, 0, 63, 20, 0, 0, 100},
                 new Boolean[]{true, true, true, true, false, true, true, true, true, true, true, true, true, true, false});
         MPTableModel model = (MPTableModel) itemtable.getModel();
-        model.setCanEdits(new boolean[]{false,false,true,true,true,true,true,false,false,false,true,true,false,false,true});
+        model.setCanEdits(new boolean[]{false, false, true, true, true, true, true, false, false, false, true, true, false, false, true});
         TableFormat.changeBackground(itemtable, 1, Color.LIGHT_GRAY);
-        if (MPView.getUser().getProperties().getProperty(MPView.tabPane, "hidecolumnquantity")) {
+        if (MPView.getUser().getProperties().getProperty(MPView.getTabPane(), "hidecolumnquantity")) {
             TableFormat.stripColumn(itemtable, 2);
             model.setCellEditable(0, 2, false);
         }
-        if (MPView.getUser().getProperties().getProperty(MPView.tabPane, "hidecolumnmeasure")) {
+        if (MPView.getUser().getProperties().getProperty(MPView.getTabPane(), "hidecolumnmeasure")) {
             TableFormat.stripColumn(itemtable, 3);
             model.setCellEditable(0, 3, false);
         }
-        if (!MPView.getUser().getProperties().getProperty(MPView.tabPane, "showoptionalcolumn")) {
+        if (!MPView.getUser().getProperties().getProperty(MPView.getTabPane(), "showoptionalcolumn")) {
             TableFormat.stripColumn(itemtable, 14);
             model.setCellEditable(0, 14, false);
         }
 
-        if(MPView.getUser().getProperties().getProperty(MPView.tabPane, "hideproductscolumn")){
+        if (MPView.getUser().getProperties().getProperty(MPView.getTabPane(), "hideproductscolumn")) {
             TableFormat.stripColumn(itemtable, 10);
             model.setCellEditable(0, 10, false);
         }
 
-        if(MPView.getUser().getProperties().getProperty(MPView.tabPane, "hidetaxcolumn")){
+        if (MPView.getUser().getProperties().getProperty(MPView.getTabPane(), "hidetaxcolumn")) {
             TableFormat.stripColumn(itemtable, 6);
             model.setCellEditable(0, 6, false);
         }
 
         TextAreaCellEditor r = new TextAreaCellEditor(itemtable);
-        ProductSelectDialog2 productSelectDialog = new ProductSelectDialog2(MPView.identifierFrame, true,itemtable);
-        productSelectDialog.okButton.addActionListener(r); productSelectDialog.cancelButton.addActionListener(r);
+        ProductSelectDialog2 productSelectDialog = new ProductSelectDialog2(MPView.identifierFrame, true, itemtable);
+        productSelectDialog.okButton.addActionListener(r);
+        productSelectDialog.cancelButton.addActionListener(r);
         r.setDialog(productSelectDialog, productSelectDialog.getIDTextField());
         r.setEditorTo(10);
         itemtable.moveColumn(10, 3);
@@ -1516,39 +1526,57 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
 
     @Override
     @SuppressWarnings("unchecked")
-    public void paste(DatabaseObject dbo) {
-        if (dbo.getContext().equals(Context.getItem())) {
-            ((Item) dbo).setIntstatus(Item.STATUS_IN_PROGRESS);
-            ((Item) dbo).setInttype(inttype_);
+    public void paste(DatabaseObject... dbos) {
+        ((MPTableModel) itemtable.getModel()).removeEmptyRows(new int[]{4});
+        for (DatabaseObject dbo : dbos) {
+            if (dbo.getContext().equals(Context.getItem())) {
+                Item o = (Item) dbo;
+//                ((Item) dbo).setIntstatus(Item.STATUS_IN_PROGRESS);
+//                ((Item) dbo).setInttype(inttype_);
+//
+//                setDataOwner(dbo, true);
+//                dbo.setIDS(-1);
+                SubItem s = new SubItem();
+                s.setQuantityvalue(1);
+                s.setItemsids(o.__getIDS());
+                s.setExternalvalue(o.__getNetvalue() + o.__getTaxvalue() + o.__getShippingvalue());
+                s.setTotalnetvalue(o.__getNetvalue());
+                s.setCName(o.__getCName());
+                s.setDescription(o.__getCnumber() + " " + DateConverter.getDefDateString(o.__getDateadded()));
 
-            setDataOwner(dbo, true);
-            dbo.setIDS(-1);
-        } else if (dbo.getContext().equals(Context.getContact())) {
-            dataOwner.setContactsids(((Contact) dbo).__getIDS());
-            setDataOwner(dataOwner, true);
-        } else if (dbo.getContext().equals(Context.getProductlist())) {
-            try {
-                SubItem[] subs = new SubItem[0];
-                if (dataOwner != null) {
-                    subs = dataOwner.getSubitems();
+                ((MPTableModel) itemtable.getModel()).addRow(s.getRowData(((MPTableModel) itemtable.getModel()).getRowCount() + 1));
+            } else if (dbo.getContext().equals(Context.getContact())) {
+                dataOwner.setContactsids(((Contact) dbo).__getIDS());
+                setDataOwner(dataOwner, true);
+            } else if (dbo.getContext().equals(Context.getProduct())) {
+                ((MPTableModel) itemtable.getModel()).addRow(
+                        new SubItem((Product) dbo).getRowData(((MPTableModel) itemtable.getModel()).
+                        getRowCount() + 1));
+            } else if (dbo.getContext().equals(Context.getProductlist())) {
+                try {
+                    SubItem[] subs = new SubItem[0];
+                    if (dataOwner != null) {
+                        subs = dataOwner.getSubitems();
+                    }
+                    ArrayList<ProductlistSubItem> l = ProductList.getReferencedObjects(dbo, Context.getProductListItems(), new ProductlistSubItem());
+                    MPTableModel t = SubItem.toModel(subs);
+                    int count = t.getRowCount();
+                    for (int i = 0; i < l.size(); i++) {
+                        ProductlistSubItem productlistSubItem = l.get(i);
+                        t.addRow(productlistSubItem.getRowData(i + count + 1));
+                    }
+                    itemtable.setModel(t);
+                    omodel = (MPTableModel) itemtable.getModel();
+                    formatTable();
+                    ((MPTableModel) itemtable.getModel()).fireTableCellUpdated(0, 0);
+                } catch (NodataFoundException ex) {
+                    Log.Debug(this, ex.getMessage());
                 }
-                ArrayList<ProductlistSubItem> l = ProductList.getReferencedObjects(dbo, Context.getProductListItems(), new ProductlistSubItem());
-                MPTableModel t = SubItem.toModel(subs);
-                int count = t.getRowCount();
-                for (int i = 0; i < l.size(); i++) {
-                    ProductlistSubItem productlistSubItem = l.get(i);
-                    t.addRow(productlistSubItem.getRowData(i + count + 1));
-                }
-                itemtable.setModel(t);
-                omodel = (MPTableModel) itemtable.getModel();
-                formatTable();
-                ((MPTableModel) itemtable.getModel()).fireTableCellUpdated(0, 0);
-            } catch (NodataFoundException ex) {
-                Log.Debug(this, ex.getMessage());
+            } else {
+                MPView.addMessage(Messages.NOT_POSSIBLE.toString() + Messages.ACTION_PASTE.toString());
             }
-        } else {
-            MPView.addMessage(Messages.NOT_POSSIBLE.toString() + Messages.ACTION_PASTE.toString());
         }
+
     }
 
     @Override
@@ -1596,7 +1624,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
         }
 
         for (int i = 0; i < usedOrders.size(); i++) {
-            Item o= usedOrders.get(i);
+            Item o = usedOrders.get(i);
             o.setIntstatus(Item.STATUS_FINISHED);
             o.save(true);
         }
@@ -1720,8 +1748,8 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
             Popup.notice(Messages.NO_TEMPLATE_LOADED);
         }
     }
-
     List<Item> usedOrders = new Vector<Item>();
+
     private void prepareTable() {
         TableCellRendererForDezimal t = new TableCellRendererForDezimal(itemtable);
         t.setRendererTo(6);
@@ -1736,8 +1764,9 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
         textAreaCellRenderer.setRendererTo(4);
         TextAreaCellEditor r = new TextAreaCellEditor(itemtable);
         ItemTextAreaDialog itemTextAreaDialog = new ItemTextAreaDialog(MPView.identifierFrame, true);
-        itemTextAreaDialog.okButton.addActionListener(r); itemTextAreaDialog.cancelButton.addActionListener(r);
-        r.setDialog(itemTextAreaDialog,itemTextAreaDialog.textArea);
+        itemTextAreaDialog.okButton.addActionListener(r);
+        itemTextAreaDialog.cancelButton.addActionListener(r);
+        r.setDialog(itemTextAreaDialog, itemTextAreaDialog.textArea);
         r.setEditorTo(4);
 
         itemMultiplier = new TableCalculator(itemtable, new int[]{2, 5, 6}, new int[]{7}, new int[]{6}, TableCalculator.ACTION_MULTIPLY, new int[]{7});
@@ -1762,12 +1791,12 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
             }
 
             public void mouseReleased(MouseEvent e) {
-                if (!MPView.getUser().getProperties().getProperty(MPView.tabPane, "ordersoverproducts")) {
+                if (!MPView.getUser().getProperties().getProperty(MPView.getTabPane(), "ordersoverproducts")) {
                     ProductSelectDialog.instanceOf((MPTableModel) itemtable.getModel(), itemtable.getSelectedRow(), e, Integer.valueOf(itemtable.getModel().getValueAt(itemtable.getSelectedRow(), 10).toString()), itemtable.getModel().getValueAt(itemtable.getSelectedRow(), 12 + 1), itemtable.getModel().getValueAt(itemtable.getSelectedRow(), 14));
                 } else {
                     SubItem s = new SubItem();
                     Item o = (Item) Popup.SelectValue(Context.getOrder());
-                    if (o!=null) {
+                    if (o != null) {
                         s.setQuantityvalue(1);
                         s.setItemsids(o.__getIDS());
                         s.setExternalvalue(o.__getNetvalue() + o.__getTaxvalue());

@@ -3,7 +3,6 @@
  */
 package mpv5.ui.frames;
 
-import enoa.connection.NoaConnection;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Cursor;
@@ -16,13 +15,9 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.File;
-import java.lang.reflect.InvocationTargetException;
 import java.net.URI;
 import java.util.ArrayList;
-import java.util.Arrays;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.ImageIcon;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
@@ -30,7 +25,6 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
-import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JProgressBar;
 import javax.swing.JScrollPane;
@@ -40,6 +34,7 @@ import javax.swing.UIManager;
 import mpv5.Main;
 import mpv5.bugtracker.ExceptionHandler;
 import mpv5.bugtracker.SubmitForm;
+import mpv5.data.MPList;
 import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
 import mpv5.db.common.NodataFoundException;
@@ -49,17 +44,13 @@ import mpv5.globals.Messages;
 import mpv5.db.objects.Favourite;
 import mpv5.db.objects.Item;
 import mpv5.db.objects.Product;
-import mpv5.db.objects.Template;
 import mpv5.logging.Log;
-import mpv5.pluginhandling.MP5Plugin;
-import mpv5.pluginhandling.Plugin;
 import mpv5.ui.dialogs.DialogForFile;
 
 import mpv5.ui.dialogs.Popup;
 import mpv5.ui.dialogs.Search;
 import mpv5.ui.menus.ClipboardMenuItem;
 import mpv5.ui.menus.FavouritesMenuItem;
-import mpv5.ui.panels.ContactPanel;
 import mpv5.ui.panels.ContactsList;
 import mpv5.ui.panels.DataPanel;
 import mpv5.ui.panels.HistoryPanel;
@@ -77,11 +68,11 @@ import mpv5.pluginhandling.MPPLuginLoader;
 import mpv5.server.MPServer;
 import mpv5.ui.dialogs.About;
 import mpv5.ui.dialogs.BigPopup;
+import mpv5.ui.dialogs.ListView;
 import mpv5.ui.dialogs.Wizard;
 import mpv5.ui.dialogs.subcomponents.wizard_XMLImport_1;
 import mpv5.ui.dialogs.subcomponents.wizard_XMLImport_2;
 import mpv5.ui.panels.ItemPanel;
-import mpv5.ui.dialogs.subcomponents.ControlPanel_Advanced;
 import mpv5.ui.dialogs.subcomponents.wizard_MP45_Import;
 import mpv5.ui.dialogs.subcomponents.wizard_Yabs1_Import;
 import mpv5.ui.panels.ExpensePanel;
@@ -94,8 +85,6 @@ import mpv5.ui.panels.StartPage;
 import mpv5.ui.panels.TrashPanel;
 import mpv5.utils.files.TextDatFile;
 import mpv5.utils.images.MPIcon;
-import mpv5.utils.numberformat.FormatNumber;
-import mpv5.utils.ooo.OOOPanel;
 import mpv5.utils.print.PrintJob;
 import mpv5.utils.renderer.ComboBoxRendererForTooltip;
 import mpv5.utils.xml.XMLWriter;
@@ -110,11 +99,11 @@ public class MPView extends FrameView {
     public static MPView identifierView;
     public static Dimension initialSize = new Dimension(1100, 900);
     public static JFrame identifierFrame;
-    public static CloseableTabbedPane tabPane;
-    public static JLabel messagelabel = new FadeOnChangeLabel();
+    private static CloseableTabbedPane tabPane;
+    private static JLabel messagelabel = new FadeOnChangeLabel();
     public static JComboBox history = new JComboBox();
     public static User currentUser;
-    public static JProgressBar progressbar = new JProgressBar();
+    private static JProgressBar progressbar = new JProgressBar();
     private static JMenu favMenu;
     private static String predefTitle;
     public static DialogForFile filedialog;
@@ -122,6 +111,9 @@ public class MPView extends FrameView {
     private static boolean navBarAnimated = true;
     private static boolean tabPaneScrolled = false;
     public static JLabel staterrorlabel = new JLabel();
+    public static MPList currentList = new MPList();
+    private static ListView clistview = new ListView(currentList);
+
 
     /**
      * Display a message at the bottom of the MP frame
@@ -132,6 +124,15 @@ public class MPView extends FrameView {
     }
 
     /**
+     * We currently support the usage of 1 temporary list of DatabaseObjects.
+     * This method shows a popup containing the actual content.
+     */
+    public static void showCurrentList(){
+        clistview.validate();
+        BigPopup.showPopup(clistview);
+    }
+
+    /**
      * Display a message at the bottom of the MP frame
      * @param message
      */
@@ -139,7 +140,7 @@ public class MPView extends FrameView {
         Runnable runnable = new Runnable() {
 
             public void run() {
-                messagelabel.setText(message);
+                getMessagelabel().setText(message);
                 history.addItem(message);
                 history.setSelectedItem(message);
             }
@@ -152,7 +153,7 @@ public class MPView extends FrameView {
      * @return
      */
     public static Object getShowingTab() {
-        return tabPane.getSelectedComponent();
+        return getTabPane().getSelectedComponent();
     }
 
     /**
@@ -214,6 +215,34 @@ public class MPView extends FrameView {
         }
     }
 
+    /**
+     * @return the tabPane
+     */
+    public static CloseableTabbedPane getTabPane() {
+        return tabPane;
+    }
+
+    /**
+     * @return the messagelabel
+     */
+    public static JLabel getMessagelabel() {
+        return messagelabel;
+    }
+
+    /**
+     * @return the progressbar
+     */
+    public static JProgressBar getProgressbar() {
+        return progressbar;
+    }
+
+    /**
+     * @return the tabpanePanel
+     */
+    public static javax.swing.JPanel getTabpanePanel() {
+        return tabpanePanel;
+    }
+
 
     /**
      * Reloads fav menu
@@ -231,7 +260,7 @@ public class MPView extends FrameView {
      * @param max
      */
     public synchronized static void setProgressMaximumValue(int max) {
-        progressbar.setMaximum(max);
+        getProgressbar().setMaximum(max);
     }
 
     /**
@@ -239,15 +268,15 @@ public class MPView extends FrameView {
      * @param val
      */
     public synchronized static void setProgressValue(int val) {
-        progressbar.setValue(val);
+        getProgressbar().setValue(val);
     }
 
     /**
      * Reset the progress bar
      */
     public synchronized static void setProgressReset() {
-        progressbar.setValue(0);
-        progressbar.setIndeterminate(false);
+        getProgressbar().setValue(0);
+        getProgressbar().setIndeterminate(false);
     }
 
     /**
@@ -255,7 +284,7 @@ public class MPView extends FrameView {
      * @param b
      */
     public synchronized static void setProgressRunning(boolean b) {
-        progressbar.setIndeterminate(b);
+        getProgressbar().setIndeterminate(b);
     }
 
     /**
@@ -301,18 +330,18 @@ public class MPView extends FrameView {
     }
 
     /**
-     * Returns the curently selected tab
+     * Returns the curently selected tab or null if this is not a {@link DataPanel}
      * @return
      */
     public DataPanel getCurrentTab() {
-        if (tabPane.getSelectedComponent() instanceof DataPanel) {
-            return (DataPanel) tabPane.getSelectedComponent();
-        } else if (tabPane.getSelectedComponent() instanceof JScrollPane) {
+        if (getTabPane().getSelectedComponent() instanceof DataPanel) {
+            return (DataPanel) getTabPane().getSelectedComponent();
+        } else if (getTabPane().getSelectedComponent() instanceof JScrollPane) {
             try {
-                return (DataPanel) ((JScrollPane) tabPane.getSelectedComponent()).getComponent(0);
+                return (DataPanel) ((JScrollPane) getTabPane().getSelectedComponent()).getComponent(0);
             } catch (ClassCastException e) {
                 try {
-                    return (DataPanel) ((JViewport) ((JScrollPane) tabPane.getSelectedComponent()).getComponent(0)).getComponent(0);
+                    return (DataPanel) ((JViewport) ((JScrollPane) getTabPane().getSelectedComponent()).getComponent(0)).getComponent(0);
                 } catch (Exception ek) {
                     return null;
                 }
@@ -328,14 +357,14 @@ public class MPView extends FrameView {
      * @return
      */
     public DataPanel getTabAt(int position) {
-        if (tabPane.getComponent(position) instanceof DataPanel) {
-            return (DataPanel) tabPane.getComponent(position);
-        } else if (tabPane.getComponent(position) instanceof JScrollPane) {
+        if (getTabPane().getComponent(position) instanceof DataPanel) {
+            return (DataPanel) getTabPane().getComponent(position);
+        } else if (getTabPane().getComponent(position) instanceof JScrollPane) {
             try {
-                return (DataPanel) ((JScrollPane) tabPane.getComponent(position)).getComponent(0);
+                return (DataPanel) ((JScrollPane) getTabPane().getComponent(position)).getComponent(0);
             } catch (ClassCastException e) {
                 try {
-                    return (DataPanel) ((JViewport) ((JScrollPane) tabPane.getComponent(position)).getComponent(0)).getComponent(0);
+                    return (DataPanel) ((JViewport) ((JScrollPane) getTabPane().getComponent(position)).getComponent(0)).getComponent(0);
                 } catch (Exception et) {
                     return null;
                 }
@@ -382,7 +411,7 @@ public class MPView extends FrameView {
         history = xhistory;
         history.setRenderer(new ComboBoxRendererForTooltip());
         if (tabPaneScrolled) {
-            tabpanePanel.add(new JScrollPane(tabPane), BorderLayout.CENTER);
+            tabpanePanel.add(new JScrollPane(getTabPane()), BorderLayout.CENTER);
             jMenuItem25.setIcon(MPIcon.ICON_ENABLED);
         } else {
             tabpanePanel.add(tabPane, BorderLayout.CENTER);
@@ -418,16 +447,16 @@ public class MPView extends FrameView {
      * @param enable
      */
     public void enableToolBar(boolean enable) {
-        mainToolbar.setEnabled(enable);
+        getMainToolbar().setEnabled(enable);
     }
 
     private void setNaviPanelSize() {
-        jOutlookBar1.setPreferredSize(new Dimension(jOutlookBar1.getWidth(), naviPanel.getHeight() - 20));
-        jOutlookBar1.setMaximumSize(new Dimension(jOutlookBar1.getWidth(), naviPanel.getHeight() - 20));
-        jOutlookBar1.setMinimumSize(new Dimension(jOutlookBar1.getWidth(), naviPanel.getHeight() - 20));
-        jOutlookBar1.setSize(new Dimension(jOutlookBar1.getWidth(), naviPanel.getHeight() - 20));
-        naviPanel.revalidate();
-        naviPanel.repaint();
+        jOutlookBar1.setPreferredSize(new Dimension(jOutlookBar1.getWidth(), getNaviPanel().getHeight() - 20));
+        jOutlookBar1.setMaximumSize(new Dimension(jOutlookBar1.getWidth(), getNaviPanel().getHeight() - 20));
+        jOutlookBar1.setMinimumSize(new Dimension(jOutlookBar1.getWidth(), getNaviPanel().getHeight() - 20));
+        jOutlookBar1.setSize(new Dimension(jOutlookBar1.getWidth(), getNaviPanel().getHeight() - 20));
+        getNaviPanel().revalidate();
+        getNaviPanel().repaint();
     }
 
     /**
@@ -440,18 +469,18 @@ public class MPView extends FrameView {
         setWaiting(true);
         boolean found = false;
         boolean proceed = true;
-        if (MPView.getUser().getProperties().getProperty(MPView.tabPane, "avoidmultipleviews")) {
+        if (MPView.getUser().getProperties().getProperty(MPView.getTabPane(), "avoidmultipleviews")) {
             Log.Debug(this, "Looking for an existing view for: " + item);
-            int count = tabPane.getTabCount();
+            int count = getTabPane().getTabCount();
             for (int i = 0; i < count; i++) {
                 if (getTabAt(i) != null) {
                     DataPanel panel = getTabAt(i);
                     if (item.equals(panel.getDataOwner())) {
-                        tabPane.setSelectedIndex(i);
+                        getTabPane().setSelectedIndex(i);
                         if (tabTitle == null) {
-                            tabPane.setTitleAt(i, item.__getCName());
+                            getTabPane().setTitleAt(i, item.__getCName());
                         } else {
-                            tabPane.setTitleAt(i, tabTitle + ": " + item.__getCName());
+                            getTabPane().setTitleAt(i, tabTitle + ": " + item.__getCName());
                         }
                         proceed = false;
                         break;
@@ -461,7 +490,7 @@ public class MPView extends FrameView {
         }
 
         if (proceed) {
-            if (item.getView() != null && MPView.getUser().getProperties().getProperty(MPView.tabPane, "norecycletabs")) {
+            if (item.getView() != null && MPView.getUser().getProperties().getProperty(MPView.getTabPane(), "norecycletabs")) {
                 if (tabTitle == null) {
                     final DataPanel p = ((DataPanel) item.getView());
                     addTab((JComponent) p, item.__getCName());
@@ -485,7 +514,7 @@ public class MPView extends FrameView {
                 }
                 getCurrentTab().setDataOwner(item, true);
             } else if (item.getView() != null) {
-                int count = tabPane.getTabCount();
+                int count = getTabPane().getTabCount();
                 for (int i = 0; i < count; i++) {
                     if (getTabAt(i) != null) {
                         DataPanel panel = getTabAt(i);
@@ -493,12 +522,12 @@ public class MPView extends FrameView {
                                 panel.getDataOwner().getContext().equals(item.getContext()) &&
                                 panel.getClass() == item.getView().getClass()) {
 //                        if (!panel.getDataOwner().isExisting() && panel.getDataOwner().getContext().equals(item.getContext())) {
-                            tabPane.setSelectedIndex(i);
+                            getTabPane().setSelectedIndex(i);
                             panel.setDataOwner(item, true);
                             if (tabTitle == null) {
-                                tabPane.setTitleAt(i, item.__getCName());
+                                getTabPane().setTitleAt(i, item.__getCName());
                             } else {
-                                tabPane.setTitleAt(i, tabTitle + ": " + item.__getCName());
+                                getTabPane().setTitleAt(i, tabTitle + ": " + item.__getCName());
                             }
                             found = true;
                             break;
@@ -550,7 +579,7 @@ public class MPView extends FrameView {
      * @param label
      */
     public void addOrShowTab(JComponent instanceOf, Object label) {
-        Component[] tabs = tabPane.getComponents();
+        Component[] tabs = getTabPane().getComponents();
         boolean found = false;
         JScrollPane scroll = null;
         for (int i = 0; i < tabs.length; i++) {
@@ -562,9 +591,9 @@ public class MPView extends FrameView {
             try {
                 if (component.getComponent(0).equals(instanceOf)) {
                     if (scroll == null) {
-                        tabPane.setSelectedComponent(instanceOf);
+                        getTabPane().setSelectedComponent(instanceOf);
                     } else {
-                        tabPane.setSelectedComponent(scroll);
+                        getTabPane().setSelectedComponent(scroll);
                     }
                     found = true;
                 }
@@ -586,9 +615,9 @@ public class MPView extends FrameView {
      */
     public int addTab(JComponent tab, String name) {
         JScrollPane spane = new JScrollPane(tab);
-        tabPane.addTab(name, spane);
-        tabPane.setSelectedComponent(spane);
-        return tabPane.getSelectedIndex();
+        getTabPane().addTab(name, spane);
+        getTabPane().setSelectedComponent(spane);
+        return getTabPane().getSelectedIndex();
     }
 
     private void addTab(JComponent tab, Messages name) {
@@ -2182,16 +2211,16 @@ public class MPView extends FrameView {
      * Open the currently selected tab in a new frame
      */
     public void selectedTabInNewFrame() {
-        final Component pane = tabPane.getSelectedComponent();
+        final Component pane = getTabPane().getSelectedComponent();
         if (pane != null) {
-            final String title = tabPane.getTitleAt(tabPane.getSelectedIndex());
-            tabPane.remove(pane);
+            final String title = getTabPane().getTitleAt(getTabPane().getSelectedIndex());
+            getTabPane().remove(pane);
             JFrame fr = new JFrame(title) {
 
                 @Override
                 public void dispose() {
-                    tabPane.addTab(title, pane);
-                    tabPane.setSelectedComponent(pane);
+                    getTabPane().addTab(title, pane);
+                    getTabPane().setSelectedComponent(pane);
                     super.dispose();
                 }
             };
@@ -2209,10 +2238,10 @@ public class MPView extends FrameView {
      */
     public void showServerStatus(boolean running) {
         if (running) {
-            serverlabel.setMaximumSize(new Dimension(18, 18));
-            serverlabel.setPreferredSize(new Dimension(18, 18));
-            serverlabel.setMinimumSize(new Dimension(18, 18));
-            serverlabel.setSize(18, 18);
+            getServerlabel().setMaximumSize(new Dimension(18, 18));
+            getServerlabel().setPreferredSize(new Dimension(18, 18));
+            getServerlabel().setMinimumSize(new Dimension(18, 18));
+            getServerlabel().setSize(18, 18);
             final JLabel plab = new JLabel();
             plab.setIcon(new MPIcon("/mpv5/resources/images/16/kwikdisk.png"));
             plab.setEnabled(true);
@@ -2244,13 +2273,55 @@ public class MPView extends FrameView {
                     }
                 }
             });
-            serverlabel.add(plab);
+            getServerlabel().add(plab);
         } else {
-            serverlabel.setMaximumSize(new Dimension(0, 0));
-            serverlabel.setPreferredSize(new Dimension(0, 0));
-            serverlabel.setMinimumSize(new Dimension(0, 0));
-            serverlabel.setSize(0, 0);
+            getServerlabel().setMaximumSize(new Dimension(0, 0));
+            getServerlabel().setPreferredSize(new Dimension(0, 0));
+            getServerlabel().setMinimumSize(new Dimension(0, 0));
+            getServerlabel().setSize(0, 0);
         }
         MPView.identifierFrame.validate();
+    }
+
+    /**
+     * @return the mainToolbar
+     */
+    public javax.swing.JToolBar getMainToolbar() {
+        return mainToolbar;
+    }
+
+    /**
+     * @return the naviPanel
+     */
+    public javax.swing.JPanel getNaviPanel() {
+        return naviPanel;
+    }
+
+    /**
+     * @return the pluginIcons
+     */
+    public javax.swing.JPanel getPluginIcons() {
+        return pluginIcons;
+    }
+
+    /**
+     * @return the separator
+     */
+    public javax.swing.JPanel getSeparator() {
+        return separator;
+    }
+
+    /**
+     * @return the serverlabel
+     */
+    public javax.swing.JPanel getServerlabel() {
+        return serverlabel;
+    }
+
+    /**
+     * @return the xhistory
+     */
+    public javax.swing.JComboBox getXhistory() {
+        return xhistory;
     }
 }

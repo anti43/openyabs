@@ -44,7 +44,7 @@ public class Job extends SwingWorker<Object, Object> {
     public Job(Waitable waitable, Waiter waiter) {
         this.object = waitable;
         this.recipient = waiter;
-        this.bar = MPView.progressbar;
+        this.bar = MPView.getProgressbar();
     }
 
     /**

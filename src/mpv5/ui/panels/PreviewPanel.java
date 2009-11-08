@@ -519,7 +519,10 @@ public class PreviewPanel extends javax.swing.JPanel implements Waiter {
     private void makeToolBar() {
         jPanel1.remove(ppanel);
         validate();
-        BigPopup.pack(this);
-        BigPopup.setOnTop(this);
+        try {
+            BigPopup.pack(this);
+            BigPopup.setOnTop(this);
+        } catch (Exception exception) {
+        }
     }
 }

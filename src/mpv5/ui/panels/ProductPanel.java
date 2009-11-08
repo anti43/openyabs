@@ -1154,12 +1154,13 @@ public class ProductPanel extends javax.swing.JPanel implements DataPanel, MPCBS
     }
 
     @Override
-    public void paste(DatabaseObject dbo) {
+    public void paste(DatabaseObject... dbos) {
+        for (DatabaseObject dbo : dbos) {
         if (dbo.getDbIdentity().equals(Context.getProduct().getDbIdentity())) {
             setDataOwner(dbo, true);
         } else {
             MPView.addMessage(Messages.NOT_POSSIBLE.toString() + Messages.ACTION_PASTE.toString());
-        }
+        }}
     }
 
     @Override

@@ -666,11 +666,13 @@ public class ControlPanel_Accounts extends javax.swing.JPanel implements Control
         idtf.setText(String.valueOf(ids_));
     }
 
-    public void paste(DatabaseObject dbo) {
-        if (dbo.getDbIdentity().equals(Context.getAccounts().getDbIdentity())) {
-            setDataOwner(dbo, true);
-        } else {
-            MPView.addMessage(Messages.NOT_POSSIBLE.toString() + Messages.ACTION_PASTE);
+    public void paste(DatabaseObject... dbos) {
+        for (DatabaseObject dbo : dbos) {
+            if (dbo.getDbIdentity().equals(Context.getAccounts().getDbIdentity())) {
+                setDataOwner(dbo, true);
+            } else {
+                MPView.addMessage(Messages.NOT_POSSIBLE.toString() + Messages.ACTION_PASTE);
+            }
         }
     }
 

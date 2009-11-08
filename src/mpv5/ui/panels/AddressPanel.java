@@ -390,12 +390,15 @@ public class AddressPanel extends javax.swing.JPanel implements DataPanel {
         }
     }
 
-    public void paste(DatabaseObject dbo) {
-        if (dbo.getDbIdentity().equals(Context.getAddress().getDbIdentity())) {
-            setDataOwner(dbo, true);
-        } else {
-            MPView.addMessage(Messages.NOT_POSSIBLE.toString() + Messages.ACTION_PASTE.toString());
+    public void paste(DatabaseObject... dbos) {
+        for (DatabaseObject dbo : dbos) {
+            if (dbo.getDbIdentity().equals(Context.getAddress().getDbIdentity())) {
+                setDataOwner(dbo, true);
+            } else {
+                MPView.addMessage(Messages.NOT_POSSIBLE.toString() + Messages.ACTION_PASTE.toString());
+            }
         }
+
     }
 
     public void showRequiredFields() {
