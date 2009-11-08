@@ -47,7 +47,7 @@ public class ProductList extends javax.swing.JPanel implements ListPanel {
         context.addReference(Context.getGroup());
     }
 
-    private void fill(boolean services) {
+    private void fill() {
 
         QueryCriteria2 qc = new QueryCriteria2();
 
@@ -57,10 +57,15 @@ public class ProductList extends javax.swing.JPanel implements ListPanel {
         if (labeledCombobox2.getValue() != null) {
             qc.and(new QueryParameter(context, "manufacturersids", Integer.valueOf(labeledCombobox2.getSelectedItem().getId()), QueryParameter.EQUALS));
         }
-        if (!services) {
-            qc.and(new QueryParameter(context, "inttype", Product.TYPE_PRODUCT, QueryParameter.EQUALS));
+        if (jCheckBox2.isSelected() && jCheckBox2.isSelected()) {
+            qc.or(new QueryParameter[]{new QueryParameter(context, "inttype", Product.TYPE_PRODUCT, QueryParameter.EQUALS),
+                  new QueryParameter(context, "inttype", Product.TYPE_SERVICE, QueryParameter.EQUALS)});
         } else {
-            qc.and(new QueryParameter(context, "inttype", Product.TYPE_SERVICE, QueryParameter.EQUALS));
+            if (!jCheckBox2.isSelected()) {
+                qc.and(new QueryParameter(context, "inttype", Product.TYPE_PRODUCT, QueryParameter.EQUALS));
+            } else {
+                qc.and(new QueryParameter(context, "inttype", Product.TYPE_SERVICE, QueryParameter.EQUALS));
+            }
         }
 
         try {
@@ -109,7 +114,7 @@ public class ProductList extends javax.swing.JPanel implements ListPanel {
 
         setName("Form"); // NOI18N
 
-         java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle(); // NOI18N
+        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("mpv5/resources/languages/Panels"); // NOI18N
         jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("ProductList.jPanel1.border.title"))); // NOI18N
         jPanel1.setName("jPanel1"); // NOI18N
 
@@ -148,7 +153,6 @@ public class ProductList extends javax.swing.JPanel implements ListPanel {
         jLabel1.setName("jLabel1"); // NOI18N
 
         jCheckBox1.setBackground(new java.awt.Color(255, 255, 255));
-        buttonGroup1.add(jCheckBox1);
         jCheckBox1.setSelected(true);
         jCheckBox1.setText(bundle.getString("ProductList.jCheckBox1.text")); // NOI18N
         jCheckBox1.setName("jCheckBox1"); // NOI18N
@@ -159,7 +163,6 @@ public class ProductList extends javax.swing.JPanel implements ListPanel {
         });
 
         jCheckBox2.setBackground(new java.awt.Color(255, 255, 255));
-        buttonGroup1.add(jCheckBox2);
         jCheckBox2.setText(bundle.getString("ProductList.jCheckBox2.text")); // NOI18N
         jCheckBox2.setName("jCheckBox2"); // NOI18N
         jCheckBox2.addItemListener(new java.awt.event.ItemListener() {
@@ -300,7 +303,7 @@ public class ProductList extends javax.swing.JPanel implements ListPanel {
 
     private void ItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_ItemStateChanged
 
-        fill(jCheckBox2.isSelected());
+        fill();
 }//GEN-LAST:event_ItemStateChanged
 
     private void listTableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_listTableMouseClicked
@@ -324,7 +327,7 @@ public class ProductList extends javax.swing.JPanel implements ListPanel {
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        fill(jCheckBox2.isSelected());
+        fill();
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
