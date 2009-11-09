@@ -21,9 +21,11 @@
  */
 package mpv5.ui.dialogs;
 
+import java.awt.Cursor;
 import java.util.ArrayList;
 import java.util.Vector;
 import javax.swing.ListModel;
+import javax.swing.SwingUtilities;
 import mpv5.data.MPList;
 import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
@@ -185,8 +187,8 @@ public class ListView extends javax.swing.JPanel {
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
         DataPanel view = MPView.identifierView.getCurrentTab();
         if (view != null) {
-                view.paste(list.toArray());
-                try {
+            view.paste(list.toArray());
+            try {
                 BigPopup.hide(this);
             } catch (Exception exception) {
             }
@@ -209,52 +211,72 @@ public class ListView extends javax.swing.JPanel {
         ListModel data;
 
         if (mpv5.usermanagement.MPSecurityManager.check(Context.getContact(), MPSecurityManager.EXPORT)
-                &&mpv5.usermanagement.MPSecurityManager.check(Context.getItem(), MPSecurityManager.EXPORT)
-                &&mpv5.usermanagement.MPSecurityManager.check(Context.getProduct(), MPSecurityManager.EXPORT)) {
+                && mpv5.usermanagement.MPSecurityManager.check(Context.getItem(), MPSecurityManager.EXPORT)
+                && mpv5.usermanagement.MPSecurityManager.check(Context.getProduct(), MPSecurityManager.EXPORT)) {
 
-                XMLWriter xmlw = new XMLWriter();
-                xmlw.newDoc(true);
-                String name = Messages.ACTION_EXPORT.toString() + " " + DateConverter.getTodayDefDate();
-                data = jList1.getModel();
-                ArrayList<DatabaseObject> dbobjarr = new ArrayList<DatabaseObject>();
-                for (int i = 0; i < data.getSize(); i++) {
-                   dbobjarr.add((DatabaseObject) data.getElementAt(i));
+            XMLWriter xmlw = new XMLWriter();
+            xmlw.newDoc(true);
+            String name = Messages.ACTION_EXPORT.toString() + " " + DateConverter.getTodayDefDate();
+            data = jList1.getModel();
+            ArrayList<Context> exportable = Context.getImportableContexts();
+            for (int i = 0; i < exportable.size(); i++) {
+                Context context = exportable.get(i);
+                ArrayList<DatabaseObject> d = new ArrayList<DatabaseObject>();
+                for (int j = 0; j < data.getSize(); j++) {
+                    if (((DatabaseObject) data.getElementAt(j)).getContext().equals(context)) {
+                        d.add((DatabaseObject) data.getElementAt(j));
+                    }
                 }
-                xmlw.add(dbobjarr);
-                MPView.showFilesaveDialogFor(xmlw.createFile(name));
+                xmlw.add(d);
+            }
+            MPView.showFilesaveDialogFor(xmlw.createFile(name));
         }
     }//GEN-LAST:event_jButton4ActionPerformed
 
     private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
 
-        DialogForFile d = new DialogForFile(DialogForFile.FILES_ONLY);
-        d.setFileFilter(DialogForFile.XML_FILES);
-        XMLReader x;
-        ArrayList<ArrayList<DatabaseObject>> objs = null;
+        final ListView v = this;
+        Runnable runnable = new Runnable() {
 
-        if (d.chooseFile()) {
-            x = new XMLReader();
-            try {
-                x.newDoc(d.getFile(), false);
-                x.setOverwriteExisting(true);
-                objs = x.getObjects();
-            } catch (Exception ex) {
-                Log.Debug(ex);
-            }
-        }
+            public void run() {
+                try {
+                    v.setCursor(new Cursor(Cursor.WAIT_CURSOR));
+                    MPView.setWaiting(true);
+                    DialogForFile d = new DialogForFile(DialogForFile.FILES_ONLY);
+                    d.setFileFilter(DialogForFile.XML_FILES);
+                    XMLReader x;
+                    ArrayList<ArrayList<DatabaseObject>> objs = null;
 
-        if (objs != null && objs.size() > 0) {
-            for (int i = 0; i < objs.size(); i++) {
-                ArrayList<DatabaseObject> arrayList = objs.get(i);
-                for (int j = 0; j < arrayList.size(); j++) {
-                    DatabaseObject databaseObject = arrayList.get(j);
-                    Log.Debug(this, "Parsing " + databaseObject.getDbIdentity() + " : " + databaseObject.__getCName() + " from file: " + d.getFile());
-                    addElement(databaseObject);
+                    if (d.chooseFile()) {
+                        x = new XMLReader();
+
+                        x.newDoc(d.getFile(), true);
+                        x.setOverwriteExisting(true);
+                        objs = x.getObjects();
+
+                    }
+
+                    if (objs != null && objs.size() > 0) {
+                        for (int i = 0; i < objs.size(); i++) {
+                            ArrayList<DatabaseObject> arrayList = objs.get(i);
+                            for (int j = 0; j < arrayList.size(); j++) {
+                                DatabaseObject databaseObject = arrayList.get(j);
+                                Log.Debug(this, "Parsing " + databaseObject.getDbIdentity() + " : " + databaseObject.__getCName() + " from file: " + d.getFile());
+                                addElement(databaseObject);
+                            }
+                        }
+                    }
+                } catch (Exception e) {
+                    Popup.error(e);
+                    Log.Debug(e);
+                } finally {
+                    v.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+                    MPView.setWaiting(false);
                 }
             }
-        } 
+        };
+        SwingUtilities.invokeLater(runnable);
     }//GEN-LAST:event_jButton5ActionPerformed
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
