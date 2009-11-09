@@ -1542,7 +1542,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
                 s.setExternalvalue(o.__getNetvalue() + o.__getTaxvalue() + o.__getShippingvalue());
                 s.setTotalnetvalue(o.__getNetvalue());
                 s.setCName(o.__getCName());
-                s.setDescription(o.__getCnumber() + " " + DateConverter.getDefDateString(o.__getDateadded()));
+                s.setDescription(Messages.GOOSE1 + " " + o.__getCnumber() + " " + Messages.GOOSE2 + " " + DateConverter.getDefDateString(o.__getDateadded()));
 
                 ((MPTableModel) itemtable.getModel()).addRow(s.getRowData(((MPTableModel) itemtable.getModel()).getRowCount() + 1));
             } else if (dbo.getContext().equals(Context.getContact())) {
@@ -1550,8 +1550,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
                 setDataOwner(dataOwner, true);
             } else if (dbo.getContext().equals(Context.getProduct())) {
                 ((MPTableModel) itemtable.getModel()).addRow(
-                        new SubItem((Product) dbo).getRowData(((MPTableModel) itemtable.getModel()).
-                        getRowCount() + 1));
+                        new SubItem((Product) dbo).getRowData(((MPTableModel) itemtable.getModel()).getRowCount() + 1));
             } else if (dbo.getContext().equals(Context.getProductlist())) {
                 try {
                     SubItem[] subs = new SubItem[0];

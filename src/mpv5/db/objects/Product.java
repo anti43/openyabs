@@ -16,10 +16,14 @@
  */
 package mpv5.db.objects;
 
+import java.io.File;
+import java.net.MalformedURLException;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Vector;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JComponent;
 import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
@@ -31,6 +35,7 @@ import mpv5.handler.FormatHandler;
 import mpv5.handler.MPEnum;
 import mpv5.logging.Log;
 import mpv5.ui.panels.ProductPanel;
+import mpv5.utils.images.MPIcon;
 import mpv5.utils.numberformat.FormatNumber;
 
 /**
@@ -112,7 +117,19 @@ public class Product extends DatabaseObject implements Formattable {
 
     @Override
     public mpv5.utils.images.MPIcon getIcon() {
-        return null;
+        MPIcon mpi = null;
+        if (defaultimage != null && defaultimage.length() > 0) {
+            File file = QueryHandler.instanceOf().clone(Context.getFiles()).retrieveFile(defaultimage);
+            if (file != null) {
+                try {
+                    mpi = new MPIcon(file.toURI().toURL());
+                    return mpi.getScaledIcon(100,100);
+                } catch (Exception ex) {
+                    Log.Debug(ex);
+                }
+            }
+        }
+        return mpi;
     }
 
     @Override

@@ -18,6 +18,8 @@ import java.io.File;
 import java.net.URI;
 import java.util.ArrayList;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.ImageIcon;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
@@ -128,8 +130,13 @@ public class MPView extends FrameView {
      * This method shows a popup containing the actual content.
      */
     public static void showCurrentList(){
-        clistview.validate();
-        BigPopup.showPopup(clistview);
+        try {
+            clistview.validate();
+            BigPopup.showPopup(MPView.identifierFrame.getRootPane(), clistview, Messages.YABS.toString());
+            BigPopup.pack(clistview);
+        } catch (Exception ex) {
+            Log.Debug(ex);
+        }
     }
 
     /**

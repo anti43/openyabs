@@ -21,11 +21,21 @@
  */
 package mpv5.ui.dialogs;
 
+import java.util.ArrayList;
+import java.util.Vector;
+import javax.swing.ListModel;
 import mpv5.data.MPList;
+import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
+import mpv5.db.common.NodataFoundException;
+import mpv5.globals.Messages;
 import mpv5.logging.Log;
 import mpv5.ui.frames.MPView;
 import mpv5.ui.panels.DataPanel;
+import mpv5.usermanagement.MPSecurityManager;
+import mpv5.utils.date.DateConverter;
+import mpv5.utils.xml.XMLReader;
+import mpv5.utils.xml.XMLWriter;
 
 /**
  *
@@ -45,6 +55,7 @@ public class ListView extends javax.swing.JPanel {
      */
     public ListView(MPList list) {
         initComponents();
+        jList1.setCellRenderer(MPList.getDBORenderer());
         this.list = list;
         validate();
     }
@@ -66,12 +77,16 @@ public class ListView extends javax.swing.JPanel {
 
         jScrollPane1 = new javax.swing.JScrollPane();
         jList1 = new javax.swing.JList();
+        jToolBar1 = new javax.swing.JToolBar();
         jButton1 = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
         jButton3 = new javax.swing.JButton();
+        jButton4 = new javax.swing.JButton();
+        jButton5 = new javax.swing.JButton();
 
         setName("Form"); // NOI18N
 
+        jScrollPane1.setVerticalScrollBarPolicy(javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
         jScrollPane1.setName("jScrollPane1"); // NOI18N
 
         jList1.setName("jList1"); // NOI18N
@@ -82,6 +97,9 @@ public class ListView extends javax.swing.JPanel {
         });
         jScrollPane1.setViewportView(jList1);
 
+        jToolBar1.setRollover(true);
+        jToolBar1.setName("jToolBar1"); // NOI18N
+
         java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("mpv5/resources/languages/Panels"); // NOI18N
         jButton1.setText(bundle.getString("ListView.jButton1.text_1")); // NOI18N
         jButton1.setName("jButton1"); // NOI18N
@@ -90,6 +108,7 @@ public class ListView extends javax.swing.JPanel {
                 jButton1ActionPerformed(evt);
             }
         });
+        jToolBar1.add(jButton1);
 
         jButton2.setText(bundle.getString("ListView.jButton2.text_1")); // NOI18N
         jButton2.setName("jButton2"); // NOI18N
@@ -98,6 +117,7 @@ public class ListView extends javax.swing.JPanel {
                 jButton2ActionPerformed(evt);
             }
         });
+        jToolBar1.add(jButton2);
 
         jButton3.setText(bundle.getString("ListView.jButton3.text_1")); // NOI18N
         jButton3.setName("jButton3"); // NOI18N
@@ -106,31 +126,45 @@ public class ListView extends javax.swing.JPanel {
                 jButton3ActionPerformed(evt);
             }
         });
+        jToolBar1.add(jButton3);
+
+        jButton4.setText(bundle.getString("ListView.jButton4.text")); // NOI18N
+        jButton4.setFocusable(false);
+        jButton4.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        jButton4.setName("jButton4"); // NOI18N
+        jButton4.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        jButton4.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton4ActionPerformed(evt);
+            }
+        });
+        jToolBar1.add(jButton4);
+
+        jButton5.setText(bundle.getString("ListView.jButton5.text")); // NOI18N
+        jButton5.setFocusable(false);
+        jButton5.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        jButton5.setName("jButton5"); // NOI18N
+        jButton5.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        jButton5.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton5ActionPerformed(evt);
+            }
+        });
+        jToolBar1.add(jButton5);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jButton3)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jButton2)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jButton1)
-                .addContainerGap())
-            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 339, Short.MAX_VALUE)
+            .addComponent(jToolBar1, javax.swing.GroupLayout.DEFAULT_SIZE, 330, Short.MAX_VALUE)
+            .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 330, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 118, Short.MAX_VALUE)
-                .addGap(17, 17, 17)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton1)
-                    .addComponent(jButton2)
-                    .addComponent(jButton3))
-                .addContainerGap())
+                .addComponent(jToolBar1, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, 0)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 226, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -170,11 +204,65 @@ public class ListView extends javax.swing.JPanel {
             }
         }
     }//GEN-LAST:event_jList1MouseClicked
+
+    private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
+        ListModel data;
+
+        if (mpv5.usermanagement.MPSecurityManager.check(Context.getContact(), MPSecurityManager.EXPORT)
+                &&mpv5.usermanagement.MPSecurityManager.check(Context.getItem(), MPSecurityManager.EXPORT)
+                &&mpv5.usermanagement.MPSecurityManager.check(Context.getProduct(), MPSecurityManager.EXPORT)) {
+
+                XMLWriter xmlw = new XMLWriter();
+                xmlw.newDoc(true);
+                String name = Messages.ACTION_EXPORT.toString() + " " + DateConverter.getTodayDefDate();
+                data = jList1.getModel();
+                ArrayList<DatabaseObject> dbobjarr = new ArrayList<DatabaseObject>();
+                for (int i = 0; i < data.getSize(); i++) {
+                   dbobjarr.add((DatabaseObject) data.getElementAt(i));
+                }
+                xmlw.add(dbobjarr);
+                MPView.showFilesaveDialogFor(xmlw.createFile(name));
+        }
+    }//GEN-LAST:event_jButton4ActionPerformed
+
+    private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
+
+        DialogForFile d = new DialogForFile(DialogForFile.FILES_ONLY);
+        d.setFileFilter(DialogForFile.XML_FILES);
+        XMLReader x;
+        ArrayList<ArrayList<DatabaseObject>> objs = null;
+
+        if (d.chooseFile()) {
+            x = new XMLReader();
+            try {
+                x.newDoc(d.getFile(), false);
+                x.setOverwriteExisting(true);
+                objs = x.getObjects();
+            } catch (Exception ex) {
+                Log.Debug(ex);
+            }
+        }
+
+        if (objs != null && objs.size() > 0) {
+            for (int i = 0; i < objs.size(); i++) {
+                ArrayList<DatabaseObject> arrayList = objs.get(i);
+                for (int j = 0; j < arrayList.size(); j++) {
+                    DatabaseObject databaseObject = arrayList.get(j);
+                    Log.Debug(this, "Parsing " + databaseObject.getDbIdentity() + " : " + databaseObject.__getCName() + " from file: " + d.getFile());
+                    addElement(databaseObject);
+                }
+            }
+        } 
+    }//GEN-LAST:event_jButton5ActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
+    private javax.swing.JButton jButton4;
+    private javax.swing.JButton jButton5;
     private javax.swing.JList jList1;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JToolBar jToolBar1;
     // End of variables declaration//GEN-END:variables
 }

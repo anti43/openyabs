@@ -447,10 +447,10 @@
                           <Group type="102" attributes="0">
                               <EmptySpace max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="0" attributes="0">
-                                  <Component id="jButton13" alignment="1" pref="90" max="32767" attributes="1"/>
-                                  <Component id="jButton12" alignment="0" pref="90" max="32767" attributes="1"/>
-                                  <Component id="jButton14" alignment="1" pref="90" max="32767" attributes="1"/>
-                                  <Component id="jButton19" alignment="0" pref="90" max="32767" attributes="1"/>
+                                  <Component id="jButton13" alignment="1" pref="87" max="32767" attributes="1"/>
+                                  <Component id="jButton12" alignment="0" pref="87" max="32767" attributes="1"/>
+                                  <Component id="jButton14" alignment="1" pref="87" max="32767" attributes="1"/>
+                                  <Component id="jButton19" alignment="0" max="32767" attributes="1"/>
                               </Group>
                               <EmptySpace max="-2" attributes="0"/>
                           </Group>
@@ -467,7 +467,7 @@
                               <Component id="jButton14" min="-2" max="-2" attributes="0"/>
                               <EmptySpace max="-2" attributes="0"/>
                               <Component id="jButton19" min="-2" max="-2" attributes="0"/>
-                              <EmptySpace pref="160" max="32767" attributes="0"/>
+                              <EmptySpace max="32767" attributes="0"/>
                           </Group>
                       </Group>
                     </DimensionLayout>

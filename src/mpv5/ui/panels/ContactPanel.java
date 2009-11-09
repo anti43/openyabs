@@ -30,6 +30,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
+import javax.swing.JPopupMenu;
 import javax.swing.JTabbedPane;
 import javax.swing.JTable;
 import javax.swing.JTextPane;
@@ -54,6 +55,7 @@ import mpv5.ui.popups.FileTablePopUp;
 import mpv5.ui.toolbars.DataPanelTB;
 import mpv5.db.objects.User;
 import mpv5.ui.dialogs.ScheduleDayEvents;
+import mpv5.ui.popups.DOTablePopUp;
 import mpv5.utils.arrays.ArrayUtilities;
 import mpv5.utils.date.DateConverter;
 import mpv5.utils.files.FileDirectoryHandler;
@@ -74,6 +76,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
     private DataPanelTB tb;
     private SearchPanel sp;
     private Integer dataTableContent = null;
+    private final JPopupMenu itemTablePopup;
 
     /** Creates new form ContactPanel
      * @param context
@@ -105,6 +108,8 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
         cname.setContext(Context.getContact());
         countryselect.setModel(LanguageManager.getCountriesAsComboBoxModel());
         refresh();
+
+        itemTablePopup = DOTablePopUp.addDefaultPopupMenu(dataTable, Context.getItem(), false);
     }
 
     @Override
@@ -220,14 +225,17 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
     }
 
     private void itemTableClicked(MouseEvent evt) {
-        if (evt.getClickCount() > 1) {
+        if (evt.getButton() == MouseEvent.BUTTON1 && evt.getClickCount() > 1) {
             try {
                 MPView.identifierView.addTab(DatabaseObject.getObject(Context.getItem(), Integer.valueOf(dataTable.getModel().getValueAt(dataTable.getSelectedRow(), 0).toString())));
             } catch (NodataFoundException ex) {
                 Log.Debug(ex);
             }
+        } else if(evt.getButton() == MouseEvent.BUTTON3){
+            itemTablePopup.show(dataTable, evt.getX(), evt.getY());
         }
     }
+
 
     private void productTableClicked(MouseEvent evt) {
         if (evt.getClickCount() > 1) {

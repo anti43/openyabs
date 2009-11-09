@@ -41,15 +41,16 @@ public class DOTablePopUp extends JPopupMenu {
     private JTable source;
     private Context c;
     private Context context;
-    private static MouseListener pop;
+    private MouseListener pop;
 
     /**
      * Adds a popup menu to the given table
      * @param source
      * @param items
      * @param c
+     * @param withMouseListener
      */
-    public DOTablePopUp(JTable source, JMenuItem[] items, Context c) {
+    public DOTablePopUp(JTable source, JMenuItem[] items, Context c, boolean withMouseListener) {
         super();
         this.source = source;
         this.context = c;
@@ -60,10 +61,10 @@ public class DOTablePopUp extends JPopupMenu {
             this.add(item);
         }
 
-        if (pop == null) {
+        if (withMouseListener) {
             pop = new MousePopupListener();
+            addMouseListener(pop);
         }
-        addMouseListener(pop);
         this.c = c;
     }
 
@@ -72,8 +73,9 @@ public class DOTablePopUp extends JPopupMenu {
      * 
      * @param to A table holding DatabaseObjects, first column MUST be the ID
      * @param c The context of the DatabaeObjects
+     * @param withMouseListener
      */
-    public static void addDefaultPopupMenu(final JTable to, final Context c) {
+    public static JPopupMenu addDefaultPopupMenu(final JTable to, final Context c, boolean withMouseListener) {
 
         JMenuItem i = new JMenuItem(Messages.ACTION_DELETE.getValue());
         i.addActionListener(new ActionListener() {
@@ -89,7 +91,7 @@ public class DOTablePopUp extends JPopupMenu {
         });
 
         JMenuItem i2 = new JMenuItem(Messages.ACTION_OPEN.getValue());
-        i.addActionListener(new ActionListener() {
+        i2.addActionListener(new ActionListener() {
 
             public void actionPerformed(ActionEvent e) {
                 try {
@@ -100,12 +102,21 @@ public class DOTablePopUp extends JPopupMenu {
             }
         });
 
+        JMenuItem i3 = new JMenuItem(Messages.ACTION_ADDLIST.getValue());
+        i3.addActionListener(new ActionListener() {
 
-        new DOTablePopUp(to, new JMenuItem[]{i, i2}, c);
-    }
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    MPView.currentList.add(DatabaseObject.getObject(c, Integer.valueOf(to.getModel().getValueAt(to.getSelectedRow(), 0).toString())));
+                    MPView.showCurrentList();
+                } catch (NodataFoundException ex) {
+                    Log.Debug(DOTablePopUp.class, ex);
+                }
+            }
+        });
 
-    public static void clear(final JTable to) {
-        to.removeMouseListener(pop);
+
+       return new DOTablePopUp(to, new JMenuItem[]{i, i2, i3}, c,withMouseListener);
     }
 
     class MousePopupListener extends MouseAdapter {

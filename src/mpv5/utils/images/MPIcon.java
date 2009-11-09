@@ -155,14 +155,14 @@ public class MPIcon extends ImageIcon {
         if (!cache.containsKey(maxWidth + "@" + maxHeight)) {
             BufferedImage bi = toBufferedImage(this.getImage());
             bi = getScaledInstance(bi, maxWidth, maxHeight, RenderingHints.VALUE_INTERPOLATION_BILINEAR, maxHeight > 0);
-            ImageIcon imic = new ImageIcon(bi);
+            MPIcon imic = new MPIcon(bi);
             cache.put(maxWidth + "@" + maxHeight, imic);
             return imic;
         } else {
             return cache.get(maxWidth + "@" + maxHeight);
         }
     }
-    private HashMap<String, Icon> cache = new HashMap<String, Icon>();
+    private HashMap<String, MPIcon> cache = new HashMap<String, MPIcon>();
 
     /**
      * Convenience method that returns a scaled instance of the
@@ -316,5 +316,23 @@ public class MPIcon extends ImageIcon {
         // Get the image's color model
         ColorModel cm = pg.getColorModel();
         return cm.hasAlpha();
+    }
+
+    /**
+     * Scale the image of this icon
+     * @param width
+     * @param height
+     * @return
+     */
+    public MPIcon getScaledIcon(int maxWidth, int maxHeight) {
+        if (!cache.containsKey(maxWidth + "@" + maxHeight)) {
+            BufferedImage bi = toBufferedImage(this.getImage());
+            bi = getScaledInstance(bi, maxWidth, maxHeight, RenderingHints.VALUE_INTERPOLATION_BILINEAR, maxHeight > 0);
+            MPIcon imic = new MPIcon(bi);
+            cache.put(maxWidth + "@" + maxHeight, imic);
+            return imic;
+        } else {
+            return cache.get(maxWidth + "@" + maxHeight);
+        }
     }
 }

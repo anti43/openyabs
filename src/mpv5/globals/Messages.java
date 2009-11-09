@@ -214,7 +214,11 @@ public enum Messages {
     AUTO_GENERATED_VALUE("Auto generated value"),
     BOOK_NOW("Save & book now?"), 
     FIRST_START("This seems to be the first start"),
-    ALL_PRODUCTS("All Products");
+    ALL_PRODUCTS("All Products"), 
+    ACTION_ADDLIST("Add to listboard"),
+    GOOSE1("Order Nr."),
+    GOOSE2("created on"),
+    YABS("Yet another business software");
 
     private Messages(String message) {
         this.message = message;

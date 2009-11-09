@@ -16,8 +16,15 @@
  */
 package mpv5.data;
 
+import com.lowagie.text.ListItem;
+import java.awt.Color;
+import java.awt.Component;
 import java.util.Vector;
+import javax.swing.BorderFactory;
 import javax.swing.DefaultListModel;
+import javax.swing.JLabel;
+import javax.swing.JList;
+import javax.swing.ListCellRenderer;
 import mpv5.db.common.DatabaseObject;
 
 /**
@@ -69,6 +76,49 @@ public class MPList extends Vector<DatabaseObject> {
             model.addElement(databaseObject);
         }
         return model;
+    }
+
+    /**
+     * Returns a custom cell renderer which displays an icon and text
+     * @return
+     */
+    public static ListCellRenderer getDBORenderer() {
+        return new MyCellRenderer();
+    }
+
+    static class MyCellRenderer extends JLabel
+            implements ListCellRenderer {
+
+        public MyCellRenderer() {
+            // Don't paint behind the component
+            setOpaque(true);
+        }
+
+        // Set the attributes of the
+        //class and return a reference
+        public Component getListCellRendererComponent(JList list,
+                Object value, // value to display
+                int index, // cell index
+                boolean iss, // is selected
+                boolean chf) // cell has focus?
+        {
+            // Set the text and
+            //background color for rendering
+            setText(((DatabaseObject) value).toString());
+            setIcon(((DatabaseObject) value).getIcon());
+
+            // Set a border if the
+            //list item is selected
+            if (iss) {
+                setBorder(BorderFactory.createLineBorder(
+                        Color.blue, 1));
+            } else {
+                setBorder(BorderFactory.createLineBorder(
+                        list.getBackground(), 1));
+            }
+
+            return this;
+        }
     }
 
     @Override

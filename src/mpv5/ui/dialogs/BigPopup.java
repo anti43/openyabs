@@ -212,7 +212,9 @@ public class BigPopup {
         } else {
             try {
                 show(content);
-                setOnTop(content);
+                if (alwaysOnTop) {
+                    setOnTop(content);
+                }
             } catch (Exception exception) {
             }
         }
