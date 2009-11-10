@@ -16,13 +16,9 @@
  */
 package mpv5.server;
 
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import mpv5.db.common.Context;
-import mpv5.db.common.DatabaseObject;
 import mpv5.globals.LocalSettings;
-import mpv5.handler.SDBObjectGenerator;
-import mpv5.handler.SimpleDatabaseObject;
 import mpv5.logging.Log;
 import mpv5.usermanagement.MPSecurityManager;
 import org.apache.xmlrpc.XmlRpcException;
@@ -92,13 +88,11 @@ public class XMLRPCServer {
         });
 
         PropertyHandlerMapping phm = new XPropertyHandlerMapping();
-
-        ArrayList<Context> cx = Context.getImportableContexts();
-        for (int i = 0; i < cx.size(); i++) {
-            Context context = cx.get(i);
-            
-            phm.addHandler("remote", XMLRPCHandler.class);
-        }
+//        ArrayList<Context> cx = Context.getImportableContexts();
+//        for (int i = 0; i < cx.size(); i++) {
+//            Context context = cx.get(i);
+//        }
+        phm.addHandler("remote", XMLRPCHandler.class);
 
         xmlRpcServer.setHandlerMapping(phm);
 

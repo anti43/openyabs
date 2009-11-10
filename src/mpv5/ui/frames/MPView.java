@@ -251,6 +251,7 @@ public class MPView extends FrameView {
     }
 
 
+
     /**
      * Reloads fav menu
      */
@@ -1969,11 +1970,12 @@ public class MPView extends FrameView {
         addTab(new ItemPanel(Context.getBill(), Item.TYPE_BILL), Messages.NEW_BILL);
     }//GEN-LAST:event_jButton8ActionPerformed
 
+    private MPServer mpserver;
     private void jMenuItem24ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem24ActionPerformed
-        MPServer serv = new MPServer();
-        serv.start();
-        MPView.identifierView.showServerStatus(serv.isAlive());
-        jMenuItem24.setEnabled(!serv.isAlive());
+        mpserver = new MPServer();
+        mpserver.start();
+        MPView.identifierView.showServerStatus(mpserver.isAlive());
+        jMenuItem24.setEnabled(!mpserver.isAlive());
     }//GEN-LAST:event_jMenuItem24ActionPerformed
 
     private void jMenuItem25ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem25ActionPerformed
@@ -2265,8 +2267,9 @@ public class MPView extends FrameView {
 
                             @Override
                             public void actionPerformed(ActionEvent e) {
-                                MPServer.stopAllInstances();
-                                plab.setEnabled(false);
+                                MPServer.shutdown();
+                                showServerStatus(false);
+                                jMenuItem24.setEnabled(true);
                                 plab.setToolTipText("<html><b>MP Server</b>");
                                 MouseListener[] ml = plab.getMouseListeners();
                                 for (int i = 0; i < ml.length; i++) {
@@ -2286,6 +2289,7 @@ public class MPView extends FrameView {
             getServerlabel().setPreferredSize(new Dimension(0, 0));
             getServerlabel().setMinimumSize(new Dimension(0, 0));
             getServerlabel().setSize(0, 0);
+
         }
         MPView.identifierFrame.validate();
     }

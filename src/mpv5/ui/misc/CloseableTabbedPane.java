@@ -42,7 +42,9 @@ import javax.swing.event.EventListenerList;
 
 import javax.swing.plaf.basic.BasicTabbedPaneUI;
 import javax.swing.plaf.metal.MetalTabbedPaneUI;
+import mpv5.logging.Log;
 import mpv5.ui.frames.MPView;
+
 
 /**
  * A JTabbedPane which has a close ('X') icon on each tab.
@@ -79,6 +81,7 @@ public class CloseableTabbedPane extends JTabbedPane implements MouseListener,
      */
     private Icon pressedCloseIcon = null;
     private MPView parentv;
+    private int oldSelection;
 
     /**
      * Creates a new instance of <code>CloseableTabbedPane</code>
@@ -143,6 +146,7 @@ public class CloseableTabbedPane extends JTabbedPane implements MouseListener,
 
     @Override
     public void setSelectedIndex(int index) {
+        oldSelection = getSelectedIndex();
         super.setSelectedIndex(index);
 //        boolean enable = false;
 //        Class[] faces = getSelectedComponent().getClass().getInterfaces();
@@ -313,6 +317,15 @@ public class CloseableTabbedPane extends JTabbedPane implements MouseListener,
                             //the tab is being closed
                             //removeTabAt(tabNumber);
                             remove(selIndex);
+                            try {
+                                if (selIndex < oldSelection) {
+                                    setSelectedIndex(oldSelection-1);
+                                } else if (selIndex > oldSelection){
+//                                    setSelectedIndex(oldSelection);
+                                }
+                            } catch (Exception selex) {
+                                Log.Debug(selex);
+                            }
                         } else {
                             icon.mouseover = false;
                             icon.mousepressed = false;
@@ -328,6 +341,7 @@ public class CloseableTabbedPane extends JTabbedPane implements MouseListener,
                 repaint(drawRect);
             }
         }
+        e.consume();
     }
 
     /**
@@ -662,7 +676,6 @@ public class CloseableTabbedPane extends JTabbedPane implements MouseListener,
         }
     }
 }
-
 /**
  * The listener that's notified when an tab should be closed in the
  * <code>CloseableTabbedPane</code>.

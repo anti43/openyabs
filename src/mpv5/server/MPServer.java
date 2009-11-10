@@ -30,15 +30,13 @@ public class MPServer extends Thread {
     /**
      *
      */
-    public static void stopAllInstances() {
+    public static void shutdown() {
         xmlrpcs.getWebServer().shutdown();
     }
-    private static Vector<Thread> INSTANCES = new Vector<Thread>();
     private static XMLRPCServer xmlrpcs;
 
     public MPServer() {
         Log.Debug(this, "Initialising MP Server..");
-        INSTANCES.add(this);
     }
 
     @Override

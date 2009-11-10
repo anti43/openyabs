@@ -27,6 +27,7 @@ import mpv5.ui.dialogs.Wizard;
 import mpv5.ui.dialogs.WizardMaster;
 import mpv5.ui.dialogs.Wizardable;
 
+
 /**
  *
  * 
@@ -94,6 +95,10 @@ public class wizard_DBSettings_1 extends javax.swing.JPanel implements Wizardabl
                     master.setMessage(Messages.CONNECTION_VERIFIED.toString());
                     LocalSettings.save(forConnId);
                     LocalSettings.apply();
+
+                    if (ConnectionTypeHandler.getDriverType() != ConnectionTypeHandler.DERBY) {
+                        Popup.notice("Please run the MySQL/SQL install script manually BEFORE clicking ok now!");
+                    }
 
                     if (!jCheckBox1.isSelected()) {
                         master.setMessage(Messages.CREATING_DATABASE.toString());

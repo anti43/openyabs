@@ -82,7 +82,7 @@ public class LoginScreen extends javax.swing.JFrame {
         jLabel4 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
-        java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle(); // NOI18N
+        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("mpv5/resources/languages/Panels"); // NOI18N
         setTitle(bundle.getString("LoginScreen.title")); // NOI18N
         setAlwaysOnTop(true);
         setFocusTraversalPolicyProvider(true);
@@ -101,6 +101,7 @@ public class LoginScreen extends javax.swing.JFrame {
             }
         });
 
+        jPasswordField1.setToolTipText(bundle.getString("LoginScreen.jPasswordField1.toolTipText")); // NOI18N
         jPasswordField1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jPasswordField1ActionPerformed(evt);
@@ -113,7 +114,7 @@ public class LoginScreen extends javax.swing.JFrame {
 
         jCheckBox2.setText(bundle.getString("LoginScreen.jCheckBox2.text")); // NOI18N
 
-        jLabel4.setFont(new java.awt.Font("Tahoma", 2, 11)); // NOI18N
+        jLabel4.setFont(new java.awt.Font("Tahoma", 2, 11));
         jLabel4.setText(bundle.getString("LoginScreen.jLabel4.text")); // NOI18N
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
@@ -131,8 +132,8 @@ public class LoginScreen extends javax.swing.JFrame {
                         .addComponent(jCheckBox2)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 70, Short.MAX_VALUE)
                         .addComponent(jButton1))
-                    .addComponent(jPasswordField1, javax.swing.GroupLayout.DEFAULT_SIZE, 323, Short.MAX_VALUE)
-                    .addComponent(jTextField1, javax.swing.GroupLayout.DEFAULT_SIZE, 323, Short.MAX_VALUE)
+                    .addComponent(jPasswordField1, javax.swing.GroupLayout.DEFAULT_SIZE, 380, Short.MAX_VALUE)
+                    .addComponent(jTextField1, javax.swing.GroupLayout.DEFAULT_SIZE, 380, Short.MAX_VALUE)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(jLabel1)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
