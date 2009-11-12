@@ -218,7 +218,8 @@ public enum Messages {
     ACTION_ADDLIST("Add to listboard"),
     GOOSE1("Order Nr."),
     GOOSE2("created on"),
-    YABS("Yet another business software");
+    YABS("Yet another business software"),
+    QUERY_WINDOW("Query Window");
 
     private Messages(String message) {
         this.message = message;

@@ -233,11 +233,11 @@ public class MPPLuginLoader {
      */
     public void unLoadPlugin(MP5Plugin mP5Plugin) {
         mP5Plugin.unload();
-        Component[] c = MPView.identifierView.pluginIcons.getComponents();
+        Component[] c = MPView.identifierView.getPluginIcons().getComponents();
         for (int i = 0; i < c.length; i++) {
             Component component = c[i];
             if (((JLabel) component).getToolTipText().contains(String.valueOf(mP5Plugin.getUID()))) {
-                MPView.identifierView.pluginIcons.remove(component);
+                MPView.identifierView.getPluginIcons().remove(component);
             }
         }
         MPView.identifierFrame.validate();
@@ -304,7 +304,7 @@ public class MPPLuginLoader {
                         }
                     }
                 });
-                MPView.identifierView.pluginIcons.add(plab);
+                MPView.identifierView.getPluginIcons().add(plab);
             } catch (Exception e) {
                 Log.Debug(e);
                 plab.setEnabled(false);

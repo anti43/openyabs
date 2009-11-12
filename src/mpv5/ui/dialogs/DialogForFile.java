@@ -96,6 +96,16 @@ public class DialogForFile extends JFileChooser implements Waiter {
             return "PDF Format(*.pdf)";
         }
     };
+    public static FileFilter SQL_FILES = new FileFilter() {
+
+        public boolean accept(File f) {
+            return f.getName().toLowerCase().endsWith(".sql") || f.isDirectory();
+        }
+
+        public String getDescription() {
+            return "SQL Format(*.sql)";
+        }
+    };
     public static FileFilter OOO_FILES = new FileFilter() {
 
         public boolean accept(File f) {
