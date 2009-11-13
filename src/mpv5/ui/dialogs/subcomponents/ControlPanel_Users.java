@@ -605,7 +605,10 @@ public class ControlPanel_Users extends javax.swing.JPanel implements ControlApp
         if (language.getSelectedItem() != null) {
             language_ = String.valueOf(((MPComboBoxModelItem) language.getSelectedItem()).getId());
         }
-        defcountry_ = ((MPComboBoxModelItem) countrylist.getSelectedItem()).getId();
+        try {
+            defcountry_ = ((MPComboBoxModelItem) countrylist.getSelectedItem()).getId();
+        } catch (Exception e) {
+        }
         if (locale.getSelectedItem() != null) {
             locale_ = String.valueOf(((MPComboBoxModelItem) locale.getSelectedItem()).getId());
         }

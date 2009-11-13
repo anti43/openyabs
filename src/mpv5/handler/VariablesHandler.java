@@ -78,13 +78,20 @@ public abstract class VariablesHandler {
         }
         return svars;
     }
-
     /**
      * Generates an array containing all available variables and values for the specific {@link DatabaseObject}
      * @param target
      * @return
      */
-    public static String[][] resolveVarsFor(final DatabaseObject target) {
+    private static DatabaseObject old;
+    public static synchronized String[][] resolveVarsFor(final DatabaseObject target) {
+
+        if (target.equals(old)) {
+            return null;
+        }
+        old = target;
+
+        Log.Debug(VariablesHandler.class, "Resolving vars for " + target.getContext() + "#" + target.ids);
         String[][] vars = new String[GENERIC_VARS.values().length + getSpecialVarsOf(target).length][2];
         GENERIC_VARS[] gens = GENERIC_VARS.values();
         int i;
@@ -111,7 +118,7 @@ public abstract class VariablesHandler {
                 } else if (vars[i][0].equals(GENERIC_VARS.OBJECT_YEAR.toString())) {
                     vars[i][1] = DateConverter.getYearName(target.__getDateadded());
                 }
-            } catch (NodataFoundException nodataFoundException) {
+            } catch (Exception nodataFoundException) {
             }
         }
         String[] specs = getSpecialVarsOf(target);
@@ -140,11 +147,13 @@ public abstract class VariablesHandler {
      */
     public static synchronized String parse(String text, final DatabaseObject source) {
         String[][] c = resolveVarsFor(source);
-        for (int i = 0; i < c.length; i++) {
-            String[] data = c[i];
+        if (c != null) {
+            for (int i = 0; i < c.length; i++) {
+                String[] data = c[i];
 //            Log.Debug(VariablesHandler.class, source + ": replacing key: " + data[0] + " with value: " + data[1]);
-            if (data[1] != null) {
-                text = text.replace(data[0], data[1]);
+                if (data[1] != null) {
+                    text = text.replace(data[0], data[1]);
+                }
             }
         }
         return text;

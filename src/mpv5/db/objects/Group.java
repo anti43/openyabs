@@ -125,8 +125,9 @@ public class Group extends DatabaseObject {
                     break;
                 }
             } while (intp >= 1);
+            return hierarchypath.replaceFirst(Group.GROUPSEPARATOR, "");
         }
-        return hierarchypath.replaceFirst(Group.GROUPSEPARATOR, "");
+        return hierarchypath;
     }
 
     /**

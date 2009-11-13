@@ -170,6 +170,7 @@ public class MPPLuginLoader {
             return (MP5Plugin) o;
         } catch (Exception malformedURLException) {
             Log.Debug(malformedURLException);
+            Popup.error(malformedURLException);
             return null;
         }
     }
