@@ -65,7 +65,8 @@ public class PrintJob implements Waiter {
         aset.add(MediaSizeName.ISO_A4);
         this.flavor = DocFlavor.INPUT_STREAM.AUTOSENSE;
         prservDflt = PrintServiceLookup.lookupDefaultPrintService();
-        prservices = PrintServiceLookup.lookupPrintServices(flavor, aset);
+//        prservices = PrintServiceLookup.lookupPrintServices(flavor, aset);
+        prservices = PrintServiceLookup.lookupPrintServices(null, aset);
     }
 
     public PrintJob(DocFlavor flavor) {
