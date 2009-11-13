@@ -63,19 +63,9 @@ public class ProductSelectDialog2 extends javax.swing.JDialog  {
         setResizable(false);
         setUndecorated(true);
         initComponents();   
-        InputMap inputMap = getIDTextField().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
-        KeyStroke enter = KeyStroke.getKeyStroke(KeyEvent.VK_ENTER,0);
-        getIDTextField().getActionMap().put(inputMap.get(enter),new AbstractAction(){
-            public void actionPerformed(ActionEvent e) {
-                ActionListener[] listeners = okButton.getActionListeners();
-                ActionEvent actionEvent = new ActionEvent(okButton, ActionEvent.ACTION_PERFORMED, okButton.getActionCommand());
-                for (int i = 0; i < listeners.length; i++) {
-                    listeners[i].actionPerformed(actionEvent);
-                }
-            }
-        });
+        InputMap inputMap = ((JComponent)getRootPane()).getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
         KeyStroke esc = KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE,0);
-        inputMap.put(esc, "escape");
+        inputMap.put(esc, "ESCAPE");
         ((JComponent)getRootPane()).getActionMap().put(inputMap.get(esc),new AbstractAction(){
             public void actionPerformed(ActionEvent e) {
                 ActionListener[] listeners = cancelButton.getActionListeners();
@@ -125,6 +115,11 @@ public class ProductSelectDialog2 extends javax.swing.JDialog  {
         });
     }
 
+    @Override
+    public void setVisible(boolean visible){
+        super.setVisible(visible);
+        getIDTextField().grabFocus();
+    }
 
     public JTextField getIDTextField(){
         return cnumber.getTextField();
@@ -147,12 +142,6 @@ public class ProductSelectDialog2 extends javax.swing.JDialog  {
         }
     }
 
-
-    @Override
-    public void setVisible(boolean visible) {
-        super.setVisible(visible);
-        cnumber.grabFocus();
-    }
 
     /** This method is called from within the constructor to
      * initialize the form.
