@@ -166,6 +166,7 @@ public enum Messages {
     TYPE_REMINDER("Reminder"),
     TYPE_REVENUE("Revenue"),
     TYPE_EXPENSE("Payables"),
+    TYPE_CONFIRMATION("Order Confirmation"),
     STATUS_PAID("Paid"),
     STATUS_UNPAID("Not Paid"),
     TRASHBIN("Trashbin"),
@@ -219,7 +220,8 @@ public enum Messages {
     GOOSE1("Order Nr."),
     GOOSE2("created on"),
     YABS("Yet another business software"),
-    QUERY_WINDOW("Query Window");
+    QUERY_WINDOW("Query Window"),
+    LOGIN("The template system will not work until you log in with a valid user.");
 
     private Messages(String message) {
         this.message = message;

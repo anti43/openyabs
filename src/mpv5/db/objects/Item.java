@@ -164,6 +164,8 @@ public class Item extends DatabaseObject implements Formattable {
                 return Messages.TYPE_ORDER.toString();
             case (TYPE_DELIVERY_NOTE):
                 return Messages.TYPE_DELIVERY.toString();
+            case (TYPE_ORDER_CONFIRMATION):
+                return Messages.TYPE_CONFIRMATION.toString();
         }
         return "";
     }
@@ -190,6 +192,7 @@ public class Item extends DatabaseObject implements Formattable {
     public static final int TYPE_ORDER = 1;
     public static final int TYPE_OFFER = 2;
     public static final int TYPE_DELIVERY_NOTE = 3;
+    public static final int TYPE_ORDER_CONFIRMATION = 4;
     private FormatHandler formatHandler;
 
     public Item() {

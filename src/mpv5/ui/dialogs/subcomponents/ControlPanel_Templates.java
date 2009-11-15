@@ -74,6 +74,7 @@ public class ControlPanel_Templates extends javax.swing.JPanel implements Contro
                         Messages.TYPE_PRODUCT.toString(),
                         Messages.TYPE_SERVICE.toString(),
                         Messages.TYPE_DELIVERY.toString(),
+                        Messages.TYPE_CONFIRMATION.toString(),
                         Messages.TYPE_REMINDER.toString()}));
             refresh();
             groupname.setModel(new DefaultComboBoxModel(

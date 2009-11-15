@@ -464,11 +464,12 @@ public class Main extends SingleFrameApplication {
      */
     public static void setDerbyLog() {
         Properties p = System.getProperties();
-         try {
+        try {
             File d = File.createTempFile(RandomText.getText(), ".~mp");
             d.createNewFile();
             p.put("derby.stream.error.file", d.getPath());
-        } catch (IOException ex) {}
+        } catch (IOException ex) {
+        }
     }
 
     /**
@@ -636,6 +637,8 @@ public class Main extends SingleFrameApplication {
                     user.login();
                 }
             }
+        } else {
+            Popup.notice(Messages.LOGIN);
         }
     }
 
