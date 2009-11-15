@@ -38,6 +38,7 @@ import mpv5.db.objects.WebShop;
 import mpv5.logging.Log;
 import mpv5.pluginhandling.UserPlugin;
 import mpv5.ui.frames.MPView;
+import mpv5.utils.text.RandomText;
 
 /**
  *
@@ -148,13 +149,13 @@ public class Context {
             IDENTITY_CONTACTS + "." + "WORKPHONE," + IDENTITY_CONTACTS + "." + "COMPANY," + IDENTITY_CONTACTS + "." + "MAILADDRESS," +
             IDENTITY_CONTACTS + "." + "WEBSITE," + IDENTITY_CONTACTS + "." + "NOTES," +
             IDENTITY_CONTACTS + "." + "TAXNUMBER";
-     public static String DETAILS_PRODUCTS =
+    public static String DETAILS_PRODUCTS =
             IDENTITY_PRODUCTS + "." + "ids," +
             IDENTITY_PRODUCTS + "." + "cnumber," +
             IDENTITY_PRODUCTS + "." + "cname," +
             IDENTITY_PRODUCTS + "." + "ean," +
             IDENTITY_PRODUCTS + "." + "reference," +
-            IDENTITY_CONTACTS + "." + "cname,"+
+            IDENTITY_CONTACTS + "." + "cname," +
             IDENTITY_GROUPS + "." + "cname";
     public static String DETAILS_USERS = IDENTITY_USERS + "." + "IDS," + IDENTITY_USERS + "." + "CNAME," +
             IDENTITY_USERS + "." + "fullname," +
@@ -444,6 +445,30 @@ public class Context {
      * Constructor now private
      */
     private Context() {
+    }
+
+    /**
+     * Constructs a new Context with a random ID
+     * @param tablename The name of the table to use
+     * @param targetObjectClass The class of the {@link DatabaseObject} child to be used with this Context
+     */
+    public Context(String tablename, Class targetObjectClass) {
+        setId(Integer.valueOf(RandomText.getNumberText()));
+        this.setSubID(DEFAULT_SUBID);
+        this.setDbIdentity(tablename);
+        this.setIdentityClass(targetObjectClass);
+    }
+
+    /**
+     * Constructs a new Context with a random ID.
+     * The tablename will be assumed from the targetObject's Class simple name
+     * @param targetObject
+     */
+    public Context(DatabaseObject targetObject) {
+        setId(Integer.valueOf(RandomText.getNumberText()));
+        this.setSubID(DEFAULT_SUBID);
+        this.setDbIdentity(targetObject.getClass().getSimpleName());
+        this.setIdentityClass(targetObject.getClass());
     }
     /**
      * A default, empty Context without id
