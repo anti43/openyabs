@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Vector;
-import mpv5.globals.Headers;
 import mpv5.db.objects.Account;
 import mpv5.db.objects.Address;
 import mpv5.db.objects.Company;
@@ -38,7 +37,9 @@ import mpv5.db.objects.WebShop;
 import mpv5.logging.Log;
 import mpv5.pluginhandling.UserPlugin;
 import mpv5.ui.frames.MPView;
+import mpv5.usermanagement.MPSecurityManager;
 import mpv5.utils.text.RandomText;
+import mpv5.utils.xml.XMLReader;
 
 /**
  *
@@ -451,12 +452,65 @@ public class Context {
      * Constructs a new Context with a random ID
      * @param tablename The name of the table to use
      * @param targetObjectClass The class of the {@link DatabaseObject} child to be used with this Context
+     * @param cacheable If true, the {@link DatabaseObject}s related to this context will be cached
+     * @param secured If true, the {@link DatabaseObject}s related to this context will be protected by the {@link MPSecurityManager}
+     * @param importable If true, the {@link DatabaseObject}s related to this context will be importable by the {@link XMLReader}
+     * @param lockable If true, the {@link DatabaseObject}s related to this context will be loackable to avoid concurrent access
+     * @param groupable If true, the {@link DatabaseObject}s related to this context will apply to a users group restriction
+     * @param trashable If true, the {@link DatabaseObject}s related to this context will be moved to the trashbin on delete
+     * @param archivable If true, actions on the {@link DatabaseObject}s related to this context will be monitored
+     */
+    public Context(String tablename, Class targetObjectClass, boolean cacheable,
+            boolean secured, boolean importable, boolean lockable, boolean groupable,
+            boolean trashable, boolean archivable) {
+        setId(Integer.valueOf(RandomText.getNumberText()));
+        this.setSubID(DEFAULT_SUBID);
+        this.setDbIdentity(tablename);
+        this.setIdentityClass(targetObjectClass);
+        if (archivable) {
+            getArchivableContexts().add(this);
+        }
+        if (cacheable) {
+            getCacheableContexts().add(this);
+        }
+        if (secured) {
+            getSecuredContexts().add(this);
+        }
+        if (importable) {
+            getImportableContexts().add(this);
+        }
+        if (lockable) {
+            getLockableContexts().add(this);
+        }
+        if (groupable) {
+            getGroupableContexts().add(this);
+        }
+        if (trashable) {
+            getTrashableContexts().add(this);
+        }
+        if (archivable) {
+            getArchivableContexts().add(this);
+        }
+    }
+
+    /**
+     * Constructs a new Context with a random ID
+     * @param tablename The name of the table to use
+     * @param targetObjectClass The class of the {@link DatabaseObject} child to be used with this Context
      */
     public Context(String tablename, Class targetObjectClass) {
         setId(Integer.valueOf(RandomText.getNumberText()));
         this.setSubID(DEFAULT_SUBID);
         this.setDbIdentity(tablename);
         this.setIdentityClass(targetObjectClass);
+    }
+
+    /**
+     * Constructs a new Context with a random ID
+     * @param targetObjectClass The tablename will be assumed from the Class' simple name
+     */
+    public Context(Class targetObjectClass) {
+        this(targetObjectClass.getSimpleName(), targetObjectClass);
     }
 
     /**
@@ -1578,16 +1632,27 @@ public class Context {
         }
         Log.Debug(Context.class, "Context not found for name: " + contextdbidentity);
         return null;
-//        throw new UnsupportedOperationException("Context not found for name: " + contextdbidentity);
+    }
+
+    /**
+     *
+     * @param contextId
+     * @return The matching context or null if not existing
+     */
+    public static Context getMatchingContext(int contextId) {
+        for (int i = 0; i < allContexts.size(); i++) {
+            Context context = allContexts.get(i);
+            if (context.getId() == contextId) {
+                return context;
+            }
+        }
+        Log.Debug(Context.class, "Context not found for id: " + contextId);
+        return null;
     }
 
     public void setSearchFields(String fields) {
         defResultFields = fields;
     }
-//
-//    public void setSearchHeaders(String[] headers) {
-//        searchHeaders = headers;
-//    }
 
     /**
      * @param identityClass the identityClass to set
