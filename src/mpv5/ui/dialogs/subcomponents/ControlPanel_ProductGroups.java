@@ -440,7 +440,7 @@ public class ControlPanel_ProductGroups extends javax.swing.JPanel implements Co
 
     @Override
     public void reset() {
-        if (dataOwner.isExisting()) {
+      if (dataOwner!=null && dataOwner.isExisting()) {
             DatabaseObject dato = dataOwner;
 
             dato.getPanelData(this);

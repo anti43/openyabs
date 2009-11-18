@@ -672,7 +672,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject> {
                     } else {
                         vals.add(new String[]{name, "0"});
                     }
-                } else if (name.toUpperCase().startsWith("INT") || name.endsWith("uid") || name.endsWith("ids") || name.equals("ids")) {
+                } else if (!name.toUpperCase().startsWith("INTERNAL") && (name.toUpperCase().startsWith("INT") || name.endsWith("uid") || name.endsWith("ids") || name.equals("ids"))){
                     vals.add(new String[]{name, value.toString()});
                 } else if (name.toUpperCase().startsWith("DATE") || name.toUpperCase().endsWith("DATE")) {
                     vals.add(new String[]{name, DateConverter.getDefDateString(DateConverter.getDate(value))});
@@ -1076,8 +1076,8 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject> {
                                         } else {
                                             vars.get(k).invoke(dbo, new Object[]{false});
                                         }
-                                    } else if ((name.toUpperCase().startsWith("INT") || name.endsWith("uid") || name.endsWith("ids") || name.equals("ids")) &&
-                                            !(name.toUpperCase().startsWith("VALUE") || name.toUpperCase().endsWith("VALUE"))) {
+                                    } else if (!name.toUpperCase().startsWith("INTERNAL") && ((name.toUpperCase().startsWith("INT") || name.endsWith("uid") || name.endsWith("ids") || name.equals("ids")) &&
+                                            !(name.toUpperCase().startsWith("VALUE") || name.toUpperCase().endsWith("VALUE")))) {
                                         vars.get(k).invoke(dbo, new Object[]{Integer.valueOf(String.valueOf(select.getData()[i][j]))});
                                     } else if (name.toUpperCase().startsWith("DATE") || name.toUpperCase().endsWith("DATE")) {
                                         vars.get(k).invoke(dbo, new Object[]{DateConverter.getDate(select.getData()[i][j])});
@@ -1144,8 +1144,10 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject> {
                         } else {
                             vars.get(k).invoke(this, new Object[]{false});
                         }
-                    } else if (name.toUpperCase().startsWith("INT") || name.endsWith("uid") || name.endsWith("ids") || name.equals("ids")) {
-                        vars.get(k).invoke(this, new Object[]{Integer.valueOf(String.valueOf(data[row][1]))});
+
+                        //fix the int/internal confusion :-(
+                    } else if (!name.toUpperCase().startsWith("INTERNAL") && (name.toUpperCase().startsWith("INT") || name.endsWith("uid") || name.endsWith("ids") || name.equals("ids"))) {
+                       vars.get(k).invoke(this, new Object[]{Integer.valueOf(String.valueOf(data[row][1]))});
                     } else if (name.toUpperCase().startsWith("DATE") || name.toUpperCase().endsWith("DATE")) {
                         vars.get(k).invoke(this, new Object[]{DateConverter.getDate(data[row][1])});
                     } else if (name.toUpperCase().startsWith("VALUE") || name.toUpperCase().endsWith("VALUE")) {
@@ -1183,7 +1185,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject> {
                         } else {
                             vars.get(k).invoke(this, new Object[]{false});
                         }
-                    } else if (name.toUpperCase().startsWith("INT") || name.endsWith("uid") || name.endsWith("ids") || name.equals("ids")) {
+                    } else if (!name.toUpperCase().startsWith("INTERNAL") && (name.toUpperCase().startsWith("INT") || name.endsWith("uid") || name.endsWith("ids") || name.equals("ids"))) {
                         vars.get(k).invoke(this, new Object[]{Integer.valueOf(String.valueOf(data[row][1]))});
                     } else if (name.toUpperCase().startsWith("DATE") || name.toUpperCase().endsWith("DATE")) {
                         vars.get(k).invoke(this, new Object[]{DateConverter.getDate(data[row][1])});
@@ -1495,7 +1497,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject> {
                 String name = vars.get(k).getName().toLowerCase().substring(3);
                 if (name.startsWith("is") || name.toUpperCase().startsWith("BOOL")) {
                     vars.get(k).invoke(this, new Object[]{new Random().nextBoolean()});
-                } else if (name.toUpperCase().startsWith("INT") || name.endsWith("uid") || name.endsWith("ids") || name.equals("ids")) {
+                } else if (!name.toUpperCase().startsWith("INTERNAL") && (name.toUpperCase().startsWith("INT") || name.endsWith("uid") || name.endsWith("ids") || name.equals("ids"))) {
                     vars.get(k).invoke(this, new Object[]{new Random().nextInt(100)});
                 } else if (name.toUpperCase().startsWith("DATE") || name.toUpperCase().endsWith("DATE")) {
                     vars.get(k).invoke(this, new Object[]{DateConverter.getRandomDate()});
