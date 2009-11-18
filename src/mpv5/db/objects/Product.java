@@ -34,9 +34,11 @@ import mpv5.globals.Messages;
 import mpv5.handler.FormatHandler;
 import mpv5.handler.MPEnum;
 import mpv5.logging.Log;
+import mpv5.ui.frames.MPView;
 import mpv5.ui.panels.ProductPanel;
 import mpv5.utils.images.MPIcon;
 import mpv5.utils.numberformat.FormatNumber;
+import mpv5.utils.text.RandomText;
 
 /**
  *
@@ -472,4 +474,22 @@ public class Product extends DatabaseObject implements Formattable {
     }
     public static String TRACKID_START_IDENTIFIER = "tid#";
     public static String TRACKID_END_IDENTIFIER = "#tid";
+
+    @Override
+    public boolean saveImport() {
+
+        if (__getProductgroupsids() <= 0 || !DatabaseObject.exists(Context.getProductGroup(), __getProductgroupsids())) {
+            setProductgroupsids(1);
+        }
+
+        if (__getManufacturersids() <= 0 || !DatabaseObject.exists(Context.getManufacturer(), __getManufacturersids())) {
+            setManufacturersids(0);
+        }
+
+        if (__getSuppliersids() <= 0 || !DatabaseObject.exists(Context.getSupplier(), __getSuppliersids())) {
+            setSuppliersids(0);
+        }
+
+        return super.saveImport();
+    }
 }
