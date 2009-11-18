@@ -94,7 +94,11 @@ public class LogConsole extends javax.swing.JFrame {
             public void run() {
                 line++;
                 if (FILE_LOG_ENABLED) {
-                    logwriter.write(line + ": " + object.toString());
+                    if (logwriter != null) {
+                        logwriter.write(line + ": " + object.toString());
+                    } else {
+                        System.err.println(object);
+                    }
                 }
                 if (CONSOLE_LOG_ENABLED) {
                     System.out.println(object);
@@ -211,7 +215,6 @@ private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
             jTextArea1.setText(null);
         }
     }
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
     private javax.swing.JScrollPane jScrollPane1;

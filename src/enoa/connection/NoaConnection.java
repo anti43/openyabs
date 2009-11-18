@@ -129,7 +129,12 @@ public class NoaConnection {
                     Thread.sleep(3333);
                 } catch (InterruptedException ex) {
                 }
-                officeAplication.activate();
+                try {
+                    officeAplication.activate();
+                } catch (OfficeApplicationException officeApplicationException1) {
+                    Log.Debug(officeApplicationException);
+                    Popup.error(officeApplicationException);
+                }
             }
             documentService =
                     officeAplication.getDocumentService();

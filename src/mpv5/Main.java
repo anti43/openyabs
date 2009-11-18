@@ -319,7 +319,7 @@ public class Main extends SingleFrameApplication {
         GroupBuilder gbuilder = new GroupBuilder();
 
         Argument option = abuilder.withName("option").withMinimum(1).withMaximum(1).create();
-        Argument filearg = abuilder.withName("file").withMinimum(1).withMaximum(1).create();
+        Argument filearg = abuilder.withName("=file").withMinimum(1).withMaximum(1).create();
         Argument dirarg = abuilder.withName("directory").withMinimum(1).withMaximum(1).create();
         Argument number = abuilder.withName("number").withMinimum(1).withMaximum(1).create();
 
@@ -415,11 +415,14 @@ public class Main extends SingleFrameApplication {
             }
 
             if (cl.hasOption(logfile)) {
+                if(String.valueOf(cl.getValue(logfile)).split("=").length !=2){
+                Log.Debug(Main.class, "logfile must be specified (-logfile=file.log)!");
+                }else{
                 try {
                     LogConsole.setLogFile(((String) cl.getValue(logfile)).split("=")[1]);
                 } catch (Exception e) {
                     Log.Debug(Main.class, "Error while writing to: " + e.getMessage());
-                }
+                }}
             }
 
             if (cl.hasOption(nolfs)) {
