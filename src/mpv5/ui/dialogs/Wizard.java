@@ -48,6 +48,7 @@ public class Wizard extends javax.swing.JFrame implements WizardMaster {
     private boolean isEnded = false;
     private boolean standalone;
     private ArrayList<JComponent> contentlist = new ArrayList<JComponent>();
+
     ;
     private int level;
 
@@ -69,7 +70,7 @@ public class Wizard extends javax.swing.JFrame implements WizardMaster {
         content.add(contentlist.get(level), BorderLayout.CENTER);
         pack();
         setLocationRelativeTo(MPView.identifierFrame);
-//        setAlwaysOnTop(!standalone);
+        setAlwaysOnTop(true);
         setVisible(true);
     }
 
@@ -195,6 +196,7 @@ public class Wizard extends javax.swing.JFrame implements WizardMaster {
     private void nextActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_nextActionPerformed
 
         Runnable runnable = new Runnable() {
+
             public void run() {
                 if (isEnded && standalone) {
                     System.exit(0);
@@ -218,22 +220,33 @@ public class Wizard extends javax.swing.JFrame implements WizardMaster {
 
                 pack();
             }
-        };new Thread(runnable).start();
+        };
+        new Thread(runnable).start();
 }//GEN-LAST:event_nextActionPerformed
 
     private void backActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_backActionPerformed
+        Runnable runnable = new Runnable() {
 
-        try {
-            if (((Wizardable) content.getComponent(0)).back() && level > 0) {
-                content.remove(lastpanel);
-                content.add(contentlist.get(level - 1), BorderLayout.CENTER);
-                level--;
+            public void run() {
+                try {
+                    if (((Wizardable) content.getComponent(0)).back() && level > 0) {
+                        content.remove(lastpanel);
+                        content.validate();
+                        validate();
+                        repaint();
+                        content.add(contentlist.get(level - 1), BorderLayout.CENTER);
+                        level--;
+                    }
+                } catch (Exception e) {
+                    back.setEnabled(false);
+                }
+
+                pack();
+                validate();
+                repaint();
             }
-        } catch (Exception e) {
-            back.setEnabled(false);
-        }
-
-        this.validate();
+        };
+        new Thread(runnable).start();
 }//GEN-LAST:event_backActionPerformed
 
     /**
