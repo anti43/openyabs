@@ -334,4 +334,8 @@ public class Wizard extends javax.swing.JFrame implements WizardMaster {
     public javax.swing.JProgressBar getProgressbar() {
         return progressbar;
     }
+
+    public void enableBackButton(boolean enable) {
+        back.setEnabled(enable);
+    }
 }

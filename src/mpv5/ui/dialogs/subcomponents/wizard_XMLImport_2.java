@@ -198,6 +198,7 @@ public class wizard_XMLImport_2 extends javax.swing.JPanel implements Wizardable
      *
      */
     public void load() {
+        master.enableBackButton(false);
         if (!isConsumed) {
             Log.Debug(this, "Overwrite is set to " + master.getStore().getProperty("overwrite", true));
             importXML();
