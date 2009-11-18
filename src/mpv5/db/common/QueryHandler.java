@@ -109,6 +109,15 @@ public class QueryHandler implements Cloneable {
             } else {
                 Log.Debug(this, "Database version info can not be found.");
             }
+            
+            ResultSet firstgroup = versionCheck.executeQuery("SELECT groupsids FROM groups WHERE ids = 1");
+            if (firstgroup.next()) {
+                int gids = firstgroup.getInt(1);
+                if (gids != 0) {
+                    versionCheck.execute("update groups set groupsids = 0 where ids = 1");
+                    Log.Debug(this, "Corrected group 1 to fix Issue 239");
+                }
+            } 
         } catch (Exception ex) {
             Log.Debug(ex);
             Popup.error(ex);
