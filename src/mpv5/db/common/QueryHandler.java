@@ -97,6 +97,16 @@ public class QueryHandler implements Cloneable {
         try {
             conn = DatabaseConnection.instanceOf();
             sqlConn = conn.getConnection();
+            versionCheck();
+            runFixes();
+        } catch (Exception ex) {
+            Log.Debug(ex);
+            Popup.error(ex);
+        }
+    }
+
+    private void versionCheck() {
+        try {
             Statement versionCheck = sqlConn.createStatement();
             Log.Debug(this, "Checking database version..");
             ResultSet versionData = versionCheck.executeQuery("SELECT value FROM globalsettings WHERE cname = 'yabs_dbversion'");
@@ -109,15 +119,27 @@ public class QueryHandler implements Cloneable {
             } else {
                 Log.Debug(this, "Database version info can not be found.");
             }
-            
-            ResultSet firstgroup = versionCheck.executeQuery("SELECT groupsids FROM groups WHERE ids = 1");
+        } catch (Exception ex) {
+            Log.Debug(ex);
+            Popup.error(ex);
+        }
+    }
+
+    private void runFixes() {
+        try {
+            Statement runfixes = sqlConn.createStatement();
+
+            //Issue #239////////////////////////////////////////////////////////
+            runfixes.setMaxRows(1);
+            ResultSet firstgroup = runfixes.executeQuery("SELECT groupsids FROM groups ORDER BY ids ASC");
             if (firstgroup.next()) {
                 int gids = firstgroup.getInt(1);
                 if (gids != 0) {
-                    versionCheck.execute("update groups set groupsids = 0 where ids = 1");
-                    Log.Debug(this, "Corrected group 1 to fix Issue 239");
+                    runfixes.execute("update groups set groupsids = 0 where ids = 1");
+                    Log.Debug(this, "Corrected group 1 to fix Issue #239");
                 }
-            } 
+            }
+            ////////////////////////////////////////////////////////////////////
         } catch (Exception ex) {
             Log.Debug(ex);
             Popup.error(ex);
@@ -786,7 +808,7 @@ public class QueryHandler implements Cloneable {
         return query.replace("\\", BACKSLASH_REPLACEMENT_STRING);
     }
 
-    private String revertEscapeBackslashes(String query) {
+    private String rescapeBackslashes(String query) {
         return query.replace(BACKSLASH_REPLACEMENT_STRING, "\\");
     }
 
@@ -1654,7 +1676,7 @@ public class QueryHandler implements Cloneable {
                     for (int i = 1; i <= rsmd.getColumnCount(); i++) {
                         Object object = resultSet.getObject(i);
                         if (object instanceof String && TypeConversion.stringToBoolean(LocalSettings.getProperty(LocalSettings.DBESCAPE))) {
-                            object = escapeBackslashes((String) object);
+                            object = rescapeBackslashes((String) object);
                         }
                         spalten.add(object);
                     }
@@ -1929,7 +1951,7 @@ public class QueryHandler implements Cloneable {
                 for (int i = 1; i <= rsmd.getColumnCount(); i++) {
                     Object object = resultSet.getObject(i);
                     if (object instanceof String && TypeConversion.stringToBoolean(LocalSettings.getProperty(LocalSettings.DBESCAPE))) {
-                        object = escapeBackslashes((String) object);
+                        object = rescapeBackslashes((String) object);
                     }
                     spalten.add(object);
                 }

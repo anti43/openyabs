@@ -73,7 +73,7 @@ public class LocalSettings {
                 {OFFICE_REMOTE, "false"},
                 {OFFICE_USE, "true"},
                 {CACHE_DIR, "Cache"},
-                {DBESCAPE, "false"}
+                {DBESCAPE, "true"}
             });
     private static Vector<PropertyStore> cookies;
 
