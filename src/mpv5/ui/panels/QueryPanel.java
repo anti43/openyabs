@@ -78,7 +78,7 @@ public class QueryPanel extends javax.swing.JPanel {
         jButton3 = new javax.swing.JButton();
         prinitingComboBox1 = new mpv5.ui.beans.PrinitingComboBox();
 
-        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("mpv5/resources/languages/Panels"); // NOI18N
+        java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle(); 
         setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("QueryPanel.border.title"))); // NOI18N
         setName("Form"); // NOI18N
 

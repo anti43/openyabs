@@ -153,7 +153,7 @@
         <DimensionLayout dim="0">
           <Group type="103" groupAlignment="0" attributes="0">
               <Group type="102" alignment="1" attributes="0">
-                  <Component id="jScrollPane4" pref="191" max="32767" attributes="2"/>
+                  <Component id="jScrollPane4" pref="197" max="32767" attributes="2"/>
                   <EmptySpace max="-2" attributes="0"/>
                   <Component id="jPanel2" min="-2" pref="380" max="-2" attributes="0"/>
               </Group>
@@ -161,8 +161,8 @@
         </DimensionLayout>
         <DimensionLayout dim="1">
           <Group type="103" groupAlignment="0" attributes="0">
-              <Component id="jScrollPane4" alignment="0" pref="326" max="32767" attributes="0"/>
-              <Component id="jPanel2" alignment="1" pref="326" max="32767" attributes="2"/>
+              <Component id="jScrollPane4" alignment="0" pref="330" max="32767" attributes="0"/>
+              <Component id="jPanel2" alignment="1" pref="330" max="32767" attributes="2"/>
           </Group>
         </DimensionLayout>
       </Layout>
@@ -213,30 +213,36 @@
               <Layout>
                 <DimensionLayout dim="0">
                   <Group type="103" groupAlignment="0" attributes="0">
-                      <Group type="102" attributes="0">
+                      <Group type="102" alignment="1" attributes="0">
                           <EmptySpace max="-2" attributes="0"/>
-                          <Group type="103" groupAlignment="0" attributes="0">
-                              <Group type="102" alignment="0" attributes="0">
-                                  <Component id="jLabel1" pref="80" max="32767" attributes="1"/>
-                                  <EmptySpace min="-2" pref="4" max="-2" attributes="0"/>
-                                  <Component id="jScrollPane2" pref="238" max="32767" attributes="1"/>
-                              </Group>
-                              <Group type="102" alignment="0" attributes="0">
-                                  <Component id="jLabel6" pref="54" max="32767" attributes="1"/>
-                                  <EmptySpace min="-2" pref="30" max="-2" attributes="0"/>
-                                  <Component id="groupname" min="-2" pref="238" max="-2" attributes="3"/>
-                              </Group>
+                          <Group type="103" groupAlignment="1" attributes="0">
+                              <Component id="fullname" alignment="0" pref="332" max="32767" attributes="0"/>
                               <Group type="102" alignment="0" attributes="0">
                                   <Component id="format" min="-2" pref="233" max="-2" attributes="0"/>
                                   <EmptySpace max="-2" attributes="0"/>
-                                  <Component id="jButton8" pref="83" max="32767" attributes="0"/>
+                                  <Component id="jButton8" pref="93" max="32767" attributes="0"/>
                               </Group>
-                              <Component id="type" alignment="1" min="-2" pref="322" max="-2" attributes="0"/>
-                              <Component id="fullname" alignment="0" min="-2" pref="322" max="-2" attributes="0"/>
+                              <Component id="type" alignment="1" pref="332" max="32767" attributes="0"/>
                               <Group type="102" alignment="1" attributes="0">
-                                  <Component id="jLabel3" pref="80" max="32767" attributes="1"/>
-                                  <EmptySpace max="-2" attributes="0"/>
-                                  <Component id="jScrollPane3" pref="238" max="32767" attributes="3"/>
+                                  <Group type="103" groupAlignment="0" attributes="0">
+                                      <Group type="102" attributes="0">
+                                          <Component id="jLabel1" pref="85" max="32767" attributes="1"/>
+                                          <EmptySpace min="-2" pref="4" max="-2" attributes="0"/>
+                                      </Group>
+                                      <Group type="102" attributes="0">
+                                          <Component id="jLabel3" pref="81" max="32767" attributes="1"/>
+                                          <EmptySpace min="-2" pref="8" max="-2" attributes="0"/>
+                                      </Group>
+                                      <Group type="102" attributes="0">
+                                          <Component id="jLabel6" pref="64" max="32767" attributes="1"/>
+                                          <EmptySpace min="-2" pref="25" max="-2" attributes="0"/>
+                                      </Group>
+                                  </Group>
+                                  <Group type="103" groupAlignment="0" attributes="0">
+                                      <Component id="groupname" alignment="1" pref="243" max="32767" attributes="3"/>
+                                      <Component id="jScrollPane3" alignment="1" pref="243" max="32767" attributes="3"/>
+                                      <Component id="jScrollPane2" alignment="1" pref="243" max="32767" attributes="1"/>
+                                  </Group>
                               </Group>
                           </Group>
                           <EmptySpace min="16" pref="16" max="-2" attributes="0"/>
@@ -262,7 +268,7 @@
                           <EmptySpace max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="0" attributes="0">
                               <Component id="jLabel3" min="-2" max="-2" attributes="1"/>
-                              <Component id="jScrollPane3" pref="105" max="32767" attributes="1"/>
+                              <Component id="jScrollPane3" pref="120" max="32767" attributes="1"/>
                           </Group>
                           <EmptySpace max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="0" attributes="0">
