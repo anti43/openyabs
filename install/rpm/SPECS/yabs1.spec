@@ -40,7 +40,7 @@ tar -xf $RPM_BUILD_ROOT/../yabs%{Version}.%{Release}.tar
 mkdir -p $RPM_BUILD_ROOT%{install_dir}/yabs/yabs%{Version}/misc
 cat > $RPM_BUILD_ROOT%{install_dir}/yabs/yabs%{Version}/misc/yabs%{Version}.desktop <<EOF
 [Desktop Entry]
-Name=YaBS %{Version}
+Name=YaBS %{Version}.%{Release}
 Comment=Crossplatform Accounting and Billing Application
 Exec=java -jar %{install_dir}/yabs/yabs%{Version}/yabs.jar
 Icon=%{install_dir}/yabs/yabs%{Version}/misc/yabsd.png

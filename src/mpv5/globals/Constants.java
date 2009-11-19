@@ -28,7 +28,7 @@ public interface Constants {
      * 
      * Full Version number
      */
-    public static final String VERSION = "Yabs-1.0-Beta-10";
+    public static final String VERSION = "Yabs-1.0-RC-1";
     /**
      * The minimal Database Version which is compatible with this release
      */
@@ -36,7 +36,7 @@ public interface Constants {
     /**
      * Will be dynamically changed by SVN.
      */
-    public static final String REVISION = "$Rev: 1235 $";
+    public static final String REVISION = "$Rev: 1268 $";
     /**
      *
      * The Release version
@@ -46,7 +46,7 @@ public interface Constants {
      *
      * Alias
      */
-    public static final String TITLE = "[Arann Islands]";
+    public static final String TITLE = "[Arann Island Ferries]";
     /**
      *
      * Name of the main JAR
@@ -79,7 +79,7 @@ public interface Constants {
     public static String ICON_NAME_LIN = "yabs.desktop";
     public static String ICON_NAME_WIN = "YaBS.url";
     public static String XML_ROOT = "mpv5";
-    public static String XML_DOCTYPE_ID = "-//http://code.google.com/p/mp-rechnungs-und-kundenverwaltung//DTD mpv5 V 1.0//EN";
+    public static String XML_DOCTYPE_ID = "-//http://openyabs.org//DTD mpv5 V 1.0//EN";
     public static String XML_DOCTYPE_URL = "http://openyabs.org/files/yabs_import_1.0.dtd";
     public static String SPLASH_IMAGE = "/mpv5/resources/images/background_a.png";
     public static String ABOUT_IMAGE = "/mpv5/resources/images/about1.png";
