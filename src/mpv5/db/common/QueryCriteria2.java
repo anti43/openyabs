@@ -146,7 +146,7 @@ public class QueryCriteria2 {
         if (asc) {
             order += " ASC ";
         } else {
-            order += " DESC ";
+            order += "      ";
         }
     }
 
