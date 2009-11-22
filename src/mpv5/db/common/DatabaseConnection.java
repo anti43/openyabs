@@ -112,10 +112,15 @@ public class DatabaseConnection {
             Log.Debug(this, ex.getMessage());
         }
 
+        return reconnect();
+
+    }
+
+    public boolean reconnect() {
         try {
-            Log.Debug(this, "Datenbankverbindung: " + getCtype().getConnectionString(create));
-            conn = DriverManager.getConnection(getCtype().getConnectionString(create), user, password);
-            if (conn != null //                    && conn.isValid(10)//does not work with MySQL 5.0
+            Log.Debug(this, "RECONNECT::Datenbankverbindung: " + getCtype().getConnectionString(false));
+            conn = DriverManager.getConnection(getCtype().getConnectionString(false), user, password);
+            if (conn != null //&& conn.isValid(10)//does not work with MySQL Connector/J 5.0
                     ) {
                 connector = this;
                 return true;
@@ -162,25 +167,7 @@ public class DatabaseConnection {
             DatabaseConnection.shutdown();
         }
 
-        try {
-            Log.Debug(this, "Datenbankverbindung: " + getCtype().getConnectionString(create));
-            conn = DriverManager.getConnection(getCtype().getConnectionString(create), getUser(), getPassword());
-
-        } catch (SQLException ex) {
-            System.out.println("Database Error: " + ex.getMessage());
-            Log.Debug(this, ex.getMessage());
-            try {
-                Log.Debug(this, ex.getNextException());
-                Log.Debug(this, ex.getNextException().getNextException());
-                Log.Debug(this, ex.getNextException().getNextException().getNextException());
-                Popup.warn(ex.getMessage());
-                DatabaseConnection.shutdown();
-            } catch (Exception e) {
-                Log.Debug(this, ex.getMessage());
-            }
-
-            throw new Exception("Datenbank konnte nicht gestartet werden.");
-        }
+        reconnect();
         return conn;
     }
 
@@ -249,7 +236,6 @@ public class DatabaseConnection {
         }
     }
 
-
     /**
      * Set a progressbar
      * @param progressbar
@@ -271,5 +257,4 @@ public class DatabaseConnection {
     public Statement getStatement() {
         return statement;
     }
-
 }

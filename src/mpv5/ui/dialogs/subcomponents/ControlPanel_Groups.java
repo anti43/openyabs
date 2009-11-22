@@ -308,6 +308,11 @@ public class ControlPanel_Groups extends javax.swing.JPanel implements ControlAp
         if (dataOwner != null) {
             DatabaseObject dato = dataOwner;
             dato.getPanelData(this);
+
+            //Issue 239 if the group id of the root group is not 0,
+            //program will end up in an infinite loop during tree building
+            if(dato.__getIDS().intValue() == 1)dato.setGroupsids(0);
+
             if (dato.save()) {
             } else {
                 showRequiredFields();

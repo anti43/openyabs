@@ -1160,7 +1160,7 @@ public class QueryHandler implements Cloneable {
         String j = "";
 
         if (order == null) {
-            order = "ids DESC ";
+            order = "ids ";
         }
 
         String ord = " ORDER BY " + table + "." + order;
