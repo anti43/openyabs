@@ -957,6 +957,8 @@ public class ProductPanel extends javax.swing.JPanel implements DataPanel, MPCBS
     public boolean collectData() {
         if (cname.getText() != null && cname.getText().length() > 0) {
 
+            cnumber_ = cnumber.get_Text();
+
             try {
                 suppliersids_ = Integer.valueOf(contactname.getSelectedItem().getId());
             } catch (Exception numberFormatException) {
