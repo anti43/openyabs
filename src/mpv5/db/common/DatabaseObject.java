@@ -543,7 +543,18 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject> {
                     } else if (tempval.getClass().isInstance(new java.sql.Date(0))) {
                         t.add(left, DateConverter.getSQLDateString((Date) tempval));
                     } else if (tempval.getClass().isInstance(0)) {
-                        t.add(left, (Integer) tempval);
+                        //if the field is an IDS field an below 0, set it to 0
+                        //as integer columns may not allow singned integers (eg. -1)
+                        if (left.toLowerCase().endsWith("ids")) {
+                            if (Integer.valueOf(tempval.toString()).intValue() < 0) {
+                                Log.Debug(this, "Correcting below-zero integer ids in " + left);
+                                t.add(left, 0);
+                            } else {
+                                t.add(left, (Integer) tempval);
+                            }
+                        } else {
+                            t.add(left, (Integer) tempval);
+                        }
                     } else if (tempval.getClass().isInstance(0f)) {
                         t.add(left, (Float) tempval);
                     } else if (tempval.getClass().isInstance(0d)) {
@@ -672,7 +683,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject> {
                     } else {
                         vals.add(new String[]{name, "0"});
                     }
-                } else if (!name.toUpperCase().startsWith("INTERNAL") && (name.toUpperCase().startsWith("INT") || name.endsWith("uid") || name.endsWith("ids") || name.equals("ids"))){
+                } else if (!name.toUpperCase().startsWith("INTERNAL") && (name.toUpperCase().startsWith("INT") || name.endsWith("uid") || name.endsWith("ids") || name.equals("ids"))) {
                     vals.add(new String[]{name, value.toString()});
                 } else if (name.toUpperCase().startsWith("DATE") || name.toUpperCase().endsWith("DATE")) {
                     vals.add(new String[]{name, DateConverter.getDefDateString(DateConverter.getDate(value))});
@@ -1147,7 +1158,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject> {
 
                         //fix the int/internal confusion :-(
                     } else if (!name.toUpperCase().startsWith("INTERNAL") && (name.toUpperCase().startsWith("INT") || name.endsWith("uid") || name.endsWith("ids") || name.equals("ids"))) {
-                       vars.get(k).invoke(this, new Object[]{Integer.valueOf(String.valueOf(data[row][1]))});
+                        vars.get(k).invoke(this, new Object[]{Integer.valueOf(String.valueOf(data[row][1]))});
                     } else if (name.toUpperCase().startsWith("DATE") || name.toUpperCase().endsWith("DATE")) {
                         vars.get(k).invoke(this, new Object[]{DateConverter.getDate(data[row][1])});
                     } else if (name.toUpperCase().startsWith("VALUE") || name.toUpperCase().endsWith("VALUE")) {
@@ -1160,7 +1171,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject> {
         }
     }
 
-     /**
+    /**
      * Tries to reflect the hash table into this do.
      * The hashtable's keys must match the methods retrieved by do.setVars()
      * @param values
@@ -1225,8 +1236,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject> {
         return newd;
     }
 
-
-     /**
+    /**
      * Tries to inject the dos data into the given {@link SimpleDatabaseObject}.
      * The simple objects name must match the DatabaseObjects's {@link Context#getDbIdentity()}
      * @param sdo
@@ -1239,11 +1249,10 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject> {
         for (int i = 0; i < m.length; i++) {
             Method method = m[i];
             if (method.getName().startsWith("set")) {
-                Object o = method.invoke(sdo, new Object[]{this.getClass().getMethod(method.getName().replace("set", "get"), (Class[])null).invoke(this, new Object[0])});
+                Object o = method.invoke(sdo, new Object[]{this.getClass().getMethod(method.getName().replace("set", "get"), (Class[]) null).invoke(this, new Object[0])});
             }
         }
     }
-
 
     /**
      * @return the groupsids
