@@ -371,37 +371,42 @@ public class LanguageManager {
 
     private static boolean hasNeededKeys(File file, boolean popupOnError) {
         synchronized (new LanguageManager()) {
-            Vector<String> failures = new Vector<String>();
-            Enumeration<String> keys = ResourceBundleUtf8.getBundle(defLanguageBundle).getKeys();
-            File impFile = file;
-            FileReaderWriter frw = new FileReaderWriter(impFile);
-            String[] lines = frw.readLines();
+            try {
+                Vector<String> failures = new Vector<String>();
+                Enumeration<String> keys = ResourceBundleUtf8.getBundle(defLanguageBundle).getKeys();
+                File impFile = file;
+                FileReaderWriter frw = new FileReaderWriter(impFile);
+                String[] lines = frw.readLines();
 
 
-            while (keys.hasMoreElements()) {
-                String string = keys.nextElement();
-                boolean found = false;
-                for (int i = 0; i < lines.length; i++) {
-                    String line = lines[i];
-                    if (line.startsWith(string)) {
-                        found = true;
+                while (keys.hasMoreElements()) {
+                    String string = keys.nextElement();
+                    boolean found = false;
+                    for (int i = 0; i < lines.length; i++) {
+                        String line = lines[i];
+                        if (line.startsWith(string)) {
+                            found = true;
+                        }
+                    }
+                    if (!found) {
+                        failed = true;
+                        Log.Debug(LanguageManager.class, "Key '" + string + "' not found in file " + file);
+                        if (!popupOnError) {
+                            MPView.addMessage(Messages.ERROR_OCCURED.toString());
+                            return false;
+                        } else {
+                            failures.add(string + "=???");
+                        }
                     }
                 }
-                if (!found) {
-                    failed = true;
-                    Log.Debug(LanguageManager.class, "Key '" + string + "' not found in file " + file);
-                    if (!popupOnError) {
-                        MPView.addMessage(Messages.ERROR_OCCURED.toString());
-                        return false;
-                    } else {
-                        failures.add(string + "=???");
-                    }
+                if (popupOnError && !failures.isEmpty()) {
+                    Popup.notice(failures, "Import not possible.\nMissing keys in " + file + ":\n");
                 }
+                return failures.isEmpty();
+            } catch (Exception e) {
+                Log.Debug(e);
+                return false;
             }
-            if (popupOnError && !failures.isEmpty()) {
-                Popup.notice(failures, "Import not possible.\nMissing keys in " + file + ":\n");
-            }
-            return failures.isEmpty();
         }
     }
 
