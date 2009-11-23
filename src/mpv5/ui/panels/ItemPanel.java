@@ -27,8 +27,6 @@ import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.InputEvent;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
@@ -46,12 +44,9 @@ import javax.swing.JTabbedPane;
 import javax.swing.JTable;
 import javax.swing.JViewport;
 import javax.swing.KeyStroke;
-import javax.swing.ListSelectionModel;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingUtilities;
-import javax.swing.table.DefaultTableColumnModel;
 import javax.swing.table.TableCellRenderer;
-import javax.swing.table.TableColumnModel;
 import mpv5.db.common.*;
 import mpv5.db.objects.Product;
 import mpv5.globals.Headers;
@@ -90,7 +85,6 @@ import mpv5.utils.numberformat.FormatNumber;
 import mpv5.utils.renderer.ButtonEditor;
 import mpv5.utils.renderer.ButtonRenderer;
 import mpv5.utils.tables.TableCalculator;
-import mpv5.utils.renderer.CellEditorWithMPComboBox;
 import mpv5.utils.renderer.TableCellRendererForDezimal;
 import mpv5.utils.renderer.TableTabAction;
 import mpv5.utils.renderer.TextAreaCellEditor;
@@ -1610,10 +1604,9 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
 
     @Override
     public void actionAfterSave() {
-
         saveSubItems();
-
         omodel = (MPTableModel) itemtable.getModel();
+        setTitle();
     }
 
     @Override
@@ -1622,6 +1615,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
         ArrayUtilities.replaceColumn(itemtable, 0, null);
         saveSubItems();
         omodel = (MPTableModel) itemtable.getModel();
+        setTitle();
     }
 
     private void saveSubItems() {
