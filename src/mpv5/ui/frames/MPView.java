@@ -2085,13 +2085,14 @@ public class MPView extends FrameView {
     }//GEN-LAST:event_jMenuItem32ActionPerformed
 
     private void jMenuItem33ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem33ActionPerformed
-
-        Search.showSearchFor(Context.getContact());
+        DatabaseObject d = Search.showSearchFor(Context.getContact());
+        if(d!=null)addTab(d);
     }//GEN-LAST:event_jMenuItem33ActionPerformed
 
     private void jMenuItem34ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem34ActionPerformed
 
-        Search.showSearchFor(Context.getItem());
+        DatabaseObject d =Search.showSearchFor(Context.getItem());
+        if(d!=null)addTab(d);
     }//GEN-LAST:event_jMenuItem34ActionPerformed
     // Variables declaration - do not modify//GEN-BEGIN:variables
     public javax.swing.JMenu clipboardMenu;
