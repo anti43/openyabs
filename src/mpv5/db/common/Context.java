@@ -206,6 +206,21 @@ public class Context {
 
     //**************************************************************************
     /**
+     * Contexts which can have an export template
+     * @return
+     */
+    public static ArrayList<Context> getTemplateableContexts() {
+        ArrayList<Context> list = new ArrayList<Context>();
+        list.add(getItem(null, null));
+        list.add(getBill());
+        list.add(getOrder());
+        list.add(getOffer());
+        list.add(getProduct());
+        list.add(getReminder());
+        return list;
+    }
+
+    /**
      * Contexts which are protected by the Securitymanager
      * @return
      */

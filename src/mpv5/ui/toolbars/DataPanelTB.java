@@ -23,9 +23,11 @@ package mpv5.ui.toolbars;
 
 import java.awt.Component;
 import java.awt.event.ActionListener;
+import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
 import mpv5.globals.Messages;
 import mpv5.db.objects.Favourite;
+import mpv5.db.objects.Template;
 import mpv5.logging.Log;
 import mpv5.ui.dialogs.Popup;
 import mpv5.ui.frames.MPView;
@@ -146,7 +148,7 @@ public class DataPanelTB extends javax.swing.JPanel {
         commonActionsToolbar.setPreferredSize(new java.awt.Dimension(342, 41));
 
         but1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/viewmag.png"))); // NOI18N
-        java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle(); 
+        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("mpv5/resources/languages/Panels"); // NOI18N
         but1.setText(bundle.getString("DataPanelTB.but1.text")); // NOI18N
         but1.setToolTipText(bundle.getString("DataPanelTB.but1.toolTipText")); // NOI18N
         but1.setContentAreaFilled(false);
@@ -335,7 +337,7 @@ public class DataPanelTB extends javax.swing.JPanel {
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(commonActionsToolbar, javax.swing.GroupLayout.DEFAULT_SIZE, 451, Short.MAX_VALUE)
+            .addComponent(commonActionsToolbar, javax.swing.GroupLayout.DEFAULT_SIZE, 527, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -503,5 +505,13 @@ public class DataPanelTB extends javax.swing.JPanel {
         } else {
             Popup.notice(Messages.DEFAULT_USER);
         }
+    }
+
+    /**
+     *
+     * @param enable
+     */
+    public void setExportButtonsEnabled(boolean enable){
+        but9.setEnabled(enable);
     }
 }

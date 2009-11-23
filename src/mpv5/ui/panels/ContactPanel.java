@@ -132,6 +132,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
 
             tb.setFavourite(Favourite.isFavourite(object));
             tb.setEditable(!object.isReadOnly());
+            tb.setExportButtonsEnabled(Context.getTemplateableContexts().contains(dataOwner.getContext()));
 
             addAddresses();
             dataTable.setModel(new MPTableModel());
