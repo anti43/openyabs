@@ -1158,11 +1158,12 @@ public class ProductPanel extends javax.swing.JPanel implements DataPanel, MPCBS
     @Override
     public void paste(DatabaseObject... dbos) {
         for (DatabaseObject dbo : dbos) {
-        if (dbo.getDbIdentity().equals(Context.getProduct().getDbIdentity())) {
-            setDataOwner(dbo, true);
-        } else {
-            MPView.addMessage(Messages.NOT_POSSIBLE.toString() + Messages.ACTION_PASTE.toString());
-        }}
+            if (dbo.getDbIdentity().equals(Context.getProduct().getDbIdentity())) {
+                setDataOwner(dbo, true);
+            } else {
+                MPView.addMessage(Messages.NOT_POSSIBLE.toString() + Messages.ACTION_PASTE.toString());
+            }
+        }
     }
 
     @Override
@@ -1193,8 +1194,9 @@ public class ProductPanel extends javax.swing.JPanel implements DataPanel, MPCBS
 
     private void preview() {
         PreviewPanel pr;
-        if (preloadedTemplate != null && preload) {
-            if (dataOwner != null && dataOwner.isExisting()) {
+        if (dataOwner != null && dataOwner.isExisting()) {
+            if (preloadedTemplate != null && preload) {
+
 
                 HashMap<String, Object> hm1 = new FormFieldsHandler(dataOwner).getFormattedFormFields(null);
                 File f2 = FileDirectoryHandler.getTempFile(cname_, "pdf");
@@ -1217,9 +1219,10 @@ public class ProductPanel extends javax.swing.JPanel implements DataPanel, MPCBS
                 pr = new PreviewPanel();
                 pr.setDataOwner(dataOwner);
                 new Job(ex, pr).execute();
+
+            } else {
+                Popup.notice(Messages.NO_TEMPLATE_LOADED + " (" + MPView.getUser() + ")");
             }
-        } else {
-            Popup.notice(Messages.NO_TEMPLATE_LOADED);
         }
     }
     private boolean preload = false;
@@ -1253,11 +1256,26 @@ public class ProductPanel extends javax.swing.JPanel implements DataPanel, MPCBS
     }
 
     public void mail() {
+        if (dataOwner != null && dataOwner.isExisting()) {
+            if (preloadedTemplate != null && preload) {
+
+               try {
+                    Contact cont = (Contact) Popup.SelectValue(Context.getContact());
+                    Export.mail(preloadedTemplate, dataOwner, cont);
+                } catch (Exception ex) {
+                    Log.Debug(ex);
+                }
+
+            } else {
+                Popup.notice(Messages.NO_TEMPLATE_LOADED + " (" + MPView.getUser() + ")");
+            }
+        }
     }
 
     public void print() {
-        if (preloadedTemplate != null && preload) {
-            if (dataOwner != null && dataOwner.isExisting()) {
+        if (dataOwner != null && dataOwner.isExisting()) {
+            if (preloadedTemplate != null && preload) {
+
                 HashMap<String, Object> hm1 = new FormFieldsHandler(dataOwner).getFormattedFormFields(null);
                 File f2 = FileDirectoryHandler.getTempFile(cname_, "pdf");
                 Export ex = new Export(preloadedTemplate);
@@ -1277,9 +1295,10 @@ public class ProductPanel extends javax.swing.JPanel implements DataPanel, MPCBS
                 ex.setTargetFile(f2);
 
                 new Job(ex, (Waiter) new PrintJob()).execute();
+
+            } else {
+                Popup.notice(Messages.NO_TEMPLATE_LOADED + " (" + MPView.getUser() + ")");
             }
-        } else {
-            Popup.notice(Messages.NO_TEMPLATE_LOADED);
         }
     }
 }

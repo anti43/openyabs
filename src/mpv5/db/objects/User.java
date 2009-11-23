@@ -605,6 +605,9 @@ public class User extends DatabaseObject {
      * @return the mailConfiguration
      */
     public MailConfiguration getMailConfiguration() {
+        if(mailConfiguration.getSmtpHost()==null || mailConfiguration.getSmtpHost().length() == 0) {
+            Popup.notice(Messages.NO_MAIL_CONFIG);
+        }
         return mailConfiguration;
     }
 

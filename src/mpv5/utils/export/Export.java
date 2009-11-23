@@ -27,6 +27,7 @@ import mpv5.db.common.QueryCriteria;
 import mpv5.db.objects.Contact;
 import mpv5.db.objects.Item;
 import mpv5.db.objects.MailMessage;
+import mpv5.db.objects.Product;
 import mpv5.db.objects.Template;
 import mpv5.globals.Messages;
 import mpv5.handler.FormFieldsHandler;
@@ -52,15 +53,16 @@ public class Export extends HashMap<String, Object> implements Waitable {
     /**
      * Mail a template
      * @param preloadedTemplate
-     * @param dataOwner 
+     * @param dataOwner
+     * @param to
      */
-    public static void mail(Template preloadedTemplate, Item dataOwner) {
+    public static void mail(Template preloadedTemplate, DatabaseObject dataOwner, Contact to) {
         QueryCriteria c = new QueryCriteria("usersids", MPView.getUser().__getIDS());
         MailMessage m = null;
         try {
             m = (MailMessage) Popup.SelectValue(DatabaseObject.getObjects(Context.getMessage(), c), Messages.SELECT_A_TEMPLATE);
         } catch (Exception ex) {
-            Log.Debug(ex);
+            Log.Debug(Export.class, ex.getMessage());
         }
 
         HashMap<String, Object> hm1 = new FormFieldsHandler(dataOwner).getFormattedFormFields(null);
@@ -72,7 +74,7 @@ public class Export extends HashMap<String, Object> implements Waitable {
         ex.setTargetFile(f2);
 
         try {
-            Contact cont = (Contact) (Contact.getObject(Context.getContact(), dataOwner.__getContactsids()));
+            Contact cont = to;
             if (MPView.getUser().__getMail().contains("@") && MPView.getUser().__getMail().contains(".") && cont.__getMailaddress().contains("@") && cont.__getMailaddress().contains(".")) {
                 SimpleMail pr = new SimpleMail();
                 pr.setMailConfiguration(MPView.getUser().getMailConfiguration());
@@ -86,12 +88,11 @@ public class Export extends HashMap<String, Object> implements Waitable {
             } else {
                 Popup.notice(Messages.NO_MAIL_DEFINED);
             }
-        } catch (NodataFoundException nodataFoundException) {
-            Log.Debug(nodataFoundException);
         } catch (UnsupportedOperationException unsupportedOperationException) {
             Popup.notice(Messages.NO_MAIL_CONFIG);
         }
     }
+
 
     /**
      * Print a template
@@ -123,6 +124,7 @@ public class Export extends HashMap<String, Object> implements Waitable {
         ex.setTargetFile(f2);
         return ex;
     }
+
     private Exportable file;
     private File toFile;
     private String targetName;

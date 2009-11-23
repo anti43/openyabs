@@ -92,6 +92,7 @@ public class Template extends DatabaseObject {
                             if (LocalSettings.getBooleanProperty(LocalSettings.OFFICE_USE)) {
                                 preloadedTemplate.exFile = new ODTFile(preloadedTemplate.getFile().getPath());
                                 Log.Debug(Template.class, "Loaded template: " + preloadedTemplate);
+                                MPView.addMessage( preloadedTemplate + Messages.LOADED.toString());
                             } else {
 //                                Popup.notice(Messages.NOT_POSSIBLE + "\n" + Messages.OOCONNERROR);
                                 return null;

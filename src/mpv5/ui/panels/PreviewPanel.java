@@ -323,7 +323,7 @@ public class PreviewPanel extends javax.swing.JPanel implements Waiter {
                 }
             }
         } else {
-            Popup.notice(Messages.NO_TEMPLATE_LOADED);
+           Popup.notice(Messages.NO_TEMPLATE_LOADED + " (" + MPView.getUser() + ")");
         }
     }//GEN-LAST:event_jButton28ActionPerformed
 

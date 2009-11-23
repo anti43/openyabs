@@ -256,6 +256,7 @@ public class NoaConnection {
                         System.out.println(line);
                     }
                 } catch (IOException ex) {
+                    stopOOOServer();
                     mpv5.logging.Log.Debug(ex);
                 }
             }

@@ -1,11 +1,18 @@
 package mpv5.ui.dialogs.subcomponents;
 
+import enoa.connection.NoaConnection;
 import java.awt.Component;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import mpv5.data.PropertyStore;
 import mpv5.db.common.QueryHandler;
+import mpv5.db.objects.Template;
 import mpv5.globals.LocalSettings;
+import mpv5.globals.Messages;
 import mpv5.logging.Log;
 import mpv5.ui.dialogs.ControlApplet;
+import mpv5.ui.dialogs.Popup;
+import mpv5.ui.frames.MPView;
 import mpv5.utils.text.TypeConversion;
 import mpv5.utils.ui.PanelUtils;
 
@@ -40,6 +47,7 @@ public class ControlPanel_OO extends javax.swing.JPanel implements ControlApplet
         jLabel3 = new javax.swing.JLabel();
         jCheckBox1 = new javax.swing.JCheckBox();
         jPanel1 = new javax.swing.JPanel();
+        jButton4 = new javax.swing.JButton();
         jButton1 = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
         jButton3 = new javax.swing.JButton();
@@ -48,7 +56,7 @@ public class ControlPanel_OO extends javax.swing.JPanel implements ControlApplet
         setName("Form"); // NOI18N
         setLayout(new java.awt.BorderLayout());
 
-        java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle(); 
+        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("mpv5/resources/languages/Panels"); // NOI18N
         jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("ControlPanel_OO.jPanel2.border.title"))); // NOI18N
         jPanel2.setName("jPanel2"); // NOI18N
 
@@ -85,13 +93,13 @@ public class ControlPanel_OO extends javax.swing.JPanel implements ControlApplet
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jCheckBox1, javax.swing.GroupLayout.DEFAULT_SIZE, 450, Short.MAX_VALUE)
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addComponent(jCheckBox3, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(labeledTextField1, javax.swing.GroupLayout.DEFAULT_SIZE, 193, Short.MAX_VALUE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(labeledTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, 119, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(jCheckBox1, javax.swing.GroupLayout.DEFAULT_SIZE, 454, Short.MAX_VALUE)
                     .addComponent(labeledTextChooser2, javax.swing.GroupLayout.DEFAULT_SIZE, 450, Short.MAX_VALUE)
                     .addComponent(jLabel3))
                 .addContainerGap())
@@ -107,9 +115,9 @@ public class ControlPanel_OO extends javax.swing.JPanel implements ControlApplet
                     .addComponent(jCheckBox3)
                     .addComponent(labeledTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(labeledTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 34, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jCheckBox1)
-                .addContainerGap())
+                .addContainerGap(37, Short.MAX_VALUE))
         );
 
         add(jPanel2, java.awt.BorderLayout.CENTER);
@@ -117,6 +125,15 @@ public class ControlPanel_OO extends javax.swing.JPanel implements ControlApplet
         jPanel1.setBackground(new java.awt.Color(255, 255, 255));
         jPanel1.setName("jPanel1"); // NOI18N
         jPanel1.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.RIGHT));
+
+        jButton4.setText(bundle.getString("ControlPanel_OO.jButton4.text")); // NOI18N
+        jButton4.setName("jButton4"); // NOI18N
+        jButton4.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton4ActionPerformed(evt);
+            }
+        });
+        jPanel1.add(jButton4);
 
         jButton1.setText(bundle.getString("ControlPanel_OO.jButton1.text")); // NOI18N
         jButton1.setName("jButton1"); // NOI18N
@@ -152,6 +169,7 @@ public class ControlPanel_OO extends javax.swing.JPanel implements ControlApplet
 
         setSettings();
         LocalSettings.save();
+        Popup.notice(Messages.RESTART_REQUIRED);
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
@@ -161,6 +179,7 @@ public class ControlPanel_OO extends javax.swing.JPanel implements ControlApplet
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
 
         setSettings();
+        Popup.notice(Messages.RESTART_REQUIRED);
 }//GEN-LAST:event_jButton2ActionPerformed
 
     private void jCheckBox3ItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_jCheckBox3ItemStateChanged
@@ -168,6 +187,44 @@ public class ControlPanel_OO extends javax.swing.JPanel implements ControlApplet
         labeledTextField2.setEnabled(jCheckBox3.isSelected());
         labeledTextChooser2.setEnabled(!jCheckBox3.isSelected());
 }//GEN-LAST:event_jCheckBox3ItemStateChanged
+
+    private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
+
+        if (!jCheckBox3.isSelected()) {
+            Runnable runnable2 = new Runnable() {
+
+                @Override
+                public void run() {
+                    MPView.setWaiting(true);
+                    try {
+                        Log.Debug(this, "Starting OpenOffice as background service..");
+                        NoaConnection.startOOServer(labeledTextChooser2.get_Text(true), 8100);
+                        LocalSettings.setProperty(LocalSettings.OFFICE_PORT, "8100");
+                    } catch (Exception n) {
+                        Popup.error(n);
+                        Log.Debug(this, n.getMessage());
+                    } finally {
+                        try {
+                            Thread.sleep(5555);
+                        } catch (InterruptedException ex) {}
+                        MPView.setWaiting(false);
+                        try {
+
+                            NoaConnection.getConnection().getDesktopService().getFramesCount();
+                            Popup.notice(Messages.OO_DONE_LOADING);
+                        } catch (Exception e) {
+                            Popup.notice(Messages.ERROR_OCCURED);
+                        }
+                        Log.Debug(this, "Stopping OpenOffice.");
+                        NoaConnection.stopOOOServer();
+                        
+                    }
+                }
+            };
+            final Thread startServerThread = new Thread(runnable2);
+            startServerThread.start();
+        }
+    }//GEN-LAST:event_jButton4ActionPerformed
 
     public void setValues(PropertyStore values) {
         oldvalues = values;
@@ -193,6 +250,7 @@ public class ControlPanel_OO extends javax.swing.JPanel implements ControlApplet
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
+    private javax.swing.JButton jButton4;
     private javax.swing.JCheckBox jCheckBox1;
     private javax.swing.JCheckBox jCheckBox3;
     private javax.swing.JLabel jLabel3;

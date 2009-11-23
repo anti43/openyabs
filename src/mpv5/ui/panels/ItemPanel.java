@@ -35,6 +35,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Vector;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.Action;
 import javax.swing.InputMap;
 import javax.swing.JButton;
@@ -1658,15 +1660,14 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
 
     private void preview() {
         PreviewPanel pr;
-
-        if (preloadedTemplate != null && preload) {
-            if (dataOwner != null && dataOwner.isExisting()) {
+        if (dataOwner != null && dataOwner.isExisting()) {
+            if (preloadedTemplate != null && preload) {
                 pr = new PreviewPanel();
                 pr.setDataOwner(dataOwner);
                 new Job(Export.createFile(preloadedTemplate, dataOwner), pr).execute();
+            } else {
+                Popup.notice(Messages.NO_TEMPLATE_LOADED + " (" + MPView.getUser() + ")");
             }
-        } else {
-            Popup.notice(Messages.NO_TEMPLATE_LOADED);
         }
     }
 
@@ -1771,22 +1772,30 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
 
     public void mail() {
         MailMessage m = null;
-        if (preloadedTemplate != null && preload) {
-            if (dataOwner != null && dataOwner.isExisting()) {
-                Export.mail(preloadedTemplate, dataOwner);
+        if (dataOwner != null && dataOwner.isExisting()) {
+            if (preloadedTemplate != null && preload) {
+
+                try {
+                    Contact cont = (Contact) (Contact.getObject(Context.getContact(), dataOwner.__getContactsids())); 
+                    Export.mail(preloadedTemplate, dataOwner, cont);
+                } catch (NodataFoundException ex) {
+                    Log.Debug(ex);
+                }
+            } else {
+                Popup.notice(Messages.NO_TEMPLATE_LOADED + " (" + MPView.getUser() + ")");
             }
-        } else {
-            Popup.notice(Messages.NO_TEMPLATE_LOADED);
         }
     }
 
     public void print() {
-        if (preloadedTemplate != null && preload) {
-            if (dataOwner != null && dataOwner.isExisting()) {
+        if (dataOwner != null && dataOwner.isExisting()) {
+            if (preloadedTemplate != null && preload) {
+
                 Export.print(preloadedTemplate, dataOwner);
+
+            } else {
+                Popup.notice(Messages.NO_TEMPLATE_LOADED + " (" + MPView.getUser() + ")");
             }
-        } else {
-            Popup.notice(Messages.NO_TEMPLATE_LOADED);
         }
     }
     List<Item> usedOrders = new Vector<Item>();
@@ -1882,29 +1891,29 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
 
     private void delivery() {
         PreviewPanel pr;
+        if (dataOwner != null && dataOwner.isExisting()) {
+            if (preloadedTemplate2 != null && preload2) {
 
-        if (preloadedTemplate2 != null && preload2) {
-            if (dataOwner != null && dataOwner.isExisting()) {
                 pr = new PreviewPanel();
                 pr.setDataOwner(dataOwner);
                 new Job(Export.createFile(preloadedTemplate2, dataOwner), pr).execute();
+            } else {
+                Popup.notice(Messages.NO_TEMPLATE_LOADED + " (" + MPView.getUser() + ")");
             }
-        } else {
-            Popup.notice(Messages.NO_TEMPLATE_LOADED);
         }
     }
 
     private void confirmation() {
         PreviewPanel pr;
+        if (dataOwner != null && dataOwner.isExisting()) {
+            if (preloadedTemplate3 != null && preload3) {
 
-        if (preloadedTemplate3 != null && preload3) {
-            if (dataOwner != null && dataOwner.isExisting()) {
                 pr = new PreviewPanel();
                 pr.setDataOwner(dataOwner);
                 new Job(Export.createFile(preloadedTemplate3, dataOwner), pr).execute();
+            } else {
+                Popup.notice(Messages.NO_TEMPLATE_LOADED + " (" + MPView.getUser() + ")");
             }
-        } else {
-            Popup.notice(Messages.NO_TEMPLATE_LOADED);
         }
     }
 }
