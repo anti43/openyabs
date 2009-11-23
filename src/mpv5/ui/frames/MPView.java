@@ -18,8 +18,6 @@ import java.io.File;
 import java.net.URI;
 import java.util.ArrayList;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.ImageIcon;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
@@ -117,7 +115,6 @@ public class MPView extends FrameView {
     public static MPList currentList = new MPList();
     private static ListView clistview = new ListView(currentList);
 
-
     /**
      * Display a message at the bottom of the MP frame
      * @param message
@@ -130,7 +127,7 @@ public class MPView extends FrameView {
      * We currently support the usage of 1 temporary list of DatabaseObjects.
      * This method shows a popup containing the actual content.
      */
-    public static void showCurrentList(){
+    public static void showCurrentList() {
         try {
             clistview.validate();
             BigPopup.showPopup(MPView.identifierFrame.getRootPane(), clistview, Messages.YABS.toString());
@@ -250,8 +247,6 @@ public class MPView extends FrameView {
     public static javax.swing.JPanel getTabpanePanel() {
         return tabpanePanel;
     }
-
-
 
     /**
      * Reloads fav menu
@@ -577,6 +572,7 @@ public class MPView extends FrameView {
     /**
      * Add a tab to the main tab pane, automatically determines the needed View
      * @param item
+     * @return
      */
     public DataPanel addTab(DatabaseObject item) {
         return addTab(item, null);
@@ -638,37 +634,6 @@ public class MPView extends FrameView {
         w.addPanel(new wizard_XMLImport_1(w));
         w.addPanel(new wizard_XMLImport_2(w));
         w.showWiz();
-
-
-//        DialogForFile d = new DialogForFile(DialogForFile.FILES_ONLY);
-//        d.setFileFilter(DialogForFile.XML_FILES);
-//        XMLReader x;
-//        ArrayList<ArrayList<DatabaseObject>> objs = null;
-//
-//        if (d.chooseFile()) {
-//            x = new XMLReader();
-//            try {
-//                x.newDoc(d.getFile(), true);
-//                objs = x.getObjects();
-//            } catch (Exception ex) {
-//                addMessage(ex.getMessage());
-//                Log.Debug(ex);
-//            }
-//        }
-//
-//
-//        if (objs != null && objs.size() < 0) {
-//            for (int i = 0; i < objs.size(); i++) {
-//                ArrayList<DatabaseObject> arrayList = objs.get(i);
-//                for (int j = 0; j < arrayList.size(); j++) {
-//                    DatabaseObject databaseObject = arrayList.get(j);
-//                    Log.Debug(this, "Parsing " + databaseObject.getDbIdentity() + " : " + databaseObject.__getCName() + " from file: " + d.getFile());
-//                    databaseObject.save();
-//                }
-//            }
-//        } else {
-//            addMessage(Messages.NO_DATA_FOUND);
-//        }
     }
 
     /** This method is called from within the constructor to
@@ -1856,18 +1821,7 @@ public class MPView extends FrameView {
     }//GEN-LAST:event_jMenuItem7ActionPerformed
 
     private void jMenuItem8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem8ActionPerformed
-        if (mpv5.usermanagement.MPSecurityManager.check(Context.getContact(), MPSecurityManager.EXPORT)) {
-            try {
-                XMLWriter xmlw = new XMLWriter();
-                xmlw.newDoc(true);
-                String name = Context.getContact().getDbIdentity();
-                ArrayList<DatabaseObject> dbobjarr = DatabaseObject.getObjects(Context.getContact());
-                xmlw.add(dbobjarr);
-                showFilesaveDialogFor(xmlw.createFile(name));
-            } catch (NodataFoundException ex) {
-                Log.Debug(this, ex);
-            }
-        }
+        XMLWriter.export(Context.getContact());
     }//GEN-LAST:event_jMenuItem8ActionPerformed
 
     private void jMenuItem9ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem9ActionPerformed
@@ -1976,18 +1930,7 @@ public class MPView extends FrameView {
 
     private void jMenuItem20ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem20ActionPerformed
 
-        if (mpv5.usermanagement.MPSecurityManager.check(Context.getAccounts(), MPSecurityManager.EXPORT)) {
-            try {
-                XMLWriter xmlw = new XMLWriter();
-                xmlw.newDoc(true);
-                String name = Context.getAccounts().getDbIdentity();
-                ArrayList<DatabaseObject> dbobjarr = DatabaseObject.getObjects(Context.getAccounts());
-                xmlw.add(dbobjarr);
-                showFilesaveDialogFor(xmlw.createFile(name));
-            } catch (NodataFoundException ex) {
-                Log.Debug(this, ex);
-            }
-        }
+        XMLWriter.export(Context.getAccounts());
     }//GEN-LAST:event_jMenuItem20ActionPerformed
 
     private void jMenuItem21ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem21ActionPerformed
@@ -2025,7 +1968,6 @@ public class MPView extends FrameView {
     private void jButton8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton8ActionPerformed
         addTab(new ItemPanel(Context.getBill(), Item.TYPE_BILL), Messages.NEW_BILL);
     }//GEN-LAST:event_jButton8ActionPerformed
-
     private MPServer mpserver;
     private void jMenuItem24ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem24ActionPerformed
         mpserver = new MPServer();
@@ -2042,19 +1984,7 @@ public class MPView extends FrameView {
 
     private void jMenuItem26ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem26ActionPerformed
 
-
-        if (mpv5.usermanagement.MPSecurityManager.check(Context.getAccounts(), MPSecurityManager.EXPORT)) {
-            try {
-                XMLWriter xmlw = new XMLWriter();
-                xmlw.newDoc(true);
-                String name = Context.getItem().getDbIdentity();
-                ArrayList<DatabaseObject> dbobjarr = DatabaseObject.getObjects(Context.getItem());
-                xmlw.add(dbobjarr);
-                showFilesaveDialogFor(xmlw.createFile(name));
-            } catch (NodataFoundException ex) {
-                Log.Debug(this, ex);
-            }
-        }
+        XMLWriter.export(Context.getItem());
     }//GEN-LAST:event_jMenuItem26ActionPerformed
 
     private void jButton10ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton10ActionPerformed
@@ -2114,11 +2044,9 @@ public class MPView extends FrameView {
     }//GEN-LAST:event_jMenuItem29ActionPerformed
 
     private void jMenu7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenu7ActionPerformed
-
 }//GEN-LAST:event_jMenu7ActionPerformed
 
     private void jMenu7MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jMenu7MouseClicked
-
     }//GEN-LAST:event_jMenu7MouseClicked
 
     private void jMenuItem27ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem27ActionPerformed
@@ -2135,12 +2063,11 @@ public class MPView extends FrameView {
 }//GEN-LAST:event_jMenuItem10ActionPerformed
 
     private void jMenuItem30ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem30ActionPerformed
-      new About(new ImageIcon(About.class.getResource(mpv5.globals.Constants.ABOUT_IMAGE)));
+        new About(new ImageIcon(About.class.getResource(mpv5.globals.Constants.ABOUT_IMAGE)));
     }//GEN-LAST:event_jMenuItem30ActionPerformed
 
     private void jButton19ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton19ActionPerformed
 
-//        addTab(d, Messages.NEW_SUPPLIER);
         if (plisttab == null) {
             plisttab = new ProductList();
         }
@@ -2154,31 +2081,18 @@ public class MPView extends FrameView {
 
     private void jMenuItem32ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem32ActionPerformed
 
-
-      if (mpv5.usermanagement.MPSecurityManager.check(Context.getProduct(), MPSecurityManager.EXPORT)) {
-            try {
-                XMLWriter xmlw = new XMLWriter();
-                xmlw.newDoc(true);
-                String name = Context.getProduct().getDbIdentity();
-                ArrayList<DatabaseObject> dbobjarr = DatabaseObject.getObjects(Context.getProduct());
-                xmlw.add(dbobjarr);
-                showFilesaveDialogFor(xmlw.createFile(name));
-            } catch (NodataFoundException ex) {
-                Log.Debug(this, ex);
-            }
-        }
+        XMLWriter.export(Context.getProduct());
     }//GEN-LAST:event_jMenuItem32ActionPerformed
 
     private void jMenuItem33ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem33ActionPerformed
 
-         Search.showSearchFor(Context.getContact());
+        Search.showSearchFor(Context.getContact());
     }//GEN-LAST:event_jMenuItem33ActionPerformed
 
     private void jMenuItem34ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem34ActionPerformed
 
-         Search.showSearchFor(Context.getItem());
+        Search.showSearchFor(Context.getItem());
     }//GEN-LAST:event_jMenuItem34ActionPerformed
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     public javax.swing.JMenu clipboardMenu;
     private javax.swing.JLabel errorlabel;

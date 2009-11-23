@@ -22,11 +22,14 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import mpv5.data.PropertyStore;
+import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
+import mpv5.db.common.NodataFoundException;
 import mpv5.globals.Constants;
 import mpv5.globals.Messages;
 import mpv5.logging.Log;
 import mpv5.ui.frames.MPView;
+import mpv5.usermanagement.MPSecurityManager;
 import mpv5.utils.files.FileDirectoryHandler;
 import org.jdom.DocType;
 import org.jdom.Document;
@@ -41,6 +44,25 @@ import org.jdom.output.XMLOutputter;
 public class XMLWriter {
 
     public static String rootElementName = Constants.XML_ROOT;
+
+    /**
+     * Exports all data in the given context to XML and shows a file save dialog for the created file.
+     * @param c
+     */
+    public static void export(Context c) {
+        if (mpv5.usermanagement.MPSecurityManager.check(c, MPSecurityManager.EXPORT)) {
+            try {
+                XMLWriter xmlw = new XMLWriter();
+                xmlw.newDoc(true);
+                String name = c.getDbIdentity();
+                ArrayList<DatabaseObject> dbobjarr = DatabaseObject.getObjects(c);
+                xmlw.add(dbobjarr);
+                MPView.showFilesaveDialogFor(xmlw.createFile(name));
+            } catch (NodataFoundException ex) {
+                Log.Debug(XMLWriter.class, ex);
+            }
+        }
+    }
     private Element rootElement = new Element(rootElementName);
     private Document myDocument = new Document();
     public static DocType DEFAULT_DOCTYPE = new DocType(rootElementName, Constants.XML_DOCTYPE_ID, Constants.XML_DOCTYPE_URL);
