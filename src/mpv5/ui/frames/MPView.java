@@ -704,6 +704,9 @@ public class MPView extends FrameView {
         jButton7 = new javax.swing.JButton();
         menuBar = new javax.swing.JMenuBar();
         javax.swing.JMenu fileMenu = new javax.swing.JMenu();
+        jMenu14 = new javax.swing.JMenu();
+        jMenuItem33 = new javax.swing.JMenuItem();
+        jMenuItem34 = new javax.swing.JMenuItem();
         jMenuItem13 = new javax.swing.JMenuItem();
         jMenuItem14 = new javax.swing.JMenuItem();
         jSeparator3 = new javax.swing.JSeparator();
@@ -794,7 +797,7 @@ public class MPView extends FrameView {
 
         jButton5.setFont(new java.awt.Font("Tahoma", 0, 10));
         jButton5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/agt_family.png"))); // NOI18N
-        java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle(); 
+        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("mpv5/resources/languages/Panels"); // NOI18N
         jButton5.setText(bundle.getString("MPView.jButton5.text_1")); // NOI18N
         jButton5.setToolTipText(bundle.getString("MPView.jButton5.toolTipText_1")); // NOI18N
         jButton5.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
@@ -1161,6 +1164,31 @@ public class MPView extends FrameView {
 
         fileMenu.setText(bundle.getString("MPView.fileMenu.text_1")); // NOI18N
         fileMenu.setName("fileMenu"); // NOI18N
+
+        jMenu14.setText(bundle.getString("MPView.jMenu14.text")); // NOI18N
+        jMenu14.setName("jMenu14"); // NOI18N
+
+        jMenuItem33.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_O, java.awt.event.InputEvent.CTRL_MASK));
+        jMenuItem33.setText(bundle.getString("MPView.jMenuItem33.text")); // NOI18N
+        jMenuItem33.setName("jMenuItem33"); // NOI18N
+        jMenuItem33.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem33ActionPerformed(evt);
+            }
+        });
+        jMenu14.add(jMenuItem33);
+
+        jMenuItem34.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_I, java.awt.event.InputEvent.CTRL_MASK));
+        jMenuItem34.setText(bundle.getString("MPView.jMenuItem34.text")); // NOI18N
+        jMenuItem34.setName("jMenuItem34"); // NOI18N
+        jMenuItem34.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem34ActionPerformed(evt);
+            }
+        });
+        jMenu14.add(jMenuItem34);
+
+        fileMenu.add(jMenu14);
 
         jMenuItem13.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_S, java.awt.event.InputEvent.CTRL_MASK));
         jMenuItem13.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/16/filesave.png"))); // NOI18N
@@ -2141,6 +2169,16 @@ public class MPView extends FrameView {
         }
     }//GEN-LAST:event_jMenuItem32ActionPerformed
 
+    private void jMenuItem33ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem33ActionPerformed
+
+         Search.showSearchFor(Context.getContact());
+    }//GEN-LAST:event_jMenuItem33ActionPerformed
+
+    private void jMenuItem34ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem34ActionPerformed
+
+         Search.showSearchFor(Context.getItem());
+    }//GEN-LAST:event_jMenuItem34ActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     public javax.swing.JMenu clipboardMenu;
     private javax.swing.JLabel errorlabel;
@@ -2168,6 +2206,7 @@ public class MPView extends FrameView {
     private javax.swing.JMenu jMenu11;
     private javax.swing.JMenu jMenu12;
     private javax.swing.JMenu jMenu13;
+    private javax.swing.JMenu jMenu14;
     private javax.swing.JMenu jMenu2;
     private javax.swing.JMenu jMenu3;
     private javax.swing.JMenu jMenu4;
@@ -2202,6 +2241,8 @@ public class MPView extends FrameView {
     private javax.swing.JMenuItem jMenuItem30;
     private javax.swing.JMenuItem jMenuItem31;
     private javax.swing.JMenuItem jMenuItem32;
+    private javax.swing.JMenuItem jMenuItem33;
+    private javax.swing.JMenuItem jMenuItem34;
     private javax.swing.JMenuItem jMenuItem4;
     private javax.swing.JMenuItem jMenuItem5;
     private javax.swing.JMenuItem jMenuItem6;
