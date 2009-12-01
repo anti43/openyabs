@@ -177,6 +177,7 @@ public void simulateKey(KeyEvent e, Component c){
         int dx = invokerScreenLocation.x;
         int dy = invokerScreenLocation.y;
         Rectangle ss = root.getGraphicsConfiguration().getBounds();
+        ss.grow(-32,-32);
         if(dy + windowBounds.height > ss.y + ss.height){
             dy = ss.y + ss.height - windowBounds.height;
             if(invokerScreenLocation.x - ss.x + invokerSize.width/2 < ss.width/2){
