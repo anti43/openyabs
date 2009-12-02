@@ -112,14 +112,14 @@ public class DatabaseConnection {
             Log.Debug(this, ex.getMessage());
         }
 
-        return reconnect();
+        return reconnect(create);
 
     }
 
-    public boolean reconnect() {
+    public boolean reconnect(boolean create) {
         try {
-            Log.Debug(this, "RECONNECT::Datenbankverbindung: " + getCtype().getConnectionString(false));
-            conn = DriverManager.getConnection(getCtype().getConnectionString(false), user, password);
+            Log.Debug(this, "RECONNECT::Datenbankverbindung: " + getCtype().getConnectionString(create));
+            conn = DriverManager.getConnection(getCtype().getConnectionString(create), user, password);
             if (conn != null //&& conn.isValid(10)//does not work with MySQL Connector/J 5.0
                     ) {
                 connector = this;
@@ -167,7 +167,7 @@ public class DatabaseConnection {
             DatabaseConnection.shutdown();
         }
 
-        reconnect();
+        reconnect(create);
         return conn;
     }
 
