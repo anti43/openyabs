@@ -522,6 +522,7 @@ public class Main extends SingleFrameApplication {
      * @param firststart
      */
     public void go(boolean firststart) {
+        writeLockFile(new FileReaderWriter(lockfile));
         setLaF(null);
         Main.splash.nextStep(Messages.INIT_LOGIN.toString());
         try {
@@ -688,9 +689,9 @@ public class Main extends SingleFrameApplication {
                             Log.Debug(e);
                         }
                     }
-                    return writeLockFile(x);
+                    return true;
                 } else {
-                    return writeLockFile(x);
+                    return true;
                 }
             } catch (Exception e) {
                 Log.Debug(e);

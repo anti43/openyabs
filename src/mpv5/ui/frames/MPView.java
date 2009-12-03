@@ -444,6 +444,7 @@ public class MPView extends FrameView {
         pluginLoader = new MPPLuginLoader();
 
         addTab(new StartPage(), Messages.WELCOME);
+        LocalSettings.save();
     }
 
     /**

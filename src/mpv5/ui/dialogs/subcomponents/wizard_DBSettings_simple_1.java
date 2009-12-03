@@ -146,10 +146,10 @@ public class wizard_DBSettings_simple_1 extends javax.swing.JPanel implements Wi
 
     private boolean DirectoryCreate() {
         ////////////// The cache dir //////////////////////
-        LocalSettings.setProperty(LocalSettings.CACHE_DIR, Main.MPPATH + File.separator + "Cache");
-        LocalSettings.save(forConnId);
         File file1 = new File(LocalSettings.getProperty(LocalSettings.CACHE_DIR));
         file1.mkdirs();
+        LocalSettings.setProperty(LocalSettings.CACHE_DIR, Main.MPPATH + File.separator + "Cache");
+        LocalSettings.save(forConnId);
         ///////////////////////////////////////////////////////////
 
         return file1.exists();
