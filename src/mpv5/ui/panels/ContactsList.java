@@ -15,6 +15,7 @@ import mpv5.logging.Log;
 import mpv5.ui.frames.MPView;
 import mpv5.utils.models.MPTableModel;
 import mpv5.utils.tables.Selection;
+import mpv5.utils.tables.TableFormat;
 
 /**
  *
@@ -54,6 +55,7 @@ public class ContactsList extends javax.swing.JPanel implements ListPanel {
 //        ((MPTableModel)listTable.getModel()).setEditable(true);
         count.setText(String.valueOf(listTable.getModel().getRowCount()));
 //        TableFormat.resizeCols(listTable, new Integer[]{100,100,100,100,100,100,100}, false);
+        TableFormat.stripFirstColumn(listTable);
         validate();
     }
 

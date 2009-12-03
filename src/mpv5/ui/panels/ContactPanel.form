@@ -26,7 +26,7 @@
     <AuxValue name="FormSettings_listenerGenerationStyle" type="java.lang.Integer" value="0"/>
     <AuxValue name="FormSettings_variablesLocal" type="java.lang.Boolean" value="false"/>
     <AuxValue name="FormSettings_variablesModifier" type="java.lang.Integer" value="2"/>
-    <AuxValue name="designerSize" type="java.awt.Dimension" value="-84,-19,0,5,115,114,0,18,106,97,118,97,46,97,119,116,46,68,105,109,101,110,115,105,111,110,65,-114,-39,-41,-84,95,68,20,2,0,2,73,0,6,104,101,105,103,104,116,73,0,5,119,105,100,116,104,120,112,0,0,2,117,0,0,2,-44"/>
+    <AuxValue name="designerSize" type="java.awt.Dimension" value="-84,-19,0,5,115,114,0,18,106,97,118,97,46,97,119,116,46,68,105,109,101,110,115,105,111,110,65,-114,-39,-41,-84,95,68,20,2,0,2,73,0,6,104,101,105,103,104,116,73,0,5,119,105,100,116,104,120,112,0,0,2,117,0,0,2,-37"/>
   </AuxValues>
 
   <Layout class="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout"/>
@@ -65,13 +65,13 @@
           <Group type="103" groupAlignment="0" attributes="0">
               <Group type="102" alignment="1" attributes="0">
                   <Group type="103" groupAlignment="1" attributes="0">
+                      <Component id="jToolBar1" alignment="0" pref="697" max="32767" attributes="2"/>
                       <Component id="jPanel9" alignment="1" max="32767" attributes="3"/>
                       <Component id="jPanel4" alignment="0" max="32767" attributes="3"/>
-                      <Component id="addresspanel" alignment="0" pref="694" max="32767" attributes="3"/>
+                      <Component id="addresspanel" alignment="0" pref="697" max="32767" attributes="3"/>
                       <Component id="jPanel1" alignment="0" max="32767" attributes="2"/>
-                      <Component id="jToolBar1" alignment="0" pref="694" max="32767" attributes="2"/>
                       <Component id="button_order1" alignment="0" min="-2" max="-2" attributes="0"/>
-                      <Component id="jPanel3" alignment="1" pref="694" max="32767" attributes="3"/>
+                      <Component id="jPanel3" alignment="1" max="32767" attributes="3"/>
                   </Group>
                   <EmptySpace max="-2" attributes="0"/>
               </Group>
@@ -80,8 +80,8 @@
         <DimensionLayout dim="1">
           <Group type="103" groupAlignment="0" attributes="0">
               <Group type="102" attributes="0">
-                  <Component id="jToolBar1" min="-2" pref="25" max="-2" attributes="0"/>
-                  <EmptySpace max="-2" attributes="0"/>
+                  <Component id="jToolBar1" min="-2" max="-2" attributes="0"/>
+                  <EmptySpace min="-2" pref="4" max="-2" attributes="0"/>
                   <Component id="jPanel1" min="-2" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
                   <Component id="button_order1" min="-2" pref="15" max="-2" attributes="0"/>
@@ -140,7 +140,7 @@
                           <Component id="dateadded" min="-2" pref="97" max="-2" attributes="0"/>
                           <Component id="addedby" min="-2" pref="97" max="-2" attributes="0"/>
                       </Group>
-                      <EmptySpace pref="61" max="32767" attributes="0"/>
+                      <EmptySpace pref="62" max="32767" attributes="0"/>
                   </Group>
               </Group>
             </DimensionLayout>
@@ -225,6 +225,7 @@
                       <ResourceString bundle="mpv5/resources/languages/Panels.properties" key="ContactPanel.customer.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
                     </Property>
                     <Property name="name" type="java.lang.String" value="customer" noResource="true"/>
+                    <Property name="opaque" type="boolean" value="false"/>
                   </Properties>
                   <Events>
                     <EventHandler event="itemStateChanged" listener="java.awt.event.ItemListener" parameters="java.awt.event.ItemEvent" handler="customerItemStateChanged"/>
@@ -236,6 +237,7 @@
                       <ResourceString bundle="mpv5/resources/languages/Panels.properties" key="ContactPanel.supplier.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
                     </Property>
                     <Property name="name" type="java.lang.String" value="supplier" noResource="true"/>
+                    <Property name="opaque" type="boolean" value="false"/>
                   </Properties>
                   <Events>
                     <EventHandler event="itemStateChanged" listener="java.awt.event.ItemListener" parameters="java.awt.event.ItemEvent" handler="supplierItemStateChanged"/>
@@ -247,6 +249,7 @@
                       <ResourceString bundle="mpv5/resources/languages/Panels.properties" key="ContactPanel.manufacturer.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
                     </Property>
                     <Property name="name" type="java.lang.String" value="manufacturer" noResource="true"/>
+                    <Property name="opaque" type="boolean" value="false"/>
                   </Properties>
                   <Events>
                     <EventHandler event="itemStateChanged" listener="java.awt.event.ItemListener" parameters="java.awt.event.ItemEvent" handler="manufacturerItemStateChanged"/>
@@ -258,6 +261,7 @@
                       <ResourceString bundle="mpv5/resources/languages/Panels.properties" key="ContactPanel.company.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
                     </Property>
                     <Property name="name" type="java.lang.String" value="company" noResource="true"/>
+                    <Property name="opaque" type="boolean" value="false"/>
                   </Properties>
                   <Events>
                     <EventHandler event="itemStateChanged" listener="java.awt.event.ItemListener" parameters="java.awt.event.ItemEvent" handler="companyItemStateChanged"/>
@@ -356,7 +360,7 @@
           <Layout>
             <DimensionLayout dim="0">
               <Group type="103" groupAlignment="0" attributes="0">
-                  <Component id="jScrollPane1" alignment="0" pref="690" max="32767" attributes="0"/>
+                  <Component id="jScrollPane1" alignment="0" pref="693" max="32767" attributes="0"/>
               </Group>
             </DimensionLayout>
             <DimensionLayout dim="1">
@@ -421,16 +425,24 @@
                           <Component id="fax" alignment="0" min="-2" max="-2" attributes="1"/>
                       </Group>
                       <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                      <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="mailaddress" alignment="0" min="-2" max="-2" attributes="0"/>
-                          <Component id="workphone" min="-2" max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                          <Component id="mobilephone" max="32767" attributes="1"/>
+                          <Component id="workphone" alignment="0" max="32767" attributes="1"/>
                       </Group>
-                      <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                      <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="mobilephone" min="-2" pref="201" max="-2" attributes="1"/>
-                          <Component id="website" min="-2" pref="240" max="-2" attributes="1"/>
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="1" attributes="0">
+                          <Group type="102" attributes="0">
+                              <Component id="website" min="-2" pref="240" max="-2" attributes="1"/>
+                              <EmptySpace max="-2" attributes="0"/>
+                              <Component id="jButton4" min="-2" pref="25" max="-2" attributes="0"/>
+                          </Group>
+                          <Group type="102" attributes="0">
+                              <Component id="mailaddress" min="-2" pref="240" max="-2" attributes="0"/>
+                              <EmptySpace max="-2" attributes="0"/>
+                              <Component id="jButton5" min="-2" pref="25" max="-2" attributes="0"/>
+                          </Group>
                       </Group>
-                      <EmptySpace pref="30" max="32767" attributes="0"/>
+                      <EmptySpace max="32767" attributes="0"/>
                   </Group>
               </Group>
             </DimensionLayout>
@@ -440,19 +452,26 @@
                       <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Group type="102" alignment="0" attributes="0">
-                              <Component id="mobilephone" min="-2" max="-2" attributes="0"/>
+                              <Group type="103" groupAlignment="1" attributes="0">
+                                  <Component id="mailaddress" min="-2" max="-2" attributes="0"/>
+                                  <Component id="jButton5" alignment="1" min="0" pref="0" max="32767" attributes="1"/>
+                              </Group>
                               <EmptySpace max="-2" attributes="0"/>
-                              <Component id="website" min="-2" max="-2" attributes="0"/>
+                              <Group type="103" groupAlignment="0" attributes="0">
+                                  <Component id="jButton4" alignment="0" min="0" pref="0" max="32767" attributes="1"/>
+                                  <Component id="website" alignment="0" min="-2" max="-2" attributes="1"/>
+                              </Group>
                           </Group>
                           <Group type="102" alignment="0" attributes="0">
-                              <Component id="workphone" max="32767" attributes="1"/>
+                              <Group type="103" groupAlignment="0" attributes="0">
+                                  <Component id="mainphone" alignment="0" min="-2" max="-2" attributes="1"/>
+                                  <Component id="workphone" max="32767" attributes="1"/>
+                              </Group>
                               <EmptySpace max="-2" attributes="0"/>
-                              <Component id="mailaddress" min="-2" max="-2" attributes="0"/>
-                          </Group>
-                          <Group type="102" alignment="0" attributes="0">
-                              <Component id="mainphone" min="-2" max="-2" attributes="1"/>
-                              <EmptySpace max="-2" attributes="0"/>
-                              <Component id="fax" min="-2" max="-2" attributes="0"/>
+                              <Group type="103" groupAlignment="0" attributes="0">
+                                  <Component id="mobilephone" min="-2" max="-2" attributes="0"/>
+                                  <Component id="fax" alignment="0" min="-2" max="-2" attributes="0"/>
+                              </Group>
                           </Group>
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
@@ -461,14 +480,6 @@
             </DimensionLayout>
           </Layout>
           <SubComponents>
-            <Component class="mpv5.ui.beans.LabeledTextField" name="mobilephone">
-              <Properties>
-                <Property name="_Label" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-                  <ResourceString bundle="mpv5/resources/languages/Panels.properties" key="ContactPanel.mobilephone._Label" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
-                </Property>
-                <Property name="name" type="java.lang.String" value="mobilephone" noResource="true"/>
-              </Properties>
-            </Component>
             <Component class="mpv5.ui.beans.LabeledTextField" name="mainphone">
               <Properties>
                 <Property name="_Label" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
@@ -509,6 +520,42 @@
                 <Property name="name" type="java.lang.String" value="fax" noResource="true"/>
               </Properties>
             </Component>
+            <Component class="javax.swing.JButton" name="jButton4">
+              <Properties>
+                <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+                  <Image iconType="3" name="/mpv5/resources/images/16/info.png"/>
+                </Property>
+                <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
+                  <ResourceString bundle="mpv5/resources/languages/Panels.properties" key="ContactPanel.jButton4.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+                </Property>
+                <Property name="name" type="java.lang.String" value="jButton4" noResource="true"/>
+              </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButton4ActionPerformed"/>
+              </Events>
+            </Component>
+            <Component class="javax.swing.JButton" name="jButton5">
+              <Properties>
+                <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+                  <Image iconType="3" name="/mpv5/resources/images/16/info.png"/>
+                </Property>
+                <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
+                  <ResourceString bundle="mpv5/resources/languages/Panels.properties" key="ContactPanel.jButton5.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+                </Property>
+                <Property name="name" type="java.lang.String" value="jButton5" noResource="true"/>
+              </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButton5ActionPerformed"/>
+              </Events>
+            </Component>
+            <Component class="mpv5.ui.beans.LabeledTextField" name="mobilephone">
+              <Properties>
+                <Property name="_Label" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
+                  <ResourceString bundle="mpv5/resources/languages/Panels.properties" key="ContactPanel.mobilephone._Label" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+                </Property>
+                <Property name="name" type="java.lang.String" value="mobilephone" noResource="true"/>
+              </Properties>
+            </Component>
           </SubComponents>
         </Container>
         <Container class="javax.swing.JPanel" name="jPanel9">
@@ -530,7 +577,7 @@
                   <Group type="102" alignment="0" attributes="0">
                       <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="jScrollPane2" alignment="1" pref="678" max="32767" attributes="0"/>
+                          <Component id="jScrollPane2" alignment="1" pref="673" max="32767" attributes="0"/>
                           <Group type="102" alignment="0" attributes="0">
                               <Component id="button_bills" min="-2" max="-2" attributes="0"/>
                               <EmptySpace max="-2" attributes="0"/>
@@ -539,7 +586,7 @@
                               <Component id="button_products" min="-2" max="-2" attributes="0"/>
                               <EmptySpace max="-2" attributes="0"/>
                               <Component id="button_orders" min="-2" max="-2" attributes="0"/>
-                              <EmptySpace pref="182" max="32767" attributes="0"/>
+                              <EmptySpace pref="290" max="32767" attributes="0"/>
                               <Component id="jButton1" min="-2" max="-2" attributes="0"/>
                               <EmptySpace max="-2" attributes="0"/>
                               <Component id="addfile" min="-2" pref="24" max="-2" attributes="0"/>
@@ -567,7 +614,7 @@
                           <Component id="addfile" alignment="0" max="32767" attributes="1"/>
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
-                      <Component id="jScrollPane2" pref="30" max="32767" attributes="2"/>
+                      <Component id="jScrollPane2" pref="83" max="32767" attributes="2"/>
                       <EmptySpace max="-2" attributes="0"/>
                   </Group>
               </Group>
@@ -889,7 +936,7 @@
                                   <Component id="countryselect" min="-2" pref="182" max="-2" attributes="0"/>
                               </Group>
                           </Group>
-                          <EmptySpace pref="16" max="32767" attributes="0"/>
+                          <EmptySpace pref="37" max="32767" attributes="0"/>
                       </Group>
                   </Group>
                 </DimensionLayout>
@@ -986,6 +1033,7 @@
                       <ResourceString bundle="mpv5/resources/languages/Panels.properties" key="ContactPanel.male.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
                     </Property>
                     <Property name="name" type="java.lang.String" value="male" noResource="true"/>
+                    <Property name="opaque" type="boolean" value="false"/>
                   </Properties>
                 </Component>
                 <Component class="javax.swing.JRadioButton" name="female">
@@ -1002,6 +1050,7 @@
                       <ResourceString bundle="mpv5/resources/languages/Panels.properties" key="ContactPanel.female.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
                     </Property>
                     <Property name="name" type="java.lang.String" value="female" noResource="true"/>
+                    <Property name="opaque" type="boolean" value="false"/>
                   </Properties>
                 </Component>
                 <Component class="mpv5.ui.beans.LabeledTextField" name="department">
