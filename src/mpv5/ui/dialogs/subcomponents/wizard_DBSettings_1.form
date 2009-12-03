@@ -53,11 +53,11 @@
               <Group type="102" attributes="0">
                   <EmptySpace max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="0" attributes="0">
-                      <Component id="labeledTextChooser2" pref="584" max="32767" attributes="0"/>
+                      <Component id="labeledTextChooser2" pref="592" max="32767" attributes="0"/>
                       <Group type="102" alignment="0" attributes="0">
                           <Component id="jCheckBox3" min="-2" pref="130" max="-2" attributes="1"/>
                           <EmptySpace max="-2" attributes="0"/>
-                          <Component id="labeledTextField1" pref="285" max="32767" attributes="1"/>
+                          <Component id="labeledTextField1" pref="293" max="32767" attributes="1"/>
                           <EmptySpace type="unrelated" max="-2" attributes="0"/>
                           <Component id="labeledTextField2" min="-2" pref="157" max="-2" attributes="1"/>
                       </Group>
@@ -73,7 +73,7 @@
                   <Component id="labeledTextChooser2" min="-2" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
                   <Component id="jLabel3" min="-2" max="-2" attributes="0"/>
-                  <EmptySpace pref="7" max="32767" attributes="0"/>
+                  <EmptySpace pref="19" max="32767" attributes="0"/>
                   <Group type="103" groupAlignment="2" attributes="0">
                       <Component id="labeledTextField1" alignment="2" min="-2" max="-2" attributes="0"/>
                       <Component id="jCheckBox3" alignment="2" min="-2" max="-2" attributes="0"/>
@@ -157,11 +157,11 @@
           <Group type="103" groupAlignment="0" attributes="0">
               <Group type="102" attributes="0">
                   <Group type="103" groupAlignment="0" attributes="0">
-                      <Component id="labeledTextChooser1" alignment="1" pref="594" max="32767" attributes="0"/>
+                      <Component id="labeledTextChooser1" alignment="1" pref="602" max="32767" attributes="0"/>
                       <Group type="102" alignment="0" attributes="0">
                           <Component id="labeledTextField3" min="-2" max="-2" attributes="0"/>
                           <EmptySpace max="-2" attributes="0"/>
-                          <Component id="jCheckBox1" pref="399" max="32767" attributes="0"/>
+                          <Component id="jCheckBox1" pref="407" max="32767" attributes="0"/>
                       </Group>
                       <Group type="102" alignment="0" attributes="0">
                           <Group type="103" groupAlignment="1" max="-2" attributes="0">
@@ -170,11 +170,11 @@
                           </Group>
                           <EmptySpace max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="1" attributes="0">
-                              <Component id="jCheckBox2" pref="407" max="32767" attributes="2"/>
-                              <Component id="jComboBox1" alignment="0" pref="407" max="32767" attributes="2"/>
+                              <Component id="jCheckBox2" pref="415" max="32767" attributes="2"/>
+                              <Component id="jComboBox1" alignment="0" pref="415" max="32767" attributes="2"/>
                           </Group>
                       </Group>
-                      <Component id="jPanel4" alignment="0" pref="594" max="32767" attributes="2"/>
+                      <Component id="jPanel4" alignment="0" pref="602" max="32767" attributes="2"/>
                       <Group type="102" alignment="0" attributes="0">
                           <Component id="prefix" min="-2" max="-2" attributes="0"/>
                           <EmptySpace max="-2" attributes="0"/>
@@ -397,7 +397,7 @@
       <Layout>
         <DimensionLayout dim="0">
           <Group type="103" groupAlignment="0" attributes="0">
-              <Component id="jScrollPane1" alignment="0" pref="604" max="32767" attributes="0"/>
+              <Component id="jScrollPane1" alignment="0" pref="612" max="32767" attributes="0"/>
           </Group>
         </DimensionLayout>
         <DimensionLayout dim="1">
