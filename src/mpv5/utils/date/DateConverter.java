@@ -43,7 +43,7 @@ public class DateConverter {
     /**
      * The date formatter with the short formatting style for the default locale.
      */
-    public static DateFormat DEF_DATE_FORMAT = DateFormat.getDateInstance(DateFormat.SHORT);
+    public static DateFormat DEF_DATE_FORMAT = DateFormat.getDateInstance(DateFormat.MEDIUM);
     /**
      * "EEE, dd MMM yyyy HH:mm:ss z"
      */

@@ -288,7 +288,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
                 button_schedule.setEnabled(inttype_ == Item.TYPE_BILL);
                 button_elevate.setEnabled(inttype_ != Item.TYPE_BILL);
                 type.setText(Item.getTypeString(inttype_));
-//            typelabel.setIcon(dataOwner.getIcon());
+                        //            typelabel.setIcon(dataOwner.getIcon());
                 this.exposeData();
 
                 setTitle();
@@ -1707,10 +1707,9 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
         Runnable runnable = new Runnable() {
 
             public void run() {
-                int ot = dataOwner.__getInttype();
-                dataOwner.setInttype(Item.TYPE_DELIVERY_NOTE);
-                preloadedTemplate2 = Template.loadTemplate(dataOwner);
-                dataOwner.setInttype(ot);
+                Item it = new Item();
+                it.setInttype(Item.TYPE_DELIVERY_NOTE);
+                preloadedTemplate2 = Template.loadTemplate(it);
                 if (preloadedTemplate2 != null) {
                     try {
                         preloadedExportFile2 = preloadedTemplate2.getExFile();
@@ -1733,10 +1732,10 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
         Runnable runnable = new Runnable() {
 
             public void run() {
-                int ot = dataOwner.__getInttype();
-                dataOwner.setInttype(Item.TYPE_ORDER_CONFIRMATION);
-                preloadedTemplate3 = Template.loadTemplate(dataOwner);
-                dataOwner.setInttype(ot);
+                Item it = new Item();
+                it.setInttype(Item.TYPE_ORDER_CONFIRMATION);
+                preloadedTemplate3 = Template.loadTemplate(it);
+
                 if (preloadedTemplate3 != null) {
                     try {
                         preloadedExportFile3 = preloadedTemplate3.getExFile();
