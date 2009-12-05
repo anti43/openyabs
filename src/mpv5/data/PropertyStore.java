@@ -51,18 +51,18 @@ public class PropertyStore {
      */
     public synchronized void addAll(Object[][] data) {
         for (int i = 0; i < data.length; i++) {
-            addProperty(data[i][0].toString(), String.valueOf(data[i][1]));
+            changeProperty(data[i][0].toString(), String.valueOf(data[i][1]));
         }
         setChanged(true);
     }
 
     /**
-     * Adds a new Property
+     * Adds a new Property, regardless if a property with that name already exists
      * @param name
      * @param value
      */
     public synchronized void addProperty(String name, String value) {
-        Log.Debug(this, "Adding property: " + name + " = " + value);
+        Log.Debug(this, "Adding or replacing property: " + name + " = " + value);
         list.add(new String[]{name, value});
         setChanged(true);
     }
@@ -76,7 +76,7 @@ public class PropertyStore {
     }
 
     /**
-     * Returns the value of the LAST property with that name
+     * Returns the value of the LAST property with that name or NULL
      * @param name
      * @return the value
      */
