@@ -1177,7 +1177,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
                 if (itemtable.getCellEditor() != null) {
                     itemtable.getCellEditor().stopCellEditing();
                 }
-                SubItem.saveModel(dataOwner, (MPTableModel) itemtable.getModel());
+                SubItem.saveModel(dataOwner, (MPTableModel) itemtable.getModel(), true);
                 setDataOwner(dataOwner, true);
             } else if (dataOwner.__getInttype() == Item.TYPE_ORDER) {
                 dataOwner.setInttype(Item.TYPE_BILL);
@@ -1189,7 +1189,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
                 if (itemtable.getCellEditor() != null) {
                     itemtable.getCellEditor().stopCellEditing();
                 }
-                SubItem.saveModel(dataOwner, (MPTableModel) itemtable.getModel());
+                SubItem.saveModel(dataOwner, (MPTableModel) itemtable.getModel(), true);
                 setDataOwner(dataOwner, true);
             }
         }
@@ -1222,6 +1222,9 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
         if (index < 0) {
             return;
         }
+        
+        MPTableModel m = (MPTableModel) itemtable.getModel();
+                SubItem.addToDeletionQueue(m.getValueAt(index, 0));
         ((MPTableModel) itemtable.getModel()).removeRow(index);
     }//GEN-LAST:event_delItemActionPerformed
 
@@ -1606,7 +1609,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
 
     @Override
     public void actionAfterSave() {
-        saveSubItems();
+        saveSubItems(true);
         omodel = (MPTableModel) itemtable.getModel();
         setTitle();
     }
@@ -1615,12 +1618,12 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
     public void actionAfterCreate() {
         sp.refresh();
         ArrayUtilities.replaceColumn(itemtable, 0, null);
-        saveSubItems();
+        saveSubItems(false);
         omodel = (MPTableModel) itemtable.getModel();
         setTitle();
     }
 
-    private void saveSubItems() {
+    private void saveSubItems(boolean deleteRemovedSubitems) {
         if (itemtable.getCellEditor() != null) {
             itemtable.getCellEditor().stopCellEditing();
         }
@@ -1632,9 +1635,9 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
         }
 
         if (dataOwner.__getInttype() != Item.TYPE_BILL) {
-            Product.createProducts(SubItem.saveModel(dataOwner, (MPTableModel) itemtable.getModel()), dataOwner);
+            Product.createProducts(SubItem.saveModel(dataOwner, (MPTableModel) itemtable.getModel(), deleteRemovedSubitems), dataOwner);
         } else {
-            SubItem.saveModel(dataOwner, (MPTableModel) itemtable.getModel());
+            SubItem.saveModel(dataOwner, (MPTableModel) itemtable.getModel(), deleteRemovedSubitems);
         }
 
         for (int i = 0; i < usedOrders.size(); i++) {

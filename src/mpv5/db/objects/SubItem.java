@@ -50,9 +50,10 @@ public class SubItem extends DatabaseObject {
      * Save the model of SubItems
      * @param dataOwner
      * @param model
+     * @param deleteRemovedSubitems
      * @return
      */
-    public static List<SubItem> saveModel(Item dataOwner, MPTableModel model) {
+    public static List<SubItem> saveModel(Item dataOwner, MPTableModel model, boolean deleteRemovedSubitems) {
         List<Object[]> rowsl = model.getValidRows(new int[]{4});
         List<SubItem> items = new Vector<SubItem>();
         Log.Debug(SubItem.class, "Rows found: " + rowsl.size());
@@ -96,9 +97,13 @@ public class SubItem extends DatabaseObject {
         }
 
         for (int i = 0; i < deletionQueue.size(); i++) {
-            try {
-                SubItem.getObject(Context.getSubItem(), deletionQueue.get(i)).delete();
-            } catch (NodataFoundException ex) {
+            if (deleteRemovedSubitems) {
+                try {
+                    SubItem.getObject(Context.getSubItem(), deletionQueue.get(i)).delete();
+                } catch (NodataFoundException ex) {
+                }
+            } else {
+                deletionQueue.remove(i);
             }
         }
         deletionQueue.clear();
@@ -225,10 +230,26 @@ public class SubItem extends DatabaseObject {
      * @param valueAt
      */
     public static void addToDeletionQueue(Object valueAt) {
+        Log.Debug(SubItem.class, "Adding to deletionqueue: " + valueAt);
         if (valueAt != null) {
             try {
-                int isd = Integer.valueOf(valueAt.toString());
+                Integer isd = Integer.valueOf(valueAt.toString());
                 deletionQueue.add(isd);
+            } catch (NumberFormatException numberFormatException) {
+            }
+        }
+    }
+
+    /**
+     * UN-Mark a subitem for deletion
+     * @param valueAt
+     */
+    public static void removeFromDeletionQueue(Object valueAt) {
+        Log.Debug(SubItem.class, "Removing from deletionqueue: " + valueAt);
+        if (valueAt != null) {
+            try {
+                Integer isd = Integer.valueOf(valueAt.toString());
+                deletionQueue.remove(isd);
             } catch (NumberFormatException numberFormatException) {
             }
         }
