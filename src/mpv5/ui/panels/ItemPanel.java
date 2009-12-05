@@ -1545,6 +1545,10 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
     @Override
     @SuppressWarnings("unchecked")
     public void paste(DatabaseObject... dbos) {
+        if (itemtable.getCellEditor() != null) {
+            itemtable.getCellEditor().stopCellEditing();
+        }
+
         ((MPTableModel) itemtable.getModel()).removeEmptyRows(new int[]{4});
         for (DatabaseObject dbo : dbos) {
             if (dbo.getContext().equals(Context.getItem())) {
@@ -1591,8 +1595,19 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
                 }
             } else {
                 MPView.addMessage(Messages.NOT_POSSIBLE.toString() + Messages.ACTION_PASTE.toString());
+                Log.Debug(this, dbo.getContext() + " to " + Context.getItem());
             }
         }
+
+        try {
+            itemtable.changeSelection(0, 0, true, false);
+        } catch (Exception e) {
+            Log.Debug(e);
+        }
+
+        itemMultiplier.calculateOnce();
+        netCalculator2.calculateOnce();
+        netCalculator.calculateOnce();
 
     }
 
