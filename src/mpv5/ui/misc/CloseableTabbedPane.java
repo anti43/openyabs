@@ -396,6 +396,26 @@ public class CloseableTabbedPane extends JTabbedPane implements MouseListener,
     }
 
     /**
+     * Removes all tabs but the selected one
+     */
+    public void removeAllButSelected() {
+        //        int index = getSelectedIndex();
+        //        for (int i = 0; i < getTabCount(); i++) {
+        //            if(i!=index)remove(i);
+        //
+        //        }
+        //        validate();
+       try {
+            Component selected = getSelectedComponent();
+            String title = getTitleAt(getSelectedIndex());
+            removeAll();
+            add(title, selected);
+        } catch (Exception e) {
+            Log.Debug(e);
+        }
+    }
+
+    /**
      * The class which generates the 'X' icon for the tabs. The constructor
      * accepts an icon which is extra to the 'X' icon, so you can have tabs
      * like in JBuilder. This value is null if no extra icon is required.

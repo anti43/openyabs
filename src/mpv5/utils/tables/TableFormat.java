@@ -121,12 +121,16 @@ public class TableFormat {
     public static void resizeCols(JTable table, Integer[] desiredColSizes, boolean fixed) {
         for (int i = 0; i < desiredColSizes.length; i++) {
             if (desiredColSizes[i] != null) {
-                table.getColumnModel().getColumn(i).setMinWidth(desiredColSizes[i]);
-                table.getColumnModel().getColumn(i).setPreferredWidth(desiredColSizes[i]);
-                if (fixed) {
-                    table.getColumnModel().getColumn(i).setMaxWidth(desiredColSizes[i]);
-                } else {
-                    table.getColumnModel().getColumn(i).setMaxWidth(1000);
+                try {
+                    table.getColumnModel().getColumn(i).setMinWidth(desiredColSizes[i]);
+                    table.getColumnModel().getColumn(i).setPreferredWidth(desiredColSizes[i]);
+                    if (fixed) {
+                        table.getColumnModel().getColumn(i).setMaxWidth(desiredColSizes[i]);
+                    } else {
+                        table.getColumnModel().getColumn(i).setMaxWidth(1000);
+                    }
+                } catch (Exception e) {
+                    Log.Debug(TableFormat.class, e.getMessage());
                 }
             }
         }
