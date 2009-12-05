@@ -1305,21 +1305,24 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
         cname_ = cname.get_Text();
         taxnumber_ = taxnumber.get_Text();
         iscompany_ = company.isSelected();
-        if (companyselect.getSelectedItem() != null) {
-            company_ = String.valueOf((companyselect.getComboBox().getSelectedItem()));
+        
+        if (companyselect.getText() != null) {
+            company_ = companyselect.getText();
         } else {
             company_ = "";
         }
-//
-//        if (company_.length() == 0) {
-////            company_ = cname_;
-//        } else {
-//            cname_ = company_;
-//        }
+
+        if (iscompany_ && company_.length() == 0) {
+            company_ = cname_;
+        } else if (iscompany_ && cname_.length() == 0) {
+            cname_ = company_;
+        }
 
         if (company_.length() == 0 && cname_.length() == 0) {
             return false;
         }
+
+
         if (groupnameselect.getSelectedItem() != null) {
             groupsids_ = Integer.valueOf((groupnameselect.getSelectedItem()).getId());
         } else {

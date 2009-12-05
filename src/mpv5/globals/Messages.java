@@ -85,7 +85,7 @@ public enum Messages {
     IMPORTED(": imported"),
     DELETED(": removed from database"),
     TRASHED(": moved to trashbin"),
-    CNAME_CANNOT_BE_NULL("You must set a NAME for this item."),
+    CNAME_CANNOT_BE_NULL("You must set a NAME for this dataset."),
     FILE_SAVED("File saved: "),
     ERROR_OCCURED("An error occurred\n"),
     SEE_LOG("See Logs for details"),

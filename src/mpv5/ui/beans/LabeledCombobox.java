@@ -238,11 +238,16 @@ public class LabeledCombobox extends javax.swing.JPanel {
     }
 
     /**
-     * The textual representation of the seleceted item
+     * The textual representation of the seleceted item or null if nothing is selected
      * @return the text of the combobox
      */
     public String getText() {
-        return mPCombobox1.getSelectedValue();
+        String t = mPCombobox1.getSelectedValue();
+        if (t.equals("null")) {
+            return null;
+        } else {
+            return t;
+        }
     }
 
     /**
