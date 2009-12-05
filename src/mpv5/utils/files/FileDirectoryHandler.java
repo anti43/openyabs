@@ -169,7 +169,8 @@ public abstract class FileDirectoryHandler {
         }
         path.deleteOnExit();
     }
-   /**
+
+    /**
      *
      * @param directory
      * @param identifier
@@ -210,7 +211,6 @@ public abstract class FileDirectoryHandler {
         return lstFiles.toArray(new File[0]);
     }
 
-
     /**
      *
      * @param directory
@@ -250,7 +250,6 @@ public abstract class FileDirectoryHandler {
         }
         return lstFiles.toArray(new File[0]);
     }
-
 
     /**
      * Open a file in default app or as "save as" dialog, depending on the platform
@@ -312,6 +311,7 @@ public abstract class FileDirectoryHandler {
      */
     public static File tempFileClone(File file, String suffix) {
         try {
+            cacheCheck();
             File fil = new File(copyFile(file, new File(LocalSettings.getProperty(LocalSettings.CACHE_DIR)), new RandomText().getString() + "." + suffix, true));
             fil.deleteOnExit();
             return fil;
@@ -345,6 +345,7 @@ public abstract class FileDirectoryHandler {
      * @return A temporay file with the given name
      */
     public static File getTempFile(String filename, String suffix) {
+        cacheCheck();
         File fil = new File(LocalSettings.getProperty(LocalSettings.CACHE_DIR) + File.separator + filename + "." + suffix);
         fil.deleteOnExit();
         return fil;
@@ -355,6 +356,7 @@ public abstract class FileDirectoryHandler {
      * @return The temporary directory + File.separator
      */
     public static String getTempDir() {
+        cacheCheck();
         return LocalSettings.getProperty(LocalSettings.CACHE_DIR) + File.separator;
     }
 
@@ -363,6 +365,7 @@ public abstract class FileDirectoryHandler {
      * @return The temporary directory
      */
     public static String getTempDir2() {
+        cacheCheck();
         return LocalSettings.getProperty(LocalSettings.CACHE_DIR);
     }
 
@@ -449,6 +452,13 @@ public abstract class FileDirectoryHandler {
         out.close();
 
         return outp.toURI();
+    }
+
+    private static void cacheCheck() {
+        File e = new File(LocalSettings.getProperty(LocalSettings.CACHE_DIR));
+        if (!e.exists()) {
+            e.mkdirs();
+        }
     }
 }
     

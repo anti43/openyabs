@@ -147,7 +147,11 @@ public class CloseableTabbedPane extends JTabbedPane implements MouseListener,
     @Override
     public void setSelectedIndex(int index) {
         oldSelection = getSelectedIndex();
-        super.setSelectedIndex(index);
+        try {
+            super.setSelectedIndex(index);
+        } catch (Exception e) {
+            Log.Debug(this, e.getMessage());
+        }
 //        boolean enable = false;
 //        Class[] faces = getSelectedComponent().getClass().getInterfaces();
 //        for (int i = 0; i < faces.length; i++) {
