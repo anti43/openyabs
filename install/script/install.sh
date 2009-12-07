@@ -2,18 +2,21 @@
 
 
 MSG0="Loading YABS"
-MSG1="Starting YABS..."
+MSG1="Starting YABS.."
 MSG2="Java exec found in "
 MSG3="OOPS, your java version is too old "
 MSG4="You need to upgrade to JRE 1.6.x or newer from http://java.sun.com"
 MSG5="Java version found: "
-MSG6="Configuring environment..."
+MSG6="Java version ok.."
 MSG7="OOPS, you don't seem to have a valid JRE "
 MSG8="OOPS, unable to locate java exec in "
 MSG9=" hierarchy"
-MSG10="Java exec not found in PATH, starting auto-search..."
-MSG11="Java exec found in PATH. Verifying..."
+MSG10="Java exec not found in PATH, starting search.."
+MSG11="Java exec found in PATH. Verifying.."
 JARNAME="yabs.jar"
+
+SAVEIFS=$IFS
+IFS=$(echo -en "\n\b")
 
 look_for_java()
 {
@@ -40,16 +43,16 @@ check_version()
 {
   JAVA_HEADER=`${JAVA_PROGRAM_DIR}java -version 2>&1 | head -n 1`
   JAVA_IYABSL=`echo ${JAVA_HEADER} | cut -f1 -d' '`
-  
+
     VERSION=`echo ${JAVA_HEADER} | sed "s/java version \"\(.*\)\"/\1/"`
     if echo $VERSION | grep "^1.[0-5]" ; then
       echo $MSG3 "[${JAVA_PROGRAM_DIR}java = ${VERSION}]" ; echo $MSG4
       return 1
     else
       echo $MSG5 "[${JAVA_PROGRAM_DIR}java = ${VERSION}]" ; echo $MSG6
-      return 0	      
+      return 0
     fi
-  
+
 }
 
 echo $MSG1
@@ -72,18 +75,16 @@ if [ "$JAVA_PROGRAM_DIR" == "" ]; then
 fi
 
 
-# get the app dir if not already defined
-if [ -z "$PROGRAM_DIR" ]; then
-    PROGRAM_DIR=`dirname "$0"`
-    PROGRAM_DIR=`cd "$PROGRAM_DIR"; pwd`
-else
-    if [ "$(echo ${PROGRAM_DIR}/*.jar)" = "${PROGRAM_DIR}/*.jar" ]; then
-	echo "You seem to have set an invalid PROGRAM_DIR, unable to continue!"
+# get the app dir
+PROGRAM_DIR=`cd "$PROGRAM_DIR"; pwd`
+echo "Program directory: ${PROGRAM_DIR}"
+
+if [ "$(echo ${PROGRAM_DIR}/*.jar)" = "${PROGRAM_DIR}/*.jar" ]; then
+	echo "No jar files found.. You seem to have set an invalid PROGRAM_DIR, unable to continue!"
 	exit 1
-    elif ! (echo ${PROGRAM_DIR}/*.jar | grep $JARNAME >/dev/null 2>&1 ); then
-	echo "Unable to locate $JARNAME in $PROGRAM_DIR, aborting!"
+elif ! [ -f "${PROGRAM_DIR}/$JARNAME" ]; then
+	echo "Unable to locate ${PROGRAM_DIR}/$JARNAME, aborting!"
 	exit 1
-    fi
 fi
 
 
@@ -95,8 +96,7 @@ done
 echo $MSG0
 
 cd ${PROGRAM_DIR}
+IFS=$SAVEIFS
 
-${JAVA_PROGRAM_DIR}java -jar ${PROGRAM_DIR}/$JARNAME
-
+${JAVA_PROGRAM_DIR}java -jar $JARNAME $1 $2 $3 $4 $5 $6
 echo "YABS TERMINATED."
-
