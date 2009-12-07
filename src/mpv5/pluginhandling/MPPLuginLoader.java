@@ -72,7 +72,7 @@ public class MPPLuginLoader {
     }
 
     public static Image getErrorImage() {
-         BufferedImage img = null;
+        BufferedImage img = null;
         try {
             img = ImageIO.read(MPPLuginLoader.class.getResource("/mpv5/resources/images/48/messagebox_question.png"));
         } catch (Exception e) {
@@ -160,11 +160,10 @@ public class MPPLuginLoader {
 //            return null;
 //        }
 //    }
-
     public MP5Plugin checkPlugin(File pluginCandidate) {
         try {
             URL[] urls = {new URL("jar:file:" + pluginCandidate + "!/")};
-            URLClassLoader loader = new AddURLClassLoader(urls,this.getClass().getClassLoader());
+            URLClassLoader loader = new AddURLClassLoader(urls, this.getClass().getClassLoader());
             Class c = loader.loadClass(Constants.PLUGIN_LOAD_CLASS);
             Object o = c.newInstance();
             return (MP5Plugin) o;
@@ -175,27 +174,24 @@ public class MPPLuginLoader {
         }
     }
 
+    public class AddURLClassLoader extends URLClassLoader {
 
-    public class AddURLClassLoader extends URLClassLoader{
-
-        public AddURLClassLoader(URL[] urls,ClassLoader parent){
-            super(urls,parent);
+        public AddURLClassLoader(URL[] urls, ClassLoader parent) {
+            super(urls, parent);
         }
 
-        public AddURLClassLoader(URL[] urls){
+        public AddURLClassLoader(URL[] urls) {
             super(urls);
         }
 
-        public AddURLClassLoader(URL[] urls,ClassLoader parent,URLStreamHandlerFactory factory){
-            super(urls,parent,factory);
+        public AddURLClassLoader(URL[] urls, ClassLoader parent, URLStreamHandlerFactory factory) {
+            super(urls, parent, factory);
         }
-
 
         @Override
-        public void addURL(URL url){
+        public void addURL(URL url) {
             super.addURL(url);
         }
-
     }
 
     /**
@@ -217,7 +213,7 @@ public class MPPLuginLoader {
         }
     }
 
-      /**
+    /**
      * Queues plugins to be loaded after the main Frame is showing.</br>
      * Adding plugins AFTER the main Frame is constructed will result in nothing.</br>
      * Use {@link loadPlugin(MP5Plugin)} instead.
@@ -226,7 +222,7 @@ public class MPPLuginLoader {
     public static void queuePlugins(MP5Plugin[] plugins) {
         pluginstoBeLoaded.addAll(Arrays.asList(plugins));
     }
-     private static ArrayList<MP5Plugin> pluginstoBeLoaded = new ArrayList<MP5Plugin>();
+    private static ArrayList<MP5Plugin> pluginstoBeLoaded = new ArrayList<MP5Plugin>();
 
     /**
      * Unloads the plugin and notifies the main view about the unload
@@ -252,14 +248,14 @@ public class MPPLuginLoader {
      */
     public void loadPlugin(Plugin gin) {
         MP5Plugin plo = new mpv5.pluginhandling.MPPLuginLoader().getPlugin(QueryHandler.instanceOf().clone(Context.getFiles()).retrieveFile(gin.__getFilename()));
-        if (plo!=null) {
+        if (plo != null) {
             loadPlugin(plo);
         } else {
             Log.Debug(this, "Plugin not loaded: " + plo);
         }
     }
-
     private static final List<Long> loadedPlugs = new Vector<Long>();
+
     /**
      * Loads the given plugin (by calling <code>plugin.load(this)<code/>). If the plugin is a visible plugin, adds it to the main tab pane.</br>
      * If it is a <code>Runnable<code/>, it will be started on an new thread.
@@ -313,5 +309,13 @@ public class MPPLuginLoader {
         } else {
             Log.Debug(this, "Plugin does not allow multiple instances: " + mP5Plugin);
         }
+    }
+
+    /**
+     * Removes the modifier from the list
+     * @param m
+     */
+    public static void removeModifier(DatabaseObjectModifier m) {
+        registeredModifiers.remove(m);
     }
 }

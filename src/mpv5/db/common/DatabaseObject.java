@@ -293,11 +293,11 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject> {
     public ArrayList<Method> setVars() {
         ArrayList<Method> list = new ArrayList<Method>();
         for (int i = 0; i < this.getClass().getMethods().length; i++) {
-            if (this.getClass().getMethods()[i].getName().startsWith("set") &&
-                    !this.getClass().getMethods()[i].getName().startsWith("setVars") &&
-                    !this.getClass().getMethods()[i].getName().startsWith("setPanelData") &&
-                    !this.getClass().getMethods()[i].getName().startsWith("getDbID") &&
-                    !this.getClass().getMethods()[i].getName().startsWith("getObject")) {
+            if (this.getClass().getMethods()[i].getName().startsWith("set")
+                    && !this.getClass().getMethods()[i].getName().startsWith("setVars")
+                    && !this.getClass().getMethods()[i].getName().startsWith("setPanelData")
+                    && !this.getClass().getMethods()[i].getName().startsWith("getDbID")
+                    && !this.getClass().getMethods()[i].getName().startsWith("getObject")) {
                 list.add(this.getClass().getMethods()[i]);
             }
         }
@@ -343,7 +343,8 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject> {
             try {
                 databaseObjectModifier.modifyOnSave(this);
             } catch (Exception e) {
-                Log.Debug(DatabaseObject.class, "Error while modificationg Object " + this + " within Modifier " + databaseObjectModifier);
+                Log.Debug(DatabaseObject.class, "Error while on-save modifying Object " + this + " within Modifier " + databaseObjectModifier);
+                Log.Debug(e);
             }
         }
 
@@ -443,6 +444,19 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject> {
      * @return
      */
     public boolean delete() {
+
+        List<DatabaseObjectModifier> mods = MPPLuginLoader.registeredModifiers;
+        for (int ik = 0; ik < mods.size(); ik++) {
+            DatabaseObjectModifier databaseObjectModifier = mods.get(ik);
+            try {
+                databaseObjectModifier.modifyOnDelete(this);
+            } catch (Exception e) {
+                Log.Debug(DatabaseObject.class, "Error while on-delete modifying Object " + this + " within Modifier " + databaseObjectModifier);
+
+                Log.Debug(e);
+            }
+        }
+
         boolean result = false;
         String message = null;
         uncacheObject(this);
@@ -602,10 +616,10 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject> {
         ArrayList<Method> vars = setVars();
         for (int i = 0; i < vars.size(); i++) {
             try {
-                Log.Debug(this, "GetPanelData: " + vars.get(i).getName().toLowerCase().substring(3, vars.get(i).getName().length()) + "_ : " +
-                        source.getClass().getField(vars.get(i).getName().toLowerCase().substring(3, vars.get(i).getName().length()) + "_").
-                        getType().getName() + " [" +
-                        source.getClass().getField(vars.get(i).getName().toLowerCase().substring(3, vars.get(i).getName().length()) + "_").get(source) + "]");
+                Log.Debug(this, "GetPanelData: " + vars.get(i).getName().toLowerCase().substring(3, vars.get(i).getName().length()) + "_ : "
+                        + source.getClass().getField(vars.get(i).getName().toLowerCase().substring(3, vars.get(i).getName().length()) + "_").
+                        getType().getName() + " ["
+                        + source.getClass().getField(vars.get(i).getName().toLowerCase().substring(3, vars.get(i).getName().length()) + "_").get(source) + "]");
                 vars.get(i).invoke(this, source.getClass().getField(vars.get(i).getName().toLowerCase().substring(3, vars.get(i).getName().length()) + "_").get(source));
             } catch (Exception n) {
                 Log.Debug(this, n);
@@ -1087,8 +1101,8 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject> {
                                         } else {
                                             vars.get(k).invoke(dbo, new Object[]{false});
                                         }
-                                    } else if (!name.toUpperCase().startsWith("INTERNAL") && ((name.toUpperCase().startsWith("INT") || name.endsWith("uid") || name.endsWith("ids") || name.equals("ids")) &&
-                                            !(name.toUpperCase().startsWith("VALUE") || name.toUpperCase().endsWith("VALUE")))) {
+                                    } else if (!name.toUpperCase().startsWith("INTERNAL") && ((name.toUpperCase().startsWith("INT") || name.endsWith("uid") || name.endsWith("ids") || name.equals("ids"))
+                                            && !(name.toUpperCase().startsWith("VALUE") || name.toUpperCase().endsWith("VALUE")))) {
                                         vars.get(k).invoke(dbo, new Object[]{Integer.valueOf(String.valueOf(select.getData()[i][j]))});
                                     } else if (name.toUpperCase().startsWith("DATE") || name.toUpperCase().endsWith("DATE")) {
                                         vars.get(k).invoke(dbo, new Object[]{DateConverter.getDate(select.getData()[i][j])});
@@ -1122,7 +1136,8 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject> {
                 try {
                     dbo = databaseObjectModifier.modifyOnExplode(dbo);
                 } catch (Exception e) {
-                    Log.Debug(DatabaseObject.class, "Error while modificationg Object " + dbo + " within Modifier " + databaseObjectModifier);
+                    Log.Debug(DatabaseObject.class, "Error while on-explode modifying Object " + dbo + " within Modifier " + databaseObjectModifier);
+                    Log.Debug(e);
                 }
             }
         }

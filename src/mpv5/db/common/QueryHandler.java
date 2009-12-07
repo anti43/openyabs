@@ -812,6 +812,19 @@ public class QueryHandler implements Cloneable {
         return query.replace(BACKSLASH_REPLACEMENT_STRING, "\\");
     }
 
+    /**
+     * Checks if any data which would match the given criteria is existing in the database
+     * @param qc
+     * @return true if matching data was found
+     */
+    public boolean checkExistance(QueryCriteria2 qc) {
+        try {
+            return select("ids", qc, new vTimeframe(new Date(0), new Date())).hasData();
+        } catch (NodataFoundException ex) {
+            return false;
+        }
+    }
+
     class Watchdog implements Runnable {
 
         @Override
