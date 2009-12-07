@@ -11,7 +11,10 @@
 package mpv5.ui.dialogs.subcomponents;
 
 import javax.swing.JTextField;
+import javax.swing.table.TableColumnModel;
 import javax.swing.table.TableModel;
+import mpv5.logging.Log;
+import mpv5.ui.dialogs.Popup;
 
 /**
  *
@@ -22,18 +25,53 @@ public class TemplateFormatEditor extends javax.swing.JPanel {
     private static TemplateFormatEditor me;
     private final JTextField rec;
 
-    public static TemplateFormatEditor instanceOf(JTextField t) {
+    public static TemplateFormatEditor instanceOf(JTextField txt) {
         if (me == null) {
-            me = new TemplateFormatEditor(t);
+            me = new TemplateFormatEditor(txt);
+        }
+        try {
+            String format = txt.getText();
+            int[] f = new int[format.split(",").length];
+            for (int i = 0; i < f.length; i++) {
+                f[i] = Integer.valueOf(format.split(",")[i]);
+            }
+
+            //Reset the table!
+//            me.jTable1.setModel(originalmodel);
+//            me.jTable1.setColumnModel(originalcolumns);
+//            for (int ix = 0; ix < me.jTable1.getColumnCount(); ix++) {
+//                me.jTable1.setValueAt(Boolean.FALSE, 0, ix);
+//            }
+
+// 
+            // set the format values
+            for (int i = 0; i < f.length; i++) {
+                int j = f[i];
+                me.jTable1.setValueAt(Boolean.TRUE, 0, j - 1);
+            }
+
+            //re-arrange!
+//            for (int i = 0; i < f.length; i++) {
+//                int j = f[i];
+//                me.jTable1.getColumnModel().getColumn(j-1).setModelIndex(i);
+//            }
+
+        } catch (Exception n) {
+            Log.Debug(n);
+            Popup.error(n);
         }
         return me;
     }
+    private static TableModel originalmodel;
+    private static TableColumnModel originalcolumns;
 
     /** Creates new form TemplateFormatEditor
      * @param rec 
      */
     private TemplateFormatEditor(JTextField rec) {
         initComponents();
+        originalmodel = jTable1.getModel();
+        originalcolumns = jTable1.getColumnModel();
         this.rec = rec;
     }
 
@@ -102,6 +140,15 @@ public class TemplateFormatEditor extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        setFormat();
+    }//GEN-LAST:event_jButton1ActionPerformed
+    // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton jButton1;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JTable jTable1;
+    // End of variables declaration//GEN-END:variables
+
+    private void setFormat() {
         TableModel t = jTable1.getModel();
         String format = "";
         for (int i = 0; i < t.getColumnCount(); i++) {
@@ -110,11 +157,8 @@ public class TemplateFormatEditor extends javax.swing.JPanel {
                 format += n + ",";
             }
         }
-        rec.setText(format.substring(0, format.length() - 1));
-    }//GEN-LAST:event_jButton1ActionPerformed
-    // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton1;
-    private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTable jTable1;
-    // End of variables declaration//GEN-END:variables
+        if (format.length()>0) {
+            rec.setText(format.substring(0, format.length() - 1));
+        } else rec.setText("");
+    }
 }
