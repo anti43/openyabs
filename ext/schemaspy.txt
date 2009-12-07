@@ -1,0 +1,1 @@
+java -jar schemaSpy.jar -t mysql -o yabs -host localhost -db library -u yabs -p yabs -dp ../lib/mysql-connector-java-5.0.8-bin.jar -db yabs 
