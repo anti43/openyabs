@@ -1,9 +1,0 @@
-Trying to change property 'svn:ignore' from 'build
-dist
-' to 'build
-dist
-',
-but property already exists with value 'build
-dist
-.~lock.install.log#
-'.

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<project name="MPV5" default="default" basedir=".">
-    <description>Builds, tests, and runs the project MPV5.</description>
+<project name="yabs" default="default" basedir=".">
+    <description>Builds, tests, and runs the project yabs.</description>
     <import file="nbproject/build-impl.xml"/>
     <import file="nbproject/profiler-build-impl.xml"/>
   <!-- Uncomment this section to build the rpm  

@@ -74,6 +74,15 @@ public class LocalSettings {
                 {OFFICE_USE, "true"},
                 {CACHE_DIR, "Cache"},
                 {DBESCAPE, "true"}
+// Uncomment for the online demo release
+//                ,{DBUSER, "copyleftuser_"}
+//                ,{DBPASSWORD, "1qaz2wsx3edc4"}
+//                ,{DBTYPE, "network"}
+//                ,{DBPATH, "copy-left.de:3306"}
+//                ,{DBDRIVER, "com.mysql.jdbc.Driver"}
+//                ,{DBNAME, "copyleft_"}
+//                ,{DBPREFIX, ""}
+//                ,{DBAUTOLOCK, "true"}
             });
     private static Vector<PropertyStore> cookies;
 
