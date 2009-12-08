@@ -221,7 +221,9 @@ public enum Messages {
     GOOSE2("created on"),
     YABS("Yet another business software"),
     QUERY_WINDOW("Query Window"),
-    LOGIN("The template system will not work until you log in with a valid user.");
+    LOGIN("The template system will not work until you log in with a valid user."),
+    CONTACT_TYPE_MALE("Mr."),
+    CONTACT_TYPE_FEMALE("Mrs.");
 
     private Messages(String message) {
         this.message = message;

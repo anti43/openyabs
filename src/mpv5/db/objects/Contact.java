@@ -8,6 +8,7 @@ import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
 import mpv5.db.common.Formattable;
 import mpv5.db.common.NodataFoundException;
+import mpv5.globals.Messages;
 import mpv5.handler.FormatHandler;
 import mpv5.i18n.LanguageManager;
 import mpv5.logging.Log;
@@ -435,6 +436,19 @@ public class Contact extends DatabaseObject implements Formattable {
             } catch (Exception numberFormatException) {
                 Log.Debug(this, numberFormatException.getMessage());
             }
+        }
+
+        try {
+            if (map.containsKey("ismale")) {
+                if(Integer.valueOf(map.get("ismale").toString()).intValue() == 1) {
+                    map.put("gender", Messages.CONTACT_TYPE_MALE);
+                } else {
+                    map.put("gender", Messages.CONTACT_TYPE_FEMALE);
+                }
+
+            }
+        } catch (Exception numberFormatException) {
+            //already resolved?
         }
 
         return map;
