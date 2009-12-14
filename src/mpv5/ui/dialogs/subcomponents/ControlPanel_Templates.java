@@ -75,7 +75,8 @@ public class ControlPanel_Templates extends javax.swing.JPanel implements Contro
                         Messages.TYPE_SERVICE.toString(),
                         Messages.TYPE_DELIVERY.toString(),
                         Messages.TYPE_CONFIRMATION.toString(),
-                        Messages.TYPE_REMINDER.toString()}));
+                        Messages.TYPE_REMINDER.toString(),
+                        Messages.TYPE_CONTACT.toString()}));
             refresh();
             groupname.setModel(new DefaultComboBoxModel(
                     MPComboBoxModelItem.toItems(new DatabaseSearch(Context.getGroup()).getValuesFor(Context.getGroup().getSubID(), null, ""))));

@@ -130,10 +130,10 @@ public class Reminder extends DatabaseObject {
         if (map.containsKey("itemsids")) {
             try {
                 try {
-                    map.put("contact", DatabaseObject.getObject(Context.getItem(), Integer.valueOf(map.get("itemsids").toString())));
+                    map.put("item", DatabaseObject.getObject(Context.getItem(), Integer.valueOf(map.get("itemsids").toString())));
                     map.remove("itemsids");
                 } catch (NodataFoundException ex) {
-                    map.put("contact", null);
+                    map.put("item", null);
                     Log.Debug(this, ex.getMessage());
                 }
             } catch (NumberFormatException numberFormatException) {

@@ -21,6 +21,7 @@
  */
 package mpv5.ui.panels;
 
+import enoa.handler.TableHandler;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
@@ -50,15 +51,19 @@ import mpv5.globals.Headers;
 import mpv5.db.objects.Group;
 import mpv5.db.objects.Item;
 import mpv5.db.objects.Revenue;
+import mpv5.db.objects.Template;
 import mpv5.globals.Messages;
 import mpv5.logging.Log;
 import mpv5.ui.beans.LabeledCombobox;
 import mpv5.ui.beans.MPCombobox;
+import mpv5.ui.dialogs.Popup;
 import mpv5.ui.frames.MPView;
 import mpv5.ui.popups.TablePopUp;
 import mpv5.utils.arrays.ArrayUtilities;
 import mpv5.utils.date.DateConverter;
 import mpv5.utils.date.vTimeframe;
+import mpv5.utils.export.Export;
+import mpv5.utils.jobs.Job;
 import mpv5.utils.models.MPComboBoxModelItem;
 import mpv5.utils.models.MPTableModel;
 import mpv5.utils.models.MPTreeModel;
@@ -82,6 +87,7 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
         return t;
     }
     private Contact dataowner;
+    private Template preloadedTemplate;
 
     /** Creates new form HistoryPanel */
     public JournalPanel() {
@@ -108,6 +114,7 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
 
         prinitingComboBox1.init(jTable1);
         refresh(null);
+        jButton4.setEnabled(false);
     }
 
     public JournalPanel(Contact dataOwner) {
@@ -134,6 +141,7 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
         jTree1.addMouseListener(MPTreeModel.getDefaultTreeListener(jTree1));
         prinitingComboBox1.init(jTable1);
 //        TreeFormat.expandTree(jTree1);
+        loadTemplate();
     }
 
     /** This method is called from within the constructor to
@@ -174,10 +182,11 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
         volume = new mpv5.ui.beans.LabeledTextField();
         revenue = new mpv5.ui.beans.LabeledTextField();
         prinitingComboBox1 = new mpv5.ui.beans.PrinitingComboBox();
+        jButton4 = new javax.swing.JButton();
 
         setName("Form"); // NOI18N
 
-        java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle(); 
+        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("mpv5/resources/languages/Panels"); // NOI18N
         jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("JournalPanel.jPanel1.border.title"))); // NOI18N
         jPanel1.setName("jPanel1"); // NOI18N
 
@@ -224,11 +233,11 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
         jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("JournalPanel.jPanel2.border.title"))); // NOI18N
         jPanel2.setName("jPanel2"); // NOI18N
 
-        jLabel3.setFont(new java.awt.Font("Dialog", 0, 12)); // NOI18N
+        jLabel3.setFont(new java.awt.Font("Dialog", 0, 12));
         jLabel3.setText(bundle.getString("JournalPanel.jLabel3.text")); // NOI18N
         jLabel3.setName("jLabel3"); // NOI18N
 
-        jLabel4.setFont(new java.awt.Font("Dialog", 0, 12)); // NOI18N
+        jLabel4.setFont(new java.awt.Font("Dialog", 0, 12));
         jLabel4.setText(bundle.getString("JournalPanel.jLabel4.text")); // NOI18N
         jLabel4.setName("jLabel4"); // NOI18N
 
@@ -251,7 +260,7 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
             }
         });
 
-        jLabel6.setFont(new java.awt.Font("Dialog", 0, 12)); // NOI18N
+        jLabel6.setFont(new java.awt.Font("Dialog", 0, 12));
         jLabel6.setText(bundle.getString("JournalPanel.jLabel6.text")); // NOI18N
         jLabel6.setName("jLabel6"); // NOI18N
 
@@ -291,7 +300,7 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
 
         jScrollPane3.setViewportView(accountsp);
 
-        jLabel7.setFont(new java.awt.Font("Dialog", 0, 12)); // NOI18N
+        jLabel7.setFont(new java.awt.Font("Dialog", 0, 12));
         jLabel7.setText(bundle.getString("JournalPanel.jLabel7.text")); // NOI18N
         jLabel7.setName("jLabel7"); // NOI18N
 
@@ -371,8 +380,15 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
         revenue.set_Label(bundle.getString("JournalPanel.revenue._Label")); // NOI18N
         revenue.setName("revenue"); // NOI18N
 
-        prinitingComboBox1.setBackground(new java.awt.Color(255, 255, 255));
         prinitingComboBox1.setName("prinitingComboBox1"); // NOI18N
+
+        jButton4.setText(bundle.getString("JournalPanel.jButton4.text")); // NOI18N
+        jButton4.setName("jButton4"); // NOI18N
+        jButton4.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton4ActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
@@ -381,25 +397,28 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
             .addGroup(jPanel4Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(prinitingComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 168, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 50, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jButton4)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 36, Short.MAX_VALUE)
                 .addComponent(volume, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(revenue, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
-            .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, 634, Short.MAX_VALUE)
-            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 634, Short.MAX_VALUE)
+            .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, 728, Short.MAX_VALUE)
+            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 728, Short.MAX_VALUE)
         );
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel4Layout.createSequentialGroup()
-                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 176, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 73, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 80, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
+                    .addComponent(prinitingComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jButton4, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(volume, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(revenue, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(prinitingComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(revenue, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap())
         );
 
@@ -409,7 +428,7 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jTabbedPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 639, Short.MAX_VALUE)
+            .addComponent(jTabbedPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 733, Short.MAX_VALUE)
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -460,6 +479,12 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
         validate();
         repaint();
     }//GEN-LAST:event_jButton3ActionPerformed
+
+    private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
+
+        preview();
+    }//GEN-LAST:event_jButton4ActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private mpv5.ui.beans.MPCombobox account1;
     private javax.swing.JPanel accountsp;
@@ -469,6 +494,7 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
+    private javax.swing.JButton jButton4;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
@@ -814,5 +840,29 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
         } catch (Exception ignore) {
             refresh(null);
         }
+    }
+
+    private void preview() {
+        PreviewPanel pr;
+        if (dataowner != null && dataowner.isExisting()) {
+            if (preloadedTemplate != null) {
+                pr = new PreviewPanel();
+                pr.setDataOwner(dataowner);
+                preloadedTemplate.injectTable(TableHandler.KEY_TABLE + 1, jTable1.getModel());
+                new Job(Export.createFile(preloadedTemplate, dataowner), pr).execute();
+            } else {
+                Popup.notice(Messages.NO_TEMPLATE_LOADED + " (" + MPView.getUser() + ")");
+            }
+        }
+    }
+
+    private void loadTemplate() {
+        Runnable runnable = new Runnable() {
+
+            public void run() {
+                preloadedTemplate = Export.loadTemplate(dataowner);
+
+            }
+        };new Thread(runnable).start();
     }
 }

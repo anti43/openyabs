@@ -93,7 +93,6 @@ public class Export extends HashMap<String, Object> implements Waitable {
         }
     }
 
-
     /**
      * Print a template
      * @param preloadedTemplate
@@ -115,7 +114,7 @@ public class Export extends HashMap<String, Object> implements Waitable {
      * @param dataOwner
      * @return
      */
-    public static Waitable createFile(Template preloadedTemplate, Item dataOwner) {
+    public static Waitable createFile(Template preloadedTemplate, DatabaseObject dataOwner) {
         HashMap<String, Object> hm1 = new FormFieldsHandler(dataOwner).getFormattedFormFields(null);
         File f2 = FileDirectoryHandler.getTempFile(dataOwner.__getCName(), "pdf");
         Export ex = new Export(preloadedTemplate);
@@ -125,6 +124,24 @@ public class Export extends HashMap<String, Object> implements Waitable {
         return ex;
     }
 
+    /**
+     * (Pre)load a template. Do not run this from the EDT, as the fetching of the templatefile from the database might take a while.
+     * @param dataOwner
+     * @return
+     */
+    public static Template loadTemplate(final DatabaseObject dataOwner) {
+        Template preloadedTemplate;
+        preloadedTemplate = Template.loadTemplate(dataOwner);
+        Exportable preloadedExportFile;
+        if (preloadedTemplate != null) {
+            try {
+                preloadedExportFile = preloadedTemplate.getExFile();
+            } catch (Exception e) {
+                Log.Debug(e);
+            }
+        }
+        return preloadedTemplate;
+    }
     private Exportable file;
     private File toFile;
     private String targetName;

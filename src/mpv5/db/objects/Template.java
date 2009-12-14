@@ -16,6 +16,7 @@
  */
 package mpv5.db.objects;
 
+import enoa.handler.TableHandler;
 import java.io.File;
 import java.util.HashMap;
 import java.util.List;
@@ -24,6 +25,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JComponent;
 import javax.swing.JFileChooser;
+import javax.swing.table.TableModel;
 import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
 import mpv5.db.common.NodataFoundException;
@@ -69,6 +71,8 @@ public class Template extends DatabaseObject {
             type = Product.getTypeString(((Product) dataOwner).__getInttype());
         } else if (dataOwner instanceof Reminder) {
             type = Reminder.getTypeString(Reminder.TYPE_REMINDER);
+        } else if (dataOwner instanceof Contact) {
+            type = Contact.getTypeString(Contact.TYPE_CONTACT);
         }
         String key = MPView.getUser() + "@" + type + "@" + dataOwner.__getGroupsids();
         if (templateCache.containsKey(key)) {
@@ -306,8 +310,10 @@ public class Template extends DatabaseObject {
         l.add(it6);
 
         Reminder it7 = new Reminder();
-        it6.setInttype(Reminder.TYPE_REMINDER);
         l.add(it7);
+
+        Contact it8 = new Contact();
+        l.add(it8);
 
         for (int i = 0; i < l.size(); i++) {
             DatabaseObject databaseObject = l.get(i);
@@ -320,5 +326,22 @@ public class Template extends DatabaseObject {
      */
     public Exportable getExFile() {
         return exFile;
+    }
+
+    /**
+     * Injects a table resource
+     * @param key
+     * @param model
+     */
+    public void injectTable(String key,TableModel model) {
+        getTables().put(key, model);
+    }
+    private  HashMap<String, TableModel> tables = new  HashMap<String, TableModel>();
+
+    /**
+     * @return the tables
+     */
+    public  HashMap<String, TableModel> getTables() {
+        return tables;
     }
 }

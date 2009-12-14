@@ -31,8 +31,12 @@ import ag.ion.bion.officelayer.text.IVariableTextFieldMaster;
 import ag.ion.bion.officelayer.text.TextException;
 import ag.ion.noa.NOAException;
 import com.sun.star.awt.XTextComponent;
+import com.sun.star.beans.PropertyVetoException;
+import com.sun.star.beans.UnknownPropertyException;
 import com.sun.star.beans.XPropertySet;
 import com.sun.star.form.XFormComponent;
+import com.sun.star.lang.IllegalArgumentException;
+import com.sun.star.lang.WrappedTargetException;
 import com.sun.star.uno.UnoRuntime;
 import enoa.connection.NoaConnection;
 import java.io.File;
@@ -42,8 +46,10 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.table.TableModel;
 import mpv5.db.objects.Template;
 import mpv5.logging.Log;
 import mpv5.utils.files.FileDirectoryHandler;
@@ -307,13 +313,18 @@ public class DocumentHandler {
     /**
      * Fill the tables in the document
      * @param data
-     * @throws TextException
      */
     public synchronized void fillTables(HashMap<String, Object> data) {
         fillTables(data, null);
     }
 
+    /**
+     * Fills the tables in an .odt file
+     * @param data
+     * @param template
+     */
     public void fillTables(HashMap<String, Object> data, Template template) {
+        HashMap<String, TableModel> models = template.getTables();
 
         Log.Debug(this, "Looking for tables in: " + document);
         try {
@@ -332,24 +343,22 @@ public class DocumentHandler {
                     }
                     for (int i = 0; i < value.size(); i++) {
                         String[] strings = value.get(i);
-                        if (template != null) {
-                            strings = refactorRow(template, strings);
-                        }
-                        for (int j = 0; j < strings.length; j++) {
-                            String cellValue = strings[j];
-                            if (!cellValue.contains("://")) {//lets say its a valid url
-                                tablehandler.setValueAt(cellValue, j, i);
-                            } else {
-                                String linkname = "Link";
-                                if (cellValue.contains("@")) {
-                                    String link1 = cellValue.split("@")[1];
-                                    linkname = cellValue.split("@")[0];
-                                    cellValue = link1;
+                        doRow(template, strings, i);
+                    }
+
+                    if (models.containsKey(key)) {
+                        TableModel m = models.get(key);
+                        for (int j = 0; j < m.getRowCount(); j++) {
+                            String[] strings = new String[m.getColumnCount()];
+                            for (int k = 0; k < strings.length; k++) {
+                                if (m.getValueAt(j, k) != null) {
+                                    strings[k] = String.valueOf(m.getValueAt(j, k));
                                 }
-                                tablehandler.setHyperlinkAt(linkname, cellValue, j, i);
                             }
+                            doRow(template, strings, j);
                         }
                     }
+                    
                 }
             }
         } catch (Exception textException) {
@@ -411,5 +420,34 @@ public class DocumentHandler {
         }
 
         return form;
+    }
+
+    private void doRow(Template template, String[] strings, int row) {
+        if (template != null) {
+            strings = refactorRow(template, strings);
+        }
+        for (int j = 0; j < strings.length; j++) {
+            String cellValue = strings[j];
+            if (!cellValue.contains("://")) {//lets say its a valid url
+                try {
+                    //lets say its a valid url
+                    tablehandler.setValueAt(cellValue, j, row);
+                } catch (TextException ex) {
+                    Log.Debug(ex);
+                }
+            } else {
+                try {
+                    String linkname = "Link";
+                    if (cellValue.contains("@")) {
+                        String link1 = cellValue.split("@")[1];
+                        linkname = cellValue.split("@")[0];
+                        cellValue = link1;
+                    }
+                    tablehandler.setHyperlinkAt(linkname, cellValue, j, row);
+                } catch (Exception ex) {
+                    Log.Debug(ex);
+                }
+            }
+        }
     }
 }

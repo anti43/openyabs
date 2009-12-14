@@ -46,6 +46,22 @@ public class Contact extends DatabaseObject implements Formattable {
     private String country = "";
     private FormatHandler formatHandler;
 
+    public final static int TYPE_CONTACT = 0;
+    public final static int TYPE_CUSTOMER = 1;
+    public final static int TYPE_SUPPLIER = 2;
+    public final static int TYPE_MANUFACTURER = 3;
+    
+
+    public static String getTypeString(int typ) {
+        switch(typ){
+            case TYPE_CONTACT: return Messages.TYPE_CONTACT.getValue();
+            case TYPE_CUSTOMER: return Messages.TYPE_CUSTOMER.getValue();
+            case TYPE_SUPPLIER: return Messages.TYPE_SUPPLIER.getValue();
+            case TYPE_MANUFACTURER: return Messages.TYPE_MANUFACTURER.getValue();
+        }
+        return Messages.TYPE_CONTACT.getValue();
+    }
+
     public Contact() {
         context = Context.getContact();
     }
