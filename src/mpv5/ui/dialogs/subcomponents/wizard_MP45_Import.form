@@ -53,21 +53,21 @@
                       <Component id="customers" alignment="0" min="-2" max="-2" attributes="0"/>
                       <Component id="suppliers" alignment="0" min="-2" max="-2" attributes="0"/>
                       <Component id="manufacturers" alignment="0" min="-2" max="-2" attributes="0"/>
-                      <Component id="path" alignment="1" pref="505" max="32767" attributes="0"/>
+                      <Component id="path" alignment="1" pref="507" max="32767" attributes="0"/>
                       <Group type="102" alignment="1" attributes="0">
-                          <Component id="jLabel2" pref="70" max="32767" attributes="1"/>
+                          <Component id="jLabel2" pref="64" max="32767" attributes="1"/>
                           <EmptySpace min="-2" max="-2" attributes="0"/>
                           <Component id="jComboBox1" min="-2" pref="431" max="-2" attributes="2"/>
                       </Group>
                       <Component id="jLabel1" alignment="0" min="-2" max="-2" attributes="0"/>
                       <Group type="102" alignment="0" attributes="0">
                           <Component id="dbuser" min="-2" max="-2" attributes="0"/>
-                          <EmptySpace pref="119" max="32767" attributes="0"/>
+                          <EmptySpace pref="105" max="32767" attributes="0"/>
                           <Component id="dbname" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <Group type="102" alignment="0" attributes="0">
                           <Component id="dbpassword" min="-2" max="-2" attributes="0"/>
-                          <EmptySpace pref="119" max="32767" attributes="0"/>
+                          <EmptySpace pref="105" max="32767" attributes="0"/>
                           <Component id="dbprefix" min="-2" max="-2" attributes="0"/>
                       </Group>
                   </Group>
@@ -86,7 +86,7 @@
                   <Component id="customers" min="-2" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
                   <Component id="products" min="-2" max="-2" attributes="0"/>
-                  <EmptySpace pref="102" max="32767" attributes="0"/>
+                  <EmptySpace pref="106" max="32767" attributes="0"/>
                   <Component id="jLabel1" min="-2" max="-2" attributes="0"/>
                   <EmptySpace type="separate" max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="3" attributes="0">

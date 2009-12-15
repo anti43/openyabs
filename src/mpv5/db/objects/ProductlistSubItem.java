@@ -230,7 +230,7 @@ public class ProductlistSubItem extends DatabaseObject {
         Double deftax = 0d;
         if (MPView.getUser().getProperties().hasProperty("deftax")) {
             int taxid = MPView.getUser().getProperties().getProperty("deftax", 0);
-            deftax = Tax.getTaxValue(taxid);
+            deftax = Tax.getTaxValue(taxid).doubleValue();
             i.setTaxpercentvalue(deftax);
         }
         Double defcount = 1d;
@@ -250,14 +250,14 @@ public class ProductlistSubItem extends DatabaseObject {
         setCName(o.__getCName());
         setDateadded(new Date());
         setDescription(o.__getDescription());
-        setExternalvalue(o.__getExternalnetvalue());
+        setExternalvalue(o.__getExternalnetvalue().doubleValue());
         setGroupsids(MPView.getUser().__getGroupsids());
         setIntaddedby(MPView.getUser().__getIDS());
-        setInternalvalue(o.__getInternalnetvalue());
+        setInternalvalue(o.__getInternalnetvalue().doubleValue());
         setMeasure(o.__getMeasure());
         setOriginalproductsids(o.__getIDS());
         setQuantityvalue(1);
-        setTaxpercentvalue(Tax.getTaxValue(o.__getTaxids()));
+        setTaxpercentvalue(Tax.getTaxValue(o.__getTaxids()).doubleValue());
         setLinkurl(o.__getUrl());
         calculate(this);
     }
@@ -276,7 +276,7 @@ public class ProductlistSubItem extends DatabaseObject {
         Double deftax = 0d;
         if (MPView.getUser().getProperties().hasProperty("deftax")) {
             int taxid = MPView.getUser().getProperties().getProperty("deftax", 0);
-            deftax = Tax.getTaxValue(taxid);
+            deftax = Tax.getTaxValue(taxid).doubleValue();
             i.setTaxpercentvalue(deftax);
         }
         Double defcount = 1d;
@@ -462,7 +462,7 @@ public class ProductlistSubItem extends DatabaseObject {
         Double deftax = 0d;
         if (MPView.getUser().getProperties().hasProperty("deftax")) {
             int taxid = MPView.getUser().getProperties().getProperty("deftax", 0);
-            deftax = Tax.getTaxValue(taxid);
+            deftax = Tax.getTaxValue(taxid).doubleValue();
         }
         Double defcount = 1d;
         if (MPView.getUser().getProperties().hasProperty("defcount")) {

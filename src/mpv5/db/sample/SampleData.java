@@ -16,6 +16,7 @@
  */
 package mpv5.db.sample;
 
+import java.math.BigDecimal;
 import java.text.DateFormat;
 import java.util.Date;
 import java.util.List;
@@ -121,17 +122,17 @@ public class SampleData {
                             for (int j = 0; j < 10; j++) {
                                 SubItem p = new SubItem();
                                 p.setCName("SPI" + seed + "-19-" + j);
-                                p.setCountvalue(1);
+                                p.setCountvalue(new BigDecimal(1));
                                 p.setDateadded(date);
                                 p.setDatedelivery(date);
                                 p.setDescription("no description!");
-                                p.setExternalvalue(100);value+=100d;
+                                p.setExternalvalue(new BigDecimal("100"));value+=100d;
                                 p.setGroupsids(1);
                                 p.setIntaddedby(MPView.getUser().ids);
-                                p.setInternalvalue(100);
+                                p.setInternalvalue(new BigDecimal("100"));
                                 p.setMeasure("h");
-                                p.setQuantityvalue(1);
-                                p.setTaxpercentvalue(19);
+                                p.setQuantityvalue(new BigDecimal("1"));
+                                p.setTaxpercentvalue(new BigDecimal("19"));
                                 l.add(p);
                             }
 
@@ -168,8 +169,8 @@ public class SampleData {
                             it.setDescription("sample product");
                             it.setEan("1234567891011");
                             it.setGroupsids(group);
-                            it.setExternalnetvalue(value * 1.3);
-                            it.setInternalnetvalue(value);
+                            it.setExternalnetvalue(new BigDecimal(value * 1.3));
+                            it.setInternalnetvalue(new BigDecimal(value));
                             it.setProductgroupsids(1);
                             it.setInttype(Product.TYPE_PRODUCT);
                             it.setTaxids(2);
@@ -195,8 +196,8 @@ public class SampleData {
                             it1.setDescription("sample product");
                             it1.setEan("1234567891011");
                             it1.setGroupsids(group);
-                            it1.setExternalnetvalue(value * 1.3);
-                            it1.setInternalnetvalue(value);
+                            it1.setExternalnetvalue(new BigDecimal(value * 1.3));
+                            it1.setInternalnetvalue(new BigDecimal(value));
                             it1.setInttype(Product.TYPE_SERVICE);
                             it1.setTaxids(1);
                             it1.setManufacturersids(c.__getIDS());

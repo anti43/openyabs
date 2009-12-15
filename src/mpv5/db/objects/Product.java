@@ -17,6 +17,7 @@
 package mpv5.db.objects;
 
 import java.io.File;
+import java.math.BigDecimal;
 import java.net.MalformedURLException;
 import java.util.Date;
 import java.util.HashMap;
@@ -100,8 +101,8 @@ public class Product extends DatabaseObject implements Formattable {
     private int manufacturersids;
     private int suppliersids;
     private int productgroupsids;
-    private double externalnetvalue;
-    private double internalnetvalue;
+    private BigDecimal externalnetvalue = new BigDecimal("0");
+    private BigDecimal internalnetvalue = new BigDecimal("0");
     private String description = "";
     private String cnumber = "";
     private String measure = "";
@@ -171,28 +172,28 @@ public class Product extends DatabaseObject implements Formattable {
     /**
      * @return the externalnetvalue
      */
-    public double __getExternalnetvalue() {
+    public BigDecimal __getExternalnetvalue() {
         return externalnetvalue;
     }
 
     /**
      * @param externalnetvalue the externalnetvalue to set
      */
-    public void setExternalnetvalue(double externalnetvalue) {
+    public void setExternalnetvalue(BigDecimal externalnetvalue) {
         this.externalnetvalue = externalnetvalue;
     }
 
     /**
      * @return the internalnetvalue
      */
-    public double __getInternalnetvalue() {
+    public BigDecimal __getInternalnetvalue() {
         return internalnetvalue;
     }
 
     /**
      * @param internalnetvalue the internalnetvalue to set
      */
-    public void setInternalnetvalue(double internalnetvalue) {
+    public void setInternalnetvalue(BigDecimal internalnetvalue) {
         this.internalnetvalue = internalnetvalue;
     }
 

@@ -26,6 +26,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.logging.Level;
@@ -128,20 +129,20 @@ public class ExpensePanel extends javax.swing.JPanel implements DataPanel {
     }
 
     private void calculate() {
-        double tax = 0;
+        BigDecimal tax = new BigDecimal("0");
         try {
             MPComboBoxModelItem t = taxrate.getValue();
             tax = Tax.getTaxValue(Integer.valueOf(t.getId()));
         } catch (Exception e) {
             try {
-                tax = Integer.valueOf(taxrate.getText());
+                tax = new BigDecimal(taxrate.getText());
             } catch (NumberFormatException numberFormatException) {
-                tax = 0d;
+                tax = new BigDecimal("0");
             }
         }
 
         try {
-            netvalue.setText(FormatNumber.formatLokalCurrency(FormatNumber.parseDezimal(value.getText()) / ((tax / 100) + 1)));
+            netvalue.setText(FormatNumber.formatLokalCurrency(FormatNumber.parseDezimal(value.getText()).divide((tax.divide(new BigDecimal("100"))).add(BigDecimal.ONE))));
         } catch (Exception e) {
             netvalue.setText(FormatNumber.formatLokalCurrency(0d));
         }
@@ -491,9 +492,9 @@ public class ExpensePanel extends javax.swing.JPanel implements DataPanel {
     public int ids_;
     public Date dateadded_;
     public int groupsids_ = 1;
-    public double netvalue_;
-    public double taxpercentvalue_;
-    public double brutvalue_;
+    public BigDecimal netvalue_;
+    public BigDecimal taxpercentvalue_;
+    public BigDecimal brutvalue_;
     public int accountsids_;
 
     @Override
@@ -521,17 +522,17 @@ public class ExpensePanel extends javax.swing.JPanel implements DataPanel {
         try {
             netvalue_ = FormatNumber.parseDezimal(netvalue.getText());
         } catch (Exception e) {
-            netvalue_ = 0d;
+            netvalue_ = new BigDecimal("0");
         }
         try {
             brutvalue_ = FormatNumber.parseDezimal(value.getText());
         } catch (Exception e) {
-            brutvalue_ = 0d;
+            brutvalue_ = new BigDecimal("0");
         }
         try {
             taxpercentvalue_ = Tax.getTaxValue(Integer.valueOf(taxrate.getSelectedItem().getId()));
         } catch (Exception numberFormatException) {
-            taxpercentvalue_ = 0d;
+            taxpercentvalue_ = new BigDecimal("0");
         }
         return true;
     }
@@ -594,7 +595,7 @@ public class ExpensePanel extends javax.swing.JPanel implements DataPanel {
      * 
      */
     public void formatTable() {
-         TableFormat.resizeCols(itemtable, new Integer[]{100, 333, 100}, false);
+        TableFormat.resizeCols(itemtable, new Integer[]{100, 333, 100}, false);
     }
 
     @Override
@@ -628,7 +629,7 @@ public class ExpensePanel extends javax.swing.JPanel implements DataPanel {
             public void run() {
                 try {
                     itemtable.setModel(new MPTableModel(Expense.getExpenses(), Headers.EXPENSE));
-                     formatTable();
+                    formatTable();
                 } catch (NodataFoundException ex) {
                 }
             }
@@ -654,20 +655,20 @@ public class ExpensePanel extends javax.swing.JPanel implements DataPanel {
         public void run() {
             while (true) {
                 while (isShowing()) {
-                    double tax = 0;
+                    BigDecimal tax = new BigDecimal("0");
                     try {
                         MPComboBoxModelItem t = taxrate.getValue();
                         tax = Tax.getTaxValue(Integer.valueOf(t.getId()));
                     } catch (Exception e) {
                         try {
-                            tax = Integer.valueOf(taxrate.getText());
+                            tax = new BigDecimal(taxrate.getText());
                         } catch (NumberFormatException numberFormatException) {
-                            tax = 0d;
+                            tax = new BigDecimal("0");
                         }
                     }
 
                     try {
-                        netvalue.setText(FormatNumber.formatLokalCurrency(FormatNumber.parseDezimal(value.getText()) * ((tax / 100) + 1)));
+                        netvalue.setText(FormatNumber.formatLokalCurrency(FormatNumber.parseDezimal(value.getText()).divide((tax.divide(new BigDecimal("100"))).add(BigDecimal.ONE))));
                     } catch (Exception e) {
                         netvalue.setText(FormatNumber.formatLokalCurrency(0d));
                     }

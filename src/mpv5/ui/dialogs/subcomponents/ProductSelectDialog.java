@@ -6,6 +6,7 @@ import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
+import java.math.BigDecimal;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JFrame;
@@ -253,7 +254,7 @@ public class ProductSelectDialog extends javax.swing.JPanel {
                 s.setDescription(labeledCombobox1.getText());
             }
         }
-        s.setCountvalue(row);
+        s.setCountvalue(new BigDecimal(row));
         s.setQuantityvalue(FormatNumber.parseDezimal(measure1.get_Text()));
         s.setLinkurl(link.getText());
         s.setCName(opt.getText());

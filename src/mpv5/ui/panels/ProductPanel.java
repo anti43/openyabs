@@ -30,6 +30,8 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.io.File;
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.net.MalformedURLException;
 import java.text.NumberFormat;
 import java.util.Date;
@@ -945,8 +947,8 @@ public class ProductPanel extends javax.swing.JPanel implements DataPanel, MPCBS
     public int inttype_;
     public int manufacturersids_;
     public int suppliersids_;
-    public double externalnetvalue_;
-    public double internalnetvalue_;
+    public BigDecimal externalnetvalue_;
+    public BigDecimal internalnetvalue_;
     public String measure_ = "";
     public String url_ = "";
     public String ean_ = "";
@@ -1005,13 +1007,13 @@ public class ProductPanel extends javax.swing.JPanel implements DataPanel, MPCBS
             try {
                 internalnetvalue_ = FormatNumber.parseDezimal(netvalue.getText());
             } catch (NumberFormatException numberFormatException) {
-                internalnetvalue_ = 0;
+                internalnetvalue_ = new BigDecimal("0");
             }
 
             try {
                 externalnetvalue_ = FormatNumber.parseDezimal(extvalue.getText());
             } catch (NumberFormatException numberFormatException) {
-                externalnetvalue_ = 0;
+                externalnetvalue_ = new BigDecimal("0");
             }
 
             try {

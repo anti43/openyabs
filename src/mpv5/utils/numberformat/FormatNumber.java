@@ -61,7 +61,7 @@ public class FormatNumber {
      * @param number
      * @return
      */
-    public synchronized static String formatDezimal(Double number) {
+    public synchronized static String formatDezimal(Number number) {
         java.text.DecimalFormat n = (DecimalFormat) getDefaultDecimalFormat();
         n.setMaximumFractionDigits(2);
         return n.format(round(number));
@@ -72,19 +72,19 @@ public class FormatNumber {
      * @param number
      * @return
      */
-    public synchronized static String formatInteger(Double number) {
+    public synchronized static String formatInteger(Number number) {
         return String.valueOf(number.intValue());
     }
 
     /**
-     * Round s a number up to two fraction digits {@link BigDecimal.ROUND_HALF_UP}
+     * Rounds a number up to two fraction digits {@link BigDecimal.ROUND_HALF_UP}
      * @param number
      * @return
      */
-    public synchronized static Double round(double number) {
-        BigDecimal b = BigDecimal.valueOf(number);
+    public synchronized static BigDecimal round(Number number) {
+        BigDecimal b = new BigDecimal(number.toString());
         b = b.setScale(2, BigDecimal.ROUND_HALF_UP);
-        return b.doubleValue();
+        return b;
     }
 
     /**
@@ -93,15 +93,15 @@ public class FormatNumber {
      * @param number A string representing a number
      * @return A double number or null if string is not parseable
      */
-    public synchronized static Double parseDezimal(String number) {
+    public synchronized static BigDecimal parseDezimal(String number) {
         if (number == null || number.trim().length() == 0) {
-            return 0d;
+            return new BigDecimal("0");
         }
         number = number.replace("%", "");//Remove percent symbol
         java.text.DecimalFormat n = (DecimalFormat) getDefaultDecimalFormat();
         n.setMaximumFractionDigits(2);
         try {
-            return n.parse(number).doubleValue();
+            return new BigDecimal(n.parse(number).toString());
         } catch (ParseException ex) {
             Log.Debug(FormatNumber.class, ex.getMessage());
             Locale[] Locales = Locale.getAvailableLocales();
@@ -118,7 +118,7 @@ public class FormatNumber {
             try {
                 //Try to parse the String with the default locale, but with removed currency signs
                 Number result = NumberFormat.getNumberInstance().parse(number);
-                return result.doubleValue();
+                return new BigDecimal(number.toString());
             } catch (ParseException parseException) {
             }
             return null;
@@ -142,7 +142,7 @@ public class FormatNumber {
      * @param betrag
      * @return
      */
-    public synchronized static String formatLokalCurrency(Double betrag) {
+    public synchronized static String formatLokalCurrency(Number betrag) {
         NumberFormat n = NumberFormat.getCurrencyInstance();
         String d = n.format(round(betrag));
         if (MPView.getUser().getProperties().getProperty(MPView.getTabPane(), "supresscurrencysymbols")) {
@@ -156,7 +156,7 @@ public class FormatNumber {
      * @param number
      * @return
      */
-    public synchronized static String formatPercent(double number) {
+    public synchronized static String formatPercent(Number number) {
         return formatDezimal(number) + "%";
     }
 
@@ -186,25 +186,25 @@ public class FormatNumber {
     }
 
     /**
-     * Tries to parse the given Object to a Double value
+     * Tries to parse the given Object to a BigDecimal value
      * @param number
      * @return
      */
-    public synchronized static Double parseNumber(
+    public synchronized static BigDecimal parseNumber(
             Object number) {
         if (number != null) {
-            if (number instanceof Number) {
-                return ((Number) number).doubleValue();
-            } else {
-                try {
-                    return Double.valueOf(number.toString());
-                } catch (NumberFormatException numberFormatException) {
-                    return parseDezimal(number.toString());
-                }
-
-            }
+//            if (number instanceof Number) {
+                return new BigDecimal(number.toString());
+//            } else {
+//                try {
+//                    return Double.valueOf(number.toString());
+//                } catch (NumberFormatException numberFormatException) {
+//                    return parseDezimal(number.toString());
+//                }
+//
+//            }
         } else {
-            return 0d;
+            return new BigDecimal("0");
         }
     }
 }

@@ -20,6 +20,8 @@ package mpv5.ui.misc;
 
 import javax.swing.*;
 import java.awt.event.*;
+import java.math.BigDecimal;
+import mpv5.globals.Messages;
 import mpv5.utils.numberformat.FormatNumber;
 
 /*
@@ -180,7 +182,7 @@ public class JCalc {
                     num1 = Double.parseDouble(previousNumber);
                     num2 = Double.parseDouble(currentNumber);
                 } catch (NumberFormatException e) {
-                    write("Eingabe ungültig.");
+                    write(Messages.ERROR_OCCURED.getValue());
                     previousNumber = "0";
                     lastOperator = 0;
                     equalsHit = true;
@@ -206,7 +208,7 @@ public class JCalc {
                     num1 = Double.parseDouble(previousNumber);
                     num2 = Double.parseDouble(currentNumber);
                 } catch (NumberFormatException e) {
-                    write("Eingabe ungültig.");
+                    write(Messages.ERROR_OCCURED.getValue());
                     previousNumber = "0";
                     lastOperator = 0;
                     equalsHit = true;
@@ -233,7 +235,7 @@ public class JCalc {
                     num1 = Double.parseDouble(previousNumber);
                     num2 = Double.parseDouble(currentNumber);
                 } catch (NumberFormatException e) {
-                    write("Eingabe ungültig.");
+                    write(Messages.ERROR_OCCURED.getValue());
                     previousNumber = "0";
                     lastOperator = 0;
                     equalsHit = true;
@@ -259,7 +261,7 @@ public class JCalc {
                     num1 = Double.parseDouble(previousNumber);
                     num2 = Double.parseDouble(currentNumber);
                 } catch (NumberFormatException e) {
-                    write("Eingabe ungültig.");
+                    write(Messages.ERROR_OCCURED.getValue());
                     previousNumber = "0";
                     lastOperator = 0;
                     equalsHit = true;
@@ -282,7 +284,7 @@ public class JCalc {
                 num1 = Double.parseDouble(previousNumber);
                 num2 = Double.parseDouble(currentNumber);
             } catch (NumberFormatException e) {
-                write("Eingabe ungültig.");
+                write(Messages.ERROR_OCCURED.getValue());
                 previousNumber = "0";
                 lastOperator = 0;
                 equalsHit = true;
@@ -317,7 +319,7 @@ public class JCalc {
             try {
                 number = Double.parseDouble(previousNumber);
             } catch (NumberFormatException e) {
-                write("Eingabe ungültig.");
+                write(Messages.ERROR_OCCURED.getValue());
                 previousNumber = "0";
                 lastOperator = 0;
                 equalsHit = true;
@@ -344,7 +346,7 @@ public class JCalc {
                     num1 = Double.parseDouble(previousNumber);
                     num2 = Double.parseDouble(currentNumber);
                 } catch (NumberFormatException e) {
-                    write("Eingabe ungültig.");
+                    write(Messages.ERROR_OCCURED.getValue());
                     previousNumber = "0";
                     lastOperator = 0;
                     equalsHit = true;
@@ -362,7 +364,7 @@ public class JCalc {
             try {
                 number = Double.parseDouble(previousNumber);
             } catch (NumberFormatException e) {
-                write("Eingabe ungültig.");
+                write(Messages.ERROR_OCCURED.getValue());
                 previousNumber = "0";
                 lastOperator = 0;
                 equalsHit = true;
@@ -402,7 +404,7 @@ public class JCalc {
                     num1 = Double.parseDouble(previousNumber);
                     num2 = Double.parseDouble(currentNumber);
                 } catch (NumberFormatException e) {
-                    write("Eingabe ungültig.");
+                    write(Messages.ERROR_OCCURED.getValue());
                     previousNumber = "0";
                     lastOperator = 0;
                     equalsHit = true;
@@ -417,9 +419,9 @@ public class JCalc {
         public String format(String answer) {
             double theAnswer = 0;
             try {
-                theAnswer = FormatNumber.round(Double.valueOf(answer));
+                theAnswer = FormatNumber.round(new BigDecimal(answer)).doubleValue();
             } catch (NumberFormatException e) {
-                write("Eingabe ungültig.");
+                write(Messages.ERROR_OCCURED.getValue());
                 previousNumber = "0";
                 lastOperator = 0;
                 equalsHit = true;

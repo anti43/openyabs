@@ -31,6 +31,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.File;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -1342,10 +1343,10 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
     public int groupsids_ = 1;
     public int contactsids_;
     public int accountsids_;
-    public double netvalue_;
-    public double taxvalue_;
-    public double shippingvalue_;
-    public double discountvalue_;
+    public BigDecimal netvalue_;
+    public BigDecimal taxvalue_;
+    public BigDecimal shippingvalue_;
+    public BigDecimal discountvalue_;
     public Date datetodo_;
     public Date dateend_;
     public int intreminders_;
@@ -1392,7 +1393,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
             try {
                 shippingvalue_ = FormatNumber.parseDezimal(shipping.getText());
             } catch (Exception e) {
-                shippingvalue_ = 0;
+                shippingvalue_ = new BigDecimal("0");
             }
 
             datetodo_ = date2.getDate();
@@ -1559,9 +1560,9 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
 //                setDataOwner(dbo, true);
 //                dbo.setIDS(-1);
                 SubItem s = new SubItem();
-                s.setQuantityvalue(1);
+                s.setQuantityvalue(new BigDecimal("1"));
                 s.setItemsids(o.__getIDS());
-                s.setExternalvalue(o.__getNetvalue() + o.__getTaxvalue() + o.__getShippingvalue());
+                s.setExternalvalue(o.__getNetvalue().add(o.__getTaxvalue()).add(o.__getShippingvalue()));
                 s.setTotalnetvalue(o.__getNetvalue());
                 s.setCName(o.__getCName());
                 s.setDescription(Messages.GOOSE1 + " " + o.__getCnumber() + " " + Messages.GOOSE2 + " " + DateConverter.getDefDateString(o.__getDateadded()));
@@ -1864,9 +1865,9 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
                     SubItem s = new SubItem();
                     Item o = (Item) Popup.SelectValue(Context.getOrder());
                     if (o != null) {
-                        s.setQuantityvalue(1);
+                        s.setQuantityvalue(new BigDecimal("1"));
                         s.setItemsids(o.__getIDS());
-                        s.setExternalvalue(o.__getNetvalue() + o.__getTaxvalue());
+                        s.setExternalvalue(o.__getNetvalue().add(o.__getTaxvalue()));
                         s.setTotalnetvalue(o.__getNetvalue());
                         s.setCName(o.__getCName());
                         s.setDescription(Messages.TYPE_ORDER + " " + o.__getCnumber() + " " + DateConverter.getDefDateString(o.__getDateadded()));

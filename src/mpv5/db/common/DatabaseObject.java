@@ -18,6 +18,7 @@ package mpv5.db.common;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -293,11 +294,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject> {
     public ArrayList<Method> setVars() {
         ArrayList<Method> list = new ArrayList<Method>();
         for (int i = 0; i < this.getClass().getMethods().length; i++) {
-            if (this.getClass().getMethods()[i].getName().startsWith("set")
-                    && !this.getClass().getMethods()[i].getName().startsWith("setVars")
-                    && !this.getClass().getMethods()[i].getName().startsWith("setPanelData")
-                    && !this.getClass().getMethods()[i].getName().startsWith("getDbID")
-                    && !this.getClass().getMethods()[i].getName().startsWith("getObject")) {
+            if (this.getClass().getMethods()[i].getName().startsWith("set") && !this.getClass().getMethods()[i].getName().startsWith("setVars") && !this.getClass().getMethods()[i].getName().startsWith("setPanelData") && !this.getClass().getMethods()[i].getName().startsWith("getDbID") && !this.getClass().getMethods()[i].getName().startsWith("getObject")) {
                 list.add(this.getClass().getMethods()[i]);
             }
         }
@@ -573,6 +570,8 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject> {
                         t.add(left, (Float) tempval);
                     } else if (tempval.getClass().isInstance(0d)) {
                         t.add(left, (Double) tempval);
+                    } else if (tempval.getClass().isInstance(new BigDecimal(0))) {
+                        t.add(left, (BigDecimal) tempval);
                     }
                 } catch (Exception ex) {
                     mpv5.logging.Log.Debug(this, this.getClass().getMethods()[i].getName());
@@ -616,10 +615,8 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject> {
         ArrayList<Method> vars = setVars();
         for (int i = 0; i < vars.size(); i++) {
             try {
-                Log.Debug(this, "GetPanelData: " + vars.get(i).getName().toLowerCase().substring(3, vars.get(i).getName().length()) + "_ : "
-                        + source.getClass().getField(vars.get(i).getName().toLowerCase().substring(3, vars.get(i).getName().length()) + "_").
-                        getType().getName() + " ["
-                        + source.getClass().getField(vars.get(i).getName().toLowerCase().substring(3, vars.get(i).getName().length()) + "_").get(source) + "]");
+                Log.Debug(this, "GetPanelData: " + vars.get(i).getName().toLowerCase().substring(3, vars.get(i).getName().length()) + "_ : " + source.getClass().getField(vars.get(i).getName().toLowerCase().substring(3, vars.get(i).getName().length()) + "_").
+                        getType().getName() + " [" + source.getClass().getField(vars.get(i).getName().toLowerCase().substring(3, vars.get(i).getName().length()) + "_").get(source) + "]");
                 vars.get(i).invoke(this, source.getClass().getField(vars.get(i).getName().toLowerCase().substring(3, vars.get(i).getName().length()) + "_").get(source));
             } catch (Exception n) {
                 Log.Debug(this, n);
@@ -1101,13 +1098,17 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject> {
                                         } else {
                                             vars.get(k).invoke(dbo, new Object[]{false});
                                         }
-                                    } else if (!name.toUpperCase().startsWith("INTERNAL") && ((name.toUpperCase().startsWith("INT") || name.endsWith("uid") || name.endsWith("ids") || name.equals("ids"))
-                                            && !(name.toUpperCase().startsWith("VALUE") || name.toUpperCase().endsWith("VALUE")))) {
+                                    } else if (!name.toUpperCase().startsWith("INTERNAL") && ((name.toUpperCase().startsWith("INT") || name.endsWith("uid") || name.endsWith("ids") || name.equals("ids")) && !(name.toUpperCase().startsWith("VALUE") || name.toUpperCase().endsWith("VALUE")))) {
                                         vars.get(k).invoke(dbo, new Object[]{Integer.valueOf(String.valueOf(select.getData()[i][j]))});
                                     } else if (name.toUpperCase().startsWith("DATE") || name.toUpperCase().endsWith("DATE")) {
                                         vars.get(k).invoke(dbo, new Object[]{DateConverter.getDate(select.getData()[i][j])});
                                     } else if (name.toUpperCase().startsWith("VALUE") || name.toUpperCase().endsWith("VALUE")) {
-                                        vars.get(k).invoke(dbo, new Object[]{Double.valueOf(String.valueOf(select.getData()[i][j]))});
+                                        try {
+                                            vars.get(k).invoke(dbo, new Object[]{new BigDecimal(String.valueOf(select.getData()[i][j]))});
+                                        } catch (IllegalArgumentException illegalArgumentException) {
+                                            //backwards compatibility
+                                            vars.get(k).invoke(dbo, new Object[]{Double.valueOf(String.valueOf(select.getData()[i][j]))});
+                                        }
                                     } else {
                                         vars.get(k).invoke(dbo, new Object[]{String.valueOf(select.getData()[i][j])});
                                     }

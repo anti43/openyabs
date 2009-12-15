@@ -19,6 +19,8 @@ package mpv5.sandbox;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.io.IOException;
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.security.NoSuchAlgorithmException;
 import javax.swing.DefaultCellEditor;
 import javax.swing.DefaultComboBoxModel;
@@ -45,8 +47,7 @@ public class Test {
   
 
     public static void main(String... aArgs) throws NoSuchAlgorithmException, IOException {
-        Headers.BABELFISH.printValues();
-
+        System.out.print(new Double(0.1).toString());
     }
 
 }

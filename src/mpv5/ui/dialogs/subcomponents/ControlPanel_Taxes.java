@@ -22,6 +22,7 @@ along with YaBS.  If not, see <http://www.gnu.org/licenses/>.
 package mpv5.ui.dialogs.subcomponents;
 
 import java.awt.Component;
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -200,7 +201,7 @@ public class ControlPanel_Taxes extends javax.swing.JPanel implements ControlApp
     public int ids_;
     public Date dateadded_;
     public int groupsids_ = 1;
-    public double taxvalue_;
+    public BigDecimal taxvalue_;
     public String identifier_ = "";
     public String country_ = "";
 
@@ -239,7 +240,7 @@ public class ControlPanel_Taxes extends javax.swing.JPanel implements ControlApp
     public boolean collectData() {
         try {
             cname_ = cname.getText();
-            taxvalue_ = value.getValue(0d);
+            taxvalue_ = new BigDecimal(value.getValue(0d).toString());
             country_ = countries.getComboBox().getSelectedItem().toString();
             return true;
         } catch (Exception e) {

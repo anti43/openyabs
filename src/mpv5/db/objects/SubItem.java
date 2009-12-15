@@ -16,6 +16,8 @@
  */
 package mpv5.db.objects;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -76,16 +78,16 @@ public class SubItem extends DatabaseObject {
             }
             it.setCName(row[14].toString());
             it.setItemsids(dataOwner.__getIDS());
-            it.setCountvalue(Double.valueOf(row[1].toString()));
+            it.setCountvalue(new BigDecimal(row[1].toString()));
             it.setDatedelivery(dataOwner.__getDatetodo());
             it.setDescription(row[4].toString());
-            it.setExternalvalue(Double.valueOf(row[5].toString()));
-            it.setInternalvalue(Double.valueOf(row[5].toString()));//not supported yet
+            it.setExternalvalue(new BigDecimal(row[5].toString()));
+            it.setInternalvalue(new BigDecimal(row[5].toString()));//not supported yet
             it.setMeasure(row[3].toString());
             it.setOriginalproductsids(Integer.valueOf(row[10].toString()));
             it.setLinkurl((row[12 + 1].toString()));
-            it.setQuantityvalue(Double.valueOf(row[2].toString()));
-            it.setTaxpercentvalue(Double.valueOf(row[6].toString()));
+            it.setQuantityvalue(new BigDecimal(row[2].toString()));
+            it.setTaxpercentvalue(new BigDecimal(row[6].toString()));
             calculate(it);
 
             if (!it.isExisting()) {
@@ -143,15 +145,15 @@ public class SubItem extends DatabaseObject {
             }
             it.setCName(row[14].toString());
             it.setItemsids(dataOwner.__getIDS());
-            it.setCountvalue(Double.valueOf(row[1].toString()));
+            it.setCountvalue(new BigDecimal(row[1].toString()));
             it.setDatedelivery(dataOwner.__getDatetodo());
             it.setDescription(row[4].toString());
-            it.setExternalvalue(Double.valueOf(row[5].toString()));
-            it.setInternalvalue(Double.valueOf(row[5].toString()));//not supported yet
+            it.setExternalvalue(new BigDecimal(row[5].toString()));
+            it.setInternalvalue(new BigDecimal(row[5].toString()));//not supported yet
             it.setMeasure(row[3].toString());
             it.setOriginalproductsids(Integer.valueOf(row[10].toString()));
-            it.setQuantityvalue(Double.valueOf(row[2].toString()));
-            it.setTaxpercentvalue(Double.valueOf(row[6].toString()));
+            it.setQuantityvalue(new BigDecimal(row[2].toString()));
+            it.setTaxpercentvalue(new BigDecimal(row[6].toString()));
             it.setLinkurl((row[12 + 1].toString()));
             calculate(it);
 
@@ -196,15 +198,15 @@ public class SubItem extends DatabaseObject {
             }
             it.setCName(row[14].toString());
 //            it.setItemsids(dataOwner.__getIDS());
-            it.setCountvalue(Double.valueOf(row[1].toString()));
+            it.setCountvalue(new BigDecimal(row[1].toString()));
 //            it.setDatedelivery(dataOwner.__getDatetodo());
             it.setDescription(row[4].toString());
-            it.setExternalvalue(Double.valueOf(row[5].toString()) * (((Double.valueOf(percentValue) / 100) + 1)));
-            it.setInternalvalue(Double.valueOf(row[5].toString()) * (((Double.valueOf(percentValue) / 100) + 1)));//not supported yet
+            it.setExternalvalue(new BigDecimal(row[5].toString()).multiply(((new BigDecimal(percentValue.toString()).divide(new BigDecimal("100"))).add(BigDecimal.ONE))));
+            it.setInternalvalue(new BigDecimal(row[5].toString()).multiply(((new BigDecimal(percentValue.toString()).divide(new BigDecimal("100"))).add(BigDecimal.ONE))));//not supported yet
             it.setMeasure(row[3].toString());
             it.setOriginalproductsids(Integer.valueOf(row[10].toString()));
-            it.setQuantityvalue(Double.valueOf(row[2].toString()));
-            it.setTaxpercentvalue(Double.valueOf(row[6].toString()));
+            it.setQuantityvalue(new BigDecimal(row[2].toString()));
+            it.setTaxpercentvalue(new BigDecimal(row[6].toString()));
             it.setLinkurl((row[12 + 1].toString()));
             calculate(it);
             items[i] = it;
@@ -256,18 +258,18 @@ public class SubItem extends DatabaseObject {
     }
     private int itemsids;
     private int originalproductsids;
-    private double countvalue;
-    private double quantityvalue;
+    private BigDecimal countvalue = new BigDecimal("0");
+    private BigDecimal quantityvalue = new BigDecimal("0");
     private String measure = "";
     private String description = "";
     private String linkurl = "";
-    private double internalvalue;
-    private double externalvalue;
-    private double taxpercentvalue;
-    private double totalnetvalue;
-    private double totalbrutvalue;
+    private BigDecimal internalvalue = new BigDecimal("0");
+    private BigDecimal externalvalue = new BigDecimal("0");
+    private BigDecimal taxpercentvalue = new BigDecimal("0");
+    private BigDecimal totalnetvalue = new BigDecimal("0");
+    private BigDecimal totalbrutvalue = new BigDecimal("0");
     private Date datedelivery;
-    private double totaltaxvalue;
+    private BigDecimal totaltaxvalue = new BigDecimal("0");
 
     public SubItem() {
         context = Context.getSubItem();
@@ -284,7 +286,7 @@ public class SubItem extends DatabaseObject {
             String defunit = MPView.getUser().getProperties().getProperty("defunit");
             i.setMeasure(defunit);
         }
-        Double deftax = 0d;
+        BigDecimal deftax = new BigDecimal("0");
         if (MPView.getUser().getProperties().hasProperty("deftax")) {
             int taxid = MPView.getUser().getProperties().getProperty("deftax", new Integer(0));
             deftax = Tax.getTaxValue(taxid);
@@ -293,7 +295,7 @@ public class SubItem extends DatabaseObject {
         Double defcount = 1d;
         if (MPView.getUser().getProperties().hasProperty("defcount")) {
             defcount = MPView.getUser().getProperties().getProperty("defcount", 0d);
-            i.setQuantityvalue(defcount);
+            i.setQuantityvalue(new BigDecimal(defcount.toString()));
         }
         return i;
     }
@@ -368,7 +370,7 @@ public class SubItem extends DatabaseObject {
         setInternalvalue(product.__getInternalnetvalue());
         setMeasure(product.__getMeasure());
         setOriginalproductsids(product.__getIDS());
-        setQuantityvalue(1);
+        setQuantityvalue(new BigDecimal("1"));
         setTaxpercentvalue(Tax.getTaxValue(product.__getTaxids()));
         setLinkurl(product.__getUrl());
         calculate(this);
@@ -386,7 +388,7 @@ public class SubItem extends DatabaseObject {
             String defunit = MPView.getUser().getProperties().getProperty("defunit");
             i.setMeasure(defunit);
         }
-        Double deftax = 0d;
+        BigDecimal deftax = new BigDecimal("0");
         if (MPView.getUser().getProperties().hasProperty("deftax")) {
             int taxid = MPView.getUser().getProperties().getProperty("deftax", 0);
             deftax = Tax.getTaxValue(taxid);
@@ -395,7 +397,7 @@ public class SubItem extends DatabaseObject {
         Double defcount = 1d;
         if (MPView.getUser().getProperties().hasProperty("defcount")) {
             defcount = MPView.getUser().getProperties().getProperty("defcount", 0d);
-            i.setQuantityvalue(defcount);
+            i.setQuantityvalue(new BigDecimal(defcount.toString()));
         }
         return i;
     }
@@ -467,28 +469,28 @@ public class SubItem extends DatabaseObject {
     /**
      * @return the count
      */
-    public double __getCountvalue() {
+    public BigDecimal __getCountvalue() {
         return countvalue;
     }
 
     /**
      * @param count the count to set
      */
-    public void setCountvalue(double count) {
+    public void setCountvalue(BigDecimal count) {
         this.countvalue = count;
     }
 
     /**
      * @return the quantity
      */
-    public double __getQuantityvalue() {
+    public BigDecimal __getQuantityvalue() {
         return quantityvalue;
     }
 
     /**
      * @param quantity the quantity to set
      */
-    public void setQuantityvalue(double quantity) {
+    public void setQuantityvalue(BigDecimal quantity) {
         this.quantityvalue = quantity;
     }
 
@@ -523,14 +525,14 @@ public class SubItem extends DatabaseObject {
     /**
      * @return the taxpercent
      */
-    public double __getTaxpercentvalue() {
+    public BigDecimal __getTaxpercentvalue() {
         return taxpercentvalue;
     }
 
     /**
      * @param taxpercent the taxpercent to set
      */
-    public void setTaxpercentvalue(double taxpercent) {
+    public void setTaxpercentvalue(BigDecimal taxpercent) {
         this.taxpercentvalue = taxpercent;
     }
 
@@ -578,7 +580,7 @@ public class SubItem extends DatabaseObject {
         }
 
         MPTableModel model = new MPTableModel(
-                new Class[]{Integer.class, Integer.class, Double.class, String.class, Object.class, Double.class, Double.class, Double.class, Double.class, Double.class, Integer.class, JButton.class, JButton.class, JButton.class, String.class, String.class},
+                new Class[]{Integer.class, Integer.class, BigDecimal.class, String.class, Object.class, BigDecimal.class, BigDecimal.class, BigDecimal.class, BigDecimal.class, BigDecimal.class, Integer.class, JButton.class, JButton.class, JButton.class, String.class, String.class},
                 new boolean[]{false, false, true, true, true, true, true, false, false, false, false, true, true, true, true, true},
                 data,
                 Headers.SUBITEMS.getValue());
@@ -588,7 +590,7 @@ public class SubItem extends DatabaseObject {
         if (MPView.getUser().getProperties().hasProperty("defunit")) {
             defunit = MPView.getUser().getProperties().getProperty("defunit");
         }
-        Double deftax = 0d;
+        BigDecimal deftax = new BigDecimal("0");
         if (MPView.getUser().getProperties().hasProperty("deftax")) {
             int taxid = MPView.getUser().getProperties().getProperty("deftax", 0);
             deftax = Tax.getTaxValue(taxid);
@@ -618,7 +620,7 @@ public class SubItem extends DatabaseObject {
             data[4] = __getDescription();
             data[5] = __getExternalvalue();
             data[6] = __getTaxpercentvalue();
-            data[7] = __getQuantityvalue() * __getExternalvalue() * ((__getTaxpercentvalue() / 100) + 1);
+            data[7] = __getQuantityvalue().multiply(__getExternalvalue().multiply(((__getTaxpercentvalue().divide(new BigDecimal("100")).add(BigDecimal.ONE)))));
             data[8] = 0.0;
             data[9] = 0.0;
             data[10] = Integer.valueOf(__getOriginalproductsids());
@@ -633,28 +635,28 @@ public class SubItem extends DatabaseObject {
     /**
      * @return the internalvalue
      */
-    public double __getInternalvalue() {
+    public BigDecimal __getInternalvalue() {
         return internalvalue;
     }
 
     /**
      * @param internalvalue the internalvalue to set
      */
-    public void setInternalvalue(double internalvalue) {
+    public void setInternalvalue(BigDecimal internalvalue) {
         this.internalvalue = internalvalue;
     }
 
     /**
      * @return the externalvalue
      */
-    public double __getExternalvalue() {
+    public BigDecimal __getExternalvalue() {
         return externalvalue;
     }
 
     /**
      * @param externalvalue the externalvalue to set
      */
-    public void setExternalvalue(double externalvalue) {
+    public void setExternalvalue(BigDecimal externalvalue) {
         this.externalvalue = externalvalue;
     }
 
@@ -680,35 +682,35 @@ public class SubItem extends DatabaseObject {
     /**
      * @return the totalnetvalue
      */
-    public double __getTotalnetvalue() {
+    public BigDecimal __getTotalnetvalue() {
         return totalnetvalue;
     }
 
     /**
      * @param totalnetvalue the totalnetvalue to set
      */
-    public void setTotalnetvalue(double totalnetvalue) {
+    public void setTotalnetvalue(BigDecimal totalnetvalue) {
         this.totalnetvalue = totalnetvalue;
     }
 
     /**
      * @return the totalbrutvalue
      */
-    public double __getTotalbrutvalue() {
+    public BigDecimal __getTotalbrutvalue() {
         return totalbrutvalue;
     }
 
     /**
      * @param totalbrutvalue the totalbrutvalue to set
      */
-    public void setTotalbrutvalue(double totalbrutvalue) {
+    public void setTotalbrutvalue(BigDecimal totalbrutvalue) {
         this.totalbrutvalue = totalbrutvalue;
     }
 
     private static void calculate(SubItem s) {
-        s.setTotalbrutvalue(s.quantityvalue * s.externalvalue * ((s.taxpercentvalue / 100) + 1));
-        s.defTotaltaxvalue(s.quantityvalue * s.externalvalue * (s.taxpercentvalue / 100));
-        s.setTotalnetvalue(s.quantityvalue * s.externalvalue);
+        s.setTotalbrutvalue(s.quantityvalue.multiply(s.externalvalue.multiply(((s.taxpercentvalue.divide(new BigDecimal("100"))).add(BigDecimal.ONE)))));
+        s.defTotaltaxvalue(s.quantityvalue.multiply(s.externalvalue.multiply((s.taxpercentvalue.divide(new BigDecimal("100"))))));
+        s.setTotalnetvalue(s.quantityvalue.multiply(s.externalvalue));
     }
 
     @Override
@@ -717,7 +719,7 @@ public class SubItem extends DatabaseObject {
         return super.save();
     }
 
-    private void defTotaltaxvalue(double value) {
+    private void defTotaltaxvalue(BigDecimal value) {
         totaltaxvalue = value;
     }
 
@@ -725,7 +727,7 @@ public class SubItem extends DatabaseObject {
      * 
      * @return
      */
-    public double getTotalTaxValue() {
+    public BigDecimal getTotalTaxValue() {
         return totaltaxvalue;
     }
 

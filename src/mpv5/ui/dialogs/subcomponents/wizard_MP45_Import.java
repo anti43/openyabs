@@ -1,6 +1,7 @@
 package mpv5.ui.dialogs.subcomponents;
 
 import java.awt.Cursor;
+import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Vector;
@@ -416,7 +417,7 @@ public class wizard_MP45_Import extends javax.swing.JPanel implements Wizardable
             for (int i = 0; i < txes.length; i++) {
                 Tax t = new Tax();
                 t.setCName(txes[i][1].toString());
-                t.setTaxvalue(Double.valueOf(txes[i][2].toString()));
+                t.setTaxvalue(new BigDecimal(txes[i][2].toString()));
                 t.save();
                 taxes.put(Integer.valueOf(txes[i][0].toString()), t.__getIDS());
             }
@@ -439,8 +440,8 @@ public class wizard_MP45_Import extends javax.swing.JPanel implements Wizardable
                 c.setCnumber(String.valueOf(data[i][0]));
                 c.setCName(String.valueOf(data[i][1]));
                 c.setDescription(String.valueOf(data[i][2]));
-                c.setExternalnetvalue(Double.valueOf(data[i][3].toString()));
-                c.setInternalnetvalue(Double.valueOf(data[i][4].toString()));
+                c.setExternalnetvalue(new BigDecimal(data[i][3].toString()));
+                c.setInternalnetvalue(new BigDecimal(data[i][4].toString()));
                 c.setTaxids(taxes.get(Integer.valueOf(String.valueOf(data[i][5]))));
                 if (manufacturer.containsKey(Integer.valueOf(String.valueOf(data[i][6])))) {
                     c.setManufacturersids(manufacturer.get(Integer.valueOf(String.valueOf(data[i][6]))));

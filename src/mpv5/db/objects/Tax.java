@@ -16,6 +16,7 @@
  */
 package mpv5.db.objects;
 
+import java.math.BigDecimal;
 import javax.swing.JComponent;
 
 import mpv5.db.common.Context;
@@ -31,7 +32,7 @@ import mpv5.utils.images.MPIcon;
  */
 public class Tax extends DatabaseObject {
 
-    private double taxvalue;
+    private BigDecimal taxvalue = new BigDecimal("0");
     private String identifier = "";
     private String country = "";
 
@@ -40,12 +41,12 @@ public class Tax extends DatabaseObject {
      * @param taxid
      * @return A value or 0d if not found
      */
-    public static Double getTaxValue(Integer taxid) {
+    public static BigDecimal getTaxValue(Integer taxid) {
         try {
             return ((Tax) getObject(Context.getTaxes(), taxid)).__getTaxvalue();
         } catch (NodataFoundException ex) {
             Log.Debug(ex);
-            return 0d;
+            return new BigDecimal("0");
         }
     }
 
@@ -54,7 +55,7 @@ public class Tax extends DatabaseObject {
      * @param value
      * @return A value or 0d if not found
      */
-    public static int getTaxId(Double value) {
+    public static int getTaxId(BigDecimal value) {
         try {
             int v = Integer.valueOf(QueryHandler.instanceOf().clone(Context.getTaxes()).select("ids", new String[]{"taxvalue", value.toString(), ""})[0][0].toString());
             Log.Debug(Item.class, "Found tax id: " + v);
@@ -82,14 +83,14 @@ public class Tax extends DatabaseObject {
     /**
      * @return the taxvalue
      */
-    public double __getTaxvalue() {
+    public BigDecimal __getTaxvalue() {
         return taxvalue;
     }
 
     /**
      * @param taxvalue the taxvalue to set
      */
-    public void setTaxvalue(double taxvalue) {
+    public void setTaxvalue(BigDecimal taxvalue) {
         this.taxvalue = taxvalue;
     }
 
