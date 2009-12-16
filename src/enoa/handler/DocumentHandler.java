@@ -327,6 +327,33 @@ public class DocumentHandler {
         HashMap<String, TableModel> models = template.getTables();
 
         Log.Debug(this, "Looking for tables in: " + document);
+
+        try {
+            for (Iterator<String> it = models.keySet().iterator(); it.hasNext();) {
+                String key = it.next();
+                TableModel m = models.get(key);
+                Log.Debug(this, "Table: " + key);
+                if (tablehandler == null) {
+                    if (key.contains(".")) {
+                        key = key.substring(key.lastIndexOf(".") + 1);
+                    }
+                    Log.Debug(this, "Table identifier: " + key);
+                    tablehandler = new TableHandler((ITextDocument) document, key);
+                }
+                for (int j = 0; j < m.getRowCount(); j++) {
+                    String[] strings = new String[m.getColumnCount()];
+                    for (int k = 0; k < strings.length; k++) {
+                        if (m.getValueAt(j, k) != null) {
+                            strings[k] = String.valueOf(m.getValueAt(j, k));
+                        }
+                    }
+                    doRow(template, strings, j);
+                }
+            }
+        } catch (Exception e) {
+            Log.Debug(e);
+        }
+
         try {
             for (Iterator<String> it = data.keySet().iterator(); it.hasNext();) {
                 String key = it.next();
@@ -345,20 +372,6 @@ public class DocumentHandler {
                         String[] strings = value.get(i);
                         doRow(template, strings, i);
                     }
-
-                    if (models.containsKey(key)) {
-                        TableModel m = models.get(key);
-                        for (int j = 0; j < m.getRowCount(); j++) {
-                            String[] strings = new String[m.getColumnCount()];
-                            for (int k = 0; k < strings.length; k++) {
-                                if (m.getValueAt(j, k) != null) {
-                                    strings[k] = String.valueOf(m.getValueAt(j, k));
-                                }
-                            }
-                            doRow(template, strings, j);
-                        }
-                    }
-                    
                 }
             }
         } catch (Exception textException) {
@@ -415,7 +428,7 @@ public class DocumentHandler {
             try {
                 form[i] = possibleCols[intcols[i] - 1];
             } catch (Exception e) {
-                Log.Debug(this, "To much columns in the format definition: " + e);
+                Log.Debug(this, "Too much columns in the format definition: " + e);
             }
         }
 
@@ -428,9 +441,11 @@ public class DocumentHandler {
         }
         for (int j = 0; j < strings.length; j++) {
             String cellValue = strings[j];
+            if (cellValue == null) {
+                cellValue = "";
+            }
             if (!cellValue.contains("://")) {//lets say its a valid url
                 try {
-                    //lets say its a valid url
                     tablehandler.setValueAt(cellValue, j, row);
                 } catch (TextException ex) {
                     Log.Debug(ex);

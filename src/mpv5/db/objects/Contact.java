@@ -450,13 +450,13 @@ public class Contact extends DatabaseObject implements Formattable {
             try {
                 map.put("country", LanguageManager.getCountryName(Integer.valueOf(map.get("country").toString())));
             } catch (Exception numberFormatException) {
-                Log.Debug(this, numberFormatException.getMessage());
+                //already resolved?
             }
         }
 
         try {
             if (map.containsKey("ismale")) {
-                if(Integer.valueOf(map.get("ismale").toString()).intValue() == 1) {
+                if(Boolean.valueOf(map.get("ismale").toString())) {
                     map.put("gender", Messages.CONTACT_TYPE_MALE);
                 } else {
                     map.put("gender", Messages.CONTACT_TYPE_FEMALE);
