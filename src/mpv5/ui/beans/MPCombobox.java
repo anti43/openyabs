@@ -332,7 +332,7 @@ public class MPCombobox extends javax.swing.JPanel {
      */
     public void setSearchEnabled(boolean enabled) {
         SEARCH_ON_ENTER = enabled;
-//        jComboBox1.setEditable(enabled);
+        jComboBox1.setEditable(enabled);
     }
 
     /**
