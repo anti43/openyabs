@@ -28,7 +28,7 @@ public interface Constants {
      * 
      * Full Version number
      */
-    public static final String VERSION = "Yabs-1.0-RC-1";
+    public static final String VERSION = "Yabs-1.0";
     /**
      * The minimal Database Version which is compatible with this release
      */
@@ -36,7 +36,7 @@ public interface Constants {
     /**
      * Will be dynamically changed by SVN.
      */
-    public static final String REVISION = "$Rev: 1268 $";
+    public static final String REVISION = "$Rev: 1311 $";
     /**
      *
      * The Release version
@@ -46,7 +46,7 @@ public interface Constants {
      *
      * Alias
      */
-    public static final String TITLE = "[Arann Island Ferries]";
+    public static final String TITLE = "[Róisín Dubh]";
     /**
      *
      * Name of the main JAR
