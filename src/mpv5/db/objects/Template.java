@@ -316,8 +316,12 @@ public class Template extends DatabaseObject {
         l.add(it8);
 
         for (int i = 0; i < l.size(); i++) {
-            DatabaseObject databaseObject = l.get(i);
-            Template t = loadTemplate(databaseObject);
+            final DatabaseObject databaseObject = l.get(i);
+            Runnable runnable = new Runnable() {
+                public void run() {
+                    Template t = loadTemplate(databaseObject);
+                }
+            };new Thread(runnable).start();
         }
     }
 
