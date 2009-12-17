@@ -47,32 +47,19 @@ public class TableCellEditorForDezimal extends LazyCellEditor {
 
             @Override
             public void setValue(Object param) {
-//                if (param !=null) {
-//                    Double _value = FormatNumber.parseNumber(param);
-//                    if (_value == null) {
-//                        tf.setValue(FormatNumber.formatDezimal(0.0));
-//                    } else {
-//                        double _d = _value.doubleValue();
-//                        String _format = FormatNumber.formatDezimal(_d);
-//                        tf.setValue(_format);
-//                    }
+
+                tf.setText("");
+//                if (String.valueOf(param).trim().equals("0.0") || tf.getText().trim().equals("0.0") ||
+//                        String.valueOf(param).trim().equals("0,0") || tf.getText().trim().equals("0,0")) {
+//                    tf.setText("");
 //                } else {
-//                    tf.setValue(FormatNumber.formatDezimal(0.0));
+//                    try {
+//                        tf.setText(FormatNumber.formatDezimal(Double.valueOf(String.valueOf(param))));
+//                    } catch (NumberFormatException numberFormatException) {
+//                        Log.Debug(this, numberFormatException.getMessage());
+//                        tf.setText(String.valueOf(param));
+//                    }
 //                }
-//                if (param != null) {
-//                    tf.setText(String.valueOf(param));
-//                } else
-                if (String.valueOf(param).equals("0.0") || tf.getText().equals("0.0") ||
-                        String.valueOf(param).equals("0,0") || tf.getText().equals("0,0")) {
-                    tf.setText("");
-                } else {
-                    try {
-                        tf.setText(FormatNumber.formatDezimal(Double.valueOf(String.valueOf(param))));
-                    } catch (NumberFormatException numberFormatException) {
-                        Log.Debug(this, numberFormatException.getMessage());
-                        tf.setText(String.valueOf(param));
-                    }
-                }
 
             }
 

@@ -591,11 +591,11 @@ public class User extends DatabaseObject {
     public void defineMailConfig() {
         if (getProperties().hasProperty("smtp.host")) {
             defineMailConfiguration(new MailConfiguration());
-            getMailConfiguration().setSmtpHost(getProperties().getProperty("smtp.host"));
-            getMailConfiguration().setSenderAddress(mail);
-            getMailConfiguration().setUsername(getProperties().getProperty("smtp.host.user"));
-            getMailConfiguration().setPassword(getProperties().getProperty("smtp.host.password"));
-            getMailConfiguration().setUseTls(Boolean.valueOf(getProperties().getProperty("smtp.host.usetls")));
+            mailConfiguration.setSmtpHost(getProperties().getProperty("smtp.host"));
+            mailConfiguration.setSenderAddress(mail);
+            mailConfiguration.setUsername(getProperties().getProperty("smtp.host.user"));
+            mailConfiguration.setPassword(getProperties().getProperty("smtp.host.password"));
+            mailConfiguration.setUseTls(Boolean.valueOf(getProperties().getProperty("smtp.host.usetls")));
         } else {
             Log.Debug(this, "Mail configuration not set.");
         }
@@ -607,6 +607,7 @@ public class User extends DatabaseObject {
     public MailConfiguration getMailConfiguration() {
         if(mailConfiguration.getSmtpHost()==null || mailConfiguration.getSmtpHost().length() == 0) {
             Popup.notice(Messages.NO_MAIL_CONFIG);
+            Log.Debug(this, "SMTP host configuration not set: " + mailConfiguration.getSmtpHost());
         }
         return mailConfiguration;
     }
