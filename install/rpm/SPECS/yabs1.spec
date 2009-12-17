@@ -1,7 +1,7 @@
 Summary: YaBS Version 1
 Name: yabs
-Version: 1
-Release: 0
+Version: 1.0
+Release: 3
 License: GPL
 Group: Applications/Office
 BuildRoot: %{_builddir}/%{name}-root
@@ -40,7 +40,7 @@ tar -xf $RPM_BUILD_ROOT/../yabs%{Version}.%{Release}.tar
 mkdir -p $RPM_BUILD_ROOT%{install_dir}/yabs/yabs%{Version}/misc
 cat > $RPM_BUILD_ROOT%{install_dir}/yabs/yabs%{Version}/misc/yabs%{Version}.desktop <<EOF
 [Desktop Entry]
-Name=YaBS %{Version}.%{Release}
+Name=YaBS 1.0
 Comment=Crossplatform Accounting and Billing Application
 Exec=java -jar %{install_dir}/yabs/yabs%{Version}/yabs.jar
 Icon=%{install_dir}/yabs/yabs%{Version}/misc/yabsd.png
@@ -65,9 +65,11 @@ cp -f %{my_dir}/install/yabsd.png $RPM_BUILD_ROOT%{install_dir}/yabs/yabs%{Versi
 %post
 ln -fs %{install_dir}/yabs/yabs%{Version}/misc/yabs%{Version}.sh  /usr/bin/yabs
 
+%preun
+unlink /usr/bin/yabs
+
 %postun
 rm -f /usr/share/applications/yabs%{Version}.desktop
-unlink /usr/bin/yabs
 
 %clean
 rm -rf $RPM_BUILD_ROOT
