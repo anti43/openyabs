@@ -636,7 +636,7 @@ public class QueryHandler implements Cloneable {
      * @param date2
      * @return
      */
-    public int selectCountBetween(java.util.Date date1, java.util.Date date2) {
+    public int selectCountBetween(java.util.Date date1, java.util.Date date2) throws SQLException {
         return selectCount("dateadded", "BETWEEN '" + DateConverter.getSQLDateString(date1) + "' AND '" + DateConverter.getSQLDateString(date2) + "'");
     }
 
@@ -852,7 +852,7 @@ public class QueryHandler implements Cloneable {
      * Count the rows of the current table
      * @return
      */
-    public Integer getCount() {
+    public Integer getCount() throws SQLException {
         int i = selectCount(null, null);
         i = (i < 0) ? -i : i;
         return i;
@@ -1559,8 +1559,9 @@ public class QueryHandler implements Cloneable {
      * @param what
      * @param condition
      * @return
+     * @throws SQLException
      */
-    public int selectCount(String what, String condition) {
+    public int selectCount(String what, String condition) throws SQLException {
         String wher = "";
         start();
 
@@ -1587,10 +1588,7 @@ public class QueryHandler implements Cloneable {
                 return 0;
             }
         } catch (SQLException ex) {
-            Log.Debug(this, message + ex.getMessage());
-            Popup.error(ex);
-
-            return 0;
+            throw ex;
         } finally {
             stop();
             // Alle Ressourcen wieder freigeben
