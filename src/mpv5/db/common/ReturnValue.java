@@ -4,6 +4,8 @@
  */
 package mpv5.db.common;
 
+import mpv5.logging.Log;
+
 /**
  *
  *  
@@ -29,7 +31,7 @@ public class ReturnValue {
     }
 
     public ReturnValue(int idOfIt, Object[][] data, String[] columnnames, String jobmessage) {
-
+        
         this.id = idOfIt;
         this.columnnames = columnnames;
         this.data = data;

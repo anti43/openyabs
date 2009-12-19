@@ -42,6 +42,14 @@ public interface DatabaseObjectModifier {
      */
     DatabaseObject modifyOnSave(DatabaseObject object);
 
+     /**
+     * This method will be called after creation of any {@link DatabaseObject} if this <br/>
+     * {@link DatabaseObjectModifier} is registered with a loaded  {@link mpv5.pluginhandling.MP5Plugin}
+     * @param object
+     * @return
+     */
+    DatabaseObject modifyAfterCreate(DatabaseObject object);
+
     /**
      * This method will be called during reference-resolving any {@link DatabaseObject} if this <br/>
      * {@link DatabaseObjectModifier} is registered with a loaded  {@link mpv5.pluginhandling.MP5Plugin}

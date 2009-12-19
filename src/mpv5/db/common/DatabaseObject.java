@@ -338,6 +338,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject> {
         for (int ik = 0; ik < mods.size(); ik++) {
             DatabaseObjectModifier databaseObjectModifier = mods.get(ik);
             try {
+                Log.Debug(this, "Passing to plugin: " + databaseObjectModifier);
                 databaseObjectModifier.modifyOnSave(this);
             } catch (Exception e) {
                 Log.Debug(DatabaseObject.class, "Error while on-save modifying Object " + this + " within Modifier " + databaseObjectModifier);
@@ -361,6 +362,17 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject> {
                     Popup.notice(Messages.CNAME_CANNOT_BE_NULL);
                     Log.Debug(this, Messages.CNAME_CANNOT_BE_NULL + " [" + context + "]");
                     return false;
+                }
+
+                for (int ik = 0; ik < mods.size(); ik++) {
+                    DatabaseObjectModifier databaseObjectModifier = mods.get(ik);
+                    try {
+                        Log.Debug(this, "Passing to plugin: " + databaseObjectModifier);
+                        databaseObjectModifier.modifyAfterCreate(this);
+                    } catch (Exception e) {
+                        Log.Debug(DatabaseObject.class, "Error while after-create modifying Object " + this + " within Modifier " + databaseObjectModifier);
+                        Log.Debug(e);
+                    }
                 }
             } else {
                 Log.Debug(this, "Updating dataset: " + ids + " within context '" + context + "'");

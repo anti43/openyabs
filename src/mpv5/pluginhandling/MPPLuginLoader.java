@@ -120,6 +120,7 @@ public class MPPLuginLoader {
 
                     list.add(c);
                     if (c instanceof DatabaseObjectModifier) {
+                        Log.Debug(this, "Register modifying plugins: " + c);
                         registeredModifiers.add((DatabaseObjectModifier) c);
                     }
                 }
