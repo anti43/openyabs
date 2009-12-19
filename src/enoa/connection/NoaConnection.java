@@ -218,7 +218,7 @@ public class NoaConnection {
      */
     public synchronized static void startOOServer(String path, int port) throws IOException {
         final ProcessBuilder builder = new ProcessBuilder(
-                path.replace("\\", "\\\\") + File.separator + "program" + File.separator + "soffice",
+                path.replace("\\", "\\\\") + File.separator + LocalSettings.getProperty(LocalSettings.OFFICE_BINARY_FOLDER) + File.separator + "soffice",
                 "-headless",
                 "-nofirststartwizard",
 //                "-invisible", 
