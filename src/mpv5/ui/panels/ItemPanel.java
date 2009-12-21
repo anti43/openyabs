@@ -226,12 +226,12 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
         oldAction = itemtable.getActionMap().get(inputMap.get(shifttab));
         itemtable.getActionMap().put(inputMap.get(shifttab), new TableTabAction(date3, oldAction, true));
 
-        KeyStroke right = KeyStroke.getKeyStroke(KeyEvent.VK_RIGHT, 0);
-        oldAction = itemtable.getActionMap().get(inputMap.get(right));
-        itemtable.getActionMap().put(inputMap.get(right), new TableTabAction(notes, oldAction, false));
-        KeyStroke left = KeyStroke.getKeyStroke(KeyEvent.VK_LEFT, 0);
-        oldAction = itemtable.getActionMap().get(inputMap.get(left));
-        itemtable.getActionMap().put(inputMap.get(left), new TableTabAction(date3, oldAction, true));
+//        KeyStroke right = KeyStroke.getKeyStroke(KeyEvent.VK_RIGHT, 0);
+//        oldAction = itemtable.getActionMap().get(inputMap.get(right));
+//        itemtable.getActionMap().put(inputMap.get(right), new TableTabAction(notes, oldAction, false));
+//        KeyStroke left = KeyStroke.getKeyStroke(KeyEvent.VK_LEFT, 0);
+//        oldAction = itemtable.getActionMap().get(inputMap.get(left));
+//        itemtable.getActionMap().put(inputMap.get(left), new TableTabAction(date3, oldAction, true));
 
         number.setSearchOnEnterEnabled(true);
         number.setParent(this);
