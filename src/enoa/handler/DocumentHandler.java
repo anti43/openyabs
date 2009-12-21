@@ -444,6 +444,7 @@ public class DocumentHandler {
             if (cellValue == null) {
                 cellValue = "";
             }
+            cellValue = cellValue.replaceAll("\\<.*?\\>", "");//remove html/xml tags
             if (!cellValue.contains("://")) {//lets say its a valid url
                 try {
                     tablehandler.setValueAt(cellValue, j, row);
