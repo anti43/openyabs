@@ -74,6 +74,9 @@ private final DefaultTableCellRenderer adaptee = new DefaultTableCellRenderer();
 
     @Override
     public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int col) {
+       if (value instanceof Number) {
+            value = DECIMALFORMAT.format(value);
+        }
         adaptee.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, col);
         setForeground(adaptee.getForeground());
         setBackground(adaptee.getBackground());
