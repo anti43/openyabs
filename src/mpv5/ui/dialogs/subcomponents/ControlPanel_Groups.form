@@ -93,6 +93,7 @@
                 <Property name="toolTipText" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
                   <ResourceString bundle="mpv5/resources/languages/Panels.properties" key="ControlPanel_Groups.tree.toolTipText" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
                 </Property>
+                <Property name="largeModel" type="boolean" value="true"/>
                 <Property name="name" type="java.lang.String" value="tree" noResource="true"/>
               </Properties>
               <Events>

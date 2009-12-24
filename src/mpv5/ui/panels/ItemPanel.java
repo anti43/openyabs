@@ -625,7 +625,6 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
 
         jScrollPane3.setName("jScrollPane3"); // NOI18N
 
-        itemtable.setAutoCreateRowSorter(true);
         itemtable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
