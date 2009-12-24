@@ -651,7 +651,7 @@ public class ProductListsPanel extends javax.swing.JPanel implements DataPanel, 
         t.setRendererTo(6);
         t.setRendererTo(5);
         t.setRendererTo(2);
-        TableCellRendererForDezimal tc = new TableCellRendererForDezimal(itemtable, Color.LIGHT_GRAY);
+        TableCellRendererForDezimal tc = new TableCellRendererForDezimal(itemtable, new java.awt.Color(161, 176, 190));
         tc.setRendererTo(7);
 
         CellEditorWithMPComboBox r = new CellEditorWithMPComboBox(Context.getProduct(), itemtable);

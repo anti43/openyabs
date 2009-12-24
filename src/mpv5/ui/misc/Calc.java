@@ -275,7 +275,7 @@ public class Calc extends JLabel implements ActionListener,KeyListener {
         buttonPercent.addActionListener(this);
         buttonPercent.setBounds(2, 230, 60, 34);
         buttonPercent.addKeyListener(this);
-        add(buttonPercent);
+//        add(buttonPercent);
 
         buttonOneOverX.addActionListener(this);
         buttonOneOverX.setBounds(66, 230, 60, 34);

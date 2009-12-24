@@ -297,6 +297,9 @@ public class SubItem extends DatabaseObject {
             defcount = MPView.getUser().getProperties().getProperty("defcount", 0d);
             i.setQuantityvalue(new BigDecimal(defcount.toString()));
         }
+
+        i.setQuantityvalue(new BigDecimal("1"));
+
         return i;
     }
 

@@ -72,7 +72,7 @@ public class MPCalculator2 extends javax.swing.JFrame {
         jPanel1 = new javax.swing.JPanel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-        setTitle("MP Calc");
+        setTitle("Yabs Calc");
         setName("Form"); // NOI18N
 
         jPanel1.setName("jPanel1"); // NOI18N

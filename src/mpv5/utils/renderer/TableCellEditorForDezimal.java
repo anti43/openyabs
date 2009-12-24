@@ -72,15 +72,15 @@ public class TableCellEditorForDezimal extends LazyCellEditor {
                     if (_number != null) {
                         double _parsed = _number.doubleValue();
                         Double d = new Double(_parsed);
-                        tf.setBackground(Color.white);
+//                        tf.setBackground(Color.white);
                         return d;
                     } else {
-                        tf.setBackground(Color.white);
+//                        tf.setBackground(Color.white);
                         return new Double(0.0);
                     }
                 } catch (Exception e) {
                     Log.Debug(this, e.getMessage());
-                    tf.setBackground(Color.red);
+//                    tf.setBackground(Color.red);
                     return new Double(0.0);
                 }
             }

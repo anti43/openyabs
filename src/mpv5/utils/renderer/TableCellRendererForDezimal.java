@@ -29,7 +29,7 @@ import javax.swing.table.TableColumn;
 import mpv5.utils.numberformat.FormatNumber;
 
 public class TableCellRendererForDezimal extends DefaultTableCellRenderer {
-
+private final DefaultTableCellRenderer adaptee = new DefaultTableCellRenderer();
     public static NumberFormat DECIMALFORMAT = FormatNumber.getShortDecimalFormat();
     private final JTable t;
     private Color color;
@@ -74,8 +74,12 @@ public class TableCellRendererForDezimal extends DefaultTableCellRenderer {
 
     @Override
     public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int col) {
-        Component p = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, col);
-        p.setBackground(color == null ? Color.WHITE : color);
-        return p;
+        adaptee.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, col);
+        setForeground(adaptee.getForeground());
+        setBackground(adaptee.getBackground());
+        setBorder(adaptee.getBorder());
+        setFont(adaptee.getFont());
+        setText(adaptee.getText());
+        return this;
     }
 }
