@@ -521,19 +521,19 @@ public class Item extends DatabaseObject implements Formattable {
         }
 
         map.put(TableHandler.KEY_TABLE + "1", list);
-        map.put("netvalue", __getNetvalue());
-        map.put("taxvalue", __getTaxvalue());
-        map.put("grosvalue", __getTaxvalue().doubleValue() + __getNetvalue().doubleValue());
-        map.put("discountnetvalue", __getNetvalue().doubleValue() * ((__getDiscountvalue().doubleValue() / 100 - 1) * -1));
-        map.put("discountnetdifference", __getNetvalue().doubleValue() * (__getDiscountvalue().doubleValue() / 100));
-        map.put("discountgrosvalue", (__getTaxvalue().doubleValue() + __getNetvalue().doubleValue()) * ((__getDiscountvalue().doubleValue() / 100 - 1) * -1));
-        map.put("discountgrosdifferenence", (__getTaxvalue().doubleValue() + __getNetvalue().doubleValue()) * (__getDiscountvalue().doubleValue() / 100));
-        map.put("discounttaxvalue", __getTaxvalue().doubleValue() * ((__getDiscountvalue().doubleValue() / 100 - 1) * -1));
-        map.put("shippednetvalue", __getNetvalue().doubleValue() * ((__getDiscountvalue().doubleValue() / 100 - 1) * -1) + __getShippingvalue().doubleValue());
+        map.put("netvalue", FormatNumber.formatDezimal(__getNetvalue()));
+        map.put("taxvalue", FormatNumber.formatDezimal(__getTaxvalue()));
+        map.put("grosvalue", FormatNumber.formatDezimal(__getTaxvalue().doubleValue() + __getNetvalue().doubleValue()));
+        map.put("discountnetvalue", FormatNumber.formatDezimal(__getNetvalue().doubleValue() * ((__getDiscountvalue().doubleValue() / 100 - 1) * -1)));
+        map.put("discountnetdifference", FormatNumber.formatDezimal(__getNetvalue().doubleValue() * (__getDiscountvalue().doubleValue() / 100)));
+        map.put("discountgrosvalue", FormatNumber.formatDezimal((__getTaxvalue().doubleValue() + __getNetvalue().doubleValue()) * ((__getDiscountvalue().doubleValue() / 100 - 1) * -1)));
+        map.put("discountgrosdifferenence", FormatNumber.formatDezimal((__getTaxvalue().doubleValue() + __getNetvalue().doubleValue()) * (__getDiscountvalue().doubleValue() / 100)));
+        map.put("discounttaxvalue", FormatNumber.formatDezimal(__getTaxvalue().doubleValue() * ((__getDiscountvalue().doubleValue() / 100 - 1) * -1)));
+        map.put("shippednetvalue", FormatNumber.formatDezimal(__getNetvalue().doubleValue() * ((__getDiscountvalue().doubleValue() / 100 - 1) * -1) + __getShippingvalue().doubleValue()));
 
-        map.put("shippedtaxvalue", __getTaxvalue().doubleValue() * ((__getDiscountvalue().doubleValue() / 100 - 1) * -1));
-        map.put("shippedgrosvalue", (__getTaxvalue().doubleValue() + __getNetvalue().doubleValue()) * ((__getDiscountvalue().doubleValue() / 100 - 1) * -1) + __getShippingvalue().doubleValue());
-        map.put("shippingvalue", __getShippingvalue());
+        map.put("shippedtaxvalue", FormatNumber.formatDezimal(__getTaxvalue().doubleValue() * ((__getDiscountvalue().doubleValue() / 100 - 1) * -1)));
+        map.put("shippedgrosvalue", FormatNumber.formatDezimal((__getTaxvalue().doubleValue() + __getNetvalue().doubleValue()) * ((__getDiscountvalue().doubleValue() / 100 - 1) * -1) + __getShippingvalue().doubleValue()));
+        map.put("shippingvalue", FormatNumber.formatDezimal(__getShippingvalue()));
         map.put("shippingvaluef", FormatNumber.formatLokalCurrency(__getShippingvalue()));
         map.put("netvaluef", FormatNumber.formatLokalCurrency(__getNetvalue()));
         map.put("taxvaluef", FormatNumber.formatLokalCurrency(__getTaxvalue().doubleValue()));
