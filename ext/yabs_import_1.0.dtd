@@ -57,12 +57,12 @@
 <!--ACCOUNTS-->
 <!ELEMENT intaccountclass ( #PCDATA ) >
 <!ELEMENT intaccounttype ( #PCDATA ) >
-<!ELEMENT description ( #PCDATA ) >
 <!ELEMENT intparentaccount ( #PCDATA ) >
-<!ELEMENT taxvalue ( #PCDATA ) >
 <!ELEMENT intprofitfid ( #PCDATA ) >
 <!ELEMENT inttaxfid ( #PCDATA ) >
 <!ELEMENT inttaxuid ( #PCDATA ) >
+<!ELEMENT description ( #PCDATA ) >
+<!ELEMENT hierarchypath ( #PCDATA ) >
 <!ELEMENT frame ( #PCDATA ) >
 <!ELEMENT account ( intaccountclass | cname | intaccounttype | taxvalue | description | intparentaccount | groupsids? | intaddedby? | dateadded? | intprofitfid | inttaxfid | inttaxuid | frame )* >
 <!ELEMENT accounts ( account* ) >
