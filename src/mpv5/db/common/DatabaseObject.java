@@ -174,12 +174,15 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject> {
             try {
                 try {
                     if (!method.getParameterTypes()[0].isPrimitive()) {
-                        if (!method.getParameterTypes()[0].isInstance(new String())) {
-                            Log.Debug(this, "Set : " + method + " with value: " + method.getParameterTypes()[0].newInstance());
-                            method.invoke(this, method.getParameterTypes()[0].newInstance());
-                        } else {
+                        if (method.getParameterTypes()[0].isInstance(new String())) {
                             Log.Debug(this, "Set : " + method + " with value: " + "<empty>");
                             method.invoke(this, "<empty>");
+                        } else if (method.getParameterTypes()[0].isInstance(new BigDecimal("0"))) {
+                            Log.Debug(this, "Set : " + method + " with value: 0" );
+                            method.invoke(this, new BigDecimal("0"));
+                        } else {
+                            Log.Debug(this, "Set : " + method + " with value: " + method.getParameterTypes()[0].newInstance());
+                            method.invoke(this, method.getParameterTypes()[0].newInstance());
                         }
                     }
                 } catch (IllegalArgumentException ex) {
