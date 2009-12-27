@@ -104,6 +104,8 @@ public class LabeledTextField extends javax.swing.JPanel {
 
         jTextField1.setFont(jTextField1.getFont());
         jTextField1.setDisabledTextColor(new java.awt.Color(0, 51, 51));
+        jTextField1.setMinimumSize(new java.awt.Dimension(5, 20));
+        jTextField1.setPreferredSize(new java.awt.Dimension(5, 20));
         jTextField1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jTextField1ActionPerformed(evt);
