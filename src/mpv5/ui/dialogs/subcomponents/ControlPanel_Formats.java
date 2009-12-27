@@ -362,12 +362,20 @@ public class ControlPanel_Formats extends javax.swing.JPanel implements ControlA
         try {
             jComboBox1.setModel(MPComboBoxModelItem.toModel(QueryHandler.instanceOf().clone(Context.getUser()).getColumns(new String[]{"ids", "cname"}, 0)));
         } catch (NodataFoundException ex) {
-            Log.Debug(ex);
+        }
+        try {
+            labeledCombobox1.setModel(QueryHandler.instanceOf().clone(Context.getFormats()).select("inttype,cname", (String[]) null));
+        } catch (Exception e) {
+        }
+        try {
+            labeledCombobox2.setModel(VariablesHandler.GENERIC_VARS.values());
+        } catch (Exception e) {
+        }
+        try {
+            labeledCombobox3.setModel(MPComboBoxModelItem.toModel((MPEnum[]) FormatHandler.TYPES.values()));
+        } catch (Exception e) {
         }
 
-        labeledCombobox1.setModel(QueryHandler.instanceOf().clone(Context.getFormats()).select("inttype,cname", (String[]) null));
-        labeledCombobox2.setModel(VariablesHandler.GENERIC_VARS.values());
-        labeledCombobox3.setModel(MPComboBoxModelItem.toModel((MPEnum[]) FormatHandler.TYPES.values()));
         labeledTextField1.setText(FormatHandler.INTEGERPART_IDENTIFIER);
         labeledCombobox3.getComboBox().setSelectedIndex(0);
 
