@@ -16,10 +16,10 @@
     <ROW Property="DialogBitmap" MultiBuildValue="DefaultBuild:dialog_image.jpg" Type="1"/>
     <ROW Property="MSIFASTINSTALL" MultiBuildValue="DefaultBuild:2"/>
     <ROW Property="Manufacturer" Value="OpenYabs.org" ValueLocId="*"/>
-    <ROW Property="ProductCode" Value="1033:{38606DFF-C6DA-4997-8E7A-2102CD1CB05D} " Type="16"/>
+    <ROW Property="ProductCode" Value="1033:{A75DA0B8-FDAA-4388-8621-0FC52927FAD5} " Type="16"/>
     <ROW Property="ProductLanguage" Value="1033"/>
     <ROW Property="ProductName" Value="Yabs 1.0" ValueLocId="*"/>
-    <ROW Property="ProductVersion" Value="1.0.0"/>
+    <ROW Property="ProductVersion" Value="1.0.1"/>
     <ROW Property="SecureCustomProperties" Value="OLDPRODUCTS;AI_NEWERPRODUCTFOUND"/>
     <ROW Property="UpgradeCode" Value="{76BC3BA4-9AB0-4E26-9BF3-EA0B40E9E4FE}"/>
   </COMPONENT>
@@ -34,65 +34,65 @@
   <COMPONENT cid="caphyon.advinst.msicomp.MsiCompsComponent">
     <ROW Component="AI_CustomARPName" ComponentId="{0E149133-D920-4AD0-9AB8-304300286413}" Directory_="APPDIR" Attributes="4" KeyPath="DisplayName"/>
     <ROW Component="AI_DisableModify" ComponentId="{39F55887-9092-4049-8A6E-1B8D65418AA5}" Directory_="APPDIR" Attributes="4" KeyPath="NoModify"/>
-    <ROW Component="SHORTCUTDIR" ComponentId="{8D7B06D0-1466-4366-91E2-0CA3EDC583D0}" Directory_="SHORTCUTDIR" Attributes="0"/>
-    <ROW Component="YaBS_1.0.exe" ComponentId="{652EE5E6-9C72-4153-B1BF-AE47F5CA7C90}" Directory_="APPDIR" Attributes="0" KeyPath="YaBS_1.0.exe"/>
-    <ROW Component="appframework_1.0.3.jar" ComponentId="{7BE84EAF-D3CF-4715-86C3-F4438DA7F3F9}" Directory_="lib_DIR" Attributes="0" KeyPath="appframework_1.0.3.jar" Type="0"/>
-    <ROW Component="license.txt" ComponentId="{76E40800-AB0A-4953-8777-047063101558}" Directory_="APPDIR" Attributes="0" KeyPath="license.txt" Type="0"/>
+    <ROW Component="SHORTCUTDIR" ComponentId="{774FB103-E156-44FE-9220-21D91D2750CC}" Directory_="SHORTCUTDIR" Attributes="0"/>
+    <ROW Component="YaBS_1.0.exe" ComponentId="{345E99D6-CEF9-4CAB-80FD-1C57C014B8A2}" Directory_="APPDIR" Attributes="0" KeyPath="YaBS_1.0.exe"/>
+    <ROW Component="appframework_1.0.3.jar" ComponentId="{10DB74D1-BB66-4C97-944C-3FC34AF863A3}" Directory_="lib_DIR" Attributes="0" KeyPath="appframework_1.0.3.jar" Type="0"/>
+    <ROW Component="license.txt" ComponentId="{35FDFF27-A894-4565-AF3E-7B7E34779AC9}" Directory_="APPDIR" Attributes="0" KeyPath="license.txt" Type="0"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiFeatsComponent">
     <ROW Feature="MainFeature" Title="MainFeature" Description="Description" Display="1" Level="1" Directory_="APPDIR" Attributes="0" Components="AI_CustomARPName AI_DisableModify appframework_1.0.3.jar license.txt YaBS_1.0.exe SHORTCUTDIR"/>
     <ATTRIBUTE name="CurrentFeature" value="MainFeature"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiFilesComponent">
-    <ROW File="MPCalendar.jar" Component_="appframework_1.0.3.jar" FileName="MPCale~1.jar|MPCalendar.jar" Attributes="0" SourcePath="..\..\..\..\..\Downloads\YaBS-1.0-RC-2\YaBS 1.0 RC-2\lib\MPCalendar.jar" SelfReg="false" Sequence="25"/>
-    <ROW File="PDFRenderer.jar" Component_="appframework_1.0.3.jar" FileName="PDFRen~1.jar|PDFRenderer.jar" Attributes="0" SourcePath="..\..\..\..\..\Downloads\YaBS-1.0-RC-2\YaBS 1.0 RC-2\lib\PDFRenderer.jar" SelfReg="false" Sequence="30"/>
-    <ROW File="YaBS_1.0.exe" Component_="YaBS_1.0.exe" FileName="YaBS10~1.exe|YaBS 1.0.exe" Attributes="0" SourcePath="..\..\..\..\..\Downloads\YaBS-1.0-RC-2\YaBS 1.0 RC-2\YaBS 1.0.exe" SelfReg="false" Sequence="49"/>
-    <ROW File="appframework_1.0.3.jar" Component_="appframework_1.0.3.jar" FileName="appfra~1.jar|appframework-1.0.3.jar" Attributes="0" SourcePath="..\..\..\..\..\Downloads\YaBS-1.0-RC-2\YaBS 1.0 RC-2\lib\appframework-1.0.3.jar" SelfReg="false" Sequence="1"/>
-    <ROW File="bootstrapconnector.jar" Component_="appframework_1.0.3.jar" FileName="bootst~1.jar|bootstrapconnector.jar" Attributes="0" SourcePath="..\..\..\..\..\Downloads\YaBS-1.0-RC-2\YaBS 1.0 RC-2\lib\bootstrapconnector.jar" SelfReg="false" Sequence="2"/>
-    <ROW File="commons_cli_20070823.jar" Component_="appframework_1.0.3.jar" FileName="common~1.jar|commons-cli-20070823.jar" Attributes="0" SourcePath="..\..\..\..\..\Downloads\YaBS-1.0-RC-2\YaBS 1.0 RC-2\lib\commons-cli-20070823.jar" SelfReg="false" Sequence="3"/>
-    <ROW File="commons_codec_1.3.jar" Component_="appframework_1.0.3.jar" FileName="common~2.jar|commons-codec-1.3.jar" Attributes="0" SourcePath="..\..\..\..\..\Downloads\YaBS-1.0-RC-2\YaBS 1.0 RC-2\lib\commons-codec-1.3.jar" SelfReg="false" Sequence="4"/>
-    <ROW File="commons_logging_1.1.jar" Component_="appframework_1.0.3.jar" FileName="common~3.jar|commons-logging-1.1.jar" Attributes="0" SourcePath="..\..\..\..\..\Downloads\YaBS-1.0-RC-2\YaBS 1.0 RC-2\lib\commons-logging-1.1.jar" SelfReg="false" Sequence="5"/>
-    <ROW File="core_renderer.jar" Component_="appframework_1.0.3.jar" FileName="core-r~1.jar|core-renderer.jar" Attributes="0" SourcePath="..\..\..\..\..\Downloads\YaBS-1.0-RC-2\YaBS 1.0 RC-2\lib\core-renderer.jar" SelfReg="false" Sequence="6"/>
-    <ROW File="derby.jar" Component_="appframework_1.0.3.jar" FileName="derby.jar" Attributes="0" SourcePath="..\..\..\..\..\Downloads\YaBS-1.0-RC-2\YaBS 1.0 RC-2\lib\derby.jar" SelfReg="false" Sequence="7"/>
-    <ROW File="dtdparser121.jar" Component_="appframework_1.0.3.jar" FileName="dtdpar~1.jar|dtdparser121.jar" Attributes="0" SourcePath="..\..\..\..\..\Downloads\YaBS-1.0-RC-2\YaBS 1.0 RC-2\lib\dtdparser121.jar" SelfReg="false" Sequence="8"/>
-    <ROW File="httpcore_4.0.1.jar" Component_="appframework_1.0.3.jar" FileName="httpco~1.jar|httpcore-4.0.1.jar" Attributes="0" SourcePath="..\..\..\..\..\Downloads\YaBS-1.0-RC-2\YaBS 1.0 RC-2\lib\httpcore-4.0.1.jar" SelfReg="false" Sequence="9"/>
-    <ROW File="httpcore_nio_4.0.1.jar" Component_="appframework_1.0.3.jar" FileName="httpco~2.jar|httpcore-nio-4.0.1.jar" Attributes="0" SourcePath="..\..\..\..\..\Downloads\YaBS-1.0-RC-2\YaBS 1.0 RC-2\lib\httpcore-nio-4.0.1.jar" SelfReg="false" Sequence="10"/>
-    <ROW File="iText_2.1.7.jar" Component_="appframework_1.0.3.jar" FileName="iText-~1.jar|iText-2.1.7.jar" Attributes="0" SourcePath="..\..\..\..\..\Downloads\YaBS-1.0-RC-2\YaBS 1.0 RC-2\lib\iText-2.1.7.jar" SelfReg="false" Sequence="11"/>
-    <ROW File="jOpenDocument_1.1_jdk5.jar" Component_="appframework_1.0.3.jar" FileName="jOpenD~1.jar|jOpenDocument-1.1-jdk5.jar" Attributes="0" SourcePath="..\..\..\..\..\Downloads\YaBS-1.0-RC-2\YaBS 1.0 RC-2\lib\jOpenDocument-1.1-jdk5.jar" SelfReg="false" Sequence="17"/>
-    <ROW File="java_uno.jar" Component_="appframework_1.0.3.jar" FileName="java_uno.jar" Attributes="0" SourcePath="..\..\..\..\..\Downloads\YaBS-1.0-RC-2\YaBS 1.0 RC-2\lib\java_uno.jar" SelfReg="false" Sequence="12"/>
-    <ROW File="java_uno_accessbridge.jar" Component_="appframework_1.0.3.jar" FileName="java_u~1.jar|java_uno_accessbridge.jar" Attributes="0" SourcePath="..\..\..\..\..\Downloads\YaBS-1.0-RC-2\YaBS 1.0 RC-2\lib\java_uno_accessbridge.jar" SelfReg="false" Sequence="13"/>
-    <ROW File="jdom.jar" Component_="appframework_1.0.3.jar" FileName="jdom.jar" Attributes="0" SourcePath="..\..\..\..\..\Downloads\YaBS-1.0-RC-2\YaBS 1.0 RC-2\lib\jdom.jar" SelfReg="false" Sequence="14"/>
-    <ROW File="jodconverter_2.2.2.jar" Component_="appframework_1.0.3.jar" FileName="jodcon~1.jar|jodconverter-2.2.2.jar" Attributes="0" SourcePath="..\..\..\..\..\Downloads\YaBS-1.0-RC-2\YaBS 1.0 RC-2\lib\jodconverter-2.2.2.jar" SelfReg="false" Sequence="15"/>
-    <ROW File="jodconverter_cli_2.2.2.jar" Component_="appframework_1.0.3.jar" FileName="jodcon~2.jar|jodconverter-cli-2.2.2.jar" Attributes="0" SourcePath="..\..\..\..\..\Downloads\YaBS-1.0-RC-2\YaBS 1.0 RC-2\lib\jodconverter-cli-2.2.2.jar" SelfReg="false" Sequence="16"/>
-    <ROW File="juh.jar" Component_="appframework_1.0.3.jar" FileName="juh.jar" Attributes="0" SourcePath="..\..\..\..\..\Downloads\YaBS-1.0-RC-2\YaBS 1.0 RC-2\lib\juh.jar" SelfReg="false" Sequence="18"/>
-    <ROW File="junit_3.8.1.jar" Component_="appframework_1.0.3.jar" FileName="junit-~1.jar|junit-3.8.1.jar" Attributes="0" SourcePath="..\..\..\..\..\Downloads\YaBS-1.0-RC-2\YaBS 1.0 RC-2\lib\junit-3.8.1.jar" SelfReg="false" Sequence="19"/>
-    <ROW File="jurt.jar" Component_="appframework_1.0.3.jar" FileName="jurt.jar" Attributes="0" SourcePath="..\..\..\..\..\Downloads\YaBS-1.0-RC-2\YaBS 1.0 RC-2\lib\jurt.jar" SelfReg="false" Sequence="20"/>
-    <ROW File="jut.jar" Component_="appframework_1.0.3.jar" FileName="jut.jar" Attributes="0" SourcePath="..\..\..\..\..\Downloads\YaBS-1.0-RC-2\YaBS 1.0 RC-2\lib\jut.jar" SelfReg="false" Sequence="21"/>
-    <ROW File="l2fprod_common_all.jar" Component_="appframework_1.0.3.jar" FileName="l2fpro~1.jar|l2fprod-common-all.jar" Attributes="0" SourcePath="..\..\..\..\..\Downloads\YaBS-1.0-RC-2\YaBS 1.0 RC-2\lib\l2fprod-common-all.jar" SelfReg="false" Sequence="22"/>
-    <ROW File="license.txt" Component_="license.txt" FileName="license.txt" Attributes="0" SourcePath="..\..\..\..\..\Downloads\YaBS-1.0-RC-2\YaBS 1.0 RC-2\license.txt" SelfReg="false" Sequence="47"/>
-    <ROW File="mail.jar" Component_="appframework_1.0.3.jar" FileName="mail.jar" Attributes="0" SourcePath="..\..\..\..\..\Downloads\YaBS-1.0-RC-2\YaBS 1.0 RC-2\lib\mail.jar" SelfReg="false" Sequence="23"/>
-    <ROW File="microba_0.4.4.2.jar" Component_="appframework_1.0.3.jar" FileName="microb~1.jar|microba-0.4.4.2.jar" Attributes="0" SourcePath="..\..\..\..\..\Downloads\YaBS-1.0-RC-2\YaBS 1.0 RC-2\lib\microba-0.4.4.2.jar" SelfReg="false" Sequence="24"/>
-    <ROW File="mysql_connector_java_5.0.8_bin.jar" Component_="appframework_1.0.3.jar" FileName="mysql-~1.jar|mysql-connector-java-5.0.8-bin.jar" Attributes="0" SourcePath="..\..\..\..\..\Downloads\YaBS-1.0-RC-2\YaBS 1.0 RC-2\lib\mysql-connector-java-5.0.8-bin.jar" SelfReg="false" Sequence="26"/>
-    <ROW File="noa_mp.jar" Component_="appframework_1.0.3.jar" FileName="noa-mp.jar" Attributes="0" SourcePath="..\..\..\..\..\Downloads\YaBS-1.0-RC-2\YaBS 1.0 RC-2\lib\noa-mp.jar" SelfReg="false" Sequence="27"/>
-    <ROW File="officebean.jar" Component_="appframework_1.0.3.jar" FileName="office~1.jar|officebean.jar" Attributes="0" SourcePath="..\..\..\..\..\Downloads\YaBS-1.0-RC-2\YaBS 1.0 RC-2\lib\officebean.jar" SelfReg="false" Sequence="28"/>
-    <ROW File="org.json.jar" Component_="appframework_1.0.3.jar" FileName="orgjso~1.jar|org.json.jar" Attributes="0" SourcePath="..\..\..\..\..\Downloads\YaBS-1.0-RC-2\YaBS 1.0 RC-2\lib\org.json.jar" SelfReg="false" Sequence="29"/>
-    <ROW File="registry_3.1.3.jar" Component_="appframework_1.0.3.jar" FileName="regist~1.jar|registry-3.1.3.jar" Attributes="0" SourcePath="..\..\..\..\..\Downloads\YaBS-1.0-RC-2\YaBS 1.0 RC-2\lib\registry-3.1.3.jar" SelfReg="false" Sequence="31"/>
-    <ROW File="resolver.jar" Component_="appframework_1.0.3.jar" FileName="resolver.jar" Attributes="0" SourcePath="..\..\..\..\..\Downloads\YaBS-1.0-RC-2\YaBS 1.0 RC-2\lib\resolver.jar" SelfReg="false" Sequence="32"/>
-    <ROW File="ridl.jar" Component_="appframework_1.0.3.jar" FileName="ridl.jar" Attributes="0" SourcePath="..\..\..\..\..\Downloads\YaBS-1.0-RC-2\YaBS 1.0 RC-2\lib\ridl.jar" SelfReg="false" Sequence="33"/>
-    <ROW File="sandbox.jar" Component_="appframework_1.0.3.jar" FileName="sandbox.jar" Attributes="0" SourcePath="..\..\..\..\..\Downloads\YaBS-1.0-RC-2\YaBS 1.0 RC-2\lib\sandbox.jar" SelfReg="false" Sequence="34"/>
-    <ROW File="serializer.jar" Component_="appframework_1.0.3.jar" FileName="serial~1.jar|serializer.jar" Attributes="0" SourcePath="..\..\..\..\..\Downloads\YaBS-1.0-RC-2\YaBS 1.0 RC-2\lib\serializer.jar" SelfReg="false" Sequence="35"/>
-    <ROW File="swing_layout_1.0.3.jar" Component_="appframework_1.0.3.jar" FileName="swing-~1.jar|swing-layout-1.0.3.jar" Attributes="0" SourcePath="..\..\..\..\..\Downloads\YaBS-1.0-RC-2\YaBS 1.0 RC-2\lib\swing-layout-1.0.3.jar" SelfReg="false" Sequence="36"/>
-    <ROW File="swing_worker_1.1.jar" Component_="appframework_1.0.3.jar" FileName="swing-~2.jar|swing-worker-1.1.jar" Attributes="0" SourcePath="..\..\..\..\..\Downloads\YaBS-1.0-RC-2\YaBS 1.0 RC-2\lib\swing-worker-1.1.jar" SelfReg="false" Sequence="37"/>
-    <ROW File="tinylaf.jar" Component_="appframework_1.0.3.jar" FileName="tinylaf.jar" Attributes="0" SourcePath="..\..\..\..\..\Downloads\YaBS-1.0-RC-2\YaBS 1.0 RC-2\lib\tinylaf.jar" SelfReg="false" Sequence="38"/>
-    <ROW File="unoil.jar" Component_="appframework_1.0.3.jar" FileName="unoil.jar" Attributes="0" SourcePath="..\..\..\..\..\Downloads\YaBS-1.0-RC-2\YaBS 1.0 RC-2\lib\unoil.jar" SelfReg="false" Sequence="39"/>
-    <ROW File="unoloader.jar" Component_="appframework_1.0.3.jar" FileName="unoloa~1.jar|unoloader.jar" Attributes="0" SourcePath="..\..\..\..\..\Downloads\YaBS-1.0-RC-2\YaBS 1.0 RC-2\lib\unoloader.jar" SelfReg="false" Sequence="40"/>
-    <ROW File="ws_commons_util_1.0.2.jar" Component_="appframework_1.0.3.jar" FileName="ws-com~1.jar|ws-commons-util-1.0.2.jar" Attributes="0" SourcePath="..\..\..\..\..\Downloads\YaBS-1.0-RC-2\YaBS 1.0 RC-2\lib\ws-commons-util-1.0.2.jar" SelfReg="false" Sequence="41"/>
-    <ROW File="xercesImpl.jar" Component_="appframework_1.0.3.jar" FileName="xerces~1.jar|xercesImpl.jar" Attributes="0" SourcePath="..\..\..\..\..\Downloads\YaBS-1.0-RC-2\YaBS 1.0 RC-2\lib\xercesImpl.jar" SelfReg="false" Sequence="42"/>
-    <ROW File="xml_apis.jar" Component_="appframework_1.0.3.jar" FileName="xml-apis.jar" Attributes="0" SourcePath="..\..\..\..\..\Downloads\YaBS-1.0-RC-2\YaBS 1.0 RC-2\lib\xml-apis.jar" SelfReg="false" Sequence="43"/>
-    <ROW File="xmlrpc_client_3.1.2.jar" Component_="appframework_1.0.3.jar" FileName="xmlrpc~1.jar|xmlrpc-client-3.1.2.jar" Attributes="0" SourcePath="..\..\..\..\..\Downloads\YaBS-1.0-RC-2\YaBS 1.0 RC-2\lib\xmlrpc-client-3.1.2.jar" SelfReg="false" Sequence="44"/>
-    <ROW File="xmlrpc_common_3.1.2.jar" Component_="appframework_1.0.3.jar" FileName="xmlrpc~2.jar|xmlrpc-common-3.1.2.jar" Attributes="0" SourcePath="..\..\..\..\..\Downloads\YaBS-1.0-RC-2\YaBS 1.0 RC-2\lib\xmlrpc-common-3.1.2.jar" SelfReg="false" Sequence="45"/>
-    <ROW File="xmlrpc_server_3.1.2.jar" Component_="appframework_1.0.3.jar" FileName="xmlrpc~3.jar|xmlrpc-server-3.1.2.jar" Attributes="0" SourcePath="..\..\..\..\..\Downloads\YaBS-1.0-RC-2\YaBS 1.0 RC-2\lib\xmlrpc-server-3.1.2.jar" SelfReg="false" Sequence="46"/>
-    <ROW File="yabs.jar" Component_="license.txt" FileName="yabs.jar" Attributes="0" SourcePath="..\..\..\..\..\Downloads\YaBS-1.0-RC-2\YaBS 1.0 RC-2\yabs.jar" SelfReg="false" Sequence="48"/>
+    <ROW File="MPCalendar.jar" Component_="appframework_1.0.3.jar" FileName="MPCale~1.jar|MPCalendar.jar" Attributes="0" SourcePath="..\..\..\..\..\Downloads\YaBS-1.0-RC-2\YaBS-1.0-Package\lib\MPCalendar.jar" SelfReg="false" Sequence="25"/>
+    <ROW File="PDFRenderer.jar" Component_="appframework_1.0.3.jar" FileName="PDFRen~1.jar|PDFRenderer.jar" Attributes="0" SourcePath="..\..\..\..\..\Downloads\YaBS-1.0-RC-2\YaBS-1.0-Package\lib\PDFRenderer.jar" SelfReg="false" Sequence="30"/>
+    <ROW File="YaBS_1.0.exe" Component_="YaBS_1.0.exe" FileName="YaBS10~1.exe|YaBS 1.0.exe" Attributes="0" SourcePath="..\..\..\..\..\Downloads\YaBS-1.0-RC-2\YaBS-1.0-Package\YaBS 1.0.exe" SelfReg="false" Sequence="48"/>
+    <ROW File="appframework_1.0.3.jar" Component_="appframework_1.0.3.jar" FileName="appfra~1.jar|appframework-1.0.3.jar" Attributes="0" SourcePath="..\..\..\..\..\Downloads\YaBS-1.0-RC-2\YaBS-1.0-Package\lib\appframework-1.0.3.jar" SelfReg="false" Sequence="1"/>
+    <ROW File="bootstrapconnector.jar" Component_="appframework_1.0.3.jar" FileName="bootst~1.jar|bootstrapconnector.jar" Attributes="0" SourcePath="..\..\..\..\..\Downloads\YaBS-1.0-RC-2\YaBS-1.0-Package\lib\bootstrapconnector.jar" SelfReg="false" Sequence="2"/>
+    <ROW File="commons_cli_20070823.jar" Component_="appframework_1.0.3.jar" FileName="common~1.jar|commons-cli-20070823.jar" Attributes="0" SourcePath="..\..\..\..\..\Downloads\YaBS-1.0-RC-2\YaBS-1.0-Package\lib\commons-cli-20070823.jar" SelfReg="false" Sequence="3"/>
+    <ROW File="commons_codec_1.3.jar" Component_="appframework_1.0.3.jar" FileName="common~2.jar|commons-codec-1.3.jar" Attributes="0" SourcePath="..\..\..\..\..\Downloads\YaBS-1.0-RC-2\YaBS-1.0-Package\lib\commons-codec-1.3.jar" SelfReg="false" Sequence="4"/>
+    <ROW File="commons_logging_1.1.jar" Component_="appframework_1.0.3.jar" FileName="common~3.jar|commons-logging-1.1.jar" Attributes="0" SourcePath="..\..\..\..\..\Downloads\YaBS-1.0-RC-2\YaBS-1.0-Package\lib\commons-logging-1.1.jar" SelfReg="false" Sequence="5"/>
+    <ROW File="core_renderer.jar" Component_="appframework_1.0.3.jar" FileName="core-r~1.jar|core-renderer.jar" Attributes="0" SourcePath="..\..\..\..\..\Downloads\YaBS-1.0-RC-2\YaBS-1.0-Package\lib\core-renderer.jar" SelfReg="false" Sequence="6"/>
+    <ROW File="derby.jar" Component_="appframework_1.0.3.jar" FileName="derby.jar" Attributes="0" SourcePath="..\..\..\..\..\Downloads\YaBS-1.0-RC-2\YaBS-1.0-Package\lib\derby.jar" SelfReg="false" Sequence="7"/>
+    <ROW File="dtdparser121.jar" Component_="appframework_1.0.3.jar" FileName="dtdpar~1.jar|dtdparser121.jar" Attributes="0" SourcePath="..\..\..\..\..\Downloads\YaBS-1.0-RC-2\YaBS-1.0-Package\lib\dtdparser121.jar" SelfReg="false" Sequence="8"/>
+    <ROW File="httpcore_4.0.1.jar" Component_="appframework_1.0.3.jar" FileName="httpco~1.jar|httpcore-4.0.1.jar" Attributes="0" SourcePath="..\..\..\..\..\Downloads\YaBS-1.0-RC-2\YaBS-1.0-Package\lib\httpcore-4.0.1.jar" SelfReg="false" Sequence="9"/>
+    <ROW File="httpcore_nio_4.0.1.jar" Component_="appframework_1.0.3.jar" FileName="httpco~2.jar|httpcore-nio-4.0.1.jar" Attributes="0" SourcePath="..\..\..\..\..\Downloads\YaBS-1.0-RC-2\YaBS-1.0-Package\lib\httpcore-nio-4.0.1.jar" SelfReg="false" Sequence="10"/>
+    <ROW File="iText_2.1.7.jar" Component_="appframework_1.0.3.jar" FileName="iText-~1.jar|iText-2.1.7.jar" Attributes="0" SourcePath="..\..\..\..\..\Downloads\YaBS-1.0-RC-2\YaBS-1.0-Package\lib\iText-2.1.7.jar" SelfReg="false" Sequence="11"/>
+    <ROW File="jOpenDocument_1.1_jdk5.jar" Component_="appframework_1.0.3.jar" FileName="jOpenD~1.jar|jOpenDocument-1.1-jdk5.jar" Attributes="0" SourcePath="..\..\..\..\..\Downloads\YaBS-1.0-RC-2\YaBS-1.0-Package\lib\jOpenDocument-1.1-jdk5.jar" SelfReg="false" Sequence="17"/>
+    <ROW File="java_uno.jar" Component_="appframework_1.0.3.jar" FileName="java_uno.jar" Attributes="0" SourcePath="..\..\..\..\..\Downloads\YaBS-1.0-RC-2\YaBS-1.0-Package\lib\java_uno.jar" SelfReg="false" Sequence="12"/>
+    <ROW File="java_uno_accessbridge.jar" Component_="appframework_1.0.3.jar" FileName="java_u~1.jar|java_uno_accessbridge.jar" Attributes="0" SourcePath="..\..\..\..\..\Downloads\YaBS-1.0-RC-2\YaBS-1.0-Package\lib\java_uno_accessbridge.jar" SelfReg="false" Sequence="13"/>
+    <ROW File="jdom.jar" Component_="appframework_1.0.3.jar" FileName="jdom.jar" Attributes="0" SourcePath="..\..\..\..\..\Downloads\YaBS-1.0-RC-2\YaBS-1.0-Package\lib\jdom.jar" SelfReg="false" Sequence="14"/>
+    <ROW File="jodconverter_2.2.2.jar" Component_="appframework_1.0.3.jar" FileName="jodcon~1.jar|jodconverter-2.2.2.jar" Attributes="0" SourcePath="..\..\..\..\..\Downloads\YaBS-1.0-RC-2\YaBS-1.0-Package\lib\jodconverter-2.2.2.jar" SelfReg="false" Sequence="15"/>
+    <ROW File="jodconverter_cli_2.2.2.jar" Component_="appframework_1.0.3.jar" FileName="jodcon~2.jar|jodconverter-cli-2.2.2.jar" Attributes="0" SourcePath="..\..\..\..\..\Downloads\YaBS-1.0-RC-2\YaBS-1.0-Package\lib\jodconverter-cli-2.2.2.jar" SelfReg="false" Sequence="16"/>
+    <ROW File="juh.jar" Component_="appframework_1.0.3.jar" FileName="juh.jar" Attributes="0" SourcePath="..\..\..\..\..\Downloads\YaBS-1.0-RC-2\YaBS-1.0-Package\lib\juh.jar" SelfReg="false" Sequence="18"/>
+    <ROW File="junit_3.8.1.jar" Component_="appframework_1.0.3.jar" FileName="junit-~1.jar|junit-3.8.1.jar" Attributes="0" SourcePath="..\..\..\..\..\Downloads\YaBS-1.0-RC-2\YaBS-1.0-Package\lib\junit-3.8.1.jar" SelfReg="false" Sequence="19"/>
+    <ROW File="jurt.jar" Component_="appframework_1.0.3.jar" FileName="jurt.jar" Attributes="0" SourcePath="..\..\..\..\..\Downloads\YaBS-1.0-RC-2\YaBS-1.0-Package\lib\jurt.jar" SelfReg="false" Sequence="20"/>
+    <ROW File="jut.jar" Component_="appframework_1.0.3.jar" FileName="jut.jar" Attributes="0" SourcePath="..\..\..\..\..\Downloads\YaBS-1.0-RC-2\YaBS-1.0-Package\lib\jut.jar" SelfReg="false" Sequence="21"/>
+    <ROW File="l2fprod_common_all.jar" Component_="appframework_1.0.3.jar" FileName="l2fpro~1.jar|l2fprod-common-all.jar" Attributes="0" SourcePath="..\..\..\..\..\Downloads\YaBS-1.0-RC-2\YaBS-1.0-Package\lib\l2fprod-common-all.jar" SelfReg="false" Sequence="22"/>
+    <ROW File="license.txt" Component_="license.txt" FileName="license.txt" Attributes="0" SourcePath="..\..\..\..\..\Downloads\YaBS-1.0-RC-2\YaBS-1.0-Package\license.txt" SelfReg="false" Sequence="47"/>
+    <ROW File="mail.jar" Component_="appframework_1.0.3.jar" FileName="mail.jar" Attributes="0" SourcePath="..\..\..\..\..\Downloads\YaBS-1.0-RC-2\YaBS-1.0-Package\lib\mail.jar" SelfReg="false" Sequence="23"/>
+    <ROW File="microba_0.4.4.2.jar" Component_="appframework_1.0.3.jar" FileName="microb~1.jar|microba-0.4.4.2.jar" Attributes="0" SourcePath="..\..\..\..\..\Downloads\YaBS-1.0-RC-2\YaBS-1.0-Package\lib\microba-0.4.4.2.jar" SelfReg="false" Sequence="24"/>
+    <ROW File="mysql_connector_java_5.0.8_bin.jar" Component_="appframework_1.0.3.jar" FileName="mysql-~1.jar|mysql-connector-java-5.0.8-bin.jar" Attributes="0" SourcePath="..\..\..\..\..\Downloads\YaBS-1.0-RC-2\YaBS-1.0-Package\lib\mysql-connector-java-5.0.8-bin.jar" SelfReg="false" Sequence="26"/>
+    <ROW File="noa_mp.jar" Component_="appframework_1.0.3.jar" FileName="noa-mp.jar" Attributes="0" SourcePath="..\..\..\..\..\Downloads\YaBS-1.0-RC-2\YaBS-1.0-Package\lib\noa-mp.jar" SelfReg="false" Sequence="27"/>
+    <ROW File="officebean.jar" Component_="appframework_1.0.3.jar" FileName="office~1.jar|officebean.jar" Attributes="0" SourcePath="..\..\..\..\..\Downloads\YaBS-1.0-RC-2\YaBS-1.0-Package\lib\officebean.jar" SelfReg="false" Sequence="28"/>
+    <ROW File="org.json.jar" Component_="appframework_1.0.3.jar" FileName="orgjso~1.jar|org.json.jar" Attributes="0" SourcePath="..\..\..\..\..\Downloads\YaBS-1.0-RC-2\YaBS-1.0-Package\lib\org.json.jar" SelfReg="false" Sequence="29"/>
+    <ROW File="registry_3.1.3.jar" Component_="appframework_1.0.3.jar" FileName="regist~1.jar|registry-3.1.3.jar" Attributes="0" SourcePath="..\..\..\..\..\Downloads\YaBS-1.0-RC-2\YaBS-1.0-Package\lib\registry-3.1.3.jar" SelfReg="false" Sequence="31"/>
+    <ROW File="resolver.jar" Component_="appframework_1.0.3.jar" FileName="resolver.jar" Attributes="0" SourcePath="..\..\..\..\..\Downloads\YaBS-1.0-RC-2\YaBS-1.0-Package\lib\resolver.jar" SelfReg="false" Sequence="32"/>
+    <ROW File="ridl.jar" Component_="appframework_1.0.3.jar" FileName="ridl.jar" Attributes="0" SourcePath="..\..\..\..\..\Downloads\YaBS-1.0-RC-2\YaBS-1.0-Package\lib\ridl.jar" SelfReg="false" Sequence="33"/>
+    <ROW File="sandbox.jar" Component_="appframework_1.0.3.jar" FileName="sandbox.jar" Attributes="0" SourcePath="..\..\..\..\..\Downloads\YaBS-1.0-RC-2\YaBS-1.0-Package\lib\sandbox.jar" SelfReg="false" Sequence="34"/>
+    <ROW File="serializer.jar" Component_="appframework_1.0.3.jar" FileName="serial~1.jar|serializer.jar" Attributes="0" SourcePath="..\..\..\..\..\Downloads\YaBS-1.0-RC-2\YaBS-1.0-Package\lib\serializer.jar" SelfReg="false" Sequence="35"/>
+    <ROW File="swing_layout_1.0.3.jar" Component_="appframework_1.0.3.jar" FileName="swing-~1.jar|swing-layout-1.0.3.jar" Attributes="0" SourcePath="..\..\..\..\..\Downloads\YaBS-1.0-RC-2\YaBS-1.0-Package\lib\swing-layout-1.0.3.jar" SelfReg="false" Sequence="36"/>
+    <ROW File="swing_worker_1.1.jar" Component_="appframework_1.0.3.jar" FileName="swing-~2.jar|swing-worker-1.1.jar" Attributes="0" SourcePath="..\..\..\..\..\Downloads\YaBS-1.0-RC-2\YaBS-1.0-Package\lib\swing-worker-1.1.jar" SelfReg="false" Sequence="37"/>
+    <ROW File="tinylaf.jar" Component_="appframework_1.0.3.jar" FileName="tinylaf.jar" Attributes="0" SourcePath="..\..\..\..\..\Downloads\YaBS-1.0-RC-2\YaBS-1.0-Package\lib\tinylaf.jar" SelfReg="false" Sequence="38"/>
+    <ROW File="unoil.jar" Component_="appframework_1.0.3.jar" FileName="unoil.jar" Attributes="0" SourcePath="..\..\..\..\..\Downloads\YaBS-1.0-RC-2\YaBS-1.0-Package\lib\unoil.jar" SelfReg="false" Sequence="39"/>
+    <ROW File="unoloader.jar" Component_="appframework_1.0.3.jar" FileName="unoloa~1.jar|unoloader.jar" Attributes="0" SourcePath="..\..\..\..\..\Downloads\YaBS-1.0-RC-2\YaBS-1.0-Package\lib\unoloader.jar" SelfReg="false" Sequence="40"/>
+    <ROW File="ws_commons_util_1.0.2.jar" Component_="appframework_1.0.3.jar" FileName="ws-com~1.jar|ws-commons-util-1.0.2.jar" Attributes="0" SourcePath="..\..\..\..\..\Downloads\YaBS-1.0-RC-2\YaBS-1.0-Package\lib\ws-commons-util-1.0.2.jar" SelfReg="false" Sequence="41"/>
+    <ROW File="xercesImpl.jar" Component_="appframework_1.0.3.jar" FileName="xerces~1.jar|xercesImpl.jar" Attributes="0" SourcePath="..\..\..\..\..\Downloads\YaBS-1.0-RC-2\YaBS-1.0-Package\lib\xercesImpl.jar" SelfReg="false" Sequence="42"/>
+    <ROW File="xml_apis.jar" Component_="appframework_1.0.3.jar" FileName="xml-apis.jar" Attributes="0" SourcePath="..\..\..\..\..\Downloads\YaBS-1.0-RC-2\YaBS-1.0-Package\lib\xml-apis.jar" SelfReg="false" Sequence="43"/>
+    <ROW File="xmlrpc_client_3.1.2.jar" Component_="appframework_1.0.3.jar" FileName="xmlrpc~1.jar|xmlrpc-client-3.1.2.jar" Attributes="0" SourcePath="..\..\..\..\..\Downloads\YaBS-1.0-RC-2\YaBS-1.0-Package\lib\xmlrpc-client-3.1.2.jar" SelfReg="false" Sequence="44"/>
+    <ROW File="xmlrpc_common_3.1.2.jar" Component_="appframework_1.0.3.jar" FileName="xmlrpc~2.jar|xmlrpc-common-3.1.2.jar" Attributes="0" SourcePath="..\..\..\..\..\Downloads\YaBS-1.0-RC-2\YaBS-1.0-Package\lib\xmlrpc-common-3.1.2.jar" SelfReg="false" Sequence="45"/>
+    <ROW File="xmlrpc_server_3.1.2.jar" Component_="appframework_1.0.3.jar" FileName="xmlrpc~3.jar|xmlrpc-server-3.1.2.jar" Attributes="0" SourcePath="..\..\..\..\..\Downloads\YaBS-1.0-RC-2\YaBS-1.0-Package\lib\xmlrpc-server-3.1.2.jar" SelfReg="false" Sequence="46"/>
+    <ROW File="yabs.jar" Component_="license.txt" FileName="yabs.jar" Attributes="0" SourcePath="..\..\..\..\..\Downloads\YaBS-1.0-RC-2\YaBS-1.0-Package\yabs.jar" SelfReg="false" Sequence="49"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.BuildComponent">
     <ROW BuildKey="DefaultBuild" BuildName="DefaultBuild" BuildOrder="1" BuildType="0" Languages="en" InstallationType="4"/>
@@ -146,7 +146,7 @@
     <ROW Name="icon.exe" SourcePath="..\..\src\mpv5\resources\images\icon.ico" Index="0"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiInstExSeqComponent">
-    <ROW Action="AI_DOWNGRADE" Condition="AI_NEWERPRODUCTFOUND AND (UILevel &lt;&gt; 5)" Sequence="210"/>
+    <ROW Action="AI_DOWNGRADE" Condition="AI_NEWERPRODUCTFOUND AND (UILevel &lt;&gt; 5)" Sequence="201"/>
     <ROW Action="AI_RESTORE_LOCATION" Condition="APPDIR=&quot;&quot;" Sequence="749"/>
     <ROW Action="AI_STORE_LOCATION" Condition="Not Installed" Sequence="1501"/>
     <ROW Action="AI_PREPARE_UPGRADE" Condition="AI_UPGRADE=&quot;No&quot; AND (Not Installed)" Sequence="1399"/>
@@ -165,7 +165,7 @@
     <ROW Registry="Contact" Root="-1" Key="Software\Microsoft\Windows\CurrentVersion\Uninstall\[ProductName]" Name="Contact" Component_="AI_CustomARPName"/>
     <ROW Registry="DisplayIcon" Root="-1" Key="Software\Microsoft\Windows\CurrentVersion\Uninstall\[ProductName]" Name="DisplayIcon" Value="[ARP_ICON_PATH]" Component_="AI_CustomARPName"/>
     <ROW Registry="DisplayName" Root="-1" Key="Software\Microsoft\Windows\CurrentVersion\Uninstall\[ProductName]" Name="DisplayName" Value="Yabs 1.0 - Yet another business software" Component_="AI_CustomARPName"/>
-    <ROW Registry="DisplayVersion" Root="-1" Key="Software\Microsoft\Windows\CurrentVersion\Uninstall\[ProductName]" Name="DisplayVersion" Value="1.0.0" Component_="AI_CustomARPName"/>
+    <ROW Registry="DisplayVersion" Root="-1" Key="Software\Microsoft\Windows\CurrentVersion\Uninstall\[ProductName]" Name="DisplayVersion" Value="1.0.1" Component_="AI_CustomARPName"/>
     <ROW Registry="HelpLink" Root="-1" Key="Software\Microsoft\Windows\CurrentVersion\Uninstall\[ProductName]" Name="HelpLink" Value="http://openyabs.org" Component_="AI_CustomARPName"/>
     <ROW Registry="HelpTelephone" Root="-1" Key="Software\Microsoft\Windows\CurrentVersion\Uninstall\[ProductName]" Name="HelpTelephone" Component_="AI_CustomARPName"/>
     <ROW Registry="ModifyPath" Root="-1" Key="Software\Microsoft\Windows\CurrentVersion\Uninstall\[ProductName]" Name="ModifyPath" Value="msiexec.exe /I [ProductCode]" Component_="AI_CustomARPName"/>
@@ -176,9 +176,9 @@
     <ROW Registry="UninstallString" Root="-1" Key="Software\Microsoft\Windows\CurrentVersion\Uninstall\[ProductName]" Name="UninstallString" Value="msiexec.exe /x [ProductCode]" Component_="AI_CustomARPName"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiShortsComponent">
-    <ROW Shortcut="Yabs_1.0" Directory_="SHORTCUTDIR" Name="Yabs1~1.0|Yabs 1.0 " Component_="YaBS_1.0.exe" Target="[#YaBS_1.0.exe]" Description="Yet another business software" Hotkey="0" Icon_="icon.exe" IconIndex="0" ShowCmd="1" WkDir="APPDIR"/>
-    <ROW Shortcut="Yabs_1.0_1" Directory_="DesktopFolder" Name="Yabs1~1.0|Yabs 1.0 " Component_="YaBS_1.0.exe" Target="[#YaBS_1.0.exe]" Description="Yet another business software" Hotkey="0" Icon_="icon.exe" IconIndex="0" ShowCmd="1" WkDir="APPDIR"/>
-    <ROW Shortcut="Yabs_1.0_2" Directory_="StartMenuFolder" Name="Yabs1~1.0|Yabs 1.0 " Component_="YaBS_1.0.exe" Target="[#YaBS_1.0.exe]" Description="Yet another business software" Hotkey="0" Icon_="icon.exe" IconIndex="0" ShowCmd="1" WkDir="APPDIR"/>
+    <ROW Shortcut="Yabs_1.0" Directory_="SHORTCUTDIR" Name="Yabs1~1.0|Yabs 1.0" Component_="YaBS_1.0.exe" Target="[#YaBS_1.0.exe]" Hotkey="0" IconIndex="0" ShowCmd="1" WkDir="APPDIR"/>
+    <ROW Shortcut="Yabs_1.0_1" Directory_="DesktopFolder" Name="Yabs1~1.0|Yabs 1.0" Component_="YaBS_1.0.exe" Target="[#YaBS_1.0.exe]" Hotkey="0" IconIndex="0" ShowCmd="1" WkDir="APPDIR"/>
+    <ROW Shortcut="Yabs_1.0_2" Directory_="StartMenuFolder" Name="Yabs1~1.0|Yabs 1.0" Component_="YaBS_1.0.exe" Target="[#YaBS_1.0.exe]" Hotkey="0" Icon_="icon.exe" IconIndex="0" ShowCmd="1" WkDir="APPDIR"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiThemeComponent">
     <ROW ThemeName="classic" ThemeManifestFilePath="&lt;AI_THEMES&gt;classic\classic.ini"/>

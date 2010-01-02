@@ -1,10 +1,6 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
+
 package mpv5.globals;
 
-import ag.ion.bion.officelayer.application.IOfficeApplication;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.net.Authenticator;
@@ -76,15 +72,6 @@ public class LocalSettings {
                 {OFFICE_USE, "true"},
                 {CACHE_DIR, "Cache"},
                 {DBESCAPE, "true"}
-// Uncomment for the online demo release
-//                ,{DBUSER, "copyleftuser_"}
-//                ,{DBPASSWORD, "1qaz2wsx3edc4"}
-//                ,{DBTYPE, "network"}
-//                ,{DBPATH, "copy-left.de:3306"}
-//                ,{DBDRIVER, "com.mysql.jdbc.Driver"}
-//                ,{DBNAME, "copyleft_"}
-//                ,{DBPREFIX, ""}
-//                ,{DBAUTOLOCK, "true"}
             });
     private static Vector<PropertyStore> cookies;
 
@@ -277,7 +264,7 @@ public class LocalSettings {
 //            cookie.print();
             Log.Debug(LocalSettings.class, "Finished local settings.");
         } catch (Exception e) {
-            throw new FileNotFoundException(Main.SETTINGS_FILE);
+            throw e;
         }
     }
 
