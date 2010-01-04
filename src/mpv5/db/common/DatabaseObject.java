@@ -16,6 +16,7 @@
  */
 package mpv5.db.common;
 
+import java.awt.Color;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.math.BigDecimal;
@@ -42,6 +43,7 @@ import mpv5.handler.SimpleDatabaseObject;
 import mpv5.handler.VariablesHandler;
 import mpv5.pluginhandling.MPPLuginLoader;
 import mpv5.utils.date.RandomDate;
+import mpv5.utils.date.vTimeframe;
 import mpv5.utils.images.MPIcon;
 import mpv5.utils.numberformat.FormatNumber;
 import mpv5.utils.text.RandomText;
@@ -159,6 +161,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject> {
     private int intaddedby = 0;
     private Date dateadded = new Date(0);
     private DatabaseObjectLock LOCK = new DatabaseObjectLock(this);
+    private Color color = Color.WHITE;
 
     public String __getCName() {
         return cname;
@@ -178,7 +181,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject> {
                             Log.Debug(this, "Set : " + method + " with value: " + "<empty>");
                             method.invoke(this, "<empty>");
                         } else if (method.getParameterTypes()[0].isInstance(new BigDecimal("0"))) {
-                            Log.Debug(this, "Set : " + method + " with value: 0" );
+                            Log.Debug(this, "Set : " + method + " with value: 0");
                             method.invoke(this, new BigDecimal("0"));
                         } else {
                             Log.Debug(this, "Set : " + method + " with value: " + method.getParameterTypes()[0].newInstance());
@@ -224,6 +227,22 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject> {
      * @return An Icon representing the type of this do
      */
     public abstract MPIcon getIcon();
+
+    /**
+     * Default Color is Color.WHITE
+     * @return
+     */
+    public Color getColor() {
+        return color;
+    }
+
+    /**
+     * 
+     * @param color
+     */
+    public void defineColor(Color color) {
+        this.color = color;
+    }
 
     @Override
     public DatabaseObject clone() {
@@ -1000,6 +1019,34 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject> {
     }
 
     /**
+     * Returns objects which match the given Context and are created within the given timeframe
+     * @param <T>
+     * @param context
+     * @param timeframe
+     * @return
+     * @throws NodataFoundException 
+     */
+    @SuppressWarnings("unchecked")
+    public static <T extends DatabaseObject> ArrayList<T> getObjects(Context context, vTimeframe timeframe) throws NodataFoundException {
+
+        ReturnValue data = data = QueryHandler.instanceOf().clone(context).select("*", new QueryCriteria2(), timeframe);
+
+        DatabaseObject template = getObject(context);
+        ArrayList<T> list = new ArrayList<T>(0);
+
+        if (data.hasData()) {
+            DatabaseObject[] f = explode(data, template, false, true);
+            for (int i = 0; i < f.length; i++) {
+                DatabaseObject databaseObject = f[i];
+                list.add((T) databaseObject);
+            }
+        }
+
+        Log.Debug(DatabaseObject.class, "Rows found: " + data.getData().length);
+        return list;
+    }
+
+    /**
      * Fills this do with the data of the given dataset id
      * @param id
      * @return
@@ -1522,7 +1569,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject> {
     public void parse(String key, Object value) throws Exception {
         Hashtable<String, Object> map = new Hashtable<String, Object>();
         map.put(key, value);
-        Log.Debug(this, "Set: " + key + " to: " + value + " [" + value.getClass().getName() + "]");
+//        Log.Debug(this, "Set: " + key + " to: " + value + " [" + value.getClass().getName() + "]");
         parse(map);
     }
 

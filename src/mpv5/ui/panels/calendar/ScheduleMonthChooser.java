@@ -49,7 +49,7 @@ import javax.swing.event.ChangeListener;
  * @version $LastChangedRevision: 100 $
  * @version $LastChangedDate: 2006-06-04 14:36:06 +0200 (So, 04 Jun 2006) $
  */
-public class JMonthChooser extends JPanel implements ItemListener,
+public class ScheduleMonthChooser extends JPanel implements ItemListener,
         ChangeListener {
 
     private static final long serialVersionUID = -2028361332231218527L;
@@ -60,8 +60,8 @@ public class JMonthChooser extends JPanel implements ItemListener,
     private int oldSpinnerValue = 0;
 
     // needed for comparison
-    private JDayChooser dayChooser;
-    private JYearChooser yearChooser;
+    private ScheduleCalendarDayChooser dayChooser;
+    private ScheduleYearChooser yearChooser;
     private JComboBox comboBox;
     private JSpinner spinner;
     private boolean initialized;
@@ -70,7 +70,7 @@ public class JMonthChooser extends JPanel implements ItemListener,
     /**
      * Default JMonthChooser constructor.
      */
-    public JMonthChooser() {
+    public ScheduleMonthChooser() {
         this(true);
     }
 
@@ -80,7 +80,7 @@ public class JMonthChooser extends JPanel implements ItemListener,
      * @param hasSpinner
      *            true, if the month chooser should have a spinner component
      */
-    public JMonthChooser(boolean hasSpinner) {
+    public ScheduleMonthChooser(boolean hasSpinner) {
         super();
         setName("JMonthChooser");
         this.hasSpinner = hasSpinner;
@@ -265,7 +265,7 @@ public class JMonthChooser extends JPanel implements ItemListener,
      * @param dayChooser
      *            the day chooser
      */
-    public void setDayChooser(JDayChooser dayChooser) {
+    public void setDayChooser(ScheduleCalendarDayChooser dayChooser) {
         this.dayChooser = dayChooser;
     }
 
@@ -276,7 +276,7 @@ public class JMonthChooser extends JPanel implements ItemListener,
      * @param yearChooser
      *            the new yearChooser value
      */
-    public void setYearChooser(JYearChooser yearChooser) {
+    public void setYearChooser(ScheduleYearChooser yearChooser) {
         this.yearChooser = yearChooser;
     }
 
@@ -390,7 +390,7 @@ public class JMonthChooser extends JPanel implements ItemListener,
      */
     public static void main(String[] s) {
         JFrame frame = new JFrame("MonthChooser");
-        frame.getContentPane().add(new JMonthChooser());
+        frame.getContentPane().add(new ScheduleMonthChooser());
         frame.pack();
         frame.setVisible(true);
     }

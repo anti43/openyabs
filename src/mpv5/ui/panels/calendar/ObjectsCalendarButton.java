@@ -19,16 +19,17 @@ package mpv5.ui.panels.calendar;
 import java.awt.Color;
 import java.util.Date;
 import javax.swing.JButton;
-import mpv5.db.objects.Schedule;
+import mpv5.db.common.DatabaseObject;
+import mpv5.db.objects.Item;
 
 
-public class CalendarButton extends JButton {
+public class ObjectsCalendarButton extends JButton {
 
     private static final long serialVersionUID = 1L;
     private Date date;
-    private Schedule schedule;
+    private DatabaseObject item;
 
-    public CalendarButton(Date d) {
+    public ObjectsCalendarButton(Date d) {
         super("");
         this.date = d;
 
@@ -51,14 +52,14 @@ public class CalendarButton extends JButton {
     /**
      * @return the schedule
      */
-    public Schedule getSchedule() {
-        return schedule;
+    public DatabaseObject getDatabaseObject() {
+        return item;
     }
 
     /**
-     * @param schedule the schedule to set
+     * @param item
      */
-    public void setSchedule(Schedule schedule) {
-        this.schedule = schedule;
+    public void setDatabaseObject(DatabaseObject item) {
+        this.item = item;
     }
 }

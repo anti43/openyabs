@@ -24,12 +24,15 @@ package mpv5.ui.panels;
 import java.awt.Color;
 import java.awt.Component;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
 import javax.swing.JComponent;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableCellRenderer;
@@ -44,6 +47,7 @@ import mpv5.ui.frames.MPView;
 import mpv5.utils.date.vTimeframe;
 import mpv5.utils.images.MPIcon;
 import mpv5.utils.models.MPTableModel;
+import mpv5.utils.renderer.TableCellRendererForDatabaseObjects;
 import mpv5.utils.tables.TableFormat;
 
 /**
@@ -54,6 +58,7 @@ public class GeneralListPanel extends javax.swing.JPanel {
 
     private static final long serialVersionUID = 1L;
     List odata;
+    TableCellRendererForDatabaseObjects rend = new  TableCellRendererForDatabaseObjects();
 
     /** Creates new form GeneralListPanel
      * @param <T>
@@ -61,15 +66,15 @@ public class GeneralListPanel extends javax.swing.JPanel {
      */
     public <T extends DatabaseObject> GeneralListPanel(List<T> list) {
         initComponents();
-        jTable1.setDefaultRenderer(String.class, new ccr());
-        jTable1.setDefaultRenderer(Object.class, new ccr());
-        jTable1.setDefaultRenderer(DatabaseObject.class, new ccr());
+        jTable1.setDefaultRenderer(String.class, rend);
+        jTable1.setDefaultRenderer(Date.class, rend);
+        jTable1.setDefaultRenderer(DatabaseObject.class, rend);
+//        jTable1.setDefaultRenderer(ImageIcon.class, new ccr());
         labeledCombobox1.setSearchEnabled(true);
         labeledCombobox1.setContext(Context.getGroup());
         labeledCombobox1.triggerSearch();
         setData(list);
         odata = list;
-
     }
 
     /**
@@ -77,6 +82,10 @@ public class GeneralListPanel extends javax.swing.JPanel {
      */
     public GeneralListPanel() {
         initComponents();
+        jTable1.setDefaultRenderer(String.class, rend);
+        jTable1.setDefaultRenderer(Date.class, rend);
+        jTable1.setDefaultRenderer(DatabaseObject.class, rend);
+//        jTable1.setDefaultRenderer(ImageIcon.class, new ccr());
     }
 
     /**
@@ -85,17 +94,16 @@ public class GeneralListPanel extends javax.swing.JPanel {
      * @param map
      */
     public <T extends DatabaseObject> void show(HashMap<Color, List<T>> map) {
-        jTable1.setDefaultRenderer(String.class, new ccr());
-        jTable1.setDefaultRenderer(Object.class, new ccr());
-        jTable1.setDefaultRenderer(DatabaseObject.class, new ccr());
+
         Iterator<Color> it = map.keySet().iterator();
-        List<coloredObject> ndata = new Vector<coloredObject>();
+        List<DatabaseObject> ndata = new Vector<DatabaseObject>();
         while (it.hasNext()) {
             Color c = it.next();
             List<T> data = map.get(c);
             for (int i = 0; i < data.size(); i++) {
                 T databaseObject = data.get(i);
-                ndata.add(new coloredObject(c, databaseObject));
+                databaseObject.defineColor(c);
+                ndata.add(databaseObject);
             }
         }
 
@@ -106,50 +114,6 @@ public class GeneralListPanel extends javax.swing.JPanel {
         labeledCombobox1.triggerSearch();
     }
 
-    class coloredObject extends DatabaseObject {
-
-        private Color color;
-        private DatabaseObject object;
-
-        public coloredObject(Color color, DatabaseObject object) {
-            this.object = object;
-            this.color = color;
-            ArrayList<Object[]> data = object.getValues2();
-            for (int i = 0; i < data.size(); i++) {
-                Object[] objects = data.get(i);
-                try {
-                    super.parse(objects[0].toString(), objects[1]);
-                } catch (Exception ex) {
-                    Log.Debug(ex);
-                }
-            }
-        }
-
-        /**
-         * @return the color
-         */
-        public Color getColor() {
-            return color;
-        }
-
-        /**
-         * @return the object
-         */
-        public DatabaseObject getObject() {
-            return object;
-        }
-
-        @Override
-        public JComponent getView() {
-            throw new UnsupportedOperationException("Not supported yet.");
-        }
-
-        @Override
-        public MPIcon getIcon() {
-            throw new UnsupportedOperationException("Not supported yet.");
-        }
-    }
-
     /**
      * Set the data of the list
      * @param <T>
@@ -157,46 +121,32 @@ public class GeneralListPanel extends javax.swing.JPanel {
      */
     public <T extends DatabaseObject> void setData(List<T> list) {
 
-        Object[][] data = new Object[list.size()][5];
+        Object[][] data = new Object[list.size()][6];
 
         for (int i = 0; i < list.size(); i++) {
-            coloredObject databaseObject = null;
-            Color c = null;
-            if (list.get(i) instanceof coloredObject) {
-                databaseObject = ((coloredObject) list.get(i));
-                c = ((coloredObject) list.get(i)).getColor();
-            } else {
-                databaseObject = new coloredObject(Color.white, (DatabaseObject) list.get(i));
+            DatabaseObject databaseObject = list.get(i);
+            data[i][0] = databaseObject;
+            data[i][1] = User.getUsername(databaseObject.__getIntaddedby());
+            data[i][2] = databaseObject.__getDateadded();
+            try {
+                data[i][3] = DatabaseObject.getObject(Context.getGroup(), databaseObject.__getGroupsids());
+            } catch (NodataFoundException ex) {
+                data[i][3] = "N/A";
             }
-            if (databaseObject != null) {
 
-                data[i][0] = databaseObject;
-                data[i][1] = User.getUsername(databaseObject.__getIntaddedby());
-                data[i][2] = databaseObject.__getDateadded();
-                try {
-                    data[i][3] = DatabaseObject.getObject(Context.getGroup(), databaseObject.__getGroupsids());
-                } catch (NodataFoundException ex) {
-                    data[i][3] = "N/A";
-                }
-
-                data[i][4] = c;
-            }
+            data[i][4] = databaseObject.getColor();
+            data[i][5] = databaseObject.getIcon();
         }
 
-        jTable1.setModel(new MPTableModel(data));
+        MPTableModel m = new MPTableModel(data);
+        m.setTypes(new Class[]{DatabaseObject.class, String.class, Date.class, DatabaseObject.class, Color.class, ImageIcon.class, Object.class, Object.class});
+        jTable1.setModel(m);
+
+        TableFormat.resizeCols(jTable1, new Integer[]{100, 100, 100, 100, 0, 33}, false);
         TableFormat.stripColumn(jTable1, 4);
+//        TableFormat.stripColumn(jTable1, 5);
     }
 
-    class ccr extends DefaultTableCellRenderer {
-
-        @Override
-        public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected,
-                boolean hasFocus, int row, int column) {
-            Component cell = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
-            cell.setBackground((Color) table.getValueAt(row, 4));
-            return cell;
-        }
-    }
 
     /**
      * Filter by group
@@ -206,11 +156,18 @@ public class GeneralListPanel extends javax.swing.JPanel {
     public void filterByGroup(Group g) {
         setData(odata);
         Object[][] data = ((MPTableModel) jTable1.getModel()).getData();
-        List<coloredObject> list = new Vector<coloredObject>();
-        for (int i = 0; i < data.length; i++) {
-            coloredObject d = (coloredObject) data[i][0];
-            if (d.__getGroupsids() == g.__getIDS()) {
-                list.add(new coloredObject(((coloredObject) d).getColor(), d));
+        List<DatabaseObject> list = new Vector<DatabaseObject>();
+        if (g.__getIDS().intValue() != 1) {
+            for (int i = 0; i < data.length; i++) {
+                DatabaseObject d = (DatabaseObject) data[i][0];
+                if (d.__getGroupsids() == g.__getIDS()) {
+                    list.add(d);
+                }
+            }
+        } else {
+            for (int i = 0; i < data.length; i++) {
+                DatabaseObject d = (DatabaseObject) data[i][0];
+                list.add(d);
             }
         }
         setData(list);
@@ -224,11 +181,11 @@ public class GeneralListPanel extends javax.swing.JPanel {
     public void filterByTimeframe(vTimeframe g) {
         setData(odata);
         Object[][] data = ((MPTableModel) jTable1.getModel()).getData();
-        List<coloredObject> list = new Vector<coloredObject>();
+        List<DatabaseObject> list = new Vector<DatabaseObject>();
         for (int i = 0; i < data.length; i++) {
-            coloredObject d = (coloredObject) data[i][0];
+            DatabaseObject d = (DatabaseObject) data[i][0];
             if (g.contains(d.__getDateadded())) {
-                list.add(new coloredObject(d.getColor(), d));
+                list.add(d);
             }
         }
         setData(list);
@@ -260,7 +217,7 @@ public class GeneralListPanel extends javax.swing.JPanel {
         jButton1 = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
 
-        java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle();
+        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("mpv5/resources/languages/Panels"); // NOI18N
         setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("GeneralListPanel.border.title"))); // NOI18N
         setName("Form"); // NOI18N
 
@@ -279,6 +236,7 @@ public class GeneralListPanel extends javax.swing.JPanel {
             }
         ));
         jTable1.setName("jTable1"); // NOI18N
+        jTable1.setShowVerticalLines(false);
         jTable1.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 jTable1MouseClicked(evt);
@@ -335,7 +293,7 @@ public class GeneralListPanel extends javax.swing.JPanel {
                     .addComponent(labeledCombobox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 238, Short.MAX_VALUE))
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 239, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -355,7 +313,7 @@ public class GeneralListPanel extends javax.swing.JPanel {
     private void jTable1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable1MouseClicked
         if (evt.getClickCount() > 1) {
             try {
-                MPView.identifierView.addTab(((coloredObject) jTable1.getModel().getValueAt(jTable1.getSelectedRow(), 0)).getObject());
+                MPView.identifierView.addTab(((DatabaseObject) jTable1.getModel().getValueAt(jTable1.getSelectedRow(), 0)));
             } catch (Exception e) {
                 Log.Debug(e);
             }

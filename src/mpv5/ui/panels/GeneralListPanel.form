@@ -81,6 +81,7 @@
               <Table columnCount="0" rowCount="4"/>
             </Property>
             <Property name="name" type="java.lang.String" value="jTable1" noResource="true"/>
+            <Property name="showVerticalLines" type="boolean" value="false"/>
           </Properties>
           <Events>
             <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="jTable1MouseClicked"/>

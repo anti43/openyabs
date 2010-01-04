@@ -34,6 +34,7 @@ import java.util.Locale;
 import javax.swing.BorderFactory;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import mpv5.db.common.Context;
 import mpv5.globals.LocalSettings;
 import mpv5.globals.Messages;
 import mpv5.ui.dialogs.BigPopup;
@@ -45,57 +46,58 @@ import mpv5.ui.dialogs.BigPopup;
  * @version $LastChangedRevision: 95 $
  * @version $LastChangedDate: 2006-05-05 18:43:15 +0200 (Fr, 05 Mai 2006) $
  */
-public class JCalendar extends JPanel implements PropertyChangeListener {
+public class ObjectsCalendar extends JPanel implements PropertyChangeListener {
 
     private static final long serialVersionUID = 8913369762644440133L;
-
     private Calendar calendar;
     /** the day chooser */
-    protected JDayChooser dayChooser;
+    protected ObjectsCalendarDayChooser dayChooser;
     private boolean initialized = false;
     /** indicates if weeks of year shall be visible */
     protected boolean weekOfYearVisible = true;
     /** the locale */
     protected Locale locale;
     /** the month chooser */
-    protected JMonthChooser monthChooser;
+    protected ObjectsMonthChooser monthChooser;
     private JPanel monthYearPanel;
     /** the year chhoser */
-    protected JYearChooser yearChooser;
+    protected ObjectsYearChooser yearChooser;
     protected Date minSelectableDate;
     protected Date maxSelectableDate;
-    private static JCalendar icke;
+    private static ObjectsCalendar icke;
 
     /**
      * The jc instance
+     * @param context
      * @return
      */
-    public static JCalendar instanceOf() {
+    public static ObjectsCalendar instanceOf(Context context) {
         if (icke == null) {
-            icke = new JCalendar();
+            icke = new ObjectsCalendar(context);
         }
         return icke;
     }
-
 
     /**
      * The jc instance as popup
      * @param width
      * @param locationOnScreen
      */
-    public static void instanceOf(int width, Point locationOnScreen) {
-        JCalendar c = new JCalendar();
+    public static void instanceOf(int width, Point locationOnScreen, Context context) {
+        ObjectsCalendar c = new ObjectsCalendar(context);
         c.setPreferredSize(new Dimension(width, width));
         BigPopup.showPopup(c, Messages.SCHEDULE.toString(), locationOnScreen);
     }
+    private final Context context;
 
     /**
      * Default JCalendar constructor.
      */
-    public JCalendar() {
-        this(null, null, true, true);
+    public ObjectsCalendar(Context context) {
+        this(null, null, true, true, context);
         yearChooser.setFont(Font.decode(LocalSettings.getProperty(LocalSettings.DEFAULT_FONT)).deriveFont(Font.BOLD, 14));
         monthChooser.setFont(Font.decode(LocalSettings.getProperty(LocalSettings.DEFAULT_FONT)).deriveFont(Font.PLAIN, 14));
+
     }
 
     /**
@@ -104,8 +106,8 @@ public class JCalendar extends JPanel implements PropertyChangeListener {
      * @param date
      *            the date
      */
-    public JCalendar(Date date) {
-        this(date, null, true, true);
+    public ObjectsCalendar(Date date, Context context) {
+        this(date, null, true, true, context);
     }
 
     /**
@@ -114,8 +116,8 @@ public class JCalendar extends JPanel implements PropertyChangeListener {
      * @param calendar
      *            the calendar
      */
-    public JCalendar(Calendar calendar) {
-        this(null, null, true, true);
+    public ObjectsCalendar(Calendar calendar, Context context) {
+        this(null, null, true, true, context);
         setCalendar(calendar);
     }
 
@@ -125,8 +127,8 @@ public class JCalendar extends JPanel implements PropertyChangeListener {
      * @param locale
      *            the new locale
      */
-    public JCalendar(Locale locale) {
-        this(null, locale, true, true);
+    public ObjectsCalendar(Locale locale, Context context) {
+        this(null, locale, true, true, context);
     }
 
     /**
@@ -137,8 +139,8 @@ public class JCalendar extends JPanel implements PropertyChangeListener {
      * @param locale
      *            the new locale
      */
-    public JCalendar(Date date, Locale locale) {
-        this(date, locale, true, true);
+    public ObjectsCalendar(Date date, Locale locale, Context context) {
+        this(date, locale, true, true, context);
     }
 
     /**
@@ -150,8 +152,8 @@ public class JCalendar extends JPanel implements PropertyChangeListener {
      * @param monthSpinner
      *            false, if no month spinner should be used
      */
-    public JCalendar(Date date, boolean monthSpinner) {
-        this(date, null, monthSpinner, true);
+    public ObjectsCalendar(Date date, boolean monthSpinner, Context context) {
+        this(date, null, monthSpinner, true, context);
     }
 
     /**
@@ -162,8 +164,8 @@ public class JCalendar extends JPanel implements PropertyChangeListener {
      * @param monthSpinner
      *            false, if no month spinner should be used
      */
-    public JCalendar(Locale locale, boolean monthSpinner) {
-        this(null, locale, monthSpinner, true);
+    public ObjectsCalendar(Locale locale, boolean monthSpinner, Context context) {
+        this(null, locale, monthSpinner, true, context);
     }
 
     /**
@@ -172,8 +174,8 @@ public class JCalendar extends JPanel implements PropertyChangeListener {
      * @param monthSpinner
      *            false, if no month spinner should be used
      */
-    public JCalendar(boolean monthSpinner) {
-        this(null, null, monthSpinner, true);
+    public ObjectsCalendar(boolean monthSpinner, Context context) {
+        this(null, null, monthSpinner, true, context);
     }
 
     /**
@@ -188,8 +190,9 @@ public class JCalendar extends JPanel implements PropertyChangeListener {
      * @param weekOfYearVisible
      *            true, if weeks of year shall be visible
      */
-    private JCalendar(Date date, Locale locale, boolean monthSpinner, boolean weekOfYearVisible) {
+    private ObjectsCalendar(Date date, Locale locale, boolean monthSpinner, boolean weekOfYearVisible, Context context) {
 
+        this.context = context;
         setName(Messages.CALENDAR.toString());
 
         // needed for setFont() etc.
@@ -211,8 +214,8 @@ public class JCalendar extends JPanel implements PropertyChangeListener {
         monthYearPanel = new JPanel();
         monthYearPanel.setLayout(new BorderLayout());
 
-        monthChooser = new JMonthChooser(monthSpinner);
-        yearChooser = new JYearChooser();
+        monthChooser = new ObjectsMonthChooser(monthSpinner);
+        yearChooser = new ObjectsYearChooser();
         yearChooser.setSize(yearChooser.getWidth(), yearChooser.getHeight() + 20);
         monthChooser.setSize(monthChooser.getWidth(), monthChooser.getHeight() + 20);
         monthChooser.setYearChooser(yearChooser);
@@ -220,7 +223,7 @@ public class JCalendar extends JPanel implements PropertyChangeListener {
         monthYearPanel.add(yearChooser, BorderLayout.CENTER);
         monthYearPanel.setBorder(BorderFactory.createEmptyBorder());
 
-        dayChooser = JDayChooser.instanceOf();
+        dayChooser = ObjectsCalendarDayChooser.instanceOf(context);
         dayChooser.addPropertyChangeListener(this);
         monthChooser.setDayChooser(dayChooser);
         monthChooser.addPropertyChangeListener(this);
@@ -240,20 +243,7 @@ public class JCalendar extends JPanel implements PropertyChangeListener {
         setCalendar(calendar);
     }
 
-    /**
-     * Creates a JFrame with a JCalendar inside and can be used for testing.
-     *
-     * @param s
-     *            The command line arguments
-     */
-    public static void main(String[] s) {
-        JFrame frame = new JFrame("JCalendar");
-
-        JCalendar jcalendar = new JCalendar();
-        frame.getContentPane().add(jcalendar);
-        frame.pack();
-        frame.setVisible(true);
-    }
+ 
 
     /**
      * Returns the calendar property.
@@ -269,7 +259,7 @@ public class JCalendar extends JPanel implements PropertyChangeListener {
      *
      * @return the dayChooser value
      */
-    public JDayChooser getDayChooser() {
+    public ObjectsCalendarDayChooser getDayChooser() {
         return dayChooser;
     }
 
@@ -289,7 +279,7 @@ public class JCalendar extends JPanel implements PropertyChangeListener {
      *
      * @return the monthChooser value
      */
-    public JMonthChooser getMonthChooser() {
+    public ObjectsMonthChooser getMonthChooser() {
         return monthChooser;
     }
 
@@ -298,7 +288,7 @@ public class JCalendar extends JPanel implements PropertyChangeListener {
      *
      * @return the yearChooser value
      */
-    public JYearChooser getYearChooser() {
+    public ObjectsYearChooser getYearChooser() {
         return yearChooser;
     }
 

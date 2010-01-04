@@ -158,6 +158,95 @@ public class DateConverter {
         }
     }
 
+     /**
+     * Returns the same date, first millisecond
+     * @param date
+     * @return
+     */
+    public static synchronized Date getStartOfDay(Date date) {
+        Calendar calendar = cl;
+        synchronized (calendar) {
+            calendar.setTime(date);
+            calendar.set(Calendar.HOUR_OF_DAY, 0);
+            calendar.set(Calendar.MILLISECOND, 1);
+            calendar.set(Calendar.SECOND, 0);
+            calendar.set(Calendar.MINUTE, 0);
+            return calendar.getTime();
+        }
+    }
+      /**
+     * Returns the same date, first millisecond of the year
+     * @param date
+     * @return
+     */
+    public static synchronized Date getStartOfYear(Date date) {
+        Calendar calendar = cl;
+        synchronized (calendar) {
+            calendar.setTime(date);
+            calendar.set(Calendar.HOUR_OF_DAY, 0);
+            calendar.set(Calendar.MILLISECOND, 1);
+            calendar.set(Calendar.SECOND, 0);
+            calendar.set(Calendar.MINUTE, 0);
+            calendar.set(Calendar.MONTH, 0);
+            calendar.set(Calendar.DAY_OF_MONTH, 1);
+            return calendar.getTime();
+        }
+    }
+     /**
+     * Returns the same date, last millisecond of the year
+     * @param date
+     * @return
+     */
+    public static synchronized Date getEndOfYear(Date date) {
+        Calendar calendar = cl;
+        synchronized (calendar) {
+            calendar.setTime(date);
+            calendar.set(Calendar.HOUR_OF_DAY, 23);
+            calendar.set(Calendar.MILLISECOND, 999);
+            calendar.set(Calendar.SECOND, 59);
+            calendar.set(Calendar.MINUTE, 59);
+            calendar.set(Calendar.MONTH, calendar.getActualMaximum(Calendar.MONTH));
+            calendar.set(Calendar.DAY_OF_MONTH, calendar.getActualMaximum(Calendar.DAY_OF_MONTH));
+            return calendar.getTime();
+        }
+    }
+     /**
+     * Returns the same date, first millisecond
+     * @param date
+     * @return
+     */
+    public static synchronized Date getStartOfMonth(Date date) {
+        Calendar calendar = cl;
+        synchronized (calendar) {
+            calendar.setTime(date);
+            calendar.set(Calendar.HOUR_OF_DAY, 0);
+            calendar.set(Calendar.MILLISECOND, 1);
+            calendar.set(Calendar.SECOND, 0);
+            calendar.set(Calendar.MINUTE, 0);
+            calendar.set(Calendar.DAY_OF_MONTH, 1);
+            return calendar.getTime();
+        }
+    }
+
+     /**
+     * Returns the same date, last millisecond of the month
+     * @param date
+     * @return
+     */
+    public static synchronized Date getEndOfMonth(Date date) {
+        Calendar calendar = cl;
+        synchronized (calendar) {
+            calendar.setTime(date);
+            calendar.set(Calendar.HOUR_OF_DAY, 23);
+            calendar.set(Calendar.MILLISECOND, 999);
+            calendar.set(Calendar.SECOND, 59);
+            calendar.set(Calendar.MINUTE, 59);
+            calendar.set(Calendar.DAY_OF_MONTH, calendar.getActualMaximum(Calendar.DAY_OF_MONTH));
+            return calendar.getTime();
+        }
+    }
+
+
     /**
      * Quarter as 1,2,3,4
      * @return
@@ -184,7 +273,7 @@ public class DateConverter {
     }
 
     /**
-     *
+     * The current date in the default, localized format
      * @return
      */
     public static synchronized String getTodayDefDate() {
@@ -192,7 +281,7 @@ public class DateConverter {
     }
 
     /**
-     *
+     * The current date in SQL format
      * @return
      */
     public static synchronized String getTodayDBDate() {

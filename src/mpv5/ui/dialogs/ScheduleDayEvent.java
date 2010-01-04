@@ -367,7 +367,7 @@ public class ScheduleDayEvent extends javax.swing.JFrame {
                 Popup.notice(Messages.SCHEDULE_NEXT +
                         DateConverter.getDefDateString(DateConverter.addMonths(labeledDateChooser1.getDate(),
                         s.__getIntervalmonth())));
-                JDayChooser.instanceOf().reload();
+                ScheduleCalendarDayChooser.instanceOf().reload();
             } catch (Exception ex) {
                 Log.Debug(this, ex.getMessage());
             }

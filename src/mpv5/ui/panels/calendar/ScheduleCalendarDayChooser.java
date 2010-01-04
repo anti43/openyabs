@@ -62,12 +62,12 @@ import mpv5.utils.date.vTimeframe;
  * @version $LastChangedRevision: 104 $
  * @version $LastChangedDate: 2006-06-04 15:20:45 +0200 (So, 04 Jun 2006) $
  */
-public class JDayChooser extends JPanel implements ActionListener, KeyListener, FocusListener {
+public class ScheduleCalendarDayChooser extends JPanel implements ActionListener, KeyListener, FocusListener {
 
     private static final long serialVersionUID = 5876398337018781820L;
-    protected CalendarButton[] days;
+    protected ScheduleCalendarButton[] days;
     protected JButton[] weeks;
-    protected CalendarButton selectedDay;
+    protected ScheduleCalendarButton selectedDay;
     protected JPanel weekPanel;
     protected JPanel dayPanel;
     protected int day;
@@ -93,15 +93,15 @@ public class JDayChooser extends JPanel implements ActionListener, KeyListener, 
     protected int maxDayCharacters;
     private static ArrayList<Schedule> events;
     private static ArrayList<Schedule> processedEvents = new ArrayList<Schedule>();
-    private static JDayChooser icke;
+    private static ScheduleCalendarDayChooser icke;
 
     /**
      * The dc instance
      * @return
      */
-    public static JDayChooser instanceOf() {
+    public static ScheduleCalendarDayChooser instanceOf() {
         if (icke == null) {
-            icke = new JDayChooser();
+            icke = new ScheduleCalendarDayChooser();
         }
         return icke;
     }
@@ -116,7 +116,7 @@ public class JDayChooser extends JPanel implements ActionListener, KeyListener, 
     /**
      * Default JDayChooser constructor.
      */
-    private JDayChooser() {
+    private ScheduleCalendarDayChooser() {
         this(true);
     }
 
@@ -126,12 +126,12 @@ public class JDayChooser extends JPanel implements ActionListener, KeyListener, 
      * @param weekOfYearVisible
      *            true, if the weeks of a year shall be shown
      */
-    private JDayChooser(boolean weekOfYearVisible) {
+    private ScheduleCalendarDayChooser(boolean weekOfYearVisible) {
         setName("JDayChooser");
         setBackground(Color.blue);
         this.weekOfYearVisible = weekOfYearVisible;
         locale = Locale.getDefault();
-        days = new CalendarButton[49];
+        days = new ScheduleCalendarButton[49];
         selectedDay = null;
         calendar = Calendar.getInstance(locale);
         today = (Calendar) calendar.clone();
@@ -159,7 +159,7 @@ public class JDayChooser extends JPanel implements ActionListener, KeyListener, 
                     // Thanks to Thomas Schaefer for the focus hint :)
                     days[index] = new DecoratorButton();
                 } else {
-                    days[index] = new CalendarButton(new Date()) {
+                    days[index] = new ScheduleCalendarButton(new Date()) {
 
                         private static final long serialVersionUID = -7433645992591669725L;
 
@@ -1097,7 +1097,7 @@ public class JDayChooser extends JPanel implements ActionListener, KeyListener, 
      * @param s
      *            The command line arguments
      */
-    class DecoratorButton extends CalendarButton {
+    class DecoratorButton extends ScheduleCalendarButton {
 
         private static final long serialVersionUID = -5306477668406547496L;
 

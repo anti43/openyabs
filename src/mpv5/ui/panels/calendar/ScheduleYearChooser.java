@@ -33,9 +33,9 @@ import javax.swing.JFrame;
  * @version $LastChangedRevision: 85 $
  * @version $LastChangedDate: 2006-04-28 13:50:52 +0200 (Fr, 28 Apr 2006) $
  */
-public class JYearChooser extends JSpinField {
+public class ScheduleYearChooser extends JSpinField {
 	private static final long serialVersionUID = 2648810220491090064L;
-	protected JDayChooser dayChooser;
+	protected ScheduleCalendarDayChooser dayChooser;
     protected int oldYear;
     protected int startYear;
     protected int endYear;
@@ -43,7 +43,7 @@ public class JYearChooser extends JSpinField {
     /**
      * Default JCalendar constructor.
      */
-    public JYearChooser() {
+    public ScheduleYearChooser() {
         setName("JYearChooser");
         Calendar calendar = Calendar.getInstance();
         dayChooser = null;
@@ -94,7 +94,7 @@ public class JYearChooser extends JSpinField {
      *
      * @param dayChooser the day chooser
      */
-    public void setDayChooser(JDayChooser dayChooser) {
+    public void setDayChooser(ScheduleCalendarDayChooser dayChooser) {
         this.dayChooser = dayChooser;
     }
 
@@ -141,7 +141,7 @@ public class JYearChooser extends JSpinField {
      */
     static public void main(String[] s) {
         JFrame frame = new JFrame("JYearChooser");
-        frame.getContentPane().add(new JYearChooser());
+        frame.getContentPane().add(new ScheduleYearChooser());
         frame.pack();
         frame.setVisible(true);
     }
