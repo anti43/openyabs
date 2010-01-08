@@ -509,8 +509,9 @@ public class Item extends DatabaseObject implements Formattable {
         try {
             data = DatabaseObject.getReferencedObjects(this, Context.getSubItem(), new SubItem());
             for (int i = 0; i < data.size(); i++) {
-                list.add(data.get(i).toStringArray());
-                data2 = data.get(i).getValues3();
+                SubItem t = data.get(i);
+                list.add(t.toStringArray());
+                data2 = t.getValues3();
                 for (int j = 0; j < data2.size(); j++) {
                     String[] strings = data2.get(j);
                     map.put("subitem" + i + "." + strings[0].toLowerCase(), strings[1]);

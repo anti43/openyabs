@@ -231,6 +231,7 @@ public class MPPLuginLoader {
      */
     public void unLoadPlugin(MP5Plugin mP5Plugin) {
         mP5Plugin.unload();
+        loadedPlugs.remove(mP5Plugin.getUID());
         Component[] c = MPView.identifierView.getPluginIcons().getComponents();
         for (int i = 0; i < c.length; i++) {
             Component component = c[i];
