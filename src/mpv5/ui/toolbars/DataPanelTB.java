@@ -61,8 +61,8 @@ public class DataPanelTB extends javax.swing.JPanel {
     public DataPanelTB(DataPanel panel) {
         initComponents();
         parents = panel;
-        parents.showSearchBar(MPView.getUser().getProperties().getProperty(this, "jToggleButton1"));
-        but1.setSelected(MPView.getUser().getProperties().getProperty(this, "jToggleButton1"));
+        parents.showSearchBar(mpv5.db.objects.User.getCurrentUser().getProperties().getProperty(this, "jToggleButton1"));
+        but1.setSelected(mpv5.db.objects.User.getCurrentUser().getProperties().getProperty(this, "jToggleButton1"));
         but6.setEnabled(!DatabaseObject.isAutoLockEnabled());
     }
 
@@ -391,7 +391,7 @@ public class DataPanelTB extends javax.swing.JPanel {
 
     private void but6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_but6ActionPerformed
         DatabaseObject dato = parents.getDataOwner();
-        if (MPView.getUser().isDefault()) {
+        if (mpv5.db.objects.User.getCurrentUser().isDefault()) {
             Popup.notice(Messages.DEFAULT_USER);
         } else if (dato.isExisting()) {
             if (dato.lock()) {
@@ -432,7 +432,7 @@ public class DataPanelTB extends javax.swing.JPanel {
     }//GEN-LAST:event_but1ActionPerformed
 
     private void but1ItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_but1ItemStateChanged
-        MPView.getUser().getProperties().changeProperty(this, "jToggleButton1", but1.isSelected());
+        mpv5.db.objects.User.getCurrentUser().getProperties().changeProperty(this, "jToggleButton1", but1.isSelected());
     }//GEN-LAST:event_but1ItemStateChanged
 
     private void but9ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_but9ActionPerformed
@@ -474,7 +474,7 @@ public class DataPanelTB extends javax.swing.JPanel {
     private void favRemover(java.awt.event.ActionEvent evt) {
 
         DatabaseObject dato = parents.getDataOwner();
-        if (!MPView.getUser().isDefault() && dato.isExisting()) {
+        if (!mpv5.db.objects.User.getCurrentUser().isDefault() && dato.isExisting()) {
             dato.getPanelData(parents);
             if (dato.save()) {
                 Favourite.removeFavourite(dato);
@@ -489,7 +489,7 @@ public class DataPanelTB extends javax.swing.JPanel {
     private void favAdd(java.awt.event.ActionEvent evt) {
         DatabaseObject dato = parents.getDataOwner();
         Favourite fav = null;
-        if (!MPView.getUser().isDefault()) {
+        if (!mpv5.db.objects.User.getCurrentUser().isDefault()) {
             if (dato.isExisting()) {
                 dato.getPanelData(parents);
                 if (dato.save()) {

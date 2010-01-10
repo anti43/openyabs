@@ -492,12 +492,12 @@ public class Account extends DatabaseObject {
         Log.Debug(this, "Starting import..");
         Log.Debug(this, "Setting IDS to -1");
         ids = -1;
-        Log.Debug(this, "Setting intaddedby to " + MPView.getUser().__getIDS());
-        setIntaddedby(MPView.getUser().__getIDS());
+        Log.Debug(this, "Setting intaddedby to " + mpv5.db.objects.User.getCurrentUser().__getIDS());
+        setIntaddedby(mpv5.db.objects.User.getCurrentUser().__getIDS());
 
         if (__getGroupsids() <= 0 || !DatabaseObject.exists(Context.getGroup(), __getGroupsids())) {
             Log.Debug(this, "Setting groups to users group.");
-            setGroupsids(MPView.getUser().__getGroupsids());
+            setGroupsids(mpv5.db.objects.User.getCurrentUser().__getGroupsids());
         }
 
         return save();

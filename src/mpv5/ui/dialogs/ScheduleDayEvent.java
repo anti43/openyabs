@@ -359,7 +359,7 @@ public class ScheduleDayEvent extends javax.swing.JFrame {
                 s.setIntervalmonth(Integer.valueOf(labeledSpinner1.getSpinner().getValue().toString()));
                 s.setStartdate(labeledDateChooser1.getDate());
                 s.setStopdate(labeledDateChooser2.getDate());
-                s.setUsersids(MPView.getUser().__getIDS());
+                s.setUsersids(mpv5.db.objects.User.getCurrentUser().__getIDS());
                 s.setNextdate(DateConverter.addMonths(labeledDateChooser1.getDate(),
                         s.__getIntervalmonth()));
                 s.save();

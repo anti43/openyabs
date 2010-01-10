@@ -39,7 +39,7 @@ public class Favourite extends DatabaseObject {
 
     public Favourite(DatabaseObject dato) {
         context.setDbIdentity(Context.IDENTITY_FAVS);
-        this.setUsersids(MPView.getUser().__getIDS());
+        this.setUsersids(mpv5.db.objects.User.getCurrentUser().__getIDS());
         setCName(dato.getDbIdentity());
         setItemsids(dato.__getIDS());
     }
@@ -82,7 +82,7 @@ public class Favourite extends DatabaseObject {
     public static boolean isFavourite(DatabaseObject dato) {
         if (!mpv5.db.common.QueryHandler.instanceOf().clone(Context.getFavourite()).
                 checkConstraint(new String[]{"cname", "usersids", "itemsids"},
-                    new Object[]{dato.getDbIdentity(), MPView.getUser().__getIDS(),dato.__getIDS()})) {
+                    new Object[]{dato.getDbIdentity(), mpv5.db.objects.User.getCurrentUser().__getIDS(),dato.__getIDS()})) {
             return true;
         } else {
             return false;
@@ -98,7 +98,7 @@ public class Favourite extends DatabaseObject {
         
             mpv5.db.common.QueryHandler.instanceOf().clone(Context.getFavourite()).
                     delete(new String[]{"cname", "usersids", "itemsids"},
-                    new Object[]{dato.getDbIdentity(), MPView.getUser().__getIDS(),dato.__getIDS()}, Messages.DONE.toString());
+                    new Object[]{dato.getDbIdentity(), mpv5.db.objects.User.getCurrentUser().__getIDS(),dato.__getIDS()}, Messages.DONE.toString());
         
     }
 
@@ -108,7 +108,7 @@ public class Favourite extends DatabaseObject {
      */
     public static Favourite[] getUserFavourites() {
 
-        Object[][] data = mpv5.db.common.QueryHandler.instanceOf().clone(Context.getFavourite()).select("cname, usersids, itemsids", new String[]{"usersids", MPView.getUser().__getIDS().toString(), ""});
+        Object[][] data = mpv5.db.common.QueryHandler.instanceOf().clone(Context.getFavourite()).select("cname, usersids, itemsids", new String[]{"usersids", mpv5.db.objects.User.getCurrentUser().__getIDS().toString(), ""});
         Favourite[] favs = new Favourite[data.length];
 
         for (int i = 0; i < favs.length; i++) {

@@ -205,7 +205,7 @@ private void jPasswordField1ActionPerformed(java.awt.event.ActionEvent evt) {//G
         if (user != null) {
             user.login();
             if (jCheckBox1.isSelected()) {
-                LocalSettings.setProperty("lastuser", MPView.getUser().__getIDS().toString());
+                LocalSettings.setProperty("lastuser", mpv5.db.objects.User.getCurrentUser().__getIDS().toString());
                 LocalSettings.save();
             }
 

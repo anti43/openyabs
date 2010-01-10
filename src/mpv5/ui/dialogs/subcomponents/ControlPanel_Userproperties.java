@@ -449,7 +449,7 @@ public class ControlPanel_Userproperties extends javax.swing.JPanel implements C
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         setSettings();
-        MPView.getUser().saveProperties();
+        mpv5.db.objects.User.getCurrentUser().saveProperties();
         Popup.notice(Messages.RESTART_REQUIRED);
     }//GEN-LAST:event_jButton1ActionPerformed
 
@@ -526,36 +526,36 @@ public class ControlPanel_Userproperties extends javax.swing.JPanel implements C
             generate();
         }
         try {
-            MPView.getUser().getProperties().changeProperty(Context.getProduct() + LightMPComboBox.VALUE_SEARCHFIELDS, format.getText());
-            MPView.getUser().getProperties().changeProperty(defcount.getName(), defcount.getText());
-            MPView.getUser().getProperties().changeProperty(defunit.getName(), defunit.getText());
-            MPView.getUser().getProperties().changeProperty(MPView.getTabPane(), "norecycletabs", tabs.isSelected());
-            MPView.getUser().getProperties().changeProperty(MPView.getTabPane(), "avoidmultipleviews", views.isSelected());
-            MPView.getUser().getProperties().changeProperty(MPView.getTabPane(), "hideunpaidbills", unpaidbills.isSelected());
-            MPView.getUser().getProperties().changeProperty(MPView.getTabPane(), "hidecolumnquantity", columnquantity.isSelected());
-            MPView.getUser().getProperties().changeProperty(MPView.getTabPane(), "hideproductscolumn", hideproductscolumn.isSelected());
-            MPView.getUser().getProperties().changeProperty(MPView.getTabPane(), "hidecolumnmeasure", columnmeasure.isSelected());
-            MPView.getUser().getProperties().changeProperty(MPView.getTabPane(), "hidetaxcolumn", hidetaxcolumn.isSelected());
-            MPView.getUser().getProperties().changeProperty(MPView.getTabPane(), "showoptionalcolumn", showoptionalcolumn.isSelected());
-            MPView.getUser().getProperties().changeProperty(MPView.getTabPane(), "supresscurrencysymbols", supresscurrencysymbols.isSelected());
-            MPView.getUser().getProperties().changeProperty(MPView.getTabPane(), "autocreaterevenue", autorev.isSelected());
-            MPView.getUser().getProperties().changeProperty(MPView.getTabPane(), "ordersoverproducts", ordersoverproducts.isSelected());
-            MPView.getUser().getProperties().changeProperty(MPView.getTabPane(), "propertiesdefined", true);
+            mpv5.db.objects.User.getCurrentUser().getProperties().changeProperty(Context.getProduct() + LightMPComboBox.VALUE_SEARCHFIELDS, format.getText());
+            mpv5.db.objects.User.getCurrentUser().getProperties().changeProperty(defcount.getName(), defcount.getText());
+            mpv5.db.objects.User.getCurrentUser().getProperties().changeProperty(defunit.getName(), defunit.getText());
+            mpv5.db.objects.User.getCurrentUser().getProperties().changeProperty(MPView.getTabPane(), "norecycletabs", tabs.isSelected());
+            mpv5.db.objects.User.getCurrentUser().getProperties().changeProperty(MPView.getTabPane(), "avoidmultipleviews", views.isSelected());
+            mpv5.db.objects.User.getCurrentUser().getProperties().changeProperty(MPView.getTabPane(), "hideunpaidbills", unpaidbills.isSelected());
+            mpv5.db.objects.User.getCurrentUser().getProperties().changeProperty(MPView.getTabPane(), "hidecolumnquantity", columnquantity.isSelected());
+            mpv5.db.objects.User.getCurrentUser().getProperties().changeProperty(MPView.getTabPane(), "hideproductscolumn", hideproductscolumn.isSelected());
+            mpv5.db.objects.User.getCurrentUser().getProperties().changeProperty(MPView.getTabPane(), "hidecolumnmeasure", columnmeasure.isSelected());
+            mpv5.db.objects.User.getCurrentUser().getProperties().changeProperty(MPView.getTabPane(), "hidetaxcolumn", hidetaxcolumn.isSelected());
+            mpv5.db.objects.User.getCurrentUser().getProperties().changeProperty(MPView.getTabPane(), "showoptionalcolumn", showoptionalcolumn.isSelected());
+            mpv5.db.objects.User.getCurrentUser().getProperties().changeProperty(MPView.getTabPane(), "supresscurrencysymbols", supresscurrencysymbols.isSelected());
+            mpv5.db.objects.User.getCurrentUser().getProperties().changeProperty(MPView.getTabPane(), "autocreaterevenue", autorev.isSelected());
+            mpv5.db.objects.User.getCurrentUser().getProperties().changeProperty(MPView.getTabPane(), "ordersoverproducts", ordersoverproducts.isSelected());
+            mpv5.db.objects.User.getCurrentUser().getProperties().changeProperty(MPView.getTabPane(), "propertiesdefined", true);
 
             if (deftax.getSelectedItem() != null) {
-                MPView.getUser().getProperties().changeProperty(deftax.getName(), deftax.getSelectedItem().getId());
+                mpv5.db.objects.User.getCurrentUser().getProperties().changeProperty(deftax.getName(), deftax.getSelectedItem().getId());
             }
             if (shiptax.getSelectedItem() != null) {
-                MPView.getUser().getProperties().changeProperty(shiptax.getName(), shiptax.getSelectedItem().getId());
+                mpv5.db.objects.User.getCurrentUser().getProperties().changeProperty(shiptax.getName(), shiptax.getSelectedItem().getId());
             }
 
-            MPView.getUser().getProperties().changeProperty("bills.warn.days", labeledTextField1.getText());
-            MPView.getUser().getProperties().changeProperty("bills.alert.days", labeledTextField2.getText());
-            MPView.getUser().getProperties().changeProperty("smtp.host", smtphost.getText());
-            MPView.getUser().getProperties().changeProperty("smtp.host.user", smtpuser.getText());
-            MPView.getUser().getProperties().changeProperty("smtp.host.password", new String(smtppw.getPassword()));
-            MPView.getUser().getProperties().changeProperty("smtp.host.usetls", Boolean.toString(smtptls.isSelected()));
-            MPView.getUser().defineMailConfig();
+            mpv5.db.objects.User.getCurrentUser().getProperties().changeProperty("bills.warn.days", labeledTextField1.getText());
+            mpv5.db.objects.User.getCurrentUser().getProperties().changeProperty("bills.alert.days", labeledTextField2.getText());
+            mpv5.db.objects.User.getCurrentUser().getProperties().changeProperty("smtp.host", smtphost.getText());
+            mpv5.db.objects.User.getCurrentUser().getProperties().changeProperty("smtp.host.user", smtpuser.getText());
+            mpv5.db.objects.User.getCurrentUser().getProperties().changeProperty("smtp.host.password", new String(smtppw.getPassword()));
+            mpv5.db.objects.User.getCurrentUser().getProperties().changeProperty("smtp.host.usetls", Boolean.toString(smtptls.isSelected()));
+            mpv5.db.objects.User.getCurrentUser().defineMailConfig();
         } catch (Exception e) {
             Log.Debug(e);
         }
@@ -570,87 +570,87 @@ public class ControlPanel_Userproperties extends javax.swing.JPanel implements C
     }
 
     private void loadSettings() {
-        tabs.setSelected(MPView.getUser().getProperties().getProperty(MPView.getTabPane(), "norecycletabs"));
-        views.setSelected(MPView.getUser().getProperties().getProperty(MPView.getTabPane(), "avoidmultipleviews"));
-        unpaidbills.setSelected(MPView.getUser().getProperties().getProperty(MPView.getTabPane(), "hideunpaidbills"));
-        columnquantity.setSelected(MPView.getUser().getProperties().getProperty(MPView.getTabPane(), "hidecolumnquantity"));
-        columnmeasure.setSelected(MPView.getUser().getProperties().getProperty(MPView.getTabPane(), "hidecolumnmeasure"));
-        hideproductscolumn.setSelected(MPView.getUser().getProperties().getProperty(MPView.getTabPane(), "hideproductscolumn"));
-        showoptionalcolumn.setSelected(MPView.getUser().getProperties().getProperty(MPView.getTabPane(), "showoptionalcolumn"));
-        supresscurrencysymbols.setSelected(MPView.getUser().getProperties().getProperty(MPView.getTabPane(), "supresscurrencysymbols"));
-        autorev.setSelected(MPView.getUser().getProperties().getProperty(MPView.getTabPane(), "autocreaterevenue"));
-        ordersoverproducts.setSelected(MPView.getUser().getProperties().getProperty(MPView.getTabPane(), "ordersoverproducts"));
-        hidetaxcolumn.setSelected(MPView.getUser().getProperties().getProperty(MPView.getTabPane(), "hidetaxcolumn"));
+        tabs.setSelected(mpv5.db.objects.User.getCurrentUser().getProperties().getProperty(MPView.getTabPane(), "norecycletabs"));
+        views.setSelected(mpv5.db.objects.User.getCurrentUser().getProperties().getProperty(MPView.getTabPane(), "avoidmultipleviews"));
+        unpaidbills.setSelected(mpv5.db.objects.User.getCurrentUser().getProperties().getProperty(MPView.getTabPane(), "hideunpaidbills"));
+        columnquantity.setSelected(mpv5.db.objects.User.getCurrentUser().getProperties().getProperty(MPView.getTabPane(), "hidecolumnquantity"));
+        columnmeasure.setSelected(mpv5.db.objects.User.getCurrentUser().getProperties().getProperty(MPView.getTabPane(), "hidecolumnmeasure"));
+        hideproductscolumn.setSelected(mpv5.db.objects.User.getCurrentUser().getProperties().getProperty(MPView.getTabPane(), "hideproductscolumn"));
+        showoptionalcolumn.setSelected(mpv5.db.objects.User.getCurrentUser().getProperties().getProperty(MPView.getTabPane(), "showoptionalcolumn"));
+        supresscurrencysymbols.setSelected(mpv5.db.objects.User.getCurrentUser().getProperties().getProperty(MPView.getTabPane(), "supresscurrencysymbols"));
+        autorev.setSelected(mpv5.db.objects.User.getCurrentUser().getProperties().getProperty(MPView.getTabPane(), "autocreaterevenue"));
+        ordersoverproducts.setSelected(mpv5.db.objects.User.getCurrentUser().getProperties().getProperty(MPView.getTabPane(), "ordersoverproducts"));
+        hidetaxcolumn.setSelected(mpv5.db.objects.User.getCurrentUser().getProperties().getProperty(MPView.getTabPane(), "hidetaxcolumn"));
 
         Component[] t = productstobillsproperties.getComponents();
         for (int i = 0; i < t.length; i++) {
             Component component = t[i];
-            if (MPView.getUser().getProperties().hasProperty(Context.getProduct() + LightMPComboBox.VALUE_SEARCHFIELDS)) {
+            if (mpv5.db.objects.User.getCurrentUser().getProperties().hasProperty(Context.getProduct() + LightMPComboBox.VALUE_SEARCHFIELDS)) {
                 if (component instanceof JCheckBox) {
                     try {
-                        ((JCheckBox) component).setSelected(MPView.getUser().getProperties().getProperty(Context.getProduct() + LightMPComboBox.VALUE_SEARCHFIELDS).contains(component.getName()));
+                        ((JCheckBox) component).setSelected(mpv5.db.objects.User.getCurrentUser().getProperties().getProperty(Context.getProduct() + LightMPComboBox.VALUE_SEARCHFIELDS).contains(component.getName()));
                     } catch (Exception e) {
                     }
                 }
             }
         }
-        String s = MPView.getUser().getProperties().getProperty(Context.getProduct() + LightMPComboBox.VALUE_SEARCHFIELDS);
+        String s = mpv5.db.objects.User.getCurrentUser().getProperties().getProperty(Context.getProduct() + LightMPComboBox.VALUE_SEARCHFIELDS);
         if (s != null) {
             format.setText(s);
         } else {
             format.setText("_$cname$_ ");
         }
 
-        if (MPView.getUser().getProperties().hasProperty(defcount.getName())) {
-            defcount.setText(MPView.getUser().getProperties().getProperty(defcount.getName()));
+        if (mpv5.db.objects.User.getCurrentUser().getProperties().hasProperty(defcount.getName())) {
+            defcount.setText(mpv5.db.objects.User.getCurrentUser().getProperties().getProperty(defcount.getName()));
         } else {
             defcount.setText("1");
         }
 
-        if (MPView.getUser().getProperties().hasProperty(defcount.getName())) {
-            defcount.setText(MPView.getUser().getProperties().getProperty(defcount.getName()));
+        if (mpv5.db.objects.User.getCurrentUser().getProperties().hasProperty(defcount.getName())) {
+            defcount.setText(mpv5.db.objects.User.getCurrentUser().getProperties().getProperty(defcount.getName()));
         } else {
             defcount.setText("1");
         }
 
-        if (MPView.getUser().getProperties().hasProperty("bills.warn.days")) {
-            labeledTextField1.setText(MPView.getUser().getProperties().getProperty("bills.warn.days"));
+        if (mpv5.db.objects.User.getCurrentUser().getProperties().hasProperty("bills.warn.days")) {
+            labeledTextField1.setText(mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("bills.warn.days"));
         } else {
             labeledTextField1.setText("14");
         }
 
-        if (MPView.getUser().getProperties().hasProperty("bills.alert.days")) {
-            labeledTextField2.setText(MPView.getUser().getProperties().getProperty("bills.alert.days"));
+        if (mpv5.db.objects.User.getCurrentUser().getProperties().hasProperty("bills.alert.days")) {
+            labeledTextField2.setText(mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("bills.alert.days"));
         } else {
             labeledTextField2.setText("30");
         }
 
 
-        if (MPView.getUser().getProperties().hasProperty("smtp.host")) {
-            smtphost.setText(MPView.getUser().getProperties().getProperty("smtp.host"));
+        if (mpv5.db.objects.User.getCurrentUser().getProperties().hasProperty("smtp.host")) {
+            smtphost.setText(mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("smtp.host"));
         }
 
-        if (MPView.getUser().getProperties().hasProperty("smtp.host.user")) {
-            smtpuser.setText(MPView.getUser().getProperties().getProperty("smtp.host.user"));
+        if (mpv5.db.objects.User.getCurrentUser().getProperties().hasProperty("smtp.host.user")) {
+            smtpuser.setText(mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("smtp.host.user"));
         }
 
-        if (MPView.getUser().getProperties().hasProperty("smtp.host.password")) {
-            smtppw.setText(MPView.getUser().getProperties().getProperty("smtp.host.password"));
+        if (mpv5.db.objects.User.getCurrentUser().getProperties().hasProperty("smtp.host.password")) {
+            smtppw.setText(mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("smtp.host.password"));
         }
 
-        if (MPView.getUser().getProperties().hasProperty("smtp.host.usetls")) {
-            smtptls.setSelected(MPView.getUser().getProperties().getProperty("smtp.host.usetls", true));
+        if (mpv5.db.objects.User.getCurrentUser().getProperties().hasProperty("smtp.host.usetls")) {
+            smtptls.setSelected(mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("smtp.host.usetls", true));
         }
         try {
             Runnable runnable = new Runnable() {
 
                 public void run() {
                     try {
-                        deftax.setSelectedItem(Integer.valueOf(MPView.getUser().getProperties().getProperty(deftax.getName())));
+                        deftax.setSelectedItem(Integer.valueOf(mpv5.db.objects.User.getCurrentUser().getProperties().getProperty(deftax.getName())));
                     } catch (NumberFormatException numberFormatException) {
                     }
                     try {
-                        shiptax.setSelectedItem(Integer.valueOf(MPView.getUser().getProperties().getProperty(shiptax.getName())));
+                        shiptax.setSelectedItem(Integer.valueOf(mpv5.db.objects.User.getCurrentUser().getProperties().getProperty(shiptax.getName())));
                     } catch (NumberFormatException numberFormatException) {
                     }
                 }

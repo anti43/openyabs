@@ -374,7 +374,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject> {
                 if (__getCName() != null && __getCName().length() > 0) {
                     Log.Debug(this, "Inserting new dataset into: " + this.getContext());
                     dateadded = new Date();
-                    intaddedby = MPView.getUser().__getIDS();
+                    intaddedby = mpv5.db.objects.User.getCurrentUser().__getIDS();
                     if (!silent && !this.getType().equals(new HistoryItem().getType())) {
                         message = this.__getCName() + Messages.INSERTED;
                     }
@@ -415,7 +415,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject> {
 
                     @Override
                     public void run() {
-                        QueryHandler.instanceOf().clone(Context.getHistory()).insertHistoryItem(fmessage, MPView.getUser().__getCName(), fdbid, fids, fgids);
+                        QueryHandler.instanceOf().clone(Context.getHistory()).insertHistoryItem(fmessage, mpv5.db.objects.User.getCurrentUser().__getCName(), fdbid, fids, fgids);
                     }
                 };
                 SwingUtilities.invokeLater(runnable);
@@ -438,12 +438,12 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject> {
         Log.Debug(this, "Starting import..");
         Log.Debug(this, "Setting IDS to -1");
         ids = -1;
-        Log.Debug(this, "Setting intaddedby to " + MPView.getUser().__getIDS());
-        intaddedby = MPView.getUser().__getIDS();
+        Log.Debug(this, "Setting intaddedby to " + mpv5.db.objects.User.getCurrentUser().__getIDS());
+        intaddedby = mpv5.db.objects.User.getCurrentUser().__getIDS();
 
         if (groupsids <= 0 || !DatabaseObject.exists(Context.getGroup(), groupsids)) {
             Log.Debug(this, "Setting groups to users group.");
-            groupsids = MPView.getUser().__getGroupsids();
+            groupsids = mpv5.db.objects.User.getCurrentUser().__getGroupsids();
         }
 
         if (__getCName() == null || __getCName().length() == 0) {
@@ -520,7 +520,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject> {
 
                     @Override
                     public void run() {
-                        QueryHandler.instanceOf().clone(Context.getHistory()).insertHistoryItem(fmessage, MPView.getUser().__getCName(), fdbid, fids, fgids);
+                        QueryHandler.instanceOf().clone(Context.getHistory()).insertHistoryItem(fmessage, mpv5.db.objects.User.getCurrentUser().__getCName(), fdbid, fids, fgids);
                     }
                 };
                 SwingUtilities.invokeLater(runnable);

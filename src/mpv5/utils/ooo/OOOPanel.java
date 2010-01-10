@@ -76,7 +76,7 @@ public class OOOPanel extends JPanel {
 //            public void dispatch(Object[] arg0) {
 //                try {
 //                    QueryHandler.instanceOf().clone(Context.getFiles()).insertFile(new File(NoaConnection.getConnection().getDocumentService().getCurrentDocuments()[0].getPersistenceService().getLocation().getPath()),
-//                            MPView.getUser(), new SaveString("Template", true));
+//                            mpv5.db.objects.User.getCurrentUser(), new SaveString("Template", true));
 //                } catch (DocumentException ex) {
 //                    Log.Debug(ex);
 //                }

@@ -99,7 +99,7 @@ public class RevenuePanel extends javax.swing.JPanel implements DataPanel {
         toolbarpane.add(tb, BorderLayout.CENTER);
         dataOwner = new Revenue();
 
-        addedby.setText(MPView.getUser().getName());
+        addedby.setText(mpv5.db.objects.User.getCurrentUser().getName());
 
         groupnameselect.setSearchEnabled(true);
         groupnameselect.setContext(Context.getGroup());
@@ -513,7 +513,7 @@ public class RevenuePanel extends javax.swing.JPanel implements DataPanel {
 
         try {
             accountsids_ = Integer.valueOf(accountselect.getSelectedItem().getId());
-            MPView.getUser().getProperties().changeProperty(me, "accountselect", accountsids_);
+            mpv5.db.objects.User.getCurrentUser().getProperties().changeProperty(me, "accountselect", accountsids_);
         } catch (Exception e) {
             accountsids_ = 1;
         }
@@ -590,7 +590,7 @@ public class RevenuePanel extends javax.swing.JPanel implements DataPanel {
                     Log.Debug(e);
                 }
                 try {
-                    accountselect.setSelectedItem(MPView.getUser().getProperties().getProperty(me, "accountselect", 1));
+                    accountselect.setSelectedItem(mpv5.db.objects.User.getCurrentUser().getProperties().getProperty(me, "accountselect", 1));
                     formatTable();
                 } catch (Exception e) {
                     Log.Debug(e);

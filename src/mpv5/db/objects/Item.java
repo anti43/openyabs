@@ -549,8 +549,8 @@ public class Item extends DatabaseObject implements Formattable {
         map.put("shippedtaxvaluef", FormatNumber.formatLokalCurrency(__getTaxvalue().doubleValue() * ((__getDiscountvalue().doubleValue() / 100 - 1) * -1)));
         map.put("shippedgrosvaluef", FormatNumber.formatLokalCurrency(((__getTaxvalue().doubleValue() + __getNetvalue().doubleValue()) * ((__getDiscountvalue().doubleValue() / 100 - 1) * -1)) + __getShippingvalue().doubleValue()));
 
-        if (MPView.getUser().getProperties().hasProperty("shiptax")) {
-            int taxid = MPView.getUser().getProperties().getProperty("shiptax", new Integer(0));
+        if (mpv5.db.objects.User.getCurrentUser().getProperties().hasProperty("shiptax")) {
+            int taxid = mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("shiptax", new Integer(0));
             Double shiptax = Tax.getTaxValue(taxid).doubleValue();
             map.put("shippingtaxvalue", __getShippingvalue().doubleValue() * (shiptax / 100));
             map.put("shippingtaxvaluef", FormatNumber.formatLokalCurrency(__getShippingvalue().doubleValue() * (shiptax / 100)));
@@ -563,10 +563,10 @@ public class Item extends DatabaseObject implements Formattable {
             map.put("shippedgrosvaluef", FormatNumber.formatLokalCurrency(((__getTaxvalue().doubleValue() + __getNetvalue().doubleValue()) * ((__getDiscountvalue().doubleValue() / 100 - 1) * -1)) + __getShippingvalue().doubleValue() * (shiptax / 100) + __getShippingvalue().doubleValue()));
         }
         //date format localization
-        if (MPView.getUser().getProperties().hasProperty("item.date.locale")) {
+        if (mpv5.db.objects.User.getCurrentUser().getProperties().hasProperty("item.date.locale")) {
             Locale l = null;
             try {
-                l = TypeConversion.stringToLocale(MPView.getUser().getProperties().getProperty("item.date.locale"));
+                l = TypeConversion.stringToLocale(mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("item.date.locale"));
             } catch (Exception e) {
             }
             if (l != null) {
@@ -630,7 +630,7 @@ public class Item extends DatabaseObject implements Formattable {
 //    @Override
 //    public boolean save() {
 //        boolean saved = super.save();
-//        if (intstatus == STATUS_PAID && inttype == TYPE_BILL && saved && MPView.getUser().getProperties().getProperty(MPView.tabPane, "autocreaterevenue")) {
+//        if (intstatus == STATUS_PAID && inttype == TYPE_BILL && saved && mpv5.db.objects.User.getCurrentUser().getProperties().getProperty(MPView.tabPane, "autocreaterevenue")) {
 //            createRevenue();
 //        }
 //        return saved;

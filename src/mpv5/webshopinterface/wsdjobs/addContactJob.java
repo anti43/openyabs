@@ -67,7 +67,7 @@ public class addContactJob implements WSDaemonJob {
                 ws.setCName( String.valueOf(id) + "@" + daemon.getWebShopID());
                 ws.setWebshopsids(daemon.getWebShopID());
                 ws.setWscontact(String.valueOf(id));
-                ws.setGroupsids(MPView.getUser().__getGroupsids());
+                ws.setGroupsids(mpv5.db.objects.User.getCurrentUser().__getGroupsids());
                 ws.save();
             }
 

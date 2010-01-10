@@ -135,7 +135,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
         refresh();
         shipping.set_ValueClass(Double.class);
 
-        addedby.setText(MPView.getUser().getName());
+        addedby.setText(mpv5.db.objects.User.getCurrentUser().getName());
         contactname.setSearchEnabled(true);
         contactname.setContext(Context.getCustomer());
         contactname.getComboBox().addActionListener(new ActionListener() {
@@ -169,7 +169,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
 
         date1.setDate(new Date());
         try {
-            date3.setDate(DateConverter.addDays(new Date(), Integer.valueOf(MPView.getUser().getProperties().getProperty("bills.warn.days"))));
+            date3.setDate(DateConverter.addDays(new Date(), Integer.valueOf(mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("bills.warn.days"))));
             date2.setDate(new Date());
         } catch (Exception e) {
             date3.setDate(DateConverter.addDays(new Date(), 14));
@@ -246,7 +246,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
             Item dato = (Item) getDataOwner();
 
             public void actionPerformed(ActionEvent e) {
-                if (dato.__getInttype() == Item.TYPE_BILL && !loading && dataOwner.isExisting() && Integer.valueOf(status.getSelectedItem().getId()) == Item.STATUS_PAID && MPView.getUser().getProperties().getProperty(MPView.getTabPane(), "autocreaterevenue")) {
+                if (dato.__getInttype() == Item.TYPE_BILL && !loading && dataOwner.isExisting() && Integer.valueOf(status.getSelectedItem().getId()) == Item.STATUS_PAID && mpv5.db.objects.User.getCurrentUser().getProperties().getProperty(MPView.getTabPane(), "autocreaterevenue")) {
                     if (Popup.Y_N_dialog(Messages.BOOK_NOW)) {
 
                         if (dato.getPanelData(p) && dato.save()) {
@@ -1460,12 +1460,12 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
             @Override
             public void run() {
                 try {
-                    groupnameselect.setModel(MPComboBoxModelItem.toModel(DatabaseObject.getObject(Context.getGroup(), MPView.getUser().__getGroupsids())));
+                    groupnameselect.setModel(MPComboBoxModelItem.toModel(DatabaseObject.getObject(Context.getGroup(), mpv5.db.objects.User.getCurrentUser().__getGroupsids())));
                     groupnameselect.setSelectedIndex(0);
                     sp.refresh();
 
                     try {
-                        accountselect.setModel(DatabaseObject.getObject(Context.getAccounts(), MPView.getUser().__getIntdefaultaccount()));
+                        accountselect.setModel(DatabaseObject.getObject(Context.getAccounts(), mpv5.db.objects.User.getCurrentUser().__getIntdefaultaccount()));
                     } catch (NodataFoundException nodataFoundException) {
                         Log.Debug(this, nodataFoundException.getMessage());
                     }
@@ -1483,7 +1483,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
                     }
                     status.setModel(Item.getStatusStrings(), MPComboBoxModelItem.COMPARE_BY_ID, skip);
                     try {
-                        status.setSelectedIndex(MPView.getUser().__getIntdefaultstatus());
+                        status.setSelectedIndex(mpv5.db.objects.User.getCurrentUser().__getIntdefaultstatus());
                     } catch (Exception e) {
                     }
                     itemtable.setModel(SubItem.toModel(new SubItem[]{
@@ -1515,25 +1515,25 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
         MPTableModel model = (MPTableModel) itemtable.getModel();
         model.setCanEdits(new boolean[]{false, false, true, true, true, true, true, false, false, false, true, true, false, false, true});
         TableFormat.changeBackground(itemtable, 1, Color.LIGHT_GRAY);
-        if (MPView.getUser().getProperties().getProperty(MPView.getTabPane(), "hidecolumnquantity")) {
+        if (mpv5.db.objects.User.getCurrentUser().getProperties().getProperty(MPView.getTabPane(), "hidecolumnquantity")) {
             TableFormat.stripColumn(itemtable, 2);
             model.setCellEditable(0, 2, false);
         }
-        if (MPView.getUser().getProperties().getProperty(MPView.getTabPane(), "hidecolumnmeasure")) {
+        if (mpv5.db.objects.User.getCurrentUser().getProperties().getProperty(MPView.getTabPane(), "hidecolumnmeasure")) {
             TableFormat.stripColumn(itemtable, 3);
             model.setCellEditable(0, 3, false);
         }
-        if (!MPView.getUser().getProperties().getProperty(MPView.getTabPane(), "showoptionalcolumn")) {
+        if (!mpv5.db.objects.User.getCurrentUser().getProperties().getProperty(MPView.getTabPane(), "showoptionalcolumn")) {
             TableFormat.stripColumn(itemtable, 14);
             model.setCellEditable(0, 14, false);
         }
 
-        if (MPView.getUser().getProperties().getProperty(MPView.getTabPane(), "hideproductscolumn")) {
+        if (mpv5.db.objects.User.getCurrentUser().getProperties().getProperty(MPView.getTabPane(), "hideproductscolumn")) {
             TableFormat.stripColumn(itemtable, 10);
             model.setCellEditable(0, 10, false);
         }
 
-        if (MPView.getUser().getProperties().getProperty(MPView.getTabPane(), "hidetaxcolumn")) {
+        if (mpv5.db.objects.User.getCurrentUser().getProperties().getProperty(MPView.getTabPane(), "hidetaxcolumn")) {
             TableFormat.stripColumn(itemtable, 6);
             model.setCellEditable(0, 6, false);
         }
@@ -1689,7 +1689,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
                 pr.setDataOwner(dataOwner);
                 new Job(Export.createFile(preloadedTemplate, dataOwner), pr).execute();
             } else {
-                Popup.notice(Messages.NO_TEMPLATE_LOADED + " (" + MPView.getUser() + ")");
+                Popup.notice(Messages.NO_TEMPLATE_LOADED + " (" + mpv5.db.objects.User.getCurrentUser() + ")");
             }
         }
     }
@@ -1781,7 +1781,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
         status.setSelectedIndex(Item.STATUS_IN_PROGRESS);
         date1.setDate(new Date());
         try {
-            date3.setDate(DateConverter.addDays(new Date(), Integer.valueOf(MPView.getUser().getProperties().getProperty("bills.warn.days"))));
+            date3.setDate(DateConverter.addDays(new Date(), Integer.valueOf(mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("bills.warn.days"))));
             date2.setDate(new Date());
         } catch (Exception e) {
             date3.setDate(DateConverter.addDays(new Date(), 14));
@@ -1804,7 +1804,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
                     Log.Debug(ex);
                 }
             } else {
-                Popup.notice(Messages.NO_TEMPLATE_LOADED + " (" + MPView.getUser() + ")");
+                Popup.notice(Messages.NO_TEMPLATE_LOADED + " (" + mpv5.db.objects.User.getCurrentUser() + ")");
             }
         }
     }
@@ -1816,7 +1816,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
                 Export.print(preloadedTemplate, dataOwner);
 
             } else {
-                Popup.notice(Messages.NO_TEMPLATE_LOADED + " (" + MPView.getUser() + ")");
+                Popup.notice(Messages.NO_TEMPLATE_LOADED + " (" + mpv5.db.objects.User.getCurrentUser() + ")");
             }
         }
     }
@@ -1863,7 +1863,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
             }
 
             public void mouseReleased(MouseEvent e) {
-                if (!MPView.getUser().getProperties().getProperty(MPView.getTabPane(), "ordersoverproducts")) {
+                if (!mpv5.db.objects.User.getCurrentUser().getProperties().getProperty(MPView.getTabPane(), "ordersoverproducts")) {
                     ProductSelectDialog.instanceOf((MPTableModel) itemtable.getModel(), itemtable.getSelectedRow(), e, Integer.valueOf(itemtable.getModel().getValueAt(itemtable.getSelectedRow(), 10).toString()), itemtable.getModel().getValueAt(itemtable.getSelectedRow(), 12 + 1), itemtable.getModel().getValueAt(itemtable.getSelectedRow(), 14));
                 } else {
                     SubItem s = new SubItem();
@@ -1920,7 +1920,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
                 pr.setDataOwner(dataOwner);
                 new Job(Export.createFile(preloadedTemplate2, dataOwner), pr).execute();
             } else {
-                Popup.notice(Messages.NO_TEMPLATE_LOADED + " (" + MPView.getUser() + ")");
+                Popup.notice(Messages.NO_TEMPLATE_LOADED + " (" + mpv5.db.objects.User.getCurrentUser() + ")");
             }
         }
     }
@@ -1934,7 +1934,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
                 pr.setDataOwner(dataOwner);
                 new Job(Export.createFile(preloadedTemplate3, dataOwner), pr).execute();
             } else {
-                Popup.notice(Messages.NO_TEMPLATE_LOADED + " (" + MPView.getUser() + ")");
+                Popup.notice(Messages.NO_TEMPLATE_LOADED + " (" + mpv5.db.objects.User.getCurrentUser() + ")");
             }
         }
     }

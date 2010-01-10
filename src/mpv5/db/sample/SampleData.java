@@ -92,7 +92,7 @@ public class SampleData {
                     c.setisSupplier(new Random().nextBoolean());
                     c.settaxnumber("123-" + seed);
                     c.setGroupsids(group);
-                    c.setIntaddedby(MPView.getUser().__getIDS());
+                    c.setIntaddedby(mpv5.db.objects.User.getCurrentUser().__getIDS());
                     try {
                         c.save();
                     } catch (Exception e) {
@@ -128,7 +128,7 @@ public class SampleData {
                                 p.setDescription("no description!");
                                 p.setExternalvalue(new BigDecimal("100"));value+=100d;
                                 p.setGroupsids(1);
-                                p.setIntaddedby(MPView.getUser().ids);
+                                p.setIntaddedby(mpv5.db.objects.User.getCurrentUser().ids);
                                 p.setInternalvalue(new BigDecimal("100"));
                                 p.setMeasure("h");
                                 p.setQuantityvalue(new BigDecimal("1"));
@@ -138,7 +138,7 @@ public class SampleData {
 
                             it.setTaxvalue(FormatNumber.round((value * 1.19) - value));
                             it.setNetvalue(FormatNumber.round(value));
-                            it.setIntaddedby(MPView.getUser().__getIDS());
+                            it.setIntaddedby(mpv5.db.objects.User.getCurrentUser().__getIDS());
                             try {
                                 it.save();
                             } catch (Exception e) {
@@ -179,7 +179,7 @@ public class SampleData {
                             it.setReference("swqsd1221");
                             it.setSuppliersids(c.__getIDS());
                             it.setUrl("www.test.com");
-                            it.setIntaddedby(MPView.getUser().__getIDS());
+                            it.setIntaddedby(mpv5.db.objects.User.getCurrentUser().__getIDS());
                             try {
                                 it.save();
                             } catch (Exception e) {
@@ -205,7 +205,7 @@ public class SampleData {
                             it1.setReference("swqsd1221");
                             it1.setSuppliersids(c.__getIDS());
                             it1.setUrl("www.test.com");
-                            it1.setIntaddedby(MPView.getUser().__getIDS());
+                            it1.setIntaddedby(mpv5.db.objects.User.getCurrentUser().__getIDS());
                             try {
                                 it1.save();
                             } catch (Exception e) {

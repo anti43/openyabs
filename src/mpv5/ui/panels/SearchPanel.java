@@ -50,8 +50,8 @@ public class SearchPanel extends javax.swing.JPanel {
         this.validate();
         this.context = context;
         this.panel = panel;
-        lastneedle = String.valueOf(MPView.getUser().__getGroupsids());
-        search(5, String.valueOf(MPView.getUser().__getGroupsids()));
+        lastneedle = String.valueOf(mpv5.db.objects.User.getCurrentUser().__getGroupsids());
+        search(5, String.valueOf(mpv5.db.objects.User.getCurrentUser().__getGroupsids()));
     }
 
     /**

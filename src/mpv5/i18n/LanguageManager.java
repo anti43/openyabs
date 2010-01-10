@@ -100,10 +100,10 @@ public class LanguageManager {
         try {
             Document doc = r.newDoc(file, true);
 
-            if (MPSecurityManager.checkAdminAccess() && !MPView.getUser().isDefault()) {
+            if (MPSecurityManager.checkAdminAccess() && !mpv5.db.objects.User.getCurrentUser().isDefault()) {
                 if (doc != null) {
                     try {
-                        QueryHandler.instanceOf().clone(Context.getCountries()).delete(new String[][]{{"groupsids", MPView.getUser().getID().toString(), ""}});
+                        QueryHandler.instanceOf().clone(Context.getCountries()).delete(new String[][]{{"groupsids", mpv5.db.objects.User.getCurrentUser().getID().toString(), ""}});
                     } catch (Exception ex) {
                         Log.Debug(ex);
                     }
@@ -113,7 +113,7 @@ public class LanguageManager {
                         QueryData t = new QueryData();
                         t.add("cname", country[1]);
                         t.add("iso", Integer.valueOf(country[2]));
-                        t.add("groupsids", MPView.getUser().__getGroupsids());
+                        t.add("groupsids", mpv5.db.objects.User.getCurrentUser().__getGroupsids());
                         QueryHandler.instanceOf().clone(Context.getCountries()).insert(t, Messages.DONE.toString());
                     }
 //                MPView.addMessage(langname + Messages.ROW_UPDATED);
@@ -228,7 +228,7 @@ public class LanguageManager {
      */
     public static ResourceBundle getBundle() {
         if (Main.INSTANTIATED) {
-            return getBundle(MPView.getUser().__getLanguage());
+            return getBundle(mpv5.db.objects.User.getCurrentUser().__getLanguage());
         } else {
             return java.util.ResourceBundle.getBundle(defLanguageBundle);
         }

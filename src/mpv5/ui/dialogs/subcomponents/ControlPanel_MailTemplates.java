@@ -334,7 +334,7 @@ public class ControlPanel_MailTemplates extends javax.swing.JPanel implements Co
 
         description_ = descr.getText();
         cname_ = fullname.getText();
-        usersids_ = MPView.getUser().__getIDS();
+        usersids_ = mpv5.db.objects.User.getCurrentUser().__getIDS();
 
         return true;
     }
@@ -365,7 +365,7 @@ public class ControlPanel_MailTemplates extends javax.swing.JPanel implements Co
     public void refresh() {
         ArrayList<DatabaseObject> temps;
         try {
-            QueryCriteria c = new QueryCriteria("usersids", MPView.getUser().__getIDS());
+            QueryCriteria c = new QueryCriteria("usersids", mpv5.db.objects.User.getCurrentUser().__getIDS());
             temps = DatabaseObject.getObjects(Context.getMessage());
             Object[][] data = new Object[temps.size()][3];
 

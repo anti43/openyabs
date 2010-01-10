@@ -332,7 +332,7 @@ public class RemindPanel extends javax.swing.JPanel {
         if (msg != null) {
             Stage s = new Stage();
             s.setCName(msg);
-            s.setGroupsids(MPView.getUser().__getGroupsids());
+            s.setGroupsids(mpv5.db.objects.User.getCurrentUser().__getGroupsids());
             s.setDescription(jTextPane1.getText());
             s.setExtravalue(Double.valueOf(labeledTextField1.getText()));
             s.save();
@@ -431,7 +431,7 @@ public class RemindPanel extends javax.swing.JPanel {
                 }
                 s = new Stage();
                 s.setCName(msg);
-                s.setGroupsids(MPView.getUser().__getGroupsids());
+                s.setGroupsids(mpv5.db.objects.User.getCurrentUser().__getGroupsids());
                 s.setDescription(jTextPane1.getText());
                 s.setExtravalue(Double.valueOf(labeledTextField1.getText()));
                 s.save();

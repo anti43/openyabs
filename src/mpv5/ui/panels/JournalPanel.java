@@ -851,7 +851,7 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
                 preloadedTemplate.injectTable(TableHandler.KEY_TABLE + 1, jTable1.getModel());
                 new Job(Export.createFile(preloadedTemplate, dataowner), pr).execute();
             } else {
-                Popup.notice(Messages.NO_TEMPLATE_LOADED + " (" + MPView.getUser() + ")");
+                Popup.notice(Messages.NO_TEMPLATE_LOADED + " (" + mpv5.db.objects.User.getCurrentUser() + ")");
             }
         }
     }

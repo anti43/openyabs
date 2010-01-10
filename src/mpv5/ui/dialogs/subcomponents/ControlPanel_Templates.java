@@ -447,17 +447,17 @@ public class ControlPanel_Templates extends javax.swing.JPanel implements Contro
 //
                 Popup.notice(Messages.ASSIGN_TEMPLATE);
 
-//                User object = MPView.getUser();
+//                User object = mpv5.db.objects.User.getCurrentUser();
 //
 //                QueryCriteria d = new QueryCriteria();
-//                d.add("cname", dataOwner.__getIDS() + "@" + object.__getIDS() + "@" + MPView.getUser().__getGroupsids());
+//                d.add("cname", dataOwner.__getIDS() + "@" + object.__getIDS() + "@" + mpv5.db.objects.User.getCurrentUser().__getGroupsids());
 //                QueryHandler.instanceOf().clone(Context.getTemplatesToUsers()).delete(d);
 //
 //                QueryData c = new QueryData();
 //                c.add("usersids", object.__getIDS());
 //                c.add("templatesids", dataOwner.__getIDS());
-//                c.add("groupsids", MPView.getUser().__getGroupsids());
-//                c.add("cname", dataOwner.__getIDS() + "@" + object.__getIDS() + "@" + MPView.getUser().__getGroupsids());
+//                c.add("groupsids", mpv5.db.objects.User.getCurrentUser().__getGroupsids());
+//                c.add("cname", dataOwner.__getIDS() + "@" + object.__getIDS() + "@" + mpv5.db.objects.User.getCurrentUser().__getGroupsids());
 //                QueryHandler.instanceOf().clone(Context.getTemplatesToUsers()).insert(c, null);
             }
         }

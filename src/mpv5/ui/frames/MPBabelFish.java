@@ -35,6 +35,7 @@ import javax.swing.SwingWorker;
 import javax.swing.table.DefaultTableModel;
 import mpv5.db.common.Context;
 import mpv5.db.common.QueryHandler;
+import mpv5.db.objects.User;
 import mpv5.logging.Log;
 import mpv5.ui.dialogs.Popup;
 import mpv5.ui.misc.Position;
@@ -78,7 +79,7 @@ public class MPBabelFish extends javax.swing.JFrame {
 
     private void setLanguageSelection() {
         languages.setModel(LanguageManager.getLanguagesAsComboBoxModel());
-        languages.setSelectedIndex(MPComboBoxModelItem.getItemID(MPView.getUser().__getLanguage(),
+        languages.setSelectedIndex(MPComboBoxModelItem.getItemID(mpv5.db.objects.User.getCurrentUser().__getLanguage(),
                 languages.getModel()));
 
         setLanguage();

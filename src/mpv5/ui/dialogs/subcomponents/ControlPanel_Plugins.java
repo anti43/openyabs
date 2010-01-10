@@ -271,7 +271,7 @@ public class ControlPanel_Plugins extends javax.swing.JPanel implements ControlA
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
 
         try {
-            ArrayList data = DatabaseObject.getReferencedObjects(MPView.getUser(), Context.getPluginsToUsers());
+            ArrayList data = DatabaseObject.getReferencedObjects(mpv5.db.objects.User.getCurrentUser(), Context.getPluginsToUsers());
             for (int i = 0; i < data.size(); i++) {
                 ((UserPlugin) data.get(i)).delete();
             }
@@ -285,7 +285,7 @@ public class ControlPanel_Plugins extends javax.swing.JPanel implements ControlA
             Plugin gin = (Plugin) plugs[i];
 
             UserPlugin up = new UserPlugin();
-            up.setUsersids(MPView.getUser().__getIDS());
+            up.setUsersids(mpv5.db.objects.User.getCurrentUser().__getIDS());
             up.setPluginsids(gin.__getIDS());
             up.setCName(gin.__getCName());
             up.save();

@@ -81,7 +81,7 @@ public class ProductlistSubItem extends DatabaseObject {
 
             if (!it.isExisting()) {
                 it.setDateadded(new Date());
-                it.setGroupsids(MPView.getUser().__getGroupsids());
+                it.setGroupsids(mpv5.db.objects.User.getCurrentUser().__getGroupsids());
             }
             it.save(true);
         }
@@ -133,7 +133,7 @@ public class ProductlistSubItem extends DatabaseObject {
 
             if (!it.isExisting()) {
                 it.setDateadded(new Date());
-                it.setGroupsids(MPView.getUser().__getGroupsids());
+                it.setGroupsids(mpv5.db.objects.User.getCurrentUser().__getGroupsids());
             }
 
             rowsk.add(it.toStringArray(t));
@@ -223,19 +223,19 @@ public class ProductlistSubItem extends DatabaseObject {
      */
     public static ProductlistSubItem getDefaultItem() {
         ProductlistSubItem i = new ProductlistSubItem();
-        if (MPView.getUser().getProperties().hasProperty("defunit")) {
-            String defunit = MPView.getUser().getProperties().getProperty("defunit");
+        if (mpv5.db.objects.User.getCurrentUser().getProperties().hasProperty("defunit")) {
+            String defunit = mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("defunit");
             i.setMeasure(defunit);
         }
         Double deftax = 0d;
-        if (MPView.getUser().getProperties().hasProperty("deftax")) {
-            int taxid = MPView.getUser().getProperties().getProperty("deftax", 0);
+        if (mpv5.db.objects.User.getCurrentUser().getProperties().hasProperty("deftax")) {
+            int taxid = mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("deftax", 0);
             deftax = Tax.getTaxValue(taxid).doubleValue();
             i.setTaxpercentvalue(deftax);
         }
         Double defcount = 1d;
-        if (MPView.getUser().getProperties().hasProperty("defcount")) {
-            defcount = MPView.getUser().getProperties().getProperty("defcount", 0d);
+        if (mpv5.db.objects.User.getCurrentUser().getProperties().hasProperty("defcount")) {
+            defcount = mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("defcount", 0d);
             i.setQuantityvalue(defcount);
         }
         return i;
@@ -251,8 +251,8 @@ public class ProductlistSubItem extends DatabaseObject {
         setDateadded(new Date());
         setDescription(o.__getDescription());
         setExternalvalue(o.__getExternalnetvalue().doubleValue());
-        setGroupsids(MPView.getUser().__getGroupsids());
-        setIntaddedby(MPView.getUser().__getIDS());
+        setGroupsids(mpv5.db.objects.User.getCurrentUser().__getGroupsids());
+        setIntaddedby(mpv5.db.objects.User.getCurrentUser().__getIDS());
         setInternalvalue(o.__getInternalnetvalue().doubleValue());
         setMeasure(o.__getMeasure());
         setOriginalproductsids(o.__getIDS());
@@ -269,19 +269,19 @@ public class ProductlistSubItem extends DatabaseObject {
     public static ProductlistSubItem getRandomItem() {
         ProductlistSubItem i = new ProductlistSubItem();
         i.fillSampleData();
-        if (MPView.getUser().getProperties().hasProperty("defunit")) {
-            String defunit = MPView.getUser().getProperties().getProperty("defunit");
+        if (mpv5.db.objects.User.getCurrentUser().getProperties().hasProperty("defunit")) {
+            String defunit = mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("defunit");
             i.setMeasure(defunit);
         }
         Double deftax = 0d;
-        if (MPView.getUser().getProperties().hasProperty("deftax")) {
-            int taxid = MPView.getUser().getProperties().getProperty("deftax", 0);
+        if (mpv5.db.objects.User.getCurrentUser().getProperties().hasProperty("deftax")) {
+            int taxid = mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("deftax", 0);
             deftax = Tax.getTaxValue(taxid).doubleValue();
             i.setTaxpercentvalue(deftax);
         }
         Double defcount = 1d;
-        if (MPView.getUser().getProperties().hasProperty("defcount")) {
-            defcount = MPView.getUser().getProperties().getProperty("defcount", 0d);
+        if (mpv5.db.objects.User.getCurrentUser().getProperties().hasProperty("defcount")) {
+            defcount = mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("defcount", 0d);
             i.setQuantityvalue(defcount);
         }
         return i;
@@ -456,17 +456,17 @@ public class ProductlistSubItem extends DatabaseObject {
                 Headers.SUBITEMS.getValue());
         model.setContext(Context.getSubItem());
         String defunit = null;
-        if (MPView.getUser().getProperties().hasProperty("defunit")) {
-            defunit = MPView.getUser().getProperties().getProperty("defunit");
+        if (mpv5.db.objects.User.getCurrentUser().getProperties().hasProperty("defunit")) {
+            defunit = mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("defunit");
         }
         Double deftax = 0d;
-        if (MPView.getUser().getProperties().hasProperty("deftax")) {
-            int taxid = MPView.getUser().getProperties().getProperty("deftax", 0);
+        if (mpv5.db.objects.User.getCurrentUser().getProperties().hasProperty("deftax")) {
+            int taxid = mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("deftax", 0);
             deftax = Tax.getTaxValue(taxid).doubleValue();
         }
         Double defcount = 1d;
-        if (MPView.getUser().getProperties().hasProperty("defcount")) {
-            defcount = MPView.getUser().getProperties().getProperty("defcount", 0d);
+        if (mpv5.db.objects.User.getCurrentUser().getProperties().hasProperty("defcount")) {
+            defcount = mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("defcount", 0d);
         }
         model.defineRow(new Object[]{0, 0, defcount, defunit, null, 0.0, deftax, 0.0, 0.0, 0.0, 0, "A", "C", "", ""});
         model.setAutoCountColumn(1);

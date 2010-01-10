@@ -102,7 +102,7 @@ public abstract class VariablesHandler {
                 if (vars[i][0].equals(GENERIC_VARS.CREATE_USER.toString())) {
                     vars[i][1] = User.getUsername(target.__getIntaddedby());
                 } else if (vars[i][0].equals(GENERIC_VARS.CURRENT_USER.toString())) {
-                    vars[i][1] = User.getUsername(MPView.getUser().__getIDS());
+                    vars[i][1] = User.getUsername(mpv5.db.objects.User.getCurrentUser().__getIDS());
                 } else if (vars[i][0].equals(GENERIC_VARS.GROUP.toString())) {
                     vars[i][1] = Group.getObject(Context.getGroup(), target.__getGroupsids()).__getCName();
                 } else if (vars[i][0].equals(GENERIC_VARS.MONTH.toString())) {

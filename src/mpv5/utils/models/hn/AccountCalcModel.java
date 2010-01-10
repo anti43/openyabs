@@ -173,7 +173,7 @@ public abstract class AccountCalcModel extends DefaultTableModel {
    * The file names for html and pdf templates
    */
   private void setFilename() {
-    String lang = MPView.getUser().__getLocale();
+    String lang = mpv5.db.objects.User.getCurrentUser().__getLocale();
     lang = lang.substring(lang.length() - 2).toLowerCase() + "_";
     lang = "de_";
     String s = "/mpv5/resources/" + lang + prefix + "form.";

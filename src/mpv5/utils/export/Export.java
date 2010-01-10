@@ -57,7 +57,7 @@ public class Export extends HashMap<String, Object> implements Waitable {
      * @param to
      */
     public static void mail(Template preloadedTemplate, DatabaseObject dataOwner, Contact to) {
-        QueryCriteria c = new QueryCriteria("usersids", MPView.getUser().__getIDS());
+        QueryCriteria c = new QueryCriteria("usersids", mpv5.db.objects.User.getCurrentUser().__getIDS());
         MailMessage m = null;
         try {
             m = (MailMessage) Popup.SelectValue(DatabaseObject.getObjects(Context.getMessage(), c), Messages.SELECT_A_TEMPLATE);
@@ -75,9 +75,9 @@ public class Export extends HashMap<String, Object> implements Waitable {
 
         try {
             Contact cont = to;
-            if (MPView.getUser().__getMail().contains("@") && MPView.getUser().__getMail().contains(".") && cont.__getMailaddress().contains("@") && cont.__getMailaddress().contains(".")) {
+            if (mpv5.db.objects.User.getCurrentUser().__getMail().contains("@") && mpv5.db.objects.User.getCurrentUser().__getMail().contains(".") && cont.__getMailaddress().contains("@") && cont.__getMailaddress().contains(".")) {
                 SimpleMail pr = new SimpleMail();
-                pr.setMailConfiguration(MPView.getUser().getMailConfiguration());
+                pr.setMailConfiguration(mpv5.db.objects.User.getCurrentUser().getMailConfiguration());
                 pr.setRecipientsAddress(cont.__getMailaddress());
                 if (m != null && m.__getCName() != null) {
                     pr.setSubject(m.__getCName());

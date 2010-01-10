@@ -167,9 +167,9 @@ public class LightMPComboBox extends JComboBox {
                 }
                 String params = "ids, cname";
                 String vars = null;
-                if (MPView.getUser().getProperties().hasProperty(context + VALUE_SEARCHFIELDS)) {
+                if (mpv5.db.objects.User.getCurrentUser().getProperties().hasProperty(context + VALUE_SEARCHFIELDS)) {
                     params = "ids";
-                    vars = MPView.getUser().getProperties().getProperty(context + VALUE_SEARCHFIELDS);
+                    vars = mpv5.db.objects.User.getCurrentUser().getProperties().getProperty(context + VALUE_SEARCHFIELDS);
                     String[] vaars = vars.split("_\\$");
 
                     for (int i = 0; i < vaars.length; i++) {

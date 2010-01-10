@@ -56,6 +56,31 @@ import mpv5.utils.text.TypeConversion;
  */
 public class User extends DatabaseObject {
 
+    public static User currentUser;
+    public static User getCurrentUser() {
+        if (currentUser == null) {
+            Log.Debug(MPView.class, "There is no user logged in here, using default user.");
+            try {
+                currentUser = User.DEFAULT;
+                return currentUser;
+            } catch (Exception ex) {
+                Log.Debug(MPView.class, "Default user is missing.");
+                return new User();
+            }
+        } else {
+            return currentUser;
+        }
+    }
+
+    /**
+     * Set the current logged in user
+     * @param usern
+     */
+    public static void setUser(User usern) {
+        currentUser = usern;
+//        predefTitle = (" (" + usern.getName() + ")");
+    }
+
     private String password = "";
     private String fullname = "";
     private String laf = "";
@@ -212,7 +237,7 @@ public class User extends DatabaseObject {
     public void login() {
         DatabaseObjectLock.releaseAllObjectsFor(this);
         if (isenabled) {
-            MPView.setUser(this);
+            setUser(this);
             setProperties();
             try {
                 Locale.setDefault(TypeConversion.stringToLocale(__getLocale()));
@@ -246,7 +271,7 @@ public class User extends DatabaseObject {
     public void logout() {
         DatabaseObjectLock.releaseAllObjectsFor(this);
         saveProperties();
-        MPView.setUser(DEFAULT);
+        setUser(DEFAULT);
         if (!isDefault()) {
             setIsloggedin(false);
             save();

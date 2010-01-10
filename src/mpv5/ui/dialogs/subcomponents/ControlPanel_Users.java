@@ -468,8 +468,8 @@ public class ControlPanel_Users extends javax.swing.JPanel implements ControlApp
             DatabaseObject dato = dataOwner;
             dato.getPanelData(this);
             if (dato.save()) {
-                if (MPView.getUser().equalTo((User) dato)) {
-                    MPView.getUser().reset();
+                if (mpv5.db.objects.User.getCurrentUser().equalTo((User) dato)) {
+                    mpv5.db.objects.User.getCurrentUser().reset();
                 }
                 Popup.notice(Messages.RESTART_REQUIRED);
             } else {

@@ -92,10 +92,10 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
         tb = new mpv5.ui.toolbars.DataPanelTB(this);
         toolbarpane.add(tb, BorderLayout.CENTER);
         dataOwner = new Contact();
-        dataOwner.setCountry(MPView.getUser().__getDefcountry());
+        dataOwner.setCountry(mpv5.db.objects.User.getCurrentUser().__getDefcountry());
 
         dateadded.setText(DateConverter.getTodayDefDate());
-        addedby.setText(MPView.getUser().getName());
+        addedby.setText(mpv5.db.objects.User.getCurrentUser().getName());
         groupnameselect.setSearchEnabled(true);
         groupnameselect.setContext(Context.getGroup());
         companyselect.setSearchEnabled(true);
@@ -1384,7 +1384,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
         }
         try {
             if (country_.length() == 0) {
-                country_ = MPView.getUser().__getDefcountry();
+                country_ = mpv5.db.objects.User.getCurrentUser().__getDefcountry();
             }
             countryselect.setSelectedIndex(MPComboBoxModelItem.getItemID(country_, countryselect.getModel()));
         } catch (Exception e) {
@@ -1422,7 +1422,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
             @Override
             public void run() {
                 try {
-                    groupnameselect.setModel(DatabaseObject.getObject(Context.getGroup(), MPView.getUser().__getGroupsids()));
+                    groupnameselect.setModel(DatabaseObject.getObject(Context.getGroup(), mpv5.db.objects.User.getCurrentUser().__getGroupsids()));
                     sp.refresh();
 
                     if (jButton1.isEnabled()) {

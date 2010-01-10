@@ -566,7 +566,7 @@ public class ControlPanel_Accounts extends javax.swing.JPanel implements Control
         }
 
         Account g = null;
-        if (!MPView.getUser().isGroupRestricted()) {
+        if (!mpv5.db.objects.User.getCurrentUser().isGroupRestricted()) {
             g = null;
             try {
                 g = (Account) DatabaseObject.getObject(Context.getAccounts(), 1);
@@ -578,7 +578,7 @@ public class ControlPanel_Accounts extends javax.swing.JPanel implements Control
         } else {
             if (data.size() == 0) {
                 g = new Account();
-                g.setCName(MPView.getUser().__getCName());
+                g.setCName(mpv5.db.objects.User.getCurrentUser().__getCName());
                 g.setIDS(-1);
                 g.setIntparentaccount(1);
             } else {
@@ -593,15 +593,15 @@ public class ControlPanel_Accounts extends javax.swing.JPanel implements Control
             Log.Debug(this, e.getMessage());
         }
 
-        if (!MPView.getUser().isGroupRestricted()) {
+        if (!mpv5.db.objects.User.getCurrentUser().isGroupRestricted()) {
             groupnameselect.setModel(new DefaultComboBoxModel(
                     MPComboBoxModelItem.toItems(new DatabaseSearch(Context.getGroup()).getValuesFor(Context.getGroup().getSubID(), null, ""))));
         } else {
             groupnameselect.setModel(new DefaultComboBoxModel(
-                    MPComboBoxModelItem.toItems(new DatabaseSearch(Context.getGroup()).getValuesFor(Context.getGroup().getSubID(), "ids", MPView.getUser().__getGroupsids()))));
+                    MPComboBoxModelItem.toItems(new DatabaseSearch(Context.getGroup()).getValuesFor(Context.getGroup().getSubID(), "ids", mpv5.db.objects.User.getCurrentUser().__getGroupsids()))));
         }
 
-        groupnameselect.setSelectedIndex(MPComboBoxModelItem.getItemID(MPView.getUser().__getGroupsids(), groupnameselect.getModel()));
+        groupnameselect.setSelectedIndex(MPComboBoxModelItem.getItemID(mpv5.db.objects.User.getCurrentUser().__getGroupsids(), groupnameselect.getModel()));
 
         typeselect.setModel(new DefaultComboBoxModel(MPComboBoxModelItem.toItems(
                 new Object[][]{

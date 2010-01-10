@@ -61,8 +61,8 @@ public class Scheduler extends Thread {
                     item.setIDS(-1);
                     item.setDateadded(new Date());
                     try {
-                        item.setDatetodo(DateConverter.addDays(new Date(), Integer.valueOf(MPView.getUser().getProperties().getProperty("bills.warn.days"))));
-                        item.setDateend(DateConverter.addDays(new Date(), Integer.valueOf(MPView.getUser().getProperties().getProperty("bills.alert.days"))));
+                        item.setDatetodo(DateConverter.addDays(new Date(), Integer.valueOf(mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("bills.warn.days"))));
+                        item.setDateend(DateConverter.addDays(new Date(), Integer.valueOf(mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("bills.alert.days"))));
                     } catch (Exception e) {
                         item.setDatetodo(DateConverter.addDays(new Date(), 14));
                         item.setDateend(DateConverter.addDays(new Date(), 30));
@@ -121,8 +121,8 @@ public class Scheduler extends Thread {
         List<Item> alerts = new Vector<Item>();
         List<Item> waitings = new Vector<Item>();
         try {
-            if (MPView.getUser().getProperties().hasProperty("bills.warn.days")) {
-                Integer warn = Integer.valueOf(MPView.getUser().getProperties().getProperty("bills.warn.days"));
+            if (mpv5.db.objects.User.getCurrentUser().getProperties().hasProperty("bills.warn.days")) {
+                Integer warn = Integer.valueOf(mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("bills.warn.days"));
                 String sql = "SELECT ids FROM items WHERE dateadded <= '" +
                         DateConverter.getSQLDateString(DateConverter.addDays(new Date(), warn * -1)) +
                         "' AND (intstatus = " + Item.STATUS_IN_PROGRESS + " OR intstatus = " + Item.STATUS_FINISHED + ") AND inttype=" + Item.TYPE_BILL;
@@ -147,8 +147,8 @@ public class Scheduler extends Thread {
             Log.Debug(numberFormatException);
         }
 
-        if (MPView.getUser().getProperties().hasProperty("bills.alert.days")) {
-            Integer alert = Integer.valueOf(MPView.getUser().getProperties().getProperty("bills.alert.days"));
+        if (mpv5.db.objects.User.getCurrentUser().getProperties().hasProperty("bills.alert.days")) {
+            Integer alert = Integer.valueOf(mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("bills.alert.days"));
             String sql = "SELECT ids FROM items WHERE dateadded <= '" +
                     DateConverter.getSQLDateString(DateConverter.addDays(new Date(), alert * -1)) +
                     "' AND (intstatus = " + Item.STATUS_IN_PROGRESS + " OR intstatus = " + Item.STATUS_FINISHED + ") AND inttype=" + Item.TYPE_BILL;
@@ -173,7 +173,7 @@ public class Scheduler extends Thread {
 
         String sql = "SELECT ids FROM items WHERE intstatus <> " + Item.STATUS_PAID + " AND inttype=" + Item.TYPE_BILL;
 
-        if (!MPView.getUser().getProperties().getProperty(MPView.getTabPane(), "hideunpaidbills")) {
+        if (!mpv5.db.objects.User.getCurrentUser().getProperties().getProperty(MPView.getTabPane(), "hideunpaidbills")) {
             ReturnValue data = QueryHandler.getConnection().freeSelectQuery(sql, MPSecurityManager.VIEW, null);
 
             if (data.hasData()) {

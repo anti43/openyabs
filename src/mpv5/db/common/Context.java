@@ -648,13 +648,13 @@ public class Context {
 
         if (!first) {
             cond = cond.substring(4, cond.length() - 4);
-            if (MPView.getUser().isGroupRestricted() && getGroupableContexts().contains(this)) {
-                cond += "AND   (" + dbIdentity + "." + "GROUPSIDS = " + MPView.getUser().__getGroupsids() + " OR " + dbIdentity + "." + "GROUPSIDS = 1)";
+            if (mpv5.db.objects.User.getCurrentUser().isGroupRestricted() && getGroupableContexts().contains(this)) {
+                cond += "AND   (" + dbIdentity + "." + "GROUPSIDS = " + mpv5.db.objects.User.getCurrentUser().__getGroupsids() + " OR " + dbIdentity + "." + "GROUPSIDS = 1)";
             }
         } else {
 
-            if (MPView.getUser().isGroupRestricted() && getGroupableContexts().contains(this)) {
-                cond = "WHERE (" + dbIdentity + "." + "GROUPSIDS = " + MPView.getUser().__getGroupsids() + " OR " + dbIdentity + "." + "GROUPSIDS = 1)";
+            if (mpv5.db.objects.User.getCurrentUser().isGroupRestricted() && getGroupableContexts().contains(this)) {
+                cond = "WHERE (" + dbIdentity + "." + "GROUPSIDS = " + mpv5.db.objects.User.getCurrentUser().__getGroupsids() + " OR " + dbIdentity + "." + "GROUPSIDS = 1)";
             } else {
                 cond = "WHERE " + CONDITION_DEFAULT;
             }
@@ -721,12 +721,12 @@ public class Context {
             }
             if (!first) {
                 cond = cond.substring(4, cond.length() - 3);
-                if (MPView.getUser().isGroupRestricted() && getGroupableContexts().contains(this)) {
-                    cond += " AND (" + dbIdentity + "." + "GROUPSIDS = " + MPView.getUser().__getGroupsids() + " OR " + dbIdentity + "." + "GROUPSIDS = 1)";
+                if (mpv5.db.objects.User.getCurrentUser().isGroupRestricted() && getGroupableContexts().contains(this)) {
+                    cond += " AND (" + dbIdentity + "." + "GROUPSIDS = " + mpv5.db.objects.User.getCurrentUser().__getGroupsids() + " OR " + dbIdentity + "." + "GROUPSIDS = 1)";
                 }
             } else {
-                if (MPView.getUser().isGroupRestricted() && getGroupableContexts().contains(this)) {
-                    cond = "WHERE (" + dbIdentity + "." + "GROUPSIDS = " + MPView.getUser().__getGroupsids() + " OR " + dbIdentity + "." + "GROUPSIDS = 1)";
+                if (mpv5.db.objects.User.getCurrentUser().isGroupRestricted() && getGroupableContexts().contains(this)) {
+                    cond = "WHERE (" + dbIdentity + "." + "GROUPSIDS = " + mpv5.db.objects.User.getCurrentUser().__getGroupsids() + " OR " + dbIdentity + "." + "GROUPSIDS = 1)";
                 } else {
                     cond = "WHERE " + CONDITION_DEFAULT;
                 }
@@ -747,8 +747,8 @@ public class Context {
      * @return
      */
     public synchronized String getGroupRestrictionSQLString() {
-        if (MPView.getUser().isGroupRestricted() && getGroupableContexts().contains(this)) {
-            return " (" + dbIdentity + "." + "GROUPSIDS = " + MPView.getUser().__getGroupsids() + " OR " + dbIdentity + "." + "GROUPSIDS = 1)";
+        if (mpv5.db.objects.User.getCurrentUser().isGroupRestricted() && getGroupableContexts().contains(this)) {
+            return " (" + dbIdentity + "." + "GROUPSIDS = " + mpv5.db.objects.User.getCurrentUser().__getGroupsids() + " OR " + dbIdentity + "." + "GROUPSIDS = 1)";
         } else {
             return null;
         }
@@ -775,8 +775,8 @@ public class Context {
      * @return
      */
     public synchronized String getGroupRestrictionSQLString(String tableName) {
-        if (MPView.getUser().isGroupRestricted() && getGroupableContexts().contains(this)) {
-            return " (" + tableName + "." + "GROUPSIDS = " + MPView.getUser().__getGroupsids() + " OR " + tableName + "." + "GROUPSIDS = 1)";
+        if (mpv5.db.objects.User.getCurrentUser().isGroupRestricted() && getGroupableContexts().contains(this)) {
+            return " (" + tableName + "." + "GROUPSIDS = " + mpv5.db.objects.User.getCurrentUser().__getGroupsids() + " OR " + tableName + "." + "GROUPSIDS = 1)";
         } else {
             return null;
         }

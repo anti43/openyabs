@@ -48,7 +48,7 @@ public class AddressPanel extends javax.swing.JPanel implements DataPanel {
     /** Creates new form AddressPanel */
     public AddressPanel() {
         initComponents();
-        dataOwner.setCountry(MPView.getUser().__getDefcountry());
+        dataOwner.setCountry(mpv5.db.objects.User.getCurrentUser().__getDefcountry());
         refresh();
     }
 
@@ -382,7 +382,7 @@ public class AddressPanel extends javax.swing.JPanel implements DataPanel {
             Runnable runnable = new Runnable() {
 
                 public void run() {
-                    countryselect.setSelectedIndex(MPComboBoxModelItem.getItemID(MPView.getUser().__getDefcountry(), countryselect.getModel()));
+                    countryselect.setSelectedIndex(MPComboBoxModelItem.getItemID(mpv5.db.objects.User.getCurrentUser().__getDefcountry(), countryselect.getModel()));
                 }
             };
             SwingUtilities.invokeLater(runnable);

@@ -74,7 +74,7 @@ public class Template extends DatabaseObject {
         } else if (dataOwner instanceof Contact) {
             type = Contact.getTypeString(Contact.TYPE_CONTACT);
         }
-        String key = MPView.getUser() + "@" + type + "@" + dataOwner.__getGroupsids();
+        String key = mpv5.db.objects.User.getCurrentUser() + "@" + type + "@" + dataOwner.__getGroupsids();
         if (templateCache.containsKey(key)) {
             return templateCache.get(key);
         } else {
@@ -83,7 +83,7 @@ public class Template extends DatabaseObject {
                 ReturnValue data = QueryHandler.getConnection().freeQuery(
                         "SELECT templatesids FROM templatestousers  LEFT OUTER JOIN templates AS templates0 ON " +
                         "templates0.ids = templatestousers.templatesids WHERE templatestousers.usersids=" +
-                        MPView.getUser().__getIDS() +
+                        mpv5.db.objects.User.getCurrentUser().__getIDS() +
                         " AND " +
                         "templates0.mimetype='" + type +
                         "' AND templatestousers.IDS>0 " +
@@ -112,8 +112,8 @@ public class Template extends DatabaseObject {
                 } else {
                     try {
                         if (!(notification.containsKey(type) && notification.get(type).equals(Group.getObject(Context.getGroup(), dataOwner.__getGroupsids())))) {
-                            MPView.addMessage(Messages.OO_NO_TEMPLATE + ": " + type + " [" + MPView.getUser() + "] [" + Group.getObject(Context.getGroup(), dataOwner.__getGroupsids()) + "]");
-                            Log.Debug(Template.class, "No template found for " + type + " for user: " + MPView.getUser() + " in GROUP " + Group.getObject(Context.getGroup(), dataOwner.__getGroupsids()));
+                            MPView.addMessage(Messages.OO_NO_TEMPLATE + ": " + type + " [" + mpv5.db.objects.User.getCurrentUser() + "] [" + Group.getObject(Context.getGroup(), dataOwner.__getGroupsids()) + "]");
+                            Log.Debug(Template.class, "No template found for " + type + " for user: " + mpv5.db.objects.User.getCurrentUser() + " in GROUP " + Group.getObject(Context.getGroup(), dataOwner.__getGroupsids()));
                             notification.put(type, (Group) Group.getObject(Context.getGroup(), dataOwner.__getGroupsids()));
                         }
 

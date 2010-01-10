@@ -92,7 +92,7 @@ public class ProductListsPanel extends javax.swing.JPanel implements DataPanel, 
         dataOwner = new ProductList();
 
         refresh();
-        addedby.setText(MPView.getUser().getName());
+        addedby.setText(mpv5.db.objects.User.getCurrentUser().getName());
         groupnameselect.setContext(Context.getGroup());
         groupnameselect.setSearchEnabled(true);
         itemtable.getTableHeader().addMouseListener(new MouseListener() {
@@ -539,7 +539,7 @@ public class ProductListsPanel extends javax.swing.JPanel implements DataPanel, 
             @Override
             public void run() {
                 try {
-                    groupnameselect.setModel(MPComboBoxModelItem.toModel(DatabaseObject.getObject(Context.getGroup(), MPView.getUser().__getGroupsids())));
+                    groupnameselect.setModel(MPComboBoxModelItem.toModel(DatabaseObject.getObject(Context.getGroup(), mpv5.db.objects.User.getCurrentUser().__getGroupsids())));
                     groupnameselect.setSelectedIndex(0);
                     itemtable.setModel(ProductlistSubItem.toModel(new ProductlistSubItem[]{
                                 ProductlistSubItem.getDefaultItem(), ProductlistSubItem.getDefaultItem(),
@@ -567,10 +567,10 @@ public class ProductListsPanel extends javax.swing.JPanel implements DataPanel, 
         prepareTable();
         TableFormat.resizeCols(itemtable, new Integer[]{0, 23, 53, 63, 100, 83, 63, 63, 0, 0, 0, 20, 20, 0, 0}, new Boolean[]{true, true, true, true, false, true, true, true, true, true, true, true, true, true, true, true});
         TableFormat.changeBackground(itemtable, 1, Color.LIGHT_GRAY);
-        if (MPView.getUser().getProperties().getProperty(MPView.getTabPane(), "hidecolumnquantity")) {
+        if (mpv5.db.objects.User.getCurrentUser().getProperties().getProperty(MPView.getTabPane(), "hidecolumnquantity")) {
             TableFormat.stripColumn(itemtable, 2);
         }
-        if (MPView.getUser().getProperties().getProperty(MPView.getTabPane(), "hidecolumnmeasure")) {
+        if (mpv5.db.objects.User.getCurrentUser().getProperties().getProperty(MPView.getTabPane(), "hidecolumnmeasure")) {
             TableFormat.stripColumn(itemtable, 3);
         }
 

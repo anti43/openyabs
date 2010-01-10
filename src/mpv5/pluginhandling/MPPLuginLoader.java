@@ -94,7 +94,7 @@ public class MPPLuginLoader {
             list = new ArrayList<MP5Plugin>();
             ArrayList<File> jars = new ArrayList<File>();
             QueryCriteria criterias = new QueryCriteria();
-            criterias.addAndCondition("usersids", MPView.getUser().__getIDS());
+            criterias.addAndCondition("usersids", mpv5.db.objects.User.getCurrentUser().__getIDS());
             try {
                 ArrayList<UserPlugin> data = DatabaseObject.getObjects(Context.getPluginsToUsers(), criterias);
                 for (int i = 0; i < data.size(); i++) {
@@ -241,6 +241,8 @@ public class MPPLuginLoader {
         }
         MPView.identifierFrame.validate();
         MPView.identifierFrame.repaint();
+        mP5Plugin = null;
+        System.gc();
     }
 
     /**
@@ -309,6 +311,7 @@ public class MPPLuginLoader {
                 plab.setEnabled(false);
             }
         } else {
+            Popup.notice(Messages.NOT_POSSIBLE + "\n" + mP5Plugin + " is already loaded and doesn't allow multiple instances.");
             Log.Debug(this, "Plugin does not allow multiple instances: " + mP5Plugin);
         }
     }

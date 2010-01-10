@@ -3,6 +3,7 @@
  */
 package mpv5.ui.frames;
 
+import com.l2fprod.common.swing.JOutlookBar;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Cursor;
@@ -104,7 +105,6 @@ public class MPView extends FrameView {
     private static CloseableTabbedPane tabPane;
     private static JLabel messagelabel = new FadeOnChangeLabel();
     public static JComboBox history = new JComboBox();
-    public static User currentUser;
     private static JProgressBar progressbar = new JProgressBar();
     private static JMenu favMenu;
     private static String predefTitle;
@@ -295,30 +295,14 @@ public class MPView extends FrameView {
     /**
      *
      * @return The currently logged in user
+     * @deprecated Use User.getCurrentUser instead
      */
+    @Deprecated
     public static User getUser() {
-        if (currentUser == null) {
-            Log.Debug(MPView.class, "There is no user logged in here, using default user.");
-            try {
-                currentUser = User.DEFAULT;
-                return currentUser;
-            } catch (Exception ex) {
-                Log.Debug(MPView.class, "Default user is missing.");
-                return new User();
-            }
-        } else {
-            return currentUser;
-        }
+        return mpv5.db.objects.User.getCurrentUser();
     }
 
-    /**
-     * Set the current logged in user
-     * @param usern
-     */
-    public static void setUser(User usern) {
-        currentUser = usern;
-        predefTitle = (" (" + usern.getName() + ")");
-    }
+    
 
     /**
      * Sets the curser to waiting state if true
@@ -475,7 +459,7 @@ public class MPView extends FrameView {
         setWaiting(true);
         boolean found = false;
         boolean proceed = true;
-        if (MPView.getUser().getProperties().getProperty(MPView.getTabPane(), "avoidmultipleviews")) {
+        if (mpv5.db.objects.User.getCurrentUser().getProperties().getProperty(MPView.getTabPane(), "avoidmultipleviews")) {
             Log.Debug(this, "Looking for an existing view for: " + item);
             int count = getTabPane().getTabCount();
             for (int i = 0; i < count; i++) {
@@ -496,7 +480,7 @@ public class MPView extends FrameView {
         }
 
         if (proceed) {
-            if (item.getView() != null && MPView.getUser().getProperties().getProperty(MPView.getTabPane(), "norecycletabs")) {
+            if (item.getView() != null && mpv5.db.objects.User.getCurrentUser().getProperties().getProperty(MPView.getTabPane(), "norecycletabs")) {
                 if (tabTitle == null) {
                     final DataPanel p = ((DataPanel) item.getView());
                     addTab((JComponent) p, item.__getCName());
@@ -524,9 +508,9 @@ public class MPView extends FrameView {
                 for (int i = 0; i < count; i++) {
                     if (getTabAt(i) != null) {
                         DataPanel panel = getTabAt(i);
-                        if (!panel.getDataOwner().isExisting() &&
-                                panel.getDataOwner().getContext().equals(item.getContext()) &&
-                                panel.getClass() == item.getView().getClass()) {
+                        if (!panel.getDataOwner().isExisting()
+                                && panel.getDataOwner().getContext().equals(item.getContext())
+                                && panel.getClass() == item.getView().getClass()) {
 //                        if (!panel.getDataOwner().isExisting() && panel.getDataOwner().getContext().equals(item.getContext())) {
                             getTabPane().setSelectedIndex(i);
                             panel.setDataOwner(item, true);
@@ -1797,14 +1781,14 @@ public class MPView extends FrameView {
 
     private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
         Main.setLaF(null);
-        getUser().setLaf(UIManager.getSystemLookAndFeelClassName());
-        getUser().save();
+        User.getCurrentUser().setLaf(UIManager.getSystemLookAndFeelClassName());
+        User.getCurrentUser().save();
     }//GEN-LAST:event_jMenuItem1ActionPerformed
 
     private void jMenuItem2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem2ActionPerformed
         Main.setLaF("de.muntjak.tinylookandfeel.TinyLookAndFeel");
-        getUser().setLaf("de.muntjak.tinylookandfeel.TinyLookAndFeel");
-        getUser().save();
+        User.getCurrentUser().setLaf("de.muntjak.tinylookandfeel.TinyLookAndFeel");
+        User.getCurrentUser().save();
     }//GEN-LAST:event_jMenuItem2ActionPerformed
 
     private void jMenuItem3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem3ActionPerformed
@@ -1819,7 +1803,7 @@ public class MPView extends FrameView {
     private void jButton26ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton26ActionPerformed
 
         mpv5.usermanagement.Lock.lock(this.getFrame());
-        getUser().logout();
+        User.getCurrentUser().logout();
 }//GEN-LAST:event_jButton26ActionPerformed
 
     private void jButton24ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton24ActionPerformed
@@ -2122,13 +2106,17 @@ public class MPView extends FrameView {
 
     private void jMenuItem33ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem33ActionPerformed
         DatabaseObject d = Search.showSearchFor(Context.getContact());
-        if(d!=null)addTab(d);
+        if (d != null) {
+            addTab(d);
+        }
     }//GEN-LAST:event_jMenuItem33ActionPerformed
 
     private void jMenuItem34ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem34ActionPerformed
 
-        DatabaseObject d =Search.showSearchFor(Context.getItem());
-        if(d!=null)addTab(d);
+        DatabaseObject d = Search.showSearchFor(Context.getItem());
+        if (d != null) {
+            addTab(d);
+        }
     }//GEN-LAST:event_jMenuItem34ActionPerformed
 
     private void jMenuItem35ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem35ActionPerformed
@@ -2142,9 +2130,8 @@ public class MPView extends FrameView {
     }//GEN-LAST:event_jMenuItem36ActionPerformed
 
     private void jMenuItem37ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem37ActionPerformed
-       addOrShowTab(OverviewPanel.instanceOf(), Messages.OVERVIEW);
+        addOrShowTab(OverviewPanel.instanceOf(), Messages.OVERVIEW);
     }//GEN-LAST:event_jMenuItem37ActionPerformed
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     public javax.swing.JMenu clipboardMenu;
     private javax.swing.JLabel errorlabel;
@@ -2370,6 +2357,13 @@ public class MPView extends FrameView {
      */
     public javax.swing.JPanel getNaviPanel() {
         return naviPanel;
+    }
+
+    /**
+     * @return the outlookbar
+     */
+    public JOutlookBar getOutlookBar() {
+        return jOutlookBar1;
     }
 
     /**

@@ -289,7 +289,7 @@ public class PreviewPanel extends javax.swing.JPanel implements Waiter {
         MailMessage m = null;
         if (dataOwner != null && dataOwner.isExisting()) {
 
-            QueryCriteria c = new QueryCriteria("usersids", MPView.getUser().__getIDS());
+            QueryCriteria c = new QueryCriteria("usersids", mpv5.db.objects.User.getCurrentUser().__getIDS());
             try {
                 m = (MailMessage) Popup.SelectValue(DatabaseObject.getObjects(Context.getMessage(), c), Messages.SELECT_A_TEMPLATE);
             } catch (Exception ex) {
@@ -299,9 +299,9 @@ public class PreviewPanel extends javax.swing.JPanel implements Waiter {
             if (dataOwner instanceof Item) {
                 try {
                     Contact cont = ((Contact) Contact.getObject(Context.getContact(), ((Item) dataOwner).__getContactsids()));
-                    if (MPView.getUser().__getMail().contains("@") && MPView.getUser().__getMail().contains(".") && cont.__getMailaddress().contains("@") && cont.__getMailaddress().contains(".")) {
+                    if (mpv5.db.objects.User.getCurrentUser().__getMail().contains("@") && mpv5.db.objects.User.getCurrentUser().__getMail().contains(".") && cont.__getMailaddress().contains("@") && cont.__getMailaddress().contains(".")) {
                         SimpleMail pr = new SimpleMail();
-                        pr.setMailConfiguration(MPView.getUser().getMailConfiguration());
+                        pr.setMailConfiguration(mpv5.db.objects.User.getCurrentUser().getMailConfiguration());
                         pr.setRecipientsAddress(cont.__getMailaddress());
                         if (m != null && m.__getCName() != null) {
                             pr.setSubject(m.__getCName());
@@ -323,7 +323,7 @@ public class PreviewPanel extends javax.swing.JPanel implements Waiter {
                 }
             }
         } else {
-           Popup.notice(Messages.NO_TEMPLATE_LOADED + " (" + MPView.getUser() + ")");
+           Popup.notice(Messages.NO_TEMPLATE_LOADED + " (" + mpv5.db.objects.User.getCurrentUser() + ")");
         }
     }//GEN-LAST:event_jButton28ActionPerformed
 

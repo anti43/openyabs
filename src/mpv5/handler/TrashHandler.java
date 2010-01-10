@@ -39,7 +39,7 @@ public class TrashHandler {
         QueryHandler.instanceOf().clone(type).delete(new String[][]{{"ids", String.valueOf(id), ""}}, message);
         Runnable runnable = new Runnable() {
             public void run() {
-                QueryHandler.instanceOf().clone(Context.getHistory()).insertHistoryItem(message, MPView.getUser().__getCName(), type, id, MPView.getUser().__getGroupsids());
+                QueryHandler.instanceOf().clone(Context.getHistory()).insertHistoryItem(message, mpv5.db.objects.User.getCurrentUser().__getCName(), type, id, mpv5.db.objects.User.getCurrentUser().__getGroupsids());
             }
         };
         SwingUtilities.invokeLater(runnable);
@@ -76,7 +76,7 @@ public class TrashHandler {
         }
         Runnable runnable = new Runnable() {
             public void run() {
-                QueryHandler.instanceOf().clone(Context.getHistory()).insertHistoryItem(message, MPView.getUser().__getCName(), type, id, MPView.getUser().__getGroupsids());
+                QueryHandler.instanceOf().clone(Context.getHistory()).insertHistoryItem(message, mpv5.db.objects.User.getCurrentUser().__getCName(), type, id, mpv5.db.objects.User.getCurrentUser().__getGroupsids());
             }
         };
         SwingUtilities.invokeLater(runnable);

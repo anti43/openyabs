@@ -64,11 +64,11 @@ public class LocalSettings {
                 {CACHE_SIZE, "100"},
                 {LAST_USER, "1"},
                 {LAST_USER_PW, "5F4DCC3B5AA765D61D8327DEB882CF99"},
-                {OFFICE_HOME, "/opt/openoffice.org3"},
+                {OFFICE_HOME, "/Applications/OpenOffice.org.app/Contents/"},
                 {OFFICE_PORT, "8100"},
                 {OFFICE_HOST, "127.0.0.1"},
                 {OFFICE_REMOTE, "false"},
-                {OFFICE_BINARY_FOLDER, "program"},
+                {OFFICE_BINARY_FOLDER, "MacOS"},
                 {OFFICE_USE, "true"},
                 {CACHE_DIR, "Cache"},
                 {DBESCAPE, "true"}

@@ -46,10 +46,10 @@ public class Search extends javax.swing.JDialog {
     public static DatabaseObject showSearchFor(Context t) {
 
         Search s = new Search(false);
-        s.scope.setSelectedItem(t);
         s.scope.setEnabled(false);
         s.setVisible(true);
         s.requestFocus();
+        s.scope.setSelectedItem(t);
         return s.getSelectedObject();
     }
     private Context lastContext;
@@ -71,7 +71,7 @@ public class Search extends javax.swing.JDialog {
         this.addTabs = addtabs;
         setModalityType(ModalityType.APPLICATION_MODAL);
         scope.setModel(new DefaultComboBoxModel(Context.getSearchableContexts().toArray()));
-        new Position(this);
+        setLocationRelativeTo(MPView.identifierFrame);
     }
 
     /** This method is called from within the constructor to

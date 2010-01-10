@@ -84,7 +84,7 @@ public class newContactsJob implements WSDaemonJob {
                     m.setWscontact(String.valueOf(id));
                     m.setCName(String.valueOf(id) + "@" + daemon.getWebShopID());
                     m.setWebshopsids(daemon.getWebShopID());
-                    m.setGroupsids(MPView.getUser().__getGroupsids());
+                    m.setGroupsids(mpv5.db.objects.User.getCurrentUser().__getGroupsids());
                     m.save();
                 }
             }

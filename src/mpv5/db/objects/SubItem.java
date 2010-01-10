@@ -282,19 +282,19 @@ public class SubItem extends DatabaseObject {
     public static SubItem getDefaultItem() {
         SubItem i = new SubItem();
 
-        if (MPView.getUser().getProperties().hasProperty("defunit")) {
-            String defunit = MPView.getUser().getProperties().getProperty("defunit");
+        if (mpv5.db.objects.User.getCurrentUser().getProperties().hasProperty("defunit")) {
+            String defunit = mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("defunit");
             i.setMeasure(defunit);
         }
         BigDecimal deftax = new BigDecimal("0");
-        if (MPView.getUser().getProperties().hasProperty("deftax")) {
-            int taxid = MPView.getUser().getProperties().getProperty("deftax", new Integer(0));
+        if (mpv5.db.objects.User.getCurrentUser().getProperties().hasProperty("deftax")) {
+            int taxid = mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("deftax", new Integer(0));
             deftax = Tax.getTaxValue(taxid);
             i.setTaxpercentvalue(deftax);
         }
         Double defcount = 1d;
-        if (MPView.getUser().getProperties().hasProperty("defcount")) {
-            defcount = MPView.getUser().getProperties().getProperty("defcount", 0d);
+        if (mpv5.db.objects.User.getCurrentUser().getProperties().hasProperty("defcount")) {
+            defcount = mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("defcount", 0d);
             i.setQuantityvalue(new BigDecimal(defcount.toString()));
         }
 
@@ -317,11 +317,11 @@ public class SubItem extends DatabaseObject {
         Context contextl = product.getContext();
         String params = "cname";
         String vars = null;
-        if (MPView.getUser().getProperties().hasProperty(contextl + mpv5.ui.beans.LightMPComboBox.VALUE_SEARCHFIELDS) &&
-                MPView.getUser().getProperties().getProperty(contextl + mpv5.ui.beans.LightMPComboBox.VALUE_SEARCHFIELDS).contains("_$")) {
+        if (mpv5.db.objects.User.getCurrentUser().getProperties().hasProperty(contextl + mpv5.ui.beans.LightMPComboBox.VALUE_SEARCHFIELDS) &&
+                mpv5.db.objects.User.getCurrentUser().getProperties().getProperty(contextl + mpv5.ui.beans.LightMPComboBox.VALUE_SEARCHFIELDS).contains("_$")) {
             try {
                 params = "ids";
-                vars = MPView.getUser().getProperties().getProperty(contextl + mpv5.ui.beans.LightMPComboBox.VALUE_SEARCHFIELDS);
+                vars = mpv5.db.objects.User.getCurrentUser().getProperties().getProperty(contextl + mpv5.ui.beans.LightMPComboBox.VALUE_SEARCHFIELDS);
                 String[] vaars = vars.split("_\\$");
 
                 for (int i = 0; i < vaars.length; i++) {
@@ -368,8 +368,8 @@ public class SubItem extends DatabaseObject {
         }
 ///////////////end format////////////////////////////////////////////////////////
         setExternalvalue(product.__getExternalnetvalue());
-        setGroupsids(MPView.getUser().__getGroupsids());
-        setIntaddedby(MPView.getUser().__getIDS());
+        setGroupsids(mpv5.db.objects.User.getCurrentUser().__getGroupsids());
+        setIntaddedby(mpv5.db.objects.User.getCurrentUser().__getIDS());
         setInternalvalue(product.__getInternalnetvalue());
         setMeasure(product.__getMeasure());
         setOriginalproductsids(product.__getIDS());
@@ -387,19 +387,19 @@ public class SubItem extends DatabaseObject {
         SubItem i = new SubItem();
         i.fillSampleData();
         i.setGroupsids(1);
-        if (MPView.getUser().getProperties().hasProperty("defunit")) {
-            String defunit = MPView.getUser().getProperties().getProperty("defunit");
+        if (mpv5.db.objects.User.getCurrentUser().getProperties().hasProperty("defunit")) {
+            String defunit = mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("defunit");
             i.setMeasure(defunit);
         }
         BigDecimal deftax = new BigDecimal("0");
-        if (MPView.getUser().getProperties().hasProperty("deftax")) {
-            int taxid = MPView.getUser().getProperties().getProperty("deftax", 0);
+        if (mpv5.db.objects.User.getCurrentUser().getProperties().hasProperty("deftax")) {
+            int taxid = mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("deftax", 0);
             deftax = Tax.getTaxValue(taxid);
             i.setTaxpercentvalue(deftax);
         }
         Double defcount = 1d;
-        if (MPView.getUser().getProperties().hasProperty("defcount")) {
-            defcount = MPView.getUser().getProperties().getProperty("defcount", 0d);
+        if (mpv5.db.objects.User.getCurrentUser().getProperties().hasProperty("defcount")) {
+            defcount = mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("defcount", 0d);
             i.setQuantityvalue(new BigDecimal(defcount.toString()));
         }
         return i;
@@ -590,17 +590,17 @@ public class SubItem extends DatabaseObject {
 
         model.setContext(Context.getSubItem());
         String defunit = null;
-        if (MPView.getUser().getProperties().hasProperty("defunit")) {
-            defunit = MPView.getUser().getProperties().getProperty("defunit");
+        if (mpv5.db.objects.User.getCurrentUser().getProperties().hasProperty("defunit")) {
+            defunit = mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("defunit");
         }
         BigDecimal deftax = new BigDecimal("0");
-        if (MPView.getUser().getProperties().hasProperty("deftax")) {
-            int taxid = MPView.getUser().getProperties().getProperty("deftax", 0);
+        if (mpv5.db.objects.User.getCurrentUser().getProperties().hasProperty("deftax")) {
+            int taxid = mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("deftax", 0);
             deftax = Tax.getTaxValue(taxid);
         }
         Double defcount = 1d;
-        if (MPView.getUser().getProperties().hasProperty("defcount")) {
-            defcount = MPView.getUser().getProperties().getProperty("defcount", 0d);
+        if (mpv5.db.objects.User.getCurrentUser().getProperties().hasProperty("defcount")) {
+            defcount = mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("defcount", 0d);
         }
         model.defineRow(new Object[]{0, 0, defcount, defunit, null, 0.0, deftax, 0.0, 0.0, 0.0, 0, "A", "C", "", ""});
         model.setAutoCountColumn(1);

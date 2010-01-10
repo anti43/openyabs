@@ -113,7 +113,7 @@ public class newOrdersJob implements WSDaemonJob {
                         md.setWscontact(String.valueOf(id));
                         md.setCName(String.valueOf(id) + "@" + daemon.getWebShopID());
                         md.setWebshopsids(daemon.getWebShopID());
-                        md.setGroupsids(MPView.getUser().__getGroupsids());
+                        md.setGroupsids(mpv5.db.objects.User.getCurrentUser().__getGroupsids());
                         md.save();
                     }
                 }
@@ -129,7 +129,7 @@ public class newOrdersJob implements WSDaemonJob {
                 m.setWsitem(String.valueOf(wsitemids));
                 m.setCName(String.valueOf(order.__getIDS() + "@" + daemon.getWebShopID()));
                 m.setWebshopsids(daemon.getWebShopID());
-                m.setGroupsids(MPView.getUser().__getGroupsids());
+                m.setGroupsids(mpv5.db.objects.User.getCurrentUser().__getGroupsids());
                 m.saveImport();
 
                 //Fetch the order details

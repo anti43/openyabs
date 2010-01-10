@@ -308,7 +308,7 @@ public class ControlPanel_Locale extends javax.swing.JPanel implements ControlAp
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         setSettings();
-        MPView.getUser().save();
+        mpv5.db.objects.User.getCurrentUser().save();
         Popup.notice(Messages.RESTART_REQUIRED);
     }//GEN-LAST:event_jButton1ActionPerformed
 
@@ -383,7 +383,7 @@ public class ControlPanel_Locale extends javax.swing.JPanel implements ControlAp
     // End of variables declaration
     private void setLanguageSelection() {
         languages.setModel(getLanguages());
-        languages.setSelectedIndex(MPComboBoxModelItem.getItemID(MPView.getUser().__getLanguage(),
+        languages.setSelectedIndex(MPComboBoxModelItem.getItemID(mpv5.db.objects.User.getCurrentUser().__getLanguage(),
                 languages.getModel()));
     }
     // End of variables declaration
@@ -392,8 +392,8 @@ public class ControlPanel_Locale extends javax.swing.JPanel implements ControlAp
 
         String localestring = ((MPComboBoxModelItem) locales.getSelectedItem()).getId();
         String languagestring = ((MPComboBoxModelItem) languages.getSelectedItem()).getId();
-        MPView.getUser().setLocale(localestring);
-        MPView.getUser().setLanguage(languagestring);
+        mpv5.db.objects.User.getCurrentUser().setLocale(localestring);
+        mpv5.db.objects.User.getCurrentUser().setLanguage(languagestring);
         Locale.setDefault(TypeConversion.stringToLocale(localestring));
 
     }

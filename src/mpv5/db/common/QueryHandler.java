@@ -2031,7 +2031,7 @@ public class QueryHandler implements Cloneable {
             java.io.InputStream fin = new java.io.FileInputStream(file);
             PreparedStatement ps = sqlConn.prepareStatement(query, PreparedStatement.RETURN_GENERATED_KEYS);
             ps.setString(1, name);
-            ps.setInt(5, MPView.getUser().getID());
+            ps.setInt(5, mpv5.db.objects.User.getCurrentUser().getID());
             ps.setLong(4, file.length());
             ps.setDate(3, new java.sql.Date(new Date().getTime()));
             ps.setBinaryStream(2, fin, fileLength);
@@ -2394,7 +2394,7 @@ public class QueryHandler implements Cloneable {
                 if (!dataOwner.getContext().equals(Context.getTemplate())) {
                     x.add(dataOwner.getType() + "sids", dataOwner.__getIDS());
                 }
-                x.add("intaddedby", MPView.getUser().__getIDS());
+                x.add("intaddedby", mpv5.db.objects.User.getCurrentUser().__getIDS());
                 x.add("intsize", file.length());
                 x.add("mimetype", fileextension);
                 QueryHandler.instanceOf().clone(tcontext).insert(x, Messages.FILE_SAVED + file.getName());

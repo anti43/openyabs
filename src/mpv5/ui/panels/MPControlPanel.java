@@ -593,7 +593,7 @@ public class MPControlPanel extends javax.swing.JPanel {
     }//GEN-LAST:event_jButton12ActionPerformed
 
     private void jButton13ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton13ActionPerformed
-        openDetails(new ControlPanel_Formats(MPView.getUser()));
+        openDetails(new ControlPanel_Formats(mpv5.db.objects.User.getCurrentUser()));
     }//GEN-LAST:event_jButton13ActionPerformed
 
     private void jButton14ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton14ActionPerformed

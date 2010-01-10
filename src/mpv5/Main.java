@@ -208,11 +208,11 @@ public class Main extends SingleFrameApplication {
     public void shutdown() {
         MPView.setWaiting(true);
         MPView.setProgressRunning(true);
-        DatabaseObjectLock.releaseAllObjectsFor(MPView.getUser());
+        DatabaseObjectLock.releaseAllObjectsFor(mpv5.db.objects.User.getCurrentUser());
         try {
             LocalSettings.save();
-            if (!MPView.getUser().isDefault()) {
-                MPView.getUser().logout();
+            if (!mpv5.db.objects.User.getCurrentUser().isDefault()) {
+                mpv5.db.objects.User.getCurrentUser().logout();
             }
             for (int i = 0; i < oap.size(); i++) {
                 IOfficeApplication iOfficeApplication = oap.get(i);
@@ -616,7 +616,7 @@ public class Main extends SingleFrameApplication {
             }
         } else {
             try {
-                ArrayList data = DatabaseObject.getReferencedObjects(MPView.getUser(), Context.getPluginsToUsers());
+                ArrayList data = DatabaseObject.getReferencedObjects(mpv5.db.objects.User.getCurrentUser(), Context.getPluginsToUsers());
                 for (int i = 0; i < data.size(); i++) {
                     try {
                         ((UserPlugin) data.get(i)).delete();

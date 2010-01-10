@@ -354,7 +354,7 @@ public class ControlPanel_Formats extends javax.swing.JPanel implements ControlA
 
     public void refresh() {
         locales.setModel(LanguageManager.getLocalesAsComboBoxModel());
-        setLocale(MPView.getUser().__getIDS());
+        setLocale(mpv5.db.objects.User.getCurrentUser().__getIDS());
         labeledSpinner1.getSpinner().setModel(new SpinnerNumberModel(0, 0, Integer.MAX_VALUE, 1));
         labeledSpinner1.getSpinner().setEditor(new JSpinner.NumberEditor(labeledSpinner1.getSpinner()));
         labeledSpinner1.getSpinner().updateUI();
@@ -444,7 +444,7 @@ public class ControlPanel_Formats extends javax.swing.JPanel implements ControlA
     private void setUser() {
         try {
             if (currentUser == null) {
-                currentUser = MPView.getUser().getID();
+                currentUser = mpv5.db.objects.User.getCurrentUser().getID();
                 jComboBox1.setSelectedIndex(MPComboBoxModelItem.getItemID(String.valueOf(currentUser), jComboBox1.getModel()));
             } else {
                 currentUser = Integer.valueOf(((MPComboBoxModelItem) jComboBox1.getSelectedItem()).getId());
@@ -510,7 +510,7 @@ public class ControlPanel_Formats extends javax.swing.JPanel implements ControlA
             if (u.getProperties().hasProperty("item.date.locale")) {
                 locales.setSelectedIndex(MPComboBoxModelItem.getItemID(u.getProperties().getProperty("item.date.locale"), locales.getModel()));
             } else {
-                locales.setSelectedIndex(MPComboBoxModelItem.getItemID(MPView.getUser().__getLocale(), locales.getModel()));
+                locales.setSelectedIndex(MPComboBoxModelItem.getItemID(mpv5.db.objects.User.getCurrentUser().__getLocale(), locales.getModel()));
             }
         } catch (NodataFoundException ex) {
             Log.Debug(ex);
