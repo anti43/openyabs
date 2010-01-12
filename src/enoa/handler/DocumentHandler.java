@@ -39,9 +39,12 @@ import com.sun.star.lang.IllegalArgumentException;
 import com.sun.star.lang.WrappedTargetException;
 import com.sun.star.uno.UnoRuntime;
 import enoa.connection.NoaConnection;
+import enoa.connection.URLAdapter;
 import java.io.File;
 import java.io.FileFilter;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -146,7 +149,12 @@ public class DocumentHandler {
         }
 
         if (filter != null) {
-            document.getPersistenceService().export(file.getPath(), filter);
+            try {
+                Log.Debug(this, "Exporting to: " + file);
+                document.getPersistenceService().export(new FileOutputStream(file), filter);
+            } catch (Exception ex) {
+                Log.Debug(ex);
+            }
         } else {
             throw new UnsupportedOperationException("File extension not supported: " + extension);
         }
@@ -389,9 +397,10 @@ public class DocumentHandler {
      */
     public void clear() throws DocumentException {
         try {
-            Log.Debug(this, file.getPath());
-            document = connection.getDocumentService().loadDocument(file.getPath().replace("\\", "/"), descriptor);
-        } catch (NOAException ex) {
+            Log.Debug(this, "Trying to load: " + URLAdapter.adaptURL(file.getPath()));
+//            document = connection.getDocumentService().loadDocument(file.getPath().replace("\\", "/"), descriptor);
+            document = connection.getDocumentService().loadDocument(new FileInputStream(file), descriptor);
+        } catch (Exception ex) {
             Log.Debug(ex);
         }
         textFieldService = null;
