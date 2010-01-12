@@ -16,6 +16,7 @@
  */
 package mpv5.db.objects;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import javax.swing.JComponent;
 import mpv5.db.common.Context;
@@ -36,9 +37,9 @@ public class Expense extends DatabaseObject implements Formattable {
 
     public static int TYPE_EXPENSE = 43;
     private String description = "";
-    private double netvalue;
-    private double taxpercentvalue;
-    private double brutvalue;
+    private BigDecimal netvalue;
+    private BigDecimal taxpercentvalue;
+    private BigDecimal brutvalue;
     private String cnumber;
     private int accountsids;
     private FormatHandler formatHandler;
@@ -79,42 +80,42 @@ public class Expense extends DatabaseObject implements Formattable {
     /**
      * @return the netvalue
      */
-    public double __getNetvalue() {
+    public BigDecimal __getNetvalue() {
         return netvalue;
     }
 
     /**
      * @param netvalue the netvalue to set
      */
-    public void setNetvalue(double netvalue) {
+    public void setNetvalue(BigDecimal netvalue) {
         this.netvalue = netvalue;
     }
 
     /**
      * @return the taxpercentvalue
      */
-    public double __getTaxpercentvalue() {
+    public BigDecimal __getTaxpercentvalue() {
         return taxpercentvalue;
     }
 
     /**
      * @param taxpercentvalue the taxpercentvalue to set
      */
-    public void setTaxpercentvalue(double taxpercentvalue) {
+    public void setTaxpercentvalue(BigDecimal taxpercentvalue) {
         this.taxpercentvalue = taxpercentvalue;
     }
 
     /**
      * @return the brutvalue
      */
-    public double __getBrutvalue() {
+    public BigDecimal __getBrutvalue() {
         return brutvalue;
     }
 
     /**
      * @param brutvalue the brutvalue to set
      */
-    public void setBrutvalue(double brutvalue) {
+    public void setBrutvalue(BigDecimal brutvalue) {
         this.brutvalue = brutvalue;
     }
 
