@@ -134,7 +134,7 @@ public class DatabaseInstallation {
         "INSERT INTO countries (iso, cname ) VALUES (276,'Deutschland')",
         "INSERT INTO accounts (cname,description, dateadded, taxvalue, intaccounttype, frame, intprofitfid, inttaxfid, inttaxuid, intparentaccount) VALUES ('" + Messages.INCOME + "','', '2009-04-03 09:31:33', 0.0, " + Account.INCOME + ", 'builtin',0,0,0,1)",
         "INSERT INTO users (fullname,password,cname,laf,locale,mail,language,inthighestright,datelastlog,isenabled, dateadded ) VALUES ('Administrator','5f4dcc3b5aa765d61d8327deb882cf99','admin','" + UIManager.getSystemLookAndFeelClassName() + "','de_DE','','buildin_en',0,'2009-04-03 09:31:33',1,'2009-04-03 09:31:33')",
-        "INSERT INTO globalsettings (cname, groupsids, value ) VALUES ('yabs_dbversion', 1, '" + Constants.DATABASE_VERSION + "')"
+        "INSERT INTO globalsettings (cname, groupsids, value ) VALUES ('yabs_dbversion', 1, '" + Constants.DATABASE_ORIGINAL_VERSION + "')"
     };
     public static String[] CUSTOM_STRUCTURE = new String[]{};
 

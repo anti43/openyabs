@@ -4,6 +4,7 @@
  */
 package mpv5.globals;
 
+import mpv5.db.objects.Product;
 import mpv5.logging.Log;
 import mpv5.i18n.LanguageManager;
 
@@ -223,7 +224,8 @@ public enum Messages {
     QUERY_WINDOW("Query Window"),
     LOGIN("The template system will not work until you log in with a valid user."),
     CONTACT_TYPE_MALE("Mr."),
-    CONTACT_TYPE_FEMALE("Mrs.");
+    CONTACT_TYPE_FEMALE("Mrs."),
+    INVENTORY_STOCK_TRESHOLD("The stock count of the following product has reached the alarm threshold: ");
 
     private Messages(String message) {
         this.message = message;

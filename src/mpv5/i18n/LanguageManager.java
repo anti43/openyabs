@@ -320,6 +320,7 @@ public class LanguageManager {
 
         if (hasNeededKeys(file, true)) {
             try {
+                MPView.setWaiting(true);
                 String dbname = QueryHandler.instanceOf().clone(Context.getFiles()).insertFile(file);
                 try {
                     Thread.sleep(3333);
@@ -345,6 +346,7 @@ public class LanguageManager {
             }
 
         }
+        MPView.setWaiting(false);
     }
 
     /**

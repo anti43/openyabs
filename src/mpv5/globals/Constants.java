@@ -29,14 +29,23 @@ public interface Constants {
      * Full Version number
      */
     public static final String VERSION = "Yabs-1.1";
+
+    /**
+     * The original database version of this release
+     */
+    public static final Double DATABASE_ORIGINAL_VERSION = 1.0;
     /**
      * The minimal Database Version which is compatible with this release
      */
-    public static final Double DATABASE_VERSION = 1.0;
+    public static final Double DATABASE_VERSION = 1.1;
+    /**
+     * The max Database Version which is compatible with this release
+     */
+    public static final Double DATABASE_MAX_VERSION = 1.9;
     /**
      * Will be dynamically changed by SVN.
      */
-    public static final String REVISION = "$Rev: 1311 $";
+    public static final String REVISION = "$Rev: $";
     /**
      *
      * The Release version
@@ -46,7 +55,7 @@ public interface Constants {
      *
      * Alias
      */
-    public static final String TITLE = "[Sláinte!]";
+    public static final String TITLE = "[Ce Na Mara]";
     /**
      *
      * Name of the main JAR
@@ -81,7 +90,7 @@ public interface Constants {
     public static String XML_ROOT = "mpv5";
     public static String XML_DOCTYPE_ID = "-//http://openyabs.org//DTD mpv5 V 1.0//EN";
     public static String XML_DOCTYPE_URL = "http://openyabs.org/files/yabs_import_1.0.dtd";
-    public static String SPLASH_IMAGE = "/mpv5/resources/images/background_c.png";
+    public static String SPLASH_IMAGE = "/mpv5/resources/images/background_d.png";
     public static String ABOUT_IMAGE = "/mpv5/resources/images/about1.png";
     public static String WEBSITE = "http://openyabs.org";
     public static final String[] CONTRIBUTORS = new String[]{
@@ -95,4 +104,5 @@ public interface Constants {
         "Uwe Stark",
         "P.Heller",
         "Jean-Christoph von Oertzen"};
+
 }

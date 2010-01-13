@@ -12,6 +12,7 @@ package mpv5.ui.beans;
 
 import java.awt.Color;
 import java.awt.Font;
+import java.math.BigDecimal;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JLabel;
@@ -314,6 +315,12 @@ public class LabeledTextField extends javax.swing.JPanel {
                 return (T) Double.valueOf(jTextField1.getText());
             } catch (NumberFormatException numberFormatException) {
                 return (T) new Double(0);
+            }
+        } else if (clazz == BigDecimal.class) {
+            try {
+                return (T) new BigDecimal((jTextField1.getText()));
+            } catch (Exception numberFormatException) {
+                return (T) new BigDecimal("0");
             }
         }
         return null;

@@ -16,6 +16,7 @@
  */
 package mpv5.db.objects;
 
+import mpv5.db.common.Triggerable;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.ArrayList;
@@ -34,8 +35,10 @@ import mpv5.db.common.NodataFoundException;
 import mpv5.db.common.QueryCriteria;
 import mpv5.db.common.QueryHandler;
 import mpv5.globals.Headers;
+import mpv5.globals.Messages;
 import mpv5.handler.VariablesHandler;
 import mpv5.logging.Log;
+import mpv5.ui.dialogs.Notificator;
 import mpv5.ui.frames.MPView;
 import mpv5.ui.panels.ItemPanel;
 import mpv5.utils.models.MPComboBoxModelItem;
@@ -46,7 +49,7 @@ import mpv5.utils.numberformat.FormatNumber;
  *
  *  
  */
-public class SubItem extends DatabaseObject {
+public class SubItem extends DatabaseObject implements Triggerable {
 
     /**
      * Save the model of SubItems
@@ -317,8 +320,8 @@ public class SubItem extends DatabaseObject {
         Context contextl = product.getContext();
         String params = "cname";
         String vars = null;
-        if (mpv5.db.objects.User.getCurrentUser().getProperties().hasProperty(contextl + mpv5.ui.beans.LightMPComboBox.VALUE_SEARCHFIELDS) &&
-                mpv5.db.objects.User.getCurrentUser().getProperties().getProperty(contextl + mpv5.ui.beans.LightMPComboBox.VALUE_SEARCHFIELDS).contains("_$")) {
+        if (mpv5.db.objects.User.getCurrentUser().getProperties().hasProperty(contextl + mpv5.ui.beans.LightMPComboBox.VALUE_SEARCHFIELDS)
+                && mpv5.db.objects.User.getCurrentUser().getProperties().getProperty(contextl + mpv5.ui.beans.LightMPComboBox.VALUE_SEARCHFIELDS).contains("_$")) {
             try {
                 params = "ids";
                 vars = mpv5.db.objects.User.getCurrentUser().getProperties().getProperty(contextl + mpv5.ui.beans.LightMPComboBox.VALUE_SEARCHFIELDS);
@@ -754,5 +757,32 @@ public class SubItem extends DatabaseObject {
             cname = "   ";
         }
         return super.save(b);
+    }
+
+    @Override
+    public void triggerOnCreate() {
+        if (__getOriginalproductsids() > 0) {
+            try {
+                Product p = (Product) DatabaseObject.getObject(Context.getProduct(), originalproductsids);
+                if (p.__getIntinventorytype() == 1) {
+                    p.setStockvalue(p.__getStockvalue().subtract(BigDecimal.ONE));
+                    p.save(true);
+                }
+
+                if(p.__getIntinventorytype() == 1 && p.__getStockvalue().intValue() <= p.__getThresholdvalue().intValue()){
+                    Notificator.raiseNotification(Messages.INVENTORY_STOCK_TRESHOLD + p.toString());
+                }
+            } catch (NodataFoundException ex) {
+                Log.Debug(ex);
+            }
+        }
+    }
+
+    @Override
+    public void triggerOnUpdate() {
+    }
+
+    @Override
+    public void triggerOnDelete() {
     }
 }

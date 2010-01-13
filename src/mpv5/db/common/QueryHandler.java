@@ -107,17 +107,21 @@ public class QueryHandler implements Cloneable {
 
     private void versionCheck() {
         try {
+
             Statement versionCheck = sqlConn.createStatement();
             Log.Debug(this, "Checking database version..");
             ResultSet versionData = versionCheck.executeQuery("SELECT value FROM globalsettings WHERE cname = 'yabs_dbversion'");
             if (versionData.next()) {
                 double dbversion = Double.valueOf(versionData.getString(1));
-                if (dbversion < Constants.DATABASE_VERSION.doubleValue()) {
-                    throw new UnsupportedOperationException("Database version is too low! Found version: " + dbversion + ". Required version: " + Constants.DATABASE_VERSION);
-                }
                 Log.Debug(this, "Database version found: " + dbversion);
+                if (dbversion >= Constants.DATABASE_MAX_VERSION.doubleValue()) {
+                    throw new UnsupportedOperationException("Database version is too high! Required min version: " + Constants.DATABASE_VERSION + " Required max version: " + Constants.DATABASE_MAX_VERSION);
+                } else if (dbversion < Constants.DATABASE_VERSION.doubleValue()) {
+                    new DatabaseUpdater().updateFrom(dbversion);
+                }
             } else {
                 Log.Debug(this, "Database version info can not be found.");
+                throw new UnsupportedOperationException("Database version cannot be validated! Required version: " + Constants.DATABASE_VERSION);
             }
         } catch (Exception ex) {
             Log.Debug(ex);
@@ -234,11 +238,11 @@ public class QueryHandler implements Cloneable {
     public Object[] getColumn(String columnName, int maximumRowCount) throws NodataFoundException {
         ReturnValue data = null;
         if (maximumRowCount > 0) {
-            data = freeSelectQuery("SELECT TOP(" + maximumRowCount + ") " +
-                    columnName + " FROM " + table + " " + context.getConditions(), mpv5.usermanagement.MPSecurityManager.VIEW, null);
+            data = freeSelectQuery("SELECT TOP(" + maximumRowCount + ") "
+                    + columnName + " FROM " + table + " " + context.getConditions(), mpv5.usermanagement.MPSecurityManager.VIEW, null);
         } else {
-            data = freeSelectQuery("SELECT " +
-                    columnName + " FROM " + table + " " + context.getConditions(), mpv5.usermanagement.MPSecurityManager.VIEW, null);
+            data = freeSelectQuery("SELECT "
+                    + columnName + " FROM " + table + " " + context.getConditions(), mpv5.usermanagement.MPSecurityManager.VIEW, null);
         }
         if (data.getData().length == 0) {
             throw new NodataFoundException();
@@ -259,11 +263,11 @@ public class QueryHandler implements Cloneable {
             }
         }
         if (maximumRowCount > 0) {
-            data = freeSelectQuery("SELECT TOP(" + maximumRowCount + ") " +
-                    columnName + " FROM " + table + " " + context.getConditions(), mpv5.usermanagement.MPSecurityManager.VIEW, null);
+            data = freeSelectQuery("SELECT TOP(" + maximumRowCount + ") "
+                    + columnName + " FROM " + table + " " + context.getConditions(), mpv5.usermanagement.MPSecurityManager.VIEW, null);
         } else {
-            data = freeSelectQuery("SELECT " +
-                    columnName + " FROM " + table + " " + context.getConditions(), mpv5.usermanagement.MPSecurityManager.VIEW, null);
+            data = freeSelectQuery("SELECT "
+                    + columnName + " FROM " + table + " " + context.getConditions(), mpv5.usermanagement.MPSecurityManager.VIEW, null);
         }
         if (data.getData().length == 0) {
             throw new NodataFoundException();
@@ -617,14 +621,14 @@ public class QueryHandler implements Cloneable {
 
         if (where != null) {
 
-            query = "SELECT " + what + " FROM " + table +
-                    " LEFT OUTER JOIN " + leftJoinTable + " ON " + table + "." + leftJoinKey + " = " + leftJoinTable + ".ids" +
-                    " WHERE " + table + "." + where[0] + " " + k + " " + where[2] + l1 + where[1] + l2 + where[2] + " ORDER BY " + table + "." + order;
+            query = "SELECT " + what + " FROM " + table
+                    + " LEFT OUTER JOIN " + leftJoinTable + " ON " + table + "." + leftJoinKey + " = " + leftJoinTable + ".ids"
+                    + " WHERE " + table + "." + where[0] + " " + k + " " + where[2] + l1 + where[1] + l2 + where[2] + " ORDER BY " + table + "." + order;
         } else {
-            query = "SELECT " + what + " FROM " + table +
-                    " LEFT OUTER JOIN  " + leftJoinTable + " ON " +
-                    table + "." + leftJoinKey + " = " + leftJoinTable + ".ids " +
-                    "  ORDER BY " + table + "." + order;
+            query = "SELECT " + what + " FROM " + table
+                    + " LEFT OUTER JOIN  " + leftJoinTable + " ON "
+                    + table + "." + leftJoinKey + " = " + leftJoinTable + ".ids "
+                    + "  ORDER BY " + table + "." + order;
         }
 
         return freeSelectQuery(query, mpv5.usermanagement.MPSecurityManager.VIEW, null).getData();
@@ -1627,10 +1631,10 @@ public class QueryHandler implements Cloneable {
     public ReturnValue freeQuery(String query, JTextArea log, int action, String jobmessage) {
 
         if (!mpv5.usermanagement.MPSecurityManager.check(context, action)) {
-            Log.Debug(this, Messages.SECURITYMANAGER_DENIED +
-                    mpv5.usermanagement.MPSecurityManager.getActionName(action) + Messages.CONTEXT + context.getDbIdentity());
-            Popup.warn(Messages.SECURITYMANAGER_DENIED +
-                    mpv5.usermanagement.MPSecurityManager.getActionName(action) + Messages.CONTEXT + context.getDbIdentity());
+            Log.Debug(this, Messages.SECURITYMANAGER_DENIED
+                    + mpv5.usermanagement.MPSecurityManager.getActionName(action) + Messages.CONTEXT + context.getDbIdentity());
+            Popup.warn(Messages.SECURITYMANAGER_DENIED
+                    + mpv5.usermanagement.MPSecurityManager.getActionName(action) + Messages.CONTEXT + context.getDbIdentity());
             return new ReturnValue(-1, new Object[0][0], new String[0]);
         }
 
@@ -1785,10 +1789,10 @@ public class QueryHandler implements Cloneable {
     public ReturnValue freeUpdateQuery(String query, JTextArea log, int action, String jobmessage) {
 
         if (!mpv5.usermanagement.MPSecurityManager.check(context, action)) {
-            Log.Debug(this, Messages.SECURITYMANAGER_DENIED +
-                    mpv5.usermanagement.MPSecurityManager.getActionName(action) + Messages.CONTEXT + context.getDbIdentity());
-            Popup.warn(Messages.SECURITYMANAGER_DENIED +
-                    mpv5.usermanagement.MPSecurityManager.getActionName(action) + Messages.CONTEXT + context.getDbIdentity());
+            Log.Debug(this, Messages.SECURITYMANAGER_DENIED
+                    + mpv5.usermanagement.MPSecurityManager.getActionName(action) + Messages.CONTEXT + context.getDbIdentity());
+            Popup.warn(Messages.SECURITYMANAGER_DENIED
+                    + mpv5.usermanagement.MPSecurityManager.getActionName(action) + Messages.CONTEXT + context.getDbIdentity());
             return new ReturnValue(-1, new Object[0][0], new String[0]);
         } else {
 //              Log.Debug(this, Messages.SECURITYMANAGER_ALLOWED+
@@ -1895,10 +1899,10 @@ public class QueryHandler implements Cloneable {
         }
 
         if (!mpv5.usermanagement.MPSecurityManager.check(context, action)) {
-            Log.Debug(this, Messages.SECURITYMANAGER_DENIED +
-                    mpv5.usermanagement.MPSecurityManager.getActionName(action) + Messages.CONTEXT + context.getDbIdentity());
-            Popup.warn(Messages.SECURITYMANAGER_DENIED +
-                    mpv5.usermanagement.MPSecurityManager.getActionName(action) + Messages.CONTEXT + context.getDbIdentity());
+            Log.Debug(this, Messages.SECURITYMANAGER_DENIED
+                    + mpv5.usermanagement.MPSecurityManager.getActionName(action) + Messages.CONTEXT + context.getDbIdentity());
+            Popup.warn(Messages.SECURITYMANAGER_DENIED
+                    + mpv5.usermanagement.MPSecurityManager.getActionName(action) + Messages.CONTEXT + context.getDbIdentity());
             return new ReturnValue(-1, new Object[0][0], new String[0]);
         } else {
 //              Log.Debug(this, Messages.SECURITYMANAGER_ALLOWED+

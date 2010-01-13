@@ -262,7 +262,7 @@ public class ControlPanel_OO extends javax.swing.JPanel implements ControlApplet
     // End of variables declaration//GEN-END:variables
 
     private void setSettings() {
-        LocalSettings.setProperty(LocalSettings.OFFICE_HOME, labeledTextChooser2.get_Text(true));
+        LocalSettings.setProperty(LocalSettings.OFFICE_HOME, labeledTextChooser2.get_Text(false));
         LocalSettings.setProperty(LocalSettings.OFFICE_USE, Boolean.toString(!jCheckBox1.isSelected()));
         LocalSettings.setProperty(LocalSettings.OFFICE_REMOTE, Boolean.toString(jCheckBox3.isSelected()));
         LocalSettings.setProperty(LocalSettings.OFFICE_HOST, labeledTextField1.getText());

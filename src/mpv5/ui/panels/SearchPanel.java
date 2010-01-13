@@ -293,10 +293,12 @@ public class SearchPanel extends javax.swing.JPanel {
                     Log.Debug(this, "Search parameters: " + searchtype + " " + value);
                     switch (searchtype) {
                         case 1:
-                            if (!context.equals(Context.getContact())) {
+                            if (context.equals(Context.getContact())) {
+                                resulttable.setModel(new MPTableModel(new DatabaseSearch(context, 500).getValuesFor(sf, new String[]{"cname", "company"}, value, true), Headers.SEARCH_DEFAULT.getValue()));
+                            } else if (context.equals(Context.getItem())) {
                                 resulttable.setModel(new MPTableModel(new DatabaseSearch(context, 500).getValuesFor(sf, "cname", value, true), Headers.SEARCH_DEFAULT.getValue()));
                             } else {
-                                resulttable.setModel(new MPTableModel(new DatabaseSearch(context, 500).getValuesFor(sf, new String[]{"cname", "company"}, value, true), Headers.SEARCH_DEFAULT.getValue()));
+                                resulttable.setModel(new MPTableModel(new DatabaseSearch(context, 500).getValuesFor(sf, "cname", value, true), Headers.SEARCH_DEFAULT.getValue()));
                             }
                             break;
                         case 2:

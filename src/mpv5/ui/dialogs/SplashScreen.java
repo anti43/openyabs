@@ -78,13 +78,13 @@ public class SplashScreen extends javax.swing.JFrame {
         progress.setText("Progress");
 
         info.setFont(new java.awt.Font("Dialog", 0, 12)); // NOI18N
-        info.setForeground(new java.awt.Color(255, 255, 255));
+        info.setForeground(new java.awt.Color(0, 0, 0));
         info.setText("Version info");
 
         jProgressBar1.setBorderPainted(false);
         jProgressBar1.setStringPainted(true);
 
-        title.setFont(new java.awt.Font("Dialog", 0, 12)); // NOI18N
+        title.setFont(new java.awt.Font("Dialog", 0, 12));
         title.setForeground(new java.awt.Color(255, 255, 255));
         title.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         title.setText("Title");

@@ -18,13 +18,9 @@ package mpv5.db.objects;
 
 import java.io.File;
 import java.math.BigDecimal;
-import java.net.MalformedURLException;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Vector;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JComponent;
 import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
@@ -35,11 +31,9 @@ import mpv5.globals.Messages;
 import mpv5.handler.FormatHandler;
 import mpv5.handler.MPEnum;
 import mpv5.logging.Log;
-import mpv5.ui.frames.MPView;
 import mpv5.ui.panels.ProductPanel;
 import mpv5.utils.images.MPIcon;
 import mpv5.utils.numberformat.FormatNumber;
-import mpv5.utils.text.RandomText;
 
 /**
  *
@@ -110,6 +104,11 @@ public class Product extends DatabaseObject implements Formattable {
     private String ean = "";
     private String reference = "";//herstellernummer
     private String defaultimage = "";
+
+    private BigDecimal stockvalue = new BigDecimal("0");;
+    private BigDecimal thresholdvalue = new BigDecimal("0");;
+    private int intinventorytype = 0;
+
     public static final int TYPE_PRODUCT = 0;
     public static final int TYPE_SERVICE = 1;
     private FormatHandler formatHandler;
@@ -492,5 +491,47 @@ public class Product extends DatabaseObject implements Formattable {
         }
 
         return super.saveImport();
+    }
+
+    /**
+     * @return the stockvalue
+     */
+    public BigDecimal __getStockvalue() {
+        return stockvalue;
+    }
+
+    /**
+     * @param stockvalue the stockvalue to set
+     */
+    public void setStockvalue(BigDecimal stockvalue) {
+        this.stockvalue = stockvalue;
+    }
+
+    /**
+     * @return the thresholdvalue
+     */
+    public BigDecimal __getThresholdvalue() {
+        return thresholdvalue;
+    }
+
+    /**
+     * @param thresholdvalue the thresholdvalue to set
+     */
+    public void setThresholdvalue(BigDecimal thresholdvalue) {
+        this.thresholdvalue = thresholdvalue;
+    }
+
+    /**
+     * @return the inventorytype
+     */
+    public int __getIntinventorytype() {
+        return intinventorytype;
+    }
+
+    /**
+     * @param inventorytype the inventorytype to set
+     */
+    public void setIntinventorytype(int inventorytype) {
+        this.intinventorytype = inventorytype;
     }
 }

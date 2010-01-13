@@ -386,6 +386,10 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject> {
                     return false;
                 }
 
+                if (this instanceof Triggerable) {
+                    ((Triggerable) this).triggerOnCreate();
+                }
+
                 for (int ik = 0; ik < mods.size(); ik++) {
                     DatabaseObjectModifier databaseObjectModifier = mods.get(ik);
                     try {
@@ -402,6 +406,10 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject> {
                     message = this.__getCName() + Messages.UPDATED;
                 }
                 QueryHandler.instanceOf().clone(context).update(collect(), ids, message);
+
+                if (this instanceof Triggerable) {
+                    ((Triggerable) this).triggerOnUpdate();
+                }
             }
 
             final String fmessage = message;
@@ -509,6 +517,10 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject> {
                 }
                 result = QueryHandler.instanceOf().clone(context).delete(new String[][]{{"ids", ids.toString(), ""}}, message);
                 Log.Debug(this, "The deleted row had id: " + ids);
+            }
+
+            if (this instanceof Triggerable) {
+                ((Triggerable) this).triggerOnDelete();
             }
 
             final String fmessage = message;
