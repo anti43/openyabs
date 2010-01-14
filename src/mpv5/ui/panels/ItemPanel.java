@@ -118,7 +118,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
      */
     public ItemPanel(Context context, int type) {
         initComponents();
-        itemtable.getTableHeader().setReorderingAllowed(false);
+//        itemtable.getTableHeader().setReorderingAllowed(false);
         inttype_ = type;
         sp = new SearchPanel(context, this);
         sp.setVisible(true);
@@ -290,7 +290,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
                 button_schedule.setEnabled(inttype_ == Item.TYPE_BILL);
                 button_elevate.setEnabled(inttype_ != Item.TYPE_BILL);
                 type.setText(Item.getTypeString(inttype_));
-                        //            typelabel.setIcon(dataOwner.getIcon());
+                //            typelabel.setIcon(dataOwner.getIcon());
                 this.exposeData();
 
                 setTitle();
@@ -514,7 +514,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
         value = new javax.swing.JLabel();
         toolbarpane = new javax.swing.JPanel();
 
-        java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle(); // NOI18N
+        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("mpv5/resources/languages/Panels"); // NOI18N
         setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("ItemPanel.border.title_1"))); // NOI18N
         setName("Form"); // NOI18N
         setLayout(new java.awt.BorderLayout());
@@ -1227,9 +1227,9 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
         if (index < 0) {
             return;
         }
-        
+
         MPTableModel m = (MPTableModel) itemtable.getModel();
-                SubItem.addToDeletionQueue(m.getValueAt(index, 0));
+        SubItem.addToDeletionQueue(m.getValueAt(index, 0));
         ((MPTableModel) itemtable.getModel()).removeRow(index);
     }//GEN-LAST:event_delItemActionPerformed
 
@@ -1393,7 +1393,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
             taxvalue_ = FormatNumber.parseDezimal(taxvalue.getText());
             discountvalue_ = new BigDecimal("0");
             // not used yet- discount must be reflected in netvalue_
-       //     discountvalue_ = new BigDecimal(discountpercent.get_Value().toString());
+            //     discountvalue_ = new BigDecimal(discountpercent.get_Value().toString());
             try {
                 shippingvalue_ = FormatNumber.parseDezimal(shipping.getText());
             } catch (Exception e) {
@@ -1423,7 +1423,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
 
         shipping.setText(FormatNumber.formatDezimal(shippingvalue_));
         button_reminders.setToolTipText(Messages.REMINDERS + String.valueOf(intreminders_));
-      //  discountpercent.setValue(discountvalue_);
+        //  discountpercent.setValue(discountvalue_);
 
         status.setSelectedItem(intstatus_);
         staus_icon.setIcon(dataOwner.getIcon());
@@ -1523,10 +1523,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
             TableFormat.stripColumn(itemtable, 3);
             model.setCellEditable(0, 3, false);
         }
-        if (!mpv5.db.objects.User.getCurrentUser().getProperties().getProperty(MPView.getTabPane(), "showoptionalcolumn")) {
-            TableFormat.stripColumn(itemtable, 14);
-            model.setCellEditable(0, 14, false);
-        }
+
 
         if (mpv5.db.objects.User.getCurrentUser().getProperties().getProperty(MPView.getTabPane(), "hideproductscolumn")) {
             TableFormat.stripColumn(itemtable, 10);
@@ -1545,6 +1542,13 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
         r.setDialog(productSelectDialog, productSelectDialog.getIDTextField());
         r.setEditorTo(10);
         itemtable.moveColumn(10, 3);
+
+        if (!mpv5.db.objects.User.getCurrentUser().getProperties().getProperty(MPView.getTabPane(), "showoptionalcolumn")) {
+            TableFormat.stripColumn(itemtable, 14);
+            model.setCellEditable(0, 14, false);
+        } else {
+            itemtable.moveColumn(14, 5);
+        }
     }
 
     @Override
@@ -1798,7 +1802,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
             if (preloadedTemplate != null && preload) {
 
                 try {
-                    Contact cont = (Contact) (Contact.getObject(Context.getContact(), dataOwner.__getContactsids())); 
+                    Contact cont = (Contact) (Contact.getObject(Context.getContact(), dataOwner.__getContactsids()));
                     Export.mail(preloadedTemplate, dataOwner, cont);
                 } catch (NodataFoundException ex) {
                     Log.Debug(ex);
@@ -1827,7 +1831,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
         t.setRendererTo(6);
         t.setRendererTo(5);
         t.setRendererTo(2);
-        TableCellRendererForDezimal tc = new TableCellRendererForDezimal(itemtable,new java.awt.Color(161, 176, 190));
+        TableCellRendererForDezimal tc = new TableCellRendererForDezimal(itemtable, new java.awt.Color(161, 176, 190));
         tc.setRendererTo(7);
 
 //        CellEditorWithMPComboBox r = new CellEditorWithMPComboBox(Context.getProduct(), itemtable);
