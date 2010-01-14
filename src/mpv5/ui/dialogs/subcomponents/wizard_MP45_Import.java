@@ -353,7 +353,7 @@ public class wizard_MP45_Import extends javax.swing.JPanel implements Wizardable
                 c.setMailaddress(String.valueOf(data[i][11]));
                 c.setWebsite(String.valueOf(data[i][12]));
                 c.setNotes(String.valueOf(data[i][12 + 1]));
-                c.setisSupplier(true);
+                c.setisCustomer(true);
                 c.saveImport();
                 imports++;
             }
