@@ -24,8 +24,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.print.Doc;
 import javax.print.DocFlavor;
 import javax.print.DocPrintJob;
@@ -36,13 +34,12 @@ import javax.print.ServiceUI;
 import javax.print.SimpleDoc;
 import javax.print.attribute.Attribute;
 import javax.print.attribute.HashPrintRequestAttributeSet;
-import javax.print.attribute.standard.MediaSizeName;
 import mpv5.db.common.DatabaseObject;
 import mpv5.globals.LocalSettings;
 import mpv5.globals.Messages;
 import mpv5.logging.Log;
+import mpv5.ui.dialogs.Popup;
 import mpv5.utils.export.Export;
-import mpv5.utils.export.Exportable;
 import mpv5.utils.files.FileDirectoryHandler;
 import mpv5.utils.files.FileReaderWriter;
 import mpv5.utils.jobs.Waiter;
@@ -60,26 +57,28 @@ public class PrintJob implements Waiter {
     private HashPrintRequestAttributeSet aset;
     private DocFlavor flavor;
 
-    public PrintJob() {
-        aset = new HashPrintRequestAttributeSet();
-        aset.add(MediaSizeName.ISO_A4);
-        this.flavor = DocFlavor.INPUT_STREAM.AUTOSENSE;
-        prservDflt = PrintServiceLookup.lookupDefaultPrintService();
+//    public PrintJob() {
+//        aset = new HashPrintRequestAttributeSet();
+//        aset.add(MediaSizeName.ISO_A4);
+//        this.flavor = DocFlavor.INPUT_STREAM.AUTOSENSE;
+//        prservDflt = PrintServiceLookup.lookupDefaultPrintService();
+////        prservices = PrintServiceLookup.lookupPrintServices(flavor, aset);
+//        prservices = PrintServiceLookup.lookupPrintServices(null, aset);
+//    }
+//
+//    public PrintJob(DocFlavor flavor) {
+//        aset = new HashPrintRequestAttributeSet();
+//        aset.add(MediaSizeName.ISO_A4);
+//        this.flavor = flavor;
+//        prservDflt = PrintServiceLookup.lookupDefaultPrintService();
 //        prservices = PrintServiceLookup.lookupPrintServices(flavor, aset);
-        prservices = PrintServiceLookup.lookupPrintServices(null, aset);
-    }
-
-    public PrintJob(DocFlavor flavor) {
-        aset = new HashPrintRequestAttributeSet();
-        aset.add(MediaSizeName.ISO_A4);
-        this.flavor = flavor;
-        prservDflt = PrintServiceLookup.lookupDefaultPrintService();
-        prservices = PrintServiceLookup.lookupPrintServices(flavor, aset);
-
-    }
+//
+//    }
 
     /**
-     *
+     * Prints files and determines the type by the file extension.
+     * May print through the default application for the given filetype or by
+     * printer lookup, depending on the user settings.
      * @param filelist
      */
     public void print(ArrayList<File> filelist) {
@@ -91,15 +90,33 @@ public class PrintJob implements Waiter {
                 Desktop.getDesktop().print(filelist.get(0));
             } catch (IOException ex) {
                 Log.Debug(this, ex.getMessage());
-                printOldStyle(filelist);
+//                printOldStyle(filelist);
+                for(File f: filelist){
+                String filename = f.getName();
+                    try {
+                        new PrintJob2(f, (filename.lastIndexOf(".") == -1) ? "" : filename.substring(filename.lastIndexOf(".") + 1, filename.length()));
+                    } catch (Exception ex1) {
+                        Log.Debug(ex1);
+                        Popup.error(ex1);
+                    }
+                }
             }
         } else {
-            printOldStyle(filelist);
+//            printOldStyle(filelist);
+             for(File f: filelist){
+                String filename = f.getName();
+                    try {
+                        new PrintJob2(f, (filename.lastIndexOf(".") == -1) ? "" : filename.substring(filename.lastIndexOf(".") + 1, filename.length()));
+                    } catch (Exception ex1) {
+                        Log.Debug(ex1);
+                        Popup.error(ex1);
+                    }
+                }
         }
     }
 
     /**
-     *
+     * Prints textfiles containing the given {@link databaseObject}s information
      * @param dbobjarr
      */
     public void printl(List<DatabaseObject> dbobjarr) {
@@ -164,6 +181,10 @@ public class PrintJob implements Waiter {
 
     }
 
+    /**
+     * @deprecated Doesnt work mostly, use {@link PrintJob2} instead.
+     * @param filelist
+     */
     private void printOldStyle(ArrayList<File> filelist) {
         if (null == prservices || 0 >= prservices.length) {
             if (null != prservDflt) {

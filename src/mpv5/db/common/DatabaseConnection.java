@@ -95,19 +95,18 @@ public class DatabaseConnection {
      */
     public boolean connect(String predefinedDriver, String user, String password, String location, String dbname, String prefix, boolean create) throws Exception {
 
-        ctype = new ConnectionTypeHandler();
-        getCtype().setDRIVER(predefinedDriver);
-        getCtype().setURL(location);
-        getCtype().setDBName(dbname);
-        getCtype().setPrefix(prefix);
-        DatabaseConnection.user = user;
-        DatabaseConnection.password = password;
-        DatabaseConnection.prefix = prefix;
-
         try {
+            ctype = new ConnectionTypeHandler();
+            getCtype().setDRIVER(predefinedDriver);
+            getCtype().setURL(location);
+            getCtype().setDBName(dbname);
+            getCtype().setPrefix(prefix);
+            DatabaseConnection.user = user;
+            DatabaseConnection.password = password;
+            DatabaseConnection.prefix = prefix;
 
             DriverManager.registerDriver((Driver) Class.forName(getCtype().getDriver()).newInstance());
-            Log.Debug(this, "Datenbanktreiber: " + getCtype().getDriver());
+            Log.Debug(this, "Driver: " + getCtype().getDriver());
         } catch (Exception ex) {
             Log.Debug(this, ex.getMessage());
         }

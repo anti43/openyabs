@@ -68,13 +68,13 @@ public class LocalSettings {
                 {OFFICE_HOST, "127.0.0.1"},
                 {OFFICE_REMOTE, "false"},
                 {OFFICE_BINARY_FOLDER, "program"},
-                {OFFICE_HOME, ""},
+//                {OFFICE_HOME, ""},
                 {OFFICE_USE, "false"},
                 {CACHE_DIR, "Cache"},
-                {DBESCAPE, "true"}
+                {DBESCAPE, "true"},
                 //Uncomment for MacOS build
-                //{OFFICE_HOME, "/Applications/OpenOffice.org.app/Contents/"},
-                //{OFFICE_BINARY_FOLDER, "MacOS"},
+                {OFFICE_HOME, "/Applications/OpenOffice.org.app/Contents/"},
+                {OFFICE_BINARY_FOLDER, "MacOS"}
             });
     private static Vector<PropertyStore> cookies;
 

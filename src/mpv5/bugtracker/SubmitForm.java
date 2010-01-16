@@ -220,7 +220,7 @@ public class SubmitForm extends javax.swing.JPanel {
         } else {
             String message = "This is a generated issue report for Yabs Version " + Constants.VERSION;
             message += "\n\n" + steps.getText() + "\n\n" + trace.getText();
-            Popup.notice("Please send this message to mp-rechnungs-und-kundenverwaltung@googlegroups.com: \n\nThank you!\n\n" +
+            Popup.notice("Please send this message to openyabs@googlegroups.com: \n\nThank you!\n\n" +
                     message, 500, 500);
             try {
                 BigPopup.close(this);
