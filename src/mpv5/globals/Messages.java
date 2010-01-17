@@ -226,7 +226,7 @@ public enum Messages {
     CONTACT_TYPE_MALE("Mr."),
     CONTACT_TYPE_FEMALE("Mrs."),
     INVENTORY_STOCK_TRESHOLD("The stock count of the following product has reached the alarm threshold: "),
-    PRINT_NOT_POSSIBLE("Could not find a print service for the give file. Try 'print though default application' setting instead:");
+    PRINT_NOT_POSSIBLE("Could not find a print service for the give file. Try 'print through default application' setting instead:");
 
     private Messages(String message) {
         this.message = message;

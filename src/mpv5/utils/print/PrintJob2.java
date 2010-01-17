@@ -16,6 +16,7 @@
  */
 package mpv5.utils.print;
 
+import java.awt.HeadlessException;
 import java.util.*;
 import java.io.*;
 import javax.print.*;
@@ -83,8 +84,12 @@ public class PrintJob2 {
                     if (!Arrays.asList(prservices).contains(prservDflt)) {
                         prservDflt = null;
                     }
-                    prserv = ServiceUI.printDialog(null, 50, 50, prservices, prservDflt, null, aset);
-                }
+                    try {
+                        prserv = ServiceUI.printDialog(null, 50, 50, prservices, prservDflt, null, aset);
+                    } catch (Exception exception) {
+                        Log.Debug(exception);
+                    }
+   }
                 if (null != prserv) {
                     Log.Debug(this, "Choosen Print-Service:");
                     Log.Debug(this, "      " + prserv);
