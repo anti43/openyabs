@@ -59,6 +59,10 @@ public class Template extends DatabaseObject {
     public static HashMap<String, Group> notification = new HashMap<String, Group>();
 
     /**
+     * Indicates no printer association
+     */
+    public static final String PRINTER_UNDEFINED = "printer_undefined";
+    /**
      * 
      * @param dataOwner
      * @return
@@ -129,6 +133,7 @@ public class Template extends DatabaseObject {
     }
     private String description = "";
     private String filename = "";
+    private String printer = "";
     private int intsize;
     private String mimetype;
     private File file;
@@ -347,5 +352,19 @@ public class Template extends DatabaseObject {
      */
     public  HashMap<String, TableModel> getTables() {
         return tables;
+    }
+
+    /**
+     * @return the printer
+     */
+    public String __getPrinter() {
+        return printer;
+    }
+
+    /**
+     * @param printer the printer to set
+     */
+    public void setPrinter(String printer) {
+        this.printer = printer;
     }
 }

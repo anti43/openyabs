@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import mpv5.db.objects.Template;
 import mpv5.logging.Log;
 import mpv5.ui.dialogs.Popup;
 
@@ -27,6 +28,9 @@ public class DatabaseUpdater {
                     "ALTER TABLE products ADD COLUMN thresholdvalue DOUBLE DEFAULT 0 NOT NULL",
                     "ALTER TABLE products ADD COLUMN intinventorytype SMALLINT DEFAULT 0 NOT NULL"
                 });
+        UPDATES_DERBY.put(1.12, new String[]{
+                    "ALTER TABLE templates ADD COLUMN printer VARCHAR(50) DEFAULT '" + Template.PRINTER_UNDEFINED + "' NOT NULL ",
+                });
         ////////////////////////////////////////////////////////////////////////////////////////////
         // mysql updates
         UPDATES_MYSQL.put(1.11, new String[]{
@@ -34,6 +38,9 @@ public class DatabaseUpdater {
                     "ALTER TABLE products ADD COLUMN thresholdvalue DOUBLE DEFAULT 0 NOT NULL",
                     "ALTER TABLE products ADD COLUMN intinventorytype SMALLINT DEFAULT 0 NOT NULL"
                 });
+       UPDATES_MYSQL.put(1.12, new String[]{
+                     "ALTER TABLE templates ADD COLUMN printer VARCHAR(50) DEFAULT '" + Template.PRINTER_UNDEFINED + "' NOT NULL ",
+               });
 
     }
 

@@ -120,7 +120,7 @@ public class ControlPanel_Templates extends javax.swing.JPanel implements Contro
         templates = new javax.swing.JTable();
 
         setBackground(new java.awt.Color(255, 255, 255));
-        java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle(); // NOI18N
+        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("mpv5/resources/languages/Panels"); // NOI18N
         setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("ControlPanel_Templates.border.title"))); // NOI18N
         setName("Form"); // NOI18N
         setPreferredSize(new java.awt.Dimension(495, 183));
@@ -264,28 +264,28 @@ public class ControlPanel_Templates extends javax.swing.JPanel implements Contro
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(fullname, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 332, Short.MAX_VALUE)
+                    .addComponent(fullname, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 333, Short.MAX_VALUE)
                     .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel4Layout.createSequentialGroup()
                         .addComponent(format, javax.swing.GroupLayout.PREFERRED_SIZE, 233, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButton8, javax.swing.GroupLayout.DEFAULT_SIZE, 93, Short.MAX_VALUE))
-                    .addComponent(type, javax.swing.GroupLayout.DEFAULT_SIZE, 332, Short.MAX_VALUE)
+                        .addComponent(jButton8, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(type, javax.swing.GroupLayout.DEFAULT_SIZE, 333, Short.MAX_VALUE)
                     .addGroup(jPanel4Layout.createSequentialGroup()
                         .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel4Layout.createSequentialGroup()
-                                .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, 85, Short.MAX_VALUE)
+                                .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, 86, Short.MAX_VALUE)
                                 .addGap(4, 4, 4))
                             .addGroup(jPanel4Layout.createSequentialGroup()
-                                .addComponent(jLabel3, javax.swing.GroupLayout.DEFAULT_SIZE, 81, Short.MAX_VALUE)
+                                .addComponent(jLabel3, javax.swing.GroupLayout.DEFAULT_SIZE, 82, Short.MAX_VALUE)
                                 .addGap(8, 8, 8))
                             .addGroup(jPanel4Layout.createSequentialGroup()
-                                .addComponent(jLabel6, javax.swing.GroupLayout.DEFAULT_SIZE, 64, Short.MAX_VALUE)
+                                .addComponent(jLabel6, javax.swing.GroupLayout.DEFAULT_SIZE, 65, Short.MAX_VALUE)
                                 .addGap(25, 25, 25)))
                         .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(groupname, javax.swing.GroupLayout.Alignment.TRAILING, 0, 243, Short.MAX_VALUE)
                             .addComponent(jScrollPane3, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 243, Short.MAX_VALUE)
                             .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 243, Short.MAX_VALUE))))
-                .addGap(16, 16, 16))
+                .addGap(20, 20, 20))
         );
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -304,7 +304,7 @@ public class ControlPanel_Templates extends javax.swing.JPanel implements Contro
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel3)
-                    .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 117, Short.MAX_VALUE))
+                    .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 77, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -325,7 +325,6 @@ public class ControlPanel_Templates extends javax.swing.JPanel implements Contro
         jScrollPane4.setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("ControlPanel_Templates.jScrollPane4.border.title"))); // NOI18N
         jScrollPane4.setName("jScrollPane4"); // NOI18N
 
-        templates.setAutoCreateRowSorter(true);
         templates.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {},
@@ -337,7 +336,8 @@ public class ControlPanel_Templates extends javax.swing.JPanel implements Contro
 
             }
         ));
-        templates.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_ALL_COLUMNS);
+        templates.setAutoCreateRowSorter(true);
+        templates.setAutoResizeMode(4);
         templates.setDragEnabled(true);
         templates.setFillsViewportHeight(true);
         templates.setName("templates"); // NOI18N
@@ -353,14 +353,14 @@ public class ControlPanel_Templates extends javax.swing.JPanel implements Contro
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 260, Short.MAX_VALUE)
+                .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 333, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 380, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 329, Short.MAX_VALUE)
-            .addComponent(jPanel2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 329, Short.MAX_VALUE)
+            .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 302, Short.MAX_VALUE)
+            .addComponent(jPanel2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 302, Short.MAX_VALUE)
         );
 
         add(jPanel1, java.awt.BorderLayout.CENTER);
@@ -523,6 +523,7 @@ public class ControlPanel_Templates extends javax.swing.JPanel implements Contro
     public int ids_;
     public int groupsids_;
     public int compsids_;
+    public String printer_;
     public java.util.Date dateadded_ = new java.util.Date();
 
     public boolean collectData() {
@@ -730,18 +731,14 @@ public class ControlPanel_Templates extends javax.swing.JPanel implements Contro
     }
 
     public void actionBeforeCreate() {
-        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     public void actionBeforeSave() {
-        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     public void mail() {
-        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     public void print() {
-        throw new UnsupportedOperationException("Not supported yet.");
     }
 }
