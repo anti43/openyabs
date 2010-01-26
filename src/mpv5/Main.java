@@ -19,6 +19,8 @@ package mpv5;
 import ag.ion.bion.officelayer.application.IOfficeApplication;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import mpv5.db.common.NodataFoundException;
 import mpv5.ui.frames.MPView;
 import mpv5.logging.*;
@@ -62,6 +64,7 @@ import mpv5.ui.dialogs.subcomponents.ControlPanel_Fonts;
 import mpv5.ui.dialogs.subcomponents.wizard_DBSettings_simple_1;
 import mpv5.utils.files.FileDirectoryHandler;
 import mpv5.utils.files.FileReaderWriter;
+import mpv5.utils.print.PrintJob2;
 import mpv5.utils.text.RandomText;
 import mpv5.webshopinterface.WSIManager;
 import org.apache.commons.cli2.*;
@@ -339,6 +342,7 @@ public class Main extends SingleFrameApplication {
         Option connectionInstance = obuilder.withShortName("connectionInstance").withShortName("conn").withDescription("Use stored connection with this ID").withArgument(number).create();
         Option windowlog = obuilder.withShortName("windowlog").withDescription("Enables logging to the MP Log Console").create();
         Option consolelog = obuilder.withShortName("consolelog").withDescription("Enables logging to STDOUT").create();
+        Option printtest = obuilder.withShortName("printtest").withDescription("Test PDF printing").create();
 
 
         Group options = gbuilder.withName("options").
@@ -358,6 +362,7 @@ public class Main extends SingleFrameApplication {
                 withOption(consolelog).
                 withOption(mpdir).
                 withOption(clear).
+                withOption(printtest).
                 create();
 
         HelpFormatter hf = new HelpFormatter();
@@ -451,6 +456,16 @@ public class Main extends SingleFrameApplication {
             }
 
             LogConsole.setLogStreams(cl.hasOption(logfile), cl.hasOption(consolelog), cl.hasOption(windowlog));
+
+            if(cl.hasOption(printtest)){
+                try {
+                    PrintJob2 printJob2 = new PrintJob2(new File("printer_test.pdf"), "pdf");
+                    System.exit(0);
+                } catch (Exception ex) {
+                    Log.Debug(ex);
+                    System.exit(0);
+                }
+            }
         }
 
         if (cl != null) {

@@ -28,7 +28,7 @@ public interface Constants {
      * 
      * Full Version number
      */
-    public static final String VERSION = "Yabs-1.11";
+    public static final String VERSION = "Yabs-1.12";
 
     /**
      * The original database version of this release
@@ -55,7 +55,7 @@ public interface Constants {
      *
      * Alias
      */
-    public static final String TITLE = "[Ce Na Mara]";
+    public static final String TITLE = "[Claddagh]";
     /**
      *
      * Name of the main JAR
