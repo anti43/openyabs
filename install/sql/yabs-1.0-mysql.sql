@@ -328,7 +328,7 @@ CREATE TABLE productlistitems  (
 	cname              	VARCHAR(2500) DEFAULT NULL,
 	linkurl            	VARCHAR(250) DEFAULT NULL,
 	groupsids          	BIGINT(20) UNSIGNED NOT NULL DEFAULT 1,
-	productslistsids    	BIGINT(20) UNSIGNED NOT NULL ,
+	productlistsids    	BIGINT(20) UNSIGNED NOT NULL ,
 	originalproductsids	BIGINT(20) UNSIGNED NOT NULL ,
 	countvalue         	DOUBLE NOT NULL DEFAULT 0,
 	quantityvalue      	DOUBLE NOT NULL DEFAULT 0,
@@ -346,7 +346,7 @@ CREATE TABLE productlistitems  (
 	reserve2           	VARCHAR(500) DEFAULT NULL
 )ENGINE=MyISAM  DEFAULT CHARSET=utf8;
 
-CREATE TABLE productslists  (
+CREATE TABLE productlists  (
 	ids        	BIGINT(20) UNSIGNED NOT NULL PRIMARY KEY auto_increment,
 	cname      	VARCHAR(2500) DEFAULT NULL,
 	groupsids  	BIGINT(20) UNSIGNED NOT NULL  DEFAULT 1,
@@ -367,7 +367,7 @@ CREATE TABLE products  (
 	internalnetvalue	DOUBLE DEFAULT 0,
 	measure         	VARCHAR(250) NOT NULL,
 	taxids          	BIGINT(20) UNSIGNED NOT NULL ,
-	manufacturesids	BIGINT(20) UNSIGNED NOT NULL DEFAULT 0,
+	manufacturersids	BIGINT(20) UNSIGNED NOT NULL DEFAULT 0,
 	suppliersids    	BIGINT(20) UNSIGNED NOT NULL DEFAULT 0,
 	groupsids       	BIGINT(20) UNSIGNED NOT NULL  DEFAULT 1,
 	productgroupsids	BIGINT(20) UNSIGNED NOT NULL DEFAULT 1,
@@ -747,10 +747,10 @@ CREATE INDEX SQL091006084319612
 	ON products(productgroupsids);
 
 CREATE UNIQUE INDEX SQL091006084320591
-	ON productslists(ids);
+	ON productlists(ids);
 
 CREATE INDEX SQL091006084320590
-	ON productslists(groupsids);
+	ON productlists(groupsids);
 
 CREATE UNIQUE INDEX SQL091006084321141
 	ON productlistitems(ids);
@@ -759,7 +759,7 @@ CREATE INDEX SQL091006084321130
 	ON productlistitems(groupsids);
 
 CREATE INDEX SQL091006084321131
-	ON productlistitems(productslistsids);
+	ON productlistitems(productlistsids);
 
 CREATE INDEX SQL091006084321140
 	ON productlistitems(originalproductsids);
@@ -1210,8 +1210,8 @@ ALTER TABLE productlistitems
 
 ALTER TABLE productlistitems
 	ADD CONSTRAINT SQL0910060843211311
-	FOREIGN KEY(productslistsids)
-	REFERENCES productslists(ids)
+	FOREIGN KEY(productlistsids)
+	REFERENCES productlists(ids)
 	ON DELETE CASCADE ;
 
 ALTER TABLE productlistitems
@@ -1219,7 +1219,7 @@ ALTER TABLE productlistitems
 	FOREIGN KEY(groupsids)
 	REFERENCES groups(ids);
 
-ALTER TABLE productslists
+ALTER TABLE productlists
 	ADD CONSTRAINT SQL0910060843205901
 	FOREIGN KEY(groupsids)
 	REFERENCES groups(ids);
@@ -1591,28 +1591,3 @@ END;
 #%
 DELIMITER ;
 
-
-INSERT INTO groups(cname, description, defaults, groupsids, dateadded, reserve1, intaddedby, hierarchypath, reserve2)
-  VALUES( 'All Groups', 'This group is visible to everyone.', NULL, 0, '2009-04-03', NULL, 0, NULL, NULL);
-INSERT INTO accounts(intaccountclass, cname, description, taxvalue, dateadded, intaddedby, intparentaccount, groupsids, invisible, intaccounttype, intprofitfid, inttaxfid, inttaxuid, frame, hierarchypath)
-  VALUES( 0, 'All Accounts', 'This account is the parent account of all account frames.', 0.0, '2009-04-03', 0, 0, 1, 0, 0, 0, 0, 0, 'builtin', NULL);
-INSERT INTO accounts(intaccountclass, cname, description, taxvalue, dateadded, intaddedby, intparentaccount, groupsids, invisible, intaccounttype, intprofitfid, inttaxfid, inttaxuid, frame, hierarchypath)
-  VALUES( 0, 'Expenses', '', 0.0, '2009-04-03', 0, 1, 1, 0, 2, 0, 0, 0, 'builtin', NULL);
-INSERT INTO accounts(intaccountclass, cname, description, taxvalue, dateadded, intaddedby, intparentaccount, groupsids, invisible, intaccounttype, intprofitfid, inttaxfid, inttaxuid, frame, hierarchypath)
-  VALUES( 0, 'Income', '', 0.0, '2009-04-03', 0, 1, 1, 0, 3, 0, 0, 0, 'builtin', NULL);
-INSERT INTO countries(cname, iso, groupsids, reserve1, reserve2)
-  VALUES( 'Deutschland', 276, 1, NULL, NULL);
-INSERT INTO globalsettings(cname, groupsids, VALUE)
-  VALUES( 'yabs_dbversion', 1, '1.0');
-INSERT INTO productgroups(cname, description, defaults, groupsids, productgroupsids, dateadded, hierarchypath, reserve1, intaddedby, reserve2)
-  VALUES( 'All Products', 'This product group is visible to everyone.', NULL, 0, 0, '2009-04-03', NULL, NULL, 0, NULL);
-INSERT INTO searchindex(dbidentity, groupsids, rowid, text)
-  VALUES( 'groups', 0, 1, 'All Groups This group is visible to everyone. 2009-04-03');
-INSERT INTO tax(cname, taxvalue, identifier, groupsids, country, dateadded, intaddedby, invisible, reserve1, reserve2)
-  VALUES( 'Default 0%', 0.0, 'Default 0%', 1, NULL, '2009-04-03', 0, 0, NULL, NULL);
-INSERT INTO tax(cname, taxvalue, identifier, groupsids, country, dateadded, intaddedby, invisible, reserve1, reserve2)
-  VALUES( 'Default 19%', 19.0, 'Default 19%', 1, NULL, '2009-04-03', 0, 0, NULL, NULL);
-INSERT INTO tax( cname, taxvalue, identifier, groupsids, country, dateadded, intaddedby, invisible, reserve1, reserve2)
-  VALUES( 'Default 7%', 7.0, 'Default 7%', 1, NULL, '2009-04-03', 0, 0, NULL, NULL);
-INSERT INTO users(cname, groupsids, intdefaultaccount, compsids, intdefaultstatus, fullname, password, laf, locale, defcountry, mail, language, inthighestright, isenabled, isrgrouped, isloggedin, datelastlog, dateadded, intaddedby, invisible, reserve1, reserve2)
-  VALUES( 'admin', 1, 1, 0, 1, 'Administrator', '5f4dcc3b5aa765d61d8327deb882cf99', 'com.sun.java.swing.plaf.windows.WindowsLookAndFeel', 'en_GB', '', '', 'buildin_en', 0, 1, 0, 0, '2009-10-06', '2009-04-03', 0, 0, NULL, NULL);

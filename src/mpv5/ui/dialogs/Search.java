@@ -50,6 +50,7 @@ public class Search extends javax.swing.JDialog {
         s.setVisible(true);
         s.requestFocus();
         s.scope.setSelectedItem(t);
+        s.validate();
         return s.getSelectedObject();
     }
     private Context lastContext;

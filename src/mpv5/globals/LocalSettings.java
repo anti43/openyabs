@@ -54,9 +54,11 @@ public class LocalSettings {
     public static final String LAST_USER = "lastuser";
     public static final String LAST_USER_PW = "lastuserpw";
     public static final String DBESCAPE = "dbescape";
+    public static final String CLIENT = "client";
 
 
     private static PropertyStore predefinedSettings = new PropertyStore(new String[][]{
+                {CLIENT, "Default Client"},
                 {DEFAULT_FONT, "DejaVu Sans 11"},
                 {DBROW_LIMIT, "0"},
                 {DBAUTOLOCK, "false"},
