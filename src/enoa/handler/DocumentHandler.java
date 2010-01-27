@@ -131,6 +131,10 @@ public class DocumentHandler {
      */
     public synchronized void saveAs(File file) throws DocumentException {
 
+        if(file.exists()) {
+            file.delete();
+        }
+        
         document.reformat();
         document.update();
 
