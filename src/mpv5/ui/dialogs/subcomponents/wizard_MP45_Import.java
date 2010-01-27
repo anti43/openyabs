@@ -316,6 +316,7 @@ public class wizard_MP45_Import extends javax.swing.JPanel implements Wizardable
                 c.setWebsite(String.valueOf(data[i][12]));
                 c.setNotes(String.valueOf(data[i][12 + 1]));
                 c.setisManufacturer(true);
+                c.setisMale(true);
                 c.saveImport();
                 imports++;
                 manufacturer.put(Integer.valueOf(String.valueOf(data[i][14])), c.__getIDS());
@@ -354,6 +355,10 @@ public class wizard_MP45_Import extends javax.swing.JPanel implements Wizardable
                 c.setWebsite(String.valueOf(data[i][12]));
                 c.setNotes(String.valueOf(data[i][12 + 1]));
                 c.setisCustomer(true);
+                c.setisManufacturer(false);
+                c.setisSupplier(false);
+                c.setisCompany(false);
+                c.setisMale(true);
                 c.saveImport();
                 imports++;
             }
@@ -391,6 +396,7 @@ public class wizard_MP45_Import extends javax.swing.JPanel implements Wizardable
                 c.setWebsite(String.valueOf(data[i][12]));
                 c.setNotes(String.valueOf(data[i][12 + 1]));
                 c.setisSupplier(true);
+                c.setisMale(true);
                 c.saveImport();
                 imports++;
                 supplier.put(Integer.valueOf(String.valueOf(data[i][14])), c.__getIDS());
