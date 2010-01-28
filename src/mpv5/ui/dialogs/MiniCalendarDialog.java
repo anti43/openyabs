@@ -34,7 +34,7 @@ public class MiniCalendarDialog extends javax.swing.JDialog {
 
     /** Creates new form MiniCalendar1 */
     public MiniCalendarDialog(JComponent t, boolean modal) {
-        super(MPView.identifierFrame, modal);
+        super(MPView.getIdentifierFrame(), modal);
         initComponents();
 
 

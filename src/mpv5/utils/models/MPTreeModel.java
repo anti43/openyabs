@@ -185,7 +185,7 @@ public class MPTreeModel extends DefaultTreeModel {
                     DefaultMutableTreeNode node = (DefaultMutableTreeNode) tree.getLastSelectedPathComponent();
                     if (node != null) {
                         if (node.getUserObject() instanceof DatabaseObject) {
-                            MPView.identifierView.addTab((DatabaseObject) node.getUserObject());
+                            MPView.getIdentifierView().addTab((DatabaseObject) node.getUserObject());
                         }
                     }
                 }

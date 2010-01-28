@@ -247,7 +247,7 @@ public class User extends DatabaseObject {
             } catch (Exception e) {
                 Log.Debug(e);
             }
-            Lock.unlock(MPView.identifierFrame);
+            Lock.unlock(MPView.getIdentifierFrame());
             Runnable runnable = new Runnable() {
 
                 @Override

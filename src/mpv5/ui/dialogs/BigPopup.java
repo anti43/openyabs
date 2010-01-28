@@ -57,7 +57,7 @@ public class BigPopup {
                 }
             });
 
-            window.setLocationRelativeTo(MPView.identifierFrame);
+            window.setLocationRelativeTo(MPView.getIdentifierFrame());
             window.setVisible(true);
             contents.put(content, window);
         } else {
@@ -153,8 +153,8 @@ public class BigPopup {
                 }
             });
             if (width != null) {
-                window.setPreferredSize(new Dimension(width, MPView.identifierFrame.getHeight()));
-                window.setSize(new Dimension(width, MPView.identifierFrame.getHeight()));
+                window.setPreferredSize(new Dimension(width, MPView.getIdentifierFrame().getHeight()));
+                window.setSize(new Dimension(width, MPView.getIdentifierFrame().getHeight()));
             }
             window.setExtendedState(state);
             new Position(window);

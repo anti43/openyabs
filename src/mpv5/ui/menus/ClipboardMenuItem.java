@@ -36,7 +36,7 @@ public class ClipboardMenuItem extends JMenuItem {
 
         addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                 MPView.identifierView.getCurrentTab().paste(dbo);
+                 MPView.getIdentifierView().getCurrentTab().paste(dbo);
             }
         });
 

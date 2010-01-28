@@ -56,12 +56,12 @@ public class Search extends javax.swing.JDialog {
      * @param addtabs Add the selected Object to the main tab pane
      */
     public Search(boolean addtabs) {
-        super(MPView.identifierFrame);
+        super(MPView.getIdentifierFrame());
         initComponents();
         this.addTabs = addtabs;
         setModalityType(ModalityType.APPLICATION_MODAL);
         scope.setModel(new DefaultComboBoxModel(Context.getSearchableContexts().toArray()));
-        setLocationRelativeTo(MPView.identifierFrame);
+        setLocationRelativeTo(MPView.getIdentifierFrame());
     }
 
     /** This method is called from within the constructor to
@@ -227,7 +227,7 @@ public class Search extends javax.swing.JDialog {
                 try {
                     selection = DatabaseObject.getObject(lastContext, Integer.valueOf(jTable1.getValueAt(jTable1.getSelectedRow(), 0).toString()));
                     if (addTabs) {
-                        MPView.identifierView.addTab(selection);
+                        MPView.getIdentifierView().addTab(selection);
                     }
                 } catch (NodataFoundException ex) {
                     mpv5.logging.Log.Debug(ex);

@@ -447,7 +447,7 @@ public class DataPanelTB extends javax.swing.JPanel {
 
         DatabaseObject dato = parents.getDataOwner();
         if (dato.isExisting()) {
-            MPView.currentList.add(dato);
+            MPView.getCurrentList().add(dato);
             MPView.showCurrentList();
         } else {
             MPView.showCurrentList();
@@ -478,7 +478,7 @@ public class DataPanelTB extends javax.swing.JPanel {
             dato.getPanelData(parents);
             if (dato.save()) {
                 Favourite.removeFavourite(dato);
-                MPView.identifierView.refreshFavouritesMenu();
+                MPView.getIdentifierView().refreshFavouritesMenu();
                 parents.setDataOwner(dato, true);
             } else {
                 parents.showRequiredFields();
@@ -495,7 +495,7 @@ public class DataPanelTB extends javax.swing.JPanel {
                 if (dato.save()) {
                     fav = new Favourite(dato);
                     fav.save();
-                    MPView.identifierView.refreshFavouritesMenu();
+                    MPView.getIdentifierView().refreshFavouritesMenu();
                     MPView.addMessage(Messages.ADDED_TO_FAVOURITES + dato.__getCName());
                     parents.setDataOwner(dato, true);
                 } else {

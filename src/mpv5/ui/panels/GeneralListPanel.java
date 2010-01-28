@@ -313,7 +313,7 @@ public class GeneralListPanel extends javax.swing.JPanel {
     private void jTable1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable1MouseClicked
         if (evt.getClickCount() > 1) {
             try {
-                MPView.identifierView.addTab(((DatabaseObject) jTable1.getModel().getValueAt(jTable1.getSelectedRow(), 0)));
+                MPView.getIdentifierView().addTab(((DatabaseObject) jTable1.getModel().getValueAt(jTable1.getSelectedRow(), 0)));
             } catch (Exception e) {
                 Log.Debug(e);
             }

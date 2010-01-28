@@ -761,7 +761,7 @@ public class MPControlPanel extends javax.swing.JPanel {
             //No rights for this!
         } finally {
             MPView.setWaiting(false);
-            MPView.identifierFrame.validate();
+            MPView.getIdentifierFrame().validate();
         }
     }
 }

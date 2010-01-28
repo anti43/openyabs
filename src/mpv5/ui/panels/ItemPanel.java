@@ -1111,7 +1111,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
 
         if (dataOwner.isExisting()) {
             try {
-                MPView.identifierView.addTab(DatabaseObject.getObject(Context.getContact(), dataOwner.__getContactsids()));
+                MPView.getIdentifierView().addTab(DatabaseObject.getObject(Context.getContact(), dataOwner.__getContactsids()));
             } catch (NodataFoundException ex) {
                 Log.Debug(ex);
             }
@@ -1164,7 +1164,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
 
     private void button_remindersActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button_remindersActionPerformed
         if (dataOwner != null && dataOwner.isExisting()) {
-            BigPopup.showPopup(MPView.identifierFrame.getRootPane(), new RemindPanel(dataOwner), Messages.REMINDER.toString(), true);
+            BigPopup.showPopup(MPView.getIdentifierFrame().getRootPane(), new RemindPanel(dataOwner), Messages.REMINDER.toString(), true);
         }
     }//GEN-LAST:event_button_remindersActionPerformed
 
@@ -1257,7 +1257,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
         try {
             int cid = Integer.valueOf(contactname.getSelectedItem().getId());
             Contact c = (Contact) DatabaseObject.getObject(Context.getContact(), cid);
-            MPView.identifierView.addTab(c);
+            MPView.getIdentifierView().addTab(c);
         } catch (Exception e) {
             //Nothing to show
         }
@@ -1536,7 +1536,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
         }
 
         TextAreaCellEditor r = new TextAreaCellEditor(itemtable);
-        ProductSelectDialog2 productSelectDialog = new ProductSelectDialog2(MPView.identifierFrame, true, itemtable);
+        ProductSelectDialog2 productSelectDialog = new ProductSelectDialog2(MPView.getIdentifierFrame(), true, itemtable);
         productSelectDialog.okButton.addActionListener(r);
         productSelectDialog.cancelButton.addActionListener(r);
         r.setDialog(productSelectDialog, productSelectDialog.getIDTextField());
@@ -1839,7 +1839,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
         TextAreaCellRenderer textAreaCellRenderer = new TextAreaCellRenderer(itemtable);
         textAreaCellRenderer.setRendererTo(4);
         TextAreaCellEditor r = new TextAreaCellEditor(itemtable);
-        ItemTextAreaDialog itemTextAreaDialog = new ItemTextAreaDialog(MPView.identifierFrame, true);
+        ItemTextAreaDialog itemTextAreaDialog = new ItemTextAreaDialog(MPView.getIdentifierFrame(), true);
         itemTextAreaDialog.okButton.addActionListener(r);
         itemTextAreaDialog.cancelButton.addActionListener(r);
         r.setDialog(itemTextAreaDialog, itemTextAreaDialog.textArea);

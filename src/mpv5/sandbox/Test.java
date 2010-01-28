@@ -49,7 +49,7 @@ public class Test {
 
     public static void main(String... aArgs) throws NoSuchAlgorithmException, IOException {
         System.out.print(new Double(0.1).toString());
-        MPView.identifierView.addOrShowTab(null, aArgs);
+        MPView.getIdentifierView().addOrShowTab(null, aArgs);
     }
 
 }

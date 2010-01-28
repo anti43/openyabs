@@ -109,7 +109,7 @@ public class Scheduler extends Thread {
             if (Popup.Y_N_dialog(list.size() + " " + Messages.SCHEDULE_NEW_ITEMS)) {
                 for (int i = 0; i < list.size(); i++) {
                     Item item = list.get(i);
-                    MPView.identifierView.addTab(item);
+                    MPView.getIdentifierView().addTab(item);
                 }
             }
         }
@@ -225,7 +225,7 @@ public class Scheduler extends Thread {
 //            if (Popup.Y_N_dialog(alerts.size() + " " + Messages.SCHEDULE_NEW_ALERTS, Messages.WARNING)) {
 
             g.show(map);
-            MPView.identifierView.addOrShowTab(g, Messages.UNPAID_BILLS.toString());
+            MPView.getIdentifierView().addOrShowTab(g, Messages.UNPAID_BILLS.toString());
 //            }
         }
     }

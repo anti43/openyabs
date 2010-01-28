@@ -507,10 +507,10 @@ public class Main extends SingleFrameApplication {
                     UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
                 }
                 LookAndFeelAddons.setAddon(LookAndFeelAddons.getBestMatchAddonClassName());
-                if (MPView.identifierFrame != null && MPView.identifierFrame.isShowing()) {
-                    MPView.identifierFrame.setVisible(false);
-                    SwingUtilities.updateComponentTreeUI(MPView.identifierFrame);
-                    MPView.identifierFrame.setVisible(true);
+                if (MPView.getIdentifierFrame() != null && MPView.getIdentifierFrame().isShowing()) {
+                    MPView.getIdentifierFrame().setVisible(false);
+                    SwingUtilities.updateComponentTreeUI(MPView.getIdentifierFrame());
+                    MPView.getIdentifierFrame().setVisible(true);
                 }
             } catch (Exception exe) {
                 try {
@@ -558,16 +558,16 @@ public class Main extends SingleFrameApplication {
         if (Main.firstStart) {
             getApplication().getMainFrame().setExtendedState(JFrame.MAXIMIZED_BOTH);
         }
-        SwingUtilities.updateComponentTreeUI(MPView.identifierFrame);
+        SwingUtilities.updateComponentTreeUI(MPView.getIdentifierFrame());
         Main.splash.nextStep(Messages.INIT_PLUGINS.toString());
         loadPlugins();
         splash.dispose();
         if (START_SERVER) {
             MPServer serv = new MPServer();
             serv.start();
-            MPView.identifierView.showServerStatus(serv.isAlive());
+            MPView.getIdentifierView().showServerStatus(serv.isAlive());
         } else {
-            MPView.identifierView.showServerStatus(false);
+            MPView.getIdentifierView().showServerStatus(false);
         }
         if (LocalSettings.getBooleanProperty(LocalSettings.OFFICE_USE)) {
             final Thread startServerThread;
@@ -640,8 +640,8 @@ public class Main extends SingleFrameApplication {
     private void loadPlugins() {
         if (!removeplugs) {
             try {
-                MPPLuginLoader.queuePlugins(MPView.pluginLoader.getPlugins());
-                MPView.pluginLoader.loadPlugins();
+                MPPLuginLoader.queuePlugins(MPView.getPluginLoader().getPlugins());
+                MPView.getPluginLoader().loadPlugins();
             } catch (Exception e) {
                 Log.Debug(e);
             }

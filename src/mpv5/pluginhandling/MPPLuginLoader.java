@@ -232,15 +232,15 @@ public class MPPLuginLoader {
     public void unLoadPlugin(MP5Plugin mP5Plugin) {
         mP5Plugin.unload();
         loadedPlugs.remove(mP5Plugin.getUID());
-        Component[] c = MPView.identifierView.getPluginIcons().getComponents();
+        Component[] c = MPView.getIdentifierView().getPluginIcons().getComponents();
         for (int i = 0; i < c.length; i++) {
             Component component = c[i];
             if (((JLabel) component).getToolTipText().contains(String.valueOf(mP5Plugin.getUID()))) {
-                MPView.identifierView.getPluginIcons().remove(component);
+                MPView.getIdentifierView().getPluginIcons().remove(component);
             }
         }
-        MPView.identifierFrame.validate();
-        MPView.identifierFrame.repaint();
+        MPView.getIdentifierFrame().validate();
+        MPView.getIdentifierFrame().repaint();
         mP5Plugin = null;
         System.gc();
     }
@@ -271,10 +271,10 @@ public class MPPLuginLoader {
             final JLabel plab = new JLabel();
             plab.setDisabledIcon(new MPIcon(MPPLuginLoader.getErrorImage()).getIcon(18));
             try {
-                mP5Plugin.load(MPView.identifierView);
+                mP5Plugin.load(MPView.getIdentifierView());
 
                 if (mP5Plugin.isComponent()) {
-                    MPView.identifierView.addTab((JComponent) mP5Plugin, mP5Plugin.getName());
+                    MPView.getIdentifierView().addTab((JComponent) mP5Plugin, mP5Plugin.getName());
                 }
                 if (mP5Plugin.isRunnable() && mP5Plugin.isLoaded()) {
                     Thread t = new Thread((Runnable) mP5Plugin);
@@ -305,7 +305,7 @@ public class MPPLuginLoader {
                         }
                     }
                 });
-                MPView.identifierView.getPluginIcons().add(plab);
+                MPView.getIdentifierView().getPluginIcons().add(plab);
             } catch (Exception e) {
                 Log.Debug(e);
                 plab.setEnabled(false);

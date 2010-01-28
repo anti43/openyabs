@@ -95,7 +95,7 @@ public class DOTablePopUp extends JPopupMenu {
 
             public void actionPerformed(ActionEvent e) {
                 try {
-                    MPView.identifierView.addTab(DatabaseObject.getObject(c, Integer.valueOf(to.getModel().getValueAt(to.getSelectedRow(), 0).toString())));
+                    MPView.getIdentifierView().addTab(DatabaseObject.getObject(c, Integer.valueOf(to.getModel().getValueAt(to.getSelectedRow(), 0).toString())));
                 } catch (NodataFoundException ex) {
                     Log.Debug(DOTablePopUp.class, ex);
                 }
@@ -107,7 +107,7 @@ public class DOTablePopUp extends JPopupMenu {
 
             public void actionPerformed(ActionEvent e) {
                 try {
-                    MPView.currentList.add(DatabaseObject.getObject(c, Integer.valueOf(to.getModel().getValueAt(to.getSelectedRow(), 0).toString())));
+                    MPView.getCurrentList().add(DatabaseObject.getObject(c, Integer.valueOf(to.getModel().getValueAt(to.getSelectedRow(), 0).toString())));
                     MPView.showCurrentList();
                 } catch (NodataFoundException ex) {
                     Log.Debug(DOTablePopUp.class, ex);

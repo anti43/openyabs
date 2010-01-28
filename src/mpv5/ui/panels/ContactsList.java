@@ -345,7 +345,7 @@ public class ContactsList extends javax.swing.JPanel implements ListPanel {
             Selection sel = new Selection(listTable);
             if (sel.checkID()) {
                 try {
-                    MPView.identifierView.addTab(DatabaseObject.getObject(context, sel.getId()));
+                    MPView.getIdentifierView().addTab(DatabaseObject.getObject(context, sel.getId()));
                 } catch (NodataFoundException ex) {
                     Log.Debug(ex);
                 }
@@ -357,7 +357,7 @@ public class ContactsList extends javax.swing.JPanel implements ListPanel {
 
         DatabaseObject d = DatabaseObject.getObject(Context.getCustomer());
         ((mpv5.db.objects.Contact) d).setisCustomer(true);
-        MPView.identifierView.addTab(d, Messages.NEW_CUSTOMER);
+        MPView.getIdentifierView().addTab(d, Messages.NEW_CUSTOMER);
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed

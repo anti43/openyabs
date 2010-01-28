@@ -186,7 +186,7 @@ public class ListView extends javax.swing.JPanel {
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
-        DataPanel view = MPView.identifierView.getCurrentTab();
+        DataPanel view = MPView.getIdentifierView().getCurrentTab();
         if (view != null) {
             view.paste(list.toArray());
             try {
@@ -200,7 +200,7 @@ public class ListView extends javax.swing.JPanel {
         if (evt.getClickCount() > 1) {
             try {
                 if (jList1.getSelectedValue() != null) {
-                    MPView.identifierView.addTab((DatabaseObject) jList1.getSelectedValue());
+                    MPView.getIdentifierView().addTab((DatabaseObject) jList1.getSelectedValue());
                 }
             } catch (Exception e) {
                 Log.Debug(e);

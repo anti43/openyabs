@@ -69,7 +69,7 @@ public class Wizard extends javax.swing.JFrame implements WizardMaster {
         back.setEnabled(false);
         content.add(contentlist.get(level), BorderLayout.CENTER);
         pack();
-        setLocationRelativeTo(MPView.identifierFrame);
+        setLocationRelativeTo(MPView.getIdentifierFrame());
         setAlwaysOnTop(!standalone);
         setVisible(true);
     }

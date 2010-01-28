@@ -176,7 +176,7 @@ public class DialogForFile extends JFileChooser implements Waiter {
      */
     public boolean chooseFile() {
         try {
-            if (this.showOpenDialog(MPView.identifierFrame) == JFileChooser.APPROVE_OPTION) {
+            if (this.showOpenDialog(MPView.getIdentifierFrame()) == JFileChooser.APPROVE_OPTION) {
                 try {
                     this.file = this.getSelectedFile();
                     CURRENT_DIR = file;
@@ -197,7 +197,7 @@ public class DialogForFile extends JFileChooser implements Waiter {
      */
     public boolean saveFile() {
         try {
-            if (this.showSaveDialog(MPView.identifierFrame) == JFileChooser.APPROVE_OPTION) {
+            if (this.showSaveDialog(MPView.getIdentifierFrame()) == JFileChooser.APPROVE_OPTION) {
                 try {
                     if (!this.getSelectedFile().exists()) {
                         this.file = this.getSelectedFile();
@@ -229,7 +229,7 @@ public class DialogForFile extends JFileChooser implements Waiter {
     public void saveFile(File fileToSave) {
 
         setSelectedFile(new File(fileToSave.getName()));
-        if (this.showSaveDialog(MPView.identifierFrame) == JFileChooser.APPROVE_OPTION) {
+        if (this.showSaveDialog(MPView.getIdentifierFrame()) == JFileChooser.APPROVE_OPTION) {
             this.file = this.getSelectedFile();
             if (!file.exists()) {
                 try {
@@ -294,7 +294,7 @@ public class DialogForFile extends JFileChooser implements Waiter {
      * @return True if a file was selected
      */
     public boolean getFilePath(JTextField field) {
-        if (this.showOpenDialog(MPView.identifierFrame) == JFileChooser.APPROVE_OPTION) {
+        if (this.showOpenDialog(MPView.getIdentifierFrame()) == JFileChooser.APPROVE_OPTION) {
             try {
                 field.setText(this.getSelectedFile().getCanonicalPath());
                 this.file = this.getSelectedFile();
