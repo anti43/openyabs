@@ -95,6 +95,7 @@ public class ProductPanel extends javax.swing.JPanel implements DataPanel, MPCBS
     private DataPanelTB tb;
     private SearchPanel sp;
     private FileTablePopUp fil;
+    private int type =0;
 
     /** Creates new form ContactPanel
      * @param context
@@ -108,7 +109,7 @@ public class ProductPanel extends javax.swing.JPanel implements DataPanel, MPCBS
         toolbarpane.add(tb, BorderLayout.CENTER);
         dataOwner = new Product();
         dataOwner.setInttype(type);
-
+        this.type = type;
         refresh();
 
         addedby.setText(mpv5.db.objects.User.getCurrentUser().getName());
@@ -213,6 +214,7 @@ public class ProductPanel extends javax.swing.JPanel implements DataPanel, MPCBS
 
         contactname.setEditable(true);
         contactname1.setEditable(true);
+
     }
 
     /**
@@ -1224,6 +1226,7 @@ public class ProductPanel extends javax.swing.JPanel implements DataPanel, MPCBS
                     fillFiles();
 
                     stype.setModel(Product.getTypes(), MPComboBoxModelItem.COMPARE_BY_ID, new java.util.Vector<Integer>());
+                    stype.setSelectedIndex(type);
                     selecttax.triggerSearch();
                 } catch (Exception e) {
                     Log.Debug(this, e);

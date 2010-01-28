@@ -28,7 +28,7 @@ public interface Constants {
      * 
      * Full Version number
      */
-    public static final String VERSION = "Yabs-1.12";
+    public static final String VERSION = "Yabs-1.14";
 
     /**
      * The original database version of this release
@@ -37,7 +37,7 @@ public interface Constants {
     /**
      * The minimal Database Version which is compatible with this release
      */
-    public static final Double DATABASE_VERSION = 1.12;
+    public static final Double DATABASE_VERSION = 1.14;
     /**
      * The max Database Version which is compatible with this release
      */
@@ -55,7 +55,7 @@ public interface Constants {
      *
      * Alias
      */
-    public static final String TITLE = "[Claddagh]";
+    public static final String TITLE = "[Spanish Arch]";
     /**
      *
      * Name of the main JAR
@@ -93,6 +93,7 @@ public interface Constants {
     public static String SPLASH_IMAGE = "/mpv5/resources/images/background_d.png";
     public static String ABOUT_IMAGE = "/mpv5/resources/images/about1.png";
     public static String WEBSITE = "http://openyabs.org";
+    public static String CURRENT_VERSION_URL = "http://mp-rechnungs-und-kundenverwaltung.googlecode.com/files/" + VERSION + ".zip";
     public static final String[] CONTRIBUTORS = new String[]{
         "Andreas Weber",
         "P.Eser",

@@ -259,12 +259,6 @@ public class StartPage extends javax.swing.JPanel {
         m.addElement("Use OpenOffice: " + LocalSettings.getProperty(LocalSettings.OFFICE_USE));
         m.addElement("");
         m.addElement("");
-        m.addElement("Contact count: " + QueryHandler.getConnection().freeQuery("select count(ids) from contacts", MPSecurityManager.VIEW, null).getData()[0][0]);
-        m.addElement("Bill count: " + QueryHandler.getConnection().freeQuery("select count(ids) from items where inttype = 0", MPSecurityManager.VIEW, null).getData()[0][0]);
-        m.addElement("Product count: " + QueryHandler.getConnection().freeQuery("select count(ids) from products", MPSecurityManager.VIEW, null).getData()[0][0]);
-        m.addElement("");
-        m.addElement("");
-        m.addElement("");
 
         Properties sysprops = System.getProperties();
         Enumeration propn = sysprops.propertyNames();

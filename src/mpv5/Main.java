@@ -31,11 +31,14 @@ import com.l2fprod.common.swing.plaf.LookAndFeelAddons;
 import enoa.connection.NoaConnection;
 import java.awt.Font;
 import java.io.File;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.Date;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.Properties;
 import java.util.Vector;
+import javax.mail.URLName;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
@@ -420,14 +423,15 @@ public class Main extends SingleFrameApplication {
             }
 
             if (cl.hasOption(logfile)) {
-                if(String.valueOf(cl.getValue(logfile)).split("=").length !=2){
-                Log.Debug(Main.class, "logfile must be specified (-logfile=file.log)!");
-                }else{
-                try {
-                    LogConsole.setLogFile(((String) cl.getValue(logfile)).split("=")[1]);
-                } catch (Exception e) {
-                    Log.Debug(Main.class, "Error while writing to: " + e.getMessage());
-                }}
+                if (String.valueOf(cl.getValue(logfile)).split("=").length != 2) {
+                    Log.Debug(Main.class, "logfile must be specified (-logfile=file.log)!");
+                } else {
+                    try {
+                        LogConsole.setLogFile(((String) cl.getValue(logfile)).split("=")[1]);
+                    } catch (Exception e) {
+                        Log.Debug(Main.class, "Error while writing to: " + e.getMessage());
+                    }
+                }
             }
 
             if (cl.hasOption(nolfs)) {
@@ -457,7 +461,7 @@ public class Main extends SingleFrameApplication {
 
             LogConsole.setLogStreams(cl.hasOption(logfile), cl.hasOption(consolelog), cl.hasOption(windowlog));
 
-            if(cl.hasOption(printtest)){
+            if (cl.hasOption(printtest)) {
                 try {
                     PrintJob2 printJob2 = new PrintJob2(new File("printer_test.pdf"), "pdf");
                     System.exit(0);
@@ -549,6 +553,7 @@ public class Main extends SingleFrameApplication {
         cache();
         Main.splash.nextStep(Messages.INIT_GUI.toString());
         super.show(new MPView(this));
+        
         firstStart = firststart;
         if (Main.firstStart) {
             getApplication().getMainFrame().setExtendedState(JFrame.MAXIMIZED_BOTH);
@@ -619,6 +624,17 @@ public class Main extends SingleFrameApplication {
             new Thread(runnable1).start();
         }
         new Scheduler().start();
+
+        Runnable runnable = new Runnable() {
+
+            @Override
+            public void run() {
+                if(checkUpdates()) {
+                    MPView.addMessage(Messages.UPDATE_AVAILABLE);
+                }
+            }
+        };
+        new Thread(runnable).start();
     }
 
     private void loadPlugins() {
@@ -684,14 +700,14 @@ public class Main extends SingleFrameApplication {
                         try {
                             if (line.length() > 0 && line.substring(line.lastIndexOf(instanceIdentifier) + instanceIdentifier.length(), line.lastIndexOf("]")).equals(String.valueOf(LocalSettings.getConnectionID()))) {
                                 String message =
-                                        "It looks like the application is already running.\n" +
-                                        "\nThis may be caused by" +
-                                        "\n\t- another instance of YaBS started with the same connection id (" + LocalSettings.getConnectionID() + ") " +
-                                        "\n\t  (or no connection id at all)" +
-                                        "\n\t- a previously crashed YaBS instance" +
-                                        "\n\t- a manually killed YaBS instance" +
-                                        "\n\t- a crash or kill of the JVM\n" +
-                                        "\nYou might want to start YaBS once with the option -clear or to delete " + lockfile + " to get rid of this message.";
+                                        "It looks like the application is already running.\n"
+                                        + "\nThis may be caused by"
+                                        + "\n\t- another instance of YaBS started with the same connection id (" + LocalSettings.getConnectionID() + ") "
+                                        + "\n\t  (or no connection id at all)"
+                                        + "\n\t- a previously crashed YaBS instance"
+                                        + "\n\t- a manually killed YaBS instance"
+                                        + "\n\t- a crash or kill of the JVM\n"
+                                        + "\nYou might want to start YaBS once with the option -clear or to delete " + lockfile + " to get rid of this message.";
                                 Log.Debug(this, message);
                                 Popup.notice(message, 800, 200);
                                 if (Log.getLoglevel() != Log.LOGLEVEL_DEBUG) {
@@ -753,5 +769,26 @@ public class Main extends SingleFrameApplication {
         }
         x.flush();
         x.write0(lines);
+    }
+
+    /**
+     * Checks if updates are available
+     */
+    private boolean checkUpdates() {
+
+        try {
+            //Just a basic check
+            HttpURLConnection.setFollowRedirects(false);
+            HttpURLConnection con =
+                    (HttpURLConnection) new URL(Constants.CURRENT_VERSION_URL).openConnection();
+            con.setRequestMethod("GET");
+            // When the available version is not the current version, we assume there is an update available
+            Log.Debug(Main.class, Constants.CURRENT_VERSION_URL + " " + con.getResponseMessage());
+            return (con.getResponseCode() != HttpURLConnection.HTTP_OK);
+        } catch (Exception e) {
+            Log.Debug(Main.class, e.getMessage());
+            //When we cant reach it at all, no update presumably
+            return false;
+        }
     }
 }

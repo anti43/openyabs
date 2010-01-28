@@ -29,8 +29,9 @@ public class DatabaseUpdater {
                     "ALTER TABLE products ADD COLUMN intinventorytype SMALLINT DEFAULT 0 NOT NULL"
                 });
         UPDATES_DERBY.put(1.12, new String[]{
-                    "ALTER TABLE templates ADD COLUMN printer VARCHAR(50) DEFAULT '" + Template.PRINTER_UNDEFINED + "' NOT NULL ",
-                });
+                    "ALTER TABLE templates ADD COLUMN printer VARCHAR(50) DEFAULT '" + Template.PRINTER_UNDEFINED + "' NOT NULL ",});
+        UPDATES_DERBY.put(1.14, new String[]{
+                    "ALTER TABLE products DROP CONSTRAINT const8",});
         ////////////////////////////////////////////////////////////////////////////////////////////
         // mysql updates
         UPDATES_MYSQL.put(1.11, new String[]{
@@ -38,10 +39,10 @@ public class DatabaseUpdater {
                     "ALTER TABLE products ADD COLUMN thresholdvalue DOUBLE DEFAULT 0 NOT NULL",
                     "ALTER TABLE products ADD COLUMN intinventorytype SMALLINT DEFAULT 0 NOT NULL"
                 });
-       UPDATES_MYSQL.put(1.12, new String[]{
-                     "ALTER TABLE templates ADD COLUMN printer VARCHAR(50) DEFAULT '" + Template.PRINTER_UNDEFINED + "' NOT NULL ",
-               });
-
+        UPDATES_MYSQL.put(1.12, new String[]{
+                    "ALTER TABLE templates ADD COLUMN printer VARCHAR(50) DEFAULT '" + Template.PRINTER_UNDEFINED + "' NOT NULL ",});
+        UPDATES_MYSQL.put(1.14, new String[]{
+                    "ALTER TABLE products DROP KEY CONST8",});
     }
 
     /**
@@ -52,7 +53,7 @@ public class DatabaseUpdater {
         Log.Debug(DatabaseUpdater.class, "Updating database from " + version);
 
         double newVersion = version;
-        
+
         if (ConnectionTypeHandler.getDriverType() == ConnectionTypeHandler.DERBY) {
             for (Iterator<Double> keys = UPDATES_DERBY.keySet().iterator(); keys.hasNext();) {
                 Double vers = keys.next();
@@ -60,7 +61,7 @@ public class DatabaseUpdater {
                     String[] val = UPDATES_DERBY.get(vers);
                     try {
                         DatabaseConnection.instanceOf().runQueries(val);
-                        if(vers > newVersion) {
+                        if (vers > newVersion) {
                             newVersion = vers;
                         }
                     } catch (Exception ex) {
@@ -75,7 +76,7 @@ public class DatabaseUpdater {
                     String[] val = UPDATES_MYSQL.get(vers);
                     try {
                         DatabaseConnection.instanceOf().runQueries(val);
-                        if(vers > newVersion) {
+                        if (vers > newVersion) {
                             newVersion = vers;
                         }
                     } catch (Exception ex) {
@@ -92,7 +93,7 @@ public class DatabaseUpdater {
         try {
             DatabaseConnection.instanceOf().runQueries(
                     new String[]{
-                "UPDATE globalsettings SET value ='" + newVersion + "' WHERE cname = 'yabs_dbversion'"});
+                        "UPDATE globalsettings SET value ='" + newVersion + "' WHERE cname = 'yabs_dbversion'"});
         } catch (Exception ex) {
             Log.Debug(ex);
             Popup.error(ex);

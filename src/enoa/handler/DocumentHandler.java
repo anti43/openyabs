@@ -31,31 +31,21 @@ import ag.ion.bion.officelayer.text.IVariableTextFieldMaster;
 import ag.ion.bion.officelayer.text.TextException;
 import ag.ion.noa.NOAException;
 import com.sun.star.awt.XTextComponent;
-import com.sun.star.beans.PropertyVetoException;
-import com.sun.star.beans.UnknownPropertyException;
 import com.sun.star.beans.XPropertySet;
 import com.sun.star.form.XFormComponent;
-import com.sun.star.lang.IllegalArgumentException;
-import com.sun.star.lang.WrappedTargetException;
 import com.sun.star.uno.UnoRuntime;
 import enoa.connection.NoaConnection;
 import enoa.connection.URLAdapter;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Vector;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.table.TableModel;
 import mpv5.db.objects.Template;
 import mpv5.logging.Log;
-import mpv5.utils.files.FileDirectoryHandler;
 
 /**
  * This class OpenOffice Documents IO

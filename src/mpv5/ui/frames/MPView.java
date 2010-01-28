@@ -70,6 +70,7 @@ import mpv5.server.MPServer;
 import mpv5.ui.dialogs.About;
 import mpv5.ui.dialogs.BigPopup;
 import mpv5.ui.dialogs.ListView;
+import mpv5.ui.dialogs.Search2;
 import mpv5.ui.dialogs.Wizard;
 import mpv5.ui.dialogs.subcomponents.wizard_XMLImport_1;
 import mpv5.ui.dialogs.subcomponents.wizard_XMLImport_2;
@@ -698,13 +699,12 @@ public class MPView extends FrameView {
         jMenuItem36 = new javax.swing.JMenuItem();
         jMenu3 = new javax.swing.JMenu();
         jMenuItem3 = new javax.swing.JMenuItem();
-        jMenuItem31 = new javax.swing.JMenuItem();
-        jMenuItem18 = new javax.swing.JMenuItem();
-        jMenuItem37 = new javax.swing.JMenuItem();
         jMenuItem23 = new javax.swing.JMenuItem();
+        jMenuItem31 = new javax.swing.JMenuItem();
         jMenuItem24 = new javax.swing.JMenuItem();
         jSeparator6 = new javax.swing.JSeparator();
-        jMenuItem22 = new javax.swing.JMenuItem();
+        jMenuItem18 = new javax.swing.JMenuItem();
+        jMenuItem37 = new javax.swing.JMenuItem();
         favouritesMenu = new javax.swing.JMenu();
         jMenuItem5 = new javax.swing.JMenuItem();
         clipboardMenu = new javax.swing.JMenu();
@@ -1450,6 +1450,16 @@ public class MPView extends FrameView {
         });
         jMenu3.add(jMenuItem3);
 
+        jMenuItem23.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/16/edittrash.png"))); // NOI18N
+        jMenuItem23.setText(bundle.getString("MPView.jMenuItem23.text")); // NOI18N
+        jMenuItem23.setName("jMenuItem23"); // NOI18N
+        jMenuItem23.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem23ActionPerformed(evt);
+            }
+        });
+        jMenu3.add(jMenuItem23);
+
         jMenuItem31.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/16/cal.png"))); // NOI18N
         jMenuItem31.setText(bundle.getString("MPView.jMenuItem31.text")); // NOI18N
         jMenuItem31.setName("jMenuItem31"); // NOI18N
@@ -1459,6 +1469,19 @@ public class MPView extends FrameView {
             }
         });
         jMenu3.add(jMenuItem31);
+
+        jMenuItem24.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/16/kwikdisk.png"))); // NOI18N
+        jMenuItem24.setText(bundle.getString("MPView.jMenuItem24.text")); // NOI18N
+        jMenuItem24.setName("jMenuItem24"); // NOI18N
+        jMenuItem24.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem24ActionPerformed(evt);
+            }
+        });
+        jMenu3.add(jMenuItem24);
+
+        jSeparator6.setName("jSeparator6"); // NOI18N
+        jMenu3.add(jSeparator6);
 
         jMenuItem18.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/16/kalarm.png"))); // NOI18N
         jMenuItem18.setText(bundle.getString("MPView.jMenuItem18.text")); // NOI18N
@@ -1479,38 +1502,6 @@ public class MPView extends FrameView {
             }
         });
         jMenu3.add(jMenuItem37);
-
-        jMenuItem23.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/16/edittrash.png"))); // NOI18N
-        jMenuItem23.setText(bundle.getString("MPView.jMenuItem23.text")); // NOI18N
-        jMenuItem23.setName("jMenuItem23"); // NOI18N
-        jMenuItem23.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenuItem23ActionPerformed(evt);
-            }
-        });
-        jMenu3.add(jMenuItem23);
-
-        jMenuItem24.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/16/kwikdisk.png"))); // NOI18N
-        jMenuItem24.setText(bundle.getString("MPView.jMenuItem24.text")); // NOI18N
-        jMenuItem24.setName("jMenuItem24"); // NOI18N
-        jMenuItem24.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenuItem24ActionPerformed(evt);
-            }
-        });
-        jMenu3.add(jMenuItem24);
-
-        jSeparator6.setName("jSeparator6"); // NOI18N
-        jMenu3.add(jSeparator6);
-
-        jMenuItem22.setText(bundle.getString("MPView.jMenuItem22.text")); // NOI18N
-        jMenuItem22.setName("jMenuItem22"); // NOI18N
-        jMenuItem22.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenuItem22ActionPerformed(evt);
-            }
-        });
-        jMenu3.add(jMenuItem22);
 
         menuBar.add(jMenu3);
 
@@ -1971,12 +1962,6 @@ public class MPView extends FrameView {
         }
     }//GEN-LAST:event_jMenuItem21ActionPerformed
 
-    private void jMenuItem22ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem22ActionPerformed
-        if (Popup.Y_N_dialog("Fill database with sample data?")) {
-            new mpv5.db.sample.SampleData(1, 1, true, true);
-        }
-    }//GEN-LAST:event_jMenuItem22ActionPerformed
-
     private void jMenuItem23ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem23ActionPerformed
         addOrShowTab(TrashPanel.instanceOf(), Messages.TRASHBIN.getValue());
     }//GEN-LAST:event_jMenuItem23ActionPerformed
@@ -2105,7 +2090,7 @@ public class MPView extends FrameView {
     }//GEN-LAST:event_jMenuItem32ActionPerformed
 
     private void jMenuItem33ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem33ActionPerformed
-        DatabaseObject d = Search.showSearchFor(Context.getContact());
+        DatabaseObject d = Search2.showSearchFor(Context.getContact());
         if (d != null) {
             addTab(d);
         }
@@ -2113,7 +2098,7 @@ public class MPView extends FrameView {
 
     private void jMenuItem34ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem34ActionPerformed
 
-        DatabaseObject d = Search.showSearchFor(Context.getItem());
+        DatabaseObject d = Search2.showSearchFor(Context.getItem());
         if (d != null) {
             addTab(d);
         }
@@ -2183,7 +2168,6 @@ public class MPView extends FrameView {
     private javax.swing.JMenuItem jMenuItem2;
     private javax.swing.JMenuItem jMenuItem20;
     private javax.swing.JMenuItem jMenuItem21;
-    private javax.swing.JMenuItem jMenuItem22;
     private javax.swing.JMenuItem jMenuItem23;
     private javax.swing.JMenuItem jMenuItem24;
     private javax.swing.JMenuItem jMenuItem25;

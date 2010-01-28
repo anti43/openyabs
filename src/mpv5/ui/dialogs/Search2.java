@@ -10,42 +10,34 @@
  */
 package mpv5.ui.dialogs;
 
-
 import javax.swing.DefaultComboBoxModel;
 import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
 import mpv5.db.common.DatabaseSearch;
 import mpv5.db.common.NodataFoundException;
 import mpv5.ui.frames.MPView;
-import mpv5.ui.misc.Position;
 import mpv5.utils.html.HtmlParser;
 import mpv5.utils.models.MPTableModel;
-import mpv5.utils.tables.Selection;
 import mpv5.utils.tables.TableFormat;
 
 /**
  *
  *  
  */
-public class Search extends javax.swing.JDialog {
+public class Search2 extends javax.swing.JDialog {
 
     private static final long serialVersionUID = 1L;
-    private static Search f;
     private String additionalSearchCondition = "";
-
-    public static Search instanceOf() {
-        if (f == null) {
-            f = new Search(true);
-        }
-        f.setVisible(true);
-        f.requestFocus();
-        return f;
-    }
     private static String oldSelection;
 
-    private Context lastContext;
+    public static DatabaseObject showSearchFor(Context t) {
+        Search2 s = new Search2(t);
+        s.setVisible(true);
+        s.requestFocus();
+        return s.getSelectedObject();
+    }
+    private Context context;
     private DatabaseObject selection;
-    private boolean addTabs = false;
 
     @Override
     public void dispose() {
@@ -55,12 +47,12 @@ public class Search extends javax.swing.JDialog {
     /** Creates new form SplashScreen
      * @param addtabs Add the selected Object to the main tab pane
      */
-    public Search(boolean addtabs) {
+    private Search2(Context t) {
         super(MPView.identifierFrame);
         initComponents();
-        this.addTabs = addtabs;
+        context = t;
+        typelabel.setText(t.getDbIdentity().toUpperCase());
         setModalityType(ModalityType.APPLICATION_MODAL);
-        scope.setModel(new DefaultComboBoxModel(Context.getSearchableContexts().toArray()));
         setLocationRelativeTo(MPView.identifierFrame);
     }
 
@@ -75,7 +67,6 @@ public class Search extends javax.swing.JDialog {
 
         jPanel1 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
-        scope = new javax.swing.JComboBox();
         jLabel2 = new javax.swing.JLabel();
         key = new javax.swing.JComboBox();
         jCheckBox1 = new javax.swing.JCheckBox();
@@ -83,23 +74,21 @@ public class Search extends javax.swing.JDialog {
         jButton2 = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         jTable1 = new javax.swing.JTable();
-        jCheckBox2 = new javax.swing.JCheckBox();
+        typelabel = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setName("Form"); // NOI18N
 
         java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle(); // NOI18N
-        jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("Search.jPanel1.border.title"))); // NOI18N
+        jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("Search2.jPanel1.border.title"))); // NOI18N
         jPanel1.setName("jPanel1"); // NOI18N
 
-        jLabel1.setText(bundle.getString("Search.jLabel1.text")); // NOI18N
-        jLabel1.setToolTipText(bundle.getString("Search.jLabel1.toolTipText")); // NOI18N
+        jLabel1.setText(bundle.getString("Search2.jLabel1.text")); // NOI18N
+        jLabel1.setToolTipText(bundle.getString("Search2.jLabel1.toolTipText")); // NOI18N
         jLabel1.setName("jLabel1"); // NOI18N
 
-        scope.setName("scope"); // NOI18N
-
-        jLabel2.setText(bundle.getString("Search.jLabel2.text")); // NOI18N
-        jLabel2.setToolTipText(bundle.getString("Search.jLabel2.toolTipText")); // NOI18N
+        jLabel2.setText(bundle.getString("Search2.jLabel2.text")); // NOI18N
+        jLabel2.setToolTipText(bundle.getString("Search2.jLabel2.toolTipText")); // NOI18N
         jLabel2.setName("jLabel2"); // NOI18N
 
         key.setEditable(true);
@@ -110,12 +99,12 @@ public class Search extends javax.swing.JDialog {
             }
         });
 
-        jCheckBox1.setText(bundle.getString("Search.jCheckBox1.text")); // NOI18N
-        jCheckBox1.setToolTipText(bundle.getString("Search.jCheckBox1.toolTipText")); // NOI18N
+        jCheckBox1.setText(bundle.getString("Search2.jCheckBox1.text")); // NOI18N
+        jCheckBox1.setToolTipText(bundle.getString("Search2.jCheckBox1.toolTipText")); // NOI18N
         jCheckBox1.setName("jCheckBox1"); // NOI18N
 
-        jButton1.setText(bundle.getString("Search.jButton1.text")); // NOI18N
-        jButton1.setToolTipText(bundle.getString("Search.jButton1.toolTipText")); // NOI18N
+        jButton1.setText(bundle.getString("Search2.jButton1.text")); // NOI18N
+        jButton1.setToolTipText(bundle.getString("Search2.jButton1.toolTipText")); // NOI18N
         jButton1.setName("jButton1"); // NOI18N
         jButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -123,7 +112,7 @@ public class Search extends javax.swing.JDialog {
             }
         });
 
-        jButton2.setText(bundle.getString("Search.jButton2.text")); // NOI18N
+        jButton2.setText(bundle.getString("Search2.jButton2.text")); // NOI18N
         jButton2.setName("jButton2"); // NOI18N
         jButton2.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -152,14 +141,8 @@ public class Search extends javax.swing.JDialog {
         });
         jScrollPane1.setViewportView(jTable1);
 
-        jCheckBox2.setText(bundle.getString("Search.jCheckBox2.text")); // NOI18N
-        jCheckBox2.setToolTipText(bundle.getString("Search.jCheckBox2.toolTipText")); // NOI18N
-        jCheckBox2.setName("jCheckBox2"); // NOI18N
-        jCheckBox2.addItemListener(new java.awt.event.ItemListener() {
-            public void itemStateChanged(java.awt.event.ItemEvent evt) {
-                jCheckBox2ItemStateChanged(evt);
-            }
-        });
+        typelabel.setText(bundle.getString("Search2.typelabel.text")); // NOI18N
+        typelabel.setName("typelabel"); // NOI18N
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -167,42 +150,39 @@ public class Search extends javax.swing.JDialog {
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(65, 65, 65)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel1)
-                    .addComponent(jLabel2)
-                    .addComponent(jCheckBox2))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(typelabel, javax.swing.GroupLayout.DEFAULT_SIZE, 163, Short.MAX_VALUE)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(jCheckBox1)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 48, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 3, Short.MAX_VALUE)
                         .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 61, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(key, javax.swing.GroupLayout.PREFERRED_SIZE, 204, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(scope, javax.swing.GroupLayout.PREFERRED_SIZE, 204, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addComponent(key, 0, 163, Short.MAX_VALUE)))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jButton2))
-            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 348, Short.MAX_VALUE)
+            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 309, Short.MAX_VALUE)
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel1)
-                    .addComponent(scope, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
+                    .addComponent(typelabel, javax.swing.GroupLayout.PREFERRED_SIZE, 15, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel1))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel2)
                     .addComponent(key, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(jCheckBox1)
-                        .addComponent(jCheckBox2))
+                    .addComponent(jCheckBox1)
                     .addComponent(jButton1))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 188, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 95, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jButton2))
         );
@@ -219,16 +199,9 @@ public class Search extends javax.swing.JDialog {
     private void jTable1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable1MouseClicked
 
         if (evt.getClickCount() > 1) {
-            if (jCheckBox2.isSelected()) {
-                Selection s = new Selection(jTable1);
-                lastContext = Context.getMatchingContext(jTable1.getValueAt(jTable1.getSelectedRow(), 1).toString());
-            }
-            if (lastContext != null) {
+            if (context != null) {
                 try {
-                    selection = DatabaseObject.getObject(lastContext, Integer.valueOf(jTable1.getValueAt(jTable1.getSelectedRow(), 0).toString()));
-                    if (addTabs) {
-                        MPView.identifierView.addTab(selection);
-                    }
+                    selection = DatabaseObject.getObject(context, Integer.valueOf(jTable1.getValueAt(jTable1.getSelectedRow(), 0).toString()));
                 } catch (NodataFoundException ex) {
                     mpv5.logging.Log.Debug(ex);
                 }
@@ -241,10 +214,6 @@ public class Search extends javax.swing.JDialog {
         search();
 }//GEN-LAST:event_jButton1ActionPerformed
 
-    private void jCheckBox2ItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_jCheckBox2ItemStateChanged
-        scope.setEnabled(!jCheckBox2.isSelected());
-}//GEN-LAST:event_jCheckBox2ItemStateChanged
-
     private void keyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_keyActionPerformed
         search();
 }//GEN-LAST:event_keyActionPerformed
@@ -252,14 +221,13 @@ public class Search extends javax.swing.JDialog {
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
     private javax.swing.JCheckBox jCheckBox1;
-    private javax.swing.JCheckBox jCheckBox2;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable jTable1;
     private javax.swing.JComboBox key;
-    private javax.swing.JComboBox scope;
+    private javax.swing.JLabel typelabel;
     // End of variables declaration//GEN-END:variables
 
     private void search() {
@@ -275,18 +243,12 @@ public class Search extends javax.swing.JDialog {
         }
 
         Object[][] data = null;
-        if (!jCheckBox2.isSelected()) {
-            lastContext = (Context) scope.getSelectedItem();
-            lastContext.addReference(Context.getGroup());
-            DatabaseSearch s = new DatabaseSearch(lastContext);
-            data = s.getValuesFor(lastContext.getDbIdentity() + ".ids," + lastContext.getDbIdentity() + ".cname," + "groups.cname," + lastContext.getDbIdentity() + ".dateadded", new String[]{"cname"}, newSelection, !jCheckBox1.isSelected());
-            jTable1.setModel(new MPTableModel(data));
-        } else {
-            lastContext = null;
-            DatabaseSearch s = new DatabaseSearch(Context.getSearchIndex());
-            data = s.getValuesFor("rowid, dbidentity, text", "text", newSelection, !jCheckBox1.isSelected());
-            jTable1.setModel(new MPTableModel(HtmlParser.getMarkedHtml(data, 2, newSelection)));
-        }
+
+        context.addReference(Context.getGroup());
+        DatabaseSearch s = new DatabaseSearch(context);
+        data = s.getValuesFor(context.getDbIdentity() + ".ids," + context.getDbIdentity() + ".cname," + "groups.cname," + context.getDbIdentity() + ".dateadded", new String[]{"cname"}, newSelection, !jCheckBox1.isSelected());
+        jTable1.setModel(new MPTableModel(data));
+
 
         TableFormat.stripFirstColumn(jTable1);
         TableFormat.format(jTable1, 1, 100);

@@ -200,8 +200,8 @@ public class SubmitForm extends javax.swing.JPanel {
                 String message = "This is a generated issue report for Yabs Version " + Constants.VERSION;
                 message += "\n\n" + steps.getText() + "\n\n" + trace.getText();
                 message = URLEncoder.encode(message, "UTF-8");
-                if (message.length() > 1800) {
-                    message = message.substring(0, 1790);
+                if (message.length() > 1000) {
+                    message = message.substring(0, 999);
                     message+="CUTOFF";
                 }
 

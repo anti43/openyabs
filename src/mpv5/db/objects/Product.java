@@ -104,11 +104,13 @@ public class Product extends DatabaseObject implements Formattable {
     private String ean = "";
     private String reference = "";//herstellernummer
     private String defaultimage = "";
+    private BigDecimal stockvalue = new BigDecimal("0");
 
-    private BigDecimal stockvalue = new BigDecimal("0");;
-    private BigDecimal thresholdvalue = new BigDecimal("0");;
+    ;
+    private BigDecimal thresholdvalue = new BigDecimal("0");
+
+    ;
     private int intinventorytype = 0;
-
     public static final int TYPE_PRODUCT = 0;
     public static final int TYPE_SERVICE = 1;
     private FormatHandler formatHandler;
@@ -125,7 +127,7 @@ public class Product extends DatabaseObject implements Formattable {
             if (file != null) {
                 try {
                     mpi = new MPIcon(file.toURI().toURL());
-                    return mpi.getScaledIcon(100,100);
+                    return mpi.getScaledIcon(100, 100);
                 } catch (Exception ex) {
                     Log.Debug(ex);
                 }
@@ -293,7 +295,9 @@ public class Product extends DatabaseObject implements Formattable {
 
     @Override
     public void ensureUniqueness() {
-        setCnumber(getFormatHandler().toString(getFormatHandler().getNextNumber()));
+        if (cnumber == null || cnumber.length() == 0) {
+            setCnumber(getFormatHandler().toString(getFormatHandler().getNextNumber()));
+        }
     }
 
     /**

@@ -71,7 +71,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject> {
      */
     public static void cacheObjects(final Context[] contextArray) {
 
-        MPView.addMessage(Messages.CACHE);
+//        MPView.addMessage(Messages.CACHE);
         Runnable runnable = new Runnable() {
 
             @Override
@@ -103,7 +103,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject> {
                     }
                 }
                 Log.Debug(DatabaseObject.class, "Cached objects: " + count);
-                MPView.addMessage(Messages.CACHED_OBJECTS + ": " + count);
+//                MPView.addMessage(Messages.CACHED_OBJECTS + ": " + count);
                 MPView.setProgressReset();
             }
         };

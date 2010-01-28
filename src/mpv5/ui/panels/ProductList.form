@@ -63,7 +63,7 @@
                       </Group>
                   </Group>
               </Group>
-              <Component id="jScrollPane1" alignment="0" pref="552" max="32767" attributes="0"/>
+              <Component id="jScrollPane1" alignment="0" pref="578" max="32767" attributes="0"/>
           </Group>
         </DimensionLayout>
         <DimensionLayout dim="1">
@@ -78,7 +78,7 @@
                       <Component id="jPanel2" alignment="1" min="-2" max="-2" attributes="3"/>
                   </Group>
                   <EmptySpace max="-2" attributes="0"/>
-                  <Component id="jScrollPane1" pref="66" max="32767" attributes="0"/>
+                  <Component id="jScrollPane1" pref="71" max="32767" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
@@ -178,9 +178,9 @@
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="2" attributes="0">
-                          <Component id="jButton4" alignment="2" min="0" pref="0" max="32767" attributes="1"/>
                           <Component id="labeledCombobox2" alignment="2" min="-2" max="-2" attributes="0"/>
-                          <Component id="jButton2" alignment="2" min="-2" max="-2" attributes="0"/>
+                          <Component id="jButton4" alignment="2" min="-2" pref="18" max="-2" attributes="1"/>
+                          <Component id="jButton2" alignment="2" min="-2" pref="20" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace pref="15" max="32767" attributes="0"/>
                   </Group>
