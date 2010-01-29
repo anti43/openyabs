@@ -90,7 +90,7 @@ public class FormatHandler {
         }
     }
     public static String INTEGERPART_IDENTIFIER = "{0,number,000000}";
-    private int type;
+//    private int type;
     private DatabaseObject source = null;
     private Integer startCount = null;
     private java.text.MessageFormat format;
@@ -145,13 +145,13 @@ public class FormatHandler {
      */
     public FormatHandler(DatabaseObject forObject) {
         this.source = forObject;
-        this.type = determineType(forObject);
+        determineType(forObject);
         this.format = getFormat();
     }
 
     @Override
     public String toString() {
-        return "Format: " + format.format(43) + " for " + source + " (" + type + ")";
+        return "Format: " + format.format(43) + " for " + source + " (" + determineType(source) + ")";
     }
 
     private FormatHandler() {
@@ -164,7 +164,7 @@ public class FormatHandler {
     public synchronized MessageFormat getFormat() {
         QueryCriteria c = new QueryCriteria();
         c.addAndCondition("usersids", mpv5.db.objects.User.getCurrentUser().__getIDS());
-        c.addAndCondition("inttype", this.getType());
+        c.addAndCondition("inttype", determineType(source));
         try {
             Object[][] frm = QueryHandler.instanceOf().clone(Context.getFormats()).select("cname, ids", c);
             if (frm.length > 0) {
@@ -204,6 +204,7 @@ public class FormatHandler {
      * @return
      */
     public synchronized int getNextNumber() {
+
         if (startCount == null) {
             int newN = 0;
             DatabaseObject forThis = source;
@@ -211,11 +212,21 @@ public class FormatHandler {
 
                 String query = "";
                 if (forThis.getContext().equals(Context.getItem())) {
-                    query = "SELECT cnumber FROM " + forThis.getDbIdentity() + " WHERE ids = (SELECT MAX(ids) from " + forThis.getDbIdentity() + " WHERE inttype =" +
-                            ((Item) forThis).__getInttype() + ")";
+                    query = "SELECT cnumber FROM " + forThis.getDbIdentity() + " WHERE ids = (SELECT MAX(ids) from " + forThis.getDbIdentity() + " WHERE inttype ="
+                            + ((Item) forThis).__getInttype() + ")";
                 } else if (forThis.getContext().equals(Context.getProduct())) {
-                    query = "SELECT cnumber FROM " + forThis.getDbIdentity() + " WHERE ids = (SELECT MAX(ids) from " + forThis.getDbIdentity() + " WHERE inttype =" +
-                            ((Product) forThis).__getInttype() + ")";
+                    query = "SELECT cnumber FROM " + forThis.getDbIdentity() + " WHERE ids = (SELECT MAX(ids) from " + forThis.getDbIdentity() + " WHERE inttype ="
+                            + ((Product) forThis).__getInttype() + ")";
+                } else if (forThis.getContext().equals(Context.getContact())) {
+                    if (((Contact) forThis).__getIscustomer()) {
+                        query = "SELECT cnumber FROM " + forThis.getDbIdentity() + " WHERE ids = (SELECT MAX(ids) from " + forThis.getDbIdentity() + " WHERE iscustomer = 1)";
+                    } else if (((Contact) forThis).__getIsmanufacturer()) {
+                        query = "SELECT cnumber FROM " + forThis.getDbIdentity() + " WHERE ids = (SELECT MAX(ids) from " + forThis.getDbIdentity() + " WHERE ismanufacturer = 1)";
+                    } else if (((Contact) forThis).__getIssupplier()) {
+                        query = "SELECT cnumber FROM " + forThis.getDbIdentity() + " WHERE ids = (SELECT MAX(ids) from " + forThis.getDbIdentity() + " WHERE issupplier = 1)";
+                    } else {
+                        query = "SELECT cnumber FROM " + forThis.getDbIdentity() + " WHERE ids = (SELECT MAX(ids) from " + forThis.getDbIdentity() + ")";
+                    }
                 } else {
                     query = "SELECT cnumber FROM " + forThis.getDbIdentity() + " WHERE ids = (SELECT MAX(ids) from " + forThis.getDbIdentity() + ")";
                 }
@@ -246,11 +257,11 @@ public class FormatHandler {
 
         String query = "";
         if (forThis.getContext().equals(Context.getItem())) {
-            query = "SELECT cnumber FROM " + forThis.getDbIdentity() + " WHERE cnumber = '" + toString(lastNumber + 1) + "' AND inttype =" +
-                    ((Item) forThis).__getInttype();
+            query = "SELECT cnumber FROM " + forThis.getDbIdentity() + " WHERE cnumber = '" + toString(lastNumber + 1) + "' AND inttype ="
+                    + ((Item) forThis).__getInttype();
         } else if (forThis.getContext().equals(Context.getProduct())) {
-            query = "SELECT cnumber FROM " + forThis.getDbIdentity() + " WHERE cnumber = '" + toString(lastNumber + 1) + "' AND inttype =" +
-                    ((Product) forThis).__getInttype();
+            query = "SELECT cnumber FROM " + forThis.getDbIdentity() + " WHERE cnumber = '" + toString(lastNumber + 1) + "' AND inttype ="
+                    + ((Product) forThis).__getInttype();
         } else {
             query = "SELECT cnumber FROM " + forThis.getDbIdentity() + " WHERE cnumber = '" + toString(lastNumber + 1) + "'";
         }
@@ -272,23 +283,22 @@ public class FormatHandler {
      * @return A formatted number
      */
     public synchronized String toString(int number) {
-        return format.format(new Object[]{number});
+        return getFormat().format(new Object[]{number});
     }
 
-    /**
-     * @return the type
-     */
-    public int getType() {
-        return type;
-    }
-
-    /**
-     * @param type the type to set
-     */
-    public void setType(int type) {
-        this.type = type;
-    }
-
+//    /**
+//     * @return the type
+//     */
+//    public int getType() {
+//        return type;
+//    }
+//
+//    /**
+//     * @param type the type to set
+//     */
+//    public void setType(int type) {
+//        this.type = type;
+//    }
     /**
      * @return the startCount
      */
