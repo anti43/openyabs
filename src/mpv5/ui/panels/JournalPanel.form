@@ -160,9 +160,6 @@
                 </Container>
                 <Container class="javax.swing.JPanel" name="jPanel2">
                   <Properties>
-                    <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-                      <Color blue="ff" green="ff" red="ff" type="rgb"/>
-                    </Property>
                     <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
                       <Border info="org.netbeans.modules.form.compat2.border.TitledBorderInfo">
                         <TitledBorder title="Details">
@@ -183,17 +180,18 @@
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Group type="102" alignment="0" attributes="0">
                               <EmptySpace max="-2" attributes="0"/>
-                              <Group type="103" groupAlignment="0" attributes="0">
-                                  <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                                      <Component id="jLabel3" alignment="0" pref="137" max="32767" attributes="1"/>
-                                      <Component id="jLabel5" alignment="0" min="-2" max="-2" attributes="1"/>
-                                      <Component id="jLabel6" alignment="0" min="-2" pref="122" max="-2" attributes="1"/>
-                                  </Group>
-                                  <Component id="jLabel7" alignment="0" min="-2" pref="122" max="-2" attributes="1"/>
-                                  <Component id="jLabel2" alignment="0" pref="156" max="32767" attributes="1"/>
+                              <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                                  <Component id="jLabel3" alignment="0" min="-2" pref="137" max="-2" attributes="1"/>
+                                  <Component id="jLabel5" alignment="0" max="32767" attributes="1"/>
+                                  <Component id="jLabel2" alignment="0" pref="148" max="32767" attributes="1"/>
+                                  <Component id="jLabel7" alignment="0" max="32767" attributes="1"/>
+                                  <Component id="jLabel6" alignment="0" pref="122" max="32767" attributes="1"/>
                               </Group>
                               <EmptySpace max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="0" attributes="0">
+                                  <Component id="jLabel4" alignment="0" min="-2" pref="269" max="-2" attributes="1"/>
+                                  <Component id="timeframeChooser1" alignment="0" min="-2" max="-2" attributes="1"/>
+                                  <Component id="statusc" alignment="0" min="-2" pref="243" max="-2" attributes="1"/>
                                   <Group type="102" alignment="0" attributes="0">
                                       <Component id="jScrollPane3" min="-2" pref="242" max="-2" attributes="0"/>
                                       <EmptySpace max="-2" attributes="0"/>
@@ -203,16 +201,13 @@
                                       <EmptySpace type="separate" max="-2" attributes="0"/>
                                       <Component id="jButton1" min="-2" pref="83" max="-2" attributes="0"/>
                                   </Group>
-                                  <Component id="jLabel4" alignment="0" min="-2" pref="269" max="-2" attributes="1"/>
-                                  <Component id="statusc" alignment="0" min="-2" pref="243" max="-2" attributes="1"/>
                                   <Group type="102" alignment="0" attributes="0">
                                       <Component id="groups" min="-2" pref="243" max="-2" attributes="0"/>
                                       <EmptySpace max="-2" attributes="0"/>
                                       <Component id="includechildgroups" min="-2" pref="176" max="-2" attributes="0"/>
                                   </Group>
-                                  <Component id="timeframeChooser1" alignment="0" min="-2" max="-2" attributes="1"/>
                               </Group>
-                              <EmptySpace pref="55" max="32767" attributes="0"/>
+                              <EmptySpace pref="99" max="32767" attributes="0"/>
                           </Group>
                       </Group>
                     </DimensionLayout>
@@ -230,19 +225,18 @@
                               </Group>
                               <EmptySpace min="-2" max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="2" attributes="0">
-                                  <Component id="includechildgroups" alignment="2" min="-2" max="-2" attributes="0"/>
                                   <Component id="groups" alignment="2" min="-2" max="-2" attributes="0"/>
                                   <Component id="jLabel2" alignment="2" min="-2" max="-2" attributes="0"/>
+                                  <Component id="includechildgroups" alignment="2" min="-2" max="-2" attributes="0"/>
                               </Group>
                               <EmptySpace max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="2" attributes="0">
                                   <Component id="statusc" alignment="2" min="-2" max="-2" attributes="0"/>
                                   <Component id="jLabel6" alignment="2" min="-2" max="-2" attributes="0"/>
                               </Group>
-                              <EmptySpace min="-2" max="-2" attributes="0"/>
+                              <EmptySpace max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="0" attributes="0">
-                                  <Component id="jLabel7" min="-2" max="-2" attributes="0"/>
-                                  <Group type="103" alignment="0" groupAlignment="1" attributes="0">
+                                  <Group type="103" groupAlignment="1" attributes="0">
                                       <Group type="103" alignment="1" groupAlignment="2" attributes="0">
                                           <Component id="jButton3" alignment="2" min="-2" max="-2" attributes="0"/>
                                           <Component id="jButton2" alignment="2" min="-2" max="-2" attributes="0"/>
@@ -250,8 +244,8 @@
                                       </Group>
                                       <Component id="jScrollPane3" alignment="1" min="-2" max="-2" attributes="0"/>
                                   </Group>
+                                  <Component id="jLabel7" alignment="0" min="-2" max="-2" attributes="0"/>
                               </Group>
-                              <EmptySpace max="-2" attributes="0"/>
                           </Group>
                       </Group>
                     </DimensionLayout>
@@ -292,9 +286,6 @@
                     </Component>
                     <Component class="mpv5.ui.beans.TimeframeChooser" name="timeframeChooser1">
                       <Properties>
-                        <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-                          <Color blue="ff" green="ff" red="ff" type="rgb"/>
-                        </Property>
                         <Property name="name" type="java.lang.String" value="timeframeChooser1" noResource="true"/>
                       </Properties>
                     </Component>
