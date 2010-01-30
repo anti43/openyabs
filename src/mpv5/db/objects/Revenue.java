@@ -133,6 +133,7 @@ public class Revenue extends DatabaseObject implements Formattable {
         this.accountsids = accountsids;
     }
 
+    @Override
     public FormatHandler getFormatHandler() {
         if (formatHandler == null) {
             formatHandler = new FormatHandler(this);
@@ -142,7 +143,7 @@ public class Revenue extends DatabaseObject implements Formattable {
 
     @Override
     public void ensureUniqueness() {
-        setCnumber(getFormatHandler().toString(getFormatHandler().getNextNumber()));
+        setCnumber(getFormatHandler().next());
         setCName(__getCnumber());
     }
 

@@ -142,7 +142,7 @@ public class Expense extends DatabaseObject implements Formattable {
 
     @Override
     public void ensureUniqueness() {
-        setCnumber(getFormatHandler().toString(getFormatHandler().getNextNumber()));
+        setCnumber(getFormatHandler().next());
         setCName(__getCnumber());
     }
 

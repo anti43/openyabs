@@ -522,7 +522,11 @@ public class MPView extends FrameView {
         filedialog = new DialogForFile(DialogForFile.FILES_ONLY);
         jMenuItem24.setEnabled(!LocalSettings.getBooleanProperty(LocalSettings.OFFICE_REMOTE));
 
-        nav_outlookbar.setAnimated(false);
+        nav_outlookbar.setAnimated(navBarAnimated
+
+
+
+                );
         getFrame().addComponentListener(new ComponentAdapter() {
 
             @Override

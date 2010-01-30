@@ -90,10 +90,8 @@ public class FormatHandler {
         }
     }
     public static String INTEGERPART_IDENTIFIER = "{0,number,000000}";
-//    private int type;
     private DatabaseObject source = null;
     private Integer startCount = null;
-    private java.text.MessageFormat format;
     public static MessageFormat DEFAULT_FORMAT = new MessageFormat(INTEGERPART_IDENTIFIER);
     /**
      * This string identifies potential start values from the format string. Use as
@@ -145,13 +143,11 @@ public class FormatHandler {
      */
     public FormatHandler(DatabaseObject forObject) {
         this.source = forObject;
-        determineType(forObject);
-        this.format = getFormat();
     }
 
     @Override
     public String toString() {
-        return "Format: " + format.format(43) + " for " + source + " (" + determineType(source) + ")";
+        return "Format: " + getFormat().format(43) + " for " + source + " (" + determineType(source) + ")";
     }
 
     private FormatHandler() {
@@ -177,11 +173,16 @@ public class FormatHandler {
                         val = val.split(START_VALUE_IDENTIFIER)[2];
                         QueryHandler.instanceOf().clone(Context.getFormats()).update("cname", id, val);
                     }
-                } catch (NumberFormatException numberFormatException) {
+                } catch (Exception numberFormatException) {
                     Log.Debug(this, numberFormatException);
                     return DEFAULT_FORMAT;
                 }
-                return new MessageFormat(VariablesHandler.parse(val, source));
+                try {
+                    return new MessageFormat(val);
+                } catch (Exception e) {
+                    Log.Debug(this, e);
+                    return DEFAULT_FORMAT;
+                }
             } else {
                 Log.Debug(this, "Format not found, using default format instead!");
                 return DEFAULT_FORMAT;
@@ -201,9 +202,10 @@ public class FormatHandler {
 
     /**
      * Fetches the next number from the database
+     * @param format
      * @return
      */
-    public synchronized int getNextNumber() {
+    public synchronized int getNextNumber(MessageFormat format) {
 
         if (startCount == null) {
             int newN = 0;
@@ -227,6 +229,16 @@ public class FormatHandler {
                     } else {
                         query = "SELECT cnumber FROM " + forThis.getDbIdentity() + " WHERE ids = (SELECT MAX(ids) from " + forThis.getDbIdentity() + ")";
                     }
+                } else if (forThis.getContext().equals(Context.getContact())) {
+                    if (((Contact) forThis).__getIscustomer()) {
+                        query = "SELECT cnumber FROM " + forThis.getDbIdentity() + " WHERE ids = (SELECT MAX(ids) from " + forThis.getDbIdentity() + " WHERE iscustomer = 1)";
+                    } else if (((Contact) forThis).__getIsmanufacturer()) {
+                        query = "SELECT cnumber FROM " + forThis.getDbIdentity() + " WHERE ids = (SELECT MAX(ids) from " + forThis.getDbIdentity() + " WHERE ismanufacturer = 1)";
+                    } else if (((Contact) forThis).__getIssupplier()) {
+                        query = "SELECT cnumber FROM " + forThis.getDbIdentity() + " WHERE ids = (SELECT MAX(ids) from " + forThis.getDbIdentity() + " WHERE issupplier = 1)";
+                    } else {
+                        query = "SELECT cnumber FROM " + forThis.getDbIdentity() + " WHERE ids = (SELECT MAX(ids) from " + forThis.getDbIdentity() + ")";
+                    }
                 } else {
                     query = "SELECT cnumber FROM " + forThis.getDbIdentity() + " WHERE ids = (SELECT MAX(ids) from " + forThis.getDbIdentity() + ")";
                 }
@@ -236,9 +248,13 @@ public class FormatHandler {
 
                 if (val.hasData()) {
                     Log.Debug(FormatHandler.class, "Last number found: " + val.getData()[0][0]);
-                    newN = ((Formattable) forThis).getFormatHandler().getIntegerPartOf(val.getData()[0][0].toString());
+                    try {
+                        newN = ((Formattable) forThis).getFormatHandler().getIntegerPartOf(format, val.getData()[0][0].toString());
+                    } catch (Exception e) {
+                        Log.Debug(e);
+                    }
                     Log.Debug(FormatHandler.class, "Counter part: " + newN);
-                    return getNextNumber(newN);
+                    return getNextNumber(format, newN);
                 } else {
                     return 1;
                 }
@@ -252,25 +268,25 @@ public class FormatHandler {
         }
     }
 
-    private synchronized int getNextNumber(int lastNumber) {
+    private synchronized int getNextNumber(MessageFormat format, int lastNumber) {
         DatabaseObject forThis = source;
 
         String query = "";
         if (forThis.getContext().equals(Context.getItem())) {
-            query = "SELECT cnumber FROM " + forThis.getDbIdentity() + " WHERE cnumber = '" + toString(lastNumber + 1) + "' AND inttype ="
-                    + ((Item) forThis).__getInttype();
+            query = "SELECT cnumber FROM " + forThis.getDbIdentity() + " WHERE cnumber = '" + toString(format, lastNumber + 1) + "' AND inttype =" +
+                    ((Item) forThis).__getInttype();
         } else if (forThis.getContext().equals(Context.getProduct())) {
-            query = "SELECT cnumber FROM " + forThis.getDbIdentity() + " WHERE cnumber = '" + toString(lastNumber + 1) + "' AND inttype ="
-                    + ((Product) forThis).__getInttype();
+            query = "SELECT cnumber FROM " + forThis.getDbIdentity() + " WHERE cnumber = '" + toString(format, lastNumber + 1) + "' AND inttype =" +
+                    ((Product) forThis).__getInttype();
         } else {
-            query = "SELECT cnumber FROM " + forThis.getDbIdentity() + " WHERE cnumber = '" + toString(lastNumber + 1) + "'";
+            query = "SELECT cnumber FROM " + forThis.getDbIdentity() + " WHERE cnumber = '" + toString(format, lastNumber + 1) + "'";
         }
 
         ReturnValue val2 = QueryHandler.getConnection().freeQuery(
                 query, MPSecurityManager.VIEW, null);
         if (val2.hasData()) {
             Log.Debug(FormatHandler.class, "Already existing..: " + val2.getData()[0][0]);
-            return getNextNumber(lastNumber + 1);
+            return getNextNumber(format, lastNumber + 1);
         } else {
             return lastNumber + 1;
         }
@@ -279,11 +295,12 @@ public class FormatHandler {
     /**
      * Formats a given number by the determined number format, <br/>if the {@link setStartCount(Integer) } has not been set.
      * Returns the defined start value then.
+     * @param format
      * @param number
      * @return A formatted number
      */
-    public synchronized String toString(int number) {
-        return getFormat().format(new Object[]{number});
+    public synchronized String toString(MessageFormat format, int number) {
+        return VariablesHandler.parse(format.format(new Object[]{number}), source);
     }
 
 //    /**
@@ -300,6 +317,14 @@ public class FormatHandler {
 //        this.type = type;
 //    }
     /**
+     * @return the type
+     */
+    public int getType() {
+        return determineType(source);
+    }
+
+
+    /**
      * @return the startCount
      */
     public Integer getStartCount() {
@@ -313,36 +338,43 @@ public class FormatHandler {
         this.startCount = startCount;
     }
 
-    /**
-     * @param format the format to set
-     */
-    public void setFormat(MessageFormat format) {
-        this.format = format;
-    }
-
-    /**
-     * @param formatPattern the format to set, as String pattern
-     */
-    public void setFormat(String formatPattern) {
-//        Pattern escaper = Pattern.compile("(['{])");
-        formatPattern = VariablesHandler.parse(formatPattern, source);
-//        formatPattern = escaper.matcher(formatPattern).replaceAll("''$1");
-//        Log.Debug(this, formatPattern);
-        this.format = new MessageFormat(formatPattern);
-    }
+//    /**
+//     * @param format the format to set
+//     */
+//    public void setFormat(MessageFormat format) {
+//        this.format = format;
+//    }
+//
+//    /**
+//     * @param formatPattern the format to set, as String pattern
+//     */
+//    public void setFormat(String formatPattern) {
+////        Pattern escaper = Pattern.compile("(['{])");
+//        formatPattern = VariablesHandler.parse(formatPattern, source);
+////        formatPattern = escaper.matcher(formatPattern).replaceAll("''$1");
+////        Log.Debug(this, formatPattern);
+//        this.format = new MessageFormat(formatPattern);
+//    }
 
     /**
      *
      * @param string
      * @return
      */
-    private synchronized int getIntegerPartOf(String string) {
+    private synchronized int getIntegerPartOf(MessageFormat format, String string) {
+       
         try {
             Number n = null;
+            MessageFormat f;
             try {
-                n = (Number) format.parse(string, new ParsePosition(0))[0];
+                Log.Debug(this, format.toPattern());
+                f = new MessageFormat((VariablesHandler.parse(format.toPattern(), source)));
+                n = (Number)  f.parse(string, new ParsePosition(0))[0];
+//                Log.Debug(this, f.toPattern());
+//                Log.Debug(this, string);
             } catch (Exception e) {
-                Log.Debug(this, e.getMessage());
+                //Its 0?
+//                Log.Debug(this, e);
             }
             if (n == null) {
                 n = 0;
@@ -352,5 +384,15 @@ public class FormatHandler {
             Log.Debug(ex);
             return 0;
         }
+    }
+
+
+    /**
+     * Returns the next determined number String
+     * @return
+     */
+    public synchronized String next() {
+        MessageFormat format = getFormat();
+        return toString(format, getNextNumber(format));
     }
 }

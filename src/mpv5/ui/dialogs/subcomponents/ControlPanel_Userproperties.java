@@ -72,6 +72,7 @@ public class ControlPanel_Userproperties extends javax.swing.JPanel implements C
         showoptionalcolumn = new javax.swing.JCheckBox();
         supresscurrencysymbols = new javax.swing.JCheckBox();
         ordersoverproducts = new javax.swing.JCheckBox();
+        companiesovernames = new javax.swing.JCheckBox();
         jPanel8 = new javax.swing.JPanel();
         labeledTextField1 = new mpv5.ui.beans.LabeledTextField();
         jLabel1 = new javax.swing.JLabel();
@@ -93,7 +94,7 @@ public class ControlPanel_Userproperties extends javax.swing.JPanel implements C
         setLayout(new java.awt.BorderLayout());
 
         jPanel1.setBackground(new java.awt.Color(255, 255, 255));
-        java.util.ResourceBundle bundle  = mpv5.i18n.LanguageManager.getBundle();
+        java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle(); // NOI18N
         jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("ControlPanel_Userproperties.jPanel1.border.title"))); // NOI18N
         jPanel1.setName("jPanel1"); // NOI18N
 
@@ -132,13 +133,13 @@ public class ControlPanel_Userproperties extends javax.swing.JPanel implements C
             .addGroup(productstobillspropertiesLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(productstobillspropertiesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(cnumber, javax.swing.GroupLayout.DEFAULT_SIZE, 210, Short.MAX_VALUE)
-                    .addComponent(description, javax.swing.GroupLayout.DEFAULT_SIZE, 210, Short.MAX_VALUE)
-                    .addComponent(cname, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 210, Short.MAX_VALUE))
+                    .addComponent(cnumber, javax.swing.GroupLayout.DEFAULT_SIZE, 208, Short.MAX_VALUE)
+                    .addComponent(description, javax.swing.GroupLayout.DEFAULT_SIZE, 208, Short.MAX_VALUE)
+                    .addComponent(cname, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 208, Short.MAX_VALUE))
                 .addGap(8, 8, 8)
                 .addGroup(productstobillspropertiesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(ean, javax.swing.GroupLayout.DEFAULT_SIZE, 282, Short.MAX_VALUE)
-                    .addComponent(reference, javax.swing.GroupLayout.DEFAULT_SIZE, 282, Short.MAX_VALUE)
+                    .addComponent(ean, javax.swing.GroupLayout.DEFAULT_SIZE, 280, Short.MAX_VALUE)
+                    .addComponent(reference, javax.swing.GroupLayout.DEFAULT_SIZE, 280, Short.MAX_VALUE)
                     .addComponent(jButton3))
                 .addContainerGap())
         );
@@ -224,7 +225,7 @@ public class ControlPanel_Userproperties extends javax.swing.JPanel implements C
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addGap(24, 24, 24)
-                        .addComponent(format, javax.swing.GroupLayout.DEFAULT_SIZE, 498, Short.MAX_VALUE))
+                        .addComponent(format, javax.swing.GroupLayout.DEFAULT_SIZE, 500, Short.MAX_VALUE))
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addContainerGap()
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -287,6 +288,10 @@ public class ControlPanel_Userproperties extends javax.swing.JPanel implements C
         ordersoverproducts.setName("ordersoverproducts"); // NOI18N
         jPanel3.add(ordersoverproducts);
 
+        companiesovernames.setText(bundle.getString("ControlPanel_Userproperties.companiesovernames.text")); // NOI18N
+        companiesovernames.setName("companiesovernames"); // NOI18N
+        jPanel3.add(companiesovernames);
+
         jPanel8.setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("ControlPanel_Userproperties.jPanel8.border.title"))); // NOI18N
         jPanel8.setName("jPanel8"); // NOI18N
 
@@ -312,12 +317,12 @@ public class ControlPanel_Userproperties extends javax.swing.JPanel implements C
                 .addContainerGap()
                 .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(labeledTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, 199, Short.MAX_VALUE))
+                    .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(labeledTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 220, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(97, Short.MAX_VALUE))
+                .addContainerGap(91, Short.MAX_VALUE))
         );
         jPanel8Layout.setVerticalGroup(
             jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -366,7 +371,7 @@ public class ControlPanel_Userproperties extends javax.swing.JPanel implements C
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(smtppw, javax.swing.GroupLayout.PREFERRED_SIZE, 131, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(smtpuser, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 216, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(53, Short.MAX_VALUE))
+                .addContainerGap(49, Short.MAX_VALUE))
         );
         jPanel9Layout.setVerticalGroup(
             jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -390,19 +395,19 @@ public class ControlPanel_Userproperties extends javax.swing.JPanel implements C
             .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addComponent(jPanel8, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addComponent(jPanel9, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(jPanel3, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 544, Short.MAX_VALUE)
+            .addComponent(jPanel3, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 546, Short.MAX_VALUE)
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, 285, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel8, javax.swing.GroupLayout.PREFERRED_SIZE, 79, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel9, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(23, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         add(jPanel1, java.awt.BorderLayout.CENTER);
@@ -481,6 +486,7 @@ public class ControlPanel_Userproperties extends javax.swing.JPanel implements C
     private javax.swing.JCheckBox cnumber;
     private javax.swing.JCheckBox columnmeasure;
     private javax.swing.JCheckBox columnquantity;
+    private javax.swing.JCheckBox companiesovernames;
     private mpv5.ui.beans.LabeledTextField defcount;
     private javax.swing.JPanel defs;
     private mpv5.ui.beans.LabeledCombobox deftax;
@@ -540,6 +546,7 @@ public class ControlPanel_Userproperties extends javax.swing.JPanel implements C
             mpv5.db.objects.User.getCurrentUser().getProperties().changeProperty(MPView.getTabPane(), "supresscurrencysymbols", supresscurrencysymbols.isSelected());
             mpv5.db.objects.User.getCurrentUser().getProperties().changeProperty(MPView.getTabPane(), "autocreaterevenue", autorev.isSelected());
             mpv5.db.objects.User.getCurrentUser().getProperties().changeProperty(MPView.getTabPane(), "ordersoverproducts", ordersoverproducts.isSelected());
+            mpv5.db.objects.User.getCurrentUser().getProperties().changeProperty(MPView.getTabPane(), "companiesovernames", companiesovernames.isSelected());
             mpv5.db.objects.User.getCurrentUser().getProperties().changeProperty(MPView.getTabPane(), "propertiesdefined", true);
 
             if (deftax.getSelectedItem() != null) {
@@ -580,6 +587,7 @@ public class ControlPanel_Userproperties extends javax.swing.JPanel implements C
         supresscurrencysymbols.setSelected(mpv5.db.objects.User.getCurrentUser().getProperties().getProperty(MPView.getTabPane(), "supresscurrencysymbols"));
         autorev.setSelected(mpv5.db.objects.User.getCurrentUser().getProperties().getProperty(MPView.getTabPane(), "autocreaterevenue"));
         ordersoverproducts.setSelected(mpv5.db.objects.User.getCurrentUser().getProperties().getProperty(MPView.getTabPane(), "ordersoverproducts"));
+        companiesovernames.setSelected(mpv5.db.objects.User.getCurrentUser().getProperties().getProperty(MPView.getTabPane(), "companiesovernames"));
         hidetaxcolumn.setSelected(mpv5.db.objects.User.getCurrentUser().getProperties().getProperty(MPView.getTabPane(), "hidetaxcolumn"));
 
         Component[] t = productstobillsproperties.getComponents();

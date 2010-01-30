@@ -83,13 +83,13 @@ public abstract class VariablesHandler {
      * @param target
      * @return
      */
-    private static DatabaseObject old;
+//    private static DatabaseObject old;
     public static synchronized String[][] resolveVarsFor(final DatabaseObject target) {
-
-        if (target.equals(old)) {
-            return null;
-        }
-        old = target;
+//
+//        if (target.equals(old)) {
+//            return null;
+//        }
+//        old = target;
 
         Log.Debug(VariablesHandler.class, "Resolving vars for " + target.getContext() + "#" + target.ids);
         String[][] vars = new String[GENERIC_VARS.values().length + getSpecialVarsOf(target).length][2];

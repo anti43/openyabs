@@ -3,6 +3,7 @@ package mpv5.ui.dialogs.subcomponents;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.text.MessageFormat;
 import java.util.Date;
 import java.util.Locale;
 import java.util.logging.Level;
@@ -496,8 +497,8 @@ public class ControlPanel_Formats extends javax.swing.JPanel implements ControlA
         b.avoidNulls();
 
         FormatHandler fh = new FormatHandler(b);
-        fh.setFormat(labeledTextField1.getText());
-        str = fh.toString(Integer.valueOf(labeledSpinner1.get_Value().toString()));
+        MessageFormat format = new MessageFormat(VariablesHandler.parse(labeledTextField1.getText(), b));
+        str = fh.toString(format, Integer.valueOf(labeledSpinner1.get_Value().toString()));
         str = Messages.THE_RESULT + str;
         return Popup.OK_dialog(str, Messages.NOTICE.getValue());
     }

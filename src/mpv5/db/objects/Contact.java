@@ -421,6 +421,7 @@ public class Contact extends DatabaseObject implements Formattable {
     /**
      * @return the formatHandler
      */
+    @Override
     public FormatHandler getFormatHandler() {
         if (formatHandler == null) {
             formatHandler = new FormatHandler(this);
@@ -430,7 +431,9 @@ public class Contact extends DatabaseObject implements Formattable {
 
     @Override
     public void ensureUniqueness() {
-        setCNumber(getFormatHandler().toString(getFormatHandler().getNextNumber()));
+       if (cnumber == null || cnumber.length() == 0) {
+            setCNumber(getFormatHandler().next());
+        }
     }
 
     @Override

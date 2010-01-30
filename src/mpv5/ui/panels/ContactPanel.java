@@ -82,6 +82,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
     private SearchPanel sp;
     private Integer dataTableContent = null;
     private final JPopupMenu itemTablePopup;
+    private String old_cnumber = "";
 
     /** Creates new form ContactPanel
      * @param context
@@ -1345,6 +1346,10 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
         mobilephone_ = mobilephone.get_Text();
         notes_ = notes.getText();
         cnumber_ = number.get_Text();
+        if (old_cnumber.equals(cnumber_)) {
+                cnumber_ = null;
+            }
+
         mainphone_ = mainphone.get_Text();
         prename_ = prename.get_Text();
         street_ = street.get_Text();
@@ -1400,6 +1405,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
         mobilephone.set_Text(mobilephone_);
         notes.setText(notes_);
         number.set_Text(cnumber_);
+        old_cnumber = cnumber_;
         mainphone.set_Text(mainphone_);
         prename.set_Text(prename_);
         street.set_Text(street_);

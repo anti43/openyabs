@@ -15,31 +15,24 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Vector;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.ComboBoxEditor;
-import javax.swing.ComboBoxModel;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComboBox;
-import javax.swing.JFormattedTextField;
 import javax.swing.JTable;
-import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
 import mpv5.db.common.DatabaseSearch;
 import mpv5.db.common.NodataFoundException;
-import mpv5.db.objects.Contact;
 import mpv5.handler.MPEnum;
 import mpv5.logging.Log;
+import mpv5.ui.frames.MPView;
 import mpv5.ui.panels.DataPanel;
-import mpv5.utils.arrays.ArrayUtilities;
 import mpv5.utils.models.*;
 import mpv5.utils.renderer.ComboBoxRendererForTooltip;
 
@@ -179,6 +172,8 @@ public class MPCombobox extends javax.swing.JPanel {
                     if (getComboBox().isEditable()) {
                         if (context.equals(Context.getProduct())) {
                             data = new DatabaseSearch(context, 200).getValuesFor2("ids, cname", new String[]{"cname", "description", "ean", "cnumber", "reference"}, String.valueOf(value), true);
+                        } if ((context.equals(Context.getCustomer()) || context.equals(Context.getManufacturer()) || context.equals(Context.getSupplier())) && mpv5.db.objects.User.getCurrentUser().getProperties().getProperty(MPView.getTabPane(), "companiesovernames")) {
+                            data = new DatabaseSearch(context, 200).getValuesFor("ids, company", "company", jComboBox1.getSelectedItem().toString(), true);
                         } else {
                             data = new DatabaseSearch(context, 200).getValuesFor("ids, cname", "cname", jComboBox1.getSelectedItem().toString(), true);
                         }

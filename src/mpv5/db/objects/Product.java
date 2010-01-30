@@ -296,7 +296,7 @@ public class Product extends DatabaseObject implements Formattable {
     @Override
     public void ensureUniqueness() {
         if (cnumber == null || cnumber.length() == 0) {
-            setCnumber(getFormatHandler().toString(getFormatHandler().getNextNumber()));
+            setCnumber(getFormatHandler().next());
         }
     }
 
