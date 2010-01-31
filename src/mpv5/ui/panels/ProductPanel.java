@@ -1028,10 +1028,7 @@ public class ProductPanel extends javax.swing.JPanel implements DataPanel, MPCBS
         if (cname.getText() != null && cname.getText().length() > 0) {
 
             cnumber_ = cnumber.get_Text();
-            if (old_cnumber.equals(cnumber_)) {
-                cnumber_ = null;
-            }
-
+            
             try {
                 suppliersids_ = Integer.valueOf(contactname.getSelectedItem().getId());
             } catch (Exception numberFormatException) {
@@ -1337,6 +1334,9 @@ public class ProductPanel extends javax.swing.JPanel implements DataPanel, MPCBS
     }
 
     public void actionBeforeCreate() {
+        if (old_cnumber.equals(cnumber_)) {
+                cnumber_ = null;
+            }
     }
 
     public void actionBeforeSave() {

@@ -1346,10 +1346,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
         mobilephone_ = mobilephone.get_Text();
         notes_ = notes.getText();
         cnumber_ = number.get_Text();
-        if (old_cnumber.equals(cnumber_)) {
-                cnumber_ = null;
-            }
-
+        
         mainphone_ = mainphone.get_Text();
         prename_ = prename.get_Text();
         street_ = street.get_Text();
@@ -1535,6 +1532,9 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
     }
 
     public void actionBeforeCreate() {
+        if (old_cnumber.equals(cnumber_)) {
+                cnumber_ = null;
+            }
     }
 
     public void actionBeforeSave() {
