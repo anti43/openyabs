@@ -1870,7 +1870,7 @@ public class MPView extends FrameView {
     }//GEN-LAST:event_jMenuItem3ActionPerformed
 
     private void calculatorButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_calculatorButtonActionPerformed
-        if (LocalSettings.hasProperty(LocalSettings.CALCULATOR) && new File(LocalSettings.getProperty(LocalSettings.CALCULATOR)).canExecute()) {
+        if (LocalSettings.hasProperty(LocalSettings.CALCULATOR) && LocalSettings.getProperty(LocalSettings.CALCULATOR).length() >=1) {
      
             try {
                 Runtime.getRuntime().exec(LocalSettings.getProperty(LocalSettings.CALCULATOR));

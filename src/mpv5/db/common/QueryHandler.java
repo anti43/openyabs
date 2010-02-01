@@ -138,6 +138,14 @@ public class QueryHandler implements Cloneable {
                     Log.Debug(this, "Corrected group 1 to fix Issue #239");
                 }
             }
+            ResultSet firstaccount = runfixes.executeQuery("SELECT intparentaccount FROM accounts ORDER BY ids ASC");
+            if (firstaccount.next()) {
+                int gids = firstaccount.getInt(1);
+                if (gids != 0) {
+                    runfixes.execute("update accounts set intparentaccount = 0 where ids = 1");
+                    Log.Debug(this, "Corrected account 1 to fix Issue #239");
+                }
+            }
             ////////////////////////////////////////////////////////////////////
         } catch (Exception ex) {
             Log.Debug(ex);

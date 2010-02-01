@@ -75,6 +75,7 @@ public class LocalSettings {
                 {OFFICE_USE, "false"},
                 {CACHE_DIR, "Cache"},
                 {DBESCAPE, "true"},
+                {CALCULATOR, ""},
                 //Uncomment for MacOS build
 //                {OFFICE_HOME, "/Applications/OpenOffice.org.app/Contents/"},
 //                {OFFICE_BINARY_FOLDER, "MacOS"}
