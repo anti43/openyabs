@@ -522,11 +522,7 @@ public class MPView extends FrameView {
         filedialog = new DialogForFile(DialogForFile.FILES_ONLY);
         jMenuItem24.setEnabled(!LocalSettings.getBooleanProperty(LocalSettings.OFFICE_REMOTE));
 
-        nav_outlookbar.setAnimated(navBarAnimated
-
-
-
-                );
+        nav_outlookbar.setAnimated(navBarAnimated);
         getFrame().addComponentListener(new ComponentAdapter() {
 
             @Override
@@ -1874,7 +1870,17 @@ public class MPView extends FrameView {
     }//GEN-LAST:event_jMenuItem3ActionPerformed
 
     private void calculatorButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_calculatorButtonActionPerformed
-        MPCalculator2.instanceOf();
+        if (LocalSettings.hasProperty(LocalSettings.CALCULATOR) && new File(LocalSettings.getProperty(LocalSettings.CALCULATOR)).canExecute()) {
+     
+            try {
+                Runtime.getRuntime().exec(LocalSettings.getProperty(LocalSettings.CALCULATOR));
+            } catch (Exception e) {
+                Popup.error(e);
+                Log.Debug(e);
+            }
+        } else {
+            MPCalculator2.instanceOf();
+        }
     }//GEN-LAST:event_calculatorButtonActionPerformed
 
     private void lockButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_lockButtonActionPerformed

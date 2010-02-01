@@ -55,6 +55,7 @@ public class LocalSettings {
     public static final String LAST_USER_PW = "lastuserpw";
     public static final String DBESCAPE = "dbescape";
     public static final String CLIENT = "client";
+    public static final String CALCULATOR = "calculator";
 
 
     private static PropertyStore predefinedSettings = new PropertyStore(new String[][]{

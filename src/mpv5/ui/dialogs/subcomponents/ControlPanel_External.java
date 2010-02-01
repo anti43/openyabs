@@ -2,25 +2,19 @@ package mpv5.ui.dialogs.subcomponents;
 
 import enoa.connection.NoaConnection;
 import java.awt.Component;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import mpv5.data.PropertyStore;
-import mpv5.db.common.QueryHandler;
-import mpv5.db.objects.Template;
 import mpv5.globals.LocalSettings;
 import mpv5.globals.Messages;
 import mpv5.logging.Log;
 import mpv5.ui.dialogs.ControlApplet;
 import mpv5.ui.dialogs.Popup;
 import mpv5.ui.frames.MPView;
-import mpv5.utils.text.TypeConversion;
-import mpv5.utils.ui.PanelUtils;
 
 /**
  *
  * 
  */
-public class ControlPanel_OO extends javax.swing.JPanel implements ControlApplet {
+public class ControlPanel_External extends javax.swing.JPanel implements ControlApplet {
 
     private static final long serialVersionUID = 1L;
     /**
@@ -28,9 +22,9 @@ public class ControlPanel_OO extends javax.swing.JPanel implements ControlApplet
      */
     public final String UNAME = "ooo";
     private PropertyStore oldvalues;
-    private static ControlPanel_OO ident;
+    private static ControlPanel_External ident;
 
-    public ControlPanel_OO() {
+    public ControlPanel_External() {
         initComponents();
         setValues(null);
         setVisible(true);
@@ -46,6 +40,8 @@ public class ControlPanel_OO extends javax.swing.JPanel implements ControlApplet
         labeledTextField2 = new mpv5.ui.beans.LabeledTextField();
         jLabel3 = new javax.swing.JLabel();
         jCheckBox1 = new javax.swing.JCheckBox();
+        jPanel3 = new javax.swing.JPanel();
+        labeledTextField3 = new mpv5.ui.beans.LabeledTextField();
         jPanel1 = new javax.swing.JPanel();
         jButton4 = new javax.swing.JButton();
         jButton1 = new javax.swing.JButton();
@@ -54,16 +50,16 @@ public class ControlPanel_OO extends javax.swing.JPanel implements ControlApplet
 
         setBackground(new java.awt.Color(255, 255, 255));
         setName("Form"); // NOI18N
-        setLayout(new java.awt.BorderLayout());
+        setLayout(new javax.swing.BoxLayout(this, javax.swing.BoxLayout.Y_AXIS));
 
-        java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle(); // NOI18N
-        jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("ControlPanel_OO.jPanel2.border.title"))); // NOI18N
+        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("mpv5/resources/languages/Panels"); // NOI18N
+        jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("ControlPanel_External.jPanel2.border.title"))); // NOI18N
         jPanel2.setName("jPanel2"); // NOI18N
 
-        labeledTextChooser2.set_Label(bundle.getString("ControlPanel_OO.labeledTextChooser2._Label")); // NOI18N
+        labeledTextChooser2.set_Label(bundle.getString("ControlPanel_External.labeledTextChooser2._Label")); // NOI18N
         labeledTextChooser2.setName("labeledTextChooser2"); // NOI18N
 
-        jCheckBox3.setText(bundle.getString("ControlPanel_OO.jCheckBox3.text")); // NOI18N
+        jCheckBox3.setText(bundle.getString("ControlPanel_External.jCheckBox3.text")); // NOI18N
         jCheckBox3.setName("jCheckBox3"); // NOI18N
         jCheckBox3.addItemListener(new java.awt.event.ItemListener() {
             public void itemStateChanged(java.awt.event.ItemEvent evt) {
@@ -71,19 +67,19 @@ public class ControlPanel_OO extends javax.swing.JPanel implements ControlApplet
             }
         });
 
-        labeledTextField1.set_Label(bundle.getString("ControlPanel_OO.labeledTextField1._Label")); // NOI18N
-        labeledTextField1.set_Text(bundle.getString("ControlPanel_OO.labeledTextField1._Text")); // NOI18N
+        labeledTextField1.set_Label(bundle.getString("ControlPanel_External.labeledTextField1._Label")); // NOI18N
+        labeledTextField1.set_Text(bundle.getString("ControlPanel_External.labeledTextField1._Text")); // NOI18N
         labeledTextField1.setEnabled(false);
         labeledTextField1.setName("labeledTextField1"); // NOI18N
 
-        labeledTextField2.set_Label(bundle.getString("ControlPanel_OO.labeledTextField2._Label")); // NOI18N
+        labeledTextField2.set_Label(bundle.getString("ControlPanel_External.labeledTextField2._Label")); // NOI18N
         labeledTextField2.setEnabled(false);
         labeledTextField2.setName("labeledTextField2"); // NOI18N
 
-        jLabel3.setText(bundle.getString("ControlPanel_OO.jLabel3.text")); // NOI18N
+        jLabel3.setText(bundle.getString("ControlPanel_External.jLabel3.text")); // NOI18N
         jLabel3.setName("jLabel3"); // NOI18N
 
-        jCheckBox1.setText(bundle.getString("ControlPanel_OO.jCheckBox1.text")); // NOI18N
+        jCheckBox1.setText(bundle.getString("ControlPanel_External.jCheckBox1.text")); // NOI18N
         jCheckBox1.setName("jCheckBox1"); // NOI18N
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
@@ -93,14 +89,14 @@ public class ControlPanel_OO extends javax.swing.JPanel implements ControlApplet
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jCheckBox1, javax.swing.GroupLayout.DEFAULT_SIZE, 450, Short.MAX_VALUE)
+                    .addComponent(jCheckBox1, javax.swing.GroupLayout.DEFAULT_SIZE, 499, Short.MAX_VALUE)
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addComponent(jCheckBox3, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(labeledTextField1, javax.swing.GroupLayout.DEFAULT_SIZE, 193, Short.MAX_VALUE)
+                        .addComponent(labeledTextField1, javax.swing.GroupLayout.DEFAULT_SIZE, 242, Short.MAX_VALUE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(labeledTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, 119, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(labeledTextChooser2, javax.swing.GroupLayout.DEFAULT_SIZE, 450, Short.MAX_VALUE)
+                    .addComponent(labeledTextChooser2, javax.swing.GroupLayout.DEFAULT_SIZE, 499, Short.MAX_VALUE)
                     .addComponent(jLabel3))
                 .addContainerGap())
         );
@@ -117,16 +113,40 @@ public class ControlPanel_OO extends javax.swing.JPanel implements ControlApplet
                     .addComponent(labeledTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jCheckBox1)
-                .addContainerGap(37, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
-        add(jPanel2, java.awt.BorderLayout.CENTER);
+        add(jPanel2);
+
+        jPanel3.setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("ControlPanel_External.jPanel3.border.title"))); // NOI18N
+        jPanel3.setName("jPanel3"); // NOI18N
+
+        labeledTextField3.set_Label(bundle.getString("ControlPanel_External.labeledTextField3._Label")); // NOI18N
+        labeledTextField3.setName("labeledTextField3"); // NOI18N
+
+        javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
+        jPanel3.setLayout(jPanel3Layout);
+        jPanel3Layout.setHorizontalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(labeledTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, 293, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(218, Short.MAX_VALUE))
+        );
+        jPanel3Layout.setVerticalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(labeledTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+        );
+
+        add(jPanel3);
 
         jPanel1.setBackground(new java.awt.Color(255, 255, 255));
         jPanel1.setName("jPanel1"); // NOI18N
         jPanel1.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.RIGHT));
 
-        jButton4.setText(bundle.getString("ControlPanel_OO.jButton4.text")); // NOI18N
+        jButton4.setText(bundle.getString("ControlPanel_External.jButton4.text")); // NOI18N
         jButton4.setName("jButton4"); // NOI18N
         jButton4.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -135,7 +155,7 @@ public class ControlPanel_OO extends javax.swing.JPanel implements ControlApplet
         });
         jPanel1.add(jButton4);
 
-        jButton1.setText(bundle.getString("ControlPanel_OO.jButton1.text")); // NOI18N
+        jButton1.setText(bundle.getString("ControlPanel_External.jButton1.text")); // NOI18N
         jButton1.setName("jButton1"); // NOI18N
         jButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -144,7 +164,7 @@ public class ControlPanel_OO extends javax.swing.JPanel implements ControlApplet
         });
         jPanel1.add(jButton1);
 
-        jButton2.setText(bundle.getString("ControlPanel_OO.jButton2.text")); // NOI18N
+        jButton2.setText(bundle.getString("ControlPanel_External.jButton2.text")); // NOI18N
         jButton2.setName("jButton2"); // NOI18N
         jButton2.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -153,7 +173,7 @@ public class ControlPanel_OO extends javax.swing.JPanel implements ControlApplet
         });
         jPanel1.add(jButton2);
 
-        jButton3.setText(bundle.getString("ControlPanel_OO.jButton3.text")); // NOI18N
+        jButton3.setText(bundle.getString("ControlPanel_External.jButton3.text")); // NOI18N
         jButton3.setName("jButton3"); // NOI18N
         jButton3.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -162,7 +182,7 @@ public class ControlPanel_OO extends javax.swing.JPanel implements ControlApplet
         });
         jPanel1.add(jButton3);
 
-        add(jPanel1, java.awt.BorderLayout.PAGE_END);
+        add(jPanel1);
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
@@ -234,6 +254,7 @@ public class ControlPanel_OO extends javax.swing.JPanel implements ControlApplet
             jCheckBox1.setSelected(!LocalSettings.getBooleanProperty(LocalSettings.OFFICE_USE));
             labeledTextField1.setText(LocalSettings.getProperty(LocalSettings.OFFICE_HOST));
             labeledTextField2.setText(LocalSettings.getProperty(LocalSettings.OFFICE_PORT));
+            labeledTextField3.setText(LocalSettings.getProperty(LocalSettings.CALCULATOR));
         } catch (Exception e) {
             Log.Debug(this, e);
         }
@@ -256,9 +277,11 @@ public class ControlPanel_OO extends javax.swing.JPanel implements ControlApplet
     private javax.swing.JLabel jLabel3;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
+    private javax.swing.JPanel jPanel3;
     private mpv5.ui.beans.LabeledTextChooser labeledTextChooser2;
     private mpv5.ui.beans.LabeledTextField labeledTextField1;
     private mpv5.ui.beans.LabeledTextField labeledTextField2;
+    private mpv5.ui.beans.LabeledTextField labeledTextField3;
     // End of variables declaration//GEN-END:variables
 
     private void setSettings() {
@@ -267,6 +290,7 @@ public class ControlPanel_OO extends javax.swing.JPanel implements ControlApplet
         LocalSettings.setProperty(LocalSettings.OFFICE_REMOTE, Boolean.toString(jCheckBox3.isSelected()));
         LocalSettings.setProperty(LocalSettings.OFFICE_HOST, labeledTextField1.getText());
         LocalSettings.setProperty(LocalSettings.OFFICE_PORT, labeledTextField2.getText());
+        LocalSettings.setProperty(LocalSettings.CALCULATOR, labeledTextField3.getText());
         LocalSettings.apply();
     }
 
