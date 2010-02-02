@@ -18,14 +18,10 @@ package mpv5.db.objects;
 
 import mpv5.db.common.Triggerable;
 import java.math.BigDecimal;
-import java.math.BigInteger;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Vector;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JTable;
@@ -39,7 +35,6 @@ import mpv5.globals.Messages;
 import mpv5.handler.VariablesHandler;
 import mpv5.logging.Log;
 import mpv5.ui.dialogs.Notificator;
-import mpv5.ui.frames.MPView;
 import mpv5.ui.panels.ItemPanel;
 import mpv5.utils.models.MPComboBoxModelItem;
 import mpv5.utils.models.MPTableModel;
@@ -51,14 +46,7 @@ import mpv5.utils.numberformat.FormatNumber;
  */
 public class SubItem extends DatabaseObject implements Triggerable {
 
-    /**
-     * Save the model of SubItems
-     * @param dataOwner
-     * @param model
-     * @param deleteRemovedSubitems
-     * @return
-     */
-    public static List<SubItem> saveModel(Item dataOwner, MPTableModel model, boolean deleteRemovedSubitems) {
+    public static List<SubItem> saveModel(Item dataOwner, MPTableModel model, boolean deleteRemovedSubitems, boolean cloneSubitems) {
         List<Object[]> rowsl = model.getValidRows(new int[]{4});
         List<SubItem> items = new Vector<SubItem>();
         Log.Debug(SubItem.class, "Rows found: " + rowsl.size());
@@ -71,7 +59,7 @@ public class SubItem extends DatabaseObject implements Triggerable {
             }
             SubItem it = new SubItem();
             try {
-                if (row[0] != null && Integer.valueOf(row[0].toString()).intValue() > 0) {
+                if (!cloneSubitems && row[0] != null && Integer.valueOf(row[0].toString()).intValue() > 0) {
                     it.setIDS(Integer.valueOf(row[0].toString()).intValue());
                 } else {
                     it.setIDS(-1);
@@ -113,6 +101,18 @@ public class SubItem extends DatabaseObject implements Triggerable {
         }
         deletionQueue.clear();
         return items;
+
+    }
+
+    /**
+     * Save the model of SubItems
+     * @param dataOwner
+     * @param model
+     * @param deleteRemovedSubitems
+     * @return
+     */
+    public static List<SubItem> saveModel(Item dataOwner, MPTableModel model, boolean deleteRemovedSubitems) {
+        return saveModel(dataOwner, model, deleteRemovedSubitems, false);
     }
 
     /**
@@ -573,16 +573,28 @@ public class SubItem extends DatabaseObject implements Triggerable {
         return null;
     }
 
-    /**
+     /**
      * Generates a table model out of the given SubItems
      * @param items
      * @return
      */
     public static MPTableModel toModel(SubItem[] items) {
+        return toModel(items, false);
+    }
+
+    /**
+     * Generates a table model out of the given SubItems
+     * @param items
+     * @return
+     */
+    public static MPTableModel toModel(SubItem[] items, boolean removeSubitemIds) {
         //"Internal ID", "ID", "Count", "Measure", "Description", "Netto Price", "Tax Value", "Total Price"
         Object[][] data = new Object[items.length][];
         for (int i = 0; i < data.length; i++) {
             data[i] = items[i].getRowData(i + 1);
+            if (removeSubitemIds) {
+                data[i][0] = -1;
+            }
         }
 
         MPTableModel model = new MPTableModel(
@@ -769,7 +781,7 @@ public class SubItem extends DatabaseObject implements Triggerable {
                     p.save(true);
                 }
 
-                if(p.__getIntinventorytype() == 1 && p.__getStockvalue().intValue() <= p.__getThresholdvalue().intValue()){
+                if (p.__getIntinventorytype() == 1 && p.__getStockvalue().intValue() <= p.__getThresholdvalue().intValue()) {
                     Notificator.raiseNotification(Messages.INVENTORY_STOCK_TRESHOLD + p.toString());
                 }
             } catch (NodataFoundException ex) {

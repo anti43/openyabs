@@ -1994,7 +1994,7 @@ public class MPView extends FrameView {
                 getCurrentTab().paste(item.getItem());
             }
         } catch (Exception ignore) {
-            Log.Debug(ignore);
+//            Log.Debug(ignore);
         }
 
     }//GEN-LAST:event_jMenuItem16ActionPerformed

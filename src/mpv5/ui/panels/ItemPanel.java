@@ -72,6 +72,7 @@ import mpv5.ui.frames.MPView;
 import mpv5.ui.popups.FileTablePopUp;
 import mpv5.ui.toolbars.DataPanelTB;
 import mpv5.db.objects.User;
+import mpv5.handler.FormatHandler;
 import mpv5.ui.beans.MPCBSelectionChangeReceiver;
 import mpv5.ui.dialogs.DialogForFile;
 import mpv5.ui.dialogs.ScheduleDayEvent;
@@ -1170,34 +1171,38 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
 
     private void button_elevateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button_elevateActionPerformed
 
-        if (Popup.OK_dialog(Messages.REALLY_CHANGE2, Messages.ARE_YOU_SURE.getValue())) {
-            dataOwner.setIntstatus(Item.STATUS_FINISHED);
-            dataOwner.save();
+//        if (Popup.OK_dialog(Messages.REALLY_CHANGE2, Messages.ARE_YOU_SURE.getValue())) {
+        dataOwner.setIntstatus(Item.STATUS_FINISHED);
+        dataOwner.save();
 
-            if (dataOwner.__getInttype() == Item.TYPE_OFFER) {
-                dataOwner.setInttype(Item.TYPE_ORDER);
-                dataOwner.defineFormatHandler(null);
-                dataOwner.setIDS(-1);
-                dataOwner.save();
-                if (itemtable.getCellEditor() != null) {
-                    itemtable.getCellEditor().stopCellEditing();
-                }
-                SubItem.saveModel(dataOwner, (MPTableModel) itemtable.getModel(), true);
-                setDataOwner(dataOwner, true);
-            } else if (dataOwner.__getInttype() == Item.TYPE_ORDER) {
-                dataOwner.setInttype(Item.TYPE_BILL);
-                setDataOwner(dataOwner, true);
-                dataOwner.defineFormatHandler(null);
-                dataOwner.setIntstatus(Item.STATUS_FINISHED);
-                dataOwner.setIDS(-1);
-                dataOwner.save();
-                if (itemtable.getCellEditor() != null) {
-                    itemtable.getCellEditor().stopCellEditing();
-                }
-                SubItem.saveModel(dataOwner, (MPTableModel) itemtable.getModel(), true);
-                setDataOwner(dataOwner, true);
+        if (dataOwner.__getInttype() == Item.TYPE_OFFER) {
+            Item i2 = (Item) dataOwner.clone();
+            i2.setInttype(Item.TYPE_ORDER);
+            i2.setIDS(-1);
+            i2.defineFormatHandler(new FormatHandler(i2));
+            i2.save();
+            if (itemtable.getCellEditor() != null) {
+                itemtable.getCellEditor().stopCellEditing();
             }
+            SubItem.saveModel(i2, (MPTableModel) itemtable.getModel(), true, true);
+            setDataOwner(i2, true);
+            Popup.notice(i2 + Messages.INSERTED.getValue());
+        } else if (dataOwner.__getInttype() == Item.TYPE_ORDER) {
+            Item i2 = (Item) dataOwner.clone();
+            i2.setInttype(Item.TYPE_BILL);
+            i2.setIDS(-1);
+            i2.defineFormatHandler(new FormatHandler(i2));
+            i2.save();
+            if (itemtable.getCellEditor() != null) {
+                itemtable.getCellEditor().stopCellEditing();
+            }
+            SubItem.saveModel(i2, (MPTableModel) itemtable.getModel(), true, true);
+            setDataOwner(i2, true);
+            Popup.notice(i2 + Messages.INSERTED.getValue());
         }
+        
+        
+////        }
 
     }//GEN-LAST:event_button_elevateActionPerformed
     MPTableModel omodel = null;
@@ -1560,22 +1565,43 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
 
         ((MPTableModel) itemtable.getModel()).removeEmptyRows(new int[]{4});
         for (DatabaseObject dbo : dbos) {
-            if (dbo.getContext().equals(Context.getItem())) {
-                Item o = (Item) dbo;
-//                ((Item) dbo).setIntstatus(Item.STATUS_IN_PROGRESS);
-//                ((Item) dbo).setInttype(inttype_);
-//
-//                setDataOwner(dbo, true);
-//                dbo.setIDS(-1);
-                SubItem s = new SubItem();
-                s.setQuantityvalue(new BigDecimal("1"));
-                s.setItemsids(o.__getIDS());
-                s.setExternalvalue(o.__getNetvalue().add(o.__getTaxvalue()).add(o.__getShippingvalue()));
-                s.setTotalnetvalue(o.__getNetvalue());
-                s.setCName(o.__getCName());
-                s.setDescription(Messages.GOOSE1 + " " + o.__getCnumber() + " " + Messages.GOOSE2 + " " + DateConverter.getDefDateString(o.__getDateadded()));
+            if (dbo.getContext().equals(Context.getItem())
+                    || dbo.getContext().equals(Context.getBill())
+                    || dbo.getContext().equals(Context.getOffer())
+                    || dbo.getContext().equals(Context.getOrder())) {
+                Item o = (Item) dbo.clone();
+//               
+                if (mpv5.db.objects.User.getCurrentUser().getProperties().getProperty(MPView.getTabPane(), "pasten")) {
+                    SubItem s = new SubItem();
+                    s.setQuantityvalue(new BigDecimal("1"));
+//                    s.setItemsids(o.__getIDS());
+                    s.setExternalvalue(((Item) dbo).__getNetvalue().add(((Item) dbo).__getTaxvalue()).add(((Item) dbo).__getShippingvalue()));
+                    s.setTotalnetvalue(((Item) dbo).__getNetvalue());
+                    s.setCName(((Item) dbo).__getCName());
+                    s.setDescription(Messages.GOOSE1 + " " + ((Item) dbo).__getCnumber() + " " + Messages.GOOSE2 + " " + DateConverter.getDefDateString(o.__getDateadded()));
 
-                ((MPTableModel) itemtable.getModel()).addRow(s.getRowData(((MPTableModel) itemtable.getModel()).getRowCount() + 1));
+                    ((MPTableModel) itemtable.getModel()).addRow(s.getRowData(((MPTableModel) itemtable.getModel()).getRowCount() + 1));
+                } else {
+                    o.setIntstatus(Item.STATUS_IN_PROGRESS);
+                    o.setInttype(inttype_);
+                    o.setCnumber("");
+                    o.setCName("");
+                    o.setDateadded(new Date());
+                    o.setDatetodo(new Date());
+                    o.setDateend(new Date());
+
+                    SubItem[] subs = new SubItem[0];
+                    subs = o.getSubitems();
+                    o.setIDS(-1);
+                    setDataOwner(o, true);
+
+                    MPTableModel t = SubItem.toModel(subs, true);
+
+                    itemtable.setModel(t);
+                    omodel = (MPTableModel) itemtable.getModel();
+                    formatTable();
+                    ((MPTableModel) itemtable.getModel()).fireTableCellUpdated(0, 0);
+                }
             } else if (dbo.getContext().equals(Context.getContact())) {
                 dataOwner.setContactsids(((Contact) dbo).__getIDS());
                 setDataOwner(dataOwner, true);

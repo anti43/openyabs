@@ -1252,7 +1252,11 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject> {
                     } else if (name.toUpperCase().startsWith("DATE") || name.toUpperCase().endsWith("DATE")) {
                         vars.get(k).invoke(this, new Object[]{DateConverter.getDate(data[row][1])});
                     } else if (name.toUpperCase().startsWith("VALUE") || name.toUpperCase().endsWith("VALUE")) {
-                        vars.get(k).invoke(this, new Object[]{Double.valueOf(String.valueOf(data[row][1]))});
+                        try {
+                            vars.get(k).invoke(this, new Object[]{Double.valueOf(String.valueOf(data[row][1]))});
+                        } catch (Exception illegalAccessException) {
+                            vars.get(k).invoke(this, new Object[]{new BigDecimal(String.valueOf(data[row][1]))});
+                        }
                     } else {
                         vars.get(k).invoke(this, new Object[]{String.valueOf(data[row][1])});
                     }
