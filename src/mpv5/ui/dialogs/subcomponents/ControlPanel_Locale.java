@@ -315,7 +315,7 @@ public class ControlPanel_Locale extends javax.swing.JPanel implements ControlAp
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
 
         if (QueryHandler.instanceOf().clone(Context.getLanguage()).checkUniqueness("longname", new JTextField[]{langName.getTextField()})) {
-            if (!langName.hasText()) {langName.setText(labeledTextChooser1.get_Text(false));}
+            if (!langName.hasText()) {langName.setText(new File(labeledTextChooser1.get_Text(false)).getName());}
                 Runnable runnable = new Runnable() {
 
                     public void run() {
