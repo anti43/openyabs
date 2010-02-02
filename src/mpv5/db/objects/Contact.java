@@ -431,9 +431,9 @@ public class Contact extends DatabaseObject implements Formattable {
 
     @Override
     public void ensureUniqueness() {
-       if (cnumber == null || cnumber.length() == 0) {
+//       if (cnumber == null || cnumber.length() == 0) {
             setCNumber(getFormatHandler().next());
-        }
+//        }
     }
 
     @Override

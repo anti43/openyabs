@@ -82,7 +82,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
     private SearchPanel sp;
     private Integer dataTableContent = null;
     private final JPopupMenu itemTablePopup;
-    private String old_cnumber = "";
+//    private String old_cnumber = "";
 
     /** Creates new form ContactPanel
      * @param context
@@ -1136,6 +1136,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
             i.setContactsids(dataOwner.__getIDS());
             i.setCName(Messages.NEW_BILL.getValue());
             i.setInttype(Item.TYPE_BILL);
+            i.setDateadded(new Date());
             i.setGroupsids(dataOwner.__getGroupsids());
             MPView.getIdentifierView().addTab(i);
         }
@@ -1147,6 +1148,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
             i.setContactsids(dataOwner.__getIDS());
             i.setCName(Messages.NEW_ORDER.getValue());
             i.setInttype(Item.TYPE_ORDER);
+            i.setDateadded(new Date());
             i.setGroupsids(dataOwner.__getGroupsids());
             MPView.getIdentifierView().addTab(i);
         }
@@ -1159,6 +1161,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
             i.setCName(Messages.NEW_OFFER.getValue());
             i.setInttype(Item.TYPE_OFFER);
             i.setGroupsids(dataOwner.__getGroupsids());
+            i.setDateadded(new Date());
             MPView.getIdentifierView().addTab(i);
         }
     }//GEN-LAST:event_button_offerActionPerformed
@@ -1402,7 +1405,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
         mobilephone.set_Text(mobilephone_);
         notes.setText(notes_);
         number.set_Text(cnumber_);
-        old_cnumber = cnumber_;
+//        old_cnumber = cnumber_;
         mainphone.set_Text(mainphone_);
         prename.set_Text(prename_);
         street.set_Text(street_);
@@ -1532,9 +1535,9 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
     }
 
     public void actionBeforeCreate() {
-        if (old_cnumber.equals(cnumber_)) {
-                cnumber_ = null;
-            }
+//        if (old_cnumber.equals(cnumber_)) {
+//                cnumber_ = null;
+//            }
     }
 
     public void actionBeforeSave() {

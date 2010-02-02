@@ -168,7 +168,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
         groupnameselect.setContext(Context.getGroup());
         groupnameselect.setSearchEnabled(true);
 
-//        date1.setDate(new Date());
+        date1.setDate(new Date());
         try {
             date3.setDate(DateConverter.addDays(new Date(), Integer.valueOf(mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("bills.warn.days"))));
             date2.setDate(new Date());
