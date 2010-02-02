@@ -55,7 +55,7 @@ public interface Constants {
      *
      * Alias
      */
-    public static final String TITLE = "[The Quays]";
+    public static final String TITLE = "[The Front Door]";
     /**
      *
      * Name of the main JAR
