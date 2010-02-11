@@ -16,13 +16,10 @@
  */
 package mpv5.db.objects;
 
-import enoa.handler.TableHandler;
 import java.io.File;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Vector;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JComponent;
 import javax.swing.JFileChooser;
 import javax.swing.table.TableModel;
@@ -34,8 +31,8 @@ import mpv5.db.common.QueryHandler;
 import mpv5.db.common.ReturnValue;
 import mpv5.globals.LocalSettings;
 import mpv5.globals.Messages;
+import mpv5.handler.MPEnum;
 import mpv5.logging.Log;
-import mpv5.ui.dialogs.Popup;
 import mpv5.ui.frames.MPView;
 import mpv5.usermanagement.MPSecurityManager;
 import mpv5.utils.export.Exportable;
@@ -44,7 +41,6 @@ import mpv5.utils.export.PDFFile;
 import mpv5.utils.files.FileDirectoryHandler;
 import mpv5.utils.images.MPIcon;
 import mpv5.utils.text.RandomText;
-import org.xhtmlrenderer.layout.TextUtil;
 
 /**
  * This class represents Yabs Templates
@@ -57,26 +53,26 @@ public class Template extends DatabaseObject {
      */
     public static HashMap<String, Template> templateCache = new HashMap<String, Template>();
     public static HashMap<String, Group> notification = new HashMap<String, Group>();
-
     /**
      * Indicates no printer association
      */
     public static final String PRINTER_UNDEFINED = "printer_undefined";
+
     /**
      * 
      * @param dataOwner
      * @return
      */
     public static Template loadTemplate(DatabaseObject dataOwner) {
-        String type = null;
+        Integer type = null;
         if (dataOwner instanceof Item) {
-            type = Item.getTypeString(((Item) dataOwner).__getInttype());
+            type = ((Item) dataOwner).__getInttype();
         } else if (dataOwner instanceof Product) {
-            type = Product.getTypeString(((Product) dataOwner).__getInttype());
+            type = TYPE_PRODUCT;
         } else if (dataOwner instanceof Reminder) {
-            type = Reminder.getTypeString(Reminder.TYPE_REMINDER);
+            type = TYPE_REMINDER;
         } else if (dataOwner instanceof Contact) {
-            type = Contact.getTypeString(Contact.TYPE_CONTACT);
+            type = TYPE_CONTACT;
         }
         String key = mpv5.db.objects.User.getCurrentUser() + "@" + type + "@" + dataOwner.__getGroupsids();
         if (templateCache.containsKey(key)) {
@@ -85,13 +81,13 @@ public class Template extends DatabaseObject {
 
             if (type != null) {
                 ReturnValue data = QueryHandler.getConnection().freeQuery(
-                        "SELECT templatesids FROM templatestousers  LEFT OUTER JOIN templates AS templates0 ON " +
-                        "templates0.ids = templatestousers.templatesids WHERE templatestousers.usersids=" +
-                        mpv5.db.objects.User.getCurrentUser().__getIDS() +
-                        " AND " +
-                        "templates0.mimetype='" + type +
-                        "' AND templatestousers.IDS>0 " +
-                        "AND (templates0.groupsids =" + dataOwner.__getGroupsids() + " OR templates0.groupsids =" + 1 + ")", MPSecurityManager.VIEW, null);
+                        "SELECT templatesids FROM templatestousers  LEFT OUTER JOIN templates AS templates0 ON "
+                        + "templates0.ids = templatestousers.templatesids WHERE templatestousers.usersids="
+                        + mpv5.db.objects.User.getCurrentUser().__getIDS()
+                        + " AND "
+                        + "templates0.mimetype='" + type
+                        + "' AND templatestousers.IDS>0 "
+                        + "AND (templates0.groupsids =" + dataOwner.__getGroupsids() + " OR templates0.groupsids =" + 1 + ")", MPSecurityManager.VIEW, null);
                 Template preloadedTemplate = null;
                 if (data.hasData()) {
                     try {
@@ -100,7 +96,7 @@ public class Template extends DatabaseObject {
                             if (LocalSettings.getBooleanProperty(LocalSettings.OFFICE_USE)) {
                                 preloadedTemplate.exFile = new ODTFile(preloadedTemplate.getFile().getPath());
                                 Log.Debug(Template.class, "Loaded template: " + preloadedTemplate);
-                                MPView.addMessage( preloadedTemplate + Messages.LOADED.toString());
+                                MPView.addMessage(preloadedTemplate + Messages.LOADED.toString());
                             } else {
 //                                Popup.notice(Messages.NOT_POSSIBLE + "\n" + Messages.OOCONNERROR);
                                 return null;
@@ -118,7 +114,7 @@ public class Template extends DatabaseObject {
                         if (!(notification.containsKey(type) && notification.get(type).equals(Group.getObject(Context.getGroup(), dataOwner.__getGroupsids())))) {
                             MPView.addMessage(Messages.OO_NO_TEMPLATE + ": " + type + " [" + mpv5.db.objects.User.getCurrentUser() + "] [" + Group.getObject(Context.getGroup(), dataOwner.__getGroupsids()) + "]");
                             Log.Debug(Template.class, "No template found for " + type + " for user: " + mpv5.db.objects.User.getCurrentUser() + " in GROUP " + Group.getObject(Context.getGroup(), dataOwner.__getGroupsids()));
-                            notification.put(type, (Group) Group.getObject(Context.getGroup(), dataOwner.__getGroupsids()));
+                            notification.put(type.toString(), (Group) Group.getObject(Context.getGroup(), dataOwner.__getGroupsids()));
                         }
 
                     } catch (NodataFoundException nodataFoundException) {
@@ -131,6 +127,131 @@ public class Template extends DatabaseObject {
             }
         }
     }
+
+    public static MPEnum[] getTypes() {
+        MPEnum[] types = new MPEnum[10];
+        types[0] = new MPEnum() {
+
+            public Integer getId() {
+                return TYPE_BILL;
+            }
+
+            public String getName() {
+                return Messages.TYPE_BILL.toString();
+            }
+        };
+
+        types[1] = new MPEnum() {
+
+            public Integer getId() {
+                return TYPE_OFFER;
+            }
+
+            public String getName() {
+                return Messages.TYPE_OFFER.toString();
+            }
+        };
+
+        types[2] = new MPEnum() {
+
+            public Integer getId() {
+                return TYPE_ORDER;
+            }
+
+            public String getName() {
+                return Messages.TYPE_ORDER.toString();
+            }
+        };
+
+        types[3] = new MPEnum() {
+
+            public Integer getId() {
+                return TYPE_CONTACT;
+            }
+
+            public String getName() {
+                return Messages.TYPE_CONTACT.toString();
+            }
+        };
+
+        types[4] = new MPEnum() {
+
+            public Integer getId() {
+                return TYPE_DELIVERY_NOTE;
+            }
+
+            public String getName() {
+                return Messages.TYPE_DELIVERY.toString();
+            }
+        };
+
+        types[5] = new MPEnum() {
+
+            public Integer getId() {
+                return TYPE_ORDER_CONFIRMATION;
+            }
+
+            public String getName() {
+                return Messages.TYPE_CONFIRMATION.toString();
+            }
+        };
+
+        types[6] = new MPEnum() {
+
+            public Integer getId() {
+                return TYPE_CONTACT;
+            }
+
+            public String getName() {
+                return Messages.TYPE_CONTACT.toString();
+            }
+        };
+
+        types[7] = new MPEnum() {
+
+            public Integer getId() {
+                return TYPE_PRODUCT;
+            }
+
+            public String getName() {
+                return Messages.TYPE_PRODUCT.toString();
+            }
+        };
+
+        types[8] = new MPEnum() {
+
+            public Integer getId() {
+                return TYPE_REMINDER;
+            }
+
+            public String getName() {
+                return Messages.TYPE_REMINDER.toString();
+            }
+        };
+
+        types[9] = new MPEnum() {
+
+            public Integer getId() {
+                return TYPE_JOURNAL;
+            }
+
+            public String getName() {
+                return Messages.TYPE_JOURNAL.toString();
+            }
+        };
+
+        return types;
+    }
+    public static final int TYPE_BILL = 0;
+    public static final int TYPE_ORDER = 1;
+    public static final int TYPE_OFFER = 2;
+    public static final int TYPE_DELIVERY_NOTE = 3;
+    public static final int TYPE_ORDER_CONFIRMATION = 4;
+    public static final int TYPE_PRODUCT = 5;
+    public static final int TYPE_SERVICE = 6;
+    public static final int TYPE_REMINDER = 7;
+    public static final int TYPE_CONTACT = 8;
+    public static final int TYPE_JOURNAL = 9;
     private String description = "";
     private String filename = "";
     private String printer = "";
@@ -323,10 +444,12 @@ public class Template extends DatabaseObject {
         for (int i = 0; i < l.size(); i++) {
             final DatabaseObject databaseObject = l.get(i);
             Runnable runnable = new Runnable() {
+
                 public void run() {
                     Template t = loadTemplate(databaseObject);
                 }
-            };new Thread(runnable).start();
+            };
+            new Thread(runnable).start();
         }
     }
 
@@ -342,15 +465,15 @@ public class Template extends DatabaseObject {
      * @param key
      * @param model
      */
-    public void injectTable(String key,TableModel model) {
+    public void injectTable(String key, TableModel model) {
         getTables().put(key, model);
     }
-    private  HashMap<String, TableModel> tables = new  HashMap<String, TableModel>();
+    private HashMap<String, TableModel> tables = new HashMap<String, TableModel>();
 
     /**
      * @return the tables
      */
-    public  HashMap<String, TableModel> getTables() {
+    public HashMap<String, TableModel> getTables() {
         return tables;
     }
 

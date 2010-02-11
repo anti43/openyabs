@@ -327,7 +327,7 @@ public abstract class FileDirectoryHandler {
      * @return
      */
     public static File getTempFile(String suffix) {
-        return getTempFile(new RandomText(8).getString(), suffix);
+        return getTempFile(new RandomText(18).getString(), suffix);
     }
 
     /**

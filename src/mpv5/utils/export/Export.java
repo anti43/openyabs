@@ -100,7 +100,7 @@ public class Export extends HashMap<String, Object> implements Waitable {
      */
     public static void print(Template preloadedTemplate, Item dataOwner) {
         HashMap<String, Object> hm1 = new FormFieldsHandler(dataOwner).getFormattedFormFields(null);
-        File f2 = FileDirectoryHandler.getTempFile(dataOwner.__getCName(), "pdf");
+        File f2 = FileDirectoryHandler.getTempFile("pdf");
         Export ex = new Export(preloadedTemplate);
         ex.putAll(hm1);
         ex.setTemplate(preloadedTemplate.getExFile());
@@ -116,7 +116,7 @@ public class Export extends HashMap<String, Object> implements Waitable {
      */
     public static Waitable createFile(Template preloadedTemplate, DatabaseObject dataOwner) {
         HashMap<String, Object> hm1 = new FormFieldsHandler(dataOwner).getFormattedFormFields(null);
-        File f2 = FileDirectoryHandler.getTempFile(dataOwner.__getCName(), "pdf");
+        File f2 = FileDirectoryHandler.getTempFile("pdf");
         Export ex = new Export(preloadedTemplate);
         ex.putAll(hm1);
         ex.setTemplate(preloadedTemplate.getExFile());

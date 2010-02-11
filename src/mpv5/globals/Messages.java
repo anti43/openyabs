@@ -167,6 +167,7 @@ public enum Messages {
     TYPE_REMINDER("Reminder"),
     TYPE_REVENUE("Revenue"),
     TYPE_EXPENSE("Payables"),
+    TYPE_JOURNAL("Journal"),
     TYPE_CONFIRMATION("Order Confirmation"),
     STATUS_PAID("Paid"),
     STATUS_UNPAID("Not Paid"),
@@ -229,6 +230,7 @@ public enum Messages {
     PRINT_NOT_POSSIBLE("Could not find a print service for the give file. Try 'print through default application' setting instead:"),
     UPDATE_AVAILABLE("There is an update available for Yabs, check openyabs.org")
             ;
+
 
 
     private Messages(String message) {

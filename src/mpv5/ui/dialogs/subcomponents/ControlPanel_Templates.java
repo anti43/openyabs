@@ -45,6 +45,7 @@ import mpv5.utils.export.PDFFile;
 import mpv5.utils.files.FileDirectoryHandler;
 import mpv5.utils.jobs.Job;
 import mpv5.utils.models.MPComboBoxModelItem;
+import mpv5.utils.models.MPComboboxModel;
 import mpv5.utils.models.MPTableModel;
 import mpv5.utils.ui.TextFieldUtils;
 
@@ -66,17 +67,7 @@ public class ControlPanel_Templates extends javax.swing.JPanel implements Contro
     public ControlPanel_Templates() {
         if (MPSecurityManager.checkAdminAccess()) {
             initComponents();
-            type.getComboBox().setModel(new DefaultComboBoxModel(
-                    new String[]{
-                        Messages.TYPE_BILL.toString(),
-                        Messages.TYPE_OFFER.toString(),
-                        Messages.TYPE_ORDER.toString(),
-                        Messages.TYPE_PRODUCT.toString(),
-                        Messages.TYPE_SERVICE.toString(),
-                        Messages.TYPE_DELIVERY.toString(),
-                        Messages.TYPE_CONFIRMATION.toString(),
-                        Messages.TYPE_REMINDER.toString(),
-                        Messages.TYPE_CONTACT.toString()}));
+            type.getComboBox().setModel(new MPComboboxModel(MPComboBoxModelItem.toItems(Template.getTypes())));
             refresh();
             groupname.setModel(new DefaultComboBoxModel(
                     MPComboBoxModelItem.toItems(new DatabaseSearch(Context.getGroup()).getValuesFor(Context.getGroup().getSubID(), null, ""))));
@@ -535,7 +526,7 @@ public class ControlPanel_Templates extends javax.swing.JPanel implements Contro
 
         description_ = descr.getText();
         cname_ = fullname.getText();
-        mimetype_ = String.valueOf(type.getComboBox().getSelectedItem());
+        mimetype_ = String.valueOf(type.getSelectedItem().getId());
         format_ = format.getText();
 
         return true;
@@ -547,7 +538,10 @@ public class ControlPanel_Templates extends javax.swing.JPanel implements Contro
             groupname.setSelectedIndex(MPComboBoxModelItem.getItemID(String.valueOf(groupsids_), groupname.getModel()));
             fullname.setText(cname_);
             descr.setText(description_);
-            type.getComboBox().setSelectedItem(mimetype_);
+            try {
+                type.setSelectedItem(Integer.valueOf(mimetype_));
+            } catch (NumberFormatException numberFormatException) {
+            }
             format.setText(format_);
 
             DefaultListModel m = new DefaultListModel();
