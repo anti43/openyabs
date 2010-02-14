@@ -286,6 +286,13 @@ public class PreviewPanel extends javax.swing.JPanel implements Waiter {
 
     private void jButton28ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton28ActionPerformed
 
+        if (dataOwner != null) {
+            try {
+                file = FileDirectoryHandler.copyFile2(file, new File(FileDirectoryHandler.getTempDir() + dataOwner.__getCName() + ".pdf"));
+            } catch (Exception ex) {
+                Log.Debug(ex);
+            }
+        }
         MailMessage m = null;
         if (dataOwner != null && dataOwner.isExisting()) {
 
@@ -351,16 +358,24 @@ public class PreviewPanel extends javax.swing.JPanel implements Waiter {
 
     private void jButton32ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton32ActionPerformed
         DialogForFile d = new DialogForFile(DialogForFile.FILES_ONLY);
+
+        if (dataOwner != null) {
+            try {
+                file = FileDirectoryHandler.copyFile2(file, new File(FileDirectoryHandler.getTempDir() + dataOwner.__getCName() + ".pdf"));
+            } catch (Exception ex) {
+                Log.Debug(ex);
+            }
+        }
         if (dataOwner == null) {
             d.setSelectedFile(new File(file.getName()));
         } else {
             d.setSelectedFile(new File(dataOwner.__getCName() + ".pdf"));
         }
-        if (d.chooseFile()) {
+        if (d.saveFile()) {
             d.getFile().delete();
             if (file.renameTo(d.getFile())) {
                 try {
-                    MPView.addMessage(Messages.FILE_SAVED + file.getCanonicalPath());
+                    MPView.addMessage(Messages.FILE_SAVED + d.getFile().getCanonicalPath());
                 } catch (IOException ex) {
                     Log.Debug(ex);
                 }
@@ -370,6 +385,13 @@ public class PreviewPanel extends javax.swing.JPanel implements Waiter {
 
     private void jButton30ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton30ActionPerformed
 
+        if (dataOwner != null) {
+            try {
+                file = FileDirectoryHandler.copyFile2(file, new File(FileDirectoryHandler.getTempDir() + dataOwner.__getCName() + ".pdf"));
+            } catch (Exception ex) {
+                Log.Debug(ex);
+            }
+        }
         FileDirectoryHandler.open(file);
 
 }//GEN-LAST:event_jButton30ActionPerformed

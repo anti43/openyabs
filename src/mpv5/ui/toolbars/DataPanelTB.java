@@ -32,6 +32,7 @@ import mpv5.logging.Log;
 import mpv5.ui.dialogs.Popup;
 import mpv5.ui.frames.MPView;
 import mpv5.ui.panels.DataPanel;
+import mpv5.ui.panels.ExportablePanel;
 
 /**
  *
@@ -64,6 +65,12 @@ public class DataPanelTB extends javax.swing.JPanel {
         parents.showSearchBar(mpv5.db.objects.User.getCurrentUser().getProperties().getProperty(this, "jToggleButton1"));
         but1.setSelected(mpv5.db.objects.User.getCurrentUser().getProperties().getProperty(this, "jToggleButton1"));
         but6.setEnabled(!DatabaseObject.isAutoLockEnabled());
+
+        if (!(parents instanceof ExportablePanel)) {
+            commonActionsToolbar.remove(odtButton);
+            commonActionsToolbar.remove(pdfButton);
+            commonActionsToolbar.validate();
+        }
     }
 
     /**
@@ -137,8 +144,10 @@ public class DataPanelTB extends javax.swing.JPanel {
         but7 = new javax.swing.JButton();
         but10 = new javax.swing.JButton();
         jSeparator2 = new javax.swing.JToolBar.Separator();
-        but8 = new javax.swing.JButton();
-        but9 = new javax.swing.JButton();
+        printButton = new javax.swing.JButton();
+        mailButton = new javax.swing.JButton();
+        pdfButton = new javax.swing.JButton();
+        odtButton = new javax.swing.JButton();
 
         setName("Form"); // NOI18N
 
@@ -148,7 +157,7 @@ public class DataPanelTB extends javax.swing.JPanel {
         commonActionsToolbar.setPreferredSize(new java.awt.Dimension(342, 41));
 
         but1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/viewmag.png"))); // NOI18N
-        java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle(); // NOI18N
+        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("mpv5/resources/languages/Panels"); // NOI18N
         but1.setText(bundle.getString("DataPanelTB.but1.text")); // NOI18N
         but1.setToolTipText(bundle.getString("DataPanelTB.but1.toolTipText")); // NOI18N
         but1.setContentAreaFilled(false);
@@ -299,45 +308,79 @@ public class DataPanelTB extends javax.swing.JPanel {
         jSeparator2.setName("jSeparator2"); // NOI18N
         commonActionsToolbar.add(jSeparator2);
 
-        but8.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/printer.png"))); // NOI18N
-        but8.setText(bundle.getString("MPV5View.jButton23.text")); // NOI18N
-        but8.setToolTipText(bundle.getString("MPV5View.jButton23.toolTipText")); // NOI18N
-        but8.setContentAreaFilled(false);
-        but8.setFocusable(false);
-        but8.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        but8.setName("but8"); // NOI18N
-        but8.setPressedIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/xclock.png"))); // NOI18N
-        but8.setRolloverIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/bright_printer.png"))); // NOI18N
-        but8.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        but8.addActionListener(new java.awt.event.ActionListener() {
+        printButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/printer.png"))); // NOI18N
+        printButton.setText(bundle.getString("MPV5View.jButton23.text")); // NOI18N
+        printButton.setToolTipText(bundle.getString("MPV5View.jButton23.toolTipText")); // NOI18N
+        printButton.setContentAreaFilled(false);
+        printButton.setFocusable(false);
+        printButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        printButton.setName("printButton"); // NOI18N
+        printButton.setPressedIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/xclock.png"))); // NOI18N
+        printButton.setRolloverIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/bright_printer.png"))); // NOI18N
+        printButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        printButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                but8ActionPerformed(evt);
+                printButtonActionPerformed(evt);
             }
         });
-        commonActionsToolbar.add(but8);
+        commonActionsToolbar.add(printButton);
 
-        but9.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/mail_reply.png"))); // NOI18N
-        but9.setText(bundle.getString("DataPanelTB.but9.text")); // NOI18N
-        but9.setToolTipText(bundle.getString("DataPanelTB.but9.toolTipText")); // NOI18N
-        but9.setContentAreaFilled(false);
-        but9.setFocusable(false);
-        but9.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        but9.setName("but9"); // NOI18N
-        but9.setPressedIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/xclock.png"))); // NOI18N
-        but9.setRolloverIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/bright_mail_reply.png"))); // NOI18N
-        but9.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        but9.addActionListener(new java.awt.event.ActionListener() {
+        mailButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/mail_reply.png"))); // NOI18N
+        mailButton.setText(bundle.getString("DataPanelTB.mailButton.text")); // NOI18N
+        mailButton.setToolTipText(bundle.getString("DataPanelTB.mailButton.toolTipText")); // NOI18N
+        mailButton.setContentAreaFilled(false);
+        mailButton.setFocusable(false);
+        mailButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        mailButton.setName("mailButton"); // NOI18N
+        mailButton.setPressedIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/xclock.png"))); // NOI18N
+        mailButton.setRolloverIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/bright_mail_reply.png"))); // NOI18N
+        mailButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        mailButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                but9ActionPerformed(evt);
+                mailButtonActionPerformed(evt);
             }
         });
-        commonActionsToolbar.add(but9);
+        commonActionsToolbar.add(mailButton);
+
+        pdfButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/pdf.png"))); // NOI18N
+        pdfButton.setText(bundle.getString("DataPanelTB.pdfButton.text")); // NOI18N
+        pdfButton.setToolTipText(bundle.getString("DataPanelTB.pdfButton.toolTipText")); // NOI18N
+        pdfButton.setContentAreaFilled(false);
+        pdfButton.setFocusable(false);
+        pdfButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        pdfButton.setName("pdfButton"); // NOI18N
+        pdfButton.setPressedIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/xclock.png"))); // NOI18N
+        pdfButton.setRolloverIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/bright_mail_reply.png"))); // NOI18N
+        pdfButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        pdfButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                pdfButtonActionPerformed(evt);
+            }
+        });
+        commonActionsToolbar.add(pdfButton);
+
+        odtButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/openofficeorg-20-writer.png"))); // NOI18N
+        odtButton.setText(bundle.getString("DataPanelTB.odtButton.text")); // NOI18N
+        odtButton.setToolTipText(bundle.getString("DataPanelTB.odtButton.toolTipText")); // NOI18N
+        odtButton.setContentAreaFilled(false);
+        odtButton.setFocusable(false);
+        odtButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        odtButton.setName("odtButton"); // NOI18N
+        odtButton.setPressedIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/xclock.png"))); // NOI18N
+        odtButton.setRolloverIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/bright_mail_reply.png"))); // NOI18N
+        odtButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        odtButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                odtButtonActionPerformed(evt);
+            }
+        });
+        commonActionsToolbar.add(odtButton);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(commonActionsToolbar, javax.swing.GroupLayout.DEFAULT_SIZE, 527, Short.MAX_VALUE)
+            .addComponent(commonActionsToolbar, javax.swing.GroupLayout.DEFAULT_SIZE, 583, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -404,13 +447,13 @@ public class DataPanelTB extends javax.swing.JPanel {
         }
 }//GEN-LAST:event_but6ActionPerformed
 
-    private void but8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_but8ActionPerformed
+    private void printButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_printButtonActionPerformed
 
         DatabaseObject dato = parents.getDataOwner();
         if (dato.isExisting()) {
             parents.print();
         }
-}//GEN-LAST:event_but8ActionPerformed
+}//GEN-LAST:event_printButtonActionPerformed
 
     private void but5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_but5ActionPerformed
 
@@ -435,13 +478,13 @@ public class DataPanelTB extends javax.swing.JPanel {
         mpv5.db.objects.User.getCurrentUser().getProperties().changeProperty(this, "jToggleButton1", but1.isSelected());
     }//GEN-LAST:event_but1ItemStateChanged
 
-    private void but9ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_but9ActionPerformed
+    private void mailButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mailButtonActionPerformed
 
         DatabaseObject dato = parents.getDataOwner();
         if (dato.isExisting()) {
             parents.mail();
         }
-    }//GEN-LAST:event_but9ActionPerformed
+    }//GEN-LAST:event_mailButtonActionPerformed
 
     private void but10ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_but10ActionPerformed
 
@@ -453,6 +496,23 @@ public class DataPanelTB extends javax.swing.JPanel {
             MPView.showCurrentList();
         }
     }//GEN-LAST:event_but10ActionPerformed
+
+    private void pdfButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_pdfButtonActionPerformed
+
+        DatabaseObject dato = parents.getDataOwner();
+        if (dato.isExisting() && parents instanceof ExportablePanel) {
+            ((ExportablePanel) parents).pdf();
+        }
+
+    }//GEN-LAST:event_pdfButtonActionPerformed
+
+    private void odtButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_odtButtonActionPerformed
+        DatabaseObject dato = parents.getDataOwner();
+        if (dato.isExisting()) {
+            ((ExportablePanel) parents).odt();
+        }
+
+    }//GEN-LAST:event_odtButtonActionPerformed
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JToggleButton but1;
     private javax.swing.JButton but10;
@@ -462,13 +522,15 @@ public class DataPanelTB extends javax.swing.JPanel {
     private javax.swing.JButton but5;
     private javax.swing.JButton but6;
     private javax.swing.JButton but7;
-    private javax.swing.JButton but8;
-    private javax.swing.JButton but9;
     private javax.swing.JToolBar commonActionsToolbar;
     private javax.swing.JToolBar.Separator jSeparator1;
     private javax.swing.JToolBar.Separator jSeparator2;
     private javax.swing.JToolBar.Separator jSeparator3;
     private javax.swing.JToolBar.Separator jSeparator4;
+    private javax.swing.JButton mailButton;
+    private javax.swing.JButton odtButton;
+    private javax.swing.JButton pdfButton;
+    private javax.swing.JButton printButton;
     // End of variables declaration//GEN-END:variables
 
     private void favRemover(java.awt.event.ActionEvent evt) {
@@ -511,7 +573,35 @@ public class DataPanelTB extends javax.swing.JPanel {
      *
      * @param enable
      */
-    public void setExportButtonsEnabled(boolean enable){
-        but9.setEnabled(enable);
+    public void setExportButtonsEnabled(boolean enable) {
+        getMailButton().setEnabled(enable);
+    }
+
+    /**
+     * @return the mailButton
+     */
+    public javax.swing.JButton getMailButton() {
+        return mailButton;
+    }
+
+    /**
+     * @return the odtButton
+     */
+    public javax.swing.JButton getOdtButton() {
+        return odtButton;
+    }
+
+    /**
+     * @return the pdfButton
+     */
+    public javax.swing.JButton getPdfButton() {
+        return pdfButton;
+    }
+
+    /**
+     * @return the printButton
+     */
+    public javax.swing.JButton getPrintButton() {
+        return printButton;
     }
 }

@@ -87,4 +87,5 @@ public interface DataPanel {
      * Print the current data
      */
     public void print();
+
 }
