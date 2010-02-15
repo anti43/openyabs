@@ -24,9 +24,12 @@ import java.io.IOException;
 import javax.swing.JFileChooser;
 import javax.swing.JTextField;
 import javax.swing.filechooser.FileFilter;
+import mpv5.Main;
 import mpv5.globals.Messages;
 import mpv5.logging.Log;
 import mpv5.ui.frames.MPView;
+import mpv5.utils.export.Export;
+import mpv5.utils.files.FileDirectoryHandler;
 import mpv5.utils.jobs.Waiter;
 
 /**
@@ -316,7 +319,17 @@ public class DialogForFile extends JFileChooser implements Waiter {
     @Override
     public void set(Object object, Exception e) throws Exception {
         if (e == null) {
-            saveFile((File) object);
+            if (object instanceof File) {
+                saveFile((File) object);
+            } if (object instanceof Export) {
+                File d = getCurrentDirectory();
+                setSelectedFile(((Export) object).getTargetFile());
+                setCurrentDirectory(d);
+                if(saveFile()) {
+                    FileDirectoryHandler.copyFile2(((Export) object).getTargetFile(), file);
+                    ((Export) object).getTargetFile().delete();
+                }
+            }
         }
     }
 }

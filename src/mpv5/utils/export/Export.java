@@ -16,6 +16,7 @@
  */
 package mpv5.utils.export;
 
+import enoa.handler.TemplateHandler;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.HashMap;
@@ -108,15 +109,40 @@ public class Export extends HashMap<String, Object> implements Waitable {
         new Job(ex, (Waiter) new PrintJob()).execute();
     }
 
-    /**
-     * Create a {@link Waitable} which is able to create a file
+       /**
+     * Create a {@link Waitable} which is able to create a file PDF
      * @param preloadedTemplate
      * @param dataOwner
      * @return
      */
     public static Waitable createFile(Template preloadedTemplate, DatabaseObject dataOwner) {
+        return createFile(null, preloadedTemplate, dataOwner);
+    }
+
+    /**
+     * Create a {@link Waitable} which is able to create a file ODT
+     * @param preloadedTemplate
+     * @param dataOwner
+     * @return
+     */
+    public static Waitable sourceFile(Template preloadedTemplate, DatabaseObject dataOwner) {
+        return sourceFile(null, preloadedTemplate, dataOwner);
+    }
+    /**
+     * Create a {@link Waitable} which is able to create a file PDF
+     * @param aname
+     * @param preloadedTemplate
+     * @param dataOwner
+     * @return
+     */
+    public static Waitable createFile(String aname, Template preloadedTemplate, DatabaseObject dataOwner) {
         HashMap<String, Object> hm1 = new FormFieldsHandler(dataOwner).getFormattedFormFields(null);
-        File f2 = FileDirectoryHandler.getTempFile("pdf");
+        File f2;
+        if (aname == null) {
+            f2 = FileDirectoryHandler.getTempFile("pdf");
+        } else {
+            f2 = FileDirectoryHandler.getTempFile(aname, "pdf");
+        }
         Export ex = new Export(preloadedTemplate);
         ex.putAll(hm1);
         ex.setTemplate(preloadedTemplate.getExFile());
@@ -125,23 +151,45 @@ public class Export extends HashMap<String, Object> implements Waitable {
     }
 
     /**
-     * (Pre)load a template. Do not run this from the EDT, as the fetching of the templatefile from the database might take a while.
+     * Create a {@link Waitable} which is able to create a file ODT
+     * @param aname
+     * @param preloadedTemplate
      * @param dataOwner
      * @return
      */
-    public static Template loadTemplate(final DatabaseObject dataOwner) {
-        Template preloadedTemplate;
-        preloadedTemplate = Template.loadTemplate(dataOwner);
-        Exportable preloadedExportFile;
-        if (preloadedTemplate != null) {
-            try {
-                preloadedExportFile = preloadedTemplate.getExFile();
-            } catch (Exception e) {
-                Log.Debug(e);
-            }
+    public static Waitable sourceFile(String aname, Template preloadedTemplate, DatabaseObject dataOwner) {
+        HashMap<String, Object> hm1 = new FormFieldsHandler(dataOwner).getFormattedFormFields(null);
+        File f2;
+        if (aname == null) {
+            f2 = FileDirectoryHandler.getTempFile("odt");
+        } else {
+            f2 = FileDirectoryHandler.getTempFile(aname, "odt");
         }
-        return preloadedTemplate;
+
+        Export ex = new Export(preloadedTemplate);
+        ex.putAll(hm1);
+        ex.setTemplate(preloadedTemplate.getExFile());
+        ex.setTargetFile(f2);
+        return ex;
     }
+//    /**
+//     * (Pre)load a template. Do not run this from the EDT, as the fetching of the templatefile from the database might take a while.
+//     * @param dataOwner
+//     * @return
+//     */
+//    public static Template loadTemplate(final DatabaseObject dataOwner) {
+//        Template preloadedTemplate;
+//        preloadedTemplate = TemplateHandler.loadTemplate(dataOwner);
+//        Exportable preloadedExportFile;
+//        if (preloadedTemplate != null) {
+//            try {
+//                preloadedExportFile = preloadedTemplate.getExFile();
+//            } catch (Exception e) {
+//                Log.Debug(e);
+//            }
+//        }
+//        return preloadedTemplate;
+//    }
     private Exportable file;
     private File toFile;
     private String targetName;
@@ -185,7 +233,8 @@ public class Export extends HashMap<String, Object> implements Waitable {
      */
     public void processData(File toFile) throws NodataFoundException, FileNotFoundException {
         if (this.isEmpty()) {
-            throw new NodataFoundException();
+//            throw new NodataFoundException();
+//            return;
         }
 
         if (file == null) {

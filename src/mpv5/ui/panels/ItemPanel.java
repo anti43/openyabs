@@ -21,6 +21,7 @@ along with YaBS.  If not, see <http://www.gnu.org/licenses/>.
  */
 package mpv5.ui.panels;
 
+import enoa.handler.TemplateHandler;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
@@ -101,7 +102,7 @@ import mpv5.utils.ui.TextFieldUtils;
  *
  * 
  */
-public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSelectionChangeReceiver {
+public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSelectionChangeReceiver, ExportablePanel {
 
     private static final long serialVersionUID = 1L;
     private Item dataOwner;
@@ -313,11 +314,8 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
                 if (object.isReadOnly()) {
                     Popup.notice(Messages.LOCKED_BY);
                 }
-                preload = false;
-                button_preview.setEnabled(preload);
-                preloadTemplate();
-                preloadTemplate2();
-                preloadTemplate3();
+                button_preview.setEnabled(false);
+                preloadTemplates();
                 validate();
             }
         } else if (object instanceof SubItem) {
@@ -453,7 +451,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
         button_schedule = new javax.swing.JButton();
         button_preview = new javax.swing.JButton();
         button_deliverynote = new javax.swing.JButton();
-        button_deliverynote1 = new javax.swing.JButton();
+        button_orderconf = new javax.swing.JButton();
         jPanel2 = new javax.swing.JPanel();
         contactname = new mpv5.ui.beans.LabeledCombobox();
         contactcity = new javax.swing.JTextField();
@@ -825,18 +823,18 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
         });
         jToolBar1.add(button_deliverynote);
 
-        button_deliverynote1.setText(bundle.getString("ItemPanel.button_deliverynote1.text")); // NOI18N
-        button_deliverynote1.setEnabled(false);
-        button_deliverynote1.setFocusable(false);
-        button_deliverynote1.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        button_deliverynote1.setName("button_deliverynote1"); // NOI18N
-        button_deliverynote1.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        button_deliverynote1.addActionListener(new java.awt.event.ActionListener() {
+        button_orderconf.setText(bundle.getString("ItemPanel.button_orderconf.text")); // NOI18N
+        button_orderconf.setEnabled(false);
+        button_orderconf.setFocusable(false);
+        button_orderconf.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        button_orderconf.setName("button_orderconf"); // NOI18N
+        button_orderconf.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        button_orderconf.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                button_deliverynote1ActionPerformed(evt);
+                button_orderconfActionPerformed(evt);
             }
         });
-        jToolBar1.add(button_deliverynote1);
+        jToolBar1.add(button_orderconf);
 
         jPanel2.setBackground(new java.awt.Color(255, 255, 255));
         jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("ItemPanel.jPanel2.border.title"))); // NOI18N
@@ -1074,7 +1072,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
                     .addComponent(removefile, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(addfile, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)))
             .addComponent(jToolBar2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 799, Short.MAX_VALUE)
-            .addComponent(jToolBar1, javax.swing.GroupLayout.DEFAULT_SIZE, 799, Short.MAX_VALUE)
+            .addComponent(jToolBar1, javax.swing.GroupLayout.PREFERRED_SIZE, 799, Short.MAX_VALUE)
             .addComponent(jPanel5, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         rightpaneLayout.setVerticalGroup(
@@ -1268,10 +1266,10 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
         }
     }//GEN-LAST:event_jButton3ActionPerformed
 
-    private void button_deliverynote1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button_deliverynote1ActionPerformed
+    private void button_orderconfActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button_orderconfActionPerformed
 
         confirmation();
-    }//GEN-LAST:event_button_deliverynote1ActionPerformed
+    }//GEN-LAST:event_button_orderconfActionPerformed
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private mpv5.ui.beans.LabeledCombobox accountselect;
     private javax.swing.JButton addItem;
@@ -1279,9 +1277,9 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
     private javax.swing.JButton addfile;
     private javax.swing.ButtonGroup buttonGroup1;
     private javax.swing.JButton button_deliverynote;
-    private javax.swing.JButton button_deliverynote1;
     private javax.swing.JButton button_elevate;
     private javax.swing.JButton button_order2;
+    private javax.swing.JButton button_orderconf;
     private javax.swing.JButton button_preview;
     private javax.swing.JButton button_reminders;
     private javax.swing.JButton button_schedule;
@@ -1711,101 +1709,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
         }
     }
 
-    private void preview() {
-        PreviewPanel pr;
-        if (dataOwner != null && dataOwner.isExisting()) {
-            if (preloadedTemplate != null && preload) {
-                pr = new PreviewPanel();
-                pr.setDataOwner(dataOwner);
-                new Job(Export.createFile(preloadedTemplate, dataOwner), pr).execute();
-            } else {
-                Popup.notice(Messages.NO_TEMPLATE_LOADED + " (" + mpv5.db.objects.User.getCurrentUser() + ")");
-            }
-        }
-    }
 
-    private void preloadTemplate() {
-        Runnable runnable = new Runnable() {
-
-            public void run() {
-                preloadedTemplate = Template.loadTemplate(dataOwner);
-                if (preloadedTemplate != null) {
-                    try {
-                        preloadedExportFile = preloadedTemplate.getExFile();
-                        preload = true;
-                        button_preview.setEnabled(preload);
-                        button_preview.setText(Messages.ACTION_PREVIEW.getValue());
-                    } catch (Exception e) {
-                        Log.Debug(e);
-                    }
-                } else {
-                    button_preview.setText(Messages.OO_NO_TEMPLATE.getValue());
-                    button_preview.setEnabled(false);
-                }
-            }
-        };
-        new Thread(runnable).start();
-    }
-    private Exportable preloadedExportFile3;
-    private Exportable preloadedExportFile2;
-    private Exportable preloadedExportFile;
-    private Template preloadedTemplate3;
-    private Template preloadedTemplate2;
-    private Template preloadedTemplate;
-    private boolean preload3 = false;
-    private boolean preload2 = false;
-    private boolean preload = false;
-
-    private void preloadTemplate2() {
-        Runnable runnable = new Runnable() {
-
-            public void run() {
-                Item it = new Item();
-                it.setInttype(Item.TYPE_DELIVERY_NOTE);
-                preloadedTemplate2 = Template.loadTemplate(it);
-                if (preloadedTemplate2 != null) {
-                    try {
-                        preloadedExportFile2 = preloadedTemplate2.getExFile();
-                        preload2 = true;
-                        button_deliverynote.setEnabled(preload);
-//                        button_deliverynote.setText(Messages.ACTION_PREVIEW.getValue());
-                    } catch (Exception e) {
-                        Log.Debug(e);
-                    }
-                } else {
-//                    button_preview.setText(Messages.OO_NO_TEMPLATE.getValue());
-                    button_deliverynote.setEnabled(false);
-                }
-            }
-        };
-        new Thread(runnable).start();
-    }
-
-    private void preloadTemplate3() {
-        Runnable runnable = new Runnable() {
-
-            public void run() {
-                Item it = new Item();
-                it.setInttype(Item.TYPE_ORDER_CONFIRMATION);
-                preloadedTemplate3 = Template.loadTemplate(it);
-
-                if (preloadedTemplate3 != null) {
-                    try {
-                        preloadedExportFile3 = preloadedTemplate3.getExFile();
-                        preload3 = true;
-                        button_deliverynote1.setEnabled(preload);
-//                        button_deliverynote.setText(Messages.ACTION_PREVIEW.getValue());
-                    } catch (Exception e) {
-                        Log.Debug(e);
-                    }
-                } else {
-//                    button_preview.setText(Messages.OO_NO_TEMPLATE.getValue());
-                    button_deliverynote1.setEnabled(false);
-                }
-            }
-        };
-        new Thread(runnable).start();
-    }
 
     public void actionBeforeCreate() {
         status.setSelectedIndex(Item.STATUS_IN_PROGRESS);
@@ -1822,34 +1726,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
     public void actionBeforeSave() {
     }
 
-    public void mail() {
-        MailMessage m = null;
-        if (dataOwner != null && dataOwner.isExisting()) {
-            if (preloadedTemplate != null && preload) {
 
-                try {
-                    Contact cont = (Contact) (Contact.getObject(Context.getContact(), dataOwner.__getContactsids()));
-                    Export.mail(preloadedTemplate, dataOwner, cont);
-                } catch (NodataFoundException ex) {
-                    Log.Debug(ex);
-                }
-            } else {
-                Popup.notice(Messages.NO_TEMPLATE_LOADED + " (" + mpv5.db.objects.User.getCurrentUser() + ")");
-            }
-        }
-    }
-
-    public void print() {
-        if (dataOwner != null && dataOwner.isExisting()) {
-            if (preloadedTemplate != null && preload) {
-
-                Export.print(preloadedTemplate, dataOwner);
-
-            } else {
-                Popup.notice(Messages.NO_TEMPLATE_LOADED + " (" + mpv5.db.objects.User.getCurrentUser() + ")");
-            }
-        }
-    }
     List<Item> usedOrders = new Vector<Item>();
 
     private void prepareTable() {
@@ -1941,14 +1818,13 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
         itemtable.getColumnModel().getColumn(12).setCellEditor(new ButtonEditor(b2));
     }
 
-    private void delivery() {
+        private void delivery() {
         PreviewPanel pr;
         if (dataOwner != null && dataOwner.isExisting()) {
-            if (preloadedTemplate2 != null && preload2) {
-
+            if (TemplateHandler.isLoaded(dataOwner, TemplateHandler.TYPE_DELIVERY_NOTE)) {
                 pr = new PreviewPanel();
                 pr.setDataOwner(dataOwner);
-                new Job(Export.createFile(preloadedTemplate2, dataOwner), pr).execute();
+                new Job(Export.createFile(TemplateHandler.loadTemplate(dataOwner, TemplateHandler.TYPE_DELIVERY_NOTE), dataOwner), pr).execute();
             } else {
                 Popup.notice(Messages.NO_TEMPLATE_LOADED + " (" + mpv5.db.objects.User.getCurrentUser() + ")");
             }
@@ -1958,16 +1834,98 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
     private void confirmation() {
         PreviewPanel pr;
         if (dataOwner != null && dataOwner.isExisting()) {
-            if (preloadedTemplate3 != null && preload3) {
+            if (TemplateHandler.isLoaded(dataOwner, TemplateHandler.TYPE_ORDER_CONFIRMATION)) {
 
                 pr = new PreviewPanel();
                 pr.setDataOwner(dataOwner);
-                new Job(Export.createFile(preloadedTemplate3, dataOwner), pr).execute();
+                new Job(Export.createFile(TemplateHandler.loadTemplate(dataOwner, TemplateHandler.TYPE_ORDER_CONFIRMATION), dataOwner), pr).execute();
             } else {
                 Popup.notice(Messages.NO_TEMPLATE_LOADED + " (" + mpv5.db.objects.User.getCurrentUser() + ")");
             }
         }
     }
+
+
+    public void mail() {
+        MailMessage m = null;
+        if (dataOwner != null && dataOwner.isExisting()) {
+            if (TemplateHandler.isLoaded(dataOwner, dataOwner.__getInttype())) {
+
+                try {
+                    Contact cont = (Contact) (Contact.getObject(Context.getContact(), dataOwner.__getContactsids()));
+                    Export.mail(TemplateHandler.loadTemplate(dataOwner, dataOwner.__getInttype()), dataOwner, cont);
+                } catch (NodataFoundException ex) {
+                    Log.Debug(ex);
+                }
+            } else {
+                Popup.notice(Messages.NO_TEMPLATE_LOADED + " (" + mpv5.db.objects.User.getCurrentUser() + ")");
+            }
+        }
+    }
+
+    public void print() {
+        if (dataOwner != null && dataOwner.isExisting()) {
+            if (TemplateHandler.isLoaded(dataOwner, dataOwner.__getInttype())) {
+                Export.print(TemplateHandler.loadTemplate(dataOwner, dataOwner.__getInttype()), dataOwner);
+            } else {
+                Popup.notice(Messages.NO_TEMPLATE_LOADED + " (" + mpv5.db.objects.User.getCurrentUser() + ")");
+            }
+        }
+    }
+
+
+    private void preview() {
+        PreviewPanel pr;
+        if (dataOwner != null && dataOwner.isExisting()) {
+            if (TemplateHandler.isLoaded(dataOwner, dataOwner.__getInttype())) {
+                pr = new PreviewPanel();
+                pr.setDataOwner(dataOwner);
+                new Job(Export.createFile(TemplateHandler.loadTemplate(dataOwner, dataOwner.__getInttype()), dataOwner), pr).execute();
+            } else {
+                Popup.notice(Messages.NO_TEMPLATE_LOADED + " (" + mpv5.db.objects.User.getCurrentUser() + ")");
+            }
+        }
+    }
+
+    private void preloadTemplates() {
+        Runnable runnable = new Runnable() {
+
+            public void run() {
+                TemplateHandler.loadTemplateFor(button_preview, dataOwner, dataOwner.__getInttype());
+                TemplateHandler.loadTemplateFor(button_deliverynote, dataOwner, TemplateHandler.TYPE_DELIVERY_NOTE);
+                TemplateHandler.loadTemplateFor(button_orderconf, dataOwner, TemplateHandler.TYPE_ORDER_CONFIRMATION);
+                TemplateHandler.loadTemplateFor(button_reminders, dataOwner, TemplateHandler.TYPE_REMINDER);
+
+                if (TemplateHandler.isLoaded(dataOwner, dataOwner.__getInttype())) {
+                    button_preview.setText(Messages.ACTION_PREVIEW.getValue());
+                } else {
+                    button_preview.setText(Messages.OO_NO_TEMPLATE.getValue());
+                }
+            }
+        };
+        new Thread(runnable).start();
+    }
+
+    public void pdf() {
+       if (dataOwner != null && dataOwner.isExisting()) {
+            if (TemplateHandler.isLoaded(dataOwner, dataOwner.__getInttype())) {
+                new Job(Export.createFile(dataOwner.__getCName(), TemplateHandler.loadTemplate(dataOwner, dataOwner.__getInttype()), dataOwner), new DialogForFile()).execute();
+            } else {
+                Popup.notice(Messages.NO_TEMPLATE_LOADED + " (" + mpv5.db.objects.User.getCurrentUser() + ")");
+            }
+        }
+    }
+
+    public void odt() {
+          if (dataOwner != null && dataOwner.isExisting()) {
+            if (TemplateHandler.isLoaded(dataOwner, dataOwner.__getInttype())) {
+                new Job(Export.sourceFile(dataOwner.__getCName(), TemplateHandler.loadTemplate(dataOwner, dataOwner.__getInttype()), dataOwner), new DialogForFile()).execute();
+            } else {
+                Popup.notice(Messages.NO_TEMPLATE_LOADED + " (" + mpv5.db.objects.User.getCurrentUser() + ")");
+            }
+        }
+    }
+
 }
 
 

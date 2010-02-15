@@ -1,6 +1,7 @@
 package mpv5.ui.dialogs.subcomponents;
 
 import enoa.handler.TableHandler;
+import enoa.handler.TemplateHandler;
 import java.awt.Component;
 import java.awt.Desktop;
 import java.io.File;
@@ -67,7 +68,7 @@ public class ControlPanel_Templates extends javax.swing.JPanel implements Contro
     public ControlPanel_Templates() {
         if (MPSecurityManager.checkAdminAccess()) {
             initComponents();
-            type.getComboBox().setModel(new MPComboboxModel(MPComboBoxModelItem.toItems(Template.getTypes())));
+            type.getComboBox().setModel(new MPComboboxModel(MPComboBoxModelItem.toItems(TemplateHandler.getTypes())));
             refresh();
             groupname.setModel(new DefaultComboBoxModel(
                     MPComboBoxModelItem.toItems(new DatabaseSearch(Context.getGroup()).getValuesFor(Context.getGroup().getSubID(), null, ""))));
@@ -369,7 +370,7 @@ public class ControlPanel_Templates extends javax.swing.JPanel implements Contro
             if (dato.save()) {
                 actionAfterSave();
                 refresh();
-                Template.cacheTemplates();
+                TemplateHandler.cacheTemplates();
             } else {
                 showRequiredFields();
             }
@@ -379,7 +380,7 @@ public class ControlPanel_Templates extends javax.swing.JPanel implements Contro
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
         if (Popup.Y_N_dialog(Messages.REALLY_DELETE)) {
             if (dataOwner != null) {
-                Template.templateCache.clear();
+                TemplateHandler.templateCache.clear();
                 DatabaseObject dato = dataOwner;
                 dato.getPanelData(this);
                 dato.delete();
@@ -402,7 +403,7 @@ public class ControlPanel_Templates extends javax.swing.JPanel implements Contro
             dataOwner.getPanelData(this);
             dataOwner.setIDS(-1);
             dataOwner.save();
-            Template.cacheTemplates();
+            TemplateHandler.cacheTemplates();
         }
 
         refresh();

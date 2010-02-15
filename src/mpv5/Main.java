@@ -29,6 +29,7 @@ import org.jdesktop.application.SingleFrameApplication;
 
 import com.l2fprod.common.swing.plaf.LookAndFeelAddons;
 import enoa.connection.NoaConnection;
+import enoa.handler.TemplateHandler;
 import java.awt.Font;
 import java.io.File;
 import java.net.HttpURLConnection;
@@ -610,7 +611,7 @@ public class Main extends SingleFrameApplication {
                             } catch (InterruptedException ex) {
                             }
                             //Needed to move this to here; otherwise the oo connection may not be initialised
-                            Template.cacheTemplates();
+                            TemplateHandler.cacheTemplates();
                             running = false;
                         } else {
                             try {
@@ -751,6 +752,7 @@ public class Main extends SingleFrameApplication {
         try {
             x.write0("Locked on " + new Date() + instanceIdentifier + LocalSettings.getConnectionID() + "]");
             Log.Debug(this, "Application will start now: " + lockfile);
+            lockfile.deleteOnExit();
             return true;
         } catch (Exception e) {
             Log.Debug(e);

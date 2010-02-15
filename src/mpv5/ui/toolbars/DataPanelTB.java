@@ -157,7 +157,7 @@ public class DataPanelTB extends javax.swing.JPanel {
         commonActionsToolbar.setPreferredSize(new java.awt.Dimension(342, 41));
 
         but1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/viewmag.png"))); // NOI18N
-        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("mpv5/resources/languages/Panels"); // NOI18N
+        java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle(); // NOI18N
         but1.setText(bundle.getString("DataPanelTB.but1.text")); // NOI18N
         but1.setToolTipText(bundle.getString("DataPanelTB.but1.toolTipText")); // NOI18N
         but1.setContentAreaFilled(false);
@@ -350,7 +350,6 @@ public class DataPanelTB extends javax.swing.JPanel {
         pdfButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         pdfButton.setName("pdfButton"); // NOI18N
         pdfButton.setPressedIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/xclock.png"))); // NOI18N
-        pdfButton.setRolloverIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/bright_mail_reply.png"))); // NOI18N
         pdfButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         pdfButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -367,7 +366,6 @@ public class DataPanelTB extends javax.swing.JPanel {
         odtButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         odtButton.setName("odtButton"); // NOI18N
         odtButton.setPressedIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/xclock.png"))); // NOI18N
-        odtButton.setRolloverIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/bright_mail_reply.png"))); // NOI18N
         odtButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         odtButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {

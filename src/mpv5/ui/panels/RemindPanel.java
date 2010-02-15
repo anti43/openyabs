@@ -21,6 +21,7 @@
  */
 package mpv5.ui.panels;
 
+import enoa.handler.TemplateHandler;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
@@ -314,6 +315,9 @@ public class RemindPanel extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        if (dataOwner == null) {
+            dataOwner = new Reminder();
+        }
         dataOwner.setIDS(-1);
         save();
     }//GEN-LAST:event_jButton2ActionPerformed
@@ -355,12 +359,12 @@ public class RemindPanel extends javax.swing.JPanel {
 
         PreviewPanel pr;
         if (dataOwner != null && dataOwner.isExisting()) {
-            Template t = Template.loadTemplate(dataOwner);
+            Template t = TemplateHandler.loadTemplate(dataOwner, TemplateHandler.TYPE_REMINDER);
             if (t != null) {
-                Exportable te = Template.loadTemplate(dataOwner).getExFile();
+                Exportable te = TemplateHandler.loadTemplate(dataOwner, TemplateHandler.TYPE_REMINDER).getExFile();
                 HashMap<String, Object> hm1 = new FormFieldsHandler(dataOwner).getFormattedFormFields(null);
                 File f2 = FileDirectoryHandler.getTempFile("pdf");
-                Export ex = new Export(null);
+                Export ex = new Export(t);
                 ex.putAll(hm1);
                 ex.setTemplate(te);
                 ex.setTargetFile(f2);
@@ -433,13 +437,21 @@ public class RemindPanel extends javax.swing.JPanel {
                 s.setCName(msg);
                 s.setGroupsids(mpv5.db.objects.User.getCurrentUser().__getGroupsids());
                 s.setDescription(jTextPane1.getText());
-                s.setExtravalue(Double.valueOf(labeledTextField1.getText()));
+                try {
+                    s.setExtravalue(Double.valueOf(labeledTextField1.getText()));
+                } catch (NumberFormatException numberFormatException) {
+                    s.setExtravalue(0d);
+                }
                 s.save();
                 labeledCombobox3.triggerSearch();
 
             }
             dataOwner.setDescription(jTextPane1.getText());
-            dataOwner.setExtravalue(Double.valueOf(labeledTextField1.getText()));
+            try {
+                dataOwner.setExtravalue(Double.valueOf(labeledTextField1.getText()));
+            } catch (NumberFormatException numberFormatException) {
+                dataOwner.setExtravalue(0d);
+            }
             dataOwner.setItemsids(i.__getIDS());
             dataOwner.setStagesids(s.__getIDS());
             dataOwner.setCName(s + "@" + i);

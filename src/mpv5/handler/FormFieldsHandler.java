@@ -50,17 +50,20 @@ public class FormFieldsHandler {
      * @return A HashMap<key,value/>
      */
     public synchronized HashMap<String, Object> getFormFields() {
-        ArrayList<Object[]> m = obj.getValues2();
         HashMap<String, Object> map = new HashMap<String, Object>();
-        for (int i = 0; i < m.size(); i++) {
-            Object[] vals = m.get(i);
-            if (vals[1] == null) {
-                vals[1] = "";
+        if (obj!=null) {
+            ArrayList<Object[]> m = obj.getValues2();
+            map = new HashMap<String, Object>();
+            for (int i = 0; i < m.size(); i++) {
+                Object[] vals = m.get(i);
+                if (vals[1] == null) {
+                    vals[1] = "";
+                }
+                map.put(vals[0].toString().toLowerCase(), vals[1]);
             }
-            map.put(vals[0].toString().toLowerCase(), vals[1]);
-        }
 
-        obj.resolveReferences(map);
+            obj.resolveReferences(map);
+        }
         return map;
     }
 

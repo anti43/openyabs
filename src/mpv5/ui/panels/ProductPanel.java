@@ -21,6 +21,7 @@ along with YaBS.  If not, see <http://www.gnu.org/licenses/>.
  */
 package mpv5.ui.panels;
 
+import enoa.handler.TemplateHandler;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
@@ -1028,7 +1029,7 @@ public class ProductPanel extends javax.swing.JPanel implements DataPanel, MPCBS
         if (cname.getText() != null && cname.getText().length() > 0) {
 
             cnumber_ = cnumber.get_Text();
-            
+
             try {
                 suppliersids_ = Integer.valueOf(contactname.getSelectedItem().getId());
             } catch (Exception numberFormatException) {
@@ -1315,7 +1316,14 @@ public class ProductPanel extends javax.swing.JPanel implements DataPanel, MPCBS
         Runnable runnable = new Runnable() {
 
             public void run() {
-                preloadedTemplate = Template.loadTemplate(dataOwner);
+                if (dataOwner.__getInttype() == Product.TYPE_PRODUCT) {
+                    preloadedTemplate = TemplateHandler.loadTemplate(dataOwner, TemplateHandler.TYPE_PRODUCT);
+                    TemplateHandler.loadTemplateFor(button_preview, dataOwner, TemplateHandler.TYPE_PRODUCT);
+                } else {
+                    preloadedTemplate = TemplateHandler.loadTemplate(dataOwner, TemplateHandler.TYPE_SERVICE);
+                    TemplateHandler.loadTemplateFor(button_preview, dataOwner, TemplateHandler.TYPE_SERVICE);
+                }
+
                 if (preloadedTemplate != null) {
                     try {
                         preloadedExportFile = preloadedTemplate.getExFile();
@@ -1335,8 +1343,8 @@ public class ProductPanel extends javax.swing.JPanel implements DataPanel, MPCBS
 
     public void actionBeforeCreate() {
         if (old_cnumber.equals(cnumber_)) {
-                cnumber_ = null;
-            }
+            cnumber_ = null;
+        }
     }
 
     public void actionBeforeSave() {

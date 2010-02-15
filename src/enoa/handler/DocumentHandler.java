@@ -19,10 +19,7 @@ package enoa.handler;
 import ag.ion.bion.officelayer.document.DocumentDescriptor;
 import ag.ion.bion.officelayer.document.DocumentException;
 import ag.ion.bion.officelayer.document.IDocument;
-import ag.ion.bion.officelayer.filter.IFilter;
-import ag.ion.bion.officelayer.filter.MSOffice97Filter;
-import ag.ion.bion.officelayer.filter.PDFFilter;
-import ag.ion.bion.officelayer.filter.TextFilter;
+import ag.ion.bion.officelayer.filter.*;
 import ag.ion.bion.officelayer.form.IFormComponent;
 import ag.ion.bion.officelayer.text.ITextDocument;
 import ag.ion.bion.officelayer.text.ITextField;
@@ -30,6 +27,7 @@ import ag.ion.bion.officelayer.text.ITextFieldService;
 import ag.ion.bion.officelayer.text.IVariableTextFieldMaster;
 import ag.ion.bion.officelayer.text.TextException;
 import ag.ion.noa.NOAException;
+import ag.ion.noa.filter.OpenDocumentFilter;
 import com.sun.star.awt.XTextComponent;
 import com.sun.star.beans.XPropertySet;
 import com.sun.star.form.XFormComponent;
@@ -140,7 +138,12 @@ public class DocumentHandler {
             filter = MSOffice97Filter.FILTER;
         } else if (extension.equalsIgnoreCase(".txt")) {
             filter = TextFilter.FILTER;
+        } else if (extension.equalsIgnoreCase(".odt")) {
+            filter = OpenDocumentFilter.FILTER;
+        } else if (extension.equalsIgnoreCase(".html")) {
+            filter = HTMLFilter.FILTER;
         }
+
 
         if (filter != null) {
             try {
@@ -290,6 +293,10 @@ public class DocumentHandler {
             filter = MSOffice97Filter.FILTER;
         } else if (extension.equalsIgnoreCase(".txt")) {
             filter = TextFilter.FILTER;
+        } else if (extension.equalsIgnoreCase(".odt")) {
+            filter = OpenDocumentFilter.FILTER;
+        } else if (extension.equalsIgnoreCase(".html")) {
+            filter = HTMLFilter.FILTER;
         }
 
         if (filter != null) {

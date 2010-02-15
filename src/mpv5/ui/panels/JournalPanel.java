@@ -22,22 +22,16 @@
 package mpv5.ui.panels;
 
 import enoa.handler.TableHandler;
-import java.awt.BorderLayout;
-import java.awt.Component;
+import enoa.handler.TemplateHandler;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Date;
 import java.util.List;
 import java.util.Vector;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.swing.BoxLayout;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComponent;
-import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.table.DefaultTableModel;
-import mpv5.handler.TrashHandler;
 import mpv5.db.common.Context;
 
 import mpv5.db.common.DatabaseObject;
@@ -54,7 +48,6 @@ import mpv5.db.objects.Revenue;
 import mpv5.db.objects.Template;
 import mpv5.globals.Messages;
 import mpv5.logging.Log;
-import mpv5.ui.beans.LabeledCombobox;
 import mpv5.ui.beans.MPCombobox;
 import mpv5.ui.dialogs.Popup;
 import mpv5.ui.frames.MPView;
@@ -69,7 +62,6 @@ import mpv5.utils.models.MPTableModel;
 import mpv5.utils.models.MPTreeModel;
 import mpv5.utils.tables.ExcelAdapter;
 import mpv5.utils.tables.TableFormat;
-import mpv5.utils.trees.TreeFormat;
 
 /**
  *
@@ -115,6 +107,7 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
         prinitingComboBox1.init(jTable1);
         refresh(null);
         jButton4.setEnabled(false);
+        loadTemplate();
     }
 
     public JournalPanel(Contact dataOwner) {
@@ -477,7 +470,6 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
 
         preview();
     }//GEN-LAST:event_jButton4ActionPerformed
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private mpv5.ui.beans.MPCombobox account1;
     private javax.swing.JPanel accountsp;
@@ -725,7 +717,7 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
                                     dd.and(new QueryParameter(c, forGroup.getDbIdentity() + "ids", forGroup.__getIDS(), QueryParameter.EQUALS));
                                 }
                             } else {
-                                if (forGroup!=null) {
+                                if (forGroup != null) {
                                     List<Group> gs = forGroup.getChildGroups();
                                     QueryParameter[] params = new QueryParameter[gs.size() + 1];
                                     params[0] = (new QueryParameter(c, forGroup.getDbIdentity() + "ids", forGroup.__getIDS(), QueryParameter.EQUALS));
@@ -838,7 +830,7 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
 
     private void preview() {
         PreviewPanel pr;
-        if (dataowner != null && dataowner.isExisting()) {
+//        if (dataowner != null && dataowner.isExisting()) {
             if (preloadedTemplate != null) {
                 pr = new PreviewPanel();
                 pr.setDataOwner(dataowner);
@@ -847,16 +839,22 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
             } else {
                 Popup.notice(Messages.NO_TEMPLATE_LOADED + " (" + mpv5.db.objects.User.getCurrentUser() + ")");
             }
-        }
+//        }
     }
 
     private void loadTemplate() {
         Runnable runnable = new Runnable() {
 
             public void run() {
-                preloadedTemplate = Export.loadTemplate(dataowner);
-
+                if (dataowner == null) {
+                    preloadedTemplate = TemplateHandler.loadTemplate(dataowner, TemplateHandler.TYPE_JOURNAL);
+                    TemplateHandler.loadTemplateFor(jButton4, dataowner, TemplateHandler.TYPE_JOURNAL);
+                } else {
+                    preloadedTemplate = TemplateHandler.loadTemplate(dataowner, TemplateHandler.TYPE_CONTACT);
+                    TemplateHandler.loadTemplateFor(jButton4, dataowner, TemplateHandler.TYPE_CONTACT);
+                }
             }
-        };new Thread(runnable).start();
+        };
+        new Thread(runnable).start();
     }
 }
