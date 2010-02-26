@@ -110,7 +110,8 @@ public abstract class FileDirectoryHandler {
      * @throws java.io.IOException
      */
     public static File copyFile2(File source, File target) throws FileNotFoundException, IOException {
-        Log.Debug(FileDirectoryHandler.class, "Copying file to " + target);
+        Log.Debug(FileDirectoryHandler.class, "Copying file from " +
+                 source + " to " + target);
         return new File(copyFile(source, target));
     }
 

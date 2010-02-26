@@ -23,6 +23,7 @@ import java.util.HashMap;
 import javax.swing.SwingUtilities;
 import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
+import mpv5.db.common.Formattable;
 import mpv5.db.common.NodataFoundException;
 import mpv5.db.common.QueryCriteria;
 import mpv5.db.objects.Contact;
@@ -30,6 +31,7 @@ import mpv5.db.objects.Item;
 import mpv5.db.objects.MailMessage;
 import mpv5.db.objects.Product;
 import mpv5.db.objects.Template;
+import mpv5.db.objects.User;
 import mpv5.globals.Messages;
 import mpv5.handler.FormFieldsHandler;
 import mpv5.handler.VariablesHandler;
@@ -67,7 +69,7 @@ public class Export extends HashMap<String, Object> implements Waitable {
         }
 
         HashMap<String, Object> hm1 = new FormFieldsHandler(dataOwner).getFormattedFormFields(null);
-        File f2 = FileDirectoryHandler.getTempFile(dataOwner.__getCName(), "pdf");
+        File f2 = FileDirectoryHandler.getTempFile(((Formattable)dataOwner).getFormatHandler().toUserString(), "pdf");
         Export ex = new Export(preloadedTemplate);
         ex.putAll(hm1);
 

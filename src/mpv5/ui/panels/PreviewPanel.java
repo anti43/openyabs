@@ -17,12 +17,14 @@ import javax.swing.JFrame;
 import javax.swing.JScrollPane;
 import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
+import mpv5.db.common.Formattable;
 import mpv5.db.common.NodataFoundException;
 import mpv5.db.common.QueryCriteria;
 import mpv5.db.common.QueryHandler;
 import mpv5.db.objects.Contact;
 import mpv5.db.objects.Item;
 import mpv5.db.objects.MailMessage;
+import mpv5.db.objects.User;
 import mpv5.globals.Messages;
 import mpv5.handler.VariablesHandler;
 import mpv5.logging.Log;
@@ -288,7 +290,7 @@ public class PreviewPanel extends javax.swing.JPanel implements Waiter {
 
         if (dataOwner != null) {
             try {
-                file = FileDirectoryHandler.copyFile2(file, new File(FileDirectoryHandler.getTempDir() + dataOwner.__getCName() + ".pdf"));
+                file = FileDirectoryHandler.copyFile2(file, new File(FileDirectoryHandler.getTempDir() + ((Formattable)dataOwner).getFormatHandler().toUserString() + ".pdf"));
             } catch (Exception ex) {
                 Log.Debug(ex);
             }
@@ -338,14 +340,14 @@ public class PreviewPanel extends javax.swing.JPanel implements Waiter {
 
         if (dataOwner != null) {
             try {
-                file = FileDirectoryHandler.copyFile2(file, new File(FileDirectoryHandler.getTempDir() + dataOwner.__getCName() + ".pdf"));
+                file = FileDirectoryHandler.copyFile2(file, new File(FileDirectoryHandler.getTempDir() + ((Formattable)dataOwner).getFormatHandler().toUserString() + ".pdf"));
             } catch (Exception ex) {
                 Log.Debug(ex);
             }
         }
 
         if (dataOwner != null && dataOwner.isExisting()) {
-            if (QueryHandler.instanceOf().clone(Context.getFiles()).insertFile(file, dataOwner, QueryCriteria.getSaveStringFor(dataOwner.__getCName()))) {
+            if (QueryHandler.instanceOf().clone(Context.getFiles()).insertFile(file, dataOwner, QueryCriteria.getSaveStringFor(((Formattable)dataOwner).getFormatHandler().toUserString().toString()))) {
                 Popup.notice(Messages.FILE_SAVED.toString() + file.getName());
                 if (parent != null) {
                     parent.refresh();
@@ -361,7 +363,7 @@ public class PreviewPanel extends javax.swing.JPanel implements Waiter {
 
         if (dataOwner != null) {
             try {
-                file = FileDirectoryHandler.copyFile2(file, new File(FileDirectoryHandler.getTempDir() + dataOwner.__getCName() + ".pdf"));
+                file = FileDirectoryHandler.copyFile2(file, new File(FileDirectoryHandler.getTempDir() + ((Formattable)dataOwner).getFormatHandler().toUserString() + ".pdf"));
             } catch (Exception ex) {
                 Log.Debug(ex);
             }
@@ -369,7 +371,7 @@ public class PreviewPanel extends javax.swing.JPanel implements Waiter {
         if (dataOwner == null) {
             d.setSelectedFile(new File(file.getName()));
         } else {
-            d.setSelectedFile(new File(dataOwner.__getCName() + ".pdf"));
+            d.setSelectedFile(new File(((Formattable)dataOwner).getFormatHandler().toUserString() + ".pdf"));
         }
         if (d.saveFile()) {
             d.getFile().delete();
@@ -387,7 +389,7 @@ public class PreviewPanel extends javax.swing.JPanel implements Waiter {
 
         if (dataOwner != null) {
             try {
-                file = FileDirectoryHandler.copyFile2(file, new File(FileDirectoryHandler.getTempDir() + dataOwner.__getCName() + ".pdf"));
+                file = FileDirectoryHandler.copyFile2(file, new File(FileDirectoryHandler.getTempDir() + ((Formattable)dataOwner).getFormatHandler().toUserString() + ".pdf"));
             } catch (Exception ex) {
                 Log.Debug(ex);
             }
