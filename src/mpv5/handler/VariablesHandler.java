@@ -17,10 +17,14 @@
 package mpv5.handler;
 
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
 import mpv5.db.common.NodataFoundException;
+import mpv5.db.objects.Contact;
 import mpv5.db.objects.Group;
+import mpv5.db.objects.Item;
 import mpv5.db.objects.SubItem;
 import mpv5.db.objects.User;
 import mpv5.logging.Log;
@@ -92,7 +96,7 @@ public abstract class VariablesHandler {
 //        old = target;
 
         Log.Debug(VariablesHandler.class, "Resolving vars for " + target.getContext() + "#" + target.ids);
-        String[][] vars = new String[GENERIC_VARS.values().length + getSpecialVarsOf(target).length][2];
+        String[][] vars = new String[GENERIC_VARS.values().length + getSpecialVarsOf(target).length + 5][2];
         GENERIC_VARS[] gens = GENERIC_VARS.values();
         int i;
         for (i = 0; i < gens.length; i++) {
@@ -122,7 +126,8 @@ public abstract class VariablesHandler {
             }
         }
         String[] specs = getSpecialVarsOf(target);
-        for (int j = 0; j < specs.length; j++) {
+        int j;
+        for (j = 0; j < specs.length; j++) {
             String variable = specs[j];
             vars[i + j][0] = variable;
 
@@ -134,6 +139,27 @@ public abstract class VariablesHandler {
                     vars[i + j][1] = value[1];
                 }
             }
+        }
+
+         if(target instanceof Item){
+            try {
+                Contact c = (Contact) DatabaseObject.getObject(Context.getContact(), ((Item) target).__getContactsids());
+
+                vars[i + j + 0] = (new String[]{"[contact.cname]".toUpperCase(), c.__getCName()});
+                vars[i + j + 1] = (new String[]{"[contact.company]".toUpperCase(), c.__getCompany()});
+                vars[i + j + 2] = (new String[]{"[contact.prename]".toUpperCase(), c.__getPrename()});
+                vars[i + j + 3] = (new String[]{"[contact.title]".toUpperCase(), c.__getTitle()});
+                vars[i + j + 4] = (new String[]{"[contact.country]".toUpperCase(), c.__getCountry()});
+            } catch (NodataFoundException ex) {
+                Log.Debug(ex);
+            }
+        } else {
+
+                vars[i + j + 0] = (new String[]{"What is 42?", "The Answer to Life, the Universe, and Everything."});
+                vars[i + j + 1] = (new String[]{"What is 42?", "The Answer to Life, the Universe, and Everything."});
+                vars[i + j + 2] = (new String[]{"What is 42?", "The Answer to Life, the Universe, and Everything."});
+                vars[i + j + 3] = (new String[]{"What is 42?", "The Answer to Life, the Universe, and Everything."});
+                vars[i + j + 4] = (new String[]{"What is 42?", "The Answer to Life, the Universe, and Everything."});
         }
 
         return vars;
@@ -150,7 +176,7 @@ public abstract class VariablesHandler {
         if (c != null) {
             for (int i = 0; i < c.length; i++) {
                 String[] data = c[i];
-//            Log.Debug(VariablesHandler.class, source + ": replacing key: " + data[0] + " with value: " + data[1]);
+            Log.Debug(VariablesHandler.class, source + ": replacing key: " + data[0] + " with value: " + data[1]);
                 if (data[1] != null) {
                     text = text.replace(data[0], data[1]);
                 }

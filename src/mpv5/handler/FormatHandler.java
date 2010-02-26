@@ -36,6 +36,7 @@ import mpv5.db.objects.Expense;
 import mpv5.db.objects.Item;
 import mpv5.db.objects.Product;
 import mpv5.db.objects.Revenue;
+import mpv5.db.objects.User;
 import mpv5.globals.Messages;
 import mpv5.logging.Log;
 import mpv5.ui.frames.MPView;
@@ -273,11 +274,11 @@ public class FormatHandler {
 
         String query = "";
         if (forThis.getContext().equals(Context.getItem())) {
-            query = "SELECT cnumber FROM " + forThis.getDbIdentity() + " WHERE cnumber = '" + toString(format, lastNumber + 1) + "' AND inttype =" +
-                    ((Item) forThis).__getInttype();
+            query = "SELECT cnumber FROM " + forThis.getDbIdentity() + " WHERE cnumber = '" + toString(format, lastNumber + 1) + "' AND inttype ="
+                    + ((Item) forThis).__getInttype();
         } else if (forThis.getContext().equals(Context.getProduct())) {
-            query = "SELECT cnumber FROM " + forThis.getDbIdentity() + " WHERE cnumber = '" + toString(format, lastNumber + 1) + "' AND inttype =" +
-                    ((Product) forThis).__getInttype();
+            query = "SELECT cnumber FROM " + forThis.getDbIdentity() + " WHERE cnumber = '" + toString(format, lastNumber + 1) + "' AND inttype ="
+                    + ((Product) forThis).__getInttype();
         } else {
             query = "SELECT cnumber FROM " + forThis.getDbIdentity() + " WHERE cnumber = '" + toString(format, lastNumber + 1) + "'";
         }
@@ -303,26 +304,31 @@ public class FormatHandler {
         return VariablesHandler.parse(format.format(new Object[]{number}), source);
     }
 
-//    /**
-//     * @return the type
-//     */
-//    public int getType() {
-//        return type;
-//    }
-//
-//    /**
-//     * @param type the type to set
-//     */
-//    public void setType(int type) {
-//        this.type = type;
-//    }
+    /**
+     * Returns the user defined (if defined) String representation of the parent object
+     * @return A formatted number
+     */
+    public synchronized String toUserString() {
+
+        String s = mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("saveformat");
+        if (s != null) {
+            if (s.contains("/")) {
+                s = s.substring(s.lastIndexOf("/") + 1);
+            }
+        } else {
+            s = source.toString();
+        }
+
+
+        return VariablesHandler.parse(s, source);
+    }
+
     /**
      * @return the type
      */
     public int getType() {
         return determineType(source);
     }
-
 
     /**
      * @return the startCount
@@ -355,21 +361,20 @@ public class FormatHandler {
 ////        Log.Debug(this, formatPattern);
 //        this.format = new MessageFormat(formatPattern);
 //    }
-
     /**
      *
      * @param string
      * @return
      */
     private synchronized int getIntegerPartOf(MessageFormat format, String string) {
-       
+
         try {
             Number n = null;
             MessageFormat f;
             try {
                 Log.Debug(this, format.toPattern());
                 f = new MessageFormat((VariablesHandler.parse(format.toPattern(), source)));
-                n = (Number)  f.parse(string, new ParsePosition(0))[0];
+                n = (Number) f.parse(string, new ParsePosition(0))[0];
 //                Log.Debug(this, f.toPattern());
 //                Log.Debug(this, string);
             } catch (Exception e) {
@@ -385,7 +390,6 @@ public class FormatHandler {
             return 0;
         }
     }
-
 
     /**
      * Returns the next determined number String

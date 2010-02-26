@@ -22,6 +22,9 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.security.NoSuchAlgorithmException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import javax.swing.DefaultCellEditor;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComboBox;
@@ -48,8 +51,10 @@ public class Test {
   
 
     public static void main(String... aArgs) throws NoSuchAlgorithmException, IOException {
-        System.out.print(new Double(0.1).toString());
-        MPView.getIdentifierView().addOrShowTab(null, aArgs);
+
+        DateFormat schnellformat = new SimpleDateFormat("yyyyMMddHHmmss");
+        Long arsch = Long.valueOf(schnellformat.format(new Date()));
+        System.out.print(arsch);
     }
 
 }

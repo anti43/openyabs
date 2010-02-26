@@ -18,6 +18,7 @@ package mpv5.db.objects;
 
 import mpv5.usermanagement.*;
 import java.awt.Font;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -40,6 +41,7 @@ import mpv5.db.common.QueryHandler;
 import mpv5.globals.LocalSettings;
 import mpv5.globals.Messages;
 import mpv5.db.objects.Property;
+import mpv5.handler.VariablesHandler;
 import mpv5.logging.Log;
 import mpv5.mail.MailConfiguration;
 import mpv5.pluginhandling.MP5Plugin;
@@ -57,6 +59,7 @@ import mpv5.utils.text.TypeConversion;
 public class User extends DatabaseObject {
 
     public static User currentUser;
+
     public static User getCurrentUser() {
         if (currentUser == null) {
             Log.Debug(MPView.class, "There is no user logged in here, using default user.");
@@ -81,6 +84,37 @@ public class User extends DatabaseObject {
 //        predefTitle = (" (" + usern.getName() + ")");
     }
 
+    /**
+     *
+     * @param ford
+     * @return The Users default save directory, if defined in the user properties. User.home instead.
+     */
+    public static File getSaveDir(DatabaseObject ford) {
+
+        String s = mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("saveformat");
+        String s2 = mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("savedir");
+        File basedir = null;
+        if (s2 != null) {
+            basedir = new File(s2);
+        } else {
+            basedir = new File(Main.USER_HOME);
+        }
+
+        File subdirs = null;
+        if (s != null) {
+            if (s.contains("/")) {
+                subdirs = new File(s.substring(0, s.lastIndexOf("/")));
+            }
+        }
+
+        File savedir = basedir;
+        if (subdirs != null) {
+            savedir = new File(VariablesHandler.parse(basedir.getPath() + File.separator + subdirs.getPath(), ford));
+        }
+
+        savedir.mkdirs();
+        return savedir;
+    }
     private String password = "";
     private String fullname = "";
     private String laf = "";
@@ -513,16 +547,16 @@ public class User extends DatabaseObject {
     }
 
     private void setProperties() {
-        
-                QueryCriteria criteria = new QueryCriteria();
-                criteria.addAndCondition("usersids", ids);
-                properties = new PropertyStore();
-                try {
-                    properties.addAll(QueryHandler.instanceOf().clone(Context.getProperties()).select("cname, value", criteria));
-                    defineMailConfig();
-                } catch (NodataFoundException ex) {
-                    Log.Debug(this, ex.getMessage());
-                }    
+
+        QueryCriteria criteria = new QueryCriteria();
+        criteria.addAndCondition("usersids", ids);
+        properties = new PropertyStore();
+        try {
+            properties.addAll(QueryHandler.instanceOf().clone(Context.getProperties()).select("cname, value", criteria));
+            defineMailConfig();
+        } catch (NodataFoundException ex) {
+            Log.Debug(this, ex.getMessage());
+        }
     }
 
     /**
@@ -630,7 +664,7 @@ public class User extends DatabaseObject {
      * @return the mailConfiguration
      */
     public MailConfiguration getMailConfiguration() {
-        if(mailConfiguration.getSmtpHost()==null || mailConfiguration.getSmtpHost().length() == 0) {
+        if (mailConfiguration.getSmtpHost() == null || mailConfiguration.getSmtpHost().length() == 0) {
             Popup.notice(Messages.NO_MAIL_CONFIG);
             Log.Debug(this, "SMTP host configuration not set: " + mailConfiguration.getSmtpHost());
         }

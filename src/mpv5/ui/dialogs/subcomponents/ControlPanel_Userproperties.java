@@ -9,6 +9,7 @@ import mpv5.globals.Messages;
 import mpv5.logging.Log;
 import mpv5.ui.beans.LightMPComboBox;
 import mpv5.ui.dialogs.ControlApplet;
+import mpv5.ui.dialogs.DialogForFile;
 import mpv5.ui.dialogs.Popup;
 import mpv5.ui.frames.MPView;
 import mpv5.ui.panels.MPControlPanel;
@@ -38,6 +39,8 @@ public class ControlPanel_Userproperties extends javax.swing.JPanel implements C
         shiptax.setSearchEnabled(true);
         shiptax.setContext(Context.getTaxes());
         shiptax.triggerSearch();
+
+        savedir.setFilter(DialogForFile.DIRECTORIES);
 
         loadSettings();
     }
@@ -85,6 +88,11 @@ public class ControlPanel_Userproperties extends javax.swing.JPanel implements C
         jLabel3 = new javax.swing.JLabel();
         smtppw = new javax.swing.JPasswordField();
         smtptls = new javax.swing.JCheckBox();
+        jPanel4 = new javax.swing.JPanel();
+        saveformat = new mpv5.ui.beans.LabeledTextField();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        jTextPane1 = new javax.swing.JTextPane();
+        savedir = new mpv5.ui.beans.LabeledTextChooser();
         jPanel6 = new javax.swing.JPanel();
         jButton4 = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
@@ -95,7 +103,7 @@ public class ControlPanel_Userproperties extends javax.swing.JPanel implements C
         setLayout(new java.awt.BorderLayout());
 
         jPanel1.setBackground(new java.awt.Color(255, 255, 255));
-        java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle(); // NOI18N
+        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("mpv5/resources/languages/Panels"); // NOI18N
         jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("ControlPanel_Userproperties.jPanel1.border.title"))); // NOI18N
         jPanel1.setName("jPanel1"); // NOI18N
 
@@ -134,13 +142,13 @@ public class ControlPanel_Userproperties extends javax.swing.JPanel implements C
             .addGroup(productstobillspropertiesLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(productstobillspropertiesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(cnumber, javax.swing.GroupLayout.DEFAULT_SIZE, 209, Short.MAX_VALUE)
-                    .addComponent(description, javax.swing.GroupLayout.DEFAULT_SIZE, 209, Short.MAX_VALUE)
-                    .addComponent(cname, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 209, Short.MAX_VALUE))
+                    .addComponent(cnumber, javax.swing.GroupLayout.DEFAULT_SIZE, 211, Short.MAX_VALUE)
+                    .addComponent(description, javax.swing.GroupLayout.DEFAULT_SIZE, 211, Short.MAX_VALUE)
+                    .addComponent(cname, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 211, Short.MAX_VALUE))
                 .addGap(8, 8, 8)
                 .addGroup(productstobillspropertiesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(ean, javax.swing.GroupLayout.DEFAULT_SIZE, 279, Short.MAX_VALUE)
-                    .addComponent(reference, javax.swing.GroupLayout.DEFAULT_SIZE, 279, Short.MAX_VALUE)
+                    .addComponent(ean, javax.swing.GroupLayout.DEFAULT_SIZE, 277, Short.MAX_VALUE)
+                    .addComponent(reference, javax.swing.GroupLayout.DEFAULT_SIZE, 277, Short.MAX_VALUE)
                     .addComponent(jButton3))
                 .addContainerGap())
         );
@@ -339,7 +347,7 @@ public class ControlPanel_Userproperties extends javax.swing.JPanel implements C
                 .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
                     .addComponent(labeledTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(labeledTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(15, 15, 15))
+                .addGap(14, 14, 14))
         );
 
         jPanel9.setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("ControlPanel_Userproperties.jPanel9.border.title"))); // NOI18N
@@ -393,14 +401,38 @@ public class ControlPanel_Userproperties extends javax.swing.JPanel implements C
                 .addContainerGap())
         );
 
+        jPanel4.setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("ControlPanel_Userproperties.jPanel4.border.title"))); // NOI18N
+        jPanel4.setName("jPanel4"); // NOI18N
+        jPanel4.setLayout(new java.awt.BorderLayout());
+
+        saveformat.set_Label(bundle.getString("ControlPanel_Userproperties.saveformat._Label")); // NOI18N
+        saveformat.setName("saveformat"); // NOI18N
+        jPanel4.add(saveformat, java.awt.BorderLayout.CENTER);
+
+        jScrollPane1.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
+        jScrollPane1.setName("jScrollPane1"); // NOI18N
+
+        jTextPane1.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 3, 1));
+        jTextPane1.setText(bundle.getString("ControlPanel_Userproperties.jTextPane1.text")); // NOI18N
+        jTextPane1.setName("jTextPane1"); // NOI18N
+        jTextPane1.setOpaque(false);
+        jScrollPane1.setViewportView(jTextPane1);
+
+        jPanel4.add(jScrollPane1, java.awt.BorderLayout.PAGE_START);
+
+        savedir.set_Label(bundle.getString("ControlPanel_Userproperties.savedir._Label")); // NOI18N
+        savedir.setName("savedir"); // NOI18N
+        jPanel4.add(savedir, java.awt.BorderLayout.PAGE_END);
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(jPanel8, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(jPanel9, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addComponent(jPanel3, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 546, Short.MAX_VALUE)
+            .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, 546, Short.MAX_VALUE)
+            .addComponent(jPanel8, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(jPanel9, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -409,7 +441,9 @@ public class ControlPanel_Userproperties extends javax.swing.JPanel implements C
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel8, javax.swing.GroupLayout.PREFERRED_SIZE, 79, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jPanel8, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel9, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
@@ -511,15 +545,20 @@ public class ControlPanel_Userproperties extends javax.swing.JPanel implements C
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
+    private javax.swing.JPanel jPanel4;
     private javax.swing.JPanel jPanel6;
     private javax.swing.JPanel jPanel8;
     private javax.swing.JPanel jPanel9;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JTextPane jTextPane1;
     private mpv5.ui.beans.LabeledTextField labeledTextField1;
     private mpv5.ui.beans.LabeledTextField labeledTextField2;
     private javax.swing.JCheckBox ordersoverproducts;
     private javax.swing.JCheckBox pasten;
     private javax.swing.JPanel productstobillsproperties;
     private javax.swing.JCheckBox reference;
+    private mpv5.ui.beans.LabeledTextChooser savedir;
+    private mpv5.ui.beans.LabeledTextField saveformat;
     private mpv5.ui.beans.LabeledCombobox shiptax;
     private javax.swing.JCheckBox showoptionalcolumn;
     private mpv5.ui.beans.LabeledTextField smtphost;
@@ -541,6 +580,8 @@ public class ControlPanel_Userproperties extends javax.swing.JPanel implements C
             mpv5.db.objects.User.getCurrentUser().getProperties().changeProperty(Context.getProduct() + LightMPComboBox.VALUE_SEARCHFIELDS, format.getText());
             mpv5.db.objects.User.getCurrentUser().getProperties().changeProperty(defcount.getName(), defcount.getText());
             mpv5.db.objects.User.getCurrentUser().getProperties().changeProperty(defunit.getName(), defunit.getText());
+            mpv5.db.objects.User.getCurrentUser().getProperties().changeProperty(saveformat.getName(), saveformat.getText().replace("\\", "/"));
+            mpv5.db.objects.User.getCurrentUser().getProperties().changeProperty(savedir.getName(), savedir.get_Text(false));
             mpv5.db.objects.User.getCurrentUser().getProperties().changeProperty(MPView.getTabPane(), "norecycletabs", tabs.isSelected());
             mpv5.db.objects.User.getCurrentUser().getProperties().changeProperty(MPView.getTabPane(), "avoidmultipleviews", views.isSelected());
             mpv5.db.objects.User.getCurrentUser().getProperties().changeProperty(MPView.getTabPane(), "hideunpaidbills", unpaidbills.isSelected());
@@ -616,6 +657,20 @@ public class ControlPanel_Userproperties extends javax.swing.JPanel implements C
             format.setText(s);
         } else {
             format.setText("_$cname$_ ");
+        }
+
+        String s1 = mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("saveformat");
+        if (s1 != null) {
+            saveformat.setText(s1);
+        } else {
+            format.setText("");
+        }
+
+        String s2 = mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("savedir");
+        if (s2 != null) {
+            savedir.set_Text(s2);
+        } else {
+            savedir.set_Text("");
         }
 
         if (mpv5.db.objects.User.getCurrentUser().getProperties().hasProperty(defcount.getName())) {

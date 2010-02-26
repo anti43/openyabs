@@ -1909,7 +1909,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
     public void pdf() {
        if (dataOwner != null && dataOwner.isExisting()) {
             if (TemplateHandler.isLoaded(dataOwner, dataOwner.__getInttype())) {
-                new Job(Export.createFile(dataOwner.__getCName(), TemplateHandler.loadTemplate(dataOwner, dataOwner.__getInttype()), dataOwner), new DialogForFile()).execute();
+                new Job(Export.createFile(dataOwner.getFormatHandler().toUserString(), TemplateHandler.loadTemplate(dataOwner, dataOwner.__getInttype()), dataOwner), new DialogForFile(User.getSaveDir(dataOwner))).execute();
             } else {
                 Popup.notice(Messages.NO_TEMPLATE_LOADED + " (" + mpv5.db.objects.User.getCurrentUser() + ")");
             }
@@ -1919,7 +1919,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
     public void odt() {
           if (dataOwner != null && dataOwner.isExisting()) {
             if (TemplateHandler.isLoaded(dataOwner, dataOwner.__getInttype())) {
-                new Job(Export.sourceFile(dataOwner.__getCName(), TemplateHandler.loadTemplate(dataOwner, dataOwner.__getInttype()), dataOwner), new DialogForFile()).execute();
+                new Job(Export.sourceFile(dataOwner.getFormatHandler().toUserString(), TemplateHandler.loadTemplate(dataOwner, dataOwner.__getInttype()), dataOwner), new DialogForFile(User.getSaveDir(dataOwner))).execute();
             } else {
                 Popup.notice(Messages.NO_TEMPLATE_LOADED + " (" + mpv5.db.objects.User.getCurrentUser() + ")");
             }

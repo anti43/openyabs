@@ -147,8 +147,13 @@ public class DialogForFile extends JFileChooser implements Waiter {
      */
     public DialogForFile(File file) {
         super();
-        this.setFileSelectionMode(DialogForFile.FILES_AND_DIRECTORIES);
-        this.setSelectedFile(file);
+        if (!file.isDirectory()) {
+            this.setFileSelectionMode(DialogForFile.FILES_AND_DIRECTORIES);
+            this.setSelectedFile(file);
+        } else {
+            this.setFileSelectionMode(DialogForFile.FILES_ONLY);
+            this.setSelectedFile(new File(file.getPath() + File.separator + "file"));
+        }
     }
 
     /**
@@ -321,11 +326,12 @@ public class DialogForFile extends JFileChooser implements Waiter {
         if (e == null) {
             if (object instanceof File) {
                 saveFile((File) object);
-            } if (object instanceof Export) {
+            }
+            if (object instanceof Export) {
                 File d = getCurrentDirectory();
                 setSelectedFile(((Export) object).getTargetFile());
                 setCurrentDirectory(d);
-                if(saveFile()) {
+                if (saveFile()) {
                     FileDirectoryHandler.copyFile2(((Export) object).getTargetFile(), file);
                     ((Export) object).getTargetFile().delete();
                 }
