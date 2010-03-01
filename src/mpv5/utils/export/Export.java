@@ -174,12 +174,13 @@ public class Export extends HashMap<String, Object> implements Waitable {
         ex.setTargetFile(f2);
         return ex;
     }
-//    /**
-//     * (Pre)load a template. Do not run this from the EDT, as the fetching of the templatefile from the database might take a while.
-//     * @param dataOwner
-//     * @return
-//     */
-//    public static Template loadTemplate(final DatabaseObject dataOwner) {
+    /**
+     * (Pre)load a template. Do not run this from the EDT, as the fetching of the templatefile from the database might take a while.
+     * @param dataOwner
+     * @return
+     * @deprecated DO NOT use this anymore, will always return NULL
+     */
+    public static Template loadTemplate(final DatabaseObject dataOwner) {
 //        Template preloadedTemplate;
 //        preloadedTemplate = TemplateHandler.loadTemplate(dataOwner);
 //        Exportable preloadedExportFile;
@@ -190,8 +191,8 @@ public class Export extends HashMap<String, Object> implements Waitable {
 //                Log.Debug(e);
 //            }
 //        }
-//        return preloadedTemplate;
-//    }
+        return null;
+    }
     private Exportable file;
     private File toFile;
     private String targetName;
