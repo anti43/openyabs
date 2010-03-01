@@ -25,8 +25,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Locale;
 import java.util.Map.Entry;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JComponent;
 import javax.swing.SwingUtilities;
 import mpv5.Main;
@@ -36,7 +34,6 @@ import mpv5.db.common.DatabaseObject;
 import mpv5.db.common.DatabaseObjectLock;
 import mpv5.db.common.NodataFoundException;
 import mpv5.db.common.QueryCriteria;
-import mpv5.db.common.QueryData;
 import mpv5.db.common.QueryHandler;
 import mpv5.globals.LocalSettings;
 import mpv5.globals.Messages;
@@ -48,7 +45,6 @@ import mpv5.pluginhandling.MP5Plugin;
 import mpv5.pluginhandling.MPPLuginLoader;
 import mpv5.ui.dialogs.Popup;
 import mpv5.ui.dialogs.subcomponents.ControlPanel_Fonts;
-import mpv5.ui.dialogs.subcomponents.ControlPanel_Userproperties;
 import mpv5.ui.frames.MPView;
 import mpv5.utils.text.TypeConversion;
 
@@ -92,9 +88,9 @@ public class User extends DatabaseObject {
     public static File getSaveDir(DatabaseObject ford) {
 
         String s = mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("saveformat");
-        String s2 = mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("savedir");
+        String s2 = LocalSettings.getProperty(LocalSettings.BASE_DIR);
         File basedir = null;
-        if (s2 != null) {
+        if (!s2.equals("null") && s2 != null) {
             basedir = new File(s2);
         } else {
             basedir = new File(Main.USER_HOME);

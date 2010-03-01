@@ -314,6 +314,8 @@ public class ControlPanel_Local extends javax.swing.JPanel implements ControlApp
         rowlimit.set_Text(values.getProperty(LocalSettings.DBROW_LIMIT));
         autolock.setSelected(TypeConversion.stringToBoolean(values.getProperty(LocalSettings.DBAUTOLOCK)));
         escape.setSelected(TypeConversion.stringToBoolean(values.getProperty(LocalSettings.DBESCAPE)));
+
+        savebasedir.set_Text(values.getProperty(LocalSettings.BASE_DIR));
     }
 
     public String getUname() {
@@ -373,6 +375,8 @@ public class ControlPanel_Local extends javax.swing.JPanel implements ControlApp
         }
 
         LocalSettings.setProperty(LocalSettings.DBAUTOLOCK, TypeConversion.booleanToString(autolock.isSelected()));
+
+        LocalSettings.setProperty(LocalSettings.BASE_DIR, savebasedir.get_Text(true));
 
         LocalSettings.apply();
     }

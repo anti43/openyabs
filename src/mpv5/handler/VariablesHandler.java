@@ -30,6 +30,7 @@ import mpv5.db.objects.User;
 import mpv5.logging.Log;
 import mpv5.ui.frames.MPView;
 import mpv5.utils.date.DateConverter;
+import mpv5.utils.numberformat.FormatNumber;
 
 /**
  *
@@ -82,6 +83,7 @@ public abstract class VariablesHandler {
         }
         return svars;
     }
+
     /**
      * Generates an array containing all available variables and values for the specific {@link DatabaseObject}
      * @param target
@@ -96,7 +98,7 @@ public abstract class VariablesHandler {
 //        old = target;
 
         Log.Debug(VariablesHandler.class, "Resolving vars for " + target.getContext() + "#" + target.ids);
-        String[][] vars = new String[GENERIC_VARS.values().length + getSpecialVarsOf(target).length + 5][2];
+        String[][] vars = new String[GENERIC_VARS.values().length + getSpecialVarsOf(target).length + 6][2];
         GENERIC_VARS[] gens = GENERIC_VARS.values();
         int i;
         for (i = 0; i < gens.length; i++) {
@@ -141,7 +143,7 @@ public abstract class VariablesHandler {
             }
         }
 
-         if(target instanceof Item){
+        if (target instanceof Item) {
             try {
                 Contact c = (Contact) DatabaseObject.getObject(Context.getContact(), ((Item) target).__getContactsids());
 
@@ -150,16 +152,20 @@ public abstract class VariablesHandler {
                 vars[i + j + 2] = (new String[]{"[contact.prename]".toUpperCase(), c.__getPrename()});
                 vars[i + j + 3] = (new String[]{"[contact.title]".toUpperCase(), c.__getTitle()});
                 vars[i + j + 4] = (new String[]{"[contact.country]".toUpperCase(), c.__getCountry()});
+                vars[i + j + 5] = (new String[]{"[grosvaluef]".toUpperCase(), FormatNumber.formatLokalCurrency(((Item) target).__getTaxvalue().doubleValue() + ((Item) target).__getNetvalue().doubleValue())});
+
             } catch (NodataFoundException ex) {
-                Log.Debug(ex);
+                Log.Debug(VariablesHandler.class, ex.getMessage());
             }
         } else {
 
-                vars[i + j + 0] = (new String[]{"What is 42?", "The Answer to Life, the Universe, and Everything."});
-                vars[i + j + 1] = (new String[]{"What is 42?", "The Answer to Life, the Universe, and Everything."});
-                vars[i + j + 2] = (new String[]{"What is 42?", "The Answer to Life, the Universe, and Everything."});
-                vars[i + j + 3] = (new String[]{"What is 42?", "The Answer to Life, the Universe, and Everything."});
-                vars[i + j + 4] = (new String[]{"What is 42?", "The Answer to Life, the Universe, and Everything."});
+            vars[i + j + 0] = (new String[]{"What is 42?", "The Answer to Life, the Universe, and Everything."});
+            vars[i + j + 1] = (new String[]{"What is 42?", "The Answer to Life, the Universe, and Everything."});
+            vars[i + j + 2] = (new String[]{"What is 42?", "The Answer to Life, the Universe, and Everything."});
+            vars[i + j + 3] = (new String[]{"What is 42?", "The Answer to Life, the Universe, and Everything."});
+            vars[i + j + 4] = (new String[]{"What is 42?", "The Answer to Life, the Universe, and Everything."});
+            vars[i + j + 5] = (new String[]{"What is 42?", "The Answer to Life, the Universe, and Everything."});
+
         }
 
         return vars;
@@ -176,7 +182,7 @@ public abstract class VariablesHandler {
         if (c != null) {
             for (int i = 0; i < c.length; i++) {
                 String[] data = c[i];
-            Log.Debug(VariablesHandler.class, source + ": replacing key: " + data[0] + " with value: " + data[1]);
+                Log.Debug(VariablesHandler.class, source + ": replacing key: " + data[0] + " with value: " + data[1]);
                 if (data[1] != null) {
                     text = text.replace(data[0], data[1]);
                 }

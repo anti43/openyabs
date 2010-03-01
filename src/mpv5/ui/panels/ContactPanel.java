@@ -1092,7 +1092,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
         Object[][] data = new DatabaseSearch(c).getValuesFor(Context.DEFAULT_ITEM_SEARCH, "contactsids", dataOwner.__getIDS());
 
         dataTable.setModel(new MPTableModel(data, Headers.ITEM_DEFAULT));
-//        TableFormat.stripFirstColumn(dataTable);
+        TableFormat.stripFirstColumn(dataTable);
         dataTableContent = ITEM;
         addfile.setEnabled(false);
         removefile.setEnabled(false);
@@ -1104,7 +1104,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
         Object[][] data = new DatabaseSearch(c).getValuesFor(Context.DEFAULT_ITEM_SEARCH, "contactsids", dataOwner.__getIDS());
 
         dataTable.setModel(new MPTableModel(data, Headers.ITEM_DEFAULT));
-//        TableFormat.stripFirstColumn(dataTable);
+        TableFormat.stripFirstColumn(dataTable);
         dataTableContent = ITEM;
         addfile.setEnabled(false);
         removefile.setEnabled(false);
@@ -1116,7 +1116,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
         Object[][] data = new DatabaseSearch(c).getValuesFor(Context.DEFAULT_ITEM_SEARCH, "contactsids", dataOwner.__getIDS());
 
         dataTable.setModel(new MPTableModel(data, Headers.ITEM_DEFAULT));
-//        TableFormat.stripFirstColumn(dataTable);
+        TableFormat.stripFirstColumn(dataTable);
         dataTableContent = ITEM;
         addfile.setEnabled(false);
         removefile.setEnabled(false);
@@ -1133,7 +1133,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
         dataTableContent = PRODUCTS;
         addfile.setEnabled(false);
         removefile.setEnabled(false);
-//        TableFormat.stripFirstColumn(dataTable);
+        TableFormat.stripFirstColumn(dataTable);
     }//GEN-LAST:event_button_productsActionPerformed
 
     private void button_billActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button_billActionPerformed
