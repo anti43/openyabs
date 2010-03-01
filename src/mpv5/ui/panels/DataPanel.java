@@ -75,8 +75,9 @@ public interface DataPanel {
 
     /**
      * Call this before saving the dataowner of the panel
+     * @throws ChangeNotApprovedException thrown if the user did not approve the change
      */
-    public void actionBeforeSave();
+    public void actionBeforeSave() throws ChangeNotApprovedException;
 
     /**
      * Mail the current data

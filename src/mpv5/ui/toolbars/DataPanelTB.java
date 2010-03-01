@@ -23,6 +23,8 @@ package mpv5.ui.toolbars;
 
 import java.awt.Component;
 import java.awt.event.ActionListener;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
 import mpv5.globals.Messages;
@@ -31,6 +33,7 @@ import mpv5.db.objects.Template;
 import mpv5.logging.Log;
 import mpv5.ui.dialogs.Popup;
 import mpv5.ui.frames.MPView;
+import mpv5.ui.panels.ChangeNotApprovedException;
 import mpv5.ui.panels.DataPanel;
 import mpv5.ui.panels.ExportablePanel;
 
@@ -397,17 +400,21 @@ public class DataPanelTB extends javax.swing.JPanel {
 }//GEN-LAST:event_but2ActionPerformed
 
     private void but3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_but3ActionPerformed
-        DatabaseObject dato = parents.getDataOwner();
-
-        if (dato.getPanelData(parents) && dato.save()) {
-            try {
-                parents.actionAfterSave();
-                parents.setDataOwner(dato, true);
-            } catch (Exception e) {
-                Log.Debug(this, e);
+        try {
+            DatabaseObject dato = parents.getDataOwner();
+            parents.actionBeforeSave();
+            if (dato.getPanelData(parents) && dato.save()) {
+                try {
+                    parents.actionAfterSave();
+                    parents.setDataOwner(dato, true);
+                } catch (Exception e) {
+                    Log.Debug(this, e);
+                }
+            } else {
+                parents.showRequiredFields();
             }
-        } else {
-            parents.showRequiredFields();
+        } catch (ChangeNotApprovedException ex) {
+            Log.Debug(this, ex.getMessage());
         }
     }//GEN-LAST:event_but3ActionPerformed
 

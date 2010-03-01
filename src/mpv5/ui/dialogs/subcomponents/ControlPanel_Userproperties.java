@@ -40,7 +40,7 @@ public class ControlPanel_Userproperties extends javax.swing.JPanel implements C
         shiptax.setContext(Context.getTaxes());
         shiptax.triggerSearch();
 
-        savedir.setFilter(DialogForFile.DIRECTORIES);
+//        savedir.setFilter(DialogForFile.DIRECTORIES);
 
         loadSettings();
     }
@@ -77,6 +77,7 @@ public class ControlPanel_Userproperties extends javax.swing.JPanel implements C
         ordersoverproducts = new javax.swing.JCheckBox();
         companiesovernames = new javax.swing.JCheckBox();
         pasten = new javax.swing.JCheckBox();
+        nowarnings = new javax.swing.JCheckBox();
         jPanel8 = new javax.swing.JPanel();
         labeledTextField1 = new mpv5.ui.beans.LabeledTextField();
         jLabel1 = new javax.swing.JLabel();
@@ -92,7 +93,6 @@ public class ControlPanel_Userproperties extends javax.swing.JPanel implements C
         saveformat = new mpv5.ui.beans.LabeledTextField();
         jScrollPane1 = new javax.swing.JScrollPane();
         jTextPane1 = new javax.swing.JTextPane();
-        savedir = new mpv5.ui.beans.LabeledTextChooser();
         jPanel6 = new javax.swing.JPanel();
         jButton4 = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
@@ -103,7 +103,7 @@ public class ControlPanel_Userproperties extends javax.swing.JPanel implements C
         setLayout(new java.awt.BorderLayout());
 
         jPanel1.setBackground(new java.awt.Color(255, 255, 255));
-        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("mpv5/resources/languages/Panels"); // NOI18N
+        java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle(); // NOI18N
         jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("ControlPanel_Userproperties.jPanel1.border.title"))); // NOI18N
         jPanel1.setName("jPanel1"); // NOI18N
 
@@ -305,6 +305,10 @@ public class ControlPanel_Userproperties extends javax.swing.JPanel implements C
         pasten.setName("pasten"); // NOI18N
         jPanel3.add(pasten);
 
+        nowarnings.setText(bundle.getString("ControlPanel_Userproperties.nowarnings.text")); // NOI18N
+        nowarnings.setName("nowarnings"); // NOI18N
+        jPanel3.add(nowarnings);
+
         jPanel8.setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("ControlPanel_Userproperties.jPanel8.border.title"))); // NOI18N
         jPanel8.setName("jPanel8"); // NOI18N
 
@@ -420,10 +424,6 @@ public class ControlPanel_Userproperties extends javax.swing.JPanel implements C
 
         jPanel4.add(jScrollPane1, java.awt.BorderLayout.PAGE_START);
 
-        savedir.set_Label(bundle.getString("ControlPanel_Userproperties.savedir._Label")); // NOI18N
-        savedir.setName("savedir"); // NOI18N
-        jPanel4.add(savedir, java.awt.BorderLayout.PAGE_END);
-
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -446,7 +446,7 @@ public class ControlPanel_Userproperties extends javax.swing.JPanel implements C
                 .addComponent(jPanel8, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel9, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(31, Short.MAX_VALUE))
         );
 
         add(jPanel1, java.awt.BorderLayout.CENTER);
@@ -553,11 +553,11 @@ public class ControlPanel_Userproperties extends javax.swing.JPanel implements C
     private javax.swing.JTextPane jTextPane1;
     private mpv5.ui.beans.LabeledTextField labeledTextField1;
     private mpv5.ui.beans.LabeledTextField labeledTextField2;
+    private javax.swing.JCheckBox nowarnings;
     private javax.swing.JCheckBox ordersoverproducts;
     private javax.swing.JCheckBox pasten;
     private javax.swing.JPanel productstobillsproperties;
     private javax.swing.JCheckBox reference;
-    private mpv5.ui.beans.LabeledTextChooser savedir;
     private mpv5.ui.beans.LabeledTextField saveformat;
     private mpv5.ui.beans.LabeledCombobox shiptax;
     private javax.swing.JCheckBox showoptionalcolumn;
@@ -581,7 +581,7 @@ public class ControlPanel_Userproperties extends javax.swing.JPanel implements C
             mpv5.db.objects.User.getCurrentUser().getProperties().changeProperty(defcount.getName(), defcount.getText());
             mpv5.db.objects.User.getCurrentUser().getProperties().changeProperty(defunit.getName(), defunit.getText());
             mpv5.db.objects.User.getCurrentUser().getProperties().changeProperty(saveformat.getName(), saveformat.getText().replace("\\", "/"));
-            mpv5.db.objects.User.getCurrentUser().getProperties().changeProperty(savedir.getName(), savedir.get_Text(false));
+//            mpv5.db.objects.User.getCurrentUser().getProperties().changeProperty(savedir.getName(), savedir.get_Text(false));
             mpv5.db.objects.User.getCurrentUser().getProperties().changeProperty(MPView.getTabPane(), "norecycletabs", tabs.isSelected());
             mpv5.db.objects.User.getCurrentUser().getProperties().changeProperty(MPView.getTabPane(), "avoidmultipleviews", views.isSelected());
             mpv5.db.objects.User.getCurrentUser().getProperties().changeProperty(MPView.getTabPane(), "hideunpaidbills", unpaidbills.isSelected());
@@ -595,6 +595,7 @@ public class ControlPanel_Userproperties extends javax.swing.JPanel implements C
             mpv5.db.objects.User.getCurrentUser().getProperties().changeProperty(MPView.getTabPane(), "ordersoverproducts", ordersoverproducts.isSelected());
             mpv5.db.objects.User.getCurrentUser().getProperties().changeProperty(MPView.getTabPane(), "companiesovernames", companiesovernames.isSelected());
             mpv5.db.objects.User.getCurrentUser().getProperties().changeProperty(MPView.getTabPane(), "pasten", pasten.isSelected());
+            mpv5.db.objects.User.getCurrentUser().getProperties().changeProperty(MPView.getTabPane(), "nowarnings", nowarnings.isSelected());
             mpv5.db.objects.User.getCurrentUser().getProperties().changeProperty(MPView.getTabPane(), "propertiesdefined", true);
 
             if (deftax.getSelectedItem() != null) {
@@ -626,6 +627,7 @@ public class ControlPanel_Userproperties extends javax.swing.JPanel implements C
 
     private void loadSettings() {
         tabs.setSelected(mpv5.db.objects.User.getCurrentUser().getProperties().getProperty(MPView.getTabPane(), "norecycletabs"));
+        nowarnings.setSelected(mpv5.db.objects.User.getCurrentUser().getProperties().getProperty(MPView.getTabPane(), "nowarnings"));
         views.setSelected(mpv5.db.objects.User.getCurrentUser().getProperties().getProperty(MPView.getTabPane(), "avoidmultipleviews"));
         unpaidbills.setSelected(mpv5.db.objects.User.getCurrentUser().getProperties().getProperty(MPView.getTabPane(), "hideunpaidbills"));
         columnquantity.setSelected(mpv5.db.objects.User.getCurrentUser().getProperties().getProperty(MPView.getTabPane(), "hidecolumnquantity"));
@@ -666,12 +668,12 @@ public class ControlPanel_Userproperties extends javax.swing.JPanel implements C
             format.setText("");
         }
 
-        String s2 = mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("savedir");
-        if (s2 != null) {
-            savedir.set_Text(s2);
-        } else {
-            savedir.set_Text("");
-        }
+//        String s2 = mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("savedir");
+//        if (s2 != null) {
+//            savedir.set_Text(s2);
+//        } else {
+//            savedir.set_Text("");
+//        }
 
         if (mpv5.db.objects.User.getCurrentUser().getProperties().hasProperty(defcount.getName())) {
             defcount.setText(mpv5.db.objects.User.getCurrentUser().getProperties().getProperty(defcount.getName()));

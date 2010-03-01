@@ -26,6 +26,7 @@ import mpv5.globals.LocalSettings;
 import mpv5.globals.Messages;
 import mpv5.logging.Log;
 import mpv5.ui.dialogs.DialogForFile;
+import mpv5.ui.dialogs.Notificator;
 import mpv5.ui.dialogs.Popup;
 import mpv5.utils.text.RandomText;
 
@@ -109,10 +110,24 @@ public abstract class FileDirectoryHandler {
      * @throws java.io.FileNotFoundException
      * @throws java.io.IOException
      */
+    public static File copyFile2(File source, File target, boolean silent) throws FileNotFoundException, IOException {
+        Log.Debug(FileDirectoryHandler.class, "Copying file from "
+                + source + " to " + target);
+        return new File(copyFile(source, target, silent));
+    }
+
+    /**
+     * Copies a file via stream
+     * @param source
+     * @param target
+     * @return
+     * @throws java.io.FileNotFoundException
+     * @throws java.io.IOException
+     */
     public static File copyFile2(File source, File target) throws FileNotFoundException, IOException {
-        Log.Debug(FileDirectoryHandler.class, "Copying file from " +
-                 source + " to " + target);
-        return new File(copyFile(source, target));
+        Log.Debug(FileDirectoryHandler.class, "Copying file from "
+                + source + " to " + target);
+        return new File(copyFile(source, target, true));
     }
 
     /**
@@ -125,6 +140,20 @@ public abstract class FileDirectoryHandler {
      * @throws java.io.IOException
      */
     public static URI copyFile(File sourceFile, File targetDirectory, String targetFilename, boolean deleteOnExit)
+            throws IOException {
+        return copyFile(sourceFile, targetDirectory, targetFilename, deleteOnExit, true);
+    }
+
+    /**
+     * Copies a file via stream
+     * @param sourceFile
+     * @param targetDirectory
+     * @param targetFilename
+     * @param deleteOnExit Shall we delete the NEW file on exit
+     * @return
+     * @throws java.io.IOException
+     */
+    public static URI copyFile(File sourceFile, File targetDirectory, String targetFilename, boolean deleteOnExit, boolean silent)
             throws IOException {
         FileOutputStream out = null;
         InputStream in = new FileInputStream(sourceFile);
@@ -154,6 +183,10 @@ public abstract class FileDirectoryHandler {
 
         if (deleteOnExit) {
             outp.deleteOnExit();
+        }
+
+        if (!silent) {
+            Notificator.raiseNotification(Messages.FILE_SAVED + " " + outp.getPath(), false);
         }
 
         return outp.toURI();
@@ -420,12 +453,12 @@ public abstract class FileDirectoryHandler {
      */
     public static File download(String address) {
         int lastSlashIndex = address.lastIndexOf('/');
-        if (lastSlashIndex >= 0 &&
-                lastSlashIndex < address.length() - 1) {
+        if (lastSlashIndex >= 0
+                && lastSlashIndex < address.length() - 1) {
             return download(address, address.substring(lastSlashIndex + 1));
         } else {
-            Log.Debug(FileDirectoryHandler.class, "Could not figure out local file name for " +
-                    address);
+            Log.Debug(FileDirectoryHandler.class, "Could not figure out local file name for "
+                    + address);
         }
         return null;
     }
@@ -434,11 +467,12 @@ public abstract class FileDirectoryHandler {
      * Copies a file via streaming
      * @param sourceFile
      * @param outp
+     * @param silent
      * @return
      * @throws java.io.FileNotFoundException
      * @throws java.io.IOException
      */
-    public static URI copyFile(File sourceFile, File outp) throws FileNotFoundException, IOException {
+    public static URI copyFile(File sourceFile, File outp, boolean silent) throws FileNotFoundException, IOException {
         InputStream in = new FileInputStream(sourceFile);
 
         OutputStream out = new FileOutputStream(outp);
@@ -452,7 +486,23 @@ public abstract class FileDirectoryHandler {
         in.close();
         out.close();
 
+        if (!silent) {
+            Notificator.raiseNotification(Messages.FILE_SAVED + " " + outp.getPath(), false);
+        }
+
         return outp.toURI();
+    }
+
+        /**
+     * Copies a file via streaming
+     * @param sourceFile
+     * @param outp
+     * @return
+     * @throws java.io.FileNotFoundException
+     * @throws java.io.IOException
+     */
+    public static URI copyFile(File sourceFile, File outp) throws FileNotFoundException, IOException {
+        return copyFile(sourceFile, outp, true);
     }
 
     private static void cacheCheck() {
@@ -461,6 +511,7 @@ public abstract class FileDirectoryHandler {
             e.mkdirs();
         }
     }
+
 }
     
 

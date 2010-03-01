@@ -83,7 +83,7 @@ public class Export extends HashMap<String, Object> implements Waitable {
                 pr.setMailConfiguration(mpv5.db.objects.User.getCurrentUser().getMailConfiguration());
                 pr.setRecipientsAddress(cont.__getMailaddress());
                 if (m != null && m.__getCName() != null) {
-                    pr.setSubject(m.__getCName());
+                    pr.setSubject(VariablesHandler.parse(m.__getCName(), dataOwner));
                     pr.setText(VariablesHandler.parse(m.__getDescription(), dataOwner));
                 }
                 new Job(ex, (Waiter) pr).execute();

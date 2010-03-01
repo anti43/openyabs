@@ -332,7 +332,7 @@ public class DialogForFile extends JFileChooser implements Waiter {
                 setSelectedFile(((Export) object).getTargetFile());
                 setCurrentDirectory(d);
                 if (saveFile()) {
-                    FileDirectoryHandler.copyFile2(((Export) object).getTargetFile(), file);
+                    FileDirectoryHandler.copyFile2(((Export) object).getTargetFile(), file, false);
                     ((Export) object).getTargetFile().delete();
                 }
             }

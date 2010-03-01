@@ -1347,7 +1347,15 @@ public class ProductPanel extends javax.swing.JPanel implements DataPanel, MPCBS
         }
     }
 
-    public void actionBeforeSave() {
+    public void actionBeforeSave() throws ChangeNotApprovedException {
+        if (dataOwner.isExisting()) {
+            if (!mpv5.db.objects.User.getCurrentUser().getProperties().getProperty(MPView.getTabPane(), "nowarnings")) {
+
+                if (!Popup.Y_N_dialog(Messages.REALLY_CHANGE)) {
+                    throw new ChangeNotApprovedException(dataOwner);
+                }
+            }
+        }
     }
 
     public void mail() {

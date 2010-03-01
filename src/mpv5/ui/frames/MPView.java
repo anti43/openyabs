@@ -78,6 +78,7 @@ import mpv5.ui.dialogs.subcomponents.wizard_XMLImport_2;
 import mpv5.ui.panels.ItemPanel;
 import mpv5.ui.dialogs.subcomponents.wizard_MP45_Import;
 import mpv5.ui.dialogs.subcomponents.wizard_Yabs1_Import;
+import mpv5.ui.panels.ChangeNotApprovedException;
 import mpv5.ui.panels.ExpensePanel;
 import mpv5.ui.panels.JournalPanel;
 import mpv5.ui.panels.OverviewPanel;
@@ -1947,21 +1948,25 @@ public class MPView extends FrameView {
     }//GEN-LAST:event_jMenuItem12ActionPerformed
 
     private void jMenuItem13ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem13ActionPerformed
-        DataPanel pane = getCurrentTab();
-        if (pane != null) {
-            pane.actionBeforeSave();
-            try {
-                DatabaseObject dato = (pane).getDataOwner();
-                dato.getPanelData((pane));
-                if (dato.save()) {
-                    (pane).actionAfterSave();
-                    (pane).setDataOwner(dato, true);
-                } else {
-                    (pane).showRequiredFields();
+        try {
+            DataPanel pane = getCurrentTab();
+            if (pane != null) {
+                pane.actionBeforeSave();
+                try {
+                    DatabaseObject dato = (pane).getDataOwner();
+                    dato.getPanelData((pane));
+                    if (dato.save()) {
+                        (pane).actionAfterSave();
+                        (pane).setDataOwner(dato, true);
+                    } else {
+                        (pane).showRequiredFields();
+                    }
+                } catch (Exception e) {
+                    Log.Debug(this, e);
                 }
-            } catch (Exception e) {
-                Log.Debug(this, e);
             }
+        } catch (ChangeNotApprovedException changeNotApprovedException) {
+            Log.Debug(this, changeNotApprovedException.getMessage());
         }
     }//GEN-LAST:event_jMenuItem13ActionPerformed
 

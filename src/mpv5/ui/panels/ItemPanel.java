@@ -1198,8 +1198,8 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
             setDataOwner(i2, true);
             Popup.notice(i2 + Messages.INSERTED.getValue());
         }
-        
-        
+
+
 ////        }
 
     }//GEN-LAST:event_button_elevateActionPerformed
@@ -1709,8 +1709,6 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
         }
     }
 
-
-
     public void actionBeforeCreate() {
         status.setSelectedIndex(Item.STATUS_IN_PROGRESS);
         date1.setDate(new Date());
@@ -1723,10 +1721,21 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
         }
     }
 
-    public void actionBeforeSave() {
+    public void actionBeforeSave() throws ChangeNotApprovedException {
+        if (dataOwner.isExisting()) {
+            if ((dataOwner.__getIntstatus() != Item.STATUS_PAID && dataOwner.__getIntstatus() != Item.STATUS_CANCELLED) || Popup.Y_N_dialog(Messages.REALLY_CHANGE_DONE_ITEM)) {
+
+                if (!mpv5.db.objects.User.getCurrentUser().getProperties().getProperty(MPView.getTabPane(), "nowarnings")) {
+
+                    if (!Popup.Y_N_dialog(Messages.REALLY_CHANGE)) {
+                        throw new ChangeNotApprovedException(dataOwner);
+                    }
+                }
+            } else {
+                throw new ChangeNotApprovedException(dataOwner);
+            }
+        }
     }
-
-
     List<Item> usedOrders = new Vector<Item>();
 
     private void prepareTable() {
@@ -1818,7 +1827,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
         itemtable.getColumnModel().getColumn(12).setCellEditor(new ButtonEditor(b2));
     }
 
-        private void delivery() {
+    private void delivery() {
         PreviewPanel pr;
         if (dataOwner != null && dataOwner.isExisting()) {
             if (TemplateHandler.isLoaded(dataOwner, TemplateHandler.TYPE_DELIVERY_NOTE)) {
@@ -1844,7 +1853,6 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
             }
         }
     }
-
 
     public void mail() {
         MailMessage m = null;
@@ -1872,7 +1880,6 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
             }
         }
     }
-
 
     private void preview() {
         PreviewPanel pr;
@@ -1907,7 +1914,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
     }
 
     public void pdf() {
-       if (dataOwner != null && dataOwner.isExisting()) {
+        if (dataOwner != null && dataOwner.isExisting()) {
             if (TemplateHandler.isLoaded(dataOwner, dataOwner.__getInttype())) {
                 new Job(Export.createFile(dataOwner.getFormatHandler().toUserString(), TemplateHandler.loadTemplate(dataOwner, dataOwner.__getInttype()), dataOwner), new DialogForFile(User.getSaveDir(dataOwner))).execute();
             } else {
@@ -1917,7 +1924,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
     }
 
     public void odt() {
-          if (dataOwner != null && dataOwner.isExisting()) {
+        if (dataOwner != null && dataOwner.isExisting()) {
             if (TemplateHandler.isLoaded(dataOwner, dataOwner.__getInttype())) {
                 new Job(Export.sourceFile(dataOwner.getFormatHandler().toUserString(), TemplateHandler.loadTemplate(dataOwner, dataOwner.__getInttype()), dataOwner), new DialogForFile(User.getSaveDir(dataOwner))).execute();
             } else {
@@ -1925,7 +1932,6 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
             }
         }
     }
-
 }
 
 

@@ -154,6 +154,13 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
                 dataTableContent = ITEM;
                 addfile.setEnabled(false);
                 removefile.setEnabled(false);
+
+                if (dataOwner.__getIscustomer()) {
+                    button_billsActionPerformed(null);
+
+                } else if (dataOwner.__getIsmanufacturer() || dataOwner.__getIssupplier()) {
+                    button_productsActionPerformed(null);
+                }
             }
 
             isCustomer(dataOwner.__getIscustomer());
@@ -238,11 +245,10 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
             } catch (NodataFoundException ex) {
                 Log.Debug(ex);
             }
-        } else if(evt.getButton() == MouseEvent.BUTTON3){
+        } else if (evt.getButton() == MouseEvent.BUTTON3) {
             itemTablePopup.show(dataTable, evt.getX(), evt.getY());
         }
     }
-
 
     private void productTableClicked(MouseEvent evt) {
         if (evt.getClickCount() > 1) {
@@ -1205,7 +1211,6 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
             }
         }
     }//GEN-LAST:event_jButton4ActionPerformed
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel addedby;
     private javax.swing.JButton addfile;
@@ -1309,7 +1314,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
         cname_ = cname.get_Text();
         taxnumber_ = taxnumber.get_Text();
         iscompany_ = company.isSelected();
-        
+
         if (companyselect.getText() != null) {
             company_ = companyselect.getText();
         } else {
@@ -1349,7 +1354,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
         mobilephone_ = mobilephone.get_Text();
         notes_ = notes.getText();
         cnumber_ = number.get_Text();
-        
+
         mainphone_ = mainphone.get_Text();
         prename_ = prename.get_Text();
         street_ = street.get_Text();
@@ -1540,7 +1545,15 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
 //            }
     }
 
-    public void actionBeforeSave() {
+    public void actionBeforeSave() throws ChangeNotApprovedException {
+        if (dataOwner.isExisting()) {
+            if (!mpv5.db.objects.User.getCurrentUser().getProperties().getProperty(MPView.getTabPane(), "nowarnings")) {
+
+                if (!Popup.Y_N_dialog(Messages.REALLY_CHANGE)) {
+                    throw new ChangeNotApprovedException(dataOwner);
+                }
+            }
+        }
     }
 
     public void mail() {
