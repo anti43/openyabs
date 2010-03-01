@@ -32,6 +32,8 @@ public class DatabaseUpdater {
                     "ALTER TABLE templates ADD COLUMN printer VARCHAR(50) DEFAULT '" + Template.PRINTER_UNDEFINED + "' NOT NULL ",});
         UPDATES_DERBY.put(1.14, new String[]{
                     "ALTER TABLE products DROP CONSTRAINT const8",});
+        UPDATES_DERBY.put(1.15, new String[]{
+                    "CREATE TABLE productstosuppliers(ids BIGINT NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1), productsids BIGINT REFERENCES products(ids) ON DELETE CASCADE, contactsids BIGINT REFERENCES contacts(ids) ON DELETE CASCADE)",});
         ////////////////////////////////////////////////////////////////////////////////////////////
         // mysql updates
         UPDATES_MYSQL.put(1.11, new String[]{
@@ -43,6 +45,23 @@ public class DatabaseUpdater {
                     "ALTER TABLE templates ADD COLUMN printer VARCHAR(50) DEFAULT '" + Template.PRINTER_UNDEFINED + "' NOT NULL ",});
         UPDATES_MYSQL.put(1.14, new String[]{
                     "ALTER TABLE products DROP KEY CONST8",});
+        UPDATES_MYSQL.put(1.15, new String[]{
+                    "CREATE TABLE productstosuppliers ("
+                    + "ids             	BIGINT(20) UNSIGNED NOT NULL PRIMARY KEY auto_increment,"
+                    + "productsids      BIGINT(20) UNSIGNED NOT NULL,"
+                    + "accountsids      BIGINT(20) UNSIGNED NOT NULL"
+                    + ")ENGINE=MyISAM DEFAULT CHARSET=utf8",
+                    "ALTER TABLE productstosuppliers "
+                    + "ADD CONSTRAINT products0843168601 "
+                    + "FOREIGN KEY(contactsids) "
+                    + "REFERENCES contacts(ids) "
+                    + "ON DELETE CASCADE ",
+                    "ALTER TABLE productstosuppliers "
+                    + "ADD CONSTRAINT products0843168602 "
+                    + "FOREIGN KEY(productsids) "
+                    + "REFERENCES products(ids) "
+                    + "ON DELETE CASCADE "
+                });
     }
 
     /**

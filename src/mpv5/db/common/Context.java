@@ -88,6 +88,7 @@ public class Context {
     public static String IDENTITY_STAGES = "stages";
     public static String IDENTITY_REVENUE = "revenues";
     public static String IDENTITY_EXPENSE = "expenses";
+    public static String IDENTITY_PRODUCTS_TO_SUPPLIERS = "productstosuppliers";
     //********** identity classes **********************************************
     private static Class IDENTITY_CONTACTS_CLASS = Contact.class;
     private static Class IDENTITY_ADDRESS_CLASS = Address.class;
@@ -448,7 +449,8 @@ public class Context {
                 getStage(),
                 getProductlist(),
                 getExpense(),
-                getRevenue()
+                getRevenue(),
+                getProductsToSuppliers()
             }));
 //    private String[] searchHeaders;
     private ArrayList<String[]> references = new ArrayList<String[]>();
@@ -1628,6 +1630,15 @@ public class Context {
         c.setSearchFields("DISTINCT ids,cname,description");
         c.setIdentityClass(ProductList.class);
         c.setId(48);
+
+        return c;
+    }
+
+    public static Context getProductsToSuppliers() {
+        Context c = new Context();
+        c.setSubID(DEFAULT_SUBID);
+        c.setDbIdentity(IDENTITY_PRODUCTS_TO_SUPPLIERS);
+        c.setId(49);
 
         return c;
     }
