@@ -103,7 +103,8 @@ public class PreviewPanel extends javax.swing.JPanel implements Waiter {
                 PDFPage page = pdffile.getPage(pagen);
                 panel.showPage(page);
             } catch (IOException ex) {
-                Log.Debug(ex);
+                Log.Debug(this, ex.getMessage());
+                Popup.notice(Messages.ERROR_OCCURED + ex.getLocalizedMessage());
             }
         } else {
             throw new IllegalArgumentException("File is not existing or a directory: " + pdf);
