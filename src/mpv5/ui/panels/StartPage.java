@@ -12,12 +12,10 @@ import java.util.Properties;
 import javax.swing.DefaultListModel;
 import javax.swing.ListModel;
 import mpv5.Main;
-import mpv5.db.common.QueryHandler;
 import mpv5.globals.Constants;
 import mpv5.globals.LocalSettings;
 import mpv5.globals.Messages;
 import mpv5.logging.Log;
-import mpv5.usermanagement.MPSecurityManager;
 import mpv5.utils.files.FileReaderWriter;
 import mpv5.utils.images.MPIcon;
 import mpv5.utils.models.MPTableModel;
@@ -305,7 +303,7 @@ public class StartPage extends javax.swing.JPanel {
 
                             jTable1.setModel(new MPTableModel(model));
                         } catch (Exception ex) {
-                            Log.Debug(ex);
+                            Log.Debug(this, ex.getLocalizedMessage());
                         }
 
                         DefaultListModel d = new DefaultListModel();
