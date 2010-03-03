@@ -26,24 +26,22 @@
           <Group type="102" alignment="1" attributes="0">
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="1" attributes="0">
-                  <Component id="productCombobox" alignment="0" pref="425" max="32767" attributes="0"/>
+                  <Component id="productCombobox" alignment="0" pref="433" max="32767" attributes="0"/>
                   <Group type="102" alignment="1" attributes="0">
                       <Component id="okButton" min="-2" pref="71" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
                       <Component id="cancelButton" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace max="-2" attributes="0"/>
                   </Group>
                   <Group type="102" alignment="0" attributes="0">
                       <Component id="cnumber" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="32767" attributes="0"/>
                       <Component id="stype" min="-2" pref="226" max="-2" attributes="0"/>
                   </Group>
-                  <Component id="familyselect" alignment="0" pref="425" max="32767" attributes="1"/>
+                  <Component id="familyselect" alignment="0" pref="433" max="32767" attributes="1"/>
                   <Group type="102" alignment="1" attributes="0">
-                      <Component id="suppliername" pref="181" max="32767" attributes="0"/>
+                      <Component id="suppliername" pref="189" max="32767" attributes="0"/>
                       <EmptySpace min="-2" pref="18" max="-2" attributes="0"/>
                       <Component id="manufacturername" min="-2" pref="226" max="-2" attributes="0"/>
-                      <EmptySpace max="-2" attributes="0"/>
                   </Group>
                   <Group type="102" alignment="0" attributes="0">
                       <EmptySpace min="-2" pref="82" max="-2" attributes="0"/>
@@ -51,8 +49,8 @@
                       <EmptySpace max="-2" attributes="0"/>
                       <Component id="resetButton" min="-2" max="-2" attributes="0"/>
                   </Group>
-                  <Component id="jScrollPane3" alignment="0" pref="425" max="32767" attributes="0"/>
-                  <Component id="cname" alignment="0" pref="425" max="32767" attributes="1"/>
+                  <Component id="jScrollPane3" alignment="0" pref="433" max="32767" attributes="0"/>
+                  <Component id="cname" alignment="0" pref="433" max="32767" attributes="1"/>
               </Group>
               <EmptySpace min="-2" pref="42" max="-2" attributes="0"/>
           </Group>

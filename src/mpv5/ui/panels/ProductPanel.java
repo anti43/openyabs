@@ -42,6 +42,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
+import javax.swing.BoxLayout;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JMenuItem;
@@ -60,6 +61,7 @@ import mpv5.db.objects.Favourite;
 import mpv5.db.objects.Group;
 import mpv5.db.objects.Item;
 import mpv5.db.objects.ProductGroup;
+import mpv5.db.objects.ProductsToSuppliers;
 import mpv5.db.objects.Template;
 import mpv5.logging.Log;
 import mpv5.ui.dialogs.BigPopup;
@@ -191,6 +193,7 @@ public class ProductPanel extends javax.swing.JPanel implements DataPanel, MPCBS
         selecttax.getComboBox().setEditable(false);
 
         contactname1.setEditable(true);
+        supplierpanel.add(new ProductPanelContactSub(null, true));
 
     }
 
@@ -956,6 +959,17 @@ public class ProductPanel extends javax.swing.JPanel implements DataPanel, MPCBS
         if (cname.getText() != null && cname.getText().length() > 0) {
 
             cnumber_ = cnumber.get_Text();
+            Component[] supplierpanels = supplierpanel.getComponents();
+            suppliersids_ = -1;
+            for (int i = 0; i < supplierpanels.length; i++) {
+                ProductPanelContactSub sub = (ProductPanelContactSub) supplierpanels[i];
+
+                if (sub.getContact() != null) {
+                    if (sub.isDefault()) {
+                        suppliersids_ = sub.getContact().__getIDS();
+                    }
+                }
+            }
 
 //            try {
 //                //main supplier here
@@ -1063,21 +1077,35 @@ public class ProductPanel extends javax.swing.JPanel implements DataPanel, MPCBS
 
         addedby.setText(User.getUsername(intaddedby_));
 
+        supplierpanel.removeAll();
+
+        try {
+            if (suppliersids_ > 0) {
+                supplierpanel.add(new ProductPanelContactSub((Contact) Contact.getObject(Context.getSupplier(), suppliersids_), true));
+            } else {
+                supplierpanel.add(new ProductPanelContactSub(null, true));
+            }
+        } catch (NodataFoundException nodataFoundException) {
+            supplierpanel.add(new ProductPanelContactSub(null, true));
+        }
+
         Runnable runnable = new Runnable() {
 
             public void run() {
                 try {
-                    List<Contact> supps = Contact.getReferencedObjects(dataOwner, Context.getProductsToSuppliers(), new Contact());
+                    List<ProductsToSuppliers> supps = Contact.getReferencedObjects(dataOwner, Context.getProductsToSuppliers(), new ProductsToSuppliers());
+
                     for (int i = 0; i < supps.size(); i++) {
-                        Contact contact = supps.get(i);
-                        supplierpanel.add(new ProductPanelContactSub(contact), BorderLayout.LINE_END);
+                        Contact contact = (Contact) Contact.getObject(Context.getContact(), supps.get(i).__getContactsids());
+                        supplierpanel.add(new ProductPanelContactSub(contact, false));
                     }
-                    supplierpanel.add(new ProductPanelContactSub(null));
+
                     supplierpanel.validate();
                 } catch (NodataFoundException nodataFoundException) {
                 }
             }
-        };new Thread(runnable).start();
+        };
+        new Thread(runnable).start();
 
         if (manufacturersids_ > 0) {
             try {
@@ -1192,10 +1220,12 @@ public class ProductPanel extends javax.swing.JPanel implements DataPanel, MPCBS
 
     @Override
     public void actionAfterSave() {
+        getSuppliers();
     }
 
     @Override
     public void actionAfterCreate() {
+        getSuppliers();
         sp.refresh();
     }
 
@@ -1329,6 +1359,24 @@ public class ProductPanel extends javax.swing.JPanel implements DataPanel, MPCBS
 
             } else {
                 Popup.notice(Messages.NO_TEMPLATE_LOADED + " (" + mpv5.db.objects.User.getCurrentUser() + ")");
+            }
+        }
+    }
+
+    private void getSuppliers() {
+        QueryCriteria c = new QueryCriteria("productsids", dataOwner.__getIDS());
+        QueryHandler.instanceOf().clone(Context.getProductsToSuppliers()).delete(c);
+        Component[] supplierpanels = supplierpanel.getComponents();
+        for (int i = 0; i < supplierpanels.length; i++) {
+            ProductPanelContactSub sub = (ProductPanelContactSub) supplierpanels[i];
+            if (sub.getContact() != null) {
+                if (sub.isDefault()) {
+                } else {
+                    ProductsToSuppliers p = new ProductsToSuppliers();
+                    p.setProductsids(dataOwner.__getIDS());
+                    p.setContactsids(sub.getContact().__getIDS());
+                    p.save(true);
+                }
             }
         }
     }

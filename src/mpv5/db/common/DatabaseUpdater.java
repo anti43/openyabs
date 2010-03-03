@@ -33,7 +33,14 @@ public class DatabaseUpdater {
         UPDATES_DERBY.put(1.14, new String[]{
                     "ALTER TABLE products DROP CONSTRAINT const8",});
         UPDATES_DERBY.put(1.15, new String[]{
-                    "CREATE TABLE productstosuppliers(ids BIGINT NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1), productsids BIGINT REFERENCES products(ids) ON DELETE CASCADE, contactsids BIGINT REFERENCES contacts(ids) ON DELETE CASCADE)",});
+//            intaddedby,dateadded,productsids,contactsids,groupsids,cname
+                    "CREATE TABLE productstosuppliers(ids BIGINT NOT NULL GENERATED ALWAYS AS IDENTITY " +
+                            "(START WITH 1, INCREMENT BY 1), productsids BIGINT REFERENCES products(ids) ON DELETE CASCADE, " +
+                            "contactsids BIGINT REFERENCES contacts(ids) ON DELETE CASCADE," +
+                            "cname VARCHAR(250) DEFAULT NULL," +
+                            "groupsids BIGINT DEFAULT 0," +
+                            "dateadded DATE NOT NULL," +
+                            "intaddedby BIGINT DEFAULT 0)",});
         ////////////////////////////////////////////////////////////////////////////////////////////
         // mysql updates
         UPDATES_MYSQL.put(1.11, new String[]{
@@ -49,13 +56,19 @@ public class DatabaseUpdater {
                     "CREATE TABLE productstosuppliers ("
                     + "ids             	BIGINT(20) UNSIGNED NOT NULL PRIMARY KEY auto_increment,"
                     + "productsids      BIGINT(20) UNSIGNED NOT NULL,"
-                    + "accountsids      BIGINT(20) UNSIGNED NOT NULL"
+                    + "accountsids      BIGINT(20) UNSIGNED NOT NULL,"
+                    + "cname            VARCHAR(250) DEFAULT NULL," +
+                      "groupsids        BIGINT(20) DEFAULT 1," +
+                      "dateadded        DATE NOT NULL," +
+                      "intaddedby       BIGINT(20) UNSIGNED DEFAULT 0"
                     + ")ENGINE=MyISAM DEFAULT CHARSET=utf8",
+
                     "ALTER TABLE productstosuppliers "
                     + "ADD CONSTRAINT products0843168601 "
                     + "FOREIGN KEY(contactsids) "
                     + "REFERENCES contacts(ids) "
                     + "ON DELETE CASCADE ",
+
                     "ALTER TABLE productstosuppliers "
                     + "ADD CONSTRAINT products0843168602 "
                     + "FOREIGN KEY(productsids) "

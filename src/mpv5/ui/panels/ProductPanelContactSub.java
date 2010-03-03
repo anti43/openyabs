@@ -8,11 +8,12 @@
  *
  * Created on 01.03.2010, 15:57:49
  */
-
 package mpv5.ui.panels;
 
+import java.awt.Container;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import javax.swing.ButtonGroup;
 import javax.swing.SwingUtilities;
 import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
@@ -27,13 +28,17 @@ import mpv5.utils.models.MPComboBoxModelItem;
  */
 public class ProductPanelContactSub extends javax.swing.JPanel {
 
+    public static ButtonGroup group = new ButtonGroup();
+    private final Contact contact;
 
     /** Creates new form ProductPanelContactSub
      * @param c
+     * @param defaults
      */
-    public ProductPanelContactSub(Contact c) {
+    public ProductPanelContactSub(Contact c, final boolean defaults) {
         initComponents();
 
+        group.add(jRadioButton1);
         contactname.setSearchEnabled(true);
         contactname.setEditable(true);
         contactname.setContext(Context.getSupplier());
@@ -52,6 +57,9 @@ public class ProductPanelContactSub extends javax.swing.JPanel {
                                 contactcity.setText(dbo.__getCity());
                                 contactcompany.setText(dbo.__getCompany());
                                 contactid.setText(dbo.__getCNumber());
+                                if (defaults) {
+                                    jRadioButton1.setSelected(true);
+                                }
                             } catch (NodataFoundException ex) {
                             }
                         }
@@ -77,6 +85,8 @@ public class ProductPanelContactSub extends javax.swing.JPanel {
             contactcompany.setText("");
             contactid.setText(String.valueOf(""));
         }
+
+        this.contact = c;
     }
 
     /** This method is called from within the constructor to
@@ -94,6 +104,8 @@ public class ProductPanelContactSub extends javax.swing.JPanel {
         contactcompany = new javax.swing.JTextField();
         contactname = new mpv5.ui.beans.LabeledCombobox();
         jRadioButton1 = new javax.swing.JRadioButton();
+        jButton1 = new javax.swing.JButton();
+        jButton2 = new javax.swing.JButton();
 
         setName("Form"); // NOI18N
 
@@ -123,11 +135,31 @@ public class ProductPanelContactSub extends javax.swing.JPanel {
         jRadioButton1.setName("jRadioButton1"); // NOI18N
         jRadioButton1.setOpaque(false);
 
+        jButton1.setIcon(resourceMap.getIcon("jButton1.icon")); // NOI18N
+        jButton1.setText(resourceMap.getString("jButton1.text")); // NOI18N
+        jButton1.setMargin(new java.awt.Insets(1, 1, 1, 1));
+        jButton1.setName("jButton1"); // NOI18N
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
+
+        jButton2.setIcon(resourceMap.getIcon("jButton2.icon")); // NOI18N
+        jButton2.setMargin(new java.awt.Insets(1, 1, 1, 1));
+        jButton2.setName("jButton2"); // NOI18N
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
         jPanel6.setLayout(jPanel6Layout);
         jPanel6Layout.setHorizontalGroup(
             jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel6Layout.createSequentialGroup()
+                .addContainerGap()
                 .addComponent(contactname, javax.swing.GroupLayout.PREFERRED_SIZE, 239, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(contactcity, javax.swing.GroupLayout.PREFERRED_SIZE, 131, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -137,18 +169,24 @@ public class ProductPanelContactSub extends javax.swing.JPanel {
                 .addComponent(contactid, javax.swing.GroupLayout.PREFERRED_SIZE, 131, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jRadioButton1)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jButton1)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jButton2)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel6Layout.setVerticalGroup(
             jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel6Layout.createSequentialGroup()
                 .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
-                    .addComponent(contactname, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(contactcity, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(contactcompany, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(contactid, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jRadioButton1))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(jRadioButton1)
+                    .addComponent(contactname, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jButton1)
+                    .addComponent(jButton2))
+                .addContainerGap(14, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
@@ -163,14 +201,52 @@ public class ProductPanelContactSub extends javax.swing.JPanel {
         );
     }// </editor-fold>//GEN-END:initComponents
 
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        getParent().add(new ProductPanelContactSub(null, false));
+        getParent().validate();
+        getParent().getParent().validate();
+    }//GEN-LAST:event_jButton1ActionPerformed
 
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        Container p = getParent();
+        getParent().remove(this);
+        if(isDefault()){
+        if(p.getComponentCount()>0) {
+                ((ProductPanelContactSub) p.getComponent(0)).setDefault(true);
+            }
+        }
+        p.validate();
+        p.getParent().validate();
+    }//GEN-LAST:event_jButton2ActionPerformed
+
+    public boolean isDefault() {
+        return jRadioButton1.isSelected();
+    }
+
+    public void setDefault(boolean def){
+        jRadioButton1.setSelected(def);
+    }
+
+    public Contact getContact() {
+
+        try {
+            //main supplier here
+            int suppliersids_ = Integer.valueOf(contactname.getSelectedItem().getId());
+            return (Contact) DatabaseObject.getObject(Context.getContact(), suppliersids_);
+        } catch (Exception numberFormatException) {
+            return null;
+        }
+    }
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTextField contactcity;
     private javax.swing.JTextField contactcompany;
     private javax.swing.JTextField contactid;
     private mpv5.ui.beans.LabeledCombobox contactname;
+    private javax.swing.JButton jButton1;
+    private javax.swing.JButton jButton2;
     private javax.swing.JPanel jPanel6;
     private javax.swing.JRadioButton jRadioButton1;
     // End of variables declaration//GEN-END:variables
 
+ 
 }

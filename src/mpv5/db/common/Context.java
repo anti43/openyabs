@@ -23,6 +23,7 @@ import mpv5.db.objects.Product;
 import mpv5.db.objects.ProductGroup;
 import mpv5.db.objects.ProductList;
 import mpv5.db.objects.ProductlistSubItem;
+import mpv5.db.objects.ProductsToSuppliers;
 import mpv5.db.objects.Reminder;
 import mpv5.db.objects.Revenue;
 import mpv5.db.objects.Stage;
@@ -1638,6 +1639,7 @@ public class Context {
         Context c = new Context();
         c.setSubID(DEFAULT_SUBID);
         c.setDbIdentity(IDENTITY_PRODUCTS_TO_SUPPLIERS);
+        c.setIdentityClass(ProductsToSuppliers.class);
         c.setId(49);
 
         return c;

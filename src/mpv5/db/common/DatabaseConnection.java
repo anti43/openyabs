@@ -4,7 +4,6 @@
  */
 package mpv5.db.common;
 
-import java.io.File;
 import java.sql.Driver;
 import javax.swing.JProgressBar;
 import mpv5.logging.Log;
@@ -12,11 +11,8 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.List;
-import java.util.Vector;
 import mpv5.globals.LocalSettings;
 import mpv5.ui.dialogs.Popup;
-import mpv5.utils.files.FileReaderWriter;
 
 /**
  *
@@ -133,7 +129,7 @@ public class DatabaseConnection {
             Log.Debug(this, ex.getNextException());
             Log.Debug(this, ex.getNextException().getNextException());
             Log.Debug(this, ex.getNextException().getNextException().getNextException());
-//            Popup.warn(ex.getMessage(), Popup.ERROR);
+            Popup.error(ex);
             DatabaseConnection.shutdown();
             return false;
         }
