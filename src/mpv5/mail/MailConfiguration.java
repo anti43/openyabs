@@ -11,6 +11,7 @@ public class MailConfiguration {
     private String password;
     private String senderAddress;
     private boolean useTls;
+    private boolean useSmtps;
 
     /**
      * @return the smtpHost
@@ -80,5 +81,19 @@ public class MailConfiguration {
      */
     public void setUseTls(boolean useTls) {
         this.useTls = useTls;
+    }
+
+    /**
+     * @return the useSmtps
+     */
+    public boolean isUseSmtps() {
+        return useSmtps;
+    }
+
+    /**
+     * @param useSmtps the useSmtps to set
+     */
+    public void setUseSmtps(boolean useSmtps) {
+        this.useSmtps = useSmtps;
     }
 }

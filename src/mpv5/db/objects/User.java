@@ -75,7 +75,7 @@ public class User extends DatabaseObject {
      * Set the current logged in user
      * @param usern
      */
-    public static void setUser(User usern) {
+    public static void _setUser(User usern) {
         currentUser = usern;
 //        predefTitle = (" (" + usern.getName() + ")");
     }
@@ -267,7 +267,7 @@ public class User extends DatabaseObject {
     public void login() {
         DatabaseObjectLock.releaseAllObjectsFor(this);
         if (isenabled) {
-            setUser(this);
+            _setUser(this);
             setProperties();
             try {
                 Locale.setDefault(TypeConversion.stringToLocale(__getLocale()));
@@ -301,7 +301,7 @@ public class User extends DatabaseObject {
     public void logout() {
         DatabaseObjectLock.releaseAllObjectsFor(this);
         saveProperties();
-        setUser(DEFAULT);
+        _setUser(DEFAULT);
         if (!isDefault()) {
             setIsloggedin(false);
             save();
@@ -651,6 +651,7 @@ public class User extends DatabaseObject {
             mailConfiguration.setUsername(getProperties().getProperty("smtp.host.user"));
             mailConfiguration.setPassword(getProperties().getProperty("smtp.host.password"));
             mailConfiguration.setUseTls(Boolean.valueOf(getProperties().getProperty("smtp.host.usetls")));
+            mailConfiguration.setUseSmtps(Boolean.valueOf(getProperties().getProperty("smtp.host.usesmpts")));
         } else {
             Log.Debug(this, "Mail configuration not set.");
         }
@@ -661,7 +662,7 @@ public class User extends DatabaseObject {
      */
     public MailConfiguration getMailConfiguration() {
         if (mailConfiguration.getSmtpHost() == null || mailConfiguration.getSmtpHost().length() == 0) {
-            Popup.notice(Messages.NO_MAIL_CONFIG);
+            MPView.addMessage(Messages.NO_MAIL_CONFIG);
             Log.Debug(this, "SMTP host configuration not set: " + mailConfiguration.getSmtpHost());
         }
         return mailConfiguration;

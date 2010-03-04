@@ -16,6 +16,7 @@
  */
 package mpv5.mail;
 
+import com.sun.mail.smtp.SMTPSSLTransport;
 import java.io.File;
 import java.util.Date;
 import java.util.Properties;
@@ -27,6 +28,7 @@ import javax.mail.Authenticator;
 import javax.mail.Message;
 import javax.mail.MessagingException;
 import javax.mail.Multipart;
+import javax.mail.NoSuchProviderException;
 import javax.mail.PasswordAuthentication;
 import javax.mail.Session;
 import javax.mail.Transport;
@@ -43,22 +45,23 @@ import mpv5.utils.jobs.Waiter;
 /**
  * A simple mail implementation, taken from
  * http://www.tutorials.de/forum/java/255387-email-mit-javamail-versenden.html
- * 
+ *
  */
 public class SimpleMail implements Waiter {
 
-    private String smtpHost ="";
-    private String username ="";
-    private String password ="";
-    private String senderAddress ="";
-    private String recipientsAddress ="";
-    private String subject ="";
-    private String text ="";
+    private String smtpHost = "";
+    private String username = "";
+    private String password = "";
+    private String senderAddress = "";
+    private String recipientsAddress = "";
+    private String subject = "";
+    private String text = "";
     private boolean useTls;
+    private boolean useSmtps;
     private File attachment;
 
     /**
-     * 
+     *
      * @param smtpHost
      * @param username
      * @param password
@@ -94,51 +97,11 @@ public class SimpleMail implements Waiter {
      * @throws MessagingException
      */
     private void sendMail() throws MessagingException {
-        MailAuthenticator auth = new MailAuthenticator(username, password);
-
-        Properties properties = null;
-        Session session = null;
-        properties = new Properties();
-        properties.put("mail.smtp.host", smtpHost);
-        if (username != null) {
-            properties.put("mail.smtp.auth", "true");
+        if (!useSmtps) {
+            sendSmptmail();
+        } else {
+            sendSmptsMail();
         }
-        if (useTls) {
-            properties.put("mail.smtp.starttls.enable", "true");
-        }
-
-        session = Session.getDefaultInstance(properties, auth);
-
-        // Define message
-        MimeMessage message = new MimeMessage(session);
-        message.setFrom(new InternetAddress(senderAddress));
-        message.addRecipient(Message.RecipientType.TO, new InternetAddress(recipientsAddress));
-        message.setSubject(subject);
-
-        // create the message part
-        MimeBodyPart messageBodyPart = new MimeBodyPart();
-
-        //fill message
-        messageBodyPart.setText(text);
-        Multipart multipart = new MimeMultipart();
-        multipart.addBodyPart(messageBodyPart);
-
-        if (attachment != null) {
-            // Part two is attachment
-            messageBodyPart = new MimeBodyPart();
-            DataSource source = new FileDataSource(attachment);
-            messageBodyPart.setDataHandler(new DataHandler(source));
-            messageBodyPart.setFileName(attachment.getName());
-            multipart.addBodyPart(messageBodyPart);
-        }
-
-        // Put parts in message
-        message.setContent(multipart);
-
-        // Send the message
-        Transport.send(message);
-        Log.Debug(this, "Mail sent: " + message);
-        Popup.notice(Messages.MAIL_SENT + " " + recipientsAddress);
     }
 
     public void set(Object object, Exception exception) throws Exception {
@@ -172,6 +135,7 @@ public class SimpleMail implements Waiter {
             setSmtpHost(c.getSmtpHost());
             setUsername(c.getUsername());
             setUseTls(c.isUseTls());
+            setUseSmtps(c.isUseSmtps());
         } else {
             throw new UnsupportedOperationException("MailConfig cannot be null!");
         }
@@ -301,6 +265,149 @@ public class SimpleMail implements Waiter {
      */
     public void setUseTls(boolean useTls) {
         this.useTls = useTls;
+    }
+
+    /**
+     * @return the useSmtps
+     */
+    public boolean isUseSmtps() {
+        return useSmtps;
+    }
+
+    /**
+     * @param useSmtps the useSmtps to set
+     */
+    public void setUseSmtps(boolean useSmtps) {
+        this.useSmtps = useSmtps;
+    }
+
+    private void sendSmptmail() throws MessagingException {
+        Log.Debug(this, "Sending mail via SMTP");
+        MailAuthenticator auth = new MailAuthenticator(username, password);
+
+        Properties properties = null;
+        Session session = null;
+        properties = new Properties();
+        properties.put("mail.smtp.host", smtpHost);
+        if (username != null) {
+            properties.put("mail.smtp.auth", "true");
+        }
+        if (useTls) {
+            properties.put("mail.smtp.starttls.enable", "true");
+        }
+
+        session = Session.getDefaultInstance(properties, auth);
+
+        // Define message
+        MimeMessage message = new MimeMessage(session);
+        message.setFrom(new InternetAddress(senderAddress));
+        message.addRecipient(Message.RecipientType.TO, new InternetAddress(recipientsAddress));
+        message.setSubject(subject);
+
+        // create the message part
+        MimeBodyPart messageBodyPart = new MimeBodyPart();
+
+        //fill message
+        messageBodyPart.setText(text);
+        Multipart multipart = new MimeMultipart();
+        multipart.addBodyPart(messageBodyPart);
+
+        if (attachment != null) {
+            // Part two is attachment
+            messageBodyPart = new MimeBodyPart();
+            DataSource source = new FileDataSource(attachment);
+            messageBodyPart.setDataHandler(new DataHandler(source));
+            messageBodyPart.setFileName(attachment.getName());
+            multipart.addBodyPart(messageBodyPart);
+        }
+
+        // Put parts in message
+        message.setContent(multipart);
+        try {
+            // Send the message
+            Transport.send(message);
+            Log.Debug(this, "Mail sent: " + message);
+            Popup.notice(Messages.MAIL_SENT + " " + recipientsAddress);
+        } catch (MessagingException messagingException) {
+            Popup.error(messagingException);
+            Log.Debug(this, messagingException.getLocalizedMessage());
+        } finally {
+// close the connection
+        }
+    }
+
+    /**
+     * From http://www.nepherte.be/send-mail-over-smtps-in-java/
+     * @throws NoSuchProviderException
+     * @throws MessagingException
+     */
+    private void sendSmptsMail() throws NoSuchProviderException, MessagingException {
+        Log.Debug(this, "Sending mail via SMTPS");
+        // create properties
+        Properties props = System.getProperties();
+        MailAuthenticator auth = new MailAuthenticator(username, password);
+
+        props.put("mail.smtps.auth", Boolean.toString(username!=null));
+        props.put("mail.smtps.starttls.enable", Boolean.toString(useTls));
+// < -- it is important you use the correct port. smtp uses 25, smtps 465 -->
+        props.put("mail.smtps.port", "465");
+// < -- put the smtps server host address here -->
+        props.put("mail.smtps.host", smtpHost);
+
+//
+//        props.put("mail.smtp.port", "587");
+//        props.put("mail.smtp.auth", (username != null));
+//        props.put("mail.smtp.starttls.enable", useTls);
+
+// create session
+        Session session = Session.getDefaultInstance(props, auth);
+//        session.setDebug(true);
+
+        // Define message
+        MimeMessage message = new MimeMessage(session);
+        message.setFrom(new InternetAddress(senderAddress));
+        message.addRecipient(Message.RecipientType.TO, new InternetAddress(recipientsAddress));
+        message.setSubject(subject);
+
+        // create the message part
+        MimeBodyPart messageBodyPart = new MimeBodyPart();
+
+        //fill message
+        messageBodyPart.setText(text);
+        Multipart multipart = new MimeMultipart();
+        multipart.addBodyPart(messageBodyPart);
+
+        if (attachment != null) {
+            // Part two is attachment
+            messageBodyPart = new MimeBodyPart();
+            DataSource source = new FileDataSource(attachment);
+            messageBodyPart.setDataHandler(new DataHandler(source));
+            messageBodyPart.setFileName(attachment.getName());
+            multipart.addBodyPart(messageBodyPart);
+        }
+
+        // Put parts in message
+        message.setContent(multipart);
+        message.saveChanges();
+// transport the message
+// < -- we will send the message over smtps -->
+        SMTPSSLTransport transport = (SMTPSSLTransport) session.getTransport("smtps");
+
+// connect to server
+        try {
+            // < -- fill in email address and password -->
+            transport.connect();
+// send the message
+            transport.sendMessage(message, message.getAllRecipients());
+            Log.Debug(this, "Mail sent: " + message);
+            Popup.notice(Messages.MAIL_SENT + " " + recipientsAddress);
+        } catch (MessagingException messagingException) {
+            Popup.error(messagingException);
+            Log.Debug(this, messagingException.getLocalizedMessage());
+        } finally {
+// close the connection
+            transport.close();
+        }
     }
 
     class MailAuthenticator extends Authenticator {

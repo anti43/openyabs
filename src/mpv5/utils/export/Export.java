@@ -86,13 +86,18 @@ public class Export extends HashMap<String, Object> implements Waitable {
                     pr.setSubject(VariablesHandler.parse(m.__getCName(), dataOwner));
                     pr.setText(VariablesHandler.parse(m.__getDescription(), dataOwner));
                 }
-                new Job(ex, (Waiter) pr).execute();
+                try {
+                    new Job(ex, (Waiter) pr).execute();
+                } catch (Exception e) {
+                    Popup.error(e);
+                }
 
             } else {
                 Popup.notice(Messages.NO_MAIL_DEFINED);
             }
         } catch (UnsupportedOperationException unsupportedOperationException) {
-            Popup.notice(Messages.NO_MAIL_CONFIG);
+            Log.Debug(unsupportedOperationException);
+            Popup.error(unsupportedOperationException);
         }
     }
 

@@ -208,7 +208,7 @@ public enum Messages {
     SELECT_A_TEMPLATE("Select a template:"),
     UNPAID_BILLS("Unpaid bills"),
     UNPAID_BILLS_OVERDUE("Overdues"),
-    NO_MAIL_CONFIG("Mail not properly configured."),
+    NO_MAIL_CONFIG("SMTP host configuration not set."),
     MAIL_SENT("Mail sent to:"),
     CHANGE_STATUS("Change status"),
     ALL("All"),
@@ -229,7 +229,8 @@ public enum Messages {
     CONTACT_TYPE_FEMALE("Mrs."),
     INVENTORY_STOCK_TRESHOLD("The stock count of the following product has reached the alarm threshold: "),
     PRINT_NOT_POSSIBLE("Could not find a print service for the give file. Try 'print through default application' setting instead:"),
-    UPDATE_AVAILABLE("There is an update available for Yabs, check openyabs.org")
+    UPDATE_AVAILABLE("There is an update available for Yabs, check openyabs.org"),
+    SEARCHABLE("This is a search-enabled field - type a phrase and hit 'Enter'");
             ;
 
 

@@ -170,7 +170,7 @@ public class Popup {
      * @param x
      */
     public static void error(Exception x) {
-        error(identifier, x.toString());
+        error(identifier, x.getLocalizedMessage());
     }
 
     private static Object prepareText(String s) {

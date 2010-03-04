@@ -29,6 +29,7 @@ import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
 import mpv5.db.common.DatabaseSearch;
 import mpv5.db.common.NodataFoundException;
+import mpv5.globals.Messages;
 import mpv5.handler.MPEnum;
 import mpv5.logging.Log;
 import mpv5.ui.frames.MPView;
@@ -126,6 +127,7 @@ public class MPCombobox extends javax.swing.JPanel {
 
 
         jComboBox1.setRenderer(new ComboBoxRendererForTooltip());
+//        jComboBox1.setToolTipText(Messages.SEARCHABLE.toString());
         setModel();
     }
 
@@ -328,6 +330,9 @@ public class MPCombobox extends javax.swing.JPanel {
     public void setSearchEnabled(boolean enabled) {
         SEARCH_ON_ENTER = enabled;
         jComboBox1.setEditable(enabled);
+        if (enabled) {
+             jComboBox1.setToolTipText(Messages.SEARCHABLE.toString());
+        }
     }
 
     /**

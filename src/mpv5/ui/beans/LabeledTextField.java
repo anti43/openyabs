@@ -22,6 +22,7 @@ import mpv5.db.common.DatabaseObject;
 import mpv5.db.common.NodataFoundException;
 import mpv5.db.common.QueryData;
 import mpv5.globals.LocalSettings;
+import mpv5.globals.Messages;
 import mpv5.logging.Log;
 import mpv5.ui.panels.DataPanel;
 import mpv5.utils.models.MPComboBoxModelItem;
@@ -272,6 +273,9 @@ public class LabeledTextField extends javax.swing.JPanel {
      * @param searchOnEnterEnabled the searchOnEnterEnabled to set
      */
     public void setSearchOnEnterEnabled(boolean searchOnEnterEnabled) {
+        if (searchOnEnterEnabled) {
+            jTextField1.setToolTipText(Messages.SEARCHABLE.toString());
+        }
         this.searchOnEnterEnabled = searchOnEnterEnabled;
     }
 

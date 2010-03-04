@@ -311,7 +311,7 @@ public class FormatHandler {
     public synchronized String toUserString() {
 
         String s = mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("saveformat");
-        if (s != null) {
+        if (s != null && s.length() > 0) {
             if (s.contains("/")) {
                 s = s.substring(s.lastIndexOf("/") + 1);
             }
