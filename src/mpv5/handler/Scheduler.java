@@ -220,7 +220,7 @@ public class Scheduler extends Thread {
 ////            }
 //        }
 
-        if (!alerts.isEmpty() || !warnings.isEmpty() || !waitings.isEmpty()) {
+        if (!alerts.isEmpty() | !warnings.isEmpty() | !waitings.isEmpty()) {
 //            alerts.addAll(warnings);
 //            if (Popup.Y_N_dialog(alerts.size() + " " + Messages.SCHEDULE_NEW_ALERTS, Messages.WARNING)) {
 

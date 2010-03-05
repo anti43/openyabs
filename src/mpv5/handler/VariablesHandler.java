@@ -98,7 +98,7 @@ public abstract class VariablesHandler {
 //        old = target;
 
         Log.Debug(VariablesHandler.class, "Resolving vars for " + target.getContext() + "#" + target.ids);
-        String[][] vars = new String[GENERIC_VARS.values().length + getSpecialVarsOf(target).length + 6][2];
+        String[][] vars = new String[GENERIC_VARS.values().length + getSpecialVarsOf(target).length + 7][2];
         GENERIC_VARS[] gens = GENERIC_VARS.values();
         int i;
         for (i = 0; i < gens.length; i++) {
@@ -153,6 +153,7 @@ public abstract class VariablesHandler {
                 vars[i + j + 3] = (new String[]{"[contact.title]".toUpperCase(), c.__getTitle()});
                 vars[i + j + 4] = (new String[]{"[contact.country]".toUpperCase(), c.__getCountry()});
                 vars[i + j + 5] = (new String[]{"[grosvaluef]".toUpperCase(), FormatNumber.formatLokalCurrency(((Item) target).__getTaxvalue().doubleValue() + ((Item) target).__getNetvalue().doubleValue())});
+                vars[i + j + 6] = (new String[]{"[type]".toUpperCase(), Item.getTypeString(((Item) target).__getInttype())});
 
             } catch (NodataFoundException ex) {
                 Log.Debug(VariablesHandler.class, ex.getMessage());
@@ -165,6 +166,7 @@ public abstract class VariablesHandler {
             vars[i + j + 3] = (new String[]{"What is 42?", "The Answer to Life, the Universe, and Everything."});
             vars[i + j + 4] = (new String[]{"What is 42?", "The Answer to Life, the Universe, and Everything."});
             vars[i + j + 5] = (new String[]{"What is 42?", "The Answer to Life, the Universe, and Everything."});
+            vars[i + j + 6] = (new String[]{"What is 42?", "The Answer to Life, the Universe, and Everything."});
 
         }
 
