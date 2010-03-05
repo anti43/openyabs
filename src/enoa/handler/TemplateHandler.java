@@ -76,6 +76,17 @@ public class TemplateHandler {
                         + "templates0.mimetype='" + type
                         + "' AND templatestousers.IDS>0 "
                         + "AND templates0.groupsids =" + groupsids, MPSecurityManager.VIEW, null);
+                if (!data.hasData()) {
+                    data = QueryHandler.getConnection().freeQuery(
+                            "SELECT templatesids FROM templatestousers  LEFT OUTER JOIN templates AS templates0 ON "
+                            + "templates0.ids = templatestousers.templatesids WHERE templatestousers.usersids="
+                            + mpv5.db.objects.User.getCurrentUser().__getIDS()
+                            + " AND "
+                            + "templates0.mimetype='" + type
+                            + "' AND templatestousers.IDS>0 "
+                            + "AND templates0.groupsids = 1", MPSecurityManager.VIEW, null);
+                }
+
                 Template preloadedTemplate = null;
                 if (data.hasData()) {
                     try {

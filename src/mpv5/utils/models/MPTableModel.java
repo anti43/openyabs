@@ -17,29 +17,19 @@
 package mpv5.utils.models;
 
 import java.text.DateFormat;
-import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.Icon;
 import javax.swing.JLabel;
-import javax.swing.JTable;
 import javax.swing.event.TableModelEvent;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.text.TableView.TableRow;
 import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
-import mpv5.db.common.NodataFoundException;
-import mpv5.db.objects.Item;
-import mpv5.db.objects.ProductlistSubItem;
-import mpv5.db.objects.SubItem;
 import mpv5.globals.Headers;
 import mpv5.logging.Log;
-import mpv5.ui.frames.MPView;
 import mpv5.utils.arrays.ArrayUtilities;
 import mpv5.utils.numberformat.FormatNumber;
 import mpv5.utils.tables.TableCalculator;
