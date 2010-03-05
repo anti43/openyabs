@@ -24,6 +24,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Vector;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JComponent;
 import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
@@ -635,4 +637,13 @@ public class Item extends DatabaseObject implements Formattable {
 //        }
 //        return saved;
 //    }
+
+    @Override
+    public String toString(){
+        try {
+            return cname + " (" + ((Contact)getObject(Context.getContact(), contactsids)).__getCName() + ")";
+        } catch (NodataFoundException ex) {
+            return super.toString();
+        }
+    }
 }
