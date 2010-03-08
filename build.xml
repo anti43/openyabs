@@ -33,7 +33,7 @@ dpkg -i paketname.deb
              minus the .jar extension. It should not have spaces.
              <property name="store.jar.name" value="MyJarName"/>
         -->
-        <property name="store.jar.name" value="YaBS"/>
+        <property name="store.jar.name" value="yabs"/>
 
 
         <!-- don't edit below this line -->
