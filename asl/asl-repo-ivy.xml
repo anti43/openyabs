@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="utf-8"?> 
+<!--
+********************************************************************************
+* Ant Script Library - Ivy repository module
+* Targets used to configure and manipulate Ivy repositories
+* Module property prefix: "repo-ivy"
+********************************************************************************
+* Copyright 2009 Joe Schmetzer
+*
+* Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+*     http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+********************************************************************************
+ -->
+<project name="asl-repo-ivy" xmlns:ivy="antlib:org.apache.ivy.ant">
+    <dirname property="repo-ivy.basedir" file="${ant.file.asl-repo-ivy}"/>
+    <property name="repo-ivy.settings-file"     location="${repo-ivy.basedir}/ivysettings.xml" />
+    <property name="repo-ivy.lib-dir"           location="lib"/>
+    <property name="repo-ivy.report-dir"        location="target/dist/reports/ivy-report"/>
+    <property name="repo-ivy.retrieve-pattern"  value="${repo-ivy.lib-dir}/[artifact]-[revision].[ext]"/>
+    <property name="repo-ivy.publish-pattern"   value="${common.dist-dir}/[artifact].[ext]"/>
+
+    <!-- ***********************************************************************
+    * Set up the Ivy tasks
+    ************************************************************************ -->
+    <path id="rep-ivy.lib-path">
+        <pathelement location="${repo-ivy.basedir}/lib/apache-ivy/ivy-2.0.0.jar"/>
+    </path>
+    <taskdef resource="org/apache/ivy/ant/antlib.xml" 
+        uri="antlib:org.apache.ivy.ant" 
+        classpathref="rep-ivy.lib-path"/>
+
+    
+    <!-- ***********************************************************************
+    * target: -repo-configure-ivy
+    ************************************************************************ -->
+    <target name="-repo-configure-ivy" >
+        <ivy:configure file="${repo-ivy.settings-file}" />
+    </target>
+
+    <!-- ***********************************************************************
+    * target: repo-resolve
+    ************************************************************************ -->
+    <target name="repo-resolve" depends="-repo-configure-ivy"
+            description="Resolves dependencies with ivy">
+        <ivy:resolve />
+    </target>
+
+    <!-- ***********************************************************************
+    * target: repo-retrieve
+    ************************************************************************ -->
+    <target name="repo-retrieve" depends="-repo-configure-ivy"  
+            description="Retrieve dependencies with Ivy">
+        <ivy:retrieve pattern="${repo-ivy.retrieve-pattern}" sync="true" />
+    </target>
+
+    <!-- ***********************************************************************
+    * target: repo-publish
+    ************************************************************************ -->
+    <target name="repo-publish" depends="-repo-configure-ivy"  
+            description="Publish artifacts to Ivy shared repository">
+        <ivy:info />
+        <ivy:publish
+            artifactspattern="${repo-ivy.publish-pattern}"
+            status="integration"
+            resolver="shared"
+            overwrite="true"
+            pubrevision="${ivy.revision}"/>
+    </target>
+
+    <!-- ***********************************************************************
+    * target: repo-publish
+    ************************************************************************ -->
+    <target name="repo-publish-local" depends="-repo-configure-ivy"  
+            description="Publish artifacts to Ivy local repository">
+        <ivy:info />
+        <ivy:publish
+            artifactspattern="${repo-ivy.publish-pattern}"
+            status="integration"
+            resolver="local"
+            overwrite="true"
+            pubrevision="${ivy.revision}"/>
+    </target>
+
+    <!-- ***********************************************************************
+    * target: repo-report
+    ************************************************************************ -->
+    <target name="repo-report" depends="repo-resolve"
+            description="Generate an Ivy dependencies report">
+        <ivy:report todir="${repo-ivy.report-dir}" />
+    </target>
+
+    <!-- ***********************************************************************
+    * target: repo-clean-cache
+    ************************************************************************ -->
+    <target name="repo-clean-cache" depends="-repo-configure-ivy"
+            description="Clean Ivy repository cache">
+        <ivy:cleancache />
+    </target>
+
+    <!-- ***********************************************************************
+    * target: repo-clean-local
+    ************************************************************************ -->
+    <target name="repo-clean-local" depends="-repo-configure-ivy"
+            description="Clean Ivy local repository">
+        <ivy:info />
+        <delete dir="${ivy.local.default.root}/${ivy.organisation}/${ivy.module}"/>
+    </target>
+
+    <!-- ***********************************************************************
+    * target: repo-install-local
+    ************************************************************************ -->
+    <target name="repo-install-local" depends="-repo-configure-ivy,-repo-install-init"
+            description="Install jars from central m2 repoisotry to Ivy local repository">
+        <ivy:install
+            from="default" to="local"
+            organisation="${repo-ivy.install-organisation}"
+            module="${repo-ivy.install-module}"
+            revision="${repo-ivy.install-revision}"
+            transitive="true"
+            haltonfailure="false"
+            overwrite="true"
+            />
+    </target>
+
+    <!-- ***********************************************************************
+    * target: -repo-install-init
+    ************************************************************************ -->
+    <target name="-repo-install-init"
+            depends="-repo-install-init-org,-repo-install-init-module,-repo-install-init-revision"/>
+    
+    <!-- ***********************************************************************
+    * target: -repo-install-init
+    ************************************************************************ -->
+    <target name="-repo-install-init-org" unless="repo-ivy.install-organisation">
+        <input addproperty="repo-ivy.install-organisation" message="Install organisation:"/>
+    </target>
+
+    <!-- ***********************************************************************
+    * target: -repo-install-init
+    ************************************************************************ -->
+    <target name="-repo-install-init-module" unless="repo-ivy.install-module">
+        <input addproperty="repo-ivy.install-module" message="Install module:"/>
+    </target>
+
+    <!-- ***********************************************************************
+    * target: -repo-install-init
+    ************************************************************************ -->
+    <target name="-repo-install-init-revision" unless="repo-ivy.install-revision">
+        <input addproperty="repo-ivy.install-revision" message="Install revision:"/>
+    </target>
+</project>

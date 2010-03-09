@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?> 
+<!--
+********************************************************************************
+* Ant Script Library - Java top level module with Ivy support
+* Module that imports all the other java modules for a plain java build
+* Module property prefix: "java-ivy"
+********************************************************************************
+* Copyright 2009 Joe Schmetzer
+*
+* Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+*     http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+********************************************************************************
+ -->
+<project name="asl-java-ivy" xmlns:ivy="antlib:org.apache.ivy.ant">
+    <dirname property="asl-java-ivy.basedir" file="${ant.file.asl-java-ivy}"/>
+
+    <import file="${asl-java-ivy.basedir}/asl-java.xml"/>
+    <import file="${asl-java-ivy.basedir}/asl-repo-ivy.xml"/>
+
+    <!-- ***********************************************************************
+    * target overide: -init-classpath
+    * overrides the default -init-classpath target to initialise the classpath
+    * from Ivy
+    ************************************************************************ -->
+    <target name="-init-classpath" depends="repo-resolve">
+        <ivy:cachepath pathid="java-build.classpath" conf="compile"/>
+    </target>
+
+    <!-- ***********************************************************************
+    * target overide: -init-runtime-classpath
+    * overrides the default -init-runtime-classpath target to initialise the classpath
+    * from Ivy
+    ************************************************************************ -->
+    <target name="-init-runtime-classpath" depends="repo-resolve">
+        <ivy:cachepath pathid="java-build.runtime-classpath" conf="runtime"/>
+    </target>
+
+    <!-- ***********************************************************************
+    * target overide: -test-init-classpath
+    * overrides the default -test-init-classpath target to initialise the test
+    * classpath from Ivy
+    ************************************************************************ -->
+    <target name="-test-init-classpath" depends="repo-resolve">
+        <ivy:cachepath pathid="java-test.classpath-ivy" conf="test,master"/>
+        <path id="java-test.classpath">
+            <path refid="java-test.classpath-ivy"/>
+            <pathelement location="${java-build.jar-file}"/>
+        </path>
+    </target>
+    
+    <!-- ***********************************************************************
+    * target overide: -init-version
+    * overrides the default -init-version target to initialise the release
+    * version from ivy.xml
+    ************************************************************************ -->
+    <target name="-init-version">
+        <ivy:info/>
+    	<property name="release.version" value="${ivy.revision}"/>
+	</target>
+</project>

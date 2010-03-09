@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="utf-8"?> 
+<!--
+********************************************************************************
+* Ant Script Library - Source Control Management for Perforce
+* Module that imports all the other java modules for a plain java build
+* Module property prefix: "scm"
+********************************************************************************
+* Copyright 2009 Joe Schmetzer
+*
+* Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+*     http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+********************************************************************************
+ -->
+<project name="asl-scm-p4">
+    <dirname property="asl-scm-p4.basedir" file="${ant.file.asl-scm-p4}"/>
+
+    <import file="${asl-scm-p4.basedir}/asl-common.xml"/>
+    
+    <property name="scm.p4-executable" value="p4"/>
+    <property name="scm.p4-tag-base" value="unknown"/>
+
+    <!-- ***********************************************************************
+    * macro: scm-checkout
+    ************************************************************************ -->
+    <macrodef name="scm-export">
+        <attribute name="serverpath"/>
+        <attribute name="version"/>
+        <attribute name="localpath"/>
+        <sequential>
+            <property name="scm.p4-workspace-name" value="@{version}-release-ws"/>
+
+        	<echo>scm-export:
+    serverpath: @{serverpath}
+    version: @{version}
+    localpath: @{localpath}
+    workspace: ${scm.p4-workspace-name}</echo>
+            <antcall target="-p4-create-workspace">
+                <param name="scm.p4-ws-server-path" value="@{serverpath}"/>
+                <param name="scm.p4-ws-version"     value="@{version}"/>
+            	<param name="scm.p4-ws-local-path"  value="@{localpath}"/>
+                <param name="scm.p4-workspace-name" value="${scm.p4-workspace-name}"/>
+            </antcall>
+            <antcall target="-p4-sync-workspace">
+                <param name="scm.p4-ws-server-path" value="@{serverpath}"/>
+                <param name="scm.p4-ws-version"     value="@{version}"/>
+                <param name="scm.p4-ws-local-path"  value="@{localpath}"/>
+                <param name="scm.p4-workspace-name" value="${scm.p4-workspace-name}"/>
+            </antcall>
+            <antcall target="-p4-delete-workspace">
+                <param name="scm.p4-workspace-name" value="${scm.p4-workspace-name}"/>
+            </antcall>
+        </sequential>
+    </macrodef>
+
+    <!-- ***********************************************************************
+    * macro: scm-update
+    ************************************************************************ -->
+    <macrodef name="scm-update">
+        <attribute name="dir"/>
+        <sequential>
+            <exec command="${scm.p4-executable}">
+                <arg value="sync"/>
+                <arg value="@{dir}/..."/>
+            </exec>
+        </sequential>
+    </macrodef>
+
+    <!-- ***********************************************************************
+    * macro: scm-tag
+    * p4 label -i
+    * p4 tag -l ${label-name} ${project-path}/...
+    ************************************************************************ -->
+    <macrodef name="scm-tag">
+        <attribute name="dir"/>
+    	<attribute name="tag"/>
+        <sequential>
+        	<antcall target="-p4-create-label">
+                <param name="scm.p4-label-path" value="@{dir}"/>
+        	    <param name="scm.p4-label-name" value="@{tag}"/>
+        	</antcall>
+        	<antcall target="-p4-apply-tag">
+                <param name="scm.p4-label-path" value="@{dir}"/>
+                <param name="scm.p4-label-name" value="@{tag}"/>
+            </antcall>
+        </sequential>
+    </macrodef>
+
+    <!-- ***********************************************************************
+    * target: -p4-create-label
+    ************************************************************************ -->
+	<target name="-p4-create-label"
+		 depends="-p4-create-label-spec, -p4-apply-label-spec, -p4-delete-label-spec"/>
+
+    <!-- ***********************************************************************
+    * target: -p4-create-label-spec
+    ************************************************************************ -->
+    <target name="-p4-create-label-spec">
+    	<property name="p4-label-spec-file" location="${java.io.tmpdir}/${ant.project.name}-p4-label-spec.txt"/>
+    	<echo message="Using p4 label spec file ${p4-label-spec-file}"/>
+    	<echo file="${p4-label-spec-file}">
+Label:  ${scm.p4-label-name}
+View:
+    	    ${scm.p4-label-path}/...</echo>
+    </target>
+	
+    <!-- ***********************************************************************
+    * target: -p4-apply-label-spec
+    ************************************************************************ -->
+    <target name="-p4-apply-label-spec">
+        <exec executable="${scm.p4-executable}"
+        	  input="${p4-label-spec-file}"
+        	  failonerror="true">
+        	<arg value="label"/>
+            <arg value="-i"/>
+        </exec>
+    </target>
+    
+    <!-- ***********************************************************************
+    * target: -p4-delete-label-spec
+    ************************************************************************ -->
+    <target name="-p4-delete-label-spec">
+    	<delete file="${p4-label-spec-file}"/>
+    </target>
+    
+    <!-- ***********************************************************************
+    * target: -p4-apply-tag
+    ************************************************************************ -->
+	<target name="-p4-apply-tag">
+        <exec executable="${scm.p4-executable}" failonerror="true">
+            <arg value="tag"/>
+        	<arg value="-l"/>
+        	<arg value="${scm.p4-label-name}"/>
+        	<arg value="${scm.p4-label-path}/..."/>
+        </exec>
+	</target>
+	
+    <!-- ***********************************************************************
+    * target: -p4-create-workspace
+    ************************************************************************ -->
+	<target name="-p4-create-workspace"
+		    depends="-p4-create-workspace-spec, -p4-apply-workspace-spec, -p4-delete-workspace-spec"/>
+	
+    <!-- ***********************************************************************
+    * target: -p4-create-workspace-spec
+    ************************************************************************ -->
+    <target name="-p4-create-workspace-spec">
+        <property name="p4-workspace-spec-file" location="${java.io.tmpdir}/${ant.project.name}-p4-workspace-spec.txt"/>
+        <echo message="Using p4 workspace spec file ${p4-workspace-spec-file}"/>
+        <echo file="${p4-workspace-spec-file}">
+Client:  ${scm.p4-workspace-name}
+Owner:   ${user.name}
+Root:    ${scm.p4-ws-local-path}
+View:
+            ${scm.p4-ws-server-path}/... //${scm.p4-workspace-name}/...
+</echo>
+    </target>
+	
+    <!-- ***********************************************************************
+    * target: -p4-apply-workspace-spec
+    ************************************************************************ -->
+    <target name="-p4-apply-workspace-spec">
+        <exec executable="${scm.p4-executable}"
+              input="${p4-workspace-spec-file}"
+              failonerror="true">
+            <arg value="client"/>
+            <arg value="-i"/>
+        </exec>
+	</target>
+
+    <!-- ***********************************************************************
+    * target: -p4-delete-workspace-spec
+    ************************************************************************ -->
+    <target name="-p4-delete-workspace-spec">
+        <delete file="${p4-workspace-spec-file}"/>
+	</target>
+	
+    <!-- ***********************************************************************
+    * target: -p4-sync-workspace
+    ************************************************************************ -->
+	<target name="-p4-sync-workspace">
+		<mkdir dir="${scm.p4-ws-local-path}"/>
+		
+        <exec executable="${scm.p4-executable}"
+              failonerror="true">
+        	<arg value="-c"/>
+        	<arg value="${scm.p4-workspace-name}"/>
+            <arg value="sync"/>
+            <arg value="-p"/>
+        	<arg value="${scm.p4-ws-server-path}/...@${scm.p4-ws-version}"/>
+        </exec>
+	</target>
+	
+    <!-- ***********************************************************************
+    * target: -p4-delete-workspace
+    ************************************************************************ -->
+    <target name="-p4-delete-workspace">
+        <exec executable="${scm.p4-executable}"
+              failonerror="true">
+            <arg value="client"/>
+            <arg value="-d"/>
+            <arg value="${scm.p4-workspace-name}"/>
+        </exec>
+    </target>
+</project>

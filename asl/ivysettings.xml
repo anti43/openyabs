@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?> 
+<ivysettings>
+    <!--
+    <include url="${ivy.default.settings.dir}/ivysettings-public.xml"/>
+    -->
+    <include url="${ivy.default.settings.dir}/ivysettings-shared.xml"/>
+    <include url="${ivy.default.settings.dir}/ivysettings-local.xml"/>
+
+    <settings defaultResolver="default"/>
+    <resolvers>
+        <url name="exubero">
+	        <ivy      pattern="http://www.exubero.com/repo/[organisation]/[module]/[revision]/[type]s/[artifact].[ext]" />
+	        <artifact pattern="http://www.exubero.com/repo/[organisation]/[module]/[revision]/[type]s/[artifact]-[revision].[ext]" />
+	        <artifact pattern="http://www.exubero.com/repo/[organisation]/[module]/[revision]/[type]s/[artifact].[ext]" />
+        </url>
+        <ibiblio name="maven2" m2compatible="true" />
+        <chain name="default" returnFirst="true">
+            <resolver ref="local"/>
+            <resolver ref="shared"/>
+            <resolver ref="exubero"/>
+            <resolver ref="maven2"/>
+        </chain>
+    </resolvers>
+
+</ivysettings>

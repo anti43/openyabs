@@ -206,6 +206,7 @@ public enum Messages {
     SCHEDULE_ITEM_REMOVED("Scheduled item reached end-date:"),
     WELCOME("Welcome"),
     SELECT_A_TEMPLATE("Select a template:"),
+    SELECT_A_CONTACT("You must select a contact."),
     UNPAID_BILLS("Unpaid bills"),
     UNPAID_BILLS_OVERDUE("Overdues"),
     NO_MAIL_CONFIG("SMTP host configuration not set."),

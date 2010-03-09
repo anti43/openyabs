@@ -1,4 +1,40 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!-- For automated build task using asl
+<project name="yabs" default="dist">
+    <property name="java-build.src-dir" location="src"/>
+    <import file="asl/asl-java-build.xml"/>
+
+    <property name="java-build.src-dir" 		location="src/main/java"/>
+    <property name="java-build.lib-dir" 		location="lib"/>
+    <property name="java-build.classes-dir" 	location="${common.target-dir}/classes"/>
+    <property name="java-build.dist-ext" 		value=".jar"/>
+    <property name="java-build.dist-filename" 	value="${ant.project.name}${java-build.dist-ext}"/>
+    <property name="java-build.dist-file" 		location="${common.dist-dir}/${java-build.dist-filename}"/>
+    <property name="java-build.jar-dir"         location="${common.dist-dir}"/>
+	<property name="java-build.jar-file"        location="${java-build.dist-file}"/>
+    <property name="java-build.source-ver" 		value="1.5"/>
+    <property name="java-build.target-ver" 		value="1.5"/>
+    <property name="java-build.debug" 			value="on"/>
+    <property name="java-build.jar-main-class" 		value="mpv5.Main"/>
+
+     <target name="copy-resources"
+            description="Copies resources in preparation to be packaged in jar">
+        <copy todir="${java-build.classes-dir}">
+            <fileset dir="${java-build.src-dir}">
+                <exclude name="**/*.java"/>
+            </fileset>
+        </copy>
+
+        <copy todir="${common.dist-dir}/lib" flatten="true" includeEmptyDirs="false">
+            <fileset dir="${java-build.lib-dir}">
+                <include name="**/*.jar"/>
+                <include name="**/*.so"/>
+                <include name="**/*.dll"/>
+            </fileset>
+        </copy>
+    </target>
+</project>
+-->
 
 <project name="yabs" default="default" basedir=".">
     <description>Builds, tests, and runs the project yabs.</description>

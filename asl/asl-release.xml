@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?> 
+<!--
+********************************************************************************
+* Ant Script Library - release module
+* Module to create a release
+* Module property prefix: "release"
+********************************************************************************
+* Copyright 2009 Joe Schmetzer
+*
+* Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+*     http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+********************************************************************************
+ -->
+<project name="asl-release">
+    <dirname property="asl-release.basedir" file="${ant.file.asl-release}"/>
+    <import file="${asl-release.basedir}/asl-common.xml"/>
+    
+    <!-- ***********************************************************************
+    * target: release
+    ************************************************************************ -->
+    <target name="release"
+    	    depends="release-tag, release-export, release-compile, release-package"
+            description="Creates a new release version, tagging, checkout, build and package"/>
+
+    <!-- ***********************************************************************
+    * target: release-version
+    ************************************************************************ -->
+    <target name="-release-init-properties" depends="-init-time, -init-version">
+    	<echo message="Release version is ${release.version}"/>
+    	
+        <property name="release.tag" value="${ant.project.name}-${release.version}"/>
+        <echo message="Release tag is ${release.tag}"/>
+    
+        <property name="release.workspace" location="${common.target-dir}/release/${release.version}"/>
+        <property name="release.buildfile-name" value="build.xml"/>
+        <property name="release.buildfile-path" location="${release.workspace}/${release.buildfile-name}"/>
+    </target>
+
+    <!-- ***********************************************************************
+    * target: release-tag
+    ************************************************************************ -->
+    <target name="release-tag" depends="-release-init-properties,-release-check-dir"
+            description="Tags the code in scm using the release version">
+    	
+        <echo message="Tagging '${release.server-path}' with tag '${release.tag}'"/>
+        <scm-tag dir="${release.server-path}" tag="${release.tag}"/>
+    	
+    </target>
+
+    <!-- ***********************************************************************
+    * target: -release-check-dir
+    ************************************************************************ -->
+    <target name="-release-check-dir" unless="release.server-path">
+    	<fail message="The property 'release.server-path' must be defined"/>
+    </target>
+	
+    <!-- ***********************************************************************
+    * target: release-export
+    ************************************************************************ -->
+    <target name="release-export" depends="-release-init-properties"
+            description="Checks out the code for the specified release tag">
+        
+        <mkdir dir="${release.workspace}"/>
+        <scm-export serverpath="${release.server-path}" version="${release.tag}" localpath="${release.workspace}"/>
+    </target>
+
+    <!-- ***********************************************************************
+    * target: release-build
+    ************************************************************************ -->
+    <target name="release-compile" depends="-release-init-properties"
+            description="Compiles the release">
+        <ant antfile="${release.buildfile-path}" inheritall="false"/>
+    </target>
+
+    <!-- ***********************************************************************
+    * target: release-package
+    ************************************************************************ -->
+    <target name="release-package" depends="-release-init-properties"
+            description="Packages the release">
+    </target>
+</project>

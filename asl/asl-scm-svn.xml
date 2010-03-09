@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?> 
+<!--
+********************************************************************************
+* Ant Script Library - Source Control Management for Subversion
+* Module that imports all the other java modules for a plain java build
+* Module property prefix: "scm"
+********************************************************************************
+* Copyright 2009 Joe Schmetzer
+*
+* Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+*     http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+********************************************************************************
+ -->
+<project name="asl-scm-svn">
+    <dirname property="asl-scm-svn.basedir" file="${ant.file.asl-scm-svn}"/>
+
+    <import file="${asl-scm-svn.basedir}/asl-common.xml"/>
+    
+    <property name="scm.svn-executable" value="svn"/>
+    <property name="scm.svn-tag-base" value="unknown"/>
+
+    <!-- ***********************************************************************
+    * macro: scm-checkout
+    * <scm-checkout serverpath="${scm.server-project-dir}" localpath="${release.workspace}"/>
+    ************************************************************************ -->
+    <macrodef name="scm-checkout">
+        <attribute name="serverpath"/>
+        <attribute name="localpath"/>
+        <sequential>
+            <exec command="${scm.svn-executable}">
+                <arg value="checkout"/>
+                <arg value="--non-interactive"/>
+                <arg value="@{serverpath}"/>
+                <arg value="@{localpath}"/>
+            </exec>
+        </sequential>
+    </macrodef>
+
+    <!-- ***********************************************************************
+    * macro: scm-update
+    ************************************************************************ -->
+    <macrodef name="scm-update">
+        <attribute name="dir"/>
+        <sequential>
+            <exec command="${scm.svn-executable}">
+                <arg value="update"/>
+                <arg value="--non-interactive"/>
+                <arg value="@{dir}"/>
+            </exec>
+        </sequential>
+    </macrodef>
+
+    <!-- ***********************************************************************
+    * macro: scm-tag
+    ************************************************************************ -->
+    <macrodef name="scm-tag">
+        <attribute name="dir"/>
+        <sequential>
+            <exec command="${scm.svn-executable}">
+                <arg value="copy"/>
+                <arg value="--non-interactive"/>
+                <arg value="@{dir}"/>
+            </exec>
+        </sequential>
+    </macrodef>
+</project>

@@ -1,0 +1,11 @@
+<configurations defaultconfmapping="default">
+	<conf name="compile"    visibility="private"
+	                        description="artifacts needed to compile the application"/>
+	<conf name="test"       extends="runtime" 
+	                        visibility="private"
+	                        description="the classpath needed to run tests"/>
+	<conf name="master"     description="contains the artifact but no dependencies"/>
+	<conf name="runtime"    extends="compile"
+	                        description="runtime but not the artifact"/>
+	<conf name="default"    extends="master,runtime"/>
+</configurations>

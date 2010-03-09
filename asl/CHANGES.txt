@@ -1,0 +1,49 @@
+This file documents the changes for the Ant Script Library.
+
+Version 1.1.0 (released ?)
+==========================
+
+Changes:
+
+- Added new release module
+- Added application package module
+- New Java reports:
+  - Checkstyle report
+  - FindBugs report
+  - Copy/paste detection report
+  - Updated documentation for reports module
+- Added new SCM modules:
+  - Subversion module
+  - Perforce module
+- New introductory tutorial
+- Enhancements to the Ivy tasks
+- Link generated JavaDoc to JRE JavaDoc
+
+Version 1.0.2 (released February 25, 2009)
+==========================================
+
+Changes:
+
+- The documentation is now packaged along with the scripts, making them
+  available offline.
+- Removed optional jar files from the default download. If you call any script
+  target that requires an optional jar, you will be prompted to run the
+  automatic download script. This makes the download much smaller for those
+  people who don’t use any of the reporting features.
+- There is a new installer module (asl-java-install.xml). This can be used to
+  install an application jar, along with all its library dependencies and
+  configuration into an application assembly.
+
+
+Version 1.0.1 (released February 4, 2009)
+=========================================
+
+Changes:
+
+- Documentation updates
+
+Version 1.0.0 (released January 22, 2009)
+=========================================
+
+- Initial release of the Ant Script Library, containing standard Java build and
+  package targets.

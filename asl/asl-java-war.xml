@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?> 
+<!--
+********************************************************************************
+* Ant Script Library - Java war module 
+* Targets to create a war
+* Module property prefix: "java-war"
+********************************************************************************
+* Copyright 2009 Joe Schmetzer
+*
+* Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+*     http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+********************************************************************************
+ -->
+<project name="asl-java-war">
+    <dirname property="asl-java-war.basedir" file="${ant.file.asl-java-war}"/>
+
+    <import file="${asl-java-war.basedir}/asl-java-build.xml"/>
+
+    <property name="java-war.dist-filename"     value="${ant.project.name}.war"/>
+    <property name="java-war.dist-file"         location="${common.dist-dir}/${java-war.dist-filename}"/>
+    <property name="java-war.web-xml-file"      location="src/metadata/myapp.xml"/>
+    <property name="java-war.libs-dir"          location="${common.target-dir}/war-libs"/>
+    <property name="java-war.web-content-dir"   location="src/main/webapp"/>
+    <property name="java-war.web-xml"           location="web.xml"/>
+    <property name="java-war.webapp-name"       location="${ant.project.name}"/>
+    <property name="java-war.deploy-base"       location="${tomcat.home}/webapps"/>
+    <property name="java-war.deploy-dir"        location="${java-war.deploy-base}/${java-war.webapp-name}"/>
+
+    <!-- ***********************************************************************
+    * target: war
+    ************************************************************************ -->
+    <target name="war" depends="compile, copy-resources, jar, -init-time, -war-prepare-libs"
+            description="Create a war for this web project">
+            
+        <mkdir dir="${common.dist-dir}"/>
+        
+        <property name="java-war.compress"    value="true"/>
+        <property name="java-war.build-id"    value="Built by ${user.name} at ${common.timestamp} running on ${os.name} ${os.version} ${os.arch}"/>
+        
+        <war destfile="${java-war.dist-file}"
+                webxml="${java-war.web-xml-file}"
+                compress="${java-war.compress}">
+            <fileset dir="${java-war.web-content-dir}" />
+            <manifest>
+                <attribute name="Build-Id" value="${java-war.build-id}"/>
+            </manifest>
+            <lib dir="${java-war.libs-dir}"/>
+        </war>
+    </target>
+
+    <!-- ***********************************************************************
+    * target: -war-prepare-libs
+    ************************************************************************ -->
+    <target name="-war-prepare-libs">
+        <mkdir dir="${java-war.libs-dir}"/>
+        <copy todir="${java-war.libs-dir}">
+            <path refid="java-build.classpath"/>
+            <mapper type="flatten"/>
+        </copy>
+        <copy todir="${java-war.libs-dir}" file="${java-build.jar-file}"/>
+    </target>
+
+    <!-- ***********************************************************************
+    * target: war-deploy
+    ************************************************************************ -->
+    <target name="war-deploy" depends="war"
+            description="Deploys the war to the application server">
+        <unwar src="${java-war.dist-file}"
+               dest="${java-war.deploy-dir}"/>
+    </target>
+
+</project>
