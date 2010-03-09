@@ -106,7 +106,7 @@ public class Export extends HashMap<String, Object> implements Waitable {
      * @param preloadedTemplate
      * @param dataOwner
      */
-    public static void print(Template preloadedTemplate, Item dataOwner) {
+    public static void print(Template preloadedTemplate, DatabaseObject dataOwner) {
         HashMap<String, Object> hm1 = new FormFieldsHandler(dataOwner).getFormattedFormFields(null);
         File f2 = FileDirectoryHandler.getTempFile("pdf");
         Export ex = new Export(preloadedTemplate);

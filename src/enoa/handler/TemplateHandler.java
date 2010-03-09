@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Vector;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JButton;
 import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
@@ -132,7 +130,7 @@ public class TemplateHandler {
      * @return
      */
     public static MPEnum[] getTypes() {
-        MPEnum[] types = new MPEnum[10];
+        MPEnum[] types = new MPEnum[11];
         types[0] = new MPEnum() {
 
             public Integer getId() {
@@ -243,6 +241,17 @@ public class TemplateHandler {
             }
         };
 
+        types[10] = new MPEnum() {
+
+            public Integer getId() {
+                return TYPE_PRODUCT_ORDER;
+            }
+
+            public String getName() {
+                return Messages.TYPE_PRODUCT_ORDER.toString();
+            }
+        };
+
         return types;
     }
 
@@ -332,6 +341,7 @@ public class TemplateHandler {
     public static final int TYPE_REMINDER = 7;
     public static final int TYPE_CONTACT = 8;
     public static final int TYPE_JOURNAL = 9;
+    public static final int TYPE_PRODUCT_ORDER = 10;
     /**
      * The cache of the templates
      */

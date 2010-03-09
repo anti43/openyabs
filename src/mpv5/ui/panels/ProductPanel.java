@@ -60,6 +60,7 @@ import mpv5.db.objects.Contact;
 import mpv5.db.objects.Favourite;
 import mpv5.db.objects.Group;
 import mpv5.db.objects.Item;
+import mpv5.db.objects.MailMessage;
 import mpv5.db.objects.ProductGroup;
 import mpv5.db.objects.ProductsToSuppliers;
 import mpv5.db.objects.Template;
@@ -228,8 +229,8 @@ public class ProductPanel extends javax.swing.JPanel implements DataPanel, MPCBS
                 Popup.notice(Messages.LOCKED_BY);
             }
 
-            preload = false;
-            button_preview.setEnabled(preload);
+            button_preview.setEnabled(false);
+            button_order.setEnabled(false);
             preloadTemplate();
         }
     }
@@ -328,7 +329,7 @@ public class ProductPanel extends javax.swing.JPanel implements DataPanel, MPCBS
         cnumber = new mpv5.ui.beans.LabeledTextField();
         addedby = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
-        button_order2 = new javax.swing.JButton();
+        button_groupadd = new javax.swing.JButton();
         stype = new mpv5.ui.beans.LabeledCombobox();
         familyselect = new mpv5.ui.beans.LabeledCombobox();
         groupnameselect = new mpv5.ui.beans.MPCombobox();
@@ -364,6 +365,7 @@ public class ProductPanel extends javax.swing.JPanel implements DataPanel, MPCBS
         ;
         jToolBar1 = new javax.swing.JToolBar();
         button_preview = new javax.swing.JButton();
+        button_order = new javax.swing.JButton();
         prinitingComboBox1 = new mpv5.ui.beans.PrinitingComboBox();
         supplierpanel = new javax.swing.JPanel();
         jPanel5 = new javax.swing.JPanel();
@@ -395,7 +397,7 @@ public class ProductPanel extends javax.swing.JPanel implements DataPanel, MPCBS
         inventoryDisabled = new javax.swing.JCheckBox();
         toolbarpane = new javax.swing.JPanel();
 
-        java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle(); // NOI18N
+        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("mpv5/resources/languages/Panels"); // NOI18N
         setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("ProductPanel.border.title_1"))); // NOI18N
         setName("Form"); // NOI18N
 
@@ -425,15 +427,15 @@ public class ProductPanel extends javax.swing.JPanel implements DataPanel, MPCBS
         jLabel4.setText(bundle.getString("ProductPanel.jLabel4.text")); // NOI18N
         jLabel4.setName("jLabel4"); // NOI18N
 
-        button_order2.setFont(button_order2.getFont().deriveFont(button_order2.getFont().getStyle() & ~java.awt.Font.BOLD, button_order2.getFont().getSize()-2));
-        button_order2.setText(bundle.getString("ProductPanel.button_order2.text")); // NOI18N
-        button_order2.setFocusable(false);
-        button_order2.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        button_order2.setName("button_order2"); // NOI18N
-        button_order2.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        button_order2.addActionListener(new java.awt.event.ActionListener() {
+        button_groupadd.setFont(button_groupadd.getFont().deriveFont(button_groupadd.getFont().getStyle() & ~java.awt.Font.BOLD, button_groupadd.getFont().getSize()-2));
+        button_groupadd.setText(bundle.getString("ProductPanel.button_groupadd.text")); // NOI18N
+        button_groupadd.setFocusable(false);
+        button_groupadd.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        button_groupadd.setName("button_groupadd"); // NOI18N
+        button_groupadd.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        button_groupadd.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                button_order2ActionPerformed(evt);
+                button_groupaddActionPerformed(evt);
             }
         });
 
@@ -469,7 +471,7 @@ public class ProductPanel extends javax.swing.JPanel implements DataPanel, MPCBS
                                 .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                                     .addComponent(jLabel4)
                                     .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                    .addComponent(button_order2)
+                                    .addComponent(button_groupadd)
                                     .addGap(116, 116, 116)))
                             .addComponent(addedby, javax.swing.GroupLayout.PREFERRED_SIZE, 97, javax.swing.GroupLayout.PREFERRED_SIZE))))
                 .addContainerGap())
@@ -485,7 +487,7 @@ public class ProductPanel extends javax.swing.JPanel implements DataPanel, MPCBS
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
                             .addComponent(familyselect, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 16, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(button_order2, javax.swing.GroupLayout.PREFERRED_SIZE, 15, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addComponent(button_groupadd, javax.swing.GroupLayout.PREFERRED_SIZE, 15, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addComponent(addedby, javax.swing.GroupLayout.PREFERRED_SIZE, 19, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
@@ -622,6 +624,18 @@ public class ProductPanel extends javax.swing.JPanel implements DataPanel, MPCBS
             }
         });
         jToolBar1.add(button_preview);
+
+        button_order.setText(bundle.getString("ProductPanel.button_order.text")); // NOI18N
+        button_order.setFocusable(false);
+        button_order.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        button_order.setName("button_order"); // NOI18N
+        button_order.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        button_order.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                button_orderActionPerformed(evt);
+            }
+        });
+        jToolBar1.add(button_order);
 
         prinitingComboBox1.setName("prinitingComboBox1"); // NOI18N
 
@@ -788,7 +802,7 @@ public class ProductPanel extends javax.swing.JPanel implements DataPanel, MPCBS
                     .addComponent(jPanel4, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(javax.swing.GroupLayout.Alignment.LEADING, rightpaneLayout.createSequentialGroup()
                         .addComponent(jToolBar1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 480, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 433, Short.MAX_VALUE)
                         .addComponent(prinitingComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(jPanel5, javax.swing.GroupLayout.Alignment.LEADING, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(supplierpanel, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 730, Short.MAX_VALUE)
@@ -855,9 +869,9 @@ public class ProductPanel extends javax.swing.JPanel implements DataPanel, MPCBS
         );
     }// </editor-fold>//GEN-END:initComponents
 
-    private void button_order2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button_order2ActionPerformed
+    private void button_groupaddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button_groupaddActionPerformed
         BigPopup.showPopup(this, new ControlPanel_Groups(), null);
-}//GEN-LAST:event_button_order2ActionPerformed
+}//GEN-LAST:event_button_groupaddActionPerformed
 
     private void removefileActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_removefileActionPerformed
         deleteFile();
@@ -882,11 +896,19 @@ public class ProductPanel extends javax.swing.JPanel implements DataPanel, MPCBS
         stack.setEnabled(!inventoryDisabled.isSelected());
         threshold.setEnabled(!inventoryDisabled.isSelected());
     }//GEN-LAST:event_inventoryDisabledItemStateChanged
+
+    private void button_orderActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button_orderActionPerformed
+
+        preview_order();
+
+    }//GEN-LAST:event_button_orderActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel addedby;
     private javax.swing.JButton addfile;
     private javax.swing.ButtonGroup buttonGroup1;
-    private javax.swing.JButton button_order2;
+    private javax.swing.JButton button_groupadd;
+    private javax.swing.JButton button_order;
     private javax.swing.JButton button_preview;
     private mpv5.ui.beans.LabeledTextField cname;
     private mpv5.ui.beans.LabeledTextField cnumber;
@@ -1232,18 +1254,14 @@ public class ProductPanel extends javax.swing.JPanel implements DataPanel, MPCBS
     @Override
     public void changeSelection(MPComboBoxModelItem to, Context c) {
     }
-    Exportable preloadedExportFile;
-    Template preloadedTemplate;
-
-    private void preview() {
+  private void preview() {
         PreviewPanel pr;
         if (dataOwner != null && dataOwner.isExisting()) {
-            if (preloadedTemplate != null && preload) {
-
+            if (TemplateHandler.isLoaded(dataOwner, TemplateHandler.TYPE_PRODUCT)) {
 
                 HashMap<String, Object> hm1 = new FormFieldsHandler(dataOwner).getFormattedFormFields(null);
                 File f2 = FileDirectoryHandler.getTempFile(cname_, "pdf");
-                Export ex = new Export(preloadedTemplate);
+                Export ex = new Export(TemplateHandler.loadTemplate(dataOwner, TemplateHandler.TYPE_PRODUCT));
                 ex.putAll(hm1);
 
                 for (int i = 0; i < dataTable.getRowCount(); i++) {
@@ -1256,7 +1274,7 @@ public class ProductPanel extends javax.swing.JPanel implements DataPanel, MPCBS
                     }
                 }
 
-                ex.setTemplate(preloadedExportFile);
+                ex.setTemplate(TemplateHandler.loadTemplate(dataOwner, TemplateHandler.TYPE_PRODUCT).getExFile());
                 ex.setTargetFile(f2);
 
                 pr = new PreviewPanel();
@@ -1264,36 +1282,57 @@ public class ProductPanel extends javax.swing.JPanel implements DataPanel, MPCBS
                 new Job(ex, pr).execute();
 
             } else {
-                Popup.notice(Messages.NO_TEMPLATE_LOADED + " (" + mpv5.db.objects.User.getCurrentUser() + ")");
+                Popup.notice(Messages.NO_TEMPLATE_LOADED + " (" + mpv5.db.objects.User.getCurrentUser() + ") : " + TemplateHandler.getName(TemplateHandler.TYPE_PRODUCT));
             }
         }
     }
-    private boolean preload = false;
+
+    private void preview_order() {
+        PreviewPanel pr;
+        if (dataOwner != null && dataOwner.isExisting()) {
+            if (TemplateHandler.isLoaded(dataOwner, TemplateHandler.TYPE_PRODUCT_ORDER)) {
+
+                HashMap<String, Object> hm1 = new FormFieldsHandler(dataOwner).getFormattedFormFields(null);
+                File f2 = FileDirectoryHandler.getTempFile(cname_, "pdf");
+                Export ex = new Export(TemplateHandler.loadTemplate(dataOwner, TemplateHandler.TYPE_PRODUCT_ORDER));
+                ex.putAll(hm1);
+
+                for (int i = 0; i < dataTable.getRowCount(); i++) {
+                    try {
+                        String fname = dataTable.getModel().getValueAt(i, 0).toString();
+                        File f = QueryHandler.instanceOf().clone(Context.getFiles()).retrieveFile(fname, new File(FileDirectoryHandler.getTempDir() + dataTable.getModel().getValueAt(dataTable.getSelectedRow(), 1).toString()));
+                        ex.put("image" + i, new MPIcon(f.toURI().toURL()));
+                    } catch (Exception mal) {
+                        Log.Debug(this, mal.getMessage());
+                    }
+                }
+
+                ex.setTemplate(TemplateHandler.loadTemplate(dataOwner, TemplateHandler.TYPE_PRODUCT_ORDER).getExFile());
+                ex.setTargetFile(f2);
+
+                pr = new PreviewPanel();
+                pr.setDataOwner(dataOwner);
+                new Job(ex, pr).execute();
+
+            } else {
+                Popup.notice(Messages.NO_TEMPLATE_LOADED + " (" + mpv5.db.objects.User.getCurrentUser() + ") : " + TemplateHandler.getName(TemplateHandler.TYPE_PRODUCT_ORDER));
+            }
+        }
+    }
+
+
+
 
     private void preloadTemplate() {
         Runnable runnable = new Runnable() {
 
             public void run() {
                 if (dataOwner.__getInttype() == Product.TYPE_PRODUCT) {
-                    preloadedTemplate = TemplateHandler.loadTemplate(dataOwner, TemplateHandler.TYPE_PRODUCT);
                     TemplateHandler.loadTemplateFor(button_preview, dataOwner, TemplateHandler.TYPE_PRODUCT);
+                    TemplateHandler.loadTemplateFor(button_order, dataOwner, TemplateHandler.TYPE_PRODUCT_ORDER);
                 } else {
-                    preloadedTemplate = TemplateHandler.loadTemplate(dataOwner, TemplateHandler.TYPE_SERVICE);
                     TemplateHandler.loadTemplateFor(button_preview, dataOwner, TemplateHandler.TYPE_SERVICE);
-                }
-
-                if (preloadedTemplate != null) {
-                    try {
-                        preloadedExportFile = preloadedTemplate.getExFile();
-                        preload = true;
-                        button_preview.setEnabled(preload);
-                    } catch (Exception e) {
-                        Log.Debug(e);
-                    }
-                } else {
-                    button_preview.setText(Messages.OO_NO_TEMPLATE.getValue());
-                    button_preview.setEnabled(false);
-                }
+                }                
             }
         };
         new Thread(runnable).start();
@@ -1316,49 +1355,30 @@ public class ProductPanel extends javax.swing.JPanel implements DataPanel, MPCBS
         }
     }
 
+
     public void mail() {
+        MailMessage m = null;
         if (dataOwner != null && dataOwner.isExisting()) {
-            if (preloadedTemplate != null && preload) {
+            if (TemplateHandler.isLoaded(dataOwner, TemplateHandler.TYPE_PRODUCT)) {
 
                 try {
                     Contact cont = (Contact) Popup.SelectValue(Context.getContact());
-                    Export.mail(preloadedTemplate, dataOwner, cont);
+                    Export.mail(TemplateHandler.loadTemplate(dataOwner, TemplateHandler.TYPE_PRODUCT), dataOwner, cont);
                 } catch (Exception ex) {
                     Log.Debug(ex);
                 }
-
             } else {
-                Popup.notice(Messages.NO_TEMPLATE_LOADED + " (" + mpv5.db.objects.User.getCurrentUser() + ")");
+                Popup.notice(Messages.NO_TEMPLATE_LOADED + " (" + mpv5.db.objects.User.getCurrentUser() + ") : " + TemplateHandler.getName(TemplateHandler.TYPE_PRODUCT));
             }
         }
     }
 
     public void print() {
         if (dataOwner != null && dataOwner.isExisting()) {
-            if (preloadedTemplate != null && preload) {
-
-                HashMap<String, Object> hm1 = new FormFieldsHandler(dataOwner).getFormattedFormFields(null);
-                File f2 = FileDirectoryHandler.getTempFile(cname_, "pdf");
-                Export ex = new Export(preloadedTemplate);
-                ex.putAll(hm1);
-
-                for (int i = 0; i < dataTable.getRowCount(); i++) {
-                    try {
-                        String fname = dataTable.getModel().getValueAt(i, 0).toString();
-                        File f = QueryHandler.instanceOf().clone(Context.getFiles()).retrieveFile(fname, new File(FileDirectoryHandler.getTempDir() + dataTable.getModel().getValueAt(dataTable.getSelectedRow(), 1).toString()));
-                        ex.put("image" + i, new MPIcon(f.toURI().toURL()));
-                    } catch (Exception mal) {
-                        Log.Debug(this, mal.getMessage());
-                    }
-                }
-
-                ex.setTemplate(preloadedExportFile);
-                ex.setTargetFile(f2);
-
-                new Job(ex, (Waiter) new PrintJob()).execute();
-
+            if (TemplateHandler.isLoaded(dataOwner, TemplateHandler.TYPE_PRODUCT)) {
+                Export.print(TemplateHandler.loadTemplate(dataOwner, TemplateHandler.TYPE_PRODUCT), dataOwner);
             } else {
-                Popup.notice(Messages.NO_TEMPLATE_LOADED + " (" + mpv5.db.objects.User.getCurrentUser() + ")");
+                Popup.notice(Messages.NO_TEMPLATE_LOADED + " (" + mpv5.db.objects.User.getCurrentUser() + ") : " + TemplateHandler.getName(TemplateHandler.TYPE_PRODUCT));
             }
         }
     }
