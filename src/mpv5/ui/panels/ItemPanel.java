@@ -1288,10 +1288,12 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
 
         Contact dbo = (Contact) Search2.showSearchFor(Context.getContact());
-        contactname.setModel(dbo);
-        contactcity.setText(dbo.__getCity());
-        contactcompany.setText(dbo.__getCompany());
-        contactid.setText(dbo.__getCNumber());
+        if (dbo!=null) {
+            contactname.setModel(dbo);
+            contactcity.setText(dbo.__getCity());
+            contactcompany.setText(dbo.__getCompany());
+            contactid.setText(dbo.__getCNumber());
+        }
     }//GEN-LAST:event_jButton4ActionPerformed
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private mpv5.ui.beans.LabeledCombobox accountselect;

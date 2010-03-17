@@ -566,7 +566,7 @@ public class DateConverter {
     }
 
     /**
-     * Generates a random date
+     * Generates a random date, which is not in the future
      * @return
      */
     public static Date getRandomDate() {

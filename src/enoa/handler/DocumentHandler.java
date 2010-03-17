@@ -149,6 +149,7 @@ public class DocumentHandler {
             try {
                 Log.Debug(this, "Exporting to: " + file);
                 document.getPersistenceService().export(new FileOutputStream(file), filter);
+               
             } catch (Exception ex) {
                 Log.Debug(ex);
             }

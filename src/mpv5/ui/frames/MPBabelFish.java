@@ -451,7 +451,7 @@ public class MPBabelFish extends javax.swing.JFrame {
                         progress.setValue(i + 1);
                     }
                 } catch (Exception ex) {
-                    Log.Debug(this, ex);
+                    Log.Debug(this, ex.getMessage());
                 }
             }
             ArrayUtilities.replaceColumn(data, 2, translated);

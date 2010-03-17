@@ -127,9 +127,9 @@
                       <Group type="102" attributes="0">
                           <Component id="langName" min="-2" max="-2" attributes="1"/>
                           <EmptySpace max="-2" attributes="0"/>
-                          <Component id="progress" max="32767" attributes="0"/>
+                          <Component id="progress" pref="150" max="32767" attributes="0"/>
                       </Group>
-                      <Component id="jLabel7" pref="351" max="32767" attributes="1"/>
+                      <Component id="jLabel7" pref="357" max="32767" attributes="1"/>
                   </Group>
                   <EmptySpace max="-2" attributes="0"/>
                   <Component id="jLabel1" min="-2" max="-2" attributes="0"/>
@@ -154,7 +154,7 @@
                       <Component id="progress" alignment="2" min="-2" pref="20" max="-2" attributes="1"/>
                   </Group>
                   <EmptySpace type="unrelated" min="-2" max="-2" attributes="0"/>
-                  <Component id="jScrollPane1" pref="217" max="32767" attributes="0"/>
+                  <Component id="jScrollPane1" pref="233" max="32767" attributes="0"/>
                   <EmptySpace min="-2" max="-2" attributes="0"/>
                   <Component id="GooogleTranslator" min="-2" pref="25" max="-2" attributes="0"/>
               </Group>

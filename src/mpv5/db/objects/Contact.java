@@ -470,6 +470,14 @@ public class Contact extends DatabaseObject implements Formattable {
             //already resolved?
         }
 
+        if (!map.containsKey("fullname")) {
+            try {
+                map.put("fullname", prename + " " + cname);
+            } catch (Exception numberFormatException) {
+                //already resolved?
+            }
+        }
+
         return map;
     }
 
