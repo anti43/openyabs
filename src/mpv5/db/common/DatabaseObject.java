@@ -439,7 +439,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject> {
 
     /**
      * Safely import a database object from external sources (xml, csv etc)<br/>
-     * Override this for ensuring the existance of DObject specific mandatory values.
+     * Override and call this from the overriding method for ensuring the existance of DObject specific mandatory values.
      * @return
      */
     public boolean saveImport() {
