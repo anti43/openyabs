@@ -28,7 +28,7 @@ public interface Constants {
      * 
      * Full Version number
      */
-    public static final String VERSION = "Yabs-1.173";
+    public static final String VERSION = "Yabs-1.174";
 
     /**
      * The original database version of this release
@@ -37,7 +37,7 @@ public interface Constants {
     /**
      * The minimal Database Version which is compatible with this release
      */
-    public static final Double DATABASE_VERSION = 1.15;
+    public static final Double DATABASE_VERSION = 1.16;
     /**
      * The max Database Version which is compatible with this release
      */
@@ -55,7 +55,7 @@ public interface Constants {
      *
      * Alias
      */
-    public static final String TITLE = "[Slea Head Road]";
+    public static final String TITLE = "[Iceland Ashes]";
     /**
      *
      * Name of the main JAR

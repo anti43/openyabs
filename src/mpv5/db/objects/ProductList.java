@@ -16,10 +16,15 @@
  */
 package mpv5.db.objects;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JComponent;
 
 import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
+import mpv5.db.common.QueryCriteria;
+import mpv5.db.common.QueryHandler;
+import mpv5.logging.Log;
 import mpv5.ui.panels.ProductListsPanel;
 import mpv5.utils.images.MPIcon;
 
@@ -28,7 +33,9 @@ import mpv5.utils.images.MPIcon;
  * 
  */
 public class ProductList extends DatabaseObject {
+
     private String description;
+    private boolean asproduct = false;
 
     public ProductList() {
         context = Context.getProductlist();
@@ -36,12 +43,12 @@ public class ProductList extends DatabaseObject {
 
     @Override
     public JComponent getView() {
-       return new ProductListsPanel();
+        return new ProductListsPanel();
     }
 
     @Override
     public mpv5.utils.images.MPIcon getIcon() {
-       return new MPIcon("/mpv5/resources/images/22/playlist.png");
+        return new MPIcon("/mpv5/resources/images/22/playlist.png");
     }
 
     /**
@@ -56,5 +63,32 @@ public class ProductList extends DatabaseObject {
      */
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    /**
+     * @return the asproduct
+     */
+    public boolean __isAsproduct() {
+        return asproduct;
+    }
+
+    /**
+     * @param asproduct the asproduct to set
+     */
+    public void setAsproduct(boolean asproduct) {
+        this.asproduct = asproduct;
+    }
+
+    @Override
+    public boolean delete() {
+        QueryCriteria c = new QueryCriteria("productlistsids", __getIDS());
+        if (asproduct) {
+            try {
+                QueryHandler.instanceOf().clone(Context.getProduct()).delete(c);
+            } catch (Exception ex) {
+                Log.Debug(ex);
+            }
+        }
+        return super.delete();
     }
 }

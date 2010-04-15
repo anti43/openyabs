@@ -23,13 +23,10 @@ package mpv5.ui.toolbars;
 
 import java.awt.Component;
 import java.awt.event.ActionListener;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import mpv5.db.common.Context;
+import java.awt.event.ItemListener;
 import mpv5.db.common.DatabaseObject;
 import mpv5.globals.Messages;
 import mpv5.db.objects.Favourite;
-import mpv5.db.objects.Template;
 import mpv5.logging.Log;
 import mpv5.ui.dialogs.Popup;
 import mpv5.ui.frames.MPView;
@@ -41,7 +38,7 @@ import mpv5.ui.panels.ExportablePanel;
  *
  * 
  */
-public class DataPanelTB extends javax.swing.JPanel {
+public class DataPanelTB extends javax.swing.JPanel implements ActionListener, ItemListener {
 
     private static final long serialVersionUID = -8215471082724735228L;
     private DataPanel parents;
@@ -160,7 +157,7 @@ public class DataPanelTB extends javax.swing.JPanel {
         commonActionsToolbar.setPreferredSize(new java.awt.Dimension(342, 41));
 
         but1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/viewmag.png"))); // NOI18N
-        java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle(); // NOI18N
+        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("mpv5/resources/languages/Panels"); // NOI18N
         but1.setText(bundle.getString("DataPanelTB.but1.text")); // NOI18N
         but1.setToolTipText(bundle.getString("DataPanelTB.but1.toolTipText")); // NOI18N
         but1.setContentAreaFilled(false);
@@ -169,16 +166,8 @@ public class DataPanelTB extends javax.swing.JPanel {
         but1.setName("but1"); // NOI18N
         but1.setRolloverIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/bright_viewmag.png"))); // NOI18N
         but1.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        but1.addItemListener(new java.awt.event.ItemListener() {
-            public void itemStateChanged(java.awt.event.ItemEvent evt) {
-                but1ItemStateChanged(evt);
-            }
-        });
-        but1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                but1ActionPerformed(evt);
-            }
-        });
+        but1.addItemListener(this);
+        but1.addActionListener(this);
         commonActionsToolbar.add(but1);
 
         jSeparator4.setName("jSeparator4"); // NOI18N
@@ -194,11 +183,7 @@ public class DataPanelTB extends javax.swing.JPanel {
         but2.setPressedIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/xclock.png"))); // NOI18N
         but2.setRolloverIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/bright_revert.png"))); // NOI18N
         but2.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        but2.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                but2ActionPerformed(evt);
-            }
-        });
+        but2.addActionListener(this);
         commonActionsToolbar.add(but2);
 
         but3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/3floppy_unmount.png"))); // NOI18N
@@ -211,11 +196,7 @@ public class DataPanelTB extends javax.swing.JPanel {
         but3.setPressedIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/xclock.png"))); // NOI18N
         but3.setRolloverIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/bright_3floppy_unmount.png"))); // NOI18N
         but3.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        but3.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                but3ActionPerformed(evt);
-            }
-        });
+        but3.addActionListener(this);
         commonActionsToolbar.add(but3);
 
         but4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/filenew.png"))); // NOI18N
@@ -228,11 +209,7 @@ public class DataPanelTB extends javax.swing.JPanel {
         but4.setPressedIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/xclock.png"))); // NOI18N
         but4.setRolloverIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/bright_filenew.png"))); // NOI18N
         but4.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        but4.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                but4ActionPerformed(evt);
-            }
-        });
+        but4.addActionListener(this);
         commonActionsToolbar.add(but4);
 
         jSeparator1.setName("jSeparator1"); // NOI18N
@@ -248,11 +225,7 @@ public class DataPanelTB extends javax.swing.JPanel {
         but5.setPressedIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/xclock.png"))); // NOI18N
         but5.setRolloverIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/bright_edittrash.png"))); // NOI18N
         but5.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        but5.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                but5ActionPerformed(evt);
-            }
-        });
+        but5.addActionListener(this);
         commonActionsToolbar.add(but5);
 
         jSeparator3.setName("jSeparator3"); // NOI18N
@@ -268,11 +241,7 @@ public class DataPanelTB extends javax.swing.JPanel {
         but6.setPressedIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/xclock.png"))); // NOI18N
         but6.setRolloverIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/bright_password.png"))); // NOI18N
         but6.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        but6.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                but6ActionPerformed(evt);
-            }
-        });
+        but6.addActionListener(this);
         commonActionsToolbar.add(but6);
 
         but7.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/bookmark_add.png"))); // NOI18N
@@ -285,11 +254,7 @@ public class DataPanelTB extends javax.swing.JPanel {
         but7.setPressedIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/xclock.png"))); // NOI18N
         but7.setRolloverIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/bright_bookmark_add.png"))); // NOI18N
         but7.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        but7.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                but7ActionPerformed(evt);
-            }
-        });
+        but7.addActionListener(this);
         commonActionsToolbar.add(but7);
 
         but10.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/add.png"))); // NOI18N
@@ -301,11 +266,7 @@ public class DataPanelTB extends javax.swing.JPanel {
         but10.setName("but10"); // NOI18N
         but10.setPressedIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/xclock.png"))); // NOI18N
         but10.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        but10.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                but10ActionPerformed(evt);
-            }
-        });
+        but10.addActionListener(this);
         commonActionsToolbar.add(but10);
 
         jSeparator2.setName("jSeparator2"); // NOI18N
@@ -321,11 +282,7 @@ public class DataPanelTB extends javax.swing.JPanel {
         printButton.setPressedIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/xclock.png"))); // NOI18N
         printButton.setRolloverIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/bright_printer.png"))); // NOI18N
         printButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        printButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                printButtonActionPerformed(evt);
-            }
-        });
+        printButton.addActionListener(this);
         commonActionsToolbar.add(printButton);
 
         mailButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/mail_reply.png"))); // NOI18N
@@ -338,11 +295,7 @@ public class DataPanelTB extends javax.swing.JPanel {
         mailButton.setPressedIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/xclock.png"))); // NOI18N
         mailButton.setRolloverIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/bright_mail_reply.png"))); // NOI18N
         mailButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        mailButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                mailButtonActionPerformed(evt);
-            }
-        });
+        mailButton.addActionListener(this);
         commonActionsToolbar.add(mailButton);
 
         pdfButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/pdf.png"))); // NOI18N
@@ -354,11 +307,7 @@ public class DataPanelTB extends javax.swing.JPanel {
         pdfButton.setName("pdfButton"); // NOI18N
         pdfButton.setPressedIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/xclock.png"))); // NOI18N
         pdfButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        pdfButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                pdfButtonActionPerformed(evt);
-            }
-        });
+        pdfButton.addActionListener(this);
         commonActionsToolbar.add(pdfButton);
 
         odtButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/openofficeorg-20-writer.png"))); // NOI18N
@@ -370,11 +319,7 @@ public class DataPanelTB extends javax.swing.JPanel {
         odtButton.setName("odtButton"); // NOI18N
         odtButton.setPressedIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/xclock.png"))); // NOI18N
         odtButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        odtButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                odtButtonActionPerformed(evt);
-            }
-        });
+        odtButton.addActionListener(this);
         commonActionsToolbar.add(odtButton);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
@@ -387,6 +332,53 @@ public class DataPanelTB extends javax.swing.JPanel {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(commonActionsToolbar, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE)
         );
+    }
+
+    // Code for dispatching events from components to event handlers.
+
+    public void actionPerformed(java.awt.event.ActionEvent evt) {
+        if (evt.getSource() == but1) {
+            DataPanelTB.this.but1ActionPerformed(evt);
+        }
+        else if (evt.getSource() == but2) {
+            DataPanelTB.this.but2ActionPerformed(evt);
+        }
+        else if (evt.getSource() == but3) {
+            DataPanelTB.this.but3ActionPerformed(evt);
+        }
+        else if (evt.getSource() == but4) {
+            DataPanelTB.this.but4ActionPerformed(evt);
+        }
+        else if (evt.getSource() == but5) {
+            DataPanelTB.this.but5ActionPerformed(evt);
+        }
+        else if (evt.getSource() == but6) {
+            DataPanelTB.this.but6ActionPerformed(evt);
+        }
+        else if (evt.getSource() == but7) {
+            DataPanelTB.this.but7ActionPerformed(evt);
+        }
+        else if (evt.getSource() == but10) {
+            DataPanelTB.this.but10ActionPerformed(evt);
+        }
+        else if (evt.getSource() == printButton) {
+            DataPanelTB.this.printButtonActionPerformed(evt);
+        }
+        else if (evt.getSource() == mailButton) {
+            DataPanelTB.this.mailButtonActionPerformed(evt);
+        }
+        else if (evt.getSource() == pdfButton) {
+            DataPanelTB.this.pdfButtonActionPerformed(evt);
+        }
+        else if (evt.getSource() == odtButton) {
+            DataPanelTB.this.odtButtonActionPerformed(evt);
+        }
+    }
+
+    public void itemStateChanged(java.awt.event.ItemEvent evt) {
+        if (evt.getSource() == but1) {
+            DataPanelTB.this.but1ItemStateChanged(evt);
+        }
     }// </editor-fold>//GEN-END:initComponents
 
     private void but2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_but2ActionPerformed
@@ -608,5 +600,19 @@ public class DataPanelTB extends javax.swing.JPanel {
      */
     public javax.swing.JButton getPrintButton() {
         return printButton;
+    }
+
+       /**
+     * @return the pdfButton
+     */
+    public javax.swing.JButton getSaveButton() {
+        return but3;
+    }
+
+    /**
+     * @return the printButton
+     */
+    public javax.swing.JButton getCreateButton() {
+        return but4;
     }
 }

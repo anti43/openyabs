@@ -95,6 +95,7 @@ public class Product extends DatabaseObject implements Formattable {
     private int manufacturersids;
     private int suppliersids;
     private int productgroupsids;
+    private int productlistsids;
     private BigDecimal externalnetvalue = new BigDecimal("0");
     private BigDecimal internalnetvalue = new BigDecimal("0");
     private String description = "";
@@ -537,5 +538,19 @@ public class Product extends DatabaseObject implements Formattable {
      */
     public void setIntinventorytype(int inventorytype) {
         this.intinventorytype = inventorytype;
+    }
+
+    /**
+     * @return the productlistsids
+     */
+    public int __getProductlistsids() {
+        return productlistsids;
+    }
+
+    /**
+     * @param productlistsids the productlistsids to set
+     */
+    public void setProductlistsids(int productlistsids) {
+        this.productlistsids = productlistsids;
     }
 }

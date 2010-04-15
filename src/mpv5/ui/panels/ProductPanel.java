@@ -54,6 +54,7 @@ import javax.swing.SwingUtilities;
 import javax.swing.table.TableCellRenderer;
 import mpv5.db.common.*;
 import mpv5.db.objects.Product;
+import mpv5.db.objects.ProductList;
 import mpv5.globals.Headers;
 import mpv5.globals.Messages;
 import mpv5.db.objects.Contact;
@@ -366,6 +367,7 @@ public class ProductPanel extends javax.swing.JPanel implements DataPanel, MPCBS
         jToolBar1 = new javax.swing.JToolBar();
         button_preview = new javax.swing.JButton();
         button_order = new javax.swing.JButton();
+        button_listedit = new javax.swing.JButton();
         prinitingComboBox1 = new mpv5.ui.beans.PrinitingComboBox();
         supplierpanel = new javax.swing.JPanel();
         jPanel5 = new javax.swing.JPanel();
@@ -397,7 +399,7 @@ public class ProductPanel extends javax.swing.JPanel implements DataPanel, MPCBS
         inventoryDisabled = new javax.swing.JCheckBox();
         toolbarpane = new javax.swing.JPanel();
 
-        java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle(); // NOI18N
+        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("mpv5/resources/languages/Panels"); // NOI18N
         setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("ProductPanel.border.title_1"))); // NOI18N
         setName("Form"); // NOI18N
 
@@ -637,6 +639,19 @@ public class ProductPanel extends javax.swing.JPanel implements DataPanel, MPCBS
         });
         jToolBar1.add(button_order);
 
+        button_listedit.setText(bundle.getString("ProductPanel.button_listedit.text")); // NOI18N
+        button_listedit.setEnabled(false);
+        button_listedit.setFocusable(false);
+        button_listedit.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        button_listedit.setName("button_listedit"); // NOI18N
+        button_listedit.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        button_listedit.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                button_listeditActionPerformed(evt);
+            }
+        });
+        jToolBar1.add(button_listedit);
+
         prinitingComboBox1.setName("prinitingComboBox1"); // NOI18N
 
         supplierpanel.setBackground(new java.awt.Color(255, 255, 255));
@@ -802,7 +817,7 @@ public class ProductPanel extends javax.swing.JPanel implements DataPanel, MPCBS
                     .addComponent(jPanel4, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(javax.swing.GroupLayout.Alignment.LEADING, rightpaneLayout.createSequentialGroup()
                         .addComponent(jToolBar1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 433, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 370, Short.MAX_VALUE)
                         .addComponent(prinitingComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(jPanel5, javax.swing.GroupLayout.Alignment.LEADING, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(supplierpanel, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 730, Short.MAX_VALUE)
@@ -903,11 +918,23 @@ public class ProductPanel extends javax.swing.JPanel implements DataPanel, MPCBS
 
     }//GEN-LAST:event_button_orderActionPerformed
 
+    private void button_listeditActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button_listeditActionPerformed
+
+        try {
+            mpv5.db.objects.ProductList l = (ProductList) DatabaseObject.getObject(Context.getProductlist(), productlistsids_);
+            MPView.identifierView.addTab(l);
+        } catch (NodataFoundException nodataFoundException) {
+            Popup.error(nodataFoundException);
+        }
+
+    }//GEN-LAST:event_button_listeditActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel addedby;
     private javax.swing.JButton addfile;
     private javax.swing.ButtonGroup buttonGroup1;
     private javax.swing.JButton button_groupadd;
+    private javax.swing.JButton button_listedit;
     private javax.swing.JButton button_order;
     private javax.swing.JButton button_preview;
     private mpv5.ui.beans.LabeledTextField cname;
@@ -961,6 +988,7 @@ public class ProductPanel extends javax.swing.JPanel implements DataPanel, MPCBS
     public Date dateadded_;
     public int groupsids_ = 1;
     public int productgroupsids_ = 1;
+    public int productlistsids_ = 0;
     public int taxids_;
     public int inttype_;
     public int manufacturersids_;
@@ -1183,6 +1211,8 @@ public class ProductPanel extends javax.swing.JPanel implements DataPanel, MPCBS
             }
         };
         SwingUtilities.invokeLater(runnable1);
+
+        button_listedit.setEnabled(productlistsids_ > 0);
     }
 
     @Override

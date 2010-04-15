@@ -41,6 +41,9 @@ public class DatabaseUpdater {
                             "groupsids BIGINT DEFAULT 0," +
                             "dateadded DATE NOT NULL," +
                             "intaddedby BIGINT DEFAULT 0)",});
+        UPDATES_DERBY.put(1.16, new String[]{
+                    "ALTER TABLE products ADD COLUMN productlistsids BIGINT DEFAULT 0",
+                });
         ////////////////////////////////////////////////////////////////////////////////////////////
         // mysql updates
         UPDATES_MYSQL.put(1.11, new String[]{
@@ -74,6 +77,9 @@ public class DatabaseUpdater {
                     + "FOREIGN KEY(productsids) "
                     + "REFERENCES products(ids) "
                     + "ON DELETE CASCADE "
+                });
+        UPDATES_MYSQL.put(1.16, new String[]{
+                    "ALTER TABLE products ADD COLUMN productlistsids BIGINT(20) UNSIGNED DEFAULT 0",
                 });
     }
 

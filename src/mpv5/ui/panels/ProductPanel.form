@@ -85,7 +85,7 @@
                       <Component id="jPanel4" alignment="0" max="32767" attributes="3"/>
                       <Group type="102" alignment="0" attributes="0">
                           <Component id="jToolBar1" min="-2" max="-2" attributes="1"/>
-                          <EmptySpace pref="433" max="32767" attributes="0"/>
+                          <EmptySpace pref="370" max="32767" attributes="0"/>
                           <Component id="prinitingComboBox1" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <Component id="jPanel5" alignment="0" min="0" max="32767" attributes="2"/>
@@ -574,6 +574,21 @@
               </Properties>
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="button_orderActionPerformed"/>
+              </Events>
+            </Component>
+            <Component class="javax.swing.JButton" name="button_listedit">
+              <Properties>
+                <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
+                  <ResourceString bundle="mpv5/resources/languages/Panels.properties" key="ProductPanel.button_listedit.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+                </Property>
+                <Property name="enabled" type="boolean" value="false"/>
+                <Property name="focusable" type="boolean" value="false"/>
+                <Property name="horizontalTextPosition" type="int" value="0"/>
+                <Property name="name" type="java.lang.String" value="button_listedit" noResource="true"/>
+                <Property name="verticalTextPosition" type="int" value="3"/>
+              </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="button_listeditActionPerformed"/>
               </Events>
             </Component>
           </SubComponents>
