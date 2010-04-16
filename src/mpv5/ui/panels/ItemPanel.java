@@ -1643,6 +1643,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
                     int count = t.getRowCount();
                     for (int i = 0; i < l.size(); i++) {
                         ProductlistSubItem productlistSubItem = l.get(i);
+                        productlistSubItem.setIDS(-1);
                         t.addRow(productlistSubItem.getRowData(i + count + 1));
                     }
                     itemtable.setModel(t);

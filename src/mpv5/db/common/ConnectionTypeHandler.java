@@ -16,10 +16,14 @@
  */
 package mpv5.db.common;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import mpv5.logging.Log;
 import java.io.File;
 import java.io.IOException;
+
 import mpv5.globals.LocalSettings;
+import mpv5.ui.dialogs.Popup;
 
 /**
  * This class handles the different DB connection types (derby, mysql, custom)
@@ -197,13 +201,18 @@ public class ConnectionTypeHandler {
      * @param predefinedDriver
      */
     public void setDRIVER(String predefinedDriver) {
-        if (predefinedDriver.equalsIgnoreCase(DERBY_DRIVER)) {
-            PREDEFINED_DRVER = DERBY;
-        } else if (predefinedDriver.equalsIgnoreCase(MYSQL_DRIVER)) {
-            PREDEFINED_DRVER = MYSQL;
-        } else {
-            PREDEFINED_DRVER = CUSTOM;
-            CUSTOM_DRIVER = predefinedDriver;
+        try {
+            Class.forName(predefinedDriver);
+            if (predefinedDriver.equalsIgnoreCase(DERBY_DRIVER)) {
+                PREDEFINED_DRVER = DERBY;
+            } else if (predefinedDriver.equalsIgnoreCase(MYSQL_DRIVER)) {
+                PREDEFINED_DRVER = MYSQL;
+            } else {
+                PREDEFINED_DRVER = CUSTOM;
+                CUSTOM_DRIVER = predefinedDriver;
+            }
+        } catch (ClassNotFoundException ex) {
+            Popup.error(ex);
         }
     }
 

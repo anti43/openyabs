@@ -28,6 +28,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -49,6 +50,7 @@ import mpv5.ui.frames.MPView;
 import mpv5.ui.toolbars.DataPanelTB;
 import mpv5.ui.beans.MPCBSelectionChangeReceiver;
 import mpv5.ui.dialogs.DialogForFile;
+import mpv5.ui.dialogs.Search2;
 import mpv5.ui.dialogs.subcomponents.ProductSelectDialog;
 import mpv5.utils.arrays.ArrayUtilities;
 import mpv5.utils.models.MPComboBoxModelItem;
@@ -148,6 +150,9 @@ public class ProductListsPanel extends javax.swing.JPanel implements DataPanel, 
 
         ((SpinnerNumberModel) calculator.getSpinner().getModel()).setMinimum(-1000);
         ((SpinnerNumberModel) calculator.getSpinner().getModel()).setMaximum(1000);
+
+        value.set_ValueClass(BigDecimal.class);
+        netvalue.set_ValueClass(BigDecimal.class);
     }
 
     @Override
@@ -227,7 +232,7 @@ public class ProductListsPanel extends javax.swing.JPanel implements DataPanel, 
         toolbarpanetbp = new javax.swing.JPanel();
 
         setBackground(javax.swing.UIManager.getDefaults().getColor("InternalFrame.inactiveTitleBackground"));
-        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("mpv5/resources/languages/Panels"); // NOI18N
+        java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle(); // NOI18N
         setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("ProductListsPanel.border.title_1"))); // NOI18N
         setName("Form"); // NOI18N
         setLayout(new java.awt.BorderLayout());
@@ -282,6 +287,11 @@ public class ProductListsPanel extends javax.swing.JPanel implements DataPanel, 
         jButton3.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         jButton3.setName("jButton3"); // NOI18N
         jButton3.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        jButton3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton3ActionPerformed(evt);
+            }
+        });
         jToolBar1.add(jButton3);
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
@@ -467,20 +477,45 @@ public class ProductListsPanel extends javax.swing.JPanel implements DataPanel, 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
 
         try {
-            evt.setSource(tb.getSaveButton());
-            tb.actionPerformed(evt);
+            if (dataOwner == null) {
+                dataOwner = new ProductList();
+            }
+            asproduct_ =  true;
+            actionBeforeSave();
+            if (dataOwner.getPanelData(this) && dataOwner.save()) {
+            } else {
+                showRequiredFields();
+            }
 
             Product p = new Product();
             p.setCName(dataOwner.__getCName());
             p.setProductlistsids(dataOwner.__getIDS());
-            if(p.save()) {
+            p.setExternalnetvalue(value.getValue(BigDecimal.ONE));
+            p.setInternalnetvalue(netvalue.getValue(BigDecimal.ONE));
+            p.setInttype(Product.TYPE_PRODUCT);
+            p.setIntinventorytype(0);
+            if (p.save()) {
                 Popup.notice(Messages.BOM_CREATED.toString() + p);
+                MPView.identifierView.addTab(p);
             }
         } catch (Exception e) {
             Log.Debug(e);
         }
 }//GEN-LAST:event_jButton2ActionPerformed
 
+    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+        Item i = (Item) Search2.showSearchFor(Context.getBill());
+        if (i != null && dataOwner != null) {
+            MPView.identifierView.addTab(i);
+            Runnable runnable = new Runnable() {
+
+                public void run() {
+                    MPView.identifierView.getCurrentTab().paste(dataOwner);
+                }
+            };
+            SwingUtilities.invokeLater(runnable);
+        }
+    }//GEN-LAST:event_jButton3ActionPerformed
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel addedby;
     private javax.swing.ButtonGroup buttonGroup1;
@@ -598,16 +633,17 @@ public class ProductListsPanel extends javax.swing.JPanel implements DataPanel, 
     @Override
     public void paste(DatabaseObject... dbos) {
         for (DatabaseObject dbo : dbos) {
-        if (dbo.getContext().equals(Context.getProduct())) {
-            MPTableModel m = (MPTableModel) itemtable.getModel();
-            m.addRow(ProductlistSubItem.toRow((Product) dbo).getRowData(m.getValidRows(new int[]{4}).size()));
-            itemtable.setModel(m);
-            omodel = m;
-        } else if (dbo.getContext().equals(Context.getProductlist())) {
-            setDataOwner(dbo, true);
-        } else {
-            MPView.addMessage(Messages.NOT_POSSIBLE.toString() + Messages.ACTION_PASTE.toString());
-        }}
+            if (dbo.getContext().equals(Context.getProduct())) {
+                MPTableModel m = (MPTableModel) itemtable.getModel();
+                m.addRow(ProductlistSubItem.toRow((Product) dbo).getRowData(m.getValidRows(new int[]{4}).size()));
+                itemtable.setModel(m);
+                omodel = m;
+            } else if (dbo.getContext().equals(Context.getProductlist())) {
+                setDataOwner(dbo, true);
+            } else {
+                MPView.addMessage(Messages.NOT_POSSIBLE.toString() + Messages.ACTION_PASTE.toString());
+            }
+        }
     }
 
     @Override
@@ -624,6 +660,24 @@ public class ProductListsPanel extends javax.swing.JPanel implements DataPanel, 
     public void actionAfterSave() {
         saveProductlistSubItems();
         omodel = (MPTableModel) itemtable.getModel();
+        if (dataOwner.__isAsproduct()) {
+            try {
+                QueryCriteria c = new QueryCriteria("productlistsids", dataOwner.__getIDS());
+                Product p = (Product) Product.getObjects(Context.getProduct(), c).get(0);
+                p.setCName(dataOwner.__getCName());
+                p.setProductlistsids(dataOwner.__getIDS());
+                p.setExternalnetvalue(value.getValue(BigDecimal.ONE));
+                p.setInternalnetvalue(netvalue.getValue(BigDecimal.ONE));
+                p.setInttype(Product.TYPE_PRODUCT);
+                p.setIntinventorytype(0);
+                if (p.save()) {
+                    Popup.notice(Messages.BOM_CREATED.toString() + p);
+                    MPView.identifierView.addTab(p);
+                }
+            } catch (Exception e) {
+                Log.Debug(e);
+            }
+        }
     }
 
     @Override

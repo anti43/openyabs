@@ -16,6 +16,8 @@
  */
 package mpv5.db.objects;
 
+import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JComponent;
@@ -91,4 +93,5 @@ public class ProductList extends DatabaseObject {
         }
         return super.delete();
     }
+
 }

@@ -90,11 +90,11 @@ public class Product extends DatabaseObject implements Formattable {
         return en;
 
     }
-    private int taxids;
+    private int taxids = 1;
     private int inttype;
     private int manufacturersids;
     private int suppliersids;
-    private int productgroupsids;
+    private int productgroupsids = 1;
     private int productlistsids;
     private BigDecimal externalnetvalue = new BigDecimal("0");
     private BigDecimal internalnetvalue = new BigDecimal("0");

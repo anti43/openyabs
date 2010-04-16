@@ -125,11 +125,12 @@ public class DatabaseConnection {
 
         } catch (SQLException ex) {
             System.out.println("Database Error: " + ex.getMessage());
+            Popup.error(ex);
             Log.Debug(this, ex);
             Log.Debug(this, ex.getNextException());
             Log.Debug(this, ex.getNextException().getNextException());
             Log.Debug(this, ex.getNextException().getNextException().getNextException());
-            Popup.error(ex);
+            
             DatabaseConnection.shutdown();
             return false;
         }

@@ -222,6 +222,7 @@ public class LabeledTextField extends javax.swing.JPanel {
                 Integer.valueOf(jTextField1.getText());
                 jTextField1.setBackground(Color.WHITE);
             } catch (NumberFormatException numberFormatException) {
+                Log.Debug(numberFormatException);
                 TextFieldUtils.blinker(jTextField1, Color.gray);
                 jTextField1.setText("0");
             }
@@ -230,6 +231,18 @@ public class LabeledTextField extends javax.swing.JPanel {
                 FormatNumber.parseDezimal(jTextField1.getText());
                 jTextField1.setBackground(Color.WHITE);
             } catch (NumberFormatException numberFormatException) {
+                Log.Debug(numberFormatException);
+                TextFieldUtils.blinker(jTextField1, Color.gray);
+                jTextField1.setText("0.0");
+            }
+        } else if (clazz == BigDecimal.class) {
+            try {
+                FormatNumber.parseDezimal(jTextField1.getText());
+                jTextField1.setBackground(Color.WHITE);
+            } catch (NumberFormatException numberFormatException) {
+                Log.Debug(this, jTextField1.getText());
+                Log.Debug(numberFormatException );
+
                 TextFieldUtils.blinker(jTextField1, Color.gray);
                 jTextField1.setText("0.0");
             }
@@ -308,23 +321,37 @@ public class LabeledTextField extends javax.swing.JPanel {
         if (clazz != classtemplate.getClass()) {
             throw new IllegalArgumentException("Classtemplate must match value class!");
         }
-        if (clazz == Integer.class) {
+         if (clazz == Integer.class) {
             try {
+                Integer.valueOf(jTextField1.getText());
+                jTextField1.setBackground(Color.WHITE);
                 return (T) Integer.valueOf(jTextField1.getText());
             } catch (NumberFormatException numberFormatException) {
-                return (T) new Integer(0);
+                Log.Debug(numberFormatException);
+                TextFieldUtils.blinker(jTextField1, Color.gray);
+                jTextField1.setText("0");
             }
         } else if (clazz == Double.class) {
             try {
-                return (T) Double.valueOf(jTextField1.getText());
+                FormatNumber.parseDezimal(jTextField1.getText());
+                jTextField1.setBackground(Color.WHITE);
+                return (T) new Double(FormatNumber.parseDezimal(jTextField1.getText()).doubleValue());
             } catch (NumberFormatException numberFormatException) {
-                return (T) new Double(0);
+                Log.Debug(numberFormatException);
+                TextFieldUtils.blinker(jTextField1, Color.gray);
+                jTextField1.setText("0.0");
             }
         } else if (clazz == BigDecimal.class) {
             try {
-                return (T) new BigDecimal((jTextField1.getText()));
-            } catch (Exception numberFormatException) {
-                return (T) new BigDecimal("0");
+                FormatNumber.parseDezimal(jTextField1.getText());
+                jTextField1.setBackground(Color.WHITE);
+                return (T) FormatNumber.parseDezimal(jTextField1.getText());
+            } catch (NumberFormatException numberFormatException) {
+                Log.Debug(this, jTextField1.getText());
+                Log.Debug(numberFormatException );
+
+                TextFieldUtils.blinker(jTextField1, Color.gray);
+                jTextField1.setText("0.0");
             }
         }
         return null;
