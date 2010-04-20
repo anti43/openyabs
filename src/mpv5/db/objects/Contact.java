@@ -1,4 +1,3 @@
-
 package mpv5.db.objects;
 
 import java.util.ArrayList;
@@ -45,19 +44,21 @@ public class Contact extends DatabaseObject implements Formattable {
     private boolean issupplier = false;
     private String country = "";
     private FormatHandler formatHandler;
-
     public final static int TYPE_CONTACT = 0;
     public final static int TYPE_CUSTOMER = 1;
     public final static int TYPE_SUPPLIER = 2;
     public final static int TYPE_MANUFACTURER = 3;
-    
 
     public static String getTypeString(int typ) {
-        switch(typ){
-            case TYPE_CONTACT: return Messages.TYPE_CONTACT.getValue();
-            case TYPE_CUSTOMER: return Messages.TYPE_CUSTOMER.getValue();
-            case TYPE_SUPPLIER: return Messages.TYPE_SUPPLIER.getValue();
-            case TYPE_MANUFACTURER: return Messages.TYPE_MANUFACTURER.getValue();
+        switch (typ) {
+            case TYPE_CONTACT:
+                return Messages.TYPE_CONTACT.getValue();
+            case TYPE_CUSTOMER:
+                return Messages.TYPE_CUSTOMER.getValue();
+            case TYPE_SUPPLIER:
+                return Messages.TYPE_SUPPLIER.getValue();
+            case TYPE_MANUFACTURER:
+                return Messages.TYPE_MANUFACTURER.getValue();
         }
         return Messages.TYPE_CONTACT.getValue();
     }
@@ -432,7 +433,7 @@ public class Contact extends DatabaseObject implements Formattable {
     @Override
     public void ensureUniqueness() {
 //       if (cnumber == null || cnumber.length() == 0) {
-            setCNumber(getFormatHandler().next());
+        setCNumber(getFormatHandler().next());
 //        }
     }
 
@@ -446,10 +447,10 @@ public class Contact extends DatabaseObject implements Formattable {
                 map.put("address" + i, data.get(i));
             }
         } catch (Exception ex) {
-           Log.Debug(this, ex.getMessage());
+            Log.Debug(this, ex.getMessage());
         }
 
-         if (map.containsKey("country")) {
+        if (map.containsKey("country")) {
             try {
                 map.put("country", LanguageManager.getCountryName(Integer.valueOf(map.get("country").toString())));
             } catch (Exception numberFormatException) {
@@ -459,7 +460,7 @@ public class Contact extends DatabaseObject implements Formattable {
 
         try {
             if (map.containsKey("ismale")) {
-                if(Boolean.valueOf(map.get("ismale").toString())) {
+                if (Boolean.valueOf(map.get("ismale").toString())) {
                     map.put("gender", Messages.CONTACT_TYPE_MALE);
                 } else {
                     map.put("gender", Messages.CONTACT_TYPE_FEMALE);
@@ -472,7 +473,11 @@ public class Contact extends DatabaseObject implements Formattable {
 
         if (!map.containsKey("fullname")) {
             try {
-                map.put("fullname", prename + " " + cname);
+                if (prename != null && prename.length() > 0) {
+                    map.put("fullname", prename + " " + cname);
+                } else {
+                    map.put("fullname", cname);
+                }
             } catch (Exception numberFormatException) {
                 //already resolved?
             }
@@ -480,7 +485,6 @@ public class Contact extends DatabaseObject implements Formattable {
 
         return map;
     }
-
 
     public void defineFormatHandler(FormatHandler handler) {
         formatHandler = handler;
