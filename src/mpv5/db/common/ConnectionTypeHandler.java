@@ -201,8 +201,8 @@ public class ConnectionTypeHandler {
      * @param predefinedDriver
      */
     public void setDRIVER(String predefinedDriver) {
-        try {
-            Class.forName(predefinedDriver);
+
+        if (predefinedDriver != null && !predefinedDriver.equalsIgnoreCase("null")) {
             if (predefinedDriver.equalsIgnoreCase(DERBY_DRIVER)) {
                 PREDEFINED_DRVER = DERBY;
             } else if (predefinedDriver.equalsIgnoreCase(MYSQL_DRIVER)) {
@@ -211,9 +211,16 @@ public class ConnectionTypeHandler {
                 PREDEFINED_DRVER = CUSTOM;
                 CUSTOM_DRIVER = predefinedDriver;
             }
-        } catch (ClassNotFoundException ex) {
-            Popup.error(ex);
         }
+    }
+
+    /**
+     * Try to load the given driver class
+     * @param driver
+     * @throws ClassNotFoundException
+     */
+    public static void testDriver(String driver) throws ClassNotFoundException {
+         Class.forName(driver);
     }
 
     public void setDBName(String dbname) {

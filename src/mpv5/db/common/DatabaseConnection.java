@@ -130,7 +130,7 @@ public class DatabaseConnection {
             Log.Debug(this, ex.getNextException());
             Log.Debug(this, ex.getNextException().getNextException());
             Log.Debug(this, ex.getNextException().getNextException().getNextException());
-            
+
             DatabaseConnection.shutdown();
             return false;
         }
@@ -144,26 +144,30 @@ public class DatabaseConnection {
     private Connection connect(boolean create) throws Exception {
 
         ctype = new ConnectionTypeHandler();
-        try {
+
+        if (getCtype().getDriver() != null) {
             Log.Debug(this, "Datenbanktreiber: " + getCtype().getDriver());
+
             try {
                 Class.forName(getCtype().getDriver()).newInstance();
             } catch (ClassNotFoundException ex) {
 //                Popup.warn(Messages.DB_DRIVER_INVALID + ex.getMessage(), Popup.ERROR);
                 DatabaseConnection.shutdown();
-
             }
             user = LocalSettings.getProperty("dbuser");
             password = LocalSettings.getProperty("dbpassword");
             prefix = LocalSettings.getProperty("dbprefix");
 
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            Popup.warn(ex.getMessage());
-            DatabaseConnection.shutdown();
+//        } catch (Exception ex) {
+//            ex.printStackTrace();
+//            Popup.warn(ex.getMessage());
+//            DatabaseConnection.shutdown();
+//        }
+            reconnect(create);
+        } else {
+            Log.Debug(this, "Datenbanktreiber: undefined");
+            throw new UnsupportedOperationException("Datenbanktreiber: undefined");
         }
-
-        reconnect(create);
         return conn;
     }
 

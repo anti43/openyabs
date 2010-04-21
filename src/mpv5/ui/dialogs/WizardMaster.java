@@ -39,4 +39,5 @@ public interface WizardMaster {
     public void setMessage(String message);
     public JProgressBar getProgressbar();
     public void enableBackButton(boolean enable);
+
 }

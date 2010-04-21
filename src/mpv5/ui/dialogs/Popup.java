@@ -170,6 +170,7 @@ public class Popup {
      * @param x
      */
     public static void error(Exception x) {
+//        x.printStackTrace();
         error(identifier, x.getLocalizedMessage());
     }
 
