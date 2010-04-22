@@ -19,11 +19,8 @@ package mpv5.i18n;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.net.URI;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Enumeration;
-import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Locale;
@@ -39,7 +36,6 @@ import mpv5.db.common.Context;
 import mpv5.db.common.NodataFoundException;
 import mpv5.db.common.QueryData;
 import mpv5.db.common.QueryHandler;
-import mpv5.db.common.ReturnValue;
 import mpv5.globals.LocalSettings;
 import mpv5.globals.Messages;
 import mpv5.logging.Log;
@@ -184,7 +180,8 @@ public class LanguageManager {
                             }
                             if (bundlefile != null) {
                                 newfile = FileDirectoryHandler.copyFile(bundlefile, new File(LocalSettings.getProperty(LocalSettings.CACHE_DIR)), tempname + ".properties", true);
-                                if (hasNeededKeys(bundlefile, false)) {
+                                File newbundle = new File(newfile);
+                                if (hasNeededKeys(newbundle, false) || addNeededKeys(newbundle)) {
                                     Log.Debug(LanguageManager.class, "File has needed keys for language: " + langid);
                                     ClasspathTools.addPath(new File(LocalSettings.getProperty(LocalSettings.CACHE_DIR)));//Add the files parent to classpath to be found
                                     Log.Debug(LanguageManager.class, "Created language file at: " + newfile);
@@ -397,7 +394,11 @@ public class LanguageManager {
                             MPView.addMessage(Messages.ERROR_OCCURED.toString());
                             return false;
                         } else {
-                            failures.add(string + "=???");
+                            try {
+                                failures.add(string + "=" + ResourceBundleUtf8.getBundle(defLanguageBundle).getString(string));
+                            } catch (Exception e) {
+                                failures.add(string + "=???");
+                            }
                         }
                     }
                 }
@@ -418,5 +419,37 @@ public class LanguageManager {
      */
     public static boolean isReady() {
         return cached;
+    }
+
+    private static boolean addNeededKeys(File file) {
+         synchronized (new LanguageManager()) {
+            try {
+                Enumeration<String> keys = ResourceBundleUtf8.getBundle(defLanguageBundle).getKeys();
+                File impFile = file;
+                FileReaderWriter frw = new FileReaderWriter(impFile);
+                String[] lines = frw.readLines();
+
+                while (keys.hasMoreElements()) {
+                    String string = keys.nextElement();
+                    boolean found = false;
+                    for (int i = 0; i < lines.length; i++) {
+                        String line = lines[i];
+                        if (line.startsWith(string)) {
+                            found = true;
+                        }
+                    }
+                    if (!found) {
+                        Log.Debug(LanguageManager.class, "Key '" + string + "' added to file " + file);
+                        frw.write(string + "=" + ResourceBundleUtf8.getBundle(defLanguageBundle).getString(string));                     
+                    }
+                }
+                failed = false;
+                return !failed;
+            } catch (Exception e) {
+                Log.Debug(e);
+                failed = true;
+                return false;
+            }
+        }
     }
 }

@@ -126,6 +126,8 @@ public class HistoryPanel extends javax.swing.JPanel implements ListPanel {
         };
         jToolBar2 = new javax.swing.JToolBar();
         timeframeChooser1 = new mpv5.ui.beans.TimeframeChooser();
+        jSeparator7 = new javax.swing.JToolBar.Separator();
+        jLabel3 = new javax.swing.JLabel();
 
         setName("Form"); // NOI18N
 
@@ -220,6 +222,13 @@ public class HistoryPanel extends javax.swing.JPanel implements ListPanel {
         timeframeChooser1.setName("timeframeChooser1"); // NOI18N
         jToolBar2.add(timeframeChooser1);
 
+        jSeparator7.setName("jSeparator7"); // NOI18N
+        jToolBar2.add(jSeparator7);
+
+        jLabel3.setText(bundle.getString("HistoryPanel.jLabel3.text")); // NOI18N
+        jLabel3.setName("jLabel3"); // NOI18N
+        jToolBar2.add(jLabel3);
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -277,6 +286,7 @@ public class HistoryPanel extends javax.swing.JPanel implements ListPanel {
     private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JToolBar.Separator jSeparator1;
@@ -285,6 +295,7 @@ public class HistoryPanel extends javax.swing.JPanel implements ListPanel {
     private javax.swing.JToolBar.Separator jSeparator4;
     private javax.swing.JToolBar.Separator jSeparator5;
     private javax.swing.JToolBar.Separator jSeparator6;
+    private javax.swing.JToolBar.Separator jSeparator7;
     private javax.swing.JTable jTable1;
     private javax.swing.JToolBar jToolBar1;
     private javax.swing.JToolBar jToolBar2;

@@ -115,7 +115,7 @@ public class ProductPanelContactSub extends javax.swing.JPanel {
         jPanel6.setName("jPanel6"); // NOI18N
 
         contactid.setEditable(false);
-        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("mpv5/resources/languages/Panels"); // NOI18N
+        java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle(); // NOI18N
         contactid.setText(bundle.getString("ProductPanel.contactid.text")); // NOI18N
         contactid.setName("contactid"); // NOI18N
 
