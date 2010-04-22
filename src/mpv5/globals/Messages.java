@@ -20,7 +20,7 @@ public enum Messages {
 
     START_MESSAGE(
     "\n" +
-    "YaBS " + Constants.VERSION + " (C) 2006-2009 Openyabs.org\n\n" +
+    "YaBS " + Constants.VERSION + " (C) 2006-2010 Openyabs.org\n\n" +
     "******************************************************************************\n" +
     "* This program is free software; you can redistribute it and/or modify it \n" +
     "* under the terms of the GNU General Public License as published by the \n" +

@@ -1255,7 +1255,11 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject> {
                         try {
                             vars.get(k).invoke(this, new Object[]{Double.valueOf(String.valueOf(data[row][1]))});
                         } catch (Exception illegalAccessException) {
-                            vars.get(k).invoke(this, new Object[]{new BigDecimal(String.valueOf(data[row][1]))});
+                            try {
+                                vars.get(k).invoke(this, new Object[]{new BigDecimal(String.valueOf(data[row][1]))});
+                            } catch (NumberFormatException n) {
+                                Log.Debug(this, "Unable to parse number: " + String.valueOf(data[row][1]));
+                            }
                         }
                     } else {
                         vars.get(k).invoke(this, new Object[]{String.valueOf(data[row][1])});

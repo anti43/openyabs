@@ -91,11 +91,11 @@ public class Product extends DatabaseObject implements Formattable {
 
     }
     private int taxids = 1;
-    private int inttype;
-    private int manufacturersids;
-    private int suppliersids;
+    private int inttype = 0;
+    private int manufacturersids = 0;
+    private int suppliersids = 0;
     private int productgroupsids = 1;
-    private int productlistsids;
+    private int productlistsids = 0;
     private BigDecimal externalnetvalue = new BigDecimal("0");
     private BigDecimal internalnetvalue = new BigDecimal("0");
     private String description = "";
@@ -106,11 +106,7 @@ public class Product extends DatabaseObject implements Formattable {
     private String reference = "";//herstellernummer
     private String defaultimage = "";
     private BigDecimal stockvalue = new BigDecimal("0");
-
-    ;
     private BigDecimal thresholdvalue = new BigDecimal("0");
-
-    ;
     private int intinventorytype = 0;
     public static final int TYPE_PRODUCT = 0;
     public static final int TYPE_SERVICE = 1;

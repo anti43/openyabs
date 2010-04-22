@@ -79,7 +79,8 @@ public class LocalSettings {
                 {CALCULATOR, ""},
                 //Uncomment for MacOS build
 //                {OFFICE_HOME, "/Applications/OpenOffice.org.app/Contents/"},
-//                {OFFICE_BINARY_FOLDER, "MacOS"}
+//                {OFFICE_BINARY_FOLDER, "MacOS"},
+//                {DBTYPE, "multi"}
             });
     private static Vector<PropertyStore> cookies;
 
