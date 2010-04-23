@@ -304,7 +304,7 @@ public class ProductList extends javax.swing.JPanel implements ListPanel {
             Selection sel = new Selection(listTable);
             if (sel.checkID()) {
                 try {
-                    MPView.getIdentifierView().addTab(DatabaseObject.getObject(context, sel.getId()));
+                    MPView.getIdentifierView().addTab(DatabaseObject.getObject(Context.getProduct(), sel.getId()));
                 } catch (NodataFoundException ex) {
                     Log.Debug(ex);
                 }

@@ -159,7 +159,10 @@ public class Context {
             IDENTITY_PRODUCTS + "." + "ean," +
             IDENTITY_PRODUCTS + "." + "reference," +
             IDENTITY_CONTACTS + "." + "cname," +
-            IDENTITY_GROUPS + "." + "cname";
+            IDENTITY_GROUPS + "." + "cname," +
+            IDENTITY_PRODUCTS + "." + "internalnetvalue," +
+            IDENTITY_PRODUCTS + "." + "externalnetvalue," +
+            IDENTITY_PRODUCTS + "." + "stockvalue";
     public static String DETAILS_USERS = IDENTITY_USERS + "." + "IDS," + IDENTITY_USERS + "." + "CNAME," +
             IDENTITY_USERS + "." + "fullname," +
             IDENTITY_USERS + "." + "mail," +

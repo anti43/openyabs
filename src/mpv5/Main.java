@@ -144,11 +144,16 @@ public class Main extends SingleFrameApplication {
     public static void start() {
 
         splash.nextStep(Messages.LAUNCH.toString());
+        Log.Debug(Main.class, "Trying to launch application now..");
         Runnable runnable = new Runnable() {
 
             @Override
             public void run() {
-                launch(Main.class, new String[]{});
+                try {
+                    launch(Main.class, new String[]{});
+                } catch (Exception e) {
+                    Log.Debug(e);
+                }
             }
         };
         SwingUtilities.invokeLater(runnable);
@@ -491,7 +496,8 @@ public class Main extends SingleFrameApplication {
             File d = File.createTempFile(RandomText.getText(), ".~mp");
             d.createNewFile();
             p.put("derby.stream.error.file", d.getPath());
-        } catch (IOException ex) {
+        } catch (Exception ex) {
+            Log.Debug(ex);
         }
     }
 
