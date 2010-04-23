@@ -63,6 +63,7 @@ import mpv5.db.objects.MailMessage;
 import mpv5.db.objects.ProductList;
 import mpv5.db.objects.ProductlistSubItem;
 import mpv5.db.objects.SubItem;
+import mpv5.db.objects.Tax;
 import mpv5.db.objects.Template;
 import mpv5.logging.Log;
 import mpv5.ui.dialogs.BigPopup;
@@ -80,6 +81,7 @@ import mpv5.ui.dialogs.ScheduleDayEvent;
 import mpv5.ui.dialogs.Search2;
 import mpv5.ui.dialogs.subcomponents.ItemTextAreaDialog;
 import mpv5.ui.dialogs.subcomponents.ProductSelectDialog;
+import mpv5.ui.misc.TableViewPersistenceHandler;
 import mpv5.utils.arrays.ArrayUtilities;
 import mpv5.utils.date.DateConverter;
 import mpv5.utils.export.Export;
@@ -266,6 +268,8 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
                 }
             }
         });
+
+        new TableViewPersistenceHandler(itemtable, this, 0);
     }
 
     /**
@@ -1288,7 +1292,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
 
         Contact dbo = (Contact) Search2.showSearchFor(Context.getContact());
-        if (dbo!=null) {
+        if (dbo != null) {
             contactname.setModel(dbo);
             contactcity.setText(dbo.__getCity());
             contactcompany.setText(dbo.__getCompany());
@@ -1588,6 +1592,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
         }
 
         ((MPTableModel) itemtable.getModel()).removeEmptyRows(new int[]{4});
+
         for (DatabaseObject dbo : dbos) {
             if (dbo.getContext().equals(Context.getItem())
                     || dbo.getContext().equals(Context.getBill())
@@ -1603,6 +1608,11 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
                     s.setTotalnetvalue(((Item) dbo).__getNetvalue());
                     s.setCName(((Item) dbo).__getCName());
                     s.setDescription(Messages.GOOSE1 + " " + ((Item) dbo).__getCnumber() + " " + Messages.GOOSE2 + " " + DateConverter.getDefDateString(o.__getDateadded()));
+                    if (mpv5.db.objects.User.getCurrentUser().getProperties().hasProperty("deftax")) {
+                        int taxid = mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("deftax", new Integer(0));
+                        BigDecimal deftax = Tax.getTaxValue(taxid);
+                        s.setTaxpercentvalue(deftax);
+                    }
 
                     ((MPTableModel) itemtable.getModel()).addRow(s.getRowData(((MPTableModel) itemtable.getModel()).getRowCount() + 1));
                 } else {

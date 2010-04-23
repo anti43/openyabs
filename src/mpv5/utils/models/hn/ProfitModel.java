@@ -28,7 +28,7 @@ public class ProfitModel extends AccountCalcModel {
 
   @Override
   public String[] getHeader() {
-    ResourceBundle bundle = ResourceBundle.getBundle("mpv5/resources/languages/Panels");
+    ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle();
     return new String[]{
           bundle.getString("ProfitModel.account"),
           bundle.getString("ProfitModel.descr"),
