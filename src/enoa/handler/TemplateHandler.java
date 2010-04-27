@@ -47,19 +47,37 @@ public class TemplateHandler {
     }
 
     /**
-     * Loads a template including neccesary files
+     * Loads a template including neccesary files, target's group
      * @param target
-     * @param typ 
+     * @param typ
      * @return
      */
     public static synchronized Template loadTemplate(DatabaseObject target, int typ) {
-        Integer type = new Integer(typ);
+
         int groupsids = 0;
         if (target != null) {
             groupsids = target.__getGroupsids();
         } else {
             groupsids = 1;
         }
+
+        return loadTemplate(target, groupsids, typ);
+    }
+
+    /**
+     * Loads a template including neccesary files
+     * @param target
+     * @param groupsids
+     * @param typ
+     * @return
+     */
+    public static synchronized Template loadTemplate(DatabaseObject target, int groupsids, int typ) {
+        Integer type = new Integer(typ);
+
+        if (groupsids < 0) {
+            groupsids = 1;
+        }
+
         String key = mpv5.db.objects.User.getCurrentUser() + "@" + type + "@" + groupsids;
         if (templateCache.containsKey(key)) {
             return templateCache.get(key);
@@ -358,7 +376,25 @@ public class TemplateHandler {
         Runnable runnable = new Runnable() {
 
             public void run() {
-                loadTemplate(dataOwner, TYPE);
+                loadTemplate(dataOwner, dataOwner.__getGroupsids(), TYPE);
+                button.setEnabled(isLoaded(dataOwner, TYPE));
+            }
+        };
+        new Thread(runnable).start();
+    }
+
+    /**
+     * Load a template for a specific GROUP rather than the dataOwners group (if not already done) and enable the given button after loading.
+     * @param button
+     * @param dataOwner
+     * @param grouspids
+     * @param TYPE
+     */
+    public static void loadTemplateFor(final JButton button, final DatabaseObject dataOwner, final int grouspids, final int TYPE) {
+        Runnable runnable = new Runnable() {
+
+            public void run() {
+                loadTemplate(dataOwner, grouspids, TYPE);
                 button.setEnabled(isLoaded(dataOwner, TYPE));
             }
         };

@@ -41,6 +41,7 @@ import mpv5.db.objects.Template;
 import mpv5.globals.Messages;
 import mpv5.handler.FormFieldsHandler;
 import mpv5.logging.Log;
+import mpv5.ui.dialogs.DialogForFile;
 import mpv5.ui.dialogs.Popup;
 import mpv5.ui.frames.MPView;
 import mpv5.utils.export.Export;
@@ -91,6 +92,10 @@ public class RemindPanel extends javax.swing.JPanel {
                 }
             }
         });
+
+
+        labeledCombobox2.setContext(Context.getGroup());
+        labeledCombobox2.setSearchEnabled(true);
     }
 
     public RemindPanel(Item bill) {
@@ -144,17 +149,20 @@ public class RemindPanel extends javax.swing.JPanel {
         jButton6 = new javax.swing.JButton();
         jSeparator3 = new javax.swing.JToolBar.Separator();
         jButton3 = new javax.swing.JButton();
+        jButton7 = new javax.swing.JButton();
+        jButton8 = new javax.swing.JButton();
         jPanel1 = new javax.swing.JPanel();
         labeledCombobox1 = new mpv5.ui.beans.LabeledCombobox();
         labeledCombobox3 = new mpv5.ui.beans.LabeledCombobox();
         jScrollPane1 = new javax.swing.JScrollPane();
         jTextPane1 = new javax.swing.JTextPane();
         labeledTextField1 = new mpv5.ui.beans.LabeledTextField();
+        labeledCombobox2 = new mpv5.ui.beans.LabeledCombobox();
         jLabel1 = new javax.swing.JLabel();
         jScrollPane2 = new javax.swing.JScrollPane();
         jList1 = new javax.swing.JList();
 
-        java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle();
+        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("mpv5/resources/languages/Panels"); // NOI18N
         setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("RemindPanel.border.title"))); // NOI18N
         setName("Form"); // NOI18N
 
@@ -219,6 +227,7 @@ public class RemindPanel extends javax.swing.JPanel {
         jSeparator3.setName("jSeparator3"); // NOI18N
         jToolBar1.add(jSeparator3);
 
+        jButton3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/22/view_text.png"))); // NOI18N
         jButton3.setText(bundle.getString("RemindPanel.jButton3.text")); // NOI18N
         jButton3.setFocusable(false);
         jButton3.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
@@ -230,6 +239,32 @@ public class RemindPanel extends javax.swing.JPanel {
             }
         });
         jToolBar1.add(jButton3);
+
+        jButton7.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/22/mimetypes/pdf.png"))); // NOI18N
+        jButton7.setText(bundle.getString("RemindPanel.jButton7.text")); // NOI18N
+        jButton7.setFocusable(false);
+        jButton7.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        jButton7.setName("jButton7"); // NOI18N
+        jButton7.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        jButton7.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton7ActionPerformed(evt);
+            }
+        });
+        jToolBar1.add(jButton7);
+
+        jButton8.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/22/mimetypes/odt.png"))); // NOI18N
+        jButton8.setText(bundle.getString("RemindPanel.jButton8.text")); // NOI18N
+        jButton8.setFocusable(false);
+        jButton8.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        jButton8.setName("jButton8"); // NOI18N
+        jButton8.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        jButton8.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton8ActionPerformed(evt);
+            }
+        });
+        jToolBar1.add(jButton8);
 
         jPanel1.setBackground(new java.awt.Color(255, 255, 255));
         jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("RemindPanel.jPanel1.border.title"))); // NOI18N
@@ -249,6 +284,9 @@ public class RemindPanel extends javax.swing.JPanel {
         labeledTextField1.set_Label(bundle.getString("RemindPanel.labeledTextField1._Label")); // NOI18N
         labeledTextField1.setName("labeledTextField1"); // NOI18N
 
+        labeledCombobox2.set_Label(bundle.getString("RemindPanel.labeledCombobox2._Label")); // NOI18N
+        labeledCombobox2.setName("labeledCombobox2"); // NOI18N
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -259,21 +297,25 @@ public class RemindPanel extends javax.swing.JPanel {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGap(2, 2, 2)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 442, Short.MAX_VALUE)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 487, Short.MAX_VALUE)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                             .addComponent(labeledCombobox3, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(labeledCombobox1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 270, Short.MAX_VALUE))
-                        .addContainerGap(172, Short.MAX_VALUE))))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(labeledCombobox2, javax.swing.GroupLayout.DEFAULT_SIZE, 217, Short.MAX_VALUE))))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addComponent(labeledCombobox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(labeledCombobox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(labeledCombobox3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(labeledCombobox2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(labeledCombobox3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 96, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 114, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(labeledTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
@@ -296,21 +338,23 @@ public class RemindPanel extends javax.swing.JPanel {
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jToolBar1, javax.swing.GroupLayout.DEFAULT_SIZE, 456, Short.MAX_VALUE)
+            .addComponent(jLabel1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 501, Short.MAX_VALUE)
+            .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 501, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addComponent(jToolBar1, javax.swing.GroupLayout.DEFAULT_SIZE, 481, Short.MAX_VALUE)
+                .addContainerGap())
             .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(jLabel1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 456, Short.MAX_VALUE)
-            .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 456, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addComponent(jToolBar1, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jToolBar1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabel1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 96, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 143, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -357,11 +401,18 @@ public class RemindPanel extends javax.swing.JPanel {
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
 
+        int group = 1;
+
         PreviewPanel pr;
         if (dataOwner != null && dataOwner.isExisting()) {
-            Template t = TemplateHandler.loadTemplate(dataOwner, TemplateHandler.TYPE_REMINDER);
+
+            if (labeledCombobox2.getSelectedItem() != null) {
+                group = Integer.valueOf(labeledCombobox2.getSelectedItem().getId());
+            }
+
+            Template t = TemplateHandler.loadTemplate(dataOwner, group, TemplateHandler.TYPE_REMINDER);
             if (t != null) {
-                Exportable te = TemplateHandler.loadTemplate(dataOwner, TemplateHandler.TYPE_REMINDER).getExFile();
+                Exportable te = TemplateHandler.loadTemplate(dataOwner, group, TemplateHandler.TYPE_REMINDER).getExFile();
                 HashMap<String, Object> hm1 = new FormFieldsHandler(dataOwner).getFormattedFormFields(null);
                 File f2 = FileDirectoryHandler.getTempFile("pdf");
                 Export ex = new Export(t);
@@ -401,6 +452,79 @@ public class RemindPanel extends javax.swing.JPanel {
 
         save();
     }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void jButton7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton7ActionPerformed
+           int group = 1;
+
+        if (dataOwner != null && dataOwner.isExisting()) {
+
+            if (labeledCombobox2.getSelectedItem() != null) {
+                group = Integer.valueOf(labeledCombobox2.getSelectedItem().getId());
+            }
+
+            Template t = TemplateHandler.loadTemplate(dataOwner, group, TemplateHandler.TYPE_REMINDER);
+            if (t != null) {
+                Exportable te = TemplateHandler.loadTemplate(dataOwner, group, TemplateHandler.TYPE_REMINDER).getExFile();
+                HashMap<String, Object> hm1 = new HashMap<String, Object>();
+                File f2 = FileDirectoryHandler.getTempFile("pdf");
+
+                try {
+                    Stage g = (Stage) DatabaseObject.getObject(Context.getStage(), dataOwner.__getStagesids());
+                    hm1.put("reminder.stage", g.__getCName());
+                } catch (NodataFoundException ex1) {
+                    Log.Debug(ex1);
+                }
+                try {
+                    Item i = (Item) DatabaseObject.getObject(Context.getItem(), dataOwner.__getItemsids());
+                    hm1.put("reminder.count", Reminder.getRemindersOf(i).size());
+                } catch (NodataFoundException nodataFoundException) {
+                    Log.Debug(nodataFoundException);
+                }
+
+                new Job(Export.createFile(dataOwner.__getCName(), t, dataOwner, hm1), new DialogForFile(DialogForFile.FILES_ONLY, dataOwner.__getCName())).execute();
+            } else {
+                Popup.notice(Messages.NO_TEMPLATE_DEFINDED);
+            }
+        }
+    }//GEN-LAST:event_jButton7ActionPerformed
+
+    private void jButton8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton8ActionPerformed
+
+      int group = 1;
+
+        PreviewPanel pr;
+        if (dataOwner != null && dataOwner.isExisting()) {
+
+            if (labeledCombobox2.getSelectedItem() != null) {
+                group = Integer.valueOf(labeledCombobox2.getSelectedItem().getId());
+            }
+
+            Template t = TemplateHandler.loadTemplate(dataOwner, group, TemplateHandler.TYPE_REMINDER);
+            if (t != null) {
+                Exportable te = TemplateHandler.loadTemplate(dataOwner, group, TemplateHandler.TYPE_REMINDER).getExFile();
+                HashMap<String, Object>  hm1 = new HashMap<String, Object>();
+                File f2 = FileDirectoryHandler.getTempFile("odt");
+
+                try {
+                    Stage g = (Stage) DatabaseObject.getObject(Context.getStage(), dataOwner.__getStagesids());
+                    hm1.put("reminder.stage", g.__getCName());
+                } catch (NodataFoundException ex1) {
+                    Log.Debug(ex1);
+                }
+                try {
+                    Item i = (Item) DatabaseObject.getObject(Context.getItem(), dataOwner.__getItemsids());
+                    hm1.put("reminder.count", Reminder.getRemindersOf(i).size());
+                } catch (NodataFoundException nodataFoundException) {
+                    Log.Debug(nodataFoundException);
+                }
+
+                new Job(Export.sourceFile(dataOwner.__getCName(), t, dataOwner, hm1), new DialogForFile(DialogForFile.FILES_ONLY, dataOwner.__getCName())).execute();
+            } else {
+                Popup.notice(Messages.NO_TEMPLATE_DEFINDED);
+            }
+        }
+    }//GEN-LAST:event_jButton8ActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
@@ -408,6 +532,8 @@ public class RemindPanel extends javax.swing.JPanel {
     private javax.swing.JButton jButton4;
     private javax.swing.JButton jButton5;
     private javax.swing.JButton jButton6;
+    private javax.swing.JButton jButton7;
+    private javax.swing.JButton jButton8;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JList jList1;
     private javax.swing.JPanel jPanel1;
@@ -418,6 +544,7 @@ public class RemindPanel extends javax.swing.JPanel {
     private javax.swing.JTextPane jTextPane1;
     private javax.swing.JToolBar jToolBar1;
     private mpv5.ui.beans.LabeledCombobox labeledCombobox1;
+    private mpv5.ui.beans.LabeledCombobox labeledCombobox2;
     private mpv5.ui.beans.LabeledCombobox labeledCombobox3;
     private mpv5.ui.beans.LabeledTextField labeledTextField1;
     // End of variables declaration//GEN-END:variables
@@ -480,8 +607,15 @@ public class RemindPanel extends javax.swing.JPanel {
         dataOwner = r;
         try {
             labeledCombobox1.setModel(Item.getObject(Context.getItem(), r.__getItemsids()));
+
         } catch (NodataFoundException ex) {
         }
+        try {
+            labeledCombobox2.setModel(Item.getObject(Context.getGroup(), r.__getGroupsids()));
+        } catch (NodataFoundException ex) {
+        }
+
+
         labeledTextField1.setText(r.__getExtravalue());
         jTextPane1.setText(r.__getDescription());
     }

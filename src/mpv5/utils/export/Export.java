@@ -179,6 +179,55 @@ public class Export extends HashMap<String, Object> implements Waitable {
         ex.setTargetFile(f2);
         return ex;
     }
+
+    /**
+     * Create a {@link Waitable} which is able to create a file PDF
+     * @param aname
+     * @param preloadedTemplate
+     * @param dataOwner
+     * @param adddata
+     * @return
+     */
+    public static Waitable createFile(String aname, Template preloadedTemplate, DatabaseObject dataOwner, HashMap<String,Object> adddata) {
+        HashMap<String, Object> hm1 = new FormFieldsHandler(dataOwner).getFormattedFormFields(null);
+        File f2;
+        if (aname == null) {
+            f2 = FileDirectoryHandler.getTempFile("pdf");
+        } else {
+            f2 = FileDirectoryHandler.getTempFile(aname, "pdf");
+        }
+        Export ex = new Export(preloadedTemplate);
+        ex.putAll(hm1);
+        ex.putAll(adddata);
+        ex.setTemplate(preloadedTemplate.getExFile());
+        ex.setTargetFile(f2);
+        return ex;
+    }
+
+    /**
+     * Create a {@link Waitable} which is able to create a file ODT
+     * @param aname
+     * @param preloadedTemplate
+     * @param dataOwner
+     * @param adddata
+     * @return
+     */
+    public static Waitable sourceFile(String aname, Template preloadedTemplate, DatabaseObject dataOwner, HashMap<String,Object> adddata) {
+        HashMap<String, Object> hm1 = new FormFieldsHandler(dataOwner).getFormattedFormFields(null);
+        File f2;
+        if (aname == null) {
+            f2 = FileDirectoryHandler.getTempFile("odt");
+        } else {
+            f2 = FileDirectoryHandler.getTempFile(aname, "odt");
+        }
+
+        Export ex = new Export(preloadedTemplate);
+        ex.putAll(hm1);
+        ex.putAll(adddata);
+        ex.setTemplate(preloadedTemplate.getExFile());
+        ex.setTargetFile(f2);
+        return ex;
+    }
     /**
      * (Pre)load a template. Do not run this from the EDT, as the fetching of the templatefile from the database might take a while.
      * @param dataOwner

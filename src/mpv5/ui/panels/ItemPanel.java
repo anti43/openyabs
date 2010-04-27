@@ -1604,7 +1604,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
                     SubItem s = new SubItem();
                     s.setQuantityvalue(new BigDecimal("1"));
 //                    s.setItemsids(o.__getIDS());
-                    s.setExternalvalue(((Item) dbo).__getNetvalue().add(((Item) dbo).__getTaxvalue()).add(((Item) dbo).__getShippingvalue()));
+                    s.setInternalvalue(((Item) dbo).__getNetvalue().add(((Item) dbo).__getTaxvalue()).add(((Item) dbo).__getShippingvalue()));
                     s.setTotalnetvalue(((Item) dbo).__getNetvalue());
                     s.setCName(((Item) dbo).__getCName());
                     s.setDescription(Messages.GOOSE1 + " " + ((Item) dbo).__getCnumber() + " " + Messages.GOOSE2 + " " + DateConverter.getDefDateString(o.__getDateadded()));
