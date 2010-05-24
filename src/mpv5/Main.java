@@ -39,7 +39,6 @@ import java.util.Enumeration;
 import java.util.List;
 import java.util.Properties;
 import java.util.Vector;
-import javax.mail.URLName;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
@@ -49,7 +48,6 @@ import mpv5.db.common.DatabaseConnection;
 import mpv5.db.common.DatabaseObject;
 import mpv5.db.common.DatabaseObjectLock;
 import mpv5.db.common.QueryHandler;
-import mpv5.db.objects.Template;
 import mpv5.globals.Constants;
 import mpv5.globals.LocalSettings;
 import mpv5.globals.Messages;
@@ -57,7 +55,6 @@ import mpv5.pluginhandling.MPPLuginLoader;
 import mpv5.ui.dialogs.Popup;
 import mpv5.ui.dialogs.SplashScreen;
 import mpv5.ui.dialogs.Wizard;
-import mpv5.ui.dialogs.subcomponents.wizard_DBSettings_1;
 
 import mpv5.db.objects.User;
 import mpv5.handler.Scheduler;
@@ -642,6 +639,19 @@ public class Main extends SingleFrameApplication {
             }
         };
         new Thread(runnable).start();
+
+        Runnable runnable1 = new Runnable() {
+
+            @Override
+            public void run() {
+                try {
+                    FileDirectoryHandler.deleteDirectoryContent(new File(FileDirectoryHandler.getTempDir2()));
+                } catch (IOException ex) {
+                    Log.Debug(ex);
+                }
+            }
+        };
+        new Thread(runnable1).start();
     }
 
     private void loadPlugins() {

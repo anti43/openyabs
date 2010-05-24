@@ -33,6 +33,7 @@ import javax.print.attribute.*;
 import javax.print.attribute.standard.*;
 import mpv5.globals.Messages;
 import mpv5.logging.Log;
+import mpv5.utils.files.FileDirectoryHandler;
 
 /**
  *
@@ -154,8 +155,10 @@ public class PrintJob2 {
 
     private void printPdf(File file) throws Exception {
 
+        // Copy the file to a temp location to avoid issues with RandomAccessFile and spaces in path names
+        File tempFile = FileDirectoryHandler.copyFile2(file, FileDirectoryHandler.getTempFile(".pdf"), true);
         // set up the PDF reading
-        RandomAccessFile raf = new RandomAccessFile(file, "r");
+        RandomAccessFile raf = new RandomAccessFile(tempFile, "r");
         FileChannel channel = raf.getChannel();
         ByteBuffer buf = channel.map(FileChannel.MapMode.READ_ONLY, 0, channel.size());
         PDFFile pdfFile = new PDFFile(buf); // Create PDF Print Page

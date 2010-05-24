@@ -21,6 +21,8 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JFileChooser;
 import javax.swing.JTextField;
 import javax.swing.filechooser.FileFilter;
@@ -238,52 +240,24 @@ public class DialogForFile extends JFileChooser implements Waiter {
 
         setSelectedFile(new File(fileToSave.getName()));
         if (this.showSaveDialog(MPView.getIdentifierFrame()) == JFileChooser.APPROVE_OPTION) {
-            this.file = this.getSelectedFile();
-            if (!file.exists()) {
-                try {
-                    file.createNewFile();
-                } catch (IOException ex) {
-                    mpv5.logging.Log.Debug(ex);//Logger.getLogger(DialogForFile.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            } else {
-                if (!Popup.Y_N_dialog(Messages.FILE_EXISTS + "\n" + file)) {
-                    saveFile(file);
-                }
-            }
-            FileReader in = null;
-            FileWriter out = null;
-            int c;
             try {
-                out = new FileWriter(file);
-            } catch (IOException ex) {
-                mpv5.logging.Log.Debug(ex);//Logger.getLogger(DialogForFile.class.getName()).log(Level.SEVERE, null, ex);
-            }
-            try {
-                in = new FileReader(fileToSave);
+                this.file = this.getSelectedFile();
+                if (!file.exists()) {
+                    try {
+                        file.createNewFile();
+                    } catch (IOException ex) {
+                        mpv5.logging.Log.Debug(ex); //Logger.getLogger(DialogForFile.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                } else {
+                    if (!Popup.Y_N_dialog(Messages.FILE_EXISTS + "\n" + file)) {
+                        saveFile(file);
+                    }
+                }
+                FileDirectoryHandler.copyFile2(fileToSave, file);
             } catch (FileNotFoundException ex) {
-                mpv5.logging.Log.Debug(ex);//Logger.getLogger(DialogForFile.class.getName()).log(Level.SEVERE, null, ex);
-            }
-            try {
-                while ((c = in.read()) != -1) {
-                    out.write(c);
-                }
-                fileToSave.delete();
-                CURRENT_DIR = file;
-                MPView.addMessage(Messages.FILE_SAVED + file.getCanonicalPath());
+                Log.Debug(ex);
             } catch (IOException ex) {
-                Popup.error(ex);
-
-            } finally {
-                try {
-                    in.close();
-                } catch (IOException ex) {
-                    mpv5.logging.Log.Debug(ex);//Logger.getLogger(DialogForFile.class.getName()).log(Level.SEVERE, null, ex);
-                }
-                try {
-                    out.close();
-                } catch (IOException ex) {
-                    mpv5.logging.Log.Debug(ex);//Logger.getLogger(DialogForFile.class.getName()).log(Level.SEVERE, null, ex);
-                }
+                Log.Debug(ex);
             }
         }
     }
