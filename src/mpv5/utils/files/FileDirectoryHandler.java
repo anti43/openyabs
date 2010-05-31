@@ -54,7 +54,17 @@ public abstract class FileDirectoryHandler {
      * @param path
      * @throws java.io.IOException
      */
-    public static void deleteTree(File path) throws IOException {
+    public synchronized static void deleteTree(File path) throws IOException {
+        deleteDirectoryContent(path);
+        path.delete();
+    }
+
+     /**
+     * Deletes the content of a directory
+     * @param path
+     * @throws java.io.IOException
+     */
+    public synchronized static void deleteDirectoryContent(File path) throws IOException {
         for (File file : path.listFiles()) {
             if (file.isDirectory()) {
                 deleteTree(file);
@@ -63,7 +73,6 @@ public abstract class FileDirectoryHandler {
                 file.delete();
             }
         }
-        path.delete();
     }
 
     /**
@@ -150,6 +159,7 @@ public abstract class FileDirectoryHandler {
      * @param targetDirectory
      * @param targetFilename
      * @param deleteOnExit Shall we delete the NEW file on exit
+     * @param silent 
      * @return
      * @throws java.io.IOException
      */
