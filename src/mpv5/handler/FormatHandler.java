@@ -17,14 +17,10 @@
 package mpv5.handler;
 
 import java.text.MessageFormat;
-import java.text.ParseException;
 import java.text.ParsePosition;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Vector;
-import java.util.regex.Pattern;
 import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
 import mpv5.db.common.Formattable;
@@ -36,10 +32,8 @@ import mpv5.db.objects.Expense;
 import mpv5.db.objects.Item;
 import mpv5.db.objects.Product;
 import mpv5.db.objects.Revenue;
-import mpv5.db.objects.User;
 import mpv5.globals.Messages;
 import mpv5.logging.Log;
-import mpv5.ui.frames.MPView;
 import mpv5.usermanagement.MPSecurityManager;
 
 /**
@@ -368,13 +362,23 @@ public class FormatHandler {
      */
     private synchronized int getIntegerPartOf(MessageFormat format, String string) {
 
+        int startindex = 0;
+        String prop = mpv5.db.objects.User.getCurrentUser().getProperties().getProperty(format.toPattern() + "_startposition");
+        if(prop!=null){
+            try {
+                startindex = Integer.valueOf(prop);
+            } catch (NumberFormatException numberFormatException) {
+                Log.Debug(numberFormatException);
+            }
+        }
+
         try {
             Number n = null;
             MessageFormat f;
             try {
                 Log.Debug(this, format.toPattern());
                 f = new MessageFormat((VariablesHandler.parse(format.toPattern(), source)));
-                n = (Number) f.parse(string, new ParsePosition(0))[0];
+                n = (Number) f.parse(string, new ParsePosition(startindex))[0];
 //                Log.Debug(this, f.toPattern());
 //                Log.Debug(this, string);
             } catch (Exception e) {
