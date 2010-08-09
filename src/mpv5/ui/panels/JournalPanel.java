@@ -630,7 +630,7 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
                             c.addReference(Context.getContact());
                         }
                         try {
-                            d = QueryHandler.instanceOf().clone(c).select(Context.DETAILS_JOURNAL, dh, timeframeChooser1.getTime()).getData();
+                            d = QueryHandler.instanceOf().clone(c).select(Context.DETAILS_JOURNAL, dh, timeframeChooser1.getTime(), "dateend").getData();
                         } catch (NodataFoundException nodataFoundException) {
                             d = new Object[0][10];
                         }

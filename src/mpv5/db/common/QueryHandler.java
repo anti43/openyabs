@@ -336,16 +336,17 @@ public class QueryHandler implements Cloneable {
     }
 
     /**
-     * Requires 'dateadded' column
+     *
      * @param columns
      * @param criterias
      * @param time
+     * @param timeCol
      * @return
-     * @throws NodataFoundException 
+     * @throws NodataFoundException
      */
-    public Object[][] select(String columns, QueryCriteria criterias, vTimeframe time) throws NodataFoundException {
+    public Object[][] select(String columns, QueryCriteria criterias, vTimeframe time, String timeCol) throws NodataFoundException {
 
-        String dateCriterium = table + ".dateadded >= '" + DateConverter.getSQLDateString(time.getStart()) + "' AND " + table + ".dateadded <= '" + DateConverter.getSQLDateString(time.getEnd()) + "'";
+        String dateCriterium = table + "." + timeCol + " >= '" + DateConverter.getSQLDateString(time.getStart()) + "' AND " + table + "." + timeCol + " <= '" + DateConverter.getSQLDateString(time.getEnd()) + "'";
         String query = "SELECT " + columns + " FROM " + table + " " + context.getReferences() + " WHERE ";
 
         for (int i = 0; i < criterias.getKeys().length; i++) {
@@ -377,11 +378,12 @@ public class QueryHandler implements Cloneable {
      * @param columns
      * @param criterias
      * @param time
+     * @param timeCol
      * @return
      * @throws NodataFoundException
      */
-    public ReturnValue select(String columns, QueryCriteria2 criterias, vTimeframe time) throws NodataFoundException {
-        String dateCriterium = table + ".dateadded >= '" + DateConverter.getSQLDateString(time.getStart()) + "' AND " + table + ".dateadded <= '" + DateConverter.getSQLDateString(time.getEnd()) + "'";
+    public ReturnValue select(String columns, QueryCriteria2 criterias, vTimeframe time, String timeCol) throws NodataFoundException {
+        String dateCriterium = table + "." + timeCol + " >= '" + DateConverter.getSQLDateString(time.getStart()) + "' AND " + table + "." + timeCol + " <= '" + DateConverter.getSQLDateString(time.getEnd()) + "'";
         String query = "SELECT " + columns + " FROM " + table + " " + context.getReferences() + " WHERE ";
 
         if (criterias.getQuery().length() > 6) {
@@ -396,6 +398,30 @@ public class QueryHandler implements Cloneable {
         } else {
             throw new NodataFoundException(context);
         }
+    }
+
+    /**
+     * Requires 'dateadded' column
+     * @param columns
+     * @param criterias
+     * @param time
+     * @return
+     * @throws NodataFoundException 
+     */
+    public Object[][] select(String columns, QueryCriteria criterias, vTimeframe time) throws NodataFoundException {
+        return select(columns, criterias, time, "dateadded");
+    }
+
+    /**
+     * Requires 'dateadded' column
+     * @param columns
+     * @param criterias
+     * @param time
+     * @return
+     * @throws NodataFoundException
+     */
+    public ReturnValue select(String columns, QueryCriteria2 criterias, vTimeframe time) throws NodataFoundException {
+        return select(columns, criterias, time, "dateadded");
     }
 
     /**
@@ -2436,4 +2462,3 @@ public class QueryHandler implements Cloneable {
         }
     }
 }
-
