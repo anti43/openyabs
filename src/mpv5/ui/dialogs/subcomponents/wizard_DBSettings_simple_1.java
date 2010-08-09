@@ -44,6 +44,7 @@ public class wizard_DBSettings_simple_1 extends javax.swing.JPanel implements Wi
         labeledTextChooser2.setMode(JFileChooser.DIRECTORIES_ONLY);
         jComboBox1.setModel(new DefaultComboBoxModel(ConnectionTypeHandler.DRIVERS));
         this.forConnId = forConnId;
+        checkOS();
         load();
     }
 
@@ -528,5 +529,20 @@ public class wizard_DBSettings_simple_1 extends javax.swing.JPanel implements Wi
         labeledTextChooser1.set_Text(Main.MPPATH);
         labeledTextField3.set_Text(dbn);
         labeledTextField1.requestFocusInWindow();
+    }
+
+    private void checkOS() {
+
+        if (Main.osIsMacOsX) {
+            labeledTextChooser2.set_Text("/Applications/OpenOffice.org.app/Contents/");
+            LocalSettings.setProperty(LocalSettings.OFFICE_BINARY_FOLDER, "MacOS");
+            jCheckBox2.setSelected(true);
+        } else if (Main.osIsWindows) {
+            labeledTextChooser2.set_Text("");
+            LocalSettings.setProperty(LocalSettings.OFFICE_BINARY_FOLDER, "program");
+        } else if (Main.osIsLinux) {
+            labeledTextChooser2.set_Text("/opt/openoffice.org3");
+            LocalSettings.setProperty(LocalSettings.OFFICE_BINARY_FOLDER, "program");
+        }
     }
 }

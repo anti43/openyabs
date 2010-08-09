@@ -129,6 +129,10 @@ public class User extends DatabaseObject {
     public static User DEFAULT = new User("Default User", "nobody", -1, 4343);
     public static HashMap<String, String> userCache = new HashMap<String, String>();
     private PropertyStore properties = new PropertyStore();
+    /**
+     * Properties added to this store will override the useres properties stored in the database upon login
+     */
+    public static PropertyStore PROPERTIES_OVERRIDE = new PropertyStore();
     private MailConfiguration mailConfiguration;
 
     /**
@@ -542,13 +546,17 @@ public class User extends DatabaseObject {
         QueryHandler.instanceOf().clone(Context.getProperties()).delete(c);
     }
 
-    private void setProperties() {
+    /**
+     * Apply the user settings to this user (usually called during the log in process)
+     */
+    public void setProperties() {
 
         QueryCriteria criteria = new QueryCriteria();
         criteria.addAndCondition("usersids", ids);
         properties = new PropertyStore();
         try {
             properties.addAll(QueryHandler.instanceOf().clone(Context.getProperties()).select("cname, value", criteria));
+            properties.addAll(PROPERTIES_OVERRIDE);
             defineMailConfig();
         } catch (NodataFoundException ex) {
             Log.Debug(this, ex.getMessage());

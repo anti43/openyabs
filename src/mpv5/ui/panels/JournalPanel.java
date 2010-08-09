@@ -517,8 +517,8 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
                 d[i][3] = data[i][3];
                 d[i][4] = data[i][4];
                 d[i][2] = data[i][2];
-                d[i][1] = DateConverter.getDefDateString(DateConverter.getDate(data[i][1].toString()));
-                d[i][0] = data[i][0];
+                d[i][1] = DateConverter.getDate(data[i][1].toString());
+                d[i][0] = Integer.valueOf(data[i][0].toString());
 
                 int type = Integer.valueOf(data[i][5].toString());
                 if (type == Revenue.TYPE_REVENUE) {
@@ -751,7 +751,7 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
                         d = ArrayUtilities.merge(ArrayUtilities.merge(d, d1), d2);
                     }
                     d = parse(d);
-                    jTable1.setModel(new MPTableModel(d, Headers.JOURNAL.getValue(), new Class[]{Integer.class, String.class, String.class, String.class, String.class, String.class, String.class, String.class, String.class, Object.class}));
+                    jTable1.setModel(new MPTableModel(d, Headers.JOURNAL.getValue(), new Class[]{Integer.class, Date.class, String.class, String.class, String.class, String.class, String.class, String.class, String.class, Object.class}));
                     TableFormat.stripColumn(jTable1, 0);
                     TableFormat.stripColumn(jTable1, 9);
                 } catch (Exception e) {

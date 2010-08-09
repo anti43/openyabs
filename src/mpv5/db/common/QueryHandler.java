@@ -2255,7 +2255,7 @@ public class QueryHandler implements Cloneable {
 
             @Override
             public int compare(Object o1, Object o2) {
-                return ((Integer) stats.get(o1)).compareTo(((Integer) stats.get(o2)));
+                return (stats.get(o1)).compareTo(((Integer) stats.get(o2)));
             }
         });
         Iterator it = keys.iterator();

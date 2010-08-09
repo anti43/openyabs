@@ -46,7 +46,7 @@ public class PropertyStore {
     }
 
     /**
-     * Adds all
+     * Adds/changes all
      * @param data {key, value}
      */
     public synchronized void addAll(Object[][] data) {
@@ -310,5 +310,18 @@ public class PropertyStore {
      */
     public synchronized boolean isChanged() {
         return changed;
+    }
+
+    /**
+     * Adds/changes all
+     * @param store
+     */
+    public void addAll(PropertyStore store) {
+        ArrayList<String[]> po = store.getList();
+        for (int i = 0; i < po.size(); i++) {
+            String[] strings = po.get(i);
+            changeProperty(String.valueOf(strings[0]), String.valueOf(strings[1]));
+        }
+        setChanged(true);
     }
 }

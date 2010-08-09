@@ -119,7 +119,9 @@ public class ConnectionTypeHandler {
     /**
      * Get the SQL command for creating the tables - for the choosen driver
      * @return The SQL command for creating the tables
+     * @deprecated Will always return null. Use {@link DatabaseInstallation#getStructure()} instead.
      */
+    @Deprecated
     public String[] getTableCreating_SQLCommand() {
         File filen = null;
         switch (PREDEFINED_DRVER) {

@@ -16,31 +16,12 @@
  */
 package mpv5.sandbox;
 
-import java.awt.BorderLayout;
-import java.awt.Component;
+import ag.ion.bion.officelayer.filter.IFilter;
+import ag.ion.bion.officelayer.filter.PDFFilter;
 import java.io.IOException;
-import java.math.BigDecimal;
-import java.math.BigInteger;
 import java.security.NoSuchAlgorithmException;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import javax.swing.DefaultCellEditor;
-import javax.swing.DefaultComboBoxModel;
-import javax.swing.JComboBox;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JTable;
-import javax.swing.UIManager;
-import javax.swing.UnsupportedLookAndFeelException;
-import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableCellRenderer;
-import javax.swing.table.TableColumn;
-import javax.swing.table.TableModel;
-import mpv5.globals.Headers;
-import mpv5.ui.frames.MPView;
-import mpv5.utils.models.MPComboBoxModelItem;
-import mpv5.utils.models.MPComboboxModel;
+import java.util.List;
+import java.util.Vector;
 
 
 /**
@@ -50,11 +31,52 @@ public class Test {
 
   
 
-    public static void main(String... aArgs) throws NoSuchAlgorithmException, IOException {
+    public static void main(String... aArgs)  {
+        IFilter[] p = PDFFilter.FILTERS;
+        for (int i = 0; i < p.length; i++) {
+            IFilter iFilter = p[i];
+            System.out.println(iFilter);
+        }
+    }
 
-        DateFormat schnellformat = new SimpleDateFormat("yyyyMMddHHmmss");
-        Long arsch = Long.valueOf(schnellformat.format(new Date()));
-        System.out.print(arsch);
+     /**
+     * Separator vor list values val1, val2, val3..
+     */
+    public static final String LIST_SEPARATOR_CHAR = "<###>";
+
+    /**
+     *
+     * @param values
+     * @return
+     */
+    public static synchronized List<String> stringToList(String values) {
+        String[] vals = values.split(LIST_SEPARATOR_CHAR);
+        List<String> list = new Vector<String>();
+        for (int i = 0; i < vals.length; i++) {
+            String string = vals[i];
+            list.add(string);
+        }
+
+        return list;
+    }
+
+    /**
+     *
+     * @param <T>
+     * @param list
+     * @return
+     */
+    public static synchronized <T extends Object> String listToString(List<T> list) {
+        String str = new String("");
+
+        if (list != null && list.size() > 0) {
+            for (T val : list) {
+                str += val.toString() + LIST_SEPARATOR_CHAR;
+            }
+            return str.substring(0, str.length() - LIST_SEPARATOR_CHAR.length());
+        } else {
+            return str;
+        }
     }
 
 }

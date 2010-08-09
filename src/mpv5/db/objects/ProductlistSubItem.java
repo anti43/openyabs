@@ -590,6 +590,14 @@ public class ProductlistSubItem extends DatabaseObject {
         return super.save();
     }
 
+    @Override
+    public boolean save(boolean b) {
+        if (cname.length() == 0) {
+            cname = "   ";
+        }
+        return super.save(b);
+    }
+
     private void defTotaltaxvalue(double value) {
         totaltaxvalue = value;
     }

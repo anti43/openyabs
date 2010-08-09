@@ -641,7 +641,7 @@ public class Item extends DatabaseObject implements Formattable {
     @Override
     public String toString(){
         try {
-            return cname + " (" + ((Contact)getObject(Context.getContact(), contactsids)).__getCName() + ")";
+            return cname + "-" + ((Contact)getObject(Context.getContact(), contactsids)).__getCName() + "";
         } catch (NodataFoundException ex) {
             return super.toString();
         }

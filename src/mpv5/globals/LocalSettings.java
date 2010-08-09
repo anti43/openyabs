@@ -57,6 +57,7 @@ public class LocalSettings {
     public static final String CLIENT = "client";
     public static final String CALCULATOR = "calculator";
     public static final String BASE_DIR = "basedir";
+    public static final String SUPPRESS_UPDATE_CHECK = "noupdate";
 
 
     private static PropertyStore predefinedSettings = new PropertyStore(new String[][]{
@@ -71,16 +72,18 @@ public class LocalSettings {
                 {OFFICE_PORT, "8100"},
                 {OFFICE_HOST, "127.0.0.1"},
                 {OFFICE_REMOTE, "false"},
-//                {OFFICE_BINARY_FOLDER, "program"},
-//                {OFFICE_HOME, ""},
                 {OFFICE_USE, "false"},
                 {CACHE_DIR, "Cache"},
                 {DBESCAPE, "true"},
                 {CALCULATOR, ""},
-                //Uncomment for MacOS build
+                {SUPPRESS_UPDATE_CHECK, "false"},
+// MacOS
 //                {OFFICE_HOME, "/Applications/OpenOffice.org.app/Contents/"},
 //                {OFFICE_BINARY_FOLDER, "MacOS"},
 //                {DBTYPE, "multi"}
+// Windows
+//                {OFFICE_BINARY_FOLDER, "program"},
+//                {OFFICE_HOME, ""}, 
             });
     private static Vector<PropertyStore> cookies;
 

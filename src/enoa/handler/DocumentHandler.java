@@ -29,20 +29,29 @@ import ag.ion.bion.officelayer.text.TextException;
 import ag.ion.noa.NOAException;
 import ag.ion.noa.filter.OpenDocumentFilter;
 import com.sun.star.awt.XTextComponent;
+import com.sun.star.beans.PropertyValue;
 import com.sun.star.beans.XPropertySet;
 import com.sun.star.form.XFormComponent;
+import com.sun.star.frame.XStorable;
+import com.sun.star.io.IOException;
 import com.sun.star.uno.UnoRuntime;
 import enoa.connection.NoaConnection;
 import enoa.connection.URLAdapter;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.net.MalformedURLException;
+import java.net.UnknownHostException;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.table.TableModel;
 import mpv5.db.objects.Template;
+import mpv5.db.objects.User;
 import mpv5.logging.Log;
 
 /**
@@ -119,10 +128,10 @@ public class DocumentHandler {
      */
     public synchronized void saveAs(File file) throws DocumentException {
 
-        if(file.exists()) {
+        if (file.exists()) {
             file.delete();
         }
-        
+
         document.reformat();
         document.update();
 
@@ -149,7 +158,7 @@ public class DocumentHandler {
             try {
                 Log.Debug(this, "Exporting to: " + file);
                 document.getPersistenceService().export(new FileOutputStream(file), filter);
-               
+
             } catch (Exception ex) {
                 Log.Debug(ex);
             }
@@ -273,7 +282,7 @@ public class DocumentHandler {
 
     /**
      * Export a file to another format/file. Supported target formats:
-     * <li>pdf
+     * <li>pdf (pdf/a)
      * <li>odt
      * <li>txt
      * @param source The file to export
@@ -289,7 +298,16 @@ public class DocumentHandler {
         IFilter filter = null;
         String extension = target.getName().substring(target.getName().lastIndexOf("."), target.getName().length());
         if (extension.equalsIgnoreCase(".pdf")) {
-            filter = PDFFilter.FILTER;
+            if (User.getCurrentUser().getProperties().hasProperty("pdftype") &&
+                    User.getCurrentUser().getProperties().getProperty("pdftype").equalsIgnoreCase("pdf/a")) {
+                try {
+                    return exportPDFA(source, target);
+                } catch (Exception ex) {
+                    Log.Debug(ex);
+                }
+            } else {
+                filter = PDFFilter.FILTER;
+            }
         } else if (extension.equalsIgnoreCase(".doc")) {
             filter = MSOffice97Filter.FILTER;
         } else if (extension.equalsIgnoreCase(".txt")) {
@@ -301,10 +319,43 @@ public class DocumentHandler {
         }
 
         if (filter != null) {
-            NoaConnection.getConnection().getDocumentService().loadDocument(source.getAbsolutePath()).getPersistenceService().export(target.getPath(), filter);
+            connection.getDocumentService().loadDocument(source.getAbsolutePath()).getPersistenceService().export(target.getPath(), filter);
         } else {
             throw new UnsupportedOperationException("File extension not supported: " + extension);
         }
+
+        return target;
+    }
+
+    private File exportPDFA(File source, File target) throws DocumentException, MalformedURLException, FileNotFoundException, IOException, UnknownHostException {
+
+        IDocument doc = connection.getDocumentService().loadDocument(new FileInputStream(source), descriptor);
+
+        PDFFilter pdfFilter = (PDFFilter) PDFFilter.FILTER;
+        /*PDFFilterProperties pdfFilterProperties = pdfFilter.getPDFFilterProperties();
+        pdfFilterProperties.setPdfVersion(1);
+        doc.getPersistenceService().export(url, pdfFilter);*/
+
+        PropertyValue[] filterData = new PropertyValue[1];
+        filterData[0] = new PropertyValue();
+        filterData[0].Name = "SelectPdfVersion";
+        filterData[0].Value = new Integer(1); //0: normal 1.4, 1: PDF/A
+
+        String filterDefinition = pdfFilter.getFilterDefinition(doc);
+        PropertyValue[] properties = new PropertyValue[2];
+        properties[0] = new PropertyValue();
+        properties[0].Name = "FilterName"; //$NON-NLS-1$
+        properties[0].Value = filterDefinition;
+        properties[1] = new PropertyValue();
+        properties[1].Name = "FilterData";
+        properties[1].Value = filterData;
+
+
+        String url = URLAdapter.adaptURL(target.getPath());
+
+        XStorable xStorable = (XStorable) UnoRuntime.queryInterface(XStorable.class,
+                doc.getXComponent());
+        xStorable.storeToURL(url, properties);
 
         return target;
     }

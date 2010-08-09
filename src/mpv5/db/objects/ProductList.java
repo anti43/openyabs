@@ -94,4 +94,12 @@ public class ProductList extends DatabaseObject {
         return super.delete();
     }
 
+    @Override
+    public boolean save(boolean b) {
+        if (cname.length() == 0) {
+            cname = "<unnamed>";
+        }
+        return super.save(b);
+    }
+
 }

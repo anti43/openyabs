@@ -37,8 +37,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Vector;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.Action;
 import javax.swing.InputMap;
 import javax.swing.JButton;
@@ -64,7 +62,6 @@ import mpv5.db.objects.ProductList;
 import mpv5.db.objects.ProductlistSubItem;
 import mpv5.db.objects.SubItem;
 import mpv5.db.objects.Tax;
-import mpv5.db.objects.Template;
 import mpv5.logging.Log;
 import mpv5.ui.dialogs.BigPopup;
 import mpv5.ui.dialogs.Popup;
@@ -85,7 +82,6 @@ import mpv5.ui.misc.TableViewPersistenceHandler;
 import mpv5.utils.arrays.ArrayUtilities;
 import mpv5.utils.date.DateConverter;
 import mpv5.utils.export.Export;
-import mpv5.utils.export.Exportable;
 import mpv5.utils.files.FileDirectoryHandler;
 import mpv5.utils.jobs.Job;
 import mpv5.utils.models.MPComboBoxModelItem;
@@ -1546,7 +1542,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
         TableFormat.resizeCols(itemtable, new Integer[]{0, 23, 53, 63, 100, 63, 63, 63, 0, 0, 63, 20, 0, 0, 100},
                 new Boolean[]{true, true, true, true, false, true, true, true, true, true, true, true, true, true, false});
         MPTableModel model = (MPTableModel) itemtable.getModel();
-        model.setCanEdits(new boolean[]{false, false, true, true, true, true, true, false, false, false, true, true, false, false, true});
+        model.setCanEdits(new boolean[]{false, false, true, true, true, true, true, true, false, false, true, true, false, false, true});
         TableFormat.changeBackground(itemtable, 1, Color.LIGHT_GRAY);
         if (mpv5.db.objects.User.getCurrentUser().getProperties().getProperty(MPView.getTabPane(), "hidecolumnquantity")) {
             TableFormat.stripColumn(itemtable, 2);
@@ -1773,7 +1769,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
             }
         }
     }
-    List<Item> usedOrders = new Vector<Item>();
+    private List<Item> usedOrders = new Vector<Item>();
 
     private void prepareTable() {
         TableCellRendererForDezimal t = new TableCellRendererForDezimal(itemtable);
