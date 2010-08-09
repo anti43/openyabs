@@ -59,7 +59,7 @@ public abstract class FileDirectoryHandler {
         path.delete();
     }
 
-     /**
+    /**
      * Deletes the content of a directory
      * @param path
      * @throws java.io.IOException
@@ -503,7 +503,7 @@ public abstract class FileDirectoryHandler {
         return outp.toURI();
     }
 
-        /**
+    /**
      * Copies a file via streaming
      * @param sourceFile
      * @param outp
@@ -523,7 +523,3 @@ public abstract class FileDirectoryHandler {
     }
 
 }
-    
-
-
-

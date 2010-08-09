@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Vector;
 import javax.swing.JButton;
+import javax.swing.JComponent;
 import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
 import mpv5.db.common.NodataFoundException;
@@ -415,5 +416,25 @@ public class TemplateHandler {
             }
         }
         return "<undefined> [" + type + "]";
+    }
+
+    /**
+     * Load a template (if not already done) and enable the given button after loading.
+     * @param jComponent
+     * @param dataOwner
+     * @param TYPE
+     */
+    public static void loadTemplateFor(final JComponent[] jComponent, final DatabaseObject dataOwner, final int TYPE) {
+        Runnable runnable = new Runnable() {
+
+            public void run() {
+                loadTemplate(dataOwner, dataOwner.__getGroupsids(), TYPE);
+                for (int i = 0; i < jComponent.length; i++) {
+                    JComponent jComponent1 = jComponent[i];
+                    jComponent1.setEnabled(isLoaded(dataOwner, TYPE));
+                }
+            }
+        };
+        new Thread(runnable).start();
     }
 }

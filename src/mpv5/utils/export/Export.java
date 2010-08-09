@@ -16,10 +16,25 @@
  */
 package mpv5.utils.export;
 
-import enoa.handler.TemplateHandler;
+import com.lowagie.text.Document;
+import com.lowagie.text.pdf.BaseFont;
+import com.lowagie.text.pdf.PdfContentByte;
+import com.lowagie.text.pdf.PdfImportedPage;
+import com.lowagie.text.pdf.PdfReader;
+import com.lowagie.text.pdf.PdfWriter;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Vector;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.print.PrintException;
 import javax.swing.SwingUtilities;
 import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
@@ -27,18 +42,14 @@ import mpv5.db.common.Formattable;
 import mpv5.db.common.NodataFoundException;
 import mpv5.db.common.QueryCriteria;
 import mpv5.db.objects.Contact;
-import mpv5.db.objects.Item;
 import mpv5.db.objects.MailMessage;
-import mpv5.db.objects.Product;
 import mpv5.db.objects.Template;
-import mpv5.db.objects.User;
 import mpv5.globals.Messages;
 import mpv5.handler.FormFieldsHandler;
 import mpv5.handler.VariablesHandler;
 import mpv5.logging.Log;
 import mpv5.mail.SimpleMail;
 import mpv5.ui.dialogs.Popup;
-import mpv5.ui.frames.MPView;
 import mpv5.utils.files.FileDirectoryHandler;
 import mpv5.utils.jobs.Job;
 import mpv5.utils.jobs.Waitable;
@@ -49,7 +60,7 @@ import mpv5.utils.print.PrintJob;
  * The Export class handles the export of data using templatefiles to PDF
  *  
  */
-public class Export extends HashMap<String, Object> implements Waitable {
+public final class Export extends HashMap<String, Object> implements Waitable {
 
     private static final long serialVersionUID = 1L;
 
@@ -69,7 +80,7 @@ public class Export extends HashMap<String, Object> implements Waitable {
         }
 
         HashMap<String, Object> hm1 = new FormFieldsHandler(dataOwner).getFormattedFormFields(null);
-        File f2 = FileDirectoryHandler.getTempFile(((Formattable)dataOwner).getFormatHandler().toUserString(), "pdf");
+        File f2 = FileDirectoryHandler.getTempFile(((Formattable) dataOwner).getFormatHandler().toUserString(), "pdf");
         Export ex = new Export(preloadedTemplate);
         ex.putAll(hm1);
 
@@ -116,7 +127,103 @@ public class Export extends HashMap<String, Object> implements Waitable {
         new Job(ex, (Waiter) new PrintJob()).execute();
     }
 
-       /**
+    /**
+     * Print a template
+     * @param preloadedTemplate
+     * @param dataOwner
+     */
+    public static void print(Template[] preloadedTemplate, DatabaseObject dataOwner) {
+        List<File> files = new Vector<File>();
+        for (int i = 0; i < preloadedTemplate.length; i++) {
+            Template template = preloadedTemplate[i];
+            HashMap<String, Object> hm1 = new FormFieldsHandler(dataOwner).getFormattedFormFields(null);
+            File f2 = FileDirectoryHandler.getTempFile("pdf");
+            Export ex = new Export(template);
+            ex.putAll(hm1);
+            try {
+                ex.processData(f2);
+                files.add(f2);
+            } catch (NodataFoundException ex1) {
+                Log.Debug(ex1);
+            } catch (FileNotFoundException ex1) {
+                Log.Debug(ex1);
+            }
+        }
+
+        try {
+            new PrintJob().print(mergeFiles(files));
+        } catch (Exception fileNotFoundException) {
+            Popup.error(fileNotFoundException);
+            Log.Debug(fileNotFoundException);
+        }
+    }
+
+    private static File mergeFiles(List<File> p) {
+
+        Document document = new Document();
+        try {
+            List<InputStream> pdfs = new Vector<InputStream>();
+            for (int i = 0; i < p.size(); i++) {
+                File inputStream = p.get(i);
+                pdfs.add(new FileInputStream(inputStream));
+            }
+            List<PdfReader> readers = new ArrayList<PdfReader>();
+            int totalPages = 0;
+            Iterator<InputStream> iteratorPDFs = pdfs.iterator();
+
+
+            while (iteratorPDFs.hasNext()) {
+                InputStream pdf = iteratorPDFs.next();
+                PdfReader pdfReader = new PdfReader(pdf);
+                readers.add(pdfReader);
+                totalPages += pdfReader.getNumberOfPages();
+            }
+
+            File f= FileDirectoryHandler.getTempFile("pdf");
+            FileOutputStream outputstream = new FileOutputStream(f);
+            PdfWriter writer = PdfWriter.getInstance(document, outputstream);
+
+            document.open();
+            BaseFont bf = BaseFont.createFont(BaseFont.HELVETICA, BaseFont.CP1252, BaseFont.NOT_EMBEDDED);
+            PdfContentByte cb = writer.getDirectContent();
+
+            PdfImportedPage page;
+            int currentPageNumber = 0;
+            int pageOfCurrentReaderPDF = 0;
+            Iterator<PdfReader> iteratorPDFReader = readers.iterator();
+
+            // Loop through the PDF files and add to the output.
+            while (iteratorPDFReader.hasNext()) {
+                PdfReader pdfReader = iteratorPDFReader.next();
+
+                // Create a new page in the target for each source page.
+                while (pageOfCurrentReaderPDF < pdfReader.getNumberOfPages()) {
+                    document.newPage();
+                    pageOfCurrentReaderPDF++;
+                    currentPageNumber++;
+                    page = writer.getImportedPage(pdfReader, pageOfCurrentReaderPDF);
+                    cb.addTemplate(page, 0, 0);
+
+                }
+                pageOfCurrentReaderPDF = 0;
+            }
+            outputstream.flush();
+            document.close();
+            outputstream.close();
+
+            return f;
+        } catch (Exception e) {
+            Log.Debug(e);
+        } finally {
+            if (document.isOpen()) {
+                document.close();
+            }
+        }
+
+        return null;
+    }
+
+    /**
      * Create a {@link Waitable} which is able to create a file PDF
      * @param preloadedTemplate
      * @param dataOwner
@@ -135,6 +242,7 @@ public class Export extends HashMap<String, Object> implements Waitable {
     public static Waitable sourceFile(Template preloadedTemplate, DatabaseObject dataOwner) {
         return sourceFile(null, preloadedTemplate, dataOwner);
     }
+
     /**
      * Create a {@link Waitable} which is able to create a file PDF
      * @param aname
@@ -188,7 +296,7 @@ public class Export extends HashMap<String, Object> implements Waitable {
      * @param adddata
      * @return
      */
-    public static Waitable createFile(String aname, Template preloadedTemplate, DatabaseObject dataOwner, HashMap<String,Object> adddata) {
+    public static Waitable createFile(String aname, Template preloadedTemplate, DatabaseObject dataOwner, HashMap<String, Object> adddata) {
         HashMap<String, Object> hm1 = new FormFieldsHandler(dataOwner).getFormattedFormFields(null);
         File f2;
         if (aname == null) {
@@ -212,7 +320,7 @@ public class Export extends HashMap<String, Object> implements Waitable {
      * @param adddata
      * @return
      */
-    public static Waitable sourceFile(String aname, Template preloadedTemplate, DatabaseObject dataOwner, HashMap<String,Object> adddata) {
+    public static Waitable sourceFile(String aname, Template preloadedTemplate, DatabaseObject dataOwner, HashMap<String, Object> adddata) {
         HashMap<String, Object> hm1 = new FormFieldsHandler(dataOwner).getFormattedFormFields(null);
         File f2;
         if (aname == null) {
@@ -228,6 +336,7 @@ public class Export extends HashMap<String, Object> implements Waitable {
         ex.setTargetFile(f2);
         return ex;
     }
+
     /**
      * (Pre)load a template. Do not run this from the EDT, as the fetching of the templatefile from the database might take a while.
      * @param dataOwner
@@ -259,6 +368,7 @@ public class Export extends HashMap<String, Object> implements Waitable {
     public Export(Template t) {
         super();
         this.t = t;
+        setTemplate(t.getExFile());
     }
 
     /**
@@ -273,7 +383,7 @@ public class Export extends HashMap<String, Object> implements Waitable {
     }
 
     /**
-     *  Set the file to be filled
+     *  Set the file to be filled.. not required to be called explicitely
      * @param <T>
      * @param templateFile 
      */
