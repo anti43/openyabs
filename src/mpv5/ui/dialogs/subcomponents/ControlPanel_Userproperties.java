@@ -526,7 +526,6 @@ public class ControlPanel_Userproperties extends javax.swing.JPanel implements C
 
     private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
         ControlPanel_Advanced_User c = new ControlPanel_Advanced_User();
-        c.setValues(User.getCurrentUser().getProperties());
         MPControlPanel.instanceOf().openDetails(c);
     }//GEN-LAST:event_jButton5ActionPerformed
 

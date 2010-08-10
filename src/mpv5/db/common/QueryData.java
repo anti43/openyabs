@@ -18,6 +18,7 @@ package mpv5.db.common;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import mpv5.logging.Log;
 import mpv5.data.*;
 
@@ -175,7 +176,7 @@ public class QueryData {
      * @param properties
      */
     public void parse(PropertyStore properties) {
-        ArrayList<String[]> data = properties.getList();
+        List<String[]> data = properties.getList();
         for (int i = 0; i < data.size(); i++) {
             String[] s = data.get(i);
             add(s[0], s[1]);

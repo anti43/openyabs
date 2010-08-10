@@ -23,6 +23,7 @@ package mpv5.ui.dialogs.subcomponents;
 
 import java.awt.Component;
 import java.util.ArrayList;
+import java.util.List;
 import javax.swing.JPanel;
 import mpv5.data.PropertyStore;
 import mpv5.db.objects.User;
@@ -48,23 +49,23 @@ public class ControlPanel_Advanced_User extends javax.swing.JPanel implements Co
     public ControlPanel_Advanced_User() {
         if (MPSecurityManager.checkAdminAccess()) {
             initComponents();
-            setData(LocalSettings.getPropertyStore());
+            setData(User.getCurrentUser().getProperties());
         }
     }
 
     public void setData(PropertyStore vals) {
         oldvals = vals;
-        ArrayList<String[]> data = vals.getList();
-        Object[][] list = new Object[data.size()][2];
+        List<String[]> data = vals.getList();
+        Object[][] list = new Object[data.size() + 10][2];
         for (int i = 0; i < data.size(); i++) {
             String[] strings = data.get(i);
             list[i][0] = strings[0].toUpperCase();
             list[i][1] = strings[1];
         }
         MPTableModel mod = new MPTableModel(list);
-        mod.setCanEdits(new boolean[]{false, true, false});
+        mod.setCanEdits(new boolean[]{true, true});
         jTable1.setModel(mod);
-        TableFormat.format(jTable1, 0, 150);
+        TableFormat.format(jTable1, 0, 250);
 
     }
 
@@ -145,14 +146,14 @@ public class ControlPanel_Advanced_User extends javax.swing.JPanel implements Co
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         if (Popup.Y_N_dialog(Messages.ADVANCED_SETTINGS_SAVE, Messages.WARNING)) {
             setSettings();
-            User.getCurrentUser().setProperties();
             User.getCurrentUser().saveProperties();
+            setData(User.getCurrentUser().getProperties());
         }
 }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         setSettings();
-        User.getCurrentUser().setProperties();
+        setData(User.getCurrentUser().getProperties());
 }//GEN-LAST:event_jButton2ActionPerformed
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
@@ -200,7 +201,9 @@ public class ControlPanel_Advanced_User extends javax.swing.JPanel implements Co
         for (int j = 0; j < i; j++) {
             String value = String.valueOf(data.getValueAt(j, 1));
             String key = String.valueOf(data.getValueAt(j, 0)).toLowerCase();
-            User.getCurrentUser().getProperties().changeProperty(key, value);
+            if (!key.equals("null") && key.length() > 0) {
+                User.getCurrentUser().getProperties().changeProperty(key, value);
+            }
         }
     }
 }

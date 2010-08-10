@@ -5,6 +5,7 @@
  */
 package mpv5.ui.dialogs;
 
+import java.awt.Component;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.security.NoSuchAlgorithmException;
@@ -16,6 +17,7 @@ import mpv5.logging.Log;
 import mpv5.ui.frames.MPView;
 import mpv5.ui.misc.Position;
 import mpv5.db.objects.User;
+import mpv5.usermanagement.Lock;
 import mpv5.utils.text.MD5HashGenerator;
 
 /**
@@ -25,9 +27,9 @@ import mpv5.utils.text.MD5HashGenerator;
 public class LoginScreen extends javax.swing.JFrame {
 
     /** Creates new form login
-
+     * @param toUnlock
      */
-    public LoginScreen() {
+    public LoginScreen(Component toUnlock) {
 
         initComponents();
 
@@ -204,6 +206,7 @@ private void jPasswordField1ActionPerformed(java.awt.event.ActionEvent evt) {//G
         User user = mpv5.usermanagement.MPSecurityManager.checkAuth(jTextField1.getText(), new String(jPasswordField1.getPassword()));
         if (user != null) {
             user.login();
+            Lock.unlock(MPView.getIdentifierFrame());
             if (jCheckBox1.isSelected()) {
                 LocalSettings.setProperty("lastuser", mpv5.db.objects.User.getCurrentUser().__getIDS().toString());
                 LocalSettings.save();

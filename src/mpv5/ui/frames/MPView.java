@@ -1927,7 +1927,7 @@ public class MPView extends FrameView {
     }//GEN-LAST:event_jMenuItem4ActionPerformed
 
     private void jMenuItem5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem5ActionPerformed
-        Favourite.flush(getUser());
+        Favourite.flush(User.getCurrentUser());
         refreshFavouritesMenu();
 
     }//GEN-LAST:event_jMenuItem5ActionPerformed

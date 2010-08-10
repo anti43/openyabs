@@ -456,4 +456,12 @@ public class MPCombobox extends javax.swing.JPanel {
             }
         });
     }
+
+    /**
+     *
+     * @return The id obj of the selected entry or NULL if nothing is selected
+     */
+    public Object getSelectedItemId() {
+        return getSelectedItem().getIdObject();
+    }
 }

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.1" encoding="UTF-8" ?>
 
 <Form version="1.4" maxVersion="1.7" type="org.netbeans.modules.form.forminfo.JPanelFormInfo">
   <Properties>
@@ -27,10 +27,10 @@
   <Layout>
     <DimensionLayout dim="0">
       <Group type="103" groupAlignment="0" attributes="0">
-          <Component id="jLabel1" alignment="1" pref="501" max="32767" attributes="0"/>
-          <Component id="jScrollPane2" alignment="0" pref="501" max="32767" attributes="0"/>
+          <Component id="jLabel1" alignment="1" pref="568" max="32767" attributes="0"/>
+          <Component id="jScrollPane2" alignment="0" pref="568" max="32767" attributes="0"/>
           <Group type="102" alignment="0" attributes="0">
-              <Component id="jToolBar1" pref="481" max="32767" attributes="0"/>
+              <Component id="jToolBar1" pref="558" max="32767" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
           </Group>
           <Component id="jPanel1" alignment="0" max="32767" attributes="0"/>
@@ -209,14 +209,14 @@
               <Group type="102" alignment="0" attributes="0">
                   <EmptySpace min="-2" pref="2" max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="0" attributes="0">
-                      <Component id="jScrollPane1" alignment="0" pref="487" max="32767" attributes="0"/>
+                      <Component id="jScrollPane1" alignment="0" pref="554" max="32767" attributes="0"/>
                       <Group type="102" alignment="0" attributes="0">
                           <Group type="103" groupAlignment="1" max="-2" attributes="0">
                               <Component id="labeledCombobox3" alignment="0" max="32767" attributes="1"/>
                               <Component id="labeledCombobox1" alignment="0" pref="270" max="32767" attributes="1"/>
                           </Group>
                           <EmptySpace max="-2" attributes="0"/>
-                          <Component id="labeledCombobox2" pref="217" max="32767" attributes="0"/>
+                          <Component id="labeledCombobox2" pref="278" max="32767" attributes="0"/>
                       </Group>
                   </Group>
               </Group>
@@ -234,7 +234,7 @@
                       <Component id="labeledCombobox2" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace max="-2" attributes="0"/>
-                  <Component id="jScrollPane1" pref="114" max="32767" attributes="0"/>
+                  <Component id="jScrollPane1" pref="138" max="32767" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
                   <Component id="labeledTextField1" min="-2" max="-2" attributes="0"/>
               </Group>

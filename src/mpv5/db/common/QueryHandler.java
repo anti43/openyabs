@@ -400,6 +400,28 @@ public class QueryHandler implements Cloneable {
         }
     }
 
+     /**
+     *
+     * @param columns
+     * @param criterias
+     * @return
+     * @throws NodataFoundException
+     */
+    public ReturnValue select(String columns, QueryCriteria2 criterias) throws NodataFoundException {
+       String query = "SELECT " + columns + " FROM " + table + " " + context.getReferences() + " WHERE ";
+
+        if (criterias.getQuery().length() > 6) {
+            query += criterias.getQuery() + " AND ";
+        }
+        query += context.getConditions().substring(6, context.getConditions().length()) + " AND ";
+        query += criterias.getOrder();
+        ReturnValue p = freeSelectQuery(query, mpv5.usermanagement.MPSecurityManager.VIEW, null);
+        if (p.hasData()) {
+            return p;
+        } else {
+            throw new NodataFoundException(context);
+        }
+    }
     /**
      * Requires 'dateadded' column
      * @param columns

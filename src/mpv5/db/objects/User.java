@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map.Entry;
 import javax.swing.JComponent;
@@ -130,7 +131,7 @@ public class User extends DatabaseObject {
     public static HashMap<String, String> userCache = new HashMap<String, String>();
     private PropertyStore properties = new PropertyStore();
     /**
-     * Properties added to this store will override the useres properties stored in the database upon login
+     * Properties added to this store will override the users properties stored in the database upon login
      */
     public static PropertyStore PROPERTIES_OVERRIDE = new PropertyStore();
     private MailConfiguration mailConfiguration;
@@ -266,7 +267,9 @@ public class User extends DatabaseObject {
     }
 
     /**
-     * Logs in this user into MP
+     * Logs in this user into yabs (sets user defined properties etc); does not check the authentication. Use
+     * {@link mpv5.usermanagement.MPSecurityManager#checkAuth(java.lang.String, java.lang.String) }
+     * before logging in the User.
      */
     public void login() {
         DatabaseObjectLock.releaseAllObjectsFor(this);
@@ -281,7 +284,7 @@ public class User extends DatabaseObject {
             } catch (Exception e) {
                 Log.Debug(e);
             }
-            Lock.unlock(MPView.getIdentifierFrame());
+
             Runnable runnable = new Runnable() {
 
                 @Override
@@ -523,7 +526,7 @@ public class User extends DatabaseObject {
     public void saveProperties() {
 
         if (properties.isChanged()) {
-            ArrayList<String[]> l = properties.getList();
+            List<String[]> l = properties.getList();
             for (int i = 0; i < l.size(); i++) {
                 String[] d = l.get(i);
                 Property p = new Property();
@@ -547,7 +550,7 @@ public class User extends DatabaseObject {
     }
 
     /**
-     * Apply the user settings to this user (usually called during the log in process)
+     * Apply the user settings to this user (usually called during the login process)
      */
     public void setProperties() {
 

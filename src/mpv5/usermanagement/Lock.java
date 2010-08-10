@@ -18,6 +18,7 @@ package mpv5.usermanagement;
 
 import java.awt.Component;
 import mpv5.logging.Log;
+import mpv5.ui.dialogs.LoginScreen;
 
 /**
  *
@@ -31,7 +32,7 @@ public class Lock {
      */
     public static void lock(Component comp) {
         comp.setEnabled(false);
-        new mpv5.ui.dialogs.LoginScreen();
+        LoginScreen loginScreen = new mpv5.ui.dialogs.LoginScreen(comp);
     }
 
 

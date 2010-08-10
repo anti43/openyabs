@@ -32,6 +32,7 @@ import mpv5.db.objects.Expense;
 import mpv5.db.objects.Item;
 import mpv5.db.objects.Product;
 import mpv5.db.objects.Revenue;
+import mpv5.globals.GlobalSettings;
 import mpv5.globals.Messages;
 import mpv5.logging.Log;
 import mpv5.usermanagement.MPSecurityManager;
@@ -363,7 +364,7 @@ public class FormatHandler {
     private synchronized int getIntegerPartOf(MessageFormat format, String string) {
 
         int startindex = 0;
-        String prop = mpv5.db.objects.User.getCurrentUser().getProperties().getProperty(format.toPattern() + "_startposition");
+        String prop = GlobalSettings.getProperty(format.toPattern() + "_startposition");
         if(prop!=null){
             try {
                 startindex = Integer.valueOf(prop);

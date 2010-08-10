@@ -17,7 +17,9 @@
 package mpv5.data;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
+import java.util.List;
 import javax.swing.JComponent;
 import mpv5.logging.Log;
 import mpv5.utils.date.DateConverter;
@@ -28,7 +30,7 @@ import mpv5.utils.date.DateConverter;
  */
 public class PropertyStore {
 
-    public ArrayList<String[]> list = new ArrayList<String[]>();
+    private ArrayList<String[]> list = new ArrayList<String[]>();
     private boolean changed = false;
 
     /**
@@ -71,8 +73,8 @@ public class PropertyStore {
      *  Generate a List of String(key-value.toString()) pairs
      * @return The complete list of properties and values
      */
-    public ArrayList<String[]> getList() {
-        return list;
+    public List<String[]> getList() {
+        return Collections.unmodifiableList(list);
     }
 
     /**
@@ -317,7 +319,7 @@ public class PropertyStore {
      * @param store
      */
     public void addAll(PropertyStore store) {
-        ArrayList<String[]> po = store.getList();
+        List<String[]> po = store.getList();
         for (int i = 0; i < po.size(); i++) {
             String[] strings = po.get(i);
             changeProperty(String.valueOf(strings[0]), String.valueOf(strings[1]));

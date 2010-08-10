@@ -55,10 +55,12 @@ import mpv5.ui.dialogs.SplashScreen;
 import mpv5.ui.dialogs.Wizard;
 
 import mpv5.db.objects.User;
+import mpv5.globals.GlobalSettings;
 import mpv5.handler.Scheduler;
 import mpv5.i18n.LanguageManager;
 import mpv5.pluginhandling.UserPlugin;
 import mpv5.server.MPServer;
+import mpv5.ui.dialogs.LoginToInstanceScreen;
 import mpv5.ui.dialogs.subcomponents.ControlPanel_Fonts;
 import mpv5.ui.dialogs.subcomponents.wizard_DBSettings_simple_1;
 import mpv5.utils.files.FileDirectoryHandler;
@@ -129,6 +131,12 @@ public class Main extends SingleFrameApplication {
         } catch (Exception ex) {
             Log.Debug(Main.class, ex.getMessage());
             Log.Debug(Main.class, "Local settings file not readable: " + LocalSettings.getLocalFile());
+        }
+
+        try {
+            GlobalSettings.read();
+        } catch (Exception ex) {
+            Log.Debug(Main.class, ex.getMessage());
         }
     }
     private File lockfile = new File(MPPATH + File.separator + "." + Constants.PROG_NAME + "." + "lck");
@@ -217,6 +225,7 @@ public class Main extends SingleFrameApplication {
         MPView.setProgressRunning(true);
         DatabaseObjectLock.releaseAllObjectsFor(mpv5.db.objects.User.getCurrentUser());
         try {
+            GlobalSettings.save();
             LocalSettings.save();
             if (!mpv5.db.objects.User.getCurrentUser().isDefault()) {
                 mpv5.db.objects.User.getCurrentUser().logout();
@@ -463,38 +472,26 @@ public class Main extends SingleFrameApplication {
 
             if (cl.hasOption(server)) {
                 START_SERVER = true;
-
-
             }
 
             if (cl.hasOption(clear)) {
                 CLEAR_LOCK = true;
-
-
             }
 
             LogConsole.setLogStreams(cl.hasOption(logfile), cl.hasOption(consolelog), cl.hasOption(windowlog));
-
-
 
             if (cl.hasOption(params)) {
                 try {
                     String[] parameters = String.valueOf(cl.getValue(params)).split(";");
 
-
-                    for (int i = 0; i
-                            < parameters.length; i++) {
+                    for (int i = 0; i< parameters.length; i++) {
                         String[] opt = parameters[i].split(":");
                         String key = opt[0];
                         String val = opt[1];
                         User.PROPERTIES_OVERRIDE.addProperty(key, val);
-
-
                     }
                 } catch (Exception exception) {
                     Log.Debug(exception);
-
-
                 }
             }
 
@@ -502,13 +499,9 @@ public class Main extends SingleFrameApplication {
                 try {
                     PrintJob2 printJob2 = new PrintJob2(new File("printer_test.pdf"), "pdf");
                     System.exit(0);
-
-
                 } catch (Exception ex) {
                     Log.Debug(ex);
                     System.exit(0);
-
-
                 }
             }
         }
@@ -516,16 +509,11 @@ public class Main extends SingleFrameApplication {
         if (cl != null) {
             Log.Print("\nOptions used:");
 
-
             for (int idx = 0; idx
                     < cl.getOptions().size(); idx++) {
                 Log.Print(cl.getOptions().get(idx));
-
-
             }
             Log.Print("\n");
-
-
         }
     }
 
@@ -534,18 +522,12 @@ public class Main extends SingleFrameApplication {
      */
     public static void setDerbyLog() {
         Properties p = System.getProperties();
-
-
         try {
             File d = File.createTempFile(RandomText.getText(), ".~mp");
             d.createNewFile();
             p.put("derby.stream.error.file", d.getPath());
-
-
         } catch (Exception ex) {
             Log.Debug(ex);
-
-
         }
     }
 
@@ -558,12 +540,8 @@ public class Main extends SingleFrameApplication {
             try {
                 if (lafname != null) {
                     UIManager.setLookAndFeel(lafname);
-
-
                 } else {
                     UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-
-
                 }
                 LookAndFeelAddons.setAddon(LookAndFeelAddons.getBestMatchAddonClassName());
 
@@ -572,22 +550,16 @@ public class Main extends SingleFrameApplication {
                     MPView.getIdentifierFrame().setVisible(false);
                     SwingUtilities.updateComponentTreeUI(MPView.getIdentifierFrame());
                     MPView.getIdentifierFrame().setVisible(true);
-
-
                 }
             } catch (Exception exe) {
                 try {
                     UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
-
-
 
                 } catch (Exception ex) {
                     Log.Debug(Main.class, ex);
                 }
                 Log.Debug(Main.class, exe);
             }
-
-
         }
     }
 
@@ -597,8 +569,6 @@ public class Main extends SingleFrameApplication {
     public static void printEnv() {
         Properties sysprops = System.getProperties();
         Enumeration propnames = sysprops.propertyNames();
-
-
 
         while (propnames.hasMoreElements()) {
             String propname = (String) propnames.nextElement();
@@ -614,55 +584,37 @@ public class Main extends SingleFrameApplication {
      */
     public void go(boolean firststart) {
         writeLockFile(new FileReaderWriter(lockfile));
-        setLaF(
-                null);
+        setLaF(null);
         Main.splash.nextStep(Messages.INIT_LOGIN.toString());
-
-
         try {
             login();
-
-
         } catch (NodataFoundException nodataFoundException) {
             Log.Debug(nodataFoundException);
-
-
         }
         splash.nextStep(Messages.CACHE.toString());
         cache();
         Main.splash.nextStep(Messages.INIT_GUI.toString());
 
-
         super.show(new MPView(this));
-
         firstStart = firststart;
-
 
         if (Main.firstStart) {
             getApplication().getMainFrame().setExtendedState(JFrame.MAXIMIZED_BOTH);
-
-
         }
         SwingUtilities.updateComponentTreeUI(MPView.getIdentifierFrame());
         Main.splash.nextStep(Messages.INIT_PLUGINS.toString());
         loadPlugins();
         splash.dispose();
 
-
         if (START_SERVER) {
             MPServer serv = new MPServer();
             serv.start();
             MPView.getIdentifierView().showServerStatus(serv.isAlive());
-
-
         } else {
             MPView.getIdentifierView().showServerStatus(false);
-
-
         }
         if (LocalSettings.getBooleanProperty(LocalSettings.OFFICE_USE)) {
             final Thread startServerThread;
-
 
             if (!LocalSettings.getBooleanProperty(LocalSettings.OFFICE_REMOTE)) {
                 Runnable runnable2 = new Runnable() {
@@ -675,57 +627,39 @@ public class Main extends SingleFrameApplication {
                         } catch (Exception n) {
                             Log.Debug(Main.class, n.getMessage());
                         }
-
-
                     }
                 };
                 startServerThread = new Thread(runnable2);
                 startServerThread.start();
 
-
             } else {
                 startServerThread = null;
-
-
             }
-
 
             Runnable runnable3 = new Runnable() {
 
                 public void run() {
                     WSIManager.instanceOf().start();
-
-
                 }
             };
 
-
             new Thread(runnable3).start();
-
             Runnable runnable1 = new Runnable() {
 
                 public void run() {
                     boolean running = true;
-
-
                     while (running) {
                         if (startServerThread == null || !startServerThread.isAlive()) {
                             try {
                                 Thread.sleep(3333);
-
-
                             } catch (InterruptedException ex) {
                             }
                             //Needed to move this to here; otherwise the oo connection may not be initialised
                             TemplateHandler.cacheTemplates();
                             running = false;
-
-
                         } else {
                             try {
                                 Thread.sleep(1000);
-
-
                             } catch (InterruptedException ex) {
                             }
                         }
@@ -733,14 +667,9 @@ public class Main extends SingleFrameApplication {
                 }
             };
 
-
             new Thread(runnable1).start();
-
-
         }
         new Scheduler().start();
-
-
 
         if (!LocalSettings.getBooleanProperty(LocalSettings.SUPPRESS_UPDATE_CHECK)) {
             Runnable runnable = new Runnable() {
@@ -749,16 +678,11 @@ public class Main extends SingleFrameApplication {
                 public void run() {
                     if (checkUpdates()) {
                         MPView.addMessage(Messages.UPDATE_AVAILABLE);
-
-
                     }
                 }
             };
 
-
             new Thread(runnable).start();
-
-
         }
 
         Runnable runnable1 = new Runnable() {
@@ -768,20 +692,13 @@ public class Main extends SingleFrameApplication {
                 try {
                     //Cleanup old files
                     FileDirectoryHandler.deleteDirectoryContent(new File(FileDirectoryHandler.getTempDir2()));
-
-
                 } catch (IOException ex) {
                     Log.Debug(ex);
-
-
                 }
             }
         };
 
-
         new Thread(runnable1).start();
-
-
     }
 
     private void loadPlugins() {
@@ -789,37 +706,22 @@ public class Main extends SingleFrameApplication {
             try {
                 MPPLuginLoader.queuePlugins(MPView.getPluginLoader().getPlugins());
                 MPView.getPluginLoader().loadPlugins();
-
-
             } catch (Exception e) {
                 Log.Debug(e);
-
-
             }
         } else {
             try {
                 ArrayList data = DatabaseObject.getReferencedObjects(mpv5.db.objects.User.getCurrentUser(), Context.getPluginsToUsers());
-
-
-                for (int i = 0; i
-                        < data.size(); i++) {
+                for (int i = 0; i < data.size(); i++) {
                     try {
                         ((UserPlugin) data.get(i)).delete();
-
-
                     } catch (Exception e) {
                         Log.Debug(e);
-
-
-
                     }
-
                 }
             } catch (NodataFoundException ex) {
                 Log.Debug(Main.class, ex.getMessage());
             }
-
-
         }
     }
 
@@ -828,41 +730,26 @@ public class Main extends SingleFrameApplication {
             User usern1 = new User();
             Log.Debug(this, "Checking for auto login.. ");
 
-
             if (usern1.fetchDataOf(Integer.valueOf(LocalSettings.getProperty("lastuser")))) {
                 Log.Debug(this, "Trying to login user: " + usern1);
                 User user = mpv5.usermanagement.MPSecurityManager.checkAuthInternal(usern1, LocalSettings.getProperty("lastuserpw"));
 
-
                 if (user != null) {
                     user.login();
-
-
                 }
             }
         } else {
-            Popup.notice(Messages.LOGIN);
-
-
+            LoginToInstanceScreen.load();
         }
     }
 
     private boolean probeDatabaseConnection() {
         try {
             DatabaseConnection.instanceOf();
-
-
             return true;
-
-
         } catch (Exception ex) {
-            Log.Debug(this, "Could not connect to database.");
-//            Log.Debug(this, ex);
-
-
+            Log.Debug(this, "Could not connect to database.:\n" + ex);
             return false;
-
-
         }
     }
     private static final String instanceIdentifier = ". Instance[";
@@ -871,17 +758,10 @@ public class Main extends SingleFrameApplication {
         if (!CLEAR_LOCK) {
             try {
                 FileReaderWriter x = new FileReaderWriter(lockfile);
-
-
                 if (lockfile.exists()) {
                     String[] xc = x.readLines();
-
-
-                    for (int i = 0; i
-                            < xc.length; i++) {
+                    for (int i = 0; i < xc.length; i++) {
                         String line = xc[i];
-
-
                         try {
                             if (line.length() > 0 && line.substring(line.lastIndexOf(instanceIdentifier) + instanceIdentifier.length(), line.lastIndexOf("]")).equals(String.valueOf(LocalSettings.getConnectionID()))) {
                                 String message =
@@ -896,44 +776,27 @@ public class Main extends SingleFrameApplication {
                                 Log.Debug(this, message);
                                 Popup.notice(message, 800, 200);
 
-
                                 if (Log.getLoglevel() != Log.LOGLEVEL_DEBUG) {
                                     System.err.println(message);
-
-
                                 }
                                 return false;
-
-
                             }
                         } catch (Exception e) {
                             Log.Debug(this, line);
                             Log.Debug(e);
-
-
                         }
                     }
                     return true;
-
-
                 } else {
                     return true;
-
-
                 }
             } catch (Exception e) {
                 Log.Debug(e);
                 Log.Debug(this, "Application encountered some problem. Will try to continue anyway.");
-
-
                 return true;
-
-
             }
         } else {
             return lockfile.delete();
-
-
         }
     }
 
@@ -943,17 +806,12 @@ public class Main extends SingleFrameApplication {
             LogConsole.setLogFile("install.log");
             Log.Debug(this, new Date());
 
-
         } catch (Exception ex) {
             mpv5.logging.Log.Debug(ex);//Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
-
-
         }
         Wizard w = new Wizard(true);
         w.addPanel(new wizard_DBSettings_simple_1(w, forConnId));
         w.showWiz();
-
-
     }
 
     private boolean writeLockFile(FileReaderWriter x) {
@@ -961,41 +819,24 @@ public class Main extends SingleFrameApplication {
             x.write0("Locked on " + new Date() + instanceIdentifier + LocalSettings.getConnectionID() + "]");
             Log.Debug(this, "Application will start now: " + lockfile);
             lockfile.deleteOnExit();
-
-
             return true;
-
-
         } catch (Exception e) {
             Log.Debug(e);
-
-
             return false;
-
-
         }
     }
 
     private void clearLockFile() {
         FileReaderWriter x = new FileReaderWriter(lockfile);
         String[] lines = x.readLines();
-
-
-        for (int i = 0; i
-                < lines.length; i++) {
+        for (int i = 0; i < lines.length; i++) {
             String line = lines[i];
-
-
             if ((!line.contains(instanceIdentifier)) || (line.length() > 0 && line.substring(line.lastIndexOf(instanceIdentifier) + instanceIdentifier.length(), line.lastIndexOf("]")).equals(String.valueOf(LocalSettings.getConnectionID())))) {
                 lines[i] = null;
-
-
             }
         }
         x.flush();
         x.write0(lines);
-
-
     }
 
     /**
@@ -1012,19 +853,11 @@ public class Main extends SingleFrameApplication {
             // When the available version is not the current version, we assume there is an update available
             Log.Debug(Main.class, Constants.CURRENT_VERSION_URL + " " + con.getResponseMessage());
 
-
-
-
-
             return (con.getResponseCode() != HttpURLConnection.HTTP_OK);
         } catch (Exception e) {
             Log.Debug(Main.class, e.getMessage());
             //When we cant reach it at all, no update presumably
-
-
-
             return false;
         }
-
     }
 }

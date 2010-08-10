@@ -23,6 +23,7 @@ package mpv5.ui.dialogs.subcomponents;
 
 import java.awt.Component;
 import java.util.ArrayList;
+import java.util.List;
 import javax.swing.JPanel;
 import mpv5.data.PropertyStore;
 import mpv5.globals.LocalSettings;
@@ -53,7 +54,7 @@ public class ControlPanel_Advanced extends javax.swing.JPanel implements Control
 
     public void setData(PropertyStore vals) {
         oldvals = vals;
-        ArrayList<String[]> data = vals.getList();
+        List<String[]> data = vals.getList();
         Object[][] list = new Object[data.size()][2];
         for (int i = 0; i < data.size(); i++) {
             String[] strings = data.get(i);
