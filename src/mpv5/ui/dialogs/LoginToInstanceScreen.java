@@ -5,20 +5,23 @@
  */
 package mpv5.ui.dialogs;
 
-import java.awt.Dialog;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.security.NoSuchAlgorithmException;
+import java.util.List;
+import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import mpv5.Main;
 import mpv5.db.common.NodataFoundException;
 import mpv5.globals.LocalSettings;
 import mpv5.globals.Messages;
 import mpv5.logging.Log;
-import mpv5.ui.frames.MPView;
 import mpv5.ui.misc.Position;
 import mpv5.db.objects.User;
 import mpv5.handler.MPEnum;
-import mpv5.usermanagement.Lock;
+import mpv5.ui.dialogs.subcomponents.wizard_DBSettings_1;
+import mpv5.ui.dialogs.subcomponents.wizard_DBSettings_manage_1;
 import mpv5.utils.text.MD5HashGenerator;
 
 /**
@@ -41,16 +44,7 @@ public class LoginToInstanceScreen extends javax.swing.JDialog {
         initComponents();
         setModalityType(ModalityType.APPLICATION_MODAL);
 
-        mPCombobox1.setModel(new MPEnum[]{new MPEnum() {
-
-            public Integer getId() {
-                return 1;
-            }
-
-            public String getName() {
-                return "default";
-            }
-        }});
+        setList();
 
         if (!LocalSettings.getProperty("lastuser").equals("null")) {
             jCheckBox1.setSelected(true);
@@ -138,12 +132,17 @@ public class LoginToInstanceScreen extends javax.swing.JDialog {
 
         jCheckBox2.setText(bundle.getString("LoginToInstanceScreen.jCheckBox2.text")); // NOI18N
 
-        jLabel4.setFont(new java.awt.Font("Tahoma", 2, 11)); // NOI18N
+        jLabel4.setFont(new java.awt.Font("Tahoma", 2, 11));
         jLabel4.setText(bundle.getString("LoginToInstanceScreen.jLabel4.text")); // NOI18N
 
         jLabel5.setText(bundle.getString("LoginToInstanceScreen.jLabel5.text")); // NOI18N
 
         jButton2.setText(bundle.getString("LoginToInstanceScreen.jButton2.text")); // NOI18N
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -158,14 +157,14 @@ public class LoginToInstanceScreen extends javax.swing.JDialog {
                             .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel1Layout.createSequentialGroup()
                                 .addComponent(jLabel1)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jLabel4, javax.swing.GroupLayout.DEFAULT_SIZE, 244, Short.MAX_VALUE))
+                                .addComponent(jLabel4, javax.swing.GroupLayout.DEFAULT_SIZE, 224, Short.MAX_VALUE))
                             .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel1Layout.createSequentialGroup()
                                 .addComponent(jLabel3)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(jCheckBox1)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(jCheckBox2)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 47, Short.MAX_VALUE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 27, Short.MAX_VALUE)
                                 .addComponent(jButton1))
                             .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                                 .addComponent(jTextField1, javax.swing.GroupLayout.Alignment.LEADING)
@@ -175,7 +174,7 @@ public class LoginToInstanceScreen extends javax.swing.JDialog {
                                         .addComponent(mPCombobox1, javax.swing.GroupLayout.PREFERRED_SIZE, 215, javax.swing.GroupLayout.PREFERRED_SIZE))
                                     .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                     .addComponent(jButton2)))
-                            .addComponent(jPasswordField1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 302, Short.MAX_VALUE))
+                            .addComponent(jPasswordField1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 282, Short.MAX_VALUE))
                         .addGap(198, 198, 198)))
                 .addContainerGap())
         );
@@ -231,6 +230,15 @@ private void jPasswordField1ActionPerformed(java.awt.event.ActionEvent evt) {//G
     login();
 
 }//GEN-LAST:event_jPasswordField1ActionPerformed
+
+private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+
+        Wizard w = new Wizard(false);
+        w.setModalityType(w.getModalityType().APPLICATION_MODAL);
+        w.addPanel(new wizard_DBSettings_manage_1(w));
+        w.showWiz();
+}//GEN-LAST:event_jButton2ActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
@@ -286,6 +294,14 @@ private void jPasswordField1ActionPerformed(java.awt.event.ActionEvent evt) {//G
             } else {
                 jLabel4.setText(Messages.ACCESS_DENIED.getValue());
             }
+        }
+    }
+
+    private void setList() {
+        try {
+            Map<Integer, String> ids = LocalSettings.getConnections();
+        } catch (Exception ex) {
+            Log.Debug(ex);
         }
     }
 }

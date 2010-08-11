@@ -4,6 +4,7 @@ package mpv5.globals;
 import java.util.List;
 import mpv5.data.PropertyStore;
 import mpv5.db.common.Context;
+import mpv5.db.common.NodataFoundException;
 import mpv5.db.common.QueryCriteria;
 import mpv5.db.common.QueryCriteria2;
 import mpv5.db.common.QueryData;
@@ -102,10 +103,10 @@ public class GlobalSettings {
         }
         return cookie.getProperty(name);
     }
-    private static int connectionID = 1;
+    private static int connectionID = 2;
 
     /**
-     * Specify the connection id to be used from the config file, default is 1
+     * Specify the connection id to be used from the config table, default is 2
      * @param id
      */
     public static void setConnectionID(Integer id) {
@@ -171,8 +172,8 @@ public class GlobalSettings {
             cookie.addAll(data);
 
             Log.Debug(GlobalSettings.class, "Finished global settings.");
-        } catch (Exception e) {
-            Log.Debug(e);
+        } catch (NodataFoundException e) {
+            //Log.Debug(e);
         }
     }
 

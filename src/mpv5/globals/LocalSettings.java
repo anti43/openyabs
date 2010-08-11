@@ -1,11 +1,14 @@
-
 package mpv5.globals;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.net.Authenticator;
 import java.net.PasswordAuthentication;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Properties;
+import java.util.TreeMap;
 import java.util.Vector;
 import mpv5.Main;
 import mpv5.data.PropertyStore;
@@ -17,6 +20,7 @@ import mpv5.ui.frames.MPView;
 import mpv5.utils.text.TypeConversion;
 import mpv5.utils.xml.XMLReader;
 import mpv5.utils.xml.XMLWriter;
+import org.jdom.JDOMException;
 
 /**
  *
@@ -58,8 +62,6 @@ public class LocalSettings {
     public static final String CALCULATOR = "calculator";
     public static final String BASE_DIR = "basedir";
     public static final String SUPPRESS_UPDATE_CHECK = "noupdate";
-
-
     private static PropertyStore predefinedSettings = new PropertyStore(new String[][]{
                 {CLIENT, "Default Client"},
                 {DEFAULT_FONT, "DejaVu Sans 11"},
@@ -76,14 +78,13 @@ public class LocalSettings {
                 {CACHE_DIR, "Cache"},
                 {DBESCAPE, "true"},
                 {CALCULATOR, ""},
-                {SUPPRESS_UPDATE_CHECK, "false"},
-// MacOS
-//                {OFFICE_HOME, "/Applications/OpenOffice.org.app/Contents/"},
-//                {OFFICE_BINARY_FOLDER, "MacOS"},
-//                {DBTYPE, "multi"}
-// Windows
-//                {OFFICE_BINARY_FOLDER, "program"},
-//                {OFFICE_HOME, ""}, 
+                {SUPPRESS_UPDATE_CHECK, "false"}, // MacOS
+            //                {OFFICE_HOME, "/Applications/OpenOffice.org.app/Contents/"},
+            //                {OFFICE_BINARY_FOLDER, "MacOS"},
+            //                {DBTYPE, "multi"}
+            // Windows
+            //                {OFFICE_BINARY_FOLDER, "program"},
+            //                {OFFICE_HOME, ""},
             });
     private static Vector<PropertyStore> cookies;
 
@@ -330,5 +331,47 @@ public class LocalSettings {
             Popup.warn(Messages.ERROR_SAVING_LOCALSETTINGS);
             Log.Debug(LocalSettings.class, ex);
         }
+    }
+
+    /**
+     * Finds all available connection IDs
+     * @return
+     * @throws Exception On read errors
+     */
+    public static List<Integer> getConnectionIDs() throws Exception {
+        List<Integer> list = new Vector<Integer>();
+        XMLReader read = new XMLReader();
+        read.newDoc(new File(Main.SETTINGS_FILE), false);
+        cookies = (Vector<PropertyStore>) read.readInto("localsettings", "connection");
+        for (int i = 0; i < cookies.size(); i++) {
+            PropertyStore propertyStore = cookies.get(i);
+            try {
+                list.add(propertyStore.getProperty("nodeid", Integer.MIN_VALUE));
+            } catch (Exception e) {
+                //possibly nodeid is not integer parseable, lets ignore them
+                Log.Debug(e);
+            }
+        }
+
+        return list;
+    }
+
+    /**
+     * Find all locally available connections
+     * @return
+     * @throws Exception
+     */
+    public static Map<Integer, String> getConnections() throws Exception {
+        Map<Integer, String> list = new TreeMap<Integer, String>();
+
+        XMLReader read = new XMLReader();
+        read.newDoc(new File(Main.SETTINGS_FILE), false);
+        cookies = (Vector<PropertyStore>) read.readInto("localsettings", "connection");
+        for (int i = 0; i < cookies.size(); i++) {
+            PropertyStore propertyStore = cookies.get(i);
+            list.put(propertyStore.getProperty("nodeid", Integer.MIN_VALUE), propertyStore.getProperty("nodename"));
+        }
+
+        return list;
     }
 }

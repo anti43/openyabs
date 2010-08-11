@@ -224,6 +224,11 @@ public class XMLReader {
             if (element.getName().equals(nodename) ) {
                 PropertyStore st = new PropertyStore();
                 st.addProperty("nodeid", element.getAttribute("id").getValue());
+                try {
+                    st.addProperty("nodename", element.getAttribute("name").getValue());
+                } catch (Exception e) {
+                    //name not mandatory
+                }
                 @SuppressWarnings("unchecked")
                 List<Element> list2 = (List<Element>) element.getContent(new ElementFilter());
                 for (int j = 0; j < list2.size(); j++) {

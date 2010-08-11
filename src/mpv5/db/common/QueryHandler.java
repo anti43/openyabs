@@ -413,7 +413,7 @@ public class QueryHandler implements Cloneable {
         if (criterias.getQuery().length() > 6) {
             query += criterias.getQuery() + " AND ";
         }
-        query += context.getConditions().substring(6, context.getConditions().length()) + " AND ";
+        query += context.getConditions().substring(6, context.getConditions().length());
         query += criterias.getOrder();
         ReturnValue p = freeSelectQuery(query, mpv5.usermanagement.MPSecurityManager.VIEW, null);
         if (p.hasData()) {
