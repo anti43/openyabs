@@ -48,6 +48,7 @@ import mpv5.ui.dialogs.Popup;
 import mpv5.ui.dialogs.subcomponents.ControlPanel_Fonts;
 import mpv5.ui.frames.MPView;
 import mpv5.utils.text.TypeConversion;
+import org.kapott.hbci.structures.Konto;
 
 /**
  *
@@ -684,5 +685,13 @@ public class User extends DatabaseObject {
      */
     public void defineMailConfiguration(MailConfiguration mailConfiguration) {
         this.mailConfiguration = mailConfiguration;
+    }
+
+    /**
+     * The configured banking account
+     * @return
+     */
+    public Konto getBankAccount() {
+        throw new UnsupportedOperationException("Not yet implemented");
     }
 }

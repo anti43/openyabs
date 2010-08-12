@@ -233,9 +233,9 @@ public enum Messages {
     UPDATE_AVAILABLE("There is an update available for Yabs, check openyabs.org"),
     SEARCHABLE("This is a search-enabled field - type a phrase and hit 'Enter'"),
     TYPE_PRODUCT_ORDER("Product Order"),
-    BOM_CREATED("A new product has been created out of this productlist and is now ready to be used: "),
-
-            ;
+    BOM_CREATED("A new product has been created out of this productlist and is now ready to be used: "), 
+    DTAUS_REASON("Invoice number: "),
+    ;
 
     private Messages(String message) {
         this.message = message;
