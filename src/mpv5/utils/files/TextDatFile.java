@@ -21,6 +21,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.print.DocFlavor;
@@ -119,7 +120,7 @@ public class TextDatFile extends File implements Waitable {
                     data = new String[dbobjarr.size()][dbobjarr.get(0).getVars().size()];
                     for (int i = 0; i < dbobjarr.size(); i++) {
                         DatabaseObject databaseObject = dbobjarr.get(i);
-                        ArrayList<String[]> temp = databaseObject.getValues();
+                        List<String[]> temp = databaseObject.getValues();
 
                         for (int j = 0; j < temp.size(); j++) {
                             String[] strings = temp.get(j);

@@ -215,7 +215,7 @@ public enum Messages {
     ALL("All"),
     OVERVIEW("Overview"),
     ASSIGN_TEMPLATE("Please assign at least one user to the imported template by selecting one or more users from the list, and the press 'Save'. The template will not be usable otherwise."),
-    NO_MAIL_DEFINED("Either you or the contact you want to send the mail to (or both) have no valid mail adress defined."),
+    NO_MAIL_DEFINED("Either you or the contact you want to send the mail to (or both) have no valid mail address defined."),
     AUTO_GENERATED_VALUE("Auto generated value"),
     BOOK_NOW("Save & book now?"), 
     FIRST_START("This seems to be the first start"),
@@ -233,10 +233,9 @@ public enum Messages {
     UPDATE_AVAILABLE("There is an update available for Yabs, check openyabs.org"),
     SEARCHABLE("This is a search-enabled field - type a phrase and hit 'Enter'"),
     TYPE_PRODUCT_ORDER("Product Order"),
-    BOM_CREATED("A new product has been created out of this productlist and is now ready to be used: ");
+    BOM_CREATED("A new product has been created out of this productlist and is now ready to be used: "),
+
             ;
-
-
 
     private Messages(String message) {
         this.message = message;
@@ -253,7 +252,7 @@ public enum Messages {
             message = LanguageManager.getBundle().getString(this.name());
         } catch (Exception e) {
             Log.Debug(this, e.getMessage());
-
+            this.addMessage(message);
         }
 
         if (message == null) {

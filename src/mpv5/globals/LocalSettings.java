@@ -360,6 +360,7 @@ public class LocalSettings {
      * Find all locally available connections
      * @return
      * @throws Exception
+     * @deprecated named instances not supported yet
      */
     public static Map<Integer, String> getConnections() throws Exception {
         Map<Integer, String> list = new TreeMap<Integer, String>();
@@ -373,5 +374,35 @@ public class LocalSettings {
         }
 
         return list;
+    }
+
+    /**
+     * Removes a connection instance from the local settings file
+     * @param forConnId
+     * @throws Exception
+     */
+    public static void removeInstance(Integer forConnId) throws Exception {
+        if (cookies == null) {
+            cookies = new Vector<PropertyStore>();
+        }
+
+        for (int i = 0; i < cookies.size(); i++) {
+            PropertyStore propertyStore = cookies.get(i);
+            if(propertyStore.getProperty("nodeid").equals(forConnId.toString())){
+                cookies.remove(propertyStore);
+            }
+        }
+
+        XMLWriter x = new XMLWriter();
+        try {
+            x.newDoc("localsettings", false);
+            if (cookies != null) {
+                x.parse("connection", cookies);
+                x.createOrReplace(new File(Main.SETTINGS_FILE));
+            } 
+        } catch (Exception ex) {
+            Popup.warn(Messages.ERROR_SAVING_LOCALSETTINGS);
+            Log.Debug(LocalSettings.class, ex);
+        }
     }
 }

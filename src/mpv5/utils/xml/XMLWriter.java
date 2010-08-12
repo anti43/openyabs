@@ -84,7 +84,7 @@ public class XMLWriter {
                     DatabaseObject databaseObject = dbobjarr.get(i);
                     Element ident = new Element(databaseObject.getType());
 
-                    ArrayList<String[]> data = databaseObject.getValues();
+                    List<String[]> data = databaseObject.getValues();
                     this.addNode(parent, ident, databaseObject.__getIDS().toString());
 
                     for (int h = 0; h < data.size(); h++) {

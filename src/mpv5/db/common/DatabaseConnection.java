@@ -165,7 +165,6 @@ public class DatabaseConnection {
 //        }
             reconnect(create);
         } else {
-            Log.Debug(this, "Datenbanktreiber: undefined");
             throw new UnsupportedOperationException("Datenbanktreiber: undefined");
         }
         return conn;

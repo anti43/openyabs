@@ -27,7 +27,6 @@ import mpv5.ui.dialogs.Wizard;
 import mpv5.ui.dialogs.WizardMaster;
 import mpv5.ui.dialogs.Wizardable;
 
-
 /**
  *
  * 
@@ -106,7 +105,7 @@ public class wizard_DBSettings_1 extends javax.swing.JPanel implements Wizardabl
                         if (conn.runQueries(new DatabaseInstallation().getStructure())
                                 && conn.runQueries(new DatabaseInstallation().getInitialData())) {
                             try {
-                                File f=new File(this.getClass().getResource("languages").toURI());
+                                File f = new File(this.getClass().getResource("languages").toURI());
                                 Log.Debug(this, "Importing languages from: " + f.getCanonicalPath());
                                 File[] langfiles = f.listFiles();
                                 for (int i = 0; i < langfiles.length; i++) {
@@ -469,7 +468,6 @@ public class wizard_DBSettings_1 extends javax.swing.JPanel implements Wizardabl
             Popup.error(ex);
         }
     }//GEN-LAST:event_jButton1ActionPerformed
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;

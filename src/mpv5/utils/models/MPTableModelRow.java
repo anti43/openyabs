@@ -40,7 +40,7 @@ public class MPTableModelRow {
         for (int i = 0; i < list.size(); i++) {
             DatabaseObject databaseObject = list.get(i);
             rows[i] =new MPTableModelRow(databaseObject);
-            ArrayList<Object[]> sdata = databaseObject.getValues2();
+            List<Object[]> sdata = databaseObject.getValues2();
             for (int j = 0; j < sdata.size(); j++) {
                 Object[] strings = sdata.get(j);
                 rows[i].setValueAt(strings[1], j);

@@ -503,7 +503,6 @@ public class wizard_DBSettings_manage_1 extends javax.swing.JPanel implements Wi
     public boolean next() {
         if (DBVerification() & DirectoryCreate()) {
             this.master.dispose();
-            Main.getApplication().go(true);
             return true;
         } else {
             this.master.setCursor(Cursor.DEFAULT_CURSOR);

@@ -132,7 +132,7 @@ public class PrintJob implements Waiter {
 
             for (int i = 0; i < dbobjarr.size(); i++) {
                 DatabaseObject databaseObject = dbobjarr.get(i);
-                ArrayList<String[]> data = databaseObject.getValues();
+                List<String[]> data = databaseObject.getValues();
 
                 for (int h = 0; h < data.size(); h++) {
                     rw.write(data.get(h)[0] + ": " + data.get(h)[1]);

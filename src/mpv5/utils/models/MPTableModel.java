@@ -20,6 +20,8 @@ import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.swing.Icon;
 import javax.swing.JLabel;
@@ -28,6 +30,8 @@ import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
+import mpv5.db.common.NodataFoundException;
+import mpv5.db.objects.SubItem;
 import mpv5.globals.Headers;
 import mpv5.logging.Log;
 import mpv5.utils.arrays.ArrayUtilities;
@@ -372,7 +376,7 @@ public class MPTableModel extends DefaultTableModel {
         for (int j = 0; j < getRowCount(); j++) {
             for (int i = 0; i < columnsToCheck.length; i++) {
                 if (getValueAt(j, columnsToCheck[i]) == null || String.valueOf(getValueAt(j, columnsToCheck[i])).length() == 0) {
-                   removeRow(j);
+                    removeRow(j);
                 }
             }
         }
@@ -561,6 +565,24 @@ public class MPTableModel extends DefaultTableModel {
     public void addRows(ArrayList<DatabaseObject> l) {
         for (DatabaseObject b : l) {
             addRow(b.toArray());
+        }
+    }
+
+    /**
+     * Returns an Object where the objects ID is stored in the first column of the given row;
+     * <b>From database/cache, NOT from the model!</b>
+     * @param <T>
+     * @param selectedRow
+     * @param target
+     * @return
+     */
+    @SuppressWarnings("unchecked")
+    public <T extends DatabaseObject> T getRowAt(int selectedRow, T target) {
+        try {
+            return (T) target.getObject(target.getContext(), Integer.valueOf(String.valueOf(getValueAt(selectedRow, 0))));
+        } catch (Exception ex) {
+            Log.Debug(ex);
+            return null;
         }
     }
 

@@ -172,8 +172,8 @@ public class GlobalSettings {
             cookie.addAll(data);
 
             Log.Debug(GlobalSettings.class, "Finished global settings.");
-        } catch (NodataFoundException e) {
-            //Log.Debug(e);
+        } catch (Exception e) {
+            Log.Debug(GlobalSettings.class, e.getCause().getMessage());
         }
     }
 

@@ -2,6 +2,7 @@ package mpv5.server;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
 import mpv5.db.common.NodataFoundException;
@@ -28,7 +29,7 @@ public class XMLRPCHandler {
             try {
                 DatabaseObject d = DatabaseObject.getObject(Context.getMatchingContext(context), i);
                 HashMap<String, Object> m2 = new HashMap<String, Object>();
-                ArrayList<Object[]> l = d.getValues2();
+                List<Object[]> l = d.getValues2();
                 for (Object[] objects : l) {
                     m2.put(objects[0].toString(), objects[1]);
                 }
@@ -43,7 +44,7 @@ public class XMLRPCHandler {
     public HashMap<String, Object> getObject(String context, int id) throws Exception {
         DatabaseObject d = DatabaseObject.getObject(Context.getMatchingContext(context), id);
         HashMap<String, Object> m = new HashMap<String, Object>();
-        ArrayList<Object[]> l = d.getValues2();
+        List<Object[]> l = d.getValues2();
         for (Object[] objects : l) {
             m.put(objects[0].toString(), objects[1]);
         }
@@ -53,7 +54,7 @@ public class XMLRPCHandler {
     public HashMap<String, Object> getObject(String context, String cname) throws Exception {
         DatabaseObject d = DatabaseObject.getObject(Context.getMatchingContext(context), cname);
         HashMap<String, Object> m = new HashMap<String, Object>();
-        ArrayList<Object[]> l = d.getValues2();
+        List<Object[]> l = d.getValues2();
         for (Object[] objects : l) {
             m.put(objects[0].toString(), objects[1]);
         }

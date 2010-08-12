@@ -1163,7 +1163,11 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
         if (evt != null) {
             MPTableModel m = (MPTableModel) itemtable.getModel();
             if (evt.getButton() != MouseEvent.BUTTON1) {
-                if (!m.hasEmptyRows(new int[]{4})) {
+                SubItem it = m.getRowAt(itemtable.getSelectedRow(), SubItem.getDefaultItem());
+
+                if (it != null) {
+                    MPView.identifierView.getClistview().addElement(it);
+                } else if (!m.hasEmptyRows(new int[]{4})) {
                     m.addRow(2);
                 }
             }
@@ -1899,7 +1903,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
     }
 
     public void mail() {
-        MailMessage m = null;
+
         if (dataOwner != null && dataOwner.isExisting()) {
             if (TemplateHandler.isLoaded(dataOwner, dataOwner.__getInttype())) {
 
@@ -1912,6 +1916,8 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
             } else {
                 Popup.notice(Messages.NO_TEMPLATE_LOADED + " (" + mpv5.db.objects.User.getCurrentUser() + ")");
             }
+        } else {
+            Popup.notice(Messages.NOT_POSSIBLE + "\n" + Messages.NOT_SAVED_YET);
         }
     }
 
@@ -1981,5 +1987,3 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
         }
     }
 }
-
-

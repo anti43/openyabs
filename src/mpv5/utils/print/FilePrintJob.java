@@ -18,6 +18,7 @@ package mpv5.utils.print;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.List;
 import mpv5.db.common.DatabaseObject;
 import mpv5.globals.Messages;
 import mpv5.logging.Log;
@@ -59,7 +60,7 @@ public class FilePrintJob {
 
         if (dbobjarr != null) {
 
-            ArrayList<String[]> data = dbobjarr.get(0).getValues();
+            List<String[]> data = dbobjarr.get(0).getValues();
             if (name == null) {
                 name = dbobjarr.get(0).getDbIdentity();
             }
@@ -108,7 +109,7 @@ public class FilePrintJob {
         if (dbobjarr != null) {
             for (int i = 0; i < dbobjarr.size(); i++) {
                 DatabaseObject databaseObject = dbobjarr.get(i);
-                ArrayList<String[]> data = databaseObject.getValues();
+               List<String[]> data = databaseObject.getValues();
                 if (name == null) {
                     name = databaseObject.getDbIdentity();
                 }

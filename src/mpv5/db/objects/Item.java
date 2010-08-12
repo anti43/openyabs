@@ -22,6 +22,7 @@ import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.Vector;
 import java.util.logging.Level;
@@ -504,8 +505,8 @@ public class Item extends DatabaseObject implements Formattable {
             }
         }
 
-        ArrayList<SubItem> data;
-        ArrayList<String[]> data2;
+        List<SubItem> data;
+        List<String[]> data2;
         Vector<String[]> list = new Vector<String[]>();
 
         try {

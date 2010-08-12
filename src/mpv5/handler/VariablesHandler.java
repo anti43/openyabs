@@ -17,6 +17,7 @@
 package mpv5.handler;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import mpv5.db.common.Context;
@@ -71,7 +72,7 @@ public abstract class VariablesHandler {
      * @return
      */
     public static String[] getSpecialVarsOf(DatabaseObject target) {
-        ArrayList<String[]> vars = target.getValues();
+        List<String[]> vars = target.getValues();
         String[] svars = new String[vars.size()];
         if (!(target instanceof SubItem)) {//No subitems, takes ages
             for (int i = 0; i < vars.size(); i++) {
@@ -133,7 +134,7 @@ public abstract class VariablesHandler {
             String variable = specs[j];
             vars[i + j][0] = variable;
 
-            ArrayList<String[]> vals;
+            List<String[]> vals;
             vals = target.getValues();
             for (int k = 0; k < vals.size(); k++) {
                 String[] value = vals.get(k);

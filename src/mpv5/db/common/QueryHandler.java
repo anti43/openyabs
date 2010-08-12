@@ -66,10 +66,8 @@ public class QueryHandler implements Cloneable {
     private DatabaseConnection conn = null;
     private Connection sqlConn = null;
     private Statement stm = null;
-    public String[] resultArray = null;
     private ResultSet resultSet = null;
     private String table = "NOTABLE";
-    public String resultString = null;
     private static JFrame comp = new JFrame();
     private Context context;
 
@@ -85,7 +83,7 @@ public class QueryHandler implements Cloneable {
     }
     private DataPanel viewToBeNotified = null;
     private static Integer ROW_LIMIT = null;
-    private int limit = 0;
+    private volatile int limit = 0;
     private boolean runInBackground = false;
 
     private QueryHandler() {

@@ -17,6 +17,7 @@
 package mpv5.utils.models;
 
 import java.util.ArrayList;
+import java.util.List;
 import javax.swing.table.TableModel;
 import mpv5.db.common.DatabaseObject;
 import mpv5.globals.Headers;
@@ -60,7 +61,7 @@ public class ImportTableModel extends MPTableModel {
 
         for (int i = 0; i < list.size(); i++) {
             DatabaseObject databaseObject = list.get(i);
-            ArrayList<String[]> t = databaseObject.getValues();
+            List<String[]> t = databaseObject.getValues();
 
             String sdata = "";
             for (int j = 0; j < t.size(); j++) {

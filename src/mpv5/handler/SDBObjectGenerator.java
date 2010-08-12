@@ -18,6 +18,7 @@ package mpv5.handler;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.List;
 import mpv5.compiler.RuntimeCompiler;
 import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
@@ -37,7 +38,7 @@ public abstract class SDBObjectGenerator {
      */
     public static SimpleDatabaseObject getObjectFrom(DatabaseObject dos, String packagename) {
 
-        ArrayList<Method> methods = dos.setVars();
+        List<Method> methods = dos.setVars();
 
         String classTemplate =
                 "package " + packagename + ";\n" +

@@ -108,7 +108,7 @@ public final class Export extends HashMap<String, Object> implements Waitable {
             }
         } catch (UnsupportedOperationException unsupportedOperationException) {
             Log.Debug(unsupportedOperationException);
-            Popup.error(unsupportedOperationException);
+            Popup.notice(Messages.NOT_POSSIBLE + "\n" + Messages.NO_MAIL_CONFIG);
         }
     }
 

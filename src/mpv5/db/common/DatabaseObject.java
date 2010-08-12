@@ -17,6 +17,7 @@
 package mpv5.db.common;
 
 import java.awt.Color;
+import java.lang.ref.SoftReference;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.math.BigDecimal;
@@ -25,7 +26,9 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
+import java.util.concurrent.ConcurrentHashMap;
 import javax.swing.SwingUtilities;
 import mpv5.globals.Messages;
 import mpv5.db.objects.HistoryItem;
@@ -56,7 +59,7 @@ import mpv5.utils.text.RandomText;
 public abstract class DatabaseObject implements Comparable<DatabaseObject> {
 
     private static boolean AUTO_LOCK = false;
-    private static Hashtable<String, DatabaseObject> cache = new Hashtable<String, DatabaseObject>();
+    private static Map<String, SoftReference<DatabaseObject>> cache = new ConcurrentHashMap<String, SoftReference<DatabaseObject>>(1000);
 
     /**
      * Cache all Objects which are within the {@link Context#getCacheableContexts() }
@@ -111,16 +114,16 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject> {
         t.start();
     }
 
-    private static void cacheObject(final DatabaseObject databaseObject) {
+    private static synchronized void cacheObject(final DatabaseObject databaseObject) {
         if (databaseObject != null && databaseObject.__getIDS().intValue() > 0) {
-            if (cache.contains(databaseObject.getDbIdentity() + "@" + databaseObject.__getIDS())) {
-                Log.Debug(DatabaseObject.class, "Replacing cached object: " + databaseObject.getDbIdentity() + "@" + databaseObject.__getIDS());
-            }
-            cache.put(databaseObject.getDbIdentity() + "@" + databaseObject.__getIDS(), databaseObject);
+//            if (cache.containsKey(databaseObject.getDbIdentity() + "@" + databaseObject.__getIDS())) {
+//                Log.Debug(DatabaseObject.class, "Replacing cached object: " + databaseObject.getDbIdentity() + "@" + databaseObject.__getIDS());
+//            }
+            cache.put(databaseObject.getDbIdentity() + "@" + databaseObject.__getIDS(), new SoftReference<DatabaseObject>(databaseObject));
         }
     }
 
-    private static void uncacheObject(final DatabaseObject databaseObject) {
+    private static synchronized void uncacheObject(final DatabaseObject databaseObject) {
         if (databaseObject != null) {
             if (cache.remove(databaseObject.getDbIdentity() + "@" + databaseObject.__getIDS()) != null) {
                 Log.Debug(DatabaseObject.class, "Removed from cache: " + databaseObject.getDbIdentity() + "@" + databaseObject.__getIDS());
@@ -129,9 +132,15 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject> {
     }
 
     private synchronized static DatabaseObject getCachedObject(final Context context, final int id) {
-        if (cache.containsKey(context.getDbIdentity() + "@" + id)) {
-            DatabaseObject o = cache.get(context.getDbIdentity() + "@" + id);
-            Log.Debug(DatabaseObject.class, "Using cached object " + context.getDbIdentity() + "@" + id + " [" + o + "]");
+        final String uid = context.getDbIdentity() + "@" + id;
+        if (cache.containsKey(uid)) {
+            DatabaseObject o = cache.get(uid).get();
+            if (o == null) {
+                //was already garbage collected
+                cache.remove(uid);
+            } else {
+                Log.Debug(DatabaseObject.class, "Using cached object " + context.getDbIdentity() + "@" + id + " [" + o + "]");
+            }
             return o;
         } else {
             Log.Debug(DatabaseObject.class, "" + context.getDbIdentity() + "@" + id + " not found in cache.");
@@ -147,10 +156,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject> {
      * The unique id, or 0 if it is a new do
      */
     public Integer ids = 0;
-    /**
-     * Is this do active or not?
-     */
-    private boolean isSaved = false;
+
     private boolean readOnly = false;
     private boolean active = true;
     /**
@@ -171,7 +177,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject> {
      * Fills all {@link DatabaseObject#setVars()} with non-NULL default values
      */
     public void avoidNulls() {
-        ArrayList<Method> vals = setVars();
+        List<Method> vals = setVars();
         for (int i = 0; i < vals.size(); i++) {
             Method method = vals.get(i);
             try {
@@ -199,7 +205,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject> {
                 mpv5.logging.Log.Debug(ex);//Logger.getLogger(DatabaseObject.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
-        Saved(false);
+
     }
 
     /**
@@ -248,7 +254,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject> {
     public DatabaseObject clone() {
         DatabaseObject obj = getObject(context);
         obj.avoidNulls();
-        ArrayList<Object[]> vals = this.getValues2();
+        List<Object[]> vals = this.getValues2();
         for (int i = 0; i < vals.size(); i++) {
             Object[] valuespairs = vals.get(i);
             try {
@@ -313,7 +319,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject> {
      *
      * @return A list of all <b>SETTERS</b> in this do child, except the native methods
      */
-    public ArrayList<Method> setVars() {
+    public List<Method> setVars() {
         ArrayList<Method> list = new ArrayList<Method>();
         for (int i = 0; i < this.getClass().getMethods().length; i++) {
             if (this.getClass().getMethods()[i].getName().startsWith("set") && !this.getClass().getMethods()[i].getName().startsWith("setVars") && !this.getClass().getMethods()[i].getName().startsWith("setPanelData") && !this.getClass().getMethods()[i].getName().startsWith("getDbID") && !this.getClass().getMethods()[i].getName().startsWith("getObject")) {
@@ -329,7 +335,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject> {
      * which match the naming convetion as in
      * <strong>__get*methodname*</strong> (methodname starts with 2 (two) underscores)
      */
-    public ArrayList<Method> getVars() {
+    public List<Method> getVars() {
         ArrayList<Method> list = new ArrayList<Method>();
         for (int i = 0; i < this.getClass().getMethods().length; i++) {
             if (this.getClass().getMethods()[i].getName().startsWith("__get")) {
@@ -428,7 +434,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject> {
                 };
                 SwingUtilities.invokeLater(runnable);
             }
-            this.Saved(true);
+
             return true;
         } catch (Exception e) {
             Log.Debug(e);
@@ -601,7 +607,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject> {
                         t.add(left, DateConverter.getSQLDateString((Date) tempval));
                     } else if (tempval.getClass().isInstance(0)) {
                         //if the field is an IDS field an below 0, set it to 0
-                        //as integer columns may not allow singned integers (eg. -1)
+                        //as integer columns may not allow signed integers (eg. -1)
                         if (left.toLowerCase().endsWith("ids")) {
                             if (Integer.valueOf(tempval.toString()).intValue() < 0) {
                                 Log.Debug(this, "Correcting below-zero integer ids in " + left);
@@ -624,24 +630,6 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject> {
                     mpv5.logging.Log.Debug(ex);//Logger.getLogger(DatabaseObject.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
-//            else if (this.getClass().getMethods()[i].getName().startsWith("is")) {
-//                try {
-//                    left += this.getClass().getMethods()[i].getName().substring(2, this.getClass().getMethods()[i].getName().length()) + ",";
-//                    tempval = this.getClass().getMethods()[i].invoke(this, (Object[]) null);
-//                    if (tempval.getClass().isInstance(boolean.class)) {
-//                        if (((Boolean) tempval)) {
-//                            intval = 1;
-//                        }
-//                    }
-//                    right += "(;;2#4#1#1#8#0#;;)" + intval + "(;;2#4#1#1#8#0#;;)" + "(;;,;;)";
-//                } catch (IllegalAccessException ex) {
-//                    mpv5.logging.Log.Debug(ex);//Logger.getLogger(DatabaseObject.class.getName()).log(Level.SEVERE, null, ex);
-//                } catch (IllegalArgumentException ex) {
-//                    mpv5.logging.Log.Debug(ex);//Logger.getLogger(DatabaseObject.class.getName()).log(Level.SEVERE, null, ex);
-//                } catch (InvocationTargetException ex) {
-//                    mpv5.logging.Log.Debug(ex);//Logger.getLogger(DatabaseObject.class.getName()).log(Level.SEVERE, null, ex);
-//                }
-//            }
         }
 
         return t;
@@ -649,16 +637,17 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject> {
 
     /**
      * Parses the given DataPanel into this do.
-     * Each of the DataPanel's fields wich has a name ending with underscore must match
+     * Each of the DataPanel's fields which has a name ending with underscore must match
      * one of the fields in this do child (without underscore)
      * @param source The DataPanel to parse.
+     * @return false if the view parsing did not return successfully
      */
     public boolean getPanelData(DataPanel source) {
-        Saved(false);
+
         if (!source.collectData()) {
             return false;
         }
-        ArrayList<Method> vars = setVars();
+        List<Method> vars = setVars();
         for (int i = 0; i < vars.size(); i++) {
             try {
                 Log.Debug(this, "GetPanelData: " + vars.get(i).getName().toLowerCase().substring(3, vars.get(i).getName().length()) + "_ : " + source.getClass().getField(vars.get(i).getName().toLowerCase().substring(3, vars.get(i).getName().length()) + "_").
@@ -680,7 +669,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject> {
      */
     public void setPanelData(DataPanel target) {
 
-        ArrayList<Method> vars = getVars();
+        List<Method> vars = getVars();
 
         for (int i = 0; i < vars.size(); i++) {
             try {
@@ -699,9 +688,9 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject> {
      * those which return in <code>getVars()</code>, as two-fields String-Array.
      * Example: new String[]{"CName", "Michael"}
      */
-    public ArrayList<String[]> getValues() {
-        ArrayList<Method> vars = getVars();
-        ArrayList<String[]> vals = new ArrayList<String[]>();
+    public List<String[]> getValues() {
+        List<Method> vars = getVars();
+        List<String[]> vals = new ArrayList<String[]>();
 
         for (int i = 0; i < vars.size(); i++) {
             try {
@@ -725,9 +714,9 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject> {
      * those which return in <code>getVars()</code>, as two-fields String-Array.
      * Example: new String[]{"dateadded", "24.22.2980"}
      */
-    public ArrayList<String[]> getValues3() {
-        ArrayList<Method> vars = getVars();
-        ArrayList<String[]> vals = new ArrayList<String[]>();
+    public List<String[]> getValues3() {
+        List<Method> vars = getVars();
+        List<String[]> vals = new ArrayList<String[]>();
 
         for (int i = 0; i < vars.size(); i++) {
             try {
@@ -762,9 +751,9 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject> {
      * those which return in <code>getVars()</code>, as two-fields Object-Array.
      * Example: new Object[]{"dateadded", java.util.Date }
      */
-    public ArrayList<Object[]> getValues2() {
-        ArrayList<Method> vars = getVars();
-        ArrayList<Object[]> vals = new ArrayList<Object[]>();
+    public List<Object[]> getValues2() {
+        List<Method> vars = getVars();
+        List<Object[]> vals = new ArrayList<Object[]>();
 
         for (int i = 0; i < vars.size(); i++) {
             try {
@@ -1138,7 +1127,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject> {
         for (int i = 0; i < dos.length; i++) {
 
             DatabaseObject dbo = null;
-            ArrayList<Method> vars = null;
+            List<Method> vars = null;
             if (!singleExplode) {
                 dbo = DatabaseObject.getObject(target.getContext());
             } else {
@@ -1227,7 +1216,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject> {
      * @throws Exception
      */
     public void parse(Hashtable<String, Object> values) throws Exception {
-        ArrayList<Method> vars = setVars();
+        List<Method> vars = setVars();
 //        Log.Debug(this, " ?? : " +  toHashTable.size());
         Object[][] data = ArrayUtilities.hashTableToArray(values);
 //        Log.Debug(this, " ?? : " +  data[0]);
@@ -1276,7 +1265,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject> {
      * @throws Exception
      */
     public void parse(HashMap<String, Object> values) throws Exception {
-        ArrayList<Method> vars = setVars();
+        List<Method> vars = setVars();
 //        Log.Debug(this, " ?? : " +  toHashTable.size());
         Object[][] data = ArrayUtilities.hashMapToArray(values);
 //        Log.Debug(this, " ?? : " +  data[0]);
@@ -1479,19 +1468,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject> {
         }
     }
 
-    /**
-     * @return the isSaved
-     */
-    public boolean isSaved() {
-        return isSaved;
-    }
 
-    /**
-     * @param isSaved the isSaved to set
-     */
-    public void Saved(boolean isSaved) {
-        this.isSaved = isSaved;
-    }
 
     /**
      * @return the readOnly
@@ -1597,7 +1574,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject> {
      * Fill the do with (senseless) sample data
      */
     public void fillSampleData() {
-        ArrayList<Method> vars = setVars();
+        List<Method> vars = setVars();
         for (int k = 0; k < vars.size(); k++) {
 
             try {
@@ -1625,10 +1602,10 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject> {
      * @return
      */
     public Object[] toArray() {
-        ArrayList<Object[]> a = getValues2();
+        List<Object[]> a = getValues2();
         Object[] b = new Object[a.size()];
         for (int i = 0; i < a.size(); i++) {
-            Object[] objects = a.get(i);
+//            Object[] objects = a.get(i);
             b[i] = a.get(i)[1];
         }
 
