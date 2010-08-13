@@ -50,7 +50,6 @@ public class DTAFile extends Exportable {
         }
     }
 
-
     @Override
     public void run() {
 
@@ -72,20 +71,24 @@ public class DTAFile extends Exportable {
                     String string = usages.get(i);
                     t.addUsage(string);
                 }
-                t.internalCustomerId = c.__getCNumber().substring(c.__getCNumber().length() - 10, c.__getCNumber().length());
+
+                String cid = "";
+                if (c.__getCNumber().length() > 10) {
+                    cid = c.__getCNumber().substring(c.__getCNumber().length() - 10, c.__getCNumber().length());
+                } else {
+                    cid = c.__getCNumber();
+                }
+                t.internalCustomerId = cid;
+
 
                 BigDecimal value = null;
 
                 if (mpv5.db.objects.User.getCurrentUser().getProperties().hasProperty("shiptax")) {
                     int taxid = mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("shiptax", new Integer(0));
                     Double shiptax = Tax.getTaxValue(taxid).doubleValue();
-                    value = (dbo.__getTaxvalue().add(dbo.__getNetvalue()))
-                            .multiply((dbo.__getDiscountvalue().divide(new BigDecimal("100"), BigDecimal.ROUND_HALF_UP).subtract(BigDecimal.ONE)).multiply(new BigDecimal("-1")))
-                            .add((dbo.__getShippingvalue().multiply(BigDecimal.valueOf(shiptax).divide(new BigDecimal("100"), BigDecimal.ROUND_HALF_UP).add(dbo.__getShippingvalue()))));
+                    value = (dbo.__getTaxvalue().add(dbo.__getNetvalue())).multiply((dbo.__getDiscountvalue().divide(new BigDecimal("100"), BigDecimal.ROUND_HALF_UP).subtract(BigDecimal.ONE)).multiply(new BigDecimal("-1"))).add((dbo.__getShippingvalue().multiply(BigDecimal.valueOf(shiptax).divide(new BigDecimal("100"), BigDecimal.ROUND_HALF_UP).add(dbo.__getShippingvalue()))));
                 } else {
-                    value = (dbo.__getTaxvalue().add(dbo.__getNetvalue()))
-                            .multiply((dbo.__getDiscountvalue().divide(new BigDecimal("100"), BigDecimal.ROUND_HALF_UP).subtract(BigDecimal.ONE)).multiply(new BigDecimal("-1")))
-                            .add(dbo.__getShippingvalue());
+                    value = (dbo.__getTaxvalue().add(dbo.__getNetvalue())).multiply((dbo.__getDiscountvalue().divide(new BigDecimal("100"), BigDecimal.ROUND_HALF_UP).subtract(BigDecimal.ONE)).multiply(new BigDecimal("-1"))).add(dbo.__getShippingvalue());
                 }
 
                 t.value = new Value(value.toPlainString());

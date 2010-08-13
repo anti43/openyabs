@@ -365,7 +365,7 @@ public class FormatHandler {
 
         int startindex = 0;
         String prop = GlobalSettings.getProperty(format.toPattern() + "_startposition");
-        if(prop!=null){
+        if(prop!=null && !prop.equals("null")){
             try {
                 startindex = Integer.valueOf(prop);
             } catch (NumberFormatException numberFormatException) {

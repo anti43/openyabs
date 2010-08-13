@@ -26,6 +26,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map.Entry;
+import java.util.Vector;
 import javax.swing.JComponent;
 import javax.swing.SwingUtilities;
 import mpv5.Main;
@@ -283,6 +284,7 @@ public class User extends DatabaseObject {
                 ControlPanel_Fonts.applyFont(Font.decode(LocalSettings.getProperty(LocalSettings.DEFAULT_FONT)));
                 Main.setLaF(__getLaf());
                 defineMailConfig();
+                defineDTAConfig();
             } catch (Exception e) {
                 Log.Debug(e);
             }
@@ -563,10 +565,12 @@ public class User extends DatabaseObject {
             properties.addAll(QueryHandler.instanceOf().clone(Context.getProperties()).select("cname, value", criteria));
             properties.addAll(PROPERTIES_OVERRIDE);
             defineMailConfig();
-            defineDTAConfig();
+            
         } catch (NodataFoundException ex) {
             Log.Debug(this, ex.getMessage());
         }
+
+        defineDTAConfig();
     }
 
     /**
@@ -707,11 +711,14 @@ public class User extends DatabaseObject {
 
     private void defineDTAConfig() {
         try {
+            Konto acc = new Konto(getProperties().getProperty("dtabankcountry"), getProperties().getProperty("dtabankid"), getProperties().getProperty("dtabankaccount"));
+            acc.name = "bankname";
             dtaconf = new DTAConfig();
-            dtaconf.setBankAccount(new Konto(getProperties().getProperty("dtabankcountry"), getProperties().getProperty("dtabankid"), getProperties().getProperty("dtabankaccount")));
+            dtaconf.setBankAccount(acc);
             dtaconf.getUsages().add(getProperties().getProperty("dtausage0"));
             dtaconf.getUsages().add(getProperties().getProperty("dtausage1"));
         } catch (Exception e) {
+            e.printStackTrace();
             Log.Debug(this, "Unable to create DTA info");
             dtaconf = null;
         }
@@ -721,7 +728,7 @@ public class User extends DatabaseObject {
 class DTAConfig {
 
     private Konto bankAccount;
-    private List<String> usages;
+    private List<String> usages = new Vector<String>();
 
     /**
      * @return the bankAccount
