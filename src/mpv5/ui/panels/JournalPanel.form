@@ -49,7 +49,7 @@
       <Layout>
         <DimensionLayout dim="0">
           <Group type="103" groupAlignment="0" attributes="0">
-              <Component id="jTabbedPane1" alignment="0" pref="770" max="32767" attributes="0"/>
+              <Component id="jTabbedPane1" alignment="0" pref="789" max="32767" attributes="0"/>
           </Group>
         </DimensionLayout>
         <DimensionLayout dim="1">
@@ -209,7 +209,7 @@
                                       <Component id="includechildgroups" min="-2" pref="176" max="-2" attributes="0"/>
                                   </Group>
                               </Group>
-                              <EmptySpace pref="152" max="32767" attributes="0"/>
+                              <EmptySpace pref="171" max="32767" attributes="0"/>
                           </Group>
                       </Group>
                     </DimensionLayout>
@@ -426,7 +426,9 @@
                               <Component id="prinitingComboBox1" min="-2" pref="196" max="-2" attributes="0"/>
                               <EmptySpace max="-2" attributes="0"/>
                               <Component id="jButton4" min="-2" max="-2" attributes="0"/>
-                              <EmptySpace pref="48" max="32767" attributes="0"/>
+                              <EmptySpace max="-2" attributes="0"/>
+                              <Component id="jButton5" min="-2" max="-2" attributes="0"/>
+                              <EmptySpace max="32767" attributes="0"/>
                               <Component id="volume" min="-2" max="-2" attributes="0"/>
                               <EmptySpace type="unrelated" max="-2" attributes="0"/>
                               <Component id="revenue" min="-2" max="-2" attributes="0"/>
@@ -442,7 +444,8 @@
                                   <Component id="prinitingComboBox1" alignment="2" min="-2" max="-2" attributes="1"/>
                                   <Component id="volume" alignment="2" min="-2" max="-2" attributes="0"/>
                                   <Component id="revenue" alignment="2" min="-2" max="-2" attributes="0"/>
-                                  <Component id="jButton4" alignment="2" min="-2" pref="20" max="-2" attributes="0"/>
+                                  <Component id="jButton4" alignment="2" min="-2" pref="23" max="-2" attributes="0"/>
+                                  <Component id="jButton5" alignment="2" min="-2" pref="23" max="-2" attributes="0"/>
                               </Group>
                               <EmptySpace max="32767" attributes="0"/>
                           </Group>
@@ -481,6 +484,17 @@
                         </Property>
                         <Property name="name" type="java.lang.String" value="volume" noResource="true"/>
                       </Properties>
+                    </Component>
+                    <Component class="javax.swing.JButton" name="jButton5">
+                      <Properties>
+                        <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
+                          <ResourceString bundle="mpv5/resources/languages/Panels.properties" key="JournalPanel.jButton5.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+                        </Property>
+                        <Property name="name" type="java.lang.String" value="jButton5" noResource="true"/>
+                      </Properties>
+                      <Events>
+                        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButton5ActionPerformed"/>
+                      </Events>
                     </Component>
                   </SubComponents>
                 </Container>
