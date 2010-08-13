@@ -197,10 +197,10 @@ public class LocalSettings {
         }
         return cookie.getProperty(name);
     }
-    private static int connectionID = 1;
+    private static int connectionID = 0;
 
     /**
-     * Specify the connection id to be used from the config file, default is 1
+     * Specify the connection id to be used from the config file, default is 0
      * @param id
      */
     public static void setConnectionID(Integer id) {
@@ -310,12 +310,17 @@ public class LocalSettings {
      * @param forConnId
      */
     public synchronized static void save(Integer forConnId) {
+        Log.Debug(LocalSettings.class, "Writing local settings: " + forConnId);
         if (cookies == null) {
             cookies = new Vector<PropertyStore>();
         }
         if (forConnId != null) {
             connectionID = forConnId;
             cookie.changeProperty("nodeid", forConnId.toString());
+            cookies.add(cookie);
+        } else {
+            connectionID = 0;
+            cookie.changeProperty("nodeid", String.valueOf(connectionID));
             cookies.add(cookie);
         }
         XMLWriter x = new XMLWriter();
@@ -388,7 +393,7 @@ public class LocalSettings {
 
         for (int i = 0; i < cookies.size(); i++) {
             PropertyStore propertyStore = cookies.get(i);
-            if(propertyStore.getProperty("nodeid").equals(forConnId.toString())){
+            if (propertyStore.getProperty("nodeid").equals(forConnId.toString())) {
                 cookies.remove(propertyStore);
             }
         }
@@ -399,7 +404,7 @@ public class LocalSettings {
             if (cookies != null) {
                 x.parse("connection", cookies);
                 x.createOrReplace(new File(Main.SETTINGS_FILE));
-            } 
+            }
         } catch (Exception ex) {
             Popup.warn(Messages.ERROR_SAVING_LOCALSETTINGS);
             Log.Debug(LocalSettings.class, ex);

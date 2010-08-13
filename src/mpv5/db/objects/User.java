@@ -136,6 +136,7 @@ public class User extends DatabaseObject {
      */
     public static PropertyStore PROPERTIES_OVERRIDE = new PropertyStore();
     private MailConfiguration mailConfiguration;
+    private DTAConfig dtaconf;
 
     /**
      * Caches all available usernames and IDs
@@ -562,6 +563,7 @@ public class User extends DatabaseObject {
             properties.addAll(QueryHandler.instanceOf().clone(Context.getProperties()).select("cname, value", criteria));
             properties.addAll(PROPERTIES_OVERRIDE);
             defineMailConfig();
+            defineDTAConfig();
         } catch (NodataFoundException ex) {
             Log.Debug(this, ex.getMessage());
         }
@@ -691,7 +693,54 @@ public class User extends DatabaseObject {
      * The configured banking account
      * @return
      */
+    public Konto getDTAAccount() {
+        return dtaconf.getBankAccount();
+    }
+
+    /**
+     * The configured banking account
+     * @return
+     */
+    public List<String> getDTAUsages() {
+        return dtaconf.getUsages();
+    }
+
+    private void defineDTAConfig() {
+        try {
+            dtaconf = new DTAConfig();
+            dtaconf.setBankAccount(new Konto(getProperties().getProperty("dtabankcountry"), getProperties().getProperty("dtabankid"), getProperties().getProperty("dtabankaccount")));
+            dtaconf.getUsages().add(getProperties().getProperty("dtausage0"));
+            dtaconf.getUsages().add(getProperties().getProperty("dtausage1"));
+        } catch (Exception e) {
+            Log.Debug(this, "Unable to create DTA info");
+            dtaconf = null;
+        }
+    }
+}
+
+class DTAConfig {
+
+    private Konto bankAccount;
+    private List<String> usages;
+
+    /**
+     * @return the bankAccount
+     */
     public Konto getBankAccount() {
-        throw new UnsupportedOperationException("Not yet implemented");
+        return bankAccount;
+    }
+
+    /**
+     * @param bankAccount the bankAccount to set
+     */
+    public void setBankAccount(Konto bankAccount) {
+        this.bankAccount = bankAccount;
+    }
+
+    /**
+     * @return the usages
+     */
+    public List<String> getUsages() {
+        return usages;
     }
 }

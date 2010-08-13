@@ -58,7 +58,7 @@ public class Wizard extends javax.swing.JDialog implements WizardMaster {
         back.setEnabled(false);
         this.standalone = standalone;
         if (standalone) {
-            this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            this.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
         }
         level = 0;
     }

@@ -524,6 +524,7 @@ public class Item extends DatabaseObject implements Formattable {
             Log.Debug(this, ex.getMessage());
         }
 
+        //TODO convert to proper BigDecimal operations rather than * + etc
         map.put(TableHandler.KEY_TABLE + "1", list);
         map.put("netvalue", FormatNumber.formatDezimal(__getNetvalue()));
         map.put("taxvalue", FormatNumber.formatDezimal(__getTaxvalue()));

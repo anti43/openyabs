@@ -748,7 +748,7 @@ public class Main extends SingleFrameApplication {
             DatabaseConnection.instanceOf();
             return true;
         } catch (Exception ex) {
-            Log.Debug(this, "Could not connect to database.:\n" + ex);
+            Log.Debug(this, "Could not connect to database.: " + ex);
             return false;
         }
     }

@@ -20,14 +20,14 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import mpv5.db.common.Context;
 import mpv5.db.objects.Contact;
 import mpv5.db.objects.Item;
+import mpv5.db.objects.Tax;
 import mpv5.db.objects.User;
-import mpv5.globals.Messages;
 import mpv5.logging.Log;
 import mpv5.ui.frames.MPView;
-import mpv5.utils.date.DateConverter;
 import mpv5.utils.files.FileReaderWriter;
 import org.kapott.hbci.structures.Value;
 import org.kapott.hbci.swift.DTAUS;
@@ -59,18 +59,34 @@ public class DTAFile extends Exportable {
             Log.Debug(this, "All fields:");
             HashMap<String, Object> datas = getData();
 
-            DTAUS dta = new DTAUS(User.getCurrentUser().getBankAccount(), DTAUS.TYPE_DEBIT);
+            DTAUS dta = new DTAUS(User.getCurrentUser().getDTAAccount(), DTAUS.TYPE_DEBIT);
 
             for (Iterator<String> it = datas.keySet().iterator(); it.hasNext();) {
                 Item dbo = (Item) datas.get(it.next());
                 Contact c = (Contact) Item.getObject(Context.getContact(), dbo.__getContactsids());
                 DTAUS.Transaction t = dta.new Transaction();
-                t.addUsage(Messages.DTAUS_REASON.getValue());
-                t.addUsage(dbo.__getCnumber());
-                t.addUsage(DateConverter.getDefDateString(dbo.__getDateadded()));
+                List<String> usages = User.getCurrentUser().getDTAUsages();
+                for (int i = 0; i < usages.size(); i++) {
+                    String string = usages.get(i);
+                    t.addUsage(string);
+                }
                 t.internalCustomerId = c.__getCNumber().substring(c.__getCNumber().length() - 10, c.__getCNumber().length());
-                t.value = new Value(
-                        (dbo.__getNetvalue().add(dbo.__getTaxvalue().add(dbo.__getShippingvalue())).multiply(new BigDecimal("100")).longValueExact()));
+
+                BigDecimal value = null;
+
+                if (mpv5.db.objects.User.getCurrentUser().getProperties().hasProperty("shiptax")) {
+                    int taxid = mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("shiptax", new Integer(0));
+                    Double shiptax = Tax.getTaxValue(taxid).doubleValue();
+                    value = (dbo.__getTaxvalue().add(dbo.__getNetvalue()))
+                            .multiply((dbo.__getDiscountvalue().divide(new BigDecimal("100"), BigDecimal.ROUND_HALF_UP).subtract(BigDecimal.ONE)).multiply(new BigDecimal("-1")))
+                            .add((dbo.__getShippingvalue().multiply(BigDecimal.valueOf(shiptax).divide(new BigDecimal("100"), BigDecimal.ROUND_HALF_UP).add(dbo.__getShippingvalue()))));
+                } else {
+                    value = (dbo.__getTaxvalue().add(dbo.__getNetvalue()))
+                            .multiply((dbo.__getDiscountvalue().divide(new BigDecimal("100"), BigDecimal.ROUND_HALF_UP).subtract(BigDecimal.ONE)).multiply(new BigDecimal("-1")))
+                            .add(dbo.__getShippingvalue());
+                }
+
+                t.value = new Value(value.toPlainString());
 
                 dta.addEntry(t);
             }

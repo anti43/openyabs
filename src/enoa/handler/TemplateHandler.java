@@ -66,7 +66,7 @@ public class TemplateHandler {
     }
 
     /**
-     * Loads a template including neccesary files
+     * Loads a template including necessary files
      * @param target
      * @param groupsids
      * @param typ
@@ -377,7 +377,11 @@ public class TemplateHandler {
         Runnable runnable = new Runnable() {
 
             public void run() {
-                loadTemplate(dataOwner, dataOwner.__getGroupsids(), TYPE);
+                int group = 1;
+                if (dataOwner != null) {
+                    group = dataOwner.__getGroupsids();
+                }
+                loadTemplate(dataOwner, group, TYPE);
                 button.setEnabled(isLoaded(dataOwner, TYPE));
             }
         };
