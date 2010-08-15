@@ -48,8 +48,8 @@ import mpv5.pluginhandling.MPPLuginLoader;
 import mpv5.ui.dialogs.Popup;
 import mpv5.ui.dialogs.subcomponents.ControlPanel_Fonts;
 import mpv5.ui.frames.MPView;
+import mpv5.utils.dtaus.Konto;
 import mpv5.utils.text.TypeConversion;
-import org.kapott.hbci.structures.Konto;
 
 /**
  *
@@ -711,14 +711,13 @@ public class User extends DatabaseObject {
 
     private void defineDTAConfig() {
         try {
-            Konto acc = new Konto(getProperties().getProperty("dtabankcountry"), getProperties().getProperty("dtabankid"), getProperties().getProperty("dtabankaccount"));
+            Konto acc = new Konto( getProperties().getProperty("dtabankid"), getProperties().getProperty("dtabankaccount"),getProperties().getProperty("dtabankname"));
             acc.name = "bankname";
             dtaconf = new DTAConfig();
             dtaconf.setBankAccount(acc);
             dtaconf.getUsages().add(getProperties().getProperty("dtausage0"));
             dtaconf.getUsages().add(getProperties().getProperty("dtausage1"));
         } catch (Exception e) {
-            e.printStackTrace();
             Log.Debug(this, "Unable to create DTA info");
             dtaconf = null;
         }
