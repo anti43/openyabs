@@ -34,16 +34,17 @@ import mpv5.logging.Log;
 import mpv5.ui.frames.MPView;
 import mpv5.utils.dtaus.DTAus;
 import mpv5.utils.dtaus.Konto;
+import mpv5.utils.files.FileDirectoryHandler;
 import mpv5.utils.files.FileReaderWriter;
-
+import mpv5.utils.jobs.Waitable;
 
 /**
  *
  *  
  */
-public class DTAFile extends Exportable {
+public class DTAFile extends Exportable implements Waitable {
 
-    public DTAFile(String pathToFile) {
+    private DTAFile(String pathToFile) {
         super(pathToFile);
         if (!exists()) {
             try {
@@ -52,6 +53,11 @@ public class DTAFile extends Exportable {
                 Log.Debug(ex);
             }
         }
+    }
+
+    public DTAFile(HashMap<String, Object> map) {
+        this(FileDirectoryHandler.getTempFile("export", "dta").getAbsolutePath());
+        setData(map);
     }
 
     @Override
@@ -94,17 +100,13 @@ public class DTAFile extends Exportable {
                     int taxid = mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("shiptax", new Integer(0));
                     Double shiptax = Tax.getTaxValue(taxid).doubleValue();
                     value = //netvalue
-                            dbo.__getTaxvalue().add(dbo.__getNetvalue())
-                            //discount
-                            .multiply((dbo.__getDiscountvalue().divide(new BigDecimal("100"), 2, BigDecimal.ROUND_HALF_UP).subtract(BigDecimal.ONE)).multiply(new BigDecimal("-1")))
-//                            // shipping
+                            dbo.__getTaxvalue().add(dbo.__getNetvalue()) //discount
+                            .multiply((dbo.__getDiscountvalue().divide(new BigDecimal("100"), 2, BigDecimal.ROUND_HALF_UP).subtract(BigDecimal.ONE)).multiply(new BigDecimal("-1"))) //                            // shipping
                             .add((dbo.__getShippingvalue().multiply(BigDecimal.valueOf(shiptax).divide(new BigDecimal("100"), 2, BigDecimal.ROUND_HALF_UP).add(dbo.__getShippingvalue()))));
                 } else {
                     value = //netvalue
-                            dbo.__getTaxvalue().add(dbo.__getNetvalue())
-                            //discount
-                            .multiply((dbo.__getDiscountvalue().divide(new BigDecimal("100"), 2, BigDecimal.ROUND_HALF_UP).subtract(BigDecimal.ONE)).multiply(new BigDecimal("-1")))
-                            // shipping
+                            dbo.__getTaxvalue().add(dbo.__getNetvalue()) //discount
+                            .multiply((dbo.__getDiscountvalue().divide(new BigDecimal("100"), 2, BigDecimal.ROUND_HALF_UP).subtract(BigDecimal.ONE)).multiply(new BigDecimal("-1"))) // shipping
                             .add(dbo.__getShippingvalue());
                 }
 
@@ -121,12 +123,21 @@ public class DTAFile extends Exportable {
             }
 
             FileReaderWriter w = new FileReaderWriter(this);
-            w.write(dta.toString());
+            w.writeOnce(dta.toDTAstring());
 
         } catch (Exception ex) {
             Log.Debug(ex);
         } finally {
             MPView.setWaiting(false);
         }
+    }
+
+    public Exception waitFor() {
+        try {
+            new Thread(this).start();
+        } catch (Exception e) {
+            return e;
+        }
+        return null;
     }
 }

@@ -24,6 +24,7 @@ package mpv5.ui.beans;
 import java.awt.event.ItemEvent;
 import java.awt.print.PrinterException;
 import java.io.File;
+import java.lang.reflect.Method;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComboBox;
 import javax.swing.JTable;
@@ -196,4 +197,12 @@ public class PrinitingComboBox extends javax.swing.JPanel {
     private javax.swing.JComboBox jComboBox1;
     private javax.swing.JLabel jLabel1;
     // End of variables declaration//GEN-END:variables
+
+
+
+    public void addAction(Object source, Method method, Object message){
+
+
+
+    }
 }

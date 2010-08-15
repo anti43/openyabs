@@ -26,10 +26,13 @@ import enoa.handler.TemplateHandler;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.lang.reflect.Method;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Vector;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComponent;
 import javax.swing.SwingUtilities;
@@ -109,6 +112,13 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
         statusc.getComboBox().setModel(new DefaultComboBoxModel(new Object[]{Messages.ALL, Messages.STATUS_PAID, Messages.STATUS_UNPAID}));
 
         prinitingComboBox1.init(jTable1);
+//        try {
+//            prinitingComboBox1.addAction(this.getClass().getMethod("dta", null), Messages.DTAUS);
+//        } catch (NoSuchMethodException ex) {
+//            Logger.getLogger(JournalPanel.class.getName()).log(Level.SEVERE, null, ex);
+//        } catch (SecurityException ex) {
+//            Logger.getLogger(JournalPanel.class.getName()).log(Level.SEVERE, null, ex);
+//        }
         refresh(null);
         jButton4.setEnabled(false);
         loadTemplate();
@@ -490,40 +500,7 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
     }//GEN-LAST:event_jButton4ActionPerformed
 
     private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
-        if (jTable1.getSelectedRowCount() < 1) {
-            Popup.notice(Messages.SELECT_AN_INVOICE);
-
-        } else {
-            List<Item> items = new Vector<Item>();
-            for (int i = 0; i < jTable1.getSelectedRows().length; i++) {
-                try {
-                    DatabaseObject obj = DatabaseObject.getObject((Context) jTable1.getValueAt(jTable1.getSelectedRows()[i], 9), Integer.valueOf(jTable1.getValueAt(jTable1.getSelectedRows()[i], 0).toString()));
-                    if (obj.getContext().equals(Context.getItem())) {
-                        Item item = (Item) obj;
-                        if (item.__getIntstatus() != Item.STATUS_PAID) {
-                            items.add(item);
-                        }
-                    }
-                } catch (NodataFoundException ex) {
-                    Log.Debug(ex);
-                }
-            }
-
-            HashMap<String, Object> map = new HashMap<String, Object>();
-            for (int i = 0; i < items.size(); i++) {
-                Item item = items.get(i);
-                map.put(item.__getCnumber(), item);
-            }
-
-            DialogForFile d = new DialogForFile(DialogForFile.FILES_ONLY, "export.dta");
-            if (d.chooseFile()) {
-                DTAFile dta = new DTAFile(d.getFile().getPath());
-                dta.setData(map);
-                new Thread(dta).start();
-            }
-
-
-        }
+      dta();
 
     }//GEN-LAST:event_jButton5ActionPerformed
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -914,4 +891,39 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
         };
         new Thread(runnable).start();
     }
+
+    private void dta() {
+          if (jTable1.getSelectedRowCount() < 1) {
+            Popup.notice(Messages.SELECT_AN_INVOICE);
+
+        } else {
+            List<Item> items = new Vector<Item>();
+            for (int i = 0; i < jTable1.getSelectedRows().length; i++) {
+                try {
+                    DatabaseObject obj = DatabaseObject.getObject((Context) jTable1.getValueAt(jTable1.getSelectedRows()[i], 9), Integer.valueOf(jTable1.getValueAt(jTable1.getSelectedRows()[i], 0).toString()));
+                    if (obj.getContext().equals(Context.getItem())) {
+                        Item item = (Item) obj;
+                        if (item.__getIntstatus() != Item.STATUS_PAID) {
+                            items.add(item);
+                        }
+                    }
+                } catch (NodataFoundException ex) {
+                    Log.Debug(ex);
+                }
+            }
+
+            HashMap<String, Object> map = new HashMap<String, Object>();
+            for (int i = 0; i < items.size(); i++) {
+                Item item = items.get(i);
+                map.put(item.__getCnumber(), item);
+            }
+
+            DialogForFile d = new DialogForFile(DialogForFile.FILES_ONLY, "export.dta");
+            DTAFile dta = new DTAFile(map);
+            Job job = new Job(dta, d, d.getSelectedFile().getPath() + " " + Messages.SAVED);
+            job.execute();
+
+        }
+    }
+
 }
