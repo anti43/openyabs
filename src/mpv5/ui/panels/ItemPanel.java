@@ -263,7 +263,16 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
                         }
                     }
                 }
+                
+                if (dato.__getInttype() == Item.TYPE_BILL && !loading && dataOwner.isExisting() &&
+                        Integer.valueOf(status.getSelectedItem().getId()) == Item.STATUS_PAID ) {
+              
+                    //set dateend
+                    date3.setDate(new Date());
+                }
             }
+            
+            
         });
 
         new TableViewPersistenceHandler(itemtable, this, 0);

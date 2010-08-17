@@ -24,10 +24,14 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeSet;
 import java.util.concurrent.ConcurrentHashMap;
 import javax.swing.SwingUtilities;
 import mpv5.globals.Messages;
@@ -156,7 +160,6 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject> {
      * The unique id, or 0 if it is a new do
      */
     public Integer ids = 0;
-
     private boolean readOnly = false;
     private boolean active = true;
     /**
@@ -432,7 +435,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject> {
                         QueryHandler.instanceOf().clone(Context.getHistory()).insertHistoryItem(fmessage, mpv5.db.objects.User.getCurrentUser().__getCName(), fdbid, fids, fgids);
                     }
                 };
-                SwingUtilities.invokeLater(runnable);
+                new Thread(runnable).start();
             }
 
             return true;
@@ -653,6 +656,9 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject> {
                 Log.Debug(this, "GetPanelData: " + vars.get(i).getName().toLowerCase().substring(3, vars.get(i).getName().length()) + "_ : " + source.getClass().getField(vars.get(i).getName().toLowerCase().substring(3, vars.get(i).getName().length()) + "_").
                         getType().getName() + " [" + source.getClass().getField(vars.get(i).getName().toLowerCase().substring(3, vars.get(i).getName().length()) + "_").get(source) + "]");
                 vars.get(i).invoke(this, source.getClass().getField(vars.get(i).getName().toLowerCase().substring(3, vars.get(i).getName().length()) + "_").get(source));
+            } catch (java.lang.NoSuchFieldException nf) {
+                Log.Debug(this, "The view: " + source
+                        + " is missing a field: " + nf.getMessage());
             } catch (Exception n) {
                 Log.Debug(this, n);
             }
@@ -675,6 +681,9 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject> {
             try {
 //                Log.Debug(this, vars.get(i).getName());
                 target.getClass().getField(vars.get(i).getName().toLowerCase().substring(5, vars.get(i).getName().length()) + "_").set(target, vars.get(i).invoke(this, new Object[0]));
+            } catch (java.lang.NoSuchFieldException nf) {
+                Log.Debug(this, "The view: " + target
+                        + " is missing a field: " + nf.getMessage());
             } catch (Exception n) {
                 Log.Debug(this, n.getMessage() + " in " + target);
                 Log.Debug(n);
@@ -1259,6 +1268,35 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject> {
     }
 
     /**
+     * Creates a Set of Entries on runtime which reflect the actual Setters of the databaseObject child
+     * @return A set Set: String (cname), Class (java.lang.String)
+     */
+    public Set<Map.Entry<String, Class<?>>> getKeySet() {
+        Set<Map.Entry<String, Class<?>>> s = new HashSet<Map.Entry<String, Class<?>>>();
+        List<Method> vars = setVars();
+        for (int i = 0; i < vars.size(); i++) {
+            final Method method = vars.get(i);
+            s.add(new Map.Entry<String, Class<?>>() {
+
+                public String getKey() {
+                    return method.getName().substring(3);
+                }
+
+                public Class<?> getValue() {
+                    return method.getReturnType();
+                }
+
+                public Class<?> setValue(Class<?> value) {
+                    //value ignored. not going to set a class :-)
+                    return method.getReturnType();
+                }
+            });
+        }
+
+        return s;
+    }
+
+    /**
      * Tries to reflect the hash table into this do.
      * The hashtable's keys must match the methods retrieved by do.setVars()
      * @param values
@@ -1430,7 +1468,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject> {
             return EQUAL;
         }
 
-//This should yield to items grouped by context..
+        // items grouped by context..
         if (this.getContext().getId() < anotherObject.getContext().getId()) {
             return BEFORE;
         }
@@ -1467,8 +1505,6 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject> {
             return false;
         }
     }
-
-
 
     /**
      * @return the readOnly
@@ -1610,5 +1646,22 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject> {
         }
 
         return b;
+    }
+
+    /**
+     * Fetch the value of the given key
+     * @param key
+     * @return
+     * @throws Exception Thrown if the given key is invalid for this object during runtime
+     */
+    public Object getValue(String key) throws Exception {
+        List<Object[]> a = getValues2();
+        for (int i = 0; i < a.size(); i++) {
+            Object[] objects = a.get(i);
+            if (String.valueOf(objects[0]).equalsIgnoreCase(key)) {
+                return (String.valueOf(objects[1]).equals("null")) ? null : String.valueOf(objects[1]);
+            }
+        }
+        throw new UnsupportedOperationException(key + " not known in " + this);
     }
 }

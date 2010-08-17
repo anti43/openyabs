@@ -22,16 +22,22 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Vector;
 import mpv5.db.common.Context;
 import mpv5.db.objects.Contact;
 import mpv5.db.objects.Item;
 import mpv5.db.objects.Tax;
 import mpv5.db.objects.User;
+import mpv5.globals.Messages;
+import mpv5.handler.VariablesHandler;
 import mpv5.logging.Log;
+import mpv5.ui.dialogs.Popup;
 import mpv5.ui.frames.MPView;
+import mpv5.utils.date.DateConverter;
 import mpv5.utils.dtaus.DTAus;
 import mpv5.utils.dtaus.Konto;
 import mpv5.utils.files.FileDirectoryHandler;
@@ -56,7 +62,7 @@ public class DTAFile extends Exportable implements Waitable {
     }
 
     public DTAFile(HashMap<String, Object> map) {
-        this(FileDirectoryHandler.getTempFile("export", "dta").getAbsolutePath());
+        this(FileDirectoryHandler.getTempFile("export-" + DateConverter.getTodayDBDate(), "dtaus").getAbsolutePath());
         setData(map);
     }
 
@@ -70,19 +76,26 @@ public class DTAFile extends Exportable implements Waitable {
             Log.Debug(this, "All fields:");
             HashMap<String, Object> datas = getData();
 
-            DTAus dta = new DTAus(User.getCurrentUser().getDTAAccount(), "lk");
+            DTAus dta = null;
+            try {
+                dta = new DTAus(User.getCurrentUser().getDTAAccount(), "lk");
+            } catch (Exception e) {
+                Popup.notice(Messages.DTAUS_NOT_SET);
+                return;
+            }
+            List<String> control = new ArrayList<String>();
 
             for (Iterator<String> it = datas.keySet().iterator(); it.hasNext();) {
                 Item dbo = (Item) datas.get(it.next());
                 Contact c = (Contact) Item.getObject(Context.getContact(), dbo.__getContactsids());
 
-                Konto k = new Konto("59351040", "150001311", "Sparkasse");
+                Konto k = new Konto(c.__getBankid(), c.__getBankaccount(), c.__getBankname());
 //
                 DTAus.Transaction t = dta.new Transaction(k);
                 List<String> usages = User.getCurrentUser().getDTAUsages();
                 for (int i = 0; i < usages.size(); i++) {
                     String string = usages.get(i);
-                    t.addUsage(string);
+                    t.addUsage(VariablesHandler.parse(string, dbo));
                 }
 
                 String cid = "";
@@ -119,11 +132,13 @@ public class DTAFile extends Exportable implements Waitable {
                     f.setDecimalFormatSymbols(sym);
                     t.setValue(f.format(value.doubleValue()));
                     dta.addEntry(t);
+                    control.add(c.__getCName() + "\t" + c.__getBankaccount() + "\t" + c.__getBankname() + "\t" + dbo.__getCnumber() + "\t" + value.toPlainString());
                 }
             }
 
             FileReaderWriter w = new FileReaderWriter(this);
             w.writeOnce(dta.toDTAstring());
+            Popup.notice(control, Messages.DTAUS_CREATED);
 
         } catch (Exception ex) {
             Log.Debug(ex);

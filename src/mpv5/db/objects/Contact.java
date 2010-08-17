@@ -36,6 +36,11 @@ public class Contact extends DatabaseObject implements Formattable {
     private String notes = "";
     private String company = "";
     private String department = "";
+    private String bankaccount = "";
+    private String bankid = "";
+    private String bankname = "";
+    private String bankcurrency = "";
+    private String bankcountry = "";
     private boolean ismale = true;
     private boolean isenabled = true;
     private boolean iscompany = false;
@@ -489,6 +494,74 @@ public class Contact extends DatabaseObject implements Formattable {
     public void defineFormatHandler(FormatHandler handler) {
         formatHandler = handler;
     }
+
+    /**
+     * @return the bankaccount
+     */
+    public String __getBankaccount() {
+        return bankaccount;
+    }
+
+    /**
+     * @param bankaccount the bankaccount to set
+     */
+    public void setBankaccount(String bankaccount) {
+        this.bankaccount = bankaccount;
+    }
+
+    /**
+     * @return the bankid
+     */
+    public String __getBankid() {
+        return bankid;
+    }
+
+    /**
+     * @param bankid the bankid to set
+     */
+    public void setBankid(String bankid) {
+        this.bankid = bankid;
+    }
+
+    /**
+     * @return the bankname
+     */
+    public String __getBankname() {
+        return bankname;
+    }
+
+    /**
+     * @param bankname the bankname to set
+     */
+    public void setBankname(String bankname) {
+        this.bankname = bankname;
+    }
+
+    /**
+     * @return the bankcurrency
+     */
+    public String __getBankcurrency() {
+        return bankcurrency;
+    }
+
+    /**
+     * @param bankcurrency the bankcurrency to set
+     */
+    public void setBankcurrency(String bankcurrency) {
+        this.bankcurrency = bankcurrency;
+    }
+
+    /**
+     * @return the bankcountry
+     */
+    public String __getBankcountry() {
+        return bankcountry;
+    }
+
+    /**
+     * @param bankcountry the bankcountry to set
+     */
+    public void setBankcountry(String bankcountry) {
+        this.bankcountry = bankcountry;
+    }
 }
-
-

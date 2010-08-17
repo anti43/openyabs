@@ -5,12 +5,10 @@ import javax.swing.JCheckBox;
 import javax.swing.SwingUtilities;
 import mpv5.data.PropertyStore;
 import mpv5.db.common.Context;
-import mpv5.db.objects.User;
 import mpv5.globals.Messages;
 import mpv5.logging.Log;
 import mpv5.ui.beans.LightMPComboBox;
 import mpv5.ui.dialogs.ControlApplet;
-import mpv5.ui.dialogs.DialogForFile;
 import mpv5.ui.dialogs.Popup;
 import mpv5.ui.frames.MPView;
 import mpv5.ui.panels.MPControlPanel;
@@ -95,6 +93,14 @@ public class ControlPanel_Userproperties extends javax.swing.JPanel implements C
         saveformat = new mpv5.ui.beans.LabeledTextField();
         jScrollPane1 = new javax.swing.JScrollPane();
         jTextPane1 = new javax.swing.JTextPane();
+        jPanel10 = new javax.swing.JPanel();
+        dtabankid = new mpv5.ui.beans.LabeledTextField();
+        dtabankaccount = new mpv5.ui.beans.LabeledTextField();
+        dtabankname = new mpv5.ui.beans.LabeledTextField();
+        dtabankcountry = new mpv5.ui.beans.LabeledTextField();
+        jLabel4 = new javax.swing.JLabel();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        dtausage0 = new javax.swing.JTextPane();
         jPanel6 = new javax.swing.JPanel();
         jButton4 = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
@@ -145,13 +151,13 @@ public class ControlPanel_Userproperties extends javax.swing.JPanel implements C
             .addGroup(productstobillspropertiesLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(productstobillspropertiesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(cnumber, javax.swing.GroupLayout.DEFAULT_SIZE, 209, Short.MAX_VALUE)
-                    .addComponent(description, javax.swing.GroupLayout.DEFAULT_SIZE, 209, Short.MAX_VALUE)
-                    .addComponent(cname, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 209, Short.MAX_VALUE))
+                    .addComponent(cnumber, javax.swing.GroupLayout.DEFAULT_SIZE, 214, Short.MAX_VALUE)
+                    .addComponent(description, javax.swing.GroupLayout.DEFAULT_SIZE, 214, Short.MAX_VALUE)
+                    .addComponent(cname, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 214, Short.MAX_VALUE))
                 .addGap(8, 8, 8)
                 .addGroup(productstobillspropertiesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(ean, javax.swing.GroupLayout.DEFAULT_SIZE, 275, Short.MAX_VALUE)
-                    .addComponent(reference, javax.swing.GroupLayout.DEFAULT_SIZE, 275, Short.MAX_VALUE)
+                    .addComponent(ean, javax.swing.GroupLayout.DEFAULT_SIZE, 278, Short.MAX_VALUE)
+                    .addComponent(reference, javax.swing.GroupLayout.DEFAULT_SIZE, 278, Short.MAX_VALUE)
                     .addComponent(jButton3))
                 .addContainerGap())
         );
@@ -237,7 +243,7 @@ public class ControlPanel_Userproperties extends javax.swing.JPanel implements C
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addGap(24, 24, 24)
-                        .addComponent(format, javax.swing.GroupLayout.DEFAULT_SIZE, 490, Short.MAX_VALUE))
+                        .addComponent(format, javax.swing.GroupLayout.DEFAULT_SIZE, 498, Short.MAX_VALUE))
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addContainerGap()
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -337,12 +343,12 @@ public class ControlPanel_Userproperties extends javax.swing.JPanel implements C
                 .addContainerGap()
                 .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(labeledTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, 195, Short.MAX_VALUE))
+                    .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, 199, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(labeledTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 220, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(93, Short.MAX_VALUE))
+                .addContainerGap(97, Short.MAX_VALUE))
         );
         jPanel8Layout.setVerticalGroup(
             jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -397,7 +403,7 @@ public class ControlPanel_Userproperties extends javax.swing.JPanel implements C
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(smtppw, javax.swing.GroupLayout.PREFERRED_SIZE, 131, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(smtpuser, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 216, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(45, Short.MAX_VALUE))
+                .addContainerGap(53, Short.MAX_VALUE))
         );
         jPanel9Layout.setVerticalGroup(
             jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -434,15 +440,78 @@ public class ControlPanel_Userproperties extends javax.swing.JPanel implements C
 
         jPanel4.add(jScrollPane1, java.awt.BorderLayout.PAGE_START);
 
+        jPanel10.setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("ControlPanel_Userproperties.jPanel10.border.title"))); // NOI18N
+        jPanel10.setName("jPanel10"); // NOI18N
+
+        dtabankid.set_Label(bundle.getString("ControlPanel_Userproperties.dtabankid._Label")); // NOI18N
+        dtabankid.setName("dtabankid"); // NOI18N
+
+        dtabankaccount.set_Label(bundle.getString("ControlPanel_Userproperties.dtabankaccount._Label")); // NOI18N
+        dtabankaccount.setName("dtabankaccount"); // NOI18N
+
+        dtabankname.set_Label(bundle.getString("ControlPanel_Userproperties.dtabankname._Label")); // NOI18N
+        dtabankname.setName("dtabankname"); // NOI18N
+
+        dtabankcountry.set_Label(bundle.getString("ControlPanel_Userproperties.dtabankcountry._Label")); // NOI18N
+        dtabankcountry.setName("dtabankcountry"); // NOI18N
+
+        jLabel4.setText(bundle.getString("ControlPanel_Userproperties.jLabel4.text")); // NOI18N
+        jLabel4.setName("jLabel4"); // NOI18N
+
+        jScrollPane2.setName("jScrollPane2"); // NOI18N
+
+        dtausage0.setText("Invoice from {item.dateadded} ref {item.cnumber}"); // NOI18N
+        dtausage0.setName("dtausage0"); // NOI18N
+        jScrollPane2.setViewportView(dtausage0);
+
+        javax.swing.GroupLayout jPanel10Layout = new javax.swing.GroupLayout(jPanel10);
+        jPanel10.setLayout(jPanel10Layout);
+        jPanel10Layout.setHorizontalGroup(
+            jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel10Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                    .addGroup(jPanel10Layout.createSequentialGroup()
+                        .addComponent(jLabel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 426, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel10Layout.createSequentialGroup()
+                        .addComponent(dtabankid, javax.swing.GroupLayout.PREFERRED_SIZE, 247, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(dtabankname, javax.swing.GroupLayout.PREFERRED_SIZE, 247, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel10Layout.createSequentialGroup()
+                        .addComponent(dtabankaccount, javax.swing.GroupLayout.PREFERRED_SIZE, 247, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(dtabankcountry, javax.swing.GroupLayout.PREFERRED_SIZE, 247, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(22, Short.MAX_VALUE))
+        );
+        jPanel10Layout.setVerticalGroup(
+            jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel10Layout.createSequentialGroup()
+                .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(dtabankid, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(dtabankname, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(dtabankcountry, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(dtabankaccount, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel4)
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 33, Short.MAX_VALUE))
+                .addContainerGap())
+        );
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(jPanel3, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 540, Short.MAX_VALUE)
-            .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, 540, Short.MAX_VALUE)
+            .addComponent(jPanel3, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 544, Short.MAX_VALUE)
+            .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, 544, Short.MAX_VALUE)
             .addComponent(jPanel8, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addComponent(jPanel9, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(jPanel10, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -455,8 +524,10 @@ public class ControlPanel_Userproperties extends javax.swing.JPanel implements C
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel8, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jPanel10, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel9, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(15, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         add(jPanel1, java.awt.BorderLayout.CENTER);
@@ -555,6 +626,11 @@ public class ControlPanel_Userproperties extends javax.swing.JPanel implements C
     private mpv5.ui.beans.LabeledCombobox deftax;
     private mpv5.ui.beans.LabeledTextField defunit;
     private javax.swing.JCheckBox description;
+    private mpv5.ui.beans.LabeledTextField dtabankaccount;
+    private mpv5.ui.beans.LabeledTextField dtabankcountry;
+    private mpv5.ui.beans.LabeledTextField dtabankid;
+    private mpv5.ui.beans.LabeledTextField dtabankname;
+    private javax.swing.JTextPane dtausage0;
     private javax.swing.JCheckBox ean;
     private mpv5.ui.beans.LabeledTextField format;
     private javax.swing.JCheckBox hideproductscolumn;
@@ -567,7 +643,9 @@ public class ControlPanel_Userproperties extends javax.swing.JPanel implements C
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
     private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel10;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
@@ -575,6 +653,7 @@ public class ControlPanel_Userproperties extends javax.swing.JPanel implements C
     private javax.swing.JPanel jPanel8;
     private javax.swing.JPanel jPanel9;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JTextPane jTextPane1;
     private mpv5.ui.beans.LabeledTextField labeledTextField1;
     private mpv5.ui.beans.LabeledTextField labeledTextField2;
@@ -639,7 +718,14 @@ public class ControlPanel_Userproperties extends javax.swing.JPanel implements C
             mpv5.db.objects.User.getCurrentUser().getProperties().changeProperty("smtp.host.usetls", Boolean.toString(smtptls.isSelected()));
             mpv5.db.objects.User.getCurrentUser().getProperties().changeProperty("smtp.host.usesmpts", Boolean.toString(smtps.isSelected()));
 
+            mpv5.db.objects.User.getCurrentUser().getProperties().changeProperty("dtabankaccount", dtabankaccount.getText());
+            mpv5.db.objects.User.getCurrentUser().getProperties().changeProperty("dtabankid", dtabankid.getText());
+            mpv5.db.objects.User.getCurrentUser().getProperties().changeProperty("dtabankname", dtabankname.getText());
+            mpv5.db.objects.User.getCurrentUser().getProperties().changeProperty("dtabankcountry", dtabankcountry.getText());
+            mpv5.db.objects.User.getCurrentUser().getProperties().changeProperty("dtausage0", dtausage0.getText());
+
             mpv5.db.objects.User.getCurrentUser().defineMailConfig();
+            mpv5.db.objects.User.getCurrentUser().defineDTAConfig();
         } catch (Exception e) {
             Log.Debug(e);
         }
@@ -668,7 +754,11 @@ public class ControlPanel_Userproperties extends javax.swing.JPanel implements C
         companiesovernames.setSelected(mpv5.db.objects.User.getCurrentUser().getProperties().getProperty(MPView.getTabPane(), "companiesovernames"));
         hidetaxcolumn.setSelected(mpv5.db.objects.User.getCurrentUser().getProperties().getProperty(MPView.getTabPane(), "hidetaxcolumn"));
         pasten.setSelected(mpv5.db.objects.User.getCurrentUser().getProperties().getProperty(MPView.getTabPane(), "pasten"));
-
+        dtabankaccount.setText(mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("dtabankaccount"));
+        dtabankid.setText(mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("dtabankid"));
+        dtabankname.setText(mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("dtabankname"));
+        dtabankcountry.setText(mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("dtabankcountry"));
+        dtausage0.setText(mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("dtausage0"));
 
         Component[] t = productstobillsproperties.getComponents();
         for (int i = 0; i < t.length; i++) {

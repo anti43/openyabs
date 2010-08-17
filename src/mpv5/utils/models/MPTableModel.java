@@ -22,12 +22,16 @@ import java.util.List;
 import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.DefaultCellEditor;
 
 import javax.swing.Icon;
+import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
+import javax.swing.JTextField;
 import javax.swing.event.TableModelEvent;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableCellEditor;
 import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
 import mpv5.db.common.NodataFoundException;
@@ -36,6 +40,7 @@ import mpv5.globals.Headers;
 import mpv5.logging.Log;
 import mpv5.utils.arrays.ArrayUtilities;
 import mpv5.utils.numberformat.FormatNumber;
+import mpv5.utils.renderer.TableCellEditorForDezimal;
 import mpv5.utils.tables.TableCalculator;
 
 /**
@@ -222,7 +227,12 @@ public class MPTableModel extends DefaultTableModel {
     @Override
     public Class getColumnClass(int columnIndex) {
         getTypes()[columnIndex].toString();//Check for non-null
-        return getTypes()[columnIndex];
+        //not sortable
+        if (getTypes()[columnIndex].equals(void.class)) {
+            return Object.class;
+        } else {
+            return getTypes()[columnIndex];
+        }
     }
 
     @Override
@@ -248,7 +258,7 @@ public class MPTableModel extends DefaultTableModel {
      * 
      * @param types
      */
-    public void setTypes(Class[] types) {
+    public void setTypes(Class... types) {
         this.types = types;
     }
 
@@ -260,14 +270,13 @@ public class MPTableModel extends DefaultTableModel {
         return canEdits;
     }
 
-    /**
-     * 
-     * @param canEdits
-     */
-    public void setCanEdits(boolean[] canEdits) {
-        this.canEdits = canEdits;
-    }
-
+//    /**
+//     *
+//     * @param canEdits
+//     */
+//    public void setCanEdits(boolean[] canEdits) {
+//        this.canEdits = canEdits;
+//    }
     /**
      * 
      * @return
@@ -587,7 +596,24 @@ public class MPTableModel extends DefaultTableModel {
     }
 
     /**
-     * Default Renderers
+     * Set the editable columns
+     * @param editable
+     */
+    public void setCanEdits(boolean... editable) {
+        this.canEdits = editable;
+    }
+
+    public static TableCellEditor getTablecCellEditorFor(Class<?> clazz) {
+
+        if (clazz.isAssignableFrom(Number.class)) {
+            return new TableCellEditorForDezimal(new JFormattedTextField());
+        } else {
+            return new DefaultCellEditor(new JTextField());
+        }
+    }
+
+    /**
+     * Default renderers
      **/
     public static class NumberRenderer extends DefaultTableCellRenderer.UIResource {
 

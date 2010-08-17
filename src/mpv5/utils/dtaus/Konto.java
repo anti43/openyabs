@@ -29,7 +29,7 @@ import de.frame4j.util.TextHelper;
  *  <br />
  *  Objects of this class represent one customer's banking account.<br />
  *  <br />
- *  Diese Klasse repr�sentiert eine einzelne Kontoverbindung eines Kunden
+ *  Diese Klasse reprsentiert eine einzelne Kontoverbindung eines Kunden
  *  bei seiner Bank.<br />
  *  <br />
  *  <br />
@@ -44,12 +44,12 @@ import de.frame4j.util.TextHelper;
 //           V.13   (22.11.2008 16.32) : cvs -> SVN; Fehl. korr.
 public final class Konto implements Serializable {
 
-    /** L�nderkennzeichen des Kontos. <br />
+    /** Lnderkennzeichen des Kontos. <br />
      *  <br />
      *  default: DE (Deutschland) <br />
      */
     public String country = "DE";
-    private String blz;  // �nderbar aber nie null
+    private String blz;  // nderbar aber nie null
     private int blzNum;
 
     /** Bankleitzahl des Kontos. <br />
@@ -193,18 +193,18 @@ public final class Konto implements Serializable {
      *  default und i.A.: null <br />
      */
     public String subnumber;
-    /** W�hrung des Kontos. <br />
+    /** Whrung des Kontos. <br />
      *  <br />
-     *  default: <code>EUR</code> f�r Euro. <br />
+     *  default: <code>EUR</code> fr Euro. <br />
      */
     public String curr = "EUR";
-    /** Kunden-ID f�r HBCI. <br />
+    /** Kunden-ID fr HBCI. <br />
      *  <br />
      *  Dieser Wert gibt an, unter welcher Kunden-ID ein Bankkunde HBCI-Zugriff
      *  auf dieses Konto hat. Ohne HBCI-Zugriff ist und bleibt dieser Wert
      *  null.<br />
      *  <br />
-     *  Wert, default: null (nur f�r zuk�nftige Entwicklung)
+     *  Wert, default: null (nur fr zuknftige Entwicklung)
      */
     public String customerid;
     /** Name des Kontoinhabers. <br />
@@ -221,14 +221,14 @@ public final class Konto implements Serializable {
     public String name2;
     /** Beschreibung des Kontos (optional). <br />
      *  <br />
-     *  Ohne Bedeutung f�r DTA.<br />
+     *  Ohne Bedeutung fr DTA.<br />
      *  default: null
      */
     public String descr;
 
     /** Anlegen eines neuen Konto-Objekts. <br />
      *  <br />
-     *  W�hrungseinstellung ist Euro.<br />
+     *  Whrungseinstellung ist Euro.<br />
      *  <br />
      */
     public Konto(String blz, String number, CharSequence name) {
@@ -269,7 +269,7 @@ public final class Konto implements Serializable {
         if (this.numb != acc.numb) {
             return false;
         }
-        // bis hierher m�sste reichen BLZ + Konto !!!
+        // bis hierher msste reichen BLZ + Konto !!!
 
         if (this.curr == null ? acc.curr != null : !this.curr.equals(acc.curr)) {
             if (this.curr == null || !this.curr.equals(acc.curr)) {

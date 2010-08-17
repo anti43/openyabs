@@ -28,11 +28,8 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.io.File;
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JPopupMenu;
@@ -66,6 +63,7 @@ import mpv5.utils.date.DateConverter;
 import mpv5.utils.files.FileDirectoryHandler;
 import mpv5.utils.models.MPComboBoxModelItem;
 import mpv5.utils.models.MPTableModel;
+import mpv5.utils.print.PrintJob;
 import mpv5.utils.tables.TableFormat;
 import mpv5.utils.ui.TextFieldUtils;
 
@@ -352,6 +350,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
         jButton3 = new javax.swing.JButton();
         jSeparator3 = new javax.swing.JToolBar.Separator();
         prinitingComboBox1 = new mpv5.ui.beans.PrinitingComboBox();
+        jButton6 = new javax.swing.JButton();
         addresspanel = new javax.swing.JTabbedPane();
         jPanel2 = new javax.swing.JPanel();
         title = new mpv5.ui.beans.LabeledTextField();
@@ -368,7 +367,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
         button_order1 = new javax.swing.JButton();
         toolbarpane = new javax.swing.JPanel();
 
-        java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle(); // NOI18N
+        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("mpv5/resources/languages/Panels"); // NOI18N
         setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("ContactPanel.border.title"))); // NOI18N
         setName("Form"); // NOI18N
         setLayout(new java.awt.BorderLayout());
@@ -721,7 +720,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
                         .addComponent(button_products)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(button_orders)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 290, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 280, Short.MAX_VALUE)
                         .addComponent(jButton1)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(addfile, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -743,7 +742,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
                     .addComponent(removefile, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(addfile, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 83, Short.MAX_VALUE)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 70, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -835,6 +834,18 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
 
         prinitingComboBox1.setName("prinitingComboBox1"); // NOI18N
         jToolBar1.add(prinitingComboBox1);
+
+        jButton6.setText(bundle.getString("ContactPanel.jButton6.text")); // NOI18N
+        jButton6.setFocusable(false);
+        jButton6.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        jButton6.setName("jButton6"); // NOI18N
+        jButton6.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        jButton6.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton6ActionPerformed(evt);
+            }
+        });
+        jToolBar1.add(jButton6);
 
         addresspanel.setBackground(new java.awt.Color(255, 255, 255));
         addresspanel.setAutoscrolls(true);
@@ -1204,13 +1215,23 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
         if (website.hasText()) {
             try {
-                Desktop.getDesktop().browse(new URI("http://" + website.getText()));
+                Desktop.getDesktop().browse(new URI("http://" + website.getText().replace("http://", "")));
             } catch (Exception ex) {
                 Log.Debug(ex);
                 Popup.error(ex);
             }
         }
     }//GEN-LAST:event_jButton4ActionPerformed
+
+    private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
+        try {
+////            PropertiesPanel p = new PropertiesPanel(Context.getContact(), dataOwner.__getIDS(), false);
+//            BigPopup.showPopup(p);
+//            BigPopup.setOnTop(p);
+        } catch (Exception ex) {
+            Log.Debug(ex);
+        }
+    }//GEN-LAST:event_jButton6ActionPerformed
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel addedby;
     private javax.swing.JButton addfile;
@@ -1242,6 +1263,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
     private javax.swing.JButton jButton3;
     private javax.swing.JButton jButton4;
     private javax.swing.JButton jButton5;
+    private javax.swing.JButton jButton6;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JPanel jPanel1;
@@ -1557,10 +1579,17 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
     }
 
     public void mail() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        try {
+            Desktop.getDesktop().mail(new URI("mailto:" + dataOwner.__getMailaddress()));
+        } catch (Exception uRISyntaxException) {
+            Log.Debug(this, uRISyntaxException.getMessage());
+            Popup.error(uRISyntaxException);
+        }
     }
 
     public void print() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        if (dataOwner.isExisting()) {
+            new PrintJob().print(dataOwner);
+        }
     }
 }

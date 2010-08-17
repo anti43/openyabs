@@ -150,6 +150,7 @@ public abstract class FileDirectoryHandler {
      */
     public static URI copyFile(File sourceFile, File targetDirectory, String targetFilename, boolean deleteOnExit)
             throws IOException {
+        targetFilename = check(targetFilename);
         return copyFile(sourceFile, targetDirectory, targetFilename, deleteOnExit, true);
     }
 
@@ -165,6 +166,7 @@ public abstract class FileDirectoryHandler {
      */
     public static URI copyFile(File sourceFile, File targetDirectory, String targetFilename, boolean deleteOnExit, boolean silent)
             throws IOException {
+        targetFilename = check(targetFilename);
         FileOutputStream out = null;
         InputStream in = new FileInputStream(sourceFile);
         File outp = null;
@@ -355,6 +357,7 @@ public abstract class FileDirectoryHandler {
      */
     public static File tempFileClone(File file, String suffix) {
         try {
+            suffix = check(suffix);
             cacheCheck();
             File fil = new File(copyFile(file, new File(LocalSettings.getProperty(LocalSettings.CACHE_DIR)), new RandomText().getString() + "." + suffix, true));
             fil.deleteOnExit();
@@ -371,6 +374,7 @@ public abstract class FileDirectoryHandler {
      * @return
      */
     public static File getTempFile(String suffix) {
+        suffix = check(suffix);
         return getTempFile(new RandomText(18).getString(), suffix);
     }
 
@@ -379,7 +383,7 @@ public abstract class FileDirectoryHandler {
      * @return A temporary file with MP suffix (~mp)
      */
     public static File getTempFile() {
-        return getTempFile("~mp");
+        return getTempFile("~yabs");
     }
 
     /**
@@ -390,6 +394,8 @@ public abstract class FileDirectoryHandler {
      */
     public static File getTempFile(String filename, String suffix) {
         cacheCheck();
+        filename = check(filename);
+        suffix = check(suffix);
         File fil = new File(LocalSettings.getProperty(LocalSettings.CACHE_DIR) + File.separator + filename + "." + suffix);
         fil.deleteOnExit();
         return fil;
@@ -421,6 +427,7 @@ public abstract class FileDirectoryHandler {
      *  Marco Schmidt
      */
     public static File download(String address, String localFileName) {
+        localFileName = check(localFileName);
         OutputStream out = null;
         URLConnection conn = null;
         InputStream in = null;
@@ -520,6 +527,10 @@ public abstract class FileDirectoryHandler {
         if (!e.exists()) {
             e.mkdirs();
         }
+    }
+
+    private static String check(String filename) {
+        return filename.replaceAll("[?:\\\\/*\\\"\\\"<>|]", "-");
     }
 
 }

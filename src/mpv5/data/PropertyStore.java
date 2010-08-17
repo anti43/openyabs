@@ -16,12 +16,15 @@
  */
 package mpv5.data;
 
+import java.awt.Component;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import javax.swing.JCheckBox;
 import javax.swing.JComponent;
 import mpv5.logging.Log;
+import mpv5.ui.panels.JournalPanel;
 import mpv5.utils.date.DateConverter;
 
 /**
@@ -227,8 +230,21 @@ public class PropertyStore {
      * @param type
      * @return
      */
-    public synchronized <T extends Object> T getProperty(JComponent comp, String source, T type) {
+    public synchronized <T extends Object> T getProperty(Component comp, String source, T type) {
         return getProperty(comp.getClass().getName() + "$" + source, type);
+    }
+
+     /**
+     * Convenience method to retrieve visual component properties stored as
+     * <br/>comp.getClass().getName() + "$" + source
+     * @param <T>
+     * @param comp
+      * @param target
+      * @param type
+     * @return
+     */
+    public synchronized <T extends Object> T getProperty(Component comp, Component target, T type) {
+        return getProperty(comp.getClass().getName() + "$" + target.getName(), type);
     }
 
     /**
@@ -280,6 +296,30 @@ public class PropertyStore {
     }
 
     /**
+     * Changes the given property, if exists and
+     * creates a new, if not. Stored as comp.getClass().getName() + "$" + source
+     * @param comp
+     * @param source
+     * @param newvalue
+     */
+    public synchronized void changeProperty(Component comp, Component source, Object newvalue) {
+        boolean found = false;
+        if (list.size() > 0) {
+            for (int i = list.size(); i > 0; i--) {
+                if (list.get(i - 1)[0].equalsIgnoreCase(comp.getClass().getName() + "$" + source.getName())) {
+                    list.set(i - 1, new String[]{comp.getClass().getName() + "$" + source.getName(), String.valueOf(newvalue)});
+                    found = true;
+                    setChanged(true);
+                    Log.Debug(this, "Change property: " + list.get(i - 1)[1] + " for " + comp.getClass().getName() + "$" + source.getName());
+                }
+            }
+        }
+        if (!found) {
+            addProperty(comp.getClass().getName() + "$" + source.getName(), String.valueOf(newvalue));
+        }
+    }
+
+    /**
      * Returns True if the local property store does contain a value with the given key name
      * @param propertyname
      * @return True if the key exists
@@ -326,4 +366,6 @@ public class PropertyStore {
         }
         setChanged(true);
     }
+
+
 }

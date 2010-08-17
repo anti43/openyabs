@@ -24,7 +24,9 @@ package mpv5.ui.toolbars;
 import java.awt.Component;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemListener;
+import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
+import mpv5.db.common.QueryHandler;
 import mpv5.globals.Messages;
 import mpv5.db.objects.Favourite;
 import mpv5.logging.Log;
@@ -449,6 +451,19 @@ public class DataPanelTB extends javax.swing.JPanel implements ActionListener, I
         DatabaseObject dato = parents.getDataOwner();
         if (dato.isExisting()) {
             parents.print();
+
+            final String fmessage = Messages.PRINTED + dato.__getCName();
+            final String fdbid = dato.getDbIdentity();
+            final int fids = dato.__getIDS();
+            final int fgids = dato.__getGroupsids();
+            Runnable runnable = new Runnable() {
+
+                @Override
+                public void run() {
+                    QueryHandler.instanceOf().clone(Context.getHistory()).insertHistoryItem(fmessage, mpv5.db.objects.User.getCurrentUser().__getCName(), fdbid, fids, fgids);
+                }
+            };
+            new Thread(runnable).start();
         }
 }//GEN-LAST:event_printButtonActionPerformed
 
@@ -499,6 +514,18 @@ public class DataPanelTB extends javax.swing.JPanel implements ActionListener, I
         DatabaseObject dato = parents.getDataOwner();
         if (dato.isExisting() && parents instanceof ExportablePanel) {
             ((ExportablePanel) parents).pdf();
+            final String fmessage = Messages.PDF + dato.__getCName();
+            final String fdbid = dato.getDbIdentity();
+            final int fids = dato.__getIDS();
+            final int fgids = dato.__getGroupsids();
+            Runnable runnable = new Runnable() {
+
+                @Override
+                public void run() {
+                    QueryHandler.instanceOf().clone(Context.getHistory()).insertHistoryItem(fmessage, mpv5.db.objects.User.getCurrentUser().__getCName(), fdbid, fids, fgids);
+                }
+            };
+            new Thread(runnable).start();
         }
 
     }//GEN-LAST:event_pdfButtonActionPerformed
@@ -507,6 +534,18 @@ public class DataPanelTB extends javax.swing.JPanel implements ActionListener, I
         DatabaseObject dato = parents.getDataOwner();
         if (dato.isExisting()) {
             ((ExportablePanel) parents).odt();
+            final String fmessage = Messages.ODT + dato.__getCName();
+            final String fdbid = dato.getDbIdentity();
+            final int fids = dato.__getIDS();
+            final int fgids = dato.__getGroupsids();
+            Runnable runnable = new Runnable() {
+
+                @Override
+                public void run() {
+                    QueryHandler.instanceOf().clone(Context.getHistory()).insertHistoryItem(fmessage, mpv5.db.objects.User.getCurrentUser().__getCName(), fdbid, fids, fgids);
+                }
+            };
+            new Thread(runnable).start();
         }
 
     }//GEN-LAST:event_odtButtonActionPerformed
@@ -602,7 +641,7 @@ public class DataPanelTB extends javax.swing.JPanel implements ActionListener, I
         return printButton;
     }
 
-       /**
+    /**
      * @return the pdfButton
      */
     public javax.swing.JButton getSaveButton() {

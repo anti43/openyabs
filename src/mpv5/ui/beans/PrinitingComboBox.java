@@ -199,10 +199,4 @@ public class PrinitingComboBox extends javax.swing.JPanel {
     // End of variables declaration//GEN-END:variables
 
 
-
-    public void addAction(Object source, Method method, Object message){
-
-
-
-    }
 }

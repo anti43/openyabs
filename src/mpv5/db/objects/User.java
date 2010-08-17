@@ -709,14 +709,15 @@ public class User extends DatabaseObject {
         return dtaconf.getUsages();
     }
 
-    private void defineDTAConfig() {
+    public void defineDTAConfig() {
         try {
-            Konto acc = new Konto( getProperties().getProperty("dtabankid"), getProperties().getProperty("dtabankaccount"),getProperties().getProperty("dtabankname"));
-            acc.name = "bankname";
+            Konto acc = new Konto( getProperties().getProperty("dtabankid"), 
+                    getProperties().getProperty("dtabankaccount"),
+                    getProperties().getProperty("dtabankname"));
+            acc.name = __getFullname();
             dtaconf = new DTAConfig();
             dtaconf.setBankAccount(acc);
             dtaconf.getUsages().add(getProperties().getProperty("dtausage0"));
-            dtaconf.getUsages().add(getProperties().getProperty("dtausage1"));
         } catch (Exception e) {
             Log.Debug(this, "Unable to create DTA info");
             dtaconf = null;

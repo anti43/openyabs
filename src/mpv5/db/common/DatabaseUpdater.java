@@ -42,6 +42,13 @@ public class DatabaseUpdater {
         UPDATES_DERBY.put(1.16, new String[]{
                     "ALTER TABLE products ADD COLUMN productlistsids BIGINT DEFAULT 0",
                 });
+        UPDATES_DERBY.put(1.17, new String[]{
+                    "ALTER TABLE contacts ADD COLUMN bankaccount VARCHAR(250) DEFAULT NULL",
+                    "ALTER TABLE contacts ADD COLUMN bankid VARCHAR(250) DEFAULT NULL",
+                    "ALTER TABLE contacts ADD COLUMN bankname VARCHAR(250) DEFAULT NULL",
+                    "ALTER TABLE contacts ADD COLUMN bankcurrency VARCHAR(250) DEFAULT NULL",
+                    "ALTER TABLE contacts ADD COLUMN bankcountry VARCHAR(250) DEFAULT NULL",
+                });
         ////////////////////////////////////////////////////////////////////////////////////////////
         // mysql updates
         UPDATES_MYSQL.put(1.11, new String[]{
@@ -78,6 +85,14 @@ public class DatabaseUpdater {
                 });
         UPDATES_MYSQL.put(1.16, new String[]{
                     "ALTER TABLE products ADD COLUMN productlistsids BIGINT(20) UNSIGNED DEFAULT 0",
+                });
+
+        UPDATES_MYSQL.put(1.17, new String[]{
+                    "ALTER TABLE contacts ADD COLUMN bankaccount VARCHAR(250) DEFAULT NULL",
+                    "ALTER TABLE contacts ADD COLUMN bankid VARCHAR(250) DEFAULT NULL",
+                    "ALTER TABLE contacts ADD COLUMN bankname VARCHAR(250) DEFAULT NULL",
+                    "ALTER TABLE contacts ADD COLUMN bankcurrency VARCHAR(250) DEFAULT NULL",
+                    "ALTER TABLE contacts ADD COLUMN bankcountry VARCHAR(250) DEFAULT NULL",
                 });
     }
 

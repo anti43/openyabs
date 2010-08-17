@@ -176,8 +176,8 @@ public class Context {
             IDENTITY_ITEMS + "." + "taxvalue, " +
             IDENTITY_ITEMS + "." + "datetodo";
     public static String DETAILS_JOURNAL = IDENTITY_ITEMS + "." + "IDS," +
-//            IDENTITY_ITEMS + "." + "dateadded," +
-            IDENTITY_ITEMS + "." + "dateend," +
+            IDENTITY_ITEMS + "." + "{date}," +
+//            IDENTITY_ITEMS + "." + "dateend," +
             IDENTITY_GROUPS + "." + "CNAME," +
             IDENTITY_ACCOUNTS + "." + "cname," +
             IDENTITY_ITEMS + "." + "CNAME," +

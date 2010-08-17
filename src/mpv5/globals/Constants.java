@@ -37,7 +37,7 @@ public interface Constants {
     /**
      * The minimal Database Version which is compatible with this release
      */
-    public static final Double DATABASE_VERSION = 1.16;
+    public static final Double DATABASE_VERSION = 1.17;
     /**
      * The max Database Version which is compatible with this release
      */
@@ -55,7 +55,7 @@ public interface Constants {
      *
      * Alias
      */
-    public static final String TITLE = "[Summer Breeze]";
+    public static final String TITLE = "[Me & My Monkey]";
     /**
      *
      * Name of the main JAR

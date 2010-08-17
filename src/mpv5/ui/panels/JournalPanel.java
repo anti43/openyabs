@@ -51,6 +51,7 @@ import mpv5.db.objects.Group;
 import mpv5.db.objects.Item;
 import mpv5.db.objects.Revenue;
 import mpv5.db.objects.Template;
+import mpv5.db.objects.User;
 import mpv5.globals.Messages;
 import mpv5.logging.Log;
 import mpv5.ui.beans.MPCombobox;
@@ -101,6 +102,7 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
         jTabbedPane1.setSelectedComponent(jPanel4);
         validate();
         timeframeChooser1.setTime(new vTimeframe(DateConverter.getDate(DateConverter.getYear()), new Date()));
+        bydateend.setSelected(User.getCurrentUser().getProperties().getProperty(this, bydateend, Boolean.TRUE));
 
         groups.setSearchEnabled(true);
         groups.setContext(Context.getGroup());
@@ -186,12 +188,12 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
         accountsp = new javax.swing.JPanel();
         account1 = new mpv5.ui.beans.MPCombobox();
         jLabel7 = new javax.swing.JLabel();
+        bydateend = new javax.swing.JCheckBox();
         jPanel3 = new javax.swing.JPanel();
         jButton4 = new javax.swing.JButton();
         prinitingComboBox1 = new mpv5.ui.beans.PrinitingComboBox();
         revenue = new mpv5.ui.beans.LabeledTextField();
         volume = new mpv5.ui.beans.LabeledTextField();
-        jButton5 = new javax.swing.JButton();
 
         setName("Form"); // NOI18N
 
@@ -230,7 +232,6 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
             }
         ));
         jTable1.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_ALL_COLUMNS);
-        jTable1.setCellSelectionEnabled(true);
         jTable1.setFillsViewportHeight(true);
         jTable1.setName("jTable1"); // NOI18N
         jTable1.setSelectionMode(javax.swing.ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
@@ -315,6 +316,14 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
         jLabel7.setText(bundle.getString("JournalPanel.jLabel7.text")); // NOI18N
         jLabel7.setName("jLabel7"); // NOI18N
 
+        bydateend.setText(bundle.getString("JournalPanel.bydateend.text")); // NOI18N
+        bydateend.setName("bydateend"); // NOI18N
+        bydateend.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                bydateendItemStateChanged(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
@@ -331,7 +340,6 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 269, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(timeframeChooser1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(statusc, javax.swing.GroupLayout.PREFERRED_SIZE, 243, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 242, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -340,10 +348,15 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
                         .addComponent(jButton3)
                         .addGap(18, 18, 18)
                         .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 83, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addComponent(groups, javax.swing.GroupLayout.PREFERRED_SIZE, 243, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(includechildgroups, javax.swing.GroupLayout.PREFERRED_SIZE, 176, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                        .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel2Layout.createSequentialGroup()
+                            .addComponent(statusc, javax.swing.GroupLayout.PREFERRED_SIZE, 243, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                            .addComponent(bydateend, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel2Layout.createSequentialGroup()
+                            .addComponent(groups, javax.swing.GroupLayout.PREFERRED_SIZE, 243, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                            .addComponent(includechildgroups, javax.swing.GroupLayout.PREFERRED_SIZE, 176, javax.swing.GroupLayout.PREFERRED_SIZE))))
                 .addContainerGap(171, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
@@ -364,7 +377,8 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
                     .addComponent(statusc, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel6))
+                    .addComponent(jLabel6)
+                    .addComponent(bydateend))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
@@ -396,14 +410,6 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
         volume.set_Label(bundle.getString("JournalPanel.volume._Label")); // NOI18N
         volume.setName("volume"); // NOI18N
 
-        jButton5.setText(bundle.getString("JournalPanel.jButton5.text")); // NOI18N
-        jButton5.setName("jButton5"); // NOI18N
-        jButton5.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton5ActionPerformed(evt);
-            }
-        });
-
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
@@ -413,9 +419,7 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
                 .addComponent(prinitingComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 196, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jButton4)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jButton5)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 67, Short.MAX_VALUE)
                 .addComponent(volume, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(revenue, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -429,8 +433,7 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
                     .addComponent(prinitingComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(volume, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(revenue, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton4, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton5, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jButton4, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -499,21 +502,20 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
         preview();
     }//GEN-LAST:event_jButton4ActionPerformed
 
-    private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
-      dta();
-
-    }//GEN-LAST:event_jButton5ActionPerformed
+    private void bydateendItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_bydateendItemStateChanged
+        User.getCurrentUser().getProperties().changeProperty(this, bydateend, bydateend.isSelected());
+    }//GEN-LAST:event_bydateendItemStateChanged
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private mpv5.ui.beans.MPCombobox account1;
     private javax.swing.JPanel accountsp;
     private javax.swing.ButtonGroup buttonGroup1;
+    private javax.swing.JCheckBox bydateend;
     private mpv5.ui.beans.MPCombobox groups;
     private javax.swing.JCheckBox includechildgroups;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
     private javax.swing.JButton jButton4;
-    private javax.swing.JButton jButton5;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
@@ -662,7 +664,11 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
                             c.addReference(Context.getContact());
                         }
                         try {
-                            d = QueryHandler.instanceOf().clone(c).select(Context.DETAILS_JOURNAL, dh, timeframeChooser1.getTime(), "dateend").getData();
+                            String datecriterium = "dateadded";
+                            if (bydateend.isSelected()) {
+                                datecriterium = "dateend";
+                            }
+                            d = QueryHandler.instanceOf().clone(c).select(Context.DETAILS_JOURNAL.replace("{date}", datecriterium), dh, timeframeChooser1.getTime(), datecriterium).getData();
                         } catch (NodataFoundException nodataFoundException) {
                             d = new Object[0][10];
                         }
@@ -805,49 +811,85 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
     }
 
     private void setPopup() {
-        TablePopUp tablePopUp = new TablePopUp(jTable1, new String[]{Messages.DELETE.toString(), Messages.CHANGE_STATUS.toString(), null, Messages.RELOAD.getValue()}, new ActionListener[]{new ActionListener() {
+        TablePopUp tablePopUp = new TablePopUp(jTable1,
+                new String[]{Messages.DELETE.toString(),
+                    Messages.CHANGE_STATUS.toString(),
+                    null, Messages.RELOAD.getValue(),
+                    null, Messages.DTA_CREATE.getValue()
+                },
+                new ActionListener[]{new ActionListener() {
 
                 public void actionPerformed(ActionEvent e) {
-                    for (int i = 0; i < jTable1.getSelectedRows().length; i++) {
-                        try {
-                            DatabaseObject obj = DatabaseObject.getObject((Context) jTable1.getValueAt(jTable1.getSelectedRows()[i], 9), Integer.valueOf(jTable1.getValueAt(jTable1.getSelectedRows()[i], 0).toString()));
-                            obj.delete();
-                        } catch (NodataFoundException ex) {
-                            Log.Debug(ex);
+                    if (Popup.Y_N_dialog(Messages.REALLY_DELETE2 + " (" + jTable1.getSelectedRowCount() + ")")) {
+                        for (int i = 0; i < jTable1.getSelectedRows().length; i++) {
+                            try {
+                                DatabaseObject obj = DatabaseObject.getObject((Context) jTable1.getValueAt(jTable1.getSelectedRows()[i], 9), Integer.valueOf(jTable1.getValueAt(jTable1.getSelectedRows()[i], 0).toString()));
+                                obj.delete();
+                                jTable1.getSelectionModel().removeSelectionInterval(jTable1.getSelectedRows()[i] - 1, jTable1.getSelectedRows()[i]);
+                            } catch (NodataFoundException ex) {
+                                Log.Debug(ex);
+                            }
                         }
+                        setData();
                     }
-                    setData();
                 }
             }, new ActionListener() {
 
                 public void actionPerformed(ActionEvent e) {
+                    int count = 0;
                     for (int i = 0; i < jTable1.getSelectedRows().length; i++) {
                         try {
                             DatabaseObject obj = DatabaseObject.getObject((Context) jTable1.getValueAt(jTable1.getSelectedRows()[i], 9), Integer.valueOf(jTable1.getValueAt(jTable1.getSelectedRows()[i], 0).toString()));
                             if (obj.getContext().equals(Context.getItem())) {
                                 Item item = (Item) obj;
-                                if (item.__getIntstatus() == Item.STATUS_PAID) {
-                                    item.setIntstatus(Item.STATUS_FINISHED);
-                                    item.save();
-                                } else {
-                                    item.setIntstatus(Item.STATUS_PAID);
-                                    item.save();
+                                if (item.__getIntstatus() != Item.STATUS_PAID) {
+                                    count++;
                                 }
-                            } else if (obj.getContext().equals(Context.getRevenue())) {
-                            } else if (obj.getContext().equals(Context.getExpense())) {
                             }
                         } catch (NodataFoundException ex) {
                             Log.Debug(ex);
                         }
                     }
-                    setData();
+                    if (Popup.Y_N_dialog(Messages.REALLY_CHANGE2 + " (" + count + ")")) {
+                        for (int i = 0; i < jTable1.getSelectedRows().length; i++) {
+                            try {
+                                DatabaseObject obj = DatabaseObject.getObject((Context) jTable1.getValueAt(jTable1.getSelectedRows()[i], 9), Integer.valueOf(jTable1.getValueAt(jTable1.getSelectedRows()[i], 0).toString()));
+                                if (obj.getContext().equals(Context.getItem())) {
+                                    Item item = (Item) obj;
+                                    if (item.__getIntstatus() == Item.STATUS_PAID) {
+//                                    item.setIntstatus(Item.STATUS_FINISHED);
+//                                    item.save();
+                                    } else {
+                                        item.setIntstatus(Item.STATUS_PAID);
+                                        item.save();
+                                        jTable1.getSelectionModel().removeSelectionInterval(jTable1.getSelectedRows()[i] - 1, jTable1.getSelectedRows()[i]);
+                                    }
+                                } else if (obj.getContext().equals(Context.getRevenue())) {
+                                } else if (obj.getContext().equals(Context.getExpense())) {
+                                }
+                            } catch (NodataFoundException ex) {
+                                Log.Debug(ex);
+                            }
+                        }
+                        setData();
+                    }
                 }
-            }, null, new ActionListener() {
+            },
+                    null,
+                    new ActionListener() {
 
-                public void actionPerformed(ActionEvent e) {
-                    setData();
-                }
-            }});
+                        public void actionPerformed(ActionEvent e) {
+                            setData();
+                        }
+                    },
+                    null,
+                    new ActionListener() {
+
+                        public void actionPerformed(ActionEvent e) {
+                            dta();
+                        }
+                    }
+                });
     }
 
     private void setData() {
@@ -893,7 +935,7 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
     }
 
     private void dta() {
-          if (jTable1.getSelectedRowCount() < 1) {
+        if (jTable1.getSelectedRowCount() < 1) {
             Popup.notice(Messages.SELECT_AN_INVOICE);
 
         } else {
@@ -918,12 +960,11 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
                 map.put(item.__getCnumber(), item);
             }
 
-            DialogForFile d = new DialogForFile(DialogForFile.FILES_ONLY, "export.dta");
+            DialogForFile d = new DialogForFile(DialogForFile.FILES_ONLY);
             DTAFile dta = new DTAFile(map);
-            Job job = new Job(dta, d, d.getSelectedFile().getPath() + " " + Messages.SAVED);
+            Job job = new Job(dta, d, d.getFile().getPath() + " " + Messages.SAVED);
             job.execute();
 
         }
     }
-
 }

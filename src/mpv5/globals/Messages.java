@@ -234,8 +234,18 @@ public enum Messages {
     SEARCHABLE("This is a search-enabled field - type a phrase and hit 'Enter'"),
     TYPE_PRODUCT_ORDER("Product Order"),
     BOM_CREATED("A new product has been created out of this productlist and is now ready to be used: "), 
-    DTAUS_REASON("Invoice number: "), 
+    DTAUS_REASON("Invoice number: "),
+    DTAUS_CREATED("The following entries have been created \n(only unpaid invoices with a value >0.15 have been used):"),
     SELECT_AN_INVOICE("You need to select at least one invoice to export."),
+    DTAUS_NOT_SET("Your user account is missing mandatory banking information for DTA file creation."),
+    PROPERTY("Property"),
+    VALUE("Value"), 
+    DTA_CREATE("Create DTAUS"),
+    REALLY_DELETE2("Do you really want to delete all selected datasets?"),
+    REALLY_CHANGE2("Do you really want to set a selected, yet unpaid invoices to status 'Paid'?"),
+    PRINTED("Printed item: "),
+    ODT("Created .odt file from item: "),
+    PDF("Created .pdf file from item: "),
     ;
 
     private Messages(String message) {
