@@ -50,7 +50,7 @@ public class DatabaseUpdater {
                     "ALTER TABLE contacts ADD COLUMN bankcountry VARCHAR(250) DEFAULT NULL",
                 });
         UPDATES_DERBY.put(1.171, new String[]{
-                    "ALTER TABLE items DROPCOLUMN discountvalue",
+                    "ALTER TABLE items DROP COLUMN discountvalue",
                 });
         ////////////////////////////////////////////////////////////////////////////////////////////
         // mysql updates
@@ -98,7 +98,7 @@ public class DatabaseUpdater {
                     "ALTER TABLE contacts ADD COLUMN bankcountry VARCHAR(250) DEFAULT NULL",
                 });
         UPDATES_MYSQL.put(1.171, new String[]{
-                    "ALTER TABLE items DROPCOLUMN discountvalue",
+                    "ALTER TABLE items DROP COLUMN discountvalue",
                 });
     }
 
