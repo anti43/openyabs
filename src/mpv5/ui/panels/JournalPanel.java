@@ -962,7 +962,7 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
 
             DialogForFile d = new DialogForFile(DialogForFile.FILES_ONLY);
             DTAFile dta = new DTAFile(map);
-            Job job = new Job(dta, d, d.getFile().getPath() + " " + Messages.SAVED);
+            Job job = new Job(dta, d, "DTAUS " + Messages.SAVED);
             job.execute();
 
         }
