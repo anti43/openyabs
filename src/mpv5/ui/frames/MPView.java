@@ -422,11 +422,11 @@ public class MPView extends FrameView {
     }
 
     /**
-     * Sets the curser to waiting state if true
+     * Sets the cursor to waiting state if true
      * @param truee
      */
     public static void setWaiting(boolean truee) {
-        if (Main.INSTANTIATED) {
+        if (Main.INSTANTIATED && getIdentifierFrame()!=null) {
             if (truee) {
                 getIdentifierFrame().setCursor(new Cursor(Cursor.WAIT_CURSOR));
             } else {

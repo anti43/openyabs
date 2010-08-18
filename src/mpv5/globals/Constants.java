@@ -100,10 +100,14 @@ public interface Constants {
         "Christian Gabel",
         "Daniel Lang",
         "Daniel Kulesz",
+        "Denny Beyer",
         "Michael Stibane",
         "Sven Lindenhahn",
         "Uwe Stark",
         "P.Heller",
         "Jean-Christoph von Oertzen"};
+    public static String LANGUAGES_DIR = "languages";
+    public static String PLUGINS_DIR = "plugins";
+    public static String TEMPLATES_DIR = "templates";
 
 }

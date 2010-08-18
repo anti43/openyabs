@@ -245,7 +245,10 @@ public enum Messages {
     REALLY_CHANGE2("Do you really want to set a selected, yet unpaid invoices to status 'Paid'?"),
     PRINTED("Printed item: "),
     ODT("Created .odt file from item: "),
-    PDF("Created .pdf file from item: "),
+    PDF("Created .pdf file from item: "), 
+    IMPORT_LANGUAGES("Checking for additional languages"),
+    IMPORT_PLUGINS("Checking for additional plugins"),
+    IMPORT_TEMPLATES("Checking for additional templates"),
     ;
 
     private Messages(String message) {

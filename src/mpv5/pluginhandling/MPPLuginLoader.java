@@ -24,6 +24,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.net.URLStreamHandlerFactory;
@@ -79,6 +80,21 @@ public class MPPLuginLoader {
             Log.Debug(e);
         }
         return img;
+    }
+
+    public static void importPlugin(String name, File file) throws FileNotFoundException {
+        MP5Plugin pl = new MPPLuginLoader().checkPlugin(file);
+        if (pl != null) {
+            String s = name;
+            if (s != null) {
+                String filename = QueryHandler.instanceOf().clone(Context.getFiles()).insertFile(file);
+                Plugin p = new Plugin();
+                p.setDescription(s);
+                p.setCName("Plugin: " + pl.getName());
+                p.setFilename(filename);
+                p.save();
+            }
+        }
     }
 
     /**

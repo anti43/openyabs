@@ -10,6 +10,7 @@ import javax.swing.JComponent;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import javax.swing.UIManager;
+import javax.swing.UIManager.LookAndFeelInfo;
 import javax.swing.table.DefaultTableModel;
 import mpv5.data.PropertyStore;
 import mpv5.db.common.Context;
@@ -721,7 +722,13 @@ public class ControlPanel_Users extends javax.swing.JPanel implements ControlApp
                 MPComboBoxModelItem.toItems(new DatabaseSearch(Context.getAccounts()).getValuesFor(Context.getAccounts().getSubID(), null, ""))));
         statuslist.setModel(MPComboBoxModelItem.toModel(Item.getStatusStrings()));
 
-        laf.setModel(new DefaultComboBoxModel(new String[]{UIManager.getSystemLookAndFeelClassName(), UIManager.getCrossPlatformLookAndFeelClassName()}));
+        LookAndFeelInfo[] lfs = UIManager.getInstalledLookAndFeels();
+        String[] lnfs = new String[lfs.length];
+        for (int i = 0; i < lnfs.length; i++) {
+            lnfs[i] = lfs[i].getClassName();
+        }
+
+        laf.setModel(new DefaultComboBoxModel(lnfs));
 
         TableFormat.stripFirstColumn(jTable1);
         TableFormat.format(jTable1, 1, 120);
@@ -758,7 +765,7 @@ public class ControlPanel_Users extends javax.swing.JPanel implements ControlApp
 
     @Override
     public void actionAfterSave() {
-        throw new UnsupportedOperationException("Not supported yet.");
+      
     }
 
     @Override
@@ -766,11 +773,11 @@ public class ControlPanel_Users extends javax.swing.JPanel implements ControlApp
     }
 
     public void actionBeforeCreate() {
-        throw new UnsupportedOperationException("Not supported yet.");
+     
     }
 
     public void actionBeforeSave() {
-        throw new UnsupportedOperationException("Not supported yet.");
+     
     }
 
     public void mail() {

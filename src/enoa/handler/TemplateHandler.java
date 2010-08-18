@@ -1,5 +1,6 @@
 package enoa.handler;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -11,12 +12,14 @@ import mpv5.db.common.DatabaseObject;
 import mpv5.db.common.NodataFoundException;
 import mpv5.db.common.QueryHandler;
 import mpv5.db.common.ReturnValue;
+import mpv5.db.common.SaveString;
 import mpv5.db.objects.*;
 import mpv5.globals.LocalSettings;
 import mpv5.globals.Messages;
 import mpv5.handler.MPEnum;
 import mpv5.logging.Log;
 import mpv5.ui.frames.MPView;
+import mpv5.ui.panels.DataPanel;
 import mpv5.usermanagement.MPSecurityManager;
 import mpv5.utils.export.ODTFile;
 import mpv5.utils.export.PDFFile;
@@ -440,5 +443,30 @@ public class TemplateHandler {
             }
         };
         new Thread(runnable).start();
+    }
+
+    /**
+     * Imports a template file
+     * @param file
+     * @return
+     */
+    public static boolean importTemplate(File file) {
+        Template t = new Template();
+
+        return QueryHandler.instanceOf().clone(Context.getFiles(), (DataPanel)null).insertFile(file, t, new SaveString(file.getName(), true));
+
+//                User object = mpv5.db.objects.User.getCurrentUser();
+//
+//                QueryCriteria d = new QueryCriteria();
+//                d.add("cname", dataOwner.__getIDS() + "@" + object.__getIDS() + "@" + mpv5.db.objects.User.getCurrentUser().__getGroupsids());
+//                QueryHandler.instanceOf().clone(Context.getTemplatesToUsers()).delete(d);
+//
+//                QueryData c = new QueryData();
+//                c.add("usersids", object.__getIDS());
+//                c.add("templatesids", dataOwner.__getIDS());
+//                c.add("groupsids", mpv5.db.objects.User.getCurrentUser().__getGroupsids());
+//                c.add("cname", dataOwner.__getIDS() + "@" + object.__getIDS() + "@" + mpv5.db.objects.User.getCurrentUser().__getGroupsids());
+//                QueryHandler.instanceOf().clone(Context.getTemplatesToUsers()).insert(c, null);
+
     }
 }

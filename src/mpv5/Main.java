@@ -58,6 +58,8 @@ import mpv5.db.objects.User;
 import mpv5.globals.GlobalSettings;
 import mpv5.handler.Scheduler;
 import mpv5.i18n.LanguageManager;
+import mpv5.pluginhandling.MP5Plugin;
+import mpv5.pluginhandling.Plugin;
 import mpv5.pluginhandling.UserPlugin;
 import mpv5.server.MPServer;
 import mpv5.ui.dialogs.LoginToInstanceScreen;
@@ -138,6 +140,65 @@ public class Main extends SingleFrameApplication {
         } catch (Exception ex) {
             Log.Debug(Main.class, ex.getMessage());
         }
+    }
+
+    private static void readImports() {
+        splash.nextStep(Messages.IMPORT_LANGUAGES.toString());
+        File ilang = new File(Constants.LANGUAGES_DIR);
+        try {
+            Log.Debug(Main.class, "Checking: " + ilang.getPath());
+            if (ilang.isDirectory() && ilang.canRead()) {
+                File[] languages = FileDirectoryHandler.getFilesOfDirectory(ilang);
+                for (int i = 0; i < languages.length; i++) {
+                    File file = languages[i];
+                    if (QueryHandler.instanceOf().clone(Context.getLanguage()).checkUniqueness("longname", file.getName())){
+                    Log.Debug(Main.class, "Importing: " + file.getPath());
+                    LanguageManager.importLanguage(file.getName(), file);
+                    }
+                    file.deleteOnExit();
+                }
+            }
+        } catch (Exception e) {
+            Log.Debug(e);
+            Popup.error(e);
+        }
+
+        splash.nextStep(Messages.IMPORT_TEMPLATES.toString());
+        File itemp = new File(Constants.TEMPLATES_DIR);
+        try {
+            Log.Debug(Main.class, "Checking: " + itemp.getPath());
+            if (itemp.isDirectory() && itemp.canRead()) {
+                File[] templates = FileDirectoryHandler.getFilesOfDirectory(itemp);
+                for (int i = 0; i < templates.length; i++) {
+                    File file = templates[i];
+                    Log.Debug(Main.class, "Importing: " + file.getPath());
+                    TemplateHandler.importTemplate(file);
+                    file.deleteOnExit();
+                }
+            }
+        } catch (Exception e) {
+            Log.Debug(e);
+            Popup.error(e);
+        }
+
+        splash.nextStep(Messages.IMPORT_PLUGINS.toString());
+        File iplug = new File(Constants.TEMPLATES_DIR);
+        try {
+            Log.Debug(Main.class, "Checking: " + iplug.getPath());
+            if (iplug.isDirectory() && iplug.canRead()) {
+                File[] plugins = FileDirectoryHandler.getFilesOfDirectory(iplug);
+                for (int i = 0; i < plugins.length; i++) {
+                    File file = plugins[i];
+                    Log.Debug(Main.class, "Importing: " + file.getPath());
+                    MPPLuginLoader.importPlugin(file.getName(), file);
+                    file.deleteOnExit();
+                }
+            }
+        } catch (Exception e) {
+            Log.Debug(e);
+            Popup.error(e);
+        }
+
     }
     private File lockfile = new File(MPPATH + File.separator + "." + Constants.PROG_NAME + "." + "lck");
 
@@ -263,7 +324,7 @@ public class Main extends SingleFrameApplication {
         LanguageManager.getBundle();
         try {
             splash = new SplashScreen(new ImageIcon(Main.class.getResource(mpv5.globals.Constants.SPLASH_IMAGE)));
-            splash.init(8);
+            splash.init(11);
             Log.Print(Messages.START_MESSAGE);
 
             splash.nextStep(Messages.INIT.toString());
@@ -272,6 +333,7 @@ public class Main extends SingleFrameApplication {
             parseArgs(args);
             readLocalSettings();
             setDerbyLog();
+            readImports();
             start();
         } catch (Exception e) {
             throw e;
@@ -484,7 +546,7 @@ public class Main extends SingleFrameApplication {
                 try {
                     String[] parameters = String.valueOf(cl.getValue(params)).split(";");
 
-                    for (int i = 0; i< parameters.length; i++) {
+                    for (int i = 0; i < parameters.length; i++) {
                         String[] opt = parameters[i].split(":");
                         String key = opt[0];
                         String val = opt[1];

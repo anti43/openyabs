@@ -311,8 +311,9 @@ public class LanguageManager {
      * Imports a language file to DB
      * @param langname
      * @param file
+     * @throws UnsupportedOperationException
      */
-    public static void importLanguage(String langname, File file) {
+    public static void importLanguage(String langname, File file) throws UnsupportedOperationException {
         String langid = new RandomText(10).getString();
 
         if (hasNeededKeys(file, true)) {
@@ -322,7 +323,7 @@ public class LanguageManager {
                 try {
                     Thread.sleep(3333);
                 } catch (InterruptedException ex) {
-                    Logger.getLogger(LanguageManager.class.getName()).log(Level.SEVERE, null, ex);
+                    Log.Debug(ex);
                 }
                 QueryData t = new QueryData();
                 t.add("cname", langid);
@@ -340,6 +341,9 @@ public class LanguageManager {
                 }
             } catch (FileNotFoundException ex) {
                 Log.Debug(LanguageManager.class, ex);
+            } catch (Exception x) {
+                //insert was not possible
+                throw new UnsupportedOperationException("Language could not be inserted, file already exists!?");
             }
 
         }
