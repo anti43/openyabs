@@ -178,7 +178,7 @@ public class Item extends DatabaseObject implements Formattable {
     private BigDecimal netvalue = new BigDecimal("0");
     private BigDecimal taxvalue = new BigDecimal("0");
     private BigDecimal shippingvalue = new BigDecimal("0");
-    private BigDecimal discountvalue = new BigDecimal("0");
+//    private BigDecimal discountvalue = new BigDecimal("0");
     private Date datetodo;
     private Date dateend;
     private int intreminders;
@@ -220,14 +220,14 @@ public class Item extends DatabaseObject implements Formattable {
     /**
      * @return the taxvalue
      */
-    public BigDecimal  __getTaxvalue() {
+    public BigDecimal __getTaxvalue() {
         return taxvalue;
     }
 
     /**
      * @param taxvalue the taxvalue to set
      */
-    public void setTaxvalue(BigDecimal  taxvalue) {
+    public void setTaxvalue(BigDecimal taxvalue) {
         this.taxvalue = taxvalue;
     }
 
@@ -365,7 +365,7 @@ public class Item extends DatabaseObject implements Formattable {
     /**
      * @return the netvalue
      */
-    public BigDecimal  __getNetvalue() {
+    public BigDecimal __getNetvalue() {
         return netvalue;
     }
 
@@ -529,29 +529,18 @@ public class Item extends DatabaseObject implements Formattable {
         map.put("netvalue", FormatNumber.formatDezimal(__getNetvalue()));
         map.put("taxvalue", FormatNumber.formatDezimal(__getTaxvalue()));
         map.put("grosvalue", FormatNumber.formatDezimal(__getTaxvalue().doubleValue() + __getNetvalue().doubleValue()));
-        map.put("discountnetvalue", FormatNumber.formatDezimal(__getNetvalue().doubleValue() * ((__getDiscountvalue().doubleValue() / 100 - 1) * -1)));
-        map.put("discountnetdifference", FormatNumber.formatDezimal(__getNetvalue().doubleValue() * (__getDiscountvalue().doubleValue() / 100)));
-        map.put("discountgrosvalue", FormatNumber.formatDezimal((__getTaxvalue().doubleValue() + __getNetvalue().doubleValue()) * ((__getDiscountvalue().doubleValue() / 100 - 1) * -1)));
-        map.put("discountgrosdifferenence", FormatNumber.formatDezimal((__getTaxvalue().doubleValue() + __getNetvalue().doubleValue()) * (__getDiscountvalue().doubleValue() / 100)));
-        map.put("discounttaxvalue", FormatNumber.formatDezimal(__getTaxvalue().doubleValue() * ((__getDiscountvalue().doubleValue() / 100 - 1) * -1)));
-        map.put("shippednetvalue", FormatNumber.formatDezimal(__getNetvalue().doubleValue() * ((__getDiscountvalue().doubleValue() / 100 - 1) * -1) + __getShippingvalue().doubleValue()));
+        map.put("shippednetvalue", FormatNumber.formatDezimal(__getNetvalue().doubleValue() + __getShippingvalue().doubleValue()));
 
-        map.put("shippedtaxvalue", FormatNumber.formatDezimal(__getTaxvalue().doubleValue() * ((__getDiscountvalue().doubleValue() / 100 - 1) * -1)));
-        map.put("shippedgrosvalue", FormatNumber.formatDezimal((__getTaxvalue().doubleValue() + __getNetvalue().doubleValue()) * ((__getDiscountvalue().doubleValue() / 100 - 1) * -1) + __getShippingvalue().doubleValue()));
+        map.put("shippedtaxvalue", FormatNumber.formatDezimal(__getTaxvalue().doubleValue()));
+        map.put("shippedgrosvalue", FormatNumber.formatDezimal((__getTaxvalue().doubleValue() + __getNetvalue().doubleValue()) + __getShippingvalue().doubleValue()));
         map.put("shippingvalue", FormatNumber.formatDezimal(__getShippingvalue()));
         map.put("shippingvaluef", FormatNumber.formatLokalCurrency(__getShippingvalue()));
         map.put("netvaluef", FormatNumber.formatLokalCurrency(__getNetvalue()));
         map.put("taxvaluef", FormatNumber.formatLokalCurrency(__getTaxvalue().doubleValue()));
         map.put("grosvaluef", FormatNumber.formatLokalCurrency(__getTaxvalue().doubleValue() + __getNetvalue().doubleValue()));
-        map.put("discountvaluef", FormatNumber.formatPercent(__getDiscountvalue()));
-        map.put("discountnetvaluef", FormatNumber.formatLokalCurrency(__getNetvalue().doubleValue() * ((__getDiscountvalue().doubleValue() / 100 - 1) * -1)));
-        map.put("discountnetdifferencef", FormatNumber.formatLokalCurrency(__getNetvalue().doubleValue() * (__getDiscountvalue().doubleValue() / 100)));
-        map.put("discountgrosvaluef", FormatNumber.formatLokalCurrency((__getTaxvalue().doubleValue() + __getNetvalue().doubleValue()) * ((__getDiscountvalue().doubleValue() / 100 - 1) * -1)));
-        map.put("discountgrosdifferenencef", FormatNumber.formatLokalCurrency((__getTaxvalue().doubleValue() + __getNetvalue().doubleValue()) * (__getDiscountvalue().doubleValue() / 100)));
-        map.put("discounttaxvaluef", FormatNumber.formatLokalCurrency(__getTaxvalue().doubleValue() * ((__getDiscountvalue().doubleValue() / 100 - 1) * -1)));
-        map.put("shippednetvaluef", FormatNumber.formatLokalCurrency(__getNetvalue().doubleValue() * ((__getDiscountvalue().doubleValue() / 100 - 1) * -1) + __getShippingvalue().doubleValue()));
-        map.put("shippedtaxvaluef", FormatNumber.formatLokalCurrency(__getTaxvalue().doubleValue() * ((__getDiscountvalue().doubleValue() / 100 - 1) * -1)));
-        map.put("shippedgrosvaluef", FormatNumber.formatLokalCurrency(((__getTaxvalue().doubleValue() + __getNetvalue().doubleValue()) * ((__getDiscountvalue().doubleValue() / 100 - 1) * -1)) + __getShippingvalue().doubleValue()));
+        map.put("shippednetvaluef", FormatNumber.formatLokalCurrency(__getNetvalue().doubleValue() + __getShippingvalue().doubleValue()));
+        map.put("shippedtaxvaluef", FormatNumber.formatLokalCurrency(__getTaxvalue().doubleValue()));
+        map.put("shippedgrosvaluef", FormatNumber.formatLokalCurrency(((__getTaxvalue().doubleValue() + __getNetvalue().doubleValue())) + __getShippingvalue().doubleValue()));
 
         if (mpv5.db.objects.User.getCurrentUser().getProperties().hasProperty("shiptax")) {
             int taxid = mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("shiptax", new Integer(0));
@@ -561,10 +550,10 @@ public class Item extends DatabaseObject implements Formattable {
             map.put("shippingtaxpercentvaluef", FormatNumber.formatPercent(shiptax));
             map.put("shippinggrosvalue", __getShippingvalue().doubleValue() * (shiptax / 100) + __getShippingvalue().doubleValue());
             map.put("shippinggrosvaluef", FormatNumber.formatLokalCurrency(__getShippingvalue().doubleValue() * (shiptax / 100) + __getShippingvalue().doubleValue()));
-            map.put("shippedtaxvalue", __getTaxvalue().doubleValue() * ((__getDiscountvalue().doubleValue() / 100 - 1) * -1) + __getShippingvalue().doubleValue() * (shiptax / 100));
-            map.put("shippedtaxvaluef", FormatNumber.formatLokalCurrency(__getTaxvalue().doubleValue() * ((__getDiscountvalue().doubleValue() / 100 - 1) * -1) + __getShippingvalue().doubleValue() * (shiptax / 100)));
-            map.put("shippedgrosvalue", (__getTaxvalue().doubleValue() + __getNetvalue().doubleValue()) * ((__getDiscountvalue().doubleValue() / 100 - 1) * -1) + __getShippingvalue().doubleValue() * (shiptax / 100) + __getShippingvalue().doubleValue());
-            map.put("shippedgrosvaluef", FormatNumber.formatLokalCurrency(((__getTaxvalue().doubleValue() + __getNetvalue().doubleValue()) * ((__getDiscountvalue().doubleValue() / 100 - 1) * -1)) + __getShippingvalue().doubleValue() * (shiptax / 100) + __getShippingvalue().doubleValue()));
+            map.put("shippedtaxvalue", __getTaxvalue().doubleValue() + __getShippingvalue().doubleValue() * (shiptax / 100));
+            map.put("shippedtaxvaluef", FormatNumber.formatLokalCurrency(__getTaxvalue().doubleValue() + __getShippingvalue().doubleValue() * (shiptax / 100)));
+            map.put("shippedgrosvalue", (__getTaxvalue().doubleValue() + __getNetvalue().doubleValue()) + __getShippingvalue().doubleValue() * (shiptax / 100) + __getShippingvalue().doubleValue());
+            map.put("shippedgrosvaluef", FormatNumber.formatLokalCurrency(((__getTaxvalue().doubleValue() + __getNetvalue().doubleValue())) + __getShippingvalue().doubleValue() * (shiptax / 100) + __getShippingvalue().doubleValue()));
         }
         //date format localization
         if (mpv5.db.objects.User.getCurrentUser().getProperties().hasProperty("item.date.locale")) {
@@ -593,24 +582,23 @@ public class Item extends DatabaseObject implements Formattable {
     /**
      * @param shippingvalue the shippingvalue to set
      */
-    public void setShippingvalue(BigDecimal  shippingvalue) {
+    public void setShippingvalue(BigDecimal shippingvalue) {
         this.shippingvalue = shippingvalue;
     }
 
-    /**
-     * @return the discountvalue
-     */
-    public BigDecimal  __getDiscountvalue() {
-        return discountvalue;
-    }
-
-    /**
-     * @param discountvalue the discountvalue to set
-     */
-    public void setDiscountvalue(BigDecimal  discountvalue) {
-        this.discountvalue = discountvalue;
-    }
-
+//    /**
+//     * @return the discountvalue
+//     */
+//    public BigDecimal  __getDiscountvalue() {
+//        return discountvalue;
+//    }
+//
+//    /**
+//     * @param discountvalue the discountvalue to set
+//     */
+//    public void setDiscountvalue(BigDecimal  discountvalue) {
+//        this.discountvalue = discountvalue;
+//    }
     public void defineFormatHandler(FormatHandler handler) {
         formatHandler = handler;
     }
@@ -641,9 +629,9 @@ public class Item extends DatabaseObject implements Formattable {
 //    }
 
     @Override
-    public String toString(){
+    public String toString() {
         try {
-            return cname + "-" + ((Contact)getObject(Context.getContact(), contactsids)).__getCName() + "";
+            return cname + "-" + ((Contact) getObject(Context.getContact(), contactsids)).__getCName() + "";
         } catch (NodataFoundException ex) {
             return super.toString();
         }

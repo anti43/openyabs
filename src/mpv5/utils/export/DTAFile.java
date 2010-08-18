@@ -106,21 +106,16 @@ public class DTAFile extends Exportable implements Waitable {
                 }
                 t.internalCustomerId = cid;
 
-
                 BigDecimal value = null;
 
                 if (mpv5.db.objects.User.getCurrentUser().getProperties().hasProperty("shiptax")) {
                     int taxid = mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("shiptax", new Integer(0));
                     Double shiptax = Tax.getTaxValue(taxid).doubleValue();
                     value = //netvalue
-                            dbo.__getTaxvalue().add(dbo.__getNetvalue()) //discount
-                            .multiply((dbo.__getDiscountvalue().divide(new BigDecimal("100"), 2, BigDecimal.ROUND_HALF_UP).subtract(BigDecimal.ONE)).multiply(new BigDecimal("-1"))) //                            // shipping
-                            .add((dbo.__getShippingvalue().multiply(BigDecimal.valueOf(shiptax).divide(new BigDecimal("100"), 2, BigDecimal.ROUND_HALF_UP).add(dbo.__getShippingvalue()))));
+                            dbo.__getTaxvalue().add(dbo.__getNetvalue()).add((dbo.__getShippingvalue().multiply(BigDecimal.valueOf(shiptax).divide(new BigDecimal("100"), 2, BigDecimal.ROUND_HALF_UP).add(dbo.__getShippingvalue()))));
                 } else {
                     value = //netvalue
-                            dbo.__getTaxvalue().add(dbo.__getNetvalue()) //discount
-                            .multiply((dbo.__getDiscountvalue().divide(new BigDecimal("100"), 2, BigDecimal.ROUND_HALF_UP).subtract(BigDecimal.ONE)).multiply(new BigDecimal("-1"))) // shipping
-                            .add(dbo.__getShippingvalue());
+                            dbo.__getTaxvalue().add(dbo.__getNetvalue()).add(dbo.__getShippingvalue());
                 }
 
                 if (value.doubleValue() > 0.15) {

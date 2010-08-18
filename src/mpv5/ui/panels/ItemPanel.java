@@ -1401,7 +1401,6 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
     public BigDecimal netvalue_;
     public BigDecimal taxvalue_;
     public BigDecimal shippingvalue_;
-    public BigDecimal discountvalue_;
     public Date datetodo_;
     public Date dateend_;
     public int intreminders_;
@@ -1444,9 +1443,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
 
             netvalue_ = FormatNumber.parseDezimal(netvalue.getText());
             taxvalue_ = FormatNumber.parseDezimal(taxvalue.getText());
-            discountvalue_ = new BigDecimal("0");
-            // not used yet- discount must be reflected in netvalue_
-            //     discountvalue_ = new BigDecimal(discountpercent.get_Value().toString());
+
             try {
                 shippingvalue_ = FormatNumber.parseDezimal(shipping.getText());
             } catch (Exception e) {

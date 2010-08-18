@@ -16,6 +16,7 @@
  */
 package mpv5.utils.tables;
 
+import java.math.BigDecimal;
 import java.text.NumberFormat;
 import java.util.HashMap;
 import javax.swing.DefaultCellEditor;
@@ -37,7 +38,7 @@ import mpv5.utils.renderer.LazyCellEditor;
  */
 public class TableCalculator implements Runnable {
 
-    public static NumberFormat DECIMALFORMAT = FormatNumber.getDefaultDecimalFormat();
+//    public static NumberFormat DECIMALFORMAT = FormatNumber.getDefaultDecimalFormat();
     private final JTable table;
     private final int[] columnsToCalculate;
     private final int[] targetColumns;
@@ -86,9 +87,9 @@ public class TableCalculator implements Runnable {
      * @param row
      * @return 
      */
-    public synchronized double calculate(int row) {
+    public synchronized BigDecimal calculate(int row) {
 
-        Double val = 0d;
+        BigDecimal val = new BigDecimal("0");
 
         try {
             switch (action) {
@@ -96,7 +97,7 @@ public class TableCalculator implements Runnable {
                     for (int i = 0; i < columnsToCalculate.length; i++) {
                         int j = columnsToCalculate[i];
                         if (table.getModel().getValueAt(row, j) != null) {
-                            val += Double.valueOf(table.getModel().getValueAt(row, j).toString());
+                            val.add(BigDecimal.valueOf(Double.valueOf(table.getModel().getValueAt(row, j).toString())));
                         }
                     }
                     break;
@@ -105,9 +106,9 @@ public class TableCalculator implements Runnable {
                         int j = columnsToCalculate[i];
                         if (table.getModel().getValueAt(row, j) != null) {
                             if (i == 0) {
-                                val = Double.valueOf(table.getModel().getValueAt(row, j).toString());
+                                val = BigDecimal.valueOf(Double.valueOf(table.getModel().getValueAt(row, j).toString()));
                             } else {
-                                val = val - Double.valueOf(table.getModel().getValueAt(row, j).toString());
+                                val = val.subtract(BigDecimal.valueOf(Double.valueOf(table.getModel().getValueAt(row, j).toString())));
                             }
                         }
                     }
@@ -125,15 +126,15 @@ public class TableCalculator implements Runnable {
                             }
                             if (!percentagec) {
                                 if (i == 0) {
-                                    val = Double.valueOf(table.getModel().getValueAt(row, j).toString());
+                                    val = BigDecimal.valueOf(Double.valueOf(table.getModel().getValueAt(row, j).toString()));
                                 } else {
-                                    val = val / Double.valueOf(table.getModel().getValueAt(row, j).toString());
+                                    val = val.divide(BigDecimal.valueOf(Double.valueOf(table.getModel().getValueAt(row, j).toString())), 2 , BigDecimal.ROUND_HALF_UP);
                                 }
                             } else {
                                 if (i == 0) {
-                                    val = ((Double.valueOf(table.getModel().getValueAt(row, j).toString()) / 100) + 1);
+                                    val = BigDecimal.valueOf(((Double.valueOf(table.getModel().getValueAt(row, j).toString()) / 100) + 1d));
                                 } else {
-                                    val = val / ((Double.valueOf(table.getModel().getValueAt(row, j).toString()) / 100) + 1);
+                                    val = val.divide(BigDecimal.valueOf((Double.valueOf(table.getModel().getValueAt(row, j).toString()) / 100) + 1), 2, BigDecimal.ROUND_HALF_UP);
                                 }
                             }
                         }
@@ -152,15 +153,15 @@ public class TableCalculator implements Runnable {
                             }
                             if (!percentagec) {
                                 if (i == 0) {
-                                    val = Double.valueOf(table.getModel().getValueAt(row, j).toString());
+                                    val = BigDecimal.valueOf(Double.valueOf(table.getModel().getValueAt(row, j).toString()));
                                 } else {
-                                    val = val * Double.valueOf(table.getModel().getValueAt(row, j).toString());
+                                    val = val.multiply(BigDecimal.valueOf(Double.valueOf(table.getModel().getValueAt(row, j).toString())));
                                 }
                             } else {
                                 if (i == 0) {
-                                    val = ((Double.valueOf(table.getModel().getValueAt(row, j).toString()) / 100) + 1);
+                                    val = BigDecimal.valueOf(((Double.valueOf(table.getModel().getValueAt(row, j).toString()) / 100) + 1));
                                 } else {
-                                    val = val * ((Double.valueOf(table.getModel().getValueAt(row, j).toString()) / 100) + 1);
+                                    val = val.multiply(BigDecimal.valueOf((Double.valueOf(table.getModel().getValueAt(row, j).toString()) / 100) + 1));
 
                                 }
                             }
@@ -171,7 +172,7 @@ public class TableCalculator implements Runnable {
 
             for (int i = 0; i < targetColumns.length; i++) {
                 int j = targetColumns[i];
-                ((MPTableModel) table.getModel()).setValueAt(val, row, j, true);
+                ((MPTableModel) table.getModel()).setValueAt(val.doubleValue(), row, j, true);
             }
 
         } catch (NumberFormatException numberFormatException) {
