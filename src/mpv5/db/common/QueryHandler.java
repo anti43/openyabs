@@ -398,7 +398,7 @@ public class QueryHandler implements Cloneable {
         }
     }
 
-     /**
+    /**
      *
      * @param columns
      * @param criterias
@@ -406,7 +406,7 @@ public class QueryHandler implements Cloneable {
      * @throws NodataFoundException
      */
     public ReturnValue select(String columns, QueryCriteria2 criterias) throws NodataFoundException {
-       String query = "SELECT " + columns + " FROM " + table + " " + context.getReferences() + " WHERE ";
+        String query = "SELECT " + columns + " FROM " + table + " " + context.getReferences() + " WHERE ";
 
         if (criterias.getQuery().length() > 6) {
             query += criterias.getQuery() + " AND ";
@@ -420,6 +420,7 @@ public class QueryHandler implements Cloneable {
             throw new NodataFoundException(context);
         }
     }
+
     /**
      * Requires 'dateadded' column
      * @param columns
@@ -1893,7 +1894,7 @@ public class QueryHandler implements Cloneable {
         } catch (SQLException ex) {
 
             jobmessage = Messages.ERROR_OCCURED.toString();
-            Log.Debug(this, message + ex.getMessage());
+            Log.Debug(this, message + ex.getMessage() + "\n" + query);
             if (log != null) {
                 log.append("\n " + ex.getMessage());
             }

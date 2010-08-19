@@ -17,6 +17,7 @@
 package mpv5.db.common;
 
 import java.awt.Color;
+import java.io.Serializable;
 import java.lang.ref.SoftReference;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -34,6 +35,7 @@ import java.util.SortedSet;
 import java.util.TreeSet;
 import java.util.concurrent.ConcurrentHashMap;
 import javax.swing.SwingUtilities;
+import mpv5.db.objects.ValueProperty;
 import mpv5.globals.Messages;
 import mpv5.db.objects.HistoryItem;
 import mpv5.logging.Log;
@@ -60,7 +62,7 @@ import mpv5.utils.text.RandomText;
  * non-graphical beans to update or create itself to the database
  * @author
  */
-public abstract class DatabaseObject implements Comparable<DatabaseObject> {
+public abstract class DatabaseObject implements Comparable<DatabaseObject>, Serializable {
 
     private static boolean AUTO_LOCK = false;
     private static Map<String, SoftReference<DatabaseObject>> cache = new ConcurrentHashMap<String, SoftReference<DatabaseObject>>(1000);
@@ -150,6 +152,23 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject> {
             Log.Debug(DatabaseObject.class, "" + context.getDbIdentity() + "@" + id + " not found in cache.");
             return null;
         }
+    }
+
+    /**
+     * This method can be used to workaround the DatabaseObject#getObjects(...) casting issues introduced by me :-)
+     * @param <T>
+     * @param objects
+     * @param template
+     * @return
+     */
+    @SuppressWarnings("unchecked")
+    public static <T extends DatabaseObject> List<T> toObjectList(List<DatabaseObject> objects, T template) {
+        List<T> l = new ArrayList<T>();
+        for (int i = 0; i < objects.size(); i++) {
+            DatabaseObject databaseObject = objects.get(i);
+            l.add((T) databaseObject);
+        }
+        return l;
     }
     /**
      * The db context of this do. To be defined by the child class!
@@ -1179,7 +1198,11 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject> {
                                             vars.get(k).invoke(dbo, new Object[]{new BigDecimal(String.valueOf(select.getData()[i][j]))});
                                         } catch (IllegalArgumentException illegalArgumentException) {
                                             //backwards compatibility
-                                            vars.get(k).invoke(dbo, new Object[]{Double.valueOf(String.valueOf(select.getData()[i][j]))});
+                                         try {
+                                                vars.get(k).invoke(dbo, new Object[]{Double.valueOf(String.valueOf(select.getData()[i][j]))});
+                                            } catch (Exception illegalAccessException) {
+                                                //TODO check for parameter types, not method names please
+                                            }
                                         }
                                     } else {
                                         vars.get(k).invoke(dbo, new Object[]{String.valueOf(select.getData()[i][j])});

@@ -33,6 +33,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.File;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -1616,22 +1617,29 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
                     || dbo.getContext().equals(Context.getOffer())
                     || dbo.getContext().equals(Context.getOrder())) {
                 Item o = (Item) dbo.clone();
-//               
+           
                 if (mpv5.db.objects.User.getCurrentUser().getProperties().getProperty(MPView.getTabPane(), "pasten")) {
                     SubItem s = new SubItem();
                     s.setQuantityvalue(new BigDecimal("1"));
 //                    s.setItemsids(o.__getIDS());
-                    s.setInternalvalue(((Item) dbo).__getNetvalue().add(((Item) dbo).__getTaxvalue()).add(((Item) dbo).__getShippingvalue()));
+                    s.setInternalvalue(((Item) dbo).__getNetvalue());
+                    s.setExternalvalue(((Item) dbo).__getNetvalue());
                     s.setTotalnetvalue(((Item) dbo).__getNetvalue());
+                    s.setTotalbrutvalue(((Item) dbo).__getNetvalue().add(((Item) dbo).__getTaxvalue()));
+                    if (s.__getTotalnetvalue().doubleValue() > 0d) {
+                        s.setTaxpercentvalue(s.__getTotalbrutvalue().subtract(s.__getTotalnetvalue()).multiply(new BigDecimal("100")).divide(s.__getTotalnetvalue(), RoundingMode.HALF_UP));
+                    }
                     s.setCName(((Item) dbo).__getCName());
                     s.setDescription(Messages.GOOSE1 + " " + ((Item) dbo).__getCnumber() + " " + Messages.GOOSE2 + " " + DateConverter.getDefDateString(o.__getDateadded()));
-                    if (mpv5.db.objects.User.getCurrentUser().getProperties().hasProperty("deftax")) {
-                        int taxid = mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("deftax", new Integer(0));
-                        BigDecimal deftax = Tax.getTaxValue(taxid);
-                        s.setTaxpercentvalue(deftax);
-                    }
+//                   if (mpv5.db.objects.User.getCurrentUser().getProperties().hasProperty("deftax")) {
+//                        int taxid = mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("deftax", new Integer(0));
+//                        BigDecimal deftax = Tax.getTaxValue(taxid);
+//                        s.setTaxpercentvalue(deftax);
+//                    }
 
-                    ((MPTableModel) itemtable.getModel()).addRow(s.getRowData(((MPTableModel) itemtable.getModel()).getRowCount() + 1));
+                    Log.PrintArray(s.toStringArray());
+
+                    ((MPTableModel) itemtable.getModel()).addRow(s.getRowData(((MPTableModel) itemtable.getModel()).getLastValidRow(new int[]{4}) + 1));
                 } else {
                     o.setIntstatus(Item.STATUS_IN_PROGRESS);
                     o.setInttype(inttype_);

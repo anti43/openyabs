@@ -32,11 +32,13 @@ public class Test {
   
 
     public static void main(String... aArgs)  {
-        IFilter[] p = PDFFilter.FILTERS;
-        for (int i = 0; i < p.length; i++) {
-            IFilter iFilter = p[i];
-            System.out.println(iFilter);
-        }
+//        IFilter[] p = PDFFilter.FILTERS;
+//        for (int i = 0; i < p.length; i++) {
+//            IFilter iFilter = p[i];
+//            System.out.println(iFilter);
+//        }
+
+
     }
 
      /**

@@ -14,9 +14,7 @@ public class DatabaseUpdater {
 
     private HashMap<Double, String[]> UPDATES_DERBY = new HashMap<Double, String[]>();
     private HashMap<Double, String[]> UPDATES_MYSQL = new HashMap<Double, String[]>();
-//stockvalue
-//thresholdvalue
-//    private int inventorytype = 1;
+
 
     public DatabaseUpdater() {
         ////////////////////////////////////////////////////////////////////////////////////////////
@@ -49,8 +47,21 @@ public class DatabaseUpdater {
                     "ALTER TABLE contacts ADD COLUMN bankcurrency VARCHAR(250) DEFAULT NULL",
                     "ALTER TABLE contacts ADD COLUMN bankcountry VARCHAR(250) DEFAULT NULL",
                 });
-        UPDATES_DERBY.put(1.171, new String[]{
-                    "ALTER TABLE items DROP COLUMN discountvalue",
+        UPDATES_DERBY.put(1.18, new String[]{
+//                    "ALTER TABLE items DROP COLUMN discountvalue",
+                    "CREATE INDEX items_index0 ON items(cnumber)",
+                    "CREATE INDEX items_index1 ON items(cname)",
+                    "CREATE INDEX products_index0 ON products(cnumber)",
+                    "CREATE INDEX products_index1 ON products(cname)",
+                    "CREATE INDEX contacts_index0 ON contacts(cname)",
+                    "CREATE TABLE valueproperties (IDS BIGINT NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1), "
+                            + "CONSTRAINT constvp0 UNIQUE (cname, contextids, objectids, groupsids),"
+                            + "cname VARCHAR(250) NOT NULL, classname VARCHAR(250) NOT NULL, "
+                            + "contextids BIGINT NOT NULL, objectids BIGINT NOT NULL,"
+                            + "value VARCHAR(2500) NOT NULL, dateadded DATE NOT NULL, intaddedby BIGINT DEFAULT 0, "
+                            + "groupsids BIGINT  REFERENCES groups(ids) DEFAULT 1, invisible SMALLINT DEFAULT 0, "
+                            + "PRIMARY KEY (ids))",
+                    "CREATE INDEX values_index0 ON valueproperties(cname, contextids, objectids)",
                 });
         ////////////////////////////////////////////////////////////////////////////////////////////
         // mysql updates
@@ -97,8 +108,28 @@ public class DatabaseUpdater {
                     "ALTER TABLE contacts ADD COLUMN bankcurrency VARCHAR(250) DEFAULT NULL",
                     "ALTER TABLE contacts ADD COLUMN bankcountry VARCHAR(250) DEFAULT NULL",
                 });
-        UPDATES_MYSQL.put(1.171, new String[]{
-                    "ALTER TABLE items DROP COLUMN discountvalue",
+        UPDATES_MYSQL.put(1.18, new String[]{
+//                    "ALTER TABLE items DROP COLUMN discountvalue",
+                    "CREATE INDEX items_index0 ON items(cnumber)",
+                    "CREATE INDEX items_index1 ON items(cname)",
+                    "CREATE INDEX products_index0 ON products(cnumber)",
+                    "CREATE INDEX products_index1 ON products(cname)",
+                    "CREATE INDEX contacts_index0 ON contacts(cname)",
+                    "CREATE TABLE valueproperties ("
+                            + "ids BIGINT(20) UNSIGNED NOT NULL PRIMARY KEY auto_increment, "
+                            + "CONSTRAINT constvp0 UNIQUE (cname, contextids, objectids, groupsids),"
+                            + "cname VARCHAR(250) NOT NULL, "
+                            + "classname VARCHAR(250) NOT NULL, "
+                            + "contextids BBIGINT(20) UNSIGNED NOT NULL,"
+                            + "objectids BIGINT(20) UNSIGNED NOT NULL,"
+                            + "value VARCHAR(2500) NOT NULL, "
+                            + "dateadded DATE NOT NULL, "
+                            + "intaddedby BIGINT(20) UNSIGNED NOT NULL, "
+                            + "groupsids BIGINT(20) REFERENCES groups(ids) UNSIGNED DEFAULT 1, "
+                            + "invisible BIGINT(20) UNSIGNED DEFAULT 0"
+                            + ")ENGINE=MyISAM DEFAULT CHARSET=utf8",
+                    "CREATE INDEX values_index0 ON valueproperties(cname, contextids, objectids)",
+
                 });
     }
 

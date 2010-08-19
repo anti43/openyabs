@@ -39,7 +39,7 @@ import mpv5.db.common.QueryCriteria;
 import mpv5.db.common.QueryHandler;
 import mpv5.globals.LocalSettings;
 import mpv5.globals.Messages;
-import mpv5.db.objects.Property;
+import mpv5.db.objects.UserProperty;
 import mpv5.handler.VariablesHandler;
 import mpv5.logging.Log;
 import mpv5.mail.MailConfiguration;
@@ -533,7 +533,7 @@ public class User extends DatabaseObject {
             List<String[]> l = properties.getList();
             for (int i = 0; i < l.size(); i++) {
                 String[] d = l.get(i);
-                Property p = new Property();
+                UserProperty p = new UserProperty();
                 p.setValue(d[1]);
                 p.setCName(d[0]);
                 p.setUsersids(getID());
@@ -550,7 +550,7 @@ public class User extends DatabaseObject {
     public void deleteProperties() {
         QueryCriteria c = new QueryCriteria();
         c.addAndCondition("usersids", __getIDS());
-        QueryHandler.instanceOf().clone(Context.getProperties()).delete(c);
+        QueryHandler.instanceOf().clone(Context.getUserProperties()).delete(c);
     }
 
     /**
@@ -562,7 +562,7 @@ public class User extends DatabaseObject {
         criteria.addAndCondition("usersids", ids);
         properties = new PropertyStore();
         try {
-            properties.addAll(QueryHandler.instanceOf().clone(Context.getProperties()).select("cname, value", criteria));
+            properties.addAll(QueryHandler.instanceOf().clone(Context.getUserProperties()).select("cname, value", criteria));
             properties.addAll(PROPERTIES_OVERRIDE);
             defineMailConfig();
             

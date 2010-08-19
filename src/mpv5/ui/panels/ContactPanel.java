@@ -29,6 +29,7 @@ import java.awt.event.MouseEvent;
 import java.io.File;
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
@@ -38,6 +39,8 @@ import javax.swing.JTable;
 import javax.swing.JTextPane;
 import javax.swing.JViewport;
 import javax.swing.SwingUtilities;
+import javax.swing.event.TableModelEvent;
+import javax.swing.event.TableModelListener;
 import javax.swing.table.TableCellRenderer;
 import mpv5.db.common.*;
 import mpv5.globals.Headers;
@@ -56,6 +59,7 @@ import mpv5.ui.frames.MPView;
 import mpv5.ui.popups.FileTablePopUp;
 import mpv5.ui.toolbars.DataPanelTB;
 import mpv5.db.objects.User;
+import mpv5.db.objects.ValueProperty;
 import mpv5.ui.dialogs.ScheduleDayEvents;
 import mpv5.ui.popups.DOTablePopUp;
 import mpv5.utils.arrays.ArrayUtilities;
@@ -114,6 +118,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
         refresh();
 
         itemTablePopup = DOTablePopUp.addDefaultPopupMenu(dataTable, Context.getItem(), false);
+
     }
 
     @Override
@@ -164,11 +169,34 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
             isCustomer(dataOwner.__getIscustomer());
             isManufacturer(dataOwner.__getIsmanufacturer());
             isSupplier(dataOwner.__getIssupplier());
+
+
+            final MPTableModel m = new MPTableModel(ValueProperty.getProperties(dataOwner));
+            final MPTableModel mold = m.clone();
+
+            if (m.getDataVector().isEmpty()) {
+                proptable.setModel(new MPTableModel(
+                        Arrays.asList(new ValueProperty[]{new ValueProperty("", "", dataOwner)})));
+            } else {
+                proptable.setModel(m);
+            }
+
+            m.addTableModelListener(new TableModelListener() {
+
+                public void tableChanged(TableModelEvent e) {
+                    if (e.getColumn() == 0 && e.getType() == TableModelEvent.DELETE) {
+                        ValueProperty.deleteProperty(dataOwner, String.valueOf(mold.getData()[0][e.getLastRow()]));
+                    } else if (e.getColumn() == 1 && m.getValueAt(0, e.getLastRow()) != null && String.valueOf(m.getValueAt(0, e.getLastRow())).length() > 0) {
+                        ValueProperty.updateOrAddProperty(String.valueOf(m.getData()[0][e.getLastRow()]), String.valueOf(m.getData()[1][e.getLastRow()]), dataOwner);
+                    }
+                }
+            });
         }
     }
 
     @Override
     public void showRequiredFields() {
+        jTabbedPane1.setSelectedIndex(1);
         TextFieldUtils.blinkerRed(cname);
         cname.requestFocus();
     }
@@ -372,6 +400,9 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
             }
         }
         notes = new NoTabTextArea();
+        propPanel = new javax.swing.JPanel();
+        jScrollPane3 = new javax.swing.JScrollPane();
+        proptable = new javax.swing.JTable();
         toolbarpane = new javax.swing.JPanel();
 
         java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("mpv5/resources/languages/Panels"); // NOI18N
@@ -1056,6 +1087,49 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
 
         jTabbedPane1.addTab(bundle.getString("ContactPanel.jPanel4.TabConstraints.tabTitle"), jPanel4); // NOI18N
 
+        propPanel.setName("propPanel"); // NOI18N
+        propPanel.setLayout(new java.awt.BorderLayout());
+
+        jScrollPane3.setName("jScrollPane3"); // NOI18N
+
+        proptable.setAutoCreateRowSorter(true);
+        proptable.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null},
+                {null, null},
+                {null, null},
+                {null, null},
+                {null, null},
+                {null, null},
+                {null, null},
+                {null, null},
+                {null, null},
+                {null, null},
+                {null, null},
+                {null, null},
+                {null, null},
+                {null, null},
+                {null, null},
+                {null, null},
+                {null, null},
+                {null, null},
+                {null, null},
+                {null, null}
+            },
+            new String [] {
+                "", ""
+            }
+        ));
+        proptable.setName("proptable"); // NOI18N
+        proptable.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
+        jScrollPane3.setViewportView(proptable);
+
+        propPanel.add(jScrollPane3, java.awt.BorderLayout.CENTER);
+
+        jTabbedPane1.addTab(bundle.getString("ContactPanel.propPanel.TabConstraints.tabTitle"), propPanel); // NOI18N
+
+        jTabbedPane1.setSelectedIndex(1);
+
         javax.swing.GroupLayout rightpaneLayout = new javax.swing.GroupLayout(rightpane);
         rightpane.setLayout(rightpaneLayout);
         rightpaneLayout.setHorizontalGroup(
@@ -1345,6 +1419,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
     private javax.swing.JPanel jPanel9;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JToolBar.Separator jSeparator1;
     private javax.swing.JToolBar.Separator jSeparator2;
     private javax.swing.JToolBar.Separator jSeparator3;
@@ -1361,6 +1436,8 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
     private mpv5.ui.beans.LabeledTextField number;
     private mpv5.ui.beans.LabeledTextField prename;
     private mpv5.ui.beans.PrinitingComboBox prinitingComboBox1;
+    private javax.swing.JPanel propPanel;
+    private javax.swing.JTable proptable;
     private javax.swing.JButton removefile;
     private javax.swing.JPanel rightpane;
     private mpv5.ui.beans.LabeledTextField street;

@@ -28,10 +28,10 @@ import mpv5.ui.frames.MPView;
  *
  *  
  */
-public class Property extends DatabaseObject {
+public class UserProperty extends DatabaseObject {
 
-    public Property() {
-        context = Context.getProperties();
+    public UserProperty() {
+        context = Context.getUserProperties();
     }
     private String value = "";
     private int usersids;
@@ -60,7 +60,7 @@ public class Property extends DatabaseObject {
         QueryCriteria c = new QueryCriteria();
         c.addAndCondition("usersids", mpv5.db.objects.User.getCurrentUser().__getIDS());
         c.addAndCondition("cname", cname);
-        QueryHandler.instanceOf().clone(Context.getProperties()).delete(c);
+        QueryHandler.instanceOf().clone(Context.getUserProperties()).delete(c);
         return super.save();
     }
 

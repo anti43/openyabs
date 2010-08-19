@@ -25,19 +25,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Vector;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JComponent;
 import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
 import mpv5.db.common.Formattable;
 import mpv5.db.common.NodataFoundException;
-import mpv5.globals.LocalSettings;
 import mpv5.globals.Messages;
 import mpv5.handler.FormatHandler;
 import mpv5.handler.MPEnum;
 import mpv5.logging.Log;
-import mpv5.ui.frames.MPView;
 import mpv5.ui.panels.ItemPanel;
 import mpv5.utils.images.MPIcon;
 import mpv5.utils.numberformat.FormatNumber;
@@ -50,7 +46,7 @@ import mpv5.utils.text.TypeConversion;
 public class Item extends DatabaseObject implements Formattable {
 
     /**
-     * Returns a localized string represenation of the given item status
+     * Returns a localized string representation of the given item status
      * @param status
      * @return
      */

@@ -36,7 +36,9 @@ import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
 import mpv5.db.common.NodataFoundException;
 import mpv5.db.objects.SubItem;
+import mpv5.db.objects.ValueProperty;
 import mpv5.globals.Headers;
+import mpv5.globals.Messages;
 import mpv5.logging.Log;
 import mpv5.utils.arrays.ArrayUtilities;
 import mpv5.utils.numberformat.FormatNumber;
@@ -47,7 +49,7 @@ import mpv5.utils.tables.TableCalculator;
  *
  *  A custom table model which implements various convenience methods
  */
-public class MPTableModel extends DefaultTableModel {
+public class MPTableModel extends DefaultTableModel implements Cloneable {
 
     private static final long serialVersionUID = 1L;
     private Class[] types;
@@ -67,6 +69,12 @@ public class MPTableModel extends DefaultTableModel {
         setTypes(new Class[]{Object.class, Object.class, Object.class, Object.class, Object.class, Object.class, Object.class,
                     Object.class, Object.class, Object.class, Object.class, Object.class, Object.class, Object.class, Object.class,
                     Object.class, Object.class, Object.class, Object.class, Object.class, Object.class, Object.class, Object.class});
+    }
+
+    @Override
+    public MPTableModel clone() {
+        MPTableModel t = new MPTableModel(types, canEdits, getData(), predefinedRow);
+        return t;
     }
 
     /**
@@ -211,9 +219,23 @@ public class MPTableModel extends DefaultTableModel {
         }
 
         setEditable(false);
-        setTypes(new Class[]{Object.class, Object.class, Object.class, Object.class, Object.class, Object.class, Object.class,
+        setTypes(new Class<?>[]{Object.class, Object.class, Object.class, Object.class, Object.class, Object.class, Object.class,
                     Object.class, Object.class, Object.class, Object.class, Object.class, Object.class, Object.class, Object.class,
                     Object.class, Object.class, Object.class, Object.class, Object.class, Object.class, Object.class, Object.class});
+    }
+
+    public MPTableModel(List<ValueProperty> properties) {
+        super();
+        final Object[][] data = new Object[properties.size()+ 10][2];
+        for (int i = 0; i < properties.size(); i++) {
+            ValueProperty valueProperty = properties.get(i);
+            data[i][0] = valueProperty.__getCName();
+            data[i][1] = valueProperty.getValueObj();
+        }
+
+        setDataVector(data, new Object[]{Messages.PROPERTY, Messages.VALUE});
+        setEditable(true);
+        setTypes(new Class<?>[]{String.class, Object.class});
     }
 
     /**
@@ -225,7 +247,7 @@ public class MPTableModel extends DefaultTableModel {
     }
 
     @Override
-    public Class getColumnClass(int columnIndex) {
+    public Class<?> getColumnClass(int columnIndex) {
         getTypes()[columnIndex].toString();//Check for non-null
         //not sortable
         if (getTypes()[columnIndex].equals(void.class)) {
@@ -258,7 +280,7 @@ public class MPTableModel extends DefaultTableModel {
      * 
      * @param types
      */
-    public void setTypes(Class... types) {
+    public final void setTypes(Class... types) {
         this.types = types;
     }
 
@@ -289,7 +311,7 @@ public class MPTableModel extends DefaultTableModel {
      * Set the table editable
      * @param bool
      */
-    public void setEditable(boolean bool) {
+    public final void setEditable(boolean bool) {
         setCanEdits(new boolean[]{bool, bool, bool, bool, bool, bool, bool, bool, bool, bool, bool, bool, bool, bool, bool, bool, bool, bool, bool, bool, bool, bool, bool, bool, bool, bool, bool, bool, bool, bool,
                     bool, bool, bool, bool, bool, bool, bool, bool, bool, bool, bool, bool, bool, bool, bool, bool, bool, bool, bool, bool, bool, bool, bool, bool, bool, bool, bool, bool, bool, bool, bool, bool, bool, bool, bool, bool, bool, bool, bool, bool, bool,
                     bool, bool, bool, bool, bool, bool, bool, bool, bool});

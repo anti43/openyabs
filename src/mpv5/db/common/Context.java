@@ -13,7 +13,7 @@ import mpv5.db.objects.Favourite;
 import mpv5.db.objects.FileToContact;
 import mpv5.db.objects.Group;
 import mpv5.db.objects.HistoryItem;
-import mpv5.db.objects.Property;
+import mpv5.db.objects.UserProperty;
 import mpv5.db.objects.Schedule;
 import mpv5.db.objects.FileToItem;
 import mpv5.db.objects.FileToProduct;
@@ -32,6 +32,7 @@ import mpv5.db.objects.Tax;
 import mpv5.db.objects.Template;
 import mpv5.pluginhandling.Plugin;
 import mpv5.db.objects.User;
+import mpv5.db.objects.ValueProperty;
 import mpv5.db.objects.WSContactsMapping;
 import mpv5.db.objects.WSItemsMapping;
 import mpv5.db.objects.WebShop;
@@ -90,6 +91,7 @@ public class Context {
     public static String IDENTITY_REVENUE = "revenues";
     public static String IDENTITY_EXPENSE = "expenses";
     public static String IDENTITY_PRODUCTS_TO_SUPPLIERS = "productstosuppliers";
+    public static String IDENTITY_VALUE_PROPERTIES = "valueproperties";
     //********** identity classes **********************************************
     private static Class IDENTITY_CONTACTS_CLASS = Contact.class;
     private static Class IDENTITY_ADDRESS_CLASS = Address.class;
@@ -101,7 +103,7 @@ public class Context {
     private static Class IDENTITY_SUBITEMS_CLASS = SubItem.class;
     private static Class IDENTITY_USER_PLUGINS_CLASS = UserPlugin.class;
     private static Class IDENTITY_PLUGINS_CLASS = Plugin.class;
-    private static Class IDENTITY_PROPERTIES_CLASS = Property.class;
+    private static Class IDENTITY_PROPERTIES_CLASS = UserProperty.class;
     private static Class IDENTITY_ACCOUNTS_CLASS = Account.class;
     private static Class IDENTITY_ITEMSLIST_CLASS = ProductlistSubItem.class;
     private static Class IDENTITY_MAILS_CLASS = MailMessage.class;
@@ -114,12 +116,14 @@ public class Context {
     private static Class IDENTITY_TEMPLATE_CLASS = Template.class;
     private static Class IDENTITY_REMINDER_CLASS = Reminder.class;
     private static Class IDENTITY_STAGE_CLASS = Stage.class;
+    private static Class IDENTITY_VALUEPROPERTY_CLASS = ValueProperty.class;
     //********** unique constraints *******************************************
     public static String UNIQUECOLUMNS_USER = "cname";
     public static String UNIQUECOLUMNS_ITEMS = "cname";
     public static String UNIQUECOLUMNS_GROUPS = "cname";
     public static String UNIQUECOLUMNS_DEFAULT = "cname";
     public static String DETAIL_CONTACT_SEARCH = "prename,cname,street,city,country,notes";
+
     //********** conditions ****************************************************
     private boolean isCompany = false;
     private boolean isCustomer = false;
@@ -437,7 +441,7 @@ public class Context {
                 getPlugins(),
                 getPluginsToUsers(),
                 getTemplatesToUsers(),
-                getProperties(),
+                getUserProperties(),
                 getAccounts(),
                 getItemsToAccounts(),
                 getMessage(),
@@ -1419,7 +1423,7 @@ public class Context {
         return c;
     }
 
-    public static Context getProperties() {
+    public static Context getUserProperties() {
         Context c = new Context();
         c.setSubID(DEFAULT_SUBID);
         c.setDbIdentity(IDENTITY_PROPERTIES_TO_USERS);
@@ -1648,6 +1652,17 @@ public class Context {
 
         return c;
     }
+
+    public static Context getValueProperties() {
+        Context c = new Context();
+        c.setSubID(DEFAULT_SUBID);
+        c.setDbIdentity(IDENTITY_VALUE_PROPERTIES);
+        c.setIdentityClass(IDENTITY_VALUEPROPERTY_CLASS);
+        c.setId(50);
+
+        return c;
+    }
+
 
     /////////////////////////////////////////////////////////////////////////////////////////////////
     /**
