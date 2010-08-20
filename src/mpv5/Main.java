@@ -182,7 +182,7 @@ public class Main extends SingleFrameApplication {
         }
 
         splash.nextStep(Messages.IMPORT_PLUGINS.toString());
-        File iplug = new File(Constants.TEMPLATES_DIR);
+        File iplug = new File(Constants.PLUGINS_DIR);
         try {
             Log.Debug(Main.class, "Checking: " + iplug.getPath());
             if (iplug.isDirectory() && iplug.canRead()) {
@@ -416,16 +416,16 @@ public class Main extends SingleFrameApplication {
         Option license = obuilder.withShortName("license").withShortName("li").withDescription("print license").create();
         Option version = obuilder.withShortName("version").withDescription("print the version information and exit").create();
         Option verbose = obuilder.withShortName("verbose").withDescription("be extra verbose").create();
-        Option nolfs = obuilder.withShortName("nolf").withDescription("use metal L&F").create();
-        Option debug = obuilder.withShortName("debug").withDescription("debug logging").create();
+        Option nolfs = obuilder.withShortName("nolf").withDescription("use java native metal L&F").create();
+        Option debug = obuilder.withShortName("debug").withDescription("enable debug logging").create();
         Option removeplugins = obuilder.withShortName("removeplugins").withDescription("remove all plugins which would be loaded").create();
         Option logfile = obuilder.withShortName("logfile").withShortName("l").withDescription("use file for log").withArgument(filearg).create();
-        Option mpdir = obuilder.withShortName("appdir").withShortName("dir").withDescription("set the application main dir").withArgument(dirarg).create();
-        Option connectionInstance = obuilder.withShortName("connectionInstance").withShortName("conn").withDescription("Use stored connection with this ID").withArgument(number).create();
-        Option windowlog = obuilder.withShortName("windowlog").withDescription("Enables logging to the MP Log Console").create();
-        Option consolelog = obuilder.withShortName("consolelog").withDescription("Enables logging to STDOUT").create();
-        Option printtest = obuilder.withShortName("printtest").withDescription("Test PDF printing").create();
-        Option params = obuilder.withShortName("params").withDescription("Optional parameters param1:value1;param2:value2..").withArgument(option).create();
+        Option mpdir = obuilder.withShortName("appdir").withShortName("dir").withShortName("path").withDescription("set the application main dir (used for caching, settings, temp files)").withArgument(dirarg).create();
+        Option connectionInstance = obuilder.withShortName("connectionInstance").withShortName("conn").withDescription("use stored connection with this ID").withArgument(number).create();
+        Option windowlog = obuilder.withShortName("windowlog").withDescription("enables logging to the MP Log Console").create();
+        Option consolelog = obuilder.withShortName("consolelog").withDescription("enables logging to STDOUT").create();
+        Option printtest = obuilder.withShortName("printtest").withDescription("test PDF printing").create();
+        Option params = obuilder.withShortName("params").withDescription("optional parameters param1:value1;param2:value2..").withArgument(option).create();
 
 
         Group options = gbuilder.withName("options").

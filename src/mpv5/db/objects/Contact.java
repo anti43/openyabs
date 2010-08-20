@@ -2,6 +2,7 @@ package mpv5.db.objects;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import javax.swing.JComponent;
 import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
@@ -454,6 +455,10 @@ public class Contact extends DatabaseObject implements Formattable {
         } catch (Exception ex) {
             Log.Debug(this, ex.getMessage());
         }
+        List<ValueProperty> props = getProperties();
+        for(ValueProperty p : props){
+            map.put(p.getKey(), String.valueOf(p.getValue()));
+        }
 
         if (map.containsKey("country")) {
             try {
@@ -563,5 +568,13 @@ public class Contact extends DatabaseObject implements Formattable {
      */
     public void setBankcountry(String bankcountry) {
         this.bankcountry = bankcountry;
+    }
+
+    /**
+     * Fetches all properties for this contact from the db
+     * @return A (possibly empty) list of {@link ValueProperty}s
+     */
+    public List<ValueProperty> getProperties() {
+        return ValueProperty.getProperties(this);
     }
 }

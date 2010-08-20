@@ -445,6 +445,11 @@ public class Item extends DatabaseObject implements Formattable {
     @Override
     public HashMap<String, Object> resolveReferences(HashMap<String, Object> map) {
 
+        List<ValueProperty> props = getProperties();
+        for (ValueProperty p : props) {
+            map.put(p.getKey(), String.valueOf(p.getValue()));
+        }
+
         try {
             if (map.containsKey("intstatus")) {
                 map.remove("intstatus");
@@ -631,5 +636,13 @@ public class Item extends DatabaseObject implements Formattable {
         } catch (NodataFoundException ex) {
             return super.toString();
         }
+    }
+
+    /**
+     * Fetches all properties for this item from the db
+     * @return A (possibly empty) list of {@link ValueProperty}s
+     */
+    public List<ValueProperty> getProperties() {
+        return ValueProperty.getProperties(this);
     }
 }

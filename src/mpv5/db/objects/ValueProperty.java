@@ -51,7 +51,10 @@ public final class ValueProperty extends DatabaseObject {
      */
     public ValueProperty(final String key, final Serializable value, final DatabaseObject owner) {
         this();
-        defineValueObj(owner);
+        if (key == null) {
+            throw new NullPointerException();
+        }
+        setValueObj(owner);
         setContextids(owner.getContext().getId());
         setObjectids(owner.__getIDS());
         setGroupsids(owner.__getGroupsids());
@@ -64,15 +67,18 @@ public final class ValueProperty extends DatabaseObject {
      * @param value
      * @param owner
      */
-    public static synchronized void updateOrAddProperty(final String key, final Serializable value, final DatabaseObject owner) {
-        if (key != null && owner !=null && key.length() > 0) {
+    public static synchronized void addOrUpdateProperty(final String key, final Serializable value, final DatabaseObject owner) {
+        if (key == null) {
+            throw new NullPointerException();
+        }
+        if (owner != null && key.length() > 0) {
             ValueProperty val;
             try {
                 val = getProperty(owner, key);
             } catch (NodataFoundException ex) {
                 val = new ValueProperty(key, value, owner);
             }
-            val.defineValueObj(value);
+            val.setValueObj(value);
             val.save(true);
         }
     }
@@ -85,6 +91,9 @@ public final class ValueProperty extends DatabaseObject {
      * @throws NodataFoundException
      */
     public static synchronized ValueProperty getProperty(final DatabaseObject owner, final String key) throws NodataFoundException {
+        if (key == null) {
+            throw new NullPointerException();
+        }
         QueryCriteria c = new QueryCriteria("contextids", owner.getContext().getId());
         c.addAndCondition("cname", key);
         c.addAndCondition("objectids", owner.__getIDS());
@@ -98,6 +107,9 @@ public final class ValueProperty extends DatabaseObject {
      * @param key
      */
     public static synchronized void deleteProperty(final DatabaseObject owner, final String key) {
+        if (key == null) {
+            throw new NullPointerException();
+        }
         try {
             QueryCriteria c = new QueryCriteria("contextids", owner.getContext().getId());
             c.addAndCondition("cname", key);
@@ -135,7 +147,7 @@ public final class ValueProperty extends DatabaseObject {
      */
     public synchronized static void addOrUpdateProperties(final Map<String, Serializable> values, final DatabaseObject owner) {
         for (Map.Entry<String, Serializable> element : values.entrySet()) {
-            updateOrAddProperty(element.getKey(), element.getValue(), owner);
+            addOrUpdateProperty(element.getKey(), element.getValue(), owner);
         }
     }
     private String classname = "";
@@ -155,13 +167,15 @@ public final class ValueProperty extends DatabaseObject {
     public synchronized String __getValue() {
         try {
             ByteArrayOutputStream io = new ByteArrayOutputStream();
-            new XMLEncoder(io).writeObject(getValueObj());
+            XMLEncoder xmlEncoder = new XMLEncoder(io);
+            xmlEncoder.writeObject(getValueObj());
+            xmlEncoder.close();
             String x = io.toString("UTF-8");
-            Log.Debug(io, x);
+//            Log.Debug(io, x);
             return x;
         } catch (UnsupportedEncodingException unsupportedEncodingException) {
             //shall not happen on utf-8
-            return "";
+            return null;
         }
     }
 
@@ -263,10 +277,52 @@ public final class ValueProperty extends DatabaseObject {
     /**
      * @param valueObj the valueObj to set
      */
-    public void defineValueObj(Serializable valueObj) {
+    public void setValueObj(Serializable valueObj) {
         this.valueObj = valueObj;
         setClassname(valueObj.getClass().getCanonicalName());
         __getValue();//generate xml
 
+    }
+
+    /**
+     * Get the key for this property, maps to {@link #__getCname()} here
+     * @return A String, never null
+     */
+    public String getKey() {
+        return __getCName();
+    }
+
+    /**
+     * Get the value for this property, maps to {@link #getValueObj()} here 
+     * @return An object, maybe null
+     */
+    public Object getValue() {
+        return getValueObj();
+    }
+
+    @Override
+    public String toString() {
+        return getKey() + ": " + String.valueOf(getValueObj()) + " [" + __getClassname() + "]";
+    }
+
+    /**
+     *
+     * @param key
+     */
+    @Override
+    public void setCName(String key) {
+        if (key == null) {
+            throw new NullPointerException();
+        }
+        this.cname = key;
+    }
+
+    /**
+     * Set the key for this property
+     * @param key
+     */
+    @Persistable(false)
+    public void setKey(String key) {
+        setCName(key);
     }
 }

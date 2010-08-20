@@ -2,6 +2,8 @@ package mpv5.db.common;
 
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
+import java.util.TreeMap;
 import mpv5.db.objects.Template;
 import mpv5.logging.Log;
 import mpv5.ui.dialogs.Popup;
@@ -12,8 +14,8 @@ import mpv5.ui.dialogs.Popup;
  */
 public class DatabaseUpdater {
 
-    private HashMap<Double, String[]> UPDATES_DERBY = new HashMap<Double, String[]>();
-    private HashMap<Double, String[]> UPDATES_MYSQL = new HashMap<Double, String[]>();
+    private Map<Double, String[]> UPDATES_DERBY = new TreeMap<Double, String[]>();
+    private Map<Double, String[]> UPDATES_MYSQL = new TreeMap<Double, String[]>();
 
 
     public DatabaseUpdater() {

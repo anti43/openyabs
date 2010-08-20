@@ -171,26 +171,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
             isSupplier(dataOwner.__getIssupplier());
 
 
-            final MPTableModel m = new MPTableModel(ValueProperty.getProperties(dataOwner));
-            final MPTableModel mold = m.clone();
-
-            if (m.getDataVector().isEmpty()) {
-                proptable.setModel(new MPTableModel(
-                        Arrays.asList(new ValueProperty[]{new ValueProperty("", "", dataOwner)})));
-            } else {
-                proptable.setModel(m);
-            }
-
-            m.addTableModelListener(new TableModelListener() {
-
-                public void tableChanged(TableModelEvent e) {
-                    if (e.getColumn() == 0 && e.getType() == TableModelEvent.DELETE) {
-                        ValueProperty.deleteProperty(dataOwner, String.valueOf(mold.getData()[e.getLastRow()][0]));
-                    } else if (e.getColumn() == 1 && m.getValueAt( e.getLastRow(), 0) != null && String.valueOf(m.getValueAt(e.getLastRow(), 0)).length() > 0) {
-                        ValueProperty.updateOrAddProperty(String.valueOf(m.getData()[e.getLastRow()][0]), String.valueOf(m.getData()[e.getLastRow()][1]), dataOwner);
-                    }
-                }
-            });
+            properties();
         }
     }
 
@@ -1758,5 +1739,34 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
         if (dataOwner.isExisting()) {
             new PrintJob().print(dataOwner);
         }
+    }
+
+    private void properties() {
+        final MPTableModel m = new MPTableModel(ValueProperty.getProperties(dataOwner));
+        final MPTableModel mold = m.clone();
+
+        if (m.getDataVector().isEmpty()) {
+            proptable.setModel(new MPTableModel(
+                    Arrays.asList(new ValueProperty[]{new ValueProperty("", "", dataOwner)})));
+        } else {
+            proptable.setModel(m);
+        }
+
+        m.addTableModelListener(new TableModelListener() {
+
+            public void tableChanged(TableModelEvent e) {
+                if (dataOwner.isExisting()) {
+                    if (e.getColumn() == 0 && e.getType() == TableModelEvent.DELETE) {
+                        ValueProperty.deleteProperty(dataOwner, String.valueOf(mold.getData()[e.getLastRow()][0]));
+                        m.removeTableModelListener(this);
+                        properties();
+                    } else if (e.getColumn() == 1 && m.getValueAt(e.getLastRow(), 0) != null && String.valueOf(m.getValueAt(e.getLastRow(), 0)).length() > 0) {
+                        ValueProperty.addOrUpdateProperty(String.valueOf(m.getData()[e.getLastRow()][0]).replaceAll("[^\\w]", ""), String.valueOf(m.getData()[e.getLastRow()][1]), dataOwner);
+                        m.removeTableModelListener(this);
+                        properties();
+                    }
+                }
+            }
+        });
     }
 }

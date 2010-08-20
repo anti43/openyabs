@@ -18,6 +18,10 @@ package mpv5.db.common;
 
 import java.awt.Color;
 import java.io.Serializable;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 import java.lang.ref.SoftReference;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -64,6 +68,17 @@ import mpv5.utils.text.RandomText;
  */
 public abstract class DatabaseObject implements Comparable<DatabaseObject>, Serializable {
 
+    /**
+     * Marks the value of the annotated getter to be persisted on {@link #save}
+     * / annotated setter to be evaluated with a value from the database on {@link #explode}.
+     * Default is true on methods with the signature start '__get'.
+     */
+    @Retention(RetentionPolicy.RUNTIME)
+    @Target(ElementType.METHOD)
+    public @interface Persistable {
+
+        boolean value();
+    }
     private static boolean AUTO_LOCK = false;
     private static Map<String, SoftReference<DatabaseObject>> cache = new ConcurrentHashMap<String, SoftReference<DatabaseObject>>(1000);
 
@@ -80,7 +95,6 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
      */
     public static void cacheObjects(final Context[] contextArray) {
 
-//        MPView.addMessage(Messages.CACHE);
         Runnable runnable = new Runnable() {
 
             @Override
@@ -112,7 +126,6 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
                     }
                 }
                 Log.Debug(DatabaseObject.class, "Cached objects: " + count);
-//                MPView.addMessage(Messages.CACHED_OBJECTS + ": " + count);
                 MPView.setProgressReset();
             }
         };
@@ -122,9 +135,6 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
 
     private static synchronized void cacheObject(final DatabaseObject databaseObject) {
         if (databaseObject != null && databaseObject.__getIDS().intValue() > 0) {
-//            if (cache.containsKey(databaseObject.getDbIdentity() + "@" + databaseObject.__getIDS())) {
-//                Log.Debug(DatabaseObject.class, "Replacing cached object: " + databaseObject.getDbIdentity() + "@" + databaseObject.__getIDS());
-//            }
             cache.put(databaseObject.getDbIdentity() + "@" + databaseObject.__getIDS(), new SoftReference<DatabaseObject>(databaseObject));
         }
     }
@@ -155,7 +165,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
     }
 
     /**
-     * This method can be used to workaround the DatabaseObject#getObjects(...) casting issues introduced by me :-)
+     * This method can be used to workaround the DatabaseObject#getObjects(...) casting issues introduced by @me :-)
      * @param <T>
      * @param objects
      * @param template
@@ -364,6 +374,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
      *
      * @return The unique id of this do
      */
+    @Persistable(false)
     public Integer __getIDS() {
         return ids;
     }
@@ -657,59 +668,60 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
      */
     private QueryData collect() {
 
-        QueryData t = new QueryData();
+        QueryData data = new QueryData();
         String left = "";
         Object tempval;
-
-
+        Method[] methods = this.getClass().getMethods();
         for (int i = 0; i < this.getClass().getMethods().length; i++) {
-            if (this.getClass().getMethods()[i].getName().startsWith("__get") && !this.getClass().getMethods()[i].getName().endsWith("IDS")) {
+            if ((methods[i].isAnnotationPresent(Persistable.class) && methods[i].getAnnotation(Persistable.class).value())
+                    || (methods[i].getName().startsWith("__get")
+                    && !(methods[i].isAnnotationPresent(Persistable.class) && !methods[i].getAnnotation(Persistable.class).value()))) {
                 try {
-                    left = this.getClass().getMethods()[i].getName().toLowerCase().substring(5, this.getClass().getMethods()[i].getName().length());
-                    Log.Debug(this, "Calling: " + this.getClass().getMethods()[i]);
-                    tempval = this.getClass().getMethods()[i].invoke(this, (Object[]) null);
-                    Log.Debug(this, "Collect: " + tempval.getClass().getName() + " : " + this.getClass().getMethods()[i].getName() + " ? " + tempval);
+                    left = methods[i].getName().toLowerCase().substring(5, methods[i].getName().length());
+                    Log.Debug(this, "Calling: " + methods[i]);
+                    tempval = methods[i].invoke(this, (Object[]) null);
+                    Log.Debug(this, "Collect: " + tempval.getClass().getName() + " : " + methods[i].getName() + " ? " + tempval);
                     if (tempval.getClass().isInstance(new String())) {
-                        t.add(left, String.valueOf(tempval));
+                        data.add(left, String.valueOf(tempval));
                     } else if (tempval.getClass().isInstance(true)) {
                         boolean c = (Boolean) tempval;
-                        t.add(left, c);
+                        data.add(left, c);
                     } else if (tempval.getClass().isInstance(new Date())) {
-                        t.add(left, DateConverter.getSQLDateString((Date) tempval));
+                        data.add(left, DateConverter.getSQLDateString((Date) tempval));
                     } else if (tempval.getClass().isInstance(new RandomDate(null))) {
-                        t.add(left, DateConverter.getSQLDateString((Date) tempval));
+                        data.add(left, DateConverter.getSQLDateString((Date) tempval));
                     } else if (tempval.getClass().isInstance(new java.sql.Date(0))) {
-                        t.add(left, DateConverter.getSQLDateString((Date) tempval));
+                        data.add(left, DateConverter.getSQLDateString((Date) tempval));
                     } else if (tempval.getClass().isInstance(0)) {
                         //if the field is an IDS field an below 0, set it to 0
                         //as integer columns may not allow signed integers (eg. -1)
                         if (left.toLowerCase().endsWith("ids")) {
                             if (Integer.valueOf(tempval.toString()).intValue() < 0) {
                                 Log.Debug(this, "Correcting below-zero integer ids in " + left);
-                                t.add(left, 0);
+                                data.add(left, 0);
                             } else {
-                                t.add(left, (Integer) tempval);
+                                data.add(left, (Integer) tempval);
                             }
                         } else {
-                            t.add(left, (Integer) tempval);
+                            data.add(left, (Integer) tempval);
                         }
                     } else if (tempval.getClass().isInstance(0f)) {
-                        t.add(left, (Float) tempval);
+                        data.add(left, (Float) tempval);
                     } else if (tempval.getClass().isInstance(0d)) {
-                        t.add(left, (Double) tempval);
+                        data.add(left, (Double) tempval);
                     } else if (tempval.getClass().isInstance(01)) {
-                        t.add(left, (Short) tempval);
+                        data.add(left, (Short) tempval);
                     } else if (tempval.getClass().isInstance(new BigDecimal(0))) {
-                        t.add(left, (BigDecimal) tempval);
+                        data.add(left, (BigDecimal) tempval);
                     }
                 } catch (Exception ex) {
-                    mpv5.logging.Log.Debug(this, this.getClass().getMethods()[i].getName());
+                    mpv5.logging.Log.Debug(this, methods[i].getName());
                     mpv5.logging.Log.Debug(ex);//Logger.getLogger(DatabaseObject.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
         }
 
-        return t;
+        return data;
     }
 
     /**
@@ -1196,7 +1208,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
     /**
      * Fills the return value's data (rows) into an array of dos if singleExplode is false, if not fills target with the first row
      */
-    public static DatabaseObject[] explode(ReturnValue select, DatabaseObject target, boolean singleExplode, boolean lock) {
+    public static synchronized DatabaseObject[] explode(ReturnValue select, DatabaseObject target, boolean singleExplode, boolean lock) {
 
         DatabaseObject[] dos = null;
         if (!singleExplode) {
@@ -1210,35 +1222,38 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
         for (int i = 0; i < dos.length; i++) {
 
             DatabaseObject dbo = null;
-            List<Method> vars = null;
+            List<Method> methods = null;
             if (!singleExplode) {
                 dbo = DatabaseObject.getObject(target.getContext());
             } else {
                 dbo = target;
             }
 
-            vars = dbo.setVars();
+            methods = dbo.setVars();
             dos[i] = dbo;
 
             if (select.hasData()) {
                 for (int j = 0; j < select.getData()[i].length; j++) {
                     String name = select.getColumnnames()[j].toLowerCase();
 
-                    for (int k = 0; k < vars.size(); k++) {
-                        if (vars.get(k).getName().toLowerCase().substring(3).equals(name)) {
+                    for (int k = 0; k < methods.size(); k++) {
+                        if (!(methods.get(k).isAnnotationPresent(Persistable.class) &&
+                                !methods.get(k).getAnnotation(Persistable.class).value())){
+                            if (methods.get(k).getName().toLowerCase().substring(3).equals(name)) {
 
-                            //Debug section
-                            String valx = "";
-                            if (select.getData()[i][j] != null) {
-                                valx = select.getData()[i][j].getClass().getName();
-                            } else {
-                                valx = "NULL VALUE!";
-                            }
+                                //Debug section
+                                String valx = "";
+                                if (select.getData()[i][j] != null) {
+                                    valx = select.getData()[i][j].getClass().getName();
+                                } else {
+                                    valx = "NULL VALUE!";
+                                }
 //                            Log.Debug(DatabaseObject.class, "Explode: " + vars.get(k).toGenericString() + " with " + select.getData()[i][j] + "[" + valx + "]");
 //                            //End Debug Section
 
-                            if (select.getData()[i][j] != null) {
-                                invoke(vars.get(k), select.getData()[i][j], dbo, valx);
+                                if (select.getData()[i][j] != null) {
+                                    invoke(methods.get(k), select.getData()[i][j], dbo, valx);
+                                }
                             }
                         }
                     }
