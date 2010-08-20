@@ -194,7 +194,10 @@ public class ControlPanel_Advanced_User extends javax.swing.JPanel implements Co
 
     private void setSettings() {
         if (jTable1.getCellEditor() != null) {
-            jTable1.getCellEditor().stopCellEditing();
+              try {
+               jTable1.getCellEditor().stopCellEditing();
+            } catch (Exception e) {
+            }
         }
         MPTableModel data = (MPTableModel) jTable1.getModel();
         int i = data.getRowCount();

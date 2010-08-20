@@ -185,9 +185,9 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
 
                 public void tableChanged(TableModelEvent e) {
                     if (e.getColumn() == 0 && e.getType() == TableModelEvent.DELETE) {
-                        ValueProperty.deleteProperty(dataOwner, String.valueOf(mold.getData()[0][e.getLastRow()]));
-                    } else if (e.getColumn() == 1 && m.getValueAt(0, e.getLastRow()) != null && String.valueOf(m.getValueAt(0, e.getLastRow())).length() > 0) {
-                        ValueProperty.updateOrAddProperty(String.valueOf(m.getData()[0][e.getLastRow()]), String.valueOf(m.getData()[1][e.getLastRow()]), dataOwner);
+                        ValueProperty.deleteProperty(dataOwner, String.valueOf(mold.getData()[e.getLastRow()][0]));
+                    } else if (e.getColumn() == 1 && m.getValueAt( e.getLastRow(), 0) != null && String.valueOf(m.getValueAt(e.getLastRow(), 0)).length() > 0) {
+                        ValueProperty.updateOrAddProperty(String.valueOf(m.getData()[e.getLastRow()][0]), String.valueOf(m.getData()[e.getLastRow()][1]), dataOwner);
                     }
                 }
             });

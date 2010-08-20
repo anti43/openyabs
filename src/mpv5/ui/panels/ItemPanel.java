@@ -1218,7 +1218,10 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
             i2.defineFormatHandler(new FormatHandler(i2));
             i2.save();
             if (itemtable.getCellEditor() != null) {
+                    try {
                 itemtable.getCellEditor().stopCellEditing();
+            } catch (Exception e) {
+            }
             }
             SubItem.saveModel(i2, (MPTableModel) itemtable.getModel(), true, true);
             setDataOwner(i2, true);
@@ -1230,7 +1233,10 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
             i2.defineFormatHandler(new FormatHandler(i2));
             i2.save();
             if (itemtable.getCellEditor() != null) {
+                   try {
                 itemtable.getCellEditor().stopCellEditing();
+            } catch (Exception e) {
+            }
             }
             SubItem.saveModel(i2, (MPTableModel) itemtable.getModel(), true, true);
             setDataOwner(i2, true);
@@ -1606,7 +1612,10 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
     @SuppressWarnings("unchecked")
     public void paste(DatabaseObject... dbos) {
         if (itemtable.getCellEditor() != null) {
-            itemtable.getCellEditor().stopCellEditing();
+            try {
+                itemtable.getCellEditor().stopCellEditing();
+            } catch (Exception e) {
+            }
         }
 
         ((MPTableModel) itemtable.getModel()).removeEmptyRows(new int[]{4});
@@ -1735,7 +1744,10 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
 
     private void saveSubItems(boolean deleteRemovedSubitems) {
         if (itemtable.getCellEditor() != null) {
-            itemtable.getCellEditor().stopCellEditing();
+               try {
+                itemtable.getCellEditor().stopCellEditing();
+            } catch (Exception e) {
+            }
         }
 
         try {

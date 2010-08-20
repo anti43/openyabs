@@ -108,7 +108,10 @@ public class TableFormat {
     public static void stopEditing(JTable jTable1) {
         TableCellEditor editor = jTable1.getCellEditor();
         if (editor != null) {
-            editor.stopCellEditing();
+            try {
+                editor.stopCellEditing();
+            } catch (Exception e) {
+            }
         }
     }
 

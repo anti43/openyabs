@@ -25,8 +25,6 @@ import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JComponent;
 
 import mpv5.db.common.Context;
@@ -158,7 +156,9 @@ public final class ValueProperty extends DatabaseObject {
         try {
             ByteArrayOutputStream io = new ByteArrayOutputStream();
             new XMLEncoder(io).writeObject(getValueObj());
-            return io.toString("UTF-8");
+            String x = io.toString("UTF-8");
+            Log.Debug(io, x);
+            return x;
         } catch (UnsupportedEncodingException unsupportedEncodingException) {
             //shall not happen on utf-8
             return "";
@@ -200,8 +200,8 @@ public final class ValueProperty extends DatabaseObject {
             ByteArrayInputStream io = new ByteArrayInputStream(value.getBytes("UTF-8"));
             XMLDecoder d = new XMLDecoder(io);
             this.valueObj = (Serializable) d.readObject();
-        } catch (UnsupportedEncodingException unsupportedEncodingException) {
-            //shall not happen on utf-8
+        } catch (Exception unsupportedEncodingException) {
+            Log.Debug(unsupportedEncodingException);
         }
     }
 
@@ -266,5 +266,7 @@ public final class ValueProperty extends DatabaseObject {
     public void defineValueObj(Serializable valueObj) {
         this.valueObj = valueObj;
         setClassname(valueObj.getClass().getCanonicalName());
+        __getValue();//generate xml
+
     }
 }

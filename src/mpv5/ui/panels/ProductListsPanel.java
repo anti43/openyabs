@@ -689,7 +689,10 @@ public class ProductListsPanel extends javax.swing.JPanel implements DataPanel, 
 
     private void saveProductlistSubItems() {
         if (itemtable.getCellEditor() != null) {
-            itemtable.getCellEditor().stopCellEditing();
+               try {
+                itemtable.getCellEditor().stopCellEditing();
+            } catch (Exception e) {
+            }
         }
         ProductlistSubItem.saveModel((MPTableModel) itemtable.getModel(), dataOwner.__getIDS());
     }

@@ -42,7 +42,10 @@ public class Selection {
             id = Integer.valueOf(String.valueOf(table.getValueAt(r, 0)));
             noerror = true;
             if (table.getCellEditor() != null) {
+                   try {
                 table.getCellEditor().stopCellEditing();
+            } catch (Exception e) {
+            }
             }
         } catch (Exception numberFormatException) {
             noerror = false;

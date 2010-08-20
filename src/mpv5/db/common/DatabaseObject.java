@@ -170,6 +170,59 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
         }
         return l;
     }
+
+    private static synchronized void invoke(Method method, Object argument, DatabaseObject dbo, Object valx) {
+        try {
+
+            if (!method.getParameterTypes()[0].isPrimitive()) {
+                if (method.getParameterTypes()[0].isInstance(true)) {
+                    if (String.valueOf(argument).equals("1") || String.valueOf(argument).equalsIgnoreCase("true")) {
+                        method.invoke(dbo, new Object[]{true});
+                    } else {
+                        method.invoke(dbo, new Object[]{false});
+                    }
+                } else if (method.getParameterTypes()[0].isInstance(0)) {
+                    method.invoke(dbo, new Object[]{Integer.valueOf(String.valueOf(argument))});
+                } else if (method.getParameterTypes()[0].isInstance(new Date())) {
+                    method.invoke(dbo, new Object[]{DateConverter.getDate(argument)});
+                } else if (method.getParameterTypes()[0].isInstance(BigDecimal.ONE)) {
+                    method.invoke(dbo, new Object[]{new BigDecimal(String.valueOf(argument))});
+                } else if (method.getParameterTypes()[0].isInstance(0d)) {
+                    method.invoke(dbo, new Object[]{Double.valueOf(String.valueOf(argument))});
+                } else if (method.getParameterTypes()[0].isInstance(0l)) {
+                    method.invoke(dbo, new Object[]{Long.valueOf(String.valueOf(argument))});
+                } else if (method.getParameterTypes()[0].isInstance(0f)) {
+                    method.invoke(dbo, new Object[]{Float.valueOf(String.valueOf(argument))});
+                } else if (method.getParameterTypes()[0].isInstance(01)) {
+                    method.invoke(dbo, new Object[]{Short.valueOf(String.valueOf(argument))});
+                } else {
+                    //defaults to java.lang.String, Object args are not supported.. possibly later via XMLEncoder?
+                    method.invoke(dbo, new Object[]{String.valueOf(argument)});
+                }
+            } else {
+                if (method.getParameterTypes()[0].isAssignableFrom(int.class)) {
+                    method.invoke(dbo, new Object[]{Integer.valueOf(String.valueOf(argument))});
+                } else if (method.getParameterTypes()[0].isAssignableFrom(float.class)) {
+                    method.invoke(dbo, new Object[]{Float.valueOf(String.valueOf(argument))});
+                } else if (method.getParameterTypes()[0].isAssignableFrom(double.class)) {
+                    method.invoke(dbo, new Object[]{Double.valueOf(String.valueOf(argument))});
+                } else if (method.getParameterTypes()[0].isAssignableFrom(short.class)) {
+                    method.invoke(dbo, new Object[]{Short.valueOf(String.valueOf(argument))});
+                } else if (method.getParameterTypes()[0].isAssignableFrom(long.class)) {
+                    method.invoke(dbo, new Object[]{Long.valueOf(String.valueOf(argument))});
+                } else if (method.getParameterTypes()[0].isAssignableFrom(boolean.class)) {
+                    if (String.valueOf(argument).equals("1") || String.valueOf(argument).equalsIgnoreCase("true")) {
+                        method.invoke(dbo, new Object[]{true});
+                    } else {
+                        method.invoke(dbo, new Object[]{false});
+                    }
+                }
+            }
+        } catch (Exception ex) {
+            Log.Debug(DatabaseObject.class, "Explode: " + method.toGenericString() + " with " + argument + "[" + valx + "]");
+            Log.Debug(ex);
+        }
+    }
     /**
      * The db context of this do. To be defined by the child class!
      * 
@@ -644,6 +697,8 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
                         t.add(left, (Float) tempval);
                     } else if (tempval.getClass().isInstance(0d)) {
                         t.add(left, (Double) tempval);
+                    } else if (tempval.getClass().isInstance(01)) {
+                        t.add(left, (Short) tempval);
                     } else if (tempval.getClass().isInstance(new BigDecimal(0))) {
                         t.add(left, (BigDecimal) tempval);
                     }
@@ -1149,7 +1204,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
         } else {
             dos = new DatabaseObject[1];
         }
-        String valx = "";
+
         Log.Debug(DatabaseObject.class, "Preparing to explode rows: " + dos.length);
 
         for (int i = 0; i < dos.length; i++) {
@@ -1173,6 +1228,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
                         if (vars.get(k).getName().toLowerCase().substring(3).equals(name)) {
 
                             //Debug section
+                            String valx = "";
                             if (select.getData()[i][j] != null) {
                                 valx = select.getData()[i][j].getClass().getName();
                             } else {
@@ -1182,35 +1238,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
 //                            //End Debug Section
 
                             if (select.getData()[i][j] != null) {
-                                try {
-                                    if (name.startsWith("is") || name.toUpperCase().startsWith("BOOL") || name.toUpperCase().endsWith("BOOL")) {
-                                        if (String.valueOf(select.getData()[i][j]).equals("1") || String.valueOf(select.getData()[i][j]).equalsIgnoreCase("true")) {
-                                            vars.get(k).invoke(dbo, new Object[]{true});
-                                        } else {
-                                            vars.get(k).invoke(dbo, new Object[]{false});
-                                        }
-                                    } else if (!name.toUpperCase().startsWith("INTERNAL") && ((name.toUpperCase().startsWith("INT") || name.endsWith("uid") || name.endsWith("ids") || name.equals("ids")) && !(name.toUpperCase().startsWith("VALUE") || name.toUpperCase().endsWith("VALUE")))) {
-                                        vars.get(k).invoke(dbo, new Object[]{Integer.valueOf(String.valueOf(select.getData()[i][j]))});
-                                    } else if (name.toUpperCase().startsWith("DATE") || name.toUpperCase().endsWith("DATE")) {
-                                        vars.get(k).invoke(dbo, new Object[]{DateConverter.getDate(select.getData()[i][j])});
-                                    } else if (name.toUpperCase().startsWith("VALUE") || name.toUpperCase().endsWith("VALUE")) {
-                                        try {
-                                            vars.get(k).invoke(dbo, new Object[]{new BigDecimal(String.valueOf(select.getData()[i][j]))});
-                                        } catch (IllegalArgumentException illegalArgumentException) {
-                                            //backwards compatibility
-                                         try {
-                                                vars.get(k).invoke(dbo, new Object[]{Double.valueOf(String.valueOf(select.getData()[i][j]))});
-                                            } catch (Exception illegalAccessException) {
-                                                //TODO check for parameter types, not method names please
-                                            }
-                                        }
-                                    } else {
-                                        vars.get(k).invoke(dbo, new Object[]{String.valueOf(select.getData()[i][j])});
-                                    }
-                                } catch (Exception ex) {
-                                    Log.Debug(DatabaseObject.class, "Explode: " + vars.get(k).toGenericString() + " with " + select.getData()[i][j] + "[" + valx + "]");
-                                    Log.Debug(ex);
-                                }
+                                invoke(vars.get(k), select.getData()[i][j], dbo, valx);
                             }
                         }
                     }
@@ -1337,22 +1365,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
 //                Log.Debug(this, name + " ?? : " + vars.get(k).getName() + " = " + data[row][1]);
                 if (vars.get(k).getName().toLowerCase().substring(3).equals(name)) {
 //                    Log.Debug(this, name + " ?? : " + vars.get(k).getName() + " = " + data[row][1]);
-
-                    if (name.startsWith("is") || name.toUpperCase().startsWith("BOOL")) {
-                        if (String.valueOf(data[row][1]).equals("1") || String.valueOf(data[row][1]).toUpperCase().equals("TRUE")) {
-                            vars.get(k).invoke(this, new Object[]{true});
-                        } else {
-                            vars.get(k).invoke(this, new Object[]{false});
-                        }
-                    } else if (!name.toUpperCase().startsWith("INTERNAL") && (name.toUpperCase().startsWith("INT") || name.endsWith("uid") || name.endsWith("ids") || name.equals("ids"))) {
-                        vars.get(k).invoke(this, new Object[]{Integer.valueOf(String.valueOf(data[row][1]))});
-                    } else if (name.toUpperCase().startsWith("DATE") || name.toUpperCase().endsWith("DATE")) {
-                        vars.get(k).invoke(this, new Object[]{DateConverter.getDate(data[row][1])});
-                    } else if (name.toUpperCase().startsWith("VALUE") || name.toUpperCase().endsWith("VALUE")) {
-                        vars.get(k).invoke(this, new Object[]{Double.valueOf(String.valueOf(data[row][1]))});
-                    } else {
-                        vars.get(k).invoke(this, new Object[]{String.valueOf(data[row][1])});
-                    }
+                    invoke(vars.get(k), data[row][1], this, name);
                 }
             }
         }
@@ -1397,7 +1410,8 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
         for (int i = 0; i < m.length; i++) {
             Method method = m[i];
             if (method.getName().startsWith("set")) {
-                Object o = method.invoke(sdo, new Object[]{this.getClass().getMethod(method.getName().replace("set", "get"), (Class[]) null).invoke(this, new Object[0])});
+                Object o = method.invoke(sdo, new Object[]{this.getClass().getMethod(method.getName().replace("set", "get"),
+                            (Class[]) null).invoke(this, new Object[0])});
             }
         }
     }
@@ -1406,8 +1420,6 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
      * @return the groupsids
      */
     public int __getGroupsids() {
-
-
         return groupsids;
     }
 
@@ -1632,6 +1644,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
     /**
      * Fill the do with (senseless) sample data
      */
+    @Deprecated
     public void fillSampleData() {
         List<Method> vars = setVars();
         for (int k = 0; k < vars.size(); k++) {
