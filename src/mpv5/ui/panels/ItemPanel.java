@@ -39,6 +39,8 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Vector;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.Action;
 import javax.swing.InputMap;
 import javax.swing.JButton;
@@ -54,6 +56,7 @@ import javax.swing.table.TableCellRenderer;
 import javax.swing.JTextPane;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
+import javax.swing.table.DefaultTableColumnModel;
 import mpv5.db.common.*;
 import mpv5.db.objects.Product;
 import mpv5.globals.Headers;
@@ -118,6 +121,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
     private TableCalculator netCalculator;
     private TableCalculator netCalculator2;
     private boolean loading = true;
+    private final TableViewPersistenceHandler tableViewPersistenceHandler;
 
     /** Creates new form ContactPanel
      * @param context
@@ -125,7 +129,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
      */
     public ItemPanel(Context context, int type) {
         initComponents();
-//        itemtable.getTableHeader().setReorderingAllowed(false);
+
         inttype_ = type;
         sp = new SearchPanel(context, this);
         sp.setVisible(true);
@@ -277,8 +281,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
                 }
             }
         });
-
-        new TableViewPersistenceHandler(itemtable, this, 0);
+        tableViewPersistenceHandler  = new TableViewPersistenceHandler(itemtable, this);
     }
 
     /**
@@ -297,6 +300,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
     @Override
     public void setDataOwner(DatabaseObject object, boolean populate) {
         loading = true;
+        tableViewPersistenceHandler.remove();
         if (object instanceof Item) {
             dataOwner = (Item) object;
             if (populate) {
@@ -344,6 +348,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
 
         properties();
         loading = false;
+        tableViewPersistenceHandler.set();
     }
 
     private void setTitle() {
@@ -1308,12 +1313,14 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
         if (omodel == null) {
             omodel = (MPTableModel) itemtable.getModel();
         }
+        tableViewPersistenceHandler.remove();
         if (omodel.getValidRows(new int[]{4}).size() > 0) {
             itemtable.setModel(omodel);
             SubItem.changeValueFields(itemtable, Integer.valueOf(calculator.get_Value().toString()), this);
             ((MPTableModel) itemtable.getModel()).fireTableCellUpdated(0, 0);
             ((MPTableModel) itemtable.getModel()).addRow(1);
         }
+        tableViewPersistenceHandler.set();
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void button_deliverynoteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button_deliverynoteActionPerformed
@@ -1572,11 +1579,13 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
 
     @Override
     public void refresh() {
+        
         Runnable runnable = new Runnable() {
 
             @Override
             public void run() {
                 try {
+                    tableViewPersistenceHandler.remove();
                     groupnameselect.setModel(MPComboBoxModelItem.toModel(DatabaseObject.getObject(Context.getGroup(), mpv5.db.objects.User.getCurrentUser().__getGroupsids())));
                     groupnameselect.setSelectedIndex(0);
                     sp.refresh();
@@ -1610,6 +1619,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
                             }));
                     formatTable();
                     shipping.setText(FormatNumber.formatDezimal(0d));
+                    tableViewPersistenceHandler.set();
                 } catch (Exception e) {
                     Log.Debug(this, e);
                 }
@@ -1617,6 +1627,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
         };
 
         SwingUtilities.invokeLater(runnable);
+        
     }
 
     /**
@@ -1671,6 +1682,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
     @Override
     @SuppressWarnings("unchecked")
     public void paste(DatabaseObject... dbos) {
+        tableViewPersistenceHandler.remove();
         if (itemtable.getCellEditor() != null) {
             try {
                 itemtable.getCellEditor().stopCellEditing();
@@ -1773,6 +1785,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
         netCalculator2.calculateOnce();
         netCalculator.calculateOnce();
 
+        tableViewPersistenceHandler.set();
     }
 
     @Override

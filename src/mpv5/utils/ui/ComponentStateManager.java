@@ -2,6 +2,8 @@ package mpv5.utils.ui;
 
 import java.beans.XMLDecoder;
 import java.beans.XMLEncoder;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -15,48 +17,23 @@ import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 import mpv5.db.objects.User;
 import mpv5.logging.Log;
-import mpv5.utils.files.FileDirectoryHandler;
+import org.apache.derby.iapi.services.io.AccessibleByteArrayOutputStream;
 
 /**
- * The Component State manager provides functions to store and restore the state of UI Components, e.g. {@link JTable}s
+ * The Component State manager provides functions to store and restore the state of UI Components, yet only {@link JTable}
  */
 public class ComponentStateManager {
 
-    static File file = new File("persitencetest.txt");
-
-    /**
-     * Use this method to persist the state of a component bound to a {@link User}
-     * @param view 
-     * @param component
-     * @param user
-     */
-    public static void saveSate(JComponent  view, JComponent component, User user) {
-
-        if (component instanceof JTable) {
-            persist(view, (JTable) component, user);
-        } else {
-            throw new UnsupportedOperationException("Not yet supported: " + component.getClass());
-        }
-
-    }
-
-    private static void reloadState(JComponent  view, JComponent component, User user) {
-
-        if (component instanceof JTable) {
-            reload(view, (JTable) component, user);
-        } else {
-            throw new UnsupportedOperationException("Not yet supported: " + component.getClass());
-        }
-    }
 
     /**
      * @author Florian Strienz
      * @param table
      * @param user
      */
-    private static void persist(JComponent  view, JTable table, User user) {
+    public static synchronized String persist(JTable table) {
         try {
-            XMLEncoder encoder = new XMLEncoder(new FileOutputStream(file));
+            ByteArrayOutputStream io = new ByteArrayOutputStream();
+            XMLEncoder encoder = new XMLEncoder(io);
             TableColumnModel tableColumnModel = table.getColumnModel();
             final Set<TableColumnLayoutInfo> tableColumnLayoutInfos = new TreeSet<TableColumnLayoutInfo>();
             for (int currentColumnIndex = 0; currentColumnIndex < tableColumnModel.getColumnCount(); currentColumnIndex++) {
@@ -69,16 +46,25 @@ public class ComponentStateManager {
             encoder.writeObject(tableColumnLayoutInfos);
             encoder.flush();
             encoder.close();
+            return io.toString("UTF-8");
         } catch (Exception e) {
             Log.Debug(e);
-        } finally {
         }
+        return null;
     }
 
-    private static void reload(JComponent  view, JTable table, User user) {
+    /**
+     * @author Florian Strienz
+     *
+     * @param data
+     * @param view
+     * @param table
+     * @param user
+     */
+    public static synchronized void reload(String data, JTable table) {
         try {
-
-            XMLDecoder decoder = new XMLDecoder(new FileInputStream(file));
+            ByteArrayInputStream io = new ByteArrayInputStream(data.getBytes("UTF-8"));
+            XMLDecoder decoder = new XMLDecoder(io);
             @SuppressWarnings("unchecked")
             Set<TableColumnLayoutInfo> tableColumnLayoutInfos = (Set<TableColumnLayoutInfo>) decoder.readObject();
 
@@ -110,47 +96,5 @@ public class ComponentStateManager {
         }
     }
 
-    public static class TableColumnLayoutInfo implements Serializable, Comparable<TableColumnLayoutInfo> {
-
-        @Override
-        public int compareTo(TableColumnLayoutInfo o) {
-            return order - o.order;
-        }
-        private int order;
-        private String columnName;
-        private int width;
-
-        public TableColumnLayoutInfo() {
-        }
-
-        public TableColumnLayoutInfo(String columnName, int order, int width) {
-            this.columnName = columnName;
-            this.order = order;
-            this.width = width;
-        }
-
-        public int getOrder() {
-            return order;
-        }
-
-        public void setOrder(int order) {
-            this.order = order;
-        }
-
-        public int getWidth() {
-            return width;
-        }
-
-        public void setWidth(int width) {
-            this.width = width;
-        }
-
-        public String getColumnName() {
-            return columnName;
-        }
-
-        public void setColumnName(String columnName) {
-            this.columnName = columnName;
-        }
-    }
+   
 }

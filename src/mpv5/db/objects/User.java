@@ -16,6 +16,8 @@
  */
 package mpv5.db.objects;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import mpv5.usermanagement.*;
 import java.awt.Font;
 import java.io.File;
@@ -300,7 +302,7 @@ public class User extends DatabaseObject {
                 }
             };
 
-            SwingUtilities.invokeLater(runnable);
+            new Thread(runnable).start();
         } else {
             Popup.warn(Messages.NOT_POSSIBLE.toString() + Messages.USER_DISABLED);
         }
@@ -722,6 +724,20 @@ public class User extends DatabaseObject {
             Log.Debug(this, "Unable to create DTA info");
             dtaconf = null;
         }
+    }
+
+    private HashMap<String, String> layoutinfo = null;
+    public synchronized HashMap<String, String> getLayoutProperties() {
+        if(layoutinfo == null){
+            try {
+                layoutinfo = ValueProperty.getProperty(this, "layoutinfo").getValue(new HashMap<String, String>());
+                //todo : fix
+            } catch (Exception ex) {
+                Log.Debug(this, ex.getMessage());
+                layoutinfo = new HashMap<String, String>();
+            }
+        }
+        return layoutinfo;
     }
 }
 

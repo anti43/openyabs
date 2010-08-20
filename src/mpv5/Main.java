@@ -19,6 +19,8 @@ package mpv5;
 import ag.ion.bion.officelayer.application.IOfficeApplication;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Map.Entry;
+import java.util.Set;
 import mpv5.db.common.NodataFoundException;
 import mpv5.ui.frames.MPView;
 import mpv5.logging.*;
@@ -55,6 +57,7 @@ import mpv5.ui.dialogs.SplashScreen;
 import mpv5.ui.dialogs.Wizard;
 
 import mpv5.db.objects.User;
+import mpv5.db.objects.ValueProperty;
 import mpv5.globals.GlobalSettings;
 import mpv5.handler.Scheduler;
 import mpv5.i18n.LanguageManager;
@@ -302,6 +305,14 @@ public class Main extends SingleFrameApplication {
         } catch (Exception e) {
             Log.Debug(e);
         }
+
+        try {
+           ValueProperty.addOrUpdateProperty("layoutinfo", User.getCurrentUser().getLayoutProperties(), User.getCurrentUser());
+
+        } catch (Exception ex) {
+            Log.Debug(ex);
+        }
+
         if (Log.getLoglevel() == Log.LOGLEVEL_DEBUG) {
             Log.Debug(Main.class, QueryHandler.instanceOf().getStatistics());
         }

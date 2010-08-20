@@ -455,10 +455,6 @@ public class Contact extends DatabaseObject implements Formattable {
         } catch (Exception ex) {
             Log.Debug(this, ex.getMessage());
         }
-        List<ValueProperty> props = getProperties();
-        for(ValueProperty p : props){
-            map.put(p.getKey(), String.valueOf(p.getValue()));
-        }
 
         if (map.containsKey("country")) {
             try {

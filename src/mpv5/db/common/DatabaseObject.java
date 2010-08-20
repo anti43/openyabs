@@ -1237,8 +1237,8 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
                     String name = select.getColumnnames()[j].toLowerCase();
 
                     for (int k = 0; k < methods.size(); k++) {
-                        if (!(methods.get(k).isAnnotationPresent(Persistable.class) &&
-                                !methods.get(k).getAnnotation(Persistable.class).value())){
+                        if (!(methods.get(k).isAnnotationPresent(Persistable.class)
+                                && !methods.get(k).getAnnotation(Persistable.class).value())) {
                             if (methods.get(k).getName().toLowerCase().substring(3).equals(name)) {
 
                                 //Debug section
@@ -1606,6 +1606,11 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
      * @return
      */
     public HashMap<String, Object> resolveReferences(HashMap<String, Object> map) {
+        List<ValueProperty> props = ValueProperty.getProperties(this);
+        for (ValueProperty p : props) {
+            map.put("property." + p.getKey(), String.valueOf(p.getValue()));
+        }
+
         if (map.containsKey("groupsids")) {
             try {
                 try {

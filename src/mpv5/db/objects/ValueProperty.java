@@ -83,6 +83,30 @@ public final class ValueProperty extends DatabaseObject {
         }
     }
 
+     /**
+     * Create a new property or update an existing one
+     * @param key
+     * @param value
+     * @param owner
+     */
+    public static synchronized void addOrUpdateProperty(final String key, final Class<?> sourceClass, final Serializable value, final DatabaseObject owner) {
+        if (key == null) {
+            throw new NullPointerException();
+        }
+        if (owner != null && key.length() > 0) {
+            ValueProperty val;
+            try {
+                val = getProperty(owner, key);
+            } catch (NodataFoundException ex) {
+                val = new ValueProperty(key, value, owner);
+            }
+            val.setValueObj(value);
+            val.setClassname(sourceClass.getCanonicalName());
+            val.save(true);
+        }
+    }
+
+
     /**
      * Search for a specific property
      * @param owner
@@ -101,6 +125,25 @@ public final class ValueProperty extends DatabaseObject {
         return (ValueProperty) objects.get(0);
     }
 
+     /**
+     * Search for a specific property
+     * @param owner
+     * @param key
+     * @return
+     * @throws NodataFoundException
+     */
+    public static synchronized ValueProperty getProperty(final DatabaseObject owner,  final Class<?> sourceClass, final String key) throws NodataFoundException {
+        if (key == null) {
+            throw new NullPointerException();
+        }
+        QueryCriteria c = new QueryCriteria("contextids", owner.getContext().getId());
+        c.addAndCondition("cname", key);
+        c.addAndCondition("classname", sourceClass.getCanonicalName());
+        c.addAndCondition("objectids", owner.__getIDS());
+        ArrayList<DatabaseObject> objects = DatabaseObject.getObjects(Context.getValueProperties(), c);
+        return (ValueProperty) objects.get(0);
+    }
+
     /**
      * Search for a specific property
      * @param owner
@@ -113,6 +156,30 @@ public final class ValueProperty extends DatabaseObject {
         try {
             QueryCriteria c = new QueryCriteria("contextids", owner.getContext().getId());
             c.addAndCondition("cname", key);
+            c.addAndCondition("objectids", owner.__getIDS());
+            ArrayList<DatabaseObject> objects = DatabaseObject.getObjects(Context.getValueProperties(), c);
+            for (int i = 0; i < objects.size(); i++) {
+                DatabaseObject databaseObject = objects.get(i);
+                databaseObject.delete();
+            }
+        } catch (NodataFoundException ex) {
+        }
+    }
+
+
+    /**
+     * Search for a specific property
+     * @param owner
+     * @param key
+     */
+    public static synchronized void deleteProperty(final DatabaseObject owner, final Class<?> sourceClass, final String key) {
+        if (key == null) {
+            throw new NullPointerException();
+        }
+        try {
+            QueryCriteria c = new QueryCriteria("contextids", owner.getContext().getId());
+            c.addAndCondition("cname", key);
+            c.addAndCondition("classname", sourceClass.getCanonicalName());
             c.addAndCondition("objectids", owner.__getIDS());
             ArrayList<DatabaseObject> objects = DatabaseObject.getObjects(Context.getValueProperties(), c);
             for (int i = 0; i < objects.size(); i++) {
@@ -150,7 +217,7 @@ public final class ValueProperty extends DatabaseObject {
             addOrUpdateProperty(element.getKey(), element.getValue(), owner);
         }
     }
-    private String classname = "";
+    private String sourceclassname = "";
     private Serializable valueObj;
     private int contextids;
     private int objectids;
@@ -197,7 +264,7 @@ public final class ValueProperty extends DatabaseObject {
     }
 
     /**
-     * Return the Class of the value object
+     * Return the Class of the source, see {@link #setClassname(java.lang.String) }
      * @return
      * @throws ClassNotFoundException
      */
@@ -228,15 +295,17 @@ public final class ValueProperty extends DatabaseObject {
      * @return the classname
      */
     public String __getClassname() {
-        return classname;
+        return sourceclassname;
     }
 
     /**
-     * You should not need to programmatically call this method, use {@link #defineValueObj(Serializable valueObj)}
-     * @param classname the classname to set
+     * Defining a source class name here allows it to store view-related objects (such as table column models etc)
+     * with a link to the according view, on a per-class basis. This way, while instanciating a view one can
+     * retrieve layout information from the database.
+     * @param sourceclassname the classname from where the value object originates (optional)
      */
-    public void setClassname(String classname) {
-        this.classname = classname;
+    public void setClassname(String sourceclassname) {
+        this.sourceclassname = sourceclassname;
     }
 
     /**
@@ -277,11 +346,10 @@ public final class ValueProperty extends DatabaseObject {
     /**
      * @param valueObj the valueObj to set
      */
+    @Persistable(false)
     public void setValueObj(Serializable valueObj) {
         this.valueObj = valueObj;
-        setClassname(valueObj.getClass().getCanonicalName());
         __getValue();//generate xml
-
     }
 
     /**

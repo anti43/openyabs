@@ -19,11 +19,22 @@ package mpv5.ui.misc;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.Enumeration;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JComponent;
 import javax.swing.JTable;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.TableColumnModelEvent;
+import javax.swing.event.TableColumnModelListener;
+import javax.swing.table.DefaultTableColumnModel;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
+import mpv5.db.common.NodataFoundException;
+import mpv5.db.objects.User;
+import mpv5.db.objects.ValueProperty;
 import mpv5.logging.Log;
+import mpv5.utils.ui.ComponentStateManager;
 
 /**
  *
@@ -31,52 +42,73 @@ import mpv5.logging.Log;
  */
 public class TableViewPersistenceHandler {
 
+    private final ColumnListener t;
+    private final JTable target;
+
     /**
      * 
      * @param target
      * @param identifier
-     * @param index
      */
-    public TableViewPersistenceHandler(JTable target, JComponent identifier, int index) {
+    public TableViewPersistenceHandler(JTable target, JComponent identifier) {
+        t = new ColumnListener(target, identifier);
+        this.target = target;
 
-        Enumeration<TableColumn> cols = target.getColumnModel().getColumns();
-        while (cols.hasMoreElements()){
-
-            TableColumn col = cols.nextElement();
-            col.addPropertyChangeListener(new ColumnListener(target, identifier, index));
+        try {
+            ComponentStateManager.reload(User.getCurrentUser().getLayoutProperties().get(target + "@" + identifier), target);
+        } catch (Exception ex) {
+            //not set
         }
     }
 
-    class ColumnListener implements PropertyChangeListener {
+    /**
+     * Set a listener
+     */
+    public void set() {
+        target.getColumnModel().addColumnModelListener(t);
+    }
+
+    /**
+     * Remove the listener again
+     */
+    public void remove() {
+        target.getColumnModel().removeColumnModelListener(t);
+    }
+
+    class ColumnListener implements TableColumnModelListener {
 
         private JTable table;
         private final JComponent identifier;
-        private final int index;
-        private final JTable target;
+        private String layout;
 
-        private ColumnListener(JTable target, JComponent identifier, int index) {
+        private ColumnListener(JTable target, JComponent identifier) {
             this.identifier = identifier;
-            this.index = index;
-            this.target = target;
+            this.table = target;
 
         }
 
-        public void propertyChange(PropertyChangeEvent e) {
-
-            Log.Debug(this, e.getPropertyName());
-            if (e.getPropertyName().equals("columWidth")) {
-                TableColumn tableColumn = (TableColumn) e.getSource();
-                int index = table.getColumnModel().getColumnIndex(tableColumn.getHeaderValue());
-
-                TableColumnModel columnModel = table.getColumnModel();
-                Enumeration<TableColumn> cols = columnModel.getColumns();
-                while (cols.hasMoreElements()) {
-                    TableColumn column = cols.nextElement();
-                    Integer modelIndex = new Integer(column.getModelIndex());
-
-                    Log.Debug(modelIndex, column.getPreferredWidth());
-                }
-            }
+        public void columnAdded(TableColumnModelEvent e) {
+            layout = ComponentStateManager.persist(table);
+            User.getCurrentUser().getLayoutProperties().put(target.getName() + "@" + identifier.getName(), layout);
         }
+
+        public void columnRemoved(TableColumnModelEvent e) {
+            layout = ComponentStateManager.persist(table);
+             User.getCurrentUser().getLayoutProperties().put(target.getName() + "@" + identifier.getName(), layout);
+        }
+
+        public void columnMoved(TableColumnModelEvent e) {
+            layout = ComponentStateManager.persist(table);
+             User.getCurrentUser().getLayoutProperties().put(target.getName() + "@" + identifier.getName(), layout);
+        }
+
+        public void columnMarginChanged(ChangeEvent e) {
+            layout = ComponentStateManager.persist(table);
+             User.getCurrentUser().getLayoutProperties().put(target.getName() + "@" + identifier.getName(), layout);
+        }
+
+        public void columnSelectionChanged(ListSelectionEvent e) {
+        }
+
     }
 }

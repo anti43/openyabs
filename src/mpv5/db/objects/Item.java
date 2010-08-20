@@ -445,10 +445,6 @@ public class Item extends DatabaseObject implements Formattable {
     @Override
     public HashMap<String, Object> resolveReferences(HashMap<String, Object> map) {
 
-        List<ValueProperty> props = getProperties();
-        for (ValueProperty p : props) {
-            map.put(p.getKey(), String.valueOf(p.getValue()));
-        }
 
         try {
             if (map.containsKey("intstatus")) {
