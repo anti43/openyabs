@@ -13,7 +13,7 @@
         </TitledBorder>
       </Border>
     </Property>
-    <Property name="name" type="java.lang.String" value="Form" noResource="true"/>
+    <Property name="name" type="java.lang.String" value="ItemPanel" noResource="true"/>
   </Properties>
   <AuxValues>
     <AuxValue name="FormSettings_autoResourcing" type="java.lang.Integer" value="1"/>

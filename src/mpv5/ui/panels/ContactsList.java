@@ -1,6 +1,7 @@
 package mpv5.ui.panels;
 
 import java.awt.Component;
+import java.util.HashMap;
 import javax.swing.JComponent;
 import javax.swing.JTable;
 import javax.swing.table.TableCellRenderer;
@@ -9,10 +10,12 @@ import mpv5.db.common.DatabaseObject;
 import mpv5.db.common.DatabaseSearch;
 import mpv5.db.common.NodataFoundException;
 import mpv5.db.objects.Contact;
+import mpv5.db.objects.User;
 import mpv5.globals.Headers;
 import mpv5.globals.Messages;
 import mpv5.logging.Log;
 import mpv5.ui.frames.MPView;
+import mpv5.utils.ui.TableViewPersistenceHandler;
 import mpv5.utils.models.MPTableModel;
 import mpv5.utils.tables.Selection;
 import mpv5.utils.tables.TableFormat;
@@ -25,24 +28,26 @@ public class ContactsList extends javax.swing.JPanel implements ListPanel {
 
     private static final long serialVersionUID = 1L;
     private Context context;
+    private mpv5.utils.ui.TableViewPersistenceHandler t;
 
     /** Creates new form ListPanel */
     public ContactsList() {
         initComponents();
+        setName("contactlist");
         prinitingComboBox1.init(listTable);
+        t = new mpv5.utils.ui.TableViewPersistenceHandler(listTable, this);
     }
 
     public ContactsList(Context context) {
-        initComponents();
+        this();
+
         this.context = context;
         context.setSearchFields(Context.DETAILS_CONTACTS);
-//        context.setSearchHeaders(Headers.CONTACT_DETAILS);
-//        context.addReference(Context.IDENTITY_CONTACTS, "ids", "company");
         fill(true, true, true, true, false);
-        prinitingComboBox1.init(listTable);
     }
 
     private void fill(boolean customer, boolean supplier, boolean manufacturer, boolean company, boolean filtered) {
+        t.remove();
         context.setContactConditions(customer, supplier, manufacturer, company);
         context.setExclusiveContactConditions(customer, supplier, manufacturer, company);
         context.useExclusiveConditions(filtered);
@@ -54,9 +59,10 @@ public class ContactsList extends javax.swing.JPanel implements ListPanel {
         }
 //        ((MPTableModel)listTable.getModel()).setEditable(true);
         count.setText(String.valueOf(listTable.getModel().getRowCount()));
-//        TableFormat.resizeCols(listTable, new Integer[]{100,100,100,100,100,100,100}, false);
+        //        TableFormat.resizeCols(listTable, new Integer[]{100,100,100,100,100,100,100}, false);
         TableFormat.stripFirstColumn(listTable);
-        validate();
+
+        t.set();
     }
 
     /** This me4thod is called from within the constructor to

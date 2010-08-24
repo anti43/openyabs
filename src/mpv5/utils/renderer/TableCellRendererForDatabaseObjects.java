@@ -31,7 +31,7 @@ public class TableCellRendererForDatabaseObjects extends DefaultTableCellRendere
             setText(adaptee.getText());
 
             if (!isSelected) {
-                setBackground(((DatabaseObject) table.getValueAt(row, 0)).getColor());
+                setBackground(((DatabaseObject) table.getModel().getValueAt(row, 0)).getColor());
             }
             return this;
         }

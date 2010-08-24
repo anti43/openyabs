@@ -155,7 +155,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
                 //was already garbage collected
                 cache.remove(uid);
             } else {
-                Log.Debug(DatabaseObject.class, "Using cached object " + context.getDbIdentity() + "@" + id + " [" + o + "]");
+//                Log.Debug(DatabaseObject.class, "Using cached object " + context.getDbIdentity() + "@" + id + " [" + o + "]");
             }
             return o;
         } else {

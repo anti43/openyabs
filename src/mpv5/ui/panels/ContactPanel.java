@@ -61,6 +61,7 @@ import mpv5.ui.toolbars.DataPanelTB;
 import mpv5.db.objects.User;
 import mpv5.db.objects.ValueProperty;
 import mpv5.ui.dialogs.ScheduleDayEvents;
+import mpv5.utils.ui.TableViewPersistenceHandler;
 import mpv5.ui.popups.DOTablePopUp;
 import mpv5.utils.arrays.ArrayUtilities;
 import mpv5.utils.date.DateConverter;
@@ -91,6 +92,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
      */
     public ContactPanel(Context context) {
         initComponents();
+        setName("contactpanel");
         sp = new SearchPanel(context, this);
         tb = new mpv5.ui.toolbars.DataPanelTB(this);
         toolbarpane.add(tb, BorderLayout.CENTER);
@@ -118,6 +120,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
         refresh();
 
         itemTablePopup = DOTablePopUp.addDefaultPopupMenu(dataTable, Context.getItem(), false);
+        new TableViewPersistenceHandler(proptable, this).set();
 
     }
 
@@ -899,10 +902,11 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
         city.set_Label(bundle.getString("ContactPanel.city._Label")); // NOI18N
         city.setName("city"); // NOI18N
 
-        button_order1.setFont(button_order1.getFont().deriveFont(button_order1.getFont().getStyle() & ~java.awt.Font.BOLD, button_order1.getFont().getSize()-2));
+        button_order1.setFont(button_order1.getFont());
+        button_order1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/16/add.png"))); // NOI18N
         button_order1.setText(bundle.getString("ContactPanel.button_order1.text")); // NOI18N
         button_order1.setFocusable(false);
-        button_order1.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        button_order1.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
         button_order1.setName("button_order1"); // NOI18N
         button_order1.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         button_order1.addActionListener(new java.awt.event.ActionListener() {
@@ -950,20 +954,16 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addGap(12, 12, 12)
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
-                            .addComponent(countryselect, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(department, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel5))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(male)
-                            .addComponent(female)))
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(button_order1)))
+                .addGap(12, 12, 12)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
+                    .addComponent(countryselect, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(department, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel5)
+                    .addComponent(button_order1))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(male)
+                    .addComponent(female))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel2Layout.createSequentialGroup()
@@ -978,7 +978,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
                         .addComponent(cname, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(city, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(21, Short.MAX_VALUE))
+                .addContainerGap(27, Short.MAX_VALUE))
         );
 
         addresspanel.addTab(bundle.getString("ContactPanel.jPanel2.TabConstraints.tabTitle"), jPanel2); // NOI18N

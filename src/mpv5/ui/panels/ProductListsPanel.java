@@ -61,6 +61,7 @@ import mpv5.utils.tables.TableCalculator;
 import mpv5.utils.renderer.CellEditorWithMPComboBox;
 import mpv5.utils.renderer.TableCellRendererForDezimal;
 import mpv5.utils.tables.TableFormat;
+import mpv5.utils.ui.TableViewPersistenceHandler;
 import mpv5.utils.ui.TextFieldUtils;
 
 /**
@@ -76,12 +77,14 @@ public class ProductListsPanel extends javax.swing.JPanel implements DataPanel, 
     private TableCalculator netCalculator;
     private TableCalculator netCalculator2;
     private final SearchPanel sp;
+    private final TableViewPersistenceHandler t;
 
     /**
      *
      */
     public ProductListsPanel() {
         initComponents();
+        setName("productlistpanel");
         itemtable.getTableHeader().setReorderingAllowed(false);
 
         sp = new SearchPanel(Context.getProductlist(), this);
@@ -106,6 +109,7 @@ public class ProductListsPanel extends javax.swing.JPanel implements DataPanel, 
                     if (m.getRowCount() > 0) {
                         m.addRow(5);
                     } else {
+                        t.remove();
                         itemtable.setModel(ProductlistSubItem.toModel(new ProductlistSubItem[]{
                                     ProductlistSubItem.getDefaultItem(), ProductlistSubItem.getDefaultItem(),
                                     ProductlistSubItem.getDefaultItem(), ProductlistSubItem.getDefaultItem(),
@@ -114,6 +118,7 @@ public class ProductListsPanel extends javax.swing.JPanel implements DataPanel, 
 
 
                         formatTable();
+                        t.set();
                     }
                 } else if (e.getButton() == MouseEvent.BUTTON3) {
 
@@ -153,6 +158,7 @@ public class ProductListsPanel extends javax.swing.JPanel implements DataPanel, 
 
         value.set_ValueClass(BigDecimal.class);
         netvalue.set_ValueClass(BigDecimal.class);
+        t = new mpv5.utils.ui.TableViewPersistenceHandler(itemtable, this);
     }
 
     @Override
@@ -170,10 +176,11 @@ public class ProductListsPanel extends javax.swing.JPanel implements DataPanel, 
             tb.setFavourite(Favourite.isFavourite(object));
             tb.setEditable(!object.isReadOnly());
             try {
+                t.remove();
                 itemtable.setModel(ProductlistSubItem.toModel(ProductlistSubItem.getList(dataOwner.__getIDS()).toArray(new ProductlistSubItem[0])));
             } catch (NodataFoundException ex) {
                 Log.Debug(this, ex.getMessage());
-            }
+            } finally {t.set();}
             if (((MPTableModel) itemtable.getModel()).getEmptyRows(new int[]{4}) < 2) {
                 ((MPTableModel) itemtable.getModel()).addRow(1);
             }
@@ -467,10 +474,12 @@ public class ProductListsPanel extends javax.swing.JPanel implements DataPanel, 
             omodel = (MPTableModel) itemtable.getModel();
         }
         if (omodel.getValidRows(new int[]{4}).size() > 0) {
+            t.remove();
             itemtable.setModel(omodel);
             ProductlistSubItem.changeValueFields(itemtable, Integer.valueOf(calculator.get_Value().toString()), this);
             ((MPTableModel) itemtable.getModel()).fireTableCellUpdated(0, 0);
             ((MPTableModel) itemtable.getModel()).addRow(1);
+            t.set();
         }
     }//GEN-LAST:event_jButton1ActionPerformed
 
@@ -592,6 +601,7 @@ public class ProductListsPanel extends javax.swing.JPanel implements DataPanel, 
             @Override
             public void run() {
                 try {
+                    t.remove();
                     groupnameselect.setModel(MPComboBoxModelItem.toModel(DatabaseObject.getObject(Context.getGroup(), mpv5.db.objects.User.getCurrentUser().__getGroupsids())));
                     groupnameselect.setSelectedIndex(0);
                     itemtable.setModel(ProductlistSubItem.toModel(new ProductlistSubItem[]{
@@ -603,6 +613,7 @@ public class ProductListsPanel extends javax.swing.JPanel implements DataPanel, 
                                 ProductlistSubItem.getDefaultItem(), ProductlistSubItem.getDefaultItem()
                             }));
                     formatTable();
+                    t.set();
                 } catch (Exception e) {
                     Log.Debug(this, e);
                 }
@@ -618,14 +629,14 @@ public class ProductListsPanel extends javax.swing.JPanel implements DataPanel, 
     public void formatTable() {
 
         prepareTable();
-        TableFormat.resizeCols(itemtable, new Integer[]{0, 23, 53, 63, 100, 83, 63, 63, 0, 0, 0, 20, 20, 0, 0}, new Boolean[]{true, true, true, true, false, true, true, true, true, true, true, true, true, true, true, true});
+//        TableFormat.resizeCols(itemtable, new Integer[]{0, 23, 53, 63, 100, 83, 63, 63, 0, 0, 0, 20, 20, 0, 0}, new Boolean[]{true, true, true, true, false, true, true, true, true, true, true, true, true, true, true, true});
         TableFormat.changeBackground(itemtable, 1, Color.LIGHT_GRAY);
-        if (mpv5.db.objects.User.getCurrentUser().getProperties().getProperty(MPView.getTabPane(), "hidecolumnquantity")) {
-            TableFormat.stripColumn(itemtable, 2);
-        }
-        if (mpv5.db.objects.User.getCurrentUser().getProperties().getProperty(MPView.getTabPane(), "hidecolumnmeasure")) {
-            TableFormat.stripColumn(itemtable, 3);
-        }
+//        if (mpv5.db.objects.User.getCurrentUser().getProperties().getProperty(MPView.getTabPane(), "hidecolumnquantity")) {
+//            TableFormat.stripColumn(itemtable, 2);
+//        }
+//        if (mpv5.db.objects.User.getCurrentUser().getProperties().getProperty(MPView.getTabPane(), "hidecolumnmeasure")) {
+//            TableFormat.stripColumn(itemtable, 3);
+//        }
 
 
     }
@@ -636,8 +647,10 @@ public class ProductListsPanel extends javax.swing.JPanel implements DataPanel, 
             if (dbo.getContext().equals(Context.getProduct())) {
                 MPTableModel m = (MPTableModel) itemtable.getModel();
                 m.addRow(ProductlistSubItem.toRow((Product) dbo).getRowData(m.getValidRows(new int[]{4}).size()));
+                t.remove();
                 itemtable.setModel(m);
                 omodel = m;
+                t.set();
             } else if (dbo.getContext().equals(Context.getProductlist())) {
                 setDataOwner(dbo, true);
             } else {
@@ -753,7 +766,7 @@ public class ProductListsPanel extends javax.swing.JPanel implements DataPanel, 
             }
 
             public void mouseReleased(MouseEvent e) {
-                ProductSelectDialog.instanceOf((MPTableModel) itemtable.getModel(), itemtable.getSelectedRow(), e, Integer.valueOf(itemtable.getValueAt(itemtable.getSelectedRow(), 10).toString()), itemtable.getValueAt(itemtable.getSelectedRow(), 12 + 1).toString(), itemtable.getValueAt(itemtable.getSelectedRow(), 14).toString());
+                ProductSelectDialog.instanceOf((MPTableModel) itemtable.getModel(), itemtable.getSelectedRow(), e, Integer.valueOf(itemtable.getModel().getValueAt(itemtable.getSelectedRow(), 10).toString()), itemtable.getModel().getValueAt(itemtable.getSelectedRow(), 12 + 1).toString(), itemtable.getModel().getValueAt(itemtable.getSelectedRow(), 14).toString());
                 if (((MPTableModel) itemtable.getModel()).getEmptyRows(new int[]{4}) < 2) {
                     ((MPTableModel) itemtable.getModel()).addRow(1);
                 }
@@ -776,9 +789,9 @@ public class ProductListsPanel extends javax.swing.JPanel implements DataPanel, 
             }
         });
 
-        itemtable.getColumnModel().getColumn(11).setCellRenderer(new ButtonRenderer());
-        itemtable.getColumnModel().getColumn(11).setCellEditor(new ButtonEditor(b1));
-        itemtable.getColumnModel().getColumn(12).setCellRenderer(new ButtonRenderer());
-        itemtable.getColumnModel().getColumn(12).setCellEditor(new ButtonEditor(b2));
+        itemtable.getColumnModel().getColumn(itemtable.getColumnModel().getColumnIndex("A")).setCellRenderer(new ButtonRenderer());
+        itemtable.getColumnModel().getColumn(itemtable.getColumnModel().getColumnIndex("A")).setCellEditor(new ButtonEditor(b1));
+        itemtable.getColumnModel().getColumn(itemtable.getColumnModel().getColumnIndex("C")).setCellRenderer(new ButtonRenderer());
+        itemtable.getColumnModel().getColumn(itemtable.getColumnModel().getColumnIndex("C")).setCellEditor(new ButtonEditor(b2));
     }
 }

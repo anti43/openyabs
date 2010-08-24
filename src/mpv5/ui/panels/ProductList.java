@@ -36,6 +36,7 @@ public class ProductList extends javax.swing.JPanel implements ListPanel {
     /** Creates new form ListPanel */
     public ProductList() {
         initComponents();
+        setName("productlist");
         labeledCombobox1.setContext(Context.getSupplier());
         labeledCombobox1.setSearchEnabled(true);
         labeledCombobox2.setContext(Context.getManufacturer());
@@ -45,6 +46,7 @@ public class ProductList extends javax.swing.JPanel implements ListPanel {
         prinitingComboBox1.init(listTable);
         context.addReference(Context.getContact().getDbIdentity(), "ids", "suppliersids");
         context.addReference(Context.getGroup());
+        new mpv5.utils.ui.TableViewPersistenceHandler(listTable, this).set();
     }
 
     private void fill() {

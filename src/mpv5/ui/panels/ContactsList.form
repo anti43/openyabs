@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.1" encoding="UTF-8" ?>
 
 <Form version="1.6" maxVersion="1.7" type="org.netbeans.modules.form.forminfo.JPanelFormInfo">
   <Properties>
@@ -48,7 +48,7 @@
               <Component id="jToolBar1" alignment="0" pref="632" max="32767" attributes="0"/>
               <Group type="102" alignment="0" attributes="0">
                   <Component id="jPanel2" min="-2" max="-2" attributes="0"/>
-                  <EmptySpace pref="70" max="32767" attributes="0"/>
+                  <EmptySpace pref="107" max="32767" attributes="0"/>
               </Group>
               <Group type="102" alignment="0" attributes="0">
                   <Component id="prinitingComboBox1" min="-2" max="-2" attributes="0"/>
@@ -85,10 +85,10 @@
           <SubComponents>
             <Component class="javax.swing.JTable" name="listTable">
               <Properties>
+                <Property name="autoCreateRowSorter" type="boolean" value="true"/>
                 <Property name="model" type="javax.swing.table.TableModel" editor="org.netbeans.modules.form.editors2.TableModelEditor">
                   <Table columnCount="0" rowCount="4"/>
                 </Property>
-                <Property name="autoCreateRowSorter" type="boolean" value="true"/>
                 <Property name="autoResizeMode" type="int" value="0"/>
                 <Property name="dragEnabled" type="boolean" value="true"/>
                 <Property name="fillsViewportHeight" type="boolean" value="true"/>
@@ -135,7 +135,7 @@
                                       <Component id="jCheckBox4" min="-2" max="-2" attributes="0"/>
                                       <EmptySpace min="-2" pref="18" max="-2" attributes="0"/>
                                       <Component id="excButton" min="-2" max="-2" attributes="0"/>
-                                      <EmptySpace pref="56" max="32767" attributes="0"/>
+                                      <EmptySpace pref="103" max="32767" attributes="0"/>
                                       <Component id="jLabel2" min="-2" max="-2" attributes="0"/>
                                       <EmptySpace max="-2" attributes="0"/>
                                       <Component id="count" min="-2" pref="54" max="-2" attributes="1"/>

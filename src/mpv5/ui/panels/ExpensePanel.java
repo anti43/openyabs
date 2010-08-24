@@ -33,6 +33,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JFrame;
 import javax.swing.JTabbedPane;
+import javax.swing.JTable;
 import javax.swing.JViewport;
 import javax.swing.SwingUtilities;
 import mpv5.db.common.*;
@@ -58,6 +59,7 @@ import mpv5.utils.models.MPComboBoxModelItem;
 import mpv5.utils.models.MPTableModel;
 import mpv5.utils.numberformat.FormatNumber;
 import mpv5.utils.tables.TableFormat;
+import mpv5.utils.ui.TableViewPersistenceHandler;
 import mpv5.utils.ui.TextFieldUtils;
 
 /**
@@ -83,11 +85,13 @@ public class ExpensePanel extends javax.swing.JPanel implements DataPanel {
     }
     private Expense dataOwner;
     private DataPanelTB tb;
+    private final TableViewPersistenceHandler t;
 
     /** Creates new form ContactPanel
      */
     public ExpensePanel() {
         initComponents();
+        setName("expensepanel");
         tb = new mpv5.ui.toolbars.DataPanelTB(this);
         tb.disableButton(1);
         tb.disableButton(8);
@@ -125,7 +129,10 @@ public class ExpensePanel extends javax.swing.JPanel implements DataPanel {
             }
         });
         taxrate.getComboBox().setEditable(false);
-//        refresh();
+        itemtable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+        itemtable.setFillsViewportHeight(true);
+        t = new mpv5.utils.ui.TableViewPersistenceHandler(itemtable, this);
+  
     }
 
     private void calculate() {
@@ -217,7 +224,6 @@ public class ExpensePanel extends javax.swing.JPanel implements DataPanel {
         number = new mpv5.ui.beans.LabeledTextField();
         addedby = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
-        button_order2 = new javax.swing.JButton();
         accountselect = new mpv5.ui.beans.LabeledCombobox();
         groupnameselect = new mpv5.ui.beans.MPCombobox();
         jPanel2 = new javax.swing.JPanel();
@@ -229,13 +235,15 @@ public class ExpensePanel extends javax.swing.JPanel implements DataPanel {
         taxrate = new mpv5.ui.beans.LabeledCombobox();
         path = new javax.swing.JLabel();
         labeledDateChooser1 = new mpv5.ui.beans.LabeledDateChooser();
+        jCheckBox1 = new javax.swing.JCheckBox();
+        labeledDateChooser2 = new mpv5.ui.beans.LabeledDateChooser();
         jPanel4 = new javax.swing.JPanel();
         jScrollPane3 = new javax.swing.JScrollPane();
         itemtable = new javax.swing.JTable();
         toolbarpane = new javax.swing.JPanel();
 
         setBackground(new java.awt.Color(176, 158, 158));
-        java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle(); 
+        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("mpv5/resources/languages/Panels"); // NOI18N
         setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("ExpensePanel.border.title_1"))); // NOI18N
         setName("Form"); // NOI18N
         setLayout(new java.awt.BorderLayout());
@@ -263,18 +271,6 @@ public class ExpensePanel extends javax.swing.JPanel implements DataPanel {
         jLabel4.setFont(jLabel4.getFont());
         jLabel4.setText(bundle.getString("ExpensePanel.jLabel4.text")); // NOI18N
         jLabel4.setName("jLabel4"); // NOI18N
-
-        button_order2.setFont(button_order2.getFont().deriveFont(button_order2.getFont().getStyle() & ~java.awt.Font.BOLD, button_order2.getFont().getSize()-2));
-        button_order2.setText(bundle.getString("ExpensePanel.button_order2.text")); // NOI18N
-        button_order2.setFocusable(false);
-        button_order2.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        button_order2.setName("button_order2"); // NOI18N
-        button_order2.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        button_order2.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                button_order2ActionPerformed(evt);
-            }
-        });
 
         accountselect.set_Label(bundle.getString("ExpensePanel.accountselect._Label")); // NOI18N
         accountselect.setName("accountselect"); // NOI18N
@@ -317,7 +313,7 @@ public class ExpensePanel extends javax.swing.JPanel implements DataPanel {
                 .addContainerGap()
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(path, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 663, Short.MAX_VALUE)
+                    .addComponent(path, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 665, Short.MAX_VALUE)
                     .addComponent(jLabel1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 99, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel2Layout.createSequentialGroup()
                         .addComponent(value, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -347,44 +343,66 @@ public class ExpensePanel extends javax.swing.JPanel implements DataPanel {
         labeledDateChooser1.set_Label(bundle.getString("ExpensePanel.labeledDateChooser1._Label")); // NOI18N
         labeledDateChooser1.setName("labeledDateChooser1"); // NOI18N
 
+        jCheckBox1.setText(bundle.getString("ExpensePanel.jCheckBox1.text")); // NOI18N
+        jCheckBox1.setName("jCheckBox1"); // NOI18N
+        jCheckBox1.setOpaque(false);
+        jCheckBox1.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                jCheckBox1ItemStateChanged(evt);
+            }
+        });
+
+        labeledDateChooser2.set_Label(bundle.getString("ExpensePanel.labeledDateChooser2._Label")); // NOI18N
+        labeledDateChooser2.setName("labeledDateChooser2"); // NOI18N
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+            .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(accountselect, javax.swing.GroupLayout.DEFAULT_SIZE, 458, Short.MAX_VALUE)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(number, javax.swing.GroupLayout.PREFERRED_SIZE, 214, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(jCheckBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 142, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(number, javax.swing.GroupLayout.PREFERRED_SIZE, 214, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(labeledDateChooser1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(accountselect, javax.swing.GroupLayout.DEFAULT_SIZE, 458, Short.MAX_VALUE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(labeledDateChooser2, javax.swing.GroupLayout.DEFAULT_SIZE, 238, Short.MAX_VALUE)
+                            .addComponent(labeledDateChooser1, javax.swing.GroupLayout.DEFAULT_SIZE, 238, Short.MAX_VALUE))))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 24, Short.MAX_VALUE)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(jLabel4)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(button_order2)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGap(59, 59, 59)
                         .addComponent(addedby, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addComponent(groupnameselect, javax.swing.GroupLayout.PREFERRED_SIZE, 187, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(22, Short.MAX_VALUE))
-            .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
+            .addComponent(jPanel2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
-                    .addComponent(accountselect, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 16, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(button_order2, javax.swing.GroupLayout.PREFERRED_SIZE, 15, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(addedby, javax.swing.GroupLayout.PREFERRED_SIZE, 19, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(groupnameselect, javax.swing.GroupLayout.DEFAULT_SIZE, 21, Short.MAX_VALUE)
-                    .addComponent(labeledDateChooser1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(number, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(accountselect, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(number, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(labeledDateChooser1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(labeledDateChooser2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jCheckBox1))
+                        .addGap(2, 2, 2))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
+                            .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 16, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(addedby, javax.swing.GroupLayout.PREFERRED_SIZE, 19, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(groupnameselect, javax.swing.GroupLayout.DEFAULT_SIZE, 57, Short.MAX_VALUE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
@@ -404,7 +422,6 @@ public class ExpensePanel extends javax.swing.JPanel implements DataPanel {
 
             }
         ));
-        itemtable.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_OFF);
         itemtable.setName("itemtable"); // NOI18N
         itemtable.setRowHeight(18);
         itemtable.setSurrendersFocusOnKeystroke(true);
@@ -419,11 +436,11 @@ public class ExpensePanel extends javax.swing.JPanel implements DataPanel {
         jPanel4.setLayout(jPanel4Layout);
         jPanel4Layout.setHorizontalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane3, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 691, Short.MAX_VALUE)
+            .addComponent(jScrollPane3, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 689, Short.MAX_VALUE)
         );
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane3, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 43, Short.MAX_VALUE)
+            .addComponent(jScrollPane3, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 103, Short.MAX_VALUE)
         );
 
         javax.swing.GroupLayout rightpaneLayout = new javax.swing.GroupLayout(rightpane);
@@ -449,25 +466,27 @@ public class ExpensePanel extends javax.swing.JPanel implements DataPanel {
         add(toolbarpane, java.awt.BorderLayout.NORTH);
     }// </editor-fold>//GEN-END:initComponents
 
-    private void button_order2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button_order2ActionPerformed
-        BigPopup.showPopup(this, new ControlPanel_Groups(), null);
-}//GEN-LAST:event_button_order2ActionPerformed
-
     private void itemtableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_itemtableMouseClicked
         try {
-            setDataOwner((DatabaseObject) itemtable.getValueAt(itemtable.getSelectedRow(), 0), true);
+            setDataOwner((DatabaseObject) itemtable.getModel().getValueAt(itemtable.getSelectedRow(), 0), true);
         } catch (Exception e) {
             Log.Debug(this, e.getMessage());
         }
     }//GEN-LAST:event_itemtableMouseClicked
+
+    private void jCheckBox1ItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_jCheckBox1ItemStateChanged
+        if (jCheckBox1.isSelected()) {
+            labeledDateChooser2.setDate(new Date());
+        }
+    }//GEN-LAST:event_jCheckBox1ItemStateChanged
     MPTableModel omodel = null;
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private mpv5.ui.beans.LabeledCombobox accountselect;
     private javax.swing.JLabel addedby;
     private javax.swing.ButtonGroup buttonGroup1;
-    private javax.swing.JButton button_order2;
     private mpv5.ui.beans.MPCombobox groupnameselect;
     private javax.swing.JTable itemtable;
+    private javax.swing.JCheckBox jCheckBox1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JPanel jPanel1;
@@ -476,6 +495,7 @@ public class ExpensePanel extends javax.swing.JPanel implements DataPanel {
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane3;
     private mpv5.ui.beans.LabeledDateChooser labeledDateChooser1;
+    private mpv5.ui.beans.LabeledDateChooser labeledDateChooser2;
     private mpv5.ui.beans.LabeledTextField netvalue;
     private javax.swing.JEditorPane notes;
     private mpv5.ui.beans.LabeledTextField number;
@@ -496,6 +516,8 @@ public class ExpensePanel extends javax.swing.JPanel implements DataPanel {
     public BigDecimal taxpercentvalue_;
     public BigDecimal brutvalue_;
     public int accountsids_;
+    public boolean ispaid_;
+    public Date dateend_;
 
     @Override
     public boolean collectData() {
@@ -516,6 +538,8 @@ public class ExpensePanel extends javax.swing.JPanel implements DataPanel {
         }
 
         dateadded_ = labeledDateChooser1.getDate();
+        dateend_ = labeledDateChooser2.getDate();
+        ispaid_ = jCheckBox1.isSelected();
 
         intaddedby_ = User.getUserId(addedby.getText());
         description_ = notes.getText();
@@ -558,6 +582,8 @@ public class ExpensePanel extends javax.swing.JPanel implements DataPanel {
         addedby.setText(User.getUsername(intaddedby_));
         labeledDateChooser1.setDate(dateadded_);
         taxrate.setSelectedItem(Tax.getTaxId(taxpercentvalue_));
+        labeledDateChooser2.setDate(dateend_);
+        jCheckBox1.setSelected(ispaid_);
     }
 
     @Override
@@ -566,6 +592,7 @@ public class ExpensePanel extends javax.swing.JPanel implements DataPanel {
 
             @Override
             public void run() {
+                t.remove();
                 groupnameselect.triggerSearch();
                 taxrate.triggerSearch();
                 try {
@@ -585,6 +612,7 @@ public class ExpensePanel extends javax.swing.JPanel implements DataPanel {
                 } catch (Exception e) {
                     Log.Debug(e);
                 }
+                t.set();
             }
         };
 
@@ -595,7 +623,7 @@ public class ExpensePanel extends javax.swing.JPanel implements DataPanel {
      * 
      */
     public void formatTable() {
-        TableFormat.resizeCols(itemtable, new Integer[]{100, 333, 100}, false);
+//        TableFormat.resizeCols(itemtable, new Integer[]{100, 333, 100}, false);
     }
 
     @Override
@@ -613,8 +641,10 @@ public class ExpensePanel extends javax.swing.JPanel implements DataPanel {
 
             public void run() {
                 try {
+                    t.remove();
                     itemtable.setModel(new MPTableModel(Expense.getExpenses(), Headers.EXPENSE));
                     formatTable();
+                    t.set();
                 } catch (NodataFoundException ex) {
                 }
             }
@@ -628,8 +658,10 @@ public class ExpensePanel extends javax.swing.JPanel implements DataPanel {
 
             public void run() {
                 try {
+                    t.remove();
                     itemtable.setModel(new MPTableModel(Expense.getExpenses(), Headers.EXPENSE));
                     formatTable();
+                    t.set();
                 } catch (NodataFoundException ex) {
                 }
             }
@@ -681,6 +713,3 @@ public class ExpensePanel extends javax.swing.JPanel implements DataPanel {
         }
     }
 }
-
-
-

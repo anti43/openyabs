@@ -17,6 +17,7 @@
 package mpv5.utils.ui;
 
 import java.io.Serializable;
+import mpv5.utils.text.RandomText;
 
 /**
  *
@@ -28,8 +29,9 @@ public class TableColumnLayoutInfo implements Serializable, Comparable<TableColu
     public int compareTo(TableColumnLayoutInfo o) {
         return order - o.order;
     }
-    private int order;
     private String columnName;
+
+    private int order;
     private int width;
 
     public TableColumnLayoutInfo() {

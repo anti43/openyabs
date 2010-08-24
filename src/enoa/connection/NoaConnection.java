@@ -23,23 +23,29 @@ import ag.ion.bion.officelayer.desktop.IDesktopService;
 import ag.ion.bion.officelayer.document.IDocumentService;
 import ag.ion.bion.officelayer.internal.document.DocumentService;
 import ag.ion.noa.NOAException;
+import com.mysql.jdbc.log.CommonsLogger;
 import com.sun.star.auth.InvalidArgumentException;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.InetSocketAddress;
+import java.net.Socket;
+import java.net.SocketAddress;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import mpv5.Main;
 import mpv5.globals.LocalSettings;
 import mpv5.globals.Messages;
 import mpv5.logging.Log;
 import mpv5.ui.dialogs.Popup;
 import mpv5.ui.frames.MPView;
+import mpv5.utils.files.FileExecutor;
 import ooo.connector.server.OOoServer;
 
 /**
@@ -173,7 +179,6 @@ public class NoaConnection {
                     officeAplication.getDesktopService();
 
             setType(TYPE_LOCAL);
-            mpv5.Main.addOfficeApplicationToClose(officeAplication);
         } else {
             throw new InvalidArgumentException("Path to OO cannot be null: " + OOOPath);
         }
@@ -210,6 +215,44 @@ public class NoaConnection {
         return desktopService;
     }
 
+      /**
+     * Tries to start OO in headless server mode. <code>Give it at least 3-4 seconds before attempting to use the server.</code>
+     * @param path The path where the OO installation resides
+     * @param port The port the server shall listen to
+     * @throws IOException
+     */
+    public synchronized static void startOOServerIfNotRunning(String path, int port) {
+
+        final String command = path.replace("\\", "\\\\") + File.separator + LocalSettings.getProperty(LocalSettings.OFFICE_BINARY_FOLDER) + File.separator + "soffice" + " "
+                + "-headless" + " "
+                + "-nofirststartwizard" + " "
+                + "-norestore" + " "
+                + "-nolockcheck" + " "
+                + "-nocrashreport" + " "
+                + "-nodefault" + " "
+                + "-accept=socket,host=0.0.0.0,port=" + port + ";urp;StarOffice.Service";
+
+        try {
+            SocketAddress addr = new InetSocketAddress("127.0.0.1", port);
+            Socket socket = new Socket();
+            socket.connect(addr, 100);
+            throw new UnsupportedOperationException("Port " + port + " is already in use :-/. Not going to start OO here.");
+        } catch (IOException iOException) {
+            //nothing is running here
+        }
+
+        Runnable runnable = new Runnable() {
+            public void run() {
+                FileExecutor.run(command);
+            }
+        };
+
+        Thread t = new Thread(runnable);
+        t.setDaemon(true);
+        t.start();
+
+    }
+
     /**
      * Tries to start OO in headless server mode. <code>Give it at least 3-4 seconds before attempting to use the server.</code>
      * @param path The path where the OO installation resides
@@ -221,7 +264,7 @@ public class NoaConnection {
                 path.replace("\\", "\\\\") + File.separator + LocalSettings.getProperty(LocalSettings.OFFICE_BINARY_FOLDER) + File.separator + "soffice",
                 "-headless",
                 "-nofirststartwizard",
-//                "-invisible", 
+                //                "-invisible",
                 "-norestore",
                 "-nolockcheck",
                 "-nocrashreport",
@@ -232,11 +275,11 @@ public class NoaConnection {
         environment.put("path", ";"); // Clearing the path variable;
         environment.put("path", path.replace("\\", "\\\\") + File.pathSeparator);
 
-        String command ="";
-        for (int i = 0; i <
-                builder.command().size(); i++) {
+        String command = "";
+        for (int i = 0; i
+                < builder.command().size(); i++) {
             Object object = builder.command().get(i);
-            command+=object + " ";
+            command += object + " ";
         }
 
         Log.Debug(NoaConnection.class, command);
@@ -253,7 +296,7 @@ public class NoaConnection {
                     String line;
 
                     while ((line = br.readLine()) != null) {
-                        System.out.println(line);
+                        mpv5.logging.Log.Print(line);
                     }
                 } catch (IOException ex) {
                     stopOOOServer();
@@ -263,7 +306,7 @@ public class NoaConnection {
         };
         new Thread(runnable).start();
     }
-    static List<Process> OOOServers = new Vector<Process>();
+    private static List<Process> OOOServers = new Vector<Process>();
 
     /**
      * Stops all OOO servers instances started by this instance

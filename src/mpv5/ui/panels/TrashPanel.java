@@ -29,6 +29,7 @@ import mpv5.globals.Messages;
 import mpv5.ui.popups.TablePopUp;
 import mpv5.utils.models.MPTableModel;
 import mpv5.utils.tables.TableFormat;
+import mpv5.utils.ui.TableViewPersistenceHandler;
 
 /**
  *
@@ -47,10 +48,12 @@ public class TrashPanel extends javax.swing.JPanel {
         return ident;
     }
     private TablePopUp tablePopUp;
+    private final TableViewPersistenceHandler t;
 
     /** Creates new form GeneralListPanel */
     private TrashPanel() {
         initComponents();
+        setName("trashpanel");
         setData();
         tablePopUp = new TablePopUp(jTable1, new String[]{Messages.DELETE.toString(), Messages.RESTORE.toString(), null, Messages.RELOAD.getValue()}, new ActionListener[]{new ActionListener() {
 
@@ -84,11 +87,13 @@ public class TrashPanel extends javax.swing.JPanel {
                     setData();
                 }
             }});
+        t = new mpv5.utils.ui.TableViewPersistenceHandler(jTable1, this);
     }
 
     public void setData() {
+        t.remove();
         jTable1.setModel(new MPTableModel(TrashHandler.getData(), Headers.TRASHBIN));
-        TableFormat.resizeCols(jTable1, new Integer[]{100, 100}, true);
+        t.set();
     }
 
     /** This method is called from within the constructor to

@@ -25,14 +25,10 @@ import enoa.handler.TableHandler;
 import enoa.handler.TemplateHandler;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.File;
-import java.lang.reflect.Method;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Vector;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComponent;
 import javax.swing.SwingUtilities;
@@ -92,6 +88,7 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
     /** Creates new form HistoryPanel */
     public JournalPanel() {
         initComponents();
+        setName("journalpanel");
         new ExcelAdapter(jTable1);
         setPopup();
         jPanel5.setEnabled(false);
@@ -103,27 +100,17 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
         validate();
         timeframeChooser1.setTime(new vTimeframe(DateConverter.getDate(DateConverter.getYear()), new Date()));
         bydateend.setSelected(User.getCurrentUser().getProperties().getProperty(this, bydateend, Boolean.TRUE));
-
         groups.setSearchEnabled(true);
         groups.setContext(Context.getGroup());
         groups.triggerSearch();
-
         account1.setSearchEnabled(true);
         account1.setContext(Context.getAccounts());
-
         statusc.getComboBox().setModel(new DefaultComboBoxModel(new Object[]{Messages.ALL, Messages.STATUS_PAID, Messages.STATUS_UNPAID}));
-
         prinitingComboBox1.init(jTable1);
-//        try {
-//            prinitingComboBox1.addAction(this.getClass().getMethod("dta", null), Messages.DTAUS);
-//        } catch (NoSuchMethodException ex) {
-//            Logger.getLogger(JournalPanel.class.getName()).log(Level.SEVERE, null, ex);
-//        } catch (SecurityException ex) {
-//            Logger.getLogger(JournalPanel.class.getName()).log(Level.SEVERE, null, ex);
-//        }
         refresh(null);
         jButton4.setEnabled(false);
         loadTemplate();
+        new mpv5.utils.ui.TableViewPersistenceHandler(jTable1, this).set();;
     }
 
     public JournalPanel(Contact dataOwner) {
@@ -151,6 +138,7 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
         prinitingComboBox1.init(jTable1);
 //        TreeFormat.expandTree(jTree1);
         loadTemplate();
+        new mpv5.utils.ui.TableViewPersistenceHandler(jTable1, this).set();
     }
 
     /** This method is called from within the constructor to
@@ -652,7 +640,9 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
                     if (statusc.getComboBox().getSelectedItem().equals(Messages.STATUS_PAID)) {
                         dh.and(new QueryParameter(Context.getItem(), "intstatus", Item.STATUS_PAID, QueryParameter.EQUALS));
                     } else if (statusc.getComboBox().getSelectedItem().equals(Messages.STATUS_UNPAID)) {
-                        additional = false;
+//                        additional = false;
+                        dh.or(new QueryParameter(Context.getItem(), "intstatus", Item.STATUS_PAID, QueryParameter.EQUALS),
+                                new QueryParameter(Context.getItem(), "intstatus", Item.STATUS_FINISHED, QueryParameter.EQUALS));
                     }
 
                     try {

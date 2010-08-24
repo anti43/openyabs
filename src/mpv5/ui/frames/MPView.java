@@ -358,6 +358,9 @@ public class MPView extends FrameView {
      * @return the clisttab
      */
     public static ContactsList getClisttab() {
+        if(clisttab == null) {
+            clisttab = new ContactsList();
+        }
         return clisttab;
     }
 

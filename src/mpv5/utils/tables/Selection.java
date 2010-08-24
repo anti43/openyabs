@@ -39,7 +39,7 @@ public class Selection {
         try {
             this.table = table;
             r = table.getSelectedRow();
-            id = Integer.valueOf(String.valueOf(table.getValueAt(r, 0)));
+            id = Integer.valueOf(String.valueOf(table.getModel().getValueAt(r, 0)));
             noerror = true;
             if (table.getCellEditor() != null) {
                    try {

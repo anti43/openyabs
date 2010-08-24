@@ -80,7 +80,7 @@ public class Log {
      * @param source
      * @param message
      */
-    public static void Debug(Object source, Object message) {
+    public static synchronized void Debug(Object source, Object message) {
         String sourcen;
         if (source instanceof Class) {
             sourcen = ((Class) source).getName();
@@ -136,13 +136,16 @@ public class Log {
     }
 
     /**
-     * Prints a message, regardless the log level
+     * Prints messages, regardless the log level
      * @param message
      */
-    public static void Print(Object message) {
-        write(message);
-        if (!LogConsole.CONSOLE_LOG_ENABLED) {
-            System.out.println(message);
+    public static void Print(Object... message) {
+        for (int i = 0; i < message.length; i++) {
+            Object object = message[i];
+            write(object);
+            if (!LogConsole.CONSOLE_LOG_ENABLED) {
+                System.out.println(object);
+            }
         }
     }
 
@@ -229,7 +232,6 @@ public class Log {
     public static void Debug(Throwable ex) {
         Debug(Log.class, ex);
     }
-
 
     /**
      *

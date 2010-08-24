@@ -612,7 +612,7 @@ public class MPTableModel extends DefaultTableModel implements Cloneable {
         try {
             return (T) target.getObject(target.getContext(), Integer.valueOf(String.valueOf(getValueAt(selectedRow, 0))));
         } catch (Exception ex) {
-            Log.Debug(ex);
+            Log.Debug(this, ex.getMessage());
             return null;
         }
     }

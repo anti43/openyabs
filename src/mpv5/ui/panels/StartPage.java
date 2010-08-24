@@ -1,5 +1,6 @@
 package mpv5.ui.panels;
 
+import java.awt.event.ActionEvent;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
@@ -9,13 +10,18 @@ import java.util.Collections;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.Properties;
+import javax.swing.AbstractAction;
 import javax.swing.DefaultListModel;
 import javax.swing.ListModel;
 import mpv5.Main;
+import mpv5.db.common.Context;
+import mpv5.db.common.DatabaseObject;
+import mpv5.db.objects.Contact;
 import mpv5.globals.Constants;
 import mpv5.globals.LocalSettings;
 import mpv5.globals.Messages;
 import mpv5.logging.Log;
+import mpv5.ui.frames.MPView;
 import mpv5.utils.files.FileReaderWriter;
 import mpv5.utils.images.MPIcon;
 import mpv5.utils.models.MPTableModel;
@@ -29,15 +35,36 @@ public class StartPage extends javax.swing.JPanel {
     /** Creates new form ListPanel */
     public StartPage() {
         initComponents();
-        fillFiles();
         jTextArea1.setText(Messages.START_MESSAGE.getValue().replace("*", ""));
+
         Runnable runnable = new Runnable() {
+
+            public void run() {
+                fillFiles();
+            }
+        };
+        new Thread(runnable).start();
+
+        Runnable runnable1 = new Runnable() {
 
             public void run() {
                 syst.setModel(getSysInfo());
             }
         };
-        new Thread(runnable).start();
+        new Thread(runnable1).start();
+
+
+        jTaskPaneGroup1.setTitle(Messages.TASKS_CONTACTS.getValue());
+
+        jTaskPaneGroup1.add(new AbstractAction(Messages.CONTACTS_LIST.getValue()) {
+
+            public void actionPerformed(ActionEvent e) {
+                DatabaseObject d = DatabaseObject.getObject(Context.getContact());
+                MPView.getClisttab().setContext(Context.getContact());
+                MPView.getClisttab().showType((Contact) d);
+                MPView.identifierView.addOrShowTab(MPView.getClisttab(), Messages.CONTACTS_LIST.toString());
+            }
+        });
     }
 
     /** This method is called from within the constructor to
@@ -50,6 +77,10 @@ public class StartPage extends javax.swing.JPanel {
     private void initComponents() {
 
         jTabbedPane1 = new javax.swing.JTabbedPane();
+        jPanel4 = new javax.swing.JPanel();
+        jTaskPane1 = new com.l2fprod.common.swing.JTaskPane();
+        jTaskPaneGroup1 = new com.l2fprod.common.swing.JTaskPaneGroup();
+        jTaskPaneGroup2 = new com.l2fprod.common.swing.JTaskPaneGroup();
         jScrollPane1 = new javax.swing.JScrollPane();
         jTextArea1 = new javax.swing.JTextArea();
         jPanel2 = new javax.swing.JPanel();
@@ -68,11 +99,41 @@ public class StartPage extends javax.swing.JPanel {
         jScrollPane6 = new javax.swing.JScrollPane();
         syst = new javax.swing.JList();
 
-        java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle(); // NOI18N
+        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("mpv5/resources/languages/Panels"); // NOI18N
         setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("StartPage.border.title"))); // NOI18N
         setName("Form"); // NOI18N
 
         jTabbedPane1.setName("jTabbedPane1"); // NOI18N
+
+        jPanel4.setName("jPanel4"); // NOI18N
+        jPanel4.setLayout(new java.awt.BorderLayout());
+
+        jTaskPane1.setName("jTaskPane1"); // NOI18N
+        com.l2fprod.common.swing.PercentLayout percentLayout4 = new com.l2fprod.common.swing.PercentLayout();
+        percentLayout4.setGap(14);
+        percentLayout4.setOrientation(1);
+        jTaskPane1.setLayout(percentLayout4);
+
+        jTaskPaneGroup1.setCollapsable(false);
+        jTaskPaneGroup1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/evolution-contacts.png"))); // NOI18N
+        jTaskPaneGroup1.setName("jTaskPaneGroup1"); // NOI18N
+        com.l2fprod.common.swing.PercentLayout percentLayout5 = new com.l2fprod.common.swing.PercentLayout();
+        percentLayout5.setGap(2);
+        percentLayout5.setOrientation(1);
+        jTaskPaneGroup1.getContentPane().setLayout(percentLayout5);
+        jTaskPane1.add(jTaskPaneGroup1);
+
+        jTaskPaneGroup2.setCollapsable(false);
+        jTaskPaneGroup2.setName("jTaskPaneGroup2"); // NOI18N
+        com.l2fprod.common.swing.PercentLayout percentLayout6 = new com.l2fprod.common.swing.PercentLayout();
+        percentLayout6.setGap(2);
+        percentLayout6.setOrientation(1);
+        jTaskPaneGroup2.getContentPane().setLayout(percentLayout6);
+        jTaskPane1.add(jTaskPaneGroup2);
+
+        jPanel4.add(jTaskPane1, java.awt.BorderLayout.CENTER);
+
+        jTabbedPane1.addTab(bundle.getString("StartPage.jPanel4.TabConstraints.tabTitle"), jPanel4); // NOI18N
 
         jScrollPane1.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
         jScrollPane1.setName("jScrollPane1"); // NOI18N
@@ -179,7 +240,7 @@ public class StartPage extends javax.swing.JPanel {
                 .addContainerGap()
                 .addComponent(jLabel3)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane5, javax.swing.GroupLayout.DEFAULT_SIZE, 203, Short.MAX_VALUE)
+                .addComponent(jScrollPane5, javax.swing.GroupLayout.DEFAULT_SIZE, 206, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 131, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
@@ -206,7 +267,7 @@ public class StartPage extends javax.swing.JPanel {
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane6, javax.swing.GroupLayout.DEFAULT_SIZE, 349, Short.MAX_VALUE)
+                .addComponent(jScrollPane6, javax.swing.GroupLayout.DEFAULT_SIZE, 352, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -230,6 +291,7 @@ public class StartPage extends javax.swing.JPanel {
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
+    private javax.swing.JPanel jPanel4;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
@@ -238,6 +300,9 @@ public class StartPage extends javax.swing.JPanel {
     private javax.swing.JScrollPane jScrollPane6;
     private javax.swing.JTabbedPane jTabbedPane1;
     private javax.swing.JTable jTable1;
+    private com.l2fprod.common.swing.JTaskPane jTaskPane1;
+    private com.l2fprod.common.swing.JTaskPaneGroup jTaskPaneGroup1;
+    private com.l2fprod.common.swing.JTaskPaneGroup jTaskPaneGroup2;
     private javax.swing.JTextArea jTextArea1;
     private javax.swing.JTextArea jTextArea2;
     private javax.swing.JTextArea jTextArea3;

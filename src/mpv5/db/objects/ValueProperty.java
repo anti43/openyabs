@@ -256,7 +256,9 @@ public final class ValueProperty extends DatabaseObject {
     @SuppressWarnings("unchecked")
     public synchronized <T extends Object> T getValue(T target) throws Exception {
 
-        if (target.getClass().isAssignableFrom(getClazz())) {
+        Log.Debug(this,"trying to get a " + target.getClass() + " from " + getValue().getClass());
+
+        if (target.getClass().isAssignableFrom(getValue().getClass())) {
             return (T) valueObj;
         } else {
             throw new UnsupportedOperationException(target + " is not  assignable to " + getClazz());

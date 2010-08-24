@@ -49,6 +49,7 @@ import mpv5.utils.images.MPIcon;
 import mpv5.utils.models.MPTableModel;
 import mpv5.utils.renderer.TableCellRendererForDatabaseObjects;
 import mpv5.utils.tables.TableFormat;
+import mpv5.utils.ui.TableViewPersistenceHandler;
 
 /**
  *
@@ -59,17 +60,15 @@ public class GeneralListPanel extends javax.swing.JPanel {
     private static final long serialVersionUID = 1L;
     List odata;
     TableCellRendererForDatabaseObjects rend = new  TableCellRendererForDatabaseObjects();
+    private final TableViewPersistenceHandler tableViewPersistenceHandler;
 
     /** Creates new form GeneralListPanel
      * @param <T>
      * @param list
      */
     public <T extends DatabaseObject> GeneralListPanel(List<T> list) {
-        initComponents();
-        jTable1.setDefaultRenderer(String.class, rend);
-        jTable1.setDefaultRenderer(Date.class, rend);
-        jTable1.setDefaultRenderer(DatabaseObject.class, rend);
-//        jTable1.setDefaultRenderer(ImageIcon.class, new ccr());
+        this();
+
         labeledCombobox1.setSearchEnabled(true);
         labeledCombobox1.setContext(Context.getGroup());
         labeledCombobox1.triggerSearch();
@@ -82,10 +81,11 @@ public class GeneralListPanel extends javax.swing.JPanel {
      */
     public GeneralListPanel() {
         initComponents();
+        setName("generallistpanel");
         jTable1.setDefaultRenderer(String.class, rend);
         jTable1.setDefaultRenderer(Date.class, rend);
         jTable1.setDefaultRenderer(DatabaseObject.class, rend);
-//        jTable1.setDefaultRenderer(ImageIcon.class, new ccr());
+        tableViewPersistenceHandler = new mpv5.utils.ui.TableViewPersistenceHandler(jTable1, this);
     }
 
     /**
@@ -121,6 +121,7 @@ public class GeneralListPanel extends javax.swing.JPanel {
      */
     public <T extends DatabaseObject> void setData(List<T> list) {
 
+        tableViewPersistenceHandler.remove();
         Object[][] data = new Object[list.size()][6];
 
         for (int i = 0; i < list.size(); i++) {
@@ -144,6 +145,7 @@ public class GeneralListPanel extends javax.swing.JPanel {
 
         TableFormat.resizeCols(jTable1, new Integer[]{100, 100, 100, 100, 0, 33}, false);
         TableFormat.stripColumn(jTable1, 4);
+        tableViewPersistenceHandler.set();
 //        TableFormat.stripColumn(jTable1, 5);
     }
 

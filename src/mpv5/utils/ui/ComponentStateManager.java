@@ -8,6 +8,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.Serializable;
+import java.util.Enumeration;
 import java.util.Set;
 import java.util.TreeSet;
 import javax.swing.JComponent;
@@ -23,7 +24,6 @@ import org.apache.derby.iapi.services.io.AccessibleByteArrayOutputStream;
  * The Component State manager provides functions to store and restore the state of UI Components, yet only {@link JTable}
  */
 public class ComponentStateManager {
-
 
     /**
      * @author Florian Strienz
@@ -61,40 +61,60 @@ public class ComponentStateManager {
      * @param table
      * @param user
      */
-    public static synchronized void reload(String data, JTable table) {
-        try {
-            ByteArrayInputStream io = new ByteArrayInputStream(data.getBytes("UTF-8"));
-            XMLDecoder decoder = new XMLDecoder(io);
-            @SuppressWarnings("unchecked")
-            Set<TableColumnLayoutInfo> tableColumnLayoutInfos = (Set<TableColumnLayoutInfo>) decoder.readObject();
+    public static synchronized void reload(String data, JTable table) throws Exception {
 
-            TableColumnModel tableColumnModel = new DefaultTableColumnModel();
+//        Log.Debug(ComponentStateManager.class, data);//
+        if (data != null) {
+            Log.Debug(ComponentStateManager.class, "Reloading layout for: " + table.getName());
+            try {
+                ByteArrayInputStream io = new ByteArrayInputStream(data.getBytes("UTF-8"));
+                XMLDecoder decoder = new XMLDecoder(io);
+                @SuppressWarnings("unchecked")
+                Set<TableColumnLayoutInfo> tableColumnLayoutInfos = (Set<TableColumnLayoutInfo>) decoder.readObject();
 
-            for (TableColumnLayoutInfo tableColumnLayoutInfo : tableColumnLayoutInfos) {
-                TableColumn tableColumn = table.getColumn(tableColumnLayoutInfo.getColumnName());
-                tableColumn.setPreferredWidth(tableColumnLayoutInfo.getWidth());
-                tableColumnModel.addColumn(tableColumn);
-            }
+                TableColumnModel tableColumnModel = new DefaultTableColumnModel();
 
-            TableColumnModel model = table.getColumnModel();
-            for (int i = 0; i < model.getColumnCount(); i++) {
-                boolean found = false;
-                for (int z = 0; z < tableColumnModel.getColumnCount(); z++) {
-                    if (tableColumnModel.getColumn(z).getHeaderValue().equals(model.getColumn(i).getHeaderValue())) {
-                        found = true;
-                        break;
+                for (TableColumnLayoutInfo tableColumnLayoutInfo : tableColumnLayoutInfos) {
+                    if (tableColumnLayoutInfo.getColumnName().length() > 0 && table.getColumnCount() > 0) {
+                        try {
+                            TableColumn tableColumn = table.getColumn(tableColumnLayoutInfo.getColumnName());
+                            tableColumn.setPreferredWidth(tableColumnLayoutInfo.getWidth());
+                            tableColumnModel.addColumn(tableColumn);
+                        } catch (Exception e) {
+                            synchronized (ComponentStateManager.class) {
+                                Log.Debug(ComponentStateManager.class, e + ": " + tableColumnLayoutInfo.getColumnName());
+                                Log.Debug(ComponentStateManager.class, e + " Count: " + table.getColumnCount());
+                                int cols = table.getColumnCount();
+                                for (int i = 0; i < cols; i++) {
+                                    Log.Debug(ComponentStateManager.class, table.getColumnName(i));
+                                }
+                                throw e;
+                            }
+                        }
                     }
                 }
-                if (!found) {
-                    tableColumnModel.addColumn(model.getColumn(i));
-                }
-            }
 
-            table.setColumnModel(tableColumnModel);
-            decoder.close();
-        } catch (Exception e) {
+                TableColumnModel model = table.getColumnModel();
+                for (int i = 0; i < model.getColumnCount(); i++) {
+                    boolean found = false;
+                    for (int z = 0; z < tableColumnModel.getColumnCount(); z++) {
+                        if (tableColumnModel.getColumn(z).getHeaderValue().equals(model.getColumn(i).getHeaderValue())) {
+                            found = true;
+                            break;
+                        }
+                    }
+                    if (!found) {
+                        tableColumnModel.addColumn(model.getColumn(i));
+                    }
+                }
+
+                table.setColumnModel(tableColumnModel);
+                decoder.close();
+            } catch (Exception e) {
+                throw e;
+            }
+        } else {
+            throw new NullPointerException();
         }
     }
-
-   
 }

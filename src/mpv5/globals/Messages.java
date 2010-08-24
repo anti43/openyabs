@@ -207,7 +207,7 @@ public enum Messages {
     WELCOME("Welcome"),
     SELECT_A_TEMPLATE("Select a template:"),
     SELECT_A_CONTACT("You must select a contact."),
-    UNPAID_BILLS("Unpaid bills"),
+    UNPAID_BILLS("Open invoices"),
     UNPAID_BILLS_OVERDUE("Overdues"),
     NO_MAIL_CONFIG("SMTP host configuration not set."),
     MAIL_SENT("Mail sent to:"),
@@ -249,6 +249,15 @@ public enum Messages {
     IMPORT_LANGUAGES("Checking for additional languages"),
     IMPORT_PLUGINS("Checking for additional plugins"),
     IMPORT_TEMPLATES("Checking for additional templates"),
+    TAXES_NOT_EQUAL("You can not use different tax values within the same invoice."),
+    ADDRESS_TYPE_BOTH("Invoicing and delivery address"),
+    ADDRESS_TYPE_INVOICE("Invoicing address"),
+    ADDRESS_TYPE_DELIVERY("Delivery address"),
+    TASKS_CONTACTS("Your contacts.."),
+    TASKS_OFFERS("Your offers.."),
+    TASKS_INVOICES("Your invoices.."),
+    TASKS_SETTINGS("Configure Yabs.."),
+
     ;
 
     private Messages(String message) {

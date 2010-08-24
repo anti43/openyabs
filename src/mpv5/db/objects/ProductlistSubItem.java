@@ -468,7 +468,7 @@ public class ProductlistSubItem extends DatabaseObject {
         if (mpv5.db.objects.User.getCurrentUser().getProperties().hasProperty("defcount")) {
             defcount = mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("defcount", 0d);
         }
-        model.defineRow(new Object[]{0, 0, defcount, defunit, null, 0.0, deftax, 0.0, 0.0, 0.0, 0, "A", "C", "", ""});
+        model.defineRow(new Object[]{0, 0, defcount, defunit, null, 0.0, deftax, 0.0, 0.0, 0.0, 0, "A", "C", "x", "y"});
         model.setAutoCountColumn(1);
 
         return model;

@@ -50,7 +50,8 @@ private final DefaultTableCellRenderer adaptee = new DefaultTableCellRenderer();
      * @param column
      */
     public void setRendererTo(int column) {
-        TableColumn col = t.getColumnModel().getColumn(column);
+
+        TableColumn col = t.getColumnModel().getColumn(t.getColumnModel().getColumnIndex(t.getModel().getColumnName(column)));
         col.setCellEditor(new TableCellEditorForDezimal(new JFormattedTextField()));
         col.setCellRenderer(this);
     }

@@ -16,17 +16,13 @@
  */
 package mpv5;
 
-import ag.ion.bion.officelayer.application.IOfficeApplication;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Map.Entry;
-import java.util.Set;
 import mpv5.db.common.NodataFoundException;
 import mpv5.ui.frames.MPView;
 import mpv5.logging.*;
 import org.jdesktop.application.Application;
 import org.jdesktop.application.SingleFrameApplication;
-
 import com.l2fprod.common.swing.plaf.LookAndFeelAddons;
 import enoa.connection.NoaConnection;
 import enoa.handler.TemplateHandler;
@@ -61,14 +57,13 @@ import mpv5.db.objects.ValueProperty;
 import mpv5.globals.GlobalSettings;
 import mpv5.handler.Scheduler;
 import mpv5.i18n.LanguageManager;
-import mpv5.pluginhandling.MP5Plugin;
-import mpv5.pluginhandling.Plugin;
 import mpv5.pluginhandling.UserPlugin;
 import mpv5.server.MPServer;
 import mpv5.ui.dialogs.LoginToInstanceScreen;
 import mpv5.ui.dialogs.subcomponents.ControlPanel_Fonts;
 import mpv5.ui.dialogs.subcomponents.wizard_DBSettings_simple_1;
 import mpv5.utils.files.FileDirectoryHandler;
+import mpv5.utils.files.FileExecutor;
 import mpv5.utils.files.FileReaderWriter;
 import mpv5.utils.print.PrintJob2;
 import mpv5.utils.text.RandomText;
@@ -93,7 +88,7 @@ public class Main extends SingleFrameApplication {
     private static boolean CLEAR_LOCK = false;
 
     /**
-     * Use this method to (re) cache data from the database to avoid uneccessary db queries
+     * Use this method to (re) cache data from the database to avoid unnecessary db queries
      */
     public static void cache() {
         Runnable runnable = new Runnable() {
@@ -120,13 +115,13 @@ public class Main extends SingleFrameApplication {
     }
 
     /**
-     * Add the office instance to close on exit
+     * Add the processes to close on exit
      * @param officeApplication
      */
-    public static void addOfficeApplicationToClose(IOfficeApplication officeApplication) {
-        oap.add(officeApplication);
+    public static void addProcessToClose(Process application) {
+        oap.add(application);
     }
-    private static List<IOfficeApplication> oap = new Vector<IOfficeApplication>();
+    private static List<Process> oap = new Vector<Process>();
 
     private static void readLocalSettings() {
         splash.nextStep(Messages.LOCAL_SETTINGS.toString());
@@ -154,9 +149,9 @@ public class Main extends SingleFrameApplication {
                 File[] languages = FileDirectoryHandler.getFilesOfDirectory(ilang);
                 for (int i = 0; i < languages.length; i++) {
                     File file = languages[i];
-                    if (QueryHandler.instanceOf().clone(Context.getLanguage()).checkUniqueness("longname", file.getName())){
-                    Log.Debug(Main.class, "Importing: " + file.getPath());
-                    LanguageManager.importLanguage(file.getName(), file);
+                    if (QueryHandler.instanceOf().clone(Context.getLanguage()).checkUniqueness("longname", file.getName())) {
+                        Log.Debug(Main.class, "Importing: " + file.getPath());
+                        LanguageManager.importLanguage(file.getName(), file);
                     }
                     file.deleteOnExit();
                 }
@@ -202,6 +197,16 @@ public class Main extends SingleFrameApplication {
             Popup.error(e);
         }
 
+    }
+
+    private static void runStartScripts() {
+        if(User.PROPERTIES_OVERRIDE.hasProperty("startupcommand")){
+            try {
+                FileExecutor.run(User.PROPERTIES_OVERRIDE.getProperty("startupcommand"));
+            } catch (Exception e) {
+                Log.Debug(e);
+            }
+        }
     }
     private File lockfile = new File(MPPATH + File.separator + "." + Constants.PROG_NAME + "." + "lck");
 
@@ -292,25 +297,33 @@ public class Main extends SingleFrameApplication {
             GlobalSettings.save();
             LocalSettings.save();
             if (!mpv5.db.objects.User.getCurrentUser().isDefault()) {
+
+                try {
+                    ValueProperty.addOrUpdateProperty("layoutinfo", User.getCurrentUser().getLayoutProperties(), User.getCurrentUser());
+                } catch (Exception ex) {
+                    Log.Debug(ex);
+                }
+
+                try {
+                    if (User.getCurrentUser().getProperties().hasProperty("shutdowncommand")) {
+                        String commands = User.getCurrentUser().getProperties().getProperty("shutdowncommand");
+                        FileExecutor.run(commands);
+                    }
+                } catch (Exception ex) {
+                    Log.Debug(ex);
+                }
                 mpv5.db.objects.User.getCurrentUser().logout();
             }
             for (int i = 0; i < oap.size(); i++) {
-                IOfficeApplication iOfficeApplication = oap.get(i);
+                Process p = oap.get(i);
                 try {
-                    iOfficeApplication.getDesktopService().terminate();
+                    p.destroy();
                 } catch (Exception n) {
                 }
             }
             NoaConnection.stopOOOServer();
         } catch (Exception e) {
             Log.Debug(e);
-        }
-
-        try {
-           ValueProperty.addOrUpdateProperty("layoutinfo", User.getCurrentUser().getLayoutProperties(), User.getCurrentUser());
-
-        } catch (Exception ex) {
-            Log.Debug(ex);
         }
 
         if (Log.getLoglevel() == Log.LOGLEVEL_DEBUG) {
@@ -321,6 +334,7 @@ public class Main extends SingleFrameApplication {
             clearLockFile();
         } catch (Exception e) {
         }
+
         super.shutdown();
     }
 
@@ -342,6 +356,7 @@ public class Main extends SingleFrameApplication {
             getOS();
             setEnv(null);
             parseArgs(args);
+            runStartScripts();
             readLocalSettings();
             setDerbyLog();
             readImports();
@@ -379,12 +394,17 @@ public class Main extends SingleFrameApplication {
      * True if a Linux distribution has been detected
      */
     public static boolean osIsLinux = false;
+    /**
+     * True if a Solaris distribution has been detected
+     */
+    public static boolean osIsSolaris = false;
 
     private static void getOS() {
         String os = System.getProperty("os.name").toLowerCase();
         osIsMacOsX = "mac os x".equals(os);
         osIsWindows = os != null && os.indexOf("windows") != -1;
         osIsLinux = os != null && os.indexOf("linux") != -1;
+        osIsSolaris = os != null && os.indexOf("solaris") != -1;
     }
 
     /**
@@ -436,7 +456,7 @@ public class Main extends SingleFrameApplication {
         Option windowlog = obuilder.withShortName("windowlog").withDescription("enables logging to the MP Log Console").create();
         Option consolelog = obuilder.withShortName("consolelog").withDescription("enables logging to STDOUT").create();
         Option printtest = obuilder.withShortName("printtest").withDescription("test PDF printing").create();
-        Option params = obuilder.withShortName("params").withDescription("optional parameters param1:value1;param2:value2..").withArgument(option).create();
+        Option params = obuilder.withShortName("params").withDescription("optional parameters \"param1:value1;param2:value2..\"").withArgument(option).create();
 
 
         Group options = gbuilder.withName("options").
@@ -555,7 +575,7 @@ public class Main extends SingleFrameApplication {
 
             if (cl.hasOption(params)) {
                 try {
-                    String[] parameters = String.valueOf(cl.getValue(params)).split(";");
+                    String[] parameters = String.valueOf(cl.getValue(params)).replace("\"", "").split(";");
 
                     for (int i = 0; i < parameters.length; i++) {
                         String[] opt = parameters[i].split(":");
@@ -696,7 +716,7 @@ public class Main extends SingleFrameApplication {
                     public void run() {
                         try {
                             Log.Debug(Main.class, "Starting OpenOffice as background service..");
-                            NoaConnection.startOOServer(LocalSettings.getProperty(LocalSettings.OFFICE_HOME), LocalSettings.getIntegerProperty(LocalSettings.OFFICE_PORT));
+                            NoaConnection.startOOServerIfNotRunning(LocalSettings.getProperty(LocalSettings.OFFICE_HOME), LocalSettings.getIntegerProperty(LocalSettings.OFFICE_PORT));
                         } catch (Exception n) {
                             Log.Debug(Main.class, n.getMessage());
                         }
@@ -919,7 +939,7 @@ public class Main extends SingleFrameApplication {
 
         try {
             //Just a basic check
-            HttpURLConnection.setFollowRedirects(false);
+            HttpURLConnection.setFollowRedirects(true);
             HttpURLConnection con =
                     (HttpURLConnection) new URL(Constants.CURRENT_VERSION_URL).openConnection();
             con.setRequestMethod("GET");

@@ -87,7 +87,7 @@ import mpv5.ui.dialogs.ScheduleDayEvent;
 import mpv5.ui.dialogs.Search2;
 import mpv5.ui.dialogs.subcomponents.ItemTextAreaDialog;
 import mpv5.ui.dialogs.subcomponents.ProductSelectDialog;
-import mpv5.ui.misc.TableViewPersistenceHandler;
+import mpv5.utils.ui.TableViewPersistenceHandler;
 import mpv5.utils.arrays.ArrayUtilities;
 import mpv5.utils.date.DateConverter;
 import mpv5.utils.export.Export;
@@ -121,7 +121,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
     private TableCalculator netCalculator;
     private TableCalculator netCalculator2;
     private boolean loading = true;
-    private final TableViewPersistenceHandler tableViewPersistenceHandler;
+    private TableViewPersistenceHandler th;
 
     /** Creates new form ContactPanel
      * @param context
@@ -281,7 +281,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
                 }
             }
         });
-        tableViewPersistenceHandler  = new TableViewPersistenceHandler(itemtable, this);
+
     }
 
     /**
@@ -300,7 +300,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
     @Override
     public void setDataOwner(DatabaseObject object, boolean populate) {
         loading = true;
-        tableViewPersistenceHandler.remove();
+        th.remove();
         if (object instanceof Item) {
             dataOwner = (Item) object;
             if (populate) {
@@ -318,10 +318,12 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
                 tb.setFavourite(Favourite.isFavourite(object));
                 tb.setEditable(!object.isReadOnly());
 
+                th.remove();
                 itemtable.setModel(SubItem.toModel(((Item) object).getSubitems()));
                 if (((MPTableModel) itemtable.getModel()).getEmptyRows(new int[]{4}) < 2) {
                     ((MPTableModel) itemtable.getModel()).addRow(1);
                 }
+                th.set();
                 omodel = (MPTableModel) itemtable.getModel();
 
                 formatTable();
@@ -348,7 +350,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
 
         properties();
         loading = false;
-        tableViewPersistenceHandler.set();
+        th.set();
     }
 
     private void setTitle() {
@@ -542,7 +544,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
 
         java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("mpv5/resources/languages/Panels"); // NOI18N
         setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("ItemPanel.border.title_1"))); // NOI18N
-        setName("Form"); // NOI18N
+        setName("ItemPanel"); // NOI18N
         setLayout(new java.awt.BorderLayout());
 
         leftpane.setName("leftpane"); // NOI18N
@@ -1313,14 +1315,15 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
         if (omodel == null) {
             omodel = (MPTableModel) itemtable.getModel();
         }
-        tableViewPersistenceHandler.remove();
+        th.remove();
         if (omodel.getValidRows(new int[]{4}).size() > 0) {
+
             itemtable.setModel(omodel);
             SubItem.changeValueFields(itemtable, Integer.valueOf(calculator.get_Value().toString()), this);
             ((MPTableModel) itemtable.getModel()).fireTableCellUpdated(0, 0);
             ((MPTableModel) itemtable.getModel()).addRow(1);
         }
-        tableViewPersistenceHandler.set();
+        th.set();
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void button_deliverynoteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button_deliverynoteActionPerformed
@@ -1579,13 +1582,15 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
 
     @Override
     public void refresh() {
-        
+
         Runnable runnable = new Runnable() {
 
             @Override
             public void run() {
                 try {
-                    tableViewPersistenceHandler.remove();
+                    if (th != null) {
+                        th.remove();
+                    }
                     groupnameselect.setModel(MPComboBoxModelItem.toModel(DatabaseObject.getObject(Context.getGroup(), mpv5.db.objects.User.getCurrentUser().__getGroupsids())));
                     groupnameselect.setSelectedIndex(0);
                     sp.refresh();
@@ -1619,7 +1624,9 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
                             }));
                     formatTable();
                     shipping.setText(FormatNumber.formatDezimal(0d));
-                    tableViewPersistenceHandler.set();
+                    if (th != null) {
+                        th.set();
+                    }
                 } catch (Exception e) {
                     Log.Debug(this, e);
                 }
@@ -1627,7 +1634,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
         };
 
         SwingUtilities.invokeLater(runnable);
-        
+
     }
 
     /**
@@ -1677,12 +1684,14 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
         } else {
             itemtable.moveColumn(14, 5);
         }
+        th = new TableViewPersistenceHandler(itemtable, this);
+        TableViewPersistenceHandler tableViewPersistenceHandler2 = new TableViewPersistenceHandler(proptable, this);
     }
 
     @Override
     @SuppressWarnings("unchecked")
     public void paste(DatabaseObject... dbos) {
-        tableViewPersistenceHandler.remove();
+        th.remove();
         if (itemtable.getCellEditor() != null) {
             try {
                 itemtable.getCellEditor().stopCellEditing();
@@ -1692,6 +1701,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
 
         ((MPTableModel) itemtable.getModel()).removeEmptyRows(new int[]{4});
 
+        BigDecimal tpvs = null;
         for (DatabaseObject dbo : dbos) {
             if (dbo.getContext().equals(Context.getItem())
                     || dbo.getContext().equals(Context.getBill())
@@ -1708,7 +1718,16 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
                     s.setTotalnetvalue(((Item) dbo).__getNetvalue());
                     s.setTotalbrutvalue(((Item) dbo).__getNetvalue().add(((Item) dbo).__getTaxvalue()));
                     if (s.__getTotalnetvalue().doubleValue() > 0d) {
-                        s.setTaxpercentvalue(s.__getTotalbrutvalue().subtract(s.__getTotalnetvalue()).multiply(new BigDecimal("100")).divide(s.__getTotalnetvalue(), RoundingMode.HALF_UP));
+                        BigDecimal tp = s.__getTotalbrutvalue().subtract(s.__getTotalnetvalue()).multiply(new BigDecimal("100")).divide(s.__getTotalnetvalue(), 2, RoundingMode.HALF_UP);
+                        if (tpvs == null) {
+                            tpvs = tp;
+                        }
+                        if (tpvs.equals(tpvs)) {
+                            s.setTaxpercentvalue(tp);
+                        } else {
+                            Popup.warn(Messages.TAXES_NOT_EQUAL);
+                            break;
+                        }
                     }
                     s.setCName(((Item) dbo).__getCName());
                     s.setDescription(Messages.GOOSE1 + " " + ((Item) dbo).__getCnumber() + " " + Messages.GOOSE2 + " " + DateConverter.getDefDateString(o.__getDateadded()));
@@ -1718,7 +1737,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
 //                        s.setTaxpercentvalue(deftax);
 //                    }
 
-                    Log.PrintArray(s.toStringArray());
+//                    Log.PrintArray(s.toStringArray());
 
                     ((MPTableModel) itemtable.getModel()).addRow(s.getRowData(((MPTableModel) itemtable.getModel()).getLastValidRow(new int[]{4}) + 1));
                 } else {
@@ -1785,7 +1804,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
         netCalculator2.calculateOnce();
         netCalculator.calculateOnce();
 
-        tableViewPersistenceHandler.set();
+        th.set();
     }
 
     @Override
@@ -1808,11 +1827,13 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
 
     @Override
     public void actionAfterCreate() {
+        th.remove();
         sp.refresh();
         ArrayUtilities.replaceColumn(itemtable, 0, null);
         saveSubItems(false);
         omodel = (MPTableModel) itemtable.getModel();
         setTitle();
+        th.set();
     }
 
     private void saveSubItems(boolean deleteRemovedSubitems) {
@@ -1968,10 +1989,10 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
             }
         });
 
-        itemtable.getColumnModel().getColumn(11).setCellRenderer(new ButtonRenderer());
-        itemtable.getColumnModel().getColumn(11).setCellEditor(new ButtonEditor(b1));
-        itemtable.getColumnModel().getColumn(12).setCellRenderer(new ButtonRenderer());
-        itemtable.getColumnModel().getColumn(12).setCellEditor(new ButtonEditor(b2));
+        itemtable.getColumnModel().getColumn( itemtable.getColumnModel().getColumnIndex("A")).setCellRenderer(new ButtonRenderer());
+        itemtable.getColumnModel().getColumn( itemtable.getColumnModel().getColumnIndex("A")).setCellEditor(new ButtonEditor(b1));
+        itemtable.getColumnModel().getColumn( itemtable.getColumnModel().getColumnIndex("C")).setCellRenderer(new ButtonRenderer());
+        itemtable.getColumnModel().getColumn( itemtable.getColumnModel().getColumnIndex("C")).setCellEditor(new ButtonEditor(b2));
     }
 
     private void delivery() {

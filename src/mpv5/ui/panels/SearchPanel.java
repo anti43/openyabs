@@ -27,6 +27,7 @@ import mpv5.ui.frames.MPView;
 import mpv5.utils.models.MPTableModel;
 import mpv5.utils.tables.Selection;
 import mpv5.utils.tables.TableFormat;
+import mpv5.utils.ui.TableViewPersistenceHandler;
 
 /**
  *
@@ -39,14 +40,17 @@ public class SearchPanel extends javax.swing.JPanel {
     private DataPanel panel;
     private int lasttype = 5;
     private String lastneedle = "0";
+    private final TableViewPersistenceHandler t;
 
     /** Creates new form SearchPanel */
     public SearchPanel() {
         initComponents();
+        t = new mpv5.utils.ui.TableViewPersistenceHandler(resulttable, this);
     }
 
     public SearchPanel(Context context, DataPanel panel) {
-        initComponents();
+        this();
+        setName("searchpanel");
         this.validate();
         this.context = context;
         this.panel = panel;
@@ -278,11 +282,12 @@ public class SearchPanel extends javax.swing.JPanel {
     private synchronized void search(final int searchtype, final String value) {
 
         if (this.isShowing()) {
+           
             Runnable runnable = new Runnable() {
 
                 @Override
                 public void run() {
-
+                    t.remove();
                     String sf = context.getSearchFields();
                     if (sf == null) {
                         sf = "ids,cname,cnumber";
@@ -326,8 +331,10 @@ public class SearchPanel extends javax.swing.JPanel {
                             Log.Debug(this, "Invalid parameters!");
                     }
                     TableFormat.makeUneditable(resulttable);
-                    TableFormat.stripColumns(resulttable, new int[]{0, 3, 4, 5, 6, 7, 8, 9});
+                    TableFormat.stripColumns(resulttable, new int[]{0, 3, 4, 5, 6, 7, 8, 9}); 
+                    t.set();
                 }
+               
             };
             Log.Debug(this, "Starting search..");
             SwingUtilities.invokeLater(runnable);

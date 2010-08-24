@@ -18,6 +18,7 @@ package mpv5.db.objects;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Date;
 import javax.swing.JComponent;
 import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
@@ -43,6 +44,8 @@ public class Expense extends DatabaseObject implements Formattable {
     private String cnumber;
     private int accountsids;
     private FormatHandler formatHandler;
+    private Date dateend = new Date();
+    private boolean ispaid;
 
     public Expense() {
         context = Context.getExpense();
@@ -197,5 +200,33 @@ public class Expense extends DatabaseObject implements Formattable {
 
     public void defineFormatHandler(FormatHandler handler) {
         formatHandler = handler;
+    }
+
+    /**
+     * @return the dateend
+     */
+    public Date __getDateend() {
+        return dateend;
+    }
+
+    /**
+     * @param dateend the dateend to set
+     */
+    public void setDateend(Date dateend) {
+        this.dateend = dateend;
+    }
+
+    /**
+     * @return the paid
+     */
+    public boolean __getIspaid() {
+        return ispaid;
+    }
+
+    /**
+     * @param paid the paid to set
+     */
+    public void setIspaid(boolean paid) {
+        this.ispaid = paid;
     }
 }

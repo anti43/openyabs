@@ -18,6 +18,7 @@ package mpv5.db.objects;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Date;
 import javax.swing.JComponent;
 import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
@@ -37,12 +38,14 @@ public class Revenue extends DatabaseObject implements Formattable {
 
     public static int TYPE_REVENUE = 42;
     private String description = "";
-    private BigDecimal  netvalue = new BigDecimal("0");
-    private BigDecimal  taxpercentvalue = new BigDecimal("0");
-    private BigDecimal  brutvalue = new BigDecimal("0");
+    private BigDecimal netvalue = new BigDecimal("0");
+    private BigDecimal taxpercentvalue = new BigDecimal("0");
+    private BigDecimal brutvalue = new BigDecimal("0");
     private String cnumber;
     private int accountsids;
     private FormatHandler formatHandler;
+    private Date dateend = new Date();
+    private boolean ispaid;
 
     public Revenue() {
         context = Context.getRevenue();
@@ -80,42 +83,42 @@ public class Revenue extends DatabaseObject implements Formattable {
     /**
      * @return the netvalue
      */
-    public BigDecimal  __getNetvalue() {
+    public BigDecimal __getNetvalue() {
         return netvalue;
     }
 
     /**
      * @param netvalue the netvalue to set
      */
-    public void setNetvalue(BigDecimal  netvalue) {
+    public void setNetvalue(BigDecimal netvalue) {
         this.netvalue = netvalue;
     }
 
     /**
      * @return the taxpercentvalue
      */
-    public BigDecimal  __getTaxpercentvalue() {
+    public BigDecimal __getTaxpercentvalue() {
         return taxpercentvalue;
     }
 
     /**
      * @param taxpercentvalue the taxpercentvalue to set
      */
-    public void setTaxpercentvalue(BigDecimal  taxpercentvalue) {
+    public void setTaxpercentvalue(BigDecimal taxpercentvalue) {
         this.taxpercentvalue = taxpercentvalue;
     }
 
     /**
      * @return the brutvalue
      */
-    public BigDecimal  __getBrutvalue() {
+    public BigDecimal __getBrutvalue() {
         return brutvalue;
     }
 
     /**
      * @param brutvalue the brutvalue to set
      */
-    public void setBrutvalue(BigDecimal  brutvalue) {
+    public void setBrutvalue(BigDecimal brutvalue) {
         this.brutvalue = brutvalue;
     }
 
@@ -196,5 +199,33 @@ public class Revenue extends DatabaseObject implements Formattable {
 
     public void defineFormatHandler(FormatHandler handler) {
         formatHandler = handler;
+    }
+
+    /**
+     * @return the dateend
+     */
+    public Date __getDateend() {
+        return dateend;
+    }
+
+    /**
+     * @param dateend the dateend to set
+     */
+    public void setDateend(Date dateend) {
+        this.dateend = dateend;
+    }
+
+    /**
+     * @return the ispaid
+     */
+    public boolean __getIspaid() {
+        return ispaid;
+    }
+
+    /**
+     * @param ispaid the ispaid to set
+     */
+    public void setIspaid(boolean ispaid) {
+        this.ispaid = ispaid;
     }
 }

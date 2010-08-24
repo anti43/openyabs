@@ -290,6 +290,7 @@ public class User extends DatabaseObject {
             } catch (Exception e) {
                 Log.Debug(e);
             }
+            final User t = this;
 
             Runnable runnable = new Runnable() {
 
@@ -299,6 +300,13 @@ public class User extends DatabaseObject {
                     setIsloggedin(true);
                     save();
                     DatabaseObject.cacheObjects();//re-cache for user
+
+                    try {
+                        layoutinfo.putAll(ValueProperty.getProperty(t, "layoutinfo").getValue(new HashMap<String, String>()));
+                        //TODO : fix
+                    } catch (Exception ex) {
+                        Log.Debug(this, ex.getMessage());
+                    }
                 }
             };
 
@@ -567,7 +575,7 @@ public class User extends DatabaseObject {
             properties.addAll(QueryHandler.instanceOf().clone(Context.getUserProperties()).select("cname, value", criteria));
             properties.addAll(PROPERTIES_OVERRIDE);
             defineMailConfig();
-            
+
         } catch (NodataFoundException ex) {
             Log.Debug(this, ex.getMessage());
         }
@@ -713,7 +721,7 @@ public class User extends DatabaseObject {
 
     public void defineDTAConfig() {
         try {
-            Konto acc = new Konto( getProperties().getProperty("dtabankid"), 
+            Konto acc = new Konto(getProperties().getProperty("dtabankid"),
                     getProperties().getProperty("dtabankaccount"),
                     getProperties().getProperty("dtabankname"));
             acc.name = __getFullname();
@@ -725,18 +733,13 @@ public class User extends DatabaseObject {
             dtaconf = null;
         }
     }
+    private HashMap<String, String> layoutinfo = new HashMap<String, String>();
 
-    private HashMap<String, String> layoutinfo = null;
-    public synchronized HashMap<String, String> getLayoutProperties() {
-        if(layoutinfo == null){
-            try {
-                layoutinfo = ValueProperty.getProperty(this, "layoutinfo").getValue(new HashMap<String, String>());
-                //todo : fix
-            } catch (Exception ex) {
-                Log.Debug(this, ex.getMessage());
-                layoutinfo = new HashMap<String, String>();
-            }
-        }
+    /**
+     *
+     * @return
+     */
+    public HashMap<String, String> getLayoutProperties() {
         return layoutinfo;
     }
 }

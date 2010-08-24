@@ -36,6 +36,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JFrame;
 import javax.swing.JTabbedPane;
+import javax.swing.JTable;
 import javax.swing.JViewport;
 import javax.swing.SwingUtilities;
 import mpv5.db.common.*;
@@ -62,6 +63,7 @@ import mpv5.utils.models.MPComboBoxModelItem;
 import mpv5.utils.models.MPTableModel;
 import mpv5.utils.numberformat.FormatNumber;
 import mpv5.utils.tables.TableFormat;
+import mpv5.utils.ui.TableViewPersistenceHandler;
 import mpv5.utils.ui.TextFieldUtils;
 
 /**
@@ -87,11 +89,13 @@ public class RevenuePanel extends javax.swing.JPanel implements DataPanel {
     private Revenue dataOwner;
     private DataPanelTB tb;
     private ArrayList<DatabaseObject> accmod;
+    private final TableViewPersistenceHandler t;
 
     /** Creates new form ContactPanel
      */
     public RevenuePanel() {
         initComponents();
+        setName("revenuepanel");
         tb = new mpv5.ui.toolbars.DataPanelTB(this);
         tb.disableButton(1);
         tb.disableButton(8);
@@ -131,8 +135,9 @@ public class RevenuePanel extends javax.swing.JPanel implements DataPanel {
         });
         taxrate.getComboBox().setEditable(false);
 
-      
-//        refresh();
+        itemtable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+        itemtable.setFillsViewportHeight(true);
+        t = new mpv5.utils.ui.TableViewPersistenceHandler(itemtable, this);
     }
 
     private void calculate() {
@@ -461,7 +466,7 @@ public class RevenuePanel extends javax.swing.JPanel implements DataPanel {
 
     private void itemtableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_itemtableMouseClicked
         try {
-            setDataOwner((DatabaseObject) itemtable.getValueAt(itemtable.getSelectedRow(), 0), true);
+            setDataOwner((DatabaseObject) itemtable.getModel().getValueAt(itemtable.getSelectedRow(), 0), true);
         } catch (Exception e) {
             Log.Debug(this, e.getMessage());
         }
@@ -470,7 +475,7 @@ public class RevenuePanel extends javax.swing.JPanel implements DataPanel {
     private void button_order2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button_order2ActionPerformed
         BigPopup.showPopup(this, new ControlPanel_Groups(), null);
 }//GEN-LAST:event_button_order2ActionPerformed
-    MPTableModel omodel = null;
+     MPTableModel omodel = null;
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private mpv5.ui.beans.LabeledCombobox accountselect;
     private javax.swing.JLabel addedby;
@@ -526,7 +531,7 @@ public class RevenuePanel extends javax.swing.JPanel implements DataPanel {
         }
 
         dateadded_ = labeledDateChooser1.getDate();
-        
+
         intaddedby_ = User.getUserId(addedby.getText());
         description_ = notes.getText();
         try {
@@ -576,6 +581,7 @@ public class RevenuePanel extends javax.swing.JPanel implements DataPanel {
 
             @Override
             public void run() {
+                t.remove();
                 groupnameselect.triggerSearch();
                 taxrate.triggerSearch();
                 try {
@@ -595,6 +601,7 @@ public class RevenuePanel extends javax.swing.JPanel implements DataPanel {
                 } catch (Exception e) {
                     Log.Debug(e);
                 }
+                t.set();
             }
         };
 
@@ -605,7 +612,7 @@ public class RevenuePanel extends javax.swing.JPanel implements DataPanel {
      * 
      */
     public void formatTable() {
-          TableFormat.resizeCols(itemtable, new Integer[]{100, 333, 100}, false);
+//        TableFormat.resizeCols(itemtable, new Integer[]{100, 333, 100}, false);
     }
 
     @Override
@@ -623,8 +630,10 @@ public class RevenuePanel extends javax.swing.JPanel implements DataPanel {
 
             public void run() {
                 try {
+                    t.remove();
                     itemtable.setModel(new MPTableModel(Revenue.getRevenues(), Headers.EXPENSE));
                     formatTable();
+                    t.set();
                 } catch (NodataFoundException ex) {
                 }
             }
@@ -638,8 +647,10 @@ public class RevenuePanel extends javax.swing.JPanel implements DataPanel {
 
             public void run() {
                 try {
+                    t.remove();
                     itemtable.setModel(new MPTableModel(Revenue.getRevenues(), Headers.EXPENSE));
                     formatTable();
+                    t.set();
                 } catch (NodataFoundException ex) {
                 }
             }
@@ -677,11 +688,11 @@ public class RevenuePanel extends javax.swing.JPanel implements DataPanel {
                         }
                     }
 
-                     try {
-            netvalue.setText(FormatNumber.formatLokalCurrency(FormatNumber.parseDezimal(value.getText()).divide((tax.divide(new BigDecimal("100"))).add(BigDecimal.ONE))));
-        } catch (Exception e) {
-            netvalue.setText(FormatNumber.formatLokalCurrency(0d));
-        }
+                    try {
+                        netvalue.setText(FormatNumber.formatLokalCurrency(FormatNumber.parseDezimal(value.getText()).divide((tax.divide(new BigDecimal("100"))).add(BigDecimal.ONE))));
+                    } catch (Exception e) {
+                        netvalue.setText(FormatNumber.formatLokalCurrency(0d));
+                    }
                     try {
                         sleep(333);
                     } catch (InterruptedException ex) {
@@ -691,6 +702,3 @@ public class RevenuePanel extends javax.swing.JPanel implements DataPanel {
         }
     }
 }
-
-
-

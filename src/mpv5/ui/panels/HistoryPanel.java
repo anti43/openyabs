@@ -64,6 +64,7 @@ public class HistoryPanel extends javax.swing.JPanel implements ListPanel {
     /** Creates new form HistoryPanel */
     public HistoryPanel() {
         initComponents();
+        setName("historypanel");
         timeframeChooser1.setTime(new vTimeframe(DateConverter.getDate(DateConverter.getYear()), new Date()));
         prinitingComboBox1.init(jTable1);
         Object[] dat;
@@ -87,6 +88,7 @@ public class HistoryPanel extends javax.swing.JPanel implements ListPanel {
         }
 
         refresh(null, null);
+        new mpv5.utils.ui.TableViewPersistenceHandler(jTable1, this).set();
     }
 
     /** This method is called from within the constructor to

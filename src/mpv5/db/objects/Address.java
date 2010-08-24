@@ -16,10 +16,13 @@
  */
 package mpv5.db.objects;
 
-import javax.swing.Icon;
+import java.util.HashMap;
+
 import javax.swing.JComponent;
 import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
+import mpv5.globals.Messages;
+import mpv5.logging.Log;
 import mpv5.utils.images.MPIcon;
 
 /**
@@ -41,10 +44,9 @@ public class Address extends DatabaseObject {
     private int contactsids = 0;
     private int inttype = 2;// [0 = billing adress, 1 = delivery adress, 2 = both, 3 = undefined]
 
-    public Address(){
+    public Address() {
         context = Context.getAddress();
     }
-
 
     /**
      * @return the taxnumber
@@ -205,7 +207,7 @@ public class Address extends DatabaseObject {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-   @Override
+    @Override
     public MPIcon getIcon() {
         return null;
     }
@@ -222,5 +224,29 @@ public class Address extends DatabaseObject {
      */
     public void setInttype(int inttype) {
         this.inttype = inttype;
+    }
+
+    @Override
+    public HashMap<String, Object> resolveReferences(HashMap<String, Object> map) {
+        super.resolveReferences(map);
+
+        try {
+            if (map.containsKey("inttype")) {
+                // [0 = billing adress, 1 = delivery adress, 2 = both, 3 = undefined]
+                if (__getInttype() == 2) {
+                    map.put("type", Messages.ADDRESS_TYPE_BOTH);
+                } else if (__getInttype() == 1) {
+                    map.put("type", Messages.ADDRESS_TYPE_DELIVERY);
+                } else if (__getInttype() == 0) {
+                    map.put("type", Messages.ADDRESS_TYPE_INVOICE);
+                }
+
+                map.remove("inttype");
+            }
+        } catch (Exception n) {
+            //already resolved?
+            Log.Debug(n);
+        }
+        return map;
     }
 }

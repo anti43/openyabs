@@ -62,6 +62,7 @@ public class LocalSettings {
     public static final String CALCULATOR = "calculator";
     public static final String BASE_DIR = "basedir";
     public static final String SUPPRESS_UPDATE_CHECK = "noupdate";
+    public static final String CMD_PASSWORD = "cmdpassword";
     private static PropertyStore predefinedSettings = new PropertyStore(new String[][]{
                 {CLIENT, "Default Client"},
                 {DEFAULT_FONT, "DejaVu Sans 11"},
@@ -78,6 +79,7 @@ public class LocalSettings {
                 {CACHE_DIR, "Cache"},
                 {DBESCAPE, "true"},
                 {CALCULATOR, ""},
+                {CMD_PASSWORD, ""},
                 {SUPPRESS_UPDATE_CHECK, "false"}, // MacOS
             //                {OFFICE_HOME, "/Applications/OpenOffice.org.app/Contents/"},
             //                {OFFICE_BINARY_FOLDER, "MacOS"},
