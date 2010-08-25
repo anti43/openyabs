@@ -355,13 +355,28 @@ public class MPView extends FrameView {
     }
 
     /**
+     * @param c
      * @return the clisttab
      */
-    public static ContactsList getClisttab() {
-        if(clisttab == null) {
-            clisttab = new ContactsList();
+    public static synchronized ContactsList getClisttab(Context c) {
+        if (c.equals(Context.getCustomer())) {
+            if (clisttabc == null) {
+                clisttabc = new ContactsList(c);
+            }
+            return clisttabc;
+        } else if (c.equals(Context.getSupplier())) {
+            if (clisttabs == null) {
+                clisttabs = new ContactsList(c);
+            }
+            return clisttabs;
+        } else if (c.equals(Context.getManufacturer())) {
+            if (clisttabm == null) {
+                clisttabm = new ContactsList(c);
+            }
+            return clisttabm;
+        } else {
+            return new ContactsList();
         }
-        return clisttab;
     }
 
     /**
@@ -429,7 +444,7 @@ public class MPView extends FrameView {
      * @param truee
      */
     public static void setWaiting(boolean truee) {
-        if (Main.INSTANTIATED && getIdentifierFrame()!=null) {
+        if (Main.INSTANTIATED && getIdentifierFrame() != null) {
             if (truee) {
                 getIdentifierFrame().setCursor(new Cursor(Cursor.WAIT_CURSOR));
             } else {
@@ -1838,48 +1853,37 @@ public class MPView extends FrameView {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
-//        DatabaseObject d = DatabaseObject.getObject(Context.getCustomer());
-//        ((mpv5.db.objects.Contact) d).setisCustomer(true);
-//        addTab(d, Messages.NEW_CUSTOMER);
+
         DatabaseObject d = DatabaseObject.getObject(Context.getCustomer());
         ((mpv5.db.objects.Contact) d).setisCustomer(true);
-//        addTab(d, Messages.NEW_SUPPLIER);
-        if (getClisttab() == null) {
-            clisttab = new ContactsList();
-        }
-        getClisttab().setContext(Context.getCustomer());
-        getClisttab().showType((Contact) d);
-        addOrShowTab(getClisttab(), Messages.CONTACTS_LIST.toString());
+
+        ContactsList t = getClisttab(Context.getCustomer());
+        t.showType((Contact) d);
+        addOrShowTab(t, Messages.CONTACTS_LIST.toString());
     }//GEN-LAST:event_jButton5ActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
 
         DatabaseObject d = DatabaseObject.getObject(Context.getSupplier());
         ((mpv5.db.objects.Contact) d).setisSupplier(true);
-//        addTab(d, Messages.NEW_SUPPLIER);
-        if (getClisttab() == null) {
-            clisttab = new ContactsList();
-        }
-        getClisttab().setContext(Context.getSupplier());
-        getClisttab().showType((Contact) d);
-        addOrShowTab(getClisttab(), Messages.CONTACTS_LIST.toString());
+
+        ContactsList t = getClisttab(Context.getSupplier());
+        t.showType((Contact) d);
+        addOrShowTab(t, Messages.CONTACTS_LIST.toString());
 
 }//GEN-LAST:event_jButton1ActionPerformed
-    private static ContactsList clisttab;
+    private static ContactsList clisttabc;
+    private static ContactsList clisttabs;
+    private static ContactsList clisttabm;
     private static ProductList plisttab;
     private void jButton18ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton18ActionPerformed
-//        DatabaseObject d = DatabaseObject.getObject(Context.getManufacturer());
-//        ((mpv5.db.objects.Contact) d).setisManufacturer(true);
-//        addTab(d, Messages.NEW_MANUFACTURER);
+
         DatabaseObject d = DatabaseObject.getObject(Context.getManufacturer());
         ((mpv5.db.objects.Contact) d).setisManufacturer(true);
-//        addTab(d, Messages.NEW_SUPPLIER);
-        if (getClisttab() == null) {
-            clisttab = new ContactsList();
-        }
-        getClisttab().setContext(Context.getManufacturer());
-        getClisttab().showType((Contact) d);
-        addOrShowTab(getClisttab(), Messages.CONTACTS_LIST.toString());
+
+        ContactsList t = getClisttab(Context.getManufacturer());
+        t.showType((Contact) d);
+        addOrShowTab(t, Messages.CONTACTS_LIST.toString());
     }//GEN-LAST:event_jButton18ActionPerformed
 
     private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
@@ -1901,7 +1905,6 @@ public class MPView extends FrameView {
 
     private void calculatorButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_calculatorButtonActionPerformed
         if (LocalSettings.hasProperty(LocalSettings.CALCULATOR) && LocalSettings.getProperty(LocalSettings.CALCULATOR).length() >= 1) {
-
             try {
                 Runtime.getRuntime().exec(LocalSettings.getProperty(LocalSettings.CALCULATOR));
             } catch (Exception e) {
@@ -2257,35 +2260,34 @@ public class MPView extends FrameView {
     private void jMenuItem38ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem38ActionPerformed
 
         DialogForFile f = MPView.getFiledialog();
-                List<Contact> contacts = null;
-                if (f.chooseFile()) {
-                    try {
-                        List<VCard> l = VCFParser.parse(f.getFile());
-                        contacts = VCFParser.toContacts(l);
+        List<Contact> contacts = null;
+        if (f.chooseFile()) {
+            try {
+                List<VCard> l = VCFParser.parse(f.getFile());
+                contacts = VCFParser.toContacts(l);
 
-                    } catch (Exception ex) {
+            } catch (Exception ex) {
 //                        Log.Debug(ex);
-                        Popup.error(ex);
-                    }
+                Popup.error(ex);
+            }
 
-                    if (contacts != null) {
-                        for (int i = 0; i < contacts.size(); i++) {
-                            Contact contact = null;
-                            try {
-                                contact = contacts.get(i);
-                                contact.saveImport();
-                            } catch (Exception ec) {
-                                Popup.error(ec);
-                                contact.setCName("ERROR");
-                            }
-                        }
-
-                        GeneralListPanel pl = new GeneralListPanel(contacts);
-                        MPView.identifierView.addTab(pl, "Imported contacts");
+            if (contacts != null) {
+                for (int i = 0; i < contacts.size(); i++) {
+                    Contact contact = null;
+                    try {
+                        contact = contacts.get(i);
+                        contact.saveImport();
+                    } catch (Exception ec) {
+                        Popup.error(ec);
+                        contact.setCName("ERROR");
                     }
                 }
-    }//GEN-LAST:event_jMenuItem38ActionPerformed
 
+                GeneralListPanel pl = new GeneralListPanel(contacts);
+                MPView.identifierView.addTab(pl, "Imported contacts");
+            }
+        }
+    }//GEN-LAST:event_jMenuItem38ActionPerformed
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton calculatorButton;
     public javax.swing.JMenu clipboardMenu;

@@ -23,6 +23,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import javax.swing.JComponent;
@@ -31,6 +32,7 @@ import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
 import mpv5.db.common.NodataFoundException;
 import mpv5.db.common.QueryCriteria;
+import mpv5.db.common.QueryHandler;
 import mpv5.logging.Log;
 
 /**
@@ -83,7 +85,7 @@ public final class ValueProperty extends DatabaseObject {
         }
     }
 
-     /**
+    /**
      * Create a new property or update an existing one
      * @param key
      * @param value
@@ -106,7 +108,6 @@ public final class ValueProperty extends DatabaseObject {
         }
     }
 
-
     /**
      * Search for a specific property
      * @param owner
@@ -125,14 +126,14 @@ public final class ValueProperty extends DatabaseObject {
         return (ValueProperty) objects.get(0);
     }
 
-     /**
+    /**
      * Search for a specific property
      * @param owner
      * @param key
      * @return
      * @throws NodataFoundException
      */
-    public static synchronized ValueProperty getProperty(final DatabaseObject owner,  final Class<?> sourceClass, final String key) throws NodataFoundException {
+    public static synchronized ValueProperty getProperty(final DatabaseObject owner, final Class<?> sourceClass, final String key) throws NodataFoundException {
         if (key == null) {
             throw new NullPointerException();
         }
@@ -165,7 +166,6 @@ public final class ValueProperty extends DatabaseObject {
         } catch (NodataFoundException ex) {
         }
     }
-
 
     /**
      * Search for a specific property
@@ -231,6 +231,7 @@ public final class ValueProperty extends DatabaseObject {
      * Generates a xml string representation of the value object
      * @return the value
      */
+    @Persistable(false)
     public synchronized String __getValue() {
         try {
             ByteArrayOutputStream io = new ByteArrayOutputStream();
@@ -256,12 +257,12 @@ public final class ValueProperty extends DatabaseObject {
     @SuppressWarnings("unchecked")
     public synchronized <T extends Object> T getValue(T target) throws Exception {
 
-        Log.Debug(this,"trying to get a " + target.getClass() + " from " + getValue().getClass());
+        Log.Debug(this, "trying to get a " + target.getClass() + " from " + getValue().getClass());
 
         if (target.getClass().isAssignableFrom(getValue().getClass())) {
             return (T) valueObj;
         } else {
-            throw new UnsupportedOperationException(target + " is not  assignable to " + getClazz());
+            throw new UnsupportedOperationException(target + " is not  assignable to " + getValue().getClass());
         }
     }
 
@@ -278,13 +279,16 @@ public final class ValueProperty extends DatabaseObject {
      * You should not need to programmatically call this method, use {@link #defineValueObj(Serializable valueObj)}
      * @param value the value to set
      */
-    public void setValue(final String value) {
+    public void setValue(final byte[] value) {
         try {
-            ByteArrayInputStream io = new ByteArrayInputStream(value.getBytes("UTF-8"));
+            ByteArrayInputStream io = new ByteArrayInputStream(value);
             XMLDecoder d = new XMLDecoder(io);
             this.valueObj = (Serializable) d.readObject();
         } catch (Exception unsupportedEncodingException) {
-            Log.Debug(unsupportedEncodingException);
+            synchronized (this) {
+                Log.Debug(unsupportedEncodingException);
+                Log.Debug(this, value);
+            }
         }
     }
 
@@ -301,9 +305,6 @@ public final class ValueProperty extends DatabaseObject {
     }
 
     /**
-     * Defining a source class name here allows it to store view-related objects (such as table column models etc)
-     * with a link to the according view, on a per-class basis. This way, while instanciating a view one can
-     * retrieve layout information from the database.
      * @param sourceclassname the classname from where the value object originates (optional)
      */
     public void setClassname(String sourceclassname) {
@@ -394,5 +395,32 @@ public final class ValueProperty extends DatabaseObject {
     @Persistable(false)
     public void setKey(String key) {
         setCName(key);
+    }
+
+    @Override
+    public boolean save(boolean silent) {
+        return save();
+    }
+
+    @Override
+    public boolean save() {
+
+        try {
+            ByteArrayInputStream in = new ByteArrayInputStream(__getValue().getBytes("Utf-8"));
+            if (ids <= 0) {
+                Log.Debug(this, "Inserting new dataset into: " + this.getContext());
+                setDateadded(new Date());
+                setIntaddedby(mpv5.db.objects.User.getCurrentUser().__getIDS());
+                ids = QueryHandler.instanceOf().clone(context).insertValueProperty(in, super.collect(), null);
+                Log.Debug(this, "The inserted row has id: " + ids);
+            } else {
+                Log.Debug(this, "Updating dataset: " + ids + " within context '" + context + "'");
+                QueryHandler.instanceOf().clone(context).updateValueProperty(ids, in, super.collect(), null);
+            }
+            return true;
+        } catch (Exception e) {
+            Log.Debug(e);
+            return false;
+        }
     }
 }

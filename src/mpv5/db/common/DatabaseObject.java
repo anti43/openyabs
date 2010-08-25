@@ -17,6 +17,10 @@
 package mpv5.db.common;
 
 import java.awt.Color;
+import java.io.ByteArrayOutputStream;
+import java.io.DataOutputStream;
+import java.io.OutputStreamWriter;
+import java.io.Reader;
 import java.io.Serializable;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -26,6 +30,7 @@ import java.lang.ref.SoftReference;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.math.BigDecimal;
+import java.sql.Clob;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -182,6 +187,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
     }
 
     private static synchronized void invoke(Method method, Object argument, DatabaseObject dbo, Object valx) {
+
         try {
 
             if (!method.getParameterTypes()[0].isPrimitive()) {
@@ -205,6 +211,17 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
                     method.invoke(dbo, new Object[]{Float.valueOf(String.valueOf(argument))});
                 } else if (method.getParameterTypes()[0].isInstance(01)) {
                     method.invoke(dbo, new Object[]{Short.valueOf(String.valueOf(argument))});
+                } else if (method.getParameterTypes()[0].getCanonicalName().equals(new byte[0].getClass().getCanonicalName())) {//doitbetter
+                    //byet[] is for CLOB data
+                    Reader reader = ((Clob) argument).getCharacterStream();
+                    ByteArrayOutputStream out = new ByteArrayOutputStream();
+                    OutputStreamWriter p = new OutputStreamWriter(out);
+                    char[] buffer = new char[1];
+                    while (reader.read(buffer) > 0) {
+                       p.write(buffer, 0, buffer.length);
+                    }
+                    p.close();
+                    method.invoke(dbo, new Object[]{out.toByteArray()});
                 } else {
                     //defaults to java.lang.String, Object args are not supported.. possibly later via XMLEncoder?
                     method.invoke(dbo, new Object[]{String.valueOf(argument)});
@@ -665,8 +682,9 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
 
     /**
      * Collect the data to masked/valid DB String array
+     * @return
      */
-    private QueryData collect() {
+    protected QueryData collect() {
 
         QueryData data = new QueryData();
         String left = "";
@@ -1248,7 +1266,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
                                 } else {
                                     valx = "NULL VALUE!";
                                 }
-//                            Log.Debug(DatabaseObject.class, "Explode: " + vars.get(k).toGenericString() + " with " + select.getData()[i][j] + "[" + valx + "]");
+//                             Log.Debug(DatabaseObject.class, "Explode: " + methods.get(k).toGenericString() + " with " + select.getData()[i][j] + "[" + valx + "]");
 //                            //End Debug Section
 
                                 if (select.getData()[i][j] != null) {

@@ -60,8 +60,8 @@ public class DatabaseUpdater {
                             + "CONSTRAINT constvp0 UNIQUE (cname, contextids, objectids, groupsids),"
                             + "cname VARCHAR(250) NOT NULL, classname VARCHAR(250) NOT NULL, "
                             + "contextids BIGINT NOT NULL, objectids BIGINT NOT NULL,"
-                            + "value VARCHAR(25000) NOT NULL, dateadded DATE NOT NULL, intaddedby BIGINT DEFAULT 0, "
-                            + "groupsids BIGINT  REFERENCES groups(ids) DEFAULT 1, invisible SMALLINT DEFAULT 0, "
+                            + "value CLOB(2G) DEFAULT NULL, dateadded DATE NOT NULL, intaddedby BIGINT DEFAULT 0, "
+                            + "groupsids BIGINT REFERENCES groups(ids) DEFAULT 1, invisible SMALLINT DEFAULT 0, "
                             + "PRIMARY KEY (ids))",
                     "CREATE INDEX values_index0 ON valueproperties(cname, contextids, objectids)",
                     "ALTER TABLE expenses ADD COLUMN dateend DATE ",
@@ -128,7 +128,7 @@ public class DatabaseUpdater {
                             + "classname VARCHAR(250) NOT NULL, "
                             + "contextids BBIGINT(20) UNSIGNED NOT NULL,"
                             + "objectids BIGINT(20) UNSIGNED NOT NULL,"
-                            + "value VARCHAR(25000) NOT NULL, "
+                            + "value LONGTEXT DEFAULT NULL, "
                             + "dateadded DATE NOT NULL, "
                             + "intaddedby BIGINT(20) UNSIGNED NOT NULL, "
                             + "groupsids BIGINT(20) REFERENCES groups(ids) UNSIGNED DEFAULT 1, "

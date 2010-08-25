@@ -459,7 +459,8 @@ public class Context {
                 getProductlist(),
                 getExpense(),
                 getRevenue(),
-                getProductsToSuppliers()
+                getProductsToSuppliers(),
+                getValueProperties()
             }));
 //    private String[] searchHeaders;
     private ArrayList<String[]> references = new ArrayList<String[]>();

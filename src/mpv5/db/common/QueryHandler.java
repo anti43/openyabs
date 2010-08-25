@@ -8,10 +8,13 @@ import java.awt.Cursor;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.BufferedInputStream;
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.URI;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -65,8 +68,6 @@ public class QueryHandler implements Cloneable {
     private static QueryHandler instance;
     private DatabaseConnection conn = null;
     private Connection sqlConn = null;
-    private Statement stm = null;
-    private ResultSet resultSet = null;
     private String table = "NOTABLE";
     private static JFrame comp = new JFrame();
     private Context context;
@@ -916,12 +917,123 @@ public class QueryHandler implements Cloneable {
      * Insert values to db
      * @param what  : {set, value, "'"}
      *   this.insert("name,wert", "'Sprache (Waehrung, z.B. Schweiz:  de_CH' ,'de_DE'");
-     * @param jobmessage The message to be displayd after a successful run
+     * @param jobmessage The message to be displayed after a successful run
      * @return id of inserted row
      */
     public int insert(QueryData what, String jobmessage) {
         String query = query = "INSERT INTO " + table + " (" + what.getKeysString() + " ) VALUES (" + what.getValuesString() + ") ";
         return freeUpdateQuery(query, mpv5.usermanagement.MPSecurityManager.CREATE_OR_DELETE, jobmessage).getId();
+    }
+
+    /**
+     * Does an insert
+     * @param clobData [columnName, clobData]
+     * @param data 
+     * @param jobmessage
+     * @return The id of the inserted row
+     */
+    public int insertValueProperty(InputStream clobData, QueryData data, String jobmessage) {
+
+        String query = "INSERT INTO " + table
+                + "(value, cname, classname, objectids, contextids, intaddedby, dateadded, groupsids )"
+                + " VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+
+        ResultSet keys;
+        int id = -1;
+
+        try {
+            start();
+            PreparedStatement ps = sqlConn.prepareStatement(query, PreparedStatement.RETURN_GENERATED_KEYS);
+            ps.setClob(1, new InputStreamReader(clobData, "Utf-8"));
+            ps.setString(2, data.getValue("cname").toString());
+            ps.setString(3, data.getValue("classname").toString());
+            ps.setInt(4, Integer.valueOf(data.getValue("objectids").toString()));
+            ps.setInt(5, Integer.valueOf(data.getValue("contextids").toString()));
+            ps.setInt(6, mpv5.db.objects.User.getCurrentUser().getID());
+            ps.setDate(7, new java.sql.Date(new Date().getTime()));
+            ps.setInt(8, Integer.valueOf(data.getValue("groupsids").toString()));
+            ps.execute();
+            if (!sqlConn.getAutoCommit()) {
+                sqlConn.commit();
+            }
+             try {
+                keys = ps.getGeneratedKeys();
+                if (keys != null && keys.next()) {
+                    id = keys.getInt(1);
+                }
+            } catch (SQLException sQLException) {
+                Log.Debug(sQLException);
+            }
+
+        } catch (Exception ex) {
+            Log.Debug(this, "Datenbankfehler: " + query);
+            Log.Debug(this, ex);
+            Popup.error(ex);
+            jobmessage = Messages.ERROR_OCCURED.toString();
+        } finally {
+            stop();
+        }
+        if (viewToBeNotified != null) {
+            viewToBeNotified.refresh();
+        }
+        if (jobmessage != null) {
+            MPView.addMessage(jobmessage);
+        }
+
+        return id;
+    }
+
+    /**
+     * Does an insert
+     * @param ids
+     * @param clobData [columnName, clobData]
+     * @param data
+     * @param jobmessage
+     */
+    public void updateValueProperty(int ids, InputStream clobData, QueryData data, String jobmessage) {
+
+        String query = "UPDATE " + table + " SET "
+                + "value = ?, "
+                + "cname= ?, "
+                + "classname= ?, "
+                + "objectids= ?, "
+                + "contextids= ?, "
+                + "intaddedby= ?, "
+                + "dateadded= ?, "
+                + "groupsids= ? "
+                + "WHERE " + table + ".ids = " + ids;
+
+        ResultSet keys;
+
+        try {
+            start();
+            PreparedStatement ps = sqlConn.prepareStatement(query, PreparedStatement.RETURN_GENERATED_KEYS);
+            ps.setClob(1, new InputStreamReader(clobData, "Utf-8"));
+            ps.setString(2, data.getValue("cname").toString());
+            ps.setString(3, data.getValue("classname").toString());
+            ps.setInt(4, Integer.valueOf(data.getValue("objectids").toString()));
+            ps.setInt(5, Integer.valueOf(data.getValue("contextids").toString()));
+            ps.setInt(6, mpv5.db.objects.User.getCurrentUser().getID());
+            ps.setDate(7, new java.sql.Date(new Date().getTime()));
+            ps.setInt(8, Integer.valueOf(data.getValue("groupsids").toString()));
+            ps.execute();
+            if (!sqlConn.getAutoCommit()) {
+                sqlConn.commit();
+            }
+        } catch (Exception ex) {
+            Log.Debug(this, "Datenbankfehler: " + query);
+            Log.Debug(this, ex);
+            Popup.error(ex);
+            jobmessage = Messages.ERROR_OCCURED.toString();
+        } finally {
+            stop();
+        }
+        if (viewToBeNotified != null) {
+            viewToBeNotified.refresh();
+        }
+        if (jobmessage != null) {
+            MPView.addMessage(jobmessage);
+        }
     }
 
     /**
@@ -964,7 +1076,7 @@ public class QueryHandler implements Cloneable {
      * @return
      * @throws UnableToLockException
      */
-    synchronized boolean insertLock(Context context, int id, User user) throws UnableToLockException {
+    protected synchronized boolean insertLock(Context context, int id, User user) throws UnableToLockException {
         try {
             if (psLock == null) {
                 try {
@@ -984,7 +1096,7 @@ public class QueryHandler implements Cloneable {
     }
     private static PreparedStatement psLock;
 
-    void removeLock(Context context, int id, User user) {
+    protected void removeLock(Context context, int id, User user) {
         try {
             if (psUnLock == null) {
                 try {
@@ -1624,8 +1736,8 @@ public class QueryHandler implements Cloneable {
         }
         String query = "SELECT COUNT(1) AS rowcount FROM " + table + " " + wher;
         String message = "Database Error (SelectCount:COUNT):";
-        stm = null;
-        resultSet = null;
+        Statement stm = null;
+        ResultSet resultSet = null;
 
         Log.Debug(this, query);
         try {
@@ -1700,8 +1812,8 @@ public class QueryHandler implements Cloneable {
         }
         ReturnValue retval = null;
         String message = "Database Error (freeQuery) :";
-        stm = null;
-        resultSet = null;
+        Statement stm = null;
+        ResultSet resultSet = null;
         boolean bool;
         ResultSetMetaData rsmd;
         Object[][] data = null;
@@ -1861,8 +1973,8 @@ public class QueryHandler implements Cloneable {
 
         ReturnValue retval = null;
         String message = "Database Error (freeQuery) :";
-        stm = null;
-        resultSet = null;
+        Statement stm = null;
+        ResultSet resultSet = null;
         Integer id = -1;
         ResultSet keys;
 
@@ -1967,8 +2079,8 @@ public class QueryHandler implements Cloneable {
         }
         String message = "Database Error (selectFreeQuery) :";
 
-        stm = null;
-        resultSet = null;
+        Statement stm = null;
+        ResultSet resultSet = null;
         ResultSetMetaData rsmd;
         Object[][] data = null;
         ArrayList z;
@@ -2124,6 +2236,8 @@ public class QueryHandler implements Cloneable {
         String query = "SELECT data, filesize FROM " + table + " WHERE cname= '" + filename + "'";
         String jobmessage = null;
         ArrayList<File> list = null;
+        Statement stm = null;
+        ResultSet resultSet = null;
         try {
             stm = sqlConn.createStatement();
             list = new ArrayList<File>();

@@ -16,6 +16,9 @@
  */
 package mpv5.utils.ui;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import javax.swing.JComponent;
 import javax.swing.JTable;
 import javax.swing.event.ChangeEvent;
@@ -23,10 +26,7 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.TableColumnModelEvent;
 import javax.swing.event.TableColumnModelListener;
 import javax.swing.table.DefaultTableColumnModel;
-import javax.swing.table.TableColumnModel;
 import mpv5.db.objects.User;
-import mpv5.logging.Log;
-import mpv5.utils.ui.ComponentStateManager;
 
 /**
  *
@@ -37,7 +37,7 @@ public class TableViewPersistenceHandler {
     private final ColumnListener t;
     private final JTable target;
     private final JComponent identifier;
-    private static final TableColumnModel nmodel = new DefaultTableColumnModel();
+    private List<TableColumnModelListener> listeners = new ArrayList<TableColumnModelListener>();
 
     /**
      * 
@@ -65,12 +65,18 @@ public class TableViewPersistenceHandler {
      */
     public void set() {
         try {
+//            listeners.addAll(Arrays.asList(((DefaultTableColumnModel) target.getColumnModel()).getColumnModelListeners()));
             ComponentStateManager.reload(User.getCurrentUser().getLayoutProperties().get(target.getName() + "@" + identifier.getName()), target);
         } catch (Exception ex) {
 //            Log.Debug(this, ex);
             User.getCurrentUser().getLayoutProperties().remove(target.getName() + "@" + identifier.getName());
         }
         target.getColumnModel().addColumnModelListener(t);
+//        for (int i = 0; i < listeners.size(); i++) {
+//            TableColumnModelListener tableColumnModelListener = listeners.get(i);
+//            target.getColumnModel().addColumnModelListener(tableColumnModelListener);
+//        }
+//        listeners.retainAll(new ArrayList<TableColumnModelListener>());
     }
 
     /**

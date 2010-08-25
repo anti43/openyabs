@@ -87,7 +87,7 @@ public class MPTableModel extends DefaultTableModel implements Cloneable {
         if (data.length > 0) {
             String[] header = new String[data[0].length];
             for (int i = 0; i < header.length; i++) {
-                header[i] = "";
+                header[i] = "" + i;
             }
             setDataVector(data, header);
         }

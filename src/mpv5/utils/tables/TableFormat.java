@@ -19,9 +19,15 @@ package mpv5.utils.tables;
 import com.l2fprod.common.swing.renderer.ColorCellRenderer;
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Dimension;
 import javax.swing.BorderFactory;
+import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JTable;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.TableColumnModelEvent;
+import javax.swing.event.TableColumnModelListener;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellEditor;
@@ -263,4 +269,34 @@ public class TableFormat {
         table.getColumnModel().getColumn(column).setCellRenderer(new ColorRenderer());
     }
 
+    /**
+     * Hides the header of a table by setting it's header height to 0
+     * @param table
+     */
+    public static void hideHeader(JTable table) {
+        table.getTableHeader().setPreferredSize(new Dimension(table.getColumnModel().getTotalColumnWidth(), 3));
+
+        class ColumnListener implements TableColumnModelListener {
+            private final JTable table;
+            private ColumnListener(JTable target) {
+                this.table = target;
+            }
+            public void columnAdded(TableColumnModelEvent e) {
+                 table.getTableHeader().setPreferredSize(new Dimension(table.getColumnModel().getTotalColumnWidth(), 3));
+            }
+            public void columnRemoved(TableColumnModelEvent e) {
+                 table.getTableHeader().setPreferredSize(new Dimension(table.getColumnModel().getTotalColumnWidth(), 3));
+            }
+            public void columnMoved(TableColumnModelEvent e) {
+                 table.getTableHeader().setPreferredSize(new Dimension(table.getColumnModel().getTotalColumnWidth(), 3));
+            }
+            public void columnMarginChanged(ChangeEvent e) {
+                 table.getTableHeader().setPreferredSize(new Dimension(table.getColumnModel().getTotalColumnWidth(), 3));
+            }
+            public void columnSelectionChanged(ListSelectionEvent e) {
+            }
+        }
+
+        table.getColumnModel().addColumnModelListener(new ColumnListener(table));
+    }
 }

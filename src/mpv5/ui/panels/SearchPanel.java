@@ -46,6 +46,7 @@ public class SearchPanel extends javax.swing.JPanel {
     public SearchPanel() {
         initComponents();
         t = new mpv5.utils.ui.TableViewPersistenceHandler(resulttable, this);
+        TableFormat.hideHeader(resulttable);
     }
 
     public SearchPanel(Context context, DataPanel panel) {

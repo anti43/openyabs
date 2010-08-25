@@ -23,19 +23,14 @@ package mpv5.ui.panels;
 
 import java.awt.Color;
 import java.awt.Component;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JComponent;
 import javax.swing.JTable;
-import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableCellRenderer;
 import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
@@ -45,7 +40,6 @@ import mpv5.db.objects.User;
 import mpv5.logging.Log;
 import mpv5.ui.frames.MPView;
 import mpv5.utils.date.vTimeframe;
-import mpv5.utils.images.MPIcon;
 import mpv5.utils.models.MPTableModel;
 import mpv5.utils.renderer.TableCellRendererForDatabaseObjects;
 import mpv5.utils.tables.TableFormat;
@@ -58,7 +52,7 @@ import mpv5.utils.ui.TableViewPersistenceHandler;
 public class GeneralListPanel extends javax.swing.JPanel {
 
     private static final long serialVersionUID = 1L;
-    List odata;
+    private List odata;
     TableCellRendererForDatabaseObjects rend = new  TableCellRendererForDatabaseObjects();
     private final TableViewPersistenceHandler tableViewPersistenceHandler;
 
@@ -145,6 +139,7 @@ public class GeneralListPanel extends javax.swing.JPanel {
 
         TableFormat.resizeCols(jTable1, new Integer[]{100, 100, 100, 100, 0, 33}, false);
         TableFormat.stripColumn(jTable1, 4);
+        TableFormat.hideHeader(jTable1);
         tableViewPersistenceHandler.set();
 //        TableFormat.stripColumn(jTable1, 5);
     }

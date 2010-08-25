@@ -303,7 +303,6 @@ public class User extends DatabaseObject {
 
                     try {
                         layoutinfo.putAll(ValueProperty.getProperty(t, "layoutinfo").getValue(new HashMap<String, String>()));
-                        //TODO : fix
                     } catch (Exception ex) {
                         Log.Debug(this, ex.getMessage());
                     }
