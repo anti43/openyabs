@@ -212,16 +212,8 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
                 } else if (method.getParameterTypes()[0].isInstance(01)) {
                     method.invoke(dbo, new Object[]{Short.valueOf(String.valueOf(argument))});
                 } else if (method.getParameterTypes()[0].getCanonicalName().equals(new byte[0].getClass().getCanonicalName())) {//doitbetter
-                    //byet[] is for CLOB data
-                    Reader reader = ((Clob) argument).getCharacterStream();
-                    ByteArrayOutputStream out = new ByteArrayOutputStream();
-                    OutputStreamWriter p = new OutputStreamWriter(out);
-                    char[] buffer = new char[1];
-                    while (reader.read(buffer) > 0) {
-                       p.write(buffer, 0, buffer.length);
-                    }
-                    p.close();
-                    method.invoke(dbo, new Object[]{out.toByteArray()});
+                    
+                    method.invoke(dbo, new Object[]{(byte[]) argument});
                 } else {
                     //defaults to java.lang.String, Object args are not supported.. possibly later via XMLEncoder?
                     method.invoke(dbo, new Object[]{String.valueOf(argument)});

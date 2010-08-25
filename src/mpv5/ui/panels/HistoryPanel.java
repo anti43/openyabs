@@ -53,6 +53,7 @@ public class HistoryPanel extends javax.swing.JPanel implements ListPanel {
 
     private static HistoryPanel t;
     private static final long serialVersionUID = 1L;
+    private java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle();
 
     public static Component instanceOf() {
         if (t == null) {
@@ -88,7 +89,7 @@ public class HistoryPanel extends javax.swing.JPanel implements ListPanel {
         }
 
         refresh(null, null);
-        new mpv5.utils.ui.TableViewPersistenceHandler(jTable1, this).set();
+
     }
 
     /** This method is called from within the constructor to
@@ -115,7 +116,7 @@ public class HistoryPanel extends javax.swing.JPanel implements ListPanel {
         prinitingComboBox1 = new mpv5.ui.beans.PrinitingComboBox();
         jSeparator3 = new javax.swing.JToolBar.Separator();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTable1 = new JTable() {
+        jTable1 = new  mpv5.ui.misc.MPTable(this) {
             public Component prepareRenderer(TableCellRenderer renderer,
                 int rowIndex, int vColIndex) {
                 Component c = super.prepareRenderer(renderer, rowIndex, vColIndex);
@@ -133,7 +134,7 @@ public class HistoryPanel extends javax.swing.JPanel implements ListPanel {
 
         setName("Form"); // NOI18N
 
-        java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle(); // NOI18N
+        mpv5.i18n.LanguageManager.getBundle();
         jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("HistoryPanel.jPanel1.border.title"))); // NOI18N
         jPanel1.setName("jPanel1"); // NOI18N
 

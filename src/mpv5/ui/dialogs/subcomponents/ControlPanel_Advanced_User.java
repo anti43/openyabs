@@ -44,6 +44,7 @@ public class ControlPanel_Advanced_User extends javax.swing.JPanel implements Co
     private static final long serialVersionUID = 1L;
     private static ControlPanel_Advanced_User ident;
     private PropertyStore oldvals;
+    private java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle();
 
     /** Creates new form GeneralListPanel */
     public ControlPanel_Advanced_User() {
@@ -85,7 +86,7 @@ public class ControlPanel_Advanced_User extends javax.swing.JPanel implements Co
         jButton2 = new javax.swing.JButton();
         jButton3 = new javax.swing.JButton();
 
-        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("mpv5/resources/languages/Panels"); // NOI18N
+        mpv5.i18n.LanguageManager.getBundle();
         setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("ControlPanel_Advanced_User.border.title"))); // NOI18N
         setName("Form"); // NOI18N
         setLayout(new javax.swing.BoxLayout(this, javax.swing.BoxLayout.PAGE_AXIS));

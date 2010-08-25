@@ -57,6 +57,7 @@ public class RemindPanel extends javax.swing.JPanel {
 
     private static final long serialVersionUID = 1L;
     Reminder dataOwner = new Reminder();
+    private java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle();
 
     /** Creates new form GeneralListPanel */
     public RemindPanel() {
@@ -162,7 +163,7 @@ public class RemindPanel extends javax.swing.JPanel {
         jScrollPane2 = new javax.swing.JScrollPane();
         jList1 = new javax.swing.JList();
 
-        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("mpv5/resources/languages/Panels"); // NOI18N
+        mpv5.i18n.LanguageManager.getBundle();
         setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("RemindPanel.border.title"))); // NOI18N
         setName("Form"); // NOI18N
 

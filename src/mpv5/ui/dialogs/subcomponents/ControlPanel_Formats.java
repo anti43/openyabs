@@ -42,6 +42,7 @@ public class ControlPanel_Formats extends javax.swing.JPanel implements ControlA
      */
     public final String UNAME = "formats";
     private Integer currentUser;
+    private java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle();
 
     public ControlPanel_Formats() {
         if (MPSecurityManager.checkAdminAccess()) {
@@ -92,7 +93,7 @@ public class ControlPanel_Formats extends javax.swing.JPanel implements ControlA
         setLayout(new java.awt.BorderLayout());
 
         jPanel1.setBackground(new java.awt.Color(255, 255, 255));
-        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("mpv5/resources/languages/Panels"); // NOI18N
+        mpv5.i18n.LanguageManager.getBundle();
         jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("ControlPanel_Formats.jPanel1.border.title"))); // NOI18N
         jPanel1.setName("jPanel1"); // NOI18N
 

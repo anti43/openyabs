@@ -27,6 +27,7 @@ import mpv5.utils.text.MD5HashGenerator;
  */
 public class LoginToInstanceScreen extends javax.swing.JDialog {
 
+    private java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle();
     /**
      * Show the instance login screen, modal
      */
@@ -97,7 +98,7 @@ public class LoginToInstanceScreen extends javax.swing.JDialog {
         jButton3 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
-        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("mpv5/resources/languages/Panels"); // NOI18N
+        mpv5.i18n.LanguageManager.getBundle();
         setTitle(bundle.getString("LoginToInstanceScreen.title")); // NOI18N
         setAlwaysOnTop(true);
         setFocusTraversalPolicyProvider(true);

@@ -9,13 +9,17 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.io.Reader;
 import java.net.URI;
+import java.sql.Clob;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -880,6 +884,19 @@ public class QueryHandler implements Cloneable {
         }
     }
 
+    private synchronized Object clobToByteArray(java.sql.Clob argument) throws SQLException, IOException {
+        //byte[] is for CLOB data
+        Reader reader = (argument).getCharacterStream();
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        OutputStreamWriter p = new OutputStreamWriter(out);
+        char[] buffer = new char[1];
+        while (reader.read(buffer) > 0) {
+            p.write(buffer, 0, buffer.length);
+        }
+        p.close();
+        return out.toByteArray();
+    }
+
     class Watchdog implements Runnable {
 
         @Override
@@ -956,7 +973,7 @@ public class QueryHandler implements Cloneable {
             if (!sqlConn.getAutoCommit()) {
                 sqlConn.commit();
             }
-             try {
+            try {
                 keys = ps.getGeneratedKeys();
                 if (keys != null && keys.next()) {
                     id = keys.getInt(1);
@@ -2098,6 +2115,7 @@ public class QueryHandler implements Cloneable {
 
             Log.Debug(this, "freeSelectQuery::" + query);
             try {
+
                 resultSet = stm.executeQuery(query);
             } catch (SQLException sQLException) {
                 Log.Debug(sQLException);
@@ -2129,7 +2147,14 @@ public class QueryHandler implements Cloneable {
                     Object object = resultSet.getObject(i);
                     if (object instanceof String && TypeConversion.stringToBoolean(LocalSettings.getProperty(LocalSettings.DBESCAPE))) {
                         object = rescapeBackslashes((String) object);
+                    } else if (object instanceof Clob) {
+                        try {
+                            object = clobToByteArray((Clob) object);
+                        } catch (Exception sQLException) {
+                            object = sQLException.toString().getBytes();
+                        } 
                     }
+
                     spalten.add(object);
                 }
                 zeilen.add(spalten);

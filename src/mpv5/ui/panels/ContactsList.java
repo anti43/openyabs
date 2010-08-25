@@ -15,6 +15,7 @@ import mpv5.globals.Headers;
 import mpv5.globals.Messages;
 import mpv5.logging.Log;
 import mpv5.ui.frames.MPView;
+import mpv5.ui.misc.MPTable;
 import mpv5.utils.ui.TableViewPersistenceHandler;
 import mpv5.utils.models.MPTableModel;
 import mpv5.utils.tables.Selection;
@@ -28,14 +29,15 @@ public class ContactsList extends javax.swing.JPanel implements ListPanel {
 
     private static final long serialVersionUID = 1L;
     private Context context;
-    private mpv5.utils.ui.TableViewPersistenceHandler t;
+    private java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle();
+
 
     /** Creates new form ListPanel */
     public ContactsList() {
         initComponents();
         setName("contactlist");
         prinitingComboBox1.init(listTable);
-        t = new mpv5.utils.ui.TableViewPersistenceHandler(listTable, this);
+
     }
 
     public ContactsList(Context context) {
@@ -47,7 +49,7 @@ public class ContactsList extends javax.swing.JPanel implements ListPanel {
     }
 
     private void fill(boolean customer, boolean supplier, boolean manufacturer, boolean company, boolean filtered) {
-        t.remove();
+
         context.setContactConditions(customer, supplier, manufacturer, company);
         context.setExclusiveContactConditions(customer, supplier, manufacturer, company);
         context.useExclusiveConditions(filtered);
@@ -57,12 +59,10 @@ public class ContactsList extends javax.swing.JPanel implements ListPanel {
         } else {
             listTable.setModel(new MPTableModel(new DatabaseSearch(context).getValuesFor(Context.DETAILS_CONTACTS, null, ""), Headers.CONTACT_DETAILS.getValue()));
         }
-//        ((MPTableModel)listTable.getModel()).setEditable(true);
         count.setText(String.valueOf(listTable.getModel().getRowCount()));
-        //        TableFormat.resizeCols(listTable, new Integer[]{100,100,100,100,100,100,100}, false);
+//        ((MPTable)listTable).setDefaultColumns(new Integer[]{100,100,100,100,100,100,100}, false);
         TableFormat.stripFirstColumn(listTable);
 
-        t.set();
     }
 
     /** This me4thod is called from within the constructor to
@@ -76,7 +76,7 @@ public class ContactsList extends javax.swing.JPanel implements ListPanel {
 
         jPanel1 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
-        listTable = new JTable() {
+        listTable = new  mpv5.ui.misc.MPTable(this) {
             public Component prepareRenderer(TableCellRenderer renderer,
                 int rowIndex, int vColIndex) {
                 Component c = super.prepareRenderer(renderer, rowIndex, vColIndex);
@@ -110,26 +110,15 @@ public class ContactsList extends javax.swing.JPanel implements ListPanel {
 
         setName("Form"); // NOI18N
 
-        java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle(); // NOI18N
+        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("mpv5/resources/languages/Panels"); // NOI18N
         jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("ContactsList.jPanel1.border.title"))); // NOI18N
         jPanel1.setName("jPanel1"); // NOI18N
 
         jScrollPane1.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS);
         jScrollPane1.setName("jScrollPane1"); // NOI18N
 
-        listTable.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-                {},
-                {},
-                {},
-                {}
-            },
-            new String [] {
-
-            }
-        ));
         listTable.setAutoCreateRowSorter(true);
-        listTable.setAutoResizeMode(0);
+        listTable.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_OFF);
         listTable.setDragEnabled(true);
         listTable.setFillsViewportHeight(true);
         listTable.setName("listTable"); // NOI18N
@@ -242,7 +231,7 @@ public class ContactsList extends javax.swing.JPanel implements ListPanel {
                                 .addComponent(jCheckBox4)
                                 .addGap(18, 18, 18)
                                 .addComponent(excButton)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 56, Short.MAX_VALUE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 103, Short.MAX_VALUE)
                                 .addComponent(jLabel2)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(count, javax.swing.GroupLayout.PREFERRED_SIZE, 54, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -331,7 +320,7 @@ public class ContactsList extends javax.swing.JPanel implements ListPanel {
             .addComponent(jToolBar1, javax.swing.GroupLayout.DEFAULT_SIZE, 632, Short.MAX_VALUE)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(70, Short.MAX_VALUE))
+                .addContainerGap(107, Short.MAX_VALUE))
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addComponent(prinitingComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())

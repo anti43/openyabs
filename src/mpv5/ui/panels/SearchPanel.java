@@ -40,12 +40,13 @@ public class SearchPanel extends javax.swing.JPanel {
     private DataPanel panel;
     private int lasttype = 5;
     private String lastneedle = "0";
-    private final TableViewPersistenceHandler t;
+
+    private java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle();
 
     /** Creates new form SearchPanel */
     public SearchPanel() {
         initComponents();
-        t = new mpv5.utils.ui.TableViewPersistenceHandler(resulttable, this);
+      //  t = new mpv5.utils.ui.TableViewPersistenceHandler(resulttable, this);
         TableFormat.hideHeader(resulttable);
     }
 
@@ -93,7 +94,7 @@ public class SearchPanel extends javax.swing.JPanel {
         jButton3 = new javax.swing.JButton();
         results = new javax.swing.JPanel();
         resultsscrollpane = new javax.swing.JScrollPane();
-        resulttable = new JTable() {
+        resulttable = new  mpv5.ui.misc.MPTable(this) {
             public Component prepareRenderer(TableCellRenderer renderer,
                 int rowIndex, int vColIndex) {
                 Component c = super.prepareRenderer(renderer, rowIndex, vColIndex);
@@ -107,7 +108,7 @@ public class SearchPanel extends javax.swing.JPanel {
 
         setName("Form"); // NOI18N
 
-         java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle(); // NOI18N
+        mpv5.i18n.LanguageManager.getBundle();
         searchfields.setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("SearchPanel.searchfields.border.title"))); // NOI18N
         searchfields.setName("searchfields"); // NOI18N
 
@@ -288,7 +289,7 @@ public class SearchPanel extends javax.swing.JPanel {
 
                 @Override
                 public void run() {
-                    t.remove();
+                    
                     String sf = context.getSearchFields();
                     if (sf == null) {
                         sf = "ids,cname,cnumber";
@@ -333,7 +334,7 @@ public class SearchPanel extends javax.swing.JPanel {
                     }
                     TableFormat.makeUneditable(resulttable);
                     TableFormat.stripColumns(resulttable, new int[]{0, 3, 4, 5, 6, 7, 8, 9}); 
-                    t.set();
+                    
                 }
                
             };

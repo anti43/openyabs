@@ -54,7 +54,8 @@ public class GeneralListPanel extends javax.swing.JPanel {
     private static final long serialVersionUID = 1L;
     private List odata;
     TableCellRendererForDatabaseObjects rend = new  TableCellRendererForDatabaseObjects();
-    private final TableViewPersistenceHandler tableViewPersistenceHandler;
+    private java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle();
+   
 
     /** Creates new form GeneralListPanel
      * @param <T>
@@ -79,7 +80,7 @@ public class GeneralListPanel extends javax.swing.JPanel {
         jTable1.setDefaultRenderer(String.class, rend);
         jTable1.setDefaultRenderer(Date.class, rend);
         jTable1.setDefaultRenderer(DatabaseObject.class, rend);
-        tableViewPersistenceHandler = new mpv5.utils.ui.TableViewPersistenceHandler(jTable1, this);
+        
     }
 
     /**
@@ -115,7 +116,7 @@ public class GeneralListPanel extends javax.swing.JPanel {
      */
     public <T extends DatabaseObject> void setData(List<T> list) {
 
-        tableViewPersistenceHandler.remove();
+        
         Object[][] data = new Object[list.size()][6];
 
         for (int i = 0; i < list.size(); i++) {
@@ -139,8 +140,7 @@ public class GeneralListPanel extends javax.swing.JPanel {
 
         TableFormat.resizeCols(jTable1, new Integer[]{100, 100, 100, 100, 0, 33}, false);
         TableFormat.stripColumn(jTable1, 4);
-        TableFormat.hideHeader(jTable1);
-        tableViewPersistenceHandler.set();
+   
 //        TableFormat.stripColumn(jTable1, 5);
     }
 
@@ -198,7 +198,7 @@ public class GeneralListPanel extends javax.swing.JPanel {
     private void initComponents() {
 
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTable1 = new JTable() {
+        jTable1 = new  mpv5.ui.misc.MPTable(this) {
             public Component prepareRenderer(TableCellRenderer renderer,
                 int rowIndex, int vColIndex) {
                 Component c = super.prepareRenderer(renderer, rowIndex, vColIndex);
@@ -214,7 +214,7 @@ public class GeneralListPanel extends javax.swing.JPanel {
         jButton1 = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
 
-        java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle(); // NOI18N
+        mpv5.i18n.LanguageManager.getBundle();
         setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("GeneralListPanel.border.title"))); // NOI18N
         setName("Form"); // NOI18N
 

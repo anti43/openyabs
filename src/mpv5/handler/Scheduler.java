@@ -136,7 +136,7 @@ public class Scheduler extends Thread {
                             Item it = (Item) Item.getObject(Context.getItem(), id);
                             warnings.add(it);
                         } catch (NodataFoundException ex) {
-                            Log.Debug(ex);
+                            Log.Debug(this, ex.getMessage());
                         }
                     }
                 }

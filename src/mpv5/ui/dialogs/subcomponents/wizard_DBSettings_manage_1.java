@@ -38,6 +38,7 @@ public class wizard_DBSettings_manage_1 extends javax.swing.JPanel implements Wi
     private static final long serialVersionUID = 1L;
     private WizardMaster master;
     private Integer forConnId = null;
+    private java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle();
 
     public wizard_DBSettings_manage_1(Wizard w) {
         this.master = w;
@@ -192,7 +193,7 @@ public class wizard_DBSettings_manage_1 extends javax.swing.JPanel implements Wi
         jTextArea1 = new javax.swing.JTextArea();
 
         setBackground(new java.awt.Color(255, 255, 255));
-        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("mpv5/resources/languages/Panels"); // NOI18N
+        mpv5.i18n.LanguageManager.getBundle();
         setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("wizard_DBSettings_manage_1.border.title"))); // NOI18N
         setName("Form"); // NOI18N
         setLayout(new java.awt.BorderLayout());

@@ -21,8 +21,11 @@
  */
 package mpv5.ui.panels;
 
+import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import javax.swing.JComponent;
+import javax.swing.table.TableCellRenderer;
 import mpv5.handler.TrashHandler;
 import mpv5.globals.Headers;
 import mpv5.globals.Messages;
@@ -39,6 +42,7 @@ public class TrashPanel extends javax.swing.JPanel {
 
     private static final long serialVersionUID = 1L;
     private static TrashPanel ident;
+    private java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle();
 
     public static TrashPanel instanceOf() {
         if (ident == null) {
@@ -48,7 +52,7 @@ public class TrashPanel extends javax.swing.JPanel {
         return ident;
     }
     private TablePopUp tablePopUp;
-    private final TableViewPersistenceHandler t;
+  
 
     /** Creates new form GeneralListPanel */
     private TrashPanel() {
@@ -87,13 +91,13 @@ public class TrashPanel extends javax.swing.JPanel {
                     setData();
                 }
             }});
-        t = new mpv5.utils.ui.TableViewPersistenceHandler(jTable1, this);
+      //  t = new mpv5.utils.ui.TableViewPersistenceHandler(jTable1, this);
     }
 
     public void setData() {
-        t.remove();
+        
         jTable1.setModel(new MPTableModel(TrashHandler.getData(), Headers.TRASHBIN));
-        t.set();
+        
     }
 
     /** This method is called from within the constructor to
@@ -107,11 +111,21 @@ public class TrashPanel extends javax.swing.JPanel {
 
         jPopupMenu1 = new javax.swing.JPopupMenu();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
+        jTable1 = new  mpv5.ui.misc.MPTable(this) {
+            public Component prepareRenderer(TableCellRenderer renderer,
+                int rowIndex, int vColIndex) {
+                Component c = super.prepareRenderer(renderer, rowIndex, vColIndex);
+                if (c instanceof JComponent) {
+                    JComponent jc = (JComponent)c;
+                    jc.setToolTipText(String.valueOf(getValueAt(rowIndex, vColIndex)));
+                }
+                return c;
+            }
+        };
 
         jPopupMenu1.setName("jPopupMenu1"); // NOI18N
 
-        java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle();
+        mpv5.i18n.LanguageManager.getBundle();
         setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("TrashPanel.border.title"))); // NOI18N
         setName("Form"); // NOI18N
 
@@ -148,7 +162,7 @@ public class TrashPanel extends javax.swing.JPanel {
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 288, Short.MAX_VALUE)
+            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 289, Short.MAX_VALUE)
         );
     }// </editor-fold>//GEN-END:initComponents
 
