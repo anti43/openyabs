@@ -12,6 +12,7 @@ import mpv5.globals.Headers;
 import mpv5.globals.Messages;
 import mpv5.logging.Log;
 import mpv5.ui.frames.MPView;
+import mpv5.ui.misc.MPTable;
 import mpv5.utils.models.MPTableModel;
 import mpv5.utils.tables.Selection;
 import mpv5.utils.tables.TableFormat;
@@ -26,13 +27,13 @@ public class ContactsList extends javax.swing.JPanel implements ListPanel {
     private Context context;
     private java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle();
 
-
     /** Creates new form ListPanel */
     public ContactsList() {
         initComponents();
         setName("contactlist");
         prinitingComboBox1.init(listTable);
         this.context = Context.getContact();
+        ((MPTable) listTable).setDefaultColumns(new Integer[]{0, 100, 100, 100, 100, 100, 100}, new Boolean[]{});
     }
 
     public ContactsList(Context context) {
@@ -40,7 +41,7 @@ public class ContactsList extends javax.swing.JPanel implements ListPanel {
 
         this.context = context;
         context.setSearchFields(Context.DETAILS_CONTACTS);
-        fill(true, true, true, true, false);
+//        fill(true, true, true, true, false);
     }
 
     private void fill(boolean customer, boolean supplier, boolean manufacturer, boolean company, boolean filtered) {
@@ -55,9 +56,6 @@ public class ContactsList extends javax.swing.JPanel implements ListPanel {
             listTable.setModel(new MPTableModel(new DatabaseSearch(context).getValuesFor(Context.DETAILS_CONTACTS, null, ""), Headers.CONTACT_DETAILS.getValue()));
         }
         count.setText(String.valueOf(listTable.getModel().getRowCount()));
-//        ((MPTable)listTable).setDefaultColumns(new Integer[]{100,100,100,100,100,100,100}, false);
-        TableFormat.stripFirstColumn(listTable);
-
     }
 
     /** This me4thod is called from within the constructor to
@@ -346,8 +344,7 @@ public class ContactsList extends javax.swing.JPanel implements ListPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void ItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_ItemStateChanged
-
-        fill(jCheckBox1.isSelected(), jCheckBox2.isSelected(), jCheckBox3.isSelected(), jCheckBox4.isSelected(), excButton.isSelected());
+//        fill(jCheckBox1.isSelected(), jCheckBox2.isSelected(), jCheckBox3.isSelected(), jCheckBox4.isSelected(), excButton.isSelected());
 }//GEN-LAST:event_ItemStateChanged
 
     private void excButtonItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_excButtonItemStateChanged
@@ -403,7 +400,6 @@ public class ContactsList extends javax.swing.JPanel implements ListPanel {
         MPView.getIdentifierView().addTab(d, Messages.NEW_SUPPLIER);
 
     }//GEN-LAST:event_jButton5ActionPerformed
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel count;
     private javax.swing.JCheckBox excButton;
@@ -456,5 +452,6 @@ public class ContactsList extends javax.swing.JPanel implements ListPanel {
         jCheckBox2.setSelected(d.__getIssupplier());
         jCheckBox3.setSelected(d.__getIsmanufacturer());
         jCheckBox4.setSelected(d.__getisCompany());
+        jTextField1ActionPerformed(null);
     }
 }

@@ -27,6 +27,7 @@ import javax.swing.event.TableColumnModelEvent;
 import javax.swing.event.TableColumnModelListener;
 import javax.swing.table.DefaultTableColumnModel;
 import mpv5.db.objects.User;
+import mpv5.ui.misc.MPTable;
 
 /**
  *
@@ -56,6 +57,9 @@ public class TableViewPersistenceHandler {
             ComponentStateManager.reload(User.getCurrentUser().getLayoutProperties().get(target.getName() + "@" + identifier.getName()), target);
         } catch (Exception ex) {
 //            Log.Debug(this, ex);
+            if (target instanceof MPTable) {
+                ((MPTable) target).reset();
+            }
             User.getCurrentUser().getLayoutProperties().remove(target.getName() + "@" + identifier.getName());
         }
     }

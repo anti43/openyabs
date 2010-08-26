@@ -59,6 +59,7 @@ import mpv5.ui.frames.MPView;
 import mpv5.ui.toolbars.DataPanelTB;
 import mpv5.db.objects.User;
 import mpv5.globals.Headers;
+import mpv5.ui.misc.MPTable;
 import mpv5.utils.arrays.ArrayUtilities;
 import mpv5.utils.date.DateConverter;
 import mpv5.utils.export.Exportable;
@@ -141,6 +142,8 @@ public class RevenuePanel extends javax.swing.JPanel implements DataPanel {
 
         itemtable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
         itemtable.setFillsViewportHeight(true);
+
+        ((MPTable)itemtable).setDefaultColumns(new Integer[]{100, 333, 100}, new Boolean[]{});
       //  t = new mpv5.utils.ui.TableViewPersistenceHandler(itemtable, this);
     }
 

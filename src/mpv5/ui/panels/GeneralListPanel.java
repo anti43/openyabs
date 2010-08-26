@@ -138,8 +138,8 @@ public class GeneralListPanel extends javax.swing.JPanel {
         m.setTypes(new Class[]{DatabaseObject.class, String.class, Date.class, DatabaseObject.class, Color.class, ImageIcon.class, Object.class, Object.class});
         listtable.setModel(m);
 
-        TableFormat.hideHeader(listtable);
-        TableFormat.stripColumn(listtable, 4);
+//        TableFormat.hideHeader(listtable);
+//        TableFormat.stripColumn(listtable, 4);
    
 //        TableFormat.stripColumn(jTable1, 5);
     }
@@ -214,7 +214,7 @@ public class GeneralListPanel extends javax.swing.JPanel {
         jButton1 = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
 
-        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("mpv5/resources/languages/Panels"); // NOI18N
+        java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle();
         setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("GeneralListPanel.border.title"))); // NOI18N
         setName("Form"); // NOI18N
 

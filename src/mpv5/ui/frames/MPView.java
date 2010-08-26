@@ -81,6 +81,7 @@ import mpv5.ui.dialogs.subcomponents.wizard_XMLImport_2;
 import mpv5.ui.panels.ItemPanel;
 import mpv5.ui.dialogs.subcomponents.wizard_MP45_Import;
 import mpv5.ui.dialogs.subcomponents.wizard_Yabs1_Import;
+import mpv5.ui.misc.MPTable;
 import mpv5.ui.panels.ChangeNotApprovedException;
 import mpv5.ui.panels.ExpensePanel;
 import mpv5.ui.panels.GeneralListPanel;
@@ -2770,8 +2771,10 @@ public class MPView extends FrameView {
     private void resettables(JComponent component) {
 
         try {
-            if (component instanceof JTable) {
-                ((JTable) component).createDefaultColumnsFromModel();
+            if (component instanceof MPTable) {
+                ((MPTable) component).reset();
+            } else if (component instanceof JTable) {
+//                ((JTable) component).createDefaultColumnsFromModel();
             } else {
                 Component[] comps = component.getComponents();
                 for (int i = 0; i < comps.length; i++) {

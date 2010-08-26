@@ -19,7 +19,7 @@ public enum Headers {
     JOURNAL(new String[]{"Internal ID", "Date", "Group", "Account", "Number", "Type", "Status", "Volume", "Revenue", "Context"}),
     TRASHBIN(new String[]{"Type", "Internal ID", "Description"}),
     PRODUCT_DEFAULT(new String[]{"Internal ID", "Name", "Number", "Description"}),
-    SUBITEMS(new String[]{"Internal ID", "z", "Count", "Measure", "Text", "Netto Price", "Tax Rate", "Total Price", "Tax value", "Net 2", "Product ID", "A", "C", "Link", "Optional"}),
+    SUBITEMS(new String[]{"Internal ID", "Nr", "Count", "Measure", "Text", "Netto Price", "Tax Rate", "Total Price", "Tax value", "Net 2", "Product ID", "A", "C", "Link", "Optional"}),
     TEMPLATES(new String[]{"Name", "Type", "Group"}),
     MAILTEMPLATES(new String[]{"Name", "Description", "Group"}),
     SCHEDULE_LIST(new String[]{"Item ID", "Interval (Months)", "End date", "Added by"}),

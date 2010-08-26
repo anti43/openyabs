@@ -284,7 +284,7 @@ public final class ValueProperty extends DatabaseObject {
         ByteArrayInputStream io = new ByteArrayInputStream(value);
         try {
             XMLDecoder d = new XMLDecoder(io);
-            this.valueObj = (Serializable) d.readObject();
+            setValueObj((Serializable) d.readObject());
         } catch (Exception unsupportedEncodingException) {
             synchronized (this) {
                 Log.Debug(unsupportedEncodingException);
@@ -354,6 +354,7 @@ public final class ValueProperty extends DatabaseObject {
     public void setValueObj(Serializable valueObj) {
         this.valueObj = valueObj;
         __getValue();//generate xml
+//        Log.Debug(this, __getValue() );
     }
 
     /**
@@ -408,6 +409,9 @@ public final class ValueProperty extends DatabaseObject {
 
         try {
             ByteArrayInputStream in = new ByteArrayInputStream(__getValue().getBytes("Utf-8"));
+
+//            Log.Debug(this, __getValue());
+
             if (ids <= 0) {
                 Log.Debug(this, "Inserting new dataset into: " + this.getContext());
                 setDateadded(new Date());

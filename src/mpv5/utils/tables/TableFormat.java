@@ -231,11 +231,13 @@ public class TableFormat {
     public static void resizeCols(JTable table, Integer[] desiredColSizes, Boolean[] fixedCols) {
         for (int i = 0; i < desiredColSizes.length; i++) {
             if (desiredColSizes[i] != null) {
-                table.getColumnModel().getColumn(i).setMinWidth(desiredColSizes[i]);
+                
                 table.getColumnModel().getColumn(i).setPreferredWidth(desiredColSizes[i]);
-                if (fixedCols[i] != null && fixedCols[i]) {
+                if (fixedCols.length >0 && fixedCols[i] != null && fixedCols[i]) {
+                    table.getColumnModel().getColumn(i).setMinWidth(desiredColSizes[i]);
                     table.getColumnModel().getColumn(i).setMaxWidth(desiredColSizes[i]);
                 } else {
+                    table.getColumnModel().getColumn(i).setMinWidth(0);
                     table.getColumnModel().getColumn(i).setMaxWidth(1000);
                 }
             }

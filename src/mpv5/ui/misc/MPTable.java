@@ -22,6 +22,7 @@ import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
 import javax.swing.table.TableColumnModel;
 import javax.swing.table.TableModel;
+import mpv5.utils.tables.TableFormat;
 import mpv5.utils.ui.TableViewPersistenceHandler;
 
 /**
@@ -172,7 +173,7 @@ public class MPTable extends JTable {
      * @param model
      */
     @Override
-    public void setModel(TableModel model) {
+    public synchronized void setModel(TableModel model) {
         if (t != null) {
             t.remove();
         }
@@ -182,6 +183,49 @@ public class MPTable extends JTable {
         }
     }
 
+    /**
+     * Reset the columns to initial sizes (if set)
+     */
+    public synchronized void reset() {
+        if (t != null) {
+            t.remove();
+        }
+        if (desiredColSizes != null) {
+            createDefaultColumnsFromModel();
+            TableFormat.resizeCols(this, desiredColSizes, fixedCols);
+        } else {
+            createDefaultColumnsFromModel();
+        }
+         if (t != null) {
+            t.set();
+        }
+    }
+    private Integer[] desiredColSizes;
+    private Boolean[] fixedCols;
+
+    /**
+     * @param desiredColSizes the desiredColSizes to set
+     */
+    public void setDesiredColSizes(Integer[] desiredColSizes) {
+        this.desiredColSizes = desiredColSizes;
+    }
+
+    /**
+     * @param fixedCols the fixedCols to set
+     */
+    public void setFixedCols(Boolean[] fixedCols) {
+        this.fixedCols = fixedCols;
+    }
+
+    /**
+     * Set the initial sizes
+     * @param integer
+     * @param b
+     */
+    public void setDefaultColumns(Integer[] integer, Boolean[] b) {
+       setDesiredColSizes(integer);
+       setFixedCols(b);
+    }
     /**
      * Sets the value for the cell in the table model at row and column.
      * Note: Unlike the original JTable implementation, the column is specified in the table <b>TableModel</b> order,

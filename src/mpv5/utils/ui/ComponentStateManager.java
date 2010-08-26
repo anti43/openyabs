@@ -4,21 +4,13 @@ import java.beans.XMLDecoder;
 import java.beans.XMLEncoder;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.Serializable;
-import java.util.Enumeration;
 import java.util.Set;
 import java.util.TreeSet;
-import javax.swing.JComponent;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableColumnModel;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
-import mpv5.db.objects.User;
 import mpv5.logging.Log;
-import org.apache.derby.iapi.services.io.AccessibleByteArrayOutputStream;
 
 /**
  * The Component State manager provides functions to store and restore the state of UI Components, yet only {@link JTable}
@@ -80,16 +72,16 @@ public class ComponentStateManager {
                             TableColumn tableColumn = table.getColumn(tableColumnLayoutInfo.getColumnName());
                             tableColumn.setPreferredWidth(tableColumnLayoutInfo.getWidth());
                             tableColumnModel.addColumn(tableColumn);
+
+//                            System.err.println(tableColumnLayoutInfo.getColumnName() + " : " + tableColumnLayoutInfo.getWidth());
                         } catch (Exception e) {
-                            synchronized (ComponentStateManager.class) {
                                 Log.Debug(ComponentStateManager.class, e + ": " + tableColumnLayoutInfo.getColumnName());
                                 Log.Debug(ComponentStateManager.class, e + " Count: " + table.getColumnCount());
                                 int cols = table.getColumnCount();
                                 for (int i = 0; i < cols; i++) {
                                     Log.Debug(ComponentStateManager.class, table.getColumnName(i));
                                 }
-                                throw e;
-                            }
+//                                throw e;
                         }
                     }
                 }
@@ -111,6 +103,7 @@ public class ComponentStateManager {
                 table.setColumnModel(tableColumnModel);
                 decoder.close();
             } catch (Exception e) {
+                Log.Debug(e);
                 throw e;
             }
         } else {

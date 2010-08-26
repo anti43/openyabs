@@ -30,8 +30,6 @@ import java.awt.event.KeyListener;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JTabbedPane;
@@ -44,25 +42,19 @@ import mpv5.db.objects.Account;
 import mpv5.db.objects.Expense;
 import mpv5.globals.Messages;
 import mpv5.db.objects.Favourite;
-import mpv5.db.objects.Item;
-import mpv5.db.objects.Tax;
 import mpv5.db.objects.Tax;
 import mpv5.db.objects.Template;
 import mpv5.logging.Log;
-import mpv5.ui.dialogs.BigPopup;
 import mpv5.ui.dialogs.Popup;
-import mpv5.ui.dialogs.subcomponents.ControlPanel_Groups;
 import mpv5.ui.frames.MPView;
 import mpv5.ui.toolbars.DataPanelTB;
 import mpv5.db.objects.User;
 import mpv5.globals.Headers;
-import mpv5.utils.date.DateConverter;
+import mpv5.ui.misc.MPTable;
 import mpv5.utils.export.Exportable;
 import mpv5.utils.models.MPComboBoxModelItem;
 import mpv5.utils.models.MPTableModel;
 import mpv5.utils.numberformat.FormatNumber;
-import mpv5.utils.tables.TableFormat;
-import mpv5.utils.ui.TableViewPersistenceHandler;
 import mpv5.utils.ui.TextFieldUtils;
 
 /**
@@ -134,6 +126,7 @@ public class ExpensePanel extends javax.swing.JPanel implements DataPanel {
         taxrate.getComboBox().setEditable(false);
         itemtable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
         itemtable.setFillsViewportHeight(true);
+        ((MPTable)itemtable).setDefaultColumns(new Integer[]{100, 333, 100}, new Boolean[]{});
       //  t = new mpv5.utils.ui.TableViewPersistenceHandler(itemtable, this);
   
     }
