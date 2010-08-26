@@ -49,7 +49,10 @@ public class DatabaseUpdater {
                     "ALTER TABLE contacts ADD COLUMN bankcurrency VARCHAR(250) DEFAULT NULL",
                     "ALTER TABLE contacts ADD COLUMN bankcountry VARCHAR(250) DEFAULT NULL",
                 });
-        UPDATES_DERBY.put(1.18, new String[]{
+        UPDATES_DERBY.put(1.181, new String[]{
+                    "DROP TABLE valueproperties"
+        });
+        UPDATES_DERBY.put(1.182, new String[]{
 //                    "ALTER TABLE items DROP COLUMN discountvalue",
                     "CREATE INDEX items_index0 ON items(cnumber)",
                     "CREATE INDEX items_index1 ON items(cname)",
@@ -114,7 +117,11 @@ public class DatabaseUpdater {
                     "ALTER TABLE contacts ADD COLUMN bankcurrency VARCHAR(250) DEFAULT NULL",
                     "ALTER TABLE contacts ADD COLUMN bankcountry VARCHAR(250) DEFAULT NULL",
                 });
-        UPDATES_MYSQL.put(1.18, new String[]{
+        UPDATES_MYSQL.put(1.181, new String[]{
+                    "ALTER TABLE valueproperties DROP INDEX values_index0",
+                    "DROP TABLE valueproperties"
+        });
+        UPDATES_MYSQL.put(1.182, new String[]{
 //                    "ALTER TABLE items DROP COLUMN discountvalue",
                     "CREATE INDEX items_index0 ON items(cnumber)",
                     "CREATE INDEX items_index1 ON items(cname)",

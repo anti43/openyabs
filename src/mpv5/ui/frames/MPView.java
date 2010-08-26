@@ -31,6 +31,7 @@ import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 import javax.swing.JProgressBar;
 import javax.swing.JScrollPane;
+import javax.swing.JTable;
 import javax.swing.JViewport;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
@@ -65,6 +66,7 @@ import mpv5.ui.misc.Position;
 import mpv5.ui.panels.calendar.ScheduleCalendar;
 import mpv5.usermanagement.MPSecurityManager;
 import mpv5.db.objects.User;
+import mpv5.db.objects.ValueProperty;
 import mpv5.globals.Constants;
 import mpv5.globals.LocalSettings;
 import mpv5.pluginhandling.MPPLuginLoader;
@@ -897,7 +899,7 @@ public class MPView extends FrameView {
 
         jButton5.setFont(new java.awt.Font("Tahoma", 0, 10));
         jButton5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/agt_family.png"))); // NOI18N
-        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("mpv5/resources/languages/Panels"); // NOI18N
+        java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle(); // NOI18N
         jButton5.setText(bundle.getString("MPView.jButton5.text_1")); // NOI18N
         jButton5.setToolTipText(bundle.getString("MPView.jButton5.toolTipText_1")); // NOI18N
         jButton5.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
@@ -2301,8 +2303,14 @@ public class MPView extends FrameView {
 
     private void jMenuItem39ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem39ActionPerformed
         User.getCurrentUser().getLayoutProperties().clear();
-    }//GEN-LAST:event_jMenuItem39ActionPerformed
+        try {
+            ValueProperty.deleteProperty(User.getCurrentUser(), "layoutinfo");
+        } catch (Exception ex) {
+            Log.Debug(ex);
+        }
 
+        resettables(getTabpanePanel());
+    }//GEN-LAST:event_jMenuItem39ActionPerformed
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton calculatorButton;
     public javax.swing.JMenu clipboardMenu;
@@ -2756,6 +2764,26 @@ public class MPView extends FrameView {
 
             default:
                 throw new UnsupportedOperationException("Target not defined.");
+        }
+    }
+
+    private void resettables(JComponent component) {
+
+        try {
+            if (component instanceof JTable) {
+                ((JTable) component).createDefaultColumnsFromModel();
+            } else {
+                Component[] comps = component.getComponents();
+                for (int i = 0; i < comps.length; i++) {
+                    Component component1 = comps[i];
+                    if (component1 instanceof JComponent) {
+                        resettables((JComponent) component1);
+                    }
+                }
+            }
+        } catch (Exception e) {
+            Log.Debug(e);
+
         }
     }
 }

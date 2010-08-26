@@ -1,22 +1,17 @@
 package mpv5.ui.panels;
 
 import java.awt.Component;
-import java.util.HashMap;
 import javax.swing.JComponent;
-import javax.swing.JTable;
 import javax.swing.table.TableCellRenderer;
 import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
 import mpv5.db.common.DatabaseSearch;
 import mpv5.db.common.NodataFoundException;
 import mpv5.db.objects.Contact;
-import mpv5.db.objects.User;
 import mpv5.globals.Headers;
 import mpv5.globals.Messages;
 import mpv5.logging.Log;
 import mpv5.ui.frames.MPView;
-import mpv5.ui.misc.MPTable;
-import mpv5.utils.ui.TableViewPersistenceHandler;
 import mpv5.utils.models.MPTableModel;
 import mpv5.utils.tables.Selection;
 import mpv5.utils.tables.TableFormat;
@@ -37,7 +32,7 @@ public class ContactsList extends javax.swing.JPanel implements ListPanel {
         initComponents();
         setName("contactlist");
         prinitingComboBox1.init(listTable);
-
+        this.context = Context.getContact();
     }
 
     public ContactsList(Context context) {
@@ -110,7 +105,7 @@ public class ContactsList extends javax.swing.JPanel implements ListPanel {
 
         setName("Form"); // NOI18N
 
-        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("mpv5/resources/languages/Panels"); // NOI18N
+        java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle(); // NOI18N
         jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("ContactsList.jPanel1.border.title"))); // NOI18N
         jPanel1.setName("jPanel1"); // NOI18N
 

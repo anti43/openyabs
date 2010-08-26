@@ -70,6 +70,7 @@ public class TableViewPersistenceHandler {
         } catch (Exception ex) {
 //            Log.Debug(this, ex);
             User.getCurrentUser().getLayoutProperties().remove(target.getName() + "@" + identifier.getName());
+            target.createDefaultColumnsFromModel();
         }
         target.getColumnModel().addColumnModelListener(t);
 //        for (int i = 0; i < listeners.size(); i++) {

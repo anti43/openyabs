@@ -29,6 +29,7 @@ import mpv5.ui.frames.MPView;
 import mpv5.utils.files.FileReaderWriter;
 import mpv5.utils.images.MPIcon;
 import mpv5.utils.models.MPTableModel;
+import mpv5.utils.tables.TableFormat;
 
 /**
  *
@@ -40,6 +41,9 @@ public class StartPage extends javax.swing.JPanel {
     /** Creates new form ListPanel */
     public StartPage() {
         initComponents();
+
+        TableFormat.hideHeader(licensetable);
+        setName("startpage");
         jTextArea1.setText(Messages.START_MESSAGE.getValue().replace("*", ""));
 
         Runnable runnable = new Runnable() {
@@ -90,7 +94,7 @@ public class StartPage extends javax.swing.JPanel {
         jScrollPane3 = new javax.swing.JScrollPane();
         jTextArea2 = new javax.swing.JTextArea();
         jScrollPane2 = new javax.swing.JScrollPane();
-        jTable1 = new  mpv5.ui.misc.MPTable(this) {
+        licensetable = new  mpv5.ui.misc.MPTable(this) {
             public Component prepareRenderer(TableCellRenderer renderer,
                 int rowIndex, int vColIndex) {
                 Component c = super.prepareRenderer(renderer, rowIndex, vColIndex);
@@ -111,7 +115,7 @@ public class StartPage extends javax.swing.JPanel {
         jScrollPane6 = new javax.swing.JScrollPane();
         syst = new javax.swing.JList();
 
-        mpv5.i18n.LanguageManager.getBundle();
+        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("mpv5/resources/languages/Panels"); // NOI18N
         setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("StartPage.border.title"))); // NOI18N
         setName("Form"); // NOI18N
 
@@ -184,8 +188,8 @@ public class StartPage extends javax.swing.JPanel {
 
         jScrollPane2.setName("jScrollPane2"); // NOI18N
 
-        jTable1.setAutoCreateRowSorter(true);
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+        licensetable.setAutoCreateRowSorter(true);
+        licensetable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
             },
@@ -193,8 +197,8 @@ public class StartPage extends javax.swing.JPanel {
 
             }
         ));
-        jTable1.setName("jTable1"); // NOI18N
-        jScrollPane2.setViewportView(jTable1);
+        licensetable.setName("licensetable"); // NOI18N
+        jScrollPane2.setViewportView(licensetable);
 
         jPanel2.add(jScrollPane2, java.awt.BorderLayout.CENTER);
 
@@ -252,7 +256,7 @@ public class StartPage extends javax.swing.JPanel {
                 .addContainerGap()
                 .addComponent(jLabel3)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane5, javax.swing.GroupLayout.DEFAULT_SIZE, 203, Short.MAX_VALUE)
+                .addComponent(jScrollPane5, javax.swing.GroupLayout.DEFAULT_SIZE, 206, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 131, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
@@ -279,7 +283,7 @@ public class StartPage extends javax.swing.JPanel {
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane6, javax.swing.GroupLayout.DEFAULT_SIZE, 349, Short.MAX_VALUE)
+                .addComponent(jScrollPane6, javax.swing.GroupLayout.DEFAULT_SIZE, 352, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -311,13 +315,13 @@ public class StartPage extends javax.swing.JPanel {
     private javax.swing.JScrollPane jScrollPane5;
     private javax.swing.JScrollPane jScrollPane6;
     private javax.swing.JTabbedPane jTabbedPane1;
-    private javax.swing.JTable jTable1;
     private com.l2fprod.common.swing.JTaskPane jTaskPane1;
     private com.l2fprod.common.swing.JTaskPaneGroup jTaskPaneGroup1;
     private com.l2fprod.common.swing.JTaskPaneGroup jTaskPaneGroup2;
     private javax.swing.JTextArea jTextArea1;
     private javax.swing.JTextArea jTextArea2;
     private javax.swing.JTextArea jTextArea3;
+    private javax.swing.JTable licensetable;
     private javax.swing.JList syst;
     // End of variables declaration//GEN-END:variables
 
@@ -378,7 +382,7 @@ public class StartPage extends javax.swing.JPanel {
                                 model[i] = string.split(";");
                             }
 
-                            jTable1.setModel(new MPTableModel(model));
+                            licensetable.setModel(new MPTableModel(model));
                         } catch (Exception ex) {
                             Log.Debug(this, ex.getLocalizedMessage());
                         }

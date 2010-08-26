@@ -18,6 +18,7 @@ package mpv5.db.objects;
 
 import java.beans.XMLDecoder;
 import java.beans.XMLEncoder;
+import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.Serializable;
@@ -280,14 +281,14 @@ public final class ValueProperty extends DatabaseObject {
      * @param value the value to set
      */
     public void setValue(final byte[] value) {
+        ByteArrayInputStream io = new ByteArrayInputStream(value);
         try {
-            ByteArrayInputStream io = new ByteArrayInputStream(value);
             XMLDecoder d = new XMLDecoder(io);
             this.valueObj = (Serializable) d.readObject();
         } catch (Exception unsupportedEncodingException) {
             synchronized (this) {
                 Log.Debug(unsupportedEncodingException);
-                Log.Debug(this, value);
+                Log.Debug(this, new String(value));
             }
         }
     }

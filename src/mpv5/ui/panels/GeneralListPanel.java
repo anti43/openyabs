@@ -77,9 +77,9 @@ public class GeneralListPanel extends javax.swing.JPanel {
     public GeneralListPanel() {
         initComponents();
         setName("generallistpanel");
-        jTable1.setDefaultRenderer(String.class, rend);
-        jTable1.setDefaultRenderer(Date.class, rend);
-        jTable1.setDefaultRenderer(DatabaseObject.class, rend);
+        listtable.setDefaultRenderer(String.class, rend);
+        listtable.setDefaultRenderer(Date.class, rend);
+        listtable.setDefaultRenderer(DatabaseObject.class, rend);
         
     }
 
@@ -136,10 +136,10 @@ public class GeneralListPanel extends javax.swing.JPanel {
 
         MPTableModel m = new MPTableModel(data);
         m.setTypes(new Class[]{DatabaseObject.class, String.class, Date.class, DatabaseObject.class, Color.class, ImageIcon.class, Object.class, Object.class});
-        jTable1.setModel(m);
+        listtable.setModel(m);
 
-        TableFormat.resizeCols(jTable1, new Integer[]{100, 100, 100, 100, 0, 33}, false);
-        TableFormat.stripColumn(jTable1, 4);
+        TableFormat.hideHeader(listtable);
+        TableFormat.stripColumn(listtable, 4);
    
 //        TableFormat.stripColumn(jTable1, 5);
     }
@@ -152,7 +152,7 @@ public class GeneralListPanel extends javax.swing.JPanel {
     @SuppressWarnings({"unchecked"})
     public void filterByGroup(Group g) {
         setData(odata);
-        Object[][] data = ((MPTableModel) jTable1.getModel()).getData();
+        Object[][] data = ((MPTableModel) listtable.getModel()).getData();
         List<DatabaseObject> list = new Vector<DatabaseObject>();
         if (g.__getIDS().intValue() != 1) {
             for (int i = 0; i < data.length; i++) {
@@ -177,7 +177,7 @@ public class GeneralListPanel extends javax.swing.JPanel {
     @SuppressWarnings("unchecked")
     public void filterByTimeframe(vTimeframe g) {
         setData(odata);
-        Object[][] data = ((MPTableModel) jTable1.getModel()).getData();
+        Object[][] data = ((MPTableModel) listtable.getModel()).getData();
         List<DatabaseObject> list = new Vector<DatabaseObject>();
         for (int i = 0; i < data.length; i++) {
             DatabaseObject d = (DatabaseObject) data[i][0];
@@ -198,7 +198,7 @@ public class GeneralListPanel extends javax.swing.JPanel {
     private void initComponents() {
 
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTable1 = new  mpv5.ui.misc.MPTable(this) {
+        listtable = new  mpv5.ui.misc.MPTable(this) {
             public Component prepareRenderer(TableCellRenderer renderer,
                 int rowIndex, int vColIndex) {
                 Component c = super.prepareRenderer(renderer, rowIndex, vColIndex);
@@ -214,14 +214,14 @@ public class GeneralListPanel extends javax.swing.JPanel {
         jButton1 = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
 
-        mpv5.i18n.LanguageManager.getBundle();
+        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("mpv5/resources/languages/Panels"); // NOI18N
         setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("GeneralListPanel.border.title"))); // NOI18N
         setName("Form"); // NOI18N
 
         jScrollPane1.setName("jScrollPane1"); // NOI18N
 
-        jTable1.setAutoCreateRowSorter(true);
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+        listtable.setAutoCreateRowSorter(true);
+        listtable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {},
                 {},
@@ -232,14 +232,14 @@ public class GeneralListPanel extends javax.swing.JPanel {
 
             }
         ));
-        jTable1.setName("jTable1"); // NOI18N
-        jTable1.setShowVerticalLines(false);
-        jTable1.addMouseListener(new java.awt.event.MouseAdapter() {
+        listtable.setName("listtable"); // NOI18N
+        listtable.setShowVerticalLines(false);
+        listtable.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                jTable1MouseClicked(evt);
+                listtableMouseClicked(evt);
             }
         });
-        jScrollPane1.setViewportView(jTable1);
+        jScrollPane1.setViewportView(listtable);
 
         timeframeChooser1.setName("timeframeChooser1"); // NOI18N
 
@@ -307,21 +307,21 @@ public class GeneralListPanel extends javax.swing.JPanel {
         }
     }//GEN-LAST:event_jButton2ActionPerformed
 
-    private void jTable1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable1MouseClicked
+    private void listtableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_listtableMouseClicked
         if (evt.getClickCount() > 1) {
             try {
-                MPView.getIdentifierView().addTab(((DatabaseObject) jTable1.getModel().getValueAt(jTable1.getSelectedRow(), 0)));
+                MPView.getIdentifierView().addTab(((DatabaseObject) listtable.getModel().getValueAt(listtable.getSelectedRow(), 0)));
             } catch (Exception e) {
                 Log.Debug(e);
             }
         }
-    }//GEN-LAST:event_jTable1MouseClicked
+    }//GEN-LAST:event_listtableMouseClicked
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTable jTable1;
     private mpv5.ui.beans.LabeledCombobox labeledCombobox1;
+    private javax.swing.JTable listtable;
     private mpv5.ui.beans.TimeframeChooser timeframeChooser1;
     // End of variables declaration//GEN-END:variables
 }

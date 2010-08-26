@@ -18,6 +18,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.Reader;
+import java.io.Writer;
 import java.net.URI;
 import java.sql.Clob;
 import java.sql.Connection;
@@ -35,7 +36,10 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ExecutionException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JFrame;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
@@ -90,11 +94,14 @@ public class QueryHandler implements Cloneable {
     private static Integer ROW_LIMIT = null;
     private volatile int limit = 0;
     private boolean runInBackground = false;
+    private static PreparedStatement ivpps;
+    private static PreparedStatement uvpps;
 
     private QueryHandler() {
         try {
             conn = DatabaseConnection.instanceOf();
             sqlConn = conn.getConnection();
+            createPs();
             versionCheck();
             runFixes();
         } catch (Exception ex) {
@@ -784,7 +791,7 @@ public class QueryHandler implements Cloneable {
         t.add(column, value);
         return checkUniqueness(t, new int[]{0});
     }
-    private static int RUNNING_JOBS = 0;
+    private static volatile int RUNNING_JOBS = 0;
     private static Thread JOB_WATCHDOG;
 
     public synchronized void stop() {
@@ -884,17 +891,38 @@ public class QueryHandler implements Cloneable {
         }
     }
 
-    private synchronized Object clobToByteArray(java.sql.Clob argument) throws SQLException, IOException {
-        //byte[] is for CLOB data
-        Reader reader = (argument).getCharacterStream();
-        ByteArrayOutputStream out = new ByteArrayOutputStream();
-        OutputStreamWriter p = new OutputStreamWriter(out);
-        char[] buffer = new char[1];
-        while (reader.read(buffer) > 0) {
-            p.write(buffer, 0, buffer.length);
+    private synchronized byte[] clobToByteArray(final Reader characterStream) throws SQLException, IOException {
+        //byte[] is for CLOB data (or char[]?)
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        Writer writer = new OutputStreamWriter(baos, "utf-8");
+        char[] buffer = new char[4096];
+        for (int count = 0; (count = characterStream.read(buffer)) != -1;) {
+            writer.write(buffer, 0, count);
         }
-        p.close();
-        return out.toByteArray();
+        writer.close();
+        return baos.toByteArray();
+    }
+    private static String ivpquery = "INSERT INTO " + Context.getValueProperties().getDbIdentity()
+            + "(value, cname, classname, objectids, contextids, intaddedby, dateadded, groupsids )"
+            + " VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+    private static String uvpquery = "UPDATE " + Context.getValueProperties().getDbIdentity() + " SET "
+            + "value = ?, "
+            + "cname= ?, "
+            + "classname= ?, "
+            + "objectids= ?, "
+            + "contextids= ?, "
+            + "intaddedby= ?, "
+            + "dateadded= ?, "
+            + "groupsids= ? "
+            + "WHERE " + Context.getValueProperties().getDbIdentity() + ".ids = ?";
+
+    private void createPs() {
+        try {
+            ivpps = sqlConn.prepareStatement(ivpquery, PreparedStatement.RETURN_GENERATED_KEYS);
+            uvpps = sqlConn.prepareStatement(uvpquery, PreparedStatement.RETURN_GENERATED_KEYS);
+        } catch (SQLException ex) {
+            Log.Debug(ex);
+        }
     }
 
     class Watchdog implements Runnable {
@@ -910,19 +938,16 @@ public class QueryHandler implements Cloneable {
                 try {
                     Thread.sleep(10);
                 } catch (InterruptedException ex) {
-                    mpv5.logging.Log.Debug(ex);//Logger.getLogger(QueryHandler.class.getName()).log(Level.SEVERE, null, ex);
+                    mpv5.logging.Log.Debug(ex);
                 }
             }
         }
     }
 
-//    public String getNextStringNumber(String colName) {
-//        Integer s = getNextIndexOfStringCol(colName, null);
-//        return originalvalue.substring(0, substringcount) + s;
-//    }
     /**
      * Count the rows of the current table
      * @return
+     * @throws SQLException 
      */
     public Integer getCount() throws SQLException {
         int i = selectCount(null, null);
@@ -950,31 +975,28 @@ public class QueryHandler implements Cloneable {
      * @return The id of the inserted row
      */
     public int insertValueProperty(InputStream clobData, QueryData data, String jobmessage) {
-
-        String query = "INSERT INTO " + table
-                + "(value, cname, classname, objectids, contextids, intaddedby, dateadded, groupsids )"
-                + " VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
-
+        if (ivpps == null) {
+            createPs();
+        }
         ResultSet keys;
         int id = -1;
 
         try {
             start();
-            PreparedStatement ps = sqlConn.prepareStatement(query, PreparedStatement.RETURN_GENERATED_KEYS);
-            ps.setClob(1, new InputStreamReader(clobData, "Utf-8"));
-            ps.setString(2, data.getValue("cname").toString());
-            ps.setString(3, data.getValue("classname").toString());
-            ps.setInt(4, Integer.valueOf(data.getValue("objectids").toString()));
-            ps.setInt(5, Integer.valueOf(data.getValue("contextids").toString()));
-            ps.setInt(6, mpv5.db.objects.User.getCurrentUser().getID());
-            ps.setDate(7, new java.sql.Date(new Date().getTime()));
-            ps.setInt(8, Integer.valueOf(data.getValue("groupsids").toString()));
-            ps.execute();
+            ivpps.setClob(1, new InputStreamReader(clobData, "Utf-8"));
+            ivpps.setString(2, data.getValue("cname").toString());
+            ivpps.setString(3, data.getValue("classname").toString());
+            ivpps.setInt(4, Integer.valueOf(data.getValue("objectids").toString()));
+            ivpps.setInt(5, Integer.valueOf(data.getValue("contextids").toString()));
+            ivpps.setInt(6, mpv5.db.objects.User.getCurrentUser().getID());
+            ivpps.setDate(7, new java.sql.Date(new Date().getTime()));
+            ivpps.setInt(8, Integer.valueOf(data.getValue("groupsids").toString()));
+            ivpps.execute();
             if (!sqlConn.getAutoCommit()) {
                 sqlConn.commit();
             }
             try {
-                keys = ps.getGeneratedKeys();
+                keys = ivpps.getGeneratedKeys();
                 if (keys != null && keys.next()) {
                     id = keys.getInt(1);
                 }
@@ -983,7 +1005,7 @@ public class QueryHandler implements Cloneable {
             }
 
         } catch (Exception ex) {
-            Log.Debug(this, "Datenbankfehler: " + query);
+            Log.Debug(this, "Datenbankfehler: " + ivpquery);
             Log.Debug(this, ex);
             Popup.error(ex);
             jobmessage = Messages.ERROR_OCCURED.toString();
@@ -1009,36 +1031,27 @@ public class QueryHandler implements Cloneable {
      */
     public void updateValueProperty(int ids, InputStream clobData, QueryData data, String jobmessage) {
 
-        String query = "UPDATE " + table + " SET "
-                + "value = ?, "
-                + "cname= ?, "
-                + "classname= ?, "
-                + "objectids= ?, "
-                + "contextids= ?, "
-                + "intaddedby= ?, "
-                + "dateadded= ?, "
-                + "groupsids= ? "
-                + "WHERE " + table + ".ids = " + ids;
-
-        ResultSet keys;
+        if (uvpps == null) {
+            createPs();
+        }
 
         try {
             start();
-            PreparedStatement ps = sqlConn.prepareStatement(query, PreparedStatement.RETURN_GENERATED_KEYS);
-            ps.setClob(1, new InputStreamReader(clobData, "Utf-8"));
-            ps.setString(2, data.getValue("cname").toString());
-            ps.setString(3, data.getValue("classname").toString());
-            ps.setInt(4, Integer.valueOf(data.getValue("objectids").toString()));
-            ps.setInt(5, Integer.valueOf(data.getValue("contextids").toString()));
-            ps.setInt(6, mpv5.db.objects.User.getCurrentUser().getID());
-            ps.setDate(7, new java.sql.Date(new Date().getTime()));
-            ps.setInt(8, Integer.valueOf(data.getValue("groupsids").toString()));
-            ps.execute();
+            uvpps.setClob(1, new InputStreamReader(clobData, "Utf-8"));
+            uvpps.setString(2, data.getValue("cname").toString());
+            uvpps.setString(3, data.getValue("classname").toString());
+            uvpps.setInt(4, Integer.valueOf(data.getValue("objectids").toString()));
+            uvpps.setInt(5, Integer.valueOf(data.getValue("contextids").toString()));
+            uvpps.setInt(6, mpv5.db.objects.User.getCurrentUser().getID());
+            uvpps.setDate(7, new java.sql.Date(new Date().getTime()));
+            uvpps.setInt(8, Integer.valueOf(data.getValue("groupsids").toString()));
+            uvpps.setInt(9, ids);
+            uvpps.execute();
             if (!sqlConn.getAutoCommit()) {
                 sqlConn.commit();
             }
         } catch (Exception ex) {
-            Log.Debug(this, "Datenbankfehler: " + query);
+            Log.Debug(this, "Datenbankfehler: " + uvpquery);
             Log.Debug(this, ex);
             Popup.error(ex);
             jobmessage = Messages.ERROR_OCCURED.toString();
@@ -2100,12 +2113,12 @@ public class QueryHandler implements Cloneable {
         ResultSet resultSet = null;
         ResultSetMetaData rsmd;
         Object[][] data = null;
-        ArrayList z;
+        ArrayList<Object> z;
         int id = -1;
         String[] columnnames = null;
 
         try {
-            stm = sqlConn.createStatement();
+            stm = sqlConn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_READ_ONLY);
             if (ROW_LIMIT != null && ROW_LIMIT.intValue() >= 0) {
                 stm.setMaxRows(ROW_LIMIT.intValue());
             }
@@ -2121,8 +2134,8 @@ public class QueryHandler implements Cloneable {
                 Log.Debug(sQLException);
                 throw sQLException;
             }
-            ArrayList spalten = new ArrayList();
-            ArrayList zeilen = new ArrayList();
+            ArrayList<Object> spalten = new ArrayList<Object>();
+            ArrayList<Object> zeilen = new ArrayList<Object>();
             rsmd = resultSet.getMetaData();
 
             try {
@@ -2142,17 +2155,18 @@ public class QueryHandler implements Cloneable {
 //            Log.PrintArray(columnnames);
 
             while (resultSet.next()) {
-                spalten = new ArrayList();
+                spalten = new ArrayList<Object>();
                 for (int i = 1; i <= rsmd.getColumnCount(); i++) {
                     Object object = resultSet.getObject(i);
                     if (object instanceof String && TypeConversion.stringToBoolean(LocalSettings.getProperty(LocalSettings.DBESCAPE))) {
                         object = rescapeBackslashes((String) object);
                     } else if (object instanceof Clob) {
                         try {
-                            object = clobToByteArray((Clob) object);
+                            object = clobToByteArray(resultSet.getCharacterStream(i));
                         } catch (Exception sQLException) {
-                            object = sQLException.toString().getBytes();
-                        } 
+                            Log.Debug(sQLException);
+                            object = sQLException;
+                        }
                     }
 
                     spalten.add(object);
@@ -2162,7 +2176,7 @@ public class QueryHandler implements Cloneable {
             data = new Object[zeilen.size()][spalten.size()];
 
             for (int h = 0; h < zeilen.size(); h++) {
-                z = (ArrayList) zeilen.get(h);
+                z = (ArrayList<Object>) zeilen.get(h);
                 for (int i = 0; i < spalten.size(); i++) {
                     data[h][i] = z.get(i);
                 }
