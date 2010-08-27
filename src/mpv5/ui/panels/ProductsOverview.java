@@ -36,6 +36,7 @@ import mpv5.db.objects.ProductGroup;
 import mpv5.globals.Messages;
 import mpv5.logging.Log;
 import mpv5.ui.dialogs.BigPopup;
+import mpv5.utils.date.DateConverter;
 import mpv5.utils.date.vTimeframe;
 import mpv5.utils.models.MPTableModel;
 import mpv5.utils.trees.TreeFormat;
@@ -51,21 +52,26 @@ public class ProductsOverview extends javax.swing.JPanel {
         initComponents();
         setName("productsoverview");
         both.setSelected(true);
+        addedafter.setDate(DateConverter.addYears(new Date(), -10));
         fillTree();
         filltable(null, null);
         search.getTextField().addActionListener(new AbstractAction() {
 
             public void actionPerformed(ActionEvent e) {
-                List<ProductGroup> gs = new ArrayList<ProductGroup>();
-                DefaultMutableTreeNode node = (DefaultMutableTreeNode) gtree.getLastSelectedPathComponent();
-                if (node != null) {
-                    ProductGroup g = (ProductGroup) node.getUserObject();
-                    gs.add(g);
-                }
-
-                filltable(search.getText(), gs);
+                search();
             }
         });
+    }
+
+    private void search() {
+        List<ProductGroup> gs = new ArrayList<ProductGroup>();
+        DefaultMutableTreeNode node = (DefaultMutableTreeNode) gtree.getLastSelectedPathComponent();
+        if (node != null) {
+            ProductGroup g = (ProductGroup) node.getUserObject();
+            gs.add(g);
+        }
+
+        filltable(search.getText(), gs);
     }
 
     /** This method is called from within the constructor to
@@ -134,8 +140,8 @@ public class ProductsOverview extends javax.swing.JPanel {
         jToolBar1.setName("jToolBar1"); // NOI18N
 
         buttonGroup1.add(products);
-        org.jdesktop.application.ResourceMap resourceMap = org.jdesktop.application.Application.getInstance(mpv5.Main.class).getContext().getResourceMap(ProductsOverview.class);
-        products.setText(resourceMap.getString("products.text")); // NOI18N
+        java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle();
+        products.setText(bundle.getString("ProductsOverview.products.text")); // NOI18N
         products.setFocusable(false);
         products.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
         products.setName("products"); // NOI18N
@@ -143,7 +149,7 @@ public class ProductsOverview extends javax.swing.JPanel {
         jToolBar1.add(products);
 
         buttonGroup1.add(services);
-        services.setText(resourceMap.getString("services.text")); // NOI18N
+        services.setText(bundle.getString("ProductsOverview.services.text")); // NOI18N
         services.setFocusable(false);
         services.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
         services.setName("services"); // NOI18N
@@ -151,7 +157,7 @@ public class ProductsOverview extends javax.swing.JPanel {
         jToolBar1.add(services);
 
         buttonGroup1.add(both);
-        both.setText(resourceMap.getString("both.text")); // NOI18N
+        both.setText(bundle.getString("ProductsOverview.both.text")); // NOI18N
         both.setFocusable(false);
         both.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
         both.setName("both"); // NOI18N
@@ -165,7 +171,7 @@ public class ProductsOverview extends javax.swing.JPanel {
         jSeparator2.setPreferredSize(new java.awt.Dimension(10, 0));
         jToolBar1.add(jSeparator2);
 
-        addedafter.set_Label(resourceMap.getString("addedafter._Label")); // NOI18N
+        addedafter.set_Label(bundle.getString("ProductsOverview.addedafter._Label")); // NOI18N
         addedafter.setMaximumSize(new java.awt.Dimension(226, 21));
         addedafter.setMinimumSize(new java.awt.Dimension(226, 21));
         addedafter.setName("addedafter"); // NOI18N
@@ -178,19 +184,22 @@ public class ProductsOverview extends javax.swing.JPanel {
         jSeparator1.setPreferredSize(new java.awt.Dimension(10, 0));
         jToolBar1.add(jSeparator1);
 
-        search.set_Label(resourceMap.getString("search._Label")); // NOI18N
+        search.set_Label(bundle.getString("ProductsOverview.search._Label")); // NOI18N
         search.setName("search"); // NOI18N
         jToolBar1.add(search);
 
-        jButton1.setText(resourceMap.getString("jButton1.text")); // NOI18N
+        jButton1.setText(bundle.getString("ProductsOverview.jButton1.text")); // NOI18N
         jButton1.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
         jButton1.setFocusable(false);
         jButton1.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         jButton1.setName("jButton1"); // NOI18N
         jButton1.setPreferredSize(new java.awt.Dimension(55, 19));
-        jButton1.setPressedIcon(resourceMap.getIcon("jButton1.pressedIcon")); // NOI18N
-        jButton1.setSelectedIcon(resourceMap.getIcon("jButton1.selectedIcon")); // NOI18N
         jButton1.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
         jToolBar1.add(jButton1);
 
         jPanel1.add(jToolBar1, java.awt.BorderLayout.PAGE_START);
@@ -203,6 +212,10 @@ public class ProductsOverview extends javax.swing.JPanel {
     private void listtableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_listtableMouseClicked
         doPopup(evt);
     }//GEN-LAST:event_listtableMouseClicked
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        search();
+    }//GEN-LAST:event_jButton1ActionPerformed
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private mpv5.ui.beans.LabeledDateChooser addedafter;
     private javax.swing.JRadioButton both;

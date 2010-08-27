@@ -395,7 +395,7 @@ public class ProductPanel extends javax.swing.JPanel implements DataPanel, MPCBS
         inventoryDisabled = new javax.swing.JCheckBox();
         toolbarpane = new javax.swing.JPanel();
 
-        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("mpv5/resources/languages/Panels"); // NOI18N
+        java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle();
         setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("ProductPanel.border.title_1"))); // NOI18N
         setName("Form"); // NOI18N
 

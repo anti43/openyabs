@@ -26,6 +26,8 @@ import javax.swing.tree.DefaultTreeModel;
 import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
 import mpv5.db.common.NodataFoundException;
+import mpv5.db.common.QueryHandler;
+import mpv5.globals.Messages;
 import mpv5.logging.Log;
 import mpv5.ui.dialogs.subcomponents.ControlPanel_Groups;
 import mpv5.ui.dialogs.subcomponents.ControlPanel_ProductGroups;
@@ -107,10 +109,10 @@ public class ProductGroup extends DatabaseObject {
 
     @Override
     public JComponent getView() {
-       return new ControlPanel_ProductGroups(this);
+        return new ControlPanel_ProductGroups(this);
     }
 
-     @Override
+    @Override
     public mpv5.utils.images.MPIcon getIcon() {
         return null;
     }
@@ -210,5 +212,12 @@ public class ProductGroup extends DatabaseObject {
             }
         }
         return firstnode;
+    }
+
+    @Override
+    public void ensureUniqueness() {
+        if (!QueryHandler.instanceOf().clone(Context.getProductGroup()).checkUniqueness("cname", cname)) {
+            throw new UnsupportedOperationException(Messages.VALUE_ALREADY_EXISTS + " " + cname);
+        }
     }
 }

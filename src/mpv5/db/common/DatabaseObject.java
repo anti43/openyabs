@@ -469,7 +469,12 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
 
         try {
             if (ids <= 0) {
-                ensureUniqueness();
+                try {
+                    ensureUniqueness();
+                } catch (Exception e) {
+                    Popup.error(e);
+                    return false;
+                }
                 if (__getCName() != null && __getCName().length() > 0) {
                     Log.Debug(this, "Inserting new dataset into: " + this.getContext());
                     dateadded = new Date();
