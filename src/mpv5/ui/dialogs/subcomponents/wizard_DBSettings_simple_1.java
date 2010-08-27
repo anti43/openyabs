@@ -113,6 +113,19 @@ public class wizard_DBSettings_simple_1 extends javax.swing.JPanel implements Wi
                             } catch (Exception uRISyntaxException) {
                                 Log.Debug(this, uRISyntaxException.getMessage());
                             }
+
+                              try {
+                                File f = new File(this.getClass().getResource("/mpv5/resources/extra/").toURI());
+                                Log.Debug(this, "Importing coutries from: " + f.getCanonicalPath());
+                                File[] langfiles = f.listFiles();
+                                for (int i = 0; i < langfiles.length; i++) {
+                                    File file = langfiles[i];
+                                    LanguageManager.importCountries(file);
+                                }
+                            } catch (Exception uRISyntaxException) {
+                                Log.Debug(this, uRISyntaxException.getMessage());
+                            }
+
                             master.setMessage(Messages.CONNECTION_VERIFIED.toString());
                         } else {
                             master.setMessage(Messages.CREATING_DATABASE_FAILED.toString());

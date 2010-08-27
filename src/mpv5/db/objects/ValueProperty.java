@@ -149,15 +149,14 @@ public final class ValueProperty extends DatabaseObject {
     /**
      * Search for a specific property
      * @param owner
-     * @param key
+     * @param key may be null (all are getting deleted for the owner)
      */
     public static synchronized void deleteProperty(final DatabaseObject owner, final String key) {
-        if (key == null) {
-            throw new NullPointerException();
-        }
         try {
             QueryCriteria c = new QueryCriteria("contextids", owner.getContext().getId());
-            c.addAndCondition("cname", key);
+            if (key != null) {
+                c.addAndCondition("cname", key);
+            }
             c.addAndCondition("objectids", owner.__getIDS());
             ArrayList<DatabaseObject> objects = DatabaseObject.getObjects(Context.getValueProperties(), c);
             for (int i = 0; i < objects.size(); i++) {

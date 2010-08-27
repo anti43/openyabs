@@ -217,14 +217,12 @@ public class DatabaseConnection {
                     }
                     Thread.sleep(100);
                 } catch (Exception ex) {
-                    Log.Debug(ex);
-                    ex.printStackTrace();
+                    throw ex;
                 }
             }
             return true;
         } catch (Exception sQLException) {
             Log.Debug(sQLException);
-            sQLException.printStackTrace();
             return false;
         } finally {
             if (prog != null) {

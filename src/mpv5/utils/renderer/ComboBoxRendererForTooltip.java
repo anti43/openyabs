@@ -40,10 +40,11 @@ public class ComboBoxRendererForTooltip extends BasicComboBoxRenderer {
       } else {
             setBackground(Color.white);
         }
-      setFont(list.getFont());
-      setText((value == null) ? "" : value.toString());
+        try {
+            setFont(list.getFont());
+            setText((value == null) ? "" : value.toString());
+        } catch (Exception e) {
+        }
       return this;
     }
-
-
 }

@@ -33,9 +33,11 @@ import javax.swing.ComboBoxModel;
 import javax.swing.DefaultComboBoxModel;
 import mpv5.Main;
 import mpv5.db.common.Context;
+import mpv5.db.common.DatabaseObject;
 import mpv5.db.common.NodataFoundException;
 import mpv5.db.common.QueryData;
 import mpv5.db.common.QueryHandler;
+import mpv5.db.objects.User;
 import mpv5.globals.LocalSettings;
 import mpv5.globals.Messages;
 import mpv5.logging.Log;
@@ -95,28 +97,39 @@ public class LanguageManager {
         XMLReader r = new XMLReader();
         try {
             Document doc = r.newDoc(file, true);
+            //            if (MPSecurityManager.checkAdminAccess() && !mpv5.db.objects.User.getCurrentUser().isDefault()) {
 
-            if (MPSecurityManager.checkAdminAccess() && !mpv5.db.objects.User.getCurrentUser().isDefault()) {
-                if (doc != null) {
-                    try {
-                        QueryHandler.instanceOf().clone(Context.getCountries()).delete(new String[][]{{"groupsids", mpv5.db.objects.User.getCurrentUser().getID().toString(), ""}});
-                    } catch (Exception ex) {
-                        Log.Debug(ex);
+            if (doc != null) {
+                ArrayList<DatabaseObject> users = User.getObjects(Context.getUser(), true);
+                try {
+
+                    for (int i = 0; i < users.size(); i++) {
+                        User u = (User) users.get(i);
+                        QueryHandler.instanceOf().clone(Context.getCountries()).delete(new String[][]{{"groupsids", String.valueOf(u.__getGroupsids()), ""}});
                     }
-                    String[][] countries1 = r.toArray(r.getSubRootElement("countries"));
+                } catch (Exception ex) {
+                    Log.Debug(ex);
+                }
+
+                String[][] countries1 = r.toArray(r.getSubRootElement("countries"));
+
+                for (int k = 0; k < users.size(); k++) {
+                    DatabaseObject databaseObject = users.get(k);
                     for (int i = 0; i < countries1.length; i++) {
                         String[] country = countries1[i];
                         QueryData t = new QueryData();
                         t.add("cname", country[1]);
                         t.add("iso", Integer.valueOf(country[2]));
-                        t.add("groupsids", mpv5.db.objects.User.getCurrentUser().__getGroupsids());
+                        t.add("groupsids", databaseObject.__getGroupsids());
                         QueryHandler.instanceOf().clone(Context.getCountries()).insert(t, Messages.DONE.toString());
                     }
-//                MPView.addMessage(langname + Messages.ROW_UPDATED);
                 }
-            } else {
-                Popup.notice(Messages.ADMIN_ACCESS + "\n" + Messages.DEFAULT_USER);
+
+//                MPView.addMessage(langname + Messages.ROW_UPDATED);
             }
+//            } else {
+//                Popup.notice(Messages.ADMIN_ACCESS + "\n" + Messages.DEFAULT_USER);
+//            }
         } catch (Exception x) {
             Log.Debug(LanguageManager.class, x);
         }
@@ -426,7 +439,7 @@ public class LanguageManager {
     }
 
     private static boolean addNeededKeys(File file) {
-         synchronized (new LanguageManager()) {
+        synchronized (new LanguageManager()) {
             try {
                 Enumeration<String> keys = ResourceBundleUtf8.getBundle(defLanguageBundle).getKeys();
                 File impFile = file;
@@ -444,7 +457,7 @@ public class LanguageManager {
                     }
                     if (!found) {
                         Log.Debug(LanguageManager.class, "Key '" + string + "' added to file " + file);
-                        frw.write(string + "=" + ResourceBundleUtf8.getBundle(defLanguageBundle).getString(string));                     
+                        frw.write(string + "=" + ResourceBundleUtf8.getBundle(defLanguageBundle).getString(string));
                     }
                 }
                 failed = false;

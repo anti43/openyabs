@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mpv5 PUBLIC "-//http://code.google.com/p/mp-rechnungs-und-kundenverwaltung//DTD mpv5 V 1.0//EN" "http://yabs.copy-left.de/files/yabs_import_1.0.dtd">
+
+<mpv5>
+	<countries>
+		<country iso="56">Belgium</country>
+		<country iso="191">Croatia</country>
+		<country iso="203">Czech Republic</country>
+		<country iso="250">France</country>
+		<country iso="276">Germany</country>
+		<country iso="348">Hungary</country>
+		<country iso="372">Ireland</country>
+		<country iso="438">Liechtenstein</country>
+		<country iso="440">Lithuania</country>
+		<country iso="442">Luxembourg</country>
+		<country iso="492">Monaco</country>
+		<country iso="528">Netherlands</country>
+		<country iso="578">Norway</country>
+		<country iso="616">Poland</country>
+		<country iso="620">Portugal</country>
+		<country iso="642">Romania</country>
+		<country iso="643">Russian Federation</country>
+		<country iso="703">Slovakia (Slovak Republic)</country>
+		<country iso="705">Slovenia</country>
+		<country iso="724">Spain</country>
+		<country iso="752">Sweden</country>
+		<country iso="756">Switzerland</country>
+		<country iso="804">Ukraine</country>
+		<country iso="826">United Kingdom</country>
+		<country iso="891">Yugoslavia</country>
+	</countries>
+</mpv5>
+

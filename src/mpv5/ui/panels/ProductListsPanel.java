@@ -31,10 +31,9 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.math.BigDecimal;
 import java.util.Date;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JButton;
 import javax.swing.JComponent;
+import javax.swing.JTable;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingUtilities;
 import javax.swing.table.TableCellRenderer;
@@ -45,14 +44,12 @@ import mpv5.db.objects.Favourite;
 import mpv5.db.objects.Item;
 import mpv5.db.objects.ProductList;
 import mpv5.db.objects.ProductlistSubItem;
-import mpv5.db.objects.SubItem;
 import mpv5.db.objects.User;
 import mpv5.logging.Log;
 import mpv5.ui.dialogs.Popup;
 import mpv5.ui.frames.MPView;
 import mpv5.ui.toolbars.DataPanelTB;
 import mpv5.ui.beans.MPCBSelectionChangeReceiver;
-import mpv5.ui.dialogs.DialogForFile;
 import mpv5.ui.dialogs.Search2;
 import mpv5.ui.dialogs.subcomponents.ProductSelectDialog;
 import mpv5.ui.misc.MPTable;
@@ -65,7 +62,6 @@ import mpv5.utils.tables.TableCalculator;
 import mpv5.utils.renderer.CellEditorWithMPComboBox;
 import mpv5.utils.renderer.TableCellRendererForDezimal;
 import mpv5.utils.tables.TableFormat;
-import mpv5.utils.ui.TableViewPersistenceHandler;
 import mpv5.utils.ui.TextFieldUtils;
 
 /**
@@ -163,9 +159,6 @@ private java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle();
         value.set_ValueClass(BigDecimal.class);
         netvalue.set_ValueClass(BigDecimal.class);
 
-        ((MPTable)itemtable).setDefaultColumns(new Integer[]{0, 23, 53, 63, 100, 83, 63, 63, 0, 0, 0, 20, 20, 0, 0},
-                new Boolean[]{true, true, true, true, false, true, true, true, true, true, true, true, true, true, true, true});
-      //  t = new mpv5.utils.ui.TableViewPersistenceHandler(itemtable, this);
     }
 
     @Override
@@ -229,7 +222,7 @@ private java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle();
         jButton3 = new javax.swing.JButton();
         jPanel4 = new javax.swing.JPanel();
         jScrollPane3 = new javax.swing.JScrollPane();
-        itemtable = new  mpv5.ui.misc.MPTable(this) {
+        itemtable = new  JTable() {
             public Component prepareRenderer(TableCellRenderer renderer,
                 int rowIndex, int vColIndex) {
                 Component c = super.prepareRenderer(renderer, rowIndex, vColIndex);
@@ -256,7 +249,7 @@ private java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle();
         toolbarpanetbp = new javax.swing.JPanel();
 
         setBackground(javax.swing.UIManager.getDefaults().getColor("InternalFrame.inactiveTitleBackground"));
-        mpv5.i18n.LanguageManager.getBundle();
+        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("mpv5/resources/languages/Panels"); // NOI18N
         setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("ProductListsPanel.border.title_1"))); // NOI18N
         setName("Form"); // NOI18N
         setLayout(new java.awt.BorderLayout());
@@ -385,7 +378,7 @@ private java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle();
         );
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 135, Short.MAX_VALUE)
+            .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 132, Short.MAX_VALUE)
         );
 
         jScrollPane1.setBorder(null);
@@ -646,14 +639,14 @@ private java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle();
     public void formatTable() {
 
         prepareTable();
-//        TableFormat.resizeCols(itemtable, new Integer[]{0, 23, 53, 63, 100, 83, 63, 63, 0, 0, 0, 20, 20, 0, 0}, new Boolean[]{true, true, true, true, false, true, true, true, true, true, true, true, true, true, true, true});
+        TableFormat.resizeCols(itemtable, new Integer[]{0, 23, 53, 63, 100, 83, 63, 63, 0, 0, 0, 20, 20, 0, 0}, new Boolean[]{true, true, true, true, false, true, true, true, true, true, true, true, true, true, true, true});
         TableFormat.changeBackground(itemtable, 1, Color.LIGHT_GRAY);
-//        if (mpv5.db.objects.User.getCurrentUser().getProperties().getProperty(MPView.getTabPane(), "hidecolumnquantity")) {
-//            TableFormat.stripColumn(itemtable, 2);
-//        }
-//        if (mpv5.db.objects.User.getCurrentUser().getProperties().getProperty(MPView.getTabPane(), "hidecolumnmeasure")) {
-//            TableFormat.stripColumn(itemtable, 3);
-//        }
+        if (mpv5.db.objects.User.getCurrentUser().getProperties().getProperty(MPView.getTabPane(), "hidecolumnquantity")) {
+            TableFormat.stripColumn(itemtable, 2);
+        }
+        if (mpv5.db.objects.User.getCurrentUser().getProperties().getProperty(MPView.getTabPane(), "hidecolumnmeasure")) {
+            TableFormat.stripColumn(itemtable, 3);
+        }
 
 
     }

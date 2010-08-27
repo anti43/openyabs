@@ -71,8 +71,11 @@ public class QueryCriteria2 {
      * @param params
      */
     public void or(QueryParameter... params) {
-        if (params.length < 2) {
-            throw new IllegalArgumentException("OR conditions must have at least 2 parameters!");
+        if (params.length < 1) {
+            return;
+        } else if (params.length == 1) {
+            and(params);
+            return;
         }
 
         query += " AND (";
@@ -115,9 +118,9 @@ public class QueryCriteria2 {
                     break;
                 case QueryParameter.LIKE:
                     if (!firstrun) {
-                        query += " OR UPPER(" + p.getKey() + ") LIKE %" + val.toUpperCase() + "%" + " ";
+                        query += " OR UPPER(" + p.getKey() + ") LIKE '%" + val.toUpperCase().replace("'", "") + "%'" + " ";
                     } else {
-                        query += " UPPER(" + p.getKey() + ") LIKE %" + val.toUpperCase() + "%" + " ";
+                        query += " UPPER(" + p.getKey() + ") LIKE '%" + val.toUpperCase().replace("'", "") + "%'" + " ";
                     }
                     break;
             }
@@ -157,5 +160,3 @@ public class QueryCriteria2 {
         return order;
     }
 }
-
-

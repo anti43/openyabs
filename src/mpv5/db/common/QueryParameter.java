@@ -86,6 +86,7 @@ public class QueryParameter {
         this.condition = condition;
     }
 
+    @Override
     public String toString() {
         return getKey() + ": " + getValue();
     }

@@ -17,7 +17,6 @@ public class DatabaseUpdater {
     private Map<Double, String[]> UPDATES_DERBY = new TreeMap<Double, String[]>();
     private Map<Double, String[]> UPDATES_MYSQL = new TreeMap<Double, String[]>();
 
-
     public DatabaseUpdater() {
         ////////////////////////////////////////////////////////////////////////////////////////////
         // derby updates
@@ -31,47 +30,44 @@ public class DatabaseUpdater {
         UPDATES_DERBY.put(1.14, new String[]{
                     "ALTER TABLE products DROP CONSTRAINT const8",});
         UPDATES_DERBY.put(1.15, new String[]{
-//            intaddedby,dateadded,productsids,contactsids,groupsids,cname
-                    "CREATE TABLE productstosuppliers(ids BIGINT NOT NULL GENERATED ALWAYS AS IDENTITY " +
-                            "(START WITH 1, INCREMENT BY 1), productsids BIGINT REFERENCES products(ids) ON DELETE CASCADE, " +
-                            "contactsids BIGINT REFERENCES contacts(ids) ON DELETE CASCADE," +
-                            "cname VARCHAR(250) DEFAULT NULL," +
-                            "groupsids BIGINT DEFAULT 0," +
-                            "dateadded DATE NOT NULL," +
-                            "intaddedby BIGINT DEFAULT 0)",});
+                    //            intaddedby,dateadded,productsids,contactsids,groupsids,cname
+                    "CREATE TABLE productstosuppliers(ids BIGINT NOT NULL GENERATED ALWAYS AS IDENTITY "
+                    + "(START WITH 1, INCREMENT BY 1), productsids BIGINT REFERENCES products(ids) ON DELETE CASCADE, "
+                    + "contactsids BIGINT REFERENCES contacts(ids) ON DELETE CASCADE,"
+                    + "cname VARCHAR(250) DEFAULT NULL,"
+                    + "groupsids BIGINT DEFAULT 0,"
+                    + "dateadded DATE NOT NULL,"
+                    + "intaddedby BIGINT DEFAULT 0)",});
         UPDATES_DERBY.put(1.16, new String[]{
-                    "ALTER TABLE products ADD COLUMN productlistsids BIGINT DEFAULT 0",
-                });
+                    "ALTER TABLE products ADD COLUMN productlistsids BIGINT DEFAULT 0",});
         UPDATES_DERBY.put(1.17, new String[]{
                     "ALTER TABLE contacts ADD COLUMN bankaccount VARCHAR(250) DEFAULT NULL",
                     "ALTER TABLE contacts ADD COLUMN bankid VARCHAR(250) DEFAULT NULL",
                     "ALTER TABLE contacts ADD COLUMN bankname VARCHAR(250) DEFAULT NULL",
                     "ALTER TABLE contacts ADD COLUMN bankcurrency VARCHAR(250) DEFAULT NULL",
-                    "ALTER TABLE contacts ADD COLUMN bankcountry VARCHAR(250) DEFAULT NULL",
-                });
+                    "ALTER TABLE contacts ADD COLUMN bankcountry VARCHAR(250) DEFAULT NULL",});
         UPDATES_DERBY.put(1.181, new String[]{
                     "DROP TABLE valueproperties"
-        });
+                });
         UPDATES_DERBY.put(1.182, new String[]{
-//                    "ALTER TABLE items DROP COLUMN discountvalue",
+                    //                    "ALTER TABLE items DROP COLUMN discountvalue",
                     "CREATE INDEX items_index0 ON items(cnumber)",
                     "CREATE INDEX items_index1 ON items(cname)",
                     "CREATE INDEX products_index0 ON products(cnumber)",
                     "CREATE INDEX products_index1 ON products(cname)",
                     "CREATE INDEX contacts_index0 ON contacts(cname)",
                     "CREATE TABLE valueproperties (IDS BIGINT NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1), "
-                            + "CONSTRAINT constvp0 UNIQUE (cname, contextids, objectids, groupsids),"
-                            + "cname VARCHAR(250) NOT NULL, classname VARCHAR(250) NOT NULL, "
-                            + "contextids BIGINT NOT NULL, objectids BIGINT NOT NULL,"
-                            + "value CLOB(2G) DEFAULT NULL, dateadded DATE NOT NULL, intaddedby BIGINT DEFAULT 0, "
-                            + "groupsids BIGINT REFERENCES groups(ids) DEFAULT 1, invisible SMALLINT DEFAULT 0, "
-                            + "PRIMARY KEY (ids))",
+                    + "CONSTRAINT constvp0 UNIQUE (cname, contextids, objectids, groupsids),"
+                    + "cname VARCHAR(250) NOT NULL, classname VARCHAR(250) NOT NULL, "
+                    + "contextids BIGINT NOT NULL, objectids BIGINT NOT NULL,"
+                    + "value CLOB(2G) DEFAULT NULL, dateadded DATE NOT NULL, intaddedby BIGINT DEFAULT 0, "
+                    + "groupsids BIGINT REFERENCES groups(ids) DEFAULT 1, invisible SMALLINT DEFAULT 0, "
+                    + "PRIMARY KEY (ids))",
                     "CREATE INDEX values_index0 ON valueproperties(cname, contextids, objectids)",
                     "ALTER TABLE expenses ADD COLUMN dateend DATE ",
                     "ALTER TABLE expenses ADD COLUMN ispaid SMALLINT DEFAULT 0 NOT NULL",
                     "ALTER TABLE revenues ADD COLUMN dateend DATE ",
-                    "ALTER TABLE revenues ADD COLUMN ispaid SMALLINT DEFAULT 0 NOT NULL",
-                });
+                    "ALTER TABLE revenues ADD COLUMN ispaid SMALLINT DEFAULT 0 NOT NULL",});
         ////////////////////////////////////////////////////////////////////////////////////////////
         // mysql updates
         UPDATES_MYSQL.put(1.11, new String[]{
@@ -88,18 +84,16 @@ public class DatabaseUpdater {
                     + "ids             	BIGINT(20) UNSIGNED NOT NULL PRIMARY KEY auto_increment,"
                     + "productsids      BIGINT(20) UNSIGNED NOT NULL,"
                     + "accountsids      BIGINT(20) UNSIGNED NOT NULL,"
-                    + "cname            VARCHAR(250) DEFAULT NULL," +
-                      "groupsids        BIGINT(20) DEFAULT 1," +
-                      "dateadded        DATE NOT NULL," +
-                      "intaddedby       BIGINT(20) UNSIGNED DEFAULT 0"
+                    + "cname            VARCHAR(250) DEFAULT NULL,"
+                    + "groupsids        BIGINT(20) DEFAULT 1,"
+                    + "dateadded        DATE NOT NULL,"
+                    + "intaddedby       BIGINT(20) UNSIGNED DEFAULT 0"
                     + ")ENGINE=MyISAM DEFAULT CHARSET=utf8",
-
                     "ALTER TABLE productstosuppliers "
                     + "ADD CONSTRAINT products0843168601 "
                     + "FOREIGN KEY(contactsids) "
                     + "REFERENCES contacts(ids) "
                     + "ON DELETE CASCADE ",
-
                     "ALTER TABLE productstosuppliers "
                     + "ADD CONSTRAINT products0843168602 "
                     + "FOREIGN KEY(productsids) "
@@ -107,53 +101,50 @@ public class DatabaseUpdater {
                     + "ON DELETE CASCADE "
                 });
         UPDATES_MYSQL.put(1.16, new String[]{
-                    "ALTER TABLE products ADD COLUMN productlistsids BIGINT(20) UNSIGNED DEFAULT 0",
-                });
+                    "ALTER TABLE products ADD COLUMN productlistsids BIGINT(20) UNSIGNED DEFAULT 0",});
 
         UPDATES_MYSQL.put(1.17, new String[]{
                     "ALTER TABLE contacts ADD COLUMN bankaccount VARCHAR(250) DEFAULT NULL",
                     "ALTER TABLE contacts ADD COLUMN bankid VARCHAR(250) DEFAULT NULL",
                     "ALTER TABLE contacts ADD COLUMN bankname VARCHAR(250) DEFAULT NULL",
                     "ALTER TABLE contacts ADD COLUMN bankcurrency VARCHAR(250) DEFAULT NULL",
-                    "ALTER TABLE contacts ADD COLUMN bankcountry VARCHAR(250) DEFAULT NULL",
-                });
+                    "ALTER TABLE contacts ADD COLUMN bankcountry VARCHAR(250) DEFAULT NULL",});
         UPDATES_MYSQL.put(1.181, new String[]{
-                    "ALTER TABLE valueproperties DROP INDEX values_index0",
-                    "DROP TABLE valueproperties"
-        });
+                    "ALTER TABLE valueproperties DROP INDEX IF EXISTS values_index0",
+                    "DROP TABLE IF EXISTS valueproperties"
+                });
         UPDATES_MYSQL.put(1.182, new String[]{
-//                    "ALTER TABLE items DROP COLUMN discountvalue",
+                    //                    "ALTER TABLE items DROP COLUMN discountvalue",
                     "CREATE INDEX items_index0 ON items(cnumber)",
                     "CREATE INDEX items_index1 ON items(cname)",
                     "CREATE INDEX products_index0 ON products(cnumber)",
                     "CREATE INDEX products_index1 ON products(cname)",
                     "CREATE INDEX contacts_index0 ON contacts(cname)",
                     "CREATE TABLE valueproperties ("
-                            + "ids BIGINT(20) UNSIGNED NOT NULL PRIMARY KEY auto_increment, "
-                            + "CONSTRAINT constvp0 UNIQUE (cname, contextids, objectids, groupsids),"
-                            + "cname VARCHAR(250) NOT NULL, "
-                            + "classname VARCHAR(250) NOT NULL, "
-                            + "contextids BBIGINT(20) UNSIGNED NOT NULL,"
-                            + "objectids BIGINT(20) UNSIGNED NOT NULL,"
-                            + "value LONGTEXT DEFAULT NULL, "
-                            + "dateadded DATE NOT NULL, "
-                            + "intaddedby BIGINT(20) UNSIGNED NOT NULL, "
-                            + "groupsids BIGINT(20) REFERENCES groups(ids) UNSIGNED DEFAULT 1, "
-                            + "invisible BIGINT(20) UNSIGNED DEFAULT 0"
-                            + ")ENGINE=MyISAM DEFAULT CHARSET=utf8",
+                    + "ids BIGINT(20) UNSIGNED NOT NULL PRIMARY KEY auto_increment, "
+                    + "CONSTRAINT constvp0 UNIQUE (cname, contextids, objectids, groupsids),"
+                    + "cname VARCHAR(250) NOT NULL, "
+                    + "classname VARCHAR(250) NOT NULL, "
+                    + "contextids BBIGINT(20) UNSIGNED NOT NULL,"
+                    + "objectids BIGINT(20) UNSIGNED NOT NULL,"
+                    + "value LONGTEXT DEFAULT NULL, "
+                    + "dateadded DATE NOT NULL, "
+                    + "intaddedby BIGINT(20) UNSIGNED NOT NULL, "
+                    + "groupsids BIGINT(20) REFERENCES groups(ids) UNSIGNED DEFAULT 1, "
+                    + "invisible BIGINT(20) UNSIGNED DEFAULT 0"
+                    + ")ENGINE=MyISAM DEFAULT CHARSET=utf8",
                     "CREATE INDEX values_index0 ON valueproperties(cname, contextids, objectids)",
                     "ALTER TABLE expenses ADD COLUMN dateend DATE ",
                     "ALTER TABLE expenses ADD COLUMN ispaid SMALLINT DEFAULT 0 NOT NULL",
                     "ALTER TABLE revenues ADD COLUMN dateend DATE ",
-                    "ALTER TABLE revenues ADD COLUMN ispaid SMALLINT DEFAULT 0 NOT NULL",
-                });
+                    "ALTER TABLE revenues ADD COLUMN ispaid SMALLINT DEFAULT 0 NOT NULL",});
     }
 
     /**
      * Update the database from the specified to the max available version
      * @param version
      */
-    public void updateFrom(double version) {
+    public void updateFrom(double version) throws Exception {
         Log.Debug(DatabaseUpdater.class, "Updating database from " + version);
 
         double newVersion = version;
@@ -169,7 +160,11 @@ public class DatabaseUpdater {
                             newVersion = vers;
                         }
                     } catch (Exception ex) {
-                        Log.Debug(ex);
+                        if (ex.getMessage().contains("does not exist")) {
+                            Log.Debug(this, ex.getMessage());
+                        } else {
+                            throw ex;
+                        }
                     }
                 }
             }
@@ -184,7 +179,11 @@ public class DatabaseUpdater {
                             newVersion = vers;
                         }
                     } catch (Exception ex) {
-                        Log.Debug(ex);
+                        if (ex.getMessage().contains("does not exist")) {
+                            Log.Debug(this, ex.getMessage());
+                        } else {
+                            throw ex;
+                        }
                     }
                 }
             }

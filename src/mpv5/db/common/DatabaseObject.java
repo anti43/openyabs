@@ -71,7 +71,7 @@ import mpv5.utils.text.RandomText;
  * non-graphical beans to update or create itself to the database
  * @author
  */
-public abstract class DatabaseObject implements Comparable<DatabaseObject>, Serializable {
+public abstract class DatabaseObject implements Comparable<DatabaseObject>, Serializable, Cloneable{
 
     /**
      * Marks the value of the annotated getter to be persisted on {@link #save}
@@ -81,7 +81,6 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
     @Retention(RetentionPolicy.RUNTIME)
     @Target(ElementType.METHOD)
     public @interface Persistable {
-
         boolean value();
     }
     private static boolean AUTO_LOCK = false;
@@ -622,6 +621,8 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
             if (this instanceof Triggerable) {
                 ((Triggerable) this).triggerOnDelete();
             }
+           
+            ValueProperty.deleteProperty(this, null);
 
             final String fmessage = message;
             final String fdbid = this.getDbIdentity();
@@ -1343,18 +1344,18 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
     }
 
     /**
-     * Creates a Set of Entries on runtime which reflect the actual Setters of the databaseObject child
+     * Creates a Set of Entries on runtime which reflect the actual getters of the databaseObject child
      * @return A set Set: String (cname), Class (java.lang.String)
      */
     public Set<Map.Entry<String, Class<?>>> getKeySet() {
         Set<Map.Entry<String, Class<?>>> s = new HashSet<Map.Entry<String, Class<?>>>();
-        List<Method> vars = setVars();
+        List<Method> vars = getVars();
         for (int i = 0; i < vars.size(); i++) {
             final Method method = vars.get(i);
             s.add(new Map.Entry<String, Class<?>>() {
 
                 public String getKey() {
-                    return method.getName().substring(3);
+                    return method.getName().substring(5);
                 }
 
                 public Class<?> getValue() {
@@ -1729,4 +1730,6 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
         }
         throw new UnsupportedOperationException(key + " not known in " + this);
     }
+
+
 }

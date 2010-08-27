@@ -20,8 +20,13 @@ import ag.ion.bion.officelayer.filter.IFilter;
 import ag.ion.bion.officelayer.filter.PDFFilter;
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Vector;
+import mpv5.db.common.Context;
+import mpv5.db.common.QueryParameter;
+import mpv5.db.objects.Product;
 
 
 /**
@@ -32,11 +37,13 @@ public class Test {
   
 
     public static void main(String... aArgs)  {
-//        IFilter[] p = PDFFilter.FILTERS;
-//        for (int i = 0; i < p.length; i++) {
-//            IFilter iFilter = p[i];
-//            System.out.println(iFilter);
-//        }
+
+         List<QueryParameter> ps = new ArrayList<QueryParameter>();
+            for (Map.Entry<String, Class<?>> en : new Product().getKeySet()) {
+                if (en.getValue().isAssignableFrom(String.class)) {
+                   ps.add(new QueryParameter(Context.getProduct(), en.getKey(), "f", QueryParameter.LIKE));
+                } else System.out.println(en.getKey());
+            }
 
 
     }

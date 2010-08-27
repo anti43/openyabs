@@ -101,9 +101,9 @@ public class QueryHandler implements Cloneable {
         try {
             conn = DatabaseConnection.instanceOf();
             sqlConn = conn.getConnection();
-            createPs();
             versionCheck();
             runFixes();
+            createPs();
         } catch (Exception ex) {
             Log.Debug(ex);
             Popup.error(ex);
@@ -921,7 +921,7 @@ public class QueryHandler implements Cloneable {
             ivpps = sqlConn.prepareStatement(ivpquery, PreparedStatement.RETURN_GENERATED_KEYS);
             uvpps = sqlConn.prepareStatement(uvpquery, PreparedStatement.RETURN_GENERATED_KEYS);
         } catch (SQLException ex) {
-            Log.Debug(ex);
+            Log.Debug(this, ex.getMessage());
         }
     }
 
