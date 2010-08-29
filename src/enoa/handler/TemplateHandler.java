@@ -65,7 +65,7 @@ public class TemplateHandler {
             groupsids = 1;
         }
 
-        return loadTemplate(target, groupsids, typ);
+        return loadTemplate(groupsids, typ);
     }
 
     /**
@@ -75,7 +75,7 @@ public class TemplateHandler {
      * @param typ
      * @return
      */
-    public static synchronized Template loadTemplate(DatabaseObject target, int groupsids, int typ) {
+    public static synchronized Template loadTemplate(int groupsids, int typ) {
         Integer type = new Integer(typ);
 
         if (groupsids < 0) {
@@ -376,7 +376,8 @@ public class TemplateHandler {
      * @param dataOwner
      * @param TYPE
      */
-    public static void loadTemplateFor(final JButton button, final DatabaseObject dataOwner, final int TYPE) {
+    public static void loadTemplateFor(final JComponent button, final DatabaseObject dataOwner, final int TYPE) {
+        button.setEnabled(false);
         Runnable runnable = new Runnable() {
 
             public void run() {
@@ -384,7 +385,7 @@ public class TemplateHandler {
                 if (dataOwner != null) {
                     group = dataOwner.__getGroupsids();
                 }
-                loadTemplate(dataOwner, group, TYPE);
+                loadTemplate(group, TYPE);
                 button.setEnabled(isLoaded(dataOwner, TYPE));
             }
         };
@@ -398,11 +399,12 @@ public class TemplateHandler {
      * @param grouspids
      * @param TYPE
      */
-    public static void loadTemplateFor(final JButton button, final DatabaseObject dataOwner, final int grouspids, final int TYPE) {
+    public static void loadTemplateFor(final JComponent button, final DatabaseObject dataOwner, final int grouspids, final int TYPE) {
+        button.setEnabled(false);
         Runnable runnable = new Runnable() {
 
             public void run() {
-                loadTemplate(dataOwner, grouspids, TYPE);
+                loadTemplate(grouspids, TYPE);
                 button.setEnabled(isLoaded(dataOwner, TYPE));
             }
         };
@@ -432,10 +434,14 @@ public class TemplateHandler {
      * @param TYPE
      */
     public static void loadTemplateFor(final JComponent[] jComponent, final DatabaseObject dataOwner, final int TYPE) {
+        for (int i = 0; i < jComponent.length; i++) {
+            JComponent jComponent1 = jComponent[i];
+            jComponent1.setEnabled(false);
+        }
         Runnable runnable = new Runnable() {
 
             public void run() {
-                loadTemplate(dataOwner, dataOwner.__getGroupsids(), TYPE);
+                loadTemplate(dataOwner.__getGroupsids(), TYPE);
                 for (int i = 0; i < jComponent.length; i++) {
                     JComponent jComponent1 = jComponent[i];
                     jComponent1.setEnabled(isLoaded(dataOwner, TYPE));
@@ -453,7 +459,7 @@ public class TemplateHandler {
     public static boolean importTemplate(File file) {
         Template t = new Template();
 
-        return QueryHandler.instanceOf().clone(Context.getFiles(), (DataPanel)null).insertFile(file, t, new SaveString(file.getName(), true));
+        return QueryHandler.instanceOf().clone(Context.getFiles(), (DataPanel) null).insertFile(file, t, new SaveString(file.getName(), true));
 
 //                User object = mpv5.db.objects.User.getCurrentUser();
 //

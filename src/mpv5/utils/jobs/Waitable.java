@@ -19,13 +19,14 @@ package mpv5.utils.jobs;
 
 /**
  *
- *  
+ *  This interfaces marks a long running tasks which shall be run in background
  */
 public interface Waitable {
 
     /**
-     * 0 indicates no error
-     * @return the return code
+     * The long running task shall be triggered by this method
+     * null indicates no error
+     * @return the return code (An <code>Exception</code> if an error has occured, or null if the task has finished successfully)
      */
     public abstract Exception waitFor();
 

@@ -1678,8 +1678,8 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
 
     /**
      * Fill the do with (senseless) sample data
-     */
-    @Deprecated
+    */
+//    @Deprecated
     public void fillSampleData() {
         List<Method> vars = setVars();
         for (int k = 0; k < vars.size(); k++) {

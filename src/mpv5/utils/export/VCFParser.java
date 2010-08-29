@@ -40,8 +40,8 @@ public class VCFParser {
      * @throws VCardParseException
      * @throws IOException
      */
-    public static synchronized List<VCard> parse(File f) throws VCardParseException, IOException {
 
+    public static synchronized List<VCard> parse(File f) throws VCardParseException, IOException {
         DomParser parser = new DomParser();
         Document document = new DocumentImpl();
         parser.parse(new FileInputStream(f), document);

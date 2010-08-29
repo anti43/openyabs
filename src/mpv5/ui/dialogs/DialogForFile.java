@@ -21,6 +21,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JFileChooser;
@@ -296,8 +297,12 @@ public class DialogForFile extends JFileChooser implements Waiter {
      * @throws Exception
      */
     @Override
-    public void set(Object object, Exception e) throws Exception {
-        if (e == null) {
+    @SuppressWarnings("unchecked")
+    public void set(Object object, Exception... e) throws Exception {
+        if (e == null || e.length > 0) {
+            if (object instanceof List) {
+                saveFiles((List) object);
+            }
             if (object instanceof File) {
                 saveFile((File) object);
             }
@@ -310,6 +315,40 @@ public class DialogForFile extends JFileChooser implements Waiter {
                     ((Export) object).getTargetFile().delete();
                 }
             }
+        } else {
+            Popup.error(e[e.length - 1]);
+
+        }
+    }
+
+    /**
+     * Shows a choose directory dialog and saves a files in the list to it.
+     * @param <T>
+     * @param list
+     */
+    public <T extends File> void saveFiles(List<T> list) {
+        try {
+            this.setFileSelectionMode(DialogForFile.DIRECTORIES_ONLY);
+            this.setSelectedFile(CURRENT_DIR);
+            if (this.showSaveDialog(MPView.getIdentifierFrame()) == JFileChooser.APPROVE_OPTION) {
+                if (!this.getSelectedFile().exists()) {
+                    this.file = this.getSelectedFile();
+                    CURRENT_DIR = file;
+                    file.mkdirs();
+                } else {
+                    this.file = this.getSelectedFile();
+                    CURRENT_DIR = file.getParentFile();
+                }
+
+                for (int i = 0; i < list.size(); i++) {
+                    File f3 = list.get(i);
+                    FileDirectoryHandler.copyFile2(f3, new File(CURRENT_DIR.getPath() + File.separator + f3.getName()), true);
+                }
+            }
+
+        } catch (Exception n) {
+            Log.Debug(this, n.getMessage());
+            Popup.error(n);
         }
     }
 }

@@ -104,7 +104,7 @@ public class SimpleMail implements Waiter {
         }
     }
 
-    public void set(Object object, Exception exception) throws Exception {
+    public void set(Object object, Exception... exception) throws Exception {
         if (exception == null) {
             try {
                 if (object instanceof Export) {
@@ -119,7 +119,7 @@ public class SimpleMail implements Waiter {
             } finally {
             }
         } else {
-            throw exception;
+            throw exception[0];
         }
     }
 

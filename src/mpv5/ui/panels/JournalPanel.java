@@ -26,6 +26,7 @@ import enoa.handler.TemplateHandler;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -62,7 +63,9 @@ import mpv5.utils.date.DateConverter;
 import mpv5.utils.date.vTimeframe;
 import mpv5.utils.export.DTAFile;
 import mpv5.utils.export.Export;
+import mpv5.utils.export.PDFFile;
 import mpv5.utils.jobs.Job;
+import mpv5.utils.jobs.Waitable;
 import mpv5.utils.models.MPComboBoxModelItem;
 import mpv5.utils.models.MPTableModel;
 import mpv5.utils.models.MPTreeModel;
@@ -113,7 +116,7 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
         refresh(null);
         jButton4.setEnabled(false);
         loadTemplate();
-        new mpv5.utils.ui.TableViewPersistenceHandler(jTable1, this).set();;
+
     }
 
     public JournalPanel(Contact dataOwner) {
@@ -818,8 +821,9 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
                 new String[]{Messages.DELETE.toString(),
                     Messages.CHANGE_STATUS.toString(),
                     null, Messages.RELOAD.getValue(),
-                    null, Messages.DTA_CREATE.getValue()
-                },
+                    null, Messages.DTA_CREATE.getValue(),
+                    Messages.PDF_CREATE.getValue(),
+                    Messages.ODT_CREATE.getValue(),},
                 new ActionListener[]{new ActionListener() {
 
                 public void actionPerformed(ActionEvent e) {
@@ -891,8 +895,22 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
                         public void actionPerformed(ActionEvent e) {
                             dta();
                         }
+                    },
+                    new ActionListener() {
+
+                        public void actionPerformed(ActionEvent e) {
+                            pdf();
+                        }
+                    },
+                    new ActionListener() {
+
+                        public void actionPerformed(ActionEvent e) {
+//                            odt();
+                        }
                     }
                 });
+
+
     }
 
     private void setData() {
@@ -968,6 +986,94 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
             Job job = new Job(dta, d, "DTAUS " + Messages.SAVED);
             job.execute();
 
+        }
+    }
+
+    private void pdf() {
+        if (jTable1.getSelectedRowCount() < 1) {
+            Popup.notice(Messages.SELECT_AN_INVOICE);
+
+        } else {
+            List<Item> items = new Vector<Item>();
+            for (int i = 0; i < jTable1.getSelectedRows().length; i++) {
+                try {
+                    DatabaseObject obj = DatabaseObject.getObject((Context) jTable1.getModel().getValueAt(jTable1.getSelectedRows()[i], 9), Integer.valueOf(jTable1.getModel().getValueAt(jTable1.getSelectedRows()[i], 0).toString()));
+                    if (obj.getContext().equals(Context.getItem())) {
+                        Item item = (Item) obj;
+//                        if (item.__getIntstatus() != Item.STATUS_PAID) {
+//export em all
+                        items.add(item);
+//                        }
+                    }
+                } catch (NodataFoundException ex) {
+                    Log.Debug(ex);
+                }
+            }
+
+            List<Waitable> files = new ArrayList<Waitable>();
+            for (int i = 0; i < items.size(); i++) {
+                try {
+                    final Item item = items.get(i);
+                    if (TemplateHandler.loadTemplate(item, TemplateHandler.TYPE_BILL) == null) {
+                        Popup.warn(Messages.NO_TEMPLATE_DEFINDED + "\n" + TemplateHandler.getName(TemplateHandler.TYPE_BILL)
+                                + "\n" + Messages.IN_GROUP + " " + DatabaseObject.getObject(Context.getGroup(), item.__getGroupsids()));
+                    } else {
+                        files.add(Export.createFile(item.getFormatHandler().toUserString(), TemplateHandler.loadTemplate(item, item.__getInttype()), item));
+                    }
+                } catch (NodataFoundException nodataFoundException) {
+                    Log.Debug(nodataFoundException);
+                }
+            }
+
+            if (!files.isEmpty()) {
+                DialogForFile d = new DialogForFile(DialogForFile.DIRECTORIES_ONLY);
+                Job job = new Job(files, d, files.size() + " PDF " + Messages.SAVED);
+                job.execute();
+            }
+        }
+    }
+
+     private void odt() {
+        if (jTable1.getSelectedRowCount() < 1) {
+            Popup.notice(Messages.SELECT_AN_INVOICE);
+
+        } else {
+            List<Item> items = new Vector<Item>();
+            for (int i = 0; i < jTable1.getSelectedRows().length; i++) {
+                try {
+                    DatabaseObject obj = DatabaseObject.getObject((Context) jTable1.getModel().getValueAt(jTable1.getSelectedRows()[i], 9), Integer.valueOf(jTable1.getModel().getValueAt(jTable1.getSelectedRows()[i], 0).toString()));
+                    if (obj.getContext().equals(Context.getItem())) {
+                        Item item = (Item) obj;
+//                        if (item.__getIntstatus() != Item.STATUS_PAID) {
+//export em all
+                        items.add(item);
+//                        }
+                    }
+                } catch (NodataFoundException ex) {
+                    Log.Debug(ex);
+                }
+            }
+
+            List<Waitable> files = new ArrayList<Waitable>();
+            for (int i = 0; i < items.size(); i++) {
+                try {
+                    final Item item = items.get(i);
+                    if (TemplateHandler.loadTemplate(item, TemplateHandler.TYPE_BILL) == null) {
+                        Popup.warn(Messages.NO_TEMPLATE_DEFINDED + "\n" + TemplateHandler.getName(TemplateHandler.TYPE_BILL)
+                                + "\n" + Messages.IN_GROUP + " " + DatabaseObject.getObject(Context.getGroup(), item.__getGroupsids()));
+                    } else {
+                        files.add(Export.sourceFile(item.getFormatHandler().toUserString(), TemplateHandler.loadTemplate(item, item.__getInttype()), item));
+                    }
+                } catch (NodataFoundException nodataFoundException) {
+                    Log.Debug(nodataFoundException);
+                }
+            }
+
+            if (!files.isEmpty()) {
+                DialogForFile d = new DialogForFile(DialogForFile.DIRECTORIES_ONLY);
+                Job job = new Job(files, d, files.size() + " PDF " + Messages.SAVED);
+                job.execute();
+            }
         }
     }
 }

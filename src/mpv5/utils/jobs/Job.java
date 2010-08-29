@@ -16,8 +16,9 @@
  */
 package mpv5.utils.jobs;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import javax.swing.JProgressBar;
 import javax.swing.SwingWorker;
 import mpv5.logging.Log;
@@ -25,36 +26,47 @@ import mpv5.ui.frames.MPView;
 
 /**
  *
- *  
+ *  This class helps to manage background tasks which result e.g. in the creation of a file or similar
  */
 public class Job extends SwingWorker<Object, Object> {
 
-    private Waitable object;
-    private Waiter recipient;
+    private final List<Waitable> objects;
+    private final Waiter recipient;
     private JProgressBar bar;
     private String message;
-    private Exception code = null;
-
+    private final List<Exception> code = new ArrayList<Exception>();
 
     /**
-     * 
+     * Creates a new job
      * @param waitable
      * @param waiter
      */
     public Job(Waitable waitable, Waiter waiter) {
-        this.object = waitable;
+        this.objects = Collections.singletonList(waitable);
         this.recipient = waiter;
         this.bar = MPView.getProgressbar();
     }
 
     /**
-     *
+     * Creates a new job
      * @param waitable
      * @param waiter 
      * @param message
      */
     public Job(Waitable waitable, Waiter waiter, String message) {
-        this.object = waitable;
+        this.objects = Collections.singletonList(waitable);
+        this.recipient = waiter;
+        this.message = message;
+    }
+
+    /**
+     * Creates a new job
+     * @param waitables
+     * @param waiter
+     * @param message
+     */
+    public Job(List<Waitable> waitables, Waiter waiter, String message) {
+        this.objects = waitables;
         this.recipient = waiter;
         this.message = message;
     }
@@ -65,7 +77,10 @@ public class Job extends SwingWorker<Object, Object> {
             bar.setIndeterminate(true);
         }
         try {
-           code = object.waitFor();
+            for (int i = 0; i < objects.size(); i++) {
+                Waitable waitable = objects.get(i);
+                code.add(waitable.waitFor());
+            }
         } catch (Exception e) {
             if (bar != null) {
                 bar.setIndeterminate(false);
@@ -76,14 +91,18 @@ public class Job extends SwingWorker<Object, Object> {
                 bar.setIndeterminate(false);
             }
         }
-        return object;
+        return objects;
     }
 
     @Override
     public void done() {
         if (recipient != null) {
             try {
-                recipient.set(object, code);
+                if (code!=null && code.size() > 0) {
+                    recipient.set(objects, code.toArray(new Exception[0]));
+                } else {
+                    recipient.set(objects,(Exception[]) null);
+                }
             } catch (Exception ex) {
                 Log.Debug(ex);
             }

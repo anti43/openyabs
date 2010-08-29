@@ -318,7 +318,7 @@ public class PreviewPanel extends javax.swing.JPanel implements Waiter {
                             pr.setText(VariablesHandler.parse(m.__getDescription(), dataOwner));
                         }
                         try {
-                            pr.set(file, null);
+                            pr.set(file, (Exception)null);
                         } catch (Exception ex) {
                             Log.Debug(ex);
                         }
@@ -479,7 +479,7 @@ public class PreviewPanel extends javax.swing.JPanel implements Waiter {
         this.dataOwner = dataOwner;
     }
 
-    public void set(Object object, Exception exception) throws Exception {
+    public void set(Object object, Exception... exception) throws Exception {
         if (exception == null) {
             try {
                 setCursor(new Cursor(Cursor.WAIT_CURSOR));
@@ -496,7 +496,7 @@ public class PreviewPanel extends javax.swing.JPanel implements Waiter {
                 setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
             }
         } else {
-            throw exception;
+            throw exception[exception.length-1];
         }
     }
 
@@ -550,4 +550,6 @@ public class PreviewPanel extends javax.swing.JPanel implements Waiter {
         } catch (Exception exception) {
         }
     }
+
+
 }

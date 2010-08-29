@@ -502,6 +502,7 @@ public class ControlPanel_WebShopManager extends javax.swing.JPanel implements C
         refresh();
     }
 
+    @SuppressWarnings("Deprecated")
     private void generate() throws NoSuchAlgorithmException, IOException {
         try {
             String pwdir = new RandomText(8).getString();

@@ -411,9 +411,9 @@ public class RemindPanel extends javax.swing.JPanel {
                 group = Integer.valueOf(labeledCombobox2.getSelectedItem().getId());
             }
 
-            Template t = TemplateHandler.loadTemplate(dataOwner, group, TemplateHandler.TYPE_REMINDER);
+            Template t = TemplateHandler.loadTemplate(group, TemplateHandler.TYPE_REMINDER);
             if (t != null) {
-                Exportable te = TemplateHandler.loadTemplate(dataOwner, group, TemplateHandler.TYPE_REMINDER).getExFile();
+                Exportable te = TemplateHandler.loadTemplate(group, TemplateHandler.TYPE_REMINDER).getExFile();
                 HashMap<String, Object> hm1 = new FormFieldsHandler(dataOwner).getFormattedFormFields(null);
                 File f2 = FileDirectoryHandler.getTempFile("pdf");
                 Export ex = new Export(t);
@@ -463,9 +463,9 @@ public class RemindPanel extends javax.swing.JPanel {
                 group = Integer.valueOf(labeledCombobox2.getSelectedItem().getId());
             }
 
-            Template t = TemplateHandler.loadTemplate(dataOwner, group, TemplateHandler.TYPE_REMINDER);
+            Template t = TemplateHandler.loadTemplate( group, TemplateHandler.TYPE_REMINDER);
             if (t != null) {
-                Exportable te = TemplateHandler.loadTemplate(dataOwner, group, TemplateHandler.TYPE_REMINDER).getExFile();
+                Exportable te = TemplateHandler.loadTemplate(group, TemplateHandler.TYPE_REMINDER).getExFile();
                 HashMap<String, Object> hm1 = new HashMap<String, Object>();
                 File f2 = FileDirectoryHandler.getTempFile("pdf");
 
@@ -500,9 +500,9 @@ public class RemindPanel extends javax.swing.JPanel {
                 group = Integer.valueOf(labeledCombobox2.getSelectedItem().getId());
             }
 
-            Template t = TemplateHandler.loadTemplate(dataOwner, group, TemplateHandler.TYPE_REMINDER);
+            Template t = TemplateHandler.loadTemplate(group, TemplateHandler.TYPE_REMINDER);
             if (t != null) {
-                Exportable te = TemplateHandler.loadTemplate(dataOwner, group, TemplateHandler.TYPE_REMINDER).getExFile();
+                Exportable te = TemplateHandler.loadTemplate(group, TemplateHandler.TYPE_REMINDER).getExFile();
                 HashMap<String, Object>  hm1 = new HashMap<String, Object>();
                 File f2 = FileDirectoryHandler.getTempFile("odt");
 

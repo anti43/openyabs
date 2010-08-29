@@ -257,6 +257,9 @@ public enum Messages {
     TASKS_OFFERS("Your offers.."),
     TASKS_INVOICES("Your invoices.."),
     TASKS_SETTINGS("Configure Yabs.."),
+    PDF_CREATE("Create PDF"),
+    ODT_CREATE("Create ODT"),
+    IN_GROUP("In group:")
 
     ;
 
