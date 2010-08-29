@@ -20,6 +20,7 @@ import com.l2fprod.common.swing.renderer.ColorCellRenderer;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.Font;
 import javax.swing.BorderFactory;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
@@ -33,6 +34,7 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableCellRenderer;
 import mpv5.db.common.DatabaseObject;
+import mpv5.globals.LocalSettings;
 import mpv5.logging.Log;
 import mpv5.utils.models.MPTableModel;
 
@@ -276,24 +278,25 @@ public class TableFormat {
      * @param table
      */
     public static void hideHeader(JTable table) {
-        table.getTableHeader().setPreferredSize(new Dimension(table.getColumnModel().getTotalColumnWidth(), 3));
+        table.getTableHeader().setPreferredSize(new Dimension(table.getColumnModel().getTotalColumnWidth(), 15));
 
+  table.getTableHeader().setFont( new Font(LocalSettings.getProperty(LocalSettings.DEFAULT_FONT), Font.PLAIN, 0));
         class ColumnListener implements TableColumnModelListener {
             private final JTable table;
             private ColumnListener(JTable target) {
                 this.table = target;
             }
             public void columnAdded(TableColumnModelEvent e) {
-                 table.getTableHeader().setPreferredSize(new Dimension(table.getColumnModel().getTotalColumnWidth(), 3));
+                 table.getTableHeader().setPreferredSize(new Dimension(table.getColumnModel().getTotalColumnWidth(), 15));
             }
             public void columnRemoved(TableColumnModelEvent e) {
-                 table.getTableHeader().setPreferredSize(new Dimension(table.getColumnModel().getTotalColumnWidth(), 3));
+                 table.getTableHeader().setPreferredSize(new Dimension(table.getColumnModel().getTotalColumnWidth(), 15));
             }
             public void columnMoved(TableColumnModelEvent e) {
-                 table.getTableHeader().setPreferredSize(new Dimension(table.getColumnModel().getTotalColumnWidth(), 3));
+                 table.getTableHeader().setPreferredSize(new Dimension(table.getColumnModel().getTotalColumnWidth(), 15));
             }
             public void columnMarginChanged(ChangeEvent e) {
-                 table.getTableHeader().setPreferredSize(new Dimension(table.getColumnModel().getTotalColumnWidth(), 3));
+                 table.getTableHeader().setPreferredSize(new Dimension(table.getColumnModel().getTotalColumnWidth(), 15));
             }
             public void columnSelectionChanged(ListSelectionEvent e) {
             }

@@ -298,15 +298,21 @@ public class DialogForFile extends JFileChooser implements Waiter {
      */
     @Override
     @SuppressWarnings("unchecked")
-    public void set(Object object, Exception... e) throws Exception {
-        if (e == null || e.length > 0) {
+    public void set(Object object, Exception e) throws Exception {
+
+        if (e == null) {
             if (object instanceof List) {
-                saveFiles((List) object);
-            }
-            if (object instanceof File) {
+
+                if (!((List) object).isEmpty()) {
+                    if (((List) object).get(0) instanceof File) {
+                        saveFiles((List) object);
+                    } else if (((List) object).get(0) instanceof Export) {
+                        saveFiles2((List) object);
+                    }
+                }
+            } else if (object instanceof File) {
                 saveFile((File) object);
-            }
-            if (object instanceof Export) {
+            } else if (object instanceof Export) {
                 File d = getCurrentDirectory();
                 setSelectedFile(((Export) object).getTargetFile());
                 setCurrentDirectory(d);
@@ -316,8 +322,40 @@ public class DialogForFile extends JFileChooser implements Waiter {
                 }
             }
         } else {
-            Popup.error(e[e.length - 1]);
+            Popup.error(e);
+        }
+    }
 
+    /**
+     * Shows a choose directory dialog and saves a files in the list to it.
+     * @param <T>
+     * @param list
+     */
+    public <T extends Export> void saveFiles2(List<T> list) {
+        try {
+            this.setFileSelectionMode(DialogForFile.DIRECTORIES_ONLY);
+            this.setSelectedFile(CURRENT_DIR);
+
+
+            if (this.showSaveDialog(MPView.getIdentifierFrame()) == JFileChooser.APPROVE_OPTION) {
+                if (!this.getSelectedFile().exists()) {
+                    this.file = this.getSelectedFile();
+                    CURRENT_DIR = file;
+                    file.mkdirs();
+                } else {
+                    this.file = this.getSelectedFile();
+                    CURRENT_DIR = file;
+                }
+
+                for (int i = 0; i< list.size(); i++) {
+                    File f3 = list.get(i).getTargetFile();
+                    FileDirectoryHandler.copyFile2(f3, new File(CURRENT_DIR.getPath() + File.separator + f3.getName()), true);
+                }
+            }
+
+        } catch (Exception n) {
+            Log.Debug(this, n.getMessage());
+            Popup.error(n);
         }
     }
 
@@ -330,6 +368,7 @@ public class DialogForFile extends JFileChooser implements Waiter {
         try {
             this.setFileSelectionMode(DialogForFile.DIRECTORIES_ONLY);
             this.setSelectedFile(CURRENT_DIR);
+
             if (this.showSaveDialog(MPView.getIdentifierFrame()) == JFileChooser.APPROVE_OPTION) {
                 if (!this.getSelectedFile().exists()) {
                     this.file = this.getSelectedFile();
@@ -337,10 +376,11 @@ public class DialogForFile extends JFileChooser implements Waiter {
                     file.mkdirs();
                 } else {
                     this.file = this.getSelectedFile();
-                    CURRENT_DIR = file.getParentFile();
+                    CURRENT_DIR = file;
                 }
 
-                for (int i = 0; i < list.size(); i++) {
+                for (int i = 0; i
+                        < list.size(); i++) {
                     File f3 = list.get(i);
                     FileDirectoryHandler.copyFile2(f3, new File(CURRENT_DIR.getPath() + File.separator + f3.getName()), true);
                 }

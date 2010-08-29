@@ -905,7 +905,7 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
                     new ActionListener() {
 
                         public void actionPerformed(ActionEvent e) {
-//                            odt();
+                            odt();
                         }
                     }
                 });
@@ -1071,7 +1071,8 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
 
             if (!files.isEmpty()) {
                 DialogForFile d = new DialogForFile(DialogForFile.DIRECTORIES_ONLY);
-                Job job = new Job(files, d, files.size() + " PDF " + Messages.SAVED);
+                
+                Job job = new Job(files, d, files.size() + " ODT " + Messages.SAVED);
                 job.execute();
             }
         }

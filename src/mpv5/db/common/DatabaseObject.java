@@ -258,7 +258,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
     private int groupsids = 1;
     private int intaddedby = 0;
     private Date dateadded = new Date(0);
-    private DatabaseObjectLock LOCK = new DatabaseObjectLock(this);
+    private transient DatabaseObjectLock LOCK = new DatabaseObjectLock(this);
     private Color color = Color.WHITE;
 
     public String __getCName() {

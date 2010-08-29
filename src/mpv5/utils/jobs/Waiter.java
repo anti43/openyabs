@@ -28,5 +28,5 @@ public interface Waiter {
      * @param exceptions
      * @throws Exception
      */
-    public abstract void set(Object object, Exception... exceptions) throws Exception;
+    public abstract void set(Object object, Exception exceptions) throws Exception;
 }

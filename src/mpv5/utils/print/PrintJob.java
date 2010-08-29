@@ -269,7 +269,7 @@ public class PrintJob implements Waiter {
      * Prints a File or mp4.interfaces.Printable Object
      */
     @Override
-    public void set(Object object, Exception... e) {
+    public void set(Object object, Exception e) {
         try {
             try {
                 print((Printable) object);

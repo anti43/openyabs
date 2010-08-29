@@ -1056,13 +1056,13 @@ public class MPView extends FrameView {
         parent_nav_accounting.setLayout(parent_nav_accountingLayout);
         parent_nav_accountingLayout.setHorizontalGroup(
             parent_nav_accountingLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(nav_accounting, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(nav_accounting, javax.swing.GroupLayout.DEFAULT_SIZE, 110, Short.MAX_VALUE)
         );
         parent_nav_accountingLayout.setVerticalGroup(
             parent_nav_accountingLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(parent_nav_accountingLayout.createSequentialGroup()
                 .addComponent(nav_accounting, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(33, Short.MAX_VALUE))
         );
 
         nav_outlookbar.addTab(bundle.getString("MPView.parent_nav_accounting.TabConstraints.tabTitle_1"), parent_nav_accounting); // NOI18N
@@ -1117,8 +1117,8 @@ public class MPView extends FrameView {
         });
         nav_products.add(jButton19);
 
-        jButton20.setFont(new java.awt.Font("Tahoma", 0, 10));
-        jButton20.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/view_text.png"))); // NOI18N
+        jButton20.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
+        jButton20.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/window_list.png"))); // NOI18N
         jButton20.setText(bundle.getString("MPView.jButton20.text")); // NOI18N
         jButton20.setToolTipText(bundle.getString("MPView.jButton20.toolTipText")); // NOI18N
         jButton20.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
@@ -1149,13 +1149,13 @@ public class MPView extends FrameView {
         parent_nav_products.setLayout(parent_nav_productsLayout);
         parent_nav_productsLayout.setHorizontalGroup(
             parent_nav_productsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(nav_products, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(nav_products, javax.swing.GroupLayout.DEFAULT_SIZE, 110, Short.MAX_VALUE)
         );
         parent_nav_productsLayout.setVerticalGroup(
             parent_nav_productsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(parent_nav_productsLayout.createSequentialGroup()
                 .addComponent(nav_products, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(95, Short.MAX_VALUE))
         );
 
         nav_outlookbar.addTab(bundle.getString("MPView.parent_nav_products.TabConstraints.tabTitle_1"), parent_nav_products); // NOI18N

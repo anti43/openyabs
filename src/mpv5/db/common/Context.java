@@ -1,5 +1,6 @@
 package mpv5.db.common;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -47,7 +48,7 @@ import mpv5.utils.xml.XMLReader;
  *
  * Context controls Database Queries for all native MP {@link DatabaseObject}s
  */
-public class Context {
+public class Context implements Serializable{
 
     //********** tablenames ****************************************************
     public static String IDENTITY_CONTACTS = "contacts";

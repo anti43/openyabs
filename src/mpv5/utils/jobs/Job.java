@@ -98,10 +98,18 @@ public class Job extends SwingWorker<Object, Object> {
     public void done() {
         if (recipient != null) {
             try {
-                if (code!=null && code.size() > 0) {
-                    recipient.set(objects, code.toArray(new Exception[0]));
+                if (code != null && code.size() > 0) {
+                    if (objects.size() == 1) {
+                        recipient.set(objects.get(0), code.get(0));
+                    } else {
+                        recipient.set(objects, code.get(0));
+                    }
                 } else {
-                    recipient.set(objects,(Exception[]) null);
+                    if (objects.size() == 1) {
+                        recipient.set(objects.get(0), null);
+                    } else {
+                        recipient.set(objects, null);
+                    }
                 }
             } catch (Exception ex) {
                 Log.Debug(ex);

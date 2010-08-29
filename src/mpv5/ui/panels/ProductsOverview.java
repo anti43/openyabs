@@ -36,6 +36,7 @@ import mpv5.db.objects.ProductGroup;
 import mpv5.globals.Messages;
 import mpv5.logging.Log;
 import mpv5.ui.dialogs.BigPopup;
+import mpv5.ui.misc.DnDTree;
 import mpv5.utils.date.DateConverter;
 import mpv5.utils.date.vTimeframe;
 import mpv5.utils.models.MPTableModel;
@@ -86,7 +87,7 @@ public class ProductsOverview extends javax.swing.JPanel {
         buttonGroup1 = new javax.swing.ButtonGroup();
         jSplitPane1 = new javax.swing.JSplitPane();
         jScrollPane1 = new javax.swing.JScrollPane();
-        gtree = new javax.swing.JTree();
+        gtree = new DnDTree();
         jPanel1 = new javax.swing.JPanel();
         jScrollPane2 = new javax.swing.JScrollPane();
         listtable = new MPTable(this);
@@ -107,7 +108,13 @@ public class ProductsOverview extends javax.swing.JPanel {
 
         jScrollPane1.setName("jScrollPane1"); // NOI18N
 
+        gtree.setLargeModel(true);
         gtree.setName("gtree"); // NOI18N
+        gtree.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                gtreeMouseClicked(evt);
+            }
+        });
         jScrollPane1.setViewportView(gtree);
 
         jSplitPane1.setLeftComponent(jScrollPane1);
@@ -117,6 +124,7 @@ public class ProductsOverview extends javax.swing.JPanel {
 
         jScrollPane2.setName("jScrollPane2"); // NOI18N
 
+        listtable.setAutoCreateRowSorter(true);
         listtable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
@@ -125,7 +133,9 @@ public class ProductsOverview extends javax.swing.JPanel {
 
             }
         ));
+        listtable.setDragEnabled(true);
         listtable.setName("listtable"); // NOI18N
+        listtable.setSelectionMode(javax.swing.ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
         listtable.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 listtableMouseClicked(evt);
@@ -140,7 +150,7 @@ public class ProductsOverview extends javax.swing.JPanel {
         jToolBar1.setName("jToolBar1"); // NOI18N
 
         buttonGroup1.add(products);
-        java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle();
+        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("mpv5/resources/languages/Panels"); // NOI18N
         products.setText(bundle.getString("ProductsOverview.products.text")); // NOI18N
         products.setFocusable(false);
         products.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
@@ -216,6 +226,11 @@ public class ProductsOverview extends javax.swing.JPanel {
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         search();
     }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void gtreeMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_gtreeMouseClicked
+       search();
+    }//GEN-LAST:event_gtreeMouseClicked
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private mpv5.ui.beans.LabeledDateChooser addedafter;
     private javax.swing.JRadioButton both;

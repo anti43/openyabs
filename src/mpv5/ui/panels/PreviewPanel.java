@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JEditorPane;
@@ -291,7 +292,7 @@ public class PreviewPanel extends javax.swing.JPanel implements Waiter {
 
         if (dataOwner != null) {
             try {
-                file = FileDirectoryHandler.copyFile2(file, new File(FileDirectoryHandler.getTempDir() + ((Formattable)dataOwner).getFormatHandler().toUserString() + ".pdf"));
+                file = FileDirectoryHandler.copyFile2(file, new File(FileDirectoryHandler.getTempDir() + ((Formattable) dataOwner).getFormatHandler().toUserString() + ".pdf"));
             } catch (Exception ex) {
                 Log.Debug(ex);
             }
@@ -318,7 +319,7 @@ public class PreviewPanel extends javax.swing.JPanel implements Waiter {
                             pr.setText(VariablesHandler.parse(m.__getDescription(), dataOwner));
                         }
                         try {
-                            pr.set(file, (Exception)null);
+                            pr.set(file, (Exception) null);
                         } catch (Exception ex) {
                             Log.Debug(ex);
                         }
@@ -333,7 +334,7 @@ public class PreviewPanel extends javax.swing.JPanel implements Waiter {
                 }
             }
         } else {
-           Popup.notice(Messages.NO_TEMPLATE_LOADED + " (" + mpv5.db.objects.User.getCurrentUser() + ")");
+            Popup.notice(Messages.NO_TEMPLATE_LOADED + " (" + mpv5.db.objects.User.getCurrentUser() + ")");
         }
     }//GEN-LAST:event_jButton28ActionPerformed
 
@@ -341,14 +342,14 @@ public class PreviewPanel extends javax.swing.JPanel implements Waiter {
 
         if (dataOwner != null) {
             try {
-                file = FileDirectoryHandler.copyFile2(file, new File(FileDirectoryHandler.getTempDir() + ((Formattable)dataOwner).getFormatHandler().toUserString() + ".pdf"));
+                file = FileDirectoryHandler.copyFile2(file, new File(FileDirectoryHandler.getTempDir() + ((Formattable) dataOwner).getFormatHandler().toUserString() + ".pdf"));
             } catch (Exception ex) {
                 Log.Debug(ex);
             }
         }
 
         if (dataOwner != null && dataOwner.isExisting()) {
-            if (QueryHandler.instanceOf().clone(Context.getFiles()).insertFile(file, dataOwner, QueryCriteria.getSaveStringFor(((Formattable)dataOwner).getFormatHandler().toUserString().toString()))) {
+            if (QueryHandler.instanceOf().clone(Context.getFiles()).insertFile(file, dataOwner, QueryCriteria.getSaveStringFor(((Formattable) dataOwner).getFormatHandler().toUserString().toString()))) {
                 Popup.notice(Messages.FILE_SAVED.toString() + file.getName());
                 if (parent != null) {
                     parent.refresh();
@@ -364,7 +365,7 @@ public class PreviewPanel extends javax.swing.JPanel implements Waiter {
 
         if (dataOwner != null) {
             try {
-                file = FileDirectoryHandler.copyFile2(file, new File(FileDirectoryHandler.getTempDir() + ((Formattable)dataOwner).getFormatHandler().toUserString() + ".pdf"));
+                file = FileDirectoryHandler.copyFile2(file, new File(FileDirectoryHandler.getTempDir() + ((Formattable) dataOwner).getFormatHandler().toUserString() + ".pdf"));
             } catch (Exception ex) {
                 Log.Debug(ex);
             }
@@ -372,7 +373,7 @@ public class PreviewPanel extends javax.swing.JPanel implements Waiter {
         if (dataOwner == null) {
             d.setSelectedFile(new File(file.getName()));
         } else {
-            d.setSelectedFile(new File(((Formattable)dataOwner).getFormatHandler().toUserString() + ".pdf"));
+            d.setSelectedFile(new File(((Formattable) dataOwner).getFormatHandler().toUserString() + ".pdf"));
         }
         if (d.saveFile()) {
             d.getFile().delete();
@@ -390,7 +391,7 @@ public class PreviewPanel extends javax.swing.JPanel implements Waiter {
 
         if (dataOwner != null) {
             try {
-                file = FileDirectoryHandler.copyFile2(file, new File(FileDirectoryHandler.getTempDir() + ((Formattable)dataOwner).getFormatHandler().toUserString() + ".pdf"));
+                file = FileDirectoryHandler.copyFile2(file, new File(FileDirectoryHandler.getTempDir() + ((Formattable) dataOwner).getFormatHandler().toUserString() + ".pdf"));
             } catch (Exception ex) {
                 Log.Debug(ex);
             }
@@ -479,11 +480,15 @@ public class PreviewPanel extends javax.swing.JPanel implements Waiter {
         this.dataOwner = dataOwner;
     }
 
-    public void set(Object object, Exception... exception) throws Exception {
+    public void set(Object object, Exception exception) throws Exception {
         if (exception == null) {
             try {
                 setCursor(new Cursor(Cursor.WAIT_CURSOR));
-                if (object instanceof Export) {
+
+                if (object instanceof List) {
+                    showInNewFrame("Export");
+                    openl(((Export)((List) object).get(0)).getTargetFile());
+                } else if (object instanceof Export) {
                     showInNewFrame("Export");
                     openl(((Export) object).getTargetFile());
                 } else {
@@ -496,7 +501,7 @@ public class PreviewPanel extends javax.swing.JPanel implements Waiter {
                 setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
             }
         } else {
-            throw exception[exception.length-1];
+            throw exception;
         }
     }
 
@@ -550,6 +555,4 @@ public class PreviewPanel extends javax.swing.JPanel implements Waiter {
         } catch (Exception exception) {
         }
     }
-
-
 }
