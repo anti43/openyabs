@@ -470,7 +470,7 @@ public class DataPanelTB extends javax.swing.JPanel implements ActionListener, I
     private void but5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_but5ActionPerformed
 
         DatabaseObject dato = parents.getDataOwner();
-        if (dato.isExisting()) {
+        if (dato.isExisting() && Popup.Y_N_dialog(Messages.REALLY_DELETE)) {
             dato.getPanelData(parents);
             dato.delete();
             parents.refresh();

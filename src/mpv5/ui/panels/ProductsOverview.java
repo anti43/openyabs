@@ -150,7 +150,7 @@ public class ProductsOverview extends javax.swing.JPanel {
         jToolBar1.setName("jToolBar1"); // NOI18N
 
         buttonGroup1.add(products);
-        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("mpv5/resources/languages/Panels"); // NOI18N
+        java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle();
         products.setText(bundle.getString("ProductsOverview.products.text")); // NOI18N
         products.setFocusable(false);
         products.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
