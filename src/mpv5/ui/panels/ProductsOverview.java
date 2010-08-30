@@ -67,7 +67,7 @@ public class ProductsOverview extends javax.swing.JPanel implements ListPanel {
     private void search() {
         List<ProductGroup> gs = new ArrayList<ProductGroup>();
         DefaultMutableTreeNode node = (DefaultMutableTreeNode) gtree.getLastSelectedPathComponent();
-        if (node != null) {
+        if (node != null && !node.isRoot()) {
             ProductGroup g = (ProductGroup) node.getUserObject();
             gs.add(g);
         }
@@ -110,6 +110,7 @@ public class ProductsOverview extends javax.swing.JPanel implements ListPanel {
 
         gtree.setLargeModel(true);
         gtree.setName("gtree"); // NOI18N
+        gtree.setPreferredSize(new java.awt.Dimension(250, 64));
         gtree.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 gtreeMouseClicked(evt);
@@ -150,7 +151,7 @@ public class ProductsOverview extends javax.swing.JPanel implements ListPanel {
         jToolBar1.setName("jToolBar1"); // NOI18N
 
         buttonGroup1.add(products);
-        java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle(); // NOI18N
+        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("mpv5/resources/languages/Panels"); // NOI18N
         products.setText(bundle.getString("ProductsOverview.products.text")); // NOI18N
         products.setFocusable(false);
         products.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
@@ -315,7 +316,7 @@ public class ProductsOverview extends javax.swing.JPanel implements ListPanel {
             qc.and(new QueryParameter(Context.getProduct(), "inttype", type, QueryParameter.EQUALS));
         }
 
-        if (groups != null) {
+        if (groups != null && !groups.isEmpty()) {
             List<QueryParameter> ps = new ArrayList<QueryParameter>();
             for (int i = 0; i < groups.size(); i++) {
                 ProductGroup group = groups.get(i);
