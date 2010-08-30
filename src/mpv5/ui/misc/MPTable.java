@@ -22,6 +22,7 @@ import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
 import javax.swing.table.TableColumnModel;
 import javax.swing.table.TableModel;
+import mpv5.ui.panels.ListPanel;
 import mpv5.utils.tables.TableFormat;
 import mpv5.utils.ui.TableViewPersistenceHandler;
 
@@ -196,7 +197,7 @@ public class MPTable extends JTable {
         } else {
             createDefaultColumnsFromModel();
         }
-         if (t != null) {
+        if (t != null) {
             t.set();
         }
     }
@@ -223,8 +224,25 @@ public class MPTable extends JTable {
      * @param b
      */
     public void setDefaultColumns(Integer[] integer, Boolean[] b) {
-       setDesiredColSizes(integer);
-       setFixedCols(b);
+        setDesiredColSizes(integer);
+        setFixedCols(b);
+    }
+    private ListPanel parentc;
+
+    /**
+     * Causes the parent container to refresh if its a {@link ListPanel} and not null.
+     */
+    public void refresh() {
+        if (parentc != null) {
+            parentc.refresh();
+        }
+    }
+
+    /**
+     * 
+     */
+    public void setParentListPanel(ListPanel parentc) {
+        this.parentc = parentc;
     }
     /**
      * Sets the value for the cell in the table model at row and column.

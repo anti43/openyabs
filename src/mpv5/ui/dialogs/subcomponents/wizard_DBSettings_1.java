@@ -84,6 +84,7 @@ public class wizard_DBSettings_1 extends javax.swing.JPanel implements Wizardabl
                     LocalSettings.setProperty(LocalSettings.DBTYPE, "single");
                 }
 
+
                 if (conn.connect(master.getStore().getProperty("driver"),
                         master.getStore().getProperty("user"),
                         master.getStore().getProperty("password"),
@@ -99,9 +100,11 @@ public class wizard_DBSettings_1 extends javax.swing.JPanel implements Wizardabl
                         Popup.notice("Please run the MySQL/SQL install script manually BEFORE clicking ok now!");
                     }
 
+
                     if (!jCheckBox1.isSelected()) {
                         master.setMessage(Messages.CREATING_DATABASE.toString());
                         conn.setProgressbar(master.getProgressbar());
+                         Log.Debug(this, "Running DB install queries...");
                         if (conn.runQueries(new DatabaseInstallation().getStructure())
                                 && conn.runQueries(new DatabaseInstallation().getInitialData())) {
                             try {

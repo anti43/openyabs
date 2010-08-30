@@ -16,27 +16,24 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
-import java.util.logging.Level;
 import javax.swing.AbstractAction;
-import javax.swing.Action;
 import mpv5.ui.misc.MPTable;
 import javax.swing.SwingUtilities;
 import javax.swing.tree.DefaultMutableTreeNode;
 import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
 import mpv5.db.common.NodataFoundException;
-import mpv5.db.common.QueryCriteria;
 import mpv5.db.common.QueryCriteria2;
 import mpv5.db.common.QueryHandler;
 import mpv5.db.common.QueryParameter;
-import mpv5.db.objects.Group;
 import mpv5.db.objects.Product;
 import mpv5.db.objects.ProductGroup;
 import mpv5.globals.Messages;
 import mpv5.logging.Log;
 import mpv5.ui.dialogs.BigPopup;
-import mpv5.ui.misc.DnDTree;
+import mpv5.ui.misc.DragNDropTreeForGroups;
+import mpv5.ui.misc.DragTableHandlerForDBOs;
+
 import mpv5.utils.date.DateConverter;
 import mpv5.utils.date.vTimeframe;
 import mpv5.utils.models.MPTableModel;
@@ -46,11 +43,14 @@ import mpv5.utils.trees.TreeFormat;
  *
  * @author andreas.weber
  */
-public class ProductsOverview extends javax.swing.JPanel {
+public class ProductsOverview extends javax.swing.JPanel implements ListPanel {
 
     /** Creates new form ProductsOverview */
     public ProductsOverview() {
         initComponents();
+
+        ((DragNDropTreeForGroups)gtree).setContainerToNotify(this);
+        DragTableHandlerForDBOs t = new DragTableHandlerForDBOs(listtable, Context.getProduct());
         setName("productsoverview");
         both.setSelected(true);
         addedafter.setDate(DateConverter.addYears(new Date(), -10));
@@ -87,7 +87,7 @@ public class ProductsOverview extends javax.swing.JPanel {
         buttonGroup1 = new javax.swing.ButtonGroup();
         jSplitPane1 = new javax.swing.JSplitPane();
         jScrollPane1 = new javax.swing.JScrollPane();
-        gtree = new DnDTree();
+        gtree =  new DragNDropTreeForGroups(1);
         jPanel1 = new javax.swing.JPanel();
         jScrollPane2 = new javax.swing.JScrollPane();
         listtable = new MPTable(this);
@@ -150,7 +150,7 @@ public class ProductsOverview extends javax.swing.JPanel {
         jToolBar1.setName("jToolBar1"); // NOI18N
 
         buttonGroup1.add(products);
-        java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle();
+        java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle(); // NOI18N
         products.setText(bundle.getString("ProductsOverview.products.text")); // NOI18N
         products.setFocusable(false);
         products.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
@@ -204,6 +204,8 @@ public class ProductsOverview extends javax.swing.JPanel {
         jButton1.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         jButton1.setName("jButton1"); // NOI18N
         jButton1.setPreferredSize(new java.awt.Dimension(55, 19));
+        jButton1.setPressedIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/16/kalarm.png"))); // NOI18N
+        jButton1.setSelectedIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/16/kalarm.png"))); // NOI18N
         jButton1.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         jButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -228,9 +230,8 @@ public class ProductsOverview extends javax.swing.JPanel {
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void gtreeMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_gtreeMouseClicked
-       search();
+        search();
     }//GEN-LAST:event_gtreeMouseClicked
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private mpv5.ui.beans.LabeledDateChooser addedafter;
     private javax.swing.JRadioButton both;
@@ -285,7 +286,7 @@ public class ProductsOverview extends javax.swing.JPanel {
                 try {
                     Product p = (Product) DatabaseObject.getObject(Context.getProduct(), Integer.valueOf(listtable.getModel().getValueAt(listtable.getSelectedRow(), 0).toString()));
                     ProductPanel pan = new ProductPanel(p);
-                    BigPopup.showPopup(this, pan, p.__getCName());
+                    BigPopup.showPopup(this, pan, p.__getCName(), true);
                 } catch (NodataFoundException ex) {
                 }
             }
@@ -332,5 +333,13 @@ public class ProductsOverview extends javax.swing.JPanel {
         } catch (NodataFoundException ex) {
             listtable.setModel(new MPTableModel());
         }
+    }
+
+    public void refresh() {
+        search();
+    }
+
+    public void flush() {
+        search();
     }
 }

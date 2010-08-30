@@ -200,7 +200,7 @@ public class Main extends SingleFrameApplication {
     }
 
     private static void runStartScripts() {
-        if(User.PROPERTIES_OVERRIDE.hasProperty("startupcommand")){
+        if (User.PROPERTIES_OVERRIDE.hasProperty("startupcommand")) {
             try {
                 FileExecutor.run(User.PROPERTIES_OVERRIDE.getProperty("startupcommand"));
             } catch (Exception e) {
@@ -249,6 +249,7 @@ public class Main extends SingleFrameApplication {
      */
     @Override
     protected void startup() {
+        Log.Debug(this, "Startup procedure... ");
         getContext().getLocalStorage().setDirectory(new File(Main.MPPATH));
         splash.nextStep(Messages.FIRST_INSTANCE.toString());
         if (LocalSettings.getProperty(LocalSettings.DBTYPE).equals("single") && !firstInstance()) {
@@ -257,15 +258,20 @@ public class Main extends SingleFrameApplication {
         splash.nextStep(Messages.DB_CHECK.toString());
         ControlPanel_Fonts.applyFont(Font.decode(LocalSettings.getProperty(LocalSettings.DEFAULT_FONT)));
         if (FORCE_INSTALLER == null) {
+            Log.Debug(this, "Probing database connection... ");
             if (probeDatabaseConnection()) {
+                Log.Debug(this, "Loading Yabs... ");
                 go(false);
             } else if (Popup.Y_N_dialog(splash, Messages.NO_DB_CONNECTION, Messages.FIRST_START.toString())) {
+                Log.Debug(this, "Loading database config wizard...");
                 splash.dispose();
                 showDbWiz(null);
             } else {
+                Log.Debug(this, "Cancelled by user.");
                 System.exit(1);
             }
         } else {
+            Log.Debug(this, "Forced to start the database config wiz... ");
             showDbWiz(FORCE_INSTALLER);
         }
     }
@@ -839,9 +845,10 @@ public class Main extends SingleFrameApplication {
     private boolean probeDatabaseConnection() {
         try {
             DatabaseConnection.instanceOf();
+            Log.Debug(this, "Connected to database: " + DatabaseConnection.instanceOf().getCtype().getURL());
             return true;
         } catch (Exception ex) {
-            Log.Debug(this, "Could not connect to database.: " + ex);
+            Log.Debug(this, "Could not connect to database: " + ex);
             return false;
         }
     }

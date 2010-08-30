@@ -120,8 +120,13 @@ public class LogConsole extends javax.swing.JFrame {
                 jTextArea1.setCaretPosition(lineStart);
             }
         };
-        Thread t = new Thread(runnable);
-        t.start();
+        if (Log.getLoglevel() != Log.LOGLEVEL_DEBUG) {
+            Thread t = new Thread(runnable);
+            t.start();
+        } else {
+            //On Event Thread
+            runnable.run();
+        }
     }
 
     /**

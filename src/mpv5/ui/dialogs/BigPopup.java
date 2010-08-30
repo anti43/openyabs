@@ -5,13 +5,14 @@
 package mpv5.ui.dialogs;
 
 import java.awt.BorderLayout;
+import java.awt.Dialog.ModalityType;
 import java.awt.Dimension;
 import java.awt.Point;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.util.HashMap;
 import javax.swing.JComponent;
-import javax.swing.JFrame;
+import javax.swing.JDialog;
 import javax.swing.JPanel;
 import mpv5.ui.frames.MPView;
 import mpv5.ui.misc.Position;
@@ -22,7 +23,7 @@ import mpv5.ui.misc.Position;
  */
 public class BigPopup {
 
-    static HashMap<JPanel, JFrame> contents = new HashMap<JPanel, JFrame>();
+    private static HashMap<JPanel, JDialog> contents = new HashMap<JPanel, JDialog>();
 
     /**
      * Creates a new popup FRAME
@@ -30,11 +31,11 @@ public class BigPopup {
      */
     public static void showPopup(JPanel content) {
         if (!contents.containsKey(content)) {
-            final JFrame window = new JFrame();
+            final JDialog window = new JDialog();
             window.getContentPane().setLayout(new BorderLayout());
             window.getContentPane().add(content, BorderLayout.CENTER);
             window.pack();
-            window.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+            window.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
             window.setTitle("");
             window.addKeyListener(new KeyListener() {
 
@@ -77,11 +78,11 @@ public class BigPopup {
      */
     public static void showPopup(JPanel content, String title, Point locationOnScreen) {
         if (!contents.containsKey(content)) {
-            final JFrame window = new JFrame();
+            final JDialog window = new JDialog();
             window.getContentPane().setLayout(new BorderLayout());
             window.getContentPane().add(content, BorderLayout.CENTER);
             window.pack();
-            window.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+            window.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
             window.setTitle(title);
             window.addKeyListener(new KeyListener() {
 
@@ -126,11 +127,11 @@ public class BigPopup {
      */
     public static void showPopup(JComponent parent, JPanel content, String title, int state, Integer width) {
         if (!contents.containsKey(content)) {
-            final JFrame window = new JFrame();
+            final JDialog window = new JDialog();
             window.getContentPane().setLayout(new BorderLayout());
             window.getContentPane().add(content, BorderLayout.CENTER);
             window.pack();
-            window.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+            window.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
             window.setTitle(title);
             window.addKeyListener(new KeyListener() {
 
@@ -156,7 +157,7 @@ public class BigPopup {
                 window.setPreferredSize(new Dimension(width, MPView.getIdentifierFrame().getHeight()));
                 window.setSize(new Dimension(width, MPView.getIdentifierFrame().getHeight()));
             }
-            window.setExtendedState(state);
+//            window.setExtendedState(state);
             new Position(window);
             window.setVisible(true);
             contents.put(content, window);
@@ -174,17 +175,21 @@ public class BigPopup {
      * @param parent
      * @param content
      * @param title
-     * @param alwaysOnTop
+     * @param alwaysOnTop make the popup modal
      */
     public static void showPopup(JComponent parent, JPanel content, String title, boolean alwaysOnTop) {
 
         if (!contents.containsKey(content)) {
-            final JFrame window = new JFrame();
+            final JDialog window = new JDialog();
             window.getContentPane().setLayout(new BorderLayout());
             window.getContentPane().add(content, BorderLayout.CENTER);
             window.pack();
             window.setAlwaysOnTop(alwaysOnTop);
-            window.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+            window.setModal(alwaysOnTop);
+            if (alwaysOnTop) {
+                window.setModalityType(ModalityType.APPLICATION_MODAL);
+            }
+            window.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
             window.setTitle(title);
             window.addKeyListener(new KeyListener() {
 

@@ -117,7 +117,6 @@ public class Log {
                 }
                 break;
             case LOGLEVEL_NONE:
-                mpv5.ui.frames.MPView.addMessage(Messages.ERROR_OCCURED.getValue());
                 break;
             default:
                 write(sourcen + ": " + message);

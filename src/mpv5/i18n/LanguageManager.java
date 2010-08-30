@@ -190,6 +190,9 @@ public class LanguageManager {
                             if (data != null && data.length > 0) {
                                 bundlefile = QueryHandler.instanceOf().clone(Context.getFiles()).retrieveFile(String.valueOf(
                                         data[0]));
+                            } else {
+                                fail(langid);
+                                failed = true;
                             }
                             if (bundlefile != null) {
                                 newfile = FileDirectoryHandler.copyFile(bundlefile, new File(LocalSettings.getProperty(LocalSettings.CACHE_DIR)), tempname + ".properties", true);
@@ -204,18 +207,21 @@ public class LanguageManager {
                                         cached = true;
                                         return bundle;
                                     } catch (Exception e) {
+                                        fail(langid);
                                         failed = true;
                                         Log.Debug(LanguageManager.class, e);
                                     }
                                 } else {
-                                    Log.Debug(LanguageManager.class, "Failed language: " + langid);
-                                    Log.Debug(LanguageManager.class, "Error loading additional languages. Using default now.");
+                                    fail(langid);
                                     failed = true;
                                 }
+                            } else {
+                                fail(langid);
+                                failed = true;
                             }
                         } catch (Exception e) {
                             failed = true;
-                            Log.Debug(LanguageManager.class, "Error loading additional languages. Using default now.");
+                            fail(langid);
                             Log.Debug(LanguageManager.class, e);
                         }
 
@@ -223,6 +229,7 @@ public class LanguageManager {
                         return getCachedLanguage(langid);
                     }
                 } else {
+                    fail(langid);
                     failed = true;
                     return java.util.ResourceBundle.getBundle(defLanguageBundle);
                 }
@@ -467,6 +474,30 @@ public class LanguageManager {
                 failed = true;
                 return false;
             }
+        }
+    }
+
+    private static void fail(String langid) {
+        Log.Debug(LanguageManager.class, "Failed language: " + langid);
+        Log.Debug(LanguageManager.class, "Error loading additional languages. Using default now.");
+        MPView.addMessage(Messages.ERROR_OCCURED.toString());
+    }
+
+    private static boolean exists(String langid) {
+        Object[] data;
+        if (!langid.contentEquals("buildin_en")) {
+            try {
+                data = QueryHandler.instanceOf().clone(Context.getLanguage()).selectFirst("filename", new String[]{Context.SEARCH_NAME, langid, "'"});
+                if (data != null && data.length > 0) {
+                    return true;
+                } else {
+                    return false;
+                }
+            } catch (NodataFoundException ex) {
+                return false;
+            }
+        } else {
+            return true;
         }
     }
 }
