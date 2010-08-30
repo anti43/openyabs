@@ -95,7 +95,7 @@ public class wizard_DBSettings_manage_1 extends javax.swing.JPanel implements Wi
                         master.getStore().getProperty("url"),
                         master.getStore().getProperty("dbname"),
                         master.getStore().getProperty("dbprefix"),
-                        true)) {
+                        !jCheckBox1.isSelected())) {
                     master.setMessage(Messages.CONNECTION_VERIFIED.toString());
                     LocalSettings.save(forConnId);
                     LocalSettings.apply();

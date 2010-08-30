@@ -90,7 +90,7 @@ public class wizard_DBSettings_1 extends javax.swing.JPanel implements Wizardabl
                         master.getStore().getProperty("url"),
                         master.getStore().getProperty("dbname"),
                         master.getStore().getProperty("dbprefix"),
-                        true)) {
+                        !jCheckBox1.isSelected())) {
                     master.setMessage(Messages.CONNECTION_VERIFIED.toString());
                     LocalSettings.save(forConnId);
                     LocalSettings.apply();

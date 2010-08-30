@@ -73,7 +73,7 @@
                   <Component id="labeledTextChooser2" min="-2" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
                   <Component id="jLabel3" min="-2" max="-2" attributes="0"/>
-                  <EmptySpace pref="21" max="32767" attributes="0"/>
+                  <EmptySpace pref="18" max="32767" attributes="0"/>
                   <Group type="103" groupAlignment="2" attributes="0">
                       <Component id="labeledTextField1" alignment="2" min="-2" max="-2" attributes="0"/>
                       <Component id="jCheckBox3" alignment="2" min="-2" max="-2" attributes="0"/>
@@ -171,7 +171,7 @@
                           <EmptySpace max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="0" attributes="0">
                               <Group type="102" alignment="1" attributes="0">
-                                  <Component id="jComboBox1" pref="350" max="32767" attributes="2"/>
+                                  <Component id="jComboBox1" pref="352" max="32767" attributes="2"/>
                                   <EmptySpace type="unrelated" max="-2" attributes="0"/>
                                   <Component id="jButton1" min="-2" max="-2" attributes="0"/>
                               </Group>

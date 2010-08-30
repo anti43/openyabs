@@ -31,7 +31,7 @@
     <DimensionLayout dim="0">
       <Group type="103" groupAlignment="0" attributes="0">
           <Group type="102" alignment="1" attributes="0">
-              <Component id="jCheckBox4" pref="487" max="32767" attributes="0"/>
+              <Component id="jCheckBox4" pref="489" max="32767" attributes="0"/>
               <EmptySpace type="unrelated" max="-2" attributes="0"/>
               <Component id="jButton1" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
@@ -176,13 +176,13 @@
           <Group type="103" groupAlignment="0" attributes="0">
               <Group type="102" attributes="0">
                   <Group type="103" groupAlignment="0" attributes="0">
-                      <Component id="labeledTextChooser1" alignment="1" pref="528" max="32767" attributes="0"/>
+                      <Component id="labeledTextChooser1" alignment="1" pref="526" max="32767" attributes="0"/>
                       <Group type="102" alignment="0" attributes="0">
                           <Component id="labeledTextField3" min="-2" max="-2" attributes="0"/>
                           <EmptySpace max="-2" attributes="0"/>
-                          <Component id="jCheckBox1" pref="333" max="32767" attributes="0"/>
+                          <Component id="jCheckBox1" pref="331" max="32767" attributes="0"/>
                       </Group>
-                      <Component id="jPanel4" alignment="0" pref="528" max="32767" attributes="2"/>
+                      <Component id="jPanel4" alignment="0" pref="526" max="32767" attributes="2"/>
                       <Group type="102" alignment="0" attributes="0">
                           <Component id="prefix" min="-2" max="-2" attributes="0"/>
                           <EmptySpace max="-2" attributes="0"/>
@@ -197,7 +197,7 @@
                           </Group>
                           <EmptySpace max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="1" attributes="0">
-                              <Component id="jCheckBox2" pref="345" max="32767" attributes="2"/>
+                              <Component id="jCheckBox2" pref="343" max="32767" attributes="2"/>
                               <Component id="jComboBox1" min="-2" max="-2" attributes="2"/>
                           </Group>
                       </Group>
