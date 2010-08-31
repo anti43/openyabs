@@ -35,6 +35,7 @@ public class SplashScreen extends javax.swing.JFrame {
      */
     public SplashScreen(ImageIcon imageIcon) {
         initComponents();
+        setTitle("Yabs start...");
         jPanel1.setOpaque(false);
         setInfo(Constants.VERSION);
         title.setText(Constants.TITLE);

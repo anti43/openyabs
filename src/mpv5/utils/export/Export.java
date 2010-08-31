@@ -25,7 +25,9 @@ import com.lowagie.text.pdf.PdfWriter;
 import java.awt.Component;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.print.Book;
 import java.awt.print.PageFormat;
+import java.awt.print.Paper;
 import java.awt.print.Printable;
 import java.awt.print.PrinterException;
 import java.awt.print.PrinterJob;
@@ -62,6 +64,7 @@ import mpv5.utils.jobs.Job;
 import mpv5.utils.jobs.Waitable;
 import mpv5.utils.jobs.Waiter;
 import mpv5.utils.print.PrintJob;
+import mpv5.utils.print.PrintJob2;
 
 /**
  * The Export class is the primary handler in Yabs to do exporting tasks, such as printing, generating files etc.
@@ -368,38 +371,7 @@ public final class Export extends HashMap<String, Object> implements Waitable {
      * Prints a screen capture of the given component
      */
     public static void print(final Component c) {
-        PrinterJob job = PrinterJob.getPrinterJob();
-        job.setPrintable(new Printable() {
-
-            public int print(Graphics g, PageFormat pf, int page) throws PrinterException {
-                if (page > 0) { /* We have only one page, and 'page' is zero-based */
-                    return NO_SUCH_PAGE;
-                }
-
-                /* User (0,0) is typically outside the imageable area, so we must
-                 * translate by the X and Y values in the PageFormat to avoid clipping
-                 */
-                Graphics2D g2d = (Graphics2D) g;
-                g2d.translate(pf.getImageableX(), pf.getImageableY());
-
-                /* Now print the window and its visible contents */
-                c.printAll(g);
-
-                /* tell the caller that this page is part of the printed document */
-                return PAGE_EXISTS;
-
-            }
-        });
-        boolean ok = job.printDialog();
-        if (ok) {
-            try {
-                job.print();
-            } catch (PrinterException ex) {
-               Popup.error(ex);
-               Log.Debug(ex);
-            }
-        }
-
+        new PrintJob2(c);
     }
     private Exportable fromFile;
     private File toFile;

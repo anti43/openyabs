@@ -17,10 +17,6 @@
 package mpv5.db.common;
 
 import java.awt.Color;
-import java.io.ByteArrayOutputStream;
-import java.io.DataOutputStream;
-import java.io.OutputStreamWriter;
-import java.io.Reader;
 import java.io.Serializable;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -30,7 +26,6 @@ import java.lang.ref.SoftReference;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.math.BigDecimal;
-import java.sql.Clob;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -40,8 +35,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.Set;
-import java.util.SortedSet;
-import java.util.TreeSet;
 import java.util.concurrent.ConcurrentHashMap;
 import javax.swing.SwingUtilities;
 import mpv5.db.objects.ValueProperty;
@@ -71,7 +64,71 @@ import mpv5.utils.text.RandomText;
  * non-graphical beans to update or create itself to the database
  * @author
  */
-public abstract class DatabaseObject implements Comparable<DatabaseObject>, Serializable, Cloneable{
+public abstract class DatabaseObject implements Comparable<DatabaseObject>, Serializable, Cloneable {
+
+    /**
+     * Represents a Context-ID pair which uniquely identifies a DatabaseObject
+     * @param <T>
+     * @param <V>
+     */
+    public static class Entity<T extends Context, V> {
+
+        private T context;
+        private Integer ids;
+
+        /**
+         * Create a new Entity, nulls not allowed
+         * @param context
+         * @param ids
+         */
+        public Entity(T context, Integer ids) {
+            if (context == null || ids == null) {
+                throw new NullPointerException("ids");
+            }
+
+            this.context = context;
+            this.ids = ids;
+        }
+
+        /**
+         * Returns the Context corresponding to this entry, never null
+         */
+        public T getKey() {
+            return context;
+        }
+
+        /**
+         * Returns the ID corresponding to this entry, never null
+         */
+        public Integer getValue() {
+            return ids;
+        }
+
+        /**
+         * Compares the specified object with this entry for equality.
+         * Returns <tt>true</tt> if the given object is also a map entry and Key and Value.intValue are equal
+         */
+        @Override
+        public boolean equals(Object o) {
+            if (o == null || !(o instanceof Entity)) {
+                return false;
+            }
+            Entity e = (Entity) o;
+            if (e.hashCode() == hashCode()) {
+                return true;
+            } else {
+                return false;
+            }
+        }
+
+        @Override
+        public int hashCode() {
+            int hash = 3;
+            hash = 11 * hash + (this.context != null ? this.context.hashCode() : 0);
+            hash = 11 * hash + (this.ids != null ? this.ids.hashCode() : 0);
+            return hash;
+        }
+    }
 
     /**
      * Marks the value of the annotated getter to be persisted on {@link #save}
@@ -81,6 +138,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
     @Retention(RetentionPolicy.RUNTIME)
     @Target(ElementType.METHOD)
     public @interface Persistable {
+
         boolean value();
     }
     private static boolean AUTO_LOCK = false;
@@ -626,7 +684,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
             if (this instanceof Triggerable) {
                 ((Triggerable) this).triggerOnDelete();
             }
-           
+
             ValueProperty.deleteProperty(this, null);
 
             final String fmessage = message;
@@ -877,6 +935,16 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
         }
 
         return vals;
+    }
+
+    /**
+     * Searches for a specific dataset, cached or non-cached
+     * @param entity 
+     * @return A database object with data, or null if none found
+     * @throws NodataFoundException
+     */
+    public static DatabaseObject getObject(Entity entity) throws NodataFoundException {
+        return getObject(entity.getKey(), entity.getValue());
     }
 
     /**
@@ -1678,7 +1746,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
 
     /**
      * Fill the do with (senseless) sample data
-    */
+     */
 //    @Deprecated
     public void fillSampleData() {
         List<Method> vars = setVars();
@@ -1735,6 +1803,4 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
         }
         throw new UnsupportedOperationException(key + " not known in " + this);
     }
-
-
 }

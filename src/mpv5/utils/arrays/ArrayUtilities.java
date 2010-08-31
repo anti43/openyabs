@@ -252,6 +252,26 @@ public class ArrayUtilities {
 
     }
 
+     /**
+     * Replaces a columns data in a table
+      * @param data
+      * @param column
+     * @param columndata
+     */
+    public static Object[][] replaceColumn(Object[][] data, int column, Object[] columndata) {
+        for (int idx = 0; idx < data.length; idx++) {
+            for (int i = 0; i < data[idx].length; i++) {
+                if (i == column) {
+                    if (columndata != null) {
+                        data[idx][i] = columndata[idx];
+                    } else {
+                        data[idx][i] = null;
+                    }
+                }
+            }
+        }
+        return data;
+    }
     /**
      * Replaces a columns data in a table
      * @param table
@@ -546,7 +566,7 @@ public class ArrayUtilities {
      * 
      * @param original_array
      * @param value
-     * @param place If < 0, value will be placed before all others
+     * @param place If smaller than< 0, value will be placed before all others
      * @return
      */
     public static Object[][] inserValue(Object[][] original_array, Object value, Integer place) {
@@ -556,7 +576,7 @@ public class ArrayUtilities {
             for (int zeile = 0; zeile < array_formatiert.length; zeile++) {
                 int merker = 0;
                 if (place != null) {
-                    if (place > 0) {
+                    if (place >= 0) {
                         for (int spalte = 0; spalte < array_formatiert[zeile].length; spalte++, merker++) {
                             if (spalte == place) {
                                 array_formatiert[zeile][place] = value;

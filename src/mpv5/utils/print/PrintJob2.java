@@ -18,12 +18,10 @@ package mpv5.utils.print;
 
 import com.sun.pdfview.PDFFile;
 import com.sun.pdfview.PDFPrintPage;
-import java.awt.HeadlessException;
-import java.awt.print.Book;
-import java.awt.print.PageFormat;
-import java.awt.print.Paper;
-import java.awt.print.PrinterException;
-import java.awt.print.PrinterJob;
+import java.awt.Component;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.print.*;
 import java.util.*;
 import java.io.*;
 import java.nio.ByteBuffer;
@@ -33,6 +31,7 @@ import javax.print.attribute.*;
 import javax.print.attribute.standard.*;
 import mpv5.globals.Messages;
 import mpv5.logging.Log;
+import mpv5.ui.dialogs.Popup;
 import mpv5.utils.files.FileDirectoryHandler;
 
 /**
@@ -43,7 +42,7 @@ public class PrintJob2 {
     /* PrintWithJ2SE14Document.java: Drucken eines Dokuments mit J2SE 1.4 */
 
     /**
-     * Set up a new printjob.
+     * Set up a new printjob and print
      * @param file
      * @param fileType
      * @throws Exception
@@ -153,6 +152,14 @@ public class PrintJob2 {
         }
     }
 
+    /**
+     * Print a Component
+     * @param c
+     */
+    public PrintJob2(Component c) {
+        printComponent(c);
+    }
+
     private void printPdf(File file) throws Exception {
 
         // Copy the file to a temp location to avoid issues with RandomAccessFile and spaces in path names
@@ -194,62 +201,44 @@ public class PrintJob2 {
             raf.close();
         }
     }
+
+    private void printComponent(final Component componentToPrint) {
+        PrinterJob job = PrinterJob.getPrinterJob();
+
+        PageFormat pf = PrinterJob.getPrinterJob().defaultPage();
+
+        Paper paper = new Paper();
+        paper.setSize(594.936, 841.536);
+        paper.setImageableArea(0, 0, 594.936, 841.536);
+        pf.setPaper(paper);
+        pf.setOrientation(PageFormat.LANDSCAPE);
+
+        Book book = new Book();
+        book.append(new java.awt.print.Printable() {
+
+            public int print(Graphics g, PageFormat pf, int page) throws PrinterException {
+                if (page > 0) {
+                    return NO_SUCH_PAGE;
+                }
+
+                Graphics2D g2d = (Graphics2D) g;
+                g2d.translate(pf.getImageableX(), pf.getImageableY());
+                componentToPrint.printAll(g);
+
+                return PAGE_EXISTS;
+            }
+        }, pf);
+
+        job.setPageable(book);
+        boolean ok = job.printDialog();
+        if (ok) {
+            try {
+                job.print();
+            } catch (PrinterException ex) {
+                Popup.error(ex);
+                Log.Debug(ex);
+            }
+        }
+    }
 }
-//
-//class PrintUtilities implements Printable {
-//
-//    private Component componentToBePrinted;
-//
-//    public static void printComponent(Component c) {
-//        new PrintUtilities(c).print();
-//    }
-//
-//    public static void printObject(Graphics2D c) {
-//        new PrintUtilities(c).print();
-//    }
-//
-//    public PrintUtilities(Component componentToBePrinted) {
-//        this.componentToBePrinted = componentToBePrinted;
-//    }
-//
-//    private PrintUtilities(Graphics2D c) {
-//        throw new UnsupportedOperationException("Not yet implemented");
-//    }
-//
-//    public void print() {
-//        PrinterJob printJob = PrinterJob.getPrinterJob();
-//        printJob.setPrintable((Printable) this);
-//        if (printJob.printDialog()) {
-//            try {
-//                printJob.print();
-//            } catch (PrinterException pe) {
-//                System.out.println("Error printing: " + pe);
-//            }
-//        }
-//    }
-//
-//    @Override
-//    public int print(Graphics g, PageFormat pageFormat, int pageIndex) {
-//        if (pageIndex > 0) {
-//            return (NO_SUCH_PAGE);
-//        } else {
-//            Graphics2D g2d = (Graphics2D) g;
-//            g2d.translate(pageFormat.getImageableX(), pageFormat.getImageableY());
-//            disableDoubleBuffering(componentToBePrinted);
-//            componentToBePrinted.paint(g2d);
-//            enableDoubleBuffering(componentToBePrinted);
-//            return (PAGE_EXISTS);
-//        }
-//    }
-//
-//    public static void disableDoubleBuffering(Component c) {
-//        RepaintManager currentManager = RepaintManager.currentManager(c);
-//        currentManager.setDoubleBufferingEnabled(false);
-//    }
-//
-//    public static void enableDoubleBuffering(Component c) {
-//        RepaintManager currentManager = RepaintManager.currentManager(c);
-//        currentManager.setDoubleBufferingEnabled(true);
-//    }
-//}
 

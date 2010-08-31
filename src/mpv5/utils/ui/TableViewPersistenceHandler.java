@@ -26,6 +26,8 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.TableColumnModelEvent;
 import javax.swing.event.TableColumnModelListener;
 import javax.swing.table.DefaultTableColumnModel;
+import javax.swing.table.TableColumn;
+import javax.swing.table.TableColumnModel;
 import mpv5.db.objects.User;
 import mpv5.ui.misc.MPTable;
 
@@ -40,6 +42,25 @@ public class TableViewPersistenceHandler {
     private final JComponent identifier;
     private List<TableColumnModelListener> listeners = new ArrayList<TableColumnModelListener>();
 
+    class MPColumnModel extends DefaultTableColumnModel {
+
+        @Override
+        public void removeColumn(TableColumn column) {
+            if (column.getModelIndex() == 0)//do nothing
+            ; else {
+                super.removeColumn(column);
+            }
+        }
+
+        @Override
+        public void moveColumn(int columnIndex, int newIndex) {
+            if (columnIndex == 0 || newIndex == 0)//do nothing
+            ; else {
+                super.moveColumn(columnIndex, newIndex);
+            }
+        }
+    }
+
     /**
      * 
      * @param target
@@ -49,7 +70,7 @@ public class TableViewPersistenceHandler {
         t = new ColumnListener(target, identifier);
         this.target = target;
         this.identifier = identifier;
-//        target.createDefaultColumnsFromModel();
+        target.setColumnModel(new MPColumnModel());
 //        omodel = target.getColumnModel();
 
 //        Log.Debug(this, User.getCurrentUser().getLayoutProperties().get(target.getName() + "@" + identifier.getName()));

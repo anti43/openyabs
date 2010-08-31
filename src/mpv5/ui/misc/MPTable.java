@@ -27,7 +27,9 @@ import mpv5.utils.tables.TableFormat;
 import mpv5.utils.ui.TableViewPersistenceHandler;
 
 /**
- * A JTable implementation which keeps its view state saved in the current yabs user profile
+ * A JTable implementation which keeps its view state saved in the current yabs user profile.
+ *
+ * Be careful with the column sorting.
  * @author andreas
  */
 public class MPTable extends JTable {
@@ -90,6 +92,7 @@ public class MPTable extends JTable {
     public MPTable(TableModel dm, TableColumnModel cm) {
         super(dm, cm);
         t = new TableViewPersistenceHandler(this, (JComponent) this.getParent());
+
     }
 
     /**
@@ -244,23 +247,29 @@ public class MPTable extends JTable {
     public void setParentListPanel(ListPanel parentc) {
         this.parentc = parentc;
     }
-
-    /**
-     * Gets the value for the cell in the table model at row and column.
-     * Note: Unlike the original JTable implementation, the column is specified in the table <b>TableModel</b> order,
-     * and not in the view's column order.
-     * This is an important distinction because as the user rearranges the columns in the table,
-     * the column at a given index in the view will change.
-     * Meanwhile the user's actions never affect the model's column ordering.
-     * @param col
-     * @param row
-     */
-    @Override
-    public Object getValueAt(int row, int col) {
-        return getModel().getValueAt(row, col);
-    }
+//
+//    /**
+//     * Gets the value for the cell in the table model at row and column.
+//     * Note: Unlike the original JTable implementation, the column is specified in the table <b>TableModel</b> order,
+//     * and not in the view's column order.
+//     * This is an important distinction because as the user rearranges the columns in the table,
+//     * the column at a given index in the view will change.
+//     * Meanwhile the user's actions never affect the model's column ordering.
+//     * @param col
+//     * @param row
+//     */
+//    @Override
+//    public Object getValueAt(int row, int col) {
+//        return getModel().getValueAt(row, col);
+//    }
 //
 //    public void setDefaultColumns(Integer[] integer, boolean resizable) {
 //
+//    }
+//
+//    @Override
+//    public void setAutoCreateRowSorter(boolean yes){
+//    //do not do it. Imagine the user resorts the table, then clicks on a row, but the underlying model is not resorted
+//        super.setAutoCreateRowSorter(false);
 //    }
 }
