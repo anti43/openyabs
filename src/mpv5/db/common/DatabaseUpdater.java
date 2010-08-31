@@ -47,7 +47,7 @@ public class DatabaseUpdater {
                     "ALTER TABLE contacts ADD COLUMN bankcurrency VARCHAR(250) DEFAULT NULL",
                     "ALTER TABLE contacts ADD COLUMN bankcountry VARCHAR(250) DEFAULT NULL",});
         UPDATES_DERBY.put(1.181, new String[]{
-                    "DROP TABLE valueproperties"
+//                    "DROP TABLE valueproperties"
                 });
         UPDATES_DERBY.put(1.182, new String[]{
                     //                    "ALTER TABLE items DROP COLUMN discountvalue",

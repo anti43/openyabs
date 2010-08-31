@@ -20,6 +20,8 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.List;
@@ -54,6 +56,7 @@ import mpv5.utils.models.MPComboboxModel;
 import mpv5.utils.reflection.ClasspathTools;
 import mpv5.utils.text.RandomText;
 import mpv5.utils.xml.XMLReader;
+import org.apache.derby.impl.sql.compile.HashTableNode;
 import org.jdom.Document;
 
 /**
@@ -164,14 +167,16 @@ public class LanguageManager {
             return false;
         }
     }
-    private static boolean failed = false;
 
+    private static boolean failed = false;
+    private static final List<String> cacheRunWatchdog = Collections.synchronizedList(new ArrayList<String>());
     /**
      * 
      * @param langid
      * @return
      */
     public static ResourceBundle getBundle(String langid) {
+
 
         synchronized (LanguageManager.class) {
             if (!langid.contentEquals("buildin_en")) {
@@ -180,6 +185,14 @@ public class LanguageManager {
 //                    Log.Debug(LanguageManager.class, "Language has not previously failed: " + langid);
                     if (!isCachedLanguage(langid)) {
                         Log.Debug(LanguageManager.class, "Language is not cached: " + langid);
+                        if (!cacheRunWatchdog.contains(langid)) {
+                            cacheRunWatchdog.add(langid);
+                        } else {
+                            Log.Debug(LanguageManager.class, "Already tried to cache language with id: " + langid);
+                            fail(langid);
+                            failed = true;
+                            return java.util.ResourceBundle.getBundle(defLanguageBundle);
+                        }
                         File bundlefile = null;
                         Object[] data;
                         URI newfile;
@@ -193,6 +206,7 @@ public class LanguageManager {
                             } else {
                                 fail(langid);
                                 failed = true;
+                                return java.util.ResourceBundle.getBundle(defLanguageBundle);
                             }
                             if (bundlefile != null) {
                                 newfile = FileDirectoryHandler.copyFile(bundlefile, new File(LocalSettings.getProperty(LocalSettings.CACHE_DIR)), tempname + ".properties", true);
@@ -210,27 +224,29 @@ public class LanguageManager {
                                         fail(langid);
                                         failed = true;
                                         Log.Debug(LanguageManager.class, e);
+                                        return java.util.ResourceBundle.getBundle(defLanguageBundle);
                                     }
                                 } else {
                                     fail(langid);
                                     failed = true;
+                                    return java.util.ResourceBundle.getBundle(defLanguageBundle);
                                 }
                             } else {
                                 fail(langid);
                                 failed = true;
+                                return java.util.ResourceBundle.getBundle(defLanguageBundle);
                             }
                         } catch (Exception e) {
                             failed = true;
                             fail(langid);
                             Log.Debug(LanguageManager.class, e);
+                            return java.util.ResourceBundle.getBundle(defLanguageBundle);
                         }
 
                     } else {
                         return getCachedLanguage(langid);
                     }
                 } else {
-                    fail(langid);
-                    failed = true;
                     return java.util.ResourceBundle.getBundle(defLanguageBundle);
                 }
             }
@@ -499,5 +515,12 @@ public class LanguageManager {
         } else {
             return true;
         }
+    }
+
+    /**
+     * Disable all languages other than the build-in one
+     */
+    public static void disableLanguages() {
+        failed = true;
     }
 }

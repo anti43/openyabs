@@ -127,6 +127,7 @@ public class MPView extends FrameView {
     private static JLabel staterrorlabel = new JLabel();
     private static MPList currentList = new MPList();
     private static ListView clistview = new ListView(currentList);
+    private static boolean loaded = false;
 
     /**
      * Display a message at the bottom of the MP frame
@@ -155,16 +156,18 @@ public class MPView extends FrameView {
      * @param message
      */
     public static synchronized void addMessage(final String message) {
-        Runnable runnable = new Runnable() {
+        if (loaded) {//dont do anything if main frame is not constructed
+            Runnable runnable = new Runnable() {
 
-            public void run() {
-                getMessagelabel().setText(message);
-                getHistory().addItem(message);
-                getHistory().setSelectedItem(message);
-                identifierFrame.validate();
-            }
-        };
-        SwingUtilities.invokeLater(runnable);
+                public void run() {
+                    getMessagelabel().setText(message);
+                    getHistory().addItem(message);
+                    getHistory().setSelectedItem(message);
+                    identifierFrame.validate();
+                }
+            };
+            SwingUtilities.invokeLater(runnable);
+        }
     }
 
     /**
@@ -577,6 +580,7 @@ public class MPView extends FrameView {
         }
 
         identifierFrame.validate();
+        loaded = true;
     }
 
     /**
@@ -2372,7 +2376,6 @@ public class MPView extends FrameView {
     }//GEN-LAST:event_sampleDataItemActionPerformed
 
     private void jMenuItem41ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem41ActionPerformed
-
         //TODO product to html wiz
     }//GEN-LAST:event_jMenuItem41ActionPerformed
     // Variables declaration - do not modify//GEN-BEGIN:variables

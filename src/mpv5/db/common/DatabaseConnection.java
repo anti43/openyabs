@@ -111,7 +111,7 @@ public class DatabaseConnection {
 
     }
 
-    public boolean reconnect(boolean create) {
+    public boolean reconnect(boolean create) throws SQLException {
         try {
             Log.Debug(this, "RECONNECT::Datenbankverbindung: " + getCtype().getConnectionString(create));
             conn = DriverManager.getConnection(getCtype().getConnectionString(create), user, password);
@@ -125,14 +125,13 @@ public class DatabaseConnection {
 
         } catch (SQLException ex) {
             System.out.println("Database Error: " + ex.getMessage());
-            Popup.notice(ex.getLocalizedMessage() + "\n" + ex.getNextException().getLocalizedMessage());
+            Popup.notice(ex.getLocalizedMessage());
             Log.Debug(this, ex);
             Log.Debug(this, ex.getNextException());
 
             DatabaseConnection.shutdown();
-            return false;
+            throw ex;
         }
-
     }
 
     /**
@@ -149,18 +148,14 @@ public class DatabaseConnection {
             try {
                 Class.forName(getCtype().getDriver()).newInstance();
             } catch (ClassNotFoundException ex) {
-//                Popup.warn(Messages.DB_DRIVER_INVALID + ex.getMessage(), Popup.ERROR);
-                DatabaseConnection.shutdown();
+                Popup.error(ex);
+                //possibly not fatal, driver can have a different class [org.apache.derby.jdbc.ClientDriver,org.apache.derby.jdbc.EmbeddedDriver]
+                Log.Debug(this, ex.getMessage());
             }
             user = LocalSettings.getProperty("dbuser");
             password = LocalSettings.getProperty("dbpassword");
             prefix = LocalSettings.getProperty("dbprefix");
 
-//        } catch (Exception ex) {
-//            ex.printStackTrace();
-//            Popup.warn(ex.getMessage());
-//            DatabaseConnection.shutdown();
-//        }
             reconnect(create);
         } else {
             throw new UnsupportedOperationException("Datenbanktreiber: undefined");

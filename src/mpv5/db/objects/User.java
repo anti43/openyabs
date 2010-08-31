@@ -43,6 +43,7 @@ import mpv5.globals.LocalSettings;
 import mpv5.globals.Messages;
 import mpv5.db.objects.UserProperty;
 import mpv5.handler.VariablesHandler;
+import mpv5.i18n.LanguageManager;
 import mpv5.logging.Log;
 import mpv5.mail.MailConfiguration;
 import mpv5.pluginhandling.MP5Plugin;
@@ -142,7 +143,7 @@ public class User extends DatabaseObject {
     private DTAConfig dtaconf;
 
     /**
-     * Caches all available usernames and IDs
+     * Caches all available usernames and IDs, no logins performed
      */
     public static void cacheUser() {
         userCache.clear();
@@ -287,6 +288,7 @@ public class User extends DatabaseObject {
                 Main.setLaF(__getLaf());
                 defineMailConfig();
                 defineDTAConfig();
+                LanguageManager.getBundle();
             } catch (Exception e) {
                 Log.Debug(e);
             }

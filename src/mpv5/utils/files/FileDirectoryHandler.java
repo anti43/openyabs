@@ -530,7 +530,7 @@ public abstract class FileDirectoryHandler {
     }
 
     private static String check(String filename) {
-        return filename.replaceAll("[^\\w]", "-");//or "[?:\\\\/*\\\"\\\"<>|]" ?
+        return filename.replaceAll("[?:\\\\/*\\\"\\\"<>|]", "-");
     }
 
 }

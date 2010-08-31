@@ -352,7 +352,6 @@ public class Main extends SingleFrameApplication {
     public static void main(String[] args) throws Exception {
 
         INSTANTIATED = true;
-        LanguageManager.getBundle();
         try {
             splash = new SplashScreen(new ImageIcon(Main.class.getResource(mpv5.globals.Constants.SPLASH_IMAGE)));
             splash.init(11);
@@ -456,6 +455,7 @@ public class Main extends SingleFrameApplication {
         Option nolfs = obuilder.withShortName("nolf").withDescription("use java native metal L&F").create();
         Option debug = obuilder.withShortName("debug").withDescription("enable debug logging").create();
         Option removeplugins = obuilder.withShortName("removeplugins").withDescription("remove all plugins which would be loaded").create();
+        Option removelangs= obuilder.withShortName("noi18n").withDescription("remove all languages which would be loaded").create();
         Option logfile = obuilder.withShortName("logfile").withShortName("l").withDescription("use file for log").withArgument(filearg).create();
         Option mpdir = obuilder.withShortName("appdir").withShortName("dir").withShortName("path").withDescription("set the application main dir (used for caching, settings, temp files)").withArgument(dirarg).create();
         Option connectionInstance = obuilder.withShortName("connectionInstance").withShortName("conn").withDescription("use stored connection with this ID").withArgument(number).create();
@@ -475,6 +475,7 @@ public class Main extends SingleFrameApplication {
                 withOption(netbook).
                 withOption(showenv).
                 withOption(removeplugins).
+                withOption(removelangs).
                 withOption(connectionInstance).
                 withOption(logfile).
                 withOption(server).
@@ -563,6 +564,10 @@ public class Main extends SingleFrameApplication {
 
             if (cl.hasOption(removeplugins)) {
                 removeplugs = true;
+            }
+
+             if (cl.hasOption(removelangs)) {
+               LanguageManager.disableLanguages();
             }
 
             if (cl.hasOption(showenv)) {
