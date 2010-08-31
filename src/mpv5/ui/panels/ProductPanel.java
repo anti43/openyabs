@@ -91,6 +91,7 @@ public class ProductPanel extends javax.swing.JPanel implements DataPanel, MPCBS
     private int type = 0;
     private String old_cnumber = "";
     private java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle();
+
     /** Creates new form ContactPanel
      * @param context
      * @param type
@@ -199,8 +200,8 @@ public class ProductPanel extends javax.swing.JPanel implements DataPanel, MPCBS
      * @param p
      */
     public ProductPanel(Product p) {
-         this(p.getContext(), p.__getInttype());
-         setDataOwner(p, true);
+        this(p.getContext(), p.__getInttype());
+        setDataOwner(p, true);
     }
 
     @Override
@@ -922,7 +923,6 @@ public class ProductPanel extends javax.swing.JPanel implements DataPanel, MPCBS
         }
 
     }//GEN-LAST:event_button_listeditActionPerformed
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel addedby;
     private javax.swing.JButton addfile;
@@ -1278,7 +1278,8 @@ public class ProductPanel extends javax.swing.JPanel implements DataPanel, MPCBS
     @Override
     public void changeSelection(MPComboBoxModelItem to, Context c) {
     }
-  private void preview() {
+
+    private void preview() {
         PreviewPanel pr;
         if (dataOwner != null && dataOwner.isExisting()) {
             if (TemplateHandler.isLoaded(dataOwner, TemplateHandler.TYPE_PRODUCT)) {
@@ -1344,9 +1345,6 @@ public class ProductPanel extends javax.swing.JPanel implements DataPanel, MPCBS
         }
     }
 
-
-
-
     private void preloadTemplate() {
         Runnable runnable = new Runnable() {
 
@@ -1356,7 +1354,7 @@ public class ProductPanel extends javax.swing.JPanel implements DataPanel, MPCBS
                     TemplateHandler.loadTemplateFor(button_order, dataOwner, TemplateHandler.TYPE_PRODUCT_ORDER);
                 } else {
                     TemplateHandler.loadTemplateFor(button_preview, dataOwner, TemplateHandler.TYPE_SERVICE);
-                }                
+                }
             }
         };
         new Thread(runnable).start();
@@ -1378,7 +1376,6 @@ public class ProductPanel extends javax.swing.JPanel implements DataPanel, MPCBS
             }
         }
     }
-
 
     public void mail() {
         MailMessage m = null;
@@ -1403,7 +1400,10 @@ public class ProductPanel extends javax.swing.JPanel implements DataPanel, MPCBS
                 Export.print(TemplateHandler.loadTemplate(dataOwner, TemplateHandler.TYPE_PRODUCT), dataOwner);
             } else {
                 Popup.notice(Messages.NO_TEMPLATE_LOADED + " (" + mpv5.db.objects.User.getCurrentUser() + ") : " + TemplateHandler.getName(TemplateHandler.TYPE_PRODUCT));
+                mpv5.utils.export.Export.print(this);
             }
+        } else {
+            mpv5.utils.export.Export.print(this);
         }
     }
 

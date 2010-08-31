@@ -22,6 +22,13 @@ import com.lowagie.text.pdf.PdfContentByte;
 import com.lowagie.text.pdf.PdfImportedPage;
 import com.lowagie.text.pdf.PdfReader;
 import com.lowagie.text.pdf.PdfWriter;
+import java.awt.Component;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.print.PageFormat;
+import java.awt.print.Printable;
+import java.awt.print.PrinterException;
+import java.awt.print.PrinterJob;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -57,7 +64,7 @@ import mpv5.utils.jobs.Waiter;
 import mpv5.utils.print.PrintJob;
 
 /**
- * The Export class handles the export of data using templatefiles to PDF
+ * The Export class is the primary handler in Yabs to do exporting tasks, such as printing, generating files etc.
  *  
  */
 public final class Export extends HashMap<String, Object> implements Waitable {
@@ -128,7 +135,7 @@ public final class Export extends HashMap<String, Object> implements Waitable {
     }
 
     /**
-     * Print a template
+     * Print multiple templates
      * @param preloadedTemplate
      * @param dataOwner
      */
@@ -179,7 +186,7 @@ public final class Export extends HashMap<String, Object> implements Waitable {
                 totalPages += pdfReader.getNumberOfPages();
             }
 
-            File f= FileDirectoryHandler.getTempFile("pdf");
+            File f = FileDirectoryHandler.getTempFile("pdf");
             FileOutputStream outputstream = new FileOutputStream(f);
             PdfWriter writer = PdfWriter.getInstance(document, outputstream);
 
@@ -356,10 +363,47 @@ public final class Export extends HashMap<String, Object> implements Waitable {
 //        }
         return null;
     }
-    private Exportable file;
+
+    /*
+     * Prints a screen capture of the given component
+     */
+    public static void print(final Component c) {
+        PrinterJob job = PrinterJob.getPrinterJob();
+        job.setPrintable(new Printable() {
+
+            public int print(Graphics g, PageFormat pf, int page) throws PrinterException {
+                if (page > 0) { /* We have only one page, and 'page' is zero-based */
+                    return NO_SUCH_PAGE;
+                }
+
+                /* User (0,0) is typically outside the imageable area, so we must
+                 * translate by the X and Y values in the PageFormat to avoid clipping
+                 */
+                Graphics2D g2d = (Graphics2D) g;
+                g2d.translate(pf.getImageableX(), pf.getImageableY());
+
+                /* Now print the window and its visible contents */
+                c.printAll(g);
+
+                /* tell the caller that this page is part of the printed document */
+                return PAGE_EXISTS;
+
+            }
+        });
+        boolean ok = job.printDialog();
+        if (ok) {
+            try {
+                job.print();
+            } catch (PrinterException ex) {
+               Popup.error(ex);
+               Log.Debug(ex);
+            }
+        }
+
+    }
+    private Exportable fromFile;
     private File toFile;
-    private String targetName;
-    private final Template t;
+    private final Template template;
 
     /**
      *
@@ -367,7 +411,7 @@ public final class Export extends HashMap<String, Object> implements Waitable {
      */
     public Export(Template t) {
         super();
-        this.t = t;
+        this.template = t;
         setTemplate(t.getExFile());
     }
 
@@ -388,7 +432,7 @@ public final class Export extends HashMap<String, Object> implements Waitable {
      * @param templateFile 
      */
     public <T extends Exportable> void setTemplate(T templateFile) {
-        this.file = templateFile;
+        this.fromFile = templateFile;
     }
 
     /**
@@ -404,10 +448,10 @@ public final class Export extends HashMap<String, Object> implements Waitable {
 //            return;
         }
 
-        if (file == null) {
+        if (fromFile == null) {
             throw new FileNotFoundException("You must call setFile(Exportable file) first!");
-        } else if (!this.file.exists()) {
-            throw new FileNotFoundException(file.getPath());
+        } else if (!this.fromFile.exists()) {
+            throw new FileNotFoundException(fromFile.getPath());
         }
 
         if (toFile != null) {
@@ -417,13 +461,13 @@ public final class Export extends HashMap<String, Object> implements Waitable {
             }
 
             toFile.getParentFile().mkdirs();
-            file.setTarget(toFile);
+            fromFile.setTarget(toFile);
         }
-        file.setData(this);
-        file.setTemplate(t);
+        fromFile.setData(this);
+        fromFile.setTemplate(template);
 
         try {
-            SwingUtilities.invokeAndWait(file);// we need to wait for OO to perform the task
+            SwingUtilities.invokeAndWait(fromFile);// we need to wait for OO to perform the task
         } catch (Exception e) {
             Log.Debug(e);
         }

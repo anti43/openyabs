@@ -765,7 +765,6 @@ public class ControlPanel_Users extends javax.swing.JPanel implements ControlApp
 
     @Override
     public void actionAfterSave() {
-      
     }
 
     @Override
@@ -773,11 +772,9 @@ public class ControlPanel_Users extends javax.swing.JPanel implements ControlApp
     }
 
     public void actionBeforeCreate() {
-     
     }
 
     public void actionBeforeSave() {
-     
     }
 
     public void mail() {
@@ -785,6 +782,6 @@ public class ControlPanel_Users extends javax.swing.JPanel implements ControlApp
     }
 
     public void print() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        mpv5.utils.export.Export.print(this);
     }
 }

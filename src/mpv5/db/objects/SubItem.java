@@ -573,7 +573,7 @@ public class SubItem extends DatabaseObject implements Triggerable {
         return null;
     }
 
-     /**
+    /**
      * Generates a table model out of the given SubItems
      * @param items
      * @return
@@ -581,6 +581,14 @@ public class SubItem extends DatabaseObject implements Triggerable {
     public static MPTableModel toModel(SubItem[] items) {
         return toModel(items, false);
     }
+    /**
+     * The ADD button index
+     */
+    public static int COLUMNINDEX_ADD = 11;
+    /**
+     * The CLEAR button index
+     */
+    public static int COLUMNINDEX_REMOVE = 12;
 
     /**
      * Generates a table model out of the given SubItems
@@ -598,7 +606,7 @@ public class SubItem extends DatabaseObject implements Triggerable {
         }
 
         MPTableModel model = new MPTableModel(
-                new Class[]{Integer.class, Integer.class, BigDecimal.class, String.class, Object.class, BigDecimal.class, BigDecimal.class, BigDecimal.class, BigDecimal.class, BigDecimal.class, Integer.class, JButton.class, JButton.class, JButton.class, String.class, String.class},
+                new Class[]{Integer.class, Integer.class, BigDecimal.class, String.class, Object.class, BigDecimal.class, BigDecimal.class, BigDecimal.class, BigDecimal.class, BigDecimal.class, Integer.class, JButton.class, JButton.class, String.class, String.class},
                 new boolean[]{false, false, true, true, true, true, true, false, false, false, false, true, true, true, true, true},
                 data,
                 Headers.SUBITEMS.getValue());

@@ -77,6 +77,7 @@ import mpv5.ui.dialogs.BigPopup;
 import mpv5.ui.dialogs.ListView;
 import mpv5.ui.dialogs.Search2;
 import mpv5.ui.dialogs.Wizard;
+import mpv5.ui.dialogs.subcomponents.wizard_CSVImport2_1;
 import mpv5.ui.dialogs.subcomponents.wizard_XMLImport_1;
 import mpv5.ui.dialogs.subcomponents.wizard_XMLImport_2;
 import mpv5.ui.panels.ItemPanel;
@@ -96,6 +97,7 @@ import mpv5.ui.panels.QueryPanel;
 import mpv5.ui.panels.RevenuePanel;
 import mpv5.ui.panels.StartPage;
 import mpv5.ui.panels.TrashPanel;
+import mpv5.utils.export.Export;
 import mpv5.utils.export.VCFParser;
 import mpv5.utils.files.TextDatFile;
 import mpv5.utils.images.MPIcon;
@@ -833,6 +835,7 @@ public class MPView extends FrameView {
         jMenu8 = new javax.swing.JMenu();
         jMenuItem11 = new javax.swing.JMenuItem();
         jMenuItem38 = new javax.swing.JMenuItem();
+        jMenuItem40 = new javax.swing.JMenuItem();
         jMenu12 = new javax.swing.JMenu();
         jMenuItem28 = new javax.swing.JMenuItem();
         jMenuItem29 = new javax.swing.JMenuItem();
@@ -1088,7 +1091,7 @@ public class MPView extends FrameView {
         nav_products.setLayout(new java.awt.GridLayout(0, 1, 2, 5));
 
         jButton13.setFont(new java.awt.Font("Tahoma", 0, 10));
-        jButton13.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/external.png"))); // NOI18N
+        jButton13.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/tux.png"))); // NOI18N
         jButton13.setText(bundle.getString("MPView.jButton13.text")); // NOI18N
         jButton13.setToolTipText(bundle.getString("MPView.jButton13.toolTipText")); // NOI18N
         jButton13.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
@@ -1102,7 +1105,7 @@ public class MPView extends FrameView {
         nav_products.add(jButton13);
 
         jButton14.setFont(new java.awt.Font("Tahoma", 0, 10));
-        jButton14.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/lists.png"))); // NOI18N
+        jButton14.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/playlist.png"))); // NOI18N
         jButton14.setText(bundle.getString("MPView.jButton14.text")); // NOI18N
         jButton14.setToolTipText(bundle.getString("MPView.jButton14.toolTipText")); // NOI18N
         jButton14.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
@@ -1116,7 +1119,7 @@ public class MPView extends FrameView {
         nav_products.add(jButton14);
 
         jButton19.setFont(new java.awt.Font("Tahoma", 0, 10));
-        jButton19.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/view_text.png"))); // NOI18N
+        jButton19.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/kghostview.png"))); // NOI18N
         jButton19.setText(bundle.getString("MPView.jButton19.text")); // NOI18N
         jButton19.setToolTipText(bundle.getString("MPView.jButton19.toolTipText")); // NOI18N
         jButton19.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
@@ -1428,6 +1431,15 @@ public class MPView extends FrameView {
             }
         });
         jMenu8.add(jMenuItem38);
+
+        jMenuItem40.setText(bundle.getString("MPView.jMenuItem40.text_1")); // NOI18N
+        jMenuItem40.setName("jMenuItem40"); // NOI18N
+        jMenuItem40.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem40ActionPerformed(evt);
+            }
+        });
+        jMenu8.add(jMenuItem40);
 
         jMenu12.setText(bundle.getString("MPView.jMenu12.text")); // NOI18N
         jMenu12.setName("jMenu12"); // NOI18N
@@ -2003,11 +2015,9 @@ public class MPView extends FrameView {
     private void jMenuItem6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem6ActionPerformed
         DataPanel pane = getCurrentTab();
         if (pane != null) {
-            try {
-                new PrintJob().print(((pane)).getDataOwner());
-            } catch (Exception e) {
-                Log.Debug(this, e);
-            }
+            pane.print();
+        } else{
+           Export.print(getTabPane().getSelectedComponent());
         }
     }//GEN-LAST:event_jMenuItem6ActionPerformed
 
@@ -2378,6 +2388,15 @@ public class MPView extends FrameView {
     private void jMenuItem41ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem41ActionPerformed
         //TODO product to html wiz
     }//GEN-LAST:event_jMenuItem41ActionPerformed
+
+    private void jMenuItem40ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem40ActionPerformed
+
+        Wizard w = new Wizard(false);
+        w.addPanel(new wizard_CSVImport2_1(w));
+        w.showWiz();
+        
+    }//GEN-LAST:event_jMenuItem40ActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton calculatorButton;
     public javax.swing.JMenu clipboardMenu;
@@ -2447,6 +2466,7 @@ public class MPView extends FrameView {
     private javax.swing.JMenuItem jMenuItem38;
     private javax.swing.JMenuItem jMenuItem39;
     private javax.swing.JMenuItem jMenuItem4;
+    private javax.swing.JMenuItem jMenuItem40;
     private javax.swing.JMenuItem jMenuItem41;
     private javax.swing.JMenuItem jMenuItem5;
     private javax.swing.JMenuItem jMenuItem6;

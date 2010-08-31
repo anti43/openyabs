@@ -244,21 +244,21 @@ public class MPTable extends JTable {
     public void setParentListPanel(ListPanel parentc) {
         this.parentc = parentc;
     }
+
     /**
-     * Sets the value for the cell in the table model at row and column.
+     * Gets the value for the cell in the table model at row and column.
      * Note: Unlike the original JTable implementation, the column is specified in the table <b>TableModel</b> order,
      * and not in the view's column order.
      * This is an important distinction because as the user rearranges the columns in the table,
      * the column at a given index in the view will change.
      * Meanwhile the user's actions never affect the model's column ordering.
-     * @param value is the new value.
      * @param col
      * @param row
      */
-//    @Override
-//    public void setValueAt(Object value, int col, int row) {
-//        this.setValueAt(value, row, col);
-//    }
+    @Override
+    public Object getValueAt(int row, int col) {
+        return getModel().getValueAt(row, col);
+    }
 //
 //    public void setDefaultColumns(Integer[] integer, boolean resizable) {
 //

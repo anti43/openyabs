@@ -773,7 +773,7 @@ public class Main extends SingleFrameApplication {
 
             new Thread(runnable1).start();
         }
-        new Scheduler().start();
+        Scheduler.getInstance().start();
 
         if (!LocalSettings.getBooleanProperty(LocalSettings.SUPPRESS_UPDATE_CHECK)) {
             Runnable runnable = new Runnable() {

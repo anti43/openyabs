@@ -62,6 +62,7 @@ import mpv5.globals.Headers;
 import mpv5.ui.misc.MPTable;
 import mpv5.utils.arrays.ArrayUtilities;
 import mpv5.utils.date.DateConverter;
+import mpv5.utils.export.Export;
 import mpv5.utils.export.Exportable;
 import mpv5.utils.models.MPComboBoxModelItem;
 import mpv5.utils.models.MPTableModel;
@@ -685,6 +686,7 @@ public class RevenuePanel extends javax.swing.JPanel implements DataPanel {
     }
 
     public void print() {
+        Export.print(this);
     }
 
     class calc extends Thread {

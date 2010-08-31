@@ -735,5 +735,6 @@ public class ControlPanel_Templates extends javax.swing.JPanel implements Contro
     }
 
     public void print() {
+        mpv5.utils.export.Export.print(this);
     }
 }

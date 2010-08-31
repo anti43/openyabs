@@ -709,6 +709,6 @@ public class ControlPanel_Accounts extends javax.swing.JPanel implements Control
     }
 
     public void print() {
-        throw new UnsupportedOperationException("Not supported yet.");
+       mpv5.utils.export.Export.print(this);
     }
 }

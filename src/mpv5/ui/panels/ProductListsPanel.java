@@ -54,6 +54,7 @@ import mpv5.ui.dialogs.Search2;
 import mpv5.ui.dialogs.subcomponents.ProductSelectDialog;
 import mpv5.ui.misc.MPTable;
 import mpv5.utils.arrays.ArrayUtilities;
+import mpv5.utils.export.Export;
 import mpv5.utils.models.MPComboBoxModelItem;
 import mpv5.utils.models.MPTableModel;
 import mpv5.utils.renderer.ButtonEditor;
@@ -742,6 +743,7 @@ private java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle();
     }
 
     public void print() {
+        Export.print(this);
     }
 
     private void prepareTable() {

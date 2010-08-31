@@ -46,6 +46,7 @@ import mpv5.ui.frames.MPView;
 import mpv5.ui.panels.DataPanel;
 import mpv5.usermanagement.MPSecurityManager;
 import mpv5.utils.arrays.ArrayUtilities;
+import mpv5.utils.export.Export;
 import mpv5.utils.models.MPTreeModel;
 import mpv5.utils.trees.TreeFormat;
 import mpv5.utils.ui.TextFieldUtils;
@@ -524,6 +525,6 @@ public class ControlPanel_Groups extends javax.swing.JPanel implements ControlAp
     }
 
     public void print() {
-       
+        mpv5.utils.export.Export.print(this);
     }
 }

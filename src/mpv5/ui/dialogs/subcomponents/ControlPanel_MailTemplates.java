@@ -427,6 +427,6 @@ public class ControlPanel_MailTemplates extends javax.swing.JPanel implements Co
     }
 
     public void print() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        mpv5.utils.export.Export.print(this);
     }
 }

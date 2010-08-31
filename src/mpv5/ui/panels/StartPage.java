@@ -23,6 +23,7 @@ import mpv5.db.objects.Contact;
 import mpv5.globals.Constants;
 import mpv5.globals.LocalSettings;
 import mpv5.globals.Messages;
+import mpv5.handler.Scheduler;
 import mpv5.logging.Log;
 import mpv5.ui.dialogs.Search2;
 import mpv5.ui.frames.MPView;
@@ -66,7 +67,6 @@ public class StartPage extends javax.swing.JPanel {
         contacts();
         items();
 
-        jTaskPaneGroup2.setTitle("UNDER CONSTRUCTION");
     }
 
     /** This method is called from within the constructor to
@@ -439,35 +439,15 @@ public class StartPage extends javax.swing.JPanel {
     }
 
     private void items() {
-         jTaskPaneGroup1.setTitle(Messages.TASKS_INVOICES.getValue());
+         jTaskPaneGroup2.setTitle(Messages.TASKS_INVOICES.getValue());
 
-        jTaskPaneGroup1.add(new AbstractAction(Messages.CONTACTS_LIST.getValue()) {
+         jTaskPaneGroup2.add(new AbstractAction(Messages.CHECK_OVERDUES.getValue()) {
 
             public void actionPerformed(ActionEvent e) {
-                DatabaseObject d = DatabaseObject.getObject(Context.getContact());
-                ContactsList t = MPView.getClisttab(Context.getContact());
-                t.showType((Contact) d);
-                MPView.identifierView.addOrShowTab(t, Messages.CONTACTS_LIST.toString());
+              Scheduler.getInstance().checkForOverdueEvents();
             }
         });
 
-        jTaskPaneGroup1.add(new AbstractAction("Add contact...") {
 
-            public void actionPerformed(ActionEvent e) {
-                DatabaseObject d = DatabaseObject.getObject(Context.getCustomer());
-                ((mpv5.db.objects.Contact) d).setisCustomer(true);
-                MPView.getIdentifierView().addTab(d, Messages.NEW_CUSTOMER);
-            }
-        });
-
-        jTaskPaneGroup1.add(new AbstractAction("Search contact...") {
-
-            public void actionPerformed(ActionEvent e) {
-                DatabaseObject d = Search2.showSearchFor(Context.getContact());
-                if (d != null) {
-                    MPView.getIdentifierView().addTab(d);
-                }
-            }
-        });
     }
 }

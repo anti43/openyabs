@@ -319,12 +319,12 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
                 tb.setFavourite(Favourite.isFavourite(object));
                 tb.setEditable(!object.isReadOnly());
 
-    
+
                 itemtable.setModel(SubItem.toModel(((Item) object).getSubitems()));
                 if (((MPTableModel) itemtable.getModel()).getEmptyRows(new int[]{4}) < 2) {
                     ((MPTableModel) itemtable.getModel()).addRow(1);
                 }
-           
+
                 omodel = (MPTableModel) itemtable.getModel();
 
                 formatTable();
@@ -351,7 +351,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
 
         properties();
         loading = false;
-     
+
     }
 
     private void setTitle() {
@@ -1325,7 +1325,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
         if (omodel == null) {
             omodel = (MPTableModel) itemtable.getModel();
         }
-     
+
         if (omodel.getValidRows(new int[]{4}).size() > 0) {
 
             itemtable.setModel(omodel);
@@ -1333,7 +1333,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
             ((MPTableModel) itemtable.getModel()).fireTableCellUpdated(0, 0);
             ((MPTableModel) itemtable.getModel()).addRow(1);
         }
-       
+
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void button_deliverynoteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button_deliverynoteActionPerformed
@@ -1598,7 +1598,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
             @Override
             public void run() {
                 try {
-                
+
                     groupnameselect.setModel(MPComboBoxModelItem.toModel(DatabaseObject.getObject(Context.getGroup(), mpv5.db.objects.User.getCurrentUser().__getGroupsids())));
                     groupnameselect.setSelectedIndex(0);
                     sp.refresh();
@@ -1632,7 +1632,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
                             }));
                     formatTable();
                     shipping.setText(FormatNumber.formatDezimal(0d));
-                
+
                 } catch (Exception e) {
                     Log.Debug(this, e);
                 }
@@ -1694,7 +1694,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
     @Override
     @SuppressWarnings("unchecked")
     public void paste(DatabaseObject... dbos) {
-      
+
         if (itemtable.getCellEditor() != null) {
             try {
                 itemtable.getCellEditor().stopCellEditing();
@@ -1807,7 +1807,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
         netCalculator2.calculateOnce();
         netCalculator.calculateOnce();
 
-    
+
     }
 
     @Override
@@ -1830,13 +1830,13 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
 
     @Override
     public void actionAfterCreate() {
-   
+
         sp.refresh();
         ArrayUtilities.replaceColumn(itemtable, 0, null);
         saveSubItems(false);
         omodel = (MPTableModel) itemtable.getModel();
         setTitle();
-     
+
     }
 
     private void saveSubItems(boolean deleteRemovedSubitems) {
@@ -1992,10 +1992,10 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
             }
         });
 
-        itemtable.getColumnModel().getColumn( itemtable.getColumnModel().getColumnIndex("A")).setCellRenderer(new ButtonRenderer());
-        itemtable.getColumnModel().getColumn( itemtable.getColumnModel().getColumnIndex("A")).setCellEditor(new ButtonEditor(b1));
-        itemtable.getColumnModel().getColumn( itemtable.getColumnModel().getColumnIndex("C")).setCellRenderer(new ButtonRenderer());
-        itemtable.getColumnModel().getColumn( itemtable.getColumnModel().getColumnIndex("C")).setCellEditor(new ButtonEditor(b2));
+        itemtable.getColumnModel().getColumn(SubItem.COLUMNINDEX_ADD).setCellRenderer(new ButtonRenderer());
+        itemtable.getColumnModel().getColumn(SubItem.COLUMNINDEX_ADD).setCellEditor(new ButtonEditor(b1));
+        itemtable.getColumnModel().getColumn(SubItem.COLUMNINDEX_REMOVE).setCellRenderer(new ButtonRenderer());
+        itemtable.getColumnModel().getColumn(SubItem.COLUMNINDEX_REMOVE).setCellEditor(new ButtonEditor(b2));
     }
 
     private void delivery() {
@@ -2054,7 +2054,10 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
                 }
             } else {
                 Popup.notice(Messages.NO_TEMPLATE_LOADED + " (" + mpv5.db.objects.User.getCurrentUser() + ")");
+                Export.print(this);
             }
+        } else {
+            Export.print(this);
         }
     }
 

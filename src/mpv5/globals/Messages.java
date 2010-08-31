@@ -259,9 +259,11 @@ public enum Messages {
     TASKS_SETTINGS("Configure Yabs.."),
     PDF_CREATE("Create PDF"),
     ODT_CREATE("Create ODT"),
-    IN_GROUP("In group:")
+    IN_GROUP("In group:"),
+    CHECK_OVERDUES("Show unpaid invoices"),
 
     ;
+
 
     private Messages(String message) {
         this.message = message;

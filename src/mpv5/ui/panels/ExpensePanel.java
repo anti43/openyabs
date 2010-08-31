@@ -685,6 +685,7 @@ public class ExpensePanel extends javax.swing.JPanel implements DataPanel {
     }
 
     public void print() {
+        mpv5.utils.export.Export.print(this);
     }
 
     class calc extends Thread {

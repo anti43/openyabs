@@ -39,6 +39,7 @@ import mpv5.db.objects.Group;
 import mpv5.db.objects.User;
 import mpv5.logging.Log;
 import mpv5.ui.frames.MPView;
+import mpv5.ui.misc.MPTable;
 import mpv5.utils.date.vTimeframe;
 import mpv5.utils.models.MPTableModel;
 import mpv5.utils.renderer.TableCellRendererForDatabaseObjects;
@@ -53,9 +54,8 @@ public class GeneralListPanel extends javax.swing.JPanel {
 
     private static final long serialVersionUID = 1L;
     private List odata;
-    TableCellRendererForDatabaseObjects rend = new  TableCellRendererForDatabaseObjects();
+    TableCellRendererForDatabaseObjects rend = new TableCellRendererForDatabaseObjects();
     private java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle();
-   
 
     /** Creates new form GeneralListPanel
      * @param <T>
@@ -69,6 +69,9 @@ public class GeneralListPanel extends javax.swing.JPanel {
         labeledCombobox1.triggerSearch();
         setData(list);
         odata = list;
+
+        ((MPTable) listtable).setDefaultColumns(new Integer[]{100, 100, 100, 100, 100}, new Boolean[]{true, true, true, true, true});
+        TableFormat.hideHeader(listtable);
     }
 
     /**
@@ -80,7 +83,9 @@ public class GeneralListPanel extends javax.swing.JPanel {
         listtable.setDefaultRenderer(String.class, rend);
         listtable.setDefaultRenderer(Date.class, rend);
         listtable.setDefaultRenderer(DatabaseObject.class, rend);
-        
+
+        ((MPTable) listtable).setDefaultColumns(new Integer[]{100, 100, 100, 100, 100}, new Boolean[]{true, true, true, true, true});
+        TableFormat.hideHeader(listtable);
     }
 
     /**
@@ -116,8 +121,8 @@ public class GeneralListPanel extends javax.swing.JPanel {
      */
     public <T extends DatabaseObject> void setData(List<T> list) {
 
-        
-        Object[][] data = new Object[list.size()][6];
+
+        Object[][] data = new Object[list.size()][5];
 
         for (int i = 0; i < list.size(); i++) {
             DatabaseObject databaseObject = list.get(i);
@@ -130,20 +135,19 @@ public class GeneralListPanel extends javax.swing.JPanel {
                 data[i][3] = "N/A";
             }
 
-            data[i][4] = databaseObject.getColor();
-            data[i][5] = databaseObject.getIcon();
+//            data[i][4] = databaseObject.getColor();
+            data[i][4] = databaseObject.getIcon();
         }
 
         MPTableModel m = new MPTableModel(data);
-        m.setTypes(new Class[]{DatabaseObject.class, String.class, Date.class, DatabaseObject.class, Color.class, ImageIcon.class, Object.class, Object.class});
+        m.setTypes(new Class[]{DatabaseObject.class, String.class, Date.class, DatabaseObject.class, ImageIcon.class, Object.class, Object.class});
         listtable.setModel(m);
 
 //        TableFormat.hideHeader(listtable);
 //        TableFormat.stripColumn(listtable, 4);
-   
+
 //        TableFormat.stripColumn(jTable1, 5);
     }
-
 
     /**
      * Filter by group

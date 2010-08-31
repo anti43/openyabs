@@ -30,6 +30,14 @@ public class Scheduler extends Thread {
 
     private static GeneralListPanel g = new GeneralListPanel();
 
+
+    private static final Scheduler instance = new Scheduler();
+    private Scheduler() {
+    }
+    public static Scheduler getInstance() {
+        return instance;
+    }
+
     @Override
     public void run() {
 
@@ -48,7 +56,7 @@ public class Scheduler extends Thread {
     }
 
     @SuppressWarnings("static-access")
-    private void checkForCreateBillEvents() {
+    public void checkForCreateBillEvents() {
         ArrayList<Schedule> data = Schedule.getEvents(new vTimeframe(DateConverter.addYears(new Date(), -2), new Date()));
         List<Item> list = new Vector<Item>();
 
@@ -115,7 +123,7 @@ public class Scheduler extends Thread {
         }
     }
 
-    private void checkForOverdueEvents() {
+    public void checkForOverdueEvents() {
 
         List<Item> warnings = new Vector<Item>();
         List<Item> alerts = new Vector<Item>();

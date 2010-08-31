@@ -233,9 +233,9 @@ public class TableFormat {
     public static void resizeCols(JTable table, Integer[] desiredColSizes, Boolean[] fixedCols) {
         for (int i = 0; i < desiredColSizes.length; i++) {
             if (desiredColSizes[i] != null) {
-                
+
                 table.getColumnModel().getColumn(i).setPreferredWidth(desiredColSizes[i]);
-                if (fixedCols.length >0 && fixedCols[i] != null && fixedCols[i]) {
+                if (fixedCols.length > 0 && fixedCols[i] != null && fixedCols[i]) {
                     table.getColumnModel().getColumn(i).setMinWidth(desiredColSizes[i]);
                     table.getColumnModel().getColumn(i).setMaxWidth(desiredColSizes[i]);
                 } else {
@@ -279,25 +279,31 @@ public class TableFormat {
      */
     public static void hideHeader(JTable table) {
         table.getTableHeader().setPreferredSize(new Dimension(table.getColumnModel().getTotalColumnWidth(), 15));
-
-  table.getTableHeader().setFont( new Font(LocalSettings.getProperty(LocalSettings.DEFAULT_FONT), Font.PLAIN, 0));
+        table.getTableHeader().setFont(new Font(LocalSettings.getProperty(LocalSettings.DEFAULT_FONT), Font.PLAIN, 0));
         class ColumnListener implements TableColumnModelListener {
+
             private final JTable table;
+
             private ColumnListener(JTable target) {
                 this.table = target;
             }
+
             public void columnAdded(TableColumnModelEvent e) {
-                 table.getTableHeader().setPreferredSize(new Dimension(table.getColumnModel().getTotalColumnWidth(), 15));
+                table.getTableHeader().setPreferredSize(new Dimension(table.getColumnModel().getTotalColumnWidth(), 15));
             }
+
             public void columnRemoved(TableColumnModelEvent e) {
-                 table.getTableHeader().setPreferredSize(new Dimension(table.getColumnModel().getTotalColumnWidth(), 15));
+                table.getTableHeader().setPreferredSize(new Dimension(table.getColumnModel().getTotalColumnWidth(), 15));
             }
+
             public void columnMoved(TableColumnModelEvent e) {
-                 table.getTableHeader().setPreferredSize(new Dimension(table.getColumnModel().getTotalColumnWidth(), 15));
+                table.getTableHeader().setPreferredSize(new Dimension(table.getColumnModel().getTotalColumnWidth(), 15));
             }
+
             public void columnMarginChanged(ChangeEvent e) {
-                 table.getTableHeader().setPreferredSize(new Dimension(table.getColumnModel().getTotalColumnWidth(), 15));
+                table.getTableHeader().setPreferredSize(new Dimension(table.getColumnModel().getTotalColumnWidth(), 15));
             }
+
             public void columnSelectionChanged(ListSelectionEvent e) {
             }
         }

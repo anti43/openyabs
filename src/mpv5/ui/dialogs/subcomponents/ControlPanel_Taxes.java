@@ -295,6 +295,6 @@ public class ControlPanel_Taxes extends javax.swing.JPanel implements ControlApp
     }
 
     public void print() {
-        throw new UnsupportedOperationException("Not supported yet.");
+       mpv5.utils.export.Export.print(this);
     }
 }

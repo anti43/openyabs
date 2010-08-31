@@ -65,6 +65,7 @@ import mpv5.utils.ui.TableViewPersistenceHandler;
 import mpv5.ui.popups.DOTablePopUp;
 import mpv5.utils.arrays.ArrayUtilities;
 import mpv5.utils.date.DateConverter;
+import mpv5.utils.export.Export;
 import mpv5.utils.files.FileDirectoryHandler;
 import mpv5.utils.models.MPComboBoxModelItem;
 import mpv5.utils.models.MPTableModel;
@@ -1745,9 +1746,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
     }
 
     public void print() {
-        if (dataOwner.isExisting()) {
-            new PrintJob().print(dataOwner);
-        }
+        Export.print(this);
     }
 
     private void properties() {
