@@ -55,6 +55,7 @@ public class Wizard extends javax.swing.JDialog implements WizardMaster {
      */
     public Wizard(boolean standalone) {
         initComponents();
+        setModal(true);
         back.setEnabled(false);
         this.standalone = standalone;
         if (standalone) {

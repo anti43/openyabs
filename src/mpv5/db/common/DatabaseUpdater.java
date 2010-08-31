@@ -32,7 +32,8 @@ public class DatabaseUpdater {
         UPDATES_DERBY.put(1.15, new String[]{
                     //            intaddedby,dateadded,productsids,contactsids,groupsids,cname
                     "CREATE TABLE productstosuppliers(ids BIGINT NOT NULL GENERATED ALWAYS AS IDENTITY "
-                    + "(START WITH 1, INCREMENT BY 1), productsids BIGINT REFERENCES products(ids) ON DELETE CASCADE, "
+                    + "(START WITH 1, INCREMENT BY 1), "
+                    + "productsids BIGINT REFERENCES products(ids) ON DELETE CASCADE, "
                     + "contactsids BIGINT REFERENCES contacts(ids) ON DELETE CASCADE,"
                     + "cname VARCHAR(250) DEFAULT NULL,"
                     + "groupsids BIGINT DEFAULT 0,"
@@ -83,7 +84,7 @@ public class DatabaseUpdater {
                     "CREATE TABLE productstosuppliers ("
                     + "ids             	BIGINT(20) UNSIGNED NOT NULL PRIMARY KEY auto_increment,"
                     + "productsids      BIGINT(20) UNSIGNED NOT NULL,"
-                    + "accountsids      BIGINT(20) UNSIGNED NOT NULL,"
+                    + "contactsids      BIGINT(20) UNSIGNED NOT NULL,"
                     + "cname            VARCHAR(250) DEFAULT NULL,"
                     + "groupsids        BIGINT(20) DEFAULT 1,"
                     + "dateadded        DATE NOT NULL,"
@@ -110,8 +111,8 @@ public class DatabaseUpdater {
                     "ALTER TABLE contacts ADD COLUMN bankcurrency VARCHAR(250) DEFAULT NULL",
                     "ALTER TABLE contacts ADD COLUMN bankcountry VARCHAR(250) DEFAULT NULL",});
         UPDATES_MYSQL.put(1.181, new String[]{
-                    "ALTER TABLE valueproperties DROP INDEX IF EXISTS values_index0",
-                    "DROP TABLE IF EXISTS valueproperties"
+//                    "ALTER TABLE valueproperties DROP INDEX IF EXISTS values_index0",
+//                    "DROP TABLE IF EXISTS valueproperties"
                 });
         UPDATES_MYSQL.put(1.182, new String[]{
                     //                    "ALTER TABLE items DROP COLUMN discountvalue",
@@ -125,12 +126,12 @@ public class DatabaseUpdater {
                     + "CONSTRAINT constvp0 UNIQUE (cname, contextids, objectids, groupsids),"
                     + "cname VARCHAR(250) NOT NULL, "
                     + "classname VARCHAR(250) NOT NULL, "
-                    + "contextids BBIGINT(20) UNSIGNED NOT NULL,"
+                    + "contextids BIGINT(20) UNSIGNED NOT NULL,"
                     + "objectids BIGINT(20) UNSIGNED NOT NULL,"
                     + "value LONGTEXT DEFAULT NULL, "
                     + "dateadded DATE NOT NULL, "
                     + "intaddedby BIGINT(20) UNSIGNED NOT NULL, "
-                    + "groupsids BIGINT(20) REFERENCES groups(ids) UNSIGNED DEFAULT 1, "
+                    + "groupsids BIGINT(20) UNSIGNED DEFAULT 1 REFERENCES groups(ids), "
                     + "invisible BIGINT(20) UNSIGNED DEFAULT 0"
                     + ")ENGINE=MyISAM DEFAULT CHARSET=utf8",
                     "CREATE INDEX values_index0 ON valueproperties(cname, contextids, objectids)",
