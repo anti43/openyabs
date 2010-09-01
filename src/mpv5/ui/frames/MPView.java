@@ -2172,7 +2172,7 @@ public class MPView extends FrameView {
     }//GEN-LAST:event_jButton7ActionPerformed
 
     private void jButton8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton8ActionPerformed
-        addTab(new ItemPanel(Context.getBill(), Item.TYPE_BILL), Messages.NEW_BILL);
+        addTab(new ItemPanel(Context.getInvoice(), Item.TYPE_BILL), Messages.NEW_BILL);
     }//GEN-LAST:event_jButton8ActionPerformed
     private MPServer mpserver;
     private void jMenuItem24ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem24ActionPerformed

@@ -524,7 +524,7 @@ private java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle();
 }//GEN-LAST:event_jButton2ActionPerformed
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
-        Item i = (Item) Search2.showSearchFor(Context.getBill());
+        Item i = (Item) Search2.showSearchFor(Context.getInvoice());
         if (i != null && dataOwner != null) {
             MPView.identifierView.addTab(i);
             Runnable runnable = new Runnable() {

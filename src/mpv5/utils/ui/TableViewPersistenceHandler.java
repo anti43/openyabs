@@ -43,22 +43,22 @@ public class TableViewPersistenceHandler {
     private List<TableColumnModelListener> listeners = new ArrayList<TableColumnModelListener>();
 
     class MPColumnModel extends DefaultTableColumnModel {
-
-        @Override
-        public void removeColumn(TableColumn column) {
-            if (column.getModelIndex() == 0)//do nothing
-            ; else {
-                super.removeColumn(column);
-            }
-        }
-
-        @Override
-        public void moveColumn(int columnIndex, int newIndex) {
-            if (columnIndex == 0 || newIndex == 0)//do nothing
-            ; else {
-                super.moveColumn(columnIndex, newIndex);
-            }
-        }
+//Performance bottleneck
+//        @Override
+//        public void removeColumn(TableColumn column) {
+//            if (column.getModelIndex() == 0)//do nothing
+//            ; else {
+//                super.removeColumn(column);
+//            }
+//        }
+//
+//        @Override
+//        public void moveColumn(int columnIndex, int newIndex) {
+//            if (columnIndex == 0 || newIndex == 0)//do nothing
+//            ; else {
+//                super.moveColumn(columnIndex, newIndex);
+//            }
+//        }
     }
 
     /**

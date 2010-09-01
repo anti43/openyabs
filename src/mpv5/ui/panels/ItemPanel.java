@@ -1707,7 +1707,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
         BigDecimal tpvs = null;
         for (DatabaseObject dbo : dbos) {
             if (dbo.getContext().equals(Context.getItem())
-                    || dbo.getContext().equals(Context.getBill())
+                    || dbo.getContext().equals(Context.getInvoice())
                     || dbo.getContext().equals(Context.getOffer())
                     || dbo.getContext().equals(Context.getOrder())) {
                 Item o = (Item) dbo.clone();

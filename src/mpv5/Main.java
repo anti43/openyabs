@@ -34,6 +34,7 @@ import java.util.Date;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.Properties;
+import java.util.Random;
 import java.util.Vector;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
@@ -456,6 +457,7 @@ public class Main extends SingleFrameApplication {
         Option debug = obuilder.withShortName("debug").withDescription("enable debug logging").create();
         Option removeplugins = obuilder.withShortName("removeplugins").withDescription("remove all plugins which would be loaded").create();
         Option removelangs= obuilder.withShortName("noi18n").withDescription("remove all languages which would be loaded").create();
+        Option forceinstall= obuilder.withShortName("finstall").withDescription("force-install").create();
         Option logfile = obuilder.withShortName("logfile").withShortName("l").withDescription("use file for log").withArgument(filearg).create();
         Option mpdir = obuilder.withShortName("appdir").withShortName("dir").withShortName("path").withDescription("set the application main dir (used for caching, settings, temp files)").withArgument(dirarg).create();
         Option connectionInstance = obuilder.withShortName("connectionInstance").withShortName("conn").withDescription("use stored connection with this ID").withArgument(number).create();
@@ -485,6 +487,7 @@ public class Main extends SingleFrameApplication {
                 withOption(clear).
                 withOption(printtest).
                 withOption(params).
+                withOption(forceinstall).
                 create();
 
         HelpFormatter hf = new HelpFormatter();
@@ -513,6 +516,10 @@ public class Main extends SingleFrameApplication {
                 } catch (Exception ex) {
                     Log.Debug(ex);
                 }
+            }
+
+            if (cl.hasOption(forceinstall)) {
+                FORCE_INSTALLER = RandomText.getInteger();
             }
 
             if (cl.hasOption(help)) {

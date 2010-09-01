@@ -129,6 +129,14 @@ public class RandomText {
             "beenidentifiedhowhewassupposedtogoaboutgainsayingtheshipsStrateejOMatAsfarasfindingsomethingt" +
             "omonitorwasconcernedthoughtheyhitsolidgold");
 
+    /**
+     * Generates a 8 digit integer value
+     * @return
+     */
+    public synchronized static Integer getInteger() {
+        return Integer.valueOf(getNumberText());
+    }
+
 
     private String string;
     private int length = 5;
@@ -185,7 +193,7 @@ public class RandomText {
      * Generates a random text containing only numbers
      * @return A random 8- char text
      */
-    public static String getNumberText() {
+    public synchronized static String getNumberText() {
        return RandomStringUtils.randomNumeric(8);
     }
 }

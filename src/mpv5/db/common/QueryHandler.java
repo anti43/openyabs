@@ -119,7 +119,8 @@ public class QueryHandler implements Cloneable {
                 }
             } else {
                 Log.Debug(this, "Database version info can not be found.");
-                throw new UnsupportedOperationException("Database version cannot be validated! Required version: " + Constants.DATABASE_VERSION);
+                throw new UnsupportedOperationException("Database version cannot be validated! Required version: " + Constants.DATABASE_VERSION + "\n\n"
+                        + "To solve this issue, maybe you want to run Yabs with the parameter ");
             }
         } catch (Exception ex) {
             Log.Debug(ex);
@@ -2266,7 +2267,7 @@ public class QueryHandler implements Cloneable {
     }
 
     /**
-     * This method returns a list of files from a "filename, filedata" table
+     * This method returns a list of files from a "filename, data, filesize" table
      * @param filename The unique filename
      * @return A list with temporary files
      * @throws IOException

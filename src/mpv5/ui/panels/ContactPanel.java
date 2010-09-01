@@ -1280,7 +1280,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
 
     private void button_billActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button_billActionPerformed
         if (dataOwner.isExisting()) {
-            Item i = (Item) DatabaseObject.getObject(Context.getBill());
+            Item i = (Item) DatabaseObject.getObject(Context.getInvoice());
             i.setContactsids(dataOwner.__getIDS());
             i.setCName(Messages.NEW_BILL.getValue());
             i.setInttype(Item.TYPE_BILL);

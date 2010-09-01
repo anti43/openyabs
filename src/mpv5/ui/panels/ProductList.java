@@ -72,7 +72,7 @@ public class ProductList extends javax.swing.JPanel implements ListPanel {
         }
 
         try {
-            QueryHandler c = QueryHandler.instanceOf().clone(context, 5);
+            QueryHandler c = QueryHandler.instanceOf().clone(context);
             listTable.setModel(new MPTableModel(c.select(Context.DETAILS_PRODUCTS, qc, new vTimeframe(new Date(0), new Date())).getData()));
         } catch (NodataFoundException ex) {
             listTable.setModel(new MPTableModel());

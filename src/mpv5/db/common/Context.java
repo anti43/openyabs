@@ -223,7 +223,7 @@ public class Context implements Serializable{
     public static ArrayList<Context> getTemplateableContexts() {
         ArrayList<Context> list = new ArrayList<Context>();
         list.add(getItem(null, null));
-        list.add(getBill());
+        list.add(getInvoice());
         list.add(getOrder());
         list.add(getOffer());
         list.add(getProduct());
@@ -244,7 +244,7 @@ public class Context implements Serializable{
         list.add(getSupplier());
         list.add(getAddress());
         list.add(getItem(null, null));
-        list.add(getBill());
+        list.add(getInvoice());
         list.add(getOrder());
         list.add(getOffer());
         list.add(getSchedule());
@@ -303,7 +303,7 @@ public class Context implements Serializable{
         list.add(getManufacturer());
         list.add(getSupplier());
         list.add(getItem(null, null));
-        list.add(getBill());
+        list.add(getInvoice());
         list.add(getOrder());
         list.add(getOffer());
         list.add(getSchedule());
@@ -336,7 +336,7 @@ public class Context implements Serializable{
         list.add(getManufacturer());
         list.add(getSupplier());
         list.add(getItem(null, null));
-        list.add(getBill());
+        list.add(getInvoice());
         list.add(getOrder());
         list.add(getOffer());
         list.add(getContact());
@@ -429,7 +429,7 @@ public class Context implements Serializable{
                 getUser(),
                 getAddress(),
                 getItem(null, null),
-                getBill(),
+                getInvoice(),
                 getOrder(),
                 getOffer(),
                 getSubItem(),
@@ -1057,74 +1057,9 @@ public class Context implements Serializable{
         this.itemType = itemType;
     }
 
-//    /**
-//     * @return the isDone
-//     */
-//    private boolean isIsDone() {
-//        return isDone;
-//    }
-//
-//    /**
-//     * @param isDone the isDone to set
-//     */
-//    private void setIsDone(boolean isDone) {
-//        this.isDone = isDone;
-//    }
-//    /**
-//     * @return the isActive
-//     */
-//    private boolean isIsActive() {
-//        return isActive;
-//    }
-//
-//    /**
-//     * @param isActive the isActive to set
-//     */
-//    private void setIsActive(boolean isActive) {
-//        this.isActive = isActive;
-//    }
-//
-//    /**
-//     * @return the isBill
-//     */
-//    public boolean isIsBill() {
-//        return isBill;
-//    }
-//
-//    /**
-//     * @param isBill the isBill to set
-//     */
-//    public void setIsBill(boolean isBill) {
-//        this.isBill = isBill;
-//    }
-//
-//    /**
-//     * @return the isOrder
-//     */
-//    public boolean isIsOrder() {
-//        return isOrder;
-//    }
-//
-//    /**
-//     * @param isOrder the isOrder to set
-//     */
-//    public void setIsOrder(boolean isOrder) {
-//        this.isOrder = isOrder;
-//    }
-//
-//    /**
-//     * @return the isOffer
-//     */
-//    public boolean isIsOffer() {
-//        return isOffer;
-//    }
-//
-//    /**
-//     * @param isOffer the isOffer to set
-//     */
-//    public void setIsOffer(boolean isOffer) {
-//        this.isOffer = isOffer;
-//    }
+////////////////////////////////////////////////////////////////////////////////
+//generate a new Context Object on each call here, callers may alter them to variants
+
     public static Context getContactsCompanies() {
         Context c = new Context();
         c.setCompany(true);
@@ -1166,14 +1101,16 @@ public class Context implements Serializable{
         return getItem(null, null);
     }
 
-    public static Context getSubItem() {
-        Context c = new Context();
-        c.setSubID(DEFAULT_SUBID);
-        c.setDbIdentity(IDENTITY_SUBITEMS);
-        c.setIdentityClass(IDENTITY_SUBITEMS_CLASS);
-        c.setId(2);
 
-        return c;
+    public static Context getSubItem() {
+        Context subitem = new Context();
+            subitem.setSubID(DEFAULT_SUBID);
+            subitem.setDbIdentity(IDENTITY_SUBITEMS);
+            subitem.setIdentityClass(IDENTITY_SUBITEMS_CLASS);
+            subitem.setId(2);
+        
+
+        return subitem;
     }
 
     public static Context getCustomer() {
@@ -1276,15 +1213,7 @@ public class Context implements Serializable{
 
         return c;
     }
-//
-//    public static Context getGroupToParentGroup() {
-//        Context c = new Context();
-//        c.setSubID(DEFAULT_SUBID);
-//        c.setDbIdentity(IDENTITY_GROUPS_TO_PARENTGROUP);
-//        c.setId(12);
-//
-//        return c;
-//    }
+
 
     public static Context getGroup() {
         Context c = new Context();
@@ -1317,7 +1246,7 @@ public class Context implements Serializable{
         return c;
     }
 
-    public static Context getBill() {
+    public static Context getInvoice() {
         Context c = new Context();
         c.setSubID(DEFAULT_SUBID);
         c.setDbIdentity(IDENTITY_ITEMS);

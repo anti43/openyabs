@@ -14,6 +14,7 @@ import java.util.Properties;
 import javax.swing.AbstractAction;
 import javax.swing.DefaultListModel;
 import javax.swing.JComponent;
+import javax.swing.JTable;
 import javax.swing.ListModel;
 import javax.swing.table.TableCellRenderer;
 import mpv5.Main;
@@ -94,7 +95,7 @@ public class StartPage extends javax.swing.JPanel {
         jScrollPane3 = new javax.swing.JScrollPane();
         jTextArea2 = new javax.swing.JTextArea();
         jScrollPane2 = new javax.swing.JScrollPane();
-        licensetable = new  mpv5.ui.misc.MPTable(this) {
+        licensetable = new JTable() {
             public Component prepareRenderer(TableCellRenderer renderer,
                 int rowIndex, int vColIndex) {
                 Component c = super.prepareRenderer(renderer, rowIndex, vColIndex);
@@ -115,7 +116,7 @@ public class StartPage extends javax.swing.JPanel {
         jScrollPane6 = new javax.swing.JScrollPane();
         syst = new javax.swing.JList();
 
-        java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle();
+        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("mpv5/resources/languages/Panels"); // NOI18N
         setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("StartPage.border.title"))); // NOI18N
         setName("Form"); // NOI18N
 
@@ -125,26 +126,14 @@ public class StartPage extends javax.swing.JPanel {
         jPanel4.setLayout(new java.awt.BorderLayout());
 
         jTaskPane1.setName("jTaskPane1"); // NOI18N
-        com.l2fprod.common.swing.PercentLayout percentLayout4 = new com.l2fprod.common.swing.PercentLayout();
-        percentLayout4.setGap(14);
-        percentLayout4.setOrientation(1);
-        jTaskPane1.setLayout(percentLayout4);
 
         jTaskPaneGroup1.setCollapsable(false);
         jTaskPaneGroup1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/evolution-contacts.png"))); // NOI18N
         jTaskPaneGroup1.setName("jTaskPaneGroup1"); // NOI18N
-        com.l2fprod.common.swing.PercentLayout percentLayout5 = new com.l2fprod.common.swing.PercentLayout();
-        percentLayout5.setGap(2);
-        percentLayout5.setOrientation(1);
-        jTaskPaneGroup1.getContentPane().setLayout(percentLayout5);
         jTaskPane1.add(jTaskPaneGroup1);
 
         jTaskPaneGroup2.setCollapsable(false);
         jTaskPaneGroup2.setName("jTaskPaneGroup2"); // NOI18N
-        com.l2fprod.common.swing.PercentLayout percentLayout6 = new com.l2fprod.common.swing.PercentLayout();
-        percentLayout6.setGap(2);
-        percentLayout6.setOrientation(1);
-        jTaskPaneGroup2.getContentPane().setLayout(percentLayout6);
         jTaskPane1.add(jTaskPaneGroup2);
 
         jPanel4.add(jTaskPane1, java.awt.BorderLayout.CENTER);
