@@ -30,7 +30,7 @@ public class UnableToLockException extends Exception {
      * @param id
      * @param user
      */
-    public UnableToLockException(Context context, int id, User user) {
+    public UnableToLockException(Context context, long id, User user) {
         super("Unable to lock item: " + context.getDbIdentity() + " with ID " + id + " for user: " + user);
     }
 }

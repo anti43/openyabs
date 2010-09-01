@@ -48,6 +48,7 @@ import mpv5.utils.arrays.ArrayUtilities;
 import mpv5.utils.date.DateConverter;
 import javax.swing.JComponent;
 import mpv5.db.objects.Group;
+import mpv5.db.objects.Product;
 import mpv5.db.objects.User;
 import mpv5.globals.LocalSettings;
 import mpv5.handler.SimpleDatabaseObject;
@@ -92,6 +93,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
 
         /**
          * Returns the Context corresponding to this entry, never null
+         * @return
          */
         public T getKey() {
             return context;
@@ -99,6 +101,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
 
         /**
          * Returns the ID corresponding to this entry, never null
+         * @return
          */
         public Integer getValue() {
             return ids;
@@ -107,6 +110,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
         /**
          * Compares the specified object with this entry for equality.
          * Returns <tt>true</tt> if the given object is also a map entry and Key and Value.intValue are equal
+         * @param o
          */
         @Override
         public boolean equals(Object o) {
@@ -128,6 +132,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
             hash = 11 * hash + (this.ids != null ? this.ids.hashCode() : 0);
             return hash;
         }
+
     }
 
     /**
@@ -302,17 +307,17 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
      * The db context of this do. To be defined by the child class!
      * 
      */
-    public Context context = Context.DEFAULT;
+    protected Context context = Context.DEFAULT;
     /**
      * The unique id, or 0 if it is a new do
      */
-    public Integer ids = 0;
+    protected Integer ids = 0;
     private boolean readOnly = false;
     private boolean active = true;
     /**
      * The mandatory name
      */
-    public String cname = "";
+    protected String cname = "";
     private int groupsids = 1;
     private int intaddedby = 0;
     private Date dateadded = new Date(0);
@@ -1678,7 +1683,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
      * AutoLockEnabled
      * @param active
      */
-    public static void AutoLockEnabled(boolean active) {
+    public static void setAutoLockEnabled(boolean active) {
         AUTO_LOCK = active;
     }
 

@@ -82,7 +82,7 @@ public class MPTableModelRow {
     public MPTableModelRow(final DatabaseObject obj) {
         this.obj = obj;
         this.context = obj.getContext();
-        this.ids = obj.ids;
+        this.ids = obj.__getIDS();
     }
 
     /**

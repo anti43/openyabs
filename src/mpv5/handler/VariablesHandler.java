@@ -16,10 +16,7 @@
  */
 package mpv5.handler;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
 import mpv5.db.common.NodataFoundException;
@@ -29,7 +26,6 @@ import mpv5.db.objects.Item;
 import mpv5.db.objects.SubItem;
 import mpv5.db.objects.User;
 import mpv5.logging.Log;
-import mpv5.ui.frames.MPView;
 import mpv5.utils.date.DateConverter;
 import mpv5.utils.numberformat.FormatNumber;
 
@@ -98,7 +94,7 @@ public abstract class VariablesHandler {
 //        }
 //        old = target;
 
-        Log.Debug(VariablesHandler.class, "Resolving vars for " + target.getContext() + "#" + target.ids);
+        Log.Debug(VariablesHandler.class, "Resolving vars for " + target.getContext() + "#" + target.__getIDS());
         String[][] vars = new String[GENERIC_VARS.values().length + getSpecialVarsOf(target).length + 7][2];
         GENERIC_VARS[] gens = GENERIC_VARS.values();
         int i;

@@ -128,7 +128,7 @@ public class SampleData {
                                 p.setDescription("no description!");
                                 p.setExternalvalue(new BigDecimal("100"));value+=100d;
                                 p.setGroupsids(1);
-                                p.setIntaddedby(mpv5.db.objects.User.getCurrentUser().ids);
+                                p.setIntaddedby(mpv5.db.objects.User.getCurrentUser().__getIDS());
                                 p.setInternalvalue(new BigDecimal("100"));
                                 p.setMeasure("h");
                                 p.setQuantityvalue(new BigDecimal("1"));

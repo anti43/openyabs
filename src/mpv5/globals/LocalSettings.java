@@ -118,7 +118,7 @@ public class LocalSettings {
         }
 
         if (!getProperty(DBAUTOLOCK).equals("null")) {
-            DatabaseObject.AutoLockEnabled(TypeConversion.stringToBoolean(getProperty(DBAUTOLOCK)));
+            DatabaseObject.setAutoLockEnabled(TypeConversion.stringToBoolean(getProperty(DBAUTOLOCK)));
         } else {
             setProperty(DBAUTOLOCK, "0");
         }

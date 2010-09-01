@@ -48,7 +48,7 @@ import mpv5.utils.xml.XMLReader;
  *
  * Context controls Database Queries for all native MP {@link DatabaseObject}s
  */
-public class Context implements Serializable{
+public class Context implements Serializable {
 
     //********** tablenames ****************************************************
     public static String IDENTITY_CONTACTS = "contacts";
@@ -124,7 +124,6 @@ public class Context implements Serializable{
     public static String UNIQUECOLUMNS_GROUPS = "cname";
     public static String UNIQUECOLUMNS_DEFAULT = "cname";
     public static String DETAIL_CONTACT_SEARCH = "prename,cname,street,city,country,notes";
-
     //********** conditions ****************************************************
     private boolean isCompany = false;
     private boolean isCustomer = false;
@@ -150,64 +149,64 @@ public class Context implements Serializable{
     public static String DEFAULT_ITEM_SEARCH = "ids, cname, dateadded, netvalue";
     public static String DEFAULT_PRODUCT_SEARCH = "ids, cnumber, cname, description";
     //********** table fields ********************************************************
-    public static String DETAILS_CONTACTS = IDENTITY_CONTACTS + "." + "IDS," + IDENTITY_CONTACTS + "." + "CNUMBER," +
-            IDENTITY_CONTACTS + "." + "TITLE," + IDENTITY_CONTACTS + "." + "PRENAME," + IDENTITY_CONTACTS + "." + "CNAME," +
-            IDENTITY_CONTACTS + "." + "STREET," + IDENTITY_CONTACTS + "." + "ZIP," + IDENTITY_CONTACTS + "." + "CITY," +
-            IDENTITY_CONTACTS + "." + "MAINPHONE," + IDENTITY_CONTACTS + "." + "FAX," + IDENTITY_CONTACTS + "." + "MOBILEPHONE," +
-            IDENTITY_CONTACTS + "." + "WORKPHONE," + IDENTITY_CONTACTS + "." + "COMPANY," + IDENTITY_CONTACTS + "." + "MAILADDRESS," +
-            IDENTITY_CONTACTS + "." + "WEBSITE," + IDENTITY_CONTACTS + "." + "NOTES," +
-            IDENTITY_CONTACTS + "." + "TAXNUMBER";
+    public static String DETAILS_CONTACTS = IDENTITY_CONTACTS + "." + "IDS," + IDENTITY_CONTACTS + "." + "CNUMBER,"
+            + IDENTITY_CONTACTS + "." + "TITLE," + IDENTITY_CONTACTS + "." + "PRENAME," + IDENTITY_CONTACTS + "." + "CNAME,"
+            + IDENTITY_CONTACTS + "." + "STREET," + IDENTITY_CONTACTS + "." + "ZIP," + IDENTITY_CONTACTS + "." + "CITY,"
+            + IDENTITY_CONTACTS + "." + "MAINPHONE," + IDENTITY_CONTACTS + "." + "FAX," + IDENTITY_CONTACTS + "." + "MOBILEPHONE,"
+            + IDENTITY_CONTACTS + "." + "WORKPHONE," + IDENTITY_CONTACTS + "." + "COMPANY," + IDENTITY_CONTACTS + "." + "MAILADDRESS,"
+            + IDENTITY_CONTACTS + "." + "WEBSITE," + IDENTITY_CONTACTS + "." + "NOTES,"
+            + IDENTITY_CONTACTS + "." + "TAXNUMBER";
     public static String DETAILS_PRODUCTS =
-            IDENTITY_PRODUCTS + "." + "ids," +
-            IDENTITY_PRODUCTS + "." + "cnumber," +
-            IDENTITY_PRODUCTS + "." + "cname," +
-            IDENTITY_PRODUCTS + "." + "ean," +
-            IDENTITY_PRODUCTS + "." + "reference," +
-            IDENTITY_CONTACTS + "." + "cname," +
-            IDENTITY_GROUPS + "." + "cname," +
-            IDENTITY_PRODUCTS + "." + "internalnetvalue," +
-            IDENTITY_PRODUCTS + "." + "externalnetvalue," +
-            IDENTITY_PRODUCTS + "." + "stockvalue";
-    public static String DETAILS_USERS = IDENTITY_USERS + "." + "IDS," + IDENTITY_USERS + "." + "CNAME," +
-            IDENTITY_USERS + "." + "fullname," +
-            IDENTITY_USERS + "." + "mail," +
-            IDENTITY_USERS + "." + "isenabled," +
-            IDENTITY_USERS + "." + "isloggedin";
+            IDENTITY_PRODUCTS + "." + "ids,"
+            + IDENTITY_PRODUCTS + "." + "cnumber,"
+            + IDENTITY_PRODUCTS + "." + "cname,"
+            + IDENTITY_PRODUCTS + "." + "ean,"
+            + IDENTITY_PRODUCTS + "." + "reference,"
+            + IDENTITY_CONTACTS + "." + "cname,"
+            + IDENTITY_GROUPS + "." + "cname,"
+            + IDENTITY_PRODUCTS + "." + "internalnetvalue,"
+            + IDENTITY_PRODUCTS + "." + "externalnetvalue,"
+            + IDENTITY_PRODUCTS + "." + "stockvalue";
+    public static String DETAILS_USERS = IDENTITY_USERS + "." + "IDS," + IDENTITY_USERS + "." + "CNAME,"
+            + IDENTITY_USERS + "." + "fullname,"
+            + IDENTITY_USERS + "." + "mail,"
+            + IDENTITY_USERS + "." + "isenabled,"
+            + IDENTITY_USERS + "." + "isloggedin";
     public static String DETAILS_ITEMS =
-            IDENTITY_ITEMS + "." + "IDS," +
-            IDENTITY_ITEMS + "." + "CNAME," +
-            IDENTITY_ITEMS + "." + "dateadded," +
-            IDENTITY_ITEMS + "." + "netvalue," +
-            IDENTITY_ITEMS + "." + "taxvalue, " +
-            IDENTITY_ITEMS + "." + "datetodo";
-    public static String DETAILS_JOURNAL = IDENTITY_ITEMS + "." + "IDS," +
-            IDENTITY_ITEMS + "." + "{date}," +
-//            IDENTITY_ITEMS + "." + "dateend," +
-            IDENTITY_GROUPS + "." + "CNAME," +
-            IDENTITY_ACCOUNTS + "." + "cname," +
-            IDENTITY_ITEMS + "." + "CNAME," +
-            IDENTITY_ITEMS + "." + "inttype," +
-            IDENTITY_ITEMS + "." + "intstatus," +
-            IDENTITY_ITEMS + "." + "netvalue," +
-            IDENTITY_ITEMS + "." + "taxvalue";
-    public static String DETAILS_JOURNAL2 = IDENTITY_REVENUE + "." + "IDS," +
-            IDENTITY_REVENUE + "." + "dateadded," +
-            IDENTITY_GROUPS + "." + "CNAME," +
-            IDENTITY_ACCOUNTS + "." + "cname," +
-            IDENTITY_REVENUE + "." + "CNAME," +
-            IDENTITY_REVENUE + "." + "ids," +
-            IDENTITY_REVENUE + "." + "ids," +
-            IDENTITY_REVENUE + "." + "brutvalue," +
-            IDENTITY_REVENUE + "." + "brutvalue";
-    public static String DETAILS_JOURNAL3 = IDENTITY_EXPENSE + "." + "IDS," +
-            IDENTITY_EXPENSE + "." + "dateadded," +
-            IDENTITY_GROUPS + "." + "CNAME," +
-            IDENTITY_ACCOUNTS + "." + "cname," +
-            IDENTITY_EXPENSE + "." + "CNAME," +
-            IDENTITY_EXPENSE + "." + "ids," +
-            IDENTITY_EXPENSE + "." + "ids," +
-            IDENTITY_EXPENSE + "." + "brutvalue," +
-            IDENTITY_EXPENSE + "." + "brutvalue";
+            IDENTITY_ITEMS + "." + "IDS,"
+            + IDENTITY_ITEMS + "." + "CNAME,"
+            + IDENTITY_ITEMS + "." + "dateadded,"
+            + IDENTITY_ITEMS + "." + "netvalue,"
+            + IDENTITY_ITEMS + "." + "taxvalue, "
+            + IDENTITY_ITEMS + "." + "datetodo";
+    public static String DETAILS_JOURNAL = IDENTITY_ITEMS + "." + "IDS,"
+            + IDENTITY_ITEMS + "." + "{date},"
+            + //            IDENTITY_ITEMS + "." + "dateend," +
+            IDENTITY_GROUPS + "." + "CNAME,"
+            + IDENTITY_ACCOUNTS + "." + "cname,"
+            + IDENTITY_ITEMS + "." + "CNAME,"
+            + IDENTITY_ITEMS + "." + "inttype,"
+            + IDENTITY_ITEMS + "." + "intstatus,"
+            + IDENTITY_ITEMS + "." + "netvalue,"
+            + IDENTITY_ITEMS + "." + "taxvalue";
+    public static String DETAILS_JOURNAL2 = IDENTITY_REVENUE + "." + "IDS,"
+            + IDENTITY_REVENUE + "." + "dateadded,"
+            + IDENTITY_GROUPS + "." + "CNAME,"
+            + IDENTITY_ACCOUNTS + "." + "cname,"
+            + IDENTITY_REVENUE + "." + "CNAME,"
+            + IDENTITY_REVENUE + "." + "ids,"
+            + IDENTITY_REVENUE + "." + "ids,"
+            + IDENTITY_REVENUE + "." + "brutvalue,"
+            + IDENTITY_REVENUE + "." + "brutvalue";
+    public static String DETAILS_JOURNAL3 = IDENTITY_EXPENSE + "." + "IDS,"
+            + IDENTITY_EXPENSE + "." + "dateadded,"
+            + IDENTITY_GROUPS + "." + "CNAME,"
+            + IDENTITY_ACCOUNTS + "." + "cname,"
+            + IDENTITY_EXPENSE + "." + "CNAME,"
+            + IDENTITY_EXPENSE + "." + "ids,"
+            + IDENTITY_EXPENSE + "." + "ids,"
+            + IDENTITY_EXPENSE + "." + "brutvalue,"
+            + IDENTITY_EXPENSE + "." + "brutvalue";
     public static String DETAILS_HISTORY = getHistory().getDbIdentity() + ".ids, " + getHistory().getDbIdentity() + ".cname, " + getHistory().getDbIdentity() + ".username, " + Context.getGroup().getDbIdentity() + ".cname," + Context.getHistory().getDbIdentity() + ".dateadded";
     public static String DETAILS_FILES_TO_CONTACTS = Context.getFiles().getDbIdentity() + ".cname," + getFilesToContacts().getDbIdentity() + ".cname, " + Context.getFiles().getDbIdentity() + ".dateadded," + Context.getFilesToContacts().getDbIdentity() + ".description," + Context.getFilesToContacts().getDbIdentity() + ".intsize," + Context.getFilesToContacts().getDbIdentity() + ".mimetype";
     public static String DETAILS_FILES_TO_ITEMS = Context.getFiles().getDbIdentity() + ".cname," + getFilesToItems().getDbIdentity() + ".cname, " + Context.getFiles().getDbIdentity() + ".dateadded," + Context.getFilesToItems().getDbIdentity() + ".description," + Context.getFilesToItems().getDbIdentity() + ".intsize," + Context.getFilesToItems().getDbIdentity() + ".mimetype";
@@ -1057,6 +1056,15 @@ public class Context implements Serializable{
         this.itemType = itemType;
     }
 
+    /**
+     * Returns an empty "sample" Object of the context type
+     * @param <T> 
+     * @return An empty {@link DatabaseObject}
+     */
+    @SuppressWarnings("unchecked")
+    public <T extends DatabaseObject>T getSampleObject() {
+        return (T) DatabaseObject.getObject(this);
+    }
 ////////////////////////////////////////////////////////////////////////////////
 //generate a new Context Object on each call here, callers may alter them to variants
 
@@ -1101,14 +1109,13 @@ public class Context implements Serializable{
         return getItem(null, null);
     }
 
-
     public static Context getSubItem() {
         Context subitem = new Context();
-            subitem.setSubID(DEFAULT_SUBID);
-            subitem.setDbIdentity(IDENTITY_SUBITEMS);
-            subitem.setIdentityClass(IDENTITY_SUBITEMS_CLASS);
-            subitem.setId(2);
-        
+        subitem.setSubID(DEFAULT_SUBID);
+        subitem.setDbIdentity(IDENTITY_SUBITEMS);
+        subitem.setIdentityClass(IDENTITY_SUBITEMS_CLASS);
+        subitem.setId(2);
+
 
         return subitem;
     }
@@ -1213,7 +1220,6 @@ public class Context implements Serializable{
 
         return c;
     }
-
 
     public static Context getGroup() {
         Context c = new Context();
@@ -1593,7 +1599,6 @@ public class Context implements Serializable{
 
         return c;
     }
-
 
     /////////////////////////////////////////////////////////////////////////////////////////////////
     /**

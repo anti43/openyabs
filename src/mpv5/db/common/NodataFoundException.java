@@ -45,7 +45,7 @@ public class NodataFoundException extends Exception {
      * @param context
      * @param id
      */
-    public NodataFoundException(Context context, int id) {
+    public NodataFoundException(Context context, long id) {
         super(Messages.NO_DATA_FOUND.toString() + " in Context: " +  context + " with id: " + id);
     }
 }

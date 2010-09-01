@@ -26,27 +26,26 @@ import mpv5.utils.images.MPIcon;
  */
 public class Company extends DatabaseObject {
 
-    private String state ="";
-    private String phoneprefix ="";
-    private String business ="";
-    private String taxadvisor ="";
-    private String city ="";
-    private String taxadvjob ="";
-    private String street ="";
-    private String stb ="";
-    private String email ="";
-    private String name ="";
-    private String zipcode ="";
-    private String phone ="";
-    private String firstname ="";
-    private String taxauthority ="";
-    private String taxnumber ="";
-    private String taxadvmandant ="";
+    private String state = "";
+    private String phoneprefix = "";
+    private String business = "";
+    private String taxadvisor = "";
+    private String city = "";
+    private String taxadvjob = "";
+    private String street = "";
+    private String stb = "";
+    private String email = "";
+    private String name = "";
+    private String zipcode = "";
+    private String phone = "";
+    private String firstname = "";
+    private String taxauthority = "";
+    private String taxnumber = "";
+    private String taxadvmandant = "";
 
-        public Company(){
+    public Company() {
         context = Context.getCompany();
     }
-
 
     @Override
     public JComponent getView() {

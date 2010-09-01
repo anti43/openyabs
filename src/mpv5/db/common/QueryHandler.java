@@ -120,7 +120,7 @@ public class QueryHandler implements Cloneable {
             } else {
                 Log.Debug(this, "Database version info can not be found.");
                 throw new UnsupportedOperationException("Database version cannot be validated! Required version: " + Constants.DATABASE_VERSION + "\n\n"
-                        + "To solve this issue, maybe you want to run Yabs with the parameter ");
+                        + "To solve this issue, you maybe want to run Yabs with the parameter -finstall");
             }
         } catch (Exception ex) {
             Log.Debug(ex);

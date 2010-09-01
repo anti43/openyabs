@@ -16,8 +16,6 @@
  */
 package mpv5.db.objects;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import mpv5.usermanagement.*;
 import java.awt.Font;
 import java.io.File;
@@ -30,7 +28,6 @@ import java.util.Locale;
 import java.util.Map.Entry;
 import java.util.Vector;
 import javax.swing.JComponent;
-import javax.swing.SwingUtilities;
 import mpv5.Main;
 import mpv5.data.PropertyStore;
 import mpv5.db.common.Context;
@@ -41,7 +38,6 @@ import mpv5.db.common.QueryCriteria;
 import mpv5.db.common.QueryHandler;
 import mpv5.globals.LocalSettings;
 import mpv5.globals.Messages;
-import mpv5.db.objects.UserProperty;
 import mpv5.handler.VariablesHandler;
 import mpv5.i18n.LanguageManager;
 import mpv5.logging.Log;
@@ -60,7 +56,7 @@ import mpv5.utils.text.TypeConversion;
  */
 public class User extends DatabaseObject {
 
-    public static User currentUser;
+    private static User currentUser;
 
     public static User getCurrentUser() {
         if (currentUser == null) {
@@ -582,6 +578,23 @@ public class User extends DatabaseObject {
         }
 
         defineDTAConfig();
+    }
+
+    @Override
+    public HashMap<String, Object> resolveReferences(HashMap<String, Object> map) {
+        super.resolveReferences(map);
+        ArrayList<Company> data;
+        try {
+            data = DatabaseObject.getReferencedObjects(this, Context.getCompany(), new Company());
+            //Presumably 0 or 1
+            for (int i = 0; i < data.size(); i++) {
+                map.put("company", data.get(i));
+            }
+        } catch (Exception ex) {
+            Log.Debug(this, ex.getMessage());
+        }
+//TODO  check for usage
+        return map;
     }
 
     /**
