@@ -1,14 +1,9 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package mpv5.db.common;
 
 import java.awt.Cursor;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.BufferedInputStream;
-import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -36,10 +31,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.concurrent.ExecutionException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JFrame;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
@@ -65,7 +57,7 @@ import mpv5.utils.ui.TextFieldUtils;
 
 /**
  *
- * Use this class to access the MP database.
+ * Use this class to access the Yabs database.
  *
  * @see QueryHandler#instanceOf() 
  * @see QueryHandler#getConnection()
@@ -85,6 +77,7 @@ public class QueryHandler implements Cloneable {
      * @return The one and only instance of the database connection
      */
     public static synchronized QueryHandler instanceOf() {
+        //Explicitely instantiated at first connection attempt
         if (instance == null) {
             instance = new QueryHandler();
         }
@@ -175,7 +168,9 @@ public class QueryHandler implements Cloneable {
     }
 
     /**
+     * <b>Do not use this during 'normal' program operation.</b>
      *
+     * @see QueryHandler#instanceOf() instead
      * @param c
      */
     public QueryHandler(DatabaseConnection c) {
@@ -243,7 +238,7 @@ public class QueryHandler implements Cloneable {
 
     /**
      * Returns a full column
-     * @param columnName
+     * @param columnName column1
      * @param maximumRowCount If >0 , this is the row count limit
      * @return The column
      * @throws NodataFoundException
@@ -264,6 +259,13 @@ public class QueryHandler implements Cloneable {
         }
     }
 
+    /**
+     * Select multiple columns
+     * @param columnNames column1, column2, column3...
+     * @param maximumRowCount
+     * @return
+     * @throws NodataFoundException
+     */
     public Object[][] getColumns(String[] columnNames, int maximumRowCount) throws NodataFoundException {
         ReturnValue data = null;
         String columnName = "";
@@ -290,7 +292,7 @@ public class QueryHandler implements Cloneable {
     }
 
     /**
-     *
+     * Set the context for this connection, usually not used as the Context is set on Clone
      * @param context
      * @return
      */
@@ -304,10 +306,10 @@ public class QueryHandler implements Cloneable {
     }
 
     /**
-     *
+     * Select the row with this IDS
      * @param id
      * @return
-     * @throws NodataFoundException
+     * @throws NodataFoundException If no such row exists
      */
     public ReturnValue select(int id) throws NodataFoundException {
         ReturnValue data = freeSelectQuery("SELECT * FROM " + table + " WHERE " + table + ".ids = " + id + " AND " + context.getConditions().substring(6, context.getConditions().length()), mpv5.usermanagement.MPSecurityManager.VIEW, null);
@@ -319,8 +321,9 @@ public class QueryHandler implements Cloneable {
     }
 
     /**
+     * Selects one or more columns from the current {@link Context}-
      * No condition checking!
-     * @param columns
+     * @param columns column1, column2, column3...
      * @return
      * @throws NodataFoundException
      */
@@ -346,11 +349,11 @@ public class QueryHandler implements Cloneable {
     }
 
     /**
-     *
-     * @param columns
+     * Select data from a timeframe
+     * @param columns column1, column2, column3...
      * @param criterias
      * @param time
-     * @param timeCol
+     * @param timeCol The column containing the date
      * @return
      * @throws NodataFoundException
      */
@@ -385,7 +388,7 @@ public class QueryHandler implements Cloneable {
 
     /**
      *
-     * @param columns
+     * @param columns column1, column2, column3...
      * @param criterias
      * @param time
      * @param timeCol
@@ -412,7 +415,7 @@ public class QueryHandler implements Cloneable {
 
     /**
      *
-     * @param columns
+     * @param columns column1, column2, column3...
      * @param criterias
      * @return
      * @throws NodataFoundException
@@ -435,7 +438,7 @@ public class QueryHandler implements Cloneable {
 
     /**
      * Requires 'dateadded' column
-     * @param columns
+     * @param columns column1, column2, column3...
      * @param criterias
      * @param time
      * @return
@@ -556,7 +559,7 @@ public class QueryHandler implements Cloneable {
 
     /**
      * 
-     * @param what
+     * @param what column1, column2, column3...
      * @param where
      * @param datecolumn
      * @param zeitraum
@@ -575,7 +578,7 @@ public class QueryHandler implements Cloneable {
 
     /**
      *
-     * @param what
+     * @param what column1, column2, column3...
      * @param where
      * @param zeitraum
      * @param additionalCondition
@@ -610,7 +613,7 @@ public class QueryHandler implements Cloneable {
 
     /**
      *
-     * @param what
+     * @param what column1, column2, column3...
      * @param where
      * @param zeitraum
      * @param additionalCondition
@@ -647,7 +650,7 @@ public class QueryHandler implements Cloneable {
 
     /**
      *
-     * @param what
+     * @param what column1, column2, column3...
      * @param where
      * @param leftJoinTable
      * @param leftJoinKey
@@ -697,7 +700,7 @@ public class QueryHandler implements Cloneable {
     }
 
     /**
-     *
+     * Count rows in a time frame
      * @param date1
      * @param date2
      * @return
@@ -707,10 +710,10 @@ public class QueryHandler implements Cloneable {
     }
 
     /**
-     *
+     * Set the table for the current connection. Usually only used inside the <code>Clone</code> method of {@link QueryHandler}
      * @param newTable
      */
-    public void setTable(String newTable) {
+    protected void setTable(String newTable) {
         this.table = newTable;
         if (DatabaseConnection.getPrefix() != null && DatabaseConnection.getPrefix().equals("null")) {
             this.table = DatabaseConnection.getPrefix() + table;
@@ -718,7 +721,7 @@ public class QueryHandler implements Cloneable {
     }
 
     /**
-     * Sets the table and the context.. dont use this.
+     * Sets the table and the context for the current connection. Don't use this.
      * @param newTable
      */
     public void setTable2(String newTable) {
@@ -734,16 +737,16 @@ public class QueryHandler implements Cloneable {
     }
 
     /**
-     *
-     * @return
+     * The current table name as specified by the current {@link Context}, or {@link #setTable(java.lang.String) }, {@link #setTable2(java.lang.String) }
+     * @return The current table name
      */
     public String getTable() {
         return table;
     }
 
     /**
-     * For the wait-cursor
-     * @param main 
+     * Set a wait-cursor during database transactions (if not cloned for silent transactions)
+     * @param main A frame window
      */
     public static void setWaitCursorFor(JFrame main) {
         comp = main;
@@ -794,7 +797,10 @@ public class QueryHandler implements Cloneable {
     private static volatile int RUNNING_JOBS = 0;
     private static Thread JOB_WATCHDOG;
 
-    public synchronized void stop() {
+    /**
+     * Invoked after running a database query (usually done automatically)
+     */
+    protected synchronized void stop() {
         if (!runInBackground) {
             Runnable runnable = new Runnable() {
 
@@ -816,7 +822,7 @@ public class QueryHandler implements Cloneable {
         }
     }
 
-    public synchronized void start() {
+    private synchronized void start() {
         if (JOB_WATCHDOG == null) {
             JOB_WATCHDOG = new Thread(new Watchdog());
             JOB_WATCHDOG.start();
@@ -870,11 +876,11 @@ public class QueryHandler implements Cloneable {
      */
     public static String BACKSLASH_REPLACEMENT_STRING = "<removedbackslash>";
 
-    private String escapeBackslashes(String query) {
+    private synchronized String escapeBackslashes(String query) {
         return query.replace("\\", BACKSLASH_REPLACEMENT_STRING);
     }
 
-    private String rescapeBackslashes(String query) {
+    private synchronized String rescapeBackslashes(String query) {
         return query.replace(BACKSLASH_REPLACEMENT_STRING, "\\");
     }
 
@@ -936,7 +942,7 @@ public class QueryHandler implements Cloneable {
                     oldValue = RUNNING_JOBS;
                 }
                 try {
-                    Thread.sleep(10);
+                    Thread.sleep(33);
                 } catch (InterruptedException ex) {
                     mpv5.logging.Log.Debug(ex);
                 }
@@ -1943,27 +1949,18 @@ public class QueryHandler implements Cloneable {
                     }
                 }
             }
+
+            stm = null;
+            resultSet = null;
+            rsmd = null;
         }
 
         if (jobmessage != null && retval != null) {
             MPView.addMessage(jobmessage);
             retval.setMessage(jobmessage);
         }
-//
-//        if (log != null && retval.hasData()) {
-//            Object[][] data1 = retval.getData();
-//            for (int i = 0; i < data1.length; i++) {
-//                Object[] objects = data1[i];
-//                log.append(" \n");
-//                for (int j = 0; j < objects.length; j++) {
-//                    Object object = objects[j];
-//                    log.append("\t" + object);
-//                }
-//            }
-//        }
 
         return retval;
-
     }
 
     /**
@@ -2066,6 +2063,8 @@ public class QueryHandler implements Cloneable {
                     }
                 }
             }
+            stm = null;
+            resultSet = null;
         }
 
         if (jobmessage != null) {
@@ -2084,7 +2083,7 @@ public class QueryHandler implements Cloneable {
      * @return Your Data
      */
     @SuppressWarnings({"unchecked"})
-    public ReturnValue freeSelectQuery(String query, int action, String jobmessage) {
+    public synchronized ReturnValue freeSelectQuery(String query, int action, String jobmessage) {
 
         if (table != null) {
             query = query.replace("%%tablename%%", table);
@@ -2113,9 +2112,11 @@ public class QueryHandler implements Cloneable {
         ResultSet resultSet = null;
         ResultSetMetaData rsmd;
         Object[][] data = null;
-        ArrayList<Object> z;
+        ArrayList<Object> row;
         int id = -1;
         String[] columnnames = null;
+        ArrayList<Object> spalten = new ArrayList<Object>();
+        ArrayList<Object> zeilen = new ArrayList<Object>();
 
         try {
             stm = sqlConn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_READ_ONLY);
@@ -2134,10 +2135,8 @@ public class QueryHandler implements Cloneable {
                 Log.Debug(sQLException);
                 throw sQLException;
             }
-            ArrayList<Object> spalten = new ArrayList<Object>();
-            ArrayList<Object> zeilen = new ArrayList<Object>();
-            rsmd = resultSet.getMetaData();
 
+            rsmd = resultSet.getMetaData();
             try {
                 ResultSet keys = stm.getGeneratedKeys();
                 if (keys != null && keys.next()) {
@@ -2151,8 +2150,6 @@ public class QueryHandler implements Cloneable {
             for (int i = 1; i <= rsmd.getColumnCount(); i++) {
                 columnnames[i - 1] = rsmd.getColumnName(i);
             }
-
-//            Log.PrintArray(columnnames);
 
             while (resultSet.next()) {
                 spalten = new ArrayList<Object>();
@@ -2168,7 +2165,6 @@ public class QueryHandler implements Cloneable {
                             object = sQLException;
                         }
                     }
-
                     spalten.add(object);
                 }
                 zeilen.add(spalten);
@@ -2176,9 +2172,9 @@ public class QueryHandler implements Cloneable {
             data = new Object[zeilen.size()][spalten.size()];
 
             for (int h = 0; h < zeilen.size(); h++) {
-                z = (ArrayList<Object>) zeilen.get(h);
+                row = (ArrayList<Object>) zeilen.get(h);
                 for (int i = 0; i < spalten.size(); i++) {
-                    data[h][i] = z.get(i);
+                    data[h][i] = row.get(i);
                 }
             }
         } catch (SQLException ex) {
@@ -2206,12 +2202,17 @@ public class QueryHandler implements Cloneable {
                     Popup.error(ex);
                 }
             }
+            stm = null;
+            resultSet = null;
+            rsmd = null;
+            row = null;
+            spalten = null;
+            zeilen = null;
         }
 
         if (jobmessage != null) {
             MPView.addMessage(jobmessage);
         }
-//        Log.PrintArray(data);
         return new ReturnValue(id, data, columnnames, jobmessage);
     }
 
