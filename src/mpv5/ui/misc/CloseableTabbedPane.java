@@ -81,7 +81,7 @@ public class CloseableTabbedPane extends JTabbedPane implements MouseListener,
      */
     private Icon pressedCloseIcon = null;
     private MPView parentv;
-    private int oldSelection;
+    private volatile int oldSelection;
 
     /**
      * Creates a new instance of <code>CloseableTabbedPane</code>
@@ -146,7 +146,7 @@ public class CloseableTabbedPane extends JTabbedPane implements MouseListener,
 
     @Override
     public void setSelectedIndex(int index) {
-        oldSelection = getSelectedIndex();
+
         try {
             super.setSelectedIndex(index);
         } catch (Exception e) {
@@ -220,6 +220,8 @@ public class CloseableTabbedPane extends JTabbedPane implements MouseListener,
      * @param e the <code>MouseEvent</code>
      */
     public void mouseEntered(MouseEvent e) {
+                oldSelection = getSelectedIndex();
+        System.err.println(oldSelection);
     }
 
     /**
@@ -325,7 +327,7 @@ public class CloseableTabbedPane extends JTabbedPane implements MouseListener,
                                 if (selIndex < oldSelection) {
                                     setSelectedIndex(oldSelection-1);
                                 } else if (selIndex > oldSelection){
-//                                    setSelectedIndex(oldSelection);
+                                    setSelectedIndex(oldSelection);
                                 }
                             } catch (Exception selex) {
                                 Log.Debug(selex);
