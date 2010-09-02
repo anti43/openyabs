@@ -71,10 +71,7 @@ import mpv5.utils.files.FileReaderWriter;
 import mpv5.utils.print.PrintJob2;
 import mpv5.utils.text.RandomText;
 import mpv5.webshopinterface.WSIManager;
-import org.apache.commons.cli2.*;
-import org.apache.commons.cli2.builder.*;
-import org.apache.commons.cli2.commandline.Parser;
-import org.apache.commons.cli2.util.*;
+
 
 /**
  * The main class of the application.
@@ -375,6 +372,7 @@ public class Main extends SingleFrameApplication {
             readImports();
             start();
         } catch (Exception e) {
+            Popup.error(null, e);
             throw e;
         }
     }
@@ -443,38 +441,38 @@ public class Main extends SingleFrameApplication {
 
     private static void parseArgs(String[] args) {
 
-        DefaultOptionBuilder obuilder = new DefaultOptionBuilder();
-        ArgumentBuilder abuilder = new ArgumentBuilder();
-        GroupBuilder gbuilder = new GroupBuilder();
+        org.apache.commons.cli2.builder.DefaultOptionBuilder obuilder = new  org.apache.commons.cli2.builder.DefaultOptionBuilder();
+         org.apache.commons.cli2.builder.ArgumentBuilder abuilder = new  org.apache.commons.cli2.builder.ArgumentBuilder();
+         org.apache.commons.cli2.builder.GroupBuilder gbuilder = new  org.apache.commons.cli2.builder.GroupBuilder();
 
-        Argument option = abuilder.withName("option").withMinimum(1).withMaximum(1).create();
-        Argument filearg = abuilder.withName("=file").withMinimum(1).withMaximum(1).create();
-        Argument dirarg = abuilder.withName("directory").withMinimum(1).withMaximum(1).create();
-        Argument number = abuilder.withName("number").withMinimum(1).withMaximum(1).create();
+         org.apache.commons.cli2.Argument option = abuilder.withName("option").withMinimum(1).withMaximum(1).create();
+        org.apache.commons.cli2.Argument filearg = abuilder.withName("=file").withMinimum(1).withMaximum(1).create();
+        org.apache.commons.cli2.Argument dirarg = abuilder.withName("directory").withMinimum(1).withMaximum(1).create();
+        org.apache.commons.cli2.Argument number = abuilder.withName("number").withMinimum(1).withMaximum(1).create();
 
-        Option server = obuilder.withShortName("server").withShortName("serv").withDescription("start built-in server component").create();
-        Option clear = obuilder.withShortName("clear").withDescription("clear the status of the yabs lock file").create();
-        Option showenv = obuilder.withShortName("showenv").withShortName("se").withDescription("show environmental variables").create();
-        Option netbook = obuilder.withShortName("netbook").withShortName("net").withDescription("use netbook size optimizations").create();
-        Option help = obuilder.withShortName("help").withShortName("h").withDescription("print this message").create();
-        Option license = obuilder.withShortName("license").withShortName("li").withDescription("print license").create();
-        Option version = obuilder.withShortName("version").withDescription("print the version information and exit").create();
-        Option verbose = obuilder.withShortName("verbose").withDescription("be extra verbose").create();
-        Option nolfs = obuilder.withShortName("nolf").withDescription("use java native metal L&F").create();
-        Option debug = obuilder.withShortName("debug").withDescription("enable debug logging").create();
-        Option removeplugins = obuilder.withShortName("removeplugins").withDescription("remove all plugins which would be loaded").create();
-        Option removelangs= obuilder.withShortName("noi18n").withDescription("remove all languages which would be loaded").create();
-        Option forceinstall= obuilder.withShortName("finstall").withDescription("force-install").create();
-        Option logfile = obuilder.withShortName("logfile").withShortName("l").withDescription("use file for log").withArgument(filearg).create();
-        Option mpdir = obuilder.withShortName("appdir").withShortName("dir").withShortName("path").withDescription("set the application main dir (used for caching, settings, temp files)").withArgument(dirarg).create();
-        Option connectionInstance = obuilder.withShortName("connectionInstance").withShortName("conn").withDescription("use stored connection with this ID").withArgument(number).create();
-        Option windowlog = obuilder.withShortName("windowlog").withDescription("enables logging to the MP Log Console").create();
-        Option consolelog = obuilder.withShortName("consolelog").withDescription("enables logging to STDOUT").create();
-        Option printtest = obuilder.withShortName("printtest").withDescription("test PDF printing").create();
-        Option params = obuilder.withShortName("params").withDescription("optional parameters \"param1:value1;param2:value2..\"").withArgument(option).create();
+        org.apache.commons.cli2.Option server = obuilder.withShortName("server").withShortName("serv").withDescription("start built-in server component").create();
+        org.apache.commons.cli2.Option clear = obuilder.withShortName("clear").withDescription("clear the status of the yabs lock file").create();
+        org.apache.commons.cli2.Option showenv = obuilder.withShortName("showenv").withShortName("se").withDescription("show environmental variables").create();
+        org.apache.commons.cli2.Option netbook = obuilder.withShortName("netbook").withShortName("net").withDescription("use netbook size optimizations").create();
+        org.apache.commons.cli2.Option help = obuilder.withShortName("help").withShortName("h").withDescription("print this message").create();
+        org.apache.commons.cli2.Option license = obuilder.withShortName("license").withShortName("li").withDescription("print license").create();
+        org.apache.commons.cli2.Option version = obuilder.withShortName("version").withDescription("print the version information and exit").create();
+        org.apache.commons.cli2.Option verbose = obuilder.withShortName("verbose").withDescription("be extra verbose").create();
+        org.apache.commons.cli2.Option nolfs = obuilder.withShortName("nolf").withDescription("use java native metal L&F").create();
+        org.apache.commons.cli2.Option debug = obuilder.withShortName("debug").withDescription("enable debug logging").create();
+        org.apache.commons.cli2.Option removeplugins = obuilder.withShortName("removeplugins").withDescription("remove all plugins which would be loaded").create();
+        org.apache.commons.cli2.Option removelangs= obuilder.withShortName("noi18n").withDescription("remove all languages which would be loaded").create();
+        org.apache.commons.cli2.Option forceinstall= obuilder.withShortName("finstall").withDescription("force-install").create();
+        org.apache.commons.cli2.Option logfile = obuilder.withShortName("logfile").withShortName("l").withDescription("use file for log").withArgument(filearg).create();
+        org.apache.commons.cli2.Option mpdir = obuilder.withShortName("appdir").withShortName("dir").withShortName("path").withDescription("set the application main dir (used for caching, settings, temp files)").withArgument(dirarg).create();
+        org.apache.commons.cli2.Option connectionInstance = obuilder.withShortName("connectionInstance").withShortName("conn").withDescription("use stored connection with this ID").withArgument(number).create();
+        org.apache.commons.cli2.Option windowlog = obuilder.withShortName("windowlog").withDescription("enables logging to the MP Log Console").create();
+        org.apache.commons.cli2.Option consolelog = obuilder.withShortName("consolelog").withDescription("enables logging to STDOUT").create();
+        org.apache.commons.cli2.Option printtest = obuilder.withShortName("printtest").withDescription("test PDF printing").create();
+        org.apache.commons.cli2.Option params = obuilder.withShortName("params").withDescription("optional parameters \"param1:value1;param2:value2..\"").withArgument(option).create();
 
 
-        Group options = gbuilder.withName("options").
+        org.apache.commons.cli2.Group options = gbuilder.withName("options").
                 withOption(help).
                 withOption(version).
                 withOption(verbose).
@@ -497,12 +495,12 @@ public class Main extends SingleFrameApplication {
                 withOption(forceinstall).
                 create();
 
-        HelpFormatter hf = new HelpFormatter();
-        Parser p = new Parser();
+        org.apache.commons.cli2.util.HelpFormatter hf = new org.apache.commons.cli2.util.HelpFormatter();
+        org.apache.commons.cli2.commandline.Parser p = new org.apache.commons.cli2.commandline.Parser();
         p.setGroup(options);
         p.setHelpFormatter(hf);
 
-        CommandLine cl = p.parseAndHelp(args);
+        org.apache.commons.cli2.CommandLine cl = p.parseAndHelp(args);
 
 
 

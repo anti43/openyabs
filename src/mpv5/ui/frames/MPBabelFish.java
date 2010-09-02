@@ -36,8 +36,11 @@ import javax.swing.table.DefaultTableModel;
 import mpv5.db.common.Context;
 import mpv5.db.common.QueryHandler;
 import mpv5.db.objects.User;
+import mpv5.globals.Constants;
+import mpv5.globals.GlobalSettings;
 import mpv5.logging.Log;
 import mpv5.ui.dialogs.Popup;
+import mpv5.ui.dialogs.PropertyDialog;
 import mpv5.ui.misc.Position;
 import mpv5.usermanagement.MPSecurityManager;
 
@@ -55,6 +58,8 @@ import mpv5.utils.ui.TextFieldUtils;
  */
 public class MPBabelFish extends javax.swing.JFrame {
 
+    private String url;
+
     /** Creates new form MPBabelFish */
     public MPBabelFish() {
         initComponents();
@@ -64,6 +69,9 @@ public class MPBabelFish extends javax.swing.JFrame {
         setAlwaysOnTop(false);
         setVisible(rootPaneCheckingEnabled);
         setLanguageSelection();
+
+        Translate.setHttpReferrer(Constants.VERSION);
+
     }
 
     private void setLanguage() {
@@ -119,7 +127,7 @@ public class MPBabelFish extends javax.swing.JFrame {
         jMenuItem3 = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-        java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle();
+        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("mpv5/resources/languages/Panels"); // NOI18N
         setTitle(bundle.getString("MPBabelFish.title_1")); // NOI18N
         setAlwaysOnTop(true);
         setName("Form"); // NOI18N
@@ -132,7 +140,6 @@ public class MPBabelFish extends javax.swing.JFrame {
 
         jScrollPane1.setName("jScrollPane1"); // NOI18N
 
-        data.setAutoCreateRowSorter(true);
         data.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {},
@@ -144,6 +151,7 @@ public class MPBabelFish extends javax.swing.JFrame {
 
             }
         ));
+        data.setAutoCreateRowSorter(true);
         data.setColumnSelectionAllowed(true);
         data.setDoubleBuffered(true);
         data.setDragEnabled(true);
@@ -229,13 +237,13 @@ public class MPBabelFish extends javax.swing.JFrame {
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(langName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(progress, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addComponent(jLabel7, javax.swing.GroupLayout.DEFAULT_SIZE, 345, Short.MAX_VALUE))
+                        .addComponent(progress, javax.swing.GroupLayout.DEFAULT_SIZE, 166, Short.MAX_VALUE))
+                    .addComponent(jLabel7, javax.swing.GroupLayout.DEFAULT_SIZE, 365, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabel1)
                 .addContainerGap())
-            .addComponent(GooogleTranslator, javax.swing.GroupLayout.DEFAULT_SIZE, 624, Short.MAX_VALUE)
-            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 624, Short.MAX_VALUE)
+            .addComponent(GooogleTranslator, javax.swing.GroupLayout.DEFAULT_SIZE, 644, Short.MAX_VALUE)
+            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 644, Short.MAX_VALUE)
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -250,12 +258,12 @@ public class MPBabelFish extends javax.swing.JFrame {
                     .addComponent(langName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(progress, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 217, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 238, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(GooogleTranslator, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE))
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addComponent(jLabel1)
-                .addContainerGap(278, Short.MAX_VALUE))
+                .addContainerGap(301, Short.MAX_VALUE))
         );
 
         jMenuBar1.setName("jMenuBar1"); // NOI18N
@@ -319,8 +327,8 @@ public class MPBabelFish extends javax.swing.JFrame {
 
     private void jMenuItem2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem2ActionPerformed
 
-        if (MPSecurityManager.checkAdminAccess() &&
-                QueryHandler.instanceOf().clone(Context.getLanguage()).checkUniqueness("longname", new JTextField[]{langName.getTextField()})) {
+        if (MPSecurityManager.checkAdminAccess()
+                && QueryHandler.instanceOf().clone(Context.getLanguage()).checkUniqueness("longname", new JTextField[]{langName.getTextField()})) {
             if (langName.hasText()) {
                 Runnable runnable = new Runnable() {
 
@@ -384,11 +392,10 @@ public class MPBabelFish extends javax.swing.JFrame {
 
         DialogForFile d = new DialogForFile(DialogForFile.FILES_ONLY);
         if (d.chooseFile()) {
-
             new Job3(this, d.getFile()).execute();
-
         }
     }//GEN-LAST:event_jMenuItem4ActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JToolBar GooogleTranslator;
     private javax.swing.JTable data;
@@ -416,8 +423,8 @@ public class MPBabelFish extends javax.swing.JFrame {
     // End of variables declaration//GEN-END:variables
 
     private void setToolBar() {
-        from.setModel(new DefaultComboBoxModel(Language.validLanguages.toArray()));
-        to.setModel(new DefaultComboBoxModel(Language.validLanguages.toArray()));
+        from.setModel(new DefaultComboBoxModel(Language.values()));
+        to.setModel(new DefaultComboBoxModel(Language.values()));
     }
 
     class Job extends SwingWorker<Object, Object> {
@@ -442,7 +449,7 @@ public class MPBabelFish extends javax.swing.JFrame {
                 try {
                     if (string != null && string.length() > 0) {
                         Log.Debug(this, "Translating: " + string);
-                        translated[i] = Translate.translate(string, from.getSelectedItem().toString(), to.getSelectedItem().toString());
+                        translated[i] = Translate.execute(string, (Language) from.getSelectedItem(), (Language) to.getSelectedItem());
                         MPView.setProgressValue(i + 1);
                         progress.setValue(i + 1);
                     } else {
@@ -505,12 +512,12 @@ public class MPBabelFish extends javax.swing.JFrame {
                     }
                 } catch (Exception ex) {
                     Log.Debug(this,
-                            "\n'I refuse to prove that I exist', says God, \n" +
-                            "'for proof denies faith, and without faith I am nothing'. \n" +
-                            "'But,' says man, 'The Babel fish is a dead giveaway, isn't it? \n" +
-                            "It could not have evolved by chance. \n" +
-                            "It proves you exist, and so therefore, by your own arguments, you don't.\n" +
-                            "The Hitchhiker's Guide to the Galaxy: Babelfish\n");
+                            "\n'I refuse to prove that I exist', says God, \n"
+                            + "'for proof denies faith, and without faith I am nothing'. \n"
+                            + "'But,' says man, 'The Babel fish is a dead giveaway, isn't it? \n"
+                            + "It could not have evolved by chance. \n"
+                            + "It proves you exist, and so therefore, by your own arguments, you don't.\n"
+                            + "The Hitchhiker's Guide to the Galaxy: Babelfish\n");
                     Log.Debug(this, ex);
                 }
             }

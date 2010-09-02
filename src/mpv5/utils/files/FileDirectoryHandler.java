@@ -423,6 +423,15 @@ public abstract class FileDirectoryHandler {
         return LocalSettings.getProperty(LocalSettings.CACHE_DIR);
     }
 
+      /**
+     *
+     * @return The temporary directory as File object
+     */
+    public static File getTempDirAsFile() {
+        cacheCheck();
+        return new File(LocalSettings.getProperty(LocalSettings.CACHE_DIR));
+    }
+
     /**
      * Downloads a file
      * @param address
@@ -533,7 +542,7 @@ public abstract class FileDirectoryHandler {
         }
     }
 
-    private static String check(String filename) {
+    private static synchronized String check(String filename) {
         return filename.replaceAll("[?:\\\\/*\\\"\\\"<>|]", "-");
     }
 }

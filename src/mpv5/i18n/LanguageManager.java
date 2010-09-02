@@ -176,8 +176,6 @@ public class LanguageManager {
      * @return
      */
     public static ResourceBundle getBundle(String langid) {
-
-
         synchronized (LanguageManager.class) {
             if (!langid.contentEquals("buildin_en")) {
 //                Log.Debug(LanguageManager.class, "Checking language: " + langid);
@@ -490,6 +488,7 @@ public class LanguageManager {
                 return !failed;
             } catch (Exception e) {
                 Log.Debug(e);
+                fail(e.getMessage());
                 failed = true;
                 return false;
             }
