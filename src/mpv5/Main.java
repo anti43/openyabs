@@ -18,6 +18,8 @@ package mpv5;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import mpv5.db.common.NodataFoundException;
 import mpv5.ui.frames.MPView;
 import mpv5.logging.*;
@@ -340,6 +342,11 @@ public class Main extends SingleFrameApplication {
         try {
             clearLockFile();
         } catch (Exception e) {
+        }
+        try {
+            //Cleanup
+            FileDirectoryHandler.deleteDirectoryContent(new File(FileDirectoryHandler.getTempDir2()));
+        } catch (IOException ex) {
         }
 
         super.shutdown();
@@ -795,21 +802,6 @@ public class Main extends SingleFrameApplication {
 
             new Thread(runnable).start();
         }
-
-        Runnable runnable1 = new Runnable() {
-
-            @Override
-            public void run() {
-                try {
-                    //Cleanup old files
-                    FileDirectoryHandler.deleteDirectoryContent(new File(FileDirectoryHandler.getTempDir2()));
-                } catch (IOException ex) {
-                    Log.Debug(ex);
-                }
-            }
-        };
-
-        new Thread(runnable1).start();
     }
 
     private void loadPlugins() {

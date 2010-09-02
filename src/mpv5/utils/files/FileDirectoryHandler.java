@@ -56,7 +56,9 @@ public abstract class FileDirectoryHandler {
      */
     public synchronized static void deleteTree(File path) throws IOException {
         deleteDirectoryContent(path);
-        path.delete();
+        if (!path.delete()) {
+            path.deleteOnExit();
+        }
     }
 
     /**
@@ -70,7 +72,9 @@ public abstract class FileDirectoryHandler {
                 deleteTree(file);
             } else {
                 Log.Debug(FileDirectoryHandler.class, "Delete: " + file.getCanonicalPath());
-                file.delete();
+                if (!file.delete()) {
+                    file.deleteOnExit();
+                }
             }
         }
     }
@@ -532,5 +536,4 @@ public abstract class FileDirectoryHandler {
     private static String check(String filename) {
         return filename.replaceAll("[?:\\\\/*\\\"\\\"<>|]", "-");
     }
-
 }

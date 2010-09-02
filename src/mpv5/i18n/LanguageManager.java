@@ -167,9 +167,9 @@ public class LanguageManager {
             return false;
         }
     }
-
-    private static boolean failed = false;
+    private static volatile boolean failed = false;
     private static final List<String> cacheRunWatchdog = Collections.synchronizedList(new ArrayList<String>());
+
     /**
      * 
      * @param langid
@@ -183,16 +183,12 @@ public class LanguageManager {
 //                Log.Debug(LanguageManager.class, "Checking language: " + langid);
                 if (!failed) {
 //                    Log.Debug(LanguageManager.class, "Language has not previously failed: " + langid);
-                    if (!isCachedLanguage(langid)) {
+                    // if not cached AND not tried to cache it before
+                    if (!isCachedLanguage(langid) && !cacheRunWatchdog.contains(langid)) {
+                        //cache it
                         Log.Debug(LanguageManager.class, "Language is not cached: " + langid);
-                        if (!cacheRunWatchdog.contains(langid)) {
-                            cacheRunWatchdog.add(langid);
-                        } else {
-                            Log.Debug(LanguageManager.class, "Already tried to cache language with id: " + langid);
-                            fail(langid);
-                            failed = true;
-                            return java.util.ResourceBundle.getBundle(defLanguageBundle);
-                        }
+                        cacheRunWatchdog.add(langid);
+
                         File bundlefile = null;
                         Object[] data;
                         URI newfile;
@@ -243,8 +239,15 @@ public class LanguageManager {
                             return java.util.ResourceBundle.getBundle(defLanguageBundle);
                         }
 
-                    } else {
+                    } else if (isCachedLanguage(langid)) {
                         return getCachedLanguage(langid);
+                    } else if (cacheRunWatchdog.contains(langid)) {
+                        failed = true;
+                        Log.Debug(LanguageManager.class, "Already tried to cache language with id: " + langid);
+                        fail(langid);
+                        return java.util.ResourceBundle.getBundle(defLanguageBundle);
+                    } else {
+                        return java.util.ResourceBundle.getBundle(defLanguageBundle);
                     }
                 } else {
                     return java.util.ResourceBundle.getBundle(defLanguageBundle);
