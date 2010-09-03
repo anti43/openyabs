@@ -260,8 +260,14 @@ public enum Messages {
     PDF_CREATE("Create PDF"),
     ODT_CREATE("Create ODT"),
     IN_GROUP("In group:"),
-    CHECK_OVERDUES("Show unpaid invoices"),
-
+    CHECK_OVERDUES("Show unpaid invoices"), 
+    ALREADY_RUNNING("It looks like the application is already running. This may be caused by"
+            + "\n\t- another instance of YaBS started with the same connection id  "
+            + "\n\t  (or no connection id at all)"
+            + "\n\t- a previously crashed YaBS instance"
+            + "\n\t- a manually killed YaBS instance"
+            + "\n\t- a crash or kill of the JVM\n"
+            + "\nYou might want to start YaBS once with the option -clear or to delete the .lck file in <user home>/.yabs> to get rid of this message."),
     ;
 
 

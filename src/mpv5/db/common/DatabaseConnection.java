@@ -148,7 +148,7 @@ public class DatabaseConnection {
             try {
                 Class.forName(getCtype().getDriver()).newInstance();
             } catch (ClassNotFoundException ex) {
-                Popup.error(ex);
+//                Popup.error(ex);
                 //possibly not fatal, driver can have a different class [org.apache.derby.jdbc.ClientDriver,org.apache.derby.jdbc.EmbeddedDriver]
                 Log.Debug(this, ex.getMessage());
             }

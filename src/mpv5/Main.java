@@ -18,8 +18,6 @@ package mpv5;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import mpv5.db.common.NodataFoundException;
 import mpv5.ui.frames.MPView;
 import mpv5.logging.*;
@@ -36,7 +34,6 @@ import java.util.Date;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.Properties;
-import java.util.Random;
 import java.util.Vector;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
@@ -71,7 +68,6 @@ import mpv5.utils.files.FileReaderWriter;
 import mpv5.utils.print.PrintJob2;
 import mpv5.utils.text.RandomText;
 import mpv5.webshopinterface.WSIManager;
-
 
 /**
  * The main class of the application.
@@ -342,7 +338,7 @@ public class Main extends SingleFrameApplication {
         }
         try {
             //Cleanup
-            FileDirectoryHandler.deleteDirectoryContent(new File(FileDirectoryHandler.getTempDir2()));
+            FileDirectoryHandler.deleteDirectoryContent(new File(FileDirectoryHandler.getTempDir2()), ".properties");
         } catch (IOException ex) {
         }
 
@@ -355,7 +351,6 @@ public class Main extends SingleFrameApplication {
      * @throws Exception 
      */
     public static void main(String[] args) throws Exception {
-
         INSTANTIATED = true;
         try {
             splash = new SplashScreen(new ImageIcon(Main.class.getResource(mpv5.globals.Constants.SPLASH_IMAGE)));
@@ -368,6 +363,7 @@ public class Main extends SingleFrameApplication {
             parseArgs(args);
             runStartScripts();
             readLocalSettings();
+            LanguageManager.preLoadCachedLanguage();
             setDerbyLog();
             readImports();
             start();
@@ -441,11 +437,11 @@ public class Main extends SingleFrameApplication {
 
     private static void parseArgs(String[] args) {
 
-        org.apache.commons.cli2.builder.DefaultOptionBuilder obuilder = new  org.apache.commons.cli2.builder.DefaultOptionBuilder();
-         org.apache.commons.cli2.builder.ArgumentBuilder abuilder = new  org.apache.commons.cli2.builder.ArgumentBuilder();
-         org.apache.commons.cli2.builder.GroupBuilder gbuilder = new  org.apache.commons.cli2.builder.GroupBuilder();
+        org.apache.commons.cli2.builder.DefaultOptionBuilder obuilder = new org.apache.commons.cli2.builder.DefaultOptionBuilder();
+        org.apache.commons.cli2.builder.ArgumentBuilder abuilder = new org.apache.commons.cli2.builder.ArgumentBuilder();
+        org.apache.commons.cli2.builder.GroupBuilder gbuilder = new org.apache.commons.cli2.builder.GroupBuilder();
 
-         org.apache.commons.cli2.Argument option = abuilder.withName("option").withMinimum(1).withMaximum(1).create();
+        org.apache.commons.cli2.Argument option = abuilder.withName("option").withMinimum(1).withMaximum(1).create();
         org.apache.commons.cli2.Argument filearg = abuilder.withName("=file").withMinimum(1).withMaximum(1).create();
         org.apache.commons.cli2.Argument dirarg = abuilder.withName("directory").withMinimum(1).withMaximum(1).create();
         org.apache.commons.cli2.Argument number = abuilder.withName("number").withMinimum(1).withMaximum(1).create();
@@ -461,8 +457,8 @@ public class Main extends SingleFrameApplication {
         org.apache.commons.cli2.Option nolfs = obuilder.withShortName("nolf").withDescription("use java native metal L&F").create();
         org.apache.commons.cli2.Option debug = obuilder.withShortName("debug").withDescription("enable debug logging").create();
         org.apache.commons.cli2.Option removeplugins = obuilder.withShortName("removeplugins").withDescription("remove all plugins which would be loaded").create();
-        org.apache.commons.cli2.Option removelangs= obuilder.withShortName("noi18n").withDescription("remove all languages which would be loaded").create();
-        org.apache.commons.cli2.Option forceinstall= obuilder.withShortName("finstall").withDescription("force-install").create();
+        org.apache.commons.cli2.Option removelangs = obuilder.withShortName("noi18n").withDescription("remove all languages which would be loaded").create();
+        org.apache.commons.cli2.Option forceinstall = obuilder.withShortName("finstall").withDescription("force-install").create();
         org.apache.commons.cli2.Option logfile = obuilder.withShortName("logfile").withShortName("l").withDescription("use file for log").withArgument(filearg).create();
         org.apache.commons.cli2.Option mpdir = obuilder.withShortName("appdir").withShortName("dir").withShortName("path").withDescription("set the application main dir (used for caching, settings, temp files)").withArgument(dirarg).create();
         org.apache.commons.cli2.Option connectionInstance = obuilder.withShortName("connectionInstance").withShortName("conn").withDescription("use stored connection with this ID").withArgument(number).create();
@@ -578,8 +574,8 @@ public class Main extends SingleFrameApplication {
                 removeplugs = true;
             }
 
-             if (cl.hasOption(removelangs)) {
-               LanguageManager.disableLanguages();
+            if (cl.hasOption(removelangs)) {
+                LanguageManager.disableLanguages();
             }
 
             if (cl.hasOption(showenv)) {
@@ -639,7 +635,7 @@ public class Main extends SingleFrameApplication {
     public static void setDerbyLog() {
         Properties p = System.getProperties();
         try {
-            File d = File.createTempFile(RandomText.getText(), ".~mp");
+            File d = FileDirectoryHandler.getTempFile("derby");
             d.createNewFile();
             p.put("derby.stream.error.file", d.getPath());
         } catch (Exception ex) {
@@ -866,17 +862,9 @@ public class Main extends SingleFrameApplication {
                         String line = xc[i];
                         try {
                             if (line.length() > 0 && line.substring(line.lastIndexOf(instanceIdentifier) + instanceIdentifier.length(), line.lastIndexOf("]")).equals(String.valueOf(LocalSettings.getConnectionID()))) {
-                                String message =
-                                        "It looks like the application is already running.\n"
-                                        + "\nThis may be caused by"
-                                        + "\n\t- another instance of YaBS started with the same connection id (" + LocalSettings.getConnectionID() + ") "
-                                        + "\n\t  (or no connection id at all)"
-                                        + "\n\t- a previously crashed YaBS instance"
-                                        + "\n\t- a manually killed YaBS instance"
-                                        + "\n\t- a crash or kill of the JVM\n"
-                                        + "\nYou might want to start YaBS once with the option -clear or to delete " + lockfile + " to get rid of this message.";
+                                String message = Messages.ALREADY_RUNNING.getValue();
                                 Log.Debug(this, message);
-                                Popup.notice(message, 800, 200);
+                                Popup.notice(message, 600, 200);
 
                                 if (Log.getLoglevel() != Log.LOGLEVEL_DEBUG) {
                                     System.err.println(message);

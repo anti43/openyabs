@@ -19,7 +19,6 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 import mpv5.logging.Log;
 
-
 /**
  * UnZip -- print or unzip a JAR or PKZIP file using java.util.zip. Command-line
  * version: extracts files.
@@ -30,46 +29,41 @@ import mpv5.logging.Log;
 public class UnZip {
 
     /** Constants for mode listing or mode extracting. */
-    public static final int LIST = 0,  EXTRACT = 1;
+    public static final int LIST = 0, EXTRACT = 1;
     /** Whether we are extracting or just printing TOC */
     protected int mode = LIST;
     /** The ZipFile that is used to read an archive */
-    protected ZipFile zippy;
+    private ZipFile zippy;
     /** The buffer for reading/writing the ZipFile data */
     protected byte[] b;
-    private static String path;
+    private String path;
 
     /**
-     * Simple main program, construct an UnZipper, process each .ZIP file from
-     * argv[] through that object.
+     * Construct an UnZipper, process each .ZIP file from
+     * zipFiles through that object.
      * @param zipfiles
      * @param toDir 
      */
-    public static void deflate(String zipfiles,String toDir) {
-        File fil =new File(toDir);
-        if(!fil.isDirectory()) {
+    public static void deflate(String zipfiles, String toDir) {
+        File fil = new File(toDir);
+        if (fil.isDirectory()) {
             fil.mkdirs();
+        } else {
+            fil.getParentFile().mkdirs();
         }
-        
-        path = toDir;
-        
-        UnZip u = new UnZip();
 
-        
-            
-            u.setMode(EXTRACT);
-           
-            String candidate = zipfiles;
-            Log.Debug(UnZip.class,"Trying path " + candidate);
-            if (candidate.endsWith(".zip") || candidate.endsWith(".jar")) {
-                u.unZip(candidate);
-            } else {
-                Log.Debug(UnZip.class,"Not a zip file? " + candidate);
-            }
-        
-        
+        UnZip u = new UnZip();
+        u.setPath(toDir);
+        u.setMode(EXTRACT);
+
+        String candidate = zipfiles;
+        Log.Debug(UnZip.class, "Trying path " + candidate);
+        if (candidate.endsWith(".zip") || candidate.endsWith(".jar")) {
+            u.unZip(candidate);
+        } else {
+            Log.Debug(UnZip.class, "Not a zip file? " + candidate);
+        }
     }
-  
 
     /** Construct an UnZip object. Just allocate the buffer */
     UnZip() {
@@ -94,12 +88,12 @@ public class UnZip {
         dirsMade = new TreeSet();
         try {
             zippy = new ZipFile(fileName);
-            Enumeration all = zippy.entries();
+            Enumeration all = getZippy().entries();
             while (all.hasMoreElements()) {
                 getFile((ZipEntry) all.nextElement());
             }
         } catch (IOException err) {
-            Log.Debug(UnZip.class,"IO Error: " + err);
+            Log.Debug(UnZip.class, "IO Error: " + err);
             return;
         }
     }
@@ -113,7 +107,9 @@ public class UnZip {
      */
     @SuppressWarnings("unchecked")
     protected void getFile(ZipEntry e) throws IOException {
-        String zipName = path + File.separator + e.getName();
+        String zipName = getPath() + File.separator + e.getName();
+
+
         switch (mode) {
             case EXTRACT:
 //                if (zipName.startsWith("/")) {
@@ -139,17 +135,17 @@ public class UnZip {
                         // If it already exists as a dir, don't do anything
                         if (!(d.exists() && d.isDirectory())) {
                             // Try to create the directory, warn if it fails
-                            Log.Debug(UnZip.class,"Creating Directory: " + dirName);
+                            Log.Debug(UnZip.class, "Creating Directory: " + dirName);
                             if (!d.mkdirs()) {
-                                Log.Debug(UnZip.class,"Warning: unable to mkdir " + dirName);
+                                Log.Debug(UnZip.class, "Warning: unable to mkdir " + dirName);
                             }
                             dirsMade.add(dirName);
                         }
                     }
                 }
-                Log.Debug(UnZip.class,"Creating " + zipName);
+                Log.Debug(UnZip.class, "Creating " + zipName);
                 FileOutputStream os = new FileOutputStream(zipName);
-                InputStream is = zippy.getInputStream(e);
+                InputStream is = getZippy().getInputStream(e);
                 int n = 0;
                 while ((n = is.read(b)) > 0) {
                     os.write(b, 0, n);
@@ -160,14 +156,34 @@ public class UnZip {
             case LIST:
                 // Not extracting, just list
                 if (e.isDirectory()) {
-                    Log.Debug(UnZip.class,"Directory " + zipName);
+                    Log.Debug(UnZip.class, "Directory " + zipName);
                 } else {
-                    Log.Debug(UnZip.class,"File " + zipName);
+                    Log.Debug(UnZip.class, "File " + zipName);
                 }
                 break;
             default:
                 throw new IllegalStateException("mode value (" + mode + ") bad");
         }
     }
-}
 
+    /**
+     * @return the path
+     */
+    public String getPath() {
+        return path;
+    }
+
+    /**
+     * @param path the path to set
+     */
+    public void setPath(String path) {
+        this.path = path;
+    }
+
+    /**
+     * @return the zippy
+     */
+    public ZipFile getZippy() {
+        return zippy;
+    }
+}

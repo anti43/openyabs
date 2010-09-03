@@ -20,7 +20,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.net.URI;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.Hashtable;
@@ -29,8 +28,6 @@ import java.util.Locale;
 
 import java.util.ResourceBundle;
 import java.util.Vector;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.ComboBoxModel;
 import javax.swing.DefaultComboBoxModel;
 import mpv5.Main;
@@ -46,7 +43,6 @@ import mpv5.logging.Log;
 import mpv5.ui.dialogs.Popup;
 import mpv5.ui.frames.MPView;
 
-import mpv5.usermanagement.MPSecurityManager;
 import mpv5.utils.arrays.ArrayUtilities;
 import mpv5.utils.date.DateConverter;
 import mpv5.utils.files.FileDirectoryHandler;
@@ -56,7 +52,6 @@ import mpv5.utils.models.MPComboboxModel;
 import mpv5.utils.reflection.ClasspathTools;
 import mpv5.utils.text.RandomText;
 import mpv5.utils.xml.XMLReader;
-import org.apache.derby.impl.sql.compile.HashTableNode;
 import org.jdom.Document;
 
 /**
@@ -65,7 +60,10 @@ import org.jdom.Document;
  */
 public class LanguageManager {
 
-    private static final String defLanguageBundle = "mpv5/resources/languages/Panels";
+    static {
+    }
+    private final static String defLanguageBundleName = "mpv5/resources/languages/Panels";
+    private static ResourceBundle defLanguageBundle = ResourceBundle.getBundle(defLanguageBundleName);
     private static String[][] defLanguage = new String[][]{{"buildin_en", "English"}};
     private static Hashtable<String, ResourceBundle> cachedLanguages = new Hashtable<String, ResourceBundle>();
     private static boolean cached = false;
@@ -200,14 +198,14 @@ public class LanguageManager {
                             } else {
                                 fail(langid);
                                 failed = true;
-                                return java.util.ResourceBundle.getBundle(defLanguageBundle);
+                                return ResourceBundle.getBundle(defLanguageBundleName);
                             }
                             if (bundlefile != null) {
-                                newfile = FileDirectoryHandler.copyFile(bundlefile, new File(LocalSettings.getProperty(LocalSettings.CACHE_DIR)), tempname + ".properties", true);
+                                newfile = FileDirectoryHandler.copyFile(bundlefile, new File(LocalSettings.getProperty(LocalSettings.CACHE_DIR)), tempname + ".properties", false, true);
+                                ClasspathTools.addPath(new File(LocalSettings.getProperty(LocalSettings.CACHE_DIR)));
                                 File newbundle = new File(newfile);
                                 if (hasNeededKeys(newbundle, false) || addNeededKeys(newbundle)) {
                                     Log.Debug(LanguageManager.class, "File has needed keys for language: " + langid);
-                                    ClasspathTools.addPath(new File(LocalSettings.getProperty(LocalSettings.CACHE_DIR)));//Add the files parent to classpath to be found
                                     Log.Debug(LanguageManager.class, "Created language file at: " + newfile);
                                     try {
                                         ResourceBundle bundle = ResourceBundleUtf8.getBundle(tempname);
@@ -218,23 +216,27 @@ public class LanguageManager {
                                         fail(langid);
                                         failed = true;
                                         Log.Debug(LanguageManager.class, e);
-                                        return java.util.ResourceBundle.getBundle(defLanguageBundle);
+                                        return defLanguageBundle;
                                     }
                                 } else {
                                     fail(langid);
                                     failed = true;
-                                    return java.util.ResourceBundle.getBundle(defLanguageBundle);
+                                    return defLanguageBundle;
                                 }
                             } else {
                                 fail(langid);
                                 failed = true;
-                                return java.util.ResourceBundle.getBundle(defLanguageBundle);
+                                return defLanguageBundle;
                             }
+                        } catch (NodataFoundException nd) {
+                            //language has been deleted?
+                            Log.Debug(LanguageManager.class, nd.getMessage());
+                            return ResourceBundle.getBundle(defLanguageBundleName);
                         } catch (Exception e) {
                             failed = true;
                             fail(langid);
                             Log.Debug(LanguageManager.class, e);
-                            return java.util.ResourceBundle.getBundle(defLanguageBundle);
+                            return defLanguageBundle;
                         }
 
                     } else if (isCachedLanguage(langid)) {
@@ -243,17 +245,17 @@ public class LanguageManager {
                         failed = true;
                         Log.Debug(LanguageManager.class, "Already tried to cache language with id: " + langid);
                         fail(langid);
-                        return java.util.ResourceBundle.getBundle(defLanguageBundle);
+                        return defLanguageBundle;
                     } else {
-                        return java.util.ResourceBundle.getBundle(defLanguageBundle);
+                        return defLanguageBundle;
                     }
                 } else {
-                    return java.util.ResourceBundle.getBundle(defLanguageBundle);
+                    return defLanguageBundle;
                 }
             }
         }
 
-        return java.util.ResourceBundle.getBundle(defLanguageBundle);
+        return defLanguageBundle;
     }
 
     /**
@@ -264,7 +266,7 @@ public class LanguageManager {
         if (Main.INSTANTIATED) {
             return getBundle(mpv5.db.objects.User.getCurrentUser().__getLanguage());
         } else {
-            return java.util.ResourceBundle.getBundle(defLanguageBundle);
+            return ResourceBundle.getBundle(defLanguageBundleName);
         }
     }
 
@@ -347,44 +349,53 @@ public class LanguageManager {
     /**
      * Imports a language file to DB
      * @param langname
-     * @param file
+     * @param file If it is a .zip, will get extracted and then processed
      * @throws UnsupportedOperationException
      */
-    public static void importLanguage(String langname, File file) throws UnsupportedOperationException {
-        String langid = new RandomText(10).getString();
+    public static void importLanguage(String langname, File file) throws Exception {
+        try {
+            String langid = new RandomText(10).getString();
 
-        if (hasNeededKeys(file, true)) {
-            try {
-                MPView.setWaiting(true);
-                String dbname = QueryHandler.instanceOf().clone(Context.getFiles()).insertFile(file);
+            file = FileDirectoryHandler.unzipFile(file);
+            Log.Debug(LanguageManager.class, "Importing: " + file);
+
+            if (hasNeededKeys(file, true)) {
                 try {
-                    Thread.sleep(3333);
-                } catch (InterruptedException ex) {
-                    Log.Debug(ex);
+                    MPView.setWaiting(true);
+                    String dbname = QueryHandler.instanceOf().clone(Context.getFiles()).insertFile(file);
+                    try {
+                        Thread.sleep(3333);
+                    } catch (InterruptedException ex) {
+                        Log.Debug(ex);
+                    }
+                    QueryData t = new QueryData();
+                    t.add("cname", langid);
+                    t.add("longname", langname);
+                    t.add("filename", dbname);
+                    t.add("dateadded", DateConverter.getTodayDBDate());
+                    Log.Debug(LanguageManager.class, "Adding language: " + langname);
+                    int id = QueryHandler.instanceOf().clone(Context.getLanguage()).insert(t, "Imported language: " + langname);
+                    if (id > 0) {
+                        MPView.addMessage(langname + Messages.INSERTED.toString());
+                        Popup.notice(langname + Messages.INSERTED.toString());
+                    } else {
+                        MPView.addMessage(Messages.ERROR_OCCURED.toString());
+                        Popup.notice(Messages.ERROR_OCCURED.toString());
+                    }
+                } catch (FileNotFoundException ex) {
+                    Log.Debug(LanguageManager.class, ex);
+                } catch (Exception x) {
+                    //insert was not possible
+                    throw new UnsupportedOperationException("Language could not be inserted, file already exists!?");
                 }
-                QueryData t = new QueryData();
-                t.add("cname", langid);
-                t.add("longname", langname);
-                t.add("filename", dbname);
-                t.add("dateadded", DateConverter.getTodayDBDate());
-                Log.Debug(LanguageManager.class, "Adding language: " + langname);
-                int id = QueryHandler.instanceOf().clone(Context.getLanguage()).insert(t, "Imported language: " + langname);
-                if (id > 0) {
-                    MPView.addMessage(langname + Messages.INSERTED.toString());
-                    Popup.notice(langname + Messages.INSERTED.toString());
-                } else {
-                    MPView.addMessage(Messages.ERROR_OCCURED.toString());
-                    Popup.notice(Messages.ERROR_OCCURED.toString());
-                }
-            } catch (FileNotFoundException ex) {
-                Log.Debug(LanguageManager.class, ex);
-            } catch (Exception x) {
-                //insert was not possible
-                throw new UnsupportedOperationException("Language could not be inserted, file already exists!?");
-            }
 
+            }
+        } catch (Exception exception) {
+            Popup.error(exception);
+            throw exception;
+        } finally {
+            MPView.setWaiting(false);
         }
-        MPView.setWaiting(false);
     }
 
     /**
@@ -412,12 +423,11 @@ public class LanguageManager {
     private static boolean hasNeededKeys(File file, boolean popupOnError) {
         synchronized (new LanguageManager()) {
             try {
-                Vector<String> failures = new Vector<String>();
-                Enumeration<String> keys = ResourceBundleUtf8.getBundle(defLanguageBundle).getKeys();
+                List<String> failures = new ArrayList<String>();
+                Enumeration<String> keys = ResourceBundle.getBundle(defLanguageBundleName).getKeys();
                 File impFile = file;
                 FileReaderWriter frw = new FileReaderWriter(impFile);
                 String[] lines = frw.readLines();
-
 
                 while (keys.hasMoreElements()) {
                     String string = keys.nextElement();
@@ -436,7 +446,7 @@ public class LanguageManager {
                             return false;
                         } else {
                             try {
-                                failures.add(string + "=" + ResourceBundleUtf8.getBundle(defLanguageBundle).getString(string));
+                                failures.add(string + "=" + ResourceBundle.getBundle(defLanguageBundleName).getString(string));
                             } catch (Exception e) {
                                 failures.add(string + "=???");
                             }
@@ -465,7 +475,7 @@ public class LanguageManager {
     private static boolean addNeededKeys(File file) {
         synchronized (new LanguageManager()) {
             try {
-                Enumeration<String> keys = ResourceBundleUtf8.getBundle(defLanguageBundle).getKeys();
+                Enumeration<String> keys = ResourceBundle.getBundle(defLanguageBundleName).getKeys();
                 File impFile = file;
                 FileReaderWriter frw = new FileReaderWriter(impFile);
                 String[] lines = frw.readLines();
@@ -481,7 +491,7 @@ public class LanguageManager {
                     }
                     if (!found) {
                         Log.Debug(LanguageManager.class, "Key '" + string + "' added to file " + file);
-                        frw.write(string + "=" + ResourceBundleUtf8.getBundle(defLanguageBundle).getString(string));
+                        frw.write(string + "=" + ResourceBundle.getBundle(defLanguageBundleName).getString(string));
                     }
                 }
                 failed = false;
@@ -524,5 +534,48 @@ public class LanguageManager {
      */
     public static void disableLanguages() {
         failed = true;
+    }
+
+    /**
+     * Checks the cache directory for cached languages and loads the last cached one
+     */
+    public static void preLoadCachedLanguage() {
+        File cache = FileDirectoryHandler.getTempDirAsFile();
+        ClasspathTools.addPath(cache);
+        Log.Debug(LanguageManager.class, "[preload-lang] Preloading languages from: " + cache);
+        File[] candidates = cache.listFiles();
+        List<File> languages = new ArrayList<File>();
+        for (int i = 0; i < candidates.length; i++) {
+            File file = candidates[i];
+            if (file.getName().endsWith(".properties")) {
+                languages.add(file);
+            }
+        }
+        Log.Debug(LanguageManager.class, "[preload-lang] Found potential language files: " + languages.size());
+        File lastfile = null;
+        for (int i = 0; i < languages.size(); i++) {
+            File file = languages.get(i);
+            file.deleteOnExit();
+            if (lastfile == null) {
+                lastfile = file;
+            }
+            if (file.lastModified() > lastfile.lastModified()) {
+                lastfile = file;
+            }
+        }
+
+        if (lastfile != null && hasNeededKeys(lastfile, false)) {
+            Log.Debug(LanguageManager.class, "[preload-lang] File has needed keys: " + lastfile);
+            //Add the files parent to classpath to be found
+            Log.Debug(LanguageManager.class, "[preload-lang] Using language file at: " + lastfile);
+            try {
+                ResourceBundle bundle = ResourceBundleUtf8.getBundle(lastfile.getName().substring(0, lastfile.getName().lastIndexOf(".")));
+                if (lastfile.canRead()) {
+                    defLanguageBundle = bundle;
+                }
+            } catch (Exception e) {
+                Log.Debug(LanguageManager.class, e.getMessage());
+            }
+        }
     }
 }

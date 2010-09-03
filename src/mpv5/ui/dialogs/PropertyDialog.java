@@ -95,7 +95,6 @@ public class PropertyDialog extends javax.swing.JDialog {
         labeledTextField1 = new mpv5.ui.beans.LabeledTextField();
         labeledTextField2 = new mpv5.ui.beans.LabeledTextField();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setName("Form"); // NOI18N
 
         labeledTextField1.setName("labeledTextField1"); // NOI18N

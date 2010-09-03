@@ -22,6 +22,8 @@ import java.net.URI;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import mpv5.globals.LocalSettings;
 import mpv5.globals.Messages;
 import mpv5.logging.Log;
@@ -208,6 +210,15 @@ public abstract class FileDirectoryHandler {
         return outp.toURI();
     }
 
+    /**
+     * Requests that the file or directory denoted by this abstract pathname be deleted when the virtual machine terminates.
+     * Files (or directories) are deleted in the reverse order that they are registered.
+     * Invoking this method to delete a file or directory that is already registered for deletion has no effect.
+     * Deletion will be attempted only for normal termination of the virtual machine, as defined by the Java Language Specification.
+     * Once deletion has been requested, it is not possible to cancel the request.
+     * @param path
+     * @throws IOException
+     */
     public static void deleteTreeOnExit(File path) throws IOException {
         for (File file : path.listFiles()) {
             if (file.isDirectory()) {
@@ -423,7 +434,7 @@ public abstract class FileDirectoryHandler {
         return LocalSettings.getProperty(LocalSettings.CACHE_DIR);
     }
 
-      /**
+    /**
      *
      * @return The temporary directory as File object
      */
@@ -544,5 +555,73 @@ public abstract class FileDirectoryHandler {
 
     private static synchronized String check(String filename) {
         return filename.replaceAll("[?:\\\\/*\\\"\\\"<>|]", "-");
+    }
+
+    /**
+     * Unzips the file (if it is a zip file, returns the original file if it is not a zip file).
+     * If the given file is a zip file containing multiple files, returns a temporary directory containing the extracted files.
+     * @param file
+     * @return
+     */
+    public static File unzipFile(File file) {
+        if (file.getName().endsWith(".zip") || file.getName().endsWith(".jar")) {
+            File c = getnewTemporaryDirectory();
+            UnZip.deflate(file.getPath(), c.getPath());
+            if (c.listFiles().length == 1) {
+                File k = c.listFiles()[0];
+                if (k.isFile()) {
+                    return k;
+                } else if (k.listFiles().length == 1) {
+                    return (k.listFiles()[0].isFile()) ? k.listFiles()[0] : c;
+                }
+            }
+
+            return c;
+        } else {
+            return file;
+        }
+    }
+
+    /**
+     * Creates a new, RW, temporary directory within the cache directory
+     * @return
+     */
+    public static File getnewTemporaryDirectory() {
+        File f = getTempDirAsFile();
+        File t = new File(f.getPath() + File.separator + RandomText.getText() + File.separator + RandomText.getText());
+        t.mkdirs();
+        t.getParentFile().setWritable(true);
+        t.getParentFile().setReadable(true);
+        return t;
+    }
+
+    /**
+     * Deletes the content of a directory, omitting files which contain $omit in their name
+     * @param path 
+     * @param omit
+     * @throws IOException 
+     */
+    public static void deleteDirectoryContent(File path, String... omit) throws IOException {
+        for (File file : path.listFiles()) {
+            boolean skip = false;
+            List<String> o = Arrays.asList(omit);
+            String name = file.getName();
+            for (int i = 0; i < o.size(); i++) {
+                String string = o.get(i);
+                if (name.toLowerCase().contains(string.toLowerCase())) {
+                    skip = true;
+                }
+            }
+            if (!skip) {
+                if (file.isDirectory()) {
+                    deleteTree(file);
+                } else {
+                    Log.Debug(FileDirectoryHandler.class, "Delete: " + file.getCanonicalPath());
+                    if (!file.delete()) {
+                        file.deleteOnExit();
+                    }
+                }
+            }
+        }
     }
 }
