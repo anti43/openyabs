@@ -1,22 +1,24 @@
 package mpv5.utils.text;
 
-/*
- * Copyright 2002-2004 The Apache Software Foundation.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+//~--- JDK imports ------------------------------------------------------------
 
+/*
+* Copyright 2002-2004 The Apache Software Foundation.
+*
+* Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+*      http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+ */
 import java.util.Random;
+
 /**
  * <p>Operations for random <code>String</code>s.</p>
  *
@@ -46,11 +48,11 @@ public class RandomStringUtils {
      * <p>This constructor is public to permit tools that require a JavaBean instance
      * to operate.</p>
      */
-    public RandomStringUtils() {
-    }
+    public RandomStringUtils() {}
 
     // Random
-    //-----------------------------------------------------------------------
+    // -----------------------------------------------------------------------
+
     /**
      * <p>Creates a random string whose length is the number of characters
      * specified.</p>
@@ -215,41 +217,44 @@ public class RandomStringUtils {
      * @throws IllegalArgumentException if <code>count</code> &lt; 0.
      * @since 2.0
      */
-    public static String random(int count, int start, int end, boolean letters, boolean numbers,
-                                char[] chars, Random random) {
+    public static String random(int count, int start, int end, boolean letters, boolean numbers, char[] chars,
+                                Random random) {
         if (count == 0) {
             return "";
         } else if (count < 0) {
             throw new IllegalArgumentException("Requested random string length " + count + " is less than 0.");
         }
+
         if ((start == 0) && (end == 0)) {
-            end = 'z' + 1;
+            end   = 'z' + 1;
             start = ' ';
-            if (!letters && !numbers) {
+
+            if (!letters &&!numbers) {
                 start = 0;
-                end = Integer.MAX_VALUE;
+                end   = Integer.MAX_VALUE;
             }
         }
 
         StringBuffer buffer = new StringBuffer();
-        int gap = end - start;
+        int          gap    = end - start;
 
         while (count-- != 0) {
             char ch;
+
             if (chars == null) {
                 ch = (char) (random.nextInt(gap) + start);
             } else {
                 ch = chars[random.nextInt(gap) + start];
             }
-            if ((letters && numbers && Character.isLetterOrDigit(ch))
-                || (letters && Character.isLetter(ch))
-                || (numbers && Character.isDigit(ch))
-                || (!letters && !numbers)) {
+
+            if ((letters && numbers && Character.isLetterOrDigit(ch)) || (letters && Character.isLetter(ch))
+                    || (numbers && Character.isDigit(ch)) || (!letters &&!numbers)) {
                 buffer.append(ch);
             } else {
                 count++;
             }
         }
+
         return buffer.toString();
     }
 
@@ -270,6 +275,7 @@ public class RandomStringUtils {
         if (chars == null) {
             return random(count, 0, 0, false, false, null, RANDOM);
         }
+
         return random(count, chars.toCharArray());
     }
 
@@ -289,7 +295,10 @@ public class RandomStringUtils {
         if (chars == null) {
             return random(count, 0, 0, false, false, null, RANDOM);
         }
+
         return random(count, 0, chars.length, false, false, chars, RANDOM);
     }
-
 }
+
+
+//~ Formatted by Jindent --- http://www.jindent.com

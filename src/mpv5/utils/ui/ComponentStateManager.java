@@ -1,16 +1,24 @@
 package mpv5.utils.ui;
 
+//~--- non-JDK imports --------------------------------------------------------
+
+import mpv5.logging.Log;
+
+//~--- JDK imports ------------------------------------------------------------
+
 import java.beans.XMLDecoder;
 import java.beans.XMLEncoder;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+
 import java.util.Set;
 import java.util.TreeSet;
+
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableColumnModel;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
-import mpv5.logging.Log;
 
 /**
  * The Component State manager provides functions to store and restore the state of UI Components, yet only {@link JTable}
@@ -24,24 +32,31 @@ public class ComponentStateManager {
      */
     public static synchronized String persist(JTable table) {
         try {
-            ByteArrayOutputStream io = new ByteArrayOutputStream();
-            XMLEncoder encoder = new XMLEncoder(io);
-            TableColumnModel tableColumnModel = table.getColumnModel();
+            ByteArrayOutputStream            io                     = new ByteArrayOutputStream();
+            XMLEncoder                       encoder                = new XMLEncoder(io);
+            TableColumnModel                 tableColumnModel       = table.getColumnModel();
             final Set<TableColumnLayoutInfo> tableColumnLayoutInfos = new TreeSet<TableColumnLayoutInfo>();
-            for (int currentColumnIndex = 0; currentColumnIndex < tableColumnModel.getColumnCount(); currentColumnIndex++) {
-                TableColumn tableColumn = tableColumnModel.getColumn(currentColumnIndex);
-                TableColumnLayoutInfo tableColumnLayoutInfo = new TableColumnLayoutInfo(
-                        tableColumn.getIdentifier().toString(),
-                        tableColumnModel.getColumnIndex(tableColumn.getIdentifier()), tableColumn.getWidth());
+
+            for (int currentColumnIndex = 0; currentColumnIndex < tableColumnModel.getColumnCount();
+                    currentColumnIndex++) {
+                TableColumn           tableColumn           = tableColumnModel.getColumn(currentColumnIndex);
+                TableColumnLayoutInfo tableColumnLayoutInfo =
+                    new TableColumnLayoutInfo(tableColumn.getIdentifier().toString(),
+                                              tableColumnModel.getColumnIndex(tableColumn.getIdentifier()),
+                                              tableColumn.getWidth());
+
                 tableColumnLayoutInfos.add(tableColumnLayoutInfo);
             }
+
             encoder.writeObject(tableColumnLayoutInfos);
             encoder.flush();
             encoder.close();
+
             return io.toString("UTF-8");
         } catch (Exception e) {
             Log.Debug(e);
         }
+
         return null;
     }
 
@@ -55,46 +70,56 @@ public class ComponentStateManager {
      */
     public static synchronized void reload(String data, JTable table) throws Exception {
 
-//        Log.Debug(ComponentStateManager.class, data);//
+//      Log.Debug(ComponentStateManager.class, data);//
         if (data != null) {
             Log.Debug(ComponentStateManager.class, "Reloading layout for: " + table.getName());
-            try {
-                ByteArrayInputStream io = new ByteArrayInputStream(data.getBytes("UTF-8"));
-                XMLDecoder decoder = new XMLDecoder(io);
-                @SuppressWarnings("unchecked")
-                Set<TableColumnLayoutInfo> tableColumnLayoutInfos = (Set<TableColumnLayoutInfo>) decoder.readObject();
 
+            try {
+                ByteArrayInputStream                                      io                     =
+                    new ByteArrayInputStream(data.getBytes("UTF-8"));
+                XMLDecoder                                                decoder                = new XMLDecoder(io);
+                @SuppressWarnings("unchecked") Set<TableColumnLayoutInfo> tableColumnLayoutInfos =
+                    (Set<TableColumnLayoutInfo>) decoder.readObject();
                 TableColumnModel tableColumnModel = new DefaultTableColumnModel();
 
                 for (TableColumnLayoutInfo tableColumnLayoutInfo : tableColumnLayoutInfos) {
-                    if (tableColumnLayoutInfo.getColumnName().length() > 0 && table.getColumnCount() > 0) {
+                    if ((tableColumnLayoutInfo.getColumnName().length() > 0) && (table.getColumnCount() > 0)) {
                         try {
                             TableColumn tableColumn = table.getColumn(tableColumnLayoutInfo.getColumnName());
+
                             tableColumn.setPreferredWidth(tableColumnLayoutInfo.getWidth());
                             tableColumnModel.addColumn(tableColumn);
 
-//                            System.err.println(tableColumnLayoutInfo.getColumnName() + " : " + tableColumnLayoutInfo.getWidth());
+//                          System.err.println(tableColumnLayoutInfo.getColumnName() + " : " + tableColumnLayoutInfo.getWidth());
                         } catch (Exception e) {
-                                Log.Debug(ComponentStateManager.class, e + ": " + tableColumnLayoutInfo.getColumnName());
-                                Log.Debug(ComponentStateManager.class, e + " Count: " + table.getColumnCount());
-                                int cols = table.getColumnCount();
-                                for (int i = 0; i < cols; i++) {
-                                    Log.Debug(ComponentStateManager.class, table.getColumnName(i));
-                                }
-//                                throw e;
+                            Log.Debug(ComponentStateManager.class, e + ": " + tableColumnLayoutInfo.getColumnName());
+                            Log.Debug(ComponentStateManager.class, e + " Count: " + table.getColumnCount());
+
+                            int cols = table.getColumnCount();
+
+                            for (int i = 0; i < cols; i++) {
+                                Log.Debug(ComponentStateManager.class, table.getColumnName(i));
+                            }
+
+//                          throw e;
                         }
                     }
                 }
 
                 TableColumnModel model = table.getColumnModel();
+
                 for (int i = 0; i < model.getColumnCount(); i++) {
                     boolean found = false;
+
                     for (int z = 0; z < tableColumnModel.getColumnCount(); z++) {
-                        if (tableColumnModel.getColumn(z).getHeaderValue().equals(model.getColumn(i).getHeaderValue())) {
+                        if (tableColumnModel.getColumn(z).getHeaderValue().equals(
+                                model.getColumn(i).getHeaderValue())) {
                             found = true;
+
                             break;
                         }
                     }
+
                     if (!found) {
                         tableColumnModel.addColumn(model.getColumn(i));
                     }
@@ -104,6 +129,7 @@ public class ComponentStateManager {
                 decoder.close();
             } catch (Exception e) {
                 Log.Debug(e);
+
                 throw e;
             }
         } else {
@@ -111,3 +137,6 @@ public class ComponentStateManager {
         }
     }
 }
+
+
+//~ Formatted by Jindent --- http://www.jindent.com

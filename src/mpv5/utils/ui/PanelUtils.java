@@ -1,8 +1,15 @@
+
 /*
- * 
- * 
+*
+*
  */
 package mpv5.utils.ui;
+
+//~--- non-JDK imports --------------------------------------------------------
+
+import mpv5.ui.beans.LabeledTextField;
+
+//~--- JDK imports ------------------------------------------------------------
 
 import java.awt.AlphaComposite;
 import java.awt.Color;
@@ -11,14 +18,15 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+
 import javax.swing.*;
-import mpv5.ui.beans.LabeledTextField;
 
 /**
  *
- * 
+ *
  */
 public class PanelUtils {
 
@@ -30,10 +38,7 @@ public class PanelUtils {
     public static void cut(JTextField jTextField, int length) {
         try {
             jTextField.setText(jTextField.getText().substring(0, length));
-
-        } catch (Exception exception) {
-        }
-
+        } catch (Exception exception) {}
     }
 
     /**
@@ -42,34 +47,36 @@ public class PanelUtils {
      * @param panel
      */
     public static void clearText(JPanel panel) {
-        JTextField jt = null;
-        Object p;
-        JEditorPane ja = null;
-        JTextArea je = null;
+        JTextField       jt = null;
+        Object           p;
+        JEditorPane      ja = null;
+        JTextArea        je = null;
         LabeledTextField le = null;
-
 
         for (int i = 0; i < panel.getComponents().length; i++) {
             try {
                 p = (java.lang.Object) panel.getComponents()[i];
+
                 if (p.getClass().isInstance(new JTextField())) {
                     jt = (JTextField) panel.getComponents()[i];
                     jt.setText("");
                 }
+
                 if (p.getClass().isInstance(new JEditorPane())) {
                     ja = (JEditorPane) panel.getComponents()[i];
                     ja.setText(null);
                 }
+
                 if (p.getClass().isInstance(new JTextArea())) {
                     je = (JTextArea) panel.getComponents()[i];
                     je.setText("");
                 }
+
                 if (p.getClass().isInstance(new LabeledTextField())) {
                     le = (LabeledTextField) panel.getComponents()[i];
                     le.set_Text("");
                 }
-            } catch (Exception exception) {
-            }
+            } catch (Exception exception) {}
         }
     }
 
@@ -83,6 +90,7 @@ public class PanelUtils {
             component.getComponents()[i].setEnabled(state);
         }
     }
-
-
 }
+
+
+//~ Formatted by Jindent --- http://www.jindent.com

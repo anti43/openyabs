@@ -1,10 +1,14 @@
 package mpv5.utils.tables;
 
+//~--- JDK imports ------------------------------------------------------------
+
 import java.awt.*;
-import java.awt.event.*;
-import javax.swing.*;
 import java.awt.datatransfer.*;
+import java.awt.event.*;
+
 import java.util.*;
+
+import javax.swing.*;
 
 /**
  * @author http://www.javaworld.com/javaworld/javatips/jw-javatip77.html
@@ -14,11 +18,10 @@ import java.util.*;
  * interoperability between enabled JTables and Excel.
  */
 public class ExcelAdapter implements ActionListener {
-
-    private String rowstring, value;
-    private Clipboard system;
+    private JTable          jTable1;
+    private String          rowstring, value;
     private StringSelection stsel;
-    private JTable jTable1;
+    private Clipboard       system;
 
     /**
      * The Excel Adapter is constructed with a
@@ -27,12 +30,15 @@ public class ExcelAdapter implements ActionListener {
      */
     public ExcelAdapter(JTable myJTable) {
         jTable1 = myJTable;
+
         KeyStroke copy = KeyStroke.getKeyStroke(KeyEvent.VK_C, ActionEvent.CTRL_MASK, false);
+
         // Identifying the copy KeyStroke user can modify this
         // to copy on some other Key combination.
         KeyStroke paste = KeyStroke.getKeyStroke(KeyEvent.VK_V, ActionEvent.CTRL_MASK, false);
+
         // Identifying the Paste KeyStroke user can modify this
-        //to copy on some other Key combination.
+        // to copy on some other Key combination.
         jTable1.registerKeyboardAction(this, "Copy", copy, JComponent.WHEN_FOCUSED);
         jTable1.registerKeyboardAction(this, "Paste", paste, JComponent.WHEN_FOCUSED);
         system = Toolkit.getDefaultToolkit().getSystemClipboard();
@@ -60,56 +66,73 @@ public class ExcelAdapter implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         if (e.getActionCommand().compareTo("Copy") == 0) {
             StringBuffer sbf = new StringBuffer();
+
             // Check to ensure we have selected only a contiguous block of
             // cells
-            int numcols = jTable1.getSelectedColumnCount();
-            int numrows = jTable1.getSelectedRowCount();
+            int   numcols      = jTable1.getSelectedColumnCount();
+            int   numrows      = jTable1.getSelectedRowCount();
             int[] rowsselected = jTable1.getSelectedRows();
             int[] colsselected = jTable1.getSelectedColumns();
-            if (!((numrows - 1 == rowsselected[rowsselected.length - 1] - rowsselected[0] &&
-                    numrows == rowsselected.length) &&
-                    (numcols - 1 == colsselected[colsselected.length - 1] - colsselected[0] &&
-                    numcols == colsselected.length))) {
-                JOptionPane.showMessageDialog(null, "Invalid Copy Selection",
-                        "Invalid Copy Selection",
-                        JOptionPane.ERROR_MESSAGE);
+
+            if (!(((numrows - 1 == rowsselected[rowsselected.length - 1] - rowsselected[0])
+                    && (numrows == rowsselected.length)) && ((numcols - 1
+                        == colsselected[colsselected.length - 1] - colsselected[0]) && (numcols
+                            == colsselected.length)))) {
+                JOptionPane.showMessageDialog(null, "Invalid Copy Selection", "Invalid Copy Selection",
+                                              JOptionPane.ERROR_MESSAGE);
+
                 return;
             }
+
             for (int i = 0; i < numrows; i++) {
                 for (int j = 0; j < numcols; j++) {
-                    String s = String.valueOf(jTable1.getValueAt(rowsselected[i], colsselected[j])).replaceAll("\\<.*?\\>", "");
+                    String s = String.valueOf(jTable1.getValueAt(rowsselected[i],
+                                   colsselected[j])).replaceAll("\\<.*?\\>", "");
+
                     if (s.equals("null")) {
                         s = "";
                     }
+
                     sbf.append(s);
+
                     if (j < numcols - 1) {
                         sbf.append("\t");
                     }
                 }
+
                 sbf.append("\n");
             }
-            stsel = new StringSelection(sbf.toString());
+
+            stsel  = new StringSelection(sbf.toString());
             system = Toolkit.getDefaultToolkit().getSystemClipboard();
             system.setContents(stsel, stsel);
         }
+
         if (e.getActionCommand().compareTo("Paste") == 0) {
-            //System.out.println("Trying to Paste");
+
+            // System.out.println("Trying to Paste");
             int startRow = (jTable1.getSelectedRows())[0];
             int startCol = (jTable1.getSelectedColumns())[0];
+
             try {
                 String trstring = (String) (system.getContents(this).getTransferData(DataFlavor.stringFlavor));
-                //System.out.println("String is:" + trstring);
+
+                // System.out.println("String is:" + trstring);
                 StringTokenizer st1 = new StringTokenizer(trstring, "\n");
+
                 for (int i = 0; st1.hasMoreTokens(); i++) {
                     rowstring = st1.nextToken();
+
                     StringTokenizer st2 = new StringTokenizer(rowstring, "\t");
+
                     for (int j = 0; st2.hasMoreTokens(); j++) {
                         value = (String) st2.nextToken();
-                        if (startRow + i < jTable1.getRowCount() &&
-                                startCol + j < jTable1.getColumnCount()) {
+
+                        if ((startRow + i < jTable1.getRowCount()) && (startCol + j < jTable1.getColumnCount())) {
                             jTable1.setValueAt(value, startRow + i, startCol + j);
                         }
-                        //System.out.println("Putting " + value + "atrow=" + startRow + i + "column=" + startCol + j);
+
+                        // System.out.println("Putting " + value + "atrow=" + startRow + i + "column=" + startCol + j);
                     }
                 }
             } catch (Exception ex) {
@@ -118,3 +141,6 @@ public class ExcelAdapter implements ActionListener {
         }
     }
 }
+
+
+//~ Formatted by Jindent --- http://www.jindent.com

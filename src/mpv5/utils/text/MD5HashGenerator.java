@@ -1,5 +1,6 @@
-
 package mpv5.utils.text;
+
+//~--- JDK imports ------------------------------------------------------------
 
 import java.security.*;
 
@@ -8,10 +9,11 @@ import java.security.*;
  * @author pertinax
  */
 public class MD5HashGenerator {
-
-    private MessageDigest md = null;
-    static private MD5HashGenerator md5 = null;
-    private static final char[] hexChars = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F'};
+    private static final char[]     hexChars = {
+        '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F'
+    };
+    static private MD5HashGenerator md5      = null;
+    private MessageDigest           md       = null;
 
     /**
      * Constructor is private so you must use the getInstance method
@@ -22,11 +24,10 @@ public class MD5HashGenerator {
 
     /**
      * This returns the singleton instance
-     * @return 
+     * @return
      * @throws NoSuchAlgorithmException
      */
     public static MD5HashGenerator getInstance() throws NoSuchAlgorithmException {
-
         if (md5 == null) {
             md5 = new MD5HashGenerator();
         }
@@ -45,7 +46,6 @@ public class MD5HashGenerator {
     }
 
     public String hashData(byte[] dataToHash) {
-
         return hexStringFromBytes((calculateHash(dataToHash)));
     }
 
@@ -56,23 +56,21 @@ public class MD5HashGenerator {
     }
 
     public String hexStringFromBytes(byte[] b) {
-
         String hex = "";
-
-        int msb;
-
-        int lsb = 0;
-        int i;
+        int    msb;
+        int    lsb = 0;
+        int    i;
 
         // MSB maps to idx 0
-
         for (i = 0; i < b.length; i++) {
-
             msb = ((int) b[i] & 0x000000FF) / 16;
-
             lsb = ((int) b[i] & 0x000000FF) % 16;
             hex = hex + hexChars[msb] + hexChars[lsb];
         }
+
         return (hex);
     }
-} 
+}
+
+
+//~ Formatted by Jindent --- http://www.jindent.com

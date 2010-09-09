@@ -1,33 +1,32 @@
+
 /*
- *  This file is part of YaBS.
- *
- *  YaBS is free software: you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation, either version 3 of the License, or
- *  (at your option) any later version.
- *
- *  YaBS is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  You should have received a copy of the GNU General Public License
- *  along with YaBS.  If not, see <http://www.gnu.org/licenses/>.
+*  This file is part of YaBS.
+*
+*  YaBS is free software: you can redistribute it and/or modify
+*  it under the terms of the GNU General Public License as published by
+*  the Free Software Foundation, either version 3 of the License, or
+*  (at your option) any later version.
+*
+*  YaBS is distributed in the hope that it will be useful,
+*  but WITHOUT ANY WARRANTY; without even the implied warranty of
+*  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+*  GNU General Public License for more details.
+*
+*  You should have received a copy of the GNU General Public License
+*  along with YaBS.  If not, see <http://www.gnu.org/licenses/>.
  */
 package mpv5.utils.xml;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Hashtable;
-import java.util.List;
+//~--- non-JDK imports --------------------------------------------------------
 
-import java.util.Vector;
 import mpv5.data.PropertyStore;
+
 import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
 import mpv5.db.objects.Contact;
+
 import mpv5.logging.Log;
+
 import org.jdom.Attribute;
 import org.jdom.Document;
 import org.jdom.Element;
@@ -35,15 +34,24 @@ import org.jdom.JDOMException;
 import org.jdom.filter.ElementFilter;
 import org.jdom.input.SAXBuilder;
 
+//~--- JDK imports ------------------------------------------------------------
+
+import java.io.File;
+import java.io.IOException;
+
+import java.util.ArrayList;
+import java.util.Hashtable;
+import java.util.List;
+import java.util.Vector;
+
 /**
  *
- * 
+ *
  */
 public class XMLReader {
-
-    private Element rootElement = new Element(mpv5.globals.Constants.XML_ROOT);
-    private Document myDocument = new Document();
-    private boolean overwriteExisting = false;
+    private Element  rootElement       = new Element(mpv5.globals.Constants.XML_ROOT);
+    private boolean  overwriteExisting = false;
+    private Document myDocument        = new Document();
 
     /**
      *
@@ -51,11 +59,11 @@ public class XMLReader {
      * @return
      */
     public Element getSubRootElement(String name) {
-        @SuppressWarnings("unchecked")
-        List<Element> l = rootElement.getContent(new ElementFilter());
+        @SuppressWarnings("unchecked") List<Element> l = rootElement.getContent(new ElementFilter());
 
         for (int i = 0; i < l.size(); i++) {
             Element element = l.get(i);
+
             if (element.getName().equals(name)) {
                 return element;
             }
@@ -69,7 +77,7 @@ public class XMLReader {
      * @param xmlfile
      * @return The resulting xml document
      * @throws JDOMException
-     * @throws IOException 
+     * @throws IOException
      */
     public Document newDoc(File xmlfile) throws JDOMException, IOException {
         return createDocument(xmlfile, false);
@@ -97,52 +105,61 @@ public class XMLReader {
      * @return The value of the element
      */
     public String getElement(String type, String nodename, String attributevalue, String name) {
-        @SuppressWarnings("unchecked")
-        List<Element> list = (List<Element>) rootElement.getChild(type).getContent();
+        @SuppressWarnings("unchecked") List<Element> list = (List<Element>) rootElement.getChild(type).getContent();
+
         for (int i = 0; i < list.size(); i++) {
             if (list.get(i) instanceof Element) {
-                if (list.get(i).getName().equals(nodename) && list.get(i).getAttribute("id") != null && list.get(i).getAttribute("id").getValue().equals(attributevalue)) {
+                if (list.get(i).getName().equals(nodename) && (list.get(i).getAttribute("id") != null)
+                        && list.get(i).getAttribute("id").getValue().equals(attributevalue)) {
                     return list.get(i).getChild(name).getValue();
                 }
             }
         }
+
         return null;
     }
 
     /**
      * Tries to parse the xml file into a list of matching database objects.
-     * @param <T> 
+     * @param <T>
      * @param template
      * @return
      * @throws Exception
      */
-    @SuppressWarnings({"unchecked"})
+    @SuppressWarnings({ "unchecked" })
     public synchronized <T extends DatabaseObject> ArrayList<T> getObjects(T template) throws Exception {
-
         Log.Debug(this, "Looking for: " + template.getDbIdentity());
-        String ident = template.getType();
-        ArrayList<DatabaseObject> arrlist = new ArrayList<DatabaseObject>();
-        @SuppressWarnings("unchecked")
-        List<Element> list = (List<Element>) rootElement.getChild(template.getDbIdentity()).getContent(new ElementFilter());
+
+        String                                       ident   = template.getType();
+        ArrayList<DatabaseObject>                    arrlist = new ArrayList<DatabaseObject>();
+        @SuppressWarnings("unchecked") List<Element> list    =
+            (List<Element>) rootElement.getChild(template.getDbIdentity()).getContent(new ElementFilter());
 
         Log.Debug(this, "Found items: " + list.size());
+
         for (int i = 0; i < list.size(); i++) {
-            if (list.get(i) instanceof Element && list.get(i).getName().equalsIgnoreCase(template.getType())) {
-//                Log.Debug(this, "Found item: " + list.get(i).getName());
+            if ((list.get(i) instanceof Element) && list.get(i).getName().equalsIgnoreCase(template.getType())) {
+
+//              Log.Debug(this, "Found item: " + list.get(i).getName());
                 if (list.get(i).getName().equals(ident)) {
-                    Element element = list.get(i);
-                    DatabaseObject obj = template.clone();
+                    Element        element = list.get(i);
+                    DatabaseObject obj     = template.clone();
+
                     obj.parse(toHashTable(element));
-                    if (isOverwriteExisting() && list.get(i).getAttribute("id") != null) {
+
+                    if (isOverwriteExisting() && (list.get(i).getAttribute("id") != null)) {
                         obj.setIDS(Integer.valueOf(list.get(i).getAttribute("id").getValue()));
-                        Log.Debug(this, "Overwriting/updating dataset id " + obj.getDbIdentity() + ": " + obj.__getIDS());
+                        Log.Debug(this,
+                                  "Overwriting/updating dataset id " + obj.getDbIdentity() + ": " + obj.__getIDS());
                     } else {
                         obj.ensureUniqueness();
                     }
+
                     arrlist.add(obj);
                 }
             }
         }
+
         return (ArrayList<T>) arrlist;
     }
 
@@ -152,14 +169,14 @@ public class XMLReader {
      * @return
      */
     public synchronized ArrayList<ArrayList<DatabaseObject>> getObjects() {
-        ArrayList<Context> c = Context.getImportableContexts();
-        ArrayList<ArrayList<DatabaseObject>> t = new ArrayList<ArrayList<DatabaseObject>>();
-        DatabaseObject template = null;
-        Context context = null;
+        ArrayList<Context>                   c        = Context.getImportableContexts();
+        ArrayList<ArrayList<DatabaseObject>> t        = new ArrayList<ArrayList<DatabaseObject>>();
+        DatabaseObject                       template = null;
+        Context                              context  = null;
 
         for (int i = 0; i < c.size(); i++) {
             try {
-                context = c.get(i);
+                context  = c.get(i);
                 template = DatabaseObject.getObject(context);
                 t.add(getObjects(template));
             } catch (Exception ignore) {
@@ -175,32 +192,38 @@ public class XMLReader {
      * @param nodename
      */
     public void print(String nodename) {
-        @SuppressWarnings("unchecked")
-        List<Element> list = (List<Element>) rootElement.getChild(nodename).getContent(new ElementFilter());
+        @SuppressWarnings("unchecked") List<Element> list =
+            (List<Element>) rootElement.getChild(nodename).getContent(new ElementFilter());
+
         for (int i = 0; i < list.size(); i++) {
             Element element = list.get(i);
+
             Log.Debug(this, element.getName() + ": " + element.getValue());
         }
     }
 
     /**
      * Reads a node with the given name into a property store object
-     * @param type 
+     * @param type
      * @param nodename
-     * @param nodeid 
+     * @param nodeid
      * @param store
      * @return
      */
     public synchronized PropertyStore readInto(String type, String nodename, String nodeid, PropertyStore store) {
-        @SuppressWarnings("unchecked")
-        List<Element> list = (List<Element>) rootElement.getChild(type).getContent(new ElementFilter());
+        @SuppressWarnings("unchecked") List<Element> list =
+            (List<Element>) rootElement.getChild(type).getContent(new ElementFilter());
+
         for (int i = 0; i < list.size(); i++) {
             Element element = list.get(i);
+
             if (element.getName().equals(nodename) && element.getAttribute("id").getValue().equals(nodeid)) {
-                @SuppressWarnings("unchecked")
-                List<Element> list2 = (List<Element>) element.getContent(new ElementFilter());
+                @SuppressWarnings("unchecked") List<Element> list2 =
+                    (List<Element>) element.getContent(new ElementFilter());
+
                 for (int j = 0; j < list2.size(); j++) {
                     Element element1 = list2.get(j);
+
                     store.addProperty(element1.getName(), element1.getValue());
                 }
             }
@@ -209,32 +232,41 @@ public class XMLReader {
         return store;
     }
 
-      /**
+    /**
      * Reads all nodes with the given name into a property store list, with additional property "nodeid"
      * @param type
      * @param nodename
      * @return
      */
     public synchronized List<PropertyStore> readInto(String type, String nodename) {
-        @SuppressWarnings("unchecked")
-        List<Element> list = (List<Element>) rootElement.getChild(type).getContent(new ElementFilter());
+        @SuppressWarnings("unchecked") List<Element> list =
+            (List<Element>) rootElement.getChild(type).getContent(new ElementFilter());
         List<PropertyStore> plist = new Vector<PropertyStore>();
+
         for (int i = 0; i < list.size(); i++) {
             Element element = list.get(i);
-            if (element.getName().equals(nodename) ) {
+
+            if (element.getName().equals(nodename)) {
                 PropertyStore st = new PropertyStore();
+
                 st.addProperty("nodeid", element.getAttribute("id").getValue());
+
                 try {
                     st.addProperty("nodename", element.getAttribute("name").getValue());
                 } catch (Exception e) {
-                    //name not mandatory
+
+                    // name not mandatory
                 }
-                @SuppressWarnings("unchecked")
-                List<Element> list2 = (List<Element>) element.getContent(new ElementFilter());
+
+                @SuppressWarnings("unchecked") List<Element> list2 =
+                    (List<Element>) element.getContent(new ElementFilter());
+
                 for (int j = 0; j < list2.size(); j++) {
                     Element element1 = list2.get(j);
+
                     st.addProperty(element1.getName(), element1.getValue());
                 }
+
                 plist.add(st);
             }
         }
@@ -244,11 +276,14 @@ public class XMLReader {
 
     private Document createDocument(File xmlfile, boolean validate) throws JDOMException, IOException {
         SAXBuilder parser = new SAXBuilder(validate);
-        myDocument = parser.build(xmlfile);
+
+        myDocument  = parser.build(xmlfile);
         rootElement = myDocument.getRootElement();
+
         if (validate) {
             Log.Debug(this, "Document validated: " + xmlfile);
         }
+
         return myDocument;
     }
 
@@ -259,12 +294,12 @@ public class XMLReader {
      * @return
      */
     public synchronized Hashtable<String, Object> toHashTable(Element node) {
-        @SuppressWarnings("unchecked")
-        List<Element> liste = node.getChildren();
-        Hashtable<String, Object> table = new Hashtable<String, Object>();
+        @SuppressWarnings("unchecked") List<Element> liste = node.getChildren();
+        Hashtable<String, Object>                    table = new Hashtable<String, Object>();
 
         for (int i = 0; i < liste.size(); i++) {
             Element element = liste.get(i);
+
             table.put(element.getName(), element.getValue());
         }
 
@@ -278,23 +313,27 @@ public class XMLReader {
      * @return
      */
     public String[][] toArray(Element node) {
-        @SuppressWarnings("unchecked")
-        List<Element> liste = node.getContent(new ElementFilter());
+        @SuppressWarnings("unchecked") List<Element> liste = node.getContent(new ElementFilter());
+
         Log.Debug(this, liste.size() + " elements found in " + node);
+
         String[][] table = new String[liste.size()][5];
 
         for (int i = 0; i < liste.size(); i++) {
             Element element = liste.get(i);
+
             table[i][0] = element.getName();
             table[i][1] = element.getValue();
-            @SuppressWarnings("unchecked")
-            List<Attribute> atts = element.getAttributes();
+
+            @SuppressWarnings("unchecked") List<Attribute> atts = element.getAttributes();
 
             for (int j = 2; j < atts.size() + 2; j++) {
                 Attribute a = atts.get(j - 2);
+
                 table[i][j] = a.getValue();
             }
         }
+
         return table;
     }
 
@@ -312,3 +351,6 @@ public class XMLReader {
         this.overwriteExisting = overwriteExisting;
     }
 }
+
+
+//~ Formatted by Jindent --- http://www.jindent.com
