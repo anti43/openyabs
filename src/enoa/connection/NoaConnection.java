@@ -122,7 +122,7 @@ public class NoaConnection {
             Map<String, String> configuration = new HashMap<String, String>();
             configuration.put(IOfficeApplication.APPLICATION_TYPE_KEY,
                     IOfficeApplication.REMOTE_APPLICATION);
-            configuration.put(IOfficeApplication.APPLICATION_HOST_KEY, host);
+            configuration.put(IOfficeApplication.APPLICATION_HOST_KEY, host.replace("http://", ""));
             configuration.put(IOfficeApplication.APPLICATION_PORT_KEY, String.valueOf(port));
 
             officeAplication =

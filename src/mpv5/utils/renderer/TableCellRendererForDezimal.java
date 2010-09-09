@@ -21,15 +21,18 @@ package mpv5.utils.renderer;
 
 import java.awt.Color;
 import java.awt.Component;
+import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import javax.swing.JFormattedTextField;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableColumn;
+import mpv5.globals.GlobalSettings;
 import mpv5.utils.numberformat.FormatNumber;
 
 public class TableCellRendererForDezimal extends DefaultTableCellRenderer {
-private final DefaultTableCellRenderer adaptee = new DefaultTableCellRenderer();
+
+    private final DefaultTableCellRenderer adaptee = new DefaultTableCellRenderer();
     public static NumberFormat DECIMALFORMAT = FormatNumber.getShortDecimalFormat();
     private final JTable t;
     private Color color;
@@ -43,6 +46,10 @@ private final DefaultTableCellRenderer adaptee = new DefaultTableCellRenderer();
         super();
         this.t = t;
         this.color = color;
+
+        if (GlobalSettings.hasProperty("table.decimal.format")) {
+            DECIMALFORMAT = new DecimalFormat(GlobalSettings.getProperty("table.decimal.format"));
+        }
     }
 
     /**
@@ -75,7 +82,7 @@ private final DefaultTableCellRenderer adaptee = new DefaultTableCellRenderer();
 
     @Override
     public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int col) {
-       if (value instanceof Number) {
+        if (value instanceof Number) {
             value = DECIMALFORMAT.format(value);
         }
         adaptee.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, col);

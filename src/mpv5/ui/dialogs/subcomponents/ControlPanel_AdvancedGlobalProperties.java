@@ -22,12 +22,11 @@
 package mpv5.ui.dialogs.subcomponents;
 
 import java.awt.Component;
-import java.util.ArrayList;
 import java.util.List;
-import javax.swing.JPanel;
 import mpv5.data.PropertyStore;
-import mpv5.globals.LocalSettings;
+import mpv5.globals.GlobalSettings;
 import mpv5.globals.Messages;
+import mpv5.logging.Log;
 import mpv5.ui.dialogs.ControlApplet;
 import mpv5.ui.dialogs.Popup;
 import mpv5.usermanagement.MPSecurityManager;
@@ -38,33 +37,34 @@ import mpv5.utils.tables.TableFormat;
  *
  *  
  */
-public class ControlPanel_Advanced extends javax.swing.JPanel implements ControlApplet {
+public class ControlPanel_AdvancedGlobalProperties extends javax.swing.JPanel implements ControlApplet {
 
     private static final long serialVersionUID = 1L;
-    private static ControlPanel_Advanced ident;
+    private static ControlPanel_AdvancedGlobalProperties ident;
     private PropertyStore oldvals;
 
     /** Creates new form GeneralListPanel */
-    public ControlPanel_Advanced() {
+    public ControlPanel_AdvancedGlobalProperties() {
         if (MPSecurityManager.checkAdminAccess()) {
             initComponents();
-            setData(LocalSettings.getPropertyStore());
+            setData(GlobalSettings.getPropertyStore());
         }
     }
 
     public void setData(PropertyStore vals) {
+
         oldvals = vals;
         List<String[]> data = vals.getList();
-        Object[][] list = new Object[data.size()][2];
+        Object[][] list = new Object[data.size() + 10][2];
         for (int i = 0; i < data.size(); i++) {
             String[] strings = data.get(i);
             list[i][0] = strings[0].toUpperCase();
             list[i][1] = strings[1];
         }
-        MPTableModel mod = new MPTableModel(list);
-        mod.setCanEdits(new boolean[]{false, true, false});
+        MPTableModel mod = new MPTableModel(list, new String[]{Messages.PROPERTY.getValue(), Messages.VALUE.getValue()});
+        mod.setCanEdits(new boolean[]{true, true, false});
+        mod.addRow(5);
         jTable1.setModel(mod);
-        TableFormat.format(jTable1, 0, 150);
 
     }
 
@@ -84,8 +84,8 @@ public class ControlPanel_Advanced extends javax.swing.JPanel implements Control
         jButton2 = new javax.swing.JButton();
         jButton3 = new javax.swing.JButton();
 
-        java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle(); // NOI18N
-        setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("ControlPanel_Advanced.border.title"))); // NOI18N
+        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("mpv5/resources/languages/Panels"); // NOI18N
+        setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("ControlPanel_AdvancedGlobalProperties.border.title"))); // NOI18N
         setName("Form"); // NOI18N
         setLayout(new javax.swing.BoxLayout(this, javax.swing.BoxLayout.PAGE_AXIS));
 
@@ -94,13 +94,13 @@ public class ControlPanel_Advanced extends javax.swing.JPanel implements Control
         jTable1.setAutoCreateRowSorter(true);
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {},
-                {},
-                {},
-                {}
+                {null, null},
+                {null, null},
+                {null, null},
+                {null, null}
             },
             new String [] {
-
+                "Title 1", "Title 2"
             }
         ));
         jTable1.setName("jTable1"); // NOI18N
@@ -112,7 +112,7 @@ public class ControlPanel_Advanced extends javax.swing.JPanel implements Control
         jPanel1.setName("jPanel1"); // NOI18N
         jPanel1.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.RIGHT));
 
-        jButton1.setText(bundle.getString("ControlPanel_Advanced.jButton1.text")); // NOI18N
+        jButton1.setText(bundle.getString("ControlPanel_AdvancedGlobalProperties.jButton1.text")); // NOI18N
         jButton1.setName("jButton1"); // NOI18N
         jButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -121,7 +121,7 @@ public class ControlPanel_Advanced extends javax.swing.JPanel implements Control
         });
         jPanel1.add(jButton1);
 
-        jButton2.setText(bundle.getString("ControlPanel_Advanced.jButton2.text")); // NOI18N
+        jButton2.setText(bundle.getString("ControlPanel_AdvancedGlobalProperties.jButton2.text")); // NOI18N
         jButton2.setName("jButton2"); // NOI18N
         jButton2.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -130,7 +130,7 @@ public class ControlPanel_Advanced extends javax.swing.JPanel implements Control
         });
         jPanel1.add(jButton2);
 
-        jButton3.setText(bundle.getString("ControlPanel_Advanced.jButton3.text")); // NOI18N
+        jButton3.setText(bundle.getString("ControlPanel_AdvancedGlobalProperties.jButton3.text")); // NOI18N
         jButton3.setName("jButton3"); // NOI18N
         jButton3.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -145,14 +145,14 @@ public class ControlPanel_Advanced extends javax.swing.JPanel implements Control
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         if (Popup.Y_N_dialog(Messages.ADVANCED_SETTINGS_SAVE, Messages.WARNING)) {
             setSettings();
-            LocalSettings.apply();
-            LocalSettings.save();
+            GlobalSettings.apply();
+            GlobalSettings.save();
         }
 }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         setSettings();
-        LocalSettings.apply();
+        GlobalSettings.apply();
 }//GEN-LAST:event_jButton2ActionPerformed
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
@@ -181,7 +181,7 @@ public class ControlPanel_Advanced extends javax.swing.JPanel implements Control
 
     @Override
     public String getUname() {
-        return "advancedsettings";
+        return "advancedglobalsettings";
     }
 
     @Override
@@ -192,8 +192,9 @@ public class ControlPanel_Advanced extends javax.swing.JPanel implements Control
     }
 
     private void setSettings() {
+
         if (jTable1.getCellEditor() != null) {
-             try {
+            try {
                 jTable1.getCellEditor().stopCellEditing();
             } catch (Exception e) {
             }
@@ -201,9 +202,12 @@ public class ControlPanel_Advanced extends javax.swing.JPanel implements Control
         MPTableModel data = (MPTableModel) jTable1.getModel();
         int i = data.getRowCount();
         for (int j = 0; j < i; j++) {
-            String value = String.valueOf(data.getValueAt(j, 1));
+
             String key = String.valueOf(data.getValueAt(j, 0)).toLowerCase();
-            LocalSettings.setProperty(key, value);
+            String value = String.valueOf(data.getValueAt(j, 1));
+            if (!key.equals("null") && key.length() > 0) {
+                GlobalSettings.setProperty(key, value);
+            }
         }
     }
 }

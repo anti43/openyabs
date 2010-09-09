@@ -19,8 +19,6 @@ along with YaBS.  If not, see <http://www.gnu.org/licenses/>.
  */
 package mpv5.utils.renderer;
 
-import java.awt.Color;
-import javax.swing.DefaultCellEditor;
 import javax.swing.JFormattedTextField;
 import javax.swing.SwingConstants;
 import mpv5.logging.Log;

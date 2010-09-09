@@ -47,8 +47,8 @@
         <DimensionLayout dim="0">
           <Group type="103" groupAlignment="0" attributes="0">
               <Component id="jPanel2" alignment="0" max="32767" attributes="0"/>
-              <Component id="jPanel3" alignment="1" pref="544" max="32767" attributes="0"/>
-              <Component id="jPanel4" alignment="0" pref="544" max="32767" attributes="0"/>
+              <Component id="jPanel3" alignment="1" pref="546" max="32767" attributes="0"/>
+              <Component id="jPanel4" alignment="0" pref="546" max="32767" attributes="0"/>
               <Component id="jPanel8" alignment="0" max="32767" attributes="0"/>
               <Component id="jPanel9" alignment="1" max="32767" attributes="0"/>
               <Component id="jPanel10" alignment="0" max="32767" attributes="0"/>
@@ -63,7 +63,7 @@
                   <EmptySpace max="-2" attributes="0"/>
                   <Component id="jPanel4" min="-2" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
-                  <Component id="jPanel8" min="-2" pref="82" max="-2" attributes="0"/>
+                  <Component id="jPanel8" min="-2" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
                   <Component id="jPanel10" min="-2" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
@@ -93,7 +93,7 @@
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Group type="102" alignment="0" attributes="0">
                               <EmptySpace min="-2" pref="24" max="-2" attributes="0"/>
-                              <Component id="format" pref="498" max="32767" attributes="0"/>
+                              <Component id="format" pref="500" max="32767" attributes="0"/>
                           </Group>
                           <Group type="102" alignment="0" attributes="0">
                               <EmptySpace max="-2" attributes="0"/>
@@ -132,14 +132,14 @@
                       <Group type="102" alignment="0" attributes="0">
                           <EmptySpace max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="0" attributes="0">
-                              <Component id="cnumber" alignment="0" pref="214" max="32767" attributes="2"/>
-                              <Component id="description" alignment="0" pref="214" max="32767" attributes="2"/>
-                              <Component id="cname" alignment="1" pref="214" max="32767" attributes="2"/>
+                              <Component id="cnumber" alignment="0" pref="212" max="32767" attributes="2"/>
+                              <Component id="description" alignment="0" pref="212" max="32767" attributes="2"/>
+                              <Component id="cname" alignment="1" pref="212" max="32767" attributes="2"/>
                           </Group>
                           <EmptySpace min="-2" pref="8" max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="0" attributes="0">
-                              <Component id="ean" pref="278" max="32767" attributes="0"/>
-                              <Component id="reference" pref="278" max="32767" attributes="0"/>
+                              <Component id="ean" pref="276" max="32767" attributes="0"/>
+                              <Component id="reference" pref="276" max="32767" attributes="0"/>
                               <Component id="jButton3" min="-2" max="-2" attributes="0"/>
                           </Group>
                           <EmptySpace max="-2" attributes="0"/>
@@ -471,14 +471,14 @@
                       <EmptySpace min="-2" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Component id="labeledTextField1" min="-2" max="-2" attributes="0"/>
-                          <Component id="jLabel1" alignment="0" pref="199" max="32767" attributes="1"/>
+                          <Component id="jLabel1" alignment="0" max="32767" attributes="1"/>
                       </Group>
                       <EmptySpace min="-2" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Component id="labeledTextField2" min="-2" max="-2" attributes="0"/>
                           <Component id="jLabel2" min="-2" pref="220" max="-2" attributes="2"/>
                       </Group>
-                      <EmptySpace pref="97" max="32767" attributes="0"/>
+                      <EmptySpace pref="91" max="32767" attributes="0"/>
                   </Group>
               </Group>
             </DimensionLayout>
@@ -574,7 +574,7 @@
                           </Group>
                           <Component id="smtpuser" alignment="0" min="-2" pref="216" max="-2" attributes="0"/>
                       </Group>
-                      <EmptySpace pref="53" max="32767" attributes="0"/>
+                      <EmptySpace pref="49" max="32767" attributes="0"/>
                   </Group>
               </Group>
             </DimensionLayout>
@@ -749,7 +749,7 @@
                               <Component id="dtabankcountry" min="-2" pref="247" max="-2" attributes="1"/>
                           </Group>
                       </Group>
-                      <EmptySpace pref="22" max="32767" attributes="0"/>
+                      <EmptySpace pref="24" max="32767" attributes="0"/>
                   </Group>
               </Group>
             </DimensionLayout>

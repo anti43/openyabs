@@ -23,14 +23,9 @@ package mpv5.ui.dialogs.subcomponents;
 
 import java.awt.Component;
 import java.util.ArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.DefaultComboBoxModel;
-import javax.swing.JFormattedTextField;
 import javax.swing.JSpinner;
 import javax.swing.JTextField;
-import javax.swing.SpinnerListModel;
-import javax.swing.SpinnerNumberModel;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreeSelectionModel;
 import mpv5.data.PropertyStore;
@@ -601,7 +596,7 @@ public class ControlPanel_Accounts extends javax.swing.JPanel implements Control
                     MPComboBoxModelItem.toItems(new DatabaseSearch(Context.getGroup()).getValuesFor(Context.getGroup().getSubID(), "ids", mpv5.db.objects.User.getCurrentUser().__getGroupsids()))));
         }
 
-        groupnameselect.setSelectedIndex(MPComboBoxModelItem.getItemID(mpv5.db.objects.User.getCurrentUser().__getGroupsids(), groupnameselect.getModel()));
+        groupnameselect.setSelectedIndex(MPComboBoxModelItem.getItemID(String.valueOf(mpv5.db.objects.User.getCurrentUser().__getGroupsids()), groupnameselect.getModel()));
 
         typeselect.setModel(new DefaultComboBoxModel(MPComboBoxModelItem.toItems(
                 new Object[][]{
@@ -656,7 +651,7 @@ public class ControlPanel_Accounts extends javax.swing.JPanel implements Control
         desc.setText(description_);
         try {
             parents.set_Text(DatabaseObject.getObject(Context.getAccounts(), intparentaccount_).__getCName());
-            groupnameselect.setSelectedIndex(MPComboBoxModelItem.getItemID(groupsids_, groupnameselect.getModel()));
+            groupnameselect.setSelectedIndex(MPComboBoxModelItem.getItemID(String.valueOf(groupsids_), groupnameselect.getModel()));
             typeselect.setSelectedIndex(MPComboBoxModelItem.getItemID(intaccounttype_, typeselect.getModel()));
         } catch (NodataFoundException ex) {
             Log.Debug(this, ex.getMessage());

@@ -6,6 +6,7 @@ import mpv5.db.common.QueryHandler;
 import mpv5.globals.LocalSettings;
 import mpv5.logging.Log;
 import mpv5.ui.dialogs.ControlApplet;
+import mpv5.ui.panels.MPControlPanel;
 import mpv5.utils.text.TypeConversion;
 import mpv5.utils.ui.PanelUtils;
 
@@ -56,12 +57,13 @@ public class ControlPanel_Local extends javax.swing.JPanel implements ControlApp
         jButton1 = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
         jButton3 = new javax.swing.JButton();
+        jButton4 = new javax.swing.JButton();
 
         setBackground(new java.awt.Color(255, 255, 255));
         setName("Form"); // NOI18N
         setLayout(new javax.swing.BoxLayout(this, javax.swing.BoxLayout.PAGE_AXIS));
 
-        java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle(); // NOI18N
+        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("mpv5/resources/languages/Panels"); // NOI18N
         jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("ControlPanel_Local.jPanel2.border.title"))); // NOI18N
         jPanel2.setName("jPanel2"); // NOI18N
 
@@ -281,6 +283,15 @@ public class ControlPanel_Local extends javax.swing.JPanel implements ControlApp
         });
         jPanel1.add(jButton3);
 
+        jButton4.setText(bundle.getString("ControlPanel_Local.jButton4.text")); // NOI18N
+        jButton4.setName("jButton4"); // NOI18N
+        jButton4.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton4ActionPerformed(evt);
+            }
+        });
+        jPanel1.add(jButton4);
+
         add(jPanel1);
     }// </editor-fold>//GEN-END:initComponents
 
@@ -303,6 +314,13 @@ public class ControlPanel_Local extends javax.swing.JPanel implements ControlApp
         reset();
     }//GEN-LAST:event_jButton3ActionPerformed
 
+    private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
+
+        ControlPanel_AdvancedLocalProperties c = new ControlPanel_AdvancedLocalProperties();
+        MPControlPanel.instanceOf().openDetails(c);
+    }//GEN-LAST:event_jButton4ActionPerformed
+
+    @Override
     public void setValues(PropertyStore values) {
         oldvalues = values;
         proxy.setText(values.getProperty("proxy"));
@@ -318,10 +336,12 @@ public class ControlPanel_Local extends javax.swing.JPanel implements ControlApp
         savebasedir.set_Text(values.getProperty(LocalSettings.BASE_DIR));
     }
 
+    @Override
     public String getUname() {
         return UNAME;
     }
 
+    @Override
     public void reset() {
         setValues(oldvalues);
     }
@@ -333,6 +353,7 @@ public class ControlPanel_Local extends javax.swing.JPanel implements ControlApp
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
+    private javax.swing.JButton jButton4;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
@@ -364,7 +385,7 @@ public class ControlPanel_Local extends javax.swing.JPanel implements ControlApp
         }
 
         LocalSettings.setProperty(LocalSettings.PRINT_DEVAPP, TypeConversion.booleanToString(printdev.isSelected()));
-      
+
         try {
             if (Integer.valueOf(rowlimit.get_Text()).intValue() >= 0) {
                 LocalSettings.setProperty(LocalSettings.DBROW_LIMIT, Integer.valueOf(rowlimit.get_Text()).toString());
@@ -381,10 +402,10 @@ public class ControlPanel_Local extends javax.swing.JPanel implements ControlApp
         LocalSettings.apply();
     }
 
-
     @Override
     public Component getAndRemoveActionPanel() {
-         this.remove(jPanel1);validate();
+        this.remove(jPanel1);
+        validate();
         return jPanel1;
     }
 }

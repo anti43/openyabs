@@ -80,6 +80,9 @@ public class LabeledTextField extends javax.swing.JPanel {
     }
 
     public void setText(String text) {
+        if (text == null) {
+            text = "";
+        }
         set_Text(text);
     }
 
@@ -165,6 +168,9 @@ public class LabeledTextField extends javax.swing.JPanel {
      * @param text the _text to set
      */
     public void setText(Object text) {
+        if (text == null) {
+            text = "";
+        }
         this._text = String.valueOf(text);
         jTextField1.setText(_text);
     }
@@ -173,6 +179,9 @@ public class LabeledTextField extends javax.swing.JPanel {
      * @param text the _text to set
      */
     public void set_Text(String text) {
+        if (text == null) {
+            text = "";
+        }
         this._text = String.valueOf(text);
         jTextField1.setText(_text);
     }
@@ -241,7 +250,7 @@ public class LabeledTextField extends javax.swing.JPanel {
                 jTextField1.setBackground(Color.WHITE);
             } catch (NumberFormatException numberFormatException) {
                 Log.Debug(this, jTextField1.getText());
-                Log.Debug(numberFormatException );
+                Log.Debug(numberFormatException);
 
                 TextFieldUtils.blinker(jTextField1, Color.gray);
                 jTextField1.setText("0.0");
@@ -321,7 +330,7 @@ public class LabeledTextField extends javax.swing.JPanel {
         if (clazz != classtemplate.getClass()) {
             throw new IllegalArgumentException("Classtemplate must match value class!");
         }
-         if (clazz == Integer.class) {
+        if (clazz == Integer.class) {
             try {
                 Integer.valueOf(jTextField1.getText());
                 jTextField1.setBackground(Color.WHITE);
@@ -348,7 +357,7 @@ public class LabeledTextField extends javax.swing.JPanel {
                 return (T) FormatNumber.parseDezimal(jTextField1.getText());
             } catch (NumberFormatException numberFormatException) {
                 Log.Debug(this, jTextField1.getText());
-                Log.Debug(numberFormatException );
+                Log.Debug(numberFormatException);
 
                 TextFieldUtils.blinker(jTextField1, Color.gray);
                 jTextField1.setText("0.0");

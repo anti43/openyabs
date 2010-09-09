@@ -39,19 +39,18 @@ import mpv5.utils.tables.TableFormat;
  *
  *  
  */
-public class ControlPanel_Advanced_User extends javax.swing.JPanel implements ControlApplet {
+public class ControlPanel_AdvancedUserProperties extends javax.swing.JPanel implements ControlApplet {
 
     private static final long serialVersionUID = 1L;
-    private static ControlPanel_Advanced_User ident;
+    private static ControlPanel_AdvancedUserProperties ident;
     private PropertyStore oldvals;
     private java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle();
 
     /** Creates new form GeneralListPanel */
-    public ControlPanel_Advanced_User() {
-        if (MPSecurityManager.checkAdminAccess()) {
-            initComponents();
-            setData(User.getCurrentUser().getProperties());
-        }
+    public ControlPanel_AdvancedUserProperties() {
+        initComponents();
+        setData(User.getCurrentUser().getProperties());
+
     }
 
     public void setData(PropertyStore vals) {
@@ -63,10 +62,10 @@ public class ControlPanel_Advanced_User extends javax.swing.JPanel implements Co
             list[i][0] = strings[0].toUpperCase();
             list[i][1] = strings[1];
         }
-        MPTableModel mod = new MPTableModel(list);
+        MPTableModel mod = new MPTableModel(list, new String[]{Messages.PROPERTY.getValue(), Messages.VALUE.getValue()});
         mod.setCanEdits(new boolean[]{true, true});
+        mod.addRow(5);
         jTable1.setModel(mod);
-        TableFormat.format(jTable1, 0, 250);
 
     }
 
@@ -86,8 +85,8 @@ public class ControlPanel_Advanced_User extends javax.swing.JPanel implements Co
         jButton2 = new javax.swing.JButton();
         jButton3 = new javax.swing.JButton();
 
-        mpv5.i18n.LanguageManager.getBundle();
-        setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("ControlPanel_Advanced_User.border.title"))); // NOI18N
+        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("mpv5/resources/languages/Panels"); // NOI18N
+        setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("ControlPanel_AdvancedUserProperties.border.title"))); // NOI18N
         setName("Form"); // NOI18N
         setLayout(new javax.swing.BoxLayout(this, javax.swing.BoxLayout.PAGE_AXIS));
 
@@ -114,7 +113,7 @@ public class ControlPanel_Advanced_User extends javax.swing.JPanel implements Co
         jPanel1.setName("jPanel1"); // NOI18N
         jPanel1.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.RIGHT));
 
-        jButton1.setText(bundle.getString("ControlPanel_Advanced_User.jButton1.text")); // NOI18N
+        jButton1.setText(bundle.getString("ControlPanel_AdvancedUserProperties.jButton1.text")); // NOI18N
         jButton1.setName("jButton1"); // NOI18N
         jButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -123,7 +122,7 @@ public class ControlPanel_Advanced_User extends javax.swing.JPanel implements Co
         });
         jPanel1.add(jButton1);
 
-        jButton2.setText(bundle.getString("ControlPanel_Advanced_User.jButton2.text")); // NOI18N
+        jButton2.setText(bundle.getString("ControlPanel_AdvancedUserProperties.jButton2.text")); // NOI18N
         jButton2.setName("jButton2"); // NOI18N
         jButton2.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -132,7 +131,7 @@ public class ControlPanel_Advanced_User extends javax.swing.JPanel implements Co
         });
         jPanel1.add(jButton2);
 
-        jButton3.setText(bundle.getString("ControlPanel_Advanced_User.jButton3.text")); // NOI18N
+        jButton3.setText(bundle.getString("ControlPanel_AdvancedUserProperties.jButton3.text")); // NOI18N
         jButton3.setName("jButton3"); // NOI18N
         jButton3.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -183,7 +182,7 @@ public class ControlPanel_Advanced_User extends javax.swing.JPanel implements Co
 
     @Override
     public String getUname() {
-        return "advancedsettings";
+        return "advancedusersettings";
     }
 
     @Override
@@ -195,8 +194,8 @@ public class ControlPanel_Advanced_User extends javax.swing.JPanel implements Co
 
     private void setSettings() {
         if (jTable1.getCellEditor() != null) {
-              try {
-               jTable1.getCellEditor().stopCellEditing();
+            try {
+                jTable1.getCellEditor().stopCellEditing();
             } catch (Exception e) {
             }
         }

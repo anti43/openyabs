@@ -112,7 +112,6 @@ public class LabeledTextChooser extends javax.swing.JPanel {
             jTextField1.setText(dialog.getFile().getPath());
         }
     }//GEN-LAST:event_jButton1ActionPerformed
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
@@ -138,6 +137,20 @@ public class LabeledTextChooser extends javax.swing.JPanel {
      * @param text the _text to set
      */
     public void set_Text(String text) {
+        if (text == null) {
+            text = "";
+        }
+        this._text = text;
+        jTextField1.setText(text);
+    }
+
+    /**
+     * @param text the text to set
+     */
+    public void setText(String text) {
+        if (text == null) {
+            text = "";
+        }
         this._text = text;
         jTextField1.setText(text);
     }

@@ -1636,6 +1636,10 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
                 } catch (Exception e) {
                     Log.Debug(this, e);
                 }
+
+                if (dataOwner.isExisting()) {
+                    setDataOwner(dataOwner, true);
+                }
             }
         };
 
