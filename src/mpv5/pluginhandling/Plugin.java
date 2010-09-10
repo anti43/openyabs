@@ -33,8 +33,7 @@ public class Plugin extends DatabaseObject {
     private String filename;
 
     public Plugin() {
-        context.setDbIdentity(Context.IDENTITY_PLUGINS);
-        context.setIdentityClass(this.getClass());
+        context = Context.getPlugins();
     }
 
     @Override

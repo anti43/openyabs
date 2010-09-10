@@ -379,7 +379,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
     public void showRequiredFields() {
         TextFieldUtils.blink(contactname.getComboBox(), Color.RED);
         contactname.requestFocus();
-        Popup.notice(Messages.SELECT_A_CONTACT);
+//        Popup.notice(Messages.SELECT_A_CONTACT);
     }
 
     private void addFile() {

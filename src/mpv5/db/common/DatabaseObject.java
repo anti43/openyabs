@@ -48,17 +48,18 @@ import mpv5.utils.arrays.ArrayUtilities;
 import mpv5.utils.date.DateConverter;
 import javax.swing.JComponent;
 import mpv5.db.objects.Group;
-import mpv5.db.objects.Product;
 import mpv5.db.objects.User;
 import mpv5.globals.LocalSettings;
 import mpv5.handler.SimpleDatabaseObject;
 import mpv5.handler.VariablesHandler;
 import mpv5.pluginhandling.MPPLuginLoader;
+import mpv5.ui.panels.ChangeNotApprovedException;
 import mpv5.utils.date.RandomDate;
 import mpv5.utils.date.vTimeframe;
 import mpv5.utils.images.MPIcon;
 import mpv5.utils.numberformat.FormatNumber;
 import mpv5.utils.text.RandomText;
+import static mpv5.db.common.Context.*;
 
 /**
  * Database Objects reflect a row in a table, and can parse graphical and
@@ -524,6 +525,10 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
             try {
                 Log.Debug(this, "Passing to plugin: " + databaseObjectModifier);
                 databaseObjectModifier.modifyOnSave(this);
+            } catch (ChangeNotApprovedException e) {
+                Log.Debug(DatabaseObject.class, "Error while on-save modifying Object " + this + " within Modifier " + databaseObjectModifier);
+                Log.Debug(DatabaseObject.class, e.getMessage());
+                return false;
             } catch (Exception e) {
                 Log.Debug(DatabaseObject.class, "Error while on-save modifying Object " + this + " within Modifier " + databaseObjectModifier);
                 Log.Debug(e);
@@ -656,9 +661,12 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
             DatabaseObjectModifier databaseObjectModifier = mods.get(ik);
             try {
                 databaseObjectModifier.modifyOnDelete(this);
+            } catch (ChangeNotApprovedException e) {
+                Log.Debug(DatabaseObject.class, "Error while on-save modifying Object " + this + " within Modifier " + databaseObjectModifier);
+                Log.Debug(e);
+                return false;
             } catch (Exception e) {
                 Log.Debug(DatabaseObject.class, "Error while on-delete modifying Object " + this + " within Modifier " + databaseObjectModifier);
-
                 Log.Debug(e);
             }
         }
@@ -666,7 +674,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
         boolean result = false;
         String message = null;
         uncacheObject(this);
-        if (!this.getType().equals(new HistoryItem().getType())) {
+        if (!this.getContext().equals(getHistory())) {
             message = this.__getCName() + Messages.TRASHED;
         }
         if (ids > 0) {

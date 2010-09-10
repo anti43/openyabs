@@ -32,6 +32,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Vector;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
@@ -83,17 +85,29 @@ public class MPPLuginLoader {
     }
 
     public static void importPlugin(String name, File file) throws FileNotFoundException {
-        MP5Plugin pl = new MPPLuginLoader().checkPlugin(file);
-        if (pl != null) {
-            String s = name;
-            if (s != null) {
-                String filename = QueryHandler.instanceOf().clone(Context.getFiles()).insertFile(file);
-                Plugin p = new Plugin();
-                p.setDescription(s);
-                p.setCName("Plugin: " + pl.getName());
-                p.setFilename(filename);
-                p.save();
+        MPView.setWaiting(true);
+        try {
+            MP5Plugin pl = new MPPLuginLoader().checkPlugin(file);
+            try {
+                Thread.sleep(10000);
+            } catch (InterruptedException ex) {
+                Logger.getLogger(MPPLuginLoader.class.getName()).log(Level.SEVERE, null, ex);
             }
+            if (pl != null) {
+                String s = name;
+                if (s != null) {
+                    String filename = QueryHandler.instanceOf().clone(Context.getFiles()).insertFile(file);
+                    Plugin p = new Plugin();
+                    p.setDescription(s);
+                    p.setCName("Plugin: " + pl.getName());
+                    p.setFilename(filename);
+                    p.save();
+                }
+            }
+        } catch (FileNotFoundException fileNotFoundException) {
+            Popup.error(MPView.identifierFrame, "Your database seems slow, try again :-/");
+        } finally {
+            MPView.setWaiting(false);
         }
     }
 
@@ -133,12 +147,7 @@ public class MPPLuginLoader {
                 File x = jars.get(i);
                 MP5Plugin c = checkPlugin(x);
                 if (c != null) {
-
                     list.add(c);
-                    if (c instanceof DatabaseObjectModifier) {
-                        Log.Debug(this, "Register modifying plugins: " + c);
-                        registeredModifiers.add((DatabaseObjectModifier) c);
-                    }
                 }
             }
         } catch (Exception e) {
@@ -165,18 +174,6 @@ public class MPPLuginLoader {
      * @param pluginCandidate
      * @return the plugin if <code>Constants.PLUGIN_LOAD_CLASS<code/> could be instantiated from this file
      */
-//    public MP5Plugin checkPlugin(File pluginCandidate) {
-//        try {
-//            URL[] urls = {new URL("jar:file:" + pluginCandidate + "!/")};
-//            URLClassLoader loader = URLClassLoader.newInstance(urls);
-//            Class c = loader.loadClass(Constants.PLUGIN_LOAD_CLASS);
-//            Object o = c.newInstance();
-//            return (MP5Plugin) o;
-//        } catch (Exception malformedURLException) {
-//            Log.Debug(malformedURLException);
-//            return null;
-//        }
-//    }
     public MP5Plugin checkPlugin(File pluginCandidate) {
         try {
             URL[] urls = {new URL("jar:file:" + pluginCandidate + "!/")};
@@ -289,6 +286,11 @@ public class MPPLuginLoader {
             try {
                 mP5Plugin.load(MPView.getIdentifierView());
 
+                if (mP5Plugin instanceof DatabaseObjectModifier) {
+                    Log.Debug(this, "Register modifying plugins: " + mP5Plugin);
+                    registeredModifiers.add((DatabaseObjectModifier) mP5Plugin);
+                }
+
                 if (mP5Plugin.isComponent()) {
                     MPView.getIdentifierView().addTab((JComponent) mP5Plugin, mP5Plugin.getName());
                 }
@@ -312,6 +314,7 @@ public class MPPLuginLoader {
                             JMenuItem n = new JMenuItem(Messages.UNLOAD.getValue());
                             n.addActionListener(new ActionListener() {
 
+                                @Override
                                 public void actionPerformed(ActionEvent e) {
                                     unLoadPlugin(mP5Plugin);
                                 }

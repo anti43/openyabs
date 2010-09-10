@@ -1253,16 +1253,7 @@ public class Context implements Serializable {
     }
 
     public static Context getInvoice() {
-        Context c = new Context();
-        c.setSubID(DEFAULT_SUBID);
-        c.setDbIdentity(IDENTITY_ITEMS);
-        c.setSearchFields(DEFAULT_ITEM_SEARCH);
-//        c.setSearchHeaders(Headers.ITEM_DEFAULT.getValue());
-        c.setIdentityClass(IDENTITY_ITEMS_CLASS);
-        c.setItemType(Item.TYPE_BILL);
-        c.setId(17);
-
-        return c;
+        return getItem(Item.TYPE_BILL, Item.STATUS_IN_PROGRESS);
     }
 
     public static Context getOrder() {

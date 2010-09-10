@@ -17,6 +17,7 @@
 package mpv5.db.common;
 
 import java.util.HashMap;
+import mpv5.ui.panels.ChangeNotApprovedException;
 
 /**
  * Any {@link MPPlugin} which implements this interface will be registered automatically to the modifiers.
@@ -40,7 +41,7 @@ public interface DatabaseObjectModifier {
      * @param object
      * @return
      */
-    DatabaseObject modifyOnSave(DatabaseObject object);
+    DatabaseObject modifyOnSave(DatabaseObject object) throws ChangeNotApprovedException;
 
      /**
      * This method will be called after creation of any {@link DatabaseObject} if this <br/>
@@ -64,5 +65,5 @@ public interface DatabaseObjectModifier {
      * @param object
      * @return
      */
-    DatabaseObject modifyOnDelete(DatabaseObject object);
+    DatabaseObject modifyOnDelete(DatabaseObject object) throws ChangeNotApprovedException;
 }
