@@ -163,17 +163,21 @@ public class GlobalSettings {
     public static synchronized void read() throws Exception {
 
         try {
-            Log.Debug(GlobalSettings.class, "Reading in global settings where ID =" + connectionID);
+            try {
+                Log.Debug(GlobalSettings.class, "Reading in global settings where ID =" + connectionID);
 
-            QueryCriteria2 c = new QueryCriteria2();
-            c.and(new QueryParameter(Context.getGlobalSettings(), "groupsids", connectionID, QueryParameter.EQUALS));
+                QueryCriteria2 c = new QueryCriteria2();
+                c.and(new QueryParameter(Context.getGlobalSettings(), "groupsids", connectionID, QueryParameter.EQUALS));
 
-            Object[][] data = QueryHandler.instanceOf().clone(Context.getGlobalSettings()).select("cname, value", c).getData();
-            cookie.addAll(data);
+                Object[][] data = QueryHandler.instanceOf().clone(Context.getGlobalSettings()).select("cname, value", c).getData();
+                cookie.addAll(data);
 
-            Log.Debug(GlobalSettings.class, "Finished global settings.");
+                Log.Debug(GlobalSettings.class, "Finished global settings.");
+            } catch (NodataFoundException nodataFoundException) {
+                 Log.Debug(GlobalSettings.class, "No global settings found..");
+            }
         } catch (Exception e) {
-            Log.Debug(GlobalSettings.class, e.getCause().getMessage());
+            Log.Debug(GlobalSettings.class, e);
         }
     }
 

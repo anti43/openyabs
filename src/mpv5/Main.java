@@ -128,11 +128,13 @@ public class Main extends SingleFrameApplication {
             Log.Debug(Main.class, ex.getMessage());
             Log.Debug(Main.class, "Local settings file not readable: " + LocalSettings.getLocalFile());
         }
+    }
 
+    private static void readGlobalSettings() {
         try {
             GlobalSettings.read();
         } catch (Exception ex) {
-            Log.Debug(Main.class, ex.getMessage());
+            Log.Debug(Main.class, ex);
         }
     }
 
@@ -256,6 +258,7 @@ public class Main extends SingleFrameApplication {
         if (FORCE_INSTALLER == null) {
             Log.Debug(this, "Probing database connection... ");
             if (probeDatabaseConnection()) {
+                readGlobalSettings();
                 Log.Debug(this, "Loading Yabs... ");
                 go(false);
             } else if (Popup.Y_N_dialog(splash, Messages.NO_DB_CONNECTION, Messages.FIRST_START.toString())) {
