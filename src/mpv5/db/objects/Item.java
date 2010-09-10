@@ -65,7 +65,7 @@ public class Item extends DatabaseObject implements Formattable {
             case (STATUS_CANCELLED):
                 return Messages.STATUS_CANCELLED.toString();
         }
-        return "";
+        return Messages.NA.toString();
     }
 
     /**

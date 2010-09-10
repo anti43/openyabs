@@ -1,27 +1,30 @@
 
 /*
-*  This file is part of YaBS.
-*
-*      YaBS is free software: you can redistribute it and/or modify
-*      it under the terms of the GNU General Public License as published by
-*      the Free Software Foundation, either version 3 of the License, or
-*      (at your option) any later version.
-*
-*      YaBS is distributed in the hope that it will be useful,
-*      but WITHOUT ANY WARRANTY; without even the implied warranty of
-*      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-*      GNU General Public License for more details.
-*
-*      You should have received a copy of the GNU General Public License
-*      along with YaBS.  If not, see <http://www.gnu.org/licenses/>.
+ *  This file is part of YaBS.
+ *
+ *      YaBS is free software: you can redistribute it and/or modify
+ *      it under the terms of the GNU General Public License as published by
+ *      the Free Software Foundation, either version 3 of the License, or
+ *      (at your option) any later version.
+ *
+ *      YaBS is distributed in the hope that it will be useful,
+ *      but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *      GNU General Public License for more details.
+ *
+ *      You should have received a copy of the GNU General Public License
+ *      along with YaBS.  If not, see <http://www.gnu.org/licenses/>.
  */
 package mpv5.utils.tables;
 
 //~--- non-JDK imports --------------------------------------------------------
-
 import com.l2fprod.common.swing.renderer.ColorCellRenderer;
+import java.util.Enumeration;
+import javax.swing.table.TableColumn;
+import javax.swing.table.TableColumnModel;
 
 import mpv5.db.common.DatabaseObject;
+import mpv5.db.common.DatabaseObject.Entity;
 
 import mpv5.globals.LocalSettings;
 
@@ -97,9 +100,9 @@ public class TableFormat {
 
     public static void makeUneditable(JTable table) {
         try {
-            ((MPTableModel) table.getModel()).setCanEdits(new boolean[] {
-                false, false, false, false, false, false, false, false, false, false, false, false, false
-            });
+            ((MPTableModel) table.getModel()).setCanEdits(new boolean[]{
+                        false, false, false, false, false, false, false, false, false, false, false, false, false
+                    });
         } catch (Exception e) {
             Log.Debug(TableFormat.class, "Can not change this table to uneditable.");
         }
@@ -135,7 +138,8 @@ public class TableFormat {
         if (editor != null) {
             try {
                 editor.stopCellEditing();
-            } catch (Exception e) {}
+            } catch (Exception e) {
+            }
         }
     }
 
@@ -166,10 +170,12 @@ public class TableFormat {
 
     public static DefaultTableModel getUneditableTable(String[][] data, String[] header) {
         return new javax.swing.table.DefaultTableModel(data, header) {
-            boolean[] canEdits = new boolean[] {
+
+            boolean[] canEdits = new boolean[]{
                 false, false, false, false, false, false, false, false, false, false, false, false, false, false, false,
                 false, false, false, false, false, false, false, false, false, false, false, false, false, false, false
             };
+
             @Override
             public boolean isCellEditable(int rowIndex, int columnIndex) {
                 return canEdits[columnIndex];
@@ -180,7 +186,7 @@ public class TableFormat {
     /**
      * Hide a column of a table
      * @param table
-     * @param columnToHide
+     * @param columnToHide from model
      */
     public static void stripColumn(JTable table, int columnToHide) {
         try {
@@ -189,11 +195,12 @@ public class TableFormat {
             table.getColumnModel().getColumn(columnToHide).setMinWidth(0);
             table.getColumnModel().getColumn(columnToHide).setMaxWidth(0);
             table.doLayout();
-        } catch (Exception e) {}
+        } catch (Exception e) {
+        }
     }
 
     /**
-     *  Hide the columns
+     * Hide the columns
      * @param resulttable
      * @param i
      */
@@ -203,7 +210,21 @@ public class TableFormat {
 
             try {
                 stripColumn(resulttable, k);
-            } catch (Exception e) {}
+            } catch (Exception e) {
+            }
+        }
+    }
+
+    /**
+     * Hide columns with a specific column class
+     * @param jTable1
+     * @param aClass
+     */
+    public static void stripColumn(JTable table, Class<Entity> aClass) {
+        for (int i = 0; i < table.getColumnCount(); i++) {
+            if (table.getColumnClass(i).equals(aClass)) {
+                stripColumn(table,table.convertColumnIndexToModel(i));
+            }
         }
     }
 
@@ -227,7 +248,8 @@ public class TableFormat {
             table.getColumnModel().getColumn(column).setPreferredWidth(width);
             table.getColumnModel().getColumn(column).setMinWidth(width);
             table.getColumnModel().getColumn(column).setMaxWidth(width);
-        } catch (Exception e) {}
+        } catch (Exception e) {
+        }
     }
 
     /**
@@ -260,16 +282,19 @@ public class TableFormat {
      */
     public static void changeBackground(final JTable table, final int column, final Color color) {
         class ColorRenderer extends JLabel implements TableCellRenderer {
+
             public ColorRenderer() {
                 this.setOpaque(true);
                 this.setHorizontalAlignment(JLabel.CENTER);
             }
+
             @Override
             public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected,
                     boolean hasFocus, int row, int col) {
                 try {
                     this.setText(value.toString());
-                } catch (Exception e) {}
+                } catch (Exception e) {
+                }
 
                 this.setBackground(color);
 
@@ -287,31 +312,38 @@ public class TableFormat {
         table.getTableHeader().setPreferredSize(new Dimension(table.getColumnModel().getTotalColumnWidth(), 15));
         table.getTableHeader().setFont(new Font(LocalSettings.getProperty(LocalSettings.DEFAULT_FONT), Font.PLAIN, 0));
         class ColumnListener implements TableColumnModelListener {
+
             private final JTable table;
+
             private ColumnListener(JTable target) {
                 this.table = target;
             }
+
             public void columnAdded(TableColumnModelEvent e) {
                 table.getTableHeader().setPreferredSize(new Dimension(table.getColumnModel().getTotalColumnWidth(),
                         15));
             }
+
             public void columnRemoved(TableColumnModelEvent e) {
                 table.getTableHeader().setPreferredSize(new Dimension(table.getColumnModel().getTotalColumnWidth(),
                         15));
             }
+
             public void columnMoved(TableColumnModelEvent e) {
                 table.getTableHeader().setPreferredSize(new Dimension(table.getColumnModel().getTotalColumnWidth(),
                         15));
             }
+
             public void columnMarginChanged(ChangeEvent e) {
                 table.getTableHeader().setPreferredSize(new Dimension(table.getColumnModel().getTotalColumnWidth(),
                         15));
             }
-            public void columnSelectionChanged(ListSelectionEvent e) {}
+
+            public void columnSelectionChanged(ListSelectionEvent e) {
+            }
         }
         table.getColumnModel().addColumnModelListener(new ColumnListener(table));
     }
 }
-
-
 //~ Formatted by Jindent --- http://www.jindent.com
+

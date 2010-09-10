@@ -71,6 +71,7 @@ import mpv5.utils.models.MPTableModel;
 import mpv5.utils.models.MPTreeModel;
 import mpv5.utils.tables.ExcelAdapter;
 import mpv5.utils.tables.TableFormat;
+import mpv5.utils.text.TypeConversion;
 
 /**
  *
@@ -109,11 +110,14 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
         groups.setSearchEnabled(true);
         groups.setContext(Context.getGroup());
         groups.triggerSearch();
+        users.setSearchEnabled(true);
+        users.setContext(Context.getUser());
+        users.setModel();
         account1.setSearchEnabled(true);
         account1.setContext(Context.getAccounts());
         statusc.getComboBox().setModel(new DefaultComboBoxModel(new Object[]{Messages.ALL, Messages.STATUS_PAID, Messages.STATUS_UNPAID}));
         prinitingComboBox1.init(jTable1);
-        refresh(null);
+        refresh(null, null);
         jButton4.setEnabled(false);
         loadTemplate();
 
@@ -136,7 +140,7 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
 
         statusc.getComboBox().setModel(new DefaultComboBoxModel(new Object[]{Messages.ALL, Messages.STATUS_PAID, Messages.STATUS_UNPAID}));
 
-        refresh(null);
+        refresh(null, null);
 
         jTree1.setCellRenderer(MPTreeModel.getRenderer());
         jTree1.setModel(new MPTreeModel(dataowner));
@@ -175,23 +179,29 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
             }
         };
         jPanel2 = new javax.swing.JPanel();
-        jLabel3 = new javax.swing.JLabel();
-        jLabel4 = new javax.swing.JLabel();
-        jLabel5 = new javax.swing.JLabel();
-        timeframeChooser1 = new mpv5.ui.beans.TimeframeChooser();
-        jLabel2 = new javax.swing.JLabel();
-        jButton1 = new javax.swing.JButton();
-        jLabel6 = new javax.swing.JLabel();
-        statusc = new mpv5.ui.beans.MPCombobox();
-        jButton2 = new javax.swing.JButton();
-        jButton3 = new javax.swing.JButton();
-        includechildgroups = new javax.swing.JCheckBox();
+        jPanel7 = new javax.swing.JPanel();
+        bydateend = new javax.swing.JCheckBox();
         groups = new mpv5.ui.beans.MPCombobox();
+        jLabel8 = new javax.swing.JLabel();
+        statusc = new mpv5.ui.beans.MPCombobox();
+        includechildgroups = new javax.swing.JCheckBox();
+        jLabel2 = new javax.swing.JLabel();
+        users = new mpv5.ui.beans.MPCombobox();
+        jLabel6 = new javax.swing.JLabel();
+        jPanel8 = new javax.swing.JPanel();
+        jLabel3 = new javax.swing.JLabel();
+        jLabel5 = new javax.swing.JLabel();
+        jLabel4 = new javax.swing.JLabel();
+        timeframeChooser1 = new mpv5.ui.beans.TimeframeChooser();
+        jScrollPane4 = new javax.swing.JScrollPane();
+        jPanel6 = new javax.swing.JPanel();
         jScrollPane3 = new javax.swing.JScrollPane();
         accountsp = new javax.swing.JPanel();
         account1 = new mpv5.ui.beans.MPCombobox();
+        jButton3 = new javax.swing.JButton();
         jLabel7 = new javax.swing.JLabel();
-        bydateend = new javax.swing.JCheckBox();
+        jButton2 = new javax.swing.JButton();
+        jButton1 = new javax.swing.JButton();
         jPanel3 = new javax.swing.JPanel();
         jButton4 = new javax.swing.JButton();
         prinitingComboBox1 = new mpv5.ui.beans.PrinitingComboBox();
@@ -200,7 +210,7 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
 
         setName("Form"); // NOI18N
 
-        java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle(); // NOI18N
+        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("mpv5/resources/languages/Panels"); // NOI18N
         jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("JournalPanel.jPanel1.border.title"))); // NOI18N
         jPanel1.setName("jPanel1"); // NOI18N
 
@@ -248,60 +258,146 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
 
         jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("JournalPanel.jPanel2.border.title"))); // NOI18N
         jPanel2.setName("jPanel2"); // NOI18N
+        jPanel2.setPreferredSize(new java.awt.Dimension(734, 280));
+        jPanel2.setRequestFocusEnabled(false);
 
-        jLabel3.setFont(new java.awt.Font("Dialog", 0, 12));
-        jLabel3.setText(bundle.getString("JournalPanel.jLabel3.text")); // NOI18N
-        jLabel3.setName("jLabel3"); // NOI18N
+        jPanel7.setBackground(new java.awt.Color(255, 255, 255));
+        jPanel7.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+        jPanel7.setName("jPanel7"); // NOI18N
 
-        jLabel4.setFont(new java.awt.Font("Dialog", 0, 12));
-        jLabel4.setText(bundle.getString("JournalPanel.jLabel4.text")); // NOI18N
-        jLabel4.setName("jLabel4"); // NOI18N
-
-        jLabel5.setFont(new java.awt.Font("Dialog", 0, 12));
-        jLabel5.setText(bundle.getString("JournalPanel.jLabel5.text")); // NOI18N
-        jLabel5.setName("jLabel5"); // NOI18N
-
-        timeframeChooser1.setName("timeframeChooser1"); // NOI18N
-
-        jLabel2.setFont(new java.awt.Font("Dialog", 0, 12));
-        jLabel2.setText(bundle.getString("JournalPanel.jLabel2.text")); // NOI18N
-        jLabel2.setName("jLabel2"); // NOI18N
-
-        jButton1.setText(bundle.getString("JournalPanel.jButton1.text")); // NOI18N
-        jButton1.setName("jButton1"); // NOI18N
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+        bydateend.setBackground(new java.awt.Color(255, 255, 255));
+        bydateend.setText(bundle.getString("JournalPanel.bydateend.text")); // NOI18N
+        bydateend.setName("bydateend"); // NOI18N
+        bydateend.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                bydateendItemStateChanged(evt);
             }
         });
 
-        jLabel6.setFont(new java.awt.Font("Dialog", 0, 12));
-        jLabel6.setText(bundle.getString("JournalPanel.jLabel6.text")); // NOI18N
-        jLabel6.setName("jLabel6"); // NOI18N
+        groups.setName("groups"); // NOI18N
+
+        jLabel8.setFont(new java.awt.Font("Dialog", 0, 12)); // NOI18N
+        jLabel8.setText(bundle.getString("JournalPanel.jLabel8.text_1")); // NOI18N
+        jLabel8.setName("jLabel8"); // NOI18N
 
         statusc.setName("statusc"); // NOI18N
 
-        jButton2.setText(bundle.getString("JournalPanel.jButton2.text")); // NOI18N
-        jButton2.setName("jButton2"); // NOI18N
-        jButton2.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton2ActionPerformed(evt);
-            }
-        });
-
-        jButton3.setText(bundle.getString("JournalPanel.jButton3.text")); // NOI18N
-        jButton3.setName("jButton3"); // NOI18N
-        jButton3.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton3ActionPerformed(evt);
-            }
-        });
-
+        includechildgroups.setBackground(new java.awt.Color(255, 255, 255));
         includechildgroups.setSelected(true);
         includechildgroups.setText(bundle.getString("JournalPanel.includechildgroups.text")); // NOI18N
         includechildgroups.setName("includechildgroups"); // NOI18N
 
-        groups.setName("groups"); // NOI18N
+        jLabel2.setFont(new java.awt.Font("Dialog", 0, 12)); // NOI18N
+        jLabel2.setText(bundle.getString("JournalPanel.jLabel2.text")); // NOI18N
+        jLabel2.setName("jLabel2"); // NOI18N
+
+        users.setName("users"); // NOI18N
+
+        jLabel6.setFont(new java.awt.Font("Dialog", 0, 12)); // NOI18N
+        jLabel6.setText(bundle.getString("JournalPanel.jLabel6.text")); // NOI18N
+        jLabel6.setName("jLabel6"); // NOI18N
+
+        javax.swing.GroupLayout jPanel7Layout = new javax.swing.GroupLayout(jPanel7);
+        jPanel7.setLayout(jPanel7Layout);
+        jPanel7Layout.setHorizontalGroup(
+            jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel7Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 148, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel8, javax.swing.GroupLayout.DEFAULT_SIZE, 161, Short.MAX_VALUE)
+                    .addComponent(jLabel6, javax.swing.GroupLayout.DEFAULT_SIZE, 161, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel7Layout.createSequentialGroup()
+                        .addComponent(users, javax.swing.GroupLayout.PREFERRED_SIZE, 243, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(198, 198, 198))
+                    .addGroup(jPanel7Layout.createSequentialGroup()
+                        .addComponent(statusc, javax.swing.GroupLayout.PREFERRED_SIZE, 243, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(bydateend, javax.swing.GroupLayout.DEFAULT_SIZE, 209, Short.MAX_VALUE))
+                    .addGroup(jPanel7Layout.createSequentialGroup()
+                        .addComponent(groups, javax.swing.GroupLayout.PREFERRED_SIZE, 243, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(includechildgroups, javax.swing.GroupLayout.PREFERRED_SIZE, 176, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 33, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap())
+        );
+        jPanel7Layout.setVerticalGroup(
+            jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel7Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
+                    .addComponent(jLabel2)
+                    .addComponent(groups, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(includechildgroups))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
+                    .addComponent(jLabel8)
+                    .addComponent(users, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
+                    .addComponent(jLabel6)
+                    .addComponent(statusc, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(bydateend))
+                .addContainerGap())
+        );
+
+        jPanel8.setBackground(new java.awt.Color(255, 255, 255));
+        jPanel8.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+        jPanel8.setName("jPanel8"); // NOI18N
+
+        jLabel3.setFont(new java.awt.Font("Dialog", 0, 12)); // NOI18N
+        jLabel3.setText(bundle.getString("JournalPanel.jLabel3.text")); // NOI18N
+        jLabel3.setName("jLabel3"); // NOI18N
+
+        jLabel5.setFont(new java.awt.Font("Dialog", 0, 12)); // NOI18N
+        jLabel5.setText(bundle.getString("JournalPanel.jLabel5.text")); // NOI18N
+        jLabel5.setName("jLabel5"); // NOI18N
+
+        jLabel4.setFont(new java.awt.Font("Dialog", 0, 12)); // NOI18N
+        jLabel4.setText(bundle.getString("JournalPanel.jLabel4.text")); // NOI18N
+        jLabel4.setName("jLabel4"); // NOI18N
+
+        timeframeChooser1.setBackground(new java.awt.Color(255, 255, 255));
+        timeframeChooser1.setName("timeframeChooser1"); // NOI18N
+
+        javax.swing.GroupLayout jPanel8Layout = new javax.swing.GroupLayout(jPanel8);
+        jPanel8.setLayout(jPanel8Layout);
+        jPanel8Layout.setHorizontalGroup(
+            jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel8Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel3)
+                    .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 162, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 269, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(timeframeChooser1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(129, Short.MAX_VALUE))
+        );
+        jPanel8Layout.setVerticalGroup(
+            jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel8Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
+                    .addComponent(jLabel3)
+                    .addComponent(jLabel4))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
+                    .addComponent(timeframeChooser1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel5))
+                .addContainerGap())
+        );
+
+        jScrollPane4.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+        jScrollPane4.setName("jScrollPane4"); // NOI18N
+
+        jPanel6.setBackground(new java.awt.Color(255, 255, 255));
+        jPanel6.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+        jPanel6.setName("jPanel6"); // NOI18N
+        jPanel6.setPreferredSize(new java.awt.Dimension(500, 200));
 
         jScrollPane3.setName("jScrollPane3"); // NOI18N
 
@@ -314,15 +410,63 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
 
         jScrollPane3.setViewportView(accountsp);
 
-        jLabel7.setFont(new java.awt.Font("Dialog", 0, 12));
+        jButton3.setText(bundle.getString("JournalPanel.jButton3.text")); // NOI18N
+        jButton3.setName("jButton3"); // NOI18N
+        jButton3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton3ActionPerformed(evt);
+            }
+        });
+
+        jLabel7.setFont(new java.awt.Font("Dialog", 0, 12)); // NOI18N
         jLabel7.setText(bundle.getString("JournalPanel.jLabel7.text")); // NOI18N
         jLabel7.setName("jLabel7"); // NOI18N
 
-        bydateend.setText(bundle.getString("JournalPanel.bydateend.text")); // NOI18N
-        bydateend.setName("bydateend"); // NOI18N
-        bydateend.addItemListener(new java.awt.event.ItemListener() {
-            public void itemStateChanged(java.awt.event.ItemEvent evt) {
-                bydateendItemStateChanged(evt);
+        jButton2.setText(bundle.getString("JournalPanel.jButton2.text")); // NOI18N
+        jButton2.setName("jButton2"); // NOI18N
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
+        jPanel6.setLayout(jPanel6Layout);
+        jPanel6Layout.setHorizontalGroup(
+            jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel6Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLabel7, javax.swing.GroupLayout.PREFERRED_SIZE, 134, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(38, 38, 38)
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 242, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jButton2)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jButton3)
+                .addContainerGap(97, Short.MAX_VALUE))
+        );
+        jPanel6Layout.setVerticalGroup(
+            jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel6Layout.createSequentialGroup()
+                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel7)
+                    .addGroup(jPanel6Layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
+                                .addComponent(jButton3)
+                                .addComponent(jButton2))
+                            .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                .addContainerGap(144, Short.MAX_VALUE))
+        );
+
+        jScrollPane4.setViewportView(jPanel6);
+
+        jButton1.setText(bundle.getString("JournalPanel.jButton1.text")); // NOI18N
+        jButton1.setName("jButton1"); // NOI18N
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
             }
         });
 
@@ -331,65 +475,26 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
-                .addContainerGap()
+                .addGap(2, 2, 2)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 137, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, 148, Short.MAX_VALUE)
-                    .addComponent(jLabel7, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jLabel6, javax.swing.GroupLayout.DEFAULT_SIZE, 122, Short.MAX_VALUE))
+                    .addComponent(jScrollPane4, 0, 0, Short.MAX_VALUE)
+                    .addComponent(jPanel8, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jPanel7, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 269, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(timeframeChooser1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 242, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButton2)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButton3)
-                        .addGap(18, 18, 18)
-                        .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 83, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                        .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel2Layout.createSequentialGroup()
-                            .addComponent(statusc, javax.swing.GroupLayout.PREFERRED_SIZE, 243, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                            .addComponent(bydateend, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                        .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel2Layout.createSequentialGroup()
-                            .addComponent(groups, javax.swing.GroupLayout.PREFERRED_SIZE, 243, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                            .addComponent(includechildgroups, javax.swing.GroupLayout.PREFERRED_SIZE, 176, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addContainerGap(121, Short.MAX_VALUE))
+                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 83, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(59, 59, 59))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
-                    .addComponent(jLabel4)
-                    .addComponent(jLabel3))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
-                    .addComponent(timeframeChooser1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel5))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
-                    .addComponent(groups, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel2)
-                    .addComponent(includechildgroups))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
-                    .addComponent(statusc, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel6)
-                    .addComponent(bydateend))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
-                            .addComponent(jButton3)
-                            .addComponent(jButton2)
-                            .addComponent(jButton1))
-                        .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(jLabel7)))
+                .addComponent(jPanel8, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(2, 2, 2)
+                .addComponent(jPanel7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(2, 2, 2)
+                .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 78, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jButton1))
         );
 
         jPanel4.add(jPanel2, java.awt.BorderLayout.PAGE_START);
@@ -421,7 +526,7 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
                 .addComponent(prinitingComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 196, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jButton4)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 17, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 44, Short.MAX_VALUE)
                 .addComponent(volume, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(revenue, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -447,11 +552,11 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jTabbedPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 739, Short.MAX_VALUE)
+            .addComponent(jTabbedPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 808, Short.MAX_VALUE)
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jTabbedPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 334, Short.MAX_VALUE)
+            .addComponent(jTabbedPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 493, Short.MAX_VALUE)
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
@@ -524,14 +629,19 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
+    private javax.swing.JLabel jLabel8;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
     private javax.swing.JPanel jPanel5;
+    private javax.swing.JPanel jPanel6;
+    private javax.swing.JPanel jPanel7;
+    private javax.swing.JPanel jPanel8;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
+    private javax.swing.JScrollPane jScrollPane4;
     private javax.swing.JTabbedPane jTabbedPane1;
     private javax.swing.JTable jTable1;
     private javax.swing.JTree jTree1;
@@ -539,6 +649,7 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
     private mpv5.ui.beans.LabeledTextField revenue;
     private mpv5.ui.beans.MPCombobox statusc;
     private mpv5.ui.beans.TimeframeChooser timeframeChooser1;
+    private mpv5.ui.beans.MPCombobox users;
     private mpv5.ui.beans.LabeledTextField volume;
     // End of variables declaration//GEN-END:variables
 
@@ -580,6 +691,11 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
                 } else if (Integer.valueOf(data[i][6].toString()).intValue() == 1000) {
                     d[i][8] = "<html><p align=center>" + mpv5.utils.numberformat.FormatNumber.formatDezimal(-1 * brutto);
                     val -= brutto;
+                    d[i][6] = Item.getStatusString(Item.STATUS_PAID);
+                } else if (Integer.valueOf(data[i][6].toString()).intValue() == 2000) {
+                    d[i][8] = "<html><p align=center>" + mpv5.utils.numberformat.FormatNumber.formatDezimal(-1 * brutto);
+                    val -= brutto;
+                    d[i][6] = Item.getStatusString(Item.STATUS_IN_PROGRESS);
                 } else {
                     d[i][8] = "<html><p align=center>" + mpv5.utils.numberformat.FormatNumber.formatDezimal(0d);
                 }
@@ -596,21 +712,22 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
         return d;
     }
 
-    private void refresh(final Group forGroup) {
+    private void refresh(final Group forGroup, final User forUser) {
         Runnable runnable = new Runnable() {
 
+            @Override
             public void run() {
                 try {
 
 
-                    QueryCriteria2 dh = new QueryCriteria2();
+                    QueryCriteria2 itemsParams = new QueryCriteria2();
                     Object[][] d = new Object[0][0];
                     Object[][] d1 = new Object[0][0];
                     Object[][] d2 = new Object[0][0];
 
                     if (!includechildgroups.isSelected()) {
                         if (forGroup != null && !forGroup.__getCName().equals("")) {
-                            dh.and(new QueryParameter(Context.getItem(), forGroup.getDbIdentity() + "ids", forGroup.__getIDS(), QueryParameter.EQUALS));
+                            itemsParams.and(new QueryParameter(Context.getItem(), forGroup.getDbIdentity() + "ids", forGroup.__getIDS(), QueryParameter.EQUALS));
                         }
                     } else {
                         if (forGroup != null && !forGroup.__getCName().equals("")) {
@@ -622,11 +739,15 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
                                     Group group = gs.get(i);
                                     params[i + 1] = (new QueryParameter(Context.getItem(), group.getDbIdentity() + "ids", group.__getIDS(), QueryParameter.EQUALS));
                                 }
-                                dh.or(params);
+                                itemsParams.or(params);
                             } else {
-                                dh.and(new QueryParameter(Context.getItem(), forGroup.getDbIdentity() + "ids", forGroup.__getIDS(), QueryParameter.EQUALS));
+                                itemsParams.and(new QueryParameter(Context.getItem(), forGroup.getDbIdentity() + "ids", forGroup.__getIDS(), QueryParameter.EQUALS));
                             }
                         }
+                    }
+
+                    if (forUser != null && !forUser.__getCName().equals("")) {
+                        itemsParams.and(new QueryParameter(Context.getItem(), "intaddedby", forUser.__getIDS(), QueryParameter.EQUALS));
                     }
 
 
@@ -640,27 +761,27 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
                         }
                     }
                     if (l.size() > 1) {
-                        dh.or(l.toArray(new QueryParameter[0]));
+                        itemsParams.or(l.toArray(new QueryParameter[0]));
                     } else {
-                        dh.and(l.toArray(new QueryParameter[0]));
+                        itemsParams.and(l.toArray(new QueryParameter[0]));
                     }
 
                     if (dataowner != null) {
-                        dh.and(new QueryParameter(dataowner.getContext(), "ids", dataowner.__getIDS(), QueryParameter.EQUALS));
+                        itemsParams.and(new QueryParameter(dataowner.getContext(), "ids", dataowner.__getIDS(), QueryParameter.EQUALS));
                     }
 
                     boolean additional = true;
                     if (statusc.getComboBox().getSelectedItem().equals(Messages.STATUS_PAID)) {
-                        dh.and(new QueryParameter(Context.getItem(), "intstatus", Item.STATUS_PAID, QueryParameter.EQUALS));
+                        itemsParams.and(new QueryParameter(Context.getItem(), "intstatus", Item.STATUS_PAID, QueryParameter.EQUALS));
                     } else if (statusc.getComboBox().getSelectedItem().equals(Messages.STATUS_UNPAID)) {
 //                        additional = false;
-                        dh.or(new QueryParameter(Context.getItem(), "intstatus", Item.STATUS_PAID, QueryParameter.EQUALS),
+                        itemsParams.or(new QueryParameter(Context.getItem(), "intstatus", Item.STATUS_PAID, QueryParameter.EQUALS),
                                 new QueryParameter(Context.getItem(), "intstatus", Item.STATUS_FINISHED, QueryParameter.EQUALS));
                     }
 
                     try {
                         Context c = Context.getItem();
-                        dh.setOrder("accountsids", true);
+                        itemsParams.setOrder("accountsids", true);
                         c.addReference(Context.getGroup());
                         c.addReference(Context.getAccounts());
                         if (dataowner != null) {
@@ -671,7 +792,7 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
                             if (bydateend.isSelected()) {
                                 datecriterium = "dateend";
                             }
-                            d = QueryHandler.instanceOf().clone(c).select(Context.DETAILS_JOURNAL.replace("{date}", datecriterium), dh, timeframeChooser1.getTime(), datecriterium).getData();
+                            d = QueryHandler.instanceOf().clone(c).select(Context.DETAILS_JOURNAL.replace("{date}", datecriterium), itemsParams, timeframeChooser1.getTime(), datecriterium).getData();
                         } catch (NodataFoundException nodataFoundException) {
                             d = new Object[0][9];
                         }
@@ -690,10 +811,10 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
                     if (dataowner == null && additional) {
                         try {
                             Context c = Context.getExpense();
-                            dh.setOrder("dateadded", true);
+                            itemsParams.setOrder("dateadded", true);
                             c.addReference(Context.getGroup());
                             c.addReference(Context.getAccounts());
-                            QueryCriteria2 dd = new QueryCriteria2();
+                            QueryCriteria2 expensesParams = new QueryCriteria2();
                             List<QueryParameter> l1 = new Vector<QueryParameter>();
                             for (int i = 0; i < accountsp.getComponentCount(); i++) {
                                 MPCombobox b = (MPCombobox) accountsp.getComponent(i);
@@ -703,14 +824,18 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
                                 }
                             }
                             if (l1.size() > 1) {
-                                dd.or(l1.toArray(new QueryParameter[0]));
+                                expensesParams.or(l1.toArray(new QueryParameter[0]));
                             } else {
-                                dd.and(l1.toArray(new QueryParameter[0]));
+                                expensesParams.and(l1.toArray(new QueryParameter[0]));
+                            }
+                            if (forUser != null && !forUser.__getCName().equals("")) {
+                                expensesParams.and(new QueryParameter(c, "intaddedby", forUser.__getIDS(), QueryParameter.EQUALS));
                             }
                             if (!includechildgroups.isSelected()) {
                                 if (forGroup != null && !forGroup.__getCName().equals("")) {
-                                    dd.and(new QueryParameter(c, forGroup.getDbIdentity() + "ids", forGroup.__getIDS(), QueryParameter.EQUALS));
+                                    expensesParams.and(new QueryParameter(c, forGroup.getDbIdentity() + "ids", forGroup.__getIDS(), QueryParameter.EQUALS));
                                 }
+
                             } else {
                                 if (forGroup != null) {
                                     List<Group> gs = forGroup.getChildGroups();
@@ -721,20 +846,30 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
                                             Group group = gs.get(i);
                                             params[i + 1] = (new QueryParameter(c, group.getDbIdentity() + "ids", group.__getIDS(), QueryParameter.EQUALS));
                                         }
-                                        dh.or(params);
+                                        itemsParams.or(params);
                                     } else {
-                                        dd.and(new QueryParameter(c, forGroup.getDbIdentity() + "ids", forGroup.__getIDS(), QueryParameter.EQUALS));
+                                        expensesParams.and(new QueryParameter(c, forGroup.getDbIdentity() + "ids", forGroup.__getIDS(), QueryParameter.EQUALS));
                                     }
                                 }
                             }
+                            if (statusc.getComboBox().getSelectedItem().equals(Messages.STATUS_PAID)) {
+                                expensesParams.and(new QueryParameter(c, "ispaid", true, QueryParameter.EQUALS));
+                            } else if (statusc.getComboBox().getSelectedItem().equals(Messages.STATUS_UNPAID)) {
+                                expensesParams.and(new QueryParameter(c, "ispaid", false, QueryParameter.EQUALS));
+                            }
                             try {
-                                d1 = QueryHandler.instanceOf().clone(c).select(Context.DETAILS_JOURNAL3, dd, timeframeChooser1.getTime()).getData();
+                                d1 = QueryHandler.instanceOf().clone(c).select(Context.DETAILS_JOURNAL3, expensesParams, timeframeChooser1.getTime()).getData();
                             } catch (NodataFoundException nodataFoundException) {
                                 d1 = new Object[0][9];
                             }
                             for (int i = 0; i < d1.length; i++) {
                                 d1[i][5] = Expense.TYPE_EXPENSE;
-                                d1[i][6] = 1000;
+
+                                if (TypeConversion.stringToBoolean(String.valueOf(d1[i][6]))) {
+                                    d1[i][6] = 1000;
+                                } else {
+                                    d1[i][6] = 2000;
+                                }
                             }
 
                             DatabaseObject.Entity<?, ?>[] es = new DatabaseObject.Entity<?, ?>[d1.length];
@@ -749,10 +884,10 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
 
                         try {
                             Context c = Context.getRevenue();
-                            dh.setOrder("dateadded", true);
+                            itemsParams.setOrder("dateadded", true);
                             c.addReference(Context.getGroup());
                             c.addReference(Context.getAccounts());
-                            QueryCriteria2 dd = new QueryCriteria2();
+                            QueryCriteria2 revenuesParams = new QueryCriteria2();
                             List<QueryParameter> l2 = new Vector<QueryParameter>();
                             for (int i = 0; i < accountsp.getComponentCount(); i++) {
                                 MPCombobox b = (MPCombobox) accountsp.getComponent(i);
@@ -762,13 +897,16 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
                                 }
                             }
                             if (l2.size() > 1) {
-                                dd.or(l2.toArray(new QueryParameter[0]));
+                                revenuesParams.or(l2.toArray(new QueryParameter[0]));
                             } else {
-                                dd.and(l2.toArray(new QueryParameter[0]));
+                                revenuesParams.and(l2.toArray(new QueryParameter[0]));
+                            }
+                            if (forUser != null && !forUser.__getCName().equals("")) {
+                                revenuesParams.and(new QueryParameter(c, "intaddedby", forUser.__getIDS(), QueryParameter.EQUALS));
                             }
                             if (!includechildgroups.isSelected()) {
                                 if (forGroup != null && !forGroup.__getCName().equals("")) {
-                                    dd.and(new QueryParameter(c, forGroup.getDbIdentity() + "ids", forGroup.__getIDS(), QueryParameter.EQUALS));
+                                    revenuesParams.and(new QueryParameter(c, forGroup.getDbIdentity() + "ids", forGroup.__getIDS(), QueryParameter.EQUALS));
                                 }
                             } else {
                                 if (forGroup != null) {
@@ -780,20 +918,27 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
                                             Group group = gs.get(i);
                                             params[i + 1] = (new QueryParameter(c, group.getDbIdentity() + "ids", group.__getIDS(), QueryParameter.EQUALS));
                                         }
-                                        dd.or(params);
+                                        revenuesParams.or(params);
                                     } else {
-                                        dd.and(new QueryParameter(c, forGroup.getDbIdentity() + "ids", forGroup.__getIDS(), QueryParameter.EQUALS));
+                                        revenuesParams.and(new QueryParameter(c, forGroup.getDbIdentity() + "ids", forGroup.__getIDS(), QueryParameter.EQUALS));
                                     }
                                 }
                             }
+//                            if (statusc.getComboBox().getSelectedItem().equals(Messages.STATUS_PAID)) {
+//                                revenuesParams.and(new QueryParameter(c, "intstatus", Item.STATUS_PAID, QueryParameter.EQUALS));
+//                            } else if (statusc.getComboBox().getSelectedItem().equals(Messages.STATUS_UNPAID)) {
+////                        additional = false;
+//                                revenuesParams.or(new QueryParameter(Context.getExpense(), "intstatus", Item.STATUS_PAID, QueryParameter.EQUALS),
+//                                        new QueryParameter(c, "intstatus", Item.STATUS_FINISHED, QueryParameter.EQUALS));
+//                            }
                             try {
-                                d2 = QueryHandler.instanceOf().clone(c).select(Context.DETAILS_JOURNAL2, dd, timeframeChooser1.getTime()).getData();
+                                d2 = QueryHandler.instanceOf().clone(c).select(Context.DETAILS_JOURNAL2, revenuesParams, timeframeChooser1.getTime()).getData();
                             } catch (NodataFoundException nodataFoundException) {
                                 d2 = new Object[0][9];
                             }
                             for (int i = 0; i < d2.length; i++) {
                                 d2[i][5] = Revenue.TYPE_REVENUE;
-                                d2[i][6] = Item.STATUS_PAID;
+                                d2[i][6] = Item.STATUS_PAID;//revenues are currently always paid :-/
                             }
 
                             DatabaseObject.Entity<?, ?>[] es = new DatabaseObject.Entity<?, ?>[d2.length];
@@ -811,7 +956,7 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
                     d = parse(d);
                     jTable1.setModel(new MPTableModel(d, Headers.JOURNAL.getValue(),
                             new Class[]{DatabaseObject.Entity.class, Date.class, String.class, String.class, String.class, String.class, String.class, String.class, String.class}));
-//                    TableFormat.stripColumn(jTable1, 0);
+                    TableFormat.stripColumn(jTable1, DatabaseObject.Entity.class);
                 } catch (Exception e) {
                     Log.Debug(this, e);
                 }
@@ -822,7 +967,7 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
 
     @Override
     public void refresh() {
-        refresh(null);
+        refresh(null, null);
     }
 
     @Override
@@ -874,8 +1019,8 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
                     if (Popup.Y_N_dialog(Messages.REALLY_CHANGE2 + " (" + count + ")")) {
                         for (int i = 0; i < jTable1.getSelectedRows().length; i++) {
                             try {
-                               DatabaseObject obj = DatabaseObject.getObject((DatabaseObject.Entity<?, ?>) jTable1.getValueAt(jTable1.getSelectedRow(), 0));
-                               if (obj.getContext().equals(Context.getItem())) {
+                                DatabaseObject obj = DatabaseObject.getObject((DatabaseObject.Entity<?, ?>) jTable1.getValueAt(jTable1.getSelectedRow(), 0));
+                                if (obj.getContext().equals(Context.getItem())) {
                                     Item item = (Item) obj;
                                     if (item.__getIntstatus() == Item.STATUS_PAID) {
 //                                    item.setIntstatus(Item.STATUS_FINISHED);
@@ -929,13 +1074,26 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
 
     private void setData() {
         try {
+            Group g = null;
+            User u = null;
+
             if (groups.getSelectedItem().isValid()) {
-                refresh((Group) Group.getObject(Context.getGroup(), Integer.valueOf(groups.getSelectedItem().getId())));
-            } else {
-                refresh(null);
+                try {
+                    g = ((Group) Group.getObject(Context.getGroup(), Integer.valueOf(groups.getSelectedItem().getId())));
+                } catch (Exception nodataFoundException) {
+                    g = null;
+                }
             }
+            try {
+                if (users.getSelectedItem().isValid()) {
+                    u = ((User) User.getObject(Context.getUser(), Integer.valueOf(users.getSelectedItem().getId())));
+                }
+            } catch (Exception nodataFoundException) {
+                u = null;
+            }
+            refresh(g, u);
         } catch (Exception ignore) {
-            refresh(null);
+            refresh(null, null);
         }
     }
 
@@ -978,7 +1136,7 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
             for (int i = 0; i < jTable1.getSelectedRows().length; i++) {
                 try {
                     DatabaseObject obj = DatabaseObject.getObject((DatabaseObject.Entity<?, ?>) jTable1.getValueAt(jTable1.getSelectedRow(), 0));
-                               if (obj.getContext().equals(Context.getItem())) {
+                    if (obj.getContext().equals(Context.getItem())) {
                         Item item = (Item) obj;
                         if (item.__getIntstatus() != Item.STATUS_PAID) {
                             items.add(item);
@@ -1012,7 +1170,7 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
             for (int i = 0; i < jTable1.getSelectedRows().length; i++) {
                 try {
                     DatabaseObject obj = DatabaseObject.getObject((DatabaseObject.Entity<?, ?>) jTable1.getValueAt(jTable1.getSelectedRow(), 0));
-                                if (obj.getContext().equals(Context.getItem())) {
+                    if (obj.getContext().equals(Context.getItem())) {
                         Item item = (Item) obj;
 //                        if (item.__getIntstatus() != Item.STATUS_PAID) {
 //export em all
@@ -1055,8 +1213,8 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
             List<Item> items = new Vector<Item>();
             for (int i = 0; i < jTable1.getSelectedRows().length; i++) {
                 try {
-                   DatabaseObject obj = DatabaseObject.getObject((DatabaseObject.Entity<?, ?>) jTable1.getValueAt(jTable1.getSelectedRow(), 0));
-                                if (obj.getContext().equals(Context.getItem())) {
+                    DatabaseObject obj = DatabaseObject.getObject((DatabaseObject.Entity<?, ?>) jTable1.getValueAt(jTable1.getSelectedRow(), 0));
+                    if (obj.getContext().equals(Context.getItem())) {
                         Item item = (Item) obj;
 //                        if (item.__getIntstatus() != Item.STATUS_PAID) {
 //export em all

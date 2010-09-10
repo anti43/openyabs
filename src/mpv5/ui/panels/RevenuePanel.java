@@ -96,7 +96,6 @@ public class RevenuePanel extends javax.swing.JPanel implements DataPanel {
     private DataPanelTB tb;
     private ArrayList<DatabaseObject> accmod;
 
-
     /** Creates new form ContactPanel
      */
     public RevenuePanel() {
@@ -144,8 +143,8 @@ public class RevenuePanel extends javax.swing.JPanel implements DataPanel {
         itemtable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
         itemtable.setFillsViewportHeight(true);
 
-        ((MPTable)itemtable).setDefaultColumns(new Integer[]{100, 333, 100}, new Boolean[]{});
-      //  t = new mpv5.utils.ui.TableViewPersistenceHandler(itemtable, this);
+        ((MPTable) itemtable).setDefaultColumns(new Integer[]{100, 333, 100}, new Boolean[]{});
+        //  t = new mpv5.utils.ui.TableViewPersistenceHandler(itemtable, this);
     }
 
     private void calculate() {
@@ -253,7 +252,6 @@ public class RevenuePanel extends javax.swing.JPanel implements DataPanel {
         number = new mpv5.ui.beans.LabeledTextField();
         addedby = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
-        button_order2 = new javax.swing.JButton();
         accountselect = new mpv5.ui.beans.LabeledCombobox();
         groupnameselect = new mpv5.ui.beans.MPCombobox();
         jPanel2 = new javax.swing.JPanel();
@@ -268,7 +266,7 @@ public class RevenuePanel extends javax.swing.JPanel implements DataPanel {
         toolbarpane = new javax.swing.JPanel();
 
         setBackground(new java.awt.Color(155, 175, 155));
-        mpv5.i18n.LanguageManager.getBundle();
+        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("mpv5/resources/languages/Panels"); // NOI18N
         setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("RevenuePanel.border.title_1"))); // NOI18N
         setName("Form"); // NOI18N
         setLayout(new java.awt.BorderLayout());
@@ -306,11 +304,11 @@ public class RevenuePanel extends javax.swing.JPanel implements DataPanel {
         jPanel4.setLayout(jPanel4Layout);
         jPanel4Layout.setHorizontalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane3, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 692, Short.MAX_VALUE)
+            .addComponent(jScrollPane3, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 694, Short.MAX_VALUE)
         );
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane3, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 40, Short.MAX_VALUE)
+            .addComponent(jScrollPane3, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 26, Short.MAX_VALUE)
         );
 
         jPanel1.setBackground(new java.awt.Color(227, 219, 202));
@@ -333,18 +331,6 @@ public class RevenuePanel extends javax.swing.JPanel implements DataPanel {
         jLabel4.setFont(jLabel4.getFont());
         jLabel4.setText(bundle.getString("RevenuePanel.jLabel4.text")); // NOI18N
         jLabel4.setName("jLabel4"); // NOI18N
-
-        button_order2.setFont(button_order2.getFont().deriveFont(button_order2.getFont().getStyle() & ~java.awt.Font.BOLD, button_order2.getFont().getSize()-2));
-        button_order2.setText(bundle.getString("RevenuePanel.button_order2.text")); // NOI18N
-        button_order2.setFocusable(false);
-        button_order2.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        button_order2.setName("button_order2"); // NOI18N
-        button_order2.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        button_order2.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                button_order2ActionPerformed(evt);
-            }
-        });
 
         accountselect.set_Label(bundle.getString("RevenuePanel.accountselect._Label")); // NOI18N
         accountselect.setName("accountselect"); // NOI18N
@@ -387,7 +373,7 @@ public class RevenuePanel extends javax.swing.JPanel implements DataPanel {
                 .addContainerGap()
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(path, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 668, Short.MAX_VALUE)
+                    .addComponent(path, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 666, Short.MAX_VALUE)
                     .addComponent(jLabel1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 99, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel2Layout.createSequentialGroup()
                         .addComponent(value, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -421,7 +407,7 @@ public class RevenuePanel extends javax.swing.JPanel implements DataPanel {
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+            .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addGroup(jPanel1Layout.createSequentialGroup()
@@ -429,32 +415,35 @@ public class RevenuePanel extends javax.swing.JPanel implements DataPanel {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(labeledDateChooser1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(accountselect, javax.swing.GroupLayout.DEFAULT_SIZE, 458, Short.MAX_VALUE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(jLabel4)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 25, Short.MAX_VALUE)
+                        .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(button_order2)
+                        .addComponent(addedby, javax.swing.GroupLayout.PREFERRED_SIZE, 94, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(addedby, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addComponent(groupnameselect, javax.swing.GroupLayout.PREFERRED_SIZE, 187, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(31, Short.MAX_VALUE))
+                        .addComponent(groupnameselect, javax.swing.GroupLayout.PREFERRED_SIZE, 187, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap())
             .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
-                    .addComponent(accountselect, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 16, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(button_order2, javax.swing.GroupLayout.PREFERRED_SIZE, 15, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(addedby, javax.swing.GroupLayout.PREFERRED_SIZE, 19, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(groupnameselect, javax.swing.GroupLayout.DEFAULT_SIZE, 22, Short.MAX_VALUE)
-                    .addComponent(labeledDateChooser1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(number, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(accountselect, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(labeledDateChooser1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(number, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
+                            .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 16, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(addedby, javax.swing.GroupLayout.PREFERRED_SIZE, 19, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(groupnameselect, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
@@ -489,16 +478,11 @@ public class RevenuePanel extends javax.swing.JPanel implements DataPanel {
             Log.Debug(this, e.getMessage());
         }
     }//GEN-LAST:event_itemtableMouseClicked
-
-    private void button_order2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button_order2ActionPerformed
-        BigPopup.showPopup(this, new ControlPanel_Groups(), null);
-}//GEN-LAST:event_button_order2ActionPerformed
-     MPTableModel omodel = null;
+    MPTableModel omodel = null;
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private mpv5.ui.beans.LabeledCombobox accountselect;
     private javax.swing.JLabel addedby;
     private javax.swing.ButtonGroup buttonGroup1;
-    private javax.swing.JButton button_order2;
     private mpv5.ui.beans.MPCombobox groupnameselect;
     private javax.swing.JTable itemtable;
     private javax.swing.JLabel jLabel1;
@@ -599,27 +583,27 @@ public class RevenuePanel extends javax.swing.JPanel implements DataPanel {
 
             @Override
             public void run() {
-                
+
                 groupnameselect.triggerSearch();
                 taxrate.triggerSearch();
                 try {
                     itemtable.setModel(new MPTableModel(Revenue.getRevenues(), Headers.EXPENSE));
                 } catch (NodataFoundException e) {
-//                    Log.Debug(e);
+                    Log.Debug(this, e.getMessage());
                 }
                 try {
                     accmod = DatabaseObject.getObjects(Context.getAccounts(), new QueryCriteria("intaccounttype", Account.INCOME));
                     accountselect.setModel(accmod);
                 } catch (NodataFoundException e) {
-                    Log.Debug(e);
+                    Log.Debug(this, e.getMessage());
                 }
                 try {
                     accountselect.setSelectedItem(mpv5.db.objects.User.getCurrentUser().getProperties().getProperty(me, "accountselect", 1));
                     formatTable();
                 } catch (Exception e) {
-                    Log.Debug(e);
+                    Log.Debug(this, e.getMessage());
                 }
-                
+
             }
         };
 
@@ -648,10 +632,10 @@ public class RevenuePanel extends javax.swing.JPanel implements DataPanel {
 
             public void run() {
                 try {
-                    
+
                     itemtable.setModel(new MPTableModel(Revenue.getRevenues(), Headers.EXPENSE));
                     formatTable();
-                    
+
                 } catch (NodataFoundException ex) {
                 }
             }
@@ -665,10 +649,10 @@ public class RevenuePanel extends javax.swing.JPanel implements DataPanel {
 
             public void run() {
                 try {
-                    
+
                     itemtable.setModel(new MPTableModel(Revenue.getRevenues(), Headers.EXPENSE));
                     formatTable();
-                    
+
                 } catch (NodataFoundException ex) {
                 }
             }

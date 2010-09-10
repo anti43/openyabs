@@ -126,9 +126,9 @@ public class ExpensePanel extends javax.swing.JPanel implements DataPanel {
         taxrate.getComboBox().setEditable(false);
         itemtable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
         itemtable.setFillsViewportHeight(true);
-        ((MPTable)itemtable).setDefaultColumns(new Integer[]{100, 333, 100}, new Boolean[]{});
-      //  t = new mpv5.utils.ui.TableViewPersistenceHandler(itemtable, this);
-  
+        ((MPTable) itemtable).setDefaultColumns(new Integer[]{100, 333, 100}, new Boolean[]{});
+        //  t = new mpv5.utils.ui.TableViewPersistenceHandler(itemtable, this);
+
     }
 
     private void calculate() {
@@ -249,7 +249,7 @@ public class ExpensePanel extends javax.swing.JPanel implements DataPanel {
         toolbarpane = new javax.swing.JPanel();
 
         setBackground(new java.awt.Color(176, 158, 158));
-        mpv5.i18n.LanguageManager.getBundle();
+        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("mpv5/resources/languages/Panels"); // NOI18N
         setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("ExpensePanel.border.title_1"))); // NOI18N
         setName("Form"); // NOI18N
         setLayout(new java.awt.BorderLayout());
@@ -319,7 +319,7 @@ public class ExpensePanel extends javax.swing.JPanel implements DataPanel {
                 .addContainerGap()
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(path, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 665, Short.MAX_VALUE)
+                    .addComponent(path, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 663, Short.MAX_VALUE)
                     .addComponent(jLabel1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 99, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel2Layout.createSequentialGroup()
                         .addComponent(value, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -371,17 +371,17 @@ public class ExpensePanel extends javax.swing.JPanel implements DataPanel {
                     .addComponent(accountselect, javax.swing.GroupLayout.DEFAULT_SIZE, 458, Short.MAX_VALUE)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(jCheckBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 142, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jCheckBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 131, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(number, javax.swing.GroupLayout.PREFERRED_SIZE, 214, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(labeledDateChooser2, javax.swing.GroupLayout.DEFAULT_SIZE, 238, Short.MAX_VALUE)
                             .addComponent(labeledDateChooser1, javax.swing.GroupLayout.DEFAULT_SIZE, 238, Short.MAX_VALUE))))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 24, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 22, Short.MAX_VALUE)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(jLabel4)
-                        .addGap(59, 59, 59)
+                        .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(addedby, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addComponent(groupnameselect, javax.swing.GroupLayout.PREFERRED_SIZE, 187, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap())
@@ -398,7 +398,7 @@ public class ExpensePanel extends javax.swing.JPanel implements DataPanel {
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(number, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(labeledDateChooser1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGap(10, 10, 10)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addComponent(labeledDateChooser2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jCheckBox1))
@@ -408,7 +408,7 @@ public class ExpensePanel extends javax.swing.JPanel implements DataPanel {
                             .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 16, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(addedby, javax.swing.GroupLayout.PREFERRED_SIZE, 19, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(groupnameselect, javax.swing.GroupLayout.DEFAULT_SIZE, 57, Short.MAX_VALUE)))
+                        .addComponent(groupnameselect, javax.swing.GroupLayout.DEFAULT_SIZE, 58, Short.MAX_VALUE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
@@ -442,11 +442,11 @@ public class ExpensePanel extends javax.swing.JPanel implements DataPanel {
         jPanel4.setLayout(jPanel4Layout);
         jPanel4Layout.setHorizontalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane3, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 689, Short.MAX_VALUE)
+            .addComponent(jScrollPane3, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 691, Short.MAX_VALUE)
         );
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane3, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 102, Short.MAX_VALUE)
+            .addComponent(jScrollPane3, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 100, Short.MAX_VALUE)
         );
 
         javax.swing.GroupLayout rightpaneLayout = new javax.swing.GroupLayout(rightpane);
@@ -598,27 +598,27 @@ public class ExpensePanel extends javax.swing.JPanel implements DataPanel {
 
             @Override
             public void run() {
-                
+
                 groupnameselect.triggerSearch();
                 taxrate.triggerSearch();
                 try {
                     itemtable.setModel(new MPTableModel(Expense.getExpenses(), Headers.EXPENSE));
                 } catch (NodataFoundException e) {
-//                    Log.Debug(e);
+                    Log.Debug(this, e.getMessage());
                 }
                 try {
                     accmod = DatabaseObject.getObjects(Context.getAccounts(), new QueryCriteria("intaccounttype", Account.EXPENSE));
                     accountselect.setModel(accmod);
                 } catch (NodataFoundException e) {
-                    Log.Debug(e);
+                    Log.Debug(this, e.getMessage());
                 }
                 try {
                     accountselect.setSelectedItem(mpv5.db.objects.User.getCurrentUser().getProperties().getProperty(me, "accountselect", 1));
                     formatTable();
                 } catch (Exception e) {
-                    Log.Debug(e);
+                    Log.Debug(this, e.getMessage());
                 }
-                
+
             }
         };
 
@@ -647,10 +647,10 @@ public class ExpensePanel extends javax.swing.JPanel implements DataPanel {
 
             public void run() {
                 try {
-                    
+
                     itemtable.setModel(new MPTableModel(Expense.getExpenses(), Headers.EXPENSE));
                     formatTable();
-                    
+
                 } catch (NodataFoundException ex) {
                 }
             }
@@ -664,10 +664,10 @@ public class ExpensePanel extends javax.swing.JPanel implements DataPanel {
 
             public void run() {
                 try {
-                    
+
                     itemtable.setModel(new MPTableModel(Expense.getExpenses(), Headers.EXPENSE));
                     formatTable();
-                    
+
                 } catch (NodataFoundException ex) {
                 }
             }

@@ -204,7 +204,7 @@ public class Context implements Serializable {
             + IDENTITY_ACCOUNTS + "." + "cname,"
             + IDENTITY_EXPENSE + "." + "CNAME,"
             + IDENTITY_EXPENSE + "." + "ids,"
-            + IDENTITY_EXPENSE + "." + "ids,"
+            + IDENTITY_EXPENSE + "." + "ispaid,"
             + IDENTITY_EXPENSE + "." + "brutvalue,"
             + IDENTITY_EXPENSE + "." + "brutvalue";
     public static String DETAILS_HISTORY = getHistory().getDbIdentity() + ".ids, " + getHistory().getDbIdentity() + ".cname, " + getHistory().getDbIdentity() + ".username, " + Context.getGroup().getDbIdentity() + ".cname," + Context.getHistory().getDbIdentity() + ".dateadded";

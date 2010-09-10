@@ -23,6 +23,8 @@ package mpv5.ui.dialogs.subcomponents;
 
 import java.awt.Component;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JSpinner;
 import javax.swing.JTextField;
@@ -651,9 +653,13 @@ public class ControlPanel_Accounts extends javax.swing.JPanel implements Control
         desc.setText(description_);
         try {
             parents.set_Text(DatabaseObject.getObject(Context.getAccounts(), intparentaccount_).__getCName());
-            groupnameselect.setSelectedIndex(MPComboBoxModelItem.getItemID(String.valueOf(groupsids_), groupnameselect.getModel()));
-            typeselect.setSelectedIndex(MPComboBoxModelItem.getItemID(intaccounttype_, typeselect.getModel()));
         } catch (NodataFoundException ex) {
+            Log.Debug(this, ex.getMessage());
+        }
+        groupnameselect.setSelectedIndex(MPComboBoxModelItem.getItemID(String.valueOf(groupsids_), groupnameselect.getModel()));
+        try {
+            typeselect.setSelectedIndex(MPComboBoxModelItem.getItemID(String.valueOf(intaccounttype_), typeselect.getModel()));
+        } catch (Exception ex) {
             Log.Debug(this, ex.getMessage());
         }
 
@@ -704,6 +710,6 @@ public class ControlPanel_Accounts extends javax.swing.JPanel implements Control
     }
 
     public void print() {
-       mpv5.utils.export.Export.print(this);
+        mpv5.utils.export.Export.print(this);
     }
 }
