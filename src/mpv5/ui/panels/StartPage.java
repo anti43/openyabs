@@ -22,6 +22,7 @@ import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
 import mpv5.db.objects.Contact;
 import mpv5.globals.Constants;
+import mpv5.globals.Headers;
 import mpv5.globals.LocalSettings;
 import mpv5.globals.Messages;
 import mpv5.handler.Scheduler;
@@ -43,8 +44,6 @@ public class StartPage extends javax.swing.JPanel {
     /** Creates new form ListPanel */
     public StartPage() {
         initComponents();
-
-        TableFormat.hideHeader(licensetable);
         setName("startpage");
         jTextArea1.setText(Messages.START_MESSAGE.getValue().replace("*", ""));
 
@@ -371,7 +370,7 @@ public class StartPage extends javax.swing.JPanel {
                                 model[i] = string.split(";");
                             }
 
-                            licensetable.setModel(new MPTableModel(model));
+                            licensetable.setModel(new MPTableModel(model, Headers.LIBRARIEST ));
                         } catch (Exception ex) {
                             Log.Debug(this, ex.getLocalizedMessage());
                         }

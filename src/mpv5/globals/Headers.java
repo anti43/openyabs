@@ -23,7 +23,8 @@ public enum Headers {
     TEMPLATES(new String[]{"Name", "Type", "Group"}),
     MAILTEMPLATES(new String[]{"Name", "Description", "Group"}),
     SCHEDULE_LIST(new String[]{"Item ID", "Interval (Months)", "End date", "Added by"}),
-    EXPENSE(new String[]{"Number", "Description", "Account", "Value", "Tax Rate"});
+    EXPENSE(new String[]{"Number", "Description", "Account", "Value", "Tax Rate"}),
+    LIBRARIEST(new String[]{"File", "Description", "License", "Author"});
 
     private Headers(String[] header) {
         this.header = header;
