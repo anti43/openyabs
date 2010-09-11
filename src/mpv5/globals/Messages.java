@@ -268,7 +268,8 @@ public enum Messages {
             + "\n\t- a manually killed YaBS instance"
             + "\n\t- a crash or kill of the JVM\n"
             + "\nYou might want to start YaBS once with the option -clear or to delete the .lck file in <user home>/.yabs> to get rid of this message."), 
-     NA("N/A"),
+     NA("N/A"), 
+     ACTION_ADD("Add"),
     ;
 
 

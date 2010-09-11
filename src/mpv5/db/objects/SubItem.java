@@ -805,4 +805,13 @@ public class SubItem extends DatabaseObject implements Triggerable {
     @Override
     public void triggerOnDelete() {
     }
+
+    @Override
+    public String toString() {
+        if (description != null && description.length() > 15) {
+            return description.substring(0, 14);
+        } else {
+            return description;
+        }
+    }
 }

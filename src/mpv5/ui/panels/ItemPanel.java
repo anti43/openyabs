@@ -88,6 +88,7 @@ import mpv5.ui.dialogs.Search2;
 import mpv5.ui.dialogs.subcomponents.ItemTextAreaDialog;
 import mpv5.ui.dialogs.subcomponents.ProductSelectDialog;
 import mpv5.ui.misc.MPTable;
+import mpv5.ui.popups.TablePopUp;
 import mpv5.utils.ui.TableViewPersistenceHandler;
 import mpv5.utils.arrays.ArrayUtilities;
 import mpv5.utils.date.DateConverter;
@@ -1249,7 +1250,8 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
                 SubItem it = m.getRowAt(itemtable.getSelectedRow(), SubItem.getDefaultItem());
 
                 if (it != null) {
-                    MPView.identifierView.getClistview().addElement(it);
+                    MPView.identifierView.addToClipBoard(it);
+
                 } else if (!m.hasEmptyRows(new int[]{4})) {
                     m.addRow(2);
                 }
@@ -1747,6 +1749,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
 //                    Log.PrintArray(s.toStringArray());
 
                     ((MPTableModel) itemtable.getModel()).addRow(s.getRowData(((MPTableModel) itemtable.getModel()).getLastValidRow(new int[]{4}) + 1));
+                    ((MPTableModel) itemtable.getModel()).fireTableCellUpdated(0, 0);
                 } else {
                     o.setIntstatus(Item.STATUS_IN_PROGRESS);
                     o.setInttype(inttype_);
@@ -1774,6 +1777,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
             } else if (dbo.getContext().equals(Context.getProduct())) {
                 ((MPTableModel) itemtable.getModel()).addRow(
                         new SubItem((Product) dbo).getRowData(((MPTableModel) itemtable.getModel()).getRowCount() + 1));
+                ((MPTableModel) itemtable.getModel()).fireTableCellUpdated(0, 0);
             } else if (dbo.getContext().equals(Context.getProductlist())) {
                 try {
                     SubItem[] subs = new SubItem[0];
@@ -1793,6 +1797,17 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
                     formatTable();
                     ((MPTableModel) itemtable.getModel()).fireTableCellUpdated(0, 0);
                 } catch (NodataFoundException ex) {
+                    Log.Debug(this, ex.getMessage());
+                }
+            } else if (dbo.getContext().equals(Context.getSubItem())) {
+                try {
+                    SubItem sub = (SubItem) dbo;
+
+                    ((MPTableModel) itemtable.getModel()).addRow(
+                            sub.getRowData(((MPTableModel) itemtable.getModel()).getRowCount() + 1));
+
+                    ((MPTableModel) itemtable.getModel()).fireTableCellUpdated(0, 0);
+                } catch (Exception ex) {
                     Log.Debug(this, ex.getMessage());
                 }
             } else {
@@ -2000,6 +2015,53 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
         itemtable.getColumnModel().getColumn(SubItem.COLUMNINDEX_ADD).setCellEditor(new ButtonEditor(b1));
         itemtable.getColumnModel().getColumn(SubItem.COLUMNINDEX_REMOVE).setCellRenderer(new ButtonRenderer());
         itemtable.getColumnModel().getColumn(SubItem.COLUMNINDEX_REMOVE).setCellEditor(new ButtonEditor(b2));
+
+        TablePopUp tpu = new TablePopUp(itemtable, new String[]{
+                    Messages.ACTION_COPY.getValue(),
+                    Messages.ACTION_PASTE.getValue(),
+                    null,
+                    Messages.ACTION_ADD.getValue(),
+                    Messages.ACTION_REMOVE.getValue()},
+                new ActionListener[]{new ActionListener() {
+
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    MPTableModel m = (MPTableModel) itemtable.getModel();
+                    SubItem it = m.getRowAt(itemtable.getSelectedRow(), SubItem.getDefaultItem());
+
+                    if (it != null) {
+                        MPView.identifierView.addToClipBoard(it);
+
+                    }
+                }
+            }, new ActionListener() {
+
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    MPView.identifierView.pasteClipboardItems();
+                }
+            },
+                    null,
+                    new ActionListener() {
+
+                        @Override
+                        public void actionPerformed(ActionEvent e) {
+                            ((MPTableModel) itemtable.getModel()).addRow(1);
+                        }
+                    }, new ActionListener() {
+
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    int index = itemtable.getSelectedRow();
+                    if (index < 0) {
+                        return;
+                    }
+
+                    MPTableModel m = (MPTableModel) itemtable.getModel();
+                    SubItem.addToDeletionQueue(m.getValueAt(index, 0));
+                    ((MPTableModel) itemtable.getModel()).removeRow(index);
+                }
+            }});
     }
 
     private void delivery() {

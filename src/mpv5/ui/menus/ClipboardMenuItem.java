@@ -31,10 +31,11 @@ public class ClipboardMenuItem extends JMenuItem {
 
     public ClipboardMenuItem(final DatabaseObject dbo) {
         this.item = dbo;
-        this.setText(dbo.__getCName());
+        this.setText(dbo.toString());
         this.setIcon(dbo.getIcon());
 
         addActionListener(new java.awt.event.ActionListener() {
+            @Override
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                  MPView.getIdentifierView().getCurrentTab().paste(dbo);
             }

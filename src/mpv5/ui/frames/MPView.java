@@ -2016,8 +2016,8 @@ public class MPView extends FrameView {
         DataPanel pane = getCurrentTab();
         if (pane != null) {
             pane.print();
-        } else{
-           Export.print(getTabPane().getSelectedComponent());
+        } else {
+            Export.print(getTabPane().getSelectedComponent());
         }
     }//GEN-LAST:event_jMenuItem6ActionPerformed
 
@@ -2096,15 +2096,7 @@ public class MPView extends FrameView {
     }//GEN-LAST:event_jMenuItem14ActionPerformed
 
     private void jMenuItem16ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem16ActionPerformed
-        ClipboardMenuItem item;
-        try {
-            if (getClipboardMenu().getItemCount() > 1) {
-                item = (ClipboardMenuItem) getClipboardMenu().getItem(getClipboardMenu().getItemCount() - 1);
-                getCurrentTab().paste(item.getItem());
-            }
-        } catch (Exception ignore) {
-//            Log.Debug(ignore);
-        }
+        pasteClipboardItems();
 
     }//GEN-LAST:event_jMenuItem16ActionPerformed
 
@@ -2394,9 +2386,8 @@ public class MPView extends FrameView {
         Wizard w = new Wizard(false);
         w.addPanel(new wizard_CSVImport2_1(w));
         w.showWiz();
-        
-    }//GEN-LAST:event_jMenuItem40ActionPerformed
 
+    }//GEN-LAST:event_jMenuItem40ActionPerformed
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton calculatorButton;
     public javax.swing.JMenu clipboardMenu;
@@ -2876,6 +2867,23 @@ public class MPView extends FrameView {
         } catch (Exception e) {
             Log.Debug(e);
 
+        }
+    }
+
+    /**
+     * Paste the current clipboard items (if any)
+     */
+    public void pasteClipboardItems() {
+
+        for (int i = 1; i < getClipboardMenu().getItemCount(); i++) {
+            try {
+                if (getClipboardMenu().getItemCount() > 1) {
+                    ClipboardMenuItem item = (ClipboardMenuItem) getClipboardMenu().getItem(i);
+                    getCurrentTab().paste(item.getItem());
+                }
+            } catch (Exception ignore) {
+//            Log.Debug(ignore);
+            }
         }
     }
 }
