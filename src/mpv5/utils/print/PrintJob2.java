@@ -39,6 +39,9 @@ import mpv5.utils.files.FileDirectoryHandler;
  * @author Torsten Horn, Andreas Weber
  */
 public class PrintJob2 {
+
+    public static void print(File file, String printer) {
+    }
     /* PrintWithJ2SE14Document.java: Drucken eines Dokuments mit J2SE 1.4 */
 
     /**
@@ -51,7 +54,7 @@ public class PrintJob2 {
         if (fileType.toUpperCase().equals("PDF")) {
             printPdf(file);
         } else {
-            print(new FileInputStream(file), fileType);
+            print(new FileInputStream(file), fileType, null);
         }
     }
 
@@ -59,9 +62,10 @@ public class PrintJob2 {
      * Send an InputStream to a printer
      * @param resourceAsStream
      * @param fileType
+     * @param printername (optional)
      * @throws Exception
      */
-    public static void print(InputStream resourceAsStream, String fileType) throws Exception {
+    public static void print(InputStream resourceAsStream, String fileType, String printername) throws Exception {
 
         final String[] ssFileExtensionsAccepted = {"JPEG", "JPG", "PNG", "GIF", "TXT", "HTM", "HTML", "PS"};
         final DocFlavor[] docFlavorsAccepted = {
@@ -91,6 +95,9 @@ public class PrintJob2 {
         // Set print attributes:
         PrintRequestAttributeSet aset = new HashPrintRequestAttributeSet();
         aset.add(MediaSizeName.ISO_A4);
+        if (printername != null && printername.length() > 0) {
+            aset.add(new PrinterName(printername, null));
+        }
 
         // Print to PrintService (e.g. to Printer):
         PrintService prservDflt = PrintServiceLookup.lookupDefaultPrintService();
@@ -158,6 +165,10 @@ public class PrintJob2 {
      */
     public PrintJob2(Component c) {
         printComponent(c);
+    }
+
+    public PrintJob2() {
+        throw new UnsupportedOperationException("Not yet implemented");
     }
 
     private void printPdf(File file) throws Exception {
@@ -241,4 +252,3 @@ public class PrintJob2 {
         }
     }
 }
-

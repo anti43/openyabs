@@ -74,7 +74,6 @@ public class PrintJob implements Waiter {
 //        prservices = PrintServiceLookup.lookupPrintServices(flavor, aset);
 //
 //    }
-
     /**
      * Prints files and determines the type by the file extension.
      * May print through the default application for the given filetype or by
@@ -83,16 +82,18 @@ public class PrintJob implements Waiter {
      */
     public void print(ArrayList<File> filelist) {
 
-        if (TypeConversion.stringToBoolean(LocalSettings.getProperty(LocalSettings.PRINT_DEVAPP)) &&
-                Desktop.isDesktopSupported() && Desktop.getDesktop().isSupported(Desktop.Action.PRINT) &&
-                filelist.size() == 1) {
+        if (TypeConversion.stringToBoolean(LocalSettings.getProperty(LocalSettings.PRINT_DEVAPP))
+                && Desktop.isDesktopSupported() && Desktop.getDesktop().isSupported(Desktop.Action.PRINT)
+                && filelist.size() == 1) {
             try {
-                Desktop.getDesktop().print(filelist.get(0));
+                for (File f : filelist) {
+                    Desktop.getDesktop().print(f);
+                }
             } catch (IOException ex) {
                 Log.Debug(this, ex.getMessage());
 //                printOldStyle(filelist);
-                for(File f: filelist){
-                String filename = f.getName();
+                for (File f : filelist) {
+                    String filename = f.getName();
                     try {
                         new PrintJob2(f, (filename.lastIndexOf(".") == -1) ? "" : filename.substring(filename.lastIndexOf(".") + 1, filename.length()));
                     } catch (Exception ex1) {
@@ -103,15 +104,15 @@ public class PrintJob implements Waiter {
             }
         } else {
 //            printOldStyle(filelist);
-             for(File f: filelist){
+            for (File f : filelist) {
                 String filename = f.getName();
-                    try {
-                        new PrintJob2(f, (filename.lastIndexOf(".") == -1) ? "" : filename.substring(filename.lastIndexOf(".") + 1, filename.length()));
-                    } catch (Exception ex1) {
-                        Log.Debug(ex1);
-                        Popup.error(ex1);
-                    }
+                try {
+                    new PrintJob2(f, (filename.lastIndexOf(".") == -1) ? "" : filename.substring(filename.lastIndexOf(".") + 1, filename.length()));
+                } catch (Exception ex1) {
+                    Log.Debug(ex1);
+                    Popup.error(ex1);
                 }
+            }
         }
     }
 

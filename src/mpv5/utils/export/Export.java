@@ -134,7 +134,13 @@ public final class Export extends HashMap<String, Object> implements Waitable {
         ex.putAll(hm1);
         ex.setTemplate(preloadedTemplate.getExFile());
         ex.setTargetFile(f2);
-        new Job(ex, (Waiter) new PrintJob()).execute();
+//        new Job(ex, (Waiter) new PrintJob()).execute();
+        ex.waitFor();
+        try {
+            PrintJob2.print(ex.getTargetFile(), preloadedTemplate.__getPrinter());
+        } catch (Exception ex1) {
+            Log.Debug(ex1);
+        }
     }
 
     /**
@@ -144,27 +150,29 @@ public final class Export extends HashMap<String, Object> implements Waitable {
      */
     public static void print(Template[] preloadedTemplate, DatabaseObject dataOwner) {
         List<File> files = new Vector<File>();
-        for (int i = 0; i < preloadedTemplate.length; i++) {
-            Template template = preloadedTemplate[i];
-            HashMap<String, Object> hm1 = new FormFieldsHandler(dataOwner).getFormattedFormFields(null);
-            File f2 = FileDirectoryHandler.getTempFile("pdf");
-            Export ex = new Export(template);
-            ex.putAll(hm1);
-            try {
-                ex.processData(f2);
-                files.add(f2);
-            } catch (NodataFoundException ex1) {
-                Log.Debug(ex1);
-            } catch (FileNotFoundException ex1) {
-                Log.Debug(ex1);
+        if (preloadedTemplate != null && preloadedTemplate.length > 0) {
+            for (int i = 0; i < preloadedTemplate.length; i++) {
+                Template template = preloadedTemplate[i];
+                HashMap<String, Object> hm1 = new FormFieldsHandler(dataOwner).getFormattedFormFields(null);
+                File f2 = FileDirectoryHandler.getTempFile("pdf");
+                Export ex = new Export(template);
+                ex.putAll(hm1);
+                try {
+                    ex.processData(f2);
+                    files.add(f2);
+                } catch (NodataFoundException ex1) {
+                    Log.Debug(ex1);
+                } catch (FileNotFoundException ex1) {
+                    Log.Debug(ex1);
+                }
             }
-        }
 
-        try {
-            new PrintJob().print(mergeFiles(files));
-        } catch (Exception fileNotFoundException) {
-            Popup.error(fileNotFoundException);
-            Log.Debug(fileNotFoundException);
+            try {
+                PrintJob2.print(mergeFiles(files), preloadedTemplate[0].__getPrinter());
+            } catch (Exception fileNotFoundException) {
+                Popup.error(fileNotFoundException);
+                Log.Debug(fileNotFoundException);
+            }
         }
     }
 
