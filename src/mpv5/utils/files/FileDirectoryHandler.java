@@ -385,7 +385,7 @@ public abstract class FileDirectoryHandler {
 
     /**
      * Returns a completely random named temporay file
-     * @param suffix
+     * @param suffix no '.' please
      * @return
      */
     public static File getTempFile(String suffix) {
@@ -554,7 +554,7 @@ public abstract class FileDirectoryHandler {
     }
 
     private static synchronized String check(String filename) {
-        return filename.replaceAll("[?:\\\\/*\\\"\\\"<>|]", "-");
+        return filename.replaceAll("[?:\\\\/*\\\"\\\"<>|]", "-").replace("..", ".");
     }
 
     /**

@@ -205,7 +205,7 @@ public class PrintJob2 {
     private void printPdf(File file, String printername) throws Exception {
 
         // Copy the file to a temp location to avoid issues with RandomAccessFile and spaces in path names
-        File tempFile = FileDirectoryHandler.copyFile2(file, FileDirectoryHandler.getTempFile(".pdf"), true);
+        File tempFile = FileDirectoryHandler.copyFile2(file, FileDirectoryHandler.getTempFile("pdf"), true);
         // set up the PDF reading
         RandomAccessFile raf = new RandomAccessFile(tempFile, "r");
         FileChannel channel = raf.getChannel();
@@ -233,21 +233,21 @@ public class PrintJob2 {
 
         AttributeSet aset2 = new HashAttributeSet();
         aset2.add(MediaSizeName.ISO_A4);
-        if (printername != null && printername.length() > 0) {
+        if (printername != null && printername.length() > 0 && !printername.contains("undefined")) {
             aset2.add(new PrinterName(printername, null));
-        }
-
-        PrintService[] services3 = PrintServiceLookup.lookupPrintServices(null, aset2);
-        if (services3.length > 0) {
-            pjob.setPrintService(services3[0]);
-        } else {
-            Notificator.raiseNotification(Messages.NO_PRINTER_FOUND + " [" + printername + "]", false);
+            PrintService[] services3 = PrintServiceLookup.lookupPrintServices(null, aset2);
+            if (services3.length > 0) {
+                pjob.setPrintService(services3[0]);
+            } else {
+                Notificator.raiseNotification(Messages.NO_PRINTER_FOUND + " [" + printername + "]", false);
+            }
         }
 
         try {
             // Send print job to printer
             if (pjob.printDialog(aset)) {
                 pjob.print(aset);
+                Notificator.raiseNotification(Messages.PRINTED + " .pdf " + " [" + pjob.getPrintService().getName() + "]", false);
                 Log.Debug(PrintJob2.class, "Document '" + file + "' printed.");
             }
         } catch (Exception e) {
