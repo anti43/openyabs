@@ -31,6 +31,7 @@ import javax.print.attribute.*;
 import javax.print.attribute.standard.*;
 import mpv5.globals.Messages;
 import mpv5.logging.Log;
+import mpv5.ui.dialogs.Notificator;
 import mpv5.ui.dialogs.Popup;
 import mpv5.utils.files.FileDirectoryHandler;
 
@@ -40,7 +41,15 @@ import mpv5.utils.files.FileDirectoryHandler;
  */
 public class PrintJob2 {
 
-    public static void print(File file, String printer) {
+    /**
+     * Send an File to a printer
+     * @param resourceAsStream
+     * @param fileType
+     * @param printername (optional)
+     * @throws Exception
+     */
+    public static void print(File file, String printer) throws FileNotFoundException, Exception {
+        new PrintJob2((file), file.getName().substring(file.getName().lastIndexOf(".") + 1, file.getName().length()), printer);
     }
     /* PrintWithJ2SE14Document.java: Drucken eines Dokuments mit J2SE 1.4 */
 
@@ -50,9 +59,23 @@ public class PrintJob2 {
      * @param fileType
      * @throws Exception
      */
+    public PrintJob2(File file, String fileType, String printer) throws Exception {
+        if (fileType.toUpperCase().equals("PDF")) {
+            printPdf(file, printer);
+        } else {
+            print(new FileInputStream(file), fileType, printer);
+        }
+    }
+
+    /**
+     * Set up a new printjob and print
+     * @param file
+     * @param fileType
+     * @throws Exception
+     */
     public PrintJob2(File file, String fileType) throws Exception {
         if (fileType.toUpperCase().equals("PDF")) {
-            printPdf(file);
+            printPdf(file, null);
         } else {
             print(new FileInputStream(file), fileType, null);
         }
@@ -93,11 +116,13 @@ public class PrintJob2 {
         }
 
         // Set print attributes:
-        PrintRequestAttributeSet aset = new HashPrintRequestAttributeSet();
+        AttributeSet aset = new HashAttributeSet();
+
         aset.add(MediaSizeName.ISO_A4);
         if (printername != null && printername.length() > 0) {
             aset.add(new PrinterName(printername, null));
         }
+        HashPrintRequestAttributeSet aset2 = new HashPrintRequestAttributeSet();
 
         // Print to PrintService (e.g. to Printer):
         PrintService prservDflt = PrintServiceLookup.lookupDefaultPrintService();
@@ -122,7 +147,7 @@ public class PrintJob2 {
                 prservDflt = null;
             }
             try {
-                prserv = ServiceUI.printDialog(null, 50, 50, prservices, prservDflt, null, aset);
+                prserv = ServiceUI.printDialog(null, 50, 50, prservices, prservDflt, null, aset2);
             } catch (Exception exception) {
                 Log.Debug(exception);
             }
@@ -133,7 +158,7 @@ public class PrintJob2 {
             printPrintServiceAttributesAndDocFlavors(prserv);
             DocPrintJob pj = prserv.createPrintJob();
             Doc doc = new SimpleDoc(resourceAsStream, flavor, null);
-            pj.print(doc, aset);
+            pj.print(doc, aset2);
             Log.Debug(PrintJob2.class, "Document '" + resourceAsStream + "' printed.");
         }
     }
@@ -171,7 +196,13 @@ public class PrintJob2 {
         throw new UnsupportedOperationException("Not yet implemented");
     }
 
-    private void printPdf(File file) throws Exception {
+    /**
+     * 
+     * @param file
+     * @param printername not used yet
+     * @throws Exception
+     */
+    private void printPdf(File file, String printername) throws Exception {
 
         // Copy the file to a temp location to avoid issues with RandomAccessFile and spaces in path names
         File tempFile = FileDirectoryHandler.copyFile2(file, FileDirectoryHandler.getTempFile(".pdf"), true);
@@ -197,8 +228,21 @@ public class PrintJob2 {
         pjob.setPageable(book);
 
         // Set print attributes:
-        PrintRequestAttributeSet aset = new HashPrintRequestAttributeSet();
+        HashPrintRequestAttributeSet aset = new HashPrintRequestAttributeSet();
         aset.add(MediaSizeName.ISO_A4);
+
+        AttributeSet aset2 = new HashAttributeSet();
+        aset2.add(MediaSizeName.ISO_A4);
+        if (printername != null && printername.length() > 0) {
+            aset2.add(new PrinterName(printername, null));
+        }
+
+        PrintService[] services3 = PrintServiceLookup.lookupPrintServices(null, aset2);
+        if (services3.length > 0) {
+            pjob.setPrintService(services3[0]);
+        } else {
+            Notificator.raiseNotification(Messages.NO_PRINTER_FOUND + " [" + printername + "]", false);
+        }
 
         try {
             // Send print job to printer

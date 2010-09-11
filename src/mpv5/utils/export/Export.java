@@ -127,20 +127,28 @@ public final class Export extends HashMap<String, Object> implements Waitable {
      * @param preloadedTemplate
      * @param dataOwner
      */
-    public static void print(Template preloadedTemplate, DatabaseObject dataOwner) {
-        HashMap<String, Object> hm1 = new FormFieldsHandler(dataOwner).getFormattedFormFields(null);
-        File f2 = FileDirectoryHandler.getTempFile("pdf");
-        Export ex = new Export(preloadedTemplate);
-        ex.putAll(hm1);
-        ex.setTemplate(preloadedTemplate.getExFile());
-        ex.setTargetFile(f2);
+    public static void print(final Template preloadedTemplate, final DatabaseObject dataOwner) {
+        Runnable runnable = new Runnable() {
+
+            @Override
+            public void run() {
+                HashMap<String, Object> hm1 = new FormFieldsHandler(dataOwner).getFormattedFormFields(null);
+                File f2 = FileDirectoryHandler.getTempFile("pdf");
+                final Export ex = new Export(preloadedTemplate);
+                ex.putAll(hm1);
+                ex.setTemplate(preloadedTemplate.getExFile());
+                ex.setTargetFile(f2);
 //        new Job(ex, (Waiter) new PrintJob()).execute();
-        ex.waitFor();
-        try {
-            PrintJob2.print(ex.getTargetFile(), preloadedTemplate.__getPrinter());
-        } catch (Exception ex1) {
-            Log.Debug(ex1);
-        }
+
+                ex.waitFor();
+                try {
+                    PrintJob2.print(ex.getTargetFile(), preloadedTemplate.__getPrinter());
+                } catch (Exception ex1) {
+                    Log.Debug(ex1);
+                }
+            }
+        };
+        new Thread(runnable).start();
     }
 
     /**
@@ -148,32 +156,39 @@ public final class Export extends HashMap<String, Object> implements Waitable {
      * @param preloadedTemplate
      * @param dataOwner
      */
-    public static void print(Template[] preloadedTemplate, DatabaseObject dataOwner) {
-        List<File> files = new Vector<File>();
-        if (preloadedTemplate != null && preloadedTemplate.length > 0) {
-            for (int i = 0; i < preloadedTemplate.length; i++) {
-                Template template = preloadedTemplate[i];
-                HashMap<String, Object> hm1 = new FormFieldsHandler(dataOwner).getFormattedFormFields(null);
-                File f2 = FileDirectoryHandler.getTempFile("pdf");
-                Export ex = new Export(template);
-                ex.putAll(hm1);
-                try {
-                    ex.processData(f2);
-                    files.add(f2);
-                } catch (NodataFoundException ex1) {
-                    Log.Debug(ex1);
-                } catch (FileNotFoundException ex1) {
-                    Log.Debug(ex1);
+    public static void print(final Template[] preloadedTemplate, final DatabaseObject dataOwner) {
+        Runnable runnable = new Runnable() {
+
+            @Override
+            public void run() {
+                List<File> files = new Vector<File>();
+                if (preloadedTemplate != null && preloadedTemplate.length > 0) {
+                    for (int i = 0; i < preloadedTemplate.length; i++) {
+                        Template template = preloadedTemplate[i];
+                        HashMap<String, Object> hm1 = new FormFieldsHandler(dataOwner).getFormattedFormFields(null);
+                        File f2 = FileDirectoryHandler.getTempFile("pdf");
+                        Export ex = new Export(template);
+                        ex.putAll(hm1);
+                        try {
+                            ex.processData(f2);
+                            files.add(f2);
+                        } catch (NodataFoundException ex1) {
+                            Log.Debug(ex1);
+                        } catch (FileNotFoundException ex1) {
+                            Log.Debug(ex1);
+                        }
+                    }
+
+                    try {
+                        PrintJob2.print(mergeFiles(files), preloadedTemplate[0].__getPrinter());
+                    } catch (Exception fileNotFoundException) {
+                        Popup.error(fileNotFoundException);
+                        Log.Debug(fileNotFoundException);
+                    }
                 }
             }
-
-            try {
-                PrintJob2.print(mergeFiles(files), preloadedTemplate[0].__getPrinter());
-            } catch (Exception fileNotFoundException) {
-                Popup.error(fileNotFoundException);
-                Log.Debug(fileNotFoundException);
-            }
-        }
+        };
+        new Thread(runnable).start();
     }
 
     private static File mergeFiles(List<File> p) {
