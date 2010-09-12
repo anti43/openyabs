@@ -23,14 +23,6 @@ import com.lowagie.text.pdf.PdfImportedPage;
 import com.lowagie.text.pdf.PdfReader;
 import com.lowagie.text.pdf.PdfWriter;
 import java.awt.Component;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.print.Book;
-import java.awt.print.PageFormat;
-import java.awt.print.Paper;
-import java.awt.print.Printable;
-import java.awt.print.PrinterException;
-import java.awt.print.PrinterJob;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -41,9 +33,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.print.PrintException;
 import javax.swing.SwingUtilities;
 import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
@@ -59,11 +48,11 @@ import mpv5.handler.VariablesHandler;
 import mpv5.logging.Log;
 import mpv5.mail.SimpleMail;
 import mpv5.ui.dialogs.Popup;
+import mpv5.ui.frames.MPView;
 import mpv5.utils.files.FileDirectoryHandler;
 import mpv5.utils.jobs.Job;
 import mpv5.utils.jobs.Waitable;
 import mpv5.utils.jobs.Waiter;
-import mpv5.utils.print.PrintJob;
 import mpv5.utils.print.PrintJob2;
 
 /**
@@ -81,44 +70,55 @@ public final class Export extends HashMap<String, Object> implements Waitable {
      * @param to
      */
     public static void mail(Template preloadedTemplate, DatabaseObject dataOwner, Contact to) {
-        QueryCriteria c = new QueryCriteria("usersids", mpv5.db.objects.User.getCurrentUser().__getIDS());
-        MailMessage m = null;
         try {
-            m = (MailMessage) Popup.SelectValue(DatabaseObject.getObjects(Context.getMessage(), c), Messages.SELECT_A_TEMPLATE);
-        } catch (Exception ex) {
-            Log.Debug(Export.class, ex.getMessage());
-        }
-
-        HashMap<String, Object> hm1 = new FormFieldsHandler(dataOwner).getFormattedFormFields(null);
-        File f2 = FileDirectoryHandler.getTempFile(((Formattable) dataOwner).getFormatHandler().toUserString(), "pdf");
-        Export ex = new Export(preloadedTemplate);
-        ex.putAll(hm1);
-
-        ex.setTemplate(preloadedTemplate.getExFile());
-        ex.setTargetFile(f2);
-
-        try {
-            Contact cont = to;
-            if (mpv5.db.objects.User.getCurrentUser().__getMail().contains("@") && mpv5.db.objects.User.getCurrentUser().__getMail().contains(".") && cont.__getMailaddress().contains("@") && cont.__getMailaddress().contains(".")) {
-                SimpleMail pr = new SimpleMail();
-                pr.setMailConfiguration(mpv5.db.objects.User.getCurrentUser().getMailConfiguration());
-                pr.setRecipientsAddress(cont.__getMailaddress());
-                if (m != null && m.__getCName() != null) {
-                    pr.setSubject(VariablesHandler.parse(m.__getCName(), dataOwner));
-                    pr.setText(VariablesHandler.parse(m.__getDescription(), dataOwner));
-                }
-                try {
-                    new Job(ex, (Waiter) pr).execute();
-                } catch (Exception e) {
-                    Popup.error(e);
-                }
-
-            } else {
-                Popup.notice(Messages.NO_MAIL_DEFINED);
+            MPView.setWaiting(true);
+            QueryCriteria c = new QueryCriteria("usersids", mpv5.db.objects.User.getCurrentUser().__getIDS());
+            MailMessage m = null;
+            boolean send = true;
+            try {
+                m = (MailMessage) Popup.SelectValue(DatabaseObject.getObjects(Context.getMessage(), c), Messages.SELECT_A_TEMPLATE);
+            } catch (Exception ex) {
+                Log.Debug(Export.class, ex.getMessage());
+                send = Popup.Y_N_dialog(Messages.NO_MAIL_TEMPLATE_DEFINED);
             }
-        } catch (UnsupportedOperationException unsupportedOperationException) {
-            Log.Debug(unsupportedOperationException);
-            Popup.notice(Messages.NOT_POSSIBLE + "\n" + Messages.NO_MAIL_CONFIG);
+
+            if (send) {
+                HashMap<String, Object> hm1 = new FormFieldsHandler(dataOwner).getFormattedFormFields(null);
+                File f2 = FileDirectoryHandler.getTempFile(((Formattable) dataOwner).getFormatHandler().toUserString(), "pdf");
+                Export ex = new Export(preloadedTemplate);
+                ex.putAll(hm1);
+
+                ex.setTemplate(preloadedTemplate.getExFile());
+                ex.setTargetFile(f2);
+
+                try {
+                    Contact cont = to;
+                    if (mpv5.db.objects.User.getCurrentUser().__getMail().contains("@") && mpv5.db.objects.User.getCurrentUser().__getMail().contains(".") && cont.__getMailaddress().contains("@") && cont.__getMailaddress().contains(".")) {
+                        SimpleMail pr = new SimpleMail();
+                        pr.setMailConfiguration(mpv5.db.objects.User.getCurrentUser().getMailConfiguration());
+                        pr.setRecipientsAddress(cont.__getMailaddress());
+                        if (m != null && m.__getCName() != null) {
+                            pr.setSubject(VariablesHandler.parse(m.__getCName(), dataOwner));
+                            pr.setText(VariablesHandler.parse(m.__getDescription(), dataOwner));
+                        }
+                        try {
+                            new Job(ex, (Waiter) pr).execute();
+                        } catch (Exception e) {
+                            Popup.error(e);
+                        }
+
+                    } else {
+                        Popup.notice(Messages.NO_MAIL_DEFINED);
+                    }
+                } catch (UnsupportedOperationException unsupportedOperationException) {
+                    Log.Debug(unsupportedOperationException);
+                    Popup.notice(Messages.NOT_POSSIBLE + "\n" + Messages.NO_MAIL_CONFIG);
+                }
+            }
+        } catch (Exception e) {
+            Log.Debug(e);
+        } finally {
+            MPView.setWaiting(false);
         }
     }
 

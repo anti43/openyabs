@@ -269,7 +269,11 @@ public enum Messages {
             + "\n\t- a crash or kill of the JVM\n"
             + "\nYou might want to start YaBS once with the option -clear or to delete the .lck file in <user home>/.yabs> to get rid of this message."), 
      NA("N/A"), 
-     ACTION_ADD("Add"),
+     ACTION_ADD("Add"), 
+     NO_MAIL_TEMPLATE_DEFINED(
+     "You do not have any mail template definded yet. "
+     + "Create mail templates at Tools->Control Panel->User Properties->Mail Templates. "
+     + "The mail will be send without any text body now."),
     ;
 
 

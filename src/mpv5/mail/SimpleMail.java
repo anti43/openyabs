@@ -20,6 +20,8 @@ import com.sun.mail.smtp.SMTPSSLTransport;
 import java.io.File;
 import java.util.Date;
 import java.util.Properties;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.activation.DataHandler;
 import javax.activation.DataSource;
@@ -39,6 +41,7 @@ import javax.mail.internet.MimeMultipart;
 import mpv5.globals.Messages;
 import mpv5.logging.Log;
 import mpv5.ui.dialogs.Popup;
+import mpv5.ui.frames.MPView;
 import mpv5.utils.export.Export;
 import mpv5.utils.jobs.Waiter;
 
@@ -96,14 +99,34 @@ public class SimpleMail implements Waiter {
      * @param attachment
      * @throws MessagingException
      */
-    private void sendMail() throws MessagingException {
-        if (!useSmtps) {
-            sendSmptmail();
-        } else {
-            sendSmptsMail();
-        }
+    private void sendMail() {
+        Runnable runnable = new Runnable() {
+
+            @Override
+            public void run() {
+                
+                if (!useSmtps) {
+                    try {
+                        sendSmptmail();
+                    } catch (MessagingException ex) {
+                        Log.Debug(ex);
+                    }
+                } else {
+                    try {
+                        sendSmptsMail();
+                    } catch (NoSuchProviderException ex) {
+                        Log.Debug(ex);
+                    } catch (MessagingException ex) {
+                        Log.Debug(ex);
+                    }
+                }
+                
+            }
+        };
+        new Thread(runnable).start();
     }
 
+    @Override
     public void set(Object object, Exception exception) throws Exception {
         if (exception == null) {
             try {
@@ -283,6 +306,7 @@ public class SimpleMail implements Waiter {
 
     private void sendSmptmail() throws MessagingException {
         Log.Debug(this, "Sending mail via SMTP");
+        MPView.getProgressbar().setIndeterminate(true);
         MailAuthenticator auth = new MailAuthenticator(username, password);
 
         Properties properties = null;
@@ -326,6 +350,7 @@ public class SimpleMail implements Waiter {
         try {
             // Send the message
             Transport.send(message);
+            MPView.getProgressbar().setIndeterminate(false);
             Log.Debug(this, "Mail sent: " + message);
             Popup.notice(Messages.MAIL_SENT + " " + recipientsAddress);
         } catch (MessagingException messagingException) {
@@ -342,12 +367,13 @@ public class SimpleMail implements Waiter {
      * @throws MessagingException
      */
     private void sendSmptsMail() throws NoSuchProviderException, MessagingException {
+        MPView.getProgressbar().setIndeterminate(true);
         Log.Debug(this, "Sending mail via SMTPS");
         // create properties
         Properties props = System.getProperties();
         MailAuthenticator auth = new MailAuthenticator(username, password);
 
-        props.put("mail.smtps.auth", Boolean.toString(username!=null));
+        props.put("mail.smtps.auth", Boolean.toString(username != null));
         props.put("mail.smtps.starttls.enable", Boolean.toString(useTls));
 // < -- it is important you use the correct port. smtp uses 25, smtps 465 -->
         props.put("mail.smtps.port", "465");
@@ -399,6 +425,7 @@ public class SimpleMail implements Waiter {
             transport.connect();
 // send the message
             transport.sendMessage(message, message.getAllRecipients());
+            MPView.getProgressbar().setIndeterminate(false);
             Log.Debug(this, "Mail sent: " + message);
             Popup.notice(Messages.MAIL_SENT + " " + recipientsAddress);
         } catch (MessagingException messagingException) {
