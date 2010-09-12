@@ -159,4 +159,13 @@ public class QueryCriteria2 {
     public String getOrder() {
         return order;
     }
+
+    /**
+     * 
+     * @param queryParameter
+     */
+    public void is(QueryParameter queryParameter) {
+        and(queryParameter);
+    }
+
 }

@@ -479,7 +479,10 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
     public List<Method> setVars() {
         ArrayList<Method> list = new ArrayList<Method>();
         for (int i = 0; i < this.getClass().getMethods().length; i++) {
-            if (this.getClass().getMethods()[i].getName().startsWith("set") && !this.getClass().getMethods()[i].getName().startsWith("setVars") && !this.getClass().getMethods()[i].getName().startsWith("setPanelData") && !this.getClass().getMethods()[i].getName().startsWith("getDbID") && !this.getClass().getMethods()[i].getName().startsWith("getObject")) {
+            if (this.getClass().getMethods()[i].getName().startsWith("set") 
+                    && !this.getClass().getMethods()[i].getName().startsWith("setVars")
+                    && !this.getClass().getMethods()[i].getName().startsWith("setPanelData")
+                    && !this.getClass().getMethods()[i].getName().startsWith("setAutoLock")) {
                 list.add(this.getClass().getMethods()[i]);
             }
         }

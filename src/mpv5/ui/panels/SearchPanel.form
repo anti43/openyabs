@@ -50,28 +50,26 @@
       <Layout>
         <DimensionLayout dim="0">
           <Group type="103" groupAlignment="0" attributes="0">
-              <Group type="102" alignment="0" attributes="0">
-                  <Group type="103" groupAlignment="0" attributes="0">
-                      <Component id="label1" min="-2" pref="47" max="-2" attributes="0"/>
-                      <Component id="label2" alignment="0" min="-2" pref="39" max="-2" attributes="1"/>
-                      <Component id="label3" alignment="0" min="-2" pref="31" max="-2" attributes="1"/>
+              <Group type="102" alignment="1" attributes="0">
+                  <Group type="103" groupAlignment="2" attributes="0">
+                      <Component id="label1" alignment="2" pref="57" max="32767" attributes="1"/>
+                      <Component id="label2" alignment="2" pref="57" max="32767" attributes="1"/>
+                      <Component id="label3" alignment="2" pref="57" max="32767" attributes="1"/>
                   </Group>
-                  <EmptySpace max="-2" attributes="0"/>
-                  <Group type="103" groupAlignment="1" attributes="0">
-                      <Component id="searchbutton1" alignment="0" pref="80" max="32767" attributes="0"/>
+                  <EmptySpace min="-2" pref="12" max="-2" attributes="0"/>
+                  <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                      <Component id="searchbutton1" alignment="0" max="32767" attributes="1"/>
                       <Group type="102" alignment="1" attributes="0">
-                          <Group type="103" groupAlignment="0" attributes="0">
-                              <Component id="searchfield3" pref="56" max="32767" attributes="1"/>
-                              <Component id="searchfield2" pref="56" max="32767" attributes="1"/>
-                              <Component id="searchfield1" alignment="1" pref="56" max="32767" attributes="1"/>
+                          <Group type="103" groupAlignment="2" attributes="0">
+                              <Component id="searchfield1" alignment="2" min="-2" pref="56" max="-2" attributes="1"/>
+                              <Component id="searchfield2" alignment="2" min="-2" pref="56" max="-2" attributes="1"/>
+                              <Component id="searchfield3" alignment="2" min="-2" pref="56" max="-2" attributes="1"/>
                           </Group>
                           <EmptySpace min="-2" max="-2" attributes="0"/>
-                          <Group type="103" groupAlignment="1" attributes="0">
-                              <Group type="103" alignment="1" groupAlignment="0" attributes="0">
-                                  <Component id="jButton2" min="-2" pref="18" max="-2" attributes="0"/>
-                                  <Component id="jButton1" alignment="0" min="-2" pref="18" max="-2" attributes="0"/>
-                              </Group>
-                              <Component id="jButton3" alignment="1" min="-2" pref="18" max="-2" attributes="0"/>
+                          <Group type="103" groupAlignment="2" attributes="0">
+                              <Component id="jButton1" alignment="2" min="-2" pref="18" max="-2" attributes="0"/>
+                              <Component id="jButton2" alignment="2" min="-2" pref="18" max="-2" attributes="0"/>
+                              <Component id="jButton3" alignment="2" min="-2" pref="18" max="-2" attributes="0"/>
                           </Group>
                       </Group>
                   </Group>
@@ -82,9 +80,9 @@
           <Group type="103" groupAlignment="0" attributes="0">
               <Group type="102" attributes="0">
                   <Group type="103" groupAlignment="2" attributes="0">
+                      <Component id="label1" alignment="2" min="-2" max="-2" attributes="0"/>
                       <Component id="searchfield1" alignment="2" min="-2" max="-2" attributes="0"/>
                       <Component id="jButton1" alignment="2" min="-2" pref="17" max="-2" attributes="0"/>
-                      <Component id="label1" alignment="2" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace min="-2" pref="2" max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="2" attributes="0">
@@ -98,8 +96,9 @@
                       <Component id="searchfield3" alignment="2" min="-2" max="-2" attributes="0"/>
                       <Component id="jButton3" alignment="2" min="-2" pref="17" max="-2" attributes="0"/>
                   </Group>
-                  <EmptySpace max="-2" attributes="0"/>
+                  <EmptySpace min="-2" max="-2" attributes="0"/>
                   <Component id="searchbutton1" min="-2" max="-2" attributes="0"/>
+                  <EmptySpace max="32767" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
@@ -243,12 +242,12 @@
       <Layout>
         <DimensionLayout dim="0">
           <Group type="103" groupAlignment="0" attributes="0">
-              <Component id="resultsscrollpane" alignment="0" pref="131" max="32767" attributes="0"/>
+              <Component id="resultsscrollpane" alignment="0" pref="149" max="32767" attributes="0"/>
           </Group>
         </DimensionLayout>
         <DimensionLayout dim="1">
           <Group type="103" groupAlignment="0" attributes="0">
-              <Component id="resultsscrollpane" alignment="0" pref="104" max="32767" attributes="0"/>
+              <Component id="resultsscrollpane" alignment="0" pref="92" max="32767" attributes="0"/>
           </Group>
         </DimensionLayout>
       </Layout>

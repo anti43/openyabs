@@ -40,13 +40,15 @@ public class SearchPanel extends javax.swing.JPanel {
     private DataPanel panel;
     private int lasttype = 5;
     private String lastneedle = "0";
-
     private java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle();
 
     /** Creates new form SearchPanel */
     public SearchPanel() {
         initComponents();
-      //  t = new mpv5.utils.ui.TableViewPersistenceHandler(resulttable, this);
+        label1.setToolTipText(label1.getText());
+        label2.setToolTipText(label2.getText());
+        label3.setToolTipText(label3.getText());
+        //  t = new mpv5.utils.ui.TableViewPersistenceHandler(resulttable, this);
         TableFormat.hideHeader(resulttable);
     }
 
@@ -108,7 +110,7 @@ public class SearchPanel extends javax.swing.JPanel {
 
         setName("Form"); // NOI18N
 
-        mpv5.i18n.LanguageManager.getBundle();
+        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("mpv5/resources/languages/Panels"); // NOI18N
         searchfields.setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("SearchPanel.searchfields.border.title"))); // NOI18N
         searchfields.setName("searchfields"); // NOI18N
 
@@ -185,33 +187,32 @@ public class SearchPanel extends javax.swing.JPanel {
         searchfields.setLayout(searchfieldsLayout);
         searchfieldsLayout.setHorizontalGroup(
             searchfieldsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(searchfieldsLayout.createSequentialGroup()
-                .addGroup(searchfieldsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(label1, javax.swing.GroupLayout.PREFERRED_SIZE, 47, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(label2, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(label3, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(searchfieldsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(searchbutton1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 80, Short.MAX_VALUE)
-                    .addGroup(searchfieldsLayout.createSequentialGroup()
-                        .addGroup(searchfieldsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(searchfield3, javax.swing.GroupLayout.DEFAULT_SIZE, 56, Short.MAX_VALUE)
-                            .addComponent(searchfield2, javax.swing.GroupLayout.DEFAULT_SIZE, 56, Short.MAX_VALUE)
-                            .addComponent(searchfield1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 56, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, searchfieldsLayout.createSequentialGroup()
+                .addGroup(searchfieldsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
+                    .addComponent(label1, javax.swing.GroupLayout.DEFAULT_SIZE, 57, Short.MAX_VALUE)
+                    .addComponent(label2, javax.swing.GroupLayout.DEFAULT_SIZE, 57, Short.MAX_VALUE)
+                    .addComponent(label3, javax.swing.GroupLayout.DEFAULT_SIZE, 57, Short.MAX_VALUE))
+                .addGap(12, 12, 12)
+                .addGroup(searchfieldsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(searchbutton1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, searchfieldsLayout.createSequentialGroup()
+                        .addGroup(searchfieldsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
+                            .addComponent(searchfield1, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(searchfield2, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(searchfield3, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(searchfieldsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addGroup(searchfieldsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 18, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 18, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGroup(searchfieldsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
+                            .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 18, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 18, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 18, javax.swing.GroupLayout.PREFERRED_SIZE)))))
         );
         searchfieldsLayout.setVerticalGroup(
             searchfieldsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(searchfieldsLayout.createSequentialGroup()
                 .addGroup(searchfieldsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
+                    .addComponent(label1)
                     .addComponent(searchfield1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 17, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(label1))
+                    .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 17, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(2, 2, 2)
                 .addGroup(searchfieldsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
                     .addComponent(label2)
@@ -223,7 +224,8 @@ public class SearchPanel extends javax.swing.JPanel {
                     .addComponent(searchfield3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 17, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(searchbutton1))
+                .addComponent(searchbutton1)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         results.setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("SearchPanel.results.border.title"))); // NOI18N
@@ -258,11 +260,11 @@ public class SearchPanel extends javax.swing.JPanel {
         results.setLayout(resultsLayout);
         resultsLayout.setHorizontalGroup(
             resultsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(resultsscrollpane, javax.swing.GroupLayout.DEFAULT_SIZE, 131, Short.MAX_VALUE)
+            .addComponent(resultsscrollpane, javax.swing.GroupLayout.DEFAULT_SIZE, 149, Short.MAX_VALUE)
         );
         resultsLayout.setVerticalGroup(
             resultsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(resultsscrollpane, javax.swing.GroupLayout.DEFAULT_SIZE, 104, Short.MAX_VALUE)
+            .addComponent(resultsscrollpane, javax.swing.GroupLayout.DEFAULT_SIZE, 92, Short.MAX_VALUE)
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
@@ -284,12 +286,12 @@ public class SearchPanel extends javax.swing.JPanel {
     private synchronized void search(final int searchtype, final String value) {
 
         if (this.isShowing()) {
-           
+
             Runnable runnable = new Runnable() {
 
                 @Override
                 public void run() {
-                    
+
                     String sf = context.getSearchFields();
                     if (sf == null) {
                         sf = "ids,cname,cnumber";
@@ -303,7 +305,13 @@ public class SearchPanel extends javax.swing.JPanel {
                             if (context.equals(Context.getContact())) {
                                 resulttable.setModel(new MPTableModel(new DatabaseSearch(context, 500).getValuesFor(sf, new String[]{"cname", "company"}, value, true), Headers.SEARCH_DEFAULT.getValue()));
                             } else if (context.equals(Context.getItem())) {
-                                resulttable.setModel(new MPTableModel(new DatabaseSearch(context, 500).getValuesFor(sf, "cname", value, true), Headers.SEARCH_DEFAULT.getValue()));
+                                Integer id = new DatabaseSearch(Context.getContact()).searchForID("cname", value, false);
+                                if (id != null) {
+                                    resulttable.setModel(new MPTableModel(new DatabaseSearch(context, 500).getValuesFor(sf, "contactsids",
+                                            id), Headers.SEARCH_DEFAULT.getValue()));
+                                } else {
+                                    resulttable.setModel(new MPTableModel(new String[][]{}, Headers.SEARCH_DEFAULT.getValue()));
+                                }
                             } else {
                                 resulttable.setModel(new MPTableModel(new DatabaseSearch(context, 500).getValuesFor(sf, "cname", value, true), Headers.SEARCH_DEFAULT.getValue()));
                             }
@@ -313,7 +321,7 @@ public class SearchPanel extends javax.swing.JPanel {
 
                             break;
                         case 3:
-                            Integer id = new DatabaseSearch(Context.getGroup()).searchForID("cname", value);
+                            Integer id = new DatabaseSearch(Context.getGroup()).searchForID("cname", value, false);
                             if (id != null) {
                                 resulttable.setModel(new MPTableModel(new DatabaseSearch(context, 500).getValuesFor(sf, "groupsids",
                                         id), Headers.SEARCH_DEFAULT.getValue()));
@@ -333,10 +341,9 @@ public class SearchPanel extends javax.swing.JPanel {
                             Log.Debug(this, "Invalid parameters!");
                     }
                     TableFormat.makeUneditable(resulttable);
-                    TableFormat.stripColumns(resulttable, new int[]{0, 3, 4, 5, 6, 7, 8, 9}); 
-                    
+                    TableFormat.stripColumns(resulttable, new int[]{0, 3, 4, 5, 6, 7, 8, 9});
+
                 }
-               
             };
             Log.Debug(this, "Starting search..");
             SwingUtilities.invokeLater(runnable);

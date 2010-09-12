@@ -106,8 +106,8 @@ public class DatabaseSearch {
             String w = "";
             String quote = "'";
             for (int i = 0; i < possibleColumns.length; i++) {
-                w += possibleColumns[i] + " " + quote + where + quote +
-                        " OR ";
+                w += possibleColumns[i] + " " + quote + where + quote
+                        + " OR ";
             }
             return QueryHandler.instanceOf().clone(context, ROWLIMIT).freeSelectQuery(context.prepareSQLString(
                     "SELECT " + resultingFieldNames + " FROM " + context.getDbIdentity() + " WHERE " + w.substring(0, w.length() - 4)), MPSecurityManager.VIEW, null).getData();
@@ -116,8 +116,8 @@ public class DatabaseSearch {
             String like = "LIKE '%";
             String like2 = "%'";
             for (int i = 0; i < possibleColumns.length; i++) {
-                w += " UPPER(" + possibleColumns[i] + ") " + like + where.toUpperCase() + like2 +
-                        " OR ";
+                w += " UPPER(" + possibleColumns[i] + ") " + like + where.toUpperCase() + like2
+                        + " OR ";
             }
             return QueryHandler.instanceOf().clone(context, ROWLIMIT).freeSelectQuery(context.prepareSQLString(
                     "SELECT " + resultingFieldNames + " FROM " + context.getDbIdentity() + " WHERE " + w.substring(0, w.length() - 4)), MPSecurityManager.VIEW, null).getData();
@@ -214,13 +214,40 @@ public class DatabaseSearch {
      * @param needle The value of the row in that column
      * @return An id if there is a matching dataset found, NULL otherwise
      */
-    public Integer searchForID(String what, String needle) {
+    private Integer searchForID(String what, String needle) {
         Object[] data;
         try {
             data = QueryHandler.instanceOf().clone(context, ROWLIMIT).selectLast("ids", new String[]{what, needle, "'"}, true);
             return Integer.valueOf(data[0].toString());
         } catch (Exception ex) {
             return null;
+        }
+    }
+
+    /**
+     * Search for an ID in this context
+     * @param what The column which you like to search through
+     * @param needle The value of the row in that column
+     * @return An id if there is a matching dataset found, NULL otherwise
+     */
+    public Integer searchForID(String what, String needle, boolean caseSensitive) {
+
+        if (caseSensitive) {
+            try {
+                 Object[] data = QueryHandler.instanceOf().clone(context, ROWLIMIT).selectLast("ids", new String[]{what, needle, "'"}, true);
+                return Integer.valueOf(data[0].toString());
+            } catch (Exception ex) {
+                return null;
+            }
+        } else {
+            try {
+                QueryCriteria2 p = new QueryCriteria2();
+                p.is(new QueryParameter(context, what, needle, QueryParameter.LIKE));
+                Object[][] data = QueryHandler.instanceOf().clone(context, ROWLIMIT).select("ids", p).getData();
+                return Integer.valueOf(data[data.length - 1][0].toString());
+            } catch (Exception nodataFoundException) {
+                return null;
+            }
         }
     }
 }
