@@ -1713,7 +1713,10 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
             }
         }
 
-        ((MPTableModel) itemtable.getModel()).removeEmptyRows(new int[]{4});
+        try {
+            ((MPTableModel) itemtable.getModel()).removeEmptyRows(new int[]{4});
+        } catch (Exception e) {
+        }
 
         BigDecimal tpvs = null;
         for (DatabaseObject dbo : dbos) {

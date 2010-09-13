@@ -31,6 +31,8 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.List;
+import java.util.Vector;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JTable;
@@ -44,6 +46,7 @@ import mpv5.db.objects.Favourite;
 import mpv5.db.objects.Item;
 import mpv5.db.objects.ProductList;
 import mpv5.db.objects.ProductlistSubItem;
+import mpv5.db.objects.SubItem;
 import mpv5.db.objects.User;
 import mpv5.logging.Log;
 import mpv5.ui.dialogs.Popup;
@@ -78,7 +81,7 @@ public class ProductListsPanel extends javax.swing.JPanel implements DataPanel, 
     private TableCalculator netCalculator;
     private TableCalculator netCalculator2;
     private final SearchPanel sp;
-private java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle();
+    private java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle();
 
     /**
      *
@@ -110,7 +113,7 @@ private java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle();
                     if (m.getRowCount() > 0) {
                         m.addRow(5);
                     } else {
-                        
+
                         itemtable.setModel(ProductlistSubItem.toModel(new ProductlistSubItem[]{
                                     ProductlistSubItem.getDefaultItem(), ProductlistSubItem.getDefaultItem(),
                                     ProductlistSubItem.getDefaultItem(), ProductlistSubItem.getDefaultItem(),
@@ -119,7 +122,7 @@ private java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle();
 
 
                         formatTable();
-                        
+
                     }
                 } else if (e.getButton() == MouseEvent.BUTTON3) {
 
@@ -177,11 +180,12 @@ private java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle();
             tb.setFavourite(Favourite.isFavourite(object));
             tb.setEditable(!object.isReadOnly());
             try {
-                
+
                 itemtable.setModel(ProductlistSubItem.toModel(ProductlistSubItem.getList(dataOwner.__getIDS()).toArray(new ProductlistSubItem[0])));
             } catch (NodataFoundException ex) {
                 Log.Debug(this, ex.getMessage());
-            } finally {}
+            } finally {
+            }
             if (((MPTableModel) itemtable.getModel()).getEmptyRows(new int[]{4}) < 2) {
                 ((MPTableModel) itemtable.getModel()).addRow(1);
             }
@@ -485,22 +489,22 @@ private java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle();
             omodel = (MPTableModel) itemtable.getModel();
         }
         if (omodel.getValidRows(new int[]{4}).size() > 0) {
-            
+
             itemtable.setModel(omodel);
             ProductlistSubItem.changeValueFields(itemtable, Integer.valueOf(calculator.get_Value().toString()), this);
             ((MPTableModel) itemtable.getModel()).fireTableCellUpdated(0, 0);
             ((MPTableModel) itemtable.getModel()).addRow(1);
-            
+
         }
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
 
-        try {
+  
             if (dataOwner == null) {
                 dataOwner = new ProductList();
             }
-            asproduct_ =  true;
+            asproduct_ = true;
             actionBeforeSave();
             if (dataOwner.getPanelData(this) && dataOwner.save()) {
             } else {
@@ -514,22 +518,43 @@ private java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle();
             p.setInternalnetvalue(netvalue.getValue(BigDecimal.ONE));
             p.setInttype(Product.TYPE_PRODUCT);
             p.setIntinventorytype(0);
+
+            if (itemtable.getCellEditor() != null) {
+                try {
+                    itemtable.getCellEditor().stopCellEditing();
+                } catch (Exception e) {
+                }
+            }
+            List<Object[]> rowsl = ((MPTableModel) itemtable.getModel()).getValidRows(new int[]{4});
+            Log.Debug(SubItem.class, "Rows found: " + rowsl.size());
+            String descr = "";
+            for (int i = 0; i < rowsl.size(); i++) {
+                Object[] row = rowsl.get(i);
+                for (int j = 0; j < row.length; j++) {
+                    if (row[j] == null) {
+                        row[j] = "";
+                    }
+                }
+                descr += row[4].toString() + "\n";
+            }
+            p.setDescription(descr);
+
             if (p.save()) {
                 Popup.notice(Messages.BOM_CREATED.toString() + p);
                 MPView.identifierView.addTab(p);
+
             }
-        } catch (Exception e) {
-            Log.Debug(e);
-        }
+        
 }//GEN-LAST:event_jButton2ActionPerformed
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
-        Item i = (Item) Search2.showSearchFor(Context.getInvoice());
-        if (i != null && dataOwner != null) {
+        final Item i = (Item) Search2.showSearchFor(Context.getInvoice());
+        if (i != null && dataOwner != null && dataOwner.isExisting()) {
             MPView.identifierView.addTab(i);
             Runnable runnable = new Runnable() {
-
+                @Override
                 public void run() {
+                    
                     MPView.identifierView.getCurrentTab().paste(dataOwner);
                 }
             };
@@ -612,7 +637,7 @@ private java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle();
             @Override
             public void run() {
                 try {
-                    
+
                     groupnameselect.setModel(MPComboBoxModelItem.toModel(DatabaseObject.getObject(Context.getGroup(), mpv5.db.objects.User.getCurrentUser().__getGroupsids())));
                     groupnameselect.setSelectedIndex(0);
                     itemtable.setModel(ProductlistSubItem.toModel(new ProductlistSubItem[]{
@@ -624,7 +649,7 @@ private java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle();
                                 ProductlistSubItem.getDefaultItem(), ProductlistSubItem.getDefaultItem()
                             }));
                     formatTable();
-                    
+
                 } catch (Exception e) {
                     Log.Debug(this, e);
                 }
@@ -658,10 +683,10 @@ private java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle();
             if (dbo.getContext().equals(Context.getProduct())) {
                 MPTableModel m = (MPTableModel) itemtable.getModel();
                 m.addRow(ProductlistSubItem.toRow((Product) dbo).getRowData(m.getValidRows(new int[]{4}).size()));
-                
+
                 itemtable.setModel(m);
                 omodel = m;
-                
+
             } else if (dbo.getContext().equals(Context.getProductlist())) {
                 setDataOwner(dbo, true);
             } else {
@@ -713,7 +738,7 @@ private java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle();
 
     private void saveProductlistSubItems() {
         if (itemtable.getCellEditor() != null) {
-               try {
+            try {
                 itemtable.getCellEditor().stopCellEditing();
             } catch (Exception e) {
             }

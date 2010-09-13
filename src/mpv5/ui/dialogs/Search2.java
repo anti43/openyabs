@@ -193,7 +193,15 @@ public class Search2 extends javax.swing.JDialog {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        dispose();
+
+         if (context != null) {
+                try {
+                    selection = DatabaseObject.getObject(context, Integer.valueOf(jTable1.getValueAt(jTable1.getSelectedRow(), 0).toString()));
+                } catch (NodataFoundException ex) {
+                    mpv5.logging.Log.Debug(ex);
+                }
+                this.dispose();
+            }
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void jTable1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable1MouseClicked

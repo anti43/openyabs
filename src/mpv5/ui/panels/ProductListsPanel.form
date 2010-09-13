@@ -70,9 +70,9 @@
         <DimensionLayout dim="0">
           <Group type="103" groupAlignment="0" attributes="0">
               <Component id="jPanel1" alignment="1" max="32767" attributes="2"/>
-              <Component id="jScrollPane1" alignment="0" pref="569" max="32767" attributes="0"/>
+              <Component id="jScrollPane1" alignment="0" pref="571" max="32767" attributes="0"/>
               <Component id="jPanel4" alignment="0" max="32767" attributes="3"/>
-              <Component id="jToolBar2" alignment="0" pref="569" max="32767" attributes="0"/>
+              <Component id="jToolBar2" alignment="0" pref="571" max="32767" attributes="0"/>
           </Group>
         </DimensionLayout>
         <DimensionLayout dim="1">
@@ -112,14 +112,14 @@
                           <Component id="groupnameselect" alignment="1" max="32767" attributes="1"/>
                           <Component id="listname" alignment="1" pref="264" max="32767" attributes="1"/>
                       </Group>
-                      <EmptySpace pref="105" max="32767" attributes="0"/>
+                      <EmptySpace pref="95" max="32767" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Component id="prinitingComboBox1" alignment="1" min="-2" max="-2" attributes="0"/>
                           <Component id="addedby" alignment="1" min="-2" pref="97" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
                   </Group>
-                  <Component id="jToolBar1" alignment="0" pref="565" max="32767" attributes="0"/>
+                  <Component id="jToolBar1" alignment="0" pref="567" max="32767" attributes="0"/>
               </Group>
             </DimensionLayout>
             <DimensionLayout dim="1">
@@ -251,12 +251,12 @@
           <Layout>
             <DimensionLayout dim="0">
               <Group type="103" groupAlignment="0" attributes="0">
-                  <Component id="jScrollPane3" alignment="0" pref="565" max="32767" attributes="0"/>
+                  <Component id="jScrollPane3" alignment="0" pref="567" max="32767" attributes="0"/>
               </Group>
             </DimensionLayout>
             <DimensionLayout dim="1">
               <Group type="103" groupAlignment="0" attributes="0">
-                  <Component id="jScrollPane3" alignment="0" pref="132" max="32767" attributes="0"/>
+                  <Component id="jScrollPane3" alignment="0" pref="128" max="32767" attributes="0"/>
               </Group>
             </DimensionLayout>
           </Layout>
