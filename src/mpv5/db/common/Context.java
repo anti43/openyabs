@@ -288,7 +288,8 @@ public class Context implements Serializable {
                 getTemplate(),
                 getReminder(),
                 getStage(),
-                getTaxes()
+                getTaxes(),
+                getProductGroup()
             }));
 
     /**

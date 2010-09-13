@@ -427,12 +427,17 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
     }
 
     private void fillFiles() {
-        Context c = Context.getFilesToItems();
-        c.addReference(Context.getFiles().getDbIdentity(), "cname", "filename");
-        Object[][] data = new DatabaseSearch(c).getValuesFor(Context.DETAILS_FILES_TO_ITEMS, "itemsids", dataOwner.__getIDS());
+        Runnable runnable = new Runnable() {
 
-        dataTable.setModel(new MPTableModel(data, Headers.FILE_REFERENCES.getValue()));
-        TableFormat.stripFirstColumn(dataTable);
+            public void run() {
+                Context c = Context.getFilesToItems();
+                c.addReference(Context.getFiles().getDbIdentity(), "cname", "filename");
+                Object[][] data = new DatabaseSearch(c).getValuesFor(Context.DETAILS_FILES_TO_ITEMS, "itemsids", dataOwner.__getIDS());
+
+                dataTable.setModel(new MPTableModel(data, Headers.FILE_REFERENCES.getValue()));
+                TableFormat.stripFirstColumn(dataTable);
+            }
+        };new Thread(runnable).start();
     }
 
     /** This method is called from within the constructor to

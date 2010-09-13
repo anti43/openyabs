@@ -185,6 +185,16 @@ public class ProductPanel extends javax.swing.JPanel implements DataPanel, MPCBS
         contactname1.setEditable(true);
         supplierpanel.add(new ProductPanelContactSub(null, true));
 
+        selecttax.getComboBox().addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                taxids_ = Integer.valueOf(selecttax.getSelectedItem().getIdObject().toString());
+                Popup.notice("Tax ID ist jetzt :" + taxids_);
+
+            }
+        });
+
     }
 
     /**
@@ -303,12 +313,17 @@ public class ProductPanel extends javax.swing.JPanel implements DataPanel, MPCBS
     }
 
     private void fillFiles() {
-        Context c = Context.getFilesToProducts();
-        c.addReference(Context.getFiles().getDbIdentity(), "cname", "filename");
-        Object[][] data = new DatabaseSearch(c).getValuesFor(Context.DETAILS_FILES_TO_PRODUCTS, "productsids", dataOwner.__getIDS());
+        Runnable runnable = new Runnable() {
 
-        dataTable.setModel(new MPTableModel(data, Headers.FILE_REFERENCES.getValue()));
-        TableFormat.stripFirstColumn(dataTable);
+            public void run() {
+                Context c = Context.getFilesToProducts();
+                c.addReference(Context.getFiles().getDbIdentity(), "cname", "filename");
+                Object[][] data = new DatabaseSearch(c).getValuesFor(Context.DETAILS_FILES_TO_PRODUCTS, "productsids", dataOwner.__getIDS());
+
+                dataTable.setModel(new MPTableModel(data, Headers.FILE_REFERENCES.getValue()));
+                TableFormat.stripFirstColumn(dataTable);
+            }
+        };new Thread(runnable).start();
     }
 
     /** This method is called from within the constructor to
@@ -1233,6 +1248,7 @@ public class ProductPanel extends javax.swing.JPanel implements DataPanel, MPCBS
                     stype.setModel(Product.getTypes(), MPComboBoxModelItem.COMPARE_BY_ID, new java.util.Vector<Integer>());
                     stype.setSelectedIndex(type);
                     selecttax.triggerSearch();
+                    selecttax.setSelectedItem(Integer.valueOf(taxids_));
                 } catch (Exception e) {
                     Log.Debug(this, e);
                 }

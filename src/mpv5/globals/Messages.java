@@ -292,6 +292,7 @@ public enum Messages {
             message = LanguageManager.getBundle().getString(this.name());
         } catch (Exception e) {
             Log.Debug(this, e.getMessage());
+//            Log.PrintArray( LanguageManager.getBundle().getKeys());
             this.addMessage(message);
         }
 
@@ -302,6 +303,10 @@ public enum Messages {
         }
     }
 
+    /**
+     * Refers to toString()
+     * @return The value for this enum
+     */
     public String getValue() {
         return toString();
     }

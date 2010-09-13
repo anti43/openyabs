@@ -76,74 +76,78 @@ public class TemplateHandler {
      * @return
      */
     public static synchronized Template loadTemplate(int groupsids, int typ) {
-        Integer type = new Integer(typ);
+        if (LocalSettings.getBooleanProperty(LocalSettings.OFFICE_USE)) {
+            Integer type = new Integer(typ);
 
-        if (groupsids < 0) {
-            groupsids = 1;
-        }
+            if (groupsids < 0) {
+                groupsids = 1;
+            }
 
-        String key = mpv5.db.objects.User.getCurrentUser() + "@" + type + "@" + groupsids;
-        if (templateCache.containsKey(key)) {
-            return templateCache.get(key);
-        } else {
+            String key = mpv5.db.objects.User.getCurrentUser() + "@" + type + "@" + groupsids;
+            if (templateCache.containsKey(key)) {
+                return templateCache.get(key);
+            } else {
 
-            if (type != null) {
-                ReturnValue data = QueryHandler.getConnection().freeQuery(
-                        "SELECT templatesids FROM templatestousers  LEFT OUTER JOIN templates AS templates0 ON "
-                        + "templates0.ids = templatestousers.templatesids WHERE templatestousers.usersids="
-                        + mpv5.db.objects.User.getCurrentUser().__getIDS()
-                        + " AND "
-                        + "templates0.mimetype='" + type
-                        + "' AND templatestousers.IDS>0 "
-                        + "AND templates0.groupsids =" + groupsids, MPSecurityManager.VIEW, null);
-                if (!data.hasData()) {
-                    data = QueryHandler.getConnection().freeQuery(
+                if (type != null) {
+                    ReturnValue data = QueryHandler.getConnection().freeQuery(
                             "SELECT templatesids FROM templatestousers  LEFT OUTER JOIN templates AS templates0 ON "
                             + "templates0.ids = templatestousers.templatesids WHERE templatestousers.usersids="
                             + mpv5.db.objects.User.getCurrentUser().__getIDS()
                             + " AND "
                             + "templates0.mimetype='" + type
                             + "' AND templatestousers.IDS>0 "
-                            + "AND templates0.groupsids = 1", MPSecurityManager.VIEW, null);
-                }
+                            + "AND templates0.groupsids =" + groupsids, MPSecurityManager.VIEW, null);
+                    if (!data.hasData()) {
+                        data = QueryHandler.getConnection().freeQuery(
+                                "SELECT templatesids FROM templatestousers  LEFT OUTER JOIN templates AS templates0 ON "
+                                + "templates0.ids = templatestousers.templatesids WHERE templatestousers.usersids="
+                                + mpv5.db.objects.User.getCurrentUser().__getIDS()
+                                + " AND "
+                                + "templates0.mimetype='" + type
+                                + "' AND templatestousers.IDS>0 "
+                                + "AND templates0.groupsids = 1", MPSecurityManager.VIEW, null);
+                    }
 
-                Template preloadedTemplate = null;
-                if (data.hasData()) {
-                    try {
-                        preloadedTemplate = (Template) DatabaseObject.getObject(Context.getTemplate(), Integer.valueOf(data.getData()[data.getData().length - 1][0].toString()));
-                        if (preloadedTemplate.getFile().getName().endsWith("odt")) {
-                            if (LocalSettings.getBooleanProperty(LocalSettings.OFFICE_USE)) {
-                                preloadedTemplate.defineExFile(new ODTFile(preloadedTemplate.getFile().getPath()));
-                                Log.Debug(Template.class, "Loaded template: " + preloadedTemplate);
-                                MPView.addMessage(preloadedTemplate + Messages.LOADED.toString());
-                            } else {
+                    Template preloadedTemplate = null;
+                    if (data.hasData()) {
+                        try {
+                            preloadedTemplate = (Template) DatabaseObject.getObject(Context.getTemplate(), Integer.valueOf(data.getData()[data.getData().length - 1][0].toString()));
+                            if (preloadedTemplate.getFile().getName().endsWith("odt")) {
+                                if (LocalSettings.getBooleanProperty(LocalSettings.OFFICE_USE)) {
+                                    preloadedTemplate.defineExFile(new ODTFile(preloadedTemplate.getFile().getPath()));
+                                    Log.Debug(Template.class, "Loaded template: " + preloadedTemplate);
+                                    MPView.addMessage(preloadedTemplate + Messages.LOADED.toString());
+                                } else {
 //                                Popup.notice(Messages.NOT_POSSIBLE + "\n" + Messages.OOCONNERROR);
-                                return null;
+                                    return null;
+                                }
+                            } else {
+                                preloadedTemplate.defineExFile(new PDFFile(preloadedTemplate.getFile().getPath()));
                             }
-                        } else {
-                            preloadedTemplate.defineExFile(new PDFFile(preloadedTemplate.getFile().getPath()));
+                            templateCache.put(key, preloadedTemplate);
+                        } catch (NodataFoundException ex) {
+                            Log.Debug(Template.class, "Invalid template: " + data.getData()[data.getData().length - 1][0].toString());
+                            return null;
                         }
-                        templateCache.put(key, preloadedTemplate);
-                    } catch (NodataFoundException ex) {
-                        Log.Debug(Template.class, "Invalid template: " + data.getData()[data.getData().length - 1][0].toString());
-                        return null;
-                    }
-                } else {
-                    try {
-                        if (!(notification.containsKey(type.toString()) && notification.get(type.toString()).equals(Group.getObject(Context.getGroup(), groupsids)))) {
-                            MPView.addMessage(Messages.OO_NO_TEMPLATE + ": " + TemplateHandler.getName(type) + " [" + mpv5.db.objects.User.getCurrentUser() + "] [" + Group.getObject(Context.getGroup(), groupsids) + "]");
-                            Log.Debug(Template.class, "No template found for type: " + type + " for user: " + mpv5.db.objects.User.getCurrentUser() + " in GROUP " + Group.getObject(Context.getGroup(), groupsids));
-                            notification.put(type.toString(), (Group) Group.getObject(Context.getGroup(), groupsids));
-                        }
+                    } else {
+                        try {
+                            if (!(notification.containsKey(type.toString()) && notification.get(type.toString()).equals(Group.getObject(Context.getGroup(), groupsids)))) {
+                                MPView.addMessage(Messages.OO_NO_TEMPLATE + ": " + TemplateHandler.getName(type) + " [" + mpv5.db.objects.User.getCurrentUser() + "] [" + Group.getObject(Context.getGroup(), groupsids) + "]");
+                                Log.Debug(Template.class, "No template found for type: " + type + " for user: " + mpv5.db.objects.User.getCurrentUser() + " in GROUP " + Group.getObject(Context.getGroup(), groupsids));
+                                notification.put(type.toString(), (Group) Group.getObject(Context.getGroup(), groupsids));
+                            }
 
-                    } catch (NodataFoundException nodataFoundException) {
-                        Log.Debug(Template.class, nodataFoundException.getMessage());
+                        } catch (NodataFoundException nodataFoundException) {
+                            Log.Debug(Template.class, nodataFoundException.getMessage());
+                        }
                     }
+                    return preloadedTemplate;
+                } else {
+                    return null;
                 }
-                return preloadedTemplate;
-            } else {
-                return null;
             }
+        } else {
+            return null;
         }
     }
 

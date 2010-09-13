@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.List;
 import javax.swing.table.TableModel;
 import mpv5.Main;
@@ -260,6 +261,15 @@ public class Log {
             for (int j = 0; j < model.getColumnCount(); j++) {
                 write(model.getValueAt(i, j));
             }
+        }
+    }
+
+    /**
+     *
+     */
+    public static void PrintArray(Enumeration<String> keys) {
+        while (keys.hasMoreElements()) {
+            Print(keys.nextElement());
         }
     }
 
