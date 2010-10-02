@@ -48,7 +48,9 @@ public abstract class VariablesHandler {
         OBJECT_YEAR("[OBJECT_YEAR]"),
         GROUP("[GROUP_NAME]"),
         CREATE_USER("[CREATE_USER]"),
-        CURRENT_USER("[CURRENT_USER]");
+        CURRENT_USER("[CURRENT_USER]"),
+        DATENUMERIC("[DATENUMERIC]"),
+        DAY("[DAY]") ;
         private String val;
 
         GENERIC_VARS(String value) {
@@ -120,6 +122,10 @@ public abstract class VariablesHandler {
                     vars[i][1] = DateConverter.getMonthName(target.__getDateadded());
                 } else if (vars[i][0].equals(GENERIC_VARS.OBJECT_YEAR.toString())) {
                     vars[i][1] = DateConverter.getYearName(target.__getDateadded());
+                } else if (vars[i][0].equals(GENERIC_VARS.DATENUMERIC.toString())) {
+                    vars[i][1] = DateConverter.getDateNumeric();
+                } else if (vars[i][0].equals(GENERIC_VARS.DAY.toString())) {
+                    vars[i][1] = DateConverter.getDayOfMonth();
                 }
             } catch (Exception nodataFoundException) {
             }

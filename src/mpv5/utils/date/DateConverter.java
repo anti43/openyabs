@@ -27,7 +27,10 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.Vector;
+import mpv5.db.objects.User;
+import mpv5.handler.FormatHandler;
 import mpv5.logging.Log;
+import mpv5.utils.text.TypeConversion;
 
 /**
  *
@@ -158,7 +161,7 @@ public class DateConverter {
         }
     }
 
-     /**
+    /**
      * Returns the same date, first millisecond
      * @param date
      * @return
@@ -174,7 +177,8 @@ public class DateConverter {
             return calendar.getTime();
         }
     }
-      /**
+
+    /**
      * Returns the same date, first millisecond of the year
      * @param date
      * @return
@@ -192,7 +196,8 @@ public class DateConverter {
             return calendar.getTime();
         }
     }
-     /**
+
+    /**
      * Returns the same date, last millisecond of the year
      * @param date
      * @return
@@ -210,7 +215,8 @@ public class DateConverter {
             return calendar.getTime();
         }
     }
-     /**
+
+    /**
      * Returns the same date, first millisecond
      * @param date
      * @return
@@ -228,7 +234,7 @@ public class DateConverter {
         }
     }
 
-     /**
+    /**
      * Returns the same date, last millisecond of the month
      * @param date
      * @return
@@ -245,7 +251,6 @@ public class DateConverter {
             return calendar.getTime();
         }
     }
-
 
     /**
      * Quarter as 1,2,3,4
@@ -397,7 +402,7 @@ public class DateConverter {
         return months[cal.get(Calendar.MONTH)];
     }
 
-     /**
+    /**
      *
      * @param date
      * @return
@@ -488,7 +493,11 @@ public class DateConverter {
      * @return
      */
     public static synchronized String getDayOfMonth() {
-        return String.valueOf(Calendar.getInstance().get(Calendar.DAY_OF_MONTH));
+        String m = String.valueOf(Calendar.getInstance().get(Calendar.DAY_OF_MONTH));
+        if (m.length() == 1) {
+            m = "0" + m;
+        }
+        return m;
     }
 
     /**
@@ -504,7 +513,11 @@ public class DateConverter {
      * @return
      */
     public static synchronized String getMonth() {
-        return String.valueOf(Calendar.getInstance().get(Calendar.MONTH) + 1);
+        String m = String.valueOf(Calendar.getInstance().get(Calendar.MONTH) + 1);
+        if (m.length() == 1) {
+            m = "0" + m;
+        }
+        return m;
     }
 
     /**
@@ -571,5 +584,28 @@ public class DateConverter {
      */
     public static Date getRandomDate() {
         return new RandomDate(new vTimeframe(new Date(0), new Date()));
+    }
+
+    /**
+     * 
+     * @return 01092010
+     */
+    public static String getDateNumeric() {
+        String year = getYear();
+        String month = getMonth();
+        String day = getDayOfMonth();
+        String dn = year + month + day;
+        if(mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("item.date.locale")==null)
+            mpv5.db.objects.User.getCurrentUser().getProperties().changeProperty("item.date.locale", Locale.getDefault().toString());
+        try {
+            Locale l = TypeConversion.stringToLocale(mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("item.date.locale"));
+            if (l.equals(Locale.GERMAN) || l.equals(Locale.GERMANY)) {
+                dn = day + month + year;
+            }
+        } catch (Exception e) {
+            Log.Debug(e);
+        } finally {
+            return dn;
+        }
     }
 }

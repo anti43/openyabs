@@ -337,7 +337,7 @@ public class LanguageManager {
             String language = o[i].getLanguage();
             String country = o[i].getCountry();
             String locale_name = o[i].getDisplayName();
-            Log.Debug(LanguageManager.class, locale_name);
+//            Log.Debug(LanguageManager.class, locale_name);
             items[i] = new MPComboBoxModelItem(language + "_" + country,
                     locale_name + "  [" + language + "_" + country + "]");
 //            items[i] = new MPComboBoxModelItem(o[i].toString(), o[i].getDisplayName());
