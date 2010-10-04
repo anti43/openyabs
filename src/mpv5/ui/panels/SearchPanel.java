@@ -294,7 +294,7 @@ public class SearchPanel extends javax.swing.JPanel {
 
                     String sf = context.getSearchFields();
                     if (sf == null) {
-                        sf = "ids,cname,cnumber";
+                        sf = context.getDbIdentity() + ".ids," + context.getDbIdentity() + ".cname," + context.getDbIdentity() + ".cnumber";
                     }
 
                     lasttype = searchtype;

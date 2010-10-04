@@ -190,7 +190,7 @@ public class ProductPanel extends javax.swing.JPanel implements DataPanel, MPCBS
             @Override
             public void actionPerformed(ActionEvent e) {
                 taxids_ = Integer.valueOf(selecttax.getSelectedItem().getIdObject().toString());
-                Popup.notice("Tax ID ist jetzt :" + taxids_);
+//                Popup.notice("Tax ID ist jetzt :" + taxids_);
 
             }
         });

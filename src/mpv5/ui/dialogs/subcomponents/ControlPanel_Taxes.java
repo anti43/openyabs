@@ -31,8 +31,10 @@ import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
 import mpv5.db.common.NodataFoundException;
 import mpv5.db.objects.Tax;
+import mpv5.globals.Messages;
 import mpv5.i18n.LanguageManager;
 import mpv5.ui.dialogs.ControlApplet;
+import mpv5.ui.dialogs.Popup;
 import mpv5.ui.panels.DataPanel;
 import mpv5.usermanagement.MPSecurityManager;
 import mpv5.utils.ui.TextFieldUtils;
@@ -80,13 +82,14 @@ public class ControlPanel_Taxes extends javax.swing.JPanel implements ControlApp
         jPanel6 = new javax.swing.JPanel();
         jButton2 = new javax.swing.JButton();
         jButton1 = new javax.swing.JButton();
+        jButton3 = new javax.swing.JButton();
         jPanel1 = new javax.swing.JPanel();
         selecttax = new mpv5.ui.beans.LabeledCombobox();
         cname = new mpv5.ui.beans.LabeledTextField();
         value = new mpv5.ui.beans.LabeledTextField();
         countries = new mpv5.ui.beans.LabeledCombobox();
 
-         java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle(); // NOI18N
+        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("mpv5/resources/languages/Panels"); // NOI18N
         setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("ControlPanel_Taxes.border.title"))); // NOI18N
         setName("Form"); // NOI18N
         setLayout(new java.awt.BorderLayout());
@@ -112,6 +115,15 @@ public class ControlPanel_Taxes extends javax.swing.JPanel implements ControlApp
             }
         });
         jPanel6.add(jButton1);
+
+        jButton3.setText(bundle.getString("ControlPanel_Taxes.jButton3.text")); // NOI18N
+        jButton3.setName("jButton3"); // NOI18N
+        jButton3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton3ActionPerformed(evt);
+            }
+        });
+        jPanel6.add(jButton3);
 
         add(jPanel6, java.awt.BorderLayout.PAGE_END);
 
@@ -140,7 +152,7 @@ public class ControlPanel_Taxes extends javax.swing.JPanel implements ControlApp
                     .addComponent(cname, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(selecttax, javax.swing.GroupLayout.DEFAULT_SIZE, 244, Short.MAX_VALUE)
                     .addComponent(countries, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap(39, Short.MAX_VALUE))
+                .addContainerGap(43, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -185,12 +197,22 @@ public class ControlPanel_Taxes extends javax.swing.JPanel implements ControlApp
         actionAfterCreate();
 
 }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+        if (dataOwner != null && dataOwner.isExisting()) {
+            if(!dataOwner.delete())
+                Popup.notice(Messages.IN_USE);
+        }
+        refresh();
+
+    }//GEN-LAST:event_jButton3ActionPerformed
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.ButtonGroup buttonGroup1;
     private mpv5.ui.beans.LabeledTextField cname;
     private mpv5.ui.beans.LabeledCombobox countries;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
+    private javax.swing.JButton jButton3;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel6;
     private mpv5.ui.beans.LabeledCombobox selecttax;
@@ -263,7 +285,7 @@ public class ControlPanel_Taxes extends javax.swing.JPanel implements ControlApp
     public void exposeData() {
         cname.setText(cname_);
         value.setText(taxvalue_);
-        countries.getComboBox().setSelectedItem(country_);
+        countries.setSelectedItem(country_);
     }
 
     public void paste(DatabaseObject... dbos) {
@@ -295,6 +317,6 @@ public class ControlPanel_Taxes extends javax.swing.JPanel implements ControlApp
     }
 
     public void print() {
-       mpv5.utils.export.Export.print(this);
+        mpv5.utils.export.Export.print(this);
     }
 }
