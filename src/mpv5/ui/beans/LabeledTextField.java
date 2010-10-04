@@ -164,7 +164,15 @@ public class LabeledTextField extends javax.swing.JPanel {
             text = "";
         }
         if (clazz != null && (clazz == Double.class || clazz == BigDecimal.class)) {
-            this._text = FormatNumber.formatDezimal((Number) text);
+            try {
+                this._text = FormatNumber.formatDezimal((Number) text);
+            } catch (Exception e) {
+                try {
+                    this._text = FormatNumber.formatDezimal(new BigDecimal(String.valueOf(text)));
+                } catch (Exception ex) {
+                    this._text = String.valueOf(text);
+                }
+            }
         } else {
             this._text = String.valueOf(text);
         }
