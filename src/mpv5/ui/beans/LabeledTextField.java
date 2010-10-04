@@ -13,19 +13,14 @@ package mpv5.ui.beans;
 import java.awt.Color;
 import java.awt.Font;
 import java.math.BigDecimal;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
 import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
 import mpv5.db.common.NodataFoundException;
-import mpv5.db.common.QueryData;
-import mpv5.globals.LocalSettings;
 import mpv5.globals.Messages;
 import mpv5.logging.Log;
 import mpv5.ui.panels.DataPanel;
-import mpv5.utils.models.MPComboBoxModelItem;
 import mpv5.utils.numberformat.FormatNumber;
 import mpv5.utils.ui.TextFieldUtils;
 
@@ -80,10 +75,7 @@ public class LabeledTextField extends javax.swing.JPanel {
     }
 
     public void setText(String text) {
-        if (text == null) {
-            text = "";
-        }
-        set_Text(text);
+        setText((Object) text);
     }
 
 //    public void setLabelFont(Font font) {
@@ -171,7 +163,11 @@ public class LabeledTextField extends javax.swing.JPanel {
         if (text == null) {
             text = "";
         }
-        this._text = String.valueOf(text);
+        if (clazz != null && (clazz == Double.class || clazz == BigDecimal.class)) {
+            this._text = FormatNumber.formatDezimal((Number) text);
+        } else {
+            this._text = String.valueOf(text);
+        }
         jTextField1.setText(_text);
     }
 
@@ -179,11 +175,7 @@ public class LabeledTextField extends javax.swing.JPanel {
      * @param text the _text to set
      */
     public void set_Text(String text) {
-        if (text == null) {
-            text = "";
-        }
-        this._text = String.valueOf(text);
-        jTextField1.setText(_text);
+        setText(text);
     }
 
     /**

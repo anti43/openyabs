@@ -24,8 +24,6 @@ package mpv5.ui.dialogs.subcomponents;
 import java.awt.Component;
 import java.math.BigDecimal;
 import java.util.Date;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import mpv5.data.PropertyStore;
 import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
