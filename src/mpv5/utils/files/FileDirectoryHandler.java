@@ -24,6 +24,9 @@ import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import mpv5.globals.Constants;
 import mpv5.globals.LocalSettings;
 import mpv5.globals.Messages;
 import mpv5.logging.Log;
@@ -550,6 +553,16 @@ public abstract class FileDirectoryHandler {
         File e = new File(LocalSettings.getProperty(LocalSettings.CACHE_DIR));
         if (!e.exists()) {
             e.mkdirs();
+        }
+        //Cannot access Cache dir?
+        if (!e.isDirectory() || !e.canWrite() || e.listFiles() == null) {
+            LocalSettings.setProperty(LocalSettings.CACHE_DIR, Constants.FALLBACK_CACHE_DIR);
+            cacheCheck();
+            try {
+                FileDirectoryHandler.deleteTreeOnExit(getTempDirAsFile());
+            } catch (IOException ex) {
+                Log.Debug(ex);
+            }
         }
     }
 

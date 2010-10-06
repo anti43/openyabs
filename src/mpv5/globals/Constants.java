@@ -110,5 +110,6 @@ public interface Constants {
     public static String PLUGINS_DIR = "plugins";
     public static String TEMPLATES_DIR = "templates";
     public static String BABELFISH_URL = "http://ajax.googleapis.com/ajax/services/language/translate?v=1.0&langpair=";;
+    public static String FALLBACK_CACHE_DIR = "Cache";//Go for a relative path
 
 }
