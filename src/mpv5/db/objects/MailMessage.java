@@ -71,4 +71,13 @@ public class MailMessage extends DatabaseObject {
     public void setDescription(String description) {
         this.description = description;
     }
+
+    @Override
+    public boolean saveImport() {
+        if (usersids <= 0) {
+            usersids = User.getCurrentUser().__getIDS();
+        }
+
+        return super.saveImport();
+    }
 }

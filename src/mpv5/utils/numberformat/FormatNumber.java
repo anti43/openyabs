@@ -62,7 +62,7 @@ public class FormatNumber {
      * @return
      */
     public synchronized static String formatDezimal(Number number) {
-        System.err.println(number);
+//        System.err.println(number);
         java.text.DecimalFormat n = (DecimalFormat) getDefaultDecimalFormat();
         n.setMaximumFractionDigits(2);
         return n.format(round(number));

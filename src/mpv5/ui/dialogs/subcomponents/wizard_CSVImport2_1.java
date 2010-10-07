@@ -1,6 +1,8 @@
 package mpv5.ui.dialogs.subcomponents;
 
 import java.awt.Cursor;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.File;
 import java.lang.reflect.Method;
 import java.math.BigDecimal;
@@ -56,6 +58,15 @@ public class wizard_CSVImport2_1 extends javax.swing.JPanel implements Wizardabl
         jTable1.getTableHeader().setReorderingAllowed(false);
         jTable1.getTableHeader().setResizingAllowed(true);
 
+        labeledCombobox1.setModel(Context.getImportableContexts(), true);
+        labeledCombobox1.getComboBox().addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                setContext();
+            }
+        });
+
         new ExcelAdapter(jTable1);
     }
 
@@ -77,6 +88,8 @@ public class wizard_CSVImport2_1 extends javax.swing.JPanel implements Wizardabl
         jButton4 = new javax.swing.JButton();
         jRadioButton1 = new javax.swing.JRadioButton();
         jRadioButton2 = new javax.swing.JRadioButton();
+        jRadioButton3 = new javax.swing.JRadioButton();
+        labeledCombobox1 = new mpv5.ui.beans.LabeledCombobox();
 
         setBackground(new java.awt.Color(255, 255, 255));
         setName("Form"); // NOI18N
@@ -135,7 +148,7 @@ public class wizard_CSVImport2_1 extends javax.swing.JPanel implements Wizardabl
         jList1.setName("jList1"); // NOI18N
         jScrollPane2.setViewportView(jList1);
 
-        jButton3.setIcon(null);
+        jButton3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/16/arrow-down.png"))); // NOI18N
         jButton3.setName("jButton3"); // NOI18N
         jButton3.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -143,7 +156,7 @@ public class wizard_CSVImport2_1 extends javax.swing.JPanel implements Wizardabl
             }
         });
 
-        jButton4.setIcon(null);
+        jButton4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/16/arrow-up.png"))); // NOI18N
         jButton4.setName("jButton4"); // NOI18N
         jButton4.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -151,6 +164,8 @@ public class wizard_CSVImport2_1 extends javax.swing.JPanel implements Wizardabl
             }
         });
 
+        buttonGroup1.add(jRadioButton1);
+        jRadioButton1.setSelected(true);
         jRadioButton1.setText(bundle.getString("wizard_CSVImport2_1.jRadioButton1.text")); // NOI18N
         jRadioButton1.setName("jRadioButton1"); // NOI18N
         jRadioButton1.addItemListener(new java.awt.event.ItemListener() {
@@ -164,7 +179,7 @@ public class wizard_CSVImport2_1 extends javax.swing.JPanel implements Wizardabl
             }
         });
 
-        jRadioButton2.setSelected(true);
+        buttonGroup1.add(jRadioButton2);
         jRadioButton2.setText(bundle.getString("wizard_CSVImport2_1.jRadioButton2.text")); // NOI18N
         jRadioButton2.setName("jRadioButton2"); // NOI18N
         jRadioButton2.addItemListener(new java.awt.event.ItemListener() {
@@ -178,54 +193,78 @@ public class wizard_CSVImport2_1 extends javax.swing.JPanel implements Wizardabl
             }
         });
 
+        buttonGroup1.add(jRadioButton3);
+        jRadioButton3.setText(bundle.getString("wizard_CSVImport2_1.jRadioButton3.text")); // NOI18N
+        jRadioButton3.setName("jRadioButton3"); // NOI18N
+        jRadioButton3.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                jRadioButton3ItemStateChanged(evt);
+            }
+        });
+        jRadioButton3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jRadioButton3ActionPerformed(evt);
+            }
+        });
+
+        labeledCombobox1.set_Label(bundle.getString("wizard_CSVImport2_1.labeledCombobox1._Label")); // NOI18N
+        labeledCombobox1.setEnabled(false);
+        labeledCombobox1.setName("labeledCombobox1"); // NOI18N
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                .addComponent(labeledTextChooser1, javax.swing.GroupLayout.DEFAULT_SIZE, 298, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(labeledTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jButton2)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jButton1)
+                .addContainerGap())
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 133, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 21, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jButton4, javax.swing.GroupLayout.PREFERRED_SIZE, 21, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(jRadioButton1)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jRadioButton2)))
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 133, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                        .addComponent(labeledTextChooser1, javax.swing.GroupLayout.DEFAULT_SIZE, 183, Short.MAX_VALUE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(labeledTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButton2)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButton1)
-                        .addContainerGap())
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 481, Short.MAX_VALUE)))
+                    .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 21, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jButton4, javax.swing.GroupLayout.PREFERRED_SIZE, 21, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 454, Short.MAX_VALUE))
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addComponent(jRadioButton1)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jRadioButton2)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jRadioButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 161, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(labeledCombobox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(31, 31, 31))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 264, Short.MAX_VALUE)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 264, Short.MAX_VALUE)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(jButton4)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButton3)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jButton3))
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 268, Short.MAX_VALUE)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 268, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
-                    .addComponent(labeledTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(labeledCombobox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jRadioButton3)
+                    .addComponent(jRadioButton2)
+                    .addComponent(jRadioButton1))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
                     .addComponent(labeledTextChooser1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(labeledTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jButton2)
-                    .addComponent(jButton1)
-                    .addComponent(jRadioButton1)
-                    .addComponent(jRadioButton2))
+                    .addComponent(jButton1))
                 .addContainerGap())
         );
 
@@ -234,6 +273,16 @@ public class wizard_CSVImport2_1 extends javax.swing.JPanel implements Wizardabl
         add(jTabbedPane1, java.awt.BorderLayout.CENTER);
     }// </editor-fold>//GEN-END:initComponents
 
+    private void setContext() {
+         if (jRadioButton1.isSelected()) {
+            setProductFields();
+        }
+        if (jRadioButton2.isSelected()) {
+            setContactFields();
+        } else {
+            setFields();
+        }
+    }
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
 
         master.setCursor(Cursor.WAIT_CURSOR);
@@ -282,20 +331,25 @@ public class wizard_CSVImport2_1 extends javax.swing.JPanel implements Wizardabl
 }//GEN-LAST:event_jRadioButton1ItemStateChanged
 
     private void jRadioButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jRadioButton1ActionPerformed
-        // TODO add your handling code here:
+       
 }//GEN-LAST:event_jRadioButton1ActionPerformed
 
     private void jRadioButton2ItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_jRadioButton2ItemStateChanged
-        if (jRadioButton1.isSelected()) {
-            setProductFields();
-        } else {
-            setContactFields();
-        }
+        setContext();
 }//GEN-LAST:event_jRadioButton2ItemStateChanged
 
     private void jRadioButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jRadioButton2ActionPerformed
-        // TODO add your handling code here:
+        
 }//GEN-LAST:event_jRadioButton2ActionPerformed
+
+    private void jRadioButton3ItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_jRadioButton3ItemStateChanged
+         setContext();
+         labeledCombobox1.setEnabled(jRadioButton3.isSelected());
+    }//GEN-LAST:event_jRadioButton3ItemStateChanged
+
+    private void jRadioButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jRadioButton3ActionPerformed
+
+    }//GEN-LAST:event_jRadioButton3ActionPerformed
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.ButtonGroup buttonGroup1;
     private javax.swing.JButton jButton1;
@@ -306,10 +360,12 @@ public class wizard_CSVImport2_1 extends javax.swing.JPanel implements Wizardabl
     private javax.swing.JPanel jPanel1;
     private javax.swing.JRadioButton jRadioButton1;
     private javax.swing.JRadioButton jRadioButton2;
+    private javax.swing.JRadioButton jRadioButton3;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JTabbedPane jTabbedPane1;
     private javax.swing.JTable jTable1;
+    private mpv5.ui.beans.LabeledCombobox labeledCombobox1;
     private mpv5.ui.beans.LabeledTextChooser labeledTextChooser1;
     private mpv5.ui.beans.LabeledTextField labeledTextField1;
     // End of variables declaration//GEN-END:variables
@@ -370,11 +426,14 @@ public class wizard_CSVImport2_1 extends javax.swing.JPanel implements Wizardabl
         final Context t;
         if (jRadioButton1.isSelected()) {
             t = Context.getProduct();
-        } else {
+        } else if (jRadioButton1.isSelected()) {
             t = Context.getContact();
+        } else {
+            t = (Context) labeledCombobox1.getSelectedItem().getIdObject();
         }
         Runnable runnable = new Runnable() {
 
+            @Override
             public void run() {
                 int count = 0;
                 try {
@@ -485,7 +544,9 @@ public class wizard_CSVImport2_1 extends javax.swing.JPanel implements Wizardabl
                 }
             }
         };
-        new Thread(runnable).start();
+        if (t != null) {
+            new Thread(runnable).start();
+        }
     }
 
     private void setContactFields() {
@@ -532,5 +593,27 @@ public class wizard_CSVImport2_1 extends javax.swing.JPanel implements Wizardabl
 
         m.addElement("GROUP");
         jList1.setModel(m);
+    }
+
+    private void setFields() {
+        Context c = (Context) labeledCombobox1.getSelectedItem().getIdObject();
+        if (c != null) {
+            DefaultListModel m = new DefaultListModel();
+            List<Method> vars = DatabaseObject.getObject(c).setVars();
+            for (int i = 0; i < vars.size(); i++) {
+                Method method = vars.get(i);
+                if (!method.getName().toLowerCase().startsWith("setint")
+                        && !method.getName().toLowerCase().startsWith("setdate")
+                        && !method.getName().toLowerCase().endsWith("ids")
+                        && !method.getName().toLowerCase().endsWith("image")
+                        && !method.getName().toLowerCase().startsWith("setexternal")
+                        && !method.getName().toLowerCase().startsWith("setgroup")) {
+                    m.addElement(method.getName().toUpperCase().substring(3));
+                }
+            }
+
+            m.addElement("GROUP");
+            jList1.setModel(m);
+        }
     }
 }

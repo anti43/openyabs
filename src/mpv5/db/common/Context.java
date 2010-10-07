@@ -399,7 +399,7 @@ public class Context implements Serializable {
     public static ArrayList<Context> getImportableContexts() {
         ArrayList<Context> list = new ArrayList<Context>();
         list.add(getItem(null, null));
-        list.add(getSchedule());
+        list.add(getMessage());
         list.add(getContact());
         list.add(getProduct());
         list.add(getAccounts());

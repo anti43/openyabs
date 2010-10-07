@@ -284,6 +284,21 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
             }
         });
 
+        labeledCombobox1.setContext(Context.getMessage());
+        labeledCombobox1.getComboBox().addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    MailMessage d = (MailMessage) DatabaseObject.getObject(Context.getMessage(), Integer.valueOf(labeledCombobox1.getSelectedItem().getId())); 
+                    notes.setText(d.__getDescription());
+                } catch (Exception ex) {
+                   
+                }     
+            }
+        });
+        labeledCombobox1.setSearchOnEnterEnabled(true);
+
     }
 
     /**
@@ -515,6 +530,19 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
         value = new javax.swing.JLabel();
         jSplitPane1 = new javax.swing.JSplitPane();
         jTabbedPane1 = new javax.swing.JTabbedPane();
+        jScrollPane4 = new javax.swing.JScrollPane();
+        proptable = new  mpv5.ui.misc.MPTable(this) {
+            public Component prepareRenderer(TableCellRenderer renderer,
+                int rowIndex, int vColIndex) {
+                Component c = super.prepareRenderer(renderer, rowIndex, vColIndex);
+                if (c instanceof JComponent) {
+                    JComponent jc = (JComponent)c;
+                    jc.setToolTipText(String.valueOf(getValueAt(rowIndex, vColIndex)));
+                }
+                return c;
+            }
+        };
+        jPanel3 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         class NoTabTextArea extends JTextPane {
             protected void processComponentKeyEvent( KeyEvent e ) {
@@ -532,18 +560,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
             }
         }
         notes = new NoTabTextArea();
-        jScrollPane4 = new javax.swing.JScrollPane();
-        proptable = new  mpv5.ui.misc.MPTable(this) {
-            public Component prepareRenderer(TableCellRenderer renderer,
-                int rowIndex, int vColIndex) {
-                Component c = super.prepareRenderer(renderer, rowIndex, vColIndex);
-                if (c instanceof JComponent) {
-                    JComponent jc = (JComponent)c;
-                    jc.setToolTipText(String.valueOf(getValueAt(rowIndex, vColIndex)));
-                }
-                return c;
-            }
-        };
+        labeledCombobox1 = new mpv5.ui.beans.LabeledCombobox();
         jScrollPane2 = new javax.swing.JScrollPane();
         dataTable = new  mpv5.ui.misc.MPTable(this) {
             public Component prepareRenderer(TableCellRenderer renderer,
@@ -559,7 +576,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
         ;
         toolbarpane = new javax.swing.JPanel();
 
-        java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle();
+        java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle(); // NOI18N
         setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("ItemPanel.border.title_1"))); // NOI18N
         setName("ItemPanel"); // NOI18N
         setLayout(new java.awt.BorderLayout());
@@ -628,7 +645,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
                             .addComponent(status, javax.swing.GroupLayout.PREFERRED_SIZE, 216, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                             .addComponent(staus_icon, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 195, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 193, Short.MAX_VALUE)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -742,7 +759,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
                 .addComponent(upItem)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(upItem1)
-                .addContainerGap(13, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
@@ -752,12 +769,12 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
             .addGroup(jPanel4Layout.createSequentialGroup()
                 .addComponent(itemPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 809, Short.MAX_VALUE))
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 813, Short.MAX_VALUE))
         );
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(itemPanel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(jScrollPane3, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 131, Short.MAX_VALUE)
+            .addComponent(jScrollPane3, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 134, Short.MAX_VALUE)
         );
 
         jToolBar1.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
@@ -941,7 +958,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
                 .addComponent(jButton3)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jButton4)
-                .addContainerGap(27, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -980,7 +997,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
                 .addComponent(date2, javax.swing.GroupLayout.PREFERRED_SIZE, 214, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(date3, javax.swing.GroupLayout.PREFERRED_SIZE, 216, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(170, Short.MAX_VALUE))
+                .addContainerGap(174, Short.MAX_VALUE))
         );
         jPanel5Layout.setVerticalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1091,24 +1108,12 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
         value.setName("value"); // NOI18N
         jToolBar2.add(value);
 
-        jSplitPane1.setDividerSize(10);
         jSplitPane1.setLastDividerLocation(150);
         jSplitPane1.setName("jSplitPane1"); // NOI18N
         jSplitPane1.setOneTouchExpandable(true);
 
         jTabbedPane1.setMinimumSize(new java.awt.Dimension(400, 61));
         jTabbedPane1.setName("jTabbedPane1"); // NOI18N
-
-        jScrollPane1.setBorder(null);
-        jScrollPane1.setName("jScrollPane1"); // NOI18N
-
-        notes.setBorder(javax.swing.BorderFactory.createEtchedBorder());
-        notes.setText(bundle.getString("ItemPanel.notes.text")); // NOI18N
-        notes.setToolTipText(bundle.getString("ItemPanel.notes.toolTipText")); // NOI18N
-        notes.setName("notes"); // NOI18N
-        jScrollPane1.setViewportView(notes);
-
-        jTabbedPane1.addTab(bundle.getString("ItemPanel.jScrollPane1.TabConstraints.tabTitle"), jScrollPane1); // NOI18N
 
         jScrollPane4.setName("jScrollPane4"); // NOI18N
 
@@ -1146,6 +1151,29 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
 
         jTabbedPane1.addTab(bundle.getString("ItemPanel.jScrollPane4.TabConstraints.tabTitle"), jScrollPane4); // NOI18N
 
+        jPanel3.setName("jPanel3"); // NOI18N
+        jPanel3.setLayout(new java.awt.BorderLayout());
+
+        jScrollPane1.setBorder(null);
+        jScrollPane1.setName("jScrollPane1"); // NOI18N
+
+        notes.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+        notes.setText(bundle.getString("ItemPanel.notes.text")); // NOI18N
+        notes.setToolTipText(bundle.getString("ItemPanel.notes.toolTipText")); // NOI18N
+        notes.setName("notes"); // NOI18N
+        jScrollPane1.setViewportView(notes);
+
+        jPanel3.add(jScrollPane1, java.awt.BorderLayout.CENTER);
+
+        labeledCombobox1.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+        labeledCombobox1.set_Label(bundle.getString("ItemPanel.labeledCombobox1._Label")); // NOI18N
+        labeledCombobox1.setName("labeledCombobox1"); // NOI18N
+        labeledCombobox1.setSearchEnabled(false);
+        labeledCombobox1.setSearchOnEnterEnabled(false);
+        jPanel3.add(labeledCombobox1, java.awt.BorderLayout.PAGE_START);
+
+        jTabbedPane1.addTab(bundle.getString("ItemPanel.jPanel3.TabConstraints.tabTitle"), jPanel3); // NOI18N
+
         jSplitPane1.setLeftComponent(jTabbedPane1);
 
         jScrollPane2.setToolTipText(bundle.getString("ItemPanel.jScrollPane2.toolTipText")); // NOI18N
@@ -1175,14 +1203,14 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
         rightpaneLayout.setHorizontalGroup(
             rightpaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, rightpaneLayout.createSequentialGroup()
-                .addComponent(jSplitPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 812, Short.MAX_VALUE)
+                .addComponent(jSplitPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 816, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(rightpaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(addfile, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(removefile, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(1, 1, 1))
-            .addComponent(jToolBar2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 843, Short.MAX_VALUE)
-            .addComponent(jToolBar1, javax.swing.GroupLayout.DEFAULT_SIZE, 843, Short.MAX_VALUE)
+            .addComponent(jToolBar2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 847, Short.MAX_VALUE)
+            .addComponent(jToolBar1, javax.swing.GroupLayout.DEFAULT_SIZE, 847, Short.MAX_VALUE)
             .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addComponent(jPanel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -1445,6 +1473,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
     private javax.swing.JLabel jLabel4;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
+    private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
     private javax.swing.JPanel jPanel5;
     private javax.swing.JScrollPane jScrollPane1;
@@ -1465,6 +1494,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
     private javax.swing.JTabbedPane jTabbedPane1;
     private javax.swing.JToolBar jToolBar1;
     private javax.swing.JToolBar jToolBar2;
+    private mpv5.ui.beans.LabeledCombobox labeledCombobox1;
     private javax.swing.JPanel leftpane;
     private javax.swing.JLabel netvalue;
     private javax.swing.JTextPane notes;

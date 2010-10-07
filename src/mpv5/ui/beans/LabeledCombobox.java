@@ -13,6 +13,7 @@ package mpv5.ui.beans;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Vector;
@@ -330,5 +331,9 @@ public class LabeledCombobox extends javax.swing.JPanel {
      */
     public void setEditable(boolean b) {
         getComboBox().setEditable(b);
+    }
+
+    public void setModel(List anything, boolean ignored) {
+        setModel(new MPComboboxModel(MPComboBoxModelItem.toItems(anything)));
     }
 }
