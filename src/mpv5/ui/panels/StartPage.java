@@ -406,7 +406,7 @@ public class StartPage extends javax.swing.JPanel {
             }
         });
 
-        jTaskPaneGroup1.add(new AbstractAction("Add contact...") {
+        jTaskPaneGroup1.add(new AbstractAction(Messages.ADD_CONTACT.getValue()) {
 
             public void actionPerformed(ActionEvent e) {
                 DatabaseObject d = DatabaseObject.getObject(Context.getCustomer());
@@ -415,7 +415,7 @@ public class StartPage extends javax.swing.JPanel {
             }
         });
 
-        jTaskPaneGroup1.add(new AbstractAction("Search contact...") {
+        jTaskPaneGroup1.add(new AbstractAction(Messages.SEARCH_CONTACT.getValue()) {
 
             public void actionPerformed(ActionEvent e) {
                 DatabaseObject d = Search2.showSearchFor(Context.getContact());

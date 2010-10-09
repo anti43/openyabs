@@ -96,7 +96,6 @@ public class ContactsList extends javax.swing.JPanel implements ListPanel {
         jButton6 = new javax.swing.JButton();
         jToolBar1 = new javax.swing.JToolBar();
         jLabel4 = new javax.swing.JLabel();
-        jSeparator1 = new javax.swing.JToolBar.Separator();
         jButton1 = new javax.swing.JButton();
         jButton5 = new javax.swing.JButton();
         jButton4 = new javax.swing.JButton();
@@ -284,20 +283,18 @@ public class ContactsList extends javax.swing.JPanel implements ListPanel {
         jToolBar1.setFloatable(false);
         jToolBar1.setRollover(true);
         jToolBar1.setName("jToolBar1"); // NOI18N
+        jToolBar1.setPreferredSize(new java.awt.Dimension(482, 50));
 
         jLabel4.setText(bundle.getString("ContactsList.jLabel4.text")); // NOI18N
+        jLabel4.setMaximumSize(new java.awt.Dimension(50, 15));
         jLabel4.setName("jLabel4"); // NOI18N
+        jLabel4.setPreferredSize(new java.awt.Dimension(120, 40));
         jToolBar1.add(jLabel4);
-
-        jSeparator1.setName("jSeparator1"); // NOI18N
-        jSeparator1.setOpaque(true);
-        jSeparator1.setSeparatorSize(new java.awt.Dimension(25, 0));
-        jSeparator1.setVerifyInputWhenFocusTarget(false);
-        jToolBar1.add(jSeparator1);
 
         jButton1.setText(bundle.getString("ContactsList.jButton1.text")); // NOI18N
         jButton1.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
         jButton1.setName("jButton1"); // NOI18N
+        jButton1.setPreferredSize(new java.awt.Dimension(120, 45));
         jButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton1ActionPerformed(evt);
@@ -308,6 +305,7 @@ public class ContactsList extends javax.swing.JPanel implements ListPanel {
         jButton5.setText(bundle.getString("ContactsList.jButton5.text")); // NOI18N
         jButton5.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
         jButton5.setName("jButton5"); // NOI18N
+        jButton5.setPreferredSize(new java.awt.Dimension(120, 45));
         jButton5.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton5ActionPerformed(evt);
@@ -318,6 +316,7 @@ public class ContactsList extends javax.swing.JPanel implements ListPanel {
         jButton4.setText(bundle.getString("ContactsList.jButton4.text")); // NOI18N
         jButton4.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
         jButton4.setName("jButton4"); // NOI18N
+        jButton4.setPreferredSize(new java.awt.Dimension(120, 45));
         jButton4.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton4ActionPerformed(evt);
@@ -347,7 +346,7 @@ public class ContactsList extends javax.swing.JPanel implements ListPanel {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 29, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 30, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(prinitingComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
@@ -448,7 +447,6 @@ public class ContactsList extends javax.swing.JPanel implements ListPanel {
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JToolBar.Separator jSeparator1;
     private javax.swing.JTextField jTextField1;
     private javax.swing.JToolBar jToolBar1;
     private javax.swing.JTable listTable;

@@ -16,19 +16,14 @@
  */
 package mpv5.utils.models;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Vector;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.ComboBoxModel;
 import javax.swing.DefaultComboBoxModel;
-import javax.swing.JComponent;
 import mpv5.db.common.DatabaseObject;
 import mpv5.handler.MPEnum;
 import mpv5.logging.Log;
-import mpv5.utils.images.MPIcon;
 
 /**
  * A MPComboBoxModelItem consists of a visible "value" part and an invisible "ID" part.
@@ -251,6 +246,31 @@ public class MPComboBoxModelItem extends DefaultComboBoxModel implements Compara
      * Converts an array to mp combo box items
      * {Integer id (hidden), String value (shown in the list)}
      * @param items
+     * @return
+     */
+    public static MPComboBoxModelItem[] toItems(List<DatabaseObject> items) {
+        return toItems(items, COMPARE_BY_VALUE);
+    }
+
+        /**
+     * Converts an array to mp combo box items
+     * {Integer id (hidden), String value (shown in the list)}
+     * @param items
+     * @return
+     */
+    public static MPComboBoxModelItem[] toItems(List items, boolean simple) {
+        MPComboBoxModelItem[] array = new MPComboBoxModelItem[items.size()];
+        for (int i = 0; i < array.length; i++) {
+            array[i] = new MPComboBoxModelItem(items.get(i), items.get(i).toString() );
+            array[i].setCompareMode(COMPARE_BY_VALUE);
+        }
+        return array;
+    }
+
+    /**
+     * Converts an array to mp combo box items
+     * {Integer id (hidden), String value (shown in the list)}
+     * @param items
      * @param compareMode
      * @return
      */
@@ -259,22 +279,6 @@ public class MPComboBoxModelItem extends DefaultComboBoxModel implements Compara
         for (int i = 0; i < array.length; i++) {
             array[i] = new MPComboBoxModelItem(new Integer(items.get(i).__getIDS()), items.get(i).__getCName());
             array[i].setCompareMode(compareMode);
-        }
-        return array;
-    }
-
-     /**
-     * Converts a list to mp combo box items
-     * {Integer id (hidden), String value (shown in the list)}
-     * @param items
-     * @param compareMode
-     * @return
-     */
-    public static MPComboBoxModelItem[] toItems(List items) {
-        MPComboBoxModelItem[] array = new MPComboBoxModelItem[items.size()];
-        for (int i = 0; i < array.length; i++) {
-            array[i] = new MPComboBoxModelItem(items.get(i), String.valueOf(items.get(i)));
-            array[i].setCompareMode(COMPARE_BY_VALUE);
         }
         return array;
     }

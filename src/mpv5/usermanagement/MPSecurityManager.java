@@ -36,20 +36,23 @@ import mpv5.utils.text.MD5HashGenerator;
 public class MPSecurityManager {
 
     public static final int SYSTEM_RIGHT = -1;
-    public static final int RIGHT_TO_VIEW = 3;
-    public static final int RIGHT_TO_EXPORT = 2;
-    public static final int RIGHT_TO_EDIT = 1;
-    public static final int RIGHT_TO_CREATE_OR_DELETE = 0;
-    public static final int VIEW = 3;
-    public static final int EXPORT = 2;
-    public static final int EDIT = 1;
-    public static final int CREATE_OR_DELETE = 0;
+    public static final int RIGHT_TO_VIEW = 4;
+    public static final int RIGHT_TO_EXPORT = 3;
+    public static final int RIGHT_TO_EDIT = 2;
+    public static final int RIGHT_TO_CREATE_OR_DELETE = 1;
+    public static final int RIGHT_TO_ADMINISTRATE = 0;
+    public static final int VIEW = 4;
+    public static final int EXPORT = 3;
+    public static final int EDIT = 2;
+    public static final int CREATE_OR_DELETE = 1;
+    public static final int ADMINISTRATE = 0;
     public static ArrayList<Context> securedContexts = Context.getSecuredContexts();
     private static String usern;
     private static Object[][] availableRights = new Object[][]{
-        {RIGHT_TO_CREATE_OR_DELETE, "Administrator"},
+        {RIGHT_TO_ADMINISTRATE, "Administrator"},
+        {RIGHT_TO_CREATE_OR_DELETE, "User"},
         {RIGHT_TO_EDIT, "Editor"},
-        {RIGHT_TO_EXPORT, "Export"},
+        {RIGHT_TO_EXPORT, "Exporter"},
         {RIGHT_TO_VIEW, "Viewer"}
     };
 
@@ -79,7 +82,7 @@ public class MPSecurityManager {
      * @return
      */
     public static boolean checkAdminAccess() {
-        if (mpv5.db.objects.User.getCurrentUser().__getInthighestright() <= RIGHT_TO_CREATE_OR_DELETE) {
+        if (mpv5.db.objects.User.getCurrentUser().__getInthighestright() <= RIGHT_TO_ADMINISTRATE) {
             return true;
         } else {
             Popup.notice(Messages.ADMIN_ACCESS);

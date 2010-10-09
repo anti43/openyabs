@@ -274,6 +274,8 @@ public enum Messages {
      "You do not have any mail template definded yet. "
      + "Create mail templates at Tools->Control Panel->User Properties->Mail Templates. "
      + "The mail will be send without any text body now."),
+     ADD_CONTACT("Add contact.."),
+     SEARCH_CONTACT("Search contact.."),
     ;
 
 

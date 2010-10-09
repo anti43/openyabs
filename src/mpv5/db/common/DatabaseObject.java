@@ -425,6 +425,28 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
     }
 
     /**
+     * Clone this DO, but into a new {@link Context}
+     * @param newContext
+     * @return
+     */
+    public DatabaseObject clone(Context newContext) {
+        DatabaseObject obj = getObject(newContext);
+        obj.avoidNulls();
+        List<Object[]> vals = this.getValues2();
+        for (int i = 0; i < vals.size(); i++) {
+            Object[] valuespairs = vals.get(i);
+            try {
+                if (valuespairs[1] != null) {
+                    obj.parse(valuespairs[0].toString(), valuespairs[1]);
+                }
+            } catch (Exception ex) {
+                Log.Debug(ex);
+            }
+        }
+        return obj;
+    }
+
+    /**
      * The type of a database object should equal the dbidentity in singular form,
      * but as the dbidentity can change over time, the type name must be consistent
      * @return The type of this do, an unique type identifier

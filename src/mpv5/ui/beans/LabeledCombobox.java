@@ -68,6 +68,10 @@ public class LabeledCombobox extends javax.swing.JPanel {
         mPCombobox1.setModel();
     }
 
+    public void setModel(List<Context> values, boolean bloedsinn) {
+       mPCombobox1.setModel(new MPComboboxModel(MPComboBoxModelItem.toItems(values, bloedsinn)));
+    }
+
     /**
      * 
      * @param values
@@ -331,9 +335,5 @@ public class LabeledCombobox extends javax.swing.JPanel {
      */
     public void setEditable(boolean b) {
         getComboBox().setEditable(b);
-    }
-
-    public void setModel(List anything, boolean ignored) {
-        setModel(new MPComboboxModel(MPComboBoxModelItem.toItems(anything)));
     }
 }
