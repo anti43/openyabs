@@ -872,6 +872,7 @@ public class MPView extends FrameView {
         jMenu1 = new javax.swing.JMenu();
         jMenuItem42 = new javax.swing.JMenuItem();
         jMenuItem43 = new javax.swing.JMenuItem();
+        jMenuItem44 = new javax.swing.JMenuItem();
         favouritesMenu = new javax.swing.JMenu();
         jMenuItem5 = new javax.swing.JMenuItem();
         clipboardMenu = new javax.swing.JMenu();
@@ -1719,6 +1720,15 @@ public class MPView extends FrameView {
         });
         jMenu1.add(jMenuItem43);
 
+        jMenuItem44.setText(bundle.getString("MPView.jMenuItem44.text")); // NOI18N
+        jMenuItem44.setName("jMenuItem44"); // NOI18N
+        jMenuItem44.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem44ActionPerformed(evt);
+            }
+        });
+        jMenu1.add(jMenuItem44);
+
         menuBar.add(jMenu1);
 
         favouritesMenu.setText(bundle.getString("MPView.favouritesMenu.text")); // NOI18N
@@ -2411,6 +2421,12 @@ public class MPView extends FrameView {
         Scheduler.getInstance().checkForOverdueEvents();
     }//GEN-LAST:event_jMenuItem43ActionPerformed
 
+    private void jMenuItem44ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem44ActionPerformed
+        mpv5.usermanagement.Lock.lock(this.getFrame());
+        User.getCurrentUser().logout();
+        
+    }//GEN-LAST:event_jMenuItem44ActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton calculatorButton;
     public javax.swing.JMenu clipboardMenu;
@@ -2485,6 +2501,7 @@ public class MPView extends FrameView {
     private javax.swing.JMenuItem jMenuItem41;
     private javax.swing.JMenuItem jMenuItem42;
     private javax.swing.JMenuItem jMenuItem43;
+    private javax.swing.JMenuItem jMenuItem44;
     private javax.swing.JMenuItem jMenuItem5;
     private javax.swing.JMenuItem jMenuItem6;
     private javax.swing.JMenuItem jMenuItem7;

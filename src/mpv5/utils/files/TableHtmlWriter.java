@@ -26,6 +26,7 @@ import java.io.IOException;
 import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 import mpv5.logging.Log;
 import mpv5.utils.date.DateConverter;
@@ -58,17 +59,21 @@ public class TableHtmlWriter {
      * @param showHorizontalLines
      * @param showVerticalLines
      */
-    public TableHtmlWriter(DefaultTableModel model, File file, boolean showHorizontalLines, boolean showVerticalLines) {
-        Object[][] obj = new Object[model.getRowCount()][model.getColumnCount()];
+    public TableHtmlWriter(JTable model, File file, boolean showHorizontalLines, boolean showVerticalLines) {
+        Object[][] obj = new Object[model.getRowCount()][model.getColumnCount()-1];
 
         for (int k = 0; k < obj.length; k++) {
-            for (int l = 0; l < obj[k].length; l++) {
-                obj[k][l] = model.getValueAt(k, l);
+            for (int l = 1; l < obj[k].length; l++) {
+                if (model.getValueAt(k, l) instanceof Date) {
+                    obj[k][l - 1] = DateConverter.getDefDateString((Date) model.getValueAt(k, l));
+                } else {
+                    obj[k][l - 1] = model.getValueAt(k, l);
+                }
             }
         }
-        String[] head = new String[model.getColumnCount()];
-        for (int i = 0; i < head.length; i++) {
-            head[i] = model.getColumnName(i);
+        String[] head = new String[model.getColumnCount()-1];
+        for (int i = 1; i < head.length; i++) {
+            head[i - 1] = model.getColumnName(i);
         }
         this.header = head;
         this.model = obj;
@@ -247,13 +252,13 @@ public class TableHtmlWriter {
         String rgb = Integer.toHexString(borderc.getRGB());
         rgb = rgb.substring(2, rgb.length());
         out.write(" <meta http-equiv='Content-Type' content='text/html;'> <HTML>");
-        out.write("<head><STYLE TYPE='text/css'><!--TD{font-family: Arial; font-size: 10pt;}" +
-                "table {border: " + border +
-                "px solid #" + rgb + ";border-collapse: collapse;}" +
-                "td { border: " + border + "px solid #" + rgb + "; }" +
-                "th { border: " + border + "px solid #" + rgb + "; }" +
-                "-->" +
-                "</STYLE></head>");
+        out.write("<head><STYLE TYPE='text/css'><!--TD{font-family: Arial; font-size: 10pt;}"
+                + "table {border: " + border
+                + "px solid #" + rgb + ";border-collapse: collapse;}"
+                + "td { border: " + border + "px solid #" + rgb + "; }"
+                + "th { border: " + border + "px solid #" + rgb + "; }"
+                + "-->"
+                + "</STYLE></head>");
         if (getPrefix() != null) {
             out.write("<P><H2>" + getPrefix() + "</H2></P><BR>");
         }
@@ -392,8 +397,7 @@ public class TableHtmlWriter {
     }
 
 ///////////////////////////////////// xhtml-writer start
-
-        /**
+    /**
      * This method creates the HTML file
      *
      * @param border The border thickness of the created HTML table
@@ -415,7 +419,7 @@ public class TableHtmlWriter {
         return getFile();
     }
 
-       private void write2(Integer border, Color borderc) throws IOException {
+    private void write2(Integer border, Color borderc) throws IOException {
 
         String bo = "";
         if (!showHorizontalLines || !showVerticalLines) {
@@ -435,17 +439,17 @@ public class TableHtmlWriter {
         out.write("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
         out.write("<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">\n");
         out.write("<html xmlns=\"http://www.w3.org/1999/xhtml\">\n<head>\n<meta http-equiv='Content-Type' content='text/html;charset=UTF-8' />\n<title />\n");
-        out.write("<style type='text/css'>\ntd{font-family: Arial; font-size:10pt;}\n" +
-                "table {border:" + border + "px solid #" + rgb + "; border-collapse:collapse;}\n" +
-                "td {border:" + border + "px solid #" + rgb + "; padding:7pt 5pt;}\n" +
-                "th {border:" + border + "px solid #" + rgb + "; padding:10pt;}\n" +
-                "h2 {margin:10pt 0 20pt;}" +
-                "</style>\n</head><body>\n");
+        out.write("<style type='text/css'>\ntd{font-family: Arial; font-size:10pt;}\n"
+                + "table {border:" + border + "px solid #" + rgb + "; border-collapse:collapse;}\n"
+                + "td {border:" + border + "px solid #" + rgb + "; padding:7pt 5pt;}\n"
+                + "th {border:" + border + "px solid #" + rgb + "; padding:10pt;}\n"
+                + "h2 {margin:10pt 0 20pt;}"
+                + "</style>\n</head><body>\n");
         if (getPrefix() != null) {
             out.write("<h2>" + getPrefix() + "</h2>\n");
         }
-        out.write("<table style='empty-cells:show;border-color:#" + rgb + " " + bo +
-            ";' \nwidth = '100%' cellpadding = '1' cellspacing = '0'>\n");
+        out.write("<table style='empty-cells:show;border-color:#" + rgb + " " + bo
+                + ";' \nwidth = '100%' cellpadding = '1' cellspacing = '0'>\n");
         if (getHeader() != null) {
             out.write("<thead>\n<tr valign='top'>\n");
             for (int k = 0; k < getHeader().length; k++) {

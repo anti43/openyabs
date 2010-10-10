@@ -147,7 +147,7 @@ public class ProductsOverview extends javax.swing.JPanel implements ListPanel {
         jToolBar1.setName("jToolBar1"); // NOI18N
 
         buttonGroup1.add(products);
-        java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle(); // NOI18N
+        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("mpv5/resources/languages/Panels"); // NOI18N
         products.setText(bundle.getString("ProductsOverview.products.text")); // NOI18N
         products.setFocusable(false);
         products.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
@@ -174,7 +174,6 @@ public class ProductsOverview extends javax.swing.JPanel implements ListPanel {
         jSeparator2.setMaximumSize(new java.awt.Dimension(10, 0));
         jSeparator2.setMinimumSize(new java.awt.Dimension(10, 0));
         jSeparator2.setName("jSeparator2"); // NOI18N
-        jSeparator2.setOpaque(true);
         jSeparator2.setPreferredSize(new java.awt.Dimension(10, 0));
         jToolBar1.add(jSeparator2);
 
@@ -187,7 +186,6 @@ public class ProductsOverview extends javax.swing.JPanel implements ListPanel {
         jSeparator1.setMaximumSize(new java.awt.Dimension(10, 0));
         jSeparator1.setMinimumSize(new java.awt.Dimension(10, 0));
         jSeparator1.setName("jSeparator1"); // NOI18N
-        jSeparator1.setOpaque(true);
         jSeparator1.setPreferredSize(new java.awt.Dimension(10, 0));
         jToolBar1.add(jSeparator1);
 
