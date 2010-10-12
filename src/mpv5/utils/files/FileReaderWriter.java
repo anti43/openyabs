@@ -162,6 +162,7 @@ public class FileReaderWriter {
             BufferedWriter writer = new BufferedWriter(out);
             writer.write(text);
             writer.close();
+            out.close();
         } catch (IOException ex) {
             System.out.println(ex.getMessage());
             return false;
