@@ -204,7 +204,7 @@ public class LanguageManager {
                                 newfile = FileDirectoryHandler.copyFile(bundlefile, new File(LocalSettings.getProperty(LocalSettings.CACHE_DIR)), tempname + ".properties", false, true);
                                 ClasspathTools.addPath(new File(LocalSettings.getProperty(LocalSettings.CACHE_DIR)));
                                 File newbundle = new File(newfile);
-                                if (hasNeededKeys(newbundle, false) || addNeededKeys(newbundle)) {
+                                if (hasNeededKeys(newbundle, false)) {
                                     Log.Debug(LanguageManager.class, "File has needed keys for language: " + langid);
                                     Log.Debug(LanguageManager.class, "Created language file at: " + newfile);
                                     try {
@@ -472,38 +472,38 @@ public class LanguageManager {
         return cached;
     }
 
-    private static boolean addNeededKeys(File file) {
-        synchronized (new LanguageManager()) {
-            try {
-                Enumeration<String> keys = ResourceBundle.getBundle(defLanguageBundleName).getKeys();
-                File impFile = file;
-                FileReaderWriter frw = new FileReaderWriter(impFile);
-                String[] lines = frw.readLines();
-
-                while (keys.hasMoreElements()) {
-                    String string = keys.nextElement();
-                    boolean found = false;
-                    for (int i = 0; i < lines.length; i++) {
-                        String line = lines[i];
-                        if (line.startsWith(string)) {
-                            found = true;
-                        }
-                    }
-                    if (!found) {
-                        Log.Debug(LanguageManager.class, "Key '" + string + "' added to file " + file);
-                        frw.write(string + "=" + ResourceBundle.getBundle(defLanguageBundleName).getString(string));
-                    }
-                }
-                failed = false;
-                return !failed;
-            } catch (Exception e) {
-                Log.Debug(e);
-                fail(e.getMessage());
-                failed = true;
-                return false;
-            }
-        }
-    }
+//    private static boolean addNeededKeys(File file) {
+//        synchronized (new LanguageManager()) {
+//            try {
+//                Enumeration<String> keys = ResourceBundle.getBundle(defLanguageBundleName).getKeys();
+//                File impFile = file;
+//                FileReaderWriter frw = new FileReaderWriter(impFile);
+//                String[] lines = frw.readLines();
+//
+//                while (keys.hasMoreElements()) {
+//                    String string = keys.nextElement();
+//                    boolean found = false;
+//                    for (int i = 0; i < lines.length; i++) {
+//                        String line = lines[i];
+//                        if (line.startsWith(string)) {
+//                            found = true;
+//                        }
+//                    }
+//                    if (!found) {
+//                        Log.Debug(LanguageManager.class, "Key '" + string + "' added to file " + file);
+//                        frw.write(string + "=" + ResourceBundle.getBundle(defLanguageBundleName).getString(string));
+//                    }
+//                }
+//                failed = false;
+//                return !failed;
+//            } catch (Exception e) {
+//                Log.Debug(e);
+//                fail(e.getMessage());
+//                failed = true;
+//                return false;
+//            }
+//        }
+//    }
 
     private static void fail(String langid) {
         Log.Debug(LanguageManager.class, "Failed language: " + langid);
