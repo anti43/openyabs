@@ -103,6 +103,7 @@ public interface Constants {
         "Denny Beyer",
         "Michael Stibane",
         "Sven Lindenhahn",
+        "Uwe Schoeler",
         "Uwe Stark",
         "P.Heller",
         "Jean-Christoph von Oertzen"};

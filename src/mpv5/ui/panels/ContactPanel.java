@@ -411,7 +411,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
         rightpane.setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("ContactPanel.rightpane.border.title"))); // NOI18N
         rightpane.setName("rightpane"); // NOI18N
 
-        jPanel1.setBackground(new java.awt.Color(145, 168, 168));
+        jPanel1.setBackground(new java.awt.Color(182, 187, 187));
         jPanel1.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         jPanel1.setName("jPanel1"); // NOI18N
 
@@ -431,7 +431,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
         jToolBar2.setName("jToolBar2"); // NOI18N
         jToolBar2.setOpaque(false);
 
-        customer.setBackground(new java.awt.Color(145, 168, 168));
+        customer.setBackground(new java.awt.Color(182, 187, 187));
         customer.setText(bundle.getString("ContactPanel.customer.text")); // NOI18N
         customer.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
         customer.setName("customer"); // NOI18N
@@ -444,7 +444,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
         });
         jToolBar2.add(customer);
 
-        supplier.setBackground(new java.awt.Color(145, 168, 168));
+        supplier.setBackground(new java.awt.Color(182, 187, 187));
         supplier.setText(bundle.getString("ContactPanel.supplier.text")); // NOI18N
         supplier.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
         supplier.setName("supplier"); // NOI18N
@@ -457,7 +457,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
         });
         jToolBar2.add(supplier);
 
-        manufacturer.setBackground(new java.awt.Color(145, 168, 168));
+        manufacturer.setBackground(new java.awt.Color(182, 187, 187));
         manufacturer.setText(bundle.getString("ContactPanel.manufacturer.text")); // NOI18N
         manufacturer.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
         manufacturer.setName("manufacturer"); // NOI18N
@@ -470,7 +470,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
         });
         jToolBar2.add(manufacturer);
 
-        company.setBackground(new java.awt.Color(145, 168, 168));
+        company.setBackground(new java.awt.Color(182, 187, 187));
         company.setText(bundle.getString("ContactPanel.company.text")); // NOI18N
         company.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
         company.setName("company"); // NOI18N
@@ -781,9 +781,10 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
         });
         jToolBar1.add(jButton6);
 
+        jTabbedPane1.setBackground(new java.awt.Color(182, 187, 187));
         jTabbedPane1.setName("jTabbedPane1"); // NOI18N
 
-        jPanel3.setBackground(new java.awt.Color(145, 168, 168));
+        jPanel3.setBackground(new java.awt.Color(182, 187, 187));
         jPanel3.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         jPanel3.setName("jPanel3"); // NOI18N
 
@@ -876,7 +877,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
         addresspanel.setFont(new java.awt.Font("Dialog", 0, 11));
         addresspanel.setName("addresspanel"); // NOI18N
 
-        jPanel2.setBackground(new java.awt.Color(145, 168, 168));
+        jPanel2.setBackground(new java.awt.Color(182, 187, 187));
         jPanel2.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
         jPanel2.setName("jPanel2"); // NOI18N
 
@@ -1007,7 +1008,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
 
         jTabbedPane1.addTab(bundle.getString("ContactPanel.addresspanel.TabConstraints.tabTitle"), addresspanel); // NOI18N
 
-        jPanel5.setBackground(new java.awt.Color(145, 168, 168));
+        jPanel5.setBackground(new java.awt.Color(182, 187, 187));
         jPanel5.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         jPanel5.setName("jPanel5"); // NOI18N
 
