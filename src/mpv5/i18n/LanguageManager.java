@@ -40,6 +40,7 @@ import mpv5.db.objects.User;
 import mpv5.globals.LocalSettings;
 import mpv5.globals.Messages;
 import mpv5.logging.Log;
+import mpv5.ui.dialogs.Notificator;
 import mpv5.ui.dialogs.Popup;
 import mpv5.ui.frames.MPView;
 
@@ -62,8 +63,8 @@ public class LanguageManager {
 
     static {
     }
-    private final static String defLanguageBundleName = "mpv5/resources/languages/Panels";
-    private static ResourceBundle defLanguageBundle = ResourceBundle.getBundle(defLanguageBundleName);
+    protected final static String defLanguageBundleName = "mpv5/resources/languages/Panels";
+    protected static ResourceBundle defLanguageBundle = ResourceBundle.getBundle(defLanguageBundleName);
     private static String[][] defLanguage = new String[][]{{"buildin_en", "English"}};
     private static Hashtable<String, ResourceBundle> cachedLanguages = new Hashtable<String, ResourceBundle>();
     private static boolean cached = false;
@@ -187,8 +188,8 @@ public class LanguageManager {
 
                         File bundlefile = null;
                         Object[] data;
-                        URI newfile;
-                        String tempname = new RandomText(10).getString();
+                        URI newfileUri;
+                        String tempname = langid;
                         try {
                             data = QueryHandler.instanceOf().clone(Context.getLanguage()).
                                     selectFirst("filename", new String[]{Context.SEARCH_NAME, langid, "'"});
@@ -201,12 +202,12 @@ public class LanguageManager {
                                 return ResourceBundle.getBundle(defLanguageBundleName);
                             }
                             if (bundlefile != null) {
-                                newfile = FileDirectoryHandler.copyFile(bundlefile, new File(LocalSettings.getProperty(LocalSettings.CACHE_DIR)), tempname + ".properties", false, true);
+                                newfileUri = FileDirectoryHandler.copyFile(bundlefile, new File(LocalSettings.getProperty(LocalSettings.CACHE_DIR)), tempname + ".properties", false, true);
                                 ClasspathTools.addPath(new File(LocalSettings.getProperty(LocalSettings.CACHE_DIR)));
-                                File newbundle = new File(newfile);
-                                if (hasNeededKeys(newbundle, false)) {
+                                File newbundle = new File(newfileUri);
+                                if (hasNeededKeys(newbundle, false) || addNeededKeys(newbundle)) {
                                     Log.Debug(LanguageManager.class, "File has needed keys for language: " + langid);
-                                    Log.Debug(LanguageManager.class, "Created language file at: " + newfile);
+                                    Log.Debug(LanguageManager.class, "Created language file at: " + newfileUri);
                                     try {
                                         ResourceBundle bundle = ResourceBundleUtf8.getBundle(tempname);
                                         cachelanguage(langid, bundle);
@@ -472,38 +473,39 @@ public class LanguageManager {
         return cached;
     }
 
-//    private static boolean addNeededKeys(File file) {
-//        synchronized (new LanguageManager()) {
-//            try {
-//                Enumeration<String> keys = ResourceBundle.getBundle(defLanguageBundleName).getKeys();
-//                File impFile = file;
-//                FileReaderWriter frw = new FileReaderWriter(impFile);
-//                String[] lines = frw.readLines();
-//
-//                while (keys.hasMoreElements()) {
-//                    String string = keys.nextElement();
-//                    boolean found = false;
-//                    for (int i = 0; i < lines.length; i++) {
-//                        String line = lines[i];
-//                        if (line.startsWith(string)) {
-//                            found = true;
-//                        }
-//                    }
-//                    if (!found) {
-//                        Log.Debug(LanguageManager.class, "Key '" + string + "' added to file " + file);
-//                        frw.write(string + "=" + ResourceBundle.getBundle(defLanguageBundleName).getString(string));
-//                    }
-//                }
-//                failed = false;
-//                return !failed;
-//            } catch (Exception e) {
-//                Log.Debug(e);
-//                fail(e.getMessage());
-//                failed = true;
-//                return false;
-//            }
-//        }
-//    }
+    private static boolean addNeededKeys(File file) {
+        Notificator.raiseNotification(Messages.LANGUAGE_FILE, true);
+        synchronized (new LanguageManager()) {
+            try {
+                Enumeration<String> keys = ResourceBundle.getBundle(defLanguageBundleName).getKeys();
+                File impFile = file;
+                FileReaderWriter frw = new FileReaderWriter(impFile, "UTF8");
+                String[] lines = frw.readLinesWCharset();
+
+                while (keys.hasMoreElements()) {
+                    String string = keys.nextElement();
+                    boolean found = false;
+                    for (int i = 0; i < lines.length; i++) {
+                        String line = lines[i];
+                        if (line.startsWith(string)) {
+                            found = true;
+                        }
+                    }
+                    if (!found) {
+                        Log.Debug(LanguageManager.class, "Key '" + string + "' added to file " + file);
+                        frw.write(string + "=" + ResourceBundle.getBundle(defLanguageBundleName).getString(string));
+                    }
+                }
+                failed = false;
+                return !failed;
+            } catch (Exception e) {
+                Log.Debug(e);
+                fail(e.getMessage());
+                failed = true;
+                return false;
+            }
+        }
+    }
 
     private static void fail(String langid) {
         Log.Debug(LanguageManager.class, "Failed language: " + langid);
@@ -555,12 +557,13 @@ public class LanguageManager {
         File lastfile = null;
         for (int i = 0; i < languages.size(); i++) {
             File file = languages.get(i);
-            file.deleteOnExit();
             if (lastfile == null) {
                 lastfile = file;
             }
             if (file.lastModified() > lastfile.lastModified()) {
                 lastfile = file;
+            } else {
+                //file.deleteOnExit();
             }
         }
 
@@ -572,6 +575,7 @@ public class LanguageManager {
                 ResourceBundle bundle = ResourceBundleUtf8.getBundle(lastfile.getName().substring(0, lastfile.getName().lastIndexOf(".")));
                 if (lastfile.canRead()) {
                     defLanguageBundle = bundle;
+                    cachelanguage(lastfile.getName().substring(0, lastfile.getName().lastIndexOf(".")), bundle);
                 }
             } catch (Exception e) {
                 Log.Debug(LanguageManager.class, e.getMessage());

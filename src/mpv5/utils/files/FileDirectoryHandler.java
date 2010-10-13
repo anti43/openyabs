@@ -610,29 +610,19 @@ public abstract class FileDirectoryHandler {
 
     /**
      * Deletes the content of a directory, omitting files which contain $omit in their name
+     * No Subdirectories are deleted!
      * @param path 
      * @param omit
      * @throws IOException 
      */
     public static void deleteDirectoryContent(File path, String... omit) throws IOException {
         for (File file : path.listFiles()) {
-            boolean skip = false;
             List<String> o = Arrays.asList(omit);
             String name = file.getName();
             for (int i = 0; i < o.size(); i++) {
                 String string = o.get(i);
-                if (name.toLowerCase().contains(string.toLowerCase())) {
-                    skip = true;
-                }
-            }
-            if (!skip) {
-                if (file.isDirectory()) {
-                    deleteTree(file);
-                } else {
-                    Log.Debug(FileDirectoryHandler.class, "Delete: " + file.getCanonicalPath());
-                    if (!file.delete()) {
-                        file.deleteOnExit();
-                    }
+                if (!name.toLowerCase().contains(string.toLowerCase())) {
+                    file.delete();
                 }
             }
         }

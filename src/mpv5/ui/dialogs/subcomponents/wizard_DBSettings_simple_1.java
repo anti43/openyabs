@@ -9,6 +9,7 @@ import java.awt.Cursor;
 import java.awt.Desktop;
 import java.io.File;
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.Date;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JFileChooser;
@@ -97,7 +98,17 @@ public class wizard_DBSettings_simple_1 extends javax.swing.JPanel implements Wi
                     LocalSettings.save(forConnId);
                     LocalSettings.apply();
 
-                    if (!jCheckBox1.isSelected() && !jCheckBox4.isSelected()) {
+                    boolean pexists = true;
+                    try {
+                        conn.runQueries(new String[]{"select * from groups where ids = 1"});
+                    } catch (Exception sQLException) {
+                        pexists = false;
+                    }
+
+                    if (!jCheckBox1.isSelected()
+                            && !jCheckBox4.isSelected()
+                            && (!pexists || !Popup.Y_N_dialog("The Yabs database seems to be existing, "
+                            + "do you want to upgrade an existing Yabs database?"))) {
                         master.setMessage(Messages.CREATING_DATABASE.toString());
                         conn.setProgressbar(master.getProgressbar());
                         if (conn.runQueries(new DatabaseInstallation().getStructure())
@@ -114,7 +125,7 @@ public class wizard_DBSettings_simple_1 extends javax.swing.JPanel implements Wi
                                 Log.Debug(this, uRISyntaxException.getMessage());
                             }
 
-                              try {
+                            try {
                                 File f = new File(this.getClass().getResource("/mpv5/resources/extra/").toURI());
                                 Log.Debug(this, "Importing coutries from: " + f.getCanonicalPath());
                                 File[] langfiles = f.listFiles();
@@ -561,11 +572,15 @@ public class wizard_DBSettings_simple_1 extends javax.swing.JPanel implements Wi
             LocalSettings.setProperty(LocalSettings.OFFICE_BINARY_FOLDER, "MacOS");
             jCheckBox2.setSelected(true);
         } else if (Main.osIsWindows) {
-            labeledTextChooser2.set_Text("");
+            labeledTextChooser2.set_Text("C:\\\\Program Files\\OpenOffice.org 3\\");
             LocalSettings.setProperty(LocalSettings.OFFICE_BINARY_FOLDER, "program");
         } else if (Main.osIsLinux) {
             labeledTextChooser2.set_Text("/opt/openoffice.org3");
             LocalSettings.setProperty(LocalSettings.OFFICE_BINARY_FOLDER, "program");
+        }
+
+        if (!new File(labeledTextChooser2.get_Text(false)).exists()) {
+            labeledTextChooser2.setText("");
         }
     }
 }

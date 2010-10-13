@@ -1,6 +1,7 @@
 package mpv5.ui.dialogs.subcomponents;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.Locale;
 import javax.swing.ComboBoxModel;
 import javax.swing.DefaultComboBoxModel;
@@ -17,6 +18,7 @@ import mpv5.ui.dialogs.Popup;
 import mpv5.ui.frames.MPView;
 
 import mpv5.utils.arrays.ArrayUtilities;
+import mpv5.utils.files.FileDirectoryHandler;
 import mpv5.utils.models.MPComboBoxModelItem;
 import mpv5.utils.text.TypeConversion;
 import mpv5.utils.ui.TextFieldUtils;
@@ -309,28 +311,34 @@ public class ControlPanel_Locale extends javax.swing.JPanel implements ControlAp
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         setSettings();
         mpv5.db.objects.User.getCurrentUser().save();
+        cleanup();
         Popup.notice(Messages.RESTART_REQUIRED);
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
 
         if (QueryHandler.instanceOf().clone(Context.getLanguage()).checkUniqueness("longname", new JTextField[]{langName.getTextField()})) {
-            if (!langName.hasText()) {langName.setText(new File(labeledTextChooser1.get_Text(false)).getName());}
-                Runnable runnable = new Runnable() {
+            if (!langName.hasText()) {
+                langName.setText(new File(labeledTextChooser1.get_Text(false)).getName());
+            }
+            Runnable runnable = new Runnable() {
 
-                    public void run() {
-                        try {
-                            MPView.setWaiting(true);
-                            LanguageManager.importLanguage(langName.get_Text(), new File(labeledTextChooser1.get_Text(true)));
-                            setLanguageSelection();
-                        } catch (Exception e) {
-                            Log.Debug(e);
-                        } finally {
-                            MPView.setWaiting(false);
-                        }
+                @Override
+                public void run() {
+                    try {
+                        MPView.setWaiting(true);
+                        LanguageManager.importLanguage(langName.get_Text(), new File(labeledTextChooser1.get_Text(true)));
+                        setLanguageSelection();
+                    } catch (Exception e) {
+                        Log.Debug(e);
+                    } finally {
+                        cleanup();
+
+                        MPView.setWaiting(false);
                     }
-                };
-                new Thread(runnable).start();    
+                }
+            };
+            new Thread(runnable).start();
         }
     }//GEN-LAST:event_jButton3ActionPerformed
 
@@ -407,9 +415,21 @@ public class ControlPanel_Locale extends javax.swing.JPanel implements ControlAp
         return LanguageManager.getCountriesAsComboBoxModel();
     }
 
+    @Override
     public java.awt.Component getAndRemoveActionPanel() {
         this.remove(jPanel6);
         validate();
         return jPanel6;
+    }
+
+    private void cleanup() {
+        try {
+            for (File f : new File(FileDirectoryHandler.getTempDir2()).listFiles()) {
+                if (f.getName().endsWith(".properties")) {
+                    f.deleteOnExit();
+                }
+            }
+        } catch (Exception ex) {
+        }
     }
 }

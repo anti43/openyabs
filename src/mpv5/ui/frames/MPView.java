@@ -596,12 +596,44 @@ public class MPView extends FrameView {
     }
 
     private void setNaviPanelSize() {
-        getNav_outlookbar().setPreferredSize(new Dimension(getNav_outlookbar().getWidth(), getFrame().getHeight() - 200));
-        getNav_outlookbar().setMaximumSize(new Dimension(getNav_outlookbar().getWidth(), getFrame().getHeight() - 200));
-        getNav_outlookbar().setMinimumSize(new Dimension(getNav_outlookbar().getWidth(), getFrame().getHeight() - 200));
-        getNav_outlookbar().setSize(new Dimension(getNav_outlookbar().getWidth(), getFrame().getHeight() - 200));
-        getNaviPanel().revalidate();
-        getNaviPanel().repaint();
+        Runnable runnable = new Runnable() {
+
+            public void run() {
+                getNav_outlookbar().setPreferredSize(new Dimension(getNav_outlookbar().getWidth(), getFrame().getHeight() - 200));
+                getNav_outlookbar().setMaximumSize(new Dimension(getNav_outlookbar().getWidth(), getFrame().getHeight() - 200));
+                getNav_outlookbar().setMinimumSize(new Dimension(getNav_outlookbar().getWidth(), getFrame().getHeight() - 200));
+                getNav_outlookbar().setSize(new Dimension(getNav_outlookbar().getWidth(), getFrame().getHeight() - 200));
+                getNaviPanel().revalidate();
+                getNaviPanel().repaint();
+            }
+        };
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        SwingUtilities.invokeLater(runnable);
     }
 
     /**

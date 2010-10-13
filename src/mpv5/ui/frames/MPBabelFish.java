@@ -491,8 +491,8 @@ public class MPBabelFish extends javax.swing.JFrame {
             String[] originallanguage = ArrayUtilities.SmallObjectToStringArray(ArrayUtilities.getColumnAsArray(data, 1));
             String[] components = ArrayUtilities.SmallObjectToStringArray(ArrayUtilities.getColumnAsArray(data, 0));
 
-            FileReaderWriter fr = new FileReaderWriter(f);
-            String[] imported = fr.readLines();
+            FileReaderWriter fr = new FileReaderWriter(f, "UTF8");
+            String[] imported = fr.readLinesWCharset();
 
             MPView.setProgressMaximumValue(imported.length);
             progress.setStringPainted(true);

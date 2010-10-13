@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.1" encoding="UTF-8" ?>
 
 <Form version="1.6" maxVersion="1.7" type="org.netbeans.modules.form.forminfo.JPanelFormInfo">
   <Properties>
@@ -48,7 +48,7 @@
               <Group type="102" alignment="0" attributes="0">
                   <EmptySpace max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="0" attributes="0">
-                      <Component id="jLabel9" alignment="0" pref="354" max="32767" attributes="0"/>
+                      <Component id="jLabel9" alignment="0" pref="352" max="32767" attributes="0"/>
                       <Component id="jLabel8" alignment="0" min="-2" max="-2" attributes="0"/>
                       <Group type="102" alignment="0" attributes="0">
                           <Component id="labeledTextChooser2" min="-2" pref="264" max="-2" attributes="0"/>
@@ -140,7 +140,7 @@
               <Group type="102" alignment="0" attributes="0">
                   <EmptySpace min="-2" max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="0" attributes="0">
-                      <Component id="jLabel6" alignment="0" pref="354" max="32767" attributes="0"/>
+                      <Component id="jLabel6" alignment="0" pref="352" max="32767" attributes="0"/>
                       <Component id="jLabel5" min="-2" max="-2" attributes="0"/>
                       <Component id="langName" alignment="0" min="-2" pref="149" max="-2" attributes="0"/>
                       <Group type="102" alignment="0" attributes="0">
@@ -262,7 +262,7 @@
               <Group type="102" alignment="0" attributes="0">
                   <EmptySpace max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="0" attributes="0">
-                      <Component id="jLabel4" alignment="0" pref="354" max="32767" attributes="1"/>
+                      <Component id="jLabel4" alignment="0" pref="352" max="32767" attributes="1"/>
                       <Component id="jLabel3" alignment="0" min="-2" max="-2" attributes="0"/>
                       <Component id="languages" alignment="0" min="-2" pref="177" max="-2" attributes="1"/>
                   </Group>
@@ -333,7 +333,7 @@
               <Group type="102" alignment="0" attributes="0">
                   <EmptySpace max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="0" attributes="0">
-                      <Component id="jLabel1" alignment="0" pref="354" max="32767" attributes="1"/>
+                      <Component id="jLabel1" alignment="0" pref="352" max="32767" attributes="1"/>
                       <Component id="jLabel2" alignment="0" min="-2" max="-2" attributes="0"/>
                       <Component id="locales" alignment="0" min="-2" pref="176" max="-2" attributes="1"/>
                   </Group>

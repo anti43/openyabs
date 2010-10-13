@@ -275,7 +275,8 @@ public enum Messages {
      + "Create mail templates at Tools->Control Panel->User Properties->Mail Templates. "
      + "The mail will be send without any text body now."),
      ADD_CONTACT("Add contact.."),
-     SEARCH_CONTACT("Search contact.."),
+     SEARCH_CONTACT("Search contact.."), 
+     LANGUAGE_FILE("Your language file is not up to date! Visit openyabs.org for a new language file or edit the existing one via Tools->Control Panel->Babelfish"),
     ;
 
 

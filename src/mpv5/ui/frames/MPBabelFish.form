@@ -129,14 +129,14 @@
                           <EmptySpace max="-2" attributes="0"/>
                           <Component id="progress" pref="166" max="32767" attributes="0"/>
                       </Group>
-                      <Component id="jLabel7" pref="365" max="32767" attributes="1"/>
+                      <Component id="jLabel7" pref="373" max="32767" attributes="1"/>
                   </Group>
                   <EmptySpace max="-2" attributes="0"/>
                   <Component id="jLabel1" min="-2" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
               </Group>
-              <Component id="GooogleTranslator" alignment="0" pref="644" max="32767" attributes="0"/>
-              <Component id="jScrollPane1" alignment="0" pref="644" max="32767" attributes="0"/>
+              <Component id="GooogleTranslator" alignment="0" pref="660" max="32767" attributes="0"/>
+              <Component id="jScrollPane1" alignment="0" pref="660" max="32767" attributes="0"/>
           </Group>
         </DimensionLayout>
         <DimensionLayout dim="1">
@@ -160,7 +160,7 @@
               </Group>
               <Group type="102" alignment="0" attributes="0">
                   <Component id="jLabel1" min="-2" max="-2" attributes="0"/>
-                  <EmptySpace pref="301" max="32767" attributes="0"/>
+                  <EmptySpace pref="307" max="32767" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>

@@ -315,7 +315,7 @@ public class ArrayUtilities {
      */
     public static File tableModelToFile(JTable table, int[] columns, String separator, String filename, String suffix) {
         File file = FileDirectoryHandler.getTempFile(filename, suffix);
-        FileReaderWriter rw = new FileReaderWriter(file);
+        FileReaderWriter rw = new FileReaderWriter(file, "UTF8");
         TableModel model = table.getModel();
         String[] data = new String[model.getRowCount()];
         String line = "";
@@ -336,7 +336,7 @@ public class ArrayUtilities {
             data[idx] = line.substring(0, line.length() - separator.length());
         }
 
-        rw.write(data);
+        rw.writeWCharset(data);
         Log.Debug(ArrayUtilities.class, file);
         return file;
     }
