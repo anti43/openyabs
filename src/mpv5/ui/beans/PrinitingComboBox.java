@@ -25,6 +25,7 @@ import java.awt.event.ItemEvent;
 import java.awt.print.PrinterException;
 import java.io.File;
 import java.lang.reflect.Method;
+import java.util.ResourceBundle;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComboBox;
 import javax.swing.JTable;
@@ -98,6 +99,7 @@ public class PrinitingComboBox extends javax.swing.JPanel {
         jLabel1 = new javax.swing.JLabel();
 
         setName("Form"); // NOI18N
+        setOpaque(false);
 
         jComboBox1.setFont(jComboBox1.getFont());
         jComboBox1.setName("jComboBox1"); // NOI18N
@@ -108,7 +110,7 @@ public class PrinitingComboBox extends javax.swing.JPanel {
         });
 
         jLabel1.setFont(jLabel1.getFont());
-        java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle(); // NOI18N
+        ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle(); // NOI18Nbundle = mpv5.i18n.LanguageManager.getBundle(); // NOI18N// NOI18N // NOI18N
         jLabel1.setText(bundle.getString("PrinitingComboBox.jLabel1.text")); // NOI18N
         jLabel1.setName("jLabel1"); // NOI18N
 

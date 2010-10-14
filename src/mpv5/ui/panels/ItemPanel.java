@@ -38,6 +38,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.ResourceBundle;
 import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -576,7 +577,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
         ;
         toolbarpane = new javax.swing.JPanel();
 
-        java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle(); // NOI18N
+        ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle(); // NOI18Nbundle = mpv5.i18n.LanguageManager.getBundle(); // NOI18N// NOI18N // NOI18N
         setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("ItemPanel.border.title_1"))); // NOI18N
         setName("ItemPanel"); // NOI18N
         setLayout(new java.awt.BorderLayout());
@@ -588,7 +589,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
         rightpane.setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("ItemPanel.rightpane.border.title"))); // NOI18N
         rightpane.setName("rightpane"); // NOI18N
 
-        jPanel1.setBackground(new java.awt.Color(155, 180, 209));
+        jPanel1.setBackground(new java.awt.Color(219, 224, 189));
         jPanel1.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         jPanel1.setName("jPanel1"); // NOI18N
         jPanel1.setPreferredSize(new java.awt.Dimension(843, 100));
@@ -784,11 +785,12 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
 
         type.setBackground(new java.awt.Color(255, 255, 255));
         type.setFont(type.getFont().deriveFont(type.getFont().getStyle() | java.awt.Font.BOLD, type.getFont().getSize()+2));
-        type.setForeground(new java.awt.Color(0, 51, 51));
+        type.setForeground(new java.awt.Color(26, 34, 70));
         type.setText(bundle.getString("ItemPanel.type.text")); // NOI18N
         type.setBorder(javax.swing.BorderFactory.createCompoundBorder(javax.swing.BorderFactory.createEtchedBorder(), javax.swing.BorderFactory.createEmptyBorder(1, 3, 1, 5)));
         type.setMaximumSize(new java.awt.Dimension(100, 23));
         type.setName("type"); // NOI18N
+        type.setPreferredSize(new java.awt.Dimension(100, 24));
         jToolBar1.add(type);
 
         jSeparator4.setName("jSeparator4"); // NOI18N

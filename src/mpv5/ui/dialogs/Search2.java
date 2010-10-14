@@ -197,8 +197,8 @@ public class Search2 extends javax.swing.JDialog {
          if (context != null) {
                 try {
                     selection = DatabaseObject.getObject(context, Integer.valueOf(jTable1.getValueAt(jTable1.getSelectedRow(), 0).toString()));
-                } catch (NodataFoundException ex) {
-                    mpv5.logging.Log.Debug(ex);
+                } catch (Exception ex) {
+                    mpv5.logging.Log.Debug(this, ex.getMessage());
                 }
                 this.dispose();
             }
