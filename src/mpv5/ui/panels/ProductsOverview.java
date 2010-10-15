@@ -33,6 +33,7 @@ import mpv5.ui.misc.DragTableHandlerForDBOs;
 import mpv5.utils.date.DateConverter;
 import mpv5.utils.date.vTimeframe;
 import mpv5.utils.models.MPTableModel;
+import mpv5.utils.tables.TableFormat;
 import mpv5.utils.trees.TreeFormat;
 
 /**
@@ -199,7 +200,6 @@ public class ProductsOverview extends javax.swing.JPanel implements ListPanel {
         jButton1.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         jButton1.setName("jButton1"); // NOI18N
         jButton1.setPreferredSize(new java.awt.Dimension(55, 19));
-        jButton1.setPressedIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/16/kalarm.png"))); // NOI18N
         jButton1.setSelectedIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/16/kalarm.png"))); // NOI18N
         jButton1.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         jButton1.addActionListener(new java.awt.event.ActionListener() {
@@ -328,6 +328,8 @@ public class ProductsOverview extends javax.swing.JPanel implements ListPanel {
         } catch (NodataFoundException ex) {
             listtable.setModel(new MPTableModel());
         }
+
+        TableFormat.hideHeader(listtable);
     }
 
     public void refresh() {

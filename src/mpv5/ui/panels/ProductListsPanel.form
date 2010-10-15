@@ -181,7 +181,6 @@
             <Component class="mpv5.ui.beans.PrinitingComboBox" name="prinitingComboBox1">
               <Properties>
                 <Property name="name" type="java.lang.String" value="prinitingComboBox1" noResource="true"/>
-                <Property name="opaque" type="boolean" value="false"/>
               </Properties>
             </Component>
             <Component class="mpv5.ui.beans.LabeledCombobox" name="groupnameselect">

@@ -94,7 +94,7 @@ public class ProductListsPanel extends javax.swing.JPanel implements DataPanel, 
         sp = new SearchPanel(Context.getProductlist(), this);
         sp.setVisible(true);
         tb = new mpv5.ui.toolbars.DataPanelTB(this);
-        tb.disableButton(1);
+//        tb.disableButton(1);
         tb.disableButton(8);
         tb.disableButton(9);
         toolbarpanetbp.add(tb, BorderLayout.CENTER);
