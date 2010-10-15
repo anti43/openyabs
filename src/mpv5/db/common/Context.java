@@ -124,6 +124,7 @@ public class Context implements Serializable {
     public static String UNIQUECOLUMNS_GROUPS = "cname";
     public static String UNIQUECOLUMNS_DEFAULT = "cname";
     public static String DETAIL_CONTACT_SEARCH = "prename,cname,street,city,country,notes";
+
     //********** conditions ****************************************************
     private boolean isCompany = false;
     private boolean isCustomer = false;
@@ -1639,6 +1640,20 @@ public class Context implements Serializable {
     @Override
     public String toString() {
         return dbIdentity.toUpperCase() + " [" + id + "]";
+    }
+
+    /**
+     * Looks for a Context with the specified id
+     * @param value
+     * @return A Context or null if no matching Context was found
+     */
+    public static Context getByID(int value) {
+        for (int i = 0; i < allContexts.size(); i++) {
+            Context context = allContexts.get(i);
+            if(context.getId() == value)
+                return context;
+        }
+        return null;
     }
 
     /**

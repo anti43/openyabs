@@ -144,9 +144,31 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
     @Retention(RetentionPolicy.RUNTIME)
     @Target(ElementType.METHOD)
     public @interface Persistable {
-
         boolean value();
     }
+
+     /**
+     * If set, the auto-database-schema creator will create a foreign key reference to the {@link Context} with the given id.
+     * To be one of {@link Context#getId() }.
+     */
+    @Retention(RetentionPolicy.RUNTIME)
+    @Target(ElementType.METHOD)
+    public @interface References {
+        int value();
+    }
+    
+     /**
+     * If set, the auto-database-schema creator will create a ON DELETE CASCADE 
+     * reference to any {@link Context}s which have been annotated via the @References annotation on this method
+     * To be one of {@link Context#getId() }.
+     */
+    @Retention(RetentionPolicy.RUNTIME)
+    @Target(ElementType.METHOD)
+    public @interface Cascade {
+        boolean value();
+    }
+
+
     private static boolean AUTO_LOCK = false;
     private static Map<String, SoftReference<DatabaseObject>> cache = new ConcurrentHashMap<String, SoftReference<DatabaseObject>>(1000);
 

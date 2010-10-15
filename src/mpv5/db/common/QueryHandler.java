@@ -184,7 +184,7 @@ public class QueryHandler implements Cloneable {
         }
     }
 
-    private void setLimit(int limit) {
+    protected void setLimit(int limit) {
         if (limit > this.limit || limit < this.limit) {
             Log.Debug(QueryHandler.class, "Setting row limit for this connection to: " + limit);
             this.limit = limit;
