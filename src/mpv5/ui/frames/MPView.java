@@ -399,6 +399,10 @@ public class MPView extends FrameView {
         return plisttab;
     }
 
+    public static void setPredefTitle(String string) {
+        predefTitle = string;
+    }
+
     /**
      * Reloads fav menu
      */
@@ -607,32 +611,32 @@ public class MPView extends FrameView {
                 getNaviPanel().repaint();
             }
         };
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         SwingUtilities.invokeLater(runnable);
     }
 
@@ -2456,9 +2460,8 @@ public class MPView extends FrameView {
     private void jMenuItem44ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem44ActionPerformed
         mpv5.usermanagement.Lock.lock(this.getFrame());
         User.getCurrentUser().logout();
-        
-    }//GEN-LAST:event_jMenuItem44ActionPerformed
 
+    }//GEN-LAST:event_jMenuItem44ActionPerformed
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton calculatorButton;
     public javax.swing.JMenu clipboardMenu;

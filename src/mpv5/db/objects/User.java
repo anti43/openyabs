@@ -294,11 +294,11 @@ public class User extends DatabaseObject {
 
                 @Override
                 public void run() {
+                    setTitle();
                     setDatelastlog(new Date());
                     setIsloggedin(true);
                     save();
                     DatabaseObject.cacheObjects();//re-cache for user
-
                     try {
                         layoutinfo.putAll(ValueProperty.getProperty(t, "layoutinfo").getValue(new HashMap<String, String>()));
                     } catch (Exception ex) {
@@ -310,6 +310,15 @@ public class User extends DatabaseObject {
             new Thread(runnable).start();
         } else {
             Popup.warn(Messages.NOT_POSSIBLE.toString() + Messages.USER_DISABLED);
+        }
+    }
+
+    private void setTitle() {
+        String nt = " (" + getCurrentUser().__getCName() + ")";
+        if (MPView.identifierFrame != null) {
+            MPView.identifierFrame.setTitle(MPView.identifierFrame.getTitle().substring(0, MPView.identifierFrame.getTitle().indexOf(" (")) + nt);
+        } else {
+            MPView.setPredefTitle(nt);
         }
     }
 

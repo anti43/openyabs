@@ -45,6 +45,29 @@ public class SchemaCreator {
                 cols.add(new column(name, type, references, cascade));
             }
         }
+        if (ConnectionTypeHandler.getDriverType() == ConnectionTypeHandler.DERBY) {
+            createTableDerby(cols, newObject.getClass().getSimpleName());
+        } else {
+            createTableMySQL(cols, newObject.getClass().getSimpleName());
+        }
+    }
+
+    private static void createTableDerby(List<column> cols, String tableName) {
+//CREATE TABLE tax (IDS BIGINT NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1), cname VARCHAR(250), taxvalue DOUBLE DEFAULT 0,identifier VARCHAR(250) DEFAULT NULL, groupsids BIGINT  REFERENCES groups(ids) DEFAULT 1,country VARCHAR(50) DEFAULT NULL, dateadded DATE NOT NULL,intaddedby BIGINT DEFAULT 0, invisible SMALLINT DEFAULT 0, reserve1 VARCHAR(500) DEFAULT NULL,reserve2 VARCHAR(500) DEFAULT NULL,PRIMARY KEY  (ids))",
+        String query = "CREATE TABLE " + tableName + " (IDS BIGINT NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1)";
+        for (int i = 0; i < cols.size(); i++) {
+            column elem = cols.get(i);
+            query+= ", " + elem.name;
+            if(Number.class.isAssignableFrom(elem.type)){
+                 query+= ", " + elem.name;
+
+            }
+        }
+        query += ")";
+    }
+
+    private static void createTableMySQL(List<column> cols, String tableName) {
+        throw new UnsupportedOperationException("Not yet implemented");
     }
 
     static class column {
