@@ -26,6 +26,7 @@ import javax.swing.JComponent;
 import mpv5.logging.Log;
 import mpv5.ui.panels.JournalPanel;
 import mpv5.utils.date.DateConverter;
+import mpv5.utils.numberformat.FormatNumber;
 
 /**
  * PropertyStores is used to store key-value pairs
@@ -171,10 +172,10 @@ public class PropertyStore {
 //        }
 //    }
     /**
-     * Return a boolean property. Will return false if the property is not parseable as boolean
+     * Return a property
      * @param <T>
      * @param key
-     * @param desiredClass
+     * @param desiredClass (one of Double, Integer, boolean, Date)
      * @return A value or a new instance of T
      */
     @SuppressWarnings("unchecked")
@@ -182,28 +183,44 @@ public class PropertyStore {
         String t = getProperty(key);
 
         if (desiredClass instanceof Double) {
-            if (t == null) {
+            if (t == null || String.valueOf(t).length() == 0) {
                 return (T) new Double(0);
             } else {
-                return (T) Double.valueOf(t);
+                try {
+                    return (T) Double.valueOf(t);
+                } catch (NumberFormatException numberFormatException) {
+                    return (T) new Double(FormatNumber.parseDezimal(t).doubleValue());
+                }
             }
         } else if (desiredClass instanceof Integer) {
-            if (t == null) {
+            if (t == null || String.valueOf(t).length() == 0) {
                 return (T) new Integer(0);
             } else {
-                return (T) Integer.valueOf(t);
+                try {
+                    return (T) Integer.valueOf(t);
+                } catch (NumberFormatException numberFormatException) {
+                    return (T) new Double(FormatNumber.parseDezimal(t).intValue());
+                }
             }
         } else if (desiredClass instanceof Boolean) {
-            if (t == null) {
+            if (t == null || String.valueOf(t).length() == 0) {
                 return (T) Boolean.FALSE;
             } else {
-                return (T) Boolean.valueOf(t);
+                try {
+                    return (T) Boolean.valueOf(t);
+                } catch (Exception e) {
+                    return (T) Boolean.FALSE;
+                }
             }
         } else if (desiredClass instanceof Date) {
-            if (t == null) {
+            if (t == null || String.valueOf(t).length() == 0) {
                 return (T) new Date();
             } else {
-                return (T) DateConverter.getDate(t);
+                try {
+                    return (T) DateConverter.getDate(t);
+                } catch (Exception e) {
+                    return (T) new Date();
+                }
             }
         } else {
             return (T) t;
@@ -234,13 +251,13 @@ public class PropertyStore {
         return getProperty(comp.getClass().getName() + "$" + source, type);
     }
 
-     /**
+    /**
      * Convenience method to retrieve visual component properties stored as
      * <br/>comp.getClass().getName() + "$" + source
      * @param <T>
      * @param comp
-      * @param target
-      * @param type
+     * @param target
+     * @param type
      * @return
      */
     public synchronized <T extends Object> T getProperty(Component comp, Component target, T type) {
@@ -366,6 +383,4 @@ public class PropertyStore {
         }
         setChanged(true);
     }
-
-
 }
