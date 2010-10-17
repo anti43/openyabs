@@ -122,6 +122,10 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
         refresh();
 
         itemTablePopup = DOTablePopUp.addDefaultPopupMenu(dataTable, Context.getItem(), false);
+
+        if (context.equals(Context.getSupplier()) || context.equals(Context.getManufacturer())) {
+            company.setSelected(true);
+        }
     }
 
     @Override

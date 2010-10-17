@@ -293,15 +293,15 @@ public class SubItem extends DatabaseObject implements Triggerable {
         if (mpv5.db.objects.User.getCurrentUser().getProperties().hasProperty("deftax")) {
             int taxid = mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("deftax", new Integer(0));
             deftax = Tax.getTaxValue(taxid);
-            i.setTaxpercentvalue(deftax);
         }
-        Double defcount = 1d;
-        if (mpv5.db.objects.User.getCurrentUser().getProperties().hasProperty("defcount")) {
-            defcount = mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("defcount", 0d);
-            i.setQuantityvalue(new BigDecimal(defcount.toString()));
-        }
+        i.setTaxpercentvalue(deftax);
 
-        i.setQuantityvalue(new BigDecimal("1"));
+        if (mpv5.db.objects.User.getCurrentUser().getProperties().hasProperty("defcount")) {
+            Double defcount = mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("defcount", 0d);
+            i.setQuantityvalue(new BigDecimal(defcount.toString()));
+        } else {
+            i.setQuantityvalue(new BigDecimal("1"));
+        }
 
         return i;
     }
