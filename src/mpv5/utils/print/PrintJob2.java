@@ -193,7 +193,6 @@ public class PrintJob2 {
     }
 
     public PrintJob2() {
-        throw new UnsupportedOperationException("Not yet implemented");
     }
 
     /**

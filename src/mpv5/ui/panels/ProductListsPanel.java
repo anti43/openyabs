@@ -176,7 +176,7 @@ public class ProductListsPanel extends javax.swing.JPanel implements DataPanel, 
         if (populate) {
             dataOwner.setPanelData(this);
             this.exposeData();
-            prinitingComboBox1.init(dataOwner);
+            prinitingComboBox1.init(rightpane);
             tb.setFavourite(Favourite.isFavourite(object));
             tb.setEditable(!object.isReadOnly());
             try {

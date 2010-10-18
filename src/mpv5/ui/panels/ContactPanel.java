@@ -144,7 +144,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
                 setTitle(object.__getCName());
             }
 
-            prinitingComboBox1.init(dataOwner);
+            prinitingComboBox1.init(rightpane);
 
             tb.setFavourite(Favourite.isFavourite(object));
             tb.setEditable(!object.isReadOnly());

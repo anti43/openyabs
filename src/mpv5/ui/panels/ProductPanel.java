@@ -228,7 +228,7 @@ public class ProductPanel extends javax.swing.JPanel implements DataPanel, MPCBS
 
             setTitle();
 
-            prinitingComboBox1.init(dataOwner);
+            prinitingComboBox1.init(rightpane);
 
             tb.setFavourite(Favourite.isFavourite(object));
             tb.setEditable(!object.isReadOnly());

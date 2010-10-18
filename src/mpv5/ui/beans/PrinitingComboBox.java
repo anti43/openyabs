@@ -21,17 +21,21 @@
  */
 package mpv5.ui.beans;
 
+import java.awt.Component;
+import java.awt.Graphics2D;
 import java.awt.event.ItemEvent;
+import java.awt.image.BufferedImage;
 import java.awt.print.PrinterException;
 import java.io.File;
-import java.lang.reflect.Method;
+import java.io.IOException;
 import java.util.ResourceBundle;
+import javax.imageio.ImageIO;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComboBox;
+import javax.swing.JComponent;
 import javax.swing.JTable;
-import javax.swing.table.DefaultTableModel;
+import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
-import mpv5.db.objects.Contact;
 import mpv5.logging.Log;
 import mpv5.ui.dialogs.DialogForFile;
 import mpv5.utils.arrays.ArrayUtilities;
@@ -42,6 +46,7 @@ import mpv5.utils.files.TableHtmlWriter;
 import mpv5.utils.models.MPComboBoxModelItem;
 import mpv5.utils.print.FilePrintJob;
 import mpv5.utils.print.PrintJob;
+import mpv5.utils.print.PrintJob2;
 
 /**
  *
@@ -54,6 +59,7 @@ public class PrinitingComboBox extends javax.swing.JPanel {
     public static final int MODE_TABLE = 1;
     private int mode = 0;
     private Object dataowner;
+    public static final int MODE_COMPONENT = 2;
 
     /** Creates new form PrinitingComboBox
      */
@@ -66,20 +72,38 @@ public class PrinitingComboBox extends javax.swing.JPanel {
      * @param dataowner DatabaseObject or JTable
      */
     public void init(Object dataowner) {
-        if (dataowner instanceof DatabaseObject) {
+        if (dataowner instanceof DatabaseObject
+                && (((DatabaseObject) dataowner).getContext().equals(Context.getContact())
+                || ((DatabaseObject) dataowner).getContext().equals(Context.getSupplier())
+                || ((DatabaseObject) dataowner).getContext().equals(Context.getManufacturer())
+                || ((DatabaseObject) dataowner).getContext().equals(Context.getCustomer())
+                || ((DatabaseObject) dataowner).getContext().equals(Context.getUser())) ){
 
             jComboBox1.setModel(new DefaultComboBoxModel(new Object[]{new MPComboBoxModelItem(-1, ""),
                         new MPComboBoxModelItem(0, "Printer"),
-                        new MPComboBoxModelItem(1, "VCF File"),
-                        new MPComboBoxModelItem(2, "CSV File"),
-                        new MPComboBoxModelItem(3, "XML File")}));
+                        new MPComboBoxModelItem(1, "VCF Export"),
+                        new MPComboBoxModelItem(2, "CSV Export"),
+                        new MPComboBoxModelItem(3, "XML Export")}));
+            mode = MODE_DO;
+        } else if (dataowner instanceof DatabaseObject) {
+
+            jComboBox1.setModel(new DefaultComboBoxModel(new Object[]{new MPComboBoxModelItem(-1, ""),
+                        new MPComboBoxModelItem(0, "Printer"),
+                        new MPComboBoxModelItem(2, "CSV Export"),
+                        new MPComboBoxModelItem(3, "XML Export")}));
             mode = MODE_DO;
         } else if (dataowner instanceof JTable) {
             jComboBox1.setModel(new DefaultComboBoxModel(new Object[]{new MPComboBoxModelItem(-1, ""),
                         new MPComboBoxModelItem(0, "Printer"),
-                        new MPComboBoxModelItem(2, "CSV File"),
-                        new MPComboBoxModelItem(1, "HTML File")}));
+                        new MPComboBoxModelItem(2, "CSV Export"),
+                        new MPComboBoxModelItem(1, "HTML Export")}));
             mode = MODE_TABLE;
+        } else if (dataowner instanceof JComponent) {
+            jComboBox1.setModel(new DefaultComboBoxModel(new Object[]{new MPComboBoxModelItem(-1, ""),
+                        new MPComboBoxModelItem(0, "Printer"),
+                        new MPComboBoxModelItem(1, "Export")
+                    }));
+            mode = MODE_COMPONENT;
         }
         this.dataowner = dataowner;
 
@@ -169,7 +193,7 @@ public class PrinitingComboBox extends javax.swing.JPanel {
                         case 1:
                             DialogForFile dialog = new DialogForFile(DialogForFile.FILES_ONLY, "export-" + DateConverter.getTodayDefDate() + ".html");
                             if (dialog.saveFile()) {
-                                File f = new TableHtmlWriter( (JTable) dataowner, dialog.getFile(), ((JTable) dataowner).getShowHorizontalLines(), ((JTable) dataowner).getShowVerticalLines()).createHtml();
+                                File f = new TableHtmlWriter((JTable) dataowner, dialog.getFile(), ((JTable) dataowner).getShowHorizontalLines(), ((JTable) dataowner).getShowVerticalLines()).createHtml();
                                 FileActionHandler.open(f);
                             }
                             break;
@@ -192,6 +216,34 @@ public class PrinitingComboBox extends javax.swing.JPanel {
                     }
                     break;
                 }
+
+            case MODE_COMPONENT:
+                if (evt.getStateChange() == ItemEvent.SELECTED) {
+                    switch (Integer.valueOf(item.getId().toString())) {
+                        case 0:
+                            new PrintJob2((Component) dataowner);
+                            break;
+                        case 1:
+                            Component comp = (Component) dataowner;
+                            int w = comp.getWidth(),
+                             h = comp.getHeight();
+                            BufferedImage image = new BufferedImage(w, h,
+                                    BufferedImage.TYPE_INT_RGB);
+                            Graphics2D g2 = image.createGraphics();
+                            comp.paint(g2);
+                            g2.dispose();
+                            DialogForFile d = new DialogForFile(new File("export.jpg"));
+                            if (d.saveFile()) {
+                                try {
+                                    ImageIO.write(image, "jpeg", d.getFile());
+                                } catch (IOException ex) {
+                                    Log.Debug(ex);
+                                }
+                            }
+                            break;
+                    }
+                }
+                break;
         }
 
     }//GEN-LAST:event_jComboBox1ItemStateChanged
@@ -199,6 +251,4 @@ public class PrinitingComboBox extends javax.swing.JPanel {
     private javax.swing.JComboBox jComboBox1;
     private javax.swing.JLabel jLabel1;
     // End of variables declaration//GEN-END:variables
-
-
 }
