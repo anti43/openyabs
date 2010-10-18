@@ -203,6 +203,14 @@ public class LabeledTextField extends javax.swing.JPanel {
         jLabel1.setToolTipText(_text);
     }
 
+        /**
+     * @param label the _label to set
+     */
+    public void setLabel(String label) {
+        set_Label(label);
+    }
+
+
     public void set_LabelFont(Font font) {
 //        if (font != null) {
 //            jLabel1.setFont(font);

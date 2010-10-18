@@ -83,11 +83,12 @@ public class DatabaseSearch {
      * @param searchForLike Shall we search with "like" condition?
      * @return 
      */
-    public Object[][] getValuesFor(String resultingFieldNames, String[] possibleColumns, String where, boolean searchForLike) {
+    public Object[][] getValuesFor(String resultingFieldNames, String[] possibleColumns, Object where, boolean searchForLike) {
         ArrayList<Object[]> list = new ArrayList<Object[]>();
         for (int i = 0; i < possibleColumns.length; i++) {
             String string = possibleColumns[i];
-            list.addAll(Arrays.asList(QueryHandler.instanceOf().clone(context, ROWLIMIT).select(resultingFieldNames, new String[]{string, where, "'"}, null, searchForLike)));
+            list.addAll(Arrays.asList(QueryHandler.instanceOf().clone(context, ROWLIMIT)
+                    .select(resultingFieldNames, new String[]{string, String.valueOf(where), (where instanceof Number)? "":"'"}, null, searchForLike)));
         }
         ArrayUtilities.removeDuplicates(list);
         return list.toArray(new Object[][]{});

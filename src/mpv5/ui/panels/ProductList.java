@@ -54,15 +54,15 @@ public class ProductList extends javax.swing.JPanel implements ListPanel {
 
         QueryCriteria2 qc = new QueryCriteria2();
 
-        if (labeledCombobox1.getValue() != null) {
+        if (labeledCombobox1.getValue() != null && labeledCombobox1.getComboBox().getSelectedIndex() != -1) {
             qc.and(new QueryParameter(context, "suppliersids", Integer.valueOf(labeledCombobox1.getSelectedItem().getId()), QueryParameter.EQUALS));
         }
-        if (labeledCombobox2.getValue() != null) {
+        if (labeledCombobox2.getValue() != null && labeledCombobox2.getComboBox().getSelectedIndex() != -1) {
             qc.and(new QueryParameter(context, "manufacturersids", Integer.valueOf(labeledCombobox2.getSelectedItem().getId()), QueryParameter.EQUALS));
         }
         if (jCheckBox1.isSelected() && jCheckBox2.isSelected()) {
             qc.or(new QueryParameter[]{new QueryParameter(context, "inttype", Product.TYPE_PRODUCT, QueryParameter.EQUALS),
-                  new QueryParameter(context, "inttype", Product.TYPE_SERVICE, QueryParameter.EQUALS)});
+                        new QueryParameter(context, "inttype", Product.TYPE_SERVICE, QueryParameter.EQUALS)});
         } else {
             if (!jCheckBox2.isSelected()) {
                 qc.and(new QueryParameter(context, "inttype", Product.TYPE_PRODUCT, QueryParameter.EQUALS));

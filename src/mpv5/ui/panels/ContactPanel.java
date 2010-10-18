@@ -1281,11 +1281,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
 
     private void button_productsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button_productsActionPerformed
         Context c = Context.getProduct();
-
-        Object[][] data1 = new DatabaseSearch(c).getValuesFor(Context.DEFAULT_PRODUCT_SEARCH, "manufacturersids", dataOwner.__getIDS());
-        Object[][] data2 = new DatabaseSearch(c).getValuesFor(Context.DEFAULT_PRODUCT_SEARCH, "suppliersids", dataOwner.__getIDS());
-        Object[][] data = ArrayUtilities.merge(data1, data2);
-
+        Object[][] data = new DatabaseSearch(c, 1000).getValuesFor(Context.DEFAULT_PRODUCT_SEARCH, new String[]{"manufacturersids", "suppliersids"}, dataOwner.__getIDS(), false);
         dataTable.setModel(new MPTableModel(data, Headers.PRODUCT_DEFAULT));
         dataTableContent = PRODUCTS;
         addfile.setEnabled(false);

@@ -134,8 +134,8 @@
                               <EmptySpace max="-2" attributes="0"/>
                               <Component id="jCheckBox2" min="-2" max="-2" attributes="0"/>
                           </Group>
-                          <Component id="labeledCombobox2" alignment="0" pref="232" max="32767" attributes="1"/>
-                          <Component id="labeledCombobox1" alignment="0" pref="232" max="32767" attributes="1"/>
+                          <Component id="labeledCombobox2" alignment="0" pref="254" max="32767" attributes="1"/>
+                          <Component id="labeledCombobox1" alignment="0" pref="254" max="32767" attributes="1"/>
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">

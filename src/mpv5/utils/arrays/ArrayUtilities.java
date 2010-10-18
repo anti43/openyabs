@@ -252,10 +252,10 @@ public class ArrayUtilities {
 
     }
 
-     /**
+    /**
      * Replaces a columns data in a table
-      * @param data
-      * @param column
+     * @param data
+     * @param column
      * @param columndata
      */
     public static Object[][] replaceColumn(Object[][] data, int column, Object[] columndata) {
@@ -272,6 +272,7 @@ public class ArrayUtilities {
         }
         return data;
     }
+
     /**
      * Replaces a columns data in a table
      * @param table
@@ -683,7 +684,6 @@ public class ArrayUtilities {
         }
         return list.toArray(new Object[][]{});
     }
-
 
     /**
      * Converts a HashMap to a 2-column array {key, value}
@@ -1102,4 +1102,5 @@ public class ArrayUtilities {
             });
         }
     }
+
 }
