@@ -147,6 +147,7 @@ public class LanguageManager {
             cachedLanguages.remove(langid);
         }
         cachedLanguages.put(langid, bundle);
+        cached = true;
     }
 
     private static ResourceBundle getCachedLanguage(String langid) {
@@ -211,7 +212,6 @@ public class LanguageManager {
                                     try {
                                         ResourceBundle bundle = ResourceBundleUtf8.getBundle(tempname);
                                         cachelanguage(langid, bundle);
-                                        cached = true;
                                         return bundle;
                                     } catch (Exception e) {
                                         fail(langid);
