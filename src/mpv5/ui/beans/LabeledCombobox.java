@@ -17,11 +17,18 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Vector;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JComboBox;
+import javax.swing.JTextArea;
 import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
+import mpv5.db.common.NodataFoundException;
 import mpv5.handler.MPEnum;
+import mpv5.logging.Log;
 import mpv5.ui.dialogs.subcomponents.ControlPanel_Taxes;
+import mpv5.ui.dialogs.subcomponents.DatabaseObejctReceiver;
+import mpv5.ui.dialogs.subcomponents.ItemTextAreaDialog;
 import mpv5.ui.panels.DataPanel;
 import mpv5.utils.models.*;
 
@@ -34,7 +41,7 @@ public class LabeledCombobox extends javax.swing.JPanel {
     private static final long serialVersionUID = 1L;
     private String _text;
     private String _label;
-    private LabeledTextField receiver;
+
 
     /** Creates new form LabeledTextField */
     public LabeledCombobox() {
@@ -304,7 +311,6 @@ public class LabeledCombobox extends javax.swing.JPanel {
      * @param receiver 
      */
     public void setReceiver(final LabeledTextField receiver) {
-        this.receiver = receiver;
         getComboBox().addActionListener(new ActionListener() {
 
             public void actionPerformed(ActionEvent e) {
@@ -335,5 +341,27 @@ public class LabeledCombobox extends javax.swing.JPanel {
      */
     public void setEditable(boolean b) {
         getComboBox().setEditable(b);
+    }
+
+    public void setReceiver(final JTextArea receiver) {
+        getComboBox().addActionListener(new ActionListener() {
+
+            public void actionPerformed(ActionEvent e) {
+                receiver.setText(getSelectedItem().toString());
+            }
+        });
+    }
+
+    public void setReceiver(final DatabaseObejctReceiver obj) {
+        getComboBox().addActionListener(new ActionListener() {
+
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    obj.receive(DatabaseObject.getObject(mPCombobox1.getContext(), (Integer)getSelectedItem().getIdObject()));
+                } catch (NodataFoundException ex) {
+//                    Log.Debug(ex);
+                }
+            }
+        });
     }
 }

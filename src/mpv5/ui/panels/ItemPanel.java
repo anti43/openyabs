@@ -1983,6 +1983,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
         textAreaCellRenderer.setRendererTo(4);
         TextAreaCellEditor r = new TextAreaCellEditor(itemtable);
         ItemTextAreaDialog itemTextAreaDialog = new ItemTextAreaDialog(MPView.getIdentifierFrame(), true);
+        itemTextAreaDialog.setParentTable(itemtable);
         itemTextAreaDialog.okButton.addActionListener(r);
         itemTextAreaDialog.cancelButton.addActionListener(r);
         r.setDialog(itemTextAreaDialog, itemTextAreaDialog.textArea);

@@ -824,9 +824,21 @@ public class ProductListsPanel extends javax.swing.JPanel implements DataPanel, 
             }
         });
 
-        itemtable.getColumnModel().getColumn(itemtable.getColumnModel().getColumnIndex("A")).setCellRenderer(new ButtonRenderer());
-        itemtable.getColumnModel().getColumn(itemtable.getColumnModel().getColumnIndex("A")).setCellEditor(new ButtonEditor(b1));
-        itemtable.getColumnModel().getColumn(itemtable.getColumnModel().getColumnIndex("C")).setCellRenderer(new ButtonRenderer());
-        itemtable.getColumnModel().getColumn(itemtable.getColumnModel().getColumnIndex("C")).setCellEditor(new ButtonEditor(b2));
-    }
+//        try {
+//            itemtable.getColumnModel().getColumn(itemtable.getColumnModel().getColumnIndex("A")).setCellRenderer(new ButtonRenderer());
+//        } catch (Exception e) {
+//        }
+//        try {
+//            itemtable.getColumnModel().getColumn(itemtable.getColumnModel().getColumnIndex("A")).setCellEditor(new ButtonEditor(b1));
+//        } catch (Exception e) {
+//        }
+//        try {
+//            itemtable.getColumnModel().getColumn(itemtable.getColumnModel().getColumnIndex("C")).setCellRenderer(new ButtonRenderer());
+//        } catch (Exception e) {
+//        }
+//        try {
+//            itemtable.getColumnModel().getColumn(itemtable.getColumnModel().getColumnIndex("C")).setCellEditor(new ButtonEditor(b2));
+//        } catch (Exception e) {
+//        }
+ }
 }
