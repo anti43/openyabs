@@ -41,7 +41,7 @@ public class Selection {
         try {
             this.table = table;
             r          = table.getSelectedRow();
-            id         = Integer.valueOf(String.valueOf(table.getModel().getValueAt(r, 0)));
+            id         = Integer.valueOf(String.valueOf(table.getValueAt(r, 0)));
             noerror    = true;
 
             if (table.getCellEditor() != null) {
@@ -62,7 +62,7 @@ public class Selection {
         Object[] data = new Object[table.getModel().getColumnCount()];
 
         for (int idx = 0; idx < data.length; idx++) {
-            data[idx] = table.getModel().getValueAt(table.getSelectedRow(), idx);
+            data[idx] = table.getValueAt(table.getSelectedRow(), idx);
         }
 
         return data;

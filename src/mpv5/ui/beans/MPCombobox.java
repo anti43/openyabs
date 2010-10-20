@@ -25,6 +25,7 @@ import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComboBox;
 import javax.swing.JTable;
 import javax.swing.SwingUtilities;
+import mpv5.db.common.ConnectionTypeHandler;
 import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
 import mpv5.db.common.DatabaseSearch;
@@ -180,7 +181,7 @@ public class MPCombobox extends javax.swing.JPanel {
                     Object[][] data = null;
                     if (getComboBox().isEditable()) {
                         if (getContext().equals(Context.getProduct())) {
-                            data = new DatabaseSearch(getContext(), 200).getValuesFor2("ids, cname", new String[]{"cname", "description", "ean", "cnumber", "reference"}, String.valueOf(value), true);
+                            data = new DatabaseSearch(getContext(), 200).getValuesFor2("ids, cname || '  ' || " + ConnectionTypeHandler.getToChar("externalnetvalue"), new String[]{"cname", "description", "ean", "cnumber", "reference"}, String.valueOf(value), true);
                         } else if ((getContext().equals(Context.getCustomer()) || getContext().equals(Context.getManufacturer()) || getContext().equals(Context.getSupplier())) && mpv5.db.objects.User.getCurrentUser().getProperties().getProperty(MPView.getTabPane(), "companiesovernames")) {
                             data = new DatabaseSearch(getContext(), 200).getValuesFor("ids, company", "company", jComboBox1.getSelectedItem().toString(), true);
                         } else {

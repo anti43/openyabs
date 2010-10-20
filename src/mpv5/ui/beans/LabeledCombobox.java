@@ -347,7 +347,10 @@ public class LabeledCombobox extends javax.swing.JPanel {
         getComboBox().addActionListener(new ActionListener() {
 
             public void actionPerformed(ActionEvent e) {
-                receiver.setText(getSelectedItem().toString());
+                try {
+                    receiver.setText(getSelectedItem().toString());
+                } catch (Exception eg) {
+                }
             }
         });
     }
@@ -358,7 +361,7 @@ public class LabeledCombobox extends javax.swing.JPanel {
             public void actionPerformed(ActionEvent e) {
                 try {
                     obj.receive(DatabaseObject.getObject(mPCombobox1.getContext(), (Integer)getSelectedItem().getIdObject()));
-                } catch (NodataFoundException ex) {
+                } catch (Exception ex) {
 //                    Log.Debug(ex);
                 }
             }

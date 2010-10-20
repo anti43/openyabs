@@ -125,12 +125,11 @@ public class ControlPanel_ProductGroups extends javax.swing.JPanel implements Co
         jButton2 = new javax.swing.JButton();
         jButton1 = new javax.swing.JButton();
 
-        java.util.ResourceBundle bundle  = mpv5.i18n.LanguageManager.getBundle();
+        java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle(); // NOI18N
         setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("ControlPanel_ProductGroups.border.title"))); // NOI18N
         setName("Form"); // NOI18N
         setLayout(new java.awt.BorderLayout());
 
-        jPanel1.setBackground(new java.awt.Color(227, 219, 202));
         jPanel1.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         jPanel1.setName("jPanel1"); // NOI18N
 
@@ -158,7 +157,7 @@ public class ControlPanel_ProductGroups extends javax.swing.JPanel implements Co
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 138, Short.MAX_VALUE)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 130, Short.MAX_VALUE)
                     .addComponent(jLabel1))
                 .addContainerGap())
         );
@@ -168,7 +167,7 @@ public class ControlPanel_ProductGroups extends javax.swing.JPanel implements Co
                 .addContainerGap()
                 .addComponent(jLabel1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 315, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -180,11 +179,11 @@ public class ControlPanel_ProductGroups extends javax.swing.JPanel implements Co
         cname.set_Label(bundle.getString("ControlPanel_ProductGroups.cname._Label")); // NOI18N
         cname.setName("cname"); // NOI18N
 
+        jScrollPane3.setBackground(new java.awt.Color(254, 254, 254));
         jScrollPane3.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
         jScrollPane3.setVerticalScrollBarPolicy(javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER);
         jScrollPane3.setName("jScrollPane3"); // NOI18N
 
-        jTextArea2.setBackground(new java.awt.Color(238, 238, 238));
         jTextArea2.setColumns(20);
         jTextArea2.setEditable(false);
         jTextArea2.setLineWrap(true);
@@ -255,7 +254,7 @@ public class ControlPanel_ProductGroups extends javax.swing.JPanel implements Co
                 .addComponent(path, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(gcombobox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(32, Short.MAX_VALUE))
+                .addContainerGap(41, Short.MAX_VALUE))
         );
 
         add(rightpane, java.awt.BorderLayout.EAST);

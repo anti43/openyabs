@@ -43,8 +43,7 @@ public class ItemTextAreaDialog extends javax.swing.JDialog implements KeyListen
         okButton.setToolTipText("ctrl+Enter");
         cancelButton.setToolTipText("Esc");
         labeledCombobox1.setContext(Context.getProduct());
-        labeledCombobox1.setSearchOnEnterEnabled(true);
-        labeledCombobox1.setReceiver(textArea);
+        labeledCombobox1.setSearchOnEnterEnabled(true);;
         labeledCombobox1.setReceiver(this);
         labeledCombobox1.setToolTipText(Messages.SEARCHABLE.toString());
     }
@@ -126,9 +125,8 @@ public class ItemTextAreaDialog extends javax.swing.JDialog implements KeyListen
     }// </editor-fold>//GEN-END:initComponents
 
     private void okButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_okButtonActionPerformed
-         setRow();
+        setRow();
     }//GEN-LAST:event_okButtonActionPerformed
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     public javax.swing.JButton cancelButton;
     private javax.swing.JScrollPane jScrollPane1;
@@ -164,15 +162,18 @@ public class ItemTextAreaDialog extends javax.swing.JDialog implements KeyListen
     public void receive(DatabaseObject obj) {
         if (obj.getContext().equals(Context.getProduct())) {
             this.product = (Product) obj;
+            textArea.setText(product.__getCName());
         }
     }
 
     private void setRow() {
         if (product != null) {
             SubItem p = new SubItem(product);
-            p.setCName(textArea.getText());
+            p.setDescription(textArea.getText());
             MPTableModel m = (MPTableModel) getParentTable().getModel();
             m.setRowAt(p.getRowData(getParentTable().getSelectedRow()), getParentTable().getSelectedRow(), 1);
+            labeledCombobox1.setSelectedIndex(-1);
+            product = null;
         }
     }
 

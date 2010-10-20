@@ -68,6 +68,21 @@ public class ConnectionTypeHandler {
     private static String DBPREFIX = "";
 
     /**
+     * Returns a database engine dependent version of CHAR() as a string
+     * @param column
+     * @return
+     */
+    public static String getToChar(String column) {
+        if (getDriverType() == DERBY) {
+            return "CHAR(externalnetvalue)";
+        } else if (getDriverType() == MYSQL) {
+            return "CAST(externalnetvalue AS CHAR)";
+        } else {
+            return "CHAR(externalnetvalue)";
+        }
+    }
+
+    /**
      * Constructs a new ConnHandler
      */
     public ConnectionTypeHandler() {
@@ -222,7 +237,7 @@ public class ConnectionTypeHandler {
      * @throws ClassNotFoundException
      */
     public static void testDriver(String driver) throws ClassNotFoundException {
-         Class.forName(driver);
+        Class.forName(driver);
     }
 
     public void setDBName(String dbname) {
