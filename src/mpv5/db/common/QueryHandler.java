@@ -142,6 +142,14 @@ public class QueryHandler implements Cloneable {
                     Log.Debug(this, "Corrected group 1 to fix Issue #239");
                 }
             }
+            ResultSet firstpgroup = runfixes.executeQuery("SELECT groupsids FROM groups ORDER BY ids ASC");
+            if (firstpgroup.next()) {
+                int gids = firstpgroup.getInt(1);
+                if (gids != 0) {
+                    runfixes.execute("update productgroups set productgroupsids = 0 where ids = 1");
+                    Log.Debug(this, "Corrected productgroup 1 to fix Issue #239");
+                }
+            }
             ResultSet firstaccount = runfixes.executeQuery("SELECT intparentaccount FROM accounts ORDER BY ids ASC");
             if (firstaccount.next()) {
                 int gids = firstaccount.getInt(1);
