@@ -46,6 +46,7 @@ import mpv5.ui.frames.MPView;
 import mpv5.ui.panels.DataPanel;
 import mpv5.usermanagement.MPSecurityManager;
 import mpv5.utils.models.MPComboBoxModelItem;
+import mpv5.utils.numberformat.FormatNumber;
 import mpv5.utils.trees.TreeFormat;
 import mpv5.utils.ui.TextFieldUtils;
 
@@ -630,7 +631,7 @@ public class ControlPanel_Accounts extends javax.swing.JPanel implements Control
             groupsids_ = 1;
         }
 
-        taxvalue_ = Double.valueOf(tax.getText());
+        taxvalue_ = FormatNumber.parseDezimal(tax.getText()).doubleValue();
         intaccountclass_ = Integer.valueOf(String.valueOf(classv.getSpinner().getValue()));
         intaccounttype_ = Integer.valueOf(((MPComboBoxModelItem) typeselect.getSelectedItem()).getId());
         return true;
