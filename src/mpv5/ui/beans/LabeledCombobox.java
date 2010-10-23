@@ -215,6 +215,7 @@ public class LabeledCombobox extends javax.swing.JPanel {
 
         jLabel1.setText("text");
 
+        mPCombobox1.setBorder(null);
         mPCombobox1.setFont(mPCombobox1.getFont());
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
@@ -228,8 +229,8 @@ public class LabeledCombobox extends javax.swing.JPanel {
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, 20, Short.MAX_VALUE)
-            .addComponent(mPCombobox1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, 24, Short.MAX_VALUE)
+            .addComponent(mPCombobox1, javax.swing.GroupLayout.DEFAULT_SIZE, 24, Short.MAX_VALUE)
         );
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables

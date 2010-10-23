@@ -1380,7 +1380,7 @@ public class QueryHandler implements Cloneable {
 //        start();
         String l1 = "";
         String l2 = "";
-        String k = " = ";
+        String condition = " = ";
         String j = "";
 
         if (order == null) {
@@ -1394,21 +1394,26 @@ public class QueryHandler implements Cloneable {
 
         if (like) {
             if (where != null && where[0].endsWith("datum")) {
-                k = " BETWEEN ";
+                condition = " BETWEEN ";
                 date = DateConverter.getDate(where[1]);
                 where[1] = "'" + DateConverter.getSQLDateString(date) + "'" + " AND " + "'" + DateConverter.getSQLDateString(DateConverter.addMonth(date)) + "'";
                 where[2] = " ";
             } else {
                 l1 = "%";
                 l2 = "%";
-                k = " LIKE ";
+                condition = " LIKE ";
             }
         }
 
         if (where == null) {
             wher = "  " + context.getConditions();
         } else {
-            wher = " WHERE " + table + "." + where[0] + " " + k + " " + where[2] + l1 + where[1] + l2 + where[2] + " AND " + context.getConditions().substring(6, context.getConditions().length()) + " ";
+            if (!like) {
+                wher = " WHERE " + table + "." + where[0] + " " + condition + " " + where[2] + l1 + where[1] + l2 + where[2] + " AND " + context.getConditions().substring(6, context.getConditions().length()) + " ";
+            } else {
+                wher = " WHERE UPPER(" + table + "." + where[0] + ") " + condition + " " + where[2] + l1 + where[1].toUpperCase() + l2 + where[2] + " AND " + context.getConditions().substring(6, context.getConditions().length()) + " ";
+            }
+
         }
         String query = "SELECT " + what + " FROM " + table + " " + context.getReferences() + wher + ord;
 
@@ -2429,10 +2434,10 @@ public class QueryHandler implements Cloneable {
             Context tc = null;
             if (dataOwner.getContext().equals(Context.getContact())) {
                 tc = Context.getFilesToContacts();
-            } else if (dataOwner.getContext().equals(Context.getItem())||
-                    dataOwner.getContext().equals(Context.getInvoice())||
-                    dataOwner.getContext().equals(Context.getOrder())||
-                    dataOwner.getContext().equals(Context.getOffer())) {
+            } else if (dataOwner.getContext().equals(Context.getItem())
+                    || dataOwner.getContext().equals(Context.getInvoice())
+                    || dataOwner.getContext().equals(Context.getOrder())
+                    || dataOwner.getContext().equals(Context.getOffer())) {
                 tc = Context.getFilesToItems();
             } else if (dataOwner.getContext().equals(Context.getProduct())) {
                 tc = Context.getFilesToProducts();

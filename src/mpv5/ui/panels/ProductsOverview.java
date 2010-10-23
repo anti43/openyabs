@@ -45,6 +45,7 @@ public class ProductsOverview extends javax.swing.JPanel implements ListPanel {
     /** Creates new form ProductsOverview */
     public ProductsOverview() {
         initComponents();
+        gtree.setLargeModel(true);
 
         ((DragNDropTreeForGroups)gtree).setContainerToNotify(this);
         DragTableHandlerForDBOs t = new DragTableHandlerForDBOs(listtable, Context.getProduct());

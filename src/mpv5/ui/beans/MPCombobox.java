@@ -162,7 +162,7 @@ public class MPCombobox extends javax.swing.JPanel {
      * Triggers the search functionality
      * @param hidePopup
      */
-    public void search(final boolean hidePopup) {
+    public synchronized void search(final boolean hidePopup) {
         if (SEARCH_ON_ENTER) {
             instantiated = true;
             Runnable runnable = new Runnable() {
@@ -203,7 +203,7 @@ public class MPCombobox extends javax.swing.JPanel {
                 }
             };
             if (getContext() != null) {
-                SwingUtilities.invokeLater(runnable);
+                new Thread(runnable).start();
             }
         }
     }
@@ -362,10 +362,12 @@ public class MPCombobox extends javax.swing.JPanel {
 
         jComboBox1 = new javax.swing.JComboBox();
 
+        setBorder(null);
         setFont(getFont());
         setOpaque(false);
 
         jComboBox1.setAutoscrolls(true);
+        jComboBox1.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(138, 138, 138), 1, true));
         jComboBox1.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 jComboBox1MouseClicked(evt);
@@ -388,7 +390,7 @@ public class MPCombobox extends javax.swing.JPanel {
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 20, Short.MAX_VALUE)
         );
     }// </editor-fold>//GEN-END:initComponents
 
