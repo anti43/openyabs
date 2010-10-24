@@ -353,7 +353,7 @@ public class LanguageManager {
      * @param file If it is a .zip, will get extracted and then processed
      * @throws UnsupportedOperationException
      */
-    public static void importLanguage(String langname, File file) throws Exception {
+    public static String importLanguage(String langname, File file) throws Exception {
         try {
             String langid = new RandomText(10).getString();
 
@@ -389,7 +389,9 @@ public class LanguageManager {
                     //insert was not possible
                     throw new UnsupportedOperationException("Language could not be inserted, file already exists!?");
                 }
-
+                return langid;
+            } else {
+                return null;
             }
         } catch (Exception exception) {
             Popup.error(exception);

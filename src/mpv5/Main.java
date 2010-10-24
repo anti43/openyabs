@@ -60,6 +60,7 @@ import mpv5.i18n.LanguageManager;
 import mpv5.pluginhandling.UserPlugin;
 import mpv5.server.MPServer;
 import mpv5.ui.dialogs.LoginToInstanceScreen;
+import mpv5.ui.dialogs.Search2;
 import mpv5.ui.dialogs.subcomponents.ControlPanel_Fonts;
 import mpv5.ui.dialogs.subcomponents.wizard_DBSettings_simple_1;
 import mpv5.utils.files.FileDirectoryHandler;
@@ -148,8 +149,20 @@ public class Main extends SingleFrameApplication {
                 for (int i = 0; i < languages.length; i++) {
                     File file = languages[i];
                     if (QueryHandler.instanceOf().clone(Context.getLanguage()).checkUniqueness("longname", file.getName())) {
-                        Log.Debug(Main.class, "Importing: " + file.getPath());
-                        LanguageManager.importLanguage(file.getName(), file);
+                        try {
+                            Log.Debug(Main.class, "Importing: " + file.getPath());
+                            String lang = LanguageManager.importLanguage(file.getName(), file);
+                            if (lang != null && Popup.Y_N_dialog("A new language has been imported, do you want to assign the language to a user?")) {//TODO: l10n
+                                User u = (User) Search2.showSearchFor(Context.getUser());
+                                if (u != null) {
+                                    u.setLanguage(lang);
+                                    u.save();
+                                    Popup.notice(Messages.DONE);
+                                }
+                            }
+                        } catch (Exception exception) {
+                            Log.Debug(exception);
+                        }
                     }
                     file.deleteOnExit();
                 }
@@ -168,7 +181,9 @@ public class Main extends SingleFrameApplication {
                 for (int i = 0; i < templates.length; i++) {
                     File file = templates[i];
                     Log.Debug(Main.class, "Importing: " + file.getPath());
-                    TemplateHandler.importTemplate(file);
+                    if (TemplateHandler.importTemplate(file)) {
+                        Popup.notice("A new template has been imported; before you can use it, you need to go to Tools->Control Panel->Templates to assign the new template to a user!");//TODO: l10n
+                    }
                     file.deleteOnExit();
                 }
             }
@@ -187,6 +202,8 @@ public class Main extends SingleFrameApplication {
                     File file = plugins[i];
                     Log.Debug(Main.class, "Importing: " + file.getPath());
                     MPPLuginLoader.importPlugin(file.getName(), file);
+                    Popup.notice("A new plugin has been imported; before you can use it, you need to go to Tools->Control Panel->Plugins to assign the new plugin to a user!");//TODO: l10n
+                   
                     file.deleteOnExit();
                 }
             }
