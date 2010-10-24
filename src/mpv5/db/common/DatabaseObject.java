@@ -133,7 +133,6 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
             hash = 11 * hash + (this.ids != null ? this.ids.hashCode() : 0);
             return hash;
         }
-
     }
 
     /**
@@ -144,20 +143,22 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
     @Retention(RetentionPolicy.RUNTIME)
     @Target(ElementType.METHOD)
     public @interface Persistable {
+
         boolean value();
     }
 
-     /**
+    /**
      * If set, the auto-database-schema creator will create a foreign key reference to the {@link Context} with the given id.
      * To be one of {@link Context#getId() }.
      */
     @Retention(RetentionPolicy.RUNTIME)
     @Target(ElementType.METHOD)
     public @interface References {
+
         int value();
     }
-    
-     /**
+
+    /**
      * If set, the auto-database-schema creator will create a ON DELETE CASCADE 
      * reference to any {@link Context}s which have been annotated via the @References annotation on this method
      * To be one of {@link Context#getId() }.
@@ -165,10 +166,9 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
     @Retention(RetentionPolicy.RUNTIME)
     @Target(ElementType.METHOD)
     public @interface Cascade {
+
         boolean value();
     }
-
-
     private static boolean AUTO_LOCK = false;
     private static Map<String, SoftReference<DatabaseObject>> cache = new ConcurrentHashMap<String, SoftReference<DatabaseObject>>(1000);
 
@@ -523,7 +523,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
     public List<Method> setVars() {
         ArrayList<Method> list = new ArrayList<Method>();
         for (int i = 0; i < this.getClass().getMethods().length; i++) {
-            if (this.getClass().getMethods()[i].getName().startsWith("set") 
+            if (this.getClass().getMethods()[i].getName().startsWith("set")
                     && !this.getClass().getMethods()[i].getName().startsWith("setVars")
                     && !this.getClass().getMethods()[i].getName().startsWith("setPanelData")
                     && !this.getClass().getMethods()[i].getName().startsWith("setAutoLock")) {
@@ -563,97 +563,101 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
      * @return true if the save did not throw any errors
      */
     public boolean save(boolean silent) {
-        String message = null;
-        uncacheObject(this);
+        if (!this.isReadOnly()) {
+            String message = null;
+            uncacheObject(this);
 
-        List<DatabaseObjectModifier> mods = MPPLuginLoader.registeredModifiers;
-        for (int ik = 0; ik < mods.size(); ik++) {
-            DatabaseObjectModifier databaseObjectModifier = mods.get(ik);
-            try {
-                Log.Debug(this, "Passing to plugin: " + databaseObjectModifier);
-                databaseObjectModifier.modifyOnSave(this);
-            } catch (ChangeNotApprovedException e) {
-                Log.Debug(DatabaseObject.class, "Error while on-save modifying Object " + this + " within Modifier " + databaseObjectModifier);
-                Log.Debug(DatabaseObject.class, e.getMessage());
-                return false;
-            } catch (Exception e) {
-                Log.Debug(DatabaseObject.class, "Error while on-save modifying Object " + this + " within Modifier " + databaseObjectModifier);
-                Log.Debug(e);
-            }
-        }
-
-        try {
-            if (ids <= 0) {
+            List<DatabaseObjectModifier> mods = MPPLuginLoader.registeredModifiers;
+            for (int ik = 0; ik < mods.size(); ik++) {
+                DatabaseObjectModifier databaseObjectModifier = mods.get(ik);
                 try {
-                    ensureUniqueness();
+                    Log.Debug(this, "Passing to plugin: " + databaseObjectModifier);
+                    databaseObjectModifier.modifyOnSave(this);
+                } catch (ChangeNotApprovedException e) {
+                    Log.Debug(DatabaseObject.class, "Error while on-save modifying Object " + this + " within Modifier " + databaseObjectModifier);
+                    Log.Debug(DatabaseObject.class, e.getMessage());
+                    return false;
                 } catch (Exception e) {
-                    Popup.error(e);
-                    return false;
+                    Log.Debug(DatabaseObject.class, "Error while on-save modifying Object " + this + " within Modifier " + databaseObjectModifier);
+                    Log.Debug(e);
                 }
-                if (__getCName() != null && __getCName().length() > 0) {
-                    Log.Debug(this, "Inserting new dataset into: " + this.getContext());
-                    dateadded = new Date();
-                    intaddedby = mpv5.db.objects.User.getCurrentUser().__getIDS();
-                    if (!silent && !this.getType().equals(new HistoryItem().getType())) {
-                        message = this.__getCName() + Messages.INSERTED;
-                    }
-                    ids = QueryHandler.instanceOf().clone(context).insert(collect(), message);
-                    Log.Debug(this, "The inserted row has id: " + ids);
-                } else {
-                    Popup.notice(Messages.CNAME_CANNOT_BE_NULL);
-                    Log.Debug(this, Messages.CNAME_CANNOT_BE_NULL + " [" + context + "]");
-                    return false;
-                }
+            }
 
-                if (this instanceof Triggerable) {
-                    ((Triggerable) this).triggerOnCreate();
-                }
-
-                for (int ik = 0; ik < mods.size(); ik++) {
-                    DatabaseObjectModifier databaseObjectModifier = mods.get(ik);
+            try {
+                if (ids <= 0) {
                     try {
-                        Log.Debug(this, "Passing to plugin: " + databaseObjectModifier);
-                        databaseObjectModifier.modifyAfterCreate(this);
+                        ensureUniqueness();
                     } catch (Exception e) {
-                        Log.Debug(DatabaseObject.class, "Error while after-create modifying Object " + this + " within Modifier " + databaseObjectModifier);
-                        Log.Debug(e);
+                        Popup.error(e);
+                        return false;
+                    }
+                    if (__getCName() != null && __getCName().length() > 0) {
+                        Log.Debug(this, "Inserting new dataset into: " + this.getContext());
+                        dateadded = new Date();
+                        intaddedby = mpv5.db.objects.User.getCurrentUser().__getIDS();
+                        if (!silent && !this.getType().equals(new HistoryItem().getType())) {
+                            message = this.__getCName() + Messages.INSERTED;
+                        }
+                        ids = QueryHandler.instanceOf().clone(context).insert(collect(), message);
+                        Log.Debug(this, "The inserted row has id: " + ids);
+                    } else {
+                        Popup.notice(Messages.CNAME_CANNOT_BE_NULL);
+                        Log.Debug(this, Messages.CNAME_CANNOT_BE_NULL + " [" + context + "]");
+                        return false;
+                    }
+
+                    if (this instanceof Triggerable) {
+                        ((Triggerable) this).triggerOnCreate();
+                    }
+
+                    for (int ik = 0; ik < mods.size(); ik++) {
+                        DatabaseObjectModifier databaseObjectModifier = mods.get(ik);
+                        try {
+                            Log.Debug(this, "Passing to plugin: " + databaseObjectModifier);
+                            databaseObjectModifier.modifyAfterCreate(this);
+                        } catch (Exception e) {
+                            Log.Debug(DatabaseObject.class, "Error while after-create modifying Object " + this + " within Modifier " + databaseObjectModifier);
+                            Log.Debug(e);
+                        }
+                    }
+                } else {
+                    Log.Debug(this, "Updating dataset: " + ids + " within context '" + context + "'");
+                    if (!silent) {
+                        message = this.__getCName() + Messages.UPDATED;
+                    }
+                    QueryHandler.instanceOf().clone(context).update(collect(), ids, message);
+
+                    if (this instanceof Triggerable) {
+                        ((Triggerable) this).triggerOnUpdate();
                     }
                 }
-            } else {
-                Log.Debug(this, "Updating dataset: " + ids + " within context '" + context + "'");
-                if (!silent) {
-                    message = this.__getCName() + Messages.UPDATED;
+
+                final String fmessage = message;
+                final String fdbid = this.getDbIdentity();
+                final int fids = this.ids;
+                final int fgids = this.groupsids;
+                //Ignore History and User events
+
+                if (!silent && Context.getArchivableContexts().contains(context)) {
+                    Runnable runnable = new Runnable() {
+
+                        @Override
+                        public void run() {
+                            QueryHandler.instanceOf().clone(Context.getHistory()).insertHistoryItem(fmessage, mpv5.db.objects.User.getCurrentUser().__getCName(), fdbid, fids, fgids);
+                        }
+                    };
+                    new Thread(runnable).start();
                 }
-                QueryHandler.instanceOf().clone(context).update(collect(), ids, message);
 
-                if (this instanceof Triggerable) {
-                    ((Triggerable) this).triggerOnUpdate();
-                }
+                return true;
+            } catch (Exception e) {
+                Log.Debug(e);
+                return false;
             }
-
-            final String fmessage = message;
-            final String fdbid = this.getDbIdentity();
-            final int fids = this.ids;
-            final int fgids = this.groupsids;
-            //Ignore History and User events
-
-            if (!silent && Context.getArchivableContexts().contains(context)) {
-                Runnable runnable = new Runnable() {
-
-                    @Override
-                    public void run() {
-                        QueryHandler.instanceOf().clone(Context.getHistory()).insertHistoryItem(fmessage, mpv5.db.objects.User.getCurrentUser().__getCName(), fdbid, fids, fgids);
-                    }
-                };
-                new Thread(runnable).start();
-            }
-
-            return true;
-        } catch (Exception e) {
-            Log.Debug(e);
-            return false;
+        } else {
+            MPView.addMessage("You cannot alter the read only object: " + this);//TODO: l10n
+            return true;//fake it for the ui
         }
-
     }
 
     /**
@@ -1590,7 +1594,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
 
     @Override
     public String toString() {
-        return cname;
+        return cname + (readOnly?" [Read-only]":"");//TODO: l10n
     }
 
     /**

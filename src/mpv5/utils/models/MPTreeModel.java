@@ -131,7 +131,7 @@ public class MPTreeModel extends DefaultTreeModel {
                 }
                 rootNode.add(ifil);
             } catch (NodataFoundException ex) {
-                 Log.Debug(MPTreeModel.class, ex.getMessage());
+                Log.Debug(MPTreeModel.class, ex.getMessage());
             }
         } catch (NodataFoundException ex) {
             Log.Debug(MPTreeModel.class, ex.getMessage());
@@ -220,8 +220,10 @@ public class MPTreeModel extends DefaultTreeModel {
 
         DefaultMutableTreeNode node1 = null;
         if (data.size() > 0) {
-            node1 = new DefaultMutableTreeNode(rootNode);
-            data.remove(rootNode);//remove root if in list
+            DatabaseObject clone = rootNode.clone();
+            clone.ReadOnly(true);
+            clone.setCName("/");
+            node1 = new DefaultMutableTreeNode(clone);
             try {
                 MPView.setWaiting(true);
                 node1 = addToParents(node1, data);

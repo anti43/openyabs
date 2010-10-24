@@ -167,7 +167,10 @@ public class ProductGroup extends DatabaseObject {
 
         DefaultMutableTreeNode node1 = null;
         if (data.size() > 0) {
-            node1 = new DefaultMutableTreeNode(rootNode);
+            DatabaseObject clone = rootNode.clone();
+            clone.ReadOnly(true);
+            clone.setCName("/");
+            node1 = new DefaultMutableTreeNode(clone);
 //            data.remove(rootNode);//remove root if in list
             try {
                 MPView.setWaiting(true);
