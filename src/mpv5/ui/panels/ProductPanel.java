@@ -461,7 +461,7 @@ public class ProductPanel extends javax.swing.JPanel implements DataPanel, MPCBS
 
         groupnameselect.setName("groupnameselect"); // NOI18N
 
-        path.setFont(new java.awt.Font("Arial", 1, 12)); // NOI18N
+        path.setFont(new java.awt.Font("Dialog", 1, 14)); // NOI18N
         path.setText(bundle.getString("ProductPanel.path.text")); // NOI18N
         path.setName("path"); // NOI18N
 
@@ -506,8 +506,7 @@ public class ProductPanel extends javax.swing.JPanel implements DataPanel, MPCBS
                     .addComponent(groupnameselect, javax.swing.GroupLayout.DEFAULT_SIZE, 22, Short.MAX_VALUE)
                     .addComponent(cnumber, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(path, javax.swing.GroupLayout.PREFERRED_SIZE, 17, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
+                .addComponent(path, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
         jPanel4.setBackground(new java.awt.Color(204, 204, 204));
@@ -887,7 +886,7 @@ public class ProductPanel extends javax.swing.JPanel implements DataPanel, MPCBS
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(leftpane, javax.swing.GroupLayout.DEFAULT_SIZE, 556, Short.MAX_VALUE)
+            .addComponent(leftpane, javax.swing.GroupLayout.DEFAULT_SIZE, 564, Short.MAX_VALUE)
             .addGroup(layout.createSequentialGroup()
                 .addComponent(toolbarpane, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -1224,6 +1223,7 @@ public class ProductPanel extends javax.swing.JPanel implements DataPanel, MPCBS
         SwingUtilities.invokeLater(runnable1);
 
         button_listedit.setEnabled(productlistsids_ > 0);
+        validate();
     }
 
     @Override

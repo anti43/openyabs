@@ -133,7 +133,7 @@ public class ProductGroup extends DatabaseObject {
                 }
             } while (intp >= 1);
         }
-        return hierarchypath.replaceFirst(Group.GROUPSEPARATOR, "");
+        return hierarchypath.replaceFirst(Group.GROUPSEPARATOR, "") + this;
     }
 
     /**

@@ -254,6 +254,11 @@ public class SearchPanel extends javax.swing.JPanel {
                 resulttableMouseClicked(evt);
             }
         });
+        resulttable.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                resulttableKeyTyped(evt);
+            }
+        });
         resultsscrollpane.setViewportView(resulttable);
 
         javax.swing.GroupLayout resultsLayout = new javax.swing.GroupLayout(results);
@@ -389,6 +394,12 @@ public class SearchPanel extends javax.swing.JPanel {
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
         searchfield3ActionPerformed(evt);
     }//GEN-LAST:event_jButton3ActionPerformed
+
+    private void resulttableKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_resulttableKeyTyped
+
+        resulttableMouseClicked(null);
+    }//GEN-LAST:event_resulttableKeyTyped
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;

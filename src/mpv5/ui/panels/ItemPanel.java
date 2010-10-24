@@ -785,7 +785,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
         jToolBar1.setName("jToolBar1"); // NOI18N
 
         type.setBackground(new java.awt.Color(255, 255, 255));
-        type.setFont(type.getFont().deriveFont(type.getFont().getStyle() | java.awt.Font.BOLD, type.getFont().getSize()+2));
+        type.setFont(new java.awt.Font("Dialog", 1, 15)); // NOI18N
         type.setForeground(new java.awt.Color(26, 34, 70));
         type.setText(bundle.getString("ItemPanel.type.text")); // NOI18N
         type.setBorder(javax.swing.BorderFactory.createCompoundBorder(javax.swing.BorderFactory.createEtchedBorder(), javax.swing.BorderFactory.createEmptyBorder(1, 3, 1, 5)));
