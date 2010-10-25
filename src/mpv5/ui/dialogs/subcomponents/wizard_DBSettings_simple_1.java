@@ -576,6 +576,9 @@ public class wizard_DBSettings_simple_1 extends javax.swing.JPanel implements Wi
             LocalSettings.setProperty(LocalSettings.OFFICE_BINARY_FOLDER, "program");
         } else if (Main.osIsLinux) {
             labeledTextChooser2.set_Text("/opt/openoffice.org3");
+            if (!new File(labeledTextChooser2.get_Text(false)).exists()) {
+                labeledTextChooser2.set_Text("/usr/lib64/ooo3/");
+            }
             LocalSettings.setProperty(LocalSettings.OFFICE_BINARY_FOLDER, "program");
         }
 

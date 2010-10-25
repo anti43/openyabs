@@ -17,10 +17,12 @@
 package mpv5.utils.print;
 
 import com.sun.pdfview.PDFFile;
-import com.sun.pdfview.PDFPrintPage;
+import com.sun.pdfview.PDFPage;
+import com.sun.pdfview.PDFRenderer;
 import java.awt.Component;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Rectangle;
 import java.awt.print.*;
 import java.util.*;
 import java.io.*;
@@ -209,7 +211,7 @@ public class PrintJob2 {
         RandomAccessFile raf = new RandomAccessFile(tempFile, "r");
         FileChannel channel = raf.getChannel();
         ByteBuffer buf = channel.map(FileChannel.MapMode.READ_ONLY, 0, channel.size());
-        PDFFile pdfFile = new PDFFile(buf); // Create PDF Print Page
+        final PDFFile pdfFile = new PDFFile(buf); // Create PDF Print Page
 
         // Create Print Job
         PrinterJob pjob = PrinterJob.getPrinterJob();
@@ -221,9 +223,47 @@ public class PrintJob2 {
         pf.setPaper(paper);
 
         Book book = new Book();
-        PDFPrintPage pages = new PDFPrintPage(pdfFile);
 
-        book.append(pages, pf, pdfFile.getNumPages());
+        book.append(new java.awt.print.Printable() {
+
+            @Override
+            public int print(Graphics g, PageFormat format, int index) throws PrinterException {
+                int pagenum = index + 1;
+
+                if ((pagenum >= 1) && (pagenum <= pdfFile.getNumPages())) {
+
+                    Graphics2D g2 = (Graphics2D) g;
+                    PDFPage page = pdfFile.getPage(pagenum);
+                    double pwidth = format.getImageableWidth();
+                    double pheight = format.getImageableHeight();
+
+                    double aspect = page.getAspectRatio();
+                    double paperaspect = pwidth / pheight;
+
+                    Rectangle imgbounds;
+                    int width;
+                    int height;
+                    if (aspect > paperaspect) {//fit paper
+                        height = (int) (pwidth / aspect);
+                        width = (int) pwidth;
+                    } else {
+                        width = (int) (pheight * aspect);
+                        height = (int) pheight;
+                    }
+                    imgbounds = new Rectangle((int) format.getImageableX(), (int) format.getImageableY(), width, height);
+
+                    PDFRenderer pgs = new PDFRenderer(page, g2, imgbounds, null, null);
+                    try {
+                        page.waitForFinish();
+                        pgs.run();
+                    } catch (InterruptedException ie) {
+                    }
+                    return PAGE_EXISTS;
+                } else {
+                    return NO_SUCH_PAGE;
+                }
+            }
+        }, pf, pdfFile.getNumPages());
         pjob.setPageable(book);
 
         // Set print attributes:

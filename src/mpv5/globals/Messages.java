@@ -277,6 +277,9 @@ public enum Messages {
      ADD_CONTACT("Add contact.."),
      SEARCH_CONTACT("Search contact.."), 
      LANGUAGE_FILE("Your language file is not up to date! Visit openyabs.org for a new language file or edit the existing one via Tools->Control Panel->Babelfish"),
+     IMPORT_LANGUAGES_DONE("A new language has been imported, do you want to assign the language to a user?"),
+     IMPORT_TEMPLATES_DONE("A new template has been imported; before you can use it, you need to go to Tools->Control Panel->Templates to assign the new template to a user!"),
+     IMPORT_PLUGINS_DONE("A new plugin has been imported; before you can use it, you need to go to Tools->Control Panel->Plugins to assign the new plugin to a user!"),
     ;
 
 

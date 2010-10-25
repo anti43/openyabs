@@ -152,7 +152,7 @@ public class Main extends SingleFrameApplication {
                         try {
                             Log.Debug(Main.class, "Importing: " + file.getPath());
                             String lang = LanguageManager.importLanguage(file.getName(), file);
-                            if (lang != null && Popup.Y_N_dialog("A new language has been imported, do you want to assign the language to a user?")) {//TODO: l10n
+                            if (lang != null && Popup.Y_N_dialog(Messages.IMPORT_LANGUAGES_DONE)) {//TODO: l10n
                                 User u = (User) Search2.showSearchFor(Context.getUser());
                                 if (u != null) {
                                     u.setLanguage(lang);
@@ -182,7 +182,7 @@ public class Main extends SingleFrameApplication {
                     File file = templates[i];
                     Log.Debug(Main.class, "Importing: " + file.getPath());
                     if (TemplateHandler.importTemplate(file)) {
-                        Popup.notice("A new template has been imported; before you can use it, you need to go to Tools->Control Panel->Templates to assign the new template to a user!");//TODO: l10n
+                        Popup.notice(Messages.IMPORT_TEMPLATES_DONE);//TODO: l10n
                     }
                     file.deleteOnExit();
                 }
@@ -202,7 +202,7 @@ public class Main extends SingleFrameApplication {
                     File file = plugins[i];
                     Log.Debug(Main.class, "Importing: " + file.getPath());
                     MPPLuginLoader.importPlugin(file.getName(), file);
-                    Popup.notice("A new plugin has been imported; before you can use it, you need to go to Tools->Control Panel->Plugins to assign the new plugin to a user!");//TODO: l10n
+                    Popup.notice(Messages.IMPORT_PLUGINS_DONE);//TODO: l10n
                    
                     file.deleteOnExit();
                 }

@@ -227,6 +227,7 @@ public class PreviewPanel extends javax.swing.JPanel implements Waiter {
         jSeparator1.setName("jSeparator1"); // NOI18N
         toolbar.add(jSeparator1);
 
+        jButton1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/1leftarrow.png"))); // NOI18N
         jButton1.setText(bundle.getString("PreviewPanel.jButton1.text")); // NOI18N
         jButton1.setFocusable(false);
         jButton1.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
@@ -239,6 +240,7 @@ public class PreviewPanel extends javax.swing.JPanel implements Waiter {
         });
         toolbar.add(jButton1);
 
+        jButton2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/1rightarrow.png"))); // NOI18N
         jButton2.setText(bundle.getString("PreviewPanel.jButton2.text")); // NOI18N
         jButton2.setFocusable(false);
         jButton2.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
@@ -402,9 +404,11 @@ public class PreviewPanel extends javax.swing.JPanel implements Waiter {
     int pagen = 1;
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         try {
-            pagen++;
-            PDFPage p = pdffile.getPage(pagen);
-            panel.showPage(p);
+            if (pdffile.getNumPages()>pagen) {
+                pagen++;
+                PDFPage p = pdffile.getPage(pagen);
+                panel.showPage(p);
+            }
         } catch (Exception e) {
             //No pdf loaded
         }
@@ -412,7 +416,7 @@ public class PreviewPanel extends javax.swing.JPanel implements Waiter {
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         try {
-            if (pagen > 0) {
+            if (pagen > 1) {
                 pagen--;
             }
             PDFPage p = pdffile.getPage(pagen);

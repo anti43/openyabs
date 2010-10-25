@@ -5,7 +5,7 @@ import mpv5.logging.Log;
 
 public enum Headers {
 //empty columnnames not allowed
-    SEARCH_DEFAULT(new String[]{"Internal ID", "1", "2"}),
+    SEARCH_DEFAULT(new String[]{"Internal ID", "A", "B"}),
     CONTACT_DEFAULT(new String[]{"Internal ID", "ID", "Name", "City"}),
     CONTACT_DETAILS(new String[]{"Internal ID", "ID", "Title", "Prename", "Name", "Street", "Zip", "City", "Mainphone", "Fax", "Mobilephone", "Workphone", "Company", "Mailaddress", "Website", "Notes", "Taxnumber"}),
     USER_DEFAULT(new String[]{"Internal ID", "ID", "User Name", "Mail", "Last logged in"}),

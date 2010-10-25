@@ -550,7 +550,14 @@ public abstract class FileDirectoryHandler {
     }
 
     private static void cacheCheck() {
-        File e = new File(LocalSettings.getProperty(LocalSettings.CACHE_DIR));
+        File e = null;
+        try {
+            e = new File(LocalSettings.getProperty(LocalSettings.CACHE_DIR));
+        } catch (Exception ex) {//avoid npe
+            Log.Debug(ex);
+            LocalSettings.setProperty(LocalSettings.CACHE_DIR, Constants.FALLBACK_CACHE_DIR);
+            e = new File(LocalSettings.getProperty(LocalSettings.CACHE_DIR));
+        }
         if (!e.exists()) {
             e.mkdirs();
         }
