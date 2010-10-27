@@ -18,6 +18,7 @@ package mpv5.utils.models;
 
 import java.text.DateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Vector;
 import java.util.logging.Level;
@@ -520,13 +521,14 @@ public class MPTableModel extends DefaultTableModel implements Cloneable {
      * @param row
      * @param columnToIgnore
      */
-    public synchronized void setRowAt(Object[] rowData, int row, int columnToIgnore) {
+    public synchronized void setRowAt(Object[] rowData, int row, Integer... columnToIgnore) {
 
         if (getRowCount() <= row) {
             addRow(1);
         }
-        for (int i = 0; i < rowData.length; i++) {
-            if (i != columnToIgnore) {
+        List<Integer> ignores = Arrays.asList(columnToIgnore);
+        for (Integer i = 0; i < rowData.length; i++) {
+            if (!ignores.contains(i)) {
                 Object object = rowData[i];
                 try {
                     setValueAt(object, row, i);

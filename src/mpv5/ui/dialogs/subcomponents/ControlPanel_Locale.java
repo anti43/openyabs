@@ -312,6 +312,7 @@ public class ControlPanel_Locale extends javax.swing.JPanel implements ControlAp
         setSettings();
         mpv5.db.objects.User.getCurrentUser().save();
         cleanup();
+        MPView.identifierView.resetTables();
         Popup.notice(Messages.RESTART_REQUIRED);
     }//GEN-LAST:event_jButton1ActionPerformed
 

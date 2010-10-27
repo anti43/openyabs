@@ -98,7 +98,7 @@ public class LanguageManager {
     public static void importCountries(File file) {
         XMLReader r = new XMLReader();
         try {
-            Document doc = r.newDoc(file, true);
+            Document doc = r.newDoc(file, false);
             //            if (MPSecurityManager.checkAdminAccess() && !mpv5.db.objects.User.getCurrentUser().isDefault()) {
 
             if (doc != null) {

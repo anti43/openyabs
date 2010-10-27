@@ -2947,6 +2947,13 @@ public class MPView extends FrameView {
         }
     }
 
+    /*
+     * Reset all table layouts
+     */
+    public void resetTables() {
+        resettables(getTabpanePanel());
+    }
+
     /**
      * Paste the current clipboard items (if any)
      */

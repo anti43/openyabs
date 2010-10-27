@@ -251,7 +251,7 @@ public class ListView extends javax.swing.JPanel {
                     if (d.chooseFile()) {
                         x = new XMLReader();
 
-                        x.newDoc(d.getFile(), true);
+                        x.newDoc(d.getFile(), false);
                         x.setOverwriteExisting(true);
                         objs = x.getObjects();
 

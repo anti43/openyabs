@@ -52,7 +52,7 @@ public class wizard_AccountXMLImport_1 extends javax.swing.JPanel implements Wiz
             x = new XMLReader();
             x.setOverwriteExisting(true);
             try {
-                x.newDoc(new File(master.getStore().getProperty("file")), true);
+                x.newDoc(new File(master.getStore().getProperty("file")), false);
                 objs = x.getObjects();
                 jTable1.setModel(ImportTableModel.getModel(objs, false));
                 jLabel2.setText(jLabel2.getText() + " " + master.getStore().getProperty("file") + " (" + jTable1.getRowCount() + ")");

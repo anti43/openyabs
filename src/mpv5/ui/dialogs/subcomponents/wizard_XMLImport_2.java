@@ -47,7 +47,7 @@ public class wizard_XMLImport_2 extends javax.swing.JPanel implements Wizardable
             x = new XMLReader();
             x.setOverwriteExisting(true);
             try {
-                x.newDoc(new File(master.getStore().getProperty("file")), true);
+                x.newDoc(new File(master.getStore().getProperty("file")), false);
                 objs = x.getObjects();
                 jTable1.setModel(ImportTableModel.getModel(objs, !master.getStore().getProperty("overwrite", true)));
                 jLabel2.setText(jLabel2.getText() + " " + master.getStore().getProperty("file") + " (" + jTable1.getRowCount() + ")");

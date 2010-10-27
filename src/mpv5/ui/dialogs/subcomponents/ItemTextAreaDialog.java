@@ -171,7 +171,7 @@ public class ItemTextAreaDialog extends javax.swing.JDialog implements KeyListen
             SubItem p = new SubItem(product);
             p.setDescription(textArea.getText());
             MPTableModel m = (MPTableModel) getParentTable().getModel();
-            m.setRowAt(p.getRowData(getParentTable().getSelectedRow()), getParentTable().getSelectedRow(), 1);
+            m.setRowAt(p.getRowData(getParentTable().getSelectedRow()), getParentTable().getSelectedRow(), 1, 14);
             labeledCombobox1.setSelectedIndex(-1);
             product = null;
         }

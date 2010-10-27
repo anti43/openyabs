@@ -21,6 +21,8 @@ import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
 import mpv5.db.common.DatabaseSearch;
 import mpv5.db.common.NodataFoundException;
+import mpv5.db.objects.User;
+import mpv5.db.objects.ValueProperty;
 import mpv5.globals.Headers;
 import mpv5.logging.Log;
 import mpv5.ui.frames.MPView;
@@ -379,6 +381,14 @@ public class SearchPanel extends javax.swing.JPanel {
                 panel.setDataOwner(DatabaseObject.getObject(context, sel.getId()), true);
             } catch (NodataFoundException ex) {
                 Log.Debug(ex);
+                User.getCurrentUser().getLayoutProperties().clear();
+                try {
+                    ValueProperty.deleteProperty(User.getCurrentUser(), "layoutinfo");
+                } catch (Exception e) {
+                    Log.Debug(ex);
+                }
+
+                MPView.identifierView.resetTables();
             }
         }
     }//GEN-LAST:event_resulttableMouseClicked
@@ -399,7 +409,6 @@ public class SearchPanel extends javax.swing.JPanel {
 
         resulttableMouseClicked(null);
     }//GEN-LAST:event_resulttableKeyTyped
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
