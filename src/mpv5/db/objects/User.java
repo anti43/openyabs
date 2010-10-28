@@ -47,7 +47,7 @@ import mpv5.pluginhandling.MPPLuginLoader;
 import mpv5.ui.dialogs.Popup;
 import mpv5.ui.dialogs.subcomponents.ControlPanel_Fonts;
 import mpv5.ui.frames.MPView;
-import mpv5.utils.dtaus.Konto;
+import dtaus.Konto;
 import mpv5.utils.text.TypeConversion;
 
 /**
