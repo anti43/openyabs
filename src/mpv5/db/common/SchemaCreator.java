@@ -14,7 +14,7 @@ public class SchemaCreator {
 
     public static boolean schemaExists(DatabaseObject checkObject) {
         try {
-            QueryHandler qh = QueryHandler.instanceOf().clone(checkObject.getClass().getSimpleName());
+            QueryHandler qh = QueryHandler.instanceOf().clone(checkObject.getContext());
             qh.setLimit(1);
             qh.freeSelect("ids");
         } catch (NodataFoundException nodataFoundException) {

@@ -100,8 +100,8 @@ public class wizard_DBSettings_simple_1 extends javax.swing.JPanel implements Wi
 
                     boolean pexists = true;
                     try {
-                        conn.runQueries(new String[]{"select * from groups where ids = 1"});
-                    } catch (Exception sQLException) {
+                        pexists = conn.runQueries(new String[]{"select * from groups where ids = 1"});
+                    } catch (java.sql.SQLSyntaxErrorException sQLException) {
                         pexists = false;
                     }
 
@@ -113,17 +113,8 @@ public class wizard_DBSettings_simple_1 extends javax.swing.JPanel implements Wi
                         conn.setProgressbar(master.getProgressbar());
                         if (conn.runQueries(new DatabaseInstallation().getStructure())
                                 && conn.runQueries(new DatabaseInstallation().getInitialData())) {
-                            try {
-                                File f = new File(this.getClass().getResource("languages").toURI());
-                                Log.Debug(this, "Importing languages from: " + f.getCanonicalPath());
-                                File[] langfiles = f.listFiles();
-                                for (int i = 0; i < langfiles.length; i++) {
-                                    File file = langfiles[i];
-                                    LanguageManager.importLanguage(file.getName(), file);
-                                }
-                            } catch (Exception uRISyntaxException) {
-                                Log.Debug(this, uRISyntaxException.getMessage());
-                            }
+
+                            Main.readImports();
 
                             try {
                                 File f = new File(this.getClass().getResource("/mpv5/resources/extra/").toURI());

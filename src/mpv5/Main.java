@@ -139,7 +139,7 @@ public class Main extends SingleFrameApplication {
         }
     }
 
-    private static void readImports() {
+    public static void readImports() {
         splash.nextStep(Messages.IMPORT_LANGUAGES.toString());
         File ilang = new File(Constants.LANGUAGES_DIR);
         try {
@@ -277,6 +277,7 @@ public class Main extends SingleFrameApplication {
             if (probeDatabaseConnection()) {
                 readGlobalSettings();
                 Log.Debug(this, "Loading Yabs... ");
+                readImports();
                 go(false);
             } else if (Popup.Y_N_dialog(splash, Messages.NO_DB_CONNECTION, Messages.FIRST_START.toString())) {
                 Log.Debug(this, "Loading database config wizard...");
@@ -385,7 +386,6 @@ public class Main extends SingleFrameApplication {
             readLocalSettings();
             LanguageManager.preLoadCachedLanguage();
             setDerbyLog();
-            readImports();
             start();
         } catch (Exception e) {
             Popup.error(null, e);

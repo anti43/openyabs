@@ -727,6 +727,7 @@ public class DTAus {
             if (c != ' ') {
                 break;
             }
+            
         }  // over leading white space
 
         if (c == ' ') {

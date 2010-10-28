@@ -132,7 +132,7 @@ public class NoaConnection {
                 officeAplication.activate();
             } catch (Exception officeApplicationException) {
                 try {
-                    Thread.sleep(3333);
+                    Thread.sleep(6666);
                 } catch (InterruptedException ex) {
                 }
                 try {
