@@ -97,6 +97,8 @@ public class RemindPanel extends javax.swing.JPanel {
 
         labeledCombobox2.setContext(Context.getGroup());
         labeledCombobox2.setSearchEnabled(true);
+        labeledCombobox2.setEditable(true);
+        labeledCombobox2.triggerSearch();
     }
 
     public RemindPanel(Item bill) {
@@ -130,6 +132,10 @@ public class RemindPanel extends javax.swing.JPanel {
         labeledCombobox1.setModel(bill);
         labeledCombobox3.triggerSearch();
         refresh(bill);
+        labeledCombobox2.setContext(Context.getGroup());
+        labeledCombobox2.setSearchEnabled(true);
+        labeledCombobox2.setEditable(true);
+        labeledCombobox2.triggerSearch();
     }
 
     /** This method is called from within the constructor to
@@ -455,7 +461,7 @@ public class RemindPanel extends javax.swing.JPanel {
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton7ActionPerformed
-           int group = 1;
+        int group = 1;
 
         if (dataOwner != null && dataOwner.isExisting()) {
 
@@ -463,7 +469,7 @@ public class RemindPanel extends javax.swing.JPanel {
                 group = Integer.valueOf(labeledCombobox2.getSelectedItem().getId());
             }
 
-            Template t = TemplateHandler.loadTemplate( group, TemplateHandler.TYPE_REMINDER);
+            Template t = TemplateHandler.loadTemplate(group, TemplateHandler.TYPE_REMINDER);
             if (t != null) {
                 Exportable te = TemplateHandler.loadTemplate(group, TemplateHandler.TYPE_REMINDER).getExFile();
                 HashMap<String, Object> hm1 = new HashMap<String, Object>();
@@ -491,7 +497,7 @@ public class RemindPanel extends javax.swing.JPanel {
 
     private void jButton8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton8ActionPerformed
 
-      int group = 1;
+        int group = 1;
 
         PreviewPanel pr;
         if (dataOwner != null && dataOwner.isExisting()) {
@@ -503,7 +509,7 @@ public class RemindPanel extends javax.swing.JPanel {
             Template t = TemplateHandler.loadTemplate(group, TemplateHandler.TYPE_REMINDER);
             if (t != null) {
                 Exportable te = TemplateHandler.loadTemplate(group, TemplateHandler.TYPE_REMINDER).getExFile();
-                HashMap<String, Object>  hm1 = new HashMap<String, Object>();
+                HashMap<String, Object> hm1 = new HashMap<String, Object>();
                 File f2 = FileDirectoryHandler.getTempFile("odt");
 
                 try {
@@ -525,7 +531,6 @@ public class RemindPanel extends javax.swing.JPanel {
             }
         }
     }//GEN-LAST:event_jButton8ActionPerformed
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
@@ -566,7 +571,7 @@ public class RemindPanel extends javax.swing.JPanel {
                 s.setGroupsids(mpv5.db.objects.User.getCurrentUser().__getGroupsids());
                 s.setDescription(jTextPane1.getText());
                 try {
-                    s.setExtravalue(Double.valueOf(labeledTextField1.getText()));
+                    s.setExtravalue(labeledTextField1.getValue(0d));
                 } catch (NumberFormatException numberFormatException) {
                     s.setExtravalue(0d);
                 }

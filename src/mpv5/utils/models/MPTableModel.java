@@ -72,6 +72,49 @@ public class MPTableModel extends DefaultTableModel implements Cloneable {
                     Object.class, Object.class, Object.class, Object.class, Object.class, Object.class, Object.class, Object.class});
     }
 
+    /**
+     * May get slow on lots of data within the given Context
+     * @param c
+     */
+    public MPTableModel(final Context c) {
+        super();
+        setContext(c);
+        try {
+            final ArrayList<DatabaseObject> data = DatabaseObject.getObjects(c);
+            final Object[][] mod = new Object[data.size()][];
+            final Class[] classes = new Class[data.size()];
+            Runnable runnable = new Runnable() {
+
+                @Override
+                public void run() {
+                    int i = 0;
+                    for (DatabaseObject o : data) {
+                        mod[i] = o.toResolvedArray();
+                        if (i == 0) {
+                            for (int j = 0; j < mod.length; j++) {
+                                Class class1 = mod[j].getClass();
+                                classes[j] = class1;
+                            }
+                        }
+                        i++;
+                    }
+
+                    String[] header = new String[mod[0].length];
+                    for (int ij = 0; ij < header.length; ij++) {
+                        header[ij] = "" + ij;
+                    }
+                    setDataVector(mod, header);
+
+                    setEditable(false);
+                    setTypes(classes);
+                }
+            };
+            new Thread(runnable).start();
+        } catch (NodataFoundException ex) {
+            Log.Debug(ex);
+        }
+    }
+
     @Override
     public MPTableModel clone() {
         MPTableModel t = new MPTableModel(types, canEdits, getData(), predefinedRow);
@@ -227,7 +270,7 @@ public class MPTableModel extends DefaultTableModel implements Cloneable {
 
     public MPTableModel(List<ValueProperty> properties) {
         super();
-        final Object[][] data = new Object[properties.size()+ 10][2];
+        final Object[][] data = new Object[properties.size() + 10][2];
         for (int i = 0; i < properties.size(); i++) {
             ValueProperty valueProperty = properties.get(i);
             data[i][0] = valueProperty.__getCName();

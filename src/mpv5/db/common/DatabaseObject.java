@@ -68,6 +68,7 @@ import static mpv5.db.common.Context.*;
  */
 public abstract class DatabaseObject implements Comparable<DatabaseObject>, Serializable, Cloneable {
 
+
     /**
      * Represents a Context-ID pair which uniquely identifies a DatabaseObject
      * @param <T>
@@ -1866,5 +1867,10 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
             }
         }
         throw new UnsupportedOperationException(key + " not known in " + this);
+    }
+
+
+    public Object[] toResolvedArray() {
+        throw new UnsupportedOperationException("Not yet implemented");
     }
 }

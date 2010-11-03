@@ -55,7 +55,7 @@ EOF
 # Create run script
 cat > $RPM_BUILD_ROOT%{install_dir}/yabs/yabs%{Version}/misc/yabs%{Version}.sh <<EOF
 #!/bin/bash
-java -jar %{install_dir}/yabs/yabs%{Version}/yabs.jar
+java -jar %{install_dir}/yabs/yabs%{Version}/yabs.jar $1 $2 $3 $4 $5
 EOF
 
 chmod 644 $RPM_BUILD_ROOT%{install_dir}/yabs/yabs%{Version}/misc/yabs%{Version}.desktop
