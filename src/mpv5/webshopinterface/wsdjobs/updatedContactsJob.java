@@ -1,24 +1,23 @@
 
 /*
-*  This file is part of YaBS.
-*
-*      YaBS is free software: you can redistribute it and/or modify
-*      it under the terms of the GNU General Public License as published by
-*      the Free Software Foundation, either version 3 of the License, or
-*      (at your option) any later version.
-*
-*      YaBS is distributed in the hope that it will be useful,
-*      but WITHOUT ANY WARRANTY; without even the implied warranty of
-*      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-*      GNU General Public License for more details.
-*
-*      You should have received a copy of the GNU General Public License
-*      along with YaBS.  If not, see <http://www.gnu.org/licenses/>.
+ *  This file is part of YaBS.
+ *
+ *      YaBS is free software: you can redistribute it and/or modify
+ *      it under the terms of the GNU General Public License as published by
+ *      the Free Software Foundation, either version 3 of the License, or
+ *      (at your option) any later version.
+ *
+ *      YaBS is distributed in the hope that it will be useful,
+ *      but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *      GNU General Public License for more details.
+ *
+ *      You should have received a copy of the GNU General Public License
+ *      along with YaBS.  If not, see <http://www.gnu.org/licenses/>.
  */
 package mpv5.webshopinterface.wsdjobs;
 
 //~--- non-JDK imports --------------------------------------------------------
-
 import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
 import mpv5.db.common.NodataFoundException;
@@ -44,11 +43,13 @@ import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import mpv5.ui.dialogs.Popup;
 
 /**
  * This job tries to fetch updated contacts + adresses of them
  */
 public class updatedContactsJob implements WSDaemonJob {
+
     private final WSDaemon daemon;
 
     /**
@@ -73,13 +74,13 @@ public class updatedContactsJob implements WSDaemonJob {
     public void work(WSConnectionClient client) {
         try {
             Object d = client.getClient().invokeGetCommand(WSConnectionClient.COMMANDS.GET_CHANGED_CONTACTS.toString(),
-                           new Object[] {}, new Object());
+                    new Object[]{}, new Object());
             List<Contact> obs = WSIManager.createObjects(d, new Contact());
 
             for (int i = 0; i < obs.size(); i++) {
-                Contact           contact = obs.get(i);
-                int               id      = contact.__getIDS();
-                WSContactsMapping m       = null;
+                Contact contact = obs.get(i);
+                int id = contact.__getIDS();
+                WSContactsMapping m = null;
 
                 try {
                     m = WSContactsMapping.getMapping(daemon.getWebShopID(), id);
@@ -90,8 +91,8 @@ public class updatedContactsJob implements WSDaemonJob {
                 }
 
                 Object da =
-                    client.getClient().invokeGetCommand(WSConnectionClient.COMMANDS.GET_CHANGED_ADRESSES.toString(),
-                        new Object[] { m.__getWscontact() }, new Object());
+                        client.getClient().invokeGetCommand(WSConnectionClient.COMMANDS.GET_CHANGED_ADRESSES.toString(),
+                        new Object[]{m.__getWscontact()}, new Object());
                 List<Address> aobs = WSIManager.createObjects(da, new Address());
 
                 for (Address address : aobs) {
@@ -115,11 +116,18 @@ public class updatedContactsJob implements WSDaemonJob {
                     }
                 }
             }
+            if (Log.getLoglevel() == Log.LOGLEVEL_DEBUG) {
+                Popup.notice(obs, "Updated contacts");
+            }
         } catch (XmlRpcException ex) {
             Log.Debug(this, ex.getMessage());
+            if (Log.getLoglevel() == Log.LOGLEVEL_DEBUG) {
+                Popup.error(ex);
+            }
         }
     }
 }
 
 
 //~ Formatted by Jindent --- http://www.jindent.com
+

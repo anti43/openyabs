@@ -24,6 +24,7 @@ import mpv5.globals.Messages;
 import mpv5.logging.Log;
 import mpv5.ui.dialogs.ControlApplet;
 import mpv5.ui.dialogs.DialogForFile;
+import mpv5.ui.dialogs.Notificator;
 import mpv5.ui.dialogs.Popup;
 import mpv5.usermanagement.MPSecurityManager;
 import mpv5.utils.files.FileDirectoryHandler;
@@ -33,9 +34,11 @@ import mpv5.utils.models.MPComboBoxModelItem;
 import mpv5.utils.text.Base64Encoder;
 import mpv5.utils.text.RandomStringUtils;
 import mpv5.utils.text.RandomText;
+import mpv5.webshopinterface.NoCompatibleHostFoundException;
 import mpv5.webshopinterface.WSConnectionClient;
 import mpv5.webshopinterface.WSDaemon;
 import mpv5.webshopinterface.WSIManager;
+import mpv5.webshopinterface.wsdjobs.*;
 
 /**
  *
@@ -129,11 +132,12 @@ public class ControlPanel_WebShopManager extends javax.swing.JPanel implements C
         list = new javax.swing.JList();
         jPanel2 = new javax.swing.JPanel();
         jButton2 = new javax.swing.JButton();
+        jButton5 = new javax.swing.JButton();
         jButton4 = new javax.swing.JButton();
         jButton1 = new javax.swing.JButton();
 
         setBackground(new java.awt.Color(255, 255, 255));
-        java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle(); // NOI18N
+        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("mpv5/resources/languages/Panels"); // NOI18N
         setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("ControlPanel_WebShopManager.border.title"))); // NOI18N
         setName("Form"); // NOI18N
         setPreferredSize(new java.awt.Dimension(300, 300));
@@ -142,7 +146,7 @@ public class ControlPanel_WebShopManager extends javax.swing.JPanel implements C
         jPanel5.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         jPanel5.setMaximumSize(new java.awt.Dimension(32767, 250));
         jPanel5.setName("jPanel5"); // NOI18N
-        jPanel5.setPreferredSize(new java.awt.Dimension(453, 200));
+        jPanel5.setPreferredSize(new java.awt.Dimension(453, 250));
 
         jButton3.setText(bundle.getString("ControlPanel_WebShopManager.jButton3.text")); // NOI18N
         jButton3.setName("jButton3"); // NOI18N
@@ -210,7 +214,7 @@ public class ControlPanel_WebShopManager extends javax.swing.JPanel implements C
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(groupselect, javax.swing.GroupLayout.PREFERRED_SIZE, 343, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel5Layout.createSequentialGroup()
-                        .addComponent(urls, javax.swing.GroupLayout.DEFAULT_SIZE, 367, Short.MAX_VALUE)
+                        .addComponent(urls, javax.swing.GroupLayout.DEFAULT_SIZE, 413, Short.MAX_VALUE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jButton3))
                     .addGroup(jPanel5Layout.createSequentialGroup()
@@ -241,9 +245,9 @@ public class ControlPanel_WebShopManager extends javax.swing.JPanel implements C
                 .addContainerGap()
                 .addComponent(groupselect, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 19, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(urls, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                    .addComponent(jButton3, javax.swing.GroupLayout.Alignment.LEADING, 0, 0, Short.MAX_VALUE)
+                    .addComponent(urls, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel5Layout.createSequentialGroup()
@@ -259,9 +263,12 @@ public class ControlPanel_WebShopManager extends javax.swing.JPanel implements C
                     .addComponent(jPasswordField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel1)
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(43, 43, 43))
+                    .addGroup(jPanel5Layout.createSequentialGroup()
+                        .addComponent(jLabel1)
+                        .addGap(56, 56, 56))
+                    .addGroup(jPanel5Layout.createSequentialGroup()
+                        .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 59, Short.MAX_VALUE)
+                        .addContainerGap())))
         );
 
         add(jPanel5, java.awt.BorderLayout.NORTH);
@@ -292,7 +299,7 @@ public class ControlPanel_WebShopManager extends javax.swing.JPanel implements C
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 422, Short.MAX_VALUE)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 456, Short.MAX_VALUE)
                     .addComponent(jLabel3))
                 .addContainerGap())
         );
@@ -302,7 +309,7 @@ public class ControlPanel_WebShopManager extends javax.swing.JPanel implements C
                 .addContainerGap()
                 .addComponent(jLabel3)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 30, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 56, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -321,6 +328,15 @@ public class ControlPanel_WebShopManager extends javax.swing.JPanel implements C
             }
         });
         jPanel2.add(jButton2);
+
+        jButton5.setText(bundle.getString("ControlPanel_WebShopManager.jButton5.text")); // NOI18N
+        jButton5.setName("jButton5"); // NOI18N
+        jButton5.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton5ActionPerformed(evt);
+            }
+        });
+        jPanel2.add(jButton5);
 
         jButton4.setText(bundle.getString("ControlPanel_WebShopManager.jButton4.text")); // NOI18N
         jButton4.setName("jButton4"); // NOI18N
@@ -419,6 +435,22 @@ public class ControlPanel_WebShopManager extends javax.swing.JPanel implements C
         }
     }//GEN-LAST:event_jButton2ActionPerformed
 
+    private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
+        try {
+            WebShop ws = (WebShop) list.getSelectedValue();
+            WSDaemon d = new WSDaemon(ws);
+            d.addJob(new newContactsJob(d));
+            d.addJob(new newOrdersJob(d));
+            d.addJob(new newSystemMessages(d));
+            d.addJob(new updatedContactsJob(d));
+            d.addJob(new updatedOrdersJob(d));
+            d.addJob(new addContactJob(d));
+            d.start();
+        } catch (Exception ex) {
+            Notificator.raiseNotification(ex, true);
+        }
+    }//GEN-LAST:event_jButton5ActionPerformed
+
     @Override
     public void setValues(PropertyStore values) {
         oldvalues = values;
@@ -442,6 +474,7 @@ public class ControlPanel_WebShopManager extends javax.swing.JPanel implements C
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
     private javax.swing.JButton jButton4;
+    private javax.swing.JButton jButton5;
     private javax.swing.JCheckBox jCheckBox1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel3;

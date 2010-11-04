@@ -1,24 +1,23 @@
 
 /*
-*  This file is part of YaBS.
-*
-*      YaBS is free software: you can redistribute it and/or modify
-*      it under the terms of the GNU General Public License as published by
-*      the Free Software Foundation, either version 3 of the License, or
-*      (at your option) any later version.
-*
-*      YaBS is distributed in the hope that it will be useful,
-*      but WITHOUT ANY WARRANTY; without even the implied warranty of
-*      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-*      GNU General Public License for more details.
-*
-*      You should have received a copy of the GNU General Public License
-*      along with YaBS.  If not, see <http://www.gnu.org/licenses/>.
+ *  This file is part of YaBS.
+ *
+ *      YaBS is free software: you can redistribute it and/or modify
+ *      it under the terms of the GNU General Public License as published by
+ *      the Free Software Foundation, either version 3 of the License, or
+ *      (at your option) any later version.
+ *
+ *      YaBS is distributed in the hope that it will be useful,
+ *      but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *      GNU General Public License for more details.
+ *
+ *      You should have received a copy of the GNU General Public License
+ *      along with YaBS.  If not, see <http://www.gnu.org/licenses/>.
  */
 package mpv5.webshopinterface.wsdjobs;
 
 //~--- non-JDK imports --------------------------------------------------------
-
 import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
 import mpv5.db.common.NodataFoundException;
@@ -54,6 +53,7 @@ import java.util.logging.Logger;
  * This job tries to fetch new orders
  */
 public class newOrdersJob implements WSDaemonJob {
+
     private final WSDaemon daemon;
 
     /**
@@ -77,13 +77,13 @@ public class newOrdersJob implements WSDaemonJob {
     @Override
     public void work(WSConnectionClient client) {
         WSContactsMapping md;
-        Contact           c;
-        List<Item>        savedOrders = new Vector<Item>();
+        Contact c;
+        List<Item> savedOrders = new Vector<Item>();
 
         try {
             Object itd = WSItemsMapping.getLastWsID(daemon.getWebShop());
-            Object d   = client.getClient().invokeGetCommand(WSConnectionClient.COMMANDS.GET_NEW_ORDERS.toString(),
-                             new Object[] { itd }, new Object());
+            Object d = client.getClient().invokeGetCommand(WSConnectionClient.COMMANDS.GET_NEW_ORDERS.toString(),
+                    new Object[]{itd}, new Object());
             List<Item> obs = WSIManager.createObjects(d, new Item());
 
             for (Item order : obs) {
@@ -91,13 +91,13 @@ public class newOrdersJob implements WSDaemonJob {
 
                 if (id == -1) {    // Guestaccount
                     Object d2 = client.getClient().invokeGetCommand(WSConnectionClient.COMMANDS.GET_CONTACT.toString(),
-                                    new Object[] { order.__getIDS(),
-                                                   Boolean.FALSE }, new Object());
+                            new Object[]{order.__getIDS(),
+                                Boolean.FALSE}, new Object());
                     List<Contact> obs2 = WSIManager.createObjects(d2, new Contact());
 
                     c = obs2.get(0);
                     c.setNotes(c.__getNotes() + "\nAuto generated guest account for webshop: "
-                               + daemon.getWebShop().__getCName());
+                            + daemon.getWebShop().__getCName());
                     c.setMailaddress("NO-MAILS " + c.__getMailaddress());
                     c.setGroupsids(daemon.getWebShop().__getGroupsids());
                     c.saveImport();
@@ -115,9 +115,9 @@ public class newOrdersJob implements WSDaemonJob {
 
                         // Not yet created
                         Object d2 =
-                            client.getClient().invokeGetCommand(WSConnectionClient.COMMANDS.GET_CONTACT.toString(),
-                                new Object[] { id,
-                                               Boolean.TRUE }, new Object());
+                                client.getClient().invokeGetCommand(WSConnectionClient.COMMANDS.GET_CONTACT.toString(),
+                                new Object[]{id,
+                                    Boolean.TRUE}, new Object());
                         List<Contact> obs2 = WSIManager.createObjects(d2, new Contact());
 
                         c = obs2.get(0);
@@ -152,13 +152,13 @@ public class newOrdersJob implements WSDaemonJob {
 
                 // Fetch the order details
                 Object da = client.getClient().invokeGetCommand(WSConnectionClient.COMMANDS.GET_ORDER_ROWS.toString(),
-                                new Object[] { String.valueOf(wsitemids) }, new Object());
+                        new Object[]{String.valueOf(wsitemids)}, new Object());
                 List<SubItem> aobs = WSIManager.createObjects(da, new SubItem());
 
                 for (SubItem orderRow : aobs) {
                     try {
                         WSItemsMapping mk = (WSItemsMapping) DatabaseObject.getObject(Context.getWebShopItemMapping(),
-                                                String.valueOf(orderRow.__getItemsids()));
+                                String.valueOf(orderRow.__getItemsids()));
 
                         orderRow.setItemsids(mk.__getItemsids());
                         orderRow.setGroupsids(daemon.getWebShop().__getGroupsids());
@@ -173,7 +173,7 @@ public class newOrdersJob implements WSDaemonJob {
                 MPView.addMessage(obs.size() + " " + Messages.ORDERS_RECEIVED + " " + daemon.getWebShop());
 
                 if (Popup.Y_N_dialog(obs.size() + " " + Messages.ORDERS_RECEIVED + " " + daemon.getWebShop() + "\n"
-                                     + Messages.LOAD_NOW)) {
+                        + Messages.LOAD_NOW)) {
                     for (Item s : savedOrders) {
                         try {
                             MPView.getIdentifierView().addTab(DatabaseObject.getObject(Context.getItem(),
@@ -187,9 +187,13 @@ public class newOrdersJob implements WSDaemonJob {
             }
         } catch (XmlRpcException ex) {
             Log.Debug(this, ex.getMessage());
+            if (Log.getLoglevel() == Log.LOGLEVEL_DEBUG) {
+                Popup.error(ex);
+            }
         }
     }
 }
 
 
 //~ Formatted by Jindent --- http://www.jindent.com
+

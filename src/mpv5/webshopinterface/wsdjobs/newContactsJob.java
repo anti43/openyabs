@@ -1,24 +1,23 @@
 
 /*
-*  This file is part of YaBS.
-*
-*      YaBS is free software: you can redistribute it and/or modify
-*      it under the terms of the GNU General Public License as published by
-*      the Free Software Foundation, either version 3 of the License, or
-*      (at your option) any later version.
-*
-*      YaBS is distributed in the hope that it will be useful,
-*      but WITHOUT ANY WARRANTY; without even the implied warranty of
-*      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-*      GNU General Public License for more details.
-*
-*      You should have received a copy of the GNU General Public License
-*      along with YaBS.  If not, see <http://www.gnu.org/licenses/>.
+ *  This file is part of YaBS.
+ *
+ *      YaBS is free software: you can redistribute it and/or modify
+ *      it under the terms of the GNU General Public License as published by
+ *      the Free Software Foundation, either version 3 of the License, or
+ *      (at your option) any later version.
+ *
+ *      YaBS is distributed in the hope that it will be useful,
+ *      but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *      GNU General Public License for more details.
+ *
+ *      You should have received a copy of the GNU General Public License
+ *      along with YaBS.  If not, see <http://www.gnu.org/licenses/>.
  */
 package mpv5.webshopinterface.wsdjobs;
 
 //~--- non-JDK imports --------------------------------------------------------
-
 import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
 import mpv5.db.common.NodataFoundException;
@@ -45,11 +44,13 @@ import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import mpv5.ui.dialogs.Popup;
 
 /**
  * This job tries to fetch new contacts + adresses of them
  */
 public class newContactsJob implements WSDaemonJob {
+
     private final WSDaemon daemon;
 
     /**
@@ -76,19 +77,19 @@ public class newContactsJob implements WSDaemonJob {
 
         try {
             Object d = client.getClient().invokeGetCommand(WSConnectionClient.COMMANDS.GET_NEW_CONTACTS.toString(),
-                           new Object[] { itd }, new Object());
+                    new Object[]{itd}, new Object());
             List<Contact> obs = WSIManager.createObjects(d, new Contact());
 
             for (int i = 0; i < obs.size(); i++) {
-                Contact           contact = obs.get(i);
-                int               id      = contact.__getIDS();
+                Contact contact = obs.get(i);
+                int id = contact.__getIDS();
                 WSContactsMapping m;
 
                 try {    // Check if the mapping already exists
                     m = (WSContactsMapping) WSContactsMapping.getObject(Context.getWebShopContactMapping(),
                             String.valueOf(id) + "@" + daemon.getWebShopID());
                     Log.Debug(this,
-                              "Using exiting mapping to: " + contact.__getIDS() + ". Not going to create " + contact);
+                            "Using exiting mapping to: " + contact.__getIDS() + ". Not going to create " + contact);
                 } catch (NodataFoundException ex) {
                     contact.setIDS(-1);
                     contact.setGroupsids(daemon.getWebShop().__getGroupsids());
@@ -106,13 +107,13 @@ public class newContactsJob implements WSDaemonJob {
             }
 
             Object da = client.getClient().invokeGetCommand(WSConnectionClient.COMMANDS.GET_NEW_ADDRESSES.toString(),
-                            new Object[] { itd }, new Object());
+                    new Object[]{itd}, new Object());
             List<Address> aobs = WSIManager.createObjects(da, new Address());
 
             for (Address address : aobs) {
                 try {
                     WSContactsMapping m = WSContactsMapping.getMapping(daemon.getWebShopID(),
-                                              address.__getContactsids());
+                            address.__getContactsids());
 
                     address.setContactsids(m.__getContactsids());
                     address.setGroupsids(daemon.getWebShop().__getGroupsids());
@@ -121,11 +122,17 @@ public class newContactsJob implements WSDaemonJob {
                     Log.Debug(this, ex.getMessage());
                 }
             }
+
+            if (Log.getLoglevel() == Log.LOGLEVEL_DEBUG) {
+                Popup.notice(obs, "Saved contacts");
+            }
         } catch (XmlRpcException ex) {
             Log.Debug(this, ex.getMessage());
+            if (Log.getLoglevel() == Log.LOGLEVEL_DEBUG) {
+                Popup.error(ex);
+            }
         }
     }
 }
-
-
 //~ Formatted by Jindent --- http://www.jindent.com
+
