@@ -19,6 +19,7 @@ package mpv5.utils.print;
 import com.sun.pdfview.PDFFile;
 import com.sun.pdfview.PDFPage;
 import com.sun.pdfview.PDFRenderer;
+import com.sun.pdfview.view.NoSuchPageException;
 import java.awt.Component;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -28,6 +29,8 @@ import java.util.*;
 import java.io.*;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.print.*;
 import javax.print.attribute.*;
 import javax.print.attribute.standard.*;
@@ -231,34 +234,36 @@ public class PrintJob2 {
                 int pagenum = index + 1;
 
                 if ((pagenum >= 1) && (pagenum <= pdfFile.getNumPages())) {
-
-                    Graphics2D g2 = (Graphics2D) g;
-                    PDFPage page = pdfFile.getPage(pagenum);
-                    double pwidth = format.getImageableWidth();
-                    double pheight = format.getImageableHeight();
-
-                    double aspect = page.getAspectRatio();
-                    double paperaspect = pwidth / pheight;
-
-                    Rectangle imgbounds;
-                    int width;
-                    int height;
-                    if (aspect > paperaspect) {//fit paper
-                        height = (int) (pwidth / aspect);
-                        width = (int) pwidth;
-                    } else {
-                        width = (int) (pheight * aspect);
-                        height = (int) pheight;
-                    }
-                    imgbounds = new Rectangle((int) format.getImageableX(), (int) format.getImageableY(), width, height);
-
-                    PDFRenderer pgs = new PDFRenderer(page, g2, imgbounds, null, null);
                     try {
-                        page.waitForFinish();
-                        pgs.run();
-                    } catch (InterruptedException ie) {
+                        Graphics2D g2 = (Graphics2D) g;
+                        PDFPage page = pdfFile.getPage(pagenum);
+                        double pwidth = format.getImageableWidth();
+                        double pheight = format.getImageableHeight();
+                        double aspect = page.getAspectRatio();
+                        double paperaspect = pwidth / pheight;
+                        Rectangle imgbounds;
+                        int width;
+                        int height;
+                        if (aspect > paperaspect) {
+                            //fit paper
+                            height = (int) (pwidth / aspect);
+                            width = (int) pwidth;
+                        } else {
+                            width = (int) (pheight * aspect);
+                            height = (int) pheight;
+                        }
+                        imgbounds = new Rectangle((int) format.getImageableX(), (int) format.getImageableY(), width, height);
+                        PDFRenderer pgs = new PDFRenderer(page, g2, imgbounds, null, null);
+                        try {
+                            page.waitForFinish();
+                            pgs.run();
+                        } catch (InterruptedException ie) {
+                        }
+                        return PAGE_EXISTS;
+                    } catch (NoSuchPageException ex) {
+                        Log.Debug(ex);
+                        return NO_SUCH_PAGE;
                     }
-                    return PAGE_EXISTS;
                 } else {
                     return NO_SUCH_PAGE;
                 }

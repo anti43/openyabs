@@ -31,6 +31,7 @@ import mpv5.globals.Messages;
 import mpv5.handler.FormatHandler;
 import mpv5.handler.MPEnum;
 import mpv5.logging.Log;
+import mpv5.ui.dialogs.Notificator;
 import mpv5.ui.panels.ProductPanel;
 import mpv5.utils.images.MPIcon;
 import mpv5.utils.numberformat.FormatNumber;
@@ -548,5 +549,15 @@ public class Product extends DatabaseObject implements Formattable {
      */
     public void setProductlistsids(int productlistsids) {
         this.productlistsids = productlistsids;
+    }
+
+    @Override
+    public boolean save(boolean silent) {
+
+        if (__getInttype() == TYPE_PRODUCT && __getIntinventorytype() == 1
+                && __getStockvalue().intValue() <= __getThresholdvalue().intValue()) {
+            Notificator.raiseNotification(Messages.INVENTORY_STOCK_TRESHOLD + toString());
+        }
+        return super.save(silent);
     }
 }

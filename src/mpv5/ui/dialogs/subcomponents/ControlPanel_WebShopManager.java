@@ -39,6 +39,7 @@ import mpv5.webshopinterface.WSConnectionClient;
 import mpv5.webshopinterface.WSDaemon;
 import mpv5.webshopinterface.WSIManager;
 import mpv5.webshopinterface.wsdjobs.*;
+import org.bouncycastle.util.encoders.Base64;
 
 /**
  *
@@ -543,7 +544,7 @@ public class ControlPanel_WebShopManager extends javax.swing.JPanel implements C
             String password = new RandomText(8).getString();
             Log.Debug(this, "The SUPER SECRET password for the generated .htaccess file is: " + password);
             //apache codec base64encoder produces wrong values here
-            String crypt = "{SHA}" + new sun.misc.BASE64Encoder().encode(java.security.MessageDigest.getInstance("SHA1").digest(password.getBytes()));
+            String crypt = "{SHA}" + Base64.encode(java.security.MessageDigest.getInstance("SHA1").digest(password.getBytes()));
             String content1 =
                     "AuthUserFile " + pwdir + "/.htpasswd\n" +
                     "AuthGroupFile /dev/null\n" +

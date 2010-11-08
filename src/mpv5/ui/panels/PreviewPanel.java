@@ -3,6 +3,7 @@ package mpv5.ui.panels;
 import com.sun.pdfview.PDFFile;
 import com.sun.pdfview.PDFPage;
 import com.sun.pdfview.PagePanel;
+import com.sun.pdfview.view.ViewerPanel;
 import java.awt.BorderLayout;
 import java.awt.Cursor;
 import java.io.File;
@@ -71,26 +72,15 @@ public class PreviewPanel extends javax.swing.JPanel implements Waiter {
         openl(file);
     }
 
+
     /**
      * Shows the given pdf file in the preview panel
      * @param pdf
      */
     public void openPdf(File pdf) {
-        this.file = pdf;
+        ViewerPanel vp;
         if (pdf.isFile() && pdf.exists()) {
             try {
-
-                panel = new PagePanel();
-                ppanel.removeAll();
-                JScrollPane sp = new JScrollPane(panel);
-                ppanel.add(sp, BorderLayout.CENTER);
-                ppanel.validate();
-
-                if (getParent() instanceof JFrame) {
-                    JFrame p = (JFrame) getParent();
-                    p.pack();
-                    p.setVisible(true);
-                }
 
                 RandomAccessFile raf = new RandomAccessFile(pdf, "r");
                 FileChannel channel = raf.getChannel();
@@ -99,18 +89,23 @@ public class PreviewPanel extends javax.swing.JPanel implements Waiter {
                 buf.clear();
                 channel.close();
                 raf.close();
-                panel.useZoomTool(true);
-                // show the first page
-                PDFPage page = pdffile.getPage(pagen);
-                panel.showPage(page);
-            } catch (IOException ex) {
-                Log.Debug(this, ex.getMessage());
-                Popup.notice(Messages.ERROR_OCCURED + ex.getLocalizedMessage());
+
+                vp = new ViewerPanel();
+                vp.loadFile(pdffile);
+
+                ppanel.removeAll();
+                ppanel.add(vp, BorderLayout.CENTER);
+                ppanel.validate();
+
+                vp.showPage(1);
+            } catch (Exception ex) {
+                Log.Debug(ex);
             }
         } else {
             throw new IllegalArgumentException("File is not existing or a directory: " + pdf);
         }
     }
+
 
     /** This me4thod is called from within the constructor to
      * initialize the form.
@@ -130,15 +125,12 @@ public class PreviewPanel extends javax.swing.JPanel implements Waiter {
         jButton30 = new javax.swing.JButton();
         jButton31 = new javax.swing.JButton();
         jButton32 = new javax.swing.JButton();
-        jSeparator1 = new javax.swing.JToolBar.Separator();
-        jButton1 = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
 
         jSeparator5.setName("jSeparator5"); // NOI18N
 
         setName("Form"); // NOI18N
 
-        java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle(); // NOI18N
+        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("mpv5/resources/languages/Panels"); // NOI18N
         jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("PreviewPanel.jPanel1.border.title"))); // NOI18N
         jPanel1.setName("jPanel1"); // NOI18N
 
@@ -223,35 +215,6 @@ public class PreviewPanel extends javax.swing.JPanel implements Waiter {
             }
         });
         toolbar.add(jButton32);
-
-        jSeparator1.setName("jSeparator1"); // NOI18N
-        toolbar.add(jSeparator1);
-
-        jButton1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/1leftarrow.png"))); // NOI18N
-        jButton1.setText(bundle.getString("PreviewPanel.jButton1.text")); // NOI18N
-        jButton1.setFocusable(false);
-        jButton1.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        jButton1.setName("jButton1"); // NOI18N
-        jButton1.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
-            }
-        });
-        toolbar.add(jButton1);
-
-        jButton2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/1rightarrow.png"))); // NOI18N
-        jButton2.setText(bundle.getString("PreviewPanel.jButton2.text")); // NOI18N
-        jButton2.setFocusable(false);
-        jButton2.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        jButton2.setName("jButton2"); // NOI18N
-        jButton2.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        jButton2.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton2ActionPerformed(evt);
-            }
-        });
-        toolbar.add(jButton2);
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -402,39 +365,13 @@ public class PreviewPanel extends javax.swing.JPanel implements Waiter {
 
 }//GEN-LAST:event_jButton30ActionPerformed
     int pagen = 1;
-    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        try {
-            if (pdffile.getNumPages()>pagen) {
-                pagen++;
-                PDFPage p = pdffile.getPage(pagen);
-                panel.showPage(p);
-            }
-        } catch (Exception e) {
-            //No pdf loaded
-        }
-    }//GEN-LAST:event_jButton2ActionPerformed
-
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        try {
-            if (pagen > 1) {
-                pagen--;
-            }
-            PDFPage p = pdffile.getPage(pagen);
-            panel.showPage(p);
-        } catch (Exception e) {
-            //No pdf loaded
-        }
-    }//GEN-LAST:event_jButton1ActionPerformed
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton27;
     private javax.swing.JButton jButton28;
     private javax.swing.JButton jButton30;
     private javax.swing.JButton jButton31;
     private javax.swing.JButton jButton32;
     private javax.swing.JPanel jPanel1;
-    private javax.swing.JToolBar.Separator jSeparator1;
     private javax.swing.JSeparator jSeparator5;
     private javax.swing.JPanel ppanel;
     private javax.swing.JToolBar toolbar;

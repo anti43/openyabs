@@ -1762,7 +1762,6 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
 
     private void properties() {
         final MPTableModel m = new MPTableModel(ValueProperty.getProperties(dataOwner));
-        final MPTableModel mold = m.clone();
 
         if (m.getDataVector().isEmpty()) {
             proptable.setModel(new MPTableModel(
@@ -1773,10 +1772,12 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
 
         m.addTableModelListener(new TableModelListener() {
 
+            @Override
             public void tableChanged(TableModelEvent e) {
+                System.err.println(String.valueOf(m.getValueAt(e.getLastRow(), 1)).length());
                 if (dataOwner.isExisting()) {
-                    if (e.getColumn() == 0 && e.getType() == TableModelEvent.DELETE) {
-                        ValueProperty.deleteProperty(dataOwner, String.valueOf(mold.getData()[e.getLastRow()][0]));
+                    if (String.valueOf(m.getValueAt(e.getLastRow(), 1)).length() == 0) {
+                        ValueProperty.deleteProperty(dataOwner, String.valueOf(m.getData()[e.getLastRow()][0]));
                         m.removeTableModelListener(this);
                         properties();
                     } else if (e.getColumn() == 1 && m.getValueAt(e.getLastRow(), 0) != null && String.valueOf(m.getValueAt(e.getLastRow(), 0)).length() > 0) {

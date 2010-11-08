@@ -788,10 +788,6 @@ public class SubItem extends DatabaseObject implements Triggerable {
                     p.setStockvalue(p.__getStockvalue().subtract(BigDecimal.ONE));
                     p.save(true);
                 }
-
-                if (p.__getIntinventorytype() == 1 && p.__getStockvalue().intValue() <= p.__getThresholdvalue().intValue()) {
-                    Notificator.raiseNotification(Messages.INVENTORY_STOCK_TRESHOLD + p.toString());
-                }
             } catch (NodataFoundException ex) {
                 Log.Debug(ex);
             }
