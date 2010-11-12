@@ -4,7 +4,7 @@
  */
 package mpv5.utils.export;
 
-import com.sun.org.apache.xerces.internal.dom.DocumentImpl;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -25,6 +25,7 @@ import net.sf.vcard4j.java.VCard;
 import net.sf.vcard4j.java.type.*;
 import net.sf.vcard4j.parser.DomParser;
 import net.sf.vcard4j.parser.VCardParseException;
+import org.apache.xerces.dom.DocumentImpl;
 import org.w3c.dom.Document;
 
 /**
