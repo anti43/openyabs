@@ -36,6 +36,7 @@ public class wizard_Yabs1_Import extends javax.swing.JPanel implements Wizardabl
         initComponents();
         path.setFilter(DialogForFile.DIRECTORIES);
         jComboBox1.setModel(new DefaultComboBoxModel(ConnectionTypeHandler.DRIVERS));
+        path.setModalityParent(this);
     }
 
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents

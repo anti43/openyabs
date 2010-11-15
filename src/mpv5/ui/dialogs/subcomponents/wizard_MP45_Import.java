@@ -47,6 +47,7 @@ public class wizard_MP45_Import extends javax.swing.JPanel implements Wizardable
         initComponents();
         path.setFilter(DialogForFile.DIRECTORIES);
         jComboBox1.setModel(new DefaultComboBoxModel(ConnectionTypeHandler.DRIVERS));
+        path.setModalityParent(this);
     }
 
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents

@@ -54,10 +54,11 @@
                   <EmptySpace min="-2" pref="2" max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="0" attributes="0">
                       <Component id="jScrollPane1" alignment="0" pref="426" max="32767" attributes="0"/>
-                      <Group type="102" alignment="1" attributes="0">
-                          <Component id="jLabel1" pref="148" max="32767" attributes="0"/>
+                      <Component id="labeledTextField2" alignment="0" pref="426" max="32767" attributes="0"/>
+                      <Group type="102" alignment="0" attributes="0">
+                          <Component id="jLabel1" pref="187" max="32767" attributes="0"/>
                           <EmptySpace max="-2" attributes="0"/>
-                          <Component id="labeledCombobox2" min="-2" pref="266" max="-2" attributes="0"/>
+                          <Component id="labeledCombobox2" min="-2" pref="227" max="-2" attributes="0"/>
                       </Group>
                   </Group>
               </Group>
@@ -71,7 +72,9 @@
                       <Component id="labeledCombobox2" alignment="2" min="-2" max="-2" attributes="1"/>
                   </Group>
                   <EmptySpace max="-2" attributes="0"/>
-                  <Component id="jScrollPane1" pref="207" max="32767" attributes="0"/>
+                  <Component id="labeledTextField2" min="-2" max="-2" attributes="0"/>
+                  <EmptySpace max="-2" attributes="0"/>
+                  <Component id="jScrollPane1" pref="179" max="32767" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
                   <Component id="labeledTextField1" min="-2" max="-2" attributes="0"/>
               </Group>
@@ -121,6 +124,14 @@
               <ResourceString bundle="mpv5/resources/languages/Panels.properties" key="ControlPanel_Reminder.jLabel1.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
             </Property>
             <Property name="name" type="java.lang.String" value="jLabel1" noResource="true"/>
+          </Properties>
+        </Component>
+        <Component class="mpv5.ui.beans.LabeledTextField" name="labeledTextField2">
+          <Properties>
+            <Property name="_Label" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
+              <ResourceString bundle="mpv5/resources/languages/Panels.properties" key="ControlPanel_Reminder.labeledTextField2._Label" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+            </Property>
+            <Property name="name" type="java.lang.String" value="labeledTextField2" noResource="true"/>
           </Properties>
         </Component>
       </SubComponents>
@@ -274,6 +285,9 @@
                 </Property>
                 <Property name="name" type="java.lang.String" value="jTable1" noResource="true"/>
               </Properties>
+              <Events>
+                <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="jTable1MouseClicked"/>
+              </Events>
             </Component>
           </SubComponents>
         </Container>

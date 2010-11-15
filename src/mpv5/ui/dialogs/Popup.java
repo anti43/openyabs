@@ -52,8 +52,14 @@ public class Popup {
      * @param message
      * @return
      */
-    public static String Enter_Value(Object message) {
-        return JOptionPane.showInputDialog(identifier, String.valueOf(message));
+    public static String Enter_Value(Object... message) {
+        String text = "";
+        for (int i = 0; i < message.length; i++) {
+            if (message[i] != null) {
+                text += message[i].toString();
+            }
+        }
+        return JOptionPane.showInputDialog(identifier, String.valueOf(text));
     }
 
     /**

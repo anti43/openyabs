@@ -54,12 +54,12 @@
                   <EmptySpace max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="0" attributes="0">
                       <Group type="102" alignment="0" attributes="0">
-                          <Component id="jLabel3" pref="187" max="32767" attributes="0"/>
+                          <Component id="jLabel3" pref="169" max="32767" attributes="0"/>
                           <EmptySpace max="-2" attributes="0"/>
                           <Component id="jComboBox1" min="-2" max="-2" attributes="0"/>
                       </Group>
-                      <Component id="labeledTextChooser1" alignment="1" pref="261" max="32767" attributes="0"/>
-                      <Component id="jLabel1" alignment="1" pref="261" max="32767" attributes="0"/>
+                      <Component id="labeledTextChooser1" alignment="1" pref="259" max="32767" attributes="0"/>
+                      <Component id="jLabel1" alignment="1" pref="259" max="32767" attributes="0"/>
                   </Group>
                   <EmptySpace max="-2" attributes="0"/>
               </Group>
@@ -68,7 +68,7 @@
         <DimensionLayout dim="1">
           <Group type="103" groupAlignment="0" attributes="0">
               <Group type="102" alignment="1" attributes="0">
-                  <EmptySpace pref="117" max="32767" attributes="0"/>
+                  <EmptySpace pref="103" max="32767" attributes="0"/>
                   <Component id="jLabel1" min="-2" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
                   <Component id="labeledTextChooser1" min="-2" max="-2" attributes="0"/>

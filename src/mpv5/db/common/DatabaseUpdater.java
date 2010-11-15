@@ -69,6 +69,10 @@ public class DatabaseUpdater {
                     "ALTER TABLE expenses ADD COLUMN ispaid SMALLINT DEFAULT 0 NOT NULL",
                     "ALTER TABLE revenues ADD COLUMN dateend DATE ",
                     "ALTER TABLE revenues ADD COLUMN ispaid SMALLINT DEFAULT 0 NOT NULL",});
+       UPDATES_DERBY.put(1.183, new String[]{
+                    "ALTER TABLE stages ADD COLUMN templategroup BIGINT REFERENCES groups(ids)"
+                });
+
         ////////////////////////////////////////////////////////////////////////////////////////////
         // mysql updates
         UPDATES_MYSQL.put(1.11, new String[]{
@@ -139,6 +143,9 @@ public class DatabaseUpdater {
                     "ALTER TABLE expenses ADD COLUMN ispaid SMALLINT DEFAULT 0 NOT NULL",
                     "ALTER TABLE revenues ADD COLUMN dateend DATE ",
                     "ALTER TABLE revenues ADD COLUMN ispaid SMALLINT DEFAULT 0 NOT NULL",});
+        UPDATES_MYSQL.put(1.183, new String[]{
+                    "ALTER TABLE stages ADD COLUMN templategroup BIGINT(20) UNSIGNED DEFAULT 1 REFERENCES groups(ids)"
+                });
     }
 
     /**

@@ -68,7 +68,6 @@ import static mpv5.db.common.Context.*;
  */
 public abstract class DatabaseObject implements Comparable<DatabaseObject>, Serializable, Cloneable {
 
-
     /**
      * Represents a Context-ID pair which uniquely identifies a DatabaseObject
      * @param <T>
@@ -811,9 +810,13 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
         Object tempval;
         Method[] methods = this.getClass().getMethods();
         for (int i = 0; i < this.getClass().getMethods().length; i++) {
-            if ((methods[i].isAnnotationPresent(Persistable.class) && methods[i].getAnnotation(Persistable.class).value())
+            if ((methods[i].isAnnotationPresent(Persistable.class) 
+                    && methods[i].getAnnotation(Persistable.class).value()
+                    && methods[i].getParameterTypes().length > 0)
+                    /*for backwards compatibility*/
                     || (methods[i].getName().startsWith("__get")
-                    && !(methods[i].isAnnotationPresent(Persistable.class) && !methods[i].getAnnotation(Persistable.class).value()))) {
+                    && !(methods[i].isAnnotationPresent(Persistable.class)
+                    && !methods[i].getAnnotation(Persistable.class).value()))) {
                 try {
                     left = methods[i].getName().toLowerCase().substring(5, methods[i].getName().length());
                     Log.Debug(this, "Calling: " + methods[i]);
@@ -1595,7 +1598,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
 
     @Override
     public String toString() {
-        return cname + (readOnly?" [Read-only]":"");//TODO: l10n
+        return cname + (readOnly ? " [Read-only]" : "");//TODO: l10n
     }
 
     /**
@@ -1868,7 +1871,6 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
         }
         throw new UnsupportedOperationException(key + " not known in " + this);
     }
-
 
     public Object[] toResolvedArray() {
         throw new UnsupportedOperationException("Not yet implemented");

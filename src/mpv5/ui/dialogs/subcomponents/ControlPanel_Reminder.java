@@ -28,6 +28,7 @@ import enoa.handler.TemplateHandler;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Vector;
@@ -53,6 +54,7 @@ import mpv5.utils.export.Exportable;
 import mpv5.utils.files.FileDirectoryHandler;
 import mpv5.utils.jobs.Job;
 import mpv5.utils.models.MPTableModel;
+import mpv5.utils.numberformat.FormatNumber;
 import mpv5.utils.tables.Selection;
 
 /**
@@ -75,7 +77,11 @@ public class ControlPanel_Reminder extends javax.swing.JPanel implements DataPan
         labeledCombobox2.setEditable(true);
         labeledCombobox2.triggerSearch();
 
-        jTable1.setModel(new MPTableModel(Context.getStage()));
+        try {
+            jTable1.setModel(new MPTableModel(Context.getStage()));
+        } catch (Exception e) {
+            Log.Debug(this, e.getMessage());
+        }
     }
 
     /** This method is called from within the constructor to
@@ -93,6 +99,7 @@ public class ControlPanel_Reminder extends javax.swing.JPanel implements DataPan
         labeledTextField1 = new mpv5.ui.beans.LabeledTextField();
         labeledCombobox2 = new mpv5.ui.beans.LabeledCombobox();
         jLabel1 = new javax.swing.JLabel();
+        labeledTextField2 = new mpv5.ui.beans.LabeledTextField();
         jPanel2 = new javax.swing.JPanel();
         jButton3 = new javax.swing.JButton();
         jButton7 = new javax.swing.JButton();
@@ -127,6 +134,9 @@ public class ControlPanel_Reminder extends javax.swing.JPanel implements DataPan
         jLabel1.setText(bundle.getString("ControlPanel_Reminder.jLabel1.text")); // NOI18N
         jLabel1.setName("jLabel1"); // NOI18N
 
+        labeledTextField2.set_Label(bundle.getString("ControlPanel_Reminder.labeledTextField2._Label")); // NOI18N
+        labeledTextField2.setName("labeledTextField2"); // NOI18N
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -138,10 +148,11 @@ public class ControlPanel_Reminder extends javax.swing.JPanel implements DataPan
                 .addGap(2, 2, 2)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 426, Short.MAX_VALUE)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                        .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, 148, Short.MAX_VALUE)
+                    .addComponent(labeledTextField2, javax.swing.GroupLayout.DEFAULT_SIZE, 426, Short.MAX_VALUE)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, 187, Short.MAX_VALUE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(labeledCombobox2, javax.swing.GroupLayout.PREFERRED_SIZE, 266, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                        .addComponent(labeledCombobox2, javax.swing.GroupLayout.PREFERRED_SIZE, 227, javax.swing.GroupLayout.PREFERRED_SIZE))))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -150,7 +161,9 @@ public class ControlPanel_Reminder extends javax.swing.JPanel implements DataPan
                     .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(labeledCombobox2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 207, Short.MAX_VALUE)
+                .addComponent(labeledTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 179, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(labeledTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
@@ -247,6 +260,11 @@ public class ControlPanel_Reminder extends javax.swing.JPanel implements DataPan
             }
         ));
         jTable1.setName("jTable1"); // NOI18N
+        jTable1.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jTable1MouseClicked(evt);
+            }
+        });
         jScrollPane2.setViewportView(jTable1);
 
         jPanel3.add(jScrollPane2, java.awt.BorderLayout.CENTER);
@@ -261,7 +279,11 @@ public class ControlPanel_Reminder extends javax.swing.JPanel implements DataPan
             s.setCName(msg);
             s.setGroupsids(mpv5.db.objects.User.getCurrentUser().__getGroupsids());
             s.setDescription(jTextPane1.getText());
-            s.setExtravalue(Double.valueOf(labeledTextField1.getText()));
+            s.setExtravalue(FormatNumber.parseDezimal(labeledTextField1.getText()).doubleValue());
+            if (labeledCombobox2.getSelectedItem() != null) {
+                s.setTemplategroup(Integer.valueOf(labeledCombobox2.getSelectedItem().getId()));
+            }
+
             s.save();
         }
     }//GEN-LAST:event_jButton4ActionPerformed
@@ -396,6 +418,16 @@ public class ControlPanel_Reminder extends javax.swing.JPanel implements DataPan
             }
         }
 }//GEN-LAST:event_jButton2ActionPerformed
+
+    private void jTable1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable1MouseClicked
+        Selection s = new Selection(jTable1);
+        if (s.checkID()) {
+            try {
+                setDataOwner(DatabaseObject.getObject(Context.getStage(), s.getId()), true);
+            } catch (NodataFoundException ex) {
+            }
+        }
+    }//GEN-LAST:event_jTable1MouseClicked
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
@@ -414,7 +446,16 @@ public class ControlPanel_Reminder extends javax.swing.JPanel implements DataPan
     private javax.swing.JTextPane jTextPane1;
     private mpv5.ui.beans.LabeledCombobox labeledCombobox2;
     private mpv5.ui.beans.LabeledTextField labeledTextField1;
+    private mpv5.ui.beans.LabeledTextField labeledTextField2;
     // End of variables declaration//GEN-END:variables
+    private double extravalue_;
+    public String cname_;
+    public String description_;
+    public int intaddedby_;
+    public int ids_;
+    public Date dateadded_;
+    public int groupsids_ = 1;
+    public int templategroup_;
 
     public boolean save() {
 
@@ -475,19 +516,31 @@ public class ControlPanel_Reminder extends javax.swing.JPanel implements DataPan
         } catch (NodataFoundException ex) {
         }
 
-
         labeledTextField1.setText(r.__getExtravalue());
         jTextPane1.setText(r.__getDescription());
+        labeledTextField2.setText(r.__getCName());
     }
 
     @Override
     public boolean collectData() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        try {
+            extravalue_ = labeledTextField1.getValue(0d);
+            cname_ = labeledTextField2.getText(true, Messages.NAME.getValue());
+            description_ = jTextPane1.getText();
+            if (labeledCombobox2.getSelectedItem() != null) {
+                templategroup_ = (Integer.valueOf(labeledCombobox2.getSelectedItem().getId()));
+            } else {
+                templategroup_ = 1;
+            }
+        } catch (Exception exception) {
+            return false;
+        }
+        return false;
     }
 
     @Override
     public DatabaseObject getDataOwner() {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return dataOwner;
     }
 
     @Override

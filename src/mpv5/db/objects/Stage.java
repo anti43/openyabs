@@ -29,6 +29,7 @@ public class Stage extends DatabaseObject {
 
     private String description = "";
     private double extravalue;
+    private int templategroup;
 
     public Stage() {
         context = Context.getStage();
@@ -83,4 +84,17 @@ public class Stage extends DatabaseObject {
         this.extravalue = extravalue;
     }
 
+    /**
+     * @return the templategroup
+     */
+    public int __getTemplategroup() {
+        return templategroup;
+    }
+
+    /**
+     * @param templategroup the templategroup to set
+     */
+    public void setTemplategroup(int templategroup) {
+        this.templategroup = templategroup;
+    }
 }

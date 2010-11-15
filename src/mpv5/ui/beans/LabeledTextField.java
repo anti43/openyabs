@@ -20,6 +20,7 @@ import mpv5.db.common.DatabaseObject;
 import mpv5.db.common.NodataFoundException;
 import mpv5.globals.Messages;
 import mpv5.logging.Log;
+import mpv5.ui.dialogs.Popup;
 import mpv5.ui.panels.DataPanel;
 import mpv5.utils.numberformat.FormatNumber;
 import mpv5.utils.ui.TextFieldUtils;
@@ -203,13 +204,12 @@ public class LabeledTextField extends javax.swing.JPanel {
         jLabel1.setToolTipText(_text);
     }
 
-        /**
+    /**
      * @param label the _label to set
      */
     public void setLabel(String label) {
         set_Label(label);
     }
-
 
     public void set_LabelFont(Font font) {
 //        if (font != null) {
@@ -372,5 +372,22 @@ public class LabeledTextField extends javax.swing.JPanel {
             }
         }
         return null;
+    }
+
+    /**
+     * Forces a user input
+     * @param nonNull
+     * @param value
+     * @return
+     */
+    public String getText(boolean nonNull, String value) {
+        String text = getText();
+        if (text == null || text.length() > 0) {
+            text = Popup.Enter_Value(Messages.ENTER_VALUE, value);
+        }
+        if (text == null || text.length() > 0) {
+            text = value;
+        }
+        return text;
     }
 }

@@ -18,6 +18,7 @@ public class wizard_CSVImport_1 extends javax.swing.JPanel implements Wizardable
         initComponents();
         labeledTextChooser1.setFilter(DialogForFile.CSV_FILES);
         jComboBox1.setSelectedIndex(0);
+        labeledTextChooser1.setModalityParent(this);
     }
 
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
