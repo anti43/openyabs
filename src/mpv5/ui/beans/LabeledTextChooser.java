@@ -12,10 +12,12 @@ package mpv5.ui.beans;
 
 import java.awt.Font;
 import java.io.File;
+import javax.swing.JComponent;
 import javax.swing.filechooser.FileFilter;
 import mpv5.globals.Messages;
 import mpv5.ui.dialogs.DialogForFile;
 import mpv5.ui.dialogs.Popup;
+import mpv5.ui.dialogs.subcomponents.wizard_XMLImport_1;
 
 /**
  *
@@ -28,6 +30,7 @@ public class LabeledTextChooser extends javax.swing.JPanel {
     private String _label;
     private int _mode = DialogForFile.FILES_AND_DIRECTORIES;
     private FileFilter filter;
+    private JComponent mparent;
 
     /** Creates new form LabeledTextField */
     public LabeledTextChooser() {
@@ -105,6 +108,7 @@ public class LabeledTextChooser extends javax.swing.JPanel {
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         DialogForFile dialog = new DialogForFile(getMode());
+        dialog.setModalityParent(mparent);
         if (filter != null) {
             dialog.setFileFilter(filter);
         }
@@ -192,5 +196,13 @@ public class LabeledTextChooser extends javax.swing.JPanel {
      */
     public void setMode(int mode) {
         this._mode = mode;
+    }
+
+    /**
+     * Sets the modality parent for the popup dialogs
+     * @param parent
+     */
+    public void setModalityParent(JComponent parent) {
+        this.mparent=parent;
     }
 }

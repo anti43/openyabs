@@ -18,7 +18,7 @@ public class SchemaCreator {
             qh.setLimit(1);
             qh.freeSelect("ids");
         } catch (NodataFoundException nodataFoundException) {
-            //thats actually ok, table exist
+            //thats actually ok, table exists
         } catch (Exception s) {
             //whoops -- java.sql.SQLSyntaxErrorException: Table/View 'HURZ' does not exist
             Log.Debug(s);

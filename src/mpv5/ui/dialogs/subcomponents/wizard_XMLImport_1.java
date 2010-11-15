@@ -18,6 +18,7 @@ public class wizard_XMLImport_1 extends javax.swing.JPanel implements Wizardable
         this.master = w;
         initComponents();
         labeledTextChooser1.setFilter(DialogForFile.XML_FILES);
+        labeledTextChooser1.setModalityParent(this);
     }
 
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents

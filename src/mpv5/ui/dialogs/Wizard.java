@@ -55,7 +55,7 @@ public class Wizard extends javax.swing.JDialog implements WizardMaster {
      */
     public Wizard(boolean standalone) {
         initComponents();
-        setModal(true);
+        setModalityType(ModalityType.APPLICATION_MODAL);
         back.setEnabled(false);
         this.standalone = standalone;
         if (standalone) {
@@ -93,7 +93,7 @@ public class Wizard extends javax.swing.JDialog implements WizardMaster {
         progressbar = new javax.swing.JProgressBar();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-        java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle(); // NOI18N
+        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("mpv5/resources/languages/Panels"); // NOI18N
         setTitle(bundle.getString("Wizard.title")); // NOI18N
         setBackground(new java.awt.Color(255, 255, 255));
         setName("Form"); // NOI18N
@@ -140,6 +140,7 @@ public class Wizard extends javax.swing.JDialog implements WizardMaster {
         jScrollPane2.setBorder(null);
         jScrollPane2.setName("jScrollPane2"); // NOI18N
 
+        message.setBackground(new java.awt.Color(254, 254, 254));
         message.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
         message.setEditable(false);
         message.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
@@ -156,13 +157,13 @@ public class Wizard extends javax.swing.JDialog implements WizardMaster {
                 .addContainerGap()
                 .addComponent(cancel)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 106, Short.MAX_VALUE)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 347, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(back)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(next)
                 .addContainerGap())
-            .addComponent(progressbar, javax.swing.GroupLayout.DEFAULT_SIZE, 400, Short.MAX_VALUE)
+            .addComponent(progressbar, javax.swing.GroupLayout.DEFAULT_SIZE, 541, Short.MAX_VALUE)
         );
         controlLayout.setVerticalGroup(
             controlLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -174,7 +175,7 @@ public class Wizard extends javax.swing.JDialog implements WizardMaster {
                         .addComponent(next)
                         .addComponent(back)
                         .addComponent(cancel))
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 29, Short.MAX_VALUE))
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 30, Short.MAX_VALUE))
                 .addContainerGap())
         );
 
