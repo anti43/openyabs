@@ -124,7 +124,6 @@ public class Context implements Serializable {
     public static String UNIQUECOLUMNS_GROUPS = "cname";
     public static String UNIQUECOLUMNS_DEFAULT = "cname";
     public static String DETAIL_CONTACT_SEARCH = "prename,cname,street,city,country,notes";
-
     //********** conditions ****************************************************
     private boolean isCompany = false;
     private boolean isCustomer = false;
@@ -1064,7 +1063,7 @@ public class Context implements Serializable {
      * @return An empty {@link DatabaseObject}
      */
     @SuppressWarnings("unchecked")
-    public <T extends DatabaseObject>T getSampleObject() {
+    public <T extends DatabaseObject> T getSampleObject() {
         return (T) DatabaseObject.getObject(this);
     }
 ////////////////////////////////////////////////////////////////////////////////
@@ -1600,6 +1599,9 @@ public class Context implements Serializable {
      * @return The matching context or null if not existing
      */
     public static Context getMatchingContext(String contextdbidentity) {
+        if (contextdbidentity.toLowerCase().endsWith("ids")) {
+            contextdbidentity = contextdbidentity.replace("ids", "");
+        }
         for (int i = 0; i < allContexts.size(); i++) {
             Context context = allContexts.get(i);
             if (context.getDbIdentity().equalsIgnoreCase(contextdbidentity)) {
@@ -1650,8 +1652,9 @@ public class Context implements Serializable {
     public static Context getByID(int value) {
         for (int i = 0; i < allContexts.size(); i++) {
             Context context = allContexts.get(i);
-            if(context.getId() == value)
+            if (context.getId() == value) {
                 return context;
+            }
         }
         return null;
     }

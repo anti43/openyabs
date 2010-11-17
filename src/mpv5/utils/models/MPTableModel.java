@@ -82,7 +82,7 @@ public class MPTableModel extends DefaultTableModel implements Cloneable {
         try {
             final ArrayList<DatabaseObject> data = DatabaseObject.getObjects(c);
             final Object[][] mod = new Object[data.size()][];
-            final Class[] classes = new Class[data.size()];
+            final Class[] classes = new Class[100];
             Runnable runnable = new Runnable() {
 
                 @Override
@@ -91,8 +91,8 @@ public class MPTableModel extends DefaultTableModel implements Cloneable {
                     for (DatabaseObject o : data) {
                         mod[i] = o.toResolvedArray();
                         if (i == 0) {
-                            for (int j = 0; j < mod.length; j++) {
-                                Class class1 = mod[j].getClass();
+                            for (int j = 0; j < mod[i].length; j++) {
+                                Class class1 = mod[i][j].getClass();
                                 classes[j] = class1;
                             }
                         }

@@ -31,6 +31,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Hashtable;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
@@ -810,7 +811,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
         Object tempval;
         Method[] methods = this.getClass().getMethods();
         for (int i = 0; i < this.getClass().getMethods().length; i++) {
-            if ((methods[i].isAnnotationPresent(Persistable.class) 
+            if ((methods[i].isAnnotationPresent(Persistable.class)
                     && methods[i].getAnnotation(Persistable.class).value()
                     && methods[i].getParameterTypes().length > 0)
                     /*for backwards compatibility*/
@@ -1003,6 +1004,70 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
         }
 
         return vals;
+    }
+
+    /**
+     *
+     * @return A list containing pairs of <b>VARNAME</b> and their <b>VALUE</b> of this Databaseobject,
+     * those which return in <code>getVars()</code>, as two-fields Object-Array.
+     * Referenced DatabaseObjects are resolved as well.
+     * Example: new Object[]{"dateadded", java.util.Date }
+     */
+    public HashMap<String, Object> getValues4() {
+        List<Method> vars = getVars();
+        HashMap<String, Object> data = new HashMap<String, Object>();
+        String left = "";
+        Object tempval;
+
+        for (int i = 0; i < vars.size(); i++) {
+            try {
+                Method m = vars.get(i);
+                left = m.getName().toLowerCase().substring(5, m.getName().length());
+                Log.Debug(this, "Calling: " + m);
+                tempval = m.invoke(this, (Object[]) null);
+                Log.Debug(this, "Collect: " + tempval.getClass().getName() + " : " + m.getName() + " ? " + tempval);
+                if (tempval.getClass().isInstance(new String())) {
+                    data.put(left, String.valueOf(tempval));
+                } else if (tempval.getClass().isInstance(true)) {
+                    boolean c = (Boolean) tempval;
+                    data.put(left, c);
+                } else if (tempval.getClass().isInstance(new Date())) {
+                    data.put(left, ((Date) tempval));
+                } else if (tempval.getClass().isInstance(new RandomDate(null))) {
+                    data.put(left, ((Date) tempval));
+                } else if (tempval.getClass().isInstance(new java.sql.Date(0))) {
+                    data.put(left, ((Date) tempval));
+                } else if (tempval.getClass().isInstance(0)) {
+                    //if the field is an IDS field
+                    if (left.toLowerCase().endsWith("ids")) {
+                        if (Context.getMatchingContext(left) != null) {
+                            Log.Debug(this, "Found Context for " + left);
+                            try {
+                                data.put(left, getObject(Context.getMatchingContext(left), (Integer) tempval));
+                            } catch (NodataFoundException nodataFoundException) {
+                                data.put(left, nodataFoundException);
+                            }
+                        } else {
+                            data.put(left, (Integer) tempval);
+                        }
+                    } else {
+                        data.put(left, (Integer) tempval);
+                    }
+                } else if (tempval.getClass().isInstance(0f)) {
+                    data.put(left, (Float) tempval);
+                } else if (tempval.getClass().isInstance(0d)) {
+                    data.put(left, (Double) tempval);
+                } else if (tempval.getClass().isInstance(01)) {
+                    data.put(left, (Short) tempval);
+                } else if (tempval.getClass().isInstance(new BigDecimal(0))) {
+                    data.put(left, (BigDecimal) tempval);
+                }
+            } catch (Exception n) {
+                Log.Debug(this, n);
+            }
+        }
+
+        return data;
     }
 
     /**
@@ -1872,7 +1937,18 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
         throw new UnsupportedOperationException(key + " not known in " + this);
     }
 
+    /**
+     * Creates an Object Array out of all getters of this DO, no special order.
+     * @return
+     */
     public Object[] toResolvedArray() {
-        throw new UnsupportedOperationException("Not yet implemented");
+        HashMap<String, Object> data = getValues4();
+        Object[] d = new Object[data.size()];
+        int i = 0;
+        for (Object object : data.values()) {
+            d[i] = object;
+            i++;
+        }
+        return d;
     }
 }
