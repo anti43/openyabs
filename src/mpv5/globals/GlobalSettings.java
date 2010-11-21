@@ -38,13 +38,17 @@ public class GlobalSettings {
      */
     @SuppressWarnings("unchecked")
     public synchronized static int getIntegerProperty(String name) {
+        return getIntegerProperty(name, 0);
+    }
 
+
+    public static int getIntegerProperty(String name, int defaultVal) {
         if (cookie.getProperty(name) != null) {
             return Integer.valueOf(cookie.getProperty(name));
         } else if (predefinedSettings.getProperty(name) != null) {
             cookie.changeProperty(name, predefinedSettings.getProperty(name));
         } else {
-            cookie.changeProperty(name, "0");
+            cookie.changeProperty(name, defaultVal + "");
         }
 
         return Integer.valueOf(cookie.getProperty(name));
@@ -57,13 +61,24 @@ public class GlobalSettings {
      */
     @SuppressWarnings("unchecked")
     public synchronized static boolean getBooleanProperty(String name) {
+        return getBooleanProperty(name, false);
+    }
+
+       /**
+     * Get a properties value, or false if N/A
+     * @param name
+        * @param defaultVal
+        * @return
+     */
+    @SuppressWarnings("unchecked")
+    public synchronized static boolean getBooleanProperty(String name, boolean defaultVal) {
 
         if (cookie.getProperty(name) != null) {
             return TypeConversion.stringToBoolean(cookie.getProperty(name));
         } else if (predefinedSettings.getProperty(name) != null) {
             cookie.changeProperty(name, predefinedSettings.getProperty(name));
         } else {
-            cookie.changeProperty(name, "false");
+            cookie.changeProperty(name, String.valueOf(defaultVal));
         }
 
         return TypeConversion.stringToBoolean(cookie.getProperty(name));
@@ -76,13 +91,24 @@ public class GlobalSettings {
      */
     @SuppressWarnings("unchecked")
     public synchronized static double getDoubleProperty(String name) {
+        return getDoubleProperty(name, 0d);
+    }
+
+      /**
+     * Get a properties value, or 0 if N/A
+     * @param name
+       * @param defaultVal
+       * @return
+     */
+    @SuppressWarnings("unchecked")
+    public synchronized static double getDoubleProperty(String name, double defaultVal) {
 
         if (cookie.getProperty(name) != null) {
             return Double.valueOf(cookie.getProperty(name));
         } else if (predefinedSettings.getProperty(name) != null) {
             cookie.changeProperty(name, predefinedSettings.getProperty(name));
         } else {
-            cookie.changeProperty(name, "0");
+            cookie.changeProperty(name, defaultVal + "");
         }
 
         return Double.valueOf(cookie.getProperty(name));
@@ -100,6 +126,23 @@ public class GlobalSettings {
             cookie.changeProperty(name, predefinedSettings.getProperty(name));
         } else {
             cookie.changeProperty(name, "null");
+        }
+        return cookie.getProperty(name);
+    }
+
+    /**
+     * Get a properties value, or the String "null" if N/A
+     * @param name
+     * @param defaultVal 
+     * @return
+     */
+    public static synchronized String getProperty(String name, String defaultVal) {
+        if (cookie.getProperty(name) != null) {
+            return cookie.getProperty(name);
+        } else if (predefinedSettings.getProperty(name) != null) {
+            cookie.changeProperty(name, predefinedSettings.getProperty(name));
+        } else {
+            cookie.changeProperty(name, defaultVal);
         }
         return cookie.getProperty(name);
     }
@@ -201,4 +244,5 @@ public class GlobalSettings {
             QueryHandler.instanceOf().clone(Context.getGlobalSettings()).insert(data, null);
         }
     }
+
 }

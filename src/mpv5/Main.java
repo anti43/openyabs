@@ -783,7 +783,7 @@ public class Main extends SingleFrameApplication {
                     while (running) {
                         if (startServerThread == null || !startServerThread.isAlive()) {
                             try {
-                                Thread.sleep(3333);
+                                Thread.sleep(GlobalSettings.getIntegerProperty("oo.wait.time", 3333));
                             } catch (InterruptedException ex) {
                             }
                             //Needed to move this to here; otherwise the oo connection may not be initialised
