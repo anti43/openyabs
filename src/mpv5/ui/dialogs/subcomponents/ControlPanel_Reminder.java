@@ -78,7 +78,7 @@ public class ControlPanel_Reminder extends javax.swing.JPanel implements DataPan
         labeledCombobox2.triggerSearch();
 
         try {
-            jTable1.setModel(new MPTableModel(Context.getStage()));
+            jTable1.setModel(new MPTableModel(Context.getStage(), jTable1));
         } catch (Exception e) {
             Log.Debug(this, e.getMessage());
         }

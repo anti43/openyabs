@@ -72,6 +72,9 @@ public class DatabaseUpdater {
        UPDATES_DERBY.put(1.183, new String[]{
                     "ALTER TABLE stages ADD COLUMN templategroup BIGINT REFERENCES groups(ids)"
                 });
+       UPDATES_DERBY.put(1.1841, new String[]{
+                    "ALTER TABLE subitems ADD COLUMN ordernr SMALLINT DEFAULT 0 NOT NULL"
+                });
 
         ////////////////////////////////////////////////////////////////////////////////////////////
         // mysql updates
@@ -145,6 +148,9 @@ public class DatabaseUpdater {
                     "ALTER TABLE revenues ADD COLUMN ispaid SMALLINT DEFAULT 0 NOT NULL",});
         UPDATES_MYSQL.put(1.183, new String[]{
                     "ALTER TABLE stages ADD COLUMN templategroup BIGINT(20) UNSIGNED DEFAULT 1 REFERENCES groups(ids)"
+                });
+        UPDATES_MYSQL.put(1.184, new String[]{
+                    "ALTER TABLE subitems ADD COLUMN ordernr SMALLINT DEFAULT 0 NOT NULL"
                 });
     }
 

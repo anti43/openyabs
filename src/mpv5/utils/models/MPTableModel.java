@@ -19,7 +19,13 @@ package mpv5.utils.models;
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
 import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -28,6 +34,7 @@ import javax.swing.DefaultCellEditor;
 import javax.swing.Icon;
 import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
+import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.event.TableModelEvent;
 import javax.swing.table.DefaultTableCellRenderer;
@@ -75,38 +82,56 @@ public class MPTableModel extends DefaultTableModel implements Cloneable {
     /**
      * May get slow on lots of data within the given Context
      * @param c
+     * @param target
      */
-    public MPTableModel(final Context c) {
+    public MPTableModel(final Context c, final JTable target) {
         super();
         setContext(c);
         try {
-            final ArrayList<DatabaseObject> data = DatabaseObject.getObjects(c);
-            final Object[][] mod = new Object[data.size()][];
+            final ArrayList<DatabaseObject> data = DatabaseObject.getObjects(c, true);
+            final Object[][] dat = new Object[data.size()][];
+
             final Class[] classes = new Class[100];
             Runnable runnable = new Runnable() {
 
                 @Override
                 public void run() {
-                    int i = 0;
+                    int j = 0;
+                    LinkedList<String> head = new LinkedList<String>();
+                    Entry<String, Object> e;
                     for (DatabaseObject o : data) {
-                        mod[i] = o.toResolvedArray();
-                        if (i == 0) {
-                            for (int j = 0; j < mod[i].length; j++) {
-                                Class class1 = mod[i][j].getClass();
-                                classes[j] = class1;
+                        final HashMap<String, Object> mod = o.getValues4();
+                        Set<Entry<String, Object>> set = mod.entrySet();
+                        dat[j] = new Object[set.size()];
+                        Iterator<Entry<String, Object>> it = set.iterator();
+                        int i = 0;
+                        while (it.hasNext()) {
+                            e = it.next();
+                            dat[j][i] = e.getValue();
+                            if (j == 0) {
+                                Class class1 = e.getValue().getClass();
+                                classes[i] = class1;
+                                head.add(i, e.getKey().toUpperCase());
                             }
+                            i++;
                         }
-                        i++;
+                        j++;
                     }
 
-                    String[] header = new String[mod[0].length];
-                    for (int ij = 0; ij < header.length; ij++) {
-                        header[ij] = "" + ij;
+                    final Object[] headers = new Object[head.size()];
+                    int x = 0;
+                    for (String hea : head) {
+                        headers[x] = hea;
+                        x++;
                     }
-                    setDataVector(mod, header);
+                    setDataVector(dat, headers);
 
                     setEditable(false);
                     setTypes(classes);
+
+                    if (target != null) {
+                        target.setAutoCreateRowSorter(true);
+                    }
                 }
             };
             new Thread(runnable).start();
@@ -536,9 +561,9 @@ public class MPTableModel extends DefaultTableModel implements Cloneable {
      * @param columns
      * @return
      */
-    public List<Object[]> getValidRows(int[] columns) {
+    public LinkedList<Object[]> getValidRows(int[] columns) {
 
-        List<Object[]> rows = new Vector<Object[]>();
+        LinkedList<Object[]> rows = new LinkedList<Object[]>();
         for (int ki = 0; ki < getRowCount(); ki++) {
             boolean valid = true;
             for (int i = 0; i < columns.length; i++) {

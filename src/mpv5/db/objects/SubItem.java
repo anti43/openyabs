@@ -18,8 +18,11 @@ package mpv5.db.objects;
 
 import mpv5.db.common.Triggerable;
 import java.math.BigDecimal;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Vector;
 import javax.swing.JButton;
@@ -39,6 +42,7 @@ import mpv5.ui.panels.ItemPanel;
 import mpv5.utils.models.MPComboBoxModelItem;
 import mpv5.utils.models.MPTableModel;
 import mpv5.utils.numberformat.FormatNumber;
+import org.apache.derby.iapi.sql.dictionary.SubCheckConstraintDescriptor;
 
 /**
  *
@@ -46,9 +50,9 @@ import mpv5.utils.numberformat.FormatNumber;
  */
 public class SubItem extends DatabaseObject implements Triggerable {
 
-    public static List<SubItem> saveModel(Item dataOwner, MPTableModel model, boolean deleteRemovedSubitems, boolean cloneSubitems) {
+    public static LinkedList<SubItem> saveModel(Item dataOwner, MPTableModel model, boolean deleteRemovedSubitems, boolean cloneSubitems) {
         List<Object[]> rowsl = model.getValidRows(new int[]{4});
-        List<SubItem> items = new Vector<SubItem>();
+        LinkedList<SubItem> items = new LinkedList<SubItem>();
         Log.Debug(SubItem.class, "Rows found: " + rowsl.size());
         for (int i = 0; i < rowsl.size(); i++) {
             Object[] row = rowsl.get(i);
@@ -58,6 +62,8 @@ public class SubItem extends DatabaseObject implements Triggerable {
                 }
             }
             SubItem it = new SubItem();
+            it.setOrdernr(i);
+            System.err.println(it.getOrdernr());
             try {
                 if (!cloneSubitems && row[0] != null && Integer.valueOf(row[0].toString()).intValue() > 0) {
                     it.setIDS(Integer.valueOf(row[0].toString()).intValue());
@@ -86,7 +92,7 @@ public class SubItem extends DatabaseObject implements Triggerable {
                 it.setGroupsids(dataOwner.__getGroupsids());
             }
             it.save(true);
-            items.add(it);
+            items.add(it.getOrdernr(), it);
         }
 
         for (int i = 0; i < deletionQueue.size(); i++) {
@@ -122,9 +128,9 @@ public class SubItem extends DatabaseObject implements Triggerable {
      * @param t
      * @return
      */
-    public static Vector<String[]> convertModel(Item dataOwner, MPTableModel model, Template t) {
+    public static LinkedList<String[]> convertModel(Item dataOwner, MPTableModel model, Template t) {
         List<Object[]> rowsl = model.getValidRows(new int[]{4});
-        Vector<String[]> rowsk = new Vector<String[]>();
+        LinkedList<String[]> rowsk = new LinkedList<String[]>();
         final List<SubItem> its = new Vector<SubItem>();
         Log.Debug(SubItem.class, "Rows found: " + rowsl.size());
         for (int i = 0; i < rowsl.size(); i++) {
@@ -137,6 +143,7 @@ public class SubItem extends DatabaseObject implements Triggerable {
             }
 
             final SubItem it = new SubItem();
+            it.setOrdernr(i);
             try {
                 if (row[0] != null && Integer.valueOf(row[0].toString()).intValue() > 0) {
                     it.setIDS(Integer.valueOf(row[0].toString()).intValue());
@@ -166,7 +173,7 @@ public class SubItem extends DatabaseObject implements Triggerable {
             }
 
 //            it.save();
-            rowsk.add(it.toStringArray());
+            rowsk.add(it.getOrdernr(), it.toStringArray());
         }
 
         return rowsk;
@@ -260,6 +267,7 @@ public class SubItem extends DatabaseObject implements Triggerable {
         }
     }
     private int itemsids;
+    private int ordernr;
     private int originalproductsids;
     private BigDecimal countvalue = new BigDecimal("0");
     private BigDecimal quantityvalue = new BigDecimal("0");
@@ -593,20 +601,41 @@ public class SubItem extends DatabaseObject implements Triggerable {
     /**
      * Generates a table model out of the given SubItems
      * @param items
+     * @param removeSubitemIds
      * @return
      */
     public static MPTableModel toModel(SubItem[] items, boolean removeSubitemIds) {
         //"Internal ID", "ID", "Count", "Measure", "Description", "Netto Price", "Tax Value", "Total Price"
         Object[][] data = new Object[items.length][];
-        for (int i = 0; i < data.length; i++) {
-            data[i] = items[i].getRowData(i + 1);
+        List<SubItem> tlist = new LinkedList<SubItem>();
+        for (int i = 0; i < items.length; i++) {
+            tlist.add(items[i]);
+        }
+        Collections.sort(tlist, new Comparator<SubItem>() {
+
+            @Override
+            public int compare(SubItem o1, SubItem o2) {
+                return (o1.getOrdernr() > o2.getOrdernr()) ? 1 : -1;
+            }
+        });
+
+        for (int i = 0; i < tlist.size(); i++) {
+            SubItem subItem = tlist.get(i);
+            if (subItem != null) {
+                data[i] = subItem.getRowData(i + 1);
+            } else {
+                data[i] = getDefaultItem().getRowData(i + 1);
+            }
             if (removeSubitemIds) {
                 data[i][0] = -1;
             }
         }
 
+
         MPTableModel model = new MPTableModel(
-                new Class[]{Integer.class, Integer.class, BigDecimal.class, String.class, Object.class, BigDecimal.class, BigDecimal.class, BigDecimal.class, BigDecimal.class, BigDecimal.class, Integer.class, JButton.class, JButton.class, String.class, String.class},
+                new Class[]{
+                    Integer.class, Integer.class, BigDecimal.class, String.class, Object.class, BigDecimal.class, BigDecimal.class, BigDecimal.class,
+                    BigDecimal.class, BigDecimal.class, Integer.class, JButton.class, JButton.class, String.class, String.class},
                 new boolean[]{false, false, true, true, true, true, true, false, false, false, false, true, true, true, true, true},
                 data,
                 Headers.SUBITEMS.getValue());
@@ -809,5 +838,20 @@ public class SubItem extends DatabaseObject implements Triggerable {
         } else {
             return description;
         }
+    }
+
+    /**
+     * @return the order
+     */
+    @Persistable(true)
+    public int getOrdernr() {
+        return ordernr;
+    }
+
+    /**
+     * @param ordernr the order to set
+     */
+    public void setOrdernr(int ordernr) {
+        this.ordernr = ordernr;
     }
 }
