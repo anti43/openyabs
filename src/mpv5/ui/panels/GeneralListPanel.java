@@ -89,6 +89,15 @@ public class GeneralListPanel extends javax.swing.JPanel {
     }
 
     /**
+     *
+     * @param c
+     * @throws NodataFoundException
+     */
+    public GeneralListPanel(Context c) throws NodataFoundException {
+        this(DatabaseObject.getObjects(c));
+    }
+
+    /**
      * Show the data
      * @param <T>
      * @param map

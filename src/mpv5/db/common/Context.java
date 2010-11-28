@@ -747,6 +747,9 @@ public class Context implements Serializable {
             if (getTrashableContexts().contains(this)) {
                 cond += " AND " + dbIdentity + ".invisible = 0 ";
             }
+            if (!QueryHandler.isMatchingBraces(cond)) {
+                cond += ")";
+            }
             return cond;
         } else {
             return exclusiveCondition.toString();
@@ -1685,4 +1688,6 @@ public class Context implements Serializable {
         hash = 47 * hash + (this.dbIdentity != null ? this.dbIdentity.hashCode() : 0);
         return hash;
     }
+
+
 }

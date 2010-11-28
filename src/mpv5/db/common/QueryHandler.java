@@ -200,6 +200,34 @@ public class QueryHandler implements Cloneable {
     }
 
     /**
+     * Returns true if the counts of ( and ) are equal in the given query
+     * @param query
+     * @return true or false
+     */
+    public static boolean isMatchingBraces(String query) {
+        int lastIndex = 0;
+        int countl = 0;
+        int countr = 0;
+        final String left = "(";
+        final String right = ")";
+
+        while (lastIndex != -1) {
+            lastIndex = query.indexOf(left, lastIndex);
+            if (lastIndex != -1) {
+                countl++;
+            }
+        }
+        lastIndex = 0;
+        while (lastIndex != -1) {
+            lastIndex = query.indexOf(right, lastIndex);
+            if (lastIndex != -1) {
+                countr++;
+            }
+        }
+        return countr == countl;
+    }
+
+    /**
      * Checks the uniqueness of a unique constraint
      * Works only for columns with equal data type
      * @param constraint  {"column1","column2"}
