@@ -81,7 +81,7 @@ public class Group extends DatabaseObject {
     @Override
     public boolean delete() {
         try {
-            ArrayList<Group> childs = DatabaseObject.getReferencedObjects(this, Context.getGroup());
+            List<Group> childs = DatabaseObject.getReferencedObjects(this, Context.getGroup());
             for (int i = 0; i < childs.size(); i++) {
                 DatabaseObject databaseObject = childs.get(i);
                 if (!databaseObject.delete()) {
@@ -143,7 +143,7 @@ public class Group extends DatabaseObject {
      * @throws NodataFoundException 
      */
     public List<Group> getChildGroups() throws NodataFoundException {
-        ArrayList<Group> childs = DatabaseObject.getReferencedObjects(this, Context.getGroup());
+        List<Group> childs = DatabaseObject.getReferencedObjects(this, Context.getGroup());
         for (int i = 0; i < childs.size(); i++) {
             Group databaseObject = childs.get(i);
             childs.addAll(databaseObject.getChildGroups());

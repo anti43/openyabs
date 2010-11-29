@@ -16,6 +16,7 @@
  */
 package mpv5.db.common;
 
+import java.util.Collections;
 import java.awt.Color;
 import java.io.Serializable;
 import java.lang.annotation.ElementType;
@@ -32,6 +33,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
@@ -1310,13 +1312,13 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
      * @throws mpv5.db.common.NodataFoundException
      */
     @SuppressWarnings("unchecked")
-    public static <T extends DatabaseObject> ArrayList<T> getReferencedObjects(DatabaseObject dataOwner, Context inReference, T targetType) throws NodataFoundException {
+    public static <T extends DatabaseObject> List<T> getReferencedObjects(DatabaseObject dataOwner, Context inReference, T targetType) throws NodataFoundException {
 
         Object[][] allIds = QueryHandler.instanceOf().clone(inReference).select("ids", new String[]{dataOwner.getDbIdentity() + "ids", dataOwner.__getIDS().toString(), ""});
         if (allIds.length == 0) {
             throw new NodataFoundException(inReference);
         }
-        ArrayList<T> list = new ArrayList<T>();
+        LinkedList<T> list = new LinkedList<T>();
 
         for (int i = 0; i < allIds.length; i++) {
             int id = Integer.valueOf(allIds[i][0].toString());
@@ -1340,10 +1342,10 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
      * @throws mpv5.db.common.NodataFoundException
      */
     @SuppressWarnings("unchecked")
-    public static <T extends DatabaseObject> ArrayList<T> getReferencedObjects(T dataOwner, Context inReference) throws NodataFoundException {
+    public static <T extends DatabaseObject> List<T> getReferencedObjects(T dataOwner, Context inReference) throws NodataFoundException {
 
         Object[][] allIds = QueryHandler.instanceOf().clone(inReference).select("ids", new String[]{dataOwner.getDbIdentity() + "ids", dataOwner.__getIDS().toString(), ""});
-        ArrayList<T> list = new ArrayList<T>();
+        LinkedList<T> list = new LinkedList<T>();
 
         for (int i = 0; i < allIds.length; i++) {
             int id = Integer.valueOf(allIds[i][0].toString());

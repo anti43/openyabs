@@ -211,7 +211,7 @@ public class VCFParser {
                     + "\n";
 
             try {
-                ArrayList data = DatabaseObject.getReferencedObjects(c, Context.getAddress());
+                List data = DatabaseObject.getReferencedObjects(c, Context.getAddress());
                 for (int ix = 0; ix < data.size(); ix++) {
                     Address a = (Address) data.get(i);
                     text += "ADR;TYPE=WORK:;;" + a.__getStreet() + ";" + a.__getCity() + ";" + ";" + a.__getZip() + ";" + a.__getCountry()

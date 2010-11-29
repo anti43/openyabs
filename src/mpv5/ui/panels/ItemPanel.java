@@ -1826,7 +1826,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
                     if (dataOwner != null) {
                         subs = dataOwner.getSubitems();
                     }
-                    ArrayList<ProductlistSubItem> l = ProductList.getReferencedObjects(dbo, Context.getProductListItems(), new ProductlistSubItem());
+                    List<ProductlistSubItem> l = ProductList.getReferencedObjects(dbo, Context.getProductListItems(), new ProductlistSubItem());
                     MPTableModel t = SubItem.toModel(subs);
                     int count = t.getRowCount();
                     for (int i = 0; i < l.size(); i++) {

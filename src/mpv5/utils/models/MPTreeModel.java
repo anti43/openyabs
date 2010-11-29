@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -86,7 +87,7 @@ public class MPTreeModel extends DefaultTreeModel {
         //build group hierarchy
 
         // Add related items
-        ArrayList<DatabaseObject> items = null;
+        List<DatabaseObject> items = null;
 
         try {
             items = DatabaseObject.getReferencedObjects(obj, Context.getItem(), DatabaseObject.getObject(Context.getItem()));
@@ -101,7 +102,7 @@ public class MPTreeModel extends DefaultTreeModel {
                 }
 
                 // Add files to the items
-                ArrayList<DatabaseObject> itemfiles = null;
+                List<DatabaseObject> itemfiles = null;
                 try {
                     itemfiles = DatabaseObject.getReferencedObjects(item, Context.getFilesToItems(), DatabaseObject.getObject(Context.getFilesToItems()));
                     for (int j = 0; j < itemfiles.size(); j++) {
@@ -120,7 +121,7 @@ public class MPTreeModel extends DefaultTreeModel {
                 Log.Debug(MPTreeModel.class, "No root group node found.");
             }
             // Add files to the contact
-            ArrayList<DatabaseObject> contactFiles = null;
+            List<DatabaseObject> contactFiles = null;
             try {
                 contactFiles = DatabaseObject.getReferencedObjects(obj, Context.getFilesToContacts(), DatabaseObject.getObject(Context.getFilesToContacts()));
 

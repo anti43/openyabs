@@ -20,6 +20,7 @@ import enoa.handler.TableHandler;
 import java.math.BigDecimal;
 import java.text.DateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -413,7 +414,7 @@ public class Item extends DatabaseObject implements Formattable {
      * @return
      */
     public SubItem[] getSubitems() {
-        ArrayList<DatabaseObject> data = new ArrayList<DatabaseObject>();
+        List<DatabaseObject> data = new ArrayList<DatabaseObject>();
         try {
             data = DatabaseObject.getReferencedObjects(this, Context.getSubItem(), DatabaseObject.getObject(Context.getSubItem()));
         } catch (NodataFoundException ex) {
@@ -508,6 +509,8 @@ public class Item extends DatabaseObject implements Formattable {
 
         try {
             data = DatabaseObject.getReferencedObjects(this, Context.getSubItem(), new SubItem());
+            Collections.sort(data, SubItem.ORDER_COMPARATOR);
+
             for (int i = 0; i < data.size(); i++) {
                 SubItem t = data.get(i);
                 list.add(t.toStringArray());

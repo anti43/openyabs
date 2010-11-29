@@ -20,6 +20,7 @@ import mpv5.db.common.DataNotCachedException;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.Icon;
@@ -150,8 +151,8 @@ public class Account extends DatabaseObject {
      * @return
      * @throws mpv5.db.common.NodataFoundException
      */
-    public ArrayList<Item> getItemsInAccount() throws NodataFoundException {
-        ArrayList<Item> tmp = DatabaseObject.getReferencedObjects((Item) DatabaseObject.getObject(Context.getItem()), Context.getItemsToAccounts());
+    public List<Item> getItemsInAccount() throws NodataFoundException {
+        List<Item> tmp = DatabaseObject.getReferencedObjects((Item) DatabaseObject.getObject(Context.getItem()), Context.getItemsToAccounts());
 
         QueryCriteria c = new QueryCriteria();
         c.addAndCondition("defaultaccountsids", this.__getIDS());

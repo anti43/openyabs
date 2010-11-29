@@ -446,7 +446,7 @@ public class Contact extends DatabaseObject implements Formattable {
     @Override
     public HashMap<String, Object> resolveReferences(HashMap<String, Object> map) {
         super.resolveReferences(map);
-        ArrayList<Address> data;
+        List<Address> data;
         try {
             data = DatabaseObject.getReferencedObjects(this, Context.getAddress(), new Address());
             for (int i = 0; i < data.size(); i++) {

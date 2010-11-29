@@ -16,6 +16,7 @@
  */
 package mpv5.db.objects;
 
+import java.util.Arrays;
 import mpv5.db.common.Triggerable;
 import java.math.BigDecimal;
 import java.util.Collections;
@@ -597,6 +598,16 @@ public class SubItem extends DatabaseObject implements Triggerable {
      * The CLEAR button index
      */
     public static int COLUMNINDEX_REMOVE = 12;
+    /**
+     * Compares by ordernr
+     */
+    public static Comparator<SubItem> ORDER_COMPARATOR = new Comparator<SubItem>() {
+
+        @Override
+        public int compare(SubItem o1, SubItem o2) {
+            return (o1.getOrdernr() > o2.getOrdernr()) ? 1 : -1;
+        }
+    };
 
     /**
      * Generates a table model out of the given SubItems
@@ -608,16 +619,8 @@ public class SubItem extends DatabaseObject implements Triggerable {
         //"Internal ID", "ID", "Count", "Measure", "Description", "Netto Price", "Tax Value", "Total Price"
         Object[][] data = new Object[items.length][];
         List<SubItem> tlist = new LinkedList<SubItem>();
-        for (int i = 0; i < items.length; i++) {
-            tlist.add(items[i]);
-        }
-        Collections.sort(tlist, new Comparator<SubItem>() {
-
-            @Override
-            public int compare(SubItem o1, SubItem o2) {
-                return (o1.getOrdernr() > o2.getOrdernr()) ? 1 : -1;
-            }
-        });
+        tlist.addAll(Arrays.asList(items));
+        Collections.sort(tlist, SubItem.ORDER_COMPARATOR);
 
         for (int i = 0; i < tlist.size(); i++) {
             SubItem subItem = tlist.get(i);

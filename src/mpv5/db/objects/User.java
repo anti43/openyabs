@@ -592,7 +592,7 @@ public class User extends DatabaseObject {
     @Override
     public HashMap<String, Object> resolveReferences(HashMap<String, Object> map) {
         super.resolveReferences(map);
-        ArrayList<Company> data;
+        List<Company> data;
         try {
             data = DatabaseObject.getReferencedObjects(this, Context.getCompany(), new Company());
             //Presumably 0 or 1

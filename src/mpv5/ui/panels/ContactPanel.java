@@ -31,6 +31,7 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JPopupMenu;
@@ -196,7 +197,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
         addresspanel.add(n);
         addresspanel.setTitleAt(0, str);
         try {
-            ArrayList data = DatabaseObject.getReferencedObjects(dataOwner, Context.getAddress());
+            List data = DatabaseObject.getReferencedObjects(dataOwner, Context.getAddress());
 
             for (int i = 0; i < data.size(); i++) {
                 Address databaseObject = (Address) data.get(i);
