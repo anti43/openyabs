@@ -25,6 +25,8 @@ import javax.swing.JComponent;
 import javax.swing.JFileChooser;
 import javax.swing.JTextField;
 import javax.swing.filechooser.FileFilter;
+import mpv5.Main;
+import mpv5.globals.Constants;
 import mpv5.globals.Messages;
 import mpv5.logging.Log;
 import mpv5.ui.frames.MPView;
@@ -120,7 +122,7 @@ public class DialogForFile extends JFileChooser implements Waiter {
         }
     };
     private File file = null;
-    public static File CURRENT_DIR = new File("");
+    public static File CURRENT_DIR = new File(Main.USER_HOME);
     private Container mparent;
 
     /**

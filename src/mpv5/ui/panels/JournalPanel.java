@@ -1135,7 +1135,7 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
             List<Item> items = new Vector<Item>();
             for (int i = 0; i < jTable1.getSelectedRows().length; i++) {
                 try {
-                    DatabaseObject obj = DatabaseObject.getObject((DatabaseObject.Entity<?, ?>) jTable1.getValueAt(jTable1.getSelectedRow(), 0));
+                    DatabaseObject obj = DatabaseObject.getObject((DatabaseObject.Entity<?, ?>) jTable1.getValueAt(jTable1.getSelectedRows()[i], 0));
                     if (obj.getContext().equals(Context.getItem())) {
                         Item item = (Item) obj;
                         if (item.__getIntstatus() != Item.STATUS_PAID) {
@@ -1169,7 +1169,7 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
             List<Item> items = new Vector<Item>();
             for (int i = 0; i < jTable1.getSelectedRows().length; i++) {
                 try {
-                    DatabaseObject obj = DatabaseObject.getObject((DatabaseObject.Entity<?, ?>) jTable1.getValueAt(jTable1.getSelectedRow(), 0));
+                    DatabaseObject obj = DatabaseObject.getObject((DatabaseObject.Entity<?, ?>) jTable1.getValueAt(jTable1.getSelectedRows()[i], 0));
                     if (obj.getContext().equals(Context.getItem())) {
                         Item item = (Item) obj;
 //                        if (item.__getIntstatus() != Item.STATUS_PAID) {
@@ -1213,7 +1213,7 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
             List<Item> items = new Vector<Item>();
             for (int i = 0; i < jTable1.getSelectedRows().length; i++) {
                 try {
-                    DatabaseObject obj = DatabaseObject.getObject((DatabaseObject.Entity<?, ?>) jTable1.getValueAt(jTable1.getSelectedRow(), 0));
+                    DatabaseObject obj = DatabaseObject.getObject((DatabaseObject.Entity<?, ?>) jTable1.getValueAt(jTable1.getSelectedRows()[i], 0));
                     if (obj.getContext().equals(Context.getItem())) {
                         Item item = (Item) obj;
 //                        if (item.__getIntstatus() != Item.STATUS_PAID) {
