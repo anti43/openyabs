@@ -850,7 +850,7 @@ public class Main extends SingleFrameApplication {
             if (usern1.fetchDataOf(Integer.valueOf(LocalSettings.getProperty("lastuser")))) {
                 Log.Debug(this, "Trying to login user: " + usern1);
                 User user = mpv5.usermanagement.MPSecurityManager.checkAuthInternal(usern1, LocalSettings.getProperty("lastuserpw"));
-
+                Log.Debug(this, "Found user: " + user);
                 if (user != null) {
                     user.login();
                 }

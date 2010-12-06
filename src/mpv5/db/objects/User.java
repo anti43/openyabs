@@ -274,6 +274,7 @@ public class User extends DatabaseObject {
      * before logging in the User.
      */
     public void login() {
+        Log.Debug(this, "releaseAllObjectsFor: " + this);
         DatabaseObjectLock.releaseAllObjectsFor(this);
         if (isenabled) {
             _setUser(this);
@@ -284,6 +285,7 @@ public class User extends DatabaseObject {
                 Main.setLaF(__getLaf());
                 defineMailConfig();
                 defineDTAConfig();
+                Log.Debug(this, "LanguageManager.getBundle() for: " + this);
                 LanguageManager.getBundle();
             } catch (Exception e) {
                 Log.Debug(e);

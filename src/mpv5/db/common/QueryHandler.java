@@ -32,6 +32,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JFrame;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
@@ -66,6 +68,38 @@ import mpv5.utils.ui.TextFieldUtils;
 public class QueryHandler implements Cloneable {
 
     private static QueryHandler instance;
+
+    private static class SQLWatch extends Thread {
+
+        private final long start;
+        private boolean done;
+        private final String watchedQuery;
+        private long minTime = 1000l;
+
+        public SQLWatch(String query) {
+            start = new Date().getTime();
+            watchedQuery = query;
+        }
+
+        public void done() {
+            done = true;
+        }
+
+        @Override
+        public void run() {
+            while (!done) {
+                try {
+                    Thread.sleep(minTime);
+                } catch (InterruptedException ex) {
+                    Log.Debug(ex);
+                }
+                Log.Debug(this, "SQLWatch " + this + " ["
+                        + (new Date().getTime() - start)
+                        + "]ms for " + watchedQuery);
+
+            }
+        }
+    }
     private DatabaseConnection conn = null;
     private Connection sqlConn = null;
     private String table = "NOTABLE";
@@ -199,33 +233,6 @@ public class QueryHandler implements Cloneable {
         }
     }
 
-    /**
-     * Returns true if the counts of ( and ) are equal in the given query
-     * @param query
-     * @return true or false
-     */
-    public static boolean isMatchingBraces(String query) {
-        int lastIndex = 0;
-        int countl = 0;
-        int countr = 0;
-        final String left = "(";
-        final String right = ")";
-
-        while (lastIndex != -1) {
-            lastIndex = query.indexOf(left, lastIndex);
-            if (lastIndex != -1) {
-                countl++;
-            }
-        }
-        lastIndex = 0;
-        while (lastIndex != -1) {
-            lastIndex = query.indexOf(right, lastIndex);
-            if (lastIndex != -1) {
-                countr++;
-            }
-        }
-        return countr == countl;
-    }
 
     /**
      * Checks the uniqueness of a unique constraint
@@ -2159,6 +2166,7 @@ public class QueryHandler implements Cloneable {
         String[] columnnames = null;
         ArrayList<Object> spalten = new ArrayList<Object>();
         ArrayList<Object> zeilen = new ArrayList<Object>();
+        SQLWatch sqlWatch;
 
         try {
             stm = sqlConn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_READ_ONLY);
@@ -2171,8 +2179,10 @@ public class QueryHandler implements Cloneable {
 
             Log.Debug(this, "freeSelectQuery::" + query);
             try {
-
+                sqlWatch = new SQLWatch(query);
                 resultSet = stm.executeQuery(query);
+                sqlWatch.done();
+                sqlWatch = null;
             } catch (SQLException sQLException) {
                 Log.Debug(sQLException);
                 throw sQLException;

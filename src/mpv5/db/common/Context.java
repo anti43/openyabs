@@ -747,9 +747,9 @@ public class Context implements Serializable {
             if (getTrashableContexts().contains(this)) {
                 cond += " AND " + dbIdentity + ".invisible = 0 ";
             }
-            if (!QueryHandler.isMatchingBraces(cond)) {
-                cond += ")";
-            }
+//            if (!QueryHandler.isMatchingBraces(cond)) {
+//                cond += ")";
+//            }
             return cond;
         } else {
             return exclusiveCondition.toString();
