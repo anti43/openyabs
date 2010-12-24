@@ -181,7 +181,7 @@ public class Scheduler extends Thread {
 
         String sql = "SELECT ids FROM items WHERE intstatus <> " + Item.STATUS_PAID + " AND inttype=" + Item.TYPE_BILL;
 
-        if (!mpv5.db.objects.User.getCurrentUser().getProperties().getProperty(MPView.getTabPane(), "hideunpaidbills")) {
+        if (!mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("org.openyabs.uiproperty", "hideunpaidbills")) {
             ReturnValue data = QueryHandler.getConnection().freeSelectQuery(sql, MPSecurityManager.VIEW, null);
 
             if (data.hasData()) {

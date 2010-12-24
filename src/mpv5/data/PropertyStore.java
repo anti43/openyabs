@@ -241,6 +241,18 @@ public class PropertyStore {
     /**
      * Convenience method to retrieve (boolean) visual component properties stored as
      * <br/>comp.getClass().getName() + "$" + source
+     * @param comp
+     * @param source
+     * @return
+     */
+    public synchronized boolean getProperty(String comp, String source) {
+        return getProperty(comp + "$" + source, true);
+    }
+
+
+    /**
+     * Convenience method to retrieve (boolean) visual component properties stored as
+     * <br/>comp.getClass().getName() + "$" + source
      * @param <T>
      * @param comp
      * @param source
@@ -286,6 +298,29 @@ public class PropertyStore {
             addProperty(name, newvalue);
         }
 
+    }
+     /**
+     * Changes the given property, if exists and
+     * creates a new, if not. Stored as comp.getClass().getName() + "$" + source
+     * @param comp
+     * @param source
+     * @param newvalue
+     */
+    public synchronized void changeProperty(String comp, String source, Object newvalue) {
+        boolean found = false;
+        if (list.size() > 0) {
+            for (int i = list.size(); i > 0; i--) {
+                if (list.get(i - 1)[0].equalsIgnoreCase(comp + "$" + source)) {
+                    list.set(i - 1, new String[]{comp + "$" + source, String.valueOf(newvalue)});
+                    found = true;
+                    setChanged(true);
+                    Log.Debug(this, "Change property: " + list.get(i - 1)[1] + " for " + comp + "$" + source);
+                }
+            }
+        }
+        if (!found) {
+            addProperty(comp + "$" + source, String.valueOf(newvalue));
+        }
     }
 
     /**

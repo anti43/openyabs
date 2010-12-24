@@ -1739,7 +1739,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
 
     public void actionBeforeSave() throws ChangeNotApprovedException {
         if (dataOwner.isExisting()) {
-            if (!mpv5.db.objects.User.getCurrentUser().getProperties().getProperty(MPView.getTabPane(), "nowarnings")) {
+            if (!mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("org.openyabs.uiproperty", "nowarnings")) {
 
                 if (!Popup.Y_N_dialog(Messages.REALLY_CHANGE)) {
                     throw new ChangeNotApprovedException(dataOwner);

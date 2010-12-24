@@ -651,7 +651,7 @@ public class MPView extends FrameView {
         setWaiting(true);
         boolean found = false;
         boolean proceed = true;
-        if (mpv5.db.objects.User.getCurrentUser().getProperties().getProperty(MPView.getTabPane(), "avoidmultipleviews")) {
+        if (mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("org.openyabs.uiproperty", "avoidmultipleviews")) {
             Log.Debug(this, "Looking for an existing view for: " + item);
             int count = getTabPane().getTabCount();
             for (int i = 0; i < count; i++) {
@@ -672,7 +672,7 @@ public class MPView extends FrameView {
         }
 
         if (proceed) {
-            if (item.getView() != null && mpv5.db.objects.User.getCurrentUser().getProperties().getProperty(MPView.getTabPane(), "norecycletabs")) {
+            if (item.getView() != null && mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("org.openyabs.uiproperty", "norecycletabs")) {
                 if (tabTitle == null) {
                     final DataPanel p = ((DataPanel) item.getView());
                     addTab((JComponent) p, item.__getCName());

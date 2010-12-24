@@ -146,7 +146,7 @@ public class FormatNumber {
     public synchronized static String formatLokalCurrency(Number betrag) {
         NumberFormat n = NumberFormat.getCurrencyInstance();
         String d = n.format(round(betrag));
-        if (mpv5.db.objects.User.getCurrentUser().getProperties().getProperty(MPView.getTabPane(), "supresscurrencysymbols")) {
+        if (mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("org.openyabs.uiproperty", "supresscurrencysymbols")) {
             d = d.replace(n.getCurrency().getSymbol(), "");
         }
         return d;

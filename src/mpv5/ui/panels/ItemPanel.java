@@ -260,7 +260,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
             Item dato = (Item) getDataOwner();
 
             public void actionPerformed(ActionEvent e) {
-                if (dato.__getInttype() == Item.TYPE_BILL && !loading && dataOwner.isExisting() && Integer.valueOf(status.getSelectedItem().getId()) == Item.STATUS_PAID && mpv5.db.objects.User.getCurrentUser().getProperties().getProperty(MPView.getTabPane(), "autocreaterevenue")) {
+                if (dato.__getInttype() == Item.TYPE_BILL && !loading && dataOwner.isExisting() && Integer.valueOf(status.getSelectedItem().getId()) == Item.STATUS_PAID && mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("org.openyabs.uiproperty", "autocreaterevenue")) {
                     if (Popup.Y_N_dialog(Messages.BOOK_NOW)) {
 
                         if (dato.getPanelData(p) && dato.save()) {
@@ -1701,21 +1701,21 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
         MPTableModel model = (MPTableModel) itemtable.getModel();
         model.setCanEdits(new boolean[]{false, false, true, true, true, true, true, true, false, false, true, true, false, false, true});
         TableFormat.changeBackground(itemtable, 1, Color.LIGHT_GRAY);
-        if (mpv5.db.objects.User.getCurrentUser().getProperties().getProperty(MPView.getTabPane(), "hidecolumnquantity")) {
+        if (mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("org.openyabs.uiproperty", "hidecolumnquantity")) {
             TableFormat.stripColumn(itemtable, 2);
             model.setCellEditable(0, 2, false);
         }
-        if (mpv5.db.objects.User.getCurrentUser().getProperties().getProperty(MPView.getTabPane(), "hidecolumnmeasure")) {
+        if (mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("org.openyabs.uiproperty", "hidecolumnmeasure")) {
             TableFormat.stripColumn(itemtable, 3);
             model.setCellEditable(0, 3, false);
         }
 
-        if (mpv5.db.objects.User.getCurrentUser().getProperties().getProperty(MPView.getTabPane(), "hideproductscolumn")) {
+        if (mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("org.openyabs.uiproperty", "hideproductscolumn")) {
             TableFormat.stripColumn(itemtable, 10);
             model.setCellEditable(0, 10, false);
         }
 
-        if (mpv5.db.objects.User.getCurrentUser().getProperties().getProperty(MPView.getTabPane(), "hidetaxcolumn")) {
+        if (mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("org.openyabs.uiproperty", "hidetaxcolumn")) {
             TableFormat.stripColumn(itemtable, 6);
             model.setCellEditable(0, 6, false);
         }
@@ -1728,7 +1728,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
         r.setEditorTo(10);
         itemtable.moveColumn(10, 3);
 
-        if (!mpv5.db.objects.User.getCurrentUser().getProperties().getProperty(MPView.getTabPane(), "showoptionalcolumn")) {
+        if (!mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("org.openyabs.uiproperty", "showoptionalcolumn")) {
             TableFormat.stripColumn(itemtable, 14);
             model.setCellEditable(0, 14, false);
         } else {
@@ -1760,7 +1760,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
                     || dbo.getContext().equals(Context.getOrder())) {
                 Item o = (Item) dbo.clone();
 
-                if (mpv5.db.objects.User.getCurrentUser().getProperties().getProperty(MPView.getTabPane(), "pasten")) {
+                if (mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("org.openyabs.uiproperty", "pasten")) {
                     SubItem s = new SubItem();
                     s.setQuantityvalue(new BigDecimal("1"));
 //                    s.setItemsids(o.__getIDS());
@@ -1957,7 +1957,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
         if (dataOwner.isExisting()) {
             if ((dataOwner.__getIntstatus() != Item.STATUS_PAID && dataOwner.__getIntstatus() != Item.STATUS_CANCELLED) || Popup.Y_N_dialog(Messages.REALLY_CHANGE_DONE_ITEM)) {
 
-                if (!mpv5.db.objects.User.getCurrentUser().getProperties().getProperty(MPView.getTabPane(), "nowarnings")) {
+                if (!mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("org.openyabs.uiproperty", "nowarnings")) {
 
                     if (!Popup.Y_N_dialog(Messages.REALLY_CHANGE)) {
                         throw new ChangeNotApprovedException(dataOwner);
@@ -2012,7 +2012,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
             }
 
             public void mouseReleased(MouseEvent e) {
-                if (!mpv5.db.objects.User.getCurrentUser().getProperties().getProperty(MPView.getTabPane(), "ordersoverproducts")) {
+                if (!mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("org.openyabs.uiproperty", "ordersoverproducts")) {
                     ProductSelectDialog.instanceOf((MPTableModel) itemtable.getModel(), itemtable.getSelectedRow(), e, Integer.valueOf(itemtable.getModel().getValueAt(itemtable.getSelectedRow(), 10).toString()), itemtable.getModel().getValueAt(itemtable.getSelectedRow(), 12 + 1), itemtable.getModel().getValueAt(itemtable.getSelectedRow(), 14));
                 } else {
                     SubItem s = new SubItem();

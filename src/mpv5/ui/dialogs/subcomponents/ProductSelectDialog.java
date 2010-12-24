@@ -69,7 +69,7 @@ public class ProductSelectDialog extends javax.swing.JPanel {
             me.statech();
         } catch (Exception e) {
         }
-        me.taxrate.setEnabled(!mpv5.db.objects.User.getCurrentUser().getProperties().getProperty(MPView.getTabPane(), "hidetaxcolumn"));
+        me.taxrate.setEnabled(!mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("org.openyabs.uiproperty", "hidetaxcolumn"));
 //        Point p = evt.getLocationOnScreen();
 //                  p.move(evt.getLocationOnScreen().x - me.getWidth(),
 //                        MPView.identifierFrame.getY() + MPView.identifierFrame.getHeight() - 310);

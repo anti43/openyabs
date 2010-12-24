@@ -692,21 +692,21 @@ public class ControlPanel_Userproperties extends javax.swing.JPanel implements C
             mpv5.db.objects.User.getCurrentUser().getProperties().changeProperty(defunit.getName(), defunit.getText());
             mpv5.db.objects.User.getCurrentUser().getProperties().changeProperty(saveformat.getName(), saveformat.getText().replace("\\", "/"));
 //            mpv5.db.objects.User.getCurrentUser().getProperties().changeProperty(savedir.getName(), savedir.get_Text(false));
-            mpv5.db.objects.User.getCurrentUser().getProperties().changeProperty(MPView.getTabPane(), "norecycletabs", tabs.isSelected());
-            mpv5.db.objects.User.getCurrentUser().getProperties().changeProperty(MPView.getTabPane(), "avoidmultipleviews", views.isSelected());
-            mpv5.db.objects.User.getCurrentUser().getProperties().changeProperty(MPView.getTabPane(), "hideunpaidbills", unpaidbills.isSelected());
-            mpv5.db.objects.User.getCurrentUser().getProperties().changeProperty(MPView.getTabPane(), "hidecolumnquantity", columnquantity.isSelected());
-            mpv5.db.objects.User.getCurrentUser().getProperties().changeProperty(MPView.getTabPane(), "hideproductscolumn", hideproductscolumn.isSelected());
-            mpv5.db.objects.User.getCurrentUser().getProperties().changeProperty(MPView.getTabPane(), "hidecolumnmeasure", columnmeasure.isSelected());
-            mpv5.db.objects.User.getCurrentUser().getProperties().changeProperty(MPView.getTabPane(), "hidetaxcolumn", hidetaxcolumn.isSelected());
-            mpv5.db.objects.User.getCurrentUser().getProperties().changeProperty(MPView.getTabPane(), "showoptionalcolumn", showoptionalcolumn.isSelected());
-            mpv5.db.objects.User.getCurrentUser().getProperties().changeProperty(MPView.getTabPane(), "supresscurrencysymbols", supresscurrencysymbols.isSelected());
-            mpv5.db.objects.User.getCurrentUser().getProperties().changeProperty(MPView.getTabPane(), "autocreaterevenue", autorev.isSelected());
-            mpv5.db.objects.User.getCurrentUser().getProperties().changeProperty(MPView.getTabPane(), "ordersoverproducts", ordersoverproducts.isSelected());
-            mpv5.db.objects.User.getCurrentUser().getProperties().changeProperty(MPView.getTabPane(), "companiesovernames", companiesovernames.isSelected());
-            mpv5.db.objects.User.getCurrentUser().getProperties().changeProperty(MPView.getTabPane(), "pasten", pasten.isSelected());
-            mpv5.db.objects.User.getCurrentUser().getProperties().changeProperty(MPView.getTabPane(), "nowarnings", nowarnings.isSelected());
-            mpv5.db.objects.User.getCurrentUser().getProperties().changeProperty(MPView.getTabPane(), "propertiesdefined", true);
+            mpv5.db.objects.User.getCurrentUser().getProperties().changeProperty("org.openyabs.uiproperty", "norecycletabs", tabs.isSelected());
+            mpv5.db.objects.User.getCurrentUser().getProperties().changeProperty("org.openyabs.uiproperty", "avoidmultipleviews", views.isSelected());
+            mpv5.db.objects.User.getCurrentUser().getProperties().changeProperty("org.openyabs.uiproperty", "hideunpaidbills", unpaidbills.isSelected());
+            mpv5.db.objects.User.getCurrentUser().getProperties().changeProperty("org.openyabs.uiproperty", "hidecolumnquantity", columnquantity.isSelected());
+            mpv5.db.objects.User.getCurrentUser().getProperties().changeProperty("org.openyabs.uiproperty", "hideproductscolumn", hideproductscolumn.isSelected());
+            mpv5.db.objects.User.getCurrentUser().getProperties().changeProperty("org.openyabs.uiproperty", "hidecolumnmeasure", columnmeasure.isSelected());
+            mpv5.db.objects.User.getCurrentUser().getProperties().changeProperty("org.openyabs.uiproperty", "hidetaxcolumn", hidetaxcolumn.isSelected());
+            mpv5.db.objects.User.getCurrentUser().getProperties().changeProperty("org.openyabs.uiproperty", "showoptionalcolumn", showoptionalcolumn.isSelected());
+            mpv5.db.objects.User.getCurrentUser().getProperties().changeProperty("org.openyabs.uiproperty", "supresscurrencysymbols", supresscurrencysymbols.isSelected());
+            mpv5.db.objects.User.getCurrentUser().getProperties().changeProperty("org.openyabs.uiproperty", "autocreaterevenue", autorev.isSelected());
+            mpv5.db.objects.User.getCurrentUser().getProperties().changeProperty("org.openyabs.uiproperty", "ordersoverproducts", ordersoverproducts.isSelected());
+            mpv5.db.objects.User.getCurrentUser().getProperties().changeProperty("org.openyabs.uiproperty", "companiesovernames", companiesovernames.isSelected());
+            mpv5.db.objects.User.getCurrentUser().getProperties().changeProperty("org.openyabs.uiproperty", "pasten", pasten.isSelected());
+            mpv5.db.objects.User.getCurrentUser().getProperties().changeProperty("org.openyabs.uiproperty", "nowarnings", nowarnings.isSelected());
+            mpv5.db.objects.User.getCurrentUser().getProperties().changeProperty("org.openyabs.uiproperty", "propertiesdefined", true);
 
             if (deftax.getSelectedItem() != null) {
                 mpv5.db.objects.User.getCurrentUser().getProperties().changeProperty(deftax.getName(), deftax.getSelectedItem().getId());
@@ -745,20 +745,20 @@ public class ControlPanel_Userproperties extends javax.swing.JPanel implements C
     }
 
     private void loadSettings() {
-        tabs.setSelected(mpv5.db.objects.User.getCurrentUser().getProperties().getProperty(MPView.getTabPane(), "norecycletabs"));
-        nowarnings.setSelected(mpv5.db.objects.User.getCurrentUser().getProperties().getProperty(MPView.getTabPane(), "nowarnings"));
-        views.setSelected(mpv5.db.objects.User.getCurrentUser().getProperties().getProperty(MPView.getTabPane(), "avoidmultipleviews"));
-        unpaidbills.setSelected(mpv5.db.objects.User.getCurrentUser().getProperties().getProperty(MPView.getTabPane(), "hideunpaidbills"));
-        columnquantity.setSelected(mpv5.db.objects.User.getCurrentUser().getProperties().getProperty(MPView.getTabPane(), "hidecolumnquantity"));
-        columnmeasure.setSelected(mpv5.db.objects.User.getCurrentUser().getProperties().getProperty(MPView.getTabPane(), "hidecolumnmeasure"));
-        hideproductscolumn.setSelected(mpv5.db.objects.User.getCurrentUser().getProperties().getProperty(MPView.getTabPane(), "hideproductscolumn"));
-        showoptionalcolumn.setSelected(mpv5.db.objects.User.getCurrentUser().getProperties().getProperty(MPView.getTabPane(), "showoptionalcolumn"));
-        supresscurrencysymbols.setSelected(mpv5.db.objects.User.getCurrentUser().getProperties().getProperty(MPView.getTabPane(), "supresscurrencysymbols"));
-        autorev.setSelected(mpv5.db.objects.User.getCurrentUser().getProperties().getProperty(MPView.getTabPane(), "autocreaterevenue"));
-        ordersoverproducts.setSelected(mpv5.db.objects.User.getCurrentUser().getProperties().getProperty(MPView.getTabPane(), "ordersoverproducts"));
-        companiesovernames.setSelected(mpv5.db.objects.User.getCurrentUser().getProperties().getProperty(MPView.getTabPane(), "companiesovernames"));
-        hidetaxcolumn.setSelected(mpv5.db.objects.User.getCurrentUser().getProperties().getProperty(MPView.getTabPane(), "hidetaxcolumn"));
-        pasten.setSelected(mpv5.db.objects.User.getCurrentUser().getProperties().getProperty(MPView.getTabPane(), "pasten"));
+        tabs.setSelected(mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("org.openyabs.uiproperty", "norecycletabs"));
+        nowarnings.setSelected(mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("org.openyabs.uiproperty", "nowarnings"));
+        views.setSelected(mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("org.openyabs.uiproperty", "avoidmultipleviews"));
+        unpaidbills.setSelected(mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("org.openyabs.uiproperty", "hideunpaidbills"));
+        columnquantity.setSelected(mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("org.openyabs.uiproperty", "hidecolumnquantity"));
+        columnmeasure.setSelected(mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("org.openyabs.uiproperty", "hidecolumnmeasure"));
+        hideproductscolumn.setSelected(mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("org.openyabs.uiproperty", "hideproductscolumn"));
+        showoptionalcolumn.setSelected(mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("org.openyabs.uiproperty", "showoptionalcolumn"));
+        supresscurrencysymbols.setSelected(mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("org.openyabs.uiproperty", "supresscurrencysymbols"));
+        autorev.setSelected(mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("org.openyabs.uiproperty", "autocreaterevenue"));
+        ordersoverproducts.setSelected(mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("org.openyabs.uiproperty", "ordersoverproducts"));
+        companiesovernames.setSelected(mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("org.openyabs.uiproperty", "companiesovernames"));
+        hidetaxcolumn.setSelected(mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("org.openyabs.uiproperty", "hidetaxcolumn"));
+        pasten.setSelected(mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("org.openyabs.uiproperty", "pasten"));
         dtabankaccount.setText(mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("dtabankaccount"));
         dtabankid.setText(mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("dtabankid"));
         dtabankname.setText(mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("dtabankname"));

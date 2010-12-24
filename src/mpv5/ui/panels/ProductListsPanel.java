@@ -665,10 +665,10 @@ public class ProductListsPanel extends javax.swing.JPanel implements DataPanel, 
         prepareTable();
         TableFormat.resizeCols(itemtable, new Integer[]{0, 23, 53, 63, 100, 83, 63, 63, 0, 0, 0, 20, 20, 0, 0}, new Boolean[]{true, true, true, true, false, true, true, true, true, true, true, true, true, true, true, true});
         TableFormat.changeBackground(itemtable, 1, Color.LIGHT_GRAY);
-        if (mpv5.db.objects.User.getCurrentUser().getProperties().getProperty(MPView.getTabPane(), "hidecolumnquantity")) {
+        if (mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("org.openyabs.uiproperty", "hidecolumnquantity")) {
             TableFormat.stripColumn(itemtable, 2);
         }
-        if (mpv5.db.objects.User.getCurrentUser().getProperties().getProperty(MPView.getTabPane(), "hidecolumnmeasure")) {
+        if (mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("org.openyabs.uiproperty", "hidecolumnmeasure")) {
             TableFormat.stripColumn(itemtable, 3);
         }
 
