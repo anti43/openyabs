@@ -16,6 +16,8 @@
  */
 package mpv5.db.common;
 
+import java.util.Arrays;
+import java.util.TreeMap;
 import java.util.Collections;
 import java.awt.Color;
 import java.io.Serializable;
@@ -28,6 +30,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -135,6 +138,11 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
             hash = 11 * hash + (this.context != null ? this.context.hashCode() : 0);
             hash = 11 * hash + (this.ids != null ? this.ids.hashCode() : 0);
             return hash;
+        }
+
+        @Override
+        public String toString() {
+            return context + " [" + ids + "]";
         }
     }
 
@@ -361,6 +369,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
     private Date dateadded = new Date(0);
     private transient DatabaseObjectLock LOCK = new DatabaseObjectLock(this);
     private Color color = Color.WHITE;
+    public Entity<Context, Integer> IDENTITY = new Entity<Context, Integer>(context, -1000);
 
     public String __getCName() {
         return cname;
@@ -615,7 +624,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
                             message = this.__getCName() + Messages.INSERTED;
                         }
                         ids = QueryHandler.instanceOf().clone(context).insert(collect(), message);
-                        Log.Debug(this, "The inserted row has id: " + ids);
+                        Log.Debug(this, "The inserted row has id: " + IDENTITY);
                     } else {
                         Popup.notice(Messages.CNAME_CANNOT_BE_NULL);
                         Log.Debug(this, Messages.CNAME_CANNOT_BE_NULL + " [" + context + "]");
@@ -1969,6 +1978,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
 
     /**
      * Creates an Object Array out of all getters of this DO, no special order.
+     * Mostly useless.
      * @return
      */
     public Object[] toResolvedArray() {
@@ -1979,6 +1989,51 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
             d[i] = object;
             i++;
         }
+        return d;
+    }
+
+    /**
+     * Creates an Object Array out of all getters of this DO,
+     * first column is a DatabaseObject.Entity to identify this DO
+     * @param fieldCount Defines how many columns the resulting array shall have.
+     *                   The ordering is somewhat unpredictable, however the array will always start with [IDENTITY, cname, ...].
+     *                   A fieldcount below 2 is not allowed.
+     * @param fields     You can specify as many fields you like to force *some* ordering of the resulting array.
+     *                   Specified fields will appear BEFORE unspecified fields, however the ordering of the specified fields is not guaranteed.
+     *                   Nonexisting fields will be ignored.
+     * @return An array representing this DOs values
+     */
+    public Object[] toResolvedArray(int fieldCount, final String... fields) {
+        if (fieldCount < 2) {
+            throw new UnsupportedOperationException("You must have more than 1 fields here.");
+        }
+        HashMap<String, Object> data = getValues4();
+        Object[] d = new Object[data.size() + 1];
+        final List<String> ff = Arrays.asList(fields);
+
+        Map<String, Object> copy = new TreeMap<String, Object>(new Comparator<String>() {
+
+            @Override
+            public int compare(String a, String b) {
+                if (a.equals(b)) {
+                    return 0;
+                }
+                if (ff.contains(a)) {
+                    return 1;
+                } else {
+                    return -1;
+                }
+            }
+        });
+        copy.putAll(data);
+        int i = 1;
+        for (Object object : copy.values()) {
+            d[i] = object;
+            i++;
+            if (i == fieldCount) {
+            }
+        }
+        d[0] = IDENTITY;
         return d;
     }
 }

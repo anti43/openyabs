@@ -31,8 +31,8 @@ public class ExceptionHandler {
      */
     public static void add(Exception exception) {
         exc.add(exception);
-        MPView.showError();
-        MPView.setWaiting(false);//clean up
+//        MPView.showError();
+//        MPView.setWaiting(false);//clean up
     }
     static List<Exception> exc = new Vector<Exception>();
 

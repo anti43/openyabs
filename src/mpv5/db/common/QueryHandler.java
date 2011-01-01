@@ -233,6 +233,62 @@ public class QueryHandler implements Cloneable {
         }
     }
 
+    /**
+     * Builds a select query which selects all fields from all rows where the fields match the given value.
+     * @param value
+     * @param fields
+     * @return A query String
+     */
+    public String buildQuery(Object value, String... fields) {
+        return buildQuery(fields, fields, "cname", value);
+    }
+
+    /**
+     *
+     * @param columns
+     * @param conditionColumns
+     * @param order
+     * @param value
+     * @return
+     */
+    public String buildQuery(String[] columns, String[] conditionColumns, String order, Object value) {
+        String cols = "";
+        if (columns != null && columns.length > 0) {
+            for (int i = 0; i < columns.length; i++) {
+                String column = columns[i];
+                cols += "," + column;
+            }
+            cols = cols.substring(1);
+        } else {
+            cols = "*";
+        }
+        String conds = "";
+        if (conditionColumns != null && conditionColumns.length > 0) {
+            for (int i = 0; i < conditionColumns.length; i++) {
+                String string = conditionColumns[i];
+                if (value instanceof String) {
+                    conds += string + " LIKE '%" + value + "%' AND ";
+                } else if (value instanceof Date) {
+                    conds += string + " = '" + DateConverter.getSQLDateString((Date) value) + "' AND ";
+                } else {
+                    conds += string + " = " + value + " AND ";
+                }
+            }
+            conds = " WHERE " + conds.substring(0, conds.length() - 4);
+            if (context.getGroupRestrictionSQLString() != null) {
+                conds += " AND " + context.getGroupRestrictionSQLString();
+            }
+            if (context.getNoTrashSQLString() != null) {
+                conds += " AND " + context.getNoTrashSQLString();
+            }
+        }
+        String query = "SELECT " + cols + " FROM " + table + conds;
+        if (order != null) {
+            query += " ORDER BY " + order;
+        }
+
+        return query;
+    }
 
     /**
      * Checks the uniqueness of a unique constraint
@@ -1465,40 +1521,8 @@ public class QueryHandler implements Cloneable {
      * @throws SQLException
      */
     public PreparedStatement buildPreparedSelectStatement(String columns[], String[] conditionColumns, String order, boolean like) throws SQLException {
-        String cols = "";
-        if (columns != null && columns.length > 0) {
-            for (int i = 0; i < columns.length; i++) {
-                String column = columns[i];
-                cols += "," + column;
-            }
-            cols = cols.substring(1);
-        } else {
-            cols = "*";
-        }
-        String conds = "";
-        if (conditionColumns != null && conditionColumns.length > 0) {
-            for (int i = 0; i < conditionColumns.length; i++) {
-                String string = conditionColumns[i];
-                if (!like) {
-                    conds += string + " LIKE ? AND ";
-                } else {
-                    conds += string + " = ? AND ";
-                }
-            }
-            conds = " WHERE " + conds.substring(0, conds.length() - 4);
-            if (context.getGroupRestrictionSQLString() != null) {
-                conds += " AND " + context.getGroupRestrictionSQLString();
-            }
-            if (context.getNoTrashSQLString() != null) {
-                conds += " AND " + mpv5.db.common.Context.getItem().getNoTrashSQLString();
-            }
-        }
-        String query = "SELECT " + cols + " FROM " + table + conds;
-        if (order != null) {
-            query += " ORDER BY " + order;
-        }
 
-        return sqlConn.prepareStatement(query, PreparedStatement.RETURN_GENERATED_KEYS);
+        return sqlConn.prepareStatement(buildQuery(columns, conditionColumns, order, like), PreparedStatement.RETURN_GENERATED_KEYS);
     }
 
     /**

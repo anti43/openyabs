@@ -223,6 +223,10 @@ public class Main extends SingleFrameApplication {
             }
         }
     }
+
+    public static void extStart() throws Exception {
+        main(new String[0]);
+    }
     private File lockfile = new File(MPPATH + File.separator + "." + Constants.PROG_NAME + "." + "lck");
 
     /**
