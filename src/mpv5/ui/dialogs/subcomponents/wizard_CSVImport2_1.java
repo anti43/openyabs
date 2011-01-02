@@ -114,7 +114,7 @@ public class wizard_CSVImport2_1 extends javax.swing.JPanel implements Wizardabl
         jTable1.setName("jTable1"); // NOI18N
         jScrollPane1.setViewportView(jTable1);
 
-        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("mpv5/resources/languages/Panels"); // NOI18N
+        java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle(); // NOI18N
         labeledTextChooser1.set_Label(bundle.getString("wizard_CSVImport2_1.labeledTextChooser1._Label")); // NOI18N
         labeledTextChooser1.setName("labeledTextChooser1"); // NOI18N
 
