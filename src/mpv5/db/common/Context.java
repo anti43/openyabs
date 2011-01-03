@@ -1644,7 +1644,7 @@ public class Context implements Serializable {
 
     @Override
     public String toString() {
-        return dbIdentity.toUpperCase() + " [" + id + "]";
+        return String.valueOf(dbIdentity).toUpperCase() + " [" + id + "]";
     }
 
     /**

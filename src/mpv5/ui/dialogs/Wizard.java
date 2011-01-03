@@ -55,7 +55,7 @@ public class Wizard extends javax.swing.JDialog implements WizardMaster {
      */
     public Wizard(boolean standalone) {
         initComponents();
-        setModalityType(ModalityType.APPLICATION_MODAL);
+        setModalityType(ModalityType.MODELESS);
         back.setEnabled(false);
         this.standalone = standalone;
         if (standalone) {
@@ -71,6 +71,7 @@ public class Wizard extends javax.swing.JDialog implements WizardMaster {
         setLocationRelativeTo(MPView.getIdentifierFrame());
         setAlwaysOnTop(!standalone);
         setVisible(true);
+        requestFocus();
     }
 
     /** This method is called from within the constructor to

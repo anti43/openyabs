@@ -427,7 +427,7 @@ public class wizard_CSVImport2_1 extends javax.swing.JPanel implements Wizardabl
         final Context t;
         if (jRadioButton1.isSelected()) {
             t = Context.getProduct();
-        } else if (jRadioButton1.isSelected()) {
+        } else if (jRadioButton2.isSelected()) {
             t = Context.getContact();
         } else {
             t = (Context) labeledCombobox1.getSelectedItem().getIdObject();
@@ -453,6 +453,7 @@ public class wizard_CSVImport2_1 extends javax.swing.JPanel implements Wizardabl
                             Object key = keys[j];
                             if (j < line.length && line[j] != null && line[j].toString().length() > 0) {
                                 try {
+                                    line[j]=line[j].toString().replace("\"", "");
 //                                Log.Debug(this, "Setting " + key + " to " + line[j]);
                                     if (key.toString().equals("TAX")) {
                                         int taxid = Tax.getTaxId(FormatNumber.parseDezimal(line[j].toString().trim()));

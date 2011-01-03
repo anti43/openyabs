@@ -963,8 +963,14 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
                     vals.add(new String[]{vars.get(i).getName().substring(5, vars.get(i).getName().length()),
                                 String.valueOf(vars.get(i).invoke(this, new Object[0]))});
                 } else {
+                    String date = null;
+                    try {
+                        date = DateConverter.getDefDateString((Date) vars.get(i).invoke(this, new Object[0]));
+                    } catch (Exception n) {
+                        date = DateConverter.getDefDateString(new Date());
+                    }
                     vals.add(new String[]{vars.get(i).getName().substring(5, vars.get(i).getName().length()),
-                                DateConverter.getDefDateString((Date) vars.get(i).invoke(this, new Object[0]))});
+                                date});
                 }
             } catch (Exception n) {
                 Log.Debug(this, n);

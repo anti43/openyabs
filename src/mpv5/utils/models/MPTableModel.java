@@ -165,6 +165,22 @@ public class MPTableModel extends DefaultTableModel implements Cloneable {
 
         setTypes(new Class[]{Object.class, Object.class, Object.class, Object.class, Object.class, Object.class, Object.class,
                     Object.class, Object.class, Object.class, Object.class, Object.class, Object.class, Object.class, Object.class,
+                    Object.class, Object.class, Object.class, Object.class, Object.class, Object.class, Object.class, Object.class,
+                    Object.class, Object.class, Object.class, Object.class, Object.class, Object.class, Object.class, Object.class,
+                    Object.class, Object.class, Object.class, Object.class, Object.class, Object.class, Object.class, Object.class,
+                    Object.class, Object.class, Object.class, Object.class, Object.class, Object.class, Object.class, Object.class,
+                    Object.class, Object.class, Object.class, Object.class, Object.class, Object.class, Object.class, Object.class,
+                    Object.class, Object.class, Object.class, Object.class, Object.class, Object.class, Object.class, Object.class,
+                    Object.class, Object.class, Object.class, Object.class, Object.class, Object.class, Object.class, Object.class,
+                    Object.class, Object.class, Object.class, Object.class, Object.class, Object.class, Object.class, Object.class,
+                    Object.class, Object.class, Object.class, Object.class, Object.class, Object.class, Object.class, Object.class,
+                    Object.class, Object.class, Object.class, Object.class, Object.class, Object.class, Object.class, Object.class,
+                    Object.class, Object.class, Object.class, Object.class, Object.class, Object.class, Object.class, Object.class,
+                    Object.class, Object.class, Object.class, Object.class, Object.class, Object.class, Object.class, Object.class,
+                    Object.class, Object.class, Object.class, Object.class, Object.class, Object.class, Object.class, Object.class,
+                    Object.class, Object.class, Object.class, Object.class, Object.class, Object.class, Object.class, Object.class,
+                    Object.class, Object.class, Object.class, Object.class, Object.class, Object.class, Object.class, Object.class,
+                    Object.class, Object.class, Object.class, Object.class, Object.class, Object.class, Object.class, Object.class,
                     Object.class, Object.class, Object.class, Object.class, Object.class, Object.class, Object.class, Object.class});
     }
 
