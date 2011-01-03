@@ -23,7 +23,7 @@ import mpv5.globals.Messages;
 
 import mpv5.i18n.LanguageManager;
 import mpv5.logging.Log;
-import mpv5.logging.LogConsole;
+import mpv5.logging.YConsole;
 import mpv5.ui.dialogs.Popup;
 import mpv5.ui.dialogs.Wizard;
 import mpv5.ui.dialogs.WizardMaster;
@@ -137,7 +137,7 @@ public class wizard_DBSettings_manage_1 extends javax.swing.JPanel implements Wi
                 Log.Debug(ex);
                 if (Popup.Y_N_dialog(this, Messages.ERROR_OCCURED + "\n" + Messages.SEE_LOG + "?", Messages.CONNECTION_FAILED)) {
                     try {
-                        Desktop.getDesktop().open(LogConsole.getLogfile());
+                        Desktop.getDesktop().open(YConsole.getLogfile());
                     } catch (IOException ex1) {
                         Popup.error(ex1);
                     }

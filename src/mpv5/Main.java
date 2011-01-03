@@ -578,7 +578,7 @@ public class Main extends SingleFrameApplication {
                     Log.Debug(Main.class, "logfile must be specified (-logfile=file.log)!");
                 } else {
                     try {
-                        LogConsole.setLogFile(((String) cl.getValue(logfile)).split("=")[1]);
+                        YConsole.setLogFile(((String) cl.getValue(logfile)).split("=")[1]);
                     } catch (Exception e) {
                         Log.Debug(Main.class, "Error while writing to: " + e.getMessage());
                     }
@@ -614,7 +614,7 @@ public class Main extends SingleFrameApplication {
                 CLEAR_LOCK = true;
             }
 
-            LogConsole.setLogStreams(cl.hasOption(logfile), cl.hasOption(consolelog), cl.hasOption(windowlog));
+            YConsole.setLogStreams(cl.hasOption(logfile), cl.hasOption(consolelog), cl.hasOption(windowlog));
 
             if (cl.hasOption(params)) {
                 try {
@@ -731,24 +731,24 @@ public class Main extends SingleFrameApplication {
         cache();
         Main.splash.nextStep(Messages.INIT_GUI.toString());
 
-        super.show(new MPView(this));
+       // super.show(new MPView(this));
         firstStart = firststart;
 
         if (Main.firstStart) {
-            getApplication().getMainFrame().setExtendedState(JFrame.MAXIMIZED_BOTH);
+       //     getApplication().getMainFrame().setExtendedState(JFrame.MAXIMIZED_BOTH);
         }
-        SwingUtilities.updateComponentTreeUI(MPView.getIdentifierFrame());
+        //SwingUtilities.updateComponentTreeUI(MPView.getIdentifierFrame());
         Main.splash.nextStep(Messages.INIT_PLUGINS.toString());
         loadPlugins();
         splash.dispose();
 
-        if (START_SERVER) {
-            MPServer serv = new MPServer();
-            serv.start();
-            MPView.getIdentifierView().showServerStatus(serv.isAlive());
-        } else {
-            MPView.getIdentifierView().showServerStatus(false);
-        }
+//        if (START_SERVER) {
+//            MPServer serv = new MPServer();
+//            serv.start();
+//            MPView.getIdentifierView().showServerStatus(serv.isAlive());
+//        } else {
+//            MPView.getIdentifierView().showServerStatus(false);
+//        }
         if (LocalSettings.getBooleanProperty(LocalSettings.OFFICE_USE)) {
             final Thread startServerThread;
 
@@ -805,45 +805,45 @@ public class Main extends SingleFrameApplication {
 
             new Thread(runnable1).start();
         }
-        Scheduler.getInstance().start();
+//        Scheduler.getInstance().start();
 
-        if (!LocalSettings.getBooleanProperty(LocalSettings.SUPPRESS_UPDATE_CHECK)) {
-            Runnable runnable = new Runnable() {
-
-                @Override
-                public void run() {
-                    if (checkUpdates()) {
-                        MPView.addMessage(Messages.UPDATE_AVAILABLE);
-                    }
-                }
-            };
-
-            new Thread(runnable).start();
-        }
+//        if (!LocalSettings.getBooleanProperty(LocalSettings.SUPPRESS_UPDATE_CHECK)) {
+//            Runnable runnable = new Runnable() {
+//
+//                @Override
+//                public void run() {
+//                    if (checkUpdates()) {
+//                        MPView.addMessage(Messages.UPDATE_AVAILABLE);
+//                    }
+//                }
+//            };
+//
+//            new Thread(runnable).start();
+//        }
     }
 
     private void loadPlugins() {
-        if (!removeplugs) {
-            try {
-                MPPLuginLoader.queuePlugins(MPView.getPluginLoader().getPlugins());
-                MPView.getPluginLoader().loadPlugins();
-            } catch (Exception e) {
-                Log.Debug(e);
-            }
-        } else {
-            try {
-                List data = DatabaseObject.getReferencedObjects(mpv5.db.objects.User.getCurrentUser(), Context.getPluginsToUsers());
-                for (int i = 0; i < data.size(); i++) {
-                    try {
-                        ((UserPlugin) data.get(i)).delete();
-                    } catch (Exception e) {
-                        Log.Debug(e);
-                    }
-                }
-            } catch (NodataFoundException ex) {
-                Log.Debug(Main.class, ex.getMessage());
-            }
-        }
+//        if (!removeplugs) {
+//            try {
+//                MPPLuginLoader.queuePlugins(MPView.getPluginLoader().getPlugins());
+//                MPView.getPluginLoader().loadPlugins();
+//            } catch (Exception e) {
+//                Log.Debug(e);
+//            }
+//        } else {
+//            try {
+//                List data = DatabaseObject.getReferencedObjects(mpv5.db.objects.User.getCurrentUser(), Context.getPluginsToUsers());
+//                for (int i = 0; i < data.size(); i++) {
+//                    try {
+//                        ((UserPlugin) data.get(i)).delete();
+//                    } catch (Exception e) {
+//                        Log.Debug(e);
+//                    }
+//                }
+//            } catch (NodataFoundException ex) {
+//                Log.Debug(Main.class, ex.getMessage());
+//            }
+//        }
     }
 
     private void login() throws NodataFoundException {
@@ -917,7 +917,7 @@ public class Main extends SingleFrameApplication {
     private void showDbWiz(Integer forConnId) {
         try {
             Log.setLogLevel(Log.LOGLEVEL_DEBUG);
-            LogConsole.setLogFile("install.log");
+            YConsole.setLogFile("install.log");
             Log.Debug(this, new Date());
 
         } catch (Exception ex) {

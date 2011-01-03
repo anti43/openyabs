@@ -42,6 +42,8 @@ import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.SwingUtilities;
 import mpv5.db.objects.ValueProperty;
 import mpv5.globals.Messages;
@@ -563,12 +565,54 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
      * @return A list of all <b>getters</b> in this do child,
      * which match the naming convetion as in
      * <strong>__get*methodname*</strong> (methodname starts with 2 (two) underscores)
+     * OR use the new annotations for persistable DO fields
      */
     public List<Method> getVars() {
         ArrayList<Method> list = new ArrayList<Method>();
+        Method[] methods = this.getClass().getMethods();
+
         for (int i = 0; i < this.getClass().getMethods().length; i++) {
-            if (this.getClass().getMethods()[i].getName().startsWith("__get")) {
-                list.add(this.getClass().getMethods()[i]);
+            if ((methods[i].isAnnotationPresent(Persistable.class)
+                    && methods[i].getAnnotation(Persistable.class).value()
+                    && methods[i].getParameterTypes().length == 0)
+                    /*for backwards compatibility*/
+                    || (methods[i].getName().startsWith("__get")
+                    && !(methods[i].isAnnotationPresent(Persistable.class)
+                    && !methods[i].getAnnotation(Persistable.class).value()))) {
+                list.add(methods[i]);
+            }
+        }
+
+        return list;
+    }
+
+    /**
+     * Convenience method:
+     * Returns all DO properties (getters) which would return plain String values
+     * @return A list of shortened method names (without "get")
+     */
+    public List<String> getStringVars() {
+
+        String left = "";
+        Method[] methods = this.getClass().getMethods();
+        ArrayList<String> list = new ArrayList<String>();
+        boolean annotated = false;
+        for (int i = 0; i < this.getClass().getMethods().length; i++) {
+            if ((methods[i].isAnnotationPresent(Persistable.class)
+                    && methods[i].getAnnotation(Persistable.class).value()
+                    && methods[i].getParameterTypes().length == 0)
+                    /*for backwards compatibility*/
+                    || (methods[i].getName().startsWith("__get")
+                    && !(methods[i].isAnnotationPresent(Persistable.class)
+                    && !methods[i].getAnnotation(Persistable.class).value()))) {
+                annotated = methods[i].isAnnotationPresent(Persistable.class);
+
+                left = annotated
+                        ? methods[i].getName().toLowerCase().substring(3, methods[i].getName().length())
+                        : methods[i].getName().toLowerCase().replace("__get", "");
+                if (methods[i].getReturnType().getName().equals(String.class.getName())) {
+                    list.add(left);
+                }
             }
         }
         return list;

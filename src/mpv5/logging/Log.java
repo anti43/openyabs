@@ -51,7 +51,7 @@ public class Log {
      */
     public static final int LOGLEVEL_DEBUG = 2;
     private static int loglevel = 1;
-    private static LogConsole logger = new LogConsole();
+    private static LogConsole logger = (LogConsole) new YConsole();
 
     /**
      * Print out a text file
@@ -125,17 +125,6 @@ public class Log {
     }
 
     /**
-     * 
-     * @param source
-     * @param message
-     * @param alwaysToKonsole
-     * @deprecated  Replaced with <code>Debug(Object source, Object message)</code>
-     */
-    public static void Debug(Class source, Object message, boolean alwaysToKonsole) {
-        Debug(source, message);
-    }
-
-    /**
      * Prints messages, regardless the log level
      * @param message
      */
@@ -143,7 +132,7 @@ public class Log {
         for (int i = 0; i < message.length; i++) {
             Object object = message[i];
             write(object);
-            if (!LogConsole.CONSOLE_LOG_ENABLED) {
+            if (!YConsole.CONSOLE_LOG_ENABLED) {
                 System.out.println(object);
             }
         }
@@ -218,11 +207,7 @@ public class Log {
     }
 
     private static synchronized void write(Object obj) {
-        try {
-            logger.log(obj);
-        } catch (IOException ex) {
-            ex.printStackTrace();
-        }
+       logger.log(obj);
     }
 
     /**
@@ -249,7 +234,7 @@ public class Log {
      * @param level
      */
     public static void setLogLevel(int level) {
-        Log.loglevel = level;
+        Log.setLoglevel(level);
     }
 
     /**
@@ -271,6 +256,20 @@ public class Log {
         while (keys.hasMoreElements()) {
             Print(keys.nextElement());
         }
+    }
+
+    /**
+     * @param aLoglevel the loglevel to set
+     */
+    public static void setLoglevel(int aLoglevel) {
+        loglevel = aLoglevel;
+    }
+
+    /**
+     * @param aLogger the logger to set
+     */
+    public static void setLogger(LogConsole aLogger) {
+        logger = aLogger;
     }
 
     private Log() {

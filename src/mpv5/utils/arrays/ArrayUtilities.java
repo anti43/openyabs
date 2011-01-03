@@ -713,10 +713,12 @@ public class ArrayUtilities {
         int z = 0;
         if (array1 != null && array1.length > 0) {
             z = array1[0].length;
-        } else if (array2 != null && array2.length > 0) {
-            z = array2[0].length;
-        } else {
-            z = 0;
+        }
+
+        if (array2 != null && array2.length > 0) {
+            if (z < array2[0].length) {
+                z = array2[0].length;
+            }
         }
 
         Object[][] mergedArray = new Object[array1.length + array2.length][z];
@@ -1102,5 +1104,4 @@ public class ArrayUtilities {
             });
         }
     }
-
 }

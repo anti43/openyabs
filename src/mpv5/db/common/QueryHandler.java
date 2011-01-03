@@ -240,7 +240,7 @@ public class QueryHandler implements Cloneable {
      * @return A query String
      */
     public String buildQuery(Object value, String... fields) {
-        return buildQuery(fields, fields, "cname", value);
+        return buildQuery(fields, fields, "cname", value, "OR");
     }
 
     /**
@@ -251,7 +251,7 @@ public class QueryHandler implements Cloneable {
      * @param value
      * @return
      */
-    public String buildQuery(String[] columns, String[] conditionColumns, String order, Object value) {
+    public String buildQuery(String[] columns, String[] conditionColumns, String order, Object value, String command) {
         String cols = "";
         if (columns != null && columns.length > 0) {
             for (int i = 0; i < columns.length; i++) {
@@ -267,11 +267,11 @@ public class QueryHandler implements Cloneable {
             for (int i = 0; i < conditionColumns.length; i++) {
                 String string = conditionColumns[i];
                 if (value instanceof String) {
-                    conds += string + " LIKE '%" + value + "%' AND ";
+                    conds += string + " LIKE '%" + value + "%' " + command + " ";
                 } else if (value instanceof Date) {
-                    conds += string + " = '" + DateConverter.getSQLDateString((Date) value) + "' AND ";
+                    conds += string + " = '" + DateConverter.getSQLDateString((Date) value) + "' " + command + " ";
                 } else {
-                    conds += string + " = " + value + " AND ";
+                    conds += string + " = " + value + " " + command + " ";
                 }
             }
             conds = " WHERE " + conds.substring(0, conds.length() - 4);
@@ -1522,7 +1522,7 @@ public class QueryHandler implements Cloneable {
      */
     public PreparedStatement buildPreparedSelectStatement(String columns[], String[] conditionColumns, String order, boolean like) throws SQLException {
 
-        return sqlConn.prepareStatement(buildQuery(columns, conditionColumns, order, like), PreparedStatement.RETURN_GENERATED_KEYS);
+        return sqlConn.prepareStatement(buildQuery(columns, conditionColumns, order, like, "OR"), PreparedStatement.RETURN_GENERATED_KEYS);
     }
 
     /**
