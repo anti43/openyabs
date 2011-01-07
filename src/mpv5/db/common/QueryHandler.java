@@ -267,11 +267,11 @@ public class QueryHandler implements Cloneable {
             for (int i = 0; i < conditionColumns.length; i++) {
                 String string = conditionColumns[i];
                 if (value instanceof String) {
-                    conds += string + " LIKE '%" + value + "%' " + command + " ";
+                    conds += " UPPER(" +string + ") LIKE '%" + String.valueOf(value).toUpperCase() + "%'  " + command + " ";
                 } else if (value instanceof Date) {
-                    conds += string + " = '" + DateConverter.getSQLDateString((Date) value) + "' " + command + " ";
+                    conds += string + " = '" + DateConverter.getSQLDateString((Date) value) + "'  " + command + " ";
                 } else {
-                    conds += string + " = " + value + " " + command + " ";
+                    conds += string + " = " + value + "  " + command + " ";
                 }
             }
             conds = " WHERE " + conds.substring(0, conds.length() - 4);

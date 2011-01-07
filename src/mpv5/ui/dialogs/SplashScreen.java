@@ -15,6 +15,7 @@ import java.awt.Image;
 import javax.swing.GrayFilter;
 import javax.swing.ImageIcon;
 import javax.swing.SwingUtilities;
+import mpv5.Main;
 import mpv5.globals.Constants;
 import mpv5.logging.Log;
 import mpv5.ui.misc.Position;
@@ -35,16 +36,19 @@ public class SplashScreen extends javax.swing.JFrame {
      */
     public SplashScreen(ImageIcon imageIcon) {
         initComponents();
-        setTitle("Yabs start...");
-        jPanel1.setOpaque(false);
-        setInfo(Constants.VERSION);
-        title.setText(Constants.TITLE);
-        jProgressBar1.setStringPainted(true);
-        image = imageIcon.getImage();
-        grayImage = GrayFilter.createDisabledImage(image);
-        new Position(this);
-        setAlwaysOnTop(Log.getLoglevel() == Log.LOGLEVEL_NONE);
-        setVisible(rootPaneCheckingEnabled);
+        if (!Main.HEADLESS) {
+            setTitle("Yabs start...");
+            jPanel1.setOpaque(false);
+            setInfo(Constants.VERSION);
+            title.setText(Constants.TITLE);
+            jProgressBar1.setStringPainted(true);
+            image = imageIcon.getImage();
+            grayImage = GrayFilter.createDisabledImage(image);
+
+            new Position(this);
+            setAlwaysOnTop(Log.getLoglevel() == Log.LOGLEVEL_NONE);
+            setVisible(rootPaneCheckingEnabled);
+        }
     }
 
     /** This method is called from within the constructor to
@@ -123,10 +127,6 @@ public class SplashScreen extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-
-
-  
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel info;
     private javax.swing.JPanel jPanel1;
@@ -139,12 +139,13 @@ public class SplashScreen extends javax.swing.JFrame {
      * Initiates the progressbar
      * @param steps
      */
-    public void init(int steps){
+    public void init(int steps) {
         jProgressBar1.setMaximum(100);
         jProgressBar1.setMinimum(0);
-        progressSteps = 100/steps+1;
+        progressSteps = 100 / steps + 1;
         nextStep("Don't panik!");
     }
+
     /**
      * @return the image
      */
@@ -208,12 +209,17 @@ public class SplashScreen extends javax.swing.JFrame {
     public synchronized void nextStep(final String message) {
         Runnable runnable = new Runnable() {
 
+            @Override
             public void run() {
-                setProgress(message);
-                jProgressBar1.setValue(progressSteps);
-                progressSteps += progressSteps;
+                if (!Main.HEADLESS) {
+                    setProgress(message);
+                    jProgressBar1.setValue(progressSteps);
+                    progressSteps += progressSteps;
+                } else {
+                    Log.Debug(this, message + " [" + progressSteps + "]");
+                }
             }
         };
-            SwingUtilities.invokeLater(runnable);
+        SwingUtilities.invokeLater(runnable);
     }
 }

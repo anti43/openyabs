@@ -83,6 +83,7 @@ public class Main extends SingleFrameApplication {
     public static boolean INSTANTIATED = false;
     private static Integer FORCE_INSTALLER;
     private static boolean CLEAR_LOCK = false;
+    public static boolean HEADLESS = false;
 
     /**
      * Use this method to (re) cache data from the database to avoid unnecessary db queries
@@ -92,11 +93,17 @@ public class Main extends SingleFrameApplication {
 
             @Override
             public void run() {
-                MPView.addMessage(Messages.CACHE);
+                if (!HEADLESS) {
+                    MPView.addMessage(Messages.CACHE);
+                }
                 User.cacheUser();
-                MPView.addMessage(Messages.CACHED_OBJECTS + ": " + Context.getUser());
+                if (!HEADLESS) {
+                    MPView.addMessage(Messages.CACHED_OBJECTS + ": " + Context.getUser());
+                }
                 LanguageManager.getCountriesAsComboBoxModel();
-                MPView.addMessage(Messages.CACHED_OBJECTS + ": " + Context.getCountries());
+                if (!HEADLESS) {
+                    MPView.addMessage(Messages.CACHED_OBJECTS + ": " + Context.getCountries());
+                }
 
             }
         };
@@ -107,8 +114,12 @@ public class Main extends SingleFrameApplication {
     }
 
     private static void useNetbookOpt() {
-        MPView.setNavBarAnimated(false);
-        MPView.setTabPaneScrolled(true);
+        if (!HEADLESS) {
+            MPView.setNavBarAnimated(false);
+        }
+        if (!HEADLESS) {
+            MPView.setTabPaneScrolled(true);
+        }
     }
 
     /**
@@ -203,7 +214,7 @@ public class Main extends SingleFrameApplication {
                     Log.Debug(Main.class, "Importing: " + file.getPath());
                     MPPLuginLoader.importPlugin(file.getName(), file);
                     Popup.notice(Messages.IMPORT_PLUGINS_DONE);//TODO: l10n
-                   
+
                     file.deleteOnExit();
                 }
             }
@@ -225,6 +236,7 @@ public class Main extends SingleFrameApplication {
     }
 
     public static void extStart() throws Exception {
+        HEADLESS = true;
         main(new String[0]);
     }
     private File lockfile = new File(MPPATH + File.separator + "." + Constants.PROG_NAME + "." + "lck");
@@ -270,11 +282,15 @@ public class Main extends SingleFrameApplication {
     protected void startup() {
         Log.Debug(this, "Startup procedure... ");
         getContext().getLocalStorage().setDirectory(new File(Main.MPPATH));
+
         splash.nextStep(Messages.FIRST_INSTANCE.toString());
+
         if (LocalSettings.getProperty(LocalSettings.DBTYPE).equals("single") && !firstInstance()) {
             System.exit(1);
         }
+
         splash.nextStep(Messages.DB_CHECK.toString());
+
         ControlPanel_Fonts.applyFont(Font.decode(LocalSettings.getProperty(LocalSettings.DEFAULT_FONT)));
         if (FORCE_INSTALLER == null) {
             Log.Debug(this, "Probing database connection... ");
@@ -285,7 +301,9 @@ public class Main extends SingleFrameApplication {
                 go(false);
             } else if (Popup.Y_N_dialog(splash, Messages.NO_DB_CONNECTION, Messages.FIRST_START.toString())) {
                 Log.Debug(this, "Loading database config wizard...");
-                splash.dispose();
+                if (!HEADLESS) {
+                    splash.dispose();
+                }
                 showDbWiz(null);
             } else {
                 Log.Debug(this, "Cancelled by user.");
@@ -317,8 +335,12 @@ public class Main extends SingleFrameApplication {
 
     @Override
     public void shutdown() {
-        MPView.setWaiting(true);
-        MPView.setProgressRunning(true);
+        if (!HEADLESS) {
+            MPView.setWaiting(true);
+        }
+        if (!HEADLESS) {
+            MPView.setProgressRunning(true);
+        }
         DatabaseObjectLock.releaseAllObjectsFor(mpv5.db.objects.User.getCurrentUser());
         try {
             GlobalSettings.save();
@@ -381,8 +403,8 @@ public class Main extends SingleFrameApplication {
             splash = new SplashScreen(new ImageIcon(Main.class.getResource(mpv5.globals.Constants.SPLASH_IMAGE)));
             splash.init(11);
             Log.Print(Messages.START_MESSAGE);
-
             splash.nextStep(Messages.INIT.toString());
+
             getOS();
             setEnv(null);
             parseArgs(args);
@@ -682,10 +704,12 @@ public class Main extends SingleFrameApplication {
                 LookAndFeelAddons.setAddon(LookAndFeelAddons.getBestMatchAddonClassName());
 
 
-                if (MPView.getIdentifierFrame() != null && MPView.getIdentifierFrame().isShowing()) {
-                    MPView.getIdentifierFrame().setVisible(false);
-                    SwingUtilities.updateComponentTreeUI(MPView.getIdentifierFrame());
-                    MPView.getIdentifierFrame().setVisible(true);
+                if (!HEADLESS) {
+                    if (MPView.getIdentifierFrame() != null && MPView.getIdentifierFrame().isShowing()) {
+                        MPView.getIdentifierFrame().setVisible(false);
+                        SwingUtilities.updateComponentTreeUI(MPView.getIdentifierFrame());
+                        MPView.getIdentifierFrame().setVisible(true);
+                    }
                 }
             } catch (Exception exe) {
                 try {
@@ -721,7 +745,9 @@ public class Main extends SingleFrameApplication {
     public void go(boolean firststart) {
         writeLockFile(new FileReaderWriter(lockfile));
         setLaF(null);
+
         Main.splash.nextStep(Messages.INIT_LOGIN.toString());
+
         try {
             login();
         } catch (NodataFoundException nodataFoundException) {
@@ -729,26 +755,38 @@ public class Main extends SingleFrameApplication {
         }
         splash.nextStep(Messages.CACHE.toString());
         cache();
+
         Main.splash.nextStep(Messages.INIT_GUI.toString());
 
-       // super.show(new MPView(this));
+
+        if (!HEADLESS) {
+            super.show(new MPView(this));
+        }
         firstStart = firststart;
 
         if (Main.firstStart) {
-       //     getApplication().getMainFrame().setExtendedState(JFrame.MAXIMIZED_BOTH);
+            if (!HEADLESS) {
+                getApplication().getMainFrame().setExtendedState(JFrame.MAXIMIZED_BOTH);
+            }
         }
-        //SwingUtilities.updateComponentTreeUI(MPView.getIdentifierFrame());
+        if (!HEADLESS) {
+            SwingUtilities.updateComponentTreeUI(MPView.getIdentifierFrame());
+        }
+
         Main.splash.nextStep(Messages.INIT_PLUGINS.toString());
+
         loadPlugins();
         splash.dispose();
 
-//        if (START_SERVER) {
-//            MPServer serv = new MPServer();
-//            serv.start();
-//            MPView.getIdentifierView().showServerStatus(serv.isAlive());
-//        } else {
-//            MPView.getIdentifierView().showServerStatus(false);
-//        }
+        if (!HEADLESS) {
+            if (START_SERVER) {
+                MPServer serv = new MPServer();
+                serv.start();
+                MPView.getIdentifierView().showServerStatus(serv.isAlive());
+            } else {
+                MPView.getIdentifierView().showServerStatus(false);
+            }
+        }
         if (LocalSettings.getBooleanProperty(LocalSettings.OFFICE_USE)) {
             final Thread startServerThread;
 
@@ -805,45 +843,51 @@ public class Main extends SingleFrameApplication {
 
             new Thread(runnable1).start();
         }
-//        Scheduler.getInstance().start();
+        if (!HEADLESS) {
+            Scheduler.getInstance().start();
+        }
 
-//        if (!LocalSettings.getBooleanProperty(LocalSettings.SUPPRESS_UPDATE_CHECK)) {
-//            Runnable runnable = new Runnable() {
-//
-//                @Override
-//                public void run() {
-//                    if (checkUpdates()) {
-//                        MPView.addMessage(Messages.UPDATE_AVAILABLE);
-//                    }
-//                }
-//            };
-//
-//            new Thread(runnable).start();
-//        }
+        if (!HEADLESS) {
+            if (!LocalSettings.getBooleanProperty(LocalSettings.SUPPRESS_UPDATE_CHECK)) {
+                Runnable runnable = new Runnable() {
+
+                    @Override
+                    public void run() {
+                        if (checkUpdates()) {
+                            MPView.addMessage(Messages.UPDATE_AVAILABLE);
+                        }
+                    }
+                };
+
+                new Thread(runnable).start();
+            }
+        }
     }
 
     private void loadPlugins() {
-//        if (!removeplugs) {
-//            try {
-//                MPPLuginLoader.queuePlugins(MPView.getPluginLoader().getPlugins());
-//                MPView.getPluginLoader().loadPlugins();
-//            } catch (Exception e) {
-//                Log.Debug(e);
-//            }
-//        } else {
-//            try {
-//                List data = DatabaseObject.getReferencedObjects(mpv5.db.objects.User.getCurrentUser(), Context.getPluginsToUsers());
-//                for (int i = 0; i < data.size(); i++) {
-//                    try {
-//                        ((UserPlugin) data.get(i)).delete();
-//                    } catch (Exception e) {
-//                        Log.Debug(e);
-//                    }
-//                }
-//            } catch (NodataFoundException ex) {
-//                Log.Debug(Main.class, ex.getMessage());
-//            }
-//        }
+        if (!HEADLESS) {
+            if (!removeplugs) {
+                try {
+                    MPPLuginLoader.queuePlugins(MPView.getPluginLoader().getPlugins());
+                    MPView.getPluginLoader().loadPlugins();
+                } catch (Exception e) {
+                    Log.Debug(e);
+                }
+            } else {
+                try {
+                    List data = DatabaseObject.getReferencedObjects(mpv5.db.objects.User.getCurrentUser(), Context.getPluginsToUsers());
+                    for (int i = 0; i < data.size(); i++) {
+                        try {
+                            ((UserPlugin) data.get(i)).delete();
+                        } catch (Exception e) {
+                            Log.Debug(e);
+                        }
+                    }
+                } catch (NodataFoundException ex) {
+                    Log.Debug(Main.class, ex.getMessage());
+                }
+            }
+        }
     }
 
     private void login() throws NodataFoundException {

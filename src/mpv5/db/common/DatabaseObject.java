@@ -83,21 +83,26 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
      */
     public static class Entity<T extends Context, V> {
 
-        private T context;
-        private Integer ids;
+        private final DatabaseObject owner;
+
+        /**
+         * Create a new Entity, nulls not allowed
+         * @param owner
+         */
+        public Entity(DatabaseObject owner) {
+            this.owner = owner;
+        }
 
         /**
          * Create a new Entity, nulls not allowed
          * @param context
          * @param ids
          */
-        public Entity(T context, Integer ids) {
+        public Entity(T context, Integer ids) throws NodataFoundException {
             if (context == null || ids == null) {
                 throw new NullPointerException("ids");
             }
-
-            this.context = context;
-            this.ids = ids;
+            this.owner = getObject(context, ids);
         }
 
         /**
@@ -105,7 +110,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
          * @return
          */
         public T getKey() {
-            return context;
+            return (T) owner.context;
         }
 
         /**
@@ -113,7 +118,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
          * @return
          */
         public Integer getValue() {
-            return ids;
+            return owner.ids;
         }
 
         /**
@@ -137,14 +142,14 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
         @Override
         public int hashCode() {
             int hash = 3;
-            hash = 11 * hash + (this.context != null ? this.context.hashCode() : 0);
-            hash = 11 * hash + (this.ids != null ? this.ids.hashCode() : 0);
+            hash = 11 * hash + (this.owner.context != null ? this.owner.context.hashCode() : 0);
+            hash = 11 * hash + (this.owner.ids != null ? this.owner.ids.hashCode() : 0);
             return hash;
         }
 
         @Override
         public String toString() {
-            return context + " [" + ids + "]";
+            return owner.context + " [" + owner.ids + "]";
         }
     }
 
@@ -371,7 +376,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
     private Date dateadded = new Date(0);
     private transient DatabaseObjectLock LOCK = new DatabaseObjectLock(this);
     private Color color = Color.WHITE;
-    public Entity<Context, Integer> IDENTITY = new Entity<Context, Integer>(context, -1000);
+    public Entity<Context, Integer> IDENTITY = new Entity<Context, Integer>(this);
 
     public String __getCName() {
         return cname;
@@ -529,6 +534,11 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
     public void setIDS(int ids) {
         uncacheObject(this);
         this.ids = ids;
+
+        System.err.println("Setting ids!!!!!!!" + ids);
+        if (ids == 0) {
+            throw new RuntimeException("ahhhhhhhhhhhhhhhhhh");
+        }
     }
 
     /**
@@ -879,6 +889,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
         Object tempval;
         Method[] methods = this.getClass().getMethods();
         boolean annotated = false;
+
         for (int i = 0; i < this.getClass().getMethods().length; i++) {
             if ((methods[i].isAnnotationPresent(Persistable.class)
                     && methods[i].getAnnotation(Persistable.class).value()
@@ -952,15 +963,19 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
         }
         List<Method> vars = setVars();
         for (int i = 0; i < vars.size(); i++) {
-            try {
-                Log.Debug(this, "GetPanelData: " + vars.get(i).getName().toLowerCase().substring(3, vars.get(i).getName().length()) + "_ : " + source.getClass().getField(vars.get(i).getName().toLowerCase().substring(3, vars.get(i).getName().length()) + "_").
-                        getType().getName() + " [" + source.getClass().getField(vars.get(i).getName().toLowerCase().substring(3, vars.get(i).getName().length()) + "_").get(source) + "]");
-                vars.get(i).invoke(this, source.getClass().getField(vars.get(i).getName().toLowerCase().substring(3, vars.get(i).getName().length()) + "_").get(source));
-            } catch (java.lang.NoSuchFieldException nf) {
-                Log.Debug(this, "The view: " + source
-                        + " is missing a field: " + nf.getMessage());
-            } catch (Exception n) {
-                Log.Debug(this, n);
+
+            String fieldname = vars.get(i).getName().toLowerCase().substring(3, vars.get(i).getName().length()) + "_";
+            if (!fieldname.equals("ids_")) {
+                try {
+                    Log.Debug(this, "GetPanelData: " + fieldname + "_ : " + source.getClass().getField(fieldname).
+                            getType().getName() + " [" + source.getClass().getField(fieldname).get(source) + "]");
+                    vars.get(i).invoke(this, source.getClass().getField(fieldname).get(source));
+                } catch (java.lang.NoSuchFieldException nf) {
+                    Log.Debug(this, "The view: " + source.getClass()
+                            + " is missing a field: " + nf.getMessage());
+                } catch (Exception n) {
+                    Log.Debug(this, n);
+                }
             }
         }
 
@@ -971,6 +986,8 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
      * Injects this do into a Datapanel
      * Each of the DataPanel's fields wich has a name ending with underscore must match
      * one of the fields in this do child (without underscore)
+     *
+     * FIXME remove dependency on __set names
      * @param target
      */
     public void setPanelData(DataPanel target) {
@@ -1541,7 +1558,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
                     String name = select.getColumnnames()[j].toLowerCase();
 
                     for (int k = 0; k < methods.size(); k++) {
-                        if (!(methods.get(k).isAnnotationPresent(Persistable.class)
+                        if (name.equals("ids") || !(methods.get(k).isAnnotationPresent(Persistable.class)
                                 && !methods.get(k).getAnnotation(Persistable.class).value())) {
                             if (methods.get(k).getName().toLowerCase().substring(3).equals(name)) {
 
@@ -1552,7 +1569,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
                                 } else {
                                     valx = "NULL VALUE!";
                                 }
-//                             Log.Debug(DatabaseObject.class, "Explode: " + methods.get(k).toGenericString() + " with " + select.getData()[i][j] + "[" + valx + "]");
+//                                Log.Debug(DatabaseObject.class, "Explode: " + methods.get(k).toGenericString() + " with " + select.getData()[i][j] + "[" + valx + "]");
 //                            //End Debug Section
 
                                 if (select.getData()[i][j] != null) {
@@ -1583,6 +1600,8 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
                     Log.Debug(e);
                 }
             }
+
+            Log.Debug(dbo.getClass(), "Exploded " + dbo.IDENTITY);
         }
 
         return dos;
