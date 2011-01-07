@@ -19,7 +19,6 @@ package mpv5.utils.print;
 import com.sun.pdfview.PDFFile;
 import com.sun.pdfview.PDFPage;
 import com.sun.pdfview.PDFRenderer;
-import com.sun.pdfview.view.NoSuchPageException;
 import java.awt.Component;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -260,7 +259,7 @@ public class PrintJob2 {
                         } catch (InterruptedException ie) {
                         }
                         return PAGE_EXISTS;
-                    } catch (NoSuchPageException ex) {
+                    } catch (Exception ex) {
                         Log.Debug(ex);
                         return NO_SUCH_PAGE;
                     }

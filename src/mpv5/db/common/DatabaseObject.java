@@ -534,11 +534,6 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
     public void setIDS(int ids) {
         uncacheObject(this);
         this.ids = ids;
-
-        System.err.println("Setting ids!!!!!!!" + ids);
-        if (ids == 0) {
-            throw new RuntimeException("ahhhhhhhhhhhhhhhhhh");
-        }
     }
 
     /**

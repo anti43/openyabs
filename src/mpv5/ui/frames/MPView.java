@@ -910,7 +910,6 @@ public class MPView extends FrameView {
         jMenuItem46 = new javax.swing.JMenuItem();
         jMenu1 = new javax.swing.JMenu();
         jMenuItem42 = new javax.swing.JMenuItem();
-        jMenuItem43 = new javax.swing.JMenuItem();
         jMenuItem44 = new javax.swing.JMenuItem();
         favouritesMenu = new javax.swing.JMenu();
         jMenuItem5 = new javax.swing.JMenuItem();
@@ -1768,15 +1767,6 @@ public class MPView extends FrameView {
         });
         jMenu1.add(jMenuItem42);
 
-        jMenuItem43.setText(bundle.getString("MPView.jMenuItem43.text")); // NOI18N
-        jMenuItem43.setName("jMenuItem43"); // NOI18N
-        jMenuItem43.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenuItem43ActionPerformed(evt);
-            }
-        });
-        jMenu1.add(jMenuItem43);
-
         jMenuItem44.setText(bundle.getString("MPView.jMenuItem44.text")); // NOI18N
         jMenuItem44.setName("jMenuItem44"); // NOI18N
         jMenuItem44.addActionListener(new java.awt.event.ActionListener() {
@@ -2474,10 +2464,6 @@ public class MPView extends FrameView {
         MPControlPanel.instanceOf().openDetails(new ControlPanel_MailTemplates());
     }//GEN-LAST:event_jMenuItem42ActionPerformed
 
-    private void jMenuItem43ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem43ActionPerformed
-        Scheduler.getInstance().checkForOverdueEvents();
-    }//GEN-LAST:event_jMenuItem43ActionPerformed
-
     private void jMenuItem44ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem44ActionPerformed
         mpv5.usermanagement.Lock.lock(this.getFrame());
         User.getCurrentUser().logout();
@@ -2565,7 +2551,6 @@ public class MPView extends FrameView {
     private javax.swing.JMenuItem jMenuItem40;
     private javax.swing.JMenuItem jMenuItem41;
     private javax.swing.JMenuItem jMenuItem42;
-    private javax.swing.JMenuItem jMenuItem43;
     private javax.swing.JMenuItem jMenuItem44;
     private javax.swing.JMenuItem jMenuItem45;
     private javax.swing.JMenuItem jMenuItem46;

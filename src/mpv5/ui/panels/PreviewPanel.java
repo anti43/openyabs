@@ -3,7 +3,6 @@ package mpv5.ui.panels;
 import com.sun.pdfview.PDFFile;
 import com.sun.pdfview.PDFPage;
 import com.sun.pdfview.PagePanel;
-import com.sun.pdfview.view.ViewerPanel;
 import java.awt.BorderLayout;
 import java.awt.Cursor;
 import java.io.File;
@@ -78,7 +77,7 @@ public class PreviewPanel extends javax.swing.JPanel implements Waiter {
      * @param pdf
      */
     public void openPdf(File pdf) {
-        ViewerPanel vp;
+        PagePanel vp;
         if (pdf.isFile() && pdf.exists()) {
             try {
 
@@ -90,14 +89,13 @@ public class PreviewPanel extends javax.swing.JPanel implements Waiter {
                 channel.close();
                 raf.close();
 
-                vp = new ViewerPanel();
-                vp.loadFile(pdffile);
+                vp = new PagePanel() ;
 
                 ppanel.removeAll();
                 ppanel.add(vp, BorderLayout.CENTER);
                 ppanel.validate();
 
-                vp.showPage(1);
+                vp.showPage(pdffile.getPage(0));
             } catch (Exception ex) {
                 Log.Debug(ex);
             }
