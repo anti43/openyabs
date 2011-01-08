@@ -2060,7 +2060,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
      * Creates an Object Array out of all getters of this DO,
      * first column is a DatabaseObject.Entity to identify this DO
      * @param fieldCount Defines how many columns the resulting array shall have.
-     *                   The ordering is somewhat unpredictable, however the array will always start with [IDENTITY, cname, ...].
+     *                   The ordering is somewhat unpredictable, however the array will always start with [IDENTITY, ...].
      *                   A fieldcount below 2 is not allowed.
      * @param fields     You can specify as many fields you like to force *some* ordering of the resulting array.
      *                   Specified fields will appear BEFORE unspecified fields, however the ordering of the specified fields is not guaranteed.

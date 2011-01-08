@@ -235,9 +235,13 @@ public class Main extends SingleFrameApplication {
         }
     }
 
-    public static void extStart() throws Exception {
+    public static void extStart(String... args) throws Exception {
         HEADLESS = true;
-        main(new String[0]);
+        main(args);
+    }
+
+    public static void extShutdown(){
+        Main.getApplication().shutdown();
     }
     private File lockfile = new File(MPPATH + File.separator + "." + Constants.PROG_NAME + "." + "lck");
 

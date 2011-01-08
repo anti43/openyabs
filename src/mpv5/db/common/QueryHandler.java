@@ -35,10 +35,12 @@ import java.util.concurrent.ExecutionException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JFrame;
+import javax.swing.JProgressBar;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
+import junit.awtui.ProgressBar;
 import mpv5.db.objects.User;
 import mpv5.globals.Messages;
 import mpv5.globals.Constants;
@@ -68,6 +70,7 @@ import mpv5.utils.ui.TextFieldUtils;
 public class QueryHandler implements Cloneable {
 
     private static QueryHandler instance;
+    private static JProgressBar progressbar = new JProgressBar();
 
     private static class SQLWatch extends Thread {
 
@@ -267,7 +270,7 @@ public class QueryHandler implements Cloneable {
             for (int i = 0; i < conditionColumns.length; i++) {
                 String string = conditionColumns[i];
                 if (value instanceof String) {
-                    conds += " UPPER(" +string + ") LIKE '%" + String.valueOf(value).toUpperCase() + "%'  " + command + " ";
+                    conds += " UPPER(" + string + ") LIKE '%" + String.valueOf(value).toUpperCase() + "%'  " + command + " ";
                 } else if (value instanceof Date) {
                     conds += string + " = '" + DateConverter.getSQLDateString((Date) value) + "'  " + command + " ";
                 } else {
@@ -853,6 +856,14 @@ public class QueryHandler implements Cloneable {
     }
 
     /**
+     * Set a progressbar during database transactions
+     * @param progressBar
+     */
+    public static void setProgressbar(JProgressBar progressBar) {
+        progressbar = progressBar;
+    }
+
+    /**
      * This will flush the table of the current context, be careful!
      * This should never be triggered by a user, the user right will not be checked!
      * @param dbIdentity
@@ -913,7 +924,8 @@ public class QueryHandler implements Cloneable {
                     }
                     if (RUNNING_JOBS <= 1) {
                         comp.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
-                        MPView.setProgressReset();
+                        progressbar.setValue(0);
+                        progressbar.setIndeterminate(false);
                     }
                     RUNNING_JOBS--;
                 }
@@ -932,7 +944,7 @@ public class QueryHandler implements Cloneable {
             if (RUNNING_JOBS > 5) {
                 comp.setCursor(new Cursor(Cursor.WAIT_CURSOR));
             }
-            MPView.setProgressMaximumValue(RUNNING_JOBS);
+            progressbar.setMaximum(RUNNING_JOBS);
         }
     }
 
@@ -1038,7 +1050,7 @@ public class QueryHandler implements Cloneable {
             int oldValue = 0;
             while (true) {
                 if (RUNNING_JOBS != oldValue) {
-                    MPView.setProgressValue(RUNNING_JOBS);
+                    progressbar.setValue(RUNNING_JOBS);
                     oldValue = RUNNING_JOBS;
                 }
                 try {
@@ -2369,7 +2381,7 @@ public class QueryHandler implements Cloneable {
             Log.Debug(this, query);
             while (rs.next()) {
 
-                MPView.setProgressMaximumValue(rs.getInt(2));
+                progressbar.setMaximum(rs.getInt(2));
                 byte[] buffer = new byte[1024];
                 File f = FileDirectoryHandler.getTempFile();
                 BufferedInputStream inputStream = new BufferedInputStream(rs.getBinaryStream(1), 1024);
@@ -2382,12 +2394,13 @@ public class QueryHandler implements Cloneable {
                     if (readBytes != -1) {
                         outputStream.write(buffer, 0, readBytes);
                     }
-                    MPView.setProgressValue(read);
+                    progressbar.setValue(read);
                 }
                 inputStream.close();
                 outputStream.close();
                 list.add(f);
-                MPView.setProgressReset();
+                progressbar.setValue(0);
+                progressbar.setIndeterminate(false);
             }
 
         } catch (SQLException ex) {
@@ -2575,7 +2588,8 @@ public class QueryHandler implements Cloneable {
                 Log.Debug(this, ex);
                 Popup.error(ex);
             } finally {
-                MPView.setProgressReset();
+                progressbar.setValue(0);
+                progressbar.setIndeterminate(false);
             }
             return null;
         }
@@ -2605,9 +2619,10 @@ public class QueryHandler implements Cloneable {
                     int progress = (Integer) evt.getNewValue();
                     Log.Debug(this, "Progress changed to: " + progress);
                     if (progress == 0) {
-                        MPView.setProgressRunning(true);
+                        progressbar.setIndeterminate(true);
                     } else if (progress == 100) {
-                        MPView.setProgressReset();
+                        progressbar.setValue(0);
+                        progressbar.setIndeterminate(false);
                     }
                 }
             }
@@ -2655,7 +2670,8 @@ public class QueryHandler implements Cloneable {
                         sqlConn.commit();
                     }
                 } catch (Exception ex) {
-                    MPView.setProgressReset();
+                    progressbar.setValue(0);
+                    progressbar.setIndeterminate(false);
                     Log.Debug(this, "Datenbankfehler: " + query);
                     Log.Debug(this, ex);
                     Popup.error(ex);
@@ -2707,9 +2723,10 @@ public class QueryHandler implements Cloneable {
 
                     Log.Debug(this, "Progress changed to: " + evt.getNewValue());
                     if (StateValue.STARTED == evt.getNewValue()) {
-                        MPView.setProgressRunning(true);
+                        progressbar.setIndeterminate(true);
                     } else if (StateValue.DONE == evt.getNewValue()) {
-                        MPView.setProgressReset();
+                        progressbar.setValue(0);
+                        progressbar.setIndeterminate(false);
                     }
                 }
             }

@@ -36,7 +36,7 @@ public class SplashScreen extends javax.swing.JFrame {
      */
     public SplashScreen(ImageIcon imageIcon) {
         initComponents();
-        if (!Main.HEADLESS) {
+//        if (!Main.HEADLESS) {
             setTitle("Yabs start...");
             jPanel1.setOpaque(false);
             setInfo(Constants.VERSION);
@@ -48,7 +48,7 @@ public class SplashScreen extends javax.swing.JFrame {
             new Position(this);
             setAlwaysOnTop(Log.getLoglevel() == Log.LOGLEVEL_NONE);
             setVisible(rootPaneCheckingEnabled);
-        }
+//        }
     }
 
     /** This method is called from within the constructor to
@@ -211,13 +211,13 @@ public class SplashScreen extends javax.swing.JFrame {
 
             @Override
             public void run() {
-                if (!Main.HEADLESS) {
+//                if (!Main.HEADLESS) {
                     setProgress(message);
                     jProgressBar1.setValue(progressSteps);
                     progressSteps += progressSteps;
-                } else {
-                    Log.Debug(this, message + " [" + progressSteps + "]");
-                }
+//                } else {
+//                    Log.Debug(this, message + " [" + progressSteps + "]");
+//                }
             }
         };
         SwingUtilities.invokeLater(runnable);

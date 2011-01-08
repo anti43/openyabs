@@ -62,7 +62,7 @@ public class FileExecutor {
             pw = User.getCurrentUser().getProperties().getProperty("cmdpassword");
         }
         if (pw != null) {
-            String script = " #!/usr/bin/expect -f" + "\n"
+            String script = "#!/usr/bin/expect -d" + "\n"
                     + "set password " + pw + "\n"
                     + "set timeout -1" + "\n"
                     + "spawn ssh root@localhost \"" + command + "\"" + "\n"
@@ -77,11 +77,12 @@ public class FileExecutor {
             frw.writeOnce(script);
             rw.setExecutable(true);
             command = rw.getPath();
+            Log.Debug(FileExecutor.class, "Running script: " + rw);
         }
 
         String output = null;
         File workDir = new File(Main.MPPATH);
-        Log.Print(command);
+        Log.Debug(FileExecutor.class, command);
         try {
             Process p = Runtime.getRuntime().exec(command, null, workDir);
             Main.addProcessToClose(p);
