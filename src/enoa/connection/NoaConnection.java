@@ -230,13 +230,13 @@ public class NoaConnection {
                 + "-nolockcheck" + " "
                 + "-nocrashreport" + " "
                 + "-nodefault" + " "
-                + "-accept=socket,host=0.0.0.0,port=" + port + ";urp;StarOffice.Service";
+                + "-accept='socket,host=0.0.0.0,port=" + port + ";urp;StarOffice.Service'";
 
         try {
             SocketAddress addr = new InetSocketAddress("127.0.0.1", port);
             Socket socket = new Socket();
             socket.connect(addr, 100);
-            throw new UnsupportedOperationException("Port " + port + " is already in use :-/. Not going to start OO here.");
+            throw new UnsupportedOperationException("Port " + port + " is already in use! Not going to start OO here.");
         } catch (IOException iOException) {
             //nothing is running here
         }

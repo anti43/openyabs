@@ -1596,7 +1596,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
                 }
             }
 
-            Log.Debug(dbo.getClass(), "Exploded " + dbo.IDENTITY);
+//            Log.Debug(dbo.getClass(), "Exploded " + dbo.IDENTITY);
         }
 
         return dos;

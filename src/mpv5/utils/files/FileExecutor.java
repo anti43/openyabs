@@ -14,6 +14,8 @@ import mpv5.logging.Log;
  */
 public class FileExecutor {
 
+    public static String SINGLEQUOTE_MAY = "<sqm>";
+
     /**
      * Runs a command, blocking, in the yabs home directory, with sudo if root password is available and os is unix
      * @param command
@@ -55,30 +57,42 @@ public class FileExecutor {
     private static void runUnix(String command) {
 
         String pw = null;
-        if (!LocalSettings.getProperty(LocalSettings.CMD_PASSWORD).equals("null") &&
-                LocalSettings.getProperty(LocalSettings.CMD_PASSWORD).length() > 0) {
-            pw = LocalSettings.getProperty("cmdpassword");
-        } else if (User.getCurrentUser().getProperties().hasProperty("cmdpassword")) {
-            pw = User.getCurrentUser().getProperties().getProperty("cmdpassword");
+        String usr = null;
+        if (!LocalSettings.getProperty(LocalSettings.CMD_PASSWORD).equals("null")
+                && LocalSettings.getProperty(LocalSettings.CMD_PASSWORD).length() > 0) {
+            pw = LocalSettings.getProperty(LocalSettings.CMD_PASSWORD);
+        } else if (User.getCurrentUser().getProperties().hasProperty(LocalSettings.CMD_PASSWORD)) {
+            pw = User.getCurrentUser().getProperties().getProperty(LocalSettings.CMD_PASSWORD);
         }
+        if (!LocalSettings.getProperty(LocalSettings.CMD_USER).equals("null")
+                && LocalSettings.getProperty(LocalSettings.CMD_USER).length() > 0) {
+            usr = LocalSettings.getProperty(LocalSettings.CMD_USER);
+        } else if (User.getCurrentUser().getProperties().hasProperty(LocalSettings.CMD_USER)) {
+            usr = User.getCurrentUser().getProperties().getProperty(LocalSettings.CMD_USER);
+        }
+
+        String script = null;
         if (pw != null) {
-            String script = "#!/usr/bin/expect -d" + "\n"
+            script = "#!/usr/bin/expect " + ((Log.getLoglevel() == Log.LOGLEVEL_DEBUG) ? "-d" : "") + "\n"
                     + "set password " + pw + "\n"
                     + "set timeout -1" + "\n"
-                    + "spawn ssh root@localhost \"" + command + "\"" + "\n"
+                    + "spawn su - " + (usr != null ? usr : "root") + " -c \"" + command + "\"" + "\n"
                     + "match_max 100000" + "\n"
-                    + "expect \"*?assword:*\"" + "\n"
+                    + "expect \"*?asswor?:*\"" + "\n"
                     + "send -- \"$password\\r\"" + "\n"
                     + "send -- \"\\r\"" + "\n"
                     + "expect eof";
-
-            File rw = FileDirectoryHandler.getTempFile("sh");
-            FileReaderWriter frw = new FileReaderWriter(rw);
-            frw.writeOnce(script);
-            rw.setExecutable(true);
-            command = rw.getPath();
-            Log.Debug(FileExecutor.class, "Running script: " + rw);
+        } else {
+            script = "#!/bin/bash " + "\n"
+                    + command + "\n";
         }
+        File rw = FileDirectoryHandler.getTempFile("sh");
+        FileReaderWriter frw = new FileReaderWriter(rw);
+        frw.writeOnce(script);
+        rw.setExecutable(true);
+        command = rw.getPath();
+        Log.Debug(FileExecutor.class, "Running script: " + script);
+
 
         String output = null;
         File workDir = new File(Main.MPPATH);
