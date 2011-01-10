@@ -109,8 +109,8 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
          * Returns the Context corresponding to this entry, never null
          * @return
          */
-        public T getKey() {
-            return (T) owner.context;
+        public Context getKey() {
+            return owner.context;
         }
 
         /**

@@ -46,7 +46,7 @@ public class FileReaderWriter {
     private FileWriter fw;
     private BufferedWriter bw;
     private String zeilenumbruch = "\r\n";
-    private Charset charset = null;
+    private Charset charset = Charset.forName("UTF-8") ;
 
     /**
      * A reader/writer helper class for textfiles

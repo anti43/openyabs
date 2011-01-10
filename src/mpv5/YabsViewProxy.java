@@ -12,6 +12,7 @@ import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JProgressBar;
 import mpv5.db.common.DatabaseObject;
+import mpv5.logging.Log;
 import mpv5.pluginhandling.MPPLuginLoader;
 import mpv5.ui.dialogs.DialogForFile;
 import mpv5.ui.panels.DataPanel;
@@ -33,6 +34,7 @@ public class YabsViewProxy implements YabsView {
     }
 
     public synchronized void register(YabsView view) {
+        Log.Print("Registering " + view.getClass());
         views.addLast(view);
     }
 

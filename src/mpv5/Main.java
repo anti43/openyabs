@@ -221,14 +221,13 @@ public class Main {
         }
     }
 
-    public static void extStart(String... args) throws Exception {
-        HEADLESS = true;
+    public static void extStart(Class app, String... args) throws Exception {
+        APPLICATION_CLASS = app;
         main(args);
     }
-
-    public static void extShutdown() {
-        getApplication().exit();
-    }
+//    public static void extShutdown() {
+//        getApplication().exit();
+//    }
     private File lockfile = new File(MPPATH + File.separator + "." + Constants.PROG_NAME + "." + "lck");
 
     /**
@@ -243,7 +242,7 @@ public class Main {
             @Override
             public void run() {
                 try {
-                    SingleFrameApplication.launch(getApplication().getClass(), new String[]{});
+                    SingleFrameApplication.launch(APPLICATION_CLASS, new String[]{});
                 } catch (Exception e) {
                     Log.Debug(e);
                 }
@@ -267,7 +266,7 @@ public class Main {
     /**
      * The Yabs Application (JSAF)
      */
-    public static SingleFrameApplication APPLICATION = new YabsApplication();
+    public static Class APPLICATION_CLASS;
     /**
      * The Yabs View (JSAF FrameView)
      */
@@ -283,7 +282,7 @@ public class Main {
         Main.splash.nextStep(Messages.INIT_GUI.toString());
         if (!HEADLESS) {
 
-            getApplication().show(new MPView(APPLICATION));
+            getApplication().show(new MPView(getApplication()));
             YabsViewProxy.instance().register((YabsView) getApplication().getMainView());
             VIEW = (YabsView) getApplication().getMainView();
         }
@@ -380,6 +379,9 @@ public class Main {
      */
     public static void main(String[] args) throws Exception {
         INSTANTIATED = true;
+        if (APPLICATION_CLASS == null) {//fallback
+            APPLICATION_CLASS = YabsApplication.class;
+        }
 
         try {
             splash = new SplashScreen(new ImageIcon(Main.class.getResource(mpv5.globals.Constants.SPLASH_IMAGE)));
@@ -909,8 +911,9 @@ public class Main {
         }
     }
 
+    @SuppressWarnings("unchecked")
     public static SingleFrameApplication getApplication() {
-        return APPLICATION;
+        return (SingleFrameApplication) SingleFrameApplication.getInstance(APPLICATION_CLASS);
     }
 
     public static YabsView getView() {

@@ -1,24 +1,23 @@
 
 /*
-*  This file is part of YaBS.
-*
-*  YaBS is free software: you can redistribute it and/or modify
-*  it under the terms of the GNU General Public License as published by
-*  the Free Software Foundation, either version 3 of the License, or
-*  (at your option) any later version.
-*
-*  YaBS is distributed in the hope that it will be useful,
-*  but WITHOUT ANY WARRANTY; without even the implied warranty of
-*  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-*  GNU General Public License for more details.
-*
-*  You should have received a copy of the GNU General Public License
-*  along with YaBS.  If not, see <http://www.gnu.org/licenses/>.
+ *  This file is part of YaBS.
+ *
+ *  YaBS is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  YaBS is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with YaBS.  If not, see <http://www.gnu.org/licenses/>.
  */
 package mpv5.utils.xml;
 
 //~--- non-JDK imports --------------------------------------------------------
-
 import mpv5.data.PropertyStore;
 
 import mpv5.db.common.Context;
@@ -37,7 +36,10 @@ import org.jdom.input.SAXBuilder;
 //~--- JDK imports ------------------------------------------------------------
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileReader;
 import java.io.IOException;
+import java.nio.charset.Charset;
 
 import java.util.ArrayList;
 import java.util.Hashtable;
@@ -49,9 +51,10 @@ import java.util.Vector;
  *
  */
 public class XMLReader {
-    private Element  rootElement       = new Element(mpv5.globals.Constants.XML_ROOT);
-    private boolean  overwriteExisting = false;
-    private Document myDocument        = new Document();
+
+    private Element rootElement = new Element(mpv5.globals.Constants.XML_ROOT);
+    private boolean overwriteExisting = false;
+    private Document myDocument = new Document();
 
     /**
      *
@@ -59,7 +62,8 @@ public class XMLReader {
      * @return
      */
     public Element getSubRootElement(String name) {
-        @SuppressWarnings("unchecked") List<Element> l = rootElement.getContent(new ElementFilter());
+        @SuppressWarnings("unchecked")
+        List<Element> l = rootElement.getContent(new ElementFilter());
 
         for (int i = 0; i < l.size(); i++) {
             Element element = l.get(i);
@@ -105,7 +109,8 @@ public class XMLReader {
      * @return The value of the element
      */
     public String getElement(String type, String nodename, String attributevalue, String name) {
-        @SuppressWarnings("unchecked") List<Element> list = (List<Element>) rootElement.getChild(type).getContent();
+        @SuppressWarnings("unchecked")
+        List<Element> list = (List<Element>) rootElement.getChild(type).getContent();
 
         for (int i = 0; i < list.size(); i++) {
             if (list.get(i) instanceof Element) {
@@ -126,14 +131,15 @@ public class XMLReader {
      * @return
      * @throws Exception
      */
-    @SuppressWarnings({ "unchecked" })
+    @SuppressWarnings({"unchecked"})
     public synchronized <T extends DatabaseObject> ArrayList<T> getObjects(T template) throws Exception {
         Log.Debug(this, "Looking for: " + template.getDbIdentity());
 
-        String                                       ident   = template.getType();
-        ArrayList<DatabaseObject>                    arrlist = new ArrayList<DatabaseObject>();
-        @SuppressWarnings("unchecked") List<Element> list    =
-            (List<Element>) rootElement.getChild(template.getDbIdentity()).getContent(new ElementFilter());
+        String ident = template.getType();
+        ArrayList<DatabaseObject> arrlist = new ArrayList<DatabaseObject>();
+        @SuppressWarnings("unchecked")
+        List<Element> list =
+                (List<Element>) rootElement.getChild(template.getDbIdentity()).getContent(new ElementFilter());
 
         Log.Debug(this, "Found items: " + list.size());
 
@@ -142,15 +148,15 @@ public class XMLReader {
 
 //              Log.Debug(this, "Found item: " + list.get(i).getName());
                 if (list.get(i).getName().equals(ident)) {
-                    Element        element = list.get(i);
-                    DatabaseObject obj     = template.clone();
+                    Element element = list.get(i);
+                    DatabaseObject obj = template.clone();
 
                     obj.parse(toHashTable(element));
 
                     if (isOverwriteExisting() && (list.get(i).getAttribute("id") != null)) {
                         obj.setIDS(Integer.valueOf(list.get(i).getAttribute("id").getValue()));
                         Log.Debug(this,
-                                  "Overwriting/updating dataset id " + obj.getDbIdentity() + ": " + obj.__getIDS());
+                                "Overwriting/updating dataset id " + obj.getDbIdentity() + ": " + obj.__getIDS());
                     } else {
                         obj.ensureUniqueness();
                     }
@@ -169,14 +175,14 @@ public class XMLReader {
      * @return
      */
     public synchronized ArrayList<ArrayList<DatabaseObject>> getObjects() {
-        ArrayList<Context>                   c        = Context.getImportableContexts();
-        ArrayList<ArrayList<DatabaseObject>> t        = new ArrayList<ArrayList<DatabaseObject>>();
-        DatabaseObject                       template = null;
-        Context                              context  = null;
+        ArrayList<Context> c = Context.getImportableContexts();
+        ArrayList<ArrayList<DatabaseObject>> t = new ArrayList<ArrayList<DatabaseObject>>();
+        DatabaseObject template = null;
+        Context context = null;
 
         for (int i = 0; i < c.size(); i++) {
             try {
-                context  = c.get(i);
+                context = c.get(i);
                 template = DatabaseObject.getObject(context);
                 t.add(getObjects(template));
             } catch (Exception ignore) {
@@ -192,8 +198,9 @@ public class XMLReader {
      * @param nodename
      */
     public void print(String nodename) {
-        @SuppressWarnings("unchecked") List<Element> list =
-            (List<Element>) rootElement.getChild(nodename).getContent(new ElementFilter());
+        @SuppressWarnings("unchecked")
+        List<Element> list =
+                (List<Element>) rootElement.getChild(nodename).getContent(new ElementFilter());
 
         for (int i = 0; i < list.size(); i++) {
             Element element = list.get(i);
@@ -211,15 +218,17 @@ public class XMLReader {
      * @return
      */
     public synchronized PropertyStore readInto(String type, String nodename, String nodeid, PropertyStore store) {
-        @SuppressWarnings("unchecked") List<Element> list =
-            (List<Element>) rootElement.getChild(type).getContent(new ElementFilter());
+        @SuppressWarnings("unchecked")
+        List<Element> list =
+                (List<Element>) rootElement.getChild(type).getContent(new ElementFilter());
 
         for (int i = 0; i < list.size(); i++) {
             Element element = list.get(i);
 
             if (element.getName().equals(nodename) && element.getAttribute("id").getValue().equals(nodeid)) {
-                @SuppressWarnings("unchecked") List<Element> list2 =
-                    (List<Element>) element.getContent(new ElementFilter());
+                @SuppressWarnings("unchecked")
+                List<Element> list2 =
+                        (List<Element>) element.getContent(new ElementFilter());
 
                 for (int j = 0; j < list2.size(); j++) {
                     Element element1 = list2.get(j);
@@ -239,8 +248,9 @@ public class XMLReader {
      * @return
      */
     public synchronized List<PropertyStore> readInto(String type, String nodename) {
-        @SuppressWarnings("unchecked") List<Element> list =
-            (List<Element>) rootElement.getChild(type).getContent(new ElementFilter());
+        @SuppressWarnings("unchecked")
+        List<Element> list =
+                (List<Element>) rootElement.getChild(type).getContent(new ElementFilter());
         List<PropertyStore> plist = new Vector<PropertyStore>();
 
         for (int i = 0; i < list.size(); i++) {
@@ -254,12 +264,11 @@ public class XMLReader {
                 try {
                     st.addProperty("nodename", element.getAttribute("name").getValue());
                 } catch (Exception e) {
-
                     // name not mandatory
                 }
-
-                @SuppressWarnings("unchecked") List<Element> list2 =
-                    (List<Element>) element.getContent(new ElementFilter());
+                @SuppressWarnings("unchecked")
+                List<Element> list2 =
+                        (List<Element>) element.getContent(new ElementFilter());
 
                 for (int j = 0; j < list2.size(); j++) {
                     Element element1 = list2.get(j);
@@ -275,9 +284,12 @@ public class XMLReader {
     }
 
     private Document createDocument(File xmlfile, boolean validate) throws JDOMException, IOException {
-        SAXBuilder parser = new SAXBuilder(validate);
 
-        myDocument  = parser.build(xmlfile);
+        SAXBuilder parser = new SAXBuilder(validate);
+        FileReader fis = new FileReader(xmlfile);
+        Log.Debug(this, "Reading Document: " + xmlfile + " using encoding: " + fis.getEncoding());
+
+        myDocument = parser.build(fis);
         rootElement = myDocument.getRootElement();
 
         if (validate) {
@@ -294,8 +306,9 @@ public class XMLReader {
      * @return
      */
     public synchronized Hashtable<String, Object> toHashTable(Element node) {
-        @SuppressWarnings("unchecked") List<Element> liste = node.getChildren();
-        Hashtable<String, Object>                    table = new Hashtable<String, Object>();
+        @SuppressWarnings("unchecked")
+        List<Element> liste = node.getChildren();
+        Hashtable<String, Object> table = new Hashtable<String, Object>();
 
         for (int i = 0; i < liste.size(); i++) {
             Element element = liste.get(i);
@@ -313,7 +326,8 @@ public class XMLReader {
      * @return
      */
     public String[][] toArray(Element node) {
-        @SuppressWarnings("unchecked") List<Element> liste = node.getContent(new ElementFilter());
+        @SuppressWarnings("unchecked")
+        List<Element> liste = node.getContent(new ElementFilter());
 
         Log.Debug(this, liste.size() + " elements found in " + node);
 
@@ -324,8 +338,8 @@ public class XMLReader {
 
             table[i][0] = element.getName();
             table[i][1] = element.getValue();
-
-            @SuppressWarnings("unchecked") List<Attribute> atts = element.getAttributes();
+            @SuppressWarnings("unchecked")
+            List<Attribute> atts = element.getAttributes();
 
             for (int j = 2; j < atts.size() + 2; j++) {
                 Attribute a = atts.get(j - 2);
@@ -354,3 +368,4 @@ public class XMLReader {
 
 
 //~ Formatted by Jindent --- http://www.jindent.com
+

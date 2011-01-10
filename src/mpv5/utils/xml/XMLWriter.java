@@ -208,6 +208,7 @@ public class XMLWriter {
     }
 
     public void createOrReplace(File file) throws Exception {
+
         FileWriter fw = null;
 
         if (file.exists()) {
@@ -219,6 +220,7 @@ public class XMLWriter {
             fw = new FileWriter(file);
         }
 
+        Log.Debug(this, "Writing Document: " + file + " using encoding: " + fw.getEncoding());
         XMLOutputter outputter = new XMLOutputter(Format.getPrettyFormat());
 
         outputter.output(myDocument, fw);
