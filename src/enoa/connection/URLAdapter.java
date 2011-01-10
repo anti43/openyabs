@@ -4,9 +4,9 @@
  * ------------------------------------------------------------------------ *
  *                                                                          *
  * The Contents of this file are made available subject to                  *
- * the terms of GNU Lesser General Public License Version 2.1.              *
+ * the terms of GNU General Public License Version 2.1.              *
  *                                                                          * 
- * GNU Lesser General Public License Version 2.1                            *
+ * GNU General Public License Version 2.1                            *
  * ======================================================================== *
  * Copyright 2003-2006 by IOn AG                                            *
  *                                                                          *
