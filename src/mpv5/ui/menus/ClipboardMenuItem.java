@@ -37,7 +37,7 @@ public class ClipboardMenuItem extends JMenuItem {
         addActionListener(new java.awt.event.ActionListener() {
             @Override
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                 MPView.getIdentifierView().getCurrentTab().paste(dbo);
+                 mpv5.YabsViewProxy.instance().getIdentifierView().getCurrentTab().paste(dbo);
             }
         });
 

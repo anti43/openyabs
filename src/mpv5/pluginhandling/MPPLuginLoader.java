@@ -41,6 +41,7 @@ import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
+import mpv5.Main;
 import mpv5.db.common.Context;
 import mpv5.db.common.NodataFoundException;
 import mpv5.db.common.QueryCriteria;
@@ -85,7 +86,7 @@ public class MPPLuginLoader {
     }
 
     public static void importPlugin(String name, File file) throws FileNotFoundException {
-        MPView.setWaiting(true);
+        mpv5.YabsViewProxy.instance().setWaiting(true);
         try {
             MP5Plugin pl = new MPPLuginLoader().checkPlugin(file);
             try {
@@ -105,9 +106,9 @@ public class MPPLuginLoader {
                 }
             }
         } catch (FileNotFoundException fileNotFoundException) {
-            Popup.error(MPView.identifierFrame, "Your database seems slow, try again :-/");
+            Popup.error(mpv5.Main.getApplication().getMainFrame(), "Your database seems slow, try again :-/");
         } finally {
-            MPView.setWaiting(false);
+            mpv5.YabsViewProxy.instance().setWaiting(false);
         }
     }
 
@@ -116,7 +117,7 @@ public class MPPLuginLoader {
      * does NOT call plugin.load()
      * @return An array of instantiated plugins
      */
-    public MP5Plugin[] getPlugins() {
+    public static MP5Plugin[] getPlugins() {
 
         ArrayList<MP5Plugin> list = null;
 
@@ -130,17 +131,17 @@ public class MPPLuginLoader {
                 for (int i = 0; i < data.size(); i++) {
                     UserPlugin up = data.get(i);
                     Plugin o = ((Plugin) DatabaseObject.getObject(Context.getPlugins(), up.__getPluginsids()));
-                    Log.Debug(this, "Found Plugin: " + o);
+                    Log.Debug(MPPLuginLoader.class, "Found Plugin: " + o);
                     if (!isCachedPlugin(o.__getFilename())) {
-                        Log.Debug(this, "Caching plugin: " + pluginSignature.replace("%%filename%%", o.__getFilename()));
+                        Log.Debug(MPPLuginLoader.class, "Caching plugin: " + pluginSignature.replace("%%filename%%", o.__getFilename()));
                         jars.add(QueryHandler.instanceOf().clone(Context.getFiles()).retrieveFile(o.__getFilename(), new File(pluginSignature.replace("%%filename%%", o.__getFilename()))));
                     } else {
-                        Log.Debug(this, "Using cached plugin: " + pluginSignature.replace("%%filename%%", o.__getFilename()));
+                        Log.Debug(MPPLuginLoader.class, "Using cached plugin: " + pluginSignature.replace("%%filename%%", o.__getFilename()));
                         jars.add(new File(pluginSignature.replace("%%filename%%", o.__getFilename())));
                     }
                 }
             } catch (NodataFoundException ex) {
-                Log.Debug(this, "No plugins found: " + ex.getMessage());
+                Log.Debug(MPPLuginLoader.class, "No plugins found: " + ex.getMessage());
             }
 
             for (int i = 0; i < jars.size(); i++) {
@@ -163,9 +164,9 @@ public class MPPLuginLoader {
      * @param filename
      * @return false if the file DOES NOT EXIST in the plugin cache directory, true otherwise
      */
-    public boolean isCachedPlugin(String filename) {
+    public static boolean isCachedPlugin(String filename) {
         File f = new File(pluginSignature.replace("%%filename%%", filename));
-        Log.Debug(this, "Checking cache for " + filename);
+        Log.Debug(MPPLuginLoader.class, "Checking cache for " + filename);
         return f.exists() && f.canRead() && (checkPlugin(f) != null);
     }
 
@@ -174,10 +175,10 @@ public class MPPLuginLoader {
      * @param pluginCandidate
      * @return the plugin if <code>Constants.PLUGIN_LOAD_CLASS<code/> could be instantiated from this file
      */
-    public MP5Plugin checkPlugin(File pluginCandidate) {
+    public static MP5Plugin checkPlugin(final File pluginCandidate) {
         try {
             URL[] urls = {new URL("jar:file:" + pluginCandidate + "!/")};
-            URLClassLoader loader = new AddURLClassLoader(urls, this.getClass().getClassLoader());
+            URLClassLoader loader = new AddURLClassLoader(urls, Main.getApplication().getClass().getClassLoader());
             Class c = loader.loadClass(Constants.PLUGIN_LOAD_CLASS);
             Object o = c.newInstance();
             return (MP5Plugin) o;
@@ -188,7 +189,10 @@ public class MPPLuginLoader {
         }
     }
 
-    public class AddURLClassLoader extends URLClassLoader {
+    /**
+     * A nifty classloader
+     */
+    public static class AddURLClassLoader extends URLClassLoader {
 
         public AddURLClassLoader(URL[] urls, ClassLoader parent) {
             super(urls, parent);
@@ -220,7 +224,7 @@ public class MPPLuginLoader {
     /**
      * Load all queued plugins
      */
-    public void loadPlugins() {
+    public static void loadPlugins() {
         for (int i = 0; i < pluginstoBeLoaded.size(); i++) {
             MP5Plugin mP5Plugin = pluginstoBeLoaded.get(i);
             loadPlugin(mP5Plugin);
@@ -233,8 +237,8 @@ public class MPPLuginLoader {
      * Use {@link loadPlugin(MP5Plugin)} instead.
      * @param plugins
      */
-    public static void queuePlugins(MP5Plugin[] plugins) {
-        pluginstoBeLoaded.addAll(Arrays.asList(plugins));
+    public static void queuePlugins() {
+        pluginstoBeLoaded.addAll(Arrays.asList(getPlugins()));
     }
     private static ArrayList<MP5Plugin> pluginstoBeLoaded = new ArrayList<MP5Plugin>();
 
@@ -242,18 +246,18 @@ public class MPPLuginLoader {
      * Unloads the plugin and notifies the main view about the unload
      * @param mP5Plugin
      */
-    public void unLoadPlugin(MP5Plugin mP5Plugin) {
+    public static void unLoadPlugin(MP5Plugin mP5Plugin) {
         mP5Plugin.unload();
         loadedPlugs.remove(mP5Plugin.getUID());
-        Component[] c = MPView.getIdentifierView().getPluginIcons().getComponents();
-        for (int i = 0; i < c.length; i++) {
-            Component component = c[i];
-            if (((JLabel) component).getToolTipText().contains(String.valueOf(mP5Plugin.getUID()))) {
-                MPView.getIdentifierView().getPluginIcons().remove(component);
-            }
-        }
-        MPView.getIdentifierFrame().validate();
-        MPView.getIdentifierFrame().repaint();
+//        Component[] c = mpv5.YabsViewProxy.instance().getIdentifierView().getPluginIcons().getComponents();
+//        for (int i = 0; i < c.length; i++) {
+//            Component component = c[i];
+//            if (((JLabel) component).getToolTipText().contains(String.valueOf(mP5Plugin.getUID()))) {
+////                mpv5.YabsViewProxy.instance().getIdentifierView().getPluginIcons().remove(component);
+//            }
+//        }
+        mpv5.YabsViewProxy.instance().getIdentifierFrame().validate();
+        mpv5.YabsViewProxy.instance().getIdentifierFrame().repaint();
         mP5Plugin = null;
         System.gc();
     }
@@ -278,21 +282,21 @@ public class MPPLuginLoader {
      * If it is a <code>Runnable<code/>, it will be started on an new thread.
      * @param mP5Plugin
      */
-    public void loadPlugin(final MP5Plugin mP5Plugin) {
+    public static void loadPlugin(final MP5Plugin mP5Plugin) {
         if (!loadedPlugs.contains(mP5Plugin.getUID()) && mP5Plugin.isEnabled()) {
             loadedPlugs.add(mP5Plugin.getUID());
             final JLabel plab = new JLabel();
             plab.setDisabledIcon(new MPIcon(MPPLuginLoader.getErrorImage()).getIcon(18));
             try {
-                mP5Plugin.load(MPView.getIdentifierView());
+                mP5Plugin.load(mpv5.YabsViewProxy.instance().getIdentifierView());
 
                 if (mP5Plugin instanceof DatabaseObjectModifier) {
-                    Log.Debug(this, "Register modifying plugins: " + mP5Plugin);
+                    Log.Debug(MPPLuginLoader.class, "Register modifying plugins: " + mP5Plugin);
                     registeredModifiers.add((DatabaseObjectModifier) mP5Plugin);
                 }
 
                 if (mP5Plugin.isComponent()) {
-                    MPView.getIdentifierView().addTab((JComponent) mP5Plugin, mP5Plugin.getName());
+                    mpv5.YabsViewProxy.instance().getIdentifierView().addTab((JComponent) mP5Plugin, mP5Plugin.getName());
                 }
                 if (mP5Plugin.isRunnable() && mP5Plugin.isLoaded()) {
                     Thread t = new Thread((Runnable) mP5Plugin);
@@ -324,14 +328,14 @@ public class MPPLuginLoader {
                         }
                     }
                 });
-                MPView.getIdentifierView().getPluginIcons().add(plab);
+//                mpv5.YabsViewProxy.instance().getIdentifierView().getPluginIcons().add(plab);
             } catch (Exception e) {
                 Log.Debug(e);
                 plab.setEnabled(false);
             }
         } else {
             Popup.notice(Messages.NOT_POSSIBLE + "\n" + mP5Plugin + " is already loaded and doesn't allow multiple instances.");
-            Log.Debug(this, "Plugin does not allow multiple instances: " + mP5Plugin);
+            Log.Debug(MPPLuginLoader.class, "Plugin does not allow multiple instances: " + mP5Plugin);
         }
     }
 

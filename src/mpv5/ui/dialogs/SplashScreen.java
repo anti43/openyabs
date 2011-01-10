@@ -14,6 +14,7 @@ import java.awt.Graphics;
 import java.awt.Image;
 import javax.swing.GrayFilter;
 import javax.swing.ImageIcon;
+import javax.swing.JDialog;
 import javax.swing.SwingUtilities;
 import mpv5.Main;
 import mpv5.globals.Constants;
@@ -24,7 +25,7 @@ import mpv5.ui.misc.Position;
  *
  *  
  */
-public class SplashScreen extends javax.swing.JFrame {
+public class SplashScreen extends JDialog {
 
     private static final long serialVersionUID = 1L;
     private Image image;
@@ -36,19 +37,17 @@ public class SplashScreen extends javax.swing.JFrame {
      */
     public SplashScreen(ImageIcon imageIcon) {
         initComponents();
-//        if (!Main.HEADLESS) {
-            setTitle("Yabs start...");
-            jPanel1.setOpaque(false);
-            setInfo(Constants.VERSION);
-            title.setText(Constants.TITLE);
-            jProgressBar1.setStringPainted(true);
-            image = imageIcon.getImage();
-            grayImage = GrayFilter.createDisabledImage(image);
+        setTitle("Yabs start...");
+        jPanel1.setOpaque(false);
+        setInfo(Constants.VERSION);
+        title.setText(Constants.TITLE);
+        jProgressBar1.setStringPainted(true);
+        image = imageIcon.getImage();
+        grayImage = GrayFilter.createDisabledImage(image);
 
-            new Position(this);
-            setAlwaysOnTop(Log.getLoglevel() == Log.LOGLEVEL_NONE);
-            setVisible(rootPaneCheckingEnabled);
-//        }
+        new Position(this);
+        setVisible(true);
+        setModalityType(ModalityType.MODELESS);
     }
 
     /** This method is called from within the constructor to
@@ -211,13 +210,9 @@ public class SplashScreen extends javax.swing.JFrame {
 
             @Override
             public void run() {
-//                if (!Main.HEADLESS) {
-                    setProgress(message);
-                    jProgressBar1.setValue(progressSteps);
-                    progressSteps += progressSteps;
-//                } else {
-//                    Log.Debug(this, message + " [" + progressSteps + "]");
-//                }
+                setProgress(message);
+                jProgressBar1.setValue(progressSteps);
+                progressSteps += progressSteps;
             }
         };
         SwingUtilities.invokeLater(runnable);

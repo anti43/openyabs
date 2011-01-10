@@ -44,7 +44,7 @@ public class Job extends SwingWorker<Object, Object> {
     public Job(Waitable waitable, Waiter waiter) {
         this.objects = Collections.singletonList(waitable);
         this.recipient = waiter;
-        this.bar = MPView.getProgressbar();
+        this.bar = mpv5.YabsViewProxy.instance().getProgressbar();
     }
 
     /**
@@ -119,7 +119,7 @@ public class Job extends SwingWorker<Object, Object> {
             bar.setIndeterminate(false);
         }
         if (message != null) {
-            MPView.addMessage(message);
+            mpv5.YabsViewProxy.instance().addMessage(message);
         }
     }
 }

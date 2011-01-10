@@ -41,13 +41,13 @@ public class MPServer extends Thread {
 
     @Override
     public void run() {
-        MPView.setWaiting(true);
-        MPView.setProgressRunning(true);
+        mpv5.YabsViewProxy.instance().setWaiting(true);
+        mpv5.YabsViewProxy.instance().setProgressRunning(true);
         if (xmlrpcs == null) {
             try {
                 xmlrpcs = new XMLRPCServer();
-                MPView.setWaiting(false);
-                MPView.setProgressRunning(false);
+                mpv5.YabsViewProxy.instance().setWaiting(false);
+                mpv5.YabsViewProxy.instance().setProgressRunning(false);
                 Popup.notice(Messages.DONE + "\n" + "Port: " + XMLRPCServer.getPort());
             } catch (Exception ex) {
                 Log.Debug(ex);

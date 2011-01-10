@@ -40,13 +40,13 @@ public class BackGroundJob extends SwingWorker<Void, Void> {
 
     @Override
     public Void doInBackground() {
-        MPView.setWaiting(true);
+        mpv5.YabsViewProxy.instance().setWaiting(true);
         try {
             clazz.getConstructors()[0].newInstance((Object[]) null);
         } catch (Exception e) {
             Log.Debug(this, e.getMessage());
         } finally {
-            MPView.setWaiting(false);
+            mpv5.YabsViewProxy.instance().setWaiting(false);
         }
         return null;
     }
@@ -54,6 +54,6 @@ public class BackGroundJob extends SwingWorker<Void, Void> {
     @Override
     public void done() {
 
-        MPView.setWaiting(false);
+        mpv5.YabsViewProxy.instance().setWaiting(false);
     }
 }

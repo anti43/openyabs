@@ -62,11 +62,6 @@ public class StartPage extends javax.swing.JPanel {
             }
         };
         new Thread(runnable1).start();
-
-
-        contacts();
-        items();
-
     }
 
     /** This method is called from within the constructor to
@@ -76,17 +71,13 @@ public class StartPage extends javax.swing.JPanel {
      *
      *  DatabaseObject d = DatabaseObject.getObject(Context.getCustomer());
     ((mpv5.db.objects.Contact) d).setisCustomer(true);
-    MPView.getIdentifierView().addTab(d, Messages.NEW_CUSTOMER);
+    mpv5.YabsViewProxy.instance().getIdentifierView().addTab(d, Messages.NEW_CUSTOMER);
      */
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
         jTabbedPane1 = new javax.swing.JTabbedPane();
-        jPanel4 = new javax.swing.JPanel();
-        jTaskPane1 = new com.l2fprod.common.swing.JTaskPane();
-        jTaskPaneGroup1 = new com.l2fprod.common.swing.JTaskPaneGroup();
-        jTaskPaneGroup2 = new com.l2fprod.common.swing.JTaskPaneGroup();
         jScrollPane1 = new javax.swing.JScrollPane();
         jTextArea1 = new javax.swing.JTextArea();
         jPanel2 = new javax.swing.JPanel();
@@ -115,29 +106,11 @@ public class StartPage extends javax.swing.JPanel {
         jScrollPane6 = new javax.swing.JScrollPane();
         syst = new javax.swing.JList();
 
-        java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle(); // NOI18N
+        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("mpv5/resources/languages/Panels"); // NOI18N
         setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("StartPage.border.title"))); // NOI18N
         setName("Form"); // NOI18N
 
         jTabbedPane1.setName("jTabbedPane1"); // NOI18N
-
-        jPanel4.setName("jPanel4"); // NOI18N
-        jPanel4.setLayout(new java.awt.BorderLayout());
-
-        jTaskPane1.setName("jTaskPane1"); // NOI18N
-
-        jTaskPaneGroup1.setCollapsable(false);
-        jTaskPaneGroup1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/evolution-contacts.png"))); // NOI18N
-        jTaskPaneGroup1.setName("jTaskPaneGroup1"); // NOI18N
-        jTaskPane1.add(jTaskPaneGroup1);
-
-        jTaskPaneGroup2.setCollapsable(false);
-        jTaskPaneGroup2.setName("jTaskPaneGroup2"); // NOI18N
-        jTaskPane1.add(jTaskPaneGroup2);
-
-        jPanel4.add(jTaskPane1, java.awt.BorderLayout.CENTER);
-
-        jTabbedPane1.addTab(bundle.getString("StartPage.jPanel4.TabConstraints.tabTitle"), jPanel4); // NOI18N
 
         jScrollPane1.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
         jScrollPane1.setName("jScrollPane1"); // NOI18N
@@ -230,12 +203,12 @@ public class StartPage extends javax.swing.JPanel {
                 .addContainerGap()
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addComponent(jLabel3, javax.swing.GroupLayout.DEFAULT_SIZE, 443, Short.MAX_VALUE)
+                        .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 438, Short.MAX_VALUE)
                         .addGap(22, 22, 22))
                     .addGroup(jPanel3Layout.createSequentialGroup()
                         .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addComponent(jScrollPane5, javax.swing.GroupLayout.Alignment.LEADING, 0, 0, Short.MAX_VALUE)
-                            .addComponent(jScrollPane4, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 452, Short.MAX_VALUE))
+                            .addComponent(jScrollPane4, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 447, Short.MAX_VALUE))
                         .addGap(13, 13, 13))))
         );
         jPanel3Layout.setVerticalGroup(
@@ -244,7 +217,7 @@ public class StartPage extends javax.swing.JPanel {
                 .addContainerGap()
                 .addComponent(jLabel3)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane5, javax.swing.GroupLayout.DEFAULT_SIZE, 206, Short.MAX_VALUE)
+                .addComponent(jScrollPane5, javax.swing.GroupLayout.DEFAULT_SIZE, 188, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 131, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
@@ -264,14 +237,14 @@ public class StartPage extends javax.swing.JPanel {
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane6, javax.swing.GroupLayout.DEFAULT_SIZE, 455, Short.MAX_VALUE)
+                .addComponent(jScrollPane6, javax.swing.GroupLayout.DEFAULT_SIZE, 448, Short.MAX_VALUE)
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane6, javax.swing.GroupLayout.DEFAULT_SIZE, 352, Short.MAX_VALUE)
+                .addComponent(jScrollPane6, javax.swing.GroupLayout.DEFAULT_SIZE, 337, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -281,7 +254,7 @@ public class StartPage extends javax.swing.JPanel {
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jTabbedPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 480, Short.MAX_VALUE)
+            .addComponent(jTabbedPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 480, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -295,7 +268,6 @@ public class StartPage extends javax.swing.JPanel {
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
-    private javax.swing.JPanel jPanel4;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
@@ -303,9 +275,6 @@ public class StartPage extends javax.swing.JPanel {
     private javax.swing.JScrollPane jScrollPane5;
     private javax.swing.JScrollPane jScrollPane6;
     private javax.swing.JTabbedPane jTabbedPane1;
-    private com.l2fprod.common.swing.JTaskPane jTaskPane1;
-    private com.l2fprod.common.swing.JTaskPaneGroup jTaskPaneGroup1;
-    private com.l2fprod.common.swing.JTaskPaneGroup jTaskPaneGroup2;
     private javax.swing.JTextArea jTextArea1;
     private javax.swing.JTextArea jTextArea2;
     private javax.swing.JTextArea jTextArea3;
@@ -393,49 +362,5 @@ public class StartPage extends javax.swing.JPanel {
 
     }
 
-    private void contacts() {
-        jTaskPaneGroup1.setTitle(Messages.TASKS_CONTACTS.getValue());
 
-        jTaskPaneGroup1.add(new AbstractAction(Messages.CONTACTS_LIST.getValue()) {
-
-            public void actionPerformed(ActionEvent e) {
-                DatabaseObject d = DatabaseObject.getObject(Context.getContact());
-                ContactsList t = MPView.getClisttab(Context.getContact());
-                t.showType((Contact) d);
-                MPView.identifierView.addOrShowTab(t, Messages.CONTACTS_LIST.toString());
-            }
-        });
-
-        jTaskPaneGroup1.add(new AbstractAction(Messages.ADD_CONTACT.getValue()) {
-
-            public void actionPerformed(ActionEvent e) {
-                DatabaseObject d = DatabaseObject.getObject(Context.getCustomer());
-                ((mpv5.db.objects.Contact) d).setisCustomer(true);
-                MPView.getIdentifierView().addTab(d, Messages.NEW_CUSTOMER);
-            }
-        });
-
-        jTaskPaneGroup1.add(new AbstractAction(Messages.SEARCH_CONTACT.getValue()) {
-
-            public void actionPerformed(ActionEvent e) {
-                DatabaseObject d = Search2.showSearchFor(Context.getContact());
-                if (d != null) {
-                    MPView.getIdentifierView().addTab(d);
-                }
-            }
-        });
-    }
-
-    private void items() {
-         jTaskPaneGroup2.setTitle(Messages.TASKS_INVOICES.getValue());
-
-         jTaskPaneGroup2.add(new AbstractAction(Messages.CHECK_OVERDUES.getValue()) {
-
-            public void actionPerformed(ActionEvent e) {
-              Scheduler.getInstance().checkForOverdueEvents();
-            }
-        });
-
-
-    }
 }

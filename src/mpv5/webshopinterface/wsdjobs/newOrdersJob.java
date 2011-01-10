@@ -170,13 +170,13 @@ public class newOrdersJob implements WSDaemonJob {
             }
 
             if (obs.size() > 0) {
-                MPView.addMessage(obs.size() + " " + Messages.ORDERS_RECEIVED + " " + daemon.getWebShop());
+                mpv5.YabsViewProxy.instance().addMessage(obs.size() + " " + Messages.ORDERS_RECEIVED + " " + daemon.getWebShop());
 
                 if (Popup.Y_N_dialog(obs.size() + " " + Messages.ORDERS_RECEIVED + " " + daemon.getWebShop() + "\n"
                         + Messages.LOAD_NOW)) {
                     for (Item s : savedOrders) {
                         try {
-                            MPView.getIdentifierView().addTab(DatabaseObject.getObject(Context.getItem(),
+                            mpv5.YabsViewProxy.instance().getIdentifierView().addTab(DatabaseObject.getObject(Context.getItem(),
                                     s.__getIDS()));
                         } catch (NodataFoundException ex) {
                             Log.Debug(ex);    // Something must have failed during the import process

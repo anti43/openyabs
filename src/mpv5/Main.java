@@ -2,16 +2,16 @@
  *  This file is part of YaBS.
  *
  *      YaBS is free software: you can redistribute it and/or modify
- *      it under the terms of the GNU General Public License as published by
+ *      it under the terms of the GNU Lesser General Public License as published by
  *      the Free Software Foundation, either version 3 of the License, or
  *      (at your option) any later version.
  *
  *      YaBS is distributed in the hope that it will be useful,
  *      but WITHOUT ANY WARRANTY; without even the implied warranty of
  *      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *      GNU General Public License for more details.
+ *      GNU Lesser General Public License for more details.
  *
- *      You should have received a copy of the GNU General Public License
+ *      You should have received a copy of the GNU Lesser General Public License
  *      along with YaBS.  If not, see <http://www.gnu.org/licenses/>.
  */
 package mpv5;
@@ -19,13 +19,13 @@ package mpv5;
 import java.io.IOException;
 import java.util.ArrayList;
 import mpv5.db.common.NodataFoundException;
-import mpv5.ui.frames.MPView;
 import mpv5.logging.*;
 import org.jdesktop.application.Application;
 import org.jdesktop.application.SingleFrameApplication;
 import com.l2fprod.common.swing.plaf.LookAndFeelAddons;
 import enoa.connection.NoaConnection;
 import enoa.handler.TemplateHandler;
+import java.awt.Cursor;
 import java.awt.Font;
 import java.io.File;
 import java.net.HttpURLConnection;
@@ -63,17 +63,19 @@ import mpv5.ui.dialogs.LoginToInstanceScreen;
 import mpv5.ui.dialogs.Search2;
 import mpv5.ui.dialogs.subcomponents.ControlPanel_Fonts;
 import mpv5.ui.dialogs.subcomponents.wizard_DBSettings_simple_1;
+import mpv5.ui.frames.MPView;
 import mpv5.utils.files.FileDirectoryHandler;
 import mpv5.utils.files.FileExecutor;
 import mpv5.utils.files.FileReaderWriter;
 import mpv5.utils.print.PrintJob2;
 import mpv5.utils.text.RandomText;
 import mpv5.webshopinterface.WSIManager;
+import org.jdesktop.application.View;
 
 /**
  * The main class of the application.
  */
-public class Main extends SingleFrameApplication {
+public class Main {
 
     public static SplashScreen splash;
     private static boolean removeplugs = false;
@@ -82,8 +84,8 @@ public class Main extends SingleFrameApplication {
      */
     public static boolean INSTANTIATED = false;
     private static Integer FORCE_INSTALLER;
-    private static boolean CLEAR_LOCK = false;
     public static boolean HEADLESS = false;
+    public static String WINDOW_TITLE = Constants.VERSION;
 
     /**
      * Use this method to (re) cache data from the database to avoid unnecessary db queries
@@ -93,33 +95,17 @@ public class Main extends SingleFrameApplication {
 
             @Override
             public void run() {
-                if (!HEADLESS) {
-                    MPView.addMessage(Messages.CACHE);
-                }
+                Log.Debug(Main.class, Messages.CACHE);
                 User.cacheUser();
-                if (!HEADLESS) {
-                    MPView.addMessage(Messages.CACHED_OBJECTS + ": " + Context.getUser());
-                }
+                Log.Debug(Main.class, Messages.CACHED_OBJECTS + ": " + Context.getUser());
                 LanguageManager.getCountriesAsComboBoxModel();
-                if (!HEADLESS) {
-                    MPView.addMessage(Messages.CACHED_OBJECTS + ": " + Context.getCountries());
-                }
-
+                Log.Debug(Main.class, Messages.CACHED_OBJECTS + ": " + Context.getCountries());
             }
         };
         new Thread(runnable).start();
 //        Account.cacheAccounts();//pre cache accounts
-//        MPView.addMessage(Messages.CACHED_OBJECTS + ": " + Context.getAccounts());
+//        YabsView.addMessage(Messages.CACHED_OBJECTS + ": " + Context.getAccounts());
 //        DatabaseObject.cacheObjects();//Is called by User.login() later
-    }
-
-    private static void useNetbookOpt() {
-        if (!HEADLESS) {
-            MPView.setNavBarAnimated(false);
-        }
-        if (!HEADLESS) {
-            MPView.setTabPaneScrolled(true);
-        }
     }
 
     /**
@@ -240,8 +226,8 @@ public class Main extends SingleFrameApplication {
         main(args);
     }
 
-    public static void extShutdown(){
-        Main.getApplication().shutdown();
+    public static void extShutdown() {
+        getApplication().exit();
     }
     private File lockfile = new File(MPPATH + File.separator + "." + Constants.PROG_NAME + "." + "lck");
 
@@ -257,7 +243,7 @@ public class Main extends SingleFrameApplication {
             @Override
             public void run() {
                 try {
-                    launch(Main.class, new String[]{});
+                    SingleFrameApplication.launch(getApplication().getClass(), new String[]{});
                 } catch (Exception e) {
                     Log.Debug(e);
                 }
@@ -278,14 +264,29 @@ public class Main extends SingleFrameApplication {
      * Indicates whether the server component shall start
      */
     public static boolean START_SERVER = false;
+    /**
+     * The Yabs Application (JSAF)
+     */
+    public static SingleFrameApplication APPLICATION = new YabsApplication();
+    /**
+     * The Yabs View (JSAF FrameView)
+     */
+    public static YabsView VIEW = null;
 
     /**
      * At startup create and show the main frame of the application.
      */
-    @Override
-    protected void startup() {
+    public void startup() {
         Log.Debug(this, "Startup procedure... ");
-        getContext().getLocalStorage().setDirectory(new File(Main.MPPATH));
+        getApplication().getContext().getLocalStorage().setDirectory(new File(Main.MPPATH));
+
+        Main.splash.nextStep(Messages.INIT_GUI.toString());
+        if (!HEADLESS) {
+
+            getApplication().show(new MPView(APPLICATION));
+            YabsViewProxy.instance().register((YabsView) getApplication().getMainView());
+            VIEW = (YabsView) getApplication().getMainView();
+        }
 
         splash.nextStep(Messages.FIRST_INSTANCE.toString());
 
@@ -319,32 +320,11 @@ public class Main extends SingleFrameApplication {
         }
     }
 
-    /**
-     * This method is to initialize the specified window by injecting resources.
-     * Windows shown in our application come fully initialized from the GUI
-     * builder, so this additional configuration is not needed.
-     * @param root
-     */
-    @Override
-    protected void configureWindow(java.awt.Window root) {
-    }
-
-    /**
-     * A convenient static getter for the application instance.
-     * @return the instance of Main
-     */
-    public static Main getApplication() {
-        return Application.getInstance(Main.class);
-    }
-
-    @Override
     public void shutdown() {
         if (!HEADLESS) {
-            MPView.setWaiting(true);
+            getApplication().getMainFrame().setCursor(new Cursor(Cursor.WAIT_CURSOR));
         }
-        if (!HEADLESS) {
-            MPView.setProgressRunning(true);
-        }
+
         DatabaseObjectLock.releaseAllObjectsFor(mpv5.db.objects.User.getCurrentUser());
         try {
             GlobalSettings.save();
@@ -383,17 +363,14 @@ public class Main extends SingleFrameApplication {
             Log.Debug(Main.class, QueryHandler.instanceOf().getStatistics());
         }
         Log.Print(GOODBYE_MESSAGE);
-        try {
-            clearLockFile();
-        } catch (Exception e) {
-        }
+
         try {
             //Cleanup
             FileDirectoryHandler.deleteDirectoryContent(new File(FileDirectoryHandler.getTempDir2()), ".properties");
         } catch (IOException ex) {
         }
 
-        super.shutdown();
+        getApplication().exit();
     }
 
     /**
@@ -403,6 +380,7 @@ public class Main extends SingleFrameApplication {
      */
     public static void main(String[] args) throws Exception {
         INSTANTIATED = true;
+
         try {
             splash = new SplashScreen(new ImageIcon(Main.class.getResource(mpv5.globals.Constants.SPLASH_IMAGE)));
             splash.init(11);
@@ -497,9 +475,7 @@ public class Main extends SingleFrameApplication {
         org.apache.commons.cli2.Argument number = abuilder.withName("number").withMinimum(1).withMaximum(1).create();
 
         org.apache.commons.cli2.Option server = obuilder.withShortName("server").withShortName("serv").withDescription("start built-in server component").create();
-        org.apache.commons.cli2.Option clear = obuilder.withShortName("clear").withDescription("clear the status of the yabs lock file").create();
         org.apache.commons.cli2.Option showenv = obuilder.withShortName("showenv").withShortName("se").withDescription("show environmental variables").create();
-        org.apache.commons.cli2.Option netbook = obuilder.withShortName("netbook").withShortName("net").withDescription("use netbook size optimizations").create();
         org.apache.commons.cli2.Option help = obuilder.withShortName("help").withShortName("h").withDescription("print this message").create();
         org.apache.commons.cli2.Option license = obuilder.withShortName("license").withShortName("li").withDescription("print license").create();
         org.apache.commons.cli2.Option version = obuilder.withShortName("version").withDescription("print the version information and exit").create();
@@ -525,7 +501,6 @@ public class Main extends SingleFrameApplication {
                 withOption(debug).
                 withOption(license).
                 withOption(nolfs).
-                withOption(netbook).
                 withOption(showenv).
                 withOption(removeplugins).
                 withOption(removelangs).
@@ -535,7 +510,6 @@ public class Main extends SingleFrameApplication {
                 withOption(windowlog).
                 withOption(consolelog).
                 withOption(mpdir).
-                withOption(clear).
                 withOption(printtest).
                 withOption(params).
                 withOption(forceinstall).
@@ -616,10 +590,6 @@ public class Main extends SingleFrameApplication {
                 Main.nolf = true;
             }
 
-            if (cl.hasOption(netbook)) {
-                useNetbookOpt();
-            }
-
             if (cl.hasOption(removeplugins)) {
                 removeplugs = true;
             }
@@ -634,10 +604,6 @@ public class Main extends SingleFrameApplication {
 
             if (cl.hasOption(server)) {
                 START_SERVER = true;
-            }
-
-            if (cl.hasOption(clear)) {
-                CLEAR_LOCK = true;
             }
 
             YConsole.setLogStreams(cl.hasOption(logfile), cl.hasOption(consolelog), cl.hasOption(windowlog));
@@ -707,12 +673,11 @@ public class Main extends SingleFrameApplication {
                 }
                 LookAndFeelAddons.setAddon(LookAndFeelAddons.getBestMatchAddonClassName());
 
-
                 if (!HEADLESS) {
-                    if (MPView.getIdentifierFrame() != null && MPView.getIdentifierFrame().isShowing()) {
-                        MPView.getIdentifierFrame().setVisible(false);
-                        SwingUtilities.updateComponentTreeUI(MPView.getIdentifierFrame());
-                        MPView.getIdentifierFrame().setVisible(true);
+                    if ((getApplication().getMainView()).getFrame() != null && (getApplication().getMainView()).getFrame().isShowing()) {
+//                        ((YabsView) getApplication().getMainView()).getIdentifierFrame().setVisible(false);
+                        SwingUtilities.updateComponentTreeUI((getApplication().getMainView()).getFrame());
+//                        ((YabsView) getApplication().getMainView()).getIdentifierFrame().setVisible(true);
                     }
                 }
             } catch (Exception exe) {
@@ -747,8 +712,6 @@ public class Main extends SingleFrameApplication {
      * @param firststart
      */
     public void go(boolean firststart) {
-        writeLockFile(new FileReaderWriter(lockfile));
-        setLaF(null);
 
         Main.splash.nextStep(Messages.INIT_LOGIN.toString());
 
@@ -760,23 +723,6 @@ public class Main extends SingleFrameApplication {
         splash.nextStep(Messages.CACHE.toString());
         cache();
 
-        Main.splash.nextStep(Messages.INIT_GUI.toString());
-
-
-        if (!HEADLESS) {
-            super.show(new MPView(this));
-        }
-        firstStart = firststart;
-
-        if (Main.firstStart) {
-            if (!HEADLESS) {
-                getApplication().getMainFrame().setExtendedState(JFrame.MAXIMIZED_BOTH);
-            }
-        }
-        if (!HEADLESS) {
-            SwingUtilities.updateComponentTreeUI(MPView.getIdentifierFrame());
-        }
-
         Main.splash.nextStep(Messages.INIT_PLUGINS.toString());
 
         loadPlugins();
@@ -786,9 +732,9 @@ public class Main extends SingleFrameApplication {
             if (START_SERVER) {
                 MPServer serv = new MPServer();
                 serv.start();
-                MPView.getIdentifierView().showServerStatus(serv.isAlive());
+//                ((YabsView)getApplication()).getIdentifierView().showServerStatus(serv.isAlive());
             } else {
-                MPView.getIdentifierView().showServerStatus(false);
+//                ((YabsView)getApplication()).getIdentifierView().showServerStatus(false);
             }
         }
         if (LocalSettings.getBooleanProperty(LocalSettings.OFFICE_USE)) {
@@ -858,7 +804,7 @@ public class Main extends SingleFrameApplication {
                     @Override
                     public void run() {
                         if (checkUpdates()) {
-                            MPView.addMessage(Messages.UPDATE_AVAILABLE);
+                            ((YabsView) getApplication().getMainView()).addMessage(Messages.UPDATE_AVAILABLE);
                         }
                     }
                 };
@@ -872,8 +818,8 @@ public class Main extends SingleFrameApplication {
         if (!HEADLESS) {
             if (!removeplugs) {
                 try {
-                    MPPLuginLoader.queuePlugins(MPView.getPluginLoader().getPlugins());
-                    MPView.getPluginLoader().loadPlugins();
+                    MPPLuginLoader.queuePlugins();
+                    MPPLuginLoader.loadPlugins();
                 } catch (Exception e) {
                     Log.Debug(e);
                 }
@@ -922,44 +868,9 @@ public class Main extends SingleFrameApplication {
             return false;
         }
     }
-    private static final String instanceIdentifier = ". Instance[";
 
     private boolean firstInstance() {
-        if (!CLEAR_LOCK) {
-            try {
-                FileReaderWriter x = new FileReaderWriter(lockfile);
-                if (lockfile.exists()) {
-                    String[] xc = x.readLines();
-                    for (int i = 0; i < xc.length; i++) {
-                        String line = xc[i];
-                        try {
-                            if (line.length() > 0 && line.substring(line.lastIndexOf(instanceIdentifier) + instanceIdentifier.length(), line.lastIndexOf("]")).equals(String.valueOf(LocalSettings.getConnectionID()))) {
-                                String message = Messages.ALREADY_RUNNING.getValue();
-                                Log.Debug(this, message);
-                                Popup.notice(message, 600, 200);
-
-                                if (Log.getLoglevel() != Log.LOGLEVEL_DEBUG) {
-                                    System.err.println(message);
-                                }
-                                return false;
-                            }
-                        } catch (Exception e) {
-                            Log.Debug(this, line);
-                            Log.Debug(e);
-                        }
-                    }
-                    return true;
-                } else {
-                    return true;
-                }
-            } catch (Exception e) {
-                Log.Debug(e);
-                Log.Debug(this, "Application encountered some problem. Will try to continue anyway.");
-                return true;
-            }
-        } else {
-            return lockfile.delete();
-        }
+        return true;
     }
 
     private void showDbWiz(Integer forConnId) {
@@ -974,31 +885,6 @@ public class Main extends SingleFrameApplication {
         Wizard w = new Wizard(true);
         w.addPanel(new wizard_DBSettings_simple_1(w, forConnId));
         w.showWiz();
-    }
-
-    private boolean writeLockFile(FileReaderWriter x) {
-        try {
-            x.write0("Locked on " + new Date() + instanceIdentifier + LocalSettings.getConnectionID() + "]");
-            Log.Debug(this, "Application will start now: " + lockfile);
-            lockfile.deleteOnExit();
-            return true;
-        } catch (Exception e) {
-            Log.Debug(e);
-            return false;
-        }
-    }
-
-    private void clearLockFile() {
-        FileReaderWriter x = new FileReaderWriter(lockfile);
-        String[] lines = x.readLines();
-        for (int i = 0; i < lines.length; i++) {
-            String line = lines[i];
-            if ((!line.contains(instanceIdentifier)) || (line.length() > 0 && line.substring(line.lastIndexOf(instanceIdentifier) + instanceIdentifier.length(), line.lastIndexOf("]")).equals(String.valueOf(LocalSettings.getConnectionID())))) {
-                lines[i] = null;
-            }
-        }
-        x.flush();
-        x.write0(lines);
     }
 
     /**
@@ -1021,5 +907,13 @@ public class Main extends SingleFrameApplication {
             //When we cant reach it at all, no update presumably
             return false;
         }
+    }
+
+    public static SingleFrameApplication getApplication() {
+        return APPLICATION;
+    }
+
+    public static YabsView getView() {
+        return VIEW;
     }
 }

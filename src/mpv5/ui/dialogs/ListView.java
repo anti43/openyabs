@@ -186,7 +186,7 @@ public class ListView extends javax.swing.JPanel {
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
-        DataPanel view = MPView.getIdentifierView().getCurrentTab();
+        DataPanel view = mpv5.YabsViewProxy.instance().getIdentifierView().getCurrentTab();
         if (view != null) {
             view.paste(list.toArray());
             try {
@@ -200,7 +200,7 @@ public class ListView extends javax.swing.JPanel {
         if (evt.getClickCount() > 1) {
             try {
                 if (jList1.getSelectedValue() != null) {
-                    MPView.getIdentifierView().addTab((DatabaseObject) jList1.getSelectedValue());
+                    mpv5.YabsViewProxy.instance().getIdentifierView().addTab((DatabaseObject) jList1.getSelectedValue());
                 }
             } catch (Exception e) {
                 Log.Debug(e);
@@ -230,7 +230,7 @@ public class ListView extends javax.swing.JPanel {
                 }
                 xmlw.add(d);
             }
-            MPView.showFilesaveDialogFor(xmlw.createFile(name));
+            mpv5.YabsViewProxy.instance().showFilesaveDialogFor(xmlw.createFile(name));
         }
     }//GEN-LAST:event_jButton4ActionPerformed
 
@@ -242,7 +242,7 @@ public class ListView extends javax.swing.JPanel {
             public void run() {
                 try {
                     v.setCursor(new Cursor(Cursor.WAIT_CURSOR));
-                    MPView.setWaiting(true);
+                    mpv5.YabsViewProxy.instance().setWaiting(true);
                     DialogForFile d = new DialogForFile(DialogForFile.FILES_ONLY);
                     d.setFileFilter(DialogForFile.XML_FILES);
                     XMLReader x;
@@ -272,7 +272,7 @@ public class ListView extends javax.swing.JPanel {
                     Log.Debug(e);
                 } finally {
                     v.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
-                    MPView.setWaiting(false);
+                    mpv5.YabsViewProxy.instance().setWaiting(false);
                 }
             }
         };

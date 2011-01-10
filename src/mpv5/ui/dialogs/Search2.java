@@ -48,12 +48,12 @@ public class Search2 extends javax.swing.JDialog {
      * @param addtabs Add the selected Object to the main tab pane
      */
     private Search2(Context t) {
-        super(MPView.getIdentifierFrame());
+        super(mpv5.YabsViewProxy.instance().getIdentifierFrame());
         initComponents();
         context = t;
         typelabel.setText(t.getDbIdentity().toUpperCase());
         setModalityType(ModalityType.APPLICATION_MODAL);
-        setLocationRelativeTo(MPView.getIdentifierFrame());
+        setLocationRelativeTo(mpv5.YabsViewProxy.instance().getIdentifierFrame());
     }
 
     /** This method is called from within the constructor to

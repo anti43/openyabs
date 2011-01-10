@@ -116,7 +116,7 @@ public class TemplateHandler {
                                 if (LocalSettings.getBooleanProperty(LocalSettings.OFFICE_USE)) {
                                     preloadedTemplate.defineExFile(new ODTFile(preloadedTemplate.getFile().getPath()));
                                     Log.Debug(Template.class, "Loaded template: " + preloadedTemplate);
-                                    MPView.addMessage(preloadedTemplate + Messages.LOADED.toString());
+                                    mpv5.YabsViewProxy.instance().addMessage(preloadedTemplate + Messages.LOADED.toString());
                                 } else {
 //                                Popup.notice(Messages.NOT_POSSIBLE + "\n" + Messages.OOCONNERROR);
                                     return null;
@@ -132,7 +132,7 @@ public class TemplateHandler {
                     } else {
                         try {
                             if (!(notification.containsKey(type.toString()) && notification.get(type.toString()).equals(Group.getObject(Context.getGroup(), groupsids)))) {
-                                MPView.addMessage(Messages.OO_NO_TEMPLATE + ": " + TemplateHandler.getName(type) + " [" + mpv5.db.objects.User.getCurrentUser() + "] [" + Group.getObject(Context.getGroup(), groupsids) + "]");
+                                mpv5.YabsViewProxy.instance().addMessage(Messages.OO_NO_TEMPLATE + ": " + TemplateHandler.getName(type) + " [" + mpv5.db.objects.User.getCurrentUser() + "] [" + Group.getObject(Context.getGroup(), groupsids) + "]");
                                 Log.Debug(Template.class, "No template found for type: " + type + " for user: " + mpv5.db.objects.User.getCurrentUser() + " in GROUP " + Group.getObject(Context.getGroup(), groupsids));
                                 notification.put(type.toString(), (Group) Group.getObject(Context.getGroup(), groupsids));
                             }

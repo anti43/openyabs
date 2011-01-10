@@ -312,7 +312,7 @@ public class ControlPanel_Locale extends javax.swing.JPanel implements ControlAp
         setSettings();
         mpv5.db.objects.User.getCurrentUser().save();
         cleanup();
-        MPView.identifierView.resetTables();
+//        mpv5.YabsViewProxy.instance().resetTables();
         Popup.notice(Messages.RESTART_REQUIRED);
     }//GEN-LAST:event_jButton1ActionPerformed
 
@@ -327,7 +327,7 @@ public class ControlPanel_Locale extends javax.swing.JPanel implements ControlAp
                 @Override
                 public void run() {
                     try {
-                        MPView.setWaiting(true);
+                        mpv5.YabsViewProxy.instance().setWaiting(true);
                         LanguageManager.importLanguage(langName.get_Text(), new File(labeledTextChooser1.get_Text(true)));
                         setLanguageSelection();
                     } catch (Exception e) {
@@ -335,7 +335,7 @@ public class ControlPanel_Locale extends javax.swing.JPanel implements ControlAp
                     } finally {
                         cleanup();
 
-                        MPView.setWaiting(false);
+                        mpv5.YabsViewProxy.instance().setWaiting(false);
                     }
                 }
             };

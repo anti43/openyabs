@@ -476,7 +476,7 @@ public class ControlPanel_Groups extends javax.swing.JPanel implements ControlAp
             if (dbo.getDbIdentity().equals(Context.getGroup().getDbIdentity())) {
                 setDataOwner(dbo, true);
             } else {
-                MPView.addMessage(Messages.NOT_POSSIBLE.toString() + Messages.ACTION_PASTE);
+                mpv5.YabsViewProxy.instance().addMessage(Messages.NOT_POSSIBLE.toString() + Messages.ACTION_PASTE);
             }
         }
     }

@@ -502,10 +502,10 @@ public class DataPanelTB extends javax.swing.JPanel implements ActionListener, I
 
         DatabaseObject dato = parents.getDataOwner();
         if (dato.isExisting()) {
-            MPView.getCurrentList().add(dato);
-            MPView.showCurrentList();
+            mpv5.YabsViewProxy.instance().addToClipBoard(dato);
+//            mpv5.YabsViewProxy.instance().showCurrentList();
         } else {
-            MPView.showCurrentList();
+//            mpv5.YabsViewProxy.instance().showCurrentList();
         }
     }//GEN-LAST:event_but10ActionPerformed
 
@@ -576,7 +576,7 @@ public class DataPanelTB extends javax.swing.JPanel implements ActionListener, I
             dato.getPanelData(parents);
             if (dato.save()) {
                 Favourite.removeFavourite(dato);
-                MPView.getIdentifierView().refreshFavouritesMenu();
+//                mpv5.YabsViewProxy.instance().getIdentifierView().refreshFavouritesMenu();
                 parents.setDataOwner(dato, true);
             } else {
                 parents.showRequiredFields();
@@ -593,8 +593,8 @@ public class DataPanelTB extends javax.swing.JPanel implements ActionListener, I
                 if (dato.save()) {
                     fav = new Favourite(dato);
                     fav.save();
-                    MPView.getIdentifierView().refreshFavouritesMenu();
-                    MPView.addMessage(Messages.ADDED_TO_FAVOURITES + dato.__getCName());
+//                    mpv5.YabsViewProxy.instance().getIdentifierView().refreshFavouritesMenu();
+                    mpv5.YabsViewProxy.instance().addMessage(Messages.ADDED_TO_FAVOURITES + dato.__getCName());
                     parents.setDataOwner(dato, true);
                 } else {
                     parents.showRequiredFields();

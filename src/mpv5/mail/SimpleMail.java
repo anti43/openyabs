@@ -306,7 +306,7 @@ public class SimpleMail implements Waiter {
 
     private void sendSmptmail() throws MessagingException {
         Log.Debug(this, "Sending mail via SMTP");
-        MPView.getProgressbar().setIndeterminate(true);
+        mpv5.YabsViewProxy.instance().getProgressbar().setIndeterminate(true);
         MailAuthenticator auth = new MailAuthenticator(username, password);
 
         Properties properties = null;
@@ -350,7 +350,7 @@ public class SimpleMail implements Waiter {
         try {
             // Send the message
             Transport.send(message);
-            MPView.getProgressbar().setIndeterminate(false);
+            mpv5.YabsViewProxy.instance().getProgressbar().setIndeterminate(false);
             Log.Debug(this, "Mail sent: " + message);
             Popup.notice(Messages.MAIL_SENT + " " + recipientsAddress);
         } catch (MessagingException messagingException) {
@@ -367,7 +367,7 @@ public class SimpleMail implements Waiter {
      * @throws MessagingException
      */
     private void sendSmptsMail() throws NoSuchProviderException, MessagingException {
-        MPView.getProgressbar().setIndeterminate(true);
+        mpv5.YabsViewProxy.instance().getProgressbar().setIndeterminate(true);
         Log.Debug(this, "Sending mail via SMTPS");
         // create properties
         Properties props = System.getProperties();
@@ -425,7 +425,7 @@ public class SimpleMail implements Waiter {
             transport.connect();
 // send the message
             transport.sendMessage(message, message.getAllRecipients());
-            MPView.getProgressbar().setIndeterminate(false);
+            mpv5.YabsViewProxy.instance().getProgressbar().setIndeterminate(false);
             Log.Debug(this, "Mail sent: " + message);
             Popup.notice(Messages.MAIL_SENT + " " + recipientsAddress);
         } catch (MessagingException messagingException) {

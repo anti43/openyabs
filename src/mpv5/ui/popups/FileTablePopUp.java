@@ -132,7 +132,7 @@ public class FileTablePopUp extends JPopupMenu {
                 try {
                     QueryHandler.instanceOf().clone(Context.getFiles()).removeFile(dataTable.getModel().getValueAt(dataTable.getSelectedRow(), 0).toString());
 
-                    ((DataPanel) MPView.getShowingTab()).refresh();
+                    ((DataPanel) mpv5.YabsViewProxy.instance().getCurrentTab()).refresh();
                 } catch (Exception ex) {
                     mpv5.logging.Log.Debug(ex);//Logger.getLogger(FileTablePopUp.class.getName()).log(Level.SEVERE, null, ex);
                 }

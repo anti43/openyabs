@@ -388,7 +388,7 @@ public class SearchPanel extends javax.swing.JPanel {
                     Log.Debug(ex);
                 }
 
-                MPView.identifierView.resetTables();
+//                mpv5.YabsViewProxy.instance().resetTables();
             }
         }
     }//GEN-LAST:event_resulttableMouseClicked

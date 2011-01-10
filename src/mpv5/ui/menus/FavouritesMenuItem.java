@@ -36,7 +36,7 @@ public class FavouritesMenuItem extends JMenuItem {
 
         addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                MPView.getIdentifierView().addTab(item);
+                mpv5.YabsViewProxy.instance().getIdentifierView().addTab(item);
             }
         });
 

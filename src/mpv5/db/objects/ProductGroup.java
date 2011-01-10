@@ -174,13 +174,13 @@ public class ProductGroup extends DatabaseObject {
             node1 = new DefaultMutableTreeNode(clone);
 //            data.remove(rootNode);//remove root if in list
             try {
-                MPView.setWaiting(true);
+                mpv5.YabsViewProxy.instance().setWaiting(true);
                 node1 = addToParents(node1, data);
 
             } catch (Exception e) {
                 Log.Debug(e);
             } finally {
-                MPView.setWaiting(false);
+                mpv5.YabsViewProxy.instance().setWaiting(false);
             }
         }
         DefaultTreeModel model = new DefaultTreeModel(node1);

@@ -395,7 +395,7 @@ public class AddressPanel extends javax.swing.JPanel implements DataPanel {
             if (dbo.getDbIdentity().equals(Context.getAddress().getDbIdentity())) {
                 setDataOwner(dbo, true);
             } else {
-                MPView.addMessage(Messages.NOT_POSSIBLE.toString() + Messages.ACTION_PASTE.toString());
+                mpv5.YabsViewProxy.instance().addMessage(Messages.NOT_POSSIBLE.toString() + Messages.ACTION_PASTE.toString());
             }
         }
 

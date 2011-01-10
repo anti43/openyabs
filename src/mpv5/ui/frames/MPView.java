@@ -36,6 +36,7 @@ import javax.swing.JViewport;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import mpv5.Main;
+import mpv5.YabsView;
 import mpv5.bugtracker.ExceptionHandler;
 import mpv5.bugtracker.SubmitForm;
 import mpv5.data.MPList;
@@ -114,7 +115,7 @@ import org.jdesktop.application.FrameView;
 /**
  * The application's main frame.
  */
-public class MPView extends FrameView {
+public class MPView extends FrameView implements YabsView {
 
     public static MPView identifierView;
     private static Dimension initialSize = new Dimension(1100, 900);
@@ -138,8 +139,8 @@ public class MPView extends FrameView {
      * Display a message at the bottom of the MP frame
      * @param message
      */
-    public static void addMessage(Messages message) {
-        addMessage(message.getValue());
+    public void addMessage(Object message) {
+        addMessage(String.valueOf(message));
     }
 
     /**
@@ -149,7 +150,7 @@ public class MPView extends FrameView {
     public static void showCurrentList() {
         try {
             getClistview().validate();
-            BigPopup.showPopup(MPView.getIdentifierFrame().getRootPane(), getClistview(), Messages.YABS.toString());
+            BigPopup.showPopup(Main.getApplication().getMainFrame().getRootPane(), getClistview(), Messages.YABS.toString());
             BigPopup.pack(getClistview());
         } catch (Exception ex) {
             Log.Debug(ex);
@@ -205,7 +206,7 @@ public class MPView extends FrameView {
      * changes the current directory to be the file's parent directory.
      * @param f
      */
-    public static void showFilesaveDialogFor(File f) {
+    public void showFilesaveDialogFor(File f) {
         getFiledialog().setSelectedFile(new File(f.getName()));
         getFiledialog().saveFile(f);
     }
@@ -236,7 +237,6 @@ public class MPView extends FrameView {
         if (Main.INSTANTIATED) {
             try {
                 getStaterrorlabel().setIcon(new javax.swing.ImageIcon(MPView.class.getResource("/mpv5/resources/images/16/remove.png"))); // NOI18N
-                getIdentifierFrame().validate();
             } catch (Exception e) {
             }
         }
@@ -259,7 +259,7 @@ public class MPView extends FrameView {
     /**
      * @return the progressbar
      */
-    public static JProgressBar getProgressbar() {
+    public JProgressBar getProgressbar() {
         return progressbar;
     }
 
@@ -273,7 +273,7 @@ public class MPView extends FrameView {
     /**
      * @return the identifierView
      */
-    public static MPView getIdentifierView() {
+    public MPView getIdentifierView() {
         return identifierView;
     }
 
@@ -287,7 +287,7 @@ public class MPView extends FrameView {
     /**
      * @return the identifierFrame
      */
-    public static JFrame getIdentifierFrame() {
+    public JFrame getIdentifierFrame() {
         return identifierFrame;
     }
 
@@ -315,7 +315,7 @@ public class MPView extends FrameView {
     /**
      * @return the filedialog
      */
-    public static DialogForFile getFiledialog() {
+    public DialogForFile getFiledialog() {
         return filedialog;
     }
 
@@ -364,7 +364,7 @@ public class MPView extends FrameView {
     /**
      * @return the pluginLoader
      */
-    public static MPPLuginLoader getPluginLoader() {
+    public MPPLuginLoader getPluginLoader() {
         return pluginLoader;
     }
 
@@ -419,7 +419,7 @@ public class MPView extends FrameView {
      * Sets the max value for the progressbar
      * @param max
      */
-    public synchronized static void setProgressMaximumValue(int max) {
+    public synchronized void setProgressMaximumValue(int max) {
         getProgressbar().setMaximum(max);
     }
 
@@ -427,14 +427,14 @@ public class MPView extends FrameView {
      *  Sets the current value for the progressbar
      * @param val
      */
-    public synchronized static void setProgressValue(int val) {
+    public synchronized void setProgressValue(int val) {
         getProgressbar().setValue(val);
     }
 
     /**
      * Reset the progress bar
      */
-    public synchronized static void setProgressReset() {
+    public synchronized void setProgressReset() {
         getProgressbar().setValue(0);
         getProgressbar().setIndeterminate(false);
     }
@@ -443,7 +443,7 @@ public class MPView extends FrameView {
      * Sets the indeterminate property of the progress bar.
      * @param b
      */
-    public synchronized static void setProgressRunning(boolean b) {
+    public synchronized void setProgressRunning(boolean b) {
         getProgressbar().setIndeterminate(b);
     }
 
@@ -461,7 +461,7 @@ public class MPView extends FrameView {
      * Sets the cursor to waiting state if true
      * @param truee
      */
-    public static void setWaiting(boolean truee) {
+    public void setWaiting(boolean truee) {
         if (Main.INSTANTIATED && getIdentifierFrame() != null) {
             if (truee) {
                 getIdentifierFrame().setCursor(new Cursor(Cursor.WAIT_CURSOR));
@@ -2171,8 +2171,7 @@ public class MPView extends FrameView {
     }//GEN-LAST:event_jMenuItem14ActionPerformed
 
     private void jMenuItem16ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem16ActionPerformed
-        pasteClipboardItems();
-
+        getCurrentTab().paste(getClipboardItems());
     }//GEN-LAST:event_jMenuItem16ActionPerformed
 
     private void jMenuItem15ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem15ActionPerformed
@@ -2245,7 +2244,7 @@ public class MPView extends FrameView {
     private void jMenuItem24ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem24ActionPerformed
         mpserver = new MPServer();
         getMpserver().start();
-        MPView.getIdentifierView().showServerStatus(getMpserver().isAlive());
+        showServerStatus(getMpserver().isAlive());
         jMenuItem24.setEnabled(!mpserver.isAlive());
     }//GEN-LAST:event_jMenuItem24ActionPerformed
 
@@ -2279,7 +2278,7 @@ public class MPView extends FrameView {
 
     private void errorlabelMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_errorlabelMouseClicked
         SubmitForm submitForm = new SubmitForm(ExceptionHandler.getExceptions());
-        BigPopup.showPopup(MPView.getIdentifierFrame().getRootPane(), submitForm, "Bughunter");
+        BigPopup.showPopup(getFrame().getRootPane(), submitForm, "Bughunter");
         getErrorlabel().setIcon(null);
         getIdentifierFrame().validate();
     }//GEN-LAST:event_errorlabelMouseClicked
@@ -2299,7 +2298,7 @@ public class MPView extends FrameView {
     }//GEN-LAST:event_jButton16ActionPerformed
 
     private void jButton17ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton17ActionPerformed
-        MPView.getIdentifierView().addOrShowTab(JournalPanel.instanceOf(), Messages.OVERVIEW);
+       addOrShowTab(JournalPanel.instanceOf(), Messages.OVERVIEW);
     }//GEN-LAST:event_jButton17ActionPerformed
 
     private void jMenuItem28ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem28ActionPerformed
@@ -2387,7 +2386,7 @@ public class MPView extends FrameView {
     }//GEN-LAST:event_jMenuItem37ActionPerformed
 
     private void jMenuItem22ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem22ActionPerformed
-        DialogForFile f = MPView.getFiledialog();
+        DialogForFile f = getFiledialog();
         if (f.saveFile()) {
             try {
                 VCFParser.toVCard(DatabaseObject.getObjects(Context.getContact(), true), f.getFile());
@@ -2398,7 +2397,7 @@ public class MPView extends FrameView {
 
     private void jMenuItem38ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem38ActionPerformed
 
-        DialogForFile f = MPView.getFiledialog();
+        DialogForFile f = getFiledialog();
         List<Contact> contacts = null;
         if (f.chooseFile()) {
             try {
@@ -2702,7 +2701,7 @@ public class MPView extends FrameView {
             getServerlabel().setSize(0, 0);
 
         }
-        MPView.getIdentifierFrame().validate();
+        getFrame().validate();
     }
 
     /**
@@ -2974,17 +2973,29 @@ public class MPView extends FrameView {
     /**
      * Paste the current clipboard items (if any)
      */
-    public void pasteClipboardItems() {
+    public DatabaseObject[] getClipboardItems() {
+
+        List<DatabaseObject> list = new ArrayList<DatabaseObject>();
 
         for (int i = 1; i < getClipboardMenu().getItemCount(); i++) {
             try {
                 if (getClipboardMenu().getItemCount() > 1) {
                     ClipboardMenuItem item = (ClipboardMenuItem) getClipboardMenu().getItem(i);
-                    getCurrentTab().paste(item.getItem());
+                    list.add(item.getItem());
                 }
             } catch (Exception ignore) {
 //            Log.Debug(ignore);
             }
         }
+
+        return list.toArray(new DatabaseObject[]{});
     }
+
+
+    @Override
+    public void addOrShowTab(DatabaseObject dbo) {
+        addTab(dbo);
+    }
+
+
 }

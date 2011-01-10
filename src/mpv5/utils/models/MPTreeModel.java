@@ -186,7 +186,7 @@ public class MPTreeModel extends DefaultTreeModel {
                     DefaultMutableTreeNode node = (DefaultMutableTreeNode) tree.getLastSelectedPathComponent();
                     if (node != null) {
                         if (node.getUserObject() instanceof DatabaseObject) {
-                            MPView.getIdentifierView().addTab((DatabaseObject) node.getUserObject());
+                            mpv5.YabsViewProxy.instance().getIdentifierView().addTab((DatabaseObject) node.getUserObject());
                         }
                     }
                 }
@@ -226,13 +226,13 @@ public class MPTreeModel extends DefaultTreeModel {
             clone.setCName("/");
             node1 = new DefaultMutableTreeNode(clone);
             try {
-                MPView.setWaiting(true);
+                mpv5.YabsViewProxy.instance().setWaiting(true);
                 node1 = addToParents(node1, data);
 
             } catch (Exception e) {
                 Log.Debug(e);
             } finally {
-                MPView.setWaiting(false);
+                mpv5.YabsViewProxy.instance().setWaiting(false);
             }
         }
         DefaultTreeModel model = new DefaultTreeModel(node1);

@@ -940,7 +940,7 @@ public class ProductPanel extends javax.swing.JPanel implements DataPanel, MPCBS
 
         try {
             mpv5.db.objects.ProductList l = (ProductList) DatabaseObject.getObject(Context.getProductlist(), productlistsids_);
-            MPView.identifierView.addTab(l);
+            mpv5.YabsViewProxy.instance().addTab(l);
         } catch (NodataFoundException nodataFoundException) {
             Popup.error(nodataFoundException);
         }
@@ -1275,7 +1275,7 @@ public class ProductPanel extends javax.swing.JPanel implements DataPanel, MPCBS
             if (dbo.getDbIdentity().equals(Context.getProduct().getDbIdentity())) {
                 setDataOwner(dbo, true);
             } else {
-                MPView.addMessage(Messages.NOT_POSSIBLE.toString() + Messages.ACTION_PASTE.toString());
+                mpv5.YabsViewProxy.instance().addMessage(Messages.NOT_POSSIBLE.toString() + Messages.ACTION_PASTE.toString());
             }
         }
     }

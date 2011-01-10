@@ -488,7 +488,7 @@ public class ControlPanel_Templates extends javax.swing.JPanel implements Contro
 
         if (dataOwner!=null && dataOwner.isExisting()) {
             try {
-                MPView.showFilesaveDialogFor(dataOwner.getFile());
+                mpv5.YabsViewProxy.instance().showFilesaveDialogFor(dataOwner.getFile());
             } catch (Exception e) {
             }
         }
@@ -668,7 +668,7 @@ public class ControlPanel_Templates extends javax.swing.JPanel implements Contro
             if (dbo.getContext().equals(Context.getTemplate())) {
                 setDataOwner(dbo, true);
             } else {
-                MPView.addMessage(Messages.NOT_POSSIBLE.toString() + Messages.ACTION_PASTE);
+                mpv5.YabsViewProxy.instance().addMessage(Messages.NOT_POSSIBLE.toString() + Messages.ACTION_PASTE);
             }
         }
     }

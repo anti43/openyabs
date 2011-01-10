@@ -440,7 +440,7 @@ public class MPBabelFish extends javax.swing.JFrame {
             parent.setCursor(new Cursor(Cursor.WAIT_CURSOR));
             String[] dat = ArrayUtilities.SmallObjectToStringArray(ArrayUtilities.getColumnAsArray(data, 1));
             String[] translated = new String[dat.length];
-            MPView.setProgressMaximumValue(dat.length);
+            mpv5.YabsViewProxy.instance().setProgressMaximumValue(dat.length);
             progress.setStringPainted(true);
             progress.setMaximum(dat.length);
             for (int i = 0; i < dat.length; i++) {
@@ -450,11 +450,11 @@ public class MPBabelFish extends javax.swing.JFrame {
                     if (string != null && string.length() > 0) {
                         Log.Debug(this, "Translating: " + string);
                         translated[i] = Translate.execute(string, (Language) from.getSelectedItem(), (Language) to.getSelectedItem());
-                        MPView.setProgressValue(i + 1);
+                        mpv5.YabsViewProxy.instance().setProgressValue(i + 1);
                         progress.setValue(i + 1);
                     } else {
                         translated[i] = "";
-                        MPView.setProgressValue(i + 1);
+                        mpv5.YabsViewProxy.instance().setProgressValue(i + 1);
                         progress.setValue(i + 1);
                     }
                 } catch (Exception ex) {
@@ -468,7 +468,7 @@ public class MPBabelFish extends javax.swing.JFrame {
         @Override
         public void done() {
             parent.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
-            MPView.setProgressReset();
+            mpv5.YabsViewProxy.instance().setProgressReset();
             progress.setValue(0);
             Popup.notice(Messages.DONE);
         }
@@ -494,7 +494,7 @@ public class MPBabelFish extends javax.swing.JFrame {
             FileReaderWriter fr = new FileReaderWriter(f, "UTF8");
             String[] imported = fr.readLinesWCharset();
 
-            MPView.setProgressMaximumValue(imported.length);
+            mpv5.YabsViewProxy.instance().setProgressMaximumValue(imported.length);
             progress.setStringPainted(true);
             progress.setMaximum(imported.length);
             for (int i = 0; i < originallanguage.length; i++) {
@@ -505,7 +505,7 @@ public class MPBabelFish extends javax.swing.JFrame {
                         if (string.split("=").length == 2) {
                             if (string.split("=")[0].equals(component)) {
                                 originallanguage[i] = string.split("=")[1];
-                                MPView.setProgressValue(i + 1);
+                                mpv5.YabsViewProxy.instance().setProgressValue(i + 1);
                                 progress.setValue(i + 1);
                             }
                         }
@@ -528,7 +528,7 @@ public class MPBabelFish extends javax.swing.JFrame {
         @Override
         public void done() {
             parent.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
-            MPView.setProgressReset();
+            mpv5.YabsViewProxy.instance().setProgressReset();
             progress.setValue(0);
             Popup.notice(Messages.DONE);
         }

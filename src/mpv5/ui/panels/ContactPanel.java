@@ -256,7 +256,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
     private void itemTableClicked(MouseEvent evt) {
         if (evt.getButton() == MouseEvent.BUTTON1 && evt.getClickCount() > 1) {
             try {
-                MPView.getIdentifierView().addTab(DatabaseObject.getObject(Context.getItem(), Integer.valueOf(dataTable.getModel().getValueAt(dataTable.getSelectedRow(), 0).toString())));
+                mpv5.YabsViewProxy.instance().getIdentifierView().addTab(DatabaseObject.getObject(Context.getItem(), Integer.valueOf(dataTable.getModel().getValueAt(dataTable.getSelectedRow(), 0).toString())));
             } catch (NodataFoundException ex) {
                 Log.Debug(ex);
             }
@@ -268,7 +268,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
     private void productTableClicked(MouseEvent evt) {
         if (evt.getClickCount() > 1) {
             try {
-                MPView.getIdentifierView().addTab(DatabaseObject.getObject(Context.getProduct(), Integer.valueOf(dataTable.getModel().getValueAt(dataTable.getSelectedRow(), 0).toString())));
+                mpv5.YabsViewProxy.instance().getIdentifierView().addTab(DatabaseObject.getObject(Context.getProduct(), Integer.valueOf(dataTable.getModel().getValueAt(dataTable.getSelectedRow(), 0).toString())));
             } catch (NodataFoundException ex) {
                 Log.Debug(ex);
             }
@@ -1239,7 +1239,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
 
         if (dataOwner.isExisting()) {
-            MPView.getIdentifierView().addTab(new JournalPanel(dataOwner), Messages.HISTORY_OF + getDataOwner().__getCName());
+            mpv5.YabsViewProxy.instance().getIdentifierView().addTab(new JournalPanel(dataOwner), Messages.HISTORY_OF + getDataOwner().__getCName());
         }
     }//GEN-LAST:event_jButton2ActionPerformed
 
@@ -1298,7 +1298,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
             i.setInttype(Item.TYPE_BILL);
             i.setDateadded(new Date());
             i.setGroupsids(dataOwner.__getGroupsids());
-            MPView.getIdentifierView().addTab(i);
+            mpv5.YabsViewProxy.instance().getIdentifierView().addTab(i);
         }
     }//GEN-LAST:event_button_billActionPerformed
 
@@ -1310,7 +1310,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
             i.setInttype(Item.TYPE_ORDER);
             i.setDateadded(new Date());
             i.setGroupsids(dataOwner.__getGroupsids());
-            MPView.getIdentifierView().addTab(i);
+            mpv5.YabsViewProxy.instance().getIdentifierView().addTab(i);
         }
     }//GEN-LAST:event_button_orderActionPerformed
 
@@ -1322,7 +1322,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
             i.setInttype(Item.TYPE_OFFER);
             i.setGroupsids(dataOwner.__getGroupsids());
             i.setDateadded(new Date());
-            MPView.getIdentifierView().addTab(i);
+            mpv5.YabsViewProxy.instance().getIdentifierView().addTab(i);
         }
     }//GEN-LAST:event_button_offerActionPerformed
 
@@ -1334,7 +1334,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
             i.setCName(Messages.NEW_PRODUCT.getValue());
             i.setInttype(Product.TYPE_PRODUCT);
             i.setGroupsids(dataOwner.__getGroupsids());
-            MPView.getIdentifierView().addTab(i);
+            mpv5.YabsViewProxy.instance().getIdentifierView().addTab(i);
         }
     }//GEN-LAST:event_button_productActionPerformed
 
@@ -1685,7 +1685,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
             if (dbo.getDbIdentity().equals(Context.getContact().getDbIdentity())) {
                 setDataOwner(dbo, true);
             } else {
-                MPView.addMessage(Messages.NOT_POSSIBLE.toString() + Messages.ACTION_PASTE.toString());
+                mpv5.YabsViewProxy.instance().addMessage(Messages.NOT_POSSIBLE.toString() + Messages.ACTION_PASTE.toString());
             }
         }
     }

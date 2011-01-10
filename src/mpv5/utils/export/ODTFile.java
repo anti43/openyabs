@@ -57,7 +57,7 @@ public class ODTFile extends Exportable {
     public void run() {
 
         Log.Debug(this, "run: ");
-        MPView.setWaiting(true);
+        mpv5.YabsViewProxy.instance().setWaiting(true);
 
         Log.Debug(this, "All fields:");
         for (Iterator<String> it = getData().keySet().iterator(); it.hasNext();) {
@@ -76,7 +76,7 @@ public class ODTFile extends Exportable {
         } catch (Exception ex) {
             Log.Debug(ex);
         } finally {
-            MPView.setWaiting(false);
+            mpv5.YabsViewProxy.instance().setWaiting(false);
 
         }
     }

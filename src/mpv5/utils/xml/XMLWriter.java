@@ -78,7 +78,7 @@ public class XMLWriter {
                 ArrayList<DatabaseObject> dbobjarr = DatabaseObject.getObjects(c);
 
                 xmlw.add(dbobjarr);
-                MPView.showFilesaveDialogFor(xmlw.createFile(name));
+                mpv5.YabsViewProxy.instance().showFilesaveDialogFor(xmlw.createFile(name));
             } catch (NodataFoundException ex) {
                 Log.Debug(XMLWriter.class, ex);
             }
@@ -222,7 +222,7 @@ public class XMLWriter {
         XMLOutputter outputter = new XMLOutputter(Format.getPrettyFormat());
 
         outputter.output(myDocument, fw);
-        MPView.addMessage(Messages.FILE_SAVED + file.getPath());
+        mpv5.YabsViewProxy.instance().addMessage(Messages.FILE_SAVED + file.getPath());
     }
 
     /**

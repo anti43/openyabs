@@ -741,7 +741,7 @@ public class ControlPanel_Users extends javax.swing.JPanel implements ControlApp
             if (dbo.getDbIdentity().equals(Context.getUser().getDbIdentity())) {
                 setDataOwner(dbo, true);
             } else {
-                MPView.addMessage(Messages.NOT_POSSIBLE.toString() + Messages.ACTION_PASTE);
+                mpv5.YabsViewProxy.instance().addMessage(Messages.NOT_POSSIBLE.toString() + Messages.ACTION_PASTE);
             }
         }
     }

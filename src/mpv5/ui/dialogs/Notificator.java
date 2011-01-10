@@ -34,7 +34,7 @@ public class Notificator {
             raiseNotification(message);
         } else {
             if (message != null) {
-                MPView.addMessage(message.toString());
+                mpv5.YabsViewProxy.instance().addMessage(message.toString());
             }
         }
     }

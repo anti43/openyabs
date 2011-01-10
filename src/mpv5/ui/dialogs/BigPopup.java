@@ -58,7 +58,7 @@ public class BigPopup {
                 }
             });
 
-            window.setLocationRelativeTo(MPView.getIdentifierFrame());
+            window.setLocationRelativeTo(mpv5.YabsViewProxy.instance().getIdentifierFrame());
             window.setVisible(true);
             contents.put(content, window);
         } else {
@@ -154,8 +154,8 @@ public class BigPopup {
                 }
             });
             if (width != null) {
-                window.setPreferredSize(new Dimension(width, MPView.getIdentifierFrame().getHeight()));
-                window.setSize(new Dimension(width, MPView.getIdentifierFrame().getHeight()));
+                window.setPreferredSize(new Dimension(width, mpv5.YabsViewProxy.instance().getIdentifierFrame().getHeight()));
+                window.setSize(new Dimension(width, mpv5.YabsViewProxy.instance().getIdentifierFrame().getHeight()));
             }
 //            window.setExtendedState(state);
             new Position(window);

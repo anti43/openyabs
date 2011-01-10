@@ -31,8 +31,8 @@ public class ExceptionHandler {
      */
     public static void add(Exception exception) {
         exc.add(exception);
-//        MPView.showError();
-//        MPView.setWaiting(false);//clean up
+//        mpv5.YabsViewProxy.instance().showError();
+//        mpv5.YabsViewProxy.instance().setWaiting(false);//clean up
     }
     static List<Exception> exc = new Vector<Exception>();
 

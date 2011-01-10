@@ -86,7 +86,7 @@ public class addContactJob implements WSDaemonJob {
             }
 
             if (!data.isEmpty()) {
-                MPView.addMessage(data.size() + " " + Messages.CONTACTS_TRANSMITTED.toString() + " "
+                mpv5.YabsViewProxy.instance().addMessage(data.size() + " " + Messages.CONTACTS_TRANSMITTED.toString() + " "
                                   + daemon.getWebShop());
             }
         } catch (XmlRpcException ex) {

@@ -539,7 +539,7 @@ public class ProductListsPanel extends javax.swing.JPanel implements DataPanel, 
 
             if (p.save()) {
                 Popup.notice(Messages.BOM_CREATED.toString() + p);
-                MPView.identifierView.addTab(p);
+                mpv5.YabsViewProxy.instance().addTab(p);
 
             }
         
@@ -548,12 +548,12 @@ public class ProductListsPanel extends javax.swing.JPanel implements DataPanel, 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
         final Item i = (Item) Search2.showSearchFor(Context.getInvoice());
         if (i != null && dataOwner != null && dataOwner.isExisting()) {
-            MPView.identifierView.addTab(i);
+            mpv5.YabsViewProxy.instance().addTab(i);
             Runnable runnable = new Runnable() {
                 @Override
                 public void run() {
                     
-                    MPView.identifierView.getCurrentTab().paste(dataOwner);
+                    mpv5.YabsViewProxy.instance().getCurrentTab().paste(dataOwner);
                 }
             };
             SwingUtilities.invokeLater(runnable);
@@ -688,7 +688,7 @@ public class ProductListsPanel extends javax.swing.JPanel implements DataPanel, 
             } else if (dbo.getContext().equals(Context.getProductlist())) {
                 setDataOwner(dbo, true);
             } else {
-                MPView.addMessage(Messages.NOT_POSSIBLE.toString() + Messages.ACTION_PASTE.toString());
+                mpv5.YabsViewProxy.instance().addMessage(Messages.NOT_POSSIBLE.toString() + Messages.ACTION_PASTE.toString());
             }
         }
     }
@@ -719,7 +719,7 @@ public class ProductListsPanel extends javax.swing.JPanel implements DataPanel, 
                 p.setIntinventorytype(0);
                 if (p.save()) {
                     Popup.notice(Messages.BOM_CREATED.toString() + p);
-                    MPView.identifierView.addTab(p);
+                    mpv5.YabsViewProxy.instance().addTab(p);
                 }
             } catch (Exception e) {
                 Log.Debug(e);

@@ -567,10 +567,10 @@ public class MPControlPanel extends javax.swing.JPanel {
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
-        MPView.setWaiting(true);
+        mpv5.YabsViewProxy.instance().setWaiting(true);
         TinyLookAndFeel.controlPanelInstantiated = true;
-        new de.muntjak.tinylookandfeel.controlpanel.ControlPanel(Main.getApplication());
-        MPView.setWaiting(false);
+//        new de.muntjak.tinylookandfeel.controlpanel.ControlPanel(Main.getApplication());
+        mpv5.YabsViewProxy.instance().setWaiting(false);
     }//GEN-LAST:event_jButton3ActionPerformed
 
     private void jButton8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton8ActionPerformed
@@ -586,9 +586,9 @@ public class MPControlPanel extends javax.swing.JPanel {
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
-        MPView.setWaiting(true);
+        mpv5.YabsViewProxy.instance().setWaiting(true);
         new MPBabelFish();
-        MPView.setWaiting(false);
+        mpv5.YabsViewProxy.instance().setWaiting(false);
 
     }//GEN-LAST:event_jButton5ActionPerformed
 
@@ -769,7 +769,7 @@ public class MPControlPanel extends javax.swing.JPanel {
      * @param panel
      */
     public synchronized void openDetails(ControlApplet panel) {
-        MPView.setWaiting(true);
+        mpv5.YabsViewProxy.instance().setWaiting(true);
 
         try {
             actions.removeAll();
@@ -789,8 +789,8 @@ public class MPControlPanel extends javax.swing.JPanel {
         } catch (Exception e) {
             //No rights for this!
         } finally {
-            MPView.setWaiting(false);
-            MPView.getIdentifierFrame().validate();
+            mpv5.YabsViewProxy.instance().setWaiting(false);
+            mpv5.YabsViewProxy.instance().getIdentifierFrame().validate();
         }
     }
 }

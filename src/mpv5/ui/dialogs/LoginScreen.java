@@ -206,7 +206,7 @@ private void jPasswordField1ActionPerformed(java.awt.event.ActionEvent evt) {//G
         User user = mpv5.usermanagement.MPSecurityManager.checkAuth(jTextField1.getText(), new String(jPasswordField1.getPassword()));
         if (user != null) {
             user.login();
-            Lock.unlock(MPView.getIdentifierFrame());
+            Lock.unlock(mpv5.YabsViewProxy.instance().getIdentifierFrame());
             if (jCheckBox1.isSelected()) {
                 LocalSettings.setProperty("lastuser", mpv5.db.objects.User.getCurrentUser().__getIDS().toString());
                 LocalSettings.save();

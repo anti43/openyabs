@@ -82,7 +82,7 @@ public class NoaConnection {
 //                    }
                 } catch (Exception ex) {
                     mpv5.logging.Log.Debug(ex);//Logger.getLogger(NoaConnection.class.getName()).log(Level.SEVERE, null, ex);
-                    Popup.error(MPView.getIdentifierFrame(), Messages.OOCONNERROR + "\n" + ex);
+                    Popup.error(mpv5.YabsViewProxy.instance().getIdentifierFrame(), Messages.OOCONNERROR + "\n" + ex);
                 }
             }
             return Connection;

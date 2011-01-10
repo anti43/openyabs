@@ -382,7 +382,7 @@ public class ContactsList extends javax.swing.JPanel implements ListPanel {
             Selection sel = new Selection(listTable);
             if (sel.checkID()) {
                 try {
-                    MPView.getIdentifierView().addTab(DatabaseObject.getObject(context, sel.getId()));
+                    mpv5.YabsViewProxy.instance().getIdentifierView().addTab(DatabaseObject.getObject(context, sel.getId()));
                 } catch (NodataFoundException ex) {
                     Log.Debug(ex);
                 }
@@ -394,7 +394,7 @@ public class ContactsList extends javax.swing.JPanel implements ListPanel {
 
         DatabaseObject d = DatabaseObject.getObject(Context.getCustomer());
         ((mpv5.db.objects.Contact) d).setisCustomer(true);
-        MPView.getIdentifierView().addTab(d, Messages.NEW_CUSTOMER);
+        mpv5.YabsViewProxy.instance().getIdentifierView().addTab(d, Messages.NEW_CUSTOMER);
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
@@ -410,14 +410,14 @@ public class ContactsList extends javax.swing.JPanel implements ListPanel {
 
         DatabaseObject d = DatabaseObject.getObject(Context.getManufacturer());
         ((mpv5.db.objects.Contact) d).setisManufacturer(true);
-        MPView.getIdentifierView().addTab(d, Messages.NEW_MANUFACTURER);
+        mpv5.YabsViewProxy.instance().getIdentifierView().addTab(d, Messages.NEW_MANUFACTURER);
     }//GEN-LAST:event_jButton4ActionPerformed
 
     private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
 
         DatabaseObject d = DatabaseObject.getObject(Context.getSupplier());
         ((mpv5.db.objects.Contact) d).setisSupplier(true);
-        MPView.getIdentifierView().addTab(d, Messages.NEW_SUPPLIER);
+        mpv5.YabsViewProxy.instance().getIdentifierView().addTab(d, Messages.NEW_SUPPLIER);
 
     }//GEN-LAST:event_jButton5ActionPerformed
 

@@ -152,7 +152,7 @@ public class ScheduleDayEvents extends javax.swing.JFrame {
         if (evt.getClickCount() > 1) {
             DatabaseObject d = (DatabaseObject) jTable1.getValueAt(jTable1.getSelectedRow(), 0);
             if (d != null) {
-                MPView.getIdentifierView().addTab(d);
+                mpv5.YabsViewProxy.instance().getIdentifierView().addTab(d);
                 this.dispose();
             }
         }

@@ -41,6 +41,7 @@ import javax.imageio.ImageIO;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JPanel;
+import mpv5.YabsView;
 
 /**
  * This is the sample of a plugin compatible with the MP5 Plugin system.<br/>
@@ -52,14 +53,14 @@ public class Main extends JPanel implements MP5Plugin, Runnable {
     private JLabel            clock            = new JLabel();
     private boolean           loaded           = false;
     private JMenu             cmenu;
-    private MPView            frame;
+    private YabsView            frame;
 
     @Override
-    public MP5Plugin load(MPView frame) {
+    public MP5Plugin load(YabsView frame) {
         this.frame = frame;
         cmenu      = new JMenu("what a crazy menu");
-        frame.getMenuBar().add(cmenu);
-        MPView.addMessage("added a crazy menu");
+//        frame.getMenuBar().add(cmenu);
+        mpv5.YabsViewProxy.instance().addMessage("added a crazy menu");
         setLayout(new BorderLayout());
         clock.setFont(new Font("Courier", Font.BOLD, 16));
         add(clock, BorderLayout.CENTER);
@@ -70,7 +71,7 @@ public class Main extends JPanel implements MP5Plugin, Runnable {
 
     @Override
     public void unload() {
-        frame.getMenuBar().remove(cmenu);
+//        frame.getMenuBar().remove(cmenu);
         loaded = false;
     }
 

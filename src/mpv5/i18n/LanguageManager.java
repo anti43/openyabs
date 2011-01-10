@@ -127,7 +127,7 @@ public class LanguageManager {
                     }
                 }
 
-//                MPView.addMessage(langname + Messages.ROW_UPDATED);
+//                mpv5.YabsViewProxy.instance().addMessage(langname + Messages.ROW_UPDATED);
             }
 //            } else {
 //                Popup.notice(Messages.ADMIN_ACCESS + "\n" + Messages.DEFAULT_USER);
@@ -362,7 +362,7 @@ public class LanguageManager {
 
             if (hasNeededKeys(file, true)) {
                 try {
-                    MPView.setWaiting(true);
+                    mpv5.YabsViewProxy.instance().setWaiting(true);
                     String dbname = QueryHandler.instanceOf().clone(Context.getFiles()).insertFile(file);
                     try {
                         Thread.sleep(3333);
@@ -377,10 +377,10 @@ public class LanguageManager {
                     Log.Debug(LanguageManager.class, "Adding language: " + langname);
                     int id = QueryHandler.instanceOf().clone(Context.getLanguage()).insert(t, "Imported language: " + langname);
                     if (id > 0) {
-                        MPView.addMessage(langname + Messages.INSERTED.toString());
+                        mpv5.YabsViewProxy.instance().addMessage(langname + Messages.INSERTED.toString());
                         Popup.notice(langname + Messages.INSERTED.toString());
                     } else {
-                        MPView.addMessage(Messages.ERROR_OCCURED.toString());
+                        mpv5.YabsViewProxy.instance().addMessage(Messages.ERROR_OCCURED.toString());
                         Popup.notice(Messages.ERROR_OCCURED.toString());
                     }
                 } catch (FileNotFoundException ex) {
@@ -397,7 +397,7 @@ public class LanguageManager {
             Popup.error(exception);
             throw exception;
         } finally {
-            MPView.setWaiting(false);
+            mpv5.YabsViewProxy.instance().setWaiting(false);
         }
     }
 
@@ -445,7 +445,7 @@ public class LanguageManager {
                         failed = true;
                         Log.Debug(LanguageManager.class, "Key '" + string + "' not found in file " + file);
                         if (!popupOnError) {
-                            MPView.addMessage(Messages.ERROR_OCCURED.toString());
+                            mpv5.YabsViewProxy.instance().addMessage(Messages.ERROR_OCCURED.toString());
                             return false;
                         } else {
                             try {
@@ -512,7 +512,7 @@ public class LanguageManager {
     private static void fail(String langid) {
         Log.Debug(LanguageManager.class, "Failed language: " + langid);
         Log.Debug(LanguageManager.class, "Error loading additional languages. Using default now.");
-        MPView.addMessage(Messages.ERROR_OCCURED.toString());
+        mpv5.YabsViewProxy.instance().addMessage(Messages.ERROR_OCCURED.toString());
     }
 
     private static boolean exists(String langid) {

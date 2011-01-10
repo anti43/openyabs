@@ -579,7 +579,7 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
         if (evt.getClickCount() > 1) {
             try {
                 DatabaseObject obj = DatabaseObject.getObject((DatabaseObject.Entity<?, ?>) jTable1.getValueAt(jTable1.getSelectedRow(), 0));
-                MPView.identifierView.addTab(obj);
+                mpv5.YabsViewProxy.instance().addTab(obj);
             } catch (NodataFoundException ex) {
                 Log.Debug(ex);
             }

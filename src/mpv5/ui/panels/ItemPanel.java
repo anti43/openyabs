@@ -1255,7 +1255,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
 
         if (dataOwner.isExisting()) {
             try {
-                MPView.getIdentifierView().addTab(DatabaseObject.getObject(Context.getContact(), dataOwner.__getContactsids()));
+                mpv5.YabsViewProxy.instance().getIdentifierView().addTab(DatabaseObject.getObject(Context.getContact(), dataOwner.__getContactsids()));
             } catch (NodataFoundException ex) {
                 Log.Debug(ex);
             }
@@ -1287,7 +1287,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
                 SubItem it = m.getRowAt(itemtable.getSelectedRow(), SubItem.getDefaultItem());
 
                 if (it != null) {
-                    MPView.identifierView.addToClipBoard(it);
+                    mpv5.YabsViewProxy.instance().addToClipBoard(it);
 
                 } else if (!m.hasEmptyRows(new int[]{4})) {
                     m.addRow(2);
@@ -1313,7 +1313,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
 
     private void button_remindersActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button_remindersActionPerformed
         if (dataOwner != null && dataOwner.isExisting()) {
-            BigPopup.showPopup(MPView.getIdentifierFrame().getRootPane(), new RemindPanel(dataOwner), Messages.REMINDER.toString(), true);
+            BigPopup.showPopup(mpv5.YabsViewProxy.instance().getIdentifierFrame().getRootPane(), new RemindPanel(dataOwner), Messages.REMINDER.toString(), true);
         }
     }//GEN-LAST:event_button_remindersActionPerformed
 
@@ -1419,7 +1419,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
         try {
             int cid = Integer.valueOf(contactname.getSelectedItem().getId());
             Contact c = (Contact) DatabaseObject.getObject(Context.getContact(), cid);
-            MPView.getIdentifierView().addTab(c);
+            mpv5.YabsViewProxy.instance().getIdentifierView().addTab(c);
         } catch (Exception e) {
             //Nothing to show
         }
@@ -1721,7 +1721,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
         }
 
         TextAreaCellEditor r = new TextAreaCellEditor(itemtable);
-        ProductSelectDialog2 productSelectDialog = new ProductSelectDialog2(MPView.getIdentifierFrame(), true, itemtable);
+        ProductSelectDialog2 productSelectDialog = new ProductSelectDialog2(mpv5.YabsViewProxy.instance().getIdentifierFrame(), true, itemtable);
         productSelectDialog.okButton.addActionListener(r);
         productSelectDialog.cancelButton.addActionListener(r);
         r.setDialog(productSelectDialog, productSelectDialog.getIDTextField());
@@ -1853,7 +1853,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
                     Log.Debug(this, ex.getMessage());
                 }
             } else {
-                MPView.addMessage(Messages.NOT_POSSIBLE.toString() + Messages.ACTION_PASTE.toString());
+                mpv5.YabsViewProxy.instance().addMessage(Messages.NOT_POSSIBLE.toString() + Messages.ACTION_PASTE.toString());
                 Log.Debug(this, dbo.getContext() + " to " + Context.getItem());
             }
         }
@@ -1983,7 +1983,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
         TextAreaCellRenderer textAreaCellRenderer = new TextAreaCellRenderer(itemtable);
         textAreaCellRenderer.setRendererTo(4);
         TextAreaCellEditor r = new TextAreaCellEditor(itemtable);
-        ItemTextAreaDialog itemTextAreaDialog = new ItemTextAreaDialog(MPView.getIdentifierFrame(), true);
+        ItemTextAreaDialog itemTextAreaDialog = new ItemTextAreaDialog(mpv5.YabsViewProxy.instance().getIdentifierFrame(), true);
         itemTextAreaDialog.setParentTable(itemtable);
         itemTextAreaDialog.okButton.addActionListener(r);
         itemTextAreaDialog.cancelButton.addActionListener(r);
@@ -2073,7 +2073,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
                     SubItem it = m.getRowAt(itemtable.getSelectedRow(), SubItem.getDefaultItem());
 
                     if (it != null) {
-                        MPView.identifierView.addToClipBoard(it);
+                        mpv5.YabsViewProxy.instance().addToClipBoard(it);
 
                     }
                 }
@@ -2081,7 +2081,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
 
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    MPView.identifierView.pasteClipboardItems();
+//                    mpv5.YabsViewProxy.instance().pasteClipboardItems();
                 }
             },
                     null,

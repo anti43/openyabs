@@ -307,7 +307,7 @@ public class ScheduleDayEvent extends javax.swing.JFrame {
 
     private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
         try {
-            MPView.getIdentifierView().addTab(DatabaseObject.getObject(Context.getItem(), Integer.valueOf(labeledCombobox1.getSelectedItem().getId())));
+            mpv5.YabsViewProxy.instance().getIdentifierView().addTab(DatabaseObject.getObject(Context.getItem(), Integer.valueOf(labeledCombobox1.getSelectedItem().getId())));
         } catch (Exception ex) {
             Log.Debug(this, ex.getMessage());
         }

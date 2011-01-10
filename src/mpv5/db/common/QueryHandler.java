@@ -886,7 +886,7 @@ public class QueryHandler implements Cloneable {
                 int j = uniquecols[i];
                 Object[][] val = select(values[j], new String[]{values[j], vals.getValue(values[j]).toString(), vals.getValue(values[j]).getWrapper()});
                 if (val != null && val.length > 0) {
-                    MPView.addMessage(Messages.VALUE_ALREADY_EXISTS + vals.getValue(values[j]).toString());
+                    mpv5.YabsViewProxy.instance().addMessage(Messages.VALUE_ALREADY_EXISTS + vals.getValue(values[j]).toString());
                     return false;
                 }
             }
@@ -1134,7 +1134,7 @@ public class QueryHandler implements Cloneable {
             viewToBeNotified.refresh();
         }
         if (jobmessage != null) {
-            MPView.addMessage(jobmessage);
+            mpv5.YabsViewProxy.instance().addMessage(jobmessage);
         }
 
         return id;
@@ -1180,7 +1180,7 @@ public class QueryHandler implements Cloneable {
             viewToBeNotified.refresh();
         }
         if (jobmessage != null) {
-            MPView.addMessage(jobmessage);
+            mpv5.YabsViewProxy.instance().addMessage(jobmessage);
         }
     }
 
@@ -2041,7 +2041,7 @@ public class QueryHandler implements Cloneable {
         }
 
         if (jobmessage != null && retval != null) {
-            MPView.addMessage(jobmessage);
+            mpv5.YabsViewProxy.instance().addMessage(jobmessage);
             retval.setMessage(jobmessage);
         }
 
@@ -2153,7 +2153,7 @@ public class QueryHandler implements Cloneable {
         }
 
         if (jobmessage != null) {
-            MPView.addMessage(jobmessage);
+            mpv5.YabsViewProxy.instance().addMessage(jobmessage);
             retval.setMessage(jobmessage);
         }
         return retval;
@@ -2299,7 +2299,7 @@ public class QueryHandler implements Cloneable {
         }
 
         if (jobmessage != null) {
-            MPView.addMessage(jobmessage);
+            mpv5.YabsViewProxy.instance().addMessage(jobmessage);
         }
         return new ReturnValue(id, data, columnnames, jobmessage);
     }
@@ -2347,7 +2347,7 @@ public class QueryHandler implements Cloneable {
             viewToBeNotified.refresh();
         }
         if (jobmessage != null) {
-            MPView.addMessage(jobmessage);
+            mpv5.YabsViewProxy.instance().addMessage(jobmessage);
         }
         return name;
 
@@ -2432,7 +2432,7 @@ public class QueryHandler implements Cloneable {
             viewToBeNotified.refresh();
         }
         if (jobmessage != null) {
-            MPView.addMessage(jobmessage);
+            mpv5.YabsViewProxy.instance().addMessage(jobmessage);
         }
         return list;
     }
@@ -2654,7 +2654,7 @@ public class QueryHandler implements Cloneable {
                 String query = "INSERT INTO " + table + "(cname, data, dateadded, filesize) VALUES (?, ?, ?, ?)";
                 String jobmessage = null;
                 Log.Debug(this, "Adding file: " + file.getName());
-                MPView.addMessage(Messages.PROCESSING + file.getName());
+                mpv5.YabsViewProxy.instance().addMessage(Messages.PROCESSING + file.getName());
 
                 try {
                     int fileLength = (int) file.length();
@@ -2679,7 +2679,7 @@ public class QueryHandler implements Cloneable {
                 }
 
                 if (jobmessage != null) {
-                    MPView.addMessage(jobmessage);
+                    mpv5.YabsViewProxy.instance().addMessage(jobmessage);
                 }
             }
 
@@ -2701,7 +2701,7 @@ public class QueryHandler implements Cloneable {
                 x.add("intsize", file.length());
                 x.add("mimetype", fileextension);
                 QueryHandler.instanceOf().clone(tcontext).insert(x, Messages.FILE_SAVED + file.getName());
-                MPView.addMessage(Messages.FILE_SAVED + file.getName());
+                mpv5.YabsViewProxy.instance().addMessage(Messages.FILE_SAVED + file.getName());
                 if (viewToBeNotified != null) {
                     viewToBeNotified.refresh();
                 }

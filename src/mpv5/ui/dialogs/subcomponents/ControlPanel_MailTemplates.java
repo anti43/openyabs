@@ -387,7 +387,7 @@ public class ControlPanel_MailTemplates extends javax.swing.JPanel implements Co
             if (dbo.getContext().equals(Context.getTemplate())) {
                 setDataOwner(dbo, true);
             } else {
-                MPView.addMessage(Messages.NOT_POSSIBLE.toString() + Messages.ACTION_PASTE);
+                mpv5.YabsViewProxy.instance().addMessage(Messages.NOT_POSSIBLE.toString() + Messages.ACTION_PASTE);
             }
         }
     }

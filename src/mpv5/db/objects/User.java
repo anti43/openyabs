@@ -48,6 +48,7 @@ import mpv5.ui.dialogs.Popup;
 import mpv5.ui.dialogs.subcomponents.ControlPanel_Fonts;
 import mpv5.ui.frames.MPView;
 import dtaus.Konto;
+import javax.swing.UIManager;
 import mpv5.utils.text.TypeConversion;
 
 /**
@@ -60,12 +61,12 @@ public class User extends DatabaseObject {
 
     public static User getCurrentUser() {
         if (currentUser == null) {
-            Log.Debug(MPView.class, "There is no user logged in here, using default user.");
+            Log.Debug(User.class, "There is no user logged in here, using default user.");
             try {
                 currentUser = User.DEFAULT;
                 return currentUser;
             } catch (Exception ex) {
-                Log.Debug(MPView.class, "Default user is missing.");
+                Log.Debug(User.class, "Default user is missing.");
                 return new User();
             }
         } else {
@@ -282,7 +283,9 @@ public class User extends DatabaseObject {
             try {
                 Locale.setDefault(TypeConversion.stringToLocale(__getLocale()));
                 ControlPanel_Fonts.applyFont(Font.decode(LocalSettings.getProperty(LocalSettings.DEFAULT_FONT)));
-                Main.setLaF(__getLaf());
+                if(UIManager.getLookAndFeel().getName() == null ? __getLaf() != null : !UIManager.getLookAndFeel().getName().equals(__getLaf())) {
+                    Main.setLaF(__getLaf());
+                }
                 defineMailConfig();
                 defineDTAConfig();
                 Log.Debug(this, "LanguageManager.getBundle() for: " + this);
@@ -296,7 +299,7 @@ public class User extends DatabaseObject {
 
                 @Override
                 public void run() {
-                    setTitle();
+//                    setTitle();
                     setDatelastlog(new Date());
                     setIsloggedin(true);
                     save();
@@ -315,14 +318,7 @@ public class User extends DatabaseObject {
         }
     }
 
-    private void setTitle() {
-        String nt = " (" + getCurrentUser().__getCName() + ")";
-        if (MPView.identifierFrame != null) {
-            MPView.identifierFrame.setTitle(MPView.identifierFrame.getTitle().substring(0, MPView.identifierFrame.getTitle().indexOf(" (")) + nt);
-        } else {
-            MPView.setPredefTitle(nt);
-        }
-    }
+
 
     /**
      * Logs out this user
@@ -715,7 +711,7 @@ public class User extends DatabaseObject {
      */
     public MailConfiguration getMailConfiguration() {
         if (mailConfiguration.getSmtpHost() == null || mailConfiguration.getSmtpHost().length() == 0) {
-            MPView.addMessage(Messages.NO_MAIL_CONFIG);
+            mpv5.YabsViewProxy.instance().addMessage(Messages.NO_MAIL_CONFIG);
             Log.Debug(this, "SMTP host configuration not set: " + mailConfiguration.getSmtpHost());
         }
         return mailConfiguration;

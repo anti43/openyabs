@@ -231,7 +231,7 @@ public class ControlPanel_External extends javax.swing.JPanel implements Control
 
                 @Override
                 public void run() {
-                    MPView.setWaiting(true);
+                    mpv5.YabsViewProxy.instance().setWaiting(true);
                     try {
                         Log.Debug(this, "Starting OpenOffice as background service..");
                         NoaConnection.startOOServer(labeledTextChooser2.get_Text(true), 8100);
@@ -243,7 +243,7 @@ public class ControlPanel_External extends javax.swing.JPanel implements Control
                         try {
                             Thread.sleep(5555);
                         } catch (InterruptedException ex) {}
-                        MPView.setWaiting(false);
+                        mpv5.YabsViewProxy.instance().setWaiting(false);
                         try {
 
                             NoaConnection.getConnection().getDesktopService().getFramesCount();

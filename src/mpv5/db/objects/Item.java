@@ -622,7 +622,7 @@ public class Item extends DatabaseObject implements Formattable {
 //    @Override
 //    public boolean save() {
 //        boolean saved = super.save();
-//        if (intstatus == STATUS_PAID && inttype == TYPE_BILL && saved && mpv5.db.objects.User.getCurrentUser().getProperties().getProperty(MPView.tabPane, "autocreaterevenue")) {
+//        if (intstatus == STATUS_PAID && inttype == TYPE_BILL && saved && mpv5.db.objects.User.getCurrentUser().getProperties().getProperty(mpv5.YabsViewProxy.instance().tabPane, "autocreaterevenue")) {
 //            createRevenue();
 //        }
 //        return saved;

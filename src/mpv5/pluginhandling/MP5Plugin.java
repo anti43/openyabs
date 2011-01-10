@@ -18,6 +18,7 @@ package mpv5.pluginhandling;
 
 
 import java.awt.Image;
+import mpv5.YabsView;
 import mpv5.ui.frames.MPView;
 
 /**
@@ -32,7 +33,7 @@ public interface MP5Plugin {
      * @param frame
      * @return
      */
-    public abstract MP5Plugin load(MPView frame);
+    public abstract MP5Plugin load(YabsView frame);
 
     /**
      * Unloads the plugin

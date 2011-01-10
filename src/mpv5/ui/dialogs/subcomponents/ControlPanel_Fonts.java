@@ -70,8 +70,8 @@ public class ControlPanel_Fonts extends javax.swing.JPanel implements ControlApp
         UIManager.put("ToolTip.font", font);
         UIManager.put("Tree.font", font);
 
-        if (MPView.getIdentifierFrame() != null) {
-            MPView.getIdentifierFrame().validate();
+        if (mpv5.YabsViewProxy.instance().getIdentifierFrame() != null) {
+            mpv5.YabsViewProxy.instance().getIdentifierFrame().validate();
         }
     }
 

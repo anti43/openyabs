@@ -123,9 +123,9 @@ public class LocalSettings {
         } else {
             setProperty(DBAUTOLOCK, "0");
         }
-        if (!getProperty(SCROLL_ALWAYS).equals("null")) {
-            MPView.setTabPaneScrolled(TypeConversion.stringToBoolean(getProperty(SCROLL_ALWAYS)));
-        }
+//        if (!getProperty(SCROLL_ALWAYS).equals("null")) {
+//            mpv5.YabsViewProxy.instance().setTabPaneScrolled(TypeConversion.stringToBoolean(getProperty(SCROLL_ALWAYS)));
+//        }
     }
 
     /**

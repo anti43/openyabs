@@ -632,7 +632,7 @@ public class ExpensePanel extends javax.swing.JPanel implements DataPanel {
 
     @Override
     public void paste(DatabaseObject... dbo) {
-        MPView.addMessage(Messages.NOT_POSSIBLE.toString() + Messages.ACTION_PASTE.toString());
+        mpv5.YabsViewProxy.instance().addMessage(Messages.NOT_POSSIBLE.toString() + Messages.ACTION_PASTE.toString());
     }
 
     @Override

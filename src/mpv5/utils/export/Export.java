@@ -71,7 +71,7 @@ public final class Export extends HashMap<String, Object> implements Waitable {
      */
     public static void mail(Template preloadedTemplate, DatabaseObject dataOwner, Contact to) {
         try {
-            MPView.setWaiting(true);
+            mpv5.YabsViewProxy.instance().setWaiting(true);
             QueryCriteria c = new QueryCriteria("usersids", mpv5.db.objects.User.getCurrentUser().__getIDS());
             MailMessage m = null;
             boolean send = true;
@@ -118,7 +118,7 @@ public final class Export extends HashMap<String, Object> implements Waitable {
         } catch (Exception e) {
             Log.Debug(e);
         } finally {
-            MPView.setWaiting(false);
+            mpv5.YabsViewProxy.instance().setWaiting(false);
         }
     }
 

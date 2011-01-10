@@ -674,7 +674,7 @@ public class ControlPanel_Accounts extends javax.swing.JPanel implements Control
             if (dbo.getDbIdentity().equals(Context.getAccounts().getDbIdentity())) {
                 setDataOwner(dbo, true);
             } else {
-                MPView.addMessage(Messages.NOT_POSSIBLE.toString() + Messages.ACTION_PASTE);
+                mpv5.YabsViewProxy.instance().addMessage(Messages.NOT_POSSIBLE.toString() + Messages.ACTION_PASTE);
             }
         }
     }

@@ -129,7 +129,7 @@ public class ControlPanel_Konsole extends javax.swing.JPanel implements ControlA
         File tf = FileDirectoryHandler.getTempFile("mp_konsole_export", "txt");
         FileReaderWriter f = new FileReaderWriter(tf);
         f.write(jTextArea1.getText());
-        MPView.showFilesaveDialogFor(tf);
+        mpv5.YabsViewProxy.instance().showFilesaveDialogFor(tf);
 
 }//GEN-LAST:event_jButton3ActionPerformed
 

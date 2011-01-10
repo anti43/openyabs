@@ -532,7 +532,7 @@ public class ControlPanel_ProductGroups extends javax.swing.JPanel implements Co
             if (dbo.getDbIdentity().equals(Context.getGroup().getDbIdentity())) {
                 setDataOwner(dbo, true);
             } else {
-                MPView.addMessage(Messages.NOT_POSSIBLE.toString() + Messages.ACTION_PASTE);
+                mpv5.YabsViewProxy.instance().addMessage(Messages.NOT_POSSIBLE.toString() + Messages.ACTION_PASTE);
             }
         }
     }

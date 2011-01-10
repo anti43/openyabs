@@ -220,7 +220,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
             @Override
             public void run() {
                 int count = 0;
-                MPView.setProgressMaximumValue(contextArray.length - 1);
+                mpv5.YabsViewProxy.instance().setProgressMaximumValue(contextArray.length - 1);
                 for (int f = 0; f < contextArray.length; f++) {
                     try {
                         Context context = contextArray[f];
@@ -240,13 +240,13 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
                                 count++;
                             }
                         }
-                        MPView.setProgressValue(f);
+                        mpv5.YabsViewProxy.instance().setProgressValue(f);
                     } catch (Exception nodataFoundException) {
                         Log.Debug(DatabaseObject.class, nodataFoundException.getMessage());
                     }
                 }
                 Log.Debug(DatabaseObject.class, "Cached objects: " + count);
-                MPView.setProgressReset();
+                mpv5.YabsViewProxy.instance().setProgressReset();
             }
         };
         Thread t = new Thread(runnable);
@@ -729,7 +729,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
                 return false;
             }
         } else {
-            MPView.addMessage("You cannot alter the read only object: " + this);//TODO: l10n
+            mpv5.YabsViewProxy.instance().addMessage("You cannot alter the read only object: " + this);//TODO: l10n
             return true;//fake it for the ui
         }
     }

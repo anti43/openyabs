@@ -459,7 +459,7 @@ public class ObjectsCalendarDayChooser extends JPanel implements ActionListener,
                                 public void actionPerformed(ActionEvent e) {
                                     try {
                                         //new ScheduleDayEvents(tday);
-                                        MPView.getIdentifierView().addTab(
+                                        mpv5.YabsViewProxy.instance().getIdentifierView().addTab(
                                                 new GeneralListPanel(
                                                 DatabaseObject.getObjects(
                                                 context, new vTimeframe(tday,

@@ -131,7 +131,7 @@ public class TextAreaCellEditor extends DefaultCellEditor implements ActionListe
             public void run() {
 
                 // Point p =textArea.getLocationOnScreen();
-                // p.move((int)p.getX(),MPView.identifierFrame.getY() + MPView.identifierFrame.getHeight() - 310);
+                // p.move((int)p.getX(),mpv5.YabsViewProxy.instance().identifierFrame.getY() + mpv5.YabsViewProxy.instance().identifierFrame.getHeight() - 310);
                 // dialog.setLocation(p);
                 setDialogLocation(textArea, dialog);
                 dialog.setVisible(true);

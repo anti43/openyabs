@@ -72,7 +72,7 @@ public class DTAFile extends Exportable implements Waitable {
         try {
 
             Log.Debug(this, "run: ");
-            MPView.setWaiting(true);
+            mpv5.YabsViewProxy.instance().setWaiting(true);
             Log.Debug(this, "All fields:");
             HashMap<String, Object> datas = getData();
 
@@ -138,7 +138,7 @@ public class DTAFile extends Exportable implements Waitable {
         } catch (Exception ex) {
             Log.Debug(ex);
         } finally {
-            MPView.setWaiting(false);
+            mpv5.YabsViewProxy.instance().setWaiting(false);
         }
     }
 

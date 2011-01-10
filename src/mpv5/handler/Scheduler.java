@@ -104,7 +104,7 @@ public class Scheduler extends Thread {
                         schedule.setNextdate(olddate);
                         schedule.setIsdone(true);
                         schedule.save(true);
-                        MPView.addMessage(Messages.SCHEDULE_ITEM_REMOVED + " " + schedule);
+                        mpv5.YabsViewProxy.instance().addMessage(Messages.SCHEDULE_ITEM_REMOVED + " " + schedule);
                     }
                     list.add(item);
                 } catch (NodataFoundException ex) {
@@ -117,7 +117,7 @@ public class Scheduler extends Thread {
             if (Popup.Y_N_dialog(list.size() + " " + Messages.SCHEDULE_NEW_ITEMS)) {
                 for (int i = 0; i < list.size(); i++) {
                     Item item = list.get(i);
-                    MPView.getIdentifierView().addTab(item);
+                    mpv5.YabsViewProxy.instance().getIdentifierView().addTab(item);
                 }
             }
         }
@@ -222,9 +222,9 @@ public class Scheduler extends Thread {
 ////            if (Popup.Y_N_dialog(warnings.size() + " " + Messages.SCHEDULE_NEW_WARNINGS, Messages.WARNING)) {
 //        for (int i = 0; i < warnings.size(); i++) {
 //            Item item = warnings.get(i);
-//            MPView.identifierView.addTab(item);
+//            mpv5.YabsViewProxy.instance().addTab(item);
 //        }
-//                 MPView.identifierView.addTab(new GeneralListPanel(warnings), Messages.UNPAID_BILLS.toString());
+//                 mpv5.YabsViewProxy.instance().addTab(new GeneralListPanel(warnings), Messages.UNPAID_BILLS.toString());
 ////            }
 //        }
 
@@ -233,7 +233,7 @@ public class Scheduler extends Thread {
 //            if (Popup.Y_N_dialog(alerts.size() + " " + Messages.SCHEDULE_NEW_ALERTS, Messages.WARNING)) {
 
             g.show(map);
-            MPView.getIdentifierView().addOrShowTab(g, Messages.UNPAID_BILLS.toString());
+            mpv5.YabsViewProxy.instance().getIdentifierView().addOrShowTab(g, Messages.UNPAID_BILLS.toString());
 //            }
         }
     }

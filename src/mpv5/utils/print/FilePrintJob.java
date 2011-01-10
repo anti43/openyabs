@@ -79,7 +79,7 @@ public class FilePrintJob {
 
         f.setHeader(head);
         f.setData(dat);
-        MPView.showFilesaveDialogFor(f.createFile(name));
+        mpv5.YabsViewProxy.instance().showFilesaveDialogFor(f.createFile(name));
     }
 
     public void toVCF() {
@@ -131,7 +131,7 @@ public class FilePrintJob {
             }
         }
 
-        MPView.showFilesaveDialogFor(f);
+        mpv5.YabsViewProxy.instance().showFilesaveDialogFor(f);
     }
 
     public void toXML() {
@@ -147,6 +147,6 @@ public class FilePrintJob {
         }
 
        
-        MPView.showFilesaveDialogFor(xmlw.createFile(name));
+        mpv5.YabsViewProxy.instance().showFilesaveDialogFor(xmlw.createFile(name));
     }
 }

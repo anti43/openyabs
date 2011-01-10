@@ -37,7 +37,7 @@ public class OOOPanel extends JPanel {
      */
     @Deprecated
     public void constructOOOPanel(final File odtFile) {
-            MPView.setWaiting(true);
+            mpv5.YabsViewProxy.instance().setWaiting(true);
 
             ITextDocument textDocument;
             setVisible(true);
@@ -57,9 +57,9 @@ public class OOOPanel extends JPanel {
                 Log.Debug(ex);
             } finally {
                 getParent().validate();
-                MPView.setWaiting(false);
+                mpv5.YabsViewProxy.instance().setWaiting(false);
             }
-            MPView.addMessage(Messages.OO_DONE_LOADING);
+            mpv5.YabsViewProxy.instance().addMessage(Messages.OO_DONE_LOADING);
         
     }
 

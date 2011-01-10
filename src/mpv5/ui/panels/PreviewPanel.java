@@ -342,7 +342,7 @@ public class PreviewPanel extends javax.swing.JPanel implements Waiter {
             d.getFile().delete();
             if (file.renameTo(d.getFile())) {
                 try {
-                    MPView.addMessage(Messages.FILE_SAVED + d.getFile().getCanonicalPath());
+                    mpv5.YabsViewProxy.instance().addMessage(Messages.FILE_SAVED + d.getFile().getCanonicalPath());
                 } catch (IOException ex) {
                     Log.Debug(ex);
                 }
