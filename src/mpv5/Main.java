@@ -17,7 +17,10 @@
 package mpv5;
 
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import mpv5.db.common.NodataFoundException;
 import mpv5.logging.*;
 import org.jdesktop.application.Application;
@@ -28,8 +31,10 @@ import enoa.handler.TemplateHandler;
 import java.awt.Cursor;
 import java.awt.Font;
 import java.io.File;
+import java.lang.reflect.Field;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.Enumeration;
 import java.util.List;
@@ -221,14 +226,11 @@ public class Main {
         }
     }
 
-    public static void extStart(Class app, String... args) throws Exception {
+    public static void extStart(Class app, Class view, String... args) throws Exception {
         APPLICATION_CLASS = app;
+        VIEW_CLASS = view;
         main(args);
     }
-//    public static void extShutdown() {
-//        getApplication().exit();
-//    }
-    private File lockfile = new File(MPPATH + File.separator + "." + Constants.PROG_NAME + "." + "lck");
 
     /**
      * Launch the application
@@ -270,7 +272,7 @@ public class Main {
     /**
      * The Yabs View (JSAF FrameView)
      */
-    public static YabsView VIEW = null;
+    public static Class VIEW_CLASS;
 
     /**
      * At startup create and show the main frame of the application.
@@ -279,20 +281,7 @@ public class Main {
         Log.Debug(this, "Startup procedure... ");
         getApplication().getContext().getLocalStorage().setDirectory(new File(Main.MPPATH));
 
-        Main.splash.nextStep(Messages.INIT_GUI.toString());
-        if (!HEADLESS) {
-
-            getApplication().show(new MPView(getApplication()));
-            YabsViewProxy.instance().register((YabsView) getApplication().getMainView());
-            VIEW = (YabsView) getApplication().getMainView();
-        }
-
         splash.nextStep(Messages.FIRST_INSTANCE.toString());
-
-        if (LocalSettings.getProperty(LocalSettings.DBTYPE).equals("single") && !firstInstance()) {
-            System.exit(1);
-        }
-
         splash.nextStep(Messages.DB_CHECK.toString());
 
         ControlPanel_Fonts.applyFont(Font.decode(LocalSettings.getProperty(LocalSettings.DEFAULT_FONT)));
@@ -302,6 +291,24 @@ public class Main {
                 readGlobalSettings();
                 Log.Debug(this, "Loading Yabs... ");
                 readImports();
+                Main.splash.nextStep(Messages.INIT_GUI.toString());
+                if (!HEADLESS) {
+                    try {
+                        View view = (View) VIEW_CLASS.getDeclaredConstructor(SingleFrameApplication.class).newInstance(getApplication());
+                        Log.Print(Arrays.asList(getApplication().getClass().getDeclaredFields()));
+
+                        Field field= getApplication().getClass().getDeclaredField("mainView");
+                        field.setAccessible(true);
+                        field.set(getApplication(), view);
+
+                        getApplication().show(view);
+                        Log.Print(Arrays.asList(getApplication().getMainView().getClass().getInterfaces()));
+                    } catch (Exception ex) {
+                        Log.Debug(ex);
+                        System.exit(1);
+                    }
+                    YabsViewProxy.instance().register((YabsView) getApplication().getMainView());
+                }
                 go(false);
             } else if (Popup.Y_N_dialog(splash, Messages.NO_DB_CONNECTION, Messages.FIRST_START.toString())) {
                 Log.Debug(this, "Loading database config wizard...");
@@ -378,9 +385,13 @@ public class Main {
      * @throws Exception 
      */
     public static void main(String[] args) throws Exception {
+
         INSTANTIATED = true;
         if (APPLICATION_CLASS == null) {//fallback
             APPLICATION_CLASS = YabsApplication.class;
+        }
+        if (VIEW_CLASS == null) {//fallback
+            VIEW_CLASS = MPView.class;
         }
 
         try {
@@ -914,9 +925,5 @@ public class Main {
     @SuppressWarnings("unchecked")
     public static SingleFrameApplication getApplication() {
         return (SingleFrameApplication) SingleFrameApplication.getInstance(APPLICATION_CLASS);
-    }
-
-    public static YabsView getView() {
-        return VIEW;
     }
 }
