@@ -75,6 +75,7 @@ import mpv5.utils.files.FileReaderWriter;
 import mpv5.utils.print.PrintJob2;
 import mpv5.utils.text.RandomText;
 import mpv5.webshopinterface.WSIManager;
+import org.jdesktop.application.FrameView;
 import org.jdesktop.application.View;
 
 /**
@@ -295,13 +296,8 @@ public class Main {
                 if (!HEADLESS) {
                     try {
                         @SuppressWarnings("unchecked")
-                        View view = (View) VIEW_CLASS.getDeclaredConstructor(SingleFrameApplication.class).newInstance(getApplication());
-                        Log.Print(Arrays.asList(getApplication().getClass().getDeclaredFields()));
-//
-//                        Field field= getApplication().getClass().getDeclaredField("mainView");
-//                        field.setAccessible(true);
-//                        field.set(getApplication(), view);
-
+                        FrameView view = (FrameView) VIEW_CLASS.getDeclaredConstructor(SingleFrameApplication.class).newInstance(getApplication());
+                        getApplication().setMainView(view);
                         getApplication().show(view);
 //                        Log.Print(Arrays.asList(getApplication().getMainView().getClass().getInterfaces()));
                     } catch (Exception ex) {
