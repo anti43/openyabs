@@ -276,7 +276,7 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
 
         groups.setName("groups"); // NOI18N
 
-        jLabel8.setFont(new java.awt.Font("Dialog", 0, 12)); // NOI18N
+        jLabel8.setFont(new java.awt.Font("Dialog", 0, 12));
         jLabel8.setText(bundle.getString("JournalPanel.jLabel8.text_1")); // NOI18N
         jLabel8.setName("jLabel8"); // NOI18N
 
@@ -287,13 +287,13 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
         includechildgroups.setText(bundle.getString("JournalPanel.includechildgroups.text")); // NOI18N
         includechildgroups.setName("includechildgroups"); // NOI18N
 
-        jLabel2.setFont(new java.awt.Font("Dialog", 0, 12)); // NOI18N
+        jLabel2.setFont(new java.awt.Font("Dialog", 0, 12));
         jLabel2.setText(bundle.getString("JournalPanel.jLabel2.text")); // NOI18N
         jLabel2.setName("jLabel2"); // NOI18N
 
         users.setName("users"); // NOI18N
 
-        jLabel6.setFont(new java.awt.Font("Dialog", 0, 12)); // NOI18N
+        jLabel6.setFont(new java.awt.Font("Dialog", 0, 12));
         jLabel6.setText(bundle.getString("JournalPanel.jLabel6.text")); // NOI18N
         jLabel6.setName("jLabel6"); // NOI18N
 
@@ -305,8 +305,8 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
                 .addContainerGap()
                 .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 148, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel8, javax.swing.GroupLayout.DEFAULT_SIZE, 161, Short.MAX_VALUE)
-                    .addComponent(jLabel6, javax.swing.GroupLayout.DEFAULT_SIZE, 161, Short.MAX_VALUE))
+                    .addComponent(jLabel8, javax.swing.GroupLayout.DEFAULT_SIZE, 165, Short.MAX_VALUE)
+                    .addComponent(jLabel6, javax.swing.GroupLayout.DEFAULT_SIZE, 165, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel7Layout.createSequentialGroup()
@@ -315,12 +315,12 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
                     .addGroup(jPanel7Layout.createSequentialGroup()
                         .addComponent(statusc, javax.swing.GroupLayout.PREFERRED_SIZE, 243, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(bydateend, javax.swing.GroupLayout.DEFAULT_SIZE, 209, Short.MAX_VALUE))
+                        .addComponent(bydateend, javax.swing.GroupLayout.DEFAULT_SIZE, 213, Short.MAX_VALUE))
                     .addGroup(jPanel7Layout.createSequentialGroup()
                         .addComponent(groups, javax.swing.GroupLayout.PREFERRED_SIZE, 243, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(includechildgroups, javax.swing.GroupLayout.PREFERRED_SIZE, 176, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 33, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 37, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
         jPanel7Layout.setVerticalGroup(
@@ -347,15 +347,15 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
         jPanel8.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         jPanel8.setName("jPanel8"); // NOI18N
 
-        jLabel3.setFont(new java.awt.Font("Dialog", 0, 12)); // NOI18N
+        jLabel3.setFont(new java.awt.Font("Dialog", 0, 12));
         jLabel3.setText(bundle.getString("JournalPanel.jLabel3.text")); // NOI18N
         jLabel3.setName("jLabel3"); // NOI18N
 
-        jLabel5.setFont(new java.awt.Font("Dialog", 0, 12)); // NOI18N
+        jLabel5.setFont(new java.awt.Font("Dialog", 0, 12));
         jLabel5.setText(bundle.getString("JournalPanel.jLabel5.text")); // NOI18N
         jLabel5.setName("jLabel5"); // NOI18N
 
-        jLabel4.setFont(new java.awt.Font("Dialog", 0, 12)); // NOI18N
+        jLabel4.setFont(new java.awt.Font("Dialog", 0, 12));
         jLabel4.setText(bundle.getString("JournalPanel.jLabel4.text")); // NOI18N
         jLabel4.setName("jLabel4"); // NOI18N
 
@@ -375,7 +375,7 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
                 .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 269, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(timeframeChooser1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(129, Short.MAX_VALUE))
+                .addContainerGap(133, Short.MAX_VALUE))
         );
         jPanel8Layout.setVerticalGroup(
             jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -443,7 +443,7 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
                 .addComponent(jButton2)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jButton3)
-                .addContainerGap(97, Short.MAX_VALUE))
+                .addContainerGap(104, Short.MAX_VALUE))
         );
         jPanel6Layout.setVerticalGroup(
             jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -526,7 +526,7 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
                 .addComponent(prinitingComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 196, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jButton4)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 44, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 88, Short.MAX_VALUE)
                 .addComponent(volume, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(revenue, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -578,7 +578,7 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
     private void jTable1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable1MouseClicked
         if (evt.getClickCount() > 1) {
             try {
-                DatabaseObject obj = DatabaseObject.getObject((DatabaseObject.Entity<?, ?>) jTable1.getValueAt(jTable1.getSelectedRow(), 0));
+                DatabaseObject obj = DatabaseObject.getObject((DatabaseObject.Entity<?, ?>) jTable1.getModel().getValueAt(jTable1.getSelectedRow(), 0));
                 mpv5.YabsViewProxy.instance().addTab(obj);
             } catch (NodataFoundException ex) {
                 Log.Debug(ex);
@@ -989,7 +989,7 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
                     if (Popup.Y_N_dialog(Messages.REALLY_DELETE2 + " (" + jTable1.getSelectedRowCount() + ")")) {
                         for (int i = 0; i < jTable1.getSelectedRows().length; i++) {
                             try {
-                                DatabaseObject obj = DatabaseObject.getObject((DatabaseObject.Entity<?, ?>) jTable1.getValueAt(jTable1.getSelectedRow(), 0));
+                                DatabaseObject obj = DatabaseObject.getObject((DatabaseObject.Entity<?, ?>) jTable1.getModel().getValueAt(jTable1.getSelectedRow(), 0));
                                 obj.delete();
                                 jTable1.getSelectionModel().removeSelectionInterval(jTable1.getSelectedRows()[i] - 1, jTable1.getSelectedRows()[i]);
                             } catch (NodataFoundException ex) {
@@ -1005,7 +1005,7 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
                     int count = 0;
                     for (int i = 0; i < jTable1.getSelectedRows().length; i++) {
                         try {
-                            DatabaseObject obj = DatabaseObject.getObject((DatabaseObject.Entity<?, ?>) jTable1.getValueAt(jTable1.getSelectedRow(), 0));
+                            DatabaseObject obj = DatabaseObject.getObject((DatabaseObject.Entity<?, ?>) jTable1.getModel().getValueAt(jTable1.getSelectedRow(), 0));
                             if (obj.getContext().equals(Context.getItem())) {
                                 Item item = (Item) obj;
                                 if (item.__getIntstatus() != Item.STATUS_PAID) {
@@ -1019,7 +1019,7 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
                     if (Popup.Y_N_dialog(Messages.REALLY_CHANGE2 + " (" + count + ")")) {
                         for (int i = 0; i < jTable1.getSelectedRows().length; i++) {
                             try {
-                                DatabaseObject obj = DatabaseObject.getObject((DatabaseObject.Entity<?, ?>) jTable1.getValueAt(jTable1.getSelectedRow(), 0));
+                                DatabaseObject obj = DatabaseObject.getObject((DatabaseObject.Entity<?, ?>) jTable1.getModel().getValueAt(jTable1.getSelectedRow(), 0));
                                 if (obj.getContext().equals(Context.getItem())) {
                                     Item item = (Item) obj;
                                     if (item.__getIntstatus() == Item.STATUS_PAID) {
@@ -1135,7 +1135,7 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
             List<Item> items = new Vector<Item>();
             for (int i = 0; i < jTable1.getSelectedRows().length; i++) {
                 try {
-                    DatabaseObject obj = DatabaseObject.getObject((DatabaseObject.Entity<?, ?>) jTable1.getValueAt(jTable1.getSelectedRows()[i], 0));
+                    DatabaseObject obj = DatabaseObject.getObject((DatabaseObject.Entity<?, ?>) jTable1.getModel().getValueAt(jTable1.getSelectedRows()[i], 0));
                     if (obj.getContext().equals(Context.getItem())) {
                         Item item = (Item) obj;
                         if (item.__getIntstatus() != Item.STATUS_PAID) {
@@ -1169,7 +1169,7 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
             List<Item> items = new Vector<Item>();
             for (int i = 0; i < jTable1.getSelectedRows().length; i++) {
                 try {
-                    DatabaseObject obj = DatabaseObject.getObject((DatabaseObject.Entity<?, ?>) jTable1.getValueAt(jTable1.getSelectedRows()[i], 0));
+                    DatabaseObject obj = DatabaseObject.getObject((DatabaseObject.Entity<?, ?>) jTable1.getModel().getValueAt(jTable1.getSelectedRows()[i], 0));
                     if (obj.getContext().equals(Context.getItem())) {
                         Item item = (Item) obj;
 //                        if (item.__getIntstatus() != Item.STATUS_PAID) {
@@ -1213,7 +1213,7 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
             List<Item> items = new Vector<Item>();
             for (int i = 0; i < jTable1.getSelectedRows().length; i++) {
                 try {
-                    DatabaseObject obj = DatabaseObject.getObject((DatabaseObject.Entity<?, ?>) jTable1.getValueAt(jTable1.getSelectedRows()[i], 0));
+                    DatabaseObject obj = DatabaseObject.getObject((DatabaseObject.Entity<?, ?>) jTable1.getModel().getValueAt(jTable1.getSelectedRows()[i], 0));
                     if (obj.getContext().equals(Context.getItem())) {
                         Item item = (Item) obj;
 //                        if (item.__getIntstatus() != Item.STATUS_PAID) {

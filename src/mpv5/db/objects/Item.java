@@ -449,9 +449,7 @@ public class Item extends DatabaseObject implements Formattable {
 
         try {
             if (map.containsKey("intstatus")) {
-                map.remove("intstatus");
                 map.put("status", getStatusString(Integer.valueOf(map.get("intstatus").toString())));
-                map.remove("intstatus");
             }
         } catch (Exception numberFormatException) {
             //already resolved?

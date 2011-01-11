@@ -81,7 +81,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
      * @param <T>
      * @param <V>
      */
-    public static class Entity<T extends Context, V> {
+    public static class Entity<T extends Context, V> implements Serializable{
 
         private final DatabaseObject owner;
 

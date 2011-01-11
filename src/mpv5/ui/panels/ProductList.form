@@ -52,14 +52,11 @@
               <Group type="102" alignment="0" attributes="0">
                   <Component id="jPanel2" min="-2" max="-2" attributes="0"/>
                   <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                  <Component id="jButton1" min="-2" max="-2" attributes="0"/>
-                  <EmptySpace min="-2" pref="102" max="-2" attributes="0"/>
+                  <Component id="jButton1" min="-2" pref="101" max="-2" attributes="0"/>
+                  <EmptySpace min="-2" pref="20" max="-2" attributes="0"/>
               </Group>
-              <Group type="102" alignment="0" attributes="0">
-                  <Component id="prinitingComboBox1" min="-2" max="-2" attributes="0"/>
-                  <EmptySpace max="-2" attributes="0"/>
-              </Group>
-              <Component id="jScrollPane1" alignment="0" pref="588" max="32767" attributes="0"/>
+              <Component id="prinitingComboBox1" alignment="0" min="-2" max="-2" attributes="0"/>
+              <Component id="jScrollPane1" alignment="0" pref="633" max="32767" attributes="0"/>
           </Group>
         </DimensionLayout>
         <DimensionLayout dim="1">
@@ -70,7 +67,7 @@
                       <Component id="jButton1" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace max="-2" attributes="0"/>
-                  <Component id="jScrollPane1" pref="57" max="32767" attributes="0"/>
+                  <Component id="jScrollPane1" pref="56" max="32767" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
                   <Component id="prinitingComboBox1" min="-2" max="-2" attributes="0"/>
               </Group>
@@ -127,26 +124,26 @@
                   <Group type="102" attributes="0">
                       <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <Group type="102" alignment="1" attributes="1">
-                              <Component id="jLabel1" pref="87" max="32767" attributes="0"/>
+                          <Group type="102" alignment="0" attributes="0">
+                              <Component id="jLabel1" min="-2" pref="81" max="-2" attributes="0"/>
                               <EmptySpace max="-2" attributes="0"/>
-                              <Component id="jCheckBox1" min="-2" max="-2" attributes="0"/>
+                              <Component id="jCheckBox1" min="-2" pref="115" max="-2" attributes="0"/>
                               <EmptySpace max="-2" attributes="0"/>
-                              <Component id="jCheckBox2" min="-2" max="-2" attributes="0"/>
+                              <Component id="jCheckBox2" min="-2" pref="117" max="-2" attributes="0"/>
                           </Group>
-                          <Component id="labeledCombobox2" alignment="0" pref="254" max="32767" attributes="1"/>
-                          <Component id="labeledCombobox1" alignment="0" pref="254" max="32767" attributes="1"/>
+                          <Component id="labeledCombobox2" alignment="0" pref="354" max="32767" attributes="1"/>
+                          <Component id="labeledCombobox1" alignment="0" pref="354" max="32767" attributes="1"/>
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Group type="102" alignment="0" attributes="0">
                               <Component id="jButton4" min="-2" pref="23" max="-2" attributes="0"/>
-                              <EmptySpace type="separate" max="-2" attributes="0"/>
-                              <Component id="jButton2" min="-2" pref="69" max="-2" attributes="0"/>
+                              <EmptySpace pref="10" max="32767" attributes="0"/>
+                              <Component id="jButton2" min="-2" pref="77" max="-2" attributes="0"/>
                           </Group>
                           <Component id="jButton3" min="-2" pref="23" max="-2" attributes="0"/>
                       </Group>
-                      <EmptySpace max="-2" attributes="0"/>
+                      <EmptySpace min="-2" max="-2" attributes="0"/>
                   </Group>
               </Group>
             </DimensionLayout>
@@ -166,8 +163,8 @@
                       <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="2" attributes="0">
                           <Component id="labeledCombobox2" alignment="2" min="-2" max="-2" attributes="0"/>
-                          <Component id="jButton4" alignment="2" min="-2" pref="18" max="-2" attributes="1"/>
-                          <Component id="jButton2" alignment="2" min="-2" pref="20" max="-2" attributes="0"/>
+                          <Component id="jButton4" alignment="2" min="-2" pref="25" max="-2" attributes="1"/>
+                          <Component id="jButton2" alignment="2" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace pref="16" max="32767" attributes="0"/>
                   </Group>

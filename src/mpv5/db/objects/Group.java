@@ -33,7 +33,7 @@ public class Group extends DatabaseObject {
     private String description = "";
     private String defaults = "";
     private String hierarchypath = "";
-    public static String GROUPSEPARATOR = " > ";
+    public static String GROUPSEPARATOR = " - ";
 
     public Group() {
         context = Context.getGroup();

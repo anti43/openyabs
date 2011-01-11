@@ -89,7 +89,7 @@
                           <Component id="accountselect" pref="458" max="32767" attributes="1"/>
                           <Group type="102" alignment="0" attributes="0">
                               <Group type="103" groupAlignment="1" attributes="0">
-                                  <Component id="jCheckBox1" min="-2" pref="131" max="-2" attributes="1"/>
+                                  <Component id="jCheckBox1" min="-2" pref="140" max="-2" attributes="1"/>
                                   <Component id="number" alignment="1" min="-2" pref="214" max="-2" attributes="1"/>
                               </Group>
                               <EmptySpace max="-2" attributes="0"/>
@@ -99,7 +99,7 @@
                               </Group>
                           </Group>
                       </Group>
-                      <EmptySpace pref="36" max="32767" attributes="0"/>
+                      <EmptySpace pref="40" max="32767" attributes="0"/>
                       <Group type="103" groupAlignment="0" max="-2" attributes="0">
                           <Group type="102" attributes="1">
                               <Component id="jLabel4" min="-2" pref="82" max="-2" attributes="0"/>
@@ -126,9 +126,9 @@
                                   <Component id="labeledDateChooser1" min="-2" max="-2" attributes="0"/>
                               </Group>
                               <EmptySpace min="-2" pref="10" max="-2" attributes="0"/>
-                              <Group type="103" groupAlignment="1" attributes="0">
-                                  <Component id="labeledDateChooser2" min="-2" max="-2" attributes="0"/>
-                                  <Component id="jCheckBox1" min="-2" max="-2" attributes="0"/>
+                              <Group type="103" groupAlignment="0" attributes="0">
+                                  <Component id="jCheckBox1" min="-2" pref="16" max="-2" attributes="0"/>
+                                  <Component id="labeledDateChooser2" alignment="0" min="-2" max="-2" attributes="0"/>
                               </Group>
                           </Group>
                           <Group type="102" attributes="0">
@@ -227,8 +227,8 @@
                       <Group type="102" alignment="1" attributes="0">
                           <EmptySpace min="-2" max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="1" attributes="0">
-                              <Component id="jScrollPane1" alignment="0" pref="677" max="32767" attributes="0"/>
-                              <Component id="path" alignment="0" pref="677" max="32767" attributes="0"/>
+                              <Component id="jScrollPane1" alignment="0" max="32767" attributes="0"/>
+                              <Component id="path" alignment="0" pref="681" max="32767" attributes="0"/>
                               <Component id="jLabel1" alignment="0" min="-2" pref="99" max="-2" attributes="0"/>
                               <Group type="102" alignment="0" attributes="0">
                                   <Component id="value" min="-2" max="-2" attributes="0"/>
@@ -347,6 +347,7 @@
                   <ResourceString bundle="mpv5/resources/languages/Panels.properties" key="ExpensePanel.jCheckBox1.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
                 </Property>
                 <Property name="name" type="java.lang.String" value="jCheckBox1" noResource="true"/>
+                <Property name="opaque" type="boolean" value="false"/>
               </Properties>
               <Events>
                 <EventHandler event="itemStateChanged" listener="java.awt.event.ItemListener" parameters="java.awt.event.ItemEvent" handler="jCheckBox1ItemStateChanged"/>
@@ -383,7 +384,7 @@
             </DimensionLayout>
             <DimensionLayout dim="1">
               <Group type="103" groupAlignment="0" attributes="0">
-                  <Component id="jScrollPane3" alignment="1" pref="91" max="32767" attributes="0"/>
+                  <Component id="jScrollPane3" alignment="1" pref="84" max="32767" attributes="0"/>
               </Group>
             </DimensionLayout>
           </Layout>
