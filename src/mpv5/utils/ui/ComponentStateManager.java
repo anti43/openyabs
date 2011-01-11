@@ -90,7 +90,7 @@ public class ComponentStateManager {
                             tableColumn.setPreferredWidth(tableColumnLayoutInfo.getWidth());
                             tableColumnModel.addColumn(tableColumn);
 
-//                          System.err.println(tableColumnLayoutInfo.getColumnName() + " : " + tableColumnLayoutInfo.getWidth());
+//                          Log.Print(tableColumnLayoutInfo.getColumnName() + " : " + tableColumnLayoutInfo.getWidth());
                         } catch (Exception e) {
                             Log.Debug(ComponentStateManager.class, e + ": " + tableColumnLayoutInfo.getColumnName());
                             Log.Debug(ComponentStateManager.class, e + " Count: " + table.getColumnCount());

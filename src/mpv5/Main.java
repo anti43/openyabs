@@ -294,15 +294,16 @@ public class Main {
                 Main.splash.nextStep(Messages.INIT_GUI.toString());
                 if (!HEADLESS) {
                     try {
+                        @SuppressWarnings("unchecked")
                         View view = (View) VIEW_CLASS.getDeclaredConstructor(SingleFrameApplication.class).newInstance(getApplication());
                         Log.Print(Arrays.asList(getApplication().getClass().getDeclaredFields()));
-
-                        Field field= getApplication().getClass().getDeclaredField("mainView");
-                        field.setAccessible(true);
-                        field.set(getApplication(), view);
+//
+//                        Field field= getApplication().getClass().getDeclaredField("mainView");
+//                        field.setAccessible(true);
+//                        field.set(getApplication(), view);
 
                         getApplication().show(view);
-                        Log.Print(Arrays.asList(getApplication().getMainView().getClass().getInterfaces()));
+//                        Log.Print(Arrays.asList(getApplication().getMainView().getClass().getInterfaces()));
                     } catch (Exception ex) {
                         Log.Debug(ex);
                         System.exit(1);
@@ -538,7 +539,7 @@ public class Main {
 
 
         if (cl == null) {
-            System.err.println("Cannot parse arguments");
+            Log.Print("Cannot parse arguments");
         } else {
             if (cl.hasOption(mpdir)) {
                 setEnv(cl.getValue(mpdir).toString());

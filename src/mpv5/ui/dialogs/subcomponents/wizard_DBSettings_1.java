@@ -515,7 +515,7 @@ public class wizard_DBSettings_1 extends javax.swing.JPanel implements Wizardabl
     public boolean next() {
         if (DBVerification() & DirectoryCreate()) {
             this.master.dispose();
-            Main.getApplication().show(Main.getApplication().getMainView());
+            Main.start();
             return true;
         } else {
             this.master.setCursor(Cursor.DEFAULT_CURSOR);

@@ -136,7 +136,7 @@ public class OOOPanel extends JPanel {
                     }
                 }
             } catch (Exception noSuchElementException) {
-                System.err.println(noSuchElementException.getMessage());
+                Log.Print(noSuchElementException.getMessage());
             }
         }
     }

@@ -25,6 +25,7 @@ import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.table.DefaultTableModel;
+import mpv5.logging.Log;
 import mpv5.utils.date.DateConverter;
 import mpv5.utils.files.FileDirectoryHandler;
 
@@ -185,7 +186,7 @@ public class TableHtmlWriter {
                 mpv5.logging.Log.Debug(ex);//Logger.getLogger(TableHtmlWriter.class.getName()).log(Level.SEVERE, null, ex);
             }
         } else {
-            System.err.println("No datamodel given.");
+            Log.Print("No datamodel given.");
         }
 
 
@@ -207,7 +208,7 @@ public class TableHtmlWriter {
                 mpv5.logging.Log.Debug(ex);//Logger.getLogger(TableHtmlWriter.class.getName()).log(Level.SEVERE, null, ex);
             }
         } else {
-            System.err.println("No datamodel given.");
+            Log.Print("No datamodel given.");
         }
 
         return getFile();

@@ -95,7 +95,7 @@ public class YConsole extends javax.swing.JFrame implements LogConsole {
                     if (logwriter != null) {
                         logwriter.write(line + ": " + object.toString());
                     } else {
-                        System.err.println(object);
+                        Log.Print(object);
                     }
                 }
                 if (CONSOLE_LOG_ENABLED) {

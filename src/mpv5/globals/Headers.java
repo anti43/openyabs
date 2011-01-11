@@ -57,7 +57,7 @@ public enum Headers {
          for (int k = 0; k < this.values().length; k++) {
             Headers data = this.values()[k];
             for (int i = 0; i < data.getValue().length; i++) {
-                System.err.println(data.name() + "." + i + "=" + data.getValue()[i]);
+                Log.Print(data.name() + "." + i + "=" + data.getValue()[i]);
             }
         }
     }

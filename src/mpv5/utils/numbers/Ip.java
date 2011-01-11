@@ -16,6 +16,8 @@
  */
 package mpv5.utils.numbers;
 
+import mpv5.logging.Log;
+
 
 public class Ip {
 
@@ -24,7 +26,7 @@ public class Ip {
             new Ip(valueOf);
             return true;
         } catch (Exception e) {
-            System.err.println(e.getMessage());
+            Log.Print(e.getMessage());
             return false;
         }
     }

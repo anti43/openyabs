@@ -209,13 +209,21 @@ public class FormatHandler {
             if (FORMATTABLE_CONTEXTS.contains(forThis.getContext())) {
 
                 String query = "";
-                if (forThis.getContext().equals(Context.getItem())) {
+                if (forThis.getContext().equals(Context.getItem())
+                        || forThis.getContext().equals(Context.getInvoice())
+                        || forThis.getContext().equals(Context.getOffer())
+                        || forThis.getContext().equals(Context.getOrder())) {
                     query = "SELECT cnumber FROM " + forThis.getDbIdentity() + " WHERE ids = (SELECT MAX(ids) from " + forThis.getDbIdentity() + " WHERE inttype ="
                             + ((Item) forThis).__getInttype() + ")";
                 } else if (forThis.getContext().equals(Context.getProduct())) {
                     query = "SELECT cnumber FROM " + forThis.getDbIdentity() + " WHERE ids = (SELECT MAX(ids) from " + forThis.getDbIdentity() + " WHERE inttype ="
                             + ((Product) forThis).__getInttype() + ")";
-                } else if (forThis.getContext().equals(Context.getContact())) {
+                } else if (forThis.getContext().equals(Context.getContact())
+                        || forThis.getContext().equals(Context.getCompany())
+                        || forThis.getContext().equals(Context.getContactsCompanies())
+                        || forThis.getContext().equals(Context.getCustomer())
+                        || forThis.getContext().equals(Context.getSupplier())
+                        || forThis.getContext().equals(Context.getManufacturer())) {
                     if (((Contact) forThis).__getIscustomer()) {
                         query = "SELECT cnumber FROM " + forThis.getDbIdentity() + " WHERE ids = (SELECT MAX(ids) from " + forThis.getDbIdentity() + " WHERE iscustomer = 1)";
                     } else if (((Contact) forThis).__getIsmanufacturer()) {
@@ -223,17 +231,7 @@ public class FormatHandler {
                     } else if (((Contact) forThis).__getIssupplier()) {
                         query = "SELECT cnumber FROM " + forThis.getDbIdentity() + " WHERE ids = (SELECT MAX(ids) from " + forThis.getDbIdentity() + " WHERE issupplier = 1)";
                     } else {
-                        query = "SELECT cnumber FROM " + forThis.getDbIdentity() + " WHERE ids = (SELECT MAX(ids) from " + forThis.getDbIdentity() + ")";
-                    }
-                } else if (forThis.getContext().equals(Context.getContact())) {
-                    if (((Contact) forThis).__getIscustomer()) {
-                        query = "SELECT cnumber FROM " + forThis.getDbIdentity() + " WHERE ids = (SELECT MAX(ids) from " + forThis.getDbIdentity() + " WHERE iscustomer = 1)";
-                    } else if (((Contact) forThis).__getIsmanufacturer()) {
-                        query = "SELECT cnumber FROM " + forThis.getDbIdentity() + " WHERE ids = (SELECT MAX(ids) from " + forThis.getDbIdentity() + " WHERE ismanufacturer = 1)";
-                    } else if (((Contact) forThis).__getIssupplier()) {
-                        query = "SELECT cnumber FROM " + forThis.getDbIdentity() + " WHERE ids = (SELECT MAX(ids) from " + forThis.getDbIdentity() + " WHERE issupplier = 1)";
-                    } else {
-                        query = "SELECT cnumber FROM " + forThis.getDbIdentity() + " WHERE ids = (SELECT MAX(ids) from " + forThis.getDbIdentity() + ")";
+                        query = "SELECT cnumber FROM " + forThis.getDbIdentity() + " WHERE ids = (SELECT MAX(ids) from " + forThis.getDbIdentity() + " WHERE issupplier = 0  AND ismanufacturer = 0 AND iscustomer = 0)";
                     }
                 } else {
                     query = "SELECT cnumber FROM " + forThis.getDbIdentity() + " WHERE ids = (SELECT MAX(ids) from " + forThis.getDbIdentity() + ")";
@@ -268,12 +266,24 @@ public class FormatHandler {
         DatabaseObject forThis = source;
 
         String query = "";
-        if (forThis.getContext().equals(Context.getItem())) {
+        if (forThis.getContext().equals(Context.getItem())
+                || forThis.getContext().equals(Context.getInvoice())
+                || forThis.getContext().equals(Context.getOffer())
+                || forThis.getContext().equals(Context.getOrder())) {
             query = "SELECT cnumber FROM " + forThis.getDbIdentity() + " WHERE cnumber = '" + toString(format, lastNumber + 1) + "' AND inttype ="
                     + ((Item) forThis).__getInttype();
         } else if (forThis.getContext().equals(Context.getProduct())) {
             query = "SELECT cnumber FROM " + forThis.getDbIdentity() + " WHERE cnumber = '" + toString(format, lastNumber + 1) + "' AND inttype ="
                     + ((Product) forThis).__getInttype();
+        } else if (forThis.getContext().equals(Context.getContact())
+                || forThis.getContext().equals(Context.getCompany())
+                || forThis.getContext().equals(Context.getContactsCompanies())
+                || forThis.getContext().equals(Context.getCustomer())
+                || forThis.getContext().equals(Context.getSupplier())
+                || forThis.getContext().equals(Context.getManufacturer())) {
+            
+                query = "SELECT cnumber FROM " + forThis.getDbIdentity() + " WHERE cnumber = '" + toString(format, lastNumber + 1) + "'";
+            
         } else {
             query = "SELECT cnumber FROM " + forThis.getDbIdentity() + " WHERE cnumber = '" + toString(format, lastNumber + 1) + "'";
         }
@@ -296,7 +306,11 @@ public class FormatHandler {
      * @return A formatted number
      */
     public synchronized String toString(MessageFormat format, int number) {
-        return VariablesHandler.parse(format.format(new Object[]{number}), source);
+        String x = VariablesHandler.parse(format.format(new Object[]{number}), source);
+        if(x.length() == 0) {
+            x = "0000" + number;
+        }
+        return x;
     }
 
     /**
@@ -365,7 +379,7 @@ public class FormatHandler {
 
         int startindex = 0;
         String prop = GlobalSettings.getProperty(format.toPattern() + "_startposition");
-        if(prop!=null && !prop.equals("null")){
+        if (prop != null && !prop.equals("null")) {
             try {
                 startindex = Integer.valueOf(prop);
             } catch (NumberFormatException numberFormatException) {
@@ -380,8 +394,7 @@ public class FormatHandler {
                 Log.Debug(this, format.toPattern());
                 f = new MessageFormat((VariablesHandler.parse(format.toPattern(), source)));
                 n = (Number) f.parse(string, new ParsePosition(startindex))[0];
-//                Log.Debug(this, f.toPattern());
-//                Log.Debug(this, string);
+                Log.Debug(this, "Pattern: " + f.toPattern() + " for String: " + string);
             } catch (Exception e) {
                 //Its 0?
 //                Log.Debug(this, e);

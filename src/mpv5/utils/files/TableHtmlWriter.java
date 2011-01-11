@@ -210,7 +210,7 @@ public class TableHtmlWriter {
                 mpv5.logging.Log.Debug(ex);//Logger.getLogger(TableHtmlWriter.class.getName()).log(Level.SEVERE, null, ex);
             }
         } else {
-            System.err.println("No datamodel given.");
+            Log.Print("No datamodel given.");
         }
 
         return getFile();
@@ -229,7 +229,7 @@ public class TableHtmlWriter {
                 mpv5.logging.Log.Debug(ex);//Logger.getLogger(TableHtmlWriter.class.getName()).log(Level.SEVERE, null, ex);
             }
         } else {
-            System.err.println("No datamodel given.");
+            Log.Print("No datamodel given.");
         }
         return getFile();
     }
@@ -413,7 +413,7 @@ public class TableHtmlWriter {
                 mpv5.logging.Log.Debug(ex);//Logger.getLogger(TableHtmlWriter.class.getName()).log(Level.SEVERE, null, ex);
             }
         } else {
-            System.err.println("No datamodel given.");
+            Log.Print("No datamodel given.");
         }
 
         return getFile();

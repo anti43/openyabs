@@ -521,11 +521,16 @@ public class ControlPanel_Formats extends javax.swing.JPanel implements ControlA
         b.setIDS(1);
         b.avoidNulls();
 
-        FormatHandler fh = new FormatHandler(b);
-        MessageFormat format = new MessageFormat(VariablesHandler.parse(labeledTextField1.getText(), b));
-        str = fh.toString(format, Integer.valueOf(labeledSpinner1.get_Value().toString()));
-        str = Messages.THE_RESULT + str;
-        return Popup.OK_dialog(str, Messages.NOTICE.getValue());
+        try {
+            FormatHandler fh = new FormatHandler(b);
+            MessageFormat format = new MessageFormat(VariablesHandler.parse(labeledTextField1.getText(), b));
+            str = fh.toString(format, Integer.valueOf(labeledSpinner1.get_Value().toString()));
+            str = Messages.THE_RESULT + str;
+            return Popup.OK_dialog(str, Messages.NOTICE.getValue());
+        } catch (Exception exception) {
+            Popup.error(exception);
+            return false;
+        }
     }
 
     private void setLocale(int userid) {

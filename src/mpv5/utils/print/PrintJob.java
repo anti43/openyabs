@@ -189,7 +189,7 @@ public class PrintJob implements Waiter {
     private void printOldStyle(ArrayList<File> filelist) {
         if (null == prservices || 0 >= prservices.length) {
             if (null != prservDflt) {
-                System.err.println("Nur Default-Printer, da lookupPrintServices fehlgeschlagen.");
+                Log.Print("Nur Default-Printer, da lookupPrintServices fehlgeschlagen.");
                 prservices = new PrintService[]{prservDflt};
             }
         }

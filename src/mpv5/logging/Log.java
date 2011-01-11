@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.List;
 import javax.swing.table.TableModel;
@@ -188,10 +189,8 @@ public class Log {
      */
     public static void PrintArray(Object[] string) {
         write("Print array: {");
-        for (int i = 0; i < string.length; i++) {
-            if (loglevel != LOGLEVEL_NONE) {
-                write(string[i]);
-            }
+        if (loglevel != LOGLEVEL_NONE) {
+            write(Arrays.asList(string));
         }
         write("}//End Print array");
     }
@@ -207,7 +206,7 @@ public class Log {
     }
 
     private static synchronized void write(Object obj) {
-       logger.log(obj);
+        logger.log(obj);
     }
 
     /**

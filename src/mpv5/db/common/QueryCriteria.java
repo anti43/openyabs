@@ -34,6 +34,7 @@ public class QueryCriteria {
     }
     private HashMap<String, SaveString> list = new HashMap<String, SaveString>();
     private String order = "";
+    private String FIELD_SEPARATOR = "<SepaRatoR>";
 
     public QueryCriteria() {
     }
@@ -149,10 +150,10 @@ public class QueryCriteria {
 
         for (int i = 0; i < k.length; i++) {
             mpv5.db.common.SaveString v = getValue(k[i]);
-            s += v.getWrapper() + v.toString() + v.getWrapper() + ",";
+            s += v.getWrapper() + v.toString() + v.getWrapper() + FIELD_SEPARATOR;
         }
         if (s.length() > 1) {
-            return s.substring(0, s.length() - 1);
+            return s.substring(0, s.length() - FIELD_SEPARATOR.length());
         } else {
             return s;
         }
@@ -163,7 +164,7 @@ public class QueryCriteria {
      * @return An array of all values, in getKeys() - order
      */
     public String[] getValues() {
-        return getValuesString().split(",");
+        return getValuesString().split(FIELD_SEPARATOR);
     }
 
     /**

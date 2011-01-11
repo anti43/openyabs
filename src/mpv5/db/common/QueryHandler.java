@@ -1630,7 +1630,10 @@ public class QueryHandler implements Cloneable {
      */
     public boolean delete(String[] whereColumns, Object[] haveValues, String jobmessage) {
         String query = "DELETE FROM " + table + " WHERE ";
+        Log.PrintArray(whereColumns);
+        Log.PrintArray(haveValues);
         for (int i = 0; i < haveValues.length; i++) {
+            Log.Print(haveValues.length);
             Object object = haveValues[i];
             String column = whereColumns[i];
 //            if (object instanceof Number) {
