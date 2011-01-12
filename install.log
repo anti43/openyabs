@@ -1,75 +1,77 @@
 
-40: mpv5.logging.LogConsole: Logging to File: install.log
-41: mpv5.Main: Sun Dec 05 16:09:38 CET 2010
-42: mpv5.globals.LocalSettings: Changing property 'ooobinaryfolder' to: program
-43: mpv5.data.PropertyStore: Adding or replacing property: ooobinaryfolder = program
-44: mpv5.data.PropertyStore: Adding or replacing property: driver = org.apache.derby.jdbc.ClientDriver
-45: mpv5.data.PropertyStore: Adding or replacing property: url = /home/anti/Desktop
-46: mpv5.data.PropertyStore: Adding or replacing property: user = 
-47: mpv5.data.PropertyStore: Adding or replacing property: password = 
-48: mpv5.data.PropertyStore: Adding or replacing property: dbname = yabs0db
-49: mpv5.data.PropertyStore: Adding or replacing property: dbprefix = 
-50: mpv5.globals.LocalSettings: Changing property 'dbpath' to: /home/anti/Desktop
-51: mpv5.data.PropertyStore: Change property: /home/anti/Desktop for dbpath
-52: mpv5.globals.LocalSettings: Changing property 'dbdriver' to: org.apache.derby.jdbc.ClientDriver
-53: mpv5.data.PropertyStore: Change property: org.apache.derby.jdbc.ClientDriver for dbdriver
-54: mpv5.globals.LocalSettings: Changing property 'dbuser' to: 
-55: mpv5.data.PropertyStore: Adding or replacing property: dbuser = 
-56: mpv5.globals.LocalSettings: Changing property 'dbpassword' to: 
-57: mpv5.data.PropertyStore: Adding or replacing property: dbpassword = 
-58: mpv5.globals.LocalSettings: Changing property 'dbname' to: yabs0db
-59: mpv5.data.PropertyStore: Change property: yabs0db for dbname
-60: mpv5.globals.LocalSettings: Changing property 'dbprefix' to: 
-61: mpv5.data.PropertyStore: Adding or replacing property: dbprefix = 
-62: mpv5.globals.LocalSettings: Changing property 'ooouse' to: false
-63: mpv5.data.PropertyStore: Adding or replacing property: ooouse = false
-64: mpv5.globals.LocalSettings: Changing property 'dbtype' to: single
-65: mpv5.data.PropertyStore: Change property: single for dbtype
-66: mpv5.db.common.DatabaseConnection: Driver: org.apache.derby.jdbc.ClientDriver
-67: mpv5.db.common.DatabaseConnection: RECONNECT::Datenbankverbindung: jdbc:derby:/home/anti/Desktop/yabs0db;create=true;
-68: mpv5.globals.LocalSettings: Writing local settings: null
-69: mpv5.data.PropertyStore: Adding or replacing property: nodeid = 0
+39: mpv5.logging.YConsole: Logging to File: install.log
+40: mpv5.Main: Tue Jan 11 17:21:47 CET 2011
+41: mpv5.globals.LocalSettings: Changing property 'ooobinaryfolder' to: program
+42: mpv5.data.PropertyStore: Adding or replacing property: ooobinaryfolder = program
+43: mpv5.data.PropertyStore: Adding or replacing property: driver = org.apache.derby.jdbc.ClientDriver
+44: mpv5.data.PropertyStore: Adding or replacing property: url = C:\Users\Andreas\.yabs
+45: mpv5.data.PropertyStore: Adding or replacing property: user = 
+46: mpv5.data.PropertyStore: Adding or replacing property: password = 
+47: mpv5.data.PropertyStore: Adding or replacing property: dbname = yabs0db
+48: mpv5.data.PropertyStore: Adding or replacing property: dbprefix = 
+49: mpv5.globals.LocalSettings: Changing property 'dbpath' to: C:\Users\Andreas\.yabs
+50: mpv5.data.PropertyStore: Change property: C:\Users\Andreas\.yabs for dbpath
+51: mpv5.globals.LocalSettings: Changing property 'dbdriver' to: org.apache.derby.jdbc.ClientDriver
+52: mpv5.data.PropertyStore: Change property: org.apache.derby.jdbc.ClientDriver for dbdriver
+53: mpv5.globals.LocalSettings: Changing property 'dbuser' to: 
+54: mpv5.data.PropertyStore: Adding or replacing property: dbuser = 
+55: mpv5.globals.LocalSettings: Changing property 'dbpassword' to: 
+56: mpv5.data.PropertyStore: Adding or replacing property: dbpassword = 
+57: mpv5.globals.LocalSettings: Changing property 'dbname' to: yabs0db
+58: mpv5.data.PropertyStore: Change property: yabs0db for dbname
+59: mpv5.globals.LocalSettings: Changing property 'dbprefix' to: 
+60: mpv5.data.PropertyStore: Adding or replacing property: dbprefix = 
+61: mpv5.globals.LocalSettings: Changing property 'ooouse' to: false
+62: mpv5.data.PropertyStore: Adding or replacing property: ooouse = false
+63: mpv5.globals.LocalSettings: Changing property 'dbtype' to: single
+64: mpv5.data.PropertyStore: Adding or replacing property: dbtype = single
+65: mpv5.db.common.DatabaseConnection: Driver: org.apache.derby.jdbc.ClientDriver
+66: mpv5.db.common.DatabaseConnection: RECONNECT::Datenbankverbindung: jdbc:derby:C:\Users\Andreas\.yabs\yabs0db;create=true;
+67: mpv5.globals.LocalSettings: Writing local settings: null
+68: mpv5.data.PropertyStore: Adding or replacing property: nodeid = 0
+69: mpv5.utils.xml.XMLWriter: Writing Document: C:\Users\Andreas\.yabs\settings0.yabs using encoding: UTF8
 70: mpv5.data.PropertyStore: Adding or replacing property: proxyhost = null
 71: mpv5.data.PropertyStore: Adding or replacing property: dbrowlimit = 0
 72: mpv5.db.common.QueryHandler: Setting global row limit to: 0
 73: mpv5.data.PropertyStore: Adding or replacing property: dbautolock = false
-74: mpv5.data.PropertyStore: Adding or replacing property: scrollpane = null
-75: mpv5.ui.dialogs.subcomponents.wizard_DBSettings_1: Running DB install queries...
-76: CREATE TABLE groups (IDS BIGINT NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1), cname VARCHAR(250) UNIQUE NOT NULL,description VARCHAR(750) DEFAULT NULL,defaults VARCHAR(250) DEFAULT NULL,groupsids BIGINT DEFAULT 0,dateadded DATE NOT NULL,reserve1 VARCHAR(500) DEFAULT NULL,intaddedby BIGINT DEFAULT 0, hierarchypath VARCHAR(500) DEFAULT NULL, reserve2 VARCHAR(500) DEFAULT NULL, PRIMARY KEY  (ids))
-77: mpv5.logging.Log: java.sql.SQLException: Table/View 'GROUPS' already exists in Schema 'APP'.
-78: java.sql.SQLException: Table/View 'GROUPS' already exists in Schema 'APP'.
+74: select * from groups where ids = 1
+75: mpv5.logging.Log: java.sql.SQLSyntaxErrorException: Table/View 'GROUPS' does not exist.
+76: java.sql.SQLSyntaxErrorException: Table/View 'GROUPS' does not exist.
 	at org.apache.derby.impl.jdbc.SQLExceptionFactory40.getSQLException(Unknown Source)
 	at org.apache.derby.impl.jdbc.Util.generateCsSQLException(Unknown Source)
 	at org.apache.derby.impl.jdbc.TransactionResourceImpl.wrapInSQLException(Unknown Source)
 	at org.apache.derby.impl.jdbc.TransactionResourceImpl.handleException(Unknown Source)
 	at org.apache.derby.impl.jdbc.EmbedConnection.handleException(Unknown Source)
 	at org.apache.derby.impl.jdbc.ConnectionChild.handleException(Unknown Source)
-	at org.apache.derby.impl.jdbc.EmbedStatement.executeStatement(Unknown Source)
 	at org.apache.derby.impl.jdbc.EmbedStatement.execute(Unknown Source)
 	at org.apache.derby.impl.jdbc.EmbedStatement.execute(Unknown Source)
 	at mpv5.db.common.DatabaseConnection.runQueries(DatabaseConnection.java:209)
-	at mpv5.ui.dialogs.subcomponents.wizard_DBSettings_1.DBVerification(wizard_DBSettings_1.java:108)
-	at mpv5.ui.dialogs.subcomponents.wizard_DBSettings_1.next(wizard_DBSettings_1.java:516)
-	at mpv5.ui.dialogs.Wizard$4.run(Wizard.java:208)
+	at mpv5.ui.dialogs.subcomponents.wizard_DBSettings_simple_1.DBVerification(wizard_DBSettings_simple_1.java:103)
+	at mpv5.ui.dialogs.subcomponents.wizard_DBSettings_simple_1.next(wizard_DBSettings_simple_1.java:535)
+	at mpv5.ui.dialogs.Wizard$4.run(Wizard.java:209)
 	at java.lang.Thread.run(Thread.java:662)
-Caused by: java.sql.SQLException: Table/View 'GROUPS' already exists in Schema 'APP'.
+Caused by: java.sql.SQLException: Table/View 'GROUPS' does not exist.
 	at org.apache.derby.impl.jdbc.SQLExceptionFactory.getSQLException(Unknown Source)
 	at org.apache.derby.impl.jdbc.SQLExceptionFactory40.wrapArgsForTransportAcrossDRDA(Unknown Source)
-	... 14 more
-Caused by: ERROR X0Y32: Table/View 'GROUPS' already exists in Schema 'APP'.
+	... 13 more
+Caused by: ERROR 42X05: Table/View 'GROUPS' does not exist.
 	at org.apache.derby.iapi.error.StandardException.newException(Unknown Source)
-	at org.apache.derby.impl.sql.catalog.DataDictionaryImpl.duplicateDescriptorException(Unknown Source)
-	at org.apache.derby.impl.sql.catalog.DataDictionaryImpl.addDescriptor(Unknown Source)
-	at org.apache.derby.impl.sql.execute.CreateTableConstantAction.executeConstantAction(Unknown Source)
-	at org.apache.derby.impl.sql.execute.MiscResultSet.open(Unknown Source)
-	at org.apache.derby.impl.sql.GenericPreparedStatement.executeStmt(Unknown Source)
-	at org.apache.derby.impl.sql.GenericPreparedStatement.execute(Unknown Source)
-	... 8 more
+	at org.apache.derby.impl.sql.compile.FromBaseTable.bindTableDescriptor(Unknown Source)
+	at org.apache.derby.impl.sql.compile.FromBaseTable.bindNonVTITables(Unknown Source)
+	at org.apache.derby.impl.sql.compile.FromList.bindTables(Unknown Source)
+	at org.apache.derby.impl.sql.compile.SelectNode.bindNonVTITables(Unknown Source)
+	at org.apache.derby.impl.sql.compile.DMLStatementNode.bindTables(Unknown Source)
+	at org.apache.derby.impl.sql.compile.DMLStatementNode.bind(Unknown Source)
+	at org.apache.derby.impl.sql.compile.CursorNode.bindStatement(Unknown Source)
+	at org.apache.derby.impl.sql.GenericStatement.prepMinion(Unknown Source)
+	at org.apache.derby.impl.sql.GenericStatement.prepare(Unknown Source)
+	at org.apache.derby.impl.sql.conn.GenericLanguageConnectionContext.prepareInternalStatement(Unknown Source)
+	... 7 more
 
-79: 
+77: 
 Caused by:
 
-80: java.sql.SQLException: Table/View 'GROUPS' already exists in Schema 'APP'.
+78: java.sql.SQLException: Table/View 'GROUPS' does not exist.
 	at org.apache.derby.impl.jdbc.SQLExceptionFactory.getSQLException(Unknown Source)
 	at org.apache.derby.impl.jdbc.SQLExceptionFactory40.wrapArgsForTransportAcrossDRDA(Unknown Source)
 	at org.apache.derby.impl.jdbc.SQLExceptionFactory40.getSQLException(Unknown Source)
@@ -78,111 +80,700 @@ Caused by:
 	at org.apache.derby.impl.jdbc.TransactionResourceImpl.handleException(Unknown Source)
 	at org.apache.derby.impl.jdbc.EmbedConnection.handleException(Unknown Source)
 	at org.apache.derby.impl.jdbc.ConnectionChild.handleException(Unknown Source)
-	at org.apache.derby.impl.jdbc.EmbedStatement.executeStatement(Unknown Source)
 	at org.apache.derby.impl.jdbc.EmbedStatement.execute(Unknown Source)
 	at org.apache.derby.impl.jdbc.EmbedStatement.execute(Unknown Source)
 	at mpv5.db.common.DatabaseConnection.runQueries(DatabaseConnection.java:209)
-	at mpv5.ui.dialogs.subcomponents.wizard_DBSettings_1.DBVerification(wizard_DBSettings_1.java:108)
-	at mpv5.ui.dialogs.subcomponents.wizard_DBSettings_1.next(wizard_DBSettings_1.java:516)
-	at mpv5.ui.dialogs.Wizard$4.run(Wizard.java:208)
+	at mpv5.ui.dialogs.subcomponents.wizard_DBSettings_simple_1.DBVerification(wizard_DBSettings_simple_1.java:103)
+	at mpv5.ui.dialogs.subcomponents.wizard_DBSettings_simple_1.next(wizard_DBSettings_simple_1.java:535)
+	at mpv5.ui.dialogs.Wizard$4.run(Wizard.java:209)
 	at java.lang.Thread.run(Thread.java:662)
-Caused by: ERROR X0Y32: Table/View 'GROUPS' already exists in Schema 'APP'.
+Caused by: ERROR 42X05: Table/View 'GROUPS' does not exist.
 	at org.apache.derby.iapi.error.StandardException.newException(Unknown Source)
-	at org.apache.derby.impl.sql.catalog.DataDictionaryImpl.duplicateDescriptorException(Unknown Source)
-	at org.apache.derby.impl.sql.catalog.DataDictionaryImpl.addDescriptor(Unknown Source)
-	at org.apache.derby.impl.sql.execute.CreateTableConstantAction.executeConstantAction(Unknown Source)
-	at org.apache.derby.impl.sql.execute.MiscResultSet.open(Unknown Source)
-	at org.apache.derby.impl.sql.GenericPreparedStatement.executeStmt(Unknown Source)
-	at org.apache.derby.impl.sql.GenericPreparedStatement.execute(Unknown Source)
-	... 8 more
+	at org.apache.derby.impl.sql.compile.FromBaseTable.bindTableDescriptor(Unknown Source)
+	at org.apache.derby.impl.sql.compile.FromBaseTable.bindNonVTITables(Unknown Source)
+	at org.apache.derby.impl.sql.compile.FromList.bindTables(Unknown Source)
+	at org.apache.derby.impl.sql.compile.SelectNode.bindNonVTITables(Unknown Source)
+	at org.apache.derby.impl.sql.compile.DMLStatementNode.bindTables(Unknown Source)
+	at org.apache.derby.impl.sql.compile.DMLStatementNode.bind(Unknown Source)
+	at org.apache.derby.impl.sql.compile.CursorNode.bindStatement(Unknown Source)
+	at org.apache.derby.impl.sql.GenericStatement.prepMinion(Unknown Source)
+	at org.apache.derby.impl.sql.GenericStatement.prepare(Unknown Source)
+	at org.apache.derby.impl.sql.conn.GenericLanguageConnectionContext.prepareInternalStatement(Unknown Source)
+	... 7 more
 
-81: mpv5.globals.LocalSettings: Changing property 'cachedir' to: /home/anti/.yabs/Cache
-82: mpv5.data.PropertyStore: Change property: /home/anti/.yabs/Cache for cachedir
-83: mpv5.globals.LocalSettings: Writing local settings: null
-84: mpv5.data.PropertyStore: Change property: 0 for nodeid
-85: mpv5.utils.xml.XMLWriter: Node exists: connection: 0
-86: mpv5.utils.xml.XMLWriter: Updating /home/anti/.yabs/settings0.yabs
-87: mpv5.data.PropertyStore: Change property: org.apache.derby.jdbc.ClientDriver for driver
-88: mpv5.data.PropertyStore: Change property: /home/anti/Desktop for url
-89: mpv5.data.PropertyStore: Change property:  for user
-90: mpv5.data.PropertyStore: Change property:  for password
-91: mpv5.data.PropertyStore: Change property: yabs0db for dbname
-92: mpv5.data.PropertyStore: Change property:  for dbprefix
-93: mpv5.globals.LocalSettings: Changing property 'dbpath' to: /home/anti/Desktop
-94: mpv5.data.PropertyStore: Change property: /home/anti/Desktop for dbpath
-95: mpv5.globals.LocalSettings: Changing property 'dbdriver' to: org.apache.derby.jdbc.ClientDriver
-96: mpv5.data.PropertyStore: Change property: org.apache.derby.jdbc.ClientDriver for dbdriver
-97: mpv5.globals.LocalSettings: Changing property 'dbuser' to: 
-98: mpv5.data.PropertyStore: Change property:  for dbuser
-99: mpv5.globals.LocalSettings: Changing property 'dbpassword' to: 
-100: mpv5.data.PropertyStore: Change property:  for dbpassword
-101: mpv5.globals.LocalSettings: Changing property 'dbname' to: yabs0db
-102: mpv5.data.PropertyStore: Change property: yabs0db for dbname
-103: mpv5.globals.LocalSettings: Changing property 'dbprefix' to: 
-104: mpv5.data.PropertyStore: Change property:  for dbprefix
-105: mpv5.globals.LocalSettings: Changing property 'ooouse' to: false
-106: mpv5.data.PropertyStore: Change property: false for ooouse
-107: mpv5.globals.LocalSettings: Changing property 'dbtype' to: single
-108: mpv5.data.PropertyStore: Change property: single for dbtype
-109: mpv5.db.common.DatabaseConnection: Driver: org.apache.derby.jdbc.ClientDriver
-110: mpv5.db.common.DatabaseConnection: RECONNECT::Datenbankverbindung: jdbc:derby:/home/anti/Desktop/yabs0db;
-111: mpv5.globals.LocalSettings: Writing local settings: null
-112: mpv5.data.PropertyStore: Change property: 0 for nodeid
-113: mpv5.utils.xml.XMLWriter: Node exists: connection: 0
-114: mpv5.utils.xml.XMLWriter: Node exists: connection: 0
-115: mpv5.utils.xml.XMLWriter: Updating /home/anti/.yabs/settings0.yabs
-116: mpv5.globals.LocalSettings: Changing property 'cachedir' to: /home/anti/.yabs/Cache
-117: mpv5.data.PropertyStore: Change property: /home/anti/.yabs/Cache for cachedir
-118: mpv5.globals.LocalSettings: Writing local settings: null
-119: mpv5.data.PropertyStore: Change property: 0 for nodeid
-120: mpv5.utils.xml.XMLWriter: Node exists: connection: 0
-121: mpv5.utils.xml.XMLWriter: Node exists: connection: 0
-122: mpv5.utils.xml.XMLWriter: Node exists: connection: 0
-123: mpv5.utils.xml.XMLWriter: Updating /home/anti/.yabs/settings0.yabs
-124: mpv5.utils.files.FileReaderWriter: /home/anti/.yabs/.Yabs-Yabs-1.175.lck (No such file or directory)
-125: mpv5.Main: Application will start now: /home/anti/.yabs/.Yabs-Yabs-1.175.lck
-126: mpv5.data.PropertyStore: Adding or replacing property: lastuser = 1
-127: mpv5.data.PropertyStore: Adding or replacing property: lastuserpw = 5F4DCC3B5AA765D61D8327DEB882CF99
-128: mpv5.Main: Checking for auto login.. 
-129: mpv5.db.common.QueryHandler: Checking database version..
-130: mpv5.db.common.QueryHandler: Database version found: 1.1841
-131: mpv5.data.PropertyStore: Adding or replacing property: dbescape = true
-132: mpv5.db.common.QueryHandler: freeSelectQuery::SELECT * FROM users WHERE users.ids = 1 AND users.IDS>0
-133: mpv5.db.common.DatabaseObject: Preparing to explode rows: 1
-134: mpv5.Main: Trying to login user: admin
-135: mpv5.db.common.QueryHandler: freeSelectQuery::SELECT * FROM users WHERE users.IDS>0
-136: mpv5.db.common.DatabaseObject: Preparing to explode rows: 1
-137: mpv5.db.common.DatabaseObject: Rows found: 1
-138: mpv5.db.common.QueryHandler: freeSelectQuery::SELECT iso,cname FROM countries WHERE countries.IDS>0
-139: mpv5.i18n.LanguageManager: Cached countries: 1
-140: mpv5.data.PropertyStore: Adding or replacing property: oootremoteserver = false
-141: mpv5.db.common.QueryHandler: freeSelectQuery::SELECT cname, usersids, itemsids FROM favourites  WHERE favourites.usersids = 4343 AND favourites.IDS>0
-142: mpv5.globals.Messages: Can't find resource for bundle java.util.PropertyResourceBundle, key START_MESSAGE
-143: mpv5.globals.LocalSettings: Writing local settings: 0
-144: mpv5.data.PropertyStore: Change property: 0 for nodeid
-145: mpv5.utils.xml.XMLWriter: Node exists: connection: 0
-146: mpv5.utils.xml.XMLWriter: Node exists: connection: 0
-147: mpv5.utils.xml.XMLWriter: Node exists: connection: 0
-148: mpv5.utils.xml.XMLWriter: Node exists: connection: 0
-149: mpv5.utils.xml.XMLWriter: Updating /home/anti/.yabs/settings0.yabs
-150: mpv5.db.common.QueryHandler: freeSelectQuery::SELECT contacts.IDS,contacts.CNUMBER,contacts.TITLE,contacts.PRENAME,contacts.CNAME,contacts.STREET,contacts.ZIP,contacts.CITY,contacts.MAINPHONE,contacts.FAX,contacts.MOBILEPHONE,contacts.WORKPHONE,contacts.COMPANY,contacts.MAILADDRESS,contacts.WEBSITE,contacts.NOTES,contacts.TAXNUMBER FROM contacts  WHERE  contacts.iscustomer=1  AND contacts.invisible = 0 
-151: mpv5.db.common.QueryHandler: DELETE FROM tablelock WHERE tablelock.usersids = 4343
-152: mpv5.db.common.QueryHandler: DELETE FROM globalsettings WHERE groupsids=2
-153: mpv5.globals.LocalSettings: Writing local settings: 0
-154: mpv5.data.PropertyStore: Change property: 0 for nodeid
-155: mpv5.utils.xml.XMLWriter: Node exists: connection: 0
-156: mpv5.utils.xml.XMLWriter: Node exists: connection: 0
-157: mpv5.utils.xml.XMLWriter: Node exists: connection: 0
-158: mpv5.utils.xml.XMLWriter: Node exists: connection: 0
-159: mpv5.utils.xml.XMLWriter: Node exists: connection: 0
-160: mpv5.utils.xml.XMLWriter: Updating /home/anti/.yabs/settings0.yabs
-161: mpv5.db.common.QueryHandler: Database statistics:
-162: mpv5.Main: Count: 1 for query: SELECT contacts.IDS,contacts.CNUMBER,contacts.TITLE,contacts.PRENAME,contacts.CNAME,contacts.STREET,contacts.ZIP,contacts.CITY,contacts.MAINPHONE,contacts.FAX,contacts.MOBILEPHONE,contacts.WORKPHONE,contacts.COMPANY,contacts.MAILADDRESS,contacts.WEBSITE,contacts.NOTES,contacts.TAXNUMBER FROM contacts  WHERE  contacts.iscustomer=1  AND contacts.invisible = 0 
-Count: 1 for query: DELETE FROM tablelock WHERE tablelock.usersids = 4343
-Count: 1 for query: SELECT cname, usersids, itemsids FROM favourites  WHERE favourites.usersids = 4343 AND favourites.IDS>0
-Count: 1 for query: SELECT * FROM users WHERE users.IDS>0
-Count: 1 for query: SELECT * FROM users WHERE users.ids = 1 AND users.IDS>0
+79: CREATE TABLE groups (IDS BIGINT NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1), cname VARCHAR(250) UNIQUE NOT NULL,description VARCHAR(750) DEFAULT NULL,defaults VARCHAR(250) DEFAULT NULL,groupsids BIGINT DEFAULT 0,dateadded DATE NOT NULL,reserve1 VARCHAR(500) DEFAULT NULL,intaddedby BIGINT DEFAULT 0, hierarchypath VARCHAR(500) DEFAULT NULL, reserve2 VARCHAR(500) DEFAULT NULL, PRIMARY KEY  (ids))
+80: CREATE TABLE productgroups (IDS BIGINT NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1), CONSTRAINT const1 UNIQUE (cname, groupsids), cname VARCHAR(250) NOT NULL,description VARCHAR(750) DEFAULT NULL,defaults VARCHAR(250) DEFAULT NULL,groupsids BIGINT DEFAULT 0, productgroupsids BIGINT DEFAULT 0,dateadded DATE NOT NULL, hierarchypath VARCHAR(500) DEFAULT NULL, reserve1 VARCHAR(500) DEFAULT NULL,intaddedby BIGINT DEFAULT 0, reserve2 VARCHAR(500) DEFAULT NULL, PRIMARY KEY  (ids))
+81: CREATE TABLE history (IDS BIGINT NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),cname VARCHAR(250)  NOT NULL, username VARCHAR(250) NOT NULL,dbidentity VARCHAR(25)  NOT NULL, INTitem SMALLINT NOT NULL,groupsids BIGINT DEFAULT 0, dateadded DATE NOT NULL,intaddedby BIGINT DEFAULT 0,reserve1 VARCHAR(500) DEFAULT NULL, reserve2 VARCHAR(500) DEFAULT NULL,PRIMARY KEY  (ids))
+82: CREATE TABLE countries (IDS BIGINT NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1), cname VARCHAR(250) NOT NULL, iso SMALLINT  UNIQUE NOT NULL,groupsids BIGINT DEFAULT 1,reserve1 VARCHAR(500) DEFAULT NULL, reserve2 VARCHAR(500) DEFAULT NULL,PRIMARY KEY  (ids))
+83: CREATE TABLE searchindex (IDS BIGINT NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),dbidentity VARCHAR(25) NOT NULL, groupsids BIGINT, rowID BIGINT NOT NULL,text VARCHAR(5000) DEFAULT NULL)
+84: CREATE TABLE globalsettings (IDS BIGINT DEFAULT 1,  CONSTRAINT const2 UNIQUE (cname, groupsids), cname VARCHAR(250) NOT NULL, groupsids BIGINT DEFAULT 1, value VARCHAR(250) NOT NULL)
+85: CREATE TABLE tax (IDS BIGINT NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1), cname VARCHAR(250), taxvalue DOUBLE DEFAULT 0,identifier VARCHAR(250) DEFAULT NULL, groupsids BIGINT  REFERENCES groups(ids) DEFAULT 1,country VARCHAR(50) DEFAULT NULL, dateadded DATE NOT NULL,intaddedby BIGINT DEFAULT 0, invisible SMALLINT DEFAULT 0, reserve1 VARCHAR(500) DEFAULT NULL,reserve2 VARCHAR(500) DEFAULT NULL,PRIMARY KEY  (ids))
+86: CREATE TABLE contacts (IDS BIGINT NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1), CONSTRAINT const3 UNIQUE (cnumber, groupsids), cnumber VARCHAR(250) DEFAULT NULL, taxnumber VARCHAR(250), title VARCHAR(250) DEFAULT NULL,groupsids BIGINT  REFERENCES groups(ids) DEFAULT 1,country VARCHAR(50) DEFAULT NULL, prename VARCHAR(250) DEFAULT NULL, cname VARCHAR(250) DEFAULT NULL, street VARCHAR(250) DEFAULT NULL,zip VARCHAR(50) DEFAULT NULL,city VARCHAR(300) DEFAULT NULL, mainphone VARCHAR(250) DEFAULT NULL,fax VARCHAR(250) DEFAULT NULL,mobilephone VARCHAR(250) DEFAULT NULL,workphone VARCHAR(250) DEFAULT NULL,mailaddress VARCHAR(350) DEFAULT NULL,company VARCHAR(250) DEFAULT NULL, department VARCHAR(250) DEFAULT NULL,website VARCHAR(350) DEFAULT NULL,notes VARCHAR(10000),dateadded DATE NOT NULL,isactive SMALLINT DEFAULT 0,iscustomer SMALLINT DEFAULT 0,ismanufacturer SMALLINT DEFAULT 0,issupplier SMALLINT DEFAULT 0,iscompany SMALLINT DEFAULT 0,ismale SMALLINT DEFAULT 0,isenabled SMALLINT DEFAULT 1,intaddedby BIGINT DEFAULT 0, invisible SMALLINT DEFAULT 0, reserve1 VARCHAR(500) DEFAULT NULL,reserve2 VARCHAR(500) DEFAULT NULL,PRIMARY KEY  (ids))
+87: CREATE TABLE users (IDS BIGINT NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1), CONSTRAINT const4 UNIQUE (cname, groupsids), cname VARCHAR(250) NOT NULL, groupsids BIGINT  REFERENCES groups(ids) DEFAULT 1, intdefaultaccount BIGINT DEFAULT 1, compsids BIGINT DEFAULT 0, intdefaultstatus BIGINT DEFAULT 1,fullname VARCHAR(250) NOT NULL, password VARCHAR(250) NOT NULL,laf VARCHAR(150) DEFAULT NULL, locale VARCHAR(50) DEFAULT NULL, defcountry VARCHAR(50) DEFAULT '276', mail VARCHAR(50) DEFAULT NULL, language VARCHAR(150) DEFAULT NULL, inthighestright SMALLINT DEFAULT 3,isenabled SMALLINT DEFAULT 1,isrgrouped SMALLINT DEFAULT 0,isloggedin SMALLINT DEFAULT 0,datelastlog DATE DEFAULT NULL, dateadded DATE NOT NULL,intaddedby BIGINT DEFAULT 0,invisible SMALLINT DEFAULT 0,reserve1 VARCHAR(500) DEFAULT NULL,reserve2 VARCHAR(500) DEFAULT NULL,PRIMARY KEY  (ids))
+88: CREATE TABLE files (IDS BIGINT NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1), cname VARCHAR(25) UNIQUE NOT NULL, groupsids BIGINT  REFERENCES groups(ids) DEFAULT 1,dateadded DATE NOT NULL,data BLOB(50M) NOT NULL, filesize BIGINT NOT NULL,intaddedby BIGINT DEFAULT 0,invisible SMALLINT DEFAULT 0,PRIMARY KEY  (ids))
+89: CREATE TABLE languages(IDS BIGINT NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1), CONSTRAINT const6 UNIQUE (cname, groupsids), cname VARCHAR(250) NOT NULL, groupsids BIGINT  REFERENCES groups(ids) DEFAULT 1, longname VARCHAR(250) UNIQUE NOT NULL, filename VARCHAR(25) NOT NULL REFERENCES files(cname) ON DELETE CASCADE,dateadded DATE NOT NULL,intaddedby BIGINT DEFAULT 0,invisible SMALLINT DEFAULT 0,reserve1 VARCHAR(500) DEFAULT NULL,reserve2 VARCHAR(500) DEFAULT NULL,PRIMARY KEY  (ids))
+90: CREATE TABLE favourites (IDS BIGINT NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),cname VARCHAR(250) NOT NULL, usersids BIGINT REFERENCES users (ids)  ON DELETE CASCADE,groupsids BIGINT  REFERENCES groups(ids) DEFAULT 1,itemsids BIGINT NOT NULL,dateadded DATE NOT NULL,intaddedby BIGINT DEFAULT 0,invisible SMALLINT DEFAULT 0,reserve1 VARCHAR(500) DEFAULT NULL, reserve2 VARCHAR(500) DEFAULT NULL,PRIMARY KEY  (ids))
+91: CREATE TABLE accounts(IDS BIGINT NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1), intaccountclass SMALLINT DEFAULT 0, cname VARCHAR(250) NOT NULL, description VARCHAR(250) NOT NULL, taxvalue DOUBLE NOT NULL DEFAULT 0, dateadded DATE NOT NULL,intaddedby BIGINT DEFAULT 0, intparentaccount BIGINT DEFAULT 0, groupsids BIGINT  REFERENCES groups(ids) DEFAULT 1, invisible SMALLINT DEFAULT 0, intaccounttype SMALLINT NOT NULL, intprofitfid SMALLINT NOT NULL, inttaxfid SMALLINT NOT NULL, inttaxuid SMALLINT NOT NULL, frame VARCHAR(25) NOT NULL, hierarchypath VARCHAR(250) DEFAULT NULL, PRIMARY KEY  (ids))
+92: CREATE TABLE items (IDS BIGINT NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1), CONSTRAINT const7 UNIQUE (cnumber, inttype), cname VARCHAR(250) NOT NULL, cnumber VARCHAR(250) NOT NULL, description VARCHAR(2500) DEFAULT NULL, groupsids BIGINT  REFERENCES groups(ids) DEFAULT 1, accountsids BIGINT REFERENCES accounts(ids) DEFAULT 1,contactsids BIGINT REFERENCES contacts(ids)  ON DELETE CASCADE, netvalue DOUBLE DEFAULT 0,taxvalue DOUBLE DEFAULT 0, discountvalue DOUBLE DEFAULT 0, shippingvalue DOUBLE DEFAULT 0, datetodo DATE DEFAULT NULL, dateend DATE DEFAULT NULL, intreminders INTEGER DEFAULT 0, inttype SMALLINT DEFAULT 0, dateadded DATE NOT NULL,intaddedby BIGINT DEFAULT 0,invisible SMALLINT DEFAULT 0,intstatus SMALLINT DEFAULT 0, hierarchypath VARCHAR(500) DEFAULT NULL, reserve1 VARCHAR(500) DEFAULT NULL, reserve2 VARCHAR(500) DEFAULT NULL, PRIMARY KEY  (ids))
+93: CREATE TABLE subitems (IDS BIGINT NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1), cname VARCHAR(5000) DEFAULT NULL,itemsids BIGINT REFERENCES items(ids)  ON DELETE CASCADE, groupsids BIGINT  REFERENCES groups(ids) DEFAULT 1,originalproductsids BIGINT DEFAULT NULL, countvalue DOUBLE DEFAULT 0 NOT NULL, quantityvalue DOUBLE DEFAULT 0 NOT NULL, measure VARCHAR(250) NOT NULL, linkurl VARCHAR(1000) DEFAULT NULL,description VARCHAR(1000) DEFAULT NULL, internalvalue DOUBLE DEFAULT 0, totalnetvalue DOUBLE DEFAULT 0, totalbrutvalue DOUBLE DEFAULT 0, externalvalue DOUBLE DEFAULT 0, taxpercentvalue DOUBLE DEFAULT 0 NOT NULL,datedelivery DATE DEFAULT NULL, dateadded DATE NOT NULL,intaddedby BIGINT DEFAULT 0,invisible SMALLINT DEFAULT 0,reserve1 VARCHAR(500) DEFAULT NULL,reserve2 VARCHAR(500) DEFAULT NULL,PRIMARY KEY  (ids))
+94: CREATE TABLE schedule (IDS BIGINT NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),cname VARCHAR(250) NOT NULL, groupsids BIGINT  REFERENCES groups(ids) DEFAULT 1,usersids BIGINT REFERENCES users (ids)  ON DELETE CASCADE,itemsids BIGINT REFERENCES items (ids)  ON DELETE CASCADE,stopdate DATE NOT NULL,startdate DATE NOT NULL,nextdate DATE NOT NULL, isdone SMALLINT DEFAULT 0, intervalmonth SMALLINT NOT NULL, dateadded DATE NOT NULL,intaddedby BIGINT DEFAULT 0,invisible SMALLINT DEFAULT 0,reserve1 VARCHAR(500) DEFAULT NULL, reserve2 VARCHAR(500) DEFAULT NULL,PRIMARY KEY  (ids))
+95: CREATE TABLE products (IDS BIGINT NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1), CONSTRAINT const8 UNIQUE (cnumber, groupsids), cname VARCHAR(500) NOT NULL, cnumber VARCHAR(250) NOT NULL, description VARCHAR(5000), externalnetvalue DOUBLE DEFAULT 0, internalnetvalue DOUBLE DEFAULT 0, measure VARCHAR(250) NOT NULL, taxids BIGINT REFERENCES tax(ids), manufacturersids BIGINT DEFAULT 0, suppliersids BIGINT DEFAULT 0, groupsids  BIGINT  REFERENCES groups(ids) DEFAULT 1, productgroupsids  BIGINT  REFERENCES productgroups(ids) DEFAULT 1, url VARCHAR(250) DEFAULT NULL,ean VARCHAR(25) DEFAULT NULL, reference VARCHAR(50) DEFAULT NULL,dateadded DATE NOT NULL,intaddedby BIGINT DEFAULT 0,invisible SMALLINT DEFAULT 0, inttype SMALLINT NOT NULL, defaultimage VARCHAR(30) DEFAULT NULL, reserve1 VARCHAR(500) DEFAULT NULL,reserve2 VARCHAR(500) DEFAULT NULL,PRIMARY KEY  (ids))
+96: CREATE TABLE productlists (IDS BIGINT NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1), cname VARCHAR(2500) DEFAULT NULL, groupsids BIGINT  REFERENCES groups(ids) DEFAULT 1, description VARCHAR(1000) DEFAULT NULL, dateadded DATE NOT NULL,intaddedby BIGINT DEFAULT 0,invisible SMALLINT DEFAULT 0,reserve1 VARCHAR(500) DEFAULT NULL,reserve2 VARCHAR(500) DEFAULT NULL,PRIMARY KEY  (ids))
+97: CREATE TABLE productlistitems (IDS BIGINT NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1), cname VARCHAR(2500) DEFAULT NULL, linkurl VARCHAR(250) DEFAULT NULL, groupsids BIGINT  REFERENCES groups(ids) DEFAULT 1, productlistsids BIGINT REFERENCES productlists(ids) ON DELETE CASCADE,originalproductsids BIGINT REFERENCES products(ids) ON DELETE CASCADE, countvalue DOUBLE DEFAULT 0 NOT NULL, quantityvalue DOUBLE DEFAULT 0 NOT NULL, measure VARCHAR(250) NOT NULL,description VARCHAR(1000) DEFAULT NULL, internalvalue DOUBLE DEFAULT 0, totalnetvalue DOUBLE DEFAULT 0, totalbrutvalue DOUBLE DEFAULT 0, externalvalue DOUBLE DEFAULT 0, taxpercentvalue DOUBLE DEFAULT 0 NOT NULL, dateadded DATE NOT NULL,intaddedby BIGINT DEFAULT 0,invisible SMALLINT DEFAULT 0,reserve1 VARCHAR(500) DEFAULT NULL,reserve2 VARCHAR(500) DEFAULT NULL,PRIMARY KEY  (ids))
+98: CREATE TABLE userproperties(IDS BIGINT DEFAULT 1,cname VARCHAR(250) NOT NULL, value VARCHAR(250) NOT NULL, usersids BIGINT NOT NULL, dateadded DATE NOT NULL,intaddedby BIGINT DEFAULT 0, groupsids BIGINT  REFERENCES groups(ids) DEFAULT 1,invisible SMALLINT DEFAULT 0)
+99: CREATE TABLE mails(IDS BIGINT NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),cname VARCHAR(1000) NOT NULL, dateadded DATE NOT NULL,intaddedby BIGINT DEFAULT 0, groupsids BIGINT  REFERENCES groups(ids) DEFAULT 1,invisible SMALLINT DEFAULT 0, usersids BIGINT REFERENCES users(ids) ON DELETE CASCADE, description VARCHAR(5000) NOT NULL, PRIMARY KEY  (ids))
+100: CREATE TABLE comps (IDS BIGINT NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1), groupsids BIGINT  REFERENCES groups(ids) DEFAULT 1, cname VARCHAR(250) DEFAULT NULL,state VARCHAR(250) DEFAULT NULL,phoneprefix VARCHAR(250) DEFAULT NULL,business VARCHAR(250) DEFAULT NULL,taxadvisor VARCHAR(250) DEFAULT NULL,city  VARCHAR(250) DEFAULT NULL,taxadvjob VARCHAR(250) DEFAULT NULL,street VARCHAR(250) DEFAULT NULL,stb  VARCHAR(250) DEFAULT NULL,email  VARCHAR(250) DEFAULT NULL,name  VARCHAR(250) DEFAULT NULL,zipcode VARCHAR(250) DEFAULT NULL,phone VARCHAR(250) DEFAULT NULL,firstname  VARCHAR(250) DEFAULT NULL,taxauthority VARCHAR(250) DEFAULT NULL,taxnumber VARCHAR(250) DEFAULT NULL,taxadvmandant VARCHAR(250) DEFAULT NULL,dateadded DATE NOT NULL,ismale SMALLINT DEFAULT 0,isenabled SMALLINT DEFAULT 1,intaddedby BIGINT DEFAULT 0, invisible SMALLINT DEFAULT 0, reserve1 VARCHAR(500) DEFAULT NULL,reserve2 VARCHAR(500) DEFAULT NULL,PRIMARY KEY  (ids))
+101: CREATE TABLE expenses (IDS BIGINT NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1), groupsids BIGINT  REFERENCES groups(ids) DEFAULT 1, cnumber VARCHAR(250) DEFAULT NULL, cname VARCHAR(250) DEFAULT NULL, accountsids BIGINT REFERENCES accounts(ids), netvalue DOUBLE DEFAULT 0, taxpercentvalue DOUBLE DEFAULT 0, brutvalue DOUBLE DEFAULT 0, description VARCHAR(5000) DEFAULT NULL,dateadded DATE NOT NULL,intaddedby BIGINT DEFAULT 0, invisible SMALLINT DEFAULT 0, reserve1 VARCHAR(500) DEFAULT NULL,reserve2 VARCHAR(500) DEFAULT NULL,PRIMARY KEY  (ids))
+102: CREATE TABLE revenues (IDS BIGINT NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1), groupsids BIGINT  REFERENCES groups(ids) DEFAULT 1, cnumber VARCHAR(250) DEFAULT NULL, cname VARCHAR(250) DEFAULT NULL, accountsids BIGINT REFERENCES accounts(ids), netvalue DOUBLE DEFAULT 0, taxpercentvalue DOUBLE DEFAULT 0, brutvalue DOUBLE DEFAULT 0, description VARCHAR(5000) DEFAULT NULL,dateadded DATE NOT NULL,intaddedby BIGINT DEFAULT 0, invisible SMALLINT DEFAULT 0, reserve1 VARCHAR(500) DEFAULT NULL,reserve2 VARCHAR(500) DEFAULT NULL,PRIMARY KEY  (ids))
+103: CREATE TABLE webshops (IDS BIGINT NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1), CONSTRAINT const9 UNIQUE (cname, groupsids), cname VARCHAR(250) NOT NULL,description VARCHAR(750) DEFAULT NULL,groupsids BIGINT DEFAULT 0,dateadded DATE NOT NULL, isrequestcompression SMALLINT DEFAULT 0, isauthenticated SMALLINT DEFAULT 0, username VARCHAR(50) DEFAULT NULL, passw VARCHAR(50) DEFAULT NULL,reserve1 VARCHAR(500) DEFAULT NULL,intaddedby BIGINT DEFAULT 0, interv BIGINT DEFAULT 0, url VARCHAR(500) DEFAULT NULL, reserve2 VARCHAR(500) DEFAULT NULL, PRIMARY KEY  (ids))
+104: CREATE TABLE wscontactsmapping (IDS BIGINT NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1), webshopsids BIGINT REFERENCES webshops(ids) ON DELETE CASCADE, cname VARCHAR(250) NOT NULL, groupsids BIGINT REFERENCES groups(ids) ON DELETE CASCADE,contactsids BIGINT REFERENCES contacts(ids) ON DELETE CASCADE, wscontact VARCHAR(250) NOT NULL, dateadded DATE DEFAULT NULL, intaddedby BIGINT DEFAULT 0, invisible SMALLINT DEFAULT 0, reserve1 VARCHAR(500) DEFAULT NULL, CONSTRAINT const10 UNIQUE (wscontact, groupsids, webshopsids), reserve2 VARCHAR(500) DEFAULT NULL, PRIMARY KEY  (ids))
+105: CREATE TABLE wsitemsmapping (IDS BIGINT NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1), webshopsids BIGINT REFERENCES webshops(ids) ON DELETE CASCADE, cname VARCHAR(250) NOT NULL, groupsids BIGINT REFERENCES groups(ids) ON DELETE CASCADE,itemsids BIGINT REFERENCES contacts(ids) ON DELETE CASCADE, wsitem VARCHAR(250) NOT NULL, dateadded DATE DEFAULT NULL, intaddedby BIGINT DEFAULT 0, invisible SMALLINT DEFAULT 0, CONSTRAINT const11 UNIQUE (wsitem, groupsids, webshopsids), reserve1 VARCHAR(500) DEFAULT NULL,reserve2 VARCHAR(500) DEFAULT NULL,PRIMARY KEY  (ids))
+106: CREATE TABLE tablelock (IDS BIGINT NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),cname VARCHAR(250), rowID BIGINT NOT NULL, usersids BIGINT REFERENCES users(ids) ON DELETE CASCADE,reserve1 VARCHAR(500) DEFAULT NULL,reserve2 VARCHAR(500) DEFAULT NULL,PRIMARY KEY  (ids), CONSTRAINT one_lock UNIQUE(cname, rowid))
+107: CREATE TABLE itemstoaccounts (IDS BIGINT NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1), itemsids BIGINT NOT NULL REFERENCES items(ids) ON DELETE CASCADE, accountsids BIGINT REFERENCES accounts(ids) ON DELETE CASCADE,reserve1 VARCHAR(500) DEFAULT NULL,reserve2 VARCHAR(500) DEFAULT NULL,PRIMARY KEY  (ids))
+108: CREATE TABLE trashbin (IDS BIGINT NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),cname VARCHAR(500), rowID BIGINT NOT NULL, description VARCHAR(2500), deleteme SMALLINT DEFAULT 1, reserve1 VARCHAR(500) DEFAULT NULL,reserve2 VARCHAR(500) DEFAULT NULL,PRIMARY KEY  (ids))
+109: CREATE TABLE filestocontacts(IDS BIGINT NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),cname VARCHAR(250) NOT NULL, description VARCHAR(550) DEFAULT NULL, contactsids BIGINT NOT NULL REFERENCES contacts(ids) ON DELETE CASCADE, filename VARCHAR(25) NOT NULL REFERENCES files(cname) ON DELETE CASCADE, intsize BIGINT DEFAULT 0, mimetype VARCHAR(25) DEFAULT NULL, intaddedby BIGINT DEFAULT 0,dateadded DATE NOT NULL,groupsids BIGINT  REFERENCES groups(ids) DEFAULT 1,PRIMARY KEY  (ids))
+110: CREATE TABLE templates(IDS BIGINT NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),cname VARCHAR(250) NOT NULL, format VARCHAR(55) DEFAULT NULL, description VARCHAR(550) DEFAULT NULL, intsize BIGINT DEFAULT 0, mimetype VARCHAR(25) DEFAULT NULL, filename VARCHAR(25) NOT NULL REFERENCES files(cname) ON DELETE CASCADE, intaddedby BIGINT DEFAULT 0,dateadded DATE NOT NULL,groupsids BIGINT  REFERENCES groups(ids) DEFAULT 1,PRIMARY KEY  (ids))
+111: CREATE TABLE filestoitems(IDS BIGINT NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),cname VARCHAR(250) NOT NULL, description VARCHAR(550) DEFAULT NULL, itemsids BIGINT NOT NULL REFERENCES items(ids) ON DELETE CASCADE,filename VARCHAR(25) NOT NULL REFERENCES files(cname) ON DELETE CASCADE,intsize BIGINT DEFAULT 0, mimetype VARCHAR(25) DEFAULT NULL, intaddedby BIGINT DEFAULT 0,dateadded DATE NOT NULL,groupsids BIGINT  REFERENCES groups(ids) DEFAULT 1,PRIMARY KEY  (ids))
+112: CREATE TABLE filestoproducts(IDS BIGINT NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),cname VARCHAR(250) NOT NULL, description VARCHAR(550) DEFAULT NULL, productsids BIGINT NOT NULL REFERENCES products(ids) ON DELETE CASCADE,filename VARCHAR(25) NOT NULL REFERENCES files(cname) ON DELETE CASCADE,intsize BIGINT DEFAULT 0, mimetype VARCHAR(25) DEFAULT NULL, intaddedby BIGINT DEFAULT 0,dateadded DATE NOT NULL,groupsids BIGINT  REFERENCES groups(ids) DEFAULT 1,PRIMARY KEY  (ids))
+113: CREATE TABLE plugins(IDS BIGINT NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),cname VARCHAR(250) NOT NULL, description VARCHAR(550) DEFAULT NULL,filename VARCHAR(25) NOT NULL REFERENCES files(cname) ON DELETE CASCADE,intaddedby BIGINT DEFAULT 0,dateadded DATE NOT NULL,groupsids BIGINT  REFERENCES groups(ids) DEFAULT 1,PRIMARY KEY  (ids))
+114: CREATE TABLE pluginstousers(IDS BIGINT NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),cname VARCHAR(250) NOT NULL, usersids BIGINT NOT NULL, pluginsids BIGINT NOT NULL REFERENCES plugins(ids) ON DELETE CASCADE,intaddedby BIGINT DEFAULT 0,dateadded DATE NOT NULL,groupsids BIGINT  REFERENCES groups(ids) DEFAULT 1,PRIMARY KEY  (ids))
+115: CREATE TABLE formatstousers(IDS BIGINT NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),cname VARCHAR(250) NOT NULL, usersids BIGINT REFERENCES users(ids) ON DELETE CASCADE, inttype SMALLINT  DEFAULT 0,PRIMARY KEY (ids))
+116: CREATE TABLE templatestousers(IDS BIGINT NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),cname VARCHAR(250) NOT NULL, usersids BIGINT REFERENCES users(ids) ON DELETE CASCADE, templatesids BIGINT NOT NULL REFERENCES templates(ids) ON DELETE CASCADE, groupsids BIGINT  REFERENCES groups(ids) DEFAULT 1, PRIMARY KEY (ids))
+117: CREATE TABLE addresses(IDS BIGINT NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),groupsids BIGINT  REFERENCES groups(ids) DEFAULT 1,contactsids BIGINT REFERENCES contacts(ids),title VARCHAR(250) DEFAULT NULL, taxnumber VARCHAR(250),prename VARCHAR(250) DEFAULT NULL, cname VARCHAR(250) DEFAULT NULL, street VARCHAR(250) DEFAULT NULL,zip VARCHAR(50) DEFAULT NULL,city VARCHAR(300) DEFAULT NULL, company VARCHAR(250) DEFAULT NULL, department VARCHAR(250) DEFAULT NULL,country VARCHAR(50) DEFAULT NULL, ismale SMALLINT DEFAULT 0,intaddedby BIGINT DEFAULT 0,dateadded DATE DEFAULT NULL,inttype SMALLINT DEFAULT 0, reserve1 VARCHAR(500) DEFAULT NULL,reserve2 VARCHAR(500) DEFAULT NULL,PRIMARY KEY  (ids))
+118: CREATE TABLE reminders(IDS BIGINT NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),cname VARCHAR(250) NOT NULL, description VARCHAR(550) DEFAULT NULL, stagesids BIGINT NOT NULL,itemsids BIGINT NOT NULL REFERENCES items(ids) ON DELETE CASCADE, extravalue DOUBLE DEFAULT 0, intaddedby BIGINT DEFAULT 0,dateadded DATE NOT NULL,groupsids BIGINT  REFERENCES groups(ids) DEFAULT 1,PRIMARY KEY  (ids))
+119: CREATE TABLE stages(IDS BIGINT NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),cname VARCHAR(250) NOT NULL, description VARCHAR(550) DEFAULT NULL, extravalue DOUBLE DEFAULT 0, intaddedby BIGINT DEFAULT 0,dateadded DATE NOT NULL,groupsids BIGINT  REFERENCES groups(ids) DEFAULT 1,PRIMARY KEY  (ids))
+120: CREATE TRIGGER contacts_indexer1 AFTER INSERT ON contacts REFERENCING NEW AS newdata FOR EACH ROW INSERT INTO searchindex (groupsids, dbidentity, rowid, text) VALUES (newdata.groupsids, 'contacts',newdata.ids,newdata.cnumber||' '||newdata.taxnumber||' '||newdata.title||' '||newdata.country||' '|| newdata.prename||' '|| newdata.cname||' '|| newdata.street||' '||newdata.zip||' '|| newdata.city ||' '||newdata.mainphone||' '||newdata.fax||' '||newdata.mobilephone||' '||newdata.workphone||' '||newdata.mailaddress||' '||newdata.company||' '|| newdata.department||' '||newdata.website||' '||newdata.notes)
+121: CREATE TRIGGER contacts_indexer2 AFTER UPDATE ON contacts REFERENCING NEW AS newdata FOR EACH ROW DELETE FROM searchindex WHERE dbidentity = 'contacts' AND  rowid = newdata.ids
+122: CREATE TRIGGER contacts_indexer3 AFTER UPDATE ON contacts REFERENCING NEW AS newdata FOR EACH ROW INSERT INTO searchindex  (groupsids, dbidentity, rowid, text) VALUES (newdata.groupsids,'contacts',newdata.ids,newdata.cnumber||' '||newdata.taxnumber||' '||newdata.title||' '||newdata.country||' '|| newdata.prename||' '|| newdata.cname||' '|| newdata.street||' '||newdata.zip||' '|| newdata.city ||' '||newdata.mainphone||' '||newdata.fax||' '||newdata.mobilephone||' '||newdata.workphone||' '||newdata.mailaddress||' '||newdata.company||' '|| newdata.department||' '||newdata.website||' '||newdata.notes)
+123: CREATE TRIGGER contacts_indexer4 AFTER DELETE ON contacts REFERENCING OLD AS newdata FOR EACH ROW DELETE FROM searchindex WHERE dbidentity = 'contacts' AND  rowid = newdata.ids
+124: CREATE TRIGGER contacts_trash1   AFTER UPDATE ON contacts REFERENCING NEW AS newdata FOR EACH ROW INSERT INTO trashbin (deleteme, cname, rowid, description) VALUES (newdata.invisible,'contacts',newdata.ids,newdata.cnumber||' ('|| newdata.cname||')')
+125: CREATE TRIGGER contacts_trash2 AFTER DELETE ON contacts REFERENCING OLD AS newdata FOR EACH ROW DELETE FROM trashbin WHERE cname = 'contacts' AND  rowid = newdata.ids
+126: CREATE TRIGGER filestocontacts_indexer1 AFTER INSERT ON filestocontacts REFERENCING NEW AS newdata FOR EACH ROW INSERT INTO searchindex (groupsids, dbidentity, rowid, text) VALUES (newdata.groupsids,'filestocontacts',newdata.ids,newdata.cname||' '||newdata.description||' '||newdata.filename)
+127: CREATE TRIGGER filestocontacts_indexer2 AFTER UPDATE ON filestocontacts REFERENCING NEW AS newdata FOR EACH ROW DELETE FROM searchindex WHERE dbidentity = 'filestocontacts' AND  rowid = newdata.ids
+128: CREATE TRIGGER filestocontacts_indexer3 AFTER UPDATE ON filestocontacts REFERENCING NEW AS newdata FOR EACH ROW INSERT INTO searchindex  (groupsids, dbidentity, rowid, text) VALUES (newdata.groupsids,'filestocontacts',newdata.ids,newdata.cname||' '||newdata.description||' '||newdata.filename)
+129: CREATE TRIGGER filestocontacts_indexer4 AFTER DELETE ON filestocontacts REFERENCING OLD AS newdata FOR EACH ROW DELETE FROM searchindex WHERE dbidentity = 'filestocontacts' AND  rowid = newdata.ids
+130: CREATE TRIGGER groups_indexer1 AFTER INSERT ON groups REFERENCING NEW AS newdata FOR EACH ROW INSERT INTO searchindex  (groupsids, dbidentity, rowid, text) VALUES (newdata.groupsids,'groups',newdata.ids,newdata.cname||' '||newdata.description||' '||newdata.dateadded)
+131: CREATE TRIGGER groups_indexer2 AFTER UPDATE ON groups REFERENCING NEW AS newdata FOR EACH ROW DELETE FROM searchindex WHERE dbidentity = 'groups' AND  rowid = newdata.ids
+132: CREATE TRIGGER groups_indexer3 AFTER UPDATE ON groups REFERENCING NEW AS newdata FOR EACH ROW INSERT INTO searchindex  (groupsids, dbidentity, rowid, text) VALUES (newdata.groupsids,'groups',newdata.ids,newdata.cname||' '||newdata.description||' '||newdata.dateadded)
+133: CREATE TRIGGER groups_indexer4 AFTER DELETE ON groups REFERENCING OLD AS newdata FOR EACH ROW DELETE FROM searchindex WHERE dbidentity = 'groups' AND  rowid = newdata.ids
+134: CREATE TRIGGER items_indexer1 AFTER INSERT ON items REFERENCING NEW AS newdata FOR EACH ROW INSERT INTO searchindex  (groupsids, dbidentity, rowid, text) VALUES (newdata.groupsids,'items',newdata.ids,newdata.cname||' '||newdata.dateadded)
+135: CREATE TRIGGER items_indexer2 AFTER UPDATE ON items REFERENCING NEW AS newdata FOR EACH ROW DELETE FROM searchindex WHERE dbidentity = 'items' AND  rowid = newdata.ids
+136: CREATE TRIGGER items_indexer3 AFTER UPDATE ON items REFERENCING NEW AS newdata FOR EACH ROW INSERT INTO searchindex  (groupsids, dbidentity, rowid, text) VALUES (newdata.groupsids,'items',newdata.ids,newdata.cname||' '||newdata.dateadded)
+137: CREATE TRIGGER items_indexer4 AFTER DELETE ON items REFERENCING OLD AS newdata FOR EACH ROW DELETE FROM searchindex WHERE dbidentity = 'items' AND  rowid = newdata.ids
+138: CREATE TRIGGER items_trash2 AFTER DELETE ON items REFERENCING OLD AS newdata FOR EACH ROW DELETE FROM trashbin WHERE cname = 'items' AND  rowid = newdata.ids
+139: CREATE TRIGGER items_trash1 AFTER UPDATE ON items REFERENCING NEW AS newdata FOR EACH ROW INSERT INTO trashbin (deleteme, cname, rowid, description) VALUES (newdata.invisible,'items',newdata.ids,newdata.cname)
+140: CREATE TRIGGER expenses_indexer1 AFTER INSERT ON expenses REFERENCING NEW AS newdata FOR EACH ROW INSERT INTO searchindex  (groupsids, dbidentity, rowid, text) VALUES (newdata.groupsids,'expenses',newdata.ids,newdata.cname||' '||newdata.dateadded)
+141: CREATE TRIGGER expenses_indexer2 AFTER UPDATE ON expenses REFERENCING NEW AS newdata FOR EACH ROW DELETE FROM searchindex WHERE dbidentity = 'expenses' AND  rowid = newdata.ids
+142: CREATE TRIGGER expenses_indexer3 AFTER UPDATE ON expenses REFERENCING NEW AS newdata FOR EACH ROW INSERT INTO searchindex  (groupsids, dbidentity, rowid, text) VALUES (newdata.groupsids,'expenses',newdata.ids,newdata.cname||' '||newdata.dateadded)
+143: CREATE TRIGGER expenses_indexer4 AFTER DELETE ON expenses REFERENCING OLD AS newdata FOR EACH ROW DELETE FROM searchindex WHERE dbidentity = 'expenses' AND  rowid = newdata.ids
+144: CREATE TRIGGER expenses_trash2 AFTER DELETE ON expenses REFERENCING OLD AS newdata FOR EACH ROW DELETE FROM trashbin WHERE cname = 'expenses' AND  rowid = newdata.ids
+145: CREATE TRIGGER expenses_trash1 AFTER UPDATE ON expenses REFERENCING NEW AS newdata FOR EACH ROW INSERT INTO trashbin (deleteme, cname, rowid, description) VALUES (newdata.invisible,'expenses',newdata.ids,newdata.cname)
+146: CREATE TRIGGER revenues_indexer1 AFTER INSERT ON revenues REFERENCING NEW AS newdata FOR EACH ROW INSERT INTO searchindex  (groupsids, dbidentity, rowid, text) VALUES (newdata.groupsids,'revenues',newdata.ids,newdata.cname||' '||newdata.dateadded)
+147: CREATE TRIGGER revenues_indexer2 AFTER UPDATE ON revenues REFERENCING NEW AS newdata FOR EACH ROW DELETE FROM searchindex WHERE dbidentity = 'revenues' AND  rowid = newdata.ids
+148: CREATE TRIGGER revenues_indexer3 AFTER UPDATE ON revenues REFERENCING NEW AS newdata FOR EACH ROW INSERT INTO searchindex  (groupsids, dbidentity, rowid, text) VALUES (newdata.groupsids,'revenues',newdata.ids,newdata.cname||' '||newdata.dateadded)
+149: CREATE TRIGGER revenues_indexer4 AFTER DELETE ON revenues REFERENCING OLD AS newdata FOR EACH ROW DELETE FROM searchindex WHERE dbidentity = 'revenues' AND  rowid = newdata.ids
+150: CREATE TRIGGER revenues_trash2 AFTER DELETE ON revenues REFERENCING OLD AS newdata FOR EACH ROW DELETE FROM trashbin WHERE cname = 'revenues' AND  rowid = newdata.ids
+151: CREATE TRIGGER revenues_trash1 AFTER UPDATE ON revenues REFERENCING NEW AS newdata FOR EACH ROW INSERT INTO trashbin (deleteme, cname, rowid, description) VALUES (newdata.invisible,'revenues',newdata.ids,newdata.cname)
+152: CREATE TRIGGER subitems_indexer1 AFTER INSERT ON subitems REFERENCING NEW AS newdata FOR EACH ROW INSERT INTO searchindex  (groupsids, dbidentity, rowid, text) VALUES (newdata.groupsids,'subitems',newdata.ids,newdata.cname||' '||newdata.description||' '||newdata.dateadded)
+153: CREATE TRIGGER subitems_indexer2 AFTER UPDATE ON subitems REFERENCING NEW AS newdata FOR EACH ROW DELETE FROM searchindex WHERE dbidentity = 'subitems' AND  rowid = newdata.ids
+154: CREATE TRIGGER subitems_indexer3 AFTER UPDATE ON subitems REFERENCING NEW AS newdata FOR EACH ROW INSERT INTO searchindex  (groupsids, dbidentity, rowid, text) VALUES (newdata.groupsids,'subitems',newdata.ids,newdata.cname||' '||newdata.description||' '||newdata.dateadded)
+155: CREATE TRIGGER subitems_indexer4 AFTER DELETE ON subitems REFERENCING OLD AS newdata FOR EACH ROW DELETE FROM searchindex WHERE dbidentity = 'subitems' AND  rowid = newdata.ids
+156: CREATE TRIGGER products_indexer1 AFTER INSERT ON products REFERENCING NEW AS newdata FOR EACH ROW INSERT INTO searchindex  (groupsids, dbidentity, rowid, text) VALUES (newdata.groupsids,'products',newdata.ids,newdata.cname||' '||newdata.cnumber||' '||newdata.description||' '||newdata.dateadded)
+157: CREATE TRIGGER products_indexer2 AFTER UPDATE ON products REFERENCING NEW AS newdata FOR EACH ROW DELETE FROM searchindex WHERE dbidentity = 'products' AND  rowid = newdata.ids
+158: CREATE TRIGGER products_indexer3 AFTER UPDATE ON products REFERENCING NEW AS newdata FOR EACH ROW INSERT INTO searchindex  (groupsids, dbidentity, rowid, text) VALUES (newdata.groupsids,'products',newdata.ids,newdata.cname||' '||newdata.cnumber||' '||newdata.description||' '||newdata.dateadded)
+159: CREATE TRIGGER products_indexer4 AFTER DELETE ON products REFERENCING OLD AS newdata FOR EACH ROW DELETE FROM searchindex WHERE dbidentity = 'products' AND  rowid = newdata.ids
+160: CREATE TRIGGER products_trash1 AFTER UPDATE ON products REFERENCING NEW AS newdata FOR EACH ROW INSERT INTO trashbin (deleteme, cname, rowid, description) VALUES (newdata.invisible, 'products',newdata.ids,newdata.cnumber||' ('|| newdata.cname||')')
+161: CREATE TRIGGER products_trash2 AFTER DELETE ON products REFERENCING OLD AS newdata FOR EACH ROW DELETE FROM trashbin WHERE cname = 'products' AND  rowid = newdata.ids
+162: CREATE TRIGGER thrash_handler1 AFTER INSERT ON trashbin FOR EACH STATEMENT DELETE FROM trashbin WHERE deleteme = 0
+163: CREATE TRIGGER thrash_handler2 AFTER INSERT ON trashbin FOR EACH STATEMENT DELETE FROM trashbin WHERE ids IN (SELECT ids FROM trashbin WHERE EXISTS( SELECT ids FROM trashbin AS tmptable WHERE trashbin.cname = tmptable.cname AND trashbin.rowid = tmptable.rowid HAVING trashbin.ids < MAX(tmptable.ids) ) )
+164: INSERT INTO groups (cname,description, dateadded) VALUES ('All Groups','This group is visible to everyone.', '2009-04-03 09:31:33')
+165: INSERT INTO tax(cname, dateadded, identifier) VALUES ('Default 0%', '2009-04-03 09:31:33', 'Default 0%')
+166: INSERT INTO tax(cname, dateadded, identifier, taxvalue) VALUES ('Default 19%', '2009-04-03 09:31:33', 'Default 19%', 19.0)
+167: INSERT INTO tax(cname, dateadded, identifier, taxvalue) VALUES ('Default 7%', '2009-04-03 09:31:33', 'Default 7%', 7.0)
+168: INSERT INTO productgroups (cname,description, dateadded) VALUES ('All Products','This product group is visible to everyone.', '2009-04-03 09:31:33')
+169: INSERT INTO accounts (cname,description, dateadded, taxvalue, intaccounttype, frame, intprofitfid, inttaxfid, inttaxuid) VALUES ('All Accounts','This account is the parent account of all account frames.', '2009-04-03 09:31:33', 0.0, 0, 'builtin',0,0,0)
+170: INSERT INTO accounts (cname,description, dateadded, taxvalue, intaccounttype, frame, intprofitfid, inttaxfid, inttaxuid, intparentaccount) VALUES ('Payables','', '2009-04-03 09:31:33', 0.0, 2, 'builtin',0,0,0,1)
+171: INSERT INTO countries (iso, cname ) VALUES (276,'Deutschland')
+172: INSERT INTO accounts (cname,description, dateadded, taxvalue, intaccounttype, frame, intprofitfid, inttaxfid, inttaxuid, intparentaccount) VALUES ('Income','', '2009-04-03 09:31:33', 0.0, 3, 'builtin',0,0,0,1)
+173: INSERT INTO users (fullname,password,cname,laf,locale,mail,language,inthighestright,datelastlog,isenabled, dateadded ) VALUES ('Administrator','5f4dcc3b5aa765d61d8327deb882cf99','admin','com.sun.java.swing.plaf.windows.WindowsLookAndFeel','de_DE','','buildin_en',0,'2009-04-03 09:31:33',1,'2009-04-03 09:31:33')
+174: INSERT INTO globalsettings (cname, groupsids, value ) VALUES ('yabs_dbversion', 1, '1.0')
+175: mpv5.Main: Checking: languages
+176: mpv5.Main: Checking: templates
+177: mpv5.Main: Checking: plugins
+178: mpv5.ui.dialogs.subcomponents.wizard_DBSettings_simple_1: Importing coutries from: C:\Users\Andreas\Documents\NetBeansProjects\trunk\build\classes\mpv5\resources\extra
+179: mpv5.utils.xml.XMLReader: Reading Document: C:\Users\Andreas\Documents\NetBeansProjects\trunk\build\classes\mpv5\resources\extra\countries.xml using encoding: UTF8
+180: mpv5.db.common.QueryHandler: Checking database version..
+181: mpv5.db.common.QueryHandler: Database version found: 1.0
+182: mpv5.db.common.DatabaseUpdater: Updating database from 1.0
+183: ALTER TABLE products ADD COLUMN stockvalue DOUBLE DEFAULT 0 NOT NULL 
+184: ALTER TABLE products ADD COLUMN thresholdvalue DOUBLE DEFAULT 0 NOT NULL
+185: ALTER TABLE products ADD COLUMN intinventorytype SMALLINT DEFAULT 0 NOT NULL
+186: ALTER TABLE templates ADD COLUMN printer VARCHAR(50) DEFAULT 'printer_undefined' NOT NULL 
+187: ALTER TABLE products DROP CONSTRAINT const8
+188: CREATE TABLE productstosuppliers(ids BIGINT NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1), productsids BIGINT REFERENCES products(ids) ON DELETE CASCADE, contactsids BIGINT REFERENCES contacts(ids) ON DELETE CASCADE,cname VARCHAR(250) DEFAULT NULL,groupsids BIGINT DEFAULT 0,dateadded DATE NOT NULL,intaddedby BIGINT DEFAULT 0)
+189: ALTER TABLE products ADD COLUMN productlistsids BIGINT DEFAULT 0
+190: ALTER TABLE contacts ADD COLUMN bankaccount VARCHAR(250) DEFAULT NULL
+191: ALTER TABLE contacts ADD COLUMN bankid VARCHAR(250) DEFAULT NULL
+192: ALTER TABLE contacts ADD COLUMN bankname VARCHAR(250) DEFAULT NULL
+193: ALTER TABLE contacts ADD COLUMN bankcurrency VARCHAR(250) DEFAULT NULL
+194: ALTER TABLE contacts ADD COLUMN bankcountry VARCHAR(250) DEFAULT NULL
+195: CREATE INDEX items_index0 ON items(cnumber)
+196: CREATE INDEX items_index1 ON items(cname)
+197: CREATE INDEX products_index0 ON products(cnumber)
+198: CREATE INDEX products_index1 ON products(cname)
+199: CREATE INDEX contacts_index0 ON contacts(cname)
+200: CREATE TABLE valueproperties (IDS BIGINT NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1), CONSTRAINT constvp0 UNIQUE (cname, contextids, objectids, groupsids),cname VARCHAR(250) NOT NULL, classname VARCHAR(250) NOT NULL, contextids BIGINT NOT NULL, objectids BIGINT NOT NULL,value CLOB(2G) DEFAULT NULL, dateadded DATE NOT NULL, intaddedby BIGINT DEFAULT 0, groupsids BIGINT REFERENCES groups(ids) DEFAULT 1, invisible SMALLINT DEFAULT 0, PRIMARY KEY (ids))
+201: CREATE INDEX values_index0 ON valueproperties(cname, contextids, objectids)
+202: ALTER TABLE expenses ADD COLUMN dateend DATE 
+203: ALTER TABLE expenses ADD COLUMN ispaid SMALLINT DEFAULT 0 NOT NULL
+204: ALTER TABLE revenues ADD COLUMN dateend DATE 
+205: ALTER TABLE revenues ADD COLUMN ispaid SMALLINT DEFAULT 0 NOT NULL
+206: ALTER TABLE stages ADD COLUMN templategroup BIGINT REFERENCES groups(ids)
+207: ALTER TABLE subitems ADD COLUMN ordernr SMALLINT DEFAULT 0 NOT NULL
+208: UPDATE globalsettings SET value ='1.1841' WHERE cname = 'yabs_dbversion'
+209: mpv5.data.PropertyStore: Adding or replacing property: dbescape = true
+210: mpv5.db.common.QueryHandler: freeSelectQuery::SELECT ids FROM users WHERE users.IDS>0
+211: mpv5.db.common.DatabaseObject: users@1 not found in cache.
+212: mpv5.db.common.DatabaseObject: users@1 not found in cache.
+213: mpv5.db.common.QueryHandler: freeSelectQuery::SELECT * FROM users WHERE users.ids = 1 AND users.IDS>0
+214: mpv5.db.common.DatabaseObject: Preparing to explode rows: 1
+215: mpv5.db.common.QueryHandler: DELETE FROM countries WHERE countries.groupsids = 1
+216: mpv5.utils.xml.XMLReader: 25 elements found in [Element: <countries/>]
+217: mpv5.db.common.QueryHandler: freeUpdateQuery::INSERT INTO countries (iso,groupsids,cname ) VALUES (56,1,'Belgium') 
+218: mpv5.db.common.QueryHandler: freeUpdateQuery::INSERT INTO countries (iso,groupsids,cname ) VALUES (191,1,'Croatia') 
+219: mpv5.db.common.QueryHandler: freeUpdateQuery::INSERT INTO countries (iso,groupsids,cname ) VALUES (203,1,'Czech Republic') 
+220: mpv5.db.common.QueryHandler: freeUpdateQuery::INSERT INTO countries (iso,groupsids,cname ) VALUES (250,1,'France') 
+221: mpv5.db.common.QueryHandler: freeUpdateQuery::INSERT INTO countries (iso,groupsids,cname ) VALUES (276,1,'Germany') 
+222: mpv5.db.common.QueryHandler: freeUpdateQuery::INSERT INTO countries (iso,groupsids,cname ) VALUES (348,1,'Hungary') 
+223: mpv5.db.common.QueryHandler: freeUpdateQuery::INSERT INTO countries (iso,groupsids,cname ) VALUES (372,1,'Ireland') 
+224: mpv5.db.common.QueryHandler: freeUpdateQuery::INSERT INTO countries (iso,groupsids,cname ) VALUES (438,1,'Liechtenstein') 
+225: mpv5.db.common.QueryHandler: freeUpdateQuery::INSERT INTO countries (iso,groupsids,cname ) VALUES (440,1,'Lithuania') 
+226: mpv5.db.common.QueryHandler: freeUpdateQuery::INSERT INTO countries (iso,groupsids,cname ) VALUES (442,1,'Luxembourg') 
+227: mpv5.db.common.QueryHandler: freeUpdateQuery::INSERT INTO countries (iso,groupsids,cname ) VALUES (492,1,'Monaco') 
+228: mpv5.db.common.QueryHandler: freeUpdateQuery::INSERT INTO countries (iso,groupsids,cname ) VALUES (528,1,'Netherlands') 
+229: mpv5.db.common.QueryHandler: freeUpdateQuery::INSERT INTO countries (iso,groupsids,cname ) VALUES (578,1,'Norway') 
+230: mpv5.db.common.QueryHandler: freeUpdateQuery::INSERT INTO countries (iso,groupsids,cname ) VALUES (616,1,'Poland') 
+231: mpv5.db.common.QueryHandler: freeUpdateQuery::INSERT INTO countries (iso,groupsids,cname ) VALUES (620,1,'Portugal') 
+232: mpv5.db.common.QueryHandler: freeUpdateQuery::INSERT INTO countries (iso,groupsids,cname ) VALUES (642,1,'Romania') 
+233: mpv5.db.common.QueryHandler: freeUpdateQuery::INSERT INTO countries (iso,groupsids,cname ) VALUES (643,1,'Russian Federation') 
+234: mpv5.db.common.QueryHandler: freeUpdateQuery::INSERT INTO countries (iso,groupsids,cname ) VALUES (703,1,'Slovakia (Slovak Republic)') 
+235: mpv5.db.common.QueryHandler: freeUpdateQuery::INSERT INTO countries (iso,groupsids,cname ) VALUES (705,1,'Slovenia') 
+236: mpv5.db.common.QueryHandler: freeUpdateQuery::INSERT INTO countries (iso,groupsids,cname ) VALUES (724,1,'Spain') 
+237: mpv5.db.common.QueryHandler: freeUpdateQuery::INSERT INTO countries (iso,groupsids,cname ) VALUES (752,1,'Sweden') 
+238: mpv5.db.common.QueryHandler: freeUpdateQuery::INSERT INTO countries (iso,groupsids,cname ) VALUES (756,1,'Switzerland') 
+239: mpv5.db.common.QueryHandler: freeUpdateQuery::INSERT INTO countries (iso,groupsids,cname ) VALUES (804,1,'Ukraine') 
+240: mpv5.db.common.QueryHandler: freeUpdateQuery::INSERT INTO countries (iso,groupsids,cname ) VALUES (826,1,'United Kingdom') 
+241: mpv5.db.common.QueryHandler: freeUpdateQuery::INSERT INTO countries (iso,groupsids,cname ) VALUES (891,1,'Yugoslavia') 
+242: mpv5.globals.LocalSettings: Changing property 'cachedir' to: C:\Users\Andreas\.yabs\Cache
+243: mpv5.data.PropertyStore: Change property: C:\Users\Andreas\.yabs\Cache for cachedir
+244: mpv5.globals.LocalSettings: Writing local settings: null
+245: mpv5.data.PropertyStore: Change property: 0 for nodeid
+246: mpv5.utils.xml.XMLWriter: Node exists: connection: 0
+247: mpv5.utils.xml.XMLWriter: Updating C:\Users\Andreas\.yabs\settings0.yabs
+248: mpv5.utils.xml.XMLWriter: Writing Document: C:\Users\Andreas\.yabs\settings0.yabs using encoding: UTF8
+249: mpv5.Main: Trying to launch application now..
+250: mpv5.Main: Startup procedure... 
+251: mpv5.Main: Probing database connection... 
+252: mpv5.Main: Connected to database: C:\Users\Andreas\.yabs
+253: mpv5.globals.GlobalSettings: Reading in global settings where ID =2
+254: mpv5.db.common.QueryCriteria2: Adding AND param globalsettings.groupsids: 2
+255: mpv5.db.common.QueryHandler: freeSelectQuery::SELECT cname, value FROM globalsettings  WHERE globalsettings.groupsids = 2  AND globalsettings.IDS>0
+256: mpv5.globals.GlobalSettings: No global settings found..
+257: mpv5.Main: Loading Yabs... 
+258: mpv5.Main: Checking: languages
+259: mpv5.Main: Checking: templates
+260: mpv5.Main: Checking: plugins
+261: mpv5.data.PropertyStore: Adding or replacing property: oootremoteserver = false
+262: mpv5.db.common.QueryHandler: freeSelectQuery::SELECT cname, usersids, itemsids FROM favourites  WHERE favourites.usersids = 4343 AND favourites.IDS>0
+263: mpv5.globals.Messages: Can't find resource for bundle java.util.PropertyResourceBundle, key START_MESSAGE
+264: mpv5.globals.LocalSettings: Writing local settings: 0
+265: mpv5.data.PropertyStore: Change property: 0 for nodeid
+266: mpv5.utils.xml.XMLWriter: Node exists: connection: 0
+267: mpv5.utils.xml.XMLWriter: Node exists: connection: 0
+268: mpv5.utils.xml.XMLWriter: Updating C:\Users\Andreas\.yabs\settings0.yabs
+269: mpv5.utils.xml.XMLWriter: Writing Document: C:\Users\Andreas\.yabs\settings0.yabs using encoding: UTF8
+270: [private final mpv5.Main mpv5.YabsApplication.main]
+271: Registering class mpv5.ui.frames.MPView
+272: mpv5.data.PropertyStore: Adding or replacing property: lastuser = 1
+273: mpv5.data.PropertyStore: Adding or replacing property: lastuserpw = 5F4DCC3B5AA765D61D8327DEB882CF99
+274: mpv5.Main: Checking for auto login.. 
+275: mpv5.db.common.QueryHandler: freeSelectQuery::SELECT * FROM users WHERE users.ids = 1 AND users.IDS>0
+276: mpv5.db.common.DatabaseObject: Preparing to explode rows: 1
+277: mpv5.Main: Trying to login user: admin
+278: mpv5.Main: Found user: admin
+279: mpv5.db.objects.User: releaseAllObjectsFor: admin
+280: mpv5.db.common.QueryHandler: DELETE FROM tablelock WHERE tablelock.usersids = 1
+281: mpv5.db.common.QueryHandler: freeSelectQuery::SELECT cname, value FROM userproperties  WHERE userproperties.usersids=1 AND userproperties.IDS>0
+282: mpv5.db.objects.User: Mail configuration not set.
+283: mpv5.db.objects.User: Unable to create DTA info
+284: mpv5.db.objects.User: Mail configuration not set.
+285: mpv5.db.objects.User: Unable to create DTA info
+286: mpv5.db.objects.User: LanguageManager.getBundle() for: admin
+287: mpv5.db.common.DatabaseObject: Removed from cache: users@1
+288: mpv5.db.objects.User: Updating dataset: 1 within context 'USERS [7]'
+289: mpv5.db.objects.User: Calling: public java.lang.String mpv5.db.objects.User.__getCName()
+290: mpv5.db.objects.User: Collect: java.lang.String : __getCName ? admin
+291: mpv5.db.objects.User: Calling: public java.lang.String mpv5.db.objects.User.__getPassword()
+292: mpv5.db.objects.User: Collect: java.lang.String : __getPassword ? 5f4dcc3b5aa765d61d8327deb882cf99
+293: mpv5.db.objects.User: Calling: public java.lang.String mpv5.db.objects.User.__getLaf()
+294: mpv5.db.objects.User: Collect: java.lang.String : __getLaf ? com.sun.java.swing.plaf.windows.WindowsLookAndFeel
+295: mpv5.db.objects.User: Calling: public java.lang.String mpv5.db.objects.User.__getLocale()
+296: mpv5.db.objects.User: Collect: java.lang.String : __getLocale ? de_DE
+297: mpv5.db.objects.User: Calling: public java.lang.String mpv5.db.objects.User.__getMail()
+298: mpv5.db.objects.User: Collect: java.lang.String : __getMail ? 
+299: mpv5.db.objects.User: Calling: public java.lang.String mpv5.db.objects.User.__getLanguage()
+300: mpv5.db.objects.User: Collect: java.lang.String : __getLanguage ? buildin_en
+301: mpv5.db.objects.User: Calling: public boolean mpv5.db.objects.User.__getIsenabled()
+302: mpv5.db.objects.User: Collect: java.lang.Boolean : __getIsenabled ? true
+303: mpv5.db.objects.User: Calling: public java.util.Date mpv5.db.objects.User.__getDatelastlog()
+304: mpv5.db.objects.User: Collect: java.util.Date : __getDatelastlog ? Tue Jan 11 17:22:16 CET 2011
+305: mpv5.db.objects.User: Calling: public boolean mpv5.db.objects.User.__getIsloggedin()
+306: mpv5.db.objects.User: Collect: java.lang.Boolean : __getIsloggedin ? true
+307: mpv5.db.objects.User: Calling: public java.lang.String mpv5.db.objects.User.__getFullname()
+308: mpv5.db.objects.User: Collect: java.lang.String : __getFullname ? Administrator
+309: mpv5.db.objects.User: Calling: public java.lang.String mpv5.db.objects.User.__getDefcountry()
+310: mpv5.db.objects.User: Collect: java.lang.String : __getDefcountry ? 276
+311: mpv5.db.objects.User: Calling: public boolean mpv5.db.objects.User.__getIsrgrouped()
+312: mpv5.db.objects.User: Collect: java.lang.Boolean : __getIsrgrouped ? false
+313: mpv5.db.objects.User: Calling: public int mpv5.db.objects.User.__getInthighestright()
+314: mpv5.db.objects.User: Collect: java.lang.Integer : __getInthighestright ? 0
+315: mpv5.db.objects.User: Calling: public int mpv5.db.objects.User.__getIntdefaultaccount()
+316: mpv5.db.objects.User: Collect: java.lang.Integer : __getIntdefaultaccount ? 1
+317: mpv5.db.objects.User: Calling: public int mpv5.db.objects.User.__getIntdefaultstatus()
+318: mpv5.db.objects.User: Collect: java.lang.Integer : __getIntdefaultstatus ? 1
+319: mpv5.db.objects.User: Calling: public int mpv5.db.objects.User.__getCompsids()
+320: mpv5.db.objects.User: Collect: java.lang.Integer : __getCompsids ? 0
+321: mpv5.Main: Caching data..
+322: mpv5.db.common.QueryHandler: freeSelectQuery::SELECT * FROM pluginstousers  WHERE usersids=1 AND pluginstousers.IDS>0
+323: mpv5.db.common.QueryHandler: freeSelectQuery::SELECT * FROM users WHERE users.IDS>0
+324: mpv5.db.objects.User: Calling: public int mpv5.db.common.DatabaseObject.__getGroupsids()
+325: mpv5.db.objects.User: Collect: java.lang.Integer : __getGroupsids ? 1
+326: mpv5.db.objects.User: Calling: public java.util.Date mpv5.db.common.DatabaseObject.__getDateadded()
+327: mpv5.db.objects.User: Collect: java.sql.Date : __getDateadded ? 2009-04-03
+328: mpv5.db.objects.User: Calling: public int mpv5.db.common.DatabaseObject.__getIntaddedby()
+329: mpv5.db.objects.User: Collect: java.lang.Integer : __getIntaddedby ? 0
+330: mpv5.db.common.QueryHandler: freeUpdateQuery::UPDATE users SET mail = '', isrgrouped = 0, inthighestright = 0, compsids = 0, locale = 'de_DE', intdefaultstatus = 1, datelastlog = '2011-01-11 17:22:16', password = '5f4dcc3b5aa765d61d8327deb882cf99', intaddedby = 0, laf = 'com.sun.java.swing.plaf.windows.WindowsLookAndFeel', isenabled = 1, intdefaultaccount = 1, dateadded = '2009-04-03 00:00:00', defcountry = '276', groupsids = 1, language = 'buildin_en', isloggedin = 1, cname = 'admin', fullname = 'Administrator' WHERE users.ids = 1
+331: mpv5.pluginhandling.MPPLuginLoader: No plugins found: Sorry, but there was no matching data in the database. in Context: PLUGINSTOUSERS [25]
+332: mpv5.db.common.DatabaseObject: Preparing to explode rows: 1
+333: mpv5.db.common.DatabaseObject: Rows found: 1
+334: mpv5.Main: Objects cached: USERS [7]
+335: mpv5.db.common.QueryHandler: freeSelectQuery::SELECT iso,cname FROM countries WHERE countries.IDS>0
+336: mpv5.data.PropertyStore: Adding or replacing property: cachesize = 100
+337: mpv5.db.common.QueryHandler: Setting row limit for this connection to: 100
+338: mpv5.db.common.QueryHandler: freeSelectQuery::SELECT * FROM valueproperties  WHERE objectids=1 AND cname='layoutinfo' AND contextids=7 AND valueproperties.IDS>0
+339: mpv5.db.common.QueryHandler: freeSelectQuery::SELECT * FROM contacts WHERE contacts.IDS>0 AND contacts.invisible = 0 
+340: mpv5.i18n.LanguageManager: Cached countries: 25
+341: mpv5.db.objects.User$1: Sorry, but there was no matching data in the database. in Context: VALUEPROPERTIES [50]
+342: mpv5.Main: Objects cached: COUNTRIES [22]
+343: mpv5.db.common.DatabaseObject: Sorry, but there was no matching data in the database. in Context: CONTACTS [6]
+344: mpv5.db.common.QueryHandler: Setting row limit for this connection to: 100
+345: mpv5.db.common.QueryHandler: freeSelectQuery::SELECT * FROM favourites WHERE favourites.IDS>0
+346: mpv5.db.common.DatabaseObject: Sorry, but there was no matching data in the database. in Context: FAVOURITES [15]
+347: mpv5.db.common.QueryHandler: Setting row limit for this connection to: 100
+348: mpv5.db.common.QueryHandler: freeSelectQuery::SELECT * FROM users WHERE users.IDS>0
+349: mpv5.db.common.DatabaseObject: Preparing to explode rows: 1
+350: mpv5.db.common.QueryHandler: Setting row limit for this connection to: 100
+351: mpv5.db.common.QueryHandler: freeSelectQuery::SELECT * FROM addresses WHERE addresses.IDS>0
+352: mpv5.db.common.DatabaseObject: Sorry, but there was no matching data in the database. in Context: ADDRESSES [16]
+353: mpv5.db.common.QueryHandler: Setting row limit for this connection to: 100
+354: mpv5.db.common.QueryHandler: freeSelectQuery::SELECT * FROM items WHERE items.IDS>0 AND items.invisible = 0 
+355: mpv5.db.common.DatabaseObject: Sorry, but there was no matching data in the database. in Context: ITEMS [1]
+356: mpv5.db.common.QueryHandler: Setting row limit for this connection to: 100
+357: mpv5.db.common.QueryHandler: freeSelectQuery::SELECT * FROM subitems WHERE subitems.IDS>0
+358: mpv5.db.common.DatabaseObject: Sorry, but there was no matching data in the database. in Context: SUBITEMS [2]
+359: mpv5.db.common.QueryHandler: Setting row limit for this connection to: 100
+360: mpv5.db.common.QueryHandler: freeSelectQuery::SELECT * FROM groups WHERE groups.IDS>0
+361: mpv5.data.PropertyStore: Adding or replacing property: noupdate = false
+362: mpv5.db.common.DatabaseObject: Preparing to explode rows: 1
+363: mpv5.db.common.QueryHandler: Setting row limit for this connection to: 100
+364: mpv5.db.common.QueryHandler: freeSelectQuery::SELECT * FROM schedule WHERE schedule.IDS>0
+365: mpv5.db.common.DatabaseObject: Sorry, but there was no matching data in the database. in Context: SCHEDULE [8]
+366: mpv5.db.common.QueryHandler: Setting row limit for this connection to: 100
+367: mpv5.db.common.QueryHandler: freeSelectQuery::SELECT * FROM filestocontacts WHERE filestocontacts.IDS>0
+368: mpv5.db.common.DatabaseObject: Sorry, but there was no matching data in the database. in Context: FILESTOCONTACTS [20]
+369: mpv5.db.common.QueryHandler: Setting row limit for this connection to: 100
+370: mpv5.db.common.QueryHandler: freeSelectQuery::SELECT * FROM filestoitems WHERE filestoitems.IDS>0
+371: mpv5.db.common.DatabaseObject: Sorry, but there was no matching data in the database. in Context: FILESTOITEMS [34]
+372: mpv5.db.common.QueryHandler: Setting row limit for this connection to: 100
+373: mpv5.db.common.QueryHandler: freeSelectQuery::SELECT * FROM filestoproducts WHERE filestoproducts.IDS>0
+374: mpv5.db.common.DatabaseObject: Sorry, but there was no matching data in the database. in Context: FILESTOPRODUCTS [20]
+375: mpv5.db.common.QueryHandler: Setting row limit for this connection to: 100
+376: mpv5.db.common.QueryHandler: freeSelectQuery::SELECT * FROM products WHERE products.IDS>0 AND products.invisible = 0 
+377: mpv5.db.common.DatabaseObject: Sorry, but there was no matching data in the database. in Context: PRODUCTS [23]
+378: mpv5.db.common.QueryHandler: Setting row limit for this connection to: 100
+379: mpv5.db.common.QueryHandler: freeSelectQuery::SELECT * FROM accounts WHERE accounts.IDS>0
+380: mpv5.db.common.DatabaseObject: Preparing to explode rows: 3
+381: mpv5.handler.Scheduler: No warn treshold for bills defined.
+382: mpv5.handler.Scheduler: No alert treshold for bills defined.
+383: mpv5.db.common.QueryHandler: freeSelectQuery::SELECT ids FROM items WHERE intstatus <> 4 AND inttype=0
+384: mpv5.db.common.QueryHandler: Setting row limit for this connection to: 100
+385: mpv5.db.common.QueryHandler: freeSelectQuery::SELECT * FROM mails WHERE mails.IDS>0
+386: mpv5.db.common.QueryHandler: freeSelectQuery::SELECT ids FROM schedule  WHERE nextdate >= '2009-01-11 17:22:17' AND nextdate <= '2011-01-11 17:22:17'
+387: mpv5.Main: http://mp-rechnungs-und-kundenverwaltung.googlecode.com/files/Yabs-1.176.zip OK
+388: mpv5.db.common.DatabaseObject: Sorry, but there was no matching data in the database. in Context: MAILS [30]
+389: mpv5.db.common.QueryHandler: Setting row limit for this connection to: 100
+390: mpv5.db.common.QueryHandler: freeSelectQuery::SELECT * FROM productlistitems WHERE productlistitems.IDS>0
+391: mpv5.db.common.DatabaseObject: Sorry, but there was no matching data in the database. in Context: PRODUCTLISTITEMS [32]
+392: mpv5.db.common.QueryHandler: Setting row limit for this connection to: 100
+393: mpv5.db.common.QueryHandler: freeSelectQuery::SELECT * FROM comps WHERE comps.IDS>0
+394: mpv5.db.common.DatabaseObject: Sorry, but there was no matching data in the database. in Context: COMPS [39]
+395: mpv5.db.common.QueryHandler: Setting row limit for this connection to: 100
+396: mpv5.db.common.QueryHandler: freeSelectQuery::SELECT * FROM webshops WHERE webshops.IDS>0
+397: mpv5.db.common.DatabaseObject: Sorry, but there was no matching data in the database. in Context: WEBSHOPS [40]
+398: mpv5.db.common.QueryHandler: Setting row limit for this connection to: 100
+399: mpv5.db.common.QueryHandler: freeSelectQuery::SELECT * FROM templates WHERE templates.IDS>0
+400: mpv5.db.common.DatabaseObject: Sorry, but there was no matching data in the database. in Context: TEMPLATES [43]
+401: mpv5.db.common.QueryHandler: Setting row limit for this connection to: 100
+402: mpv5.db.common.QueryHandler: freeSelectQuery::SELECT * FROM reminders WHERE reminders.IDS>0
+403: mpv5.db.common.DatabaseObject: Sorry, but there was no matching data in the database. in Context: REMINDERS [45]
+404: mpv5.db.common.QueryHandler: Setting row limit for this connection to: 100
+405: mpv5.db.common.QueryHandler: freeSelectQuery::SELECT * FROM stages WHERE stages.IDS>0
+406: mpv5.db.common.DatabaseObject: Sorry, but there was no matching data in the database. in Context: STAGES [46]
+407: mpv5.db.common.QueryHandler: Setting row limit for this connection to: 100
+408: mpv5.db.common.QueryHandler: freeSelectQuery::SELECT * FROM tax WHERE tax.IDS>0
+409: mpv5.db.common.DatabaseObject: Preparing to explode rows: 3
+410: mpv5.db.common.QueryHandler: Setting row limit for this connection to: 100
+411: mpv5.db.common.QueryHandler: freeSelectQuery::SELECT * FROM productgroups WHERE productgroups.IDS>0
+412: mpv5.db.common.DatabaseObject: Preparing to explode rows: 1
+413: mpv5.db.common.DatabaseObject: Cached objects: 9
+414: mpv5.db.common.QueryHandler: freeSelectQuery::SELECT contacts.IDS,contacts.CNUMBER,contacts.TITLE,contacts.PRENAME,contacts.CNAME,contacts.STREET,contacts.ZIP,contacts.CITY,contacts.MAINPHONE,contacts.FAX,contacts.MOBILEPHONE,contacts.WORKPHONE,contacts.COMPANY,contacts.MAILADDRESS,contacts.WEBSITE,contacts.NOTES,contacts.TAXNUMBER FROM contacts  WHERE  contacts.iscustomer=1  AND contacts.invisible = 0 
+415: mpv5.db.common.QueryHandler: freeSelectQuery::SELECT contacts.IDS,contacts.CNUMBER,contacts.TITLE,contacts.PRENAME,contacts.CNAME,contacts.STREET,contacts.ZIP,contacts.CITY,contacts.MAINPHONE,contacts.FAX,contacts.MOBILEPHONE,contacts.WORKPHONE,contacts.COMPANY,contacts.MAILADDRESS,contacts.WEBSITE,contacts.NOTES,contacts.TAXNUMBER FROM contacts  WHERE  contacts.ismanufacturer=1  AND contacts.invisible = 0 
+416: mpv5.db.common.QueryHandler: freeSelectQuery::SELECT contacts.IDS,contacts.CNUMBER,contacts.TITLE,contacts.PRENAME,contacts.CNAME,contacts.STREET,contacts.ZIP,contacts.CITY,contacts.MAINPHONE,contacts.FAX,contacts.MOBILEPHONE,contacts.WORKPHONE,contacts.COMPANY,contacts.MAILADDRESS,contacts.WEBSITE,contacts.NOTES,contacts.TAXNUMBER FROM contacts  WHERE  contacts.issupplier=1  AND contacts.invisible = 0 
+417: mpv5.db.common.QueryHandler: freeSelectQuery::SELECT files.cname,filestoproducts.cname, files.dateadded,filestoproducts.description,filestoproducts.intsize,filestoproducts.mimetype FROM filestoproducts  LEFT OUTER JOIN files ON files.cname = filestoproducts.filename WHERE filestoproducts.productsids = 0 AND filestoproducts.IDS>0
+418: mpv5.db.common.QueryHandler: Setting row limit for this connection to: 200
+419: mpv5.db.common.QueryHandler: freeSelectQuery::SELECT ids, cname FROM tax  WHERE UPPER(tax.cname)  LIKE  '%%' AND tax.IDS>0  ORDER BY tax.ids 
+420: mpv5.db.common.QueryHandler: freeSelectQuery::SELECT * FROM accounts WHERE accounts.ids = 1 AND accounts.IDS>0
+421: mpv5.db.common.DatabaseObject: Preparing to explode rows: 1
+422: mpv5.db.common.QueryHandler: freeSelectQuery::SELECT files.cname,filestoitems.cname, files.dateadded,filestoitems.description,filestoitems.intsize,filestoitems.mimetype FROM filestoitems  LEFT OUTER JOIN files ON files.cname = filestoitems.filename WHERE filestoitems.itemsids = 0 AND filestoitems.IDS>0
+423: mpv5.db.common.QueryHandler: freeSelectQuery::SELECT files.cname,filestoitems.cname, files.dateadded,filestoitems.description,filestoitems.intsize,filestoitems.mimetype FROM filestoitems  LEFT OUTER JOIN files ON files.cname = filestoitems.filename WHERE filestoitems.itemsids = 0 AND filestoitems.IDS>0
+424: mpv5.utils.ui.ComponentStateManager: Reloading layout for: dataTable
+425: mpv5.db.common.QueryHandler: freeSelectQuery::SELECT files.cname,filestoitems.cname, files.dateadded,filestoitems.description,filestoitems.intsize,filestoitems.mimetype FROM filestoitems  LEFT OUTER JOIN files ON files.cname = filestoitems.filename WHERE filestoitems.itemsids = 0 AND filestoitems.IDS>0
+426: mpv5.utils.ui.ComponentStateManager: Reloading layout for: dataTable
+427: mpv5.db.common.QueryHandler: freeSelectQuery::SELECT files.cname,filestoitems.cname, files.dateadded,filestoitems.description,filestoitems.intsize,filestoitems.mimetype FROM filestoitems  LEFT OUTER JOIN files ON files.cname = filestoitems.filename WHERE filestoitems.itemsids = 0 AND filestoitems.IDS>0
+428: mpv5.utils.ui.ComponentStateManager: Reloading layout for: dataTable
+429: mpv5.db.common.QueryHandler: freeSelectQuery::SELECT * FROM users WHERE users.ids = 1 AND users.IDS>0
+430: mpv5.db.common.DatabaseObject: Preparing to explode rows: 1
+431: mpv5.db.common.QueryHandler: freeSelectQuery::SELECT cname, value FROM userproperties  WHERE userproperties.usersids=1 AND userproperties.IDS>0
+432: mpv5.db.objects.User: Mail configuration not set.
+433: mpv5.db.objects.User: Unable to create DTA info
+434: mpv5.db.common.QueryHandler: DELETE FROM tablelock WHERE tablelock.usersids = 1
+435: mpv5.db.common.DatabaseObject: Removed from cache: users@1
+436: mpv5.db.objects.User: Updating dataset: 1 within context 'USERS [7]'
+437: mpv5.db.objects.User: Calling: public java.lang.String mpv5.db.objects.User.__getCName()
+438: mpv5.db.objects.User: Collect: java.lang.String : __getCName ? admin
+439: mpv5.db.objects.User: Calling: public java.lang.String mpv5.db.objects.User.__getPassword()
+440: mpv5.db.objects.User: Collect: java.lang.String : __getPassword ? 5f4dcc3b5aa765d61d8327deb882cf99
+441: mpv5.db.objects.User: Calling: public java.lang.String mpv5.db.objects.User.__getLaf()
+442: mpv5.db.objects.User: Collect: java.lang.String : __getLaf ? com.sun.java.swing.plaf.windows.WindowsLookAndFeel
+443: mpv5.db.objects.User: Calling: public java.lang.String mpv5.db.objects.User.__getLocale()
+444: mpv5.db.objects.User: Collect: java.lang.String : __getLocale ? de_DE
+445: mpv5.db.objects.User: Calling: public java.lang.String mpv5.db.objects.User.__getMail()
+446: mpv5.db.objects.User: Collect: java.lang.String : __getMail ? 
+447: mpv5.db.objects.User: Calling: public java.lang.String mpv5.db.objects.User.__getLanguage()
+448: mpv5.db.objects.User: Collect: java.lang.String : __getLanguage ? buildin_en
+449: mpv5.db.objects.User: Calling: public boolean mpv5.db.objects.User.__getIsenabled()
+450: mpv5.db.objects.User: Collect: java.lang.Boolean : __getIsenabled ? true
+451: mpv5.db.objects.User: Calling: public java.util.Date mpv5.db.objects.User.__getDatelastlog()
+452: mpv5.db.objects.User: Collect: java.util.Date : __getDatelastlog ? Tue Jan 11 17:22:16 CET 2011
+453: mpv5.db.objects.User: Calling: public boolean mpv5.db.objects.User.__getIsloggedin()
+454: mpv5.db.objects.User: Collect: java.lang.Boolean : __getIsloggedin ? false
+455: mpv5.db.objects.User: Calling: public java.lang.String mpv5.db.objects.User.__getFullname()
+456: mpv5.db.objects.User: Collect: java.lang.String : __getFullname ? Administrator
+457: mpv5.db.objects.User: Calling: public java.lang.String mpv5.db.objects.User.__getDefcountry()
+458: mpv5.db.objects.User: Collect: java.lang.String : __getDefcountry ? 276
+459: mpv5.db.objects.User: Calling: public boolean mpv5.db.objects.User.__getIsrgrouped()
+460: mpv5.db.objects.User: Collect: java.lang.Boolean : __getIsrgrouped ? false
+461: mpv5.db.objects.User: Calling: public int mpv5.db.objects.User.__getInthighestright()
+462: mpv5.db.objects.User: Collect: java.lang.Integer : __getInthighestright ? 0
+463: mpv5.db.objects.User: Calling: public int mpv5.db.objects.User.__getIntdefaultaccount()
+464: mpv5.db.objects.User: Collect: java.lang.Integer : __getIntdefaultaccount ? 1
+465: mpv5.db.objects.User: Calling: public int mpv5.db.objects.User.__getIntdefaultstatus()
+466: mpv5.db.objects.User: Collect: java.lang.Integer : __getIntdefaultstatus ? 1
+467: mpv5.db.objects.User: Calling: public int mpv5.db.objects.User.__getCompsids()
+468: mpv5.db.objects.User: Collect: java.lang.Integer : __getCompsids ? 0
+469: mpv5.db.objects.User: Calling: public int mpv5.db.common.DatabaseObject.__getGroupsids()
+470: mpv5.db.objects.User: Collect: java.lang.Integer : __getGroupsids ? 1
+471: mpv5.db.objects.User: Calling: public java.util.Date mpv5.db.common.DatabaseObject.__getDateadded()
+472: mpv5.db.objects.User: Collect: java.sql.Date : __getDateadded ? 2009-04-03
+473: mpv5.db.objects.User: Calling: public int mpv5.db.common.DatabaseObject.__getIntaddedby()
+474: mpv5.db.objects.User: Collect: java.lang.Integer : __getIntaddedby ? 0
+475: mpv5.db.common.QueryHandler: freeUpdateQuery::UPDATE users SET mail = '', isrgrouped = 0, inthighestright = 0, compsids = 0, locale = 'de_DE', intdefaultstatus = 1, datelastlog = '2011-01-11 17:22:16', password = '5f4dcc3b5aa765d61d8327deb882cf99', intaddedby = 0, laf = 'com.sun.java.swing.plaf.windows.WindowsLookAndFeel', isenabled = 1, intdefaultaccount = 1, dateadded = '2009-04-03 00:00:00', defcountry = '276', groupsids = 1, language = 'buildin_en', isloggedin = 0, cname = 'admin', fullname = 'Administrator' WHERE users.ids = 1
+476: mpv5.db.common.QueryHandler: freeSelectQuery::SELECT ids FROM users  WHERE users.cname  =  'admin' AND users.IDS>0  ORDER BY users.ids
+477: mpv5.db.common.QueryHandler: freeSelectQuery::SELECT * FROM users WHERE users.ids = 1 AND users.IDS>0
+478: mpv5.db.common.DatabaseObject: Preparing to explode rows: 1
+479: mpv5.db.objects.User: releaseAllObjectsFor: admin
+480: mpv5.db.common.QueryHandler: DELETE FROM tablelock WHERE tablelock.usersids = 1
+481: mpv5.db.common.QueryHandler: freeSelectQuery::SELECT cname, value FROM userproperties  WHERE userproperties.usersids=1 AND userproperties.IDS>0
+482: mpv5.db.objects.User: Mail configuration not set.
+483: mpv5.db.objects.User: Unable to create DTA info
+484: mpv5.db.objects.User: Mail configuration not set.
+485: mpv5.db.objects.User: Unable to create DTA info
+486: mpv5.db.objects.User: LanguageManager.getBundle() for: admin
+487: mpv5.db.objects.User: Updating dataset: 1 within context 'USERS [7]'
+488: mpv5.globals.LocalSettings: Changing property 'lastuser' to: 1
+489: mpv5.db.objects.User: Calling: public java.lang.String mpv5.db.objects.User.__getCName()
+490: mpv5.data.PropertyStore: Change property: 1 for lastuser
+491: mpv5.globals.LocalSettings: Writing local settings: 0
+492: mpv5.data.PropertyStore: Change property: 0 for nodeid
+493: mpv5.db.objects.User: Collect: java.lang.String : __getCName ? admin
+494: mpv5.utils.xml.XMLWriter: Node exists: connection: 0
+495: mpv5.db.objects.User: Calling: public java.lang.String mpv5.db.objects.User.__getPassword()
+496: mpv5.utils.xml.XMLWriter: Node exists: connection: 0
+497: mpv5.utils.xml.XMLWriter: Node exists: connection: 0
+498: mpv5.db.objects.User: Collect: java.lang.String : __getPassword ? 5f4dcc3b5aa765d61d8327deb882cf99
+499: mpv5.utils.xml.XMLWriter: Updating C:\Users\Andreas\.yabs\settings0.yabs
+500: mpv5.db.objects.User: Calling: public java.lang.String mpv5.db.objects.User.__getLaf()
+501: mpv5.utils.xml.XMLWriter: Writing Document: C:\Users\Andreas\.yabs\settings0.yabs using encoding: UTF8
+502: mpv5.db.objects.User: Collect: java.lang.String : __getLaf ? com.sun.java.swing.plaf.windows.WindowsLookAndFeel
+503: mpv5.db.objects.User: Calling: public java.lang.String mpv5.db.objects.User.__getLocale()
+504: mpv5.db.objects.User: Collect: java.lang.String : __getLocale ? de_DE
+505: mpv5.db.objects.User: Calling: public java.lang.String mpv5.db.objects.User.__getMail()
+506: mpv5.db.objects.User: Collect: java.lang.String : __getMail ? 
+507: mpv5.db.objects.User: Calling: public java.lang.String mpv5.db.objects.User.__getLanguage()
+508: mpv5.db.objects.User: Collect: java.lang.String : __getLanguage ? buildin_en
+509: mpv5.db.objects.User: Calling: public boolean mpv5.db.objects.User.__getIsenabled()
+510: mpv5.db.objects.User: Collect: java.lang.Boolean : __getIsenabled ? true
+511: mpv5.db.objects.User: Calling: public java.util.Date mpv5.db.objects.User.__getDatelastlog()
+512: mpv5.db.objects.User: Collect: java.util.Date : __getDatelastlog ? Tue Jan 11 17:22:58 CET 2011
+513: mpv5.db.objects.User: Calling: public boolean mpv5.db.objects.User.__getIsloggedin()
+514: mpv5.db.objects.User: Collect: java.lang.Boolean : __getIsloggedin ? true
+515: mpv5.db.objects.User: Calling: public java.lang.String mpv5.db.objects.User.__getFullname()
+516: mpv5.db.objects.User: Collect: java.lang.String : __getFullname ? Administrator
+517: mpv5.db.objects.User: Calling: public java.lang.String mpv5.db.objects.User.__getDefcountry()
+518: mpv5.db.objects.User: Collect: java.lang.String : __getDefcountry ? 276
+519: mpv5.db.objects.User: Calling: public boolean mpv5.db.objects.User.__getIsrgrouped()
+520: mpv5.db.objects.User: Collect: java.lang.Boolean : __getIsrgrouped ? false
+521: mpv5.db.objects.User: Calling: public int mpv5.db.objects.User.__getInthighestright()
+522: mpv5.db.objects.User: Collect: java.lang.Integer : __getInthighestright ? 0
+523: mpv5.db.objects.User: Calling: public int mpv5.db.objects.User.__getIntdefaultaccount()
+524: mpv5.db.objects.User: Collect: java.lang.Integer : __getIntdefaultaccount ? 1
+525: mpv5.db.objects.User: Calling: public int mpv5.db.objects.User.__getIntdefaultstatus()
+526: mpv5.db.objects.User: Collect: java.lang.Integer : __getIntdefaultstatus ? 1
+527: mpv5.db.objects.User: Calling: public int mpv5.db.objects.User.__getCompsids()
+528: mpv5.db.objects.User: Collect: java.lang.Integer : __getCompsids ? 0
+529: mpv5.db.objects.User: Calling: public int mpv5.db.common.DatabaseObject.__getGroupsids()
+530: mpv5.db.objects.User: Collect: java.lang.Integer : __getGroupsids ? 1
+531: mpv5.db.objects.User: Calling: public java.util.Date mpv5.db.common.DatabaseObject.__getDateadded()
+532: mpv5.db.objects.User: Collect: java.sql.Date : __getDateadded ? 2009-04-03
+533: mpv5.db.objects.User: Calling: public int mpv5.db.common.DatabaseObject.__getIntaddedby()
+534: mpv5.db.objects.User: Collect: java.lang.Integer : __getIntaddedby ? 0
+535: mpv5.db.common.QueryHandler: freeUpdateQuery::UPDATE users SET mail = '', isrgrouped = 0, inthighestright = 0, compsids = 0, locale = 'de_DE', intdefaultstatus = 1, datelastlog = '2011-01-11 17:22:58', password = '5f4dcc3b5aa765d61d8327deb882cf99', intaddedby = 0, laf = 'com.sun.java.swing.plaf.windows.WindowsLookAndFeel', isenabled = 1, intdefaultaccount = 1, dateadded = '2009-04-03 00:00:00', defcountry = '276', groupsids = 1, language = 'buildin_en', isloggedin = 1, cname = 'admin', fullname = 'Administrator' WHERE users.ids = 1
+536: mpv5.db.common.QueryHandler: Setting row limit for this connection to: 100
+537: mpv5.db.common.QueryHandler: freeSelectQuery::SELECT * FROM valueproperties  WHERE objectids=1 AND cname='layoutinfo' AND contextids=7 AND valueproperties.IDS>0
+538: mpv5.db.common.QueryHandler: freeSelectQuery::SELECT * FROM contacts WHERE contacts.IDS>0 AND contacts.invisible = 0 
+539: mpv5.db.common.DatabaseObject: Sorry, but there was no matching data in the database. in Context: CONTACTS [6]
+540: mpv5.db.common.QueryHandler: Setting row limit for this connection to: 100
+541: mpv5.db.objects.User$1: Sorry, but there was no matching data in the database. in Context: VALUEPROPERTIES [50]
+542: mpv5.db.common.QueryHandler: freeSelectQuery::SELECT * FROM favourites WHERE favourites.IDS>0
+543: mpv5.db.common.DatabaseObject: Sorry, but there was no matching data in the database. in Context: FAVOURITES [15]
+544: mpv5.db.common.QueryHandler: Setting row limit for this connection to: 100
+545: mpv5.db.common.QueryHandler: freeSelectQuery::SELECT * FROM users WHERE users.IDS>0
+546: mpv5.db.common.DatabaseObject: Preparing to explode rows: 1
+547: mpv5.db.common.QueryHandler: Setting row limit for this connection to: 100
+548: mpv5.db.common.QueryHandler: freeSelectQuery::SELECT * FROM addresses WHERE addresses.IDS>0
+549: mpv5.db.common.DatabaseObject: Sorry, but there was no matching data in the database. in Context: ADDRESSES [16]
+550: mpv5.db.common.QueryHandler: Setting row limit for this connection to: 100
+551: mpv5.db.common.QueryHandler: freeSelectQuery::SELECT * FROM items WHERE items.IDS>0 AND items.invisible = 0 
+552: mpv5.db.common.DatabaseObject: Sorry, but there was no matching data in the database. in Context: ITEMS [1]
+553: mpv5.db.common.QueryHandler: Setting row limit for this connection to: 100
+554: mpv5.db.common.QueryHandler: freeSelectQuery::SELECT * FROM subitems WHERE subitems.IDS>0
+555: mpv5.db.common.DatabaseObject: Sorry, but there was no matching data in the database. in Context: SUBITEMS [2]
+556: mpv5.db.common.QueryHandler: Setting row limit for this connection to: 100
+557: mpv5.db.common.QueryHandler: freeSelectQuery::SELECT * FROM groups WHERE groups.IDS>0
+558: mpv5.db.common.DatabaseObject: Preparing to explode rows: 1
+559: mpv5.db.common.QueryHandler: Setting row limit for this connection to: 100
+560: mpv5.db.common.QueryHandler: freeSelectQuery::SELECT * FROM schedule WHERE schedule.IDS>0
+561: mpv5.db.common.DatabaseObject: Sorry, but there was no matching data in the database. in Context: SCHEDULE [8]
+562: mpv5.db.common.QueryHandler: Setting row limit for this connection to: 100
+563: mpv5.db.common.QueryHandler: freeSelectQuery::SELECT * FROM filestocontacts WHERE filestocontacts.IDS>0
+564: mpv5.db.common.DatabaseObject: Sorry, but there was no matching data in the database. in Context: FILESTOCONTACTS [20]
+565: mpv5.db.common.QueryHandler: Setting row limit for this connection to: 100
+566: mpv5.db.common.QueryHandler: freeSelectQuery::SELECT * FROM filestoitems WHERE filestoitems.IDS>0
+567: mpv5.db.common.DatabaseObject: Sorry, but there was no matching data in the database. in Context: FILESTOITEMS [34]
+568: mpv5.db.common.QueryHandler: Setting row limit for this connection to: 100
+569: mpv5.db.common.QueryHandler: freeSelectQuery::SELECT * FROM filestoproducts WHERE filestoproducts.IDS>0
+570: mpv5.db.common.DatabaseObject: Sorry, but there was no matching data in the database. in Context: FILESTOPRODUCTS [20]
+571: mpv5.db.common.QueryHandler: Setting row limit for this connection to: 100
+572: mpv5.db.common.QueryHandler: freeSelectQuery::SELECT * FROM products WHERE products.IDS>0 AND products.invisible = 0 
+573: mpv5.db.common.DatabaseObject: Sorry, but there was no matching data in the database. in Context: PRODUCTS [23]
+574: mpv5.db.common.QueryHandler: Setting row limit for this connection to: 100
+575: mpv5.db.common.QueryHandler: freeSelectQuery::SELECT * FROM accounts WHERE accounts.IDS>0
+576: mpv5.db.common.DatabaseObject: Preparing to explode rows: 3
+577: mpv5.db.common.QueryHandler: Setting row limit for this connection to: 100
+578: mpv5.db.common.QueryHandler: freeSelectQuery::SELECT * FROM mails WHERE mails.IDS>0
+579: mpv5.db.common.DatabaseObject: Sorry, but there was no matching data in the database. in Context: MAILS [30]
+580: mpv5.db.common.QueryHandler: Setting row limit for this connection to: 100
+581: mpv5.db.common.QueryHandler: freeSelectQuery::SELECT * FROM productlistitems WHERE productlistitems.IDS>0
+582: mpv5.db.common.DatabaseObject: Sorry, but there was no matching data in the database. in Context: PRODUCTLISTITEMS [32]
+583: mpv5.db.common.QueryHandler: Setting row limit for this connection to: 100
+584: mpv5.db.common.QueryHandler: freeSelectQuery::SELECT * FROM comps WHERE comps.IDS>0
+585: mpv5.db.common.DatabaseObject: Sorry, but there was no matching data in the database. in Context: COMPS [39]
+586: mpv5.db.common.QueryHandler: Setting row limit for this connection to: 100
+587: mpv5.db.common.QueryHandler: freeSelectQuery::SELECT * FROM webshops WHERE webshops.IDS>0
+588: mpv5.db.common.DatabaseObject: Sorry, but there was no matching data in the database. in Context: WEBSHOPS [40]
+589: mpv5.db.common.QueryHandler: Setting row limit for this connection to: 100
+590: mpv5.db.common.QueryHandler: freeSelectQuery::SELECT * FROM templates WHERE templates.IDS>0
+591: mpv5.db.common.DatabaseObject: Sorry, but there was no matching data in the database. in Context: TEMPLATES [43]
+592: mpv5.db.common.QueryHandler: Setting row limit for this connection to: 100
+593: mpv5.db.common.QueryHandler: freeSelectQuery::SELECT * FROM reminders WHERE reminders.IDS>0
+594: mpv5.db.common.DatabaseObject: Sorry, but there was no matching data in the database. in Context: REMINDERS [45]
+595: mpv5.db.common.QueryHandler: Setting row limit for this connection to: 100
+596: mpv5.db.common.QueryHandler: freeSelectQuery::SELECT * FROM stages WHERE stages.IDS>0
+597: mpv5.db.common.DatabaseObject: Sorry, but there was no matching data in the database. in Context: STAGES [46]
+598: mpv5.db.common.QueryHandler: Setting row limit for this connection to: 100
+599: mpv5.db.common.QueryHandler: freeSelectQuery::SELECT * FROM tax WHERE tax.IDS>0
+600: mpv5.db.common.DatabaseObject: Preparing to explode rows: 3
+601: mpv5.db.common.QueryHandler: Setting row limit for this connection to: 100
+602: mpv5.db.common.QueryHandler: freeSelectQuery::SELECT * FROM productgroups WHERE productgroups.IDS>0
+603: mpv5.db.common.DatabaseObject: Preparing to explode rows: 1
+604: mpv5.db.common.DatabaseObject: Cached objects: 9
+605: mpv5.data.PropertyStore: Adding or replacing property: calculator = 
+606: mpv5.db.common.QueryHandler: Setting row limit for this connection to: 200
+607: mpv5.db.common.QueryHandler: Setting row limit for this connection to: 200
+608: mpv5.db.common.QueryHandler: freeSelectQuery::SELECT ids, cname FROM tax  WHERE UPPER(tax.cname)  LIKE  '%%' AND tax.IDS>0  ORDER BY tax.ids 
+609: mpv5.db.common.QueryHandler: freeSelectQuery::SELECT ids, cname FROM tax  WHERE UPPER(tax.cname)  LIKE  '%%' AND tax.IDS>0  ORDER BY tax.ids 
+610: mpv5.db.common.QueryHandler: DELETE FROM tablelock WHERE tablelock.usersids = 1
+611: 1
+612: mpv5.db.common.QueryHandler: DELETE FROM globalsettings WHERE groupsids=2
+613: mpv5.globals.LocalSettings: Writing local settings: 0
+614: mpv5.data.PropertyStore: Change property: 0 for nodeid
+615: mpv5.utils.xml.XMLWriter: Node exists: connection: 0
+616: mpv5.utils.xml.XMLWriter: Node exists: connection: 0
+617: mpv5.utils.xml.XMLWriter: Node exists: connection: 0
+618: mpv5.utils.xml.XMLWriter: Node exists: connection: 0
+619: mpv5.utils.xml.XMLWriter: Updating C:\Users\Andreas\.yabs\settings0.yabs
+620: mpv5.utils.xml.XMLWriter: Writing Document: C:\Users\Andreas\.yabs\settings0.yabs using encoding: UTF8
+621: mpv5.db.common.QueryHandler: freeSelectQuery::SELECT * FROM valueproperties  WHERE objectids=1 AND cname='layoutinfo' AND contextids=7 AND valueproperties.IDS>0
+622: mpv5.db.objects.ValueProperty: Inserting new dataset into: VALUEPROPERTIES [50]
+623: mpv5.db.objects.ValueProperty: Calling: public java.lang.String mpv5.db.objects.ValueProperty.__getClassname()
+624: mpv5.db.objects.ValueProperty: Collect: java.lang.String : __getClassname ? 
+625: mpv5.db.objects.ValueProperty: Calling: public int mpv5.db.objects.ValueProperty.__getContextids()
+626: mpv5.db.objects.ValueProperty: Collect: java.lang.Integer : __getContextids ? 7
+627: mpv5.db.objects.ValueProperty: Calling: public int mpv5.db.objects.ValueProperty.__getObjectids()
+628: mpv5.db.objects.ValueProperty: Collect: java.lang.Integer : __getObjectids ? 1
+629: mpv5.db.objects.ValueProperty: Calling: public java.lang.String mpv5.db.common.DatabaseObject.__getCName()
+630: mpv5.db.objects.ValueProperty: Collect: java.lang.String : __getCName ? layoutinfo
+631: mpv5.db.objects.ValueProperty: Calling: public int mpv5.db.common.DatabaseObject.__getGroupsids()
+632: mpv5.db.objects.ValueProperty: Collect: java.lang.Integer : __getGroupsids ? 1
+633: mpv5.db.objects.ValueProperty: Calling: public java.util.Date mpv5.db.common.DatabaseObject.__getDateadded()
+634: mpv5.db.objects.ValueProperty: Collect: java.util.Date : __getDateadded ? Tue Jan 11 17:23:30 CET 2011
+635: mpv5.db.objects.ValueProperty: Calling: public int mpv5.db.common.DatabaseObject.__getIntaddedby()
+636: mpv5.db.objects.ValueProperty: Collect: java.lang.Integer : __getIntaddedby ? 1
+637: mpv5.db.objects.ValueProperty: The inserted row has id: 1
+638: mpv5.db.common.QueryHandler: DELETE FROM tablelock WHERE tablelock.usersids = 1
+639: mpv5.db.common.DatabaseObject: Removed from cache: users@1
+640: mpv5.db.objects.User: Updating dataset: 1 within context 'USERS [7]'
+641: mpv5.db.objects.User: Calling: public java.lang.String mpv5.db.objects.User.__getCName()
+642: mpv5.db.objects.User: Collect: java.lang.String : __getCName ? admin
+643: mpv5.db.objects.User: Calling: public java.lang.String mpv5.db.objects.User.__getPassword()
+644: mpv5.db.objects.User: Collect: java.lang.String : __getPassword ? 5f4dcc3b5aa765d61d8327deb882cf99
+645: mpv5.db.objects.User: Calling: public java.lang.String mpv5.db.objects.User.__getLaf()
+646: mpv5.db.objects.User: Collect: java.lang.String : __getLaf ? com.sun.java.swing.plaf.windows.WindowsLookAndFeel
+647: mpv5.db.objects.User: Calling: public java.lang.String mpv5.db.objects.User.__getLocale()
+648: mpv5.db.objects.User: Collect: java.lang.String : __getLocale ? de_DE
+649: mpv5.db.objects.User: Calling: public java.lang.String mpv5.db.objects.User.__getMail()
+650: mpv5.db.objects.User: Collect: java.lang.String : __getMail ? 
+651: mpv5.db.objects.User: Calling: public java.lang.String mpv5.db.objects.User.__getLanguage()
+652: mpv5.db.objects.User: Collect: java.lang.String : __getLanguage ? buildin_en
+653: mpv5.db.objects.User: Calling: public boolean mpv5.db.objects.User.__getIsenabled()
+654: mpv5.db.objects.User: Collect: java.lang.Boolean : __getIsenabled ? true
+655: mpv5.db.objects.User: Calling: public java.util.Date mpv5.db.objects.User.__getDatelastlog()
+656: mpv5.db.objects.User: Collect: java.util.Date : __getDatelastlog ? Tue Jan 11 17:22:58 CET 2011
+657: mpv5.db.objects.User: Calling: public boolean mpv5.db.objects.User.__getIsloggedin()
+658: mpv5.db.objects.User: Collect: java.lang.Boolean : __getIsloggedin ? false
+659: mpv5.db.objects.User: Calling: public java.lang.String mpv5.db.objects.User.__getFullname()
+660: mpv5.db.objects.User: Collect: java.lang.String : __getFullname ? Administrator
+661: mpv5.db.objects.User: Calling: public java.lang.String mpv5.db.objects.User.__getDefcountry()
+662: mpv5.db.objects.User: Collect: java.lang.String : __getDefcountry ? 276
+663: mpv5.db.objects.User: Calling: public boolean mpv5.db.objects.User.__getIsrgrouped()
+664: mpv5.db.objects.User: Collect: java.lang.Boolean : __getIsrgrouped ? false
+665: mpv5.db.objects.User: Calling: public int mpv5.db.objects.User.__getInthighestright()
+666: mpv5.db.objects.User: Collect: java.lang.Integer : __getInthighestright ? 0
+667: mpv5.db.objects.User: Calling: public int mpv5.db.objects.User.__getIntdefaultaccount()
+668: mpv5.db.objects.User: Collect: java.lang.Integer : __getIntdefaultaccount ? 1
+669: mpv5.db.objects.User: Calling: public int mpv5.db.objects.User.__getIntdefaultstatus()
+670: mpv5.db.objects.User: Collect: java.lang.Integer : __getIntdefaultstatus ? 1
+671: mpv5.db.objects.User: Calling: public int mpv5.db.objects.User.__getCompsids()
+672: mpv5.db.objects.User: Collect: java.lang.Integer : __getCompsids ? 0
+673: mpv5.db.objects.User: Calling: public int mpv5.db.common.DatabaseObject.__getGroupsids()
+674: mpv5.db.objects.User: Collect: java.lang.Integer : __getGroupsids ? 1
+675: mpv5.db.objects.User: Calling: public java.util.Date mpv5.db.common.DatabaseObject.__getDateadded()
+676: mpv5.db.objects.User: Collect: java.sql.Date : __getDateadded ? 2009-04-03
+677: mpv5.db.objects.User: Calling: public int mpv5.db.common.DatabaseObject.__getIntaddedby()
+678: mpv5.db.objects.User: Collect: java.lang.Integer : __getIntaddedby ? 0
+679: mpv5.db.common.QueryHandler: freeUpdateQuery::UPDATE users SET mail = '', isrgrouped = 0, inthighestright = 0, compsids = 0, locale = 'de_DE', intdefaultstatus = 1, datelastlog = '2011-01-11 17:22:58', password = '5f4dcc3b5aa765d61d8327deb882cf99', intaddedby = 0, laf = 'com.sun.java.swing.plaf.windows.WindowsLookAndFeel', isenabled = 1, intdefaultaccount = 1, dateadded = '2009-04-03 00:00:00', defcountry = '276', groupsids = 1, language = 'buildin_en', isloggedin = 0, cname = 'admin', fullname = 'Administrator' WHERE users.ids = 1
+680: mpv5.db.common.QueryHandler: Database statistics:
+681: mpv5.Main: Count: 1 for query: INSERT INTO countries (iso,groupsids,cname ) VALUES (440,1,'Lithuania') 
+Count: 1 for query: INSERT INTO countries (iso,groupsids,cname ) VALUES (756,1,'Switzerland') 
+Count: 1 for query: INSERT INTO countries (iso,groupsids,cname ) VALUES (528,1,'Netherlands') 
+Count: 1 for query: SELECT * FROM accounts WHERE accounts.ids = 1 AND accounts.IDS>0
+Count: 1 for query: SELECT contacts.IDS,contacts.CNUMBER,contacts.TITLE,contacts.PRENAME,contacts.CNAME,contacts.STREET,contacts.ZIP,contacts.CITY,contacts.MAINPHONE,contacts.FAX,contacts.MOBILEPHONE,contacts.WORKPHONE,contacts.COMPANY,contacts.MAILADDRESS,contacts.WEBSITE,contacts.NOTES,contacts.TAXNUMBER FROM contacts  WHERE  contacts.issupplier=1  AND contacts.invisible = 0 
+Count: 1 for query: INSERT INTO countries (iso,groupsids,cname ) VALUES (492,1,'Monaco') 
+Count: 1 for query: INSERT INTO countries (iso,groupsids,cname ) VALUES (724,1,'Spain') 
+Count: 1 for query: SELECT ids FROM users  WHERE users.cname  =  'admin' AND users.IDS>0  ORDER BY users.ids
+Count: 1 for query: UPDATE users SET mail = '', isrgrouped = 0, inthighestright = 0, compsids = 0, locale = 'de_DE', intdefaultstatus = 1, datelastlog = '2011-01-11 17:22:16', password = '5f4dcc3b5aa765d61d8327deb882cf99', intaddedby = 0, laf = 'com.sun.java.swing.plaf.windows.WindowsLookAndFeel', isenabled = 1, intdefaultaccount = 1, dateadded = '2009-04-03 00:00:00', defcountry = '276', groupsids = 1, language = 'buildin_en', isloggedin = 0, cname = 'admin', fullname = 'Administrator' WHERE users.ids = 1
+Count: 1 for query: INSERT INTO countries (iso,groupsids,cname ) VALUES (203,1,'Czech Republic') 
+Count: 1 for query: INSERT INTO countries (iso,groupsids,cname ) VALUES (642,1,'Romania') 
 Count: 1 for query: DELETE FROM globalsettings WHERE groupsids=2
+Count: 1 for query: SELECT cname, value FROM globalsettings  WHERE globalsettings.groupsids = 2  AND globalsettings.IDS>0
+Count: 1 for query: INSERT INTO countries (iso,groupsids,cname ) VALUES (752,1,'Sweden') 
+Count: 1 for query: SELECT ids FROM items WHERE intstatus <> 4 AND inttype=0
+Count: 1 for query: SELECT cname, usersids, itemsids FROM favourites  WHERE favourites.usersids = 4343 AND favourites.IDS>0
+Count: 1 for query: SELECT files.cname,filestoproducts.cname, files.dateadded,filestoproducts.description,filestoproducts.intsize,filestoproducts.mimetype FROM filestoproducts  LEFT OUTER JOIN files ON files.cname = filestoproducts.filename WHERE filestoproducts.productsids = 0 AND filestoproducts.IDS>0
+Count: 1 for query: INSERT INTO countries (iso,groupsids,cname ) VALUES (891,1,'Yugoslavia') 
+Count: 1 for query: SELECT contacts.IDS,contacts.CNUMBER,contacts.TITLE,contacts.PRENAME,contacts.CNAME,contacts.STREET,contacts.ZIP,contacts.CITY,contacts.MAINPHONE,contacts.FAX,contacts.MOBILEPHONE,contacts.WORKPHONE,contacts.COMPANY,contacts.MAILADDRESS,contacts.WEBSITE,contacts.NOTES,contacts.TAXNUMBER FROM contacts  WHERE  contacts.iscustomer=1  AND contacts.invisible = 0 
+Count: 1 for query: INSERT INTO countries (iso,groupsids,cname ) VALUES (705,1,'Slovenia') 
+Count: 1 for query: UPDATE users SET mail = '', isrgrouped = 0, inthighestright = 0, compsids = 0, locale = 'de_DE', intdefaultstatus = 1, datelastlog = '2011-01-11 17:22:58', password = '5f4dcc3b5aa765d61d8327deb882cf99', intaddedby = 0, laf = 'com.sun.java.swing.plaf.windows.WindowsLookAndFeel', isenabled = 1, intdefaultaccount = 1, dateadded = '2009-04-03 00:00:00', defcountry = '276', groupsids = 1, language = 'buildin_en', isloggedin = 1, cname = 'admin', fullname = 'Administrator' WHERE users.ids = 1
+Count: 1 for query: INSERT INTO countries (iso,groupsids,cname ) VALUES (438,1,'Liechtenstein') 
+Count: 1 for query: INSERT INTO countries (iso,groupsids,cname ) VALUES (276,1,'Germany') 
+Count: 1 for query: INSERT INTO countries (iso,groupsids,cname ) VALUES (56,1,'Belgium') 
+Count: 1 for query: INSERT INTO countries (iso,groupsids,cname ) VALUES (348,1,'Hungary') 
 Count: 1 for query: SELECT iso,cname FROM countries WHERE countries.IDS>0
+Count: 1 for query: INSERT INTO countries (iso,groupsids,cname ) VALUES (442,1,'Luxembourg') 
+Count: 1 for query: INSERT INTO countries (iso,groupsids,cname ) VALUES (826,1,'United Kingdom') 
+Count: 1 for query: INSERT INTO countries (iso,groupsids,cname ) VALUES (643,1,'Russian Federation') 
+Count: 1 for query: SELECT contacts.IDS,contacts.CNUMBER,contacts.TITLE,contacts.PRENAME,contacts.CNAME,contacts.STREET,contacts.ZIP,contacts.CITY,contacts.MAINPHONE,contacts.FAX,contacts.MOBILEPHONE,contacts.WORKPHONE,contacts.COMPANY,contacts.MAILADDRESS,contacts.WEBSITE,contacts.NOTES,contacts.TAXNUMBER FROM contacts  WHERE  contacts.ismanufacturer=1  AND contacts.invisible = 0 
+Count: 1 for query: INSERT INTO countries (iso,groupsids,cname ) VALUES (250,1,'France') 
+Count: 1 for query: SELECT * FROM pluginstousers  WHERE usersids=1 AND pluginstousers.IDS>0
+Count: 1 for query: SELECT ids FROM users WHERE users.IDS>0
+Count: 1 for query: INSERT INTO countries (iso,groupsids,cname ) VALUES (372,1,'Ireland') 
+Count: 1 for query: UPDATE users SET mail = '', isrgrouped = 0, inthighestright = 0, compsids = 0, locale = 'de_DE', intdefaultstatus = 1, datelastlog = '2011-01-11 17:22:16', password = '5f4dcc3b5aa765d61d8327deb882cf99', intaddedby = 0, laf = 'com.sun.java.swing.plaf.windows.WindowsLookAndFeel', isenabled = 1, intdefaultaccount = 1, dateadded = '2009-04-03 00:00:00', defcountry = '276', groupsids = 1, language = 'buildin_en', isloggedin = 1, cname = 'admin', fullname = 'Administrator' WHERE users.ids = 1
+Count: 1 for query: SELECT ids FROM schedule  WHERE nextdate >= '2009-01-11 17:22:17' AND nextdate <= '2011-01-11 17:22:17'
+Count: 1 for query: INSERT INTO countries (iso,groupsids,cname ) VALUES (616,1,'Poland') 
+Count: 1 for query: DELETE FROM countries WHERE countries.groupsids = 1
+Count: 1 for query: INSERT INTO countries (iso,groupsids,cname ) VALUES (804,1,'Ukraine') 
+Count: 1 for query: UPDATE users SET mail = '', isrgrouped = 0, inthighestright = 0, compsids = 0, locale = 'de_DE', intdefaultstatus = 1, datelastlog = '2011-01-11 17:22:58', password = '5f4dcc3b5aa765d61d8327deb882cf99', intaddedby = 0, laf = 'com.sun.java.swing.plaf.windows.WindowsLookAndFeel', isenabled = 1, intdefaultaccount = 1, dateadded = '2009-04-03 00:00:00', defcountry = '276', groupsids = 1, language = 'buildin_en', isloggedin = 0, cname = 'admin', fullname = 'Administrator' WHERE users.ids = 1
+Count: 1 for query: INSERT INTO countries (iso,groupsids,cname ) VALUES (191,1,'Croatia') 
+Count: 1 for query: INSERT INTO countries (iso,groupsids,cname ) VALUES (578,1,'Norway') 
+Count: 1 for query: INSERT INTO countries (iso,groupsids,cname ) VALUES (703,1,'Slovakia (Slovak Republic)') 
+Count: 1 for query: INSERT INTO countries (iso,groupsids,cname ) VALUES (620,1,'Portugal') 
+Count: 2 for query: SELECT * FROM schedule WHERE schedule.IDS>0
+Count: 2 for query: SELECT * FROM filestoitems WHERE filestoitems.IDS>0
+Count: 2 for query: SELECT * FROM filestocontacts WHERE filestocontacts.IDS>0
+Count: 2 for query: SELECT * FROM stages WHERE stages.IDS>0
+Count: 2 for query: SELECT * FROM webshops WHERE webshops.IDS>0
+Count: 2 for query: SELECT * FROM reminders WHERE reminders.IDS>0
+Count: 2 for query: SELECT * FROM templates WHERE templates.IDS>0
+Count: 2 for query: SELECT * FROM productlistitems WHERE productlistitems.IDS>0
+Count: 2 for query: SELECT * FROM subitems WHERE subitems.IDS>0
+Count: 2 for query: SELECT * FROM tax WHERE tax.IDS>0
+Count: 2 for query: SELECT * FROM filestoproducts WHERE filestoproducts.IDS>0
+Count: 2 for query: SELECT * FROM favourites WHERE favourites.IDS>0
+Count: 2 for query: SELECT * FROM comps WHERE comps.IDS>0
+Count: 2 for query: SELECT * FROM addresses WHERE addresses.IDS>0
+Count: 2 for query: SELECT * FROM products WHERE products.IDS>0 AND products.invisible = 0 
+Count: 2 for query: SELECT * FROM groups WHERE groups.IDS>0
+Count: 2 for query: SELECT * FROM mails WHERE mails.IDS>0
+Count: 2 for query: SELECT * FROM items WHERE items.IDS>0 AND items.invisible = 0 
+Count: 2 for query: SELECT * FROM accounts WHERE accounts.IDS>0
+Count: 2 for query: SELECT * FROM productgroups WHERE productgroups.IDS>0
+Count: 2 for query: SELECT * FROM contacts WHERE contacts.IDS>0 AND contacts.invisible = 0 
+Count: 3 for query: SELECT cname, value FROM userproperties  WHERE userproperties.usersids=1 AND userproperties.IDS>0
+Count: 3 for query: SELECT ids, cname FROM tax  WHERE UPPER(tax.cname)  LIKE  '%%' AND tax.IDS>0  ORDER BY tax.ids 
+Count: 3 for query: SELECT * FROM valueproperties  WHERE objectids=1 AND cname='layoutinfo' AND contextids=7 AND valueproperties.IDS>0
+Count: 3 for query: SELECT * FROM users WHERE users.IDS>0
+Count: 4 for query: SELECT * FROM users WHERE users.ids = 1 AND users.IDS>0
+Count: 4 for query: SELECT files.cname,filestoitems.cname, files.dateadded,filestoitems.description,filestoitems.intsize,filestoitems.mimetype FROM filestoitems  LEFT OUTER JOIN files ON files.cname = filestoitems.filename WHERE filestoitems.itemsids = 0 AND filestoitems.IDS>0
+Count: 5 for query: DELETE FROM tablelock WHERE tablelock.usersids = 1
 
-163: So Long, and Thanks for All the Fish.
+682: So Long, and Thanks for All the Fish.

@@ -168,13 +168,16 @@ public class FormatHandler {
                         startCount = Integer.valueOf(val.split(START_VALUE_IDENTIFIER)[1]);
                         val = val.split(START_VALUE_IDENTIFIER)[2];
                         QueryHandler.instanceOf().clone(Context.getFormats()).update("cname", id, val);
-                    }
+                        Log.Debug(this, "Setting start count to: " + startCount);
+                    } 
                 } catch (Exception numberFormatException) {
                     Log.Debug(this, numberFormatException);
                     return DEFAULT_FORMAT;
                 }
                 try {
-                    return new MessageFormat(val);
+                    MessageFormat mf =  new MessageFormat(val);
+                    Log.Debug(this, "Format found: " + mf.toPattern());
+                    return mf;
                 } catch (Exception e) {
                     Log.Debug(this, e);
                     return DEFAULT_FORMAT;
@@ -193,7 +196,10 @@ public class FormatHandler {
      * Contains all formattable Contexts
      */
     public static List<Context> FORMATTABLE_CONTEXTS = new Vector<Context>(Arrays.asList(new Context[]{
-                Context.getContact(), Context.getCustomer(), Context.getManufacturer(), Context.getSupplier(), Context.getProduct(), Context.getItem(), Context.getExpense(), Context.getRevenue(), Context.getOffer(), Context.getOrder(), Context.getInvoice()
+                Context.getContact(), Context.getCustomer(), Context.getManufacturer(), 
+                Context.getSupplier(), Context.getProduct(), Context.getItem(),
+                Context.getExpense(), Context.getRevenue(), Context.getOffer(),
+                Context.getOrder(), Context.getInvoice(), Context.getCompany()
             }));
 
     /**
@@ -258,6 +264,7 @@ public class FormatHandler {
         } else {
             int tmp = startCount.intValue();
             startCount = null;
+            Log.Debug(FormatHandler.class, "Startcount: " + tmp);
             return tmp;
         }
     }
@@ -266,14 +273,15 @@ public class FormatHandler {
         DatabaseObject forThis = source;
 
         String query = "";
+        String cnumber = toString(format, lastNumber + 1);
         if (forThis.getContext().equals(Context.getItem())
                 || forThis.getContext().equals(Context.getInvoice())
                 || forThis.getContext().equals(Context.getOffer())
                 || forThis.getContext().equals(Context.getOrder())) {
-            query = "SELECT cnumber FROM " + forThis.getDbIdentity() + " WHERE cnumber = '" + toString(format, lastNumber + 1) + "' AND inttype ="
+            query = "SELECT cnumber FROM " + forThis.getDbIdentity() + " WHERE cnumber = '" + cnumber + "' AND inttype ="
                     + ((Item) forThis).__getInttype();
         } else if (forThis.getContext().equals(Context.getProduct())) {
-            query = "SELECT cnumber FROM " + forThis.getDbIdentity() + " WHERE cnumber = '" + toString(format, lastNumber + 1) + "' AND inttype ="
+            query = "SELECT cnumber FROM " + forThis.getDbIdentity() + " WHERE cnumber = '" + cnumber + "' AND inttype ="
                     + ((Product) forThis).__getInttype();
         } else if (forThis.getContext().equals(Context.getContact())
                 || forThis.getContext().equals(Context.getCompany())
@@ -282,19 +290,22 @@ public class FormatHandler {
                 || forThis.getContext().equals(Context.getSupplier())
                 || forThis.getContext().equals(Context.getManufacturer())) {
             
-                query = "SELECT cnumber FROM " + forThis.getDbIdentity() + " WHERE cnumber = '" + toString(format, lastNumber + 1) + "'";
+                query = "SELECT cnumber FROM " + forThis.getDbIdentity() + " WHERE cnumber = '" + cnumber + "'";
             
         } else {
-            query = "SELECT cnumber FROM " + forThis.getDbIdentity() + " WHERE cnumber = '" + toString(format, lastNumber + 1) + "'";
+            query = "SELECT cnumber FROM " + forThis.getDbIdentity() + " WHERE cnumber = '" + cnumber + "'";
         }
 
+        Log.Debug(FormatHandler.class, "Checking : " + cnumber);
         ReturnValue val2 = QueryHandler.getConnection().freeQuery(
                 query, MPSecurityManager.VIEW, null);
         if (val2.hasData()) {
             Log.Debug(FormatHandler.class, "Already existing..: " + val2.getData()[0][0]);
             return getNextNumber(format, lastNumber + 1);
         } else {
-            return lastNumber + 1;
+            int nu = lastNumber + 1;
+            Log.Debug(FormatHandler.class, "Not existing yet : " + cnumber + ", returning next one: " + nu);
+            return nu;
         }
     }
 

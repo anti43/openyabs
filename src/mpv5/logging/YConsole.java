@@ -45,9 +45,9 @@ public class YConsole extends javax.swing.JFrame implements LogConsole {
     public static void setLogFile(String file) throws Exception {
         if (file != null) {
             YConsole.logfile = new File(file);
-            getLogfile().delete();
-            if (getLogfile().createNewFile() && !logfile.canWrite()) {
-                throw new Exception("Fehler in " + getLogfile().getCanonicalPath());
+//            getLogfile().delete();
+            if (!getLogfile().exists()&& !logfile.createNewFile()) {
+                throw new Exception("Error creating " + getLogfile().getCanonicalPath());
             } else {
                 FILE_LOG_ENABLED = true;
                 logwriter = new FileReaderWriter(getLogfile());
