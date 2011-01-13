@@ -8,6 +8,9 @@ import java.io.File;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JProgressBar;
@@ -25,7 +28,12 @@ public class YabsViewProxy implements YabsView {
 
     private LinkedList<YabsView> views = new LinkedList<YabsView>();
     private static YabsViewProxy instance;
+    private ConcurrentHashMap<Class, Class> viewCache = new ConcurrentHashMap<Class, Class>();
 
+    /**
+     * 
+     * @return
+     */
     public static synchronized YabsViewProxy instance() {
         if (instance == null) {
             instance = new YabsViewProxy();
@@ -33,6 +41,10 @@ public class YabsViewProxy implements YabsView {
         return instance;
     }
 
+    /**
+     *
+     * @param view
+     */
     public synchronized void register(YabsView view) {
         Log.Print("Registering " + view.getClass());
         views.addLast(view);
@@ -222,5 +234,27 @@ public class YabsViewProxy implements YabsView {
         } else {
             return Collections.unmodifiableList(views);
         }
+    }
+
+    public DataPanel getViewFor(DatabaseObject item) {
+        if (viewCache.containsKey(item.getClass())) {
+            try {
+                return (DataPanel) viewCache.get(item.getClass()).newInstance();
+            } catch (Exception ex) {
+                Log.Debug(ex);
+                return (DataPanel) item.getView();
+            }
+        } else {
+            return (DataPanel) item.getView();
+        }
+    }
+
+    /**
+     *
+     * @param clazz
+     * @param view
+     */
+    public void registerViewFor(Class clazz, Class view) {
+        viewCache.put(clazz, view);
     }
 }

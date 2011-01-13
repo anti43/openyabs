@@ -21,7 +21,6 @@ along with YaBS.  If not, see <http://www.gnu.org/licenses/>.
 package mpv5.utils.tables;
 
 //~--- JDK imports ------------------------------------------------------------
-
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
@@ -31,23 +30,25 @@ import javax.swing.table.TableModel;
  *
  */
 public class Selection {
-    private int     removed = 0;
-    private int     id;
+
+    private int removed = 0;
+    private int id;
     private boolean noerror;
-    private int     r;
-    private JTable  table;
+    private int r;
+    private JTable table;
 
     public Selection(JTable table) {
         try {
             this.table = table;
-            r          = table.getSelectedRow();
-            id         = Integer.valueOf(String.valueOf(table.getValueAt(r, 0)));
-            noerror    = true;
+            r = table.getSelectedRow();
+            id = Integer.valueOf(String.valueOf(table.getModel().getValueAt(r, 0)));
+            noerror = true;
 
             if (table.getCellEditor() != null) {
                 try {
                     table.getCellEditor().stopCellEditing();
-                } catch (Exception e) {}
+                } catch (Exception e) {
+                }
             }
         } catch (Exception numberFormatException) {
             noerror = false;
@@ -69,9 +70,9 @@ public class Selection {
     }
 
     public void removeRow() {
-        TableModel model       = table.getModel();
-        Object[][] data        = new Object[model.getRowCount()][model.getColumnCount()];
-        Object[]   columnNames = new Object[model.getColumnCount()];
+        TableModel model = table.getModel();
+        Object[][] data = new Object[model.getRowCount()][model.getColumnCount()];
+        Object[] columnNames = new Object[model.getColumnCount()];
 
         for (int idx = 0; idx < columnNames.length; idx++) {
             columnNames[idx] = model.getColumnName(idx);
@@ -107,3 +108,4 @@ public class Selection {
 
 
 //~ Formatted by Jindent --- http://www.jindent.com
+

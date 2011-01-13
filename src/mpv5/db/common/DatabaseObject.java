@@ -81,7 +81,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
      * @param <T>
      * @param <V>
      */
-    public static class Entity<T extends Context, V> implements Serializable{
+    public static class Entity<T extends Context, V> implements Serializable {
 
         private final DatabaseObject owner;
 
@@ -1084,10 +1084,8 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
 
         for (int i = 0; i < vars.size(); i++) {
             try {
-//                if (!vars.get(i).getName().substring(5, vars.get(i).getName().length()).toUpperCase().startsWith("DATE")) {
-                vals.add(new Object[]{vars.get(i).getName().substring(5, vars.get(i).getName().length()),
+                vals.add(new Object[]{vars.get(i).getName().substring(5, vars.get(i).getName().length()).toLowerCase(),
                             (vars.get(i).invoke(this, new Object[0]))});
-//                }
             } catch (Exception n) {
                 Log.Debug(this, n);
             }
