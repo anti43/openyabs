@@ -361,7 +361,6 @@ public class Context implements Serializable {
      */
     public static ArrayList<Context> getSearchableContexts() {
         ArrayList<Context> list = new ArrayList<Context>();
-        list.add(getUser());
         list.add(getSubItem());
         list.add(getItem(null, null));
         list.add(getOffer());
@@ -369,7 +368,7 @@ public class Context implements Serializable {
         list.add(getSchedule());
         list.add(getContact());
         list.add(getProduct());
-        list.add(getAccounts());
+////        list.add(getAccounts());
         return list;
     }
 
