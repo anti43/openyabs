@@ -63,5 +63,6 @@ public interface YabsView{
     public void addToClipBoard(DatabaseObject it);
 
     public DatabaseObject[] getClipboardItems();
+
     
 }

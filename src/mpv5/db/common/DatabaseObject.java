@@ -83,8 +83,9 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
      */
     public static class Entity<T extends Context, V> implements Serializable {
 
-        private final DatabaseObject owner;
+        private DatabaseObject owner;
 
+        public Entity(){}
         /**
          * Create a new Entity, nulls not allowed
          * @param owner
@@ -152,6 +153,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
             return owner.context + " [" + owner.ids + "]";
         }
     }
+
 
     /**
      * Marks the value of the annotated getter to be persisted on {@link #save}
@@ -898,7 +900,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
                     left = annotated
                             ? methods[i].getName().toLowerCase().substring(3, methods[i].getName().length())
                             : methods[i].getName().toLowerCase().replace("__get", "");
-                    Log.Debug(this, "Calling: " + methods[i]);
+//                    Log.Debug(this, "Calling: " + methods[i]);
                     tempval = methods[i].invoke(this, (Object[]) null);
                     Log.Debug(this, "Collect: " + tempval.getClass().getName() + " : " + methods[i].getName() + " ? " + tempval);
                     if (tempval.getClass().isInstance(new String())) {
@@ -1176,6 +1178,16 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
      */
     public static DatabaseObject getObject(Entity entity) throws NodataFoundException {
         return getObject(entity.getKey(), entity.getValue());
+    }
+
+    /**
+     * Searches for a specific dataset, cached or non-cached
+     * @param entity
+     * @return A database object with data, or null if none found
+     * @throws NodataFoundException
+     */
+    public static DatabaseObject getObject(SerializableEntity entity) throws NodataFoundException {
+        return getObject(Context.getMatchingContext(entity.getTablename()), entity.getId().intValue());
     }
 
     /**
@@ -1972,7 +1984,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
      * @throws Exception
      */
     public void parse(String key, Object value) throws Exception {
-        Hashtable<String, Object> map = new Hashtable<String, Object>();
+        HashMap<String, Object> map = new HashMap<String, Object>();
         map.put(key, value);
 //        Log.Debug(this, "Set: " + key + " to: " + value + " [" + value.getClass().getName() + "]");
         parse(map);

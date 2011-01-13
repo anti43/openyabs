@@ -26,6 +26,12 @@ import mpv5.ui.panels.DataPanel;
  */
 public class YabsViewProxy implements YabsView {
 
+    public static interface SessionSaver {
+
+        public void saveSession();
+
+        public void restoreSession();
+    }
     private LinkedList<YabsView> views = new LinkedList<YabsView>();
     private static YabsViewProxy instance;
     private ConcurrentHashMap<Class, Class> viewCache = new ConcurrentHashMap<Class, Class>();
@@ -256,5 +262,21 @@ public class YabsViewProxy implements YabsView {
      */
     public void registerViewFor(Class clazz, Class view) {
         viewCache.put(clazz, view);
+    }
+
+    public void saveSession() {
+        for (int i = 0; i < views.size(); i++) {
+            if (views.get(i) instanceof SessionSaver) {
+                ((SessionSaver) views.get(i)).saveSession();
+            }
+        }
+    }
+
+    public void restoreSession() {
+        for (int i = 0; i < views.size(); i++) {
+            if (views.get(i) instanceof SessionSaver) {
+                ((SessionSaver) views.get(i)).restoreSession();
+            }
+        }
     }
 }

@@ -353,7 +353,7 @@ public final class ValueProperty extends DatabaseObject {
     public void setValueObj(Serializable valueObj) {
         this.valueObj = valueObj;
         __getValue();//generate xml
-//        Log.Debug(this, __getValue() );
+        Log.Debug(this, __getValue() );
     }
 
     /**

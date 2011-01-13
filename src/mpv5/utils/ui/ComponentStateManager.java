@@ -1,7 +1,6 @@
 package mpv5.utils.ui;
 
 //~--- non-JDK imports --------------------------------------------------------
-
 import mpv5.logging.Log;
 
 //~--- JDK imports ------------------------------------------------------------
@@ -32,18 +31,18 @@ public class ComponentStateManager {
      */
     public static synchronized String persist(JTable table) {
         try {
-            ByteArrayOutputStream            io                     = new ByteArrayOutputStream();
-            XMLEncoder                       encoder                = new XMLEncoder(io);
-            TableColumnModel                 tableColumnModel       = table.getColumnModel();
+            ByteArrayOutputStream io = new ByteArrayOutputStream();
+            XMLEncoder encoder = new XMLEncoder(io);
+            TableColumnModel tableColumnModel = table.getColumnModel();
             final Set<TableColumnLayoutInfo> tableColumnLayoutInfos = new TreeSet<TableColumnLayoutInfo>();
 
             for (int currentColumnIndex = 0; currentColumnIndex < tableColumnModel.getColumnCount();
                     currentColumnIndex++) {
-                TableColumn           tableColumn           = tableColumnModel.getColumn(currentColumnIndex);
+                TableColumn tableColumn = tableColumnModel.getColumn(currentColumnIndex);
                 TableColumnLayoutInfo tableColumnLayoutInfo =
-                    new TableColumnLayoutInfo(tableColumn.getIdentifier().toString(),
-                                              tableColumnModel.getColumnIndex(tableColumn.getIdentifier()),
-                                              tableColumn.getWidth());
+                        new TableColumnLayoutInfo(tableColumn.getIdentifier().toString(),
+                        tableColumnModel.getColumnIndex(tableColumn.getIdentifier()),
+                        tableColumn.getWidth());
 
                 tableColumnLayoutInfos.add(tableColumnLayoutInfo);
             }
@@ -75,11 +74,12 @@ public class ComponentStateManager {
             Log.Debug(ComponentStateManager.class, "Reloading layout for: " + table.getName());
 
             try {
-                ByteArrayInputStream                                      io                     =
-                    new ByteArrayInputStream(data.getBytes("UTF-8"));
-                XMLDecoder                                                decoder                = new XMLDecoder(io);
-                @SuppressWarnings("unchecked") Set<TableColumnLayoutInfo> tableColumnLayoutInfos =
-                    (Set<TableColumnLayoutInfo>) decoder.readObject();
+                ByteArrayInputStream io =
+                        new ByteArrayInputStream(data.getBytes("UTF-8"));
+                XMLDecoder decoder = new XMLDecoder(io);
+                @SuppressWarnings("unchecked")
+                Set<TableColumnLayoutInfo> tableColumnLayoutInfos =
+                        (Set<TableColumnLayoutInfo>) decoder.readObject();
                 TableColumnModel tableColumnModel = new DefaultTableColumnModel();
 
                 for (TableColumnLayoutInfo tableColumnLayoutInfo : tableColumnLayoutInfos) {
@@ -140,3 +140,4 @@ public class ComponentStateManager {
 
 
 //~ Formatted by Jindent --- http://www.jindent.com
+
