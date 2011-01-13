@@ -3,6 +3,7 @@ package mpv5.db.common;
 import java.util.ArrayList;
 import java.util.Arrays;
 import mpv5.db.objects.User;
+import mpv5.logging.Log;
 import mpv5.usermanagement.MPSecurityManager;
 import mpv5.utils.arrays.ArrayUtilities;
 
@@ -44,6 +45,13 @@ public class DatabaseSearch {
         this.context = context;
         this.ROWLIMIT = rowlimit;
     }
+ /**
+     * Initiates a new search and allows to limit the resulting rows
+     * @param rowlimit
+     */
+    public DatabaseSearch(int rowlimit) {
+        this.ROWLIMIT = rowlimit;
+    }
 
     /**
      * Get multiple values from a search
@@ -51,6 +59,34 @@ public class DatabaseSearch {
      */
     public Object[][] getValuesFor() {
         return QueryHandler.instanceOf().clone(context, ROWLIMIT).select("*", (String[]) null);
+    }
+
+    /**
+     * Do a fulltextsearch
+     * @param val
+     * @return The result
+     */
+    @SuppressWarnings("unchecked")
+    public Object[][] getFulltextSearchvaluesFor(String val) {
+        Log.Debug(this, "Fulltextlookup for " + val);
+        ArrayList<Context> contexts = Context.getSearchableContexts();
+        Object[][] data = new Object[][]{};
+        for (int i = 0; i < contexts.size(); i++) {
+            try {
+                Context contx = contexts.get(i);
+                ReturnValue rdata = QueryHandler.instanceOf().freeQuery(QueryHandler.instanceOf().clone(contx, ROWLIMIT).buildQuery(val, DatabaseObject.getObject(contx).getStringVars().toArray(new String[]{})), MPSecurityManager.VIEW, null);
+                Object[][] ndata = rdata.getData();
+                Object[] idcol = new Object[ndata.length];
+                for (int j = 0; j < idcol.length; j++) {
+                    idcol[j] = new DatabaseObject.Entity(contx, Integer.valueOf(ndata[j][0].toString()));
+                }
+                ndata = ArrayUtilities.replaceColumn(ndata, 0, idcol);
+                data = ArrayUtilities.merge(data, ndata);
+            } catch (Exception e) {
+                Log.Debug(e);
+            }
+        }
+        return data;
     }
 
     /**
@@ -87,8 +123,7 @@ public class DatabaseSearch {
         ArrayList<Object[]> list = new ArrayList<Object[]>();
         for (int i = 0; i < possibleColumns.length; i++) {
             String string = possibleColumns[i];
-            list.addAll(Arrays.asList(QueryHandler.instanceOf().clone(context, ROWLIMIT)
-                    .select(resultingFieldNames, new String[]{string, String.valueOf(where), (where instanceof Number)? "":"'"}, null, searchForLike)));
+            list.addAll(Arrays.asList(QueryHandler.instanceOf().clone(context, ROWLIMIT).select(resultingFieldNames, new String[]{string, String.valueOf(where), (where instanceof Number) ? "" : "'"}, null, searchForLike)));
         }
         ArrayUtilities.removeDuplicates(list);
         return list.toArray(new Object[][]{});
@@ -235,7 +270,7 @@ public class DatabaseSearch {
 
         if (caseSensitive) {
             try {
-                 Object[] data = QueryHandler.instanceOf().clone(context, ROWLIMIT).selectLast("ids", new String[]{what, needle, "'"}, true);
+                Object[] data = QueryHandler.instanceOf().clone(context, ROWLIMIT).selectLast("ids", new String[]{what, needle, "'"}, true);
                 return Integer.valueOf(data[0].toString());
             } catch (Exception ex) {
                 return null;

@@ -240,18 +240,19 @@ public class QueryHandler implements Cloneable {
      * Builds a select query which selects all fields from all rows where the fields match the given value.
      * @param value
      * @param fields
-     * @return A query String
+     * @return A query String select ids, bla
      */
     public String buildQuery(Object value, String... fields) {
         return buildQuery(fields, fields, "cname", value, "OR");
     }
 
     /**
-     *
+     * selct ids, columns
      * @param columns
      * @param conditionColumns
      * @param order
      * @param value
+     * @param command
      * @return
      */
     public String buildQuery(String[] columns, String[] conditionColumns, String order, Object value, String command) {
@@ -285,7 +286,7 @@ public class QueryHandler implements Cloneable {
                 conds += " AND " + context.getNoTrashSQLString();
             }
         }
-        String query = "SELECT " + cols + " FROM " + table + conds;
+        String query = "SELECT ids," + cols + " FROM " + table + conds;
         if (order != null) {
             query += " ORDER BY " + order;
         }

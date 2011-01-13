@@ -2309,7 +2309,7 @@ public class MPView extends FrameView implements YabsView {
 }//GEN-LAST:event_jMenuItem27ActionPerformed
 
     private void jMenuItem10ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem10ActionPerformed
-        addOrShowTab(Log.getLogger().open(), "Logs");
+        addOrShowTab(Log.getLogger().get(0).open(), "Logs");
 }//GEN-LAST:event_jMenuItem10ActionPerformed
 
     private void jMenuItem30ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem30ActionPerformed

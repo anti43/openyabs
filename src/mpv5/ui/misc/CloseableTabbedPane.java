@@ -42,6 +42,7 @@ import javax.swing.event.EventListenerList;
 
 import javax.swing.plaf.basic.BasicTabbedPaneUI;
 import javax.swing.plaf.metal.MetalTabbedPaneUI;
+import mpv5.YabsView;
 import mpv5.logging.Log;
 import mpv5.ui.frames.MPView;
 
@@ -57,7 +58,7 @@ import mpv5.ui.frames.MPView;
  *
  * @author http://forums.sun.com/profile.jspa?userID=484725
  */
-public class CloseableTabbedPane extends JTabbedPane implements MouseListener,
+public final class CloseableTabbedPane extends JTabbedPane implements MouseListener,
         MouseMotionListener {
 
     /**
@@ -80,14 +81,14 @@ public class CloseableTabbedPane extends JTabbedPane implements MouseListener,
      * The closeicon when the mouse is pressed.
      */
     private Icon pressedCloseIcon = null;
-    private MPView parentv;
+    private YabsView parentv;
     private volatile int oldSelection;
 
     /**
      * Creates a new instance of <code>CloseableTabbedPane</code>
      * @param view
      */
-    public CloseableTabbedPane(MPView view) {
+    public CloseableTabbedPane(YabsView view) {
         super();
         init(SwingUtilities.LEFT);
         setCloseIcons(new ImageIcon(CloseableTabbedPane.class.getResource("/mpv5/resources/images/close.png")),

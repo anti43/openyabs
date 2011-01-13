@@ -22,6 +22,7 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Enumeration;
 import java.util.List;
 import javax.swing.table.TableModel;
@@ -52,7 +53,8 @@ public class Log {
      */
     public static final int LOGLEVEL_DEBUG = 2;
     private static int loglevel = 1;
-    private static LogConsole logger = (LogConsole) new YConsole();
+    private static List<LogConsole> loggers =
+            new ArrayList<LogConsole>(Arrays.asList(new LogConsole[]{(LogConsole) new YConsole()}));
 
     /**
      * Print out a text file
@@ -206,7 +208,10 @@ public class Log {
     }
 
     private static synchronized void write(Object obj) {
-        logger.log(obj);
+        for (int i = 0; i < loggers.size(); i++) {
+            loggers.get(i).log(obj);
+            ;
+        }
     }
 
     /**
@@ -221,8 +226,8 @@ public class Log {
      *
      * @return
      */
-    public static LogConsole getLogger() {
-        return logger;
+    public static List<LogConsole> getLogger() {
+        return Collections.unmodifiableList(loggers);
     }
 
     /**
@@ -268,7 +273,12 @@ public class Log {
      * @param aLogger the logger to set
      */
     public static void setLogger(LogConsole aLogger) {
-        logger = aLogger;
+        loggers.clear();
+        loggers.add(aLogger);
+    }
+
+    public static void addLogger(LogConsole logConsole) {
+        loggers.add(logConsole);
     }
 
     private Log() {

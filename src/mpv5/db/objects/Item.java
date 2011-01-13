@@ -404,8 +404,10 @@ public class Item extends DatabaseObject implements Formattable {
 
     @Override
     public void ensureUniqueness() {
+        Log.Debug(this, "In ensureUniqueness for " + this.getClass());
         setCnumber(getFormatHandler().next());
         setCName(__getCnumber());
+        Log.Debug(this, "ensureUniqueness result: " + __getCnumber());
     }
 
     /**
