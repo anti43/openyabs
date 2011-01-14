@@ -40,6 +40,7 @@ import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import mpv5.Main;
+import mpv5.YabsViewProxy;
 import mpv5.globals.LocalSettings;
 import mpv5.globals.Messages;
 import mpv5.logging.Log;
@@ -82,7 +83,7 @@ public class NoaConnection {
 //                    }
                 } catch (Exception ex) {
                     mpv5.logging.Log.Debug(ex);//Logger.getLogger(NoaConnection.class.getName()).log(Level.SEVERE, null, ex);
-                    Popup.error(mpv5.YabsViewProxy.instance().getIdentifierFrame(), Messages.OOCONNERROR + "\n" + ex);
+                    YabsViewProxy.instance().addMessage( Messages.OOCONNERROR + "\n" + ex);
                 }
             }
             return Connection;
@@ -230,13 +231,13 @@ public class NoaConnection {
                 + "-nolockcheck" + " "
                 + "-nocrashreport" + " "
                 + "-nodefault" + " "
-                + "-accept='socket,host=0.0.0.0,port=" + port + ";urp;StarOffice.Service'";
+                + "-accept=socket,host=0.0.0.0,port=" + port + ";urp;StarOffice.Service";
 
         try {
             SocketAddress addr = new InetSocketAddress("127.0.0.1", port);
             Socket socket = new Socket();
             socket.connect(addr, 100);
-            throw new UnsupportedOperationException("Port " + port + " is already in use! Not going to start OO here.");
+            throw new UnsupportedOperationException("Port " + port + " is already in use :-/. Not going to start OO here.");
         } catch (IOException iOException) {
             //nothing is running here
         }
