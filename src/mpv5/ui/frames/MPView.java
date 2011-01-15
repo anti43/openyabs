@@ -21,6 +21,8 @@ import java.io.File;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -151,9 +153,7 @@ public class MPView extends FrameView implements YabsView {
      */
     public static void showCurrentList() {
         try {
-            getClistview().validate();
-            BigPopup.showPopup(Main.getApplication().getMainFrame().getRootPane(), getClistview(), Messages.YABS.toString());
-            BigPopup.pack(getClistview());
+            BigPopup.show(getClistview());
         } catch (Exception ex) {
             Log.Debug(ex);
         }
@@ -406,7 +406,6 @@ public class MPView extends FrameView implements YabsView {
         predefTitle = string;
     }
 
-
     /**
      * Sets the max value for the progressbar
      * @param max
@@ -508,17 +507,17 @@ public class MPView extends FrameView implements YabsView {
         }
     }
 
-    private static void fillFavouritesmenu() {
-        Favourite[] favs = Favourite.getUserFavourites();
-        for (int i = 0; i < favs.length; i++) {
-            Favourite fav = favs[i];
-            try {
-                getFavMenu().add(new FavouritesMenuItem(Favourite.getObject(fav.getFavContext(), fav.__getItemsids())));
-            } catch (NodataFoundException ex) {
-//                Log.Debug(this, ex.getMessage());
-            }
-        }
-    }
+//    private static void fillFavouritesmenu() {
+//        Favourite[] favs = Favourite.getUserFavourites();
+//        for (int i = 0; i < favs.length; i++) {
+//            Favourite fav = favs[i];
+//            try {
+//                getFavMenu().add(new FavouritesMenuItem(Favourite.getObject(fav.getFavContext(), fav.__getItemsids())));
+//            } catch (NodataFoundException ex) {
+////                Log.Debug(this, ex.getMessage());
+//            }
+//        }
+//    }
 
     /**
      * Add something to the clipboard menu
@@ -526,6 +525,8 @@ public class MPView extends FrameView implements YabsView {
      */
     public void addToClipBoard(DatabaseObject obj) {
         getClipboardMenu().add(new ClipboardMenuItem(obj));
+        getCurrentList().add(obj);
+        getClistview().validate();
     }
 
     public MPView(SingleFrameApplication app) {
@@ -534,6 +535,7 @@ public class MPView extends FrameView implements YabsView {
         MPView.identifierApplication = app;
 
         initComponents();
+        BigPopup.create(getClistview(), Messages.YABS.toString());
 
         try {
             Image icon = Toolkit.getDefaultToolkit().getImage(this.getFrame().getClass().getResource(Constants.ICON));
@@ -575,7 +577,6 @@ public class MPView extends FrameView implements YabsView {
             identifierFrame.setTitle(identifierFrame.getTitle() + predefTitle);
         }
 
-        fillFavouritesmenu();
         QueryHandler.setWaitCursorFor(identifierFrame);
 
         pluginLoader = new MPPLuginLoader();
@@ -583,9 +584,9 @@ public class MPView extends FrameView implements YabsView {
         addTab(new StartPage(), Messages.WELCOME);
         LocalSettings.save();
 
-//        if (Log.getLoglevel() != Log.LOGLEVEL_DEBUG) {
-//            sampleDataItem.getParent().remove(sampleDataItem);
-//        }
+        if (Log.getLoglevel() == Log.LOGLEVEL_DEBUG) {
+            jMenuItem45.setEnabled(true);
+        }
 
         identifierFrame.validate();
         loaded = true;
@@ -611,31 +612,6 @@ public class MPView extends FrameView implements YabsView {
                 getNaviPanel().repaint();
             }
         };
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
         SwingUtilities.invokeLater(runnable);
     }
@@ -912,6 +888,7 @@ public class MPView extends FrameView implements YabsView {
         clipboardMenu = new javax.swing.JMenu();
         jMenu6 = new javax.swing.JMenu();
         jMenuItem7 = new javax.swing.JMenuItem();
+        jMenuItem5 = new javax.swing.JMenuItem();
         helpmenu = new javax.swing.JMenu();
         jMenuItem10 = new javax.swing.JMenuItem();
         jMenuItem27 = new javax.swing.JMenuItem();
@@ -1744,6 +1721,7 @@ public class MPView extends FrameView implements YabsView {
         toolsMenu.add(jMenuItem37);
 
         jMenuItem45.setText(bundle.getString("MPView.jMenuItem45.text")); // NOI18N
+        jMenuItem45.setEnabled(false);
         jMenuItem45.setName("jMenuItem45"); // NOI18N
         jMenuItem45.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -1780,7 +1758,7 @@ public class MPView extends FrameView implements YabsView {
         clipboardMenu.setText(bundle.getString("MPView.clipboardMenu.text")); // NOI18N
         clipboardMenu.setName("clipboardMenu"); // NOI18N
 
-        jMenu6.setText(bundle.getString("MPView.jMenu6.text")); // NOI18N
+        jMenu6.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/16/finish.png"))); // NOI18N
         jMenu6.setName("jMenu6"); // NOI18N
 
         jMenuItem7.setText(bundle.getString("MPView.jMenuItem7.text")); // NOI18N
@@ -1791,6 +1769,15 @@ public class MPView extends FrameView implements YabsView {
             }
         });
         jMenu6.add(jMenuItem7);
+
+        jMenuItem5.setText(bundle.getString("MPView.jMenuItem5.text")); // NOI18N
+        jMenuItem5.setName("jMenuItem5"); // NOI18N
+        jMenuItem5.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem5ActionPerformed(evt);
+            }
+        });
+        jMenu6.add(jMenuItem5);
 
         clipboardMenu.add(jMenu6);
 
@@ -2276,7 +2263,7 @@ public class MPView extends FrameView implements YabsView {
     }//GEN-LAST:event_jButton16ActionPerformed
 
     private void jButton17ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton17ActionPerformed
-       addOrShowTab(JournalPanel.instanceOf(), Messages.OVERVIEW);
+        addOrShowTab(JournalPanel.instanceOf(), Messages.OVERVIEW);
     }//GEN-LAST:event_jButton17ActionPerformed
 
     private void jMenuItem28ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem28ActionPerformed
@@ -2451,6 +2438,9 @@ public class MPView extends FrameView implements YabsView {
         new SampleData(3, 1, true, true);
     }//GEN-LAST:event_jMenuItem45ActionPerformed
 
+    private void jMenuItem5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem5ActionPerformed
+        mpv5.YabsViewProxy.instance().setClipBoardVisible(true);
+    }//GEN-LAST:event_jMenuItem5ActionPerformed
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton calculatorButton;
     public javax.swing.JMenu clipboardMenu;
@@ -2525,6 +2515,7 @@ public class MPView extends FrameView implements YabsView {
     private javax.swing.JMenuItem jMenuItem42;
     private javax.swing.JMenuItem jMenuItem44;
     private javax.swing.JMenuItem jMenuItem45;
+    private javax.swing.JMenuItem jMenuItem5;
     private javax.swing.JMenuItem jMenuItem6;
     private javax.swing.JMenuItem jMenuItem7;
     private javax.swing.JMenuItem jMenuItem8;
@@ -2589,7 +2580,6 @@ public class MPView extends FrameView implements YabsView {
     public javax.swing.JPanel getStatusPanel() {
         return statusPanel;
     }
-
 
     /**
      * Open the currently selected tab in a new frame
@@ -2956,11 +2946,19 @@ public class MPView extends FrameView implements YabsView {
         return list.toArray(new DatabaseObject[]{});
     }
 
-
     @Override
     public void addOrShowTab(DatabaseObject dbo) {
         addTab(dbo);
     }
 
-
+    @Override
+    public void setClipBoardVisible(boolean show) {
+        try {
+            getClistview().validate();
+            BigPopup.setOnTop(getClistview());
+//            BigPopup.show(getClistview());
+        } catch (Exception ex) {
+            Logger.getLogger(MPView.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
 }

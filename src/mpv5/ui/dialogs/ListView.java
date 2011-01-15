@@ -65,6 +65,7 @@ public class ListView extends javax.swing.JPanel {
     @Override
     public void validate() {
         jList1.setModel(list.getListModel());
+        Log.Debug(this, "Having content: " + list.size());
         super.validate();
     }
 

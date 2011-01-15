@@ -52,11 +52,11 @@ public class DatabaseUpdater {
                 });
         UPDATES_DERBY.put(1.182, new String[]{
                     //                    "ALTER TABLE items DROP COLUMN discountvalue",
-                    "CREATE INDEX items_index0 ON items(cnumber(100))",
-                    "CREATE INDEX items_index1 ON items(cname(100))",
-                    "CREATE INDEX products_index0 ON products(cnumber(100))",
-                    "CREATE INDEX products_index1 ON products(cname(100))",
-                    "CREATE INDEX contacts_index0 ON contacts(cname(100))",
+                    "CREATE INDEX items_index0 ON items(cnumber)",
+                    "CREATE INDEX items_index1 ON items(cname)",
+                    "CREATE INDEX products_index0 ON products(cnumber)",
+                    "CREATE INDEX products_index1 ON products(cname)",
+                    "CREATE INDEX contacts_index0 ON contacts(cname)",
                     "CREATE TABLE valueproperties (IDS BIGINT NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1), "
                     + "CONSTRAINT constvp0 UNIQUE (cname, contextids, objectids, groupsids),"
                     + "cname VARCHAR(250) NOT NULL, classname VARCHAR(250) NOT NULL, "
@@ -64,7 +64,7 @@ public class DatabaseUpdater {
                     + "value CLOB(2G) DEFAULT NULL, dateadded DATE NOT NULL, intaddedby BIGINT DEFAULT 0, "
                     + "groupsids BIGINT REFERENCES groups(ids) DEFAULT 1, invisible SMALLINT DEFAULT 0, "
                     + "PRIMARY KEY (ids))",
-                    "CREATE INDEX values_index0 ON valueproperties(cname(100), contextids, objectids)",
+                    "CREATE INDEX values_index0 ON valueproperties(cname, contextids, objectids)",
                     "ALTER TABLE expenses ADD COLUMN dateend DATE ",
                     "ALTER TABLE expenses ADD COLUMN ispaid SMALLINT DEFAULT 0 NOT NULL",
                     "ALTER TABLE revenues ADD COLUMN dateend DATE ",
@@ -123,11 +123,11 @@ public class DatabaseUpdater {
                 });
         UPDATES_MYSQL.put(1.182, new String[]{
                     //                    "ALTER TABLE items DROP COLUMN discountvalue",
-                    "CREATE INDEX items_index0 ON items(cnumber)",
-                    "CREATE INDEX items_index1 ON items(cname)",
-                    "CREATE INDEX products_index0 ON products(cnumber)",
-                    "CREATE INDEX products_index1 ON products(cname)",
-                    "CREATE INDEX contacts_index0 ON contacts(cname)",
+                    "CREATE INDEX items_index0 ON items(cnumber(100))",
+                    "CREATE INDEX items_index1 ON items(cname(100))",
+                    "CREATE INDEX products_index0 ON products(cnumber(100))",
+                    "CREATE INDEX products_index1 ON products(cname(100))",
+                    "CREATE INDEX contacts_index0 ON contacts(cname(100))",
                     "CREATE TABLE valueproperties ("
                     + "ids BIGINT(20) UNSIGNED NOT NULL PRIMARY KEY auto_increment, "
                     + "CONSTRAINT constvp0 UNIQUE (cname, contextids, objectids, groupsids),"
@@ -141,7 +141,7 @@ public class DatabaseUpdater {
                     + "groupsids BIGINT(20) UNSIGNED DEFAULT 1 REFERENCES groups(ids), "
                     + "invisible BIGINT(20) UNSIGNED DEFAULT 0"
                     + ")ENGINE=MyISAM DEFAULT CHARSET=utf8",
-                    "CREATE INDEX values_index0 ON valueproperties(cname, contextids, objectids)",
+                    "CREATE INDEX values_index0 ON valueproperties(cname(100), contextids, objectids)",
                     "ALTER TABLE expenses ADD COLUMN dateend DATE ",
                     "ALTER TABLE expenses ADD COLUMN ispaid SMALLINT DEFAULT 0 NOT NULL",
                     "ALTER TABLE revenues ADD COLUMN dateend DATE ",

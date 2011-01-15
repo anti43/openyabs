@@ -26,11 +26,17 @@ import mpv5.ui.panels.DataPanel;
  */
 public class YabsViewProxy implements YabsView {
 
+
     public static interface SessionSaver {
 
         public void saveSession();
 
         public void restoreSession();
+    }
+
+    public static interface LookupProvider {
+
+        public void setLookupVisible(boolean show);
     }
     private LinkedList<YabsView> views = new LinkedList<YabsView>();
     private static YabsViewProxy instance;
@@ -221,6 +227,13 @@ public class YabsViewProxy implements YabsView {
         }
     }
 
+     @Override
+    public synchronized void setClipBoardVisible(boolean show) {
+        for (int i = 0; i < views.size(); i++) {
+            views.get(i). setClipBoardVisible(show);
+        }
+    }
+
     @Override
     public synchronized DatabaseObject[] getClipboardItems() {
         if (views.isEmpty()) {
@@ -276,6 +289,15 @@ public class YabsViewProxy implements YabsView {
         for (int i = 0; i < views.size(); i++) {
             if (views.get(i) instanceof SessionSaver) {
                 ((SessionSaver) views.get(i)).restoreSession();
+            }
+        }
+    }
+
+
+    public void setLookupVisible(boolean show) {
+        for (int i = 0; i < views.size(); i++) {
+            if (views.get(i) instanceof LookupProvider) {
+                ((LookupProvider) views.get(i)).setLookupVisible(show);
             }
         }
     }

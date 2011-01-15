@@ -30,7 +30,9 @@ import java.util.ResourceBundle;
 import java.util.Vector;
 import javax.swing.ComboBoxModel;
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.SwingUtilities;
 import mpv5.Main;
+import mpv5.YabsViewProxy;
 import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
 import mpv5.db.common.NodataFoundException;
@@ -362,7 +364,12 @@ public class LanguageManager {
 
             if (hasNeededKeys(file, true)) {
                 try {
-                    mpv5.YabsViewProxy.instance().setWaiting(true);
+                    Runnable runnable = new Runnable() {
+
+                        public void run() {
+                            mpv5.YabsViewProxy.instance().setWaiting(true);
+                        }
+                    };SwingUtilities.invokeLater(runnable);
                     String dbname = QueryHandler.instanceOf().clone(Context.getFiles()).insertFile(file);
                     try {
                         Thread.sleep(3333);
@@ -379,6 +386,7 @@ public class LanguageManager {
                     if (id > 0) {
                         mpv5.YabsViewProxy.instance().addMessage(langname + Messages.INSERTED.toString());
                         Popup.notice(langname + Messages.INSERTED.toString());
+                        cachelanguage(langid, getBundle(langid));
                     } else {
                         mpv5.YabsViewProxy.instance().addMessage(Messages.ERROR_OCCURED.toString());
                         Popup.notice(Messages.ERROR_OCCURED.toString());

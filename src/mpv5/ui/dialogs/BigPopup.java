@@ -14,7 +14,6 @@ import java.util.HashMap;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JPanel;
-import mpv5.ui.frames.MPView;
 import mpv5.ui.misc.Position;
 
 /**
@@ -270,7 +269,9 @@ public class BigPopup {
     public static void setOnTop(JPanel panel) throws Exception {
 
         if (contents.containsKey(panel)) {
+            show(panel);
             contents.get(panel).setAlwaysOnTop(true);
+            contents.get(panel).validate();
         } else {
             throw new Exception("Can not use a panel which has never been shown before.");
         }
@@ -297,8 +298,46 @@ public class BigPopup {
     public static void show(JPanel panel) throws Exception {
         if (contents.containsKey(panel)) {
             contents.get(panel).setVisible(true);
+            contents.get(panel).validate();
         } else {
             throw new Exception("Can not use a panel which has never been shown before.");
         }
+    }
+
+    /**
+     * Creates the popup with the given content, without showing it
+     * @param content
+     * @param title 
+     */
+    public static void create(JPanel content, String title) {
+        final JDialog window = new JDialog();
+        window.getContentPane().setLayout(new BorderLayout());
+        window.getContentPane().add(content, BorderLayout.CENTER);
+        window.pack();
+
+        window.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+        window.setTitle(title);
+        window.addKeyListener(new KeyListener() {
+
+            @Override
+            public void keyTyped(KeyEvent e) {
+                if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
+                    window.dispose();
+                }
+            }
+
+            @Override
+            public void keyPressed(KeyEvent e) {
+                if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
+                    window.dispose();
+                }
+            }
+
+            @Override
+            public void keyReleased(KeyEvent e) {
+            }
+        });
+        Position position = new Position(window);
+        contents.put(content, window);
     }
 }

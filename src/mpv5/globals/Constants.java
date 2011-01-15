@@ -28,7 +28,7 @@ public interface Constants {
      * 
      * Full Version number
      */
-    public static final String VERSION = "Yabs-1.2-alpha";
+    public static final String VERSION = "Yabs-1.1761";
 
     /**
      * The original database version of this release
@@ -55,7 +55,7 @@ public interface Constants {
      *
      * Alias
      */
-    public static final String TITLE = "[Three-Headed Monkey]";
+    public static final String TITLE = "[Scabb Island]";
     /**
      *
      * Name of the main JAR

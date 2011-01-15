@@ -503,10 +503,8 @@ public class DataPanelTB extends javax.swing.JPanel implements ActionListener, I
         DatabaseObject dato = parents.getDataOwner();
         if (dato.isExisting()) {
             mpv5.YabsViewProxy.instance().addToClipBoard(dato);
-//            mpv5.YabsViewProxy.instance().showCurrentList();
-        } else {
-//            mpv5.YabsViewProxy.instance().showCurrentList();
-        }
+//            mpv5.YabsViewProxy.instance().setClipBoardVisible(true);
+        } 
     }//GEN-LAST:event_but10ActionPerformed
 
     private void pdfButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_pdfButtonActionPerformed

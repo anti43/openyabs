@@ -17,13 +17,8 @@
 package mpv5;
 
 import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import mpv5.db.common.NodataFoundException;
 import mpv5.logging.*;
-import org.jdesktop.application.Application;
 import org.jdesktop.application.SingleFrameApplication;
 import com.l2fprod.common.swing.plaf.LookAndFeelAddons;
 import enoa.connection.NoaConnection;
@@ -31,17 +26,14 @@ import enoa.handler.TemplateHandler;
 import java.awt.Cursor;
 import java.awt.Font;
 import java.io.File;
-import java.lang.reflect.Field;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.Properties;
 import java.util.Vector;
 import javax.swing.ImageIcon;
-import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import mpv5.db.common.Context;
@@ -76,7 +68,6 @@ import mpv5.utils.print.PrintJob2;
 import mpv5.utils.text.RandomText;
 import mpv5.webshopinterface.WSIManager;
 import org.jdesktop.application.FrameView;
-import org.jdesktop.application.View;
 
 /**
  * The main class of the application.
@@ -179,15 +170,19 @@ public class Main {
         File itemp = new File(Constants.TEMPLATES_DIR);
         try {
             Log.Debug(Main.class, "Checking: " + itemp.getPath());
+            boolean imp = false;
             if (itemp.isDirectory() && itemp.canRead()) {
                 File[] templates = FileDirectoryHandler.getFilesOfDirectory(itemp);
                 for (int i = 0; i < templates.length; i++) {
                     File file = templates[i];
                     Log.Debug(Main.class, "Importing: " + file.getPath());
                     if (TemplateHandler.importTemplate(file)) {
-                        Popup.notice(Messages.IMPORT_TEMPLATES_DONE);//TODO: l10n
+                        imp = true;
                     }
                     file.deleteOnExit();
+                }
+                if (imp) {
+                    Popup.notice(Messages.IMPORT_TEMPLATES_DONE);
                 }
             }
         } catch (Exception e) {
@@ -279,6 +274,7 @@ public class Main {
      * At startup create and show the main frame of the application.
      */
     public void startup() {
+
         Log.Debug(this, "Startup procedure... ");
         getApplication().getContext().getLocalStorage().setDirectory(new File(Main.MPPATH));
 
@@ -292,6 +288,13 @@ public class Main {
                 readGlobalSettings();
                 Log.Debug(this, "Loading Yabs... ");
                 readImports();
+
+                Main.splash.nextStep(Messages.INIT_LOGIN.toString());
+                try {
+                    login();
+                } catch (NodataFoundException nodataFoundException) {
+                    Log.Debug(nodataFoundException);
+                }
                 Main.splash.nextStep(Messages.INIT_GUI.toString());
                 if (!HEADLESS) {
                     try {
@@ -299,6 +302,7 @@ public class Main {
                         FrameView view = (FrameView) VIEW_CLASS.getDeclaredConstructor(SingleFrameApplication.class).newInstance(getApplication());
                         getApplication().setMainView(view);
                         getApplication().show(view);
+                        Main.setLaF(User.getCurrentUser().__getLaf());
 //                        Log.Print(Arrays.asList(getApplication().getMainView().getClass().getInterfaces()));
                     } catch (Exception ex) {
                         Log.Debug(ex);
@@ -723,13 +727,6 @@ public class Main {
      */
     public void go(boolean firststart) {
 
-        Main.splash.nextStep(Messages.INIT_LOGIN.toString());
-
-        try {
-            login();
-        } catch (NodataFoundException nodataFoundException) {
-            Log.Debug(nodataFoundException);
-        }
         splash.nextStep(Messages.CACHE.toString());
         cache();
 

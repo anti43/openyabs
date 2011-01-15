@@ -114,7 +114,7 @@ public class wizard_DBSettings_simple_1 extends javax.swing.JPanel implements Wi
                         if (conn.runQueries(new DatabaseInstallation().getStructure())
                                 && conn.runQueries(new DatabaseInstallation().getInitialData())) {
 
-                            Main.readImports();
+//                            Main.readImports();
 
                             try {
                                 File f = new File(this.getClass().getResource("/mpv5/resources/extra/").toURI());

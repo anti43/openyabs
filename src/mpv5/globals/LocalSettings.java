@@ -64,6 +64,7 @@ public class LocalSettings {
     public static final String SUPPRESS_UPDATE_CHECK = "noupdate";
     public static final String CMD_PASSWORD = "cmdpassword";
     public static final String CMD_USER = "cmduser";
+    public static final String OFFICE_COMMAND = "ooocommand";
     private static PropertyStore predefinedSettings = new PropertyStore(new String[][]{
                 {CLIENT, "Default Client"},
                 {DEFAULT_FONT, "DejaVu Sans 11"},
@@ -90,6 +91,7 @@ public class LocalSettings {
             //                {OFFICE_HOME, ""},
             });
     private static Vector<PropertyStore> cookies;
+
 
     /**
      * Applies the environmental settings

@@ -244,7 +244,8 @@ public class NoaConnection {
 
         Runnable runnable = new Runnable() {
             public void run() {
-                FileExecutor.run(command);
+                FileExecutor.run(LocalSettings.hasProperty(LocalSettings.OFFICE_COMMAND)
+                        ?LocalSettings.getProperty(LocalSettings.OFFICE_COMMAND):command);
             }
         };
 
