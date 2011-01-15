@@ -23,7 +23,7 @@ import ag.ion.bion.officelayer.desktop.IDesktopService;
 import ag.ion.bion.officelayer.document.IDocumentService;
 import ag.ion.bion.officelayer.internal.document.DocumentService;
 import ag.ion.noa.NOAException;
-import com.mysql.jdbc.log.CommonsLogger;
+
 import com.sun.star.auth.InvalidArgumentException;
 import java.io.BufferedReader;
 import java.io.File;

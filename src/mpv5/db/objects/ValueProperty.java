@@ -291,6 +291,23 @@ public final class ValueProperty extends DatabaseObject {
             }
         }
     }
+    
+     /**
+     * You should not need to programmatically call this method, use {@link #defineValueObj(Serializable valueObj)}
+     * @param value the value to set
+     */
+    public void setValue(final String value) {
+        try {
+            ByteArrayInputStream io = new ByteArrayInputStream(value.getBytes("UTF-8"));
+            XMLDecoder d = new XMLDecoder(io);
+            setValueObj((Serializable) d.readObject());
+        } catch (Exception unsupportedEncodingException) {
+            synchronized (this) {
+                Log.Debug(unsupportedEncodingException);
+                Log.Debug(this, new String(value));
+            }
+        }
+    }
 
     @Override
     public mpv5.utils.images.MPIcon getIcon() {

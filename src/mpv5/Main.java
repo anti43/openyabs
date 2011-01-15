@@ -238,6 +238,7 @@ public class Main {
         Runnable runnable = new Runnable() {
 
             @Override
+            @SuppressWarnings("unchecked")
             public void run() {
                 try {
                     SingleFrameApplication.launch(APPLICATION_CLASS, new String[]{});

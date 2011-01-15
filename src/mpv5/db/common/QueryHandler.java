@@ -1960,7 +1960,7 @@ public class QueryHandler implements Cloneable {
                     id = keys.getInt(1);
                 }
             } catch (SQLException sQLException) {
-                Log.Debug(sQLException);
+//                Log.Debug(sQLException);
             }
             if (bool) {
                 resultSet = stm.getResultSet();
@@ -2235,7 +2235,7 @@ public class QueryHandler implements Cloneable {
                     id = keys.getInt(1);
                 }
             } catch (SQLException sQLException) {
-                Log.Debug(sQLException);
+//                Log.Debug(sQLException);
             }
 
             columnnames = new String[rsmd.getColumnCount()];
