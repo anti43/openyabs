@@ -39,17 +39,16 @@ public class Selection {
 
     public Selection(JTable table) {
         try {
-            this.table = table;
-            r = table.getSelectedRow();
-            id = Integer.valueOf(String.valueOf(table.getModel().getValueAt(r, 0)));
-            noerror = true;
-
             if (table.getCellEditor() != null) {
                 try {
                     table.getCellEditor().stopCellEditing();
                 } catch (Exception e) {
                 }
             }
+            this.table = table;
+            r = table.getSelectedRow();
+            id = Integer.valueOf(String.valueOf(table.getValueAt(r, table.convertColumnIndexToView(0))));
+            noerror = true;
         } catch (Exception numberFormatException) {
             noerror = false;
         }
@@ -63,7 +62,7 @@ public class Selection {
         Object[] data = new Object[table.getModel().getColumnCount()];
 
         for (int idx = 0; idx < data.length; idx++) {
-            data[idx] = table.getValueAt(table.getSelectedRow(), idx);
+            data[idx] = table.getModel().getValueAt(table.getSelectedRow(), idx);
         }
 
         return data;
@@ -105,7 +104,5 @@ public class Selection {
         return noerror;
     }
 }
-
-
 //~ Formatted by Jindent --- http://www.jindent.com
 

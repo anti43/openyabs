@@ -36,6 +36,10 @@ import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
 import javax.swing.JTable;
 import javax.swing.JTextField;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.TableColumnModelEvent;
+import javax.swing.event.TableColumnModelListener;
 import javax.swing.event.TableModelEvent;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
@@ -57,7 +61,7 @@ import mpv5.utils.tables.TableCalculator;
  *
  *  A custom table model which implements various convenience methods
  */
-public class MPTableModel extends DefaultTableModel implements Cloneable {
+public class MPTableModel extends DefaultTableModel implements Cloneable, TableColumnModelListener {
 
     private static final long serialVersionUID = 1L;
     private Class[] types;
@@ -66,6 +70,7 @@ public class MPTableModel extends DefaultTableModel implements Cloneable {
     private Object[] predefinedRow;
     private Integer autoCountColumn;
     private List<TableCalculator> calculators = new Vector<TableCalculator>();
+    private JTable owner;
 
     /**
      * Creates an empty, uneditable model 
@@ -718,6 +723,50 @@ public class MPTableModel extends DefaultTableModel implements Cloneable {
         } else {
             return new DefaultCellEditor(new JTextField());
         }
+    }
+
+    /**
+     * @return the owner
+     */
+    public JTable getOwner() {
+        return owner;
+    }
+
+    /**
+     * @param owner the owner to set
+     */
+    public void setOwner(JTable owner) {
+        this.owner = owner;
+    }
+
+    @Override
+    public void columnAdded(TableColumnModelEvent e) {
+
+    }
+
+    @Override
+    public void columnRemoved(TableColumnModelEvent e) {
+
+    }
+
+    @Override
+    public void columnMoved(TableColumnModelEvent e) {
+       resort();
+    }
+
+    @Override
+    public void columnMarginChanged(ChangeEvent e) {
+
+    }
+
+    @Override
+    public void columnSelectionChanged(ListSelectionEvent e) {
+
+    }
+
+    private void resort() {
+
+
     }
 
     /**

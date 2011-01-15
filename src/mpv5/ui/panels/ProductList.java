@@ -2,27 +2,19 @@ package mpv5.ui.panels;
 
 import java.awt.Component;
 import java.util.Date;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JComponent;
-import javax.swing.JTable;
 import javax.swing.table.TableCellRenderer;
 import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
-import mpv5.db.common.DatabaseSearch;
 import mpv5.db.common.NodataFoundException;
 import mpv5.db.common.QueryCriteria2;
 import mpv5.db.common.QueryHandler;
 import mpv5.db.common.QueryParameter;
-import mpv5.db.objects.Contact;
 import mpv5.db.objects.Product;
-import mpv5.globals.Headers;
 import mpv5.globals.Messages;
 import mpv5.logging.Log;
-import mpv5.ui.frames.MPView;
 import mpv5.utils.date.vTimeframe;
 import mpv5.utils.models.MPTableModel;
-import mpv5.utils.tables.Selection;
 import mpv5.utils.tables.*;
 
 /**
@@ -119,7 +111,7 @@ public class ProductList extends javax.swing.JPanel implements ListPanel {
 
         setName("Form"); // NOI18N
 
-        java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle(); // NOI18N
+        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("mpv5/resources/languages/Panels"); // NOI18N
         jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("ProductList.jPanel1.border.title"))); // NOI18N
         jPanel1.setName("jPanel1"); // NOI18N
 
