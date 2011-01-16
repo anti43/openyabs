@@ -315,8 +315,14 @@ public class NoaConnection {
      */
     public synchronized static void stopOOOServer() {
         for (int i = 0; i < OOOServers.size(); i++) {
-            Process process = OOOServers.get(i);
-            process.destroy();
+            try {
+                Process process = OOOServers.get(i);
+                process.destroy();
+                process.waitFor();
+            } catch (InterruptedException ex) {
+                Log.Debug(ex);
+            }
         }
+        
     }
 }

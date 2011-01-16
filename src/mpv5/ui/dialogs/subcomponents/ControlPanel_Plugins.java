@@ -7,6 +7,8 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.DefaultListModel;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
@@ -88,7 +90,13 @@ public class ControlPanel_Plugins extends javax.swing.JPanel implements ControlA
 
             public void actionPerformed(ActionEvent e) {
                 Plugin gin = (Plugin) list.getSelectedValue();
-                mpv5.YabsViewProxy.instance().getPluginLoader().loadPlugin(gin);
+                try {
+                    mpv5.YabsViewProxy.instance().getPluginLoader().loadPlugin(gin);
+                } catch (Exception ex) {
+                    Popup.error(ex);
+                } catch (Throwable ex) {
+                    Popup.error(new Exception(ex));
+                }
             }
         });
     }
@@ -289,16 +297,28 @@ public class ControlPanel_Plugins extends javax.swing.JPanel implements ControlA
         Object[] plugs = list.getSelectedValues();
         for (int i = 0; i < plugs.length; i++) {
             Plugin gin = (Plugin) plugs[i];
-            mpv5.YabsViewProxy.instance().getPluginLoader().loadPlugin(gin);
+            try {
+                mpv5.YabsViewProxy.instance().getPluginLoader().loadPlugin(gin);
+            } catch (Exception ex) {
+                Popup.error(ex);
+            } catch (Throwable ex) {
+                Popup.error(new Exception(ex));
+            }
         }
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
         MP5Plugin p = null;
         try {
-            if (new MPPLuginLoader().checkPlugin(new File(labeledTextChooser2.get_Text(true))) != null) {
-                p = new MPPLuginLoader().checkPlugin(new File(labeledTextChooser2.get_Text(true)));
-                mpv5.YabsViewProxy.instance().getPluginLoader().loadPlugin(p);
+            if (MPPLuginLoader.checkPlugin(new File(labeledTextChooser2.get_Text(true))) != null) {
+                p = MPPLuginLoader.checkPlugin(new File(labeledTextChooser2.get_Text(true)));
+                try {
+                    MPPLuginLoader.loadPlugin(p);
+                } catch (Exception ex) {
+                    Popup.error(ex);
+                } catch (Throwable ex) {
+                    Popup.error(new Exception(ex));
+                }
             } else {
                 Popup.notice(Messages.ERROR_OCCURED);
             }

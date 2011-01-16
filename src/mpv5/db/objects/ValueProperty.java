@@ -304,7 +304,7 @@ public final class ValueProperty extends DatabaseObject {
         } catch (Exception unsupportedEncodingException) {
             synchronized (this) {
                 Log.Debug(unsupportedEncodingException);
-                Log.Debug(this, new String(value));
+                Log.Debug(this,value);
             }
         }
     }

@@ -85,7 +85,9 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
 
         private DatabaseObject owner;
 
-        public Entity(){}
+        public Entity() {
+        }
+
         /**
          * Create a new Entity, nulls not allowed
          * @param owner
@@ -153,7 +155,6 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
             return owner.context + " [" + owner.ids + "]";
         }
     }
-
 
     /**
      * Marks the value of the annotated getter to be persisted on {@link #save}
@@ -329,10 +330,12 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
                 } else if (method.getParameterTypes()[0].isInstance(01)) {
                     method.invoke(dbo, new Object[]{Short.valueOf(String.valueOf(argument))});
                 } else if (method.getParameterTypes()[0].getCanonicalName().equals(new byte[0].getClass().getCanonicalName())) {//doitbetter
-                    method.invoke(dbo, new Object[]{(byte[]) ((argument instanceof String)?String.valueOf(argument).getBytes("UTF-8"):argument)});
+                    method.invoke(dbo, new Object[]{(byte[]) ((argument instanceof String) ? String.valueOf(argument).getBytes("UTF-8") : argument)});
                 } else {
                     //defaults to java.lang.String, Object args are not supported.. possibly later via XMLEncoder?
-                    method.invoke(dbo, new Object[]{String.valueOf(argument)});
+                    method.invoke(dbo, new Object[]{(argument instanceof byte[])
+                            ? new String((byte[]) argument)
+                            : String.valueOf(argument)});
                 }
             } else {
                 if (method.getParameterTypes()[0].isAssignableFrom(int.class)) {

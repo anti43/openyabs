@@ -358,8 +358,11 @@ public class Main {
             for (int i = 0; i < oap.size(); i++) {
                 Process p = oap.get(i);
                 try {
+                    Log.Debug(this, "Killing process: " + p);
                     p.destroy();
+                    p.waitFor();
                 } catch (Exception n) {
+                    Log.Debug(this, n);
                 }
             }
             NoaConnection.stopOOOServer();
@@ -733,7 +736,18 @@ public class Main {
 
         Main.splash.nextStep(Messages.INIT_PLUGINS.toString());
 
-        loadPlugins();
+        Runnable runnable = new Runnable() {
+
+            @Override
+            public void run() {
+                try {
+                    loadPlugins();
+                } catch (Exception e) {
+                    Popup.error(e);
+                }
+            }
+        };
+        new Thread(runnable).start();
         splash.dispose();
 
         if (!HEADLESS) {
@@ -807,7 +821,7 @@ public class Main {
 
         if (!HEADLESS) {
             if (!LocalSettings.getBooleanProperty(LocalSettings.SUPPRESS_UPDATE_CHECK)) {
-                Runnable runnable = new Runnable() {
+                Runnable runnable1 = new Runnable() {
 
                     @Override
                     public void run() {
@@ -817,7 +831,7 @@ public class Main {
                     }
                 };
 
-                new Thread(runnable).start();
+                new Thread(runnable1).start();
             }
         }
     }
@@ -828,8 +842,9 @@ public class Main {
                 try {
                     MPPLuginLoader.queuePlugins();
                     MPPLuginLoader.loadPlugins();
-                } catch (Exception e) {
+                } catch (Throwable e) {
                     Log.Debug(e);
+                    Popup.notice("Plugin ERROR " + e);
                 }
             } else {
                 try {
