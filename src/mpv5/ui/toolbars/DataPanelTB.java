@@ -574,7 +574,7 @@ public class DataPanelTB extends javax.swing.JPanel implements ActionListener, I
             dato.getPanelData(parents);
             if (dato.save()) {
                 Favourite.removeFavourite(dato);
-//                mpv5.YabsViewProxy.instance().getIdentifierView().refreshFavouritesMenu();
+                mpv5.YabsViewProxy.instance().reloadFavorites();
                 parents.setDataOwner(dato, true);
             } else {
                 parents.showRequiredFields();
@@ -591,7 +591,7 @@ public class DataPanelTB extends javax.swing.JPanel implements ActionListener, I
                 if (dato.save()) {
                     fav = new Favourite(dato);
                     fav.save();
-//                    mpv5.YabsViewProxy.instance().getIdentifierView().refreshFavouritesMenu();
+                    mpv5.YabsViewProxy.instance().reloadFavorites();
                     mpv5.YabsViewProxy.instance().addMessage(Messages.ADDED_TO_FAVOURITES + dato.__getCName());
                     parents.setDataOwner(dato, true);
                 } else {

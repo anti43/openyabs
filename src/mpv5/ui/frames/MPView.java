@@ -507,17 +507,17 @@ public class MPView extends FrameView implements YabsView {
         }
     }
 
-//    private static void fillFavouritesmenu() {
-//        Favourite[] favs = Favourite.getUserFavourites();
-//        for (int i = 0; i < favs.length; i++) {
-//            Favourite fav = favs[i];
-//            try {
-//                getFavMenu().add(new FavouritesMenuItem(Favourite.getObject(fav.getFavContext(), fav.__getItemsids())));
-//            } catch (NodataFoundException ex) {
-////                Log.Debug(this, ex.getMessage());
-//            }
-//        }
-//    }
+    public void reloadFavorites() {
+        Favourite[] favs = Favourite.getUserFavourites();
+        for (int i = 0; i < favs.length; i++) {
+            Favourite fav = favs[i];
+            try {
+                getFavMenu().add(new FavouritesMenuItem(Favourite.getObject(fav.getFavContext(), fav.__getItemsids())));
+            } catch (NodataFoundException ex) {
+//                Log.Debug(this, ex.getMessage());
+            }
+        }
+    }
 
     /**
      * Add something to the clipboard menu
@@ -559,7 +559,8 @@ public class MPView extends FrameView implements YabsView {
         } else {
             tabpanePanel.add(tabPane, BorderLayout.CENTER);
         }
-//        favMenu = favouritesMenu;
+        favMenu = favouritesMenu;
+        reloadFavorites();
         identifierView = this;
         filedialog = new DialogForFile(DialogForFile.FILES_ONLY);
         jMenuItem24.setEnabled(!LocalSettings.getBooleanProperty(LocalSettings.OFFICE_REMOTE));
@@ -885,6 +886,7 @@ public class MPView extends FrameView implements YabsView {
         jMenu1 = new javax.swing.JMenu();
         jMenuItem42 = new javax.swing.JMenuItem();
         jMenuItem44 = new javax.swing.JMenuItem();
+        favouritesMenu = new javax.swing.JMenu();
         clipboardMenu = new javax.swing.JMenu();
         jMenu6 = new javax.swing.JMenu();
         jMenuItem7 = new javax.swing.JMenuItem();
@@ -1755,6 +1757,10 @@ public class MPView extends FrameView implements YabsView {
 
         menuBar.add(jMenu1);
 
+        favouritesMenu.setText(bundle.getString("MPView.favouritesMenu.text")); // NOI18N
+        favouritesMenu.setName("favouritesMenu"); // NOI18N
+        menuBar.add(favouritesMenu);
+
         clipboardMenu.setText(bundle.getString("MPView.clipboardMenu.text")); // NOI18N
         clipboardMenu.setName("clipboardMenu"); // NOI18N
 
@@ -2447,6 +2453,7 @@ public class MPView extends FrameView implements YabsView {
     private javax.swing.JButton closeButton;
     private javax.swing.JMenu editMenu;
     private javax.swing.JLabel errorlabel;
+    private javax.swing.JMenu favouritesMenu;
     private javax.swing.JMenu helpmenu;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton10;

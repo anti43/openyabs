@@ -86,7 +86,6 @@ public class MPControlPanel extends javax.swing.JPanel {
         jButton10 = new javax.swing.JButton();
         jButton12 = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
-        jButton3 = new javax.swing.JButton();
         jButton5 = new javax.swing.JButton();
         jButton6 = new javax.swing.JButton();
         jButton8 = new javax.swing.JButton();
@@ -259,7 +258,7 @@ public class MPControlPanel extends javax.swing.JPanel {
         });
         buttons.add(jButton10);
 
-        jButton12.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
+        jButton12.setFont(new java.awt.Font("Tahoma", 0, 10));
         jButton12.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/48/gkrellm2.png"))); // NOI18N
         jButton12.setText(bundle.getString("MPControlPanel.jButton12.text")); // NOI18N
         jButton12.setToolTipText(bundle.getString("MPControlPanel.jButton12.toolTipText")); // NOI18N
@@ -298,26 +297,6 @@ public class MPControlPanel extends javax.swing.JPanel {
             }
         });
         buttons.add(jButton2);
-
-        jButton3.setFont(new java.awt.Font("Tahoma", 0, 10));
-        jButton3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/48/looknfeel.png"))); // NOI18N
-        jButton3.setText(bundle.getString("MPControlPanel.jButton3.text")); // NOI18N
-        jButton3.setToolTipText(bundle.getString("MPControlPanel.jButton3.toolTipText")); // NOI18N
-        jButton3.setBorder(javax.swing.BorderFactory.createEtchedBorder());
-        jButton3.setContentAreaFilled(false);
-        jButton3.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        jButton3.setIconTextGap(1);
-        jButton3.setMaximumSize(new java.awt.Dimension(90, 90));
-        jButton3.setMinimumSize(new java.awt.Dimension(90, 80));
-        jButton3.setName("jButton3"); // NOI18N
-        jButton3.setPreferredSize(new java.awt.Dimension(80, 70));
-        jButton3.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        jButton3.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton3ActionPerformed(evt);
-            }
-        });
-        buttons.add(jButton3);
 
         jButton5.setFont(new java.awt.Font("Tahoma", 0, 10));
         jButton5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/48/babelfish.png"))); // NOI18N
@@ -359,7 +338,7 @@ public class MPControlPanel extends javax.swing.JPanel {
         });
         buttons.add(jButton6);
 
-        jButton8.setFont(new java.awt.Font("Tahoma", 0, 10));
+        jButton8.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
         jButton8.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/48/draw-eraser.png"))); // NOI18N
         jButton8.setText(bundle.getString("MPControlPanel.jButton8.text")); // NOI18N
         jButton8.setToolTipText(bundle.getString("MPControlPanel.jButton8.toolTipText")); // NOI18N
@@ -499,7 +478,7 @@ public class MPControlPanel extends javax.swing.JPanel {
         });
         buttons.add(jButton19);
 
-        jButton18.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
+        jButton18.setFont(new java.awt.Font("Tahoma", 0, 10));
         jButton18.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/48/kxconfig.png"))); // NOI18N
         jButton18.setText(bundle.getString("MPControlPanel.jButton18.text")); // NOI18N
         jButton18.setToolTipText(bundle.getString("MPControlPanel.jButton18.toolTipText")); // NOI18N
@@ -565,13 +544,6 @@ public class MPControlPanel extends javax.swing.JPanel {
 
         openDetails(new ControlPanel_Local());
     }//GEN-LAST:event_jButton1ActionPerformed
-
-    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
-        mpv5.YabsViewProxy.instance().setWaiting(true);
-        TinyLookAndFeel.controlPanelInstantiated = true;
-//        new de.muntjak.tinylookandfeel.controlpanel.ControlPanel(Main.getApplication());
-        mpv5.YabsViewProxy.instance().setWaiting(false);
-    }//GEN-LAST:event_jButton3ActionPerformed
 
     private void jButton8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton8ActionPerformed
 
@@ -680,7 +652,6 @@ public class MPControlPanel extends javax.swing.JPanel {
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton20;
     private javax.swing.JButton jButton21;
-    private javax.swing.JButton jButton3;
     private javax.swing.JButton jButton4;
     private javax.swing.JButton jButton5;
     private javax.swing.JButton jButton6;

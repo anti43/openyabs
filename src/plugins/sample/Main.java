@@ -1,24 +1,23 @@
 
 /*
-*  This file is part of YaBS.
-*
-*      YaBS is free software: you can redistribute it and/or modify
-*      it under the terms of the GNU General Public License as published by
-*      the Free Software Foundation, either version 3 of the License, or
-*      (at your option) any later version.
-*
-*      YaBS is distributed in the hope that it will be useful,
-*      but WITHOUT ANY WARRANTY; without even the implied warranty of
-*      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-*      GNU General Public License for more details.
-*
-*      You should have received a copy of the GNU General Public License
-*      along with YaBS.  If not, see <http://www.gnu.org/licenses/>.
+ *  This file is part of YaBS.
+ *
+ *      YaBS is free software: you can redistribute it and/or modify
+ *      it under the terms of the GNU General Public License as published by
+ *      the Free Software Foundation, either version 3 of the License, or
+ *      (at your option) any later version.
+ *
+ *      YaBS is distributed in the hope that it will be useful,
+ *      but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *      GNU General Public License for more details.
+ *
+ *      You should have received a copy of the GNU General Public License
+ *      along with YaBS.  If not, see <http://www.gnu.org/licenses/>.
  */
 package plugins.sample;
 
 //~--- non-JDK imports --------------------------------------------------------
-
 import mpv5.logging.Log;
 
 import mpv5.pluginhandling.MP5Plugin;
@@ -49,17 +48,18 @@ import mpv5.YabsView;
  *
  */
 public class Main extends JPanel implements MP5Plugin, Runnable {
+
     private static final long serialVersionUID = -2334458558298502643L;
-    private JLabel            clock            = new JLabel();
-    private boolean           loaded           = false;
-    private JMenu             cmenu;
-    private YabsView            frame;
+    private JLabel clock = new JLabel();
+    private boolean loaded = false;
+    private JMenu cmenu;
+    private YabsView frame;
 
     @Override
     public MP5Plugin load(YabsView frame) {
         this.frame = frame;
-        cmenu      = new JMenu("what a crazy menu");
-//        frame.getMenuBar().add(cmenu);
+        cmenu = new JMenu("what a crazy menu");
+        mpv5.Main.getApplication().getMainView().getMenuBar().add(cmenu);
         mpv5.YabsViewProxy.instance().addMessage("added a crazy menu");
         setLayout(new BorderLayout());
         clock.setFont(new Font("Courier", Font.BOLD, 16));
@@ -71,13 +71,13 @@ public class Main extends JPanel implements MP5Plugin, Runnable {
 
     @Override
     public void unload() {
-//        frame.getMenuBar().remove(cmenu);
+        mpv5.Main.getApplication().getMainView().getMenuBar().remove(cmenu);
         loaded = false;
     }
 
     @Override
     public String getName() {
-        return "Sample Plugin for MP5";
+        return "Sample Plugin for YABS";
     }
 
     @Override
@@ -112,7 +112,8 @@ public class Main extends JPanel implements MP5Plugin, Runnable {
 
             try {
                 Thread.sleep(1000);
-            } catch (InterruptedException ignore) {}
+            } catch (InterruptedException ignore) {
+            }
         }
     }
 
@@ -137,3 +138,4 @@ public class Main extends JPanel implements MP5Plugin, Runnable {
 
 
 //~ Formatted by Jindent --- http://www.jindent.com
+

@@ -285,8 +285,8 @@ public class MPPLuginLoader {
     public static void loadPlugin(final MP5Plugin mP5Plugin) throws Exception, Throwable {
         if (!loadedPlugs.contains(mP5Plugin.getUID()) && mP5Plugin.isEnabled()) {
             loadedPlugs.add(mP5Plugin.getUID());
-//            final JLabel plab = new JLabel();
-//            plab.setDisabledIcon(new MPIcon(MPPLuginLoader.getErrorImage()).getIcon(18));
+            final JLabel plab = new JLabel();
+            plab.setDisabledIcon(new MPIcon(MPPLuginLoader.getErrorImage()).getIcon(18));
             try {
                 mP5Plugin.load(mpv5.YabsViewProxy.instance().getIdentifierView());
 
@@ -302,33 +302,40 @@ public class MPPLuginLoader {
                     Thread t = new Thread((Runnable) mP5Plugin);
                     t.start();
                 }
-//                if (mP5Plugin.getIcon() != null) {
-//                    plab.setIcon(new MPIcon(mP5Plugin.getIcon()).getIcon(18));
-//                } else {
-//                    plab.setIcon(new MPIcon(MPPLuginLoader.getDefaultPluginImage()).getIcon(18));
-//                }
-//                plab.setToolTipText("<html><b>" + mP5Plugin.getName() + " " + Messages.LOADED + "</b><br/><font size=-3>[" + mP5Plugin.getUID() + "]</html>");
-//                plab.addMouseListener(new MouseAdapter() {
-//
-//                    @Override
-//                    public void mouseReleased(MouseEvent e) {
-//                        if (e.getButton() == MouseEvent.BUTTON2 || e.getButton() == MouseEvent.BUTTON3) {
-//                            JLabel source = (JLabel) e.getSource();
-//                            JPopupMenu m = new JPopupMenu();
-//                            JMenuItem n = new JMenuItem(Messages.UNLOAD.getValue());
-//                            n.addActionListener(new ActionListener() {
-//
-//                                @Override
-//                                public void actionPerformed(ActionEvent e) {
-//                                    unLoadPlugin(mP5Plugin);
-//                                }
-//                            });
-//                            m.add(n);
-//                            m.show(plab, e.getX(), e.getY());
-//                        }
-//                    }
-//                });
-//                mpv5.YabsViewProxy.instance().getIdentifierView().getPluginIcons().add(plab);
+                if (mP5Plugin.getIcon() != null) {
+                    plab.setIcon(new MPIcon(mP5Plugin.getIcon()).getIcon(18));
+                } else {
+                    plab.setIcon(new MPIcon(MPPLuginLoader.getDefaultPluginImage()).getIcon(18));
+                }
+                plab.setToolTipText("<html><b>" + mP5Plugin.getName() + " " + Messages.LOADED + "</b><br/><font size=-3>[" + mP5Plugin.getUID() + "]</html>");
+                plab.addMouseListener(new MouseAdapter() {
+
+                    @Override
+                    public void mouseReleased(MouseEvent e) {
+                        if (e.getButton() == MouseEvent.BUTTON2 || e.getButton() == MouseEvent.BUTTON3) {
+                            JLabel source = (JLabel) e.getSource();
+                            JPopupMenu m = new JPopupMenu();
+                            JMenuItem n = new JMenuItem(Messages.UNLOAD.getValue());
+                            n.addActionListener(new ActionListener() {
+
+                                @Override
+                                public void actionPerformed(ActionEvent e) {
+                                    unLoadPlugin(mP5Plugin);
+                                    mpv5.Main.getApplication().getMainView().getMenuBar().remove(plab);
+                                    mpv5.Main.getApplication().getMainView().getMenuBar().validate();
+                                }
+                            });
+                            m.add(n);
+                            m.show(plab, e.getX(), e.getY());
+                        }
+                    }
+                });
+                try {
+                    Main.getApplication().getMainView().getMenuBar().add(plab);
+                    mpv5.Main.getApplication().getMainView().getMenuBar().validate();
+                } catch (Exception e) {
+                    Log.Debug(e);
+                }
             } catch (Throwable e) {
                 Log.Debug(e);
 //                plab.setEnabled(false);

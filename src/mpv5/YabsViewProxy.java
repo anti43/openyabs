@@ -26,7 +26,6 @@ import mpv5.ui.panels.DataPanel;
  */
 public class YabsViewProxy implements YabsView {
 
-
     public static interface SessionSaver {
 
         public void saveSession();
@@ -227,10 +226,10 @@ public class YabsViewProxy implements YabsView {
         }
     }
 
-     @Override
+    @Override
     public synchronized void setClipBoardVisible(boolean show) {
         for (int i = 0; i < views.size(); i++) {
-            views.get(i). setClipBoardVisible(show);
+            views.get(i).setClipBoardVisible(show);
         }
     }
 
@@ -293,12 +292,18 @@ public class YabsViewProxy implements YabsView {
         }
     }
 
-
     public void setLookupVisible(boolean show) {
         for (int i = 0; i < views.size(); i++) {
             if (views.get(i) instanceof LookupProvider) {
                 ((LookupProvider) views.get(i)).setLookupVisible(show);
             }
+        }
+    }
+
+    @Override
+    public void reloadFavorites() {
+        for (int i = 0; i < views.size(); i++) {
+            views.get(i).reloadFavorites();
         }
     }
 }

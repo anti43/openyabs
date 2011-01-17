@@ -695,7 +695,7 @@ public class Main {
                     if ((getApplication().getMainView()).getFrame() != null && (getApplication().getMainView()).getFrame().isShowing()) {
 //                        ((YabsView) getApplication().getMainView()).getIdentifierFrame().setVisible(false);
                         SwingUtilities.updateComponentTreeUI((getApplication().getMainView()).getFrame());
-//                        ((YabsView) getApplication().getMainView()).getIdentifierFrame().setVisible(true);
+                        ((YabsView) getApplication().getMainView()).getIdentifierFrame().validate();
                     }
                 }
             } catch (Exception exe) {

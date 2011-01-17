@@ -65,5 +65,7 @@ public interface YabsView{
     public DatabaseObject[] getClipboardItems();
 
     public void setClipBoardVisible(boolean show);
+
+    public void reloadFavorites();
     
 }
