@@ -34,6 +34,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
 import javax.swing.SwingUtilities;
+import mpv5.YabsViewProxy;
 import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
 import mpv5.db.common.Formattable;
@@ -47,6 +48,7 @@ import mpv5.handler.FormFieldsHandler;
 import mpv5.handler.VariablesHandler;
 import mpv5.logging.Log;
 import mpv5.mail.SimpleMail;
+import mpv5.ui.dialogs.Notificator;
 import mpv5.ui.dialogs.Popup;
 import mpv5.ui.frames.MPView;
 import mpv5.utils.files.FileDirectoryHandler;
@@ -395,6 +397,27 @@ public final class Export extends HashMap<String, Object> implements Waitable {
      */
     public static void print(final Component c) {
         new PrintJob2(c);
+    }
+
+    /**
+     * Generates a waiter for export
+     * @param saveDir
+     * @return
+     */
+    public static Waiter wait(final File saveDir) {
+        return new Waiter() {
+
+            @Override
+            public void set(Object object, Exception exceptions) throws Exception {
+                if (exceptions == null) {
+                    if (object instanceof File) {
+                        FileDirectoryHandler.copyFile2((File) object, saveDir);
+                    }
+                } else {
+                    Notificator.raiseNotification(exceptions, false);
+                }
+            }
+        };
     }
     private Exportable fromFile;
     private File toFile;

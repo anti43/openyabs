@@ -17,6 +17,7 @@
 package mpv5.db.objects;
 
 import enoa.handler.TableHandler;
+import enoa.handler.TemplateHandler;
 import java.math.BigDecimal;
 import java.text.DateFormat;
 import java.util.ArrayList;
@@ -27,6 +28,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Vector;
 import javax.swing.JComponent;
+import mpv5.YabsViewProxy;
 import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
 import mpv5.db.common.Formattable;
@@ -36,7 +38,9 @@ import mpv5.handler.FormatHandler;
 import mpv5.handler.MPEnum;
 import mpv5.logging.Log;
 import mpv5.ui.panels.ItemPanel;
+import mpv5.utils.export.Export;
 import mpv5.utils.images.MPIcon;
+import mpv5.utils.jobs.Job;
 import mpv5.utils.numberformat.FormatNumber;
 import mpv5.utils.text.TypeConversion;
 
@@ -563,7 +567,7 @@ public class Item extends DatabaseObject implements Formattable {
             } catch (Exception e) {
             }
             if (l != null) {
-                map.put("dateadded", DateFormat.getDateInstance(DateFormat.SHORT, l).format(__getDateadded()));
+                map.put("dateadded", DateFormat.getDateInstance(DateFormat.MEDIUM, l).format(__getDateadded()));
             } else {
                 Log.Debug(this, "Error while using item.date.locale");
             }
@@ -619,14 +623,27 @@ public class Item extends DatabaseObject implements Formattable {
         }
         r.save();
     }
-//    @Override
-//    public boolean save() {
-//        boolean saved = super.save();
-//        if (intstatus == STATUS_PAID && inttype == TYPE_BILL && saved && mpv5.db.objects.User.getCurrentUser().getProperties().getProperty(mpv5.YabsViewProxy.instance().tabPane, "autocreaterevenue")) {
-//            createRevenue();
-//        }
-//        return saved;
-//    }
+
+    @Override
+    public boolean save(boolean silent) {
+        boolean saved = super.save(silent);
+        if (mpv5.db.objects.User.getCurrentUser().getProperty("org.openyabs.property", "autocreatepdf")) {
+            if (TemplateHandler.isLoaded(this, this.__getInttype())) {
+                new Job(Export.createFile(this.getFormatHandler().toUserString(), TemplateHandler.loadTemplate(this, this.__getInttype()), this), Export.wait(User.getSaveDir(this))).execute();
+            } else {
+                YabsViewProxy.instance().addMessage(Messages.NO_TEMPLATE_LOADED + " (" + mpv5.db.objects.User.getCurrentUser() + ")");
+            }
+        }
+        if (mpv5.db.objects.User.getCurrentUser().getProperty("org.openyabs.property", "autocreateodt")) {
+            if (TemplateHandler.isLoaded(this, this.__getInttype())) {
+                new Job(Export.sourceFile(this.getFormatHandler().toUserString(), TemplateHandler.loadTemplate(this, this.__getInttype()), this), Export.wait(User.getSaveDir(this))).execute();
+            } else {
+                YabsViewProxy.instance().addMessage(Messages.NO_TEMPLATE_LOADED + " (" + mpv5.db.objects.User.getCurrentUser() + ")");
+            }
+        }
+
+        return saved;
+    }
 
     @Override
     public String toString() {

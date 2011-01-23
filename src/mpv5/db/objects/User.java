@@ -283,7 +283,7 @@ public class User extends DatabaseObject {
             try {
                 Locale.setDefault(TypeConversion.stringToLocale(__getLocale()));
                 ControlPanel_Fonts.applyFont(Font.decode(LocalSettings.getProperty(LocalSettings.DEFAULT_FONT)));
-                if(UIManager.getLookAndFeel().getName() == null ? __getLaf() != null : !UIManager.getLookAndFeel().getName().equals(__getLaf())) {
+                if (UIManager.getLookAndFeel().getName() == null ? __getLaf() != null : !UIManager.getLookAndFeel().getName().equals(__getLaf())) {
                     Main.setLaF(__getLaf());
                 }
                 defineMailConfig();
@@ -317,8 +317,6 @@ public class User extends DatabaseObject {
             Popup.warn(Messages.NOT_POSSIBLE.toString() + Messages.USER_DISABLED);
         }
     }
-
-
 
     /**
      * Logs out this user
@@ -762,6 +760,24 @@ public class User extends DatabaseObject {
      */
     public HashMap<String, String> getLayoutProperties() {
         return layoutinfo;
+    }
+
+    /**
+     * Delegates to getproperties().getproperty
+     * @param typ
+     * @param name
+     * @return
+     */
+    public boolean getProperty(String typ, String name) {
+        return getProperties().getProperty(typ, name);
+    }
+
+    /** Delegates to getproperties().getproperty
+     * @param name
+     * @return
+     */
+    public String getProperty(String name) {
+        return getProperties().getProperty(name);
     }
 }
 
