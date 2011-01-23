@@ -44,6 +44,7 @@ import mpv5.YabsViewProxy;
 import mpv5.globals.LocalSettings;
 import mpv5.globals.Messages;
 import mpv5.logging.Log;
+import mpv5.ui.dialogs.Notificator;
 import mpv5.ui.dialogs.Popup;
 import mpv5.ui.frames.MPView;
 import mpv5.utils.files.FileExecutor;
@@ -231,7 +232,8 @@ public class NoaConnection {
                 + "-nolockcheck" + " "
                 + "-nocrashreport" + " "
                 + "-nodefault" + " "
-                + "-accept=socket,host=0.0.0.0,port=" + port + ";urp;StarOffice.Service";
+                + (Main.osIsWindows?"-accept=socket,host=0.0.0.0,port=" + port + ";urp;StarOffice.Service":
+                    "-accept='socket,host=0.0.0.0,port=" + port + ";urp;StarOffice.Service'");
 
         try {
             SocketAddress addr = new InetSocketAddress("127.0.0.1", port);
@@ -302,7 +304,7 @@ public class NoaConnection {
                     }
                 } catch (IOException ex) {
                     stopOOOServer();
-                    mpv5.logging.Log.Debug(ex);
+                    Notificator.raiseNotification(ex, true);
                 }
             }
         };

@@ -68,6 +68,9 @@ public class PropertyStore {
      * @param value
      */
     public synchronized void addProperty(String name, String value) {
+        if (value == null) {
+            value = "";
+        }
         Log.Debug(this, "Adding or replacing property: " + name + " = " + value);
         list.add(new String[]{name, value});
         setChanged(true);
@@ -87,14 +90,19 @@ public class PropertyStore {
      * @return the value
      */
     public synchronized String getProperty(String name) {
+        String prop;
         if (list.size() > 0) {
             for (int i = list.size(); i > 0; i--) {
                 if (list.get(i - 1)[0].equalsIgnoreCase(name)) {
 //                    Log.Debug(this, "Found property: " +  list.get(i - 1)[1] + " for " + name);
-                    return list.get(i - 1)[1];
+                    prop = list.get(i - 1)[1];
+                    if (prop != null && !prop.equals("null") && prop.length()!=0) {
+                        return prop;
+                    }
                 }
             }
         }
+        changeProperty(name, null);
         return null;
     }
 
@@ -249,7 +257,6 @@ public class PropertyStore {
         return getProperty(comp + "$" + source, true);
     }
 
-
     /**
      * Convenience method to retrieve (boolean) visual component properties stored as
      * <br/>comp.getClass().getName() + "$" + source
@@ -299,7 +306,8 @@ public class PropertyStore {
         }
 
     }
-     /**
+
+    /**
      * Changes the given property, if exists and
      * creates a new, if not. Stored as comp.getClass().getName() + "$" + source
      * @param comp

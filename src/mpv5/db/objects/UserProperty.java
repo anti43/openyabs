@@ -57,6 +57,9 @@ public class UserProperty extends DatabaseObject {
 
     @Override
     public boolean save() {
+        if (value == null) {
+            value = "";
+        }
         QueryCriteria c = new QueryCriteria();
         c.addAndCondition("usersids", mpv5.db.objects.User.getCurrentUser().__getIDS());
         c.addAndCondition("cname", cname);
@@ -77,7 +80,8 @@ public class UserProperty extends DatabaseObject {
     public void setUsersids(int usersids) {
         this.usersids = usersids;
     }
-     @Override
+
+    @Override
     public mpv5.utils.images.MPIcon getIcon() {
         return null;
     }

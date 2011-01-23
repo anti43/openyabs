@@ -556,7 +556,7 @@ public abstract class FileDirectoryHandler {
         } catch (Exception ex) {//avoid npe
             Log.Debug(ex);
             LocalSettings.setProperty(LocalSettings.CACHE_DIR, Constants.FALLBACK_CACHE_DIR);
-            e = new File(LocalSettings.getProperty(LocalSettings.CACHE_DIR));
+            e = new File(Constants.FALLBACK_CACHE_DIR);
         }
         if (!e.exists()) {
             e.mkdirs();

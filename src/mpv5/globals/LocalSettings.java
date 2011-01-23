@@ -100,10 +100,10 @@ public class LocalSettings {
         Properties systemSettings = System.getProperties();
 
         //Proxy settings
-        if (!getProperty(PROXYHOST).equals("null")) {
+        if (hasProperty(PROXYHOST )){
             systemSettings.put("http.proxyHost", getProperty(PROXYHOST));
             systemSettings.put("http.proxyPort", getProperty(PROXYPORT));
-            if (!getProperty(PROXYUSER).equals("null")) {
+            if (hasProperty(PROXYUSER)) {
                 Authenticator.setDefault(new Authenticator() {
 
                     @Override
@@ -114,13 +114,13 @@ public class LocalSettings {
             }
         }//End proxy settings
 
-        if (!getProperty(DBROW_LIMIT).equals("null")) {
+        if (hasProperty(DBROW_LIMIT)) {
             QueryHandler.setRowLimit(Integer.valueOf(getProperty(DBROW_LIMIT)));
         } else {
             setProperty(DBROW_LIMIT, "0");
         }
 
-        if (!getProperty(DBAUTOLOCK).equals("null")) {
+        if (hasProperty(DBAUTOLOCK)) {
             DatabaseObject.setAutoLockEnabled(TypeConversion.stringToBoolean(getProperty(DBAUTOLOCK)));
         } else {
             setProperty(DBAUTOLOCK, "0");
@@ -238,7 +238,12 @@ public class LocalSettings {
      * @return True if the key exists
      */
     public static boolean hasProperty(String propertyname) {
-        return (cookie.hasProperty(propertyname) && !cookie.getProperty(propertyname).equals("null")) || (predefinedSettings.hasProperty(propertyname) && !predefinedSettings.getProperty(propertyname).equals("null"));
+        return (cookie.hasProperty(propertyname) && 
+                !cookie.getProperty(propertyname).equals("null") &&
+                cookie.getProperty(propertyname).length() != 0) ||
+                
+                (predefinedSettings.hasProperty(propertyname) &&
+                !predefinedSettings.getProperty(propertyname).equals("null"));
     }
 
     /**
