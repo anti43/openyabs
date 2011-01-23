@@ -71,13 +71,13 @@ public class PreviewPanel extends javax.swing.JPanel implements Waiter {
         openl(file);
     }
 
-
     /**
      * Shows the given pdf file in the preview panel
      * @param pdf
      */
     public void openPdf(File pdf) {
         PagePanel vp;
+        this.file = pdf;
         if (pdf.isFile() && pdf.exists()) {
             try {
 
@@ -89,7 +89,7 @@ public class PreviewPanel extends javax.swing.JPanel implements Waiter {
                 channel.close();
                 raf.close();
 
-                vp = new PagePanel() ;
+                vp = new PagePanel();
 
                 ppanel.removeAll();
                 ppanel.add(vp, BorderLayout.CENTER);
@@ -103,7 +103,6 @@ public class PreviewPanel extends javax.swing.JPanel implements Waiter {
             throw new IllegalArgumentException("File is not existing or a directory: " + pdf);
         }
     }
-
 
     /** This me4thod is called from within the constructor to
      * initialize the form.
@@ -426,7 +425,7 @@ public class PreviewPanel extends javax.swing.JPanel implements Waiter {
 
                 if (object instanceof List) {
                     showInNewFrame("Export");
-                    openl(((Export)((List) object).get(0)).getTargetFile());
+                    openl(((Export) ((List) object).get(0)).getTargetFile());
                 } else if (object instanceof Export) {
                     showInNewFrame("Export");
                     openl(((Export) object).getTargetFile());
@@ -448,6 +447,8 @@ public class PreviewPanel extends javax.swing.JPanel implements Waiter {
         if (file.getName().split("\\.").length < 2) {
             throw new UnsupportedOperationException("The file must have an extension: " + file);
         }
+
+        this.file = file;
 
         String extension = file.getName().substring(file.getName().lastIndexOf("."), file.getName().length());
 
