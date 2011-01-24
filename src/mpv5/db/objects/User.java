@@ -93,7 +93,7 @@ public class User extends DatabaseObject {
         String s = mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("saveformat");
         String s2 = LocalSettings.getProperty(LocalSettings.BASE_DIR);
         File basedir = null;
-        if (!s2.equals("null") && s2 != null) {
+        if (s2 != null && !s2.equals("null") ) {
             basedir = new File(s2);
         } else {
             basedir = new File(Main.USER_HOME);
