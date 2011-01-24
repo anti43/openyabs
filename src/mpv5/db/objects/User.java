@@ -49,6 +49,7 @@ import mpv5.ui.dialogs.subcomponents.ControlPanel_Fonts;
 import mpv5.ui.frames.MPView;
 import dtaus.Konto;
 import javax.swing.UIManager;
+import mpv5.YabsViewProxy;
 import mpv5.utils.text.TypeConversion;
 
 /**
@@ -304,6 +305,7 @@ public class User extends DatabaseObject {
                     setIsloggedin(true);
                     save();
                     DatabaseObject.cacheObjects();//re-cache for user
+                    YabsViewProxy.instance().addMessage(Messages.CACHED_OBJECTS);
                     try {
                         layoutinfo.putAll(ValueProperty.getProperty(t, "layoutinfo").getValue(new HashMap<String, String>()));
                     } catch (Exception ex) {

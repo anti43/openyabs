@@ -71,7 +71,7 @@ public class LocalSettings {
                 {DBROW_LIMIT, "0"},
                 {DBAUTOLOCK, "false"},
                 {SERVER_PORT, "4343"},
-                {CACHE_SIZE, "100"},
+                {CACHE_SIZE, "500"},
                 {LAST_USER, "1"},
                 {LAST_USER_PW, "5F4DCC3B5AA765D61D8327DEB882CF99"},
                 {OFFICE_PORT, "8100"},
