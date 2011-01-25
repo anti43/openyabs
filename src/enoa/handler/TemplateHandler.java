@@ -112,6 +112,7 @@ public class TemplateHandler {
                     if (data.hasData()) {
                         try {
                             preloadedTemplate = (Template) DatabaseObject.getObject(Context.getTemplate(), Integer.valueOf(data.getData()[data.getData().length - 1][0].toString()));
+                            Log.Debug(TemplateHandler.class, preloadedTemplate.getFile());
                             if (preloadedTemplate.getFile().getName().endsWith("odt")) {
                                 if (LocalSettings.getBooleanProperty(LocalSettings.OFFICE_USE)) {
                                     preloadedTemplate.defineExFile(new ODTFile(preloadedTemplate.getFile().getPath()));

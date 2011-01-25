@@ -58,14 +58,13 @@ public class FileExecutor {
 
         String pw = null;
         String usr = null;
-        if (!LocalSettings.getProperty(LocalSettings.CMD_PASSWORD).equals("null")
-                && LocalSettings.getProperty(LocalSettings.CMD_PASSWORD).length() > 0) {
+        
+        if (LocalSettings.hasProperty(LocalSettings.CMD_PASSWORD)) {
             pw = LocalSettings.getProperty(LocalSettings.CMD_PASSWORD);
         } else if (User.getCurrentUser().getProperties().hasProperty(LocalSettings.CMD_PASSWORD)) {
             pw = User.getCurrentUser().getProperties().getProperty(LocalSettings.CMD_PASSWORD);
         }
-        if (!LocalSettings.getProperty(LocalSettings.CMD_USER).equals("null")
-                && LocalSettings.getProperty(LocalSettings.CMD_USER).length() > 0) {
+        if (LocalSettings.hasProperty(LocalSettings.CMD_USER)) {
             usr = LocalSettings.getProperty(LocalSettings.CMD_USER);
         } else if (User.getCurrentUser().getProperties().hasProperty(LocalSettings.CMD_USER)) {
             usr = User.getCurrentUser().getProperties().getProperty(LocalSettings.CMD_USER);

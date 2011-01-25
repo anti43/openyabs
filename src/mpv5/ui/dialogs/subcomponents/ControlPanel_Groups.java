@@ -482,7 +482,7 @@ public class ControlPanel_Groups extends javax.swing.JPanel implements ControlAp
     }
 
     public void showSearchBar(boolean show) {
-        throw new UnsupportedOperationException("Not supported yet.");
+//        throw new UnsupportedOperationException("Not supported yet.");
     }
 
     public Component getAndRemoveActionPanel() {
