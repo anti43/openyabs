@@ -5,6 +5,7 @@ package mpv5;
 
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import mpv5.db.objects.User;
 import org.jdesktop.application.SingleFrameApplication;
 
 /**
@@ -49,5 +50,10 @@ public class YabsApplication extends SingleFrameApplication {
      */
     public static YabsApplication getApplication() {
         return YabsApplication.getInstance(YabsApplication.class);
+    }
+
+    @Override
+    public void ready() {
+        Main.setLaF(User.getCurrentUser().__getLaf());
     }
 }

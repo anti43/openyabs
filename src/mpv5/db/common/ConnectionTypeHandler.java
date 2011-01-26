@@ -74,11 +74,11 @@ public class ConnectionTypeHandler {
      */
     public static String getToChar(String column) {
         if (getDriverType() == DERBY) {
-            return "CHAR(externalnetvalue)";
+            return "CHAR(" + column + ")";
         } else if (getDriverType() == MYSQL) {
-            return "CAST(externalnetvalue AS CHAR)";
+            return "CAST(" + column + " AS CHAR)";
         } else {
-            return "CHAR(externalnetvalue)";
+            return "CHAR(" + column + ")";
         }
     }
 

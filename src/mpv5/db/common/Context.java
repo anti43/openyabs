@@ -335,10 +335,10 @@ public class Context implements Serializable {
         list.add(getCustomer());
         list.add(getManufacturer());
         list.add(getSupplier());
-        list.add(getItem(null, null));
-        list.add(getInvoice());
-        list.add(getOrder());
-        list.add(getOffer());
+//        list.add(getItem(null, null));
+//        list.add(getInvoice());
+//        list.add(getOrder());
+//        list.add(getOffer());
         list.add(getContact());
         list.add(getProduct());
         list.add(getFiles());

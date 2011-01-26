@@ -305,7 +305,7 @@ public class Main {
                         FrameView view = (FrameView) VIEW_CLASS.getDeclaredConstructor(SingleFrameApplication.class).newInstance(getApplication());
                         getApplication().setMainView(view);
                         getApplication().show(view);
-                        Main.setLaF(User.getCurrentUser().__getLaf());
+
 //                        Log.Print(Arrays.asList(getApplication().getMainView().getClass().getInterfaces()));
                     } catch (Exception ex) {
                         Log.Debug(ex);
@@ -606,7 +606,6 @@ public class Main {
             }
 
             if (cl.hasOption(nolfs)) {
-                setLaF("javax.swing.plaf.metal.MetalLookAndFeel");
                 Main.nolf = true;
             }
 
@@ -674,6 +673,8 @@ public class Main {
             File d = FileDirectoryHandler.getTempFile("derby");
             d.createNewFile();
             p.put("derby.stream.error.file", d.getPath());
+//            p.setProperty("derby.drda.startNetworkServer", "true");
+
         } catch (Exception ex) {
             Log.Debug(ex);
         }
@@ -683,26 +684,37 @@ public class Main {
      * 
      * @param lafname 
      */
-    public static void setLaF(String lafname) {
-        if (!Main.nolf) {
-            try {
-                Class.forName(lafname);
-            } catch (ClassNotFoundException ex) {
-                Log.Debug(Main.class, "Laf not valid here: " + lafname);
-                return;
-            }
-            try {
-                if (lafname != null) {
-                    UIManager.setLookAndFeel(lafname);
-                } else {
-                    UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-                }
-                LookAndFeelAddons.setAddon(LookAndFeelAddons.getBestMatchAddonClassName());
+    public static void setLaF(final String lafname) {
+        if (!Main.nolf && !HEADLESS) {
+            Runnable runnable = new Runnable() {
 
-                if (!HEADLESS) {
+                @Override
+                public void run() {
+                    try {
+                        if (lafname != null) {
+                            try {
+                                Class.forName(lafname);
+                            } catch (ClassNotFoundException ex) {
+                                Log.Debug(Main.class, "Laf not valid here: " + lafname);
+                                return;
+                            }
+                            UIManager.setLookAndFeel(lafname);
+                        } else {
+                            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+                        }
+                        LookAndFeelAddons.setAddon(LookAndFeelAddons.getBestMatchAddonClassName());
+
+                    } catch (Exception exe) {
+                        try {
+                            UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
+
+                        } catch (Exception ex) {
+                            Log.Debug(Main.class, ex);
+                        }
+                        Log.Debug(Main.class, exe);
+                    }
                     try {
                         if (getApplication().isReady() && getApplication().getMainView().getFrame() != null && (getApplication().getMainView()).getFrame().isShowing()) {
-//                        ((YabsView) getApplication().getMainView()).getIdentifierFrame().setVisible(false);
                             SwingUtilities.updateComponentTreeUI((getApplication().getMainView()).getFrame());
                             ((YabsView) getApplication().getMainView()).getIdentifierFrame().validate();
                         }
@@ -710,15 +722,8 @@ public class Main {
                         Log.Debug(Main.class, e.getMessage());
                     }
                 }
-            } catch (Exception exe) {
-                try {
-                    UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
-
-                } catch (Exception ex) {
-                    Log.Debug(Main.class, ex);
-                }
-                Log.Debug(Main.class, exe);
-            }
+            };
+            SwingUtilities.invokeLater(runnable);
         }
     }
 

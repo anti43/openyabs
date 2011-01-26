@@ -18,6 +18,7 @@ package mpv5.db.objects;
 
 import enoa.handler.TableHandler;
 import enoa.handler.TemplateHandler;
+import java.awt.Color;
 import java.math.BigDecimal;
 import java.text.DateFormat;
 import java.util.ArrayList;
@@ -660,5 +661,14 @@ public class Item extends DatabaseObject implements Formattable {
      */
     public List<ValueProperty> getProperties() {
         return ValueProperty.getProperties(this);
+    }
+
+    @Override
+    public boolean delete(){
+//        SubItem[] it = getSubitems();
+//        for (int i = 0; i < it.length; i++) {
+//            it[i].delete();
+//        }undelete??
+        return super.delete();
     }
 }
