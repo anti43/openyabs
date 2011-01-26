@@ -55,7 +55,7 @@ public class LoginScreen extends javax.swing.JFrame {
                 LocalSettings.setProperty(LocalSettings.LAST_USER_PW, null);
                 LocalSettings.save();
                 Main.getApplication().exit();
-               
+
             }
         });
 
@@ -209,7 +209,8 @@ private void jPasswordField1ActionPerformed(java.awt.event.ActionEvent evt) {//G
             Lock.unlock(mpv5.YabsViewProxy.instance().getIdentifierFrame());
             if (jCheckBox1.isSelected()) {
                 LocalSettings.setProperty("lastuser", mpv5.db.objects.User.getCurrentUser().__getIDS().toString());
-                LocalSettings.save();
+            } else {
+                LocalSettings.setProperty("lastuser", "INSTANCE");
             }
 
             if (jCheckBox2.isSelected()) {
@@ -218,8 +219,10 @@ private void jPasswordField1ActionPerformed(java.awt.event.ActionEvent evt) {//G
                 } catch (NoSuchAlgorithmException ex) {
                     Log.Debug(ex);
                 }
-                LocalSettings.save();
+            } else {
+                LocalSettings.setProperty("lastuserpw", "ZFIFZIUG876KJIHJu888iouu");
             }
+            LocalSettings.save();
             this.dispose();
         } else {
             jLabel4.setText(Messages.ACCESS_DENIED.getValue());

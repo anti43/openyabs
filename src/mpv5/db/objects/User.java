@@ -130,7 +130,7 @@ public class User extends DatabaseObject {
     private boolean isloggedin = true;
     private boolean isrgrouped = false;
     private Date datelastlog = new Date();
-    public static User DEFAULT = new User("Default User", "nobody", -1, 4343);
+    public static User DEFAULT = new User("Default User", "nobody", MPSecurityManager.RIGHT_TO_VIEW, 4343);
     public static HashMap<String, String> userCache = new HashMap<String, String>();
     private PropertyStore properties = new PropertyStore();
     /**

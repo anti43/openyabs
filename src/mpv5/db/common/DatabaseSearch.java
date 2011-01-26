@@ -76,6 +76,7 @@ public class DatabaseSearch {
                 Context contx = contexts.get(i);
                 ReturnValue rdata = QueryHandler.instanceOf().freeQuery(QueryHandler.instanceOf().clone(contx, ROWLIMIT).buildQuery(val, DatabaseObject.getObject(contx).getStringVars().toArray(new String[]{})), MPSecurityManager.VIEW, null);
                 Object[][] ndata = rdata.getData();
+//                Log.PrintArray(ndata);
                 Object[] idcol = new Object[ndata.length];
                 for (int j = 0; j < idcol.length; j++) {
                     idcol[j] = new DatabaseObject.Entity(contx, Integer.valueOf(ndata[j][0].toString()));

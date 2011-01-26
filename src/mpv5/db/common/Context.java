@@ -362,9 +362,7 @@ public class Context implements Serializable {
     public static ArrayList<Context> getSearchableContexts() {
         ArrayList<Context> list = new ArrayList<Context>();
         list.add(getSubItem());
-        list.add(getItem(null, null));
-        list.add(getOffer());
-        list.add(getOrder());
+        list.add(getItem());
         list.add(getSchedule());
         list.add(getContact());
         list.add(getProduct());

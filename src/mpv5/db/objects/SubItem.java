@@ -571,9 +571,8 @@ public class SubItem extends DatabaseObject implements Triggerable {
             Item dos = (Item) DatabaseObject.getObject(Context.getItem(), __getItemsids());
             ItemPanel ip = new ItemPanel(Context.getItem(), dos.__getInttype());
             return ip;
-        } catch (Exception ex) {
-            Log.Debug(ex);
-            return null;
+        } catch (NodataFoundException ex) {
+            throw new RuntimeException(ex);
         }
     }
 

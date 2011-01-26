@@ -28,6 +28,7 @@ import mpv5.utils.text.MD5HashGenerator;
 public class LoginToInstanceScreen extends javax.swing.JDialog {
 
     private java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle();
+
     /**
      * Show the instance login screen, modal
      */
@@ -300,8 +301,6 @@ private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
                 Log.Debug(Main.class, ex.getMessage());
                 Popup.error(this, "Local settings file not readable: " + LocalSettings.getLocalFile() + "\n" + ex);
             }
-
-
             User user = mpv5.usermanagement.MPSecurityManager.checkAuth(jTextField1.getText(), new String(jPasswordField1.getPassword()));
             if (user != null) {
                 user.login();
@@ -309,7 +308,8 @@ private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
 
                 if (jCheckBox1.isSelected()) {
                     LocalSettings.setProperty("lastuser", mpv5.db.objects.User.getCurrentUser().__getIDS().toString());
-                    LocalSettings.save();
+                } else {
+                    LocalSettings.setProperty("lastuser", "INSTANCE");
                 }
 
                 if (jCheckBox2.isSelected()) {
@@ -318,8 +318,10 @@ private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
                     } catch (NoSuchAlgorithmException ex) {
                         Log.Debug(ex);
                     }
-                    LocalSettings.save();
+                } else {
+                    LocalSettings.setProperty("lastuserpw", "fdgdfDDRDFGFGFCVGEDgefg45g");
                 }
+                LocalSettings.save();
                 this.dispose();
             } else {
                 jLabel4.setText(Messages.ACCESS_DENIED.getValue());

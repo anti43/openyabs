@@ -17,6 +17,8 @@
 package mpv5;
 
 import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import mpv5.db.common.NodataFoundException;
 import mpv5.logging.*;
 import org.jdesktop.application.SingleFrameApplication;
@@ -684,6 +686,12 @@ public class Main {
     public static void setLaF(String lafname) {
         if (!Main.nolf) {
             try {
+                Class.forName(lafname);
+            } catch (ClassNotFoundException ex) {
+                Log.Debug(Main.class, "Laf not valid here: " + lafname);
+                return;
+            }
+            try {
                 if (lafname != null) {
                     UIManager.setLookAndFeel(lafname);
                 } else {
@@ -692,10 +700,14 @@ public class Main {
                 LookAndFeelAddons.setAddon(LookAndFeelAddons.getBestMatchAddonClassName());
 
                 if (!HEADLESS) {
-                    if ((getApplication().getMainView()).getFrame() != null && (getApplication().getMainView()).getFrame().isShowing()) {
+                    try {
+                        if (getApplication().isReady() && getApplication().getMainView().getFrame() != null && (getApplication().getMainView()).getFrame().isShowing()) {
 //                        ((YabsView) getApplication().getMainView()).getIdentifierFrame().setVisible(false);
-                        SwingUtilities.updateComponentTreeUI((getApplication().getMainView()).getFrame());
-                        ((YabsView) getApplication().getMainView()).getIdentifierFrame().validate();
+                            SwingUtilities.updateComponentTreeUI((getApplication().getMainView()).getFrame());
+                            ((YabsView) getApplication().getMainView()).getIdentifierFrame().validate();
+                        }
+                    } catch (Exception e) {
+                        Log.Debug(Main.class, e.getMessage());
                     }
                 }
             } catch (Exception exe) {
@@ -864,7 +876,7 @@ public class Main {
     }
 
     private void login() throws NodataFoundException {
-        if (!LocalSettings.getProperty("lastuser").equals("null") && !LocalSettings.getProperty("lastuserpw").equals("null")) {
+        if (!LocalSettings.getProperty("lastuser").equals("INSTANCE")) {
             User usern1 = new User();
             Log.Debug(this, "Checking for auto login.. ");
 
@@ -874,6 +886,8 @@ public class Main {
                 Log.Debug(this, "Found user: " + user);
                 if (user != null) {
                     user.login();
+                } else {
+                    LoginToInstanceScreen.load();
                 }
             }
         } else {

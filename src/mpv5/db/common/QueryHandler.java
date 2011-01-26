@@ -278,7 +278,7 @@ public class QueryHandler implements Cloneable {
                     conds += string + " = " + value + "  " + command + " ";
                 }
             }
-            conds = " WHERE " + conds.substring(0, conds.length() - 4);
+            conds = " WHERE (" + conds.substring(0, conds.length() - 4) + ")";
             if (context.getGroupRestrictionSQLString() != null) {
                 conds += " AND " + context.getGroupRestrictionSQLString();
             }
