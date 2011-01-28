@@ -323,9 +323,8 @@ public class GeneralListPanel extends javax.swing.JPanel {
     private void listtableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_listtableMouseClicked
         if (evt.getClickCount() > 1) {
             try {
-                mpv5.YabsViewProxy.instance().getIdentifierView()
-                        .addTab(((DatabaseObject) listtable.getModel()
-                        .getValueAt(listtable.getSelectedRow(), 0)));
+                System.err.println(mpv5.YabsViewProxy.instance().getIdentifierView());
+                mpv5.YabsViewProxy.instance().getIdentifierView().addTab(((DatabaseObject) listtable.getModel().getValueAt(listtable.getSelectedRow(), 0)));
             } catch (Exception e) {
                 Log.Debug(e);
             }

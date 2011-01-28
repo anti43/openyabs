@@ -51,6 +51,9 @@ public class LocalSettings {
     public static final String DBPREFIX = "dbprefix";
     public static final String DBROW_LIMIT = "dbrowlimit";
     public static final String DBAUTOLOCK = "dbautolock";
+    /**
+     * single, multi
+     */
     public static final String DBTYPE = "dbtype";
     public static final String SERVER_PORT = "serverport";
     public static final String SCROLL_ALWAYS = "scrollpane";

@@ -29,6 +29,8 @@ import java.awt.Cursor;
 import java.awt.Font;
 import java.io.File;
 import java.net.HttpURLConnection;
+import java.net.ServerSocket;
+import java.net.Socket;
 import java.net.URL;
 import java.util.Date;
 import java.util.Enumeration;
@@ -74,7 +76,7 @@ import org.jdesktop.application.FrameView;
 /**
  * The main class of the application.
  */
-public class Main {
+public class Main implements Runnable {
 
     public static SplashScreen splash;
     private static boolean removeplugs = false;
@@ -85,6 +87,7 @@ public class Main {
     private static Integer FORCE_INSTALLER;
     public static boolean HEADLESS = false;
     public static String WINDOW_TITLE = Constants.VERSION;
+    public static int SINGLE_PORT = 65531;
 
     /**
      * Use this method to (re) cache data from the database to avoid unnecessary db queries
@@ -277,6 +280,8 @@ public class Main {
      * At startup create and show the main frame of the application.
      */
     public void startup() {
+
+        checkSingleInstance();
 
         Log.Debug(this, "Startup procedure... ");
         getApplication().getContext().getLocalStorage().setDirectory(new File(Main.MPPATH));
@@ -954,5 +959,43 @@ public class Main {
     @SuppressWarnings("unchecked")
     public static SingleFrameApplication getApplication() {
         return (SingleFrameApplication) SingleFrameApplication.getInstance(APPLICATION_CLASS);
+    }
+
+    private void checkSingleInstance() {
+        if (LocalSettings.getProperty(LocalSettings.DBTYPE).equals("single")) {
+            try {
+                Socket test = new Socket("localhost", Main.SINGLE_PORT);
+                Log.Print("*** Already running!");
+                System.exit(1);
+            } catch (Exception e) {
+                Log.Print("*** First instance.. running!");
+                new Thread(this).start();
+            }
+        }
+    }
+
+    @Override
+    public void run() {
+        Socket clientSocket;
+        try {
+            // Create the server socket
+            ServerSocket serverSocket = new ServerSocket(Main.SINGLE_PORT, 10);
+            while (true) {
+                // Wait for a connection
+                clientSocket = serverSocket.accept();
+                java.awt.EventQueue.invokeLater(new Runnable() {
+
+                    @Override
+                    public void run() {
+                        getApplication().getMainFrame().setVisible(true);
+                        getApplication().getMainFrame().requestFocus();
+                    }
+                });
+
+                clientSocket.close();
+            }
+        } catch (IOException ioe) {
+            Log.Debug(ioe);
+        }
     }
 }
