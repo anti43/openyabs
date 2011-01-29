@@ -855,14 +855,12 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
         String message = null;
         message = this.__getCName() + Messages.UNTRASHED;
 
-        if (Context.getTrashableContexts().contains(context)) {
-            Log.Debug(this, "Removing from trash:");
-            QueryData d = new QueryData();
-            d.add("invisible", 0);
-            QueryHandler.instanceOf().clone(context).update(d, new String[]{"ids", ids.toString(), ""}, message);
-            result = true;
-            Log.Debug(this, "The untrashed row has id: " + ids);
-        }
+        Log.Debug(this, "Removing from trash:");
+        QueryData d = new QueryData();
+        d.add("invisible", 0);
+        QueryHandler.instanceOf().clone(context).update(d, new String[]{"ids", ids.toString(), ""}, message);
+        result = true;
+        Log.Debug(this, "The untrashed row has id: " + ids);
 
         final String fmessage = message;
         final String fdbid = this.getDbIdentity();
