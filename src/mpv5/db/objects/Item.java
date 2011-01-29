@@ -423,7 +423,7 @@ public class Item extends DatabaseObject implements Formattable {
     public SubItem[] getSubitems() {
         List<DatabaseObject> data = new ArrayList<DatabaseObject>();
         try {
-            data = DatabaseObject.getReferencedObjects(this, Context.getSubItem(), DatabaseObject.getObject(Context.getSubItem()));
+            data = DatabaseObject.getReferencedObjects(this, Context.getSubItem(), DatabaseObject.getObject(Context.getSubItem()), true);
         } catch (NodataFoundException ex) {
             for (int i = 0; i < 6; i++) {
                 data.add(SubItem.getDefaultItem());
@@ -664,11 +664,20 @@ public class Item extends DatabaseObject implements Formattable {
     }
 
     @Override
-    public boolean delete(){
-//        SubItem[] it = getSubitems();
-//        for (int i = 0; i < it.length; i++) {
-//            it[i].delete();
-//        }undelete??
+    public boolean delete() {
+        SubItem[] it = getSubitems();
+        for (int i = 0; i < it.length; i++) {
+            it[i].delete();
+        }
         return super.delete();
+    }
+
+    @Override
+    public boolean undelete() {
+        SubItem[] it = getSubitems();
+        for (int i = 0; i < it.length; i++) {
+            it[i].undelete();
+        }
+        return super.undelete();
     }
 }

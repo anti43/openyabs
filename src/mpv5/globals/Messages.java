@@ -281,7 +281,8 @@ public enum Messages {
      IMPORT_TEMPLATES_DONE("A new template has been imported; before you can use it, you need to go to Tools->Control Panel->Templates to assign the new template to a user!"),
      IMPORT_PLUGINS_DONE("A new plugin has been imported; before you can use it, you need to go to Tools->Control Panel->Plugins to assign the new plugin to a user!"),
      ENTER_VALUE("You need to enter a value for: "),
-     NAME("Name"),
+     NAME("Name"), 
+     UNTRASHED("moved out of trashbin"),
     ;
 
 

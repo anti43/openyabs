@@ -334,8 +334,8 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
                 } else {
                     //defaults to java.lang.String, Object args are not supported.. possibly later via XMLEncoder?
                     method.invoke(dbo, new Object[]{(argument instanceof byte[])
-                            ? new String((byte[]) argument)
-                            : String.valueOf(argument)});
+                                ? new String((byte[]) argument)
+                                : String.valueOf(argument)});
                 }
             } else {
                 if (method.getParameterTypes()[0].isAssignableFrom(int.class)) {
@@ -846,6 +846,37 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
             }
         }
         setIDS(-1);
+        return result;
+    }
+
+    public boolean undelete() {
+
+        boolean result = false;
+        String message = null;
+        message = this.__getCName() + Messages.UNTRASHED;
+
+        if (Context.getTrashableContexts().contains(context)) {
+            Log.Debug(this, "Removing from trash:");
+            QueryData d = new QueryData();
+            d.add("invisible", 0);
+            QueryHandler.instanceOf().clone(context).update(d, new String[]{"ids", ids.toString(), ""}, message);
+            result = true;
+            Log.Debug(this, "The untrashed row has id: " + ids);
+        }
+
+        final String fmessage = message;
+        final String fdbid = this.getDbIdentity();
+        final int fids = this.ids;
+        final int fgids = this.groupsids;
+        Runnable runnable = new Runnable() {
+
+            @Override
+            public void run() {
+                QueryHandler.instanceOf().clone(Context.getHistory()).insertHistoryItem(fmessage, mpv5.db.objects.User.getCurrentUser().__getCName(), fdbid, fids, fgids);
+            }
+        };
+        SwingUtilities.invokeLater(runnable);
+
         return result;
     }
 
@@ -1396,7 +1427,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
      * @throws mpv5.db.common.NodataFoundException
      */
     @SuppressWarnings("unchecked")
-    public static <T extends DatabaseObject> List<T> getReferencedObjects(DatabaseObject dataOwner, Context inReference, T targetType) throws NodataFoundException {
+    public static <T extends DatabaseObject> List<T> getReferencedObjects(DatabaseObject dataOwner, Context inReference, T targetType, boolean withDeleted) throws NodataFoundException {
 
         Object[][] allIds = QueryHandler.instanceOf().clone(inReference).select("ids", new String[]{dataOwner.getDbIdentity() + "ids", dataOwner.__getIDS().toString(), ""});
         if (allIds.length == 0) {
@@ -1414,6 +1445,19 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
             }
         }
         return list;
+    }
+
+    /**
+     *
+     * @param <T>
+     * @param dataOwner
+     * @param inReference
+     * @param targetType
+     * @return
+     * @throws NodataFoundException
+     */
+    public static <T extends DatabaseObject> List<T> getReferencedObjects(DatabaseObject dataOwner, Context inReference, T targetType) throws NodataFoundException {
+        return getReferencedObjects(dataOwner, inReference, targetType);
     }
 
     /**
