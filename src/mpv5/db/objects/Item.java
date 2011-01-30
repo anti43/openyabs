@@ -429,10 +429,10 @@ public class Item extends DatabaseObject implements Formattable {
                 data.add(SubItem.getDefaultItem());
             }
         }
-        SubItem[] t = new SubItem[data.size()];
-        for (int i = 0; i < data.size(); i++) {
-            t[i] = (SubItem) data.get(i);
-        }
+//        SubItem[] t = new SubItem[data.size()];
+//        for (int i = 0; i < data.size(); i++) {
+//            t[i] = (SubItem) data.get(i);
+//        }
         return data.toArray(new SubItem[]{});
     }
 

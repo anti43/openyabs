@@ -16,11 +16,14 @@
  */
 package mpv5.handler;
 
-import java.text.MessageFormat;
+
 import java.text.ParsePosition;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Vector;
+import java.util.concurrent.ConcurrentHashMap;
 import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
 import mpv5.db.common.Formattable;
@@ -32,6 +35,7 @@ import mpv5.db.objects.Expense;
 import mpv5.db.objects.Item;
 import mpv5.db.objects.Product;
 import mpv5.db.objects.Revenue;
+import mpv5.db.objects.User;
 import mpv5.globals.GlobalSettings;
 import mpv5.globals.Messages;
 import mpv5.logging.Log;
@@ -87,8 +91,7 @@ public class FormatHandler {
     }
     public static String INTEGERPART_IDENTIFIER = "{0,number,000000}";
     private DatabaseObject source = null;
-    private Integer startCount = null;
-    public static MessageFormat DEFAULT_FORMAT = new MessageFormat(INTEGERPART_IDENTIFIER);
+    public static YMessageFormat DEFAULT_FORMAT = new YMessageFormat(INTEGERPART_IDENTIFIER, 0);
     /**
      * This string identifies potential start values from the format string. Use as
      * START_VALUE_IDENTIFIERstartvalueSTART_VALUE_IDENTIFIERformat
@@ -148,40 +151,68 @@ public class FormatHandler {
 
     private FormatHandler() {
     }
+    private static Map<String, YMessageFormat> formatCache = null;
 
     /**
      *
      * @return
      */
-    public synchronized MessageFormat getFormat() {
-        QueryCriteria c = new QueryCriteria();
-        c.addAndCondition("usersids", mpv5.db.objects.User.getCurrentUser().__getIDS());
-        c.addAndCondition("inttype", determineType(source));
-        try {
-            Object[][] frm = QueryHandler.instanceOf().clone(Context.getFormats()).select("cname, ids", c);
-            if (frm.length > 0) {
-                String val = frm[frm.length - 1][0].toString();
-                try {
-                    int id = Integer.valueOf(frm[frm.length - 1][1].toString());
+    public synchronized YMessageFormat getFormat() {
 
-                    if (val.startsWith(START_VALUE_IDENTIFIER)) {
-                        startCount = Integer.valueOf(val.split(START_VALUE_IDENTIFIER)[1]);
-                        val = val.split(START_VALUE_IDENTIFIER)[2];
-                        QueryHandler.instanceOf().clone(Context.getFormats()).update("cname", id, val);
-                        Log.Debug(this, "Setting start count to: " + startCount);
-                    } 
-                } catch (Exception numberFormatException) {
-                    Log.Debug(this, numberFormatException);
-                    return DEFAULT_FORMAT;
+        int typ = determineType(source);
+        String key = mpv5.db.objects.User.getCurrentUser().__getIDS() + "@" + typ;
+        String adminKey = User.ADMIN_ID + "@" + typ;
+
+        if (formatCache != null) {
+            if (!formatCache.containsKey(adminKey) && !formatCache.containsKey(key)) {
+                Log.Debug(this, "Format caching did not result in a matching format.");
+                return DEFAULT_FORMAT;
+            }
+
+            if (formatCache.containsKey(key)) {
+                return formatCache.get(key);
+            } else {
+                return formatCache.get(adminKey);
+            }
+        }
+
+        //Formats not cached yet
+        formatCache = new ConcurrentHashMap<String, YMessageFormat>();
+
+        QueryCriteria c = new QueryCriteria();
+//        c.addAndCondition("usersids", mpv5.db.objects.User.getCurrentUser().__getIDS());
+//        c.addAndCondition("inttype", determineType(source));
+        try {
+            Object[][] formats = QueryHandler.instanceOf().clone(Context.getFormats()).select("cname, ids, inttype, usersids", c);
+            if (formats.length > 0) {
+                for (int i = 0; i < formats.length; i++) {
+                    int startCount =0;
+                    String value = formats[i][0].toString();
+                    try {
+                        int formatId = Integer.valueOf(formats[i][1].toString());
+
+                        if (value.startsWith(START_VALUE_IDENTIFIER) && Integer.valueOf(formats[i][2].toString()).intValue() == typ) {
+                            startCount = Integer.valueOf(value.split(START_VALUE_IDENTIFIER)[1]);
+                            value = value.split(START_VALUE_IDENTIFIER)[2];
+                            QueryHandler.instanceOf().clone(Context.getFormats()).update("cname", formatId, value);
+                            Log.Debug(this, "Setting start count to: " + startCount);
+                        }
+                    } catch (Exception numberFormatException) {
+                        Log.Debug(this, numberFormatException);
+                        return DEFAULT_FORMAT;
+                    }
+                    try {
+                        YMessageFormat mFormat = new YMessageFormat(value, startCount);
+                        Log.Debug(this, "Format found: " + mFormat.toPattern() + ", caching for " + formats[i][3].toString() + "@" + formats[i][2].toString());
+                        formatCache.put(formats[i][3].toString() + "@" + formats[i][2].toString(), mFormat);
+
+                    } catch (Exception e) {
+                        Log.Debug(this, e);
+                        return DEFAULT_FORMAT;
+                    }
                 }
-                try {
-                    MessageFormat mf =  new MessageFormat(val);
-                    Log.Debug(this, "Format found: " + mf.toPattern());
-                    return mf;
-                } catch (Exception e) {
-                    Log.Debug(this, e);
-                    return DEFAULT_FORMAT;
-                }
+
+                return getFormat();
             } else {
                 Log.Debug(this, "Format not found, using default format instead!");
                 return DEFAULT_FORMAT;
@@ -196,7 +227,7 @@ public class FormatHandler {
      * Contains all formattable Contexts
      */
     public static List<Context> FORMATTABLE_CONTEXTS = new Vector<Context>(Arrays.asList(new Context[]{
-                Context.getContact(), Context.getCustomer(), Context.getManufacturer(), 
+                Context.getContact(), Context.getCustomer(), Context.getManufacturer(),
                 Context.getSupplier(), Context.getProduct(), Context.getItem(),
                 Context.getExpense(), Context.getRevenue(), Context.getOffer(),
                 Context.getOrder(), Context.getInvoice(), Context.getCompany()
@@ -207,9 +238,9 @@ public class FormatHandler {
      * @param format
      * @return
      */
-    public synchronized int getNextNumber(MessageFormat format) {
+    public synchronized int getNextNumber(YMessageFormat format) {
 
-        if (startCount == null) {
+        if (format.startValue() == null) {
             int newN = 0;
             DatabaseObject forThis = source;
             if (FORMATTABLE_CONTEXTS.contains(forThis.getContext())) {
@@ -262,14 +293,13 @@ public class FormatHandler {
                 throw new UnsupportedOperationException("FormatHandler#getNextNumber is not defined for " + forThis.getContext());
             }
         } else {
-            int tmp = startCount.intValue();
-            startCount = null;
+            int tmp = format.startValue().intValue();
             Log.Debug(FormatHandler.class, "Startcount: " + tmp);
             return tmp;
         }
     }
 
-    private synchronized int getNextNumber(MessageFormat format, int lastNumber) {
+    private synchronized int getNextNumber(YMessageFormat format, int lastNumber) {
         DatabaseObject forThis = source;
 
         String query = "";
@@ -289,9 +319,9 @@ public class FormatHandler {
                 || forThis.getContext().equals(Context.getCustomer())
                 || forThis.getContext().equals(Context.getSupplier())
                 || forThis.getContext().equals(Context.getManufacturer())) {
-            
-                query = "SELECT cnumber FROM " + forThis.getDbIdentity() + " WHERE cnumber = '" + cnumber + "'";
-            
+
+            query = "SELECT cnumber FROM " + forThis.getDbIdentity() + " WHERE cnumber = '" + cnumber + "'";
+
         } else {
             query = "SELECT cnumber FROM " + forThis.getDbIdentity() + " WHERE cnumber = '" + cnumber + "'";
         }
@@ -316,9 +346,9 @@ public class FormatHandler {
      * @param number
      * @return A formatted number
      */
-    public synchronized String toString(MessageFormat format, int number) {
+    public synchronized String toString(YMessageFormat format, int number) {
         String x = VariablesHandler.parse(format.format(new Object[]{number}), source);
-        if(x.length() == 0) {
+        if (x.length() == 0) {
             x = "0000" + number;
         }
         return x;
@@ -350,19 +380,7 @@ public class FormatHandler {
         return determineType(source);
     }
 
-    /**
-     * @return the startCount
-     */
-    public Integer getStartCount() {
-        return startCount;
-    }
 
-    /**
-     * @param startCount the startCount to set
-     */
-    public void setStartCount(Integer startCount) {
-        this.startCount = startCount;
-    }
 
 //    /**
 //     * @param format the format to set
@@ -386,7 +404,7 @@ public class FormatHandler {
      * @param string
      * @return
      */
-    private synchronized int getIntegerPartOf(MessageFormat format, String string) {
+    private synchronized int getIntegerPartOf(YMessageFormat format, String string) {
 
         int startindex = 0;
         String prop = GlobalSettings.getProperty(format.toPattern() + "_startposition");
@@ -400,10 +418,10 @@ public class FormatHandler {
 
         try {
             Number n = null;
-            MessageFormat f;
+            YMessageFormat f;
             try {
                 Log.Debug(this, format.toPattern());
-                f = new MessageFormat((VariablesHandler.parse(format.toPattern(), source)));
+                f = new YMessageFormat((VariablesHandler.parse(format.toPattern(), source)), null);
                 n = (Number) f.parse(string, new ParsePosition(startindex))[0];
                 Log.Debug(this, "Pattern: " + f.toPattern() + " for String: " + string);
             } catch (Exception e) {
@@ -425,7 +443,21 @@ public class FormatHandler {
      * @return
      */
     public synchronized String next() {
-        MessageFormat format = getFormat();
+        YMessageFormat format = getFormat();
         return toString(format, getNextNumber(format));
+    }
+
+    private static class YMessageFormat extends java.text.MessageFormat {
+
+        private Integer startValue = null;
+
+        public YMessageFormat(String pattern, Integer startValue) {
+            super(pattern);
+            this.startValue = startValue;
+        }
+
+        public Integer startValue() {
+            return startValue;
+        }
     }
 }

@@ -129,6 +129,7 @@ public class User extends DatabaseObject {
     private boolean isenabled = true;
     private boolean isloggedin = true;
     private boolean isrgrouped = false;
+    public static int ADMIN_ID = 1;
     private Date datelastlog = new Date();
     public static User DEFAULT = new User("Default User", "nobody", MPSecurityManager.RIGHT_TO_VIEW, 4343);
     public static HashMap<String, String> userCache = new HashMap<String, String>();
@@ -781,6 +782,8 @@ public class User extends DatabaseObject {
     public String getProperty(String name) {
         return getProperties().getProperty(name);
     }
+
+
 }
 
 class DTAConfig {
