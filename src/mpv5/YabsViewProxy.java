@@ -16,7 +16,7 @@ import javax.swing.JFrame;
 import javax.swing.JProgressBar;
 import mpv5.db.common.DatabaseObject;
 import mpv5.logging.Log;
-import mpv5.pluginhandling.MPPLuginLoader;
+import mpv5.pluginhandling.YabsPluginLoader;
 import mpv5.ui.dialogs.DialogForFile;
 import mpv5.ui.panels.DataPanel;
 
@@ -101,7 +101,7 @@ public class YabsViewProxy implements YabsView {
     }
 
     @Override
-    public synchronized MPPLuginLoader getPluginLoader() {
+    public synchronized YabsPluginLoader getPluginLoader() {
         if (views.isEmpty()) {
             return null;
         } else {

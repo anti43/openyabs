@@ -21,6 +21,7 @@ public class EntitySelection {
     private int[] rows;
     private final JTable table;
 
+    @SuppressWarnings("unchecked")
     public EntitySelection(JTable table) {
         this.table = table;
         try {

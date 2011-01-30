@@ -79,9 +79,11 @@ public class MPTableModel extends DefaultTableModel implements Cloneable, TableC
         super();
         setEditable(false);
 
-        setTypes(new Class[]{Object.class, Object.class, Object.class, Object.class, Object.class, Object.class, Object.class,
-                    Object.class, Object.class, Object.class, Object.class, Object.class, Object.class, Object.class, Object.class,
-                    Object.class, Object.class, Object.class, Object.class, Object.class, Object.class, Object.class, Object.class});
+        Class[] typs = new Class[333];
+        for (int i = 0; i < 333; i++) {
+            typs[i] = Object.class;
+        }
+        setTypes(typs);
     }
 
     /**
@@ -164,29 +166,14 @@ public class MPTableModel extends DefaultTableModel implements Cloneable, TableC
                 header[i] = "" + i;
             }
             setDataVector(data, header);
+            Class[] typs = new Class[header.length];
+            for (int i = 0; i < header.length; i++) {
+                typs[i] = Object.class;
+            }
+            setTypes(typs);
         }
 
         setEditable(false);
-
-        setTypes(new Class[]{Object.class, Object.class, Object.class, Object.class, Object.class, Object.class, Object.class,
-                    Object.class, Object.class, Object.class, Object.class, Object.class, Object.class, Object.class, Object.class,
-                    Object.class, Object.class, Object.class, Object.class, Object.class, Object.class, Object.class, Object.class,
-                    Object.class, Object.class, Object.class, Object.class, Object.class, Object.class, Object.class, Object.class,
-                    Object.class, Object.class, Object.class, Object.class, Object.class, Object.class, Object.class, Object.class,
-                    Object.class, Object.class, Object.class, Object.class, Object.class, Object.class, Object.class, Object.class,
-                    Object.class, Object.class, Object.class, Object.class, Object.class, Object.class, Object.class, Object.class,
-                    Object.class, Object.class, Object.class, Object.class, Object.class, Object.class, Object.class, Object.class,
-                    Object.class, Object.class, Object.class, Object.class, Object.class, Object.class, Object.class, Object.class,
-                    Object.class, Object.class, Object.class, Object.class, Object.class, Object.class, Object.class, Object.class,
-                    Object.class, Object.class, Object.class, Object.class, Object.class, Object.class, Object.class, Object.class,
-                    Object.class, Object.class, Object.class, Object.class, Object.class, Object.class, Object.class, Object.class,
-                    Object.class, Object.class, Object.class, Object.class, Object.class, Object.class, Object.class, Object.class,
-                    Object.class, Object.class, Object.class, Object.class, Object.class, Object.class, Object.class, Object.class,
-                    Object.class, Object.class, Object.class, Object.class, Object.class, Object.class, Object.class, Object.class,
-                    Object.class, Object.class, Object.class, Object.class, Object.class, Object.class, Object.class, Object.class,
-                    Object.class, Object.class, Object.class, Object.class, Object.class, Object.class, Object.class, Object.class,
-                    Object.class, Object.class, Object.class, Object.class, Object.class, Object.class, Object.class, Object.class,
-                    Object.class, Object.class, Object.class, Object.class, Object.class, Object.class, Object.class, Object.class});
     }
 
 //    /**
@@ -210,11 +197,11 @@ public class MPTableModel extends DefaultTableModel implements Cloneable, TableC
 
         setDataVector(datstr, header);
         setEditable(false);
-
-        setTypes(new Class[]{Object.class, Object.class, Object.class, Object.class, Object.class, Object.class, Object.class,
-                    Object.class, Object.class, Object.class, Object.class, Object.class, Object.class, Object.class, Object.class,
-                    Object.class, Object.class, Object.class, Object.class, Object.class, Object.class, Object.class, Object.class});
-
+        Class[] typs = new Class[header.length];
+        for (int i = 0; i < header.length; i++) {
+            typs[i] = Object.class;
+        }
+        setTypes(typs);
     }
 
     /**
@@ -226,10 +213,11 @@ public class MPTableModel extends DefaultTableModel implements Cloneable, TableC
         super(data, header.getValue());
         setEditable(false);
 
-        setTypes(new Class[]{Object.class, Object.class, Object.class, Object.class, Object.class, Object.class, Object.class,
-                    Object.class, Object.class, Object.class, Object.class, Object.class, Object.class, Object.class, Object.class,
-                    Object.class, Object.class, Object.class, Object.class, Object.class, Object.class, Object.class, Object.class});
-
+        Class[] typs = new Class[header.getValue().length];
+        for (int i = 0; i < header.getValue().length; i++) {
+            typs[i] = Object.class;
+        }
+        setTypes(typs);
     }
 
     /**
@@ -309,10 +297,11 @@ public class MPTableModel extends DefaultTableModel implements Cloneable, TableC
         }
 
         setEditable(false);
-        setTypes(new Class<?>[]{Object.class, Object.class, Object.class, Object.class, Object.class, Object.class, Object.class,
-                    Object.class, Object.class, Object.class, Object.class, Object.class, Object.class, Object.class, Object.class,
-                    Object.class, Object.class, Object.class, Object.class, Object.class, Object.class, Object.class, Object.class});
-    }
+        Class[] typs = new Class[header.length];
+        for (int i = 0; i < header.length; i++) {
+            typs[i] = Object.class;
+        }
+        setTypes(typs); }
 
     public MPTableModel(List<ValueProperty> properties) {
         super();
@@ -741,32 +730,26 @@ public class MPTableModel extends DefaultTableModel implements Cloneable, TableC
 
     @Override
     public void columnAdded(TableColumnModelEvent e) {
-
     }
 
     @Override
     public void columnRemoved(TableColumnModelEvent e) {
-
     }
 
     @Override
     public void columnMoved(TableColumnModelEvent e) {
-       resort();
+        resort();
     }
 
     @Override
     public void columnMarginChanged(ChangeEvent e) {
-
     }
 
     @Override
     public void columnSelectionChanged(ListSelectionEvent e) {
-
     }
 
     private void resort() {
-
-
     }
 
     /**

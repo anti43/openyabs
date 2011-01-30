@@ -96,7 +96,7 @@ public class PropertyStore {
                 if (list.get(i - 1)[0].equalsIgnoreCase(name)) {
 //                    Log.Debug(this, "Found property: " +  list.get(i - 1)[1] + " for " + name);
                     prop = list.get(i - 1)[1];
-                    if (prop != null && !prop.equals("null") && prop.length()!=0) {
+                    if (prop != null && !prop.equals("null") && prop.length() != 0) {
                         return prop;
                     }
                 }
@@ -297,7 +297,9 @@ public class PropertyStore {
                     list.set(i - 1, new String[]{name, newvalue});
                     found = true;
                     setChanged(true);
-                    Log.Debug(this, "Change property: " + list.get(i - 1)[1] + " for " + name);
+                    if (list.get(i - 1)[1] != null && !list.get(i - 1)[1].equals("null")) {
+                        Log.Debug(this, "Change property: " + list.get(i - 1)[1] + " for " + name);
+                    }
                 }
             }
         }

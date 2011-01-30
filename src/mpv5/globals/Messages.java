@@ -282,7 +282,8 @@ public enum Messages {
      IMPORT_PLUGINS_DONE("A new plugin has been imported; before you can use it, you need to go to Tools->Control Panel->Plugins to assign the new plugin to a user!"),
      ENTER_VALUE("You need to enter a value for: "),
      NAME("Name"), 
-     UNTRASHED(": moved out of trashbin"),
+     UNTRASHED(": moved out of trashbin"), 
+     PLUGIN_INCOMPATIBLE("Incompatible plugin found. Shall I try to load it anyway?"),
     ;
 
 

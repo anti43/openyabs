@@ -573,4 +573,30 @@ public class Contact extends DatabaseObject implements Formattable {
     public List<ValueProperty> getProperties() {
         return ValueProperty.getProperties(this);
     }
+
+    @Override
+    public boolean delete() {
+        try {
+            List<DatabaseObject> it = getReferencedObjects(this, Context.getItem(), getObject(Context.getItem()));
+            for (int i = 0; i < it.size(); i++) {
+                it.get(i).delete();
+            }
+        } catch (Exception e) {
+        }
+
+        return super.delete();
+    }
+
+    @Override
+    public boolean undelete() {
+        try {
+            List<DatabaseObject> it = getReferencedObjects(this, Context.getItem(), getObject(Context.getItem()), true);
+            for (int i = 0; i < it.size(); i++) {
+                it.get(i).undelete();
+            }
+        } catch (Exception e) {
+        }
+
+        return super.undelete();
+    }
 }

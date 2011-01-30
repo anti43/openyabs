@@ -60,8 +60,9 @@ import mpv5.db.objects.User;
 import mpv5.globals.LocalSettings;
 import mpv5.handler.SimpleDatabaseObject;
 import mpv5.handler.VariablesHandler;
-import mpv5.pluginhandling.MPPLuginLoader;
+import mpv5.pluginhandling.YabsPluginLoader;
 import mpv5.ui.panels.ChangeNotApprovedException;
+import mpv5.usermanagement.MPSecurityManager;
 import mpv5.utils.date.RandomDate;
 import mpv5.utils.date.vTimeframe;
 import mpv5.utils.images.MPIcon;
@@ -75,6 +76,7 @@ import static mpv5.db.common.Context.*;
  * @author
  */
 public abstract class DatabaseObject implements Comparable<DatabaseObject>, Serializable, Cloneable {
+
 
     /**
      * Represents a Context-ID pair which uniquely identifies a DatabaseObject
@@ -646,7 +648,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
             String message = null;
             uncacheObject(this);
 
-            List<DatabaseObjectModifier> mods = MPPLuginLoader.registeredModifiers;
+            List<DatabaseObjectModifier> mods = YabsPluginLoader.registeredModifiers;
             for (int ik = 0; ik < mods.size(); ik++) {
                 DatabaseObjectModifier databaseObjectModifier = mods.get(ik);
                 try {
@@ -786,7 +788,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
      */
     public boolean delete() {
 
-        List<DatabaseObjectModifier> mods = MPPLuginLoader.registeredModifiers;
+        List<DatabaseObjectModifier> mods = YabsPluginLoader.registeredModifiers;
         for (int ik = 0; ik < mods.size(); ik++) {
             DatabaseObjectModifier databaseObjectModifier = mods.get(ik);
             try {
@@ -1221,7 +1223,6 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
     public static DatabaseObject getObject(SerializableEntity entity) throws NodataFoundException {
         return getObject(Context.getMatchingContext(entity.getTablename()), entity.getId().intValue());
     }
-
     /**
      * Searches for a specific dataset, cached or non-cached
      * @param context The context to search under
@@ -1230,12 +1231,24 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
      * @throws NodataFoundException
      */
     public static DatabaseObject getObject(final Context context, final int id) throws NodataFoundException {
+        return getObject(context, id, false);
+    }
+
+    /**
+     * Searches for a specific dataset, cached or non-cached
+     * @param context The context to search under
+     * @param id The id of the object
+     * @param includeInvisible
+     * @return A database object with data, or null if none found
+     * @throws NodataFoundException
+     */
+    public static DatabaseObject getObject(final Context context, final int id, boolean includeInvisible) throws NodataFoundException {
         if (id > 0) {
             DatabaseObject cdo = DatabaseObject.getCachedObject(context, id);
             if (cdo == null) {
                 try {
                     Object obj = context.getIdentityClass().newInstance();
-                    ((DatabaseObject) obj).fetchDataOf(id);
+                    ((DatabaseObject) obj).fetchDataOf(id, includeInvisible);
                     ((DatabaseObject) obj).context = context;
                     cacheObject((DatabaseObject) obj);
                     return (DatabaseObject) obj;
@@ -1421,43 +1434,56 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
      * @param dataOwner
      * @param inReference
      * @param targetType The type you like to get back, most likely {@link DatabaseObject.getObject(Context)}
+     * @param withDeleted
      * @return
      * @throws mpv5.db.common.NodataFoundException
      */
     @SuppressWarnings("unchecked")
-    public static <T extends DatabaseObject> List<T> getReferencedObjects(DatabaseObject dataOwner, Context inReference, T targetType, boolean withDeleted) throws NodataFoundException {
+    public static <T extends DatabaseObject> List<T> getReferencedObjects(DatabaseObject dataOwner, Context inReference, T targetType) throws NodataFoundException {
+        return getReferencedObjects(dataOwner, inReference, targetType, false);
+    }
 
-        Object[][] allIds = QueryHandler.instanceOf().clone(inReference).select("ids", new String[]{dataOwner.getDbIdentity() + "ids", dataOwner.__getIDS().toString(), ""});
+    @SuppressWarnings("unchecked")
+    public static <T extends DatabaseObject> List<T> getReferencedObjects(DatabaseObject dataOwner, Context inReference, T targetType, boolean includeInvisible) throws NodataFoundException {
+
+        String query = "select " + inReference.getDbIdentity() + ".ids from " + inReference.getDbIdentity() + " where " + dataOwner.getDbIdentity() + "ids = " + dataOwner.__getIDS();
+        if (!includeInvisible && Context.getTrashableContexts().contains(inReference)) {
+            query += " and invisible = 0";
+        }
+        Object[][] allIds = QueryHandler.instanceOf().clone(inReference).freeSelectQuery(query, MPSecurityManager.VIEW, null).getData();
         if (allIds.length == 0) {
             throw new NodataFoundException(inReference);
         }
         LinkedList<T> list = new LinkedList<T>();
-
         for (int i = 0; i < allIds.length; i++) {
             int id = Integer.valueOf(allIds[i][0].toString());
             DatabaseObject x = DatabaseObject.getCachedObject(inReference, id);
             if (x != null) {
                 list.add((T) x);
             } else {
-                list.add((T) getObject(inReference, id));
+                list.add((T) getObject(inReference, id, includeInvisible));
             }
         }
         return list;
     }
 
-    /**
-     *
-     * @param <T>
-     * @param dataOwner
-     * @param inReference
-     * @param targetType
-     * @return
-     * @throws NodataFoundException
-     */
-    public static <T extends DatabaseObject> List<T> getReferencedObjects(DatabaseObject dataOwner, Context inReference, T targetType) throws NodataFoundException {
-        return getReferencedObjects(dataOwner, inReference, targetType);
-    }
-
+//    /**
+//     *
+//     * @param <T>
+//     * @param dataOwner
+//     * @param inReference
+//     * @param targetType
+//     * @return
+//     * @throws NodataFoundException
+//     */
+//    public static <T extends DatabaseObject> List<T> getReferencedObjects(DatabaseObject dataOwner, Context inReference, T targetType) throws NodataFoundException {
+//        List<DatabaseObject> vals = getReferencedObjects(dataOwner, inReference);
+//        List<T> cvals = new ArrayList<T>();
+//        for (int i = 0; i < vals.size(); i++) {
+//            cvals.add( (T) vals.get(i));
+//        }
+//        return cvals;
+//    }
     /**
      * Return objects which are referenced in the given Context@table
      * <br/>As list of getObject(inReference, (SELECT ids FROM Context@table WHERE dataOwnerIDS = dataowner.ids))
@@ -1521,6 +1547,18 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
      */
     public boolean fetchDataOf(int id) throws NodataFoundException {
         explode(QueryHandler.instanceOf().clone(context).select(id), this, true, true);
+        return true;
+    }
+
+     /**
+     * Fills this do with the data of the given dataset id
+     * @param id
+      * @param includeInvisible
+      * @return
+     * @throws NodataFoundException
+     */
+    public boolean fetchDataOf(int id, boolean includeInvisible) throws NodataFoundException {
+        explode(QueryHandler.instanceOf().clone(context).select(id, includeInvisible), this, true, true);
         return true;
     }
 
@@ -1640,7 +1678,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
                 }
             }
 
-            List<DatabaseObjectModifier> mods = MPPLuginLoader.registeredModifiers;
+            List<DatabaseObjectModifier> mods = YabsPluginLoader.registeredModifiers;
             for (int ik = 0; ik < mods.size(); ik++) {
                 DatabaseObjectModifier databaseObjectModifier = mods.get(ik);
                 try {
@@ -2009,7 +2047,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
         } catch (NumberFormatException numberFormatException) {
             //already resolved?
         }
-        List<DatabaseObjectModifier> mods = MPPLuginLoader.registeredModifiers;
+        List<DatabaseObjectModifier> mods = YabsPluginLoader.registeredModifiers;
         for (int ik = 0; ik < mods.size(); ik++) {
             DatabaseObjectModifier databaseObjectModifier = mods.get(ik);
             try {

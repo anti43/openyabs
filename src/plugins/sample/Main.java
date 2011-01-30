@@ -19,8 +19,9 @@ package plugins.sample;
 
 //~--- non-JDK imports --------------------------------------------------------
 import mpv5.logging.Log;
-
 import mpv5.pluginhandling.MP5Plugin;
+
+import mpv5.pluginhandling.YabsPlugin;
 
 import mpv5.ui.frames.MPView;
 
@@ -47,7 +48,7 @@ import mpv5.YabsView;
  * <b>In real plugins, this needs to go to a package named "plugin"</b> to be recognized as a valid plugin.
  *
  */
-public class Main extends JPanel implements MP5Plugin, Runnable {
+public class Main extends JPanel implements YabsPlugin, Runnable {
 
     private static final long serialVersionUID = -2334458558298502643L;
     private JLabel clock = new JLabel();
@@ -56,8 +57,8 @@ public class Main extends JPanel implements MP5Plugin, Runnable {
     private YabsView frame;
 
     @Override
-    public MP5Plugin load(YabsView frame) {
-        this.frame = frame;
+    public YabsPlugin load(Object frame) {
+        this.frame = (YabsView) frame;
         cmenu = new JMenu("what a crazy menu");
         mpv5.Main.getApplication().getMainView().getMenuBar().add(cmenu);
         mpv5.YabsViewProxy.instance().addMessage("added a crazy menu");

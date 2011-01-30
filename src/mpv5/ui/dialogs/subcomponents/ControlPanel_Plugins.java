@@ -22,13 +22,14 @@ import mpv5.db.objects.User;
 import mpv5.globals.Messages;
 import mpv5.logging.Log;
 import mpv5.pluginhandling.MP5Plugin;
-import mpv5.pluginhandling.MPPLuginLoader;
+import mpv5.pluginhandling.YabsPluginLoader;
 import mpv5.pluginhandling.Plugin;
 import mpv5.ui.dialogs.ControlApplet;
 import mpv5.ui.dialogs.Popup;
 import mpv5.ui.frames.MPView;
 import mpv5.usermanagement.MPSecurityManager;
 import mpv5.pluginhandling.UserPlugin;
+import mpv5.pluginhandling.YabsPlugin;
 
 /**
  *
@@ -62,7 +63,7 @@ public class ControlPanel_Plugins extends javax.swing.JPanel implements ControlA
         if (s == null) {
             s = file.getName();
         }
-        MPPLuginLoader.importPlugin(s, file);
+        YabsPluginLoader.importPlugin(s, file);
         refresh();
     }
 
@@ -308,12 +309,12 @@ public class ControlPanel_Plugins extends javax.swing.JPanel implements ControlA
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
-        MP5Plugin p = null;
+        YabsPlugin p = null;
         try {
-            if (MPPLuginLoader.checkPlugin(new File(labeledTextChooser2.get_Text(true))) != null) {
-                p = MPPLuginLoader.checkPlugin(new File(labeledTextChooser2.get_Text(true)));
+            if (YabsPluginLoader.checkPlugin(new File(labeledTextChooser2.get_Text(true))) != null) {
+                p = YabsPluginLoader.checkPlugin(new File(labeledTextChooser2.get_Text(true)));
                 try {
-                    MPPLuginLoader.loadPlugin(p);
+                    YabsPluginLoader.loadPlugin(p);
                 } catch (Exception ex) {
                     Popup.error(ex);
                 } catch (Throwable ex) {

@@ -12,7 +12,7 @@ import javax.swing.JFrame;
 import javax.swing.JProgressBar;
 import mpv5.db.common.DatabaseObject;
 import mpv5.globals.Constants;
-import mpv5.pluginhandling.MPPLuginLoader;
+import mpv5.pluginhandling.YabsPluginLoader;
 import mpv5.ui.dialogs.DialogForFile;
 import mpv5.ui.panels.DataPanel;
 
@@ -34,7 +34,7 @@ public interface YabsView{
 
     public YabsView getIdentifierView();
 
-    public MPPLuginLoader getPluginLoader();
+    public YabsPluginLoader getPluginLoader();
 
     public void setProgressMaximumValue(int i);
 

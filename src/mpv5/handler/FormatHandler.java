@@ -16,7 +16,7 @@
  */
 package mpv5.handler;
 
-
+import java.text.MessageFormat;
 import java.text.ParsePosition;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -179,14 +179,14 @@ public class FormatHandler {
         //Formats not cached yet
         formatCache = new ConcurrentHashMap<String, YMessageFormat>();
 
-        QueryCriteria c = new QueryCriteria();
+
 //        c.addAndCondition("usersids", mpv5.db.objects.User.getCurrentUser().__getIDS());
 //        c.addAndCondition("inttype", determineType(source));
         try {
-            Object[][] formats = QueryHandler.instanceOf().clone(Context.getFormats()).select("cname, ids, inttype, usersids", c);
+            Object[][] formats = QueryHandler.instanceOf().clone(Context.getFormats()).select("cname, ids, inttype, usersids");
             if (formats.length > 0) {
                 for (int i = 0; i < formats.length; i++) {
-                    int startCount =0;
+                    Integer startCount = null;
                     String value = formats[i][0].toString();
                     try {
                         int formatId = Integer.valueOf(formats[i][1].toString());
@@ -294,7 +294,8 @@ public class FormatHandler {
             }
         } else {
             int tmp = format.startValue().intValue();
-            Log.Debug(FormatHandler.class, "Startcount: " + tmp);
+            Log.Debug(FormatHandler.class, "Found Startcount: " + tmp + " for " + format.toPattern());
+            format.setStartValue(null);
             return tmp;
         }
     }
@@ -346,7 +347,7 @@ public class FormatHandler {
      * @param number
      * @return A formatted number
      */
-    public synchronized String toString(YMessageFormat format, int number) {
+    public synchronized String toString(MessageFormat format, int number) {
         String x = VariablesHandler.parse(format.format(new Object[]{number}), source);
         if (x.length() == 0) {
             x = "0000" + number;
@@ -379,8 +380,6 @@ public class FormatHandler {
     public int getType() {
         return determineType(source);
     }
-
-
 
 //    /**
 //     * @param format the format to set
@@ -458,6 +457,10 @@ public class FormatHandler {
 
         public Integer startValue() {
             return startValue;
+        }
+
+        public void setStartValue(Integer val) {
+            startValue = val;
         }
     }
 }

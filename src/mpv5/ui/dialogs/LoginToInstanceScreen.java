@@ -50,7 +50,7 @@ public class LoginToInstanceScreen extends javax.swing.JDialog {
             try {
                 jTextField1.setText(new User(Integer.valueOf(LocalSettings.getProperty("lastuser"))).getName());
             } catch (NodataFoundException ex) {
-                Log.Debug(this, ex);
+                Log.Debug(this, ex.getMessage());
             }
             jPasswordField1.requestFocus();
         }

@@ -31,23 +31,22 @@ import javax.swing.table.TableModel;
  */
 public class Selection {
 
-    private int removed = 0;
     private int id;
     private boolean noerror;
-    private int r;
-    private JTable table;
+    private final int row;
+    private final JTable table;
 
-    public Selection(JTable table) {
+    public Selection(final JTable table) {
+        this.table = table;
+        if (table.getCellEditor() != null) {
+            try {table.getCellEditor().stopCellEditing();} catch (Exception e) {}
+        }
+        row = table.getSelectedRow();
         try {
-            if (table.getCellEditor() != null) {
-                try {
-                    table.getCellEditor().stopCellEditing();
-                } catch (Exception e) {
-                }
-            }
-            this.table = table;
-            r = table.getSelectedRow();
-            id = Integer.valueOf(String.valueOf(table.getValueAt(r, table.convertColumnIndexToView(0))));
+            System.err.print("@AAAAAAAAAAAAAAAAAAAAAAAAA@    " + row);
+            id = Integer.valueOf(String.valueOf(
+                    table.getValueAt(row,
+                    table.convertColumnIndexToView(0))));
             noerror = true;
         } catch (Exception numberFormatException) {
             noerror = false;

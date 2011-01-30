@@ -310,45 +310,46 @@ public class SearchPanel extends javax.swing.JPanel {
                     switch (searchtype) {
                         case 1:
                             if (context.equals(Context.getContact())) {
-                                resulttable.setModel(new MPTableModel(new DatabaseSearch(context, 500).getValuesFor(sf, new String[]{"cname", "company"}, value, true), Headers.SEARCH_DEFAULT.getValue()));
+                                resulttable.setModel(new MPTableModel(new DatabaseSearch(context, 500).getValuesFor(sf, new String[]{"cname", "company"}, value, true)));
                             } else if (context.equals(Context.getItem())) {
                                 Integer id = new DatabaseSearch(Context.getContact()).searchForID("cname", value, false);
                                 if (id != null) {
                                     resulttable.setModel(new MPTableModel(new DatabaseSearch(context, 500).getValuesFor(sf, "contactsids",
-                                            id), Headers.SEARCH_DEFAULT.getValue()));
+                                            id)));
                                 } else {
-                                    resulttable.setModel(new MPTableModel(new String[][]{}, Headers.SEARCH_DEFAULT.getValue()));
+                                    resulttable.setModel(new MPTableModel(new String[][]{}));
                                 }
                             } else {
-                                resulttable.setModel(new MPTableModel(new DatabaseSearch(context, 500).getValuesFor(sf, "cname", value, true), Headers.SEARCH_DEFAULT.getValue()));
+                                resulttable.setModel(new MPTableModel(new DatabaseSearch(context, 500).getValuesFor(sf, "cname", value, true)));
                             }
                             break;
                         case 2:
-                            resulttable.setModel(new MPTableModel(new DatabaseSearch(context, 500).getValuesFor(sf, "cnumber", value, true), Headers.SEARCH_DEFAULT.getValue()));
+                            resulttable.setModel(new MPTableModel(new DatabaseSearch(context, 500).getValuesFor(sf, "cnumber", value, true)));
 
                             break;
                         case 3:
                             Integer id = new DatabaseSearch(Context.getGroup()).searchForID("cname", value, false);
                             if (id != null) {
                                 resulttable.setModel(new MPTableModel(new DatabaseSearch(context, 500).getValuesFor(sf, "groupsids",
-                                        id), Headers.SEARCH_DEFAULT.getValue()));
+                                        id)));
                             } else {
-                                resulttable.setModel(new MPTableModel(new String[][]{}, Headers.SEARCH_DEFAULT.getValue()));
+                                resulttable.setModel(new MPTableModel(new String[][]{}));
                             }
 
                             break;
                         case 4:
-                            resulttable.setModel(new MPTableModel(new DatabaseSearch(context, 0).getValuesFor(sf, "cname", "", true), Headers.SEARCH_DEFAULT.getValue()));
+                            resulttable.setModel(new MPTableModel(new DatabaseSearch(context, 0).getValuesFor(sf, "cname", "", true)));
                             break;
                         case 5:
                             resulttable.setModel(new MPTableModel(new DatabaseSearch(context, 0).getValuesFor(sf, "groupsids",
-                                    Integer.valueOf(value)), Headers.SEARCH_DEFAULT.getValue()));
+                                    Integer.valueOf(value))));
                             break;
                         default:
                             Log.Debug(this, "Invalid parameters!");
                     }
+                    TableFormat.hideHeader(resulttable);
                     TableFormat.makeUneditable(resulttable);
-                    TableFormat.stripColumns(resulttable, new int[]{0, 3, 4, 5, 6, 7, 8, 9});
+                    TableFormat.stripColumns(resulttable, new int[]{0, 4, 5, 6, 7, 8, 9});
 
                 }
             };

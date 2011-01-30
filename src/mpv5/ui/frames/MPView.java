@@ -76,7 +76,7 @@ import mpv5.db.sample.SampleData;
 import mpv5.globals.Constants;
 import mpv5.globals.LocalSettings;
 import mpv5.handler.Scheduler;
-import mpv5.pluginhandling.MPPLuginLoader;
+import mpv5.pluginhandling.YabsPluginLoader;
 import mpv5.server.MPServer;
 import mpv5.ui.dialogs.About;
 import mpv5.ui.dialogs.BigPopup;
@@ -230,7 +230,7 @@ public class MPView extends FrameView implements YabsView {
     /**
      * The handler for all plugins
      */
-    private static MPPLuginLoader pluginLoader;
+    private static YabsPluginLoader pluginLoader;
 
     /**
      * Let the view notify the user about an unexpected error
@@ -366,7 +366,7 @@ public class MPView extends FrameView implements YabsView {
     /**
      * @return the pluginLoader
      */
-    public MPPLuginLoader getPluginLoader() {
+    public YabsPluginLoader getPluginLoader() {
         return pluginLoader;
     }
 
@@ -580,7 +580,7 @@ public class MPView extends FrameView implements YabsView {
 
         QueryHandler.setWaitCursorFor(identifierFrame);
 
-        pluginLoader = new MPPLuginLoader();
+        pluginLoader = new YabsPluginLoader();
 
         addTab(new StartPage(), Messages.WELCOME);
         LocalSettings.save();

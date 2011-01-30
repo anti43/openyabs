@@ -820,7 +820,9 @@ public class SubItem extends DatabaseObject implements Triggerable {
                     p.save(true);
                 }
             } catch (NodataFoundException ex) {
-                Log.Debug(ex);
+                Log.Debug(this, ex.getMessage());//jemand hats gelöscht:-/
+                originalproductsids = -1;
+                save(true);
             }
         }
     }

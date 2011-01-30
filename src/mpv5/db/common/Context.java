@@ -335,10 +335,11 @@ public class Context implements Serializable {
         list.add(getCustomer());
         list.add(getManufacturer());
         list.add(getSupplier());
-//        list.add(getItem(null, null));
-//        list.add(getInvoice());
-//        list.add(getOrder());
-//        list.add(getOffer());
+        list.add(getItem(null, null));
+        list.add(getInvoice());
+        list.add(getOrder());
+        list.add(getOffer());
+        list.add(getSubItem());
         list.add(getContact());
         list.add(getProduct());
         list.add(getFiles());
@@ -687,35 +688,35 @@ public class Context implements Serializable {
             boolean first = true;
             if (isCompany()) {
                 if (first) {
-                    cond += "WHERE(";
+                    cond += "(";
                 }
                 first = false;
                 cond += " " + CONDITION_CONTACTS_COMPANY + "=1 OR ";
             }
             if (isCustomer()) {
                 if (first) {
-                    cond += "WHERE(";
+                    cond += "(";
                 }
                 first = false;
                 cond += " " + CONDITION_CONTACTS_CUSTOMER + "=1 OR ";
             }
             if (isManufacturer()) {
                 if (first) {
-                    cond += "WHERE(";
+                    cond += "(";
                 }
                 first = false;
                 cond += " " + CONDITION_CONTACTS_MANUFACTURER + "=1 OR ";
             }
             if (isSupplier()) {
                 if (first) {
-                    cond += "WHERE(";
+                    cond += "(";
                 }
                 first = false;
                 cond += " " + CONDITION_CONTACTS_SUPPLIER + "=1 OR ";
             }
             if (itemType != null) {
                 if (first) {
-                    cond += "WHERE(";
+                    cond += "(";
 
                 }
                 first = false;
@@ -723,14 +724,14 @@ public class Context implements Serializable {
             }
             if (itemStatus != null) {
                 if (first) {
-                    cond += "WHERE(";
+                    cond += "(";
 
                 }
                 first = false;
                 cond += " " + CONDITION_ITEMS_STATUS + "=" + getItemStatus() + " OR ";
             }
             if (!first) {
-                cond = cond.substring(4, cond.length() - 3);
+                cond = "WHERE" + cond.substring(0, cond.length() - 3) + ")";
                 if (mpv5.db.objects.User.getCurrentUser().isGroupRestricted() && getGroupableContexts().contains(this)) {
                     cond += " AND (" + dbIdentity + "." + "GROUPSIDS = " + mpv5.db.objects.User.getCurrentUser().__getGroupsids() + " OR " + dbIdentity + "." + "GROUPSIDS = 1)";
                 }
@@ -1685,6 +1686,4 @@ public class Context implements Serializable {
         hash = 47 * hash + (this.dbIdentity != null ? this.dbIdentity.hashCode() : 0);
         return hash;
     }
-
-
 }

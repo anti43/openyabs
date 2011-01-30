@@ -18,10 +18,13 @@ package mpv5.handler;
 
 import javax.swing.SwingUtilities;
 import mpv5.db.common.Context;
+import mpv5.db.common.DatabaseObject;
+import mpv5.db.common.NodataFoundException;
 import mpv5.db.common.QueryCriteria;
 import mpv5.db.common.QueryData;
 import mpv5.db.common.QueryHandler;
 import mpv5.globals.Messages;
+import mpv5.logging.Log;
 import mpv5.ui.frames.MPView;
 
 /**
@@ -38,6 +41,7 @@ public class TrashHandler {
     public static void delete(final String type, final int id, final String message) {
         QueryHandler.instanceOf().clone(type).delete(new String[][]{{"ids", String.valueOf(id), ""}}, message);
         Runnable runnable = new Runnable() {
+
             public void run() {
                 QueryHandler.instanceOf().clone(Context.getHistory()).insertHistoryItem(message, mpv5.db.objects.User.getCurrentUser().__getCName(), type, id, mpv5.db.objects.User.getCurrentUser().__getGroupsids());
             }
@@ -64,17 +68,18 @@ public class TrashHandler {
      * @param message
      */
     public static void restore(final String type, final int id, final String message) {
-        QueryData q = new QueryData();
-        q.add("invisible", 0);
-        QueryHandler.instanceOf().clone(type).update(q, id, message);
+
+        Context context = Context.getMatchingContext(type);
         try {
-            QueryCriteria qu = new QueryCriteria();
-            qu.addAndCondition("rowid", id);
-            qu.addAndCondition("cname", type.toLowerCase());
-            QueryHandler.instanceOf().clone("trashbin").delete(qu);
-        } catch (Exception ignore) {
+            DatabaseObject dbo = DatabaseObject.getObject(context, id, true);
+            Log.Debug(TrashHandler.class, "Restoring: " + dbo);
+            dbo.undelete();
+        } catch (NodataFoundException ex) {
+            Log.Debug(ex);
         }
+
         Runnable runnable = new Runnable() {
+
             public void run() {
                 QueryHandler.instanceOf().clone(Context.getHistory()).insertHistoryItem(message, mpv5.db.objects.User.getCurrentUser().__getCName(), type, id, mpv5.db.objects.User.getCurrentUser().__getGroupsids());
             }

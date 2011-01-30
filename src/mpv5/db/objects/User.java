@@ -43,13 +43,14 @@ import mpv5.i18n.LanguageManager;
 import mpv5.logging.Log;
 import mpv5.mail.MailConfiguration;
 import mpv5.pluginhandling.MP5Plugin;
-import mpv5.pluginhandling.MPPLuginLoader;
+import mpv5.pluginhandling.YabsPluginLoader;
 import mpv5.ui.dialogs.Popup;
 import mpv5.ui.dialogs.subcomponents.ControlPanel_Fonts;
 import mpv5.ui.frames.MPView;
 import dtaus.Konto;
 import javax.swing.UIManager;
 import mpv5.YabsViewProxy;
+import mpv5.pluginhandling.YabsPlugin;
 import mpv5.utils.text.TypeConversion;
 
 /**
@@ -247,8 +248,8 @@ public class User extends DatabaseObject {
      * Return this users plugins
      * @return 
      */
-    public MP5Plugin[] getPlugins() {
-        return new MPPLuginLoader().getPlugins();
+    public YabsPlugin[] getPlugins() {
+        return YabsPluginLoader.getPlugins();
     }
 
     /**

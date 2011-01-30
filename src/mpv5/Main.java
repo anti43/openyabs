@@ -48,7 +48,7 @@ import mpv5.db.common.QueryHandler;
 import mpv5.globals.Constants;
 import mpv5.globals.LocalSettings;
 import mpv5.globals.Messages;
-import mpv5.pluginhandling.MPPLuginLoader;
+import mpv5.pluginhandling.YabsPluginLoader;
 import mpv5.ui.dialogs.Popup;
 import mpv5.ui.dialogs.SplashScreen;
 import mpv5.ui.dialogs.Wizard;
@@ -204,7 +204,7 @@ public class Main implements Runnable {
                 for (int i = 0; i < plugins.length; i++) {
                     File file = plugins[i];
                     Log.Debug(Main.class, "Importing: " + file.getPath());
-                    MPPLuginLoader.importPlugin(file.getName(), file);
+                    YabsPluginLoader.importPlugin(file.getName(), file);
                     Popup.notice(Messages.IMPORT_PLUGINS_DONE);//TODO: l10n
 
                     file.deleteOnExit();
@@ -862,8 +862,8 @@ public class Main implements Runnable {
         if (!HEADLESS) {
             if (!removeplugs) {
                 try {
-                    MPPLuginLoader.queuePlugins();
-                    MPPLuginLoader.loadPlugins();
+                    YabsPluginLoader.queuePlugins();
+                    YabsPluginLoader.loadPlugins();
                 } catch (Throwable e) {
                     Log.Debug(e);
                     Popup.notice("Plugin ERROR " + e);
@@ -890,15 +890,19 @@ public class Main implements Runnable {
             User usern1 = new User();
             Log.Debug(this, "Checking for auto login.. ");
 
-            if (usern1.fetchDataOf(Integer.valueOf(LocalSettings.getProperty("lastuser")))) {
-                Log.Debug(this, "Trying to login user: " + usern1);
-                User user = mpv5.usermanagement.MPSecurityManager.checkAuthInternal(usern1, LocalSettings.getProperty("lastuserpw"));
-                Log.Debug(this, "Found user: " + user);
-                if (user != null) {
-                    user.login();
-                } else {
-                    LoginToInstanceScreen.load();
+            try {
+                if (usern1.fetchDataOf(Integer.valueOf(LocalSettings.getProperty("lastuser")))) {
+                    Log.Debug(this, "Trying to login user: " + usern1);
+                    User user = mpv5.usermanagement.MPSecurityManager.checkAuthInternal(usern1, LocalSettings.getProperty("lastuserpw"));
+                    Log.Debug(this, "Found user: " + user);
+                    if (user != null) {
+                        user.login();
+                    } else {
+                        LoginToInstanceScreen.load();
+                    }
                 }
+            } catch (Exception nodataFoundException) {
+                LoginToInstanceScreen.load();
             }
         } else {
             LoginToInstanceScreen.load();

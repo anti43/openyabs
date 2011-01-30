@@ -178,7 +178,7 @@ public class Template extends DatabaseObject {
     @Override
     public boolean delete() {
         QueryCriteria c = new QueryCriteria();
-        c.addAndCondition("filename", filename);
+        c.addAndCondition("cname", filename);
         QueryHandler.instanceOf().clone(Context.getFiles()).delete(c);
         return super.delete();
     }

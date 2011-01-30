@@ -415,8 +415,24 @@ public class QueryHandler implements Cloneable {
      * @return
      * @throws NodataFoundException If no such row exists
      */
-    public ReturnValue select(int id) throws NodataFoundException {
-        ReturnValue data = freeSelectQuery("SELECT * FROM " + table + " WHERE " + table + ".ids = " + id + " AND " + context.getConditions().substring(6, context.getConditions().length()), mpv5.usermanagement.MPSecurityManager.VIEW, null);
+    protected ReturnValue select(int id) throws NodataFoundException {
+        return select(id, false);
+    }
+
+    /**
+     * Select the row with this IDS
+     * @param id
+     * @param noConditions
+     * @return
+     * @throws NodataFoundException If no such row exists
+     */
+    protected ReturnValue select(int id, boolean noConditions) throws NodataFoundException {
+        ReturnValue data;
+        if (noConditions) {
+            data = freeSelectQuery("SELECT * FROM " + table + " WHERE " + table + ".ids = " + id, mpv5.usermanagement.MPSecurityManager.VIEW, null);
+        } else {
+            data = freeSelectQuery("SELECT * FROM " + table + " WHERE " + table + ".ids = " + id + " AND " + context.getConditions().substring(6, context.getConditions().length()), mpv5.usermanagement.MPSecurityManager.VIEW, null);
+        }
         if (data.getData().length == 0) {
             throw new NodataFoundException(context, id);
         } else {
@@ -449,10 +465,26 @@ public class QueryHandler implements Cloneable {
      * @throws NodataFoundException
      */
     public Object[][] select(String columns, QueryCriteria criterias) throws NodataFoundException {
-        return select(columns, criterias.getKeys(), criterias.getValues());
+        if (criterias.getKeys().length > 0) {
+            return select(columns, criterias.getKeys(), criterias.getValues());
+        } else {
+            return select(columns);
+        }
     }
 
     /**
+     * This is a convenience method to retrieve data such as
+     * <code>select("*", criterias.getKeys(), criterias.getValues())<code/>
+     * @param columns
+     * @param criterias
+     * @return
+     * @throws NodataFoundException
+     */
+    public Object[][] select(String columns) throws NodataFoundException {
+        return select(columns, new String[0], new Object[0]);
+    }
+
+    /**0
      * Select data from a timeframe
      * @param columns column1, column2, column3...
      * @param criterias
@@ -464,10 +496,9 @@ public class QueryHandler implements Cloneable {
     public Object[][] select(String columns, QueryCriteria criterias, vTimeframe time, String timeCol) throws NodataFoundException {
 
         String dateCriterium = table + "." + timeCol + " >= '" + DateConverter.getSQLDateString(time.getStart()) + "' AND " + table + "." + timeCol + " <= '" + DateConverter.getSQLDateString(time.getEnd()) + "'";
-        String query = "SELECT " + columns + " FROM " + table + " " + context.getReferences() + " WHERE ";
+        String query = "SELECT " + columns + " FROM " + table + " " + context.getReferences() + (criterias.getKeys().length > 0 ? " WHERE " : "");
 
         for (int i = 0; i < criterias.getKeys().length; i++) {
-
             Object object = criterias.getValues()[i];
             String column = criterias.getKeys()[i];
             query += table + "." + column + "=" + String.valueOf(object);
@@ -1455,9 +1486,8 @@ public class QueryHandler implements Cloneable {
      * @return
      */
     public Object[][] select(String what, String[] whereColumns, Object[] haveValues) {
-        String query = "SELECT " + what + " FROM " + table + " " + context.getReferences() + " WHERE ";
+        String query = "SELECT " + what + " FROM " + table + " " + context.getReferences() + (whereColumns.length > 0 ? " WHERE " : "");
         for (int i = 0; i < haveValues.length; i++) {
-
             Object object = haveValues[i];
             String column = whereColumns[i];
             query += table + "." + column + "=" + String.valueOf(object);
