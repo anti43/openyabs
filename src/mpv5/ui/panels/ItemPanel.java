@@ -43,6 +43,7 @@ import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.Action;
+import javax.swing.Box;
 import javax.swing.InputMap;
 import javax.swing.JButton;
 import javax.swing.JComponent;
@@ -55,6 +56,7 @@ import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingUtilities;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.JTextPane;
+import javax.swing.JToolBar;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableColumnModel;
@@ -89,6 +91,7 @@ import mpv5.ui.dialogs.Search2;
 import mpv5.ui.dialogs.subcomponents.ItemTextAreaDialog;
 import mpv5.ui.dialogs.subcomponents.ProductSelectDialog;
 import mpv5.ui.misc.MPTable;
+import mpv5.ui.misc.TextFieldCalculator;
 import mpv5.ui.popups.TablePopUp;
 import mpv5.utils.ui.TableViewPersistenceHandler;
 import mpv5.utils.arrays.ArrayUtilities;
@@ -121,8 +124,8 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
     private SearchPanel sp;
     private Integer dataTableContent = null;
     private TableCalculator itemMultiplier;
+    private TableCalculator taxcalculator;
     private TableCalculator netCalculator;
-    private TableCalculator netCalculator2;
     private boolean loading = true;
     private java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle();
 
@@ -132,6 +135,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
      */
     public ItemPanel(Context context, int type) {
         initComponents();
+
 
         inttype_ = type;
         sp = new SearchPanel(context, this);
@@ -147,7 +151,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
         }
 
         refresh();
-        shipping.set_ValueClass(Double.class);
+//        shipping.set_ValueClass(Double.class);
 
         addedby.setText(mpv5.db.objects.User.getCurrentUser().getName());
         contactname.setSearchEnabled(true);
@@ -291,11 +295,10 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
-                    MailMessage d = (MailMessage) DatabaseObject.getObject(Context.getMessage(), Integer.valueOf(labeledCombobox1.getSelectedItem().getId())); 
+                    MailMessage d = (MailMessage) DatabaseObject.getObject(Context.getMessage(), Integer.valueOf(labeledCombobox1.getSelectedItem().getId()));
                     notes.setText(d.__getDescription());
                 } catch (Exception ex) {
-                   
-                }     
+                }
             }
         });
         labeledCombobox1.setSearchOnEnterEnabled(true);
@@ -453,7 +456,8 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
                 dataTable.setModel(new MPTableModel(data, Headers.FILE_REFERENCES.getValue()));
                 TableFormat.stripFirstColumn(dataTable);
             }
-        };new Thread(runnable).start();
+        };
+        new Thread(runnable).start();
     }
 
     /** This method is called from within the constructor to
@@ -512,8 +516,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
         date3 = new mpv5.ui.beans.LabeledDateChooser();
         addfile = new javax.swing.JButton();
         removefile = new javax.swing.JButton();
-        jToolBar2 = new javax.swing.JToolBar();
-        shipping = new mpv5.ui.beans.LabeledTextField();
+        jToolBar2 = new alignRightToolbar();
         jSeparator11 = new javax.swing.JToolBar.Separator();
         calculator = new mpv5.ui.beans.LabeledSpinner();
         jButton1 = new javax.swing.JButton();
@@ -577,7 +580,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
         ;
         toolbarpane = new javax.swing.JPanel();
 
-        java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle(); // NOI18N
+        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("mpv5/resources/languages/Panels"); // NOI18N
         setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("ItemPanel.border.title_1"))); // NOI18N
         setName("ItemPanel"); // NOI18N
         setLayout(new java.awt.BorderLayout());
@@ -761,7 +764,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
                 .addComponent(upItem)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(upItem1)
-                .addContainerGap(27, Short.MAX_VALUE))
+                .addContainerGap(19, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
@@ -776,7 +779,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(itemPanel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(jScrollPane3, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 145, Short.MAX_VALUE)
+            .addComponent(jScrollPane3, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 137, Short.MAX_VALUE)
         );
 
         jToolBar1.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
@@ -1034,12 +1037,8 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
         jToolBar2.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(0, 102, 102), 1, true));
         jToolBar2.setFloatable(false);
         jToolBar2.setRollover(true);
+        jToolBar2.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         jToolBar2.setName("jToolBar2"); // NOI18N
-
-        shipping.set_Label(bundle.getString("ItemPanel.shipping._Label")); // NOI18N
-        shipping.setMaximumSize(new java.awt.Dimension(200, 20));
-        shipping.setName("shipping"); // NOI18N
-        jToolBar2.add(shipping);
 
         jSeparator11.setName("jSeparator11"); // NOI18N
         jSeparator11.setSeparatorSize(new java.awt.Dimension(15, 10));
@@ -1074,7 +1073,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
         jSeparator3.setSeparatorSize(new java.awt.Dimension(15, 10));
         jToolBar2.add(jSeparator3);
 
-        netvalue.setFont(new java.awt.Font("Tahoma", 1, 11));
+        netvalue.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
         netvalue.setText(bundle.getString("ItemPanel.netvalue.text")); // NOI18N
         netvalue.setName("netvalue"); // NOI18N
         jToolBar2.add(netvalue);
@@ -1106,7 +1105,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
         jSeparator5.setSeparatorSize(new java.awt.Dimension(15, 10));
         jToolBar2.add(jSeparator5);
 
-        value.setFont(new java.awt.Font("Tahoma", 1, 11));
+        value.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
         value.setText(bundle.getString("ItemPanel.value.text")); // NOI18N
         value.setName("value"); // NOI18N
         jToolBar2.add(value);
@@ -1506,7 +1505,6 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
     private javax.swing.JTable proptable;
     private javax.swing.JButton removefile;
     private javax.swing.JPanel rightpane;
-    private mpv5.ui.beans.LabeledTextField shipping;
     private mpv5.ui.beans.LabeledCombobox status;
     private javax.swing.JLabel staus_icon;
     private javax.swing.JLabel taxvalue;
@@ -1572,11 +1570,11 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
             netvalue_ = FormatNumber.parseDezimal(netvalue.getText());
             taxvalue_ = FormatNumber.parseDezimal(taxvalue.getText());
 
-            try {
-                shippingvalue_ = FormatNumber.parseDezimal(shipping.getText());
-            } catch (Exception e) {
-                shippingvalue_ = new BigDecimal("0");
-            }
+//            try {
+//                shippingvalue_ = FormatNumber.parseDezimal(shipping.getText());
+//            } catch (Exception e) {
+            shippingvalue_ = new BigDecimal("0");
+//            }
 
             datetodo_ = date2.getDate();
             dateend_ = date3.getDate();
@@ -1599,7 +1597,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
         date3.setDate(dateend_);
         notes.setText(description_);
 
-        shipping.setText(FormatNumber.formatDezimal(shippingvalue_));
+//        shipping.setText(FormatNumber.formatDezimal(shippingvalue_));
         button_reminders.setToolTipText(Messages.REMINDERS + String.valueOf(intreminders_));
         //  discountpercent.setValue(discountvalue_);
 
@@ -1672,7 +1670,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
                                 SubItem.getDefaultItem(), SubItem.getDefaultItem()
                             }));
                     formatTable();
-                    shipping.setText(FormatNumber.formatDezimal(0d));
+//                    shipping.setText(FormatNumber.formatDezimal(0d));
 
                 } catch (Exception e) {
                     Log.Debug(this, e);
@@ -1865,8 +1863,8 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
         }
 
         itemMultiplier.calculateOnce();
-        netCalculator2.calculateOnce();
         netCalculator.calculateOnce();
+        taxcalculator.calculateOnce();
 
 
     }
@@ -1994,13 +1992,24 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
         ((MPTableModel) itemtable.getModel()).addCalculator(itemMultiplier);
         itemMultiplier.addLabel(value, 7);
 
-        netCalculator2 = new TableCalculator(itemtable, new int[]{2, 5}, new int[]{9}, new int[]{}, TableCalculator.ACTION_MULTIPLY, new int[]{9});
-        ((MPTableModel) itemtable.getModel()).addCalculator(netCalculator2);
-        netCalculator2.addLabel(netvalue, 9);
-
-        netCalculator = new TableCalculator(itemtable, new int[]{7, 9}, new int[]{8}, new int[]{}, TableCalculator.ACTION_SUBSTRACT, new int[]{8});
+        netCalculator = new TableCalculator(itemtable, new int[]{2, 5}, new int[]{9}, new int[]{}, TableCalculator.ACTION_MULTIPLY, new int[]{9});
         ((MPTableModel) itemtable.getModel()).addCalculator(netCalculator);
-        netCalculator.addLabel(taxvalue, 8);
+        netCalculator.addLabel(netvalue, 9);
+
+        taxcalculator = new TableCalculator(itemtable, new int[]{7, 9}, new int[]{8}, new int[]{}, TableCalculator.ACTION_SUBSTRACT, new int[]{8});
+        ((MPTableModel) itemtable.getModel()).addCalculator(taxcalculator);
+        taxcalculator.addLabel(taxvalue, 8);
+
+//        if (mpv5.db.objects.User.getCurrentUser().getProperties().hasProperty("shiptax")) {
+//            int taxid = mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("shiptax", new Integer(0));
+//            Double shiptax = Tax.getTaxValue(taxid).doubleValue();
+//            Double shipt = (shiptax / 100);
+//            itemMultiplier.addToSum(shipping);
+//            taxcalculator.addToSum(shipping, shipt);
+//        } else {
+//            itemMultiplier.addToSum(shipping);
+//            netCalculator.addToSum(shipping);
+//        }
 
         JButton b1 = new JButton();
         b1.addMouseListener(new MouseListener() {
@@ -2249,5 +2258,12 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
                 }
             }
         });
+    }
+
+    private class alignRightToolbar extends JToolBar {
+
+        public alignRightToolbar() {
+            add(Box.createHorizontalGlue());
+        }
     }
 }

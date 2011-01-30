@@ -390,4 +390,5 @@ public class LabeledTextField extends javax.swing.JPanel {
         }
         return text;
     }
+
 }

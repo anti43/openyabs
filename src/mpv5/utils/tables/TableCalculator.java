@@ -1,24 +1,23 @@
 
 /*
-*  This file is part of YaBS.
-*
-*      YaBS is free software: you can redistribute it and/or modify
-*      it under the terms of the GNU General Public License as published by
-*      the Free Software Foundation, either version 3 of the License, or
-*      (at your option) any later version.
-*
-*      YaBS is distributed in the hope that it will be useful,
-*      but WITHOUT ANY WARRANTY; without even the implied warranty of
-*      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-*      GNU General Public License for more details.
-*
-*      You should have received a copy of the GNU General Public License
-*      along with YaBS.  If not, see <http://www.gnu.org/licenses/>.
+ *  This file is part of YaBS.
+ *
+ *      YaBS is free software: you can redistribute it and/or modify
+ *      it under the terms of the GNU General Public License as published by
+ *      the Free Software Foundation, either version 3 of the License, or
+ *      (at your option) any later version.
+ *
+ *      YaBS is distributed in the hope that it will be useful,
+ *      but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *      GNU General Public License for more details.
+ *
+ *      You should have received a copy of the GNU General Public License
+ *      along with YaBS.  If not, see <http://www.gnu.org/licenses/>.
  */
 package mpv5.utils.tables;
 
 //~--- non-JDK imports --------------------------------------------------------
-
 import mpv5.logging.Log;
 
 import mpv5.ui.beans.LabeledTextField;
@@ -32,8 +31,10 @@ import mpv5.utils.renderer.LazyCellEditor;
 import java.math.BigDecimal;
 
 import java.text.NumberFormat;
+import java.util.ArrayList;
 
 import java.util.HashMap;
+import java.util.List;
 
 import javax.swing.DefaultCellEditor;
 import javax.swing.JComponent;
@@ -53,31 +54,28 @@ public class TableCalculator implements Runnable {
      * <b>/</b>
      */
     public static final int ACTION_DIVIDE = 1;
-
     /**
      * <b>*</b>
      */
     public static final int ACTION_MULTIPLY = 3;
-
     /**
      * <b>-</b>
      */
     public static final int ACTION_SUBSTRACT = 2;
-
     /**
      * <b>+</b>
      */
-    public static final int              ACTION_SUM = 0;
-    private boolean                      onScreen   = true;
-    private HashMap<Integer, JComponent> sumcols    = new HashMap<Integer, JComponent>();
-    private final int                    action;
-    private final int[]                  columnsToCalculate;
-    private final int[]                  percentageColumns;
-    private int[]                        sumColumn;
-
+    public static final int ACTION_SUM = 0;
+    private boolean onScreen = true;
+    private HashMap<Integer, JComponent> sumcols = new HashMap<Integer, JComponent>();
+    private List<LabeledTextField> addToSumcols = new ArrayList<LabeledTextField>();
+    private final int action;
+    private final int[] columnsToCalculate;
+    private final int[] percentageColumns;
+    private int[] sumColumn;
 //  public static NumberFormat DECIMALFORMAT = FormatNumber.getDefaultDecimalFormat();
     private final JTable table;
-    private final int[]  targetColumns;
+    private final int[] targetColumns;
 
     /**
      *
@@ -89,14 +87,14 @@ public class TableCalculator implements Runnable {
      * @param sumColumn The columns to sum up vertically (+)
      */
     public TableCalculator(JTable table, int[] columnsToCalculate, int[] targetColumns, int[] percentageColumns,
-                           int action, int[] sumColumn) {
+            int action, int[] sumColumn) {
         super();
-        this.table              = table;
+        this.table = table;
         this.columnsToCalculate = columnsToCalculate;
-        this.targetColumns      = targetColumns;
-        this.percentageColumns  = percentageColumns;
-        this.action             = action;
-        this.sumColumn          = sumColumn;
+        this.targetColumns = targetColumns;
+        this.percentageColumns = percentageColumns;
+        this.action = action;
+        this.sumColumn = sumColumn;
     }
 
     /**
@@ -109,106 +107,106 @@ public class TableCalculator implements Runnable {
 
         try {
             switch (action) {
-            case ACTION_SUM :
-                for (int i = 0; i < columnsToCalculate.length; i++) {
-                    int j = columnsToCalculate[i];
+                case ACTION_SUM:
+                    for (int i = 0; i < columnsToCalculate.length; i++) {
+                        int j = columnsToCalculate[i];
 
-                    if (table.getModel().getValueAt(row, j) != null) {
-                        val.add(BigDecimal.valueOf(Double.valueOf(table.getModel().getValueAt(row, j).toString())));
-                    }
-                }
-
-                break;
-
-            case ACTION_SUBSTRACT :
-                for (int i = 0; i < columnsToCalculate.length; i++) {
-                    int j = columnsToCalculate[i];
-
-                    if (table.getModel().getValueAt(row, j) != null) {
-                        if (i == 0) {
-                            val = BigDecimal.valueOf(Double.valueOf(table.getModel().getValueAt(row, j).toString()));
-                        } else {
-                            val = val.subtract(BigDecimal.valueOf(Double.valueOf(table.getModel().getValueAt(row,
-                                    j).toString())));
+                        if (table.getModel().getValueAt(row, j) != null) {
+                            val.add(BigDecimal.valueOf(Double.valueOf(table.getModel().getValueAt(row, j).toString())));
                         }
                     }
-                }
 
-                break;
+                    break;
 
-            case ACTION_DIVIDE :
-                for (int i = 0; i < columnsToCalculate.length; i++) {
-                    int j = columnsToCalculate[i];
+                case ACTION_SUBSTRACT:
+                    for (int i = 0; i < columnsToCalculate.length; i++) {
+                        int j = columnsToCalculate[i];
 
-                    if (table.getModel().getValueAt(row, j) != null) {
-                        boolean percentagec = false;
-
-                        for (int k = 0; k < percentageColumns.length; k++) {
-                            int l = percentageColumns[k];
-
-                            if (l == j) {
-                                percentagec = true;
-                            }
-                        }
-
-                        if (!percentagec) {
+                        if (table.getModel().getValueAt(row, j) != null) {
                             if (i == 0) {
-                                val = BigDecimal.valueOf(Double.valueOf(table.getModel().getValueAt(row,
-                                        j).toString()));
+                                val = BigDecimal.valueOf(Double.valueOf(table.getModel().getValueAt(row, j).toString()));
                             } else {
-                                val = val.divide(BigDecimal.valueOf(Double.valueOf(table.getModel().getValueAt(row,
-                                        j).toString())), 2, BigDecimal.ROUND_HALF_UP);
-                            }
-                        } else {
-                            if (i == 0) {
-                                val = BigDecimal.valueOf(((Double.valueOf(table.getModel().getValueAt(row,
-                                        j).toString()) / 100) + 1d));
-                            } else {
-                                val = val.divide(BigDecimal.valueOf((Double.valueOf(table.getModel().getValueAt(row,
-                                        j).toString()) / 100) + 1), 2, BigDecimal.ROUND_HALF_UP);
-                            }
-                        }
-                    }
-                }
-
-                break;
-
-            case ACTION_MULTIPLY :
-                for (int i = 0; i < columnsToCalculate.length; i++) {
-                    int j = columnsToCalculate[i];
-
-                    if (table.getModel().getValueAt(row, j) != null) {
-                        boolean percentagec = false;
-
-                        for (int k = 0; k < percentageColumns.length; k++) {
-                            int l = percentageColumns[k];
-
-                            if (l == j) {
-                                percentagec = true;
-                            }
-                        }
-
-                        if (!percentagec) {
-                            if (i == 0) {
-                                val = BigDecimal.valueOf(Double.valueOf(table.getModel().getValueAt(row,
-                                        j).toString()));
-                            } else {
-                                val = val.multiply(BigDecimal.valueOf(Double.valueOf(table.getModel().getValueAt(row,
+                                val = val.subtract(BigDecimal.valueOf(Double.valueOf(table.getModel().getValueAt(row,
                                         j).toString())));
                             }
-                        } else {
-                            if (i == 0) {
-                                val = BigDecimal.valueOf(((Double.valueOf(table.getModel().getValueAt(row,
-                                        j).toString()) / 100) + 1));
+                        }
+                    }
+
+                    break;
+
+                case ACTION_DIVIDE:
+                    for (int i = 0; i < columnsToCalculate.length; i++) {
+                        int j = columnsToCalculate[i];
+
+                        if (table.getModel().getValueAt(row, j) != null) {
+                            boolean percentagec = false;
+
+                            for (int k = 0; k < percentageColumns.length; k++) {
+                                int l = percentageColumns[k];
+
+                                if (l == j) {
+                                    percentagec = true;
+                                }
+                            }
+
+                            if (!percentagec) {
+                                if (i == 0) {
+                                    val = BigDecimal.valueOf(Double.valueOf(table.getModel().getValueAt(row,
+                                            j).toString()));
+                                } else {
+                                    val = val.divide(BigDecimal.valueOf(Double.valueOf(table.getModel().getValueAt(row,
+                                            j).toString())), 2, BigDecimal.ROUND_HALF_UP);
+                                }
                             } else {
-                                val = val.multiply(BigDecimal.valueOf((Double.valueOf(table.getModel().getValueAt(row,
-                                        j).toString()) / 100) + 1));
+                                if (i == 0) {
+                                    val = BigDecimal.valueOf(((Double.valueOf(table.getModel().getValueAt(row,
+                                            j).toString()) / 100) + 1d));
+                                } else {
+                                    val = val.divide(BigDecimal.valueOf((Double.valueOf(table.getModel().getValueAt(row,
+                                            j).toString()) / 100) + 1), 2, BigDecimal.ROUND_HALF_UP);
+                                }
                             }
                         }
                     }
-                }
 
-                break;
+                    break;
+
+                case ACTION_MULTIPLY:
+                    for (int i = 0; i < columnsToCalculate.length; i++) {
+                        int j = columnsToCalculate[i];
+
+                        if (table.getModel().getValueAt(row, j) != null) {
+                            boolean percentagec = false;
+
+                            for (int k = 0; k < percentageColumns.length; k++) {
+                                int l = percentageColumns[k];
+
+                                if (l == j) {
+                                    percentagec = true;
+                                }
+                            }
+
+                            if (!percentagec) {
+                                if (i == 0) {
+                                    val = BigDecimal.valueOf(Double.valueOf(table.getModel().getValueAt(row,
+                                            j).toString()));
+                                } else {
+                                    val = val.multiply(BigDecimal.valueOf(Double.valueOf(table.getModel().getValueAt(row,
+                                            j).toString())));
+                                }
+                            } else {
+                                if (i == 0) {
+                                    val = BigDecimal.valueOf(((Double.valueOf(table.getModel().getValueAt(row,
+                                            j).toString()) / 100) + 1));
+                                } else {
+                                    val = val.multiply(BigDecimal.valueOf((Double.valueOf(table.getModel().getValueAt(row,
+                                            j).toString()) / 100) + 1));
+                                }
+                            }
+                        }
+                    }
+
+                    break;
             }
 
             for (int i = 0; i < targetColumns.length; i++) {
@@ -336,6 +334,13 @@ public class TableCalculator implements Runnable {
                     }
                 }
 
+                for (int j = 0; j < addToSumcols.size(); j++) {
+                    try {
+                        ovalue += Double.valueOf(addToSumcols.get(j).getValue(0d));
+                    } catch (NumberFormatException numberFormatException) {
+                    }
+                }
+
                 JComponent t = sumcols.get(new Integer(k));
 
                 if (t instanceof JLabel) {
@@ -358,7 +363,12 @@ public class TableCalculator implements Runnable {
     public JTable getTable() {
         return table;
     }
+
+    public void addToSum(LabeledTextField shipping) {
+        addToSumcols.add(shipping);
+    }
 }
 
 
 //~ Formatted by Jindent --- http://www.jindent.com
+

@@ -28,7 +28,7 @@ public interface Constants {
      * 
      * Full Version number
      */
-    public static final String VERSION = "Yabs-1.1762";
+    public static final String VERSION = "Yabs-1.1763";
 
     /**
      * The original database version of this release
@@ -55,7 +55,7 @@ public interface Constants {
      *
      * Alias
      */
-    public static final String TITLE = "[Booty Island]";
+    public static final String TITLE = "[Booty Island 2]";
     /**
      *
      * Name of the main JAR
