@@ -49,6 +49,17 @@ public class LabeledTextField extends javax.swing.JPanel {
 
     /**
      *
+     * @param d
+     * @param clazz
+     */
+    public LabeledTextField(Object d, Class clazz) {
+        initComponents();
+        set_ValueClass(clazz);
+        setText(d);
+    }
+
+    /**
+     *
      * @return
      */
     public JTextField getTextField() {
@@ -336,7 +347,7 @@ public class LabeledTextField extends javax.swing.JPanel {
     @SuppressWarnings("unchecked")
     public <T extends Object> T getValue(T classtemplate) {
         if (clazz != classtemplate.getClass()) {
-            throw new IllegalArgumentException("Classtemplate must match value class!");
+            throw new IllegalArgumentException("Classtemplate must match value class! " + classtemplate.getClass() + ", " + clazz);
         }
         if (clazz == Integer.class) {
             try {
@@ -390,5 +401,4 @@ public class LabeledTextField extends javax.swing.JPanel {
         }
         return text;
     }
-
 }

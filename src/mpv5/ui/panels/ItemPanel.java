@@ -84,6 +84,7 @@ import mpv5.ui.toolbars.DataPanelTB;
 import mpv5.db.objects.User;
 import mpv5.db.objects.ValueProperty;
 import mpv5.handler.FormatHandler;
+import mpv5.ui.beans.LabeledTextField;
 import mpv5.ui.beans.MPCBSelectionChangeReceiver;
 import mpv5.ui.dialogs.DialogForFile;
 import mpv5.ui.dialogs.ScheduleDayEvent;
@@ -580,7 +581,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
         ;
         toolbarpane = new javax.swing.JPanel();
 
-        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("mpv5/resources/languages/Panels"); // NOI18N
+        java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle(); // NOI18N
         setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("ItemPanel.border.title_1"))); // NOI18N
         setName("ItemPanel"); // NOI18N
         setLayout(new java.awt.BorderLayout());
@@ -1037,7 +1038,6 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
         jToolBar2.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(0, 102, 102), 1, true));
         jToolBar2.setFloatable(false);
         jToolBar2.setRollover(true);
-        jToolBar2.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         jToolBar2.setName("jToolBar2"); // NOI18N
 
         jSeparator11.setName("jSeparator11"); // NOI18N
@@ -2004,8 +2004,16 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
 //            int taxid = mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("shiptax", new Integer(0));
 //            Double shiptax = Tax.getTaxValue(taxid).doubleValue();
 //            Double shipt = (shiptax / 100);
-//            itemMultiplier.addToSum(shipping);
-//            taxcalculator.addToSum(shipping, shipt);
+//            itemMultiplier.addAsRow(1, new LabeledTextField(1d, Double.class), 2);
+//            itemMultiplier.addAsRow(1, new LabeledTextField(shiptax, Double.class), 6);
+//            itemMultiplier.addAsRow(1, shipping, 5);
+//
+//            netCalculator.addAsRow(1, new LabeledTextField(1d, Double.class), 2);
+//            netCalculator.addAsRow(1, new LabeledTextField(shiptax, Double.class), 6);
+//            netCalculator.addAsRow(1, shipping, 5);
+//            taxcalculator.addAsRow(1, new LabeledTextField(1d, Double.class), 2);
+//            taxcalculator.addAsRow(1, new LabeledTextField(shiptax, Double.class), 6);
+//            taxcalculator.addAsRow(1, shipping, 5);
 //        } else {
 //            itemMultiplier.addToSum(shipping);
 //            netCalculator.addToSum(shipping);
