@@ -65,6 +65,7 @@ import mpv5.ui.dialogs.Search2;
 import mpv5.ui.dialogs.subcomponents.ControlPanel_Fonts;
 import mpv5.ui.dialogs.subcomponents.wizard_DBSettings_simple_1;
 import mpv5.ui.frames.MPView;
+import mpv5.usermanagement.MPSecurityManager;
 import mpv5.utils.files.FileDirectoryHandler;
 import mpv5.utils.files.FileExecutor;
 import mpv5.utils.files.FileReaderWriter;
@@ -344,6 +345,7 @@ public class Main implements Runnable {
         try {
             GlobalSettings.save();
             LocalSettings.save();
+
             if (!mpv5.db.objects.User.getCurrentUser().isDefault()) {
 
                 try {
@@ -933,6 +935,14 @@ public class Main implements Runnable {
         } catch (Exception ex) {
             mpv5.logging.Log.Debug(ex);//Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
         }
+        try {
+            User u = User.DEFAULT;
+            u.setInthighestright(MPSecurityManager.RIGHT_TO_CREATE_OR_DELETE);
+            User._setUser(User.DEFAULT);
+        } catch (Exception e) {
+            Log.Debug(e);
+        }
+
         Wizard w = new Wizard(true);
         w.addPanel(new wizard_DBSettings_simple_1(w, forConnId));
         w.showWiz();
@@ -966,7 +976,8 @@ public class Main implements Runnable {
     }
 
     private void checkSingleInstance() {
-        if (LocalSettings.getProperty(LocalSettings.DBTYPE).equals("single")) {
+        if (LocalSettings.hasProperty(LocalSettings.DBTYPE)
+                && LocalSettings.getProperty(LocalSettings.DBTYPE).equals("single")) {
             try {
                 Socket test = new Socket("localhost", Main.SINGLE_PORT);
                 Log.Print("*** Already running!");

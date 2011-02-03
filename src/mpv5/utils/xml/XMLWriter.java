@@ -1,24 +1,23 @@
 
 /*
-*  This file is part of YaBS.
-*
-*  YaBS is free software: you can redistribute it and/or modify
-*  it under the terms of the GNU General Public License as published by
-*  the Free Software Foundation, either version 3 of the License, or
-*  (at your option) any later version.
-*
-*  YaBS is distributed in the hope that it will be useful,
-*  but WITHOUT ANY WARRANTY; without even the implied warranty of
-*  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-*  GNU General Public License for more details.
-*
-*  You should have received a copy of the GNU General Public License
-*  along with YaBS.  If not, see <http://www.gnu.org/licenses/>.
+ *  This file is part of YaBS.
+ *
+ *  YaBS is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  YaBS is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with YaBS.  If not, see <http://www.gnu.org/licenses/>.
  */
 package mpv5.utils.xml;
 
 //~--- non-JDK imports --------------------------------------------------------
-
 import mpv5.data.PropertyStore;
 
 import mpv5.db.common.Context;
@@ -56,12 +55,13 @@ import java.util.List;
  *
  */
 public class XMLWriter {
-    public static String  rootElementName = Constants.XML_ROOT;
+
+    public static String rootElementName = Constants.XML_ROOT;
     public static DocType DEFAULT_DOCTYPE = new DocType(rootElementName, Constants.XML_DOCTYPE_ID,
-                                                Constants.XML_DOCTYPE_URL);
-    private Element  rootElement = new Element(rootElementName);
-    private Document myDocument  = new Document();
-    private Element  defaultSubRoot;
+            Constants.XML_DOCTYPE_URL);
+    private Element rootElement = new Element(rootElementName);
+    private Document myDocument = new Document();
+    private Element defaultSubRoot;
 
     /**
      * Exports all data in the given context to XML and shows a file save dialog for the created file.
@@ -74,7 +74,7 @@ public class XMLWriter {
 
                 xmlw.newDoc(true);
 
-                String                    name     = c.getDbIdentity();
+                String name = c.getDbIdentity();
                 ArrayList<DatabaseObject> dbobjarr = DatabaseObject.getObjects(c);
 
                 xmlw.add(dbobjarr);
@@ -91,24 +91,24 @@ public class XMLWriter {
      */
     public void add(ArrayList<DatabaseObject> dbobjarr) {
         if ((dbobjarr != null) && (dbobjarr.size() > 0)) {
-            DatabaseObject d      = dbobjarr.get(0);
-            String         sident = d.getDbIdentity();
-            Element        parent = addNode(new Element(sident));
+            DatabaseObject d = dbobjarr.get(0);
+            String sident = d.getDbIdentity();
+            Element parent = addNode(new Element(sident));
 
             Log.Debug(this, "Adding root node " + sident);
 
             for (int i = 0; i < dbobjarr.size(); i++) {
                 try {
                     DatabaseObject databaseObject = dbobjarr.get(i);
-                    Element        ident          = new Element(databaseObject.getType());
-                    List<String[]> data           = databaseObject.getValues();
+                    Element ident = new Element(databaseObject.getType());
+                    List<String[]> data = databaseObject.getValues();
 
                     this.addNode(parent, ident, databaseObject.__getIDS().toString());
 
                     for (int h = 0; h < data.size(); h++) {
                         if (!data.get(h)[0].equals("IDS")) {
                             this.addElement(parent, ident, databaseObject.__getIDS().toString(),
-                                            data.get(h)[0].toLowerCase(), data.get(h)[1]);
+                                    data.get(h)[0].toLowerCase(), data.get(h)[1]);
                         }
                     }
                 } catch (Exception ex) {
@@ -154,8 +154,8 @@ public class XMLWriter {
         Element elem = name;
 
         elem.setAttribute("id", attribute);
-
-        @SuppressWarnings("unchecked") List<Element> list = (List<Element>) parent.getContent();
+        @SuppressWarnings("unchecked")
+        List<Element> list = (List<Element>) parent.getContent();
 
         for (int i = 0; i < list.size(); i++) {
             if (list.get(i) instanceof Element) {
@@ -183,7 +183,6 @@ public class XMLWriter {
 //      rootElement.addContent(e);
 //      return e;
 //  }
-
     /**
      * Appends the PropertyStore's data to an existing XML file,
      * or creates one if not existant
@@ -198,7 +197,7 @@ public class XMLWriter {
 
         try {
             Log.Debug(this, "Reading in " + file);
-            myDocument  = reader.newDoc(file);
+            myDocument = reader.newDoc(file);
             rootElement = myDocument.getRootElement();
         } catch (Exception ex) {
             newDoc(true);
@@ -225,6 +224,7 @@ public class XMLWriter {
 
         outputter.output(myDocument, fw);
         mpv5.YabsViewProxy.instance().addMessage(Messages.FILE_SAVED + file.getPath());
+        Log.Debug(this, Messages.FILE_SAVED + file.getPath());
     }
 
     /**
@@ -268,7 +268,7 @@ public class XMLWriter {
      */
     public File createFile(String filename) {
         try {
-            File         f         = FileDirectoryHandler.getTempFile(filename, "xml");
+            File f = FileDirectoryHandler.getTempFile(filename, "xml");
             XMLOutputter outputter = new XMLOutputter(Format.getPrettyFormat());
 
             outputter.output(myDocument, new FileWriter(f));
@@ -296,8 +296,8 @@ public class XMLWriter {
         Element elem = new Element(name);
 
         elem.addContent(value);
-
-        @SuppressWarnings("unchecked") List<Element> list = (List<Element>) parent.getContent();
+        @SuppressWarnings("unchecked")
+        List<Element> list = (List<Element>) parent.getContent();
 
         for (int i = 0; i < list.size(); i++) {
             if (list.get(i) instanceof Element) {
@@ -344,8 +344,8 @@ public class XMLWriter {
     public void parse(String nodename, List<PropertyStore> cookie) {
         for (int i = 0; i < cookie.size(); i++) {
             PropertyStore propertyStore = cookie.get(i);
-            Element       e             = new Element(nodename);
-            Element       n             = addNode(defaultSubRoot, e, propertyStore.getProperty("nodeid"));
+            Element e = new Element(nodename);
+            Element n = addNode(defaultSubRoot, e, propertyStore.getProperty("nodeid"));
 
             if (n != null) {
                 Iterator list = propertyStore.getList().iterator();
@@ -369,3 +369,4 @@ public class XMLWriter {
 
 
 //~ Formatted by Jindent --- http://www.jindent.com
+

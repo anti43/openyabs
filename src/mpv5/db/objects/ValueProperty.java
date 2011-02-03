@@ -21,12 +21,16 @@ import java.beans.XMLEncoder;
 import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.zip.DataFormatException;
+import java.util.zip.Deflater;
+import java.util.zip.Inflater;
 import javax.swing.JComponent;
 
 import mpv5.db.common.Context;
@@ -239,7 +243,7 @@ public final class ValueProperty extends DatabaseObject {
             xmlEncoder.writeObject(getValueObj());
             xmlEncoder.close();
             String x = io.toString("UTF-8");
-//            Log.Debug(io, x);
+            Log.Debug(io, x);
             return x;
         } catch (UnsupportedEncodingException unsupportedEncodingException) {
             //shall not happen on utf-8
@@ -280,6 +284,27 @@ public final class ValueProperty extends DatabaseObject {
      * @param value the value to set
      */
     public void setValue(final byte[] value) {
+//
+//        Inflater decompressor = new Inflater();
+//        decompressor.setInput(value);
+//        ByteArrayOutputStream bos = new ByteArrayOutputStream(value.length);
+//        byte[] buf = new byte[1024];
+//        while (!decompressor.finished()) {
+//            try {
+//                int count = decompressor.inflate(buf);
+//                System.err.print(count);
+//                bos.write(buf, 0, count);
+//            } catch (DataFormatException e) {
+//                Log.Debug(e);
+//                return;
+//            }
+//        }
+//        try {
+//            bos.close();
+//        } catch (IOException e) {
+//        }
+//        byte[] decompressedData = bos.toByteArray();
+
         ByteArrayInputStream io = new ByteArrayInputStream(value);
         try {
             XMLDecoder d = new XMLDecoder(io);
@@ -291,8 +316,8 @@ public final class ValueProperty extends DatabaseObject {
             }
         }
     }
-    
-     /**
+
+    /**
      * You should not need to programmatically call this method, use {@link #defineValueObj(Serializable valueObj)}
      * @param value the value to set
      */
@@ -304,7 +329,7 @@ public final class ValueProperty extends DatabaseObject {
         } catch (Exception unsupportedEncodingException) {
             synchronized (this) {
                 Log.Debug(unsupportedEncodingException);
-                Log.Debug(this,value);
+                Log.Debug(this, value);
             }
         }
     }
@@ -370,7 +395,7 @@ public final class ValueProperty extends DatabaseObject {
     public void setValueObj(Serializable valueObj) {
         this.valueObj = valueObj;
         __getValue();//generate xml
-//        Log.Debug(this, __getValue() );
+        Log.Debug(this, __getValue() );
     }
 
     /**
@@ -424,19 +449,36 @@ public final class ValueProperty extends DatabaseObject {
     public boolean save() {
 
         try {
-            ByteArrayInputStream in = new ByteArrayInputStream(__getValue().getBytes("Utf-8"));
-
-//            Log.Debug(this, __getValue());
-
+            //            ByteArrayInputStream input = new ByteArrayInputStream(__getValue().getBytes("Utf-8"));
+            byte[] bytes = __getValue().getBytes("Utf-8");
+            Log.Debug(this, "Compressing a value of size: " + bytes.length);
+//            Deflater compressor = new Deflater();
+//            compressor.setLevel(Deflater.BEST_COMPRESSION);
+//            compressor.setInput(bytes);
+//            compressor.finish();
+//            ByteArrayOutputStream bos = new ByteArrayOutputStream(bytes.length);
+//
+//            byte[] buf = new byte[1024];
+//            while (!compressor.finished()) {
+//                int count = compressor.deflate(buf);
+//                bos.write(buf, 0, count);
+//            }
+//            try {
+//                bos.close();
+//            } catch (IOException e) {
+//            }
+//
+//            byte[] compressedData = bos.toByteArray();
+            Log.Debug(this, "Compressed size: " + bytes.length);
             if (ids <= 0) {
                 Log.Debug(this, "Inserting new dataset into: " + this.getContext());
                 setDateadded(new Date());
                 setIntaddedby(mpv5.db.objects.User.getCurrentUser().__getIDS());
-                ids = QueryHandler.instanceOf().clone(context).insertValueProperty(in, super.collect(), null);
+                ids = QueryHandler.instanceOf().clone(context).insertValueProperty(new ByteArrayInputStream(bytes), super.collect(), null);
                 Log.Debug(this, "The inserted row has id: " + ids);
             } else {
                 Log.Debug(this, "Updating dataset: " + ids + " within context '" + context + "'");
-                QueryHandler.instanceOf().clone(context).updateValueProperty(ids, in, super.collect(), null);
+                QueryHandler.instanceOf().clone(context).updateValueProperty(ids, new ByteArrayInputStream(bytes), super.collect(), null);
             }
             return true;
         } catch (Exception e) {
