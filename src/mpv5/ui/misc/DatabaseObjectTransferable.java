@@ -21,14 +21,17 @@ public class DatabaseObjectTransferable implements Transferable {
         obj = value;
     }
 
+    @Override
     public DataFlavor[] getTransferDataFlavors() {
         return new DataFlavor[]{FLAVOR};
     }
 
+    @Override
     public boolean isDataFlavorSupported(DataFlavor flavor) {
         return flavor == FLAVOR;
     }
 
+    @Override
     public Object getTransferData(DataFlavor flavor) throws UnsupportedFlavorException, IOException {
         if (isDataFlavorSupported(flavor)) {
             Log.Debug(this, "Returning array: " + obj);
