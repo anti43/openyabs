@@ -1,5 +1,6 @@
 package mpv5.db.common;
 
+
 import java.awt.Cursor;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -10,12 +11,11 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.Reader;
 import java.io.Writer;
 import java.net.URI;
-import java.sql.Clob;
+import java.sql.Blob;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -32,21 +32,17 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JFrame;
 import javax.swing.JProgressBar;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
-import junit.awtui.ProgressBar;
 import mpv5.db.objects.User;
 import mpv5.globals.Messages;
 import mpv5.globals.Constants;
 import mpv5.globals.LocalSettings;
 import mpv5.logging.Log;
-import mpv5.ui.frames.MPView;
 import mpv5.ui.dialogs.Popup;
 import mpv5.ui.panels.DataPanel;
 import mpv5.usermanagement.MPSecurityManager;
@@ -1041,8 +1037,8 @@ public class QueryHandler implements Cloneable {
         }
     }
 
-    private synchronized byte[] clobToByteArray(final Reader characterStream) throws SQLException, IOException {
-        //byte[] is for CLOB data (or char[]?)
+    private synchronized byte[] blobToByteArray(final Reader characterStream) throws SQLException, IOException {
+        //byte[] is for BLOB data (or char[]?)
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         Writer writer = new OutputStreamWriter(baos, "utf-8");
         char[] buffer = new char[4096];
@@ -1119,12 +1115,12 @@ public class QueryHandler implements Cloneable {
 
     /**
      * Does an insert
-     * @param clobData [columnName, clobData]
+     * @param blobData [columnName, blobData]
      * @param data 
      * @param jobmessage
      * @return The id of the inserted row
      */
-    public int insertValueProperty(InputStream clobData, QueryData data, String jobmessage) {
+    public int insertValueProperty(InputStream blobData, QueryData data, String jobmessage) {
         if (ivpps == null) {
             createPs();
         }
@@ -1133,7 +1129,7 @@ public class QueryHandler implements Cloneable {
 
         try {
             start();
-            ivpps.setClob(1, new InputStreamReader(clobData, "Utf-8"));
+            ivpps.setBlob(1, blobData);
             ivpps.setString(2, data.getValue("cname").toString());
             ivpps.setString(3, data.getValue("classname").toString());
             ivpps.setInt(4, Integer.valueOf(data.getValue("objectids").toString()));
@@ -1175,11 +1171,11 @@ public class QueryHandler implements Cloneable {
     /**
      * Does an insert
      * @param ids
-     * @param clobData [columnName, clobData]
+     * @param blobData [columnName, blobData]
      * @param data
      * @param jobmessage
      */
-    public void updateValueProperty(int ids, InputStream clobData, QueryData data, String jobmessage) {
+    public void updateValueProperty(int ids, InputStream blobData, QueryData data, String jobmessage) {
 
         if (uvpps == null) {
             createPs();
@@ -1187,7 +1183,7 @@ public class QueryHandler implements Cloneable {
 
         try {
             start();
-            uvpps.setClob(1, new InputStreamReader(clobData, "Utf-8"));
+            uvpps.setBlob(1, blobData);
             uvpps.setString(2, data.getValue("cname").toString());
             uvpps.setString(3, data.getValue("classname").toString());
             uvpps.setInt(4, Integer.valueOf(data.getValue("objectids").toString()));
@@ -2279,9 +2275,9 @@ public class QueryHandler implements Cloneable {
                     Object object = resultSet.getObject(i);
                     if (object instanceof String && TypeConversion.stringToBoolean(LocalSettings.getProperty(LocalSettings.DBESCAPE))) {
                         object = rescapeBackslashes((String) object);
-                    } else if (object instanceof Clob) {
+                    } else if (object instanceof Blob) {
                         try {
-                            object = clobToByteArray(resultSet.getCharacterStream(i));
+                            object = ((Blob) object).getBytes(1, (int) ((Blob) object).length());
                         } catch (Exception sQLException) {
                             Log.Debug(sQLException);
                             object = sQLException;
@@ -2752,7 +2748,7 @@ public class QueryHandler implements Cloneable {
              * Invoked when task's progress property changes.
              */
             public void propertyChange(PropertyChangeEvent evt) {
-                System.out.println(Thread.currentThread().getName() + evt.getNewValue());
+//                System.out.println(Thread.currentThread().getName() + evt.getNewValue());
                 if ("state".equals(evt.getPropertyName())) {
 
                     Log.Debug(this, "Progress changed to: " + evt.getNewValue());

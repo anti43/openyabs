@@ -30,7 +30,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.zip.DataFormatException;
 import java.util.zip.Deflater;
+import java.util.zip.GZIPInputStream;
+import java.util.zip.GZIPOutputStream;
 import java.util.zip.Inflater;
+import javax.print.DocFlavor.STRING;
 import javax.swing.JComponent;
 
 import mpv5.db.common.Context;
@@ -243,7 +246,7 @@ public final class ValueProperty extends DatabaseObject {
             xmlEncoder.writeObject(getValueObj());
             xmlEncoder.close();
             String x = io.toString("UTF-8");
-            Log.Debug(io, x);
+//            Log.Debug(io, x);
             return x;
         } catch (UnsupportedEncodingException unsupportedEncodingException) {
             //shall not happen on utf-8
@@ -283,27 +286,13 @@ public final class ValueProperty extends DatabaseObject {
      * You should not need to programmatically call this method, use {@link #defineValueObj(Serializable valueObj)}
      * @param value the value to set
      */
-    public void setValue(final byte[] value) {
-//
-//        Inflater decompressor = new Inflater();
-//        decompressor.setInput(value);
-//        ByteArrayOutputStream bos = new ByteArrayOutputStream(value.length);
-//        byte[] buf = new byte[1024];
-//        while (!decompressor.finished()) {
-//            try {
-//                int count = decompressor.inflate(buf);
-//                System.err.print(count);
-//                bos.write(buf, 0, count);
-//            } catch (DataFormatException e) {
-//                Log.Debug(e);
-//                return;
-//            }
-//        }
-//        try {
-//            bos.close();
-//        } catch (IOException e) {
-//        }
-//        byte[] decompressedData = bos.toByteArray();
+    public void setValue(byte[] value) {
+
+        try {
+            value = Compressor.decompress(value);
+        } catch (Exception e) {
+            Log.Debug(this, e.getMessage());
+        }
 
         ByteArrayInputStream io = new ByteArrayInputStream(value);
         try {
@@ -312,27 +301,35 @@ public final class ValueProperty extends DatabaseObject {
         } catch (Exception unsupportedEncodingException) {
             synchronized (this) {
                 Log.Debug(unsupportedEncodingException);
-                Log.Debug(this, new String(value));
+//                Log.Debug(this, new String(value));
             }
         }
     }
-
-    /**
-     * You should not need to programmatically call this method, use {@link #defineValueObj(Serializable valueObj)}
-     * @param value the value to set
-     */
-    public void setValue(final String value) {
-        try {
-            ByteArrayInputStream io = new ByteArrayInputStream(value.getBytes("UTF-8"));
-            XMLDecoder d = new XMLDecoder(io);
-            setValueObj((Serializable) d.readObject());
-        } catch (Exception unsupportedEncodingException) {
-            synchronized (this) {
-                Log.Debug(unsupportedEncodingException);
-                Log.Debug(this, value);
-            }
-        }
-    }
+//
+//    /**
+//     * You should not need to programmatically call this method, use {@link #defineValueObj(Serializable valueObj)}
+//     * @param value the value to set
+//     */
+//    public void setValue(final String value) {
+//
+//
+//        try {
+//            byte[] bytes = value.getBytes("UTF-8");
+//            try {
+//                bytes = Compressor.decompress(bytes);
+//            } catch (Exception e) {
+//                Log.Debug(this, e.getMessage());
+//            }
+//            ByteArrayInputStream io = new ByteArrayInputStream(bytes);
+//            XMLDecoder d = new XMLDecoder(io);
+//            setValueObj((Serializable) d.readObject());
+//        } catch (Exception unsupportedEncodingException) {
+//            synchronized (this) {
+//                Log.Debug(unsupportedEncodingException);
+//                Log.Debug(this, value);
+//            }
+//        }
+//    }
 
     @Override
     public mpv5.utils.images.MPIcon getIcon() {
@@ -395,7 +392,7 @@ public final class ValueProperty extends DatabaseObject {
     public void setValueObj(Serializable valueObj) {
         this.valueObj = valueObj;
         __getValue();//generate xml
-        Log.Debug(this, __getValue() );
+//        Log.Debug(this, __getValue());
     }
 
     /**
@@ -452,23 +449,7 @@ public final class ValueProperty extends DatabaseObject {
             //            ByteArrayInputStream input = new ByteArrayInputStream(__getValue().getBytes("Utf-8"));
             byte[] bytes = __getValue().getBytes("Utf-8");
             Log.Debug(this, "Compressing a value of size: " + bytes.length);
-//            Deflater compressor = new Deflater();
-//            compressor.setLevel(Deflater.BEST_COMPRESSION);
-//            compressor.setInput(bytes);
-//            compressor.finish();
-//            ByteArrayOutputStream bos = new ByteArrayOutputStream(bytes.length);
-//
-//            byte[] buf = new byte[1024];
-//            while (!compressor.finished()) {
-//                int count = compressor.deflate(buf);
-//                bos.write(buf, 0, count);
-//            }
-//            try {
-//                bos.close();
-//            } catch (IOException e) {
-//            }
-//
-//            byte[] compressedData = bos.toByteArray();
+            bytes = Compressor.compress(bytes);
             Log.Debug(this, "Compressed size: " + bytes.length);
             if (ids <= 0) {
                 Log.Debug(this, "Inserting new dataset into: " + this.getContext());
@@ -485,5 +466,33 @@ public final class ValueProperty extends DatabaseObject {
             Log.Debug(e);
             return false;
         }
+    }
+}
+
+class Compressor {
+
+    public static byte[] compress(byte[] content) {
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        try {
+            GZIPOutputStream gzipOutputStream = new GZIPOutputStream(byteArrayOutputStream);
+            gzipOutputStream.write(content);
+            gzipOutputStream.close();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+//        System.err.printf("Compression ratio %f\n", (1.0f
+//                * content.length / byteArrayOutputStream.size()));
+        return byteArrayOutputStream.toByteArray();
+    }
+
+    public static byte[] decompress(byte[] contentBytes) {
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        try {
+            org.apache.commons.io.IOUtils.copy(new GZIPInputStream(new ByteArrayInputStream(contentBytes)), out);
+        } catch (IOException e) {
+//            System.err.println(new String(contentBytes));
+            throw new RuntimeException(e);
+        }
+        return out.toByteArray();
     }
 }

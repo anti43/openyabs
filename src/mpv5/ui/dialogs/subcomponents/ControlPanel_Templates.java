@@ -395,7 +395,7 @@ public class ControlPanel_Templates extends javax.swing.JPanel implements Contro
             if (dato.save()) {
                 actionAfterSave();
                 refresh();
-                TemplateHandler.cacheTemplates();
+//                TemplateHandler.cacheTemplates();
             } else {
                 showRequiredFields();
             }
@@ -428,7 +428,7 @@ public class ControlPanel_Templates extends javax.swing.JPanel implements Contro
             dataOwner.getPanelData(this);
             dataOwner.setIDS(-1);
             dataOwner.save();
-            TemplateHandler.cacheTemplates();
+//            TemplateHandler.cacheTemplates();
         }
 
         refresh();

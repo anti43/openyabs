@@ -397,7 +397,7 @@ public class JCalc {
                 if (!equalsHit) {
                     currentNumber = read();
                 }
-                System.out.println(currentNumber);
+//                System.out.println(currentNumber);
                 double num1 = 0;
                 double num2 = 0;
                 try {

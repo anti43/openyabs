@@ -43,7 +43,7 @@ public class Selection {
         }
         row = table.getSelectedRow();
         try {
-            System.err.print("@AAAAAAAAAAAAAAAAAAAAAAAAA@    " + row);
+//            System.err.print("@AAAAAAAAAAAAAAAAAAAAAAAAA@    " + row);
             id = Integer.valueOf(String.valueOf(
                     table.getValueAt(row,
                     table.convertColumnIndexToView(0))));

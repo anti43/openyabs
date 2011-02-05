@@ -75,6 +75,10 @@ public class DatabaseUpdater {
        UPDATES_DERBY.put(1.1841, new String[]{
                     "ALTER TABLE subitems ADD COLUMN ordernr SMALLINT DEFAULT 0 NOT NULL"
                 });
+       UPDATES_DERBY.put(1.1842, new String[]{
+                    "ALTER TABLE valueproperties DROP COLUMN value",
+                    "ALTER TABLE valueproperties ADD COLUMN value BLOB(2G) DEFAULT NULL"
+                });
 
         ////////////////////////////////////////////////////////////////////////////////////////////
         // mysql updates
@@ -151,6 +155,10 @@ public class DatabaseUpdater {
                 });
         UPDATES_MYSQL.put(1.184, new String[]{
                     "ALTER TABLE subitems ADD COLUMN ordernr SMALLINT DEFAULT 0 NOT NULL"
+                });
+        UPDATES_MYSQL.put(1.1842, new String[]{
+                    "ALTER TABLE valueproperties DROP COLUMN value",
+                    "ALTER TABLE valueproperties ADD COLUMN value LONGBLOB DEFAULT NULL"
                 });
     }
 

@@ -825,7 +825,7 @@ public class Main implements Runnable {
                             } catch (InterruptedException ex) {
                             }
                             //Needed to move this to here; otherwise the oo connection may not be initialised
-                            TemplateHandler.cacheTemplates();
+//                            TemplateHandler.cacheTemplates();
                             running = false;
                         } else {
                             try {
