@@ -1070,7 +1070,7 @@ public class Context implements Serializable {
 ////////////////////////////////////////////////////////////////////////////////
 //generate a new Context Object on each call here, callers may alter them to variants
 
-    public static Context getContactsCompanies() {
+    public static synchronized Context getContactsCompanies() {
         Context c = new Context();
         c.setCompany(true);
         c.setSubID(DEFAULT_SUBID);
@@ -1089,7 +1089,7 @@ public class Context implements Serializable {
      * @param status
      * @return
      */
-    public static Context getItem(Integer type, Integer status) {
+    public static synchronized Context getItem(Integer type, Integer status) {
         Context c = new Context();
         c.setSubID(DEFAULT_SUBID);
         c.setDbIdentity(IDENTITY_ITEMS);
@@ -1107,11 +1107,11 @@ public class Context implements Serializable {
         return c;
     }
 
-    public static Context getItem() {
+    public static synchronized Context getItem() {
         return getItem(null, null);
     }
 
-    public static Context getSubItem() {
+    public static synchronized Context getSubItem() {
         Context subitem = new Context();
         subitem.setSubID(DEFAULT_SUBID);
         subitem.setDbIdentity(IDENTITY_SUBITEMS);
@@ -1122,7 +1122,7 @@ public class Context implements Serializable {
         return subitem;
     }
 
-    public static Context getCustomer() {
+    public static synchronized Context getCustomer() {
         Context c = new Context();
         c.setCustomer(true);
         c.setSubID(DEFAULT_SUBID);
@@ -1135,7 +1135,7 @@ public class Context implements Serializable {
         return c;
     }
 
-    public static Context getManufacturer() {
+    public static synchronized Context getManufacturer() {
         Context c = new Context();
         c.setManufacturer(true);
         c.setSubID(DEFAULT_SUBID);
@@ -1148,7 +1148,7 @@ public class Context implements Serializable {
         return c;
     }
 
-    public static Context getSupplier() {
+    public static synchronized Context getSupplier() {
         Context c = new Context();
         c.setSupplier(true);
         c.setSubID(DEFAULT_SUBID);
@@ -1161,7 +1161,7 @@ public class Context implements Serializable {
         return c;
     }
 
-    public static Context getContact() {
+    public static synchronized Context getContact() {
         Context c = new Context();
         c.setSubID(DEFAULT_SUBID);
         c.setDbIdentity(IDENTITY_CONTACTS);
@@ -1173,7 +1173,7 @@ public class Context implements Serializable {
         return c;
     }
 
-    public static Context getUser() {
+    public static synchronized Context getUser() {
         Context c = new Context();
         c.setSubID(DEFAULT_SUBID);
         c.setDbIdentity(IDENTITY_USERS);
@@ -1186,7 +1186,7 @@ public class Context implements Serializable {
         return c;
     }
 
-    public static Context getSchedule() {
+    public static synchronized Context getSchedule() {
         Context c = new Context();
         c.setSubID(DEFAULT_SUBID);
         c.setDbIdentity(IDENTITY_SCHEDULE);
@@ -1196,7 +1196,7 @@ public class Context implements Serializable {
         return c;
     }
 
-    public static Context getLanguage() {
+    public static synchronized Context getLanguage() {
         Context c = new Context();
         c.setSubID(DEFAULT_SUBID);
         c.setDbIdentity(IDENTITY_LANGUAGES);
@@ -1205,7 +1205,7 @@ public class Context implements Serializable {
         return c;
     }
 
-    public static Context getFiles() {
+    public static synchronized Context getFiles() {
         Context c = new Context();
         c.setSubID(DEFAULT_SUBID);
         c.setDbIdentity(IDENTITY_FILES);
@@ -1214,7 +1214,7 @@ public class Context implements Serializable {
         return c;
     }
 
-    public static Context getLock() {
+    public static synchronized Context getLock() {
         Context c = new Context();
         c.setSubID(DEFAULT_SUBID);
         c.setDbIdentity(IDENTITY_LOCK);
@@ -1223,7 +1223,7 @@ public class Context implements Serializable {
         return c;
     }
 
-    public static Context getGroup() {
+    public static synchronized Context getGroup() {
         Context c = new Context();
         c.setSubID(DEFAULT_SUBID);
         c.setDbIdentity(IDENTITY_GROUPS);
@@ -1234,7 +1234,7 @@ public class Context implements Serializable {
         return c;
     }
 
-    public static Context getFavourite() {
+    public static synchronized Context getFavourite() {
         Context c = new Context();
         c.setSubID(DEFAULT_SUBID);
         c.setDbIdentity(IDENTITY_FAVS);
@@ -1244,7 +1244,7 @@ public class Context implements Serializable {
         return c;
     }
 
-    public static Context getAddress() {
+    public static synchronized Context getAddress() {
         Context c = new Context();
         c.setSubID(DEFAULT_SUBID);
         c.setDbIdentity(IDENTITY_ADDRESS);
@@ -1254,11 +1254,11 @@ public class Context implements Serializable {
         return c;
     }
 
-    public static Context getInvoice() {
+    public static synchronized Context getInvoice() {
         return getItem(Item.TYPE_BILL, Item.STATUS_IN_PROGRESS);
     }
 
-    public static Context getOrder() {
+    public static synchronized Context getOrder() {
         Context c = new Context();
         c.setSubID(DEFAULT_SUBID);
         c.setDbIdentity(IDENTITY_ITEMS);
@@ -1271,7 +1271,7 @@ public class Context implements Serializable {
         return c;
     }
 
-    public static Context getOffer() {
+    public static synchronized Context getOffer() {
         Context c = new Context();
         c.setSubID(DEFAULT_SUBID);
         c.setDbIdentity(IDENTITY_ITEMS);
@@ -1284,7 +1284,7 @@ public class Context implements Serializable {
         return c;
     }
 
-    public static Context getFilesToContacts() {
+    public static synchronized Context getFilesToContacts() {
         Context c = new Context();
         c.setSubID(DEFAULT_SUBID);
         c.setDbIdentity(IDENTITY_FILES_TO_CONTACTS);
@@ -1294,7 +1294,7 @@ public class Context implements Serializable {
         return c;
     }
 
-    public static Context getHistory() {
+    public static synchronized Context getHistory() {
         Context c = new Context();
         c.setSubID(DEFAULT_SUBID);
         c.setDbIdentity(IDENTITY_HISTORY);
@@ -1304,7 +1304,7 @@ public class Context implements Serializable {
         return c;
     }
 
-    public static Context getCountries() {
+    public static synchronized Context getCountries() {
         Context c = new Context();
         c.setSubID(DEFAULT_SUBID);
         c.setDbIdentity(IDENTITY_COUNTRIES);
@@ -1313,7 +1313,7 @@ public class Context implements Serializable {
         return c;
     }
 
-    public static Context getProduct() {
+    public static synchronized Context getProduct() {
         Context c = new Context();
         c.setSubID(DEFAULT_SUBID);
         c.setDbIdentity(IDENTITY_PRODUCTS);
@@ -1324,7 +1324,7 @@ public class Context implements Serializable {
         return c;
     }
 
-    public static Context getSearchIndex() {
+    public static synchronized Context getSearchIndex() {
         Context c = new Context();
         c.setSubID(DEFAULT_SUBID);
         c.setDbIdentity(IDENTITY_SEARCHINDEX);
@@ -1333,7 +1333,7 @@ public class Context implements Serializable {
         return c;
     }
 
-    public static Context getPluginsToUsers() {
+    public static synchronized Context getPluginsToUsers() {
         Context c = new Context();
         c.setSubID(DEFAULT_SUBID);
         c.setDbIdentity(IDENTITY_PLUGINS_TO_USERS);
@@ -1343,7 +1343,7 @@ public class Context implements Serializable {
         return c;
     }
 
-    public static Context getPlugins() {
+    public static synchronized Context getPlugins() {
         Context c = new Context();
         c.setSubID(DEFAULT_SUBID);
         c.setDbIdentity(IDENTITY_PLUGINS);
@@ -1353,7 +1353,7 @@ public class Context implements Serializable {
         return c;
     }
 
-    public static Context getUserProperties() {
+    public static synchronized Context getUserProperties() {
         Context c = new Context();
         c.setSubID(DEFAULT_SUBID);
         c.setDbIdentity(IDENTITY_PROPERTIES_TO_USERS);
@@ -1363,7 +1363,7 @@ public class Context implements Serializable {
         return c;
     }
 
-    public static Context getAccounts() {
+    public static synchronized Context getAccounts() {
         Context c = new Context();
         c.setSubID(DEFAULT_SUBID);
         c.setDbIdentity(IDENTITY_ACCOUNTS);
@@ -1374,7 +1374,7 @@ public class Context implements Serializable {
         return c;
     }
 
-    public static Context getItemsToAccounts() {
+    public static synchronized Context getItemsToAccounts() {
         Context c = new Context();
         c.setSubID(DEFAULT_SUBID);
         c.setDbIdentity(IDENTITY_ITEMS_TO_ACCOUNTS);
@@ -1383,7 +1383,7 @@ public class Context implements Serializable {
         return c;
     }
 
-    public static Context getMessage() {
+    public static synchronized Context getMessage() {
         Context c = new Context();
         c.setSubID(DEFAULT_SUBID);
         c.setDbIdentity(IDENTITY_MAIL);
@@ -1394,7 +1394,7 @@ public class Context implements Serializable {
         return c;
     }
 
-    public static Context getProductListItems() {
+    public static synchronized Context getProductListItems() {
         Context c = new Context();
         c.setSubID(DEFAULT_SUBID);
         c.setDbIdentity(IDENTITY_PRODUCTSLISTITEMS);
@@ -1404,7 +1404,7 @@ public class Context implements Serializable {
         return c;
     }
 
-    public static Context getFormats() {
+    public static synchronized Context getFormats() {
         Context c = new Context();
         c.setSubID(DEFAULT_SUBID);
         c.setDbIdentity(IDENTITY_FORMATS_T_USERS);
@@ -1413,7 +1413,7 @@ public class Context implements Serializable {
         return c;
     }
 
-    public static Context getFilesToItems() {
+    public static synchronized Context getFilesToItems() {
         Context c = new Context();
         c.setSubID(DEFAULT_SUBID);
         c.setDbIdentity(IDENTITY_FILES_TO_ITEMS);
@@ -1423,7 +1423,7 @@ public class Context implements Serializable {
         return c;
     }
 
-    public static Context getTaxes() {
+    public static synchronized Context getTaxes() {
         Context c = new Context();
         c.setSubID(DEFAULT_SUBID);
         c.setDbIdentity(IDENTITY_TAX);
@@ -1433,7 +1433,7 @@ public class Context implements Serializable {
         return c;
     }
 
-    public static Context getGlobalSettings() {
+    public static synchronized Context getGlobalSettings() {
         Context c = new Context();
         c.setSubID(DEFAULT_SUBID);
         c.setDbIdentity(IDENTITY_GLOBALSETTINGS);
@@ -1442,7 +1442,7 @@ public class Context implements Serializable {
         return c;
     }
 
-    public static Context getProductGroup() {
+    public static synchronized Context getProductGroup() {
         Context c = new Context();
         c.setSubID(DEFAULT_SUBID);
         c.setDbIdentity(IDENTITY_PGROUPS);
@@ -1453,7 +1453,7 @@ public class Context implements Serializable {
         return c;
     }
 
-    public static Context getFilesToProducts() {
+    public static synchronized Context getFilesToProducts() {
         Context c = new Context();
         c.setSubID(DEFAULT_SUBID);
         c.setDbIdentity(IDENTITY_FILES_TO_PRODUCTS);
@@ -1463,7 +1463,7 @@ public class Context implements Serializable {
         return c;
     }
 
-    public static Context getCompany() {
+    public static synchronized Context getCompany() {
         Context c = new Context();
         c.setSubID(DEFAULT_SUBID);
         c.setDbIdentity(IDENTITY_COMPANIES);
@@ -1473,7 +1473,7 @@ public class Context implements Serializable {
         return c;
     }
 
-    public static Context getWebShop() {
+    public static synchronized Context getWebShop() {
         Context c = new Context();
         c.setSubID(DEFAULT_SUBID);
         c.setDbIdentity(IDENTITY_WEBSHOPS);
@@ -1483,7 +1483,7 @@ public class Context implements Serializable {
         return c;
     }
 
-    public static Context getWebShopContactMapping() {
+    public static synchronized Context getWebShopContactMapping() {
         Context c = new Context();
         c.setSubID(DEFAULT_SUBID);
         c.setDbIdentity(IDENTITY_WSMAPPING);
@@ -1493,7 +1493,7 @@ public class Context implements Serializable {
         return c;
     }
 
-    public static Context getWebShopItemMapping() {
+    public static synchronized Context getWebShopItemMapping() {
         Context c = new Context();
         c.setSubID(DEFAULT_SUBID);
         c.setDbIdentity(IDENTITY_WSIMAPPING);
@@ -1503,7 +1503,7 @@ public class Context implements Serializable {
         return c;
     }
 
-    public static Context getTemplate() {
+    public static synchronized Context getTemplate() {
         Context c = new Context();
         c.setSubID(DEFAULT_SUBID);
         c.setDbIdentity(IDENTITY_TEMPLATES);
@@ -1513,7 +1513,7 @@ public class Context implements Serializable {
         return c;
     }
 
-    public static Context getTemplatesToUsers() {
+    public static synchronized Context getTemplatesToUsers() {
         Context c = new Context();
         c.setSubID(DEFAULT_SUBID);
         c.setDbIdentity(IDENTITY_TEMPLATES_TO_USERS);
@@ -1522,7 +1522,7 @@ public class Context implements Serializable {
         return c;
     }
 
-    public static Context getReminder() {
+    public static synchronized Context getReminder() {
         Context c = new Context();
         c.setSubID(DEFAULT_SUBID);
         c.setDbIdentity(IDENTITY_REMINDERS);
@@ -1532,7 +1532,7 @@ public class Context implements Serializable {
         return c;
     }
 
-    public static Context getStage() {
+    public static synchronized Context getStage() {
         Context c = new Context();
         c.setSubID(DEFAULT_SUBID);
         c.setDbIdentity(IDENTITY_STAGES);
@@ -1542,7 +1542,7 @@ public class Context implements Serializable {
         return c;
     }
 
-    public static Context getRevenue() {
+    public static synchronized Context getRevenue() {
         Context c = new Context();
         c.setSubID(DEFAULT_SUBID);
         c.setDbIdentity(IDENTITY_REVENUE);
@@ -1552,7 +1552,7 @@ public class Context implements Serializable {
         return c;
     }
 
-    public static Context getExpense() {
+    public static synchronized Context getExpense() {
         Context c = new Context();
         c.setSubID(DEFAULT_SUBID);
         c.setDbIdentity(IDENTITY_EXPENSE);
@@ -1562,7 +1562,7 @@ public class Context implements Serializable {
         return c;
     }
 
-    public static Context getProductlist() {
+    public static synchronized Context getProductlist() {
         Context c = new Context();
         c.setSubID(DEFAULT_SUBID);
         c.setDbIdentity(IDENTITY_PRODUCTSLIST);
@@ -1573,7 +1573,7 @@ public class Context implements Serializable {
         return c;
     }
 
-    public static Context getProductsToSuppliers() {
+    public static synchronized Context getProductsToSuppliers() {
         Context c = new Context();
         c.setSubID(DEFAULT_SUBID);
         c.setDbIdentity(IDENTITY_PRODUCTS_TO_SUPPLIERS);
@@ -1583,7 +1583,7 @@ public class Context implements Serializable {
         return c;
     }
 
-    public static Context getValueProperties() {
+    public static synchronized Context getValueProperties() {
         Context c = new Context();
         c.setSubID(DEFAULT_SUBID);
         c.setDbIdentity(IDENTITY_VALUE_PROPERTIES);
@@ -1599,7 +1599,7 @@ public class Context implements Serializable {
      * @param contextdbidentity
      * @return The matching context or null if not existing
      */
-    public static Context getMatchingContext(String contextdbidentity) {
+    public static synchronized Context getMatchingContext(String contextdbidentity) {
         if (contextdbidentity.toLowerCase().endsWith("ids")) {
             contextdbidentity = contextdbidentity.replace("ids", "");
         }
@@ -1618,7 +1618,7 @@ public class Context implements Serializable {
      * @param contextId
      * @return The matching context or null if not existing
      */
-    public static Context getMatchingContext(int contextId) {
+    public static synchronized Context getMatchingContext(int contextId) {
         for (int i = 0; i < allContexts.size(); i++) {
             Context context = allContexts.get(i);
             if (context.getId() == contextId) {
@@ -1650,7 +1650,7 @@ public class Context implements Serializable {
      * @param value
      * @return A Context or null if no matching Context was found
      */
-    public static Context getByID(int value) {
+    public static synchronized Context getByID(int value) {
         for (int i = 0; i < allContexts.size(); i++) {
             Context context = allContexts.get(i);
             if (context.getId() == value) {

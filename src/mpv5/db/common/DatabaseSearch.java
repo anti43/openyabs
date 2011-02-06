@@ -15,7 +15,7 @@ import mpv5.utils.arrays.ArrayUtilities;
 public class DatabaseSearch {
 
     public static String ALL_COLUMNS = "*";
-    private Context context;
+    private final Context context;
     private int ROWLIMIT = 0;
 
     /**
@@ -45,13 +45,13 @@ public class DatabaseSearch {
         this.context = context;
         this.ROWLIMIT = rowlimit;
     }
- /**
-     * Initiates a new search and allows to limit the resulting rows
-     * @param rowlimit
-     */
-    public DatabaseSearch(int rowlimit) {
-        this.ROWLIMIT = rowlimit;
-    }
+// /**
+//     * Initiates a new search and allows to limit the resulting rows
+//     * @param rowlimit
+//     */
+//    public DatabaseSearch(int rowlimit) {
+//        this.ROWLIMIT = rowlimit;
+//    }
 
     /**
      * Get multiple values from a search

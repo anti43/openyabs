@@ -307,7 +307,7 @@ public class QueryHandler implements Cloneable {
 
         }
 
-        Object[][] val = select("ids", constraint, values);
+        Object[][] val = select(context.getDbIdentity() + ".ids", constraint, values);
         if (val != null && val.length > 0) {
             Log.Debug(this, "Uniqueness check failed!");
             return false;
