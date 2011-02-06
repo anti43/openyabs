@@ -81,16 +81,18 @@ public class TableViewPersistenceHandler {
      * Set a listener
      */
     public void set() {
+
         try {
 
 //          listeners.addAll(Arrays.asList(((DefaultTableColumnModel) target.getColumnModel()).getColumnModelListeners()));
-            ComponentStateManager.reload(User.getCurrentUser().getLayoutProperties().get(target.getName() + "@"
-                    + identifier.getName()), target);
+            ComponentStateManager.reload(User.getCurrentUser().getLayoutProperties().get(target.getName() + "@" + identifier.getName()), target);
         } catch (Exception ex) {
 
 //          Log.Debug(this, ex);
-            User.getCurrentUser().getLayoutProperties().remove(target.getName() + "@" + identifier.getName());
+//            User.getCurrentUser().getLayoutProperties().remove(target.getName() + "@" + identifier.getName());
             target.createDefaultColumnsFromModel();
+            String layout = ComponentStateManager.persist(target);
+            User.getCurrentUser().getLayoutProperties().put(target.getName() + "@" + identifier.getName(), layout);
         }
 
         target.getColumnModel().addColumnModelListener(t);

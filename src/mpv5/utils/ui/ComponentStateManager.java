@@ -71,7 +71,7 @@ public class ComponentStateManager {
 
 //      Log.Debug(ComponentStateManager.class, data);//
         if (data != null) {
-            Log.Debug(ComponentStateManager.class, "Reloading layout for: " + table.getName());
+//            Log.Debug(ComponentStateManager.class, "Reloading layout for: " + table.getName() + " data: " + data);
 
             try {
                 ByteArrayInputStream io =
@@ -82,6 +82,7 @@ public class ComponentStateManager {
                         (Set<TableColumnLayoutInfo>) decoder.readObject();
                 TableColumnModel tableColumnModel = new DefaultTableColumnModel();
 
+                int index = 0;
                 for (TableColumnLayoutInfo tableColumnLayoutInfo : tableColumnLayoutInfos) {
                     if ((tableColumnLayoutInfo.getColumnName().length() > 0) && (table.getColumnCount() > 0)) {
                         try {
@@ -92,17 +93,28 @@ public class ComponentStateManager {
 
 //                          Log.Print(tableColumnLayoutInfo.getColumnName() + " : " + tableColumnLayoutInfo.getWidth());
                         } catch (Exception e) {
-                            Log.Debug(ComponentStateManager.class, e + ": " + tableColumnLayoutInfo.getColumnName());
-                            Log.Debug(ComponentStateManager.class, e + " Count: " + table.getColumnCount());
+                            try {
+                                Log.Debug(ComponentStateManager.class, e + ": " + tableColumnLayoutInfo.getColumnName());
+                                TableColumn tableColumn = table.getColumn(table.getColumnName(index));
 
-                            int cols = table.getColumnCount();
-
-                            for (int i = 0; i < cols; i++) {
-                                Log.Debug(ComponentStateManager.class, table.getColumnName(i));
+                                tableColumn.setPreferredWidth(tableColumnLayoutInfo.getWidth());
+                                tableColumnModel.addColumn(tableColumn);
+                            } catch (java.lang.ArrayIndexOutOfBoundsException ex) {
+                                //ignore
+                                //
+//                                Log.Debug(ComponentStateManager.class, "Layout for: " + table.getName() + " data: " + data);
                             }
+//                            Log.Debug(ComponentStateManager.class, e + " Count: " + table.getColumnCount());
+//
+//                            int cols = table.getColumnCount();
+//
+//                            for (int i = 0; i < cols; i++) {
+//                                Log.Debug(ComponentStateManager.class, table.getColumnName(i));
+//                            }
 
 //                          throw e;
                         }
+                        index++;
                     }
                 }
 

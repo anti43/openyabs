@@ -28,7 +28,7 @@ public interface Constants {
      * 
      * Full Version number
      */
-    public static final String VERSION = "Yabs-1.1763";
+    public static final String VERSION = "Yabs-1.1764";
 
     /**
      * The original database version of this release
@@ -55,7 +55,7 @@ public interface Constants {
      *
      * Alias
      */
-    public static final String TITLE = "[Booty Island 2]";
+    public static final String TITLE = "[Booty Island 3]";
     /**
      *
      * Name of the main JAR
@@ -71,11 +71,6 @@ public interface Constants {
      * Running Java Version info
      */
     public static String JAVA_VERSION = "Java Version: " + System.getProperty("java.version");
-    /**
-     *
-     * The marker for valid plugins for this version
-     */
-    public static String PLUGIN_IDENTIFIER = "MP5Plugin";
     /**
      *
      * The class name to be loaded from plugins
@@ -111,7 +106,7 @@ public interface Constants {
     public static String LANGUAGES_DIR = "languages";
     public static String PLUGINS_DIR = "plugins";
     public static String TEMPLATES_DIR = "templates";
-    public static String BABELFISH_URL = "http://ajax.googleapis.com/ajax/services/language/translate?v=1.0&langpair=";;
+    public static String BABELFISH_URL = "http://ajax.googleapis.com/ajax/services/language/translate?v=1.0&langpair=";
     public static String FALLBACK_CACHE_DIR = "Cache";//Go for a relative path
 
 }
