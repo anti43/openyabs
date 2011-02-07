@@ -422,7 +422,7 @@ public class Contact extends DatabaseObject implements Formattable {
 
     @Override
     public String toString() {
-        return cnumber;
+        return cname + " (" + cnumber + ")";
     }
 
     /**
