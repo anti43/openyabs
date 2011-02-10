@@ -47,6 +47,7 @@ import javax.swing.table.TableCellEditor;
 import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
 import mpv5.db.common.NodataFoundException;
+import mpv5.db.objects.Contact;
 import mpv5.db.objects.SubItem;
 import mpv5.db.objects.ValueProperty;
 import mpv5.globals.Headers;
@@ -93,58 +94,98 @@ public class MPTableModel extends DefaultTableModel implements Cloneable, TableC
      */
     public MPTableModel(final Context c, final JTable target) {
         super();
-        setContext(c);
         try {
+            setContext(c);
             final ArrayList<DatabaseObject> data = DatabaseObject.getObjects(c, true);
             final Object[][] dat = new Object[data.size()][];
-
             final Class[] classes = new Class[100];
-            Runnable runnable = new Runnable() {
-
-                @Override
-                public void run() {
-                    int j = 0;
-                    LinkedList<String> head = new LinkedList<String>();
-                    Entry<String, Object> e;
-                    for (DatabaseObject o : data) {
-                        final HashMap<String, Object> mod = o.getValues4();
-                        Set<Entry<String, Object>> set = mod.entrySet();
-                        dat[j] = new Object[set.size()];
-                        Iterator<Entry<String, Object>> it = set.iterator();
-                        int i = 0;
-                        while (it.hasNext()) {
-                            e = it.next();
-                            dat[j][i] = e.getValue();
-                            if (j == 0) {
-                                Class class1 = e.getValue().getClass();
-                                classes[i] = class1;
-                                head.add(i, e.getKey().toUpperCase());
-                            }
-                            i++;
-                        }
-                        j++;
+            int j = 0;
+            LinkedList<String> head = new LinkedList<String>();
+            Entry<String, Object> e;
+            for (DatabaseObject o : data) {
+                final HashMap<String, Object> mod = o.getValues4();
+                Set<Entry<String, Object>> set = mod.entrySet();
+                dat[j] = new Object[set.size()];
+                Iterator<Entry<String, Object>> it = set.iterator();
+                int i = 0;
+                while (it.hasNext()) {
+                    e = it.next();
+                    dat[j][i] = e.getValue();
+                    if (j == 0) {
+                        Class class1 = e.getValue().getClass();
+                        classes[i] = class1;
+                        head.add(i, e.getKey().toUpperCase());
                     }
-
-                    final Object[] headers = new Object[head.size()];
-                    int x = 0;
-                    for (String hea : head) {
-                        headers[x] = hea;
-                        x++;
-                    }
-                    setDataVector(dat, headers);
-
-                    setEditable(false);
-                    setTypes(classes);
-
-                    if (target != null) {
-                        target.setAutoCreateRowSorter(true);
-                    }
+                    i++;
                 }
-            };
-            new Thread(runnable).start();
+                j++;
+            }
+            final Object[] headers = new Object[head.size()];
+            int x = 0;
+            for (String hea : head) {
+                headers[x] = hea;
+                x++;
+            }
+            setDataVector(dat, headers);
+            setEditable(false);
+            setTypes(classes);
+            if (target != null) {
+                target.setAutoCreateRowSorter(true);
+            }
         } catch (NodataFoundException ex) {
-            Log.Debug(ex);
+            Logger.getLogger(MPTableModel.class.getName()).log(Level.SEVERE, null, ex);
         }
+    }
+
+    public <T extends DatabaseObject> MPTableModel(final List<T> list, final JTable target) {
+        super();
+        final Object[][] dat = new Object[list.size()][];
+        final Class[] classes = new Class[100];
+
+        int j = 0;
+        LinkedList<String> head = new LinkedList<String>();
+        Entry<String, Object> e;
+        for (DatabaseObject object : list) {
+            if (context == null) {
+                setContext(object.getContext());
+            }
+            final HashMap<String, Object> mod = object.getValues4();
+            Set<Entry<String, Object>> set = mod.entrySet();
+            dat[j] = new Object[set.size()];
+            Iterator<Entry<String, Object>> it = set.iterator();
+            int i = 0;
+            while (it.hasNext()) {
+                e = it.next();
+                dat[j][i] = e.getValue();
+                if (j == 0) {
+                    Class class1 = e.getValue().getClass();
+                    classes[i] = class1;
+                    head.add(i, e.getKey().toUpperCase());
+                }
+                i++;
+            }
+            j++;
+        }
+
+        final Object[] headers = new Object[head.size()];
+        int x = 0;
+        for (String hea : head) {
+            headers[x] = hea;
+            x++;
+        }
+        setEditable(false);
+        setTypes(classes);
+        try {
+//            Log.PrintArray(dat);
+            Object[] h = getDefaultHeader(15);
+            setDataVector(dat, h );
+        } catch (Exception ge) {
+        }
+        if (target != null) {
+            target.setAutoCreateRowSorter(true);
+        }
+        target.repaint();
+        target.getParent().validate();
     }
 
     @Override
@@ -301,7 +342,8 @@ public class MPTableModel extends DefaultTableModel implements Cloneable, TableC
         for (int i = 0; i < header.length; i++) {
             typs[i] = Object.class;
         }
-        setTypes(typs); }
+        setTypes(typs);
+    }
 
     public MPTableModel(List<ValueProperty> properties) {
         super();
@@ -327,7 +369,11 @@ public class MPTableModel extends DefaultTableModel implements Cloneable, TableC
 
     @Override
     public Class<?> getColumnClass(int columnIndex) {
-        getTypes()[columnIndex].toString();//Check for non-null
+        try {
+            getTypes()[columnIndex].toString();//Check for non-null
+        } catch (Exception e) {
+            return Object.class;
+        }
         //not sortable
         if (getTypes()[columnIndex].equals(void.class)) {
             return Object.class;
@@ -750,6 +796,15 @@ public class MPTableModel extends DefaultTableModel implements Cloneable, TableC
     }
 
     private void resort() {
+    }
+
+    private Object[] getDefaultHeader(int x) {
+        Object[] obj = new Object[x];
+        for (int i = 0; i < x; i++) {
+            obj[i]=i;
+        }
+
+        return obj;
     }
 
     /**

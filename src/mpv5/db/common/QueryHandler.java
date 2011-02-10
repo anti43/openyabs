@@ -1,6 +1,5 @@
 package mpv5.db.common;
 
-
 import java.awt.Cursor;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -1470,6 +1469,28 @@ public class QueryHandler implements Cloneable {
             query = "SELECT " + what + " FROM " + table + " " + context.getReferences() + " WHERE " + table + "." + where[0] + " = " + where[2] + where[1] + where[2] + " AND " + context.getConditions().substring(6, context.getConditions().length());
         } else {
             query = "SELECT " + what + " FROM " + table + " " + context.getReferences() + " WHERE " + context.getConditions().substring(6, context.getConditions().length());
+        }
+        return freeSelectQuery(query, mpv5.usermanagement.MPSecurityManager.VIEW, null).getData();
+    }
+
+    /**
+     *
+     * @param what
+     * @param where : {value, comparison, "'"}
+     * @param order
+     * @param limit 
+     * @return results as multidimensional string array
+     */
+    @SuppressWarnings("unchecked")
+    public Object[][] select(String what, String[] where, String order, int limit) {
+        if (limit > 0) {
+            setLimit(limit);
+        }
+        String query;
+        if (where != null && where[0] != null && where[1] != null) {
+            query = "SELECT " + what + " FROM " + table + " " + context.getReferences() + " WHERE " + table + "." + where[0] + " = " + where[2] + where[1] + where[2] + " AND " + context.getConditions().substring(6, context.getConditions().length()) + (order != null ? " ORDER BY " + order : "");
+        } else {
+            query = "SELECT " + what + " FROM " + table + " " + context.getReferences() + " WHERE " + context.getConditions().substring(6, context.getConditions().length()) + (order != null ? " ORDER BY " + order : "");
         }
         return freeSelectQuery(query, mpv5.usermanagement.MPSecurityManager.VIEW, null).getData();
     }

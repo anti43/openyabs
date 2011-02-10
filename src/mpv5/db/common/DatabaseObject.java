@@ -18,7 +18,6 @@ package mpv5.db.common;
 
 import java.util.Arrays;
 import java.util.TreeMap;
-import java.util.Collections;
 import java.awt.Color;
 import java.io.Serializable;
 import java.lang.annotation.ElementType;
@@ -35,15 +34,12 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Hashtable;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.SwingUtilities;
 import mpv5.db.objects.ValueProperty;
 import mpv5.globals.Messages;
@@ -51,7 +47,6 @@ import mpv5.db.objects.HistoryItem;
 import mpv5.logging.Log;
 import mpv5.ui.panels.DataPanel;
 import mpv5.ui.dialogs.Popup;
-import mpv5.ui.frames.MPView;
 import mpv5.utils.arrays.ArrayUtilities;
 import mpv5.utils.date.DateConverter;
 import javax.swing.JComponent;
@@ -76,7 +71,6 @@ import static mpv5.db.common.Context.*;
  * @author
  */
 public abstract class DatabaseObject implements Comparable<DatabaseObject>, Serializable, Cloneable {
-
 
     /**
      * Represents a Context-ID pair which uniquely identifies a DatabaseObject
@@ -1223,6 +1217,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
     public static DatabaseObject getObject(SerializableEntity entity) throws NodataFoundException {
         return getObject(Context.getMatchingContext(entity.getTablename()), entity.getId().intValue());
     }
+
     /**
      * Searches for a specific dataset, cached or non-cached
      * @param context The context to search under
@@ -1512,6 +1507,35 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
     }
 
     /**
+     * Return objects which are referenced in the given Context@table
+     * <br/>As list of getObject(inReference, (SELECT ids FROM Context@table WHERE dataOwnerIDS = dataowner.ids))
+     * @param <T>
+     * @param dataOwner
+     * @param inReference
+     * @param order
+     * @param limit
+     * @return
+     * @throws mpv5.db.common.NodataFoundException
+     */
+    @SuppressWarnings("unchecked")
+    public static <T extends DatabaseObject> List<T> getReferencedObjects(T dataOwner, Context inReference, String order, Integer limit) throws NodataFoundException {
+
+        Object[][] allIds = QueryHandler.instanceOf().clone(inReference).select("ids", new String[]{dataOwner.getDbIdentity() + "ids", dataOwner.__getIDS().toString(), ""}, order, limit);
+        LinkedList<T> list = new LinkedList<T>();
+
+        for (int i = 0; i < allIds.length; i++) {
+            int id = Integer.valueOf(allIds[i][0].toString());
+            DatabaseObject x = DatabaseObject.getCachedObject(inReference, id);
+            if (x != null) {
+                list.add((T) x);
+            } else {
+                list.add((T) getObject(inReference, id));
+            }
+        }
+        return list;
+    }
+
+    /**
      * Returns objects which match the given Context and are created within the given timeframe
      * @param <T>
      * @param context
@@ -1550,11 +1574,11 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
         return true;
     }
 
-     /**
+    /**
      * Fills this do with the data of the given dataset id
      * @param id
-      * @param includeInvisible
-      * @return
+     * @param includeInvisible
+     * @return
      * @throws NodataFoundException
      */
     public boolean fetchDataOf(int id, boolean includeInvisible) throws NodataFoundException {
