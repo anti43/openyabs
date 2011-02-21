@@ -2116,10 +2116,10 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
     private void delivery() {
         PreviewPanel pr;
         if (dataOwner != null && dataOwner.isExisting()) {
-            if (TemplateHandler.isLoaded(dataOwner, TemplateHandler.TYPE_DELIVERY_NOTE)) {
+            if (TemplateHandler.isLoaded(Long.valueOf(dataOwner.templateGroupIds()), TemplateHandler.TYPE_DELIVERY_NOTE)) {
                 pr = new PreviewPanel();
                 pr.setDataOwner(dataOwner);
-                new Job(Export.createFile(TemplateHandler.loadTemplate(dataOwner, TemplateHandler.TYPE_DELIVERY_NOTE), dataOwner), pr).execute();
+                new Job(Export.createFile(TemplateHandler.loadTemplate(dataOwner.templateGroupIds(), TemplateHandler.TYPE_DELIVERY_NOTE), dataOwner), pr).execute();
             } else {
                 Popup.notice(Messages.NO_TEMPLATE_LOADED + " (" + mpv5.db.objects.User.getCurrentUser() + ")");
             }
@@ -2129,11 +2129,11 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
     private void confirmation() {
         PreviewPanel pr;
         if (dataOwner != null && dataOwner.isExisting()) {
-            if (TemplateHandler.isLoaded(dataOwner, TemplateHandler.TYPE_ORDER_CONFIRMATION)) {
+            if (TemplateHandler.isLoaded(Long.valueOf(dataOwner.templateGroupIds()), TemplateHandler.TYPE_ORDER_CONFIRMATION)) {
 
                 pr = new PreviewPanel();
                 pr.setDataOwner(dataOwner);
-                new Job(Export.createFile(TemplateHandler.loadTemplate(dataOwner, TemplateHandler.TYPE_ORDER_CONFIRMATION), dataOwner), pr).execute();
+                new Job(Export.createFile(TemplateHandler.loadTemplate(dataOwner.templateGroupIds(), TemplateHandler.TYPE_ORDER_CONFIRMATION), dataOwner), pr).execute();
             } else {
                 Popup.notice(Messages.NO_TEMPLATE_LOADED + " (" + mpv5.db.objects.User.getCurrentUser() + ")");
             }
@@ -2143,11 +2143,11 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
     public void mail() {
 
         if (dataOwner != null && dataOwner.isExisting()) {
-            if (TemplateHandler.isLoaded(dataOwner, dataOwner.__getInttype())) {
+            if (TemplateHandler.isLoaded(Long.valueOf(dataOwner.templateGroupIds()), dataOwner.__getInttype())) {
 
                 try {
                     Contact cont = (Contact) (Contact.getObject(Context.getContact(), dataOwner.__getContactsids()));
-                    Export.mail(TemplateHandler.loadTemplate(dataOwner, dataOwner.__getInttype()), dataOwner, cont);
+                    Export.mail(TemplateHandler.loadTemplate(dataOwner.templateGroupIds(), dataOwner.__getInttype()), dataOwner, cont);
                 } catch (NodataFoundException ex) {
                     Log.Debug(ex);
                 }
@@ -2161,11 +2161,11 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
 
     public void print() {
         if (dataOwner != null && dataOwner.isExisting()) {
-            if (TemplateHandler.isLoaded(dataOwner, dataOwner.__getInttype())) {
+            if (TemplateHandler.isLoaded(Long.valueOf(dataOwner.templateGroupIds()), dataOwner.__getInttype())) {
                 if (!checkb_pront_oc.isSelected()) {
-                    Export.print(TemplateHandler.loadTemplate(dataOwner, dataOwner.__getInttype()), dataOwner);
+                    Export.print(TemplateHandler.loadTemplate(dataOwner.templateGroupIds(), dataOwner.__getInttype()), dataOwner);
                 } else {
-                    Export.print(new Template[]{TemplateHandler.loadTemplate(dataOwner, dataOwner.__getInttype()), TemplateHandler.loadTemplate(dataOwner, TemplateHandler.TYPE_ORDER_CONFIRMATION)}, dataOwner);
+                    Export.print(new Template[]{TemplateHandler.loadTemplate(dataOwner.templateGroupIds(), dataOwner.__getInttype()), TemplateHandler.loadTemplate(dataOwner.templateGroupIds(), TemplateHandler.TYPE_ORDER_CONFIRMATION)}, dataOwner);
                 }
             } else {
                 Popup.notice(Messages.NO_TEMPLATE_LOADED + " (" + mpv5.db.objects.User.getCurrentUser() + ")");
@@ -2179,10 +2179,10 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
     private void preview() {
         PreviewPanel pr;
         if (dataOwner != null && dataOwner.isExisting()) {
-            if (TemplateHandler.isLoaded(dataOwner, dataOwner.__getInttype())) {
+            if (TemplateHandler.isLoaded(Long.valueOf(dataOwner.templateGroupIds()), dataOwner.__getInttype())) {
                 pr = new PreviewPanel();
                 pr.setDataOwner(dataOwner);
-                new Job(Export.createFile(TemplateHandler.loadTemplate(dataOwner, dataOwner.__getInttype()), dataOwner), pr).execute();
+                new Job(Export.createFile(TemplateHandler.loadTemplate(dataOwner.templateGroupIds(), dataOwner.__getInttype()), dataOwner), pr).execute();
             } else {
                 Popup.notice(Messages.NO_TEMPLATE_LOADED + " (" + mpv5.db.objects.User.getCurrentUser() + ")");
             }
@@ -2193,12 +2193,12 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
         Runnable runnable = new Runnable() {
 
             public void run() {
-                TemplateHandler.loadTemplateFor(button_preview, dataOwner, dataOwner.__getInttype());
-                TemplateHandler.loadTemplateFor(button_deliverynote, dataOwner, TemplateHandler.TYPE_DELIVERY_NOTE);
-                TemplateHandler.loadTemplateFor(new JComponent[]{button_orderconf, checkb_pront_oc}, dataOwner, TemplateHandler.TYPE_ORDER_CONFIRMATION);
-                TemplateHandler.loadTemplateFor(button_reminders, dataOwner, TemplateHandler.TYPE_REMINDER);
+                TemplateHandler.loadTemplateFor(button_preview, dataOwner.templateGroupIds(), dataOwner.__getInttype());
+                TemplateHandler.loadTemplateFor(button_deliverynote, dataOwner.templateGroupIds(), TemplateHandler.TYPE_DELIVERY_NOTE);
+                TemplateHandler.loadTemplateFor(new JComponent[]{button_orderconf, checkb_pront_oc}, dataOwner.templateGroupIds() , TemplateHandler.TYPE_ORDER_CONFIRMATION);
+                TemplateHandler.loadTemplateFor(button_reminders, dataOwner.templateGroupIds(), TemplateHandler.TYPE_REMINDER);
 
-                if (TemplateHandler.isLoaded(dataOwner, dataOwner.__getInttype())) {
+                if (TemplateHandler.isLoaded(Long.valueOf(dataOwner.templateGroupIds()), dataOwner.__getInttype())) {
                     button_preview.setText(Messages.ACTION_PREVIEW.getValue());
                 } else {
                     button_preview.setText(Messages.OO_NO_TEMPLATE.getValue());
@@ -2210,8 +2210,8 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
 
     public void pdf() {
         if (dataOwner != null && dataOwner.isExisting()) {
-            if (TemplateHandler.isLoaded(dataOwner, dataOwner.__getInttype())) {
-                new Job(Export.createFile(dataOwner.getFormatHandler().toUserString(), TemplateHandler.loadTemplate(dataOwner, dataOwner.__getInttype()), dataOwner), new DialogForFile(User.getSaveDir(dataOwner))).execute();
+            if (TemplateHandler.isLoaded(Long.valueOf(dataOwner.templateGroupIds()), dataOwner.__getInttype())) {
+                new Job(Export.createFile(dataOwner.getFormatHandler().toUserString(), TemplateHandler.loadTemplate(dataOwner.templateGroupIds(), dataOwner.__getInttype()), dataOwner), new DialogForFile(User.getSaveDir(dataOwner))).execute();
             } else {
                 Popup.notice(Messages.NO_TEMPLATE_LOADED + " (" + mpv5.db.objects.User.getCurrentUser() + ")");
             }
@@ -2220,8 +2220,8 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
 
     public void odt() {
         if (dataOwner != null && dataOwner.isExisting()) {
-            if (TemplateHandler.isLoaded(dataOwner, dataOwner.__getInttype())) {
-                new Job(Export.sourceFile(dataOwner.getFormatHandler().toUserString(), TemplateHandler.loadTemplate(dataOwner, dataOwner.__getInttype()), dataOwner), new DialogForFile(User.getSaveDir(dataOwner))).execute();
+            if (TemplateHandler.isLoaded(Long.valueOf(dataOwner.templateGroupIds()), dataOwner.__getInttype())) {
+                new Job(Export.sourceFile(dataOwner.getFormatHandler().toUserString(), TemplateHandler.loadTemplate(dataOwner.templateGroupIds(), dataOwner.__getInttype()), dataOwner), new DialogForFile(User.getSaveDir(dataOwner))).execute();
             } else {
                 Popup.notice(Messages.NO_TEMPLATE_LOADED + " (" + mpv5.db.objects.User.getCurrentUser() + ")");
             }

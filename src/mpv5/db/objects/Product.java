@@ -27,6 +27,7 @@ import mpv5.db.common.DatabaseObject;
 import mpv5.db.common.Formattable;
 import mpv5.db.common.NodataFoundException;
 import mpv5.db.common.QueryHandler;
+import mpv5.db.common.Templateable;
 import mpv5.globals.Messages;
 import mpv5.handler.FormatHandler;
 import mpv5.handler.MPEnum;
@@ -40,7 +41,7 @@ import mpv5.utils.numberformat.FormatNumber;
  *
  *  
  */
-public class Product extends DatabaseObject implements Formattable {
+public class Product extends DatabaseObject implements Formattable, Templateable {
 
     /**
      * Returns a localized string represenation of the given product type
@@ -559,5 +560,19 @@ public class Product extends DatabaseObject implements Formattable {
             Notificator.raiseNotification(Messages.INVENTORY_STOCK_TRESHOLD + toString());
         }
         return super.save(silent);
+    }
+
+
+    @Override
+    public int templateType() {
+        return __getInttype();
+    }
+    /**
+     *
+     * @return
+     */
+    @Override
+    public int templateGroupIds() {
+        return __getGroupsids();
     }
 }

@@ -1299,11 +1299,11 @@ public class ProductPanel extends javax.swing.JPanel implements DataPanel, MPCBS
     private void preview() {
         PreviewPanel pr;
         if (dataOwner != null && dataOwner.isExisting()) {
-            if (TemplateHandler.isLoaded(dataOwner, TemplateHandler.TYPE_PRODUCT)) {
+            if (TemplateHandler.isLoaded(Long.valueOf(dataOwner.templateGroupIds()), TemplateHandler.TYPE_PRODUCT)) {
 
                 HashMap<String, Object> hm1 = new FormFieldsHandler(dataOwner).getFormattedFormFields(null);
                 File f2 = FileDirectoryHandler.getTempFile(cname_, "pdf");
-                Export ex = new Export(TemplateHandler.loadTemplate(dataOwner, TemplateHandler.TYPE_PRODUCT));
+                Export ex = new Export(TemplateHandler.loadTemplate(Long.valueOf(dataOwner.templateGroupIds()), TemplateHandler.TYPE_PRODUCT));
                 ex.putAll(hm1);
 
                 for (int i = 0; i < dataTable.getRowCount(); i++) {
@@ -1316,7 +1316,7 @@ public class ProductPanel extends javax.swing.JPanel implements DataPanel, MPCBS
                     }
                 }
 
-                ex.setTemplate(TemplateHandler.loadTemplate(dataOwner, TemplateHandler.TYPE_PRODUCT).getExFile());
+                ex.setTemplate(TemplateHandler.loadTemplate(Long.valueOf(dataOwner.templateGroupIds()), TemplateHandler.TYPE_PRODUCT).getExFile());
                 ex.setTargetFile(f2);
 
                 pr = new PreviewPanel();
@@ -1332,11 +1332,11 @@ public class ProductPanel extends javax.swing.JPanel implements DataPanel, MPCBS
     private void preview_order() {
         PreviewPanel pr;
         if (dataOwner != null && dataOwner.isExisting()) {
-            if (TemplateHandler.isLoaded(dataOwner, TemplateHandler.TYPE_PRODUCT_ORDER)) {
+            if (TemplateHandler.isLoaded(Long.valueOf(dataOwner.templateGroupIds()), TemplateHandler.TYPE_PRODUCT_ORDER)) {
 
                 HashMap<String, Object> hm1 = new FormFieldsHandler(dataOwner).getFormattedFormFields(null);
                 File f2 = FileDirectoryHandler.getTempFile(cname_, "pdf");
-                Export ex = new Export(TemplateHandler.loadTemplate(dataOwner, TemplateHandler.TYPE_PRODUCT_ORDER));
+                Export ex = new Export(TemplateHandler.loadTemplate(Long.valueOf(dataOwner.templateGroupIds()), TemplateHandler.TYPE_PRODUCT_ORDER));
                 ex.putAll(hm1);
 
                 for (int i = 0; i < dataTable.getRowCount(); i++) {
@@ -1349,7 +1349,7 @@ public class ProductPanel extends javax.swing.JPanel implements DataPanel, MPCBS
                     }
                 }
 
-                ex.setTemplate(TemplateHandler.loadTemplate(dataOwner, TemplateHandler.TYPE_PRODUCT_ORDER).getExFile());
+                ex.setTemplate(TemplateHandler.loadTemplate(Long.valueOf(dataOwner.templateGroupIds()), TemplateHandler.TYPE_PRODUCT_ORDER).getExFile());
                 ex.setTargetFile(f2);
 
                 pr = new PreviewPanel();
@@ -1367,10 +1367,10 @@ public class ProductPanel extends javax.swing.JPanel implements DataPanel, MPCBS
 
             public void run() {
                 if (dataOwner.__getInttype() == Product.TYPE_PRODUCT) {
-                    TemplateHandler.loadTemplateFor(button_preview, dataOwner, TemplateHandler.TYPE_PRODUCT);
-                    TemplateHandler.loadTemplateFor(button_order, dataOwner, TemplateHandler.TYPE_PRODUCT_ORDER);
+                    TemplateHandler.loadTemplateFor(button_preview, Long.valueOf(dataOwner.templateGroupIds()), TemplateHandler.TYPE_PRODUCT);
+                    TemplateHandler.loadTemplateFor(button_order, Long.valueOf(dataOwner.templateGroupIds()), TemplateHandler.TYPE_PRODUCT_ORDER);
                 } else {
-                    TemplateHandler.loadTemplateFor(button_preview, dataOwner, TemplateHandler.TYPE_SERVICE);
+                    TemplateHandler.loadTemplateFor(button_preview, Long.valueOf(dataOwner.templateGroupIds()), TemplateHandler.TYPE_SERVICE);
                 }
             }
         };
@@ -1397,11 +1397,11 @@ public class ProductPanel extends javax.swing.JPanel implements DataPanel, MPCBS
     public void mail() {
         MailMessage m = null;
         if (dataOwner != null && dataOwner.isExisting()) {
-            if (TemplateHandler.isLoaded(dataOwner, TemplateHandler.TYPE_PRODUCT)) {
+            if (TemplateHandler.isLoaded(Long.valueOf(dataOwner.templateGroupIds()), TemplateHandler.TYPE_PRODUCT)) {
 
                 try {
                     Contact cont = (Contact) Popup.SelectValue(Context.getContact());
-                    Export.mail(TemplateHandler.loadTemplate(dataOwner, TemplateHandler.TYPE_PRODUCT), dataOwner, cont);
+                    Export.mail(TemplateHandler.loadTemplate(Long.valueOf(dataOwner.templateGroupIds()), TemplateHandler.TYPE_PRODUCT), dataOwner, cont);
                 } catch (Exception ex) {
                     Log.Debug(ex);
                 }
@@ -1413,8 +1413,8 @@ public class ProductPanel extends javax.swing.JPanel implements DataPanel, MPCBS
 
     public void print() {
         if (dataOwner != null && dataOwner.isExisting()) {
-            if (TemplateHandler.isLoaded(dataOwner, TemplateHandler.TYPE_PRODUCT)) {
-                Export.print(TemplateHandler.loadTemplate(dataOwner, TemplateHandler.TYPE_PRODUCT), dataOwner);
+            if (TemplateHandler.isLoaded(Long.valueOf(dataOwner.templateGroupIds()), TemplateHandler.TYPE_PRODUCT)) {
+                Export.print(TemplateHandler.loadTemplate(Long.valueOf(dataOwner.templateGroupIds()), TemplateHandler.TYPE_PRODUCT), dataOwner);
             } else {
                 Popup.notice(Messages.NO_TEMPLATE_LOADED + " (" + mpv5.db.objects.User.getCurrentUser() + ") : " + TemplateHandler.getName(TemplateHandler.TYPE_PRODUCT));
                 mpv5.utils.export.Export.print(this);

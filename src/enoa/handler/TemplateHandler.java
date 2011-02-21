@@ -12,6 +12,7 @@ import mpv5.db.common.NodataFoundException;
 import mpv5.db.common.QueryHandler;
 import mpv5.db.common.ReturnValue;
 import mpv5.db.common.SaveString;
+import mpv5.db.common.Templateable;
 import mpv5.db.objects.*;
 import mpv5.globals.LocalSettings;
 import mpv5.globals.Messages;
@@ -29,19 +30,40 @@ public class TemplateHandler {
 
     /**
      * Return true if the Template for the currently logged in user, with the given type, and matching the targets group is loaded
-     * @param target
+     * @param group
      * @param type
      * @return
      */
-    public static synchronized boolean isLoaded(DatabaseObject target, int type) {
+    public static synchronized boolean isLoaded(Long group, int type) {
         String key = null;
-        if (target != null) {
-            key = mpv5.db.objects.User.getCurrentUser() + "@" + type + "@" + target.__getGroupsids();
+        if (group != null) {
+            key = mpv5.db.objects.User.getCurrentUser() + "@" + type + "@" + group;
         } else {
             key = mpv5.db.objects.User.getCurrentUser() + "@" + type + "@" + 1;
         }
 
-        if (templateCache.containsKey(key)) {
+        if (TEMPLATE_CACHE.containsKey(key)) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    /**
+     * Return true if the Template for the currently logged in user, with the given type, and matching the targets group is loaded
+     * @param target
+     * @param type
+     * @return
+     */
+    public static synchronized boolean isLoaded(Templateable target) {
+        String key = null;
+        if (target != null) {
+            key = mpv5.db.objects.User.getCurrentUser() + "@" + target.templateType() + "@" + target.templateGroupIds();
+        } else {
+            key = mpv5.db.objects.User.getCurrentUser() + "@" + target.templateType() + "@" + 1;
+        }
+
+        if (TEMPLATE_CACHE.containsKey(key)) {
             return true;
         } else {
             return false;
@@ -54,16 +76,35 @@ public class TemplateHandler {
      * @param typ
      * @return
      */
-    public static synchronized Template loadTemplate(DatabaseObject target, int typ) {
+    public static synchronized Template loadTemplate(Templateable target) {
 
         int groupsids = 0;
         if (target != null) {
-            groupsids = target.__getGroupsids();
+            groupsids = target.templateGroupIds();
         } else {
             groupsids = 1;
         }
 
-        return loadTemplate(groupsids, typ);
+        return loadTemplate(groupsids, target.templateType());
+    }
+
+    /**
+     *
+     * @param t
+     * @return
+     */
+    public static synchronized Template loadTemplate(Template t) {
+        return loadTemplate(t.__getGroupsids(), Integer.valueOf(t.__getMimetype()));
+    }
+
+    /**
+     * 
+     * @param group
+     * @param typ
+     * @return
+     */
+    public static synchronized Template loadTemplate(int group, int typ) {
+        return loadTemplate(Long.valueOf(group), typ);
     }
 
     /**
@@ -73,7 +114,7 @@ public class TemplateHandler {
      * @param typ
      * @return
      */
-    public static synchronized Template loadTemplate(int groupsids, int typ) {
+    public static synchronized Template loadTemplate(long groupsids, int typ) {
         if (LocalSettings.getBooleanProperty(LocalSettings.OFFICE_USE)) {
             Integer type = new Integer(typ);
 
@@ -82,8 +123,8 @@ public class TemplateHandler {
             }
 
             String key = mpv5.db.objects.User.getCurrentUser() + "@" + type + "@" + groupsids;
-            if (templateCache.containsKey(key)) {
-                return templateCache.get(key);
+            if (TEMPLATE_CACHE.containsKey(key)) {
+                return TEMPLATE_CACHE.get(key);
             } else {
 
                 if (type != null) {
@@ -123,17 +164,17 @@ public class TemplateHandler {
                             } else {
                                 preloadedTemplate.defineExFile(new PDFFile(preloadedTemplate.getFile().getPath()));
                             }
-                            templateCache.put(key, preloadedTemplate);
+                            TEMPLATE_CACHE.put(key, preloadedTemplate);
                         } catch (NodataFoundException ex) {
                             Log.Debug(Template.class, "Invalid template: " + data.getData()[data.getData().length - 1][0].toString());
                             return null;
                         }
                     } else {
                         try {
-                            if (!(notification.containsKey(type.toString()) && notification.get(type.toString()).equals(Group.getObject(Context.getGroup(), groupsids)))) {
-                                mpv5.YabsViewProxy.instance().addMessage(Messages.OO_NO_TEMPLATE + ": " + TemplateHandler.getName(type) + " [" + mpv5.db.objects.User.getCurrentUser() + "] [" + Group.getObject(Context.getGroup(), groupsids) + "]");
-                                Log.Debug(Template.class, "No template found for type: " + type + " for user: " + mpv5.db.objects.User.getCurrentUser() + " in GROUP " + Group.getObject(Context.getGroup(), groupsids));
-                                notification.put(type.toString(), (Group) Group.getObject(Context.getGroup(), groupsids));
+                            if (!(TEMPLATE_MISSING_NOTIFICATIONS.containsKey(type.toString()) && TEMPLATE_MISSING_NOTIFICATIONS.get(type.toString()).equals(Group.getObject(Context.getGroup(), (int) groupsids)))) {
+                                mpv5.YabsViewProxy.instance().addMessage(Messages.OO_NO_TEMPLATE + ": " + TemplateHandler.getName(type) + " [" + mpv5.db.objects.User.getCurrentUser() + "] [" + Group.getObject(Context.getGroup(), (int) groupsids) + "]");
+                                Log.Debug(Template.class, "No template found for type: " + type + " for user: " + mpv5.db.objects.User.getCurrentUser() + " in GROUP " + Group.getObject(Context.getGroup(), (int) groupsids));
+                                TEMPLATE_MISSING_NOTIFICATIONS.put(type.toString(), (Group) Group.getObject(Context.getGroup(), (int) groupsids));
                             }
 
                         } catch (NodataFoundException nodataFoundException) {
@@ -155,7 +196,7 @@ public class TemplateHandler {
      * @return
      */
     public static MPEnum[] getTypes() {
-        MPEnum[] types = new MPEnum[11];
+        MPEnum[] types = new MPEnum[12];
         types[0] = new MPEnum() {
 
             public Integer getId() {
@@ -277,14 +318,27 @@ public class TemplateHandler {
             }
         };
 
+        types[11] = new MPEnum() {
+
+            public Integer getId() {
+                return TYPE_CONTACT;
+            }
+
+            public String getName() {
+                return Messages.TYPE_CONTRACT.toString();
+            }
+        };
+
+
         return types;
     }
 
     /**
      * (P)reload the template files
+     * @deprecated performance..
      */
     public static synchronized void cacheTemplates() {
-        templateCache.clear();
+        TEMPLATE_CACHE.clear();
         final List<Group> groups = new Vector<Group>();
         try {
             ArrayList<DatabaseObject> tlist = Group.getObjects(Context.getGroup(), true);
@@ -295,61 +349,61 @@ public class TemplateHandler {
         } catch (NodataFoundException ex) {
         }
 
-        List<DatabaseObject> l = new Vector<DatabaseObject>();
+        List<Templateable> targets = new Vector<Templateable>();
         List<Integer> typs = new Vector<Integer>();
         Item it1 = new Item();
         it1.setInttype(Item.TYPE_BILL);
-        l.add(it1);
+        targets.add(it1);
         typs.add(TYPE_BILL);
 
         Item it2 = new Item();
         it2.setInttype(Item.TYPE_OFFER);
-        l.add(it2);
+        targets.add(it2);
         typs.add(TYPE_OFFER);
 
         Item it3 = new Item();
         it3.setInttype(Item.TYPE_ORDER);
-        l.add(it3);
+        targets.add(it3);
         typs.add(TYPE_ORDER);
 
         Item it4 = new Item();
         it4.setInttype(Item.TYPE_DELIVERY_NOTE);
-        l.add(it4);
+        targets.add(it4);
         typs.add(TYPE_DELIVERY_NOTE);
 
         Product it5 = new Product();
         it5.setInttype(Product.TYPE_PRODUCT);
-        l.add(it5);
+        targets.add(it5);
         typs.add(TYPE_PRODUCT);
 
         Product it6 = new Product();
         it6.setInttype(Product.TYPE_SERVICE);
-        l.add(it6);
+        targets.add(it6);
         typs.add(TYPE_SERVICE);
 
         Reminder it7 = new Reminder();
-        l.add(it7);
+        targets.add(it7);
         typs.add(TYPE_REMINDER);
 
         Contact it8 = new Contact();
-        l.add(it8);
+        targets.add(it8);
         typs.add(TYPE_CONTACT);
 
-        l.add(null);
+        targets.add(null);
         typs.add(TYPE_JOURNAL);
 
-        for (int i = 0; i < l.size(); i++) {
-            final DatabaseObject databaseObject = l.get(i);
+        for (int i = 0; i < targets.size(); i++) {
+//            final Templateable databaseObject = targets.get(i);
             final int type = typs.get(i);
             Runnable runnable = new Runnable() {
 
                 public void run() {
                     for (int j = 0; j < groups.size(); j++) {
                         Group group = groups.get(j);
-                        if (databaseObject != null && group != null) {
-                            databaseObject.setGroupsids(group.__getIDS());
-                        }
-                        loadTemplate(databaseObject, type);
+//                        if (databaseObject != null && group != null) {
+//                            ((DatabaseObject)databaseObject).setGroupsids(group.__getIDS());
+//                        }
+                        loadTemplate(group.__getIDS(), type);
                     }
                 }
             };
@@ -367,48 +421,36 @@ public class TemplateHandler {
     public static final int TYPE_CONTACT = 8;
     public static final int TYPE_JOURNAL = 9;
     public static final int TYPE_PRODUCT_ORDER = 10;
+    public static final int TYPE_CONTRACT = 11;
     /**
      * The cache of the templates
      */
-    public static HashMap<String, Template> templateCache = new HashMap<String, Template>();
-    public static HashMap<String, Group> notification = new HashMap<String, Group>();
+    public static HashMap<String, Template> TEMPLATE_CACHE = new HashMap<String, Template>();
+    public static HashMap<String, Group> TEMPLATE_MISSING_NOTIFICATIONS = new HashMap<String, Group>();
 
     /**
      * Load a template (if not already done) and enable the given button after loading.
      * @param button
      * @param dataOwner
-     * @param TYPE
      */
-    public static void loadTemplateFor(final JComponent button, final DatabaseObject dataOwner, final int TYPE) {
-        button.setEnabled(false);
-        Runnable runnable = new Runnable() {
-
-            public void run() {
-                int group = 1;
-                if (dataOwner != null) {
-                    group = dataOwner.__getGroupsids();
-                }
-                loadTemplate(group, TYPE);
-                button.setEnabled(isLoaded(dataOwner, TYPE));
-            }
-        };
-        new Thread(runnable).start();
+    public static void loadTemplateFor(final JComponent button, final Templateable dataOwner) {
+        loadTemplate(dataOwner.templateGroupIds(), dataOwner.templateType());
     }
 
     /**
      * Load a template for a specific GROUP rather than the dataOwners group (if not already done) and enable the given button after loading.
      * @param button
-     * @param dataOwner
-     * @param grouspids
-     * @param TYPE
+     * @param typ
+     * @param groupsids
      */
-    public static void loadTemplateFor(final JComponent button, final DatabaseObject dataOwner, final int grouspids, final int TYPE) {
+    public static void loadTemplateFor(final JComponent button, final long groupsids, final int typ) {
         button.setEnabled(false);
         Runnable runnable = new Runnable() {
 
+            @Override
             public void run() {
-                loadTemplate(grouspids, TYPE);
-                button.setEnabled(isLoaded(dataOwner, TYPE));
+                loadTemplate(groupsids, typ);
+                button.setEnabled(isLoaded(groupsids, typ));
             }
         };
         new Thread(runnable).start();
@@ -436,7 +478,7 @@ public class TemplateHandler {
      * @param dataOwner
      * @param TYPE
      */
-    public static void loadTemplateFor(final JComponent[] jComponent, final DatabaseObject dataOwner, final int TYPE) {
+    public static void loadTemplateFor(final JComponent[] jComponent, final Templateable dataOwner) {
         for (int i = 0; i < jComponent.length; i++) {
             JComponent jComponent1 = jComponent[i];
             jComponent1.setEnabled(false);
@@ -444,10 +486,35 @@ public class TemplateHandler {
         Runnable runnable = new Runnable() {
 
             public void run() {
-                loadTemplate(dataOwner.__getGroupsids(), TYPE);
+                loadTemplate(dataOwner);
                 for (int i = 0; i < jComponent.length; i++) {
                     JComponent jComponent1 = jComponent[i];
-                    jComponent1.setEnabled(isLoaded(dataOwner, TYPE));
+                    jComponent1.setEnabled(isLoaded(dataOwner));
+                }
+            }
+        };
+        new Thread(runnable).start();
+    }
+
+    /**
+     * Load a template (if not already done) and enable the given button after loading.
+     * @param jComponent
+     * @param typ
+     * @param groupsids
+     */
+    public static void loadTemplateFor(final JComponent[] jComponent, final long groupsids, final int typ) {
+        for (int i = 0; i < jComponent.length; i++) {
+            JComponent jComponent1 = jComponent[i];
+            jComponent1.setEnabled(false);
+        }
+        Runnable runnable = new Runnable() {
+
+            @Override
+            public void run() {
+                loadTemplate(groupsids, typ);
+                for (int i = 0; i < jComponent.length; i++) {
+                    JComponent jComponent1 = jComponent[i];
+                    jComponent1.setEnabled(isLoaded(groupsids, typ));
                 }
             }
         };

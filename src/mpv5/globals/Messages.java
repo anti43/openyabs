@@ -275,7 +275,8 @@ public enum Messages {
      ENTER_VALUE("You need to enter a value for: "),
      NAME("Name"), 
      UNTRASHED(": moved out of trashbin"), 
-     PLUGIN_INCOMPATIBLE("Incompatible plugin found. Shall I try to load it anyway?"),
+     PLUGIN_INCOMPATIBLE("Incompatible plugin found. Shall I try to load it anyway?"), 
+     TYPE_CONTRACT("Contract"),
     ;
 
 

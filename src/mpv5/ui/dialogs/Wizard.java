@@ -41,6 +41,7 @@ public class Wizard extends javax.swing.JDialog implements WizardMaster {
 
     private static final long serialVersionUID = 1L;
     public PropertyStore actionVars = new PropertyStore();
+
 //    private int index = 4300;
     private Component lastpanel;
     private boolean isEnded = false;

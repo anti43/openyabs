@@ -334,6 +334,24 @@ public class MPComboBoxModelItem extends DefaultComboBoxModel implements Compara
         return new MPComboboxModel(toItems(new Vector<DatabaseObject>(Arrays.asList(new DatabaseObject[]{data}))));
     }
 
+
+    /**
+     * Creates a {@link MPComBoxModel} containing a {@link MPComboBoxModelItem}
+     * {entity (hidden), dbo (shown in the list)}
+     * @param <T>
+     * @param data
+     * @return
+     */
+    public static <T extends DatabaseObject>MPComboboxModel toModel0(List<T> data) {
+        Object[][] l = new Object[data.size()][2];
+        for (int i = 0; i < data.size(); i++) {
+            DatabaseObject databaseObject = data.get(i);
+            l[i][0] = databaseObject.IDENTITY;
+            l[i][0] = databaseObject;
+        }
+        return new MPComboboxModel(toItems(l));
+    }
+
     /**
      * Delegates to new MPComboboxModel(data);
      * @param data

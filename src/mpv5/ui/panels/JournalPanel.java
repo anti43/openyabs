@@ -89,7 +89,7 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
         }
         return t;
     }
-    private Contact dataowner;
+    private Contact dataOwner;
     private Template preloadedTemplate;
 
     /** Creates new form HistoryPanel */
@@ -130,7 +130,7 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
         timeframeChooser1.setTime(new vTimeframe(DateConverter.getDate(DateConverter.getYear()), new Date()));
         prinitingComboBox1.init(jTable1);
 
-        dataowner = dataOwner;
+        dataOwner = dataOwner;
         groups.setSearchEnabled(true);
         groups.setContext(Context.getGroup());
         groups.triggerSearch();
@@ -143,7 +143,7 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
         refresh(null, null);
 
         jTree1.setCellRenderer(MPTreeModel.getRenderer());
-        jTree1.setModel(new MPTreeModel(dataowner));
+        jTree1.setModel(new MPTreeModel(dataOwner));
         jTree1.addMouseListener(MPTreeModel.getDefaultTreeListener(jTree1));
         prinitingComboBox1.init(jTable1);
 //        TreeFormat.expandTree(jTree1);
@@ -766,8 +766,8 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
                         itemsParams.and(l.toArray(new QueryParameter[0]));
                     }
 
-                    if (dataowner != null) {
-                        itemsParams.and(new QueryParameter(dataowner.getContext(), "ids", dataowner.__getIDS(), QueryParameter.EQUALS));
+                    if (dataOwner != null) {
+                        itemsParams.and(new QueryParameter(dataOwner.getContext(), "ids", dataOwner.__getIDS(), QueryParameter.EQUALS));
                     }
 
                     boolean additional = true;
@@ -784,7 +784,7 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
                         itemsParams.setOrder("accountsids", true);
                         c.addReference(Context.getGroup());
                         c.addReference(Context.getAccounts());
-                        if (dataowner != null) {
+                        if (dataOwner != null) {
                             c.addReference(Context.getContact());
                         }
                         try {
@@ -808,7 +808,7 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
                     } catch (Exception ex) {
                         Log.Debug(ex);
                     }
-                    if (dataowner == null && additional) {
+                    if (dataOwner == null && additional) {
                         try {
                             Context c = Context.getExpense();
                             itemsParams.setOrder("dateadded", true);
@@ -1102,9 +1102,9 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
 //        if (dataowner != null && dataowner.isExisting()) {
         if (preloadedTemplate != null) {
             pr = new PreviewPanel();
-            pr.setDataOwner(dataowner);
+            pr.setDataOwner(dataOwner);
             preloadedTemplate.injectTable(TableHandler.KEY_TABLE + 1, jTable1.getModel());
-            new Job(Export.createFile(preloadedTemplate, dataowner), pr).execute();
+            new Job(Export.createFile(preloadedTemplate, dataOwner), pr).execute();
         } else {
             Popup.notice(Messages.NO_TEMPLATE_LOADED + " (" + mpv5.db.objects.User.getCurrentUser() + ")");
         }
@@ -1115,12 +1115,12 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
         Runnable runnable = new Runnable() {
 
             public void run() {
-                if (dataowner == null) {
-                    preloadedTemplate = TemplateHandler.loadTemplate(dataowner, TemplateHandler.TYPE_JOURNAL);
-                    TemplateHandler.loadTemplateFor(jButton4, dataowner, TemplateHandler.TYPE_JOURNAL);
+                if (dataOwner == null) {
+                    preloadedTemplate = TemplateHandler.loadTemplate(Long.valueOf(dataOwner.templateGroupIds()), TemplateHandler.TYPE_JOURNAL);
+                    TemplateHandler.loadTemplateFor(jButton4, Long.valueOf(dataOwner.templateGroupIds()), TemplateHandler.TYPE_JOURNAL);
                 } else {
-                    preloadedTemplate = TemplateHandler.loadTemplate(dataowner, TemplateHandler.TYPE_CONTACT);
-                    TemplateHandler.loadTemplateFor(jButton4, dataowner, TemplateHandler.TYPE_CONTACT);
+                    preloadedTemplate = TemplateHandler.loadTemplate(Long.valueOf(dataOwner.templateGroupIds()), TemplateHandler.TYPE_CONTACT);
+                    TemplateHandler.loadTemplateFor(jButton4, Long.valueOf(dataOwner.templateGroupIds()), TemplateHandler.TYPE_CONTACT);
                 }
             }
         };
@@ -1186,11 +1186,11 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
             for (int i = 0; i < items.size(); i++) {
                 try {
                     final Item item = items.get(i);
-                    if (TemplateHandler.loadTemplate(item, TemplateHandler.TYPE_BILL) == null) {
+                    if (TemplateHandler.loadTemplate(Long.valueOf(item.templateGroupIds()), TemplateHandler.TYPE_BILL) == null) {
                         Popup.warn(Messages.NO_TEMPLATE_DEFINDED + "\n" + TemplateHandler.getName(TemplateHandler.TYPE_BILL)
                                 + "\n" + Messages.IN_GROUP + " " + DatabaseObject.getObject(Context.getGroup(), item.__getGroupsids()));
                     } else {
-                        files.add(Export.createFile(item.getFormatHandler().toUserString(), TemplateHandler.loadTemplate(item, item.__getInttype()), item));
+                        files.add(Export.createFile(item.getFormatHandler().toUserString(), TemplateHandler.loadTemplate(Long.valueOf(item.templateGroupIds()), item.__getInttype()), item));
                     }
                 } catch (NodataFoundException nodataFoundException) {
                     Log.Debug(nodataFoundException);
@@ -1230,11 +1230,11 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
             for (int i = 0; i < items.size(); i++) {
                 try {
                     final Item item = items.get(i);
-                    if (TemplateHandler.loadTemplate(item, TemplateHandler.TYPE_BILL) == null) {
+                    if (TemplateHandler.loadTemplate(Long.valueOf(item.templateGroupIds()), TemplateHandler.TYPE_BILL) == null) {
                         Popup.warn(Messages.NO_TEMPLATE_DEFINDED + "\n" + TemplateHandler.getName(TemplateHandler.TYPE_BILL)
                                 + "\n" + Messages.IN_GROUP + " " + DatabaseObject.getObject(Context.getGroup(), item.__getGroupsids()));
                     } else {
-                        files.add(Export.sourceFile(item.getFormatHandler().toUserString(), TemplateHandler.loadTemplate(item, item.__getInttype()), item));
+                        files.add(Export.sourceFile(item.getFormatHandler().toUserString(), TemplateHandler.loadTemplate(Long.valueOf(item.templateGroupIds()), item.__getInttype()), item));
                     }
                 } catch (NodataFoundException nodataFoundException) {
                     Log.Debug(nodataFoundException);

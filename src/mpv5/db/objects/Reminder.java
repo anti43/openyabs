@@ -16,6 +16,7 @@
  */
 package mpv5.db.objects;
 
+import enoa.handler.TemplateHandler;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -23,6 +24,7 @@ import javax.swing.JComponent;
 import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
 import mpv5.db.common.NodataFoundException;
+import mpv5.db.common.Templateable;
 import mpv5.globals.Messages;
 import mpv5.logging.Log;
 import mpv5.utils.images.MPIcon;
@@ -31,7 +33,7 @@ import mpv5.utils.images.MPIcon;
  *
  *  
  */
-public class Reminder extends DatabaseObject {
+public class Reminder extends DatabaseObject implements Templateable {
 
     public static int TYPE_REMINDER = 0;
     static String getTypeString(int typ) {
@@ -156,5 +158,20 @@ public class Reminder extends DatabaseObject {
      */
     public void setStagesids(int stagesids) {
         this.stagesids = stagesids;
+    }
+
+
+    @Override
+    public int templateType() {
+        return TemplateHandler.TYPE_REMINDER;
+    }
+
+    /**
+     *
+     * @return
+     */
+    @Override
+    public int templateGroupIds() {
+        return __getGroupsids();
     }
 }

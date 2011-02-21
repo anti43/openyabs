@@ -405,7 +405,7 @@ public class ControlPanel_Templates extends javax.swing.JPanel implements Contro
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
         if (Popup.Y_N_dialog(Messages.REALLY_DELETE)) {
             if (dataOwner != null) {
-                TemplateHandler.templateCache.clear();
+                TemplateHandler.TEMPLATE_CACHE.clear();
                 DatabaseObject dato = dataOwner;
                 dato.getPanelData(this);
                 dato.delete();

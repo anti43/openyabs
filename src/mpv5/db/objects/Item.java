@@ -34,6 +34,7 @@ import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
 import mpv5.db.common.Formattable;
 import mpv5.db.common.NodataFoundException;
+import mpv5.db.common.Templateable;
 import mpv5.globals.Messages;
 import mpv5.handler.FormatHandler;
 import mpv5.handler.MPEnum;
@@ -49,7 +50,7 @@ import mpv5.utils.text.TypeConversion;
  *
  *  
  */
-public class Item extends DatabaseObject implements Formattable {
+public class Item extends DatabaseObject implements Formattable, Templateable {
 
     /**
      * Returns a localized string representation of the given item status
@@ -629,15 +630,15 @@ public class Item extends DatabaseObject implements Formattable {
     public boolean save(boolean silent) {
         boolean saved = super.save(silent);
         if (mpv5.db.objects.User.getCurrentUser().getProperty("org.openyabs.property", "autocreatepdf")) {
-            if (TemplateHandler.isLoaded(this, this.__getInttype())) {
-                new Job(Export.createFile(this.getFormatHandler().toUserString(), TemplateHandler.loadTemplate(this, this.__getInttype()), this), Export.wait(User.getSaveDir(this))).execute();
+            if (TemplateHandler.isLoaded(this)) {
+                new Job(Export.createFile(this.getFormatHandler().toUserString(), TemplateHandler.loadTemplate(this), this), Export.wait(User.getSaveDir(this))).execute();
             } else {
                 YabsViewProxy.instance().addMessage(Messages.NO_TEMPLATE_LOADED + " (" + mpv5.db.objects.User.getCurrentUser() + ")");
             }
         }
         if (mpv5.db.objects.User.getCurrentUser().getProperty("org.openyabs.property", "autocreateodt")) {
-            if (TemplateHandler.isLoaded(this, this.__getInttype())) {
-                new Job(Export.sourceFile(this.getFormatHandler().toUserString(), TemplateHandler.loadTemplate(this, this.__getInttype()), this), Export.wait(User.getSaveDir(this))).execute();
+            if (TemplateHandler.isLoaded(this)) {
+                new Job(Export.sourceFile(this.getFormatHandler().toUserString(), TemplateHandler.loadTemplate(this), this), Export.wait(User.getSaveDir(this))).execute();
             } else {
                 YabsViewProxy.instance().addMessage(Messages.NO_TEMPLATE_LOADED + " (" + mpv5.db.objects.User.getCurrentUser() + ")");
             }
@@ -679,5 +680,19 @@ public class Item extends DatabaseObject implements Formattable {
             it[i].undelete();
         }
         return super.undelete();
+    }
+
+    @Override
+    public int templateType() {
+        return __getInttype();
+    }
+
+    /**
+     *
+     * @return
+     */
+    @Override
+    public int templateGroupIds() {
+        return __getGroupsids();
     }
 }

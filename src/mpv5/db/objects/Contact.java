@@ -1,5 +1,6 @@
 package mpv5.db.objects;
 
+import enoa.handler.TemplateHandler;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -8,6 +9,7 @@ import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
 import mpv5.db.common.Formattable;
 import mpv5.db.common.NodataFoundException;
+import mpv5.db.common.Templateable;
 import mpv5.globals.Messages;
 import mpv5.handler.FormatHandler;
 import mpv5.i18n.LanguageManager;
@@ -19,7 +21,7 @@ import mpv5.utils.images.MPIcon;
  *
  * 
  */
-public class Contact extends DatabaseObject implements Formattable {
+public class Contact extends DatabaseObject implements Formattable, Templateable {
 
     private String cnumber = "";
     private String taxnumber = "";
@@ -598,5 +600,20 @@ public class Contact extends DatabaseObject implements Formattable {
         }
 
         return super.undelete();
+    }
+
+
+    @Override
+    public int templateType() {
+        return TemplateHandler.TYPE_CONTACT;
+    }
+
+    /**
+     *
+     * @return
+     */
+    @Override
+    public int templateGroupIds() {
+        return __getGroupsids();
     }
 }
