@@ -39,11 +39,13 @@ import mpv5.globals.Headers;
 import mpv5.db.objects.Group;
 import mpv5.logging.Log;
 import mpv5.db.objects.User;
+import mpv5.ui.misc.MPTable;
 import mpv5.utils.arrays.ArrayUtilities;
 import mpv5.utils.date.DateConverter;
 import mpv5.utils.date.vTimeframe;
 import mpv5.utils.models.MPTableModel;
 import mpv5.utils.tables.TableFormat;
+import mpv5.utils.ui.TableViewPersistenceHandler;
 
 /**
  *
@@ -89,6 +91,7 @@ public class HistoryPanel extends javax.swing.JPanel implements ListPanel {
         }
 
         refresh(null, null);
+        ((MPTable) jTable1).setPersistanceHandler(new TableViewPersistenceHandler(jTable1, this));
 
     }
 

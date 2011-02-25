@@ -85,6 +85,7 @@ public class GeneralListPanel extends javax.swing.JPanel {
         listtable.setDefaultRenderer(DatabaseObject.class, rend);
 
         ((MPTable) listtable).setDefaultColumns(new Integer[]{100, 100, 100, 100, 100}, new Boolean[]{true, true, true, true, true});
+        ((MPTable) listtable).setPersistanceHandler(new TableViewPersistenceHandler(listtable, this));
         TableFormat.hideHeader(listtable);
     }
 

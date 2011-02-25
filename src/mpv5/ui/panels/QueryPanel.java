@@ -29,9 +29,11 @@ import mpv5.db.common.QueryHandler;
 import mpv5.db.common.ReturnValue;
 import mpv5.ui.dialogs.DialogForFile;
 import mpv5.ui.dialogs.Popup;
+import mpv5.ui.misc.MPTable;
 import mpv5.usermanagement.MPSecurityManager;
 import mpv5.utils.files.FileReaderWriter;
 import mpv5.utils.models.MPTableModel;
+import mpv5.utils.ui.TableViewPersistenceHandler;
 
 /**
  *
@@ -48,6 +50,7 @@ public class QueryPanel extends javax.swing.JPanel {
     public QueryPanel() {
         initComponents();
         prinitingComboBox1.init(jTable1);
+        ((MPTable) jTable1).setPersistanceHandler(new TableViewPersistenceHandler(jTable1, this));
     }
 
     /** This method is called from within the constructor to

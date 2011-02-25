@@ -34,7 +34,7 @@ import mpv5.utils.ui.TableViewPersistenceHandler;
  */
 public class MPTable extends JTable {
 
-    private final TableViewPersistenceHandler t;
+    private TableViewPersistenceHandler persistanceHandler;
 
     /**
      * Constructs a default <code>JTable</code> that is initialized with a default
@@ -49,7 +49,8 @@ public class MPTable extends JTable {
      */
     public MPTable(JComponent identifier) {
         super();
-        t = new TableViewPersistenceHandler(this, identifier);
+        setName("43");
+     //   t = new TableViewPersistenceHandler(this, identifier);
     }
 
     /**
@@ -63,7 +64,8 @@ public class MPTable extends JTable {
      */
     public MPTable() {
         super();
-        t = new TableViewPersistenceHandler(this, (JComponent) this.getParent());
+        setName("43");
+     //   t = new TableViewPersistenceHandler(this, (JComponent) this.getParent());
     }
 
     /**
@@ -77,7 +79,8 @@ public class MPTable extends JTable {
      */
     public MPTable(TableModel dm) {
         super(dm);
-        t = new TableViewPersistenceHandler(this, (JComponent) this.getParent());
+        setName("43");
+     //   t = new TableViewPersistenceHandler(this, (JComponent) this.getParent());
     }
 
     /**
@@ -91,7 +94,8 @@ public class MPTable extends JTable {
      */
     public MPTable(TableModel dm, TableColumnModel cm) {
         super(dm, cm);
-        t = new TableViewPersistenceHandler(this, (JComponent) this.getParent());
+        setName("43");
+     //   t = new TableViewPersistenceHandler(this, (JComponent) this.getParent());
 
     }
 
@@ -115,7 +119,8 @@ public class MPTable extends JTable {
      */
     public MPTable(TableModel dm, TableColumnModel cm, ListSelectionModel sm) {
         super(dm, cm, sm);
-        t = new TableViewPersistenceHandler(this, (JComponent) this.getParent());
+        setName("43");
+     //   t = new TableViewPersistenceHandler(this, (JComponent) this.getParent());
 
     }
 
@@ -131,7 +136,8 @@ public class MPTable extends JTable {
      */
     public MPTable(int numRows, int numColumns) {
         super(numRows, numColumns);
-        t = new TableViewPersistenceHandler(this, (JComponent) this.getParent());
+        setName("43");
+     //   t = new TableViewPersistenceHandler(this, (JComponent) this.getParent());
     }
 
     /**
@@ -150,7 +156,8 @@ public class MPTable extends JTable {
      */
     public MPTable(Vector rowData, Vector columnNames) {
         super(rowData, columnNames);
-        t = new TableViewPersistenceHandler(this, (JComponent) this.getParent());
+        setName("43");
+     //   t = new TableViewPersistenceHandler(this, (JComponent) this.getParent());
     }
 
     /**
@@ -168,7 +175,8 @@ public class MPTable extends JTable {
      */
     public MPTable(final Object[][] rowData, final Object[] columnNames) {
         super(rowData, columnNames);
-        t = new TableViewPersistenceHandler(this, (JComponent) this.getParent());
+        setName("43");
+     //   t = new TableViewPersistenceHandler(this, (JComponent) this.getParent());
     }
 
     /**
@@ -178,12 +186,12 @@ public class MPTable extends JTable {
      */
     @Override
     public synchronized void setModel(TableModel model) {
-        if (t != null) {
-            t.remove();
+        if (getPersistanceHandler() != null) {
+            getPersistanceHandler().remove();
         }
         super.setModel(model);
-        if (t != null) {
-            t.set();
+        if (persistanceHandler!= null) {
+            persistanceHandler.set();
         }
     }
 
@@ -191,8 +199,8 @@ public class MPTable extends JTable {
      * Reset the columns to initial sizes (if set)
      */
     public synchronized void reset() {
-        if (t != null) {
-            t.remove();
+        if (getPersistanceHandler() != null) {
+            getPersistanceHandler().remove();
         }
         if (desiredColSizes != null) {
             createDefaultColumnsFromModel();
@@ -200,8 +208,8 @@ public class MPTable extends JTable {
         } else {
             createDefaultColumnsFromModel();
         }
-        if (t != null) {
-            t.set();
+        if (getPersistanceHandler() != null) {
+            getPersistanceHandler().set();
         }
     }
     private Integer[] desiredColSizes;
@@ -246,6 +254,23 @@ public class MPTable extends JTable {
      */
     public void setParentListPanel(ListPanel parentc) {
         this.parentc = parentc;
+    }
+
+    /**
+     * @return the persistanceHandler
+     */
+    public TableViewPersistenceHandler getPersistanceHandler() {
+        return persistanceHandler;
+    }
+
+    /**
+     * @param persistanceHandler the persistanceHandler to set
+     */
+    public void setPersistanceHandler(TableViewPersistenceHandler persistanceHandler) {
+        this.persistanceHandler = persistanceHandler;
+        if (persistanceHandler!= null) {
+            persistanceHandler.set();
+        }
     }
 //
 //    /**

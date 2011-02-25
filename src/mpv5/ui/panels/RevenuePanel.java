@@ -144,7 +144,7 @@ public class RevenuePanel extends javax.swing.JPanel implements DataPanel {
         itemtable.setFillsViewportHeight(true);
 
         ((MPTable) itemtable).setDefaultColumns(new Integer[]{100, 333, 100}, new Boolean[]{});
-        //  t = new mpv5.utils.ui.TableViewPersistenceHandler(itemtable, this);
+        ((MPTable) itemtable).setPersistanceHandler(new TableViewPersistenceHandler(itemtable, this));
     }
 
     private void calculate() {

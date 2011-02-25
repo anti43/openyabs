@@ -83,6 +83,7 @@ import mpv5.ui.dialogs.ScheduleDayEvent;
 import mpv5.ui.dialogs.Search2;
 import mpv5.ui.dialogs.subcomponents.ItemTextAreaDialog;
 import mpv5.ui.dialogs.subcomponents.ProductSelectDialog;
+import mpv5.ui.misc.MPTable;
 import mpv5.ui.popups.TablePopUp;
 import mpv5.utils.arrays.ArrayUtilities;
 import mpv5.utils.date.DateConverter;
@@ -100,6 +101,7 @@ import mpv5.utils.renderer.TableTabAction;
 import mpv5.utils.renderer.TextAreaCellEditor;
 import mpv5.utils.renderer.TextAreaCellRenderer;
 import mpv5.utils.tables.TableFormat;
+import mpv5.utils.ui.TableViewPersistenceHandler;
 import mpv5.utils.ui.TextFieldUtils;
 
 /**
@@ -292,6 +294,9 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
             }
         });
         labeledCombobox1.setSearchOnEnterEnabled(true);
+
+       ((MPTable) dataTable).setPersistanceHandler(new TableViewPersistenceHandler(dataTable, this));
+       ((MPTable) proptable).setPersistanceHandler(new TableViewPersistenceHandler(proptable, this));
 
     }
 

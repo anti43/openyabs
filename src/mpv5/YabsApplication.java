@@ -6,6 +6,7 @@ package mpv5;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import mpv5.db.objects.User;
+import org.jdesktop.application.Application;
 import org.jdesktop.application.SingleFrameApplication;
 
 /**
@@ -34,7 +35,7 @@ public class YabsApplication extends SingleFrameApplication {
      */
     @Override
     protected void configureWindow(java.awt.Window root) {
-        getApplication().getMainFrame().setTitle(Main.WINDOW_TITLE);
+//        getApplication().getMainFrame().setTitle(Main.WINDOW_TITLE);
         root.addWindowListener(new WindowAdapter() {
 
             @Override
@@ -48,8 +49,8 @@ public class YabsApplication extends SingleFrameApplication {
      * A convenient static getter for the application instance.
      * @return the instance of Main
      */
-    public static YabsApplication getApplication() {
-        return YabsApplication.getInstance(YabsApplication.class);
+    public static Application getApplication() {
+        return YabsApplication.getInstance(Application.class);
     }
 
     @Override

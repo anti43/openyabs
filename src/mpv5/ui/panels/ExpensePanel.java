@@ -55,6 +55,7 @@ import mpv5.utils.export.Exportable;
 import mpv5.utils.models.MPComboBoxModelItem;
 import mpv5.utils.models.MPTableModel;
 import mpv5.utils.numberformat.FormatNumber;
+import mpv5.utils.ui.TableViewPersistenceHandler;
 import mpv5.utils.ui.TextFieldUtils;
 
 /**
@@ -127,7 +128,7 @@ public class ExpensePanel extends javax.swing.JPanel implements DataPanel {
         itemtable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
         itemtable.setFillsViewportHeight(true);
         ((MPTable) itemtable).setDefaultColumns(new Integer[]{100, 333, 100}, new Boolean[]{});
-        //  t = new mpv5.utils.ui.TableViewPersistenceHandler(itemtable, this);
+        ((MPTable) itemtable).setPersistanceHandler(new TableViewPersistenceHandler(itemtable, this));
 
     }
 

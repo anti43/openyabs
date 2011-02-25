@@ -16,6 +16,7 @@ import mpv5.ui.misc.MPTable;
 import mpv5.utils.models.MPTableModel;
 import mpv5.utils.tables.Selection;
 import mpv5.utils.tables.TableFormat;
+import mpv5.utils.ui.TableViewPersistenceHandler;
 
 /**
  *
@@ -34,6 +35,7 @@ public class ContactsList extends javax.swing.JPanel implements ListPanel {
         prinitingComboBox1.init(listTable);
         this.context = Context.getContact();
         ((MPTable) listTable).setDefaultColumns(new Integer[]{0, 100, 100, 100, 100, 100, 100}, new Boolean[]{});
+        ((MPTable) listTable).setPersistanceHandler(new TableViewPersistenceHandler(listTable, this));
     }
 
     public ContactsList(Context context) {

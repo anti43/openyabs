@@ -285,7 +285,7 @@ public class Main implements Runnable {
         checkSingleInstance();
 
         Log.Debug(this, "Startup procedure... ");
-        getApplication().getContext().getLocalStorage().setDirectory(new File(Main.MPPATH));
+        getApplication().getContext().getLocalStorage().setDirectory(new File(MPPATH));
 
         splash.nextStep(Messages.FIRST_INSTANCE.toString());
         splash.nextStep(Messages.DB_CHECK.toString());
@@ -840,7 +840,11 @@ public class Main implements Runnable {
             new Thread(runnable1).start();
         }
         if (!HEADLESS) {
-            Scheduler.getInstance().start();
+            try {
+                Scheduler.getInstance().start();
+            } catch (Exception e) {
+                Log.Debug(e);
+            }
         }
 
         if (!HEADLESS) {

@@ -57,6 +57,7 @@ import mpv5.ui.beans.MPCombobox;
 import mpv5.ui.dialogs.DialogForFile;
 import mpv5.ui.dialogs.Popup;
 import mpv5.ui.frames.MPView;
+import mpv5.ui.misc.MPTable;
 import mpv5.ui.popups.TablePopUp;
 import mpv5.utils.arrays.ArrayUtilities;
 import mpv5.utils.date.DateConverter;
@@ -72,6 +73,7 @@ import mpv5.utils.models.MPTreeModel;
 import mpv5.utils.tables.ExcelAdapter;
 import mpv5.utils.tables.TableFormat;
 import mpv5.utils.text.TypeConversion;
+import mpv5.utils.ui.TableViewPersistenceHandler;
 
 /**
  *
@@ -120,6 +122,7 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
         refresh(null, null);
         jButton4.setEnabled(false);
         loadTemplate();
+        ((MPTable) jTable1).setPersistanceHandler(new TableViewPersistenceHandler(jTable1, this));
 
     }
 
@@ -148,6 +151,7 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
         prinitingComboBox1.init(jTable1);
 //        TreeFormat.expandTree(jTree1);
         loadTemplate();
+        ((MPTable) jTable1).setPersistanceHandler(new TableViewPersistenceHandler(jTable1, this));
     }
 
     /** This method is called from within the constructor to
