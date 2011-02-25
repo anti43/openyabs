@@ -126,12 +126,12 @@ public final class TableViewPersistenceHandler {
     }
 
     private void restore() throws IOException {
-        storage.restore(target, saveFile);
+        storage.restoreSingle(target, saveFile);
     }
 
     private void persist() {
         try {
-            storage.save(target, saveFile);
+            storage.saveSingle(target, saveFile);
             Log.Print(saveFile);
         } catch (IOException ex) {
             Log.Debug(ex);
