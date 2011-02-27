@@ -16,13 +16,16 @@
  */
 package mpv5.ui.misc;
 
+import java.util.List;
 import java.util.Vector;
 import javax.swing.JComponent;
 import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
 import javax.swing.table.TableColumnModel;
 import javax.swing.table.TableModel;
+import mpv5.db.common.DatabaseObject;
 import mpv5.ui.panels.ListPanel;
+import mpv5.utils.models.MPTableModel;
 import mpv5.utils.tables.TableFormat;
 import mpv5.utils.ui.TableViewPersistenceHandler;
 
@@ -190,6 +193,29 @@ public class MPTable extends JTable {
             getPersistanceHandler().remove();
         }
         super.setModel(model);
+        if (persistanceHandler!= null) {
+            persistanceHandler.set();
+        }
+    }
+
+    /**
+     * Sets the data model for this table to newModel and registers with it for listener notifications from the new data model.
+     * Additionally takes care of the registered {@link TableViewPersistenceHandler}.
+     * @param model
+     * @param fieldCount
+     * @param fields 
+     */
+    public synchronized void setModel(List<DatabaseObject> model, int fieldCount, String fields) {
+        if (getPersistanceHandler() != null) {
+            getPersistanceHandler().remove();
+        }
+        Object[][] data = new Object[model.size()][];
+        for (int i = 0; i < model.size(); i++) {
+            DatabaseObject databaseObject = model.get(i);
+            data[i] = databaseObject.toResolvedArray(fieldCount, fields);
+        }
+        MPTableModel m = new MPTableModel(data);
+        setModel(m);
         if (persistanceHandler!= null) {
             persistanceHandler.set();
         }
