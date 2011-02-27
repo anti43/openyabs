@@ -3,6 +3,10 @@ package mpv5.ui.panels;
 import de.muntjak.tinylookandfeel.TinyLookAndFeel;
 import java.awt.BorderLayout;
 import java.awt.Component;
+import java.io.File;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.Icon;
 import javax.swing.JButton;
 import javax.swing.JPanel;
@@ -548,8 +552,11 @@ public class MPControlPanel extends javax.swing.JPanel {
     private void jButton8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton8ActionPerformed
 
         if (Popup.Y_N_dialog(Messages.REALLY_WIPE)) {
-            FileDirectoryHandler.deleteFile(LocalSettings.getLocalFile(), false);
-            Popup.notice(Messages.WIPED_LOCALSETTINGS);
+            try {
+                FileDirectoryHandler.deleteDirectoryContent(new File(FileDirectoryHandler.getTempDir2()), ".properties", ".xml");
+            } catch (IOException ex) {
+                Popup.error(ex);
+            }
         }
     }//GEN-LAST:event_jButton8ActionPerformed
 
@@ -633,7 +640,6 @@ public class MPControlPanel extends javax.swing.JPanel {
     private void jButton18ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton18ActionPerformed
         openDetails(new ControlPanel_Reminder());
     }//GEN-LAST:event_jButton18ActionPerformed
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel actions;
     private javax.swing.JPanel buttons;

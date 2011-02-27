@@ -285,7 +285,7 @@ public class Main implements Runnable {
         checkSingleInstance();
 
         Log.Debug(this, "Startup procedure... ");
-        getApplication().getContext().getLocalStorage().setDirectory(new File(MPPATH));
+        getApplication().getContext().getLocalStorage().setDirectory(new File(LocalSettings.getProperty(LocalSettings.CACHE_DIR)));
 
         splash.nextStep(Messages.FIRST_INSTANCE.toString());
         splash.nextStep(Messages.DB_CHECK.toString());
@@ -386,7 +386,7 @@ public class Main implements Runnable {
 
         try {
             //Cleanup
-            FileDirectoryHandler.deleteDirectoryContent(new File(FileDirectoryHandler.getTempDir2()), ".properties");
+            FileDirectoryHandler.deleteDirectoryContent(new File(FileDirectoryHandler.getTempDir2()), ".properties", ".xml");
         } catch (IOException ex) {
         }
 

@@ -626,11 +626,15 @@ public abstract class FileDirectoryHandler {
         for (File file : path.listFiles()) {
             List<String> o = Arrays.asList(omit);
             String name = file.getName();
+            boolean rd = true;
             for (int i = 0; i < o.size(); i++) {
                 String string = o.get(i);
-                if (!name.toLowerCase().contains(string.toLowerCase())) {
-                    file.delete();
+                if (name.toLowerCase().contains(string.toLowerCase())) {
+                    rd = false;
                 }
+            }
+            if (rd) {
+                file.delete();
             }
         }
     }
