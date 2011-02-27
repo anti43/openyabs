@@ -632,7 +632,7 @@ public abstract class FileDirectoryHandler {
                 if (name.toLowerCase().contains(string.toLowerCase())) {
                     rd = false;
                 }
-            }
+             }
             if (rd) {
                 file.delete();
             }
