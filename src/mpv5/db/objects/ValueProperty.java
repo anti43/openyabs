@@ -49,6 +49,7 @@ import mpv5.logging.Log;
  */
 public final class ValueProperty extends DatabaseObject {
 
+
     public ValueProperty() {
         context = Context.getValueProperties();
     }

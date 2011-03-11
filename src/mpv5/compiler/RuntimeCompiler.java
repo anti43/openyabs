@@ -74,6 +74,7 @@ public final class RuntimeCompiler {
      * @param classString The string representation of the class
      *
      * @param packageName
+     * @param recompile 
      * @return
      * @throws java.io.IOException         if problems writing class files.
      * @throws ClassNotFoundException      if generated class cannot be found.
@@ -81,16 +82,16 @@ public final class RuntimeCompiler {
      * @throws InstantiationException      if cant instantiate class
      * @throws java.net.URISyntaxException if malformed class name.
      */
-    public static Class getClassFor(final String className, final String classString, final String packageName) throws URISyntaxException,
+    public static Class getClassFor(final String className, final String classString, final String packageName, boolean recompile) throws URISyntaxException,
             IOException,
             ClassNotFoundException,
             IllegalAccessException,
             InstantiationException {
 
         //Do dont recompile the same file over and over again
-        if (!new File(LocalSettings.getProperty(LocalSettings.CACHE_DIR) + File.separator + packageName.replace(".", File.separator)  + File.separator + className + ".class").exists()) {
+        if (recompile || !new File(LocalSettings.getProperty(LocalSettings.CACHE_DIR) + File.separator + packageName.replace(".", File.separator)  + File.separator + className + ".class").exists()) {
             final boolean status = compile(new TempResidentJavaFileObject(className, classString));
-            Log.Debug(RuntimeCompiler.class, "Compiled class: " + className + " Status: " + status);
+            Log.Debug(RuntimeCompiler.class, "Compiled class: " + className + " Status: " + status + "\n" +classString);
         }
         ClassLoader oldCL = Thread.currentThread().getContextClassLoader();
         ClassLoader newCL = new URLClassLoader(new URL[]{new File(LocalSettings.getProperty(LocalSettings.CACHE_DIR) + File.separator).toURI().toURL()}, oldCL);
@@ -102,6 +103,17 @@ public final class RuntimeCompiler {
         }
 
         return tempFileClass;
+    }
+    
+     public static Class getClassFor(final String className, final String classString, final String packageName) throws URISyntaxException,
+            IOException,
+            ClassNotFoundException,
+            IllegalAccessException,
+            InstantiationException {
+
+       
+
+        return getClassFor(className, classString, packageName, false);
     }
 
     /**
