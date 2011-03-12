@@ -50,6 +50,7 @@ import mpv5.ui.dialogs.Popup;
 import mpv5.utils.arrays.ArrayUtilities;
 import mpv5.utils.date.DateConverter;
 import javax.swing.JComponent;
+import mpv5.compiler.LazyInvocable;
 import mpv5.db.objects.Group;
 import mpv5.db.objects.User;
 import mpv5.globals.LocalSettings;
@@ -2044,7 +2045,17 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
     public HashMap<String, Object> resolveReferences(HashMap<String, Object> map) {
         List<ValueProperty> props = ValueProperty.getProperties(this);
         for (ValueProperty p : props) {
-            map.put("property." + p.getKey(), String.valueOf(p.getValue()));
+            if (p.getValue() instanceof LazyInvocable) {
+                try {
+                    LazyInvocable lazy = (LazyInvocable) p.getValue();
+                    lazy.doIt(this);
+                    map.put("property." + p.getKey(), String.valueOf(lazy));
+                } catch (Exception e) {
+                    Log.Debug(this, e.getMessage());
+                }
+            } else {
+                map.put("property." + p.getKey(), String.valueOf(p.getValue()));
+            }
         }
 
         if (map.containsKey("groupsids")) {

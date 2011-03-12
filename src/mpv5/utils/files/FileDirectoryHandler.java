@@ -632,7 +632,34 @@ public abstract class FileDirectoryHandler {
                 if (name.toLowerCase().contains(string.toLowerCase())) {
                     rd = false;
                 }
-             }
+            }
+            if (rd) {
+                file.delete();
+            }
+        }
+    }
+
+    /**
+     * Deletes the content of a directory, omitting files which contain $omit in their name
+     * ALL Subdirectories are deleted!
+     * @param path 
+     * @param omit
+     * @throws IOException 
+     */
+    public static void deleteDirectoryContent2(File path, String... omit) throws IOException {
+        for (File file : path.listFiles()) {
+            if (file.isDirectory()) {
+                deleteDirectoryContent2(file, omit);
+            }
+            List<String> o = Arrays.asList(omit);
+            String name = file.getName();
+            boolean rd = true;
+            for (int i = 0; i < o.size(); i++) {
+                String string = o.get(i);
+                if (name.toLowerCase().contains(string.toLowerCase())) {
+                    rd = false;
+                }
+            }
             if (rd) {
                 file.delete();
             }

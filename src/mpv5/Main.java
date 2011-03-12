@@ -386,7 +386,7 @@ public class Main implements Runnable {
 
         try {
             //Cleanup
-            FileDirectoryHandler.deleteDirectoryContent(new File(FileDirectoryHandler.getTempDir2()), ".properties", ".xml");
+            FileDirectoryHandler.deleteDirectoryContent2(new File(FileDirectoryHandler.getTempDir2()), ".properties", ".xml");
         } catch (IOException ex) {
         }
 

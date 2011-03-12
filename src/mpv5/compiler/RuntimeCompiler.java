@@ -99,7 +99,8 @@ public final class RuntimeCompiler {
         try {
             tempFileClass = newCL.loadClass(packageName + "." + className);
         } catch (ClassNotFoundException classNotFoundException) {
-            throw new ClassNotFoundException(LocalSettings.getProperty(LocalSettings.CACHE_DIR) + File.separator + packageName.replace(".", File.separator) + File.separator +className, classNotFoundException);
+            Log.Debug(classNotFoundException);
+            throw classNotFoundException;
         }
 
         return tempFileClass;
