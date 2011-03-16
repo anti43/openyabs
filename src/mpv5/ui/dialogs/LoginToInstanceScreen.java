@@ -49,10 +49,11 @@ public class LoginToInstanceScreen extends javax.swing.JDialog {
             jCheckBox1.setSelected(true);
             try {
                 jTextField1.setText(new User(Integer.valueOf(LocalSettings.getProperty("lastuser"))).getName());
-            } catch (NodataFoundException ex) {
+                jPasswordField1.requestFocus();
+            } catch (Exception ex) {
                 Log.Debug(this, ex.getMessage());
+                jTextField1.requestFocus();
             }
-            jPasswordField1.requestFocus();
         }
 
         this.addWindowListener(new WindowAdapter() {
