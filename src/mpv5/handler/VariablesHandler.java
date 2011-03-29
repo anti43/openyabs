@@ -25,6 +25,7 @@ import mpv5.db.objects.Group;
 import mpv5.db.objects.Item;
 import mpv5.db.objects.SubItem;
 import mpv5.db.objects.User;
+import mpv5.globals.Messages;
 import mpv5.logging.Log;
 import mpv5.utils.date.DateConverter;
 import mpv5.utils.numberformat.FormatNumber;
@@ -158,18 +159,25 @@ public abstract class VariablesHandler {
                 vars[i + j + 5] = (new String[]{"[grosvaluef]".toUpperCase(), FormatNumber.formatLokalCurrency(((Item) target).__getTaxvalue().doubleValue() + ((Item) target).__getNetvalue().doubleValue())});
                 vars[i + j + 6] = (new String[]{"[type]".toUpperCase(), Item.getTypeString(((Item) target).__getInttype())});
 
+                if (c.__getisMale()) {
+                    vars[i + j + 7] = (new String[]{"[contact.gender]".toUpperCase(), Messages.CONTACT_TYPE_MALE.getValue()});
+                } else {
+                    vars[i + j + 7] = (new String[]{"[contact.gender]".toUpperCase(), Messages.CONTACT_TYPE_FEMALE.getValue()});
+                }
+
             } catch (NodataFoundException ex) {
                 Log.Debug(VariablesHandler.class, ex.getMessage());
             }
         } else {
-
-            vars[i + j + 0] = (new String[]{"What is 42?", "The Answer to Life, the Universe, and Everything."});
-            vars[i + j + 1] = (new String[]{"What is 42?", "The Answer to Life, the Universe, and Everything."});
-            vars[i + j + 2] = (new String[]{"What is 42?", "The Answer to Life, the Universe, and Everything."});
-            vars[i + j + 3] = (new String[]{"What is 42?", "The Answer to Life, the Universe, and Everything."});
-            vars[i + j + 4] = (new String[]{"What is 42?", "The Answer to Life, the Universe, and Everything."});
-            vars[i + j + 5] = (new String[]{"What is 42?", "The Answer to Life, the Universe, and Everything."});
-            vars[i + j + 6] = (new String[]{"What is 42?", "The Answer to Life, the Universe, and Everything."});
+            String[] tmol = new String[]{"1", "2"};
+            vars[i + j + 0] = (tmol);
+            vars[i + j + 1] = (tmol);
+            vars[i + j + 2] = (tmol);
+            vars[i + j + 3] = (tmol);
+            vars[i + j + 4] = (tmol);
+            vars[i + j + 5] = (tmol);
+            vars[i + j + 6] = (tmol);
+            vars[i + j + 7] = (tmol);
 
         }
 
