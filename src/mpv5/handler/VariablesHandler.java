@@ -98,7 +98,7 @@ public abstract class VariablesHandler {
 //        old = target;
 
         Log.Debug(VariablesHandler.class, "Resolving vars for " + target.getContext() + "#" + target.__getIDS());
-        String[][] vars = new String[GENERIC_VARS.values().length + getSpecialVarsOf(target).length + 7][2];
+        String[][] vars = new String[GENERIC_VARS.values().length + getSpecialVarsOf(target).length + 8][2];
         GENERIC_VARS[] gens = GENERIC_VARS.values();
         int i;
         for (i = 0; i < gens.length; i++) {

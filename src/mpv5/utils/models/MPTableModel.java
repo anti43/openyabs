@@ -133,7 +133,7 @@ public class MPTableModel extends DefaultTableModel implements Cloneable, TableC
                 target.setAutoCreateRowSorter(true);
             }
         } catch (NodataFoundException ex) {
-            Logger.getLogger(MPTableModel.class.getName()).log(Level.SEVERE, null, ex);
+            Log.Debug(ex);
         }
     }
 
