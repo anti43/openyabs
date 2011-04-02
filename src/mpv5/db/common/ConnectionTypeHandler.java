@@ -83,6 +83,28 @@ public class ConnectionTypeHandler {
     }
 
     /**
+     * Uses a database engine dependent version of CONCAT to concatenate column0 with all following cols
+     * @param column0 
+     * @param columnNames 
+     * @return
+     */
+    public static String concat(String column0, String... columnNames) {
+        String result = column0;
+        for (int i = 0; i < columnNames.length; i++) {
+            String column = columnNames[i];
+            if (getDriverType() == DERBY) {
+                result += "||" + column;
+            } else if (getDriverType() == MYSQL) {
+                result += "CONCAT(" + result + "," + column + ")";
+            } else {
+                result += "||" + column;
+            }
+        }
+
+        return result;
+    }
+
+    /**
      * Constructs a new ConnHandler
      */
     public ConnectionTypeHandler() {

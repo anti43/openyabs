@@ -540,6 +540,7 @@ public class MPView extends FrameView implements YabsView {
         try {
             Image icon = Toolkit.getDefaultToolkit().getImage(this.getFrame().getClass().getResource(Constants.ICON));
             this.getFrame().setIconImage(icon);
+            this.getFrame().setTitle(Constants.TITLE);
         } catch (Exception e) {
             Log.Debug(e);
         }
