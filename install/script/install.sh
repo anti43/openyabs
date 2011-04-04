@@ -1,8 +1,16 @@
 #!/bin/bash
 
+#
+#Einstellen des Programmverzeichnisses
+unset PROGRAM_DIR
+#wenn root installiert, dann /usr/local/bin/
+#wenn user installiert, dann ~/bin/
+#wenn es wo anders hin soll, dann in der folgenden Zeile anders eintragen
+#PROGRAM_DIR=""
+#
+#######################
 
-MSG0="Loading YABS"
-MSG1="Starting YABS.."
+
 MSG2="Java exec found in "
 MSG3="OOPS, your java version is too old "
 MSG4="You need to upgrade to JRE 1.6.x or newer from http://java.sun.com"
@@ -14,6 +22,8 @@ MSG9=" hierarchy"
 MSG10="Java exec not found in PATH, starting search.."
 MSG11="Java exec found in PATH. Verifying.."
 JARNAME="yabs.jar"
+
+
 
 SAVEIFS=$IFS
 IFS=$(echo -en "\n\b")
@@ -55,10 +65,9 @@ check_version()
 
 }
 
-echo $MSG1
 
 # locate and test the java executable
-if [ "$JAVA_PROGRAM_DIR" == "" ]; then
+if [ "$JAVA_PROGRAM_DIR" = "" ]; then
   if ! command -v java &>/dev/null; then
     echo $MSG10
     if ! look_for_java ; then
@@ -76,27 +85,48 @@ fi
 
 
 # get the app dir
-PROGRAM_DIR=`cd "$PROGRAM_DIR"; pwd`
-echo "Program directory: ${PROGRAM_DIR}"
 
-if [ "$(echo ${PROGRAM_DIR}/*.jar)" = "${PROGRAM_DIR}/*.jar" ]; then
-	echo "No jar files found.. You seem to have set an invalid PROGRAM_DIR, unable to continue!"
-	exit 1
-elif ! [ -f "${PROGRAM_DIR}/$JARNAME" ]; then
-	echo "Unable to locate ${PROGRAM_DIR}/$JARNAME, aborting!"
-	exit 1
+if [ "$PROGRAM_DIR" = "" ]
+   then 
+     if [ $(id -u) -eq 0 ]
+        then PROGRAM_DIR=/usr/local/bin
+     fi
+     else 
+        PROGRAM_DIR=$HOME/bin
 fi
 
 
+#Programmpfad zusammenbauen
+YABS=$PROGRAM_DIR/YaBS
+
+mkdir -p $YABS
+cp -r * $YABS
+
+
+echo "Program directory: ${YABS}"
+
+
+
 # build the classpath
-for FILE in ${PROGRAM_DIR}/*.jar; do
+for FILE in ${YABS}/*.jar; do
    CLASSPATH="${CLASSPATH:+${CLASSPATH}:}$FILE"
 done
 
-echo $MSG0
-
-cd ${PROGRAM_DIR}
 IFS=$SAVEIFS
 
-${JAVA_PROGRAM_DIR}java -jar $JARNAME $1 $2 $3 $4 $5 $6
-echo "YABS TERMINATED."
+echo "#!/bin/bash" > yabs.sh
+echo "CLASSPATH=${CLASSPATH}" >> yabs.sh
+echo "IFS=$SAVEIFS" >> yabs.sh
+echo "${JAVA_PROGRAM_DIR}java -jar $YABS/$JARNAME $1 $2 $3 $4 $5 $6" >> yabs.sh
+chmod +x yabs.sh
+mv  yabs.sh $YABS
+pushd . > /dev/null
+cd $PROGRAM_DIR
+ln -s YaBS/yabs.sh yabs
+popd > /dev/null
+
+echo "Installation beendet. Programmstart mit 'yabs'"
+
+sync
+
+

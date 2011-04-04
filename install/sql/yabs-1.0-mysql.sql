@@ -1382,212 +1382,283 @@ ALTER TABLE wsitemsmapping
 
 DELIMITER %
 
+DROP TRIGGER IF EXISTS contacts_INDEXER1
+%
 CREATE TRIGGER contacts_INDEXER1
-	AFTER INSERT ON contacts
+        AFTER INSERT ON contacts
 
-	FOR EACH ROW BEGIN
-	INSERT INTO searchindex (groupsids, dbidentity, rowid, text) VALUES (NEW.groupsids, 'contacts',NEW.ids,NEW.cnumber||' '||NEW.taxnumber||' '||NEW.title||' '||NEW.country||' '|| NEW.prename||' '|| NEW.cname||' '|| NEW.street||' '||NEW.zip||' '|| NEW.city ||' '||NEW.mainphone||' '||NEW.fax||' '||NEW.mobilephone||' '||NEW.workphone||' '||NEW.mailaddress||' '||NEW.company||' '|| NEW.department||' '||NEW.website||' '||NEW.notes);
+        FOR EACH ROW BEGIN
+        INSERT INTO searchindex (groupsids, dbidentity, rowid, text) VALUES (NEW.groupsids, 'contacts',NEW.ids,NEW.cnumber||' '||NEW.taxnumber||' '||NEW.title||' '||NEW.country||' '|| NEW.prename||' '|| NEW.cname||' '|| NEW.street||' '||NEW.zip||' '|| NEW.city ||' '||NEW.mainphone||' '||NEW.fax||' '||NEW.mobilephone||' '||NEW.workphone||' '||NEW.mailaddress||' '||NEW.company||' '|| NEW.department||' '||NEW.website||' '||NEW.notes);
 END;
-	%
+        %
 
+DROP TRIGGER IF EXISTS contacts_INDEXER2
+%
 CREATE TRIGGER contacts_INDEXER2
-	AFTER UPDATE ON contacts
+        AFTER UPDATE ON contacts
 
-	FOR EACH ROW BEGIN
-	DELETE FROM searchindex WHERE dbidentity = 'contacts' AND  rowid = NEW.ids;
-	INSERT INTO searchindex  (groupsids, dbidentity, rowid, text) VALUES (NEW.groupsids,'contacts',NEW.ids,NEW.cnumber||' '||NEW.taxnumber||' '||NEW.title||' '||NEW.country||' '|| NEW.prename||' '|| NEW.cname||' '|| NEW.street||' '||NEW.zip||' '|| NEW.city ||' '||NEW.mainphone||' '||NEW.fax||' '||NEW.mobilephone||' '||NEW.workphone||' '||NEW.mailaddress||' '||NEW.company||' '|| NEW.department||' '||NEW.website||' '||NEW.notes);
-	INSERT INTO trashbin (deleteme, cname, rowid, description) VALUES (NEW.invisible,'contacts',NEW.ids,NEW.cnumber||' ('|| NEW.cname||')');
+        FOR EACH ROW BEGIN
+        DELETE FROM searchindex WHERE dbidentity = 'contacts' AND  rowid = NEW.ids;
+        INSERT INTO searchindex  (groupsids, dbidentity, rowid, text) VALUES (NEW.groupsids,'contacts',NEW.ids,NEW.cnumber||' '||NEW.taxnumber||' '||NEW.title||' '||NEW.country||' '|| NEW.prename||' '|| NEW.cname||' '|| NEW.street||' '||NEW.zip||' '|| NEW.city ||' '||NEW.mainphone||' '||NEW.fax||' '||NEW.mobilephone||' '||NEW.workphone||' '||NEW.mailaddress||' '||NEW.company||' '|| NEW.department||' '||NEW.website||' '||NEW.notes);
+        IF NEW.invisible != '0' THEN            
+          INSERT INTO trashbin (deleteme, cname, rowid, description) VALUES (NEW.invisible,'contacts',NEW.ids,NEW.cnumber||' ('|| NEW.cname||')');                    
+        ELSE
+          DELETE FROM trashbin WHERE cname = 'contacts' AND rowid = NEW.ids; 
+        END IF;
 END;
 %
 
+DROP TRIGGER IF EXISTS contacts_INDEXER4
+%
 CREATE TRIGGER contacts_INDEXER4
-	AFTER DELETE ON contacts
+        AFTER DELETE ON contacts
 
-	FOR EACH ROW BEGIN
-	DELETE FROM searchindex WHERE dbidentity = 'contacts' AND  rowid = OLD.ids;
-	DELETE FROM trashbin WHERE cname = 'contacts' AND  rowid = OLD.ids;
+        FOR EACH ROW BEGIN
+        DELETE FROM searchindex WHERE dbidentity = 'contacts' AND  rowid = OLD.ids;
+        DELETE FROM trashbin WHERE cname = 'contacts' AND  rowid = OLD.ids;
 END;
 %
 
+DROP TRIGGER IF EXISTS expenses_INDEXER1
+%
 CREATE TRIGGER expenses_INDEXER1
-	AFTER INSERT ON expenses
+        AFTER INSERT ON expenses
 
-	FOR EACH ROW BEGIN
-	INSERT INTO searchindex  (groupsids, dbidentity, rowid, text) VALUES (NEW.groupsids,'expenses',NEW.ids,NEW.cname||' '||NEW.dateadded);
+        FOR EACH ROW BEGIN
+        INSERT INTO searchindex  (groupsids, dbidentity, rowid, text) VALUES (NEW.groupsids,'expenses',NEW.ids,NEW.cname||' '||NEW.dateadded);
 END;
-	%
+        %
+
+DROP TRIGGER IF EXISTS expenses_INDEXER2
+%        
 CREATE TRIGGER expenses_INDEXER2
-	AFTER UPDATE ON expenses
+        AFTER UPDATE ON expenses
 
-	FOR EACH ROW BEGIN
-	DELETE FROM searchindex WHERE dbidentity = 'expenses' AND  rowid = NEW.ids;
-	INSERT INTO searchindex  (groupsids, dbidentity, rowid, text) VALUES (NEW.groupsids,'expenses',NEW.ids,NEW.cname||' '||NEW.dateadded);
-	INSERT INTO trashbin (deleteme, cname, rowid, description) VALUES (NEW.invisible,'expenses',NEW.ids,NEW.cname);
+        FOR EACH ROW BEGIN
+        DELETE FROM searchindex WHERE dbidentity = 'expenses' AND  rowid = NEW.ids;
+        INSERT INTO searchindex  (groupsids, dbidentity, rowid, text) VALUES (NEW.groupsids,'expenses',NEW.ids,NEW.cname||' '||NEW.dateadded);
+        IF NEW.invisible != '0' THEN            
+          INSERT INTO trashbin (deleteme, cname, rowid, description) VALUES (NEW.invisible,'expenses',NEW.ids,NEW.cname);          
+        ELSE
+          DELETE FROM trashbin WHERE cname = 'expenses' AND rowid = NEW.ids; 
+        END IF;
 END;
 %
 
+DROP TRIGGER IF EXISTS expenses_INDEXER4
+%
 CREATE TRIGGER expenses_INDEXER4
-	AFTER DELETE ON expenses
+        AFTER DELETE ON expenses
 
-	FOR EACH ROW BEGIN
-	DELETE FROM searchindex WHERE dbidentity = 'expenses' AND  rowid = OLD.ids;
-	DELETE FROM trashbin WHERE cname = 'expenses' AND  rowid = OLD.ids;
+        FOR EACH ROW BEGIN
+        DELETE FROM searchindex WHERE dbidentity = 'expenses' AND  rowid = OLD.ids;
+        DELETE FROM trashbin WHERE cname = 'expenses' AND  rowid = OLD.ids;
 END;
 %
 
+DROP TRIGGER IF EXISTS filestocontacts_INDEXER1
+%
 CREATE TRIGGER filestocontacts_INDEXER1
-	AFTER INSERT ON filestocontacts
+        AFTER INSERT ON filestocontacts
 
-	FOR EACH ROW BEGIN
-	INSERT INTO searchindex (groupsids, dbidentity, rowid, text) VALUES (NEW.groupsids,'filestocontacts',NEW.ids,NEW.cname||' '||NEW.description||' '||NEW.filename);
+        FOR EACH ROW BEGIN
+        INSERT INTO searchindex (groupsids, dbidentity, rowid, text) VALUES (NEW.groupsids,'filestocontacts',NEW.ids,NEW.cname||' '||NEW.description||' '||NEW.filename);
 END;
-	%
+        %
+
+DROP TRIGGER IF EXISTS filestocontacts_INDEXER2
+%        
 CREATE TRIGGER filestocontacts_INDEXER2
-	AFTER UPDATE ON filestocontacts
+        AFTER UPDATE ON filestocontacts
 
-	FOR EACH ROW BEGIN
+        FOR EACH ROW BEGIN
   DELETE FROM searchindex WHERE dbidentity = 'filestocontacts' AND  rowid = NEW.ids;
-	INSERT INTO searchindex  (groupsids, dbidentity, rowid, text) VALUES (NEW.groupsids,'filestocontacts',NEW.ids,NEW.cname||' '||NEW.description||' '||NEW.filename);
+        INSERT INTO searchindex  (groupsids, dbidentity, rowid, text) VALUES (NEW.groupsids,'filestocontacts',NEW.ids,NEW.cname||' '||NEW.description||' '||NEW.filename);
 END;
-	%
+        %
 
+DROP TRIGGER IF EXISTS filestocontacts_INDEXER4
+%
 CREATE TRIGGER filestocontacts_INDEXER4
-	AFTER DELETE ON filestocontacts
+        AFTER DELETE ON filestocontacts
 
-	FOR EACH ROW BEGIN
-	DELETE FROM searchindex WHERE dbidentity = 'filestocontacts' AND  rowid = OLD.ids;
+        FOR EACH ROW BEGIN
+        DELETE FROM searchindex WHERE dbidentity = 'filestocontacts' AND  rowid = OLD.ids;
 
-	END;
-	%
+        END;
+        %
+
+DROP TRIGGER IF EXISTS groups_INDEXER1
+%        
 CREATE TRIGGER groups_INDEXER1
-	AFTER INSERT ON groups
+        AFTER INSERT ON groups
 
-	FOR EACH ROW BEGIN
-	INSERT INTO searchindex  (groupsids, dbidentity, rowid, text) VALUES (NEW.groupsids,'groups',NEW.ids,NEW.cname||' '||NEW.description||' '||NEW.dateadded);
+        FOR EACH ROW BEGIN
+        INSERT INTO searchindex  (groupsids, dbidentity, rowid, text) VALUES (NEW.groupsids,'groups',NEW.ids,NEW.cname||' '||NEW.description||' '||NEW.dateadded);
 END;
-	%
+        %
+        
+DROP TRIGGER IF EXISTS groups_INDEXER2
+%  
 CREATE TRIGGER groups_INDEXER2
-	AFTER UPDATE ON groups
+        AFTER UPDATE ON groups
 
-	FOR EACH ROW BEGIN
-	DELETE FROM searchindex WHERE dbidentity = 'groups' AND  rowid = NEW.ids;
-	INSERT INTO searchindex  (groupsids, dbidentity, rowid, text) VALUES (NEW.groupsids,'groups',NEW.ids,NEW.cname||' '||NEW.description||' '||NEW.dateadded);
+        FOR EACH ROW BEGIN
+        DELETE FROM searchindex WHERE dbidentity = 'groups' AND  rowid = NEW.ids;
+        INSERT INTO searchindex  (groupsids, dbidentity, rowid, text) VALUES (NEW.groupsids,'groups',NEW.ids,NEW.cname||' '||NEW.description||' '||NEW.dateadded);
 END;
 %
+
+DROP TRIGGER IF EXISTS groups_INDEXER4
+%  
 CREATE TRIGGER groups_INDEXER4
-	AFTER DELETE ON groups
+        AFTER DELETE ON groups
 
-	FOR EACH ROW BEGIN
-	DELETE FROM searchindex WHERE dbidentity = 'groups' AND  rowid = OLD.ids;
+        FOR EACH ROW BEGIN
+        DELETE FROM searchindex WHERE dbidentity = 'groups' AND  rowid = OLD.ids;
 END;
-	%
+        %
+
+DROP TRIGGER IF EXISTS items_INDEXER1
+%          
 CREATE TRIGGER items_INDEXER1
-	AFTER INSERT ON items
+        AFTER INSERT ON items
 
-	FOR EACH ROW BEGIN
-	INSERT INTO searchindex  (groupsids, dbidentity, rowid, text) VALUES (NEW.groupsids,'items',NEW.ids,NEW.cname||' '||NEW.dateadded);
+        FOR EACH ROW BEGIN
+        INSERT INTO searchindex  (groupsids, dbidentity, rowid, text) VALUES (NEW.groupsids,'items',NEW.ids,NEW.cname||' '||NEW.dateadded);
 END;
-	%
+        %
+        
+DROP TRIGGER IF EXISTS items_INDEXER2
+% 
 CREATE TRIGGER items_INDEXER2
-	AFTER UPDATE ON items
+        AFTER UPDATE ON items
 
-	FOR EACH ROW BEGIN
-	DELETE FROM searchindex WHERE dbidentity = 'items' AND  rowid = NEW.ids;
-	INSERT INTO searchindex  (groupsids, dbidentity, rowid, text) VALUES (NEW.groupsids,'items',NEW.ids,NEW.cname||' '||NEW.dateadded);
-	INSERT INTO trashbin (deleteme, cname, rowid, description) VALUES (NEW.invisible,'items',NEW.ids,NEW.cname);
+        FOR EACH ROW BEGIN
+        DELETE FROM searchindex WHERE dbidentity = 'items' AND  rowid = NEW.ids;
+        INSERT INTO searchindex  (groupsids, dbidentity, rowid, text) VALUES (NEW.groupsids,'items',NEW.ids,NEW.cname||' '||NEW.dateadded);
+        IF NEW.invisible != '0' THEN            
+          INSERT INTO trashbin (deleteme, cname, rowid, description) VALUES (NEW.invisible,'items',NEW.ids,NEW.cname);          
+        ELSE
+          DELETE FROM trashbin WHERE cname = 'items' AND rowid = NEW.ids; 
+        END IF;
 END;
 %
 
+DROP TRIGGER IF EXISTS items_INDEXER4
+% 
 CREATE TRIGGER items_INDEXER4
-	AFTER DELETE ON items
+        AFTER DELETE ON items
 
-	FOR EACH ROW BEGIN
-	DELETE FROM searchindex WHERE dbidentity = 'items' AND  rowid = OLD.ids;
-  DELETE FROM trashbin WHERE cname = 'items' AND  rowid = OLD.ids;
+        FOR EACH ROW BEGIN
+        DELETE FROM searchindex WHERE dbidentity = 'items' AND  rowid = OLD.ids;
+        DELETE FROM trashbin WHERE cname = 'items' AND  rowid = OLD.ids;
 END;
-	%
+        %
 
+DROP TRIGGER IF EXISTS products_INDEXER1
+% 
 CREATE TRIGGER products_INDEXER1
-	AFTER INSERT ON products
+        AFTER INSERT ON products
 
-	FOR EACH ROW BEGIN
-	INSERT INTO searchindex  (groupsids, dbidentity, rowid, text) VALUES (NEW.groupsids,'products',NEW.ids,NEW.cname||' '||NEW.cnumber||' '||NEW.description||' '||NEW.dateadded);
+        FOR EACH ROW BEGIN
+        INSERT INTO searchindex  (groupsids, dbidentity, rowid, text) VALUES (NEW.groupsids,'products',NEW.ids,NEW.cname||' '||NEW.cnumber||' '||NEW.description||' '||NEW.dateadded);
 END;
-	%
+        %
+
+DROP TRIGGER IF EXISTS products_INDEXER2
+%         
 CREATE TRIGGER products_INDEXER2
-	AFTER UPDATE ON products
+        AFTER UPDATE ON products
 
-	FOR EACH ROW BEGIN
-	DELETE FROM searchindex WHERE dbidentity = 'products' AND  rowid = NEW.ids;
-	INSERT INTO searchindex  (groupsids, dbidentity, rowid, text) VALUES (NEW.groupsids,'products',NEW.ids,NEW.cname||' '||NEW.cnumber||' '||NEW.description||' '||NEW.dateadded);
-	INSERT INTO trashbin (deleteme, cname, rowid, description) VALUES (NEW.invisible, 'products',NEW.ids,NEW.cnumber||' ('|| NEW.cname||')');
+        FOR EACH ROW BEGIN
+        DELETE FROM searchindex WHERE dbidentity = 'products' AND  rowid = NEW.ids;
+        INSERT INTO searchindex  (groupsids, dbidentity, rowid, text) VALUES (NEW.groupsids,'products',NEW.ids,NEW.cname||' '||NEW.cnumber||' '||NEW.description||' '||NEW.dateadded);
+        IF NEW.invisible != '0' THEN            
+          INSERT INTO trashbin (deleteme, cname, rowid, description) VALUES (NEW.invisible, 'products',NEW.ids,NEW.cnumber||' ('|| NEW.cname||')');          
+        ELSE
+          DELETE FROM trashbin WHERE cname = 'products' AND rowid = NEW.ids; 
+        END IF;
 END;
 %
 
+DROP TRIGGER IF EXISTS products_INDEXER4
+% 
 CREATE TRIGGER products_INDEXER4
-	AFTER DELETE ON products
+        AFTER DELETE ON products
 
-	FOR EACH ROW BEGIN
-	DELETE FROM searchindex WHERE dbidentity = 'products' AND  rowid = OLD.ids;
-	DELETE FROM trashbin WHERE cname = 'products' AND  rowid = OLD.ids;
+        FOR EACH ROW BEGIN
+        DELETE FROM searchindex WHERE dbidentity = 'products' AND  rowid = OLD.ids;
+        DELETE FROM trashbin WHERE cname = 'products' AND  rowid = OLD.ids;
 END;
-	%
+        %
 
-
+DROP TRIGGER IF EXISTS revenues_INDEXER1
+% 
 CREATE TRIGGER revenues_INDEXER1
-	AFTER INSERT ON revenues
+        AFTER INSERT ON revenues
 
-	FOR EACH ROW BEGIN
-	INSERT INTO searchindex  (groupsids, dbidentity, rowid, text) VALUES (NEW.groupsids,'revenues',NEW.ids,NEW.cname||' '||NEW.dateadded);
+        FOR EACH ROW BEGIN
+        INSERT INTO searchindex  (groupsids, dbidentity, rowid, text) VALUES (NEW.groupsids,'revenues',NEW.ids,NEW.cname||' '||NEW.dateadded);
 END;
-	%
+        %
+
+DROP TRIGGER IF EXISTS revenues_INDEXER2
+%         
 CREATE TRIGGER revenues_INDEXER2
-	AFTER UPDATE ON revenues
+        AFTER UPDATE ON revenues
 
-	FOR EACH ROW BEGIN
-	DELETE FROM searchindex WHERE dbidentity = 'revenues' AND  rowid = NEW.ids;
-	INSERT INTO searchindex  (groupsids, dbidentity, rowid, text) VALUES (NEW.groupsids,'revenues',NEW.ids,NEW.cname||' '||NEW.dateadded);
-	INSERT INTO trashbin (deleteme, cname, rowid, description) VALUES (NEW.invisible,'revenues',NEW.ids,NEW.cname);
+        FOR EACH ROW BEGIN
+        DELETE FROM searchindex WHERE dbidentity = 'revenues' AND  rowid = NEW.ids;
+        INSERT INTO searchindex  (groupsids, dbidentity, rowid, text) VALUES (NEW.groupsids,'revenues',NEW.ids,NEW.cname||' '||NEW.dateadded);
+        IF NEW.invisible != '0' THEN            
+          INSERT INTO trashbin (deleteme, cname, rowid, description) VALUES (NEW.invisible,'revenues',NEW.ids,NEW.cname);          
+        ELSE
+          DELETE FROM trashbin WHERE cname = 'revenues' AND rowid = NEW.ids; 
+        END IF;
 END;
-	%
-CREATE TRIGGER revenues_INDEXER4
-	AFTER DELETE ON revenues
+        %
 
-	FOR EACH ROW BEGIN
-	DELETE FROM searchindex WHERE dbidentity = 'revenues' AND  rowid = OLD.ids;
-	DELETE FROM trashbin WHERE cname = 'revenues' AND  rowid = OLD.ids;
+DROP TRIGGER IF EXISTS revenues_INDEXER4
+%         
+CREATE TRIGGER revenues_INDEXER4
+        AFTER DELETE ON revenues
+
+        FOR EACH ROW BEGIN
+        DELETE FROM searchindex WHERE dbidentity = 'revenues' AND  rowid = OLD.ids;
+        DELETE FROM trashbin WHERE cname = 'revenues' AND  rowid = OLD.ids;
 END;
 %
+
+DROP TRIGGER IF EXISTS subitems_INDEXER1
+% 
 CREATE TRIGGER subitems_INDEXER1
-	AFTER INSERT ON subitems
+        AFTER INSERT ON subitems
 
-	FOR EACH ROW BEGIN
-	INSERT INTO searchindex  (groupsids, dbidentity, rowid, text) VALUES (NEW.groupsids,'subitems',NEW.ids,NEW.cname||' '||NEW.description||' '||NEW.dateadded);
+        FOR EACH ROW BEGIN
+        INSERT INTO searchindex  (groupsids, dbidentity, rowid, text) VALUES (NEW.groupsids,'subitems',NEW.ids,NEW.cname||' '||NEW.description||' '||NEW.dateadded);
 END;
-	%
+        %
+
+DROP TRIGGER IF EXISTS subitems_INDEXER2
+%         
 CREATE TRIGGER subitems_INDEXER2
-	AFTER UPDATE ON subitems
+        AFTER UPDATE ON subitems
 
-	FOR EACH ROW BEGIN
-	DELETE FROM searchindex WHERE dbidentity = 'subitems' AND  rowid = NEW.ids;
-	INSERT INTO searchindex  (groupsids, dbidentity, rowid, text) VALUES (NEW.groupsids,'subitems',NEW.ids,NEW.cname||' '||NEW.description||' '||NEW.dateadded);
+        FOR EACH ROW BEGIN
+        DELETE FROM searchindex WHERE dbidentity = 'subitems' AND  rowid = NEW.ids;
+        INSERT INTO searchindex  (groupsids, dbidentity, rowid, text) VALUES (NEW.groupsids,'subitems',NEW.ids,NEW.cname||' '||NEW.description||' '||NEW.dateadded);
 END;
-	%
+        %
 
+DROP TRIGGER IF EXISTS subitems_INDEXER4
+% 
 CREATE TRIGGER subitems_INDEXER4
-	AFTER DELETE ON subitems
+        AFTER DELETE ON subitems
 
-	FOR EACH ROW BEGIN
-	DELETE FROM searchindex WHERE dbidentity = 'subitems' AND  rowid = OLD.ids;
+        FOR EACH ROW BEGIN
+        DELETE FROM searchindex WHERE dbidentity = 'subitems' AND  rowid = OLD.ids;
 END;
-	%
-#Does not work in mysql!
-#CREATE TRIGGER THRASH_HANDLER1
-#	AFTER INSERT ON trashbin
-#	FOR EACH ROW BEGIN
-#	DELETE FROM trashbin WHERE deleteme = 0;
-#	DELETE FROM trashbin WHERE ids IN (SELECT ids FROM trashbin WHERE EXISTS( SELECT ids FROM trashbin AS tmptable WHERE trashbin.cname = tmptable.cname AND trashbin.rowid = tmptable.rowid HAVING trashbin.ids < MAX(tmptable.ids) ) );
-#END;
-#%
+        %
 DELIMITER ;
 
