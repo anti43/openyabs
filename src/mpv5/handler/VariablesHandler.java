@@ -51,7 +51,7 @@ public abstract class VariablesHandler {
         CREATE_USER("[CREATE_USER]"),
         CURRENT_USER("[CURRENT_USER]"),
         DATENUMERIC("[DATENUMERIC]"),
-        DAY("[DAY]") ;
+        DAY("[DAY]");
         private String val;
 
         GENERIC_VARS(String value) {
@@ -168,17 +168,6 @@ public abstract class VariablesHandler {
             } catch (NodataFoundException ex) {
                 Log.Debug(VariablesHandler.class, ex.getMessage());
             }
-        } else {
-            String[] tmol = new String[]{"1", "2"};
-            vars[i + j + 0] = (tmol);
-            vars[i + j + 1] = (tmol);
-            vars[i + j + 2] = (tmol);
-            vars[i + j + 3] = (tmol);
-            vars[i + j + 4] = (tmol);
-            vars[i + j + 5] = (tmol);
-            vars[i + j + 6] = (tmol);
-            vars[i + j + 7] = (tmol);
-
         }
 
         return vars;
@@ -195,9 +184,11 @@ public abstract class VariablesHandler {
         if (c != null) {
             for (int i = 0; i < c.length; i++) {
                 String[] data = c[i];
-//                Log.Debug(VariablesHandler.class, source + ": replacing key: " + data[0] + " with value: " + data[1]);
-                if (data[1] != null) {
-                    text = text.replace(data[0], data[1]);
+                if (data != null) {
+                    Log.Debug(VariablesHandler.class, source + ": replacing key: " + data[0] + " with value: " + data[1]);
+                    if (data[1] != null) {
+                        text = text.replace(data[0], data[1]);
+                    }
                 }
             }
         }

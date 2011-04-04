@@ -217,7 +217,7 @@ public class DatabaseConnection {
             }
             return true;
         } catch (Exception sQLException) {
-            Log.Debug(sQLException);
+            Log.Debug(this, sQLException.getMessage());
             return false;
         } finally {
             if (prog != null) {

@@ -79,6 +79,8 @@ public class DatabaseUpdater {
                     "ALTER TABLE valueproperties DROP COLUMN value",
                     "ALTER TABLE valueproperties ADD COLUMN value BLOB(2G) DEFAULT NULL"
                 });
+       UPDATES_DERBY.put(1.1843, new String[]{
+                    "ALTER TABLE contacts DROP CONSTRAINT const3",});
 
         ////////////////////////////////////////////////////////////////////////////////////////////
         // mysql updates
@@ -160,6 +162,8 @@ public class DatabaseUpdater {
                     "ALTER TABLE valueproperties DROP COLUMN value",
                     "ALTER TABLE valueproperties ADD COLUMN value LONGBLOB DEFAULT NULL"
                 });
+        UPDATES_MYSQL.put(1.1843, new String[]{
+                    "ALTER TABLE contacts DROP KEY CONST3",});
     }
 
     /**

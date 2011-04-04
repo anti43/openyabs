@@ -91,7 +91,7 @@ public class FormatHandler {
     }
     public static String INTEGERPART_IDENTIFIER = "{0,number,000000}";
     private DatabaseObject source = null;
-    public static YMessageFormat DEFAULT_FORMAT = new YMessageFormat(INTEGERPART_IDENTIFIER, 0);
+    public static YMessageFormat DEFAULT_FORMAT = new YMessageFormat(INTEGERPART_IDENTIFIER, null);
     /**
      * This string identifies potential start values from the format string. Use as
      * START_VALUE_IDENTIFIERstartvalueSTART_VALUE_IDENTIFIERformat
@@ -287,7 +287,8 @@ public class FormatHandler {
                     Log.Debug(FormatHandler.class, "Counter part: " + newN);
                     return getNextNumber(format, newN);
                 } else {
-                    return 1;
+                    Log.Debug(FormatHandler.class, "First entry?: " + newN);
+                    return getNextNumber(format, 0);
                 }
             } else {
                 throw new UnsupportedOperationException("FormatHandler#getNextNumber is not defined for " + forThis.getContext());
@@ -300,9 +301,9 @@ public class FormatHandler {
         }
     }
 
-    private synchronized int getNextNumber(YMessageFormat format, int lastNumber) {
+    private synchronized int getNextNumber(final YMessageFormat format, final int lastNumber) {
         DatabaseObject forThis = source;
-
+        
         String query = "";
         String cnumber = toString(format, lastNumber + 1);
         if (forThis.getContext().equals(Context.getItem())
@@ -320,9 +321,16 @@ public class FormatHandler {
                 || forThis.getContext().equals(Context.getCustomer())
                 || forThis.getContext().equals(Context.getSupplier())
                 || forThis.getContext().equals(Context.getManufacturer())) {
-
-            query = "SELECT cnumber FROM " + forThis.getDbIdentity() + " WHERE cnumber = '" + cnumber + "'";
-
+            
+            if (((Contact) forThis).__getIscustomer()) {
+                query = "SELECT cnumber FROM " + forThis.getDbIdentity() + " WHERE cnumber = '" + cnumber + "' AND iscustomer = 1";
+            } else if (((Contact) forThis).__getIsmanufacturer()) {
+                query = "SELECT cnumber FROM " + forThis.getDbIdentity() + " WHERE cnumber = '" + cnumber + "' AND ismanufacturer = 1";
+            } else if (((Contact) forThis).__getIssupplier()) {
+                query = "SELECT cnumber FROM " + forThis.getDbIdentity() + " WHERE cnumber = '" + cnumber + "' AND issupplier = 1";
+            } else {
+                query = "SELECT cnumber FROM " + forThis.getDbIdentity() + " WHERE cnumber = '" + cnumber + "' AND (issupplier = 0  AND ismanufacturer = 0 AND iscustomer = 0)";
+            }
         } else {
             query = "SELECT cnumber FROM " + forThis.getDbIdentity() + " WHERE cnumber = '" + cnumber + "'";
         }
@@ -347,8 +355,10 @@ public class FormatHandler {
      * @param number
      * @return A formatted number
      */
-    public synchronized String toString(MessageFormat format, int number) {
-        String x = VariablesHandler.parse(format.format(new Object[]{number}), source);
+    public synchronized String toString(final MessageFormat format, final int number) {
+        String fs = format.format(new Object[]{number});
+        Log.Debug(FormatHandler.class, format.toPattern() + " ? " + number + " : " + fs);
+        String x = VariablesHandler.parse(fs, source);
         if (x.length() == 0) {
             x = "0000" + number;
         }
