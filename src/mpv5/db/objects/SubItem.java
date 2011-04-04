@@ -816,7 +816,7 @@ public class SubItem extends DatabaseObject implements Triggerable {
             try {
                 Product p = (Product) DatabaseObject.getObject(Context.getProduct(), originalproductsids);
                 if (p.__getIntinventorytype() == 1) {
-                    p.setStockvalue(p.__getStockvalue().subtract(BigDecimal.ONE));
+                    p.setStockvalue(p.__getStockvalue().subtract( __getQuantityvalue() ));
                     p.save(true);
                 }
             } catch (NodataFoundException ex) {
