@@ -27,7 +27,18 @@ import mpv5.utils.export.PDFFile;
  * This class provides {@link Template} loading and caching functionality, thread-safe
  */
 public class TemplateHandler {
-
+    public static final int TYPE_BILL = 0;
+    public static final int TYPE_ORDER = 1;
+    public static final int TYPE_OFFER = 2;
+    public static final int TYPE_DELIVERY_NOTE = 3;
+    public static final int TYPE_ORDER_CONFIRMATION = 4;
+    public static final int TYPE_PRODUCT = 5;
+    public static final int TYPE_SERVICE = 6;
+    public static final int TYPE_REMINDER = 7;
+    public static final int TYPE_CONTACT = 8;
+    public static final int TYPE_JOURNAL = 9;
+    public static final int TYPE_PRODUCT_ORDER = 10;
+    public static final int TYPE_CONTRACT = 11;
     /**
      * Return true if the Template for the currently logged in user, with the given type, and matching the targets group is loaded
      * @param group
@@ -410,18 +421,7 @@ public class TemplateHandler {
             new Thread(runnable).start();
         }
     }
-    public static final int TYPE_BILL = 0;
-    public static final int TYPE_ORDER = 1;
-    public static final int TYPE_OFFER = 2;
-    public static final int TYPE_DELIVERY_NOTE = 3;
-    public static final int TYPE_ORDER_CONFIRMATION = 4;
-    public static final int TYPE_PRODUCT = 5;
-    public static final int TYPE_SERVICE = 6;
-    public static final int TYPE_REMINDER = 7;
-    public static final int TYPE_CONTACT = 8;
-    public static final int TYPE_JOURNAL = 9;
-    public static final int TYPE_PRODUCT_ORDER = 10;
-    public static final int TYPE_CONTRACT = 11;
+
     /**
      * The cache of the templates
      */

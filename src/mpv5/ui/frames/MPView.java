@@ -587,7 +587,7 @@ public class MPView extends FrameView implements YabsView {
         LocalSettings.save();
 
         if (Log.getLoglevel() == Log.LOGLEVEL_DEBUG) {
-            jMenuItem45.setEnabled(true);
+//            jMenuItem45.setEnabled(true);
         }
 
         identifierFrame.validate();
@@ -883,7 +883,7 @@ public class MPView extends FrameView implements YabsView {
         jSeparator6 = new javax.swing.JSeparator();
         jMenuItem18 = new javax.swing.JMenuItem();
         jMenuItem37 = new javax.swing.JMenuItem();
-        jMenuItem45 = new javax.swing.JMenuItem();
+        jMenuItem43 = new javax.swing.JMenuItem();
         jMenu1 = new javax.swing.JMenu();
         jMenuItem42 = new javax.swing.JMenuItem();
         jMenuItem44 = new javax.swing.JMenuItem();
@@ -989,7 +989,7 @@ public class MPView extends FrameView implements YabsView {
             parent_nav_contactsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(parent_nav_contactsLayout.createSequentialGroup()
                 .addComponent(nav_contacts, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(236, Short.MAX_VALUE))
+                .addContainerGap(207, Short.MAX_VALUE))
         );
 
         nav_outlookbar.addTab(bundle.getString("MPView.parent_nav_contacts.TabConstraints.tabTitle_1"), parent_nav_contacts); // NOI18N
@@ -1266,7 +1266,7 @@ public class MPView extends FrameView implements YabsView {
         naviPanelLayout.setVerticalGroup(
             naviPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(naviPanelLayout.createSequentialGroup()
-                .addComponent(nav_outlookbar, javax.swing.GroupLayout.DEFAULT_SIZE, 507, Short.MAX_VALUE)
+                .addComponent(nav_outlookbar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -1723,15 +1723,14 @@ public class MPView extends FrameView implements YabsView {
         });
         toolsMenu.add(jMenuItem37);
 
-        jMenuItem45.setText(bundle.getString("MPView.jMenuItem45.text")); // NOI18N
-        jMenuItem45.setEnabled(false);
-        jMenuItem45.setName("jMenuItem45"); // NOI18N
-        jMenuItem45.addActionListener(new java.awt.event.ActionListener() {
+        jMenuItem43.setText(bundle.getString("MPView.jMenuItem43.text")); // NOI18N
+        jMenuItem43.setName("jMenuItem43"); // NOI18N
+        jMenuItem43.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenuItem45ActionPerformed(evt);
+                jMenuItem43ActionPerformed(evt);
             }
         });
-        toolsMenu.add(jMenuItem45);
+        toolsMenu.add(jMenuItem43);
 
         menuBar.add(toolsMenu);
 
@@ -2441,13 +2440,19 @@ public class MPView extends FrameView implements YabsView {
 
     }//GEN-LAST:event_jMenuItem44ActionPerformed
 
-    private void jMenuItem45ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem45ActionPerformed
-        new SampleData(3, 1, true, true);
-    }//GEN-LAST:event_jMenuItem45ActionPerformed
-
     private void jMenuItem5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem5ActionPerformed
         mpv5.YabsViewProxy.instance().setClipBoardVisible(true);
     }//GEN-LAST:event_jMenuItem5ActionPerformed
+
+    private void jMenuItem43ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem43ActionPerformed
+
+
+        try {
+            Scheduler.getInstance().start();
+        } catch (Exception e) {
+            Log.Debug(e);
+        }
+    }//GEN-LAST:event_jMenuItem43ActionPerformed
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton calculatorButton;
     public javax.swing.JMenu clipboardMenu;
@@ -2521,8 +2526,8 @@ public class MPView extends FrameView implements YabsView {
     private javax.swing.JMenuItem jMenuItem40;
     private javax.swing.JMenuItem jMenuItem41;
     private javax.swing.JMenuItem jMenuItem42;
+    private javax.swing.JMenuItem jMenuItem43;
     private javax.swing.JMenuItem jMenuItem44;
-    private javax.swing.JMenuItem jMenuItem45;
     private javax.swing.JMenuItem jMenuItem5;
     private javax.swing.JMenuItem jMenuItem6;
     private javax.swing.JMenuItem jMenuItem7;
