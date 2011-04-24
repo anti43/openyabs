@@ -655,6 +655,18 @@ public class Item extends DatabaseObject implements Formattable, Templateable {
             return super.toString();
         }
     }
+    
+    @Override
+     public boolean reset() {
+        if (ids > 0) {
+            SubItem[] data = getSubitems();
+            for (int i = 0; i < data.length; i++) {
+                SubItem subItem = data[i];
+                SubItem.removeFromDeletionQueue(subItem.__getIDS());
+            }
+        }
+        return super.reset();
+    }
 
     /**
      * Fetches all properties for this item from the db

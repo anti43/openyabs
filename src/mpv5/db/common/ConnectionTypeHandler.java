@@ -95,7 +95,7 @@ public class ConnectionTypeHandler {
             if (getDriverType() == DERBY) {
                 result += "||" + column;
             } else if (getDriverType() == MYSQL) {
-                result += "CONCAT(" + result + "," + column + ")";
+                result = " CONCAT(" + result + "," + column + ")";
             } else {
                 result += "||" + column;
             }

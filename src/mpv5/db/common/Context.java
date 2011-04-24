@@ -462,11 +462,11 @@ public class Context implements Serializable {
                 getValueProperties()
             }));
 //    private String[] searchHeaders;
-    private ArrayList<String[]> references = new ArrayList<String[]>();
+    private volatile ArrayList<String[]> references = new ArrayList<String[]>();
     private boolean exclusiveConditionsAvailable = false;
-    private String exclusiveCondition;
-    private String uniqueColumns;
-    private int id = -1;
+    private volatile String exclusiveCondition;
+    private volatile String uniqueColumns;
+    private volatile int id = -1;
 
     /**
      * Constructor now private
@@ -905,8 +905,10 @@ public class Context implements Serializable {
      * @param referenceidkey They key column in the original table
      */
     public void addReference(String referencetable, String referencekey, String referenceidkey) {
-        String alias = referencetable;
-        references.add(new String[]{referencetable, referencekey, referenceidkey, alias, this.getDbIdentity()});
+        synchronized (this) {
+            String alias = referencetable;
+            references.add(new String[]{referencetable, referencekey, referenceidkey, alias, getDbIdentity()});
+        }
     }
 
     /**

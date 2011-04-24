@@ -850,12 +850,15 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
 
         boolean result = false;
         String message = null;
-        message = this.__getCName() + Messages.UNTRASHED;
+        message = this.__getCName() + " " + Messages.UNTRASHED;
 
         Log.Debug(this, "Removing from trash:");
         QueryData d = new QueryData();
         d.add("invisible", 0);
         QueryHandler.instanceOf().clone(context).update(d, new String[]{"ids", ids.toString(), ""}, message);
+        QueryHandler.instanceOf().clone("trashbin").delete(new String[][]{ 
+            new String[]{"rowid", ids.toString(), ""}
+          , new String[]{"cname", "items", "'"}}, null);
         result = true;
         Log.Debug(this, "The untrashed row has id: " + ids);
 

@@ -2448,7 +2448,7 @@ public class MPView extends FrameView implements YabsView {
 
 
         try {
-            Scheduler.getInstance().start();
+            Scheduler.getInstance().checkForOverdueEvents();
         } catch (Exception e) {
             Log.Debug(e);
         }
@@ -2968,7 +2968,11 @@ public class MPView extends FrameView implements YabsView {
     public void setClipBoardVisible(boolean show) {
         try {
             getClistview().validate();
-            BigPopup.setOnTop(getClistview());
+            if (!User.getCurrentUser().getProperty("org.openyabs.uiproperty", "clipboardtab")) {
+                BigPopup.setOnTop(getClistview());
+            } else {
+                addOrShowTab(getClistview(), "Clipboard");
+            }
 //            BigPopup.show(getClistview());
         } catch (Exception ex) {
             Logger.getLogger(MPView.class.getName()).log(Level.SEVERE, null, ex);

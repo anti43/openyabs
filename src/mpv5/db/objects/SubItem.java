@@ -96,14 +96,13 @@ public class SubItem extends DatabaseObject implements Triggerable {
             items.add(it.getOrdernr(), it);
         }
 
-        for (int i = 0; i < deletionQueue.size(); i++) {
-            if (deleteRemovedSubitems) {
+        if (deleteRemovedSubitems) {
+            for (int i = 0; i < deletionQueue.size(); i++) {
                 try {
-                    SubItem.getObject(Context.getSubItem(), deletionQueue.get(i)).delete();
+                    QueryHandler.delete(SubItem.getObject(Context.getSubItem(), deletionQueue.get(i)));
                 } catch (NodataFoundException ex) {
+                    Log.Debug(ex);
                 }
-            } else {
-                deletionQueue.remove(i);
             }
         }
         deletionQueue.clear();
@@ -240,7 +239,7 @@ public class SubItem extends DatabaseObject implements Triggerable {
 
     /**
      * Mark a subitem for deletion
-     * @param valueAt
+     * @param valueAt INT or Entity
      */
     public static void addToDeletionQueue(Object valueAt) {
         Log.Debug(SubItem.class, "Adding to deletionqueue: " + valueAt);
@@ -249,13 +248,15 @@ public class SubItem extends DatabaseObject implements Triggerable {
                 Integer isd = Integer.valueOf(valueAt.toString());
                 deletionQueue.add(isd);
             } catch (NumberFormatException numberFormatException) {
+                Integer isd = ((Entity) valueAt).getValue();
+                deletionQueue.add(isd);
             }
         }
     }
 
     /**
      * UN-Mark a subitem for deletion
-     * @param valueAt
+     * @param valueAt INT or Entity
      */
     public static void removeFromDeletionQueue(Object valueAt) {
         Log.Debug(SubItem.class, "Removing from deletionqueue: " + valueAt);
@@ -264,6 +265,8 @@ public class SubItem extends DatabaseObject implements Triggerable {
                 Integer isd = Integer.valueOf(valueAt.toString());
                 deletionQueue.remove(isd);
             } catch (NumberFormatException numberFormatException) {
+                Integer isd = ((Entity) valueAt).getValue();
+                deletionQueue.add(isd);
             }
         }
     }
@@ -816,7 +819,7 @@ public class SubItem extends DatabaseObject implements Triggerable {
             try {
                 Product p = (Product) DatabaseObject.getObject(Context.getProduct(), originalproductsids);
                 if (p.__getIntinventorytype() == 1) {
-                    p.setStockvalue(p.__getStockvalue().subtract( __getQuantityvalue() ));
+                    p.setStockvalue(p.__getStockvalue().subtract(__getQuantityvalue()));
                     p.save(true);
                 }
             } catch (NodataFoundException ex) {
@@ -833,6 +836,7 @@ public class SubItem extends DatabaseObject implements Triggerable {
 
     @Override
     public void triggerOnDelete() {
+        // Log.Debug(this, "Deleting... " + IDENTITY);
     }
 
     @Override

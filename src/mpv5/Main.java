@@ -380,7 +380,7 @@ public class Main implements Runnable {
         }
 
         if (Log.getLoglevel() == Log.LOGLEVEL_DEBUG) {
-            Log.Debug(Main.class, QueryHandler.instanceOf().getStatistics());
+//            Log.Debug(Main.class, QueryHandler.instanceOf().getStatistics());
         }
         Log.Print(GOODBYE_MESSAGE);
 

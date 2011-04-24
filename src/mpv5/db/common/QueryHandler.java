@@ -31,6 +31,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JFrame;
 import javax.swing.JProgressBar;
 import javax.swing.JTextArea;
@@ -1644,20 +1646,17 @@ public class QueryHandler implements Cloneable {
     /**
      * Deletes the given data permanently from the database
      * @param where : {value, comparison, "'"}
-     *                eg new String[][]{{"ids", "8" , ""},{"ids", "9",""}}
+     *                eg new String[]{"ids", "8" , ""}
      * @param jobmessage
      * @return True if the deletion was not terminated by constraints
      */
-    public boolean delete(String[][] where, String jobmessage) {
-//        start();
+    public boolean delete(String[] where, String jobmessage) {
         String str = "";
         String query = null;
         ReturnValue retval = null;
 
         if (where != null) {
-            for (int i = 0; i < where.length; i++) {
-                str = str + table + "." + where[i][0] + " = " + where[i][2] + where[i][1] + where[i][2];
-            }
+            str = str + table + "." + where[0] + " = " + where[2] + where[1] + where[2];
             query = "DELETE FROM " + table + " WHERE " + str;
             retval = freeQuery(query, mpv5.usermanagement.MPSecurityManager.CREATE_OR_DELETE, jobmessage);
         }
@@ -1668,8 +1667,42 @@ public class QueryHandler implements Cloneable {
             return true;
         }
     }
-
-    /**
+    
+       /**
+     * Deletes the given data permanently from the database
+     * @param where : {value, comparison, "'"}
+     *                eg new String[][]{{"ids", "8" , ""},{"ids", "9",""}}
+     * @param jobmessage
+     * @return True if the deletion was not terminated by constraints
+     */
+    public boolean delete(String[][] where, String jobmessage)  {
+        boolean ret = true;
+        if (where != null) {
+            for (int i = 0; i < where.length; i++) {
+                try {
+                    delete(where[i], jobmessage);
+                } catch (Exception ex) {
+                    Log.Debug(ex);
+                    ret = false;
+                }
+            }
+        }
+        return ret;
+    }
+    
+         /**
+     * Deletes the given data permanently from the database
+     * @param where : {value, comparison, "'"}
+     *                eg new String[][]{{"ids", "8" , ""},{"ids", "9",""}}
+     * @param jobmessage
+     * @return True if the deletion was not terminated by constraints
+     */
+    public boolean delete(String[][] where)  {
+        return delete(where, null);
+    }
+    
+    
+  /**
      * Deletes the given data permanently from the database
      * @param whereColumns
      * @param haveValues
@@ -1702,13 +1735,29 @@ public class QueryHandler implements Cloneable {
             return true;
         }
     }
+    /**
+     * Deletes the given dbo permanently from the database
+     * @param dbo 
+     * @return 
+     */
+    public synchronized static boolean delete(DatabaseObject dbo) {
+        String query = "DELETE FROM " + dbo.IDENTITY.getKey().getDbIdentity() + " WHERE ids = " + dbo.IDENTITY.getValue();
+
+        ReturnValue retval = instanceOf().freeQuery(query, mpv5.usermanagement.MPSecurityManager.CREATE_OR_DELETE, null);
+
+        if (retval == null) {
+            return false;
+        } else {
+            return true;
+        }
+    }
 
     /**
      * Convenience method for delete(where, null);
      * @param where : {value, comparison, "'"}
      * @throws Exception 
      */
-    public void delete(String[][] where) throws Exception {
+    public void delete(String[] where) throws Exception {
         delete(where, null);
     }
 
@@ -2545,7 +2594,7 @@ public class QueryHandler implements Cloneable {
      * @throws java.lang.Exception
      */
     public void removeFile(String fileid) throws Exception {
-        delete(new String[][]{{"cname", fileid, "'"}});
+        delete(new String[]{"cname", fileid, "'"});
     }
 
     /**
