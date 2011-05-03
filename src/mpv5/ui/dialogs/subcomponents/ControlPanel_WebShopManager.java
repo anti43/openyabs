@@ -1,5 +1,6 @@
 package mpv5.ui.dialogs.subcomponents;
 
+import com.google.gdata.util.common.util.Base64;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -39,7 +40,7 @@ import mpv5.webshopinterface.WSConnectionClient;
 import mpv5.webshopinterface.WSDaemon;
 import mpv5.webshopinterface.WSIManager;
 import mpv5.webshopinterface.wsdjobs.*;
-import org.bouncycastle.util.encoders.Base64;
+
 
 /**
  *

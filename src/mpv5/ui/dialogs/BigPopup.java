@@ -5,7 +5,6 @@
 package mpv5.ui.dialogs;
 
 import java.awt.BorderLayout;
-import java.awt.Dialog.ModalityType;
 import java.awt.Dimension;
 import java.awt.Point;
 import java.awt.event.KeyEvent;
@@ -185,9 +184,9 @@ public class BigPopup {
             window.pack();
             window.setAlwaysOnTop(alwaysOnTop);
             window.setModal(alwaysOnTop);
-            if (alwaysOnTop) {
-                window.setModalityType(ModalityType.APPLICATION_MODAL);
-            }
+//            if (alwaysOnTop) {
+//                window.setModal(alwaysOnTop);
+//            }
             window.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
             window.setTitle(title);
             window.addKeyListener(new KeyListener() {
