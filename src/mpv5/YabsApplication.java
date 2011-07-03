@@ -3,8 +3,6 @@
  */
 package mpv5;
 
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
 import mpv5.db.objects.User;
 import org.jdesktop.application.Application;
 import org.jdesktop.application.SingleFrameApplication;
@@ -33,18 +31,18 @@ public class YabsApplication extends SingleFrameApplication {
      * builder, so this additional configuration is not needed.
      * @param root
      */
-    @Override
-    protected void configureWindow(java.awt.Window root) {
-//        getApplication().getMainFrame().setTitle(Main.WINDOW_TITLE);
-        root.addWindowListener(new WindowAdapter() {
-
-            @Override
-            public void windowClosing(WindowEvent e) {
-                main.shutdown();
-            }
-        });
-    }
-
+//    @Override
+//    protected void configureWindow(java.awt.Window root) {
+////        getApplication().getMainFrame().setTitle(Main.WINDOW_TITLE);
+//        root.addWindowListener(new WindowAdapter() {
+//
+//            @Override
+//            public void windowClosing(WindowEvent e) {
+//                main.shutdown();
+//            }
+//        });
+//    }
+    
     /**
      * A convenient static getter for the application instance.
      * @return the instance of Main
@@ -56,5 +54,10 @@ public class YabsApplication extends SingleFrameApplication {
     @Override
     public void ready() {
         Main.setLaF(User.getCurrentUser().__getLaf());
+    }
+    
+    @Override
+    public void shutdown() {
+       main.shutdown();
     }
 }

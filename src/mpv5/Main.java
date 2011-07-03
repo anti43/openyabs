@@ -393,7 +393,7 @@ public class Main implements Runnable {
         } catch (IOException ex) {
         }
 
-        getApplication().exit();
+//        getApplication().exit();
     }
 
     /**
