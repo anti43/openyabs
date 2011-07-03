@@ -1041,7 +1041,7 @@ public class Main implements Runnable {
                     Arrays.sort(filenames);
                     int indexOfLib = Arrays.binarySearch(filenames,
                             Constants.LIBS[i]);
-                    if (indexOfLib > 0) {
+                    if (indexOfLib >= 0) {
                         Log.Debug(Main.class,
                                 "Passed: " + Constants.LIBS[i]);
                     } else {
