@@ -17,10 +17,9 @@
 package mpv5;
 
 import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import mpv5.db.common.NodataFoundException;
 import mpv5.logging.*;
+import org.jdesktop.application.Application;
 import org.jdesktop.application.SingleFrameApplication;
 import com.l2fprod.common.swing.plaf.LookAndFeelAddons;
 import enoa.connection.NoaConnection;
@@ -28,10 +27,12 @@ import enoa.handler.TemplateHandler;
 import java.awt.Cursor;
 import java.awt.Font;
 import java.io.File;
+import java.io.FileFilter;
 import java.net.HttpURLConnection;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.URL;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.Enumeration;
 import java.util.List;
@@ -72,6 +73,7 @@ import mpv5.utils.files.FileReaderWriter;
 import mpv5.utils.print.PrintJob2;
 import mpv5.utils.text.RandomText;
 import mpv5.webshopinterface.WSIManager;
+import org.apache.commons.io.filefilter.FileFileFilter;
 import org.jdesktop.application.FrameView;
 
 /**
@@ -282,6 +284,7 @@ public class Main implements Runnable {
      */
     public void startup() {
 
+        checkLibs();
         checkSingleInstance();
 
         Log.Debug(this, "Startup procedure... ");
@@ -1017,4 +1020,45 @@ public class Main implements Runnable {
             Log.Debug(ioe);
         }
     }
+    
+    @SuppressWarnings("unchecked")
+    private void checkLibs() {
+        splash.nextStep(Messages.CHECK_LIBS.toString());
+        Runnable runnable1 = new Runnable() {
+
+            @Override
+            public void run() {
+                File ilang = new File(Constants.LIBS_DIR);
+                File[] files = ilang.listFiles((FileFilter) FileFileFilter.FILE);
+                String[] filenames = new String[files.length];
+                for (int i = 0; i < files.length; i++) {
+                    filenames[i] = files[i].getName();
+                }
+                boolean failed = false;
+                for (int i = 0; i < Constants.LIBS.length; i++) {
+                    Log.Debug(Main.class,
+                            "Checking: " + Constants.LIBS[i]);
+                    Arrays.sort(filenames);
+                    int indexOfLib = Arrays.binarySearch(filenames,
+                            Constants.LIBS[i]);
+                    if (indexOfLib > 0) {
+                        Log.Debug(Main.class,
+                                "Passed: " + Constants.LIBS[i]);
+                    } else {
+                        Log.Debug(Main.class,
+                                "Missed: " + Constants.LIBS[i]);
+                        Popup.notice(Messages.MISSING_FILE.toString() + " "
+                                + Constants.LIBS[i]);
+                        failed = true;
+                    }
+                }
+                if ( failed == true ) {
+                    Popup.notice(Messages.MISSING_LIBS.toString());
+                   YabsApplication.getInstance().exit();
+                }
+            }
+        };
+
+        new Thread(runnable1).start();
+    }    
 }
