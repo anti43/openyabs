@@ -161,8 +161,10 @@ public abstract class VariablesHandler {
 
                 if (c.__getisMale()) {
                     vars[i + j + 7] = (new String[]{"[contact.gender]".toUpperCase(), Messages.CONTACT_TYPE_MALE.getValue()});
+                    vars[i + j + 8] = (new String[]{"[contact.intro]".toUpperCase(), Messages.CONTACT_INTRO_MALE.getValue()});
                 } else {
                     vars[i + j + 7] = (new String[]{"[contact.gender]".toUpperCase(), Messages.CONTACT_TYPE_FEMALE.getValue()});
+                    vars[i + j + 8] = (new String[]{"[contact.intro]".toUpperCase(), Messages.CONTACT_INTRO_FEMALE.getValue()});
                 }
 
             } catch (NodataFoundException ex) {

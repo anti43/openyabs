@@ -21,6 +21,7 @@ import ag.ion.bion.officelayer.document.DocumentException;
 import ag.ion.bion.officelayer.document.IDocument;
 import ag.ion.bion.officelayer.filter.*;
 import ag.ion.bion.officelayer.form.IFormComponent;
+import ag.ion.bion.officelayer.text.ITextCursor;
 import ag.ion.bion.officelayer.text.ITextDocument;
 import ag.ion.bion.officelayer.text.ITextField;
 import ag.ion.bion.officelayer.text.ITextFieldService;
@@ -42,17 +43,17 @@ import java.io.FileFilter;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.UnknownHostException;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.table.TableModel;
 import mpv5.db.objects.Template;
 import mpv5.db.objects.User;
 import mpv5.logging.Log;
+import org.jopendocument.util.StringInputStream;
 
 /**
  * This class OpenOffice Documents IO
@@ -229,16 +230,36 @@ public class DocumentHandler {
                 placehrepr[i] = placeholders[i].getDisplayText();
             }
         }
-
+        InputStream is = null;
+        ITextCursor cursor;
+        
         while (keys.hasNext()) {
             key = keys.next();
             try {
                 for (int i = 0; i < placehrepr.length; i++) {
                     String placeholderDisplayText = placehrepr[i];
 //                    Log.Debug(this, "Check placeholder key: " + placeholderDisplayText);
-                    if (placeholderDisplayText.equalsIgnoreCase(key) || placeholderDisplayText.equalsIgnoreCase("<" + key + ">")) {
+                    if (placeholderDisplayText.equalsIgnoreCase(key) || placeholderDisplayText.equalsIgnoreCase("<" + key + ">")
+                            || placeholderDisplayText.equalsIgnoreCase("<RTF." + key + ">")) {
                         Log.Debug(this, "Found placeholder key: " + key + " [" + data.get(key) + "]");
-                        placeholders[i].getTextRange().setText(String.valueOf(data.get(key)));
+                         if (placeholderDisplayText.startsWith("<RTF.") || placeholderDisplayText.
+                                startsWith("<rtf.")) {
+                            is = new StringInputStream(((String) data.get(key)).
+                                    replace("`",
+                                    "'"));
+                            cursor = placeholders[i].getTextDocument().
+                                    getViewCursorService().
+                                    getViewCursor().
+                                    getTextCursorFromStart();
+                            cursor.gotoRange(placeholders[i].getTextRange(),
+                                    false);
+                            cursor.insertDocument(is,
+                                    RTFFilter.FILTER);
+                            placeholders[i].getTextRange().
+                                    setText("");
+                        } else {
+                            placeholders[i].getTextRange().setText(String.valueOf(data.get(key)));
+                        }
                     }
                 }
             } catch (java.lang.Exception ex) {

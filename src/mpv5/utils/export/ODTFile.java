@@ -22,13 +22,13 @@ import enoa.handler.DocumentHandler;
 import java.io.IOException;
 import java.util.Iterator;
 import mpv5.logging.Log;
-import mpv5.ui.frames.MPView;
 
 /**
  *
  *  
  */
 public class ODTFile extends Exportable {
+    private static final long serialVersionUID = 1L;
 
     private NoaConnection nc;
     private final DocumentHandler dh;
