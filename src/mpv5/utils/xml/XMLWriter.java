@@ -29,7 +29,6 @@ import mpv5.globals.Messages;
 
 import mpv5.logging.Log;
 
-import mpv5.ui.frames.MPView;
 
 import mpv5.usermanagement.MPSecurityManager;
 
@@ -56,7 +55,7 @@ import java.util.List;
  */
 public class XMLWriter {
 
-    public static String rootElementName = Constants.XML_ROOT;
+    public static final String rootElementName = Constants.XML_ROOT;
     public static DocType DEFAULT_DOCTYPE = new DocType(rootElementName, Constants.XML_DOCTYPE_ID,
             Constants.XML_DOCTYPE_URL);
     private Element rootElement = new Element(rootElementName);
@@ -269,13 +268,18 @@ public class XMLWriter {
     public File createFile(String filename) {
         try {
             File f = FileDirectoryHandler.getTempFile(filename, "xml");
-            XMLOutputter outputter = new XMLOutputter(Format.getPrettyFormat());
+            FileWriter fw = new FileWriter(f);
+            Format format = Format.getPrettyFormat();
+            format.setEncoding(fw.getEncoding());
+            XMLOutputter outputter = new XMLOutputter(format);
 
+            Log.Debug(this, "Writing Document: " + f + " using encoding: " + fw.getEncoding());
             outputter.output(myDocument, new FileWriter(f));
 
             return f;
         } catch (java.io.IOException e) {
-            e.printStackTrace();
+            Log.Debug(this,
+                    e);
         }
 
         return null;
