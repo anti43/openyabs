@@ -39,7 +39,6 @@ import mpv5.db.objects.WSItemsMapping;
 import mpv5.db.objects.WebShop;
 import mpv5.logging.Log;
 import mpv5.pluginhandling.UserPlugin;
-import mpv5.ui.frames.MPView;
 import mpv5.usermanagement.MPSecurityManager;
 import mpv5.utils.text.RandomText;
 import mpv5.utils.xml.XMLReader;
@@ -124,6 +123,7 @@ public class Context implements Serializable {
     public static String UNIQUECOLUMNS_GROUPS = "cname";
     public static String UNIQUECOLUMNS_DEFAULT = "cname";
     public static String DETAIL_CONTACT_SEARCH = "prename,cname,street,city,country,notes";
+    private static final long serialVersionUID = 1L;
     //********** conditions ****************************************************
     private boolean isCompany = false;
     private boolean isCustomer = false;
@@ -975,7 +975,7 @@ public class Context implements Serializable {
     /**
      * @return the Company
      */
-    private boolean isCompany() {
+    public boolean isCompany() {
         return isCompany;
     }
 
