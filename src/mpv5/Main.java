@@ -271,6 +271,10 @@ public class Main implements Runnable {
      */
     public static boolean START_SERVER = false;
     /**
+     * Indicates whether lib check shall be skipped
+     */
+    public static boolean SKIP_LIBCHECK = false;
+    /**
      * The Yabs Application (JSAF)
      */
     public static Class APPLICATION_CLASS;
@@ -505,6 +509,7 @@ public class Main implements Runnable {
         org.apache.commons.cli2.Argument number = abuilder.withName("number").withMinimum(1).withMaximum(1).create();
 
         org.apache.commons.cli2.Option server = obuilder.withShortName("server").withShortName("serv").withDescription("start built-in server component").create();
+        org.apache.commons.cli2.Option ignoreLibs = obuilder.withShortName("ignorelibs").withShortName("il").withDescription("ignore Libs checking").create();
         org.apache.commons.cli2.Option showenv = obuilder.withShortName("showenv").withShortName("se").withDescription("show environmental variables").create();
         org.apache.commons.cli2.Option help = obuilder.withShortName("help").withShortName("h").withDescription("print this message").create();
         org.apache.commons.cli2.Option license = obuilder.withShortName("license").withShortName("li").withDescription("print license").create();
@@ -543,6 +548,7 @@ public class Main implements Runnable {
                 withOption(printtest).
                 withOption(params).
                 withOption(forceinstall).
+                withOption(ignoreLibs).
                 create();
 
         org.apache.commons.cli2.util.HelpFormatter hf = new org.apache.commons.cli2.util.HelpFormatter();
@@ -633,6 +639,10 @@ public class Main implements Runnable {
 
             if (cl.hasOption(server)) {
                 START_SERVER = true;
+            }
+            
+            if (cl.hasOption(ignoreLibs)) {
+                SKIP_LIBCHECK = true;
             }
 
             YConsole.setLogStreams(cl.hasOption(logfile), cl.hasOption(consolelog), cl.hasOption(windowlog));
@@ -1024,41 +1034,43 @@ public class Main implements Runnable {
     @SuppressWarnings("unchecked")
     private void checkLibs() {
         splash.nextStep(Messages.CHECK_LIBS.toString());
-        Runnable runnable1 = new Runnable() {
+        if (!SKIP_LIBCHECK) {
+            Runnable runnable1 = new Runnable() {
 
-            @Override
-            public void run() {
-                File ilang = new File(Constants.LIBS_DIR);
-                File[] files = ilang.listFiles((FileFilter) FileFileFilter.FILE);
-                String[] filenames = new String[files.length];
-                for (int i = 0; i < files.length; i++) {
-                    filenames[i] = files[i].getName();
-                }
-                boolean failed = false;
-                for (int i = 0; i < Constants.LIBS.length; i++) {
-                    Log.Debug(Main.class,
-                            "Checking: " + Constants.LIBS[i]);
-                    Arrays.sort(filenames);
-                    int indexOfLib = Arrays.binarySearch(filenames,
-                            Constants.LIBS[i]);
-                    if (indexOfLib >= 0) {
+                @Override
+                public void run() {
+                    File ilang = new File(Constants.LIBS_DIR);
+                    File[] files = ilang.listFiles((FileFilter) FileFileFilter.FILE);
+                    String[] filenames = new String[files.length];
+                    for (int i = 0; i < files.length; i++) {
+                        filenames[i] = files[i].getName();
+                    }
+                    boolean failed = false;
+                    for (int i = 0; i < Constants.LIBS.length; i++) {
                         Log.Debug(Main.class,
-                                "Passed: " + Constants.LIBS[i]);
-                    } else {
-                        Log.Debug(Main.class,
-                                "Missed: " + Constants.LIBS[i]);
-                        Popup.notice(Messages.MISSING_FILE.toString() + " "
-                                + Constants.LIBS[i]);
-                        failed = true;
+                                "Checking: " + Constants.LIBS[i]);
+                        Arrays.sort(filenames);
+                        int indexOfLib = Arrays.binarySearch(filenames,
+                                Constants.LIBS[i]);
+                        if (indexOfLib >= 0) {
+                            Log.Debug(Main.class,
+                                    "Passed: " + Constants.LIBS[i]);
+                        } else {
+                            Log.Debug(Main.class,
+                                    "Missed: " + Constants.LIBS[i]);
+                            Popup.notice(Messages.MISSING_FILE.toString() + " "
+                                    + Constants.LIBS[i]);
+                            failed = true;
+                        }
+                    }
+                    if (failed == true) {
+                        Popup.notice(Messages.MISSING_LIBS.toString());
+                        YabsApplication.getInstance().exit();
                     }
                 }
-                if ( failed == true ) {
-                    Popup.notice(Messages.MISSING_LIBS.toString());
-                   YabsApplication.getInstance().exit();
-                }
-            }
-        };
+            };
 
-        new Thread(runnable1).start();
-    }    
+            new Thread(runnable1).start();
+        }
+    }
 }
