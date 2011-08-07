@@ -2,6 +2,10 @@ package mpv5.ui.dialogs.subcomponents;
 
 import enoa.connection.NoaConnection;
 import java.awt.Component;
+import java.io.File;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import mpv5.data.PropertyStore;
 import mpv5.globals.LocalSettings;
 import mpv5.globals.Messages;
@@ -242,7 +246,8 @@ public class ControlPanel_External extends javax.swing.JPanel implements Control
                     } finally {
                         try {
                             Thread.sleep(5555);
-                        } catch (InterruptedException ex) {}
+                        } catch (InterruptedException ex) {
+                        }
                         mpv5.YabsViewProxy.instance().setWaiting(false);
                         try {
 
@@ -253,7 +258,7 @@ public class ControlPanel_External extends javax.swing.JPanel implements Control
                         }
                         Log.Debug(this, "Stopping OpenOffice.");
                         NoaConnection.stopOOOServer();
-                        
+
                     }
                 }
             };
@@ -303,6 +308,15 @@ public class ControlPanel_External extends javax.swing.JPanel implements Control
     // End of variables declaration//GEN-END:variables
 
     private void setSettings() {
+        File f = new File(labeledTextChooser2.get_Text(false));
+        if (!jCheckBox3.isSelected() && !f.isDirectory()) {
+            try {
+                labeledTextChooser2.setText(f.getParentFile().getCanonicalPath());
+            } catch (IOException ex) {
+                Log.Debug(ex);
+            }
+        }
+
         LocalSettings.setProperty(LocalSettings.OFFICE_HOME, labeledTextChooser2.get_Text(false));
         LocalSettings.setProperty(LocalSettings.OFFICE_USE, Boolean.toString(!jCheckBox1.isSelected()));
         LocalSettings.setProperty(LocalSettings.OFFICE_REMOTE, Boolean.toString(jCheckBox3.isSelected()));
