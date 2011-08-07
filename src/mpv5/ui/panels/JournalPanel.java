@@ -133,7 +133,7 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
         timeframeChooser1.setTime(new vTimeframe(DateConverter.getDate(DateConverter.getYear()), new Date()));
         prinitingComboBox1.init(jTable1);
 
-        dataOwner = dataOwner;
+        this.dataOwner = dataOwner;
         groups.setSearchEnabled(true);
         groups.setContext(Context.getGroup());
         groups.triggerSearch();
@@ -1123,8 +1123,8 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
                     preloadedTemplate = TemplateHandler.loadTemplate(Long.valueOf(dataOwner.templateGroupIds()), TemplateHandler.TYPE_JOURNAL);
                     TemplateHandler.loadTemplateFor(jButton4, Long.valueOf(dataOwner.templateGroupIds()), TemplateHandler.TYPE_JOURNAL);
                 } else {
-                    preloadedTemplate = TemplateHandler.loadTemplate(Long.valueOf(dataOwner.templateGroupIds()), TemplateHandler.TYPE_CONTACT);
-                    TemplateHandler.loadTemplateFor(jButton4, Long.valueOf(dataOwner.templateGroupIds()), TemplateHandler.TYPE_CONTACT);
+                    preloadedTemplate = TemplateHandler.loadTemplate(Long.valueOf(User.getCurrentUser().__getGroupsids()), TemplateHandler.TYPE_CONTACT);
+                    TemplateHandler.loadTemplateFor(jButton4, Long.valueOf(User.getCurrentUser().__getGroupsids()), TemplateHandler.TYPE_CONTACT);
                 }
             }
         };
