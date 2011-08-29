@@ -424,7 +424,7 @@ public class Item extends DatabaseObject implements Formattable, Templateable {
     public SubItem[] getSubitems() {
         List<DatabaseObject> data = new ArrayList<DatabaseObject>();
         try {
-            data = DatabaseObject.getReferencedObjects(this, Context.getSubItem(), DatabaseObject.getObject(Context.getSubItem()), true);
+            data = DatabaseObject.getReferencedObjects(this, Context.getSubItem(), DatabaseObject.getObject(Context.getSubItem()), false);
         } catch (NodataFoundException ex) {
             for (int i = 0; i < 6; i++) {
                 data.add(SubItem.getDefaultItem());
