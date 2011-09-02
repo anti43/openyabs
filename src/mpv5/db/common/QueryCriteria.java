@@ -36,6 +36,10 @@ public class QueryCriteria {
     private String order = "";
     private String FIELD_SEPARATOR = "<SepaRatoR>";
 
+    
+    /**
+     * @deprecated You MUST add at least one and criteria
+     */
     public QueryCriteria() {
     }
 

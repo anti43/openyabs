@@ -124,7 +124,7 @@ public class MPPLuginLoader {
         try {
             list = new ArrayList<MP5Plugin>();
             ArrayList<File> jars = new ArrayList<File>();
-            QueryCriteria criterias = new QueryCriteria();
+            QueryCriteria criterias = new QueryCriteria( );
             criterias.addAndCondition("usersids", mpv5.db.objects.User.getCurrentUser().__getIDS());
             try {
                 ArrayList<UserPlugin> data = DatabaseObject.getObjects(Context.getPluginsToUsers(), criterias);

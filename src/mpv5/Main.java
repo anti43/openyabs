@@ -692,6 +692,7 @@ public class Main implements Runnable {
         try {
             File d = FileDirectoryHandler.getTempFile("derby");
             d.createNewFile();
+            Log.Debug(Main.class, "Setting derby log to " + d.getPath());
             p.put("derby.stream.error.file", d.getPath());
 //            p.setProperty("derby.drda.startNetworkServer", "true");
 

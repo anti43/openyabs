@@ -655,9 +655,9 @@ public class Item extends DatabaseObject implements Formattable, Templateable {
             return super.toString();
         }
     }
-    
+
     @Override
-     public boolean reset() {
+    public boolean reset() {
         if (ids > 0) {
             SubItem[] data = getSubitems();
             for (int i = 0; i < data.length; i++) {
@@ -687,10 +687,17 @@ public class Item extends DatabaseObject implements Formattable, Templateable {
 
     @Override
     public boolean undelete() {
-        SubItem[] it = getSubitems();
-        for (int i = 0; i < it.length; i++) {
-            it[i].undelete();
+
+        List<DatabaseObject> data = new ArrayList<DatabaseObject>();
+        try {
+            data = DatabaseObject.getReferencedObjects(this, Context.getSubItem(), DatabaseObject.getObject(Context.getSubItem()), true);
+            for (int i = 0; i < data.size(); i++) {
+                data.get(i).undelete();
+            }
+        } catch (NodataFoundException ex) {
+            Log.Debug(this, ex.getMessage());
         }
+
         return super.undelete();
     }
 

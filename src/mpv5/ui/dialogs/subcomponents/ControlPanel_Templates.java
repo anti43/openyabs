@@ -700,7 +700,7 @@ public class ControlPanel_Templates extends javax.swing.JPanel implements Contro
         for (int i = 0; i < selectedValues.length; i++) {
             User object = (User) selectedValues[i];
 
-            QueryCriteria d = new QueryCriteria();
+            QueryCriteria d = new QueryCriteria( );
             d.addAndCondition("cname", dataOwner.__getIDS() + "@" + object.__getIDS() + "@" + groups);
             QueryHandler.instanceOf().clone(Context.getTemplatesToUsers()).delete(d);
 
@@ -734,7 +734,7 @@ public class ControlPanel_Templates extends javax.swing.JPanel implements Contro
 
             try {
                 HashMap<String, Object> hm1 = new FormFieldsHandler(t).getFormattedFormFields(null);
-                Log.Print(hm1.entrySet().toArray());
+//                Log.Print(hm1.entrySet().toArray());
                 File f = dataOwner.getFile();
                 File f2 = FileDirectoryHandler.getTempFile("pdf");
                 Export ex = new Export(dataOwner);

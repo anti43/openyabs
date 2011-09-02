@@ -64,7 +64,7 @@ public final class TableViewPersistenceHandler {
     public TableViewPersistenceHandler(final JTable target, final JComponent identifier) {
 
         saveFile = User.getCurrentUser().__getCName() + "_" + target.getName()+ "_" + identifier.getName() + ".xml";
-        Log.Print(saveFile);
+        //Log.Print(saveFile);
         storage = mpv5.YabsApplication.getApplication().getContext().getSessionStorage();
         cListener = new TableColumnModelListener() {
 
@@ -75,12 +75,12 @@ public final class TableViewPersistenceHandler {
             }
 
             public void columnMoved(TableColumnModelEvent e) {
-                Log.Print(e);
+              //  Log.Print(e);
                 persist();
             }
 
             public void columnMarginChanged(ChangeEvent e) {
-                Log.Print(e);
+               // Log.Print(e);
                 persist();
             }
 
@@ -132,7 +132,7 @@ public final class TableViewPersistenceHandler {
     private void persist() {
         try {
             storage.saveSingle(target, saveFile);
-            Log.Print(saveFile);
+          //  Log.Print(saveFile);
         } catch (IOException ex) {
             Log.Debug(ex);
         }

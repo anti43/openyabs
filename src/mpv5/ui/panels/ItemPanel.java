@@ -1610,7 +1610,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
 
         addedby.setText(User.getUsername(intaddedby_));
         try {
-            Contact owner = (Contact) DatabaseObject.getObject(Context.getContact(), contactsids_);
+            Contact owner = (Contact) DatabaseObject.getObject(Context.getContact(), contactsids_, true);
             contactname.setModel(owner);
             contactcity.setText(owner.__getCity());
             contactcompany.setText(owner.__getCompany());

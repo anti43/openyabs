@@ -93,7 +93,7 @@ public class updatedOrdersJob implements WSDaemonJob {
 
                 for (SubItem orderRow : aobs) {
                     try {
-                        QueryCriteria qs = new QueryCriteria();
+                        QueryCriteria qs = new QueryCriteria( );
 
                         qs.addAndCondition("itemsids", orderRow.__getItemsids());
 

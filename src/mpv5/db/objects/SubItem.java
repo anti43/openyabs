@@ -64,7 +64,7 @@ public class SubItem extends DatabaseObject implements Triggerable {
             }
             SubItem it = new SubItem();
             it.setOrdernr(i);
-            Log.Print(it.getOrdernr());
+           // Log.Print(it.getOrdernr());
             try {
                 if (!cloneSubitems && row[0] != null && Integer.valueOf(row[0].toString()).intValue() > 0) {
                     it.setIDS(Integer.valueOf(row[0].toString()).intValue());

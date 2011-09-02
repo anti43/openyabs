@@ -855,11 +855,14 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
         Log.Debug(this, "Removing from trash:");
         QueryData d = new QueryData();
         d.add("invisible", 0);
-        QueryHandler.instanceOf().clone(context).update(d, new String[]{"ids", ids.toString(), ""}, message);
-        QueryHandler.instanceOf().clone("trashbin").delete(new String[][]{ 
-            new String[]{"rowid", ids.toString(), ""}
-          , new String[]{"cname", "items", "'"}}, null);
-        result = true;
+        QueryHandler.instanceOf().clone(context).update(d, ids, message);
+        QueryCriteria2 c2 = new QueryCriteria2();
+        Context tr = new Context("trashbin", null);
+        c2.and(new QueryParameter(tr, "rowid", ids, QueryParameter.EQUALS));
+        c2.and(new QueryParameter(tr, "cname", context.getDbIdentity().toLowerCase(), QueryParameter.EQUALS));
+        
+        result = QueryHandler.instanceOf().clone(tr).delete(c2);
+
         Log.Debug(this, "The untrashed row has id: " + ids);
 
         final String fmessage = message;
@@ -1223,14 +1226,14 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
     }
 
     /**
-     * Searches for a specific dataset, cached or non-cached
+     * Searches for a specific dataset, cached or non-cached, including deleted
      * @param context The context to search under
      * @param id The id of the object
      * @return A database object with data, or null if none found
      * @throws NodataFoundException
      */
     public static DatabaseObject getObject(final Context context, final int id) throws NodataFoundException {
-        return getObject(context, id, false);
+        return getObject(context, id, true);
     }
 
     /**

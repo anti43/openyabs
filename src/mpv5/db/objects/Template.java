@@ -24,7 +24,9 @@ import javax.swing.table.TableModel;
 import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
 import mpv5.db.common.QueryCriteria;
+import mpv5.db.common.QueryCriteria2;
 import mpv5.db.common.QueryHandler;
+import mpv5.db.common.QueryParameter;
 import mpv5.logging.Log;
 import mpv5.utils.export.Exportable;
 import mpv5.utils.files.FileDirectoryHandler;
@@ -37,13 +39,10 @@ import mpv5.utils.text.RandomText;
  */
 public class Template extends DatabaseObject {
 
-
     /**
      * Indicates no printer association
      */
     public static final String PRINTER_UNDEFINED = "printer_undefined";
-
-  
     private String description = "";
     private String filename = "";
     private String printer = "";
@@ -177,10 +176,14 @@ public class Template extends DatabaseObject {
 
     @Override
     public boolean delete() {
-        QueryCriteria c = new QueryCriteria();
-        c.addAndCondition("cname", filename);
-        QueryHandler.instanceOf().clone(Context.getFiles()).delete(c);
-        return super.delete();
+        QueryCriteria2 c = new QueryCriteria2();
+        c.and(new QueryParameter(this.context, "cname", filename, QueryParameter.EQUALS));
+        if (QueryHandler.instanceOf().clone(Context.getFiles()).delete(c)) {
+            return super.delete();
+        } else {
+            Log.Debug(this, "Cant delete file " + filename);
+            return super.delete();
+        }
     }
 
     /**
@@ -196,8 +199,6 @@ public class Template extends DatabaseObject {
     public void setFormat(String format) {
         this.format = format;
     }
-
-   
 
     /**
      * @return the exFile
@@ -237,7 +238,7 @@ public class Template extends DatabaseObject {
         this.printer = printer;
     }
 
-    public void defineExFile(Exportable ex){
-       this.exFile = ex;
+    public void defineExFile(Exportable ex) {
+        this.exFile = ex;
     }
 }

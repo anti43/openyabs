@@ -1714,7 +1714,7 @@ public class QueryHandler implements Cloneable {
 //        Log.PrintArray(whereColumns);
 //        Log.PrintArray(haveValues);
         for (int i = 0; i < haveValues.length; i++) {
-            Log.Print(haveValues.length);
+        //    Log.Print(haveValues.length);
             Object object = haveValues[i];
             String column = whereColumns[i];
 //            if (object instanceof Number) {
@@ -1767,6 +1767,22 @@ public class QueryHandler implements Cloneable {
      */
     public void delete(QueryCriteria criterias) {
         delete(criterias.getKeys(), criterias.getValues(), null);
+    }
+    
+    /**
+     * Deletes the given data permanently from the database
+     * @param criterias
+     * @return  
+     */
+    public boolean delete(QueryCriteria2 criterias) {
+        String query = "DELETE FROM " + table + " WHERE " + criterias.getQuery();
+        ReturnValue retval = instanceOf().freeQuery(query, mpv5.usermanagement.MPSecurityManager.CREATE_OR_DELETE, null);
+
+        if (retval == null) {
+            return false;
+        } else {
+            return true;
+        }
     }
 
     /**

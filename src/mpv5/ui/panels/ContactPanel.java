@@ -1748,7 +1748,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
 
             @Override
             public void tableChanged(TableModelEvent e) {
-                Log.Print(String.valueOf(m.getValueAt(e.getLastRow(), 1)).length());
+//                Log.Print(String.valueOf(m.getValueAt(e.getLastRow(), 1)).length());
                 if (dataOwner.isExisting()) {
                     if (String.valueOf(m.getValueAt(e.getLastRow(), 1)).length() == 0) {
                         ValueProperty.deleteProperty(dataOwner, String.valueOf(m.getData()[e.getLastRow()][0]));

@@ -34,7 +34,9 @@ import mpv5.db.common.Context;
 import mpv5.db.common.QueryCriteria;
 import mpv5.db.common.DatabaseObject;
 import mpv5.db.common.NodataFoundException;
+import mpv5.db.common.QueryCriteria2;
 import mpv5.db.common.QueryHandler;
+import mpv5.db.common.QueryParameter;
 import mpv5.globals.Headers;
 import mpv5.db.objects.Group;
 import mpv5.logging.Log;
@@ -311,32 +313,28 @@ public class HistoryPanel extends javax.swing.JPanel implements ListPanel {
     // End of variables declaration//GEN-END:variables
 
     private void refresh(User forUser, Group forGroup) {
-        QueryCriteria dh = new QueryCriteria();
+        QueryCriteria2 dh = new QueryCriteria2();
         Object[][] d = new Object[0][0];
 
         if (forUser != null && !forUser.equals(User.DEFAULT)) {
             try {
- 
-                dh.addAndCondition(forUser.getType() + "name", forUser.getName());
-
+                dh.and(new QueryParameter(Context.getHistory(), forUser.getType() + "name", forUser.getName(), QueryParameter.EQUALS));
                 if (forGroup != null && !forGroup.__getCName().equals("")) {
-                    dh.addAndCondition( forGroup.getDbIdentity() + "ids", forGroup.__getIDS());
+                    dh.and(new QueryParameter(Context.getHistory(), forGroup.getDbIdentity() + "ids", forGroup.__getIDS(), QueryParameter.EQUALS));
                 }
                 Context c = Context.getHistory();
                 c.addReference(Context.getGroup());
-                d = QueryHandler.instanceOf().clone(c).select(Context.DETAILS_HISTORY, dh, timeframeChooser1.getTime());
+                d = QueryHandler.instanceOf().clone(c).select(Context.DETAILS_HISTORY, dh, timeframeChooser1.getTime()).getData();
 
             } catch (NodataFoundException ex) {
                 Log.Debug(this, ex.getMessage());
             }
         } else if (forGroup != null && !forGroup.__getCName().equals("")) {
             try {
-              
-                dh.addAndCondition( forGroup.getDbIdentity() + "ids", forGroup.__getIDS());
-
+                dh.and(new QueryParameter(Context.getHistory(), forGroup.getDbIdentity() + "ids", forGroup.__getIDS(), QueryParameter.EQUALS));
                 Context c = Context.getHistory();
                 c.addReference(Context.getGroup());
-                d = QueryHandler.instanceOf().clone(c).select(Context.DETAILS_HISTORY, dh, timeframeChooser1.getTime());
+                d = QueryHandler.instanceOf().clone(c).select(Context.DETAILS_HISTORY, dh, timeframeChooser1.getTime()).getData();
 
             } catch (NodataFoundException ex) {
                 Log.Debug(this, ex.getMessage());
@@ -344,9 +342,8 @@ public class HistoryPanel extends javax.swing.JPanel implements ListPanel {
         } else {
             try {
                 Context c = Context.getHistory();
-                dh = new QueryCriteria();
                 c.addReference(Context.getGroup());
-                d = QueryHandler.instanceOf().clone(c).select(Context.DETAILS_HISTORY, dh, timeframeChooser1.getTime());
+                d = QueryHandler.instanceOf().clone(c).select(Context.DETAILS_HISTORY, dh, timeframeChooser1.getTime()).getData();
             } catch (NodataFoundException ex) {
                 Log.Debug(this, ex.getMessage());
             }
