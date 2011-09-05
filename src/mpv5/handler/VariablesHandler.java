@@ -16,6 +16,7 @@
  */
 package mpv5.handler;
 
+import java.util.ArrayList;
 import java.util.List;
 import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
@@ -90,7 +91,7 @@ public abstract class VariablesHandler {
      * @return
      */
 //    private static DatabaseObject old;
-    public static synchronized String[][] resolveVarsFor(final DatabaseObject target) {
+    public static synchronized List<String[]> resolveVarsFor(final DatabaseObject target) {
 //
 //        if (target.equals(old)) {
 //            return null;
@@ -98,73 +99,76 @@ public abstract class VariablesHandler {
 //        old = target;
 
         Log.Debug(VariablesHandler.class, "Resolving vars for " + target.getContext() + "#" + target.__getIDS());
-        String[][] vars = new String[GENERIC_VARS.values().length + getSpecialVarsOf(target).length + 8][2];
+        List<String[]> vars = new ArrayList<String[]>();
         GENERIC_VARS[] gens = GENERIC_VARS.values();
         int i;
         for (i = 0; i < gens.length; i++) {
             VariablesHandler.GENERIC_VARS generic_vars = gens[i];
-            vars[i][0] = generic_vars.toString();
+            String varName = generic_vars.toString();
+            String varValue = "";
             try {
-                if (vars[i][0].equals(GENERIC_VARS.CREATE_USER.toString())) {
-                    vars[i][1] = User.getUsername(target.__getIntaddedby());
-                } else if (vars[i][0].equals(GENERIC_VARS.CURRENT_USER.toString())) {
-                    vars[i][1] = User.getUsername(mpv5.db.objects.User.getCurrentUser().__getIDS());
-                } else if (vars[i][0].equals(GENERIC_VARS.GROUP.toString())) {
-                    vars[i][1] = Group.getObject(Context.getGroup(), target.__getGroupsids()).__getCName();
-                } else if (vars[i][0].equals(GENERIC_VARS.MONTH.toString())) {
-                    vars[i][1] = DateConverter.getMonth();
-                } else if (vars[i][0].equals(GENERIC_VARS.MONTH_NAME.toString())) {
-                    vars[i][1] = DateConverter.getMonthName();
-                } else if (vars[i][0].equals(GENERIC_VARS.QUARTER.toString())) {
-                    vars[i][1] = String.valueOf(DateConverter.getQuarter());
-                } else if (vars[i][0].equals(GENERIC_VARS.YEAR.toString())) {
-                    vars[i][1] = DateConverter.getYear();
-                } else if (vars[i][0].equals(GENERIC_VARS.OBJECT_MONTH.toString())) {
-                    vars[i][1] = DateConverter.getMonthName(target.__getDateadded());
-                } else if (vars[i][0].equals(GENERIC_VARS.OBJECT_YEAR.toString())) {
-                    vars[i][1] = DateConverter.getYearName(target.__getDateadded());
-                } else if (vars[i][0].equals(GENERIC_VARS.DATENUMERIC.toString())) {
-                    vars[i][1] = DateConverter.getDateNumeric();
-                } else if (vars[i][0].equals(GENERIC_VARS.DAY.toString())) {
-                    vars[i][1] = DateConverter.getDayOfMonth();
+                if (varName.equals(GENERIC_VARS.CREATE_USER.toString())) {
+                    varValue = User.getUsername(target.__getIntaddedby());
+                } else if (varName.equals(GENERIC_VARS.CURRENT_USER.toString())) {
+                    varValue = User.getUsername(mpv5.db.objects.User.getCurrentUser().__getIDS());
+                } else if (varName.equals(GENERIC_VARS.GROUP.toString())) {
+                    varValue = Group.getObject(Context.getGroup(), target.__getGroupsids()).__getCName();
+                } else if (varName.equals(GENERIC_VARS.MONTH.toString())) {
+                    varValue = DateConverter.getMonth();
+                } else if (varName.equals(GENERIC_VARS.MONTH_NAME.toString())) {
+                    varValue = DateConverter.getMonthName();
+                } else if (varName.equals(GENERIC_VARS.QUARTER.toString())) {
+                    varValue = String.valueOf(DateConverter.getQuarter());
+                } else if (varName.equals(GENERIC_VARS.YEAR.toString())) {
+                    varValue = DateConverter.getYear();
+                } else if (varName.equals(GENERIC_VARS.OBJECT_MONTH.toString())) {
+                    varValue = DateConverter.getMonthName(target.__getDateadded());
+                } else if (varName.equals(GENERIC_VARS.OBJECT_YEAR.toString())) {
+                    varValue = DateConverter.getYearName(target.__getDateadded());
+                } else if (varName.equals(GENERIC_VARS.DATENUMERIC.toString())) {
+                    varValue = DateConverter.getDateNumeric();
+                } else if (varName.equals(GENERIC_VARS.DAY.toString())) {
+                    varValue = DateConverter.getDayOfMonth();
                 }
             } catch (Exception nodataFoundException) {
             }
+            vars.add(new String[]{varName, varValue});
         }
         String[] specs = getSpecialVarsOf(target);
         int j;
         for (j = 0; j < specs.length; j++) {
-            String variable = specs[j];
-            vars[i + j][0] = variable;
+            String varName = specs[j];
+            String varValue = "";
 
             List<String[]> vals;
             vals = target.getValues();
             for (int k = 0; k < vals.size(); k++) {
                 String[] value = vals.get(k);
-                if (value[0].equalsIgnoreCase(variable.substring(1, variable.length() - 1))) {
-                    vars[i + j][1] = value[1];
+                if (value[0].equalsIgnoreCase(varName.substring(1, varName.length() - 1))) {
+                    varValue = value[1];
                 }
             }
+            vars.add(new String[]{varName, varValue});
         }
 
         if (target instanceof Item) {
             try {
                 Contact c = (Contact) DatabaseObject.getObject(Context.getContact(), ((Item) target).__getContactsids());
 
-                vars[i + j + 0] = (new String[]{"[contact.cname]".toUpperCase(), c.__getCName()});
-                vars[i + j + 1] = (new String[]{"[contact.company]".toUpperCase(), c.__getCompany()});
-                vars[i + j + 2] = (new String[]{"[contact.prename]".toUpperCase(), c.__getPrename()});
-                vars[i + j + 3] = (new String[]{"[contact.title]".toUpperCase(), c.__getTitle()});
-                vars[i + j + 4] = (new String[]{"[contact.country]".toUpperCase(), c.__getCountry()});
-                vars[i + j + 5] = (new String[]{"[grosvaluef]".toUpperCase(), FormatNumber.formatLokalCurrency(((Item) target).__getTaxvalue().doubleValue() + ((Item) target).__getNetvalue().doubleValue())});
-                vars[i + j + 6] = (new String[]{"[type]".toUpperCase(), Item.getTypeString(((Item) target).__getInttype())});
+                vars.add(new String[]{"[contact.cname]".toUpperCase(), c.__getCName()});
+                vars.add(new String[]{"[contact.company]".toUpperCase(), c.__getCompany()});
+                vars.add(new String[]{"[contact.prename]".toUpperCase(), c.__getPrename()});
+                vars.add(new String[]{"[contact.title]".toUpperCase(), c.__getTitle()});
+                vars.add(new String[]{"[contact.country]".toUpperCase(), c.__getCountry()});
+                vars.add(new String[]{"[grosvaluef]".toUpperCase(), FormatNumber.formatLokalCurrency(((Item) target).__getTaxvalue().doubleValue() + ((Item) target).__getNetvalue().doubleValue())});
+                vars.add(new String[]{"[type]".toUpperCase(), Item.getTypeString(((Item) target).__getInttype())});
 
                 if (c.__getisMale()) {
-                    vars[i + j + 7] = (new String[]{"[contact.gender]".toUpperCase(), Messages.CONTACT_TYPE_MALE.getValue()});
-                    vars[i + j + 8] = (new String[]{"[contact.intro]".toUpperCase(), Messages.CONTACT_INTRO_MALE.getValue()});
+                    vars.add(new String[]{"[contact.gender]".toUpperCase(), Messages.CONTACT_TYPE_MALE.getValue()});
+                    vars.add(new String[]{"[contact.intro]".toUpperCase(), Messages.CONTACT_INTRO_MALE.getValue()});
                 } else {
-                    vars[i + j + 7] = (new String[]{"[contact.gender]".toUpperCase(), Messages.CONTACT_TYPE_FEMALE.getValue()});
-                    vars[i + j + 8] = (new String[]{"[contact.intro]".toUpperCase(), Messages.CONTACT_INTRO_FEMALE.getValue()});
+                    vars.add(new String[]{"[contact.gender]".toUpperCase(), Messages.CONTACT_TYPE_FEMALE.getValue()});
+                    vars.add(new String[]{"[contact.intro]".toUpperCase(), Messages.CONTACT_INTRO_FEMALE.getValue()});
                 }
 
             } catch (NodataFoundException ex) {
@@ -182,10 +186,10 @@ public abstract class VariablesHandler {
      * @return
      */
     public static synchronized String parse(String text, final DatabaseObject source) {
-        String[][] c = resolveVarsFor(source);
+        List<String[]> c = resolveVarsFor(source);
         if (c != null) {
-            for (int i = 0; i < c.length; i++) {
-                String[] data = c[i];
+            for (int i = 0; i < c.size(); i++) {
+                String[] data = c.get(i);
                 if (data != null) {
                     Log.Debug(VariablesHandler.class, source + ": replacing key: " + data[0] + " with value: " + data[1]);
                     if (data[1] != null) {

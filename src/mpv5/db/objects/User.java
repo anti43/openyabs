@@ -285,6 +285,7 @@ public class User extends DatabaseObject {
             setProperties();
             try {
                 Locale.setDefault(TypeConversion.stringToLocale(__getLocale()));
+                Log.Debug(this, "Locale.setDefault() for: " + Locale.getDefault());
                 ControlPanel_Fonts.applyFont(Font.decode(LocalSettings.getProperty(LocalSettings.DEFAULT_FONT)));
                 if (UIManager.getLookAndFeel().getName() == null ? __getLaf() != null : !UIManager.getLookAndFeel().getName().equals(__getLaf())) {
                     Main.setLaF(__getLaf());
@@ -564,7 +565,7 @@ public class User extends DatabaseObject {
      * Delete the users properties
      */
     public void deleteProperties() {
-        QueryCriteria c = new QueryCriteria("invisible", false);
+        QueryCriteria c = new QueryCriteria();
         c.addAndCondition("usersids", __getIDS());
         QueryHandler.instanceOf().clone(Context.getUserProperties()).delete(c);
     }
@@ -574,19 +575,16 @@ public class User extends DatabaseObject {
      */
     public void setProperties() {
 
-        QueryCriteria criteria = new QueryCriteria( );
+        QueryCriteria criteria = new QueryCriteria();
         criteria.addAndCondition("usersids", ids);
         properties = new PropertyStore();
         try {
             properties.addAll(QueryHandler.instanceOf().clone(Context.getUserProperties()).select("cname, value", criteria));
             properties.addAll(PROPERTIES_OVERRIDE);
-            defineMailConfig();
-
+            properties.setChanged(false);
         } catch (NodataFoundException ex) {
             Log.Debug(this, ex.getMessage());
         }
-
-        defineDTAConfig();
     }
 
     @Override

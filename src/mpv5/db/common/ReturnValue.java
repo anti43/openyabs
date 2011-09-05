@@ -4,6 +4,9 @@
  */
 package mpv5.db.common;
 
+import java.util.Arrays;
+import java.util.Iterator;
+import java.util.List;
 import mpv5.logging.Log;
 
 /**
@@ -31,7 +34,7 @@ public class ReturnValue {
     }
 
     public ReturnValue(int idOfIt, Object[][] data, String[] columnnames, String jobmessage) {
-        
+
         this.id = idOfIt;
         this.columnnames = columnnames;
         this.data = data;
@@ -59,11 +62,51 @@ public class ReturnValue {
     }
 
     /**
+     * First row of data retrieved by a select query
+     * @return the data
+     */
+    public Object[] getFirstRow() {
+        if (hasData()) {
+            return data[0];
+        } else {
+            return null;
+        }
+    }
+
+    /**
+     * First field of data retrieved by a select query
+     * @return the data
+     */
+    public Object getFirstEntry() {
+        if (hasData()) {
+            return data[0][0];
+        } else {
+            return null;
+        }
+    }
+
+    /**
      * All data retrieved by a select query
      * @return the data
      */
     public Object[][] getData() {
         return data;
+    }
+
+    /**
+     * All data retrieved by a select query
+     * @return the data
+     */
+    public List<Object[]> getDataAsList() {
+        return Arrays.asList(getData());
+    }
+
+    /**
+     * All data retrieved by a select query
+     * @return the data
+     */
+    public Iterator<Object[]> getDataIterator() {
+        return Arrays.asList(getData()).iterator();
     }
 
     /**
@@ -126,6 +169,6 @@ public class ReturnValue {
      * @return
      */
     public boolean hasData() {
-        return data != null && data.length > 0;
+        return data != null && data.length > 0 && data[0].length > 0 ;
     }
 }

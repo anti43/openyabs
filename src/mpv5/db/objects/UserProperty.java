@@ -22,7 +22,6 @@ import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
 import mpv5.db.common.QueryCriteria;
 import mpv5.db.common.QueryHandler;
-import mpv5.ui.frames.MPView;
 
 /**
  *

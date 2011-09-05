@@ -278,9 +278,9 @@ public class FormatHandler {
                         query, MPSecurityManager.VIEW, null);
 
                 if (val.hasData()) {
-                    Log.Debug(FormatHandler.class, "Last number found: " + val.getData()[0][0]);
+                    Log.Debug(FormatHandler.class, "Last number found: " + val.getFirstEntry());
                     try {
-                        newN = ((Formattable) forThis).getFormatHandler().getIntegerPartOf(format, val.getData()[0][0].toString());
+                        newN = ((Formattable) forThis).getFormatHandler().getIntegerPartOf(format, val.getFirstEntry().toString());
                     } catch (Exception e) {
                         Log.Debug(e);
                     }
@@ -431,8 +431,8 @@ public class FormatHandler {
             try {
                 Log.Debug(this, format.toPattern());
                 f = new YMessageFormat((VariablesHandler.parse(format.toPattern(), source)), null);
-                n = (Number) f.parse(string, new ParsePosition(startindex))[0];
                 Log.Debug(this, "Pattern: " + f.toPattern() + " for String: " + string);
+                n = (Number) f.parse(string, new ParsePosition(startindex))[0];
             } catch (Exception e) {
                 //Its 0?
                 Log.Debug(this, e.getMessage());
@@ -457,6 +457,7 @@ public class FormatHandler {
     }
 
     private static class YMessageFormat extends java.text.MessageFormat {
+        private static final long serialVersionUID = 1L;
 
         private Integer startValue = null;
 
