@@ -435,7 +435,7 @@ public class FormatHandler {
                 Log.Debug(this, "Pattern: " + f.toPattern() + " for String: " + string);
             } catch (Exception e) {
                 //Its 0?
-//                Log.Debug(this, e);
+                Log.Debug(this, e.getMessage());
             }
             if (n == null) {
                 n = 0;
