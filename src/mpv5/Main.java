@@ -381,7 +381,6 @@ public class Main implements Runnable {
                     Log.Debug(this, n);
                 }
             }
-            NoaConnection.stopOOOServer();
         } catch (Exception e) {
             Log.Debug(e);
         }

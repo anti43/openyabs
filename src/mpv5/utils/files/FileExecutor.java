@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -27,43 +28,31 @@ public class FileExecutor {
      * @param command
      */
     public static synchronized void run(String command) {
-        Log.Debug(FileExecutor.class, "Running command: " + command);
         if (Main.osIsWindows) {
             runWin(command);
         } else if (Main.osIsMacOsX || Main.osIsLinux || Main.osIsSolaris) {
-            if ((LocalSettings.hasProperty(LocalSettings.CMD_PASSWORD)
-                    && LocalSettings.getProperty(LocalSettings.CMD_PASSWORD).length() > 0)
-                    || (User.getCurrentUser().getProperties().hasProperty("cmdpassword"))) {
-                runUnixWPassword(command);
-            } else {
-                runAlternate(command);
-            }
+            runUnixWPassword(command);
         }
     }
+    
+      /**
+     * Runs a command,non- blocking, in the yabs home directory, with sudo if root password is available and os is unix
+     * @param command
+     */
+    public static synchronized void run(String[] commandArgs) {
+        runAlternate(commandArgs);
+    }
 
-    private static void runAlternate(String commandArrq) {
-        final List<String> commandList = new ArrayList<String>();
-        List<String> matchList = new ArrayList<String>();
-        Pattern regex = Pattern.compile("[^\\s\"']+|\"[^\"]*\"|'[^']*'");
-        Matcher regexMatcher = regex.matcher(commandArrq);
-        while (regexMatcher.find()) {
-            matchList.add(regexMatcher.group());
-        }
-        String[] commandArr = commandList.toArray(new String[]{});
-        final ProcessBuilder builder = new ProcessBuilder(commandArr);
+
+    private static void runAlternate(String[] commandArrq) {
+
+        final ProcessBuilder builder = new ProcessBuilder(commandArrq);
 
         Map<String, String> environment = builder.environment();
         environment.put("path", ";"); // Clearing the path variable;
-        environment.put("path", commandArr[0].replace("\\", "\\\\") + File.pathSeparator);
+        environment.put("path", commandArrq[0].replace("\\", "\\\\") + File.pathSeparator);
 
-        String command = "";
-        for (int i = 0; i
-                < builder.command().size(); i++) {
-            Object object = builder.command().get(i);
-            command += object + " ";
-        }
-
-        Log.Debug(FileExecutor.class, "runAlternate" + command);
+        Log.Debug(FileExecutor.class, "runAlternate" + Arrays.asList(commandArrq));
         Runnable runnable = new Runnable() {
 
             @Override
@@ -71,7 +60,7 @@ public class FileExecutor {
                 try {
                     Process oos = builder.start();
                     Main.addProcessToClose(oos);
-                    InputStream is = oos.getErrorStream();
+                    InputStream is = oos.getErrorStream() ;
                     InputStreamReader isr = new InputStreamReader(is);
                     BufferedReader br = new BufferedReader(isr);
                     String line;

@@ -84,7 +84,7 @@ public class NoaConnection {
 //                    }
                 } catch (Exception ex) {
                     mpv5.logging.Log.Debug(ex);//Logger.getLogger(NoaConnection.class.getName()).log(Level.SEVERE, null, ex);
-                    YabsViewProxy.instance().addMessage( Messages.OOCONNERROR + "\n" + ex);
+                    YabsViewProxy.instance().addMessage(Messages.OOCONNERROR + "\n" + ex);
                 }
             }
             return Connection;
@@ -217,13 +217,13 @@ public class NoaConnection {
         return desktopService;
     }
 
-      /**
+    /**
      * Tries to start OO in headless server mode. <code>Give it at least 3-4 seconds before attempting to use the server.</code>
      * @param path The path where the OO installation resides
      * @param port The port the server shall listen to
      * @throws IOException
      */
-    public synchronized static void startOOServerIfNotRunning(String path, int port) {
+    public synchronized static void startOOServerIfNotRunning(final String path, final int port) {
 
         final String command = path.replace("\\", "\\\\") + File.separator + LocalSettings.getProperty(LocalSettings.OFFICE_BINARY_FOLDER) + File.separator + "soffice" + " "
                 + "-headless" + " "
@@ -232,8 +232,8 @@ public class NoaConnection {
                 + "-nolockcheck" + " "
                 + "-nocrashreport" + " "
                 + "-nodefault" + " "
-                + (Main.osIsWindows?"-accept=socket,host=0.0.0.0,port=" + port + ";urp;StarOffice.Service":
-                    "-accept='socket,host=0.0.0.0,port=" + port + ";urp;StarOffice.Service'");
+                + (Main.osIsWindows ? "-accept=socket,host=0.0.0.0,port=" + port + ";urp;StarOffice.Service"
+                : "-accept='socket,host=0.0.0.0,port=" + port + ";urp;StarOffice.Service'");
 
         try {
             SocketAddress addr = new InetSocketAddress("127.0.0.1", port);
@@ -245,9 +245,13 @@ public class NoaConnection {
         }
 
         Runnable runnable = new Runnable() {
+
             public void run() {
-                FileExecutor.run(LocalSettings.hasProperty(LocalSettings.OFFICE_COMMAND)
-                        ?LocalSettings.getProperty(LocalSettings.OFFICE_COMMAND):command);
+                if (LocalSettings.hasProperty(LocalSettings.OFFICE_COMMAND)) {
+                    FileExecutor.run(LocalSettings.getProperty(LocalSettings.OFFICE_COMMAND));
+                } else {
+                    FileExecutor.run(getOOArgs(path, port));
+                }
             }
         };
 
@@ -264,67 +268,18 @@ public class NoaConnection {
      * @throws IOException
      */
     public synchronized static void startOOServer(String path, int port) throws IOException {
-        final ProcessBuilder builder = new ProcessBuilder(
-                path.replace("\\", "\\\\") + File.separator + LocalSettings.getProperty(LocalSettings.OFFICE_BINARY_FOLDER) + File.separator + "soffice",
-                "-headless",
-                "-nofirststartwizard",
-                //                "-invisible",
-                "-norestore",
-                "-nolockcheck",
-                "-nocrashreport",
-                "-nodefault",
-                "-accept=socket,host=0.0.0.0,port=" + port + ";urp;StarOffice.Service");
-
-        Map<String, String> environment = builder.environment();
-        environment.put("path", ";"); // Clearing the path variable;
-        environment.put("path", path.replace("\\", "\\\\") + File.pathSeparator);
-
-        String command = "";
-        for (int i = 0; i
-                < builder.command().size(); i++) {
-            Object object = builder.command().get(i);
-            command += object + " ";
-        }
-
-        Log.Debug(NoaConnection.class, command);
-        Runnable runnable = new Runnable() {
-
-            @Override
-            public void run() {
-                try {
-                    Process oos = builder.start();
-                    OOOServers.add(oos);
-                    InputStream is = oos.getErrorStream();
-                    InputStreamReader isr = new InputStreamReader(is);
-                    BufferedReader br = new BufferedReader(isr);
-                    String line;
-
-                    while ((line = br.readLine()) != null) {
-                        mpv5.logging.Log.Print(line);
-                    }
-                } catch (IOException ex) {
-                    stopOOOServer();
-                    Notificator.raiseNotification(ex, true);
-                }
-            }
-        };
-        new Thread(runnable).start();
+        FileExecutor.run(getOOArgs(path, port));
     }
-    private static List<Process> OOOServers = new Vector<Process>();
 
-    /**
-     * Stops all OOO servers instances started by this instance
-     */
-    public synchronized static void stopOOOServer() {
-        for (int i = 0; i < OOOServers.size(); i++) {
-            try {
-                Process process = OOOServers.get(i);
-                process.destroy();
-                process.waitFor();
-            } catch (InterruptedException ex) {
-                Log.Debug(ex);
-            }
-        }
-        
+    private static String[] getOOArgs(String path, int port) {
+        return new String[]{path.replace("\\", "\\\\") + File.separator + LocalSettings.getProperty(LocalSettings.OFFICE_BINARY_FOLDER) + File.separator + "soffice",
+                    "-headless",
+                    "-nofirststartwizard",
+                    //                "-invisible",
+                    "-norestore",
+                    "-nolockcheck",
+                    "-nocrashreport",
+                    "-nodefault",
+                    "-accept=socket,host=0.0.0.0,port=" + port + ";urp;StarOffice.Service"};
     }
 }

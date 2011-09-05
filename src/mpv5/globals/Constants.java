@@ -55,7 +55,7 @@ public interface Constants {
      *
      * Alias
      */
-    public static final String TITLE = "[43]";
+    public static final String TITLE = "[Late Night Yabs]";
     /**
      *
      * Name of the main JAR
@@ -92,6 +92,7 @@ public interface Constants {
     public static String CURRENT_VERSION_URL = "http://mp-rechnungs-und-kundenverwaltung.googlecode.com/files/" + VERSION + ".zip";
     public static final String[] CONTRIBUTORS = new String[]{
         "Andreas Weber",
+        "digger@bw",
         "P.Eser",
         "Christian Gabel",
         "Daniel Lang",

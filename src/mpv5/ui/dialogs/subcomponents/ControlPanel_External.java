@@ -250,15 +250,11 @@ public class ControlPanel_External extends javax.swing.JPanel implements Control
                         }
                         mpv5.YabsViewProxy.instance().setWaiting(false);
                         try {
-
                             NoaConnection.getConnection().getDesktopService().getFramesCount();
                             Popup.notice(Messages.OO_DONE_LOADING);
                         } catch (Exception e) {
                             Popup.notice(Messages.ERROR_OCCURED);
                         }
-                        Log.Debug(this, "Stopping OpenOffice.");
-                        NoaConnection.stopOOOServer();
-
                     }
                 }
             };
