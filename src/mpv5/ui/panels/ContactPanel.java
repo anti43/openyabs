@@ -161,6 +161,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
                 Context c = Context.getItem(Item.TYPE_BILL, null);
                 Object[][] data = new DatabaseSearch(c).getValuesFor(Context.DEFAULT_ITEM_SEARCH, "contactsids", dataOwner.__getIDS());
                 dataTable.setModel(new MPTableModel(data, Headers.ITEM_DEFAULT));
+                dataTable.setTypes(new Class[]{Integer.class, Object.class, Date.class, Double.class});
                 dataTableContent = ITEM;
                 addfile.setEnabled(false);
                 removefile.setEnabled(false);
@@ -1233,6 +1234,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
         Object[][] data = new DatabaseSearch(c).getValuesFor(Context.DEFAULT_ITEM_SEARCH, "contactsids", dataOwner.__getIDS());
 
         dataTable.setModel(new MPTableModel(data, Headers.ITEM_DEFAULT));
+        dataTable.setTypes(new Class[]{Integer.class, Object.class, Date.class, Double.class});
         TableFormat.stripFirstColumn(dataTable);
         dataTableContent = ITEM;
         addfile.setEnabled(false);
@@ -1245,6 +1247,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
         Object[][] data = new DatabaseSearch(c).getValuesFor(Context.DEFAULT_ITEM_SEARCH, "contactsids", dataOwner.__getIDS());
 
         dataTable.setModel(new MPTableModel(data, Headers.ITEM_DEFAULT));
+        dataTable.setTypes(new Class[]{Integer.class, Object.class, Date.class, Double.class});
         TableFormat.stripFirstColumn(dataTable);
         dataTableContent = ITEM;
         addfile.setEnabled(false);
