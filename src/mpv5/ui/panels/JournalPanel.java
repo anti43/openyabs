@@ -582,7 +582,8 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
     private void jTable1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable1MouseClicked
         if (evt.getClickCount() > 1) {
             try {
-                DatabaseObject obj = DatabaseObject.getObject((DatabaseObject.Entity<?, ?>) jTable1.getModel().getValueAt(jTable1.getSelectedRow(), 0));
+            int index = jTable1.convertRowIndexToModel(jTable1.getSelectedRow());
+                DatabaseObject obj = DatabaseObject.getObject((DatabaseObject.Entity<?, ?>) jTable1.getModel().getValueAt(index, 0));
                 mpv5.YabsViewProxy.instance().addTab(obj);
             } catch (NodataFoundException ex) {
                 Log.Debug(ex);
@@ -991,14 +992,19 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
 
                 public void actionPerformed(ActionEvent e) {
                     if (Popup.Y_N_dialog(Messages.REALLY_DELETE2 + " (" + jTable1.getSelectedRowCount() + ")")) {
-                        for (int i = 0; i < jTable1.getSelectedRows().length; i++) {
+                    int[] rows = jTable1.getSelectedRows();
+                        for (int i = 0; i < rows.length; i++) {
                             try {
-                                DatabaseObject obj = DatabaseObject.getObject((DatabaseObject.Entity<?, ?>) jTable1.getModel().getValueAt(jTable1.getSelectedRow(), 0));
+                            int index = jTable1.convertRowIndexToModel(rows[i]);
+                                DatabaseObject obj = DatabaseObject.getObject((DatabaseObject.Entity<?, ?>) jTable1.getModel().getValueAt(index, 0));
                                 obj.delete();
-                                jTable1.getSelectionModel().removeSelectionInterval(jTable1.getSelectedRows()[i] - 1, jTable1.getSelectedRows()[i]);
+                                jTable1.getSelectionModel().removeSelectionInterval(rows[i] - 1, rows[i]);
                             } catch (NodataFoundException ex) {
                                 Log.Debug(ex);
-                            }
+  }catch(Exception exc){
+  Log.debug(exc);
+  Popup.error(exc);
+  }
                         }
                         setData();
                     }
@@ -1007,9 +1013,11 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
 
                 public void actionPerformed(ActionEvent e) {
                     int count = 0;
-                    for (int i = 0; i < jTable1.getSelectedRows().length; i++) {
+                    int[] rows = jTable1.getSelectedrows();
+                    for (int i = 0; i < rows.length; i++) {
                         try {
-                            DatabaseObject obj = DatabaseObject.getObject((DatabaseObject.Entity<?, ?>) jTable1.getModel().getValueAt(jTable1.getSelectedRow(), 0));
+                        int index = jTable1.convertRowIndexToModel(rows[i]);
+                            DatabaseObject obj = DatabaseObject.getObject((DatabaseObject.Entity<?, ?>) jTable1.getModel().getValueAt(index, 0));
                             if (obj.getContext().equals(Context.getItem())) {
                                 Item item = (Item) obj;
                                 if (item.__getIntstatus() != Item.STATUS_PAID) {
@@ -1021,9 +1029,11 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
                         }
                     }
                     if (Popup.Y_N_dialog(Messages.REALLY_CHANGE2 + " (" + count + ")")) {
-                        for (int i = 0; i < jTable1.getSelectedRows().length; i++) {
+                    int[] rows = jTable1.getSelectedrows();
+                        for (int i = 0; i < rows.length; i++) {
                             try {
-                                DatabaseObject obj = DatabaseObject.getObject((DatabaseObject.Entity<?, ?>) jTable1.getModel().getValueAt(jTable1.getSelectedRow(), 0));
+                            int index = jTable1.convertRowIndexToModel(jTable1.getSelectedRow());
+                                DatabaseObject obj = DatabaseObject.getObject((DatabaseObject.Entity<?, ?>) jTable1.getModel().getValueAt(index, 0));
                                 if (obj.getContext().equals(Context.getItem())) {
                                     Item item = (Item) obj;
                                     if (item.__getIntstatus() == Item.STATUS_PAID) {
@@ -1032,7 +1042,7 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
                                     } else {
                                         item.setIntstatus(Item.STATUS_PAID);
                                         item.save();
-                                        jTable1.getSelectionModel().removeSelectionInterval(jTable1.getSelectedRows()[i] - 1, jTable1.getSelectedRows()[i]);
+                                        jTable1.getSelectionModel().removeSelectionInterval(rows[i] - 1,rows[i]);
                                     }
                                 } else if (obj.getContext().equals(Context.getRevenue())) {
                                 } else if (obj.getContext().equals(Context.getExpense())) {
@@ -1139,7 +1149,8 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
             List<Item> items = new Vector<Item>();
             for (int i = 0; i < jTable1.getSelectedRows().length; i++) {
                 try {
-                    DatabaseObject obj = DatabaseObject.getObject((DatabaseObject.Entity<?, ?>) jTable1.getModel().getValueAt(jTable1.getSelectedRows()[i], 0));
+                int index = jTable1.convertRowIndexToModel(jTable1.getSelectedRows()[i]);
+                    DatabaseObject obj = DatabaseObject.getObject((DatabaseObject.Entity<?, ?>) jTable1.getModel().getValueAt(index, 0));
                     if (obj.getContext().equals(Context.getItem())) {
                         Item item = (Item) obj;
                         if (item.__getIntstatus() != Item.STATUS_PAID) {
@@ -1173,7 +1184,8 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
             List<Item> items = new Vector<Item>();
             for (int i = 0; i < jTable1.getSelectedRows().length; i++) {
                 try {
-                    DatabaseObject obj = DatabaseObject.getObject((DatabaseObject.Entity<?, ?>) jTable1.getModel().getValueAt(jTable1.getSelectedRows()[i], 0));
+                int index = jTable1.convertRowIndexToModel(jTable1.getSelectedRows()[i]);
+                    DatabaseObject obj = DatabaseObject.getObject((DatabaseObject.Entity<?, ?>) jTable1.getModel().getValueAt(index, 0));
                     if (obj.getContext().equals(Context.getItem())) {
                         Item item = (Item) obj;
 //                        if (item.__getIntstatus() != Item.STATUS_PAID) {
@@ -1217,7 +1229,8 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
             List<Item> items = new Vector<Item>();
             for (int i = 0; i < jTable1.getSelectedRows().length; i++) {
                 try {
-                    DatabaseObject obj = DatabaseObject.getObject((DatabaseObject.Entity<?, ?>) jTable1.getModel().getValueAt(jTable1.getSelectedRows()[i], 0));
+                int index = jTable1.convertRowIndexToModel(jTable1.getSelectedRows()[i]);
+                    DatabaseObject obj = DatabaseObject.getObject((DatabaseObject.Entity<?, ?>) jTable1.getModel().getValueAt(index, 0));
                     if (obj.getContext().equals(Context.getItem())) {
                         Item item = (Item) obj;
 //                        if (item.__getIntstatus() != Item.STATUS_PAID) {
