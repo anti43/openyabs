@@ -441,6 +441,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
     }
 
     private void fillFiles() {
+        
         Runnable runnable = new Runnable() {
 
             public void run() {
@@ -1641,7 +1642,6 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
                     } catch (NodataFoundException nodataFoundException) {
                         Log.Debug(this, nodataFoundException.getMessage());
                     }
-                    fillFiles();
 
                     List<Integer> skip = new Vector<Integer>();
                     if (inttype_ == Item.TYPE_BILL) {

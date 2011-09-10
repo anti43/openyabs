@@ -553,7 +553,7 @@ public class MPControlPanel extends javax.swing.JPanel {
 
         if (Popup.Y_N_dialog(Messages.REALLY_WIPE)) {
             try {
-                FileDirectoryHandler.deleteDirectoryContent(new File(FileDirectoryHandler.getTempDir2()), ".properties", ".xml");
+                FileDirectoryHandler.deleteDirectoryContent(new File(FileDirectoryHandler.getTempDir2()) );
             } catch (IOException ex) {
                 Popup.error(ex);
             }
