@@ -160,8 +160,9 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
             if (dataOwner.isExisting()) {
                 Context c = Context.getItem(Item.TYPE_BILL, null);
                 Object[][] data = new DatabaseSearch(c).getValuesFor(Context.DEFAULT_ITEM_SEARCH, "contactsids", dataOwner.__getIDS());
-                dataTable.setModel(new MPTableModel(data, Headers.ITEM_DEFAULT));
-                dataTable.setTypes(new Class[]{Integer.class, Object.class, Date.class, Double.class});
+                MPTableModel mod = new MPTableModel(data, Headers.ITEM_DEFAULT);
+                mod.setTypes(new Class[]{Integer.class, Object.class, Date.class, Double.class});
+                dataTable.setModel(mod);
                 dataTableContent = ITEM;
                 addfile.setEnabled(false);
                 removefile.setEnabled(false);
@@ -1233,8 +1234,9 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
 //        c.addReference(Context.getContact().getDbIdentity(), "cname", "filename");
         Object[][] data = new DatabaseSearch(c).getValuesFor(Context.DEFAULT_ITEM_SEARCH, "contactsids", dataOwner.__getIDS());
 
-        dataTable.setModel(new MPTableModel(data, Headers.ITEM_DEFAULT));
-        dataTable.setTypes(new Class[]{Integer.class, Object.class, Date.class, Double.class});
+        MPTableModel mod = new MPTableModel(data, Headers.ITEM_DEFAULT);
+        mod.setTypes(new Class[]{Integer.class, Object.class, Date.class, Double.class});
+        dataTable.setModel(mod);
         TableFormat.stripFirstColumn(dataTable);
         dataTableContent = ITEM;
         addfile.setEnabled(false);
@@ -1245,9 +1247,9 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
         Context c = Context.getItem(Item.TYPE_OFFER, null);
 
         Object[][] data = new DatabaseSearch(c).getValuesFor(Context.DEFAULT_ITEM_SEARCH, "contactsids", dataOwner.__getIDS());
-
-        dataTable.setModel(new MPTableModel(data, Headers.ITEM_DEFAULT));
-        dataTable.setTypes(new Class[]{Integer.class, Object.class, Date.class, Double.class});
+        MPTableModel mod = new MPTableModel(data, Headers.ITEM_DEFAULT);
+        mod.setTypes(new Class[]{Integer.class, Object.class, Date.class, Double.class});
+        dataTable.setModel(mod);
         TableFormat.stripFirstColumn(dataTable);
         dataTableContent = ITEM;
         addfile.setEnabled(false);
@@ -1351,7 +1353,6 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
             }
         }
     }//GEN-LAST:event_jButton4ActionPerformed
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel addedby;
     private javax.swing.JButton addfile;
