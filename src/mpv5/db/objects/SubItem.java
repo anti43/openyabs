@@ -185,7 +185,7 @@ public class SubItem extends DatabaseObject implements Triggerable {
      * @param percentValue
      * @param panel dirty dirty
      */
-    public static void changeValueFields(JTable table, Integer percentValue, ItemPanel panel) {
+    public static void changeValueFields(JTable table, Integer percentValue) {
         List<Object[]> rowsl = ((MPTableModel) table.getModel()).getValidRows(new int[]{4});
         Log.Debug(SubItem.class, "Rows found: " + rowsl.size());
         SubItem[] items = new SubItem[rowsl.size()];
@@ -230,10 +230,6 @@ public class SubItem extends DatabaseObject implements Triggerable {
         }
 
         table.setModel(toModel(items));
-
-        if (panel != null) {
-            panel.formatTable();
-        }
     }
     private static List<Integer> deletionQueue = new Vector<Integer>();
 

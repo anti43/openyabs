@@ -55,7 +55,7 @@ public interface Constants {
      *
      * Alias
      */
-    public static final String TITLE = "[Late Night Yabs]";
+    public static final String TITLE = "[cristaline]";
     /**
      *
      * Name of the main JAR
@@ -85,7 +85,7 @@ public interface Constants {
     public static String XML_ROOT = "mpv5";
     public static String XML_DOCTYPE_ID = "-//http://openyabs.org//DTD mpv5 V 1.0//EN";
     public static String XML_DOCTYPE_URL = "http://openyabs.org/files/yabs_import_1.0.dtd";
-    public static String SPLASH_IMAGE = "/mpv5/resources/images/background_i.png";
+    public static String SPLASH_IMAGE = "/mpv5/resources/images/background_j.png";
     public static String ABOUT_IMAGE = "/mpv5/resources/images/about1.png";
     public static String ICON = "/mpv5/resources/images/icon.png";
     public static String WEBSITE = "http://openyabs.org";

@@ -1362,7 +1362,8 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
         if (omodel.getValidRows(new int[]{4}).size() > 0) {
 
             itemtable.setModel(omodel);
-            SubItem.changeValueFields(itemtable, Integer.valueOf(calculator.get_Value().toString()), this);
+            SubItem.changeValueFields(itemtable, Integer.valueOf(calculator.get_Value().toString()));
+            formatTable();
             ((MPTableModel) itemtable.getModel()).fireTableCellUpdated(0, 0);
             ((MPTableModel) itemtable.getModel()).addRow(1);
         }
@@ -1919,6 +1920,8 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
         }
     }
 
+    List<Item> usedOrders = new Vector<Item>();
+
     @Override
     public void changeSelection(MPComboBoxModelItem to, Context c) {
         try {
@@ -1960,7 +1963,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
             }
         }
     }
-    private List<Item> usedOrders = new Vector<Item>();
+    
 
     private void prepareTable() {
         TableCellRendererForDezimal t = new TableCellRendererForDezimal(itemtable);

@@ -37,7 +37,6 @@ public class TableCellEditorForDezimal extends LazyCellEditor {
     public TableCellEditorForDezimal(final JFormattedTextField tf) {
         super(tf);
         super.setClickCountToStart(1);
-
         tf.setFocusLostBehavior(JFormattedTextField.COMMIT);
         tf.setHorizontalAlignment(SwingConstants.LEFT);
         tf.setBorder(null);
@@ -45,20 +44,7 @@ public class TableCellEditorForDezimal extends LazyCellEditor {
 
             @Override
             public void setValue(Object param) {
-
                 tf.setText("");
-//                if (String.valueOf(param).trim().equals("0.0") || tf.getText().trim().equals("0.0") ||
-//                        String.valueOf(param).trim().equals("0,0") || tf.getText().trim().equals("0,0")) {
-//                    tf.setText("");
-//                } else {
-//                    try {
-//                        tf.setText(FormatNumber.formatDezimal(Double.valueOf(String.valueOf(param))));
-//                    } catch (NumberFormatException numberFormatException) {
-//                        Log.Debug(this, numberFormatException.getMessage());
-//                        tf.setText(String.valueOf(param));
-//                    }
-//                }
-
             }
 
             @Override

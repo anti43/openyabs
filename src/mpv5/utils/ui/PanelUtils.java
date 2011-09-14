@@ -24,6 +24,7 @@ import java.beans.PropertyChangeListener;
 
 import javax.swing.*;
 
+
 /**
  *
  *
@@ -88,6 +89,27 @@ public class PanelUtils {
     public static void enableSubComponents(JComponent component, boolean state) {
         for (int i = 0; i < component.getComponents().length; i++) {
             component.getComponents()[i].setEnabled(state);
+        }
+    }
+
+    public static void setTitle(JPanel aThis, String cname_) {
+        if (aThis.getParent() instanceof JViewport || aThis.getParent() instanceof JTabbedPane) {
+            JTabbedPane jTabbedPane = null;
+            String title1 = cname_;
+            //this->viewport->scrollpane->tabbedpane
+            if (aThis.getParent().getParent().getParent() instanceof JTabbedPane) {
+                jTabbedPane = (JTabbedPane) aThis.getParent().getParent().getParent();
+            } else {
+                try {
+                    jTabbedPane = (JTabbedPane) aThis.getParent();
+                } catch (Exception e) {
+                    //Free floating window
+                    ((JFrame) aThis.getRootPane().getParent()).setTitle(title1);
+                }
+            }
+            if (jTabbedPane != null) {
+                jTabbedPane.setTitleAt(jTabbedPane.getSelectedIndex(), title1);
+            }
         }
     }
 }

@@ -616,4 +616,9 @@ public class Contact extends DatabaseObject implements Formattable, Templateable
     public int templateGroupIds() {
         return __getGroupsids();
     }
+
+    @Persistable(false)
+    public String getInfoString() {
+        return (__getStreet()==null?__getStreet():"") + ", " + (__getCity()==null?__getCity():"") ;
+    }
 }

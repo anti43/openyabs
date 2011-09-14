@@ -123,7 +123,7 @@ public class BigPopup {
      * @param state
      * @param width optional
      */
-    public static void showPopup(JComponent parent, JPanel content, String title, int state, Integer width) {
+    public static void showPopup(JComponent parent, JPanel content, String title, Integer height, Integer width) {
         if (!contents.containsKey(content)) {
             final JDialog window = new JDialog();
             window.getContentPane().setLayout(new BorderLayout());
@@ -152,8 +152,8 @@ public class BigPopup {
                 }
             });
             if (width != null) {
-                window.setPreferredSize(new Dimension(width, mpv5.YabsViewProxy.instance().getIdentifierFrame().getHeight()));
-                window.setSize(new Dimension(width, mpv5.YabsViewProxy.instance().getIdentifierFrame().getHeight()));
+                window.setPreferredSize(new Dimension(width, height));
+                window.setSize(new Dimension(width, height));
             }
 //            window.setExtendedState(state);
             new Position(window);

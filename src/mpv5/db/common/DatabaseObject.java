@@ -1028,11 +1028,12 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
 
         for (int i = 0; i < vars.size(); i++) {
             try {
-//                Log.Debug(this, vars.get(i).getName());
+                Log.Debug(this, vars.get(i).getName() + " [" + vars.get(i).invoke(this, new Object[0]) +"]");
                 target.getClass().getField(vars.get(i).getName().toLowerCase().substring(5, vars.get(i).getName().length()) + "_").set(target, vars.get(i).invoke(this, new Object[0]));
+                Log.Debug(target,  target.getClass().getField(vars.get(i).getName().toLowerCase().substring(5, vars.get(i).getName().length()) + "_").get(target));
+
             } catch (java.lang.NoSuchFieldException nf) {
-                Log.Debug(this, "The view: " + target
-                        + " is missing a field: " + nf.getMessage());
+                Log.Debug(this, "The view: " + target + " is missing a field: " + nf.getMessage());
             } catch (Exception n) {
                 Log.Debug(this, n.getMessage() + " in " + target);
                 Log.Debug(n);
