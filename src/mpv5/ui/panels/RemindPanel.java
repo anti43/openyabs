@@ -368,6 +368,7 @@ public class RemindPanel extends javax.swing.JPanel {
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         if (dataOwner == null) {
             dataOwner = new Reminder();
+
         }
         dataOwner.setIDS(-1);
         save();
@@ -389,7 +390,11 @@ public class RemindPanel extends javax.swing.JPanel {
             s.setCName(msg);
             s.setGroupsids(mpv5.db.objects.User.getCurrentUser().__getGroupsids());
             s.setDescription(jTextPane1.getText());
-            s.setExtravalue(Double.valueOf(labeledTextField1.getText()));
+            try {
+                s.setExtravalue(Double.valueOf(labeledTextField1.getText()));
+            } catch (NumberFormatException e) {
+                s.setExtravalue(0d);
+            }
             s.save();
             labeledCombobox3.triggerSearch();
         }
@@ -569,6 +574,7 @@ public class RemindPanel extends javax.swing.JPanel {
                 s = new Stage();
                 s.setCName(msg);
                 s.setGroupsids(mpv5.db.objects.User.getCurrentUser().__getGroupsids());
+                s.setTemplategroup(mpv5.db.objects.User.getCurrentUser().__getGroupsids());
                 s.setDescription(jTextPane1.getText());
                 try {
                     s.setExtravalue(labeledTextField1.getValue(0d));

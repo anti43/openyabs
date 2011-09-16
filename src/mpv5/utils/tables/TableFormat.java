@@ -168,6 +168,28 @@ public class TableFormat {
         }
     }
 
+    /**
+     * Resizes a tables cols
+     * @param table
+     * @param columnIndex 
+     * @param desiredColSize
+     * @param fixed Should the cols be non-resizable
+     */
+    public static void resizeCol(JTable table, int columnIndex, int desiredColSize, boolean fixed) {
+        try {
+            table.getColumnModel().getColumn(columnIndex).setMinWidth(desiredColSize);
+            table.getColumnModel().getColumn(columnIndex).setPreferredWidth(desiredColSize);
+
+            if (fixed) {
+                table.getColumnModel().getColumn(columnIndex).setMaxWidth(desiredColSize);
+            } else {
+                table.getColumnModel().getColumn(columnIndex).setMaxWidth(1000);
+            }
+        } catch (Exception e) {
+            Log.Debug(TableFormat.class, e.getMessage());
+        }
+    }
+
     public static DefaultTableModel getUneditableTable(String[][] data, String[] header) {
         return new javax.swing.table.DefaultTableModel(data, header) {
 
@@ -223,7 +245,7 @@ public class TableFormat {
     public static void stripColumn(JTable table, Class<Entity> aClass) {
         for (int i = 0; i < table.getColumnCount(); i++) {
             if (table.getColumnClass(i).equals(aClass)) {
-                stripColumn(table,table.convertColumnIndexToModel(i));
+                stripColumn(table, table.convertColumnIndexToModel(i));
             }
         }
     }

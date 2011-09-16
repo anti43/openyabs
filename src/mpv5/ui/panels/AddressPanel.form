@@ -75,13 +75,13 @@
                           <Group type="103" groupAlignment="0" attributes="0">
                               <Group type="102" alignment="0" attributes="0">
                                   <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                                      <Component id="prename" alignment="1" min="0" pref="0" max="32767" attributes="1"/>
-                                      <Component id="city" alignment="1" min="-2" pref="182" max="-2" attributes="1"/>
+                                      <Component id="prename" max="32767" attributes="1"/>
+                                      <Component id="city" alignment="0" pref="226" max="32767" attributes="1"/>
                                   </Group>
                                   <EmptySpace max="-2" attributes="0"/>
                                   <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                                      <Component id="cname" alignment="0" min="0" pref="0" max="32767" attributes="1"/>
-                                      <Component id="zip" alignment="0" min="-2" pref="174" max="-2" attributes="1"/>
+                                      <Component id="zip" max="32767" attributes="1"/>
+                                      <Component id="cname" alignment="0" max="32767" attributes="1"/>
                                   </Group>
                                   <EmptySpace max="-2" attributes="0"/>
                                   <Group type="103" groupAlignment="0" attributes="0">
@@ -130,14 +130,14 @@
                       </Group>
                       <Group type="102" alignment="1" attributes="0">
                           <Group type="103" groupAlignment="0" attributes="0">
-                              <Component id="prename" alignment="0" min="-2" max="-2" attributes="0"/>
-                              <Component id="cname" alignment="0" min="-2" max="-2" attributes="0"/>
                               <Component id="title" min="-2" max="-2" attributes="0"/>
+                              <Component id="prename" min="-2" max="-2" attributes="0"/>
+                              <Component id="cname" min="-2" max="-2" attributes="0"/>
                           </Group>
                           <EmptySpace max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="0" attributes="0">
-                              <Component id="city" alignment="0" min="-2" max="-2" attributes="0"/>
-                              <Component id="zip" alignment="0" min="-2" max="-2" attributes="0"/>
+                              <Component id="zip" min="-2" max="-2" attributes="0"/>
+                              <Component id="city" min="-2" max="-2" attributes="0"/>
                               <Component id="street" alignment="0" min="-2" max="-2" attributes="0"/>
                           </Group>
                       </Group>
@@ -203,7 +203,6 @@
               <ResourceString bundle="mpv5/resources/languages/Panels.properties" key="AddressPanel.male.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
             </Property>
             <Property name="name" type="java.lang.String" value="male" noResource="true"/>
-            <Property name="opaque" type="boolean" value="false"/>
           </Properties>
         </Component>
         <Component class="javax.swing.JRadioButton" name="female">
@@ -217,7 +216,6 @@
               <ResourceString bundle="mpv5/resources/languages/Panels.properties" key="AddressPanel.female.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
             </Property>
             <Property name="name" type="java.lang.String" value="female" noResource="true"/>
-            <Property name="opaque" type="boolean" value="false"/>
           </Properties>
         </Component>
         <Component class="mpv5.ui.beans.LabeledTextField" name="street">
@@ -266,7 +264,6 @@
               <ResourceString bundle="mpv5/resources/languages/Panels.properties" key="AddressPanel.dadress.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
             </Property>
             <Property name="name" type="java.lang.String" value="dadress" noResource="true"/>
-            <Property name="opaque" type="boolean" value="false"/>
           </Properties>
         </Component>
         <Component class="javax.swing.JCheckBox" name="badress">
@@ -275,7 +272,6 @@
               <ResourceString bundle="mpv5/resources/languages/Panels.properties" key="AddressPanel.badress.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
             </Property>
             <Property name="name" type="java.lang.String" value="badress" noResource="true"/>
-            <Property name="opaque" type="boolean" value="false"/>
           </Properties>
         </Component>
         <Component class="javax.swing.JButton" name="jButton2">
