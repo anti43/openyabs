@@ -30,7 +30,7 @@ import mpv5.ui.misc.MPTable;
 import mpv5.utils.models.MPTableModel;
 import mpv5.utils.tables.Selection;
 import mpv5.utils.tables.TableFormat;
-import mpv5.utils.ui.TableViewPersistenceHandler;
+import mpv5.ui.misc.TableViewPersistenceHandler;
 
 /**
  *
@@ -53,7 +53,7 @@ public class SearchPanel extends javax.swing.JPanel {
         label3.setToolTipText(label3.getText());
         //  t = new mpv5.utils.ui.TableViewPersistenceHandler(resulttable, this);
         TableFormat.hideHeader(resulttable);
-        ((MPTable) resulttable).setPersistanceHandler(new TableViewPersistenceHandler(resulttable, this));
+        ((MPTable) resulttable).setPersistanceHandler(new TableViewPersistenceHandler((MPTable)resulttable, this));
     }
 
     public SearchPanel(Context context, DataPanel panel) {

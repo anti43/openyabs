@@ -1065,7 +1065,7 @@ public class Main implements Runnable {
                     }
                     if (failed == true) {
                         Popup.notice(Messages.MISSING_LIBS.toString());
-                        YabsApplication.getInstance().exit();
+                        //YabsApplication.getInstance().exit();
                     }
                 }
             };

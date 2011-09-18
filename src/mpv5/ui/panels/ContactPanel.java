@@ -61,7 +61,8 @@ import mpv5.db.objects.User;
 import mpv5.db.objects.ValueProperty;
 import mpv5.ui.dialogs.ScheduleDayEvents;
 import mpv5.ui.misc.MPTable;
-import mpv5.utils.ui.TableViewPersistenceHandler;
+import mpv5.ui.misc.TableViewPersistenceHandler;
+
 import mpv5.ui.popups.DOTablePopUp;
 import mpv5.utils.date.DateConverter;
 import mpv5.utils.export.Export;
@@ -124,8 +125,8 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
         if (context.equals(Context.getSupplier()) || context.equals(Context.getManufacturer())) {
             company.setSelected(true);
         }
-        ((MPTable) dataTable).setPersistanceHandler(new TableViewPersistenceHandler(dataTable, this));
-        ((MPTable) proptable).setPersistanceHandler(new TableViewPersistenceHandler(proptable, this));
+        ((MPTable) dataTable).setPersistanceHandler(new TableViewPersistenceHandler((MPTable)dataTable, this));
+        ((MPTable) proptable).setPersistanceHandler(new TableViewPersistenceHandler((MPTable)proptable, this));
     }
 
     @Override

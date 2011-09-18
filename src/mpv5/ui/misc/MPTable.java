@@ -27,7 +27,6 @@ import mpv5.db.common.DatabaseObject;
 import mpv5.ui.panels.ListPanel;
 import mpv5.utils.models.MPTableModel;
 import mpv5.utils.tables.TableFormat;
-import mpv5.utils.ui.TableViewPersistenceHandler;
 
 /**
  * A JTable implementation which keeps its view state saved in the current yabs user profile.
@@ -37,6 +36,7 @@ import mpv5.utils.ui.TableViewPersistenceHandler;
  */
 public class MPTable extends JTable {
 
+    private static final long serialVersionUID = 1L;
     private TableViewPersistenceHandler persistanceHandler;
 
     /**
@@ -53,7 +53,10 @@ public class MPTable extends JTable {
     public MPTable(JComponent identifier) {
         super();
         setName("43");
-     //   t = new TableViewPersistenceHandler(this, identifier);
+        if (identifier.getName() == null) {
+            identifier.setName(identifier.getClass().getSimpleName());
+        }
+        setPersistanceHandler(new TableViewPersistenceHandler(this, identifier));
     }
 
     /**
@@ -68,7 +71,7 @@ public class MPTable extends JTable {
     public MPTable() {
         super();
         setName("43");
-     //   t = new TableViewPersistenceHandler(this, (JComponent) this.getParent());
+        setPersistanceHandler(new TableViewPersistenceHandler(this, (JComponent) this.getParent()));
     }
 
     /**
@@ -83,7 +86,7 @@ public class MPTable extends JTable {
     public MPTable(TableModel dm) {
         super(dm);
         setName("43");
-     //   t = new TableViewPersistenceHandler(this, (JComponent) this.getParent());
+        setPersistanceHandler(new TableViewPersistenceHandler(this, (JComponent) this.getParent()));
     }
 
     /**
@@ -98,8 +101,7 @@ public class MPTable extends JTable {
     public MPTable(TableModel dm, TableColumnModel cm) {
         super(dm, cm);
         setName("43");
-     //   t = new TableViewPersistenceHandler(this, (JComponent) this.getParent());
-
+        setPersistanceHandler(new TableViewPersistenceHandler(this, (JComponent) this.getParent()));
     }
 
     /**
@@ -123,7 +125,7 @@ public class MPTable extends JTable {
     public MPTable(TableModel dm, TableColumnModel cm, ListSelectionModel sm) {
         super(dm, cm, sm);
         setName("43");
-     //   t = new TableViewPersistenceHandler(this, (JComponent) this.getParent());
+        setPersistanceHandler(new TableViewPersistenceHandler(this, (JComponent) this.getParent()));
 
     }
 
@@ -140,7 +142,7 @@ public class MPTable extends JTable {
     public MPTable(int numRows, int numColumns) {
         super(numRows, numColumns);
         setName("43");
-     //   t = new TableViewPersistenceHandler(this, (JComponent) this.getParent());
+        setPersistanceHandler(new TableViewPersistenceHandler(this, (JComponent) this.getParent()));
     }
 
     /**
@@ -160,7 +162,7 @@ public class MPTable extends JTable {
     public MPTable(Vector rowData, Vector columnNames) {
         super(rowData, columnNames);
         setName("43");
-     //   t = new TableViewPersistenceHandler(this, (JComponent) this.getParent());
+        setPersistanceHandler(new TableViewPersistenceHandler(this, (JComponent) this.getParent()));
     }
 
     /**
@@ -179,7 +181,7 @@ public class MPTable extends JTable {
     public MPTable(final Object[][] rowData, final Object[] columnNames) {
         super(rowData, columnNames);
         setName("43");
-     //   t = new TableViewPersistenceHandler(this, (JComponent) this.getParent());
+        setPersistanceHandler(new TableViewPersistenceHandler(this, (JComponent) this.getParent()));
     }
 
     /**
@@ -189,12 +191,13 @@ public class MPTable extends JTable {
      */
     @Override
     public synchronized void setModel(TableModel model) {
-        if (getPersistanceHandler() != null) {
-            getPersistanceHandler().remove();
+        if (persistanceHandler != null) {
+            persistanceHandler.remove();
         }
         super.setModel(model);
-        if (persistanceHandler!= null) {
+        if (persistanceHandler != null) {
             persistanceHandler.set();
+            persistanceHandler.restore();
         }
     }
 
@@ -206,8 +209,8 @@ public class MPTable extends JTable {
      * @param fields 
      */
     public synchronized void setModel(List<DatabaseObject> model, int fieldCount, String fields) {
-        if (getPersistanceHandler() != null) {
-            getPersistanceHandler().remove();
+        if (persistanceHandler != null) {
+            persistanceHandler.remove();
         }
         Object[][] data = new Object[model.size()][];
         for (int i = 0; i < model.size(); i++) {
@@ -216,8 +219,9 @@ public class MPTable extends JTable {
         }
         MPTableModel m = new MPTableModel(data);
         setModel(m);
-        if (persistanceHandler!= null) {
+        if (persistanceHandler != null) {
             persistanceHandler.set();
+            persistanceHandler.restore();
         }
     }
 
@@ -225,8 +229,8 @@ public class MPTable extends JTable {
      * Reset the columns to initial sizes (if set)
      */
     public synchronized void reset() {
-        if (getPersistanceHandler() != null) {
-            getPersistanceHandler().remove();
+        if (persistanceHandler != null) {
+            persistanceHandler.remove();
         }
         if (desiredColSizes != null) {
             createDefaultColumnsFromModel();
@@ -234,8 +238,9 @@ public class MPTable extends JTable {
         } else {
             createDefaultColumnsFromModel();
         }
-        if (getPersistanceHandler() != null) {
-            getPersistanceHandler().set();
+        if (persistanceHandler != null) {
+            persistanceHandler.set();
+            persistanceHandler.restore();
         }
     }
     private Integer[] desiredColSizes;
@@ -294,7 +299,7 @@ public class MPTable extends JTable {
      */
     public void setPersistanceHandler(TableViewPersistenceHandler persistanceHandler) {
         this.persistanceHandler = persistanceHandler;
-        if (persistanceHandler!= null) {
+        if (persistanceHandler != null) {
             persistanceHandler.set();
         }
     }

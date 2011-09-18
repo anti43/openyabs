@@ -252,7 +252,7 @@ public class MPComboBoxModelItem extends DefaultComboBoxModel implements Compara
         return toItems(items, COMPARE_BY_VALUE);
     }
 
-        /**
+    /**
      * Converts an array to mp combo box items
      * {Integer id (hidden), String value (shown in the list)}
      * @param items
@@ -261,7 +261,7 @@ public class MPComboBoxModelItem extends DefaultComboBoxModel implements Compara
     public static MPComboBoxModelItem[] toItems(List items, boolean simple) {
         MPComboBoxModelItem[] array = new MPComboBoxModelItem[items.size()];
         for (int i = 0; i < array.length; i++) {
-            array[i] = new MPComboBoxModelItem(items.get(i), items.get(i).toString() );
+            array[i] = new MPComboBoxModelItem(items.get(i), items.get(i).toString());
             array[i].setCompareMode(COMPARE_BY_VALUE);
         }
         return array;
@@ -309,7 +309,7 @@ public class MPComboBoxModelItem extends DefaultComboBoxModel implements Compara
                 array[z] = new MPComboBoxModelItem(items[i].getId(), items[i].getName());
                 array[z].setCompareMode(compareMode);
                 z++;
-            } 
+            }
         }
         return array;
     }
@@ -334,7 +334,6 @@ public class MPComboBoxModelItem extends DefaultComboBoxModel implements Compara
         return new MPComboboxModel(toItems(new Vector<DatabaseObject>(Arrays.asList(new DatabaseObject[]{data}))));
     }
 
-
     /**
      * Creates a {@link MPComBoxModel} containing a {@link MPComboBoxModelItem}
      * {entity (hidden), dbo (shown in the list)}
@@ -342,7 +341,7 @@ public class MPComboBoxModelItem extends DefaultComboBoxModel implements Compara
      * @param data
      * @return
      */
-    public static <T extends DatabaseObject>MPComboboxModel toModel0(List<T> data) {
+    public static <T extends DatabaseObject> MPComboboxModel toModel0(List<T> data) {
         Object[][] l = new Object[data.size()][2];
         for (int i = 0; i < data.size(); i++) {
             DatabaseObject databaseObject = data.get(i);
@@ -534,7 +533,7 @@ public class MPComboBoxModelItem extends DefaultComboBoxModel implements Compara
      */
     @Override
     public String toString() {
-        return name;
+        return name != null && !"".equals(name) ? name : "";
     }
 
 //     * <br/>The ID field is <b>NOT</b> part of the compare.

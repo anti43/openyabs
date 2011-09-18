@@ -145,8 +145,9 @@ public class Template extends DatabaseObject {
     /**
      * Fetches the physical file from db
      * @return
+     * @throws Exception  
      */
-    public synchronized File getFile() {
+    public synchronized File getFile() throws Exception {
         if (file == null) {
             try {
                 file = QueryHandler.instanceOf().clone(Context.getFiles()).
@@ -155,6 +156,7 @@ public class Template extends DatabaseObject {
                 file.deleteOnExit();
             } catch (Exception e) {
                 Log.Debug(e);
+                throw e;
             }
         }
         return file;
@@ -176,8 +178,13 @@ public class Template extends DatabaseObject {
 
     @Override
     public boolean delete() {
+         
+        QueryCriteria2 c0 = new QueryCriteria2();
+        c0.and(new QueryParameter(Context.getTemplatesToUsers(), "templatesids", ids, QueryParameter.EQUALS));
+        QueryHandler.instanceOf().clone(Context.getTemplatesToUsers()).delete(c0);
+        
         QueryCriteria2 c = new QueryCriteria2();
-        c.and(new QueryParameter(this.context, "cname", filename, QueryParameter.EQUALS));
+        c.and(new QueryParameter(Context.getFiles(), "cname", filename, QueryParameter.EQUALS));
         if (QueryHandler.instanceOf().clone(Context.getFiles()).delete(c)) {
             return super.delete();
         } else {

@@ -24,6 +24,8 @@ import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.io.IOException;
 import java.util.Enumeration;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import mpv5.db.objects.User;
 
 import mpv5.ui.misc.MPTable;
@@ -44,6 +46,7 @@ import mpv5.logging.Log;
 import mpv5.utils.files.FileDirectoryHandler;
 import org.jdesktop.application.SessionStorage;
 
+
 /**
  *
  * @author anti
@@ -60,11 +63,31 @@ public final class TableViewPersistenceHandler {
     private boolean observeColumnState = true;
 
     /**
-     *
+     * 
      * @param target
      * @param identifier
      */
     public TableViewPersistenceHandler(final MPTable target, final JComponent identifier) {
+        this(target, identifier, false);
+    }
+
+    /**
+     *
+     * @param target
+     * @param identifier
+     * @param passive  
+     */
+    public TableViewPersistenceHandler(final MPTable target, final JComponent identifier, final boolean passive) {
+        if(User.getCurrentUser().__getCName()==null || User.getCurrentUser().__getCName().length()==0) {
+            throw new IllegalStateException("The username is not set.");
+        }
+        if(target.getName()==null || target.getName().length()==0) {
+            throw new IllegalStateException("The table name is not set.");
+        }
+        if(identifier.getName()==null || identifier.getName().length()==0) {
+            throw new IllegalStateException("The identifier name is not set: " + identifier);
+        }
+            
 
         saveFile = User.getCurrentUser().__getCName() + "_" + target.getName() + "_" + identifier.getName() + ".xml";
         //Log.Print(saveFile);
@@ -72,9 +95,10 @@ public final class TableViewPersistenceHandler {
         wListener = new PropertyChangeListener() {
 
             public void propertyChange(PropertyChangeEvent evt) {
-                if (isObserveColumnState() && evt.getPropertyName().equals("preferredWidth")) {
+                //Log.Debug(this, evt.getPropertyName());
+                if (!passive && isObserveColumnState() && evt.getPropertyName().equals("preferredWidth")) {
 //                    Log.Debug(this, evt);
-                    //  persist();
+                    persist();
                 }
             }
         };
@@ -87,9 +111,9 @@ public final class TableViewPersistenceHandler {
             }
 
             public void columnMoved(TableColumnModelEvent e) {
-                if (isObserveColumnState()) {
+                if (!passive && isObserveColumnState()) {
 //                    Log.Debug(this, e);
-                    //  persist();
+                    persist();
                 }
             }
 
@@ -120,28 +144,34 @@ public final class TableViewPersistenceHandler {
     protected boolean set() {
 
         boolean res = true;
-        try {
-            Log.Debug(this, "Setting restore listeners for table: " + target.getName());
-            res = restore();
-        } catch (Exception ex) {
-            Log.Debug(this, ex);
-            res = false;
-//            User.getCurrentUser().getLayoutProperties().remove(target.getName() + "@" + identifier.getName());
-//            target.createDefaultColumnsFromModel();
-//            persist();
-        }
+//        try {
+//            Log.Debug(this, "Setting restore listeners for table: " + target.getName());
+//            res = restore();
+//        } catch (Exception ex) {
+//            Log.Debug(this, ex);
+//            res = false;
+////            User.getCurrentUser().getLayoutProperties().remove(target.getName() + "@" + identifier.getName());
+////            target.createDefaultColumnsFromModel();
+////            persist();
+//        }
         target.getColumnModel().addColumnModelListener(cListener);
         Enumeration<TableColumn> cols = target.getColumnModel().getColumns();
         while (cols.hasMoreElements()) {
             cols.nextElement().addPropertyChangeListener(wListener);
         }
+        setObserveColumnState(res);
         return res;
     }
 
-    private boolean restore() throws IOException {
+    protected boolean restore() {
         if (hasData()) {
             Log.Debug(this, "Trying to restore table: " + target.getName());
-            storage.restoreSingle(target, saveFile);
+            try {
+                storage.restoreSingle(target, saveFile);
+            } catch (IOException ex) {
+                Log.Debug(ex);
+                return false;
+            }
             return true;
         } else {
             Log.Debug(this, "Cannot restore table: " + target.getName());
@@ -175,5 +205,9 @@ public final class TableViewPersistenceHandler {
      */
     protected void setObserveColumnState(boolean observeColumnState) {
         this.observeColumnState = observeColumnState;
+    }
+
+    protected void remove() {
+        setObserveColumnState(false);
     }
 }

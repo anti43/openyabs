@@ -252,7 +252,7 @@ public enum Messages {
     IMPORT_TEMPLATES("Checking for additional templates"),
     CHECK_LIBS("Checking for needed libs"),
     MISSING_FILE("Missing File: "),
-    MISSING_LIBS("Missing needed lib(s)! Exiting Programm!"),
+    MISSING_LIBS("Missing needed lib(s)! Programm may crash!"),
     LANG_EMPTY("Language is Empty! Please select a Language!"),
     LANG_USED("Language is in use and can't be deleted!"),
     TAXES_NOT_EQUAL("You can not use different tax values within the same invoice."),

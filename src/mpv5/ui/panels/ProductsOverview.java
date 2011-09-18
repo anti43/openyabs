@@ -35,7 +35,7 @@ import mpv5.utils.date.vTimeframe;
 import mpv5.utils.models.MPTableModel;
 import mpv5.utils.tables.TableFormat;
 import mpv5.utils.trees.TreeFormat;
-import mpv5.utils.ui.TableViewPersistenceHandler;
+import mpv5.ui.misc.TableViewPersistenceHandler;
 
 /**
  *
@@ -61,7 +61,7 @@ public class ProductsOverview extends javax.swing.JPanel implements ListPanel {
                 search();
             }
         });
-        ((MPTable) listtable).setPersistanceHandler(new TableViewPersistenceHandler(listtable, this));
+        ((MPTable) listtable).setPersistanceHandler(new TableViewPersistenceHandler((MPTable)listtable, this));
     }
 
     private void search() {

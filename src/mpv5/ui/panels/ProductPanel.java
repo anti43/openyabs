@@ -76,7 +76,7 @@ import mpv5.utils.models.MPComboBoxModelItem;
 import mpv5.utils.models.MPTableModel;
 import mpv5.utils.numberformat.FormatNumber;
 import mpv5.utils.tables.TableFormat;
-import mpv5.utils.ui.TableViewPersistenceHandler;
+import mpv5.ui.misc.TableViewPersistenceHandler;
 import mpv5.utils.ui.TextFieldUtils;
 
 /**
@@ -214,7 +214,7 @@ public class ProductPanel extends javax.swing.JPanel implements DataPanel, MPCBS
     public ProductPanel(Product p) {
         this(p.getContext(), p.__getInttype());
         setDataOwner(p, true);
-        ((MPTable) dataTable).setPersistanceHandler(new TableViewPersistenceHandler(dataTable, this));
+        ((MPTable) dataTable).setPersistanceHandler(new TableViewPersistenceHandler((MPTable)dataTable, this));
     }
 
     @Override

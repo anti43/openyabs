@@ -68,7 +68,7 @@ import mpv5.utils.models.MPComboBoxModelItem;
 import mpv5.utils.models.MPTableModel;
 import mpv5.utils.numberformat.FormatNumber;
 import mpv5.utils.tables.TableFormat;
-import mpv5.utils.ui.TableViewPersistenceHandler;
+import mpv5.ui.misc.TableViewPersistenceHandler;
 import mpv5.utils.ui.TextFieldUtils;
 
 /**
@@ -144,7 +144,7 @@ public class RevenuePanel extends javax.swing.JPanel implements DataPanel {
         itemtable.setFillsViewportHeight(true);
 
         ((MPTable) itemtable).setDefaultColumns(new Integer[]{100, 333, 100}, new Boolean[]{});
-        ((MPTable) itemtable).setPersistanceHandler(new TableViewPersistenceHandler(itemtable, this));
+        ((MPTable) itemtable).setPersistanceHandler(new TableViewPersistenceHandler((MPTable)itemtable, this));
     }
 
     private void calculate() {

@@ -111,7 +111,7 @@ public interface Constants {
     public static String FALLBACK_CACHE_DIR = "Cache";//Go for a relative path
     public static String LIBS_DIR = "lib";
     public static String[] LIBS = {
-        "AbsoluteLayout.jar",
+      //  "AbsoluteLayout.jar",
         "activation.jar",
         "bcprov-jdk16-145.jar",
         "bootstrapconnector.jar",

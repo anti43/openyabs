@@ -47,7 +47,7 @@ import mpv5.utils.date.DateConverter;
 import mpv5.utils.date.vTimeframe;
 import mpv5.utils.models.MPTableModel;
 import mpv5.utils.tables.TableFormat;
-import mpv5.utils.ui.TableViewPersistenceHandler;
+import mpv5.ui.misc.TableViewPersistenceHandler;
 
 /**
  *
@@ -93,7 +93,7 @@ public class HistoryPanel extends javax.swing.JPanel implements ListPanel {
         }
 
         refresh(null, null);
-        ((MPTable) jTable1).setPersistanceHandler(new TableViewPersistenceHandler(jTable1, this));
+        ((MPTable) jTable1).setPersistanceHandler(new TableViewPersistenceHandler((MPTable)jTable1, this));
 
     }
 

@@ -33,7 +33,7 @@ import mpv5.ui.misc.MPTable;
 import mpv5.ui.popups.TablePopUp;
 import mpv5.utils.models.MPTableModel;
 import mpv5.utils.tables.TableFormat;
-import mpv5.utils.ui.TableViewPersistenceHandler;
+import mpv5.ui.misc.TableViewPersistenceHandler;
 
 /**
  *
@@ -92,7 +92,7 @@ public class TrashPanel extends javax.swing.JPanel {
                     setData();
                 }
             }});
-      ((MPTable) jTable1).setPersistanceHandler(new TableViewPersistenceHandler(jTable1, this));
+      ((MPTable) jTable1).setPersistanceHandler(new TableViewPersistenceHandler((MPTable)jTable1, this));
     }
 
     public void setData() {

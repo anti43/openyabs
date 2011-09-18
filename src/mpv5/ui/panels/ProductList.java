@@ -17,7 +17,7 @@ import mpv5.ui.misc.MPTable;
 import mpv5.utils.date.vTimeframe;
 import mpv5.utils.models.MPTableModel;
 import mpv5.utils.tables.*;
-import mpv5.utils.ui.TableViewPersistenceHandler;
+import mpv5.ui.misc.TableViewPersistenceHandler;
 
 /**
  *
@@ -42,7 +42,7 @@ public class ProductList extends javax.swing.JPanel implements ListPanel {
         prinitingComboBox1.init(listTable);
         context.addReference(Context.getContact().getDbIdentity(), "ids", "suppliersids");
         context.addReference(Context.getGroup());
-        ((MPTable) listTable).setPersistanceHandler(new TableViewPersistenceHandler(listTable, this));
+        ((MPTable) listTable).setPersistanceHandler(new TableViewPersistenceHandler((MPTable)listTable, this));
 
     }
 

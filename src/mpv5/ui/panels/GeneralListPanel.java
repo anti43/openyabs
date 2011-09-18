@@ -44,7 +44,7 @@ import mpv5.utils.date.vTimeframe;
 import mpv5.utils.models.MPTableModel;
 import mpv5.utils.renderer.TableCellRendererForDatabaseObjects;
 import mpv5.utils.tables.TableFormat;
-import mpv5.utils.ui.TableViewPersistenceHandler;
+import mpv5.ui.misc.TableViewPersistenceHandler;
 
 /**
  *
@@ -85,7 +85,7 @@ public class GeneralListPanel extends javax.swing.JPanel {
         listtable.setDefaultRenderer(DatabaseObject.class, rend);
 
         ((MPTable) listtable).setDefaultColumns(new Integer[]{100, 100, 100, 100, 100}, new Boolean[]{true, true, true, true, true});
-        ((MPTable) listtable).setPersistanceHandler(new TableViewPersistenceHandler(listtable, this));
+        ((MPTable) listtable).setPersistanceHandler(new TableViewPersistenceHandler((MPTable)listtable, this));
         TableFormat.hideHeader(listtable);
     }
 
