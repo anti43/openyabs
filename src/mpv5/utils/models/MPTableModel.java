@@ -201,7 +201,7 @@ public class MPTableModel extends DefaultTableModel implements Cloneable, TableC
     public MPTableModel(Object[][] data) {
         super();
 
-        if (data.length > 0) {
+        if (data!=null && data.length > 0) {
             String[] header = new String[data[0].length];
             for (int i = 0; i < header.length; i++) {
                 header[i] = "" + i;

@@ -19,6 +19,9 @@ package mpv5.ui.misc;
 
 //~--- non-JDK imports --------------------------------------------------------
 import com.l2fprod.common.demo.Main;
+import java.awt.Rectangle;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
@@ -41,11 +44,12 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.TableColumnModelEvent;
 import javax.swing.event.TableColumnModelListener;
+import javax.swing.table.JTableHeader;
 import javax.swing.table.TableColumn;
+import javax.swing.table.TableColumnModel;
 import mpv5.logging.Log;
 import mpv5.utils.files.FileDirectoryHandler;
 import org.jdesktop.application.SessionStorage;
-
 
 /**
  *
@@ -60,7 +64,7 @@ public final class TableViewPersistenceHandler {
     private final TableColumnModelListener cListener;
     private final String saveFile;
     private final PropertyChangeListener wListener;
-    private boolean observeColumnState = true;
+    private final MouseAdapter mListener;
 
     /**
      * 
@@ -78,28 +82,42 @@ public final class TableViewPersistenceHandler {
      * @param passive  
      */
     public TableViewPersistenceHandler(final MPTable target, final JComponent identifier, final boolean passive) {
-        if(User.getCurrentUser().__getCName()==null || User.getCurrentUser().__getCName().length()==0) {
+        if (User.getCurrentUser().__getCName() == null || User.getCurrentUser().__getCName().length() == 0) {
             throw new IllegalStateException("The username is not set.");
         }
-        if(target.getName()==null || target.getName().length()==0) {
+        if (target.getName() == null || target.getName().length() == 0) {
             throw new IllegalStateException("The table name is not set.");
         }
-        if(identifier.getName()==null || identifier.getName().length()==0) {
+        if (identifier == null  ) {
+            throw new IllegalStateException("The identifier is not set: " + identifier);
+        }
+        if (identifier.getName() == null || identifier.getName().length() == 0) {
             throw new IllegalStateException("The identifier name is not set: " + identifier);
         }
-            
 
         saveFile = User.getCurrentUser().__getCName() + "_" + target.getName() + "_" + identifier.getName() + ".xml";
-        //Log.Print(saveFile);
         storage = mpv5.YabsApplication.getApplication().getContext().getSessionStorage();
+        mListener = new MouseAdapter() {
+
+            @Override
+            public void mouseReleased(MouseEvent evt) {
+                persist();
+            }
+        };
         wListener = new PropertyChangeListener() {
 
             public void propertyChange(PropertyChangeEvent evt) {
-                //Log.Debug(this, evt.getPropertyName());
-                if (!passive && isObserveColumnState() && evt.getPropertyName().equals("preferredWidth")) {
-//                    Log.Debug(this, evt);
-                    persist();
-                }
+//                if (evt.getPropertyName().equals("model")) {
+//                    // Log.Debug(this, evt);
+//                    setObserveColumnState(true);
+//                }
+//
+////                Log.Debug(this, evt.getPropertyName());
+//
+//                if (!passive && isObserveColumnState() && evt.getPropertyName().equals("preferredWidth")) {
+//                    // Log.Debug(this, evt);
+//                    persist();
+//                }
             }
         };
         cListener = new TableColumnModelListener() {
@@ -111,10 +129,6 @@ public final class TableViewPersistenceHandler {
             }
 
             public void columnMoved(TableColumnModelEvent e) {
-                if (!passive && isObserveColumnState()) {
-//                    Log.Debug(this, e);
-                    persist();
-                }
             }
 
             public void columnMarginChanged(ChangeEvent e) {
@@ -142,8 +156,6 @@ public final class TableViewPersistenceHandler {
      * Set a listener
      */
     protected boolean set() {
-
-        boolean res = true;
 //        try {
 //            Log.Debug(this, "Setting restore listeners for table: " + target.getName());
 //            res = restore();
@@ -155,12 +167,13 @@ public final class TableViewPersistenceHandler {
 ////            persist();
 //        }
         target.getColumnModel().addColumnModelListener(cListener);
+        target.getTableHeader().addMouseListener(mListener);
+        target.addPropertyChangeListener(wListener);
         Enumeration<TableColumn> cols = target.getColumnModel().getColumns();
         while (cols.hasMoreElements()) {
             cols.nextElement().addPropertyChangeListener(wListener);
         }
-        setObserveColumnState(res);
-        return res;
+        return true;
     }
 
     protected boolean restore() {
@@ -171,7 +184,7 @@ public final class TableViewPersistenceHandler {
             } catch (IOException ex) {
                 Log.Debug(ex);
                 return false;
-            }
+            } 
             return true;
         } else {
             Log.Debug(this, "Cannot restore table: " + target.getName());
@@ -182,7 +195,7 @@ public final class TableViewPersistenceHandler {
     private void persist() {
         try {
             storage.saveSingle(target, saveFile);
-            //  Log.Print(saveFile);
+            Log.Debug(this, "Persisting table state: " + target);
         } catch (IOException ex) {
             Log.Debug(ex);
         }
@@ -191,23 +204,5 @@ public final class TableViewPersistenceHandler {
     protected boolean hasData() {
         File x = new File(FileDirectoryHandler.getTempDir() + saveFile);
         return x.exists() && x.canWrite() && x.canRead();
-    }
-
-    /**
-     * @return the observeColumnState
-     */
-    protected boolean isObserveColumnState() {
-        return observeColumnState;
-    }
-
-    /**
-     * @param observeColumnState the observeColumnState to set
-     */
-    protected void setObserveColumnState(boolean observeColumnState) {
-        this.observeColumnState = observeColumnState;
-    }
-
-    protected void remove() {
-        setObserveColumnState(false);
     }
 }

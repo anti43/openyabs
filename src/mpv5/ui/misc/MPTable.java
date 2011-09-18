@@ -24,6 +24,7 @@ import javax.swing.ListSelectionModel;
 import javax.swing.table.TableColumnModel;
 import javax.swing.table.TableModel;
 import mpv5.db.common.DatabaseObject;
+import mpv5.logging.Log;
 import mpv5.ui.panels.ListPanel;
 import mpv5.utils.models.MPTableModel;
 import mpv5.utils.tables.TableFormat;
@@ -190,14 +191,15 @@ public class MPTable extends JTable {
      * @param model
      */
     @Override
-    public synchronized void setModel(TableModel model) {
-        if (persistanceHandler != null) {
-            persistanceHandler.remove();
-        }
-        super.setModel(model);
-        if (persistanceHandler != null) {
-            persistanceHandler.set();
-            persistanceHandler.restore();
+    public void setModel(TableModel model) {
+        synchronized (this) {
+            super.setModel(model);
+            Log.Debug(this, "done set model");
+                   
+            if (persistanceHandler != null) {
+                persistanceHandler.restore();
+                persistanceHandler.set();
+            }
         }
     }
 
@@ -209,9 +211,6 @@ public class MPTable extends JTable {
      * @param fields 
      */
     public synchronized void setModel(List<DatabaseObject> model, int fieldCount, String fields) {
-        if (persistanceHandler != null) {
-            persistanceHandler.remove();
-        }
         Object[][] data = new Object[model.size()][];
         for (int i = 0; i < model.size(); i++) {
             DatabaseObject databaseObject = model.get(i);
@@ -220,8 +219,8 @@ public class MPTable extends JTable {
         MPTableModel m = new MPTableModel(data);
         setModel(m);
         if (persistanceHandler != null) {
-            persistanceHandler.set();
             persistanceHandler.restore();
+            persistanceHandler.set();
         }
     }
 
@@ -229,9 +228,6 @@ public class MPTable extends JTable {
      * Reset the columns to initial sizes (if set)
      */
     public synchronized void reset() {
-        if (persistanceHandler != null) {
-            persistanceHandler.remove();
-        }
         if (desiredColSizes != null) {
             createDefaultColumnsFromModel();
             TableFormat.resizeCols(this, desiredColSizes, fixedCols);
@@ -239,8 +235,8 @@ public class MPTable extends JTable {
             createDefaultColumnsFromModel();
         }
         if (persistanceHandler != null) {
-            persistanceHandler.set();
             persistanceHandler.restore();
+            persistanceHandler.set();
         }
     }
     private Integer[] desiredColSizes;
