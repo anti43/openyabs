@@ -37,6 +37,13 @@ public class YabsViewProxy implements YabsView {
 
         public void setLookupVisible(boolean show);
     }
+    
+    public static interface FlowProvider {
+
+        public List<DatabaseObject> getFlow();
+       // public int getLast();
+    }
+   
     private LinkedList<YabsView> views = new LinkedList<YabsView>();
     private static YabsViewProxy instance;
     private ConcurrentHashMap<Class, Class> viewCache = new ConcurrentHashMap<Class, Class>();
