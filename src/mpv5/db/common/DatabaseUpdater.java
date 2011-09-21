@@ -81,6 +81,17 @@ public class DatabaseUpdater {
                 });
        UPDATES_DERBY.put(1.1843, new String[]{
                     "ALTER TABLE contacts DROP CONSTRAINT const3",});
+       UPDATES_DERBY.put(1.185, new String[]{
+                    "CREATE TABLE productprices (IDS BIGINT NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1), "
+                    + "cname VARCHAR(250) NOT NULL, "
+                    + "productsids BIGINT REFERENCES products(ids) ON DELETE CASCADE, "
+                    + "externalnetvalue DOUBLE DEFAULT 0, "
+                    + "internalnetvalue DOUBLE DEFAULT 0, "
+                    + "mincountvalue DOUBLE DEFAULT 0, "
+                    + "dateadded DATE NOT NULL, intaddedby BIGINT DEFAULT 0, "
+                    + "groupsids BIGINT REFERENCES groups(ids) DEFAULT 1, invisible SMALLINT DEFAULT 0, "
+                    + "PRIMARY KEY (ids))"
+                });
 
         ////////////////////////////////////////////////////////////////////////////////////////////
         // mysql updates
@@ -164,6 +175,19 @@ public class DatabaseUpdater {
                 });
         UPDATES_MYSQL.put(1.1843, new String[]{
                     "ALTER TABLE contacts DROP KEY CONST3",});
+        
+        UPDATES_MYSQL.put(1.185, new String[]{
+                    "CREATE TABLE productprices ("
+                    + "ids BIGINT(20) UNSIGNED NOT NULL PRIMARY KEY auto_increment, "
+                    + "cname VARCHAR(250) NOT NULL, "
+                    + "productsids BIGINT REFERENCES products(ids) ON DELETE CASCADE, "
+                    + "externalnetvalue DOUBLE DEFAULT 0, "
+                    + "internalnetvalue DOUBLE DEFAULT 0, "
+                    + "mincountvalue DOUBLE DEFAULT 0, "
+                    + "dateadded DATE NOT NULL, intaddedby BIGINT(20) UNSIGNED NOT NULL, "
+                    + "groupsids BIGINT(20) UNSIGNED DEFAULT 1 REFERENCES groups(ids),"
+                    + "invisible BIGINT(20) UNSIGNED DEFAULT 0"
+                    + ")ENGINE=MyISAM DEFAULT CHARSET=utf8"});
     }
 
     /**
