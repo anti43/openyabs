@@ -29,7 +29,6 @@ public class YabsViewProxy implements YabsView {
     public static interface SessionSaver {
 
         public void saveSession();
-
         public void restoreSession();
     }
 
@@ -40,8 +39,11 @@ public class YabsViewProxy implements YabsView {
     
     public static interface FlowProvider {
 
-        public List<DatabaseObject> getFlow();
-       // public int getLast();
+        public void showPreviousDatabaseObject();
+        public boolean hasPreviousDatabaseObject();
+        public void showNextDatabaseObject();
+        public boolean hasNextDatabaseObject();
+        public DatabaseObject getCurrentDatabaseObject();
     }
    
     private LinkedList<YabsView> views = new LinkedList<YabsView>();

@@ -124,6 +124,7 @@ public class Context implements Serializable {
     public static String UNIQUECOLUMNS_DEFAULT = "cname";
     public static String DETAIL_CONTACT_SEARCH = "prename,cname,street,city,country,notes";
     private static final long serialVersionUID = 1L;
+
     //********** conditions ****************************************************
     private boolean isCompany = false;
     private boolean isCustomer = false;

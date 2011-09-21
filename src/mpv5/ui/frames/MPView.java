@@ -20,7 +20,10 @@ import java.awt.event.MouseListener;
 import java.io.File;
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.LinkedHashSet;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -41,6 +44,7 @@ import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import mpv5.Main;
 import mpv5.YabsView;
+import mpv5.YabsViewProxy.FlowProvider;
 import mpv5.bugtracker.ExceptionHandler;
 import mpv5.bugtracker.SubmitForm;
 import mpv5.data.MPList;
@@ -119,7 +123,7 @@ import org.jdesktop.application.FrameView;
 /**
  * The application's main frame.
  */
-public class MPView extends FrameView implements YabsView {
+public class MPView extends FrameView implements YabsView, FlowProvider {
 
     public static MPView identifierView;
     private static Dimension initialSize = new Dimension(1100, 900);
@@ -720,6 +724,7 @@ public class MPView extends FrameView implements YabsView {
             }
         }
 
+        setPointInFlow(addToFlow(item));
         setWaiting(false);
         return getCurrentTab();
     }
@@ -906,6 +911,8 @@ public class MPView extends FrameView implements YabsView {
         serverlabel = new javax.swing.JPanel();
         errorlabel = new javax.swing.JLabel();
         mainToolbar = new javax.swing.JToolBar();
+        closeButton1 = new javax.swing.JButton();
+        closeButton2 = new javax.swing.JButton();
         closeButton = new javax.swing.JButton();
         lockButton = new javax.swing.JButton();
         jSeparator2 = new javax.swing.JToolBar.Separator();
@@ -938,7 +945,7 @@ public class MPView extends FrameView implements YabsView {
 
         jButton5.setFont(new java.awt.Font("Tahoma", 0, 10));
         jButton5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/agt_family.png"))); // NOI18N
-        java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle(); // NOI18N
+        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("mpv5/resources/languages/Panels"); // NOI18N
         jButton5.setText(bundle.getString("MPView.jButton5.text_1")); // NOI18N
         jButton5.setToolTipText(bundle.getString("MPView.jButton5.toolTipText_1")); // NOI18N
         jButton5.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
@@ -1929,6 +1936,32 @@ public class MPView extends FrameView implements YabsView {
         mainToolbar.setRollover(true);
         mainToolbar.setName("mainToolbar"); // NOI18N
 
+        closeButton1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/1leftarrow.png"))); // NOI18N
+        closeButton1.setToolTipText(bundle.getString("MPView.closeButton1.toolTipText")); // NOI18N
+        closeButton1.setFocusable(false);
+        closeButton1.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        closeButton1.setName("closeButton1"); // NOI18N
+        closeButton1.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        closeButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                closeButton1ActionPerformed(evt);
+            }
+        });
+        mainToolbar.add(closeButton1);
+
+        closeButton2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/1rightarrow.png"))); // NOI18N
+        closeButton2.setToolTipText(bundle.getString("MPView.closeButton2.toolTipText")); // NOI18N
+        closeButton2.setFocusable(false);
+        closeButton2.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        closeButton2.setName("closeButton2"); // NOI18N
+        closeButton2.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        closeButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                closeButton2ActionPerformed(evt);
+            }
+        });
+        mainToolbar.add(closeButton2);
+
         closeButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/endturn.png"))); // NOI18N
         closeButton.setToolTipText(bundle.getString("MPView.closeButton.toolTipText_1")); // NOI18N
         closeButton.setFocusable(false);
@@ -2453,10 +2486,22 @@ public class MPView extends FrameView implements YabsView {
             Log.Debug(e);
         }
     }//GEN-LAST:event_jMenuItem43ActionPerformed
+
+    private void closeButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_closeButton1ActionPerformed
+       
+        showPreviousDatabaseObject();
+    }//GEN-LAST:event_closeButton1ActionPerformed
+
+    private void closeButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_closeButton2ActionPerformed
+        showNextDatabaseObject();
+    }//GEN-LAST:event_closeButton2ActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton calculatorButton;
     public javax.swing.JMenu clipboardMenu;
     private javax.swing.JButton closeButton;
+    private javax.swing.JButton closeButton1;
+    private javax.swing.JButton closeButton2;
     private javax.swing.JMenu editMenu;
     private javax.swing.JLabel errorlabel;
     private javax.swing.JMenu favouritesMenu;
@@ -2977,5 +3022,48 @@ public class MPView extends FrameView implements YabsView {
         } catch (Exception ex) {
             Logger.getLogger(MPView.class.getName()).log(Level.SEVERE, null, ex);
         }
+    }
+    private static LinkedList<DatabaseObject> FLOW = new LinkedList<DatabaseObject>();
+    private int pif = 0;
+
+    public int getPointInFlow() {
+        return pif;
+    }
+
+    public int addToFlow(DatabaseObject d) {
+        if (!FLOW.contains(d)) {
+            FLOW.addLast(d);
+        } else {
+            FLOW.set(FLOW.lastIndexOf(d), d);
+        }
+        return FLOW.lastIndexOf(d);
+    }
+
+    public void showPreviousDatabaseObject() {
+        if (hasPreviousDatabaseObject()) {
+            addOrShowTab(FLOW.get(pif - 1));
+        }
+    }
+
+    public boolean hasPreviousDatabaseObject() {
+        return !FLOW.isEmpty() && pif > 0;
+    }
+
+    public void showNextDatabaseObject() {
+        if (hasNextDatabaseObject()) {
+            addOrShowTab(FLOW.get(pif + 1));
+        }
+    }
+
+    public boolean hasNextDatabaseObject() {
+        return pif + 1 < FLOW.size();
+    }
+
+    public DatabaseObject getCurrentDatabaseObject() {
+        return FLOW.get(pif);
+    }
+
+    private void setPointInFlow(int npif) {
+        pif = npif;
     }
 }
