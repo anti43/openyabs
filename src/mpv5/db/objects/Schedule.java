@@ -23,6 +23,7 @@ import javax.swing.JComponent;
 import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
 import mpv5.db.common.NodataFoundException;
+import mpv5.db.common.QueryCriteria;
 import mpv5.db.common.QueryHandler;
 import mpv5.db.objects.Item;
 import mpv5.logging.Log;
@@ -39,12 +40,15 @@ public class Schedule extends DatabaseObject {
 
     private int usersids = 4343;
     private int itemsids;
+    private int contactsids;
     private Date nextdate = new Date();
     private Date stopdate = new Date();
     private Date startdate = new Date();
     private int intervalmonth = 1;
+    private int eventtype = 0;
     private Item item;
     private boolean isdone;
+    private Contact contact;
 
     public Schedule() {
         context = Context.getSchedule();
@@ -68,10 +72,22 @@ public class Schedule extends DatabaseObject {
      * @throws mpv5.db.common.NodataFoundException
      */
     public Item getItem() throws NodataFoundException {
-        if (item == null) {
+        if (item == null && __getItemsids() >= 0) {
             item = (Item) DatabaseObject.getObject(Context.getItem(), __getItemsids());
         }
         return item;
+    }
+    
+        /**
+     *
+     * @return The item assigned to this schedule object
+     * @throws mpv5.db.common.NodataFoundException
+     */
+    public Contact getContact() throws NodataFoundException {
+        if (contact == null && __getContactsids() >= 0 ) {
+            contact = (Contact) DatabaseObject.getObject(Context.getContact(), __getContactsids());
+        }
+        return contact;
     }
 
     /**
@@ -94,6 +110,28 @@ public class Schedule extends DatabaseObject {
         return l;
     }
 
+    /**
+     *
+     * @param date
+     * @return
+     */
+    public static ArrayList<Schedule> getEvents2(vTimeframe date) {
+        ArrayList<Schedule> l = new ArrayList<Schedule>();
+        QueryCriteria criteria = new QueryCriteria("intervalmonth", 0);
+        try {
+            Object[][] data = QueryHandler.instanceOf().clone(Context.getSchedule()).select("IDS", criteria, date, "nextdate");
+            for (int i = 0; i < data.length; i++) {
+                Object[] objects = data[i];
+                Schedule s = (Schedule) DatabaseObject.getObject(Context.getSchedule(), Integer.valueOf(objects[0].toString()));
+                l.add(s);
+            }
+            return l;
+        } catch (NodataFoundException ex) {
+            Log.Debug(Schedule.class, ex.getMessage());
+            return l;
+        }
+    }
+    
     /**
      *
      * @param dataOwner
@@ -122,6 +160,34 @@ public class Schedule extends DatabaseObject {
         return l;
     }
 
+        /**
+     *
+     * @param dataOwner
+     * @return
+     */
+    public static ArrayList<Schedule> getEvents2(Contact dataOwner) {
+        ArrayList<Schedule> l = new ArrayList<Schedule>();
+        Object[][] data;
+        if (dataOwner != null) {
+            QueryCriteria criteria = new QueryCriteria("contactsids", dataOwner.__getIDS());
+            try {
+                data = QueryHandler.instanceOf().clone(Context.getSchedule()).select("IDS", criteria);
+                for (int i = 0; i < data.length; i++) {
+                    Object[] objects = data[i];
+                    try {
+                        Schedule s = (Schedule) DatabaseObject.getObject(Context.getSchedule(), Integer.valueOf(objects[0].toString()));
+                        l.add(s);
+                    } catch (NodataFoundException ex) {
+                        Log.Debug(ex);
+                    }
+                }
+            } catch (NodataFoundException ex) {
+                Log.Debug(Schedule.class, ex.getMessage());
+            }
+        }
+        return l;
+    }
+    
     /**
      *
      * @param dataOwner 
@@ -148,6 +214,36 @@ public class Schedule extends DatabaseObject {
         return l;
     }
 
+        /**
+     *
+     * @param dataOwner 
+     * @return
+     */
+    public static ArrayList<Schedule> getEvents2(Item dataOwner) {
+        ArrayList<Schedule> l = new ArrayList<Schedule>();
+        Object[][] data;
+        if (dataOwner != null) {
+            QueryCriteria criteria = new QueryCriteria("itemsids", dataOwner.__getIDS());
+            try {
+                data = QueryHandler.instanceOf().clone(Context.getSchedule()).select("IDS", criteria);
+                for (int i = 0; i < data.length; i++) {
+                    Object[] objects = data[i];
+                    try {
+                        Schedule s = (Schedule) DatabaseObject.getObject(Context.getSchedule(), Integer.valueOf(objects[0].toString()));
+                        if (s.__getIntervalmonth() >= 1) {
+                            l.add(s);
+                        }
+                    } catch (NodataFoundException ex) {
+                        Log.Debug(ex);
+                    }
+                }
+            } catch (NodataFoundException ex) {
+                Log.Debug(Schedule.class, ex.getMessage());
+            }
+        }
+        return l;
+    }
+    
     /**
      *
      * @param day
@@ -157,6 +253,10 @@ public class Schedule extends DatabaseObject {
         return getEvents(new vTimeframe(day, new Date(DateConverter.addDay(day).getTime() - 1)));
     }
 
+    public static ArrayList<Schedule> getEvents2(Date day) {
+        return getEvents2(new vTimeframe(day, new Date(DateConverter.addDay(day).getTime() - 1)));
+    }
+    
     @Override
     public JComponent getView() {
         throw new UnsupportedOperationException("Not supported yet.");
@@ -190,6 +290,23 @@ public class Schedule extends DatabaseObject {
         this.itemsids = itemsids;
     }
 
+    public int __getContactsids() {
+        return contactsids;
+    }
+
+    public void setContactsids(int contactsids) {
+        this.contactsids = contactsids;
+    }
+
+    public int __getEventtype() {
+        return eventtype;
+    }
+
+    public void setEventtype(int eventtype) {
+        this.eventtype = eventtype;
+    }
+
+    
     /**
      * @return the nextdate
      */
@@ -226,12 +343,13 @@ public class Schedule extends DatabaseObject {
             return new MPIcon("/mpv5/resources/images/32/clean.png");
         }
     }
-
+        
     /**
      * Array representation of this event.
      * <br/>{getItem(), intervalmonth, stopdate, user}
      * @return
      */
+    @Override
     public Object[] toArray() {
         Object[] t = new Object[]{this, intervalmonth, DateConverter.getDefDateString(stopdate),
             User.getUsername(usersids)};

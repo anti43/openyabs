@@ -103,6 +103,18 @@ public class DateConverter {
      * @param amount
      * @return
      */
+    public static synchronized Date addDynamic(Date date, Integer amount, Integer Typ) {
+        cl.setTime(date);
+        cl.add(Typ, amount);
+
+        return cl.getTime();
+    }
+    /**
+     *
+     * @param date
+     * @param amount
+     * @return
+     */
     public static synchronized Date addYears(Date date, int amount) {
         cl.setTime(date);
         cl.add(Calendar.YEAR, amount);

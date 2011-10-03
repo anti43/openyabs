@@ -4,7 +4,6 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Vector;
 import mpv5.db.objects.Account;
 import mpv5.db.objects.Address;
 import mpv5.db.objects.Company;
@@ -27,6 +26,7 @@ import mpv5.db.objects.ProductlistSubItem;
 import mpv5.db.objects.ProductsToSuppliers;
 import mpv5.db.objects.Reminder;
 import mpv5.db.objects.Revenue;
+import mpv5.db.objects.ScheduleTypes;
 import mpv5.db.objects.Stage;
 import mpv5.db.objects.SubItem;
 import mpv5.db.objects.Tax;
@@ -64,6 +64,7 @@ public class Context implements Serializable {
     public static String IDENTITY_GROUPS = "groups";
     public static String IDENTITY_PGROUPS = "productgroups";
     public static String IDENTITY_SCHEDULE = "schedule";
+    public static String IDENTITY_SCHEDULE_TYPES = "scheduletypes";
     public static String IDENTITY_HISTORY = "history";
     public static String IDENTITY_FILES_TO_CONTACTS = "filestocontacts";
     public static String IDENTITY_FILES_TO_PRODUCTS = "filestoproducts";
@@ -895,7 +896,7 @@ public class Context implements Serializable {
             references.add(new String[]{alias, "ids", alias + "ids", alias, this.getDbIdentity()});
         }
     }
-    List<Context> refs = new Vector<Context>();
+    List<Context> refs = new ArrayList<Context>();
 
     /**
      * Add a foreign table reference to this context<br/><br/>
@@ -934,7 +935,7 @@ public class Context implements Serializable {
     /**
      * @param dbIdentity the dbIdentity to set
      */
-    public void setDbIdentity(String dbIdentity) {
+    public final void setDbIdentity(String dbIdentity) {
         this.dbIdentity = dbIdentity;
     }
 
@@ -955,7 +956,7 @@ public class Context implements Serializable {
     /**
      * @param subID the subID to set
      */
-    public void setSubID(String subID) {
+    public final void setSubID(String subID) {
         this.subID = subID;
     }
 
@@ -1596,6 +1597,16 @@ public class Context implements Serializable {
         return c;
     }
 
+        public static synchronized Context getScheduleTypes() {
+        Context c = new Context();
+        c.setSubID(DEFAULT_SUBID);
+        c.setDbIdentity(IDENTITY_SCHEDULE_TYPES);
+        c.setIdentityClass(ScheduleTypes.class);
+        c.setId(51);
+
+        return c;
+    }
+
     /////////////////////////////////////////////////////////////////////////////////////////////////
     /**
      *
@@ -1639,7 +1650,7 @@ public class Context implements Serializable {
     /**
      * @param identityClass the identityClass to set
      */
-    public void setIdentityClass(Class identityClass) {
+    public final void setIdentityClass(Class identityClass) {
         this.identityClass = identityClass;
     }
 

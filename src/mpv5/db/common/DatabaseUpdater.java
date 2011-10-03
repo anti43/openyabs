@@ -1,6 +1,5 @@
 package mpv5.db.common;
 
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.TreeMap;
@@ -69,19 +68,19 @@ public class DatabaseUpdater {
                     "ALTER TABLE expenses ADD COLUMN ispaid SMALLINT DEFAULT 0 NOT NULL",
                     "ALTER TABLE revenues ADD COLUMN dateend DATE ",
                     "ALTER TABLE revenues ADD COLUMN ispaid SMALLINT DEFAULT 0 NOT NULL",});
-       UPDATES_DERBY.put(1.183, new String[]{
+        UPDATES_DERBY.put(1.183, new String[]{
                     "ALTER TABLE stages ADD COLUMN templategroup BIGINT REFERENCES groups(ids)"
                 });
-       UPDATES_DERBY.put(1.1841, new String[]{
+        UPDATES_DERBY.put(1.1841, new String[]{
                     "ALTER TABLE subitems ADD COLUMN ordernr SMALLINT DEFAULT 0 NOT NULL"
                 });
-       UPDATES_DERBY.put(1.1842, new String[]{
+        UPDATES_DERBY.put(1.1842, new String[]{
                     "ALTER TABLE valueproperties DROP COLUMN value",
                     "ALTER TABLE valueproperties ADD COLUMN value BLOB(2G) DEFAULT NULL"
                 });
-       UPDATES_DERBY.put(1.1843, new String[]{
+        UPDATES_DERBY.put(1.1843, new String[]{
                     "ALTER TABLE contacts DROP CONSTRAINT const3",});
-       UPDATES_DERBY.put(1.185, new String[]{
+        UPDATES_DERBY.put(1.185, new String[]{
                     "CREATE TABLE productprices (IDS BIGINT NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1), "
                     + "cname VARCHAR(250) NOT NULL, "
                     + "productsids BIGINT REFERENCES products(ids) ON DELETE CASCADE, "
@@ -92,7 +91,22 @@ public class DatabaseUpdater {
                     + "groupsids BIGINT REFERENCES groups(ids) DEFAULT 1, invisible SMALLINT DEFAULT 0, "
                     + "PRIMARY KEY (ids))"
                 });
-
+        UPDATES_DERBY.put(1.186, new String[]{
+                    "CREATE TABLE scheduletypes (IDS BIGINT NOT NULL GENERATED ALWAYS AS IDENTITY "
+                    + "(START WITH 1, INCREMENT BY 1),"
+                    + "cname VARCHAR(250) NOT NULL,"
+                    + "groupsids BIGINT  REFERENCES groups(ids) DEFAULT 1,"
+                    + "usersids BIGINT REFERENCES users (ids)  ON DELETE CASCADE,"
+                    + "dateadded DATE NOT NULL,intaddedby BIGINT DEFAULT 0,"
+                    + "invisible SMALLINT DEFAULT 0,"
+                    + "PRIMARY KEY  (ids))",
+                    "INSERT INTO scheduletypes (cname, groupsids, usersids, dateadded, invisible) VALUES ('Call',1,1,'2011-07-29',0)",
+                    "INSERT INTO scheduletypes (cname, groupsids, usersids, dateadded, invisible) VALUES ('Meeting',1,1,'2011-07-29',0)",
+                    "INSERT INTO scheduletypes (cname, groupsids, usersids, dateadded, invisible) VALUES ('Mail',1,1,'2011-07-29',0)",
+                    "INSERT INTO scheduletypes (cname, groupsids, usersids, dateadded, invisible) VALUES ('ToDo',1,1,'2011-07-29',0)",
+                    "ALTER TABLE schedule ADD COLUMN "
+                    + "contactsids BIGINT REFERENCES contacts (ids) ON DELETE CASCADE, "
+                    + "eventtype BIGINT REFERENCES scheduletypes (ids) ON DELETE CASCADE"});
         ////////////////////////////////////////////////////////////////////////////////////////////
         // mysql updates
         UPDATES_MYSQL.put(1.11, new String[]{
@@ -136,7 +150,7 @@ public class DatabaseUpdater {
                     "ALTER TABLE contacts ADD COLUMN bankcountry VARCHAR(250) DEFAULT NULL",});
         UPDATES_MYSQL.put(1.181, new String[]{
 //                    "ALTER TABLE valueproperties DROP INDEX IF EXISTS values_index0",
-//                    "DROP TABLE IF EXISTS valueproperties"
+                //                    "DROP TABLE IF EXISTS valueproperties"
                 });
         UPDATES_MYSQL.put(1.182, new String[]{
                     //                    "ALTER TABLE items DROP COLUMN discountvalue",
@@ -175,7 +189,7 @@ public class DatabaseUpdater {
                 });
         UPDATES_MYSQL.put(1.1843, new String[]{
                     "ALTER TABLE contacts DROP KEY CONST3",});
-        
+
         UPDATES_MYSQL.put(1.185, new String[]{
                     "CREATE TABLE productprices ("
                     + "ids BIGINT(20) UNSIGNED NOT NULL PRIMARY KEY auto_increment, "
@@ -188,6 +202,22 @@ public class DatabaseUpdater {
                     + "groupsids BIGINT(20) UNSIGNED DEFAULT 1 REFERENCES groups(ids),"
                     + "invisible BIGINT(20) UNSIGNED DEFAULT 0"
                     + ")ENGINE=MyISAM DEFAULT CHARSET=utf8"});
+        UPDATES_DERBY.put(1.186, new String[]{
+                    "CREATE TABLE scheduletypes (IDS BIGINT NOT NULL GENERATED ALWAYS AS IDENTITY "
+                    + "(START WITH 1, INCREMENT BY 1),"
+                    + "cname VARCHAR(250) NOT NULL,"
+                    + "groupsids BIGINT  REFERENCES groups(ids) DEFAULT 1,"
+                    + "usersids BIGINT REFERENCES users (ids)  ON DELETE CASCADE,"
+                    + "dateadded DATE NOT NULL,intaddedby BIGINT DEFAULT 0,"
+                    + "invisible SMALLINT DEFAULT 0,"
+                    + "PRIMARY KEY  (ids))",
+                    "INSERT INTO scheduletypes (cname, groupsids, usersids, dateadded, invisible) VALUES ('Call',1,1,'2011-07-29',0)",
+                    "INSERT INTO scheduletypes (cname, groupsids, usersids, dateadded, invisible) VALUES ('Meeting',1,1,'2011-07-29',0)",
+                    "INSERT INTO scheduletypes (cname, groupsids, usersids, dateadded, invisible) VALUES ('Mail',1,1,'2011-07-29',0)",
+                    "INSERT INTO scheduletypes (cname, groupsids, usersids, dateadded, invisible) VALUES ('ToDo',1,1,'2011-07-29',0)",
+                    "ALTER TABLE schedule ADD COLUMN "
+                    + "contactsids BIGINT REFERENCES contacts (ids) ON DELETE CASCADE, "
+                    + "eventtype BIGINT REFERENCES scheduletypes (ids) ON DELETE CASCADE"});
     }
 
     /**

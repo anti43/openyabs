@@ -31,8 +31,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JFrame;
 import javax.swing.JProgressBar;
 import javax.swing.JTextArea;
@@ -86,6 +84,7 @@ public class QueryHandler implements Cloneable {
         }
 
         @Override
+        @SuppressWarnings("SleepWhileInLoop")
         public void run() {
             while (!done) {
                 try {
@@ -1075,6 +1074,7 @@ public class QueryHandler implements Cloneable {
     class Watchdog implements Runnable {
 
         @Override
+        @SuppressWarnings("SleepWhileInLoop")
         public void run() {
             int oldValue = 0;
             while (true) {
@@ -1979,7 +1979,7 @@ public class QueryHandler implements Cloneable {
         Log.Debug(this, query);
         try {
             // Select-Anweisung ausführen
-            stm = sqlConn.createStatement(resultSet.TYPE_SCROLL_INSENSITIVE, resultSet.CONCUR_READ_ONLY);
+            stm = sqlConn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
             resultSet = stm.executeQuery(query);
 
             if (resultSet.first()) {
@@ -2568,7 +2568,7 @@ public class QueryHandler implements Cloneable {
             Log.Debug(this, name + " not found in " + table);
             return null;
         }
-        if (list.size() == 0) {
+        if (list.isEmpty()) {
             return null;
         } else {
             URI k;
@@ -2597,7 +2597,7 @@ public class QueryHandler implements Cloneable {
             Log.Debug(this, name + " not found in " + table);
             return null;
         }
-        if (list.size() == 0) {
+        if (list.isEmpty()) {
             return null;
         } else {
             return list.get(0);
@@ -2663,6 +2663,7 @@ public class QueryHandler implements Cloneable {
         Collections.sort(keys, new Comparator() {
 
             @Override
+            @SuppressWarnings("element-type-mismatch")
             public int compare(Object o1, Object o2) {
                 return (stats.get(o1)).compareTo(((Integer) stats.get(o2)));
             }

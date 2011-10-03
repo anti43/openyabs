@@ -17,48 +17,83 @@
 package mpv5.ui.panels.calendar;
 
 import java.awt.Color;
+import java.awt.Font;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.ArrayList;
 import java.util.Date;
 import javax.swing.JButton;
 import mpv5.db.objects.Schedule;
+import mpv5.globals.Messages;
+import mpv5.ui.panels.ScheduleDayEventsPanel;
 
-
-public class ScheduleCalendarButton extends JButton {
+public class ScheduleCalendarButton extends JButton implements ActionListener {
 
     private static final long serialVersionUID = 1L;
     private Date date;
-    private Schedule schedule;
+    private ArrayList<Schedule> scheduledEvents = new ArrayList<Schedule>();
 
-    public ScheduleCalendarButton(Date d) {
+    protected ScheduleCalendarButton(Date d) {
         super("");
         this.date = d;
-
     }
 
     /**
      * @return the date
      */
-    public Date getDate() {
+    protected Date getDate() {
         return date;
     }
 
     /**
      * @param date the date to set
      */
-    public void setDate(Date date) {
+    protected void setDate(Date date) {
         this.date = date;
     }
 
-    /**
-     * @return the schedule
-     */
-    public Schedule getSchedule() {
-        return schedule;
+    protected void addScheduledEvent(Schedule schedule) {
+        scheduledEvents.add(schedule);
+        this.setFont(this.getFont().deriveFont(Font.BOLD));
+        this.setBackground(Color.GREEN);
+
+        if (scheduledEvents.isEmpty() == false) {
+            this.setToolTipText(Messages.DAY_EVENTS.toString());
+        }
     }
 
-    /**
-     * @param schedule the schedule to set
-     */
-    public void setSchedule(Schedule schedule) {
-        this.schedule = schedule;
+    protected void removeScheduledEvent(Schedule schedule) {
+        scheduledEvents.remove(schedule);
+        if (scheduledEvents.isEmpty() == true) {
+            this.setFont(this.getFont().deriveFont(Font.PLAIN));
+            this.setBackground(Color.LIGHT_GRAY);
+            this.setToolTipText(Messages.DAY_EVENTS.toString());
+        }
+    }
+
+    protected void clearScheduledEvents() {
+        scheduledEvents.clear();
+        this.setFont(this.getFont().deriveFont(Font.PLAIN));
+        this.setBackground(Color.LIGHT_GRAY);
+    }
+
+    public void actionPerformed(ActionEvent e) {
+        JButton button = (JButton) e.getSource();
+        String buttonText = button.getText();
+        int dayInt = new Integer(buttonText).intValue();
+        ScheduleCalendarDayChooser.instanceOf().setDay(dayInt);
+        ScheduleDayEventsPanel.instanceOf().setDayEvents(scheduledEvents);
+    }
+
+    protected boolean hasEvents() {
+        if (scheduledEvents.isEmpty()) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    public ArrayList<Schedule> getScheduledEvents() {
+        return scheduledEvents;
     }
 }

@@ -22,15 +22,10 @@ package mpv5.ui.panels.calendar;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.GridLayout;
 import java.awt.Insets;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.FocusEvent;
-import java.awt.event.FocusListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseListener;
@@ -46,12 +41,9 @@ import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.UIManager;
 import javax.swing.border.LineBorder;
-import mpv5.db.common.NodataFoundException;
-import mpv5.globals.Messages;
 import mpv5.db.objects.Schedule;
 import mpv5.logging.Log;
-import mpv5.ui.dialogs.ScheduleDayEvent;
-import mpv5.ui.dialogs.ScheduleDayEvents;
+import mpv5.ui.panels.ScheduleDayEventsPanel;
 import mpv5.utils.date.DateConverter;
 import mpv5.utils.date.vTimeframe;
 
@@ -62,7 +54,7 @@ import mpv5.utils.date.vTimeframe;
  * @version $LastChangedRevision: 104 $
  * @version $LastChangedDate: 2006-06-04 15:20:45 +0200 (So, 04 Jun 2006) $
  */
-public class ScheduleCalendarDayChooser extends JPanel implements ActionListener, KeyListener, FocusListener {
+public final class ScheduleCalendarDayChooser extends JPanel implements KeyListener {
 
     private static final long serialVersionUID = 5876398337018781820L;
     protected ScheduleCalendarButton[] days;
@@ -82,7 +74,7 @@ public class ScheduleCalendarDayChooser extends JPanel implements ActionListener
     protected Locale locale;
     protected boolean initialized;
     protected boolean weekOfYearVisible;
-    protected boolean decorationBackgroundVisible = true;
+    protected boolean decorationBackgroundVisible = false;
     protected boolean decorationBordersVisible;
     protected boolean dayBordersVisible;
     private boolean alwaysFireDayProperty;
@@ -92,7 +84,6 @@ public class ScheduleCalendarDayChooser extends JPanel implements ActionListener
     protected Date defaultMaxSelectableDate;
     protected int maxDayCharacters;
     private static ArrayList<Schedule> events;
-    private static ArrayList<Schedule> processedEvents = new ArrayList<Schedule>();
     private static ScheduleCalendarDayChooser icke;
 
     /**
@@ -101,23 +92,9 @@ public class ScheduleCalendarDayChooser extends JPanel implements ActionListener
      */
     public static ScheduleCalendarDayChooser instanceOf() {
         if (icke == null) {
-            icke = new ScheduleCalendarDayChooser();
+            icke = new ScheduleCalendarDayChooser(true);
         }
         return icke;
-    }
-
-    /**
-     * Reload the event list
-     */
-    public void reload(){
-       drawDays(Schedule.getEvents(new vTimeframe(new Date(0), DateConverter.addYears(new Date(), 2))));
-    }
-
-    /**
-     * Default JDayChooser constructor.
-     */
-    private ScheduleCalendarDayChooser() {
-        this(true);
     }
 
     /**
@@ -141,13 +118,12 @@ public class ScheduleCalendarDayChooser extends JPanel implements ActionListener
         dayPanel = new JPanel();
         dayPanel.setLayout(new GridLayout(7, 7));
 
+        maxDayCharacters = 2;
 
         sundayForeground = new Color(164, 0, 0);
         weekdayForeground = new Color(0, 90, 164);
 
-        // decorationBackgroundColor = new Color(194, 211, 252);
         decorationBackgroundColor = new Color(238, 238, 238);
-//		decorationBackgroundColor = new Color(210, 228, 238);
 
         for (int y = 0; y < 7; y++) {
             for (int x = 0; x < 7; x++) {
@@ -176,15 +152,14 @@ public class ScheduleCalendarDayChooser extends JPanel implements ActionListener
                             super.paint(g);
                         }
                     };
-                    days[index].addActionListener(this);
+                    days[index].addActionListener(days[index]);
                     days[index].addKeyListener(this);
-                    days[index].addFocusListener(this);
                 }
 
                 days[index].setMargin(new Insets(1, 1, 1, 1));
-                days[index].setFocusPainted(false);
-//                days[index].setContentAreaFilled(false);
-//                days[index].setBorderPainted(false);
+                days[index].setFocusPainted(true);
+                days[index].setContentAreaFilled(true);
+                days[index].setBorderPainted(true);
                 dayPanel.add(days[index]);
             }
         }
@@ -218,11 +193,7 @@ public class ScheduleCalendarDayChooser extends JPanel implements ActionListener
 
         setDay(Calendar.getInstance().get(Calendar.DAY_OF_MONTH));
         add(dayPanel, BorderLayout.CENTER);
-
-        if (weekOfYearVisible) {
-            add(weekPanel, BorderLayout.WEST);
-        }
-        initialized = true;
+        add(weekPanel, BorderLayout.WEST);
         updateUI();
     }
 
@@ -239,57 +210,41 @@ public class ScheduleCalendarDayChooser extends JPanel implements ActionListener
         calendar.setTime(date);
 
         drawDayNames();
-        drawDays(Schedule.getEvents(new vTimeframe(new Date(0), DateConverter.addYears(new Date(), 2))));
+        drawDays(Schedule.getEvents2(new vTimeframe(DateConverter.getStartOfMonth(new Date()), DateConverter.getEndOfMonth(new Date()))));
     }
 
     /**
      * Draws the day names of the day columnes.
      *
      */
-    public void drawDayNames() {
+    protected void drawDayNames() {
         int firstDayOfWeek = calendar.getFirstDayOfWeek();
         DateFormatSymbols dateFormatSymbols = new DateFormatSymbols(locale);
         dayNames = dateFormatSymbols.getShortWeekdays();
 
-        int day = firstDayOfWeek;
+        int fwd = firstDayOfWeek;
 
         for (int i = 0; i < 7; i++) {
             if (maxDayCharacters > 0 && maxDayCharacters < 5) {
-                if (dayNames[day].length() >= maxDayCharacters) {
-                    dayNames[day] = dayNames[day].substring(0, maxDayCharacters);
+                if (dayNames[fwd].length() >= maxDayCharacters) {
+                    dayNames[fwd] = dayNames[fwd].substring(0, maxDayCharacters);
                 }
             }
 
-            days[i].setText(dayNames[day]);
+            days[i].setText(dayNames[fwd]);
             days[i].setFont(days[i].getFont().deriveFont(Font.BOLD));
 
-            if (day == 1) {
+            if (fwd == 1) {
                 days[i].setForeground(sundayForeground);
             } else {
                 days[i].setForeground(weekdayForeground);
             }
 
-            if (day < 7) {
-                day++;
+            if (fwd < 7) {
+                fwd++;
             } else {
-                day -= 6;
+                fwd -= 6;
             }
-        }
-    }
-
-    /**
-     * Initializes both day names and weeks of the year.
-     */
-    protected void initDecorations() {
-        for (int x = 0; x < 7; x++) {
-            days[x].setContentAreaFilled(false);
-            days[x].setBorderPainted(true);
-            days[x].invalidate();
-            days[x].repaint();
-            weeks[x].setContentAreaFilled(decorationBackgroundVisible);
-            weeks[x].setBorderPainted(decorationBordersVisible);
-            weeks[x].invalidate();
-            weeks[x].repaint();
         }
     }
 
@@ -372,15 +327,15 @@ public class ScheduleCalendarDayChooser extends JPanel implements ActionListener
         Date firstDayInNextMonth = tmpCalendar.getTime();
         tmpCalendar.add(Calendar.MONTH, -1);
 
-        Date day = tmpCalendar.getTime();
+        Date time = tmpCalendar.getTime();
         int n = 0;
         Color foregroundColor = getForeground();
-        ActionListener[] listeners;
 
-        while (day.before(firstDayInNextMonth)) {
-            days[i + n + 7].setDate(day);
+        while (time.before(firstDayInNextMonth)) {
+            days[i + n + 7].setDate(time);
             days[i + n + 7].setText(Integer.toString(n + 1));
             days[i + n + 7].setVisible(true);
+            Log.Debug(this, "Creating Day: " + days[i + n + 7].getText());
 
             if ((tmpCalendar.get(Calendar.DAY_OF_YEAR) == today.get(Calendar.DAY_OF_YEAR)) && (tmpCalendar.get(Calendar.YEAR) == today.get(Calendar.YEAR))) {
                 days[i + n + 7].setForeground(sundayForeground);
@@ -401,64 +356,26 @@ public class ScheduleCalendarDayChooser extends JPanel implements ActionListener
                 days[i + n + 7].setEnabled(true);
             }
 
-            final Date tday = day;
-
-            boolean found = false;
+            Log.Debug(this, "Checking events");
             if (events != null) {
+                days[i + n + 7].clearScheduledEvents();
                 for (int j = 0; j < events.size(); j++) {
                     Schedule schedule = events.get(j);
-//                  Log.Debug(this, "Checking date: " + schedule.getDate() + " against " + day);
-                    if (schedule.getDate().contains(day)) {
-//                        Log.Debug(this, "Found date: " + schedule.getDate());
-                        days[i + n + 7].setIcon(schedule.getIcon());
-                        try {
-                            days[i + n + 7].setToolTipText(Messages.ACTION_OPEN + " " + schedule.getItem().__getCName());
-                            listeners = days[i + n + 7].getActionListeners();
-                            for (int k = 0; k < listeners.length; k++) {
-                                ActionListener li = listeners[k];
-                                days[i + n + 7].removeActionListener(li);
-                            }
-                            days[i + n + 7].addActionListener(new ActionListener() {
-
-                                public void actionPerformed(ActionEvent e) {
-                                    new ScheduleDayEvents(tday);
-                                }
-                            });
-                        } catch (NodataFoundException ex) {
-                            Log.Debug(this, ex.getMessage());
-                        }
-                        processedEvents.add(schedule);
-                    } else {
-
-                        for (int k = 0; k < processedEvents.size(); k++) {
-                            Schedule schedule1 = processedEvents.get(k);
-                            if (schedule1.getDate().contains(day)) {
-                                found = true;
-                            }
-                        }
-                        if (!found) {
-                            days[i + n + 7].setIcon(null);
-                        }
+                    Log.Debug(this, "Checking date: "
+                            + schedule.getDate()
+                            + " against "
+                            + days[i + n + 7].getText());
+                    if (schedule.getDate().contains(time)) {
+                        Log.Debug(this, "Found date: " + schedule.getDate());
+                        days[i + n + 7].addScheduledEvent(schedule);
+                        events.remove(j);
                     }
                 }
             }
 
-            if (days[i + n + 7].getIcon() == null) {
-                days[i + n + 7].setToolTipText(Messages.NEW_VALUE.toString());
-                days[i + n + 7].addActionListener(new ActionListener() {
-
-                    public void actionPerformed(ActionEvent e) {
-                        if (!ScheduleDayEvent.instanceOf().isVisible()) {
-                            ScheduleDayEvent.instanceOf().setVisible(true);
-                        }
-                        ScheduleDayEvent.instanceOf().setDate(tday);
-                    }
-                });
-            }
-
             n++;
             tmpCalendar.add(Calendar.DATE, 1);
-            day = tmpCalendar.getTime();
+            time = tmpCalendar.getTime();
         }
 
         for (int k = n + i + 7; k < 49; k++) {
@@ -476,6 +393,7 @@ public class ScheduleCalendarDayChooser extends JPanel implements ActionListener
      *
      * @see #setLocale
      */
+    @Override
     public Locale getLocale() {
         return locale;
     }
@@ -488,6 +406,7 @@ public class ScheduleCalendarDayChooser extends JPanel implements ActionListener
      *
      * @see #getLocale
      */
+    @Override
     public void setLocale(Locale locale) {
         if (!initialized) {
             super.setLocale(locale);
@@ -533,7 +452,8 @@ public class ScheduleCalendarDayChooser extends JPanel implements ActionListener
             if (days[i].getText().equals(Integer.toString(day))) {
                 selectedDay = days[i];
                 selectedDay.setBackground(selectedColor);
-                break;
+            } else if (days[i].hasEvents()) {
+                days[i].setBackground(Color.GREEN);
             }
         }
 
@@ -542,17 +462,6 @@ public class ScheduleCalendarDayChooser extends JPanel implements ActionListener
         } else {
             firePropertyChange("day", oldDay, day);
         }
-    }
-
-    /**
-     * this is needed for JDateChooser.
-     *
-     * @param alwaysFire
-     *            true, if day property shall be fired every time a day is
-     *            chosen.
-     */
-    public void setAlwaysFireDayProperty(boolean alwaysFire) {
-        alwaysFireDayProperty = alwaysFire;
     }
 
     /**
@@ -579,16 +488,18 @@ public class ScheduleCalendarDayChooser extends JPanel implements ActionListener
         if (maxDays == day) {
             day = calendar.getActualMaximum(Calendar.DAY_OF_MONTH);
         }
-
-        // Since the day does not change,
-        // don't fire a day property change, even if alwaysFireDayProperty is
-        // true :)
-        boolean storedMode = alwaysFireDayProperty;
-        alwaysFireDayProperty = false;
+        Log.Debug(this,
+                "Setting Month to: " + calendar.getDisplayName(
+                month,
+                Calendar.LONG,
+                locale));
         setDay(day);
-        alwaysFireDayProperty = storedMode;
 
-        drawDays(null);
+        drawDays(
+                Schedule.getEvents2(
+                new vTimeframe(
+                DateConverter.getStartOfMonth(calendar.getTime()),
+                DateConverter.getEndOfMonth(calendar.getTime()))));
     }
 
     /**
@@ -600,7 +511,13 @@ public class ScheduleCalendarDayChooser extends JPanel implements ActionListener
      */
     public void setYear(int year) {
         calendar.set(Calendar.YEAR, year);
-        drawDays(null);
+        drawDays(
+                Schedule.getEvents2(
+                new vTimeframe(
+                DateConverter.getStartOfMonth(calendar.getTime()),
+                DateConverter.getEndOfMonth(calendar.getTime()))));
+
+        ScheduleDayEventsPanel.instanceOf().setDayEvents(null);
     }
 
     /**
@@ -612,7 +529,11 @@ public class ScheduleCalendarDayChooser extends JPanel implements ActionListener
      */
     public void setCalendar(Calendar calendar) {
         this.calendar = calendar;
-        drawDays(null);
+        drawDays(
+                Schedule.getEvents2(
+                new vTimeframe(
+                DateConverter.getStartOfMonth(calendar.getTime()),
+                DateConverter.getEndOfMonth(calendar.getTime()))));
     }
 
     /**
@@ -633,69 +554,6 @@ public class ScheduleCalendarDayChooser extends JPanel implements ActionListener
                 weeks[i].setFont(font);
             }
         }
-    }
-
-    /**
-     * Sets the foregroundColor color.
-     *
-     * @param foreground
-     *            the new foregroundColor
-     */
-    public void setForeground(Color foreground) {
-        super.setForeground(foreground);
-
-        if (days != null) {
-            for (int i = 7; i < 49; i++) {
-                days[i].setForeground(foreground);
-            }
-
-            drawDays(null);
-        }
-    }
-
-    /**
-     * JDayChooser is the ActionListener for all day buttons.
-     *
-     * @param e
-     *            the ActionEvent
-     */
-    public void actionPerformed(ActionEvent e) {
-        JButton button = (JButton) e.getSource();
-        String buttonText = button.getText();
-        int day = new Integer(buttonText).intValue();
-        setDay(day);
-    }
-
-    /**
-     * JDayChooser is the FocusListener for all day buttons. (Added by Thomas
-     * Schaefer)
-     *
-     * @param e
-     *            the FocusEvent
-     */
-    /*
-     * Code below commented out by Mark Brown on 24 Aug 2004. This code breaks
-     * the JDateChooser code by triggering the actionPerformed method on the
-     * next day button. This causes the date chosen to always be incremented by
-     * one day.
-     */
-    public void focusGained(FocusEvent e) {
-        // JButton button = (JButton) e.getSource();
-        // String buttonText = button.getText();
-        //
-        // if ((buttonText != null) && !buttonText.equals("") &&
-        // !e.isTemporary()) {
-        // actionPerformed(new ActionEvent(e.getSource(), 0, null));
-        // }
-    }
-
-    /**
-     * Does nothing.
-     *
-     * @param e
-     *            the FocusEvent
-     */
-    public void focusLost(FocusEvent e) {
     }
 
     /**
@@ -736,361 +594,53 @@ public class ScheduleCalendarDayChooser extends JPanel implements ActionListener
     public void keyReleased(KeyEvent e) {
     }
 
-    /**
-     * Enable or disable the JDayChooser.
-     *
-     * @param enabled
-     *            The new enabled value
-     */
-    public void setEnabled(boolean enabled) {
-        super.setEnabled(enabled);
-
-        for (short i = 0; i < days.length; i++) {
-            if (days[i] != null) {
-                days[i].setEnabled(enabled);
-            }
-        }
-
-        for (short i = 0; i < weeks.length; i++) {
-            if (weeks[i] != null) {
-                weeks[i].setEnabled(enabled);
-            }
-        }
-    }
-
-    /**
-     * In some Countries it is often usefull to know in which week of the year a
-     * date is.
-     *
-     * @return boolean true, if the weeks of the year is shown
-     */
-    public boolean isWeekOfYearVisible() {
-        return weekOfYearVisible;
-    }
-
-    /**
-     * In some Countries it is often usefull to know in which week of the year a
-     * date is.
-     *
-     * @param weekOfYearVisible
-     *            true, if the weeks of the year shall be shown
-     */
-    public void setWeekOfYearVisible(boolean weekOfYearVisible) {
-        if (weekOfYearVisible == this.weekOfYearVisible) {
-            return;
-        } else if (weekOfYearVisible) {
-            add(weekPanel, BorderLayout.WEST);
-        } else {
-            remove(weekPanel);
-        }
-
-        this.weekOfYearVisible = weekOfYearVisible;
-        validate();
-        dayPanel.validate();
-    }
-
-    /**
-     * Returns the day panel.
-     *
-     * @return the day panel
-     */
-    public JPanel getDayPanel() {
-        return dayPanel;
-    }
-
-    /**
-     * Returns the color of the decoration (day names and weeks).
-     *
-     * @return the color of the decoration (day names and weeks).
-     */
-    public Color getDecorationBackgroundColor() {
-        return decorationBackgroundColor;
-    }
-
-    /**
-     * Sets the background of days and weeks of year buttons.
-     *
-     * @param decorationBackgroundColor
-     *            The background to set
-     */
-    public void setDecorationBackgroundColor(Color decorationBackgroundColor) {
-        this.decorationBackgroundColor = decorationBackgroundColor;
-
-        if (days != null) {
-            for (int i = 0; i < 7; i++) {
-                days[i].setBackground(decorationBackgroundColor);
-            }
-        }
-
-        if (weeks != null) {
-            for (int i = 0; i < 7; i++) {
-                weeks[i].setBackground(decorationBackgroundColor);
-            }
-        }
-    }
-
-    /**
-     * Returns the Sunday foreground.
-     *
-     * @return Color the Sunday foreground.
-     */
-    public Color getSundayForeground() {
-        return sundayForeground;
-    }
-
-    /**
-     * Returns the weekday foreground.
-     *
-     * @return Color the weekday foreground.
-     */
-    public Color getWeekdayForeground() {
-        return weekdayForeground;
-    }
-
-//    /**
-//     * Sets the Sunday foreground.
-//     *
-//     * @param sundayForeground
-//     *            The sundayForeground to set
-//     */
-//    public void setSundayForeground(Color sundayForeground) {
-//        this.sundayForeground = sundayForeground;
-//        drawDayNames();
-//        drawDays();
-//    }
-//
-//    /**
-//     * Sets the weekday foreground.
-//     *
-//     * @param weekdayForeground
-//     *            The weekdayForeground to set
-//     */
-//    public void setWeekdayForeground(Color weekdayForeground) {
-//        this.weekdayForeground = weekdayForeground;
-//        drawDayNames();
-//        drawDays();
-//    }
-    /**
-     * Requests that the selected day also have the focus.
-     */
-    public void setFocus() {
-        if (selectedDay != null) {
-            this.selectedDay.requestFocus();
-        }
-    }
-
-    /**
-     * The decoration background is the background color of the day titles and
-     * the weeks of the year.
-     *
-     * @return Returns true, if the decoration background is painted.
-     */
-    public boolean isDecorationBackgroundVisible() {
-        return decorationBackgroundVisible;
-    }
-
-    /**
-     * The decoration background is the background color of the day titles and
-     * the weeks of the year.
-     *
-     * @param decorationBackgroundVisible
-     *            true, if the decoration background shall be painted.
-     */
-    public void setDecorationBackgroundVisible(boolean decorationBackgroundVisible) {
-        this.decorationBackgroundVisible = decorationBackgroundVisible;
-        initDecorations();
-    }
-
-    /**
-     * The decoration border is the button border of the day titles and the
-     * weeks of the year.
-     *
-     * @return Returns true, if the decoration border is painted.
-     */
-    public boolean isDecorationBordersVisible() {
-        return decorationBordersVisible;
-    }
-
-    public boolean isDayBordersVisible() {
-        return dayBordersVisible;
-    }
-
-    /**
-     * The decoration border is the button border of the day titles and the
-     * weeks of the year.
-     *
-     * @param decorationBordersVisible
-     *            true, if the decoration border shall be painted.
-     */
-    public void setDecorationBordersVisible(boolean decorationBordersVisible) {
-        this.decorationBordersVisible = decorationBordersVisible;
-        initDecorations();
-    }
-
     public void setDayBordersVisible(boolean dayBordersVisible) {
         this.dayBordersVisible = dayBordersVisible;
         if (initialized) {
 
             for (int x = 0; x < 7; x++) {
 
-                days[x].setContentAreaFilled(true);
+                days[x].setContentAreaFilled(false);
                 days[x].setBorder(new LineBorder(Color.white, 1, false));
                 days[x].setBorderPainted(true);
                 days[x].setBackground(Color.LIGHT_GRAY);
             }
 
             for (int x = 7; x < 49; x++) {
-                if ("Windows".equals(UIManager.getLookAndFeel().getID())) {
-                    days[x].setContentAreaFilled(dayBordersVisible);
-                } else {
-                    days[x].setContentAreaFilled(true);
-                }
+                days[x].setContentAreaFilled(false);
                 days[x].setBorderPainted(dayBordersVisible);
                 days[x].setBorder(new LineBorder(Color.darkGray, 1, false));
-
             }
         }
     }
 
-    /**
-     * Updates the UI and sets the day button preferences.
-     */
-    public void updateUI() {
-        super.updateUI();
-        setFont(Font.decode("Dialog Plain 16"));
-
-
-
-        if (weekPanel != null) {
-            weekPanel.updateUI();
-        }
-        if (initialized) {
-            if ("Windows".equals(UIManager.getLookAndFeel().getID())) {
-                setDayBordersVisible(false);
-                setDecorationBackgroundVisible(true);
-                setDecorationBordersVisible(false);
-            } else {
-                setDayBordersVisible(true);
-                setDecorationBackgroundVisible(decorationBackgroundVisible);
-                setDecorationBordersVisible(decorationBordersVisible);
+    public void refreshDayPanels(Date nday, Schedule sched, Boolean add) {
+        Log.Debug(this, "aktualisieren DaySelektor ... geklickt");
+        for (int o = 0; o < days.length; o++) {
+//            Log.Debug(this, "Checking ..." + days[o].getDate() + "\n"
+//                          + "angainst ..." + nday );
+            if (days[o].getDate().equals(nday)) {
+                if (add) {
+                    Log.Debug(this, "aktualisieren DaySelektor ... a");
+                    days[o].addScheduledEvent(sched);
+                } else {
+                    Log.Debug(this, "aktualisieren DaySelektor ... b");
+                    days[o].removeScheduledEvent(sched);
+                }
             }
         }
+        Log.Debug(this, "aktualisieren DaySelektor ... fertig");
     }
 
-    /**
-     * Sets a valid date range for selectable dates. If max is before min, the
-     * default range with no limitation is set.
-     *
-     * @param min
-     *            the minimum selectable date or null (then the minimum date is
-     *            set to 01\01\0001)
-     * @param max
-     *            the maximum selectable date or null (then the maximum date is
-     *            set to 01\01\9999)
-     */
-    public void setSelectableDateRange(Date min, Date max) {
-        if (min == null) {
-            minSelectableDate = defaultMinSelectableDate;
-        } else {
-            minSelectableDate = min;
+    public ArrayList<Schedule> getScheduledEvents(Date nday) {
+        for (int o = 0; o < days.length; o++) {
+            if (days[o].getDate().equals(nday)) {
+                return days[o].getScheduledEvents();
+            }
         }
-        if (max == null) {
-            maxSelectableDate = defaultMaxSelectableDate;
-        } else {
-            maxSelectableDate = max;
-        }
-        if (maxSelectableDate.before(minSelectableDate)) {
-            minSelectableDate = defaultMinSelectableDate;
-            maxSelectableDate = defaultMaxSelectableDate;
-        }
-        drawDays(null);
+        return null;
     }
-
-    /**
-     * Sets the maximum selectable date. If null, the date 01\01\9999 will be set instead.
-     *
-     * @param max the maximum selectable date
-     *
-     * @return the maximum selectable date
-     */
-    public Date setMaxSelectableDate(Date max) {
-        if (max == null) {
-            maxSelectableDate = defaultMaxSelectableDate;
-        } else {
-            maxSelectableDate = max;
-        }
-        drawDays(null);
-        return maxSelectableDate;
-    }
-
-    /**
-     * Sets the minimum selectable date. If null, the date 01\01\0001 will be set instead.
-     *
-     * @param min the minimum selectable date
-     *
-     * @return the minimum selectable date
-     */
-    public Date setMinSelectableDate(Date min) {
-        if (min == null) {
-            minSelectableDate = defaultMinSelectableDate;
-        } else {
-            minSelectableDate = min;
-        }
-        drawDays(null);
-        return minSelectableDate;
-    }
-
-    /**
-     * Gets the maximum selectable date.
-     *
-     * @return the maximum selectable date
-     */
-    public Date getMaxSelectableDate() {
-        return maxSelectableDate;
-    }
-
-    /**
-     * Gets the minimum selectable date.
-     *
-     * @return the minimum selectable date
-     */
-    public Date getMinSelectableDate() {
-        return minSelectableDate;
-    }
-
-    /**
-     * Gets the maximum number of characters of a day name or 0. If 0 is
-     * returned, dateFormatSymbols.getShortWeekdays() will be used.
-     *
-     * @return the maximum number of characters of a day name or 0.
-     */
-    public int getMaxDayCharacters() {
-        return maxDayCharacters;
-    }
-
-//    /**
-//     * Sets the maximum number of characters per day in the day bar. Valid
-//     * values are 0-4. If set to 0, dateFormatSymbols.getShortWeekdays() will be
-//     * used, otherwise theses strings will be reduced to the maximum number of
-//     * characters.
-//     *
-//     * @param maxDayCharacters
-//     *            the maximum number of characters of a day name.
-//     */
-//    public void setMaxDayCharacters(int maxDayCharacters) {
-//        if (maxDayCharacters == this.maxDayCharacters) {
-//            return;
-//        }
-//
-//        if (maxDayCharacters < 0 || maxDayCharacters > 4) {
-//            this.maxDayCharacters = 0;
-//        } else {
-//            this.maxDayCharacters = maxDayCharacters;
-//        }
-//        drawDayNames();
-//        drawDays();
-//        invalidate();
-//    }
+    
     /**
      * Creates a JFrame with a JDayChooser inside and can be used for testing.
      *
@@ -1108,13 +658,16 @@ public class ScheduleCalendarDayChooser extends JPanel implements ActionListener
             setBorderPainted(decorationBordersVisible);
         }
 
+        @Override
         public void addMouseListener(MouseListener l) {
         }
 
+        @Override
         public boolean isFocusable() {
             return false;
         }
 
+        @Override
         public void paint(Graphics g) {
             if ("Windows".equals(UIManager.getLookAndFeel().getID())) {
                 // this is a hack to get the background painted

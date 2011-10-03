@@ -700,8 +700,7 @@ public class ControlPanel_Templates extends javax.swing.JPanel implements Contro
         for (int i = 0; i < selectedValues.length; i++) {
             User object = (User) selectedValues[i];
 
-            QueryCriteria d = new QueryCriteria( );
-            d.addAndCondition("cname", dataOwner.__getIDS() + "@" + object.__getIDS() + "@" + groups);
+            QueryCriteria d = new QueryCriteria("cname", dataOwner.__getIDS() + "@" + object.__getIDS() + "@" + groups);
             QueryHandler.instanceOf().clone(Context.getTemplatesToUsers()).delete(d);
 
             QueryData c = new QueryData();

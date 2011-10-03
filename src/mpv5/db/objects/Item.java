@@ -26,7 +26,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
-import java.util.Vector;
 import javax.swing.JComponent;
 import mpv5.YabsViewProxy;
 import mpv5.db.common.Context;
@@ -50,6 +49,7 @@ import mpv5.utils.text.TypeConversion;
  *  
  */
 public class Item extends DatabaseObject implements Formattable, Templateable {
+    private static final long serialVersionUID = 1L;
 
     /**
      * Returns a localized string representation of the given item status
@@ -175,6 +175,84 @@ public class Item extends DatabaseObject implements Formattable, Templateable {
         }
         return "";
     }
+    
+        public static MPEnum[] getItemEnum() {
+        MPEnum[] en = new MPEnum[6];
+        en[0] = new MPEnum() {
+
+            @Override
+            public Integer getId() {
+                return new Integer(-1);
+            }
+
+            @Override
+            public String getName() {
+                return Messages.ALL.toString();
+            }
+        };
+        en[1] = new MPEnum() {
+
+            @Override
+            public Integer getId() {
+                return new Integer(0);
+            }
+
+            @Override
+            public String getName() {
+                return getTypeString(0);
+            }
+        };
+        en[2] = new MPEnum() {
+
+            @Override
+            public Integer getId() {
+                return new Integer(1);
+            }
+
+            @Override
+            public String getName() {
+                return getTypeString(1);
+            }
+        };
+        en[3] = new MPEnum() {
+
+            @Override
+            public Integer getId() {
+                return new Integer(2);
+            }
+
+            @Override
+            public String getName() {
+                return getTypeString(2);
+            }
+        };
+        en[4] = new MPEnum() {
+
+            @Override
+            public Integer getId() {
+                return new Integer(3);
+            }
+
+            @Override
+            public String getName() {
+                return getTypeString(3);
+            }
+        };
+        en[5] = new MPEnum() {
+
+            @Override
+            public Integer getId() {
+                return new Integer(4);
+            }
+
+            @Override
+            public String getName() {
+                return getTypeString(4);
+            }
+        };        
+        return en;
+    }
+        
     private int contactsids;
     private int accountsids;
     private BigDecimal netvalue = new BigDecimal("0");
@@ -510,7 +588,7 @@ public class Item extends DatabaseObject implements Formattable, Templateable {
 
         List<SubItem> data;
         List<String[]> data2;
-        Vector<String[]> list = new Vector<String[]>();
+        ArrayList<String[]> list = new ArrayList<String[]>();
 
         try {
             data = DatabaseObject.getReferencedObjects(this, Context.getSubItem(), new SubItem());

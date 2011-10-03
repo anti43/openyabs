@@ -37,7 +37,7 @@ public interface Constants {
     /**
      * The minimal Database Version which is compatible with this release
      */
-    public static final Double DATABASE_VERSION = 1.185;
+    public static final Double DATABASE_VERSION = 1.186;
     /**
      * The max Database Version which is compatible with this release
      */
@@ -92,7 +92,7 @@ public interface Constants {
     public static String CURRENT_VERSION_URL = "http://mp-rechnungs-und-kundenverwaltung.googlecode.com/files/" + VERSION + ".zip";
     public static final String[] CONTRIBUTORS = new String[]{
         "Andreas Weber",
-        "digger@bw",
+        "Jan Hahnisch",
         "P.Eser",
         "Christian Gabel",
         "Daniel Lang",

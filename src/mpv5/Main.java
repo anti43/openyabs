@@ -19,7 +19,6 @@ package mpv5;
 import java.io.IOException;
 import mpv5.db.common.NodataFoundException;
 import mpv5.logging.*;
-import org.jdesktop.application.Application;
 import org.jdesktop.application.SingleFrameApplication;
 import com.l2fprod.common.swing.plaf.LookAndFeelAddons;
 import enoa.connection.NoaConnection;
@@ -32,12 +31,12 @@ import java.net.HttpURLConnection;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.Properties;
-import java.util.Vector;
 import javax.swing.ImageIcon;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
@@ -120,7 +119,7 @@ public class Main implements Runnable {
     public static void addProcessToClose(Process application) {
         oap.add(application);
     }
-    private static List<Process> oap = new Vector<Process>();
+    private static List<Process> oap = new ArrayList<Process>();
 
     private static void readLocalSettings() {
         splash.nextStep(Messages.LOCAL_SETTINGS.toString());
@@ -854,7 +853,7 @@ public class Main implements Runnable {
         }
         if (!HEADLESS) {
             try {
-                Scheduler.getInstance().start();
+                (new Scheduler()).start();
             } catch (Exception e) {
                 Log.Debug(e);
             }

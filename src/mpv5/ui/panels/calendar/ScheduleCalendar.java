@@ -21,10 +21,7 @@
 package mpv5.ui.panels.calendar;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.Font;
-import java.awt.Point;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.Calendar;
@@ -32,11 +29,8 @@ import java.util.Date;
 import java.util.Locale;
 
 import javax.swing.BorderFactory;
-import javax.swing.JFrame;
 import javax.swing.JPanel;
 import mpv5.globals.LocalSettings;
-import mpv5.globals.Messages;
-import mpv5.ui.dialogs.BigPopup;
 
 /**
  * JCalendar is a bean for entering a date by choosing the year, month and day.
@@ -45,14 +39,13 @@ import mpv5.ui.dialogs.BigPopup;
  * @version $LastChangedRevision: 95 $
  * @version $LastChangedDate: 2006-05-05 18:43:15 +0200 (Fr, 05 Mai 2006) $
  */
-public class ScheduleCalendar extends JPanel implements PropertyChangeListener {
+public final class ScheduleCalendar extends JPanel implements PropertyChangeListener {
 
     private static final long serialVersionUID = 8913369762644440133L;
 
     private Calendar calendar;
     /** the day chooser */
     protected ScheduleCalendarDayChooser dayChooser;
-    private boolean initialized = false;
     /** indicates if weeks of year shall be visible */
     protected boolean weekOfYearVisible = true;
     /** the locale */
@@ -72,110 +65,12 @@ public class ScheduleCalendar extends JPanel implements PropertyChangeListener {
      */
     public static ScheduleCalendar instanceOf() {
         if (icke == null) {
-            icke = new ScheduleCalendar();
+            icke = new ScheduleCalendar(null, null, true, true);
         }
         return icke;
     }
-
-
-    /**
-     * The jc instance as popup
-     * @param width
-     * @param locationOnScreen
-     */
-    public static void instanceOf(int width, Point locationOnScreen) {
-        ScheduleCalendar c = new ScheduleCalendar();
-        c.setPreferredSize(new Dimension(width, width));
-        BigPopup.showPopup(c, Messages.SCHEDULE.toString(), locationOnScreen);
-    }
-
-    /**
-     * Default JCalendar constructor.
-     */
-    public ScheduleCalendar() {
-        this(null, null, true, true);
-        yearChooser.setFont(Font.decode(LocalSettings.getProperty(LocalSettings.DEFAULT_FONT)).deriveFont(Font.BOLD, 14));
-        monthChooser.setFont(Font.decode(LocalSettings.getProperty(LocalSettings.DEFAULT_FONT)).deriveFont(Font.PLAIN, 14));
-    }
-
-    /**
-     * JCalendar constructor which allows the initial date to be set.
-     *
-     * @param date
-     *            the date
-     */
-    public ScheduleCalendar(Date date) {
-        this(date, null, true, true);
-    }
-
-    /**
-     * JCalendar constructor which allows the initial calendar to be set.
-     *
-     * @param calendar
-     *            the calendar
-     */
-    public ScheduleCalendar(Calendar calendar) {
-        this(null, null, true, true);
-        setCalendar(calendar);
-    }
-
-    /**
-     * JCalendar constructor allowing the initial locale to be set.
-     *
-     * @param locale
-     *            the new locale
-     */
-    public ScheduleCalendar(Locale locale) {
-        this(null, locale, true, true);
-    }
-
-    /**
-     * JCalendar constructor specifying both the initial date and locale.
-     *
-     * @param date
-     *            the date
-     * @param locale
-     *            the new locale
-     */
-    public ScheduleCalendar(Date date, Locale locale) {
-        this(date, locale, true, true);
-    }
-
-    /**
-     * JCalendar constructor specifying both the initial date and the month
-     * spinner type.
-     *
-     * @param date
-     *            the date
-     * @param monthSpinner
-     *            false, if no month spinner should be used
-     */
-    public ScheduleCalendar(Date date, boolean monthSpinner) {
-        this(date, null, monthSpinner, true);
-    }
-
-    /**
-     * JCalendar constructor specifying both the locale and the month spinner.
-     *
-     * @param locale
-     *            the locale
-     * @param monthSpinner
-     *            false, if no month spinner should be used
-     */
-    public ScheduleCalendar(Locale locale, boolean monthSpinner) {
-        this(null, locale, monthSpinner, true);
-    }
-
-    /**
-     * JCalendar constructor specifying the month spinner type.
-     *
-     * @param monthSpinner
-     *            false, if no month spinner should be used
-     */
-    public ScheduleCalendar(boolean monthSpinner) {
-        this(null, null, monthSpinner, true);
-    }
-
+   
+    
     /**
      * JCalendar constructor with month spinner parameter.
      *
@@ -189,19 +84,17 @@ public class ScheduleCalendar extends JPanel implements PropertyChangeListener {
      *            true, if weeks of year shall be visible
      */
     private ScheduleCalendar(Date date, Locale locale, boolean monthSpinner, boolean weekOfYearVisible) {
-
-        setName(Messages.CALENDAR.toString());
-
+      
         // needed for setFont() etc.
         dayChooser = null;
         monthChooser = null;
         yearChooser = null;
         this.weekOfYearVisible = weekOfYearVisible;
 
-        this.locale = locale;
-
         if (locale == null) {
             this.locale = Locale.getDefault();
+        } else {
+            this.locale = locale;
         }
 
         calendar = Calendar.getInstance();
@@ -235,33 +128,9 @@ public class ScheduleCalendar extends JPanel implements PropertyChangeListener {
             calendar.setTime(date);
         }
 
-        initialized = true;
-
         setCalendar(calendar);
-    }
-
-    /**
-     * Creates a JFrame with a JCalendar inside and can be used for testing.
-     *
-     * @param s
-     *            The command line arguments
-     */
-    public static void main(String[] s) {
-        JFrame frame = new JFrame("JCalendar");
-
-        ScheduleCalendar jcalendar = new ScheduleCalendar();
-        frame.getContentPane().add(jcalendar);
-        frame.pack();
-        frame.setVisible(true);
-    }
-
-    /**
-     * Returns the calendar property.
-     *
-     * @return the value of the calendar property.
-     */
-    public Calendar getCalendar() {
-        return calendar;
+        yearChooser.setFont(Font.decode(LocalSettings.getProperty(LocalSettings.DEFAULT_FONT)).deriveFont(Font.BOLD, 14));
+        monthChooser.setFont(Font.decode(LocalSettings.getProperty(LocalSettings.DEFAULT_FONT)).deriveFont(Font.PLAIN, 14));
     }
 
     /**
@@ -271,17 +140,6 @@ public class ScheduleCalendar extends JPanel implements PropertyChangeListener {
      */
     public ScheduleCalendarDayChooser getDayChooser() {
         return dayChooser;
-    }
-
-    /**
-     * Returns the locale.
-     *
-     * @return the value of the locale property.
-     *
-     * @see #setLocale
-     */
-    public Locale getLocale() {
-        return locale;
     }
 
     /**
@@ -300,15 +158,6 @@ public class ScheduleCalendar extends JPanel implements PropertyChangeListener {
      */
     public ScheduleYearChooser getYearChooser() {
         return yearChooser;
-    }
-
-    /**
-     * Indicates if the weeks of year are visible..
-     *
-     * @return boolean true, if weeks of year are visible
-     */
-    public boolean isWeekOfYearVisible() {
-        return dayChooser.isWeekOfYearVisible();
     }
 
     /**
@@ -335,20 +184,6 @@ public class ScheduleCalendar extends JPanel implements PropertyChangeListener {
                 c.setTime((Date) evt.getNewValue());
                 setCalendar(c, true);
             }
-        }
-    }
-
-    /**
-     * Sets the background color.
-     *
-     * @param bg
-     *            the new background
-     */
-    public void setBackground(Color bg) {
-        super.setBackground(bg);
-
-        if (dayChooser != null) {
-            dayChooser.setBackground(bg);
         }
     }
 
@@ -393,190 +228,6 @@ public class ScheduleCalendar extends JPanel implements PropertyChangeListener {
     }
 
     /**
-     * Enable or disable the JCalendar.
-     *
-     * @param enabled
-     *            the new enabled value
-     */
-    public void setEnabled(boolean enabled) {
-        super.setEnabled(enabled);
-
-        if (dayChooser != null) {
-            dayChooser.setEnabled(enabled);
-            monthChooser.setEnabled(enabled);
-            yearChooser.setEnabled(enabled);
-        }
-    }
-
-    /**
-     * Returns true, if enabled.
-     *
-     * @return true, if enabled.
-     */
-    public boolean isEnabled() {
-        return super.isEnabled();
-    }
-
-    /**
-     * Sets the font property.
-     *
-     * @param font
-     *            the new font
-     */
-    public void setFont(Font font) {
-        super.setFont(font);
-
-        if (dayChooser != null) {
-            dayChooser.setFont(font);
-            monthChooser.setFont(font);
-            yearChooser.setFont(font);
-        }
-    }
-
-    /**
-     * Sets the foreground color.
-     *
-     * @param fg
-     *            the new foreground
-     */
-    public void setForeground(Color fg) {
-        super.setForeground(fg);
-
-        if (dayChooser != null) {
-            dayChooser.setForeground(fg);
-            monthChooser.setForeground(fg);
-            yearChooser.setForeground(fg);
-        }
-    }
-
-    /**
-     * Sets the locale property. This is a bound property.
-     *
-     * @param l
-     *            the new locale value
-     *
-     * @see #getLocale
-     */
-    public void setLocale(Locale l) {
-        if (!initialized) {
-            super.setLocale(l);
-        } else {
-            Locale oldLocale = locale;
-            locale = l;
-            dayChooser.setLocale(locale);
-            monthChooser.setLocale(locale);
-            firePropertyChange("locale", oldLocale, locale);
-        }
-    }
-
-    /**
-     * Sets the week of year visible.
-     *
-     * @param weekOfYearVisible
-     *            true, if weeks of year shall be visible
-     */
-    public void setWeekOfYearVisible(boolean weekOfYearVisible) {
-        dayChooser.setWeekOfYearVisible(weekOfYearVisible);
-        setLocale(locale); // hack for doing complete new layout :)
-    }
-
-    /**
-     * Gets the visibility of the decoration background.
-     *
-     * @return true, if the decoration background is visible.
-     */
-    public boolean isDecorationBackgroundVisible() {
-        return dayChooser.isDecorationBackgroundVisible();
-    }
-
-    /**
-     * Sets the decoration background visible.
-     *
-     * @param decorationBackgroundVisible
-     *            true, if the decoration background should be visible.
-     */
-    public void setDecorationBackgroundVisible(boolean decorationBackgroundVisible) {
-        dayChooser.setDecorationBackgroundVisible(decorationBackgroundVisible);
-        setLocale(locale); // hack for doing complete new layout :)
-    }
-
-    /**
-     * Gets the visibility of the decoration border.
-     *
-     * @return true, if the decoration border is visible.
-     */
-    public boolean isDecorationBordersVisible() {
-        return dayChooser.isDecorationBordersVisible();
-    }
-
-    /**
-     * Sets the decoration borders visible.
-     *
-     * @param decorationBordersVisible
-     *            true, if the decoration borders should be visible.
-     */
-    public void setDecorationBordersVisible(boolean decorationBordersVisible) {
-        dayChooser.setDecorationBordersVisible(decorationBordersVisible);
-        setLocale(locale); // hack for doing complete new layout :)
-    }
-
-    /**
-     * Returns the color of the decoration (day names and weeks).
-     *
-     * @return the color of the decoration (day names and weeks).
-     */
-    public Color getDecorationBackgroundColor() {
-        return dayChooser.getDecorationBackgroundColor();
-    }
-
-    /**
-     * Sets the background of days and weeks of year buttons.
-     *
-     * @param decorationBackgroundColor
-     *            the background color
-     */
-    public void setDecorationBackgroundColor(Color decorationBackgroundColor) {
-        dayChooser.setDecorationBackgroundColor(decorationBackgroundColor);
-    }
-
-    /**
-     * Returns the Sunday foreground.
-     *
-     * @return Color the Sunday foreground.
-     */
-    public Color getSundayForeground() {
-        return dayChooser.getSundayForeground();
-    }
-
-    /**
-     * Returns the weekday foreground.
-     *
-     * @return Color the weekday foreground.
-     */
-    public Color getWeekdayForeground() {
-        return dayChooser.getWeekdayForeground();
-    }
-
-//	/**
-//	 * Sets the Sunday foreground.
-//	 *
-//	 * @param sundayForeground
-//	 *            the sundayForeground to set
-//	 */
-//	public void setSundayForeground(Color sundayForeground) {
-//		dayChooser.setSundayForeground(sundayForeground);
-//	}
-//
-//	/**
-//	 * Sets the weekday foreground.
-//	 *
-//	 * @param weekdayForeground
-//	 *            the weekdayForeground to set
-//	 */
-//	public void setWeekdayForeground(Color weekdayForeground) {
-//		dayChooser.setWeekdayForeground(weekdayForeground);
-//	}
-    /**
      * Returns a Date object.
      *
      * @return a date object constructed from the calendar property.
@@ -604,82 +255,7 @@ public class ScheduleCalendar extends JPanel implements PropertyChangeListener {
         monthChooser.setMonth(month);
         dayChooser.setCalendar(calendar);
         dayChooser.setDay(day);
-
+        
         firePropertyChange("date", oldDate, date);
     }
-
-    /**
-     * Sets a valid date range for selectable dates. If max is before
-     * min, the default range with no limitation is set.
-     *
-     * @param min
-     *            the minimum selectable date or null (then the minimum date is
-     *            set to 01\01\0001)
-     * @param max
-     *            the maximum selectable date or null (then the maximum date is
-     *            set to 01\01\9999)
-     */
-    public void setSelectableDateRange(Date min, Date max) {
-        dayChooser.setSelectableDateRange(min, max);
-    }
-
-    ;
-
-    /**
-     * Gets the minimum selectable date.
-     *
-     * @return the minimum selectable date
-     */
-    public Date getMaxSelectableDate() {
-        return dayChooser.getMaxSelectableDate();
-    }
-
-    /**
-     * Gets the maximum selectable date.
-     *
-     * @return the maximum selectable date
-     */
-    public Date getMinSelectableDate() {
-        return dayChooser.getMinSelectableDate();
-    }
-
-    /**
-     * Sets the maximum selectable date.
-     *
-     * @param max maximum selectable date
-     */
-    public void setMaxSelectableDate(Date max) {
-        dayChooser.setMaxSelectableDate(max);
-    }
-
-    /**
-     * Sets the minimum selectable date.
-     *
-     * @param min minimum selectable date
-     */
-    public void setMinSelectableDate(Date min) {
-        dayChooser.setMinSelectableDate(min);
-    }
-
-    /**
-     * Gets the maximum number of characters of a day name or 0. If 0 is
-     * returned, dateFormatSymbols.getShortWeekdays() will be used.
-     *
-     * @return the maximum number of characters of a day name or 0.
-     */
-    public int getMaxDayCharacters() {
-        return dayChooser.getMaxDayCharacters();
-    }
-//	/**
-//	 * Sets the maximum number of characters per day in the day bar. Valid
-//	 * values are 0-4. If set to 0, dateFormatSymbols.getShortWeekdays() will be
-//	 * used, otherwise theses strings will be reduced to the maximum number of
-//	 * characters.
-//	 *
-//	 * @param maxDayCharacters
-//	 *            the maximum number of characters of a day name.
-//	 */
-//	public void setMaxDayCharacters(int maxDayCharacters) {
-//		dayChooser.setMaxDayCharacters(maxDayCharacters);
-//	}
 }

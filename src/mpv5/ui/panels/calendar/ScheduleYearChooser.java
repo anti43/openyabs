@@ -34,8 +34,8 @@ import javax.swing.JFrame;
  * @version $LastChangedDate: 2006-04-28 13:50:52 +0200 (Fr, 28 Apr 2006) $
  */
 public class ScheduleYearChooser extends JSpinField {
-	private static final long serialVersionUID = 2648810220491090064L;
-	protected ScheduleCalendarDayChooser dayChooser;
+    private static final long serialVersionUID = 2648810220491090064L;
+    protected ScheduleCalendarDayChooser dayChooser;
     protected int oldYear;
     protected int startYear;
     protected int endYear;
@@ -76,7 +76,8 @@ public class ScheduleYearChooser extends JSpinField {
      *
      * @param value the year value
      */
-    public void setValue(int value) {
+    @Override
+    public final void setValue(int value) {
         setYear(value);
     }
 

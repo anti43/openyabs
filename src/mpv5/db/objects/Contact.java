@@ -134,6 +134,7 @@ public class Contact extends DatabaseObject implements Formattable, Templateable
     /**
      * @return the name
      */
+    @Override
     public String __getCName() {
         return cname;
     }
@@ -141,6 +142,7 @@ public class Contact extends DatabaseObject implements Formattable, Templateable
     /**
      * @param name the name to set
      */
+    @Override
     public void setCName(String name) {
         this.cname = name;
     }
@@ -414,7 +416,7 @@ public class Contact extends DatabaseObject implements Formattable, Templateable
     @Override
     public JComponent getView() {
         ContactPanel x = new ContactPanel(getContext());
-        return x;
+        return (JComponent) x;
     }
 
     @Override

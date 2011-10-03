@@ -565,8 +565,7 @@ public class User extends DatabaseObject {
      * Delete the users properties
      */
     public void deleteProperties() {
-        QueryCriteria c = new QueryCriteria();
-        c.addAndCondition("usersids", __getIDS());
+        QueryCriteria c = new QueryCriteria("usersids", __getIDS());
         QueryHandler.instanceOf().clone(Context.getUserProperties()).delete(c);
     }
 
@@ -575,8 +574,7 @@ public class User extends DatabaseObject {
      */
     public void setProperties() {
 
-        QueryCriteria criteria = new QueryCriteria();
-        criteria.addAndCondition("usersids", ids);
+        QueryCriteria criteria = new QueryCriteria("usersids", ids);
         properties = new PropertyStore();
         try {
             properties.addAll(QueryHandler.instanceOf().clone(Context.getUserProperties()).select("cname, value", criteria));

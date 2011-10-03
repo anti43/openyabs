@@ -12,10 +12,12 @@ package mpv5.ui.dialogs;
 
 import java.awt.Graphics;
 import java.awt.Image;
-import javax.swing.DefaultListCellRenderer;
 import javax.swing.DefaultListModel;
-import javax.swing.GrayFilter;
 import javax.swing.ImageIcon;
+import mpv5.db.common.Context;
+import mpv5.db.common.NodataFoundException;
+import mpv5.db.common.QueryCriteria;
+import mpv5.db.common.QueryHandler;
 import mpv5.globals.Constants;
 import mpv5.logging.Log;
 import mpv5.ui.misc.Position;
@@ -41,6 +43,7 @@ public class About extends javax.swing.JFrame {
 //        ((DefaultListCellRenderer)jList1.getCellRenderer()).setOpaque( false );
 //        jList1.setOpaque(false);
         setInfo(Constants.VERSION);
+        setDBVersion();
         website.setText(Constants.WEBSITE);
         DefaultListModel m = new DefaultListModel();
         String[] cons = Constants.CONTRIBUTORS;
@@ -80,9 +83,10 @@ public class About extends javax.swing.JFrame {
         jList1 = new javax.swing.JList();
         jLabel2 = new javax.swing.JLabel();
         website = new javax.swing.JLabel();
+        db_version = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-        java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle(); 
+        java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle(); // NOI18N
         setTitle(bundle.getString("About.title")); // NOI18N
         setResizable(false);
 
@@ -91,23 +95,26 @@ public class About extends javax.swing.JFrame {
         info.setFont(new java.awt.Font("DejaVu Sans", 0, 11)); // NOI18N
         info.setText(bundle.getString("About.info.text")); // NOI18N
 
-        title.setFont(new java.awt.Font("DejaVu Sans", 0, 11)); // NOI18N
+        title.setFont(new java.awt.Font("DejaVu Sans", 0, 11));
         title.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         title.setText(bundle.getString("About.title.text")); // NOI18N
 
-        jLabel1.setFont(new java.awt.Font("DejaVu Sans", 0, 11)); // NOI18N
+        jLabel1.setFont(new java.awt.Font("DejaVu Sans", 0, 11));
         jLabel1.setText(bundle.getString("About.jLabel1.text")); // NOI18N
 
         jList1.setFont(new java.awt.Font("DejaVu Sans", 0, 11));
         jList1.setForeground(new java.awt.Color(0, 0, 51));
         jScrollPane1.setViewportView(jList1);
 
-        jLabel2.setFont(new java.awt.Font("DejaVu Sans", 0, 11)); // NOI18N
+        jLabel2.setFont(new java.awt.Font("DejaVu Sans", 0, 11));
         jLabel2.setForeground(new java.awt.Color(255, 255, 204));
         jLabel2.setText(bundle.getString("About.jLabel2.text")); // NOI18N
 
         website.setForeground(new java.awt.Color(255, 255, 204));
         website.setText(bundle.getString("About.website.text")); // NOI18N
+
+        db_version.setFont(new java.awt.Font("DejaVu Sans", 0, 11)); // NOI18N
+        db_version.setText(bundle.getString("About.db_version.text")); // NOI18N
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -128,7 +135,9 @@ public class About extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 163, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                        .addContainerGap(381, Short.MAX_VALUE)
+                        .addContainerGap()
+                        .addComponent(db_version, javax.swing.GroupLayout.PREFERRED_SIZE, 177, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 194, Short.MAX_VALUE)
                         .addComponent(jLabel1)))
                 .addContainerGap())
         );
@@ -140,7 +149,9 @@ public class About extends javax.swing.JFrame {
                     .addComponent(info)
                     .addComponent(title))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jLabel1)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel1)
+                    .addComponent(db_version))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
@@ -161,6 +172,7 @@ public class About extends javax.swing.JFrame {
   
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JLabel db_version;
     private javax.swing.JLabel info;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
@@ -210,8 +222,21 @@ public class About extends javax.swing.JFrame {
     /**
      * @param info the info to set
      */
-    public void setInfo(String info) {
+    public final void setInfo(String info) {
         this.info.setText(info);
     }
-
+    
+    /**
+     * @param info the info to set
+     */
+    public final void setDBVersion() {
+        QueryCriteria criteria = new QueryCriteria("CNAME", "yabs_dbversion");
+        Object[][] data = null;
+        try {
+            data = QueryHandler.instanceOf().clone(Context.IDENTITY_GLOBALSETTINGS).select("VALUE", criteria);
+        } catch (NodataFoundException ex) {
+            Log.Debug(this, ex.getMessage());
+        }
+        this.db_version.setText("(DB:" + data[0][0].toString()+ ")");
+    }
 }

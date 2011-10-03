@@ -154,8 +154,7 @@ public class Account extends DatabaseObject {
     public List<Item> getItemsInAccount() throws NodataFoundException {
         List<Item> tmp = DatabaseObject.getReferencedObjects((Item) DatabaseObject.getObject(Context.getItem()), Context.getItemsToAccounts());
 
-        QueryCriteria c = new QueryCriteria( );
-        c.addAndCondition("defaultaccountsids", this.__getIDS());
+        QueryCriteria c = new QueryCriteria("defaultaccountsids", this.__getIDS());
         ArrayList<Item> tmp2 = DatabaseObject.getObjects(new Item(), c);
 
         tmp.addAll(tmp2);

@@ -13,8 +13,6 @@ package mpv5.ui.dialogs;
 import java.util.ArrayList;
 import java.util.Date;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
 import mpv5.db.common.NodataFoundException;
@@ -23,9 +21,7 @@ import mpv5.db.objects.Schedule;
 import mpv5.globals.Headers;
 import mpv5.globals.Messages;
 import mpv5.logging.Log;
-import mpv5.ui.frames.MPView;
 import mpv5.ui.misc.Position;
-import mpv5.ui.panels.calendar.*;
 import mpv5.utils.date.DateConverter;
 import mpv5.utils.models.MPTableModel;
 import mpv5.utils.tables.TableFormat;
@@ -261,8 +257,7 @@ public class ScheduleDayEvent extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void jTable1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable1MouseClicked
-
-        Schedule d = (Schedule) jTable1.getValueAt(jTable1.getSelectedRow(), 0);
+        Schedule d = (Schedule) jTable1.getModel().getValueAt(jTable1.convertRowIndexToModel(jTable1.getSelectedRow()), 0);
         if (d != null) {
             try {
                 labeledCombobox1.setModel(d.getItem());
@@ -367,7 +362,6 @@ public class ScheduleDayEvent extends javax.swing.JFrame {
                 Popup.notice(Messages.SCHEDULE_NEXT +
                         DateConverter.getDefDateString(DateConverter.addMonths(labeledDateChooser1.getDate(),
                         s.__getIntervalmonth())));
-                ScheduleCalendarDayChooser.instanceOf().reload();
             } catch (Exception ex) {
                 Log.Debug(this, ex.getMessage());
             }

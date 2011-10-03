@@ -144,7 +144,11 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
 
         refresh();
 //        shipping.set_ValueClass(Double.class);
-
+        
+//        checkb_pront_oc.setSelected(
+//            mpv5.db.objects.User.getCurrentUser().getProperties().getProperty(
+//                "org.openyabs.uiproperty", 
+//                "orderconfirmationalways"));
         addedby.setText(mpv5.db.objects.User.getCurrentUser().getName());
         contactname.setSearchEnabled(true);
         contactname.setContext(Context.getCustomer());

@@ -43,8 +43,7 @@ public class WSItemsMapping extends DatabaseObject {
      * @throws NodataFoundException
      */
     public static WSItemsMapping getMapping(int webShopID, int itemsids) throws NodataFoundException {
-        QueryCriteria qs = new QueryCriteria();
-        qs.addAndCondition("webshopid", webShopID);
+        QueryCriteria qs = new QueryCriteria("webshopid", webShopID);
         qs.addAndCondition("itemsids", itemsids);
         List old = DatabaseObject.getObjects(Context.getWebShopItemMapping(), qs);
         return (WSItemsMapping) old.get(0);

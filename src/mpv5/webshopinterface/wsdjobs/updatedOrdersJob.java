@@ -93,9 +93,7 @@ public class updatedOrdersJob implements WSDaemonJob {
 
                 for (SubItem orderRow : aobs) {
                     try {
-                        QueryCriteria qs = new QueryCriteria( );
-
-                        qs.addAndCondition("itemsids", orderRow.__getItemsids());
+                        QueryCriteria qs = new QueryCriteria("itemsids", orderRow.__getItemsids());
 
                         List<DatabaseObject> old = DatabaseObject.getObjects(Context.getAddress(), qs);
 

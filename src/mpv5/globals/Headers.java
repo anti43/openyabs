@@ -23,6 +23,7 @@ public enum Headers {
     TEMPLATES(new String[]{"Name", "Type", "Group"}),
     MAILTEMPLATES(new String[]{"Name", "Description", "Group"}),
     SCHEDULE_LIST(new String[]{"Item ID", "Interval (Months)", "End date", "Added by"}),
+    SCHEDULE_PANEL(new String[]{"IDS","Schedule ID", "Date","Type"}),
     EXPENSE(new String[]{"Number", "Description", "Account", "Value", "Tax Rate"}),
     LIBRARIEST(new String[]{"File", "Description", "License", "Author"});
 

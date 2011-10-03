@@ -403,8 +403,7 @@ public class ControlPanel_Formats extends javax.swing.JPanel implements ControlA
             labeledTextField1.setText(FormatHandler.START_VALUE_IDENTIFIER + Integer.valueOf(labeledSpinner1.getSpinner().getValue().toString()) + FormatHandler.START_VALUE_IDENTIFIER + oval);
         }
 
-        QueryCriteria c = new QueryCriteria( );
-        c.addAndCondition("inttype", Integer.valueOf(labeledCombobox3.getSelectedItem().getId()));
+        QueryCriteria c = new QueryCriteria("inttype", Integer.valueOf(labeledCombobox3.getSelectedItem().getId()));
         c.addAndCondition("usersids", Integer.valueOf(((MPComboBoxModelItem) jComboBox1.getSelectedItem()).getId()));
         QueryHandler.instanceOf().clone(Context.getFormats()).delete(c);
         QueryData what = new QueryData();

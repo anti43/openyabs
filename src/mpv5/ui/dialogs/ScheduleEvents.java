@@ -1,0 +1,782 @@
+/*
+ * To change this template, choose Tools | Templates
+ * and open the template in the editor.
+ */
+
+/*
+ * SplashScreen.java
+ *
+ * Created on 30.03.2009, 21:55:52
+ */
+package mpv5.ui.dialogs;
+
+import java.awt.Component;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+
+import javax.swing.JComboBox;
+import mpv5.db.common.Context;
+import mpv5.db.common.DatabaseObject;
+import mpv5.db.common.DatabaseSearch;
+import mpv5.db.common.NodataFoundException;
+import mpv5.db.common.QueryCriteria;
+import mpv5.db.objects.Contact;
+import mpv5.db.objects.Item;
+import mpv5.db.objects.Schedule;
+import mpv5.db.objects.ScheduleTypes;
+import mpv5.db.objects.User;
+import mpv5.globals.Headers;
+import mpv5.globals.Messages;
+import mpv5.logging.Log;
+import mpv5.ui.misc.Position;
+import mpv5.ui.panels.HomeScreen;
+import mpv5.ui.panels.calendar.ScheduleCalendarDayChooser;
+import mpv5.utils.date.DateConverter;
+import mpv5.utils.models.MPComboBoxModelItem;
+import mpv5.utils.models.MPComboboxModel;
+import mpv5.utils.models.MPTableModel;
+import mpv5.utils.tables.TableFormat;
+
+/**
+ *
+ *  
+ */
+public class ScheduleEvents extends javax.swing.JFrame {
+
+    private static final long serialVersionUID = 1L;
+    private static ScheduleEvents icke;
+    private Schedule dataOwner;
+
+    public static ScheduleEvents instanceOf() {
+        if (icke == null) {
+            icke = new ScheduleEvents();
+        }
+        icke.setVisible(true);
+        icke.clearViews();
+        Log.Debug(ScheduleEvents.class, "Anzeige erfolgt ...");
+        return icke;
+    }
+
+    private ScheduleEvents() {
+        initComponents();
+        labeledCombobox1.setSearchEnabled(true);
+        labeledCombobox1.setContext(Context.getInvoice());
+        labeledCombobox1.getComboBox().addActionListener(new ActionListener() {
+
+            public void actionPerformed(ActionEvent e) {
+                JComboBox cb = (JComboBox) e.getSource();
+                Integer id;
+                try {
+                    if (Integer.valueOf(cb.getSelectedIndex()) >= 0) {
+                        Log.Debug(this, "Item-ID: " + Integer.valueOf(labeledCombobox1.getSelectedItem().getId()));
+                        Item i = (Item) DatabaseObject.getObject(Context.getItem(),
+                                Integer.valueOf(labeledCombobox1.getSelectedItem().getId()));
+                        icke.refreshFromItem(i);
+                    }
+                } catch (NodataFoundException ex) {
+                    Log.Debug(this, ex);
+                }
+            }
+        });
+        initSchedTyps();
+        labeledCombobox3.setSearchEnabled(true);
+        labeledCombobox3.setContext(Context.getContact());
+        labeledCombobox3.getComboBox().addActionListener(new ActionListener() {
+
+            public void actionPerformed(ActionEvent e) {
+                JComboBox cb = (JComboBox) e.getSource();
+                String s;
+                Integer id;
+                try {
+                    if (Integer.valueOf(cb.getSelectedIndex()) >= 0) {
+                        id = Integer.valueOf(labeledCombobox3.getSelectedItem().getId());
+                        Log.Debug(this, "Contact-ID: " + id);
+                        Contact c = (Contact) DatabaseObject.getObject(Context.getContact(),
+                                id);
+                        icke.refreshFromContact(c);
+                        Context i = Context.getItem();
+                        s = Context.DEFAULT_ITEM_SEARCH + ", inttype";
+                        Object[][] data = new DatabaseSearch(i).getValuesFor(s, "contactsids", c.__getIDS());
+                        Log.Debug(this, "gefundene Items: " + data.length);
+                        MPComboBoxModelItem[] items = new MPComboBoxModelItem[data.length];
+                        for (int a = 0; a < data.length; a++) {
+                            items[a] = new MPComboBoxModelItem(data[a][0],
+                                    Item.getTypeString((Integer) data[a][4]) + ": " + data[a][1]);
+                        }
+                        labeledCombobox4.setModel(new MPComboboxModel(items));
+                    }
+                } catch (NodataFoundException ex) {
+                    Log.Debug(this, ex);
+                }
+            }
+        });
+        labeledCombobox4.setSearchEnabled(false);
+        setAlwaysOnTop(true);
+        new Position(this);
+    }
+
+    @Override
+    public void dispose() {
+        setVisible(false);
+    }
+
+    public void setDate(Date tday) {
+        labeledDateChooser1.setDate(DateConverter.addDays(tday, 0));
+        labeledDateChooser2.setDate(DateConverter.addYear(tday));
+        labeledDateChooser3.getDateChooser().setDate(tday);
+    }
+
+    /** This method is called from within the constructor to
+     * initialize the form.
+     * WARNING: Do NOT modify this code. The content of this method is
+     * always regenerated by the Form Editor.
+     */
+    @SuppressWarnings("unchecked")
+    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
+    private void initComponents() {
+
+        jPanel1 = new javax.swing.JPanel();
+        jPanel2 = new javax.swing.JPanel();
+        jSeparator1 = new javax.swing.JSeparator();
+        but4 = new javax.swing.JButton();
+        jSeparator3 = new javax.swing.JSeparator();
+        jSeparator2 = new javax.swing.JSeparator();
+        but6 = new javax.swing.JButton();
+        but5 = new javax.swing.JButton();
+        but7 = new javax.swing.JButton();
+        but8 = new javax.swing.JButton();
+        jTabbedPane1 = new javax.swing.JTabbedPane();
+        jPanel3 = new javax.swing.JPanel();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        jTable1 = new javax.swing.JTable();
+        jLabel3 = new javax.swing.JLabel();
+        labeledDateChooser2 = new mpv5.ui.beans.LabeledDateChooser();
+        labeledDateChooser1 = new mpv5.ui.beans.LabeledDateChooser();
+        labeledSpinner1 = new mpv5.ui.beans.LabeledSpinner();
+        jLabel1 = new javax.swing.JLabel();
+        labeledCombobox1 = new mpv5.ui.beans.LabeledCombobox();
+        jButton5 = new javax.swing.JButton();
+        jPanel4 = new javax.swing.JPanel();
+        labeledDateChooser3 = new mpv5.ui.beans.LabeledDateChooser();
+        jLabel4 = new javax.swing.JLabel();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        jTable2 = new javax.swing.JTable();
+        labeledCombobox2 = new mpv5.ui.beans.LabeledCombobox();
+        labeledCombobox3 = new mpv5.ui.beans.LabeledCombobox();
+        labeledCombobox4 = new mpv5.ui.beans.LabeledCombobox();
+
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle(); // NOI18N
+        setTitle(bundle.getString("ScheduleEvents.title")); // NOI18N
+        setAlwaysOnTop(true);
+        setName("Form"); // NOI18N
+
+        jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("ScheduleEvents.jPanel1.border.title"))); // NOI18N
+        jPanel1.setName("jPanel1"); // NOI18N
+
+        jPanel2.setName("jPanel2"); // NOI18N
+        jPanel2.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+
+        jSeparator1.setName("jSeparator1"); // NOI18N
+        jPanel2.add(jSeparator1, new org.netbeans.lib.awtextra.AbsoluteConstraints(63, 24, -1, -1));
+
+        but4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/save_all.png"))); // NOI18N
+        but4.setText(bundle.getString("ScheduleEvents.but4.text")); // NOI18N
+        but4.setToolTipText(bundle.getString("ScheduleEvents.but4.toolTipText")); // NOI18N
+        but4.setContentAreaFilled(false);
+        but4.setFocusable(false);
+        but4.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        but4.setName("but4"); // NOI18N
+        but4.setPressedIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/xclock.png"))); // NOI18N
+        but4.setRolloverIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/save_all.png"))); // NOI18N
+        but4.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        but4.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                but4ActionPerformed(evt);
+            }
+        });
+        jPanel2.add(but4, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 3, -1, 40));
+
+        jSeparator3.setName("jSeparator3"); // NOI18N
+        jPanel2.add(jSeparator3, new org.netbeans.lib.awtextra.AbsoluteConstraints(138, 24, -1, -1));
+
+        jSeparator2.setName("jSeparator2"); // NOI18N
+        jPanel2.add(jSeparator2, new org.netbeans.lib.awtextra.AbsoluteConstraints(143, 24, -1, -1));
+
+        but6.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/kate.png"))); // NOI18N
+        but6.setText(bundle.getString("ScheduleEvents.but6.text")); // NOI18N
+        but6.setToolTipText(bundle.getString("ScheduleEvents.but6.toolTipText")); // NOI18N
+        but6.setContentAreaFilled(false);
+        but6.setFocusable(false);
+        but6.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        but6.setName("but6"); // NOI18N
+        but6.setPressedIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/xclock.png"))); // NOI18N
+        but6.setRolloverIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/kate.png"))); // NOI18N
+        but6.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        but6.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                but6ActionPerformed(evt);
+            }
+        });
+        jPanel2.add(but6, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 0, -1, 40));
+
+        but5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/edittrash.png"))); // NOI18N
+        but5.setText(bundle.getString("ScheduleEvents.but5.text")); // NOI18N
+        but5.setToolTipText(bundle.getString("ScheduleEvents.but5.toolTipText")); // NOI18N
+        but5.setContentAreaFilled(false);
+        but5.setFocusable(false);
+        but5.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        but5.setName("but5"); // NOI18N
+        but5.setPressedIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/xclock.png"))); // NOI18N
+        but5.setRolloverIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/bright_edittrash.png"))); // NOI18N
+        but5.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        but5.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                but5ActionPerformed(evt);
+            }
+        });
+        jPanel2.add(but5, new org.netbeans.lib.awtextra.AbsoluteConstraints(110, 0, -1, 40));
+
+        but7.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/All software is current.png"))); // NOI18N
+        but7.setText(bundle.getString("ScheduleEvents.but7.text")); // NOI18N
+        but7.setToolTipText(bundle.getString("ScheduleEvents.but7.toolTipText")); // NOI18N
+        but7.setContentAreaFilled(false);
+        but7.setFocusable(false);
+        but7.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        but7.setName("but7"); // NOI18N
+        but7.setPressedIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/xclock.png"))); // NOI18N
+        but7.setRolloverIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/All software is current.png"))); // NOI18N
+        but7.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        but7.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                but7ActionPerformed(evt);
+            }
+        });
+        jPanel2.add(but7, new org.netbeans.lib.awtextra.AbsoluteConstraints(340, 0, -1, -1));
+
+        but8.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/tab_remove.png"))); // NOI18N
+        but8.setText(bundle.getString("ScheduleEvents.but8.text")); // NOI18N
+        but8.setToolTipText(bundle.getString("ScheduleEvents.but8.toolTipText")); // NOI18N
+        but8.setContentAreaFilled(false);
+        but8.setFocusable(false);
+        but8.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        but8.setName("but8"); // NOI18N
+        but8.setPressedIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/xclock.png"))); // NOI18N
+        but8.setRolloverIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/tab_remove.png"))); // NOI18N
+        but8.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        but8.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                but8ActionPerformed(evt);
+            }
+        });
+        jPanel2.add(but8, new org.netbeans.lib.awtextra.AbsoluteConstraints(280, 0, -1, 40));
+
+        jTabbedPane1.setTabPlacement(javax.swing.JTabbedPane.BOTTOM);
+        jTabbedPane1.setName("jTabbedPane1"); // NOI18N
+
+        jPanel3.setName("jPanel3"); // NOI18N
+
+        jScrollPane1.setName("jScrollPane1"); // NOI18N
+
+        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {},
+                {},
+                {},
+                {}
+            },
+            new String [] {
+
+            }
+        ));
+        jTable1.setName("jTable1"); // NOI18N
+        jTable1.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jTable1MouseClicked(evt);
+            }
+        });
+        jScrollPane1.setViewportView(jTable1);
+
+        jLabel3.setText(bundle.getString("ScheduleEvents.jLabel3.text")); // NOI18N
+        jLabel3.setName("jLabel3"); // NOI18N
+
+        labeledDateChooser2.set_Label(bundle.getString("ScheduleEvents.labeledDateChooser2._Label")); // NOI18N
+        labeledDateChooser2.setName("labeledDateChooser2"); // NOI18N
+
+        labeledDateChooser1.setToolTipText(bundle.getString("ScheduleEvents.labeledDateChooser1.toolTipText")); // NOI18N
+        labeledDateChooser1.set_Label(bundle.getString("ScheduleEvents.labeledDateChooser1._Label")); // NOI18N
+        labeledDateChooser1.setName("labeledDateChooser1"); // NOI18N
+
+        labeledSpinner1.set_Label(bundle.getString("ScheduleEvents.labeledSpinner1._Label")); // NOI18N
+        labeledSpinner1.setName("labeledSpinner1"); // NOI18N
+
+        jLabel1.setText(bundle.getString("ScheduleEvents.jLabel1.text")); // NOI18N
+        jLabel1.setName("jLabel1"); // NOI18N
+
+        labeledCombobox1.set_Label(bundle.getString("ScheduleEvents.labeledCombobox1._Label")); // NOI18N
+        labeledCombobox1.setName("labeledCombobox1"); // NOI18N
+
+        jButton5.setText(bundle.getString("ScheduleEvents.jButton5.text")); // NOI18N
+        jButton5.setName("jButton5"); // NOI18N
+        jButton5.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton5ActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
+        jPanel3.setLayout(jPanel3Layout);
+        jPanel3Layout.setHorizontalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 449, Short.MAX_VALUE)
+                    .addComponent(labeledCombobox1, javax.swing.GroupLayout.DEFAULT_SIZE, 449, Short.MAX_VALUE)
+                    .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 258, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(jPanel3Layout.createSequentialGroup()
+                        .addComponent(labeledSpinner1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jLabel1)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 163, Short.MAX_VALUE)
+                        .addComponent(jButton5))
+                    .addComponent(labeledDateChooser1, javax.swing.GroupLayout.DEFAULT_SIZE, 449, Short.MAX_VALUE)
+                    .addComponent(labeledDateChooser2, javax.swing.GroupLayout.DEFAULT_SIZE, 449, Short.MAX_VALUE))
+                .addContainerGap())
+        );
+        jPanel3Layout.setVerticalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(labeledCombobox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(14, 14, 14)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(labeledSpinner1, javax.swing.GroupLayout.DEFAULT_SIZE, 28, Short.MAX_VALUE)
+                    .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(jButton5)
+                        .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, 26, Short.MAX_VALUE)))
+                .addGap(18, 18, 18)
+                .addComponent(labeledDateChooser1, javax.swing.GroupLayout.PREFERRED_SIZE, 21, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(labeledDateChooser2, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel3)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 251, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(52, 52, 52))
+        );
+
+        jTabbedPane1.addTab(bundle.getString("ScheduleEvents.jPanel3.TabConstraints.tabTitle"), jPanel3); // NOI18N
+
+        jPanel4.setName("jPanel4"); // NOI18N
+
+        labeledDateChooser3.set_Label(bundle.getString("ScheduleEvents.labeledDateChooser3._Label")); // NOI18N
+        labeledDateChooser3.setName("labeledDateChooser3"); // NOI18N
+
+        jLabel4.setText(bundle.getString("ScheduleEvents.jLabel4.text")); // NOI18N
+        jLabel4.setName("jLabel4"); // NOI18N
+
+        jScrollPane2.setName("jScrollPane2"); // NOI18N
+
+        jTable2.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {},
+                {},
+                {},
+                {}
+            },
+            new String [] {
+
+            }
+        ));
+        jTable2.setName("jTable2"); // NOI18N
+        jTable2.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jTable2MouseClicked(evt);
+            }
+        });
+        jScrollPane2.setViewportView(jTable2);
+
+        labeledCombobox2.set_Label(bundle.getString("ScheduleEvents.labeledCombobox2._Label")); // NOI18N
+        labeledCombobox2.setName("labeledCombobox2"); // NOI18N
+
+        labeledCombobox3.set_Label(bundle.getString("ScheduleEvents.labeledCombobox3._Label")); // NOI18N
+        labeledCombobox3.setName("labeledCombobox3"); // NOI18N
+
+        labeledCombobox4.set_Label(bundle.getString("ScheduleEvents.labeledCombobox4._Label")); // NOI18N
+        labeledCombobox4.setName("labeledCombobox4"); // NOI18N
+
+        javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
+        jPanel4.setLayout(jPanel4Layout);
+        jPanel4Layout.setHorizontalGroup(
+            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 449, Short.MAX_VALUE)
+                    .addComponent(labeledDateChooser3, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 449, Short.MAX_VALUE)
+                    .addComponent(labeledCombobox3, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 449, Short.MAX_VALUE)
+                    .addComponent(labeledCombobox4, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 449, Short.MAX_VALUE)
+                    .addComponent(labeledCombobox2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 449, Short.MAX_VALUE)
+                    .addComponent(jLabel4, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 258, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap())
+        );
+        jPanel4Layout.setVerticalGroup(
+            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(labeledCombobox3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(labeledCombobox4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(labeledDateChooser3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(labeledCombobox2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel4)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 318, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(59, 59, 59))
+        );
+
+        jTabbedPane1.addTab(bundle.getString("ScheduleEvents.jPanel4.TabConstraints.tabTitle"), jPanel4); // NOI18N
+
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jTabbedPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 474, Short.MAX_VALUE)
+                .addContainerGap())
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGap(34, 34, 34)
+                .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, 411, Short.MAX_VALUE)
+                .addGap(49, 49, 49))
+        );
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addComponent(jTabbedPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 505, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(45, Short.MAX_VALUE))
+        );
+
+        getContentPane().add(jPanel1, java.awt.BorderLayout.PAGE_START);
+
+        pack();
+    }// </editor-fold>//GEN-END:initComponents
+
+    private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
+        try {
+            mpv5.YabsViewProxy.instance().getIdentifierView().addTab(DatabaseObject.getObject(Context.getItem(), Integer.valueOf(labeledCombobox1.getSelectedItem().getId())));
+        } catch (Exception ex) {
+            Log.Debug(this, ex.getMessage());
+        }
+    }//GEN-LAST:event_jButton5ActionPerformed
+
+    private void jTable1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable1MouseClicked
+        Log.Debug(this, "CYCLIC-Event geklicked...");
+        Schedule d = (Schedule) jTable1.getModel().getValueAt(jTable1.convertRowIndexToModel(jTable1.getSelectedRow()), 0);
+        Log.Debug(this, "CYCLIC-Event geklicked...0");
+        if (d != null) {
+            Log.Debug(this, "CYCLIC-Event geklicked...1");
+            try {
+                labeledCombobox1.setModel(d.getItem());
+                Log.Debug(this, "CYCLIC-Event geklicked...2");
+            } catch (NodataFoundException ex) {
+                Log.Debug(ex);
+            }
+            Log.Debug(this, "CYCLIC-Event geklicked...3");
+            labeledDateChooser1.setDate(d.__getStartdate());
+            Log.Debug(this, "CYCLIC-Event geklicked...4");
+            labeledDateChooser2.setDate(d.__getStopdate());
+            Log.Debug(this, "CYCLIC-Event geklicked...5");
+            labeledSpinner1.setValue(d.__getIntervalmonth());
+            Log.Debug(this, "CYCLIC-Event geklicked...6");
+            dataOwner = d;
+            but5.setEnabled(true);
+            but6.setEnabled(true);           
+            Log.Debug(this, "CYCLIC-Event geklicked...fertig");
+        }
+    }//GEN-LAST:event_jTable1MouseClicked
+
+    private void jTable2MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable2MouseClicked
+        Log.Debug(this, "Single-Event geklicked...");
+        Schedule d = (Schedule) jTable2.getModel().getValueAt(jTable2.convertRowIndexToModel(jTable2.getSelectedRow()), 0);
+        Log.Debug(this, "Single-Event geklicked...0");
+        if (d != null) {
+            Log.Debug(this, "Single-Event geklicked...1");
+            try {
+                labeledCombobox3.setModel(d.getContact());
+                Log.Debug(this, "Single-Event geklicked...2");
+            } catch (NodataFoundException ex) {
+                Log.Debug(ex);
+            }
+            Log.Debug(this, "Single-Event geklicked...3");
+            labeledCombobox2.setSelectedItem(d.__getEventtype());
+            Log.Debug(this, "Single-Event geklicked...4");
+            labeledDateChooser3.setDate(d.__getStartdate());
+            Log.Debug(this, "Single-Event geklicked...5");
+            dataOwner = d;
+            but5.setEnabled(true);
+            but6.setEnabled(true);
+            Log.Debug(this, "Single-Event geklicked...fertig");
+        }
+    }//GEN-LAST:event_jTable2MouseClicked
+
+    private void but6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_but6ActionPerformed
+        Log.Debug(this, "ändern ... geklickt");
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(dataOwner.__getStartdate());
+        Date oldDate = cal.getTime();
+        Log.Debug(this, "ändern ... 1");
+        save(dataOwner);
+        Log.Debug(this, "ändern ... 2");
+        try {
+            if (jTabbedPane1.getSelectedIndex() == 0) {
+                Log.Debug(this, "ändern ... 2a");
+                refreshFromItem(dataOwner.getItem());
+            } else if (jTabbedPane1.getSelectedIndex() == 1) {
+                Log.Debug(this, "ändern ... 2b");
+                refreshFromContact(dataOwner.getContact());
+                Log.Debug(this, "ändern ... 2b.");
+                ScheduleCalendarDayChooser.instanceOf().refreshDayPanels(oldDate,
+                        dataOwner, Boolean.FALSE);
+                Log.Debug(this, "ändern ... 2b..");
+                ScheduleCalendarDayChooser.instanceOf().refreshDayPanels(dataOwner.__getStartdate(),
+                        dataOwner, Boolean.TRUE);
+                Log.Debug(this, oldDate + " / " + dataOwner.__getStartdate());
+                Log.Debug(this, "ändern ... 2b...");
+            }
+        } catch (Exception ex) {
+            Log.Debug(this,
+                    ex);
+        }
+        Log.Debug(this, "ändern ... fertig");
+    }//GEN-LAST:event_but6ActionPerformed
+
+    private void but4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_but4ActionPerformed
+        Log.Debug(this, "neu Anlage ... geklickt");
+        save(dataOwner = new Schedule());
+        Log.Debug(this, "neu Anlage ... 1");
+        try {
+            if (jTabbedPane1.getSelectedIndex() == 0) {
+                Log.Debug(this, "neu Anlage ... 1a");
+                refreshFromItem(dataOwner.getItem());
+            } else if (jTabbedPane1.getSelectedIndex() == 1) {
+                Log.Debug(this, "neu Anlage ... 1b");
+                refreshFromContact(dataOwner.getContact());
+                ScheduleCalendarDayChooser.instanceOf().refreshDayPanels(dataOwner.__getStartdate(),
+                        dataOwner, Boolean.TRUE);
+            }
+            Log.Debug(this, "neu Anlage ... 2");
+        } catch (NodataFoundException ex) {
+            Log.Debug(this,
+                    ex);
+        }
+        Log.Debug(this, "neu Anlage ... 3");
+        ScheduleCalendarDayChooser.instanceOf();
+        Log.Debug(this, "neu Anlage ... fertig");
+    }//GEN-LAST:event_but4ActionPerformed
+
+    private void but5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_but5ActionPerformed
+        Log.Debug(this, "löschen ... geklicked");
+        if (dataOwner != null && dataOwner.isExisting()) {
+            Log.Debug(this, "löschen ... 1");
+            dataOwner.delete();
+            Log.Debug(this, "löschen ... 2");
+            try {
+                if (jTabbedPane1.getSelectedIndex() == 0) {
+                    Log.Debug(this, "löschen ... 3a");
+                    refreshFromItem(dataOwner.getItem());
+                } else if (jTabbedPane1.getSelectedIndex() == 1) {
+                    Log.Debug(this, "löschen ... 3b");
+                    refreshFromContact(dataOwner.getContact());
+                    Log.Debug(this, "löschen ... 3b.");
+                    Calendar cal = Calendar.getInstance();
+                    cal.setTime(dataOwner.__getStartdate());
+                    Date oldDate = cal.getTime();
+                    ScheduleCalendarDayChooser.instanceOf().refreshDayPanels(oldDate,
+                            dataOwner, Boolean.FALSE);
+                }
+            } catch (NodataFoundException ex) {
+                Log.Debug(ex);
+            }
+        }
+        Log.Debug(this, "löschen ... fertig");
+    }//GEN-LAST:event_but5ActionPerformed
+
+    private void but7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_but7ActionPerformed
+        this.setVisible(false);
+        HomeScreen.getInstance().refresh();
+    }//GEN-LAST:event_but7ActionPerformed
+
+    private void but8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_but8ActionPerformed
+        but5.setEnabled(false);
+        but6.setEnabled(false);
+        clearViews();
+    }//GEN-LAST:event_but8ActionPerformed
+
+    // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton but4;
+    private javax.swing.JButton but5;
+    private javax.swing.JButton but6;
+    private javax.swing.JButton but7;
+    private javax.swing.JButton but8;
+    private javax.swing.JButton jButton5;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
+    private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel2;
+    private javax.swing.JPanel jPanel3;
+    private javax.swing.JPanel jPanel4;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JSeparator jSeparator1;
+    private javax.swing.JSeparator jSeparator2;
+    private javax.swing.JSeparator jSeparator3;
+    private javax.swing.JTabbedPane jTabbedPane1;
+    private javax.swing.JTable jTable1;
+    private javax.swing.JTable jTable2;
+    private mpv5.ui.beans.LabeledCombobox labeledCombobox1;
+    private mpv5.ui.beans.LabeledCombobox labeledCombobox2;
+    private mpv5.ui.beans.LabeledCombobox labeledCombobox3;
+    private mpv5.ui.beans.LabeledCombobox labeledCombobox4;
+    private mpv5.ui.beans.LabeledDateChooser labeledDateChooser1;
+    private mpv5.ui.beans.LabeledDateChooser labeledDateChooser2;
+    private mpv5.ui.beans.LabeledDateChooser labeledDateChooser3;
+    private mpv5.ui.beans.LabeledSpinner labeledSpinner1;
+    // End of variables declaration//GEN-END:variables
+
+    private void refreshFromItem(Item dao) {
+        Log.Debug(this, "Anzeige der zyklischen Eventtabelle aktualisiert!");
+        ArrayList<Schedule> data = Schedule.getEvents2(dao);
+        Object[][] d = new Object[data.size()][];
+        for (int i = 0; i < data.size(); i++) {
+            Schedule schedule = data.get(i);
+            d[i] = schedule.toArray();
+        }
+        jTable1.setModel(new MPTableModel(d, Headers.SCHEDULE_LIST));
+        TableFormat.resizeCols(jTable1, new Integer[]{150}, false);
+    }
+
+    private void refreshFromContact(Contact dao) {
+        Log.Debug(this, "Anzeige der einmaligen Eventtabelle aktualisiert!");
+        ArrayList<Schedule> data = Schedule.getEvents2(dao);
+        Object[][] d = new Object[data.size()][4];
+        QueryCriteria qc;
+        for (int i = 0; i < data.size(); i++) {
+            try {
+                Schedule schedule = data.get(i);
+                d[i][0] = schedule;
+                d[i][1] = schedule.__getCName();
+                d[i][2] = schedule.__getStartdate();
+                qc = new QueryCriteria("USERSIDS", User.getCurrentUser().getID());
+                qc.addAndCondition("IDS", schedule.__getEventtype());
+                Log.Debug(this, "Eventtype: " + schedule.__getEventtype());
+                ArrayList<DatabaseObject> SType = DatabaseObject.getObjects(Context.getScheduleTypes(),
+                        qc);
+                d[i][3] = SType.get(0).__getCName();
+            } catch (NodataFoundException ex) {
+                Log.Debug(this, ex);
+            }
+        }
+        jTable2.setModel(new MPTableModel(d, Headers.SCHEDULE_PANEL));
+        TableFormat.stripColumn(jTable2, 0);
+        TableFormat.resizeCols(jTable2, new Integer[]{150}, false);
+    }
+
+    private void save(Schedule s) {
+        Component tmp;
+        if (s != null) {
+            try {
+                if (jTabbedPane1.getSelectedIndex() == 0) {
+
+                    Item i = (Item) DatabaseObject.getObject(Context.getItem(),
+                            Integer.valueOf(labeledCombobox1.getSelectedItem().getId()));
+                    s.setCName("(" + Messages.SCHEDULE + ") " + i.toString());
+                    s.setItemsids(i.__getIDS());
+                    s.setContactsids(i.__getContactsids());
+                    s.setEventtype(0);
+                    s.setGroupsids(i.__getGroupsids());
+                    s.setIntervalmonth(Integer.valueOf(labeledSpinner1.getSpinner().getValue().toString()));
+                    s.setStartdate(labeledDateChooser1.getDate());
+                    s.setStopdate(labeledDateChooser2.getDate());
+                    s.setUsersids(mpv5.db.objects.User.getCurrentUser().__getIDS());
+                    s.setNextdate(DateConverter.addMonths(labeledDateChooser1.getDate(),
+                            s.__getIntervalmonth()));
+                    s.save();
+                    dataOwner = s;
+                    /*
+                     * Hack um das POPUP ganz nach oben zu bringen ...
+                     */
+                    tmp = Popup.identifier;
+                    Popup.identifier = this;
+                    Popup.notice(Messages.SCHEDULE_NEXT
+                            + DateConverter.getDefDateString(DateConverter.addMonths(labeledDateChooser1.getDate(),
+                            s.__getIntervalmonth())));
+                    Popup.identifier = tmp;
+                } else if (jTabbedPane1.getSelectedIndex() == 1) {
+                    Contact c = (Contact) DatabaseObject.getObject(Context.getContact(),
+                            Integer.valueOf(labeledCombobox3.getSelectedItem().getId()));
+                    s.setCName("(" + Messages.SCHEDULE + ") " + c.toString());
+                    s.setItemsids(Integer.parseInt(labeledCombobox4.getSelectedItem().getId()));
+                    s.setContactsids(c.__getIDS());
+                    s.setEventtype(Integer.valueOf(labeledCombobox2.getSelectedItem().getId()));
+                    s.setGroupsids(c.__getGroupsids());
+                    s.setIntervalmonth(0);
+                    s.setStartdate(labeledDateChooser3.getDate());
+                    s.setStopdate(labeledDateChooser3.getDate());
+                    s.setUsersids(mpv5.db.objects.User.getCurrentUser().__getIDS());
+                    s.setNextdate(labeledDateChooser3.getDate());
+                    s.save();
+                    dataOwner = s;
+                }
+            } catch (Exception ex) {
+                Log.Debug(this, ex.getMessage());
+            }
+        }
+    }
+
+    private void initSchedTyps() {
+        try {
+            final ArrayList<DatabaseObject> STypes = DatabaseObject.getObjects(Context.getScheduleTypes(),
+                    new QueryCriteria("USERSIDS", User.getCurrentUser().getID()));
+            MPComboBoxModelItem[] SchedTyps = new MPComboBoxModelItem[STypes.size()];
+
+            for (int i = 0; i < STypes.size(); i++) {
+                ScheduleTypes st = (ScheduleTypes) STypes.get(i);
+                SchedTyps[i] = new MPComboBoxModelItem(st.__getIDS(),
+                        st.__getCName());
+            }
+            labeledCombobox2.setModel(new MPComboboxModel(SchedTyps));
+        } catch (NodataFoundException ex) {
+            Log.Debug(this, ex);
+        }
+    }
+
+    private void clearViews() {
+        dataOwner = null;
+        refreshFromContact(null);
+        refreshFromItem(null);
+        Log.Debug(this, "Views zurückgesetzt ...1");
+        labeledCombobox1.setSelectedIndex(-1);
+        Log.Debug(this, "Views zurückgesetzt ...2");
+        labeledCombobox2.setSelectedIndex(-1);
+        Log.Debug(this, "Views zurückgesetzt ...3");
+        labeledCombobox3.setSelectedIndex(-1);
+        Log.Debug(this, "Views zurückgesetzt ...4");
+        labeledCombobox4.setSelectedIndex(-1);
+        Log.Debug(this, "Views zurückgesetzt ...5");
+        setDate(new Date());
+        Log.Debug(this, "Views zurückgesetzt ...6");
+        labeledSpinner1.setValue(1);
+        Log.Debug(this, "Views zurückgesetzt ...7");
+    }
+}
