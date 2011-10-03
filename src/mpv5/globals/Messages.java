@@ -172,6 +172,8 @@ public enum Messages {
     STATUS_PAID("Paid"),
     STATUS_UNPAID("Not Paid"),
     TRASHBIN("Trashbin"),
+    CONVERSATION("Conversation"),
+    MASSPRINT("Massprint"),
     DELETE("Delete"),
     RESTORE("Restore"),
     RESTORED(" restored"),
@@ -285,8 +287,10 @@ public enum Messages {
      PLUGIN_INCOMPATIBLE("Incompatible plugin found. Shall I try to load it anyway?"), 
      TYPE_CONTRACT("Contract"), 
      HOMESCREEN("Homescreen"),
-     DAY_EVENTS("This Day has Events!"),
-    ;
+     DAY_EVENTS("This Day has Events!"), 
+     TYPE_CONVERSATION("Conversation"), 
+     Conversation_MainAddress("Main-Address") 
+     ;
 
 
     private Messages(String message) {

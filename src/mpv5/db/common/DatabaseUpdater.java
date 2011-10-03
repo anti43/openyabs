@@ -107,6 +107,19 @@ public class DatabaseUpdater {
                     "ALTER TABLE schedule ADD COLUMN "
                     + "contactsids BIGINT REFERENCES contacts (ids) ON DELETE CASCADE, "
                     + "eventtype BIGINT REFERENCES scheduletypes (ids) ON DELETE CASCADE"});
+        UPDATES_DERBY.put(1.187, new String[]{
+                    "CREATE TABLE conversations "
+                    + "(IDS BIGINT NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1), "
+                    + "cname VARCHAR(2500), "
+                    + "adress VARCHAR(2500), "
+                    + "cnumber VARCHAR(6), "
+                    + "groupsids BIGINT DEFAULT 1,"
+                    + "date DATE NOT NULL, "
+                    + "dateadded DATE NOT NULL,"
+                    + "intaddedby BIGINT DEFAULT 0, "
+                    + "invisible SMALLINT DEFAULT 0, "
+                    + "content LONG VARCHAR NOT NULL, "
+                    + "PRIMARY KEY  (ids))"});        
         ////////////////////////////////////////////////////////////////////////////////////////////
         // mysql updates
         UPDATES_MYSQL.put(1.11, new String[]{
@@ -218,6 +231,16 @@ public class DatabaseUpdater {
                     "ALTER TABLE schedule ADD COLUMN "
                     + "contactsids BIGINT REFERENCES contacts (ids) ON DELETE CASCADE, "
                     + "eventtype BIGINT REFERENCES scheduletypes (ids) ON DELETE CASCADE"});
+        UPDATES_DERBY.put(1.187, new String[]{
+                    "CREATE TABLE conversations (IDS BIGINT(20) UNSIGNED NOT NULL PRIMARY KEY auto_increment,"
+                    + "cname VARCHAR(2500), "
+                    + "adress VARCHAR(2500), "
+                    + "cnumber VARCHAR(6), "
+                    + "groupsids BIGINT UNSIGNED NOT NULL DEFAULT 1, "
+                    + "date DATE NOT NULL,dateadded DATE NOT NULL,"
+                    + "intaddedby BIGINT UNSIGNED NOT NULL DEFAULT 1, "
+                    + "invisible SMALLINT DEFAULT 0, "
+                    + "content LONGVARCHAR NOT NULL)ENGINE=MyISAM  DEFAULT CHARSET=IS0-8859-15"});
     }
 
     /**

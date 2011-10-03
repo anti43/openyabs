@@ -8,6 +8,7 @@ import mpv5.db.objects.Account;
 import mpv5.db.objects.Address;
 import mpv5.db.objects.Company;
 import mpv5.db.objects.Contact;
+import mpv5.db.objects.Conversation;
 import mpv5.db.objects.Expense;
 import mpv5.db.objects.Favourite;
 import mpv5.db.objects.FileToContact;
@@ -93,6 +94,7 @@ public class Context implements Serializable {
     public static String IDENTITY_EXPENSE = "expenses";
     public static String IDENTITY_PRODUCTS_TO_SUPPLIERS = "productstosuppliers";
     public static String IDENTITY_VALUE_PROPERTIES = "valueproperties";
+    public static String IDENTITY_CONVERSATION = "conversations";
     //********** identity classes **********************************************
     private static Class IDENTITY_CONTACTS_CLASS = Contact.class;
     private static Class IDENTITY_ADDRESS_CLASS = Address.class;
@@ -1597,7 +1599,7 @@ public class Context implements Serializable {
         return c;
     }
 
-        public static synchronized Context getScheduleTypes() {
+    public static synchronized Context getScheduleTypes() {
         Context c = new Context();
         c.setSubID(DEFAULT_SUBID);
         c.setDbIdentity(IDENTITY_SCHEDULE_TYPES);
@@ -1607,6 +1609,15 @@ public class Context implements Serializable {
         return c;
     }
 
+    public static synchronized Context getConversation() {
+        Context c = new Context();
+        c.setSubID(DEFAULT_SUBID);
+        c.setDbIdentity(IDENTITY_CONVERSATION);
+        c.setIdentityClass(Conversation.class);
+        c.setId(52);
+
+        return c;
+    }
     /////////////////////////////////////////////////////////////////////////////////////////////////
     /**
      *

@@ -57,6 +57,7 @@ public class FormatHandler {
     public static final int TYPE_SERVICE = 8;
     public static final int TYPE_EXPENSE = 9;
     public static final int TYPE_REVENUE = 10;
+    public static final int TYPE_CONVERSATION = 11;
 
     public static enum TYPES implements MPEnum {
 
@@ -70,7 +71,8 @@ public class FormatHandler {
         TYPE_PRODUCT(FormatHandler.TYPE_PRODUCT, Messages.TYPE_PRODUCT.getValue()),
         TYPE_SERVICE(FormatHandler.TYPE_SERVICE, Messages.TYPE_SERVICE.getValue()),
         TYPE_REVENUE(FormatHandler.TYPE_REVENUE, Messages.TYPE_REVENUE.getValue()),
-        TYPE_EXPENSE(FormatHandler.TYPE_EXPENSE, Messages.TYPE_EXPENSE.getValue());
+        TYPE_EXPENSE(FormatHandler.TYPE_EXPENSE, Messages.TYPE_EXPENSE.getValue()),
+        TYPE_CONVERSATION(FormatHandler.TYPE_CONVERSATION, Messages.TYPE_CONVERSATION.getValue());
         int ids;
         String names;
 

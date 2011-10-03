@@ -4,7 +4,6 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Vector;
 import javax.swing.JComponent;
 import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
@@ -39,6 +38,7 @@ public class TemplateHandler {
     public static final int TYPE_JOURNAL = 9;
     public static final int TYPE_PRODUCT_ORDER = 10;
     public static final int TYPE_CONTRACT = 11;
+    public static final int TYPE_CONVERSATION = 12;
     /**
      * Return true if the Template for the currently logged in user, with the given type, and matching the targets group is loaded
      * @param group
@@ -213,7 +213,7 @@ public class TemplateHandler {
      * @return
      */
     public static MPEnum[] getTypes() {
-        MPEnum[] types = new MPEnum[12];
+        MPEnum[] types = new MPEnum[13];
         types[0] = new MPEnum() {
 
             public Integer getId() {
@@ -345,6 +345,17 @@ public class TemplateHandler {
                 return Messages.TYPE_CONTRACT.toString();
             }
         };
+            
+        types[12] = new MPEnum() {
+
+            public Integer getId() {
+                return TYPE_CONVERSATION;
+            }
+
+            public String getName() {
+                return Messages.TYPE_CONVERSATION.toString();
+            }            
+        };
 
 
         return types;
@@ -356,7 +367,7 @@ public class TemplateHandler {
      */
     public static synchronized void cacheTemplates() {
         TEMPLATE_CACHE.clear();
-        final List<Group> groups = new Vector<Group>();
+        final List<Group> groups = new ArrayList<Group>();
         try {
             ArrayList<DatabaseObject> tlist = Group.getObjects(Context.getGroup(), true);
             for (int i = 0; i < tlist.size(); i++) {
@@ -366,8 +377,8 @@ public class TemplateHandler {
         } catch (NodataFoundException ex) {
         }
 
-        List<Templateable> targets = new Vector<Templateable>();
-        List<Integer> typs = new Vector<Integer>();
+        List<Templateable> targets = new ArrayList<Templateable>();
+        List<Integer> typs = new ArrayList<Integer>();
         Item it1 = new Item();
         it1.setInttype(Item.TYPE_BILL);
         targets.add(it1);

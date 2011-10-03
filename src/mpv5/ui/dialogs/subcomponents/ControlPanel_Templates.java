@@ -9,7 +9,6 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Vector;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListModel;
 import mpv5.data.PropertyStore;
@@ -30,7 +29,6 @@ import mpv5.globals.Messages;
 import mpv5.logging.Log;
 import mpv5.ui.dialogs.ControlApplet;
 import mpv5.ui.dialogs.Popup;
-import mpv5.ui.frames.MPView;
 import mpv5.ui.panels.DataPanel;
 import mpv5.usermanagement.MPSecurityManager;
 import mpv5.db.objects.User;
@@ -54,7 +52,7 @@ import mpv5.utils.ui.TextFieldUtils;
  *
  * 
  */
-public class ControlPanel_Templates extends javax.swing.JPanel implements ControlApplet, DataPanel {
+public final class ControlPanel_Templates extends javax.swing.JPanel implements ControlApplet, DataPanel {
 
     private static final long serialVersionUID = 1L;
     /**
@@ -590,7 +588,7 @@ public class ControlPanel_Templates extends javax.swing.JPanel implements Contro
             QueryCriteria c = new QueryCriteria("templatesids", dataOwner.__getIDS());
             Object[][] data = QueryHandler.instanceOf().clone(Context.getTemplatesToUsers()).select("usersids", c);
 
-            List<Integer> l = new Vector<Integer>();
+            List<Integer> l = new ArrayList<Integer>();
             for (int i = 0; i < li.size(); i++) {
                 User databaseObject = (User) li.get(i);
 
@@ -739,7 +737,7 @@ public class ControlPanel_Templates extends javax.swing.JPanel implements Contro
                 Export ex = new Export(dataOwner);
                 ex.putAll(hm1);
 
-                Vector<String[]> l = new Vector<String[]>();
+                ArrayList<String[]> l = new ArrayList<String[]>();
 
                 for (int i = 0; i < 20; i++) {
                     l.add(SubItem.getRandomItem().toStringArray());

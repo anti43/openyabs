@@ -20,10 +20,8 @@ import java.awt.event.MouseListener;
 import java.io.File;
 import java.net.URI;
 import java.util.ArrayList;
-import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -94,9 +92,11 @@ import mpv5.ui.dialogs.subcomponents.wizard_MP45_Import;
 import mpv5.ui.dialogs.subcomponents.wizard_Yabs1_Import;
 import mpv5.ui.misc.MPTable;
 import mpv5.ui.panels.ChangeNotApprovedException;
+import mpv5.ui.panels.ConversationPanel;
 import mpv5.ui.panels.ExpensePanel;
 import mpv5.ui.panels.GeneralListPanel;
 import mpv5.ui.panels.JournalPanel;
+import mpv5.ui.panels.MassPrintPanel;
 import mpv5.ui.panels.ProductList;
 import mpv5.ui.panels.ProductListsPanel;
 import mpv5.ui.panels.ProductPanel;
@@ -827,6 +827,7 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
         nav_extras = new javax.swing.JPanel();
         jButton6 = new javax.swing.JButton();
         jButton7 = new javax.swing.JButton();
+        jButton9 = new javax.swing.JButton();
         menuBar = new javax.swing.JMenuBar();
         javax.swing.JMenu fileMenu = new javax.swing.JMenu();
         jMenu14 = new javax.swing.JMenu();
@@ -882,6 +883,7 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
         jMenuItem24 = new javax.swing.JMenuItem();
         jSeparator6 = new javax.swing.JSeparator();
         jMenuItem43 = new javax.swing.JMenuItem();
+        jMenuItem45 = new javax.swing.JMenuItem();
         jMenu1 = new javax.swing.JMenu();
         jMenuItem42 = new javax.swing.JMenuItem();
         jMenuItem44 = new javax.swing.JMenuItem();
@@ -1241,6 +1243,21 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
             }
         });
         nav_extras.add(jButton7);
+
+        jButton9.setFont(new java.awt.Font("Tahoma", 0, 10));
+        jButton9.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/folder_txt.png"))); // NOI18N
+        jButton9.setText(bundle.getString("MPView.jButton9.text")); // NOI18N
+        jButton9.setToolTipText(bundle.getString("MPView.jButton9.toolTipText")); // NOI18N
+        jButton9.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        jButton9.setName("jButton9"); // NOI18N
+        jButton9.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        jButton9.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton9ActionPerformed(evt);
+            }
+        });
+        nav_extras.add(jButton9);
+        jButton9.getAccessibleContext().setAccessibleDescription(bundle.getString("MPView.jButton9.AccessibleContext.accessibleDescription")); // NOI18N
 
         javax.swing.GroupLayout parent_nav_extrasLayout = new javax.swing.GroupLayout(parent_nav_extras);
         parent_nav_extras.setLayout(parent_nav_extrasLayout);
@@ -1712,6 +1729,16 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
             }
         });
         toolsMenu.add(jMenuItem43);
+
+        jMenuItem45.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/22/kontact_mail.png"))); // NOI18N
+        jMenuItem45.setText(bundle.getString("MPView.jMenuItem45.text")); // NOI18N
+        jMenuItem45.setName("jMenuItem45"); // NOI18N
+        jMenuItem45.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem45ActionPerformed(evt);
+            }
+        });
+        toolsMenu.add(jMenuItem45);
 
         menuBar.add(toolsMenu);
 
@@ -2452,13 +2479,20 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
     }//GEN-LAST:event_jMenuItem43ActionPerformed
 
     private void closeButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_closeButton1ActionPerformed
-       
         showPreviousDatabaseObject();
     }//GEN-LAST:event_closeButton1ActionPerformed
 
     private void closeButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_closeButton2ActionPerformed
         showNextDatabaseObject();
     }//GEN-LAST:event_closeButton2ActionPerformed
+
+    private void jButton9ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton9ActionPerformed
+        addOrShowTab(ConversationPanel.instanceOf(), Messages.CONVERSATION.toString());
+    }//GEN-LAST:event_jButton9ActionPerformed
+
+    private void jMenuItem45ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem45ActionPerformed
+        addOrShowTab(MassPrintPanel.instanceOf(), Messages.MASSPRINT.toString());
+    }//GEN-LAST:event_jMenuItem45ActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton calculatorButton;
@@ -2486,6 +2520,7 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
     private javax.swing.JButton jButton6;
     private javax.swing.JButton jButton7;
     private javax.swing.JButton jButton8;
+    private javax.swing.JButton jButton9;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu10;
     private javax.swing.JMenu jMenu11;
@@ -2535,6 +2570,7 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
     private javax.swing.JMenuItem jMenuItem42;
     private javax.swing.JMenuItem jMenuItem43;
     private javax.swing.JMenuItem jMenuItem44;
+    private javax.swing.JMenuItem jMenuItem45;
     private javax.swing.JMenuItem jMenuItem5;
     private javax.swing.JMenuItem jMenuItem6;
     private javax.swing.JMenuItem jMenuItem7;
