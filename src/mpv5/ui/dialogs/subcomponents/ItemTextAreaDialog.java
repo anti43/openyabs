@@ -26,6 +26,7 @@ import mpv5.db.common.DatabaseObject;
 import mpv5.db.objects.Product;
 import mpv5.db.objects.SubItem;
 import mpv5.globals.Messages;
+import mpv5.logging.Log;
 import mpv5.utils.models.MPTableModel;
 
 public class ItemTextAreaDialog extends javax.swing.JDialog implements KeyListener, DatabaseObejctReceiver {
@@ -40,7 +41,7 @@ public class ItemTextAreaDialog extends javax.swing.JDialog implements KeyListen
         setUndecorated(true);
         initComponents();
         textArea.addKeyListener(this);
-        okButton.setToolTipText("ctrl+Enter");
+//        okButton.setToolTipText("ctrl+Enter");
         cancelButton.setToolTipText("Esc");
         labeledCombobox1.setContext(Context.getProduct());
         labeledCombobox1.setSearchOnEnterEnabled(true);;
@@ -51,7 +52,7 @@ public class ItemTextAreaDialog extends javax.swing.JDialog implements KeyListen
     @Override
     public void setVisible(boolean visible) {
         super.setVisible(visible);
-        textArea.grabFocus();
+        if(visible)textArea.grabFocus();
     }
 
     /** This method is called from within the constructor to
@@ -126,6 +127,7 @@ public class ItemTextAreaDialog extends javax.swing.JDialog implements KeyListen
 
     private void okButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_okButtonActionPerformed
         setRow();
+//        Log.Debug(this, evt);
     }//GEN-LAST:event_okButtonActionPerformed
     // Variables declaration - do not modify//GEN-BEGIN:variables
     public javax.swing.JButton cancelButton;
@@ -166,15 +168,19 @@ public class ItemTextAreaDialog extends javax.swing.JDialog implements KeyListen
         }
     }
 
-    private void setRow() {
-        if (product != null) {
-            SubItem p = new SubItem(product);
-            p.setDescription(textArea.getText());
-            MPTableModel m = (MPTableModel) getParentTable().getModel();
-            m.setRowAt(p.getRowData(getParentTable().getSelectedRow()), getParentTable().getSelectedRow(), 1, 14);
-            labeledCombobox1.setSelectedIndex(-1);
-            product = null;
+    private synchronized void setRow() {
+        SubItem p;
+        if (product == null) {
+            p = SubItem.getDefaultItem();
+        } else {
+            p = new SubItem(product);
         }
+        p.setDescription(textArea.getText());
+        MPTableModel m = (MPTableModel) getParentTable().getModel();
+        m.setRowAt(p.getRowData(getParentTable().getSelectedRow()), getParentTable().getSelectedRow(), 1, 14);
+        labeledCombobox1.setSelectedIndex(-1);
+        product = null;
+        setVisible(false);
     }
 
     /**

@@ -328,6 +328,10 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
                     method.invoke(dbo, new Object[]{Short.valueOf(String.valueOf(argument))});
                 } else if (method.getParameterTypes()[0].getCanonicalName().equals(new byte[0].getClass().getCanonicalName())) {//doitbetter
                     method.invoke(dbo, new Object[]{(byte[]) ((argument instanceof String) ? String.valueOf(argument).getBytes("UTF-8") : argument)});
+                } else if (method.getParameterTypes()[0].isAssignableFrom(DatabaseObject.class)) {
+                    Context c = ((DatabaseObject) method.getParameterTypes()[0].newInstance()).getContext();
+                    DatabaseObject d = getObject(c, Integer.valueOf(String.valueOf(argument)));
+                    method.invoke(dbo, new Object[]{d});
                 } else {
                     //defaults to java.lang.String, Object args are not supported.. possibly later via XMLEncoder?
                     method.invoke(dbo, new Object[]{(argument instanceof byte[])
@@ -860,7 +864,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
         Context tr = new Context("trashbin", null);
         c2.and(new QueryParameter(tr, "rowid", ids, QueryParameter.EQUALS));
         c2.and(new QueryParameter(tr, "cname", context.getDbIdentity().toLowerCase(), QueryParameter.EQUALS));
-        
+
         result = QueryHandler.instanceOf().clone(tr).delete(c2);
 
         Log.Debug(this, "The untrashed row has id: " + ids);
@@ -914,7 +918,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
      * Collect the data to masked/valid DB String array
      * @return
      */
-    protected QueryData collect() {
+    protected synchronized QueryData collect() {
 
         QueryData data = new QueryData();
         String left = "";
@@ -970,6 +974,8 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
                         data.add(left, (Short) tempval);
                     } else if (tempval.getClass().isInstance(new BigDecimal(0))) {
                         data.add(left, (BigDecimal) tempval);
+                    } else if (tempval.getClass().isAssignableFrom(DatabaseObject.class)) {
+                        data.add(left + "ids", ((DatabaseObject) tempval).__getIDS());
                     }
                 } catch (Exception ex) {
                     mpv5.logging.Log.Debug(this, methods[i].getName());
@@ -1028,9 +1034,9 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
 
         for (int i = 0; i < vars.size(); i++) {
             try {
-                Log.Debug(this, vars.get(i).getName() + " [" + vars.get(i).invoke(this, new Object[0]) +"]");
+                Log.Debug(this, vars.get(i).getName() + " [" + vars.get(i).invoke(this, new Object[0]) + "]");
                 target.getClass().getField(vars.get(i).getName().toLowerCase().substring(5, vars.get(i).getName().length()) + "_").set(target, vars.get(i).invoke(this, new Object[0]));
-                Log.Debug(target,  target.getClass().getField(vars.get(i).getName().toLowerCase().substring(5, vars.get(i).getName().length()) + "_").get(target));
+                Log.Debug(target, target.getClass().getField(vars.get(i).getName().toLowerCase().substring(5, vars.get(i).getName().length()) + "_").get(target));
 
             } catch (java.lang.NoSuchFieldException nf) {
                 Log.Debug(this, "The view: " + target + " is missing a field: " + nf.getMessage());
@@ -1694,6 +1700,11 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
 
                                 if (select.getData()[i][j] != null) {
                                     invoke(methods.get(k), select.getData()[i][j], dbo, valx);
+                                }
+                            } else if (methods.get(k).getName().toLowerCase().substring(3).equals(name.replace("ids", ""))) {
+                                Log.Debug(DatabaseObject.class, "Explode: " + methods.get(k).toGenericString() + " with " + select.getData()[i][j] + "[DBO]");
+                                if (select.getData()[i][j] != null) {
+                                    invoke(methods.get(k), select.getData()[i][j], dbo, "DatabaseObject");
                                 }
                             }
                         }

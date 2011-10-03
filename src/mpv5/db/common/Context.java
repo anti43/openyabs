@@ -23,6 +23,7 @@ import mpv5.db.objects.MailMessage;
 import mpv5.db.objects.Product;
 import mpv5.db.objects.ProductGroup;
 import mpv5.db.objects.ProductList;
+import mpv5.db.objects.ProductPrice;
 import mpv5.db.objects.ProductlistSubItem;
 import mpv5.db.objects.ProductsToSuppliers;
 import mpv5.db.objects.Reminder;
@@ -95,6 +96,7 @@ public class Context implements Serializable {
     public static String IDENTITY_PRODUCTS_TO_SUPPLIERS = "productstosuppliers";
     public static String IDENTITY_VALUE_PROPERTIES = "valueproperties";
     public static String IDENTITY_CONVERSATION = "conversations";
+    public static String IDENTITY_PRODUCT_PRICES = "productprices";
     //********** identity classes **********************************************
     private static Class IDENTITY_CONTACTS_CLASS = Contact.class;
     private static Class IDENTITY_ADDRESS_CLASS = Address.class;
@@ -120,6 +122,7 @@ public class Context implements Serializable {
     private static Class IDENTITY_REMINDER_CLASS = Reminder.class;
     private static Class IDENTITY_STAGE_CLASS = Stage.class;
     private static Class IDENTITY_VALUEPROPERTY_CLASS = ValueProperty.class;
+    private static Class IDENTITY_PRODUCTPRICE_CLASS = ProductPrice.class;
     //********** unique constraints *******************************************
     public static String UNIQUECOLUMNS_USER = "cname";
     public static String UNIQUECOLUMNS_ITEMS = "cname";
@@ -260,6 +263,7 @@ public class Context implements Serializable {
         list.add(getTemplate());
         list.add(getReminder());
         list.add(getSubItem());
+        list.add(getProductPrice());
 
         return list;
     }
@@ -293,7 +297,8 @@ public class Context implements Serializable {
                 getReminder(),
                 getStage(),
                 getTaxes(),
-                getProductGroup()
+                getProductGroup(),
+                getProductPrice()
             }));
 
     /**
@@ -326,6 +331,7 @@ public class Context implements Serializable {
         list.add(getExpense());
         list.add(getRevenue());
         list.add(getTaxes());
+        list.add(getProductPrice());
         return list;
     }
 
@@ -463,7 +469,8 @@ public class Context implements Serializable {
                 getExpense(),
                 getRevenue(),
                 getProductsToSuppliers(),
-                getValueProperties()
+                getValueProperties(),
+                getProductPrice()
             }));
 //    private String[] searchHeaders;
     private volatile ArrayList<String[]> references = new ArrayList<String[]>();
@@ -1618,6 +1625,17 @@ public class Context implements Serializable {
 
         return c;
     }
+        
+    public static synchronized Context getProductPrice() {
+        Context c = new Context();
+        c.setSubID(DEFAULT_SUBID);
+        c.setDbIdentity(IDENTITY_PRODUCT_PRICES);
+        c.setIdentityClass(IDENTITY_PRODUCTPRICE_CLASS);
+        c.setId(53);
+
+        return c;
+    }
+
     /////////////////////////////////////////////////////////////////////////////////////////////////
     /**
      *
