@@ -22,6 +22,7 @@ import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
 import mpv5.db.common.NodataFoundException;
 import mpv5.db.objects.Contact;
+import mpv5.db.objects.Conversation;
 import mpv5.db.objects.Group;
 import mpv5.db.objects.Item;
 import mpv5.db.objects.SubItem;
@@ -174,6 +175,10 @@ public abstract class VariablesHandler {
             } catch (NodataFoundException ex) {
                 Log.Debug(VariablesHandler.class, ex.getMessage());
             }
+        }
+        
+        if (target instanceof Conversation) {
+            vars.add(new String[]{"[type]".toUpperCase(), Messages.TYPE_CONVERSATION.toString()});   
         }
 
         return vars;

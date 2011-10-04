@@ -19,7 +19,6 @@ package mpv5.handler;
 import java.text.MessageFormat;
 import java.text.ParsePosition;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Vector;
@@ -27,10 +26,10 @@ import java.util.concurrent.ConcurrentHashMap;
 import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
 import mpv5.db.common.Formattable;
-import mpv5.db.common.QueryCriteria;
 import mpv5.db.common.QueryHandler;
 import mpv5.db.common.ReturnValue;
 import mpv5.db.objects.Contact;
+import mpv5.db.objects.Conversation;
 import mpv5.db.objects.Expense;
 import mpv5.db.objects.Item;
 import mpv5.db.objects.Product;
@@ -57,7 +56,7 @@ public class FormatHandler {
     public static final int TYPE_SERVICE = 8;
     public static final int TYPE_EXPENSE = 9;
     public static final int TYPE_REVENUE = 10;
-    public static final int TYPE_CONVERSATION = 11;
+    public static final int TYPE_CONVERSATION = 12;
 
     public static enum TYPES implements MPEnum {
 
@@ -134,6 +133,8 @@ public class FormatHandler {
             return TYPE_REVENUE;
         } else if (obj instanceof Expense) {
             return TYPE_EXPENSE;
+        } else if (obj instanceof Conversation) {
+            return TYPE_CONVERSATION;
         }
         return -1;
     }
