@@ -245,4 +245,8 @@ public class GlobalSettings {
         }
     }
 
+    public static void removeAll() {
+        cookie.removeAll();
+    }
+
 }

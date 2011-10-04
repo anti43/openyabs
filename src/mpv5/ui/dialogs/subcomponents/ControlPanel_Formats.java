@@ -26,6 +26,7 @@ import mpv5.globals.GlobalSettings;
 import mpv5.handler.FormatHandler;
 import mpv5.handler.MPEnum;
 import mpv5.handler.VariablesHandler;
+import mpv5.ui.dialogs.Notificator;
 import mpv5.utils.models.MPComboBoxModelItem;
 import mpv5.utils.models.MPTableModel;
 import mpv5.utils.tables.TableFormat;
@@ -418,11 +419,15 @@ public class ControlPanel_Formats extends javax.swing.JPanel implements ControlA
         } catch (Exception ex) {
             Log.Debug(ex);
         }
+        
+        if(oval.contains("[") &&
+            String.valueOf(labeledSpinner2.get_Value()).equals("0"))
+            Notificator.raiseNotification("If you use dynamic parts in your number format, you MUST define a position from where to parse the number from!\n "
+                    + "If you do not define a parse position, the defined format may not work as expected.", true);//FIXME i18n
 
         try {
-            User u = (User) User.getObject(Context.getUser(), Integer.valueOf(((MPComboBoxModelItem) jComboBox1.getSelectedItem()).getId()));
-            u.getProperties().changeProperty(oval + "_startposition", String.valueOf(labeledSpinner2.get_Value()));
-            u.saveProperties();
+            GlobalSettings.setProperty(new MessageFormat(oval).toPattern() + "_startposition", String.valueOf(labeledSpinner2.get_Value()));
+            GlobalSettings.save();
         } catch (Exception ex) {
             Log.Debug(ex);
         }
@@ -476,7 +481,7 @@ public class ControlPanel_Formats extends javax.swing.JPanel implements ControlA
             @Override
             public void actionPerformed(ActionEvent e) {
                 labeledTextField1.setText(labeledCombobox1.getSelectedItem());
-                String prop = User.getCurrentUser().getProperties().getProperty(labeledTextField1.getText() + "_startposition");
+                String prop = GlobalSettings.getProperty(new MessageFormat(labeledTextField1.getText() ).toPattern() + "_startposition");
                 if(prop !=null){
                     try {
                         int pos = Integer.valueOf(prop);

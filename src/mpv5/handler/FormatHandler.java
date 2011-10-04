@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Vector;
 import java.util.concurrent.ConcurrentHashMap;
+import mpv5.YabsViewProxy;
 import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
 import mpv5.db.common.Formattable;
@@ -38,6 +39,8 @@ import mpv5.db.objects.User;
 import mpv5.globals.GlobalSettings;
 import mpv5.globals.Messages;
 import mpv5.logging.Log;
+import mpv5.ui.dialogs.Popup;
+import mpv5.ui.frames.MPView;
 import mpv5.usermanagement.MPSecurityManager;
 
 /**
@@ -306,7 +309,7 @@ public class FormatHandler {
 
     private synchronized int getNextNumber(final YMessageFormat format, final int lastNumber) {
         DatabaseObject forThis = source;
-        
+
         String query = "";
         String cnumber = toString(format, lastNumber + 1);
         if (forThis.getContext().equals(Context.getItem())
@@ -324,7 +327,7 @@ public class FormatHandler {
                 || forThis.getContext().equals(Context.getCustomer())
                 || forThis.getContext().equals(Context.getSupplier())
                 || forThis.getContext().equals(Context.getManufacturer())) {
-            
+
             if (((Contact) forThis).__getIscustomer()) {
                 query = "SELECT cnumber FROM " + forThis.getDbIdentity() + " WHERE cnumber = '" + cnumber + "' AND iscustomer = 1";
             } else if (((Contact) forThis).__getIsmanufacturer()) {
@@ -417,9 +420,10 @@ public class FormatHandler {
      * @return
      */
     private synchronized int getIntegerPartOf(YMessageFormat format, String string) {
-
+        Log.Debug(this, "In getIntegerPartOf " + string + " with " + User.getCurrentUser().getName());
         int startindex = 0;
         String prop = GlobalSettings.getProperty(format.toPattern() + "_startposition");
+        Log.Debug(this, "GlobalSettings.getProperty: " + prop + " for " + format.toPattern() + "_startposition");
         if (prop != null && !prop.equals("null")) {
             try {
                 startindex = Integer.valueOf(prop);
@@ -433,12 +437,12 @@ public class FormatHandler {
             YMessageFormat f;
             try {
                 Log.Debug(this, format.toPattern());
-                f = new YMessageFormat((VariablesHandler.parse(format.toPattern(), source)), null);
+                f = new YMessageFormat((VariablesHandler.parse(format.toPattern(), source)).substring(startindex), null);
                 Log.Debug(this, "Pattern: " + f.toPattern() + " for String: " + string + " Starting at " + startindex);
                 n = (Number) f.parse(string, new ParsePosition(startindex))[0];
             } catch (Exception e) {
-                //Its 0?
                 Log.Debug(this, e);
+                Popup.error(YabsViewProxy.instance().getIdentifierFrame(), Messages.ERROR_OCCURED + "\n" + "Pattern: " + format.toPattern() + " for String: " + string + " Starting at " + startindex);
             }
             if (n == null) {
                 n = 0;
@@ -460,8 +464,8 @@ public class FormatHandler {
     }
 
     private static class YMessageFormat extends java.text.MessageFormat {
-        private static final long serialVersionUID = 1L;
 
+        private static final long serialVersionUID = 1L;
         private Integer startValue = null;
 
         public YMessageFormat(String pattern, Integer startValue) {

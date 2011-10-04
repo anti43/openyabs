@@ -193,6 +193,7 @@ public class ControlPanel_AdvancedGlobalProperties extends javax.swing.JPanel im
 
     private void setSettings() {
 
+        GlobalSettings.removeAll();
         if (jTable1.getCellEditor() != null) {
             try {
                 jTable1.getCellEditor().stopCellEditing();
@@ -207,7 +208,7 @@ public class ControlPanel_AdvancedGlobalProperties extends javax.swing.JPanel im
             String value = String.valueOf(data.getValueAt(j, 1));
             if (!key.equals("null") && key.length() > 0) {
                 GlobalSettings.setProperty(key, value);
-            }
+            } 
         }
     }
 }

@@ -1,5 +1,6 @@
 package mpv5.ui.dialogs;
 
+import javax.swing.SwingUtilities;
 import mpv5.ui.frames.MPView;
 
 /**
@@ -21,7 +22,7 @@ public class Notificator {
                 Popup.notice(message);
             }
         };
-        new Thread(runnable);
+        SwingUtilities.invokeLater(runnable);
     }
 
     /**

@@ -51,7 +51,7 @@
         </DimensionLayout>
         <DimensionLayout dim="1">
           <Group type="103" groupAlignment="0" attributes="0">
-              <Component id="jPanel2" alignment="0" pref="409" max="32767" attributes="1"/>
+              <Component id="jPanel2" alignment="0" pref="402" max="32767" attributes="1"/>
           </Group>
         </DimensionLayout>
       </Layout>
@@ -67,6 +67,8 @@
             </Property>
             <Property name="name" type="java.lang.String" value="jPanel2" noResource="true"/>
           </Properties>
+
+          <Layout class="org.netbeans.modules.form.compat2.layouts.DesignFlowLayout"/>
           <SubComponents>
             <Container class="javax.swing.JScrollPane" name="jScrollPane1">
               <Properties>

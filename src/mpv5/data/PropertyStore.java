@@ -21,10 +21,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
-import javax.swing.JCheckBox;
 import javax.swing.JComponent;
 import mpv5.logging.Log;
-import mpv5.ui.panels.JournalPanel;
 import mpv5.utils.date.DateConverter;
 import mpv5.utils.numberformat.FormatNumber;
 
@@ -34,7 +32,7 @@ import mpv5.utils.numberformat.FormatNumber;
  */
 public class PropertyStore {
 
-    private ArrayList<String[]> list = new ArrayList<String[]>();
+    private final ArrayList<String[]> list = new ArrayList<String[]>();
     private boolean changed = false;
 
     /**
@@ -94,7 +92,6 @@ public class PropertyStore {
         if (list.size() > 0) {
             for (int i = list.size(); i > 0; i--) {
                 if (list.get(i - 1)[0].equalsIgnoreCase(name)) {
-//                    Log.Debug(this, "Found property: " +  list.get(i - 1)[1] + " for " + name);
                     prop = list.get(i - 1)[1];
                     if (prop != null && !prop.equals("null") && prop.length() != 0) {
                         return prop;
@@ -306,7 +303,6 @@ public class PropertyStore {
         if (!found) {
             addProperty(name, newvalue);
         }
-
     }
 
     /**
@@ -426,6 +422,14 @@ public class PropertyStore {
             String[] strings = po.get(i);
             changeProperty(String.valueOf(strings[0]), String.valueOf(strings[1]));
         }
+        setChanged(true);
+    }
+
+    /**
+     * Clear all properties
+     */
+    public void removeAll() {
+        list.clear();
         setChanged(true);
     }
 }
