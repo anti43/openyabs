@@ -433,11 +433,11 @@ public class FormatHandler {
             try {
                 Log.Debug(this, format.toPattern());
                 f = new YMessageFormat((VariablesHandler.parse(format.toPattern(), source)), null);
-                Log.Debug(this, "Pattern: " + f.toPattern() + " for String: " + string);
+                Log.Debug(this, "Pattern: " + f.toPattern() + " for String: " + string + " Starting at " + startindex);
                 n = (Number) f.parse(string, new ParsePosition(startindex))[0];
             } catch (Exception e) {
                 //Its 0?
-                Log.Debug(this, e.getMessage());
+                Log.Debug(this, e);
             }
             if (n == null) {
                 n = 0;
