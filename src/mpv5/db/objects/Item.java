@@ -178,7 +178,7 @@ public class Item extends DatabaseObject implements Formattable, Templateable {
     }
 
     public static MPEnum[] getItemEnum() {
-        MPEnum[] en = new MPEnum[6];
+        MPEnum[] en = new MPEnum[4];
         en[0] = new MPEnum() {
 
             @Override
