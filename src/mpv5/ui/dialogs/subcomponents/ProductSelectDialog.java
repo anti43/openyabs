@@ -1,26 +1,18 @@
 package mpv5.ui.dialogs.subcomponents;
 
 import java.awt.BorderLayout;
-import java.awt.Point;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.math.BigDecimal;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JFrame;
-import javax.swing.JSpinner.NumberEditor;
-import javax.swing.SpinnerNumberModel;
 import mpv5.db.common.Context;
 import mpv5.db.common.NodataFoundException;
-import mpv5.db.objects.Item;
 import mpv5.db.objects.Product;
 import mpv5.db.objects.SubItem;
 import mpv5.db.objects.Tax;
 import mpv5.globals.Messages;
-import mpv5.logging.Log;
-import mpv5.ui.frames.MPView;
 import mpv5.utils.models.MPTableModel;
 import mpv5.utils.numberformat.FormatNumber;
 

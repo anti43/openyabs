@@ -107,7 +107,7 @@ public class LabeledCombobox extends javax.swing.JPanel {
 
     /**
      *
-     * @return An {@link MPComboBoxModelItem} or null if nothing is selected
+     * @return An {@link MPComboBoxModelItem} or null if nothing is selected. Attention - may return an item with ID -1 if a default item was set.
      */
     public MPComboBoxModelItem getSelectedItem() {
         if (mPCombobox1.getSelectedItem() instanceof MPComboBoxModelItem) {

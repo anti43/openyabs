@@ -365,15 +365,15 @@ public class ProductSelectDialog2 extends javax.swing.JDialog  {
         }
         qc.and(new QueryParameter(Context.getProduct(), "inttype",Integer.parseInt(stype.getSelectedItem().getId()), QueryParameter.EQUALS));
         MPComboBoxModelItem item = familyselect.getSelectedItem();
-        if(item!=null){
+        if(item!=null&& Integer.parseInt(item.getId())>0){
             qc.and(new QueryParameter(Context.getProduct(), "productgroupsids",Integer.parseInt(item.getId()), QueryParameter.EQUALS));
         }
         item = suppliername.getSelectedItem();
-        if(item!=null){
+        if(item!=null && Integer.parseInt(item.getId())>0){
             qc.and(new QueryParameter(Context.getProduct(), "suppliersids",Integer.parseInt(item.getId()), QueryParameter.EQUALS));
         }
         item = manufacturername.getSelectedItem();
-        if(item!=null){
+        if(item!=null&& Integer.parseInt(item.getId())>0){
             qc.and(new QueryParameter(Context.getProduct(), "manufacturersids",Integer.parseInt(item.getId()), QueryParameter.EQUALS));
         }
 
