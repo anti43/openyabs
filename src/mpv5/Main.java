@@ -1040,6 +1040,12 @@ public class Main implements Runnable {
                 public void run() {
                     File ilang = new File(Constants.LIBS_DIR);
                     File[] files = ilang.listFiles((FileFilter) FileFileFilter.FILE);
+                    //listFiles may return null
+                    if(files==null){
+                       Log.Debug(Main.class,
+                         "Libcheck failed in " + Constants.LIBS_DIR);
+                       return;
+                     }
                     String[] filenames = new String[files.length];
                     for (int i = 0; i < files.length; i++) {
                         filenames[i] = files[i].getName();
