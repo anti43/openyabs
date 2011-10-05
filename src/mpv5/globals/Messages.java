@@ -289,7 +289,8 @@ public enum Messages {
      HOMESCREEN("Homescreen"),
      DAY_EVENTS("This Day has Events!"), 
      TYPE_CONVERSATION("Conversation"), 
-     Conversation_MainAddress("Main-Address") 
+     Conversation_MainAddress("Main-Address"),
+     CREATE_REMINDER("This Item is overdue! Should a reminder be created?")
      ;
 
 

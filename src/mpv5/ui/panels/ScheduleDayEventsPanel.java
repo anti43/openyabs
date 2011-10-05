@@ -41,7 +41,7 @@ public class ScheduleDayEventsPanel extends JPanel {
         if (icke == null) {
             icke = new ScheduleDayEventsPanel();
         } else {
-            icke.refresh(null);
+//            icke.refresh(null);
         }
         return icke;
     }
@@ -203,7 +203,11 @@ public class ScheduleDayEventsPanel extends JPanel {
             TableFormat.stripColumn(jTable1, 0);
             TableFormat.stripColumn(jTable1, 2);
             TableFormat.format(jTable1, 0, 140);
-            but5.setEnabled(true);
+            if (list.isEmpty()) {
+                but5.setEnabled(false);
+            } else {
+                but5.setEnabled(true);
+            }
         } else {
             Object[][] data = new Object[0][4];
             MPTableModel m = new MPTableModel(data, Headers.SCHEDULE_PANEL);
@@ -211,8 +215,10 @@ public class ScheduleDayEventsPanel extends JPanel {
             TableFormat.stripColumn(jTable1, 0);
             TableFormat.stripColumn(jTable1, 2);
             TableFormat.format(jTable1, 0, 140);
+            Log.Debug(this, "Delete off");
             but5.setEnabled(false);
         }
+        this.validate();
     }
 
     public void setDayEvents(ArrayList<Schedule> list) {

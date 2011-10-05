@@ -38,6 +38,7 @@ import mpv5.db.common.DatabaseObject;
 import mpv5.db.common.NodataFoundException;
 import mpv5.db.objects.Group;
 import mpv5.db.objects.Item;
+import mpv5.db.objects.Reminder;
 import mpv5.db.objects.Schedule;
 import mpv5.db.objects.SubItem;
 import mpv5.db.objects.User;
@@ -383,7 +384,7 @@ public class HomeScreen
         but4 = new javax.swing.JButton();
         but5 = new javax.swing.JButton();
 
-        java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle(); // NOI18N
+        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("mpv5/resources/languages/Panels"); // NOI18N
         setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("HomeScreen.border.title"))); // NOI18N
         setName("Form"); // NOI18N
 
@@ -649,15 +650,35 @@ public class HomeScreen
     }//GEN-LAST:event_jButton3ActionPerformed
 
     private void overdueMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_overdueMouseClicked
+        Reminder rem;
+        DatabaseObject dbo;
+        Item itm;
         if (evt.getClickCount() > 1) {
             try {
                 System.err.println(mpv5.YabsViewProxy.instance().
                         getIdentifierView());
+                dbo = ((DatabaseObject) overdue.getModel().
+                        getValueAt(overdue.convertRowIndexToModel(overdue.getSelectedRow()),
+                        0));
+                if (dbo.getColor().equals(Color.RED)
+                        && (dbo instanceof Item)) {
+                    itm = (Item) dbo;
+                    if (itm.__getInttype() == Item.TYPE_BILL) {
+                        if (Popup.Y_N_dialog(Messages.CREATE_REMINDER.toString())) {
+                            rem = new Reminder();
+                            rem.setCName(Messages.REMINDER.toString() + "@" + dbo.__getCName());
+                            rem.setDateadded(new Date());
+                            rem.setDescription("");
+                            rem.setGroupsids(dbo.__getGroupsids());
+                            rem.setIntaddedby(User.getCurrentUser().getID());
+                            rem.setItemsids(dbo.__getIDS());
+                            rem.save();
+                        }
+                    }
+                }
                 mpv5.YabsViewProxy.instance().
                         getIdentifierView().
-                        addTab(((DatabaseObject) overdue.getModel().
-                        getValueAt(overdue.convertRowIndexToModel(overdue.getSelectedRow()),
-                        0)));
+                        addTab(dbo);
             } catch (Exception e) {
                 Log.Debug(e);
             }
