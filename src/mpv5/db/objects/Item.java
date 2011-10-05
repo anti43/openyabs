@@ -49,6 +49,7 @@ import mpv5.utils.text.TypeConversion;
  *  
  */
 public class Item extends DatabaseObject implements Formattable, Templateable {
+
     private static final long serialVersionUID = 1L;
 
     /**
@@ -168,15 +169,15 @@ public class Item extends DatabaseObject implements Formattable, Templateable {
                 return Messages.TYPE_OFFER.toString();
             case (TYPE_ORDER):
                 return Messages.TYPE_ORDER.toString();
-            case (TYPE_DELIVERY_NOTE):
-                return Messages.TYPE_DELIVERY.toString();
-            case (TYPE_ORDER_CONFIRMATION):
-                return Messages.TYPE_CONFIRMATION.toString();
+//            case (TYPE_DELIVERY_NOTE):
+//                return Messages.TYPE_DELIVERY.toString();
+//            case (TYPE_ORDER_CONFIRMATION):
+//                return Messages.TYPE_CONFIRMATION.toString();
         }
         return "";
     }
-    
-        public static MPEnum[] getItemEnum() {
+
+    public static MPEnum[] getItemEnum() {
         MPEnum[] en = new MPEnum[6];
         en[0] = new MPEnum() {
 
@@ -194,65 +195,64 @@ public class Item extends DatabaseObject implements Formattable, Templateable {
 
             @Override
             public Integer getId() {
-                return new Integer(0);
+                return new Integer(TYPE_BILL);
             }
 
             @Override
             public String getName() {
-                return getTypeString(0);
+                return getTypeString(TYPE_BILL);
             }
         };
         en[2] = new MPEnum() {
 
             @Override
             public Integer getId() {
-                return new Integer(1);
+                return new Integer(TYPE_OFFER);
             }
 
             @Override
             public String getName() {
-                return getTypeString(1);
+                return getTypeString(TYPE_OFFER);
             }
         };
         en[3] = new MPEnum() {
 
             @Override
             public Integer getId() {
-                return new Integer(2);
+                return new Integer(TYPE_ORDER);
             }
 
             @Override
             public String getName() {
-                return getTypeString(2);
+                return getTypeString(TYPE_ORDER);
             }
         };
-        en[4] = new MPEnum() {
-
-            @Override
-            public Integer getId() {
-                return new Integer(3);
-            }
-
-            @Override
-            public String getName() {
-                return getTypeString(3);
-            }
-        };
-        en[5] = new MPEnum() {
-
-            @Override
-            public Integer getId() {
-                return new Integer(4);
-            }
-
-            @Override
-            public String getName() {
-                return getTypeString(4);
-            }
-        };        
+//        en[4] = new MPEnum() {
+//
+//            @Override
+//            public Integer getId() {
+//                return new Integer(3);
+//            }
+//
+//            @Override
+//            public String getName() {
+//                return getTypeString(3);
+//            }
+//        };
+//        en[5] = new MPEnum() {
+//
+//            @Override
+//            public Integer getId() {
+//                return new Integer(4);
+//            }
+//
+//            @Override
+//            public String getName() {
+//                return getTypeString(4);
+//            }
+//        };        
         return en;
     }
-        
     private int contactsids;
     private int accountsids;
     private BigDecimal netvalue = new BigDecimal("0");
@@ -275,8 +275,8 @@ public class Item extends DatabaseObject implements Formattable, Templateable {
     public static final int TYPE_BILL = 0;
     public static final int TYPE_ORDER = 1;
     public static final int TYPE_OFFER = 2;
-    public static final int TYPE_DELIVERY_NOTE = 3;
-    public static final int TYPE_ORDER_CONFIRMATION = 4;
+//    public static final int TYPE_DELIVERY_NOTE = 3;
+//    public static final int TYPE_ORDER_CONFIRMATION = 4;
     private FormatHandler formatHandler;
 
     public Item() {

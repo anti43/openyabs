@@ -361,83 +361,83 @@ public class TemplateHandler {
         return types;
     }
 
-    /**
-     * (P)reload the template files
-     * @deprecated performance..
-     */
-    public static synchronized void cacheTemplates() {
-        TEMPLATE_CACHE.clear();
-        final List<Group> groups = new ArrayList<Group>();
-        try {
-            ArrayList<DatabaseObject> tlist = Group.getObjects(Context.getGroup(), true);
-            for (int i = 0; i < tlist.size(); i++) {
-                DatabaseObject databaseObject = tlist.get(i);
-                groups.add((Group) databaseObject);
-            }
-        } catch (NodataFoundException ex) {
-        }
-
-        List<Templateable> targets = new ArrayList<Templateable>();
-        List<Integer> typs = new ArrayList<Integer>();
-        Item it1 = new Item();
-        it1.setInttype(Item.TYPE_BILL);
-        targets.add(it1);
-        typs.add(TYPE_BILL);
-
-        Item it2 = new Item();
-        it2.setInttype(Item.TYPE_OFFER);
-        targets.add(it2);
-        typs.add(TYPE_OFFER);
-
-        Item it3 = new Item();
-        it3.setInttype(Item.TYPE_ORDER);
-        targets.add(it3);
-        typs.add(TYPE_ORDER);
-
-        Item it4 = new Item();
-        it4.setInttype(Item.TYPE_DELIVERY_NOTE);
-        targets.add(it4);
-        typs.add(TYPE_DELIVERY_NOTE);
-
-        Product it5 = new Product();
-        it5.setInttype(Product.TYPE_PRODUCT);
-        targets.add(it5);
-        typs.add(TYPE_PRODUCT);
-
-        Product it6 = new Product();
-        it6.setInttype(Product.TYPE_SERVICE);
-        targets.add(it6);
-        typs.add(TYPE_SERVICE);
-
-        Reminder it7 = new Reminder();
-        targets.add(it7);
-        typs.add(TYPE_REMINDER);
-
-        Contact it8 = new Contact();
-        targets.add(it8);
-        typs.add(TYPE_CONTACT);
-
-        targets.add(null);
-        typs.add(TYPE_JOURNAL);
-
-        for (int i = 0; i < targets.size(); i++) {
-//            final Templateable databaseObject = targets.get(i);
-            final int type = typs.get(i);
-            Runnable runnable = new Runnable() {
-
-                public void run() {
-                    for (int j = 0; j < groups.size(); j++) {
-                        Group group = groups.get(j);
-//                        if (databaseObject != null && group != null) {
-//                            ((DatabaseObject)databaseObject).setGroupsids(group.__getIDS());
-//                        }
-                        loadTemplate(group.__getIDS(), type);
-                    }
-                }
-            };
-            new Thread(runnable).start();
-        }
-    }
+//    /**
+//     * (P)reload the template files
+//     * @deprecated performance..
+//     */
+//    public static synchronized void cacheTemplates() {
+//        TEMPLATE_CACHE.clear();
+//        final List<Group> groups = new ArrayList<Group>();
+//        try {
+//            ArrayList<DatabaseObject> tlist = Group.getObjects(Context.getGroup(), true);
+//            for (int i = 0; i < tlist.size(); i++) {
+//                DatabaseObject databaseObject = tlist.get(i);
+//                groups.add((Group) databaseObject);
+//            }
+//        } catch (NodataFoundException ex) {
+//        }
+//
+//        List<Templateable> targets = new ArrayList<Templateable>();
+//        List<Integer> typs = new ArrayList<Integer>();
+//        Item it1 = new Item();
+//        it1.setInttype(Item.TYPE_BILL);
+//        targets.add(it1);
+//        typs.add(TYPE_BILL);
+//
+//        Item it2 = new Item();
+//        it2.setInttype(Item.TYPE_OFFER);
+//        targets.add(it2);
+//        typs.add(TYPE_OFFER);
+//
+//        Item it3 = new Item();
+//        it3.setInttype(Item.TYPE_ORDER);
+//        targets.add(it3);
+//        typs.add(TYPE_ORDER);
+//
+//        Item it4 = new Item();
+//        it4.setInttype(TYPE_DELIVERY_NOTE);
+//        targets.add(it4);
+//        typs.add(TYPE_DELIVERY_NOTE);
+//
+//        Product it5 = new Product();
+//        it5.setInttype(Product.TYPE_PRODUCT);
+//        targets.add(it5);
+//        typs.add(TYPE_PRODUCT);
+//
+//        Product it6 = new Product();
+//        it6.setInttype(Product.TYPE_SERVICE);
+//        targets.add(it6);
+//        typs.add(TYPE_SERVICE);
+//
+//        Reminder it7 = new Reminder();
+//        targets.add(it7);
+//        typs.add(TYPE_REMINDER);
+//
+//        Contact it8 = new Contact();
+//        targets.add(it8);
+//        typs.add(TYPE_CONTACT);
+//
+//        targets.add(null);
+//        typs.add(TYPE_JOURNAL);
+//
+//        for (int i = 0; i < targets.size(); i++) {
+////            final Templateable databaseObject = targets.get(i);
+//            final int type = typs.get(i);
+//            Runnable runnable = new Runnable() {
+//
+//                public void run() {
+//                    for (int j = 0; j < groups.size(); j++) {
+//                        Group group = groups.get(j);
+////                        if (databaseObject != null && group != null) {
+////                            ((DatabaseObject)databaseObject).setGroupsids(group.__getIDS());
+////                        }
+//                        loadTemplate(group.__getIDS(), type);
+//                    }
+//                }
+//            };
+//            new Thread(runnable).start();
+//        }
+//    }
 
     /**
      * The cache of the templates
