@@ -147,7 +147,7 @@ public class DatabaseSearch {
                         + " OR ";
             }
             return QueryHandler.instanceOf().clone(context, ROWLIMIT).freeSelectQuery(context.prepareSQLString(
-                    "SELECT " + resultingFieldNames + " FROM " + context.getDbIdentity() + " WHERE " + w.substring(0, w.length() - 4)), MPSecurityManager.VIEW, null).getData();
+                    "SELECT " + resultingFieldNames + " FROM " + context.getDbIdentity() + " WHERE (" + w.substring(0, w.length() - 4) + ")"), MPSecurityManager.VIEW, null).getData();
         } else {
             String w = "";
             String like = "LIKE '%";
@@ -157,7 +157,7 @@ public class DatabaseSearch {
                         + " OR ";
             }
             return QueryHandler.instanceOf().clone(context, ROWLIMIT).freeSelectQuery(context.prepareSQLString(
-                    "SELECT " + resultingFieldNames + " FROM " + context.getDbIdentity() + " WHERE " + w.substring(0, w.length() - 4)), MPSecurityManager.VIEW, null).getData();
+                    "SELECT " + resultingFieldNames + " FROM " + context.getDbIdentity() + " WHERE (" + w.substring(0, w.length() - 4) + ")"), MPSecurityManager.VIEW, null).getData();
         }
     }
 
