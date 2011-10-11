@@ -132,7 +132,7 @@ public class ProductSelectDialog extends javax.swing.JPanel {
         labeledCombobox1.setName("labeledCombobox1"); // NOI18N
         labeledCombobox1.setSearchOnEnterEnabled(true);
 
-        jButton1.setFont(new java.awt.Font("Dialog", 0, 10)); // NOI18N
+        jButton1.setFont(new java.awt.Font("Dialog", 0, 10));
         jButton1.setText(bundle.getString("ProductSelectDialog.jButton1.text")); // NOI18N
         jButton1.setName("jButton1"); // NOI18N
         jButton1.addActionListener(new java.awt.event.ActionListener() {
@@ -150,7 +150,7 @@ public class ProductSelectDialog extends javax.swing.JPanel {
         value.set_Label(bundle.getString("ProductSelectDialog.value._Label")); // NOI18N
         value.setName("value"); // NOI18N
 
-        jButton2.setFont(new java.awt.Font("Dialog", 0, 10)); // NOI18N
+        jButton2.setFont(new java.awt.Font("Dialog", 0, 10));
         jButton2.setText(bundle.getString("ProductSelectDialog.jButton2.text")); // NOI18N
         jButton2.setName("jButton2"); // NOI18N
         jButton2.addActionListener(new java.awt.event.ActionListener() {

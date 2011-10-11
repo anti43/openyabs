@@ -153,6 +153,7 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
     public static void showCurrentList() {
         try {
             BigPopup.show(getClistview());
+            BigPopup.setOnTop(getClistview());
         } catch (Exception ex) {
             Log.Debug(ex);
         }

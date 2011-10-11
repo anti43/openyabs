@@ -69,7 +69,7 @@
             <DimensionLayout dim="1">
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" alignment="0" attributes="0">
-                      <Component id="nav_outlookbar" pref="507" max="32767" attributes="0"/>
+                      <Component id="nav_outlookbar" max="32767" attributes="0"/>
                       <EmptySpace min="-2" max="-2" attributes="1"/>
                   </Group>
               </Group>
@@ -119,7 +119,7 @@
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Group type="102" alignment="0" attributes="0">
                               <Component id="nav_contacts" min="-2" max="-2" attributes="0"/>
-                              <EmptySpace pref="236" max="32767" attributes="0"/>
+                              <EmptySpace pref="207" max="32767" attributes="0"/>
                           </Group>
                       </Group>
                     </DimensionLayout>
@@ -134,10 +134,10 @@
                       </Properties>
 
                       <Layout class="org.netbeans.modules.form.compat2.layouts.DesignGridLayout">
-                        <Property name="horizontalGap" type="int" value="2"/>
                         <Property name="columns" type="int" value="1"/>
-                        <Property name="verticalGap" type="int" value="5"/>
+                        <Property name="horizontalGap" type="int" value="2"/>
                         <Property name="rows" type="int" value="0"/>
+                        <Property name="verticalGap" type="int" value="5"/>
                       </Layout>
                       <SubComponents>
                         <Component class="javax.swing.JButton" name="jButton5">
@@ -255,10 +255,10 @@
                       </Properties>
 
                       <Layout class="org.netbeans.modules.form.compat2.layouts.DesignGridLayout">
-                        <Property name="horizontalGap" type="int" value="2"/>
                         <Property name="columns" type="int" value="1"/>
-                        <Property name="verticalGap" type="int" value="5"/>
+                        <Property name="horizontalGap" type="int" value="2"/>
                         <Property name="rows" type="int" value="0"/>
+                        <Property name="verticalGap" type="int" value="5"/>
                       </Layout>
                       <SubComponents>
                         <Component class="javax.swing.JButton" name="jButton8">
@@ -442,10 +442,10 @@
                       </Properties>
 
                       <Layout class="org.netbeans.modules.form.compat2.layouts.DesignGridLayout">
-                        <Property name="horizontalGap" type="int" value="2"/>
                         <Property name="columns" type="int" value="1"/>
-                        <Property name="verticalGap" type="int" value="5"/>
+                        <Property name="horizontalGap" type="int" value="2"/>
                         <Property name="rows" type="int" value="0"/>
+                        <Property name="verticalGap" type="int" value="5"/>
                       </Layout>
                       <SubComponents>
                         <Component class="javax.swing.JButton" name="jButton13">
@@ -643,10 +643,10 @@
                       </Properties>
 
                       <Layout class="org.netbeans.modules.form.compat2.layouts.DesignGridLayout">
-                        <Property name="horizontalGap" type="int" value="2"/>
                         <Property name="columns" type="int" value="1"/>
-                        <Property name="verticalGap" type="int" value="5"/>
+                        <Property name="horizontalGap" type="int" value="2"/>
                         <Property name="rows" type="int" value="0"/>
+                        <Property name="verticalGap" type="int" value="5"/>
                       </Layout>
                       <SubComponents>
                         <Component class="javax.swing.JButton" name="jButton6">

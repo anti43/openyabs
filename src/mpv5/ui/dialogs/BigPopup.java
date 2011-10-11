@@ -13,6 +13,8 @@ import java.util.HashMap;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JPanel;
+import mpv5.YabsViewProxy;
+import mpv5.globals.Messages;
 import mpv5.ui.misc.Position;
 
 /**
@@ -29,12 +31,11 @@ public class BigPopup {
      */
     public static void showPopup(JPanel content) {
         if (!contents.containsKey(content)) {
-            final JDialog window = new JDialog();
+            final JDialog window = new JDialog(YabsViewProxy.instance().getIdentifierFrame(), Messages.YABS.getValue());
             window.getContentPane().setLayout(new BorderLayout());
             window.getContentPane().add(content, BorderLayout.CENTER);
             window.pack();
             window.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-            window.setTitle("");
             window.addKeyListener(new KeyListener() {
 
                 @Override
@@ -76,7 +77,7 @@ public class BigPopup {
      */
     public static void showPopup(JPanel content, String title, Point locationOnScreen) {
         if (!contents.containsKey(content)) {
-            final JDialog window = new JDialog();
+            final JDialog window = new JDialog(YabsViewProxy.instance().getIdentifierFrame(), Messages.YABS.getValue());
             window.getContentPane().setLayout(new BorderLayout());
             window.getContentPane().add(content, BorderLayout.CENTER);
             window.pack();
@@ -125,7 +126,7 @@ public class BigPopup {
      */
     public static void showPopup(JComponent parent, JPanel content, String title, Integer height, Integer width) {
         if (!contents.containsKey(content)) {
-            final JDialog window = new JDialog();
+            final JDialog window = new JDialog(YabsViewProxy.instance().getIdentifierFrame(), Messages.YABS.getValue());
             window.getContentPane().setLayout(new BorderLayout());
             window.getContentPane().add(content, BorderLayout.CENTER);
             window.pack();
@@ -178,7 +179,7 @@ public class BigPopup {
     public static void showPopup(JComponent parent, JPanel content, String title, boolean alwaysOnTop) {
 
         if (!contents.containsKey(content)) {
-            final JDialog window = new JDialog();
+            final JDialog window = new JDialog(YabsViewProxy.instance().getIdentifierFrame(), Messages.YABS.getValue());
             window.getContentPane().setLayout(new BorderLayout());
             window.getContentPane().add(content, BorderLayout.CENTER);
             window.pack();
@@ -309,7 +310,7 @@ public class BigPopup {
      * @param title 
      */
     public static void create(JPanel content, String title) {
-        final JDialog window = new JDialog();
+        final JDialog window = new JDialog(YabsViewProxy.instance().getIdentifierFrame(), Messages.YABS.getValue());
         window.getContentPane().setLayout(new BorderLayout());
         window.getContentPane().add(content, BorderLayout.CENTER);
         window.pack();
