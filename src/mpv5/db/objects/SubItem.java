@@ -17,6 +17,8 @@
 package mpv5.db.objects;
 
 import java.util.Arrays;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import mpv5.db.common.Triggerable;
 import java.math.BigDecimal;
 import java.util.Collections;
@@ -34,6 +36,7 @@ import mpv5.db.common.DatabaseObject;
 import mpv5.db.common.NodataFoundException;
 import mpv5.db.common.QueryCriteria;
 import mpv5.db.common.QueryHandler;
+import mpv5.globals.GlobalSettings;
 import mpv5.globals.Headers;
 import mpv5.globals.Messages;
 import mpv5.handler.VariablesHandler;
@@ -51,6 +54,10 @@ import org.apache.derby.iapi.sql.dictionary.SubCheckConstraintDescriptor;
  */
 public class SubItem extends DatabaseObject implements Triggerable {
 
+    public static final int TYPE_TEXT = 1;
+    public static final int TYPE_PRODUCT = 2;
+    public static final int TYPE_NORMAL = 0;
+
     public static LinkedList<SubItem> saveModel(Item dataOwner, MPTableModel model, boolean deleteRemovedSubitems, boolean cloneSubitems) {
         List<Object[]> rowsl = model.getValidRows(new int[]{4});
         LinkedList<SubItem> items = new LinkedList<SubItem>();
@@ -64,7 +71,7 @@ public class SubItem extends DatabaseObject implements Triggerable {
             }
             SubItem it = new SubItem();
             it.setOrdernr(i);
-           // Log.Print(it.getOrdernr());
+            // Log.Print(it.getOrdernr());
             try {
                 if (!cloneSubitems && row[0] != null && Integer.valueOf(row[0].toString()).intValue() > 0) {
                     it.setIDS(Integer.valueOf(row[0].toString()).intValue());
@@ -268,6 +275,7 @@ public class SubItem extends DatabaseObject implements Triggerable {
     }
     private int itemsids;
     private int ordernr;
+    private int inttype;
     private int originalproductsids;
     private BigDecimal countvalue = new BigDecimal("0");
     private BigDecimal quantityvalue = new BigDecimal("0");
@@ -420,26 +428,49 @@ public class SubItem extends DatabaseObject implements Triggerable {
      * Generates a String array out of this SubItem
      * @return
      */
-    public String[] toStringArray() {
+    public synchronized String[] toStringArray() {
         calculate(this);
+
+        List<String> all = new LinkedList<String>();
 
         String[] possibleCols = new String[]{
             ////////////////// The exported columns///////////////////////////////////////
-            String.valueOf(FormatNumber.formatInteger(this.__getCountvalue())),
-            String.valueOf(FormatNumber.formatDezimal(this.__getQuantityvalue())),
-            __getMeasure(),
+            getInttype() == TYPE_NORMAL || getInttype() == TYPE_PRODUCT ? String.valueOf(FormatNumber.formatInteger(this.__getCountvalue())) : "",
+            getInttype() == TYPE_NORMAL || getInttype() == TYPE_PRODUCT ? String.valueOf(FormatNumber.formatDezimal(this.__getQuantityvalue())) : "",
+            getInttype() == TYPE_NORMAL || getInttype() == TYPE_PRODUCT ? __getMeasure() : "",
             __getDescription(),
-            String.valueOf(FormatNumber.formatLokalCurrency(this.__getExternalvalue())),
-            String.valueOf(FormatNumber.formatLokalCurrency(this.__getTotalnetvalue())),
-            String.valueOf(FormatNumber.formatPercent(this.__getTaxpercentvalue())),
-            String.valueOf(FormatNumber.formatLokalCurrency(this.getTotalTaxValue())),
-            String.valueOf(FormatNumber.formatLokalCurrency(this.__getTotalbrutvalue())),
+            getInttype() == TYPE_NORMAL || getInttype() == TYPE_PRODUCT ? String.valueOf(FormatNumber.formatLokalCurrency(this.__getExternalvalue())) : "",
+            getInttype() == TYPE_NORMAL || getInttype() == TYPE_PRODUCT ? String.valueOf(FormatNumber.formatLokalCurrency(this.__getTotalnetvalue())) : "",
+            getInttype() == TYPE_NORMAL || getInttype() == TYPE_PRODUCT ? String.valueOf(FormatNumber.formatPercent(this.__getTaxpercentvalue())) : "",
+            getInttype() == TYPE_NORMAL || getInttype() == TYPE_PRODUCT ? String.valueOf(FormatNumber.formatLokalCurrency(this.getTotalTaxValue())) : "",
+            getInttype() == TYPE_NORMAL || getInttype() == TYPE_PRODUCT ? String.valueOf(FormatNumber.formatLokalCurrency(this.__getTotalbrutvalue())) : "",
             __getLinkurl(),
             __getCName()
         ///////////////////////////////////////////////////////////////////////////////
         };
+        List<String> l = Arrays.asList(possibleCols);
+        all.addAll(l);
 
-        return possibleCols;
+        if (GlobalSettings.getBooleanProperty("org.openyabs.exportproperty.productsresolved", false) && __getOriginalproductsids() > 0) {
+            try {
+                Product p = (Product) DatabaseObject.getObject(Context.getProduct(), __getOriginalproductsids());
+                List<String[]> vals = p.getValues3();
+                Collections.sort(vals, new Comparator<String[]>() {
+
+                    public int compare(String[] o1, String[] o2) {
+                        return o1[0].compareTo(o2[0]);
+                    }
+                });
+                for (int i = 0; i < vals.size(); i++) {
+                    String[] v = vals.get(i);
+                    all.add(v[1]);
+                }
+            } catch (Exception ex) {
+                Log.Debug(ex);
+            }
+        }
+
+        return all.toArray(new String[0]);
     }
 
     @Override
@@ -478,6 +509,11 @@ public class SubItem extends DatabaseObject implements Triggerable {
      */
     public void setOriginalproductsids(int originalproductsids) {
         this.originalproductsids = originalproductsids;
+        if (originalproductsids > 0) {
+            setInttype(TYPE_PRODUCT);
+        } else {
+            setInttype(TYPE_NORMAL);
+        }
     }
 
     /**
@@ -857,5 +893,20 @@ public class SubItem extends DatabaseObject implements Triggerable {
      */
     public void setOrdernr(int ordernr) {
         this.ordernr = ordernr;
+    }
+
+    /**
+     * @return the inttype
+     */
+    @Persistable(true)
+    public int getInttype() {
+        return inttype;
+    }
+
+    /**
+     * @param inttype the inttype to set
+     */
+    public void setInttype(int inttype) {
+        this.inttype = inttype;
     }
 }

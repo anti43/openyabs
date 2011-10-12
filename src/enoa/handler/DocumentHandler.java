@@ -511,7 +511,7 @@ public class DocumentHandler {
             try {
                 form[i] = possibleCols[intcols[i] - 1];
             } catch (Exception e) {
-                Log.Debug(this, "Too much columns in the format definition: " + e);
+               // Log.Debug(this, "Too much columns in the format definition: " + e);
             }
         }
 

@@ -119,7 +119,10 @@ public class DatabaseUpdater {
                     + "intaddedby BIGINT DEFAULT 0, "
                     + "invisible SMALLINT DEFAULT 0, "
                     + "content LONG VARCHAR NOT NULL, "
-                    + "PRIMARY KEY  (ids))"});        
+                    + "PRIMARY KEY  (ids))"});    
+        UPDATES_DERBY.put(1.188, new String[]{
+                    "ALTER TABLE subitems ADD COLUMN inttype SMALLINT DEFAULT 0 NOT NULL"
+                });
         ////////////////////////////////////////////////////////////////////////////////////////////
         // mysql updates
         UPDATES_MYSQL.put(1.11, new String[]{
@@ -241,6 +244,9 @@ public class DatabaseUpdater {
                     + "intaddedby BIGINT UNSIGNED NOT NULL DEFAULT 1, "
                     + "invisible SMALLINT DEFAULT 0, "
                     + "content LONGVARCHAR NOT NULL)ENGINE=MyISAM  DEFAULT CHARSET=IS0-8859-15"});
+        UPDATES_MYSQL.put(1.188, new String[]{
+                    "ALTER TABLE subitems ADD COLUMN inttype SMALLINT DEFAULT 0 NOT NULL"
+                });
     }
 
     /**
