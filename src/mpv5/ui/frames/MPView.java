@@ -42,6 +42,7 @@ import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import mpv5.Main;
 import mpv5.YabsView;
+import mpv5.YabsViewProxy;
 import mpv5.YabsViewProxy.FlowProvider;
 import mpv5.bugtracker.ExceptionHandler;
 import mpv5.bugtracker.SubmitForm;
@@ -3012,10 +3013,17 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
     public void setClipBoardVisible(boolean show) {
         try {
             getClistview().validate();
-            if (!User.getCurrentUser().getProperty("org.openyabs.uiproperty", "clipboardtab")) {
-                BigPopup.setOnTop(getClistview());
-            } else {
+            if (User.getCurrentUser().getProperty("org.openyabs.uiproperty", "clipboardtab")) {
                 addOrShowTab(getClistview(), "Clipboard");
+            } else if (!User.getCurrentUser().getProperty("org.openyabs.uiproperty", "clipboardframe")) {
+                JFrame j = new JFrame("Clipboard");
+                j.setLayout(new BorderLayout());
+                j.add(getClistview(), BorderLayout.CENTER);
+                j.pack();
+                j.setLocationRelativeTo(YabsViewProxy.instance().getIdentifierFrame());
+                j.setVisible(true);
+            } else {
+                BigPopup.setOnTop(getClistview());
             }
 //            BigPopup.show(getClistview());
         } catch (Exception ex) {
