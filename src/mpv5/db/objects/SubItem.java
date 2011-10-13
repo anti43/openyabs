@@ -17,8 +17,6 @@
 package mpv5.db.objects;
 
 import java.util.Arrays;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import mpv5.db.common.Triggerable;
 import java.math.BigDecimal;
 import java.util.Collections;
@@ -38,15 +36,12 @@ import mpv5.db.common.QueryCriteria;
 import mpv5.db.common.QueryHandler;
 import mpv5.globals.GlobalSettings;
 import mpv5.globals.Headers;
-import mpv5.globals.Messages;
 import mpv5.handler.VariablesHandler;
 import mpv5.logging.Log;
-import mpv5.ui.dialogs.Notificator;
 import mpv5.ui.panels.ItemPanel;
 import mpv5.utils.models.MPComboBoxModelItem;
 import mpv5.utils.models.MPTableModel;
 import mpv5.utils.numberformat.FormatNumber;
-import org.apache.derby.iapi.sql.dictionary.SubCheckConstraintDescriptor;
 
 /**
  *
@@ -542,6 +537,9 @@ public class SubItem extends DatabaseObject implements Triggerable {
      */
     public void setQuantityvalue(BigDecimal quantity) {
         this.quantityvalue = quantity;
+        if (quantity.compareTo(BigDecimal.ZERO) == 0) {
+            setInttype(TYPE_TEXT);
+        }
     }
 
     /**
