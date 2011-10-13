@@ -430,15 +430,15 @@ public class SubItem extends DatabaseObject implements Triggerable {
 
         String[] possibleCols = new String[]{
             ////////////////// The exported columns///////////////////////////////////////
-            getInttype() == TYPE_NORMAL || getInttype() == TYPE_PRODUCT ? String.valueOf(FormatNumber.formatInteger(this.__getCountvalue())) : "",
-            getInttype() == TYPE_NORMAL || getInttype() == TYPE_PRODUCT ? String.valueOf(FormatNumber.formatDezimal(this.__getQuantityvalue())) : "",
-            getInttype() == TYPE_NORMAL || getInttype() == TYPE_PRODUCT ? __getMeasure() : "",
+            getInttype() != TYPE_TEXT ? String.valueOf(FormatNumber.formatInteger(this.__getCountvalue())) : "",
+            getInttype() != TYPE_TEXT ? String.valueOf(FormatNumber.formatDezimal(this.__getQuantityvalue())) : "",
+            getInttype() != TYPE_TEXT ? __getMeasure() : "",
             __getDescription(),
-            getInttype() == TYPE_NORMAL || getInttype() == TYPE_PRODUCT ? String.valueOf(FormatNumber.formatLokalCurrency(this.__getExternalvalue())) : "",
-            getInttype() == TYPE_NORMAL || getInttype() == TYPE_PRODUCT ? String.valueOf(FormatNumber.formatLokalCurrency(this.__getTotalnetvalue())) : "",
-            getInttype() == TYPE_NORMAL || getInttype() == TYPE_PRODUCT ? String.valueOf(FormatNumber.formatPercent(this.__getTaxpercentvalue())) : "",
-            getInttype() == TYPE_NORMAL || getInttype() == TYPE_PRODUCT ? String.valueOf(FormatNumber.formatLokalCurrency(this.getTotalTaxValue())) : "",
-            getInttype() == TYPE_NORMAL || getInttype() == TYPE_PRODUCT ? String.valueOf(FormatNumber.formatLokalCurrency(this.__getTotalbrutvalue())) : "",
+            getInttype() != TYPE_TEXT ? String.valueOf(FormatNumber.formatLokalCurrency(this.__getExternalvalue())) : "",
+            getInttype() != TYPE_TEXT ? String.valueOf(FormatNumber.formatLokalCurrency(this.__getTotalnetvalue())) : "",
+            getInttype() != TYPE_TEXT ? String.valueOf(FormatNumber.formatPercent(this.__getTaxpercentvalue())) : "",
+            getInttype() != TYPE_TEXT ? String.valueOf(FormatNumber.formatLokalCurrency(this.getTotalTaxValue())) : "",
+            getInttype() != TYPE_TEXT ? String.valueOf(FormatNumber.formatLokalCurrency(this.__getTotalbrutvalue())) : "",
             __getLinkurl(),
             __getCName()
         ///////////////////////////////////////////////////////////////////////////////
@@ -465,6 +465,9 @@ public class SubItem extends DatabaseObject implements Triggerable {
             }
         }
 
+        if (Log.getLoglevel() == Log.LOGLEVEL_DEBUG) {
+            Log.Debug(this, all.toString());
+        }
         return all.toArray(new String[0]);
     }
 

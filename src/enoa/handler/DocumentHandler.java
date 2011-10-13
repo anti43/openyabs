@@ -46,6 +46,7 @@ import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.UnknownHostException;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -232,7 +233,7 @@ public class DocumentHandler {
         }
         InputStream is = null;
         ITextCursor cursor;
-        
+
         while (keys.hasNext()) {
             key = keys.next();
             try {
@@ -242,10 +243,8 @@ public class DocumentHandler {
                     if (placeholderDisplayText.equalsIgnoreCase(key) || placeholderDisplayText.equalsIgnoreCase("<" + key + ">")
                             || placeholderDisplayText.equalsIgnoreCase("<RTF." + key + ">")) {
                         Log.Debug(this, "Found placeholder key: " + key + " [" + data.get(key) + "]");
-                         if (placeholderDisplayText.startsWith("<RTF.") || placeholderDisplayText.
-                                startsWith("<rtf.")) {
-                            is = new StringInputStream(((String) data.get(key)).
-                                    replace("`",
+                        if (placeholderDisplayText.startsWith("<RTF.") || placeholderDisplayText.startsWith("<rtf.")) {
+                            is = new StringInputStream(((String) data.get(key)).replace("`",
                                     "'"));
                             cursor = placeholders[i].getTextDocument().
                                     getViewCursorService().
@@ -319,8 +318,8 @@ public class DocumentHandler {
         IFilter filter = null;
         String extension = target.getName().substring(target.getName().lastIndexOf("."), target.getName().length());
         if (extension.equalsIgnoreCase(".pdf")) {
-            if (User.getCurrentUser().getProperties().hasProperty("pdftype") &&
-                    User.getCurrentUser().getProperties().getProperty("pdftype").equalsIgnoreCase("pdf/a")) {
+            if (User.getCurrentUser().getProperties().hasProperty("pdftype")
+                    && User.getCurrentUser().getProperties().getProperty("pdftype").equalsIgnoreCase("pdf/a")) {
                 try {
                     return exportPDFA(source, target);
                 } catch (Exception ex) {
@@ -511,7 +510,7 @@ public class DocumentHandler {
             try {
                 form[i] = possibleCols[intcols[i] - 1];
             } catch (Exception e) {
-               // Log.Debug(this, "Too much columns in the format definition: " + e);
+                // Log.Debug(this, "Too much columns in the format definition: " + e);
             }
         }
 
@@ -521,6 +520,9 @@ public class DocumentHandler {
     private void doRow(Template template, String[] strings, int row) {
         if (template != null) {
             strings = refactorRow(template, strings);
+        }
+        if (Log.getLoglevel() == Log.LOGLEVEL_DEBUG) {
+            Log.Debug(this, Arrays.asList(strings).toString());
         }
         for (int j = 0; j < strings.length; j++) {
             String cellValue = strings[j];
