@@ -33,6 +33,7 @@ import mpv5.db.common.DatabaseObject;
 import mpv5.db.common.Formattable;
 import mpv5.db.common.NodataFoundException;
 import mpv5.db.common.Templateable;
+import mpv5.globals.GlobalSettings;
 import mpv5.globals.Messages;
 import mpv5.handler.FormatHandler;
 import mpv5.handler.MPEnum;
@@ -597,10 +598,12 @@ public class Item extends DatabaseObject implements Formattable, Templateable {
             for (int i = 0; i < data.size(); i++) {
                 SubItem t = data.get(i);
                 list.add(t.toStringArray());
-                data2 = t.getValues3();
-                for (int j = 0; j < data2.size(); j++) {
-                    String[] strings = data2.get(j);
-                    map.put("subitem" + i + "." + strings[0].toLowerCase(), strings[1]);
+                if (GlobalSettings.getBooleanProperty("org.openyabs.exportproperty.pdftable", false)) {
+                    data2 = t.getValues3();
+                    for (int j = 0; j < data2.size(); j++) {
+                        String[] strings = data2.get(j);
+                        map.put("subitem" + i + "." + strings[0].toLowerCase(), strings[1]);
+                    }
                 }
             }
         } catch (NodataFoundException ex) {
