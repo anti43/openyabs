@@ -18,9 +18,12 @@ package mpv5.db.objects;
 
 import java.io.File;
 import java.math.BigDecimal;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Vector;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JComponent;
 import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
@@ -562,11 +565,11 @@ public class Product extends DatabaseObject implements Formattable, Templateable
         return super.save(silent);
     }
 
-
     @Override
     public int templateType() {
         return __getInttype();
     }
+
     /**
      *
      * @return
@@ -574,5 +577,23 @@ public class Product extends DatabaseObject implements Formattable, Templateable
     @Override
     public int templateGroupIds() {
         return __getGroupsids();
+    }
+
+    @Override
+    public boolean delete() {
+        List<ProductPrice> pp = findProductPrices();
+        for (int i = 0; i < pp.size(); i++) {
+            pp.get(i).delete();
+        }
+        return super.delete();
+    }
+
+    public List<ProductPrice> findProductPrices() {
+        try {
+            return getReferencedObjects(this, Context.getProductPrice(), new ProductPrice());
+        } catch (NodataFoundException ex) {
+            Log.Debug(this, ex.getMessage());
+        }
+        return Collections.emptyList();
     }
 }

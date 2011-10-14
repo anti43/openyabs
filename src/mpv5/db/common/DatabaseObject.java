@@ -781,7 +781,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
     }
 
     /**
-     * Deletes this do from database, can not be reverted!
+     * Deletes this do from database, can possibly not get reverted!
      * Note: You can reuse this do then as it it would be a new one with prepopulated data
      * @return
      */
