@@ -2,6 +2,8 @@ package mpv5.db.objects;
 
 import enoa.handler.TemplateHandler;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import javax.swing.JComponent;
@@ -453,6 +455,12 @@ public class Contact extends DatabaseObject implements Formattable, Templateable
         List<Address> data;
         try {
             data = DatabaseObject.getReferencedObjects(this, Context.getAddress(), new Address());
+            Collections.sort(data, new Comparator<Address>() {
+//[0 = billing adress, 1 = delivery adress, 2 = both, 3 = undefined]
+                public int compare(Address o1, Address o2) {
+                    return Integer.valueOf(o1.__getInttype()).compareTo(Integer.valueOf(o2.__getInttype()));
+                }
+            });
             for (int i = 0; i < data.size(); i++) {
                 map.put("address" + i, data.get(i));
             }
