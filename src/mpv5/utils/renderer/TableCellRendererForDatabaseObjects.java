@@ -5,7 +5,6 @@
 
 package mpv5.utils.renderer;
 
-import java.awt.Color;
 import java.awt.Component;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableCellRenderer;
@@ -31,7 +30,7 @@ public class TableCellRendererForDatabaseObjects extends DefaultTableCellRendere
             setText(adaptee.getText());
 
             if (!isSelected) {
-                setBackground(((DatabaseObject) table.getModel().getValueAt(row, 0)).getColor());
+                setBackground(((DatabaseObject) table.getModel().getValueAt(table.convertRowIndexToModel(row), 0)).getColor());
             }
             return this;
         }
