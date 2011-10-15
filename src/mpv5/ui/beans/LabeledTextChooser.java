@@ -72,10 +72,9 @@ public class LabeledTextChooser extends javax.swing.JPanel {
 
         setOpaque(false);
 
-        jLabel1.setFont(jLabel1.getFont());
         jLabel1.setText("text");
 
-        jTextField1.setFont(jTextField1.getFont());
+        //jTextField1.setFont(jTextField1.getFont());
 
         jButton1.setText("...");
         jButton1.setToolTipText("Choose");
@@ -91,8 +90,8 @@ public class LabeledTextChooser extends javax.swing.JPanel {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(2, 2, 2)
                 .addComponent(jTextField1, javax.swing.GroupLayout.DEFAULT_SIZE, 145, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jButton1))

@@ -43,6 +43,10 @@ public class Address extends DatabaseObject {
     private boolean ismale = true;
     private int contactsids = 0;
     private int inttype = 2;// [0 = billing adress, 1 = delivery adress, 2 = both, 3 = undefined]
+    public static final int TYPE_INVOICE = 0;
+    public static final int TYPE_DELIVERY = 1;
+    public static final int TYPE_ALL = 2;
+    public static final int TYPE_NONE = 3;
 
     public Address() {
         context = Context.getAddress();
@@ -233,11 +237,11 @@ public class Address extends DatabaseObject {
         try {
             if (map.containsKey("inttype")) {
                 // [0 = billing adress, 1 = delivery adress, 2 = both, 3 = undefined]
-                if (__getInttype() == 2) {
+                if (__getInttype() == TYPE_ALL) {
                     map.put("type", Messages.ADDRESS_TYPE_BOTH);
-                } else if (__getInttype() == 1) {
+                } else if (__getInttype() == TYPE_DELIVERY) {
                     map.put("type", Messages.ADDRESS_TYPE_DELIVERY);
-                } else if (__getInttype() == 0) {
+                } else if (__getInttype() == TYPE_INVOICE) {
                     map.put("type", Messages.ADDRESS_TYPE_INVOICE);
                 }
 

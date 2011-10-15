@@ -2,11 +2,6 @@
 
 <Form version="1.4" maxVersion="1.7" type="org.netbeans.modules.form.forminfo.JPanelFormInfo">
   <Properties>
-    <Property name="font" type="java.awt.Font" editor="org.netbeans.modules.form.editors2.FontEditor">
-      <FontInfo relative="true">
-        <Font component="Form" property="font" relativeSize="true" size="0"/>
-      </FontInfo>
-    </Property>
     <Property name="name" type="java.lang.String" value="Form" noResource="true"/>
   </Properties>
   <AuxValues>
