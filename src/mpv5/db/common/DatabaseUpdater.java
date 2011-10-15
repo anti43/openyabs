@@ -123,6 +123,9 @@ public class DatabaseUpdater {
         UPDATES_DERBY.put(1.188, new String[]{
                     "ALTER TABLE subitems ADD COLUMN inttype SMALLINT DEFAULT 0 NOT NULL"
                 });
+        UPDATES_DERBY.put(1.189, new String[]{
+                    "ALTER TABLE conversations ADD COLUMN contactsids BIGINT REFERENCES contacts (ids) ON DELETE CASCADE"
+                });
         ////////////////////////////////////////////////////////////////////////////////////////////
         // mysql updates
         UPDATES_MYSQL.put(1.11, new String[]{
@@ -247,6 +250,9 @@ public class DatabaseUpdater {
         UPDATES_MYSQL.put(1.188, new String[]{
                     "ALTER TABLE subitems ADD COLUMN inttype SMALLINT DEFAULT 0 NOT NULL"
                 });
+        UPDATES_MYSQL.put(1.189, new String[]{
+                    "ALTER TABLE conversations ADD COLUMN contactsids BIGINT REFERENCES contacts (ids) ON DELETE CASCADE"
+                });        
     }
 
     /**

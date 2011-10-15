@@ -290,8 +290,10 @@ public enum Messages {
      DAY_EVENTS("This Day has Events!"), 
      TYPE_CONVERSATION("Conversation"), 
      Conversation_MainAddress("Main-Address"),
-     CREATE_REMINDER("This Item is overdue! Should a reminder be created?")
-     ;
+     CREATE_REMINDER("This Item is overdue! Should a reminder be created?"),
+     TYPE_MASSPRINT("Serial-Mail (Massprint)"), 
+     CNAME_EXISTS("Please adjust the Subject!\nActual Subject exists!"),
+     CONTACT_COMPLETE("Please complete the Contact-Data!");
 
 
     private Messages(String message) {

@@ -10,14 +10,52 @@
  */
 package mpv5.ui.panels;
 
+import enoa.handler.TemplateHandler;
+import java.awt.Color;
+import java.awt.GraphicsEnvironment;
+import java.awt.event.ActionEvent;
+import java.io.File;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import javax.swing.DefaultComboBoxModel;
+import javax.swing.DefaultListModel;
+import javax.swing.DefaultListSelectionModel;
+import javax.swing.JComboBox;
+import javax.swing.JTextPane;
+import javax.swing.JToggleButton;
+import javax.swing.text.AttributeSet;
+import javax.swing.text.MutableAttributeSet;
+import javax.swing.text.SimpleAttributeSet;
+import javax.swing.text.StyleConstants;
+import javax.swing.text.StyledDocument;
+import javax.swing.text.StyledEditorKit;
+import javax.swing.text.rtf.RTFEditorKit;
+import mpv5.db.common.Context;
+import mpv5.db.common.DatabaseSearch;
+import mpv5.db.common.NodataFoundException;
+import mpv5.db.objects.Contact;
+import mpv5.db.objects.Template;
+import mpv5.db.objects.User;
+import mpv5.globals.LocalSettings;
+import mpv5.globals.Messages;
+import mpv5.logging.Log;
+import mpv5.ui.dialogs.DialogForFile;
+import mpv5.utils.export.Export;
+import mpv5.utils.files.FileDirectoryHandler;
+import mpv5.utils.jobs.Job;
+import mpv5.utils.jobs.Waitable;
+import mpv5.utils.print.PrintJob2;
+
 /**
  *
  * @author Samsung SA11
  */
 public class MassPrintPanel
         extends javax.swing.JPanel {
-    
+
     private static MassPrintPanel me;
+    private final DefaultListModel model;
     private static final long serialVersionUID = -4425127949239926332L;
 
     /**
@@ -28,13 +66,21 @@ public class MassPrintPanel
         if (me == null) {
             me = new MassPrintPanel();
         }
-
         return me;
     }
 
     /** Creates new form MassPrintUI */
     public MassPrintPanel() {
         initComponents();
+        model = new DefaultListModel();
+        contactlist.setModel(model);
+        contactlist.setSelectionBackground(Color.GREEN);
+        contactlist.setSelectionForeground(Color.BLACK);
+        contactlist.setSelectionMode(DefaultListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
+        templates.setModel(new DefaultComboBoxModel());
+        this.setContacts();
+        this.setTemplateList();
+
     }
 
     /** This method is called from within the constructor to
@@ -46,20 +92,435 @@ public class MassPrintPanel
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jPanel3 = new javax.swing.JPanel();
+        jComboBox2 = new javax.swing.JComboBox();
+        String fontSizes[] = {"8", "10", "11", "12", "14", "16", "18",
+            "20", "24", "30", "36", "40", "48", "60", "72"};
+        for (int index = 0; index < fontSizes.length; index++) {
+            jComboBox2.addItem(fontSizes[index]);
+        }
+        jComboBox1 = new javax.swing.JComboBox();
+        try {
+            String[] fonts = GraphicsEnvironment.getLocalGraphicsEnvironment().getAvailableFontFamilyNames();
+            Log.Debug(this, "Ermittelte Fonts: " + fonts.length);
+
+            for (int index = 0; index < fonts.length; index++) {
+                jComboBox1.addItem(fonts[index]);
+            }
+        } catch (Exception e) {
+
+            Log.Debug(ConversationPanel.class, e);
+        }
+        jToggleButton3 = new javax.swing.JToggleButton();
+        jToggleButton1 = new javax.swing.JToggleButton();
+        jToggleButton2 = new javax.swing.JToggleButton();
+        jLabel3 = new javax.swing.JLabel();
+        jSeparator1 = new javax.swing.JSeparator();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        RTF_Text = new javax.swing.JTextPane();
+        dateTo = new mpv5.ui.beans.DateChooser();
+        templates = new javax.swing.JComboBox();
+        try {
+            String[] fonts = GraphicsEnvironment.getLocalGraphicsEnvironment().getAvailableFontFamilyNames();
+            Log.Debug(this, "Ermittelte Fonts: " + fonts.length);
+
+            for (int index = 0; index < fonts.length; index++) {
+                jComboBox1.addItem(fonts[index]);
+            }
+        } catch (Exception e) {
+
+            Log.Debug(ConversationPanel.class, e);
+        }
+        jLabel4 = new javax.swing.JLabel();
+        jButton1 = new javax.swing.JButton();
+        jLabel5 = new javax.swing.JLabel();
+        jButton2 = new javax.swing.JButton();
+        jPanel1 = new javax.swing.JPanel();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        contactlist = new javax.swing.JList();
+
         setMaximumSize(new java.awt.Dimension(750, 600));
         setMinimumSize(new java.awt.Dimension(750, 600));
+
+        java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle(); // NOI18N
+        jPanel3.setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("ConversationPanel.jPanel3.border.title"))); // NOI18N
+
+        jComboBox2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jComboBox2ActionPerformed(evt);
+            }
+        });
+
+        jComboBox1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jComboBox1ActionPerformed(evt);
+            }
+        });
+
+        jToggleButton3.setFont(jToggleButton3.getFont());
+        jToggleButton3.setText(bundle.getString("ConversationPanel.jToggleButton3.text")); // NOI18N
+        jToggleButton3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jToggleButton3ActionPerformed(evt);
+            }
+        });
+
+        jToggleButton1.setFont(new java.awt.Font("Tahoma", 1, 11));
+        jToggleButton1.setText(bundle.getString("ConversationPanel.jToggleButton1.text")); // NOI18N
+        jToggleButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jToggleButton1ActionPerformed(evt);
+            }
+        });
+
+        jToggleButton2.setFont(new java.awt.Font("Tahoma", 2, 11));
+        jToggleButton2.setText(bundle.getString("ConversationPanel.jToggleButton2.text")); // NOI18N
+        jToggleButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jToggleButton2ActionPerformed(evt);
+            }
+        });
+
+        jLabel3.setText(bundle.getString("ConversationPanel.jLabel3.text")); // NOI18N
+
+        RTF_Text.setEditorKit(new javax.swing.text.rtf.RTFEditorKit());
+        RTF_Text.addCaretListener(new javax.swing.event.CaretListener() {
+            public void caretUpdate(javax.swing.event.CaretEvent evt) {
+                RTF_TextCaretUpdate(evt);
+            }
+        });
+        jScrollPane1.setViewportView(RTF_Text);
+
+        dateTo.setMaximumSize(new java.awt.Dimension(32767, 20));
+        dateTo.setMinimumSize(new java.awt.Dimension(120, 20));
+        dateTo.setPreferredSize(new java.awt.Dimension(150, 20));
+
+        jLabel4.setText(bundle.getString("ConversationPanel.jLabel3.text")); // NOI18N
+
+        jButton1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/bright_printer.png"))); // NOI18N
+        jButton1.setText("Print");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
+
+        jLabel5.setText(bundle.getString("ConversationPanel.jLabel3.text")); // NOI18N
+
+        jButton2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/acroread.png"))); // NOI18N
+        jButton2.setText("PDF");
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
+        jPanel3.setLayout(jPanel3Layout);
+        jPanel3Layout.setHorizontalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 820, Short.MAX_VALUE)
+                    .addGroup(jPanel3Layout.createSequentialGroup()
+                        .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 306, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(512, 512, 512))
+                    .addGroup(jPanel3Layout.createSequentialGroup()
+                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 295, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 191, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(templates, javax.swing.GroupLayout.PREFERRED_SIZE, 295, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addGroup(jPanel3Layout.createSequentialGroup()
+                                .addGap(15, 15, 15)
+                                .addComponent(jComboBox2, javax.swing.GroupLayout.PREFERRED_SIZE, 63, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(7, 7, 7)
+                                .addComponent(jToggleButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 68, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(2, 2, 2)
+                                .addComponent(jToggleButton2)
+                                .addGap(5, 5, 5)
+                                .addComponent(jToggleButton3)
+                                .addGap(27, 27, 27)
+                                .addComponent(jLabel3)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 28, Short.MAX_VALUE)
+                                .addComponent(dateTo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(jPanel3Layout.createSequentialGroup()
+                                .addGap(18, 18, 18)
+                                .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 267, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 10, Short.MAX_VALUE)
+                                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 230, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                    .addComponent(jSeparator1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 820, Short.MAX_VALUE)))
+        );
+        jPanel3Layout.setVerticalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
+                        .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(5, 5, 5)
+                        .addComponent(templates, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(6, 6, 6))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
+                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jButton1)
+                            .addComponent(jButton2))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)))
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jComboBox2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jToggleButton1)
+                    .addComponent(jToggleButton2)
+                    .addComponent(jToggleButton3)
+                    .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                        .addComponent(dateTo, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 2, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 467, Short.MAX_VALUE))
+        );
+
+        jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder("Contacts"));
+
+        jScrollPane2.setViewportView(contactlist);
+
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 168, Short.MAX_VALUE)
+        );
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 588, Short.MAX_VALUE)
+        );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 750, Short.MAX_VALUE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 600, Short.MAX_VALUE)
+            .addComponent(jPanel1, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
     }// </editor-fold>//GEN-END:initComponents
+
+    private void jToggleButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jToggleButton1ActionPerformed
+        JToggleButton btn = (JToggleButton) evt.getSource();
+        RTFEditorKit kit = (RTFEditorKit) RTF_Text.getEditorKit();
+        MutableAttributeSet attr = kit.getInputAttributes();
+        boolean bold = (StyleConstants.isBold(attr)) ? false : true;
+        btn.setSelected(bold);
+        SimpleAttributeSet sas = new SimpleAttributeSet();
+        StyleConstants.setBold(sas, bold);
+        RTF_Text.setCharacterAttributes(sas, false);
+    }//GEN-LAST:event_jToggleButton1ActionPerformed
+
+    private void jToggleButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jToggleButton2ActionPerformed
+        JToggleButton btn = (JToggleButton) evt.getSource();
+        RTFEditorKit kit = (RTFEditorKit) RTF_Text.getEditorKit();
+        MutableAttributeSet attr = kit.getInputAttributes();
+        boolean italic = (StyleConstants.isItalic(attr)) ? false : true;
+        btn.setSelected(italic);
+        SimpleAttributeSet sas = new SimpleAttributeSet();
+        StyleConstants.setItalic(sas, italic);
+        RTF_Text.setCharacterAttributes(sas, false);
+    }//GEN-LAST:event_jToggleButton2ActionPerformed
+
+    private void jToggleButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jToggleButton3ActionPerformed
+        JToggleButton btn = (JToggleButton) evt.getSource();
+        RTFEditorKit kit = (RTFEditorKit) RTF_Text.getEditorKit();
+        MutableAttributeSet attr = kit.getInputAttributes();
+        boolean under = (StyleConstants.isUnderline(attr)) ? false : true;
+        btn.setSelected(under);
+        SimpleAttributeSet sas = new SimpleAttributeSet();
+        StyleConstants.setUnderline(sas, under);
+        RTF_Text.setCharacterAttributes(sas, false);
+    }//GEN-LAST:event_jToggleButton3ActionPerformed
+
+    private void RTF_TextCaretUpdate(javax.swing.event.CaretEvent evt) {//GEN-FIRST:event_RTF_TextCaretUpdate
+        JTextPane text = (JTextPane) evt.getSource();
+        StyledDocument doc = text.getStyledDocument();
+        if (doc.getLength() > 0) {
+            Boolean isBold = null;
+            Boolean isItalic = null;
+            Boolean isUnderline = null;
+            Boolean tmp = null;
+            String fontFamily = null;
+            int fontSize = 8;
+            for (int i = evt.getMark(); i < evt.getDot(); i++) {
+                AttributeSet atts = doc.getCharacterElement(i).getAttributes();
+                tmp = StyleConstants.isBold(atts);
+                if (isBold == null) {
+                    isBold = tmp;
+                } else if (tmp.equals(isBold) == false) {
+                    isBold = false;
+                }
+                tmp = StyleConstants.isItalic(atts);
+                if (isItalic == null) {
+                    isItalic = tmp;
+                } else if (tmp.equals(isItalic) == false) {
+                    isItalic = false;
+                }
+                tmp = StyleConstants.isUnderline(atts);
+                if (isUnderline == null) {
+                    isUnderline = tmp;
+                } else if (tmp.equals(isUnderline) == false) {
+                    isUnderline = false;
+                }
+                fontFamily = StyleConstants.getFontFamily(atts);
+                fontSize = StyleConstants.getFontSize(atts);
+            }
+            if (isBold == null && isItalic == null && isUnderline == null) {
+                AttributeSet atts = doc.getCharacterElement(evt.getDot() - 1).getAttributes();
+                isBold = StyleConstants.isBold(atts);
+                isItalic = StyleConstants.isItalic(atts);
+                isUnderline = StyleConstants.isUnderline(atts);
+            }
+            if (fontFamily == null || fontSize == 8) {
+                AttributeSet atts = doc.getCharacterElement(evt.getDot() - 1).getAttributes();
+                fontFamily = StyleConstants.getFontFamily(atts);
+                fontSize = StyleConstants.getFontSize(atts);
+            }
+            jToggleButton1.setSelected(isBold);
+            jToggleButton2.setSelected(isItalic);
+            jToggleButton3.setSelected(isUnderline);
+            jComboBox1.setSelectedItem(fontFamily);
+            jComboBox2.setSelectedItem(String.valueOf(fontSize));
+        }
+    }//GEN-LAST:event_RTF_TextCaretUpdate
+
+    private void jComboBox1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBox1ActionPerformed
+        JComboBox comboBox = (JComboBox) evt.getSource();
+        javax.swing.text.StyledEditorKit.FontFamilyAction action = new StyledEditorKit.FontFamilyAction("xxx", comboBox.getSelectedItem().toString());
+        action.actionPerformed(new ActionEvent(comboBox, ActionEvent.ACTION_PERFORMED, "xxx"));
+    }//GEN-LAST:event_jComboBox1ActionPerformed
+
+    private void jComboBox2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBox2ActionPerformed
+        JComboBox comboBox = (JComboBox) evt.getSource();
+        javax.swing.text.StyledEditorKit.FontSizeAction action = new StyledEditorKit.FontSizeAction("xxx", Integer.parseInt(comboBox.getSelectedItem().toString()));
+        action.actionPerformed(new ActionEvent(comboBox, ActionEvent.ACTION_PERFORMED, "xxx"));
+    }//GEN-LAST:event_jComboBox2ActionPerformed
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        Runnable runnable = new Runnable() {
+
+            @Override
+            public void run() {
+                Object[] sel = contactlist.getSelectedValues();
+                Template tpl = (Template) templates.getSelectedItem();
+                HashMap<String, Object> hm1;
+                List<File> files = new ArrayList<File>();
+                File f;
+                for (int o = 0; o < sel.length; o++) {
+                    try {
+                        Contact cont = (Contact) (Contact.getObject(Context.getContact(), sel[o].toString()));
+                        hm1 = new HashMap<String, Object>();
+//                        hm1 = this.ReplaceVariablesInContent(hm1);
+                        f = Export.print2(TemplateHandler.loadTemplate(tpl),
+                                cont, hm1);
+                        files.add(f);
+                    } catch (NodataFoundException e) {
+                        Log.Debug(this, e);
+                    }
+                }
+
+                if (!files.isEmpty()) {
+                    try {
+                        Log.Debug(Export.class, "hihi");
+                        Export.print3(files, tpl.__getPrinter());
+                    } catch (Exception ex1) {
+                        Log.Debug(ex1);
+                    }
+                }
+            }
+        };
+        new Thread(runnable).start();
+    }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        Object[] sel = contactlist.getSelectedValues();
+        Template tpl = (Template) templates.getSelectedItem();
+        HashMap<String, Object> hm1;
+        List<Waitable> files = new ArrayList<Waitable>();
+        for (int o = 0; o < sel.length; o++) {
+            try {
+                Contact cont = (Contact) (Contact.getObject(Context.getContact(), sel[o].toString()));
+                hm1 = new HashMap<String, Object>();
+                hm1 = this.ReplaceVariablesInContent(hm1);
+                files.add(Export.createFile(cont.__getCName(),
+                        TemplateHandler.loadTemplate(tpl),
+                        cont,
+                        hm1));
+            } catch (NodataFoundException ex) {
+                Log.Debug(this, ex);
+            }
+        }
+
+        if (!files.isEmpty()) {
+            DialogForFile d = new DialogForFile(DialogForFile.DIRECTORIES_ONLY);
+            Job job = new Job(files, d, files.size() + " PDF " + Messages.SAVED);
+            job.execute();
+        }
+    }//GEN-LAST:event_jButton2ActionPerformed
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JTextPane RTF_Text;
+    private javax.swing.JList contactlist;
+    private mpv5.ui.beans.DateChooser dateTo;
+    private javax.swing.JButton jButton1;
+    private javax.swing.JButton jButton2;
+    private javax.swing.JComboBox jComboBox1;
+    private javax.swing.JComboBox jComboBox2;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
+    private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel3;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JSeparator jSeparator1;
+    private javax.swing.JToggleButton jToggleButton1;
+    private javax.swing.JToggleButton jToggleButton2;
+    private javax.swing.JToggleButton jToggleButton3;
+    private javax.swing.JComboBox templates;
     // End of variables declaration//GEN-END:variables
+
+    private void setContacts() {
+        Runnable runnable = new Runnable() {
+
+            @Override
+            public void run() {
+                Object[][] data1 = null;
+                data1 = new DatabaseSearch(Context.getContact(), 200).getValuesFor("cname", "cname", "", true);
+                for (int i = 0; i < data1.length; i++) {
+                    model.addElement((String) data1[i][0]);
+                }
+            }
+        };
+        new Thread(runnable).start();
+    }
+
+    private void setTemplateList() {
+        DefaultComboBoxModel mdl = (DefaultComboBoxModel) templates.getModel();
+        Template[] tpl = TemplateHandler.getTemplatesForType(User.getCurrentUser().__getGroupsids(), TemplateHandler.TYPE_MASSPRINT);
+        for (int i = 0; i < tpl.length; i++) {
+            mdl.addElement(tpl[i]);
+        }
+    }
+
+    private HashMap<String, Object> ReplaceVariablesInContent(HashMap<String, Object> hm1) {
+        //FIXME JAN  
+        return hm1;
+    }
 }

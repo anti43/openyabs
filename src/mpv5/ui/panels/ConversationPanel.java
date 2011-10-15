@@ -41,6 +41,7 @@ import javax.swing.text.StyledEditorKit;
 import javax.swing.text.rtf.RTFEditorKit;
 import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
+import mpv5.db.common.DatabaseSearch;
 import mpv5.db.common.NodataFoundException;
 import mpv5.db.objects.Address;
 import mpv5.db.objects.Contact;
@@ -63,7 +64,7 @@ import mpv5.utils.ui.TextFieldUtils;
 
 /**
  *
- * @author Samsung SA11
+ * @author Jan Hahnisch 
  */
 public class ConversationPanel
         extends javax.swing.JPanel
@@ -98,7 +99,9 @@ public class ConversationPanel
     public Date dateadded_;
     Contact contact = null;
     List data = null;
+    Thread t = null;
     public Integer intaddedby_;
+    public int contactsids_;
 
     /** Creates new form ConversationUI */
     public ConversationPanel() {
@@ -108,6 +111,7 @@ public class ConversationPanel
 
         sp = new SearchPanel(Context.getConversation(), this);
         tb = new DataPanelTB(this);
+        tb.getMailButton().setEnabled(false);
         SearchBarPane.add(sp,
                 BorderLayout.CENTER);
         Log.Debug(ConversationPanel.class,
@@ -130,45 +134,46 @@ public class ConversationPanel
 
             @Override
             public void actionPerformed(ActionEvent e) {
+                Log.Debug(this, e.getActionCommand());
                 final MPComboBoxModelItem item = contactname.getSelectedItem();
                 if (item != null && item.isValid()) {
-                    Runnable runnable = new Runnable() {
+                            t = new Thread() {
 
-                        @Override
-                        public void run() {
-                            Address adr;
-                            try {
-                                contact = (Contact) DatabaseObject.getObject(Context.getContact(), Integer.valueOf(item.getId()));
+                                @Override
+                                public void run() {
+                                    Address adr;
+                                    try {
+                                        contact = (Contact) DatabaseObject.getObject(Context.getContact(), Integer.valueOf(item.getId()));
 
-                                data = DatabaseObject.getReferencedObjects(contact,
-                                        Context.getAddress());
-                                if (data.isEmpty()) {
-                                    contactcity.setText(contact.__getCity());
-                                    contactcompany.setText(contact.__getCompany());
-                                    contactzip.setText(contact.__getZip());
-                                    contactstreet.setText(contact.__getStreet());
-                                } else {
-                                    contactcity.setText("");
-                                    contactcompany.setText("");
-                                    contactzip.setText("");
-                                    contactstreet.setText("");
+                                        data = DatabaseObject.getReferencedObjects(contact,
+                                                Context.getAddress());
+                                        if (data.isEmpty()) {
+                                            contactcity.setText(contact.__getCity());
+                                            contactcompany.setText(contact.__getCompany());
+                                            contactzip.setText(contact.__getZip());
+                                            contactstreet.setText(contact.__getStreet());
+                                        } else {
+                                            contactcity.setText("");
+                                            contactcompany.setText("");
+                                            contactzip.setText("");
+                                            contactstreet.setText("");
+                                        }
+                                        contactid.setText(contact.__getCNumber());
+                                        Object[][] data1 = new Object[data.size() + 1][2];
+                                        data1[0][0] = 0;
+                                        data1[0][1] = Messages.Conversation_MainAddress.toString();
+                                        for (int o = 0; o < data.size(); o++) {
+                                            adr = (Address) data.get(o);
+                                            data1[o + 1][0] = adr.__getIDS();
+                                            data1[o + 1][1] = adr.__getCName();
+                                        }
+                                        adressList.setModel(data1);
+                                    } catch (NodataFoundException ex) {
+                                        Log.Debug(this, ex);
+                                    }
                                 }
-                                contactid.setText(contact.__getCNumber());
-                                Object[][] data1 = new Object[data.size() + 1][2];
-                                data1[0][0] = 0;
-                                data1[0][1] = Messages.Conversation_MainAddress.toString();
-                                for (int o = 0; o < data.size(); o++) {
-                                    adr = (Address) data.get(o);
-                                    data1[o + 1][0] = adr.__getIDS();
-                                    data1[o + 1][1] = adr.__getCName();
-                                }
-                                adressList.setModel(data1);
-                            } catch (NodataFoundException ex) {
-                                Log.Debug(this, ex);
-                            }
-                        }
-                    };
-                    SwingUtilities.invokeLater(runnable);
+                            };
+                    t.start();
                 }
             }
         });
@@ -183,22 +188,22 @@ public class ConversationPanel
 
                         @Override
                         public void run() {
-                            Log.Debug(this, item.getId());
+                            Log.Debug(this, "AdressListe");
                             if (item.getId().equals("0")) {
                                 contactcity.setText(contact.__getCity());
                                 contactcompany.setText(contact.__getCompany());
                                 contactzip.setText(contact.__getZip());
                                 contactstreet.setText(contact.__getStreet());
                                 contactid.setText(contact.__getCNumber());
-                                return;
-                            }
-                            for (int i = 0; i < data.size(); i++) {
-                                Address adr = (Address) data.get(i);
-                                if (item.getId() == null ? adr.__getIDS().toString() == null : item.getId().equals(adr.__getIDS().toString())) {
-                                    contactcity.setText(adr.__getCity());
-                                    contactcompany.setText(adr.__getCompany());
-                                    contactzip.setText(adr.__getZip());
-                                    contactstreet.setText(adr.__getStreet());
+                            } else {
+                                for (int i = 0; i < data.size(); i++) {
+                                    Address adr = (Address) data.get(i);
+                                    if (item.getId() == null ? adr.__getIDS().toString() == null : item.getId().equals(adr.__getIDS().toString())) {
+                                        contactcity.setText(adr.__getCity());
+                                        contactcompany.setText(adr.__getCompany());
+                                        contactzip.setText(adr.__getZip());
+                                        contactstreet.setText(adr.__getStreet());
+                                    }
                                 }
                             }
                         }
@@ -776,7 +781,7 @@ public class ConversationPanel
             Contact c = (Contact) DatabaseObject.getObject(Context.getContact(), cid);
             mpv5.YabsViewProxy.instance().getIdentifierView().addTab(c);
         } catch (Exception e) {
-            //Nothing to show
+            Log.Debug(this, e);
         }
     }//GEN-LAST:event_actionShowContact
 
@@ -828,10 +833,19 @@ public class ConversationPanel
     private javax.swing.JPanel street;
     // End of variables declaration//GEN-END:variables
 
+    /**
+     *  Give the DatabaseObject back
+     * @return The DatabaseObject
+     */
     public DatabaseObject getDataOwner() {
         return dataOwner;
     }
 
+    /**
+     * Sets the DatabaseObject
+     * @param DatabaseObject
+     * @param populate 
+     */
     public void setDataOwner(DatabaseObject object,
             boolean populate) {
         dataOwner = (Conversation) object;
@@ -852,29 +866,11 @@ public class ConversationPanel
 
             SwingUtilities.invokeLater(runnable);
 
-            runnable = new Runnable() {
-
-                @Override
-                public void run() {
-                    try {
-                        TemplateHandler.loadTemplate(1,
-                                Type);
-                    } catch (Exception e) {
-                        Log.Debug(this,
-                                e);
-                    }
-                }
-            };
-
-            SwingUtilities.invokeLater(runnable);
-
             if (dataOwner.isExisting() && populate) {
                 setTitle(dataOwner.__getCName());
             }
             tb.setFavourite(Favourite.isFavourite(object));
             tb.setEditable(!object.isReadOnly());
-            tb.setExportButtonsEnabled(Context.getTemplateableContexts().
-                    contains(dataOwner.getContext()));
 
             if (object.isReadOnly()) {
                 Popup.notice(Messages.LOCKED_BY);
@@ -884,7 +880,7 @@ public class ConversationPanel
         }
     }
 
-    public void refresh_internal() {
+    private void refresh_internal() {
         contact = null;
         sp.refresh();
         cname.setText("");
@@ -911,11 +907,18 @@ public class ConversationPanel
                 "UI zurückgesetzt!!");
     }
 
+    /**
+     * Pastestub of the Copy&Paste-function 
+     * @param arg0 
+     */
     public void paste(DatabaseObject... arg0) {
         mpv5.YabsViewProxy.instance().
                 addMessage(Messages.NOT_POSSIBLE.toString() + Messages.ACTION_PASTE.toString());
     }
 
+    /**
+     * Checks the fullfillment of all requierements
+     */
     public void showRequiredFields() {
         TextFieldUtils.blink(contactid,
                 Color.RED);
@@ -925,6 +928,10 @@ public class ConversationPanel
         cname.requestFocus();
     }
 
+    /**
+     * enables / disables the Searchbar
+     * @param show 
+     */
     public void showSearchBar(boolean show) {
 
         SearchBarPane.removeAll();
@@ -942,15 +949,28 @@ public class ConversationPanel
         validate();
     }
 
+    /**
+     * empty Function
+     */
     public void actionAfterSave() {
     }
 
+    /**
+     * empty Function
+     */
     public void actionAfterCreate() {
     }
 
+    /**
+     * empty Function
+     */
     public void actionBeforeCreate() {
     }
 
+    /**
+     * Do an action bevor the System saves
+     * @throws ChangeNotApprovedException 
+     */
     public void actionBeforeSave() throws ChangeNotApprovedException {
         if (dataOwner.isExisting()) {
             if (!mpv5.db.objects.User.getCurrentUser().
@@ -965,9 +985,12 @@ public class ConversationPanel
         }
     }
 
+    /**
+     * Sends the DataObject as Mail 
+     */
     public void mail() {
 //        if (dataOwner != null && dataOwner.isExisting()) {
-//            if (TemplateHandler.isLoaded(Long.valueOf(dataOwner.templateGroupIds()), dataOwner.__getInttype())) {
+//            if (TemplateHandler.isLoaded(dataOwner.templateGroupIds(), dataOwner.__getInttype())) {
 //
 //                try {
 //                    Contact cont = (Contact) (Contact.getObject(Context.getContact(), dataOwner.__getContactsids()));
@@ -983,11 +1006,14 @@ public class ConversationPanel
 //        }
     }
 
+    /**
+     * prints the DataObject
+     */
     public void print() {
         if (dataOwner != null && dataOwner.isExisting()) {
-            if (TemplateHandler.isLoaded(Long.valueOf(1),
+            if (TemplateHandler.isLoaded(Long.valueOf(dataOwner.templateGroupIds()),
                     Type)) {
-                Export.print(TemplateHandler.loadTemplate(1,
+                Export.print(TemplateHandler.loadTemplate(dataOwner.templateGroupIds(),
                         Type),
                         dataOwner);
             } else {
@@ -999,13 +1025,15 @@ public class ConversationPanel
         }
     }
 
+    /**
+     * Sends the DataObject as PDF
+     */
     public void pdf() {
         if (dataOwner != null && dataOwner.isExisting()) {
-            if (TemplateHandler.isLoaded(Long.valueOf(1),
+            if (TemplateHandler.isLoaded(Long.valueOf(dataOwner.templateGroupIds()),
                     Type)) {
                 new Job(Export.createFile(cname_,
-                        TemplateHandler.loadTemplate(
-                        1,
+                        TemplateHandler.loadTemplate(dataOwner.templateGroupIds(),
                         Type),
                         dataOwner,
                         getAddData()),
@@ -1018,13 +1046,15 @@ public class ConversationPanel
         }
     }
 
+    /**
+     * Sends the DataObject as odt 
+     */
     public void odt() {
         if (dataOwner != null && dataOwner.isExisting()) {
-            if (TemplateHandler.isLoaded(Long.valueOf(1),
+            if (TemplateHandler.isLoaded(Long.valueOf(dataOwner.templateGroupIds()),
                     Type)) {
                 new Job(Export.sourceFile(cname_,
-                        TemplateHandler.loadTemplate(
-                        1,
+                        TemplateHandler.loadTemplate(dataOwner.templateGroupIds(),
                         Type),
                         dataOwner),
                         new DialogForFile(User.getSaveDir(dataOwner))).execute();
@@ -1036,10 +1066,14 @@ public class ConversationPanel
         }
     }
 
+    /**
+     * Collects the Data from the Userscreen 
+     */
     public boolean collectData() {
         groupsids_ = 1;
         cname_ = cname.getText();
         cnumber_ = contactid.getText();
+        contactsids_ = Integer.parseInt(contactname.getSelectedItem().getId());
         adress_ = adressList.getSelectedItem().getId();
         date_ = dateTo.getDate();
         dateadded_ = dateadded.getDate();
@@ -1049,27 +1083,29 @@ public class ConversationPanel
         if (cname_.length() == 0
                 || cnumber_.length() == 0
                 || adress_.equals("choose")) {
-            Popup.notice("Bitte Kontaktdaten vollständig erfassen!");
+            Popup.notice(Messages.CONTACT_COMPLETE.toString());
             return false;
         }
 
-//        Object[][] liste = new DatabaseSearch(dataOwner).getValuesFor(
-//                Context.IDENTITY_CONVERSATION + "." + "CNAME",
-//                "cname",
-//                cname_);
-//        if (liste.length > 0 && !dataOwner.isExisting()) {
-//            Popup.notice(
-//                    "Bitte Betreff anpassen!\nAktueller Betreff existiert bereits!");
-//            return false;
-//        }
+        Object[][] liste = new DatabaseSearch(dataOwner).getValuesFor(
+                Context.IDENTITY_CONVERSATION + "." + "CNAME",
+                "cname",
+                cname_);
+        if (liste.length > 0 && !dataOwner.isExisting()) {
+            Popup.notice(
+                    Messages.CNAME_EXISTS.toString());
+            return false;
+        }
 
         return true;
     }
 
+    /**
+     * Puts the Data to the Userscreen
+     */
     public void exposeData() {
         cname.setText(cname_);
         fillContactFields();
-        adressList.setSelectedItem(adress_);
         dateTo.setDate(date_);
         dateadded.setDate(dateadded_);
         addedby.setText(User.getUsername(intaddedby_));
@@ -1135,7 +1171,6 @@ public class ConversationPanel
                 || this.getParent() instanceof JTabbedPane) {
             JTabbedPane jTabbedPane = null;
             String title1 = title;
-            //this->viewport->scrollpane->tabbedpane
             if (this.getParent().
                     getParent().
                     getParent() instanceof JTabbedPane) {
@@ -1158,52 +1193,35 @@ public class ConversationPanel
         }
     }
 
+    /**
+     * empty
+     */
     public void refresh() {
     }
 
-    public void fillContactFields() {
+    private void fillContactFields() {
         Log.Debug(this,
                 "Felder füllen ...");
         try {
             Log.Debug(this,
-                    "... mit ID: " + cnumber_);
-            contact = (Contact) DatabaseObject.getObject(Context.getContact(),
-                    "cnumber",
-                    cnumber_);
-            contactid.setText(cnumber_);
-            contactname.setSelectedItem(contact);
-            data = DatabaseObject.getReferencedObjects(contact,
-                    Context.getAddress());
-            setAddressModel();
-            adressList.setSelectedItem(adress_);
+                    "... mit ID: " + contactsids_);
+            if (contactsids_ > 0) {
+                contact = (Contact) DatabaseObject.getObject(Context.getContact(),
+                        contactsids_,
+                        false);
+                contactid.setText(cnumber_);
+                contactname.setModel(contact);
+                try {
+                    t.join();
+                    adressList.setSelectedItem(Integer.parseInt(adress_));
+                } catch (InterruptedException ex) {
+                    Log.Debug(this, ex);
+                }
+                Log.Debug(this, "test..2");
+            }
         } catch (NodataFoundException ex) {
             Log.Debug(this,
                     ex);
         }
-    }
-    
-    private void setAddressModel() {
-        Address adr;
-        if (data.isEmpty()) {
-            contactcity.setText(contact.__getCity());
-            contactcompany.setText(contact.__getCompany());
-            contactzip.setText(contact.__getZip());
-            contactstreet.setText(contact.__getStreet());
-        } else {
-            contactcity.setText("");
-            contactcompany.setText("");
-            contactzip.setText("");
-            contactstreet.setText("");
-        }
-        contactid.setText(contact.__getCNumber());
-        Object[][] data1 = new Object[data.size() + 1][2];
-        data1[0][0] = 0;
-        data1[0][1] = Messages.Conversation_MainAddress.toString();
-        for (int o = 0; o < data.size(); o++) {
-            adr = (Address) data.get(o);
-            data1[o + 1][0] = adr.__getIDS();
-            data1[o + 1][1] = adr.__getCName();
-        }
-        adressList.setModel(data1);
     }
 }

@@ -35,10 +35,20 @@ public class Conversation
 
     private static final long serialVersionUID = 6039340924254489575L;
     private String cnumber = "";
+    private int contactsids;
     private String adress = "";
     private Date date = null;
     private String content = "";
 
+    public int __getContactsids() {
+        return contactsids;
+    }
+
+    public void setContactsids(int contactsids) {
+        this.contactsids = contactsids;
+    }
+
+    
     public String __getContent() {
         return content;
     }

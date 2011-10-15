@@ -32,9 +32,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Vector;
 import javax.swing.SwingUtilities;
-import mpv5.YabsViewProxy;
 import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
 import mpv5.db.common.Formattable;
@@ -50,7 +48,6 @@ import mpv5.logging.Log;
 import mpv5.mail.SimpleMail;
 import mpv5.ui.dialogs.Notificator;
 import mpv5.ui.dialogs.Popup;
-import mpv5.ui.frames.MPView;
 import mpv5.utils.files.FileDirectoryHandler;
 import mpv5.utils.jobs.Job;
 import mpv5.utils.jobs.Waitable;
@@ -125,9 +122,9 @@ public final class Export extends HashMap<String, Object> implements Waitable {
     }
 
     /**
-     * Print a template
+     * Prints a template
      * @param preloadedTemplate
-     * @param dataOwner
+     * @param dataOwner 
      */
     public static void print(final Template preloadedTemplate, final DatabaseObject dataOwner) {
         Runnable runnable = new Runnable() {
@@ -153,6 +150,40 @@ public final class Export extends HashMap<String, Object> implements Waitable {
         new Thread(runnable).start();
     }
 
+    public static File print2(Template preloadedTemplate, DatabaseObject dataOwner, HashMap<String, Object> hm) {
+
+        HashMap<String, Object> hm1 = new FormFieldsHandler(dataOwner).getFormattedFormFields(null);
+        File f2 = FileDirectoryHandler.getTempFile("pdf");
+        final Export ex = new Export(preloadedTemplate);
+        ex.putAll(hm1);
+        ex.putAll(hm);
+        ex.setTemplate(preloadedTemplate.getExFile());
+        ex.setTargetFile(f2);
+        ex.waitFor();
+        return ex.getTargetFile();
+    }
+
+    /**
+     * Prints collected pages at one time
+     * @param prints
+     * @param Printer 
+     */
+    public static void print3(final List<File> prints, final String Printer) {
+        Runnable runnable = new Runnable() {
+
+            @Override
+            public void run() {
+                try {
+                    PrintJob2.print(mergeFiles(prints), Printer);
+                } catch (Exception fileNotFoundException) {
+                    Popup.error(fileNotFoundException);
+                    Log.Debug(fileNotFoundException);
+                }
+            }
+        };
+        new Thread(runnable).start();
+    }
+
     /**
      * Print multiple templates
      * @param preloadedTemplate
@@ -163,7 +194,7 @@ public final class Export extends HashMap<String, Object> implements Waitable {
 
             @Override
             public void run() {
-                List<File> files = new Vector<File>();
+                List<File> files = new ArrayList<File>();
                 if (preloadedTemplate != null && preloadedTemplate.length > 0) {
                     for (int i = 0; i < preloadedTemplate.length; i++) {
                         Template template = preloadedTemplate[i];
@@ -197,7 +228,7 @@ public final class Export extends HashMap<String, Object> implements Waitable {
 
         Document document = new Document();
         try {
-            List<InputStream> pdfs = new Vector<InputStream>();
+            List<InputStream> pdfs = new ArrayList<InputStream>();
             for (int i = 0; i < p.size(); i++) {
                 File inputStream = p.get(i);
                 pdfs.add(new FileInputStream(inputStream));

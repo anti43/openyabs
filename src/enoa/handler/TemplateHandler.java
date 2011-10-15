@@ -3,7 +3,7 @@ package enoa.handler;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
+import java.util.Iterator;
 import javax.swing.JComponent;
 import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
@@ -39,6 +39,7 @@ public class TemplateHandler {
     public static final int TYPE_PRODUCT_ORDER = 10;
     public static final int TYPE_CONTRACT = 11;
     public static final int TYPE_CONVERSATION = 12;
+    public static final int TYPE_MASSPRINT = 13;
     /**
      * Return true if the Template for the currently logged in user, with the given type, and matching the targets group is loaded
      * @param group
@@ -126,6 +127,7 @@ public class TemplateHandler {
      * @return
      */
     public static synchronized Template loadTemplate(long groupsids, int typ) {
+        ReturnValue data;
         if (LocalSettings.getBooleanProperty(LocalSettings.OFFICE_USE)) {
             Integer type = new Integer(typ);
 
@@ -139,25 +141,7 @@ public class TemplateHandler {
             } else {
 
                 if (type != null) {
-                    ReturnValue data = QueryHandler.getConnection().freeQuery(
-                            "SELECT templatesids FROM templatestousers  LEFT OUTER JOIN templates AS templates0 ON "
-                            + "templates0.ids = templatestousers.templatesids WHERE templatestousers.usersids="
-                            + mpv5.db.objects.User.getCurrentUser().__getIDS()
-                            + " AND "
-                            + "templates0.mimetype='" + type
-                            + "' AND templatestousers.IDS>0 "
-                            + "AND templates0.groupsids =" + groupsids, MPSecurityManager.VIEW, null);
-                    if (!data.hasData()) {
-                        data = QueryHandler.getConnection().freeQuery(
-                                "SELECT templatesids FROM templatestousers  LEFT OUTER JOIN templates AS templates0 ON "
-                                + "templates0.ids = templatestousers.templatesids WHERE templatestousers.usersids="
-                                + mpv5.db.objects.User.getCurrentUser().__getIDS()
-                                + " AND "
-                                + "templates0.mimetype='" + type
-                                + "' AND templatestousers.IDS>0 "
-                                + "AND templates0.groupsids = 1", MPSecurityManager.VIEW, null);
-                    }
-
+                    data = TemplateHandler.getDefinedTemplatesFor(groupsids, type);
                     Template preloadedTemplate = null;
                     if (data.hasData()) {
                         try {
@@ -193,7 +177,6 @@ public class TemplateHandler {
                                 Log.Debug(Template.class, "No template found for type: " + type + " for user: " + mpv5.db.objects.User.getCurrentUser() + " in GROUP " + Group.getObject(Context.getGroup(), (int) groupsids));
                                 TEMPLATE_MISSING_NOTIFICATIONS.put(type.toString(), (Group) Group.getObject(Context.getGroup(), (int) groupsids));
                             }
-
                         } catch (NodataFoundException nodataFoundException) {
                             Log.Debug(Template.class, nodataFoundException.getMessage());
                         }
@@ -208,12 +191,35 @@ public class TemplateHandler {
         }
     }
 
+    private static ReturnValue getDefinedTemplatesFor(long groupsids, Integer type) {
+        ReturnValue data = QueryHandler.getConnection().freeQuery(
+                "SELECT templatesids FROM templatestousers  LEFT OUTER JOIN templates AS templates0 ON "
+                + "templates0.ids = templatestousers.templatesids WHERE templatestousers.usersids="
+                + mpv5.db.objects.User.getCurrentUser().__getIDS()
+                + " AND "
+                + "templates0.mimetype='" + type
+                + "' AND templatestousers.IDS>0 "
+                + "AND templates0.groupsids = " + groupsids, MPSecurityManager.VIEW, null);
+        if (!data.hasData()) {
+            data = QueryHandler.getConnection().freeQuery(
+                    "SELECT templatesids FROM templatestousers  LEFT OUTER JOIN templates AS templates0 ON "
+                    + "templates0.ids = templatestousers.templatesids WHERE templatestousers.usersids="
+                    + mpv5.db.objects.User.getCurrentUser().__getIDS()
+                    + " AND "
+                    + "templates0.mimetype='" + type
+                    + "' AND templatestousers.IDS>0 "
+                    + "AND templates0.groupsids = 1", MPSecurityManager.VIEW, null);
+        }
+        Log.Debug(TemplateHandler.class, "gefundene Daten: " + data.hasData());
+        return data;
+    }
+
     /**
      * An enum over the available template types and their String representation
      * @return
      */
     public static MPEnum[] getTypes() {
-        MPEnum[] types = new MPEnum[13];
+        MPEnum[] types = new MPEnum[14];
         types[0] = new MPEnum() {
 
             public Integer getId() {
@@ -356,8 +362,17 @@ public class TemplateHandler {
                 return Messages.TYPE_CONVERSATION.toString();
             }            
         };
+        
+        types[13] = new MPEnum() {
 
+            public Integer getId() {
+                return TYPE_MASSPRINT;
+            }
 
+            public String getName() {
+                return Messages.TYPE_MASSPRINT.toString();
+            }            
+        };
         return types;
     }
 
@@ -561,5 +576,27 @@ public class TemplateHandler {
 //                c.add("cname", dataOwner.__getIDS() + "@" + object.__getIDS() + "@" + mpv5.db.objects.User.getCurrentUser().__getGroupsids());
 //                QueryHandler.instanceOf().clone(Context.getTemplatesToUsers()).insert(c, null);
 
+    }
+    
+   /**
+     * Exports all template Objects for give template-Type
+     * @param Type - the templatetype 
+     * @return template[] - the template assoziated to the give templatetype 
+     */
+    public static Template[] getTemplatesForType(long groupsids, int typ) { 
+        String key = mpv5.db.objects.User.getCurrentUser() + "@" + new Integer(typ) + "@" + groupsids;
+        ReturnValue data = TemplateHandler.getDefinedTemplatesFor(groupsids, new Integer(typ));
+        Iterator<Object[]> it = data.getDataIterator();
+        Template[] templates = new Template[data.getData().length];
+        int i = 0;
+        while (it.hasNext()) {
+            Object[] ret = it.next();
+            try {
+                templates[i++] = (Template) DatabaseObject.getObject(Context.getTemplate(), Integer.valueOf(ret[0].toString()));
+            } catch (Exception ex) {
+                Log.Debug(Template.class, ex);
+            }
+        }
+        return templates;
     }
 }
