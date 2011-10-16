@@ -14,8 +14,11 @@ import enoa.handler.TemplateHandler;
 import java.awt.Color;
 import java.awt.GraphicsEnvironment;
 import java.awt.event.ActionEvent;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import javax.swing.DefaultComboBoxModel;
@@ -25,6 +28,7 @@ import javax.swing.JComboBox;
 import javax.swing.JTextPane;
 import javax.swing.JToggleButton;
 import javax.swing.text.AttributeSet;
+import javax.swing.text.BadLocationException;
 import javax.swing.text.MutableAttributeSet;
 import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
@@ -37,15 +41,12 @@ import mpv5.db.common.NodataFoundException;
 import mpv5.db.objects.Contact;
 import mpv5.db.objects.Template;
 import mpv5.db.objects.User;
-import mpv5.globals.LocalSettings;
 import mpv5.globals.Messages;
 import mpv5.logging.Log;
 import mpv5.ui.dialogs.DialogForFile;
 import mpv5.utils.export.Export;
-import mpv5.utils.files.FileDirectoryHandler;
 import mpv5.utils.jobs.Job;
 import mpv5.utils.jobs.Waitable;
-import mpv5.utils.print.PrintJob2;
 
 /**
  *
@@ -427,7 +428,7 @@ public class MassPrintPanel
                     try {
                         Contact cont = (Contact) (Contact.getObject(Context.getContact(), sel[o].toString()));
                         hm1 = new HashMap<String, Object>();
-//                        hm1 = this.ReplaceVariablesInContent(hm1);
+                        hm1 = me.ReplaceVariablesInContent(hm1, cont);
                         f = Export.print2(TemplateHandler.loadTemplate(tpl),
                                 cont, hm1);
                         files.add(f);
@@ -438,7 +439,6 @@ public class MassPrintPanel
 
                 if (!files.isEmpty()) {
                     try {
-                        Log.Debug(Export.class, "hihi");
                         Export.print3(files, tpl.__getPrinter());
                     } catch (Exception ex1) {
                         Log.Debug(ex1);
@@ -458,7 +458,7 @@ public class MassPrintPanel
             try {
                 Contact cont = (Contact) (Contact.getObject(Context.getContact(), sel[o].toString()));
                 hm1 = new HashMap<String, Object>();
-                hm1 = this.ReplaceVariablesInContent(hm1);
+                hm1 = this.ReplaceVariablesInContent(hm1, cont);
                 files.add(Export.createFile(cont.__getCName(),
                         TemplateHandler.loadTemplate(tpl),
                         cont,
@@ -519,8 +519,50 @@ public class MassPrintPanel
         }
     }
 
-    private HashMap<String, Object> ReplaceVariablesInContent(HashMap<String, Object> hm1) {
-        //FIXME JAN  
+    private HashMap<String, Object> ReplaceVariablesInContent(HashMap<String, Object> hm1, Contact cont) {
+        String rtf = serialize();
+        hm1.put("massprint.cname", ""); 
+        hm1.put("massprint.addedby", User.getCurrentUser().getName());
+        hm1.put("massprint.dateadded", new Date());
+        if (cont.__getisMale()) {
+            hm1.put("massprint.gender",
+                    Messages.CONTACT_TYPE_MALE.toString());
+            hm1.put("massprint.intro",
+                    Messages.CONTACT_INTRO_MALE.toString());
+        } else {
+            hm1.put("massprint.gender",
+                    Messages.CONTACT_TYPE_FEMALE.toString());
+            hm1.put("massprint.intro",
+                    Messages.CONTACT_INTRO_FEMALE.toString());
+        }
+        hm1.put("massprint.content", rtf);
         return hm1;
+    }
+    
+     private String serialize() {
+        ByteArrayOutputStream out;
+        RTFEditorKit kit = (RTFEditorKit) RTF_Text.getEditorKit();
+        StyledDocument doc = RTF_Text.getStyledDocument();
+        out = new ByteArrayOutputStream();
+        try {
+            kit.write(out,
+                    doc,
+                    0,
+                    doc.getLength());
+        } catch (BadLocationException ex) {
+            Log.Debug(this,
+                    ex.toString());
+        } catch (IOException ex) {
+            Log.Debug(this,
+                    ex.toString());
+        }
+        String str = null;
+
+        str = out.toString();
+        str = str.replaceAll("[\r\n]+",
+                " ");
+        str = str.replaceAll("  ",
+                " ");
+        return str;
     }
 }
