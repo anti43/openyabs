@@ -293,7 +293,8 @@ public enum Messages {
      CREATE_REMINDER("This Item is overdue! Should a reminder be created?"),
      TYPE_MASSPRINT("Serial-Mail (Massprint)"), 
      CNAME_EXISTS("Please adjust the Subject!\nActual Subject exists!"),
-     CONTACT_COMPLETE("Please complete the Contact-Data!");
+     CONTACT_COMPLETE("Please complete the Contact-Data!"), 
+     DATAOWNER_EMPTY("No Entry selected!\nPlease select an Tableentry.");
 
 
     private Messages(String message) {

@@ -2644,6 +2644,23 @@ public class QueryHandler implements Cloneable {
             return false;
         }
     }
+    
+    /**
+     * Updates an File at the Database
+     * @param file
+     * @param IDS
+     * @return 
+     */
+    public boolean updateFile(File file, String cname) {
+        try {
+            new backgroundFileUpdate(file, cname).execute();
+            return true;
+        } catch (Exception e) {
+            Log.Debug(e);
+            return false;
+        }
+    }
+        
     private static HashMap<String, Integer> stats = new HashMap<String, Integer>();
 
     private synchronized void updateStatistics(String query) {
@@ -2836,6 +2853,84 @@ public class QueryHandler implements Cloneable {
              */
             public void propertyChange(PropertyChangeEvent evt) {
 //                System.out.println(Thread.currentThread().getName() + evt.getNewValue());
+                if ("state".equals(evt.getPropertyName())) {
+
+                    Log.Debug(this, "Progress changed to: " + evt.getNewValue());
+                    if (StateValue.STARTED == evt.getNewValue()) {
+                        progressbar.setIndeterminate(true);
+                    } else if (StateValue.DONE == evt.getNewValue()) {
+                        progressbar.setValue(0);
+                        progressbar.setIndeterminate(false);
+                    }
+                }
+            }
+        }
+    }
+
+    class backgroundFileUpdate extends SwingWorker<String, Void> {
+
+        private File file;
+        private String name;
+        private String cname;
+
+        public backgroundFileUpdate(File file, String cname) {
+            this.addPropertyChangeListener(new changeListener());
+            this.file = file;
+            this.cname = cname;
+        }
+
+        @Override
+        protected String doInBackground() {
+
+            Object obj = new Object();
+            synchronized (obj) {
+                String query = "Update " + table + " SET data = ? WHERE cname = ?";
+                String jobmessage = null;
+                Log.Debug(this, "Updating file: " + file.getName());
+                mpv5.YabsViewProxy.instance().addMessage(Messages.PROCESSING + file.getName());
+
+                try {
+                    int fileLength = (int) file.length();
+                    name = new RandomText(23).getString();
+                    java.io.InputStream fin = new java.io.FileInputStream(file);
+                    PreparedStatement ps = sqlConn.prepareStatement(query, PreparedStatement.RETURN_GENERATED_KEYS);
+                    ps.setBinaryStream(1, fin, fileLength);
+                    ps.setString(2, cname);
+                    ps.execute();
+                    if (!sqlConn.getAutoCommit()) {
+                        sqlConn.commit();
+                    }
+                } catch (Exception ex) {
+                    progressbar.setValue(0);
+                    progressbar.setIndeterminate(false);
+                    Log.Debug(this, "Datenbankfehler: " + query);
+                    Log.Debug(this, ex);
+                    Popup.error(ex);
+                    jobmessage = Messages.ERROR_OCCURED.toString();
+                }
+
+                if (jobmessage != null) {
+                    mpv5.YabsViewProxy.instance().addMessage(jobmessage);
+                }
+            }
+
+            return name;
+        }
+
+        @Override
+        public void done() {
+            mpv5.YabsViewProxy.instance().addMessage(Messages.FILE_SAVED + file.getName());
+            if (viewToBeNotified != null) {
+                viewToBeNotified.refresh();
+            }
+        }
+
+        class changeListener implements PropertyChangeListener {
+
+            /**
+             * Invoked when task's progress property changes.
+             */
+            public void propertyChange(PropertyChangeEvent evt) {
                 if ("state".equals(evt.getPropertyName())) {
 
                     Log.Debug(this, "Progress changed to: " + evt.getNewValue());
