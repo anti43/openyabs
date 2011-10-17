@@ -512,6 +512,7 @@ public final class ControlPanel_Templates extends javax.swing.JPanel implements 
                 QueryHandler.instanceOf().clone(Context.getFiles(), this).updateFile(di.getFile(), tpl.__getFilename());
                 tpl.setDescription(tpl.__getDescription() + "\n - Updated: " + new Date());
                 tpl.save(true);
+                TemplateHandler.clearCache();
             }
             try {
                 Thread.sleep(333);
