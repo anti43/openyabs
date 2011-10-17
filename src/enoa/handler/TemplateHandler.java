@@ -599,4 +599,11 @@ public class TemplateHandler {
         }
         return templates;
     }
+
+    /**
+     * Clear the template cache
+     */
+    public static void clearCache() {
+        TEMPLATE_CACHE.clear();
+    }
 }

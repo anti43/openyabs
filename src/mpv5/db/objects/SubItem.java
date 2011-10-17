@@ -459,15 +459,15 @@ public class SubItem extends DatabaseObject implements Triggerable {
                 for (int i = 0; i < vals.size(); i++) {
                     String[] v = vals.get(i);
                     all.add(v[1]);
+                    if (Log.getLoglevel() == Log.LOGLEVEL_DEBUG) {
+                        Log.Debug(this, (12 + i) + ": " + v[0] + " " );
+                    }
                 }
             } catch (Exception ex) {
                 Log.Debug(ex);
             }
         }
 
-        if (Log.getLoglevel() == Log.LOGLEVEL_DEBUG) {
-            Log.Debug(this, all.toString());
-        }
         return all.toArray(new String[0]);
     }
 

@@ -414,7 +414,7 @@ public final class ControlPanel_Templates extends javax.swing.JPanel implements 
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
         if (Popup.Y_N_dialog(Messages.REALLY_DELETE)) {
             if (dataOwner != null) {
-                TemplateHandler.TEMPLATE_CACHE.clear();
+                TemplateHandler.clearCache();
                 DatabaseObject dato = dataOwner;
                 dato.getPanelData(this);
                 dato.delete();
@@ -738,6 +738,8 @@ public final class ControlPanel_Templates extends javax.swing.JPanel implements 
             c.add("cname", dataOwner.__getIDS() + "@" + object.__getIDS() + "@" + groups);
             QueryHandler.instanceOf().clone(Context.getTemplatesToUsers()).insert(c, null);
         }
+        
+        TemplateHandler.clearCache();
     }
 
     @Override
