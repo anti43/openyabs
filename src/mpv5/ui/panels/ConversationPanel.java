@@ -336,7 +336,7 @@ public class ConversationPanel
         jPanel1.setPreferredSize(new java.awt.Dimension(750, 600));
 
         street.setBackground(new java.awt.Color(255, 255, 255));
-        java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle(); // NOI18N
+        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("mpv5/resources/languages/Panels"); // NOI18N
         street.setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("ConversationPanel.street.border.title"))); // NOI18N
         street.setName("street"); // NOI18N
         street.setOpaque(false);
@@ -459,7 +459,7 @@ public class ConversationPanel
             }
         });
 
-        jToggleButton1.setFont(new java.awt.Font("Tahoma", 1, 11));
+        jToggleButton1.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
         jToggleButton1.setText(bundle.getString("ConversationPanel.jToggleButton1.text")); // NOI18N
         jToggleButton1.setName("jToggleButton1"); // NOI18N
         jToggleButton1.addActionListener(new java.awt.event.ActionListener() {
@@ -468,7 +468,7 @@ public class ConversationPanel
             }
         });
 
-        jToggleButton2.setFont(new java.awt.Font("Tahoma", 2, 11));
+        jToggleButton2.setFont(new java.awt.Font("Tahoma", 2, 11)); // NOI18N
         jToggleButton2.setText(bundle.getString("ConversationPanel.jToggleButton2.text")); // NOI18N
         jToggleButton2.setName("jToggleButton2"); // NOI18N
         jToggleButton2.addActionListener(new java.awt.event.ActionListener() {
@@ -516,11 +516,11 @@ public class ConversationPanel
         jPanel3Layout.setHorizontalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
-                .addGap(10, 10, 10)
+                .addGap(12, 12, 12)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 900, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 886, Short.MAX_VALUE)
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 892, Short.MAX_VALUE)
                         .addGap(14, 14, 14))
                     .addGroup(jPanel3Layout.createSequentialGroup()
                         .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
@@ -563,8 +563,8 @@ public class ConversationPanel
                 .addGap(5, 5, 5)
                 .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(10, 10, 10)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 328, Short.MAX_VALUE)
-                .addGap(11, 11, 11))
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 286, Short.MAX_VALUE)
+                .addGap(12, 12, 12))
         );
 
         jPanel4.setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("ConversationPanel.jPanel4.border.title"))); // NOI18N
@@ -623,8 +623,8 @@ public class ConversationPanel
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                 .addGap(8, 8, 8)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jPanel4, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 922, Short.MAX_VALUE)
-                    .addComponent(street, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jPanel4, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 930, Short.MAX_VALUE)
+                    .addComponent(street, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 930, Short.MAX_VALUE)
                     .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addGap(281, 281, 281))
         );
@@ -634,7 +634,7 @@ public class ConversationPanel
                 .addGap(8, 8, 8)
                 .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(street, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(street, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGap(8, 8, 8))

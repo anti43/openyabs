@@ -27,6 +27,7 @@ import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -39,6 +40,7 @@ import javax.swing.table.TableCellRenderer;
 import mpv5.db.common.Context;
 
 import mpv5.db.common.DatabaseObject;
+import mpv5.db.common.DatabaseObject.Entity;
 import mpv5.db.common.NodataFoundException;
 import mpv5.db.common.QueryCriteria2;
 import mpv5.db.common.QueryHandler;
@@ -77,7 +79,7 @@ import mpv5.ui.misc.TableViewPersistenceHandler;
 
 /**
  *
- *  
+ *  FIXME unpaid??
  */
 public class JournalPanel extends javax.swing.JPanel implements ListPanel {
 
@@ -122,7 +124,7 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
         refresh(null, null);
         jButton4.setEnabled(false);
         loadTemplate();
-        ((MPTable) jTable1).setPersistanceHandler(new TableViewPersistenceHandler((MPTable)jTable1, this));
+        ((MPTable) jTable1).setPersistanceHandler(new TableViewPersistenceHandler((MPTable) jTable1, this));
 
     }
 
@@ -151,7 +153,7 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
         prinitingComboBox1.init(jTable1);
 //        TreeFormat.expandTree(jTree1);
         loadTemplate();
-        ((MPTable) jTable1).setPersistanceHandler(new TableViewPersistenceHandler((MPTable)jTable1, this));
+        ((MPTable) jTable1).setPersistanceHandler(new TableViewPersistenceHandler((MPTable) jTable1, this));
     }
 
     /** This method is called from within the constructor to
@@ -662,53 +664,61 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
         //#entity date group account number type status value
         double val = 0d;
         double val1 = 0d;
-        Object[][] d = new Object[data.length][9];
+        Object[][] d = new Object[data.length][14];
         try {
             for (int i = 0; i < d.length; i++) {
+                d[i][1] = data[i][1];
+                d[i][2] = data[i][2];
                 d[i][3] = data[i][3];
                 d[i][4] = data[i][4];
-                d[i][2] = data[i][2];
-                d[i][1] = DateConverter.getDate(data[i][1].toString());
+                d[i][5] = data[i][5];
+                //d[i][14] = data[i][14];
+                d[i][8] = data[i][8];
+                d[i][9] = data[i][9];
+                d[i][7] = data[i][7];
+                d[i][6] = DateConverter.getDefDateString(DateConverter.getDate(data[i][6].toString()));
+
                 d[i][0] = data[i][0];
 
-                int type = Integer.valueOf(data[i][5].toString());
+                int type = Integer.valueOf(data[i][5+5].toString());
                 if (type == Revenue.TYPE_REVENUE) {
-                    d[i][5] = Messages.TYPE_REVENUE.toString();
+                    d[i][5 + 5] = Messages.TYPE_REVENUE.toString();
                 } else if (type == Expense.TYPE_EXPENSE) {
-                    d[i][5] = Messages.TYPE_EXPENSE.toString();
+                    d[i][5 + 5] = Messages.TYPE_EXPENSE.toString();
                 } else {
-                    d[i][5] = Item.getTypeString(type);
+                    d[i][5 + 5] = Item.getTypeString(type);
                 }
 
                 double brutto = 0;
                 if (type == Revenue.TYPE_REVENUE || type == Expense.TYPE_EXPENSE) {
-                    brutto = Double.valueOf(data[i][8].toString());
+                    brutto = Double.valueOf(data[i][8 + 5].toString());
                 } else {
-                    brutto = Double.valueOf(data[i][7].toString()) + Double.valueOf(data[i][8].toString());
+                    brutto = Double.valueOf(data[i][7 + 5].toString()) + Double.valueOf(data[i][8+5].toString());
                 }
 
-                d[i][6] = Item.getStatusString(Integer.valueOf(data[i][6].toString()));
+                d[i][6 + 5] = Item.getStatusString(Integer.valueOf(data[i][6 + 5].toString()));
 
 
-                if (Integer.valueOf(data[i][6].toString()).intValue() == Item.STATUS_PAID) {
+                if (Integer.valueOf(data[i][6 + 5].toString()).intValue() == Item.STATUS_PAID) {
                     val += brutto;
-                    d[i][8] = "<html><p align=center>" + mpv5.utils.numberformat.FormatNumber.formatDezimal(brutto);
-                } else if (Integer.valueOf(data[i][6].toString()).intValue() == 1000) {
-                    d[i][8] = "<html><p align=center>" + mpv5.utils.numberformat.FormatNumber.formatDezimal(-1 * brutto);
+                    d[i][8 + 5] = "<html><p align=center>" + mpv5.utils.numberformat.FormatNumber.formatDezimal(brutto);
+                } else if (Integer.valueOf(data[i][6 + 5].toString()).intValue() == 1000) {
+                    d[i][8 + 5] = "<html><p align=center>" + mpv5.utils.numberformat.FormatNumber.formatDezimal(-1 * brutto);
                     val -= brutto;
-                    d[i][6] = Item.getStatusString(Item.STATUS_PAID);
-                } else if (Integer.valueOf(data[i][6].toString()).intValue() == 2000) {
-                    d[i][8] = "<html><p align=center>" + mpv5.utils.numberformat.FormatNumber.formatDezimal(-1 * brutto);
+                    d[i][6 + 5] = Item.getStatusString(Item.STATUS_PAID);
+                } else if (Integer.valueOf(data[i][6 + 5].toString()).intValue() == 2000) {
+                    d[i][8 + 5] = "<html><p align=center>" + mpv5.utils.numberformat.FormatNumber.formatDezimal(-1 * brutto);
                     val -= brutto;
-                    d[i][6] = Item.getStatusString(Item.STATUS_IN_PROGRESS);
+                    d[i][6 + 5] = Item.getStatusString(Item.STATUS_IN_PROGRESS);
                 } else {
-                    d[i][8] = "<html><p align=center>" + mpv5.utils.numberformat.FormatNumber.formatDezimal(0d);
+                    d[i][8 + 5] = "<html><p align=center>" + mpv5.utils.numberformat.FormatNumber.formatDezimal(0d);
                 }
-                d[i][7] = "<html><p align=center>" + mpv5.utils.numberformat.FormatNumber.formatDezimal(brutto);
+                d[i][7 + 5] = "<html><p align=center>" + mpv5.utils.numberformat.FormatNumber.formatDezimal(brutto);
                 val1 += brutto;
             }
         } catch (Exception numberFormatException) {
             Log.Debug(numberFormatException);
+            Log.Debug(this, Arrays.asList(data[0]));
         }
 
         volume.setText(mpv5.utils.numberformat.FormatNumber.formatDezimal(val1));
@@ -789,9 +799,8 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
                         itemsParams.setOrder("accountsids", true);
                         c.addReference(Context.getGroup());
                         c.addReference(Context.getAccounts());
-                        if (dataOwner != null) {
-                            c.addReference(Context.getContact());
-                        }
+                        c.addReference(Context.getContact());
+
                         try {
                             String datecriterium = "dateadded";
                             if (bydateend.isSelected()) {
@@ -799,16 +808,17 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
                             }
                             d = QueryHandler.instanceOf().clone(c).select(Context.DETAILS_JOURNAL.replace("{date}", datecriterium), itemsParams, timeframeChooser1.getTime(), datecriterium).getData();
                         } catch (NodataFoundException nodataFoundException) {
-                            d = new Object[0][9];
+                            d = new Object[0][15];
                         }
 
                         DatabaseObject.Entity<?, ?>[] es = new DatabaseObject.Entity<?, ?>[d.length];
                         for (int i = 0; i < d.length; i++) {
                             es[i] = new DatabaseObject.Entity<Context, Integer>(Context.getItem(), Integer.valueOf(d[i][0].toString()));
                         }
+                        
                         d = ArrayUtilities.replaceColumn(d, 0, es);
                         if (!additional) {
-                            d = ArrayUtilities.removeRows(d, 6, Item.STATUS_PAID);
+                            d = ArrayUtilities.removeRows(d, 6 + 5, Item.STATUS_PAID);
                         }
                     } catch (Exception ex) {
                         Log.Debug(ex);
@@ -865,15 +875,15 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
                             try {
                                 d1 = QueryHandler.instanceOf().clone(c).select(Context.DETAILS_JOURNAL3, expensesParams, timeframeChooser1.getTime()).getData();
                             } catch (NodataFoundException nodataFoundException) {
-                                d1 = new Object[0][9];
+                                d1 = new Object[0][14];
                             }
                             for (int i = 0; i < d1.length; i++) {
-                                d1[i][5] = Expense.TYPE_EXPENSE;
+                                d1[i][5+5] = Expense.TYPE_EXPENSE;
 
-                                if (TypeConversion.stringToBoolean(String.valueOf(d1[i][6]))) {
-                                    d1[i][6] = 1000;
+                                if (TypeConversion.stringToBoolean(String.valueOf(d1[i][6 + 5]))) {
+                                    d1[i][6 + 5] = 1000;
                                 } else {
-                                    d1[i][6] = 2000;
+                                    d1[i][6 + 5] = 2000;
                                 }
                             }
 
@@ -939,11 +949,11 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
                             try {
                                 d2 = QueryHandler.instanceOf().clone(c).select(Context.DETAILS_JOURNAL2, revenuesParams, timeframeChooser1.getTime()).getData();
                             } catch (NodataFoundException nodataFoundException) {
-                                d2 = new Object[0][9];
+                                d2 = new Object[0][14];
                             }
                             for (int i = 0; i < d2.length; i++) {
-                                d2[i][5] = Revenue.TYPE_REVENUE;
-                                d2[i][6] = Item.STATUS_PAID;//revenues are currently always paid :-/
+                                d2[i][5+5] = Revenue.TYPE_REVENUE;
+                                d2[i][6+5] = Item.STATUS_PAID;//revenues are currently always paid :-/
                             }
 
                             DatabaseObject.Entity<?, ?>[] es = new DatabaseObject.Entity<?, ?>[d2.length];
@@ -960,7 +970,7 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
                     }
                     d = parse(d);
                     jTable1.setModel(new MPTableModel(d, Headers.JOURNAL.getValue(),
-                            new Class[]{DatabaseObject.Entity.class, Date.class, String.class, String.class, String.class, String.class, String.class, String.class, String.class}));
+                            new Class[]{Entity.class, String.class, String.class, String.class, String.class, String.class, String.class, String.class, String.class, String.class, String.class, String.class, String.class, String.class, Object.class}));
                     TableFormat.stripColumn(jTable1, DatabaseObject.Entity.class);
                 } catch (Exception e) {
                     Log.Debug(this, e);

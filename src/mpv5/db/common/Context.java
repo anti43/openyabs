@@ -186,34 +186,10 @@ public class Context implements Serializable {
             + IDENTITY_ITEMS + "." + "netvalue,"
             + IDENTITY_ITEMS + "." + "taxvalue, "
             + IDENTITY_ITEMS + "." + "datetodo";
-    public static String DETAILS_JOURNAL = IDENTITY_ITEMS + "." + "IDS,"
-            + IDENTITY_ITEMS + "." + "{date},"
-            + //            IDENTITY_ITEMS + "." + "dateend," +
-            IDENTITY_GROUPS + "." + "CNAME,"
-            + IDENTITY_ACCOUNTS + "." + "cname,"
-            + IDENTITY_ITEMS + "." + "CNAME,"
-            + IDENTITY_ITEMS + "." + "inttype,"
-            + IDENTITY_ITEMS + "." + "intstatus,"
-            + IDENTITY_ITEMS + "." + "netvalue,"
-            + IDENTITY_ITEMS + "." + "taxvalue";
-    public static String DETAILS_JOURNAL2 = IDENTITY_REVENUE + "." + "IDS,"
-            + IDENTITY_REVENUE + "." + "dateadded,"
-            + IDENTITY_GROUPS + "." + "CNAME,"
-            + IDENTITY_ACCOUNTS + "." + "cname,"
-            + IDENTITY_REVENUE + "." + "CNAME,"
-            + IDENTITY_REVENUE + "." + "ids,"
-            + IDENTITY_REVENUE + "." + "ids,"
-            + IDENTITY_REVENUE + "." + "brutvalue,"
-            + IDENTITY_REVENUE + "." + "brutvalue";
-    public static String DETAILS_JOURNAL3 = IDENTITY_EXPENSE + "." + "IDS,"
-            + IDENTITY_EXPENSE + "." + "dateadded,"
-            + IDENTITY_GROUPS + "." + "CNAME,"
-            + IDENTITY_ACCOUNTS + "." + "cname,"
-            + IDENTITY_EXPENSE + "." + "CNAME,"
-            + IDENTITY_EXPENSE + "." + "ids,"
-            + IDENTITY_EXPENSE + "." + "ispaid,"
-            + IDENTITY_EXPENSE + "." + "brutvalue,"
-            + IDENTITY_EXPENSE + "." + "brutvalue";
+    public static String DETAILS_JOURNAL = Context.IDENTITY_ITEMS + "." + "IDS," + Context.IDENTITY_CONTACTS + "." + "cname," + Context.IDENTITY_CONTACTS + "." + "prename," + Context.IDENTITY_CONTACTS + "." + "street," + Context.IDENTITY_CONTACTS + "." + "city," + Context.IDENTITY_CONTACTS + "." + "country," + Context.IDENTITY_ITEMS + "." + "dateadded," + Context.IDENTITY_GROUPS + "." + "CNAME," + Context.IDENTITY_ACCOUNTS + "." + "cname," + Context.IDENTITY_ITEMS + "." + "CNAME," + Context.IDENTITY_ITEMS + "." + "inttype," + Context.IDENTITY_ITEMS + "." + "intstatus," + Context.IDENTITY_ITEMS + "." + "netvalue," + Context.IDENTITY_ITEMS + "." + "taxvalue";
+    public static String DETAILS_JOURNAL2 = Context.IDENTITY_REVENUE + "." + "IDS," + Context.IDENTITY_GROUPS + "." + "reserve2," + Context.IDENTITY_GROUPS + "." + "reserve2," + Context.IDENTITY_GROUPS + "." + "reserve2," + Context.IDENTITY_GROUPS + "." + "reserve2," + Context.IDENTITY_GROUPS + "." + "reserve2," + Context.IDENTITY_REVENUE + "." + "dateadded," + Context.IDENTITY_GROUPS + "." + "CNAME," + Context.IDENTITY_ACCOUNTS + "." + "cname," + Context.IDENTITY_REVENUE + "." + "CNAME," + Context.IDENTITY_REVENUE + "." + "ids," + Context.IDENTITY_REVENUE + "." + "ids," + Context.IDENTITY_REVENUE + "." + "brutvalue," + Context.IDENTITY_REVENUE + "." + "brutvalue";
+    public static String DETAILS_JOURNAL3 = Context.IDENTITY_EXPENSE + "." + "IDS," + Context.IDENTITY_GROUPS + "." + "reserve2," + Context.IDENTITY_GROUPS + "." + "reserve2," + Context.IDENTITY_GROUPS + "." + "reserve2," + Context.IDENTITY_GROUPS + "." + "reserve2," + Context.IDENTITY_GROUPS + "." + "reserve2," + Context.IDENTITY_EXPENSE + "." + "dateadded," + Context.IDENTITY_GROUPS + "." + "CNAME," + Context.IDENTITY_ACCOUNTS + "." + "cname," + Context.IDENTITY_EXPENSE + "." + "CNAME," + Context.IDENTITY_EXPENSE + "." + "ids," + Context.IDENTITY_EXPENSE + "." + "ids," + Context.IDENTITY_EXPENSE + "." + "brutvalue," + Context.IDENTITY_EXPENSE + "." + "brutvalue";
+
     public static String DETAILS_HISTORY = getHistory().getDbIdentity() + ".ids, " + getHistory().getDbIdentity() + ".cname, " + getHistory().getDbIdentity() + ".username, " + Context.getGroup().getDbIdentity() + ".cname," + Context.getHistory().getDbIdentity() + ".dateadded";
     public static String DETAILS_FILES_TO_CONTACTS = Context.getFiles().getDbIdentity() + ".cname," + getFilesToContacts().getDbIdentity() + ".cname, " + Context.getFiles().getDbIdentity() + ".dateadded," + Context.getFilesToContacts().getDbIdentity() + ".description," + Context.getFilesToContacts().getDbIdentity() + ".intsize," + Context.getFilesToContacts().getDbIdentity() + ".mimetype";
     public static String DETAILS_FILES_TO_ITEMS = Context.getFiles().getDbIdentity() + ".cname," + getFilesToItems().getDbIdentity() + ".cname, " + Context.getFiles().getDbIdentity() + ".dateadded," + Context.getFilesToItems().getDbIdentity() + ".description," + Context.getFilesToItems().getDbIdentity() + ".intsize," + Context.getFilesToItems().getDbIdentity() + ".mimetype";

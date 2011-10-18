@@ -108,15 +108,8 @@ public class DTAFile extends Exportable implements Waitable {
 
                 BigDecimal value = null;
 
-                if (mpv5.db.objects.User.getCurrentUser().getProperties().hasProperty("shiptax")) {
-                    int taxid = mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("shiptax", new Integer(0));
-                    Double shiptax = Tax.getTaxValue(taxid).doubleValue();
-                    value = //netvalue
-                            dbo.__getTaxvalue().add(dbo.__getNetvalue()).add((dbo.__getShippingvalue().multiply(BigDecimal.valueOf(shiptax).divide(new BigDecimal("100"), 2, BigDecimal.ROUND_HALF_UP).add(dbo.__getShippingvalue()))));
-                } else {
-                    value = //netvalue
-                            dbo.__getTaxvalue().add(dbo.__getNetvalue()).add(dbo.__getShippingvalue());
-                }
+                value = //netvalue
+                            dbo.__getTaxvalue().add(dbo.__getNetvalue());
 
                 if (value.doubleValue() > 0.15) {
                     value.setScale(2, RoundingMode.HALF_UP);

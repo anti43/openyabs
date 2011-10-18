@@ -62,8 +62,8 @@
               <Group type="102" alignment="1" attributes="0">
                   <EmptySpace min="8" pref="8" max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="1" attributes="0">
-                      <Component id="jPanel4" alignment="0" pref="922" max="32767" attributes="0"/>
-                      <Component id="street" alignment="0" max="32767" attributes="0"/>
+                      <Component id="jPanel4" alignment="0" pref="930" max="32767" attributes="0"/>
+                      <Component id="street" alignment="0" pref="930" max="32767" attributes="0"/>
                       <Component id="jPanel3" alignment="1" max="32767" attributes="0"/>
                   </Group>
                   <EmptySpace min="281" pref="281" max="281" attributes="0"/>
@@ -76,7 +76,7 @@
                   <EmptySpace min="-2" pref="8" max="-2" attributes="0"/>
                   <Component id="jPanel4" min="-2" pref="50" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
-                  <Component id="street" min="-2" max="-2" attributes="0"/>
+                  <Component id="street" min="-2" pref="105" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
                   <Component id="jPanel3" max="32767" attributes="0"/>
                   <EmptySpace min="8" pref="8" max="8" attributes="0"/>
@@ -264,11 +264,11 @@
             <DimensionLayout dim="0">
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" attributes="0">
-                      <EmptySpace min="10" pref="10" max="-2" attributes="0"/>
+                      <EmptySpace min="12" pref="12" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Component id="jSeparator1" min="-2" pref="900" max="-2" attributes="0"/>
                           <Group type="102" attributes="0">
-                              <Component id="jScrollPane1" pref="886" max="32767" attributes="0"/>
+                              <Component id="jScrollPane1" pref="892" max="32767" attributes="0"/>
                               <EmptySpace min="14" pref="14" max="14" attributes="0"/>
                           </Group>
                           <Group type="102" alignment="0" attributes="0">
@@ -322,8 +322,8 @@
                       <EmptySpace min="-2" pref="5" max="-2" attributes="0"/>
                       <Component id="jSeparator1" min="-2" max="-2" attributes="0"/>
                       <EmptySpace min="-2" pref="10" max="-2" attributes="0"/>
-                      <Component id="jScrollPane1" pref="320" max="32767" attributes="0"/>
-                      <EmptySpace min="11" pref="11" max="11" attributes="0"/>
+                      <Component id="jScrollPane1" pref="286" max="32767" attributes="0"/>
+                      <EmptySpace min="12" pref="12" max="12" attributes="0"/>
                   </Group>
               </Group>
             </DimensionLayout>

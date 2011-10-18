@@ -389,7 +389,7 @@
                                       <Component id="jLabel4" alignment="0" min="-2" pref="269" max="-2" attributes="1"/>
                                       <Component id="timeframeChooser1" alignment="0" min="-2" max="-2" attributes="1"/>
                                   </Group>
-                                  <EmptySpace pref="133" max="32767" attributes="0"/>
+                                  <EmptySpace pref="139" max="32767" attributes="0"/>
                               </Group>
                           </Group>
                         </DimensionLayout>
@@ -491,7 +491,7 @@
                                       <Component id="jButton2" min="-2" max="-2" attributes="0"/>
                                       <EmptySpace max="-2" attributes="0"/>
                                       <Component id="jButton3" min="-2" max="-2" attributes="0"/>
-                                      <EmptySpace pref="104" max="32767" attributes="0"/>
+                                      <EmptySpace pref="156" max="32767" attributes="0"/>
                                   </Group>
                               </Group>
                             </DimensionLayout>
@@ -511,7 +511,7 @@
                                               </Group>
                                           </Group>
                                       </Group>
-                                      <EmptySpace pref="144" max="32767" attributes="0"/>
+                                      <EmptySpace pref="154" max="32767" attributes="0"/>
                                   </Group>
                               </Group>
                             </DimensionLayout>
@@ -615,7 +615,7 @@
                               <Component id="prinitingComboBox1" min="-2" pref="196" max="-2" attributes="0"/>
                               <EmptySpace max="-2" attributes="0"/>
                               <Component id="jButton4" min="-2" max="-2" attributes="0"/>
-                              <EmptySpace pref="88" max="32767" attributes="0"/>
+                              <EmptySpace pref="51" max="32767" attributes="0"/>
                               <Component id="volume" min="-2" max="-2" attributes="0"/>
                               <EmptySpace type="unrelated" max="-2" attributes="0"/>
                               <Component id="revenue" min="-2" max="-2" attributes="0"/>

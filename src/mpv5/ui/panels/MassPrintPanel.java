@@ -35,6 +35,7 @@ import javax.swing.text.StyleConstants;
 import javax.swing.text.StyledDocument;
 import javax.swing.text.StyledEditorKit;
 import javax.swing.text.rtf.RTFEditorKit;
+import mpv5.YabsViewProxy;
 import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseSearch;
 import mpv5.db.common.NodataFoundException;
