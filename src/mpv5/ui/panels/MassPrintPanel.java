@@ -11,19 +11,17 @@
 package mpv5.ui.panels;
 
 import enoa.handler.TemplateHandler;
-import java.awt.Color;
+import java.awt.Font;
 import java.awt.GraphicsEnvironment;
 import java.awt.event.ActionEvent;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListModel;
-import javax.swing.DefaultListSelectionModel;
 import javax.swing.JComboBox;
 import javax.swing.JTextPane;
 import javax.swing.JToggleButton;
@@ -35,16 +33,17 @@ import javax.swing.text.StyleConstants;
 import javax.swing.text.StyledDocument;
 import javax.swing.text.StyledEditorKit;
 import javax.swing.text.rtf.RTFEditorKit;
-import mpv5.YabsViewProxy;
 import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseSearch;
 import mpv5.db.common.NodataFoundException;
 import mpv5.db.objects.Contact;
 import mpv5.db.objects.Template;
 import mpv5.db.objects.User;
+import mpv5.globals.LocalSettings;
 import mpv5.globals.Messages;
 import mpv5.logging.Log;
 import mpv5.ui.dialogs.DialogForFile;
+import mpv5.ui.dialogs.Popup;
 import mpv5.utils.export.Export;
 import mpv5.utils.jobs.Job;
 import mpv5.utils.jobs.Waitable;
@@ -73,13 +72,8 @@ public class MassPrintPanel
 
     /** Creates new form MassPrintUI */
     public MassPrintPanel() {
-        initComponents();
         model = new DefaultListModel();
-        contactlist.setModel(model);
-        contactlist.setSelectionBackground(Color.GREEN);
-        contactlist.setSelectionForeground(Color.BLACK);
-        contactlist.setSelectionMode(DefaultListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
-        templates.setModel(new DefaultComboBoxModel());
+        initComponents();
         this.setContacts();
         this.setTemplateList();
 
@@ -111,7 +105,7 @@ public class MassPrintPanel
             }
         } catch (Exception e) {
 
-            Log.Debug(ConversationPanel.class, e);
+            Log.Debug(MassPrintPanel.class, e);
         }
         jToggleButton3 = new javax.swing.JToggleButton();
         jToggleButton1 = new javax.swing.JToggleButton();
@@ -122,18 +116,6 @@ public class MassPrintPanel
         RTF_Text = new javax.swing.JTextPane();
         dateTo = new mpv5.ui.beans.DateChooser();
         templates = new javax.swing.JComboBox();
-        try {
-            String[] fonts = GraphicsEnvironment.getLocalGraphicsEnvironment().getAvailableFontFamilyNames();
-            Log.Debug(this, "Ermittelte Fonts: " + fonts.length);
-
-            for (int index = 0; index < fonts.length; index++) {
-                jComboBox1.addItem(fonts[index]);
-            }
-        } catch (Exception e) {
-
-            Log.Debug(ConversationPanel.class, e);
-        }
-        jLabel4 = new javax.swing.JLabel();
         jButton1 = new javax.swing.JButton();
         jLabel5 = new javax.swing.JLabel();
         jButton2 = new javax.swing.JButton();
@@ -143,16 +125,20 @@ public class MassPrintPanel
 
         setMaximumSize(new java.awt.Dimension(750, 600));
         setMinimumSize(new java.awt.Dimension(750, 600));
+        setName("Form"); // NOI18N
 
-        java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle(); // NOI18N
+        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("mpv5/resources/languages/Panels"); // NOI18N
         jPanel3.setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("ConversationPanel.jPanel3.border.title"))); // NOI18N
+        jPanel3.setName("jPanel3"); // NOI18N
 
+        jComboBox2.setName("jComboBox2"); // NOI18N
         jComboBox2.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jComboBox2ActionPerformed(evt);
             }
         });
 
+        jComboBox1.setName("jComboBox1"); // NOI18N
         jComboBox1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jComboBox1ActionPerformed(evt);
@@ -161,6 +147,7 @@ public class MassPrintPanel
 
         jToggleButton3.setFont(jToggleButton3.getFont());
         jToggleButton3.setText(bundle.getString("ConversationPanel.jToggleButton3.text")); // NOI18N
+        jToggleButton3.setName("jToggleButton3"); // NOI18N
         jToggleButton3.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jToggleButton3ActionPerformed(evt);
@@ -169,6 +156,7 @@ public class MassPrintPanel
 
         jToggleButton1.setFont(new java.awt.Font("Tahoma", 1, 11));
         jToggleButton1.setText(bundle.getString("ConversationPanel.jToggleButton1.text")); // NOI18N
+        jToggleButton1.setName("jToggleButton1"); // NOI18N
         jToggleButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jToggleButton1ActionPerformed(evt);
@@ -177,6 +165,7 @@ public class MassPrintPanel
 
         jToggleButton2.setFont(new java.awt.Font("Tahoma", 2, 11));
         jToggleButton2.setText(bundle.getString("ConversationPanel.jToggleButton2.text")); // NOI18N
+        jToggleButton2.setName("jToggleButton2"); // NOI18N
         jToggleButton2.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jToggleButton2ActionPerformed(evt);
@@ -184,8 +173,16 @@ public class MassPrintPanel
         });
 
         jLabel3.setText(bundle.getString("ConversationPanel.jLabel3.text")); // NOI18N
+        jLabel3.setName("jLabel3"); // NOI18N
 
+        jSeparator1.setName("jSeparator1"); // NOI18N
+
+        jScrollPane1.setName("jScrollPane1"); // NOI18N
+
+        RTF_Text.setDocument(new javax.swing.text.rtf.RTFEditorKit().createDefaultDocument());
         RTF_Text.setEditorKit(new javax.swing.text.rtf.RTFEditorKit());
+        RTF_Text.setFont(Font.decode(LocalSettings.getProperty(LocalSettings.DEFAULT_FONT)).deriveFont(Font.PLAIN, 11));
+        RTF_Text.setName("RTF_Text"); // NOI18N
         RTF_Text.addCaretListener(new javax.swing.event.CaretListener() {
             public void caretUpdate(javax.swing.event.CaretEvent evt) {
                 RTF_TextCaretUpdate(evt);
@@ -195,12 +192,15 @@ public class MassPrintPanel
 
         dateTo.setMaximumSize(new java.awt.Dimension(32767, 20));
         dateTo.setMinimumSize(new java.awt.Dimension(120, 20));
+        dateTo.setName("dateTo"); // NOI18N
         dateTo.setPreferredSize(new java.awt.Dimension(150, 20));
 
-        jLabel4.setText(bundle.getString("ConversationPanel.jLabel3.text")); // NOI18N
+        templates.setModel(new DefaultComboBoxModel());
+        templates.setName("templates"); // NOI18N
 
         jButton1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/bright_printer.png"))); // NOI18N
-        jButton1.setText("Print");
+        jButton1.setText(bundle.getString("MassPrintPanel.jButton1.text")); // NOI18N
+        jButton1.setName("jButton1"); // NOI18N
         jButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton1ActionPerformed(evt);
@@ -208,9 +208,11 @@ public class MassPrintPanel
         });
 
         jLabel5.setText(bundle.getString("ConversationPanel.jLabel3.text")); // NOI18N
+        jLabel5.setName("jLabel5"); // NOI18N
 
         jButton2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/acroread.png"))); // NOI18N
-        jButton2.setText("PDF");
+        jButton2.setText(bundle.getString("MassPrintPanel.jButton2.text_1")); // NOI18N
+        jButton2.setName("jButton2"); // NOI18N
         jButton2.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton2ActionPerformed(evt);
@@ -224,16 +226,15 @@ public class MassPrintPanel
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 820, Short.MAX_VALUE)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 830, Short.MAX_VALUE)
                     .addGroup(jPanel3Layout.createSequentialGroup()
                         .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 306, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(512, 512, 512))
                     .addGroup(jPanel3Layout.createSequentialGroup()
                         .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 295, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 191, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(templates, javax.swing.GroupLayout.PREFERRED_SIZE, 295, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addGroup(jPanel3Layout.createSequentialGroup()
                                 .addGap(15, 15, 15)
@@ -249,29 +250,26 @@ public class MassPrintPanel
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 28, Short.MAX_VALUE)
                                 .addComponent(dateTo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGroup(jPanel3Layout.createSequentialGroup()
-                                .addGap(18, 18, 18)
                                 .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 267, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 10, Short.MAX_VALUE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 28, Short.MAX_VALUE)
                                 .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 230, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                    .addComponent(jSeparator1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 820, Short.MAX_VALUE)))
+                    .addComponent(jSeparator1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 830, Short.MAX_VALUE)))
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
-                        .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(5, 5, 5)
-                        .addComponent(templates, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(6, 6, 6))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
+                    .addGroup(jPanel3Layout.createSequentialGroup()
+                        .addGap(1, 1, 1)
                         .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jButton1)
-                            .addComponent(jButton2))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)))
+                            .addComponent(jButton2)))
+                    .addComponent(templates, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jComboBox2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(jComboBox2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(jToggleButton1)
                     .addComponent(jToggleButton2)
                     .addComponent(jToggleButton3)
@@ -283,22 +281,30 @@ public class MassPrintPanel
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 467, Short.MAX_VALUE))
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 483, Short.MAX_VALUE))
         );
 
-        jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder("Contacts"));
+        jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("MassPrintPanel.jPanel1.border.title_1"))); // NOI18N
+        jPanel1.setName("jPanel1"); // NOI18N
 
+        jScrollPane2.setName("jScrollPane2"); // NOI18N
+
+        contactlist.setModel(model);
+        contactlist.setToolTipText(bundle.getString("MassPrintPanel.contactlist.toolTipText_1")); // NOI18N
+        contactlist.setName("contactlist"); // NOI18N
+        contactlist.setSelectionBackground(java.awt.Color.green);
+        contactlist.setSelectionForeground(java.awt.Color.black);
         jScrollPane2.setViewportView(contactlist);
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 168, Short.MAX_VALUE)
+            .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 164, Short.MAX_VALUE)
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 588, Short.MAX_VALUE)
+            .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 604, Short.MAX_VALUE)
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
@@ -405,8 +411,8 @@ public class MassPrintPanel
 
     private void jComboBox1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBox1ActionPerformed
         JComboBox comboBox = (JComboBox) evt.getSource();
-        javax.swing.text.StyledEditorKit.FontFamilyAction action = new StyledEditorKit.FontFamilyAction("xxx", comboBox.getSelectedItem().toString());
-        action.actionPerformed(new ActionEvent(comboBox, ActionEvent.ACTION_PERFORMED, "xxx"));
+        javax.swing.text.StyledEditorKit.FontFamilyAction action = new StyledEditorKit.FontFamilyAction("yyy", comboBox.getSelectedItem().toString());
+        action.actionPerformed(new ActionEvent(comboBox, ActionEvent.ACTION_PERFORMED, "yyy"));
     }//GEN-LAST:event_jComboBox1ActionPerformed
 
     private void jComboBox2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBox2ActionPerformed
@@ -425,18 +431,26 @@ public class MassPrintPanel
                 HashMap<String, Object> hm1;
                 List<File> files = new ArrayList<File>();
                 File f;
-                for (int o = 0; o < sel.length; o++) {
-                    try {
-                        Contact cont = (Contact) (Contact.getObject(Context.getContact(), sel[o].toString()));
-                        hm1 = new HashMap<String, Object>();
-                        hm1 = me.ReplaceVariablesInContent(hm1, cont);
-                        f = Export.print2(TemplateHandler.loadTemplate(tpl),
-                                cont, hm1);
-                        files.add(f);
-                    } catch (NodataFoundException e) {
-                        Log.Debug(this, e);
+                if (tpl != null) {
+                    for (int o = 0; o < sel.length; o++) {
+                        try {
+                            Contact cont = (Contact) (Contact.getObject(Context.getContact(), sel[o].toString()));
+                            hm1 = new HashMap<String, Object>();
+                            hm1 = me.ReplaceVariablesInContent(hm1, cont);
+                            f = Export.print2(TemplateHandler.loadTemplate(tpl),
+                                    cont, hm1);
+                            files.add(f);
+                            mpv5.YabsViewProxy.instance().getProgressbar().setValue((100 / sel.length) * (o + 1));
+                            mpv5.YabsViewProxy.instance().getProgressbar().setString(cont.__getCName());
+                            mpv5.YabsViewProxy.instance().getProgressbar().setStringPainted(true);
+                        } catch (NodataFoundException e) {
+                            Log.Debug(this, e);
+                        }
                     }
+                } else {
+                    Popup.error(MassPrintPanel.instanceOf(), Messages.NO_TEMPLATE_DEFINDED.toString());
                 }
+
 
                 if (!files.isEmpty()) {
                     try {
@@ -455,25 +469,35 @@ public class MassPrintPanel
         Template tpl = (Template) templates.getSelectedItem();
         HashMap<String, Object> hm1;
         List<Waitable> files = new ArrayList<Waitable>();
-        for (int o = 0; o < sel.length; o++) {
-            try {
-                Contact cont = (Contact) (Contact.getObject(Context.getContact(), sel[o].toString()));
-                hm1 = new HashMap<String, Object>();
-                hm1 = this.ReplaceVariablesInContent(hm1, cont);
-                files.add(Export.createFile(cont.__getCName(),
-                        TemplateHandler.loadTemplate(tpl),
-                        cont,
-                        hm1));
-            } catch (NodataFoundException ex) {
-                Log.Debug(this, ex);
+        if (tpl != null) {
+            for (int o = 0; o < sel.length; o++) {
+                try {
+                    Contact cont = (Contact) (Contact.getObject(Context.getContact(), sel[o].toString()));
+                    hm1 = new HashMap<String, Object>();
+                    hm1 = this.ReplaceVariablesInContent(hm1, cont);
+                    files.add(Export.createFile(cont.__getCName(),
+                            TemplateHandler.loadTemplate(tpl),
+                            cont,
+                            hm1));
+                    mpv5.YabsViewProxy.instance().getProgressbar().setValue((100 / sel.length) * (o + 1));
+                    mpv5.YabsViewProxy.instance().getProgressbar().setString(cont.__getCName());
+                    mpv5.YabsViewProxy.instance().getProgressbar().setStringPainted(true);
+                } catch (NodataFoundException ex) {
+                    Log.Debug(this, ex);
+                }
             }
+        } else {
+            Popup.error(this, Messages.NO_TEMPLATE_DEFINDED.toString());
         }
 
         if (!files.isEmpty()) {
-            DialogForFile d = new DialogForFile(DialogForFile.DIRECTORIES_ONLY);
+            DialogForFile.CURRENT_DIR = new File(LocalSettings.getProperty(LocalSettings.BASE_DIR) + File.separator + "test");
+            DialogForFile d = new DialogForFile();
             Job job = new Job(files, d, files.size() + " PDF " + Messages.SAVED);
             job.execute();
-        }
+            mpv5.YabsViewProxy.instance().getProgressbar().setValue(100);
+            mpv5.YabsViewProxy.instance().getProgressbar().setString(Messages.DONE.toString());
+       }
     }//GEN-LAST:event_jButton2ActionPerformed
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTextPane RTF_Text;
@@ -484,7 +508,6 @@ public class MassPrintPanel
     private javax.swing.JComboBox jComboBox1;
     private javax.swing.JComboBox jComboBox2;
     private javax.swing.JLabel jLabel3;
-    private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel3;
@@ -513,18 +536,26 @@ public class MassPrintPanel
     }
 
     private void setTemplateList() {
-        DefaultComboBoxModel mdl = (DefaultComboBoxModel) templates.getModel();
-        Template[] tpl = TemplateHandler.getTemplatesForType(User.getCurrentUser().__getGroupsids(), TemplateHandler.TYPE_MASSPRINT);
-        for (int i = 0; i < tpl.length; i++) {
-            mdl.addElement(tpl[i]);
-        }
+        Runnable runnable = new Runnable() {
+
+            @Override
+            public void run() {
+                DefaultComboBoxModel mdl = (DefaultComboBoxModel) templates.getModel();
+                Template[] tpl = TemplateHandler.getTemplatesForType(User.getCurrentUser().__getGroupsids(), TemplateHandler.TYPE_MASSPRINT);
+                for (int i = 0; i < tpl.length; i++) {
+                    mdl.addElement(tpl[i]);
+                    TemplateHandler.loadTemplate(tpl[i]);
+                }
+            }
+        };
+        new Thread(runnable).start();
     }
 
     private HashMap<String, Object> ReplaceVariablesInContent(HashMap<String, Object> hm1, Contact cont) {
         String rtf = serialize();
-        hm1.put("massprint.cname", ""); 
+        hm1.put("massprint.cname", "");
         hm1.put("massprint.addedby", User.getCurrentUser().getName());
-        hm1.put("massprint.dateadded", new Date());
+        hm1.put("massprint.dateadded", dateTo.getDate());
         if (cont.__getisMale()) {
             hm1.put("massprint.gender",
                     Messages.CONTACT_TYPE_MALE.toString());
@@ -539,8 +570,8 @@ public class MassPrintPanel
         hm1.put("massprint.content", rtf);
         return hm1;
     }
-    
-     private String serialize() {
+
+    private String serialize() {
         ByteArrayOutputStream out;
         RTFEditorKit kit = (RTFEditorKit) RTF_Text.getEditorKit();
         StyledDocument doc = RTF_Text.getStyledDocument();

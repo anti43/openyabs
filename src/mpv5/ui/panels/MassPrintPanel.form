@@ -8,13 +8,15 @@
     <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
       <Dimension value="[750, 600]"/>
     </Property>
+    <Property name="name" type="java.lang.String" value="Form" noResource="true"/>
   </Properties>
   <AuxValues>
-    <AuxValue name="FormSettings_autoResourcing" type="java.lang.Integer" value="0"/>
-    <AuxValue name="FormSettings_autoSetComponentName" type="java.lang.Boolean" value="false"/>
+    <AuxValue name="FormSettings_autoResourcing" type="java.lang.Integer" value="1"/>
+    <AuxValue name="FormSettings_autoSetComponentName" type="java.lang.Boolean" value="true"/>
+    <AuxValue name="FormSettings_formBundle" type="java.lang.String" value="mpv5/resources/languages/Panels"/>
     <AuxValue name="FormSettings_generateFQN" type="java.lang.Boolean" value="true"/>
     <AuxValue name="FormSettings_generateMnemonicsCode" type="java.lang.Boolean" value="false"/>
-    <AuxValue name="FormSettings_i18nAutoMode" type="java.lang.Boolean" value="false"/>
+    <AuxValue name="FormSettings_i18nAutoMode" type="java.lang.Boolean" value="true"/>
     <AuxValue name="FormSettings_layoutCodeTarget" type="java.lang.Integer" value="1"/>
     <AuxValue name="FormSettings_listenerGenerationStyle" type="java.lang.Integer" value="0"/>
     <AuxValue name="FormSettings_variablesLocal" type="java.lang.Boolean" value="false"/>
@@ -49,6 +51,7 @@
             </TitledBorder>
           </Border>
         </Property>
+        <Property name="name" type="java.lang.String" value="jPanel3" noResource="true"/>
       </Properties>
 
       <Layout>
@@ -57,7 +60,7 @@
               <Group type="102" alignment="0" attributes="0">
                   <EmptySpace max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="0" attributes="0">
-                      <Component id="jScrollPane1" alignment="1" pref="825" max="32767" attributes="1"/>
+                      <Component id="jScrollPane1" alignment="1" pref="830" max="32767" attributes="1"/>
                       <Group type="102" alignment="0" attributes="0">
                           <Component id="jLabel5" min="-2" pref="306" max="-2" attributes="0"/>
                           <EmptySpace min="-2" pref="512" max="-2" attributes="0"/>
@@ -65,10 +68,9 @@
                       <Group type="102" alignment="0" attributes="0">
                           <Group type="103" groupAlignment="0" attributes="0">
                               <Component id="jComboBox1" min="-2" pref="295" max="-2" attributes="0"/>
-                              <Component id="jLabel4" alignment="0" min="-2" pref="191" max="-2" attributes="0"/>
-                              <Component id="templates" alignment="0" min="-2" pref="295" max="-2" attributes="0"/>
+                              <Component id="templates" min="-2" pref="295" max="-2" attributes="0"/>
                           </Group>
-                          <EmptySpace max="-2" attributes="0"/>
+                          <EmptySpace type="unrelated" max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="1" attributes="0">
                               <Group type="102" attributes="0">
                                   <EmptySpace min="-2" pref="15" max="-2" attributes="0"/>
@@ -86,12 +88,12 @@
                               </Group>
                               <Group type="102" attributes="0">
                                   <Component id="jButton2" min="-2" pref="267" max="-2" attributes="1"/>
-                                  <EmptySpace pref="27" max="32767" attributes="0"/>
+                                  <EmptySpace pref="28" max="32767" attributes="0"/>
                                   <Component id="jButton1" min="-2" pref="230" max="-2" attributes="1"/>
                               </Group>
                           </Group>
                       </Group>
-                      <Component id="jSeparator1" alignment="1" pref="825" max="32767" attributes="1"/>
+                      <Component id="jSeparator1" alignment="1" pref="830" max="32767" attributes="1"/>
                   </Group>
               </Group>
           </Group>
@@ -100,23 +102,21 @@
           <Group type="103" groupAlignment="0" attributes="0">
               <Group type="102" alignment="0" attributes="0">
                   <Group type="103" groupAlignment="0" attributes="0">
-                      <Group type="102" alignment="1" attributes="0">
-                          <Component id="jLabel4" min="-2" pref="22" max="-2" attributes="0"/>
-                          <EmptySpace min="-2" pref="5" max="-2" attributes="0"/>
-                          <Component id="templates" min="-2" max="-2" attributes="0"/>
-                          <EmptySpace min="-2" pref="6" max="-2" attributes="0"/>
-                      </Group>
-                      <Group type="102" alignment="1" attributes="0">
+                      <Group type="102" attributes="0">
+                          <EmptySpace min="-2" pref="1" max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="3" attributes="0">
                               <Component id="jButton1" alignment="3" min="-2" max="-2" attributes="0"/>
                               <Component id="jButton2" alignment="3" min="-2" max="-2" attributes="0"/>
                           </Group>
-                          <EmptySpace type="unrelated" max="-2" attributes="0"/>
                       </Group>
+                      <Component id="templates" min="-2" pref="42" max="-2" attributes="0"/>
                   </Group>
+                  <EmptySpace type="unrelated" max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="0" attributes="0">
-                      <Component id="jComboBox1" alignment="0" min="-2" max="-2" attributes="0"/>
-                      <Component id="jComboBox2" alignment="0" min="-2" max="-2" attributes="0"/>
+                      <Group type="103" alignment="0" groupAlignment="3" attributes="0">
+                          <Component id="jComboBox2" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="jComboBox1" alignment="3" min="-2" max="-2" attributes="0"/>
+                      </Group>
                       <Component id="jToggleButton1" alignment="0" min="-2" max="-2" attributes="0"/>
                       <Component id="jToggleButton2" alignment="0" min="-2" max="-2" attributes="0"/>
                       <Component id="jToggleButton3" alignment="0" min="-2" max="-2" attributes="0"/>
@@ -125,12 +125,12 @@
                           <Component id="jLabel3" alignment="1" min="-2" pref="20" max="-2" attributes="0"/>
                       </Group>
                   </Group>
-                  <EmptySpace type="unrelated" min="-2" max="-2" attributes="0"/>
+                  <EmptySpace type="unrelated" max="-2" attributes="0"/>
                   <Component id="jSeparator1" min="-2" pref="2" max="-2" attributes="0"/>
                   <EmptySpace min="-2" max="-2" attributes="0"/>
                   <Component id="jLabel5" min="-2" pref="20" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
-                  <Component id="jScrollPane1" pref="467" max="32767" attributes="0"/>
+                  <Component id="jScrollPane1" pref="483" max="32767" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
@@ -141,6 +141,7 @@
             <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
               <StringArray count="0"/>
             </Property>
+            <Property name="name" type="java.lang.String" value="jComboBox2" noResource="true"/>
           </Properties>
           <Events>
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jComboBox2ActionPerformed"/>
@@ -154,12 +155,13 @@
             <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
               <StringArray count="0"/>
             </Property>
+            <Property name="name" type="java.lang.String" value="jComboBox1" noResource="true"/>
           </Properties>
           <Events>
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jComboBox1ActionPerformed"/>
           </Events>
           <AuxValues>
-            <AuxValue name="JavaCodeGenerator_CreateCodePost" type="java.lang.String" value="try {&#xa;            String[] fonts = GraphicsEnvironment.getLocalGraphicsEnvironment().getAvailableFontFamilyNames();&#xa;            Log.Debug(this, &quot;Ermittelte Fonts: &quot; + fonts.length);&#xa;&#xa;            for (int index = 0; index &lt; fonts.length; index++) {&#xa;                jComboBox1.addItem(fonts[index]);&#xa;            }&#xa;        } catch (Exception e) {&#xa;&#xa;            Log.Debug(ConversationPanel.class, e);&#xa;        }"/>
+            <AuxValue name="JavaCodeGenerator_CreateCodePost" type="java.lang.String" value="try {&#xa;            String[] fonts = GraphicsEnvironment.getLocalGraphicsEnvironment().getAvailableFontFamilyNames();&#xa;            Log.Debug(this, &quot;Ermittelte Fonts: &quot; + fonts.length);&#xa;&#xa;            for (int index = 0; index &lt; fonts.length; index++) {&#xa;                jComboBox1.addItem(fonts[index]);&#xa;            }&#xa;        } catch (Exception e) {&#xa;&#xa;            Log.Debug(MassPrintPanel.class, e);&#xa;        }"/>
           </AuxValues>
         </Component>
         <Component class="javax.swing.JToggleButton" name="jToggleButton3">
@@ -172,6 +174,7 @@
             <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
               <ResourceString bundle="mpv5/resources/languages/Panels.properties" key="ConversationPanel.jToggleButton3.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
             </Property>
+            <Property name="name" type="java.lang.String" value="jToggleButton3" noResource="true"/>
           </Properties>
           <Events>
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jToggleButton3ActionPerformed"/>
@@ -185,6 +188,7 @@
             <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
               <ResourceString bundle="mpv5/resources/languages/Panels.properties" key="ConversationPanel.jToggleButton1.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
             </Property>
+            <Property name="name" type="java.lang.String" value="jToggleButton1" noResource="true"/>
           </Properties>
           <Events>
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jToggleButton1ActionPerformed"/>
@@ -198,6 +202,7 @@
             <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
               <ResourceString bundle="mpv5/resources/languages/Panels.properties" key="ConversationPanel.jToggleButton2.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
             </Property>
+            <Property name="name" type="java.lang.String" value="jToggleButton2" noResource="true"/>
           </Properties>
           <Events>
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jToggleButton2ActionPerformed"/>
@@ -208,11 +213,18 @@
             <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
               <ResourceString bundle="mpv5/resources/languages/Panels.properties" key="ConversationPanel.jLabel3.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
             </Property>
+            <Property name="name" type="java.lang.String" value="jLabel3" noResource="true"/>
           </Properties>
         </Component>
         <Component class="javax.swing.JSeparator" name="jSeparator1">
+          <Properties>
+            <Property name="name" type="java.lang.String" value="jSeparator1" noResource="true"/>
+          </Properties>
         </Component>
         <Container class="javax.swing.JScrollPane" name="jScrollPane1">
+          <Properties>
+            <Property name="name" type="java.lang.String" value="jScrollPane1" noResource="true"/>
+          </Properties>
           <AuxValues>
             <AuxValue name="autoScrollPane" type="java.lang.Boolean" value="true"/>
           </AuxValues>
@@ -221,9 +233,16 @@
           <SubComponents>
             <Component class="javax.swing.JTextPane" name="RTF_Text">
               <Properties>
+                <Property name="document" type="javax.swing.text.Document" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
+                  <Connection code="new javax.swing.text.rtf.RTFEditorKit().createDefaultDocument()" type="code"/>
+                </Property>
                 <Property name="editorKit" type="javax.swing.text.EditorKit" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
                   <Connection code="new javax.swing.text.rtf.RTFEditorKit()" type="code"/>
                 </Property>
+                <Property name="font" type="java.awt.Font" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
+                  <Connection code="Font.decode(LocalSettings.getProperty(LocalSettings.DEFAULT_FONT)).deriveFont(Font.PLAIN, 11)" type="code"/>
+                </Property>
+                <Property name="name" type="java.lang.String" value="RTF_Text" noResource="true"/>
               </Properties>
               <Events>
                 <EventHandler event="caretUpdate" listener="javax.swing.event.CaretListener" parameters="javax.swing.event.CaretEvent" handler="RTF_TextCaretUpdate"/>
@@ -239,6 +258,7 @@
             <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
               <Dimension value="[120, 20]"/>
             </Property>
+            <Property name="name" type="java.lang.String" value="dateTo" noResource="true"/>
             <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
               <Dimension value="[150, 20]"/>
             </Property>
@@ -246,19 +266,10 @@
         </Component>
         <Component class="javax.swing.JComboBox" name="templates">
           <Properties>
-            <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
-              <StringArray count="0"/>
+            <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
+              <Connection code="new DefaultComboBoxModel()" type="code"/>
             </Property>
-          </Properties>
-          <AuxValues>
-            <AuxValue name="JavaCodeGenerator_CreateCodePost" type="java.lang.String" value="try {&#xa;            String[] fonts = GraphicsEnvironment.getLocalGraphicsEnvironment().getAvailableFontFamilyNames();&#xa;            Log.Debug(this, &quot;Ermittelte Fonts: &quot; + fonts.length);&#xa;&#xa;            for (int index = 0; index &lt; fonts.length; index++) {&#xa;                jComboBox1.addItem(fonts[index]);&#xa;            }&#xa;        } catch (Exception e) {&#xa;&#xa;            Log.Debug(ConversationPanel.class, e);&#xa;        }"/>
-          </AuxValues>
-        </Component>
-        <Component class="javax.swing.JLabel" name="jLabel4">
-          <Properties>
-            <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-              <ResourceString bundle="mpv5/resources/languages/Panels.properties" key="ConversationPanel.jLabel3.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
-            </Property>
+            <Property name="name" type="java.lang.String" value="templates" noResource="true"/>
           </Properties>
         </Component>
         <Component class="javax.swing.JButton" name="jButton1">
@@ -266,7 +277,10 @@
             <Property name="icon" type="javax.swing.Icon" noResource="true" editor="org.netbeans.modules.form.editors2.IconEditor">
               <Image iconType="3" name="/mpv5/resources/images/32/bright_printer.png"/>
             </Property>
-            <Property name="text" type="java.lang.String" value="Print"/>
+            <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
+              <ResourceString bundle="mpv5/resources/languages/Panels.properties" key="MassPrintPanel.jButton1.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+            </Property>
+            <Property name="name" type="java.lang.String" value="jButton1" noResource="true"/>
           </Properties>
           <Events>
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButton1ActionPerformed"/>
@@ -277,6 +291,7 @@
             <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
               <ResourceString bundle="mpv5/resources/languages/Panels.properties" key="ConversationPanel.jLabel3.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
             </Property>
+            <Property name="name" type="java.lang.String" value="jLabel5" noResource="true"/>
           </Properties>
         </Component>
         <Component class="javax.swing.JButton" name="jButton2">
@@ -284,7 +299,10 @@
             <Property name="icon" type="javax.swing.Icon" noResource="true" editor="org.netbeans.modules.form.editors2.IconEditor">
               <Image iconType="3" name="/mpv5/resources/images/32/acroread.png"/>
             </Property>
-            <Property name="text" type="java.lang.String" value="PDF"/>
+            <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
+              <ResourceString bundle="mpv5/resources/languages/Panels.properties" key="MassPrintPanel.jButton2.text_1" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+            </Property>
+            <Property name="name" type="java.lang.String" value="jButton2" noResource="true"/>
           </Properties>
           <Events>
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButton2ActionPerformed"/>
@@ -296,15 +314,18 @@
       <Properties>
         <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
           <Border info="org.netbeans.modules.form.compat2.border.TitledBorderInfo">
-            <TitledBorder title="Contacts"/>
+            <TitledBorder title="Contacts">
+              <ResourceString PropertyName="titleX" bundle="mpv5/resources/languages/Panels.properties" key="MassPrintPanel.jPanel1.border.title_1" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+            </TitledBorder>
           </Border>
         </Property>
+        <Property name="name" type="java.lang.String" value="jPanel1" noResource="true"/>
       </Properties>
 
       <Layout>
         <DimensionLayout dim="0">
           <Group type="103" groupAlignment="0" attributes="0">
-              <Component id="jScrollPane2" alignment="0" pref="168" max="32767" attributes="0"/>
+              <Component id="jScrollPane2" alignment="0" pref="164" max="32767" attributes="0"/>
           </Group>
         </DimensionLayout>
         <DimensionLayout dim="1">
@@ -315,6 +336,9 @@
       </Layout>
       <SubComponents>
         <Container class="javax.swing.JScrollPane" name="jScrollPane2">
+          <Properties>
+            <Property name="name" type="java.lang.String" value="jScrollPane2" noResource="true"/>
+          </Properties>
           <AuxValues>
             <AuxValue name="autoScrollPane" type="java.lang.Boolean" value="true"/>
           </AuxValues>
@@ -323,8 +347,18 @@
           <SubComponents>
             <Component class="javax.swing.JList" name="contactlist">
               <Properties>
-                <Property name="model" type="javax.swing.ListModel" editor="org.netbeans.modules.form.editors2.ListModelEditor">
-                  <StringArray count="0"/>
+                <Property name="model" type="javax.swing.ListModel" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
+                  <Connection code="model" type="code"/>
+                </Property>
+                <Property name="toolTipText" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
+                  <ResourceString bundle="mpv5/resources/languages/Panels.properties" key="MassPrintPanel.contactlist.toolTipText_1" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+                </Property>
+                <Property name="name" type="java.lang.String" value="contactlist" noResource="true"/>
+                <Property name="selectionBackground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+                  <Color blue="0" green="ff" id="green" palette="1" red="0" type="palette"/>
+                </Property>
+                <Property name="selectionForeground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+                  <Color blue="0" green="0" id="black" palette="1" red="0" type="palette"/>
                 </Property>
               </Properties>
             </Component>

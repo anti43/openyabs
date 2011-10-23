@@ -69,6 +69,7 @@ public class Job extends SwingWorker<Object, Object> {
         this.objects = waitables;
         this.recipient = waiter;
         this.message = message;
+        this.bar = mpv5.YabsViewProxy.instance().getProgressbar();
     }
 
     @Override

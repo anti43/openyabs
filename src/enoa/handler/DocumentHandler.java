@@ -254,8 +254,8 @@ public class DocumentHandler {
                                     false);
                             cursor.insertDocument(is,
                                     RTFFilter.FILTER);
-                            placeholders[i].getTextRange().
-                                    setText("");
+//                            placeholders[i].getTextRange().
+//                                    setText("");
                         } else {
                             placeholders[i].getTextRange().setText(String.valueOf(data.get(key)));
                         }
