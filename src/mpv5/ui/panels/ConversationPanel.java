@@ -336,7 +336,7 @@ public class ConversationPanel
         jPanel1.setPreferredSize(new java.awt.Dimension(750, 600));
 
         street.setBackground(new java.awt.Color(255, 255, 255));
-        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("mpv5/resources/languages/Panels"); // NOI18N
+        java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle(); // NOI18N
         street.setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("ConversationPanel.street.border.title"))); // NOI18N
         street.setName("street"); // NOI18N
         street.setOpaque(false);
