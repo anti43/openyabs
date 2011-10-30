@@ -257,6 +257,7 @@ public class ProductListsPanel extends javax.swing.JPanel implements DataPanel, 
         java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle(); // NOI18N
         setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("ProductListsPanel.border.title_1"))); // NOI18N
         setName("Form"); // NOI18N
+        setOpaque(false);
         setLayout(new java.awt.BorderLayout());
 
         leftpane.setBorder(javax.swing.BorderFactory.createEtchedBorder());
@@ -283,7 +284,6 @@ public class ProductListsPanel extends javax.swing.JPanel implements DataPanel, 
         addedby.setName("addedby"); // NOI18N
 
         prinitingComboBox1.setName("prinitingComboBox1"); // NOI18N
-        prinitingComboBox1.setOpaque(false);
 
         groupnameselect.set_Label(bundle.getString("ProductListsPanel.groupnameselect._Label")); // NOI18N
         groupnameselect.setName("groupnameselect"); // NOI18N
@@ -324,7 +324,7 @@ public class ProductListsPanel extends javax.swing.JPanel implements DataPanel, 
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                     .addComponent(groupnameselect, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(listname, javax.swing.GroupLayout.DEFAULT_SIZE, 264, Short.MAX_VALUE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 93, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 97, Short.MAX_VALUE)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(prinitingComboBox1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(addedby, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 97, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -381,7 +381,7 @@ public class ProductListsPanel extends javax.swing.JPanel implements DataPanel, 
         );
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 128, Short.MAX_VALUE)
+            .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 133, Short.MAX_VALUE)
         );
 
         jScrollPane1.setBorder(null);
