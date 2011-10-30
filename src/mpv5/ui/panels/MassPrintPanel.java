@@ -20,8 +20,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListModel;
 import javax.swing.JComboBox;
@@ -78,6 +76,7 @@ public class MassPrintPanel
     public MassPrintPanel() {
         model = new DefaultListModel();
         initComponents();
+        setName("MassPrintPanel");
         this.setContacts();
         this.setTemplateList();
         this.setMessageTemplateList();
