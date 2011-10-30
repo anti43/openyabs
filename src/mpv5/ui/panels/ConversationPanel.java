@@ -779,7 +779,9 @@ public class ConversationPanel
         try {
             int cid = Integer.valueOf(contactname.getSelectedItem().getId());
             Contact c = (Contact) DatabaseObject.getObject(Context.getContact(), cid);
-            mpv5.YabsViewProxy.instance().getIdentifierView().addTab(c);
+            ContactPanel cp = new ContactPanel(Context.getContact());
+            mpv5.YabsViewProxy.instance().getIdentifierView().addOrShowTab(cp , Messages.TYPE_CONTACT.toString());
+            cp.setDataOwner(c, true);
         } catch (Exception e) {
             Log.Debug(this, e);
         }
