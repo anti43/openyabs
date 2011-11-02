@@ -163,8 +163,8 @@ public class TemplateHandler {
                         } catch (Exception ex) {
                             Log.Debug(Template.class, "Invalid template: " + data.getData()[data.getData().length - 1][0].toString());
                             try {
-                                Log.Debug(TemplateHandler.class, "Removing invalid template " + preloadedTemplate);
-                                preloadedTemplate.delete();
+                                Log.Debug(TemplateHandler.class, "Not removing invalid template " + preloadedTemplate);
+                                //preloadedTemplate.delete();
                             } catch (Exception e) {
                                 Log.Debug(e);
                             }

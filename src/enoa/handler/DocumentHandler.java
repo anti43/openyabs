@@ -230,6 +230,7 @@ public class DocumentHandler {
             for (int i = 0; i < placeholders.length; i++) {
                 placehrepr[i] = placeholders[i].getDisplayText();
             }
+            Log.Debug(this, "Got: " + Arrays.asList(placehrepr));
         }
         InputStream is = null;
         ITextCursor cursor;
