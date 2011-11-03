@@ -46,7 +46,6 @@ import mpv5.db.objects.Tax;
 import mpv5.db.objects.Template;
 import mpv5.logging.Log;
 import mpv5.ui.dialogs.Popup;
-import mpv5.ui.frames.MPView;
 import mpv5.ui.toolbars.DataPanelTB;
 import mpv5.db.objects.User;
 import mpv5.globals.Headers;
@@ -67,6 +66,7 @@ public class ExpensePanel extends javax.swing.JPanel implements DataPanel {
     private static final long serialVersionUID = 1L;
     private static ExpensePanel me;
     private ArrayList<DatabaseObject> accmod;
+    private BigDecimal tax = new BigDecimal("0");
     private java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle();
 
     /**
@@ -102,7 +102,6 @@ public class ExpensePanel extends javax.swing.JPanel implements DataPanel {
         taxrate.setSearchEnabled(true);
         taxrate.setContext(Context.getTaxes());
 
-//        new calc().start();
         value.getTextField().addKeyListener(new KeyListener() {
 
             public void keyTyped(KeyEvent e) {
@@ -121,33 +120,23 @@ public class ExpensePanel extends javax.swing.JPanel implements DataPanel {
         taxrate.getComboBox().addActionListener(new ActionListener() {
 
             public void actionPerformed(ActionEvent e) {
-                calculate();
+                getTaxRate();
             }
         });
+        getTaxRate();
         taxrate.getComboBox().setEditable(false);
         itemtable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
         itemtable.setFillsViewportHeight(true);
         ((MPTable) itemtable).setDefaultColumns(new Integer[]{100, 333, 100}, new Boolean[]{});
-        ((MPTable) itemtable).setPersistanceHandler(new TableViewPersistenceHandler((MPTable)itemtable, this));
+        ((MPTable) itemtable).setPersistanceHandler(new TableViewPersistenceHandler((MPTable) itemtable, this));
 
     }
 
     private void calculate() {
-        BigDecimal tax = new BigDecimal("0");
         try {
-            MPComboBoxModelItem t = taxrate.getValue();
-            tax = Tax.getTaxValue(Integer.valueOf(t.getId()));
+            netvalue.setText(FormatNumber.formatLokalCurrency(FormatNumber.parseDezimal(value.getText()).divide((tax.divide(new BigDecimal("100"), 10, BigDecimal.ROUND_HALF_EVEN)).add(BigDecimal.ONE), 10, BigDecimal.ROUND_HALF_EVEN)));
         } catch (Exception e) {
-            try {
-                tax = new BigDecimal(taxrate.getText());
-            } catch (NumberFormatException numberFormatException) {
-                tax = new BigDecimal("0");
-            }
-        }
-
-        try {
-            netvalue.setText(FormatNumber.formatLokalCurrency(FormatNumber.parseDezimal(value.getText()).divide((tax.divide(new BigDecimal("100"))).add(BigDecimal.ONE))));
-        } catch (Exception e) {
+            Log.Debug(this, e);
             netvalue.setText(FormatNumber.formatLokalCurrency(0d));
         }
     }
@@ -237,6 +226,7 @@ public class ExpensePanel extends javax.swing.JPanel implements DataPanel {
         jPanel4 = new javax.swing.JPanel();
         jScrollPane3 = new javax.swing.JScrollPane();
         itemtable = new  mpv5.ui.misc.MPTable(this) {
+            private static final long serialVersionUID = 1L;
             public Component prepareRenderer(TableCellRenderer renderer,
                 int rowIndex, int vColIndex) {
                 Component c = super.prepareRenderer(renderer, rowIndex, vColIndex);
@@ -253,6 +243,7 @@ public class ExpensePanel extends javax.swing.JPanel implements DataPanel {
         java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle(); // NOI18N
         setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("ExpensePanel.border.title_1"))); // NOI18N
         setName("Form"); // NOI18N
+        setOpaque(false);
         setLayout(new java.awt.BorderLayout());
 
         rightpane.setBorder(javax.swing.BorderFactory.createEtchedBorder());
@@ -446,7 +437,7 @@ public class ExpensePanel extends javax.swing.JPanel implements DataPanel {
         );
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane3, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 84, Short.MAX_VALUE)
+            .addComponent(jScrollPane3, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 100, Short.MAX_VALUE)
         );
 
         javax.swing.GroupLayout rightpaneLayout = new javax.swing.GroupLayout(rightpane);
@@ -688,35 +679,51 @@ public class ExpensePanel extends javax.swing.JPanel implements DataPanel {
         mpv5.utils.export.Export.print(this);
     }
 
-    class calc extends Thread {
-
-        @Override
-        public void run() {
-            while (true) {
-                while (isShowing()) {
-                    BigDecimal tax = new BigDecimal("0");
-                    try {
-                        MPComboBoxModelItem t = taxrate.getValue();
-                        tax = Tax.getTaxValue(Integer.valueOf(t.getId()));
-                    } catch (Exception e) {
-                        try {
-                            tax = new BigDecimal(taxrate.getText());
-                        } catch (NumberFormatException numberFormatException) {
-                            tax = new BigDecimal("0");
-                        }
-                    }
-
-                    try {
-                        netvalue.setText(FormatNumber.formatLokalCurrency(FormatNumber.parseDezimal(value.getText()).divide((tax.divide(new BigDecimal("100"))).add(BigDecimal.ONE))));
-                    } catch (Exception e) {
-                        netvalue.setText(FormatNumber.formatLokalCurrency(0d));
-                    }
-                    try {
-                        sleep(333);
-                    } catch (InterruptedException ex) {
-                    }
-                }
+    private void getTaxRate() {
+        try {
+            MPComboBoxModelItem t = taxrate.getValue();
+            tax = Tax.getTaxValue(Integer.valueOf(t.getId()));
+            Log.Debug(this, "Selected Taxrate: " + tax);
+        } catch (Exception ex) {
+            try {
+                Log.Debug(this, "Trying Decimal Taxrate: " + taxrate.getText());
+                tax = new BigDecimal(taxrate.getText());
+            } catch (NumberFormatException numberFormatException) {
+                Log.Debug(this, "Reading Taxrate failed: Assuming Zero");
+                tax = new BigDecimal("0");
             }
         }
     }
+
+//    class calc extends Thread {
+//
+//        @Override
+//        public void run() {
+//            while (true) {
+//                while (isShowing()) {
+//                    BigDecimal tax = new BigDecimal("0");
+//                    try {
+//                        MPComboBoxModelItem t = taxrate.getValue();
+//                        tax = Tax.getTaxValue(Integer.valueOf(t.getId()));
+//                    } catch (Exception e) {
+//                        try {
+//                            tax = new BigDecimal(taxrate.getText());
+//                        } catch (NumberFormatException numberFormatException) {
+//                            tax = new BigDecimal("0");
+//                        }
+//                    }
+//
+//                    try {
+//                        netvalue.setText(FormatNumber.formatLokalCurrency(FormatNumber.parseDezimal(value.getText()).divide((tax.divide(new BigDecimal("100"))).add(BigDecimal.ONE))));
+//                    } catch (Exception e) {
+//                        netvalue.setText(FormatNumber.formatLokalCurrency(0d));
+//                    }
+//                    try {
+//                        sleep(333);
+//                    } catch (InterruptedException ex) {
+//                    }
+//                }
+//            }
+//        }
+//    }
 }
