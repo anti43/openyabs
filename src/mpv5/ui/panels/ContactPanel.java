@@ -1261,8 +1261,9 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
         Context c = Context.getItem(Item.TYPE_ORDER, null);
 
         Object[][] data = new DatabaseSearch(c).getValuesFor(Context.DEFAULT_ITEM_SEARCH, "contactsids", dataOwner.__getIDS());
-
-        dataTable.setModel(new MPTableModel(data, Headers.ITEM_DEFAULT));
+        MPTableModel mod = new MPTableModel(data, Headers.ITEM_DEFAULT);
+        mod.setTypes(new Class[]{Integer.class, Object.class, Date.class, Double.class});
+        dataTable.setModel(mod);
         TableFormat.stripFirstColumn(dataTable);
         dataTableContent = ITEM;
         addfile.setEnabled(false);
