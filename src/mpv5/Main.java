@@ -239,7 +239,8 @@ public class Main implements Runnable {
      * Launch the application
      */
     public static void start() {
-
+        splash.nextStep(Messages.DBCONN_UPDATE_BEPATIENT.toString());
+        QueryHandler.instanceOf();
         splash.nextStep(Messages.LAUNCH.toString());
         Log.Debug(Main.class, "Trying to launch application now..");
         Runnable runnable = new Runnable() {
@@ -415,7 +416,7 @@ public class Main implements Runnable {
 
         try {
             splash = new SplashScreen(new ImageIcon(Main.class.getResource(mpv5.globals.Constants.SPLASH_IMAGE)));
-            splash.init(11);
+            splash.init(12);
             Log.Print(Messages.START_MESSAGE);
             splash.nextStep(Messages.INIT.toString());
 

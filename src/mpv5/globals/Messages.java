@@ -294,7 +294,8 @@ public enum Messages {
      TYPE_MASSPRINT("Serial-Mail (Massprint)"), 
      CNAME_EXISTS("Please adjust the Subject!\nActual Subject exists!"),
      CONTACT_COMPLETE("Please complete the Contact-Data!"), 
-     DATAOWNER_EMPTY("No Entry selected!\nPlease select an Tableentry.");
+     DATAOWNER_EMPTY("No Entry selected!\nPlease select an Tableentry."), 
+     DBCONN_UPDATE_BEPATIENT("Checking database version und updating (may take a while)...");
 
 
     private Messages(String message) {

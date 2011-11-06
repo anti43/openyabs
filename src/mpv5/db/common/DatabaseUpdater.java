@@ -104,9 +104,8 @@ public class DatabaseUpdater {
                     "INSERT INTO scheduletypes (cname, groupsids, usersids, dateadded, invisible) VALUES ('Meeting',1,1,'2011-07-29',0)",
                     "INSERT INTO scheduletypes (cname, groupsids, usersids, dateadded, invisible) VALUES ('Mail',1,1,'2011-07-29',0)",
                     "INSERT INTO scheduletypes (cname, groupsids, usersids, dateadded, invisible) VALUES ('ToDo',1,1,'2011-07-29',0)",
-                    "ALTER TABLE schedule ADD COLUMN "
-                    + "contactsids BIGINT REFERENCES contacts (ids) ON DELETE CASCADE, "
-                    + "eventtype BIGINT REFERENCES scheduletypes (ids) ON DELETE CASCADE"});
+                    "ALTER TABLE schedule ADD COLUMN contactsids BIGINT REFERENCES contacts (ids) ON DELETE CASCADE",
+                    "ALTER TABLE schedule ADD COLUMN eventtype BIGINT REFERENCES scheduletypes (ids) ON DELETE CASCADE"});
         UPDATES_DERBY.put(1.187, new String[]{
                     "CREATE TABLE conversations "
                     + "(IDS BIGINT NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1), "
@@ -234,9 +233,8 @@ public class DatabaseUpdater {
                     "INSERT INTO scheduletypes (cname, groupsids, usersids, dateadded, invisible) VALUES ('Meeting',1,1,'2011-07-29',0)",
                     "INSERT INTO scheduletypes (cname, groupsids, usersids, dateadded, invisible) VALUES ('Mail',1,1,'2011-07-29',0)",
                     "INSERT INTO scheduletypes (cname, groupsids, usersids, dateadded, invisible) VALUES ('ToDo',1,1,'2011-07-29',0)",
-                    "ALTER TABLE schedule ADD COLUMN "
-                    + "contactsids BIGINT REFERENCES contacts (ids) ON DELETE CASCADE, "
-                    + "eventtype BIGINT REFERENCES scheduletypes (ids) ON DELETE CASCADE"});
+                    "ALTER TABLE schedule ADD COLUMN contactsids BIGINT REFERENCES contacts (ids) ON DELETE CASCADE ",
+                    "ALTER TABLE schedule ADD COLUMN eventtype BIGINT REFERENCES scheduletypes (ids) ON DELETE CASCADE"});
         UPDATES_MYSQL.put(1.187, new String[]{
                     "CREATE TABLE conversations (IDS BIGINT(20) UNSIGNED NOT NULL PRIMARY KEY auto_increment,"
                     + "cname VARCHAR(2500), "

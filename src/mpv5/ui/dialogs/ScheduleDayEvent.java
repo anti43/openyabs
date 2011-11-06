@@ -286,17 +286,18 @@ public class ScheduleDayEvent extends javax.swing.JFrame {
         save(dataOwner);
         try {
             refresh(dataOwner.getItem());
-        } catch (Exception ex) {}
+        } catch (Exception ex) {
+        }
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
         if (dataOwner != null && dataOwner.isExisting()) {
             dataOwner.delete();
             try {
-            refresh(dataOwner.getItem());
-        } catch (NodataFoundException ex) {
-            Log.Debug(ex);
-        }
+                refresh(dataOwner.getItem());
+            } catch (NodataFoundException ex) {
+                Log.Debug(ex);
+            }
         }
     }//GEN-LAST:event_jButton3ActionPerformed
 
@@ -330,7 +331,7 @@ public class ScheduleDayEvent extends javax.swing.JFrame {
 
     private void refresh(Item dao) {
         labeledSpinner1.setValue(1);
-        if (dao!=null) {
+        if (dao != null) {
             jLabel3.setText(text + " " + dao);
         }
         ArrayList<Schedule> data = Schedule.getEvents(dao);
@@ -357,13 +358,17 @@ public class ScheduleDayEvent extends javax.swing.JFrame {
                 s.setUsersids(mpv5.db.objects.User.getCurrentUser().__getIDS());
                 s.setNextdate(DateConverter.addMonths(labeledDateChooser1.getDate(),
                         s.__getIntervalmonth()));
-                s.save();
-                dataOwner = s;
-                Popup.notice(Messages.SCHEDULE_NEXT +
-                        DateConverter.getDefDateString(DateConverter.addMonths(labeledDateChooser1.getDate(),
-                        s.__getIntervalmonth())));
+                s.setContactsids(i.__getContactsids());
+                s.setEventtype(1);
+                if (s.save()) {
+                    dataOwner = s;
+                    Popup.notice(Messages.SCHEDULE_NEXT
+                            + DateConverter.getDefDateString(DateConverter.addMonths(labeledDateChooser1.getDate(),
+                            s.__getIntervalmonth())));
+                }
             } catch (Exception ex) {
                 Log.Debug(this, ex.getMessage());
+                Notificator.raiseNotification(ex, true);
             }
         }
     }
