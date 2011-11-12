@@ -101,7 +101,7 @@ public class wizard_DBSettings_simple_1 extends javax.swing.JPanel implements Wi
                     boolean pexists = true;
                     try {
                         pexists = conn.runQueries(new String[]{"select * from groups where ids = 1"});
-                    } catch (java.sql.SQLSyntaxErrorException sQLException) {
+                    } catch (java.sql.SQLException sQLException) {
                         pexists = false;
                     }
 

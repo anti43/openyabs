@@ -59,10 +59,10 @@ public class UserProperty extends DatabaseObject {
         if (value == null) {
             value = "";
         }
-        QueryCriteria c = new QueryCriteria("usersids", mpv5.db.objects.User.getCurrentUser().__getIDS());
+        QueryCriteria c = new QueryCriteria("usersids", usersids);
         c.addAndCondition("cname", cname);
         QueryHandler.instanceOf().clone(Context.getUserProperties()).delete(c);
-        return super.save();
+        return super.save(true);
     }
 
     /**

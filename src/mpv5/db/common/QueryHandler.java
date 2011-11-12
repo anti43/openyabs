@@ -2417,7 +2417,10 @@ public class QueryHandler implements Cloneable {
         if (jobmessage != null) {
             mpv5.YabsViewProxy.instance().addMessage(jobmessage);
         }
-        return new ReturnValue(id, data, columnnames, jobmessage);
+        ReturnValue p = new ReturnValue(id, data, columnnames, jobmessage);
+        if(Log.LOGLEVEL_DEBUG==Log.getLoglevel())
+            Log.Debug(this, p);
+        return p;
     }
 
     /**

@@ -460,7 +460,7 @@ public class SubItem extends DatabaseObject implements Triggerable {
                     String[] v = vals.get(i);
                     all.add(v[1]);
                     if (Log.getLoglevel() == Log.LOGLEVEL_DEBUG) {
-                        Log.Debug(this, (12 + i) + ": " + v[0] + " " );
+                        Log.Debug(this, (12 + i) + ": " + v[0] + " ");
                     }
                 }
             } catch (Exception ex) {
@@ -723,6 +723,30 @@ public class SubItem extends DatabaseObject implements Triggerable {
             data[14] = __getCName();
         }
         return data;
+    }
+
+    /**
+     * Turn this SubItem into table row data
+     * @param row
+     * @return
+     */
+    public static synchronized SubItem getFromModel(MPTableModel m, int row) {
+        SubItem t = new SubItem();
+
+        t.setIDS(Integer.valueOf(m.getValueAt(row, 0).toString()));
+        t.setCountvalue(new BigDecimal(m.getValueAt(row, 1).toString()));
+        t.setQuantityvalue(new BigDecimal(m.getValueAt(row, 2).toString()));
+        t.setMeasure(m.getValueAt(row, 3).toString());
+        t.setDescription(m.getValueAt(row, 4).toString());
+        t.setExternalvalue(new BigDecimal(m.getValueAt(row, 5).toString()));
+        t.setTaxpercentvalue(new BigDecimal(m.getValueAt(row, 6).toString()));
+
+        t.setOriginalproductsids(Integer.valueOf(m.getValueAt(row, 10).toString()));
+
+        t.setLinkurl(m.getValueAt(row, 13).toString());
+        t.setCName(m.getValueAt(row, 14).toString());
+
+        return t;
     }
 
     /**

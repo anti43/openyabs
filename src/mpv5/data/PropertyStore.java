@@ -20,7 +20,9 @@ import java.awt.Component;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import javax.swing.JComponent;
 import mpv5.logging.Log;
 import mpv5.utils.date.DateConverter;
@@ -431,5 +433,42 @@ public class PropertyStore {
     public void removeAll() {
         list.clear();
         setChanged(true);
+    }
+
+    /**
+     * Creates a new propertystore containing all data which has a key starting with prefix, prefix removed
+     * @param prefix
+     * @return A new PropertyStore
+     */
+    public PropertyStore getProperties(String prefix) {
+        PropertyStore p = new PropertyStore();
+        if (list.size() > 0) {
+            for (int i = list.size(); i > 0; i--) {
+                String name = list.get(i - 1)[0];
+                if (name.startsWith(prefix)) {
+                    String prop = list.get(i - 1)[1];
+                    if (prop != null && !prop.equals("null")) {
+                        p.addProperty(name.replace(prefix, ""), prop);
+                    }
+                }
+            }
+        }
+
+        return p;
+    }
+
+    public Map<String, String> getMap() {
+        Map<String, String> p = new HashMap<String, String>();
+        if (list.size() > 0) {
+            for (int i = list.size(); i > 0; i--) {
+                String name = list.get(i - 1)[0];
+                String prop = list.get(i - 1)[1];
+                if (prop != null && !prop.equals("null")) {
+                    p.put(name, prop);
+                }
+            }
+        }
+
+        return Collections.unmodifiableMap(p);
     }
 }

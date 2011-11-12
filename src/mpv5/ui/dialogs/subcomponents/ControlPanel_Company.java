@@ -1,10 +1,15 @@
 package mpv5.ui.dialogs.subcomponents;
 
 import java.awt.Component;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map.Entry;
 import mpv5.data.PropertyStore;
 import mpv5.db.common.QueryHandler;
+import mpv5.db.objects.User;
 import mpv5.globals.LocalSettings;
 import mpv5.logging.Log;
+import mpv5.ui.beans.LabeledTextField;
 import mpv5.ui.dialogs.ControlApplet;
 import mpv5.utils.text.TypeConversion;
 import mpv5.utils.ui.PanelUtils;
@@ -13,19 +18,19 @@ import mpv5.utils.ui.PanelUtils;
  *
  * 
  */
-public class ControlPanel_Company extends javax.swing.JPanel implements ControlApplet {
+public final class ControlPanel_Company extends javax.swing.JPanel implements ControlApplet {
 
     private static final long serialVersionUID = 1L;
     /**
      * This unique name identifies this control applet
      */
-    public final String UNAME = "ooo";
+    public final String UNAME = "companyinfo";
     private PropertyStore oldvalues;
     private static ControlPanel_Company ident;
 
     public ControlPanel_Company() {
         initComponents();
-        setValues(null);
+        setValues(User.getCurrentUser().getProperties().getProperties("companyinfo."));
         setVisible(true);
     }
 
@@ -34,22 +39,28 @@ public class ControlPanel_Company extends javax.swing.JPanel implements ControlA
 
         jPanel2 = new javax.swing.JPanel();
         jPanel3 = new javax.swing.JPanel();
-        labeledTextField17 = new mpv5.ui.beans.LabeledTextField();
-        labeledTextField3 = new mpv5.ui.beans.LabeledTextField();
-        labeledTextField4 = new mpv5.ui.beans.LabeledTextField();
-        labeledTextField5 = new mpv5.ui.beans.LabeledTextField();
-        labeledTextField6 = new mpv5.ui.beans.LabeledTextField();
-        labeledTextField8 = new mpv5.ui.beans.LabeledTextField();
-        labeledTextField7 = new mpv5.ui.beans.LabeledTextField();
-        labeledTextField9 = new mpv5.ui.beans.LabeledTextField();
-        labeledTextField10 = new mpv5.ui.beans.LabeledTextField();
-        labeledTextField11 = new mpv5.ui.beans.LabeledTextField();
-        labeledTextField12 = new mpv5.ui.beans.LabeledTextField();
-        labeledTextField14 = new mpv5.ui.beans.LabeledTextField();
-        labeledTextField16 = new mpv5.ui.beans.LabeledTextField();
-        labeledTextField13 = new mpv5.ui.beans.LabeledTextField();
-        labeledTextField18 = new mpv5.ui.beans.LabeledTextField();
-        labeledTextField15 = new mpv5.ui.beans.LabeledTextField();
+        business = new mpv5.ui.beans.LabeledTextField();
+        name = new mpv5.ui.beans.LabeledTextField();
+        firstname = new mpv5.ui.beans.LabeledTextField();
+        street = new mpv5.ui.beans.LabeledTextField();
+        city = new mpv5.ui.beans.LabeledTextField();
+        zip = new mpv5.ui.beans.LabeledTextField();
+        country = new mpv5.ui.beans.LabeledTextField();
+        phoneprefix = new mpv5.ui.beans.LabeledTextField();
+        phone = new mpv5.ui.beans.LabeledTextField();
+        email = new mpv5.ui.beans.LabeledTextField();
+        fax = new mpv5.ui.beans.LabeledTextField();
+        taxauthority = new mpv5.ui.beans.LabeledTextField();
+        taxmandant = new mpv5.ui.beans.LabeledTextField();
+        taxadvsior = new mpv5.ui.beans.LabeledTextField();
+        taxadvjob = new mpv5.ui.beans.LabeledTextField();
+        taxnumber = new mpv5.ui.beans.LabeledTextField();
+        bankname = new mpv5.ui.beans.LabeledTextField();
+        banknumber = new mpv5.ui.beans.LabeledTextField();
+        account = new mpv5.ui.beans.LabeledTextField();
+        account1 = new mpv5.ui.beans.LabeledTextField();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        jTextArea1 = new javax.swing.JTextArea();
         jPanel1 = new javax.swing.JPanel();
         jButton1 = new javax.swing.JButton();
         jButton3 = new javax.swing.JButton();
@@ -58,91 +69,126 @@ public class ControlPanel_Company extends javax.swing.JPanel implements ControlA
         setName("Form"); // NOI18N
         setLayout(new java.awt.BorderLayout());
 
-        java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle(); // NOI18N
+        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("mpv5/resources/languages/Panels"); // NOI18N
         jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("ControlPanel_Company.jPanel2.border.title"))); // NOI18N
         jPanel2.setName("jPanel2"); // NOI18N
 
         jPanel3.setName("jPanel3"); // NOI18N
-        jPanel3.setLayout(new javax.swing.BoxLayout(jPanel3, javax.swing.BoxLayout.PAGE_AXIS));
+        jPanel3.setLayout(new java.awt.GridLayout(10, 2, 5, 1));
 
-        labeledTextField17.set_Label(bundle.getString("ControlPanel_Company.labeledTextField17._Label")); // NOI18N
-        labeledTextField17.setName("labeledTextField17"); // NOI18N
-        jPanel3.add(labeledTextField17);
+        business.set_Label(bundle.getString("ControlPanel_Company.business._Label")); // NOI18N
+        business.setName("business"); // NOI18N
+        jPanel3.add(business);
 
-        labeledTextField3.set_Label(bundle.getString("ControlPanel_Company.labeledTextField3._Label")); // NOI18N
-        labeledTextField3.setName("labeledTextField3"); // NOI18N
-        jPanel3.add(labeledTextField3);
+        name.set_Label(bundle.getString("ControlPanel_Company.name._Label")); // NOI18N
+        name.setName("name"); // NOI18N
+        jPanel3.add(name);
 
-        labeledTextField4.set_Label(bundle.getString("ControlPanel_Company.labeledTextField4._Label")); // NOI18N
-        labeledTextField4.setName("labeledTextField4"); // NOI18N
-        jPanel3.add(labeledTextField4);
+        firstname.set_Label(bundle.getString("ControlPanel_Company.firstname._Label")); // NOI18N
+        firstname.setName("firstname"); // NOI18N
+        jPanel3.add(firstname);
 
-        labeledTextField5.set_Label(bundle.getString("ControlPanel_Company.labeledTextField5._Label")); // NOI18N
-        labeledTextField5.setName("labeledTextField5"); // NOI18N
-        jPanel3.add(labeledTextField5);
+        street.set_Label(bundle.getString("ControlPanel_Company.street._Label")); // NOI18N
+        street.setName("street"); // NOI18N
+        jPanel3.add(street);
 
-        labeledTextField6.set_Label(bundle.getString("ControlPanel_Company.labeledTextField6._Label")); // NOI18N
-        labeledTextField6.setName("labeledTextField6"); // NOI18N
-        jPanel3.add(labeledTextField6);
+        city.set_Label(bundle.getString("ControlPanel_Company.city._Label")); // NOI18N
+        city.setName("city"); // NOI18N
+        jPanel3.add(city);
 
-        labeledTextField8.set_Label(bundle.getString("ControlPanel_Company.labeledTextField8._Label")); // NOI18N
-        labeledTextField8.setName("labeledTextField8"); // NOI18N
-        jPanel3.add(labeledTextField8);
+        zip.set_Label(bundle.getString("ControlPanel_Company.zip._Label")); // NOI18N
+        zip.setName("zip"); // NOI18N
+        jPanel3.add(zip);
 
-        labeledTextField7.set_Label(bundle.getString("ControlPanel_Company.labeledTextField7._Label")); // NOI18N
-        labeledTextField7.setName("labeledTextField7"); // NOI18N
-        jPanel3.add(labeledTextField7);
+        country.set_Label(bundle.getString("ControlPanel_Company.country._Label")); // NOI18N
+        country.setName("country"); // NOI18N
+        jPanel3.add(country);
 
-        labeledTextField9.set_Label(bundle.getString("ControlPanel_Company.labeledTextField9._Label")); // NOI18N
-        labeledTextField9.setName("labeledTextField9"); // NOI18N
-        jPanel3.add(labeledTextField9);
+        phoneprefix.set_Label(bundle.getString("ControlPanel_Company.phoneprefix._Label")); // NOI18N
+        phoneprefix.setName("phoneprefix"); // NOI18N
+        jPanel3.add(phoneprefix);
 
-        labeledTextField10.set_Label(bundle.getString("ControlPanel_Company.labeledTextField10._Label")); // NOI18N
-        labeledTextField10.setName("labeledTextField10"); // NOI18N
-        jPanel3.add(labeledTextField10);
+        phone.set_Label(bundle.getString("ControlPanel_Company.phone._Label")); // NOI18N
+        phone.setName("phone"); // NOI18N
+        jPanel3.add(phone);
 
-        labeledTextField11.set_Label(bundle.getString("ControlPanel_Company.labeledTextField11._Label")); // NOI18N
-        labeledTextField11.setName("labeledTextField11"); // NOI18N
-        jPanel3.add(labeledTextField11);
+        email.set_Label(bundle.getString("ControlPanel_Company.email._Label")); // NOI18N
+        email.setName("email"); // NOI18N
+        jPanel3.add(email);
 
-        labeledTextField12.set_Label(bundle.getString("ControlPanel_Company.labeledTextField12._Label")); // NOI18N
-        labeledTextField12.setName("labeledTextField12"); // NOI18N
-        jPanel3.add(labeledTextField12);
+        fax.set_Label(bundle.getString("ControlPanel_Company.fax._Label")); // NOI18N
+        fax.setName("fax"); // NOI18N
+        jPanel3.add(fax);
 
-        labeledTextField14.set_Label(bundle.getString("ControlPanel_Company.labeledTextField14._Label")); // NOI18N
-        labeledTextField14.setName("labeledTextField14"); // NOI18N
-        jPanel3.add(labeledTextField14);
+        taxauthority.set_Label(bundle.getString("ControlPanel_Company.taxauthority._Label")); // NOI18N
+        taxauthority.setName("taxauthority"); // NOI18N
+        jPanel3.add(taxauthority);
 
-        labeledTextField16.set_Label(bundle.getString("ControlPanel_Company.labeledTextField16._Label")); // NOI18N
-        labeledTextField16.setName("labeledTextField16"); // NOI18N
-        jPanel3.add(labeledTextField16);
+        taxmandant.set_Label(bundle.getString("ControlPanel_Company.taxmandant._Label")); // NOI18N
+        taxmandant.setName("taxmandant"); // NOI18N
+        jPanel3.add(taxmandant);
 
-        labeledTextField13.set_Label(bundle.getString("ControlPanel_Company.labeledTextField13._Label")); // NOI18N
-        labeledTextField13.setName("labeledTextField13"); // NOI18N
-        jPanel3.add(labeledTextField13);
+        taxadvsior.set_Label(bundle.getString("ControlPanel_Company.taxadvsior._Label")); // NOI18N
+        taxadvsior.setName("taxadvsior"); // NOI18N
+        jPanel3.add(taxadvsior);
 
-        labeledTextField18.set_Label(bundle.getString("ControlPanel_Company.labeledTextField18._Label")); // NOI18N
-        labeledTextField18.setName("labeledTextField18"); // NOI18N
-        jPanel3.add(labeledTextField18);
+        taxadvjob.set_Label(bundle.getString("ControlPanel_Company.taxadvjob._Label")); // NOI18N
+        taxadvjob.setName("taxadvjob"); // NOI18N
+        jPanel3.add(taxadvjob);
 
-        labeledTextField15.set_Label(bundle.getString("ControlPanel_Company.labeledTextField15._Label")); // NOI18N
-        labeledTextField15.setName("labeledTextField15"); // NOI18N
-        jPanel3.add(labeledTextField15);
+        taxnumber.set_Label(bundle.getString("ControlPanel_Company.taxnumber._Label")); // NOI18N
+        taxnumber.setName("taxnumber"); // NOI18N
+        jPanel3.add(taxnumber);
+
+        bankname.set_Label(bundle.getString("ControlPanel_Company.bankname._Label")); // NOI18N
+        bankname.setName("bankname"); // NOI18N
+        jPanel3.add(bankname);
+
+        banknumber.set_Label(bundle.getString("ControlPanel_Company.banknumber._Label")); // NOI18N
+        banknumber.setName("banknumber"); // NOI18N
+        jPanel3.add(banknumber);
+
+        account.set_Label(bundle.getString("ControlPanel_Company.account._Label")); // NOI18N
+        account.setName("account"); // NOI18N
+        jPanel3.add(account);
+
+        account1.set_Label(bundle.getString("ControlPanel_Company.account1._Label")); // NOI18N
+        account1.setName("account1"); // NOI18N
+        jPanel3.add(account1);
+
+        jScrollPane1.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+        jScrollPane1.setVerticalScrollBarPolicy(javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER);
+        jScrollPane1.setName("jScrollPane1"); // NOI18N
+
+        jTextArea1.setBackground(new java.awt.Color(240, 240, 240));
+        jTextArea1.setColumns(20);
+        jTextArea1.setFont(new java.awt.Font("Dialog", 0, 12)); // NOI18N
+        jTextArea1.setLineWrap(true);
+        jTextArea1.setRows(5);
+        jTextArea1.setText(bundle.getString("ControlPanel_Company.jTextArea1.text")); // NOI18N
+        jTextArea1.setWrapStyleWord(true);
+        jTextArea1.setName("jTextArea1"); // NOI18N
+        jTextArea1.setOpaque(false);
+        jScrollPane1.setViewportView(jTextArea1);
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel2Layout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, 262, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(66, Short.MAX_VALUE))
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, 614, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 614, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap())
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
-                .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, 333, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 77, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(51, Short.MAX_VALUE))
         );
 
         add(jPanel2, java.awt.BorderLayout.CENTER);
@@ -175,7 +221,7 @@ public class ControlPanel_Company extends javax.swing.JPanel implements ControlA
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
 
         setSettings();
-        LocalSettings.save();
+        User.getCurrentUser().saveProperties();
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
@@ -185,7 +231,13 @@ public class ControlPanel_Company extends javax.swing.JPanel implements ControlA
     public void setValues(PropertyStore values) {
         oldvalues = values;
         try {
- 
+            for (Component comp : jPanel3.getComponents()) {
+                for (String[] v : values.getList()) {
+                    if (comp.getName().equalsIgnoreCase(v[0])) {
+                        ((LabeledTextField) comp).setText(v[1]);
+                    }
+                }
+            }
         } catch (Exception e) {
             Log.Debug(this, e);
         }
@@ -199,31 +251,42 @@ public class ControlPanel_Company extends javax.swing.JPanel implements ControlA
         setValues(oldvalues);
     }
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private mpv5.ui.beans.LabeledTextField account;
+    private mpv5.ui.beans.LabeledTextField account1;
+    private mpv5.ui.beans.LabeledTextField bankname;
+    private mpv5.ui.beans.LabeledTextField banknumber;
+    private mpv5.ui.beans.LabeledTextField business;
+    private mpv5.ui.beans.LabeledTextField city;
+    private mpv5.ui.beans.LabeledTextField country;
+    private mpv5.ui.beans.LabeledTextField email;
+    private mpv5.ui.beans.LabeledTextField fax;
+    private mpv5.ui.beans.LabeledTextField firstname;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton3;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
-    private mpv5.ui.beans.LabeledTextField labeledTextField10;
-    private mpv5.ui.beans.LabeledTextField labeledTextField11;
-    private mpv5.ui.beans.LabeledTextField labeledTextField12;
-    private mpv5.ui.beans.LabeledTextField labeledTextField13;
-    private mpv5.ui.beans.LabeledTextField labeledTextField14;
-    private mpv5.ui.beans.LabeledTextField labeledTextField15;
-    private mpv5.ui.beans.LabeledTextField labeledTextField16;
-    private mpv5.ui.beans.LabeledTextField labeledTextField17;
-    private mpv5.ui.beans.LabeledTextField labeledTextField18;
-    private mpv5.ui.beans.LabeledTextField labeledTextField3;
-    private mpv5.ui.beans.LabeledTextField labeledTextField4;
-    private mpv5.ui.beans.LabeledTextField labeledTextField5;
-    private mpv5.ui.beans.LabeledTextField labeledTextField6;
-    private mpv5.ui.beans.LabeledTextField labeledTextField7;
-    private mpv5.ui.beans.LabeledTextField labeledTextField8;
-    private mpv5.ui.beans.LabeledTextField labeledTextField9;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JTextArea jTextArea1;
+    private mpv5.ui.beans.LabeledTextField name;
+    private mpv5.ui.beans.LabeledTextField phone;
+    private mpv5.ui.beans.LabeledTextField phoneprefix;
+    private mpv5.ui.beans.LabeledTextField street;
+    private mpv5.ui.beans.LabeledTextField taxadvjob;
+    private mpv5.ui.beans.LabeledTextField taxadvsior;
+    private mpv5.ui.beans.LabeledTextField taxauthority;
+    private mpv5.ui.beans.LabeledTextField taxmandant;
+    private mpv5.ui.beans.LabeledTextField taxnumber;
+    private mpv5.ui.beans.LabeledTextField zip;
     // End of variables declaration//GEN-END:variables
 
     private void setSettings() {
-        
+        HashMap<String, String> m = PanelUtils.getSubComponentValues(jPanel3);
+        Iterator<Entry<String, String>> i = m.entrySet().iterator();
+        while (i.hasNext()) {
+            Entry<String, String> it = i.next();
+            User.getCurrentUser().setProperty("companyinfo."+it.getKey(), it.getValue());
+        }
     }
 
     @Override

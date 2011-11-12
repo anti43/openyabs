@@ -170,13 +170,14 @@ public class ItemTextAreaDialog extends javax.swing.JDialog implements KeyListen
 
     private synchronized void setRow() {
         SubItem p;
+        MPTableModel m = (MPTableModel) getParentTable().getModel();
         if (product == null) {
-            p = SubItem.getDefaultItem();
+            p = SubItem.getFromModel(m, getParentTable().getSelectedRow());
         } else {
             p = new SubItem(product);
         }
         p.setDescription(textArea.getText());
-        MPTableModel m = (MPTableModel) getParentTable().getModel();
+        
         m.setRowAt(p.getRowData(getParentTable().getSelectedRow()), getParentTable().getSelectedRow(), 1, 14);
         labeledCombobox1.setSelectedIndex(-1);
         product = null;

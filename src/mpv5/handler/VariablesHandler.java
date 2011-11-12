@@ -196,7 +196,8 @@ public abstract class VariablesHandler {
             for (int i = 0; i < c.size(); i++) {
                 String[] data = c.get(i);
                 if (data != null) {
-                    Log.Debug(VariablesHandler.class, source + ": replacing key: " + data[0] + " with value: " + data[1]);
+                    if(Log.getLoglevel()==Log.LOGLEVEL_DEBUG)
+                        Log.Debug(VariablesHandler.class, source + ": replacing key: " + data[0] + " with value: " + data[1]);
                     if (data[1] != null) {
                         text = text.replace(data[0], data[1]);
                     }

@@ -169,6 +169,11 @@ public class ReturnValue {
      * @return
      */
     public boolean hasData() {
-        return data != null && data.length > 0 && data[0].length > 0 ;
+        return data != null && data.length > 0 && data[0].length > 0;
+    }
+
+    @Override
+    public String toString() {
+        return "Rowcount: " +  data.length;
     }
 }

@@ -21,10 +21,12 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Vector;
 import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
 import mpv5.db.objects.Group;
+import mpv5.db.objects.User;
 import mpv5.logging.Log;
 import mpv5.utils.date.DateConverter;
 import mpv5.utils.numberformat.FormatNumber;
@@ -51,7 +53,8 @@ public class FormFieldsHandler {
      */
     public synchronized HashMap<String, Object> getFormFields() {
         HashMap<String, Object> map = new HashMap<String, Object>();
-        if (obj!=null) {
+        
+        if (obj != null) {
             List<Object[]> m = obj.getValues2();
             map = new HashMap<String, Object>();
             for (int i = 0; i < m.size(); i++) {
@@ -64,6 +67,7 @@ public class FormFieldsHandler {
 
             obj.resolveReferences(map);
         }
+        
         return map;
     }
 
@@ -76,7 +80,6 @@ public class FormFieldsHandler {
     public synchronized HashMap<String, Object> getFormattedFormFields(final String identifier) {
         HashMap<String, Object> map = getFormFields();
         HashMap<String, Object> maps = new HashMap<String, Object>();
-        List l = new Vector();
 
         for (Iterator<String> it = map.keySet().iterator(); it.hasNext();) {
             String key = it.next();
@@ -103,7 +106,14 @@ public class FormFieldsHandler {
                 maps.put(skey, o);
             }
         }
+        List<String[]> mapi = User.getCurrentUser().getProperties().getProperties("companyinfo.").getList();
+        for (int i = 0; i < mapi.size(); i++) {
+            String[] strings = mapi.get(i);
+            if (strings[1] != null) {
+                maps.put("company." + strings[0], strings[1].contains("[") ? VariablesHandler.parse(strings[1], obj) : strings[1]);
+            }
+        }
+
         return maps;
     }
 }
-

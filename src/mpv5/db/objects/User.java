@@ -95,7 +95,7 @@ public class User extends DatabaseObject {
         String s = mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("saveformat");
         String s2 = LocalSettings.getProperty(LocalSettings.BASE_DIR);
         File basedir = null;
-        if (s2 != null && !s2.equals("null") ) {
+        if (s2 != null && !s2.equals("null")) {
             basedir = new File(s2);
         } else {
             basedir = new File(Main.USER_HOME);
@@ -545,20 +545,15 @@ public class User extends DatabaseObject {
      * Saves the user properties
      */
     public void saveProperties() {
-
-        if (properties.isChanged()) {
-            List<String[]> l = properties.getList();
-            for (int i = 0; i < l.size(); i++) {
-                String[] d = l.get(i);
-                UserProperty p = new UserProperty();
-                p.setValue(d[1]);
-                p.setCName(d[0]);
-                p.setUsersids(getID());
-                p.save();
-            }
+        List<String[]> l = properties.getList();
+        for (int i = 0; i < l.size(); i++) {
+            String[] d = l.get(i);
+            UserProperty p = new UserProperty();
+            p.setValue(d[1]);
+            p.setCName(d[0]);
+            p.setUsersids(getID());
+            p.save();
         }
-        properties.setChanged(false);
-
     }
 
     /**
@@ -780,7 +775,13 @@ public class User extends DatabaseObject {
         return getProperties().getProperty(name);
     }
 
-
+    /** Delegates to getproperties().setproperty
+     * @param name
+     * @return
+     */
+    public void setProperty(String key, String value) {
+        getProperties().changeProperty(key, value);
+    }
 }
 
 class DTAConfig {

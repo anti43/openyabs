@@ -1,15 +1,19 @@
 package mpv5.ui.dialogs.subcomponents;
 
+import com.google.enterprise.util.FileMonitor;
 import enoa.handler.TableHandler;
 import enoa.handler.TemplateHandler;
 import java.awt.Component;
 import java.awt.Desktop;
 import java.io.File;
+import java.io.IOException;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListModel;
 import mpv5.data.PropertyStore;
@@ -62,6 +66,7 @@ public final class ControlPanel_Templates extends javax.swing.JPanel implements 
     public final String UNAME = "templates";
     private Template dataOwner;
     private static ControlPanel_Templates ident;
+    private File lastImportedFile;
 
     public ControlPanel_Templates() {
         if (MPSecurityManager.checkAdminAccess()) {
@@ -92,7 +97,6 @@ public final class ControlPanel_Templates extends javax.swing.JPanel implements 
         jButton9 = new javax.swing.JButton();
         jButton3 = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
-        jButton7 = new javax.swing.JButton();
         jPanel1 = new javax.swing.JPanel();
         jPanel2 = new javax.swing.JPanel();
         jPanel4 = new javax.swing.JPanel();
@@ -109,11 +113,12 @@ public final class ControlPanel_Templates extends javax.swing.JPanel implements 
         format = new mpv5.ui.beans.LabeledTextField();
         jButton8 = new javax.swing.JButton();
         printern = new mpv5.ui.beans.LabeledTextField();
+        jCheckBox1 = new javax.swing.JCheckBox();
         jScrollPane4 = new javax.swing.JScrollPane();
         templates = new javax.swing.JTable();
 
         setBackground(new java.awt.Color(255, 255, 255));
-        java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle(); // NOI18N
+        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("mpv5/resources/languages/Panels"); // NOI18N
         setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("ControlPanel_Templates.border.title"))); // NOI18N
         setName("Form"); // NOI18N
         setPreferredSize(new java.awt.Dimension(495, 183));
@@ -201,15 +206,6 @@ public final class ControlPanel_Templates extends javax.swing.JPanel implements 
         });
         jPanel6.add(jButton2);
 
-        jButton7.setText(bundle.getString("ControlPanel_Templates.jButton7.text")); // NOI18N
-        jButton7.setName("jButton7"); // NOI18N
-        jButton7.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton7ActionPerformed(evt);
-            }
-        });
-        jPanel6.add(jButton7);
-
         add(jPanel6, java.awt.BorderLayout.PAGE_END);
 
         jPanel1.setName("jPanel1"); // NOI18N
@@ -249,7 +245,7 @@ public final class ControlPanel_Templates extends javax.swing.JPanel implements 
 
         jScrollPane3.setName("jScrollPane3"); // NOI18N
 
-        jList1.setForeground(new java.awt.Color(204, 204, 204));
+        jList1.setForeground(new java.awt.Color(0, 153, 0));
         jList1.setName("jList1"); // NOI18N
         jScrollPane3.setViewportView(jList1);
 
@@ -280,22 +276,11 @@ public final class ControlPanel_Templates extends javax.swing.JPanel implements 
                 .addContainerGap()
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel4Layout.createSequentialGroup()
-                        .addComponent(fullname, javax.swing.GroupLayout.DEFAULT_SIZE, 326, Short.MAX_VALUE)
-                        .addGap(20, 20, 20))
-                    .addGroup(jPanel4Layout.createSequentialGroup()
-                        .addComponent(printern, javax.swing.GroupLayout.DEFAULT_SIZE, 324, Short.MAX_VALUE)
-                        .addGap(22, 22, 22))
-                    .addGroup(jPanel4Layout.createSequentialGroup()
                         .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createSequentialGroup()
-                                .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, 83, Short.MAX_VALUE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 239, Short.MAX_VALUE))
                             .addGroup(jPanel4Layout.createSequentialGroup()
                                 .addComponent(format, javax.swing.GroupLayout.PREFERRED_SIZE, 233, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(jButton8, javax.swing.GroupLayout.DEFAULT_SIZE, 87, Short.MAX_VALUE))
-                            .addComponent(type, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 326, Short.MAX_VALUE)
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createSequentialGroup()
                                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addGroup(jPanel4Layout.createSequentialGroup()
@@ -303,11 +288,21 @@ public final class ControlPanel_Templates extends javax.swing.JPanel implements 
                                         .addGap(8, 8, 8))
                                     .addGroup(jPanel4Layout.createSequentialGroup()
                                         .addComponent(jLabel6, javax.swing.GroupLayout.DEFAULT_SIZE, 62, Short.MAX_VALUE)
-                                        .addGap(25, 25, 25)))
-                                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                    .addComponent(groupname, 0, 239, Short.MAX_VALUE)
-                                    .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 239, Short.MAX_VALUE))))
-                        .addGap(20, 20, 20))))
+                                        .addGap(25, 25, 25))
+                                    .addGroup(jPanel4Layout.createSequentialGroup()
+                                        .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, 72, Short.MAX_VALUE)
+                                        .addGap(15, 15, 15)))
+                                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 239, Short.MAX_VALUE)
+                                    .addComponent(groupname, javax.swing.GroupLayout.Alignment.TRAILING, 0, 239, Short.MAX_VALUE)
+                                    .addComponent(jScrollPane3, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 239, Short.MAX_VALUE)))
+                            .addComponent(type, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 326, Short.MAX_VALUE))
+                        .addGap(20, 20, 20))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createSequentialGroup()
+                        .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(fullname, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 324, Short.MAX_VALUE)
+                            .addComponent(printern, javax.swing.GroupLayout.DEFAULT_SIZE, 324, Short.MAX_VALUE))
+                        .addGap(22, 22, 22))))
         );
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -316,8 +311,8 @@ public final class ControlPanel_Templates extends javax.swing.JPanel implements 
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(printern, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(type, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(type, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(4, 4, 4)
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
                     .addComponent(jButton8)
                     .addComponent(format, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -333,19 +328,33 @@ public final class ControlPanel_Templates extends javax.swing.JPanel implements 
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel4Layout.createSequentialGroup()
                         .addComponent(jLabel1)
-                        .addContainerGap(119, Short.MAX_VALUE))
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 133, Short.MAX_VALUE)))
+                        .addContainerGap(84, Short.MAX_VALUE))
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 98, Short.MAX_VALUE)))
         );
+
+        jCheckBox1.setText(bundle.getString("ControlPanel_Templates.jCheckBox1.text")); // NOI18N
+        jCheckBox1.setEnabled(false);
+        jCheckBox1.setName("jCheckBox1"); // NOI18N
+        jCheckBox1.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                jCheckBox1ItemStateChanged(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(jCheckBox1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 368, javax.swing.GroupLayout.PREFERRED_SIZE)
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel4, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 5, Short.MAX_VALUE)
+                .addComponent(jCheckBox1)
+                .addContainerGap())
         );
 
         jScrollPane4.setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("ControlPanel_Templates.jScrollPane4.border.title"))); // NOI18N
@@ -412,36 +421,22 @@ public final class ControlPanel_Templates extends javax.swing.JPanel implements 
 }//GEN-LAST:event_jButton2ActionPerformed
 
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
-        if (Popup.Y_N_dialog(Messages.REALLY_DELETE)) {
-            if (dataOwner != null) {
+        if (dataOwner != null && dataOwner.isExisting()) {
+            if (Popup.Y_N_dialog(Messages.REALLY_DELETE)) {
+
                 TemplateHandler.clearCache();
                 DatabaseObject dato = dataOwner;
                 dato.getPanelData(this);
                 dato.delete();
+
+                try {
+                    Thread.sleep(333);
+                } catch (InterruptedException ex) {
+                }
+                refresh();
             }
-            try {
-                Thread.sleep(333);
-            } catch (InterruptedException ex) {
-            }
-            refresh();
         }
     }//GEN-LAST:event_jButton4ActionPerformed
-
-    private void jButton7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton7ActionPerformed
-
-        if (dataOwner == null) {
-            jButton1ActionPerformed(evt);
-        }
-
-        if (dataOwner != null) {
-            dataOwner.getPanelData(this);
-            dataOwner.setIDS(-1);
-            dataOwner.save();
-//            TemplateHandler.cacheTemplates();
-        }
-
-        refresh();
-    }//GEN-LAST:event_jButton7ActionPerformed
 
     private void templatesMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_templatesMouseClicked
         try {
@@ -469,9 +464,12 @@ public final class ControlPanel_Templates extends javax.swing.JPanel implements 
 
         if (di.chooseFile()) {
             Template t = new Template();
-            if (QueryHandler.instanceOf().clone(Context.getFiles(), this).insertFile(di.getFile(), t, new SaveString(di.getFile().getName(), true))) {
-//
+            File fi = di.getFile();
+            if (QueryHandler.instanceOf().clone(Context.getFiles(), this).insertFile(fi, t, new SaveString(di.getFile().getName(), true))) {
+//      
                 Popup.notice(Messages.ASSIGN_TEMPLATE);
+                lastImportedFile = fi;
+                jCheckBox1.setEnabled(true);
 
 //                User object = mpv5.db.objects.User.getCurrentUser();
 //
@@ -495,7 +493,7 @@ public final class ControlPanel_Templates extends javax.swing.JPanel implements 
 
     private void jButton9ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton9ActionPerformed
 
-        if (dataOwner!=null && dataOwner.isExisting()) {
+        if (dataOwner != null && dataOwner.isExisting()) {
             try {
                 mpv5.YabsViewProxy.instance().showFilesaveDialogFor(dataOwner.getFile());
             } catch (Exception e) {
@@ -504,23 +502,66 @@ public final class ControlPanel_Templates extends javax.swing.JPanel implements 
     }//GEN-LAST:event_jButton9ActionPerformed
 
     private void jButton10ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton10ActionPerformed
-        Template tpl = (Template) templates.getValueAt(templates.convertRowIndexToModel(templates.getSelectedRow()), 0);
-        if (Popup.Y_N_dialog(Messages.REALLY_CHANGE.toString(), tpl.__getCName())) {
-            DialogForFile di = new DialogForFile(DialogForFile.FILES_ONLY);
-            di.setFileFilter(DialogForFile.TEMPLATE_FILES);
-            if (di.chooseFile()) {
-                QueryHandler.instanceOf().clone(Context.getFiles(), this).updateFile(di.getFile(), tpl.__getFilename());
+        if (dataOwner != null && dataOwner.isExisting()) {
+            Template tpl = (Template) templates.getValueAt(templates.convertRowIndexToModel(templates.getSelectedRow()), 0);
+            if (Popup.Y_N_dialog(Messages.REALLY_CHANGE.toString(), tpl.__getCName())) {
+                DialogForFile di = new DialogForFile(DialogForFile.FILES_ONLY);
+                di.setFileFilter(DialogForFile.TEMPLATE_FILES);
+                if (di.chooseFile()) {
+                    File fi = di.getFile();
+                    QueryHandler.instanceOf().clone(Context.getFiles(), this).updateFile(fi, tpl.__getFilename());
+                    tpl.setDescription(tpl.__getDescription() + "\n - Updated: " + new Date());
+                    tpl.save(true);
+                    TemplateHandler.clearCache();
+
+                    try {
+                        Thread.sleep(333);
+                    } catch (InterruptedException ex) {
+                    }
+                    refresh();
+                    lastImportedFile = fi;
+                    jCheckBox1.setEnabled(true);
+                }
+            }
+        }
+    }//GEN-LAST:event_jButton10ActionPerformed
+
+    private void jCheckBox1ItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_jCheckBox1ItemStateChanged
+        final DataPanel x = this;
+        final Template tpl = dataOwner;
+        FileMonitor.FileChangeListener filecl = new FileMonitor.FileChangeListener() {
+
+            public void fileChanged(String fileName) {
+                QueryHandler.instanceOf().clone(Context.getFiles(), x).updateFile(new File(fileName), tpl.__getFilename());
                 tpl.setDescription(tpl.__getDescription() + "\n - Updated: " + new Date());
                 tpl.save(true);
                 TemplateHandler.clearCache();
+
+                try {
+                    Thread.sleep(333);
+                } catch (InterruptedException ex) {
+                }
+                refresh();
             }
-            try {
-                Thread.sleep(333);
-            } catch (InterruptedException ex) {
+        };
+        if (lastImportedFile != null) {
+            if (jCheckBox1.isSelected()) {
+                try {
+                    FileMonitor.getInstance().addFileChangeListener(filecl, lastImportedFile.getCanonicalPath(), 1000l);
+                } catch (IOException ex) {
+                    Log.Debug(ex);
+                }
+            } else {
+                try {
+                    FileMonitor.getInstance().removeFileChangeListener(filecl, lastImportedFile.getCanonicalPath());
+                } catch (IOException ex) {
+                    Log.Debug(ex);
+                }
             }
-            refresh();
+        } else {
+            jCheckBox1.setSelected(false);
         }
-    }//GEN-LAST:event_jButton10ActionPerformed
+    }//GEN-LAST:event_jCheckBox1ItemStateChanged
 
     public void setValues(PropertyStore values) {
     }
@@ -550,9 +591,9 @@ public final class ControlPanel_Templates extends javax.swing.JPanel implements 
     private javax.swing.JButton jButton4;
     private javax.swing.JButton jButton5;
     private javax.swing.JButton jButton6;
-    private javax.swing.JButton jButton7;
     private javax.swing.JButton jButton8;
     private javax.swing.JButton jButton9;
+    private javax.swing.JCheckBox jCheckBox1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel6;
@@ -670,9 +711,9 @@ public final class ControlPanel_Templates extends javax.swing.JPanel implements 
                 Template t = (Template) temps.get(i);
                 data[i][0] = t;
                 data[i][1] = t.__getMimetype();
-                data[i][2] = Group.getObject(Context.getGroup(), t.__getGroupsids());                
+                data[i][2] = Group.getObject(Context.getGroup(), t.__getGroupsids());
             }
-            
+
             templates.setModel(new MPTableModel(data, Headers.TEMPLATES.getValue()));
         } catch (NodataFoundException ex) {
             Log.Debug(this, ex.getMessage());
@@ -739,7 +780,7 @@ public final class ControlPanel_Templates extends javax.swing.JPanel implements 
             c.add("cname", dataOwner.__getIDS() + "@" + object.__getIDS() + "@" + groups);
             QueryHandler.instanceOf().clone(Context.getTemplatesToUsers()).insert(c, null);
         }
-        
+
         TemplateHandler.clearCache();
     }
 
