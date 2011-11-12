@@ -16,6 +16,8 @@
  */
 package mpv5.ui.misc;
 
+import java.awt.Component;
+import java.awt.Dialog;
 import java.util.List;
 import java.util.Vector;
 import javax.swing.JComponent;
@@ -52,6 +54,26 @@ public class MPTable extends JTable {
      * @see #createDefaultSelectionModel
      */
     public MPTable(JComponent identifier) {
+        super();
+        setName("43");
+        if (identifier.getName() == null) {
+            identifier.setName(identifier.getClass().getSimpleName());
+        }
+        setPersistanceHandler(new TableViewPersistenceHandler(this, identifier));
+    }
+    
+     /**
+     * Constructs a default <code>JTable</code> that is initialized with a default
+     * data model, a default column model, and a default selection
+     * model. The identifier JComponent is used to save the state of the table columns in the actual view.
+     * Not using this one constructor may lead to inconsistent behavior of the view if this JTable's parent component has no unique name.
+     * It is recommended to use this constructor in Yabs.
+     *
+     * @see #createDefaultDataModel
+     * @see #createDefaultColumnModel
+     * @see #createDefaultSelectionModel
+     */
+    public MPTable(Component identifier) {
         super();
         setName("43");
         if (identifier.getName() == null) {

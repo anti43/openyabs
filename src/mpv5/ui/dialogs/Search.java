@@ -10,8 +10,10 @@
  */
 package mpv5.ui.dialogs;
 
-
+import java.awt.Component;
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.JComponent;
+import javax.swing.table.TableCellRenderer;
 import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
 import mpv5.db.common.DatabaseSearch;
@@ -42,7 +44,6 @@ public class Search extends javax.swing.JDialog {
         return f;
     }
     private static String oldSelection;
-
     private Context lastContext;
     private DatabaseObject selection;
     private boolean addTabs = false;
@@ -82,13 +83,23 @@ public class Search extends javax.swing.JDialog {
         jButton1 = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
+        jTable1 = new  mpv5.ui.misc.MPTable(this) {
+            public Component prepareRenderer(TableCellRenderer renderer,
+                int rowIndex, int vColIndex) {
+                Component c = super.prepareRenderer(renderer, rowIndex, vColIndex);
+                if (c instanceof JComponent) {
+                    JComponent jc = (JComponent)c;
+                    jc.setToolTipText(String.valueOf(getValueAt(rowIndex, vColIndex)));
+                }
+                return c;
+            }
+        };
         jCheckBox2 = new javax.swing.JCheckBox();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setName("Form"); // NOI18N
 
-        java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle(); // NOI18N
+        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("mpv5/resources/languages/Panels"); // NOI18N
         jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("Search.jPanel1.border.title"))); // NOI18N
         jPanel1.setName("jPanel1"); // NOI18N
 
@@ -202,7 +213,7 @@ public class Search extends javax.swing.JDialog {
                         .addComponent(jCheckBox2))
                     .addComponent(jButton1))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 180, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 200, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jButton2))
         );
@@ -288,8 +299,9 @@ public class Search extends javax.swing.JDialog {
             jTable1.setModel(new MPTableModel(HtmlParser.getMarkedHtml(data, 2, newSelection)));
         }
 
+        TableFormat.hideHeader(jTable1);
         TableFormat.stripFirstColumn(jTable1);
-        TableFormat.format(jTable1, 1, 100);
+        //TableFormat.format(jTable1, 1, 100);
     }
 
     private DatabaseObject getSelectedObject() {

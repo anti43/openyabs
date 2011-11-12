@@ -19,6 +19,7 @@ package mpv5.ui.misc;
 
 //~--- non-JDK imports --------------------------------------------------------
 import com.l2fprod.common.demo.Main;
+import java.awt.Component;
 import java.awt.Rectangle;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -58,7 +59,7 @@ import org.jdesktop.application.SessionStorage;
 public final class TableViewPersistenceHandler {
 
     private List<TableColumnModelListener> listeners = new ArrayList<TableColumnModelListener>();
-    private final JComponent identifier;
+    private final Component identifier;
     private final JTable target;
     private final SessionStorage storage;
     private final TableColumnModelListener cListener;
@@ -71,7 +72,7 @@ public final class TableViewPersistenceHandler {
      * @param target
      * @param identifier
      */
-    public TableViewPersistenceHandler(final MPTable target, final JComponent identifier) {
+    public TableViewPersistenceHandler(final MPTable target, final Component identifier) {
         this(target, identifier, false);
     }
 
@@ -81,7 +82,7 @@ public final class TableViewPersistenceHandler {
      * @param identifier
      * @param passive  
      */
-    public TableViewPersistenceHandler(final MPTable target, final JComponent identifier, final boolean passive) {
+    public TableViewPersistenceHandler(final MPTable target, final Component identifier, final boolean passive) {
         if (User.getCurrentUser().__getCName() == null || User.getCurrentUser().__getCName().length() == 0) {
             throw new IllegalStateException("The username is not set.");
         }
