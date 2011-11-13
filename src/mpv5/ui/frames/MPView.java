@@ -153,6 +153,7 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
      */
     public static void showCurrentList() {
         try {
+            BigPopup.setLocationBottomRight(getClistview());
             BigPopup.show(getClistview());
             BigPopup.setOnTop(getClistview());
         } catch (Exception ex) {
@@ -528,6 +529,7 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
         getClipboardMenu().add(new ClipboardMenuItem(obj));
         getCurrentList().add(obj);
         getClistview().validate();
+        showCurrentList();
     }
 
     public MPView(SingleFrameApplication app) {
@@ -942,7 +944,7 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
 
         jButton5.setFont(new java.awt.Font("Tahoma", 0, 10));
         jButton5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/agt_family.png"))); // NOI18N
-        java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle(); // NOI18N
+        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("mpv5/resources/languages/Panels"); // NOI18N
         jButton5.setText(bundle.getString("MPView.jButton5.text_1")); // NOI18N
         jButton5.setToolTipText(bundle.getString("MPView.jButton5.toolTipText_1")); // NOI18N
         jButton5.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
@@ -1786,6 +1788,7 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
         });
         jMenu6.add(jMenuItem7);
 
+        jMenuItem5.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_Y, java.awt.event.InputEvent.CTRL_MASK));
         jMenuItem5.setText(bundle.getString("MPView.jMenuItem5.text")); // NOI18N
         jMenuItem5.setName("jMenuItem5"); // NOI18N
         jMenuItem5.addActionListener(new java.awt.event.ActionListener() {

@@ -109,5 +109,11 @@ public class Position {
     public void topLeft() {
         comp.setLocation(0, 0);
     }
+
+    public void bottomRight() {
+        Dimension frameSize = new Dimension(comp.getSize());
+        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+        comp.setLocation((int) (screenSize.getWidth() - frameSize.getWidth()), (int) (screenSize.getHeight() - frameSize.getHeight()));
+    }
 }
 

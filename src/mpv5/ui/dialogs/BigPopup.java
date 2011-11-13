@@ -340,4 +340,24 @@ public class BigPopup {
         Position position = new Position(window);
         contents.put(content, window);
     }
+
+    public static void setLocation(JPanel panel, Point location) {
+        if (contents.containsKey(panel)) {
+            contents.get(panel).setLocation(location);
+        }
+    }
+    
+    public static void setLocationBottomLeft(JPanel panel) {
+       if (contents.containsKey(panel)) {
+           Position position = new Position(contents.get(panel));
+           position.bottomLeft();
+        } 
+    }
+
+    public static void setLocationBottomRight(JPanel panel) {
+        if (contents.containsKey(panel)) {
+           Position position = new Position(contents.get(panel));
+           position.bottomRight();
+        } 
+    }
 }
