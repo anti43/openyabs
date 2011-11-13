@@ -244,7 +244,7 @@ public class DatabaseUpdater {
                     + "date DATE NOT NULL,dateadded DATE NOT NULL,"
                     + "intaddedby BIGINT UNSIGNED NOT NULL DEFAULT 1, "
                     + "invisible SMALLINT DEFAULT 0, "
-                    + "content LONGVARCHAR NOT NULL)ENGINE=MyISAM  DEFAULT CHARSET=IS0-8859-15"});
+                    + "content LONGVARCHAR NOT NULL)ENGINE=MyISAM  DEFAULT CHARSET=utf8"});
         UPDATES_MYSQL.put(1.188, new String[]{
                     "ALTER TABLE subitems ADD COLUMN inttype SMALLINT DEFAULT 0 NOT NULL"
                 });
