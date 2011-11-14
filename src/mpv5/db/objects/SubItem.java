@@ -381,7 +381,7 @@ public class SubItem extends DatabaseObject implements Triggerable {
             setDescription(VariablesHandler.parse(product.__getCName(), product));
         }
 ///////////////end format////////////////////////////////////////////////////////
-        setExternalvalue(product.__getExternalnetvalue());
+        setExternalvalue(product.findPriceFor(1d));
         setGroupsids(mpv5.db.objects.User.getCurrentUser().__getGroupsids());
         setIntaddedby(mpv5.db.objects.User.getCurrentUser().__getIDS());
         setInternalvalue(product.__getInternalnetvalue());

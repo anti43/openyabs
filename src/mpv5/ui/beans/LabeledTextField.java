@@ -34,7 +34,7 @@ public class LabeledTextField extends javax.swing.JPanel {
     private static final long serialVersionUID = 1L;
     private String _text;
     private String _label;
-    private Class clazz;
+    private Class clazz = Double.class;//default now
     private DataPanel parent;
     private Context context;
     private String searchField;
@@ -110,7 +110,7 @@ public class LabeledTextField extends javax.swing.JPanel {
 
         jLabel1.setText("text");
 
-        //jTextField1.setFont(jTextField1.getFont());
+        jTextField1.setFont(jTextField1.getFont());
         jTextField1.setDisabledTextColor(new java.awt.Color(0, 51, 51));
         jTextField1.setMinimumSize(new java.awt.Dimension(5, 20));
         jTextField1.setPreferredSize(new java.awt.Dimension(5, 20));
@@ -127,7 +127,7 @@ public class LabeledTextField extends javax.swing.JPanel {
             .addGroup(layout.createSequentialGroup()
                 .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 84, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, 0)
-                .addComponent(jTextField1, javax.swing.GroupLayout.DEFAULT_SIZE, 117, Short.MAX_VALUE))
+                .addComponent(jTextField1, javax.swing.GroupLayout.DEFAULT_SIZE, 98, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -353,7 +353,7 @@ public class LabeledTextField extends javax.swing.JPanel {
                 Integer.valueOf(jTextField1.getText());
                 jTextField1.setBackground(Color.WHITE);
                 return (T) Integer.valueOf(jTextField1.getText());
-            } catch (NumberFormatException numberFormatException) {
+            } catch (Exception numberFormatException) {
                 Log.Debug(numberFormatException);
                 TextFieldUtils.blinker(jTextField1, Color.gray);
                 jTextField1.setText("0");
@@ -363,7 +363,7 @@ public class LabeledTextField extends javax.swing.JPanel {
                 FormatNumber.parseDezimal(jTextField1.getText());
                 jTextField1.setBackground(Color.WHITE);
                 return (T) new Double(FormatNumber.parseDezimal(jTextField1.getText()).doubleValue());
-            } catch (NumberFormatException numberFormatException) {
+            } catch (Exception numberFormatException) {
                 Log.Debug(numberFormatException);
                 TextFieldUtils.blinker(jTextField1, Color.gray);
                 jTextField1.setText("0.0");
@@ -373,7 +373,7 @@ public class LabeledTextField extends javax.swing.JPanel {
                 FormatNumber.parseDezimal(jTextField1.getText());
                 jTextField1.setBackground(Color.WHITE);
                 return (T) FormatNumber.parseDezimal(jTextField1.getText());
-            } catch (NumberFormatException numberFormatException) {
+            } catch (Exception numberFormatException) {
                 Log.Debug(this, jTextField1.getText());
                 Log.Debug(numberFormatException);
 
@@ -381,7 +381,7 @@ public class LabeledTextField extends javax.swing.JPanel {
                 jTextField1.setText("0.0");
             }
         }
-        return null;
+        return classtemplate;
     }
 
     /**

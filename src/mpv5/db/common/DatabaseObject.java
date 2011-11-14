@@ -681,8 +681,8 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
                         ids = QueryHandler.instanceOf().clone(context).insert(collect(), message);
                         Log.Debug(this, "The inserted row has id: " + IDENTITY);
                     } else {
-                        Popup.notice(Messages.CNAME_CANNOT_BE_NULL);
-                        Log.Debug(this, Messages.CNAME_CANNOT_BE_NULL + " [" + context + "]");
+                        Popup.notice(Messages.CNAME_CANNOT_BE_NULL + ": " + this.getType());
+                        Log.Debug(this, new RuntimeException(Messages.CNAME_CANNOT_BE_NULL + " [" + context + "]"));
                         return false;
                     }
 
@@ -941,6 +941,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
                             : methods[i].getName().toLowerCase().replace("__get", "");
 //                    Log.Debug(this, "Calling: " + methods[i]);
                     tempval = methods[i].invoke(this, (Object[]) null);
+                   // Log.Debug(this, "On " + methods[i].getName());
                     Log.Debug(this, "Collect: " + tempval.getClass().getName() + " : " + methods[i].getName() + " ? " + tempval);
                     if (tempval.getClass().isInstance(new String())) {
                         data.add(left, String.valueOf(tempval));
@@ -974,8 +975,8 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
                         data.add(left, (Short) tempval);
                     } else if (tempval.getClass().isInstance(new BigDecimal(0))) {
                         data.add(left, (BigDecimal) tempval);
-                    } else if (tempval.getClass().isAssignableFrom(DatabaseObject.class)) {
-                        data.add(left + "ids", ((DatabaseObject) tempval).__getIDS());
+                    } else if (DatabaseObject.class.isAssignableFrom(tempval.getClass())) {
+                        data.add(left + "sids", ((DatabaseObject) tempval).__getIDS());
                     }
                 } catch (Exception ex) {
                     mpv5.logging.Log.Debug(this, methods[i].getName());

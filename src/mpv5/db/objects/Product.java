@@ -590,10 +590,23 @@ public class Product extends DatabaseObject implements Formattable, Templateable
 
     public List<ProductPrice> findProductPrices() {
         try {
-            return getReferencedObjects(this, Context.getProductPrice(), new ProductPrice());
+            return getReferencedObjects(this, Context.getProductPrice(), new ProductPrice(), false);
         } catch (NodataFoundException ex) {
             Log.Debug(this, ex.getMessage());
         }
         return Collections.emptyList();
+    }
+
+    public BigDecimal findPriceFor(double amount) {
+        BigDecimal res = BigDecimal.ZERO;
+        BigDecimal am = BigDecimal.valueOf(amount);
+        List<ProductPrice> pp = findProductPrices();
+        Collections.sort(pp);
+        for (ProductPrice p : pp) {
+            if (am.compareTo(p.getMincountvalue()) > 0) {
+                res = p.getExternalnetvalue();
+            }
+        }
+        return res.compareTo(BigDecimal.ZERO) == 0 ? __getExternalnetvalue() : res;
     }
 }

@@ -20,6 +20,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.math.BigDecimal;
 import javax.swing.JTable;
 import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
@@ -69,6 +70,7 @@ public class ItemTextAreaDialog extends javax.swing.JDialog implements KeyListen
         okButton = new javax.swing.JButton();
         cancelButton = new javax.swing.JButton();
         labeledCombobox1 = new mpv5.ui.beans.LabeledCombobox();
+        labeledSpinner1 = new mpv5.ui.beans.LabeledSpinner();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setName("Form"); // NOI18N
@@ -80,7 +82,7 @@ public class ItemTextAreaDialog extends javax.swing.JDialog implements KeyListen
         textArea.setName("textArea"); // NOI18N
         jScrollPane1.setViewportView(textArea);
 
-        java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle(); // NOI18N
+        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("mpv5/resources/languages/Panels"); // NOI18N
         okButton.setText(bundle.getString("okButton")); // NOI18N
         okButton.setName("okButton"); // NOI18N
         okButton.addActionListener(new java.awt.event.ActionListener() {
@@ -96,18 +98,22 @@ public class ItemTextAreaDialog extends javax.swing.JDialog implements KeyListen
         labeledCombobox1.set_Label(bundle.getString("ItemTextAreaDialog.labeledCombobox1._Label")); // NOI18N
         labeledCombobox1.setName("labeledCombobox1"); // NOI18N
 
+        labeledSpinner1.set_Label(bundle.getString("ItemTextAreaDialog.labeledSpinner1._Label")); // NOI18N
+        labeledSpinner1.setName("labeledSpinner1"); // NOI18N
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(268, Short.MAX_VALUE)
+                .addComponent(labeledSpinner1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 58, Short.MAX_VALUE)
                 .addComponent(okButton, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(cancelButton)
                 .addGap(11, 11, 11))
-            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 408, Short.MAX_VALUE)
-            .addComponent(labeledCombobox1, javax.swing.GroupLayout.DEFAULT_SIZE, 408, Short.MAX_VALUE)
+            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 421, Short.MAX_VALUE)
+            .addComponent(labeledCombobox1, javax.swing.GroupLayout.DEFAULT_SIZE, 421, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -116,10 +122,11 @@ public class ItemTextAreaDialog extends javax.swing.JDialog implements KeyListen
                 .addGap(0, 0, 0)
                 .addComponent(labeledCombobox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(3, 3, 3)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
+                    .addComponent(okButton)
                     .addComponent(cancelButton)
-                    .addComponent(okButton))
-                .addContainerGap(18, Short.MAX_VALUE))
+                    .addComponent(labeledSpinner1, javax.swing.GroupLayout.PREFERRED_SIZE, 21, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap())
         );
 
         pack();
@@ -133,6 +140,7 @@ public class ItemTextAreaDialog extends javax.swing.JDialog implements KeyListen
     public javax.swing.JButton cancelButton;
     private javax.swing.JScrollPane jScrollPane1;
     private mpv5.ui.beans.LabeledCombobox labeledCombobox1;
+    private mpv5.ui.beans.LabeledSpinner labeledSpinner1;
     public javax.swing.JButton okButton;
     public javax.swing.JTextArea textArea;
     // End of variables declaration//GEN-END:variables
@@ -175,6 +183,8 @@ public class ItemTextAreaDialog extends javax.swing.JDialog implements KeyListen
             p = SubItem.getFromModel(m, getParentTable().getSelectedRow());
         } else {
             p = new SubItem(product);
+            p.setCountvalue(new BigDecimal(labeledSpinner1.get_Value().toString()));
+            p.setExternalvalue(product.findPriceFor(p.__getCountvalue().doubleValue()));
         }
         p.setDescription(textArea.getText());
         

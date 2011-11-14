@@ -188,6 +188,7 @@ public class ProductPanel extends javax.swing.JPanel implements DataPanel, MPCBS
 
         contactname1.setEditable(true);
         supplierpanel.add(new ProductPanelContactSub(null, true));
+        labeledTextField1.set_ValueClass(Double.class);
 
         selecttax.getComboBox().addActionListener(new ActionListener() {
 
@@ -425,7 +426,7 @@ public class ProductPanel extends javax.swing.JPanel implements DataPanel, MPCBS
         labeledSpinner3 = new mpv5.ui.beans.LabeledSpinner();
         toolbarpane = new javax.swing.JPanel();
 
-        java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle(); // NOI18N
+        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("mpv5/resources/languages/Panels"); // NOI18N
         setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("ProductPanel.border.title_1"))); // NOI18N
         setName("Form"); // NOI18N
 
@@ -474,7 +475,7 @@ public class ProductPanel extends javax.swing.JPanel implements DataPanel, MPCBS
 
         groupnameselect.setName("groupnameselect"); // NOI18N
 
-        path.setFont(new java.awt.Font("Dialog", 0, 12));
+        path.setFont(new java.awt.Font("Dialog", 0, 12)); // NOI18N
         path.setText(bundle.getString("ProductPanel.path.text")); // NOI18N
         path.setName("path"); // NOI18N
 
@@ -485,13 +486,13 @@ public class ProductPanel extends javax.swing.JPanel implements DataPanel, MPCBS
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(path, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 844, Short.MAX_VALUE)
+                    .addComponent(path, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 848, Short.MAX_VALUE)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(stype, javax.swing.GroupLayout.PREFERRED_SIZE, 216, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(familyselect, javax.swing.GroupLayout.DEFAULT_SIZE, 384, Short.MAX_VALUE)
                             .addComponent(cnumber, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 174, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 178, Short.MAX_VALUE)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                             .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addComponent(jLabel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -603,7 +604,7 @@ public class ProductPanel extends javax.swing.JPanel implements DataPanel, MPCBS
                 .addComponent(contactcompany1, javax.swing.GroupLayout.PREFERRED_SIZE, 131, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(8, 8, 8)
                 .addComponent(contactid1, javax.swing.GroupLayout.PREFERRED_SIZE, 131, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(196, Short.MAX_VALUE))
+                .addContainerGap(198, Short.MAX_VALUE))
         );
         jPanel5Layout.setVerticalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -670,9 +671,9 @@ public class ProductPanel extends javax.swing.JPanel implements DataPanel, MPCBS
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 62, Short.MAX_VALUE)
+            .addGap(0, 82, Short.MAX_VALUE)
             .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 62, Short.MAX_VALUE))
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 82, Short.MAX_VALUE))
         );
 
         jPanel9.setBackground(new java.awt.Color(255, 255, 255));
@@ -707,7 +708,7 @@ public class ProductPanel extends javax.swing.JPanel implements DataPanel, MPCBS
                 .addComponent(threshold, javax.swing.GroupLayout.PREFERRED_SIZE, 175, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(inventoryDisabled)
-                .addContainerGap(331, Short.MAX_VALUE))
+                .addContainerGap(369, Short.MAX_VALUE))
         );
         jPanel9Layout.setVerticalGroup(
             jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -799,7 +800,7 @@ public class ProductPanel extends javax.swing.JPanel implements DataPanel, MPCBS
                     .addComponent(cname, javax.swing.GroupLayout.PREFERRED_SIZE, 463, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 365, Short.MAX_VALUE)
+                    .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 372, Short.MAX_VALUE)
                     .addComponent(unit, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap())
         );
@@ -872,7 +873,7 @@ public class ProductPanel extends javax.swing.JPanel implements DataPanel, MPCBS
                         .addComponent(labeledSpinner3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(labeledTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(440, Short.MAX_VALUE))
+                .addContainerGap(447, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -918,7 +919,7 @@ public class ProductPanel extends javax.swing.JPanel implements DataPanel, MPCBS
                             .addComponent(addfile, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, rightpaneLayout.createSequentialGroup()
                         .addGap(2, 2, 2)
-                        .addComponent(jTabbedPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                        .addComponent(jTabbedPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 870, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         rightpaneLayout.setVerticalGroup(
@@ -943,7 +944,7 @@ public class ProductPanel extends javax.swing.JPanel implements DataPanel, MPCBS
                         .addComponent(addfile)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(removefile))
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 62, Short.MAX_VALUE)
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 82, Short.MAX_VALUE)
                     .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
@@ -1319,28 +1320,41 @@ public class ProductPanel extends javax.swing.JPanel implements DataPanel, MPCBS
 
             public void run() {
                 try {
+                    pp1=null;
+                    pp2=null;
+                    pp3=null;
+                    
                     List<ProductPrice> pp = b.findProductPrices();
                     for (int i = 0; i < pp.size(); i++) {
                         ProductPrice productPrice = pp.get(i);
-                        if (pp1 == null) {
+                        if (i == 0) {
                             pp1 = productPrice;
-                        } else if (pp2 == null) {
+                        } else if (i == 1) {
                             pp2 = productPrice;
-                        } else if (pp3 == null) {
+                        } else if (i == 2) {
                             pp3 = productPrice;
                         }
                     }
                     if (pp1 != null) {
                         labeledSpinner1.setValue(pp1.getMincountvalue());
                         labeledTextField1.setText(pp1.getExternalnetvalue());
+                    }else{
+                        labeledSpinner1.setValue(0d);
+                        labeledTextField1.setText(0d);
                     }
                     if (pp2 != null) {
                         labeledSpinner2.setValue(pp2.getMincountvalue());
                         labeledTextField2.setText(pp2.getExternalnetvalue());
+                    }else{
+                        labeledSpinner2.setValue(0d);
+                        labeledTextField2.setText(0d);
                     }
                     if (pp3 != null) {
                         labeledSpinner3.setValue(pp3.getMincountvalue());
                         labeledTextField3.setText(pp3.getExternalnetvalue());
+                    }else{
+                        labeledSpinner3.setValue(0d);
+                        labeledTextField3.setText(0d);
                     }
                 } catch (Exception e) {
                     Log.Debug(this, e.getMessage());
@@ -1376,6 +1390,10 @@ public class ProductPanel extends javax.swing.JPanel implements DataPanel, MPCBS
                     stype.setSelectedIndex(type);
                     selecttax.triggerSearch();
                     selecttax.setSelectedItem(Integer.valueOf(taxids_));
+
+                    if (dataOwner != null) {
+                        setDataOwner(dataOwner, true);
+                    }
                 } catch (Exception e) {
                     Log.Debug(this, e);
                 }

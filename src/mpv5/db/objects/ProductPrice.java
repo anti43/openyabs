@@ -28,8 +28,8 @@ import mpv5.ui.panels.ProductPanel;
  * 
  */
 public class ProductPrice extends DatabaseObject {
-    private static final long serialVersionUID = 1L;
 
+    private static final long serialVersionUID = 1L;
     private Product product;
     private BigDecimal externalnetvalue;
     private BigDecimal internalnetvalue;
@@ -37,6 +37,7 @@ public class ProductPrice extends DatabaseObject {
 
     public ProductPrice() {
         context = Context.getProductPrice();
+        setCName("ProductPrice@" + IDENTITY);
     }
 
     @Override
@@ -107,5 +108,11 @@ public class ProductPrice extends DatabaseObject {
      */
     public void setMincountvalue(BigDecimal mincountvalue) {
         this.mincountvalue = mincountvalue;
+    }
+
+    @Override
+    public boolean save(boolean silent) {
+        setCName("Productprice for " + getProduct() + "@" + mincountvalue);
+        return super.save(silent);
     }
 }

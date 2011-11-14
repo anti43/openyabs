@@ -47,14 +47,12 @@ public class LabeledSpinner extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jLabel1 = new javax.swing.JLabel();
         jSpinner1 = new javax.swing.JSpinner();
+        jLabel1 = new javax.swing.JLabel();
 
         setOpaque(false);
 
-        jLabel1.setText("text");
-
-       // jSpinner1.setFont(jSpinner1.getFont());
+        jSpinner1.setFont(jSpinner1.getFont());
         jSpinner1.setModel(new javax.swing.SpinnerNumberModel(Integer.valueOf(0), Integer.valueOf(0), null, Integer.valueOf(1)));
         jSpinner1.setEditor(new javax.swing.JSpinner.NumberEditor(jSpinner1, ""));
         jSpinner1.addChangeListener(new javax.swing.event.ChangeListener() {
@@ -63,20 +61,21 @@ public class LabeledSpinner extends javax.swing.JPanel {
             }
         });
 
+        jLabel1.setText("text");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 89, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(3, 3, 3)
-                .addComponent(jSpinner1, javax.swing.GroupLayout.DEFAULT_SIZE, 99, Short.MAX_VALUE)
-                .addContainerGap())
+                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 84, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, 0)
+                .addComponent(jSpinner1, javax.swing.GroupLayout.DEFAULT_SIZE, 98, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jSpinner1)
-            .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, 28, Short.MAX_VALUE)
+            .addComponent(jSpinner1, javax.swing.GroupLayout.DEFAULT_SIZE, 22, Short.MAX_VALUE)
+            .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, 22, Short.MAX_VALUE)
         );
     }// </editor-fold>//GEN-END:initComponents
 
