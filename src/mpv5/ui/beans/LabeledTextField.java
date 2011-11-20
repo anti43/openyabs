@@ -34,7 +34,7 @@ public class LabeledTextField extends javax.swing.JPanel {
     private static final long serialVersionUID = 1L;
     private String _text;
     private String _label;
-    private Class clazz = Double.class;//default now
+    private Class clazz; // = Double.class;//default now
     private DataPanel parent;
     private Context context;
     private String searchField;

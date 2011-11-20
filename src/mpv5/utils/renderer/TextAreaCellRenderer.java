@@ -19,8 +19,8 @@ package mpv5.utils.renderer;
 
 //~--- JDK imports ------------------------------------------------------------
 
+import java.awt.Color;
 import java.awt.Component;
-import java.awt.Dimension;
 
 import javax.swing.JTable;
 import javax.swing.JTextArea;
@@ -89,7 +89,10 @@ public class TextAreaCellRenderer extends JTextArea implements TableCellRenderer
         if (table.getRowHeight(row) != newrowheight) {
             table.setRowHeight(row, newrowheight);
         }
-
+        if (hasFocus) {
+            setBackground(Color.BLUE);
+            setForeground(Color.WHITE);
+        }
         return this;
     }
 }

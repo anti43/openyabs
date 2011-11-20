@@ -29,7 +29,6 @@ import com.sun.star.lang.WrappedTargetException;
 import com.sun.star.text.XText;
 import com.sun.star.text.XTextCursor;
 import com.sun.star.uno.UnoRuntime;
-import mpv5.webshopinterface.wsdjobs.addContactJob;
 
 /**
  * This class handles tables withinh OO files

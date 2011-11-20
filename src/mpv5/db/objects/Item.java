@@ -590,12 +590,13 @@ public class Item extends DatabaseObject implements Formattable, Templateable {
         ArrayList<String[]> list = new ArrayList<String[]>();
 
         try {
-            data = DatabaseObject.getReferencedObjects(this, Context.getSubItem(), new SubItem());
+            data = DatabaseObject.getReferencedObjects(this, Context.getSubItem(), new SubItem(), false);
             Collections.sort(data, SubItem.ORDER_COMPARATOR);
 
             for (int i = 0; i < data.size(); i++) {
                 SubItem t = data.get(i);
                 list.add(t.toStringArray());
+
                 if (GlobalSettings.getBooleanProperty("org.openyabs.exportproperty.pdftable", false)) {
                     data2 = t.getValues3();
                     for (int j = 0; j < data2.size(); j++) {
@@ -604,12 +605,24 @@ public class Item extends DatabaseObject implements Formattable, Templateable {
                     }
                 }
             }
+
+            if (GlobalSettings.getBooleanProperty("org.openyabs.exportproperty.hidecountfortext", true)) {
+                int skipcount = 0;
+                for (int i = 0; i < data.size(); i++) {
+                    SubItem t = data.get(i);
+                    if (t.getInttype() == SubItem.TYPE_TEXT) {
+                        skipcount++;
+                    } else {
+                        list.get(i)[0] = Integer.valueOf(list.get(i)[0] + skipcount).toString();
+                    }
+                }
+            }
         } catch (NodataFoundException ex) {
             Log.Debug(this, ex.getMessage());
         }
 
         map.put(TableHandler.KEY_TABLE + "1", list);
-        
+
         //values
         map.put("netvalue", FormatNumber.formatDezimal(__getNetvalue()));
         map.put("taxvalue", FormatNumber.formatDezimal(__getTaxvalue()));
@@ -635,7 +648,6 @@ public class Item extends DatabaseObject implements Formattable, Templateable {
 
         return super.resolveReferences(map);
     }
-
 
     public void defineFormatHandler(FormatHandler handler) {
         formatHandler = handler;

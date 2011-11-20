@@ -19,8 +19,12 @@ along with YaBS.  If not, see <http://www.gnu.org/licenses/>.
  */
 package mpv5.utils.renderer;
 
+import java.awt.event.MouseEvent;
+import java.math.BigDecimal;
+import java.util.EventObject;
 import javax.swing.JFormattedTextField;
 import javax.swing.SwingConstants;
+import javax.swing.SwingUtilities;
 import mpv5.logging.Log;
 import mpv5.utils.numberformat.FormatNumber;
 
@@ -41,10 +45,31 @@ public class TableCellEditorForDezimal extends LazyCellEditor {
         tf.setHorizontalAlignment(SwingConstants.LEFT);
         tf.setBorder(null);
         delegate = new EditorDelegate() {
+            boolean isMousePressed = false;
 
             @Override
             public void setValue(Object param) {
-                tf.setText("");
+                if (isMousePressed
+                        && param != null && (param.getClass() == Double.class || param.getClass() == BigDecimal.class)) {
+                    SwingUtilities.invokeLater(new Runnable() {
+
+                        public void run() {
+                            tf.selectAll();
+                        }
+                    });
+                    try {
+                        tf.setText(FormatNumber.formatDezimal((Number) param));
+                    } catch (Exception e) {
+                        try {
+                            tf.setText(FormatNumber.formatDezimal(new BigDecimal(String.valueOf(param))));
+                        } catch (Exception ex) {
+                            tf.setText(String.valueOf(param));
+                        }
+                    }
+                } else {
+                    tf.setText("");
+                }
+
             }
 
             @Override
@@ -67,6 +92,16 @@ public class TableCellEditorForDezimal extends LazyCellEditor {
 //                    tf.setBackground(Color.red);
                     return new Double(0.0);
                 }
+            }
+            
+            @Override
+            public boolean isCellEditable(EventObject anEvent) {
+	    if (anEvent instanceof MouseEvent) { 
+                isMousePressed = true;
+		return ((MouseEvent)anEvent).getClickCount() >= clickCountToStart;
+	    }
+            isMousePressed = false;
+	    return true;
             }
         };
 

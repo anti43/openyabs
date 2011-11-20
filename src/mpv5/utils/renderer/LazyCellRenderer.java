@@ -6,17 +6,24 @@ package mpv5.utils.renderer;
 
 import java.awt.Color;
 import java.awt.Component;
+import javax.swing.JFormattedTextField;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableCellRenderer;
-import mpv5.db.common.DatabaseObject;
+import javax.swing.table.TableColumn;
 
 /**
  *
  * @author anti
  */
-public class TableCellRendererForDatabaseObjects extends DefaultTableCellRenderer {
+public class LazyCellRenderer extends DefaultTableCellRenderer {
 
-    private DefaultTableCellRenderer adaptee = new DefaultTableCellRenderer();
+    protected JTable table;
+    private final DefaultTableCellRenderer adaptee = new DefaultTableCellRenderer();
+
+    public LazyCellRenderer(JTable table) {
+        super();
+        this.table = table;
+    }
 
     @Override
     public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected,
@@ -31,9 +38,17 @@ public class TableCellRendererForDatabaseObjects extends DefaultTableCellRendere
             setBackground(Color.BLUE);
             setForeground(Color.WHITE);
         }
-        if (!isSelected) {
-            setBackground(((DatabaseObject) table.getModel().getValueAt(table.convertRowIndexToModel(row), 0)).getColor());
-        }
         return this;
+    }
+
+    /**
+     * Set this renderer to the given column + editor
+     * @param column
+     */
+    public void setRendererTo(int column) {
+
+        TableColumn col = table.getColumnModel().getColumn(table.getColumnModel().getColumnIndex(table.getModel().getColumnName(column)));
+        col.setCellEditor(new TableCellEditorForDezimal(new JFormattedTextField()));
+        col.setCellRenderer(this);
     }
 }

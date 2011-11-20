@@ -102,6 +102,8 @@ import mpv5.utils.renderer.TextAreaCellEditor;
 import mpv5.utils.renderer.TextAreaCellRenderer;
 import mpv5.utils.tables.TableFormat;
 import mpv5.ui.misc.TableViewPersistenceHandler;
+import mpv5.utils.renderer.TableCellRendererForDatabaseObjects;
+import mpv5.utils.renderer.TableCellRendererForProducts;
 import mpv5.utils.ui.TextFieldUtils;
 
 /**
@@ -1979,6 +1981,9 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
     
 
     private void prepareTable() {
+        TableCellRendererForProducts tx = new TableCellRendererForProducts(itemtable);
+        tx.setRendererTo(10);
+        
         TableCellRendererForDezimal t = new TableCellRendererForDezimal(itemtable);
         t.setRendererTo(6);
         t.setRendererTo(5);

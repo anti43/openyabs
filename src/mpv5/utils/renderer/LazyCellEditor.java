@@ -16,9 +16,12 @@
  */
 package mpv5.utils.renderer;
 
+import java.awt.event.MouseEvent;
+import java.util.EventObject;
 import javax.swing.DefaultCellEditor;
 import javax.swing.JComboBox;
 import javax.swing.JTextField;
+import javax.swing.SwingUtilities;
 
 /**
  *
@@ -29,8 +32,42 @@ public class LazyCellEditor extends DefaultCellEditor {
         super(c);
     }
 
-    public LazyCellEditor(JTextField tf) {
+    public LazyCellEditor(final JTextField tf) {
         super(tf);
+        super.setClickCountToStart(1);
+        delegate = new EditorDelegate() {
+
+            boolean isMousePressed = false;
+
+            @Override
+            public void setValue(Object value) {
+                if(isMousePressed && value != null){
+                SwingUtilities.invokeLater(new Runnable() {
+
+                    public void run() {
+                        tf.selectAll();
+                    }
+                });
+                tf.setText(value.toString());
+                } else {
+                tf.setText(""); }
+            }
+
+            @Override
+            public Object getCellEditorValue() {
+                return tf.getText();
+            }
+
+            @Override
+            public boolean isCellEditable(EventObject anEvent) {
+                if (anEvent instanceof MouseEvent) {
+                    isMousePressed = true;
+                    return ((MouseEvent) anEvent).getClickCount() >= clickCountToStart;
+                }
+                isMousePressed = false;
+                return true;
+            }
+        };
     }
 
     public boolean stopCellEditingSilent() {
