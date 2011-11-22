@@ -1,24 +1,23 @@
 
 /*
-*  This file is part of YaBS.
-*
-*      YaBS is free software: you can redistribute it and/or modify
-*      it under the terms of the GNU General Public License as published by
-*      the Free Software Foundation, either version 3 of the License, or
-*      (at your option) any later version.
-*
-*      YaBS is distributed in the hope that it will be useful,
-*      but WITHOUT ANY WARRANTY; without even the implied warranty of
-*      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-*      GNU General Public License for more details.
-*
-*      You should have received a copy of the GNU General Public License
-*      along with YaBS.  If not, see <http://www.gnu.org/licenses/>.
+ *  This file is part of YaBS.
+ *
+ *      YaBS is free software: you can redistribute it and/or modify
+ *      it under the terms of the GNU General Public License as published by
+ *      the Free Software Foundation, either version 3 of the License, or
+ *      (at your option) any later version.
+ *
+ *      YaBS is distributed in the hope that it will be useful,
+ *      but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *      GNU General Public License for more details.
+ *
+ *      You should have received a copy of the GNU General Public License
+ *      along with YaBS.  If not, see <http://www.gnu.org/licenses/>.
  */
 package mpv5.utils.renderer;
 
 //~--- JDK imports ------------------------------------------------------------
-
 import java.awt.Color;
 import java.awt.Component;
 
@@ -27,12 +26,15 @@ import javax.swing.JTextArea;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
+import mpv5.logging.Log;
 
 public class TextAreaCellRenderer extends JTextArea implements TableCellRenderer {
-    private final static int               MARGIN   = 1;
-    private final static int               MAXLINES = 3;
-    private final DefaultTableCellRenderer adaptee  = new DefaultTableCellRenderer();
-    protected JTable                       table;
+
+    private final static int MARGIN = 1;
+    private static int MAXLINES = 3;
+    private static final long serialVersionUID = 1L;
+    private final DefaultTableCellRenderer adaptee = new DefaultTableCellRenderer();
+    protected JTable table;
 
     public TextAreaCellRenderer(JTable table) {
         super();
@@ -50,7 +52,6 @@ public class TextAreaCellRenderer extends JTextArea implements TableCellRenderer
      */
     public void setRendererTo(int column) {
         TableColumn col = table.getColumnModel().getColumn(column);
-
         col.setCellRenderer(this);
     }
 
@@ -62,32 +63,35 @@ public class TextAreaCellRenderer extends JTextArea implements TableCellRenderer
         setBorder(adaptee.getBorder());
         setFont(adaptee.getFont());
         setText(adaptee.getText());
+        try {
+            // find the number of showed lines
+            int charwidth = getColumnWidth();
+            double cellwidth = table.getCellRect(row, column, false).getWidth();
+            int charsproline = (int) (cellwidth / charwidth);
+            int charnum = getText().length();
+            int lines = charnum / charsproline;
+            int textlines = getLineCount();
 
-        // find the number of showed lines
-        int    charwidth    = getColumnWidth();
-        double cellwidth    = table.getCellRect(row, column, false).getWidth();
-        int    charsproline = (int) (cellwidth / charwidth);
-        int    charnum      = getText().length();
-        int    lines        = charnum / charsproline;
-        int    textlines    = getLineCount();
+            if (lines < textlines) {
+                lines = textlines;
+            }
 
-        if (lines < textlines) {
-            lines = textlines;
-        }
+            if (lines > MAXLINES) {
+                lines = MAXLINES;
+            }
 
-        if (lines > MAXLINES) {
-            lines = MAXLINES;
-        }
+            if (lines <= 0) {
+                lines = 1;
+            }
 
-        if (lines <= 0) {
-            lines = 1;
-        }
+            // setMaximumSize(new Dimension(30,30));
+            int newrowheight = getRowHeight() * lines + 2 * MARGIN;
 
-        // setMaximumSize(new Dimension(30,30));
-        int newrowheight = getRowHeight() * lines + 2 * MARGIN;
-
-        if (table.getRowHeight(row) != newrowheight) {
-            table.setRowHeight(row, newrowheight);
+            if (table.getRowHeight(row) != newrowheight) {
+                table.setRowHeight(row, newrowheight);
+            }
+        } catch (ArithmeticException ae) {
+            Log.Debug(this, ae);
         }
         if (hasFocus) {
             setBackground(Color.BLUE);
@@ -95,7 +99,9 @@ public class TextAreaCellRenderer extends JTextArea implements TableCellRenderer
         }
         return this;
     }
+
+    public static void setMAXLINES(int MAXLINES) {
+        TextAreaCellRenderer.MAXLINES = MAXLINES;
+    }
 }
-
-
 //~ Formatted by Jindent --- http://www.jindent.com

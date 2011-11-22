@@ -18,10 +18,10 @@ package mpv5.handler;
 
 import java.text.MessageFormat;
 import java.text.ParsePosition;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-import java.util.Vector;
 import java.util.concurrent.ConcurrentHashMap;
 import mpv5.YabsViewProxy;
 import mpv5.db.common.Context;
@@ -29,6 +29,7 @@ import mpv5.db.common.DatabaseObject;
 import mpv5.db.common.Formattable;
 import mpv5.db.common.QueryHandler;
 import mpv5.db.common.ReturnValue;
+import mpv5.db.objects.ActivityList;
 import mpv5.db.objects.Contact;
 import mpv5.db.objects.Conversation;
 import mpv5.db.objects.Expense;
@@ -40,7 +41,6 @@ import mpv5.globals.GlobalSettings;
 import mpv5.globals.Messages;
 import mpv5.logging.Log;
 import mpv5.ui.dialogs.Popup;
-import mpv5.ui.frames.MPView;
 import mpv5.usermanagement.MPSecurityManager;
 
 /**
@@ -60,6 +60,7 @@ public class FormatHandler {
     public static final int TYPE_EXPENSE = 9;
     public static final int TYPE_REVENUE = 10;
     public static final int TYPE_CONVERSATION = 12;
+    public static final int TYPE_ACTIVITY = 14;
 
     public static enum TYPES implements MPEnum {
 
@@ -74,7 +75,8 @@ public class FormatHandler {
         TYPE_SERVICE(FormatHandler.TYPE_SERVICE, Messages.TYPE_SERVICE.getValue()),
         TYPE_REVENUE(FormatHandler.TYPE_REVENUE, Messages.TYPE_REVENUE.getValue()),
         TYPE_EXPENSE(FormatHandler.TYPE_EXPENSE, Messages.TYPE_EXPENSE.getValue()),
-        TYPE_CONVERSATION(FormatHandler.TYPE_CONVERSATION, Messages.TYPE_CONVERSATION.getValue());
+        TYPE_CONVERSATION(FormatHandler.TYPE_CONVERSATION, Messages.TYPE_CONVERSATION.getValue()),
+        TYPE_ACTIVITY(FormatHandler.TYPE_ACTIVITY,Messages.TYPE_ACTIVITY.getValue());
         int ids;
         String names;
 
@@ -138,6 +140,8 @@ public class FormatHandler {
             return TYPE_EXPENSE;
         } else if (obj instanceof Conversation) {
             return TYPE_CONVERSATION;
+        } else if (obj instanceof ActivityList) {
+            return TYPE_ACTIVITY;
         }
         return -1;
     }
@@ -232,11 +236,11 @@ public class FormatHandler {
     /**
      * Contains all formattable Contexts
      */
-    public static List<Context> FORMATTABLE_CONTEXTS = new Vector<Context>(Arrays.asList(new Context[]{
+    public static List<Context> FORMATTABLE_CONTEXTS = new ArrayList<Context>(Arrays.asList(new Context[]{
                 Context.getContact(), Context.getCustomer(), Context.getManufacturer(),
                 Context.getSupplier(), Context.getProduct(), Context.getItem(),
                 Context.getExpense(), Context.getRevenue(), Context.getOffer(),
-                Context.getOrder(), Context.getInvoice(), Context.getCompany()
+                Context.getOrder(), Context.getInvoice(), Context.getCompany(), Context.getActivityList()
             }));
 
     /**

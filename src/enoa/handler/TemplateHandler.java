@@ -1,7 +1,6 @@
 package enoa.handler;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import javax.swing.JComponent;
@@ -40,6 +39,7 @@ public class TemplateHandler {
     public static final int TYPE_CONTRACT = 11;
     public static final int TYPE_CONVERSATION = 12;
     public static final int TYPE_MASSPRINT = 13;
+    public static final int TYPE_ACTIVITY = 14;
     /**
      * Return true if the Template for the currently logged in user, with the given type, and matching the targets group is loaded
      * @param group
@@ -219,7 +219,7 @@ public class TemplateHandler {
      * @return
      */
     public static MPEnum[] getTypes() {
-        MPEnum[] types = new MPEnum[14];
+        MPEnum[] types = new MPEnum[15];
         types[0] = new MPEnum() {
 
             public Integer getId() {
@@ -372,6 +372,17 @@ public class TemplateHandler {
             public String getName() {
                 return Messages.TYPE_MASSPRINT.toString();
             }            
+        };
+
+        types[14] = new MPEnum() {
+
+            public Integer getId() {
+                return TYPE_ACTIVITY;
+            }
+
+            public String getName() {
+                return Messages.TYPE_ACTIVITY.toString();
+            }
         };
         return types;
     }

@@ -21,6 +21,7 @@ import java.util.List;
 import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
 import mpv5.db.common.NodataFoundException;
+import mpv5.db.objects.ActivityList;
 import mpv5.db.objects.Contact;
 import mpv5.db.objects.Conversation;
 import mpv5.db.objects.Group;
@@ -180,7 +181,23 @@ public abstract class VariablesHandler {
         if (target instanceof Conversation) {
             vars.add(new String[]{"[type]".toUpperCase(), Messages.TYPE_CONVERSATION.toString()});   
         }
+        
+        if (target instanceof ActivityList) {
+            try {
+                Contact c = (Contact) DatabaseObject.getObject(Context.getContact(), ((ActivityList) target).__getContactsids());
 
+                vars.add(new String[]{"[contact.cname]".toUpperCase(), c.__getCName()});
+                vars.add(new String[]{"[contact.company]".toUpperCase(), c.__getCompany()});
+                vars.add(new String[]{"[contact.prename]".toUpperCase(), c.__getPrename()});
+                vars.add(new String[]{"[contact.title]".toUpperCase(), c.__getTitle()});
+                vars.add(new String[]{"[contact.country]".toUpperCase(), c.__getCountry()});
+                vars.add(new String[]{"[type]".toUpperCase(), Messages.TYPE_ACTIVITY.toString()});
+
+            } catch (NodataFoundException ex) {
+                Log.Debug(VariablesHandler.class, ex.getMessage());
+            }
+        }
+        
         return vars;
     }
 

@@ -19,7 +19,7 @@ public enum Messages {
 
     START_MESSAGE(
     "\n" +
-    "YaBS " + Constants.VERSION + " (C) 2006-2010 Openyabs.org\n\n" +
+    "YaBS " + Constants.VERSION + " (C) 2006-2011 Openyabs.org\n\n" +
     "******************************************************************************\n" +
     "* This program is free software; you can redistribute it and/or modify it \n" +
     "* under the terms of the GNU General Public License as published by the \n" +
@@ -295,7 +295,14 @@ public enum Messages {
      CNAME_EXISTS("Please adjust the Subject!\nActual Subject exists!"),
      CONTACT_COMPLETE("Please complete the Contact-Data!"), 
      DATAOWNER_EMPTY("No Entry selected!\nPlease select an Tableentry."), 
-     DBCONN_UPDATE_BEPATIENT("Checking database version und updating (may take a while)...");
+     DBCONN_UPDATE_BEPATIENT("Checking database version und updating (may take a while)..."),
+     ACTIVITYCONFIRMATION("Activity Confirmation"),
+     ACTIVITY_EMPTY_DATE("Missing Product or Date for Activity-Entry!"), 
+     NOT_YET_IMPLEMENTED("This Function is actualy not implemented!"), 
+     TYPE_ACTIVITY("Activity Confirmation"), 
+     ActivityList_Existing("There's an Activity List Existing. Add this to the Invoice?"), 
+     ActivityList_toSubItem("See attached Acitivy Confirmation for Project: ");
+     
 
 
     private Messages(String message) {

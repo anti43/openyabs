@@ -1,7 +1,6 @@
 package mpv5.db.objects;
 
 import enoa.handler.TemplateHandler;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -10,7 +9,6 @@ import javax.swing.JComponent;
 import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
 import mpv5.db.common.Formattable;
-import mpv5.db.common.NodataFoundException;
 import mpv5.db.common.Templateable;
 import mpv5.globals.Messages;
 import mpv5.handler.FormatHandler;
@@ -24,6 +22,7 @@ import mpv5.utils.images.MPIcon;
  * 
  */
 public class Contact extends DatabaseObject implements Formattable, Templateable {
+    private static final long serialVersionUID = 1L;
 
     private String cnumber = "";
     private String taxnumber = "";
@@ -479,9 +478,11 @@ public class Contact extends DatabaseObject implements Formattable, Templateable
         try {
             if (map.containsKey("ismale")) {
                 if (Boolean.valueOf(map.get("ismale").toString())) {
-                    map.put("gender", Messages.CONTACT_TYPE_MALE);
+                    map.put("gender", Messages.CONTACT_TYPE_MALE.toString());
+                    map.put("intro", Messages.CONTACT_INTRO_MALE.toString());
                 } else {
-                    map.put("gender", Messages.CONTACT_TYPE_FEMALE);
+                    map.put("gender", Messages.CONTACT_TYPE_FEMALE.toString());
+                    map.put("intro", Messages.CONTACT_INTRO_FEMALE.toString());
                 }
 
             }

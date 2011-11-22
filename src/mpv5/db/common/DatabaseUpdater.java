@@ -125,6 +125,36 @@ public class DatabaseUpdater {
         UPDATES_DERBY.put(1.189, new String[]{
                     "ALTER TABLE conversations ADD COLUMN contactsids BIGINT REFERENCES contacts (ids) ON DELETE CASCADE"
                 });
+        UPDATES_DERBY.put(1.190, new String[]{
+                    "CREATE TABLE activitylists (IDS BIGINT NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),"
+                    + " cname VARCHAR(200) DEFAULT NULL,"
+                    + " cnumber VARCHAR(250) NOT NULL,"
+                    + " groupsids BIGINT  REFERENCES groups(ids) DEFAULT 1,"
+                    + " contactsids BIGINT  REFERENCES contacts(ids) DEFAULT 0,"
+                    + " orderids BIGINT  REFERENCES items(ids) DEFAULT 0,"
+                    + " totalamount DOUBLE DEFAULT 0,"
+                    + " dateadded DATE NOT NULL,"
+                    + " intaddedby BIGINT DEFAULT 0,"
+                    + " invisible SMALLINT DEFAULT 0,"
+                    + " PRIMARY KEY (ids))",
+                    //"Date", "Count", "Description", "Netto Price", "Tax Value", "Total Price", "Product", "cname"     
+                    "CREATE TABLE activitylistitems (IDS BIGINT NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),"
+                    + " cname VARCHAR(20) DEFAULT NULL,"
+                    + " groupsids BIGINT REFERENCES groups(ids) DEFAULT 1,"
+                    + " activitylistsids BIGINT REFERENCES activitylists(ids) ON DELETE CASCADE,"
+                    + " datedoing DATE NOT NULL,"
+                    + " quantityvalue DOUBLE DEFAULT 0 NOT NULL,"
+                    + " measure VARCHAR(25) NOT NULL,"
+                    + " description VARCHAR(1000) DEFAULT NULL,"                
+                    + " internalvalue DOUBLE DEFAULT 0,"
+                    + " taxpercentvalue DOUBLE DEFAULT 0 NOT NULL,"
+                    + " totalbrutvalue DOUBLE DEFAULT 0,"
+                    + " productsids BIGINT REFERENCES products(ids) ON DELETE CASCADE,"
+                    + " dateadded DATE NOT NULL,"
+                    + " intaddedby BIGINT DEFAULT 0,"
+                    + " invisible SMALLINT DEFAULT 0,"
+                    + " PRIMARY KEY (ids))"
+                });        
         ////////////////////////////////////////////////////////////////////////////////////////////
         // mysql updates
         UPDATES_MYSQL.put(1.11, new String[]{
@@ -251,6 +281,36 @@ public class DatabaseUpdater {
         UPDATES_MYSQL.put(1.189, new String[]{
                     "ALTER TABLE conversations ADD COLUMN contactsids BIGINT REFERENCES contacts (ids) ON DELETE CASCADE"
                 });        
+        UPDATES_MYSQL.put(1.190, new String[]{
+                    "CREATE TABLE activitylists (IDS BIGINT(20) UNSIGNED NOT NULL PRIMARY KEY auto_increment,"
+                    + " cname VARCHAR(200) DEFAULT NULL,"
+                    + " cnumber VARCHAR(250) NOT NULL,"
+                    + " groupsids BIGINT  REFERENCES groups(ids) DEFAULT 1,"
+                    + " contactsids BIGINT  REFERENCES contacts(ids) DEFAULT 0,"
+                    + " orderids BIGINT  REFERENCES items(ids) DEFAULT 0,"
+                    + " totalamount DOUBLE DEFAULT 0,"
+                    + " dateadded DATE NOT NULL,"
+                    + " intaddedby BIGINT DEFAULT 0,"
+                    + " invisible SMALLINT DEFAULT 0,"
+                    + " PRIMARY KEY (ids))ENGINE=MyISAM  DEFAULT CHARSET=IS0-8859-15",
+                    //"Date", "Count", "Description", "Netto Price", "Tax Value", "Total Price", "Product", "cname"     
+                    "CREATE TABLE activitylistitems (IDS BIGINT(20) UNSIGNED NOT NULL PRIMARY KEY auto_increment,"
+                    + " cname VARCHAR(20) DEFAULT NULL,"
+                    + " groupsids BIGINT REFERENCES groups(ids) DEFAULT 1,"
+                    + " activitylistsids BIGINT REFERENCES activitylists(ids) ON DELETE CASCADE,"
+                    + " datedoing DATE NOT NULL,"
+                    + " quantityvalue DOUBLE DEFAULT 0 NOT NULL,"
+                    + " measure VARCHAR(25) NOT NULL,"
+                    + " description VARCHAR(1000) DEFAULT NULL,"                
+                    + " internalvalue DOUBLE DEFAULT 0,"
+                    + " taxpercentvalue DOUBLE DEFAULT 0 NOT NULL,"
+                    + " totalbrutvalue DOUBLE DEFAULT 0,"
+                    + " productsids BIGINT REFERENCES products(ids) ON DELETE CASCADE,"
+                    + " dateadded DATE NOT NULL,"
+                    + " intaddedby BIGINT DEFAULT 0,"
+                    + " invisible SMALLINT DEFAULT 0,"
+                    + " PRIMARY KEY (ids))ENGINE=MyISAM  DEFAULT CHARSET=IS0-8859-15"
+                });                
     }
 
     /**

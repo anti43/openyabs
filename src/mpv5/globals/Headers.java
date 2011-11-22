@@ -24,6 +24,7 @@ public enum Headers {
     MAILTEMPLATES(new String[]{"Name", "Description", "Group"}),
     SCHEDULE_LIST(new String[]{"Item ID", "Interval (Months)", "End date", "Added by"}),
     SCHEDULE_PANEL(new String[]{"IDS","Schedule ID", "Date","Type"}),
+    ACTIVITY(new String[]{"Internal ID", "Nr", "Date", "Count", "Measure", "Text", "Netto Price", "Tax Rate", "Total Price", "Product", "Name", "object"}),
     EXPENSE(new String[]{"Number", "Description", "Account", "Value", "Tax Rate"}),
     LIBRARIEST(new String[]{"File", "Description", "License", "Author"});
 

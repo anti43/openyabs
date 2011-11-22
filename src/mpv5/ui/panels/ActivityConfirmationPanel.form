@@ -1,0 +1,349 @@
+<?xml version="1.1" encoding="UTF-8" ?>
+
+<Form version="1.6" maxVersion="1.7" type="org.netbeans.modules.form.forminfo.JPanelFormInfo">
+  <Properties>
+    <Property name="name" type="java.lang.String" value="Form" noResource="true"/>
+  </Properties>
+  <AuxValues>
+    <AuxValue name="FormSettings_autoResourcing" type="java.lang.Integer" value="1"/>
+    <AuxValue name="FormSettings_autoSetComponentName" type="java.lang.Boolean" value="true"/>
+    <AuxValue name="FormSettings_formBundle" type="java.lang.String" value="mpv5/resources/languages/Panels"/>
+    <AuxValue name="FormSettings_generateFQN" type="java.lang.Boolean" value="true"/>
+    <AuxValue name="FormSettings_generateMnemonicsCode" type="java.lang.Boolean" value="false"/>
+    <AuxValue name="FormSettings_i18nAutoMode" type="java.lang.Boolean" value="true"/>
+    <AuxValue name="FormSettings_layoutCodeTarget" type="java.lang.Integer" value="1"/>
+    <AuxValue name="FormSettings_listenerGenerationStyle" type="java.lang.Integer" value="0"/>
+    <AuxValue name="FormSettings_variablesLocal" type="java.lang.Boolean" value="false"/>
+    <AuxValue name="FormSettings_variablesModifier" type="java.lang.Integer" value="2"/>
+    <AuxValue name="designerSize" type="java.awt.Dimension" value="-84,-19,0,5,115,114,0,18,106,97,118,97,46,97,119,116,46,68,105,109,101,110,115,105,111,110,65,-114,-39,-41,-84,95,68,20,2,0,2,73,0,6,104,101,105,103,104,116,73,0,5,119,105,100,116,104,120,112,0,0,1,87,0,0,1,-104"/>
+  </AuxValues>
+
+  <Layout class="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout"/>
+  <SubComponents>
+    <Container class="javax.swing.JPanel" name="jPanel1">
+      <Properties>
+        <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
+          <Border info="org.netbeans.modules.form.compat2.border.TitledBorderInfo">
+            <TitledBorder title="Activity Confirmation">
+              <ResourceString PropertyName="titleX" bundle="mpv5/resources/languages/Panels.properties" key="ActivityConfirmationPanel.jPanel1.border.title" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+            </TitledBorder>
+          </Border>
+        </Property>
+        <Property name="name" type="java.lang.String" value="jPanel1" noResource="true"/>
+      </Properties>
+      <Constraints>
+        <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout" value="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout$BorderConstraintsDescription">
+          <BorderConstraints direction="Center"/>
+        </Constraint>
+      </Constraints>
+
+      <Layout>
+        <DimensionLayout dim="0">
+          <Group type="103" groupAlignment="0" attributes="0">
+              <Component id="jPanel2" alignment="0" max="32767" attributes="0"/>
+              <Group type="102" alignment="0" attributes="0">
+                  <Component id="itemPanel" min="-2" max="-2" attributes="0"/>
+                  <EmptySpace max="-2" attributes="0"/>
+                  <Component id="jScrollPane4" pref="366" max="32767" attributes="0"/>
+              </Group>
+              <Group type="102" alignment="1" attributes="0">
+                  <EmptySpace pref="154" max="32767" attributes="0"/>
+                  <Component id="jLabel1" min="-2" max="-2" attributes="0"/>
+                  <EmptySpace max="-2" attributes="0"/>
+                  <Component id="total" min="-2" pref="87" max="-2" attributes="0"/>
+              </Group>
+          </Group>
+        </DimensionLayout>
+        <DimensionLayout dim="1">
+          <Group type="103" groupAlignment="0" attributes="0">
+              <Group type="102" alignment="0" attributes="0">
+                  <Component id="jPanel2" min="-2" max="-2" attributes="3"/>
+                  <EmptySpace min="-2" max="-2" attributes="0"/>
+                  <Group type="103" groupAlignment="0" attributes="0">
+                      <Component id="itemPanel" max="32767" attributes="0"/>
+                      <Component id="jScrollPane4" pref="129" max="32767" attributes="0"/>
+                  </Group>
+                  <EmptySpace min="-2" pref="11" max="-2" attributes="0"/>
+                  <Group type="103" groupAlignment="3" attributes="0">
+                      <Component id="jLabel1" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="total" alignment="3" min="-2" max="-2" attributes="0"/>
+                  </Group>
+              </Group>
+          </Group>
+        </DimensionLayout>
+      </Layout>
+      <SubComponents>
+        <Container class="javax.swing.JPanel" name="jPanel2">
+          <Properties>
+            <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
+              <Border info="org.netbeans.modules.form.compat2.border.TitledBorderInfo">
+                <TitledBorder title="Project Head Information">
+                  <ResourceString PropertyName="titleX" bundle="mpv5/resources/languages/Panels.properties" key="ActivityConfirmationPanel.jPanel2.border.title" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+                </TitledBorder>
+              </Border>
+            </Property>
+            <Property name="name" type="java.lang.String" value="jPanel2" noResource="true"/>
+          </Properties>
+
+          <Layout>
+            <DimensionLayout dim="0">
+              <Group type="103" groupAlignment="0" attributes="0">
+                  <Group type="102" attributes="0">
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="0" attributes="0">
+                          <Component id="number" pref="364" max="32767" attributes="1"/>
+                          <Group type="102" alignment="0" attributes="0">
+                              <Group type="103" groupAlignment="1" attributes="0">
+                                  <Component id="order" pref="281" max="32767" attributes="1"/>
+                                  <Component id="contact" alignment="1" pref="281" max="32767" attributes="1"/>
+                              </Group>
+                              <EmptySpace max="-2" attributes="0"/>
+                              <Group type="103" groupAlignment="0" attributes="0">
+                                  <Component id="jButton2" min="-2" pref="77" max="-2" attributes="0"/>
+                                  <Component id="jButton3" min="-2" pref="77" max="-2" attributes="0"/>
+                              </Group>
+                          </Group>
+                          <Component id="Project" alignment="0" pref="364" max="32767" attributes="0"/>
+                      </Group>
+                      <EmptySpace max="-2" attributes="0"/>
+                  </Group>
+              </Group>
+            </DimensionLayout>
+            <DimensionLayout dim="1">
+              <Group type="103" groupAlignment="0" attributes="0">
+                  <Group type="102" alignment="1" attributes="0">
+                      <Component id="number" max="32767" attributes="1"/>
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Component id="Project" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="0" attributes="0">
+                          <Component id="jButton3" min="-2" max="-2" attributes="0"/>
+                          <Component id="contact" alignment="0" min="-2" max="-2" attributes="1"/>
+                      </Group>
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="1" attributes="0">
+                          <Component id="jButton2" min="-2" max="-2" attributes="0"/>
+                          <Component id="order" min="-2" pref="22" max="-2" attributes="0"/>
+                      </Group>
+                      <EmptySpace min="-2" max="-2" attributes="0"/>
+                  </Group>
+              </Group>
+            </DimensionLayout>
+          </Layout>
+          <SubComponents>
+            <Component class="mpv5.ui.beans.LabeledCombobox" name="contact">
+              <Properties>
+                <Property name="_Label" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
+                  <ResourceString bundle="mpv5/resources/languages/Panels.properties" key="ActivityConfirmationPanel.contact._Label" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+                </Property>
+                <Property name="name" type="java.lang.String" value="contact" noResource="true"/>
+              </Properties>
+            </Component>
+            <Component class="mpv5.ui.beans.LabeledCombobox" name="order">
+              <Properties>
+                <Property name="_Label" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
+                  <ResourceString bundle="mpv5/resources/languages/Panels.properties" key="ActivityConfirmationPanel.order._Label" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+                </Property>
+                <Property name="name" type="java.lang.String" value="order" noResource="true"/>
+              </Properties>
+            </Component>
+            <Component class="javax.swing.JButton" name="jButton2">
+              <Properties>
+                <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
+                  <ResourceString bundle="mpv5/resources/languages/Panels.properties" key="ActivityConfirmationPanel.jButton2.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+                </Property>
+                <Property name="name" type="java.lang.String" value="jButton2" noResource="true"/>
+              </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButton2ActionPerformed"/>
+              </Events>
+            </Component>
+            <Component class="javax.swing.JButton" name="jButton3">
+              <Properties>
+                <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
+                  <ResourceString bundle="mpv5/resources/languages/Panels.properties" key="ActivityConfirmationPanel.jButton3.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+                </Property>
+                <Property name="name" type="java.lang.String" value="jButton3" noResource="true"/>
+              </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButton3ActionPerformed"/>
+              </Events>
+            </Component>
+            <Component class="mpv5.ui.beans.LabeledTextField" name="Project">
+              <Properties>
+                <Property name="_Label" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
+                  <ResourceString bundle="mpv5/resources/languages/Panels.properties" key="ActivityConfirmationPanel.Project._Label" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+                </Property>
+                <Property name="name" type="java.lang.String" value="Project" noResource="true"/>
+              </Properties>
+            </Component>
+            <Component class="mpv5.ui.beans.LabeledTextField" name="number">
+              <Properties>
+                <Property name="_Label" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
+                  <ResourceString bundle="mpv5/resources/languages/Panels.properties" key="ActivityConfirmationPanel.number._Label" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+                </Property>
+                <Property name="focusable" type="boolean" value="false"/>
+                <Property name="font" type="java.awt.Font" editor="org.netbeans.modules.form.editors2.FontEditor">
+                  <FontInfo relative="true">
+                    <Font component="number" property="font" relativeSize="true" size="0"/>
+                  </FontInfo>
+                </Property>
+                <Property name="name" type="java.lang.String" value="number" noResource="true"/>
+              </Properties>
+            </Component>
+          </SubComponents>
+        </Container>
+        <Container class="javax.swing.JScrollPane" name="jScrollPane4">
+          <Properties>
+            <Property name="name" type="java.lang.String" value="jScrollPane4" noResource="true"/>
+          </Properties>
+          <AuxValues>
+            <AuxValue name="autoScrollPane" type="java.lang.Boolean" value="true"/>
+          </AuxValues>
+
+          <Layout class="org.netbeans.modules.form.compat2.layouts.support.JScrollPaneSupportLayout"/>
+          <SubComponents>
+            <Component class="javax.swing.JTable" name="itemtable">
+              <Properties>
+                <Property name="autoCreateRowSorter" type="boolean" value="true"/>
+                <Property name="model" type="javax.swing.table.TableModel" editor="org.netbeans.modules.form.editors2.TableModelEditor">
+                  <Table columnCount="0" rowCount="0"/>
+                </Property>
+                <Property name="cellSelectionEnabled" type="boolean" value="true"/>
+                <Property name="name" type="java.lang.String" value="itemtable" noResource="true"/>
+                <Property name="surrendersFocusOnKeystroke" type="boolean" value="true"/>
+              </Properties>
+              <AuxValues>
+                <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new JTable() {&#xd;&#xa;    private static final long serialVersionUID = 1L;&#xd;&#xa;&#xd;&#xa;    public Component prepareRenderer(TableCellRenderer renderer,&#xd;&#xa;        int rowIndex, int vColIndex) {&#xd;&#xa;        Component c = super.prepareRenderer(renderer, rowIndex, vColIndex);&#xd;&#xa;        if (c instanceof JComponent) {&#xd;&#xa;            JComponent jc = (JComponent)c;&#xd;&#xa;            jc.setToolTipText(String.valueOf(getValueAt(rowIndex, vColIndex)));&#xd;&#xa;        }&#xd;&#xa;        return c;&#xd;&#xa;    }&#xd;&#xa;}"/>
+              </AuxValues>
+            </Component>
+          </SubComponents>
+        </Container>
+        <Container class="javax.swing.JPanel" name="itemPanel">
+          <Properties>
+            <Property name="name" type="java.lang.String" value="itemPanel" noResource="true"/>
+            <Property name="opaque" type="boolean" value="false"/>
+          </Properties>
+
+          <Layout>
+            <DimensionLayout dim="0">
+              <Group type="103" groupAlignment="0" attributes="0">
+                  <Component id="addItem" alignment="0" min="-2" pref="24" max="-2" attributes="0"/>
+                  <Component id="delItem" alignment="0" min="-2" pref="24" max="-2" attributes="0"/>
+                  <Component id="upItem" alignment="0" min="-2" pref="24" max="-2" attributes="0"/>
+                  <Component id="upItem1" alignment="0" min="-2" pref="24" max="-2" attributes="0"/>
+              </Group>
+            </DimensionLayout>
+            <DimensionLayout dim="1">
+              <Group type="103" groupAlignment="0" attributes="0">
+                  <Group type="102" alignment="0" attributes="0">
+                      <Component id="addItem" min="-2" max="-2" attributes="1"/>
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Component id="delItem" min="-2" max="-2" attributes="1"/>
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Component id="upItem" min="-2" max="-2" attributes="1"/>
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Component id="upItem1" min="-2" max="-2" attributes="1"/>
+                      <EmptySpace max="32767" attributes="0"/>
+                  </Group>
+              </Group>
+            </DimensionLayout>
+          </Layout>
+          <SubComponents>
+            <Component class="javax.swing.JButton" name="addItem">
+              <Properties>
+                <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+                  <Image iconType="3" name="/mpv5/resources/images/16/add.png"/>
+                </Property>
+                <Property name="name" type="java.lang.String" value="addItem" noResource="true"/>
+              </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="addItemActionPerformed"/>
+              </Events>
+            </Component>
+            <Component class="javax.swing.JButton" name="delItem">
+              <Properties>
+                <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+                  <Image iconType="3" name="/mpv5/resources/images/16/remove.png"/>
+                </Property>
+                <Property name="name" type="java.lang.String" value="delItem" noResource="true"/>
+              </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="delItemActionPerformed"/>
+              </Events>
+            </Component>
+            <Component class="javax.swing.JButton" name="upItem">
+              <Properties>
+                <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+                  <Image iconType="3" name="/mpv5/resources/images/16/arrow-up.png"/>
+                </Property>
+                <Property name="enabled" type="boolean" value="false"/>
+                <Property name="name" type="java.lang.String" value="upItem" noResource="true"/>
+              </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="upItemActionPerformed"/>
+              </Events>
+            </Component>
+            <Component class="javax.swing.JButton" name="upItem1">
+              <Properties>
+                <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+                  <Image iconType="3" name="/mpv5/resources/images/16/arrow-down.png"/>
+                </Property>
+                <Property name="enabled" type="boolean" value="false"/>
+                <Property name="name" type="java.lang.String" value="upItem1" noResource="true"/>
+              </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="upItem1ActionPerformed"/>
+              </Events>
+            </Component>
+          </SubComponents>
+        </Container>
+        <Component class="javax.swing.JLabel" name="jLabel1">
+          <Properties>
+            <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
+              <ResourceString bundle="mpv5/resources/languages/Panels.properties" key="ActivityConfirmationPanel.jLabel1.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+            </Property>
+            <Property name="name" type="java.lang.String" value="jLabel1" noResource="true"/>
+          </Properties>
+        </Component>
+        <Component class="javax.swing.JTextField" name="total">
+          <Properties>
+            <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
+              <ResourceString bundle="mpv5/resources/languages/Panels.properties" key="ActivityConfirmationPanel.total.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+            </Property>
+            <Property name="name" type="java.lang.String" value="total" noResource="true"/>
+          </Properties>
+        </Component>
+      </SubComponents>
+    </Container>
+    <Container class="javax.swing.JPanel" name="toolbarpanetbp">
+      <Properties>
+        <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
+          <Border info="org.netbeans.modules.form.compat2.border.EtchedBorderInfo">
+            <EtchetBorder/>
+          </Border>
+        </Property>
+        <Property name="name" type="java.lang.String" value="toolbarpanetbp" noResource="true"/>
+      </Properties>
+      <Constraints>
+        <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout" value="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout$BorderConstraintsDescription">
+          <BorderConstraints direction="North"/>
+        </Constraint>
+      </Constraints>
+
+      <Layout class="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout"/>
+    </Container>
+    <Container class="javax.swing.JPanel" name="SearchBarPane">
+      <Properties>
+        <Property name="name" type="java.lang.String" value="SearchBarPane" noResource="true"/>
+      </Properties>
+      <Constraints>
+        <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout" value="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout$BorderConstraintsDescription">
+          <BorderConstraints direction="West"/>
+        </Constraint>
+      </Constraints>
+
+      <Layout class="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout"/>
+    </Container>
+  </SubComponents>
+</Form>

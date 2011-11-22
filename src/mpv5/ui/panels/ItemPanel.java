@@ -34,8 +34,10 @@ import java.awt.event.MouseListener;
 import java.io.File;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
 import javax.swing.Action;
@@ -56,6 +58,7 @@ import javax.swing.JToolBar;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import mpv5.db.common.*;
+import mpv5.db.objects.ActivityList;
 import mpv5.db.objects.Product;
 import mpv5.globals.Headers;
 import mpv5.globals.Messages;
@@ -102,7 +105,6 @@ import mpv5.utils.renderer.TextAreaCellEditor;
 import mpv5.utils.renderer.TextAreaCellRenderer;
 import mpv5.utils.tables.TableFormat;
 import mpv5.ui.misc.TableViewPersistenceHandler;
-import mpv5.utils.renderer.TableCellRendererForDatabaseObjects;
 import mpv5.utils.renderer.TableCellRendererForProducts;
 import mpv5.utils.ui.TextFieldUtils;
 
@@ -1330,6 +1332,8 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
 //        if (Popup.OK_dialog(Messages.REALLY_CHANGE2, Messages.ARE_YOU_SURE.getValue())) {
         dataOwner.setIntstatus(Item.STATUS_FINISHED);
         dataOwner.save();
+        ArrayList<ActivityList> data;
+        Object[] row;
 
         if (dataOwner.__getInttype() == Item.TYPE_OFFER) {
             Item i2 = (Item) dataOwner.clone(Context.getOrder());
@@ -1358,7 +1362,21 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
                 } catch (Exception e) {
                 }
             }
-            SubItem.saveModel(i2, (MPTableModel) itemtable.getModel(), true, true);
+            try {
+                data = DatabaseObject.getObjects(Context.getActivityList(), new QueryCriteria("orderids", dataOwner.__getIDS()));
+                if (Popup.Y_N_dialog(Messages.ActivityList_Existing.toString())) {
+                    MPTableModel model = (MPTableModel) itemtable.getModel();
+                    Iterator<ActivityList> it = data.iterator();
+                    while (it.hasNext()) {
+                        row = ((ActivityList) it.next()).getDataForInvoice();
+                        row[1] = model.getRowCount();
+                        model.insertRow(model.getRowCount(),row);
+                    }
+                    SubItem.saveModel(i2, model, true, true);
+                }
+            } catch (NodataFoundException ex) {
+                Log.Debug(this, ex);
+            }
             setDataOwner(i2, true);
             Popup.notice(i2 + Messages.INSERTED.getValue());
         }

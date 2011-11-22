@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import mpv5.db.objects.Account;
+import mpv5.db.objects.ActivityList;
+import mpv5.db.objects.ActivityListSubItem;
 import mpv5.db.objects.Address;
 import mpv5.db.objects.Company;
 import mpv5.db.objects.Contact;
@@ -97,32 +99,46 @@ public class Context implements Serializable {
     public static String IDENTITY_VALUE_PROPERTIES = "valueproperties";
     public static String IDENTITY_CONVERSATION = "conversations";
     public static String IDENTITY_PRODUCT_PRICES = "productprices";
+    public static String IDENTITY_ACTIVITYLISTITEMS = "activitylistitems";
+    public static String IDENTITY_ACTIVITYLIST = "activitylists";
     //********** identity classes **********************************************
-    private static Class IDENTITY_CONTACTS_CLASS = Contact.class;
-    private static Class IDENTITY_ADDRESS_CLASS = Address.class;
-    private static Class IDENTITY_USERS_CLASS = User.class;
-    private static Class IDENTITY_ITEMS_CLASS = Item.class;
-    private static Class IDENTITY_CONTACTS_FILES_CLASS = FileToContact.class;
-    private static Class IDENTITY_ITEM_FILES_CLASS = FileToItem.class;
-    private static Class HISTORY_ITEMS_CLASS = HistoryItem.class;
-    private static Class IDENTITY_SUBITEMS_CLASS = SubItem.class;
-    private static Class IDENTITY_USER_PLUGINS_CLASS = UserPlugin.class;
-    private static Class IDENTITY_PLUGINS_CLASS = Plugin.class;
-    private static Class IDENTITY_PROPERTIES_CLASS = UserProperty.class;
-    private static Class IDENTITY_ACCOUNTS_CLASS = Account.class;
-    private static Class IDENTITY_ITEMSLIST_CLASS = ProductlistSubItem.class;
-    private static Class IDENTITY_MAILS_CLASS = MailMessage.class;
-    private static Class IDENTITY_PRODUCTS_CLASS = Product.class;
-    private static Class IDENTITY_GROUPS_CLASS = Group.class;
-    private static Class IDENTITY_COMPANY_CLASS = Company.class;
-    private static Class IDENTITY_PGROUPS_CLASS = ProductGroup.class;
-    private static Class IDENTITY_PRODUCTS_FILES_CLASS = FileToProduct.class;
-    private static Class IDENTITY_WEBSHOP_CLASS = WebShop.class;
-    private static Class IDENTITY_TEMPLATE_CLASS = Template.class;
-    private static Class IDENTITY_REMINDER_CLASS = Reminder.class;
-    private static Class IDENTITY_STAGE_CLASS = Stage.class;
-    private static Class IDENTITY_VALUEPROPERTY_CLASS = ValueProperty.class;
-    private static Class IDENTITY_PRODUCTPRICE_CLASS = ProductPrice.class;
+    private static Class<Contact>               IDENTITY_CONTACTS_CLASS = Contact.class;
+    private static Class<Address>               IDENTITY_ADDRESS_CLASS = Address.class;
+    private static Class<User>                  IDENTITY_USERS_CLASS = User.class;
+    private static Class<Item>                  IDENTITY_ITEMS_CLASS = Item.class;
+    private static Class<FileToContact>         IDENTITY_CONTACTS_FILES_CLASS = FileToContact.class;
+    private static Class<FileToItem>            IDENTITY_ITEM_FILES_CLASS = FileToItem.class;
+    private static Class<HistoryItem>           IDENTITY_HISTORY_ITEMS_CLASS = HistoryItem.class;
+    private static Class<SubItem>               IDENTITY_SUBITEMS_CLASS = SubItem.class;
+    private static Class<UserPlugin>            IDENTITY_USER_PLUGINS_CLASS = UserPlugin.class;
+    private static Class<Plugin>                IDENTITY_PLUGINS_CLASS = Plugin.class;
+    private static Class<UserProperty>          IDENTITY_PROPERTIES_CLASS = UserProperty.class;
+    private static Class<Account>               IDENTITY_ACCOUNTS_CLASS = Account.class;
+    private static Class<ProductlistSubItem>    IDENTITY_ITEMSLIST_CLASS = ProductlistSubItem.class;
+    private static Class<MailMessage>           IDENTITY_MAILS_CLASS = MailMessage.class;
+    private static Class<Product>               IDENTITY_PRODUCTS_CLASS = Product.class;
+    private static Class<Group>                 IDENTITY_GROUPS_CLASS = Group.class;
+    private static Class<Company>               IDENTITY_COMPANY_CLASS = Company.class;
+    private static Class<ProductGroup>          IDENTITY_PGROUPS_CLASS = ProductGroup.class;
+    private static Class<FileToProduct>         IDENTITY_PRODUCTS_FILES_CLASS = FileToProduct.class;
+    private static Class<WebShop>               IDENTITY_WEBSHOP_CLASS = WebShop.class;
+    private static Class<Template>              IDENTITY_TEMPLATE_CLASS = Template.class;
+    private static Class<Reminder>              IDENTITY_REMINDER_CLASS = Reminder.class;
+    private static Class<Stage>                 IDENTITY_STAGE_CLASS = Stage.class;
+    private static Class<ValueProperty>         IDENTITY_VALUEPROPERTY_CLASS = ValueProperty.class;
+    private static Class<ProductPrice>          IDENTITY_PRODUCTPRICE_CLASS = ProductPrice.class;
+    private static Class<Favourite>             IDENTITY_FAVOURITE_CLASS = Favourite.class;
+    private static Class<Tax>                   IDENTITY_TAX_CLASS = Tax.class;
+    private static Class<WSContactsMapping>     IDENTITY_WSCONTACTSMAPPING_CLASS = WSContactsMapping.class;
+    private static Class<WSItemsMapping>        IDENTITY_WSITEMSMAPPING_CLASS = WSItemsMapping.class;
+    private static Class<Expense>               IDENTITY_EXPENSE_CLASS = Expense.class;
+    private static Class<ProductList>           IDENTITY_PRODUCTLIST_CLASS = ProductList.class;
+    private static Class<ProductsToSuppliers>   IDENTITY_PRODUCTSTOSUPPLIERS_CLASS = ProductsToSuppliers.class;
+    private static Class<Conversation>          IDENTITY_CONVERSATION_CLASS = Conversation.class;
+    private static Class<Schedule>              IDENTITY_SCHEDULE_CLASS = Schedule.class;
+    private static Class<ScheduleTypes>         IDENTITY_SCHEDULETYPES_CLASS = ScheduleTypes.class;
+    private static Class<ActivityListSubItem>   IDENTITY_ACTIVITYITEMSLIST_CLASS = ActivityListSubItem.class;
+    private static Class<ActivityList>          IDENTITY_ACTIVITYLIST_CLASS = ActivityList.class;
     //********** unique constraints *******************************************
     public static String UNIQUECOLUMNS_USER = "cname";
     public static String UNIQUECOLUMNS_ITEMS = "cname";
@@ -155,6 +171,8 @@ public class Context implements Serializable {
     public static String DEFAULT_USER_SEARCH = "ids, cname, mail, lastlogdate";
     public static String DEFAULT_ITEM_SEARCH = "ids, cname, dateadded, netvalue";
     public static String DEFAULT_PRODUCT_SEARCH = "ids, cnumber, cname, description";
+    public static String DEFAULT_ACTIVITYLIST_SEARCH = "DISTINCT ids,cname";
+    public static String DEFAULT_PRODUCTSLIST_SEARCH = "DISTINCT ids,cname,description";
     //********** table fields ********************************************************
     public static String DETAILS_CONTACTS = IDENTITY_CONTACTS + "." + "IDS," + IDENTITY_CONTACTS + "." + "CNUMBER,"
             + IDENTITY_CONTACTS + "." + "TITLE," + IDENTITY_CONTACTS + "." + "PRENAME," + IDENTITY_CONTACTS + "." + "CNAME,"
@@ -210,6 +228,7 @@ public class Context implements Serializable {
         list.add(getOffer());
         list.add(getProduct());
         list.add(getReminder());
+        list.add(getActivityList());
         return list;
     }
 
@@ -274,7 +293,8 @@ public class Context implements Serializable {
                 getStage(),
                 getTaxes(),
                 getProductGroup(),
-                getProductPrice()
+                getProductPrice(),
+                getActivityListItems()
             }));
 
     /**
@@ -308,6 +328,7 @@ public class Context implements Serializable {
         list.add(getRevenue());
         list.add(getTaxes());
         list.add(getProductPrice());
+        list.add(getActivityListItems());
         return list;
     }
 
@@ -331,6 +352,7 @@ public class Context implements Serializable {
         list.add(getFiles());
         list.add(getExpense());
         list.add(getRevenue());
+        list.add(getActivityList());
         return list;
     }
 
@@ -1179,7 +1201,7 @@ public class Context implements Serializable {
         Context c = new Context();
         c.setSubID(DEFAULT_SUBID);
         c.setDbIdentity(IDENTITY_SCHEDULE);
-        c.setIdentityClass(Schedule.class);
+        c.setIdentityClass(IDENTITY_SCHEDULE_CLASS);
         c.setId(8);
 
         return c;
@@ -1216,7 +1238,7 @@ public class Context implements Serializable {
         Context c = new Context();
         c.setSubID(DEFAULT_SUBID);
         c.setDbIdentity(IDENTITY_GROUPS);
-        c.setIdentityClass(Group.class);
+        c.setIdentityClass(IDENTITY_GROUPS_CLASS);
         c.uniqueColumns = UNIQUECOLUMNS_GROUPS;
         c.setId(14);
 
@@ -1227,7 +1249,7 @@ public class Context implements Serializable {
         Context c = new Context();
         c.setSubID(DEFAULT_SUBID);
         c.setDbIdentity(IDENTITY_FAVS);
-        c.setIdentityClass(Favourite.class);
+        c.setIdentityClass(IDENTITY_FAVOURITE_CLASS);
         c.setId(15);
 
         return c;
@@ -1287,7 +1309,7 @@ public class Context implements Serializable {
         Context c = new Context();
         c.setSubID(DEFAULT_SUBID);
         c.setDbIdentity(IDENTITY_HISTORY);
-        c.setIdentityClass(HISTORY_ITEMS_CLASS);
+        c.setIdentityClass(IDENTITY_HISTORY_ITEMS_CLASS);
         c.setId(21);
 
         return c;
@@ -1376,7 +1398,7 @@ public class Context implements Serializable {
         Context c = new Context();
         c.setSubID(DEFAULT_SUBID);
         c.setDbIdentity(IDENTITY_MAIL);
-        c.setIdentityClass(MailMessage.class);
+        c.setIdentityClass(IDENTITY_MAILS_CLASS);
         c.setId(30);
         c.uniqueColumns = UNIQUECOLUMNS_DEFAULT;
 
@@ -1416,7 +1438,7 @@ public class Context implements Serializable {
         Context c = new Context();
         c.setSubID(DEFAULT_SUBID);
         c.setDbIdentity(IDENTITY_TAX);
-        c.setIdentityClass(Tax.class);
+        c.setIdentityClass(IDENTITY_TAX_CLASS);
         c.setId(36);
 
         return c;
@@ -1476,7 +1498,7 @@ public class Context implements Serializable {
         Context c = new Context();
         c.setSubID(DEFAULT_SUBID);
         c.setDbIdentity(IDENTITY_WSMAPPING);
-        c.setIdentityClass(WSContactsMapping.class);
+        c.setIdentityClass(IDENTITY_WSCONTACTSMAPPING_CLASS);
         c.setId(41);
 
         return c;
@@ -1486,7 +1508,7 @@ public class Context implements Serializable {
         Context c = new Context();
         c.setSubID(DEFAULT_SUBID);
         c.setDbIdentity(IDENTITY_WSIMAPPING);
-        c.setIdentityClass(WSItemsMapping.class);
+        c.setIdentityClass(IDENTITY_WSITEMSMAPPING_CLASS);
         c.setId(42);
 
         return c;
@@ -1545,7 +1567,7 @@ public class Context implements Serializable {
         Context c = new Context();
         c.setSubID(DEFAULT_SUBID);
         c.setDbIdentity(IDENTITY_EXPENSE);
-        c.setIdentityClass(Expense.class);
+        c.setIdentityClass(IDENTITY_EXPENSE_CLASS);
         c.setId(48);
 
         return c;
@@ -1555,8 +1577,8 @@ public class Context implements Serializable {
         Context c = new Context();
         c.setSubID(DEFAULT_SUBID);
         c.setDbIdentity(IDENTITY_PRODUCTSLIST);
-        c.setSearchFields("DISTINCT ids,cname,description");
-        c.setIdentityClass(ProductList.class);
+        c.setSearchFields(DEFAULT_PRODUCTSLIST_SEARCH);
+        c.setIdentityClass(IDENTITY_PRODUCTLIST_CLASS);
         c.setId(48);
 
         return c;
@@ -1566,7 +1588,7 @@ public class Context implements Serializable {
         Context c = new Context();
         c.setSubID(DEFAULT_SUBID);
         c.setDbIdentity(IDENTITY_PRODUCTS_TO_SUPPLIERS);
-        c.setIdentityClass(ProductsToSuppliers.class);
+        c.setIdentityClass(IDENTITY_PRODUCTSTOSUPPLIERS_CLASS);
         c.setId(49);
 
         return c;
@@ -1586,7 +1608,7 @@ public class Context implements Serializable {
         Context c = new Context();
         c.setSubID(DEFAULT_SUBID);
         c.setDbIdentity(IDENTITY_SCHEDULE_TYPES);
-        c.setIdentityClass(ScheduleTypes.class);
+        c.setIdentityClass(IDENTITY_SCHEDULETYPES_CLASS);
         c.setId(51);
 
         return c;
@@ -1596,7 +1618,7 @@ public class Context implements Serializable {
         Context c = new Context();
         c.setSubID(DEFAULT_SUBID);
         c.setDbIdentity(IDENTITY_CONVERSATION);
-        c.setIdentityClass(Conversation.class);
+        c.setIdentityClass(IDENTITY_CONVERSATION_CLASS);
         c.setId(52);
 
         return c;
@@ -1608,6 +1630,27 @@ public class Context implements Serializable {
         c.setDbIdentity(IDENTITY_PRODUCT_PRICES);
         c.setIdentityClass(IDENTITY_PRODUCTPRICE_CLASS);
         c.setId(53);
+
+        return c;
+    }
+
+    public static synchronized Context getActivityList() {
+        Context c = new Context();
+        c.setSubID(DEFAULT_SUBID);
+        c.setDbIdentity(IDENTITY_ACTIVITYLIST);
+        c.setSearchFields(DEFAULT_ACTIVITYLIST_SEARCH);
+        c.setIdentityClass(IDENTITY_ACTIVITYLIST_CLASS);
+        c.setId(54);
+
+        return c;
+    }
+        
+    public static synchronized Context getActivityListItems() {
+        Context c = new Context();
+        c.setSubID(DEFAULT_SUBID);
+        c.setDbIdentity(IDENTITY_ACTIVITYLISTITEMS);
+        c.setIdentityClass(IDENTITY_ACTIVITYITEMSLIST_CLASS);
+        c.setId(55);
 
         return c;
     }
