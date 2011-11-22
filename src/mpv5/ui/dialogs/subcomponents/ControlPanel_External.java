@@ -4,15 +4,12 @@ import enoa.connection.NoaConnection;
 import java.awt.Component;
 import java.io.File;
 import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import mpv5.data.PropertyStore;
 import mpv5.globals.LocalSettings;
 import mpv5.globals.Messages;
 import mpv5.logging.Log;
 import mpv5.ui.dialogs.ControlApplet;
 import mpv5.ui.dialogs.Popup;
-import mpv5.ui.frames.MPView;
 
 /**
  *
@@ -229,7 +226,8 @@ public class ControlPanel_External extends javax.swing.JPanel implements Control
 }//GEN-LAST:event_jCheckBox3ItemStateChanged
 
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
-
+        NoaConnection.clearConnection();
+        
         if (!jCheckBox3.isSelected()) {
             Runnable runnable2 = new Runnable() {
 
@@ -256,6 +254,39 @@ public class ControlPanel_External extends javax.swing.JPanel implements Control
                             Popup.notice(Messages.ERROR_OCCURED);
                         }
                     }
+                }
+            };
+            final Thread startServerThread = new Thread(runnable2);
+            startServerThread.start();
+        } else {
+            Runnable runnable2 = new Runnable() {
+
+                @Override
+                public void run() {
+                    //Caching the old values
+                    String host = LocalSettings.getProperty(LocalSettings.OFFICE_HOST);
+                    String Port = LocalSettings.getProperty(LocalSettings.OFFICE_PORT);
+                    String Remote = LocalSettings.getProperty(LocalSettings.OFFICE_REMOTE);
+
+                    //Setiing Values to test ...
+                    LocalSettings.setProperty(LocalSettings.OFFICE_HOST, labeledTextField1.getText());
+                    LocalSettings.setProperty(LocalSettings.OFFICE_PORT, labeledTextField2.getText());
+                    LocalSettings.setProperty(LocalSettings.OFFICE_REMOTE, Boolean.toString(jCheckBox3.isSelected()));
+
+
+                    mpv5.YabsViewProxy.instance().setWaiting(true);
+                    try {
+                        NoaConnection.getConnection().getDesktopService().getFramesCount();
+                        Popup.notice(Messages.OO_DONE_LOADING);
+                    } catch (Exception e) {
+                        Popup.notice(Messages.ERROR_OCCURED);
+                    }
+                    mpv5.YabsViewProxy.instance().setWaiting(false);
+
+                    //Restore old Values ....
+                    LocalSettings.setProperty(LocalSettings.OFFICE_HOST, host);
+                    LocalSettings.setProperty(LocalSettings.OFFICE_PORT, Port);
+                    LocalSettings.setProperty(LocalSettings.OFFICE_REMOTE, Remote);
                 }
             };
             final Thread startServerThread = new Thread(runnable2);

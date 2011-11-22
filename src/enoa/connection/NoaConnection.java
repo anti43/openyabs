@@ -21,34 +21,23 @@ import ag.ion.bion.officelayer.application.OfficeApplicationException;
 import ag.ion.bion.officelayer.application.OfficeApplicationRuntime;
 import ag.ion.bion.officelayer.desktop.IDesktopService;
 import ag.ion.bion.officelayer.document.IDocumentService;
-import ag.ion.bion.officelayer.internal.document.DocumentService;
 import ag.ion.noa.NOAException;
 
 import com.sun.star.auth.InvalidArgumentException;
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.SocketAddress;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.Vector;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import mpv5.Main;
 import mpv5.YabsViewProxy;
 import mpv5.globals.LocalSettings;
 import mpv5.globals.Messages;
 import mpv5.logging.Log;
-import mpv5.ui.dialogs.Notificator;
 import mpv5.ui.dialogs.Popup;
-import mpv5.ui.frames.MPView;
 import mpv5.utils.files.FileExecutor;
-import ooo.connector.server.OOoServer;
 
 /**
  *This class handles connections to remote and local OpenOffice installations
@@ -91,6 +80,13 @@ public class NoaConnection {
         } else {
             throw new UnsupportedOperationException("OpenOffice is not configured yet.");
         }
+    }
+
+    /**
+     * clears the onnnetion for testing puproses
+     */
+    public static void clearConnection() {
+        Connection = null;
     }
 
     /**
