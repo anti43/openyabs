@@ -41,6 +41,7 @@ import mpv5.db.common.QueryParameter;
 import mpv5.db.common.ReturnValue;
 import mpv5.db.objects.Product;
 import mpv5.db.objects.SubItem;
+import mpv5.db.objects.User;
 import mpv5.logging.Log;
 import mpv5.utils.date.vTimeframe;
 import mpv5.utils.models.MPComboBoxModelItem;
@@ -371,7 +372,10 @@ public class ProductSelectDialog2 extends javax.swing.JDialog  {
         if(item!=null&& Integer.parseInt(item.getId())>0){
             qc.and(new QueryParameter(Context.getProduct(), "manufacturersids",Integer.parseInt(item.getId()), QueryParameter.EQUALS));
         }
-
+        if(User.getCurrentUser().isGroupRestricted()){
+            qc.and(new QueryParameter(Context.getProduct(), "groupsids", User.getCurrentUser().__getGroupsids(), QueryParameter.EQUALS));
+        }
+        
         try{
             ReturnValue data = QueryHandler.instanceOf().clone(Context.getProduct()).select("ids, cname", qc, new vTimeframe(new Date(0), new Date()));
             productCombobox.setModel(new MPComboboxModel(MPComboBoxModelItem.toItems(data.getData())));

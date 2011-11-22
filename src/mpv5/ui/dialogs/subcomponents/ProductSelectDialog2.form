@@ -34,7 +34,7 @@
                   </Group>
                   <Group type="102" alignment="0" attributes="0">
                       <Component id="cnumber" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace max="32767" attributes="0"/>
+                      <EmptySpace pref="25" max="32767" attributes="0"/>
                       <Component id="stype" min="-2" pref="226" max="-2" attributes="0"/>
                   </Group>
                   <Component id="familyselect" alignment="0" pref="433" max="32767" attributes="1"/>
