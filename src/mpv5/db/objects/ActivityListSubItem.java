@@ -101,7 +101,7 @@ public final class ActivityListSubItem extends DatabaseObject {
 
         for (int i = 0; i < deletionQueue.size(); i++) {
             try {
-                QueryHandler.delete(SubItem.getObject(Context.getSubItem(), deletionQueue.get(i)));
+                QueryHandler.delete(ActivityListSubItem.getObject(Context.getActivityListItems(), deletionQueue.get(i)));
             } catch (NodataFoundException ex) {
                 Log.Debug(ex);
             }
@@ -125,7 +125,7 @@ public final class ActivityListSubItem extends DatabaseObject {
      * @param valueAt INT or Entity
      */
     public static void addToDeletionQueue(Object valueAt) {
-        Log.Debug(SubItem.class, "Adding to deletionqueue: " + valueAt);
+        Log.Debug(ActivityListSubItem.class, "Adding to deletionqueue: " + valueAt);
         if (valueAt != null) {
             try {
                 Integer isd = Integer.valueOf(valueAt.toString());
@@ -142,7 +142,7 @@ public final class ActivityListSubItem extends DatabaseObject {
      * @param valueAt INT or Entity
      */
     public static void removeFromDeletionQueue(Object valueAt) {
-        Log.Debug(SubItem.class, "Removing from deletionqueue: " + valueAt);
+        Log.Debug(ActivityListSubItem.class, "Removing from deletionqueue: " + valueAt);
         if (valueAt != null) {
             try {
                 Integer isd = Integer.valueOf(valueAt.toString());
