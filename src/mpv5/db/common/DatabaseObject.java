@@ -977,6 +977,8 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
                         data.add(left, (BigDecimal) tempval);
                     } else if (DatabaseObject.class.isAssignableFrom(tempval.getClass())) {
                         data.add(left + "sids", ((DatabaseObject) tempval).__getIDS());
+                    } else if (tempval.getClass().isInstance(new Long(0))) {
+                        data.add(left, String.valueOf(tempval));
                     }
                 } catch (Exception ex) {
                     mpv5.logging.Log.Debug(this, methods[i].getName());

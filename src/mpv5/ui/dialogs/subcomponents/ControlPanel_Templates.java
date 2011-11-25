@@ -1,6 +1,5 @@
 package mpv5.ui.dialogs.subcomponents;
 
-import com.google.enterprise.util.FileMonitor;
 import enoa.handler.TableHandler;
 import enoa.handler.TemplateHandler;
 import java.awt.Component;
@@ -12,8 +11,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListModel;
 import mpv5.data.PropertyStore;
@@ -47,6 +44,7 @@ import mpv5.utils.export.Export;
 import mpv5.utils.export.ODTFile;
 import mpv5.utils.export.PDFFile;
 import mpv5.utils.files.FileDirectoryHandler;
+import mpv5.utils.files.FileMonitor;
 import mpv5.utils.jobs.Job;
 import mpv5.utils.models.MPComboBoxModelItem;
 import mpv5.utils.models.MPComboboxModel;
@@ -65,8 +63,8 @@ public final class ControlPanel_Templates extends javax.swing.JPanel implements 
      */
     public final String UNAME = "templates";
     private Template dataOwner;
-    private static ControlPanel_Templates ident;
     private File lastImportedFile;
+    private long lastmodified;
 
     public ControlPanel_Templates() {
         if (MPSecurityManager.checkAdminAccess()) {
@@ -77,7 +75,7 @@ public final class ControlPanel_Templates extends javax.swing.JPanel implements 
                     MPComboBoxModelItem.toItems(new DatabaseSearch(Context.getGroup()).getValuesFor(Context.getGroup().getSubID(), null, ""))));
             java.util.ResourceBundle bundle1 = mpv5.i18n.LanguageManager.getBundle();
             format.setText(Template.DEFAULT_FORMAT);
-//            format.getTextField().setEditable(false);
+            format.getTextField().setEditable(false);
             format.getTextField().setToolTipText(bundle1.getString("ControlPanel_Templates.format.toolTipText_1")); // NOI18N
             setVisible(true);
         }
@@ -113,7 +111,8 @@ public final class ControlPanel_Templates extends javax.swing.JPanel implements 
         format = new mpv5.ui.beans.LabeledTextField();
         jButton8 = new javax.swing.JButton();
         printern = new mpv5.ui.beans.LabeledTextField();
-        jCheckBox1 = new javax.swing.JCheckBox();
+        updateService = new javax.swing.JCheckBox();
+        pathtofile = new mpv5.ui.beans.LabeledTextField();
         jScrollPane4 = new javax.swing.JScrollPane();
         templates = new javax.swing.JTable();
 
@@ -280,29 +279,29 @@ public final class ControlPanel_Templates extends javax.swing.JPanel implements 
                             .addGroup(jPanel4Layout.createSequentialGroup()
                                 .addComponent(format, javax.swing.GroupLayout.PREFERRED_SIZE, 233, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jButton8, javax.swing.GroupLayout.DEFAULT_SIZE, 87, Short.MAX_VALUE))
+                                .addComponent(jButton8, javax.swing.GroupLayout.DEFAULT_SIZE, 72, Short.MAX_VALUE))
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createSequentialGroup()
                                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addGroup(jPanel4Layout.createSequentialGroup()
-                                        .addComponent(jLabel3, javax.swing.GroupLayout.DEFAULT_SIZE, 79, Short.MAX_VALUE)
+                                        .addComponent(jLabel3, javax.swing.GroupLayout.DEFAULT_SIZE, 72, Short.MAX_VALUE)
                                         .addGap(8, 8, 8))
                                     .addGroup(jPanel4Layout.createSequentialGroup()
-                                        .addComponent(jLabel6, javax.swing.GroupLayout.DEFAULT_SIZE, 62, Short.MAX_VALUE)
+                                        .addComponent(jLabel6, javax.swing.GroupLayout.DEFAULT_SIZE, 55, Short.MAX_VALUE)
                                         .addGap(25, 25, 25))
                                     .addGroup(jPanel4Layout.createSequentialGroup()
-                                        .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, 72, Short.MAX_VALUE)
+                                        .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, 65, Short.MAX_VALUE)
                                         .addGap(15, 15, 15)))
                                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 239, Short.MAX_VALUE)
-                                    .addComponent(groupname, javax.swing.GroupLayout.Alignment.TRAILING, 0, 239, Short.MAX_VALUE)
-                                    .addComponent(jScrollPane3, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 239, Short.MAX_VALUE)))
-                            .addComponent(type, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 326, Short.MAX_VALUE))
-                        .addGap(20, 20, 20))
+                                    .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 231, Short.MAX_VALUE)
+                                    .addComponent(groupname, javax.swing.GroupLayout.Alignment.TRAILING, 0, 231, Short.MAX_VALUE)
+                                    .addComponent(jScrollPane3, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 231, Short.MAX_VALUE)))
+                            .addComponent(type, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 311, Short.MAX_VALUE))
+                        .addContainerGap())
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createSequentialGroup()
                         .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(fullname, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 324, Short.MAX_VALUE)
-                            .addComponent(printern, javax.swing.GroupLayout.DEFAULT_SIZE, 324, Short.MAX_VALUE))
-                        .addGap(22, 22, 22))))
+                            .addComponent(fullname, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 293, Short.MAX_VALUE)
+                            .addComponent(printern, javax.swing.GroupLayout.DEFAULT_SIZE, 293, Short.MAX_VALUE))
+                        .addGap(28, 28, 28))))
         );
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -332,29 +331,45 @@ public final class ControlPanel_Templates extends javax.swing.JPanel implements 
                     .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 98, Short.MAX_VALUE)))
         );
 
-        jCheckBox1.setText(bundle.getString("ControlPanel_Templates.jCheckBox1.text")); // NOI18N
-        jCheckBox1.setEnabled(false);
-        jCheckBox1.setName("jCheckBox1"); // NOI18N
-        jCheckBox1.addItemListener(new java.awt.event.ItemListener() {
+        updateService.setText(bundle.getString("ControlPanel_Templates.updateService.text")); // NOI18N
+        updateService.setEnabled(false);
+        updateService.setName("updateService"); // NOI18N
+        updateService.addItemListener(new java.awt.event.ItemListener() {
             public void itemStateChanged(java.awt.event.ItemEvent evt) {
-                jCheckBox1ItemStateChanged(evt);
+                updateServiceItemStateChanged(evt);
             }
         });
+
+        pathtofile.set_Label(bundle.getString("ControlPanel_Templates.pathtofile._Label")); // NOI18N
+        pathtofile.setEnabled(false);
+        pathtofile.setFont(pathtofile.getFont());
+        pathtofile.setName("pathtofile"); // NOI18N
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(jCheckBox1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 368, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                    .addComponent(jPanel4, javax.swing.GroupLayout.Alignment.LEADING, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel2Layout.createSequentialGroup()
+                        .addGap(6, 6, 6)
+                        .addComponent(updateService, javax.swing.GroupLayout.PREFERRED_SIZE, 337, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap())
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(pathtofile, javax.swing.GroupLayout.DEFAULT_SIZE, 303, Short.MAX_VALUE)
+                .addGap(40, 40, 40))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 5, Short.MAX_VALUE)
-                .addComponent(jCheckBox1)
-                .addContainerGap())
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(updateService)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(pathtofile, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         jScrollPane4.setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("ControlPanel_Templates.jScrollPane4.border.title"))); // NOI18N
@@ -388,14 +403,15 @@ public final class ControlPanel_Templates extends javax.swing.JPanel implements 
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 373, Short.MAX_VALUE)
+                .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 346, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 380, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 351, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(29, 29, 29))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 442, Short.MAX_VALUE)
-            .addComponent(jPanel2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 442, Short.MAX_VALUE)
+            .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 472, Short.MAX_VALUE)
+            .addComponent(jPanel2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 472, Short.MAX_VALUE)
         );
 
         add(jPanel1, java.awt.BorderLayout.CENTER);
@@ -441,6 +457,9 @@ public final class ControlPanel_Templates extends javax.swing.JPanel implements 
     private void templatesMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_templatesMouseClicked
         try {
             setDataOwner((DatabaseObject) templates.getValueAt(templates.convertRowIndexToModel(templates.getSelectedRow()), 0), true);
+            if (!pathtofile_.equals("")) {
+                updateService.setEnabled(true);
+            }
         } catch (Exception e) {
 //            Log.Debug(e);
         }
@@ -465,24 +484,16 @@ public final class ControlPanel_Templates extends javax.swing.JPanel implements 
         if (di.chooseFile()) {
             Template t = new Template();
             File fi = di.getFile();
-            if (QueryHandler.instanceOf().clone(Context.getFiles(), this).insertFile(fi, t, new SaveString(di.getFile().getName(), true))) {
-//      
+            if (QueryHandler.instanceOf().clone(Context.getFiles(), this).insertFile(fi, t, new SaveString(di.getFile().getName(), true))) {     
                 Popup.notice(Messages.ASSIGN_TEMPLATE);
                 lastImportedFile = fi;
-                jCheckBox1.setEnabled(true);
-
-//                User object = mpv5.db.objects.User.getCurrentUser();
-//
-//                QueryCriteria d = new QueryCriteria();
-//                d.add("cname", dataOwner.__getIDS() + "@" + object.__getIDS() + "@" + mpv5.db.objects.User.getCurrentUser().__getGroupsids());
-//                QueryHandler.instanceOf().clone(Context.getTemplatesToUsers()).delete(d);
-//
-//                QueryData c = new QueryData();
-//                c.add("usersids", object.__getIDS());
-//                c.add("templatesids", dataOwner.__getIDS());
-//                c.add("groupsids", mpv5.db.objects.User.getCurrentUser().__getGroupsids());
-//                c.add("cname", dataOwner.__getIDS() + "@" + object.__getIDS() + "@" + mpv5.db.objects.User.getCurrentUser().__getGroupsids());
-//                QueryHandler.instanceOf().clone(Context.getTemplatesToUsers()).insert(c, null);
+                updateService.setEnabled(true);
+                try {
+                    pathtofile.setText(fi.getCanonicalPath().toString());
+                } catch (IOException ex) {
+                    Log.Debug(this, ex);
+                }
+                lastmodified = fi.lastModified();
             }
         }
 }//GEN-LAST:event_jButton1ActionPerformed
@@ -520,13 +531,19 @@ public final class ControlPanel_Templates extends javax.swing.JPanel implements 
                     }
                     refresh();
                     lastImportedFile = fi;
-                    jCheckBox1.setEnabled(true);
+                    updateService.setEnabled(true);
+                    try {
+                        pathtofile.setText(fi.getCanonicalPath().toString());
+                    } catch (IOException ex) {
+                        Log.Debug(this, ex);
+                    }
+                    lastmodified = fi.lastModified();
                 }
             }
         }
     }//GEN-LAST:event_jButton10ActionPerformed
 
-    private void jCheckBox1ItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_jCheckBox1ItemStateChanged
+    private void updateServiceItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_updateServiceItemStateChanged
         final DataPanel x = this;
         final Template tpl = dataOwner;
         FileMonitor.FileChangeListener filecl = new FileMonitor.FileChangeListener() {
@@ -544,8 +561,9 @@ public final class ControlPanel_Templates extends javax.swing.JPanel implements 
                 refresh();
             }
         };
+        
         if (lastImportedFile != null) {
-            if (jCheckBox1.isSelected()) {
+            if (updateService.isSelected()) {
                 try {
                     FileMonitor.getInstance().addFileChangeListener(filecl, lastImportedFile.getCanonicalPath(), 1000l);
                 } catch (IOException ex) {
@@ -558,10 +576,15 @@ public final class ControlPanel_Templates extends javax.swing.JPanel implements 
                     Log.Debug(ex);
                 }
             }
-        } else {
-            jCheckBox1.setSelected(false);
+        } else if(!pathtofile_.equals("")) {
+            if (updateService.isSelected()) {
+                FileMonitor.getInstance().addFileChangeListener(filecl, pathtofile_, 1000l);
+            } else {
+                FileMonitor.getInstance().removeFileChangeListener(filecl, pathtofile_);
+            }
         }
-    }//GEN-LAST:event_jCheckBox1ItemStateChanged
+        lastImportedFile = null;
+    }//GEN-LAST:event_updateServiceItemStateChanged
 
     public void setValues(PropertyStore values) {
     }
@@ -593,7 +616,6 @@ public final class ControlPanel_Templates extends javax.swing.JPanel implements 
     private javax.swing.JButton jButton6;
     private javax.swing.JButton jButton8;
     private javax.swing.JButton jButton9;
-    private javax.swing.JCheckBox jCheckBox1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel6;
@@ -607,15 +629,16 @@ public final class ControlPanel_Templates extends javax.swing.JPanel implements 
     private javax.swing.JScrollPane jScrollPane4;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JSeparator jSeparator2;
+    private mpv5.ui.beans.LabeledTextField pathtofile;
     private mpv5.ui.beans.LabeledTextField printern;
     private javax.swing.JTable templates;
     private mpv5.ui.beans.LabeledCombobox type;
+    private javax.swing.JCheckBox updateService;
     // End of variables declaration//GEN-END:variables
     public String description_ = "";
     public String filename_ = "";
     public String cname_;
     public String format_;
-    public File file_;
     public int intsize_;
     public String mimetype_;
     public int intaddedby_ = 4343;
@@ -624,6 +647,10 @@ public final class ControlPanel_Templates extends javax.swing.JPanel implements 
     public int compsids_;
     public String printer_;
     public java.util.Date dateadded_ = new java.util.Date();
+    public boolean isupdateenabled_ = false;
+    public String pathtofile_ = "";
+    public long lastmodified_ ;
+    
 
     public boolean collectData() {
         if (groupname.getSelectedItem() != null) {
@@ -637,6 +664,9 @@ public final class ControlPanel_Templates extends javax.swing.JPanel implements 
         mimetype_ = String.valueOf(type.getSelectedItem().getId());
         format_ = format.getText();
         printer_ = printern.getText();
+        pathtofile_ = pathtofile.getText();
+        lastmodified_ = lastmodified;
+        isupdateenabled_ = updateService.isSelected();
 
         return true;
     }
@@ -682,6 +712,9 @@ public final class ControlPanel_Templates extends javax.swing.JPanel implements 
             }
 
             jList1.setSelectedIndices(ix);
+            pathtofile.setText(pathtofile_);
+            lastmodified = lastmodified_;
+            updateService.setSelected(isupdateenabled_);
 
         } catch (Exception e) {
             Log.Debug(this, e);
@@ -697,7 +730,7 @@ public final class ControlPanel_Templates extends javax.swing.JPanel implements 
         if (p) {
             dataOwner.setPanelData(this);
             this.exposeData();
-        }
+        }   
     }
 
     public void refresh() {
@@ -767,20 +800,45 @@ public final class ControlPanel_Templates extends javax.swing.JPanel implements 
             groups = 1;
         }
 
+        Object[][] UtT = null;
+        QueryCriteria d = new QueryCriteria("templatesids", dataOwner.__getIDS());
+        try {
+             UtT = QueryHandler.instanceOf().clone(Context.getTemplatesToUsers()).select(d).getData();
+        } catch (NodataFoundException ex) {
+            Log.Debug(this, ex);
+        }
+        
+
+
         for (int i = 0; i < selectedValues.length; i++) {
             User object = (User) selectedValues[i];
-
-            QueryCriteria d = new QueryCriteria("cname", dataOwner.__getIDS() + "@" + object.__getIDS() + "@" + groups);
-            QueryHandler.instanceOf().clone(Context.getTemplatesToUsers()).delete(d);
-
-            QueryData c = new QueryData();
-            c.add("usersids", object.__getIDS());
-            c.add("templatesids", dataOwner.__getIDS());
-            c.add("groupsids", groups.intValue());
-            c.add("cname", dataOwner.__getIDS() + "@" + object.__getIDS() + "@" + groups);
-            QueryHandler.instanceOf().clone(Context.getTemplatesToUsers()).insert(c, null);
+            boolean found = false;
+            
+            for (int j = 0; j < UtT.length; j++) {
+                if (Integer.parseInt(UtT[j][2].toString()) == object.__getIDS()) {
+                    found = true;
+                    UtT[j][1] = "found";
+                    break;
+                }
+            }
+            
+            if (!found) {
+                QueryData c = new QueryData();
+                c.add("usersids", object.__getIDS());
+                c.add("templatesids", dataOwner.__getIDS());
+                c.add("groupsids", groups.intValue());
+                c.add("cname", dataOwner.__getIDS() + "@" + object.__getIDS() + "@" + groups);
+                QueryHandler.instanceOf().clone(Context.getTemplatesToUsers()).insert(c, null);
+            }
         }
 
+        for (int j = 0; j < UtT.length; j++) {
+            if (!UtT[j][1].equals("found")) {
+                QueryCriteria d2 = new QueryCriteria("cname", UtT[j][1].toString());
+                QueryHandler.instanceOf().clone(Context.getTemplatesToUsers()).delete(d2);
+            }
+        }
+        
         TemplateHandler.clearCache();
     }
 
@@ -845,6 +903,5 @@ public final class ControlPanel_Templates extends javax.swing.JPanel implements 
     }
 
     public void print() {
-        mpv5.utils.export.Export.print(this);
     }
 }

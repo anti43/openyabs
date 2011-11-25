@@ -18,6 +18,7 @@ package mpv5;
 
 import java.io.IOException;
 import mpv5.db.common.NodataFoundException;
+import mpv5.db.common.ReturnValue;
 import mpv5.logging.*;
 import org.jdesktop.application.SingleFrameApplication;
 import com.l2fprod.common.swing.plaf.LookAndFeelAddons;
@@ -45,6 +46,7 @@ import mpv5.db.common.DatabaseConnection;
 import mpv5.db.common.DatabaseObject;
 import mpv5.db.common.DatabaseObjectLock;
 import mpv5.db.common.QueryHandler;
+import mpv5.db.objects.Template;
 import mpv5.globals.Constants;
 import mpv5.globals.LocalSettings;
 import mpv5.globals.Messages;
@@ -68,6 +70,7 @@ import mpv5.ui.frames.MPView;
 import mpv5.usermanagement.MPSecurityManager;
 import mpv5.utils.files.FileDirectoryHandler;
 import mpv5.utils.files.FileExecutor;
+import mpv5.utils.files.FileMonitor;
 import mpv5.utils.files.FileReaderWriter;
 import mpv5.utils.print.PrintJob2;
 import mpv5.utils.text.RandomText;
@@ -229,7 +232,7 @@ public class Main implements Runnable {
         }
     }
 
-    public static void extStart(Class app, Class view, String... args) throws Exception {
+    public static void extStart(Class<YabsApplication> app, Class<MPView> view, String... args) throws Exception {
         APPLICATION_CLASS = app;
         VIEW_CLASS = view;
         main(args);
@@ -275,13 +278,17 @@ public class Main implements Runnable {
      */
     public static boolean SKIP_LIBCHECK = false;
     /**
+     * Indicates whether template check shall be skipped
+     */
+    public static boolean SKIP_TPLCHECK = false;    
+    /**
      * The Yabs Application (JSAF)
      */
-    public static Class APPLICATION_CLASS;
+    public static Class<YabsApplication> APPLICATION_CLASS;
     /**
      * The Yabs View (JSAF FrameView)
      */
-    public static Class VIEW_CLASS;
+    public static Class<MPView> VIEW_CLASS;
 
     /**
      * At startup create and show the main frame of the application.
@@ -509,6 +516,7 @@ public class Main implements Runnable {
 
         org.apache.commons.cli2.Option server = obuilder.withShortName("server").withShortName("serv").withDescription("start built-in server component").create();
         org.apache.commons.cli2.Option ignoreLibs = obuilder.withShortName("ignorelibs").withShortName("il").withDescription("ignore Libs checking").create();
+        org.apache.commons.cli2.Option ignoreTpls = obuilder.withShortName("ignoretpls").withShortName("it").withDescription("ignore Templateupdate checking").create();
         org.apache.commons.cli2.Option showenv = obuilder.withShortName("showenv").withShortName("se").withDescription("show environmental variables").create();
         org.apache.commons.cli2.Option help = obuilder.withShortName("help").withShortName("h").withDescription("print this message").create();
         org.apache.commons.cli2.Option license = obuilder.withShortName("license").withShortName("li").withDescription("print license").create();
@@ -548,6 +556,7 @@ public class Main implements Runnable {
                 withOption(params).
                 withOption(forceinstall).
                 withOption(ignoreLibs).
+                withOption(ignoreTpls).
                 create();
 
         org.apache.commons.cli2.util.HelpFormatter hf = new org.apache.commons.cli2.util.HelpFormatter();
@@ -644,6 +653,9 @@ public class Main implements Runnable {
                 SKIP_LIBCHECK = true;
             }
 
+            if (cl.hasOption(ignoreTpls)) {
+                SKIP_TPLCHECK = true;
+            }
             YConsole.setLogStreams(cl.hasOption(logfile), cl.hasOption(consolelog), cl.hasOption(windowlog));
 
             if (cl.hasOption(params)) {
@@ -875,6 +887,11 @@ public class Main implements Runnable {
                 new Thread(runnable1).start();
             }
         }
+
+        if (!HEADLESS) {
+            checkTpls();
+        }
+        
     }
 
     private void loadPlugins() {
@@ -1076,6 +1093,58 @@ public class Main implements Runnable {
                 }
             };
 
+            new Thread(runnable1).start();
+        }
+    }
+    
+    @SuppressWarnings("unchecked")
+    private void checkTpls() {
+        splash.nextStep(Messages.CHECK_TPLUPDATE.toString());
+        if (!SKIP_TPLCHECK) {
+            Runnable runnable1 = new Runnable() {
+
+                Object[][] data = null;
+
+                @Override
+                public void run() {
+                    try {
+                        ReturnValue rv = QueryHandler.instanceOf().clone(Context.getTemplate()).select();
+                        data = rv.getData();
+                        for (int i = 0; i < data.length; i++) {
+                            final Template tpl = (Template) Template.getObject(Context.getTemplate(), Integer.parseInt(data[i][0].toString()));
+                            FileMonitor.FileChangeListener filecl = new FileMonitor.FileChangeListener() {
+
+                                public void fileChanged(String fileName) {
+                                    QueryHandler.instanceOf().clone(Context.getFiles()).updateFile(new File(fileName), tpl.__getFilename());
+                                    tpl.setDescription(tpl.__getDescription() + "\n - Updated: " + new Date());
+                                    tpl.save(true);
+                                    TemplateHandler.clearCache();
+                                }
+                            };
+                            
+                            if (!tpl.__getPathtofile().equals("")) {
+                                if (tpl.__getisupdateenabled()) {
+                                    File file = new File(tpl.__getPathtofile());
+                                    if (file.exists()) {
+                                        Log.Debug(this, tpl.__getLastmodified());
+                                        Log.Debug(this, file.lastModified());
+                                        if (tpl.__getLastmodified() < file.lastModified()) {
+                                            QueryHandler.instanceOf().clone(Context.getFiles()).updateFile(file, tpl.__getFilename());
+                                            tpl.setDescription(tpl.__getDescription() + "\n - Updated: " + new Date());
+                                            tpl.setLastmodified(file.lastModified());
+                                            tpl.save(true);
+                                            TemplateHandler.clearCache();
+                                        }
+                                    }
+                                    FileMonitor.getInstance().addFileChangeListener(filecl, tpl.__getPathtofile(), 1000l);
+                                }
+                            }
+                        }
+                    } catch (NodataFoundException ex) {
+                        Log.Debug(this, ex);
+                    }
+                }
+            };
             new Thread(runnable1).start();
         }
     }

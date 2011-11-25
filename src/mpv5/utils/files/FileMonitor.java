@@ -12,10 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package com.google.enterprise.util;
+package mpv5.utils.files;
 
 import java.io.File;
-import java.util.Hashtable;
+import java.util.HashMap;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -28,11 +28,11 @@ public class FileMonitor {
   private static final FileMonitor SINGLETON = new FileMonitor();
 
   private Timer timer;
-  private Hashtable<String, TimerTask> timerTasks;
+  private HashMap<String, TimerTask> timerTasks;
 
   private FileMonitor() {
     timer = new Timer(true);
-    timerTasks = new Hashtable<String, TimerTask>();
+    timerTasks = new HashMap<String, TimerTask>();
   }
 
   /**
@@ -101,9 +101,9 @@ public class FileMonitor {
 
     @Override
     public void run() {
-      long lastModified = getLastModified();
-      if (lastModified != this.lastModified) {
-        this.lastModified = lastModified;
+      long lastModifiedInt = getLastModified();
+      if (lastModifiedInt != this.lastModified) {
+        this.lastModified = lastModifiedInt;
         fireFileChangeEvent(this.listener, this.fileName);
       }
     }
@@ -112,5 +112,4 @@ public class FileMonitor {
   public interface FileChangeListener {
     public void fileChanged(String fileName);
   }
-
 }

@@ -301,7 +301,8 @@ public enum Messages {
      NOT_YET_IMPLEMENTED("This Function is actualy not implemented!"), 
      TYPE_ACTIVITY("Activity Confirmation"), 
      ActivityList_Existing("There's an Activity List Existing. Add this to the Invoice?"), 
-     ActivityList_toSubItem("See attached Acitivy Confirmation for Project: ");
+     ActivityList_toSubItem("See attached Acitivy Confirmation for Project: "), 
+     CHECK_TPLUPDATE("Checking Templates to update from Filechange ...");
      
 
 

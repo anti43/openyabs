@@ -23,7 +23,6 @@ import javax.swing.JFileChooser;
 import javax.swing.table.TableModel;
 import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
-import mpv5.db.common.QueryCriteria;
 import mpv5.db.common.QueryCriteria2;
 import mpv5.db.common.QueryHandler;
 import mpv5.db.common.QueryParameter;
@@ -43,6 +42,7 @@ public class Template extends DatabaseObject {
      * Indicates no printer association
      */
     public static final String PRINTER_UNDEFINED = "printer_undefined";
+    private static final long serialVersionUID = 1L;
     private String description = "";
     private String filename = "";
     private String printer = "";
@@ -51,6 +51,9 @@ public class Template extends DatabaseObject {
     private File file;
     private String format = DEFAULT_FORMAT;
     private Exportable exFile;
+    private boolean isupdateenabled = false;
+    private String pathtofile = "";
+    private long lastmodified = 0;
     /**
      * Represents the default column order
      */
@@ -116,6 +119,75 @@ public class Template extends DatabaseObject {
     public void setIntsize(int intsize) {
         this.intsize = intsize;
     }
+    
+    
+    /**
+     * @return the filename
+     */
+    public String __getFilename() {
+        return filename;
+    }
+
+    /**
+     * @param filename the filename to set
+     */
+    public void setFilename(String filename) {
+        this.filename = filename;
+    }
+    
+    /**
+     * @return the format
+     */
+    public String __getFormat() {
+        return format;
+    }
+
+    /**
+     * @param format the format to set
+     */
+    public void setFormat(String format) {
+        this.format = format;
+    }
+    
+    /**
+     * @return the printer
+     */
+    public String __getPrinter() {
+        return printer;
+    }
+
+    /**
+     * @param printer the printer to set
+     */
+    public void setPrinter(String printer) {
+        this.printer = printer;
+    }
+
+    public boolean __getisupdateenabled() {
+        return isupdateenabled;
+    }
+
+    public void setIsupdateenabled(boolean isupdateenabled) {
+        this.isupdateenabled = isupdateenabled;
+    }
+
+    public long __getLastmodified() {
+        return lastmodified;
+    }
+
+    public void setLastmodified(long lastmodified) {
+        this.lastmodified = lastmodified;
+    }
+
+    public String __getPathtofile() {
+        return pathtofile;
+    }
+
+    public void setPathtofile(String pathtofile) {
+        this.pathtofile = pathtofile;
+    }
+    
+    
     MPIcon icon;
 
     @Override
@@ -162,19 +234,7 @@ public class Template extends DatabaseObject {
         return file;
     }
 
-    /**
-     * @return the filename
-     */
-    public String __getFilename() {
-        return filename;
-    }
 
-    /**
-     * @param filename the filename to set
-     */
-    public void setFilename(String filename) {
-        this.filename = filename;
-    }
 
     @Override
     public boolean delete() {
@@ -192,21 +252,7 @@ public class Template extends DatabaseObject {
             return super.delete();
         }
     }
-
-    /**
-     * @return the format
-     */
-    public String __getFormat() {
-        return format;
-    }
-
-    /**
-     * @param format the format to set
-     */
-    public void setFormat(String format) {
-        this.format = format;
-    }
-
+    
     /**
      * @return the exFile
      */
@@ -229,20 +275,6 @@ public class Template extends DatabaseObject {
      */
     public HashMap<String, TableModel> getTables() {
         return tables;
-    }
-
-    /**
-     * @return the printer
-     */
-    public String __getPrinter() {
-        return printer;
-    }
-
-    /**
-     * @param printer the printer to set
-     */
-    public void setPrinter(String printer) {
-        this.printer = printer;
     }
 
     public void defineExFile(Exportable ex) {
