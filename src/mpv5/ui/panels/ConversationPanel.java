@@ -137,42 +137,42 @@ public class ConversationPanel
                 Log.Debug(this, e.getActionCommand());
                 final MPComboBoxModelItem item = contactname.getSelectedItem();
                 if (item != null && item.isValid()) {
-                            t = new Thread() {
+                    t = new Thread() {
 
-                                @Override
-                                public void run() {
-                                    Address adr;
-                                    try {
-                                        contact = (Contact) DatabaseObject.getObject(Context.getContact(), Integer.valueOf(item.getId()));
+                        @Override
+                        public void run() {
+                            Address adr;
+                            try {
+                                contact = (Contact) DatabaseObject.getObject(Context.getContact(), Integer.valueOf(item.getId()));
 
-                                        data = DatabaseObject.getReferencedObjects(contact,
-                                                Context.getAddress());
-                                        if (data.isEmpty()) {
-                                            contactcity.setText(contact.__getCity());
-                                            contactcompany.setText(contact.__getCompany());
-                                            contactzip.setText(contact.__getZip());
-                                            contactstreet.setText(contact.__getStreet());
-                                        } else {
-                                            contactcity.setText("");
-                                            contactcompany.setText("");
-                                            contactzip.setText("");
-                                            contactstreet.setText("");
-                                        }
-                                        contactid.setText(contact.__getCNumber());
-                                        Object[][] data1 = new Object[data.size() + 1][2];
-                                        data1[0][0] = 0;
-                                        data1[0][1] = Messages.Conversation_MainAddress.toString();
-                                        for (int o = 0; o < data.size(); o++) {
-                                            adr = (Address) data.get(o);
-                                            data1[o + 1][0] = adr.__getIDS();
-                                            data1[o + 1][1] = adr.__getCName();
-                                        }
-                                        adressList.setModel(data1);
-                                    } catch (NodataFoundException ex) {
-                                        Log.Debug(this, ex);
-                                    }
+                                data = DatabaseObject.getReferencedObjects(contact,
+                                        Context.getAddress());
+                                if (data.isEmpty()) {
+                                    contactcity.setText(contact.__getCity());
+                                    contactcompany.setText(contact.__getCompany());
+                                    contactzip.setText(contact.__getZip());
+                                    contactstreet.setText(contact.__getStreet());
+                                } else {
+                                    contactcity.setText("");
+                                    contactcompany.setText("");
+                                    contactzip.setText("");
+                                    contactstreet.setText("");
                                 }
-                            };
+                                contactid.setText(contact.__getCNumber());
+                                Object[][] data1 = new Object[data.size() + 1][2];
+                                data1[0][0] = 0;
+                                data1[0][1] = Messages.Conversation_MainAddress.toString();
+                                for (int o = 0; o < data.size(); o++) {
+                                    adr = (Address) data.get(o);
+                                    data1[o + 1][0] = adr.__getIDS();
+                                    data1[o + 1][1] = adr.__getCName();
+                                }
+                                adressList.setModel(data1);
+                            } catch (NodataFoundException ex) {
+                                Log.Debug(this, ex);
+                            }
+                        }
+                    };
                     t.start();
                 }
             }
@@ -780,7 +780,7 @@ public class ConversationPanel
             int cid = Integer.valueOf(contactname.getSelectedItem().getId());
             Contact c = (Contact) DatabaseObject.getObject(Context.getContact(), cid);
             ContactPanel cp = new ContactPanel(Context.getContact());
-            mpv5.YabsViewProxy.instance().getIdentifierView().addOrShowTab(cp , Messages.TYPE_CONTACT.toString());
+            mpv5.YabsViewProxy.instance().getIdentifierView().addOrShowTab(cp, Messages.TYPE_CONTACT.toString());
             cp.setDataOwner(c, true);
         } catch (Exception e) {
             Log.Debug(this, e);
@@ -925,6 +925,8 @@ public class ConversationPanel
         TextFieldUtils.blink(contactid,
                 Color.RED);
         TextFieldUtils.blink(adressList,
+                Color.RED);
+        TextFieldUtils.blink(contactname,
                 Color.RED);
         TextFieldUtils.blinkerRed(cname);
         cname.requestFocus();
@@ -1072,33 +1074,37 @@ public class ConversationPanel
      * Collects the Data from the Userscreen 
      */
     public boolean collectData() {
-        groupsids_ = 1;
-        cname_ = cname.getText();
-        cnumber_ = contactid.getText();
-        contactsids_ = Integer.parseInt(contactname.getSelectedItem().getId());
-        adress_ = adressList.getSelectedItem().getId();
-        date_ = dateTo.getDate();
-        dateadded_ = dateadded.getDate();
-        intaddedby_ = User.getUserId(addedby.getText());
-        content_ = serialize();
-
-        if (cname_.length() == 0
-                || cnumber_.length() == 0
-                || adress_.equals("choose")) {
-            Popup.notice(Messages.CONTACT_COMPLETE.toString());
+        if (contactname.getSelectedItem() == null) {
+            showRequiredFields();
             return false;
-        }
+        } else {
+            groupsids_ = 1;
+            cname_ = cname.getText();
+            cnumber_ = contactid.getText();
+            contactsids_ = Integer.parseInt(contactname.getSelectedItem().getId());
+            adress_ = adressList.getSelectedItem().getId();
+            date_ = dateTo.getDate();
+            dateadded_ = dateadded.getDate();
+            intaddedby_ = User.getUserId(addedby.getText());
+            content_ = serialize();
 
-        Object[][] liste = new DatabaseSearch(dataOwner).getValuesFor(
-                Context.IDENTITY_CONVERSATION + "." + "CNAME",
-                "cname",
-                cname_);
-        if (liste.length > 0 && !dataOwner.isExisting()) {
-            Popup.notice(
-                    Messages.CNAME_EXISTS.toString());
-            return false;
-        }
+            if (cname_.length() == 0
+                    || cnumber_.length() == 0
+                    || adress_.equals("choose")) {
+                Popup.notice(Messages.CONTACT_COMPLETE.toString());
+                return false;
+            }
 
+            Object[][] liste = new DatabaseSearch(dataOwner).getValuesFor(
+                    Context.IDENTITY_CONVERSATION + "." + "CNAME",
+                    "cname",
+                    cname_);
+            if (liste.length > 0 && !dataOwner.isExisting()) {
+                Popup.notice(
+                        Messages.CNAME_EXISTS.toString());
+                return false;
+            }
+        }
         return true;
     }
 
