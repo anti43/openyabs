@@ -157,7 +157,7 @@ public class DatabaseUpdater {
                 });    
         UPDATES_DERBY.put(1.191, new String[]{
                     "ALTER TABLE templates ADD COLUMN isupdateenabled SMALLINT DEFAULT 0 NOT NULL",
-                    "ALTER TABLE templates ADD COLUMN lastmodified VARCHAR(50) DEFAULT NULL",
+                    "ALTER TABLE templates ADD COLUMN lastmodified BIGINT DEFAULT NULL",
                     "ALTER TABLE templates ADD COLUMN pathtofile VARCHAR(2500) DEFAULT NULL"
                 });
         ////////////////////////////////////////////////////////////////////////////////////////////
@@ -318,7 +318,7 @@ public class DatabaseUpdater {
                 });
         UPDATES_MYSQL.put(1.191, new String[]{
                     "ALTER TABLE templates ADD COLUMN isupdateenabled SMALLINT DEFAULT 0 NOT NULL",
-                    "ALTER TABLE templates ADD COLUMN lastmodified VARCHAR(50) DEFAULT NULL",
+                    "ALTER TABLE templates ADD COLUMN lastmodified BIGINT DEFAULT NULL",
                     "ALTER TABLE templates ADD COLUMN pathtofile VARCHAR(2500) DEFAULT NULL"
                 });
     }
