@@ -301,65 +301,66 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
         return l;
     }
 
-    private static synchronized void invoke(Method method, Object argument, DatabaseObject dbo, Object valx) {
+    private static void invoke(Method method, Object argument, DatabaseObject dbo, Object valx) {
+        synchronized (dbo) {
+            try {
 
-        try {
-
-            if (!method.getParameterTypes()[0].isPrimitive()) {
-                if (method.getParameterTypes()[0].isInstance(true)) {
-                    if (String.valueOf(argument).equals("1") || String.valueOf(argument).equalsIgnoreCase("true")) {
-                        method.invoke(dbo, new Object[]{true});
+                if (!method.getParameterTypes()[0].isPrimitive()) {
+                    if (method.getParameterTypes()[0].isInstance(true)) {
+                        if (String.valueOf(argument).equals("1") || String.valueOf(argument).equalsIgnoreCase("true")) {
+                            method.invoke(dbo, new Object[]{true});
+                        } else {
+                            method.invoke(dbo, new Object[]{false});
+                        }
+                    } else if (method.getParameterTypes()[0].isInstance(0)) {
+                        method.invoke(dbo, new Object[]{Integer.valueOf(String.valueOf(argument))});
+                    } else if (method.getParameterTypes()[0].isInstance(new Date())) {
+                        method.invoke(dbo, new Object[]{DateConverter.getDate(argument)});
+                    } else if (method.getParameterTypes()[0].isInstance(BigDecimal.ONE)) {
+                        method.invoke(dbo, new Object[]{new BigDecimal(String.valueOf(argument))});
+                    } else if (method.getParameterTypes()[0].isInstance(0d)) {
+                        method.invoke(dbo, new Object[]{Double.valueOf(String.valueOf(argument))});
+                    } else if (method.getParameterTypes()[0].isInstance(0l)) {
+                        method.invoke(dbo, new Object[]{Long.valueOf(String.valueOf(argument))});
+                    } else if (method.getParameterTypes()[0].isInstance(0f)) {
+                        method.invoke(dbo, new Object[]{Float.valueOf(String.valueOf(argument))});
+                    } else if (method.getParameterTypes()[0].isInstance(01)) {
+                        method.invoke(dbo, new Object[]{Short.valueOf(String.valueOf(argument))});
+                    } else if (method.getParameterTypes()[0].getCanonicalName().equals(new byte[0].getClass().getCanonicalName())) {//doitbetter
+                        method.invoke(dbo, new Object[]{(byte[]) ((argument instanceof String) ? String.valueOf(argument).getBytes("UTF-8") : argument)});
+                    } else if (method.getParameterTypes()[0].isAssignableFrom(DatabaseObject.class)) {
+                        Context c = ((DatabaseObject) method.getParameterTypes()[0].newInstance()).getContext();
+                        DatabaseObject d = getObject(c, Integer.valueOf(String.valueOf(argument)));
+                        method.invoke(dbo, new Object[]{d});
                     } else {
-                        method.invoke(dbo, new Object[]{false});
+                        //defaults to java.lang.String, Object args are not supported.. possibly later via XMLEncoder?
+                        method.invoke(dbo, new Object[]{(argument instanceof byte[])
+                                    ? new String((byte[]) argument)
+                                    : String.valueOf(argument)});
                     }
-                } else if (method.getParameterTypes()[0].isInstance(0)) {
-                    method.invoke(dbo, new Object[]{Integer.valueOf(String.valueOf(argument))});
-                } else if (method.getParameterTypes()[0].isInstance(new Date())) {
-                    method.invoke(dbo, new Object[]{DateConverter.getDate(argument)});
-                } else if (method.getParameterTypes()[0].isInstance(BigDecimal.ONE)) {
-                    method.invoke(dbo, new Object[]{new BigDecimal(String.valueOf(argument))});
-                } else if (method.getParameterTypes()[0].isInstance(0d)) {
-                    method.invoke(dbo, new Object[]{Double.valueOf(String.valueOf(argument))});
-                } else if (method.getParameterTypes()[0].isInstance(0l)) {
-                    method.invoke(dbo, new Object[]{Long.valueOf(String.valueOf(argument))});
-                } else if (method.getParameterTypes()[0].isInstance(0f)) {
-                    method.invoke(dbo, new Object[]{Float.valueOf(String.valueOf(argument))});
-                } else if (method.getParameterTypes()[0].isInstance(01)) {
-                    method.invoke(dbo, new Object[]{Short.valueOf(String.valueOf(argument))});
-                } else if (method.getParameterTypes()[0].getCanonicalName().equals(new byte[0].getClass().getCanonicalName())) {//doitbetter
-                    method.invoke(dbo, new Object[]{(byte[]) ((argument instanceof String) ? String.valueOf(argument).getBytes("UTF-8") : argument)});
-                } else if (method.getParameterTypes()[0].isAssignableFrom(DatabaseObject.class)) {
-                    Context c = ((DatabaseObject) method.getParameterTypes()[0].newInstance()).getContext();
-                    DatabaseObject d = getObject(c, Integer.valueOf(String.valueOf(argument)));
-                    method.invoke(dbo, new Object[]{d});
                 } else {
-                    //defaults to java.lang.String, Object args are not supported.. possibly later via XMLEncoder?
-                    method.invoke(dbo, new Object[]{(argument instanceof byte[])
-                                ? new String((byte[]) argument)
-                                : String.valueOf(argument)});
-                }
-            } else {
-                if (method.getParameterTypes()[0].isAssignableFrom(int.class)) {
-                    method.invoke(dbo, new Object[]{Integer.valueOf(String.valueOf(argument))});
-                } else if (method.getParameterTypes()[0].isAssignableFrom(float.class)) {
-                    method.invoke(dbo, new Object[]{Float.valueOf(String.valueOf(argument))});
-                } else if (method.getParameterTypes()[0].isAssignableFrom(double.class)) {
-                    method.invoke(dbo, new Object[]{Double.valueOf(String.valueOf(argument))});
-                } else if (method.getParameterTypes()[0].isAssignableFrom(short.class)) {
-                    method.invoke(dbo, new Object[]{Short.valueOf(String.valueOf(argument))});
-                } else if (method.getParameterTypes()[0].isAssignableFrom(long.class)) {
-                    method.invoke(dbo, new Object[]{Long.valueOf(String.valueOf(argument))});
-                } else if (method.getParameterTypes()[0].isAssignableFrom(boolean.class)) {
-                    if (String.valueOf(argument).equals("1") || String.valueOf(argument).equalsIgnoreCase("true")) {
-                        method.invoke(dbo, new Object[]{true});
-                    } else {
-                        method.invoke(dbo, new Object[]{false});
+                    if (int.class.isAssignableFrom(method.getParameterTypes()[0])) {
+                        method.invoke(dbo, new Object[]{Integer.valueOf(String.valueOf(argument))});
+                    } else if (float.class.isAssignableFrom(method.getParameterTypes()[0])) {
+                        method.invoke(dbo, new Object[]{Float.valueOf(String.valueOf(argument))});
+                    } else if (double.class.isAssignableFrom(method.getParameterTypes()[0])) {
+                        method.invoke(dbo, new Object[]{Double.valueOf(String.valueOf(argument))});
+                    } else if (short.class.isAssignableFrom(method.getParameterTypes()[0])) {
+                        method.invoke(dbo, new Object[]{Short.valueOf(String.valueOf(argument))});
+                    } else if (long.class.isAssignableFrom(method.getParameterTypes()[0])) {
+                        method.invoke(dbo, new Object[]{Long.valueOf(String.valueOf(argument))});
+                    } else if (boolean.class.isAssignableFrom(method.getParameterTypes()[0])) {
+                        if (String.valueOf(argument).equals("1") || String.valueOf(argument).equalsIgnoreCase("true")) {
+                            method.invoke(dbo, new Object[]{true});
+                        } else {
+                            method.invoke(dbo, new Object[]{false});
+                        }
                     }
                 }
+            } catch (Exception ex) {
+                Log.Debug(DatabaseObject.class, "Explode: " + method.toGenericString() + " with " + argument + "[" + valx + "]");
+                Log.Debug(ex);
             }
-        } catch (Exception ex) {
-            Log.Debug(DatabaseObject.class, "Explode: " + method.toGenericString() + " with " + argument + "[" + valx + "]");
-            Log.Debug(ex);
         }
     }
     /**
@@ -922,7 +923,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
 
         QueryData data = new QueryData();
         String left = "";
-        Object tempval;
+
         Method[] methods = this.getClass().getMethods();
         boolean annotated = false;
 
@@ -935,50 +936,57 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
                     && !(methods[i].isAnnotationPresent(Persistable.class)
                     && !methods[i].getAnnotation(Persistable.class).value()))) {
                 annotated = methods[i].isAnnotationPresent(Persistable.class);
+                Object tempval;
                 try {
                     left = annotated
                             ? methods[i].getName().toLowerCase().substring(3, methods[i].getName().length())
                             : methods[i].getName().toLowerCase().replace("__get", "");
 //                    Log.Debug(this, "Calling: " + methods[i]);
                     tempval = methods[i].invoke(this, (Object[]) null);
-                   // Log.Debug(this, "On " + methods[i].getName());
-                    Log.Debug(this, "Collect: " + tempval.getClass().getName() + " : " + methods[i].getName() + " ? " + tempval);
-                    if (tempval.getClass().isInstance(new String())) {
-                        data.add(left, String.valueOf(tempval));
-                    } else if (tempval.getClass().isInstance(true)) {
-                        boolean c = (Boolean) tempval;
-                        data.add(left, c);
-                    } else if (tempval.getClass().isInstance(new Date())) {
-                        data.add(left, DateConverter.getSQLDateString((Date) tempval));
-                    } else if (tempval.getClass().isInstance(new RandomDate(null))) {
-                        data.add(left, DateConverter.getSQLDateString((Date) tempval));
-                    } else if (tempval.getClass().isInstance(new java.sql.Date(0))) {
-                        data.add(left, DateConverter.getSQLDateString((Date) tempval));
-                    } else if (tempval.getClass().isInstance(0)) {
-                        //if the field is an IDS field an below 0, set it to 0
-                        //as integer columns may not allow signed integers (eg. -1)
-                        if (left.toLowerCase().endsWith("ids")) {
-                            if (Integer.valueOf(tempval.toString()).intValue() < 0) {
-                                Log.Debug(this, "Correcting below-zero integer ids in " + left);
-                                data.add(left, 0);
+                    // Log.Debug(this, "On " + methods[i].getName());
+                    if (tempval != null) {
+                        Log.Debug(this, "Collect: " + tempval.getClass().getName() + " : " + methods[i].getName() + " ? " + tempval);
+                        if (tempval.getClass().isInstance(new String())) {
+                            data.add(left, String.valueOf(tempval));
+                        } else if (tempval.getClass().isInstance(true)) {
+                            boolean c = (Boolean) tempval;
+                            data.add(left, c);
+                        } else if (tempval.getClass().isInstance(new Date())) {
+                            data.add(left, DateConverter.getSQLDateString((Date) tempval));
+                        } else if (tempval.getClass().isInstance(new RandomDate(null))) {
+                            data.add(left, DateConverter.getSQLDateString((Date) tempval));
+                        } else if (tempval.getClass().isInstance(new java.sql.Date(0))) {
+                            data.add(left, DateConverter.getSQLDateString((Date) tempval));
+                        } else if (tempval.getClass().isInstance(0)) {
+                            //if the field is an IDS field an below 0, set it to 0
+                            //as integer columns may not allow signed integers (eg. -1)
+                            if (left.toLowerCase().endsWith("ids")) {
+                                if (Integer.valueOf(tempval.toString()).intValue() < 0) {
+                                    Log.Debug(this, "Correcting below-zero integer ids in " + left);
+                                    data.add(left, 0);
+                                } else {
+                                    data.add(left, (Integer) tempval);
+                                }
                             } else {
                                 data.add(left, (Integer) tempval);
                             }
+                        } else if (tempval.getClass().isInstance(0f)) {
+                            data.add(left, (Float) tempval);
+                        } else if (tempval.getClass().isInstance(0d)) {
+                            data.add(left, (Double) tempval);
+                        } else if (tempval.getClass().isInstance(01)) {
+                            data.add(left, (Short) tempval);
+                        } else if (tempval.getClass().isInstance(0l)) {
+                            data.add(left, (Long) tempval);
+                        } else if (tempval.getClass().isInstance(new BigDecimal(0))) {
+                            data.add(left, (BigDecimal) tempval);
+                        } else if (DatabaseObject.class.isAssignableFrom(tempval.getClass())) {
+                            data.add(left + "sids", ((DatabaseObject) tempval).__getIDS());
                         } else {
-                            data.add(left, (Integer) tempval);
+                            throw new RuntimeException("Unsupported class found: " + tempval.getClass());
                         }
-                    } else if (tempval.getClass().isInstance(0f)) {
-                        data.add(left, (Float) tempval);
-                    } else if (tempval.getClass().isInstance(0d)) {
-                        data.add(left, (Double) tempval);
-                    } else if (tempval.getClass().isInstance(01)) {
-                        data.add(left, (Short) tempval);
-                    } else if (tempval.getClass().isInstance(new BigDecimal(0))) {
-                        data.add(left, (BigDecimal) tempval);
-                    } else if (DatabaseObject.class.isAssignableFrom(tempval.getClass())) {
-                        data.add(left + "sids", ((DatabaseObject) tempval).__getIDS());
-                    } else if (tempval.getClass().isInstance(new Long(0))) {
-                        data.add(left, String.valueOf(tempval));
+                    } else {
+                        Log.Debug(this, "NULL value on " + methods[i].getName());
                     }
                 } catch (Exception ex) {
                     mpv5.logging.Log.Debug(this, methods[i].getName());
