@@ -45,7 +45,7 @@ public class ControlPanel_ValueProps extends javax.swing.JPanel implements Contr
         setName("Form"); // NOI18N
         setLayout(new javax.swing.BoxLayout(this, javax.swing.BoxLayout.PAGE_AXIS));
 
-        java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle(); // NOI18N
+        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("mpv5/resources/languages/Panels"); // NOI18N
         jPanel3.setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("ControlPanel_ValueProps.jPanel3.border.title"))); // NOI18N
         jPanel3.setName("jPanel3"); // NOI18N
 
@@ -138,9 +138,13 @@ public class ControlPanel_ValueProps extends javax.swing.JPanel implements Contr
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
-        DatabaseObject s = Search2.showSearchFor(Context.getContact());
+        DatabaseObject s = Search2.showSearchFor(Context.getItem());
         if (s != null) {
-            Popup.notice(s.evaluate(jTextPane1.getText()));
+            try {
+                Popup.notice(s.evaluate(jTextPane1.getText()));
+            } catch (Exception e) {
+                Popup.error(e);
+            }
         }
     }//GEN-LAST:event_jButton3ActionPerformed
 

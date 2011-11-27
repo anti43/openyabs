@@ -759,4 +759,44 @@ public class Item extends DatabaseObject implements Formattable, Templateable {
     public int templateGroupIds() {
         return __getGroupsids();
     }
+
+    /**
+     * @return the contact
+     */
+    @Persistable(false)/*is persisting via contactsids*/
+    public Contact getContact() throws NodataFoundException {
+        return (Contact) getObject(Context.getContact(), contactsids);
+    }
+
+    /**
+     * @param contact the contact to set
+     */
+    @Persistable(false)
+    public void setContact(Contact contact) {
+        setContactsids(contact.__getIDS());
+    }
+
+    /**
+     * @return the account
+     */
+    @Persistable(false)
+    public Account getAccount() throws NodataFoundException {
+        return (Account) getObject(Context.getAccounts(), accountsids);
+    }
+
+    /**
+     * @param account the account to set
+     */
+    @Persistable(false)
+    public void setAccount(Account account) {
+        setAccountsids(account.__getIDS());
+    }
+
+    /**
+     * @return the status
+     */
+    @Persistable(false)
+    public String getStatus() {
+        return getStatusString(intstatus);
+    }
 }
