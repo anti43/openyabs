@@ -150,4 +150,12 @@ public class Group extends DatabaseObject {
         }
         return childs;
     }
+
+    /**
+     * 
+     * @return True if the group has no parent group
+     */
+    public boolean isRoot() {
+        return __getGroupsids() == 0;
+    }
 }

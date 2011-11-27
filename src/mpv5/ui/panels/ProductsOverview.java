@@ -302,7 +302,7 @@ public class ProductsOverview extends javax.swing.JPanel implements ListPanel {
                     ps.add(new QueryParameter(Context.getProduct(), en.getKey(), search, QueryParameter.LIKE));
                 }
             }
-            qc.or(ps.toArray(new QueryParameter[0]));
+            qc.or(ps);
         }
 
         if (!both.isSelected()) {
@@ -319,7 +319,7 @@ public class ProductsOverview extends javax.swing.JPanel implements ListPanel {
                 ProductGroup group = groups.get(i);
                 ps.add(new QueryParameter(Context.getProduct(), "productgroupsids", group.__getIDS(), QueryParameter.EQUALS));
             }
-            qc.or(ps.toArray(new QueryParameter[0]));
+            qc.or(ps);
         }
 
         Context c = Context.getProduct();

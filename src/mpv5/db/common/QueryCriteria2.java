@@ -16,6 +16,8 @@
  */
 package mpv5.db.common;
 
+import java.util.List;
+import mpv5.db.common.QueryParameter;
 import mpv5.logging.Log;
 
 /**
@@ -70,15 +72,37 @@ public class QueryCriteria2 {
      * Add OR conditions
      * @param params
      */
-    public void or(QueryParameter... params) {
+    public void or(List<QueryParameter> params) {
+        if (params.isEmpty()) {
+            return;
+        } else if (params.size() == 1) {
+            Log.Debug(this, "Converting 1-sized OR list to AND!!");
+            and(params.get(0));
+            return;
+        } /*else if (params.size() < 2) {
+        throw new IllegalArgumentException("Params.size must be > 2, is " + params.size());
+        }*/
+        or(params.get(0), params.toArray(new QueryParameter[params.size()]));
+    }
+
+    /**
+     * Add OR conditions
+     * @param params
+     */
+    public void or(QueryParameter param1, List<QueryParameter> params) {
+        or(param1, params.toArray(new QueryParameter[params.size()]));
+    }
+
+    /**
+     * Add OR conditions
+     * @param params
+     */
+    public void or(QueryParameter param1, QueryParameter... params) {
         if (params.length < 1) {
             return;
-        } else if (params.length == 1) {
-            and(params);
-            return;
         }
-
         query += " AND (";
+
         boolean firstrun = true;
         for (QueryParameter p : params) {
 
@@ -167,5 +191,4 @@ public class QueryCriteria2 {
     public void is(QueryParameter queryParameter) {
         and(queryParameter);
     }
-
 }

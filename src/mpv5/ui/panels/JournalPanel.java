@@ -58,7 +58,6 @@ import mpv5.logging.Log;
 import mpv5.ui.beans.MPCombobox;
 import mpv5.ui.dialogs.DialogForFile;
 import mpv5.ui.dialogs.Popup;
-import mpv5.ui.frames.MPView;
 import mpv5.ui.misc.MPTable;
 import mpv5.ui.popups.TablePopUp;
 import mpv5.utils.arrays.ArrayUtilities;
@@ -66,7 +65,6 @@ import mpv5.utils.date.DateConverter;
 import mpv5.utils.date.vTimeframe;
 import mpv5.utils.export.DTAFile;
 import mpv5.utils.export.Export;
-import mpv5.utils.export.PDFFile;
 import mpv5.utils.jobs.Job;
 import mpv5.utils.jobs.Waitable;
 import mpv5.utils.models.MPComboBoxModelItem;
@@ -680,7 +678,7 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
 
                 d[i][0] = data[i][0];
 
-                int type = Integer.valueOf(data[i][5+5].toString());
+                int type = Integer.valueOf(data[i][5 + 5].toString());
                 if (type == Revenue.TYPE_REVENUE) {
                     d[i][5 + 5] = Messages.TYPE_REVENUE.toString();
                 } else if (type == Expense.TYPE_EXPENSE) {
@@ -693,7 +691,7 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
                 if (type == Revenue.TYPE_REVENUE || type == Expense.TYPE_EXPENSE) {
                     brutto = Double.valueOf(data[i][8 + 5].toString());
                 } else {
-                    brutto = Double.valueOf(data[i][7 + 5].toString()) + Double.valueOf(data[i][8+5].toString());
+                    brutto = Double.valueOf(data[i][7 + 5].toString()) + Double.valueOf(data[i][8 + 5].toString());
                 }
 
                 d[i][6 + 5] = Item.getStatusString(Integer.valueOf(data[i][6 + 5].toString()));
@@ -732,6 +730,7 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
 
             @Override
             public void run() {
+
                 try {
 
 
@@ -747,16 +746,16 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
                     } else {
                         if (forGroup != null && !forGroup.__getCName().equals("")) {
                             List<Group> gs = forGroup.getChildGroups();
-                            QueryParameter[] params = new QueryParameter[gs.size() + 1];
-                            params[0] = (new QueryParameter(Context.getItem(), forGroup.getDbIdentity() + "ids", forGroup.__getIDS(), QueryParameter.EQUALS));
+                            QueryParameter[] params = new QueryParameter[gs.size()];
+                            QueryParameter param1 = (new QueryParameter(Context.getItem(), forGroup.getDbIdentity() + "ids", forGroup.__getIDS(), QueryParameter.EQUALS));
                             if (gs.size() >= 1) {
                                 for (int i = 0; i < gs.size(); i++) {
                                     Group group = gs.get(i);
-                                    params[i + 1] = (new QueryParameter(Context.getItem(), group.getDbIdentity() + "ids", group.__getIDS(), QueryParameter.EQUALS));
+                                    params[i] = (new QueryParameter(Context.getItem(), group.getDbIdentity() + "ids", group.__getIDS(), QueryParameter.EQUALS));
                                 }
-                                itemsParams.or(params);
+                                itemsParams.or(param1, params);
                             } else {
-                                itemsParams.and(new QueryParameter(Context.getItem(), forGroup.getDbIdentity() + "ids", forGroup.__getIDS(), QueryParameter.EQUALS));
+                                itemsParams.and(param1);
                             }
                         }
                     }
@@ -776,7 +775,7 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
                         }
                     }
                     if (l.size() > 1) {
-                        itemsParams.or(l.toArray(new QueryParameter[0]));
+                        itemsParams.or(l);
                     } else {
                         itemsParams.and(l.toArray(new QueryParameter[0]));
                     }
@@ -815,7 +814,7 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
                         for (int i = 0; i < d.length; i++) {
                             es[i] = new DatabaseObject.Entity<Context, Integer>(Context.getItem(), Integer.valueOf(d[i][0].toString()));
                         }
-                        
+
                         d = ArrayUtilities.replaceColumn(d, 0, es);
                         if (!additional) {
                             d = ArrayUtilities.removeRows(d, 6 + 5, Item.STATUS_PAID);
@@ -839,7 +838,7 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
                                 }
                             }
                             if (l1.size() > 1) {
-                                expensesParams.or(l1.toArray(new QueryParameter[0]));
+                                expensesParams.or(l1 );
                             } else {
                                 expensesParams.and(l1.toArray(new QueryParameter[0]));
                             }
@@ -854,16 +853,16 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
                             } else {
                                 if (forGroup != null) {
                                     List<Group> gs = forGroup.getChildGroups();
-                                    QueryParameter[] params = new QueryParameter[gs.size() + 1];
-                                    params[0] = (new QueryParameter(c, forGroup.getDbIdentity() + "ids", forGroup.__getIDS(), QueryParameter.EQUALS));
+                                    QueryParameter[] params = new QueryParameter[gs.size()];
+                                    QueryParameter params1 = (new QueryParameter(c, forGroup.getDbIdentity() + "ids", forGroup.__getIDS(), QueryParameter.EQUALS));
                                     if (gs.size() >= 1) {
                                         for (int i = 0; i < gs.size(); i++) {
                                             Group group = gs.get(i);
-                                            params[i + 1] = (new QueryParameter(c, group.getDbIdentity() + "ids", group.__getIDS(), QueryParameter.EQUALS));
+                                            params[i] = (new QueryParameter(c, group.getDbIdentity() + "ids", group.__getIDS(), QueryParameter.EQUALS));
                                         }
-                                        itemsParams.or(params);
+                                        itemsParams.or(params1, params);
                                     } else {
-                                        expensesParams.and(new QueryParameter(c, forGroup.getDbIdentity() + "ids", forGroup.__getIDS(), QueryParameter.EQUALS));
+                                        expensesParams.and(params1);
                                     }
                                 }
                             }
@@ -878,7 +877,7 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
                                 d1 = new Object[0][14];
                             }
                             for (int i = 0; i < d1.length; i++) {
-                                d1[i][5+5] = Expense.TYPE_EXPENSE;
+                                d1[i][5 + 5] = Expense.TYPE_EXPENSE;
 
                                 if (TypeConversion.stringToBoolean(String.valueOf(d1[i][6 + 5]))) {
                                     d1[i][6 + 5] = 1000;
@@ -912,7 +911,7 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
                                 }
                             }
                             if (l2.size() > 1) {
-                                revenuesParams.or(l2.toArray(new QueryParameter[0]));
+                                revenuesParams.or(l2);
                             } else {
                                 revenuesParams.and(l2.toArray(new QueryParameter[0]));
                             }
@@ -926,16 +925,16 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
                             } else {
                                 if (forGroup != null) {
                                     List<Group> gs = forGroup.getChildGroups();
-                                    QueryParameter[] params = new QueryParameter[gs.size() + 1];
-                                    params[0] = (new QueryParameter(c, forGroup.getDbIdentity() + "ids", forGroup.__getIDS(), QueryParameter.EQUALS));
+                                    QueryParameter[] params = new QueryParameter[gs.size()];
+                                    QueryParameter params1 = (new QueryParameter(c, forGroup.getDbIdentity() + "ids", forGroup.__getIDS(), QueryParameter.EQUALS));
                                     if (gs.size() >= 1) {
                                         for (int i = 0; i < gs.size(); i++) {
                                             Group group = gs.get(i);
-                                            params[i + 1] = (new QueryParameter(c, group.getDbIdentity() + "ids", group.__getIDS(), QueryParameter.EQUALS));
+                                            params[i] = (new QueryParameter(c, group.getDbIdentity() + "ids", group.__getIDS(), QueryParameter.EQUALS));
                                         }
-                                        revenuesParams.or(params);
+                                        revenuesParams.or(params1, params);
                                     } else {
-                                        revenuesParams.and(new QueryParameter(c, forGroup.getDbIdentity() + "ids", forGroup.__getIDS(), QueryParameter.EQUALS));
+                                        revenuesParams.and(params1);
                                     }
                                 }
                             }
@@ -952,8 +951,8 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
                                 d2 = new Object[0][14];
                             }
                             for (int i = 0; i < d2.length; i++) {
-                                d2[i][5+5] = Revenue.TYPE_REVENUE;
-                                d2[i][6+5] = Item.STATUS_PAID;//revenues are currently always paid :-/
+                                d2[i][5 + 5] = Revenue.TYPE_REVENUE;
+                                d2[i][6 + 5] = Item.STATUS_PAID;//revenues are currently always paid :-/
                             }
 
                             DatabaseObject.Entity<?, ?>[] es = new DatabaseObject.Entity<?, ?>[d2.length];

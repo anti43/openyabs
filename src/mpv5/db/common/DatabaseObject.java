@@ -42,6 +42,8 @@ import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.SwingUtilities;
 import mpv5.db.objects.ValueProperty;
 import mpv5.globals.Messages;
@@ -75,7 +77,6 @@ import static mpv5.db.common.Context.*;
  */
 public abstract class DatabaseObject implements Comparable<DatabaseObject>, Serializable, Cloneable {
 
-    
     /**
      * Represents a Context-ID pair which uniquely identifies a DatabaseObject
      * @param <T>
@@ -222,6 +223,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
 
             @Override
             public void run() {
+                Log.Debug(DatabaseObject.class, "Start caching objects..");
                 int count = 0;
                 mpv5.YabsViewProxy.instance().setProgressMaximumValue(contextArray.length - 1);
                 for (int f = 0; f < contextArray.length; f++) {
@@ -1366,8 +1368,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
     }
 
     /**
-     * Returns all DBOs in the specific context, VERY SLOW!
-     * Use {@link getObjects(Context context, boolean withCached)} instead
+     * Delegates to {@link getObjects(Context context, true)} 
      * @param <T>
      * @param context
      * @return A list of DBOs
@@ -1375,7 +1376,19 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
      */
     @SuppressWarnings("unchecked")
     public static <T extends DatabaseObject> ArrayList<T> getObjects(Context context) throws NodataFoundException {
-        return (ArrayList<T>) getObjects(DatabaseObject.getObject(context), null);
+        return (ArrayList<T>) getObjects(context, (QueryCriteria2) null, true);
+    }
+
+    /**
+     * Delegates to {@link getObjects(Context context, true)} 
+     * @param <T>
+     * @param context
+     * @return A list of DBOs
+     * @throws NodataFoundException
+     */
+    @SuppressWarnings("unchecked")
+    public static <T extends DatabaseObject> ArrayList<T> getObjects(Context context, boolean withCached) throws NodataFoundException {
+        return (ArrayList<T>) getObjects(context, (QueryCriteria2) null, withCached);
     }
 
     /**
@@ -1387,27 +1400,81 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
      * @throws NodataFoundException
      */
     @SuppressWarnings("unchecked")
-    public static <T extends DatabaseObject> ArrayList<T> getObjects(Context context, boolean withCached) throws NodataFoundException {
-        ArrayList<T> list = new ArrayList<T>();
+    public static <T extends DatabaseObject> ArrayList<T> getObjects(Context context, QueryCriteria2 criterias, boolean withCached) throws NodataFoundException {
+
         if (!withCached) {
             return (ArrayList<T>) getObjects(DatabaseObject.getObject(context), null);
         } else {
-            Object[] ids = QueryHandler.instanceOf().clone(context).getColumn("ids", 0);
-            for (int i = 0; i < ids.length; i++) {
-                Integer id = Integer.valueOf(ids[i].toString());
-                DatabaseObject x = DatabaseObject.getCachedObject(context, id);
-                if (x != null) {
-                    list.add((T) x);
-                } else {
-                    list.add((T) getObject(context, id));
-                }
+            List<Integer> idlist;
+            if (criterias != null) {
+                idlist = QueryHandler.instanceOf().clone(context).selectIds(criterias);
+            } else {
+                idlist = QueryHandler.instanceOf().clone(context).selectIds();
+            }
+            return getObjects(context, idlist);
+        }
+    }
+
+    /**
+     * Returns all DBOs in the specific context
+     * @param <T>
+     * @param context
+     * @param withCached If true, checks the cache first for matching objects (faster)
+     * @return A list of DBOs
+     * @throws NodataFoundException
+     */
+    @SuppressWarnings("unchecked")
+    public static <T extends DatabaseObject> ArrayList<T> getObjects(Context context, QueryCriteria criterias, boolean withCached) throws NodataFoundException {
+
+        if (!withCached) {
+            return (ArrayList<T>) getObjects(DatabaseObject.getObject(context), null);
+        } else {
+            List<Integer> idlist;
+            if (criterias != null) {
+                idlist = QueryHandler.instanceOf().clone(context).selectIds(criterias);
+            } else {
+                idlist = QueryHandler.instanceOf().clone(context).selectIds();
+            }
+            return getObjects(context, idlist);
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    public static <T extends DatabaseObject> ArrayList<T> getObjects(Context context, List<Integer> idlist) throws NodataFoundException {
+        if (Log.LOGLEVEL_DEBUG == Log.getLoglevel()) {
+            Log.Debug(DatabaseObject.class, "Fetching objects " + idlist);
+        }
+        ArrayList<T> list = new ArrayList<T>();
+        QueryCriteria2 criterias = new QueryCriteria2();
+        List<QueryParameter> uncachedIds = new ArrayList<QueryParameter>();
+        for (int i = 0; i < idlist.size(); i++) {
+            Integer id = idlist.get(i);
+            DatabaseObject x = DatabaseObject.getCachedObject(context, id);
+            if (x != null) {
+                list.add((T) x);
+            } else {
+                uncachedIds.add(new QueryParameter(context, "ids", id, QueryParameter.EQUALS));
+            }
+        }
+        if (uncachedIds.isEmpty()) {
+            return list;//all from cache
+        }
+        criterias.or(uncachedIds);
+//        Log.Debug(DatabaseObject.class, criterias.getQuery());
+        ReturnValue data = QueryHandler.instanceOf().clone(context).select("*", criterias);
+        if (data.hasData()) {
+            DatabaseObject[] f = explode(data, getObject(context), false, true);
+            for (int i = 0; i < f.length; i++) {
+                DatabaseObject databaseObject = f[i];
+                cacheObject(databaseObject);
+                list.add((T) databaseObject);
             }
         }
         return list;
     }
 
     /**
-     *  Returns objects within the given context which match the criterias in the given DataStringHandler
+     * Returns objects within the given context which match the criterias in the given DataStringHandler
      * @param <T>
      * @param context
      * @param criterias
@@ -1415,13 +1482,12 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
      * @throws NodataFoundException
      */
     @SuppressWarnings("unchecked")
-    public static <T extends DatabaseObject> ArrayList<T> getObjects(Context context, QueryCriteria criterias) throws NodataFoundException {
+    public static <T extends DatabaseObject> ArrayList< T> getObjects(Context context, QueryCriteria criterias) throws NodataFoundException {
         return (ArrayList<T>) getObjects(DatabaseObject.getObject(context), criterias);
     }
 
     /**
-     *  Returns objects within the given context which match the criterias in the given QueryCriteria object<br/>
-     *  May get very <b>slow</b> with some hundreds objects.
+     * Returns objects within the given context which match the criterias in the given QueryCriteria object<br/>
      * @param <T>
      * @param criterias If NULL returns ALL
      * @param template
@@ -1429,25 +1495,8 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
      * @throws NodataFoundException
      */
     @SuppressWarnings("unchecked")
-    public static <T extends DatabaseObject> ArrayList<T> getObjects(T template, QueryCriteria criterias) throws NodataFoundException {
-        ReturnValue data = null;
-        if (criterias != null) {
-            data = QueryHandler.instanceOf().clone(template.getContext()).select(criterias);
-        } else {
-            data = QueryHandler.instanceOf().clone(template.getContext()).select();
-        }
-        ArrayList<T> list = new ArrayList<T>(0);
-
-        if (data.hasData()) {
-            DatabaseObject[] f = explode(data, template, false, true);
-            for (int i = 0; i < f.length; i++) {
-                DatabaseObject databaseObject = f[i];
-                list.add((T) databaseObject);
-            }
-        }
-
-        Log.Debug(DatabaseObject.class, "Rows found: " + data.getData().length);
-        return list;
+    public static <T extends DatabaseObject> ArrayList< T> getObjects(T template, QueryCriteria criterias) throws NodataFoundException {
+        return getObjects(template.getContext(), criterias, true);
     }
 
     /**
@@ -1462,12 +1511,12 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
      * @throws mpv5.db.common.NodataFoundException
      */
     @SuppressWarnings("unchecked")
-    public static <T extends DatabaseObject> List<T> getReferencedObjects(DatabaseObject dataOwner, Context inReference, T targetType) throws NodataFoundException {
+    public static <T extends DatabaseObject> List< T> getReferencedObjects(DatabaseObject dataOwner, Context inReference, T targetType) throws NodataFoundException {
         return getReferencedObjects(dataOwner, inReference, targetType, false);
     }
 
     @SuppressWarnings("unchecked")
-    public static <T extends DatabaseObject> List<T> getReferencedObjects(DatabaseObject dataOwner, Context inReference, T targetType, boolean includeInvisible) throws NodataFoundException {
+    public static <T extends DatabaseObject> List< T> getReferencedObjects(DatabaseObject dataOwner, Context inReference, T targetType, boolean includeInvisible) throws NodataFoundException {
 
         String query = "select " + inReference.getDbIdentity() + ".ids from " + inReference.getDbIdentity() + " where " + dataOwner.getDbIdentity() + "ids = " + dataOwner.__getIDS();
         if (!includeInvisible && Context.getTrashableContexts().contains(inReference)) {
@@ -1477,17 +1526,11 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
         if (allIds.length == 0) {
             throw new NodataFoundException(inReference);
         }
-        LinkedList<T> list = new LinkedList<T>();
+        List<Integer> idlist = new ArrayList<Integer>();
         for (int i = 0; i < allIds.length; i++) {
-            int id = Integer.valueOf(allIds[i][0].toString());
-            DatabaseObject x = DatabaseObject.getCachedObject(inReference, id);
-            if (x != null) {
-                list.add((T) x);
-            } else {
-                list.add((T) getObject(inReference, id, includeInvisible));
-            }
+            idlist.add(Integer.valueOf(String.valueOf(allIds[i][0])));
         }
-        return list;
+        return getObjects(inReference, idlist);
     }
 
 //    /**
@@ -1517,7 +1560,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
      * @throws mpv5.db.common.NodataFoundException
      */
     @SuppressWarnings("unchecked")
-    public static <T extends DatabaseObject> List<T> getReferencedObjects(T dataOwner, Context inReference) throws NodataFoundException {
+    public static <T extends DatabaseObject> List< T> getReferencedObjects(T dataOwner, Context inReference) throws NodataFoundException {
 
         Object[][] allIds = QueryHandler.instanceOf().clone(inReference).select("ids", new String[]{dataOwner.getDbIdentity() + "ids", dataOwner.__getIDS().toString(), ""});
         LinkedList<T> list = new LinkedList<T>();
@@ -1546,7 +1589,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
      * @throws mpv5.db.common.NodataFoundException
      */
     @SuppressWarnings("unchecked")
-    public static <T extends DatabaseObject> List<T> getReferencedObjects(T dataOwner, Context inReference, String order, Integer limit) throws NodataFoundException {
+    public static <T extends DatabaseObject> List< T> getReferencedObjects(T dataOwner, Context inReference, String order, Integer limit) throws NodataFoundException {
 
         Object[][] allIds = QueryHandler.instanceOf().clone(inReference).select("ids", new String[]{dataOwner.getDbIdentity() + "ids", dataOwner.__getIDS().toString(), ""}, order, limit);
         LinkedList<T> list = new LinkedList<T>();
@@ -1570,9 +1613,11 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
      * @param timeframe
      * @return
      * @throws NodataFoundException 
+     * @deprecated Not using caches, this may well get slow
      */
     @SuppressWarnings("unchecked")
-    public static <T extends DatabaseObject> ArrayList<T> getObjects(Context context, vTimeframe timeframe) throws NodataFoundException {
+    @Deprecated()
+    public static <T extends DatabaseObject> ArrayList< T> getObjects(Context context, vTimeframe timeframe) throws NodataFoundException {
 
         ReturnValue data = data = QueryHandler.instanceOf().clone(context).select("*", new QueryCriteria2(), timeframe);
 
@@ -1634,7 +1679,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
      * @throws NodataFoundException
      */
     public Integer getIdOf(String cname) throws NodataFoundException {
-        cname = cname.replaceAll("'", "`");
+        cname = new SaveString(cname, false).toString();
         Object[] data = QueryHandler.instanceOf().clone(context).selectLast("ids", new String[]{"cname", cname, "'"});
         if (data != null && data.length > 0) {
             return Integer.valueOf(String.valueOf(data[0]));
@@ -1649,7 +1694,6 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
      * @return True if data was found
      */
     public boolean fetchDataOf(String cname) {
-        cname = cname.replaceAll("'", "`");
         Integer id;
         ReturnValue data;
         try {
@@ -1679,6 +1723,9 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
         }
 
         Log.Debug(DatabaseObject.class, "Preparing to explode rows: " + dos.length);
+        if (dos.length == 3213) {
+            Log.Debug(new RuntimeException("grr"));
+        }
 
         for (int i = 0; i < dos.length; i++) {
 
@@ -2076,6 +2123,12 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
      */
     public HashMap<String, Object> resolveReferences(HashMap<String, Object> map) {
         List<ValueProperty> props = ValueProperty.getProperties(this);
+        try {
+            props.addAll(ValueProperty.getProperties(getContext(), getGroup()));
+        } catch (NodataFoundException ex) {
+            Log.Debug(this, ex.getMessage());
+        }
+
         for (ValueProperty p : props) {
             String strVal = String.valueOf(p.getValue());
             if (p.getValue() instanceof LazyInvocable) {
@@ -2268,8 +2321,8 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
         d[0] = IDENTITY;
         return d;
     }
-    
     private GroovyShell groovyShell;
+
     private GroovyShell getGroovyShell() {
         synchronized (this) {
             if (groovyShell == null) {
@@ -2280,7 +2333,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
             return groovyShell;
         }
     }
-    
+
     /**
      * Evaluates a script in this and returns its result
      * @param script
@@ -2290,4 +2343,20 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
         return String.valueOf(getGroovyShell().evaluate(script));
     }
 
+    /**
+     * @return the Group
+     */
+    @Persistable(false)/*is persisting via contactsids*/
+
+    public Group getGroup() throws NodataFoundException {
+        return (Group) getObject(Context.getGroup(), __getGroupsids());
+    }
+
+    /**
+     * @param Group the Group to set
+     */
+    @Persistable(false)
+    public void setGroup(Group g) {
+        setGroupsids(g.__getIDS());
+    }
 }

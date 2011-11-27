@@ -25,6 +25,7 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -40,7 +41,9 @@ import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
 import mpv5.db.common.NodataFoundException;
 import mpv5.db.common.QueryCriteria;
+import mpv5.db.common.QueryCriteria2;
 import mpv5.db.common.QueryHandler;
+import mpv5.db.common.QueryParameter;
 import mpv5.logging.Log;
 
 /**
@@ -48,7 +51,6 @@ import mpv5.logging.Log;
  *  
  */
 public final class ValueProperty extends DatabaseObject {
-
 
     public ValueProperty() {
         context = Context.getValueProperties();
@@ -73,6 +75,24 @@ public final class ValueProperty extends DatabaseObject {
     }
 
     /**
+     * Create a new property
+     * @param key
+     * @param value
+     * @param owner
+     */
+    public ValueProperty(final String key, final Serializable value, final Context owner, final Group group) {
+        this();
+        if (key == null) {
+            throw new NullPointerException();
+        }
+        setValueObj(owner);
+        setContextids(owner.getId());
+        setObjectids(0);
+        setGroupsids(group.__getIDS());
+        setCName(key);
+    }
+
+    /**
      * Create a new property or update an existing one
      * @param key
      * @param value
@@ -88,6 +108,28 @@ public final class ValueProperty extends DatabaseObject {
                 val = getProperty(owner, key);
             } catch (NodataFoundException ex) {
                 val = new ValueProperty(key, value, owner);
+            }
+            val.setValueObj(value);
+            val.save(true);
+        }
+    }
+
+    /**
+     * Create a new property or update an existing one
+     * @param key
+     * @param value
+     * @param owner
+     */
+    public static synchronized void addOrUpdateProperty(final String key, final Serializable value, final Context owner, final Group group) {
+        if (key == null) {
+            throw new NullPointerException();
+        }
+        if (owner != null && key.length() > 0) {
+            ValueProperty val;
+            try {
+                val = getProperty(owner, key);
+            } catch (NodataFoundException ex) {
+                val = new ValueProperty(key, value, owner, group);
             }
             val.setValueObj(value);
             val.save(true);
@@ -142,6 +184,24 @@ public final class ValueProperty extends DatabaseObject {
      * @return
      * @throws NodataFoundException
      */
+    public static synchronized ValueProperty getProperty(final Context owner, final String key) throws NodataFoundException {
+        if (key == null) {
+            throw new NullPointerException();
+        }
+        QueryCriteria c = new QueryCriteria("contextids", owner.getId());
+        c.addAndCondition("cname", key);
+        c.addAndCondition("objectids", 0);
+        ArrayList<DatabaseObject> objects = DatabaseObject.getObjects(Context.getValueProperties(), c);
+        return (ValueProperty) objects.get(0);
+    }
+
+    /**
+     * Search for a specific property
+     * @param owner
+     * @param key
+     * @return
+     * @throws NodataFoundException
+     */
     public static synchronized ValueProperty getProperty(final DatabaseObject owner, final Class<?> sourceClass, final String key) throws NodataFoundException {
         if (key == null) {
             throw new NullPointerException();
@@ -155,9 +215,6 @@ public final class ValueProperty extends DatabaseObject {
     }
 
     /**
-     * Search for a specific property
-     * @param owner
-     * @param key may be null (all are getting deleted for the owner)
      */
     public static synchronized void deleteProperty(final DatabaseObject owner, final String key) {
         try {
@@ -166,6 +223,24 @@ public final class ValueProperty extends DatabaseObject {
                 c.addAndCondition("cname", key);
             }
             c.addAndCondition("objectids", owner.__getIDS());
+            ArrayList<DatabaseObject> objects = DatabaseObject.getObjects(Context.getValueProperties(), c);
+            for (int i = 0; i < objects.size(); i++) {
+                DatabaseObject databaseObject = objects.get(i);
+                databaseObject.delete();
+            }
+        } catch (NodataFoundException ex) {
+        }
+    }
+
+    /**
+     */
+    public static synchronized void deleteProperty(final Context owner, final String key) {
+        try {
+            QueryCriteria c = new QueryCriteria("contextids", owner.getId());
+            if (key != null) {
+                c.addAndCondition("cname", key);
+            }
+            c.addAndCondition("objectids", 0);
             ArrayList<DatabaseObject> objects = DatabaseObject.getObjects(Context.getValueProperties(), c);
             for (int i = 0; i < objects.size(); i++) {
                 DatabaseObject databaseObject = objects.get(i);
@@ -203,6 +278,7 @@ public final class ValueProperty extends DatabaseObject {
      * @param owner
      * @return A list of properties (possibly empty)
      */
+    @SuppressWarnings("unchecked")
     public static synchronized List<ValueProperty> getProperties(final DatabaseObject owner) {
         try {
             QueryCriteria c = new QueryCriteria("contextids", owner.getContext().getId());
@@ -211,7 +287,33 @@ public final class ValueProperty extends DatabaseObject {
             return DatabaseObject.toObjectList(objects, new ValueProperty());
         } catch (NodataFoundException ex) {
             Log.Debug(ValueProperty.class, ex.getMessage());
-            return new ArrayList<ValueProperty>();
+            return Collections.EMPTY_LIST;
+        }
+    }
+
+    /**
+     * Find all properties for the given owner
+     * @param owner
+     * @return A list of properties (possibly empty)
+     */
+    @SuppressWarnings("unchecked")
+    public static synchronized List<ValueProperty> getProperties(final Context owner, final Group p) {
+        try {
+            QueryCriteria2 c = new QueryCriteria2();
+            c.and(new QueryParameter(Context.getValueProperties(), "contextids", owner.getId(), QueryParameter.EQUALS));
+            c.and(new QueryParameter(Context.getValueProperties(), "objectids", 0, QueryParameter.EQUALS));
+            if (p != null && !p.isRoot()) {
+                List<Group> groups = p.getChildGroups();
+                for (Group g : groups) {
+                    c.or(new QueryParameter(Context.getValueProperties(), "groupsids", g.__getIDS(), QueryParameter.EQUALS));
+                }
+            }
+
+            ArrayList<DatabaseObject> objects = DatabaseObject.getObjects(Context.getValueProperties(), c, false);
+            return DatabaseObject.toObjectList(objects, new ValueProperty());
+        } catch (NodataFoundException ex) {
+            Log.Debug(ValueProperty.class, ex.getMessage());
+            return Collections.EMPTY_LIST;
         }
     }
 
