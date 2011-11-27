@@ -484,16 +484,9 @@ public final class ControlPanel_Templates extends javax.swing.JPanel implements 
         if (di.chooseFile()) {
             Template t = new Template();
             File fi = di.getFile();
-            if (QueryHandler.instanceOf().clone(Context.getFiles(), this).insertFile(fi, t, new SaveString(di.getFile().getName(), true))) {     
+            if (QueryHandler.instanceOf().clone(Context.getFiles(), this).insertFile(fi, t, new SaveString(di.getFile().getName(), true))) {
                 Popup.notice(Messages.ASSIGN_TEMPLATE);
-                lastImportedFile = fi;
-                updateService.setEnabled(true);
-                try {
-                    pathtofile.setText(fi.getCanonicalPath().toString());
-                } catch (IOException ex) {
-                    Log.Debug(this, ex);
-                }
-                lastmodified = fi.lastModified();
+                configureUpdateService(fi);
             }
         }
 }//GEN-LAST:event_jButton1ActionPerformed
@@ -507,7 +500,15 @@ public final class ControlPanel_Templates extends javax.swing.JPanel implements 
         if (dataOwner != null && dataOwner.isExisting()) {
             try {
                 mpv5.YabsViewProxy.instance().showFilesaveDialogFor(dataOwner.getFile());
+
+                DialogForFile d = mpv5.YabsViewProxy.instance().getFiledialog();
+                File nFile = d.saveFile(dataOwner.getFile());
+                if (nFile != null) {
+                    configureUpdateService(nFile);
+                    updateService.setSelected(true);
+                }
             } catch (Exception e) {
+                Log.Debug(e);
             }
         }
     }//GEN-LAST:event_jButton9ActionPerformed
@@ -561,7 +562,7 @@ public final class ControlPanel_Templates extends javax.swing.JPanel implements 
                 refresh();
             }
         };
-        
+
         if (lastImportedFile != null) {
             if (updateService.isSelected()) {
                 try {
@@ -576,7 +577,7 @@ public final class ControlPanel_Templates extends javax.swing.JPanel implements 
                     Log.Debug(ex);
                 }
             }
-        } else if(!pathtofile_.equals("")) {
+        } else if (!pathtofile_.equals("")) {
             if (updateService.isSelected()) {
                 FileMonitor.getInstance().addFileChangeListener(filecl, pathtofile_, 1000l);
             } else {
@@ -649,8 +650,7 @@ public final class ControlPanel_Templates extends javax.swing.JPanel implements 
     public java.util.Date dateadded_ = new java.util.Date();
     public boolean isupdateenabled_ = false;
     public String pathtofile_ = "";
-    public long lastmodified_ ;
-    
+    public long lastmodified_;
 
     public boolean collectData() {
         if (groupname.getSelectedItem() != null) {
@@ -730,7 +730,7 @@ public final class ControlPanel_Templates extends javax.swing.JPanel implements 
         if (p) {
             dataOwner.setPanelData(this);
             this.exposeData();
-        }   
+        }
     }
 
     public void refresh() {
@@ -803,17 +803,17 @@ public final class ControlPanel_Templates extends javax.swing.JPanel implements 
         Object[][] UtT = null;
         QueryCriteria d = new QueryCriteria("templatesids", dataOwner.__getIDS());
         try {
-             UtT = QueryHandler.instanceOf().clone(Context.getTemplatesToUsers()).select(d).getData();
+            UtT = QueryHandler.instanceOf().clone(Context.getTemplatesToUsers()).select(d).getData();
         } catch (NodataFoundException ex) {
             Log.Debug(this, ex);
         }
-        
+
 
 
         for (int i = 0; i < selectedValues.length; i++) {
             User object = (User) selectedValues[i];
             boolean found = false;
-            
+
             for (int j = 0; j < UtT.length; j++) {
                 if (Integer.parseInt(UtT[j][2].toString()) == object.__getIDS()) {
                     found = true;
@@ -821,7 +821,7 @@ public final class ControlPanel_Templates extends javax.swing.JPanel implements 
                     break;
                 }
             }
-            
+
             if (!found) {
                 QueryData c = new QueryData();
                 c.add("usersids", object.__getIDS());
@@ -838,7 +838,7 @@ public final class ControlPanel_Templates extends javax.swing.JPanel implements 
                 QueryHandler.instanceOf().clone(Context.getTemplatesToUsers()).delete(d2);
             }
         }
-        
+
         TemplateHandler.clearCache();
     }
 
@@ -903,5 +903,16 @@ public final class ControlPanel_Templates extends javax.swing.JPanel implements 
     }
 
     public void print() {
+    }
+
+    private void configureUpdateService(File fi) {
+        lastImportedFile = fi;
+        updateService.setEnabled(true);
+        try {
+            pathtofile.setText(fi.getCanonicalPath().toString());
+        } catch (IOException ex) {
+            Log.Debug(this, ex);
+        }
+        lastmodified = fi.lastModified();
     }
 }

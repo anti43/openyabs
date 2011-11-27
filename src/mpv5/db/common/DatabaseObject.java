@@ -16,6 +16,8 @@
  */
 package mpv5.db.common;
 
+import groovy.lang.GroovyShell;
+import groovy.lang.Binding;
 import java.util.Arrays;
 import java.util.TreeMap;
 import java.awt.Color;
@@ -2074,6 +2076,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
     public HashMap<String, Object> resolveReferences(HashMap<String, Object> map) {
         List<ValueProperty> props = ValueProperty.getProperties(this);
         for (ValueProperty p : props) {
+            String strVal = String.valueOf(p.getValue());
             if (p.getValue() instanceof LazyInvocable) {
                 try {
                     LazyInvocable lazy = (LazyInvocable) p.getValue();
@@ -2082,8 +2085,15 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
                 } catch (Exception e) {
                     Log.Debug(this, e.getMessage());
                 }
+            } else if (strVal.startsWith("#") && strVal.endsWith("#")) {
+                try {
+                    Object value = getGroovyShell().evaluate(strVal.replace("#", ""));
+                    map.put("property." + p.getKey(), String.valueOf(value));
+                } catch (Exception e) {
+                    Log.Debug(this, e);
+                }
             } else {
-                map.put("property." + p.getKey(), String.valueOf(p.getValue()));
+                map.put("property." + p.getKey(), strVal);
             }
         }
 
@@ -2256,5 +2266,17 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
         }
         d[0] = IDENTITY;
         return d;
+    }
+    
+    private GroovyShell groovyShell;
+    private GroovyShell getGroovyShell() {
+        synchronized (this) {
+            if (groovyShell == null) {
+                Binding binding = new Binding();
+                binding.setVariable("dbo", this);
+                groovyShell = new GroovyShell(binding);
+            }
+            return groovyShell;
+        }
     }
 }

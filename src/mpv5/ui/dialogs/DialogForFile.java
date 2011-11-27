@@ -237,8 +237,7 @@ public class DialogForFile extends JFileChooser implements Waiter {
      * Show a file save dialog
      * @param fileToSave
      */
-    public void saveFile(File fileToSave) {
-
+    public File saveFile(File fileToSave) {
         setSelectedFile(new File(fileToSave.getName()));
         if (this.showSaveDialog(mparent == null ? mpv5.YabsViewProxy.instance().getIdentifierFrame() : mparent) == JFileChooser.APPROVE_OPTION) {
             try {
@@ -260,7 +259,10 @@ public class DialogForFile extends JFileChooser implements Waiter {
             } catch (IOException ex) {
                 Log.Debug(ex);
             }
+            return file;
         }
+
+        return null;
     }
 
     /**
