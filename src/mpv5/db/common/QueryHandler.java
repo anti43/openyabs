@@ -241,6 +241,16 @@ public class QueryHandler implements Cloneable {
     public String buildQuery(Object value, String... fields) {
         return buildQuery(fields, fields, "cname", value, "OR");
     }
+    
+        /**
+     * Builds a select query which selects ids from all rows where the fields match the given value.
+     * @param value
+     * @param fields
+     * @return A query String select ids, bla
+     */
+    public String buildIdQuery(Object value, String... fields) {
+        return buildQuery(new String[]{"ids"}, fields, "cname", value, "OR");
+    }
 
     /**
      * selct ids, columns

@@ -74,6 +74,22 @@ public class ReturnValue {
     }
 
     /**
+     * First row of data retrieved by a select query
+     * @return the data
+     */
+    public Object[] getFirstColumn() {
+        if (hasData()) {
+            Object[] res = new Object[data.length];
+            for (int i = 0; i < data.length; i++) {
+                res[i] = data[i][0];
+            }
+            return res;
+        } else {
+            return null;
+        }
+    }
+
+    /**
      * First field of data retrieved by a select query
      * @return the data
      */
@@ -174,6 +190,6 @@ public class ReturnValue {
 
     @Override
     public String toString() {
-        return "Rowcount: " +  data.length;
+        return "Rowcount: " + data.length;
     }
 }

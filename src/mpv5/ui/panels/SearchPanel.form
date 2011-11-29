@@ -21,13 +21,13 @@
     <DimensionLayout dim="0">
       <Group type="103" groupAlignment="0" attributes="0">
           <Component id="results" alignment="0" max="32767" attributes="1"/>
-          <Component id="searchfields" alignment="0" max="32767" attributes="1"/>
+          <Component id="searchfields" alignment="0" pref="163" max="32767" attributes="1"/>
       </Group>
     </DimensionLayout>
     <DimensionLayout dim="1">
       <Group type="103" groupAlignment="0" attributes="0">
           <Group type="102" alignment="0" attributes="0">
-              <Component id="searchfields" min="-2" max="-2" attributes="0"/>
+              <Component id="searchfields" min="-2" pref="55" max="-2" attributes="0"/>
               <EmptySpace min="-2" pref="0" max="-2" attributes="0"/>
               <Component id="results" max="32767" attributes="0"/>
           </Group>
@@ -47,182 +47,18 @@
         <Property name="name" type="java.lang.String" value="searchfields" noResource="true"/>
       </Properties>
 
-      <Layout>
-        <DimensionLayout dim="0">
-          <Group type="103" groupAlignment="0" attributes="0">
-              <Group type="102" alignment="1" attributes="0">
-                  <Group type="103" groupAlignment="2" attributes="0">
-                      <Component id="label1" alignment="2" pref="57" max="32767" attributes="1"/>
-                      <Component id="label2" alignment="2" pref="57" max="32767" attributes="1"/>
-                      <Component id="label3" alignment="2" pref="57" max="32767" attributes="1"/>
-                  </Group>
-                  <EmptySpace min="-2" pref="12" max="-2" attributes="0"/>
-                  <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                      <Component id="searchbutton1" alignment="0" max="32767" attributes="1"/>
-                      <Group type="102" alignment="1" attributes="0">
-                          <Group type="103" groupAlignment="2" attributes="0">
-                              <Component id="searchfield1" alignment="2" min="-2" pref="56" max="-2" attributes="1"/>
-                              <Component id="searchfield2" alignment="2" min="-2" pref="56" max="-2" attributes="1"/>
-                              <Component id="searchfield3" alignment="2" min="-2" pref="56" max="-2" attributes="1"/>
-                          </Group>
-                          <EmptySpace min="-2" max="-2" attributes="0"/>
-                          <Group type="103" groupAlignment="2" attributes="0">
-                              <Component id="jButton1" alignment="2" min="-2" pref="18" max="-2" attributes="0"/>
-                              <Component id="jButton2" alignment="2" min="-2" pref="18" max="-2" attributes="0"/>
-                              <Component id="jButton3" alignment="2" min="-2" pref="18" max="-2" attributes="0"/>
-                          </Group>
-                      </Group>
-                  </Group>
-              </Group>
-          </Group>
-        </DimensionLayout>
-        <DimensionLayout dim="1">
-          <Group type="103" groupAlignment="0" attributes="0">
-              <Group type="102" attributes="0">
-                  <Group type="103" groupAlignment="2" attributes="0">
-                      <Component id="label1" alignment="2" min="-2" max="-2" attributes="0"/>
-                      <Component id="searchfield1" alignment="2" min="-2" max="-2" attributes="0"/>
-                      <Component id="jButton1" alignment="2" min="-2" pref="17" max="-2" attributes="0"/>
-                  </Group>
-                  <EmptySpace min="-2" pref="2" max="-2" attributes="0"/>
-                  <Group type="103" groupAlignment="2" attributes="0">
-                      <Component id="label2" alignment="2" min="-2" max="-2" attributes="0"/>
-                      <Component id="searchfield2" alignment="2" min="-2" max="-2" attributes="0"/>
-                      <Component id="jButton2" alignment="2" min="-2" pref="17" max="-2" attributes="0"/>
-                  </Group>
-                  <EmptySpace min="-2" pref="2" max="-2" attributes="0"/>
-                  <Group type="103" groupAlignment="2" attributes="0">
-                      <Component id="label3" alignment="2" min="-2" max="-2" attributes="0"/>
-                      <Component id="searchfield3" alignment="2" min="-2" max="-2" attributes="0"/>
-                      <Component id="jButton3" alignment="2" min="-2" pref="17" max="-2" attributes="0"/>
-                  </Group>
-                  <EmptySpace min="-2" max="-2" attributes="0"/>
-                  <Component id="searchbutton1" min="-2" max="-2" attributes="0"/>
-                  <EmptySpace max="32767" attributes="0"/>
-              </Group>
-          </Group>
-        </DimensionLayout>
-      </Layout>
+      <Layout class="org.netbeans.modules.form.compat2.layouts.DesignBoxLayout"/>
       <SubComponents>
-        <Component class="javax.swing.JLabel" name="label1">
+        <Component class="javax.swing.JTextField" name="textfield">
           <Properties>
             <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-              <ResourceString bundle="mpv5/resources/languages/Panels.properties" key="SearchPanel.label1.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+              <ResourceString bundle="mpv5/resources/languages/Panels.properties" key="SearchPanel.textfield.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
             </Property>
-            <Property name="name" type="java.lang.String" value="label1" noResource="true"/>
-          </Properties>
-        </Component>
-        <Component class="javax.swing.JTextField" name="searchfield1">
-          <Properties>
-            <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
-              <Border info="org.netbeans.modules.form.compat2.border.EtchedBorderInfo">
-                <EtchetBorder/>
-              </Border>
-            </Property>
-            <Property name="name" type="java.lang.String" value="searchfield1" noResource="true"/>
+            <Property name="name" type="java.lang.String" value="textfield" noResource="true"/>
           </Properties>
           <Events>
-            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="searchfield1ActionPerformed"/>
-          </Events>
-        </Component>
-        <Component class="javax.swing.JTextField" name="searchfield2">
-          <Properties>
-            <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
-              <Border info="org.netbeans.modules.form.compat2.border.EtchedBorderInfo">
-                <EtchetBorder/>
-              </Border>
-            </Property>
-            <Property name="name" type="java.lang.String" value="searchfield2" noResource="true"/>
-          </Properties>
-          <Events>
-            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="searchfield2ActionPerformed"/>
-          </Events>
-        </Component>
-        <Component class="javax.swing.JLabel" name="label2">
-          <Properties>
-            <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-              <ResourceString bundle="mpv5/resources/languages/Panels.properties" key="SearchPanel.label2.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
-            </Property>
-            <Property name="name" type="java.lang.String" value="label2" noResource="true"/>
-          </Properties>
-        </Component>
-        <Component class="javax.swing.JTextField" name="searchfield3">
-          <Properties>
-            <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
-              <Border info="org.netbeans.modules.form.compat2.border.EtchedBorderInfo">
-                <EtchetBorder/>
-              </Border>
-            </Property>
-            <Property name="name" type="java.lang.String" value="searchfield3" noResource="true"/>
-          </Properties>
-          <Events>
-            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="searchfield3ActionPerformed"/>
-          </Events>
-        </Component>
-        <Component class="javax.swing.JLabel" name="label3">
-          <Properties>
-            <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-              <ResourceString bundle="mpv5/resources/languages/Panels.properties" key="SearchPanel.label3.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
-            </Property>
-            <Property name="name" type="java.lang.String" value="label3" noResource="true"/>
-          </Properties>
-        </Component>
-        <Component class="javax.swing.JButton" name="searchbutton1">
-          <Properties>
-            <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-              <ResourceString bundle="mpv5/resources/languages/Panels.properties" key="SearchPanel.searchbutton1.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
-            </Property>
-            <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
-              <Border info="org.netbeans.modules.form.compat2.border.EtchedBorderInfo">
-                <EtchetBorder/>
-              </Border>
-            </Property>
-            <Property name="name" type="java.lang.String" value="searchbutton1" noResource="true"/>
-          </Properties>
-          <Events>
-            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="searchbutton1ActionPerformed"/>
-          </Events>
-        </Component>
-        <Component class="javax.swing.JButton" name="jButton1">
-          <Properties>
-            <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-              <Image iconType="3" name="/mpv5/resources/images/16/search.png"/>
-            </Property>
-            <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-              <ResourceString bundle="mpv5/resources/languages/Panels.properties" key="SearchPanel.jButton1.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
-            </Property>
-            <Property name="name" type="java.lang.String" value="jButton1" noResource="true"/>
-          </Properties>
-          <Events>
-            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButton1ActionPerformed"/>
-          </Events>
-        </Component>
-        <Component class="javax.swing.JButton" name="jButton2">
-          <Properties>
-            <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-              <Image iconType="3" name="/mpv5/resources/images/16/search.png"/>
-            </Property>
-            <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-              <ResourceString bundle="mpv5/resources/languages/Panels.properties" key="SearchPanel.jButton2.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
-            </Property>
-            <Property name="name" type="java.lang.String" value="jButton2" noResource="true"/>
-          </Properties>
-          <Events>
-            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButton2ActionPerformed"/>
-          </Events>
-        </Component>
-        <Component class="javax.swing.JButton" name="jButton3">
-          <Properties>
-            <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-              <Image iconType="3" name="/mpv5/resources/images/16/search.png"/>
-            </Property>
-            <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-              <ResourceString bundle="mpv5/resources/languages/Panels.properties" key="SearchPanel.jButton3.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
-            </Property>
-            <Property name="name" type="java.lang.String" value="jButton3" noResource="true"/>
-          </Properties>
-          <Events>
-            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButton3ActionPerformed"/>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="textfieldActionPerformed"/>
+            <EventHandler event="keyTyped" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="textfieldKeyTyped"/>
           </Events>
         </Component>
       </SubComponents>
@@ -242,12 +78,12 @@
       <Layout>
         <DimensionLayout dim="0">
           <Group type="103" groupAlignment="0" attributes="0">
-              <Component id="resultsscrollpane" alignment="0" pref="149" max="32767" attributes="0"/>
+              <Component id="resultsscrollpane" alignment="0" pref="151" max="32767" attributes="0"/>
           </Group>
         </DimensionLayout>
         <DimensionLayout dim="1">
           <Group type="103" groupAlignment="0" attributes="0">
-              <Component id="resultsscrollpane" alignment="0" pref="92" max="32767" attributes="0"/>
+              <Component id="resultsscrollpane" alignment="0" pref="158" max="32767" attributes="0"/>
           </Group>
         </DimensionLayout>
       </Layout>
@@ -262,7 +98,7 @@
 
           <Layout class="org.netbeans.modules.form.compat2.layouts.support.JScrollPaneSupportLayout"/>
           <SubComponents>
-            <Component class="javax.swing.JTable" name="resulttable">
+            <Component class="javax.swing.JTable" name="lookupResultTable">
               <Properties>
                 <Property name="autoCreateRowSorter" type="boolean" value="true"/>
                 <Property name="model" type="javax.swing.table.TableModel" editor="org.netbeans.modules.form.editors2.TableModelEditor">
@@ -271,7 +107,7 @@
                 <Property name="columnModel" type="javax.swing.table.TableColumnModel" editor="org.netbeans.modules.form.editors2.TableColumnModelEditor">
                   <TableColumnModel selectionModel="0"/>
                 </Property>
-                <Property name="name" type="java.lang.String" value="resulttable" noResource="true"/>
+                <Property name="name" type="java.lang.String" value="lookupResultTable" noResource="true"/>
                 <Property name="selectionModel" type="javax.swing.ListSelectionModel" editor="org.netbeans.modules.form.editors2.JTableSelectionModelEditor">
                   <JTableSelectionModel selectionMode="0"/>
                 </Property>
@@ -282,8 +118,8 @@
                 </Property>
               </Properties>
               <Events>
-                <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="resulttableMouseClicked"/>
-                <EventHandler event="keyTyped" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="resulttableKeyTyped"/>
+                <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="lookupResultTableMouseClicked"/>
+                <EventHandler event="keyTyped" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="lookupResultTableKeyTyped"/>
               </Events>
               <AuxValues>
                 <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new  mpv5.ui.misc.MPTable(this) {&#xa;            public Component prepareRenderer(TableCellRenderer renderer,&#xa;                int rowIndex, int vColIndex) {&#xa;                Component c = super.prepareRenderer(renderer, rowIndex, vColIndex);&#xa;                if (c instanceof JComponent) {&#xa;                    JComponent jc = (JComponent)c;&#xa;                    jc.setToolTipText(String.valueOf(getValueAt(rowIndex, vColIndex)));&#xa;                }&#xa;                return c;&#xa;            }&#xa;        }"/>

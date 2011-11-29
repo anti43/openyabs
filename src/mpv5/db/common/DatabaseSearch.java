@@ -2,6 +2,7 @@ package mpv5.db.common;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import mpv5.db.objects.User;
 import mpv5.logging.Log;
 import mpv5.usermanagement.MPSecurityManager;
@@ -65,7 +66,9 @@ public class DatabaseSearch {
      * Do a fulltextsearch
      * @param val
      * @return The result
+     * @deprecated SLOW
      */
+    @Deprecated
     @SuppressWarnings("unchecked")
     public Object[][] getFulltextSearchvaluesFor(String val) {
         Log.Debug(this, "Fulltextlookup for " + val);
@@ -88,6 +91,44 @@ public class DatabaseSearch {
             }
         }
         return data;
+    }
+
+    /**
+     * Do a fulltextsearch
+     * @param val
+     * @return The result
+     */
+    @SuppressWarnings("unchecked")
+    public List<Integer> searchObjectIdsFor(String val) {
+        Log.Debug(this, "searchObjectIdsFor for " + val);
+        List<Integer> l = new ArrayList<Integer>();
+        try {
+            Context contx = context;
+            ReturnValue rdata = QueryHandler.instanceOf().freeQuery(QueryHandler.instanceOf().clone(contx, ROWLIMIT).buildIdQuery(val, DatabaseObject.getObject(contx).getStringVars().toArray(new String[]{})), MPSecurityManager.VIEW, null);
+            Object[] ndata = rdata.getFirstColumn();
+
+            if (ndata != null) {
+                for (int j = 0; j < ndata.length; j++) {
+                    l.add(Integer.valueOf(ndata[j].toString()));
+                }
+            }
+
+        } catch (Exception e) {
+            Log.Debug(e);
+        }
+
+        return l;
+    }
+
+    /**
+     * 
+     * @param val
+     * @return
+     * @throws NodataFoundException 
+     */
+    public List<DatabaseObject> searchObjectsFor(String val) throws NodataFoundException {
+        List<Integer> data = searchObjectIdsFor(val);
+        return DatabaseObject.getObjects(context, data);
     }
 
     /**

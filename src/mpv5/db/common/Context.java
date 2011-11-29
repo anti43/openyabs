@@ -163,13 +163,13 @@ public class Context implements Serializable {
     public static final String CONDITION_ITEMS_STATUS = IDENTITY_ITEMS + "." + "intstatus";
     //********** searchfields **************************************************
     public static final String SEARCH_NAME = "cname";
-    public static final String SEARCH_CONTACT_NUMBER = "cnumber";
-    public static final String SEARCH_CONTACT_CITY = "city";
+//    public static final String SEARCH_CONTACT_NUMBER = "cnumber";
+//    public static final String SEARCH_CONTACT_CITY = "city";
     //********** defaults ******************************************************
     public static String DEFAULT_SUBID = "ids, cname";
-    public static String DEFAULT_CONTACT_SEARCH = "ids, cnumber, cname, city";
-    public static String DEFAULT_USER_SEARCH = "ids, cname, mail, lastlogdate";
-    public static String DEFAULT_ITEM_SEARCH = "ids, cname, dateadded, netvalue";
+    public static String DEFAULT_CONTACT_SEARCH = "ids, cnumber, cname, city, street";
+    public static String DEFAULT_USER_SEARCH = "ids, cname, mail";
+    public static String DEFAULT_ITEM_SEARCH = "ids, cname";
     public static String DEFAULT_PRODUCT_SEARCH = "ids, cnumber, cname, description";
     public static String DEFAULT_ACTIVITYLIST_SEARCH = "DISTINCT ids,cname";
     public static String DEFAULT_PRODUCTSLIST_SEARCH = "DISTINCT ids,cname,description";

@@ -25,7 +25,7 @@
         <DimensionLayout dim="1">
           <Group type="103" groupAlignment="0" attributes="0">
               <Component id="naviPanel" alignment="0" max="32767" attributes="2"/>
-              <Component id="tabpanePanel" alignment="0" pref="522" max="32767" attributes="0"/>
+              <Component id="tabpanePanel" alignment="0" pref="538" max="32767" attributes="0"/>
           </Group>
         </DimensionLayout>
       </Layout>
@@ -69,7 +69,7 @@
             <DimensionLayout dim="1">
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" alignment="0" attributes="0">
-                      <Component id="nav_outlookbar" pref="507" max="32767" attributes="0"/>
+                      <Component id="nav_outlookbar" pref="523" max="32767" attributes="0"/>
                       <EmptySpace min="-2" max="-2" attributes="1"/>
                   </Group>
               </Group>
@@ -119,7 +119,7 @@
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Group type="102" alignment="0" attributes="0">
                               <Component id="nav_contacts" min="-2" max="-2" attributes="0"/>
-                              <EmptySpace pref="236" max="32767" attributes="0"/>
+                              <EmptySpace pref="252" max="32767" attributes="0"/>
                           </Group>
                       </Group>
                     </DimensionLayout>
@@ -134,10 +134,10 @@
                       </Properties>
 
                       <Layout class="org.netbeans.modules.form.compat2.layouts.DesignGridLayout">
-                        <Property name="horizontalGap" type="int" value="2"/>
                         <Property name="columns" type="int" value="1"/>
-                        <Property name="verticalGap" type="int" value="5"/>
+                        <Property name="horizontalGap" type="int" value="2"/>
                         <Property name="rows" type="int" value="0"/>
+                        <Property name="verticalGap" type="int" value="5"/>
                       </Layout>
                       <SubComponents>
                         <Component class="javax.swing.JButton" name="jButton5">
@@ -233,7 +233,7 @@
                   <Layout>
                     <DimensionLayout dim="0">
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="nav_accounting" alignment="0" pref="110" max="32767" attributes="0"/>
+                          <Component id="nav_accounting" alignment="0" max="32767" attributes="0"/>
                       </Group>
                     </DimensionLayout>
                     <DimensionLayout dim="1">
@@ -255,10 +255,10 @@
                       </Properties>
 
                       <Layout class="org.netbeans.modules.form.compat2.layouts.DesignGridLayout">
-                        <Property name="horizontalGap" type="int" value="2"/>
                         <Property name="columns" type="int" value="1"/>
-                        <Property name="verticalGap" type="int" value="5"/>
+                        <Property name="horizontalGap" type="int" value="2"/>
                         <Property name="rows" type="int" value="0"/>
+                        <Property name="verticalGap" type="int" value="5"/>
                       </Layout>
                       <SubComponents>
                         <Component class="javax.swing.JButton" name="jButton8">
@@ -464,10 +464,10 @@
                       </Properties>
 
                       <Layout class="org.netbeans.modules.form.compat2.layouts.DesignGridLayout">
-                        <Property name="horizontalGap" type="int" value="2"/>
                         <Property name="columns" type="int" value="1"/>
-                        <Property name="verticalGap" type="int" value="5"/>
+                        <Property name="horizontalGap" type="int" value="2"/>
                         <Property name="rows" type="int" value="0"/>
+                        <Property name="verticalGap" type="int" value="5"/>
                       </Layout>
                       <SubComponents>
                         <Component class="javax.swing.JButton" name="jButton13">
@@ -665,10 +665,10 @@
                       </Properties>
 
                       <Layout class="org.netbeans.modules.form.compat2.layouts.DesignGridLayout">
-                        <Property name="horizontalGap" type="int" value="2"/>
                         <Property name="columns" type="int" value="1"/>
-                        <Property name="verticalGap" type="int" value="5"/>
+                        <Property name="horizontalGap" type="int" value="2"/>
                         <Property name="rows" type="int" value="0"/>
+                        <Property name="verticalGap" type="int" value="5"/>
                       </Layout>
                       <SubComponents>
                         <Component class="javax.swing.JButton" name="jButton6">
@@ -1754,8 +1754,12 @@
     </Container>
     <Container class="javax.swing.JToolBar" name="mainToolbar">
       <Properties>
+        <Property name="floatable" type="boolean" value="false"/>
         <Property name="rollover" type="boolean" value="true"/>
         <Property name="name" type="java.lang.String" value="mainToolbar" noResource="true"/>
+        <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+          <Dimension value="[203, 25]"/>
+        </Property>
       </Properties>
 
       <Layout class="org.netbeans.modules.form.compat2.layouts.DesignBoxLayout"/>
@@ -1763,7 +1767,7 @@
         <Component class="javax.swing.JButton" name="closeButton1">
           <Properties>
             <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-              <Image iconType="3" name="/mpv5/resources/images/32/1leftarrow.png"/>
+              <Image iconType="3" name="/mpv5/resources/images/22/back.png"/>
             </Property>
             <Property name="toolTipText" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
               <ResourceString bundle="mpv5/resources/languages/Panels.properties" key="MPView.closeButton1.toolTipText" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
@@ -1771,7 +1775,6 @@
             <Property name="focusable" type="boolean" value="false"/>
             <Property name="horizontalTextPosition" type="int" value="0"/>
             <Property name="name" type="java.lang.String" value="closeButton1" noResource="true"/>
-            <Property name="verticalTextPosition" type="int" value="3"/>
           </Properties>
           <Events>
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="closeButton1ActionPerformed"/>
@@ -1780,7 +1783,7 @@
         <Component class="javax.swing.JButton" name="closeButton2">
           <Properties>
             <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-              <Image iconType="3" name="/mpv5/resources/images/32/1rightarrow.png"/>
+              <Image iconType="3" name="/mpv5/resources/images/22/forward.png"/>
             </Property>
             <Property name="toolTipText" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
               <ResourceString bundle="mpv5/resources/languages/Panels.properties" key="MPView.closeButton2.toolTipText" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
@@ -1794,10 +1797,15 @@
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="closeButton2ActionPerformed"/>
           </Events>
         </Component>
+        <Component class="javax.swing.JToolBar$Separator" name="jSeparator7">
+          <Properties>
+            <Property name="name" type="java.lang.String" value="jSeparator7" noResource="true"/>
+          </Properties>
+        </Component>
         <Component class="javax.swing.JButton" name="closeButton">
           <Properties>
             <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-              <Image iconType="3" name="/mpv5/resources/images/32/endturn.png"/>
+              <Image iconType="3" name="/mpv5/resources/images/22/exit.png"/>
             </Property>
             <Property name="toolTipText" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
               <ResourceString bundle="mpv5/resources/languages/Panels.properties" key="MPView.closeButton.toolTipText_1" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
@@ -1814,7 +1822,7 @@
         <Component class="javax.swing.JButton" name="lockButton">
           <Properties>
             <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-              <Image iconType="3" name="/mpv5/resources/images/32/lock.png"/>
+              <Image iconType="3" name="/mpv5/resources/images/22/lock.png"/>
             </Property>
             <Property name="toolTipText" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
               <ResourceString bundle="mpv5/resources/languages/Panels.properties" key="MPView.lockButton.toolTipText_1" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
@@ -1836,7 +1844,7 @@
         <Component class="javax.swing.JButton" name="calculatorButton">
           <Properties>
             <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-              <Image iconType="3" name="/mpv5/resources/images/32/kcalc.png"/>
+              <Image iconType="3" name="/mpv5/resources/images/22/run.png"/>
             </Property>
             <Property name="toolTipText" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
               <ResourceString bundle="mpv5/resources/languages/Panels.properties" key="MPView.calculatorButton.toolTipText_1" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
@@ -1848,6 +1856,26 @@
           </Properties>
           <Events>
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="calculatorButtonActionPerformed"/>
+          </Events>
+        </Component>
+        <Component class="javax.swing.JButton" name="jButton2">
+          <Properties>
+            <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+              <Image iconType="3" name="/mpv5/resources/images/22/printer1.png"/>
+            </Property>
+            <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
+              <ResourceString bundle="mpv5/resources/languages/Panels.properties" key="MPView.jButton2.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+            </Property>
+            <Property name="toolTipText" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
+              <ResourceString bundle="mpv5/resources/languages/Panels.properties" key="MPView.jButton2.toolTipText" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+            </Property>
+            <Property name="focusable" type="boolean" value="false"/>
+            <Property name="horizontalTextPosition" type="int" value="0"/>
+            <Property name="name" type="java.lang.String" value="jButton2" noResource="true"/>
+            <Property name="verticalTextPosition" type="int" value="3"/>
+          </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButton2ActionPerformed"/>
           </Events>
         </Component>
       </SubComponents>

@@ -45,7 +45,7 @@ public class ControlPanel_ValueProps extends javax.swing.JPanel implements Contr
         setName("Form"); // NOI18N
         setLayout(new javax.swing.BoxLayout(this, javax.swing.BoxLayout.PAGE_AXIS));
 
-        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("mpv5/resources/languages/Panels"); // NOI18N
+        java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle(); // NOI18N
         jPanel3.setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("ControlPanel_ValueProps.jPanel3.border.title"))); // NOI18N
         jPanel3.setName("jPanel3"); // NOI18N
 
