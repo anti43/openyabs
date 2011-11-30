@@ -245,6 +245,10 @@ public class SearchPanel extends javax.swing.JPanel {
                         } catch (Exception ex) {
                             Log.Debug(this, ex);
                         }
+                    } else {
+                        for (Integer s : new DatabaseSearch(context, 50).searchObjectIdsFor(value)) {
+                            data.add(s);
+                        }
                     }
                     String dboids = "0";
                     for (Integer id : data) {
