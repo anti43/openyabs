@@ -66,8 +66,7 @@ public class MPTableModel extends DefaultTableModel implements Cloneable, TableC
     private Context context;
     private Object[] predefinedRow;
     private Integer autoCountColumn;
-    private List<TableCalculator> calculators = new ArrayList<TableCalculator>();
-    private ArrayList<DynamicTableCalculator> calculators2 = new ArrayList<DynamicTableCalculator>();
+    private ArrayList<DynamicTableCalculator> calculators = new ArrayList<DynamicTableCalculator>();
     private JTable owner;
 
     /**
@@ -355,21 +354,13 @@ public class MPTableModel extends DefaultTableModel implements Cloneable, TableC
         setEditable(true);
         setTypes(new Class<?>[]{String.class, Object.class});
     }
-
-    /**
-     * Add a cell calculator for this model
-     * @param cv
-     */
-    public void addCalculator(TableCalculator cv) {
-        this.calculators.add(cv);
-    }
-
+    
     /**
      * Add a cell calculator for this model
      * @param cv
      */
     public void addCalculator(DynamicTableCalculator cv) {
-        this.calculators2.add(cv);
+        this.calculators.add(cv);
     }
 
     @Override
@@ -485,14 +476,7 @@ public class MPTableModel extends DefaultTableModel implements Cloneable, TableC
     public synchronized void fireTableCellUpdated(int row, int column) {
 
         for (int i = 0; i < calculators.size(); i++) {
-            TableCalculator calculator = calculators.get(i);
-            if (calculator != null && !calculator.isTargetCell(row, column)) {
-                calculator.calculateOnce();
-            }
-        }
-
-        for (int i = 0; i < calculators2.size(); i++) {
-            DynamicTableCalculator calculator = calculators2.get(i);
+            DynamicTableCalculator calculator = calculators.get(i);
             if (calculator != null && !calculator.isTargetCell(row, column)) {
                 calculator.calculateOnce();
             }
@@ -612,7 +596,7 @@ public class MPTableModel extends DefaultTableModel implements Cloneable, TableC
     /**
      * @param context the context to set
      */
-    public void setContext(Context context) {
+    public final void setContext(Context context) {
         this.context = context;
     }
 
@@ -760,7 +744,7 @@ public class MPTableModel extends DefaultTableModel implements Cloneable, TableC
      * Set the editable columns
      * @param editable
      */
-    public void setCanEdits(boolean... editable) {
+    public final void setCanEdits(boolean... editable) {
         this.canEdits = editable;
     }
 

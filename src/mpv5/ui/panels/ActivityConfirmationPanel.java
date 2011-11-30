@@ -40,6 +40,7 @@ import mpv5.utils.renderer.TableCellEditorForDate;
 import mpv5.utils.renderer.TableCellRendererForDezimal;
 import mpv5.utils.renderer.TextAreaCellEditor;
 import mpv5.utils.renderer.TextAreaCellRenderer;
+import mpv5.utils.tables.DynamicTableCalculator;
 import mpv5.utils.tables.TableCalculator;
 import mpv5.utils.tables.TableFormat;
 
@@ -76,7 +77,7 @@ public final class ActivityConfirmationPanel extends javax.swing.JPanel implemen
     public Date dateadded_;
     public int groupsids_ = 1;
     public boolean asproduct_;
-    private TableCalculator itemMultiplier;
+    private DynamicTableCalculator itemMultiplier;
     private LightMPComboBox cb = new LightMPComboBox();
     private boolean HEADER_FAILD = false;
 
@@ -658,7 +659,7 @@ public final class ActivityConfirmationPanel extends javax.swing.JPanel implemen
         tcr.setRendererTo(7);
         tcr.setRendererTo(8);
 
-        itemMultiplier = new TableCalculator(itemtable, new int[]{3, 6, 7}, new int[]{8}, new int[]{7}, TableCalculator.ACTION_MULTIPLY, new int[]{8});
+        itemMultiplier =  new DynamicTableCalculator(itemtable, "(([3]*[6])-([3]*[6]%[7]))", new int[]{8});
         ((MPTableModel) itemtable.getModel()).addCalculator(itemMultiplier);
         itemMultiplier.addLabel(total, 8);
     }

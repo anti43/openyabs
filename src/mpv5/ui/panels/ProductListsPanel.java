@@ -32,7 +32,6 @@ import java.awt.event.MouseListener;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
-import java.util.Vector;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JTable;
@@ -50,21 +49,17 @@ import mpv5.db.objects.SubItem;
 import mpv5.db.objects.User;
 import mpv5.logging.Log;
 import mpv5.ui.dialogs.Popup;
-import mpv5.ui.frames.MPView;
 import mpv5.ui.toolbars.DataPanelTB;
 import mpv5.ui.beans.MPCBSelectionChangeReceiver;
 import mpv5.ui.dialogs.Search2;
 import mpv5.ui.dialogs.subcomponents.ProductSelectDialog;
-import mpv5.ui.misc.MPTable;
 import mpv5.utils.arrays.ArrayUtilities;
 import mpv5.utils.export.Export;
 import mpv5.utils.models.MPComboBoxModelItem;
 import mpv5.utils.models.MPTableModel;
-import mpv5.utils.renderer.ButtonEditor;
-import mpv5.utils.renderer.ButtonRenderer;
-import mpv5.utils.tables.TableCalculator;
 import mpv5.utils.renderer.CellEditorWithMPComboBox;
 import mpv5.utils.renderer.TableCellRendererForDezimal;
+import mpv5.utils.tables.DynamicTableCalculator;
 import mpv5.utils.tables.TableFormat;
 import mpv5.utils.ui.TextFieldUtils;
 
@@ -77,9 +72,9 @@ public class ProductListsPanel extends javax.swing.JPanel implements DataPanel, 
     private static final long serialVersionUID = 1L;
     private ProductList dataOwner;
     private DataPanelTB tb;
-    private TableCalculator itemMultiplier;
-    private TableCalculator netCalculator;
-    private TableCalculator netCalculator2;
+    private DynamicTableCalculator itemMultiplier;
+    private DynamicTableCalculator netCalculator;
+    private DynamicTableCalculator netCalculator2;
     private final SearchPanel sp;
     private java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle();
 
@@ -629,7 +624,7 @@ public class ProductListsPanel extends javax.swing.JPanel implements DataPanel, 
     }
 
     @Override
-    public void refresh() {
+    public final void refresh() {
         Runnable runnable = new Runnable() {
 
             @Override
@@ -663,7 +658,7 @@ public class ProductListsPanel extends javax.swing.JPanel implements DataPanel, 
     public void formatTable() {
 
         prepareTable();
-        TableFormat.resizeCols(itemtable, new Integer[]{0, 23, 53, 63, 100, 83, 63, 63, 0, 0, 0, 20, 20, 0, 0}, new Boolean[]{true, true, true, true, false, true, true, true, true, true, true, true, true, true, true, true});
+        TableFormat.resizeCols(itemtable, new Integer[]{0, 23, 53, 63, 100, 83, 63, 63, 0, 0, 0, 20, 20, 0, 0, 0, 0}, new Boolean[]{true, true, true, true, false, true, true, true, true, true, true, true, true, true, true, true, true, true});
         TableFormat.changeBackground(itemtable, 1, Color.LIGHT_GRAY);
         if (mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("org.openyabs.uiproperty", "hidecolumnquantity")) {
             TableFormat.stripColumn(itemtable, 2);
@@ -779,15 +774,15 @@ public class ProductListsPanel extends javax.swing.JPanel implements DataPanel, 
 
         CellEditorWithMPComboBox r = new CellEditorWithMPComboBox(Context.getProduct(), itemtable);
         r.setEditorTo(4, this, false);
-        itemMultiplier = new TableCalculator(itemtable, new int[]{2, 5, 6}, new int[]{7}, new int[]{6}, TableCalculator.ACTION_MULTIPLY, new int[]{7});
+        itemMultiplier =new DynamicTableCalculator(itemtable, "(([2]*[5])+([2]*[5]%[6]))", new int[]{7});
         ((MPTableModel) itemtable.getModel()).addCalculator(itemMultiplier);
         itemMultiplier.addLabel(value, 7);
 
-        netCalculator = new TableCalculator(itemtable, new int[]{7, 5}, new int[]{8}, new int[]{}, TableCalculator.ACTION_SUBSTRACT, new int[]{8});
+        netCalculator = new DynamicTableCalculator(itemtable, "([2]*[5]%[6])", new int[]{8});
         ((MPTableModel) itemtable.getModel()).addCalculator(netCalculator);
         netCalculator.addLabel(taxvalue, 8);
 
-        netCalculator2 = new TableCalculator(itemtable, new int[]{5}, new int[]{9}, new int[]{}, TableCalculator.ACTION_SUM, new int[]{9});
+        netCalculator2 = new DynamicTableCalculator(itemtable, "[2]*[5]", new int[]{9});
         ((MPTableModel) itemtable.getModel()).addCalculator(netCalculator2);
         netCalculator2.addLabel(netvalue, 9);
 
