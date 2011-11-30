@@ -31,7 +31,6 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Vector;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComponent;
 import javax.swing.SwingUtilities;
@@ -172,6 +171,7 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
         jPanel4 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         jTable1 = new  mpv5.ui.misc.MPTable(this) {
+            private static final long serialVersionUID = 1L;
             public Component prepareRenderer(TableCellRenderer renderer,
                 int rowIndex, int vColIndex) {
                 Component c = super.prepareRenderer(renderer, rowIndex, vColIndex);
@@ -214,7 +214,7 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
 
         setName("Form"); // NOI18N
 
-        java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle(); // NOI18N
+       java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle(); // NOI18N
         jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("JournalPanel.jPanel1.border.title"))); // NOI18N
         jPanel1.setName("jPanel1"); // NOI18N
 
@@ -309,8 +309,8 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
                 .addContainerGap()
                 .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 148, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel8, javax.swing.GroupLayout.DEFAULT_SIZE, 165, Short.MAX_VALUE)
-                    .addComponent(jLabel6, javax.swing.GroupLayout.DEFAULT_SIZE, 165, Short.MAX_VALUE))
+                    .addComponent(jLabel8, javax.swing.GroupLayout.DEFAULT_SIZE, 168, Short.MAX_VALUE)
+                    .addComponent(jLabel6, javax.swing.GroupLayout.DEFAULT_SIZE, 168, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel7Layout.createSequentialGroup()
@@ -319,12 +319,12 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
                     .addGroup(jPanel7Layout.createSequentialGroup()
                         .addComponent(statusc, javax.swing.GroupLayout.PREFERRED_SIZE, 243, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(bydateend, javax.swing.GroupLayout.DEFAULT_SIZE, 213, Short.MAX_VALUE))
+                        .addComponent(bydateend, javax.swing.GroupLayout.DEFAULT_SIZE, 216, Short.MAX_VALUE))
                     .addGroup(jPanel7Layout.createSequentialGroup()
                         .addComponent(groups, javax.swing.GroupLayout.PREFERRED_SIZE, 243, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(includechildgroups, javax.swing.GroupLayout.PREFERRED_SIZE, 176, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 37, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 40, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
         jPanel7Layout.setVerticalGroup(
@@ -379,7 +379,7 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
                 .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 269, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(timeframeChooser1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(133, Short.MAX_VALUE))
+                .addContainerGap(139, Short.MAX_VALUE))
         );
         jPanel8Layout.setVerticalGroup(
             jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -422,7 +422,7 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
             }
         });
 
-        jLabel7.setFont(new java.awt.Font("Dialog", 0, 12)); // NOI18N
+        jLabel7.setFont(new java.awt.Font("Dialog", 0, 12));
         jLabel7.setText(bundle.getString("JournalPanel.jLabel7.text")); // NOI18N
         jLabel7.setName("jLabel7"); // NOI18N
 
@@ -447,7 +447,7 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
                 .addComponent(jButton2)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jButton3)
-                .addContainerGap(104, Short.MAX_VALUE))
+                .addContainerGap(110, Short.MAX_VALUE))
         );
         jPanel6Layout.setVerticalGroup(
             jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -461,7 +461,7 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
                                 .addComponent(jButton3)
                                 .addComponent(jButton2))
                             .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addContainerGap(144, Short.MAX_VALUE))
+                .addContainerGap(159, Short.MAX_VALUE))
         );
 
         jScrollPane4.setViewportView(jPanel6);
@@ -530,7 +530,7 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
                 .addComponent(prinitingComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 196, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jButton4)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 88, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 110, Short.MAX_VALUE)
                 .addComponent(volume, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(revenue, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -691,7 +691,7 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
                 if (type == Revenue.TYPE_REVENUE || type == Expense.TYPE_EXPENSE) {
                     brutto = Double.valueOf(data[i][8 + 5].toString());
                 } else {
-                    brutto = Double.valueOf(data[i][7 + 5].toString()) + Double.valueOf(data[i][8 + 5].toString());
+                    brutto = Double.valueOf(data[i][7 + 5].toString()) + Double.valueOf(data[i][8 + 5].toString()) - Double.valueOf(data[i][9 + 5].toString());
                 }
 
                 d[i][6 + 5] = Item.getStatusString(Integer.valueOf(data[i][6 + 5].toString()));
@@ -765,7 +765,7 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
                     }
 
 
-                    List<QueryParameter> l = new Vector<QueryParameter>();
+                    ArrayList<QueryParameter> l = new ArrayList<QueryParameter>();
                     for (int i = 0; i < accountsp.getComponentCount(); i++) {
                         MPCombobox b = (MPCombobox) accountsp.getComponent(i);
                         MPComboBoxModelItem acc = b.getSelectedItem();
@@ -829,7 +829,7 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
                             c.addReference(Context.getGroup());
                             c.addReference(Context.getAccounts());
                             QueryCriteria2 expensesParams = new QueryCriteria2();
-                            List<QueryParameter> l1 = new Vector<QueryParameter>();
+                            ArrayList<QueryParameter> l1 = new ArrayList<QueryParameter>();
                             for (int i = 0; i < accountsp.getComponentCount(); i++) {
                                 MPCombobox b = (MPCombobox) accountsp.getComponent(i);
                                 MPComboBoxModelItem acc = b.getSelectedItem();
@@ -902,7 +902,7 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
                             c.addReference(Context.getGroup());
                             c.addReference(Context.getAccounts());
                             QueryCriteria2 revenuesParams = new QueryCriteria2();
-                            List<QueryParameter> l2 = new Vector<QueryParameter>();
+                            ArrayList<QueryParameter> l2 = new ArrayList<QueryParameter>();
                             for (int i = 0; i < accountsp.getComponentCount(); i++) {
                                 MPCombobox b = (MPCombobox) accountsp.getComponent(i);
                                 MPComboBoxModelItem acc = b.getSelectedItem();
@@ -1155,7 +1155,7 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
             Popup.notice(Messages.SELECT_AN_INVOICE);
 
         } else {
-            List<Item> items = new Vector<Item>();
+            ArrayList<Item> items = new ArrayList<Item>();
             for (int i = 0; i < jTable1.getSelectedRows().length; i++) {
                 try {
                     int index = jTable1.convertRowIndexToModel(jTable1.getSelectedRows()[i]);
@@ -1190,7 +1190,7 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
             Popup.notice(Messages.SELECT_AN_INVOICE);
 
         } else {
-            List<Item> items = new Vector<Item>();
+            ArrayList<Item> items = new ArrayList<Item>();
             for (int i = 0; i < jTable1.getSelectedRows().length; i++) {
                 try {
                     int index = jTable1.convertRowIndexToModel(jTable1.getSelectedRows()[i]);
@@ -1235,7 +1235,7 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
             Popup.notice(Messages.SELECT_AN_INVOICE);
 
         } else {
-            List<Item> items = new Vector<Item>();
+            ArrayList<Item> items = new ArrayList<Item>();
             for (int i = 0; i < jTable1.getSelectedRows().length; i++) {
                 try {
                     int index = jTable1.convertRowIndexToModel(jTable1.getSelectedRows()[i]);

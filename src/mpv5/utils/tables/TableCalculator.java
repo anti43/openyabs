@@ -31,11 +31,9 @@ import mpv5.utils.renderer.LazyCellEditor;
 
 import java.math.BigDecimal;
 
-import java.text.NumberFormat;
 
 import java.util.HashMap;
 
-import javax.swing.DefaultCellEditor;
 import javax.swing.JComponent;
 import javax.swing.JEditorPane;
 import javax.swing.JLabel;
@@ -46,7 +44,10 @@ import javax.swing.table.TableCellEditor;
 
 /**
  * This class provides auto calculation functions for table cell values (Double.class required!), works only with {@link MPTableModel}s!
+ * @Deprecated 
+ * use <link>DynamicTableCalculator</link> DynamicArithmetic for being more flexible
  */
+@Deprecated
 public class TableCalculator implements Runnable {
 
     /**

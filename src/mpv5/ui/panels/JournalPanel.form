@@ -156,7 +156,7 @@
                         <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="jTable1MouseClicked"/>
                       </Events>
                       <AuxValues>
-                        <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new  mpv5.ui.misc.MPTable(this) {&#xa;            public Component prepareRenderer(TableCellRenderer renderer,&#xa;                int rowIndex, int vColIndex) {&#xa;                Component c = super.prepareRenderer(renderer, rowIndex, vColIndex);&#xa;                if (c instanceof JComponent) {&#xa;                    JComponent jc = (JComponent)c;&#xa;                    jc.setToolTipText(String.valueOf(getValueAt(rowIndex, vColIndex)));&#xa;                }&#xa;                return c;&#xa;            }&#xa;        }"/>
+                        <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new  mpv5.ui.misc.MPTable(this) {&#xa;    private static final long serialVersionUID = 1L;&#xa;    public Component prepareRenderer(TableCellRenderer renderer,&#xa;        int rowIndex, int vColIndex) {&#xa;        Component c = super.prepareRenderer(renderer, rowIndex, vColIndex);&#xa;        if (c instanceof JComponent) {&#xa;            JComponent jc = (JComponent)c;&#xa;            jc.setToolTipText(String.valueOf(getValueAt(rowIndex, vColIndex)));&#xa;        }&#xa;        return c;&#xa;    }&#xa;}"/>
                       </AuxValues>
                     </Component>
                   </SubComponents>

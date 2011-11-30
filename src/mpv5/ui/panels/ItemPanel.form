@@ -873,47 +873,6 @@
 
           <Layout class="org.netbeans.modules.form.compat2.layouts.DesignBoxLayout"/>
           <SubComponents>
-            <Component class="javax.swing.JToolBar$Separator" name="jSeparator11">
-              <Properties>
-                <Property name="name" type="java.lang.String" value="jSeparator11" noResource="true"/>
-                <Property name="separatorSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                  <Dimension value="[15, 10]"/>
-                </Property>
-              </Properties>
-            </Component>
-            <Component class="mpv5.ui.beans.LabeledSpinner" name="calculator">
-              <Properties>
-                <Property name="_Label" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-                  <ResourceString bundle="mpv5/resources/languages/Panels.properties" key="ItemPanel.calculator._Label" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
-                </Property>
-                <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                  <Dimension value="[200, 20]"/>
-                </Property>
-                <Property name="name" type="java.lang.String" value="calculator" noResource="true"/>
-              </Properties>
-            </Component>
-            <Component class="javax.swing.JButton" name="jButton1">
-              <Properties>
-                <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-                  <ResourceString bundle="mpv5/resources/languages/Panels.properties" key="ItemPanel.jButton1.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
-                </Property>
-                <Property name="focusable" type="boolean" value="false"/>
-                <Property name="horizontalTextPosition" type="int" value="0"/>
-                <Property name="name" type="java.lang.String" value="jButton1" noResource="true"/>
-                <Property name="verticalTextPosition" type="int" value="3"/>
-              </Properties>
-              <Events>
-                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButton1ActionPerformed"/>
-              </Events>
-            </Component>
-            <Component class="javax.swing.JToolBar$Separator" name="jSeparator12">
-              <Properties>
-                <Property name="name" type="java.lang.String" value="jSeparator12" noResource="true"/>
-                <Property name="separatorSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                  <Dimension value="[15, 10]"/>
-                </Property>
-              </Properties>
-            </Component>
             <Component class="javax.swing.JLabel" name="jLabel1">
               <Properties>
                 <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
@@ -1005,6 +964,38 @@
                 <Property name="name" type="java.lang.String" value="value" noResource="true"/>
               </Properties>
             </Component>
+            <Component class="javax.swing.JToolBar$Separator" name="jSeparator11">
+              <Properties>
+                <Property name="name" type="java.lang.String" value="jSeparator11" noResource="true"/>
+              </Properties>
+            </Component>
+            <Component class="javax.swing.JLabel" name="jLabel5">
+              <Properties>
+                <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
+                  <ResourceString bundle="mpv5/resources/languages/Panels.properties" key="ItemPanel.jLabel5.text_1" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+                </Property>
+                <Property name="name" type="java.lang.String" value="jLabel5" noResource="true"/>
+              </Properties>
+            </Component>
+            <Component class="javax.swing.JToolBar$Separator" name="jSeparator8">
+              <Properties>
+                <Property name="name" type="java.lang.String" value="jSeparator8" noResource="true"/>
+                <Property name="separatorSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                  <Dimension value="[15, 10]"/>
+                </Property>
+              </Properties>
+            </Component>
+            <Component class="javax.swing.JLabel" name="discount">
+              <Properties>
+                <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
+                  <Font name="Tahoma" size="11" style="1"/>
+                </Property>
+                <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
+                  <ResourceString bundle="mpv5/resources/languages/Panels.properties" key="ItemPanel.discount.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+                </Property>
+                <Property name="name" type="java.lang.String" value="discount" noResource="true"/>
+              </Properties>
+            </Component>
           </SubComponents>
         </Container>
         <Container class="javax.swing.JSplitPane" name="jSplitPane1">
@@ -1085,7 +1076,7 @@
                           </Properties>
                           <AuxValues>
                             <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new NoTabTextArea()"/>
-                            <AuxValue name="JavaCodeGenerator_CreateCodePre" type="java.lang.String" value="class NoTabTextArea extends JTextPane {&#xa;            protected void processComponentKeyEvent( KeyEvent e ) {&#xa;                if ( e.getID() == KeyEvent.KEY_PRESSED &amp;&amp;&#xa;                    e.getKeyCode() == KeyEvent.VK_TAB ) {&#xa;                    e.consume();&#xa;                    if (e.isShiftDown()) {&#xa;                        transferFocusBackward();&#xa;                    } else {&#xa;                        itemtable.requestFocusInWindow();&#xa;                    }&#xa;                } else {&#xa;                    super.processComponentKeyEvent( e );&#xa;                }&#xa;            }&#xa;        }"/>
+                            <AuxValue name="JavaCodeGenerator_CreateCodePre" type="java.lang.String" value="class NoTabTextArea extends JTextPane {&#xa;            private static final long serialVersionUID = 1L;&#xa;            protected void processComponentKeyEvent( KeyEvent e ) {&#xa;                if ( e.getID() == KeyEvent.KEY_PRESSED &amp;&amp;&#xa;                    e.getKeyCode() == KeyEvent.VK_TAB ) {&#xa;                    e.consume();&#xa;                    if (e.isShiftDown()) {&#xa;                        transferFocusBackward();&#xa;                    } else {&#xa;                        itemtable.requestFocusInWindow();&#xa;                    }&#xa;                } else {&#xa;                    super.processComponentKeyEvent( e );&#xa;                }&#xa;            }&#xa;        }"/>
                           </AuxValues>
                         </Component>
                       </SubComponents>
@@ -1146,7 +1137,7 @@
                         </Property>
                       </Properties>
                       <AuxValues>
-                        <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new  mpv5.ui.misc.MPTable(this) {&#xa;            public Component prepareRenderer(TableCellRenderer renderer,&#xa;                int rowIndex, int vColIndex) {&#xa;                Component c = super.prepareRenderer(renderer, rowIndex, vColIndex);&#xa;                if (c instanceof JComponent) {&#xa;                    JComponent jc = (JComponent)c;&#xa;                    jc.setToolTipText(String.valueOf(getValueAt(rowIndex, vColIndex)));&#xa;                }&#xa;                return c;&#xa;            }&#xa;        }"/>
+                        <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new  mpv5.ui.misc.MPTable(this) {&#xa;            private static final long serialVersionUID = 1L;&#xa;            public Component prepareRenderer(TableCellRenderer renderer,&#xa;                int rowIndex, int vColIndex) {&#xa;                Component c = super.prepareRenderer(renderer, rowIndex, vColIndex);&#xa;                if (c instanceof JComponent) {&#xa;                    JComponent jc = (JComponent)c;&#xa;                    jc.setToolTipText(String.valueOf(getValueAt(rowIndex, vColIndex)));&#xa;                }&#xa;                return c;&#xa;            }&#xa;        }"/>
                       </AuxValues>
                     </Component>
                   </SubComponents>
@@ -1185,7 +1176,7 @@
                     <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="dataTableMouseClicked"/>
                   </Events>
                   <AuxValues>
-                    <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new  mpv5.ui.misc.MPTable(this) {&#xa;            public Component prepareRenderer(TableCellRenderer renderer,&#xa;                int rowIndex, int vColIndex) {&#xa;                Component c = super.prepareRenderer(renderer, rowIndex, vColIndex);&#xa;                if (c instanceof JComponent) {&#xa;                    JComponent jc = (JComponent)c;&#xa;                    jc.setToolTipText(String.valueOf(getValueAt(rowIndex, vColIndex)));&#xa;                }&#xa;                return c;&#xa;            }&#xa;        }&#xa;"/>
+                    <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new  mpv5.ui.misc.MPTable(this) {&#xa;            private static final long serialVersionUID = 1L;&#xa;            public Component prepareRenderer(TableCellRenderer renderer,&#xa;                int rowIndex, int vColIndex) {&#xa;                Component c = super.prepareRenderer(renderer, rowIndex, vColIndex);&#xa;                if (c instanceof JComponent) {&#xa;                    JComponent jc = (JComponent)c;&#xa;                    jc.setToolTipText(String.valueOf(getValueAt(rowIndex, vColIndex)));&#xa;                }&#xa;                return c;&#xa;            }&#xa;        }&#xa;"/>
                   </AuxValues>
                 </Component>
               </SubComponents>

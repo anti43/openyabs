@@ -258,6 +258,7 @@ public class Item extends DatabaseObject implements Formattable, Templateable {
     private int accountsids;
     private BigDecimal netvalue = new BigDecimal("0");
     private BigDecimal taxvalue = new BigDecimal("0");
+    private BigDecimal discountvalue = new BigDecimal("0");
     private Date datetodo;
     private Date dateend;
     private int intreminders;
@@ -309,7 +310,21 @@ public class Item extends DatabaseObject implements Formattable, Templateable {
     public void setTaxvalue(BigDecimal taxvalue) {
         this.taxvalue = taxvalue;
     }
+    
+/**
+     * @return the Discountvalue
+     */
+    public BigDecimal __getDiscountvalue() {
+        return discountvalue;
+    }
 
+    /**
+     * @param the discountvalue to set
+     */
+    public void setDiscountvalue(BigDecimal discountvalue) {
+        this.discountvalue = discountvalue;
+    }
+    
     /**
      * @return the datetodo
      */
@@ -661,7 +676,7 @@ public class Item extends DatabaseObject implements Formattable, Templateable {
         r.setAccountsids(accountsids);
         r.setNetvalue(netvalue);
 //        r.setTaxpercentvalue(taxvalue);
-        r.setBrutvalue(netvalue.add(taxvalue));
+        r.setBrutvalue(netvalue.add(taxvalue).subtract(discountvalue));
         if (description != null && description.length() > 0) {
             r.setDescription(description);
         } else {

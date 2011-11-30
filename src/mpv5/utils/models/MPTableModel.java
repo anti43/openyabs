@@ -23,12 +23,9 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.Vector;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.DefaultCellEditor;
 
 import javax.swing.Icon;
@@ -47,8 +44,6 @@ import javax.swing.table.TableCellEditor;
 import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
 import mpv5.db.common.NodataFoundException;
-import mpv5.db.objects.Contact;
-import mpv5.db.objects.SubItem;
 import mpv5.db.objects.ValueProperty;
 import mpv5.globals.Headers;
 import mpv5.globals.Messages;
@@ -56,6 +51,7 @@ import mpv5.logging.Log;
 import mpv5.utils.arrays.ArrayUtilities;
 import mpv5.utils.numberformat.FormatNumber;
 import mpv5.utils.renderer.TableCellEditorForDezimal;
+import mpv5.utils.tables.DynamicTableCalculator;
 import mpv5.utils.tables.TableCalculator;
 
 /**
@@ -70,7 +66,8 @@ public class MPTableModel extends DefaultTableModel implements Cloneable, TableC
     private Context context;
     private Object[] predefinedRow;
     private Integer autoCountColumn;
-    private List<TableCalculator> calculators = new Vector<TableCalculator>();
+    private List<TableCalculator> calculators = new ArrayList<TableCalculator>();
+    private ArrayList<DynamicTableCalculator> calculators2 = new ArrayList<DynamicTableCalculator>();
     private JTable owner;
 
     /**
@@ -367,6 +364,14 @@ public class MPTableModel extends DefaultTableModel implements Cloneable, TableC
         this.calculators.add(cv);
     }
 
+    /**
+     * Add a cell calculator for this model
+     * @param cv
+     */
+    public void addCalculator(DynamicTableCalculator cv) {
+        this.calculators2.add(cv);
+    }
+
     @Override
     public Class<?> getColumnClass(int columnIndex) {
         try {
@@ -485,6 +490,14 @@ public class MPTableModel extends DefaultTableModel implements Cloneable, TableC
                 calculator.calculateOnce();
             }
         }
+
+        for (int i = 0; i < calculators2.size(); i++) {
+            DynamicTableCalculator calculator = calculators2.get(i);
+            if (calculator != null && !calculator.isTargetCell(row, column)) {
+                calculator.calculateOnce();
+            }
+        }
+        
         fireTableChanged(new TableModelEvent(this, row, row, column));
     }
 

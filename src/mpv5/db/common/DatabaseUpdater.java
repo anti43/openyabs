@@ -160,6 +160,9 @@ public class DatabaseUpdater {
                     "ALTER TABLE templates ADD COLUMN lastmodified BIGINT DEFAULT NULL",
                     "ALTER TABLE templates ADD COLUMN pathtofile VARCHAR(2500) DEFAULT NULL"
                 });
+        UPDATES_DERBY.put(1.192, new String[]{
+                    "ALTER TABLE subitems ADD COLUMN discount DOUBLE DEFAULT 0 NOT NULL"
+                });        
         ////////////////////////////////////////////////////////////////////////////////////////////
         // mysql updates
         UPDATES_MYSQL.put(1.11, new String[]{
@@ -321,6 +324,9 @@ public class DatabaseUpdater {
                     "ALTER TABLE templates ADD COLUMN lastmodified BIGINT DEFAULT NULL",
                     "ALTER TABLE templates ADD COLUMN pathtofile VARCHAR(2500) DEFAULT NULL"
                 });
+        UPDATES_MYSQL.put(1.192, new String[]{
+                    "ALTER TABLE subitems ADD COLUMN discount DOUBLE DEFAULT 0 NOT NULL"
+                });  
     }
 
     /**
