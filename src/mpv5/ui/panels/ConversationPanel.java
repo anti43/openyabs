@@ -110,6 +110,7 @@ public class ConversationPanel
                 "Erstellung gestartet ...");
 
         sp = new SearchPanel(Context.getConversation(), this);
+        sp.setVisible(true);
         tb = new DataPanelTB(this);
         tb.getMailButton().setEnabled(false);
         SearchBarPane.add(sp,
@@ -236,8 +237,7 @@ public class ConversationPanel
                 Log.Debug(this,
                         "gezielte Addresse geladen ...");
             }
-
-            Iterator iterator = hm1.keySet().iterator();
+            Iterator<String> iterator = hm1.keySet().iterator();
             Object e;
             while (iterator.hasNext()) {
                 e = iterator.next();
@@ -945,6 +945,7 @@ public class ConversationPanel
                     BorderLayout.CENTER);
             Log.Debug(ConversationPanel.class,
                     "Suchfenster eingeblendet");
+            sp.search();
         } else {
             Log.Debug(ConversationPanel.class,
                     "Suchfenster ausgeblendet");
@@ -963,6 +964,7 @@ public class ConversationPanel
      * empty Function
      */
     public void actionAfterCreate() {
+        sp.refresh();
     }
 
     /**

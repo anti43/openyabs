@@ -1619,6 +1619,7 @@ public class Context implements Serializable {
         c.setSubID(DEFAULT_SUBID);
         c.setDbIdentity(IDENTITY_CONVERSATION);
         c.setIdentityClass(IDENTITY_CONVERSATION_CLASS);
+        c.setSearchFields(DEFAULT_SUBID);
         c.setId(52);
 
         return c;
