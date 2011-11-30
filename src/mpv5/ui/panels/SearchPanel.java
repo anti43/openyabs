@@ -11,12 +11,8 @@
 package mpv5.ui.panels;
 
 import java.awt.Component;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JComponent;
 import javax.swing.SwingUtilities;
 import javax.swing.table.TableCellRenderer;
@@ -26,7 +22,6 @@ import mpv5.db.common.DatabaseObject;
 import mpv5.db.common.DatabaseSearch;
 import mpv5.db.common.NodataFoundException;
 import mpv5.db.common.QueryHandler;
-import mpv5.db.common.ReturnValue;
 import mpv5.db.objects.User;
 import mpv5.db.objects.ValueProperty;
 import mpv5.logging.Log;
@@ -36,7 +31,6 @@ import mpv5.utils.tables.Selection;
 import mpv5.utils.tables.TableFormat;
 import mpv5.ui.misc.TableViewPersistenceHandler;
 import mpv5.usermanagement.MPSecurityManager;
-import mpv5.utils.arrays.ArrayUtilities;
 
 /**
  *
