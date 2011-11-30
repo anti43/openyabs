@@ -389,6 +389,9 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
     private transient DatabaseObjectLock LOCK = new DatabaseObjectLock(this);
     private Color color = Color.WHITE;
     public Entity<Context, Integer> IDENTITY = new Entity<Context, Integer>(this);
+    private static final Map<String, List<Method>> setVars_cached = new HashMap<String, List<Method>>();
+    private static final Map<String, List<Method>> getVars_cached = new HashMap<String, List<Method>>();
+    private static final Map<String, List<String>> getStringVars_cached = new HashMap<String, List<String>>();
 
     public String __getCName() {
         return cname;
@@ -563,18 +566,22 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
     /**
      *
      * @return A list of all <b>SETTERS</b> in this do child, except the native methods
+     * will not recognize newly added methods (eg with groovy or reflection)
      */
-    public List<Method> setVars() {
-        ArrayList<Method> list = new ArrayList<Method>();
-        for (int i = 0; i < this.getClass().getMethods().length; i++) {
-            if (this.getClass().getMethods()[i].getName().startsWith("set")
-                    && !this.getClass().getMethods()[i].getName().startsWith("setVars")
-                    && !this.getClass().getMethods()[i].getName().startsWith("setPanelData")
-                    && !this.getClass().getMethods()[i].getName().startsWith("setAutoLock")) {
-                list.add(this.getClass().getMethods()[i]);
+    public synchronized List<Method> setVars() {
+        if (!setVars_cached.containsKey(getClass().getCanonicalName())) {
+            Log.Debug(this, "Caching " + this.getClass().getCanonicalName());
+            setVars_cached.put(this.getClass().getCanonicalName(), new ArrayList<Method>());
+            for (int i = 0; i < this.getClass().getMethods().length; i++) {
+                if (this.getClass().getMethods()[i].getName().startsWith("set")
+                        && !this.getClass().getMethods()[i].getName().startsWith("setVars")
+                        && !this.getClass().getMethods()[i].getName().startsWith("setPanelData")
+                        && !this.getClass().getMethods()[i].getName().startsWith("setAutoLock")) {
+                    setVars_cached.get(this.getClass().getCanonicalName()).add(this.getClass().getMethods()[i]);
+                }
             }
         }
-        return list;
+        return setVars_cached.get(this.getClass().getCanonicalName());
     }
 
     /**
@@ -585,22 +592,24 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
      * OR use the new annotations for persistable DO fields
      */
     public List<Method> getVars() {
-        ArrayList<Method> list = new ArrayList<Method>();
-        Method[] methods = this.getClass().getMethods();
-
-        for (int i = 0; i < this.getClass().getMethods().length; i++) {
-            if ((methods[i].isAnnotationPresent(Persistable.class)
-                    && methods[i].getAnnotation(Persistable.class).value()
-                    && methods[i].getParameterTypes().length == 0)
-                    /*for backwards compatibility*/
-                    || (methods[i].getName().startsWith("__get")
-                    && !(methods[i].isAnnotationPresent(Persistable.class)
-                    && !methods[i].getAnnotation(Persistable.class).value()))) {
-                list.add(methods[i]);
+        if (!getVars_cached.containsKey(getClass().getCanonicalName())) {
+            Log.Debug(this, "Caching " + this.getClass().getCanonicalName());
+            getVars_cached.put(this.getClass().getCanonicalName(), new ArrayList<Method>());
+            Method[] methods = this.getClass().getMethods();
+            for (int i = 0; i < this.getClass().getMethods().length; i++) {
+                if ((methods[i].isAnnotationPresent(Persistable.class)
+                        && methods[i].getAnnotation(Persistable.class).value()
+                        && methods[i].getParameterTypes().length == 0)
+                        /*for backwards compatibility*/
+                        || (methods[i].getName().startsWith("__get")
+                        && !(methods[i].isAnnotationPresent(Persistable.class)
+                        && !methods[i].getAnnotation(Persistable.class).value()))) {
+                    getVars_cached.get(this.getClass().getCanonicalName()).add(methods[i]);
+                }
             }
-        }
 
-        return list;
+        }
+        return getVars_cached.get(this.getClass().getCanonicalName());
     }
 
     /**
@@ -609,30 +618,33 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
      * @return A list of shortened method names (without "get")
      */
     public List<String> getStringVars() {
+        if (!getStringVars_cached.containsKey(getClass().getCanonicalName())) {
+            Log.Debug(this, "Caching " + this.getClass().getCanonicalName());
+            getStringVars_cached.put(this.getClass().getCanonicalName(), new ArrayList<String>());
+            String left = "";
+            Method[] methods = this.getClass().getMethods();
 
-        String left = "";
-        Method[] methods = this.getClass().getMethods();
-        ArrayList<String> list = new ArrayList<String>();
-        boolean annotated = false;
-        for (int i = 0; i < this.getClass().getMethods().length; i++) {
-            if ((methods[i].isAnnotationPresent(Persistable.class)
-                    && methods[i].getAnnotation(Persistable.class).value()
-                    && methods[i].getParameterTypes().length == 0)
-                    /*for backwards compatibility*/
-                    || (methods[i].getName().startsWith("__get")
-                    && !(methods[i].isAnnotationPresent(Persistable.class)
-                    && !methods[i].getAnnotation(Persistable.class).value()))) {
-                annotated = methods[i].isAnnotationPresent(Persistable.class);
+            boolean annotated = false;
+            for (int i = 0; i < this.getClass().getMethods().length; i++) {
+                if ((methods[i].isAnnotationPresent(Persistable.class)
+                        && methods[i].getAnnotation(Persistable.class).value()
+                        && methods[i].getParameterTypes().length == 0)
+                        /*for backwards compatibility*/
+                        || (methods[i].getName().startsWith("__get")
+                        && !(methods[i].isAnnotationPresent(Persistable.class)
+                        && !methods[i].getAnnotation(Persistable.class).value()))) {
+                    annotated = methods[i].isAnnotationPresent(Persistable.class);
 
-                left = annotated
-                        ? methods[i].getName().toLowerCase().substring(3, methods[i].getName().length())
-                        : methods[i].getName().toLowerCase().replace("__get", "");
-                if (methods[i].getReturnType().getName().equals(String.class.getName())) {
-                    list.add(left);
+                    left = annotated
+                            ? methods[i].getName().toLowerCase().substring(3, methods[i].getName().length())
+                            : methods[i].getName().toLowerCase().replace("__get", "");
+                    if (methods[i].getReturnType().getName().equals(String.class.getName())) {
+                        getStringVars_cached.get(this.getClass().getCanonicalName()).add(left);
+                    }
                 }
             }
         }
-        return list;
+        return getStringVars_cached.get(this.getClass().getCanonicalName());
     }
 
     /**
