@@ -90,7 +90,9 @@ public class Scheduler extends Thread {
                         prop = "hideunattentedconfirmations";
                 }
                 if (!mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("org.openyabs.uiproperty",prop)) {
-                    String sql = "SELECT ids FROM items WHERE (intstatus = " + Item.STATUS_IN_PROGRESS + " OR intstatus = " + Item.STATUS_FINISHED + ") AND inttype=" + b;
+                    String sql = "SELECT ids FROM items WHERE (intstatus = " + Item.STATUS_IN_PROGRESS + " OR intstatus = " + 
+                                                                               Item.STATUS_FINISHED + ") AND inttype=" + b +
+                                                                               " AND invisible = 0";
                     ReturnValue data = QueryHandler.getConnection().
                             freeSelectQuery(sql,
                             MPSecurityManager.VIEW,
@@ -149,7 +151,8 @@ public class Scheduler extends Thread {
                             + DateConverter.getSQLDateString(DateConverter.addDays(
                             new Date(),
                             warn * -1))
-                            + "' AND (intstatus = " + Item.STATUS_IN_PROGRESS + " OR intstatus = " + Item.STATUS_FINISHED + ") AND inttype=" + b;
+                            + "' AND (intstatus = " + Item.STATUS_IN_PROGRESS + " OR intstatus = " + Item.STATUS_FINISHED + ") AND inttype=" + b
+                            + " AND invisible = 0";
                     ReturnValue data = QueryHandler.getConnection().
                             freeSelectQuery(sql,
                             MPSecurityManager.VIEW,
@@ -201,7 +204,8 @@ public class Scheduler extends Thread {
                         + DateConverter.getSQLDateString(DateConverter.addDays(
                         new Date(),
                         alert * -1))
-                        + "' AND (intstatus = " + Item.STATUS_IN_PROGRESS + " OR intstatus = " + Item.STATUS_FINISHED + ") AND inttype=" + b;
+                        + "' AND (intstatus = " + Item.STATUS_IN_PROGRESS + " OR intstatus = " + Item.STATUS_FINISHED + ") AND inttype=" + b
+                        + " AND invisible = 0";
                 ReturnValue data = QueryHandler.getConnection().
                         freeSelectQuery(sql,
                         MPSecurityManager.VIEW,
