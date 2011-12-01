@@ -242,8 +242,7 @@ public class Main implements Runnable {
      * Launch the application
      */
     public static void start() {
-        splash.nextStep(Messages.DBCONN_UPDATE_BEPATIENT.toString());
-        QueryHandler.instanceOf();
+        
         splash.nextStep(Messages.LAUNCH.toString());
         Log.Debug(Main.class, "Trying to launch application now..");
         Runnable runnable = new Runnable() {
@@ -303,11 +302,15 @@ public class Main implements Runnable {
 
         splash.nextStep(Messages.FIRST_INSTANCE.toString());
         splash.nextStep(Messages.DB_CHECK.toString());
-
+        
         ControlPanel_Fonts.applyFont(Font.decode(LocalSettings.getProperty(LocalSettings.DEFAULT_FONT)));
         if (FORCE_INSTALLER == null) {
             Log.Debug(this, "Probing database connection... ");
             if (probeDatabaseConnection()) {
+                
+                splash.nextStep(Messages.DBCONN_UPDATE_BEPATIENT.toString());
+                QueryHandler.instanceOf();
+                
                 readGlobalSettings();
                 Log.Debug(this, "Loading Yabs... ");
                 readImports();
