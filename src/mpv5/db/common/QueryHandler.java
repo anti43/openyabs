@@ -2356,7 +2356,7 @@ public class QueryHandler implements Cloneable {
      */
     @SuppressWarnings({"unchecked"})
     public synchronized ReturnValue freeSelectQuery(String query, int action, String jobmessage) {
-        
+        if(query.equals("SELECT * FROM items WHERE items.ids = 897"))Log.Debug(new Exception(query));
         if (table != null) {
             query = query.replace("%%tablename%%", table);
         }

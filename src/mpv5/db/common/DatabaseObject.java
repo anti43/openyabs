@@ -42,8 +42,6 @@ import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.SwingUtilities;
 import mpv5.db.objects.ValueProperty;
 import mpv5.globals.Messages;
@@ -84,7 +82,8 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
      */
     public static class Entity<T extends Context, V> implements Serializable {
 
-        private DatabaseObject owner;
+        private Context ownerContext;
+        private Integer ownerId;
 
         public Entity() {
         }
@@ -94,7 +93,8 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
          * @param owner
          */
         public Entity(DatabaseObject owner) {
-            this.owner = owner;
+            this.ownerContext = owner.getContext();
+            this.ownerId = owner.__getIDS();
         }
 
         /**
@@ -106,7 +106,8 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
             if (context == null || ids == null) {
                 throw new NullPointerException("ids");
             }
-            this.owner = getObject(context, ids);
+            this.ownerContext = context;
+            this.ownerId = ids;
         }
 
         /**
@@ -114,7 +115,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
          * @return
          */
         public Context getKey() {
-            return owner.context;
+            return ownerContext;
         }
 
         /**
@@ -122,7 +123,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
          * @return
          */
         public Integer getValue() {
-            return owner.ids;
+            return ownerId;
         }
 
         /**
@@ -146,14 +147,14 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
         @Override
         public int hashCode() {
             int hash = 3;
-            hash = 11 * hash + (this.owner.context != null ? this.owner.context.hashCode() : 0);
-            hash = 11 * hash + (this.owner.ids != null ? this.owner.ids.hashCode() : 0);
+            hash = 11 * hash + (this.ownerContext != null ? this.ownerContext.hashCode() : 0);
+            hash = 11 * hash + (this.ownerId != null ? this.ownerId.hashCode() : 0);
             return hash;
         }
 
         @Override
         public String toString() {
-            return owner.context + " [" + owner.ids + "]";
+            return ownerContext + " [" + ownerId + "]";
         }
     }
 
@@ -2134,7 +2135,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
      * @return
      */
     public HashMap<String, Object> resolveReferences(HashMap<String, Object> map) {
-        List<ValueProperty> props = ValueProperty.getProperties(this);
+        List<ValueProperty> props = new ArrayList<ValueProperty>(ValueProperty.getProperties(this));
         try {
             props.addAll(ValueProperty.getProperties(getContext(), getGroup()));
         } catch (NodataFoundException ex) {

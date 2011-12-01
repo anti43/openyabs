@@ -207,11 +207,17 @@ public class Log {
         }
     }
 
-    private static synchronized void write(Object obj) {
-        for (int i = 0; i < loggers.size(); i++) {
-            loggers.get(i).log(obj);
-            ;
-        }
+    private static synchronized void write(final Object obj) {
+        Runnable runnable = new Runnable() {
+            public void run() {
+                for (int i = 0; i < loggers.size(); i++) {
+                    loggers.get(i).log(obj);
+                    ;
+                }
+            }
+        };
+        Thread thread = new Thread(runnable);
+        thread.start();
     }
 
     /**

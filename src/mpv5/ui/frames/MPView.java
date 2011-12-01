@@ -126,7 +126,7 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
     private static Dimension initialSize = new Dimension(1100, 900);
     public static JFrame identifierFrame;
     private static CloseableTabbedPane tabPane;
-    private static JLabel messagelabel = new FadeOnChangeLabel();
+    private static JLabel messagelabel = new JLabel();
     private static JComboBox history = new JComboBox();
     private static JProgressBar progressbar = new JProgressBar();
     private static JMenu favMenu;
@@ -903,7 +903,7 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
         jMenuItem27 = new javax.swing.JMenuItem();
         jMenuItem30 = new javax.swing.JMenuItem();
         statusPanel = new javax.swing.JPanel();
-        statusMessageLabel = new FadeOnChangeLabel();
+        statusMessageLabel = new javax.swing.JLabel();
         pluginIcons = new javax.swing.JPanel();
         separator = new javax.swing.JPanel();
         progressBar = new javax.swing.JProgressBar();
@@ -1872,7 +1872,7 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
         statusPanel.setPreferredSize(new java.awt.Dimension(800, 20));
         statusPanel.setLayout(new javax.swing.BoxLayout(statusPanel, javax.swing.BoxLayout.LINE_AXIS));
 
-        statusMessageLabel.setFont(new java.awt.Font("Dialog", 0, 11));
+        statusMessageLabel.setFont(new java.awt.Font("Dialog", 0, 11)); // NOI18N
         statusMessageLabel.setText(bundle.getString("MPView.statusMessageLabel.text")); // NOI18N
         statusMessageLabel.setMaximumSize(new java.awt.Dimension(1000, 25));
         statusMessageLabel.setMinimumSize(new java.awt.Dimension(300, 14));
