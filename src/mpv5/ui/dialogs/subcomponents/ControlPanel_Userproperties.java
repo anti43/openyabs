@@ -64,19 +64,12 @@ public class ControlPanel_Userproperties extends javax.swing.JPanel implements C
         autorev = new javax.swing.JCheckBox();
         format = new mpv5.ui.beans.LabeledTextField();
         jPanel3 = new javax.swing.JPanel();
-        tabs = new javax.swing.JCheckBox();
-        views = new javax.swing.JCheckBox();
-        unpaidbills = new javax.swing.JCheckBox();
         columnquantity = new javax.swing.JCheckBox();
         columnmeasure = new javax.swing.JCheckBox();
-        hideproductscolumn = new javax.swing.JCheckBox();
         hidetaxcolumn = new javax.swing.JCheckBox();
+        hidediscountcolumn = new javax.swing.JCheckBox();
+        hideproductscolumn = new javax.swing.JCheckBox();
         showoptionalcolumn = new javax.swing.JCheckBox();
-        supresscurrencysymbols = new javax.swing.JCheckBox();
-        ordersoverproducts = new javax.swing.JCheckBox();
-        companiesovernames = new javax.swing.JCheckBox();
-        pasten = new javax.swing.JCheckBox();
-        nowarnings = new javax.swing.JCheckBox();
         jPanel9 = new javax.swing.JPanel();
         smtphost = new mpv5.ui.beans.LabeledTextField();
         smtpuser = new mpv5.ui.beans.LabeledTextField();
@@ -101,13 +94,22 @@ public class ControlPanel_Userproperties extends javax.swing.JPanel implements C
         jButton2 = new javax.swing.JButton();
         jButton1 = new javax.swing.JButton();
         jButton5 = new javax.swing.JButton();
+        jPanel5 = new javax.swing.JPanel();
+        tabs = new javax.swing.JCheckBox();
+        supresscurrencysymbols = new javax.swing.JCheckBox();
+        ordersoverproducts = new javax.swing.JCheckBox();
+        companiesovernames = new javax.swing.JCheckBox();
+        pasten = new javax.swing.JCheckBox();
+        nowarnings = new javax.swing.JCheckBox();
+        unpaidbills = new javax.swing.JCheckBox();
+        views = new javax.swing.JCheckBox();
 
         setBackground(new java.awt.Color(255, 255, 255));
         setName("Form"); // NOI18N
         setLayout(new java.awt.BorderLayout());
 
         jPanel1.setBackground(new java.awt.Color(255, 255, 255));
-        java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle(); // NOI18N
+        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("mpv5/resources/languages/Panels"); // NOI18N
         jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("ControlPanel_Userproperties.jPanel1.border.title"))); // NOI18N
         jPanel1.setName("jPanel1"); // NOI18N
 
@@ -146,13 +148,13 @@ public class ControlPanel_Userproperties extends javax.swing.JPanel implements C
             .addGroup(productstobillspropertiesLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(productstobillspropertiesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(cnumber, javax.swing.GroupLayout.DEFAULT_SIZE, 410, Short.MAX_VALUE)
-                    .addComponent(description, javax.swing.GroupLayout.DEFAULT_SIZE, 410, Short.MAX_VALUE)
-                    .addComponent(cname, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 410, Short.MAX_VALUE))
+                    .addComponent(cnumber, javax.swing.GroupLayout.DEFAULT_SIZE, 288, Short.MAX_VALUE)
+                    .addComponent(description, javax.swing.GroupLayout.DEFAULT_SIZE, 288, Short.MAX_VALUE)
+                    .addComponent(cname, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 288, Short.MAX_VALUE))
                 .addGap(8, 8, 8)
                 .addGroup(productstobillspropertiesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(ean, javax.swing.GroupLayout.DEFAULT_SIZE, 425, Short.MAX_VALUE)
-                    .addComponent(reference, javax.swing.GroupLayout.DEFAULT_SIZE, 425, Short.MAX_VALUE)
+                    .addComponent(ean, javax.swing.GroupLayout.DEFAULT_SIZE, 304, Short.MAX_VALUE)
+                    .addComponent(reference, javax.swing.GroupLayout.DEFAULT_SIZE, 304, Short.MAX_VALUE)
                     .addComponent(jButton3))
                 .addContainerGap())
         );
@@ -238,7 +240,7 @@ public class ControlPanel_Userproperties extends javax.swing.JPanel implements C
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addGap(24, 24, 24)
-                        .addComponent(format, javax.swing.GroupLayout.DEFAULT_SIZE, 841, Short.MAX_VALUE))
+                        .addComponent(format, javax.swing.GroupLayout.DEFAULT_SIZE, 598, Short.MAX_VALUE))
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addContainerGap()
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -261,18 +263,6 @@ public class ControlPanel_Userproperties extends javax.swing.JPanel implements C
         jPanel3.setName("jPanel3"); // NOI18N
         jPanel3.setLayout(new javax.swing.BoxLayout(jPanel3, javax.swing.BoxLayout.PAGE_AXIS));
 
-        tabs.setText(bundle.getString("ControlPanel_Userproperties.tabs.text")); // NOI18N
-        tabs.setName("tabs"); // NOI18N
-        jPanel3.add(tabs);
-
-        views.setText(bundle.getString("ControlPanel_Userproperties.views.text")); // NOI18N
-        views.setName("views"); // NOI18N
-        jPanel3.add(views);
-
-        unpaidbills.setText(bundle.getString("ControlPanel_Userproperties.unpaidbills.text")); // NOI18N
-        unpaidbills.setName("unpaidbills"); // NOI18N
-        jPanel3.add(unpaidbills);
-
         columnquantity.setText(bundle.getString("ControlPanel_Userproperties.columnquantity.text")); // NOI18N
         columnquantity.setName("columnquantity"); // NOI18N
         jPanel3.add(columnquantity);
@@ -281,37 +271,21 @@ public class ControlPanel_Userproperties extends javax.swing.JPanel implements C
         columnmeasure.setName("columnmeasure"); // NOI18N
         jPanel3.add(columnmeasure);
 
-        hideproductscolumn.setText(bundle.getString("ControlPanel_Userproperties.hideproductscolumn.text")); // NOI18N
-        hideproductscolumn.setName("hideproductscolumn"); // NOI18N
-        jPanel3.add(hideproductscolumn);
-
         hidetaxcolumn.setText(bundle.getString("ControlPanel_Userproperties.hidetaxcolumn.text")); // NOI18N
         hidetaxcolumn.setName("hidetaxcolumn"); // NOI18N
         jPanel3.add(hidetaxcolumn);
 
+        hidediscountcolumn.setText(bundle.getString("ControlPanel_Userproperties.hidediscountcolumn.text")); // NOI18N
+        hidediscountcolumn.setName("hidediscountcolumn"); // NOI18N
+        jPanel3.add(hidediscountcolumn);
+
+        hideproductscolumn.setText(bundle.getString("ControlPanel_Userproperties.hideproductscolumn.text")); // NOI18N
+        hideproductscolumn.setName("hideproductscolumn"); // NOI18N
+        jPanel3.add(hideproductscolumn);
+
         showoptionalcolumn.setText(bundle.getString("ControlPanel_Userproperties.showoptionalcolumn.text")); // NOI18N
         showoptionalcolumn.setName("showoptionalcolumn"); // NOI18N
         jPanel3.add(showoptionalcolumn);
-
-        supresscurrencysymbols.setText(bundle.getString("ControlPanel_Userproperties.supresscurrencysymbols.text")); // NOI18N
-        supresscurrencysymbols.setName("supresscurrencysymbols"); // NOI18N
-        jPanel3.add(supresscurrencysymbols);
-
-        ordersoverproducts.setText(bundle.getString("ControlPanel_Userproperties.ordersoverproducts.text")); // NOI18N
-        ordersoverproducts.setName("ordersoverproducts"); // NOI18N
-        jPanel3.add(ordersoverproducts);
-
-        companiesovernames.setText(bundle.getString("ControlPanel_Userproperties.companiesovernames.text")); // NOI18N
-        companiesovernames.setName("companiesovernames"); // NOI18N
-        jPanel3.add(companiesovernames);
-
-        pasten.setText(bundle.getString("ControlPanel_Userproperties.pasten.text")); // NOI18N
-        pasten.setName("pasten"); // NOI18N
-        jPanel3.add(pasten);
-
-        nowarnings.setText(bundle.getString("ControlPanel_Userproperties.nowarnings.text")); // NOI18N
-        nowarnings.setName("nowarnings"); // NOI18N
-        jPanel3.add(nowarnings);
 
         jPanel9.setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("ControlPanel_Userproperties.jPanel9.border.title"))); // NOI18N
         jPanel9.setName("jPanel9"); // NOI18N
@@ -364,7 +338,7 @@ public class ControlPanel_Userproperties extends javax.swing.JPanel implements C
                                 .addComponent(smtppw, javax.swing.GroupLayout.PREFERRED_SIZE, 131, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addComponent(smtpuser, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 216, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addComponent(jButton4))
-                .addContainerGap(396, Short.MAX_VALUE))
+                .addContainerGap(153, Short.MAX_VALUE))
         );
         jPanel9Layout.setVerticalGroup(
             jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -446,7 +420,7 @@ public class ControlPanel_Userproperties extends javax.swing.JPanel implements C
                         .addComponent(dtabankaccount, javax.swing.GroupLayout.PREFERRED_SIZE, 247, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(dtabankcountry, javax.swing.GroupLayout.PREFERRED_SIZE, 247, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(365, Short.MAX_VALUE))
+                .addContainerGap(122, Short.MAX_VALUE))
         );
         jPanel10Layout.setVerticalGroup(
             jPanel10Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -496,33 +470,74 @@ public class ControlPanel_Userproperties extends javax.swing.JPanel implements C
         });
         jPanel6.add(jButton5);
 
+        jPanel5.setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("ControlPanel_Userproperties.jPanel5.border.title"))); // NOI18N
+        jPanel5.setName("jPanel5"); // NOI18N
+        jPanel5.setLayout(new javax.swing.BoxLayout(jPanel5, javax.swing.BoxLayout.Y_AXIS));
+
+        tabs.setText(bundle.getString("ControlPanel_Userproperties.tabs.text")); // NOI18N
+        tabs.setName("tabs"); // NOI18N
+        jPanel5.add(tabs);
+
+        supresscurrencysymbols.setText(bundle.getString("ControlPanel_Userproperties.supresscurrencysymbols.text")); // NOI18N
+        supresscurrencysymbols.setName("supresscurrencysymbols"); // NOI18N
+        jPanel5.add(supresscurrencysymbols);
+
+        ordersoverproducts.setText(bundle.getString("ControlPanel_Userproperties.ordersoverproducts.text")); // NOI18N
+        ordersoverproducts.setName("ordersoverproducts"); // NOI18N
+        jPanel5.add(ordersoverproducts);
+
+        companiesovernames.setText(bundle.getString("ControlPanel_Userproperties.companiesovernames.text")); // NOI18N
+        companiesovernames.setName("companiesovernames"); // NOI18N
+        jPanel5.add(companiesovernames);
+
+        pasten.setText(bundle.getString("ControlPanel_Userproperties.pasten.text")); // NOI18N
+        pasten.setName("pasten"); // NOI18N
+        jPanel5.add(pasten);
+
+        nowarnings.setText(bundle.getString("ControlPanel_Userproperties.nowarnings.text")); // NOI18N
+        nowarnings.setName("nowarnings"); // NOI18N
+        jPanel5.add(nowarnings);
+
+        unpaidbills.setText(bundle.getString("ControlPanel_Userproperties.unpaidbills.text")); // NOI18N
+        unpaidbills.setName("unpaidbills"); // NOI18N
+        jPanel5.add(unpaidbills);
+
+        views.setText(bundle.getString("ControlPanel_Userproperties.views.text")); // NOI18N
+        views.setName("views"); // NOI18N
+        jPanel5.add(views);
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(jPanel3, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 887, Short.MAX_VALUE)
-            .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, 887, Short.MAX_VALUE)
             .addComponent(jPanel10, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addComponent(jPanel9, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                .addContainerGap(313, Short.MAX_VALUE)
+                .addContainerGap(70, Short.MAX_VALUE)
                 .addComponent(jPanel6, javax.swing.GroupLayout.PREFERRED_SIZE, 564, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, 306, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jPanel5, javax.swing.GroupLayout.DEFAULT_SIZE, 332, Short.MAX_VALUE))
+            .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, 644, Short.MAX_VALUE)
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jPanel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, 96, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel10, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel9, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 30, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 121, Short.MAX_VALUE)
                 .addComponent(jPanel6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
@@ -588,6 +603,7 @@ public class ControlPanel_Userproperties extends javax.swing.JPanel implements C
     private javax.swing.JTextPane dtausage0;
     private javax.swing.JCheckBox ean;
     private mpv5.ui.beans.LabeledTextField format;
+    private javax.swing.JCheckBox hidediscountcolumn;
     private javax.swing.JCheckBox hideproductscolumn;
     private javax.swing.JCheckBox hidetaxcolumn;
     private javax.swing.JButton jButton1;
@@ -602,6 +618,7 @@ public class ControlPanel_Userproperties extends javax.swing.JPanel implements C
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
+    private javax.swing.JPanel jPanel5;
     private javax.swing.JPanel jPanel6;
     private javax.swing.JPanel jPanel9;
     private javax.swing.JScrollPane jScrollPane1;
@@ -643,6 +660,7 @@ public class ControlPanel_Userproperties extends javax.swing.JPanel implements C
             mpv5.db.objects.User.getCurrentUser().getProperties().changeProperty("org.openyabs.uiproperty", "hideproductscolumn", hideproductscolumn.isSelected());
             mpv5.db.objects.User.getCurrentUser().getProperties().changeProperty("org.openyabs.uiproperty", "hidecolumnmeasure", columnmeasure.isSelected());
             mpv5.db.objects.User.getCurrentUser().getProperties().changeProperty("org.openyabs.uiproperty", "hidetaxcolumn", hidetaxcolumn.isSelected());
+            mpv5.db.objects.User.getCurrentUser().getProperties().changeProperty("org.openyabs.uiproperty", "hidediscountcolumn", hidediscountcolumn.isSelected());
             mpv5.db.objects.User.getCurrentUser().getProperties().changeProperty("org.openyabs.uiproperty", "showoptionalcolumn", showoptionalcolumn.isSelected());
             mpv5.db.objects.User.getCurrentUser().getProperties().changeProperty("org.openyabs.uiproperty", "supresscurrencysymbols", supresscurrencysymbols.isSelected());
             mpv5.db.objects.User.getCurrentUser().getProperties().changeProperty("org.openyabs.uiproperty", "autocreaterevenue", autorev.isSelected());
@@ -705,6 +723,7 @@ public class ControlPanel_Userproperties extends javax.swing.JPanel implements C
         dtabankname.setText(mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("dtabankname"));
         dtabankcountry.setText(mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("dtabankcountry"));
         dtausage0.setText(mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("dtausage0"));
+        hidediscountcolumn.setSelected(mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("org.openyabs.uiproperty", "hidediscountcolumn"));
 
         Component[] t = productstobillsproperties.getComponents();
         for (int i = 0; i < t.length; i++) {

@@ -1720,6 +1720,11 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
             TableFormat.stripColumn(itemtable, 6);
             model.setCellEditable(0, 6, false);
         }
+        
+        if (mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("org.openyabs.uiproperty", "hidediscountcolumn")) {
+            TableFormat.stripColumn(itemtable, 16);
+            model.setCellEditable(0, 16, false);
+        }
 
         TextAreaCellEditor r = new TextAreaCellEditor(itemtable);
         ProductSelectDialog2 productSelectDialog = new ProductSelectDialog2(mpv5.YabsViewProxy.instance().getIdentifierFrame(), true, itemtable);
