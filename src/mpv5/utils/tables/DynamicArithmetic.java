@@ -127,13 +127,13 @@ class DynamicArithmetic {
     }
 
     private void calc() throws ParseFormatException {
-        BigDecimal tmp = new BigDecimal("0");
+        BigDecimal tmp = BigDecimal.ZERO;
         if (!vals.isEmpty()) {
             switch (operator) {
                 case '+':
                     for (int k = 0; k < vals.size(); k++) {
                         if (k == 0) {
-                            tmp = vals.get(k);
+                            tmp = vals.get(k) == null ? BigDecimal.ZERO : vals.get(k);
                         } else {
                             tmp = tmp.add(vals.get(k));
                         }
@@ -145,7 +145,7 @@ class DynamicArithmetic {
                 case '-':
                     for (int k = 0; k < vals.size(); k++) {
                         if (k == 0) {
-                            tmp = vals.get(k);
+                            tmp = vals.get(k) == null ? BigDecimal.ZERO : vals.get(k);
                         } else {
                             tmp = tmp.subtract(vals.get(k));
                         }
@@ -157,7 +157,7 @@ class DynamicArithmetic {
                 case ':':
                     for (int k = 0; k < vals.size(); k++) {
                         if (k == 0) {
-                            tmp = vals.get(k);
+                            tmp = vals.get(k) == null ? BigDecimal.ZERO : vals.get(k);
                         } else {
                             tmp = tmp.divide(vals.get(k));
                         }
@@ -169,7 +169,7 @@ class DynamicArithmetic {
                 case '/':
                     for (int k = 0; k < vals.size(); k++) {
                         if (k == 0) {
-                            tmp = vals.get(k);
+                            tmp = vals.get(k) == null ? BigDecimal.ZERO : vals.get(k);
                         } else {
                             tmp = tmp.divide(vals.get(k));
                         }
@@ -181,7 +181,7 @@ class DynamicArithmetic {
                 case '*':
                     for (int k = 0; k < vals.size(); k++) {
                         if (k == 0) {
-                            tmp = vals.get(k);
+                            tmp = vals.get(k) == null ? BigDecimal.ZERO : vals.get(k);
                         } else {
                             tmp = tmp.multiply(vals.get(k));
                         }
@@ -193,7 +193,7 @@ class DynamicArithmetic {
                 case '%':
                     for (int k = 0; k < vals.size(); k++) {
                         if (k == 0) {
-                            tmp = vals.get(k);
+                            tmp = vals.get(k) == null ? BigDecimal.ZERO : vals.get(k);
                         } else {
                             tmp = tmp.multiply(vals.get(k)).divide(new BigDecimal("100"));
                         }
@@ -204,7 +204,7 @@ class DynamicArithmetic {
                     break;
                 default:
                     if (vals.size() == 1) {
-                        result = vals.get(0);
+                        tmp = vals.get(0) == null ? BigDecimal.ZERO : vals.get(0);
                     } else {
                         throw new ParseFormatException("Parsing Error: Missing Operator!\n"
                                 + "Arithmetic Expression: " + toParse);
