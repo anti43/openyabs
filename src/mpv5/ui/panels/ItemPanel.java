@@ -1722,8 +1722,8 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
         }
         
         if (mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("org.openyabs.uiproperty", "hidediscountcolumn")) {
-            TableFormat.stripColumn(itemtable, 16);
-            model.setCellEditable(0, 16, false);
+            TableFormat.stripColumn(itemtable, 15);
+            model.setCellEditable(0, 15, false);
         }
 
         TextAreaCellEditor r = new TextAreaCellEditor(itemtable);

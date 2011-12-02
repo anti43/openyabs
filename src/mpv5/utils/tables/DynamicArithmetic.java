@@ -44,7 +44,7 @@ class DynamicArithmetic {
         boolean pushValueString = false;
 
         if (toParse.charAt(0) != '(') {
-            Log.Debug(this, "First Char is not a Term opener --> enclosing it");
+            //Log.Debug(this, "First Char is not a Term opener --> enclosing it");
             toParse = "(" + toParse + ")";
         }
 
@@ -52,11 +52,11 @@ class DynamicArithmetic {
             char ch = toParse.charAt(i);
             switch (ch) {
                 case '[':
-                    Log.Debug(this, "Value Opener found --> append Value String on ");
+                    //Log.Debug(this, "Value Opener found --> append Value String on ");
                     pushValueString = true;
                     break;
                 case ']':
-                    Log.Debug(this, "Value Closer found --> append Value String off");
+                    //Log.Debug(this, "Value Closer found --> append Value String off");
                     pushValueString = false;
                     if (!columnString.equals("")) {
                         vals.add(values.get(Integer.parseInt(columnString)));
@@ -67,7 +67,7 @@ class DynamicArithmetic {
                     columnString = "";
                     break;
                 case '(':
-                    Log.Debug(this, "Term Opener found --> increment Stack 3");
+                    //Log.Debug(this, "Term Opener found --> increment Stack 3");
                     if (openTerms == 0) {
                         vals.clear();
                         openTerms = openTerms + 1;
@@ -77,13 +77,13 @@ class DynamicArithmetic {
                     }
                     break;
                 case ')':
-                    Log.Debug(this, "Term Closer found --> decrement Stack 3");
+                    //Log.Debug(this, "Term Closer found --> decrement Stack 3");
                     openTerms = openTerms - 1;
                     calc();
                     break;
                 default:
                     if (Character.isDigit(ch)) {
-                        Log.Debug(this, "Column found --> put it to Stack ??");
+                        //Log.Debug(this, "Column found --> put it to Stack ??");
                         if (pushValueString) {
                             columnString = columnString + ch;
                         } else {
@@ -93,11 +93,11 @@ class DynamicArithmetic {
                     } else {
                         for (int j = 0; j < operators.length; j++) {
                             if (ch == operators[j]) {
-                                Log.Debug(this, "Operator found --> put it to Stack ??");
+                                //Log.Debug(this, "Operator found --> put it to Stack ??");
                                 if (operator != ch && operator != 0) {
-                                    Log.Debug(this, "Operator changed-->checking for Arithmetic Rules ...");
+                                    //Log.Debug(this, "Operator changed-->checking for Arithmetic Rules ...");
                                     if (ch == '*' || ch == ':' || ch == '/' || ch == '%') {
-                                        Log.Debug(this, "Handle privileged ...");
+                                        //Log.Debug(this, "Handle privileged ...");
                                         values.put(999999, vals.get(vals.size() - 1));
                                         da = new DynamicArithmetic("([999999]" + toParse.substring(i), values);
                                         values.remove(999999);
@@ -106,7 +106,7 @@ class DynamicArithmetic {
                                         calc();
                                         return result;
                                     } else {
-                                        Log.Debug(this, "normal Switch of 'same level operators' or comming from privileged");
+                                        //Log.Debug(this, "normal Switch of 'same level operators' or comming from privileged");
                                         openTerms = openTerms - 1;
                                         calc();
                                         openTerms = openTerms + 1;
