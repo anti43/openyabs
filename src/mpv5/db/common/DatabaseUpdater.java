@@ -162,7 +162,21 @@ public class DatabaseUpdater {
                 });
         UPDATES_DERBY.put(1.192, new String[]{
                     "ALTER TABLE subitems ADD COLUMN discount DOUBLE DEFAULT 0 NOT NULL"
-                });        
+                });    
+        UPDATES_DERBY.put(1.193, new String[]{
+                    "CREATE TABLE massprintrules (IDS BIGINT NOT NULL GENERATED ALWAYS AS IDENTITY "
+                    + "(START WITH 1, INCREMENT BY 1),"
+                    + " cname VARCHAR(250) NOT NULL,"
+                    + " inttype SMALLINT DEFAULT 0,"
+                    + " content LONG VARCHAR NOT NULL,"
+                    + " dateadded DATE NOT NULL,"
+                    + " invisible SMALLINT DEFAULT 0,"
+                    + " intaddedby BIGINT DEFAULT 0,"
+                    + " groupsids BIGINT REFERENCES groups(ids) DEFAULT 1,"
+                    + "PRIMARY KEY  (ids))",
+                    "INSERT INTO massprintrules (cname, inttype, content, dateadded, invisible, groupsids) VALUES ('Open Bills',0, 'Select * from contacts Inner Join items on (Items.contactsids = contacts.ids) where items.intstatus = 4 and items.inttype =3', '2011-07-29',0, 1)",
+                    "INSERT INTO massprintrules (cname, inttype, content, dateadded, invisible, groupsids) VALUES ('Is Customer', -1, 'Select * from contacts where iscustomer = 1', '2011-07-29',0, 1)",
+                    "INSERT INTO massprintrules (cname, inttype, content, dateadded, invisible, groupsids) VALUES ('Is Suply', -1, 'Select * from contacts where iscustomer = 1', '2011-07-29',0, 1)"});        
         ////////////////////////////////////////////////////////////////////////////////////////////
         // mysql updates
         UPDATES_MYSQL.put(1.11, new String[]{
@@ -327,6 +341,19 @@ public class DatabaseUpdater {
         UPDATES_MYSQL.put(1.192, new String[]{
                     "ALTER TABLE subitems ADD COLUMN discount DOUBLE DEFAULT 0 NOT NULL"
                 });  
+        UPDATES_MYSQL.put(1.193, new String[]{
+                    "CREATE TABLE massprintrules (IDS BIGINT NOT NULL GENERATED ALWAYS AS IDENTITY "
+                    + "(START WITH 1, INCREMENT BY 1),"
+                    + " cname VARCHAR(250) NOT NULL,"
+                    + " content LONG VARCHAR NOT NULL,"
+                    + " inttype SMALLINT DEFAULT 0,"
+                    + " dateadded DATE NOT NULL,"
+                    + " groupsids BIGINT REFERENCES groups(ids) DEFAULT 1,"
+                    + " invisible SMALLINT DEFAULT 0,"
+                    + "PRIMARY KEY  (ids))ENGINE=MyISAM  DEFAULT CHARSET=IS0-8859-15",
+                    "INSERT INTO massprintrules (cname, inttype, content, dateadded, invisible, groupsids) VALUES ('Open Bills',0, 'Select * from contacts Inner Join items on (Items.contactsids = contacts.ids) where items.intstatus = 4 and items.inttype =3', '2011-07-29',0, 1)",
+                    "INSERT INTO massprintrules (cname, inttype, content, dateadded, invisible, groupsids) VALUES ('Is Customer', -1, 'Select * from contacts where iscustomer = 1', '2011-07-29',0, 1)",
+                    "INSERT INTO massprintrules (cname, inttype, content, dateadded, invisible, groupsids) VALUES ('Is Suply', -1, 'Select * from contacts where iscustomer = 1', '2011-07-29',0, 1)"});              
     }
 
     /**

@@ -22,6 +22,7 @@ import mpv5.db.objects.FileToItem;
 import mpv5.db.objects.FileToProduct;
 import mpv5.db.objects.Item;
 import mpv5.db.objects.MailMessage;
+import mpv5.db.objects.MassprintRules;
 import mpv5.db.objects.Product;
 import mpv5.db.objects.ProductGroup;
 import mpv5.db.objects.ProductList;
@@ -101,6 +102,7 @@ public class Context implements Serializable {
     public static String IDENTITY_PRODUCT_PRICES = "productprices";
     public static String IDENTITY_ACTIVITYLISTITEMS = "activitylistitems";
     public static String IDENTITY_ACTIVITYLIST = "activitylists";
+    public static String IDENTITY_MASSPRINT = "massprintrules";
     //********** identity classes **********************************************
     private static Class<Contact>               IDENTITY_CONTACTS_CLASS = Contact.class;
     private static Class<Address>               IDENTITY_ADDRESS_CLASS = Address.class;
@@ -139,6 +141,7 @@ public class Context implements Serializable {
     private static Class<ScheduleTypes>         IDENTITY_SCHEDULETYPES_CLASS = ScheduleTypes.class;
     private static Class<ActivityListSubItem>   IDENTITY_ACTIVITYITEMSLIST_CLASS = ActivityListSubItem.class;
     private static Class<ActivityList>          IDENTITY_ACTIVITYLIST_CLASS = ActivityList.class;
+    private static Class<MassprintRules>        IDENTITY_MASSPRINT_CLASS = MassprintRules.class;
     //********** unique constraints *******************************************
     public static String UNIQUECOLUMNS_USER = "cname";
     public static String UNIQUECOLUMNS_ITEMS = "cname";
@@ -207,11 +210,15 @@ public class Context implements Serializable {
     public static String DETAILS_JOURNAL = Context.IDENTITY_ITEMS + "." + "IDS," + Context.IDENTITY_CONTACTS + "." + "cname," + Context.IDENTITY_CONTACTS + "." + "prename," + Context.IDENTITY_CONTACTS + "." + "street," + Context.IDENTITY_CONTACTS + "." + "city," + Context.IDENTITY_CONTACTS + "." + "country," + Context.IDENTITY_ITEMS + "." + "dateadded," + Context.IDENTITY_GROUPS + "." + "CNAME," + Context.IDENTITY_ACCOUNTS + "." + "cname," + Context.IDENTITY_ITEMS + "." + "CNAME," + Context.IDENTITY_ITEMS + "." + "inttype," + Context.IDENTITY_ITEMS + "." + "intstatus," + Context.IDENTITY_ITEMS + "." + "netvalue," + Context.IDENTITY_ITEMS + "." + "taxvalue," + Context.IDENTITY_ITEMS + "." + "discountvalue";
     public static String DETAILS_JOURNAL2 = Context.IDENTITY_REVENUE + "." + "IDS," + Context.IDENTITY_GROUPS + "." + "reserve2," + Context.IDENTITY_GROUPS + "." + "reserve2," + Context.IDENTITY_GROUPS + "." + "reserve2," + Context.IDENTITY_GROUPS + "." + "reserve2," + Context.IDENTITY_GROUPS + "." + "reserve2," + Context.IDENTITY_REVENUE + "." + "dateadded," + Context.IDENTITY_GROUPS + "." + "CNAME," + Context.IDENTITY_ACCOUNTS + "." + "cname," + Context.IDENTITY_REVENUE + "." + "CNAME," + Context.IDENTITY_REVENUE + "." + "ids," + Context.IDENTITY_REVENUE + "." + "ids," + Context.IDENTITY_REVENUE + "." + "brutvalue," + Context.IDENTITY_REVENUE + "." + "brutvalue";
     public static String DETAILS_JOURNAL3 = Context.IDENTITY_EXPENSE + "." + "IDS," + Context.IDENTITY_GROUPS + "." + "reserve2," + Context.IDENTITY_GROUPS + "." + "reserve2," + Context.IDENTITY_GROUPS + "." + "reserve2," + Context.IDENTITY_GROUPS + "." + "reserve2," + Context.IDENTITY_GROUPS + "." + "reserve2," + Context.IDENTITY_EXPENSE + "." + "dateadded," + Context.IDENTITY_GROUPS + "." + "CNAME," + Context.IDENTITY_ACCOUNTS + "." + "cname," + Context.IDENTITY_EXPENSE + "." + "CNAME," + Context.IDENTITY_EXPENSE + "." + "ids," + Context.IDENTITY_EXPENSE + "." + "ids," + Context.IDENTITY_EXPENSE + "." + "brutvalue," + Context.IDENTITY_EXPENSE + "." + "brutvalue";
-
     public static String DETAILS_HISTORY = getHistory().getDbIdentity() + ".ids, " + getHistory().getDbIdentity() + ".cname, " + getHistory().getDbIdentity() + ".username, " + Context.getGroup().getDbIdentity() + ".cname," + Context.getHistory().getDbIdentity() + ".dateadded";
     public static String DETAILS_FILES_TO_CONTACTS = Context.getFiles().getDbIdentity() + ".cname," + getFilesToContacts().getDbIdentity() + ".cname, " + Context.getFiles().getDbIdentity() + ".dateadded," + Context.getFilesToContacts().getDbIdentity() + ".description," + Context.getFilesToContacts().getDbIdentity() + ".intsize," + Context.getFilesToContacts().getDbIdentity() + ".mimetype";
     public static String DETAILS_FILES_TO_ITEMS = Context.getFiles().getDbIdentity() + ".cname," + getFilesToItems().getDbIdentity() + ".cname, " + Context.getFiles().getDbIdentity() + ".dateadded," + Context.getFilesToItems().getDbIdentity() + ".description," + Context.getFilesToItems().getDbIdentity() + ".intsize," + Context.getFilesToItems().getDbIdentity() + ".mimetype";
     public static String DETAILS_FILES_TO_PRODUCTS = Context.getFiles().getDbIdentity() + ".cname," + getFilesToProducts().getDbIdentity() + ".cname, " + Context.getFiles().getDbIdentity() + ".dateadded," + Context.getFilesToProducts().getDbIdentity() + ".description," + Context.getFilesToProducts().getDbIdentity() + ".intsize," + Context.getFilesToProducts().getDbIdentity() + ".mimetype";
+    public static String DETAILS_MASSPRINT = 
+            Context.IDENTITY_MASSPRINT + "." + "IDS," 
+            + Context.IDENTITY_MASSPRINT + "." + "cname," 
+            + Context.IDENTITY_MASSPRINT + "." + "inttype," 
+            + Context.IDENTITY_MASSPRINT + "." + "dateadded" ;
 //    public static String DETAILS_FILES_TO_TEMPLATES = Context.getTemplate().getDbIdentity() + ".ids," + getTemplate().getDbIdentity() + ".cname, " + Context.getTemplate().getDbIdentity() + ".dateadded," + Context.getTemplate().getDbIdentity() + ".intsize," + Context.getTemplate().getDbIdentity() + ".mimetype";
 //    public static String DETAILS_TEMPLATES = Context.getTemplate().getDbIdentity() + ".ids," + getTemplate().getDbIdentity() + ".cname, " + Context.getTemplate().getDbIdentity() + ".mimetype," + " groups0.cname";
 
@@ -468,7 +475,8 @@ public class Context implements Serializable {
                 getRevenue(),
                 getProductsToSuppliers(),
                 getValueProperties(),
-                getProductPrice()
+                getProductPrice(),
+                getMassprint()
             }));
 //    private String[] searchHeaders;
     private volatile ArrayList<String[]> references = new ArrayList<String[]>();
@@ -1655,6 +1663,16 @@ public class Context implements Serializable {
 
         return c;
     }
+    
+    public static Context getMassprint() {
+        Context c = new Context();
+        c.setSubID(DEFAULT_SUBID);
+        c.setDbIdentity(IDENTITY_MASSPRINT);
+        c.setIdentityClass(IDENTITY_MASSPRINT_CLASS);
+        c.setId(56);
+
+        return c;
+    }    
 
     /////////////////////////////////////////////////////////////////////////////////////////////////
     /**

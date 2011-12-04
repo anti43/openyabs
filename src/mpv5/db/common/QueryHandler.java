@@ -2387,6 +2387,7 @@ public class QueryHandler implements Cloneable {
         ArrayList<Object> row;
         int id = -1;
         String[] columnnames = null;
+        String[] fullcolnames = null;
         ArrayList<Object> spalten = new ArrayList<Object>();
         ArrayList<Object> zeilen = new ArrayList<Object>();
         SQLWatch sqlWatch;
@@ -2422,8 +2423,10 @@ public class QueryHandler implements Cloneable {
             }
             
             columnnames = new String[rsmd.getColumnCount()];
+            fullcolnames = new String[rsmd.getColumnCount()];
             for (int i = 1; i <= rsmd.getColumnCount(); i++) {
                 columnnames[i - 1] = rsmd.getColumnName(i);
+                fullcolnames[i - 1] = rsmd.getTableName(i) + "." + rsmd.getColumnName(i);
             }
             
             while (resultSet.next()) {
@@ -2488,7 +2491,7 @@ public class QueryHandler implements Cloneable {
         if (jobmessage != null) {
             mpv5.YabsViewProxy.instance().addMessage(jobmessage);
         }
-        ReturnValue p = new ReturnValue(id, data, columnnames, jobmessage);
+        ReturnValue p = new ReturnValue(id, data, columnnames, fullcolnames, jobmessage);
         if (Log.LOGLEVEL_DEBUG == Log.getLoglevel()) {
             Log.Debug(this, p);
         }

@@ -18,23 +18,23 @@ import mpv5.i18n.LanguageManager;
 public enum Messages {
 
     START_MESSAGE(
-    "\n" +
-    "YaBS " + Constants.VERSION + " (C) 2006-2011 Openyabs.org\n\n" +
-    "******************************************************************************\n" +
-    "* This program is free software; you can redistribute it and/or modify it \n" +
-    "* under the terms of the GNU General Public License as published by the \n" +
-    "* Free Software Foundation; either version 2 of the License, or (at your option) \n" +
-    "* any later version.\n*\n" +
-    "* This program is distributed in the hope that it will be useful, \n" +
-    "* but WITHOUT ANY WARRANTY; without even the implied warranty of \n" +
-    "* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General \n" +
-    "* Public License for more details.\n*\n" +
-    "* You should have received a copy of the GNU General Public License along with \n" +
-    "* this program; if not, write to the Free Software Foundation, Inc., \n" +
-    "* 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA\n*\n" +
-    "* Start with -license for details.\n" +
-    "* Start with -help for command line options.\n" +
-    "******************************************************************************"),
+    "\n"
+    + "YaBS " + Constants.VERSION + " (C) 2006-2011 Openyabs.org\n\n"
+    + "******************************************************************************\n"
+    + "* This program is free software; you can redistribute it and/or modify it \n"
+    + "* under the terms of the GNU General Public License as published by the \n"
+    + "* Free Software Foundation; either version 2 of the License, or (at your option) \n"
+    + "* any later version.\n*\n"
+    + "* This program is distributed in the hope that it will be useful, \n"
+    + "* but WITHOUT ANY WARRANTY; without even the implied warranty of \n"
+    + "* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General \n"
+    + "* Public License for more details.\n*\n"
+    + "* You should have received a copy of the GNU General Public License along with \n"
+    + "* this program; if not, write to the Free Software Foundation, Inc., \n"
+    + "* 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA\n*\n"
+    + "* Start with -license for details.\n"
+    + "* Start with -help for command line options.\n"
+    + "******************************************************************************"),
     CONTACT("Contact: "),
     /**
      * Start MAIN
@@ -218,9 +218,9 @@ public enum Messages {
     ASSIGN_TEMPLATE("Please assign at least one user to the imported template by selecting one or more users from the list, and the press 'Save'. The template will not be usable otherwise."),
     NO_MAIL_DEFINED("Either you or the contact you want to send the mail to (or both) have no valid mail address defined."),
     AUTO_GENERATED_VALUE("Auto generated value"),
-    BOOK_NOW("Save & book now?"), 
+    BOOK_NOW("Save & book now?"),
     FIRST_START("This seems to be the first start"),
-    ALL_PRODUCTS("All Products"), 
+    ALL_PRODUCTS("All Products"),
     ACTION_ADDLIST("Add to listboard"),
     GOOSE1("Order Nr."),
     GOOSE2("created on"),
@@ -236,19 +236,19 @@ public enum Messages {
     UPDATE_AVAILABLE("There is an update available for Yabs, check openyabs.org"),
     SEARCHABLE("This is a search-enabled field - type a phrase and hit 'Enter'"),
     TYPE_PRODUCT_ORDER("Product Order"),
-    BOM_CREATED("A new product has been created out of this productlist and is now ready to be used: "), 
+    BOM_CREATED("A new product has been created out of this productlist and is now ready to be used: "),
     DTAUS_REASON("Invoice number: "),
     DTAUS_CREATED("The following entries have been created \n(only unpaid invoices with a value >0.15 have been used):"),
     SELECT_AN_INVOICE("You need to select at least one invoice to export."),
     DTAUS_NOT_SET("Your user account is missing mandatory banking information for DTA file creation."),
     PROPERTY("Property"),
-    VALUE("Value"), 
+    VALUE("Value"),
     DTA_CREATE("Create DTAUS"),
     REALLY_DELETE2("Do you really want to delete all selected datasets?"),
     REALLY_CHANGE2("Do you really want to set a selected, yet unpaid invoices to status 'Paid'?"),
     PRINTED("Printed item: "),
     ODT("Created .odt file from item: "),
-    PDF("Created .pdf file from item: "), 
+    PDF("Created .pdf file from item: "),
     IMPORT_LANGUAGES("Checking for additional languages"),
     IMPORT_PLUGINS("Checking for additional plugins"),
     IMPORT_TEMPLATES("Checking for additional templates"),
@@ -268,43 +268,44 @@ public enum Messages {
     PDF_CREATE("Create PDF"),
     ODT_CREATE("Create ODT"),
     IN_GROUP("In group:"),
-    CHECK_OVERDUES("Show unpaid invoices"), 
-    NA("N/A"), 
-     ACTION_ADD("Add"), 
-     NO_MAIL_TEMPLATE_DEFINED(
-     "You do not have any mail template definded yet. "
-     + "Create mail templates at Tools->Control Panel->User Properties->Mail Templates. "
-     + "The mail will be send without any text body now."),
-     ADD_CONTACT("Add contact.."),
-     SEARCH_CONTACT("Search contact.."), 
-     LANGUAGE_FILE("Your language file is not up to date! Visit openyabs.org for a new language file or edit the existing one via Tools->Control Panel->Babelfish"),
-     IMPORT_LANGUAGES_DONE("A new language has been imported, do you want to assign the language to a user?"),
-     IMPORT_TEMPLATES_DONE("A new template has been imported; before you can use it, you need to go to Tools->Control Panel->Templates to assign the new template to a user!"),
-     IMPORT_PLUGINS_DONE("A new plugin has been imported; before you can use it, you need to go to Tools->Control Panel->Plugins to assign the new plugin to a user!"),
-     ENTER_VALUE("You need to enter a value for: "),
-     NAME("Name"), 
-     UNTRASHED(": moved out of trashbin"), 
-     PLUGIN_INCOMPATIBLE("Incompatible plugin found. Shall I try to load it anyway?"), 
-     TYPE_CONTRACT("Contract"), 
-     HOMESCREEN("Homescreen"),
-     DAY_EVENTS("This Day has Events!"), 
-     TYPE_CONVERSATION("Conversation"), 
-     Conversation_MainAddress("Main-Address"),
-     CREATE_REMINDER("This Item is overdue! Should a reminder be created?"),
-     TYPE_MASSPRINT("Serial-Mail (Massprint)"), 
-     CNAME_EXISTS("Please adjust the Subject!\nActual Subject exists!"),
-     CONTACT_COMPLETE("Please complete the Contact-Data!"), 
-     DATAOWNER_EMPTY("No Entry selected!\nPlease select an Tableentry."), 
-     DBCONN_UPDATE_BEPATIENT("Checking database version und updating (may take a while)..."),
-     ACTIVITYCONFIRMATION("Activity Confirmation"),
-     ACTIVITY_EMPTY_DATE("Missing Product or Date for Activity-Entry!"), 
-     NOT_YET_IMPLEMENTED("This Function is actualy not implemented!"), 
-     TYPE_ACTIVITY("Activity Confirmation"), 
-     ActivityList_Existing("There's an Activity List Existing. Add this to the Invoice?"), 
-     ActivityList_toSubItem("See attached Acitivy Confirmation for Project: "), 
-     CHECK_TPLUPDATE("Checking Templates to update from Filechange ...");
-     
-
+    CHECK_OVERDUES("Show unpaid invoices"),
+    NA("N/A"),
+    ACTION_ADD("Add"),
+    NO_MAIL_TEMPLATE_DEFINED(
+    "You do not have any mail template definded yet. "
+    + "Create mail templates at Tools->Control Panel->User Properties->Mail Templates. "
+    + "The mail will be send without any text body now."),
+    ADD_CONTACT("Add contact.."),
+    SEARCH_CONTACT("Search contact.."),
+    LANGUAGE_FILE("Your language file is not up to date! Visit openyabs.org for a new language file or edit the existing one via Tools->Control Panel->Babelfish"),
+    IMPORT_LANGUAGES_DONE("A new language has been imported, do you want to assign the language to a user?"),
+    IMPORT_TEMPLATES_DONE("A new template has been imported; before you can use it, you need to go to Tools->Control Panel->Templates to assign the new template to a user!"),
+    IMPORT_PLUGINS_DONE("A new plugin has been imported; before you can use it, you need to go to Tools->Control Panel->Plugins to assign the new plugin to a user!"),
+    ENTER_VALUE("You need to enter a value for: "),
+    NAME("Name"),
+    UNTRASHED(": moved out of trashbin"),
+    PLUGIN_INCOMPATIBLE("Incompatible plugin found. Shall I try to load it anyway?"),
+    TYPE_CONTRACT("Contract"),
+    HOMESCREEN("Homescreen"),
+    DAY_EVENTS("This Day has Events!"),
+    TYPE_CONVERSATION("Conversation"),
+    Conversation_MainAddress("Main-Address"),
+    CREATE_REMINDER("This Item is overdue! Should a reminder be created?"),
+    TYPE_MASSPRINT("Serial-Mail (Massprint)"),
+    CNAME_EXISTS("Please adjust the Subject!\nActual Subject exists!"),
+    CONTACT_COMPLETE("Please complete the Contact-Data!"),
+    DATAOWNER_EMPTY("No Entry selected!\nPlease select an Tableentry."),
+    DBCONN_UPDATE_BEPATIENT("Checking database version und updating (may take a while)..."),
+    ACTIVITYCONFIRMATION("Activity Confirmation"),
+    ACTIVITY_EMPTY_DATE("Missing Product or Date for Activity-Entry!"),
+    NOT_YET_IMPLEMENTED("This Function is actualy not implemented!"),
+    TYPE_ACTIVITY("Activity Confirmation"),
+    ActivityList_Existing("There's an Activity List Existing. Add this to the Invoice?"),
+    ActivityList_toSubItem("See attached Acitivy Confirmation for Project: "),
+    CHECK_TPLUPDATE("Checking Templates to update from Filechange ..."),
+    MASSPRINT_FILTER("Filter Entries by:"), 
+    MASSPRINT_ENTER_NAME("Enter a Name for the Filter-Rule:"), 
+    MASSPRINT_FILTER_ALL("All Contacts");
 
     private Messages(String message) {
         this.message = message;

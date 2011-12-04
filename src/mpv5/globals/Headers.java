@@ -26,7 +26,8 @@ public enum Headers {
     SCHEDULE_PANEL(new String[]{"IDS","Schedule ID", "Date","Type"}),
     ACTIVITY(new String[]{"Internal ID", "Nr", "Date", "Count", "Measure", "Text", "Netto Price", "Tax Rate", "Total Price", "Product", "Name", "object"}),
     EXPENSE(new String[]{"Number", "Description", "Account", "Value", "Tax Rate"}),
-    LIBRARIEST(new String[]{"File", "Description", "License", "Author"});
+    LIBRARIEST(new String[]{"File", "Description", "License", "Author"}), 
+    MASSPRINT(new String[]{"Object", "Name", "Item-Type", "Date Added"});
 
     private Headers(String[] header) {
         this.header = header;

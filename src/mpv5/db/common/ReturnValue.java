@@ -7,7 +7,6 @@ package mpv5.db.common;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
-import mpv5.logging.Log;
 
 /**
  *
@@ -19,6 +18,7 @@ public class ReturnValue {
     private Object[][] data;
     private String[] columnnames;
     private String message = null;
+    private String[] fullColumnNames = null;
 
     public ReturnValue(int idOfIt, Object[][] data) {
 
@@ -33,12 +33,13 @@ public class ReturnValue {
         this.data = data;
     }
 
-    public ReturnValue(int idOfIt, Object[][] data, String[] columnnames, String jobmessage) {
+    public ReturnValue(int idOfIt, Object[][] data, String[] columnnames, String[] fullcolnames, String jobmessage) {
 
         this.id = idOfIt;
         this.columnnames = columnnames;
         this.data = data;
         this.message = jobmessage;
+        this.fullColumnNames = fullcolnames;
     }
 
     public ReturnValue(Integer id) {
@@ -191,5 +192,13 @@ public class ReturnValue {
     @Override
     public String toString() {
         return "Rowcount: " + data.length;
+    }
+
+    public String[] getFullColumnNames() {
+        return fullColumnNames;
+    }
+
+    public void setFullColumnNames(String[] fullColumnNames) {
+        this.fullColumnNames = fullColumnNames;
     }
 }

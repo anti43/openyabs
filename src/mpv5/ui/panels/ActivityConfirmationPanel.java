@@ -41,7 +41,6 @@ import mpv5.utils.renderer.TableCellRendererForDezimal;
 import mpv5.utils.renderer.TextAreaCellEditor;
 import mpv5.utils.renderer.TextAreaCellRenderer;
 import mpv5.utils.tables.DynamicTableCalculator;
-import mpv5.utils.tables.TableCalculator;
 import mpv5.utils.tables.TableFormat;
 
 public final class ActivityConfirmationPanel extends javax.swing.JPanel implements DataPanel, ExportablePanel {

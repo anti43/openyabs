@@ -14,6 +14,8 @@ import enoa.handler.TemplateHandler;
 import java.awt.Font;
 import java.awt.GraphicsEnvironment;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
@@ -34,10 +36,14 @@ import javax.swing.text.StyledDocument;
 import javax.swing.text.StyledEditorKit;
 import javax.swing.text.rtf.RTFEditorKit;
 import mpv5.db.common.Context;
+import mpv5.db.common.DatabaseObject;
 import mpv5.db.common.DatabaseSearch;
 import mpv5.db.common.NodataFoundException;
+import mpv5.db.common.QueryHandler;
+import mpv5.db.common.ReturnValue;
 import mpv5.db.objects.Contact;
 import mpv5.db.objects.MailMessage;
+import mpv5.db.objects.MassprintRules;
 import mpv5.db.objects.Template;
 import mpv5.db.objects.User;
 import mpv5.globals.LocalSettings;
@@ -45,6 +51,9 @@ import mpv5.globals.Messages;
 import mpv5.logging.Log;
 import mpv5.ui.dialogs.DialogForFile;
 import mpv5.ui.dialogs.Popup;
+import mpv5.ui.menus.ListMenuItem;
+import mpv5.ui.popups.ListPopUp;
+import mpv5.usermanagement.MPSecurityManager;
 import mpv5.utils.export.Export;
 import mpv5.utils.jobs.Job;
 import mpv5.utils.jobs.Waitable;
@@ -54,7 +63,8 @@ import mpv5.utils.jobs.Waitable;
  * @author Samsung SA11
  */
 public class MassPrintPanel
-        extends javax.swing.JPanel {
+        extends javax.swing.JPanel
+        implements ActionListener {
 
     private static MassPrintPanel me;
     private final DefaultListModel model;
@@ -133,7 +143,7 @@ public class MassPrintPanel
         setMinimumSize(new java.awt.Dimension(750, 600));
         setName("Form"); // NOI18N
 
-        java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle(); // NOI18N
+       java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle(); // NOI18N
         jPanel3.setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("ConversationPanel.jPanel3.border.title"))); // NOI18N
         jPanel3.setName("jPanel3"); // NOI18N
 
@@ -248,36 +258,41 @@ public class MassPrintPanel
                 .addContainerGap()
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                            .addComponent(jLabel6, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(templates, javax.swing.GroupLayout.Alignment.LEADING, 0, 183, Short.MAX_VALUE))
-                        .addGap(18, 18, 18)
-                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel7, javax.swing.GroupLayout.DEFAULT_SIZE, 196, Short.MAX_VALUE)
-                            .addComponent(messageTpl, 0, 196, Short.MAX_VALUE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 178, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 190, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 786, Short.MAX_VALUE)
                         .addContainerGap())
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 792, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 784, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 295, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jComboBox2, javax.swing.GroupLayout.PREFERRED_SIZE, 63, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(7, 7, 7)
-                        .addComponent(jToggleButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 68, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(2, 2, 2)
-                        .addComponent(jToggleButton2)
-                        .addGap(5, 5, 5)
-                        .addComponent(jToggleButton3)
-                        .addGap(22, 22, 22)
-                        .addComponent(jLabel3)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(dateTo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addContainerGap())
-                    .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 306, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel3Layout.createSequentialGroup()
+                                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                    .addComponent(jLabel6, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(templates, javax.swing.GroupLayout.Alignment.LEADING, 0, 183, Short.MAX_VALUE))
+                                .addGap(18, 18, 18)
+                                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jLabel7, javax.swing.GroupLayout.DEFAULT_SIZE, 195, Short.MAX_VALUE)
+                                    .addComponent(messageTpl, 0, 195, Short.MAX_VALUE))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 178, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 190, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED))
+                            .addGroup(jPanel3Layout.createSequentialGroup()
+                                .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 295, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jComboBox2, javax.swing.GroupLayout.PREFERRED_SIZE, 63, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(7, 7, 7)
+                                .addComponent(jToggleButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 68, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(2, 2, 2)
+                                .addComponent(jToggleButton2)
+                                .addGap(5, 5, 5)
+                                .addComponent(jToggleButton3)
+                                .addGap(22, 22, 22)
+                                .addComponent(jLabel3)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(dateTo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED))
+                            .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 306, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 784, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(8, 8, 8))))
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -307,9 +322,8 @@ public class MassPrintPanel
                 .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 8, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 456, Short.MAX_VALUE)
-                .addGap(28, 28, 28))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 479, Short.MAX_VALUE))
         );
 
         jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("MassPrintPanel.jPanel1.border.title_1"))); // NOI18N
@@ -322,13 +336,18 @@ public class MassPrintPanel
         contactlist.setName("contactlist"); // NOI18N
         contactlist.setSelectionBackground(java.awt.Color.green);
         contactlist.setSelectionForeground(java.awt.Color.black);
+        contactlist.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseReleased(java.awt.event.MouseEvent evt) {
+                contactlistMouseReleased(evt);
+            }
+        });
         jScrollPane2.setViewportView(contactlist);
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 23, Short.MAX_VALUE)
+            .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 158, javax.swing.GroupLayout.PREFERRED_SIZE)
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -339,11 +358,11 @@ public class MassPrintPanel
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -463,7 +482,7 @@ public class MassPrintPanel
                 if (tpl != null) {
                     for (int o = 0; o < sel.length; o++) {
                         try {
-                            Contact cont = (Contact) (Contact.getObject(Context.getContact(), sel[o].toString()));
+                            Contact cont = (Contact) (Contact.getObject(Context.getContact(), ((IdItem) sel[o]).getId()));
                             hm1 = new HashMap<String, Object>();
                             hm1 = me.ReplaceVariablesInContent(hm1, cont);
                             f = Export.print2(TemplateHandler.loadTemplate(tpl),
@@ -501,7 +520,7 @@ public class MassPrintPanel
         if (tpl != null) {
             for (int o = 0; o < sel.length; o++) {
                 try {
-                    Contact cont = (Contact) (Contact.getObject(Context.getContact(), sel[o].toString()));
+                    Contact cont = (Contact) (Contact.getObject(Context.getContact(), ((IdItem) sel[o]).getId()));
                     hm1 = new HashMap<String, Object>();
                     hm1 = this.ReplaceVariablesInContent(hm1, cont);
                     files.add(Export.createFile(cont.__getCName(),
@@ -526,7 +545,7 @@ public class MassPrintPanel
             job.execute();
             mpv5.YabsViewProxy.instance().getProgressbar().setValue(100);
             mpv5.YabsViewProxy.instance().getProgressbar().setString(Messages.DONE.toString());
-       }
+        }
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void messageTplActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_messageTplActionPerformed
@@ -544,6 +563,11 @@ public class MassPrintPanel
         }
     }//GEN-LAST:event_messageTplActionPerformed
 
+    private void contactlistMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_contactlistMouseReleased
+        if (evt.isPopupTrigger()) {
+            showMenu(evt);
+        }
+    }//GEN-LAST:event_contactlistMouseReleased
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTextPane RTF_Text;
     private javax.swing.JList contactlist;
@@ -581,6 +605,26 @@ public class MassPrintPanel
             }
         };
         new Thread(runnable).start();
+    }
+
+    private void showMenu(MouseEvent evt) {
+        try {
+            Object[][] d = QueryHandler.instanceOf().clone(Context.getMassprint()).select(Context.DETAILS_MASSPRINT);
+            String[][] rules = new String[d.length][2];
+            ActionListener[] act = new ActionListener[d.length];
+            rules[0][0] = Messages.MASSPRINT_FILTER_ALL.toString();
+            rules[0][1] = "999999";
+            act[0] = this;
+
+            for (int i = 1; i <= d.length; i++) {
+                rules[i][0] = d[i - 1][1].toString();
+                rules[i][1] = d[i - 1][0].toString();
+                act[i] = this;
+            }
+            new ListPopUp(contactlist, rules, act);
+        } catch (NodataFoundException ex) {
+            Log.Debug(this, ex);
+        }
     }
 
     private void setTemplateList() {
@@ -660,5 +704,61 @@ public class MassPrintPanel
             }
         };
         new Thread(runnable).start();
+    }
+
+    public void actionPerformed(ActionEvent e) {
+        int cname = 0;
+        ListMenuItem mi = (ListMenuItem) e.getSource();
+        Log.Debug(this, " Executing Rule: " + mi.getID());
+        Object[][] data = null;
+        int ids = 0;
+        try {
+            if (mi.getID() == 999999) {
+                model.clear();
+                data = new DatabaseSearch(Context.getContact(), 200).getValuesFor("cname", "cname", "", true);
+                for (int i = 0; i < data.length; i++) {
+                    model.addElement(new IdItem(Integer.parseInt(data[i][ids].toString()), data[i][cname].toString()));
+                }
+            } else {
+                MassprintRules mpr = (MassprintRules) (DatabaseObject.getObject(Context.getMassprint(), mi.getID()));
+                model.clear();
+                ReturnValue ret = QueryHandler.instanceOf().freeSelectQuery(mpr.__getContent(), MPSecurityManager.VIEW, null);
+                String[] cols = ret.getFullColumnNames();
+                for (int j = 0; j < cols.length; j++) {
+                    if (cols[j].equalsIgnoreCase("contacts.cname")) {
+                        cname = j;
+                    }
+                    if (cols[j].equalsIgnoreCase("contacts.ids")) {
+                        ids = j;
+                    }
+                }
+                data = ret.getData();
+                for (int i = 0; i < data.length; i++) {
+                    model.addElement(new IdItem(Integer.parseInt(data[i][ids].toString()), data[i][cname].toString()));
+                }
+            }
+        } catch (NodataFoundException ex) {
+            Log.Debug(this, ex);
+        }
+    }
+
+    class IdItem {
+
+        int id;
+        String description;
+
+        IdItem(int id, String description) {
+            this.id = id;
+            this.description = description;
+        }
+
+        public int getId() {
+            return id;
+        }
+
+        @Override
+        public String toString() {
+            return description;
+        }
     }
 }
