@@ -2,7 +2,12 @@ package mpv5.db.common;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import mpv5.db.objects.User;
 import mpv5.logging.Log;
 import mpv5.usermanagement.MPSecurityManager;
@@ -327,5 +332,111 @@ public class DatabaseSearch {
                 return null;
             }
         }
+    }
+
+    public List<DatabaseObject> searchObjectsFor(Context[] ext, Context[] self, String value) {
+        Log.Debug(this, "Search parameter: " + value);
+        Set<Integer> data = new TreeSet<Integer>();
+
+        for (Integer s : new DatabaseSearch(context, 50).searchObjectIdsFor(value)) {
+            data.add(s);
+        }
+
+        for (Context exct : ext) {
+
+            String subitemids = "0";
+            for (Integer s : new DatabaseSearch(exct, 50).searchObjectIdsFor(value)) {
+                subitemids = s + "," + subitemids;
+            }
+
+            Object[] sdata = QueryHandler.instanceOf().clone(context).freeQuery("select " + context.getDbIdentity() + "ids from " + exct.getDbIdentity() + " where ids in(" + subitemids + ")", MPSecurityManager.VIEW, null).getFirstColumn();
+            if (sdata != null) {
+                for (int i = 0; i < sdata.length; i++) {
+                    try {
+                        data.add(Integer.valueOf(sdata[i].toString()));
+                    } catch (NumberFormatException numberFormatException) {
+                        Log.Debug(numberFormatException);
+                    }
+                }
+            }
+        }
+        for (Context selfc : self) {
+            String contactsids = "0";
+            for (Integer s : new DatabaseSearch(selfc, 50).searchObjectIdsFor(value)) {
+                contactsids = s + "," + contactsids;
+            }
+            Object[] sdata = QueryHandler.instanceOf().clone(context).freeQuery("select ids from items where " + selfc.getDbIdentity() + "ids in(" + contactsids + ")", MPSecurityManager.VIEW, null).getFirstColumn();
+            if (sdata != null) {
+                for (int i = 0; i < sdata.length; i++) {
+                    try {
+                        data.add(Integer.valueOf(sdata[i].toString()));
+                    } catch (NumberFormatException numberFormatException) {
+                        Log.Debug(numberFormatException);
+                    }
+                }
+            }
+        }
+        try {
+            return DatabaseObject.getObjects(context, data);
+        } catch (NodataFoundException ex) {
+            Log.Debug(ex);
+            return Collections.EMPTY_LIST;
+        }
+    }
+
+    public List<Integer> searchObjectIdsFor(Context[] ext, Context[] self, String value) {
+        Log.Debug(this, "Search parameter: " + value);
+        Set<Integer> data = new TreeSet<Integer>();
+
+        for (Integer s : new DatabaseSearch(context, 50).searchObjectIdsFor(value)) {
+            data.add(s);
+        }
+
+        for (Context exct : ext) {
+
+            String subitemids = "0";
+            for (Integer s : new DatabaseSearch(exct, 50).searchObjectIdsFor(value)) {
+                subitemids = s + "," + subitemids;
+            }
+            
+            final String x = Context.getAliasFor(context, exct);
+            Object[] sdata = QueryHandler.instanceOf().clone(context).freeQuery("select " + x + "ids from " + exct.getDbIdentity() + " where ids in(" + subitemids + ")", MPSecurityManager.VIEW, null).getFirstColumn();
+            if (sdata != null) {
+                for (int i = 0; i < sdata.length; i++) {
+                    try {
+                        data.add(Integer.valueOf(sdata[i].toString()));
+                    } catch (NumberFormatException numberFormatException) {
+                        Log.Debug(numberFormatException);
+                    }
+                }
+            }
+        }
+        for (Context selfc : self) {
+            String contactsids = "0";
+            for (Integer s : new DatabaseSearch(selfc, 50).searchObjectIdsFor(value)) {
+                contactsids = s + "," + contactsids;
+            }
+            Object[] sdata = QueryHandler.instanceOf().clone(context).freeQuery("select ids from items where " + selfc.getDbIdentity() + "ids in(" + contactsids + ")", MPSecurityManager.VIEW, null).getFirstColumn();
+            if (sdata != null) {
+                for (int i = 0; i < sdata.length; i++) {
+                    try {
+                        data.add(Integer.valueOf(sdata[i].toString()));
+                    } catch (NumberFormatException numberFormatException) {
+                        Log.Debug(numberFormatException);
+                    }
+                }
+            }
+        }
+
+        return new ArrayList<Integer>(data);
+    }
+
+    public Object[][] searchDataFor(String sf, Context[] ext, Context[] self, String value) {
+        List<Integer> data = searchObjectIdsFor(ext, self, value);
+        String dboids = "0";
+        for (Integer id : data) {
+            dboids = id + "," + dboids;
+        }
+        return QueryHandler.instanceOf().clone(context).freeQuery("select " + sf + " from %%tablename%% where ids in (" + dboids + ")", MPSecurityManager.VIEW, null).getData();
     }
 }

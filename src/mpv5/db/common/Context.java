@@ -3,7 +3,9 @@ package mpv5.db.common;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import mpv5.db.objects.Account;
 import mpv5.db.objects.ActivityList;
 import mpv5.db.objects.ActivityListSubItem;
@@ -104,43 +106,43 @@ public class Context implements Serializable {
     public static String IDENTITY_ACTIVITYLIST = "activitylists";
     public static String IDENTITY_MASSPRINT = "massprintrules";
     //********** identity classes **********************************************
-    private static Class<Contact>               IDENTITY_CONTACTS_CLASS = Contact.class;
-    private static Class<Address>               IDENTITY_ADDRESS_CLASS = Address.class;
-    private static Class<User>                  IDENTITY_USERS_CLASS = User.class;
-    private static Class<Item>                  IDENTITY_ITEMS_CLASS = Item.class;
-    private static Class<FileToContact>         IDENTITY_CONTACTS_FILES_CLASS = FileToContact.class;
-    private static Class<FileToItem>            IDENTITY_ITEM_FILES_CLASS = FileToItem.class;
-    private static Class<HistoryItem>           IDENTITY_HISTORY_ITEMS_CLASS = HistoryItem.class;
-    private static Class<SubItem>               IDENTITY_SUBITEMS_CLASS = SubItem.class;
-    private static Class<UserPlugin>            IDENTITY_USER_PLUGINS_CLASS = UserPlugin.class;
-    private static Class<Plugin>                IDENTITY_PLUGINS_CLASS = Plugin.class;
-    private static Class<UserProperty>          IDENTITY_PROPERTIES_CLASS = UserProperty.class;
-    private static Class<Account>               IDENTITY_ACCOUNTS_CLASS = Account.class;
-    private static Class<ProductlistSubItem>    IDENTITY_ITEMSLIST_CLASS = ProductlistSubItem.class;
-    private static Class<MailMessage>           IDENTITY_MAILS_CLASS = MailMessage.class;
-    private static Class<Product>               IDENTITY_PRODUCTS_CLASS = Product.class;
-    private static Class<Group>                 IDENTITY_GROUPS_CLASS = Group.class;
-    private static Class<Company>               IDENTITY_COMPANY_CLASS = Company.class;
-    private static Class<ProductGroup>          IDENTITY_PGROUPS_CLASS = ProductGroup.class;
-    private static Class<FileToProduct>         IDENTITY_PRODUCTS_FILES_CLASS = FileToProduct.class;
-    private static Class<WebShop>               IDENTITY_WEBSHOP_CLASS = WebShop.class;
-    private static Class<Template>              IDENTITY_TEMPLATE_CLASS = Template.class;
-    private static Class<Reminder>              IDENTITY_REMINDER_CLASS = Reminder.class;
-    private static Class<Stage>                 IDENTITY_STAGE_CLASS = Stage.class;
-    private static Class<ValueProperty>         IDENTITY_VALUEPROPERTY_CLASS = ValueProperty.class;
-    private static Class<ProductPrice>          IDENTITY_PRODUCTPRICE_CLASS = ProductPrice.class;
-    private static Class<Favourite>             IDENTITY_FAVOURITE_CLASS = Favourite.class;
-    private static Class<Tax>                   IDENTITY_TAX_CLASS = Tax.class;
-    private static Class<WSContactsMapping>     IDENTITY_WSCONTACTSMAPPING_CLASS = WSContactsMapping.class;
-    private static Class<WSItemsMapping>        IDENTITY_WSITEMSMAPPING_CLASS = WSItemsMapping.class;
-    private static Class<Expense>               IDENTITY_EXPENSE_CLASS = Expense.class;
-    private static Class<ProductList>           IDENTITY_PRODUCTLIST_CLASS = ProductList.class;
-    private static Class<ProductsToSuppliers>   IDENTITY_PRODUCTSTOSUPPLIERS_CLASS = ProductsToSuppliers.class;
-    private static Class<Conversation>          IDENTITY_CONVERSATION_CLASS = Conversation.class;
-    private static Class<Schedule>              IDENTITY_SCHEDULE_CLASS = Schedule.class;
-    private static Class<ScheduleTypes>         IDENTITY_SCHEDULETYPES_CLASS = ScheduleTypes.class;
-    private static Class<ActivityListSubItem>   IDENTITY_ACTIVITYITEMSLIST_CLASS = ActivityListSubItem.class;
-    private static Class<ActivityList>          IDENTITY_ACTIVITYLIST_CLASS = ActivityList.class;
+    private static Class<Contact> IDENTITY_CONTACTS_CLASS = Contact.class;
+    private static Class<Address> IDENTITY_ADDRESS_CLASS = Address.class;
+    private static Class<User> IDENTITY_USERS_CLASS = User.class;
+    private static Class<Item> IDENTITY_ITEMS_CLASS = Item.class;
+    private static Class<FileToContact> IDENTITY_CONTACTS_FILES_CLASS = FileToContact.class;
+    private static Class<FileToItem> IDENTITY_ITEM_FILES_CLASS = FileToItem.class;
+    private static Class<HistoryItem> IDENTITY_HISTORY_ITEMS_CLASS = HistoryItem.class;
+    private static Class<SubItem> IDENTITY_SUBITEMS_CLASS = SubItem.class;
+    private static Class<UserPlugin> IDENTITY_USER_PLUGINS_CLASS = UserPlugin.class;
+    private static Class<Plugin> IDENTITY_PLUGINS_CLASS = Plugin.class;
+    private static Class<UserProperty> IDENTITY_PROPERTIES_CLASS = UserProperty.class;
+    private static Class<Account> IDENTITY_ACCOUNTS_CLASS = Account.class;
+    private static Class<ProductlistSubItem> IDENTITY_ITEMSLIST_CLASS = ProductlistSubItem.class;
+    private static Class<MailMessage> IDENTITY_MAILS_CLASS = MailMessage.class;
+    private static Class<Product> IDENTITY_PRODUCTS_CLASS = Product.class;
+    private static Class<Group> IDENTITY_GROUPS_CLASS = Group.class;
+    private static Class<Company> IDENTITY_COMPANY_CLASS = Company.class;
+    private static Class<ProductGroup> IDENTITY_PGROUPS_CLASS = ProductGroup.class;
+    private static Class<FileToProduct> IDENTITY_PRODUCTS_FILES_CLASS = FileToProduct.class;
+    private static Class<WebShop> IDENTITY_WEBSHOP_CLASS = WebShop.class;
+    private static Class<Template> IDENTITY_TEMPLATE_CLASS = Template.class;
+    private static Class<Reminder> IDENTITY_REMINDER_CLASS = Reminder.class;
+    private static Class<Stage> IDENTITY_STAGE_CLASS = Stage.class;
+    private static Class<ValueProperty> IDENTITY_VALUEPROPERTY_CLASS = ValueProperty.class;
+    private static Class<ProductPrice> IDENTITY_PRODUCTPRICE_CLASS = ProductPrice.class;
+    private static Class<Favourite> IDENTITY_FAVOURITE_CLASS = Favourite.class;
+    private static Class<Tax> IDENTITY_TAX_CLASS = Tax.class;
+    private static Class<WSContactsMapping> IDENTITY_WSCONTACTSMAPPING_CLASS = WSContactsMapping.class;
+    private static Class<WSItemsMapping> IDENTITY_WSITEMSMAPPING_CLASS = WSItemsMapping.class;
+    private static Class<Expense> IDENTITY_EXPENSE_CLASS = Expense.class;
+    private static Class<ProductList> IDENTITY_PRODUCTLIST_CLASS = ProductList.class;
+    private static Class<ProductsToSuppliers> IDENTITY_PRODUCTSTOSUPPLIERS_CLASS = ProductsToSuppliers.class;
+    private static Class<Conversation> IDENTITY_CONVERSATION_CLASS = Conversation.class;
+    private static Class<Schedule> IDENTITY_SCHEDULE_CLASS = Schedule.class;
+    private static Class<ScheduleTypes> IDENTITY_SCHEDULETYPES_CLASS = ScheduleTypes.class;
+    private static Class<ActivityListSubItem> IDENTITY_ACTIVITYITEMSLIST_CLASS = ActivityListSubItem.class;
+    private static Class<ActivityList> IDENTITY_ACTIVITYLIST_CLASS = ActivityList.class;
     private static Class<MassprintRules>        IDENTITY_MASSPRINT_CLASS = MassprintRules.class;
     //********** unique constraints *******************************************
     public static String UNIQUECOLUMNS_USER = "cname";
@@ -149,7 +151,6 @@ public class Context implements Serializable {
     public static String UNIQUECOLUMNS_DEFAULT = "cname";
     public static String DETAIL_CONTACT_SEARCH = "prename,cname,street,city,country,notes";
     private static final long serialVersionUID = 1L;
-
     //********** conditions ****************************************************
     private boolean isCompany = false;
     private boolean isCustomer = false;
@@ -221,8 +222,23 @@ public class Context implements Serializable {
             + Context.IDENTITY_MASSPRINT + "." + "dateadded" ;
 //    public static String DETAILS_FILES_TO_TEMPLATES = Context.getTemplate().getDbIdentity() + ".ids," + getTemplate().getDbIdentity() + ".cname, " + Context.getTemplate().getDbIdentity() + ".dateadded," + Context.getTemplate().getDbIdentity() + ".intsize," + Context.getTemplate().getDbIdentity() + ".mimetype";
 //    public static String DETAILS_TEMPLATES = Context.getTemplate().getDbIdentity() + ".ids," + getTemplate().getDbIdentity() + ".cname, " + Context.getTemplate().getDbIdentity() + ".mimetype," + " groups0.cname";
+    private static final Map<String, String> FOREIGN_KEY_ALIASES = new HashMap<String, String>();
 
+    /**
+     * Find an alias (eg originalproducstids is an alias for productsids in table subitems)
+     * @param context
+     * @param exct
+     * @return 
+     */
+    public static String getAliasFor(Context context, Context exct) {
+        if (FOREIGN_KEY_ALIASES.containsKey(context + "@" + exct)) {
+            return FOREIGN_KEY_ALIASES.get(context + "@" + exct);
+        } else {
+            return context.getDbIdentity();
+        }
+    }
     //**************************************************************************
+
     /**
      * Contexts which can have an export template
      * @return
@@ -1137,7 +1153,6 @@ public class Context implements Serializable {
         subitem.setIdentityClass(IDENTITY_SUBITEMS_CLASS);
         subitem.setId(2);
 
-
         return subitem;
     }
 
@@ -1339,6 +1354,7 @@ public class Context implements Serializable {
         c.setIdentityClass(IDENTITY_PRODUCTS_CLASS);
         c.setSearchFields(DEFAULT_PRODUCT_SEARCH);
         c.setId(23);
+        FOREIGN_KEY_ALIASES.put(c + "@" + getSubItem(), "originalproducts");
 
         return c;
     }
@@ -1632,7 +1648,7 @@ public class Context implements Serializable {
 
         return c;
     }
-        
+
     public static synchronized Context getProductPrice() {
         Context c = new Context();
         c.setSubID(DEFAULT_SUBID);
@@ -1653,7 +1669,7 @@ public class Context implements Serializable {
 
         return c;
     }
-        
+
     public static synchronized Context getActivityListItems() {
         Context c = new Context();
         c.setSubID(DEFAULT_SUBID);

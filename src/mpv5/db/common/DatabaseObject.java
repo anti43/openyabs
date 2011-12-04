@@ -16,6 +16,7 @@
  */
 package mpv5.db.common;
 
+import java.util.Collection;
 import groovy.lang.GroovyShell;
 import groovy.lang.Binding;
 import java.util.Arrays;
@@ -1453,13 +1454,14 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
     }
 
     @SuppressWarnings("unchecked")
-    public static <T extends DatabaseObject> ArrayList<T> getObjects(Context context, List<Integer> idlist) throws NodataFoundException {
+    public static <T extends DatabaseObject> ArrayList<T> getObjects(Context context, Collection<Integer> listi) throws NodataFoundException {
         if (Log.LOGLEVEL_DEBUG == Log.getLoglevel()) {
-            Log.Debug(DatabaseObject.class, "Fetching objects " + idlist);
+            Log.Debug(DatabaseObject.class, "Fetching objects " + listi);
         }
         ArrayList<T> list = new ArrayList<T>();
         QueryCriteria2 criterias = new QueryCriteria2();
         List<QueryParameter> uncachedIds = new ArrayList<QueryParameter>();
+         ArrayList<Integer> idlist =  new ArrayList<Integer>(listi);
         for (int i = 0; i < idlist.size(); i++) {
             Integer id = idlist.get(i);
             DatabaseObject x = DatabaseObject.getCachedObject(context, id);

@@ -16,6 +16,7 @@ import java.util.TreeSet;
 import javax.swing.JComponent;
 import javax.swing.SwingUtilities;
 import javax.swing.table.TableCellRenderer;
+import mpv5.YabsViewProxy;
 import mpv5.db.common.Context;
 
 import mpv5.db.common.DatabaseObject;
@@ -192,78 +193,46 @@ public class SearchPanel extends javax.swing.JPanel {
 
                 @Override
                 public void run() {
-
-                    Log.Debug(this, "Search parameter: " + value);
-                    Set<Integer> data = new TreeSet<Integer>();
-
-                    if (context.equals(Context.getItem())) {
-                        for (Integer s : new DatabaseSearch(Context.getItem(), 50).searchObjectIdsFor(value)) {
-                            data.add(s);
-                        }
-
-                        try {
-                            String subitemids = "0";
-                            for (Integer s : new DatabaseSearch(Context.getSubItem(), 50).searchObjectIdsFor(value)) {
-                                subitemids = s + "," + subitemids;
-                            }
-
-                            Object[] sdata = QueryHandler.instanceOf().clone(context).freeQuery("select itemsids from subitems where ids in(" + subitemids + ")", MPSecurityManager.VIEW, null).getFirstColumn();
-                            if (sdata != null) {
-                                for (int i = 0; i < sdata.length; i++) {
-                                    try {
-                                        data.add(Integer.valueOf(sdata[i].toString()));
-                                    } catch (NumberFormatException numberFormatException) {
-                                        Log.Debug(numberFormatException);
-                                    }
-                                }
-                            }
-                        } catch (Exception ex) {
-                            Log.Debug(this, ex);
-                        }
-
-                        try {
-                            String contactsids = "0";
-                            for (Integer s : new DatabaseSearch(Context.getContact(), 50).searchObjectIdsFor(value)) {
-                                contactsids = s + "," + contactsids;
-                            }
-                            Object[] sdata = QueryHandler.instanceOf().clone(context).freeQuery("select ids from items where contactsids in(" + contactsids + ")", MPSecurityManager.VIEW, null).getFirstColumn();
-                            if (sdata != null) {
-                                for (int i = 0; i < sdata.length; i++) {
-                                    try {
-                                        data.add(Integer.valueOf(sdata[i].toString()));
-                                    } catch (NumberFormatException numberFormatException) {
-                                        Log.Debug(numberFormatException);
-                                    }
-                                }
-                            }
-                        } catch (Exception ex) {
-                            Log.Debug(this, ex);
-                        }
-                    } else {
-                        for (Integer s : new DatabaseSearch(context, 50).searchObjectIdsFor(value)) {
-                            data.add(s);
-                        }
-                    }
-                    String dboids = "0";
-                    for (Integer id : data) {
-                        dboids = id + "," + dboids;
-                    }
+                    YabsViewProxy.instance().setProgressRunning(true);
                     try {
-                        Object[][] res = QueryHandler.instanceOf().clone(context).freeQuery("select " + sf + " from %%tablename%% where ids in (" + dboids + ")", MPSecurityManager.VIEW, null).getData();
+                        DatabaseSearch s = new DatabaseSearch(context);
+                        Object[][] res = null;
+                        if (context.equals(Context.getItem())) {
+                            try {
+                                res = s.searchDataFor(sf, new Context[]{Context.getSubItem()}, new Context[]{Context.getCustomer()}, value);
+                            } catch (Exception ex) {
+                                Log.Debug(ex);
+                            }
+                        } else if (context.equals(Context.getProduct())) {
+                            try {
+                                res = s.searchDataFor(sf, new Context[]{Context.getSubItem()}, new Context[0], value);
+                            } catch (Exception ex) {
+                                Log.Debug(ex);
+                            }
+                        } else {
+                            try {
+                                res = s.searchDataFor(sf, new Context[0], new Context[0], value);
+                            } catch (Exception ex) {
+                                Log.Debug(ex);
+                            }
+                        }
+
                         if (res != null) {
                             lookupResultTable.setModel(new MPTableModel(res));
                         }
-                    } catch (Exception ex) {
-                        Log.Debug(ex);
-                    }
 
-                    TableFormat.hideHeader(lookupResultTable);
-                    TableFormat.makeUneditable(lookupResultTable);
-                    TableFormat.stripColumns(lookupResultTable, new int[]{0, 4, 5, 6, 7, 8, 9});
+                        TableFormat.hideHeader(lookupResultTable);
+                        TableFormat.makeUneditable(lookupResultTable);
+                        TableFormat.stripColumns(lookupResultTable, new int[]{0, 4, 5, 6, 7, 8, 9});
+                    } catch (Exception e) {
+                        Log.Debug(e);
+                    } finally {
+                        YabsViewProxy.instance().setProgressRunning(false);
+                    }
                 }
             };
             Log.Debug(this, "Starting search..");
-            SwingUtilities.invokeLater(runnable);
+            new Thread(runnable).start();
         }
 
     }
@@ -295,6 +264,7 @@ public class SearchPanel extends javax.swing.JPanel {
     }//GEN-LAST:event_textfieldActionPerformed
 
     private void textfieldKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_textfieldKeyTyped
+
     }//GEN-LAST:event_textfieldKeyTyped
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTable lookupResultTable;
