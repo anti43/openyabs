@@ -28,7 +28,8 @@ class DynamicArithmetic {
     private char[] operators = "+-:/*%".toCharArray();
     private ArrayList<BigDecimal> vals = new ArrayList<BigDecimal>();
     private char operator = 0;
-    public BigDecimal result = new BigDecimal("0");
+    public BigDecimal result = BigDecimal.ZERO;
+    private final BigDecimal hundert = new BigDecimal("100");
     private int openTerms = 0;
     private final HashMap<Integer, BigDecimal> values;
     private DynamicArithmetic da;
@@ -132,10 +133,11 @@ class DynamicArithmetic {
             switch (operator) {
                 case '+':
                     for (int k = 0; k < vals.size(); k++) {
+                        BigDecimal val = vals.get(k) == null ? BigDecimal.ZERO : vals.get(k);
                         if (k == 0) {
-                            tmp = vals.get(k) == null ? BigDecimal.ZERO : vals.get(k);
+                            tmp = val;
                         } else {
-                            tmp = tmp.add(vals.get(k));
+                            tmp = tmp.add(val);
                         }
                     }
                     if (openTerms == 0) {
@@ -144,10 +146,11 @@ class DynamicArithmetic {
                     break;
                 case '-':
                     for (int k = 0; k < vals.size(); k++) {
+                        BigDecimal val = vals.get(k) == null ? BigDecimal.ZERO : vals.get(k);
                         if (k == 0) {
-                            tmp = vals.get(k) == null ? BigDecimal.ZERO : vals.get(k);
+                            tmp = val;
                         } else {
-                            tmp = tmp.subtract(vals.get(k));
+                            tmp = tmp.subtract(val);
                         }
                     }
                     if (openTerms == 0) {
@@ -156,10 +159,11 @@ class DynamicArithmetic {
                     break;
                 case ':':
                     for (int k = 0; k < vals.size(); k++) {
+                        BigDecimal val = vals.get(k) == null ? BigDecimal.ZERO : vals.get(k);
                         if (k == 0) {
-                            tmp = vals.get(k) == null ? BigDecimal.ZERO : vals.get(k);
+                            tmp = val;
                         } else {
-                            tmp = tmp.divide(vals.get(k));
+                            tmp = tmp.divide(val);
                         }
                     }
                     if (openTerms == 0) {
@@ -168,10 +172,11 @@ class DynamicArithmetic {
                     break;
                 case '/':
                     for (int k = 0; k < vals.size(); k++) {
+                        BigDecimal val = vals.get(k) == null ? BigDecimal.ZERO : vals.get(k);
                         if (k == 0) {
-                            tmp = vals.get(k) == null ? BigDecimal.ZERO : vals.get(k);
+                            tmp = val;
                         } else {
-                            tmp = tmp.divide(vals.get(k));
+                            tmp = tmp.divide(val);
                         }
                     }
                     if (openTerms == 0) {
@@ -180,10 +185,11 @@ class DynamicArithmetic {
                     break;
                 case '*':
                     for (int k = 0; k < vals.size(); k++) {
+                        BigDecimal val = vals.get(k) == null ? BigDecimal.ZERO : vals.get(k);
                         if (k == 0) {
-                            tmp = vals.get(k) == null ? BigDecimal.ZERO : vals.get(k);
+                            tmp = val;
                         } else {
-                            tmp = tmp.multiply(vals.get(k));
+                            tmp = tmp.multiply(val);
                         }
                     }
                     if (openTerms == 0) {
@@ -192,10 +198,11 @@ class DynamicArithmetic {
                     break;
                 case '%':
                     for (int k = 0; k < vals.size(); k++) {
+                        BigDecimal val = vals.get(k) == null ? BigDecimal.ZERO : vals.get(k);
                         if (k == 0) {
-                            tmp = vals.get(k) == null ? BigDecimal.ZERO : vals.get(k);
+                            tmp = val;
                         } else {
-                            tmp = tmp.multiply(vals.get(k)).divide(new BigDecimal("100"));
+                            tmp = tmp.multiply(val).divide(hundert);
                         }
                     }
                     if (openTerms == 0) {
