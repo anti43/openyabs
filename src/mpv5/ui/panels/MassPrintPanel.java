@@ -598,9 +598,9 @@ public class MassPrintPanel
             @Override
             public void run() {
                 Object[][] data1 = null;
-                data1 = new DatabaseSearch(Context.getContact(), 200).getValuesFor("cname", "cname", "", true);
+                data1 = new DatabaseSearch(Context.getContact(), 200).getValuesFor("ids, cname", "cname", "", true);
                 for (int i = 0; i < data1.length; i++) {
-                    model.addElement((String) data1[i][0]);
+                    model.addElement(new IdItem(Integer.parseInt(data1[i][0].toString()), data1[i][1].toString()));
                 }
             }
         };
@@ -610,16 +610,16 @@ public class MassPrintPanel
     private void showMenu(MouseEvent evt) {
         try {
             Object[][] d = QueryHandler.instanceOf().clone(Context.getMassprint()).select(Context.DETAILS_MASSPRINT);
-            String[][] rules = new String[d.length][2];
-            ActionListener[] act = new ActionListener[d.length];
+            String[][] rules = new String[d.length + 1][2];
+            ActionListener[] act = new ActionListener[d.length + 1];
             rules[0][0] = Messages.MASSPRINT_FILTER_ALL.toString();
             rules[0][1] = "999999";
             act[0] = this;
 
-            for (int i = 1; i <= d.length; i++) {
-                rules[i][0] = d[i - 1][1].toString();
-                rules[i][1] = d[i - 1][0].toString();
-                act[i] = this;
+            for (int i = 0; i < d.length; i++) {
+                rules[i + 1][0] = d[i][1].toString();
+                rules[i + 1][1] = d[i][0].toString();
+                act[i + 1] = this;
             }
             new ListPopUp(contactlist, rules, act);
         } catch (NodataFoundException ex) {
@@ -715,9 +715,9 @@ public class MassPrintPanel
         try {
             if (mi.getID() == 999999) {
                 model.clear();
-                data = new DatabaseSearch(Context.getContact(), 200).getValuesFor("cname", "cname", "", true);
+                data = new DatabaseSearch(Context.getContact(), 200).getValuesFor("ids, cname", "cname", "", true);
                 for (int i = 0; i < data.length; i++) {
-                    model.addElement(new IdItem(Integer.parseInt(data[i][ids].toString()), data[i][cname].toString()));
+                    model.addElement(new IdItem(Integer.parseInt(data[i][0].toString()), data[i][1].toString()));
                 }
             } else {
                 MassprintRules mpr = (MassprintRules) (DatabaseObject.getObject(Context.getMassprint(), mi.getID()));

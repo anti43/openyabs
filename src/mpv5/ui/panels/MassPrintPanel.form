@@ -80,7 +80,6 @@
                                   <Component id="jButton2" min="-2" pref="178" max="-2" attributes="1"/>
                                   <EmptySpace type="separate" max="-2" attributes="0"/>
                                   <Component id="jButton1" min="-2" pref="190" max="-2" attributes="1"/>
-                                  <EmptySpace max="-2" attributes="0"/>
                               </Group>
                               <Group type="102" alignment="0" attributes="0">
                                   <Component id="jComboBox1" min="-2" pref="295" max="-2" attributes="0"/>
@@ -96,7 +95,6 @@
                                   <Component id="jLabel3" min="-2" max="-2" attributes="0"/>
                                   <EmptySpace type="unrelated" max="-2" attributes="0"/>
                                   <Component id="dateTo" min="-2" max="-2" attributes="1"/>
-                                  <EmptySpace max="-2" attributes="0"/>
                               </Group>
                               <Component id="jLabel5" alignment="0" min="-2" pref="306" max="-2" attributes="0"/>
                               <Component id="jSeparator1" alignment="0" min="-2" pref="784" max="-2" attributes="1"/>
