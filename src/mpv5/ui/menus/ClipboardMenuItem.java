@@ -35,9 +35,14 @@ public class ClipboardMenuItem extends JMenuItem {
         this.setIcon(dbo.getIcon());
 
         addActionListener(new java.awt.event.ActionListener() {
+
             @Override
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                 mpv5.YabsViewProxy.instance().getIdentifierView().getCurrentTab().paste(dbo);
+                try {
+                    mpv5.YabsViewProxy.instance().getIdentifierView().getCurrentTab().paste(dbo);
+                } catch (Exception e) {
+                    mpv5.YabsViewProxy.instance().getIdentifierView().addOrShowTab(dbo);
+                }
             }
         });
 

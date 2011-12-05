@@ -419,7 +419,6 @@ public final class ActivityConfirmationPanel extends javax.swing.JPanel implemen
         ((MPTableModel) itemtable.getModel()).moveRow(index, index, index + 1);
         itemtable.changeSelection(index + 1, itemtable.getSelectedColumn(), false, false);
     }//GEN-LAST:event_upItem1ActionPerformed
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private mpv5.ui.beans.LabeledTextField Project;
     private javax.swing.JPanel SearchBarPane;
@@ -464,12 +463,19 @@ public final class ActivityConfirmationPanel extends javax.swing.JPanel implemen
     public boolean collectData() {
         cname_ = Project.getText();
         if (cname_.length() > 0) {
-            groupsids_ = User.getCurrentUser().__getGroupsids();
-            contactsids_ = Integer.parseInt(contact.getSelectedItem().getId());
-            orderids_ = Integer.parseInt(order.getSelectedItem().getId());
-            totalamount_ = new BigDecimal(total.getText().replace(",","."));
-            cnumber_ = number.getText();
-            HEADER_FAILD = false;
+            try {
+                groupsids_ = User.getCurrentUser().__getGroupsids();
+                contactsids_ = Integer.parseInt(contact.getSelectedItem().getId());
+                orderids_ = Integer.parseInt(order.getSelectedItem().getId());
+                totalamount_ = new BigDecimal(total.getText().replace(",", "."));
+                cnumber_ = number.getText();
+                HEADER_FAILD = false;
+            } catch (Exception exception) {
+                Log.Debug(exception);
+                HEADER_FAILD = true;
+                return false;
+            }
+
         } else {
             HEADER_FAILD = true;
             return false;
@@ -658,15 +664,15 @@ public final class ActivityConfirmationPanel extends javax.swing.JPanel implemen
         tcr.setRendererTo(7);
         tcr.setRendererTo(8);
 
-        itemMultiplier =  new DynamicTableCalculator(itemtable, "(([3]*[6])-([3]*[6]%[7]))", new int[]{8});
+        itemMultiplier = new DynamicTableCalculator(itemtable, "(([3]*[6])-([3]*[6]%[7]))", new int[]{8});
         ((MPTableModel) itemtable.getModel()).addCalculator(itemMultiplier);
         itemMultiplier.addLabel(total, 8);
     }
 
     public void pdf() {
         if (dataOwner != null && dataOwner.isExisting()) {
-            if (TemplateHandler.isLoaded(Long.valueOf(dataOwner.templateGroupIds()),dataOwner.templateType())) {
-                new Job(Export.createFile(dataOwner.getFormatHandler().toUserString(), 
+            if (TemplateHandler.isLoaded(Long.valueOf(dataOwner.templateGroupIds()), dataOwner.templateType())) {
+                new Job(Export.createFile(dataOwner.getFormatHandler().toUserString(),
                         TemplateHandler.loadTemplate(
                         dataOwner.templateGroupIds(), dataOwner.templateType()),
                         dataOwner), new DialogForFile(User.getSaveDir(dataOwner))).execute();
@@ -680,7 +686,7 @@ public final class ActivityConfirmationPanel extends javax.swing.JPanel implemen
         if (dataOwner != null && dataOwner.isExisting()) {
             if (TemplateHandler.isLoaded(Long.valueOf(dataOwner.templateGroupIds()), dataOwner.templateType())) {
                 new Job(Export.sourceFile(
-                        dataOwner.getFormatHandler().toUserString(), 
+                        dataOwner.getFormatHandler().toUserString(),
                         TemplateHandler.loadTemplate(dataOwner.templateGroupIds(), dataOwner.templateType()), dataOwner), new DialogForFile(User.getSaveDir(dataOwner))).execute();
             } else {
                 Popup.notice(Messages.NO_TEMPLATE_LOADED + " (" + mpv5.db.objects.User.getCurrentUser() + ")");
@@ -696,7 +702,7 @@ public final class ActivityConfirmationPanel extends javax.swing.JPanel implemen
 
         formatTable();
     }
-    
+
     private void preloadTemplate() {
         Runnable runnable = new Runnable() {
 
