@@ -127,8 +127,8 @@ public class HomeScreen
                     true,
                     true});
         ((MPTable) table).setPersistanceHandler(new TableViewPersistenceHandler(
-               (MPTable) table,
-                this ));
+                (MPTable) table,
+                this));
         TableFormat.hideHeader(table);
     }
 
@@ -159,7 +159,7 @@ public class HomeScreen
         labeledCombobox1.setContext(Context.getGroup());
         labeledCombobox1.triggerSearch();
         timeframeChooser1.setTime(new vTimeframe(DateConverter.getStartOfMonth(new Date()), DateConverter.getEndOfMonth(new Date())));
-        
+
         labeledCombobox3.setSearchEnabled(true);
         labeledCombobox3.setContext(Context.getGroup());
         labeledCombobox3.triggerSearch();
@@ -171,12 +171,12 @@ public class HomeScreen
         } else {
             setData(ndata, table, true);
             xdata = ndata;
-        } 
+        }
         validate();
     }
 
     public <T extends DatabaseObject> void setData(List<T> list, JTable table, Boolean isDBObj) {
-        Object[][] data  = null;
+        Object[][] data = null;
         int type;
         orderSum = new BigDecimal(0);
         offerSum = new BigDecimal(0);
@@ -215,7 +215,7 @@ public class HomeScreen
                             orderSum = orderSum.add(((Item) databaseObject).__getNetvalue().multiply(tax));
                             break;
                     }
-                    
+
                     data[i][4] = Item.getTypeString(type);
                     data[i][5] = databaseObject.getIcon();
                 } else {
@@ -232,7 +232,7 @@ public class HomeScreen
         } else {
             data = new Object[0][6];
         }
-        
+
         MPTableModel m = new MPTableModel(data);
         m.setTypes(new Class[]{DatabaseObject.class,
                     String.class,
@@ -242,7 +242,7 @@ public class HomeScreen
                     ImageIcon.class
                 });
         table.setModel(m);
-        
+
         if (isDBObj == false) {
             orders.setText(FormatNumber.formatLokalCurrency(orderSum));
             offers.setText(FormatNumber.formatLokalCurrency(offerSum));
@@ -256,16 +256,8 @@ public class HomeScreen
      */
     @SuppressWarnings("unchecked")
     public void filterByTimeframe(vTimeframe g) {
-        setData(odata, overdue, false);
-        Object[][] data = ((MPTableModel) overdue.getModel()).getData();
-        List<DatabaseObject> list = new ArrayList<DatabaseObject>();
-        for (int i = 0; i < data.length; i++) {
-            DatabaseObject d = (DatabaseObject) data[i][0];
-            if (g.contains(d.__getDateadded())) {
-                list.add(d);
-            }
-        }
-        setData(list, overdue, false);
+        HashMap<Color, List<Item>> map = Scheduler.getOverdueEvents();
+        this.show(map, this.getOverdue());
     }
 
     /**
@@ -275,16 +267,7 @@ public class HomeScreen
     @SuppressWarnings("unchecked")
     public void filterByTimeframe2(vTimeframe g) {
         HashMap<Color, List<Schedule>> map = Scheduler.getScheduledBills(g);
-        Iterator<Color> it = map.keySet().
-                iterator();
-        while (it.hasNext()) {
-            Color c = it.next();
-            List<Schedule> data = map.get(c);
-            if (!data.isEmpty()) {
-                this.show(map, this.getNextEvents());
-                break;
-            }
-        }
+        this.show(map, this.getNextEvents());
     }
 
     @SuppressWarnings("unchecked")
@@ -404,6 +387,7 @@ public class HomeScreen
         offers = new mpv5.ui.beans.LabeledTextField();
         bills = new mpv5.ui.beans.LabeledTextField();
         orders = new mpv5.ui.beans.LabeledTextField();
+        but6 = new javax.swing.JButton();
         jPanel2 = new javax.swing.JPanel();
         jButton6 = new javax.swing.JButton();
         jButton5 = new javax.swing.JButton();
@@ -504,15 +488,34 @@ public class HomeScreen
         orders.setEnabled(false);
         orders.setName("orders"); // NOI18N
 
+        but6.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/agt_reload.png"))); // NOI18N
+        but6.setText(bundle.getString("HomeScreen.but6.text")); // NOI18N
+        but6.setToolTipText(bundle.getString("HomeScreen.but6.toolTipText")); // NOI18N
+        but6.setContentAreaFilled(false);
+        but6.setFocusable(false);
+        but6.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        but6.setName("but6"); // NOI18N
+        but6.setPressedIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/xclock.png"))); // NOI18N
+        but6.setRolloverIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/agt_reload.png"))); // NOI18N
+        but6.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        but6.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                but6ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 849, Short.MAX_VALUE)
+            .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 861, Short.MAX_VALUE)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addComponent(timeframeChooser1, javax.swing.GroupLayout.PREFERRED_SIZE, 330, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(6, 6, 6)
-                .addComponent(jButton1))
+                .addComponent(jButton1)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 419, Short.MAX_VALUE)
+                .addComponent(but6, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addComponent(labeledCombobox2, javax.swing.GroupLayout.PREFERRED_SIZE, 325, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
@@ -523,7 +526,7 @@ public class HomeScreen
                 .addComponent(jButton2))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                 .addComponent(offers, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 186, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 198, Short.MAX_VALUE)
                 .addComponent(orders, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(117, 117, 117)
                 .addComponent(bills, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -531,11 +534,14 @@ public class HomeScreen
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(timeframeChooser1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton1))
-                .addGap(9, 9, 9)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(timeframeChooser1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jButton1)))
+                    .addComponent(but6, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(14, 14, 14)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jButton3)
                     .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
@@ -543,7 +549,7 @@ public class HomeScreen
                         .addComponent(labeledCombobox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(labeledCombobox2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 155, Short.MAX_VALUE)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 149, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
@@ -649,10 +655,10 @@ public class HomeScreen
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 849, Short.MAX_VALUE)
+            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 861, Short.MAX_VALUE)
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addComponent(but4, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 771, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 783, Short.MAX_VALUE)
                 .addComponent(but5, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE))
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addComponent(timeframeChooser2, javax.swing.GroupLayout.PREFERRED_SIZE, 330, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -664,7 +670,7 @@ public class HomeScreen
                 .addComponent(jButton4)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(labeledCombobox3, javax.swing.GroupLayout.PREFERRED_SIZE, 322, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 72, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 84, Short.MAX_VALUE)
                 .addComponent(jButton5))
         );
         jPanel2Layout.setVerticalGroup(
@@ -681,7 +687,7 @@ public class HomeScreen
                         .addComponent(jButton4)
                         .addComponent(jButton5)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 132, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 128, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(but4, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -799,7 +805,7 @@ private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
     private void but4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_but4ActionPerformed
         Log.Debug(this, "adding new schedule from Homescreen");
         ScheduleEvents.instanceOf();
-        
+
     }//GEN-LAST:event_but4ActionPerformed
 
     private void but5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_but5ActionPerformed
@@ -809,10 +815,39 @@ private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
         refresh();
     }//GEN-LAST:event_but5ActionPerformed
 
+    private void but6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_but6ActionPerformed
+        odata = xdata = null;
+        refresh();
+        HashMap<Color, List<Schedule>> map1 = Scheduler.getScheduledBills(null);
+        Iterator<Color> it1 = map1.keySet().
+                iterator();
+        while (it1.hasNext()) {
+            Color c = it1.next();
+            List<Schedule> data = map1.get(c);
+            if (!data.isEmpty()) {
+                this.show(map1, this.getNextEvents());
+                break;
+            }
+        }
+        
+        HashMap<Color, List<Item>> map2 = Scheduler.getOverdueEvents();
+        Iterator<Color> it2 = map2.keySet().
+                iterator();
+        while (it2.hasNext()) {
+            Color c = it2.next();
+            List<Item> data = map2.get(c);
+            if (!data.isEmpty()) {
+                this.show(map2, this.getOverdue());
+                break;
+            }
+        }
+    }//GEN-LAST:event_but6ActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private mpv5.ui.beans.LabeledTextField bills;
     private javax.swing.JButton but4;
     private javax.swing.JButton but5;
+    private javax.swing.JButton but6;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;

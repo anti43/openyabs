@@ -174,7 +174,7 @@ public class DatabaseUpdater {
                     + " intaddedby BIGINT DEFAULT 0,"
                     + " groupsids BIGINT REFERENCES groups(ids) DEFAULT 1,"
                     + "PRIMARY KEY  (ids))",
-                    "INSERT INTO massprintrules (cname, inttype, content, dateadded, invisible, groupsids) VALUES ('Open Bills',0, 'Select * from contacts Inner Join items on (Items.contactsids = contacts.ids) where items.intstatus = 4 and items.inttype =3', '2011-07-29',0, 1)",
+                    "INSERT INTO massprintrules (cname, inttype, content, dateadded, invisible, groupsids) VALUES ('Open Bills',0, 'Select * from contacts Inner Join items on (Items.contactsids = contacts.ids) where items.intstatus = 1 and items.inttype = 0', '2011-07-29',0, 1)",
                     "INSERT INTO massprintrules (cname, inttype, content, dateadded, invisible, groupsids) VALUES ('Is Customer', -1, 'Select * from contacts where iscustomer = 1', '2011-07-29',0, 1)",
                     "INSERT INTO massprintrules (cname, inttype, content, dateadded, invisible, groupsids) VALUES ('Is Suply', -1, 'Select * from contacts where issupplier = 1', '2011-07-29',0, 1)"});        
         ////////////////////////////////////////////////////////////////////////////////////////////
@@ -351,7 +351,7 @@ public class DatabaseUpdater {
                     + " groupsids BIGINT REFERENCES groups(ids) DEFAULT 1,"
                     + " invisible SMALLINT DEFAULT 0,"
                     + "PRIMARY KEY  (ids))ENGINE=MyISAM  DEFAULT CHARSET=IS0-8859-15",
-                    "INSERT INTO massprintrules (cname, inttype, content, dateadded, invisible, groupsids) VALUES ('Open Bills',0, 'Select * from contacts Inner Join items on (Items.contactsids = contacts.ids) where items.intstatus = 4 and items.inttype =3', '2011-07-29',0, 1)",
+                    "INSERT INTO massprintrules (cname, inttype, content, dateadded, invisible, groupsids) VALUES ('Open Bills',0, 'Select * from contacts Inner Join items on (Items.contactsids = contacts.ids) where items.intstatus = 1 and items.inttype = 0', '2011-07-29',0, 1)",
                     "INSERT INTO massprintrules (cname, inttype, content, dateadded, invisible, groupsids) VALUES ('Is Customer', -1, 'Select * from contacts where iscustomer = 1', '2011-07-29',0, 1)",
                     "INSERT INTO massprintrules (cname, inttype, content, dateadded, invisible, groupsids) VALUES ('Is Suply', -1, 'Select * from contacts where issupplier = 1', '2011-07-29',0, 1)"});              
     }

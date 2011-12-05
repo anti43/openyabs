@@ -613,7 +613,7 @@ public class ScheduleEvents extends javax.swing.JFrame {
 
     private void but7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_but7ActionPerformed
         this.setVisible(false);
-        HomeScreen.getInstance().refresh();
+        HomeScreen.getInstance();
     }//GEN-LAST:event_but7ActionPerformed
 
     private void but8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_but8ActionPerformed

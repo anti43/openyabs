@@ -27,7 +27,6 @@ import mpv5.utils.date.vTimeframe;
 public class Scheduler extends Thread {
 
     private HomeScreen g;
-    private boolean show;
 
     public Scheduler() {
         g = HomeScreen.getInstance();
@@ -39,9 +38,9 @@ public class Scheduler extends Thread {
         checkForOverdueEvents();
         checkForCreateBillEvents(null);
         while (YabsApplication.getApplication().isReady() == false);
-        if (show) {
-            mpv5.YabsViewProxy.instance().getIdentifierView().addOrShowTab(g, Messages.HOMESCREEN.toString());
-        }
+//        if (show) {
+        mpv5.YabsViewProxy.instance().getIdentifierView().addOrShowTab(g, Messages.HOMESCREEN.toString());
+//        }
     }
 
     @SuppressWarnings("static-access")
@@ -55,7 +54,6 @@ public class Scheduler extends Thread {
             List<Schedule> data = map.get(c);
             if (!data.isEmpty()) {
                 g.show(map, g.getNextEvents());
-                show = true;
                 break;
             }
         }
@@ -63,14 +61,60 @@ public class Scheduler extends Thread {
 
     @SuppressWarnings("fallthrough")
     public void checkForOverdueEvents() {
+        HashMap<Color, List<Item>> map = new HashMap<Color, List<Item>>();
+        map = getOverdueEvents();
+        Iterator<Color> it = map.keySet().
+                iterator();
+        while (it.hasNext()) {
+            Color c = it.next();
+            List<Item> data = map.get(c);
+            if (!data.isEmpty()) {
+                g.show(map, g.getOverdue());
+                break;
+            }
+        }
+    }
 
+    public static HashMap<Color, List<Schedule>> getScheduledBills(vTimeframe DateFrame) {
+        ArrayList<Schedule> data;
+        if (DateFrame == null) {
+            data = Schedule.getEvents(new vTimeframe(DateConverter.getStartOfMonth(new Date()), DateConverter.getEndOfMonth(new Date())));
+        } else {
+            data = Schedule.getEvents(DateFrame);
+        }
+        List<Schedule> warnings = new ArrayList<Schedule>();
+        List<Schedule> alerts = new ArrayList<Schedule>();
+        List<Schedule> waitings = new ArrayList<Schedule>();
+
+
+        for (int i = 0; i < data.size(); i++) {
+            Schedule sched = data.get(i);
+            if (!sched.__getIsdone() && sched.__getIntervalmonth() != 0) {
+                if (sched.__getNextdate().compareTo(new Date()) < 0) {
+                    alerts.add(sched);
+                } else if (sched.__getNextdate().compareTo(new Date()) > 0) {
+                    waitings.add(sched);
+                } else {
+                    warnings.add(sched);
+                }
+            }
+        }
+
+        HashMap<Color, List<Schedule>> map = new HashMap<Color, List<Schedule>>();
+        map.put(Color.red, alerts);
+        map.put(Color.yellow, warnings);
+        map.put(Color.green, waitings);
+        return map;
+    }
+
+    public static HashMap<Color, List<Item>> getOverdueEvents() {
         List<Item> warnings = new ArrayList<Item>();
         List<Item> alerts = new ArrayList<Item>();
         List<Item> waitings = new ArrayList<Item>();
         int b = 0;
         String ItemType = "bills";
         String prop = "";
-         try {
+        try {
             while (b < 5) {
                 switch (b) {
                     case 0:
@@ -89,10 +133,10 @@ public class Scheduler extends Thread {
                         ItemType = "confirmation";
                         prop = "hideunattentedconfirmations";
                 }
-                if (!mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("org.openyabs.uiproperty",prop)) {
-                    String sql = "SELECT ids FROM items WHERE (intstatus = " + Item.STATUS_IN_PROGRESS + " OR intstatus = " + 
-                                                                               Item.STATUS_FINISHED + ") AND inttype=" + b +
-                                                                               " AND invisible = 0";
+                if (!mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("org.openyabs.uiproperty", prop)) {
+                    String sql = "SELECT ids FROM items WHERE (intstatus = " + Item.STATUS_IN_PROGRESS + " OR intstatus = "
+                            + Item.STATUS_FINISHED + ") AND inttype=" + b
+                            + " AND invisible = 0";
                     ReturnValue data = QueryHandler.getConnection().
                             freeSelectQuery(sql,
                             MPSecurityManager.VIEW,
@@ -108,13 +152,13 @@ public class Scheduler extends Thread {
                                         id);
                                 waitings.add(it);
                             } catch (NodataFoundException ex) {
-                                Log.Debug(this,
+                                Log.Debug(Scheduler.class,
                                         ex.getMessage());
                             }
                         }
                     }
                 } else {
-                    Log.Debug(this,
+                    Log.Debug(Scheduler.class,
                             "No warn treshold for " + ItemType + " defined.");
                 }
                 b++;
@@ -142,8 +186,8 @@ public class Scheduler extends Thread {
                         ItemType = "confirmation";
                         prop = "hideunattentedconfirmations";
                 }
-                if (mpv5.db.objects.User.getCurrentUser().getProperties().hasProperty(ItemType + ".warn.days") && 
-                    !mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("org.openyabs.uiproperty",prop)) {
+                if (mpv5.db.objects.User.getCurrentUser().getProperties().hasProperty(ItemType + ".warn.days")
+                        && !mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("org.openyabs.uiproperty", prop)) {
                     Integer warn = Integer.valueOf(mpv5.db.objects.User.getCurrentUser().
                             getProperties().
                             getProperty(ItemType + ".warn.days"));
@@ -168,13 +212,13 @@ public class Scheduler extends Thread {
                                         id);
                                 warnings.add(it);
                             } catch (NodataFoundException ex) {
-                                Log.Debug(this,
+                                Log.Debug(Scheduler.class,
                                         ex.getMessage());
                             }
                         }
                     }
                 } else {
-                    Log.Debug(this,
+                    Log.Debug(Scheduler.class,
                             "No warn treshold for " + ItemType + " defined.");
                 }
                 b++;
@@ -225,7 +269,7 @@ public class Scheduler extends Thread {
                     }
                 }
             } else {
-                Log.Debug(this,
+                Log.Debug(Scheduler.class,
                         "No alert treshold for " + ItemType + " defined.");
             }
             b++;
@@ -245,44 +289,7 @@ public class Scheduler extends Thread {
             }
         }
 
-
         HashMap<Color, List<Item>> map = new HashMap<Color, List<Item>>();
-        map.put(Color.red, alerts);
-        map.put(Color.yellow, warnings);
-        map.put(Color.green, waitings);
-
-        if (!alerts.isEmpty() | !warnings.isEmpty() | !waitings.isEmpty()) {
-            g.show(map, g.getOverdue());
-            show = true;
-        }
-    }
-
-    public static HashMap<Color, List<Schedule>> getScheduledBills(vTimeframe DateFrame) {
-        ArrayList<Schedule> data;
-        if (DateFrame == null) {
-            data = Schedule.getEvents(new vTimeframe(DateConverter.getStartOfMonth(new Date()), DateConverter.getEndOfMonth(new Date())));
-        } else {
-            data = Schedule.getEvents(DateFrame);
-        }
-        List<Schedule> warnings = new ArrayList<Schedule>();
-        List<Schedule> alerts = new ArrayList<Schedule>();
-        List<Schedule> waitings = new ArrayList<Schedule>();
-
-
-        for (int i = 0; i < data.size(); i++) {
-            Schedule sched = data.get(i);
-            if (!sched.__getIsdone() && sched.__getIntervalmonth() != 0) {
-                if (sched.__getNextdate().compareTo(new Date()) < 0) {
-                    alerts.add(sched);
-                } else if (sched.__getNextdate().compareTo(new Date()) > 0) {
-                    waitings.add(sched);
-                } else {
-                    warnings.add(sched);
-                }
-            }
-        }
-
-        HashMap<Color, List<Schedule>> map = new HashMap<Color, List<Schedule>>();
         map.put(Color.red, alerts);
         map.put(Color.yellow, warnings);
         map.put(Color.green, waitings);
