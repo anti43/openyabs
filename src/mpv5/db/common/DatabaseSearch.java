@@ -334,6 +334,14 @@ public class DatabaseSearch {
         }
     }
 
+    /**
+     * 
+     * @param ext
+     * @param self
+     * @param value
+     * @return 
+     */
+    @SuppressWarnings("unchecked")
     public List<DatabaseObject> searchObjectsFor(Context[] ext, Context[] self, String value) {
         Log.Debug(this, "Search parameter: " + value);
         Set<Integer> data = new TreeSet<Integer>();
@@ -384,6 +392,13 @@ public class DatabaseSearch {
         }
     }
 
+    /**
+     * 
+     * @param ext
+     * @param self
+     * @param value
+     * @return 
+     */
     public List<Integer> searchObjectIdsFor(Context[] ext, Context[] self, String value) {
         Log.Debug(this, "Search parameter: " + value);
         Set<Integer> data = new TreeSet<Integer>();
@@ -431,6 +446,14 @@ public class DatabaseSearch {
         return new ArrayList<Integer>(data);
     }
 
+    /**
+     * 
+     * @param sf
+     * @param ext
+     * @param self
+     * @param value
+     * @return 
+     */
     public Object[][] searchDataFor(String sf, Context[] ext, Context[] self, String value) {
         List<Integer> data = searchObjectIdsFor(ext, self, value);
         String dboids = "0";

@@ -195,7 +195,12 @@ public class TextAreaCellEditor extends DefaultCellEditor implements ActionListe
         }
 
         Dimension invokerSize           = c.getSize();
-        Point     invokerScreenLocation = c.getLocationOnScreen();
+        Point invokerScreenLocation = new Point(0, 0);
+        try {
+            invokerScreenLocation = c.getLocationOnScreen();
+        } catch (Exception e) {
+            Log.Debug(e);
+        }
         Rectangle windowBounds          = dialog.getBounds();
         int       dx                    = invokerScreenLocation.x;
         int       dy                    = invokerScreenLocation.y;

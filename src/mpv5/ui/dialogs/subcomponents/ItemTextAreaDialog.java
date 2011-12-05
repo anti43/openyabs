@@ -183,7 +183,7 @@ public class ItemTextAreaDialog extends javax.swing.JDialog implements KeyListen
             p = SubItem.getFromModel(m, getParentTable().getSelectedRow());
         } else {
             p = new SubItem(product);
-            p.setCountvalue(new BigDecimal(labeledSpinner1.get_Value().toString()));
+            p.setQuantityvalue(new BigDecimal(labeledSpinner1.get_Value().toString()));
             p.setExternalvalue(product.findPriceFor(p.__getCountvalue().doubleValue()));
         }
         p.setDescription(textArea.getText());

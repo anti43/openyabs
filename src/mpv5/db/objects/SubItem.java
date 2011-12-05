@@ -266,12 +266,18 @@ public final class SubItem extends DatabaseObject implements Triggerable {
             String defunit = mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("defunit");
             i.setMeasure(defunit);
         }
-        BigDecimal deftax = new BigDecimal("0");
+        BigDecimal deftax = BigDecimal.ZERO;
         if (mpv5.db.objects.User.getCurrentUser().getProperties().hasProperty("deftax")) {
             int taxid = mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("deftax", new Integer(0));
             deftax = Tax.getTaxValue(taxid);
         }
         i.setTaxpercentvalue(deftax);
+        
+        BigDecimal defdiscount = BigDecimal.ZERO;
+        if (mpv5.db.objects.User.getCurrentUser().getProperties().hasProperty("defdiscount")) {
+             defdiscount = new BigDecimal(mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("defdiscount"));
+        }
+        i.setDiscount(defdiscount);
 
         if (mpv5.db.objects.User.getCurrentUser().getProperties().hasProperty("defcount")) {
             Double defcount = mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("defcount", 0d);
@@ -682,7 +688,7 @@ public final class SubItem extends DatabaseObject implements Triggerable {
         if (mpv5.db.objects.User.getCurrentUser().getProperties().hasProperty("defcount")) {
             defcount = mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("defcount", 0d);
         }
-        model.defineRow(new Object[]{0, 0, defcount, defunit, null, 0.0, deftax, 0.0, 0.0, 0.0, null, "A", "C", "", ""});
+        model.defineRow(new Object[]{0, 0, defcount, defunit, null, 0.0, deftax, 0.0, 0.0, 0.0, null, "A", "C", "", "", 0.0, 0.0});
         model.setAutoCountColumn(1);
 
         return model;

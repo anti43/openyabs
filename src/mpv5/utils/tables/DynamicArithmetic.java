@@ -35,6 +35,7 @@ class DynamicArithmetic {
     private DynamicArithmetic da;
 
     public DynamicArithmetic(String toParse, HashMap<Integer, BigDecimal> values) throws ParseFormatException {
+      //  Log.Debug(this, toParse);
         this.toParse = toParse;
         this.values = values;
         result = parse();
