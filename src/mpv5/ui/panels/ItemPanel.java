@@ -146,7 +146,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
 
         refresh();
 //        shipping.set_ValueClass(Double.class);
-        
+
 //        checkb_pront_oc.setSelected(
 //            mpv5.db.objects.User.getCurrentUser().getProperties().getProperty(
 //                "org.openyabs.uiproperty", 
@@ -299,8 +299,8 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
         });
         labeledCombobox1.setSearchOnEnterEnabled(true);
 
-       ((MPTable) dataTable).setPersistanceHandler(new TableViewPersistenceHandler((MPTable)dataTable, this));
-       ((MPTable) proptable).setPersistanceHandler(new TableViewPersistenceHandler((MPTable)proptable, this));
+        ((MPTable) dataTable).setPersistanceHandler(new TableViewPersistenceHandler((MPTable) dataTable, this));
+        ((MPTable) proptable).setPersistanceHandler(new TableViewPersistenceHandler((MPTable) proptable, this));
 
     }
 
@@ -445,7 +445,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
     }
 
     private void fillFiles() {
-        
+
         Runnable runnable = new Runnable() {
 
             public void run() {
@@ -1360,7 +1360,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
                     while (it.hasNext()) {
                         row = ((ActivityList) it.next()).getDataForInvoice();
                         row[1] = model.getRowCount();
-                        model.insertRow(model.getRowCount(),row);
+                        model.insertRow(model.getRowCount(), row);
                     }
                     SubItem.saveModel(i2, model, true, true);
                 }
@@ -1720,7 +1720,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
             TableFormat.stripColumn(itemtable, 6);
             model.setCellEditable(0, 6, false);
         }
-        
+
         if (mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("org.openyabs.uiproperty", "hidediscountcolumn")) {
             TableFormat.stripColumn(itemtable, 15);
             model.setCellEditable(0, 15, false);
@@ -1732,16 +1732,18 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
         productSelectDialog.cancelButton.addActionListener(r);
         r.setDialog(productSelectDialog, productSelectDialog.getIDTextField());
         r.setEditorTo(10);
-        itemtable.moveColumn(10, 3);
 
         if (!mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("org.openyabs.uiproperty", "showoptionalcolumn")) {
             TableFormat.stripColumn(itemtable, 14);
             model.setCellEditable(0, 14, false);
         } else {
-            itemtable.moveColumn(14, 5);
             TableFormat.resizeCol(itemtable, 5, 120, true);
         }
-        itemtable.moveColumn(15, 6);
+
+        //column move is the very last thing to do, in newcol.asc order
+        itemtable.moveColumn(10, 3);
+        itemtable.moveColumn(14, 5);
+        itemtable.moveColumn(15, 7);
     }
 
     @Override
@@ -1935,7 +1937,6 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
             o.save(true);
         }
     }
-
     List<Item> usedOrders = new ArrayList<Item>();
 
     @Override
@@ -1979,12 +1980,11 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
             }
         }
     }
-    
 
     private void prepareTable() {
         TableCellRendererForProducts tx = new TableCellRendererForProducts(itemtable);
         tx.setRendererTo(10);
-        
+
         TableCellRendererForDezimal t = new TableCellRendererForDezimal(itemtable);
         t.setRendererTo(6);
         t.setRendererTo(5);
@@ -2005,7 +2005,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
         itemTextAreaDialog.cancelButton.addActionListener(r);
         r.setDialog(itemTextAreaDialog, itemTextAreaDialog.textArea);
         r.setEditorTo(4);
-        
+
         itemMultiplier = new DynamicTableCalculator(itemtable, "(([2]*[5])-([2]*[5]%[15]))+(([2]*[5])-([2]*[5]%[15]))%[6]", new int[]{7});
         ((MPTableModel) itemtable.getModel()).addCalculator(itemMultiplier);
         itemMultiplier.addLabel(value, 7);
@@ -2013,15 +2013,15 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
         netCalculator = new DynamicTableCalculator(itemtable, "[2]*[5]", new int[]{9});
         ((MPTableModel) itemtable.getModel()).addCalculator(netCalculator);
         netCalculator.addLabel(netvalue, 9);
-        
+
         taxcalculator = new DynamicTableCalculator(itemtable, "[7]-([9]-([2]*[5]%[15]))", new int[]{8});
         ((MPTableModel) itemtable.getModel()).addCalculator(taxcalculator);
         taxcalculator.addLabel(taxvalue, 8);
-        
+
         disccalculator = new DynamicTableCalculator(itemtable, "[2]*[5]%[15]", new int[]{16});
         ((MPTableModel) itemtable.getModel()).addCalculator(disccalculator);
         disccalculator.addLabel(discount, 16);
-        
+
 //        if (mpv5.db.objects.User.getCurrentUser().getProperties().hasProperty("shiptax")) {
 //            int taxid = mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("shiptax", new Integer(0));
 //            Double shiptax = Tax.getTaxValue(taxid).doubleValue();
@@ -2228,7 +2228,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
             public void run() {
                 TemplateHandler.loadTemplateFor(button_preview, dataOwner.templateGroupIds(), dataOwner.__getInttype());
                 TemplateHandler.loadTemplateFor(button_deliverynote, dataOwner.templateGroupIds(), TemplateHandler.TYPE_DELIVERY_NOTE);
-                TemplateHandler.loadTemplateFor(new JComponent[]{button_orderconf, checkb_pront_oc}, dataOwner.templateGroupIds() , TemplateHandler.TYPE_ORDER_CONFIRMATION);
+                TemplateHandler.loadTemplateFor(new JComponent[]{button_orderconf, checkb_pront_oc}, dataOwner.templateGroupIds(), TemplateHandler.TYPE_ORDER_CONFIRMATION);
                 TemplateHandler.loadTemplateFor(button_reminders, dataOwner.templateGroupIds(), TemplateHandler.TYPE_REMINDER);
 
                 if (TemplateHandler.isLoaded(Long.valueOf(dataOwner.templateGroupIds()), dataOwner.__getInttype())) {
@@ -2291,6 +2291,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
     }
 
     private class alignRightToolbar extends JToolBar {
+
         private static final long serialVersionUID = 1L;
 
         public alignRightToolbar() {

@@ -48,6 +48,8 @@ public class ItemTextAreaDialog extends javax.swing.JDialog implements KeyListen
         labeledCombobox1.setSearchOnEnterEnabled(true);;
         labeledCombobox1.setReceiver(this);
         labeledCombobox1.setToolTipText(Messages.SEARCHABLE.toString());
+        
+        labeledSpinner1.setValue(1);
     }
 
     @Override
