@@ -22,19 +22,15 @@ along with YaBS.  If not, see <http://www.gnu.org/licenses/>.
 package mpv5.ui.panels;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.awt.event.MouseEvent;
 import java.math.BigDecimal;
-import java.math.BigInteger;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JTabbedPane;
@@ -44,7 +40,6 @@ import javax.swing.SwingUtilities;
 import javax.swing.table.TableCellRenderer;
 import mpv5.db.common.*;
 import mpv5.db.objects.Account;
-import mpv5.db.objects.Expense;
 import mpv5.db.objects.Revenue;
 import mpv5.globals.Messages;
 import mpv5.db.objects.Favourite;
@@ -52,22 +47,16 @@ import mpv5.db.objects.Item;
 import mpv5.db.objects.Tax;
 import mpv5.db.objects.Template;
 import mpv5.logging.Log;
-import mpv5.ui.dialogs.BigPopup;
 import mpv5.ui.dialogs.Popup;
-import mpv5.ui.dialogs.subcomponents.ControlPanel_Groups;
-import mpv5.ui.frames.MPView;
 import mpv5.ui.toolbars.DataPanelTB;
 import mpv5.db.objects.User;
 import mpv5.globals.Headers;
 import mpv5.ui.misc.MPTable;
-import mpv5.utils.arrays.ArrayUtilities;
-import mpv5.utils.date.DateConverter;
 import mpv5.utils.export.Export;
 import mpv5.utils.export.Exportable;
 import mpv5.utils.models.MPComboBoxModelItem;
 import mpv5.utils.models.MPTableModel;
 import mpv5.utils.numberformat.FormatNumber;
-import mpv5.utils.tables.TableFormat;
 import mpv5.ui.misc.TableViewPersistenceHandler;
 import mpv5.utils.ui.TextFieldUtils;
 
@@ -148,21 +137,24 @@ public class RevenuePanel extends javax.swing.JPanel implements DataPanel {
     }
 
     private void calculate() {
-        BigDecimal tax = new BigDecimal("0");
+        BigDecimal tax = BigDecimal.ZERO;
         try {
             MPComboBoxModelItem t = taxrate.getValue();
             tax = Tax.getTaxValue(Integer.valueOf(t.getId()));
         } catch (Exception e) {
+            Log.Debug(e);
             try {
                 tax = new BigDecimal(taxrate.getText());
             } catch (Exception numberFormatException) {
-                tax = new BigDecimal("0");
+                Log.Debug(e);
+                tax = BigDecimal.ZERO;
             }
         }
 
         try {
-            netvalue.setText(FormatNumber.formatLokalCurrency(FormatNumber.parseDezimal(value.getText()).divide((tax.divide(new BigDecimal("100"))).add(BigDecimal.ONE))));
+            netvalue.setText(FormatNumber.formatLokalCurrency(FormatNumber.parseDezimal(value.getText()).divide((tax.divide(new BigDecimal("100"), RoundingMode.HALF_UP)).add(BigDecimal.ONE), RoundingMode.HALF_UP)));
         } catch (Exception e) {
+            Log.Debug(e);
             netvalue.setText(FormatNumber.formatLokalCurrency(0d));
         }
     }

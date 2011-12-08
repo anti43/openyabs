@@ -28,6 +28,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Date;
 import javax.swing.JComponent;
@@ -132,11 +133,25 @@ public class ExpensePanel extends javax.swing.JPanel implements DataPanel {
 
     }
 
-    private void calculate() {
+   private void calculate() {
+        BigDecimal tax = BigDecimal.ZERO;
         try {
-            netvalue.setText(FormatNumber.formatLokalCurrency(FormatNumber.parseDezimal(value.getText()).divide((tax.divide(new BigDecimal("100"), 10, BigDecimal.ROUND_HALF_EVEN)).add(BigDecimal.ONE), 10, BigDecimal.ROUND_HALF_EVEN)));
+            MPComboBoxModelItem t = taxrate.getValue();
+            tax = Tax.getTaxValue(Integer.valueOf(t.getId()));
         } catch (Exception e) {
-            Log.Debug(this, e);
+            Log.Debug(e);
+            try {
+                tax = new BigDecimal(taxrate.getText());
+            } catch (Exception numberFormatException) {
+                Log.Debug(e);
+                tax = BigDecimal.ZERO;
+            }
+        }
+
+        try {
+            netvalue.setText(FormatNumber.formatLokalCurrency(FormatNumber.parseDezimal(value.getText()).divide((tax.divide(new BigDecimal("100"), RoundingMode.HALF_UP)).add(BigDecimal.ONE), RoundingMode.HALF_UP)));
+        } catch (Exception e) {
+            Log.Debug(e);
             netvalue.setText(FormatNumber.formatLokalCurrency(0d));
         }
     }
