@@ -22,6 +22,7 @@ import javax.swing.JComponent;
 import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
 import mpv5.db.common.NodataFoundException;
+import mpv5.logging.Log;
 import mpv5.ui.dialogs.subcomponents.ControlPanel_Groups;
 
 /**
@@ -147,6 +148,9 @@ public class Group extends DatabaseObject {
         for (int i = 0; i < childs.size(); i++) {
             Group databaseObject = childs.get(i);
             childs.addAll(databaseObject.getChildGroups());
+        }
+        if (Log.LOGLEVEL_DEBUG == Log.getLoglevel()) {
+            Log.Debug(this, childs);
         }
         return childs;
     }

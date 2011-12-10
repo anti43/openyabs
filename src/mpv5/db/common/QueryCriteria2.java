@@ -19,6 +19,7 @@ package mpv5.db.common;
 import java.util.List;
 import mpv5.db.common.QueryParameter;
 import mpv5.logging.Log;
+import mpv5.utils.arrays.ArrayUtilities;
 
 /**
  *
@@ -101,11 +102,12 @@ public class QueryCriteria2 {
         if (params.length < 1) {
             return;
         }
+        Object[] paramsx = ArrayUtilities.merge(new QueryParameter[]{param1}, params);
         query += " AND (";
 
         boolean firstrun = true;
-        for (QueryParameter p : params) {
-
+        for (Object px : paramsx) {
+            QueryParameter p = (QueryParameter) px;
             Log.Debug(this, "Adding OR param " + p);
 
             if ((p.getValue() instanceof Number || p.getValue() instanceof Boolean) && p.getCondition() == QueryParameter.LIKE) {

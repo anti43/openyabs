@@ -753,6 +753,7 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
                                     Group group = gs.get(i);
                                     params[i] = (new QueryParameter(Context.getItem(), group.getDbIdentity() + "ids", group.__getIDS(), QueryParameter.EQUALS));
                                 }
+                                System.err.println(params);
                                 itemsParams.or(param1, params);
                             } else {
                                 itemsParams.and(param1);
