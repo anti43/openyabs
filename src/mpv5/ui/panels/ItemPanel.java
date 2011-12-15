@@ -2014,7 +2014,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
         ((MPTableModel) itemtable.getModel()).addCalculator(netCalculator);
         netCalculator.addLabel(netvalue, 9);
 
-        taxcalculator = new DynamicTableCalculator(itemtable, "[7]-([9]-([2]*[5]%[15]))", new int[]{8});
+        taxcalculator = new DynamicTableCalculator(itemtable, "((([2]*[5])-([2]*[5]%[15]))+(([2]*[5])-([2]*[5]%[15]))%[6])-(([2]*[5])-([2]*[5]%[15]))", new int[]{8});
         ((MPTableModel) itemtable.getModel()).addCalculator(taxcalculator);
         taxcalculator.addLabel(taxvalue, 8);
 
