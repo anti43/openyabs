@@ -357,15 +357,12 @@ public class ArrayUtilities {
     @SuppressWarnings("unchecked")
     public static List removeDuplicates(List arlList) {
         Set set = new HashSet();
-        List newList = new ArrayList();
         for (Iterator<Ip> iter = arlList.iterator(); iter.hasNext();) {
             Object element = iter.next();
-            if (set.add(element)) {
-                newList.add(element);
-            }
+            set.add(element);
         }
         arlList.clear();
-        arlList.addAll(newList);
+        arlList.addAll(set);
 
         return arlList;
     }
