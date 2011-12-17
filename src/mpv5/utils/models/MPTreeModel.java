@@ -240,35 +240,36 @@ public class MPTreeModel extends DefaultTreeModel {
     }
 
     @SuppressWarnings("unchecked")
-    private static <T extends DatabaseObject> DefaultMutableTreeNode addToParents(DefaultMutableTreeNode firstnode, ArrayList<T> dobjlist) {
+    private static <T extends DatabaseObject> DefaultMutableTreeNode addToParents(DefaultMutableTreeNode firstnode, List<T> dobjlist) {
+        //        ((T) firstnode.getUserObject()).__getIDS().intValue()
+        HashMap<Integer, DefaultMutableTreeNode> map = new HashMap<Integer, DefaultMutableTreeNode>();
 
-//        Log.Debug(ArrayUtilities.class, "Parent Node: " + firstnode);
-        for (int i = 0; i < dobjlist.size(); i++) {
-            T dobj = dobjlist.get(i);
-//            Log.Debug(ArrayUtilities.class, "Node: " + dobj);
+        for (int i = 0; i < dobjlist.size(); i++) {//root run
+            T t = dobjlist.get(i);
+            if (((T) firstnode.getUserObject()).__getIDS().intValue() == t.__getGroupsids()) {
+                DefaultMutableTreeNode y = new DefaultMutableTreeNode(t);
+                firstnode.add(y);
+                map.put(t.__getIDS(), y);
+                dobjlist.remove(t);
+            }
+        }
 
-            if (dobj.__getGroupsids() <= 0 && firstnode.isRoot()) {
-//                Log.Debug(ArrayUtilities.class, "Node is root child, adding it to root and removing it from the list.");
-                firstnode.add(new DefaultMutableTreeNode(dobj));
-                dobjlist.remove(dobj);//First level groups
-                i--;
-            } else {
-                int parentid = dobj.__getGroupsids();
-                if (((T) firstnode.getUserObject()).__getIDS().intValue() == parentid) {
-//                    Log.Debug(ArrayUtilities.class, "Node is child of parentnode, adding and removing it from the list.");
-                    firstnode.add(new DefaultMutableTreeNode(dobj));
-                    dobjlist.remove(dobj);
-                    i--;
-                } else {
-//                    Log.Debug(ArrayUtilities.class, "Node is no child of parentnode, iterating over the parent node..");
-                    @SuppressWarnings("unchecked")
-                    Enumeration<DefaultMutableTreeNode> nodes = firstnode.children();
-                    while (nodes.hasMoreElements()) {
-                        addToParents(nodes.nextElement(), dobjlist);
-                    }
+        while (!dobjlist.isEmpty()) {
+            for (int i = 0; i < dobjlist.size(); i++) {
+                T t = dobjlist.get(i);
+                DefaultMutableTreeNode x = map.get(t.__getGroupsids());
+                DefaultMutableTreeNode y = map.get(t.__getIDS());
+                if (y == null) {
+                    y = new DefaultMutableTreeNode(t);
+                    map.put(t.__getIDS(), y);
+                }
+                if (x != null) {
+                    x.add(y);
+                    dobjlist.remove(t);
                 }
             }
         }
+
         return firstnode;
     }
 }

@@ -36,6 +36,8 @@ import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
 import mpv5.db.common.DatabaseSearch;
 import mpv5.db.common.NodataFoundException;
+import mpv5.db.common.QueryCriteria;
+import mpv5.db.common.QueryCriteria2;
 import mpv5.db.common.QueryHandler;
 import mpv5.globals.Messages;
 import mpv5.db.objects.Group;
@@ -412,7 +414,9 @@ public class ControlPanel_Groups extends javax.swing.JPanel implements ControlAp
 
         ArrayList<Group> data = null;
         try {
-            data = DatabaseObject.getObjects(Context.getGroup());
+            QueryCriteria2 c = new QueryCriteria2();
+            c.setOrder("hierarchypath", false);
+            data = DatabaseObject.getObjects(Context.getGroup(), c);
         } catch (NodataFoundException ex) {
             Log.Debug(this, ex.getMessage());
         }

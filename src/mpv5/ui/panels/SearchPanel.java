@@ -11,6 +11,7 @@
 package mpv5.ui.panels;
 
 import java.awt.Component;
+import java.awt.Cursor;
 import java.util.Set;
 import java.util.TreeSet;
 import javax.swing.JComponent;
@@ -194,6 +195,7 @@ public class SearchPanel extends javax.swing.JPanel {
                 @Override
                 public void run() {
                     YabsViewProxy.instance().setProgressRunning(true);
+                    setCursor(new Cursor(Cursor.WAIT_CURSOR));
                     try {
                         DatabaseSearch s = new DatabaseSearch(context);
                         Object[][] res = null;
@@ -228,6 +230,7 @@ public class SearchPanel extends javax.swing.JPanel {
                         Log.Debug(e);
                     } finally {
                         YabsViewProxy.instance().setProgressRunning(false);
+                        setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
                     }
                 }
             };

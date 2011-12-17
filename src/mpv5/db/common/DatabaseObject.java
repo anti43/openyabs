@@ -1409,16 +1409,16 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
      * Returns all DBOs in the specific context
      * @param <T>
      * @param context
-     * @param withCached If true, checks the cache first for matching objects (faster)
+     * @param withCached IGNORED
      * @return A list of DBOs
      * @throws NodataFoundException
      */
     @SuppressWarnings("unchecked")
     public static <T extends DatabaseObject> ArrayList<T> getObjects(Context context, QueryCriteria2 criterias, boolean withCached) throws NodataFoundException {
 
-        if (!withCached) {
-            return (ArrayList<T>) getObjects(DatabaseObject.getObject(context), null);
-        } else {
+//        if (!withCached) { //quatsch
+//            return (ArrayList<T>) getObjects(DatabaseObject.getObject(context), null);
+//        } else {
             List<Integer> idlist;
             if (criterias != null) {
                 idlist = QueryHandler.instanceOf().clone(context).selectIds(criterias);
@@ -1426,23 +1426,23 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
                 idlist = QueryHandler.instanceOf().clone(context).selectIds();
             }
             return getObjects(context, idlist);
-        }
+//        }
     }
 
     /**
      * Returns all DBOs in the specific context
      * @param <T>
      * @param context
-     * @param withCached If true, checks the cache first for matching objects (faster)
+     * @param withCached IGNORED
      * @return A list of DBOs
      * @throws NodataFoundException
      */
     @SuppressWarnings("unchecked")
     public static <T extends DatabaseObject> ArrayList<T> getObjects(Context context, QueryCriteria criterias, boolean withCached) throws NodataFoundException {
 
-        if (!withCached) {
-            return (ArrayList<T>) getObjects(DatabaseObject.getObject(context), null);
-        } else {
+//        if (!withCached) {
+//            return (ArrayList<T>) getObjects(DatabaseObject.getObject(context), null);
+//        } else {
             List<Integer> idlist;
             if (criterias != null) {
                 idlist = QueryHandler.instanceOf().clone(context).selectIds(criterias);
@@ -1450,7 +1450,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
                 idlist = QueryHandler.instanceOf().clone(context).selectIds();
             }
             return getObjects(context, idlist);
-        }
+//        }
     }
 
     @SuppressWarnings("unchecked")
@@ -1498,7 +1498,20 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
      */
     @SuppressWarnings("unchecked")
     public static <T extends DatabaseObject> ArrayList< T> getObjects(Context context, QueryCriteria criterias) throws NodataFoundException {
-        return (ArrayList<T>) getObjects(DatabaseObject.getObject(context), criterias);
+        return (ArrayList<T>) getObjects( context, criterias, true);
+    }
+    
+        /**
+     * Returns objects within the given context which match the criterias in the given DataStringHandler
+     * @param <T>
+     * @param context
+     * @param criterias
+     * @return
+     * @throws NodataFoundException
+     */
+    @SuppressWarnings("unchecked")
+    public static <T extends DatabaseObject> ArrayList< T> getObjects(Context context, QueryCriteria2 criterias) throws NodataFoundException {
+        return (ArrayList<T>) getObjects(context, criterias, true);
     }
 
     /**
@@ -1513,6 +1526,20 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
     public static <T extends DatabaseObject> ArrayList< T> getObjects(T template, QueryCriteria criterias) throws NodataFoundException {
         return getObjects(template.getContext(), criterias, true);
     }
+    
+      /**
+     * Returns objects within the given context which match the criterias in the given QueryCriteria object<br/>
+     * @param <T>
+     * @param criterias If NULL returns ALL
+     * @param template
+     * @return
+     * @throws NodataFoundException
+     */
+    @SuppressWarnings("unchecked")
+    public static <T extends DatabaseObject> ArrayList< T> getObjects(T template, QueryCriteria2 criterias) throws NodataFoundException {
+        return getObjects(template.getContext(), criterias, true);
+    }
+
 
     /**
      * Return objects which are referenced in the given Context@table

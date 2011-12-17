@@ -180,7 +180,7 @@ public class WSIManager {
                 shopDeamons.get((WebShop) i.next()).kill();
             }
 
-            shops.addAll(DatabaseObject.getObjects(new WebShop(), null));
+            shops.addAll(DatabaseObject.toObjectList(DatabaseObject.getObjects(Context.getWebShop()), new WebShop()));
         } catch (NodataFoundException ex) {
             Log.Debug(this, ex.getMessage());
         }
