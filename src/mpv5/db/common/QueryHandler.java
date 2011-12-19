@@ -63,26 +63,26 @@ import mpv5.utils.ui.TextFieldUtils;
  * @see QueryHandler#clone(mpv5.db.common.Context) 
  */
 public class QueryHandler implements Cloneable {
-    
+
     private static QueryHandler instance;
     private static JProgressBar progressbar = new JProgressBar();
-    
+
     private static class SQLWatch extends Thread {
-        
+
         private final long start;
         private boolean done;
         private final String watchedQuery;
         private long minTime = 1000l;
-        
+
         public SQLWatch(String query) {
             start = new Date().getTime();
             watchedQuery = query;
         }
-        
+
         public void done() {
             done = true;
         }
-        
+
         @Override
         @SuppressWarnings("SleepWhileInLoop")
         public void run() {
@@ -95,7 +95,7 @@ public class QueryHandler implements Cloneable {
                 Log.Debug(this, "SQLWatch " + this + " ["
                         + (new Date().getTime() - start)
                         + "]ms for " + watchedQuery);
-                
+
             }
         }
     }
@@ -122,7 +122,7 @@ public class QueryHandler implements Cloneable {
     private boolean runInBackground = false;
     private static PreparedStatement ivpps;
     private static PreparedStatement uvpps;
-    
+
     private QueryHandler() {
         try {
             conn = DatabaseConnection.instanceOf();
@@ -135,10 +135,10 @@ public class QueryHandler implements Cloneable {
             Popup.error(ex);
         }
     }
-    
+
     private void versionCheck() {
         try {
-            
+
             Statement versionCheck = sqlConn.createStatement();
             Log.Debug(this, "Checking database version..");
             ResultSet versionData = versionCheck.executeQuery("SELECT value FROM globalsettings WHERE cname = 'yabs_dbversion'");
@@ -160,7 +160,7 @@ public class QueryHandler implements Cloneable {
             Popup.error(ex);
         }
     }
-    
+
     private void runFixes() {
         try {
             Statement runfixes = sqlConn.createStatement();
@@ -224,7 +224,7 @@ public class QueryHandler implements Cloneable {
             Popup.error(ex);
         }
     }
-    
+
     protected void setLimit(int limit) {
         if (limit > this.limit || limit < this.limit) {
             Log.Debug(QueryHandler.class, "Setting row limit for this connection to: " + limit);
@@ -241,8 +241,8 @@ public class QueryHandler implements Cloneable {
     public String buildQuery(Object value, String... fields) {
         return buildQuery(fields, fields, "cname", value, "OR");
     }
-    
-        /**
+
+    /**
      * Builds a select query which selects ids from all rows where the fields match the given value.
      * @param value
      * @param fields
@@ -296,7 +296,7 @@ public class QueryHandler implements Cloneable {
         if (order != null) {
             query += " ORDER BY " + order;
         }
-        
+
         return query;
     }
 
@@ -310,13 +310,13 @@ public class QueryHandler implements Cloneable {
     public boolean checkConstraint(String[] constraint, Object[] values) {
         for (int i = 0; i < values.length; i++) {
             Object object = values[i];
-            
+
             if (!(object instanceof Number)) {
                 values[i] = "'" + object.toString() + "'";
             }
-            
+
         }
-        
+
         Object[][] val = select(context.getDbIdentity() + ".ids", constraint, values);
         if (val != null && val.length > 0) {
             Log.Debug(this, "Uniqueness check failed!");
@@ -342,7 +342,7 @@ public class QueryHandler implements Cloneable {
                 returnv = false;
             }
         }
-        
+
         return returnv;
     }
 
@@ -500,15 +500,15 @@ public class QueryHandler implements Cloneable {
      * @throws NodataFoundException
      */
     public Object[][] select(String columns, QueryCriteria criterias, vTimeframe time, String timeCol) throws NodataFoundException {
-        
+
         String dateCriterium = table + "." + timeCol + " >= '" + DateConverter.getSQLDateString(time.getStart()) + "' AND " + table + "." + timeCol + " <= '" + DateConverter.getSQLDateString(time.getEnd()) + "'";
         String query = "SELECT " + columns + " FROM " + table + " " + context.getReferences() + (criterias.getKeys().length > 0 ? " WHERE " : "");
-        
+
         for (int i = 0; i < criterias.getKeys().length; i++) {
             Object object = criterias.getValues()[i];
             String column = criterias.getKeys()[i];
             query += table + "." + column + "=" + String.valueOf(object);
-            
+
             if ((i + 1) != criterias.getValues().length) {
                 query += " AND ";
             }
@@ -539,7 +539,7 @@ public class QueryHandler implements Cloneable {
     public ReturnValue select(String columns, QueryCriteria2 criterias, vTimeframe time, String timeCol) throws NodataFoundException {
         String dateCriterium = table + "." + timeCol + " >= '" + DateConverter.getSQLDateString(time.getStart()) + "' AND " + table + "." + timeCol + " <= '" + DateConverter.getSQLDateString(time.getEnd()) + "'";
         String query = "SELECT " + columns + " FROM " + table + " " + context.getReferences() + " WHERE ";
-        
+
         if (criterias.getQuery().length() > 6) {
             query += criterias.getQuery() + " AND ";
         }
@@ -563,7 +563,7 @@ public class QueryHandler implements Cloneable {
      */
     public ReturnValue select(String columns, QueryCriteria2 criterias) throws NodataFoundException {
         String query = "SELECT " + columns + " FROM " + table + " " + context.getReferences() + " WHERE ";
-        
+
         if (criterias.getQuery().length() > 6) {
             query += criterias.getQuery() + " AND ";
         }
@@ -661,18 +661,18 @@ public class QueryHandler implements Cloneable {
     public ReturnValue select(QueryCriteria criterias) throws NodataFoundException {
         String query = "SELECT * FROM " + table + " " + context.getReferences() + " WHERE ";
         for (int i = 0; i < criterias.getValues().length; i++) {
-            
+
             Object object = criterias.getValues()[i];
             String column = criterias.getKeys()[i];
             query += column + "=" + String.valueOf(object);
-            
+
             if ((i + 1) != criterias.getValues().length) {
                 query += " AND ";
             } else {
                 query += " AND " + context.getConditions().substring(6, context.getConditions().length());
             }
         }
-        
+
         query += criterias.getOrder();
         ReturnValue data = freeSelectQuery(query, mpv5.usermanagement.MPSecurityManager.VIEW, null);
         if (!data.hasData()) {
@@ -740,12 +740,12 @@ public class QueryHandler implements Cloneable {
         }
         String f = " = '";
         String g = "'";
-        
+
         if (!exactMatch) {
             f = " LIKE '%";
             g = "%'";
         }
-        
+
         if (context != null) {
             if (value == null) {
                 return ArrayUtilities.ObjectToSingleColumnArray(freeSelectQuery("SELECT " + cols + " FROM " + table + " " + context.getReferences() + " WHERE " + context.getConditions().substring(6, context.getConditions().length()), mpv5.usermanagement.MPSecurityManager.VIEW, null).getData());
@@ -787,19 +787,19 @@ public class QueryHandler implements Cloneable {
      * @return
      */
     public ArrayList<Double> selectYearlySums(String what, String[] where, vTimeframe zeitraum, String additionalCondition) {
-        
+
         Date temdate = zeitraum.getStart();
         ArrayList<Double> values = new ArrayList<java.lang.Double>();
         String query;
         do {
             String str = "AND datum BETWEEN '" + DateConverter.getSQLDateString(temdate) + "' AND '" + DateConverter.getSQLDateString(DateConverter.addYear(temdate)) + "'";
-            
+
             if (where != null) {
                 query = "SELECT SUM(" + what + ") FROM " + table + " WHERE " + where[0] + " = " + where[2] + where[1] + where[2] + " " + "  " + str + " " + additionalCondition;
             } else {
                 query = "SELECT SUM(" + what + ") FROM " + table + "  " + str + " " + additionalCondition;
             }
-            
+
             Object[][] o = freeSelectQuery(query, mpv5.usermanagement.MPSecurityManager.VIEW, null).getData();
             if (o != null && o[0][0] != null && !o[0][0].equals("null")) {
                 values.add(Double.valueOf(String.valueOf(o[0][0])));
@@ -808,9 +808,9 @@ public class QueryHandler implements Cloneable {
             }
             temdate = DateConverter.addMonth(temdate);
         } while (temdate.before(zeitraum.getEnd()));
-        
+
         return values;
-        
+
     }
 
     /**
@@ -822,19 +822,19 @@ public class QueryHandler implements Cloneable {
      * @return
      */
     public ArrayList<Double> selectMonthlySums(String what, String[] where, vTimeframe zeitraum, String additionalCondition) {
-        
+
         Date temdate = zeitraum.getStart();
         ArrayList<Double> values = new ArrayList<java.lang.Double>();
         String query;
         do {
             String str = "AND datum BETWEEN '" + DateConverter.getSQLDateString(temdate) + "' AND '" + DateConverter.getSQLDateString(DateConverter.addMonth(temdate)) + "'";
-            
+
             if (where != null) {
                 query = "SELECT SUM(" + what + ") FROM " + table + " WHERE " + where[0] + " = " + where[2] + where[1] + where[2] + " " + "  " + str + " " + additionalCondition;
             } else {
                 query = "SELECT SUM(" + what + ") FROM " + table + "  " + str + " " + additionalCondition;
             }
-            
+
             Object[][] o = freeSelectQuery(query, mpv5.usermanagement.MPSecurityManager.VIEW, null).getData();
             if (o != null && o[0][0] != null && !o[0][0].equals("null")) {
                 Log.Debug(this, "Summe: " + o[0][0]);
@@ -845,9 +845,9 @@ public class QueryHandler implements Cloneable {
             }
             temdate = DateConverter.addMonth(temdate);
         } while (temdate.before(zeitraum.getEnd()));
-        
+
         return values;
-        
+
     }
 
     /**
@@ -867,10 +867,10 @@ public class QueryHandler implements Cloneable {
         String l2 = "";
         String k = " = ";
         String j = "";
-        
+
         String wher = "";
         java.util.Date date;
-        
+
         if (like != null) {
             if (like) {
                 if (where != null && where[0].endsWith("datum")) {
@@ -885,9 +885,9 @@ public class QueryHandler implements Cloneable {
                 }
             }
         }
-        
+
         if (where != null) {
-            
+
             query = "SELECT " + what + " FROM " + table
                     + " LEFT OUTER JOIN " + leftJoinTable + " ON " + table + "." + leftJoinKey + " = " + leftJoinTable + ".ids"
                     + " WHERE " + table + "." + where[0] + " " + k + " " + where[2] + l1 + where[1] + l2 + where[2] + " ORDER BY " + table + "." + order;
@@ -897,7 +897,7 @@ public class QueryHandler implements Cloneable {
                     + table + "." + leftJoinKey + " = " + leftJoinTable + ".ids "
                     + "  ORDER BY " + table + "." + order;
         }
-        
+
         return freeSelectQuery(query, mpv5.usermanagement.MPSecurityManager.VIEW, null).getData();
     }
 
@@ -979,7 +979,7 @@ public class QueryHandler implements Cloneable {
      */
     public boolean checkUniqueness(QueryData vals, int[] uniquecols) {
         String[] values = vals.getKeys();
-        
+
         if (uniquecols != null) {
             for (int i = 0; i < uniquecols.length; i++) {
                 int j = uniquecols[i];
@@ -1013,7 +1013,7 @@ public class QueryHandler implements Cloneable {
     protected synchronized void stop() {
         if (!runInBackground) {
             Runnable runnable = new Runnable() {
-                
+
                 @Override
                 public void run() {
                     try {//Avoid Cursor flickering
@@ -1032,7 +1032,7 @@ public class QueryHandler implements Cloneable {
             SwingUtilities.invokeLater(runnable);
         }
     }
-    
+
     private synchronized void start() {
         if (JOB_WATCHDOG == null) {
             JOB_WATCHDOG = new Thread(new Watchdog());
@@ -1086,11 +1086,11 @@ public class QueryHandler implements Cloneable {
      * This string is used to replace backslashes in sql queries (if escaping is enabled)
      */
     public static String BACKSLASH_REPLACEMENT_STRING = "<removedbackslash>";
-    
+
     private synchronized String escapeBackslashes(String query) {
         return query.replace("\\", BACKSLASH_REPLACEMENT_STRING);
     }
-    
+
     private synchronized String rescapeBackslashes(String query) {
         return query.replace(BACKSLASH_REPLACEMENT_STRING, "\\");
     }
@@ -1107,7 +1107,7 @@ public class QueryHandler implements Cloneable {
             return false;
         }
     }
-    
+
     private synchronized byte[] blobToByteArray(final Reader characterStream) throws SQLException, IOException {
         //byte[] is for BLOB data (or char[]?)
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -1132,7 +1132,7 @@ public class QueryHandler implements Cloneable {
             + "dateadded= ?, "
             + "groupsids= ? "
             + "WHERE " + Context.getValueProperties().getDbIdentity() + ".ids = ?";
-    
+
     private void createPs() {
         try {
             ivpps = sqlConn.prepareStatement(ivpquery, PreparedStatement.RETURN_GENERATED_KEYS);
@@ -1141,9 +1141,9 @@ public class QueryHandler implements Cloneable {
             Log.Debug(this, ex.getMessage());
         }
     }
-    
+
     class Watchdog implements Runnable {
-        
+
         @Override
         @SuppressWarnings("SleepWhileInLoop")
         public void run() {
@@ -1198,7 +1198,7 @@ public class QueryHandler implements Cloneable {
         }
         ResultSet keys;
         int id = -1;
-        
+
         try {
             start();
             ivpps.setBlob(1, blobData);
@@ -1221,7 +1221,7 @@ public class QueryHandler implements Cloneable {
             } catch (SQLException sQLException) {
                 Log.Debug(sQLException);
             }
-            
+
         } catch (Exception ex) {
             Log.Debug(this, "Datenbankfehler: " + ivpquery);
             Log.Debug(this, ex);
@@ -1236,7 +1236,7 @@ public class QueryHandler implements Cloneable {
         if (jobmessage != null) {
             mpv5.YabsViewProxy.instance().addMessage(jobmessage);
         }
-        
+
         return id;
     }
 
@@ -1248,11 +1248,11 @@ public class QueryHandler implements Cloneable {
      * @param jobmessage
      */
     public void updateValueProperty(int ids, InputStream blobData, QueryData data, String jobmessage) {
-        
+
         if (uvpps == null) {
             createPs();
         }
-        
+
         try {
             start();
             uvpps.setBlob(1, blobData);
@@ -1312,7 +1312,7 @@ public class QueryHandler implements Cloneable {
         } catch (SQLException ex) {
             mpv5.logging.Log.Debug(ex);//Logger.getLogger(QueryHandler.class.getName()).log(Level.SEVERE, null, ex);
         }
-        
+
     }
     private static PreparedStatement psHistory;
 
@@ -1343,7 +1343,7 @@ public class QueryHandler implements Cloneable {
         }
     }
     private static PreparedStatement psLock;
-    
+
     protected void removeLock(Context context, int id, User user) {
         try {
             if (psUnLock == null) {
@@ -1383,19 +1383,19 @@ public class QueryHandler implements Cloneable {
      * @param jobmessage
      */
     public void update(QueryData what, String[] where, String jobmessage) {
-        
+
         String query;
         String[] a = what.getKeys();
         String c = "";
-        
+
         for (int i = 0; i < a.length; i++) {
             c += a[i] + " = " + what.getValue(a[i]).getWrapper() + what.getValue(a[i]).toString() + what.getValue(a[i]).getWrapper() + ", ";
         }
-        
+
         if (c.length() > 2) {
             c = c.substring(0, c.length() - 2);
         }
-        
+
         query = "UPDATE " + table + " SET " + c + " WHERE " + table + "." + where[0] + " = " + where[2] + where[1] + where[2];
         freeUpdateQuery(query, mpv5.usermanagement.MPSecurityManager.EDIT, jobmessage);
     }
@@ -1429,9 +1429,9 @@ public class QueryHandler implements Cloneable {
      */
     @SuppressWarnings("unchecked")
     public Object[] selectLast(String what, String[] where) throws NodataFoundException {
-        
+
         Object[][] data = select(what, where, what, false);
-        
+
         if (data == null || data.length == 0) {
             throw new NodataFoundException();
         } else {
@@ -1449,9 +1449,9 @@ public class QueryHandler implements Cloneable {
      */
     @SuppressWarnings("unchecked")
     public Object[] selectFirst(String what, String[] where) throws NodataFoundException {
-        
+
         Object[][] data = select(what, where, what, false);
-        
+
         if (data == null || data.length == 0) {
             throw new NodataFoundException();
         } else {
@@ -1470,9 +1470,9 @@ public class QueryHandler implements Cloneable {
      */
     @SuppressWarnings("unchecked")
     public Object[] selectFirst(String what, String[] where, boolean searchFoLike) throws NodataFoundException {
-        
+
         Object[][] data = select(what, where, what, searchFoLike);
-        
+
         if (data == null || data.length == 0) {
             throw new NodataFoundException();
         } else {
@@ -1491,9 +1491,9 @@ public class QueryHandler implements Cloneable {
      */
     @SuppressWarnings("unchecked")
     public Object[] selectLast(String what, String[] where, boolean searchFoLike) throws NodataFoundException {
-        
+
         Object[][] data = select(what, where, what, searchFoLike);
-        
+
         if (data == null || data.length == 0) {
             throw new NodataFoundException();
         } else {
@@ -1581,7 +1581,7 @@ public class QueryHandler implements Cloneable {
             Object object = haveValues[i];
             String column = whereColumns[i];
             query += table + "." + column + "=" + String.valueOf(object);
-            
+
             if ((i + 1) != haveValues.length) {
                 query += " AND ";
             } else {
@@ -1606,16 +1606,16 @@ public class QueryHandler implements Cloneable {
         String l2 = "";
         String condition = " = ";
         String j = "";
-        
+
         if (order == null) {
             order = "ids ";
         }
-        
+
         String ord = " ORDER BY " + table + "." + order;
         String wher = "";
         java.util.Date date;
-        
-        
+
+
         if (like) {
             if (where != null && where[0].endsWith("datum")) {
                 condition = " BETWEEN ";
@@ -1628,7 +1628,7 @@ public class QueryHandler implements Cloneable {
                 condition = " LIKE ";
             }
         }
-        
+
         if (where == null) {
             wher = "  " + context.getConditions();
         } else {
@@ -1637,10 +1637,10 @@ public class QueryHandler implements Cloneable {
             } else {
                 wher = " WHERE UPPER(" + table + "." + where[0] + ") " + condition + " " + where[2] + l1 + where[1].toUpperCase() + l2 + where[2] + " AND " + context.getConditions().substring(6, context.getConditions().length()) + " ";
             }
-            
+
         }
         String query = "SELECT " + what + " FROM " + table + " " + context.getReferences() + wher + ord;
-        
+
         return freeSelectQuery(query, mpv5.usermanagement.MPSecurityManager.VIEW, null).getData();
     }
 
@@ -1654,7 +1654,7 @@ public class QueryHandler implements Cloneable {
      * @throws SQLException
      */
     public PreparedStatement buildPreparedSelectStatement(String columns[], String[] conditionColumns, String order, boolean like) throws SQLException {
-        
+
         return sqlConn.prepareStatement(buildQuery(columns, conditionColumns, order, like, "OR"), PreparedStatement.RETURN_GENERATED_KEYS);
     }
 
@@ -1669,14 +1669,14 @@ public class QueryHandler implements Cloneable {
     @SuppressWarnings("unchecked")
     @Deprecated
     public ReturnValue executeStatement(PreparedStatement statement, Object[] values) throws SQLException {
-        
+
         if (values != null) {
             for (int i = 0; i < values.length; i++) {
                 Object object = values[i];
                 statement.setObject(i + 1, object);
             }
         }
-        
+
         ResultSet set = statement.executeQuery();
         ReturnValue val = new ReturnValue();
         ArrayList spalten = new ArrayList();
@@ -1691,7 +1691,7 @@ public class QueryHandler implements Cloneable {
         for (int i = 1; i <= rsmd.getColumnCount(); i++) {
             columnnames[i - 1] = rsmd.getColumnName(i);
         }
-        
+
         while (set.next()) {
             spalten = new ArrayList();
             for (int i = 1; i <= rsmd.getColumnCount(); i++) {
@@ -1701,7 +1701,7 @@ public class QueryHandler implements Cloneable {
         }
         Object[][] data = new Object[zeilen.size()][spalten.size()];
         ArrayList z;
-        
+
         for (int h = 0; h < zeilen.size(); h++) {
             z = (ArrayList) zeilen.get(h);
             for (int i = 0; i < spalten.size(); i++) {
@@ -1725,13 +1725,13 @@ public class QueryHandler implements Cloneable {
         String str = "";
         String query = null;
         ReturnValue retval = null;
-        
+
         if (where != null) {
             str = str + table + "." + where[0] + " = " + where[2] + where[1] + where[2];
             query = "DELETE FROM " + table + " WHERE " + str;
             retval = freeQuery(query, mpv5.usermanagement.MPSecurityManager.CREATE_OR_DELETE, jobmessage);
         }
-        
+
         if (retval == null) {
             return false;
         } else {
@@ -1798,7 +1798,7 @@ public class QueryHandler implements Cloneable {
             }
         }
         ReturnValue retval = freeQuery(query, mpv5.usermanagement.MPSecurityManager.CREATE_OR_DELETE, jobmessage);
-        
+
         if (retval == null) {
             return false;
         } else {
@@ -1813,9 +1813,9 @@ public class QueryHandler implements Cloneable {
      */
     public synchronized static boolean delete(DatabaseObject dbo) {
         String query = "DELETE FROM " + dbo.IDENTITY.getKey().getDbIdentity() + " WHERE ids = " + dbo.IDENTITY.getValue();
-        
+
         ReturnValue retval = instanceOf().freeQuery(query, mpv5.usermanagement.MPSecurityManager.CREATE_OR_DELETE, null);
-        
+
         if (retval == null) {
             return false;
         } else {
@@ -1848,7 +1848,7 @@ public class QueryHandler implements Cloneable {
     public boolean delete(QueryCriteria2 criterias) {
         String query = "DELETE FROM " + table + " WHERE " + criterias.getQuery();
         ReturnValue retval = instanceOf().freeQuery(query, mpv5.usermanagement.MPSecurityManager.CREATE_OR_DELETE, null);
-        
+
         if (retval == null) {
             return false;
         } else {
@@ -1991,7 +1991,7 @@ public class QueryHandler implements Cloneable {
         String ord = " ORDER BY " + table + "." + order;
         String wher = "";
         wher = "";
-        
+
         if (integer) {
             if (where[1].equals("")) {
                 where[1] = "0";
@@ -2013,7 +2013,7 @@ public class QueryHandler implements Cloneable {
                 k = " LIKE ";
             }
         }
-        
+
         if (where == null) {
         } else {
             wher = where[0] + " " + k + " " + where[2] + l + where[1] + l + where[2] + " AND " + wher + " AND " + context.getConditions().substring(6, context.getConditions().length());
@@ -2022,7 +2022,7 @@ public class QueryHandler implements Cloneable {
             }
         }
         String query = "SELECT " + what + " FROM " + table + " " + context.getReferences() + " WHERE " + wher + ord;
-        
+
         return freeSelectQuery(query, mpv5.usermanagement.MPSecurityManager.VIEW, null).getData();
     }
 
@@ -2038,7 +2038,7 @@ public class QueryHandler implements Cloneable {
     public int selectCount(String what, String condition) throws SQLException {
         String wher = "";
         start();
-        
+
         if (condition != null) {
             wher = " WHERE " + what + " " + condition;
         }
@@ -2046,13 +2046,13 @@ public class QueryHandler implements Cloneable {
         String message = "Database Error (SelectCount:COUNT):";
         Statement stm = null;
         ResultSet resultSet = null;
-        
+
         Log.Debug(this, query);
         try {
             // Select-Anweisung ausführen
             stm = sqlConn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
             resultSet = stm.executeQuery(query);
-            
+
             if (resultSet.first()) {
                 Log.Debug(this, "Count " + resultSet.getInt("rowcount"));
                 stop();
@@ -2096,10 +2096,10 @@ public class QueryHandler implements Cloneable {
     public ReturnValue freeQuery(String string, int action, String jobmessage) {
         return freeQuery(string, null, action, jobmessage);
     }
-    
+
     @SuppressWarnings("unchecked")
     public ReturnValue freeQuery(String query, JTextArea log, int action, String jobmessage) {
-        
+
         if (!mpv5.usermanagement.MPSecurityManager.check(context, action)) {
             Log.Debug(this, Messages.SECURITYMANAGER_DENIED
                     + mpv5.usermanagement.MPSecurityManager.getActionName(action) + Messages.CONTEXT + context.getDbIdentity());
@@ -2107,13 +2107,13 @@ public class QueryHandler implements Cloneable {
                     + mpv5.usermanagement.MPSecurityManager.getActionName(action) + Messages.CONTEXT + context.getDbIdentity());
             return new ReturnValue(-1, new Object[0][0], new String[0]);
         }
-        
+
         if (TypeConversion.stringToBoolean(LocalSettings.getProperty(LocalSettings.DBESCAPE))) {
             query = escapeBackslashes(query);
         }
-        
+
         updateStatistics(query);
-        
+
         start();
         if (table != null) {
             query = query.replace("%%tablename%%", table);
@@ -2136,7 +2136,7 @@ public class QueryHandler implements Cloneable {
                 log.append("\n " + query + "\n\n_________________________________________________________________________________\n");
             }
             bool = stm.execute(query);
-            
+
             try {
                 ResultSet keys = stm.getGeneratedKeys();
                 if (keys != null && keys.next()) {
@@ -2150,12 +2150,12 @@ public class QueryHandler implements Cloneable {
                 ArrayList spalten = new ArrayList();
                 ArrayList zeilen = new ArrayList();
                 rsmd = resultSet.getMetaData();
-                
+
                 columnnames = new String[rsmd.getColumnCount()];
                 for (int i = 1; i <= rsmd.getColumnCount(); i++) {
                     columnnames[i - 1] = rsmd.getColumnName(i);
                 }
-                
+
                 while (resultSet.next()) {
                     spalten = new ArrayList();
                     for (int i = 1; i <= rsmd.getColumnCount(); i++) {
@@ -2168,7 +2168,7 @@ public class QueryHandler implements Cloneable {
                     zeilen.add(spalten);
                 }
                 data = new Object[zeilen.size()][spalten.size()];
-                
+
                 for (int h = 0; h < zeilen.size(); h++) {
                     z = (ArrayList) zeilen.get(h);
                     for (int i = 0; i < spalten.size(); i++) {
@@ -2186,9 +2186,9 @@ public class QueryHandler implements Cloneable {
             if (log != null) {
                 log.append("\n " + stm.getUpdateCount() + " rows affected.");
             }
-            
+
         } catch (SQLException ex) {
-            
+
             jobmessage = Messages.ERROR_OCCURED.toString();
             Log.Debug(this, message + ex.getMessage());
 //            retval = null;
@@ -2202,7 +2202,7 @@ public class QueryHandler implements Cloneable {
                 try {
                     resultSet.close();
                 } catch (SQLException ex) {
-                    
+
                     jobmessage = Messages.ERROR_OCCURED.toString();
                     Log.Debug(this, message + ex.getMessage());
                     if (log != null) {
@@ -2214,24 +2214,24 @@ public class QueryHandler implements Cloneable {
                 try {
                     stm.close();
                 } catch (SQLException ex) {
-                    
+
                     Log.Debug(this, message + ex.getMessage());
                     if (log != null) {
                         log.append(" \n" + ex.getMessage());
                     }
                 }
             }
-            
+
             stm = null;
             resultSet = null;
             rsmd = null;
         }
-        
+
         if (jobmessage != null && retval != null) {
             mpv5.YabsViewProxy.instance().addMessage(jobmessage);
             retval.setMessage(jobmessage);
         }
-        
+
         return retval;
     }
 
@@ -2245,10 +2245,10 @@ public class QueryHandler implements Cloneable {
     public ReturnValue freeUpdateQuery(String query, int action, String jobmessage) {
         return freeUpdateQuery(query, null, action, jobmessage);
     }
-    
+
     @SuppressWarnings("unchecked")
     public ReturnValue freeUpdateQuery(String query, JTextArea log, int action, String jobmessage) {
-        
+
         if (!mpv5.usermanagement.MPSecurityManager.check(context, action)) {
             Log.Debug(this, Messages.SECURITYMANAGER_DENIED
                     + mpv5.usermanagement.MPSecurityManager.getActionName(action) + Messages.CONTEXT + context.getDbIdentity());
@@ -2261,22 +2261,22 @@ public class QueryHandler implements Cloneable {
         }
         updateStatistics(query);
         start();
-        
+
         if (TypeConversion.stringToBoolean(LocalSettings.getProperty(LocalSettings.DBESCAPE))) {
             query = escapeBackslashes(query);
         }
-        
+
         if (table != null) {
             query = query.replace("%%tablename%%", table);
         }
-        
+
         ReturnValue retval = null;
         String message = "Database Error (freeQuery) :";
         Statement stm = null;
         ResultSet resultSet = null;
         Integer id = -1;
         ResultSet keys;
-        
+
         try {
             // Select-Anweisung ausführen
             stm = sqlConn.createStatement();
@@ -2288,22 +2288,22 @@ public class QueryHandler implements Cloneable {
             if (log != null) {
                 log.append("\n " + stm.getUpdateCount() + " rows affected.");
             }
-            
-            
+
+
             try {
                 keys = stm.getGeneratedKeys();
-                
+
                 if (keys != null && keys.next()) {
                     id = keys.getInt(1);
                 }
             } catch (SQLException sQLException) {
                 Log.Debug(sQLException);
             }
-            
+
             retval = new ReturnValue(id, null, null);
-            
+
         } catch (SQLException ex) {
-            
+
             jobmessage = Messages.ERROR_OCCURED.toString();
             Log.Debug(this, message + ex.getMessage() + "\n" + query);
             if (log != null) {
@@ -2316,7 +2316,7 @@ public class QueryHandler implements Cloneable {
                 try {
                     resultSet.close();
                 } catch (SQLException ex) {
-                    
+
                     jobmessage = Messages.ERROR_OCCURED.toString();
                     Log.Debug(this, message + ex.getMessage());
                     if (log != null) {
@@ -2328,7 +2328,7 @@ public class QueryHandler implements Cloneable {
                 try {
                     stm.close();
                 } catch (SQLException ex) {
-                    
+
                     Log.Debug(this, message + ex.getMessage());
                     if (log != null) {
                         log.append(" \n" + ex.getMessage());
@@ -2338,13 +2338,13 @@ public class QueryHandler implements Cloneable {
             stm = null;
             resultSet = null;
         }
-        
+
         if (jobmessage != null) {
             mpv5.YabsViewProxy.instance().addMessage(jobmessage);
             retval.setMessage(jobmessage);
         }
         return retval;
-        
+
     }
 
     /**
@@ -2360,7 +2360,7 @@ public class QueryHandler implements Cloneable {
         if (table != null) {
             query = query.replace("%%tablename%%", table);
         }
-        
+
         if (!mpv5.usermanagement.MPSecurityManager.check(context, action)) {
             Log.Debug(this, Messages.SECURITYMANAGER_DENIED
                     + mpv5.usermanagement.MPSecurityManager.getActionName(action) + Messages.CONTEXT + context.getDbIdentity());
@@ -2374,12 +2374,12 @@ public class QueryHandler implements Cloneable {
         }
         updateStatistics(query);
         start();
-        
+
         if (TypeConversion.stringToBoolean(LocalSettings.getProperty(LocalSettings.DBESCAPE))) {
             query = escapeBackslashes(query);
         }
         String message = "Database Error (selectFreeQuery) :";
-        
+
         Statement stm = null;
         ResultSet resultSet = null;
         ResultSetMetaData rsmd;
@@ -2391,7 +2391,7 @@ public class QueryHandler implements Cloneable {
         ArrayList<Object> spalten = new ArrayList<Object>();
         ArrayList<Object> zeilen = new ArrayList<Object>();
         SQLWatch sqlWatch;
-        
+
         try {
             stm = sqlConn.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_READ_ONLY);
             if (ROW_LIMIT != null && ROW_LIMIT.intValue() >= 0) {
@@ -2400,7 +2400,7 @@ public class QueryHandler implements Cloneable {
             if (this.limit > 0) {
                 stm.setMaxRows(limit);
             }
-            
+
             Log.Debug(this, "freeSelectQuery::" + query);
             try {
                 sqlWatch = new SQLWatch(query);
@@ -2411,7 +2411,7 @@ public class QueryHandler implements Cloneable {
                 Log.Debug(sQLException);
                 throw sQLException;
             }
-            
+
             rsmd = resultSet.getMetaData();
             try {
                 ResultSet keys = stm.getGeneratedKeys();
@@ -2421,14 +2421,14 @@ public class QueryHandler implements Cloneable {
             } catch (SQLException sQLException) {
 //                Log.Debug(sQLException);
             }
-            
+
             columnnames = new String[rsmd.getColumnCount()];
             fullcolnames = new String[rsmd.getColumnCount()];
             for (int i = 1; i <= rsmd.getColumnCount(); i++) {
                 columnnames[i - 1] = rsmd.getColumnName(i);
                 fullcolnames[i - 1] = rsmd.getTableName(i) + "." + rsmd.getColumnName(i);
             }
-            
+
             while (resultSet.next()) {
                 spalten = new ArrayList<Object>();
                 for (int i = 1; i <= rsmd.getColumnCount(); i++) {
@@ -2448,7 +2448,7 @@ public class QueryHandler implements Cloneable {
                 zeilen.add(spalten);
             }
             data = new Object[zeilen.size()][spalten.size()];
-            
+
             for (int h = 0; h < zeilen.size(); h++) {
                 row = (ArrayList<Object>) zeilen.get(h);
                 for (int i = 0; i < spalten.size(); i++) {
@@ -2487,7 +2487,7 @@ public class QueryHandler implements Cloneable {
             spalten = null;
             zeilen = null;
         }
-        
+
         if (jobmessage != null) {
             mpv5.YabsViewProxy.instance().addMessage(jobmessage);
         }
@@ -2505,13 +2505,13 @@ public class QueryHandler implements Cloneable {
      * @throws java.io.FileNotFoundException
      */
     public synchronized String insertFile(final File file) throws FileNotFoundException {
-        
+
         String name = null;
         String query = "INSERT INTO " + table + "(cname, data, dateadded, filesize, intaddedby) VALUES (?, ?, ?, ?, ?)";
         String jobmessage = null;
         Log.Debug(this, "Adding file: " + file.getName());
         backgroundSqlQuery j;
-        
+
         try {
             start();
             int fileLength = (int) file.length();
@@ -2525,16 +2525,16 @@ public class QueryHandler implements Cloneable {
             ps.setBinaryStream(2, fin, fileLength);
             j = new backgroundSqlQuery(ps);
             j.execute();
-            
+
             Log.Debug(this, "File added: " + name);
-            
+
         } catch (Exception ex) {
             Log.Debug(this, "Datenbankfehler: " + query);
             Log.Debug(this, ex);
             Popup.error(ex);
             jobmessage = Messages.ERROR_OCCURED.toString();
         } finally {
-            
+
             stop();
         }
         if (viewToBeNotified != null) {
@@ -2544,7 +2544,7 @@ public class QueryHandler implements Cloneable {
             mpv5.YabsViewProxy.instance().addMessage(jobmessage);
         }
         return name;
-        
+
     }
 
     /**
@@ -2563,18 +2563,18 @@ public class QueryHandler implements Cloneable {
         try {
             stm = sqlConn.createStatement();
             list = new ArrayList<File>();
-            
+
             if (ROW_LIMIT != null && ROW_LIMIT.intValue() >= 0) {
                 stm.setMaxRows(ROW_LIMIT.intValue());
             }
             if (this.limit > 0) {
                 stm.setMaxRows(limit);
             }
-            
+
             ResultSet rs = stm.executeQuery(query);
             Log.Debug(this, query);
             while (rs.next()) {
-                
+
                 progressbar.setMaximum(rs.getInt(2));
                 byte[] buffer = new byte[1024];
                 File f = FileDirectoryHandler.getTempFile();
@@ -2596,10 +2596,12 @@ public class QueryHandler implements Cloneable {
                 progressbar.setValue(0);
                 progressbar.setIndeterminate(false);
             }
-            
+
         } catch (SQLException ex) {
-            Log.Debug(this, "Datenbankfehler: " + ex.getMessage());
-            Popup.error(ex);
+            Log.Debug(this, ex);
+            if (list == null || list.isEmpty()) {
+                Popup.error(ex);
+            }
             jobmessage = Messages.ERROR_OCCURED.toString();
         } finally {
             // Alle Ressourcen wieder freigeben
@@ -2739,7 +2741,7 @@ public class QueryHandler implements Cloneable {
         }
     }
     private static HashMap<String, Integer> stats = new HashMap<String, Integer>();
-    
+
     private synchronized void updateStatistics(String query) {
         if (Log.getLoglevel() == Log.LOGLEVEL_DEBUG) {
             if (stats.containsKey(query)) {
@@ -2750,12 +2752,12 @@ public class QueryHandler implements Cloneable {
             }
         }
     }
-    
+
     @SuppressWarnings("unchecked")
     public synchronized String getStatistics() {
         List keys = new LinkedList(stats.keySet());
         Collections.sort(keys, new Comparator() {
-            
+
             @Override
             @SuppressWarnings("element-type-mismatch")
             public int compare(Object o1, Object o2) {
@@ -2770,22 +2772,22 @@ public class QueryHandler implements Cloneable {
             s = it.next().toString();
             str += "Count: " + stats.get(s) + " for query: " + s + "\n";
         }
-        
+
         return str;
     }
-    
+
     class backgroundSqlQuery extends SwingWorker<Void, Void> {
-        
+
         private PreparedStatement ps;
-        
+
         public backgroundSqlQuery(PreparedStatement ps) {
             this.ps = ps;
             this.addPropertyChangeListener(new changeListener());
         }
-        
+
         @Override
         protected Void doInBackground() {
-            
+
             setProgress(0);
             try {
                 Object obj = new Object();
@@ -2804,13 +2806,13 @@ public class QueryHandler implements Cloneable {
             }
             return null;
         }
-        
+
         @Override
         public void done() {
             setProgress(100);
             if (viewToBeNotified != null) {
                 Runnable runnable = new Runnable() {
-                    
+
                     @Override
                     public void run() {
                         viewToBeNotified.refresh();
@@ -2819,7 +2821,7 @@ public class QueryHandler implements Cloneable {
                 SwingUtilities.invokeLater(runnable);
             }
         }
-        
+
         class changeListener implements PropertyChangeListener {
 
             /**
@@ -2839,15 +2841,15 @@ public class QueryHandler implements Cloneable {
             }
         }
     }
-    
+
     class backgroundFileInsert extends SwingWorker<String, Void> {
-        
+
         private File file;
         private String name;
         private DatabaseObject dataOwner;
         private String descriptiveText;
         private final Context tcontext;
-        
+
         public backgroundFileInsert(File file, DatabaseObject owner, SaveString description, Context tcontext) {
             this.addPropertyChangeListener(new changeListener());
             this.file = file;
@@ -2855,10 +2857,10 @@ public class QueryHandler implements Cloneable {
             this.descriptiveText = description.toString();
             this.tcontext = tcontext;
         }
-        
+
         @Override
         protected String doInBackground() {
-            
+
             Object obj = new Object();
             synchronized (obj) {
 //                setProgress(0);
@@ -2866,7 +2868,7 @@ public class QueryHandler implements Cloneable {
                 String jobmessage = null;
                 Log.Debug(this, "Adding file: " + file.getName());
                 mpv5.YabsViewProxy.instance().addMessage(Messages.PROCESSING + file.getName());
-                
+
                 try {
                     int fileLength = (int) file.length();
                     name = new RandomText(23).getString();
@@ -2888,22 +2890,22 @@ public class QueryHandler implements Cloneable {
                     Popup.error(ex);
                     jobmessage = Messages.ERROR_OCCURED.toString();
                 }
-                
+
                 if (jobmessage != null) {
                     mpv5.YabsViewProxy.instance().addMessage(jobmessage);
                 }
             }
-            
+
             return name;
         }
-        
+
         @Override
         public void done() {
             QueryData x;
             try {
                 String filename = file.getName();
                 String fileextension = (filename.lastIndexOf(".") == -1) ? "" : filename.substring(filename.lastIndexOf(".") + 1, filename.length());
-                
+
                 x = new QueryData(new String[]{"cname,filename, description, dateadded", file.getName() + "," + get() + "," + descriptiveText + "," + DateConverter.getTodayDBDate()});
                 if (!dataOwner.getContext().equals(Context.getTemplate())) {
                     x.add(dataOwner.getType() + "sids", dataOwner.__getIDS());
@@ -2922,7 +2924,7 @@ public class QueryHandler implements Cloneable {
                 mpv5.logging.Log.Debug(ex);//Logger.getLogger(QueryHandler.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
-        
+
         class changeListener implements PropertyChangeListener {
 
             /**
@@ -2931,7 +2933,7 @@ public class QueryHandler implements Cloneable {
             public void propertyChange(PropertyChangeEvent evt) {
 //                System.out.println(Thread.currentThread().getName() + evt.getNewValue());
                 if ("state".equals(evt.getPropertyName())) {
-                    
+
                     Log.Debug(this, "Progress changed to: " + evt.getNewValue());
                     if (StateValue.STARTED == evt.getNewValue()) {
                         progressbar.setIndeterminate(true);
@@ -2943,29 +2945,29 @@ public class QueryHandler implements Cloneable {
             }
         }
     }
-    
+
     class backgroundFileUpdate extends SwingWorker<String, Void> {
-        
+
         private File file;
         private String name;
         private String cname;
-        
+
         public backgroundFileUpdate(File file, String cname) {
             this.addPropertyChangeListener(new changeListener());
             this.file = file;
             this.cname = cname;
         }
-        
+
         @Override
         protected String doInBackground() {
-            
+
             Object obj = new Object();
             synchronized (obj) {
                 String query = "Update " + table + " SET data = ? WHERE cname = ?";
                 String jobmessage = null;
                 Log.Debug(this, "Updating file: " + file.getName());
                 mpv5.YabsViewProxy.instance().addMessage(Messages.PROCESSING + file.getName());
-                
+
                 try {
                     int fileLength = (int) file.length();
                     name = new RandomText(23).getString();
@@ -2985,15 +2987,15 @@ public class QueryHandler implements Cloneable {
                     Popup.error(ex);
                     jobmessage = Messages.ERROR_OCCURED.toString();
                 }
-                
+
                 if (jobmessage != null) {
                     mpv5.YabsViewProxy.instance().addMessage(jobmessage);
                 }
             }
-            
+
             return name;
         }
-        
+
         @Override
         public void done() {
             mpv5.YabsViewProxy.instance().addMessage(Messages.FILE_SAVED + file.getName());
@@ -3001,7 +3003,7 @@ public class QueryHandler implements Cloneable {
                 viewToBeNotified.refresh();
             }
         }
-        
+
         class changeListener implements PropertyChangeListener {
 
             /**
@@ -3009,7 +3011,7 @@ public class QueryHandler implements Cloneable {
              */
             public void propertyChange(PropertyChangeEvent evt) {
                 if ("state".equals(evt.getPropertyName())) {
-                    
+
                     Log.Debug(this, "Progress changed to: " + evt.getNewValue());
                     if (StateValue.STARTED == evt.getNewValue()) {
                         progressbar.setIndeterminate(true);

@@ -20,6 +20,7 @@ import mpv5.db.common.DatabaseSearch;
 import mpv5.db.common.NodataFoundException;
 import mpv5.ui.frames.MPView;
 import mpv5.ui.misc.Position;
+import mpv5.utils.arrays.ArrayUtilities;
 import mpv5.utils.html.HtmlParser;
 import mpv5.utils.models.MPTableModel;
 import mpv5.utils.tables.Selection;
@@ -44,7 +45,6 @@ public class Search extends javax.swing.JDialog {
         return f;
     }
     private static String oldSelection;
-    private Context lastContext;
     private DatabaseObject selection;
     private boolean addTabs = false;
 
@@ -61,7 +61,6 @@ public class Search extends javax.swing.JDialog {
         initComponents();
         this.addTabs = addtabs;
         setModalityType(ModalityType.APPLICATION_MODAL);
-        scope.setModel(new DefaultComboBoxModel(Context.getSearchableContexts().toArray()));
         setLocationRelativeTo(mpv5.YabsViewProxy.instance().getIdentifierFrame());
     }
 
@@ -75,8 +74,6 @@ public class Search extends javax.swing.JDialog {
     private void initComponents() {
 
         jPanel1 = new javax.swing.JPanel();
-        jLabel1 = new javax.swing.JLabel();
-        scope = new javax.swing.JComboBox();
         jLabel2 = new javax.swing.JLabel();
         key = new javax.swing.JComboBox();
         jCheckBox1 = new javax.swing.JCheckBox();
@@ -99,15 +96,9 @@ public class Search extends javax.swing.JDialog {
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setName("Form"); // NOI18N
 
-       java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle(); // NOI18N
+        java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle(); // NOI18N
         jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("Search.jPanel1.border.title"))); // NOI18N
         jPanel1.setName("jPanel1"); // NOI18N
-
-        jLabel1.setText(bundle.getString("Search.jLabel1.text")); // NOI18N
-        jLabel1.setToolTipText(bundle.getString("Search.jLabel1.toolTipText")); // NOI18N
-        jLabel1.setName("jLabel1"); // NOI18N
-
-        scope.setName("scope"); // NOI18N
 
         jLabel2.setText(bundle.getString("Search.jLabel2.text")); // NOI18N
         jLabel2.setToolTipText(bundle.getString("Search.jLabel2.toolTipText")); // NOI18N
@@ -123,10 +114,12 @@ public class Search extends javax.swing.JDialog {
 
         jCheckBox1.setText(bundle.getString("Search.jCheckBox1.text")); // NOI18N
         jCheckBox1.setToolTipText(bundle.getString("Search.jCheckBox1.toolTipText")); // NOI18N
+        jCheckBox1.setFocusable(false);
         jCheckBox1.setName("jCheckBox1"); // NOI18N
 
         jButton1.setText(bundle.getString("Search.jButton1.text")); // NOI18N
         jButton1.setToolTipText(bundle.getString("Search.jButton1.toolTipText")); // NOI18N
+        jButton1.setFocusPainted(false);
         jButton1.setName("jButton1"); // NOI18N
         jButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -144,6 +137,7 @@ public class Search extends javax.swing.JDialog {
 
         jScrollPane1.setName("jScrollPane1"); // NOI18N
 
+        jTable1.setAutoCreateRowSorter(true);
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {},
@@ -161,10 +155,16 @@ public class Search extends javax.swing.JDialog {
                 jTable1MouseClicked(evt);
             }
         });
+        jTable1.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                jTable1KeyTyped(evt);
+            }
+        });
         jScrollPane1.setViewportView(jTable1);
 
         jCheckBox2.setText(bundle.getString("Search.jCheckBox2.text")); // NOI18N
         jCheckBox2.setToolTipText(bundle.getString("Search.jCheckBox2.toolTipText")); // NOI18N
+        jCheckBox2.setFocusable(false);
         jCheckBox2.setName("jCheckBox2"); // NOI18N
         jCheckBox2.addItemListener(new java.awt.event.ItemListener() {
             public void itemStateChanged(java.awt.event.ItemEvent evt) {
@@ -176,44 +176,38 @@ public class Search extends javax.swing.JDialog {
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel1)
-                    .addComponent(jLabel2)
-                    .addComponent(jCheckBox2))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(jCheckBox1)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addComponent(key, javax.swing.GroupLayout.PREFERRED_SIZE, 204, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(scope, javax.swing.GroupLayout.PREFERRED_SIZE, 204, javax.swing.GroupLayout.PREFERRED_SIZE)))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jButton2))
             .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 346, Short.MAX_VALUE)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jCheckBox2)
+                    .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(jCheckBox1)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(27, 27, 27)
+                        .addComponent(key, 0, 204, Short.MAX_VALUE))))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel1)
-                    .addComponent(scope, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel2)
-                    .addComponent(key, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(key, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(jCheckBox1)
-                        .addComponent(jCheckBox2))
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jCheckBox1)
+                    .addComponent(jCheckBox2)
                     .addComponent(jButton1))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 200, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 235, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jButton2))
         );
@@ -224,27 +218,13 @@ public class Search extends javax.swing.JDialog {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        dispose();
+        open();
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void jTable1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable1MouseClicked
 
         if (evt.getClickCount() > 1) {
-            if (jCheckBox2.isSelected()) {
-                Selection s = new Selection(jTable1);
-                lastContext = Context.getMatchingContext(jTable1.getValueAt(jTable1.getSelectedRow(), 1).toString());
-            }
-            if (lastContext != null) {
-                try {
-                    selection = DatabaseObject.getObject(lastContext, Integer.valueOf(jTable1.getValueAt(jTable1.getSelectedRow(), 0).toString()));
-                    if (addTabs) {
-                        mpv5.YabsViewProxy.instance().getIdentifierView().addTab(selection);
-                    }
-                } catch (NodataFoundException ex) {
-                    mpv5.logging.Log.Debug(ex);
-                }
-                this.dispose();
-            }
+            open();
         }
     }//GEN-LAST:event_jTable1MouseClicked
 
@@ -253,24 +233,25 @@ public class Search extends javax.swing.JDialog {
 }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jCheckBox2ItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_jCheckBox2ItemStateChanged
-        scope.setEnabled(!jCheckBox2.isSelected());
+//        scope.setEnabled(!jCheckBox2.isSelected());
 }//GEN-LAST:event_jCheckBox2ItemStateChanged
 
     private void keyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_keyActionPerformed
         search();
 }//GEN-LAST:event_keyActionPerformed
+
+    private void jTable1KeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTable1KeyTyped
+    }//GEN-LAST:event_jTable1KeyTyped
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
     private javax.swing.JCheckBox jCheckBox1;
     private javax.swing.JCheckBox jCheckBox2;
-    private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable jTable1;
     private javax.swing.JComboBox key;
-    private javax.swing.JComboBox scope;
     // End of variables declaration//GEN-END:variables
 
     private void search() {
@@ -287,13 +268,14 @@ public class Search extends javax.swing.JDialog {
 
         Object[][] data = null;
         if (!jCheckBox2.isSelected()) {
-            lastContext = (Context) scope.getSelectedItem();
-            lastContext.addReference(Context.getGroup());
-            DatabaseSearch s = new DatabaseSearch(lastContext);
-            data = s.getValuesFor(lastContext.getDbIdentity() + ".ids," + lastContext.getDbIdentity() + ".cname," + "groups.cname," + lastContext.getDbIdentity() + ".dateadded", new String[]{"cname"}, newSelection, !jCheckBox1.isSelected());
+            for (int i = 0; i < Context.getSearchableContexts().size(); i++) {
+                Context c = Context.getSearchableContexts().get(i);
+                c.addReference(Context.getGroup());
+                DatabaseSearch s = new DatabaseSearch(c);
+                data = ArrayUtilities.merge(data, s.getValuesFor(c.getDbIdentity() + ".ids, '" + c.getDbIdentity() + "', " + c.getDbIdentity() + ".cname," + "groups.cname," + c.getDbIdentity() + ".dateadded", DatabaseObject.getObject(c).getStringVars().toArray(new String[]{}), newSelection, !jCheckBox1.isSelected()));
+            }
             jTable1.setModel(new MPTableModel(data));
         } else {
-            lastContext = null;
             DatabaseSearch s = new DatabaseSearch(Context.getSearchIndex());
             data = s.getValuesFor("rowid, dbidentity, text", "text", newSelection, !jCheckBox1.isSelected());
             jTable1.setModel(new MPTableModel(HtmlParser.getMarkedHtml(data, 2, newSelection)));
@@ -320,5 +302,25 @@ public class Search extends javax.swing.JDialog {
      */
     public void setAdditionalSearchCondition(String additionalSearchCondition) {
         this.additionalSearchCondition = additionalSearchCondition;
+    }
+
+    private void open() {
+        Context lastContext = null;
+        if (jTable1.getSelectedRow() >= 0) {
+            Selection s = new Selection(jTable1);
+            lastContext = Context.getMatchingContext(jTable1.getValueAt(jTable1.getSelectedRow(), jTable1.convertColumnIndexToView(1)).toString());
+
+            if (lastContext != null) {
+                try {
+                    selection = DatabaseObject.getObject(lastContext, Integer.valueOf(jTable1.getModel().getValueAt(jTable1.getSelectedRow(), 0).toString()));
+                    if (addTabs) {
+                        mpv5.YabsViewProxy.instance().getIdentifierView().addTab(selection);
+                    }
+                } catch (NodataFoundException ex) {
+                    mpv5.logging.Log.Debug(ex);
+                }
+                this.dispose();
+            }
+        }
     }
 }

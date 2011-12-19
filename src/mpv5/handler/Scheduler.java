@@ -14,6 +14,7 @@ import mpv5.db.common.QueryHandler;
 import mpv5.db.common.ReturnValue;
 import mpv5.db.objects.Item;
 import mpv5.db.objects.Schedule;
+import mpv5.db.objects.User;
 import mpv5.globals.Messages;
 import mpv5.logging.Log;
 import mpv5.ui.panels.HomeScreen;
@@ -26,10 +27,10 @@ import mpv5.utils.date.vTimeframe;
  */
 public class Scheduler extends Thread {
 
-    private HomeScreen g;
+    private HomeScreen homescreen;
 
     public Scheduler() {
-        g = HomeScreen.getInstance();
+        homescreen = HomeScreen.getInstance();
     }
 
     @Override
@@ -38,9 +39,9 @@ public class Scheduler extends Thread {
         checkForOverdueEvents();
         checkForCreateBillEvents(null);
         while (YabsApplication.getApplication().isReady() == false);
-//        if (show) {
-        mpv5.YabsViewProxy.instance().getIdentifierView().addOrShowTab(g, Messages.HOMESCREEN.toString());
-//        }
+        if (!User.getCurrentUser().getProperties().getProperty(homescreen, "disable", true)) {
+            mpv5.YabsViewProxy.instance().getIdentifierView().addOrShowTab(homescreen, Messages.HOMESCREEN.toString());
+        }
     }
 
     @SuppressWarnings("static-access")
@@ -53,7 +54,7 @@ public class Scheduler extends Thread {
             Color c = it.next();
             List<Schedule> data = map.get(c);
             if (!data.isEmpty()) {
-                g.show(map, g.getNextEvents());
+                homescreen.show(map, homescreen.getNextEvents());
                 break;
             }
         }
@@ -69,7 +70,7 @@ public class Scheduler extends Thread {
             Color c = it.next();
             List<Item> data = map.get(c);
             if (!data.isEmpty()) {
-                g.show(map, g.getOverdue());
+                homescreen.show(map, homescreen.getOverdue());
                 break;
             }
         }

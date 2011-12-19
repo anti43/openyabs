@@ -167,13 +167,21 @@ public class DatabaseSearch {
      * @return 
      */
     public Object[][] getValuesFor(String resultingFieldNames, String[] possibleColumns, Object where, boolean searchForLike) {
-        ArrayList<Object[]> list = new ArrayList<Object[]>();
-        for (int i = 0; i < possibleColumns.length; i++) {
-            String string = possibleColumns[i];
-            list.addAll(Arrays.asList(QueryHandler.instanceOf().clone(context, ROWLIMIT).select(resultingFieldNames, new String[]{string, String.valueOf(where), (where instanceof Number) ? "" : "'"}, null, searchForLike)));
+        try {
+            ArrayList<Object[]> list = new ArrayList<Object[]>();
+            QueryCriteria2 c = new QueryCriteria2();
+            ArrayList<QueryParameter> l = new ArrayList<QueryParameter>();
+            for (int i = 0; i < possibleColumns.length; i++) {
+                String string = possibleColumns[i];
+                l.add(new QueryParameter(context, string, where, searchForLike ? QueryParameter.LIKE : QueryParameter.EQUALS));
+            }
+            c.or(l);
+            list.addAll(Arrays.asList(QueryHandler.instanceOf().clone(context, ROWLIMIT).select(resultingFieldNames, c).getData()));
+
+            return list.toArray(new Object[][]{});
+        } catch (NodataFoundException ex) {
+            return new Object[0][0];
         }
-        ArrayUtilities.removeDuplicates(list);
-        return list.toArray(new Object[][]{});
     }
 
     /**
@@ -413,7 +421,7 @@ public class DatabaseSearch {
             for (Integer s : new DatabaseSearch(exct, 50).searchObjectIdsFor(value)) {
                 subitemids = s + "," + subitemids;
             }
-            
+
             final String x = Context.getAliasFor(context, exct);
             Object[] sdata = QueryHandler.instanceOf().clone(context).freeQuery("select " + x + "ids from " + exct.getDbIdentity() + " where ids in(" + subitemids + ")", MPSecurityManager.VIEW, null).getFirstColumn();
             if (sdata != null) {

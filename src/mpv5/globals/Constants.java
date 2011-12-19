@@ -28,7 +28,7 @@ public interface Constants {
      * 
      * Full Version number
      */
-    public static final String VERSION = "Yabs-1.177";
+    public static final String VERSION = "Yabs-1.178";
 
     /**
      * The original database version of this release
