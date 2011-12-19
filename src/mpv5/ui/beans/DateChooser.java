@@ -81,12 +81,15 @@ public class DateChooser extends javax.swing.JPanel {
         jButton1 = new javax.swing.JButton();
         jSpinner1 = new javax.swing.JSpinner();
 
+        setName("Form"); // NOI18N
         setOpaque(false);
 
         jButton1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/16/cal.png"))); // NOI18N
-        jButton1.setText("...");
-        jButton1.setToolTipText("Choose");
+        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("mpv5/resources/languages/Panels"); // NOI18N
+        jButton1.setToolTipText(bundle.getString("DateChooser.jButton1.toolTipText")); // NOI18N
         jButton1.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+        jButton1.setContentAreaFilled(false);
+        jButton1.setName("jButton1"); // NOI18N
         jButton1.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 jButton1MouseClicked(evt);
@@ -98,9 +101,10 @@ public class DateChooser extends javax.swing.JPanel {
             }
         });
 
-       // jSpinner1.setFont(jSpinner1.getFont().deriveFont(jSpinner1.getFont().getSize()-2f));
+        jSpinner1.setFont(jSpinner1.getFont());
         jSpinner1.setModel(new javax.swing.SpinnerDateModel());
         jSpinner1.setEditor(new javax.swing.JSpinner.DateEditor(jSpinner1, ""));
+        jSpinner1.setName("jSpinner1"); // NOI18N
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -114,7 +118,7 @@ public class DateChooser extends javax.swing.JPanel {
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
-                .addComponent(jButton1)
+                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 21, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addComponent(jSpinner1, javax.swing.GroupLayout.PREFERRED_SIZE, 21, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
     }// </editor-fold>//GEN-END:initComponents

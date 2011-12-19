@@ -95,7 +95,6 @@ public class LocalSettings {
             });
     private static Vector<PropertyStore> cookies;
 
-
     /**
      * Applies the environmental settings
      */
@@ -103,7 +102,7 @@ public class LocalSettings {
         Properties systemSettings = System.getProperties();
 
         //Proxy settings
-        if (hasProperty(PROXYHOST )){
+        if (hasProperty(PROXYHOST)) {
             systemSettings.put("http.proxyHost", getProperty(PROXYHOST));
             systemSettings.put("http.proxyPort", getProperty(PROXYPORT));
             if (hasProperty(PROXYUSER)) {
@@ -241,12 +240,11 @@ public class LocalSettings {
      * @return True if the key exists
      */
     public static boolean hasProperty(String propertyname) {
-        return (cookie.hasProperty(propertyname) && 
-                !cookie.getProperty(propertyname).equals("null") &&
-                cookie.getProperty(propertyname).length() != 0) ||
-                
-                (predefinedSettings.hasProperty(propertyname) &&
-                !predefinedSettings.getProperty(propertyname).equals("null"));
+        return (cookie.hasProperty(propertyname)
+                && !cookie.getProperty(propertyname).equals("null")
+                && cookie.getProperty(propertyname).length() != 0)
+                || (predefinedSettings.hasProperty(propertyname)
+                && !predefinedSettings.getProperty(propertyname).equals("null"));
     }
 
     /**
@@ -276,9 +274,13 @@ public class LocalSettings {
     public static synchronized void read() throws Exception {
 
         try {
+            File ls = new File(Main.SETTINGS_FILE);
+            if (!ls.canRead()) {
+                throw new RuntimeException(ls + "not readable.");
+            }
             Log.Debug(LocalSettings.class, "Reading in local settings where ID =" + connectionID);
             XMLReader read = new XMLReader();
-            read.newDoc(new File(Main.SETTINGS_FILE), false);
+            read.newDoc(ls, false);
             cookies = (Vector<PropertyStore>) read.readInto("localsettings", "connection");
             for (int i = 0; i < cookies.size(); i++) {
                 PropertyStore propertyStore = cookies.get(i);

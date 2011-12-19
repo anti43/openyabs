@@ -17,12 +17,15 @@
 package mpv5.utils.reflection;
 
 import java.io.File;
+import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.util.jar.Attributes;
+import java.util.jar.Manifest;
 import mpv5.logging.Log;
 
 /**
@@ -76,5 +79,30 @@ public class ClasspathTools {
         } catch (MalformedURLException ex) {
             mpv5.logging.Log.Debug(ex);//Logger.getLogger(ClasspathTools.class.getName()).log(Level.SEVERE, null, ex);
         }
+    }
+
+    /**
+     * findLibsFromManifest where the class comes from
+     * @param fromClass
+     * @return
+     * @throws IOException
+     */
+    public static String[] findLibsFromManifest(Class fromClass) throws IOException {
+        Class clazz = fromClass;
+        String className = clazz.getSimpleName() + ".class";
+        String classPath = clazz.getResource(className).toString();
+        if (!classPath.startsWith("jar")) {
+            // Class not from JAR
+            Log.Debug(ClasspathTools.class, "Class not loaded from jar: " + fromClass);
+            return null;
+        }
+        String manifestPath = classPath.substring(0, classPath.lastIndexOf("!") + 1)
+                + "/META-INF/MANIFEST.MF";
+        Manifest manifest = new Manifest(new URL(manifestPath).openStream());
+        Attributes attr = manifest.getMainAttributes();
+
+        String value = attr.getValue("Class-Path");
+//        Log.Debug(ClasspathTools.class, value);
+        return value.split(" ");
     }
 }

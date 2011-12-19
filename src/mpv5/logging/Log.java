@@ -96,6 +96,7 @@ public class Log {
             try {
                 ExceptionHandler.add((Exception) message);
             } catch (Exception e) {
+                Print(e);
             }
         }
 

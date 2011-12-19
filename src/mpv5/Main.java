@@ -17,6 +17,8 @@
 package mpv5;
 
 import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import mpv5.db.common.NodataFoundException;
 import mpv5.db.common.ReturnValue;
 import mpv5.logging.*;
@@ -27,13 +29,11 @@ import enoa.handler.TemplateHandler;
 import java.awt.Cursor;
 import java.awt.Font;
 import java.io.File;
-import java.io.FileFilter;
 import java.net.HttpURLConnection;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.Enumeration;
 import java.util.List;
@@ -73,9 +73,9 @@ import mpv5.utils.files.FileExecutor;
 import mpv5.utils.files.FileMonitor;
 import mpv5.utils.files.FileReaderWriter;
 import mpv5.utils.print.PrintJob2;
+import mpv5.utils.reflection.ClasspathTools;
 import mpv5.utils.text.RandomText;
 import mpv5.webshopinterface.WSIManager;
-import org.apache.commons.io.filefilter.FileFileFilter;
 import org.jdesktop.application.FrameView;
 
 /**
@@ -124,15 +124,18 @@ public class Main implements Runnable {
     }
     private static List<Process> oap = new ArrayList<Process>();
 
-    private static void readLocalSettings() {
+    private static boolean readLocalSettings() {
         splash.nextStep(Messages.LOCAL_SETTINGS.toString());
         try {
             LocalSettings.read();
             LocalSettings.apply();
+            Log.Print("Done with local settings file: " + LocalSettings.getLocalFile());
+            return true;
         } catch (Exception ex) {
-            Log.Debug(Main.class, ex.getMessage());
-            Log.Debug(Main.class, "Local settings file not readable: " + LocalSettings.getLocalFile());
+            Log.Print(ex.getMessage());
+            Log.Print("Local settings file not readable: " + LocalSettings.getLocalFile());
         }
+        return false;
     }
 
     private static void readGlobalSettings() {
@@ -242,7 +245,7 @@ public class Main implements Runnable {
      * Launch the application
      */
     public static void start() {
-        
+
         splash.nextStep(Messages.LAUNCH.toString());
         Log.Debug(Main.class, "Trying to launch application now..");
         Runnable runnable = new Runnable() {
@@ -279,7 +282,7 @@ public class Main implements Runnable {
     /**
      * Indicates whether template check shall be skipped
      */
-    public static boolean SKIP_TPLCHECK = false;    
+    public static boolean SKIP_TPLCHECK = false;
     /**
      * The Yabs Application (JSAF)
      */
@@ -302,15 +305,15 @@ public class Main implements Runnable {
 
         splash.nextStep(Messages.FIRST_INSTANCE.toString());
         splash.nextStep(Messages.DB_CHECK.toString());
-        
+
         ControlPanel_Fonts.applyFont(Font.decode(LocalSettings.getProperty(LocalSettings.DEFAULT_FONT)));
         if (FORCE_INSTALLER == null) {
             Log.Debug(this, "Probing database connection... ");
             if (probeDatabaseConnection()) {
-                
+
                 splash.nextStep(Messages.DBCONN_UPDATE_BEPATIENT.toString());
                 QueryHandler.instanceOf();
-                
+
                 readGlobalSettings();
                 Log.Debug(this, "Loading Yabs... ");
                 readImports();
@@ -434,8 +437,9 @@ public class Main implements Runnable {
             setEnv(null);
             parseArgs(args);
             runStartScripts();
-            readLocalSettings();
-            LanguageManager.preLoadCachedLanguage();
+            if (readLocalSettings()) {
+                LanguageManager.preLoadCachedLanguage();
+            }
             setDerbyLog();
             start();
         } catch (Exception e) {
@@ -651,7 +655,7 @@ public class Main implements Runnable {
             if (cl.hasOption(server)) {
                 START_SERVER = true;
             }
-            
+
             if (cl.hasOption(ignoreLibs)) {
                 SKIP_LIBCHECK = true;
             }
@@ -659,6 +663,7 @@ public class Main implements Runnable {
             if (cl.hasOption(ignoreTpls)) {
                 SKIP_TPLCHECK = true;
             }
+
             YConsole.setLogStreams(cl.hasOption(logfile), cl.hasOption(consolelog), cl.hasOption(windowlog));
 
             if (cl.hasOption(params)) {
@@ -894,7 +899,7 @@ public class Main implements Runnable {
         if (!HEADLESS) {
             checkTpls();
         }
-        
+
     }
 
     private void loadPlugins() {
@@ -1050,56 +1055,47 @@ public class Main implements Runnable {
             Log.Debug(ioe);
         }
     }
-    
+
     @SuppressWarnings("unchecked")
     private void checkLibs() {
         splash.nextStep(Messages.CHECK_LIBS.toString());
         if (!SKIP_LIBCHECK) {
-            Runnable runnable1 = new Runnable() {
+            final String[] libs;
+            try {
+                libs = ClasspathTools.findLibsFromManifest(Main.class);
+                if (libs != null) {
+                    Runnable runnable1 = new Runnable() {
 
-                @Override
-                public void run() {
-                    File ilang = new File(Constants.LIBS_DIR);
-                    File[] files = ilang.listFiles((FileFilter) FileFileFilter.FILE);
-                    //listFiles may return null
-                    if(files==null){
-                       Log.Debug(Main.class,
-                         "Libcheck failed in " + Constants.LIBS_DIR);
-                       return;
-                     }
-                    String[] filenames = new String[files.length];
-                    for (int i = 0; i < files.length; i++) {
-                        filenames[i] = files[i].getName();
-                    }
-                    boolean failed = false;
-                    for (int i = 0; i < Constants.LIBS.length; i++) {
-                        Log.Debug(Main.class,
-                                "Checking: " + Constants.LIBS[i]);
-                        Arrays.sort(filenames);
-                        int indexOfLib = Arrays.binarySearch(filenames,
-                                Constants.LIBS[i]);
-                        if (indexOfLib >= 0) {
-                            Log.Debug(Main.class,
-                                    "Passed: " + Constants.LIBS[i]);
-                        } else {
-                            Log.Debug(Main.class,
-                                    "Missed: " + Constants.LIBS[i]);
-                            Popup.notice(Messages.MISSING_FILE.toString() + " "
-                                    + Constants.LIBS[i]);
-                            failed = true;
+                        @Override
+                        public void run() {
+                            File libdir = new File(Constants.LIBS_DIR);
+                            if (!libdir.exists()) {
+                                Log.Debug(Main.class,
+                                        "Libcheck failed in " + Constants.LIBS_DIR);
+                                return;
+                            }
+
+                            boolean failed = false;
+                            for (int i = 0; i < libs.length; i++) {
+                                Log.Debug(Main.class, "Checking: " + libs[i]);
+                                File lib = new File(libs[i]);
+                                failed = !lib.canRead();
+                            }
+                            if (failed == true) {
+                                Popup.notice(Messages.MISSING_LIBS.toString());
+                                //YabsApplication.getInstance().exit();
+                            }
                         }
-                    }
-                    if (failed == true) {
-                        Popup.notice(Messages.MISSING_LIBS.toString());
-                        //YabsApplication.getInstance().exit();
-                    }
-                }
-            };
+                    };
 
-            new Thread(runnable1).start();
+                    new Thread(runnable1).start();
+                }
+            } catch (Exception e) {
+                Log.Debug(e);
+            }
         }
     }
-    
+
     @SuppressWarnings("unchecked")
     private void checkTpls() {
         splash.nextStep(Messages.CHECK_TPLUPDATE.toString());
@@ -1124,7 +1120,7 @@ public class Main implements Runnable {
                                     TemplateHandler.clearCache();
                                 }
                             };
-                            
+
                             if (!tpl.__getPathtofile().equals("")) {
                                 if (tpl.__getisupdateenabled()) {
                                     File file = new File(tpl.__getPathtofile());
