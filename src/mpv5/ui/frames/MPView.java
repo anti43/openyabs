@@ -138,6 +138,7 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
     private static JLabel staterrorlabel = new JLabel();
     private static MPList currentList = new MPList();
     private static ListView clistview = new ListView(currentList);
+    private static JFrame clipboard = null;
     private static boolean loaded = false;
 
     /**
@@ -146,20 +147,6 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
      */
     public void addMessage(Object message) {
         addMessage(String.valueOf(message));
-    }
-
-    /**
-     * We currently support the usage of 1 temporary list of DatabaseObjects.
-     * This method shows a popup containing the actual content.
-     */
-    public static void showCurrentList() {
-        try {
-            BigPopup.setLocationBottomRight(getClistview());
-            BigPopup.show(getClistview());
-            BigPopup.setOnTop(getClistview());
-        } catch (Exception ex) {
-            Log.Debug(ex);
-        }
     }
 
     /**
@@ -360,13 +347,6 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
     }
 
     /**
-     * @return the clistview
-     */
-    public static ListView getClistview() {
-        return clistview;
-    }
-
-    /**
      * @return the pluginLoader
      */
     public YabsPluginLoader getPluginLoader() {
@@ -529,8 +509,7 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
     public void addToClipBoard(DatabaseObject obj) {
         getClipboardMenu().add(new ClipboardMenuItem(obj));
         getCurrentList().add(obj);
-        getClistview().validate();
-        showCurrentList();
+        setClipBoardVisible(true);
     }
 
     public MPView(SingleFrameApplication app) {
@@ -539,7 +518,6 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
         MPView.identifierApplication = app;
 
         initComponents();
-        BigPopup.create(getClistview(), Messages.YABS.toString());
 
         try {
             Image icon = Toolkit.getDefaultToolkit().getImage(this.getFrame().getClass().getResource(Constants.ICON));
@@ -3064,22 +3042,22 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
     }
 
     @Override
-    public void setClipBoardVisible(boolean show) {
+    public synchronized void setClipBoardVisible(boolean show) {
+        if (clipboard == null) {
+            clipboard = new JFrame(Messages.YABS.getValue());
+            clipboard.setLayout(new BorderLayout());
+            clipboard.add(clistview, BorderLayout.CENTER);
+            clipboard.pack();
+            clipboard.setLocationRelativeTo(YabsViewProxy.instance().getIdentifierFrame());
+            clipboard.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+        }
         try {
-            getClistview().validate();
+            clistview.validate();
             if (User.getCurrentUser().getProperty("org.openyabs.uiproperty", "clipboardtab")) {
-                addOrShowTab(getClistview(), "Clipboard");
-            } else if (!User.getCurrentUser().getProperty("org.openyabs.uiproperty", "clipboardframe")) {
-                JFrame j = new JFrame("Clipboard");
-                j.setLayout(new BorderLayout());
-                j.add(getClistview(), BorderLayout.CENTER);
-                j.pack();
-                j.setLocationRelativeTo(YabsViewProxy.instance().getIdentifierFrame());
-                j.setVisible(true);
+                addOrShowTab(clistview, "Clipboard");
             } else {
-                BigPopup.setOnTop(getClistview());
+                clipboard.setVisible(show);
             }
-//            BigPopup.show(getClistview());
         } catch (Exception ex) {
             Logger.getLogger(MPView.class.getName()).log(Level.SEVERE, null, ex);
         }

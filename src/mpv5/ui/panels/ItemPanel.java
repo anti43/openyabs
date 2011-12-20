@@ -1737,7 +1737,11 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
             TableFormat.stripColumn(itemtable, 14);
             model.setCellEditable(0, 14, false);
         } else {
-            TableFormat.resizeCol(itemtable, 5, 120, true);
+            int widthc = mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("org.openyabs.uiproperty.optionalcolumn.width", 0);
+            if (widthc <= 0) {
+                widthc = 121;
+            }
+            TableFormat.resizeCol(itemtable, 14, widthc, widthc!=121);
         }
 
         //column move is the very last thing to do, in newcol.asc order
