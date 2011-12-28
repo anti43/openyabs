@@ -119,7 +119,7 @@ public class FormatNumber {
             try {
                 //Try to parse the String with the default locale, but with removed currency signs
                 Number result = NumberFormat.getNumberInstance().parse(number);
-                return new BigDecimal(number.toString());
+                return new BigDecimal(result.toString());
             } catch (ParseException parseException) {
             }
             return null;

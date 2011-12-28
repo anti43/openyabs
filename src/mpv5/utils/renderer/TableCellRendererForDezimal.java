@@ -28,27 +28,40 @@ import javax.swing.JTable;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableColumn;
 import mpv5.globals.GlobalSettings;
+import mpv5.logging.Log;
 import mpv5.utils.numberformat.FormatNumber;
 
 public class TableCellRendererForDezimal extends DefaultTableCellRenderer {
 
+    private static final long serialVersionUID = 1L;
     private final DefaultTableCellRenderer adaptee = new DefaultTableCellRenderer();
-    public static NumberFormat DECIMALFORMAT = FormatNumber.getShortDecimalFormat();
     private final JTable t;
     private Color color;
+    private NumberFormat format = FormatNumber.getShortDecimalFormat();
 
     /**
      * 
      * @param t
-     * @param color
+     * @param color Not used yet
      */
     public TableCellRendererForDezimal(JTable t, Color color) {
-        super();
-        this.t = t;
+        this(t);
         this.color = color;
+    }
 
-        if (GlobalSettings.hasProperty("table.decimal.format")) {
-            DECIMALFORMAT = new DecimalFormat(GlobalSettings.getProperty("table.decimal.format"));
+    /**
+     * 
+     * @param t
+     * @param pattern Overriding FormatNumber.getShortDecimalFormat() and GlobalSettings.getProperty("table.decimal.format")
+     */
+    public TableCellRendererForDezimal(JTable t, String pattern) {
+        this(t);
+        if (pattern != null && pattern.length() != 0) {
+            try {
+                this.format = new DecimalFormat(pattern);
+            } catch (Exception e) {
+                Log.Debug(e);
+            }
         }
     }
 
@@ -59,7 +72,7 @@ public class TableCellRendererForDezimal extends DefaultTableCellRenderer {
     public void setRendererTo(int column) {
 
         TableColumn col = t.getColumnModel().getColumn(t.getColumnModel().getColumnIndex(t.getModel().getColumnName(column)));
-        col.setCellEditor(new TableCellEditorForDezimal(new JFormattedTextField()));
+        col.setCellEditor(new TableCellEditorForDezimal(new JFormattedTextField(), format));
         col.setCellRenderer(this);
     }
 
@@ -70,12 +83,20 @@ public class TableCellRendererForDezimal extends DefaultTableCellRenderer {
     public TableCellRendererForDezimal(JTable t) {
         super();
         this.t = t;
+
+        if (GlobalSettings.hasProperty("table.decimal.format")) {
+            try {
+                this.format = new DecimalFormat(GlobalSettings.getProperty("table.decimal.format"));
+            } catch (Exception e) {
+                Log.Debug(e);
+            }
+        }
     }
 
     @Override
     protected void setValue(Object value) {
         if (value instanceof Number) {
-            value = DECIMALFORMAT.format(value);
+            value = format.format(value);
         }
         super.setValue(value);
     }
@@ -83,7 +104,7 @@ public class TableCellRendererForDezimal extends DefaultTableCellRenderer {
     @Override
     public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int col) {
         if (value instanceof Number) {
-            value = DECIMALFORMAT.format(value);
+            value = format.format(value);
         }
         adaptee.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, col);
         setForeground(adaptee.getForeground());

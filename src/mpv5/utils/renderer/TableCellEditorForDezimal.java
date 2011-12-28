@@ -21,6 +21,7 @@ package mpv5.utils.renderer;
 
 import java.awt.event.MouseEvent;
 import java.math.BigDecimal;
+import java.text.NumberFormat;
 import java.util.EventObject;
 import javax.swing.JFormattedTextField;
 import javax.swing.SwingConstants;
@@ -34,17 +35,29 @@ import mpv5.utils.numberformat.FormatNumber;
  */
 public class TableCellEditorForDezimal extends LazyCellEditor {
 
+    private static final long serialVersionUID = 1L;
+
     /**
-     *
+     * 
      * @param tf
      */
     public TableCellEditorForDezimal(final JFormattedTextField tf) {
+        this(tf, null);
+    }
+
+    /**
+     *
+     * @param tf
+     * @param format  
+     */
+    public TableCellEditorForDezimal(final JFormattedTextField tf, final NumberFormat format) {
         super(tf);
         super.setClickCountToStart(1);
         tf.setFocusLostBehavior(JFormattedTextField.COMMIT);
         tf.setHorizontalAlignment(SwingConstants.LEFT);
         tf.setBorder(null);
         delegate = new EditorDelegate() {
+
             boolean isMousePressed = false;
 
             @Override
@@ -58,10 +71,11 @@ public class TableCellEditorForDezimal extends LazyCellEditor {
                         }
                     });
                     try {
-                        tf.setText(FormatNumber.formatDezimal((Number) param));
+                        tf.setText(format == null ? FormatNumber.formatDezimal((Number) param) : format.format((Number) param));
                     } catch (Exception e) {
                         try {
-                            tf.setText(FormatNumber.formatDezimal(new BigDecimal(String.valueOf(param))));
+                            param = new BigDecimal(String.valueOf(param));
+                            tf.setText(format == null ? FormatNumber.formatDezimal((Number) param) : format.format((Number) param));
                         } catch (Exception ex) {
                             tf.setText(String.valueOf(param));
                         }
@@ -76,7 +90,7 @@ public class TableCellEditorForDezimal extends LazyCellEditor {
             public Object getCellEditorValue() {
                 try {
                     String _field = tf.getText();
-                    Number _number = FormatNumber.parseDezimal(_field);
+                    Number _number = (format == null ? FormatNumber.parseDezimal(_field) : format.parse(_field));
 
                     if (_number != null) {
                         double _parsed = _number.doubleValue();
@@ -93,22 +107,16 @@ public class TableCellEditorForDezimal extends LazyCellEditor {
                     return new Double(0.0);
                 }
             }
-            
+
             @Override
             public boolean isCellEditable(EventObject anEvent) {
-	    if (anEvent instanceof MouseEvent) { 
-                isMousePressed = true;
-		return ((MouseEvent)anEvent).getClickCount() >= clickCountToStart;
-	    }
-            isMousePressed = false;
-	    return true;
+                if (anEvent instanceof MouseEvent) {
+                    isMousePressed = true;
+                    return ((MouseEvent) anEvent).getClickCount() >= clickCountToStart;
+                }
+                isMousePressed = false;
+                return true;
             }
         };
-
-
     }
 }
-
-
-    
-    

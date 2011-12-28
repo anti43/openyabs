@@ -84,7 +84,7 @@ public class ItemTextAreaDialog extends javax.swing.JDialog implements KeyListen
         textArea.setName("textArea"); // NOI18N
         jScrollPane1.setViewportView(textArea);
 
-       java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle(); // NOI18N
+        java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle(); // NOI18N
         okButton.setText(bundle.getString("okButton")); // NOI18N
         okButton.setName("okButton"); // NOI18N
         okButton.addActionListener(new java.awt.event.ActionListener() {
@@ -109,7 +109,7 @@ public class ItemTextAreaDialog extends javax.swing.JDialog implements KeyListen
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addComponent(labeledSpinner1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 58, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 86, Short.MAX_VALUE)
                 .addComponent(okButton, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(cancelButton)
@@ -185,10 +185,11 @@ public class ItemTextAreaDialog extends javax.swing.JDialog implements KeyListen
             p = SubItem.getFromModel(m, getParentTable().getSelectedRow());
         } else {
             p = new SubItem(product);
-            p.setQuantityvalue(new BigDecimal(labeledSpinner1.get_Value().toString()));
+//            p.setQuantityvalue(new BigDecimal(labeledSpinner1.get_Value().toString()));
             p.setExternalvalue(product.findPriceFor(p.__getCountvalue().doubleValue()));
         }
         p.setDescription(textArea.getText());
+        p.setQuantityvalue(new BigDecimal(labeledSpinner1.get_Value().toString()));
         
         m.setRowAt(p.getRowData(getParentTable().getSelectedRow()), getParentTable().getSelectedRow(), 1, 14);
         labeledCombobox1.setSelectedIndex(-1);
