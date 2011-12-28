@@ -143,7 +143,7 @@ public class Context implements Serializable {
     private static Class<ScheduleTypes> IDENTITY_SCHEDULETYPES_CLASS = ScheduleTypes.class;
     private static Class<ActivityListSubItem> IDENTITY_ACTIVITYITEMSLIST_CLASS = ActivityListSubItem.class;
     private static Class<ActivityList> IDENTITY_ACTIVITYLIST_CLASS = ActivityList.class;
-    private static Class<MassprintRules>        IDENTITY_MASSPRINT_CLASS = MassprintRules.class;
+    private static Class<MassprintRules> IDENTITY_MASSPRINT_CLASS = MassprintRules.class;
     //********** unique constraints *******************************************
     public static String UNIQUECOLUMNS_USER = "cname";
     public static String UNIQUECOLUMNS_ITEMS = "cname";
@@ -215,11 +215,11 @@ public class Context implements Serializable {
     public static String DETAILS_FILES_TO_CONTACTS = Context.getFiles().getDbIdentity() + ".cname," + getFilesToContacts().getDbIdentity() + ".cname, " + Context.getFiles().getDbIdentity() + ".dateadded," + Context.getFilesToContacts().getDbIdentity() + ".description," + Context.getFilesToContacts().getDbIdentity() + ".intsize," + Context.getFilesToContacts().getDbIdentity() + ".mimetype";
     public static String DETAILS_FILES_TO_ITEMS = Context.getFiles().getDbIdentity() + ".cname," + getFilesToItems().getDbIdentity() + ".cname, " + Context.getFiles().getDbIdentity() + ".dateadded," + Context.getFilesToItems().getDbIdentity() + ".description," + Context.getFilesToItems().getDbIdentity() + ".intsize," + Context.getFilesToItems().getDbIdentity() + ".mimetype";
     public static String DETAILS_FILES_TO_PRODUCTS = Context.getFiles().getDbIdentity() + ".cname," + getFilesToProducts().getDbIdentity() + ".cname, " + Context.getFiles().getDbIdentity() + ".dateadded," + Context.getFilesToProducts().getDbIdentity() + ".description," + Context.getFilesToProducts().getDbIdentity() + ".intsize," + Context.getFilesToProducts().getDbIdentity() + ".mimetype";
-    public static String DETAILS_MASSPRINT = 
-            Context.IDENTITY_MASSPRINT + "." + "IDS," 
-            + Context.IDENTITY_MASSPRINT + "." + "cname," 
-            + Context.IDENTITY_MASSPRINT + "." + "inttype," 
-            + Context.IDENTITY_MASSPRINT + "." + "dateadded" ;
+    public static String DETAILS_MASSPRINT =
+            Context.IDENTITY_MASSPRINT + "." + "IDS,"
+            + Context.IDENTITY_MASSPRINT + "." + "cname,"
+            + Context.IDENTITY_MASSPRINT + "." + "inttype,"
+            + Context.IDENTITY_MASSPRINT + "." + "dateadded";
 //    public static String DETAILS_FILES_TO_TEMPLATES = Context.getTemplate().getDbIdentity() + ".ids," + getTemplate().getDbIdentity() + ".cname, " + Context.getTemplate().getDbIdentity() + ".dateadded," + Context.getTemplate().getDbIdentity() + ".intsize," + Context.getTemplate().getDbIdentity() + ".mimetype";
 //    public static String DETAILS_TEMPLATES = Context.getTemplate().getDbIdentity() + ".ids," + getTemplate().getDbIdentity() + ".cname, " + Context.getTemplate().getDbIdentity() + ".mimetype," + " groups0.cname";
     private static final Map<String, String> FOREIGN_KEY_ALIASES = new HashMap<String, String>();
@@ -1679,7 +1679,7 @@ public class Context implements Serializable {
 
         return c;
     }
-    
+
     public static Context getMassprint() {
         Context c = new Context();
         c.setSubID(DEFAULT_SUBID);
@@ -1688,7 +1688,7 @@ public class Context implements Serializable {
         c.setId(56);
 
         return c;
-    }    
+    }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////
     /**
@@ -1739,7 +1739,11 @@ public class Context implements Serializable {
 
     @Override
     public String toString() {
-        return String.valueOf(dbIdentity).toUpperCase() + " [" + id + "]";
+        if (true/*getIdentityClass() == null*/) {
+            return String.valueOf(dbIdentity).toUpperCase() + " [" + id + "]";
+        } else {
+            return "<html>"+String.valueOf(dbIdentity).toUpperCase() + " [" + id + "] (<b>" + getIdentityClass().getSimpleName() + "</b>)</html>";
+        }
     }
 
     /**
@@ -1769,11 +1773,7 @@ public class Context implements Serializable {
         if (!(o instanceof Context) || o == null) {
             return false;
         }
-        if (((Context) o).getDbIdentity().equals(getDbIdentity()) && ((Context) o).getId() == getId()) {
-            return true;
-        } else {
-            return false;
-        }
+        return Integer.valueOf(getId()).equals(Integer.valueOf(((Context)o).getId()));
     }
 
     @Override

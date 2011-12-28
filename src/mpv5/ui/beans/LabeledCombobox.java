@@ -21,6 +21,7 @@ import javax.swing.JTextArea;
 import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
 import mpv5.handler.MPEnum;
+import mpv5.logging.Log;
 import mpv5.ui.dialogs.subcomponents.DatabaseObejctReceiver;
 import mpv5.ui.panels.DataPanel;
 import mpv5.utils.models.*;
@@ -34,7 +35,6 @@ public class LabeledCombobox extends javax.swing.JPanel {
     private static final long serialVersionUID = 1L;
     private String _text;
     private String _label;
-
 
     /** Creates new form LabeledTextField */
     public LabeledCombobox() {
@@ -69,7 +69,7 @@ public class LabeledCombobox extends javax.swing.JPanel {
     }
 
     public void setModel(List<Context> values, boolean bloedsinn) {
-       mPCombobox1.setModel(new MPComboboxModel(MPComboBoxModelItem.toItems(values, bloedsinn)));
+        mPCombobox1.setModel(new MPComboboxModel(MPComboBoxModelItem.toItems(values, bloedsinn)));
     }
 
     /**
@@ -356,9 +356,15 @@ public class LabeledCombobox extends javax.swing.JPanel {
 
             public void actionPerformed(ActionEvent e) {
                 try {
-                    obj.receive(DatabaseObject.getObject(mPCombobox1.getContext(), (Integer)getSelectedItem().getIdObject()));
+                    if (getSelectedItem().getSelectedItem() instanceof DatabaseObject) {
+                        obj.receive((DatabaseObject) getSelectedItem().getSelectedItem());
+                    } else if (mPCombobox1.getContext() != null) {
+                        obj.receive(DatabaseObject.getObject(mPCombobox1.getContext(), (Integer) getSelectedItem().getIdObject()));
+                    } else {
+                        Log.Debug(this, "No dbos in model or nor context set!");
+                    }
                 } catch (Exception ex) {
-//                    Log.Debug(ex);
+                    Log.Debug(ex);
                 }
             }
         });

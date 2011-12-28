@@ -1,23 +1,34 @@
 package mpv5.ui.dialogs.subcomponents;
 
+import java.awt.BorderLayout;
 import java.awt.Component;
 import java.util.Date;
 import javax.swing.JComponent;
+import javax.swing.JDialog;
+import javax.swing.JList;
+import javax.swing.JPanel;
 import javax.swing.table.TableCellRenderer;
+import mpv5.YabsViewProxy;
 import mpv5.data.PropertyStore;
 import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
 import mpv5.db.common.DatabaseObject.Entity;
 import mpv5.db.common.NodataFoundException;
 import mpv5.db.common.QueryHandler;
+import mpv5.db.common.ReturnValue;
 import mpv5.db.objects.Item;
 import mpv5.db.objects.MassprintRules;
 import mpv5.globals.Headers;
 import mpv5.globals.Messages;
 import mpv5.logging.Log;
 import mpv5.ui.dialogs.ControlApplet;
+import mpv5.ui.dialogs.Notificator;
 import mpv5.ui.dialogs.Popup;
 import mpv5.ui.dialogs.Search2;
+import mpv5.ui.panels.GeneralListPanel;
+import mpv5.ui.panels.GeneralListPanel2;
+import mpv5.ui.popups.ListPopUp;
+import mpv5.usermanagement.MPSecurityManager;
 import mpv5.utils.models.MPTableModel;
 import mpv5.utils.tables.TableFormat;
 
@@ -74,7 +85,7 @@ public class ControlPanel_Massprint extends javax.swing.JPanel implements Contro
         setName("Form"); // NOI18N
         setLayout(new javax.swing.BoxLayout(this, javax.swing.BoxLayout.PAGE_AXIS));
 
-       java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle(); // NOI18N
+        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("mpv5/resources/languages/Panels"); // NOI18N
         jPanel3.setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("ControlPanel_Massprint.jPanel3.border.title"))); // NOI18N
         jPanel3.setName("jPanel3"); // NOI18N
 
@@ -133,6 +144,7 @@ public class ControlPanel_Massprint extends javax.swing.JPanel implements Contro
         jScrollPane1.setViewportView(rule);
 
         objects.set_Label(bundle.getString("ControlPanel_Massprint.objects._Label")); // NOI18N
+        objects.setEnabled(false);
         objects.setName("objects"); // NOI18N
 
         javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
@@ -143,9 +155,9 @@ public class ControlPanel_Massprint extends javax.swing.JPanel implements Contro
                 .addContainerGap()
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 370, Short.MAX_VALUE)
-                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel5Layout.createSequentialGroup()
-                        .addComponent(jButton3)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 85, Short.MAX_VALUE)
+                    .addGroup(jPanel5Layout.createSequentialGroup()
+                        .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 84, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 84, Short.MAX_VALUE)
                         .addComponent(objects, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
@@ -154,9 +166,9 @@ public class ControlPanel_Massprint extends javax.swing.JPanel implements Contro
             .addGroup(jPanel5Layout.createSequentialGroup()
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 35, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(objects, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton3))
+                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
+                    .addComponent(jButton3)
+                    .addComponent(objects, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap())
         );
 
@@ -220,13 +232,19 @@ public class ControlPanel_Massprint extends javax.swing.JPanel implements Contro
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
-        DatabaseObject s = Search2.showSearchFor(Context.getItem());
-        if (s != null) {
-            try {
-                Popup.notice(s.evaluate(rule.getText()));
-            } catch (Exception e) {
-                Popup.error(e);
-            }
+//        DatabaseObject s = Search2.showSearchFor(Context.getItem());
+//        if (s != null) {
+//            try {
+//                Popup.notice(s.evaluate(rule.getText()));
+//            } catch (Exception e) {
+//                Popup.error(e);
+//            }
+//        }
+        try {
+            ReturnValue data = QueryHandler.instanceOf().freeSelectQuery(rule.getText(), MPSecurityManager.RIGHT_TO_VIEW, null);
+            Popup.notice(data.getDataAsStringList(), Messages.DONE);
+        } catch (Exception e) {
+            Notificator.raiseNotification(e, true);
         }
     }//GEN-LAST:event_jButton3ActionPerformed
 

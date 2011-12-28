@@ -307,6 +307,22 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
         }
         return l;
     }
+    
+     /**
+     * This method can be used to workaround the DatabaseObject#getObjects(...) casting issues introduced by @me :-)
+     * @param <T>
+     * @param objects
+     * @return
+     */
+    @SuppressWarnings("unchecked")
+    public static <T extends DatabaseObject> List<DatabaseObject> toObjectList(List<T> objects) {
+        List<DatabaseObject> l = new ArrayList<DatabaseObject>();
+        for (int i = 0; i < objects.size(); i++) {
+            DatabaseObject databaseObject = objects.get(i);
+            l.add(databaseObject);
+        }
+        return l;
+    }
 
     private static void invoke(Method method, Object argument, DatabaseObject dbo, Object valx) {
         synchronized (dbo) {

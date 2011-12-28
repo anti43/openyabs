@@ -18,7 +18,6 @@ package mpv5.db.objects;
 
 import java.beans.XMLDecoder;
 import java.beans.XMLEncoder;
-import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -29,12 +28,8 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-import java.util.zip.DataFormatException;
-import java.util.zip.Deflater;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
-import java.util.zip.Inflater;
-import javax.print.DocFlavor.STRING;
 import javax.swing.JComponent;
 
 import mpv5.db.common.Context;
@@ -45,12 +40,15 @@ import mpv5.db.common.QueryCriteria2;
 import mpv5.db.common.QueryHandler;
 import mpv5.db.common.QueryParameter;
 import mpv5.logging.Log;
+import mpv5.utils.text.RandomStringUtils;
 
 /**
  *
  *  
  */
 public final class ValueProperty extends DatabaseObject {
+
+    private static final long serialVersionUID = 1L;
 
     public ValueProperty() {
         context = Context.getValueProperties();
@@ -79,17 +77,18 @@ public final class ValueProperty extends DatabaseObject {
      * @param key
      * @param value
      * @param owner
+     * @param group  
      */
     public ValueProperty(final String key, final Serializable value, final Context owner, final Group group) {
         this();
-        if (key == null) {
+        if (owner == null) {
             throw new NullPointerException();
         }
-        setValueObj(owner);
+        setValueObj(value);
         setContextids(owner.getId());
         setObjectids(0);
         setGroupsids(group.__getIDS());
-        setCName(key);
+        setCName(key == null ? RandomStringUtils.randomAlphabetic(8) : key);
     }
 
     /**
@@ -119,6 +118,7 @@ public final class ValueProperty extends DatabaseObject {
      * @param key
      * @param value
      * @param owner
+     * @param group  
      */
     public static synchronized void addOrUpdateProperty(final String key, final Serializable value, final Context owner, final Group group) {
         if (key == null) {
@@ -139,6 +139,7 @@ public final class ValueProperty extends DatabaseObject {
     /**
      * Create a new property or update an existing one
      * @param key
+     * @param sourceClass 
      * @param value
      * @param owner
      */
@@ -215,6 +216,8 @@ public final class ValueProperty extends DatabaseObject {
     }
 
     /**
+     * @param owner
+     * @param key  
      */
     public static synchronized void deleteProperty(final DatabaseObject owner, final String key) {
         try {
@@ -233,6 +236,8 @@ public final class ValueProperty extends DatabaseObject {
     }
 
     /**
+     * @param owner
+     * @param key  
      */
     public static synchronized void deleteProperty(final Context owner, final String key) {
         try {
@@ -251,8 +256,30 @@ public final class ValueProperty extends DatabaseObject {
     }
 
     /**
+     * @param owner
+     * @param key  
+     */
+    public static synchronized void deleteProperty(final Context owner, final Group group, final String key) {
+        try {
+            QueryCriteria c = new QueryCriteria("contextids", owner.getId());
+            if (key != null) {
+                c.addAndCondition("cname", key);
+            }
+            c.addAndCondition("objectids", 0);
+            c.addAndCondition("groupsids", group.__getIDS());
+            ArrayList<DatabaseObject> objects = DatabaseObject.getObjects(Context.getValueProperties(), c);
+            for (int i = 0; i < objects.size(); i++) {
+                DatabaseObject databaseObject = objects.get(i);
+                databaseObject.delete();
+            }
+        } catch (NodataFoundException ex) {
+        }
+    }
+
+    /**
      * Search for a specific property
      * @param owner
+     * @param sourceClass 
      * @param key
      */
     public static synchronized void deleteProperty(final DatabaseObject owner, final Class<?> sourceClass, final String key) {
@@ -284,6 +311,27 @@ public final class ValueProperty extends DatabaseObject {
             QueryCriteria c = new QueryCriteria("contextids", owner.getContext().getId());
             c.addAndCondition("objectids", owner.__getIDS());
             ArrayList<DatabaseObject> objects = DatabaseObject.getObjects(Context.getValueProperties(), c);
+            return DatabaseObject.toObjectList(objects, new ValueProperty());
+        } catch (NodataFoundException ex) {
+            Log.Debug(ValueProperty.class, ex.getMessage());
+            return Collections.EMPTY_LIST;
+        }
+    }
+
+    /**
+     * 
+     * @return 
+     */
+    @SuppressWarnings("unchecked")
+    public static List<ValueProperty> getGroupProperties() {
+        try {
+            QueryCriteria2 c = new QueryCriteria2();
+            c.and(new QueryParameter(Context.getValueProperties(), "objectids", 0, QueryParameter.EQUALS));
+            List<Group> groups = Group.getObjects(Context.getGroup());
+            for (Group g : groups) {
+                c.or(new QueryParameter(Context.getValueProperties(), "groupsids", g.__getIDS(), QueryParameter.EQUALS));
+            }
+            ArrayList<DatabaseObject> objects = DatabaseObject.getObjects(Context.getValueProperties(), c, false);
             return DatabaseObject.toObjectList(objects, new ValueProperty());
         } catch (NodataFoundException ex) {
             Log.Debug(ValueProperty.class, ex.getMessage());
@@ -401,10 +449,13 @@ public final class ValueProperty extends DatabaseObject {
         try {
             XMLDecoder d = new XMLDecoder(io);
             setValueObj((Serializable) d.readObject());
-        } catch (Exception unsupportedEncodingException) {
+        } catch (Exception exc) {
             synchronized (this) {
-                Log.Debug(unsupportedEncodingException);
-//                Log.Debug(this, new String(value));
+                Log.Debug(exc);
+                Log.Debug(this, new String(value));
+                if(delete()) {
+                    Log.Debug(this, "Removed faulty VP from database!");
+                }
             }
         }
     }

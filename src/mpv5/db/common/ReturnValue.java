@@ -4,6 +4,7 @@
  */
 package mpv5.db.common;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
@@ -116,6 +117,26 @@ public class ReturnValue {
      */
     public List<Object[]> getDataAsList() {
         return Arrays.asList(getData());
+    }
+
+    /**
+     * All data retrieved by a select query
+     * @return the data
+     */
+    public List<String> getDataAsStringList() {
+        ArrayList<String> l = new ArrayList<String>(data.length);
+        for (int i = 0; i < data.length; i++) {
+            Object[] objects = data[i];
+            StringBuilder a = new StringBuilder("");
+            for (int j = 0; j < objects.length; j++) {
+                a.append(objects[j]);
+                if (j != objects.length-1) {
+                    a.append(", ");
+                }
+            }
+            l.add(a.toString());
+        }
+        return l;
     }
 
     /**
