@@ -305,7 +305,8 @@ public enum Messages {
     CHECK_TPLUPDATE("Checking Templates to update from Filechange ..."),
     MASSPRINT_FILTER("Filter Entries by:"), 
     MASSPRINT_ENTER_NAME("Enter a Name for the Filter-Rule:"), 
-    MASSPRINT_FILTER_ALL("All Contacts");
+    MASSPRINT_FILTER_ALL("All Contacts"), 
+    SCRIPT_ERROR("A script did not run successfully:");
 
     private Messages(String message) {
         this.message = message;

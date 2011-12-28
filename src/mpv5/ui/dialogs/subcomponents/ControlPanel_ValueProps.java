@@ -66,7 +66,7 @@ public class ControlPanel_ValueProps extends javax.swing.JPanel implements Contr
 
         jScrollPane6.setName("jScrollPane6"); // NOI18N
 
-        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("mpv5/resources/languages/Panels"); // NOI18N
+        java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle(); // NOI18N
         jPanel3.setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("ControlPanel_ValueProps.jPanel3.border.title"))); // NOI18N
         jPanel3.setName("jPanel3"); // NOI18N
 
@@ -210,8 +210,11 @@ public class ControlPanel_ValueProps extends javax.swing.JPanel implements Contr
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
 
-        setSettings();
-        LocalSettings.save();
+        if (dataOwner != null) {
+            dataOwner.delete();
+            refresh();
+            dataOwner = null;
+        }
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
@@ -236,9 +239,10 @@ public class ControlPanel_ValueProps extends javax.swing.JPanel implements Contr
         prepare();
         String cname = labeledTextField1.getText(true, "key");
         String val = "#" + jTextPane2.getText() + "#";
-
-        dataOwner = new ValueProperty(cname, val, (Context) jList1.getSelectedValue(), (Group) jList2.getSelectedValue());
-        dataOwner.save();
+        ValueProperty xx = new ValueProperty(cname, val, (Context) jList1.getSelectedValue(), (Group) jList2.getSelectedValue());
+        if (xx.save()) {
+            dataOwner = xx;
+        }
         refresh();
     }//GEN-LAST:event_jButton5ActionPerformed
 

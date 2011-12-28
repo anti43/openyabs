@@ -1365,7 +1365,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
                     SubItem.saveModel(i2, model, true, true);
                 }
             } catch (NodataFoundException ex) {
-                Log.Debug(this, ex);
+                Log.Debug(this, ex.getMessage());
             }
             setDataOwner(i2, true);
             Popup.notice(i2 + Messages.INSERTED.getValue());

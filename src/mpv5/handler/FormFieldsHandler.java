@@ -55,6 +55,7 @@ public class FormFieldsHandler {
         HashMap<String, Object> map = new HashMap<String, Object>();
         
         if (obj != null) {
+            obj.resolveValueProperties(map);
             List<Object[]> m = obj.getValues2();
             map = new HashMap<String, Object>();
             for (int i = 0; i < m.size(); i++) {

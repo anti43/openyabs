@@ -60,6 +60,7 @@ import mpv5.globals.LocalSettings;
 import mpv5.handler.SimpleDatabaseObject;
 import mpv5.handler.VariablesHandler;
 import mpv5.pluginhandling.YabsPluginLoader;
+import mpv5.ui.dialogs.Notificator;
 import mpv5.ui.panels.ChangeNotApprovedException;
 import mpv5.usermanagement.MPSecurityManager;
 import mpv5.utils.date.RandomDate;
@@ -307,8 +308,8 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
         }
         return l;
     }
-    
-     /**
+
+    /**
      * This method can be used to workaround the DatabaseObject#getObjects(...) casting issues introduced by @me :-)
      * @param <T>
      * @param objects
@@ -1435,13 +1436,13 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
 //        if (!withCached) { //quatsch
 //            return (ArrayList<T>) getObjects(DatabaseObject.getObject(context), null);
 //        } else {
-            List<Integer> idlist;
-            if (criterias != null) {
-                idlist = QueryHandler.instanceOf().clone(context).selectIds(criterias);
-            } else {
-                idlist = QueryHandler.instanceOf().clone(context).selectIds();
-            }
-            return getObjects(context, idlist);
+        List<Integer> idlist;
+        if (criterias != null) {
+            idlist = QueryHandler.instanceOf().clone(context).selectIds(criterias);
+        } else {
+            idlist = QueryHandler.instanceOf().clone(context).selectIds();
+        }
+        return getObjects(context, idlist);
 //        }
     }
 
@@ -1459,13 +1460,13 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
 //        if (!withCached) {
 //            return (ArrayList<T>) getObjects(DatabaseObject.getObject(context), null);
 //        } else {
-            List<Integer> idlist;
-            if (criterias != null) {
-                idlist = QueryHandler.instanceOf().clone(context).selectIds(criterias);
-            } else {
-                idlist = QueryHandler.instanceOf().clone(context).selectIds();
-            }
-            return getObjects(context, idlist);
+        List<Integer> idlist;
+        if (criterias != null) {
+            idlist = QueryHandler.instanceOf().clone(context).selectIds(criterias);
+        } else {
+            idlist = QueryHandler.instanceOf().clone(context).selectIds();
+        }
+        return getObjects(context, idlist);
 //        }
     }
 
@@ -1477,7 +1478,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
         ArrayList<T> list = new ArrayList<T>();
         QueryCriteria2 criterias = new QueryCriteria2();
         List<QueryParameter> uncachedIds = new ArrayList<QueryParameter>();
-         ArrayList<Integer> idlist =  new ArrayList<Integer>(listi);
+        ArrayList<Integer> idlist = new ArrayList<Integer>(listi);
         for (int i = 0; i < idlist.size(); i++) {
             Integer id = idlist.get(i);
             DatabaseObject x = DatabaseObject.getCachedObject(context, id);
@@ -1514,10 +1515,10 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
      */
     @SuppressWarnings("unchecked")
     public static <T extends DatabaseObject> ArrayList< T> getObjects(Context context, QueryCriteria criterias) throws NodataFoundException {
-        return (ArrayList<T>) getObjects( context, criterias, true);
+        return (ArrayList<T>) getObjects(context, criterias, true);
     }
-    
-        /**
+
+    /**
      * Returns objects within the given context which match the criterias in the given DataStringHandler
      * @param <T>
      * @param context
@@ -1542,8 +1543,8 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
     public static <T extends DatabaseObject> ArrayList< T> getObjects(T template, QueryCriteria criterias) throws NodataFoundException {
         return getObjects(template.getContext(), criterias, true);
     }
-    
-      /**
+
+    /**
      * Returns objects within the given context which match the criterias in the given QueryCriteria object<br/>
      * @param <T>
      * @param criterias If NULL returns ALL
@@ -1555,7 +1556,6 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
     public static <T extends DatabaseObject> ArrayList< T> getObjects(T template, QueryCriteria2 criterias) throws NodataFoundException {
         return getObjects(template.getContext(), criterias, true);
     }
-
 
     /**
      * Return objects which are referenced in the given Context@table
@@ -2180,34 +2180,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
      * @return
      */
     public HashMap<String, Object> resolveReferences(HashMap<String, Object> map) {
-        List<ValueProperty> props = new ArrayList<ValueProperty>(ValueProperty.getProperties(this));
-        try {
-            props.addAll(ValueProperty.getProperties(getContext(), getGroup()));
-        } catch (NodataFoundException ex) {
-            Log.Debug(this, ex.getMessage());
-        }
-
-        for (ValueProperty p : props) {
-            String strVal = String.valueOf(p.getValue());
-            if (p.getValue() instanceof LazyInvocable) {
-                try {
-                    LazyInvocable lazy = (LazyInvocable) p.getValue();
-                    lazy.doIt(this);
-                    map.put("property." + p.getKey(), String.valueOf(lazy));
-                } catch (Exception e) {
-                    Log.Debug(this, e.getMessage());
-                }
-            } else if (strVal.startsWith("#") && strVal.endsWith("#")) {
-                try {
-                    Object value = getGroovyShell().evaluate(strVal.replace("#", ""));
-                    map.put("property." + p.getKey(), String.valueOf(value));
-                } catch (Exception e) {
-                    Log.Debug(this, e);
-                }
-            } else {
-                map.put("property." + p.getKey(), strVal);
-            }
-        }
+        resolveValueProperties(map);
 
         if (map.containsKey("groupsids")) {
             try {
@@ -2399,6 +2372,46 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
      */
     public synchronized String evaluate(String script) {
         return String.valueOf(getGroovyShell().evaluate(script));
+    }
+
+    /**
+     * 
+     * @param map 
+     */
+    public synchronized void resolveValueProperties(final Map<String, Object> map) {
+        if (map.containsKey("vpresolved@" + this)) {
+            return;//just resolve once
+        }
+        map.put("vpresolved@" + this, Boolean.TRUE);
+        List<ValueProperty> props = new ArrayList<ValueProperty>(ValueProperty.getProperties(this));
+        try {
+            props.addAll(ValueProperty.getProperties(getContext(), getGroup()));
+        } catch (NodataFoundException ex) {
+            Log.Debug(this, ex.getMessage());
+        }
+
+        for (ValueProperty p : props) {
+            String strVal = String.valueOf(p.getValue());
+            if (p.getValue() instanceof LazyInvocable) {
+                try {
+                    LazyInvocable lazy = (LazyInvocable) p.getValue();
+                    lazy.doIt(this);
+                    map.put("property." + p.getKey(), String.valueOf(lazy));
+                } catch (Exception e) {
+                    Log.Debug(this, e.getMessage());
+                }
+            } else if (strVal.startsWith("#") && strVal.endsWith("#")) {
+                try {
+                    Object value = getGroovyShell().evaluate(strVal.replace("#", ""));
+                    map.put("property." + p.getKey(), String.valueOf(value));
+                } catch (Exception e) {
+                    Log.Debug(this, e);
+                    Notificator.raiseNotification(Messages.SCRIPT_ERROR + " " + p.getKey(), false);
+                }
+            } else {
+                map.put("property." + p.getKey(), strVal);
+            }
+        }
     }
 
     /**

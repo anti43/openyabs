@@ -800,16 +800,13 @@ public final class ControlPanel_Templates extends javax.swing.JPanel implements 
             groups = 1;
         }
 
-        Object[][] UtT = null;
+        Object[][] UtT = new Object[0][0];
         QueryCriteria d = new QueryCriteria("templatesids", dataOwner.__getIDS());
         try {
             UtT = QueryHandler.instanceOf().clone(Context.getTemplatesToUsers()).select(d).getData();
         } catch (NodataFoundException ex) {
-            Log.Debug(this, ex);
+            Log.Debug(this, ex.getMessage());
         }
-
-
-
         for (int i = 0; i < selectedValues.length; i++) {
             User object = (User) selectedValues[i];
             boolean found = false;

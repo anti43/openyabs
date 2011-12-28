@@ -544,7 +544,7 @@ public class Item extends DatabaseObject implements Formattable, Templateable {
 
     @Override
     public HashMap<String, Object> resolveReferences(HashMap<String, Object> map) {
-
+        resolveValueProperties(map);
 
         try {
             if (map.containsKey("intstatus")) {
