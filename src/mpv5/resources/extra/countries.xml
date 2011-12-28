@@ -3,6 +3,7 @@
 
 <mpv5>
 	<countries>
+                <country iso="40">Austria</country>
 		<country iso="56">Belgium</country>
 		<country iso="191">Croatia</country>
 		<country iso="203">Czech Republic</country>

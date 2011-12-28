@@ -41,7 +41,7 @@ public interface Constants {
     /**
      * The max Database Version which is compatible with this release
      */
-    public static final Double DATABASE_MAX_VERSION = 1.9;
+    public static final Double DATABASE_MAX_VERSION = 2.0;
     /**
      * Will be dynamically changed by SVN.
      */
