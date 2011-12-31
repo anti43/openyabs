@@ -145,7 +145,7 @@ public class MassPrintPanel
         setPreferredSize(new java.awt.Dimension(1004, 333));
         setLayout(new java.awt.BorderLayout());
 
-        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("mpv5/resources/languages/Panels"); // NOI18N
+        java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle(); // NOI18N
         jPanel3.setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("ConversationPanel.jPanel3.border.title"))); // NOI18N
         jPanel3.setPreferredSize(new java.awt.Dimension(818, 333));
 

@@ -977,7 +977,7 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
             parent_nav_contactsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(parent_nav_contactsLayout.createSequentialGroup()
                 .addComponent(nav_contacts, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(252, Short.MAX_VALUE))
+                .addContainerGap(219, Short.MAX_VALUE))
         );
 
         nav_outlookbar.addTab(bundle.getString("MPView.parent_nav_contacts.TabConstraints.tabTitle_1"), parent_nav_contacts); // NOI18N
@@ -1092,7 +1092,7 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
         parent_nav_accounting.setLayout(parent_nav_accountingLayout);
         parent_nav_accountingLayout.setHorizontalGroup(
             parent_nav_accountingLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(nav_accounting, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(nav_accounting, javax.swing.GroupLayout.DEFAULT_SIZE, 98, Short.MAX_VALUE)
         );
         parent_nav_accountingLayout.setVerticalGroup(
             parent_nav_accountingLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1197,13 +1197,13 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
         parent_nav_products.setLayout(parent_nav_productsLayout);
         parent_nav_productsLayout.setHorizontalGroup(
             parent_nav_productsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(nav_products, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(nav_products, javax.swing.GroupLayout.DEFAULT_SIZE, 110, Short.MAX_VALUE)
         );
         parent_nav_productsLayout.setVerticalGroup(
             parent_nav_productsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(parent_nav_productsLayout.createSequentialGroup()
                 .addComponent(nav_products, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(95, Short.MAX_VALUE))
         );
 
         nav_outlookbar.addTab(bundle.getString("MPView.parent_nav_products.TabConstraints.tabTitle_1"), parent_nav_products); // NOI18N
@@ -1263,13 +1263,13 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
         parent_nav_extras.setLayout(parent_nav_extrasLayout);
         parent_nav_extrasLayout.setHorizontalGroup(
             parent_nav_extrasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(nav_extras, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(nav_extras, javax.swing.GroupLayout.DEFAULT_SIZE, 110, Short.MAX_VALUE)
         );
         parent_nav_extrasLayout.setVerticalGroup(
             parent_nav_extrasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(parent_nav_extrasLayout.createSequentialGroup()
                 .addComponent(nav_extras, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(219, Short.MAX_VALUE))
         );
 
         nav_outlookbar.addTab(bundle.getString("MPView.parent_nav_extras.TabConstraints.tabTitle"), parent_nav_extras); // NOI18N
@@ -1294,7 +1294,7 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
             .addGroup(mainPanelLayout.createSequentialGroup()
                 .addComponent(naviPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(tabpanePanel, javax.swing.GroupLayout.DEFAULT_SIZE, 678, Short.MAX_VALUE))
+                .addComponent(tabpanePanel, javax.swing.GroupLayout.DEFAULT_SIZE, 793, Short.MAX_VALUE))
         );
         mainPanelLayout.setVerticalGroup(
             mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1850,7 +1850,7 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
         statusPanel.setPreferredSize(new java.awt.Dimension(800, 20));
         statusPanel.setLayout(new javax.swing.BoxLayout(statusPanel, javax.swing.BoxLayout.LINE_AXIS));
 
-        statusMessageLabel.setFont(new java.awt.Font("Dialog", 0, 11)); // NOI18N
+        statusMessageLabel.setFont(new java.awt.Font("Dialog", 0, 11));
         statusMessageLabel.setText(bundle.getString("MPView.statusMessageLabel.text")); // NOI18N
         statusMessageLabel.setMaximumSize(new java.awt.Dimension(1000, 25));
         statusMessageLabel.setMinimumSize(new java.awt.Dimension(300, 14));
