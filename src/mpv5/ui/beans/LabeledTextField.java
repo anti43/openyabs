@@ -249,7 +249,7 @@ public class LabeledTextField extends javax.swing.JPanel {
                 Integer.valueOf(jTextField1.getText());
                 jTextField1.setBackground(Color.WHITE);
             } catch (NumberFormatException numberFormatException) {
-                Log.Debug(numberFormatException);
+                Log.Debug(this, numberFormatException.getMessage());
                 TextFieldUtils.blinker(jTextField1, Color.gray);
                 jTextField1.setText("0");
             }
@@ -258,7 +258,7 @@ public class LabeledTextField extends javax.swing.JPanel {
                 FormatNumber.parseDezimal(jTextField1.getText());
                 jTextField1.setBackground(Color.WHITE);
             } catch (NumberFormatException numberFormatException) {
-                Log.Debug(numberFormatException);
+                Log.Debug(this, numberFormatException.getMessage());
                 TextFieldUtils.blinker(jTextField1, Color.gray);
                 jTextField1.setText("0.0");
             }
@@ -268,7 +268,7 @@ public class LabeledTextField extends javax.swing.JPanel {
                 jTextField1.setBackground(Color.WHITE);
             } catch (NumberFormatException numberFormatException) {
                 Log.Debug(this, jTextField1.getText());
-                Log.Debug(numberFormatException);
+                Log.Debug(this, numberFormatException.getMessage());
 
                 TextFieldUtils.blinker(jTextField1, Color.gray);
                 jTextField1.setText("0.0");

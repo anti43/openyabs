@@ -3050,6 +3050,7 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
             clipboard.pack();
             clipboard.setLocationRelativeTo(YabsViewProxy.instance().getIdentifierFrame());
             clipboard.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+            clipboard.setAlwaysOnTop(User.getCurrentUser().getProperty("org.openyabs.uiproperty", "clipboardontop"));
         }
         try {
             clistview.validate();
@@ -3059,7 +3060,7 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
                 clipboard.setVisible(show);
             }
         } catch (Exception ex) {
-            Logger.getLogger(MPView.class.getName()).log(Level.SEVERE, null, ex);
+            Log.Debug(ex);
         }
     }
     private static LinkedList<DatabaseObject> FLOW = new LinkedList<DatabaseObject>();

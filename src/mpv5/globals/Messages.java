@@ -40,7 +40,7 @@ public enum Messages {
      * Start MAIN
      */
     INIT("Initialising.."),
-    LOCAL_SETTINGS("Reading local settings.."),
+    LOCAL_SETTINGS("Reading local settings.. if this runs forever, run Yabs as Administrator once"),
     LAUNCH("Launching application.."),
     FIRST_INSTANCE("Checking for running instances.."),
     DB_CHECK("Checking database connectivity.."),

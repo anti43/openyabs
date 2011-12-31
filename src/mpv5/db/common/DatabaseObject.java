@@ -716,6 +716,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
                             message = this.__getCName() + Messages.INSERTED;
                         }
                         ids = QueryHandler.instanceOf().clone(context).insert(collect(), message);
+                        IDENTITY = new Entity<Context, Integer>(context, ids);
                         Log.Debug(this, "The inserted row has id: " + IDENTITY);
                     } else {
                         Popup.notice(Messages.CNAME_CANNOT_BE_NULL + ": " + this.getType());

@@ -364,7 +364,7 @@ public class LabeledCombobox extends javax.swing.JPanel {
                         Log.Debug(this, "No dbos in model or nor context set!");
                     }
                 } catch (Exception ex) {
-                    Log.Debug(ex);
+                    Log.Debug(this, ex.getMessage());
                 }
             }
         });
