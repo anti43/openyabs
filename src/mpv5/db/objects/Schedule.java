@@ -37,6 +37,7 @@ import mpv5.utils.images.MPIcon;
  *  
  */
 public class Schedule extends DatabaseObject {
+    private static final long serialVersionUID = 1L;
 
     private int usersids = 4343;
     private int itemsids;

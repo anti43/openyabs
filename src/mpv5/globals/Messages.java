@@ -306,7 +306,8 @@ public enum Messages {
     MASSPRINT_FILTER("Filter Entries by:"), 
     MASSPRINT_ENTER_NAME("Enter a Name for the Filter-Rule:"), 
     MASSPRINT_FILTER_ALL("All Contacts"), 
-    SCRIPT_ERROR("A script did not run successfully:");
+    SCRIPT_ERROR("A script did not run successfully:"), 
+    SELECT_A_TYPE("Select a Type!");
 
     private Messages(String message) {
         this.message = message;

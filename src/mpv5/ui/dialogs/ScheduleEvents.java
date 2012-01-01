@@ -500,7 +500,7 @@ public class ScheduleEvents extends javax.swing.JFrame {
             Log.Debug(this, "CYCLIC-Event geklicked...6");
             dataOwner = d;
             but5.setEnabled(true);
-            but6.setEnabled(true);           
+            but6.setEnabled(true);
             Log.Debug(this, "CYCLIC-Event geklicked...fertig");
         }
     }//GEN-LAST:event_jTable1MouseClicked
@@ -564,24 +564,28 @@ public class ScheduleEvents extends javax.swing.JFrame {
         Log.Debug(this, "neu Anlage ... geklickt");
         save(dataOwner = new Schedule());
         Log.Debug(this, "neu Anlage ... 1");
-        try {
-            if (jTabbedPane1.getSelectedIndex() == 0) {
-                Log.Debug(this, "neu Anlage ... 1a");
-                refreshFromItem(dataOwner.getItem());
-            } else if (jTabbedPane1.getSelectedIndex() == 1) {
-                Log.Debug(this, "neu Anlage ... 1b");
-                refreshFromContact(dataOwner.getContact());
-                ScheduleCalendarDayChooser.instanceOf().refreshDayPanels(dataOwner.__getStartdate(),
-                        dataOwner, Boolean.TRUE);
+        if (dataOwner != null) {
+            try {
+                if (jTabbedPane1.getSelectedIndex() == 0) {
+                    Log.Debug(this, "neu Anlage ... 1a");
+                    refreshFromItem(dataOwner.getItem());
+                } else if (jTabbedPane1.getSelectedIndex() == 1) {
+                    Log.Debug(this, "neu Anlage ... 1b");
+                    refreshFromContact(dataOwner.getContact());
+                    ScheduleCalendarDayChooser.instanceOf().refreshDayPanels(dataOwner.__getStartdate(),
+                            dataOwner, Boolean.TRUE);
+                }
+                Log.Debug(this, "neu Anlage ... 2");
+            } catch (NodataFoundException ex) {
+                Log.Debug(this,
+                        ex);
             }
-            Log.Debug(this, "neu Anlage ... 2");
-        } catch (NodataFoundException ex) {
-            Log.Debug(this,
-                    ex);
+            Log.Debug(this, "neu Anlage ... 3");
+            ScheduleCalendarDayChooser.instanceOf();
+            Log.Debug(this, "neu Anlage ... fertig");
+        } else {
+            Popup.error(this, Messages.ENTER_VALUE.toString());
         }
-        Log.Debug(this, "neu Anlage ... 3");
-        ScheduleCalendarDayChooser.instanceOf();
-        Log.Debug(this, "neu Anlage ... fertig");
     }//GEN-LAST:event_but4ActionPerformed
 
     private void but5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_but5ActionPerformed
@@ -621,7 +625,6 @@ public class ScheduleEvents extends javax.swing.JFrame {
         but6.setEnabled(false);
         clearViews();
     }//GEN-LAST:event_but8ActionPerformed
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton but4;
     private javax.swing.JButton but5;
@@ -723,12 +726,27 @@ public class ScheduleEvents extends javax.swing.JFrame {
                             s.__getIntervalmonth())));
                     Popup.identifier = tmp;
                 } else if (jTabbedPane1.getSelectedIndex() == 1) {
+                    if (labeledCombobox3.getSelectedItem() == null) {
+                        Popup.error(this, Messages.SELECT_A_CONTACT.toString());
+                        dataOwner = null;
+                        return;
+                    }
+                    if (labeledCombobox4.getSelectedItem() == null) {
+                        Popup.error(this, Messages.SELECT_AN_INVOICE.toString());
+                        dataOwner = null;
+                        return;
+                    }
+                    if (labeledCombobox2.getSelectedItem() == null) {
+                        Popup.error(this, Messages.SELECT_A_TYPE.toString());
+                        dataOwner = null;
+                        return;
+                    }
                     Contact c = (Contact) DatabaseObject.getObject(Context.getContact(),
                             Integer.valueOf(labeledCombobox3.getSelectedItem().getId()));
                     s.setCName("(" + Messages.SCHEDULE + ") " + c.toString());
-                    s.setItemsids(Integer.parseInt(labeledCombobox4.getSelectedItem().getId()));
+                        s.setItemsids(Integer.parseInt(labeledCombobox4.getSelectedItem().getId()));
                     s.setContactsids(c.__getIDS());
-                    s.setEventtype(Integer.valueOf(labeledCombobox2.getSelectedItem().getId()));
+                        s.setEventtype(Integer.valueOf(labeledCombobox2.getSelectedItem().getId()));
                     s.setGroupsids(c.__getGroupsids());
                     s.setIntervalmonth(0);
                     s.setStartdate(labeledDateChooser3.getDate());
@@ -738,7 +756,7 @@ public class ScheduleEvents extends javax.swing.JFrame {
                     s.save();
                     dataOwner = s;
                 }
-            } catch (Exception ex) {
+            } catch (NodataFoundException ex) {
                 Log.Debug(this, ex.getMessage());
             }
         }

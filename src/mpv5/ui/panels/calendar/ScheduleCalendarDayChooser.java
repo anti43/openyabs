@@ -357,9 +357,10 @@ public final class ScheduleCalendarDayChooser extends JPanel implements KeyListe
             }
 
             Log.Debug(this, "Checking events");
+            int j = 0;
             if (events != null) {
                 days[i + n + 7].clearScheduledEvents();
-                for (int j = 0; j < events.size(); j++) {
+                while (!events.isEmpty() && events.size() > j) {
                     Schedule schedule = events.get(j);
                     Log.Debug(this, "Checking date: "
                             + schedule.getDate()
@@ -369,6 +370,8 @@ public final class ScheduleCalendarDayChooser extends JPanel implements KeyListe
                         Log.Debug(this, "Found date: " + schedule.getDate());
                         days[i + n + 7].addScheduledEvent(schedule);
                         events.remove(j);
+                    } else { 
+                        j++;
                     }
                 }
             }

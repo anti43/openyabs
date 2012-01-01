@@ -121,6 +121,7 @@ public final class ScheduleCalendar extends JPanel implements PropertyChangeList
         yearChooser.addPropertyChangeListener(this);
         add(monthYearPanel, BorderLayout.NORTH);
         add(dayChooser, BorderLayout.CENTER);
+        add(new ScheduleNavigator(monthChooser, yearChooser), BorderLayout.SOUTH);
 
         // Set the initialized flag before setting the calendar. This will
         // cause the other components to be updated properly.
