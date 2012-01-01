@@ -212,7 +212,7 @@ class DynamicArithmetic {
                     break;
                 default:
                     if (vals.size() == 1) {
-                        tmp = vals.get(0) == null ? BigDecimal.ZERO : vals.get(0);
+                        result = vals.get(0) == null ? BigDecimal.ZERO : vals.get(0);
                     } else {
                         throw new ParseFormatException("Parsing Error: Missing Operator!\n"
                                 + "Arithmetic Expression: " + toParse);
