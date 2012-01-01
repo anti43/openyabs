@@ -933,6 +933,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
         if (!this.isReadOnly()) {
             return LOCK.aquire();
         } else {
+            Log.Debug(this, cname + " is readonly, lock not required.");
             return false;
         }
     }
@@ -1836,7 +1837,6 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
                 if (AUTO_LOCK && Context.getLockableContexts().contains(dbo.getContext())) {
                     Log.Debug(DatabaseObject.class, "Preparing to lock: " + dbo);
                     boolean lck = dbo.lock();
-                    dbo.ReadOnly(!lck);
                     Log.Debug(DatabaseObject.class, "Locking was: " + lck);
                 }
             }

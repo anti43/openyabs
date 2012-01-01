@@ -408,7 +408,7 @@ public class Context implements Serializable {
      */
     public static ArrayList<Context> getLockableContexts() {
         ArrayList<Context> list = new ArrayList<Context>();
-        list.add(getUser());
+//        list.add(getUser());
         list.add(getItem(null, null));
         list.add(getSchedule());
         list.add(getContact());

@@ -438,6 +438,7 @@ public class DataPanelTB extends javax.swing.JPanel implements ActionListener, I
         } else if (dato.isExisting()) {
             if (dato.lock()) {
                 Popup.notice(dato.toString() + Messages.LOCKED);
+                but6.setEnabled(false);
             } else {
                 Popup.notice(Messages.LOCK_FAILED);
             }

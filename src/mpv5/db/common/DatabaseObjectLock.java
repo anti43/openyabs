@@ -79,6 +79,7 @@ public class DatabaseObjectLock {
                 LOCKED = true;
             } catch (UnableToLockException ex) {
                 Log.Debug(this, ex.getMessage());
+//                Log.Debug(this, ex );
                 LOCKED = false;
                 dbo.ReadOnly(true);
             }
