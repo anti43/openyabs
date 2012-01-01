@@ -1,24 +1,36 @@
 package mpv5.ui.dialogs.subcomponents;
 
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.FileWriter;
+import java.io.OutputStreamWriter;
 import java.sql.SQLException;
+import java.util.Collections;
+import java.util.Enumeration;
+import java.util.List;
 import java.util.Locale;
+import java.util.ResourceBundle;
 import javax.swing.ComboBoxModel;
 import javax.swing.DefaultComboBoxModel;
 
+import javax.swing.JFileChooser;
 import javax.swing.JTextField;
 import mpv5.data.PropertyStore;
 import mpv5.db.common.Context;
 import mpv5.db.common.NodataFoundException;
 import mpv5.db.common.QueryHandler;
+import mpv5.globals.Constants;
 import mpv5.globals.Messages;
 import mpv5.i18n.LanguageManager;
 import mpv5.logging.Log;
 import mpv5.ui.dialogs.ControlApplet;
+import mpv5.ui.dialogs.DialogForFile;
 import mpv5.ui.dialogs.Popup;
 
 import mpv5.utils.files.FileDirectoryHandler;
 import mpv5.utils.models.MPComboBoxModelItem;
+import mpv5.utils.text.RandomText;
 import mpv5.utils.text.TypeConversion;
 
 /**
@@ -26,8 +38,8 @@ import mpv5.utils.text.TypeConversion;
  * 
  */
 public class ControlPanel_Locale extends javax.swing.JPanel implements ControlApplet {
-    private static final long serialVersionUID = 1L;
 
+    private static final long serialVersionUID = 1L;
     /**
      * This unique name identifies this control applet
      */
@@ -44,7 +56,8 @@ public class ControlPanel_Locale extends javax.swing.JPanel implements ControlAp
         setVisible(true);
     }
 
-    private void initComponents() {//GEN-BEGIN:initComponents
+    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
+    private void initComponents() {
 
         jPanel5 = new javax.swing.JPanel();
         jLabel8 = new javax.swing.JLabel();
@@ -63,6 +76,7 @@ public class ControlPanel_Locale extends javax.swing.JPanel implements ControlAp
         jLabel4 = new javax.swing.JLabel();
         languages = new javax.swing.JComboBox();
         jButton5 = new javax.swing.JButton();
+        jButton6 = new javax.swing.JButton();
         jPanel2 = new javax.swing.JPanel();
         jLabel2 = new javax.swing.JLabel();
         jLabel1 = new javax.swing.JLabel();
@@ -72,7 +86,7 @@ public class ControlPanel_Locale extends javax.swing.JPanel implements ControlAp
         jButton1 = new javax.swing.JButton();
 
         setBackground(new java.awt.Color(255, 255, 255));
-        java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle(); // NOI18N
+       java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle(); // NOI18N
         setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("ControlPanel_Locale.border.title"))); // NOI18N
         setName("Form"); // NOI18N
         setLayout(new javax.swing.BoxLayout(this, javax.swing.BoxLayout.PAGE_AXIS));
@@ -122,7 +136,7 @@ public class ControlPanel_Locale extends javax.swing.JPanel implements ControlAp
                 .addComponent(jLabel8)
                 .addGap(7, 7, 7)
                 .addComponent(jLabel9)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 8, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jButton4, javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(labeledTextChooser2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -189,7 +203,7 @@ public class ControlPanel_Locale extends javax.swing.JPanel implements ControlAp
                 .addComponent(jLabel7)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(langName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 8, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jLabel6)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -221,6 +235,14 @@ public class ControlPanel_Locale extends javax.swing.JPanel implements ControlAp
             }
         });
 
+        jButton6.setText(bundle.getString("ControlPanel_Locale.jButton6.text")); // NOI18N
+        jButton6.setName("jButton6"); // NOI18N
+        jButton6.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton6ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
@@ -228,16 +250,16 @@ public class ControlPanel_Locale extends javax.swing.JPanel implements ControlAp
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel3)
                     .addGroup(jPanel3Layout.createSequentialGroup()
                         .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel4, javax.swing.GroupLayout.DEFAULT_SIZE, 356, Short.MAX_VALUE)
-                            .addComponent(jLabel3))
-                        .addContainerGap())
-                    .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addComponent(languages, javax.swing.GroupLayout.PREFERRED_SIZE, 177, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(97, 97, 97)
-                        .addComponent(jButton5)
-                        .addContainerGap(29, Short.MAX_VALUE))))
+                            .addComponent(languages, javax.swing.GroupLayout.PREFERRED_SIZE, 177, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 245, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(29, 29, 29)
+                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jButton6)
+                            .addComponent(jButton5))))
+                .addContainerGap(27, Short.MAX_VALUE))
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -245,12 +267,14 @@ public class ControlPanel_Locale extends javax.swing.JPanel implements ControlAp
                 .addContainerGap()
                 .addComponent(jLabel3)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jLabel4)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel4)
+                    .addComponent(jButton6))
                 .addGap(18, 18, 18)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(languages, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jButton5))
-                .addContainerGap(13, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         add(jPanel3);
@@ -289,7 +313,7 @@ public class ControlPanel_Locale extends javax.swing.JPanel implements ControlAp
                 .addComponent(jLabel1)
                 .addGap(18, 18, 18)
                 .addComponent(locales, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(13, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         add(jPanel2);
@@ -317,7 +341,7 @@ public class ControlPanel_Locale extends javax.swing.JPanel implements ControlAp
         jPanel6.add(jButton1);
 
         add(jPanel6);
-    }//GEN-END:initComponents
+    }// </editor-fold>//GEN-END:initComponents
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         setSettings();
@@ -368,13 +392,12 @@ public class ControlPanel_Locale extends javax.swing.JPanel implements ControlAp
         if (languages.getSelectedIndex() == -1) {
             Popup.warn(Messages.LANG_EMPTY.toString());
         } else {
-            String languagestring = ((MPComboBoxModelItem) languages.
-                         getSelectedItem()).getId();
+            String languagestring = ((MPComboBoxModelItem) languages.getSelectedItem()).getId();
             try {
                 int rows = QueryHandler.instanceOf().
                         clone(Context.getUser()).
                         selectCount("LANGUAGE=",
-                          "'" + languagestring + "'");
+                        "'" + languagestring + "'");
                 if (rows != 0) {
                     Popup.notice(Messages.LANG_USED.toString());
                 } else {
@@ -391,6 +414,40 @@ public class ControlPanel_Locale extends javax.swing.JPanel implements ControlAp
             }
         }
     }//GEN-LAST:event_jButton5ActionPerformed
+
+    private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
+        File f = null;
+        String key;
+        FileWriter fw;
+        String lang_long = null;
+        if (languages.getSelectedIndex() == -1) {
+            Popup.warn(Messages.LANG_EMPTY.toString());
+        } else {
+            try {
+                f = File.createTempFile(RandomText.getText(), UNAME);
+                BufferedWriter out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(f)));
+                lang_long = ((MPComboBoxModelItem) languages.getSelectedItem()).getValue();
+                String lang = ((MPComboBoxModelItem) languages.getSelectedItem()).getId();
+                ResourceBundle bundle = LanguageManager.getBundle(lang);
+                Enumeration<String> keys = bundle.getKeys();
+                List<String> list = Collections.list(keys);
+                Collections.sort(list);
+
+                for (int i = 0; i < list.size(); i++) {
+                    key = list.get(i);
+                    out.write(key + "=" + bundle.getString(key));
+                    out.newLine();
+                }
+
+                out.close();
+                DialogForFile df = new DialogForFile(JFileChooser.FILES_AND_DIRECTORIES, lang_long + "_" + Constants.VERSION);
+                df.saveFile(f);
+
+            } catch (Exception ex) {
+                Log.Debug(this, ex.getLocalizedMessage());
+            }
+        }
+    }//GEN-LAST:event_jButton6ActionPerformed
 
     public void setValues(PropertyStore values) {
         oldvalues = values;
@@ -409,6 +466,7 @@ public class ControlPanel_Locale extends javax.swing.JPanel implements ControlAp
     private javax.swing.JButton jButton3;
     private javax.swing.JButton jButton4;
     private javax.swing.JButton jButton5;
+    private javax.swing.JButton jButton6;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
