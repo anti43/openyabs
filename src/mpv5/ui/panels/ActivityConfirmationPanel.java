@@ -665,7 +665,7 @@ public final class ActivityConfirmationPanel extends javax.swing.JPanel implemen
         tcr.setRendererTo(7);
         tcr.setRendererTo(8);
 
-        itemMultiplier = new DynamicTableCalculator(itemtable, "(([3]*[6])-([3]*[6]%[7]))", new int[]{8});
+        itemMultiplier = new DynamicTableCalculator(itemtable, "(([3]*[6])+([3]*[6]%[7]))", new int[]{8});
         ((MPTableModel) itemtable.getModel()).addCalculator(itemMultiplier);
         itemMultiplier.addLabel(total, 8);
     }
