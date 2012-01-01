@@ -18,7 +18,7 @@
               <Group type="102" alignment="0" attributes="0">
                   <Component id="naviPanel" min="-2" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
-                  <Component id="tabpanePanel" pref="793" max="32767" attributes="0"/>
+                  <Component id="tabpanePanel" pref="678" max="32767" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
@@ -112,7 +112,7 @@
                   <Layout>
                     <DimensionLayout dim="0">
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="nav_contacts" alignment="0" pref="110" max="32767" attributes="0"/>
+                          <Component id="nav_contacts" alignment="0" max="32767" attributes="0"/>
                       </Group>
                     </DimensionLayout>
                     <DimensionLayout dim="1">
@@ -142,8 +142,10 @@
                       <SubComponents>
                         <Component class="javax.swing.JButton" name="jButton5">
                           <Properties>
-                            <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-                              <Font name="Tahoma" size="10" style="0"/>
+                            <Property name="font" type="java.awt.Font" editor="org.netbeans.modules.form.editors2.FontEditor">
+                              <FontInfo relative="true">
+                                <Font component="jButton5" property="font" relativeSize="true" size="-1"/>
+                              </FontInfo>
                             </Property>
                             <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
                               <Image iconType="3" name="/mpv5/resources/images/32/agt_family.png"/>
@@ -164,8 +166,10 @@
                         </Component>
                         <Component class="javax.swing.JButton" name="jButton1">
                           <Properties>
-                            <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-                              <Font name="Tahoma" size="10" style="0"/>
+                            <Property name="font" type="java.awt.Font" editor="org.netbeans.modules.form.editors2.FontEditor">
+                              <FontInfo relative="true">
+                                <Font component="jButton1" property="font" relativeSize="true" size="-1"/>
+                              </FontInfo>
                             </Property>
                             <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
                               <Image iconType="3" name="/mpv5/resources/images/32/edit_group.png"/>
@@ -186,8 +190,10 @@
                         </Component>
                         <Component class="javax.swing.JButton" name="jButton18">
                           <Properties>
-                            <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-                              <Font name="Tahoma" size="10" style="0"/>
+                            <Property name="font" type="java.awt.Font" editor="org.netbeans.modules.form.editors2.FontEditor">
+                              <FontInfo relative="true">
+                                <Font component="jButton18" property="font" relativeSize="true" size="-1"/>
+                              </FontInfo>
                             </Property>
                             <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
                               <Image iconType="3" name="/mpv5/resources/images/32/edit_group.png"/>
@@ -233,7 +239,7 @@
                   <Layout>
                     <DimensionLayout dim="0">
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="nav_accounting" alignment="0" pref="98" max="32767" attributes="0"/>
+                          <Component id="nav_accounting" alignment="0" max="32767" attributes="0"/>
                       </Group>
                     </DimensionLayout>
                     <DimensionLayout dim="1">
@@ -263,8 +269,10 @@
                       <SubComponents>
                         <Component class="javax.swing.JButton" name="jButton8">
                           <Properties>
-                            <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-                              <Font name="Tahoma" size="10" style="0"/>
+                            <Property name="font" type="java.awt.Font" editor="org.netbeans.modules.form.editors2.FontEditor">
+                              <FontInfo relative="true">
+                                <Font component="jButton8" property="font" relativeSize="true" size="-1"/>
+                              </FontInfo>
                             </Property>
                             <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
                               <Image iconType="3" name="/mpv5/resources/images/32/folder_blue.png"/>
@@ -285,8 +293,10 @@
                         </Component>
                         <Component class="javax.swing.JButton" name="jButton11">
                           <Properties>
-                            <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-                              <Font name="Tahoma" size="10" style="0"/>
+                            <Property name="font" type="java.awt.Font" editor="org.netbeans.modules.form.editors2.FontEditor">
+                              <FontInfo relative="true">
+                                <Font component="jButton11" property="font" relativeSize="true" size="-1"/>
+                              </FontInfo>
                             </Property>
                             <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
                               <Image iconType="3" name="/mpv5/resources/images/32/folder_green.png"/>
@@ -307,8 +317,10 @@
                         </Component>
                         <Component class="javax.swing.JButton" name="jButton21">
                           <Properties>
-                            <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-                              <Font name="Tahoma" size="10" style="0"/>
+                            <Property name="font" type="java.awt.Font" editor="org.netbeans.modules.form.editors2.FontEditor">
+                              <FontInfo relative="true">
+                                <Font component="jButton21" property="font" relativeSize="true" size="-1"/>
+                              </FontInfo>
                             </Property>
                             <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
                               <Image iconType="3" name="/mpv5/resources/images/32/folder_documents.png"/>
@@ -329,8 +341,10 @@
                         </Component>
                         <Component class="javax.swing.JButton" name="jButton10">
                           <Properties>
-                            <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-                              <Font name="Tahoma" size="10" style="0"/>
+                            <Property name="font" type="java.awt.Font" editor="org.netbeans.modules.form.editors2.FontEditor">
+                              <FontInfo relative="true">
+                                <Font component="jButton10" property="font" relativeSize="true" size="-1"/>
+                              </FontInfo>
                             </Property>
                             <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
                               <Image iconType="3" name="/mpv5/resources/images/32/folder_grey.png"/>
@@ -351,8 +365,10 @@
                         </Component>
                         <Component class="javax.swing.JButton" name="jButton15">
                           <Properties>
-                            <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-                              <Font name="Tahoma" size="10" style="0"/>
+                            <Property name="font" type="java.awt.Font" editor="org.netbeans.modules.form.editors2.FontEditor">
+                              <FontInfo relative="true">
+                                <Font component="jButton15" property="font" relativeSize="true" size="-1"/>
+                              </FontInfo>
                             </Property>
                             <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
                               <Image iconType="3" name="/mpv5/resources/images/32/folder_red.png"/>
@@ -373,8 +389,10 @@
                         </Component>
                         <Component class="javax.swing.JButton" name="jButton16">
                           <Properties>
-                            <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-                              <Font name="Tahoma" size="10" style="0"/>
+                            <Property name="font" type="java.awt.Font" editor="org.netbeans.modules.form.editors2.FontEditor">
+                              <FontInfo relative="true">
+                                <Font component="jButton16" property="font" relativeSize="true" size="-1"/>
+                              </FontInfo>
                             </Property>
                             <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
                               <Image iconType="3" name="/mpv5/resources/images/32/folder_yellow.png"/>
@@ -395,8 +413,10 @@
                         </Component>
                         <Component class="javax.swing.JButton" name="jButton17">
                           <Properties>
-                            <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-                              <Font name="Tahoma" size="10" style="0"/>
+                            <Property name="font" type="java.awt.Font" editor="org.netbeans.modules.form.editors2.FontEditor">
+                              <FontInfo relative="true">
+                                <Font component="jButton17" property="font" relativeSize="true" size="-1"/>
+                              </FontInfo>
                             </Property>
                             <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
                               <Image iconType="3" name="/mpv5/resources/images/32/reload.png"/>
@@ -442,7 +462,7 @@
                   <Layout>
                     <DimensionLayout dim="0">
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="nav_products" alignment="0" pref="110" max="32767" attributes="0"/>
+                          <Component id="nav_products" alignment="0" max="32767" attributes="0"/>
                       </Group>
                     </DimensionLayout>
                     <DimensionLayout dim="1">
@@ -472,8 +492,10 @@
                       <SubComponents>
                         <Component class="javax.swing.JButton" name="jButton13">
                           <Properties>
-                            <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-                              <Font name="Tahoma" size="10" style="0"/>
+                            <Property name="font" type="java.awt.Font" editor="org.netbeans.modules.form.editors2.FontEditor">
+                              <FontInfo relative="true">
+                                <Font component="jButton13" property="font" relativeSize="true" size="-1"/>
+                              </FontInfo>
                             </Property>
                             <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
                               <Image iconType="3" name="/mpv5/resources/images/32/tux.png"/>
@@ -503,8 +525,10 @@
                         </Component>
                         <Component class="javax.swing.JButton" name="jButton14">
                           <Properties>
-                            <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-                              <Font name="Tahoma" size="10" style="0"/>
+                            <Property name="font" type="java.awt.Font" editor="org.netbeans.modules.form.editors2.FontEditor">
+                              <FontInfo relative="true">
+                                <Font component="jButton14" property="font" relativeSize="true" size="-1"/>
+                              </FontInfo>
                             </Property>
                             <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
                               <Image iconType="3" name="/mpv5/resources/images/32/playlist.png"/>
@@ -534,8 +558,10 @@
                         </Component>
                         <Component class="javax.swing.JButton" name="jButton19">
                           <Properties>
-                            <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-                              <Font name="Tahoma" size="10" style="0"/>
+                            <Property name="font" type="java.awt.Font" editor="org.netbeans.modules.form.editors2.FontEditor">
+                              <FontInfo relative="true">
+                                <Font component="jButton19" property="font" relativeSize="true" size="-1"/>
+                              </FontInfo>
                             </Property>
                             <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
                               <Image iconType="3" name="/mpv5/resources/images/32/kghostview.png"/>
@@ -565,8 +591,10 @@
                         </Component>
                         <Component class="javax.swing.JButton" name="jButton20">
                           <Properties>
-                            <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-                              <Font name="Tahoma" size="10" style="0"/>
+                            <Property name="font" type="java.awt.Font" editor="org.netbeans.modules.form.editors2.FontEditor">
+                              <FontInfo relative="true">
+                                <Font component="jButton20" property="font" relativeSize="true" size="-1"/>
+                              </FontInfo>
                             </Property>
                             <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
                               <Image iconType="3" name="/mpv5/resources/images/32/window_list.png"/>
@@ -587,8 +615,10 @@
                         </Component>
                         <Component class="javax.swing.JButton" name="jButton12">
                           <Properties>
-                            <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-                              <Font name="Tahoma" size="10" style="0"/>
+                            <Property name="font" type="java.awt.Font" editor="org.netbeans.modules.form.editors2.FontEditor">
+                              <FontInfo relative="true">
+                                <Font component="jButton12" property="font" relativeSize="true" size="-1"/>
+                              </FontInfo>
                             </Property>
                             <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
                               <Image iconType="3" name="/mpv5/resources/images/32/gear.png"/>
@@ -643,7 +673,7 @@
                   <Layout>
                     <DimensionLayout dim="0">
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="nav_extras" alignment="0" pref="110" max="32767" attributes="0"/>
+                          <Component id="nav_extras" alignment="0" max="32767" attributes="0"/>
                       </Group>
                     </DimensionLayout>
                     <DimensionLayout dim="1">
@@ -673,8 +703,10 @@
                       <SubComponents>
                         <Component class="javax.swing.JButton" name="jButton6">
                           <Properties>
-                            <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-                              <Font name="Tahoma" size="10" style="0"/>
+                            <Property name="font" type="java.awt.Font" editor="org.netbeans.modules.form.editors2.FontEditor">
+                              <FontInfo relative="true">
+                                <Font component="jButton6" property="font" relativeSize="true" size="-1"/>
+                              </FontInfo>
                             </Property>
                             <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
                               <Image iconType="3" name="/mpv5/resources/images/32/kservices.png"/>
@@ -695,8 +727,10 @@
                         </Component>
                         <Component class="javax.swing.JButton" name="jButton7">
                           <Properties>
-                            <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-                              <Font name="Tahoma" size="10" style="0"/>
+                            <Property name="font" type="java.awt.Font" editor="org.netbeans.modules.form.editors2.FontEditor">
+                              <FontInfo relative="true">
+                                <Font component="jButton7" property="font" relativeSize="true" size="-1"/>
+                              </FontInfo>
                             </Property>
                             <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
                               <Image iconType="3" name="/mpv5/resources/images/32/edittrash.png"/>
@@ -717,8 +751,10 @@
                         </Component>
                         <Component class="javax.swing.JButton" name="jButton9">
                           <Properties>
-                            <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-                              <Font name="Tahoma" size="10" style="0"/>
+                            <Property name="font" type="java.awt.Font" editor="org.netbeans.modules.form.editors2.FontEditor">
+                              <FontInfo relative="true">
+                                <Font component="jButton9" property="font" relativeSize="true" size="-1"/>
+                              </FontInfo>
                             </Property>
                             <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
                               <Image iconType="3" name="/mpv5/resources/images/32/folder_txt.png"/>

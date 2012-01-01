@@ -56,10 +56,12 @@ public class ProductSelectDialog extends javax.swing.JPanel {
         if (link != null) {
             me.setLink(link.toString());
         }
-        try {
-            me.labeledCombobox1.setSelectedItem(Integer.valueOf(productid));
-            me.statech();
-        } catch (Exception e) {
+        if (productid > 0) {
+            try {
+                me.labeledCombobox1.setSelectedItem(Integer.valueOf(productid));
+                me.statech();
+            } catch (Exception e) {
+            }
         }
         me.taxrate.setEnabled(!mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("org.openyabs.uiproperty", "hidetaxcolumn"));
 //        Point p = evt.getLocationOnScreen();
@@ -89,7 +91,7 @@ public class ProductSelectDialog extends javax.swing.JPanel {
         taxrate.setContext(Context.getTaxes());
         taxrate.triggerSearch();
         value.set_ValueClass(Double.class);
-        measure1.set_ValueClass(Double.class);
+        countt.set_ValueClass(Double.class);
         labeledCombobox1.setContext(Context.getProduct());
         labeledCombobox1.getComboBox().addItemListener(new ItemListener() {
 
@@ -112,14 +114,14 @@ public class ProductSelectDialog extends javax.swing.JPanel {
         value = new mpv5.ui.beans.LabeledTextField();
         jButton2 = new javax.swing.JButton();
         link = new mpv5.ui.beans.LabeledTextField();
-        measure1 = new mpv5.ui.beans.LabeledTextField();
+        countt = new mpv5.ui.beans.LabeledTextField();
         opt = new mpv5.ui.beans.LabeledTextField();
 
         setBackground(new java.awt.Color(255, 255, 255));
         setName("Form"); // NOI18N
         setLayout(new java.awt.BorderLayout());
 
-       java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle(); // NOI18N
+        java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle(); // NOI18N
         jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("ProductSelectDialog.jPanel1.border.title"))); // NOI18N
         jPanel1.setName("jPanel1"); // NOI18N
         jPanel1.addKeyListener(new java.awt.event.KeyAdapter() {
@@ -132,7 +134,7 @@ public class ProductSelectDialog extends javax.swing.JPanel {
         labeledCombobox1.setName("labeledCombobox1"); // NOI18N
         labeledCombobox1.setSearchOnEnterEnabled(true);
 
-        jButton1.setFont(new java.awt.Font("Dialog", 0, 10)); // NOI18N
+        jButton1.setFont(new java.awt.Font("Dialog", 0, 10));
         jButton1.setText(bundle.getString("ProductSelectDialog.jButton1.text")); // NOI18N
         jButton1.setName("jButton1"); // NOI18N
         jButton1.addActionListener(new java.awt.event.ActionListener() {
@@ -150,7 +152,7 @@ public class ProductSelectDialog extends javax.swing.JPanel {
         value.set_Label(bundle.getString("ProductSelectDialog.value._Label")); // NOI18N
         value.setName("value"); // NOI18N
 
-        jButton2.setFont(new java.awt.Font("Dialog", 0, 10)); // NOI18N
+        jButton2.setFont(new java.awt.Font("Dialog", 0, 10));
         jButton2.setText(bundle.getString("ProductSelectDialog.jButton2.text")); // NOI18N
         jButton2.setName("jButton2"); // NOI18N
         jButton2.addActionListener(new java.awt.event.ActionListener() {
@@ -162,9 +164,9 @@ public class ProductSelectDialog extends javax.swing.JPanel {
         link.set_Label(bundle.getString("ProductSelectDialog.link._Label")); // NOI18N
         link.setName("link"); // NOI18N
 
-        measure1.set_Label(bundle.getString("ProductSelectDialog.measure1._Label")); // NOI18N
-        measure1.set_Text(bundle.getString("ProductSelectDialog.measure1._Text")); // NOI18N
-        measure1.setName("measure1"); // NOI18N
+        countt.set_Label(bundle.getString("ProductSelectDialog.countt._Label")); // NOI18N
+        countt.set_Text(bundle.getString("ProductSelectDialog.countt._Text")); // NOI18N
+        countt.setName("countt"); // NOI18N
 
         opt.set_Label(bundle.getString("ProductSelectDialog.opt._Label")); // NOI18N
         opt.setName("opt"); // NOI18N
@@ -177,7 +179,7 @@ public class ProductSelectDialog extends javax.swing.JPanel {
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                        .addComponent(measure1, javax.swing.GroupLayout.DEFAULT_SIZE, 144, Short.MAX_VALUE)
+                        .addComponent(countt, javax.swing.GroupLayout.DEFAULT_SIZE, 144, Short.MAX_VALUE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(labeledCombobox1, javax.swing.GroupLayout.PREFERRED_SIZE, 326, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel1Layout.createSequentialGroup()
@@ -200,7 +202,7 @@ public class ProductSelectDialog extends javax.swing.JPanel {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
                     .addComponent(jButton1, 0, 0, Short.MAX_VALUE)
                     .addComponent(labeledCombobox1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(measure1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(countt, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
                     .addComponent(jButton2)
@@ -221,7 +223,7 @@ public class ProductSelectDialog extends javax.swing.JPanel {
         try {
             Product p = (Product) Product.getObject(Context.getProduct(), Integer.valueOf(labeledCombobox1.getSelectedItem().getId()));
             measure.setText(p.__getMeasure());
-            value.setText(FormatNumber.formatDezimal(p.findPriceFor(measure1.getValue(0d))));
+            value.setText(FormatNumber.formatDezimal(p.findPriceFor(countt.getValue(0d))));
             taxrate.setSelectedItem(p.__getTaxids());
             if (linkt == null || linkt.length() == 0) {
                 link.setText(p.__getUrl());
@@ -246,18 +248,21 @@ public class ProductSelectDialog extends javax.swing.JPanel {
             }
         }
         s.setCountvalue(new BigDecimal(row));
-        s.setQuantityvalue(FormatNumber.parseDezimal(measure1.get_Text()));
+        BigDecimal f = FormatNumber.parseDezimal(countt.getText());
+        s.setQuantityvalue(f != null ? f : BigDecimal.ONE);
         s.setLinkurl(link.getText());
         s.setCName(opt.getText());
 
-        if (measure.getText().length() > 0) {
-            s.setMeasure(measure.getText());
+        s.setMeasure(measure.getText());
+        try {
             s.setExternalvalue(FormatNumber.parseDezimal(value.getText()));
-            try {
-                s.setTaxpercentvalue(Tax.getTaxValue(Integer.valueOf(taxrate.getSelectedItem().getId())));
-            } catch (Exception numberFormatException) {
-            }
+        } catch (Exception e) {
         }
+        try {
+            s.setTaxpercentvalue(Tax.getTaxValue(Integer.valueOf(taxrate.getSelectedItem().getId())));
+        } catch (Exception numberFormatException) {
+        }
+
         model.setRowAt(s.getRowData(row), row, 1);
         frame.setVisible(false);
     }//GEN-LAST:event_jButton1ActionPerformed
@@ -272,13 +277,13 @@ public class ProductSelectDialog extends javax.swing.JPanel {
         }
     }//GEN-LAST:event_jPanel1KeyPressed
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private mpv5.ui.beans.LabeledTextField countt;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
     private javax.swing.JPanel jPanel1;
     private mpv5.ui.beans.LabeledCombobox labeledCombobox1;
     private mpv5.ui.beans.LabeledTextField link;
     private mpv5.ui.beans.LabeledTextField measure;
-    private mpv5.ui.beans.LabeledTextField measure1;
     private mpv5.ui.beans.LabeledTextField opt;
     private mpv5.ui.beans.LabeledCombobox taxrate;
     private mpv5.ui.beans.LabeledTextField value;

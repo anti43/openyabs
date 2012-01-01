@@ -64,7 +64,7 @@
         <DimensionLayout dim="0">
           <Group type="103" groupAlignment="0" attributes="0">
               <Group type="102" alignment="1" attributes="0">
-                  <Component id="jSplitPane1" pref="834" max="32767" attributes="0"/>
+                  <Component id="jSplitPane1" pref="849" max="32767" attributes="0"/>
                   <EmptySpace min="-2" max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="0" attributes="0">
                       <Component id="addfile" min="-2" pref="24" max="-2" attributes="0"/>
@@ -72,8 +72,8 @@
                   </Group>
                   <EmptySpace min="-2" pref="1" max="-2" attributes="0"/>
               </Group>
-              <Component id="jToolBar2" alignment="1" pref="865" max="32767" attributes="0"/>
-              <Component id="jToolBar1" alignment="0" pref="865" max="32767" attributes="1"/>
+              <Component id="jToolBar2" alignment="1" pref="880" max="32767" attributes="0"/>
+              <Component id="jToolBar1" alignment="0" pref="880" max="32767" attributes="1"/>
               <Component id="jPanel4" alignment="0" max="32767" attributes="3"/>
               <Group type="102" alignment="0" attributes="0">
                   <Group type="103" groupAlignment="1" max="-2" attributes="0">
@@ -81,7 +81,7 @@
                       <Component id="jPanel2" alignment="0" max="32767" attributes="3"/>
                       <Component id="jPanel1" alignment="0" pref="855" max="32767" attributes="1"/>
                   </Group>
-                  <EmptySpace max="32767" attributes="0"/>
+                  <EmptySpace pref="25" max="32767" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
@@ -303,8 +303,10 @@
                 <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
                   <Color blue="ff" green="ff" red="ff" type="rgb"/>
                 </Property>
-                <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
-                  <Font name="Dialog" size="15" style="1"/>
+                <Property name="font" type="java.awt.Font" editor="org.netbeans.modules.form.editors2.FontEditor">
+                  <FontInfo relative="true">
+                    <Font bold="true" component="type" property="font" relativeSize="true" size="4"/>
+                  </FontInfo>
                 </Property>
                 <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
                   <Color blue="46" green="22" red="1a" type="rgb"/>
@@ -354,7 +356,7 @@
                   <Group type="102" alignment="0" attributes="0">
                       <Component id="itemPanel" min="-2" max="-2" attributes="0"/>
                       <EmptySpace min="-2" max="-2" attributes="0"/>
-                      <Component id="jScrollPane3" pref="831" max="32767" attributes="0"/>
+                      <Component id="jScrollPane3" pref="846" max="32767" attributes="0"/>
                   </Group>
               </Group>
             </DimensionLayout>

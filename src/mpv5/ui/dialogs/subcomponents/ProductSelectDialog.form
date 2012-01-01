@@ -50,7 +50,7 @@
                   <EmptySpace min="-2" max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="0" attributes="0">
                       <Group type="102" alignment="1" attributes="0">
-                          <Component id="measure1" pref="144" max="32767" attributes="1"/>
+                          <Component id="countt" pref="144" max="32767" attributes="1"/>
                           <EmptySpace max="-2" attributes="0"/>
                           <Component id="labeledCombobox1" min="-2" pref="326" max="-2" attributes="0"/>
                       </Group>
@@ -79,7 +79,7 @@
                   <Group type="103" groupAlignment="2" attributes="0">
                       <Component id="jButton1" alignment="2" min="0" pref="0" max="32767" attributes="1"/>
                       <Component id="labeledCombobox1" alignment="2" max="32767" attributes="1"/>
-                      <Component id="measure1" alignment="2" max="32767" attributes="1"/>
+                      <Component id="countt" alignment="2" max="32767" attributes="1"/>
                   </Group>
                   <EmptySpace max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="2" attributes="0">
@@ -167,15 +167,15 @@
             <Property name="name" type="java.lang.String" value="link" noResource="true"/>
           </Properties>
         </Component>
-        <Component class="mpv5.ui.beans.LabeledTextField" name="measure1">
+        <Component class="mpv5.ui.beans.LabeledTextField" name="countt">
           <Properties>
             <Property name="_Label" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-              <ResourceString bundle="mpv5/resources/languages/Panels.properties" key="ProductSelectDialog.measure1._Label" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+              <ResourceString bundle="mpv5/resources/languages/Panels.properties" key="ProductSelectDialog.countt._Label" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
             </Property>
             <Property name="_Text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-              <ResourceString bundle="mpv5/resources/languages/Panels.properties" key="ProductSelectDialog.measure1._Text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+              <ResourceString bundle="mpv5/resources/languages/Panels.properties" key="ProductSelectDialog.countt._Text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
             </Property>
-            <Property name="name" type="java.lang.String" value="measure1" noResource="true"/>
+            <Property name="name" type="java.lang.String" value="countt" noResource="true"/>
           </Properties>
         </Component>
         <Component class="mpv5.ui.beans.LabeledTextField" name="opt">

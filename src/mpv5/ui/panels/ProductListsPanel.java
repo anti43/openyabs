@@ -57,6 +57,8 @@ import mpv5.utils.arrays.ArrayUtilities;
 import mpv5.utils.export.Export;
 import mpv5.utils.models.MPComboBoxModelItem;
 import mpv5.utils.models.MPTableModel;
+import mpv5.utils.renderer.ButtonEditor;
+import mpv5.utils.renderer.ButtonRenderer;
 import mpv5.utils.renderer.CellEditorWithMPComboBox;
 import mpv5.utils.renderer.TableCellRendererForDezimal;
 import mpv5.utils.tables.DynamicTableCalculator;
@@ -217,7 +219,6 @@ public class ProductListsPanel extends javax.swing.JPanel implements DataPanel, 
         addedby = new javax.swing.JLabel();
         prinitingComboBox1 = new mpv5.ui.beans.PrinitingComboBox();
         groupnameselect = new mpv5.ui.beans.LabeledCombobox();
-        jToolBar1 = new javax.swing.JToolBar();
         jButton2 = new javax.swing.JButton();
         jButton3 = new javax.swing.JButton();
         jPanel4 = new javax.swing.JPanel();
@@ -283,9 +284,6 @@ public class ProductListsPanel extends javax.swing.JPanel implements DataPanel, 
         groupnameselect.set_Label(bundle.getString("ProductListsPanel.groupnameselect._Label")); // NOI18N
         groupnameselect.setName("groupnameselect"); // NOI18N
 
-        jToolBar1.setRollover(true);
-        jToolBar1.setName("jToolBar1"); // NOI18N
-
         jButton2.setText(bundle.getString("ProductListsPanel.jButton2.text_1")); // NOI18N
         jButton2.setFocusable(false);
         jButton2.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
@@ -296,7 +294,6 @@ public class ProductListsPanel extends javax.swing.JPanel implements DataPanel, 
                 jButton2ActionPerformed(evt);
             }
         });
-        jToolBar1.add(jButton2);
 
         jButton3.setText(bundle.getString("ProductListsPanel.jButton3.text")); // NOI18N
         jButton3.setFocusable(false);
@@ -308,7 +305,6 @@ public class ProductListsPanel extends javax.swing.JPanel implements DataPanel, 
                 jButton3ActionPerformed(evt);
             }
         });
-        jToolBar1.add(jButton3);
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -316,21 +312,27 @@ public class ProductListsPanel extends javax.swing.JPanel implements DataPanel, 
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                    .addComponent(groupnameselect, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(listname, javax.swing.GroupLayout.DEFAULT_SIZE, 264, Short.MAX_VALUE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 97, Short.MAX_VALUE)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(groupnameselect, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(listname, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 264, Short.MAX_VALUE)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(jButton2)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jButton3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 123, Short.MAX_VALUE)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(prinitingComboBox1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(addedby, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 97, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap())
-            .addComponent(jToolBar1, javax.swing.GroupLayout.DEFAULT_SIZE, 565, Short.MAX_VALUE)
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addComponent(jToolBar1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addContainerGap()
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jButton2)
+                    .addComponent(jButton3))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(listname, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -349,7 +351,6 @@ public class ProductListsPanel extends javax.swing.JPanel implements DataPanel, 
 
         jScrollPane3.setName("jScrollPane3"); // NOI18N
 
-        itemtable.setAutoCreateRowSorter(true);
         itemtable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
@@ -372,11 +373,11 @@ public class ProductListsPanel extends javax.swing.JPanel implements DataPanel, 
         jPanel4.setLayout(jPanel4Layout);
         jPanel4Layout.setHorizontalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 565, Short.MAX_VALUE)
+            .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 591, Short.MAX_VALUE)
         );
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 133, Short.MAX_VALUE)
+            .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 36, Short.MAX_VALUE)
         );
 
         jScrollPane1.setBorder(null);
@@ -444,15 +445,15 @@ public class ProductListsPanel extends javax.swing.JPanel implements DataPanel, 
         rightpane.setLayout(rightpaneLayout);
         rightpaneLayout.setHorizontalGroup(
             rightpaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 595, Short.MAX_VALUE)
+            .addComponent(jToolBar2, javax.swing.GroupLayout.DEFAULT_SIZE, 595, Short.MAX_VALUE)
             .addComponent(jPanel1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 569, Short.MAX_VALUE)
             .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(jToolBar2, javax.swing.GroupLayout.DEFAULT_SIZE, 569, Short.MAX_VALUE)
         );
         rightpaneLayout.setVerticalGroup(
             rightpaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(rightpaneLayout.createSequentialGroup()
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -572,7 +573,6 @@ public class ProductListsPanel extends javax.swing.JPanel implements DataPanel, 
     private javax.swing.JToolBar.Separator jSeparator5;
     private javax.swing.JToolBar.Separator jSeparator6;
     private javax.swing.JToolBar.Separator jSeparator9;
-    private javax.swing.JToolBar jToolBar1;
     private javax.swing.JToolBar jToolBar2;
     private javax.swing.JPanel leftpane;
     private mpv5.ui.beans.LabeledTextField listname;
@@ -796,7 +796,7 @@ public class ProductListsPanel extends javax.swing.JPanel implements DataPanel, 
             }
 
             public void mouseReleased(MouseEvent e) {
-                ProductSelectDialog.instanceOf((MPTableModel) itemtable.getModel(), itemtable.getSelectedRow(), e, Integer.valueOf(itemtable.getModel().getValueAt(itemtable.getSelectedRow(), 10).toString()), itemtable.getModel().getValueAt(itemtable.getSelectedRow(), 12 + 1).toString(), itemtable.getModel().getValueAt(itemtable.getSelectedRow(), 14).toString());
+                ProductSelectDialog.instanceOf((MPTableModel) itemtable.getModel(), itemtable.getSelectedRow(), e, 0, null, null);
                 if (((MPTableModel) itemtable.getModel()).getEmptyRows(new int[]{4}) < 2) {
                     ((MPTableModel) itemtable.getModel()).addRow(1);
                 }
@@ -819,21 +819,21 @@ public class ProductListsPanel extends javax.swing.JPanel implements DataPanel, 
             }
         });
 
-//        try {
-//            itemtable.getColumnModel().getColumn(itemtable.getColumnModel().getColumnIndex("A")).setCellRenderer(new ButtonRenderer());
-//        } catch (Exception e) {
-//        }
-//        try {
-//            itemtable.getColumnModel().getColumn(itemtable.getColumnModel().getColumnIndex("A")).setCellEditor(new ButtonEditor(b1));
-//        } catch (Exception e) {
-//        }
-//        try {
-//            itemtable.getColumnModel().getColumn(itemtable.getColumnModel().getColumnIndex("C")).setCellRenderer(new ButtonRenderer());
-//        } catch (Exception e) {
-//        }
-//        try {
-//            itemtable.getColumnModel().getColumn(itemtable.getColumnModel().getColumnIndex("C")).setCellEditor(new ButtonEditor(b2));
-//        } catch (Exception e) {
-//        }
+        try {
+            itemtable.getColumnModel().getColumn(itemtable.getColumnModel().getColumnIndex("A")).setCellRenderer(new ButtonRenderer());
+        } catch (Exception e) {
+        }
+        try {
+            itemtable.getColumnModel().getColumn(itemtable.getColumnModel().getColumnIndex("A")).setCellEditor(new ButtonEditor(b1));
+        } catch (Exception e) {
+        }
+        try {
+            itemtable.getColumnModel().getColumn(itemtable.getColumnModel().getColumnIndex("C")).setCellRenderer(new ButtonRenderer());
+        } catch (Exception e) {
+        }
+        try {
+            itemtable.getColumnModel().getColumn(itemtable.getColumnModel().getColumnIndex("C")).setCellEditor(new ButtonEditor(b2));
+        } catch (Exception e) {
+        }
  }
 }

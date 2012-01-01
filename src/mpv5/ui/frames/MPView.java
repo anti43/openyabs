@@ -924,7 +924,7 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
         nav_contacts.setName("nav_contacts"); // NOI18N
         nav_contacts.setLayout(new java.awt.GridLayout(0, 1, 2, 5));
 
-        jButton5.setFont(new java.awt.Font("Tahoma", 0, 10));
+        jButton5.setFont(jButton5.getFont().deriveFont(jButton5.getFont().getSize()-1f));
         jButton5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/agt_family.png"))); // NOI18N
         java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle(); // NOI18N
         jButton5.setText(bundle.getString("MPView.jButton5.text_1")); // NOI18N
@@ -939,7 +939,7 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
         });
         nav_contacts.add(jButton5);
 
-        jButton1.setFont(new java.awt.Font("Tahoma", 0, 10));
+        jButton1.setFont(jButton1.getFont().deriveFont(jButton1.getFont().getSize()-1f));
         jButton1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/edit_group.png"))); // NOI18N
         jButton1.setText(bundle.getString("MPView.jButton1.text_1")); // NOI18N
         jButton1.setToolTipText(bundle.getString("MPView.jButton1.toolTipText_1")); // NOI18N
@@ -953,7 +953,7 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
         });
         nav_contacts.add(jButton1);
 
-        jButton18.setFont(new java.awt.Font("Tahoma", 0, 10));
+        jButton18.setFont(jButton18.getFont().deriveFont(jButton18.getFont().getSize()-1f));
         jButton18.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/edit_group.png"))); // NOI18N
         jButton18.setText(bundle.getString("MPView.jButton18.text_1")); // NOI18N
         jButton18.setToolTipText(bundle.getString("MPView.jButton18.toolTipText_1")); // NOI18N
@@ -971,7 +971,7 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
         parent_nav_contacts.setLayout(parent_nav_contactsLayout);
         parent_nav_contactsLayout.setHorizontalGroup(
             parent_nav_contactsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(nav_contacts, javax.swing.GroupLayout.DEFAULT_SIZE, 110, Short.MAX_VALUE)
+            .addComponent(nav_contacts, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         parent_nav_contactsLayout.setVerticalGroup(
             parent_nav_contactsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -990,7 +990,7 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
         nav_accounting.setName("nav_accounting"); // NOI18N
         nav_accounting.setLayout(new java.awt.GridLayout(0, 1, 2, 5));
 
-        jButton8.setFont(new java.awt.Font("Tahoma", 0, 10));
+        jButton8.setFont(jButton8.getFont().deriveFont(jButton8.getFont().getSize()-1f));
         jButton8.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/folder_blue.png"))); // NOI18N
         jButton8.setText(bundle.getString("MPView.jButton8.text")); // NOI18N
         jButton8.setToolTipText(bundle.getString("MPView.jButton8.toolTipText")); // NOI18N
@@ -1004,7 +1004,7 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
         });
         nav_accounting.add(jButton8);
 
-        jButton11.setFont(new java.awt.Font("Tahoma", 0, 10));
+        jButton11.setFont(jButton11.getFont().deriveFont(jButton11.getFont().getSize()-1f));
         jButton11.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/folder_green.png"))); // NOI18N
         jButton11.setText(bundle.getString("MPView.jButton11.text")); // NOI18N
         jButton11.setToolTipText(bundle.getString("MPView.jButton11.toolTipText")); // NOI18N
@@ -1018,7 +1018,7 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
         });
         nav_accounting.add(jButton11);
 
-        jButton21.setFont(new java.awt.Font("Tahoma", 0, 10));
+        jButton21.setFont(jButton21.getFont().deriveFont(jButton21.getFont().getSize()-1f));
         jButton21.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/folder_documents.png"))); // NOI18N
         jButton21.setText(bundle.getString("MPView.jButton21.text")); // NOI18N
         jButton21.setToolTipText(bundle.getString("MPView.jButton21.toolTipText")); // NOI18N
@@ -1032,7 +1032,7 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
         });
         nav_accounting.add(jButton21);
 
-        jButton10.setFont(new java.awt.Font("Tahoma", 0, 10));
+        jButton10.setFont(jButton10.getFont().deriveFont(jButton10.getFont().getSize()-1f));
         jButton10.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/folder_grey.png"))); // NOI18N
         jButton10.setText(bundle.getString("MPView.jButton10.text")); // NOI18N
         jButton10.setToolTipText(bundle.getString("MPView.jButton10.toolTipText")); // NOI18N
@@ -1046,7 +1046,7 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
         });
         nav_accounting.add(jButton10);
 
-        jButton15.setFont(new java.awt.Font("Tahoma", 0, 10));
+        jButton15.setFont(jButton15.getFont().deriveFont(jButton15.getFont().getSize()-1f));
         jButton15.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/folder_red.png"))); // NOI18N
         jButton15.setText(bundle.getString("MPView.jButton15.text")); // NOI18N
         jButton15.setToolTipText(bundle.getString("MPView.jButton15.toolTipText")); // NOI18N
@@ -1060,7 +1060,7 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
         });
         nav_accounting.add(jButton15);
 
-        jButton16.setFont(new java.awt.Font("Tahoma", 0, 10));
+        jButton16.setFont(jButton16.getFont().deriveFont(jButton16.getFont().getSize()-1f));
         jButton16.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/folder_yellow.png"))); // NOI18N
         jButton16.setText(bundle.getString("MPView.jButton16.text")); // NOI18N
         jButton16.setToolTipText(bundle.getString("MPView.jButton16.toolTipText")); // NOI18N
@@ -1074,7 +1074,7 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
         });
         nav_accounting.add(jButton16);
 
-        jButton17.setFont(new java.awt.Font("Tahoma", 0, 10));
+        jButton17.setFont(jButton17.getFont().deriveFont(jButton17.getFont().getSize()-1f));
         jButton17.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/reload.png"))); // NOI18N
         jButton17.setText(bundle.getString("MPView.jButton17.text")); // NOI18N
         jButton17.setToolTipText(bundle.getString("MPView.jButton17.toolTipText")); // NOI18N
@@ -1092,7 +1092,7 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
         parent_nav_accounting.setLayout(parent_nav_accountingLayout);
         parent_nav_accountingLayout.setHorizontalGroup(
             parent_nav_accountingLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(nav_accounting, javax.swing.GroupLayout.DEFAULT_SIZE, 98, Short.MAX_VALUE)
+            .addComponent(nav_accounting, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         parent_nav_accountingLayout.setVerticalGroup(
             parent_nav_accountingLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1111,7 +1111,7 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
         nav_products.setName("nav_products"); // NOI18N
         nav_products.setLayout(new java.awt.GridLayout(0, 1, 2, 5));
 
-        jButton13.setFont(new java.awt.Font("Tahoma", 0, 10));
+        jButton13.setFont(jButton13.getFont().deriveFont(jButton13.getFont().getSize()-1f));
         jButton13.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/tux.png"))); // NOI18N
         jButton13.setText(bundle.getString("MPView.jButton13.text")); // NOI18N
         jButton13.setToolTipText(bundle.getString("MPView.jButton13.toolTipText")); // NOI18N
@@ -1128,7 +1128,7 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
         });
         nav_products.add(jButton13);
 
-        jButton14.setFont(new java.awt.Font("Tahoma", 0, 10));
+        jButton14.setFont(jButton14.getFont().deriveFont(jButton14.getFont().getSize()-1f));
         jButton14.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/playlist.png"))); // NOI18N
         jButton14.setText(bundle.getString("MPView.jButton14.text")); // NOI18N
         jButton14.setToolTipText(bundle.getString("MPView.jButton14.toolTipText")); // NOI18N
@@ -1145,7 +1145,7 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
         });
         nav_products.add(jButton14);
 
-        jButton19.setFont(new java.awt.Font("Tahoma", 0, 10));
+        jButton19.setFont(jButton19.getFont().deriveFont(jButton19.getFont().getSize()-1f));
         jButton19.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/kghostview.png"))); // NOI18N
         jButton19.setText(bundle.getString("MPView.jButton19.text")); // NOI18N
         jButton19.setToolTipText(bundle.getString("MPView.jButton19.toolTipText")); // NOI18N
@@ -1162,7 +1162,7 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
         });
         nav_products.add(jButton19);
 
-        jButton20.setFont(new java.awt.Font("Tahoma", 0, 10));
+        jButton20.setFont(jButton20.getFont().deriveFont(jButton20.getFont().getSize()-1f));
         jButton20.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/window_list.png"))); // NOI18N
         jButton20.setText(bundle.getString("MPView.jButton20.text")); // NOI18N
         jButton20.setToolTipText(bundle.getString("MPView.jButton20.toolTipText")); // NOI18N
@@ -1176,7 +1176,7 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
         });
         nav_products.add(jButton20);
 
-        jButton12.setFont(new java.awt.Font("Tahoma", 0, 10));
+        jButton12.setFont(jButton12.getFont().deriveFont(jButton12.getFont().getSize()-1f));
         jButton12.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/gear.png"))); // NOI18N
         jButton12.setText(bundle.getString("MPView.jButton12.text")); // NOI18N
         jButton12.setToolTipText(bundle.getString("MPView.jButton12.toolTipText")); // NOI18N
@@ -1197,7 +1197,7 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
         parent_nav_products.setLayout(parent_nav_productsLayout);
         parent_nav_productsLayout.setHorizontalGroup(
             parent_nav_productsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(nav_products, javax.swing.GroupLayout.DEFAULT_SIZE, 110, Short.MAX_VALUE)
+            .addComponent(nav_products, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         parent_nav_productsLayout.setVerticalGroup(
             parent_nav_productsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1216,7 +1216,7 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
         nav_extras.setName("nav_extras"); // NOI18N
         nav_extras.setLayout(new java.awt.GridLayout(0, 1, 2, 5));
 
-        jButton6.setFont(new java.awt.Font("Tahoma", 0, 10));
+        jButton6.setFont(jButton6.getFont().deriveFont(jButton6.getFont().getSize()-1f));
         jButton6.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/kservices.png"))); // NOI18N
         jButton6.setText(bundle.getString("MPView.jButton6.text")); // NOI18N
         jButton6.setToolTipText(bundle.getString("MPView.jButton6.toolTipText")); // NOI18N
@@ -1230,7 +1230,7 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
         });
         nav_extras.add(jButton6);
 
-        jButton7.setFont(new java.awt.Font("Tahoma", 0, 10));
+        jButton7.setFont(jButton7.getFont().deriveFont(jButton7.getFont().getSize()-1f));
         jButton7.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/edittrash.png"))); // NOI18N
         jButton7.setText(bundle.getString("MPView.jButton7.text")); // NOI18N
         jButton7.setToolTipText(bundle.getString("MPView.jButton7.toolTipText")); // NOI18N
@@ -1244,7 +1244,7 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
         });
         nav_extras.add(jButton7);
 
-        jButton9.setFont(new java.awt.Font("Tahoma", 0, 10));
+        jButton9.setFont(jButton9.getFont().deriveFont(jButton9.getFont().getSize()-1f));
         jButton9.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/folder_txt.png"))); // NOI18N
         jButton9.setText(bundle.getString("MPView.jButton9.text")); // NOI18N
         jButton9.setToolTipText(bundle.getString("MPView.jButton9.toolTipText")); // NOI18N
@@ -1263,7 +1263,7 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
         parent_nav_extras.setLayout(parent_nav_extrasLayout);
         parent_nav_extrasLayout.setHorizontalGroup(
             parent_nav_extrasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(nav_extras, javax.swing.GroupLayout.DEFAULT_SIZE, 110, Short.MAX_VALUE)
+            .addComponent(nav_extras, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         parent_nav_extrasLayout.setVerticalGroup(
             parent_nav_extrasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1294,7 +1294,7 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
             .addGroup(mainPanelLayout.createSequentialGroup()
                 .addComponent(naviPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(tabpanePanel, javax.swing.GroupLayout.DEFAULT_SIZE, 793, Short.MAX_VALUE))
+                .addComponent(tabpanePanel, javax.swing.GroupLayout.DEFAULT_SIZE, 678, Short.MAX_VALUE))
         );
         mainPanelLayout.setVerticalGroup(
             mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
