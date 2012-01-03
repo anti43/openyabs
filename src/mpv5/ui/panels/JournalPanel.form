@@ -190,32 +190,29 @@
                                   <Component id="jPanel7" alignment="0" max="32767" attributes="1"/>
                                   <Component id="jPanel8" alignment="0" max="32767" attributes="1"/>
                               </Group>
+                              <EmptySpace max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="0" attributes="0">
                                   <Group type="102" attributes="0">
-                                      <EmptySpace min="-2" pref="0" max="-2" attributes="0"/>
-                                      <Component id="jPanel6" min="-2" pref="184" max="-2" attributes="1"/>
-                                  </Group>
-                                  <Group type="102" alignment="0" attributes="1">
-                                      <EmptySpace max="-2" attributes="0"/>
                                       <Component id="jButton1" min="-2" pref="86" max="-2" attributes="1"/>
                                       <EmptySpace max="-2" attributes="0"/>
-                                      <Component id="count" pref="88" max="32767" attributes="0"/>
+                                      <Component id="count" min="-2" pref="67" max="-2" attributes="0"/>
                                   </Group>
+                                  <Component id="jPanel6" alignment="0" min="-2" pref="212" max="-2" attributes="1"/>
                               </Group>
-                              <EmptySpace pref="52" max="32767" attributes="0"/>
+                              <EmptySpace max="-2" attributes="0"/>
                           </Group>
                       </Group>
                     </DimensionLayout>
                     <DimensionLayout dim="1">
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Group type="102" attributes="0">
-                              <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                              <Group type="103" groupAlignment="0" attributes="0">
                                   <Group type="102" alignment="0" attributes="0">
                                       <Component id="jPanel8" min="-2" max="-2" attributes="0"/>
                                       <EmptySpace min="-2" pref="0" max="-2" attributes="0"/>
                                       <Component id="jPanel7" min="-2" max="-2" attributes="0"/>
                                   </Group>
-                                  <Group type="102" alignment="1" attributes="1">
+                                  <Group type="102" alignment="1" attributes="0">
                                       <Component id="jPanel6" min="0" pref="0" max="32767" attributes="1"/>
                                       <EmptySpace max="-2" attributes="0"/>
                                       <Group type="103" groupAlignment="2" attributes="0">
@@ -255,19 +252,15 @@
                                   </Group>
                                   <EmptySpace max="-2" attributes="0"/>
                                   <Group type="103" groupAlignment="0" attributes="0">
-                                      <Group type="102" alignment="1" attributes="0">
-                                          <Component id="statusc" pref="251" max="32767" attributes="1"/>
-                                          <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                                          <Component id="bydateend" min="-2" pref="210" max="-2" attributes="0"/>
-                                      </Group>
-                                      <Group type="102" alignment="1" attributes="0">
-                                          <Group type="103" groupAlignment="1" attributes="0">
-                                              <Component id="groups" alignment="1" pref="252" max="32767" attributes="0"/>
-                                              <Component id="users" alignment="1" pref="252" max="32767" attributes="0"/>
-                                          </Group>
-                                          <EmptySpace min="-2" pref="5" max="-2" attributes="0"/>
-                                          <Component id="includechildgroups" min="-2" pref="210" max="-2" attributes="0"/>
-                                      </Group>
+                                      <Component id="groups" alignment="0" pref="252" max="32767" attributes="0"/>
+                                      <Component id="users" alignment="0" pref="252" max="32767" attributes="0"/>
+                                      <Component id="statusc" alignment="0" pref="252" max="32767" attributes="1"/>
+                                  </Group>
+                                  <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                                  <Group type="103" groupAlignment="0" attributes="0">
+                                      <Component id="expbydateend" alignment="0" min="-2" pref="210" max="-2" attributes="0"/>
+                                      <Component id="bydateend" alignment="0" min="-2" pref="210" max="-2" attributes="0"/>
+                                      <Component id="includechildgroups" alignment="0" min="-2" pref="210" max="-2" attributes="0"/>
                                   </Group>
                                   <EmptySpace max="-2" attributes="0"/>
                               </Group>
@@ -283,14 +276,15 @@
                                   </Group>
                                   <EmptySpace max="-2" attributes="0"/>
                                   <Group type="103" groupAlignment="2" attributes="0">
-                                      <Component id="users" alignment="2" min="-2" max="-2" attributes="0"/>
                                       <Component id="jLabel8" alignment="2" min="-2" max="-2" attributes="0"/>
+                                      <Component id="users" alignment="2" min="-2" max="-2" attributes="0"/>
+                                      <Component id="expbydateend" alignment="2" min="-2" max="-2" attributes="0"/>
                                   </Group>
                                   <EmptySpace max="-2" attributes="0"/>
                                   <Group type="103" groupAlignment="2" attributes="0">
+                                      <Component id="bydateend" alignment="2" min="-2" max="-2" attributes="0"/>
                                       <Component id="statusc" alignment="2" min="-2" max="-2" attributes="0"/>
                                       <Component id="jLabel6" alignment="2" min="-2" max="-2" attributes="0"/>
-                                      <Component id="bydateend" alignment="2" min="-2" max="-2" attributes="0"/>
                                   </Group>
                               </Group>
                           </Group>
@@ -411,6 +405,25 @@
                             </Property>
                           </Properties>
                         </Component>
+                        <Component class="javax.swing.JCheckBox" name="expbydateend">
+                          <Properties>
+                            <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+                              <Color blue="ff" green="ff" red="ff" type="rgb"/>
+                            </Property>
+                            <Property name="font" type="java.awt.Font" editor="org.netbeans.modules.form.editors2.FontEditor">
+                              <FontInfo relative="true">
+                                <Font component="expbydateend" property="font" relativeSize="true" size="0"/>
+                              </FontInfo>
+                            </Property>
+                            <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
+                              <ResourceString bundle="mpv5/resources/languages/Panels.properties" key="JournalPanel.expbydateend.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+                            </Property>
+                            <Property name="name" type="java.lang.String" value="expbydateend" noResource="true"/>
+                          </Properties>
+                          <Events>
+                            <EventHandler event="itemStateChanged" listener="java.awt.event.ItemListener" parameters="java.awt.event.ItemEvent" handler="expbydateendItemStateChanged"/>
+                          </Events>
+                        </Component>
                       </SubComponents>
                     </Container>
                     <Container class="javax.swing.JPanel" name="jPanel8">
@@ -440,7 +453,7 @@
                                       <Component id="jLabel4" alignment="0" min="-2" pref="269" max="-2" attributes="1"/>
                                       <Component id="timeframeChooser1" alignment="0" min="-2" max="-2" attributes="1"/>
                                   </Group>
-                                  <EmptySpace pref="133" max="32767" attributes="0"/>
+                                  <EmptySpace pref="134" max="32767" attributes="0"/>
                               </Group>
                           </Group>
                         </DimensionLayout>

@@ -46,7 +46,7 @@ public class FileReaderWriter {
     private FileWriter fw;
     private BufferedWriter bw;
     private String zeilenumbruch = "\r\n";
-    private Charset charset = Charset.forName("UTF-8") ;
+    private Charset charset = Charset.forName("UTF-8");
 
     /**
      * A reader/writer helper class for textfiles
@@ -144,14 +144,15 @@ public class FileReaderWriter {
      * @param text
      * @return true is writing successful
      */
-    public boolean write(String[] text) {
+    public boolean write(String[] lines) {
 
-        for (int i = 0; i < text.length; i++) {
-            String string = text[i];
-            if (string != null) {
-                if (!write(string)) {
-                    return false;
-                }
+        String string = "";
+        for (int i = 0; i < lines.length; i++) {
+            string += lines[i] + "\n";
+        }
+        if (string.length() > 0) {
+            if (!write(string)) {
+                return false;
             }
         }
 
@@ -206,12 +207,13 @@ public class FileReaderWriter {
      * @return
      */
     public boolean write0(String[] lines) {
+        String string = "";
         for (int i = 0; i < lines.length; i++) {
-            String string = lines[i];
-            if (string != null && string.length() > 0) {
-                if (!write0(string)) {
-                    return false;
-                }
+            string += lines[i] + "\n";
+        }
+        if (string.length() > 0) {
+            if (!write0(string)) {
+                return false;
             }
         }
 
@@ -226,12 +228,13 @@ public class FileReaderWriter {
      * @return
      */
     public boolean write0WCharset(String[] lines) {
+        String string = "";
         for (int i = 0; i < lines.length; i++) {
-            String string = lines[i];
-            if (string != null && string.length() > 0) {
-                if (!write0WCharset(string)) {
-                    return false;
-                }
+            string += lines[i] + "\n";
+        }
+        if (string.length() > 0) {
+            if (!write0WCharset(string)) {
+                return false;
             }
         }
 

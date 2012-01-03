@@ -88,26 +88,24 @@
                       <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="1" attributes="0">
                           <Group type="102" attributes="0">
-                              <Group type="103" groupAlignment="1" attributes="0">
-                                  <Component id="jCheckBox1" min="-2" pref="216" max="-2" attributes="1"/>
-                                  <Component id="number" alignment="1" min="-2" pref="214" max="-2" attributes="1"/>
-                              </Group>
+                              <Component id="number" min="-2" pref="214" max="-2" attributes="1"/>
                               <EmptySpace max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="0" attributes="0">
-                                  <Component id="labeledDateChooser2" pref="238" max="32767" attributes="0"/>
-                                  <Component id="labeledDateChooser1" alignment="0" pref="238" max="32767" attributes="0"/>
+                                  <Component id="paydate" min="-2" pref="238" max="-2" attributes="0"/>
+                                  <Component id="labeledDateChooser1" alignment="0" min="-2" pref="238" max="-2" attributes="0"/>
                               </Group>
                           </Group>
-                          <Component id="accountselect" pref="460" max="32767" attributes="1"/>
+                          <Component id="accountselect" min="-2" pref="460" max="-2" attributes="1"/>
                       </Group>
                       <EmptySpace min="-2" pref="38" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                          <Group type="102" attributes="1">
+                          <Component id="jCheckBox1" max="32767" attributes="1"/>
+                          <Group type="102" alignment="0" attributes="1">
                               <Component id="jLabel4" min="-2" pref="82" max="-2" attributes="0"/>
                               <EmptySpace max="32767" attributes="0"/>
                               <Component id="addedby" min="-2" pref="94" max="-2" attributes="0"/>
                           </Group>
-                          <Component id="groupnameselect" min="-2" pref="187" max="-2" attributes="1"/>
+                          <Component id="groupnameselect" alignment="0" pref="187" max="32767" attributes="1"/>
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
                   </Group>
@@ -118,28 +116,21 @@
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" alignment="0" attributes="0">
                       <EmptySpace min="-2" max="-2" attributes="0"/>
-                      <Group type="103" groupAlignment="0" attributes="0">
-                          <Group type="102" attributes="0">
-                              <Component id="accountselect" min="-2" max="-2" attributes="0"/>
-                              <EmptySpace max="-2" attributes="0"/>
-                              <Group type="103" groupAlignment="0" attributes="0">
-                                  <Component id="number" min="-2" max="-2" attributes="1"/>
-                                  <Component id="labeledDateChooser1" min="-2" max="-2" attributes="0"/>
-                              </Group>
-                              <EmptySpace min="-2" pref="10" max="-2" attributes="0"/>
-                              <Group type="103" groupAlignment="0" attributes="0">
-                                  <Component id="jCheckBox1" min="-2" pref="16" max="-2" attributes="0"/>
-                                  <Component id="labeledDateChooser2" alignment="0" min="-2" max="-2" attributes="0"/>
-                              </Group>
-                          </Group>
-                          <Group type="102" attributes="0">
-                              <Group type="103" groupAlignment="2" attributes="0">
-                                  <Component id="addedby" alignment="2" min="-2" pref="19" max="-2" attributes="0"/>
-                                  <Component id="jLabel4" alignment="2" min="-2" pref="16" max="-2" attributes="0"/>
-                              </Group>
-                              <EmptySpace max="-2" attributes="0"/>
-                              <Component id="groupnameselect" min="-2" max="-2" attributes="1"/>
-                          </Group>
+                      <Group type="103" groupAlignment="2" attributes="0">
+                          <Component id="accountselect" alignment="2" min="-2" max="-2" attributes="0"/>
+                          <Component id="jLabel4" alignment="2" min="-2" pref="19" max="-2" attributes="0"/>
+                          <Component id="addedby" alignment="2" min="-2" pref="20" max="-2" attributes="0"/>
+                      </Group>
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="2" attributes="0">
+                          <Component id="labeledDateChooser1" alignment="2" min="-2" max="-2" attributes="0"/>
+                          <Component id="number" alignment="2" min="-2" max="-2" attributes="1"/>
+                          <Component id="groupnameselect" alignment="2" min="-2" max="-2" attributes="1"/>
+                      </Group>
+                      <EmptySpace min="-2" pref="10" max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="2" attributes="0">
+                          <Component id="jCheckBox1" alignment="2" min="-2" pref="20" max="-2" attributes="0"/>
+                          <Component id="paydate" alignment="2" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace min="-2" pref="8" max="-2" attributes="0"/>
                       <Component id="jPanel2" max="32767" attributes="0"/>
@@ -228,7 +219,7 @@
                       <Group type="102" alignment="1" attributes="0">
                           <EmptySpace min="-2" max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="1" attributes="0">
-                              <Component id="jScrollPane1" alignment="0" max="32767" attributes="0"/>
+                              <Component id="jScrollPane1" alignment="0" pref="681" max="32767" attributes="0"/>
                               <Component id="path" alignment="0" pref="681" max="32767" attributes="0"/>
                               <Component id="jLabel1" alignment="0" min="-2" pref="99" max="-2" attributes="0"/>
                               <Group type="102" alignment="0" attributes="0">
@@ -357,12 +348,12 @@
                 <EventHandler event="itemStateChanged" listener="java.awt.event.ItemListener" parameters="java.awt.event.ItemEvent" handler="jCheckBox1ItemStateChanged"/>
               </Events>
             </Component>
-            <Component class="mpv5.ui.beans.LabeledDateChooser" name="labeledDateChooser2">
+            <Component class="mpv5.ui.beans.LabeledDateChooser" name="paydate">
               <Properties>
                 <Property name="_Label" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-                  <ResourceString bundle="mpv5/resources/languages/Panels.properties" key="ExpensePanel.labeledDateChooser2._Label" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+                  <ResourceString bundle="mpv5/resources/languages/Panels.properties" key="ExpensePanel.paydate._Label" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
                 </Property>
-                <Property name="name" type="java.lang.String" value="labeledDateChooser2" noResource="true"/>
+                <Property name="name" type="java.lang.String" value="paydate" noResource="true"/>
               </Properties>
             </Component>
           </SubComponents>

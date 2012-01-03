@@ -29,6 +29,7 @@ import mpv5.ui.dialogs.DialogForFile;
 import mpv5.ui.dialogs.Popup;
 
 import mpv5.utils.files.FileDirectoryHandler;
+import mpv5.utils.files.FileReaderWriter;
 import mpv5.utils.models.MPComboBoxModelItem;
 import mpv5.utils.text.RandomText;
 import mpv5.utils.text.TypeConversion;
@@ -418,29 +419,27 @@ public class ControlPanel_Locale extends javax.swing.JPanel implements ControlAp
     private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
         File f = null;
         String key;
-        FileWriter fw;
-        String lang_long = null;
+        String lang_long = "export";
         if (languages.getSelectedIndex() == -1) {
             Popup.warn(Messages.LANG_EMPTY.toString());
         } else {
             try {
-                f = File.createTempFile(RandomText.getText(), UNAME);
-                BufferedWriter out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(f)));
-                lang_long = ((MPComboBoxModelItem) languages.getSelectedItem()).getValue();
+                lang_long = ((MPComboBoxModelItem) languages.getSelectedItem()).toString();
+                f = FileDirectoryHandler.getTempFile(lang_long + "_" + Constants.VERSION, "yabs");
+                FileReaderWriter rw = new FileReaderWriter(f, "utf-8");
+
                 String lang = ((MPComboBoxModelItem) languages.getSelectedItem()).getId();
                 ResourceBundle bundle = LanguageManager.getBundle(lang);
                 Enumeration<String> keys = bundle.getKeys();
                 List<String> list = Collections.list(keys);
                 Collections.sort(list);
-
+                String[] data = new String[list.size()];
                 for (int i = 0; i < list.size(); i++) {
                     key = list.get(i);
-                    out.write(key + "=" + bundle.getString(key));
-                    out.newLine();
+                    data[i] = key + "=" + bundle.getString(key);
                 }
-
-                out.close();
-                DialogForFile df = new DialogForFile(JFileChooser.FILES_AND_DIRECTORIES, lang_long + "_" + Constants.VERSION);
+                rw.write0WCharset(data);
+                DialogForFile df = new DialogForFile(JFileChooser.FILES_AND_DIRECTORIES);
                 df.saveFile(f);
 
             } catch (Exception ex) {
