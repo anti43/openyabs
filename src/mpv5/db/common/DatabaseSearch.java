@@ -237,9 +237,9 @@ public class DatabaseSearch {
                 String string = strings[i];
                 for (String en : possibleColumns) {
                     if (!string.startsWith("-")) {
-                        psx.add(new QueryParameter(context, en, string, QueryParameter.LIKE));
+                        psx.add(new QueryParameter(context, en, string, searchForLike?QueryParameter.LIKE:QueryParameter.EQUALS));
                     } else {
-                        not.add(new QueryParameter(context, en, string.substring(1), QueryParameter.NOTLIKE));
+                        not.add(new QueryParameter(context, en, string.substring(1), searchForLike?QueryParameter.LIKE:QueryParameter.EQUALS));
                     }
                 }
             }
