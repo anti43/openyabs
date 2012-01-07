@@ -42,7 +42,6 @@ public class YabsApplication extends SingleFrameApplication {
 //            }
 //        });
 //    }
-    
     /**
      * A convenient static getter for the application instance.
      * @return the instance of Main
@@ -55,9 +54,10 @@ public class YabsApplication extends SingleFrameApplication {
     public void ready() {
         Main.setLaF(User.getCurrentUser().__getLaf());
     }
-    
+
     @Override
     public void shutdown() {
-       main.shutdown();
+        super.shutdown();
+        main.shutdown();
     }
 }
