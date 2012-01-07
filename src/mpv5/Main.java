@@ -1140,7 +1140,7 @@ public class Main implements Runnable {
                             }
                         }
                     } catch (NodataFoundException ex) {
-                        Log.Debug(this, ex);
+                        Log.Debug(this, ex.getMessage());
                         YabsViewProxy.instance().addMessage(Messages.NO_TEMPLATE_DEFINDED);
                     }
                 }

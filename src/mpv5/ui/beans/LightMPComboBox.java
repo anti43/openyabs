@@ -183,7 +183,7 @@ public class LightMPComboBox extends JComboBox {
                     }
                 }
 
-                Object[][] data = new DatabaseSearch(context, 200).getValuesFor2(params, new String[]{"cname", "description", "ean", "cnumber", "reference"}, String.valueOf(value), true);
+                Object[][] data = new DatabaseSearch(context, 200).getValuesFor2(params, String.valueOf(value), null, true, true);
                 setModel(MPComboBoxModelItem.toModel(MPComboBoxModelItem.toItems(data, true, MPComboBoxModelItem.COMPARE_BY_VALUE, vars)));
                 try {
                     table.editCellAt(table.getSelectedRow(), 4);

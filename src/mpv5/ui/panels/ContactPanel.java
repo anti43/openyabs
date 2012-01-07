@@ -405,7 +405,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
         };
         toolbarpane = new javax.swing.JPanel();
 
-        java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle(); // NOI18N
+        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("mpv5/resources/languages/Panels"); // NOI18N
         setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("ContactPanel.border.title"))); // NOI18N
         setName("Form"); // NOI18N
         setLayout(new java.awt.BorderLayout());
@@ -677,7 +677,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
                     .addComponent(removefile, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(addfile, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 121, Short.MAX_VALUE)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 119, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -686,10 +686,17 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
         jToolBar1.setRollover(true);
         jToolBar1.setName("jToolBar1"); // NOI18N
 
+        button_offer.setBackground(new java.awt.Color(204, 255, 204));
         button_offer.setText(bundle.getString("ContactPanel.button_offer.text")); // NOI18N
+        button_offer.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
         button_offer.setFocusable(false);
         button_offer.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        button_offer.setIconTextGap(5);
+        button_offer.setMaximumSize(new java.awt.Dimension(95, 23));
+        button_offer.setMinimumSize(new java.awt.Dimension(88, 23));
         button_offer.setName("button_offer"); // NOI18N
+        button_offer.setPreferredSize(new java.awt.Dimension(88, 23));
+        button_offer.setRolloverEnabled(false);
         button_offer.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         button_offer.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -698,10 +705,17 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
         });
         jToolBar1.add(button_offer);
 
+        button_order.setBackground(new java.awt.Color(204, 255, 204));
         button_order.setText(bundle.getString("ContactPanel.button_order.text")); // NOI18N
+        button_order.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
         button_order.setFocusable(false);
         button_order.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        button_order.setIconTextGap(5);
+        button_order.setMaximumSize(new java.awt.Dimension(95, 23));
+        button_order.setMinimumSize(new java.awt.Dimension(88, 23));
         button_order.setName("button_order"); // NOI18N
+        button_order.setPreferredSize(new java.awt.Dimension(88, 23));
+        button_order.setRolloverEnabled(false);
         button_order.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         button_order.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -710,10 +724,17 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
         });
         jToolBar1.add(button_order);
 
+        button_bill.setBackground(new java.awt.Color(204, 255, 204));
         button_bill.setText(bundle.getString("ContactPanel.button_bill.text")); // NOI18N
+        button_bill.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
         button_bill.setFocusable(false);
         button_bill.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        button_bill.setIconTextGap(5);
+        button_bill.setMaximumSize(new java.awt.Dimension(95, 23));
+        button_bill.setMinimumSize(new java.awt.Dimension(88, 23));
         button_bill.setName("button_bill"); // NOI18N
+        button_bill.setPreferredSize(new java.awt.Dimension(88, 23));
+        button_bill.setRolloverEnabled(false);
         button_bill.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         button_bill.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -725,10 +746,17 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
         jSeparator1.setName("jSeparator1"); // NOI18N
         jToolBar1.add(jSeparator1);
 
+        button_product.setBackground(new java.awt.Color(204, 204, 255));
         button_product.setText(bundle.getString("ContactPanel.button_product.text")); // NOI18N
+        button_product.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
         button_product.setFocusable(false);
         button_product.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        button_product.setIconTextGap(5);
+        button_product.setMaximumSize(new java.awt.Dimension(95, 23));
+        button_product.setMinimumSize(new java.awt.Dimension(88, 23));
         button_product.setName("button_product"); // NOI18N
+        button_product.setPreferredSize(new java.awt.Dimension(88, 23));
+        button_product.setRolloverEnabled(false);
         button_product.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         button_product.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -740,10 +768,17 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
         jSeparator2.setName("jSeparator2"); // NOI18N
         jToolBar1.add(jSeparator2);
 
+        jButton2.setBackground(new java.awt.Color(255, 255, 204));
         jButton2.setText(bundle.getString("ContactPanel.jButton2.text")); // NOI18N
+        jButton2.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
         jButton2.setFocusable(false);
         jButton2.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        jButton2.setIconTextGap(5);
+        jButton2.setMaximumSize(new java.awt.Dimension(95, 23));
+        jButton2.setMinimumSize(new java.awt.Dimension(88, 23));
         jButton2.setName("jButton2"); // NOI18N
+        jButton2.setPreferredSize(new java.awt.Dimension(88, 23));
+        jButton2.setRolloverEnabled(false);
         jButton2.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         jButton2.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -752,10 +787,17 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
         });
         jToolBar1.add(jButton2);
 
+        jButton3.setBackground(new java.awt.Color(255, 255, 204));
         jButton3.setText(bundle.getString("ContactPanel.jButton3.text")); // NOI18N
+        jButton3.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
         jButton3.setFocusable(false);
         jButton3.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        jButton3.setIconTextGap(5);
+        jButton3.setMaximumSize(new java.awt.Dimension(95, 23));
+        jButton3.setMinimumSize(new java.awt.Dimension(88, 23));
         jButton3.setName("jButton3"); // NOI18N
+        jButton3.setPreferredSize(new java.awt.Dimension(88, 23));
+        jButton3.setRolloverEnabled(false);
         jButton3.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         jButton3.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -1260,7 +1302,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
 
     private void button_productsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button_productsActionPerformed
         Context c = Context.getProduct();
-        Object[][] data = new DatabaseSearch(c, 1000).getValuesFor(Context.DEFAULT_PRODUCT_SEARCH, new String[]{"manufacturersids", "suppliersids"}, dataOwner.__getIDS(), false);
+        Object[][] data = new DatabaseSearch(c, 1000).getValuesFor(Context.DEFAULT_PRODUCT_SEARCH, new String[]{"manufacturersids", "suppliersids"}, dataOwner.__getIDS());
         dataTable.setModel(new MPTableModel(data, Headers.PRODUCT_DEFAULT));
         dataTableContent = PRODUCTS;
         addfile.setEnabled(false);

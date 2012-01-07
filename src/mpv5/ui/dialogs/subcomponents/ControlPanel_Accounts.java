@@ -593,7 +593,7 @@ public class ControlPanel_Accounts extends javax.swing.JPanel implements Control
 
         if (!mpv5.db.objects.User.getCurrentUser().isGroupRestricted()) {
             groupnameselect.setModel(new DefaultComboBoxModel(
-                    MPComboBoxModelItem.toItems(new DatabaseSearch(Context.getGroup()).getValuesFor(Context.getGroup().getSubID(), null, ""))));
+                    MPComboBoxModelItem.toItems(new DatabaseSearch(Context.getGroup()).getValuesFor(Context.getGroup().getSubID()))));
         } else {
             groupnameselect.setModel(new DefaultComboBoxModel(
                     MPComboBoxModelItem.toItems(new DatabaseSearch(Context.getGroup()).getValuesFor(Context.getGroup().getSubID(), "ids", mpv5.db.objects.User.getCurrentUser().__getGroupsids()))));

@@ -48,7 +48,7 @@ public class ProductsOverview extends javax.swing.JPanel implements ListPanel {
         initComponents();
         gtree.setLargeModel(true);
 
-        ((DragNDropTreeForGroups)gtree).setContainerToNotify(this);
+        ((DragNDropTreeForGroups) gtree).setContainerToNotify(this);
         DragTableHandlerForDBOs t = new DragTableHandlerForDBOs(listtable, Context.getProduct());
         setName("productsoverview");
         both.setSelected(true);
@@ -61,7 +61,7 @@ public class ProductsOverview extends javax.swing.JPanel implements ListPanel {
                 search();
             }
         });
-        ((MPTable) listtable).setPersistanceHandler(new TableViewPersistenceHandler((MPTable)listtable, this));
+        ((MPTable) listtable).setPersistanceHandler(new TableViewPersistenceHandler((MPTable) listtable, this));
     }
 
     private void search() {
@@ -295,14 +295,28 @@ public class ProductsOverview extends javax.swing.JPanel implements ListPanel {
     private void filltable(String search, List<ProductGroup> groups) {
 
         QueryCriteria2 qc = new QueryCriteria2();
+
         if (search != null) {
-            List<QueryParameter> ps = new ArrayList<QueryParameter>();
-            for (Map.Entry<String, Class<?>> en : new Product().getKeySet()) {
-                if (en.getValue().isAssignableFrom(String.class)) {
-                    ps.add(new QueryParameter(Context.getProduct(), en.getKey(), search, QueryParameter.LIKE));
+            List<List<QueryParameter>> ps = new ArrayList<List<QueryParameter>>();
+            List<QueryParameter> not = new ArrayList<QueryParameter>();
+            String[] strings = search.split("\\s+");
+            for (int i = 0; i < strings.length; i++) {
+                ArrayList<QueryParameter> psx = new ArrayList<QueryParameter>();
+                ps.add(psx);
+                String string = strings[i];
+                for (String en : new Product().getStringVars()) {
+                    if (!string.startsWith("-")) {
+                        psx.add(new QueryParameter(Context.getProduct(), en, string, QueryParameter.LIKE));
+                    } else {
+                        not.add(new QueryParameter(Context.getProduct(), en, string.substring(1), QueryParameter.NOTLIKE));
+                    }
                 }
             }
-            qc.or(ps);
+            for (int i = 0; i < ps.size(); i++) {
+                qc.or(ps.get(i));
+            }
+
+            qc.and(not);
         }
 
         if (!both.isSelected()) {

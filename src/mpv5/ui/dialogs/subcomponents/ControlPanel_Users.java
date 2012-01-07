@@ -715,11 +715,11 @@ public class ControlPanel_Users extends javax.swing.JPanel implements ControlApp
         jTable1.setModel(new MPTableModel(new Class[]{String.class, String.class, String.class, String.class, Boolean.class, Boolean.class}, TableFormat.changeToClassValue(QueryHandler.instanceOf().clone(Context.getUser()).select(Context.DETAILS_USERS, (String[]) null), Boolean.class, new int[]{4, 5}), Headers.USER_DETAILS.getValue()));
 
         groupname.setModel(new DefaultComboBoxModel(
-                MPComboBoxModelItem.toItems(new DatabaseSearch(Context.getGroup()).getValuesFor(Context.getGroup().getSubID(), null, ""))));
+                MPComboBoxModelItem.toItems(new DatabaseSearch(Context.getGroup()).getValuesFor(Context.getGroup().getSubID()))));
         companyselect.setModel(new DefaultComboBoxModel(
-                MPComboBoxModelItem.toItems(new DatabaseSearch(Context.getCompany()).getValuesFor(Context.getCompany().getSubID(), null, ""))));
+                MPComboBoxModelItem.toItems(new DatabaseSearch(Context.getCompany()).getValuesFor(Context.getCompany().getSubID()))));
         accountlist.setModel(new DefaultComboBoxModel(
-                MPComboBoxModelItem.toItems(new DatabaseSearch(Context.getAccounts()).getValuesFor(Context.getAccounts().getSubID(), null, ""))));
+                MPComboBoxModelItem.toItems(new DatabaseSearch(Context.getAccounts()).getValuesFor(Context.getAccounts().getSubID()))));
         statuslist.setModel(MPComboBoxModelItem.toModel(Item.getStatusStrings()));
 
         LookAndFeelInfo[] lfs = UIManager.getInstalledLookAndFeels();

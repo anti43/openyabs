@@ -22,9 +22,22 @@ package mpv5.db.common;
  */
 public class QueryParameter {
 
+    /**
+     * a = a
+     */
     public static final int EQUALS = 0;
+    /**
+     * a <> a
+     */
     public static final int NOTEQUAL = 1;
+    /**
+     * UPPER(a) LIKE %A%
+     */
     public static final int LIKE = 2;
+    /**
+     * UPPER(a) NOT LIKE %A%
+     */
+    public static final int NOTLIKE = 3;
     private Context context;
     private String key;
     private Object value;

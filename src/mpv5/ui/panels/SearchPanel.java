@@ -12,10 +12,7 @@ package mpv5.ui.panels;
 
 import java.awt.Component;
 import java.awt.Cursor;
-import java.util.Set;
-import java.util.TreeSet;
 import javax.swing.JComponent;
-import javax.swing.SwingUtilities;
 import javax.swing.table.TableCellRenderer;
 import mpv5.YabsViewProxy;
 import mpv5.db.common.Context;
@@ -23,7 +20,6 @@ import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
 import mpv5.db.common.DatabaseSearch;
 import mpv5.db.common.NodataFoundException;
-import mpv5.db.common.QueryHandler;
 import mpv5.db.objects.User;
 import mpv5.db.objects.ValueProperty;
 import mpv5.logging.Log;
@@ -32,7 +28,6 @@ import mpv5.utils.models.MPTableModel;
 import mpv5.utils.tables.Selection;
 import mpv5.utils.tables.TableFormat;
 import mpv5.ui.misc.TableViewPersistenceHandler;
-import mpv5.usermanagement.MPSecurityManager;
 
 /**
  *

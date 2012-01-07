@@ -3,11 +3,13 @@ package mpv5.db.common;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import mpv5.db.objects.Group;
 import mpv5.db.objects.User;
 import mpv5.logging.Log;
 import mpv5.usermanagement.MPSecurityManager;
@@ -139,12 +141,10 @@ public class DatabaseSearch {
     /**
      * Get multiple values from a search
      * @param resultingFieldNames What do you like to get (columns)?
-     * @param what Which column do you like to take for the condition?
-     * @param where And what value should the column value have?
      * @return
      */
-    public Object[][] getValuesFor(String resultingFieldNames, String what, String where) {
-        return QueryHandler.instanceOf().clone(context, ROWLIMIT).select(resultingFieldNames, new String[]{what, where, "'"});
+    public Object[][] getValuesFor(String resultingFieldNames) {
+        return QueryHandler.instanceOf().clone(context, ROWLIMIT).select(resultingFieldNames, new String[]{null, "", "'"});
     }
 
     /**
@@ -159,21 +159,31 @@ public class DatabaseSearch {
     }
 
     /**
+     * Get multiple values from a search, where the search column is a String column
+     * @param resultingFieldNames What do you like to get (columns)?
+     * @param what Which column do you like to take for the condition?
+     * @param  value
+     * @return
+     */
+    public Object[][] getValuesFor(String resultingFieldNames, String what, String value) {
+        return getValuesFor2(resultingFieldNames, value, null, false, false, new String[]{what});
+    }
+
+    /**
      * Get multiple values from a search
      * @param resultingFieldNames What do you like to get (columns)?
      * @param possibleColumns Which columns do you like to take for the condition?
      * @param where And what value should the column value have?
-     * @param searchForLike Shall we search with "like" condition?
      * @return 
      */
-    public Object[][] getValuesFor(String resultingFieldNames, String[] possibleColumns, Object where, boolean searchForLike) {
+    public Object[][] getValuesFor(String resultingFieldNames, String[] possibleColumns, Number where) {
         try {
             ArrayList<Object[]> list = new ArrayList<Object[]>();
             QueryCriteria2 c = new QueryCriteria2();
             ArrayList<QueryParameter> l = new ArrayList<QueryParameter>();
             for (int i = 0; i < possibleColumns.length; i++) {
                 String string = possibleColumns[i];
-                l.add(new QueryParameter(context, string, where, searchForLike ? QueryParameter.LIKE : QueryParameter.EQUALS));
+                l.add(new QueryParameter(context, string, where, QueryParameter.EQUALS));
             }
             c.or(l);
             list.addAll(Arrays.asList(QueryHandler.instanceOf().clone(context, ROWLIMIT).select(resultingFieldNames, c).getData()));
@@ -185,33 +195,74 @@ public class DatabaseSearch {
     }
 
     /**
-     * Get multiple values from a search, ignores reference tables and is herewith faster
+     * Get multiple values from a search. Will split word by whitespace
      * @param resultingFieldNames What do you like to get (columns)?
      * @param possibleColumns Which columns do you like to take for the condition?
      * @param where And what value should the column value have?
      * @param searchForLike Shall we search with "like" condition?
+     * @return 
+     */
+    public Object[][] getValuesFor(String resultingFieldNames, String[] possibleColumns, String where, boolean searchForLike) {
+        return getValuesFor2(resultingFieldNames, where, null, true, searchForLike, possibleColumns);
+    }
+
+    /**
+     * Get multiple values from a search, ignores reference tables and is herewith faster
+     * @param resultingFieldNames What do you like to get (columns)?
+     * @param possibleColumns Which columns do you like to take for the condition?
+     * @param groups 
+     * @param splitByWhitespace 
+     * @param search And what value should the column value have?
+     * @param searchForLike Shall we search with "like" condition?
      * @return
      */
-    public Object[][] getValuesFor2(String resultingFieldNames, String[] possibleColumns, String where, boolean searchForLike) {
-        if (!searchForLike) {
-            String w = "";
-            String quote = "'";
-            for (int i = 0; i < possibleColumns.length; i++) {
-                w += possibleColumns[i] + " " + quote + where + quote
-                        + " OR ";
+    public Object[][] getValuesFor2(String resultingFieldNames, String search, List<Group> groups, boolean splitByWhitespace, boolean searchForLike, String... possibleColumns) {
+        QueryCriteria2 qc = new QueryCriteria2();
+        if (possibleColumns == null || possibleColumns.length == 0) {
+            possibleColumns = DatabaseObject.getObject(context).getStringVars().toArray(new String[0]);
+        }
+
+        if (search != null) {
+            List<List<QueryParameter>> ps = new ArrayList<List<QueryParameter>>();
+            List<QueryParameter> not = new ArrayList<QueryParameter>();
+            String[] strings = null;
+            if (splitByWhitespace) {
+                strings = search.split("\\s+");
+            } else {
+                strings = new String[]{search};
             }
-            return QueryHandler.instanceOf().clone(context, ROWLIMIT).freeSelectQuery(context.prepareSQLString(
-                    "SELECT " + resultingFieldNames + " FROM " + context.getDbIdentity() + " WHERE (" + w.substring(0, w.length() - 4) + ")"), MPSecurityManager.VIEW, null).getData();
-        } else {
-            String w = "";
-            String like = "LIKE '%";
-            String like2 = "%'";
-            for (int i = 0; i < possibleColumns.length; i++) {
-                w += " UPPER(" + possibleColumns[i] + ") " + like + where.toUpperCase() + like2
-                        + " OR ";
+            for (int i = 0; i < strings.length; i++) {
+                ArrayList<QueryParameter> psx = new ArrayList<QueryParameter>();
+                ps.add(psx);
+                String string = strings[i];
+                for (String en : possibleColumns) {
+                    if (!string.startsWith("-")) {
+                        psx.add(new QueryParameter(context, en, string, QueryParameter.LIKE));
+                    } else {
+                        not.add(new QueryParameter(context, en, string.substring(1), QueryParameter.NOTLIKE));
+                    }
+                }
             }
-            return QueryHandler.instanceOf().clone(context, ROWLIMIT).freeSelectQuery(context.prepareSQLString(
-                    "SELECT " + resultingFieldNames + " FROM " + context.getDbIdentity() + " WHERE (" + w.substring(0, w.length() - 4) + ")"), MPSecurityManager.VIEW, null).getData();
+            for (int i = 0; i < ps.size(); i++) {
+                qc.or(ps.get(i));
+            }
+            qc.and(not);
+        }
+        List<QueryParameter> ps = new ArrayList<QueryParameter>();
+        if (User.getCurrentUser().isGroupRestricted()) {
+            ps.add(new QueryParameter(context, "groupsids", User.getCurrentUser().__getGroupsids(), QueryParameter.EQUALS));
+        } else if (groups != null && !groups.isEmpty()) {
+            for (int i = 0; i < groups.size(); i++) {
+                Group group = groups.get(i);
+                ps.add(new QueryParameter(context, "groupsids", group.__getIDS(), QueryParameter.EQUALS));
+            }
+        }
+        qc.or(ps);
+        try {
+            return QueryHandler.instanceOf().clone(context).select(resultingFieldNames, qc).getData();
+        } catch (NodataFoundException ex) {
+            Log.Debug(search, ex.getMessage());
+            return new Object[0][0];
         }
     }
 
@@ -249,18 +300,18 @@ public class DatabaseSearch {
         return QueryHandler.instanceOf().clone(context, ROWLIMIT).select(resultingFieldNames, new String[]{what, where, "'"}, null, searchForLike);
 
     }
-
-    /**
-     * Get a single dimension list from a search after values from the column
-     * where the value is LIKE the given needle
-     * @param what Which column do you like to get and search through?
-     * @param needle
-     * @return
-     * @throws NodataFoundException If no data was found matching your search
-     */
-    public Object[] searchFor(String what, String needle) throws NodataFoundException {
-        return searchFor(null, what, needle);
-    }
+//
+//    /**
+//     * Get a single dimension list from a search after values from the column
+//     * where the value is LIKE the given needle
+//     * @param what Which column do you like to get and search through?
+//     * @param needle
+//     * @return
+//     * @throws NodataFoundException If no data was found matching your search
+//     */
+//    public Object[] searchFor(String what, String needle) throws NodataFoundException {
+//        return searchFor(null, what, needle);
+//    }
 
     /**
      * Get a single dimension list from a search after values from the column
@@ -299,49 +350,47 @@ public class DatabaseSearch {
         }
     }
 
-    /**
-     * Search for an ID in this context
-     * @param what The column which you like to search through
-     * @param needle The value of the row in that column
-     * @return An id if there is a matching dataset found, NULL otherwise
-     */
-    private Integer searchForID(String what, String needle) {
-        Object[] data;
-        try {
-            data = QueryHandler.instanceOf().clone(context, ROWLIMIT).selectLast("ids", new String[]{what, needle, "'"}, true);
-            return Integer.valueOf(data[0].toString());
-        } catch (Exception ex) {
-            return null;
-        }
-    }
-
-    /**
-     * Search for an ID in this context
-     * @param what The column which you like to search through
-     * @param needle The value of the row in that column
-     * @return An id if there is a matching dataset found, NULL otherwise
-     */
-    public Integer searchForID(String what, String needle, boolean caseSensitive) {
-
-        if (caseSensitive) {
-            try {
-                Object[] data = QueryHandler.instanceOf().clone(context, ROWLIMIT).selectLast("ids", new String[]{what, needle, "'"}, true);
-                return Integer.valueOf(data[0].toString());
-            } catch (Exception ex) {
-                return null;
-            }
-        } else {
-            try {
-                QueryCriteria2 p = new QueryCriteria2();
-                p.is(new QueryParameter(context, what, needle, QueryParameter.LIKE));
-                Object[][] data = QueryHandler.instanceOf().clone(context, ROWLIMIT).select("ids", p).getData();
-                return Integer.valueOf(data[data.length - 1][0].toString());
-            } catch (Exception nodataFoundException) {
-                return null;
-            }
-        }
-    }
-
+//    /**
+//     * Search for an ID in this context
+//     * @param what The column which you like to search through
+//     * @param needle The value of the row in that column
+//     * @return An id if there is a matching dataset found, NULL otherwise
+//     */
+//    private Integer searchForID(String what, String needle) {
+//        Object[] data;
+//        try {
+//            data = QueryHandler.instanceOf().clone(context, ROWLIMIT).selectLast("ids", new String[]{what, needle, "'"}, true);
+//            return Integer.valueOf(data[0].toString());
+//        } catch (Exception ex) {
+//            return null;
+//        }
+//    }
+//    /**
+//     * Search for an ID in this context
+//     * @param what The column which you like to search through
+//     * @param needle The value of the row in that column
+//     * @return An id if there is a matching dataset found, NULL otherwise
+//     */
+//    public Integer searchForID(String what, String needle, boolean caseSensitive) {
+//
+//        if (caseSensitive) {
+//            try {
+//                Object[] data = QueryHandler.instanceOf().clone(context, ROWLIMIT).selectLast("ids", new String[]{what, needle, "'"}, true);
+//                return Integer.valueOf(data[0].toString());
+//            } catch (Exception ex) {
+//                return null;
+//            }
+//        } else {
+//            try {
+//                QueryCriteria2 p = new QueryCriteria2();
+//                p.is(new QueryParameter(context, what, needle, QueryParameter.LIKE));
+//                Object[][] data = QueryHandler.instanceOf().clone(context, ROWLIMIT).select("ids", p).getData();
+//                return Integer.valueOf(data[data.length - 1][0].toString());
+//            } catch (Exception nodataFoundException) {
+//                return null;
+//            }
+//        }
+//    }
     /**
      * 
      * @param ext

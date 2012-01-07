@@ -179,7 +179,7 @@ public class MPCombobox extends javax.swing.JPanel {
                     Object[][] data = null;
                     if (getComboBox().isEditable()) {
                         if (getContext().equals(Context.getProduct())) {
-                            data = new DatabaseSearch(getContext(), 200).getValuesFor2("ids, " + ConnectionTypeHandler.concat("cname","' '", ConnectionTypeHandler.getToChar("externalnetvalue")), new String[]{"cname", "description", "ean", "cnumber", "reference"}, String.valueOf(value), true);
+                            data = new DatabaseSearch(getContext(), 200).getValuesFor2("ids, " + ConnectionTypeHandler.concat("cname","' '", ConnectionTypeHandler.getToChar("externalnetvalue")), String.valueOf(value), null, true, true);
                         } else if (((getContext().equals(Context.getCustomer()) || getContext().equals(Context.getManufacturer()) || getContext().equals(Context.getSupplier())) && mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("org.openyabs.uiproperty", "companiesovernames")) || getContext().isCompany()==true) {
                             data = new DatabaseSearch(getContext(), 200).getValuesFor("ids, company", "company", jComboBox1.getSelectedItem().toString(), true);
                         } else {

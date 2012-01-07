@@ -17,7 +17,6 @@
 package mpv5.db.common;
 
 import java.util.List;
-import mpv5.db.common.QueryParameter;
 import mpv5.logging.Log;
 import mpv5.utils.arrays.ArrayUtilities;
 
@@ -38,7 +37,7 @@ public class QueryCriteria2 {
         for (QueryParameter p : params) {
 
             Log.Debug(this, "Adding AND param " + p);
-            if ((p.getValue() instanceof Number || p.getValue() instanceof Boolean) && p.getCondition() == QueryParameter.LIKE) {
+            if ((p.getValue() instanceof Number || p.getValue() instanceof Boolean) && (p.getCondition() == QueryParameter.LIKE || p.getCondition() == QueryParameter.NOTLIKE)) {
                 throw new IllegalArgumentException("You cannot mix LIKE and boolean/number values!");
             }
 
@@ -64,6 +63,9 @@ public class QueryCriteria2 {
                     break;
                 case QueryParameter.LIKE:
                     query += " AND UPPER(" + p.getKey() + ") LIKE '%" + val.replace("'", "").toUpperCase() + "%'" + " ";
+                    break;
+                case QueryParameter.NOTLIKE:
+                    query += " AND UPPER(" + p.getKey() + ") NOT LIKE '%" + val.replace("'", "").toUpperCase() + "%'" + " ";
                     break;
             }
         }
@@ -110,7 +112,7 @@ public class QueryCriteria2 {
             QueryParameter p = (QueryParameter) px;
             Log.Debug(this, "Adding OR param " + p);
 
-            if ((p.getValue() instanceof Number || p.getValue() instanceof Boolean) && p.getCondition() == QueryParameter.LIKE) {
+            if ((p.getValue() instanceof Number || p.getValue() instanceof Boolean) && (p.getCondition() == QueryParameter.LIKE || p.getCondition() == QueryParameter.NOTLIKE)) {
                 throw new IllegalArgumentException("You cannot mix LIKE and boolean/number values!");
             }
 
@@ -147,6 +149,13 @@ public class QueryCriteria2 {
                         query += " OR UPPER(" + p.getKey() + ") LIKE '%" + val.toUpperCase().replace("'", "") + "%'" + " ";
                     } else {
                         query += " UPPER(" + p.getKey() + ") LIKE '%" + val.toUpperCase().replace("'", "") + "%'" + " ";
+                    }
+                    break;
+                case QueryParameter.NOTLIKE:
+                    if (!firstrun) {
+                        query += " OR UPPER(" + p.getKey() + ") NOT LIKE '%" + val.toUpperCase().replace("'", "") + "%'" + " ";
+                    } else {
+                        query += " UPPER(" + p.getKey() + ") NOT LIKE '%" + val.toUpperCase().replace("'", "") + "%'" + " ";
                     }
                     break;
             }
@@ -192,5 +201,16 @@ public class QueryCriteria2 {
      */
     public void is(QueryParameter queryParameter) {
         and(queryParameter);
+    }
+
+    /**
+     * 
+     * @param params
+     */
+    public void and(List<QueryParameter> params) {
+        if (params.isEmpty()) {
+            return;
+        }
+        and(params.toArray(new QueryParameter[params.size()]));
     }
 }

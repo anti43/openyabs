@@ -72,7 +72,7 @@ public final class ControlPanel_Templates extends javax.swing.JPanel implements 
             type.getComboBox().setModel(new MPComboboxModel(MPComboBoxModelItem.toItems(TemplateHandler.getTypes())));
             refresh();
             groupname.setModel(new DefaultComboBoxModel(
-                    MPComboBoxModelItem.toItems(new DatabaseSearch(Context.getGroup()).getValuesFor(Context.getGroup().getSubID(), null, ""))));
+                    MPComboBoxModelItem.toItems(new DatabaseSearch(Context.getGroup()).getValuesFor(Context.getGroup().getSubID()))));
             java.util.ResourceBundle bundle1 = mpv5.i18n.LanguageManager.getBundle();
             format.setText(Template.DEFAULT_FORMAT);
             format.getTextField().setEditable(false);
