@@ -84,13 +84,15 @@ public final class SubItem extends DatabaseObject implements Triggerable {
             it.setExternalvalue(new BigDecimal(row[5].toString()));
             it.setInternalvalue(new BigDecimal(row[5].toString()));//not supported yet
             it.setMeasure(row[3].toString());
-
-            if (row[10] instanceof  Product) {
+         
+            if (row[10] instanceof  Product ) {
                 try {
                     it.setOriginalproductsids(((Product) row[10]).__getIDS());
                 } catch (Exception e) {
                     Log.Debug(e);
                 }
+            } else {
+                
             }
             it.setLinkurl((row[12 + 1].toString()));
             it.setQuantityvalue(new BigDecimal(row[2].toString()));
@@ -109,7 +111,10 @@ public final class SubItem extends DatabaseObject implements Triggerable {
         if (deleteRemovedSubitems) {
             for (int i = 0; i < deletionQueue.size(); i++) {
                 try {
-                    QueryHandler.delete(SubItem.getObject(Context.getSubItem(), deletionQueue.get(i)));
+                    // TODO: Quickfix (quick and dirty), now Identity for Subitem: no delete
+                    DatabaseObject subitemForDelete = SubItem.getObject(Context.getSubItem(), deletionQueue.get(i));
+                    subitemForDelete.IDENTITY = new Entity<Context, Integer>(Context.getSubItem(), deletionQueue.get(i));
+                    QueryHandler.delete(subitemForDelete);
                 } catch (NodataFoundException ex) {
                     Log.Debug(ex);
                 }

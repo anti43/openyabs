@@ -626,7 +626,7 @@ public class Item extends DatabaseObject implements Formattable, Templateable {
                 for (int i = 0; i < data.size(); i++) {
                     SubItem t = data.get(i);
                     if (t.getInttype() == SubItem.TYPE_TEXT) {
-                        skipcount++;
+                        skipcount--;
                         Log.Debug(this, "Skipping text subitem..");
                     } else {
                         list.get(i)[0] = String.valueOf(Integer.valueOf(list.get(i)[0])+skipcount);

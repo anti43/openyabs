@@ -47,6 +47,7 @@ import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JTabbedPane;
 import javax.swing.JTable;
+import javax.swing.JTextField;
 import javax.swing.JViewport;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
@@ -72,7 +73,7 @@ import mpv5.logging.Log;
 import mpv5.ui.dialogs.BigPopup;
 import mpv5.ui.dialogs.Popup;
 import mpv5.ui.dialogs.subcomponents.ControlPanel_Groups;
-import mpv5.ui.dialogs.subcomponents.ProductSelectDialog2;
+import mpv5.ui.dialogs.subcomponents.ProductSelectDialog3;
 import mpv5.ui.popups.FileTablePopUp;
 import mpv5.ui.toolbars.DataPanelTB;
 import mpv5.db.objects.User;
@@ -102,6 +103,8 @@ import mpv5.utils.renderer.TextAreaCellEditor;
 import mpv5.utils.renderer.TextAreaCellRenderer;
 import mpv5.utils.tables.TableFormat;
 import mpv5.ui.misc.TableViewPersistenceHandler;
+import mpv5.utils.renderer.LazyCellEditor;
+import mpv5.utils.renderer.LazyCellRenderer;
 import mpv5.utils.renderer.TableCellRendererForProducts;
 import mpv5.utils.tables.DynamicTableCalculator;
 import mpv5.utils.ui.TextFieldUtils;
@@ -1726,14 +1729,14 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
             TableFormat.stripColumn(itemtable, 15);
             model.setCellEditable(0, 15, false);
         }
-        
+      
         TextAreaCellEditor r = new TextAreaCellEditor(itemtable);
-        ProductSelectDialog2 productSelectDialog = new ProductSelectDialog2(mpv5.YabsViewProxy.instance().getIdentifierFrame(), true, itemtable);
+        ProductSelectDialog3 productSelectDialog = new ProductSelectDialog3(mpv5.YabsViewProxy.instance().getIdentifierFrame(), true, itemtable);
         productSelectDialog.okButton.addActionListener(r);
         productSelectDialog.cancelButton.addActionListener(r);
         r.setDialog(productSelectDialog, productSelectDialog.getIDTextField());
         r.setEditorTo(10);
-        
+       
         if (!mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("org.openyabs.uiproperty", "showoptionalcolumn")) {
             TableFormat.stripColumn(itemtable, 14);
             model.setCellEditable(0, 14, false);
@@ -1993,6 +1996,9 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
         TableCellRendererForDezimal ti = new TableCellRendererForDezimal(itemtable, User.getCurrentUser().getProperty("org.openyabs.uiproperty$defquantityformat"));
         ti.setRendererTo(2);
         
+        LazyCellRenderer lcr = new LazyCellRenderer(itemtable);
+        lcr.setRendererTo(3);
+        
         TableCellRendererForDezimal t = new TableCellRendererForDezimal(itemtable);
         t.setRendererTo(6);
         t.setRendererTo(5);
@@ -2012,6 +2018,8 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
         itemTextAreaDialog.cancelButton.addActionListener(r);
         r.setDialog(itemTextAreaDialog, itemTextAreaDialog.textArea);
         r.setEditorTo(4);
+        
+        itemtable.getColumnModel().getColumn(3).setCellEditor(new LazyCellEditor(new JTextField()));
         
         itemMultiplier = new DynamicTableCalculator(itemtable, "(([2]*[5])-([2]*[5]%[15]))+(([2]*[5])-([2]*[5]%[15]))%[6]", new int[]{7});
         ((MPTableModel) itemtable.getModel()).addCalculator(itemMultiplier);

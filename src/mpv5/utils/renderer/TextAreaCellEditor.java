@@ -46,7 +46,11 @@ import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 import javax.swing.table.TableColumn;
 import javax.swing.text.JTextComponent;
+import mpv5.db.objects.Product;
+import mpv5.db.objects.SubItem;
 import mpv5.ui.dialogs.subcomponents.ActivityTextAreaDialog;
+import mpv5.ui.dialogs.subcomponents.ProductSelectDialog3;
+import mpv5.utils.models.MPTableModel;
 
 public class TextAreaCellEditor extends DefaultCellEditor implements ActionListener {
     protected final static String CANCEL = "CANCEL";
@@ -80,6 +84,10 @@ public class TextAreaCellEditor extends DefaultCellEditor implements ActionListe
             private static final long serialVersionUID = 1L;
             @Override
             public void setValue(Object value) {
+
+                if (value != null && dialog instanceof ProductSelectDialog3 && value instanceof  Product){
+                    value = ((Product)value).__getCnumber();
+                }
                 textArea.setText((value != null)
                                  ? value.toString()
                                  : "");
@@ -87,7 +95,7 @@ public class TextAreaCellEditor extends DefaultCellEditor implements ActionListe
             @Override
             public Object getCellEditorValue() {
                 return textArea.getText();
-            }
+            }           
         };
     }
 
@@ -117,13 +125,19 @@ public class TextAreaCellEditor extends DefaultCellEditor implements ActionListe
 
     @Override
     public Component getTableCellEditorComponent(final JTable table, Object value, boolean isSelected, final int row, final int column) {
+        if (value != null && dialog instanceof ProductSelectDialog3 && value instanceof  Product){
+            MPTableModel m = (MPTableModel) table.getModel();
+            SubItem it = m.getRowAt(row, SubItem.getDefaultItem());
+            ((ProductSelectDialog3) dialog).setTempSubItem(it);
+            value = ((Product)value).__getCnumber();
+        }
         if (value == null) {
             value = "";
         }
 
         Component component = super.getTableCellEditorComponent(table, value, isSelected, row, column);
 
-        dialogsTextComponent.setText(value.toString());
+        dialogsTextComponent.setText(value.toString());    
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
 
