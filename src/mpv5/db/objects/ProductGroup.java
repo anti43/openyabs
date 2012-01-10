@@ -47,7 +47,7 @@ public class ProductGroup extends DatabaseObject {
     private int productgroupsids;
 
     public ProductGroup() {
-        context = Context.getProductGroup();
+        setContext(Context.getProductGroup());
     }
 
     public ProductGroup(String name) {

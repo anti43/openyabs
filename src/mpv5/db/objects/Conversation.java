@@ -82,8 +82,7 @@ public class Conversation
     }
 
     public Conversation() {
-        this.context = Context.getConversation();
-        this.context.setIdentityClass(getClass());
+        setContext(Context.getConversation());
     }
 
     @Override

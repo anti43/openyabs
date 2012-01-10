@@ -31,7 +31,7 @@ public class UserPlugin extends DatabaseObject {
     private int usersids;
 
     public UserPlugin() {
-        context = Context.getPluginsToUsers();
+       setContext(Context.getPluginsToUsers());
     }
 
     @Override

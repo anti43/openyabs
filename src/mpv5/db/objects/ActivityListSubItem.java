@@ -166,7 +166,7 @@ public final class ActivityListSubItem extends DatabaseObject {
     private BigDecimal totalbrutvalue = new BigDecimal("0");
 
     public ActivityListSubItem() {
-        context = Context.getActivityListItems();
+        setContext(Context.getActivityListItems());
     }
 
     /**

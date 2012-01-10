@@ -29,7 +29,7 @@ public class ScheduleTypes extends DatabaseObject {
     private int UserIds_;
 
     public ScheduleTypes() {
-        context = Context.getScheduleTypes();
+        setContext(Context.getScheduleTypes());
     }
 
     @Override

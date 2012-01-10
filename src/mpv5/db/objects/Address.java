@@ -49,7 +49,7 @@ public class Address extends DatabaseObject {
     public static final int TYPE_NONE = 3;
 
     public Address() {
-        context = Context.getAddress();
+        setContext(Context.getAddress());
     }
 
     /**

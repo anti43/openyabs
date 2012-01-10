@@ -36,7 +36,7 @@ public class WebShop extends DatabaseObject {
     private String passw = "";
 
     public WebShop() {
-        context = Context.getWebShop();
+        setContext(Context.getWebShop());
     }
 
     @Override

@@ -31,7 +31,7 @@ public class ProductsToSuppliers extends DatabaseObject {
     private int productsids;
 
     public ProductsToSuppliers() {
-        context = Context.getProductsToSuppliers();
+        setContext(Context.getProductsToSuppliers());
         setCName("n/a");
     }
 

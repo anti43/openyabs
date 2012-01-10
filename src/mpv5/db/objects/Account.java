@@ -93,7 +93,7 @@ public class Account extends DatabaseObject {
     }
 
     public Account() {
-        context = Context.getAccounts();
+        setContext(Context.getAccounts());
     }
     private int intparentaccount;
     private int intaccountclass;
@@ -347,7 +347,7 @@ public class Account extends DatabaseObject {
     @Override
     public boolean delete() {
         try {
-            ArrayList<Account> childs = DatabaseObject.getObjects(context, new QueryCriteria("intparentaccount", ids));
+            ArrayList<Account> childs = DatabaseObject.getObjects(getContext(), new QueryCriteria("intparentaccount", ids));
             for (int i = 0; i < childs.size(); i++) {
                 DatabaseObject databaseObject = childs.get(i);
                 if (!databaseObject.delete()) {

@@ -111,10 +111,7 @@ public final class SubItem extends DatabaseObject implements Triggerable {
         if (deleteRemovedSubitems) {
             for (int i = 0; i < deletionQueue.size(); i++) {
                 try {
-                    // TODO: Quickfix (quick and dirty), now Identity for Subitem: no delete
-                    DatabaseObject subitemForDelete = SubItem.getObject(Context.getSubItem(), deletionQueue.get(i));
-                    subitemForDelete.IDENTITY = new Entity<Context, Integer>(Context.getSubItem(), deletionQueue.get(i));
-                    QueryHandler.delete(subitemForDelete);
+                    QueryHandler.delete(SubItem.getObject(Context.getSubItem(), deletionQueue.get(i)));
                 } catch (NodataFoundException ex) {
                     Log.Debug(ex);
                 }
@@ -257,7 +254,7 @@ public final class SubItem extends DatabaseObject implements Triggerable {
     private BigDecimal discvalue = new BigDecimal("0");
     
     public SubItem() {
-        context = Context.getSubItem();
+        setContext(Context.getSubItem());
     }
 
     /**

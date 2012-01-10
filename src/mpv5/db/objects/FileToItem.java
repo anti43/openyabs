@@ -39,7 +39,7 @@ public class FileToItem extends DatabaseObject {
     private File file;
 
     public FileToItem() {
-        context = Context.getFilesToItems();
+        setContext(Context.getFilesToItems());
     }
 
     @Override

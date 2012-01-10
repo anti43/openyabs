@@ -40,7 +40,7 @@ public class ProductList extends DatabaseObject {
     private boolean asproduct = false;
 
     public ProductList() {
-        context = Context.getProductlist();
+        setContext(Context.getProductlist());
     }
 
     @Override

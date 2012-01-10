@@ -48,7 +48,7 @@ public class Expense extends DatabaseObject implements Formattable {
     private boolean ispaid;
 
     public Expense() {
-        context = Context.getExpense();
+        setContext(Context.getExpense());
     }
 
     /**

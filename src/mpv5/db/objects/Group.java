@@ -37,12 +37,11 @@ public class Group extends DatabaseObject {
     public static String GROUPSEPARATOR = " - ";
 
     public Group() {
-        context = Context.getGroup();
+        setContext(Context.getGroup());
     }
 
     public Group(String name) {
-        context.setDbIdentity(Context.IDENTITY_GROUPS);
-        context.setIdentityClass(this.getClass());
+        setContext(Context.getGroup());
         cname = name;
     }
 

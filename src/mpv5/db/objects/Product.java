@@ -118,7 +118,7 @@ public class Product extends DatabaseObject implements Formattable, Templateable
     private FormatHandler formatHandler;
 
     public Product() {
-        context = Context.getProduct();
+        setContext(Context.getProduct());
     }
 
     @Override
@@ -140,7 +140,7 @@ public class Product extends DatabaseObject implements Formattable, Templateable
 
     @Override
     public JComponent getView() {
-        ProductPanel p = new ProductPanel(context);
+        ProductPanel p = new ProductPanel(getContext());
         return p;
     }
 

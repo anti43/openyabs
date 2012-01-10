@@ -34,7 +34,7 @@ public class HistoryItem extends DatabaseObject {
   private int intitem;
 
   public HistoryItem() {
-        context = Context.getHistory();
+        setContext(Context.getHistory());
     }
 
 

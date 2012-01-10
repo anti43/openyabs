@@ -32,7 +32,7 @@ public class Stage extends DatabaseObject {
     private int templategroup;
 
     public Stage() {
-        context = Context.getStage();
+        setContext(Context.getStage());
     }
 
     @Override

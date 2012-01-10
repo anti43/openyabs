@@ -31,7 +31,7 @@ public class MailMessage extends DatabaseObject {
     private String description;
 
     public MailMessage() {
-        context = Context.getMessage();
+        setContext(Context.getMessage());
     }
 
     @Override

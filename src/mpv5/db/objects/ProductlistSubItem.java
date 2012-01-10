@@ -214,7 +214,7 @@ public class ProductlistSubItem extends DatabaseObject {
     private String linkurl = "";
 
     public ProductlistSubItem() {
-        context = Context.getProductListItems();
+        setContext(Context.getProductListItems());
     }
 
     /**

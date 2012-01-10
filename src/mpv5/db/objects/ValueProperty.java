@@ -51,7 +51,7 @@ public final class ValueProperty extends DatabaseObject {
     private static final long serialVersionUID = 1L;
 
     public ValueProperty() {
-        context = Context.getValueProperties();
+        setContext(Context.getValueProperties());
     }
 
     /**
@@ -609,11 +609,11 @@ public final class ValueProperty extends DatabaseObject {
                 Log.Debug(this, "Inserting new dataset into: " + this.getContext());
                 setDateadded(new Date());
                 setIntaddedby(mpv5.db.objects.User.getCurrentUser().__getIDS());
-                ids = QueryHandler.instanceOf().clone(context).insertValueProperty(new ByteArrayInputStream(bytes), super.collect(), null);
+                ids = QueryHandler.instanceOf().clone(getContext()).insertValueProperty(new ByteArrayInputStream(bytes), super.collect(), null);
                 Log.Debug(this, "The inserted row has id: " + ids);
             } else {
-                Log.Debug(this, "Updating dataset: " + ids + " within context '" + context + "'");
-                QueryHandler.instanceOf().clone(context).updateValueProperty(ids, new ByteArrayInputStream(bytes), super.collect(), null);
+                Log.Debug(this, "Updating dataset: " + ids + " within context '" + getContext() + "'");
+                QueryHandler.instanceOf().clone(getContext()).updateValueProperty(ids, new ByteArrayInputStream(bytes), super.collect(), null);
             }
             return true;
         } catch (Exception e) {

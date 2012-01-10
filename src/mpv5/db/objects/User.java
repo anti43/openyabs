@@ -219,7 +219,7 @@ public class User extends DatabaseObject {
     }
 
     public User() {
-        context = Context.getUser();
+        setContext(Context.getUser());
     }
 
     private User(String fullname, String userid, int highright, int IDS) {

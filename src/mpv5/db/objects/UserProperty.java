@@ -30,7 +30,7 @@ import mpv5.db.common.QueryHandler;
 public class UserProperty extends DatabaseObject {
 
     public UserProperty() {
-        context = Context.getUserProperties();
+        setContext(Context.getUserProperties());
     }
     private String value = "";
     private int usersids;

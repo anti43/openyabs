@@ -41,7 +41,7 @@ public class FileToContact extends DatabaseObject {
     private String mimetype;
 
     public FileToContact() {
-        context = Context.getFilesToContacts();
+        setContext(Context.getFilesToContacts());
     }
 
     @Override

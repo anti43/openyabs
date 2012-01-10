@@ -73,7 +73,7 @@ public class Contact extends DatabaseObject implements Formattable, Templateable
     }
 
     public Contact() {
-        context = Context.getContact();
+        setContext(Context.getContact());
     }
 
     /**

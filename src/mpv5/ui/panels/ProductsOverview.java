@@ -11,7 +11,6 @@ import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 import javax.swing.AbstractAction;
 import mpv5.ui.misc.MPTable;
 import javax.swing.SwingUtilities;

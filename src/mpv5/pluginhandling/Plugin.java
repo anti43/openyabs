@@ -33,7 +33,7 @@ public class Plugin extends DatabaseObject {
     private String filename;
 
     public Plugin() {
-        context = Context.getPlugins();
+        setContext(Context.getPlugins());
     }
 
     @Override

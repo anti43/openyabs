@@ -124,7 +124,7 @@ public class WSContactsMapping extends DatabaseObject {
      * Create a new mapping
      */
     public WSContactsMapping() {
-        context = Context.getWebShopContactMapping();
+        setContext(Context.getWebShopContactMapping());
     }
 
     @Override

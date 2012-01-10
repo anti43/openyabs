@@ -33,7 +33,7 @@ public class MassprintRules extends DatabaseObject {
     
 
     public MassprintRules() {
-        context = Context.getMassprint();
+        setContext(Context.getMassprint());
     }
     
     static String getTypeString(int typ) {

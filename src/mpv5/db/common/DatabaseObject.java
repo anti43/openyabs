@@ -84,27 +84,25 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
      */
     public static class Entity<T extends Context, V> implements Serializable {
 
-        private Context ownerContext;
+        private static final long serialVersionUID = 12L;
+        private final Context ownerContext;
         private Integer ownerId;
 
-        public Entity() {
-        }
-
-        /**
-         * Create a new Entity, nulls not allowed
-         * @param owner
-         */
-        public Entity(DatabaseObject owner) {
-            this.ownerContext = owner.getContext();
-            this.ownerId = owner.__getIDS();
-        }
+//        /**
+//         * Create a new Entity, nulls not allowed
+//         * @param owner
+//         */
+//        public Entity(DatabaseObject owner) {
+//            this.ownerContext = owner.getContext();
+//            this.ownerId = owner.__getIDS();
+//        }
 
         /**
          * Create a new Entity, nulls not allowed
          * @param context
          * @param ids
          */
-        public Entity(T context, Integer ids) throws NodataFoundException {
+        public Entity(T context, Integer ids) {
             if (context == null || ids == null) {
                 throw new NullPointerException("ids");
             }
@@ -388,11 +386,6 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
         }
     }
     /**
-     * The db context of this do. To be defined by the child class!
-     * 
-     */
-    protected Context context = Context.DEFAULT;
-    /**
      * The unique id, or 0 if it is a new do
      */
     protected Integer ids = 0;
@@ -407,7 +400,10 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
     private Date dateadded = new Date(0);
     private transient DatabaseObjectLock LOCK = new DatabaseObjectLock(this);
     private Color color = Color.WHITE;
-    public Entity<Context, Integer> IDENTITY = new Entity<Context, Integer>(this);
+    /**
+     * 
+     */
+    public Entity<Context, Integer> IDENTITY;
     private static final Map<String, List<Method>> setVars_cached = new HashMap<String, List<Method>>();
     private static final Map<String, List<Method>> getVars_cached = new HashMap<String, List<Method>>();
     private static final Map<String, List<String>> getStringVars_cached = new HashMap<String, List<String>>();
@@ -495,7 +491,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
 
     @Override
     public DatabaseObject clone() {
-        DatabaseObject obj = getObject(context);
+        DatabaseObject obj = getObject(getContext());
         obj.avoidNulls();
         List<Object[]> vals = this.getValues2();
         for (int i = 0; i < vals.size(); i++) {
@@ -547,7 +543,15 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
      * @return A Context
      */
     public Context getContext() {
-        return context;
+        return this.IDENTITY.getKey();
+    }
+
+    /**
+     * The do's context
+     * @param c 
+     */
+    protected void setContext(Context c) {
+        this.IDENTITY = new Entity<Context, Integer>(c, ids);
     }
 
     /**
@@ -715,12 +719,12 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
                         if (!silent && !this.getType().equals(new HistoryItem().getType())) {
                             message = this.__getCName() + Messages.INSERTED;
                         }
-                        ids = QueryHandler.instanceOf().clone(context).insert(collect(), message);
-                        IDENTITY = new Entity<Context, Integer>(context, ids);
+                        ids = QueryHandler.instanceOf().clone(getContext()).insert(collect(), message);
+                        IDENTITY = new Entity<Context, Integer>(getContext(), ids);
                         Log.Debug(this, "The inserted row has id: " + IDENTITY);
                     } else {
                         Popup.notice(Messages.CNAME_CANNOT_BE_NULL + ": " + this.getType());
-                        Log.Debug(this, new RuntimeException(Messages.CNAME_CANNOT_BE_NULL + " [" + context + "]"));
+                        Log.Debug(this, new RuntimeException(Messages.CNAME_CANNOT_BE_NULL + " [" + getContext() + "]"));
                         return false;
                     }
 
@@ -739,11 +743,11 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
                         }
                     }
                 } else {
-                    Log.Debug(this, "Updating dataset: " + ids + " within context '" + context + "'");
+                    Log.Debug(this, "Updating dataset: " + ids + " within context '" + getContext() + "'");
                     if (!silent) {
                         message = this.__getCName() + Messages.UPDATED;
                     }
-                    QueryHandler.instanceOf().clone(context).update(collect(), ids, message);
+                    QueryHandler.instanceOf().clone(getContext()).update(collect(), ids, message);
 
                     if (this instanceof Triggerable) {
                         ((Triggerable) this).triggerOnUpdate();
@@ -756,7 +760,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
                 final int fgids = this.groupsids;
                 //Ignore History and User events
 
-                if (!silent && Context.getArchivableContexts().contains(context)) {
+                if (!silent && Context.getArchivableContexts().contains(getContext())) {
                     Runnable runnable = new Runnable() {
 
                         @Override
@@ -847,11 +851,11 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
             message = this.__getCName() + Messages.TRASHED;
         }
         if (ids > 0) {
-            if (Context.getTrashableContexts().contains(context)) {
+            if (Context.getTrashableContexts().contains(getContext())) {
                 Log.Debug(this, "Moving to trash:");
                 QueryData d = new QueryData();
                 d.add("invisible", 1);
-                QueryHandler.instanceOf().clone(context).update(d, new String[]{"ids", ids.toString(), ""}, message);
+                QueryHandler.instanceOf().clone(getContext()).update(d, new String[]{"ids", ids.toString(), ""}, message);
                 result = true;
                 Log.Debug(this, "The trashed row has id: " + ids);
             } else {
@@ -859,7 +863,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
                 if (!this.getType().equals(new HistoryItem().getType())) {
                     message = this.__getCName() + Messages.DELETED;
                 }
-                result = QueryHandler.instanceOf().clone(context).delete(new String[][]{{"ids", ids.toString(), ""}}, message);
+                result = QueryHandler.instanceOf().clone(getContext()).delete(new String[][]{{"ids", ids.toString(), ""}}, message);
                 Log.Debug(this, "The deleted row had id: " + ids);
             }
 
@@ -897,11 +901,11 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
         Log.Debug(this, "Removing from trash:");
         QueryData d = new QueryData();
         d.add("invisible", 0);
-        QueryHandler.instanceOf().clone(context).update(d, ids, message);
+        QueryHandler.instanceOf().clone(getContext()).update(d, ids, message);
         QueryCriteria2 c2 = new QueryCriteria2();
         Context tr = new Context("trashbin", null);
         c2.and(new QueryParameter(tr, "rowid", ids, QueryParameter.EQUALS));
-        c2.and(new QueryParameter(tr, "cname", context.getDbIdentity().toLowerCase(), QueryParameter.EQUALS));
+        c2.and(new QueryParameter(tr, "cname", getContext().getDbIdentity().toLowerCase(), QueryParameter.EQUALS));
 
         result = QueryHandler.instanceOf().clone(tr).delete(c2);
 
@@ -950,7 +954,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
      * @return The tablename/view of this do
      */
     public String getDbIdentity() {
-        return context.getDbIdentity();
+        return getContext().getDbIdentity();
     }
 
     /**
@@ -1307,7 +1311,6 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
                 try {
                     Object obj = context.getIdentityClass().newInstance();
                     ((DatabaseObject) obj).fetchDataOf(id, includeInvisible);
-                    ((DatabaseObject) obj).context = context;
                     cacheObject((DatabaseObject) obj);
                     return (DatabaseObject) obj;
                 } catch (InstantiationException ex) {
@@ -1336,7 +1339,6 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
             Object obj = context.getIdentityClass().newInstance();
             if (((DatabaseObject) obj).fetchDataOf(cname)) {
                 cacheObject((DatabaseObject) obj);
-                ((DatabaseObject) obj).context = context;
                 return (DatabaseObject) obj;
             } else {
                 throw new NodataFoundException(context);
@@ -1363,7 +1365,6 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
             Object obj = context.getIdentityClass().newInstance();
             if (((DatabaseObject) obj).fetchDataOf(column, value)) {
                 cacheObject((DatabaseObject) obj);
-                ((DatabaseObject) obj).context = context;
                 return (DatabaseObject) obj;
             } else {
                 throw new NodataFoundException(context);
@@ -1387,12 +1388,12 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
         if (context.getIdentityClass() != null) {
             try {
                 Object obj = context.getIdentityClass().newInstance();
-                ((DatabaseObject) obj).context = context;
+                ((DatabaseObject) obj).IDENTITY = new Entity<Context, Integer>(context, -1);
                 return (DatabaseObject) obj;
             } catch (InstantiationException ex) {
-                mpv5.logging.Log.Debug(ex);//Logger.getLogger(DatabaseObject.class.getName()).log(Level.SEVERE, null, ex);
+                mpv5.logging.Log.Debug(ex);
             } catch (IllegalAccessException ex) {
-                mpv5.logging.Log.Debug(ex);//Logger.getLogger(DatabaseObject.class.getName()).log(Level.SEVERE, null, ex);
+                mpv5.logging.Log.Debug(ex);
             }
         } else {
             Log.Debug(DatabaseObject.class, "No identity class found for: " + context);
@@ -1703,7 +1704,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
      * @throws NodataFoundException
      */
     public boolean fetchDataOf(int id) throws NodataFoundException {
-        explode(QueryHandler.instanceOf().clone(context).select(id), this, true, true);
+        explode(QueryHandler.instanceOf().clone(getContext()).select(id), this, true, true);
         return true;
     }
 
@@ -1715,7 +1716,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
      * @throws NodataFoundException
      */
     public boolean fetchDataOf(int id, boolean includeInvisible) throws NodataFoundException {
-        explode(QueryHandler.instanceOf().clone(context).select(id, includeInvisible), this, true, true);
+        explode(QueryHandler.instanceOf().clone(getContext()).select(id, includeInvisible), this, true, true);
         return true;
     }
 
@@ -1728,7 +1729,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
      */
     public boolean fetchDataOf(String column, Object value) throws NodataFoundException {
         QueryCriteria c = new QueryCriteria(column, value);
-        explode(QueryHandler.instanceOf().clone(context).select(c), this, true, true);
+        explode(QueryHandler.instanceOf().clone(getContext()).select(c), this, true, true);
         return true;
     }
 
@@ -1740,7 +1741,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
      */
     public Integer getIdOf(String cname) throws NodataFoundException {
         cname = new SaveString(cname, false).toString();
-        Object[] data = QueryHandler.instanceOf().clone(context).selectLast("ids", new String[]{"cname", cname, "'"});
+        Object[] data = QueryHandler.instanceOf().clone(getContext()).selectLast("ids", new String[]{"cname", cname, "'"});
         if (data != null && data.length > 0) {
             return Integer.valueOf(String.valueOf(data[0]));
         } else {
@@ -1758,12 +1759,17 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
         ReturnValue data;
         try {
             id = this.getIdOf(cname);
-            data = QueryHandler.instanceOf().clone(context).select(id);
+            data = QueryHandler.instanceOf().clone(getContext()).select(id);
         } catch (NodataFoundException ex) {
             return false;
         }
         if (data.getData() != null && data.getData().length > 0) {
-            explode(data, this, true, true);
+            try {
+                explode(data, this, true, true);
+            } catch (NodataFoundException ex) {
+                Log.Debug(ex);
+                return false;
+            }
             return true;
         } else {
             return false;
@@ -1773,7 +1779,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
     /**
      * Fills the return value's data (rows) into an array of dos if singleExplode is false, if not fills target with the first row
      */
-    public static synchronized DatabaseObject[] explode(ReturnValue select, DatabaseObject target, boolean singleExplode, boolean lock) {
+    public static synchronized DatabaseObject[] explode(ReturnValue select, DatabaseObject target, boolean singleExplode, boolean lock) throws NodataFoundException {
 
         DatabaseObject[] dos = null;
         if (!singleExplode) {
@@ -1783,10 +1789,6 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
         }
 
         Log.Debug(DatabaseObject.class, "Preparing to explode rows: " + dos.length);
-        if (dos.length == 3213) {
-            Log.Debug(new RuntimeException("grr"));
-        }
-
         for (int i = 0; i < dos.length; i++) {
 
             DatabaseObject dbo = null;
@@ -1852,7 +1854,10 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
                 }
             }
 
-//            Log.Debug(dbo.getClass(), "Exploded " + dbo.IDENTITY);
+            dbo.IDENTITY = new Entity<Context, Integer>(target.getContext(), dbo.__getIDS());
+            if (Log.LOGLEVEL_DEBUG == Log.getLoglevel()) {
+                Log.Debug(dbo.getClass(), "Exploded " + dbo.IDENTITY);
+            }
         }
 
         return dos;
@@ -2056,7 +2061,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
     @Override
     public int hashCode() {
         int hash = 7;
-        hash = 83 * hash + (this.context != null ? this.context.hashCode() : 0);
+        hash = 83 * hash + (this.getContext() != null ? this.getContext().hashCode() : 0);
         hash = 83 * hash + (this.ids != null ? this.ids.hashCode() : 0);
         return hash;
     }
@@ -2071,7 +2076,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
         if (databaseObject == null || !(databaseObject instanceof DatabaseObject)) {
             return false;
         } else {
-            return (context.equals(((DatabaseObject) databaseObject).getContext()) && ids == ((DatabaseObject) databaseObject).__getIDS());
+            return (getContext().equals(((DatabaseObject) databaseObject).getContext()) && ids == ((DatabaseObject) databaseObject).__getIDS());
         }
     }
 

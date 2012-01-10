@@ -36,7 +36,7 @@ public class ProductPrice extends DatabaseObject {
     private BigDecimal mincountvalue;
 
     public ProductPrice() {
-        context = Context.getProductPrice();
+        setContext(Context.getProductPrice());
         setCName("ProductPrice@" + IDENTITY);
     }
 

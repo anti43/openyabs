@@ -280,7 +280,7 @@ public class Item extends DatabaseObject implements Formattable, Templateable {
     private FormatHandler formatHandler;
 
     public Item() {
-        context = Context.getItem();
+        setContext(Context.getItem());
     }
 
     /**

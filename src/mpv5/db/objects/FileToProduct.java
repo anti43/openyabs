@@ -39,7 +39,7 @@ public class FileToProduct extends DatabaseObject {
     private File file;
 
     public FileToProduct() {
-        context = Context.getFilesToProducts();
+        setContext(Context.getFilesToProducts());
     }
 
     @Override

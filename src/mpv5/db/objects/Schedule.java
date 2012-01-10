@@ -52,7 +52,7 @@ public class Schedule extends DatabaseObject {
     private Contact contact;
 
     public Schedule() {
-        context = Context.getSchedule();
+       setContext(Context.getSchedule());
     }
 
     /**

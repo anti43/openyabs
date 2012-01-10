@@ -44,7 +44,7 @@ public class Company extends DatabaseObject {
     private String taxadvmandant = "";
 
     public Company() {
-        context = Context.getCompany();
+        setContext(Context.getCompany());
     }
 
     @Override

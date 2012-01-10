@@ -56,7 +56,7 @@ public class ActivityList extends DatabaseObject implements Formattable, Templat
     private FormatHandler formatHandler;
 
     public ActivityList() {
-        context = Context.getActivityList();
+        setContext(Context.getActivityList());
     }
 
     @Override

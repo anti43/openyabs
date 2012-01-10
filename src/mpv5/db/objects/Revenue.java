@@ -48,7 +48,7 @@ public class Revenue extends DatabaseObject implements Formattable {
     private boolean ispaid;
 
     public Revenue() {
-        context = Context.getRevenue();
+        setContext(Context.getRevenue());
     }
 
     /**

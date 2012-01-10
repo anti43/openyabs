@@ -93,7 +93,7 @@ public class WSItemsMapping extends DatabaseObject {
      * Create a new mapping
      */
     public WSItemsMapping() {
-        context = Context.getWebShopItemMapping();
+        setContext(Context.getWebShopItemMapping());
     }
 
     @Override

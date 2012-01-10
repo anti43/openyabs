@@ -67,7 +67,7 @@ public class Tax extends DatabaseObject {
     }
 
     public Tax() {
-        context = Context.getTaxes();
+        setContext(Context.getTaxes());
     }
 
     @Override

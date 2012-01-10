@@ -45,7 +45,7 @@ public class Reminder extends DatabaseObject implements Templateable {
     private int stagesids;
 
     public Reminder() {
-        context = Context.getReminder();
+        setContext(Context.getReminder());
     }
 
     @Override
