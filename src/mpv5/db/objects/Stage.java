@@ -37,7 +37,7 @@ public class Stage extends DatabaseObject {
 
     @Override
     public String __getCName() {
-        return cname;
+        return getCname();
     }
 
     @Override
@@ -47,7 +47,7 @@ public class Stage extends DatabaseObject {
 
     @Override
     public void setCName(String name) {
-        cname = name;
+        setCname(name);
     }
 
     /**

@@ -42,7 +42,7 @@ public class Group extends DatabaseObject {
 
     public Group(String name) {
         setContext(Context.getGroup());
-        cname = name;
+        setCName(name);
     }
 
     /**

@@ -71,8 +71,8 @@ public class ActivityList extends DatabaseObject implements Formattable, Templat
 
     @Override
     public boolean save(boolean b) {
-        if (cname.length() == 0) {
-            cname = "<unnamed>";
+        if (getCname().length() == 0) {
+            setCname("<unnamed>");
         }
         return super.save(b);
     }

@@ -711,7 +711,7 @@ public class Item extends DatabaseObject implements Formattable, Templateable {
     @Override
     public String toString() {
         try {
-            return ((Contact) getObject(Context.getContact(), contactsids)).__getCName() + "-" + cname;
+            return ((Contact) getObject(Context.getContact(), contactsids)).__getCName() + "-" + getCname();
         } catch (NodataFoundException ex) {
             return super.toString();
         }

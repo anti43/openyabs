@@ -38,7 +38,7 @@ public class Plugin extends DatabaseObject {
 
     @Override
     public String __getCName() {
-        return cname;
+        return getCname();
     }
 
     @Override
@@ -48,7 +48,7 @@ public class Plugin extends DatabaseObject {
 
     @Override
     public void setCName(String name) {
-        cname = name;
+        setCname(name);
     }
 
     /**

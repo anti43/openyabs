@@ -60,7 +60,7 @@ public class UserProperty extends DatabaseObject {
             value = "";
         }
         QueryCriteria c = new QueryCriteria("usersids", usersids);
-        c.addAndCondition("cname", cname);
+        c.addAndCondition("cname", getCname());
         QueryHandler.instanceOf().clone(Context.getUserProperties()).delete(c);
         return super.save(true);
     }

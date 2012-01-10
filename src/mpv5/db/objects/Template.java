@@ -65,7 +65,7 @@ public class Template extends DatabaseObject {
 
     @Override
     public String __getCName() {
-        return cname;
+        return getCname();
     }
 
     @Override
@@ -75,7 +75,7 @@ public class Template extends DatabaseObject {
 
     @Override
     public void setCName(String name) {
-        cname = name;
+        setCname(name);
     }
 
     /**
@@ -224,7 +224,7 @@ public class Template extends DatabaseObject {
             try {
                 file = QueryHandler.instanceOf().clone(Context.getFiles()).
                         retrieveFile(filename,
-                        new File(FileDirectoryHandler.getTempDir() + "~" + RandomText.getText() + "_" + cname));
+                        new File(FileDirectoryHandler.getTempDir() + "~" + RandomText.getText() + "_" + getCname()));
                 file.deleteOnExit();
             } catch (Exception e) {
                 Log.Debug(e);

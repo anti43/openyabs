@@ -52,7 +52,7 @@ public class ProductGroup extends DatabaseObject {
 
     public ProductGroup(String name) {
         this();
-        cname = name;
+        setCName(name);
     }
 
     /**
@@ -221,8 +221,8 @@ public class ProductGroup extends DatabaseObject {
 
     @Override
     public void ensureUniqueness() {
-        if (!QueryHandler.instanceOf().clone(Context.getProductGroup()).checkUniqueness("cname", cname)) {
-            throw new UnsupportedOperationException(Messages.VALUE_ALREADY_EXISTS + " " + cname);
+        if (!QueryHandler.instanceOf().clone(Context.getProductGroup()).checkUniqueness("cname", getCname())) {
+            throw new UnsupportedOperationException(Messages.VALUE_ALREADY_EXISTS + " " + getCname());
         }
     }
 }

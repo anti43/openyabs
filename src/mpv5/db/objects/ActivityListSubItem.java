@@ -443,8 +443,8 @@ public final class ActivityListSubItem extends DatabaseObject {
 
     @Override
     public boolean save(boolean b) {
-        if (cname.length() == 0) {
-            cname = "   ";
+        if (getCname().length() == 0) {
+            setCname("   ");
         }
         calculate(this);
         return super.save(b);

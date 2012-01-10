@@ -46,7 +46,7 @@ public class FileToContact extends DatabaseObject {
 
     @Override
     public String __getCName() {
-        return cname;
+        return getCname();
     }
 
     @Override
@@ -61,7 +61,7 @@ public class FileToContact extends DatabaseObject {
 
     @Override
     public void setCName(String name) {
-        cname = name;
+        setCname(name);
     }
 
     /**
@@ -140,7 +140,7 @@ public class FileToContact extends DatabaseObject {
             try {
                 file = QueryHandler.instanceOf().clone(Context.getFiles()).
                         retrieveFile(filename,
-                        new File(FileDirectoryHandler.getTempDir() + cname));
+                        new File(FileDirectoryHandler.getTempDir() + getCname()));
             } catch (Exception e) {
                 Log.Debug(e);
             }

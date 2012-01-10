@@ -137,7 +137,7 @@ public class Contact extends DatabaseObject implements Formattable, Templateable
      */
     @Override
     public String __getCName() {
-        return cname;
+        return getCname();
     }
 
     /**
@@ -145,7 +145,7 @@ public class Contact extends DatabaseObject implements Formattable, Templateable
      */
     @Override
     public void setCName(String name) {
-        this.cname = name;
+        this.setCname(name);
     }
 
     /**
@@ -427,7 +427,7 @@ public class Contact extends DatabaseObject implements Formattable, Templateable
 
     @Override
     public String toString() {
-        return cname + " (" + cnumber + ")";
+        return getCname() + " (" + cnumber + ")";
     }
 
     /**
@@ -493,9 +493,9 @@ public class Contact extends DatabaseObject implements Formattable, Templateable
         if (!map.containsKey("fullname")) {
             try {
                 if (prename != null && prename.length() > 0) {
-                    map.put("fullname", prename + " " + cname);
+                    map.put("fullname", prename + " " + getCname());
                 } else {
-                    map.put("fullname", cname);
+                    map.put("fullname", getCname());
                 }
             } catch (Exception numberFormatException) {
                 //already resolved?

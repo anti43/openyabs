@@ -50,7 +50,7 @@ public class Reminder extends DatabaseObject implements Templateable {
 
     @Override
     public String __getCName() {
-        return cname;
+        return getCname();
     }
 
     @Override
@@ -60,7 +60,7 @@ public class Reminder extends DatabaseObject implements Templateable {
 
     @Override
     public void setCName(String name) {
-        cname = name;
+        setCname(name);
     }
 
     /**

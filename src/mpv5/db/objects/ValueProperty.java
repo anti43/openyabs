@@ -579,7 +579,7 @@ public final class ValueProperty extends DatabaseObject {
         if (key == null) {
             throw new NullPointerException();
         }
-        this.cname = key;
+        this.setCname(key);
     }
 
     /**

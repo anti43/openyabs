@@ -78,6 +78,20 @@ import static mpv5.db.common.Context.*;
 public abstract class DatabaseObject implements Comparable<DatabaseObject>, Serializable, Cloneable {
 
     /**
+     * @return the cname
+     */
+    public String getCname() {
+        return cname;
+    }
+
+    /**
+     * @param cname the cname to set
+     */
+    public void setCname(String cname) {
+        this.cname = cname;
+    }
+
+    /**
      * Represents a Context-ID pair which uniquely identifies a DatabaseObject
      * @param <T>
      * @param <V>
@@ -394,7 +408,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
     /**
      * The mandatory name
      */
-    protected String cname = "";
+    private String cname = "";
     private int groupsids = 1;
     private int intaddedby = 0;
     private Date dateadded = new Date(0);
@@ -409,7 +423,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
     private static final Map<String, List<String>> getStringVars_cached = new HashMap<String, List<String>>();
 
     public String __getCName() {
-        return cname;
+        return getCname();
     }
 
     /**
@@ -455,7 +469,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
     }
 
     public void setCName(String name) {
-        cname = name;
+        setCname(name);
     }
 
     /**
@@ -937,7 +951,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
         if (!this.isReadOnly()) {
             return LOCK.aquire();
         } else {
-            Log.Debug(this, cname + " is readonly, lock not required.");
+            Log.Debug(this, getCname() + " is readonly, lock not required.");
             return false;
         }
     }
@@ -2026,7 +2040,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
 
     @Override
     public String toString() {
-        return cname + (readOnly ? " [Read-only]" : "");//TODO: l10n
+        return getCname() + (readOnly ? " [Read-only]" : "");//TODO: l10n
     }
 
     /**

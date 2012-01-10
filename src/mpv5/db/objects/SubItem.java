@@ -447,12 +447,12 @@ public final class SubItem extends DatabaseObject implements Triggerable {
 
     @Override
     public String __getCName() {
-        return cname;
+        return getCname();
     }
 
     @Override
     public void setCName(String name) {
-        this.cname = name;
+        this.setCname(name);
     }
 
     /**
@@ -880,8 +880,8 @@ public final class SubItem extends DatabaseObject implements Triggerable {
 
     @Override
     public boolean save(boolean b) {
-        if (cname.length() == 0) {
-            cname = "   ";
+        if (getCname().length() == 0) {
+            setCname("   ");
         }
         return super.save(b);
     }

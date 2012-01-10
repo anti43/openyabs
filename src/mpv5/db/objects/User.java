@@ -225,7 +225,7 @@ public class User extends DatabaseObject {
     private User(String fullname, String userid, int highright, int IDS) {
         this();
         this.fullname = fullname;
-        this.cname = userid;
+        setCName(userid);
         this.inthighestright = highright;
         this.setIDS(IDS);
 
@@ -236,12 +236,12 @@ public class User extends DatabaseObject {
     }
 
     public String getName() {
-        return cname;
+        return getCname();
     }
 
     @Override
     public String __getCName() {
-        return cname;
+        return getCname();
     }
 
     /**
@@ -338,7 +338,7 @@ public class User extends DatabaseObject {
 
     @Override
     public void setCName(String name) {
-        cname = name;
+        setCname(name);
     }
 
     @Override
@@ -447,7 +447,7 @@ public class User extends DatabaseObject {
 
     @Override
     public String toString() {
-        return cname;
+        return getCname();
     }
 
     /**
