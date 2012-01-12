@@ -560,7 +560,7 @@ public class Product extends DatabaseObject implements Formattable, Templateable
 
         if (__getInttype() == TYPE_PRODUCT && __getIntinventorytype() == 1
                 && __getStockvalue().intValue() <= __getThresholdvalue().intValue()) {
-            Notificator.raiseNotification(Messages.INVENTORY_STOCK_TRESHOLD + toString());
+            Notificator.raiseNotification(Messages.INVENTORY_STOCK_TRESHOLD + toString(), true, true, this);
         }
         return super.save(silent);
     }

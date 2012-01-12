@@ -1,6 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE mpv5 PUBLIC "-//http://code.google.com/p/mp-rechnungs-und-kundenverwaltung//DTD mpv5 V 1.0//EN" "http://yabs.copy-left.de/files/yabs_import_1.0.dtd">
-
 <mpv5>
 	<countries>
                 <country iso="40">Austria</country>
