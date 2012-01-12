@@ -273,14 +273,15 @@ public class DatabaseUpdater {
                     + "invisible BIGINT(20) UNSIGNED DEFAULT 0"
                     + ")ENGINE=MyISAM DEFAULT CHARSET=utf8"});
         UPDATES_MYSQL.put(1.186, new String[]{
-                    "CREATE TABLE scheduletypes (IDS BIGINT NOT NULL GENERATED ALWAYS AS IDENTITY "
-                    + "(START WITH 1, INCREMENT BY 1),"
+                    "CREATE TABLE scheduletypes ("
+                    + "ids BIGINT(20) UNSIGNED NOT NULL PRIMARY KEY auto_increment, "
                     + "cname VARCHAR(250) NOT NULL,"
-                    + "groupsids BIGINT  REFERENCES groups(ids) DEFAULT 1,"
+                    + "groupsids BIGINT DEFAULT 1 REFERENCES groups(ids),"
                     + "usersids BIGINT REFERENCES users (ids)  ON DELETE CASCADE,"
-                    + "dateadded DATE NOT NULL,intaddedby BIGINT DEFAULT 0,"
-                    + "invisible SMALLINT DEFAULT 0,"
-                    + "PRIMARY KEY  (ids))",
+                    + "dateadded DATE NOT NULL,"
+                    + "intaddedby BIGINT DEFAULT 0,"
+                    + "invisible SMALLINT DEFAULT 0"
+                    + ")ENGINE=MyISAM DEFAULT CHARSET=utf8",
                     "INSERT INTO scheduletypes (cname, groupsids, usersids, dateadded, invisible) VALUES ('Call',1,1,'2011-07-29',0)",
                     "INSERT INTO scheduletypes (cname, groupsids, usersids, dateadded, invisible) VALUES ('Meeting',1,1,'2011-07-29',0)",
                     "INSERT INTO scheduletypes (cname, groupsids, usersids, dateadded, invisible) VALUES ('Mail',1,1,'2011-07-29',0)",
@@ -288,7 +289,8 @@ public class DatabaseUpdater {
                     "ALTER TABLE schedule ADD COLUMN contactsids BIGINT REFERENCES contacts (ids) ON DELETE CASCADE ",
                     "ALTER TABLE schedule ADD COLUMN eventtype BIGINT REFERENCES scheduletypes (ids) ON DELETE CASCADE"});
         UPDATES_MYSQL.put(1.187, new String[]{
-                    "CREATE TABLE conversations (IDS BIGINT(20) UNSIGNED NOT NULL PRIMARY KEY auto_increment,"
+                    "CREATE TABLE conversations ("
+                    + "ids BIGINT(20) UNSIGNED NOT NULL PRIMARY KEY auto_increment,"
                     + "cname VARCHAR(2500), "
                     + "adress VARCHAR(2500), "
                     + "cnumber VARCHAR(6), "
@@ -296,7 +298,8 @@ public class DatabaseUpdater {
                     + "date DATE NOT NULL,dateadded DATE NOT NULL,"
                     + "intaddedby BIGINT UNSIGNED NOT NULL DEFAULT 1, "
                     + "invisible SMALLINT DEFAULT 0, "
-                    + "content LONGVARCHAR NOT NULL)ENGINE=MyISAM  DEFAULT CHARSET=utf8"});
+                    + "content LONG VARCHAR NOT NULL"
+                    + ")ENGINE=MyISAM DEFAULT CHARSET=utf8"});
         UPDATES_MYSQL.put(1.188, new String[]{
                     "ALTER TABLE subitems ADD COLUMN inttype SMALLINT DEFAULT 0 NOT NULL"
                 });
@@ -304,21 +307,23 @@ public class DatabaseUpdater {
                     "ALTER TABLE conversations ADD COLUMN contactsids BIGINT REFERENCES contacts (ids) ON DELETE CASCADE"
                 });        
         UPDATES_MYSQL.put(1.190, new String[]{
-                    "CREATE TABLE activitylists (IDS BIGINT(20) UNSIGNED NOT NULL PRIMARY KEY auto_increment,"
+                    "CREATE TABLE activitylists ("
+                    + "ids BIGINT(20) UNSIGNED NOT NULL PRIMARY KEY auto_increment,"
                     + " cname VARCHAR(200) DEFAULT NULL,"
                     + " cnumber VARCHAR(250) NOT NULL,"
-                    + " groupsids BIGINT  REFERENCES groups(ids) DEFAULT 1,"
-                    + " contactsids BIGINT  REFERENCES contacts(ids) DEFAULT 0,"
-                    + " orderids BIGINT  REFERENCES items(ids) DEFAULT 0,"
+                    + " groupsids BIGINT DEFAULT 1 REFERENCES groups(ids),"
+                    + " contactsids BIGINT DEFAULT 0 REFERENCES contacts(ids),"
+                    + " orderids BIGINT DEFAULT 0 REFERENCES items(ids),"
                     + " totalamount DOUBLE DEFAULT 0,"
                     + " dateadded DATE NOT NULL,"
                     + " intaddedby BIGINT DEFAULT 0,"
-                    + " invisible SMALLINT DEFAULT 0,"
-                    + " PRIMARY KEY (ids))ENGINE=MyISAM  DEFAULT CHARSET=IS0-8859-15",
+                    + " invisible SMALLINT DEFAULT 0"
+                    + " )ENGINE=MyISAM  DEFAULT CHARSET=utf8",
                     //"Date", "Count", "Description", "Netto Price", "Tax Value", "Total Price", "Product", "cname"     
-                    "CREATE TABLE activitylistitems (IDS BIGINT(20) UNSIGNED NOT NULL PRIMARY KEY auto_increment,"
+                    "CREATE TABLE activitylistitems ("
+                    + " ids BIGINT(20) UNSIGNED NOT NULL PRIMARY KEY auto_increment,"
                     + " cname VARCHAR(20) DEFAULT NULL,"
-                    + " groupsids BIGINT REFERENCES groups(ids) DEFAULT 1,"
+                    + " groupsids BIGINT  DEFAULT 1 REFERENCES groups(ids),"
                     + " activitylistsids BIGINT REFERENCES activitylists(ids) ON DELETE CASCADE,"
                     + " datedoing DATE NOT NULL,"
                     + " quantityvalue DOUBLE DEFAULT 0 NOT NULL,"
@@ -330,8 +335,8 @@ public class DatabaseUpdater {
                     + " productsids BIGINT REFERENCES products(ids) ON DELETE CASCADE,"
                     + " dateadded DATE NOT NULL,"
                     + " intaddedby BIGINT DEFAULT 0,"
-                    + " invisible SMALLINT DEFAULT 0,"
-                    + " PRIMARY KEY (ids))ENGINE=MyISAM  DEFAULT CHARSET=IS0-8859-15"
+                    + " invisible SMALLINT DEFAULT 0"
+                    + ")ENGINE=MyISAM  DEFAULT CHARSET=utf8"
                 });
         UPDATES_MYSQL.put(1.191, new String[]{
                     "ALTER TABLE templates ADD COLUMN isupdateenabled SMALLINT DEFAULT 0 NOT NULL",
@@ -342,15 +347,15 @@ public class DatabaseUpdater {
                     "ALTER TABLE subitems ADD COLUMN discount DOUBLE DEFAULT 0 NOT NULL"
                 });  
         UPDATES_MYSQL.put(1.193, new String[]{
-                    "CREATE TABLE massprintrules (IDS BIGINT NOT NULL GENERATED ALWAYS AS IDENTITY "
-                    + "(START WITH 1, INCREMENT BY 1),"
+                    "CREATE TABLE massprintrules ("
+                    + " ids BIGINT(20) UNSIGNED NOT NULL PRIMARY KEY auto_increment,"
                     + " cname VARCHAR(250) NOT NULL,"
                     + " content LONG VARCHAR NOT NULL,"
                     + " inttype SMALLINT DEFAULT 0,"
                     + " dateadded DATE NOT NULL,"
-                    + " groupsids BIGINT REFERENCES groups(ids) DEFAULT 1,"
-                    + " invisible SMALLINT DEFAULT 0,"
-                    + "PRIMARY KEY  (ids))ENGINE=MyISAM  DEFAULT CHARSET=IS0-8859-15",
+                    + " groupsids BIGINT DEFAULT 1 REFERENCES groups(ids),"
+                    + " invisible SMALLINT DEFAULT 0"
+                    + ")ENGINE=MyISAM  DEFAULT CHARSET=utf8",
                     "INSERT INTO massprintrules (cname, inttype, content, dateadded, invisible, groupsids) VALUES ('Open Bills',0, 'Select * from contacts Inner Join items on (Items.contactsids = contacts.ids) where items.intstatus = 1 and items.inttype = 0', '2011-07-29',0, 1)",
                     "INSERT INTO massprintrules (cname, inttype, content, dateadded, invisible, groupsids) VALUES ('Is Customer', -1, 'Select * from contacts where iscustomer = 1', '2011-07-29',0, 1)",
                     "INSERT INTO massprintrules (cname, inttype, content, dateadded, invisible, groupsids) VALUES ('Is Suply', -1, 'Select * from contacts where issupplier = 1', '2011-07-29',0, 1)"});              
