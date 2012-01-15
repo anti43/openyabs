@@ -43,3 +43,5 @@ httpcore-nio-4.0.1.jar;Apache HttpCore;Apache License Version 2.0;The Apache Sof
 commons-codec-1.3.jar;Apache Commons Codec;Apache License Version 2.0;The Apache Software Foundation
 tinylaf-1_4;A (mostly painted) Look and Feel;GNU Lesser General Public License;Hans Bickel
 vcard4j-1_1_3.jar;vCard4J is a Java toolkit to manipulate vCards;GNU Lesser General Public License;http://vcard4j.sourceforge.net/
+groovy-all-1.8.4.jar;Groovy!;Apache Software License 2 (Open Source);http://groovy.codehaus.org/
+bcprov-jdk16-145;bcprov;bcprov License;The Legion Of The Bouncy Castle (http://www.bouncycastle.org)

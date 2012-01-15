@@ -27,7 +27,7 @@ import mpv5.globals.Headers;
 import mpv5.globals.Messages;
 import mpv5.i18n.LanguageManager;
 import mpv5.ui.dialogs.DialogForFile;
-import com.google.api.translate.*;
+
 import java.awt.Cursor;
 import java.io.File;
 import javax.swing.JTextField;
@@ -70,7 +70,7 @@ public class MPBabelFish extends javax.swing.JFrame {
         setVisible(rootPaneCheckingEnabled);
         setLanguageSelection();
 
-        Translate.setHttpReferrer(Constants.VERSION);
+//        Translate.setHttpReferrer(Constants.VERSION);
 
     }
 
@@ -438,8 +438,8 @@ public class MPBabelFish extends javax.swing.JFrame {
     // End of variables declaration//GEN-END:variables
 
     private void setToolBar() {
-        from.setModel(new DefaultComboBoxModel(Language.values()));
-        to.setModel(new DefaultComboBoxModel(Language.values()));
+//        from.setModel(new DefaultComboBoxModel(Language.values()));
+//        to.setModel(new DefaultComboBoxModel(Language.values()));
     }
 
     class Job extends SwingWorker<Object, Object> {
@@ -464,7 +464,7 @@ public class MPBabelFish extends javax.swing.JFrame {
                 try {
                     if (string != null && string.length() > 0) {
                         Log.Debug(this, "Translating: " + string);
-                        translated[i] = Translate.execute(string, (Language) from.getSelectedItem(), (Language) to.getSelectedItem());
+//                        translated[i] = Translate.execute(string, (Language) from.getSelectedItem(), (Language) to.getSelectedItem());
                         mpv5.YabsViewProxy.instance().setProgressValue(i + 1);
                         progress.setValue(i + 1);
                     } else {
