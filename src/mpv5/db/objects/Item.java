@@ -643,10 +643,12 @@ public class Item extends DatabaseObject implements Formattable, Templateable {
         map.put("netvalue", FormatNumber.formatDezimal(__getNetvalue()));
         map.put("taxvalue", FormatNumber.formatDezimal(__getTaxvalue()));
         map.put("grosvalue", FormatNumber.formatDezimal(__getTaxvalue().add(__getNetvalue())));
+        map.put("discountvalue", FormatNumber.formatDezimal(__getDiscountvalue()));
 
         map.put("netvaluef", FormatNumber.formatLokalCurrency(__getNetvalue()));
         map.put("taxvaluef", FormatNumber.formatLokalCurrency(__getTaxvalue()));
         map.put("grosvaluef", FormatNumber.formatLokalCurrency(__getTaxvalue().add(__getNetvalue())));
+        map.put("discountvaluef", FormatNumber.formatPercent(__getDiscountvalue()));
 
         //date format localization
         if (mpv5.db.objects.User.getCurrentUser().getProperties().hasProperty("item.date.locale")) {
