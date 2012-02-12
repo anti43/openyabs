@@ -76,7 +76,7 @@ public class FormatHandler {
         TYPE_REVENUE(FormatHandler.TYPE_REVENUE, Messages.TYPE_REVENUE.getValue()),
         TYPE_EXPENSE(FormatHandler.TYPE_EXPENSE, Messages.TYPE_EXPENSE.getValue()),
         TYPE_CONVERSATION(FormatHandler.TYPE_CONVERSATION, Messages.TYPE_CONVERSATION.getValue()),
-        TYPE_ACTIVITY(FormatHandler.TYPE_ACTIVITY,Messages.TYPE_ACTIVITY.getValue());
+        TYPE_ACTIVITY(FormatHandler.TYPE_ACTIVITY, Messages.TYPE_ACTIVITY.getValue());
         int ids;
         String names;
 
@@ -440,6 +440,10 @@ public class FormatHandler {
             Number n = null;
             YMessageFormat f;
             try {
+                if (startindex < 0) {
+                    Log.Debug(this, " Converting startindex " + startindex + " to " + (string.length() + startindex));
+                    startindex = string.length() + startindex;
+                }
                 Log.Debug(this, format.toPattern());
                 f = new YMessageFormat((VariablesHandler.parse(format.toPattern(), source)).substring(startindex), null);
                 Log.Debug(this, "Pattern: " + f.toPattern() + " for String: " + string + " Starting at " + startindex);

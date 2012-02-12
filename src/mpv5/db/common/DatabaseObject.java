@@ -723,7 +723,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
                     try {
                         ensureUniqueness();
                     } catch (Exception e) {
-                        Popup.error(e);
+                        Notificator.raiseNotification(e, !silent, true, this);
                         return false;
                     }
                     if (__getCName() != null && __getCName().length() > 0) {

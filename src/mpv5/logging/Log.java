@@ -102,14 +102,14 @@ public class Log {
 
         switch (loglevel) {
             case LOGLEVEL_DEBUG:
-                write(sourcen + ": " + message);
+                writeDirect(sourcen + ": " + message);
                 if (message != null && message instanceof Exception) {
                     ((Exception) message).printStackTrace();
-                    write(getStackTrace(((Exception) message)));
-                    write("\nCaused by:\n");
+                    writeDirect(getStackTrace(((Exception) message)));
+                    writeDirect("\nCaused by:\n");
                     try {
                         ((Exception) message).getCause().printStackTrace();
-                        write(getStackTrace(((Exception) message).getCause()));
+                        writeDirect(getStackTrace(((Exception) message).getCause()));
                         mpv5.YabsViewProxy.instance().addMessage(Messages.ERROR_OCCURED + ". " + Messages.SEE_LOG);
                     } catch (Exception e) {
                     }
@@ -210,6 +210,7 @@ public class Log {
 
     private static synchronized void write(final Object obj) {
         Runnable runnable = new Runnable() {
+
             public void run() {
                 for (int i = 0; i < loggers.size(); i++) {
                     loggers.get(i).log(obj);
@@ -219,6 +220,12 @@ public class Log {
         };
         Thread thread = new Thread(runnable);
         thread.start();
+    }
+
+    private static synchronized void writeDirect(final Object obj) {
+        for (int i = 0; i < loggers.size(); i++) {
+            loggers.get(i).log(obj);
+        }
     }
 
     /**
