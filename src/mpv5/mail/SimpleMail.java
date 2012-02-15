@@ -18,10 +18,7 @@ package mpv5.mail;
 
 import com.sun.mail.smtp.SMTPSSLTransport;
 import java.io.File;
-import java.util.Date;
 import java.util.Properties;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import javax.activation.DataHandler;
 import javax.activation.DataSource;
@@ -41,7 +38,6 @@ import javax.mail.internet.MimeMultipart;
 import mpv5.globals.Messages;
 import mpv5.logging.Log;
 import mpv5.ui.dialogs.Popup;
-import mpv5.ui.frames.MPView;
 import mpv5.utils.export.Export;
 import mpv5.utils.jobs.Waiter;
 
@@ -59,6 +55,7 @@ public class SimpleMail implements Waiter {
     private String recipientsAddress = "";
     private String subject = "";
     private String text = "";
+    private String bccAddress = null;
     private boolean useTls;
     private boolean useSmtps;
     private File attachment;
@@ -326,6 +323,8 @@ public class SimpleMail implements Waiter {
         MimeMessage message = new MimeMessage(session);
         message.setFrom(new InternetAddress(senderAddress));
         message.addRecipient(Message.RecipientType.TO, new InternetAddress(recipientsAddress));
+        if(getBccAddress()!=null)
+            message.addRecipient(Message.RecipientType.BCC, new InternetAddress(bccAddress));
         message.setSubject(subject);
 
         // create the message part
@@ -393,6 +392,8 @@ public class SimpleMail implements Waiter {
         MimeMessage message = new MimeMessage(session);
         message.setFrom(new InternetAddress(senderAddress));
         message.addRecipient(Message.RecipientType.TO, new InternetAddress(recipientsAddress));
+        if(getBccAddress()!=null)
+            message.addRecipient(Message.RecipientType.BCC, new InternetAddress(bccAddress));
         message.setSubject(subject);
 
         // create the message part
@@ -435,6 +436,21 @@ public class SimpleMail implements Waiter {
 // close the connection
             transport.close();
         }
+    }
+
+
+    /**
+     * @return the bccAddress
+     */
+    public String getBccAddress() {
+        return bccAddress;
+    }
+
+    /**
+     * @param bccAddress the bccAddress to set
+     */
+    public void setBccAddress(String bccAddress) {
+        this.bccAddress = bccAddress;
     }
 
     class MailAuthenticator extends Authenticator {

@@ -31,17 +31,9 @@ import java.lang.ref.SoftReference;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Hashtable;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
-import java.util.Set;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import javax.swing.SwingUtilities;
 import mpv5.db.objects.ValueProperty;
@@ -69,10 +61,12 @@ import mpv5.utils.images.MPIcon;
 import mpv5.utils.numberformat.FormatNumber;
 import mpv5.utils.text.RandomText;
 import static mpv5.db.common.Context.*;
+import mpv5.utils.text.TypeConversion;
 
 /**
  * Database Objects reflect a row in a table, and can parse graphical and
  * non-graphical beans to update or create itself to the database
+ *
  * @author
  */
 public abstract class DatabaseObject implements Comparable<DatabaseObject>, Serializable, Cloneable {
@@ -93,6 +87,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
 
     /**
      * Represents a Context-ID pair which uniquely identifies a DatabaseObject
+     *
      * @param <T>
      * @param <V>
      */
@@ -110,9 +105,9 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
 //            this.ownerContext = owner.getContext();
 //            this.ownerId = owner.__getIDS();
 //        }
-
         /**
          * Create a new Entity, nulls not allowed
+         *
          * @param context
          * @param ids
          */
@@ -126,6 +121,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
 
         /**
          * Returns the Context corresponding to this entry, never null
+         *
          * @return
          */
         public Context getKey() {
@@ -134,6 +130,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
 
         /**
          * Returns the ID corresponding to this entry, never null
+         *
          * @return
          */
         public Integer getValue() {
@@ -141,8 +138,10 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
         }
 
         /**
-         * Compares the specified object with this entry for equality.
-         * Returns <tt>true</tt> if the given object is also a map entry and Key and Value.intValue are equal
+         * Compares the specified object with this entry for equality. Returns
+         * <tt>true</tt> if the given object is also a map entry and Key and
+         * Value.intValue are equal
+         *
          * @param o
          */
         @Override
@@ -185,8 +184,10 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
     }
 
     /**
-     * If set, the auto-database-schema creator will create a foreign key reference to the {@link Context} with the given id.
-     * To be one of {@link Context#getId() }.
+     * If set, the auto-database-schema creator will create a foreign key
+     * reference to the {@link Context} with the given id. To be one of {@link Context#getId()
+     * }.
+     *
      * @deprecated not yet implemented
      */
     @Retention(RetentionPolicy.RUNTIME)
@@ -197,9 +198,11 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
     }
 
     /**
-     * If set, the auto-database-schema creator will create a ON DELETE CASCADE 
-     * reference to any {@link Context}s which have been annotated via the @References annotation on this method
-     * To be one of {@link Context#getId() }.
+     * If set, the auto-database-schema creator will create a ON DELETE CASCADE
+     * reference to any {@link Context}s which have been annotated via the
+     * @References annotation on this method To be one of {@link Context#getId()
+     * }.
+     *
      * @deprecated not yet implemented
      */
     @Retention(RetentionPolicy.RUNTIME)
@@ -222,7 +225,8 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
     private static Map<String, SoftReference<DatabaseObject>> cache = new ConcurrentHashMap<String, SoftReference<DatabaseObject>>(1000);
 
     /**
-     * Cache all Objects which are within the {@link Context#getCacheableContexts() }
+     * Cache all Objects which are within the {@link Context#getCacheableContexts()
+     * }
      */
     public static void cacheObjects() {
         DatabaseObject.cacheObjects(Context.getCacheableContexts().toArray(new Context[]{}));
@@ -230,6 +234,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
 
     /**
      * Caches objects of this Context
+     *
      * @param contextArray
      */
     public static void cacheObjects(final Context[] contextArray) {
@@ -305,7 +310,9 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
     }
 
     /**
-     * This method can be used to workaround the DatabaseObject#getObjects(...) casting issues introduced by @me :-)
+     * This method can be used to workaround the DatabaseObject#getObjects(...)
+     * casting issues introduced by @me :-)
+     *
      * @param <T>
      * @param objects
      * @param template
@@ -322,7 +329,9 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
     }
 
     /**
-     * This method can be used to workaround the DatabaseObject#getObjects(...) casting issues introduced by @me :-)
+     * This method can be used to workaround the DatabaseObject#getObjects(...)
+     * casting issues introduced by @me :-)
+     *
      * @param <T>
      * @param objects
      * @return
@@ -415,7 +424,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
     private transient DatabaseObjectLock LOCK = new DatabaseObjectLock(this);
     private Color color = Color.WHITE;
     /**
-     * 
+     *
      */
     public Entity<Context, Integer> IDENTITY;
     private static final Map<String, List<Method>> setVars_cached = new HashMap<String, List<Method>>();
@@ -462,8 +471,10 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
     }
 
     /**
-     * Some DatabaseObjects have unique fields, and calling this method shall ensure they are unique before saving.<br/>
-     * The native implementation actually does nothing, you need to override the method if you define unique columns for a DO.
+     * Some DatabaseObjects have unique fields, and calling this method shall
+     * ensure they are unique before saving.<br/> The native implementation
+     * actually does nothing, you need to override the method if you define
+     * unique columns for a DO.
      */
     public void ensureUniqueness() {
     }
@@ -479,16 +490,18 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
     public abstract JComponent getView();
 
     /**
-     * This can be used to graphically represent a do.<br/>
-     * The programmer has to take care of the icon size!
-     * See {@link MPIcon#getIcon(int width, int height)}<br/>
-     * It is recommended to use 22*22 sized icons which do not need to get resized for performance reasons.
+     * This can be used to graphically represent a do.<br/> The programmer has
+     * to take care of the icon size! See {@link MPIcon#getIcon(int width, int height)}<br/>
+     * It is recommended to use 22*22 sized icons which do not need to get
+     * resized for performance reasons.
+     *
      * @return An Icon representing the type of this do
      */
     public abstract MPIcon getIcon();
 
     /**
      * Default Color is Color.WHITE
+     *
      * @return
      */
     public Color getColor() {
@@ -496,7 +509,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
     }
 
     /**
-     * 
+     *
      * @param color
      */
     public void defineColor(Color color) {
@@ -523,6 +536,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
 
     /**
      * Clone this DO, but into a new {@link Context}
+     *
      * @param newContext
      * @return
      */
@@ -544,8 +558,10 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
     }
 
     /**
-     * The type of a database object should equal the dbidentity in singular form,
-     * but as the dbidentity can change over time, the type name must be consistent
+     * The type of a database object should equal the dbidentity in singular
+     * form, but as the dbidentity can change over time, the type name must be
+     * consistent
+     *
      * @return The type of this do, an unique type identifier
      */
     public String getType() {
@@ -554,6 +570,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
 
     /**
      * The do's context
+     *
      * @return A Context
      */
     public Context getContext() {
@@ -562,7 +579,8 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
 
     /**
      * The do's context
-     * @param c 
+     *
+     * @param c
      */
     protected void setContext(Context c) {
         this.IDENTITY = new Entity<Context, Integer>(c, ids);
@@ -579,8 +597,8 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
     }
 
     /**
-     * Sets the unique id of this do,
-     * usually not called manually.
+     * Sets the unique id of this do, usually not called manually.
+     *
      * @param ids
      */
     public void setIDS(int ids) {
@@ -590,6 +608,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
 
     /**
      * Checks whether this do represents an existing row in the db
+     *
      * @return True if the do has been saved once
      */
     public boolean isExisting() {
@@ -602,8 +621,9 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
 
     /**
      *
-     * @return A list of all <b>SETTERS</b> in this do child, except the native methods
-     * will not recognize newly added methods (eg with groovy or reflection)
+     * @return A list of all <b>SETTERS</b> in this do child, except the native
+     * methods will not recognize newly added methods (eg with groovy or
+     * reflection)
      */
     public synchronized List<Method> setVars() {
         if (!setVars_cached.containsKey(getClass().getCanonicalName())) {
@@ -623,10 +643,10 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
 
     /**
      *
-     * @return A list of all <b>getters</b> in this do child,
-     * which match the naming convetion as in
-     * <strong>__get*methodname*</strong> (methodname starts with 2 (two) underscores)
-     * OR use the new annotations for persistable DO fields
+     * @return A list of all <b>getters</b> in this do child, which match the
+     * naming convetion as in <strong>__get*methodname*</strong> (methodname
+     * starts with 2 (two) underscores) OR use the new annotations for
+     * persistable DO fields
      */
     public List<Method> getVars() {
         if (!getVars_cached.containsKey(getClass().getCanonicalName())) {
@@ -637,7 +657,9 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
                 if ((methods[i].isAnnotationPresent(Persistable.class)
                         && methods[i].getAnnotation(Persistable.class).value()
                         && methods[i].getParameterTypes().length == 0)
-                        /*for backwards compatibility*/
+                        /*
+                         * for backwards compatibility
+                         */
                         || (methods[i].getName().startsWith("__get")
                         && !(methods[i].isAnnotationPresent(Persistable.class)
                         && !methods[i].getAnnotation(Persistable.class).value()))) {
@@ -650,8 +672,9 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
     }
 
     /**
-     * Convenience method:
-     * Returns all DO properties (getters) which would return plain String values
+     * Convenience method: Returns all DO properties (getters) which would
+     * return plain String values
+     *
      * @return A list of shortened method names (without "get")
      */
     public List<String> getStringVars() {
@@ -666,7 +689,9 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
                 if ((methods[i].isAnnotationPresent(Persistable.class)
                         && methods[i].getAnnotation(Persistable.class).value()
                         && methods[i].getParameterTypes().length == 0)
-                        /*for backwards compatibility*/
+                        /*
+                         * for backwards compatibility
+                         */
                         || (methods[i].getName().startsWith("__get")
                         && !(methods[i].isAnnotationPresent(Persistable.class)
                         && !methods[i].getAnnotation(Persistable.class).value()))) {
@@ -686,6 +711,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
 
     /**
      * Save this do to db, or update if it has a valid uid already
+     *
      * @return
      */
     public boolean save() {
@@ -694,7 +720,9 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
 
     /**
      * Save this do to db, or update if it has a valid uid already
-     * @param silent If true, no notifications are sent to the history handler regarding this call to save
+     *
+     * @param silent If true, no notifications are sent to the history handler
+     * regarding this call to save
      * @return true if the save did not throw any errors
      */
     public boolean save(boolean silent) {
@@ -798,7 +826,9 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
 
     /**
      * Safely import a database object from external sources (xml, csv etc)<br/>
-     * Override and call this from the overriding method for ensuring the existance of DObject specific mandatory values.
+     * Override and call this from the overriding method for ensuring the
+     * existance of DObject specific mandatory values.
+     *
      * @return
      */
     public boolean saveImport() {
@@ -822,6 +852,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
 
     /**
      * Reset the data of this do (reload from database and discard changes)
+     *
      * @return
      */
     public boolean reset() {
@@ -837,8 +868,9 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
     }
 
     /**
-     * Deletes this do from database, can possibly not get reverted!
-     * Note: You can reuse this do then as it it would be a new one with prepopulated data
+     * Deletes this do from database, can possibly not get reverted! Note: You
+     * can reuse this do then as it it would be a new one with prepopulated data
+     *
      * @return
      */
     public boolean delete() {
@@ -942,9 +974,10 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
     }
 
     /**
-     * Locks the dataset represented by this do. The dataset can not be edited by someone else
-     * after locking it, until the locking user has logged-out.
+     * Locks the dataset represented by this do. The dataset can not be edited
+     * by someone else after locking it, until the locking user has logged-out.
      * This does not prevent the data to be viewed by anyone.
+     *
      * @return
      */
     public boolean lock() {
@@ -973,6 +1006,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
 
     /**
      * Collect the data to masked/valid DB String array
+     *
      * @return
      */
     protected synchronized QueryData collect() {
@@ -987,7 +1021,9 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
             if ((methods[i].isAnnotationPresent(Persistable.class)
                     && methods[i].getAnnotation(Persistable.class).value()
                     && methods[i].getParameterTypes().length == 0)
-                    /*for backwards compatibility*/
+                    /*
+                     * for backwards compatibility
+                     */
                     || (methods[i].getName().startsWith("__get")
                     && !(methods[i].isAnnotationPresent(Persistable.class)
                     && !methods[i].getAnnotation(Persistable.class).value()))) {
@@ -1055,9 +1091,10 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
     }
 
     /**
-     * Parses the given DataPanel into this do.
-     * Each of the DataPanel's fields which has a name ending with underscore must match
-     * one of the fields in this do child (without underscore)
+     * Parses the given DataPanel into this do. Each of the DataPanel's fields
+     * which has a name ending with underscore must match one of the fields in
+     * this do child (without underscore)
+     *
      * @param source The DataPanel to parse.
      * @return false if the view parsing did not return successfully
      */
@@ -1088,11 +1125,12 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
     }
 
     /**
-     * Injects this do into a Datapanel
-     * Each of the DataPanel's fields wich has a name ending with underscore must match
-     * one of the fields in this do child (without underscore)
+     * Injects this do into a Datapanel Each of the DataPanel's fields wich has
+     * a name ending with underscore must match one of the fields in this do
+     * child (without underscore)
      *
      * FIXME remove dependency on __set names
+     *
      * @param target
      */
     public void setPanelData(DataPanel target) {
@@ -1116,9 +1154,10 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
 
     /**
      *
-     * @return A list containing pairs of <b>VARNAME</b> and their  <b>VALUE</b> (as unformatted String) of this Databaseobject,
-     * those which return in <code>getVars()</code>, as two-fields String-Array.
-     * Example: new String[]{"CName", "Michael"}
+     * @return A list containing pairs of <b>VARNAME</b> and their <b>VALUE</b>
+     * (as unformatted String) of this Databaseobject, those which return in
+     * <code>getVars()</code>, as two-fields String-Array. Example: new
+     * String[]{"CName", "Michael"}
      */
     public List<String[]> getValues() {
         List<Method> vars = getVars();
@@ -1148,9 +1187,11 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
 
     /**
      *
-     * @return A list containing pairs of <b>VARNAME</b> and their  <b>VALUE (as formatted String, and variables resolved)</b>  of this Databaseobject,
-     * those which return in <code>getVars()</code>, as two-fields String-Array.
-     * Example: new String[]{"dateadded", "24.22.2980"}
+     * @return A list containing pairs of <b>VARNAME</b> and their <b>VALUE (as
+     * formatted String, and variables resolved)</b> of this Databaseobject,
+     * those which return in
+     * <code>getVars()</code>, as two-fields String-Array. Example: new
+     * String[]{"dateadded", "24.22.2980"}
      */
     public List<String[]> getValues3() {
         List<Method> vars = getVars();
@@ -1185,9 +1226,10 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
 
     /**
      *
-     * @return A list containing pairs of <b>VARNAME</b> and their <b>VALUE</b> of this Databaseobject,
-     * those which return in <code>getVars()</code>, as two-fields Object-Array.
-     * Example: new Object[]{"dateadded", java.util.Date }
+     * @return A list containing pairs of <b>VARNAME</b> and their <b>VALUE</b>
+     * of this Databaseobject, those which return in
+     * <code>getVars()</code>, as two-fields Object-Array. Example: new
+     * Object[]{"dateadded", java.util.Date }
      */
     public List<Object[]> getValues2() {
         List<Method> vars = getVars();
@@ -1207,10 +1249,11 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
 
     /**
      *
-     * @return A list containing pairs of <b>VARNAME</b> and their <b>VALUE</b> of this Databaseobject,
-     * those which return in <code>getVars()</code>, as two-fields Object-Array.
-     * Referenced DatabaseObjects are resolved as well. Flagged @Displayable(false) ones are ignored.
-     * Example: new Object[]{"dateadded", java.util.Date }
+     * @return A list containing pairs of <b>VARNAME</b> and their <b>VALUE</b>
+     * of this Databaseobject, those which return in
+     * <code>getVars()</code>, as two-fields Object-Array. Referenced
+     * DatabaseObjects are resolved as well. Flagged @Displayable(false) ones
+     * are ignored. Example: new Object[]{"dateadded", java.util.Date }
      */
     public HashMap<String, Object> getValues4() {
         List<Method> vars = getVars();
@@ -1281,7 +1324,8 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
 
     /**
      * Searches for a specific dataset, cached or non-cached
-     * @param entity 
+     *
+     * @param entity
      * @return A database object with data, or null if none found
      * @throws NodataFoundException
      */
@@ -1291,6 +1335,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
 
     /**
      * Searches for a specific dataset, cached or non-cached
+     *
      * @param entity
      * @return A database object with data, or null if none found
      * @throws NodataFoundException
@@ -1301,6 +1346,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
 
     /**
      * Searches for a specific dataset, cached or non-cached, including deleted
+     *
      * @param context The context to search under
      * @param id The id of the object
      * @return A database object with data, or null if none found
@@ -1312,6 +1358,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
 
     /**
      * Searches for a specific dataset, cached or non-cached
+     *
      * @param context The context to search under
      * @param id The id of the object
      * @param includeInvisible
@@ -1343,10 +1390,11 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
 
     /**
      * Searches for a specific dataset by name
+     *
      * @param context The context to search under
      * @param cname
      * @return A database object with data, or null if none found
-     * @throws NodataFoundException 
+     * @throws NodataFoundException
      */
     public static DatabaseObject getObject(Context context, String cname) throws NodataFoundException {
         try {
@@ -1368,6 +1416,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
 
     /**
      * Searches for a specific dataset by name
+     *
      * @param context The context to search under
      * @param column
      * @param value
@@ -1393,7 +1442,9 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
     }
 
     /**
-     * Returns an empty "sample" Object of the specified <code>Context</code> type
+     * Returns an empty "sample" Object of the specified
+     * <code>Context</code> type
+     *
      * @param context
      * @return
      */
@@ -1416,7 +1467,8 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
     }
 
     /**
-     * Delegates to {@link getObjects(Context context, true)} 
+     * Delegates to {@link getObjects(Context context, true)}
+     *
      * @param <T>
      * @param context
      * @return A list of DBOs
@@ -1428,7 +1480,8 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
     }
 
     /**
-     * Delegates to {@link getObjects(Context context, true)} 
+     * Delegates to {@link getObjects(Context context, true)}
+     *
      * @param <T>
      * @param context
      * @return A list of DBOs
@@ -1441,6 +1494,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
 
     /**
      * Returns all DBOs in the specific context
+     *
      * @param <T>
      * @param context
      * @param withCached IGNORED
@@ -1465,6 +1519,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
 
     /**
      * Returns all DBOs in the specific context
+     *
      * @param <T>
      * @param context
      * @param withCached IGNORED
@@ -1523,7 +1578,9 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
     }
 
     /**
-     * Returns objects within the given context which match the criterias in the given DataStringHandler
+     * Returns objects within the given context which match the criterias in the
+     * given DataStringHandler
+     *
      * @param <T>
      * @param context
      * @param criterias
@@ -1536,7 +1593,9 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
     }
 
     /**
-     * Returns objects within the given context which match the criterias in the given DataStringHandler
+     * Returns objects within the given context which match the criterias in the
+     * given DataStringHandler
+     *
      * @param <T>
      * @param context
      * @param criterias
@@ -1549,7 +1608,9 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
     }
 
     /**
-     * Returns objects within the given context which match the criterias in the given QueryCriteria object<br/>
+     * Returns objects within the given context which match the criterias in the
+     * given QueryCriteria object<br/>
+     *
      * @param <T>
      * @param criterias If NULL returns ALL
      * @param template
@@ -1562,7 +1623,9 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
     }
 
     /**
-     * Returns objects within the given context which match the criterias in the given QueryCriteria object<br/>
+     * Returns objects within the given context which match the criterias in the
+     * given QueryCriteria object<br/>
+     *
      * @param <T>
      * @param criterias If NULL returns ALL
      * @param template
@@ -1575,8 +1638,10 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
     }
 
     /**
-     * Return objects which are referenced in the given Context@table
-     * <br/>As list of getObject(inReference, (SELECT ids FROM Context@table WHERE dataOwnerIDS = dataowner.ids))
+     * Return objects which are referenced in the given Context@table <br/>As
+     * list of getObject(inReference, (SELECT ids FROM Context@table WHERE
+     * dataOwnerIDS = dataowner.ids))
+     *
      * @param <T>
      * @param dataOwner
      * @param inReference
@@ -1626,8 +1691,10 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
 //        return cvals;
 //    }
     /**
-     * Return objects which are referenced in the given Context@table
-     * <br/>As list of getObject(inReference, (SELECT ids FROM Context@table WHERE dataOwnerIDS = dataowner.ids))
+     * Return objects which are referenced in the given Context@table <br/>As
+     * list of getObject(inReference, (SELECT ids FROM Context@table WHERE
+     * dataOwnerIDS = dataowner.ids))
+     *
      * @param <T>
      * @param dataOwner
      * @param inReference
@@ -1653,8 +1720,10 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
     }
 
     /**
-     * Return objects which are referenced in the given Context@table
-     * <br/>As list of getObject(inReference, (SELECT ids FROM Context@table WHERE dataOwnerIDS = dataowner.ids))
+     * Return objects which are referenced in the given Context@table <br/>As
+     * list of getObject(inReference, (SELECT ids FROM Context@table WHERE
+     * dataOwnerIDS = dataowner.ids))
+     *
      * @param <T>
      * @param dataOwner
      * @param inReference
@@ -1682,12 +1751,14 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
     }
 
     /**
-     * Returns objects which match the given Context and are created within the given timeframe
+     * Returns objects which match the given Context and are created within the
+     * given timeframe
+     *
      * @param <T>
      * @param context
      * @param timeframe
      * @return
-     * @throws NodataFoundException 
+     * @throws NodataFoundException
      * @deprecated Not using caches, this may well get slow
      */
     @SuppressWarnings("unchecked")
@@ -1713,6 +1784,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
 
     /**
      * Fills this do with the data of the given dataset id
+     *
      * @param id
      * @return
      * @throws NodataFoundException
@@ -1724,6 +1796,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
 
     /**
      * Fills this do with the data of the given dataset id
+     *
      * @param id
      * @param includeInvisible
      * @return
@@ -1736,6 +1809,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
 
     /**
      * Fills this do with the data of the given dataset id
+     *
      * @param column
      * @param value
      * @return
@@ -1749,6 +1823,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
 
     /**
      * Tries to get the id of the last do with the given cname
+     *
      * @param cname
      * @return The id, or 0 if none found
      * @throws NodataFoundException
@@ -1765,6 +1840,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
 
     /**
      * Fills this do with the data of the given dataset cname
+     *
      * @param cname
      * @return True if data was found
      */
@@ -1791,7 +1867,8 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
     }
 
     /**
-     * Fills the return value's data (rows) into an array of dos if singleExplode is false, if not fills target with the first row
+     * Fills the return value's data (rows) into an array of dos if
+     * singleExplode is false, if not fills target with the first row
      */
     public static synchronized DatabaseObject[] explode(ReturnValue select, DatabaseObject target, boolean singleExplode, boolean lock) throws NodataFoundException {
 
@@ -1878,8 +1955,9 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
     }
 
     /**
-     * Tries to reflect the hash table into this do.
-     * The hashtable's keys must match the methods retrieved by do.setVars()
+     * Tries to reflect the hash table into this do. The hashtable's keys must
+     * match the methods retrieved by do.setVars()
+     *
      * @param values
      * @throws Exception
      */
@@ -1927,7 +2005,9 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
     }
 
     /**
-     * Creates a Set of Entries on runtime which reflect the actual getters of the databaseObject child
+     * Creates a Set of Entries on runtime which reflect the actual getters of
+     * the databaseObject child
+     *
      * @return A set Set: String (cname), Class (java.lang.String)
      */
     public Set<Map.Entry<String, Class<?>>> getKeySet() {
@@ -1956,8 +2036,9 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
     }
 
     /**
-     * Tries to reflect the hash table into this do.
-     * The hashtable's keys must match the methods retrieved by do.setVars()
+     * Tries to reflect the hash table into this do. The hashtable's keys must
+     * match the methods retrieved by do.setVars()
+     *
      * @param values
      * @throws Exception
      */
@@ -1980,8 +2061,9 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
     }
 
     /**
-     * Tries to reflect the {@link SimpleDatabaseObject} into a new do.
-     * The simple objects name must match the DatabaseObjects's {@link Context#getDbIdentity()}
+     * Tries to reflect the {@link SimpleDatabaseObject} into a new do. The
+     * simple objects name must match the DatabaseObjects's {@link Context#getDbIdentity()}
+     *
      * @param sdo
      * @return
      * @throws Exception
@@ -2008,6 +2090,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
     /**
      * Tries to inject the dos data into the given {@link SimpleDatabaseObject}.
      * The simple objects name must match the DatabaseObjects's {@link Context#getDbIdentity()}
+     *
      * @param sdo
      * @throws Exception
      */
@@ -2081,8 +2164,11 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
     }
 
     /**
-     * The equals Method is implemented here to check if two DatabaseObjects represent the same row of their table in the database.<br/>
-     * You should not override this, and if, check for the Object to be an instanceOf your own class.
+     * The equals Method is implemented here to check if two DatabaseObjects
+     * represent the same row of their table in the database.<br/> You should
+     * not override this, and if, check for the Object to be an instanceOf your
+     * own class.
+     *
      * @param databaseObject
      */
     @Override
@@ -2134,6 +2220,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
 
     /**
      * Return true if the given id exist in the given Context
+     *
      * @param cont
      * @param ids
      * @return
@@ -2187,6 +2274,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
 
     /**
      * AutoLockEnabled
+     *
      * @param active
      */
     public static void setAutoLockEnabled(boolean active) {
@@ -2194,8 +2282,11 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
     }
 
     /**
-     * Resolves referencing ids in the map to their named values.<br/>
-     * Child classes should override this and call super.resolveReferences(HashMap<String, String> map) in the overriding method
+     * Resolves referencing ids in the map to their named values.<br/> Child
+     * classes should override this and call
+     * super.resolveReferences(HashMap<String, String> map) in the overriding
+     * method
+     *
      * @param map
      * @return
      */
@@ -2226,6 +2317,30 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
         } catch (NumberFormatException numberFormatException) {
             //already resolved?
         }
+        
+        Locale l = Locale.getDefault();
+        if (mpv5.db.objects.User.getCurrentUser().getProperties().hasProperty("item.date.locale")) {
+            try {
+                l = TypeConversion.stringToLocale(mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("item.date.locale"));
+            } catch (Exception e) {
+            }
+            if (l != null) {
+            } else {
+                Log.Debug(this, "Error while using item.date.locale");
+            }
+        }
+        DateFormat df = DateFormat.getDateInstance(DateFormat.MEDIUM, l);
+        if (mpv5.db.objects.User.getCurrentUser().getProperties().hasProperty("org.openyabs.exportproperty.dateformat")) {
+            String dd = mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("org.openyabs.exportproperty.dateformat");
+            try {
+                df = new SimpleDateFormat(dd, l);
+            } catch (Exception e) {
+                Log.Debug(this, "Error while using default.date.format: " + e);
+            }
+        }
+
+        map.put("dateadded", df.format(__getDateadded()));
+
         List<DatabaseObjectModifier> mods = YabsPluginLoader.registeredModifiers;
         for (int ik = 0; ik < mods.size(); ik++) {
             DatabaseObjectModifier databaseObjectModifier = mods.get(ik);
@@ -2240,7 +2355,9 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
     }
 
     /**
-     * Tries to reflect the given key and value to a setter of this database object at runtime. Does convert nulls to the String "null".
+     * Tries to reflect the given key and value to a setter of this database
+     * object at runtime. Does convert nulls to the String "null".
+     *
      * @param key
      * @param value
      * @throws Exception
@@ -2282,6 +2399,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
 
     /**
      * Generate an array out of the getValues2()
+     *
      * @return
      */
     public Object[] toArray() {
@@ -2297,9 +2415,11 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
 
     /**
      * Fetch the value of the given key
+     *
      * @param key
      * @return
-     * @throws Exception Thrown if the given key is invalid for this object during runtime
+     * @throws Exception Thrown if the given key is invalid for this object
+     * during runtime
      */
     public Object getValue(String key) throws Exception {
         List<Object[]> a = getValues2();
@@ -2315,6 +2435,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
     /**
      * Creates an Object Array out of all getters of this DO, no special order.
      * Mostly useless.
+     *
      * @return
      */
     public Object[] toResolvedArray() {
@@ -2329,14 +2450,16 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
     }
 
     /**
-     * Creates an Object Array out of all getters of this DO,
-     * first column is a DatabaseObject.Entity to identify this DO
-     * @param fieldCount Defines how many columns the resulting array shall have.
-     *                   The ordering is somewhat unpredictable, however the array will always start with [IDENTITY, ...].
-     *                   A fieldcount below 2 is not allowed.
-     * @param fields     You can specify as many fields you like to force *some* ordering of the resulting array.
-     *                   Specified fields will appear BEFORE unspecified fields, however the ordering of the specified fields is not guaranteed.
-     *                   Nonexisting fields will be ignored.
+     * Creates an Object Array out of all getters of this DO, first column is a
+     * DatabaseObject.Entity to identify this DO
+     *
+     * @param fieldCount Defines how many columns the resulting array shall
+     * have. The ordering is somewhat unpredictable, however the array will
+     * always start with [IDENTITY, ...]. A fieldcount below 2 is not allowed.
+     * @param fields You can specify as many fields you like to force *some*
+     * ordering of the resulting array. Specified fields will appear BEFORE
+     * unspecified fields, however the ordering of the specified fields is not
+     * guaranteed. Nonexisting fields will be ignored.
      * @return An array representing this DOs values
      */
     public Object[] toResolvedArray(int fieldCount, final String... fields) {
@@ -2387,16 +2510,17 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
 
     /**
      * Evaluates a script in this and returns its result
+     *
      * @param script
-     * @return 
+     * @return
      */
     public synchronized String evaluate(String script) {
         return String.valueOf(getGroovyShell().evaluate(script));
     }
 
     /**
-     * 
-     * @param map 
+     *
+     * @param map
      */
     public synchronized void resolveValueProperties(final Map<String, Object> map) {
         if (map.containsKey("vpresolved@" + this)) {
@@ -2437,7 +2561,9 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
     /**
      * @return the Group
      */
-    @Persistable(false)/*is persisting via contactsids*/
+    @Persistable(false)/*
+     * is persisting via contactsids
+     */
 
     public Group getGroup() throws NodataFoundException {
         return (Group) getObject(Context.getGroup(), __getGroupsids());

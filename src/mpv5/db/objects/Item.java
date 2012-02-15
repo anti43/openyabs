@@ -20,6 +20,7 @@ import enoa.handler.TableHandler;
 import enoa.handler.TemplateHandler;
 import java.math.BigDecimal;
 import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -47,7 +48,7 @@ import mpv5.utils.text.TypeConversion;
 
 /**
  *
- *  
+ *
  */
 public class Item extends DatabaseObject implements Formattable, Templateable {
 
@@ -55,6 +56,7 @@ public class Item extends DatabaseObject implements Formattable, Templateable {
 
     /**
      * Returns a localized string representation of the given item status
+     *
      * @param status
      * @return
      */
@@ -78,6 +80,7 @@ public class Item extends DatabaseObject implements Formattable, Templateable {
 
     /**
      * Returns all possible status messages
+     *
      * @return
      */
     public static MPEnum[] getStatusStrings() {
@@ -159,6 +162,7 @@ public class Item extends DatabaseObject implements Formattable, Templateable {
 
     /**
      * Returns a localized string represenation of the given item type
+     *
      * @param type
      * @return
      */
@@ -310,8 +314,8 @@ public class Item extends DatabaseObject implements Formattable, Templateable {
     public void setTaxvalue(BigDecimal taxvalue) {
         this.taxvalue = taxvalue;
     }
-    
-/**
+
+    /**
      * @return the Discountvalue
      */
     public BigDecimal __getDiscountvalue() {
@@ -324,7 +328,7 @@ public class Item extends DatabaseObject implements Formattable, Templateable {
     public void setDiscountvalue(BigDecimal discountvalue) {
         this.discountvalue = discountvalue;
     }
-    
+
     /**
      * @return the datetodo
      */
@@ -415,10 +419,8 @@ public class Item extends DatabaseObject implements Formattable, Templateable {
     }
 
     /**
-     *  <li>QUEUED = 0;
-     *  <li>IN_PROGRESS= 1;
-     *  <li>PAUSED = 2;
-     *  <li>FINNISHED= 3;
+     * <li>QUEUED = 0; <li>IN_PROGRESS= 1; <li>PAUSED = 2; <li>FINNISHED= 3;
+     *
      * @return the intstatus
      */
     public int __getIntstatus() {
@@ -426,10 +428,8 @@ public class Item extends DatabaseObject implements Formattable, Templateable {
     }
 
     /**
-     *  <li>QUEUED = 0;
-     *  <li>IN_PROGRESS= 1;
-     *  <li>PAUSED = 2;
-     *  <li>FINNISHED= 3;
+     * <li>QUEUED = 0; <li>IN_PROGRESS= 1; <li>PAUSED = 2; <li>FINNISHED= 3;
+     *
      * @param intstatus the intstatus to set
      */
     public void setIntstatus(int intstatus) {
@@ -437,9 +437,8 @@ public class Item extends DatabaseObject implements Formattable, Templateable {
     }
 
     /**
-     *  <li>TYPE_BILL = 0;
-     *  <li>TYPE_ORDER = 1;
-     *  <li>TYPE_OFFER = 2;
+     * <li>TYPE_BILL = 0; <li>TYPE_ORDER = 1; <li>TYPE_OFFER = 2;
+     *
      * @return the inttype
      */
     public int __getInttype() {
@@ -447,9 +446,8 @@ public class Item extends DatabaseObject implements Formattable, Templateable {
     }
 
     /**
-     *  <li>TYPE_BILL = 0;
-     *  <li>TYPE_ORDER = 1;
-     *  <li>TYPE_OFFER = 2;
+     * <li>TYPE_BILL = 0; <li>TYPE_ORDER = 1; <li>TYPE_OFFER = 2;
+     *
      * @param inttype the inttype to set
      */
     public void setInttype(int inttype) {
@@ -508,8 +506,9 @@ public class Item extends DatabaseObject implements Formattable, Templateable {
     }
 
     /**
-     * Fetches all related {@link Subitem}s to this {@link Item}<br/>
-     * If no subitems are assigned, returns an empty default list of default subitems
+     * Fetches all related {@link Subitem}s to this {@link Item}<br/> If no
+     * subitems are assigned, returns an empty default list of default subitems
+     *
      * @return
      */
     public SubItem[] getSubitems() {
@@ -629,7 +628,7 @@ public class Item extends DatabaseObject implements Formattable, Templateable {
                         skipcount--;
                         Log.Debug(this, "Skipping text subitem..");
                     } else {
-                        list.get(i)[0] = String.valueOf(Integer.valueOf(list.get(i)[0])+skipcount);
+                        list.get(i)[0] = String.valueOf(Integer.valueOf(list.get(i)[0]) + skipcount);
                     }
                 }
             }
@@ -650,19 +649,28 @@ public class Item extends DatabaseObject implements Formattable, Templateable {
         map.put("grosvaluef", FormatNumber.formatLokalCurrency(__getTaxvalue().add(__getNetvalue())));
         map.put("discountvaluef", FormatNumber.formatPercent(__getDiscountvalue()));
 
-        //date format localization
+        Locale l = Locale.getDefault();
         if (mpv5.db.objects.User.getCurrentUser().getProperties().hasProperty("item.date.locale")) {
-            Locale l = null;
             try {
                 l = TypeConversion.stringToLocale(mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("item.date.locale"));
             } catch (Exception e) {
             }
             if (l != null) {
-                map.put("dateadded", DateFormat.getDateInstance(DateFormat.MEDIUM, l).format(__getDateadded()));
             } else {
                 Log.Debug(this, "Error while using item.date.locale");
             }
         }
+        DateFormat df = DateFormat.getDateInstance(DateFormat.MEDIUM, l);
+        if (mpv5.db.objects.User.getCurrentUser().getProperties().hasProperty("org.openyabs.exportproperty.dateformat")) {
+            String dd = mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("org.openyabs.exportproperty.dateformat");
+            try {
+                df = new SimpleDateFormat(dd, l);
+            } catch (Exception e) {
+                Log.Debug(this, "Error while using default.date.format: " + e);
+            }
+        }
+        map.put("dateend", df.format(__getDateend()));
+        map.put("datetodo", df.format(__getDatetodo()));
 
         return super.resolveReferences(map);
     }
@@ -733,6 +741,7 @@ public class Item extends DatabaseObject implements Formattable, Templateable {
 
     /**
      * Fetches all properties for this item from the db
+     *
      * @return A (possibly empty) list of {@link ValueProperty}s
      */
     public List<ValueProperty> getProperties() {
@@ -781,7 +790,10 @@ public class Item extends DatabaseObject implements Formattable, Templateable {
     /**
      * @return the contact
      */
-    @Persistable(false)/*is persisting via contactsids*/
+    @Persistable(false)/*
+     * is persisting via contactsids
+     */
+
     public Contact getContact() throws NodataFoundException {
         return (Contact) getObject(Context.getContact(), contactsids);
     }

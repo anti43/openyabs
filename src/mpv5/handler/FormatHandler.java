@@ -444,7 +444,7 @@ public class FormatHandler {
                     Log.Debug(this, " Converting startindex " + startindex + " to " + (string.length() + startindex));
                     startindex = string.length() + startindex;
                 }
-                Log.Debug(this, format.toPattern());
+                Log.Debug(this, "Original pattern: " + format.toPattern());
                 f = new YMessageFormat((VariablesHandler.parse(format.toPattern(), source)).substring(startindex), null);
                 Log.Debug(this, "Pattern: " + f.toPattern() + " for String: " + string + " Starting at " + startindex);
                 n = (Number) f.parse(string, new ParsePosition(startindex))[0];
@@ -471,7 +471,7 @@ public class FormatHandler {
         return toString(format, getNextNumber(format));
     }
 
-    private static class YMessageFormat extends java.text.MessageFormat {
+    public static class YMessageFormat extends java.text.MessageFormat {
 
         private static final long serialVersionUID = 1L;
         private Integer startValue = null;

@@ -28,6 +28,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.InputStream;
+import java.net.InetAddress;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -41,6 +42,7 @@ import mpv5.db.common.QueryCriteria;
 import mpv5.db.objects.Contact;
 import mpv5.db.objects.MailMessage;
 import mpv5.db.objects.Template;
+import mpv5.globals.GlobalSettings;
 import mpv5.globals.Messages;
 import mpv5.handler.FormFieldsHandler;
 import mpv5.handler.VariablesHandler;
@@ -55,8 +57,9 @@ import mpv5.utils.jobs.Waiter;
 import mpv5.utils.print.PrintJob2;
 
 /**
- * The Export class is the primary handler in Yabs to do exporting tasks, such as printing, generating files etc.
- *  
+ * The Export class is the primary handler in Yabs to do exporting tasks, such
+ * as printing, generating files etc.
+ *
  */
 public final class Export extends HashMap<String, Object> implements Waitable {
 
@@ -64,6 +67,7 @@ public final class Export extends HashMap<String, Object> implements Waitable {
 
     /**
      * Mail a template
+     *
      * @param preloadedTemplate
      * @param dataOwner
      * @param to
@@ -96,6 +100,14 @@ public final class Export extends HashMap<String, Object> implements Waitable {
                         SimpleMail pr = new SimpleMail();
                         pr.setMailConfiguration(mpv5.db.objects.User.getCurrentUser().getMailConfiguration());
                         pr.setRecipientsAddress(cont.__getMailaddress());
+
+                        if (GlobalSettings.hasProperty("org.openyabs.exportproperty.mailbcc")) {
+                            String bcc = GlobalSettings.getProperty("org.openyabs.exportproperty.mailbcc");
+                            if (mpv5.utils.text.TypeConversion.stringToMail(bcc) != null) {
+                                pr.setBccAddress(bcc);
+                            }
+                        }
+
                         if (m != null && m.__getCName() != null) {
                             pr.setSubject(VariablesHandler.parse(m.__getCName(), dataOwner));
                             pr.setText(VariablesHandler.parse(m.__getDescription(), dataOwner));
@@ -123,8 +135,9 @@ public final class Export extends HashMap<String, Object> implements Waitable {
 
     /**
      * Prints a template
+     *
      * @param preloadedTemplate
-     * @param dataOwner 
+     * @param dataOwner
      */
     public static void print(final Template preloadedTemplate, final DatabaseObject dataOwner) {
         Runnable runnable = new Runnable() {
@@ -165,8 +178,9 @@ public final class Export extends HashMap<String, Object> implements Waitable {
 
     /**
      * Prints collected pages at one time
+     *
      * @param prints
-     * @param Printer 
+     * @param Printer
      */
     public static void print3(final List<File> prints, final String Printer) {
         Runnable runnable = new Runnable() {
@@ -186,6 +200,7 @@ public final class Export extends HashMap<String, Object> implements Waitable {
 
     /**
      * Print multiple templates
+     *
      * @param preloadedTemplate
      * @param dataOwner
      */
@@ -291,6 +306,7 @@ public final class Export extends HashMap<String, Object> implements Waitable {
 
     /**
      * Create a {@link Waitable} which is able to create a file PDF
+     *
      * @param preloadedTemplate
      * @param dataOwner
      * @return
@@ -301,6 +317,7 @@ public final class Export extends HashMap<String, Object> implements Waitable {
 
     /**
      * Create a {@link Waitable} which is able to create a file ODT
+     *
      * @param preloadedTemplate
      * @param dataOwner
      * @return
@@ -311,6 +328,7 @@ public final class Export extends HashMap<String, Object> implements Waitable {
 
     /**
      * Create a {@link Waitable} which is able to create a file PDF
+     *
      * @param aname
      * @param preloadedTemplate
      * @param dataOwner
@@ -333,6 +351,7 @@ public final class Export extends HashMap<String, Object> implements Waitable {
 
     /**
      * Create a {@link Waitable} which is able to create a file ODT
+     *
      * @param aname
      * @param preloadedTemplate
      * @param dataOwner
@@ -356,6 +375,7 @@ public final class Export extends HashMap<String, Object> implements Waitable {
 
     /**
      * Create a {@link Waitable} which is able to create a file PDF
+     *
      * @param aname
      * @param preloadedTemplate
      * @param dataOwner
@@ -380,6 +400,7 @@ public final class Export extends HashMap<String, Object> implements Waitable {
 
     /**
      * Create a {@link Waitable} which is able to create a file ODT
+     *
      * @param aname
      * @param preloadedTemplate
      * @param dataOwner
@@ -404,7 +425,9 @@ public final class Export extends HashMap<String, Object> implements Waitable {
     }
 
     /**
-     * (Pre)load a template. Do not run this from the EDT, as the fetching of the templatefile from the database might take a while.
+     * (Pre)load a template. Do not run this from the EDT, as the fetching of
+     * the templatefile from the database might take a while.
+     *
      * @param dataOwner
      * @return
      * @deprecated DO NOT use this anymore, will always return NULL
@@ -432,6 +455,7 @@ public final class Export extends HashMap<String, Object> implements Waitable {
 
     /**
      * Generates a waiter for export
+     *
      * @param saveDir
      * @return
      */
@@ -466,7 +490,8 @@ public final class Export extends HashMap<String, Object> implements Waitable {
 
     /**
      * Add the data, must be key - value pairs
-     * @param data 
+     *
+     * @param data
      */
     public void addData(String[][] data) {
         for (int i = 0; i < data.length; i++) {
@@ -476,9 +501,10 @@ public final class Export extends HashMap<String, Object> implements Waitable {
     }
 
     /**
-     *  Set the file to be filled.. not required to be called explicitely
+     * Set the file to be filled.. not required to be called explicitely
+     *
      * @param <T>
-     * @param templateFile 
+     * @param templateFile
      */
     public <T extends Exportable> void setTemplate(T templateFile) {
         this.fromFile = templateFile;
@@ -487,7 +513,9 @@ public final class Export extends HashMap<String, Object> implements Waitable {
     /**
      * Exports the given data to the target file using the given template file.
      * <br/>
-     * @param toFile The target file. If the file exists, will be overwritten if possible.
+     *
+     * @param toFile The target file. If the file exists, will be overwritten if
+     * possible.
      * @throws NodataFoundException If no data has been previously added
      * @throws FileNotFoundException If no file was given as template
      */
@@ -533,6 +561,7 @@ public final class Export extends HashMap<String, Object> implements Waitable {
 
     /**
      * The target file. If the file exists, will be overwritten if possible.
+     *
      * @param toFile the toFile to set
      */
     public void setTargetFile(File toFile) {
