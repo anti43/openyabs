@@ -189,6 +189,8 @@ public class ProductPanel extends javax.swing.JPanel implements DataPanel, MPCBS
         contactname1.setEditable(true);
         supplierpanel.add(new ProductPanelContactSub(null, true));
         labeledTextField1.set_ValueClass(Double.class);
+        labeledTextField2.set_ValueClass(Double.class);
+        labeledTextField3.set_ValueClass(Double.class);
 
         selecttax.getComboBox().addActionListener(new ActionListener() {
 
