@@ -62,6 +62,7 @@ public class AddressPanel extends javax.swing.JPanel implements DataPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        buttonGroup1 = new javax.swing.ButtonGroup();
         jPanel2 = new javax.swing.JPanel();
         department = new mpv5.ui.beans.LabeledTextField();
         jLabel5 = new javax.swing.JLabel();
@@ -105,12 +106,14 @@ public class AddressPanel extends javax.swing.JPanel implements DataPanel {
         title.set_Label(bundle.getString("AddressPanel.title._Label")); // NOI18N
         title.setName("title"); // NOI18N
 
+        buttonGroup1.add(male);
         male.setFont(male.getFont());
         male.setSelected(true);
         male.setText(bundle.getString("AddressPanel.male.text")); // NOI18N
         male.setName("male"); // NOI18N
         male.setOpaque(false);
 
+        buttonGroup1.add(female);
         female.setFont(female.getFont());
         female.setText(bundle.getString("AddressPanel.female.text")); // NOI18N
         female.setName("female"); // NOI18N
@@ -255,6 +258,7 @@ public class AddressPanel extends javax.swing.JPanel implements DataPanel {
 }//GEN-LAST:event_countryselectActionPerformed
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JCheckBox badress;
+    private javax.swing.ButtonGroup buttonGroup1;
     private mpv5.ui.beans.LabeledTextField city;
     private mpv5.ui.beans.LabeledTextField cname;
     private javax.swing.JComboBox countryselect;
