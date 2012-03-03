@@ -90,9 +90,6 @@ public class MassPrintPanel
         model = new DefaultListModel();
         initComponents();
         setName("MassPrintPanel");
-        this.setContacts();
-        this.setTemplateList();
-        this.setMessageTemplateList();
     }
 
     /** This method is called from within the constructor to
@@ -581,6 +578,7 @@ public class MassPrintPanel
             public void run() {
                 Object[][] data1 = null;
                 data1 = new DatabaseSearch(Context.getContact(), 200).getValuesFor("ids, cname", "cname", "", true);
+                model.clear();
                 for (int i = 0; i < data1.length; i++) {
                     model.addElement(new IdItem(Integer.parseInt(data1[i][0].toString()), data1[i][1].toString()));
                 }
@@ -616,6 +614,7 @@ public class MassPrintPanel
             public void run() {
                 DefaultComboBoxModel mdl = (DefaultComboBoxModel) templates.getModel();
                 Template[] tpl = TemplateHandler.getTemplatesForType(User.getCurrentUser().__getGroupsids(), TemplateHandler.TYPE_MASSPRINT);
+                mdl.removeAllElements();
                 for (int i = 0; i < tpl.length; i++) {
                     mdl.addElement(tpl[i]);
                     TemplateHandler.loadTemplate(tpl[i]);
@@ -680,6 +679,7 @@ public class MassPrintPanel
                 DefaultComboBoxModel mdl = (DefaultComboBoxModel) messageTpl.getModel();
                 Object[][] data1 = null;
                 data1 = new DatabaseSearch(Context.getMessage(), 200).getValuesFor("cname", "cname", "", true);
+                mdl.removeAllElements();
                 for (int i = 0; i < data1.length; i++) {
                     mdl.addElement((String) data1[i][0]);
                 }
