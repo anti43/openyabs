@@ -142,6 +142,19 @@ public class Reminder extends DatabaseObject implements Templateable {
                 //already resolved?
             }
         }
+        if (map.containsKey("stagesids")) {
+            try {
+                try {
+                    map.put("stage", DatabaseObject.getObject(Context.getStage(), Integer.valueOf(map.get("stagesids").toString())));
+                    map.remove("stagesids");
+                } catch (NodataFoundException ex) {
+                    map.put("stage", null);
+                    Log.Debug(this, ex.getMessage());
+                }
+            } catch (NumberFormatException numberFormatException) {
+                //already resolved?
+            }
+        }
 
         return map;
     }
