@@ -26,6 +26,7 @@ import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
 import mpv5.db.objects.Product;
 import mpv5.db.objects.SubItem;
+import mpv5.db.objects.User;
 import mpv5.globals.Messages;
 import mpv5.logging.Log;
 import mpv5.utils.models.MPTableModel;
@@ -48,7 +49,7 @@ public class ItemTextAreaDialog extends javax.swing.JDialog implements KeyListen
         labeledCombobox1.setSearchOnEnterEnabled(true);;
         labeledCombobox1.setReceiver(this);
         labeledCombobox1.setToolTipText(Messages.SEARCHABLE.toString());
-        
+
         labeledSpinner1.setValue(1);
     }
 
