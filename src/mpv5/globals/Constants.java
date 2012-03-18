@@ -28,7 +28,7 @@ public interface Constants {
      * 
      * Full Version number
      */
-    public static final String VERSION = "Yabs-1.18-beta";
+    public static final String VERSION = "Yabs-1.18-beta2";
 
     /**
      * The original database version of this release
@@ -37,7 +37,7 @@ public interface Constants {
     /**
      * The minimal Database Version which is compatible with this release
      */
-    public static final Double DATABASE_VERSION = 1.193;
+    public static final Double DATABASE_VERSION = 1.194;
     /**
      * The max Database Version which is compatible with this release
      */
@@ -55,7 +55,7 @@ public interface Constants {
      *
      * Alias
      */
-    public static final String TITLE = "Yabs - Colombo";
+    public static final String TITLE = "Yabs - Cookme";
     /**
      *
      * Name of the main JAR

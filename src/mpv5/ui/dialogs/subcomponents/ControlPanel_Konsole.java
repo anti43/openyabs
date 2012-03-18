@@ -1,5 +1,7 @@
 package mpv5.ui.dialogs.subcomponents;
 
+import groovy.lang.Binding;
+import groovy.lang.GroovyShell;
 import java.awt.Component;
 import java.awt.event.KeyEvent;
 import java.io.File;
@@ -7,6 +9,7 @@ import java.io.FileReader;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.text.BadLocationException;
+import mpv5.YabsViewProxy;
 import mpv5.data.PropertyStore;
 import mpv5.db.common.QueryHandler;
 import mpv5.globals.Messages;
@@ -18,6 +21,7 @@ import mpv5.ui.popups.CopyPasteMenu;
 import mpv5.usermanagement.MPSecurityManager;
 import mpv5.utils.files.FileDirectoryHandler;
 import mpv5.utils.files.FileReaderWriter;
+import org.codehaus.groovy.control.CompilationFailedException;
 
 /**
  *
@@ -32,6 +36,7 @@ public class ControlPanel_Konsole extends javax.swing.JPanel implements ControlA
     public final String UNAME = "console";
     private PropertyStore oldvalues;
     private static ControlPanel_Konsole ident;
+    private GroovyShell groovyShell;
 
     public ControlPanel_Konsole() {
         if (MPSecurityManager.checkAdminAccess()) {
@@ -164,32 +169,23 @@ public class ControlPanel_Konsole extends javax.swing.JPanel implements ControlA
     private javax.swing.JTextArea jTextArea2;
     // End of variables declaration//GEN-END:variables
 
-
-
     @Override
     public Component getAndRemoveActionPanel() {
-         this.remove(jPanel2);validate();
+        this.remove(jPanel2);
+        validate();
         return jPanel2;
     }
 
     private void process() {
         if (MPSecurityManager.checkAdminAccess()) {
-            if (jTextArea1.getText().startsWith("sql")) {
-                jTextArea1.setText(null);
-                jTextArea2.setText("Please enter your sql code now..");
-            } else if (jTextArea1.getText().startsWith("mp")) {
-                jTextArea2.setText("MP server commands not supported yet.");
-                jTextArea1.setText(null);
-            } else if (jTextArea1.getText().startsWith("java")) {
-                jTextArea2.setText("Java commands not supported yet.");
-                jTextArea1.setText(null);
+            if (jTextArea1.getText().startsWith("groovy")) {
+                runGroovy();
             } else {
-                runSQL();//a little bit of faked interaction ;-)
-                jTextArea1.setText(null);
+                runSQL();
             }
             jTextArea1.setCaretPosition(0);
-        }
-    }
+        }}
+    
 
     private void runSQL() {
         for (int i = 0; i < jTextArea1.getLineCount(); i++) {
@@ -199,16 +195,38 @@ public class ControlPanel_Konsole extends javax.swing.JPanel implements ControlA
                     command = command.substring(0, command.lastIndexOf(";"));
                 }
                 if (command.length() > 1) {
-                   if(command.toLowerCase().contains("update")) {
+                    if (command.toLowerCase().contains("update")) {
                         QueryHandler.getConnection().freeUpdateQuery(command, jTextArea2, MPSecurityManager.CREATE_OR_DELETE, Messages.SEE_LOG.getValue());
                     } else {
                         QueryHandler.getConnection().freeQuery(command, jTextArea2, MPSecurityManager.CREATE_OR_DELETE, Messages.SEE_LOG.getValue());
                     }
                 }
-                jTextArea1.replaceRange(null, jTextArea1.getLineStartOffset(i), jTextArea1.getLineEndOffset(i));
+                jTextArea1.replaceRange(command + ";--ok", jTextArea1.getLineStartOffset(i), jTextArea1.getLineEndOffset(i));
             } catch (Exception ex) {
                 Log.Debug(this, ex.getMessage());
             }
+        }
+    }
+
+    private void runGroovy() {
+        try {
+            jTextArea2.setText(String.valueOf(
+                    getGroovyShell().evaluate(jTextArea1.getText().replace("groovy", ""))));
+            jTextArea1.setText(null);
+        } catch (Exception exception) {
+            Log.Debug(exception);
+            jTextArea2.setText(exception.getMessage());
+        }
+    }
+
+    private GroovyShell getGroovyShell() {
+        synchronized (this) {
+            if (groovyShell == null) {
+                Binding binding = new Binding();
+                binding.setVariable("db", QueryHandler.instanceOf());
+                groovyShell = new GroovyShell(binding);
+            }
+            return groovyShell;
         }
     }
 }

@@ -177,6 +177,10 @@ public class DatabaseUpdater {
                     "INSERT INTO massprintrules (cname, inttype, content, dateadded, invisible, groupsids) VALUES ('Open Bills',0, 'Select * from contacts Inner Join items on (Items.contactsids = contacts.ids) where items.intstatus = 1 and items.inttype = 0', '2011-07-29',0, 1)",
                     "INSERT INTO massprintrules (cname, inttype, content, dateadded, invisible, groupsids) VALUES ('Is Customer', -1, 'Select * from contacts where iscustomer = 1', '2011-07-29',0, 1)",
                     "INSERT INTO massprintrules (cname, inttype, content, dateadded, invisible, groupsids) VALUES ('Is Suply', -1, 'Select * from contacts where issupplier = 1', '2011-07-29',0, 1)"});        
+        UPDATES_DERBY.put(1.194, new String[]{
+                    "ALTER TABLE subitems ALTER description SET DATA TYPE VARCHAR(3333)"
+                }); 
+        
         ////////////////////////////////////////////////////////////////////////////////////////////
         // mysql updates
         UPDATES_MYSQL.put(1.11, new String[]{
@@ -358,7 +362,11 @@ public class DatabaseUpdater {
                     + ")ENGINE=MyISAM  DEFAULT CHARSET=utf8",
                     "INSERT INTO massprintrules (cname, inttype, content, dateadded, invisible, groupsids) VALUES ('Open Bills',0, 'Select * from contacts Inner Join items on (Items.contactsids = contacts.ids) where items.intstatus = 1 and items.inttype = 0', '2011-07-29',0, 1)",
                     "INSERT INTO massprintrules (cname, inttype, content, dateadded, invisible, groupsids) VALUES ('Is Customer', -1, 'Select * from contacts where iscustomer = 1', '2011-07-29',0, 1)",
-                    "INSERT INTO massprintrules (cname, inttype, content, dateadded, invisible, groupsids) VALUES ('Is Suply', -1, 'Select * from contacts where issupplier = 1', '2011-07-29',0, 1)"});              
+                    "INSERT INTO massprintrules (cname, inttype, content, dateadded, invisible, groupsids) VALUES ('Is Suply', -1, 'Select * from contacts where issupplier = 1', '2011-07-29',0, 1)",
+        });     
+        UPDATES_MYSQL.put(1.194, new String[]{
+                    "ALTER TABLE subitems MODIFY description VARCHAR(3333)"
+                }); 
     }
 
     /**
