@@ -16,12 +16,20 @@
  */
 package mpv5.db.objects;
 
+import java.util.Date;
+import mpv5.db.common.NodataFoundException;
+import mpv5.db.common.QueryParameter;
 import javax.swing.JComponent;
 
 import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
 import mpv5.db.common.QueryCriteria;
+import mpv5.db.common.QueryCriteria2;
+import mpv5.db.common.QueryData;
 import mpv5.db.common.QueryHandler;
+import mpv5.logging.Log;
+import mpv5.utils.date.DateConverter;
+import static mpv5.db.common.QueryParameter.*;
 
 /**
  *
@@ -59,10 +67,26 @@ public class UserProperty extends DatabaseObject {
         if (value == null) {
             value = "";
         }
-        QueryCriteria c = new QueryCriteria("usersids", usersids);
-        c.addAndCondition("cname", getCname());
-        QueryHandler.instanceOf().clone(Context.getUserProperties()).delete(c);
-        return super.save(true);
+        QueryCriteria2 q = new QueryCriteria2();
+        q.and(new QueryParameter(getContext(), "usersids", usersids, EQUALS),
+                new QueryParameter(getContext(), "groupsids", __getGroupsids(), EQUALS),
+                new QueryParameter(getContext(), "cname", getCname(), EQUALS));
+        
+        try {
+            update(q);
+            return true;
+        } catch (Exception e) {
+            Log.Debug(this, e.getMessage());
+            QueryHandler.instanceOf().clone(Context.getUserProperties()).delete(q);
+            return super.save(true);
+        }
+    }
+
+    private void update(QueryCriteria2 q) throws NodataFoundException {
+        QueryData d = new QueryData();
+        d.add("value", value);
+        d.add("dateadded", DateConverter.getSQLDateString(new Date()));
+        QueryHandler.instanceOf().clone(Context.getUserProperties()).updateOrCreate(d, q, null);
     }
 
     /**

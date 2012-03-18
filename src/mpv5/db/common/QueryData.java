@@ -28,6 +28,21 @@ import mpv5.data.*;
  */
 public class QueryData {
 
+    @Override
+    public String toString() {
+        String[] a = getKeys();
+        String c = "";
+
+        for (int i = 0; i < a.length; i++) {
+            c += a[i] + " = " + getValue(a[i]).getWrapper() + getValue(a[i]).toString() + getValue(a[i]).getWrapper() + ", ";
+        }
+
+        if (c.length() > 2) {
+            c = c.substring(0, c.length() - 2);
+        }
+        return c;
+    }
+
     /**
      * Generate a <code>SaveString<code/>
      * @param s
@@ -65,6 +80,18 @@ public class QueryData {
         String string = String.valueOf(value);
         list.put(key, new SaveString(string, false));
     }
+    
+    /**
+     * 
+     * @param criteria 
+     */
+    public void add(QueryCriteria2 criteria){
+        List<QueryParameter> d = criteria.getFields();
+        for (int i = 0; i < d.size(); i++) {
+            QueryParameter o = d.get(i);
+            add(o.getKey(), o.getValue());
+        }
+    }
 
     /**
      * Adds a key with a value
@@ -85,8 +112,7 @@ public class QueryData {
      * @param value
      */
     public void add(String key, String value) {
-        String string = String.valueOf(value);
-        list.put(key, new SaveString(string, true));
+        list.put(key, new SaveString(value, true));
     }
 
     /**
@@ -194,8 +220,7 @@ public class QueryData {
         } else if (value instanceof Boolean) {
             add(columnName, (Boolean) value);
         } else {
-            add(columnName, value.toString());
+            add(columnName, String.valueOf(value));
         }
     }
 }
-

@@ -552,6 +552,7 @@ public class User extends DatabaseObject {
             p.setValue(d[1]);
             p.setCName(d[0]);
             p.setUsersids(getID());
+            p.setGroupsids(__getGroupsids());
             p.save();
         }
     }

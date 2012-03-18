@@ -16,6 +16,8 @@
  */
 package mpv5.db.common;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import mpv5.logging.Log;
 import mpv5.utils.arrays.ArrayUtilities;
@@ -28,6 +30,8 @@ public class QueryCriteria2 {
 
     private String query = "";
     private String order = "";
+    
+    private List<QueryParameter> fields =  new ArrayList<QueryParameter>();
 
     /**
      * Add AND conditions
@@ -35,7 +39,7 @@ public class QueryCriteria2 {
      */
     public void and(QueryParameter... params) {
         for (QueryParameter p : params) {
-
+            fields.add(p);
             Log.Debug(this, "Adding AND param " + p);
             if ((p.getValue() instanceof Number || p.getValue() instanceof Boolean) && (p.getCondition() == QueryParameter.LIKE || p.getCondition() == QueryParameter.NOTLIKE)) {
                 throw new IllegalArgumentException("You cannot mix LIKE and boolean/number values!");
@@ -98,6 +102,7 @@ public class QueryCriteria2 {
 
     /**
      * Add OR conditions
+     * @param param1 
      * @param params
      */
     public void or(QueryParameter param1, QueryParameter... params) {
@@ -111,6 +116,7 @@ public class QueryCriteria2 {
         for (Object px : paramsx) {
             QueryParameter p = (QueryParameter) px;
             Log.Debug(this, "Adding OR param " + p);
+            fields.add(p);
 
             if ((p.getValue() instanceof Number || p.getValue() instanceof Boolean) && (p.getCondition() == QueryParameter.LIKE || p.getCondition() == QueryParameter.NOTLIKE)) {
                 throw new IllegalArgumentException("You cannot mix LIKE and boolean/number values!");
@@ -212,5 +218,13 @@ public class QueryCriteria2 {
             return;
         }
         and(params.toArray(new QueryParameter[params.size()]));
+    }
+
+    /**
+     * All fields
+     * @return 
+     */
+    public List<QueryParameter> getFields() {
+        return Collections.unmodifiableList(fields);
     }
 }

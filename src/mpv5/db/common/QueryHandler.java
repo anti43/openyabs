@@ -1401,6 +1401,41 @@ public class QueryHandler implements Cloneable {
     }
 
     /**
+     * Will throw an exception if the desired row to update doesnt exist.
+     * @param what The data
+     * @param criteria  
+     * @param jobmessage
+     * @throws NodataFoundException  
+     */
+    public void update(QueryData what, QueryCriteria2 criteria, String jobmessage) throws NodataFoundException {
+
+        String checkquery = "select ids from " + table + " WHERE " + criteria.getQuery();
+        String query = "UPDATE " + table + " SET " + what + " WHERE " + criteria.getQuery();
+        if (freeSelectQuery(checkquery, mpv5.usermanagement.MPSecurityManager.VIEW, jobmessage).hasData()) {
+            freeUpdateQuery(query, mpv5.usermanagement.MPSecurityManager.EDIT, jobmessage);
+        } else {
+            Log.Debug(this, "No data for : " + checkquery);
+            throw new NodataFoundException(context);
+        }
+    }
+    
+     /**
+     * Will create the row if the desired row to update doesnt exist.
+     * @param what The data
+     * @param criteria  
+     * @param jobmessage
+     */
+    public void updateOrCreate(QueryData what, QueryCriteria2 criteria, String jobmessage) {
+        String query = "UPDATE " + table + " SET " + what + " WHERE " + criteria.getQuery();
+        if (freeUpdateQuery(query, mpv5.usermanagement.MPSecurityManager.EDIT, jobmessage).getUpdateCount()>0) {
+        } else {
+            Log.Debug(this, "Need to create " + what + " on " + criteria.getQuery());
+            what.add(criteria);
+            insert(what, jobmessage);
+        }
+    }
+
+    /**
      *
      * @param q The data
      * @param criteria Only the "ids" criterium will be used
@@ -2285,8 +2320,9 @@ public class QueryHandler implements Cloneable {
                 log.append("\n " + query);
             }
             stm.executeUpdate(query, Statement.RETURN_GENERATED_KEYS);
+            int res = stm.getUpdateCount();
             if (log != null) {
-                log.append("\n " + stm.getUpdateCount() + " rows affected.");
+                log.append("\n " + res + " rows affected.");
             }
 
 
@@ -2301,6 +2337,7 @@ public class QueryHandler implements Cloneable {
             }
 
             retval = new ReturnValue(id, null, null);
+            retval.setUpdateCount(stm.getUpdateCount());
 
         } catch (SQLException ex) {
 

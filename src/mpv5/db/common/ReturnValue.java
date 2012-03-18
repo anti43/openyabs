@@ -16,6 +16,7 @@ import java.util.List;
 public class ReturnValue {
 
     private int id = 0;
+    private int updateCount = 0;
     private Object[][] data;
     private String[] columnnames;
     private String message = null;
@@ -221,5 +222,16 @@ public class ReturnValue {
 
     public void setFullColumnNames(String[] fullColumnNames) {
         this.fullColumnNames = fullColumnNames;
+    }
+
+    public void setUpdateCount(int updateCount) {
+        this.updateCount = updateCount;
+    }
+
+    /**
+     * @return the updateCount
+     */
+    public int getUpdateCount() {
+        return updateCount;
     }
 }

@@ -2,7 +2,6 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package mpv5.db.common;
 
 /**
@@ -26,7 +25,11 @@ public class SaveString {
      * @param wrapped If true, the String will be wrapped with a single quote on insertion time
      */
     public SaveString(String str, boolean wrapped) {
-        this.string = str.replace("'", "`");
+        if (str == null) {
+            this.string = "";
+        } else {
+            this.string = str.replace("'", "`");
+        }
         if (wrapped) {
             this.wrapper = "'";
         }
