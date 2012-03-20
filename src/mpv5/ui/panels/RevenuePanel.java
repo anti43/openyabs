@@ -69,6 +69,7 @@ public class RevenuePanel extends javax.swing.JPanel implements DataPanel {
     private static final long serialVersionUID = 1L;
     private static RevenuePanel me;
     private java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle();
+    private BigDecimal tax = new BigDecimal("0");
 
     /**
      * Singleton
@@ -104,8 +105,6 @@ public class RevenuePanel extends javax.swing.JPanel implements DataPanel {
         taxrate.setSearchEnabled(true);
         taxrate.setContext(Context.getTaxes());
 
-
-
 //        new calc().start();
         value.getTextField().addKeyListener(new KeyListener() {
 
@@ -124,7 +123,7 @@ public class RevenuePanel extends javax.swing.JPanel implements DataPanel {
         taxrate.getComboBox().addActionListener(new ActionListener() {
 
             public void actionPerformed(ActionEvent e) {
-                calculate();
+                getTaxRate();
             }
         });
         taxrate.getComboBox().setEditable(false);
@@ -133,26 +132,12 @@ public class RevenuePanel extends javax.swing.JPanel implements DataPanel {
         itemtable.setFillsViewportHeight(true);
 
         ((MPTable) itemtable).setDefaultColumns(new Integer[]{100, 333, 100}, new Boolean[]{});
-        ((MPTable) itemtable).setPersistanceHandler(new TableViewPersistenceHandler((MPTable)itemtable, this));
+        ((MPTable) itemtable).setPersistanceHandler(new TableViewPersistenceHandler((MPTable) itemtable, this));
     }
 
     private void calculate() {
-        BigDecimal tax = BigDecimal.ZERO;
         try {
-            MPComboBoxModelItem t = taxrate.getValue();
-            tax = Tax.getTaxValue(Integer.valueOf(t.getId()));
-        } catch (Exception e) {
-            Log.Debug(e);
-            try {
-                tax = new BigDecimal(taxrate.getText());
-            } catch (Exception numberFormatException) {
-                Log.Debug(e);
-                tax = BigDecimal.ZERO;
-            }
-        }
-
-        try {
-            netvalue.setText(FormatNumber.formatLokalCurrency(FormatNumber.parseDezimal(value.getText()).divide((tax.divide(new BigDecimal("100"), RoundingMode.HALF_UP)).add(BigDecimal.ONE), RoundingMode.HALF_UP)));
+            netvalue.setText(FormatNumber.formatLokalCurrency(FormatNumber.parseDezimal(value.getText()).divide((tax.divide(new BigDecimal("100"), 10, RoundingMode.HALF_UP)).add(BigDecimal.ONE), 10, RoundingMode.HALF_UP)));
         } catch (Exception e) {
             Log.Debug(e);
             netvalue.setText(FormatNumber.formatLokalCurrency(0d));
@@ -562,6 +547,7 @@ public class RevenuePanel extends javax.swing.JPanel implements DataPanel {
         addedby.setText(User.getUsername(intaddedby_));
         labeledDateChooser1.setDate((dateadded_));
         taxrate.setSelectedItem(Tax.getTaxId(taxpercentvalue_));
+        getTaxRate();
     }
 
     @Override
@@ -590,7 +576,7 @@ public class RevenuePanel extends javax.swing.JPanel implements DataPanel {
                 } catch (Exception e) {
                     Log.Debug(this, e.getMessage());
                 }
-
+                getTaxRate();
             }
         };
 
@@ -660,35 +646,51 @@ public class RevenuePanel extends javax.swing.JPanel implements DataPanel {
         Export.print(this);
     }
 
-    class calc extends Thread {
-
-        @Override
-        public void run() {
-            while (true) {
-                while (isShowing()) {
-                    BigDecimal tax = new BigDecimal("0");
-                    try {
-                        MPComboBoxModelItem t = taxrate.getValue();
-                        tax = Tax.getTaxValue(Integer.valueOf(t.getId()));
-                    } catch (Exception e) {
-                        try {
-                            tax = new BigDecimal(taxrate.getText());
-                        } catch (Exception numberFormatException) {
-                            tax = new BigDecimal("0");
-                        }
-                    }
-
-                    try {
-                        netvalue.setText(FormatNumber.formatLokalCurrency(FormatNumber.parseDezimal(value.getText()).divide((tax.divide(new BigDecimal("100"))).add(BigDecimal.ONE))));
-                    } catch (Exception e) {
-                        netvalue.setText(FormatNumber.formatLokalCurrency(0d));
-                    }
-                    try {
-                        sleep(333);
-                    } catch (InterruptedException ex) {
-                    }
-                }
+    private void getTaxRate() {
+        try {
+            MPComboBoxModelItem t = taxrate.getValue();
+            tax = Tax.getTaxValue(Integer.valueOf(t.getId()));
+            Log.Debug(this, "Selected Taxrate: " + tax);
+        } catch (Exception ex) {
+            try {
+                Log.Debug(this, "Trying Decimal Taxrate: " + taxrate.getText());
+                tax = new BigDecimal(taxrate.getText());
+            } catch (NumberFormatException numberFormatException) {
+                Log.Debug(this, "Reading Taxrate failed: Assuming Zero");
+                tax = new BigDecimal("0");
             }
         }
+        calculate();
     }
+//    class calc extends Thread {
+//
+//        @Override
+//        public void run() {
+//            while (true) {
+//                while (isShowing()) {
+//                    BigDecimal tax = new BigDecimal("0");
+//                    try {
+//                        MPComboBoxModelItem t = taxrate.getValue();
+//                        tax = Tax.getTaxValue(Integer.valueOf(t.getId()));
+//                    } catch (Exception e) {
+//                        try {
+//                            tax = new BigDecimal(taxrate.getText());
+//                        } catch (Exception numberFormatException) {
+//                            tax = new BigDecimal("0");
+//                        }
+//                    }
+//
+//                    try {
+//                        netvalue.setText(FormatNumber.formatLokalCurrency(FormatNumber.parseDezimal(value.getText()).divide((tax.divide(new BigDecimal("100"))).add(BigDecimal.ONE))));
+//                    } catch (Exception e) {
+//                        netvalue.setText(FormatNumber.formatLokalCurrency(0d));
+//                    }
+//                    try {
+//                        sleep(333);
+//                    } catch (InterruptedException ex) {
+//                    }
+//                }
+//            }
+//        }
+//    }
 }
