@@ -133,23 +133,23 @@ public class ExpensePanel extends javax.swing.JPanel implements DataPanel {
 
     }
 
-   private void calculate() {
-        BigDecimal tax = BigDecimal.ZERO;
-        try {
-            MPComboBoxModelItem t = taxrate.getValue();
-            tax = Tax.getTaxValue(Integer.valueOf(t.getId()));
-        } catch (Exception e) {
-            Log.Debug(e);
-            try {
-                tax = new BigDecimal(taxrate.getText());
-            } catch (Exception numberFormatException) {
-                Log.Debug(e);
-                tax = BigDecimal.ZERO;
-            }
-        }
+    private void calculate() {
+//        BigDecimal tax2 = BigDecimal.ZERO;
+//        try {
+//            MPComboBoxModelItem t = taxrate.getValue();
+//            tax2 = Tax.getTaxValue(Integer.valueOf(t.getId()));
+//        } catch (Exception e) {
+//            Log.Debug(e);
+//            try {
+//                tax2 = new BigDecimal(taxrate.getText());
+//            } catch (Exception numberFormatException) {
+//                Log.Debug(e);
+//                tax2 = BigDecimal.ZERO;
+//            }
+//        }
 
         try {
-            netvalue.setText(FormatNumber.formatLokalCurrency(FormatNumber.parseDezimal(value.getText()).divide((tax.divide(new BigDecimal("100"), RoundingMode.HALF_UP)).add(BigDecimal.ONE), RoundingMode.HALF_UP)));
+            netvalue.setText(FormatNumber.formatLokalCurrency(FormatNumber.parseDezimal(value.getText()).divide((tax.divide(new BigDecimal("100"), 10, RoundingMode.HALF_UP)).add(BigDecimal.ONE), 10, RoundingMode.HALF_UP)));
         } catch (Exception e) {
             Log.Debug(e);
             netvalue.setText(FormatNumber.formatLokalCurrency(0d));
@@ -592,6 +592,7 @@ public class ExpensePanel extends javax.swing.JPanel implements DataPanel {
         taxrate.setSelectedItem(Tax.getTaxId(taxpercentvalue_));
         paydate.setDate(dateend_);
         jCheckBox1.setSelected(ispaid_);
+        getTaxRate();
     }
 
     @Override
@@ -620,7 +621,7 @@ public class ExpensePanel extends javax.swing.JPanel implements DataPanel {
                 } catch (Exception e) {
                     Log.Debug(this, e.getMessage());
                 }
-
+                getTaxRate();
             }
         };
 
@@ -704,8 +705,8 @@ public class ExpensePanel extends javax.swing.JPanel implements DataPanel {
                 tax = new BigDecimal("0");
             }
         }
+        calculate();
     }
-
 //    class calc extends Thread {
 //
 //        @Override
