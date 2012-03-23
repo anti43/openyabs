@@ -4,13 +4,19 @@ import java.awt.Component;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map.Entry;
+import javax.swing.SwingUtilities;
 import mpv5.data.PropertyStore;
+import mpv5.db.common.Context;
 import mpv5.db.common.QueryHandler;
+import mpv5.db.objects.HistoryItem;
 import mpv5.db.objects.User;
 import mpv5.globals.LocalSettings;
+import mpv5.globals.Messages;
 import mpv5.logging.Log;
 import mpv5.ui.beans.LabeledTextField;
 import mpv5.ui.dialogs.ControlApplet;
+import mpv5.ui.dialogs.Popup;
+import mpv5.usermanagement.MPSecurityManager;
 import mpv5.utils.text.TypeConversion;
 import mpv5.utils.ui.PanelUtils;
 
@@ -62,6 +68,7 @@ public final class ControlPanel_Company extends javax.swing.JPanel implements Co
         jScrollPane1 = new javax.swing.JScrollPane();
         jTextArea1 = new javax.swing.JTextArea();
         jPanel1 = new javax.swing.JPanel();
+        jButton2 = new javax.swing.JButton();
         jButton1 = new javax.swing.JButton();
         jButton3 = new javax.swing.JButton();
 
@@ -69,7 +76,7 @@ public final class ControlPanel_Company extends javax.swing.JPanel implements Co
         setName("Form"); // NOI18N
         setLayout(new java.awt.BorderLayout());
 
-       java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle(); // NOI18N
+        java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle(); // NOI18N
         jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("ControlPanel_Company.jPanel2.border.title"))); // NOI18N
         jPanel2.setName("jPanel2"); // NOI18N
 
@@ -175,12 +182,11 @@ public final class ControlPanel_Company extends javax.swing.JPanel implements Co
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                .addContainerGap()
+            .addGroup(jPanel2Layout.createSequentialGroup()
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, 614, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 614, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap())
+                .addContainerGap(90, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -196,6 +202,16 @@ public final class ControlPanel_Company extends javax.swing.JPanel implements Co
         jPanel1.setBackground(new java.awt.Color(255, 255, 255));
         jPanel1.setName("jPanel1"); // NOI18N
         jPanel1.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.RIGHT));
+
+        jButton2.setBackground(new java.awt.Color(255, 153, 153));
+        jButton2.setText(bundle.getString("ControlPanel_Company.jButton2.text")); // NOI18N
+        jButton2.setName("jButton2"); // NOI18N
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
+        jPanel1.add(jButton2);
 
         jButton1.setText(bundle.getString("ControlPanel_Company.jButton1.text")); // NOI18N
         jButton1.setName("jButton1"); // NOI18N
@@ -227,6 +243,27 @@ public final class ControlPanel_Company extends javax.swing.JPanel implements Co
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
         reset();
     }//GEN-LAST:event_jButton3ActionPerformed
+
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        if (mpv5.ui.dialogs.Popup.Y_N_dialog("Really delete all invoices, orders and offers from the database? This is irreversible!!! Contacts and Products will not be affected.", Messages.ARE_YOU_SURE)) {
+            if (Popup.Y_N_dialog(Messages.ARE_YOU_SURE)) {
+                Popup.notice(QueryHandler.instanceOf().freeQuery("delete from items", MPSecurityManager.ADMINISTRATE, "Item reset done.").getMessage());
+                final String fmessage = "ITEM RESET: removed all invoices, orders and offers from database";
+                final String fdbid = "items";
+                final int fids = 0;
+                final int fgids = 1;
+
+                Runnable runnable = new Runnable() {
+
+                    @Override
+                    public void run() {
+                        QueryHandler.instanceOf().clone(Context.getHistory()).insertHistoryItem(fmessage, mpv5.db.objects.User.getCurrentUser().__getCName(), fdbid, fids, fgids);
+                    }
+                };
+                SwingUtilities.invokeLater(runnable);
+            }
+        }
+    }//GEN-LAST:event_jButton2ActionPerformed
 
     public void setValues(PropertyStore values) {
         oldvalues = values;
@@ -262,6 +299,7 @@ public final class ControlPanel_Company extends javax.swing.JPanel implements Co
     private mpv5.ui.beans.LabeledTextField fax;
     private mpv5.ui.beans.LabeledTextField firstname;
     private javax.swing.JButton jButton1;
+    private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
@@ -285,7 +323,7 @@ public final class ControlPanel_Company extends javax.swing.JPanel implements Co
         Iterator<Entry<String, String>> i = m.entrySet().iterator();
         while (i.hasNext()) {
             Entry<String, String> it = i.next();
-            User.getCurrentUser().setProperty("companyinfo."+it.getKey(), it.getValue());
+            User.getCurrentUser().setProperty("companyinfo." + it.getKey(), it.getValue());
         }
     }
 

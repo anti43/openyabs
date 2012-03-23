@@ -122,7 +122,7 @@ public class MPControlPanel extends javax.swing.JPanel {
         jScrollPane1.setPreferredSize(new java.awt.Dimension(343, 303));
 
         buttons.setBackground(new java.awt.Color(255, 255, 255));
-       java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle(); // NOI18N
+        java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle(); // NOI18N
         buttons.setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("MPControlPanel.buttons.border.title"))); // NOI18N
         buttons.setAutoscrolls(true);
         buttons.setMaximumSize(new java.awt.Dimension(32767, 400));
@@ -170,7 +170,7 @@ public class MPControlPanel extends javax.swing.JPanel {
         });
         buttons.add(jButton1);
 
-        jButton15.setFont(new java.awt.Font("Tahoma", 0, 10));
+        jButton15.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
         jButton15.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/48/advancedsettings.png"))); // NOI18N
         jButton15.setText(bundle.getString("MPControlPanel.jButton15.text")); // NOI18N
         jButton15.setToolTipText(bundle.getString("MPControlPanel.jButton15.toolTipText")); // NOI18N
@@ -530,7 +530,7 @@ public class MPControlPanel extends javax.swing.JPanel {
         });
         buttons.add(jButton22);
 
-        jButton23.setFont(new java.awt.Font("Tahoma", 0, 10));
+        jButton23.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
         jButton23.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/48/advancedsettings.png"))); // NOI18N
         jButton23.setText(bundle.getString("MPControlPanel.jButton23.text")); // NOI18N
         jButton23.setToolTipText(bundle.getString("MPControlPanel.jButton23.toolTipText")); // NOI18N
@@ -570,7 +570,7 @@ public class MPControlPanel extends javax.swing.JPanel {
         });
         buttons.add(jButton24);
 
-        jButton25.setFont(new java.awt.Font("Tahoma", 0, 10));
+        jButton25.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N
         jButton25.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/48/advancedsettings.png"))); // NOI18N
         jButton25.setText(bundle.getString("MPControlPanel.jButton25.text")); // NOI18N
         jButton25.setToolTipText(bundle.getString("MPControlPanel.jButton25.toolTipText")); // NOI18N
