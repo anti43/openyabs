@@ -20,6 +20,7 @@ package mpv5.utils.tables;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
+import mpv5.globals.Constants;
 import mpv5.logging.Log;
 
 class DynamicArithmetic {
@@ -29,7 +30,7 @@ class DynamicArithmetic {
     private ArrayList<BigDecimal> vals = new ArrayList<BigDecimal>();
     private char operator = 0;
     public BigDecimal result = BigDecimal.ZERO;
-    private final BigDecimal hundert = new BigDecimal("100");
+    private final BigDecimal hundert = Constants.BD100;
     private int openTerms = 0;
     private final HashMap<Integer, BigDecimal> values;
     private DynamicArithmetic da;
@@ -164,7 +165,7 @@ class DynamicArithmetic {
                         if (k == 0) {
                             tmp = val;
                         } else {
-                            tmp = tmp.divide(val);
+                            tmp = tmp.divide(val, 9, BigDecimal.ROUND_HALF_UP);
                         }
                     }
                     if (openTerms == 0) {
@@ -177,7 +178,7 @@ class DynamicArithmetic {
                         if (k == 0) {
                             tmp = val;
                         } else {
-                            tmp = tmp.divide(val);
+                            tmp = tmp.divide(val, 9, BigDecimal.ROUND_HALF_UP);
                         }
                     }
                     if (openTerms == 0) {
@@ -203,7 +204,7 @@ class DynamicArithmetic {
                         if (k == 0) {
                             tmp = val;
                         } else {
-                            tmp = tmp.multiply(val).divide(hundert);
+                            tmp = tmp.multiply(val).divide(hundert, 9, BigDecimal.ROUND_HALF_UP);
                         }
                     }
                     if (openTerms == 0) {

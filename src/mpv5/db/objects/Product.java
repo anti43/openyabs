@@ -101,8 +101,8 @@ public class Product extends DatabaseObject implements Formattable, Templateable
     private int suppliersids = 0;
     private int productgroupsids = 1;
     private int productlistsids = 0;
-    private BigDecimal externalnetvalue = new BigDecimal("0");
-    private BigDecimal internalnetvalue = new BigDecimal("0");
+    private BigDecimal externalnetvalue = BigDecimal.ZERO;
+    private BigDecimal internalnetvalue = BigDecimal.ZERO;
     private String description = "";
     private String cnumber = "";
     private String measure = "";
@@ -110,8 +110,8 @@ public class Product extends DatabaseObject implements Formattable, Templateable
     private String ean = "";
     private String reference = "";//herstellernummer
     private String defaultimage = "";
-    private BigDecimal stockvalue = new BigDecimal("0");
-    private BigDecimal thresholdvalue = new BigDecimal("0");
+    private BigDecimal stockvalue = BigDecimal.ZERO;
+    private BigDecimal thresholdvalue = BigDecimal.ZERO;
     private int intinventorytype = 0;
     public static final int TYPE_PRODUCT = 0;
     public static final int TYPE_SERVICE = 1;

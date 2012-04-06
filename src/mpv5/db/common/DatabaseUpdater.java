@@ -180,7 +180,9 @@ public class DatabaseUpdater {
         UPDATES_DERBY.put(1.194, new String[]{
                     "ALTER TABLE subitems ALTER description SET DATA TYPE VARCHAR(3333)"
                 }); 
-        
+        UPDATES_DERBY.put(1.195, new String[]{
+                    "update expenses set brutvalue = (netvalue * ((taxpercentvalue/100)+1)) where taxpercentvalue > 0"
+                });
         ////////////////////////////////////////////////////////////////////////////////////////////
         // mysql updates
         UPDATES_MYSQL.put(1.11, new String[]{
@@ -367,6 +369,9 @@ public class DatabaseUpdater {
         UPDATES_MYSQL.put(1.194, new String[]{
                     "ALTER TABLE subitems MODIFY description VARCHAR(3333)"
                 }); 
+        UPDATES_MYSQL.put(1.195, new String[]{
+                    "update expenses set brutvalue = (netvalue * ((taxpercentvalue/100)+1)) where taxpercentvalue > 0"
+                });
     }
 
     /**

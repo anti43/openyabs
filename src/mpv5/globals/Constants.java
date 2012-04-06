@@ -18,6 +18,8 @@
  */
 package mpv5.globals;
 
+import java.math.BigDecimal;
+
 /**
  *
  * 
@@ -28,7 +30,7 @@ public interface Constants {
      * 
      * Full Version number
      */
-    public static final String VERSION = "Yabs-1.18-beta2";
+    public static final String VERSION = "Yabs-1.18-beta3";
 
     /**
      * The original database version of this release
@@ -37,7 +39,7 @@ public interface Constants {
     /**
      * The minimal Database Version which is compatible with this release
      */
-    public static final Double DATABASE_VERSION = 1.194;
+    public static final Double DATABASE_VERSION = 1.195;
     /**
      * The max Database Version which is compatible with this release
      */
@@ -110,5 +112,6 @@ public interface Constants {
     public static String BABELFISH_URL = "http://ajax.googleapis.com/ajax/services/language/translate?v=1.0&langpair=";
     public static String FALLBACK_CACHE_DIR = "Cache";//Go for a relative path
     public static String LIBS_DIR = "lib";
+    public static BigDecimal BD100 = new BigDecimal("100");
     
 }

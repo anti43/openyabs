@@ -260,9 +260,9 @@ public class Item extends DatabaseObject implements Formattable, Templateable {
     }
     private int contactsids;
     private int accountsids;
-    private BigDecimal netvalue = new BigDecimal("0");
-    private BigDecimal taxvalue = new BigDecimal("0");
-    private BigDecimal discountvalue = new BigDecimal("0");
+    private BigDecimal netvalue = BigDecimal.ZERO;
+    private BigDecimal taxvalue = BigDecimal.ZERO;
+    private BigDecimal discountvalue = BigDecimal.ZERO;
     private Date datetodo;
     private Date dateend;
     private int intreminders;

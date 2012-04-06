@@ -156,14 +156,14 @@ public final class ActivityListSubItem extends DatabaseObject {
     private int activitylistsids;
     private int id;
     private Date datedoing;
-    private BigDecimal countvalue = new BigDecimal("0");
-    private BigDecimal quantityvalue = new BigDecimal("0");
+    private BigDecimal countvalue = BigDecimal.ZERO;
+    private BigDecimal quantityvalue = BigDecimal.ZERO;
     private String measure = "";
     private String description = "";
     private int productsids;
-    private BigDecimal internalvalue = new BigDecimal("0");
-    private BigDecimal taxpercentvalue = new BigDecimal("0");
-    private BigDecimal totalbrutvalue = new BigDecimal("0");
+    private BigDecimal internalvalue = BigDecimal.ZERO;
+    private BigDecimal taxpercentvalue = BigDecimal.ZERO;
+    private BigDecimal totalbrutvalue = BigDecimal.ZERO;
 
     public ActivityListSubItem() {
         setContext(Context.getActivityListItems());
@@ -432,7 +432,7 @@ public final class ActivityListSubItem extends DatabaseObject {
     }
 
     private static void calculate(ActivityListSubItem s) {
-        s.setTotalbrutvalue(s.quantityvalue.multiply(s.__getInternalvalue()).multiply(s.taxpercentvalue.divide(new BigDecimal(100)).add(new BigDecimal(1))));
+        s.setTotalbrutvalue(s.quantityvalue.multiply(s.__getInternalvalue()).multiply(s.taxpercentvalue.divide(new BigDecimal(100), 9, BigDecimal.ROUND_HALF_UP).add(new BigDecimal(1))));
     }
 
     @Override

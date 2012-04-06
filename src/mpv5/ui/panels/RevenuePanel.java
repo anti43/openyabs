@@ -50,6 +50,7 @@ import mpv5.logging.Log;
 import mpv5.ui.dialogs.Popup;
 import mpv5.ui.toolbars.DataPanelTB;
 import mpv5.db.objects.User;
+import mpv5.globals.Constants;
 import mpv5.globals.Headers;
 import mpv5.ui.misc.MPTable;
 import mpv5.utils.export.Export;
@@ -137,7 +138,20 @@ public class RevenuePanel extends javax.swing.JPanel implements DataPanel {
 
     private void calculate() {
         try {
-            netvalue.setText(FormatNumber.formatLokalCurrency(FormatNumber.parseDezimal(value.getText()).divide((tax.divide(new BigDecimal("100"), 10, RoundingMode.HALF_UP)).add(BigDecimal.ONE), 10, RoundingMode.HALF_UP)));
+            MPComboBoxModelItem t = taxrate.getValue();
+            tax = Tax.getTaxValue(Integer.valueOf(t.getId()));
+        } catch (Exception e) {
+            Log.Debug(e);
+            try {
+                tax = new BigDecimal(taxrate.getText());
+            } catch (Exception numberFormatException) {
+                Log.Debug(e);
+                tax = BigDecimal.ZERO;
+            }
+        }
+
+        try {
+            netvalue.setText(FormatNumber.formatLokalCurrency(FormatNumber.parseDezimal(value.getText()).divide((tax.divide(Constants.BD100, 9, RoundingMode.HALF_UP)).add(BigDecimal.ONE), 9, RoundingMode.HALF_UP)));
         } catch (Exception e) {
             Log.Debug(e);
             netvalue.setText(FormatNumber.formatLokalCurrency(0d));
@@ -281,7 +295,7 @@ public class RevenuePanel extends javax.swing.JPanel implements DataPanel {
         jPanel4.setLayout(jPanel4Layout);
         jPanel4Layout.setHorizontalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane3, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 755, Short.MAX_VALUE)
+            .addComponent(jScrollPane3, javax.swing.GroupLayout.Alignment.TRAILING)
         );
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -339,6 +353,14 @@ public class RevenuePanel extends javax.swing.JPanel implements DataPanel {
 
         taxrate.set_Label(bundle.getString("RevenuePanel.taxrate._Label")); // NOI18N
         taxrate.setName("taxrate"); // NOI18N
+        taxrate.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                taxrateMouseClicked(evt);
+            }
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                taxrateMouseExited(evt);
+            }
+        });
 
         path.setText(bundle.getString("RevenuePanel.path.text")); // NOI18N
         path.setName("path"); // NOI18N
@@ -350,8 +372,8 @@ public class RevenuePanel extends javax.swing.JPanel implements DataPanel {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 731, Short.MAX_VALUE)
-                    .addComponent(path, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 731, Short.MAX_VALUE)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(path, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jLabel1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 99, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel2Layout.createSequentialGroup()
                         .addComponent(value, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -400,7 +422,7 @@ public class RevenuePanel extends javax.swing.JPanel implements DataPanel {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(addedby, javax.swing.GroupLayout.PREFERRED_SIZE, 94, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(groupnameselect, javax.swing.GroupLayout.PREFERRED_SIZE, 187, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(82, Short.MAX_VALUE))
+                .addContainerGap())
             .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         jPanel1Layout.setVerticalGroup(
@@ -450,6 +472,14 @@ public class RevenuePanel extends javax.swing.JPanel implements DataPanel {
             Log.Debug(this, e.getMessage());
         }
     }//GEN-LAST:event_itemtableMouseClicked
+
+    private void taxrateMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_taxrateMouseClicked
+        calculate();
+    }//GEN-LAST:event_taxrateMouseClicked
+
+    private void taxrateMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_taxrateMouseExited
+       calculate();
+    }//GEN-LAST:event_taxrateMouseExited
     MPTableModel omodel = null;
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private mpv5.ui.beans.LabeledCombobox accountselect;
@@ -487,7 +517,7 @@ public class RevenuePanel extends javax.swing.JPanel implements DataPanel {
     public int accountsids_;
 
     @Override
-    public boolean collectData() {
+    public synchronized boolean collectData() {
         calculate();
 
         try {
@@ -511,17 +541,17 @@ public class RevenuePanel extends javax.swing.JPanel implements DataPanel {
         try {
             netvalue_ = FormatNumber.parseDezimal(netvalue.getText());
         } catch (Exception e) {
-            netvalue_ = new BigDecimal("0");
+            netvalue_ = BigDecimal.ZERO;
         }
         try {
             brutvalue_ = FormatNumber.parseDezimal(value.getText());
         } catch (Exception e) {
-            brutvalue_ = new BigDecimal("0");
+            brutvalue_ = BigDecimal.ZERO;
         }
         try {
             taxpercentvalue_ = Tax.getTaxValue(Integer.valueOf(taxrate.getSelectedItem().getId()));
         } catch (Exception numberFormatException) {
-            taxpercentvalue_ = new BigDecimal("0");
+            taxpercentvalue_ = BigDecimal.ZERO;
         }
         return true;
     }
@@ -658,6 +688,7 @@ public class RevenuePanel extends javax.swing.JPanel implements DataPanel {
             } catch (NumberFormatException numberFormatException) {
                 Log.Debug(this, "Reading Taxrate failed: Assuming Zero");
                 tax = new BigDecimal("0");
+
             }
         }
         calculate();

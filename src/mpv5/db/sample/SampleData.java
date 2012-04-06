@@ -28,6 +28,7 @@ import mpv5.db.objects.Group;
 import mpv5.db.objects.Item;
 import mpv5.db.objects.Product;
 import mpv5.db.objects.SubItem;
+import mpv5.globals.Constants;
 import mpv5.ui.dialogs.Popup;
 import mpv5.ui.frames.MPView;
 import mpv5.utils.date.DateConverter;
@@ -126,12 +127,12 @@ public class SampleData {
                                 p.setDateadded(date);
                                 p.setDatedelivery(date);
                                 p.setDescription("no description!");
-                                p.setExternalvalue(new BigDecimal("100"));value+=100d;
+                                p.setExternalvalue(Constants.BD100);value+=100d;
                                 p.setGroupsids(1);
                                 p.setIntaddedby(mpv5.db.objects.User.getCurrentUser().__getIDS());
-                                p.setInternalvalue(new BigDecimal("100"));
+                                p.setInternalvalue(Constants.BD100);
                                 p.setMeasure("h");
-                                p.setQuantityvalue(new BigDecimal("1"));
+                                p.setQuantityvalue(BigDecimal.ONE);
                                 p.setTaxpercentvalue(new BigDecimal("19"));
                                 l.add(p);
                             }

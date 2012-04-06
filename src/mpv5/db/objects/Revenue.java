@@ -38,9 +38,9 @@ public class Revenue extends DatabaseObject implements Formattable {
 
     public static int TYPE_REVENUE = 42;
     private String description = "";
-    private BigDecimal netvalue = new BigDecimal("0");
-    private BigDecimal taxpercentvalue = new BigDecimal("0");
-    private BigDecimal brutvalue = new BigDecimal("0");
+    private BigDecimal netvalue = BigDecimal.ZERO;
+    private BigDecimal taxpercentvalue = BigDecimal.ZERO;
+    private BigDecimal brutvalue = BigDecimal.ZERO;
     private String cnumber;
     private int accountsids;
     private FormatHandler formatHandler;

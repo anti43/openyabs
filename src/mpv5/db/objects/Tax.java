@@ -32,7 +32,7 @@ import mpv5.utils.images.MPIcon;
  */
 public class Tax extends DatabaseObject {
 
-    private BigDecimal taxvalue = new BigDecimal("0");
+    private BigDecimal taxvalue = BigDecimal.ZERO;
     private String identifier = "";
     private String country = "";
 
@@ -46,7 +46,7 @@ public class Tax extends DatabaseObject {
             return ((Tax) getObject(Context.getTaxes(), taxid)).__getTaxvalue();
         } catch (NodataFoundException ex) {
             Log.Debug(ex);
-            return new BigDecimal("0");
+            return BigDecimal.ZERO;
         }
     }
 

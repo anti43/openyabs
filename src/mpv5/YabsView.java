@@ -14,6 +14,8 @@ import mpv5.globals.Constants;
 import mpv5.pluginhandling.YabsPluginLoader;
 import mpv5.ui.dialogs.DialogForFile;
 import mpv5.ui.panels.DataPanel;
+import org.jdesktop.application.Application;
+import org.jdesktop.application.SingleFrameApplication;
 
 /**
  *
@@ -32,6 +34,8 @@ public interface YabsView{
     public JFrame getIdentifierFrame();
 
     public YabsView getIdentifierView();
+    
+    public Application getApplication();
 
     public YabsPluginLoader getPluginLoader();
 

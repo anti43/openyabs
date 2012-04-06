@@ -1171,13 +1171,13 @@ public class ProductPanel extends javax.swing.JPanel implements DataPanel, MPCBS
             try {
                 internalnetvalue_ = FormatNumber.parseDezimal(netvalue.getText());
             } catch (NumberFormatException numberFormatException) {
-                internalnetvalue_ = new BigDecimal("0");
+                internalnetvalue_ = BigDecimal.ZERO;
             }
 
             try {
                 externalnetvalue_ = FormatNumber.parseDezimal(extvalue.getText());
             } catch (NumberFormatException numberFormatException) {
-                externalnetvalue_ = new BigDecimal("0");
+                externalnetvalue_ = BigDecimal.ZERO;
             }
 
             try {

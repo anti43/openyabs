@@ -43,6 +43,7 @@ import mpv5.db.objects.Reminder;
 import mpv5.db.objects.Schedule;
 import mpv5.db.objects.SubItem;
 import mpv5.db.objects.User;
+import mpv5.globals.Constants;
 import mpv5.globals.Messages;
 import mpv5.handler.Scheduler;
 import mpv5.logging.Log;
@@ -203,15 +204,15 @@ public class HomeScreen
                     //  <li>TYPE_OFFER = 2;
                     switch (type) {
                         case Item.TYPE_BILL:
-                            tax = new BigDecimal("100").add(((Item) databaseObject).__getTaxvalue()).divide(new BigDecimal("100"));
+                            tax = Constants.BD100.add(((Item) databaseObject).__getTaxvalue()).divide(Constants.BD100, 9, BigDecimal.ROUND_HALF_UP);
                             billsSum = billsSum.add(((Item) databaseObject).__getNetvalue().multiply(tax));
                             break;
                         case Item.TYPE_OFFER:
-                            tax = new BigDecimal("100").add(((Item) databaseObject).__getTaxvalue()).divide(new BigDecimal("100"));
+                            tax = Constants.BD100.add(((Item) databaseObject).__getTaxvalue()).divide(Constants.BD100, 9, BigDecimal.ROUND_HALF_UP);
                             offerSum = offerSum.add(((Item) databaseObject).__getNetvalue().multiply(tax));
                             break;
                         case Item.TYPE_ORDER:
-                            tax = new BigDecimal("100").add(((Item) databaseObject).__getTaxvalue()).divide(new BigDecimal("100"));
+                            tax = Constants.BD100.add(((Item) databaseObject).__getTaxvalue()).divide(Constants.BD100, 9, BigDecimal.ROUND_HALF_UP);
                             orderSum = orderSum.add(((Item) databaseObject).__getNetvalue().multiply(tax));
                             break;
                     }

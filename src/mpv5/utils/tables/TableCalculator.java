@@ -106,7 +106,7 @@ public class TableCalculator implements Runnable {
      * @return
      */
     public synchronized BigDecimal calculate(int row) {
-        BigDecimal val = new BigDecimal("0");
+        BigDecimal val = BigDecimal.ZERO;
 
         try {
             switch (action) {

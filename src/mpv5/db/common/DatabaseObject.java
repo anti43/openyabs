@@ -61,7 +61,10 @@ import mpv5.utils.images.MPIcon;
 import mpv5.utils.numberformat.FormatNumber;
 import mpv5.utils.text.RandomText;
 import static mpv5.db.common.Context.*;
+import static mpv5.globals.Constants.*;
 import mpv5.utils.text.TypeConversion;
+import mpv5.globals.Constants;
+
 
 /**
  * Database Objects reflect a row in a table, and can parse graphical and
@@ -69,7 +72,7 @@ import mpv5.utils.text.TypeConversion;
  *
  * @author
  */
-public abstract class DatabaseObject implements Comparable<DatabaseObject>, Serializable, Cloneable {
+public abstract class DatabaseObject implements Comparable<DatabaseObject>, Serializable, Cloneable, Constants {
 
     /**
      * @return the cname
@@ -448,9 +451,9 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
                         if (method.getParameterTypes()[0].isInstance(new String())) {
                             Log.Debug(this, "Set : " + method + " with value: " + "<empty>");
                             method.invoke(this, "<empty>");
-                        } else if (method.getParameterTypes()[0].isInstance(new BigDecimal("0"))) {
+                        } else if (method.getParameterTypes()[0].isInstance(BigDecimal.ZERO)) {
                             Log.Debug(this, "Set : " + method + " with value: 0");
-                            method.invoke(this, new BigDecimal("0"));
+                            method.invoke(this, BigDecimal.ZERO);
                         } else {
                             Log.Debug(this, "Set : " + method + " with value: " + method.getParameterTypes()[0].newInstance());
                             method.invoke(this, method.getParameterTypes()[0].newInstance());

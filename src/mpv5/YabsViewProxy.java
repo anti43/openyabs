@@ -19,6 +19,7 @@ import mpv5.logging.Log;
 import mpv5.pluginhandling.YabsPluginLoader;
 import mpv5.ui.dialogs.DialogForFile;
 import mpv5.ui.panels.DataPanel;
+import org.jdesktop.application.Application;
 
 /**
  *
@@ -29,6 +30,7 @@ public class YabsViewProxy implements YabsView {
     public static interface SessionSaver {
 
         public void saveSession();
+
         public void restoreSession();
     }
 
@@ -36,16 +38,19 @@ public class YabsViewProxy implements YabsView {
 
         public void setLookupVisible(boolean show);
     }
-    
+
     public static interface FlowProvider {
 
         public void showPreviousDatabaseObject();
+
         public boolean hasPreviousDatabaseObject();
+
         public void showNextDatabaseObject();
+
         public boolean hasNextDatabaseObject();
+
         public DatabaseObject getCurrentDatabaseObject();
     }
-   
     private LinkedList<YabsView> views = new LinkedList<YabsView>();
     private static YabsViewProxy instance;
     private ConcurrentHashMap<Class, Class> viewCache = new ConcurrentHashMap<Class, Class>();
@@ -88,6 +93,15 @@ public class YabsViewProxy implements YabsView {
     public synchronized void setProgressRunning(boolean b) {
         for (int i = 0; i < views.size(); i++) {
             views.get(i).setProgressRunning(b);
+        }
+    }
+    
+    @Override
+    public Application getApplication() {
+        if (views.isEmpty()) {
+            return null;
+        } else {
+            return views.getFirst().getApplication();
         }
     }
 

@@ -96,7 +96,7 @@ public class FormatNumber {
      */
     public synchronized static BigDecimal parseDezimal(String number) {
         if (number == null || number.trim().length() == 0) {
-            return new BigDecimal("0");
+            return BigDecimal.ZERO;
         }
         number = number.replace("%", "");//Remove percent symbol
         java.text.DecimalFormat n = (DecimalFormat) getDefaultDecimalFormat();
@@ -205,7 +205,7 @@ public class FormatNumber {
 //
 //            }
         } else {
-            return new BigDecimal("0");
+            return BigDecimal.ZERO;
         }
     }
 }

@@ -114,6 +114,7 @@ import mpv5.utils.images.MPIcon;
 import mpv5.utils.renderer.ComboBoxRendererForTooltip;
 import mpv5.utils.xml.XMLWriter;
 import net.sf.vcard4j.java.VCard;
+import org.jdesktop.application.Application;
 import org.jdesktop.application.SingleFrameApplication;
 import org.jdesktop.application.FrameView;
 
@@ -215,7 +216,7 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
      * @param c
      */
     public static void show(JFrame c) {
-        getIdentifierApplication().show(c);
+        Main.getApplication().show(c);
     }
     /**
      * The handler for all plugins
@@ -314,7 +315,7 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
     /**
      * @return the identifierApplication
      */
-    public static SingleFrameApplication getIdentifierApplication() {
+    public Application getIdentifierApplication() {
         return identifierApplication;
     }
 

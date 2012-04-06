@@ -62,11 +62,11 @@ public class DynamicTableCalculator implements Runnable {
      * @return
      */
     public synchronized BigDecimal calculate(int row) {
-        BigDecimal val = new BigDecimal("0");
+        BigDecimal val = BigDecimal.ZERO;
         HashMap<Integer, BigDecimal> values = new HashMap<Integer, BigDecimal>();
         for (int i=0; i < table.getModel().getColumnCount(); i++) {
             if (table.getModel().getValueAt(row, i) != null && 
-                    table.getModel().getValueAt(row, i).getClass().isInstance(new BigDecimal("0"))) {
+                    table.getModel().getValueAt(row, i).getClass().isInstance(BigDecimal.ZERO)) {
                 values.put(i, (BigDecimal) table.getModel().getValueAt(row, i));
             } else if (table.getModel().getValueAt(row, i) != null && 
                     table.getModel().getValueAt(row, i).getClass().isInstance(new Double("0"))) {

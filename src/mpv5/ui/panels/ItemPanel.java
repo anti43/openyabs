@@ -78,6 +78,7 @@ import mpv5.ui.popups.FileTablePopUp;
 import mpv5.ui.toolbars.DataPanelTB;
 import mpv5.db.objects.User;
 import mpv5.db.objects.ValueProperty;
+import mpv5.globals.Constants;
 import mpv5.handler.FormatHandler;
 import mpv5.ui.beans.MPCBSelectionChangeReceiver;
 import mpv5.ui.dialogs.DialogForFile;
@@ -1619,7 +1620,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
 //            try {
 //                shippingvalue_ = FormatNumber.parseDezimal(shipping.getText());
 //            } catch (Exception e) {
-            shippingvalue_ = new BigDecimal("0");
+            shippingvalue_ = BigDecimal.ZERO;
 //            }
 
             datetodo_ = date2.getDate();
@@ -1818,14 +1819,14 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
                 
                 if (mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("org.openyabs.uiproperty", "pasten")) {
                     SubItem s = new SubItem();
-                    s.setQuantityvalue(new BigDecimal("1"));
+                    s.setQuantityvalue(BigDecimal.ONE);
 //                    s.setItemsids(o.__getIDS());
                     s.setInternalvalue(((Item) dbo).__getNetvalue());
                     s.setExternalvalue(((Item) dbo).__getNetvalue());
                     s.setTotalnetvalue(((Item) dbo).__getNetvalue());
                     s.setTotalbrutvalue(((Item) dbo).__getNetvalue().add(((Item) dbo).__getTaxvalue()));
                     if (s.__getTotalnetvalue().doubleValue() > 0d) {
-                        BigDecimal tp = s.__getTotalbrutvalue().subtract(s.__getTotalnetvalue()).multiply(new BigDecimal("100")).divide(s.__getTotalnetvalue(), 2, RoundingMode.HALF_UP);
+                        BigDecimal tp = s.__getTotalbrutvalue().subtract(s.__getTotalnetvalue()).multiply(Constants.BD100).divide(s.__getTotalnetvalue(), 9, RoundingMode.HALF_UP);
                         if (tpvs == null) {
                             tpvs = tp;
                         }
@@ -2110,7 +2111,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
                     SubItem s = new SubItem();
                     Item o = (Item) Popup.SelectValue(Context.getOrder());
                     if (o != null) {
-                        s.setQuantityvalue(new BigDecimal("1"));
+                        s.setQuantityvalue(BigDecimal.ONE);
                         s.setItemsids(o.__getIDS());
                         s.setExternalvalue(o.__getNetvalue().add(o.__getTaxvalue()));
                         s.setTotalnetvalue(o.__getNetvalue());

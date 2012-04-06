@@ -52,7 +52,7 @@ public class ActivityList extends DatabaseObject implements Formattable, Templat
     private String cnumber;
     private int contactsids;
     private int orderids;
-    private BigDecimal totalamount = new BigDecimal("0");
+    private BigDecimal totalamount = BigDecimal.ZERO;
     private FormatHandler formatHandler;
 
     public ActivityList() {

@@ -33,6 +33,7 @@ import mpv5.db.common.DatabaseObject;
 import mpv5.db.common.NodataFoundException;
 import mpv5.db.common.QueryCriteria;
 import mpv5.db.common.QueryHandler;
+import mpv5.globals.Constants;
 import mpv5.globals.GlobalSettings;
 import mpv5.globals.Headers;
 import mpv5.handler.VariablesHandler;
@@ -236,20 +237,20 @@ public final class SubItem extends DatabaseObject implements Triggerable {
     private int ordernr;
     private int inttype;
     private int originalproductsids;
-    private BigDecimal countvalue = new BigDecimal("0");
-    private BigDecimal quantityvalue = new BigDecimal("0");
+    private BigDecimal countvalue = BigDecimal.ZERO;
+    private BigDecimal quantityvalue = BigDecimal.ZERO;
     private String measure = "";
     private String description = "";
     private String linkurl = "";
-    private BigDecimal internalvalue = new BigDecimal("0");
-    private BigDecimal externalvalue = new BigDecimal("0");
-    private BigDecimal taxpercentvalue = new BigDecimal("0");
-    private BigDecimal totalnetvalue = new BigDecimal("0");
-    private BigDecimal totalbrutvalue = new BigDecimal("0");
+    private BigDecimal internalvalue = BigDecimal.ZERO;
+    private BigDecimal externalvalue = BigDecimal.ZERO;
+    private BigDecimal taxpercentvalue = BigDecimal.ZERO;
+    private BigDecimal totalnetvalue = BigDecimal.ZERO;
+    private BigDecimal totalbrutvalue = BigDecimal.ZERO;
     private Date datedelivery;
-    private BigDecimal totaltaxvalue = new BigDecimal("0");
-    private BigDecimal discount = new BigDecimal("0");
-    private BigDecimal discvalue = new BigDecimal("0");
+    private BigDecimal totaltaxvalue = BigDecimal.ZERO;
+    private BigDecimal discount = BigDecimal.ZERO;
+    private BigDecimal discvalue = BigDecimal.ZERO;
 
     public SubItem() {
         setContext(Context.getSubItem());
@@ -283,7 +284,7 @@ public final class SubItem extends DatabaseObject implements Triggerable {
             Double defcount = mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("defcount", 0d);
             i.setQuantityvalue(new BigDecimal(defcount.toString()));
         } else {
-            i.setQuantityvalue(new BigDecimal("1"));
+            i.setQuantityvalue(BigDecimal.ONE);
         }
 
         return i;
@@ -359,7 +360,7 @@ public final class SubItem extends DatabaseObject implements Triggerable {
         setInternalvalue(product.__getInternalnetvalue());
         setMeasure(product.__getMeasure());
         setOriginalproductsids(product.__getIDS());
-        setQuantityvalue(new BigDecimal("1"));
+        setQuantityvalue(BigDecimal.ONE);
         setTaxpercentvalue(Tax.getTaxValue(product.__getTaxids()));
         setLinkurl(product.__getUrl());
         calculate(this);
@@ -377,7 +378,7 @@ public final class SubItem extends DatabaseObject implements Triggerable {
             String defunit = mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("defunit");
             i.setMeasure(defunit);
         }
-        BigDecimal deftax = new BigDecimal("0");
+        BigDecimal deftax = BigDecimal.ZERO;
         if (mpv5.db.objects.User.getCurrentUser().getProperties().hasProperty("deftax")) {
             int taxid = mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("deftax", 0);
             deftax = Tax.getTaxValue(taxid);
@@ -679,7 +680,7 @@ public final class SubItem extends DatabaseObject implements Triggerable {
         if (mpv5.db.objects.User.getCurrentUser().getProperties().hasProperty("defunit")) {
             defunit = mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("defunit");
         }
-        BigDecimal deftax = new BigDecimal("0");
+        BigDecimal deftax = BigDecimal.ZERO;
         if (mpv5.db.objects.User.getCurrentUser().getProperties().hasProperty("deftax")) {
             int taxid = mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("deftax", 0);
             deftax = Tax.getTaxValue(taxid);
@@ -709,7 +710,7 @@ public final class SubItem extends DatabaseObject implements Triggerable {
             data[4] = __getDescription();
             data[5] = __getExternalvalue();
             data[6] = __getTaxpercentvalue();
-            data[7] = __getQuantityvalue().multiply(__getExternalvalue().multiply(((__getTaxpercentvalue().divide(new BigDecimal("100")).add(BigDecimal.ONE)))));
+            data[7] = __getQuantityvalue().multiply(__getExternalvalue().multiply(((__getTaxpercentvalue().divide(Constants.BD100, 9, BigDecimal.ROUND_HALF_UP).add(BigDecimal.ONE)))));
             data[8] = 0.0;
             data[9] = 0.0;
             if (__getOriginalproductsids() > 0) {
@@ -854,10 +855,10 @@ public final class SubItem extends DatabaseObject implements Triggerable {
     }
 
     private static void calculate(SubItem s) {
-        BigDecimal disc = s.__getDiscount().divide(new BigDecimal("100"));
-        s.setTotalbrutvalue(s.quantityvalue.multiply(s.externalvalue.multiply(((s.taxpercentvalue.divide(new BigDecimal("100"))).add(BigDecimal.ONE)))));
+        BigDecimal disc = s.__getDiscount().divide(BD100, 9, BigDecimal.ROUND_HALF_UP);
+        s.setTotalbrutvalue(s.quantityvalue.multiply(s.externalvalue.multiply(((s.taxpercentvalue.divide(Constants.BD100, 9, BigDecimal.ROUND_HALF_UP)).add(BigDecimal.ONE)))));
         s.setTotalbrutvalue(s.totalbrutvalue.subtract(s.totalbrutvalue.multiply(disc)));
-        s.defTotaltaxvalue(s.quantityvalue.multiply(s.externalvalue.multiply((s.taxpercentvalue.divide(new BigDecimal("100"))))));
+        s.defTotaltaxvalue(s.quantityvalue.multiply(s.externalvalue.multiply((s.taxpercentvalue.divide(Constants.BD100, 9, BigDecimal.ROUND_HALF_UP)))));
         s.defTotaltaxvalue(s.totaltaxvalue.subtract(s.totaltaxvalue.multiply(disc)));
         s.setTotalnetvalue(s.quantityvalue.multiply(s.externalvalue));
         s.defDiscvalue(s.totalnetvalue.multiply(disc));
