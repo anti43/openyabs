@@ -5,12 +5,18 @@
  */
 package mpv5.ui.dialogs.subcomponents;
 
+import ag.ion.bion.officelayer.application.IApplicationAssistant;
+import ag.ion.bion.officelayer.application.ILazyApplicationInfo;
+import ag.ion.bion.officelayer.application.OfficeApplicationException;
+import ag.ion.bion.officelayer.internal.application.ApplicationAssistant;
 import java.awt.Cursor;
 import java.awt.Desktop;
 import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.Date;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JFileChooser;
 import mpv5.Main;
@@ -31,7 +37,7 @@ import mpv5.ui.dialogs.Wizardable;
 
 /**
  *
- * 
+ *
  */
 public class wizard_DBSettings_simple_1 extends javax.swing.JPanel implements Wizardable {
 
@@ -557,24 +563,36 @@ public class wizard_DBSettings_simple_1 extends javax.swing.JPanel implements Wi
     }
 
     private void checkOS() {
-
-        if (Main.osIsMacOsX) {
-            labeledTextChooser2.set_Text("/Applications/OpenOffice.org.app/Contents/");
-            LocalSettings.setProperty(LocalSettings.OFFICE_BINARY_FOLDER, "MacOS");
-            jCheckBox2.setSelected(true);
-        } else if (Main.osIsWindows) {
-            labeledTextChooser2.set_Text("C:\\\\Program Files\\OpenOffice.org 3\\");
-            LocalSettings.setProperty(LocalSettings.OFFICE_BINARY_FOLDER, "program");
-        } else if (Main.osIsLinux) {
-            labeledTextChooser2.set_Text("/opt/openoffice.org3");
-            if (!new File(labeledTextChooser2.get_Text(false)).exists()) {
-                labeledTextChooser2.set_Text("/usr/lib64/ooo3/");
+        try {
+            IApplicationAssistant applicationAssistant = new ApplicationAssistant();
+            ILazyApplicationInfo appInfo = applicationAssistant.getLatestLocalLibreOfficeApplication();
+            if (appInfo == null) {
+                appInfo = applicationAssistant.getLatestLocalOpenOfficeOrgApplication();
             }
-            LocalSettings.setProperty(LocalSettings.OFFICE_BINARY_FOLDER, "program");
-        }
+            if (appInfo == null) {
+                if (Main.osIsMacOsX) {
+                    labeledTextChooser2.set_Text("/Applications/OpenOffice.org.app/Contents/");
+                    LocalSettings.setProperty(LocalSettings.OFFICE_BINARY_FOLDER, "MacOS");
+                    jCheckBox2.setSelected(true);
+                } else if (Main.osIsWindows) {
+                    labeledTextChooser2.set_Text("C:\\\\Program Files\\LibreOffice 3.4\\");
+                    LocalSettings.setProperty(LocalSettings.OFFICE_BINARY_FOLDER, "program");
+                } else if (Main.osIsLinux) {
+                    labeledTextChooser2.set_Text("/opt/openoffice.org3");
+                    if (!new File(labeledTextChooser2.get_Text(false)).exists()) {
+                        labeledTextChooser2.set_Text("/usr/lib64/ooo3/");
+                    }
+                    LocalSettings.setProperty(LocalSettings.OFFICE_BINARY_FOLDER, "program");
+                }
 
-        if (!new File(labeledTextChooser2.get_Text(false)).exists()) {
-            labeledTextChooser2.setText("");
+                if (!new File(labeledTextChooser2.get_Text(false)).exists()) {
+                    labeledTextChooser2.setText("");
+                }
+            } else {
+                labeledTextChooser2.setText(appInfo.getHome());
+            }
+        } catch (OfficeApplicationException ex) {
+            Logger.getLogger(wizard_DBSettings_simple_1.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 }

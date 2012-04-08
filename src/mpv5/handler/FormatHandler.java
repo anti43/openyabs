@@ -193,7 +193,7 @@ public class FormatHandler {
 //        c.addAndCondition("usersids", mpv5.db.objects.User.getCurrentUser().__getIDS());
 //        c.addAndCondition("inttype", determineType(source));
         try {
-            Object[][] formats = QueryHandler.instanceOf().clone(Context.getFormats()).select("cname, ids, inttype, usersids");
+            Object[][] formats = QueryHandler.instanceOf().clone(Context.getFormats()).select("cname, ids, inttype, usersids", false);
             if (formats.length > 0) {
                 for (int i = 0; i < formats.length; i++) {
                     Integer startCount = null;

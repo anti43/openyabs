@@ -305,7 +305,7 @@ public class ControlPanel_Massprint extends javax.swing.JPanel implements Contro
     private void refresh() {
         MPTableModel model;
         try {
-            Object[][] d = QueryHandler.instanceOf().clone(Context.getMassprint()).select(Context.DETAILS_MASSPRINT);
+            Object[][] d = QueryHandler.instanceOf().clone(Context.getMassprint()).select(Context.DETAILS_MASSPRINT, false);
             Rules.setModel(model = new MPTableModel(d, Headers.MASSPRINT.getValue(),
                     new Class[]{Entity.class, String.class, String.class, String.class, String.class}));
             Rules.getColumnModel().addColumnModelListener(model);

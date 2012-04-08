@@ -317,7 +317,7 @@ public class QueryHandler implements Cloneable {
 
         }
 
-        Object[][] val = select(context.getDbIdentity() + ".ids", constraint, values);
+        Object[][] val = select(context.getDbIdentity() + ".ids", constraint, values, false);
         if (val != null && val.length > 0) {
             Log.Debug(this, "Uniqueness check failed!");
             return false;
@@ -357,10 +357,10 @@ public class QueryHandler implements Cloneable {
         ReturnValue data = null;
         if (maximumRowCount > 0) {
             data = freeSelectQuery("SELECT TOP(" + maximumRowCount + ") "
-                    + columnName + " FROM " + table + " " + context.getConditions(), mpv5.usermanagement.MPSecurityManager.VIEW, null);
+                    + columnName + " FROM " + table + " " + context.getConditions(false), mpv5.usermanagement.MPSecurityManager.VIEW, null);
         } else {
             data = freeSelectQuery("SELECT "
-                    + columnName + " FROM " + table + " " + context.getConditions(), mpv5.usermanagement.MPSecurityManager.VIEW, null);
+                    + columnName + " FROM " + table + " " + context.getConditions(false), mpv5.usermanagement.MPSecurityManager.VIEW, null);
         }
         if (data.getData().length == 0) {
             throw new NodataFoundException();
@@ -375,6 +375,7 @@ public class QueryHandler implements Cloneable {
      * @param maximumRowCount
      * @return
      * @throws NodataFoundException
+     * <i><b>Omits trashed datasets implicitly</b></i>
      */
     public Object[][] getColumns(String[] columnNames, int maximumRowCount) throws NodataFoundException {
         ReturnValue data = null;
@@ -389,10 +390,10 @@ public class QueryHandler implements Cloneable {
         }
         if (maximumRowCount > 0) {
             data = freeSelectQuery("SELECT TOP(" + maximumRowCount + ") "
-                    + columnName + " FROM " + table + " " + context.getConditions(), mpv5.usermanagement.MPSecurityManager.VIEW, null);
+                    + columnName + " FROM " + table + " " + context.getConditions(false), mpv5.usermanagement.MPSecurityManager.VIEW, null);
         } else {
             data = freeSelectQuery("SELECT "
-                    + columnName + " FROM " + table + " " + context.getConditions(), mpv5.usermanagement.MPSecurityManager.VIEW, null);
+                    + columnName + " FROM " + table + " " + context.getConditions(false), mpv5.usermanagement.MPSecurityManager.VIEW, null);
         }
         if (data.getData().length == 0) {
             throw new NodataFoundException();
@@ -431,13 +432,14 @@ public class QueryHandler implements Cloneable {
      * @param noConditions
      * @return
      * @throws NodataFoundException If no such row exists
+     * <i><b>Omits trashed datasets implicitly</b></i>
      */
     protected ReturnValue select(int id, boolean noConditions) throws NodataFoundException {
         ReturnValue data;
         if (noConditions) {
             data = freeSelectQuery("SELECT * FROM " + table + " WHERE " + table + ".ids = " + id, mpv5.usermanagement.MPSecurityManager.VIEW, null);
         } else {
-            data = freeSelectQuery("SELECT * FROM " + table + " WHERE " + table + ".ids = " + id + " AND " + context.getConditions().substring(6, context.getConditions().length()), mpv5.usermanagement.MPSecurityManager.VIEW, null);
+            data = freeSelectQuery("SELECT * FROM " + table + " WHERE " + table + ".ids = " + id + " AND " + context.getConditions(false).substring(6, context.getConditions(false).length()), mpv5.usermanagement.MPSecurityManager.VIEW, null);
         }
         if (data.getData().length == 0) {
             throw new NodataFoundException(context, id);
@@ -470,11 +472,11 @@ public class QueryHandler implements Cloneable {
      * @return
      * @throws NodataFoundException
      */
-    public Object[][] select(String columns, QueryCriteria criterias) throws NodataFoundException {
+    public Object[][] select(String columns, QueryCriteria criterias ) throws NodataFoundException {
         if (criterias.getKeys().length > 0) {
-            return select(columns, criterias.getKeys(), criterias.getValues());
+            return select(columns, criterias.getKeys(), criterias.getValues(), criterias.getIncludeInvisible());
         } else {
-            return select(columns);
+            return select(columns, criterias.getIncludeInvisible());
         }
     }
 
@@ -482,12 +484,11 @@ public class QueryHandler implements Cloneable {
      * This is a convenience method to retrieve data such as
      * <code>select("*", criterias.getKeys(), criterias.getValues())<code/>
      * @param columns
-     * @param criterias
      * @return
      * @throws NodataFoundException
      */
-    public Object[][] select(String columns) throws NodataFoundException {
-        return select(columns, new String[0], new Object[0]);
+    public Object[][] select(String columns, boolean withDeleted) throws NodataFoundException {
+        return select(columns, new String[0], new Object[0], withDeleted);
     }
 
     /**0
@@ -498,6 +499,7 @@ public class QueryHandler implements Cloneable {
      * @param timeCol The column containing the date
      * @return
      * @throws NodataFoundException
+     * <i><b>Omits trashed datasets implicitly</b></i>
      */
     public Object[][] select(String columns, QueryCriteria criterias, vTimeframe time, String timeCol) throws NodataFoundException {
 
@@ -516,7 +518,7 @@ public class QueryHandler implements Cloneable {
         if (criterias.getKeys().length > 0 && !query.endsWith("AND ")) {
             query += " AND ";
         }
-        query += context.getConditions().substring(6, context.getConditions().length()) + " AND ";
+        query += context.getConditions(false).substring(6, context.getConditions(false).length()) + " AND ";
         query += dateCriterium;
         query += criterias.getOrder();
         ReturnValue p = freeSelectQuery(query, mpv5.usermanagement.MPSecurityManager.VIEW, null);
@@ -543,7 +545,7 @@ public class QueryHandler implements Cloneable {
         if (criterias.getQuery().length() > 6) {
             query += criterias.getQuery() + " AND ";
         }
-        query += context.getConditions().substring(6, context.getConditions().length()) + " AND ";
+        query += context.getConditions(criterias.getIncludeInvisible()).substring(6, context.getConditions(criterias.getIncludeInvisible()).length()) + " AND ";
         query += dateCriterium;
         query += criterias.getOrder();
         ReturnValue p = freeSelectQuery(query, mpv5.usermanagement.MPSecurityManager.VIEW, null);
@@ -567,7 +569,7 @@ public class QueryHandler implements Cloneable {
         if (criterias.getQuery().length() > 6) {
             query += criterias.getQuery() + " AND ";
         }
-        query += context.getConditions().substring(6, context.getConditions().length());
+        query += context.getConditions(criterias.getIncludeInvisible()).substring(6, context.getConditions(criterias.getIncludeInvisible()).length());
         query += criterias.getOrder();
         ReturnValue p = freeSelectQuery(query, mpv5.usermanagement.MPSecurityManager.VIEW, null);
         if (p.hasData()) {
@@ -669,7 +671,7 @@ public class QueryHandler implements Cloneable {
             if ((i + 1) != criterias.getValues().length) {
                 query += " AND ";
             } else {
-                query += " AND " + context.getConditions().substring(6, context.getConditions().length());
+                query += " AND " + context.getConditions(criterias.getIncludeInvisible()).substring(6, context.getConditions(criterias.getIncludeInvisible()).length());
             }
         }
 
@@ -687,8 +689,8 @@ public class QueryHandler implements Cloneable {
      * @return All rows in the current context
      * @throws NodataFoundException
      */
-    public ReturnValue select() throws NodataFoundException {
-        ReturnValue data = freeSelectQuery("SELECT * FROM " + table + " " + context.getConditions(), mpv5.usermanagement.MPSecurityManager.VIEW, null);
+    public ReturnValue select(boolean includeDeleted) throws NodataFoundException {
+        ReturnValue data = freeSelectQuery("SELECT * FROM " + table + " " + context.getConditions(includeDeleted), mpv5.usermanagement.MPSecurityManager.VIEW, null);
         if (data.getData().length == 0) {
             throw new NodataFoundException(context);
         } else {
@@ -701,8 +703,8 @@ public class QueryHandler implements Cloneable {
      * @return All rows in the current context
      * @throws NodataFoundException
      */
-    public List<Integer> selectIds() throws NodataFoundException {
-        ReturnValue data = freeSelectQuery("SELECT ids FROM " + table + " " + context.getConditions(), mpv5.usermanagement.MPSecurityManager.VIEW, null);
+    public List<Integer> selectIds(boolean includeDeleted) throws NodataFoundException {
+        ReturnValue data = freeSelectQuery("SELECT ids FROM " + table + " " + context.getConditions(includeDeleted), mpv5.usermanagement.MPSecurityManager.VIEW, null);
         if (data.getData().length == 0) {
             throw new NodataFoundException(context);
         } else {
@@ -727,6 +729,7 @@ public class QueryHandler implements Cloneable {
      * @param value
      * @param exactMatch 
      * @return
+     * <i><b>Omits trashed datasets implicitly</b></i>
      */
     public Object[] getValuesFor(String[] columns, String needle, String value, boolean exactMatch) {
         String cols = needle;
@@ -748,9 +751,9 @@ public class QueryHandler implements Cloneable {
 
         if (context != null) {
             if (value == null) {
-                return ArrayUtilities.ObjectToSingleColumnArray(freeSelectQuery("SELECT " + cols + " FROM " + table + " " + context.getReferences() + " WHERE " + context.getConditions().substring(6, context.getConditions().length()), mpv5.usermanagement.MPSecurityManager.VIEW, null).getData());
+                return ArrayUtilities.ObjectToSingleColumnArray(freeSelectQuery("SELECT " + cols + " FROM " + table + " " + context.getReferences() + " WHERE " + context.getConditions(false).substring(6, context.getConditions(false).length()), mpv5.usermanagement.MPSecurityManager.VIEW, null).getData());
             } else {
-                return ArrayUtilities.ObjectToSingleColumnArray(freeSelectQuery("SELECT " + cols + " FROM " + table + " " + context.getReferences() + " WHERE " + needle + f + value + g + " AND " + context.getConditions().substring(6, context.getConditions().length()), mpv5.usermanagement.MPSecurityManager.VIEW, null).getData());
+                return ArrayUtilities.ObjectToSingleColumnArray(freeSelectQuery("SELECT " + cols + " FROM " + table + " " + context.getReferences() + " WHERE " + needle + f + value + g + " AND " + context.getConditions(false).substring(6, context.getConditions(false).length()), mpv5.usermanagement.MPSecurityManager.VIEW, null).getData());
             }
         } else if (value == null) {
             return ArrayUtilities.ObjectToSingleColumnArray(freeSelectQuery("SELECT " + cols + " FROM " + table + " " + context.getReferences(), mpv5.usermanagement.MPSecurityManager.VIEW, null).getData());
@@ -1568,15 +1571,16 @@ public class QueryHandler implements Cloneable {
      * @param what
      * @param where : {value, comparison, "'"}
      * @return results as multidimensional string array
+     * <i><b>Omits trashed datasets implicitly</b></i>
      */
     @SuppressWarnings("unchecked")
     public Object[][] select(String what, String[] where) {
 //        start();
         String query;
         if (where != null && where[0] != null && where[1] != null) {
-            query = "SELECT " + what + " FROM " + table + " " + context.getReferences() + " WHERE " + table + "." + where[0] + " = " + where[2] + where[1] + where[2] + " AND " + context.getConditions().substring(6, context.getConditions().length());
+            query = "SELECT " + what + " FROM " + table + " " + context.getReferences() + " WHERE " + table + "." + where[0] + " = " + where[2] + where[1] + where[2] + " AND " + context.getConditions(false).substring(6, context.getConditions(false).length());
         } else {
-            query = "SELECT " + what + " FROM " + table + " " + context.getReferences() + " WHERE " + context.getConditions().substring(6, context.getConditions().length());
+            query = "SELECT " + what + " FROM " + table + " " + context.getReferences() + " WHERE " + context.getConditions(false).substring(6, context.getConditions(false).length());
         }
         return freeSelectQuery(query, mpv5.usermanagement.MPSecurityManager.VIEW, null).getData();
     }
@@ -1588,6 +1592,7 @@ public class QueryHandler implements Cloneable {
      * @param order
      * @param limit 
      * @return results as multidimensional string array
+     * <i><b>Omits trashed datasets implicitly</b></i>
      */
     @SuppressWarnings("unchecked")
     public Object[][] select(String what, String[] where, String order, int limit) {
@@ -1596,9 +1601,9 @@ public class QueryHandler implements Cloneable {
         }
         String query;
         if (where != null && where[0] != null && where[1] != null) {
-            query = "SELECT " + what + " FROM " + table + " " + context.getReferences() + " WHERE " + table + "." + where[0] + " = " + where[2] + where[1] + where[2] + " AND " + context.getConditions().substring(6, context.getConditions().length()) + (order != null ? " ORDER BY " + order : "");
+            query = "SELECT " + what + " FROM " + table + " " + context.getReferences() + " WHERE " + table + "." + where[0] + " = " + where[2] + where[1] + where[2] + " AND " + context.getConditions(false).substring(6, context.getConditions(false).length()) + (order != null ? " ORDER BY " + order : "");
         } else {
-            query = "SELECT " + what + " FROM " + table + " " + context.getReferences() + " WHERE " + context.getConditions().substring(6, context.getConditions().length()) + (order != null ? " ORDER BY " + order : "");
+            query = "SELECT " + what + " FROM " + table + " " + context.getReferences() + " WHERE " + context.getConditions(false).substring(6, context.getConditions(false).length()) + (order != null ? " ORDER BY " + order : "");
         }
         return freeSelectQuery(query, mpv5.usermanagement.MPSecurityManager.VIEW, null).getData();
     }
@@ -1609,8 +1614,9 @@ public class QueryHandler implements Cloneable {
      * @param whereColumns  {"column1","column2"}
      * @param haveValues {"value1",value2<any/>}
      * @return
+     * <i><b>Omits trashed datasets implicitly</b></i>
      */
-    public Object[][] select(String what, String[] whereColumns, Object[] haveValues) {
+    public Object[][] select(String what, String[] whereColumns, Object[] haveValues, boolean withDeleted) {
         String query = "SELECT " + what + " FROM " + table + " " + context.getReferences() + (whereColumns.length > 0 ? " WHERE " : "");
         for (int i = 0; i < haveValues.length; i++) {
             Object object = haveValues[i];
@@ -1620,7 +1626,7 @@ public class QueryHandler implements Cloneable {
             if ((i + 1) != haveValues.length) {
                 query += " AND ";
             } else {
-                query += " AND " + context.getConditions().substring(6, context.getConditions().length());
+                query += " AND " + context.getConditions(false).substring(6, context.getConditions(withDeleted).length());
             }
         }
         return freeSelectQuery(query, mpv5.usermanagement.MPSecurityManager.VIEW, null).getData();
@@ -1633,6 +1639,7 @@ public class QueryHandler implements Cloneable {
      * @param order 
      * @param like - datum will be returned between given and given + 1 month
      * @return results as multidimensional string array
+     * <i><b>Omits trashed datasets implicitly</b></i>
      */
     @SuppressWarnings("unchecked")
     public Object[][] select(String what, String[] where, String order, boolean like) {
@@ -1665,12 +1672,12 @@ public class QueryHandler implements Cloneable {
         }
 
         if (where == null) {
-            wher = "  " + context.getConditions();
+            wher = "  " + context.getConditions(false);
         } else {
             if (!like) {
-                wher = " WHERE " + table + "." + where[0] + " " + condition + " " + where[2] + l1 + where[1] + l2 + where[2] + " AND " + context.getConditions().substring(6, context.getConditions().length()) + " ";
+                wher = " WHERE " + table + "." + where[0] + " " + condition + " " + where[2] + l1 + where[1] + l2 + where[2] + " AND " + context.getConditions(false).substring(6, context.getConditions(false).length()) + " ";
             } else {
-                wher = " WHERE UPPER(" + table + "." + where[0] + ") " + condition + " " + where[2] + l1 + where[1].toUpperCase() + l2 + where[2] + " AND " + context.getConditions().substring(6, context.getConditions().length()) + " ";
+                wher = " WHERE UPPER(" + table + "." + where[0] + ") " + condition + " " + where[2] + l1 + where[1].toUpperCase() + l2 + where[2] + " AND " + context.getConditions(false).substring(6, context.getConditions(false).length()) + " ";
             }
 
         }
@@ -1699,7 +1706,7 @@ public class QueryHandler implements Cloneable {
      * @param values Length must match the conditionColumns argument of the build call of the statement
      * @return
      * @throws java.sql.SQLException
-     * @deprecated possible not returning the desired results yet
+     * <i><b>Omits trashed datasets implicitly</b></i>possible not returning the desired results yet
      */
     @SuppressWarnings("unchecked")
     @Deprecated
@@ -2007,60 +2014,7 @@ public class QueryHandler implements Cloneable {
         }
         return theClone;
     }
-
-    /**
-     * 
-     * @param what
-     * @param where
-     * @param order
-     * @param like
-     * @param integer
-     * @return
-     */
-    @SuppressWarnings({"unchecked", "unchecked"})
-    public Object[][] select(String what, String[] where, String order, boolean like, boolean integer) {
-//        start();
-        String l = "";
-        String k = " = ";
-        String j = "";
-        String ord = " ORDER BY " + table + "." + order;
-        String wher = "";
-        wher = "";
-
-        if (integer) {
-            if (where[1].equals("")) {
-                where[1] = "0";
-            }
-            where[2] = "";
-//            l = "%";
-            k = " = ";
-//            j = " OR WHERE " + where[0] + " " + k + " " + where[2] + l + where[1] + l + where[2];
-        }
-        java.util.Date date;
-        if (like) {
-            if (where != null && where[0].contains("datum")) {
-                k = " BETWEEN ";
-                date = DateConverter.getDate(where[1]);
-                where[1] = "'" + DateConverter.getSQLDateString(date) + "'" + " AND " + "'" + DateConverter.getSQLDateString(DateConverter.addMonth(date)) + "'";
-                where[2] = " ";
-            } else {
-                l = "%";
-                k = " LIKE ";
-            }
-        }
-
-        if (where == null) {
-        } else {
-            wher = where[0] + " " + k + " " + where[2] + l + where[1] + l + where[2] + " AND " + wher + " AND " + context.getConditions().substring(6, context.getConditions().length());
-            if (where.length > 3) {
-                wher = wher + " AND " + where[3] + " " + k + " " + where[5] + l + where[4] + l + where[5] + " " + context.getConditions() + " ";
-            }
-        }
-        String query = "SELECT " + what + " FROM " + table + " " + context.getReferences() + " WHERE " + wher + ord;
-
-        return freeSelectQuery(query, mpv5.usermanagement.MPSecurityManager.VIEW, null).getData();
-    }
-
+    
     /**
      * Returns the count of rows which match the condition.
      * <br/>Example:

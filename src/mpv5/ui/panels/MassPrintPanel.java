@@ -589,7 +589,7 @@ public class MassPrintPanel
 
     private void showMenu(MouseEvent evt) {
         try {
-            Object[][] d = QueryHandler.instanceOf().clone(Context.getMassprint()).select(Context.DETAILS_MASSPRINT);
+            Object[][] d = QueryHandler.instanceOf().clone(Context.getMassprint()).select(Context.DETAILS_MASSPRINT, false);
             String[][] rules = new String[d.length + 1][2];
             ActionListener[] act = new ActionListener[d.length + 1];
             rules[0][0] = Messages.MASSPRINT_FILTER_ALL.toString();

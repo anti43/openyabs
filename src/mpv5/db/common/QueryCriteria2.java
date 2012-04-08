@@ -32,6 +32,7 @@ public class QueryCriteria2 {
     private String order = "";
     
     private List<QueryParameter> fields =  new ArrayList<QueryParameter>();
+    private boolean includeDeleted;
 
     /**
      * Add AND conditions
@@ -226,5 +227,16 @@ public class QueryCriteria2 {
      */
     public List<QueryParameter> getFields() {
         return Collections.unmodifiableList(fields);
+    }
+    
+        public boolean getIncludeInvisible() {
+        return includeDeleted;
+    }
+
+    /**
+     * @param in the in to set
+     */
+    public void setIncludeInvisible(boolean in) {
+        this.includeDeleted = in;
     }
 }

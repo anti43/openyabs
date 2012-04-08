@@ -298,7 +298,7 @@ public class wizard_Yabs1_Import extends javax.swing.JPanel implements Wizardabl
 
     private void importObjects(Context c) {
         try {
-            ReturnValue data = qh.clone(c).select();
+            ReturnValue data = qh.clone(c).select(false);
             DatabaseObject[] objs = DatabaseObject.explode(data, DatabaseObject.getObject(c), false, false);
             for (int i = 0; i < objs.length; i++) {
                 DatabaseObject databaseObject = objs[i];

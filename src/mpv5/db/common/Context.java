@@ -715,7 +715,7 @@ public class Context implements Serializable {
      *
      * @return DB condition string
      */
-    public String getConditions() {
+    public String getConditions(boolean withInvisible) {
         if (!exclusiveConditionsAvailable) {
             String cond = "    ";
             boolean first = true;
@@ -775,7 +775,7 @@ public class Context implements Serializable {
                     cond = "WHERE " + CONDITION_DEFAULT;
                 }
             }
-            if (getTrashableContexts().contains(this)) {
+            if (!withInvisible && getTrashableContexts().contains(this)) {
                 cond += " AND " + dbIdentity + ".invisible = 0 ";
             }
 //            if (!QueryHandler.isMatchingBraces(cond)) {

@@ -260,7 +260,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
                             }
                         }
                         if (cacheable) {
-                            ReturnValue data = QueryHandler.instanceOf().clone(context, LocalSettings.getIntegerProperty(LocalSettings.CACHE_SIZE), true).select();
+                            ReturnValue data = QueryHandler.instanceOf().clone(context, LocalSettings.getIntegerProperty(LocalSettings.CACHE_SIZE), true).select(false);
                             DatabaseObject[] dos = explode(data, DatabaseObject.getObject(context), false, true);
                             for (int i = 0; i < dos.length; i++) {
                                 DatabaseObject databaseObject = dos[i];
@@ -1514,7 +1514,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
         if (criterias != null) {
             idlist = QueryHandler.instanceOf().clone(context).selectIds(criterias);
         } else {
-            idlist = QueryHandler.instanceOf().clone(context).selectIds();
+            idlist = QueryHandler.instanceOf().clone(context).selectIds(false);
         }
         return getObjects(context, idlist);
 //        }
@@ -1539,7 +1539,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
         if (criterias != null) {
             idlist = QueryHandler.instanceOf().clone(context).selectIds(criterias);
         } else {
-            idlist = QueryHandler.instanceOf().clone(context).selectIds();
+            idlist = QueryHandler.instanceOf().clone(context).selectIds(false);
         }
         return getObjects(context, idlist);
 //        }

@@ -25,6 +25,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.List;
+import java.util.logging.Logger;
 import javax.swing.table.TableModel;
 import mpv5.Main;
 import mpv5.bugtracker.ExceptionHandler;
@@ -55,6 +56,7 @@ public class Log {
     private static int loglevel = 1;
     private static List<LogConsole> loggers =
             new ArrayList<LogConsole>(Arrays.asList(new LogConsole[]{(LogConsole) new YConsole()}));
+    public static Logger LOGGER;
 
     /**
      * Print out a text file

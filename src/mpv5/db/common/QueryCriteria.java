@@ -35,6 +35,7 @@ public class QueryCriteria {
     private HashMap<String, SaveString> list = new HashMap<String, SaveString>();
     private String order = "";
     private String FIELD_SEPARATOR = "<SepaRatoR>";
+    private boolean in;
 
     
     /**
@@ -176,6 +177,17 @@ public class QueryCriteria {
      */
     public String getOrder() {
         return order;
+    }
+
+    public boolean getIncludeInvisible() {
+        return in;
+    }
+
+    /**
+     * @param in the in to set
+     */
+    public void setIncludeInvisible(boolean in) {
+        this.in = in;
     }
 
 

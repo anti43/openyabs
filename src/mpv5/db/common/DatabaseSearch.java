@@ -17,8 +17,8 @@ import mpv5.utils.arrays.ArrayUtilities;
 
 /**
  *
- * Convenience class for database searches.
- * <br/>Does <b>NOT</b> automatically take care of multi-client capability needs.
+ * Convenience class for database searches. <br/>Does <b>NOT</b> automatically
+ * take care of multi-client capability needs.
  */
 public class DatabaseSearch {
 
@@ -28,6 +28,7 @@ public class DatabaseSearch {
 
     /**
      * Initiates a new search
+     *
      * @param context
      */
     public DatabaseSearch(Context context) {
@@ -36,6 +37,7 @@ public class DatabaseSearch {
 
     /**
      * Initiates a new search
+     *
      * @param obj The DBOBJ the search will rely on
      */
     public DatabaseSearch(DatabaseObject obj) {
@@ -46,6 +48,7 @@ public class DatabaseSearch {
 
     /**
      * Initiates a new search and allows to limit the resulting rows
+     *
      * @param context
      * @param rowlimit
      */
@@ -63,6 +66,7 @@ public class DatabaseSearch {
 
     /**
      * Get multiple values from a search
+     *
      * @return select("*", null);
      */
     public Object[][] getValuesFor() {
@@ -71,6 +75,7 @@ public class DatabaseSearch {
 
     /**
      * Do a fulltextsearch
+     *
      * @param val
      * @return The result
      * @deprecated SLOW
@@ -102,6 +107,7 @@ public class DatabaseSearch {
 
     /**
      * Do a fulltextsearch
+     *
      * @param val
      * @return The result
      */
@@ -128,10 +134,10 @@ public class DatabaseSearch {
     }
 
     /**
-     * 
+     *
      * @param val
      * @return
-     * @throws NodataFoundException 
+     * @throws NodataFoundException
      */
     public List<DatabaseObject> searchObjectsFor(String val) throws NodataFoundException {
         List<Integer> data = searchObjectIdsFor(val);
@@ -140,6 +146,7 @@ public class DatabaseSearch {
 
     /**
      * Get multiple values from a search
+     *
      * @param resultingFieldNames What do you like to get (columns)?
      * @return
      */
@@ -148,10 +155,12 @@ public class DatabaseSearch {
     }
 
     /**
-     * Get multiple values from a search, where the search column is a number column
+     * Get multiple values from a search, where the search column is a number
+     * column
+     *
      * @param resultingFieldNames What do you like to get (columns)?
      * @param what Which column do you like to take for the condition?
-     * @param  value
+     * @param value
      * @return
      */
     public Object[][] getValuesFor(String resultingFieldNames, String what, Number value) {
@@ -159,10 +168,12 @@ public class DatabaseSearch {
     }
 
     /**
-     * Get multiple values from a search, where the search column is a String column
+     * Get multiple values from a search, where the search column is a String
+     * column
+     *
      * @param resultingFieldNames What do you like to get (columns)?
      * @param what Which column do you like to take for the condition?
-     * @param  value
+     * @param value
      * @return
      */
     public Object[][] getValuesFor(String resultingFieldNames, String what, String value) {
@@ -171,10 +182,12 @@ public class DatabaseSearch {
 
     /**
      * Get multiple values from a search
+     *
      * @param resultingFieldNames What do you like to get (columns)?
-     * @param possibleColumns Which columns do you like to take for the condition?
+     * @param possibleColumns Which columns do you like to take for the
+     * condition?
      * @param where And what value should the column value have?
-     * @return 
+     * @return
      */
     public Object[][] getValuesFor(String resultingFieldNames, String[] possibleColumns, Number where) {
         try {
@@ -196,22 +209,27 @@ public class DatabaseSearch {
 
     /**
      * Get multiple values from a search. Will split word by whitespace
+     *
      * @param resultingFieldNames What do you like to get (columns)?
-     * @param possibleColumns Which columns do you like to take for the condition?
+     * @param possibleColumns Which columns do you like to take for the
+     * condition?
      * @param where And what value should the column value have?
      * @param searchForLike Shall we search with "like" condition?
-     * @return 
+     * @return
      */
     public Object[][] getValuesFor(String resultingFieldNames, String[] possibleColumns, String where, boolean searchForLike) {
         return getValuesFor2(resultingFieldNames, where, null, true, searchForLike, possibleColumns);
     }
 
     /**
-     * Get multiple values from a search, ignores reference tables and is herewith faster
+     * Get multiple values from a search, ignores reference tables and is
+     * herewith faster
+     *
      * @param resultingFieldNames What do you like to get (columns)?
-     * @param possibleColumns Which columns do you like to take for the condition?
-     * @param groups 
-     * @param splitByWhitespace 
+     * @param possibleColumns Which columns do you like to take for the
+     * condition?
+     * @param groups
+     * @param splitByWhitespace
      * @param search And what value should the column value have?
      * @param searchForLike Shall we search with "like" condition?
      * @return
@@ -237,9 +255,9 @@ public class DatabaseSearch {
                 String string = strings[i];
                 for (String en : possibleColumns) {
                     if (!string.startsWith("-")) {
-                        psx.add(new QueryParameter(context, en, string, searchForLike?QueryParameter.LIKE:QueryParameter.EQUALS));
+                        psx.add(new QueryParameter(context, en, string, searchForLike ? QueryParameter.LIKE : QueryParameter.EQUALS));
                     } else {
-                        not.add(new QueryParameter(context, en, string.substring(1), searchForLike?QueryParameter.LIKE:QueryParameter.EQUALS));
+                        not.add(new QueryParameter(context, en, string.substring(1), searchForLike ? QueryParameter.LIKE : QueryParameter.EQUALS));
                     }
                 }
             }
@@ -266,40 +284,27 @@ public class DatabaseSearch {
         }
     }
 
-//    /**
-//     * Get multiple values from a search<br/>
-//     * if the specified {@link User} is not null and is group -restricted, only results for his group will be returned
-//     * @param resultingFieldNames What do you like to get (columns)?
-//     * @param possibleColumns Which columns do you like to take for the condition?
-//     * @param where And what value should the column value have?
-//     * @param searchForLike Shall we search with "like" condition?
-//     * @param user
-//     * @return
-//     */
-//    public Object[][] getValuesFor(String resultingFieldNames, String[] possibleColumns, String where, boolean searchForLike, User user) {
-//        if (user == null || user.isGroupRestricted()) {
-//            ArrayList<Object[]> list = new ArrayList<Object[]>();
-//            for (int i = 0; i < possibleColumns.length; i++) {
-//                String string = possibleColumns[i];
-//                list.addAll(Arrays.asList(QueryHandler.instanceOf().clone(context, ROWLIMIT).select(resultingFieldNames, new String[]{string, where, "'"}, null, searchForLike)));
-//            }
-//            return list.toArray(new Object[][]{});
-//        } else {
-//            return getValuesFor(resultingFieldNames, possibleColumns, where, searchForLike);
-//        }
-//    }
     /**
      * Get multiple values from a search
-     * @param resultingFieldNames What do you like to get (columns, comma separated)?
+     *
+     * @param resultingFieldNames What do you like to get (columns, comma
+     * separated)?
      * @param what Which column do you like to take for the condition?
      * @param where And what value should the column value have?
      * @param searchForLike Shall we search with "like" condition?
      * @return
      */
     public Object[][] getValuesFor(String resultingFieldNames, String what, String where, boolean searchForLike) {
-        return QueryHandler.instanceOf().clone(context, ROWLIMIT).select(resultingFieldNames, new String[]{what, where, "'"}, null, searchForLike);
-
+        QueryCriteria2 c = new QueryCriteria2();
+        c.and(new QueryParameter(context, what, where, searchForLike ? QueryParameter.LIKE : QueryParameter.EQUALS));
+        try {
+            return QueryHandler.instanceOf().clone(context, ROWLIMIT).select(resultingFieldNames, c).getData();
+        } catch (NodataFoundException ex) {
+            Log.Debug(this, ex.getMessage());
+            return new Object[0][0];
+        }
     }
+
 //
 //    /**
 //     * Get a single dimension list from a search after values from the column
@@ -312,10 +317,10 @@ public class DatabaseSearch {
 //    public Object[] searchFor(String what, String needle) throws NodataFoundException {
 //        return searchFor(null, what, needle);
 //    }
-
     /**
      * Get a single dimension list from a search after values from the column
      * where the value is LIKE the given needle
+     *
      * @param columns Which columns to get?
      * @param what Which column do you like to search through?
      * @param needle
@@ -335,6 +340,7 @@ public class DatabaseSearch {
     /**
      * Get a single dimension list from a search after values from the column
      * where the value is LIKE the given needle
+     *
      * @param columns Which columns to get?
      * @param what Which column do you like to search through?
      * @param needle
@@ -350,53 +356,12 @@ public class DatabaseSearch {
         }
     }
 
-//    /**
-//     * Search for an ID in this context
-//     * @param what The column which you like to search through
-//     * @param needle The value of the row in that column
-//     * @return An id if there is a matching dataset found, NULL otherwise
-//     */
-//    private Integer searchForID(String what, String needle) {
-//        Object[] data;
-//        try {
-//            data = QueryHandler.instanceOf().clone(context, ROWLIMIT).selectLast("ids", new String[]{what, needle, "'"}, true);
-//            return Integer.valueOf(data[0].toString());
-//        } catch (Exception ex) {
-//            return null;
-//        }
-//    }
-//    /**
-//     * Search for an ID in this context
-//     * @param what The column which you like to search through
-//     * @param needle The value of the row in that column
-//     * @return An id if there is a matching dataset found, NULL otherwise
-//     */
-//    public Integer searchForID(String what, String needle, boolean caseSensitive) {
-//
-//        if (caseSensitive) {
-//            try {
-//                Object[] data = QueryHandler.instanceOf().clone(context, ROWLIMIT).selectLast("ids", new String[]{what, needle, "'"}, true);
-//                return Integer.valueOf(data[0].toString());
-//            } catch (Exception ex) {
-//                return null;
-//            }
-//        } else {
-//            try {
-//                QueryCriteria2 p = new QueryCriteria2();
-//                p.is(new QueryParameter(context, what, needle, QueryParameter.LIKE));
-//                Object[][] data = QueryHandler.instanceOf().clone(context, ROWLIMIT).select("ids", p).getData();
-//                return Integer.valueOf(data[data.length - 1][0].toString());
-//            } catch (Exception nodataFoundException) {
-//                return null;
-//            }
-//        }
-//    }
     /**
-     * 
+     *
      * @param ext
      * @param self
      * @param value
-     * @return 
+     * @return
      */
     @SuppressWarnings("unchecked")
     public List<DatabaseObject> searchObjectsFor(Context[] ext, Context[] self, String value) {
@@ -450,11 +415,11 @@ public class DatabaseSearch {
     }
 
     /**
-     * 
+     *
      * @param ext
      * @param self
      * @param value
-     * @return 
+     * @return
      */
     public List<Integer> searchObjectIdsFor(Context[] ext, Context[] self, String value) {
         Log.Debug(this, "Search parameter: " + value);
@@ -504,12 +469,12 @@ public class DatabaseSearch {
     }
 
     /**
-     * 
+     *
      * @param sf
      * @param ext
      * @param self
      * @param value
-     * @return 
+     * @return
      */
     public Object[][] searchDataFor(String sf, Context[] ext, Context[] self, String value) {
         List<Integer> data = searchObjectIdsFor(ext, self, value);

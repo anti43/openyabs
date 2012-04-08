@@ -95,18 +95,18 @@ public class About extends javax.swing.JFrame {
         info.setFont(new java.awt.Font("DejaVu Sans", 0, 11)); // NOI18N
         info.setText(bundle.getString("About.info.text")); // NOI18N
 
-        title.setFont(new java.awt.Font("DejaVu Sans", 0, 11));
+        title.setFont(new java.awt.Font("DejaVu Sans", 0, 11)); // NOI18N
         title.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         title.setText(bundle.getString("About.title.text")); // NOI18N
 
-        jLabel1.setFont(new java.awt.Font("DejaVu Sans", 0, 11));
+        jLabel1.setFont(new java.awt.Font("DejaVu Sans", 0, 11)); // NOI18N
         jLabel1.setText(bundle.getString("About.jLabel1.text")); // NOI18N
 
-        jList1.setFont(new java.awt.Font("DejaVu Sans", 0, 11));
+        jList1.setFont(new java.awt.Font("DejaVu Sans", 0, 11)); // NOI18N
         jList1.setForeground(new java.awt.Color(0, 0, 51));
         jScrollPane1.setViewportView(jList1);
 
-        jLabel2.setFont(new java.awt.Font("DejaVu Sans", 0, 11));
+        jLabel2.setFont(new java.awt.Font("DejaVu Sans", 0, 11)); // NOI18N
         jLabel2.setForeground(new java.awt.Color(255, 255, 204));
         jLabel2.setText(bundle.getString("About.jLabel2.text")); // NOI18N
 
@@ -127,18 +127,21 @@ public class About extends javax.swing.JFrame {
                         .addComponent(info, javax.swing.GroupLayout.PREFERRED_SIZE, 177, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 92, Short.MAX_VALUE)
                         .addComponent(title, javax.swing.GroupLayout.PREFERRED_SIZE, 177, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                        .addGap(71, 71, 71)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel2)
-                            .addComponent(website, javax.swing.GroupLayout.DEFAULT_SIZE, 218, Short.MAX_VALUE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 163, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(db_version, javax.swing.GroupLayout.PREFERRED_SIZE, 177, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 194, Short.MAX_VALUE)
-                        .addComponent(jLabel1)))
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addGap(71, 71, 71)
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jLabel2)
+                                    .addComponent(website, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED))
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addContainerGap()
+                                .addComponent(db_version, javax.swing.GroupLayout.PREFERRED_SIZE, 177, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(106, 106, 106)))
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 163, Short.MAX_VALUE))))
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(

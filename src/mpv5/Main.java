@@ -1105,7 +1105,7 @@ public class Main implements Runnable {
                 @Override
                 public void run() {
                     try {
-                        ReturnValue rv = QueryHandler.instanceOf().clone(Context.getTemplate()).select();
+                        ReturnValue rv = QueryHandler.instanceOf().clone(Context.getTemplate()).select(false);
                         data = rv.getData();
                         for (int i = 0; i < data.length; i++) {
                             final Template tpl = (Template) Template.getObject(Context.getTemplate(), Integer.parseInt(data[i][0].toString()));
