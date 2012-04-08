@@ -120,7 +120,7 @@
                           </Group>
                           <Component id="type" alignment="0" min="-2" max="-2" attributes="0"/>
                       </Group>
-                      <EmptySpace pref="15" max="32767" attributes="0"/>
+                      <EmptySpace pref="26" max="32767" attributes="0"/>
                       <Group type="103" groupAlignment="0" max="-2" attributes="0">
                           <Component id="status" alignment="0" max="32767" attributes="1"/>
                           <Group type="102" attributes="1">
@@ -132,7 +132,7 @@
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
                       <Component id="staus_icon" min="-2" pref="28" max="-2" attributes="0"/>
-                      <EmptySpace type="separate" pref="39" max="32767" attributes="0"/>
+                      <EmptySpace min="-2" pref="49" max="-2" attributes="0"/>
                       <Component id="addedby" min="-2" pref="130" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
                   </Group>
@@ -142,35 +142,28 @@
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" alignment="0" attributes="0">
                       <EmptySpace max="-2" attributes="0"/>
-                      <Group type="103" groupAlignment="1" attributes="0">
-                          <Group type="102" alignment="0" attributes="0">
-                              <Group type="103" groupAlignment="0" attributes="0">
-                                  <Component id="type" min="-2" max="-2" attributes="0"/>
-                                  <Component id="status" min="-2" max="-2" attributes="1"/>
-                              </Group>
-                              <EmptySpace max="-2" attributes="0"/>
-                              <Group type="103" groupAlignment="1" attributes="0">
-                                  <Component id="accountselect" min="-2" max="-2" attributes="0"/>
-                                  <Group type="103" alignment="1" groupAlignment="0" max="-2" attributes="0">
-                                      <Component id="button_order2" alignment="1" min="0" pref="0" max="32767" attributes="1"/>
-                                      <Component id="jLabel4" alignment="1" pref="16" max="32767" attributes="1"/>
-                                  </Group>
-                              </Group>
-                              <EmptySpace max="-2" attributes="0"/>
-                              <Group type="103" groupAlignment="0" attributes="0">
-                                  <Component id="groupnameselect" min="-2" pref="22" max="-2" attributes="0"/>
-                                  <Component id="number" alignment="0" max="32767" attributes="1"/>
-                              </Group>
-                          </Group>
-                          <Group type="103" alignment="1" groupAlignment="0" attributes="0">
-                              <Component id="addedby" alignment="0" min="-2" pref="19" max="-2" attributes="0"/>
-                              <Group type="102" alignment="1" attributes="0">
-                                  <Component id="staus_icon" min="-2" pref="20" max="-2" attributes="0"/>
-                                  <EmptySpace min="-2" pref="28" max="-2" attributes="0"/>
-                              </Group>
-                          </Group>
+                      <Group type="103" groupAlignment="2" attributes="0">
+                          <Component id="status" alignment="2" min="-2" max="-2" attributes="1"/>
+                          <Component id="addedby" alignment="2" max="32767" attributes="0"/>
+                          <Component id="type" alignment="0" min="-2" pref="24" max="-2" attributes="0"/>
+                      </Group>
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="1" max="-2" attributes="0">
+                          <Component id="accountselect" max="32767" attributes="0"/>
+                          <Component id="button_order2" alignment="1" min="-2" pref="16" max="-2" attributes="1"/>
+                          <Component id="jLabel4" alignment="1" max="32767" attributes="1"/>
+                      </Group>
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="2" attributes="0">
+                          <Component id="groupnameselect" alignment="2" max="32767" attributes="0"/>
+                          <Component id="number" alignment="2" max="32767" attributes="1"/>
                       </Group>
                       <EmptySpace min="-2" pref="62" max="-2" attributes="0"/>
+                  </Group>
+                  <Group type="102" attributes="0">
+                      <EmptySpace min="11" pref="11" max="-2" attributes="0"/>
+                      <Component id="staus_icon" max="32767" attributes="0"/>
+                      <EmptySpace min="122" pref="122" max="-2" attributes="0"/>
                   </Group>
               </Group>
             </DimensionLayout>
