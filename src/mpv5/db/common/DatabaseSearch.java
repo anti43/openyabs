@@ -363,64 +363,6 @@ public class DatabaseSearch {
      * @param value
      * @return
      */
-    @SuppressWarnings("unchecked")
-    public List<DatabaseObject> searchObjectsFor(Context[] ext, Context[] self, String value) {
-        Log.Debug(this, "Search parameter: " + value);
-        Set<Integer> data = new TreeSet<Integer>();
-
-        for (Integer s : new DatabaseSearch(context, 50).searchObjectIdsFor(value)) {
-            data.add(s);
-        }
-
-        for (Context exct : ext) {
-
-            String subitemids = "0";
-            for (Integer s : new DatabaseSearch(exct, 50).searchObjectIdsFor(value)) {
-                subitemids = s + "," + subitemids;
-            }
-
-            Object[] sdata = QueryHandler.instanceOf().clone(context).freeQuery("select " + context.getDbIdentity() + "ids from " + exct.getDbIdentity() + " where ids in(" + subitemids + ")", MPSecurityManager.VIEW, null).getFirstColumn();
-            if (sdata != null) {
-                for (int i = 0; i < sdata.length; i++) {
-                    try {
-                        data.add(Integer.valueOf(sdata[i].toString()));
-                    } catch (NumberFormatException numberFormatException) {
-                        Log.Debug(numberFormatException);
-                    }
-                }
-            }
-        }
-        for (Context selfc : self) {
-            String contactsids = "0";
-            for (Integer s : new DatabaseSearch(selfc, 50).searchObjectIdsFor(value)) {
-                contactsids = s + "," + contactsids;
-            }
-            Object[] sdata = QueryHandler.instanceOf().clone(context).freeQuery("select ids from items where " + selfc.getDbIdentity() + "ids in(" + contactsids + ")", MPSecurityManager.VIEW, null).getFirstColumn();
-            if (sdata != null) {
-                for (int i = 0; i < sdata.length; i++) {
-                    try {
-                        data.add(Integer.valueOf(sdata[i].toString()));
-                    } catch (NumberFormatException numberFormatException) {
-                        Log.Debug(numberFormatException);
-                    }
-                }
-            }
-        }
-        try {
-            return DatabaseObject.getObjects(context, data);
-        } catch (NodataFoundException ex) {
-            Log.Debug(ex);
-            return Collections.EMPTY_LIST;
-        }
-    }
-
-    /**
-     *
-     * @param ext
-     * @param self
-     * @param value
-     * @return
-     */
     public List<Integer> searchObjectIdsFor(Context[] ext, Context[] self, String value) {
         Log.Debug(this, "Search parameter: " + value);
         Set<Integer> data = new TreeSet<Integer>();
@@ -482,6 +424,6 @@ public class DatabaseSearch {
         for (Integer id : data) {
             dboids = id + "," + dboids;
         }
-        return QueryHandler.instanceOf().clone(context).freeQuery("select " + sf + " from %%tablename%% where ids in (" + dboids + ")", MPSecurityManager.VIEW, null).getData();
+        return QueryHandler.instanceOf().clone(context).freeQuery("select " + sf + " from %%tablename%% where ids in (" + dboids + ") AND " + context.getNoTrashSQLString(), MPSecurityManager.VIEW, null).getData();
     }
 }

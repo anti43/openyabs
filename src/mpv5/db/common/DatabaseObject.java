@@ -973,6 +973,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
         };
         SwingUtilities.invokeLater(runnable);
 
+        save(true);
         return result;
     }
 
@@ -1548,7 +1549,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
     @SuppressWarnings("unchecked")
     public static <T extends DatabaseObject> ArrayList<T> getObjects(Context context, Collection<Integer> listi) throws NodataFoundException {
         if (Log.LOGLEVEL_DEBUG == Log.getLoglevel()) {
-            Log.Debug(DatabaseObject.class, "Fetching objects " + listi);
+            Log.Debug(DatabaseObject.class, "Fetching objects " + context + ": " + listi);
         }
         ArrayList<T> list = new ArrayList<T>();
         QueryCriteria2 criterias = new QueryCriteria2();
@@ -1567,6 +1568,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
             return list;//all from cache
         }
         criterias.or(uncachedIds);
+        criterias.setIncludeInvisible(true);
 //        Log.Debug(DatabaseObject.class, criterias.getQuery());
         ReturnValue data = QueryHandler.instanceOf().clone(context).select("*", criterias);
         if (data.hasData()) {

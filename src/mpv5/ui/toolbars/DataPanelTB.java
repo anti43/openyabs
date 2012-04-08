@@ -475,7 +475,7 @@ public class DataPanelTB extends javax.swing.JPanel implements ActionListener, I
             dato.getPanelData(parents);
             dato.delete();
             parents.refresh();
-            parents.setDataOwner(dato, true);
+            parents.setDataOwner(dato.getObject(dato.getContext()), true);
         }
     }//GEN-LAST:event_but5ActionPerformed
 

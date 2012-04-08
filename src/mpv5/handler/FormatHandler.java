@@ -96,16 +96,18 @@ public class FormatHandler {
         }
     }
     public static String INTEGERPART_IDENTIFIER = "{0,number,000000}";
+    public static String DELETED_IDENTIFIER = "!";
     private DatabaseObject source = null;
     public static YMessageFormat DEFAULT_FORMAT = new YMessageFormat(INTEGERPART_IDENTIFIER, null);
     /**
-     * This string identifies potential start values from the format string. Use as
-     * START_VALUE_IDENTIFIERstartvalueSTART_VALUE_IDENTIFIERformat
+     * This string identifies potential start values from the format string. Use
+     * as START_VALUE_IDENTIFIERstartvalueSTART_VALUE_IDENTIFIERformat
      */
     public static String START_VALUE_IDENTIFIER = "@SV@";
 
     /**
      * Determines the format type of the given {@link DatabaseObject}
+     *
      * @param obj
      * @return An int value representing the format type
      */
@@ -245,6 +247,7 @@ public class FormatHandler {
 
     /**
      * Fetches the next number from the database
+     *
      * @param format
      * @return
      */
@@ -261,10 +264,10 @@ public class FormatHandler {
                         || forThis.getContext().equals(Context.getOffer())
                         || forThis.getContext().equals(Context.getOrder())) {
                     query = "SELECT cnumber FROM " + forThis.getDbIdentity() + " WHERE ids = (SELECT MAX(ids) from " + forThis.getDbIdentity() + " WHERE inttype ="
-                            + ((Item) forThis).__getInttype() + ")";
+                            + ((Item) forThis).__getInttype() + " and invisible=0)";
                 } else if (forThis.getContext().equals(Context.getProduct())) {
                     query = "SELECT cnumber FROM " + forThis.getDbIdentity() + " WHERE ids = (SELECT MAX(ids) from " + forThis.getDbIdentity() + " WHERE inttype ="
-                            + ((Product) forThis).__getInttype() + ")";
+                            + ((Product) forThis).__getInttype() + " and invisible=0)";
                 } else if (forThis.getContext().equals(Context.getContact())
                         || forThis.getContext().equals(Context.getCompany())
                         || forThis.getContext().equals(Context.getContactsCompanies())
@@ -272,16 +275,16 @@ public class FormatHandler {
                         || forThis.getContext().equals(Context.getSupplier())
                         || forThis.getContext().equals(Context.getManufacturer())) {
                     if (((Contact) forThis).__getIscustomer()) {
-                        query = "SELECT cnumber FROM " + forThis.getDbIdentity() + " WHERE ids = (SELECT MAX(ids) from " + forThis.getDbIdentity() + " WHERE iscustomer = 1)";
+                        query = "SELECT cnumber FROM " + forThis.getDbIdentity() + " WHERE ids = (SELECT MAX(ids) from " + forThis.getDbIdentity() + " WHERE iscustomer = 1 and invisible=0)";
                     } else if (((Contact) forThis).__getIsmanufacturer()) {
-                        query = "SELECT cnumber FROM " + forThis.getDbIdentity() + " WHERE ids = (SELECT MAX(ids) from " + forThis.getDbIdentity() + " WHERE ismanufacturer = 1)";
+                        query = "SELECT cnumber FROM " + forThis.getDbIdentity() + " WHERE ids = (SELECT MAX(ids) from " + forThis.getDbIdentity() + " WHERE ismanufacturer = 1 and invisible=0)";
                     } else if (((Contact) forThis).__getIssupplier()) {
-                        query = "SELECT cnumber FROM " + forThis.getDbIdentity() + " WHERE ids = (SELECT MAX(ids) from " + forThis.getDbIdentity() + " WHERE issupplier = 1)";
+                        query = "SELECT cnumber FROM " + forThis.getDbIdentity() + " WHERE ids = (SELECT MAX(ids) from " + forThis.getDbIdentity() + " WHERE issupplier = 1 and invisible=0)";
                     } else {
-                        query = "SELECT cnumber FROM " + forThis.getDbIdentity() + " WHERE ids = (SELECT MAX(ids) from " + forThis.getDbIdentity() + " WHERE issupplier = 0  AND ismanufacturer = 0 AND iscustomer = 0)";
+                        query = "SELECT cnumber FROM " + forThis.getDbIdentity() + " WHERE ids = (SELECT MAX(ids) from " + forThis.getDbIdentity() + " WHERE issupplier = 0  AND ismanufacturer = 0 AND iscustomer = 0 and invisible=0)";
                     }
                 } else {
-                    query = "SELECT cnumber FROM " + forThis.getDbIdentity() + " WHERE ids = (SELECT MAX(ids) from " + forThis.getDbIdentity() + ")";
+                    query = "SELECT cnumber FROM " + forThis.getDbIdentity() + " WHERE ids = (SELECT MAX(ids) from " + forThis.getDbIdentity() + " and invisible=0)";
                 }
 
                 ReturnValue val = QueryHandler.getConnection().freeQuery(
@@ -359,8 +362,9 @@ public class FormatHandler {
     }
 
     /**
-     * Formats a given number by the determined number format, <br/>if the {@link setStartCount(Integer) } has not been set.
-     * Returns the defined start value then.
+     * Formats a given number by the determined number format, <br/>if the {@link setStartCount(Integer)
+     * } has not been set. Returns the defined start value then.
+     *
      * @param format
      * @param number
      * @return A formatted number
@@ -376,7 +380,9 @@ public class FormatHandler {
     }
 
     /**
-     * Returns the user defined (if defined) String representation of the parent object
+     * Returns the user defined (if defined) String representation of the parent
+     * object
+     *
      * @return A formatted number
      */
     public synchronized String toUserString() {
@@ -464,6 +470,7 @@ public class FormatHandler {
 
     /**
      * Returns the next determined number String
+     *
      * @return
      */
     public synchronized String next() {
@@ -477,7 +484,7 @@ public class FormatHandler {
         private Integer startValue = null;
 
         public YMessageFormat(String pattern, Integer startValue) {
-            super(pattern);
+            super(pattern.replace(DELETED_IDENTIFIER, ""));
             this.startValue = startValue;
         }
 

@@ -754,6 +754,9 @@ public class Item extends DatabaseObject implements Formattable, Templateable {
         for (int i = 0; i < it.length; i++) {
             it[i].delete();
         }
+        setCnumber(FormatHandler.DELETED_IDENTIFIER + __getCnumber());
+        setCName(__getCnumber());
+        save(true);
         return super.delete();
     }
 
@@ -769,6 +772,9 @@ public class Item extends DatabaseObject implements Formattable, Templateable {
         } catch (NodataFoundException ex) {
             Log.Debug(this, ex.getMessage());
         }
+
+        setCnumber(__getCnumber().replaceFirst(FormatHandler.DELETED_IDENTIFIER, ""));
+        setCName(__getCnumber());
 
         return super.undelete();
     }
