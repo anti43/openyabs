@@ -8,12 +8,7 @@ import java.util.Date;
 import javax.swing.JSpinner;
 import javax.swing.SpinnerNumberModel;
 import mpv5.data.PropertyStore;
-import mpv5.db.common.Context;
-import mpv5.db.common.DatabaseObject;
-import mpv5.db.common.NodataFoundException;
-import mpv5.db.common.QueryCriteria;
-import mpv5.db.common.QueryData;
-import mpv5.db.common.QueryHandler;
+import mpv5.db.common.*;
 import mpv5.db.objects.Item;
 import mpv5.globals.Messages;
 import mpv5.logging.Log;
@@ -33,7 +28,7 @@ import mpv5.utils.tables.TableFormat;
 
 /**
  *
- * 
+ *
  */
 public class ControlPanel_Formats extends javax.swing.JPanel implements ControlApplet {
 
@@ -365,13 +360,15 @@ public class ControlPanel_Formats extends javax.swing.JPanel implements ControlA
         labeledSpinner1.getSpinner().setModel(new SpinnerNumberModel(0, 0, Integer.MAX_VALUE, 1));
         labeledSpinner1.getSpinner().setEditor(new JSpinner.NumberEditor(labeledSpinner1.getSpinner()));
         labeledSpinner1.getSpinner().updateUI();
-        
+
         labeledSpinner2.getSpinner().setModel(new SpinnerNumberModel(0, -1000, Integer.MAX_VALUE, 1));
         labeledSpinner2.getSpinner().setEditor(new JSpinner.NumberEditor(labeledSpinner2.getSpinner()));
         labeledSpinner2.getSpinner().updateUI();
 
         try {
-            jComboBox1.setModel(MPComboBoxModelItem.toModel(QueryHandler.instanceOf().clone(Context.getUser()).getColumns(new String[]{"ids", "cname"}, 0)));
+            QueryCriteria2 q = new QueryCriteria2();
+            q.and(new QueryParameter(Context.getCountries(), "groupsids", User.getCurrentUser().__getGroupsids(), QueryParameter.EQUALS));
+            jComboBox1.setModel(MPComboBoxModelItem.toModel(QueryHandler.instanceOf().clone(Context.getUser()).getColumns(new String[]{"ids", "cname"}, 0, q)));
         } catch (NodataFoundException ex) {
         }
         try {
@@ -424,12 +421,12 @@ public class ControlPanel_Formats extends javax.swing.JPanel implements ControlA
         } catch (Exception ex) {
             Log.Debug(ex);
         }
-        
-        if(oval.contains("[") &&
-            String.valueOf(labeledSpinner2.get_Value()).equals("0"))
+
+        if (oval.contains("[")
+                && String.valueOf(labeledSpinner2.get_Value()).equals("0")) {
             Notificator.raiseNotification("If you use dynamic parts in your number format, you MUST define a position from where to parse the number from!\n "
                     + "If you do not define a parse position, the defined format may not work as expected.", true);//FIXME i18n
-
+        }
         try {
             GlobalSettings.setProperty(new MessageFormat(oval).toPattern() + "_startposition", String.valueOf(labeledSpinner2.get_Value()));
             GlobalSettings.save();
@@ -486,8 +483,8 @@ public class ControlPanel_Formats extends javax.swing.JPanel implements ControlA
             @Override
             public void actionPerformed(ActionEvent e) {
                 labeledTextField1.setText(labeledCombobox1.getSelectedItem());
-                String prop = GlobalSettings.getProperty(new MessageFormat(labeledTextField1.getText() ).toPattern() + "_startposition");
-                if(prop !=null){
+                String prop = GlobalSettings.getProperty(new MessageFormat(labeledTextField1.getText()).toPattern() + "_startposition");
+                if (prop != null) {
                     try {
                         int pos = Integer.valueOf(prop);
                         labeledSpinner2.set_Value(pos);
@@ -513,7 +510,7 @@ public class ControlPanel_Formats extends javax.swing.JPanel implements ControlA
     }
 
     private boolean test() {
-        
+
 //        if (!labeledTextField1.getText().contains(FormatHandler.INTEGERPART_IDENTIFIER.substring(0, 3))) {
 //            labeledTextField1.set_Text(labeledTextField1.getText() + FormatHandler.INTEGERPART_IDENTIFIER);
 //        }
@@ -534,7 +531,7 @@ public class ControlPanel_Formats extends javax.swing.JPanel implements ControlA
             FormatHandler fh = new FormatHandler(b);
             str = fh.toString(new FormatHandler.YMessageFormat((VariablesHandler.parse(labeledTextField1.getText(), b)).substring(Integer.valueOf(labeledSpinner1.get_Value().toString())), null), Integer.valueOf(labeledSpinner1.get_Value().toString()));
             str = Messages.THE_RESULT + str;
-            
+
             return Popup.OK_dialog(str, Messages.NOTICE.getValue());
         } catch (Exception exception) {
             Popup.error(exception);

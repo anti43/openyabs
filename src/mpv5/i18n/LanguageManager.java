@@ -33,11 +33,7 @@ import javax.swing.DefaultComboBoxModel;
 import javax.swing.SwingUtilities;
 import mpv5.Main;
 import mpv5.YabsViewProxy;
-import mpv5.db.common.Context;
-import mpv5.db.common.DatabaseObject;
-import mpv5.db.common.NodataFoundException;
-import mpv5.db.common.QueryData;
-import mpv5.db.common.QueryHandler;
+import mpv5.db.common.*;
 import mpv5.db.objects.User;
 import mpv5.globals.LocalSettings;
 import mpv5.globals.Messages;
@@ -84,8 +80,8 @@ public class LanguageManager {
      * @return
      */
     public static String getCountryName(int id) {
-        for (int i = 0; i < countries.size(); i++) {
-            MPComboBoxModelItem mPComboBoxModelItem = countries.get(i);
+        for (int i = 0; i < COUNTRIES.size(); i++) {
+            MPComboBoxModelItem mPComboBoxModelItem = COUNTRIES.get(i);
             if (mPComboBoxModelItem.getId().equals(String.valueOf(id))) {
                 return mPComboBoxModelItem.getValue();
             }
@@ -120,12 +116,16 @@ public class LanguageManager {
                 for (int k = 0; k < users.size(); k++) {
                     DatabaseObject databaseObject = users.get(k);
                     for (int i = 0; i < countries1.length; i++) {
-                        String[] country = countries1[i];
-                        QueryData t = new QueryData();
-                        t.add("cname", country[1]);
-                        t.add("iso", Integer.valueOf(country[2]));
-                        t.add("groupsids", databaseObject.__getGroupsids());
-                        QueryHandler.instanceOf().clone(Context.getCountries()).insert(t, Messages.DONE.toString());
+                        try {
+                            String[] country = countries1[i];
+                            QueryData t = new QueryData();
+                            t.add("cname", country[1]);
+                            t.add("iso", Integer.valueOf(country[2]));
+                            t.add("groupsids", databaseObject.__getGroupsids());
+                            QueryHandler.instanceOf().clone(Context.getCountries()).insert(t, Messages.DONE.toString());
+                        } catch (Exception exception) {
+                            Log.Debug(LanguageManager.class, exception.getMessage());
+                        }
                     }
                 }
 
@@ -303,29 +303,31 @@ public class LanguageManager {
         t = MPComboBoxModelItem.toItems(ldata);
         return new DefaultComboBoxModel(t);
     }
-    private static List<MPComboBoxModelItem> countries;
+    public static List<MPComboBoxModelItem> COUNTRIES;
 
     /**
      *
      * @return A ComboBoxModel reflecting the available Countries
      */
     public static synchronized mpv5.utils.models.MPComboboxModel getCountriesAsComboBoxModel() {
-        if (countries == null) {
-            countries = new Vector<MPComboBoxModelItem>();
+        if (COUNTRIES == null) {
+            COUNTRIES = new Vector<MPComboBoxModelItem>();
             try {
-                Object[][] data = QueryHandler.instanceOf().clone(Context.getCountries()).getColumns(new String[]{"iso", "cname"}, 0);
+                QueryCriteria2 q = new QueryCriteria2();
+                q.and(new QueryParameter(Context.getCountries(), "groupsids", User.getCurrentUser().__getGroupsids(), QueryParameter.EQUALS));
+                Object[][] data = QueryHandler.instanceOf().clone(Context.getCountries()).getColumns(new String[]{"iso", "cname"}, 0, q);
                 for (int i = 0; i < data.length; i++) {
                     Object[] objects = data[i];
-                    countries.add(new MPComboBoxModelItem(objects[0].toString(), objects[1].toString()));
+                    COUNTRIES.add(new MPComboBoxModelItem(objects[0].toString(), objects[1].toString()));
                 }
-                Log.Debug(LanguageManager.class, "Cached countries: " + countries.size());
-                return MPComboBoxModelItem.toModel(countries);
+                Log.Debug(LanguageManager.class, "Cached countries: " + COUNTRIES.size());
+                return MPComboBoxModelItem.toModel(COUNTRIES);
             } catch (NodataFoundException ex) {
                 Log.Debug(LanguageManager.class, ex.getMessage());
                 return new MPComboboxModel(new MPComboBoxModelItem[]{});
             }
         } else {
-            return MPComboBoxModelItem.toModel(countries);
+            return MPComboBoxModelItem.toModel(COUNTRIES);
         }
     }
 

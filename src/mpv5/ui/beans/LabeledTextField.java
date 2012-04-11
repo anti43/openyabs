@@ -111,7 +111,6 @@ public class LabeledTextField extends javax.swing.JPanel {
         jLabel1.setText("text");
 
         jTextField1.setFont(jTextField1.getFont());
-        jTextField1.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         jTextField1.setDisabledTextColor(new java.awt.Color(0, 51, 51));
         jTextField1.setMargin(new java.awt.Insets(0, 0, 0, 0));
         jTextField1.setMinimumSize(new java.awt.Dimension(5, 20));
@@ -129,13 +128,12 @@ public class LabeledTextField extends javax.swing.JPanel {
             .addGroup(layout.createSequentialGroup()
                 .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 84, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, 0)
-                .addComponent(jTextField1, javax.swing.GroupLayout.DEFAULT_SIZE, 98, Short.MAX_VALUE))
+                .addComponent(jTextField1, javax.swing.GroupLayout.DEFAULT_SIZE, 169, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addComponent(jTextField1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addComponent(jLabel1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 22, Short.MAX_VALUE)
+            .addComponent(jTextField1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -157,6 +155,7 @@ public class LabeledTextField extends javax.swing.JPanel {
             }
         }
     }//GEN-LAST:event_jTextField1ActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel jLabel1;
     private javax.swing.JTextField jTextField1;
@@ -356,7 +355,7 @@ public class LabeledTextField extends javax.swing.JPanel {
                 jTextField1.setBackground(Color.WHITE);
                 return (T) Integer.valueOf(jTextField1.getText());
             } catch (Exception numberFormatException) {
-                Log.Debug(numberFormatException);
+                Log.Debug(this, numberFormatException.getMessage());
                 TextFieldUtils.blinker(jTextField1, Color.gray);
                 jTextField1.setText("0");
             }
@@ -366,7 +365,7 @@ public class LabeledTextField extends javax.swing.JPanel {
                 jTextField1.setBackground(Color.WHITE);
                 return (T) new Double(FormatNumber.parseDezimal(jTextField1.getText()).doubleValue());
             } catch (Exception numberFormatException) {
-                Log.Debug(numberFormatException);
+                Log.Debug(this, numberFormatException.getMessage());
                 TextFieldUtils.blinker(jTextField1, Color.gray);
                 jTextField1.setText("0.0");
             }
@@ -377,7 +376,7 @@ public class LabeledTextField extends javax.swing.JPanel {
                 return (T) FormatNumber.parseDezimal(jTextField1.getText());
             } catch (Exception numberFormatException) {
                 Log.Debug(this, jTextField1.getText());
-                Log.Debug(numberFormatException);
+                Log.Debug(this, numberFormatException.getMessage());
 
                 TextFieldUtils.blinker(jTextField1, Color.gray);
                 jTextField1.setText("0.0");

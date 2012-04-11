@@ -16,17 +16,19 @@ import javax.swing.DefaultComboBoxModel;
 
 import javax.swing.JFileChooser;
 import javax.swing.JTextField;
+import javax.swing.plaf.TextUI;
 import mpv5.data.PropertyStore;
-import mpv5.db.common.Context;
-import mpv5.db.common.NodataFoundException;
-import mpv5.db.common.QueryHandler;
+import mpv5.db.common.*;
+import mpv5.db.objects.User;
 import mpv5.globals.Constants;
 import mpv5.globals.Messages;
 import mpv5.i18n.LanguageManager;
 import mpv5.logging.Log;
 import mpv5.ui.dialogs.ControlApplet;
 import mpv5.ui.dialogs.DialogForFile;
+import mpv5.ui.dialogs.Notificator;
 import mpv5.ui.dialogs.Popup;
+import mpv5.ui.misc.TextFieldUtils;
 
 import mpv5.utils.files.FileDirectoryHandler;
 import mpv5.utils.files.FileReaderWriter;
@@ -36,7 +38,7 @@ import mpv5.utils.text.TypeConversion;
 
 /**
  *
- * 
+ *
  */
 public class ControlPanel_Locale extends javax.swing.JPanel implements ControlApplet {
 
@@ -54,6 +56,8 @@ public class ControlPanel_Locale extends javax.swing.JPanel implements ControlAp
         locales.setSelectedIndex(MPComboBoxModelItem.getItemID(Locale.getDefault().toString(),
                 locales.getModel()));
         setLanguageSelection();
+        isocode.set_ValueClass(java.lang.Integer.class);
+        countryselect.setModel(LanguageManager.getCountriesAsComboBoxModel());
         setVisible(true);
     }
 
@@ -65,6 +69,13 @@ public class ControlPanel_Locale extends javax.swing.JPanel implements ControlAp
         jLabel9 = new javax.swing.JLabel();
         labeledTextChooser2 = new mpv5.ui.beans.LabeledTextChooser();
         jButton4 = new javax.swing.JButton();
+        jPanel1 = new javax.swing.JPanel();
+        isocode = new mpv5.ui.beans.LabeledTextField();
+        countryname = new mpv5.ui.beans.LabeledTextField();
+        jButton7 = new javax.swing.JButton();
+        jPanel7 = new javax.swing.JPanel();
+        jButton8 = new javax.swing.JButton();
+        countryselect = new mpv5.ui.beans.LabeledCombobox();
         jPanel4 = new javax.swing.JPanel();
         jLabel5 = new javax.swing.JLabel();
         jLabel6 = new javax.swing.JLabel();
@@ -87,7 +98,7 @@ public class ControlPanel_Locale extends javax.swing.JPanel implements ControlAp
         jButton1 = new javax.swing.JButton();
 
         setBackground(new java.awt.Color(255, 255, 255));
-       java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle(); // NOI18N
+        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("mpv5/resources/languages/Panels"); // NOI18N
         setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("ControlPanel_Locale.border.title"))); // NOI18N
         setName("Form"); // NOI18N
         setLayout(new javax.swing.BoxLayout(this, javax.swing.BoxLayout.PAGE_AXIS));
@@ -95,16 +106,16 @@ public class ControlPanel_Locale extends javax.swing.JPanel implements ControlAp
         jPanel5.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         jPanel5.setName("jPanel5"); // NOI18N
 
-        jLabel8.setFont(new java.awt.Font("Tahoma", 1, 12));
+        jLabel8.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
         jLabel8.setText(bundle.getString("ControlPanel_Locale.jLabel8.text")); // NOI18N
         jLabel8.setName("jLabel8"); // NOI18N
 
-        jLabel9.setFont(new java.awt.Font("Dialog", 0, 11));
+        jLabel9.setFont(new java.awt.Font("Dialog", 0, 11)); // NOI18N
         jLabel9.setText(bundle.getString("ControlPanel_Locale.jLabel9.text")); // NOI18N
         jLabel9.setName("jLabel9"); // NOI18N
 
         labeledTextChooser2.set_Label(bundle.getString("ControlPanel_Locale.labeledTextChooser2._Label")); // NOI18N
-        labeledTextChooser2.set_LabelFont(new java.awt.Font("Tahoma", 0, 11));
+        labeledTextChooser2.set_LabelFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
         labeledTextChooser2.setName("labeledTextChooser2"); // NOI18N
 
         jButton4.setText(bundle.getString("ControlPanel_Locale.jButton4.text")); // NOI18N
@@ -115,6 +126,74 @@ public class ControlPanel_Locale extends javax.swing.JPanel implements ControlAp
             }
         });
 
+        jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("ControlPanel_Locale.jPanel1.border.title"))); // NOI18N
+        jPanel1.setName(bundle.getString("ControlPanel_Locale.jPanel1.name")); // NOI18N
+
+        isocode.set_Label(bundle.getString("ControlPanel_Locale.isocode._Label")); // NOI18N
+        isocode.setName(bundle.getString("ControlPanel_Locale.isocode.name")); // NOI18N
+
+        countryname.set_Label(bundle.getString("ControlPanel_Locale.countryname._Label")); // NOI18N
+        countryname.setName(bundle.getString("ControlPanel_Locale.countryname.name")); // NOI18N
+
+        jButton7.setText(bundle.getString("ControlPanel_Locale.jButton7.text")); // NOI18N
+        jButton7.setName(bundle.getString("ControlPanel_Locale.jButton7.name")); // NOI18N
+        jButton7.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton7ActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addComponent(isocode, javax.swing.GroupLayout.PREFERRED_SIZE, 146, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(countryname, javax.swing.GroupLayout.PREFERRED_SIZE, 172, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jButton7)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jButton7, javax.swing.GroupLayout.Alignment.TRAILING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addComponent(isocode, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(countryname, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+        );
+
+        jPanel7.setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("ControlPanel_Locale.jPanel7.border.title"))); // NOI18N
+        jPanel7.setName(bundle.getString("ControlPanel_Locale.jPanel7.name")); // NOI18N
+
+        jButton8.setText(bundle.getString("ControlPanel_Locale.jButton8.text")); // NOI18N
+        jButton8.setName(bundle.getString("ControlPanel_Locale.jButton8.name")); // NOI18N
+        jButton8.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton8ActionPerformed(evt);
+            }
+        });
+
+        countryselect.set_Label(bundle.getString("ControlPanel_Locale.countryselect._Label")); // NOI18N
+        countryselect.setName(bundle.getString("ControlPanel_Locale.countryselect.name")); // NOI18N
+
+        javax.swing.GroupLayout jPanel7Layout = new javax.swing.GroupLayout(jPanel7);
+        jPanel7.setLayout(jPanel7Layout);
+        jPanel7Layout.setHorizontalGroup(
+            jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel7Layout.createSequentialGroup()
+                .addComponent(countryselect, javax.swing.GroupLayout.PREFERRED_SIZE, 328, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jButton8)
+                .addContainerGap(28, Short.MAX_VALUE))
+        );
+        jPanel7Layout.setVerticalGroup(
+            jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
+                .addComponent(jButton8)
+                .addComponent(countryselect, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+        );
+
         javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
         jPanel5.setLayout(jPanel5Layout);
         jPanel5Layout.setHorizontalGroup(
@@ -122,26 +201,34 @@ public class ControlPanel_Locale extends javax.swing.JPanel implements ControlAp
             .addGroup(jPanel5Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel9, javax.swing.GroupLayout.DEFAULT_SIZE, 356, Short.MAX_VALUE)
-                    .addComponent(jLabel8)
+                    .addComponent(jLabel9, javax.swing.GroupLayout.DEFAULT_SIZE, 437, Short.MAX_VALUE)
+                    .addComponent(jLabel8, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(jPanel5Layout.createSequentialGroup()
-                        .addComponent(labeledTextChooser2, javax.swing.GroupLayout.PREFERRED_SIZE, 264, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jButton4)))
+                        .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addGroup(jPanel5Layout.createSequentialGroup()
+                                .addComponent(labeledTextChooser2, javax.swing.GroupLayout.PREFERRED_SIZE, 268, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jButton4))
+                            .addComponent(jPanel7, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         jPanel5Layout.setVerticalGroup(
             jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel5Layout.createSequentialGroup()
-                .addContainerGap()
+            .addGroup(jPanel5Layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jLabel8)
                 .addGap(7, 7, 7)
                 .addComponent(jLabel9)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jButton4, javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(labeledTextChooser2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap())
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(labeledTextChooser2, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jButton4, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jPanel7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
         add(jPanel5);
@@ -149,16 +236,16 @@ public class ControlPanel_Locale extends javax.swing.JPanel implements ControlAp
         jPanel4.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         jPanel4.setName("jPanel4"); // NOI18N
 
-        jLabel5.setFont(new java.awt.Font("Tahoma", 1, 12));
+        jLabel5.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
         jLabel5.setText(bundle.getString("ControlPanel_Locale.jLabel5.text")); // NOI18N
         jLabel5.setName("jLabel5"); // NOI18N
 
-        jLabel6.setFont(new java.awt.Font("Dialog", 0, 11));
+        jLabel6.setFont(new java.awt.Font("Dialog", 0, 11)); // NOI18N
         jLabel6.setText(bundle.getString("ControlPanel_Locale.jLabel6.text")); // NOI18N
         jLabel6.setName("jLabel6"); // NOI18N
 
         labeledTextChooser1.set_Label(bundle.getString("ControlPanel_Locale.labeledTextChooser1._Label")); // NOI18N
-        labeledTextChooser1.set_LabelFont(new java.awt.Font("Tahoma", 0, 11));
+        labeledTextChooser1.set_LabelFont(new java.awt.Font("Tahoma", 0, 11)); // NOI18N
         labeledTextChooser1.setName("labeledTextChooser1"); // NOI18N
 
         jButton3.setText(bundle.getString("ControlPanel_Locale.jButton3.text")); // NOI18N
@@ -170,10 +257,10 @@ public class ControlPanel_Locale extends javax.swing.JPanel implements ControlAp
         });
 
         langName.set_Label(bundle.getString("ControlPanel_Locale.langName._Label")); // NOI18N
-        langName.set_LabelFont(new java.awt.Font("Dialog", 0, 11));
+        langName.set_LabelFont(new java.awt.Font("Dialog", 0, 11)); // NOI18N
         langName.setName("langName"); // NOI18N
 
-        jLabel7.setFont(new java.awt.Font("Dialog", 0, 11));
+        jLabel7.setFont(new java.awt.Font("Dialog", 0, 11)); // NOI18N
         jLabel7.setText(bundle.getString("ControlPanel_Locale.jLabel7.text")); // NOI18N
         jLabel7.setName("jLabel7"); // NOI18N
 
@@ -181,18 +268,20 @@ public class ControlPanel_Locale extends javax.swing.JPanel implements ControlAp
         jPanel4.setLayout(jPanel4Layout);
         jPanel4Layout.setHorizontalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel4Layout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel6, javax.swing.GroupLayout.DEFAULT_SIZE, 356, Short.MAX_VALUE)
-                    .addComponent(jLabel5)
-                    .addComponent(langName, javax.swing.GroupLayout.PREFERRED_SIZE, 149, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(jPanel4Layout.createSequentialGroup()
-                        .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                            .addComponent(labeledTextChooser1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jLabel7, javax.swing.GroupLayout.DEFAULT_SIZE, 266, Short.MAX_VALUE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButton3)))
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jLabel6, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 356, Short.MAX_VALUE)
+                    .addComponent(jLabel5, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel4Layout.createSequentialGroup()
+                        .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(langName, javax.swing.GroupLayout.PREFERRED_SIZE, 149, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(jPanel4Layout.createSequentialGroup()
+                                .addComponent(labeledTextChooser1, javax.swing.GroupLayout.PREFERRED_SIZE, 266, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jButton3)))
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addComponent(jLabel7, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
         jPanel4Layout.setVerticalGroup(
@@ -207,9 +296,11 @@ public class ControlPanel_Locale extends javax.swing.JPanel implements ControlAp
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jLabel6)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jButton3, javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(labeledTextChooser1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jButton3)
+                    .addGroup(jPanel4Layout.createSequentialGroup()
+                        .addGap(1, 1, 1)
+                        .addComponent(labeledTextChooser1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                 .addContainerGap())
         );
 
@@ -218,11 +309,11 @@ public class ControlPanel_Locale extends javax.swing.JPanel implements ControlAp
         jPanel3.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         jPanel3.setName("jPanel3"); // NOI18N
 
-        jLabel3.setFont(new java.awt.Font("Tahoma", 1, 12));
+        jLabel3.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
         jLabel3.setText(bundle.getString("ControlPanel_Locale.jLabel3.text")); // NOI18N
         jLabel3.setName("jLabel3"); // NOI18N
 
-        jLabel4.setFont(new java.awt.Font("Dialog", 0, 11));
+        jLabel4.setFont(new java.awt.Font("Dialog", 0, 11)); // NOI18N
         jLabel4.setText(bundle.getString("ControlPanel_Locale.jLabel4.text")); // NOI18N
         jLabel4.setName("jLabel4"); // NOI18N
 
@@ -250,16 +341,16 @@ public class ControlPanel_Locale extends javax.swing.JPanel implements ControlAp
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel3)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addGroup(jPanel3Layout.createSequentialGroup()
                         .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(languages, javax.swing.GroupLayout.PREFERRED_SIZE, 177, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 245, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(29, 29, 29)
+                            .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 270, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jButton6)
-                            .addComponent(jButton5))))
+                            .addComponent(jButton5)))
+                    .addComponent(jLabel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap(27, Short.MAX_VALUE))
         );
         jPanel3Layout.setVerticalGroup(
@@ -268,11 +359,11 @@ public class ControlPanel_Locale extends javax.swing.JPanel implements ControlAp
                 .addContainerGap()
                 .addComponent(jLabel3)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
                     .addComponent(jLabel4)
                     .addComponent(jButton6))
                 .addGap(18, 18, 18)
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
                     .addComponent(languages, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jButton5))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
@@ -283,11 +374,11 @@ public class ControlPanel_Locale extends javax.swing.JPanel implements ControlAp
         jPanel2.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         jPanel2.setName("jPanel2"); // NOI18N
 
-        jLabel2.setFont(new java.awt.Font("Tahoma", 1, 12));
+        jLabel2.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
         jLabel2.setText(bundle.getString("ControlPanel_Locale.jLabel2.text")); // NOI18N
         jLabel2.setName("jLabel2"); // NOI18N
 
-        jLabel1.setFont(new java.awt.Font("Dialog", 0, 11));
+        jLabel1.setFont(new java.awt.Font("Dialog", 0, 11)); // NOI18N
         jLabel1.setText(bundle.getString("ControlPanel_Locale.jLabel1.text")); // NOI18N
         jLabel1.setName("jLabel1"); // NOI18N
 
@@ -386,6 +477,8 @@ public class ControlPanel_Locale extends javax.swing.JPanel implements ControlAp
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
         if (labeledTextChooser2.hasText()) {
             LanguageManager.importCountries(new File(labeledTextChooser2.get_Text(true)));
+            LanguageManager.COUNTRIES = null;
+            countryselect.setModel(LanguageManager.getCountriesAsComboBoxModel());
         }
     }//GEN-LAST:event_jButton4ActionPerformed
 
@@ -448,6 +541,39 @@ public class ControlPanel_Locale extends javax.swing.JPanel implements ControlAp
         }
     }//GEN-LAST:event_jButton6ActionPerformed
 
+    private void jButton7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton7ActionPerformed
+        if (!isocode.hasText()) {
+            TextFieldUtils.blinkerRed(isocode);
+        }
+        if (!countryname.hasText()) {
+            TextFieldUtils.blinkerRed(countryname);
+        } else {
+            try {
+                QueryData t = new QueryData();
+                t.add("cname", countryname.getText());
+                t.add("iso", isocode.getValue(0));
+                t.add("groupsids", User.getCurrentUser().__getGroupsids());
+                QueryHandler.instanceOf().clone(Context.getCountries()).insert(t, Messages.DONE.toString());
+                Notificator.raiseNotification(Messages.DONE);
+                LanguageManager.COUNTRIES = null;
+                countryselect.setModel(LanguageManager.getCountriesAsComboBoxModel());
+            } catch (Exception exception) {
+                Log.Debug(LanguageManager.class, exception.getMessage());
+                Notificator.raiseNotification("Isocode must be unique!");
+            }
+        }
+    }//GEN-LAST:event_jButton7ActionPerformed
+
+    private void jButton8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton8ActionPerformed
+        String country_ = countryselect.getSelectedItem().getId();
+        QueryCriteria2 q = new QueryCriteria2();
+        q.and(new QueryParameter(Context.getCountries(), "iso", Integer.valueOf(country_), QueryParameter.EQUALS));
+        QueryHandler.instanceOf().clone(Context.getCountries()).delete(q);
+        LanguageManager.COUNTRIES = null;
+        countryselect.setModel(LanguageManager.getCountriesAsComboBoxModel());
+        Notificator.raiseNotification(Messages.DONE);
+    }//GEN-LAST:event_jButton8ActionPerformed
+
     public void setValues(PropertyStore values) {
         oldvalues = values;
     }
@@ -460,12 +586,17 @@ public class ControlPanel_Locale extends javax.swing.JPanel implements ControlAp
         setValues(oldvalues);
     }
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private mpv5.ui.beans.LabeledTextField countryname;
+    private mpv5.ui.beans.LabeledCombobox countryselect;
+    private mpv5.ui.beans.LabeledTextField isocode;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
     private javax.swing.JButton jButton4;
     private javax.swing.JButton jButton5;
     private javax.swing.JButton jButton6;
+    private javax.swing.JButton jButton7;
+    private javax.swing.JButton jButton8;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
@@ -475,11 +606,13 @@ public class ControlPanel_Locale extends javax.swing.JPanel implements ControlAp
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
+    private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
     private javax.swing.JPanel jPanel5;
     private javax.swing.JPanel jPanel6;
+    private javax.swing.JPanel jPanel7;
     private mpv5.ui.beans.LabeledTextChooser labeledTextChooser1;
     private mpv5.ui.beans.LabeledTextChooser labeledTextChooser2;
     private mpv5.ui.beans.LabeledTextField langName;

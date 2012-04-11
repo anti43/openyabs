@@ -58,9 +58,9 @@ import mpv5.utils.ui.TextFieldUtils;
  *
  * Use this class to access the Yabs database.
  *
- * @see QueryHandler#instanceOf() 
+ * @see QueryHandler#instanceOf()
  * @see QueryHandler#getConnection()
- * @see QueryHandler#clone(mpv5.db.common.Context) 
+ * @see QueryHandler#clone(mpv5.db.common.Context)
  */
 public class QueryHandler implements Cloneable {
 
@@ -107,6 +107,7 @@ public class QueryHandler implements Cloneable {
 
     /**
      * !Use "Clone" method before actually do anything!
+     *
      * @return The one and only instance of the database connection
      */
     public static synchronized QueryHandler instanceOf() {
@@ -200,6 +201,7 @@ public class QueryHandler implements Cloneable {
 
     /**
      * Set the global row limit for select queries. 0 is unlimited.
+     *
      * @param limit
      */
     public static synchronized void setRowLimit(int limit) {
@@ -233,7 +235,9 @@ public class QueryHandler implements Cloneable {
     }
 
     /**
-     * Builds a select query which selects all fields from all rows where the fields match the given value.
+     * Builds a select query which selects all fields from all rows where the
+     * fields match the given value.
+     *
      * @param value
      * @param fields
      * @return A query String select ids, bla
@@ -243,7 +247,9 @@ public class QueryHandler implements Cloneable {
     }
 
     /**
-     * Builds a select query which selects ids from all rows where the fields match the given value.
+     * Builds a select query which selects ids from all rows where the fields
+     * match the given value.
+     *
      * @param value
      * @param fields
      * @return A query String select ids, bla
@@ -254,6 +260,7 @@ public class QueryHandler implements Cloneable {
 
     /**
      * selct ids, columns
+     *
      * @param columns
      * @param conditionColumns
      * @param order
@@ -301,9 +308,10 @@ public class QueryHandler implements Cloneable {
     }
 
     /**
-     * Checks the uniqueness of a unique constraint
-     * Works only for columns with equal data type
-     * @param constraint  {"column1","column2"}
+     * Checks the uniqueness of a unique constraint Works only for columns with
+     * equal data type
+     *
+     * @param constraint {"column1","column2"}
      * @param values {"value1",value2<any/>}
      * @return true if the key constraint is not existing yet
      */
@@ -328,8 +336,10 @@ public class QueryHandler implements Cloneable {
 
     /**
      * This is a convenience bridge between views and unique constraint checks.
-     * If the given objects is from type JTextField or LabeledTextField, the TextFields background will flash red<br/>
-     * if the uniqueness check fails, nothing will happen otherwise
+     * If the given objects is from type JTextField or LabeledTextField, the
+     * TextFields background will flash red<br/> if the uniqueness check fails,
+     * nothing will happen otherwise
+     *
      * @param uniqueColumns to be separated with a comma
      * @param object An array of textfields
      * @return true if no uniqueness failure has been hidden
@@ -348,36 +358,28 @@ public class QueryHandler implements Cloneable {
 
     /**
      * Returns a full column
+     *
      * @param columnName column1
      * @param maximumRowCount If >0 , this is the row count limit
+     * @param q
      * @return The column
      * @throws NodataFoundException
      */
-    public Object[] getColumn(String columnName, int maximumRowCount) throws NodataFoundException {
-        ReturnValue data = null;
-        if (maximumRowCount > 0) {
-            data = freeSelectQuery("SELECT TOP(" + maximumRowCount + ") "
-                    + columnName + " FROM " + table + " " + context.getConditions(false), mpv5.usermanagement.MPSecurityManager.VIEW, null);
-        } else {
-            data = freeSelectQuery("SELECT "
-                    + columnName + " FROM " + table + " " + context.getConditions(false), mpv5.usermanagement.MPSecurityManager.VIEW, null);
-        }
-        if (data.getData().length == 0) {
-            throw new NodataFoundException();
-        } else {
-            return ArrayUtilities.ObjectToSingleColumnArray(data.getData());
-        }
+    public Object[] getColumn(String columnName, int maximumRowCount, QueryCriteria2 q) throws NodataFoundException {
+        return ArrayUtilities.ObjectToSingleColumnArray(getColumns(new String[]{columnName}, maximumRowCount, q));
     }
 
     /**
      * Select multiple columns
+     *
      * @param columnNames column1, column2, column3...
      * @param maximumRowCount
+     * @param q
      * @return
-     * @throws NodataFoundException
-     * <i><b>Omits trashed datasets implicitly</b></i>
+     * @throws NodataFoundException <i><b>Omits trashed datasets
+     * implicitly</b></i>
      */
-    public Object[][] getColumns(String[] columnNames, int maximumRowCount) throws NodataFoundException {
+    public Object[][] getColumns(String[] columnNames, int maximumRowCount, QueryCriteria2 q) throws NodataFoundException {
         ReturnValue data = null;
         String columnName = "";
         for (int i = 0; i < columnNames.length; i++) {
@@ -390,10 +392,10 @@ public class QueryHandler implements Cloneable {
         }
         if (maximumRowCount > 0) {
             data = freeSelectQuery("SELECT TOP(" + maximumRowCount + ") "
-                    + columnName + " FROM " + table + " " + context.getConditions(false), mpv5.usermanagement.MPSecurityManager.VIEW, null);
+                    + columnName + " FROM " + table + " " + context.getConditions(false) + " AND (" + q.getQuery() + ")", mpv5.usermanagement.MPSecurityManager.VIEW, null);
         } else {
             data = freeSelectQuery("SELECT "
-                    + columnName + " FROM " + table + " " + context.getConditions(false), mpv5.usermanagement.MPSecurityManager.VIEW, null);
+                    + columnName + " FROM " + table + " " + context.getConditions(false) + " AND (" + q.getQuery() + ")", mpv5.usermanagement.MPSecurityManager.VIEW, null);
         }
         if (data.getData().length == 0) {
             throw new NodataFoundException();
@@ -403,7 +405,9 @@ public class QueryHandler implements Cloneable {
     }
 
     /**
-     * Set the context for this connection, usually not used as the Context is set on Clone
+     * Set the context for this connection, usually not used as the Context is
+     * set on Clone
+     *
      * @param context
      * @return
      */
@@ -418,6 +422,7 @@ public class QueryHandler implements Cloneable {
 
     /**
      * Select the row with this IDS
+     *
      * @param id
      * @return
      * @throws NodataFoundException If no such row exists
@@ -428,11 +433,12 @@ public class QueryHandler implements Cloneable {
 
     /**
      * Select the row with this IDS
+     *
      * @param id
      * @param noConditions
      * @return
-     * @throws NodataFoundException If no such row exists
-     * <i><b>Omits trashed datasets implicitly</b></i>
+     * @throws NodataFoundException If no such row exists <i><b>Omits trashed
+     * datasets implicitly</b></i>
      */
     protected ReturnValue select(int id, boolean noConditions) throws NodataFoundException {
         ReturnValue data;
@@ -449,8 +455,9 @@ public class QueryHandler implements Cloneable {
     }
 
     /**
-     * Selects one or more columns from the current {@link Context}-
-     * No condition checking!
+     * Selects one or more columns from the current {@link Context}- No
+     * condition checking!
+     *
      * @param columns column1, column2, column3...
      * @return
      * @throws NodataFoundException
@@ -467,12 +474,13 @@ public class QueryHandler implements Cloneable {
     /**
      * This is a convenience method to retrieve data such as
      * <code>select("*", criterias.getKeys(), criterias.getValues())<code/>
+     *
      * @param columns
      * @param criterias
      * @return
      * @throws NodataFoundException
      */
-    public Object[][] select(String columns, QueryCriteria criterias ) throws NodataFoundException {
+    public Object[][] select(String columns, QueryCriteria criterias) throws NodataFoundException {
         if (criterias.getKeys().length > 0) {
             return select(columns, criterias.getKeys(), criterias.getValues(), criterias.getIncludeInvisible());
         } else {
@@ -483,6 +491,7 @@ public class QueryHandler implements Cloneable {
     /**
      * This is a convenience method to retrieve data such as
      * <code>select("*", criterias.getKeys(), criterias.getValues())<code/>
+     *
      * @param columns
      * @return
      * @throws NodataFoundException
@@ -491,15 +500,17 @@ public class QueryHandler implements Cloneable {
         return select(columns, new String[0], new Object[0], withDeleted);
     }
 
-    /**0
+    /**
+     * 0
      * Select data from a timeframe
+     *
      * @param columns column1, column2, column3...
      * @param criterias
      * @param time
      * @param timeCol The column containing the date
      * @return
-     * @throws NodataFoundException
-     * <i><b>Omits trashed datasets implicitly</b></i>
+     * @throws NodataFoundException <i><b>Omits trashed datasets
+     * implicitly</b></i>
      */
     public Object[][] select(String columns, QueryCriteria criterias, vTimeframe time, String timeCol) throws NodataFoundException {
 
@@ -632,11 +643,12 @@ public class QueryHandler implements Cloneable {
 
     /**
      * Requires 'dateadded' column
+     *
      * @param columns column1, column2, column3...
      * @param criterias
      * @param time
      * @return
-     * @throws NodataFoundException 
+     * @throws NodataFoundException
      */
     public Object[][] select(String columns, QueryCriteria criterias, vTimeframe time) throws NodataFoundException {
         return select(columns, criterias, time, "dateadded");
@@ -644,6 +656,7 @@ public class QueryHandler implements Cloneable {
 
     /**
      * Requires 'dateadded' column
+     *
      * @param columns
      * @param criterias
      * @param time
@@ -656,6 +669,7 @@ public class QueryHandler implements Cloneable {
 
     /**
      * Convenience method to retrieve * from where the criterias match
+     *
      * @param criterias
      * @return
      * @throws mpv5.db.common.NodataFoundException
@@ -685,7 +699,9 @@ public class QueryHandler implements Cloneable {
     }
 
     /**
-     * This is a convenience method to retrieve data such as "SELECT * FROM table"
+     * This is a convenience method to retrieve data such as "SELECT * FROM
+     * table"
+     *
      * @return All rows in the current context
      * @throws NodataFoundException
      */
@@ -699,7 +715,9 @@ public class QueryHandler implements Cloneable {
     }
 
     /**
-     * This is a convenience method to retrieve data such as "SELECT ids FROM table"
+     * This is a convenience method to retrieve data such as "SELECT ids FROM
+     * table"
+     *
      * @return All rows in the current context
      * @throws NodataFoundException
      */
@@ -727,9 +745,8 @@ public class QueryHandler implements Cloneable {
      * @param columns If null, the column specified with "needle" is returned
      * @param needle
      * @param value
-     * @param exactMatch 
-     * @return
-     * <i><b>Omits trashed datasets implicitly</b></i>
+     * @param exactMatch
+     * @return <i><b>Omits trashed datasets implicitly</b></i>
      */
     public Object[] getValuesFor(String[] columns, String needle, String value, boolean exactMatch) {
         String cols = needle;
@@ -763,7 +780,7 @@ public class QueryHandler implements Cloneable {
     }
 
     /**
-     * 
+     *
      * @param what column1, column2, column3...
      * @param where
      * @param datecolumn
@@ -906,6 +923,7 @@ public class QueryHandler implements Cloneable {
 
     /**
      * Count rows in a time frame
+     *
      * @param date1
      * @param date2
      * @return
@@ -915,7 +933,9 @@ public class QueryHandler implements Cloneable {
     }
 
     /**
-     * Set the table for the current connection. Usually only used inside the <code>Clone</code> method of {@link QueryHandler}
+     * Set the table for the current connection. Usually only used inside the
+     * <code>Clone</code> method of {@link QueryHandler}
+     *
      * @param newTable
      */
     protected void setTable(String newTable) {
@@ -926,7 +946,9 @@ public class QueryHandler implements Cloneable {
     }
 
     /**
-     * Sets the table and the context for the current connection. Don't use this.
+     * Sets the table and the context for the current connection. Don't use
+     * this.
+     *
      * @param newTable
      */
     public void setTable2(String newTable) {
@@ -942,7 +964,9 @@ public class QueryHandler implements Cloneable {
     }
 
     /**
-     * The current table name as specified by the current {@link Context}, or {@link #setTable(java.lang.String) }, {@link #setTable2(java.lang.String) }
+     * The current table name as specified by the current {@link Context}, or {@link #setTable(java.lang.String)
+     * }, {@link #setTable2(java.lang.String) }
+     *
      * @return The current table name
      */
     public String getTable() {
@@ -950,7 +974,9 @@ public class QueryHandler implements Cloneable {
     }
 
     /**
-     * Set a wait-cursor during database transactions (if not cloned for silent transactions)
+     * Set a wait-cursor during database transactions (if not cloned for silent
+     * transactions)
+     *
      * @param main A frame window
      */
     public static void setWaitCursorFor(JFrame main) {
@@ -959,6 +985,7 @@ public class QueryHandler implements Cloneable {
 
     /**
      * Set a progressbar during database transactions
+     *
      * @param progressBar
      */
     public static void setProgressbar(JProgressBar progressBar) {
@@ -966,8 +993,9 @@ public class QueryHandler implements Cloneable {
     }
 
     /**
-     * This will flush the table of the current context, be careful!
-     * This should never be triggered by a user, the user right will not be checked!
+     * This will flush the table of the current context, be careful! This should
+     * never be triggered by a user, the user right will not be checked!
+     *
      * @param dbIdentity
      */
     public void truncate(String dbIdentity) {
@@ -976,6 +1004,7 @@ public class QueryHandler implements Cloneable {
 
     /**
      * Checks the uniqueness of the data
+     *
      * @param vals
      * @param uniquecols
      * @return
@@ -998,6 +1027,7 @@ public class QueryHandler implements Cloneable {
 
     /**
      * Checks the uniqueness of STRING data
+     *
      * @param column
      * @param value
      * @return
@@ -1052,6 +1082,7 @@ public class QueryHandler implements Cloneable {
 
     /**
      * Returns exactly one value from a column
+     *
      * @param columnName The column where to take the result from
      * @param compareColumn The column to compare
      * @param compareValue The value to compare to
@@ -1070,10 +1101,13 @@ public class QueryHandler implements Cloneable {
     }
 
     /**
-     * Returns map view of the found {@link DatabaseObject} with the given ID in the current {@link Context}
+     * Returns map view of the found {@link DatabaseObject} with the given ID in
+     * the current {@link Context}
+     *
      * @param id
-     * @return  A HashMap
-     * @throws NodataFoundException If no Object with the given ID was found in the current Context
+     * @return A HashMap
+     * @throws NodataFoundException If no Object with the given ID was found in
+     * the current Context
      */
     public Map<String, String> getValuesFor(int id) throws NodataFoundException {
         ReturnValue rv = select(id);
@@ -1086,7 +1120,8 @@ public class QueryHandler implements Cloneable {
         return map;
     }
     /**
-     * This string is used to replace backslashes in sql queries (if escaping is enabled)
+     * This string is used to replace backslashes in sql queries (if escaping is
+     * enabled)
      */
     public static String BACKSLASH_REPLACEMENT_STRING = "<removedbackslash>";
 
@@ -1099,7 +1134,9 @@ public class QueryHandler implements Cloneable {
     }
 
     /**
-     * Checks if any data which would match the given criteria is existing in the database
+     * Checks if any data which would match the given criteria is existing in
+     * the database
+     *
      * @param qc
      * @return true if matching data was found
      */
@@ -1167,8 +1204,9 @@ public class QueryHandler implements Cloneable {
 
     /**
      * Count the rows of the current table
+     *
      * @return
-     * @throws SQLException 
+     * @throws SQLException
      */
     public Integer getCount() throws SQLException {
         int i = selectCount(null, null);
@@ -1178,8 +1216,9 @@ public class QueryHandler implements Cloneable {
 
     /**
      * Insert values to db
-     * @param what  : {set, value, "'"}
-     *   this.insert("name,wert", "'Sprache (Waehrung, z.B. Schweiz:  de_CH' ,'de_DE'");
+     *
+     * @param what : {set, value, "'"} this.insert("name,wert", "'Sprache
+     * (Waehrung, z.B. Schweiz: de_CH' ,'de_DE'");
      * @param jobmessage The message to be displayed after a successful run
      * @return id of inserted row
      */
@@ -1190,8 +1229,9 @@ public class QueryHandler implements Cloneable {
 
     /**
      * Does an insert
+     *
      * @param blobData [columnName, blobData]
-     * @param data 
+     * @param data
      * @param jobmessage
      * @return The id of the inserted row
      */
@@ -1245,6 +1285,7 @@ public class QueryHandler implements Cloneable {
 
     /**
      * Does an insert
+     *
      * @param ids
      * @param blobData [columnName, blobData]
      * @param data
@@ -1288,7 +1329,8 @@ public class QueryHandler implements Cloneable {
     }
 
     /**
-     *  This is a special insert method for the History feature
+     * This is a special insert method for the History feature
+     *
      * @param message
      * @param username
      * @param dbidentity
@@ -1321,6 +1363,7 @@ public class QueryHandler implements Cloneable {
 
     /**
      * This is a special insert method for the Lock feature
+     *
      * @param context
      * @param id
      * @param user
@@ -1369,6 +1412,7 @@ public class QueryHandler implements Cloneable {
 
     /**
      * Updates the given column at the row with the given id
+     *
      * @param columnName
      * @param id
      * @param value
@@ -1380,8 +1424,8 @@ public class QueryHandler implements Cloneable {
     }
 
     /**
-     * 
-     * @param what  : {set, values}
+     *
+     * @param what : {set, values}
      * @param where : {value, comparison, "'"}
      * @param jobmessage
      */
@@ -1405,10 +1449,11 @@ public class QueryHandler implements Cloneable {
 
     /**
      * Will throw an exception if the desired row to update doesnt exist.
+     *
      * @param what The data
-     * @param criteria  
+     * @param criteria
      * @param jobmessage
-     * @throws NodataFoundException  
+     * @throws NodataFoundException
      */
     public void update(QueryData what, QueryCriteria2 criteria, String jobmessage) throws NodataFoundException {
 
@@ -1421,16 +1466,17 @@ public class QueryHandler implements Cloneable {
             throw new NodataFoundException(context);
         }
     }
-    
-     /**
+
+    /**
      * Will create the row if the desired row to update doesnt exist.
+     *
      * @param what The data
-     * @param criteria  
+     * @param criteria
      * @param jobmessage
      */
     public void updateOrCreate(QueryData what, QueryCriteria2 criteria, String jobmessage) {
         String query = "UPDATE " + table + " SET " + what + " WHERE " + criteria.getQuery();
-        if (freeUpdateQuery(query, mpv5.usermanagement.MPSecurityManager.EDIT, jobmessage).getUpdateCount()>0) {
+        if (freeUpdateQuery(query, mpv5.usermanagement.MPSecurityManager.EDIT, jobmessage).getUpdateCount() > 0) {
         } else {
             Log.Debug(this, "Need to create " + what + " on " + criteria.getQuery());
             what.add(criteria);
@@ -1459,7 +1505,7 @@ public class QueryHandler implements Cloneable {
     }
 
     /**
-     * 
+     *
      * @param what
      * @param where : {value, comparison, "'"}
      * @return last matching result as string array
@@ -1479,7 +1525,7 @@ public class QueryHandler implements Cloneable {
 
     /**
      * if "where" is "null", everything is selected (without "where" -clause)
-     * 
+     *
      * @param what
      * @param where : {value, comparison, "'"}
      * @return first matching result as string array
@@ -1540,12 +1586,12 @@ public class QueryHandler implements Cloneable {
     }
 
     /**
-     * 
+     *
      * @param what
      * @param where
      * @param leftJoinTable
-     * @param leftJoinKey 
-     * @param order 
+     * @param leftJoinKey
+     * @param order
      * @return results as multidimensional string array
      */
     @SuppressWarnings("unchecked")
@@ -1554,11 +1600,11 @@ public class QueryHandler implements Cloneable {
     }
 
     /**
-     * 
+     *
      * @param what
      * @param where
      * @param leftJoinTable
-     * @param leftJoinKey 
+     * @param leftJoinKey
      * @return results as multidimensional string array
      */
     @SuppressWarnings({"unchecked", "unchecked"})
@@ -1567,11 +1613,11 @@ public class QueryHandler implements Cloneable {
     }
 
     /**
-     * 
+     *
      * @param what
      * @param where : {value, comparison, "'"}
-     * @return results as multidimensional string array
-     * <i><b>Omits trashed datasets implicitly</b></i>
+     * @return results as multidimensional string array <i><b>Omits trashed
+     * datasets implicitly</b></i>
      */
     @SuppressWarnings("unchecked")
     public Object[][] select(String what, String[] where) {
@@ -1590,9 +1636,9 @@ public class QueryHandler implements Cloneable {
      * @param what
      * @param where : {value, comparison, "'"}
      * @param order
-     * @param limit 
-     * @return results as multidimensional string array
-     * <i><b>Omits trashed datasets implicitly</b></i>
+     * @param limit
+     * @return results as multidimensional string array <i><b>Omits trashed
+     * datasets implicitly</b></i>
      */
     @SuppressWarnings("unchecked")
     public Object[][] select(String what, String[] where, String order, int limit) {
@@ -1611,10 +1657,9 @@ public class QueryHandler implements Cloneable {
     /**
      *
      * @param what
-     * @param whereColumns  {"column1","column2"}
+     * @param whereColumns {"column1","column2"}
      * @param haveValues {"value1",value2<any/>}
-     * @return
-     * <i><b>Omits trashed datasets implicitly</b></i>
+     * @return <i><b>Omits trashed datasets implicitly</b></i>
      */
     public Object[][] select(String what, String[] whereColumns, Object[] haveValues, boolean withDeleted) {
         String query = "SELECT " + what + " FROM " + table + " " + context.getReferences() + (whereColumns.length > 0 ? " WHERE " : "");
@@ -1633,13 +1678,13 @@ public class QueryHandler implements Cloneable {
     }
 
     /**
-     * 
+     *
      * @param what
      * @param where : {value, comparison, "'"}
-     * @param order 
+     * @param order
      * @param like - datum will be returned between given and given + 1 month
-     * @return results as multidimensional string array
-     * <i><b>Omits trashed datasets implicitly</b></i>
+     * @return results as multidimensional string array <i><b>Omits trashed
+     * datasets implicitly</b></i>
      */
     @SuppressWarnings("unchecked")
     public Object[][] select(String what, String[] where, String order, boolean like) {
@@ -1688,10 +1733,11 @@ public class QueryHandler implements Cloneable {
 
     /**
      * Creates a {@link PreparedStatement}
-     * @param columns 
-     * @param conditionColumns 
-     * @param order 
-     * @param like 
+     *
+     * @param columns
+     * @param conditionColumns
+     * @param order
+     * @param like
      * @return A {@link PreparedStatement}
      * @throws SQLException
      */
@@ -1702,11 +1748,13 @@ public class QueryHandler implements Cloneable {
 
     /**
      * Executes the given statement
+     *
      * @param statement
-     * @param values Length must match the conditionColumns argument of the build call of the statement
+     * @param values Length must match the conditionColumns argument of the
+     * build call of the statement
      * @return
-     * @throws java.sql.SQLException
-     * <i><b>Omits trashed datasets implicitly</b></i>possible not returning the desired results yet
+     * @throws java.sql.SQLException <i><b>Omits trashed datasets
+     * implicitly</b></i>possible not returning the desired results yet
      */
     @SuppressWarnings("unchecked")
     @Deprecated
@@ -1758,8 +1806,8 @@ public class QueryHandler implements Cloneable {
 
     /**
      * Deletes the given data permanently from the database
-     * @param where : {value, comparison, "'"}
-     *                eg new String[]{"ids", "8" , ""}
+     *
+     * @param where : {value, comparison, "'"} eg new String[]{"ids", "8" , ""}
      * @param jobmessage
      * @return True if the deletion was not terminated by constraints
      */
@@ -1783,8 +1831,9 @@ public class QueryHandler implements Cloneable {
 
     /**
      * Deletes the given data permanently from the database
-     * @param where : {value, comparison, "'"}
-     *                eg new String[][]{{"ids", "8" , ""},{"ids", "9",""}}
+     *
+     * @param where : {value, comparison, "'"} eg new String[][]{{"ids", "8" ,
+     * ""},{"ids", "9",""}}
      * @param jobmessage
      * @return True if the deletion was not terminated by constraints
      */
@@ -1805,8 +1854,9 @@ public class QueryHandler implements Cloneable {
 
     /**
      * Deletes the given data permanently from the database
-     * @param where : {value, comparison, "'"}
-     *                eg new String[][]{{"ids", "8" , ""},{"ids", "9",""}}
+     *
+     * @param where : {value, comparison, "'"} eg new String[][]{{"ids", "8" ,
+     * ""},{"ids", "9",""}}
      * @param jobmessage
      * @return True if the deletion was not terminated by constraints
      */
@@ -1816,10 +1866,11 @@ public class QueryHandler implements Cloneable {
 
     /**
      * Deletes the given data permanently from the database
+     *
      * @param whereColumns
      * @param haveValues
      * @param jobmessage
-     * @return 
+     * @return
      */
     public boolean delete(String[] whereColumns, Object[] haveValues, String jobmessage) {
         String query = "DELETE FROM " + table + " WHERE ";
@@ -1850,8 +1901,9 @@ public class QueryHandler implements Cloneable {
 
     /**
      * Deletes the given dbo permanently from the database
-     * @param dbo 
-     * @return 
+     *
+     * @param dbo
+     * @return
      */
     public synchronized static boolean delete(DatabaseObject dbo) {
         String query = "DELETE FROM " + dbo.IDENTITY.getKey().getDbIdentity() + " WHERE ids = " + dbo.IDENTITY.getValue();
@@ -1867,8 +1919,9 @@ public class QueryHandler implements Cloneable {
 
     /**
      * Convenience method for delete(where, null);
+     *
      * @param where : {value, comparison, "'"}
-     * @throws Exception 
+     * @throws Exception
      */
     public void delete(String[] where) throws Exception {
         delete(where, null);
@@ -1876,6 +1929,7 @@ public class QueryHandler implements Cloneable {
 
     /**
      * Deletes the given data permanently from the database
+     *
      * @param criterias
      */
     public void delete(QueryCriteria criterias) {
@@ -1884,8 +1938,9 @@ public class QueryHandler implements Cloneable {
 
     /**
      * Deletes the given data permanently from the database
+     *
      * @param criterias
-     * @return  
+     * @return
      */
     public boolean delete(QueryCriteria2 criterias) {
         String query = "DELETE FROM " + table + " WHERE " + criterias.getQuery();
@@ -1899,7 +1954,7 @@ public class QueryHandler implements Cloneable {
     }
 
     /**
-     * 
+     *
      * @param tablename
      * @return a clone of this ConnectionHandler (with database connection)
      */
@@ -1921,6 +1976,7 @@ public class QueryHandler implements Cloneable {
 
     /**
      * Returns a new db connection without any table or Context association.
+     *
      * @return A QueryHandler object
      */
     public static QueryHandler getConnection() {
@@ -1996,7 +2052,7 @@ public class QueryHandler implements Cloneable {
     }
 
     /**
-     * 
+     *
      * @param c
      * @param viewToBeNotified
      * @return
@@ -2014,11 +2070,11 @@ public class QueryHandler implements Cloneable {
         }
         return theClone;
     }
-    
+
     /**
-     * Returns the count of rows which match the condition.
-     * <br/>Example:
+     * Returns the count of rows which match the condition. <br/>Example:
      * <br/>selectCount("cname", "LIKE %%")
+     *
      * @param what
      * @param condition
      * @return
@@ -2076,6 +2132,7 @@ public class QueryHandler implements Cloneable {
 
     /**
      * Free SQL Statement!
+     *
      * @param string
      * @param action
      * @param jobmessage
@@ -2340,9 +2397,10 @@ public class QueryHandler implements Cloneable {
 
     /**
      * Free SQL Select Statement!
+     *
      * @param query
-     * @param action 
-     * @param jobmessage 
+     * @param action
+     * @param jobmessage
      * @return Your Data
      */
     @SuppressWarnings({"unchecked"})
@@ -2491,6 +2549,7 @@ public class QueryHandler implements Cloneable {
 
     /**
      * This method inserts a file into a "filename<unique/>, filedata" table
+     *
      * @param file
      * @return The UNIQUE name of the inserted file in db
      * @throws java.io.FileNotFoundException
@@ -2539,7 +2598,9 @@ public class QueryHandler implements Cloneable {
     }
 
     /**
-     * This method returns a list of files from a "filename, data, filesize" table
+     * This method returns a list of files from a "filename, data, filesize"
+     * table
+     *
      * @param filename The unique filename
      * @return A list with temporary files
      * @throws IOException
@@ -2627,8 +2688,9 @@ public class QueryHandler implements Cloneable {
     /**
      * A convenience method to retrieve one file from db, or null of no file
      * with the specified name is available.
+     *
      * @param name
-     * @param targetFile 
+     * @param targetFile
      * @return The target file or NULL
      */
     public synchronized File retrieveFile(String name, File targetFile) {
@@ -2657,6 +2719,7 @@ public class QueryHandler implements Cloneable {
     /**
      * A convenience method to retrieve one file from db, or null of no file
      * with the specified name is available.
+     *
      * @param name
      * @return A virtual file or NULL
      */
@@ -2677,6 +2740,7 @@ public class QueryHandler implements Cloneable {
 
     /**
      * Remove a file from the db
+     *
      * @param fileid
      * @throws java.lang.Exception
      */
@@ -2686,6 +2750,7 @@ public class QueryHandler implements Cloneable {
 
     /**
      * This is a convenience method to insert files
+     *
      * @param file The file
      * @param dataOwner The owner
      * @param descriptiveText Describe the file
@@ -2718,9 +2783,10 @@ public class QueryHandler implements Cloneable {
 
     /**
      * Updates an File at the Database
+     *
      * @param file
      * @param IDS
-     * @return 
+     * @return
      */
     public boolean updateFile(File file, String cname) {
         try {
