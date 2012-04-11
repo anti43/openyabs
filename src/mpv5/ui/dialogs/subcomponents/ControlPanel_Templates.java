@@ -11,8 +11,11 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListModel;
+import mpv5.YabsViewProxy;
 import mpv5.data.PropertyStore;
 import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
@@ -36,14 +39,17 @@ import mpv5.usermanagement.MPSecurityManager;
 import mpv5.db.objects.User;
 
 import mpv5.globals.Constants;
+import mpv5.globals.LocalSettings;
 import mpv5.handler.FormFieldsHandler;
 import mpv5.ui.dialogs.BigPopup;
 import mpv5.ui.dialogs.DialogForFile;
+import mpv5.ui.panels.LOAPanel;
 import mpv5.ui.panels.PreviewPanel;
 import mpv5.utils.export.Export;
 import mpv5.utils.export.ODTFile;
 import mpv5.utils.export.PDFFile;
 import mpv5.utils.files.FileDirectoryHandler;
+import mpv5.utils.files.FileExecutor;
 import mpv5.utils.files.FileMonitor;
 import mpv5.utils.jobs.Job;
 import mpv5.utils.models.MPComboBoxModelItem;
@@ -53,7 +59,7 @@ import mpv5.utils.ui.TextFieldUtils;
 
 /**
  *
- * 
+ *
  */
 public final class ControlPanel_Templates extends javax.swing.JPanel implements ControlApplet, DataPanel {
 
@@ -75,7 +81,7 @@ public final class ControlPanel_Templates extends javax.swing.JPanel implements 
                     MPComboBoxModelItem.toItems(new DatabaseSearch(Context.getGroup()).getValuesFor(Context.getGroup().getSubID()))));
             java.util.ResourceBundle bundle1 = mpv5.i18n.LanguageManager.getBundle();
             format.setText(Template.DEFAULT_FORMAT);
-            format.getTextField().setEditable(false);
+            format.getTextField().setEditable(true);
             format.getTextField().setToolTipText(bundle1.getString("ControlPanel_Templates.format.toolTipText_1")); // NOI18N
             setVisible(true);
         }
@@ -92,6 +98,7 @@ public final class ControlPanel_Templates extends javax.swing.JPanel implements 
         jSeparator1 = new javax.swing.JSeparator();
         jSeparator2 = new javax.swing.JSeparator();
         jButton4 = new javax.swing.JButton();
+        jButton7 = new javax.swing.JButton();
         jButton9 = new javax.swing.JButton();
         jButton3 = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
@@ -117,7 +124,7 @@ public final class ControlPanel_Templates extends javax.swing.JPanel implements 
         templates = new javax.swing.JTable();
 
         setBackground(new java.awt.Color(255, 255, 255));
-       java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle(); // NOI18N
+        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("mpv5/resources/languages/Panels"); // NOI18N
         setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("ControlPanel_Templates.border.title"))); // NOI18N
         setName("Form"); // NOI18N
         setPreferredSize(new java.awt.Dimension(495, 183));
@@ -177,6 +184,15 @@ public final class ControlPanel_Templates extends javax.swing.JPanel implements 
             }
         });
         jPanel6.add(jButton4);
+
+        jButton7.setText(bundle.getString("ControlPanel_Templates.jButton7.text")); // NOI18N
+        jButton7.setName(bundle.getString("ControlPanel_Templates.jButton7.name")); // NOI18N
+        jButton7.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton7ActionPerformed(evt);
+            }
+        });
+        jPanel6.add(jButton7);
 
         jButton9.setText(bundle.getString("ControlPanel_Templates.jButton9.text")); // NOI18N
         jButton9.setName("jButton9"); // NOI18N
@@ -279,28 +295,28 @@ public final class ControlPanel_Templates extends javax.swing.JPanel implements 
                             .addGroup(jPanel4Layout.createSequentialGroup()
                                 .addComponent(format, javax.swing.GroupLayout.PREFERRED_SIZE, 233, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jButton8, javax.swing.GroupLayout.DEFAULT_SIZE, 72, Short.MAX_VALUE))
+                                .addComponent(jButton8, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createSequentialGroup()
                                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addGroup(jPanel4Layout.createSequentialGroup()
-                                        .addComponent(jLabel3, javax.swing.GroupLayout.DEFAULT_SIZE, 72, Short.MAX_VALUE)
+                                        .addComponent(jLabel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                         .addGap(8, 8, 8))
                                     .addGroup(jPanel4Layout.createSequentialGroup()
-                                        .addComponent(jLabel6, javax.swing.GroupLayout.DEFAULT_SIZE, 55, Short.MAX_VALUE)
+                                        .addComponent(jLabel6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                         .addGap(25, 25, 25))
                                     .addGroup(jPanel4Layout.createSequentialGroup()
-                                        .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, 65, Short.MAX_VALUE)
+                                        .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                         .addGap(15, 15, 15)))
                                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 231, Short.MAX_VALUE)
-                                    .addComponent(groupname, javax.swing.GroupLayout.Alignment.TRAILING, 0, 231, Short.MAX_VALUE)
-                                    .addComponent(jScrollPane3, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 231, Short.MAX_VALUE)))
-                            .addComponent(type, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 311, Short.MAX_VALUE))
+                                    .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.TRAILING)
+                                    .addComponent(groupname, javax.swing.GroupLayout.Alignment.TRAILING, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(jScrollPane3, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)))
+                            .addComponent(type, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                         .addContainerGap())
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createSequentialGroup()
                         .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(fullname, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 293, Short.MAX_VALUE)
-                            .addComponent(printern, javax.swing.GroupLayout.DEFAULT_SIZE, 293, Short.MAX_VALUE))
+                            .addComponent(fullname, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(printern, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                         .addGap(28, 28, 28))))
         );
         jPanel4Layout.setVerticalGroup(
@@ -358,7 +374,7 @@ public final class ControlPanel_Templates extends javax.swing.JPanel implements 
                 .addContainerGap())
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(pathtofile, javax.swing.GroupLayout.DEFAULT_SIZE, 303, Short.MAX_VALUE)
+                .addComponent(pathtofile, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGap(40, 40, 40))
         );
         jPanel2Layout.setVerticalGroup(
@@ -403,14 +419,14 @@ public final class ControlPanel_Templates extends javax.swing.JPanel implements 
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 346, Short.MAX_VALUE)
+                .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 420, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 351, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(29, 29, 29))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 472, Short.MAX_VALUE)
+            .addComponent(jScrollPane4)
             .addComponent(jPanel2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 472, Short.MAX_VALUE)
         );
 
@@ -545,6 +561,7 @@ public final class ControlPanel_Templates extends javax.swing.JPanel implements 
     }//GEN-LAST:event_jButton10ActionPerformed
 
     private void updateServiceItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_updateServiceItemStateChanged
+
         final DataPanel x = this;
         final Template tpl = dataOwner;
         FileMonitor.FileChangeListener filecl = new FileMonitor.FileChangeListener() {
@@ -563,29 +580,44 @@ public final class ControlPanel_Templates extends javax.swing.JPanel implements 
             }
         };
 
+        String file = null;
         if (lastImportedFile != null) {
-            if (updateService.isSelected()) {
-                try {
-                    FileMonitor.getInstance().addFileChangeListener(filecl, lastImportedFile.getCanonicalPath(), 1000l);
-                } catch (IOException ex) {
-                    Log.Debug(ex);
-                }
-            } else {
-                try {
-                    FileMonitor.getInstance().removeFileChangeListener(filecl, lastImportedFile.getCanonicalPath());
-                } catch (IOException ex) {
-                    Log.Debug(ex);
-                }
+            try {
+                file = lastImportedFile.getCanonicalPath();
+            } catch (IOException ex) {
+                Log.Debug(ex);
             }
-        } else if (!pathtofile_.equals("")) {
-            if (updateService.isSelected()) {
-                FileMonitor.getInstance().addFileChangeListener(filecl, pathtofile_, 1000l);
-            } else {
-                FileMonitor.getInstance().removeFileChangeListener(filecl, pathtofile_);
-            }
+        } else if (!pathtofile.getText().equals("") && new File(pathtofile.getText()).canRead()) {
+            file = pathtofile.getText();
+        }
+        if (updateService.isSelected() && file != null) {
+            FileMonitor.getInstance().addFileChangeListener(filecl, file, 1000l);
+        } else {
+            FileMonitor.getInstance().removeFileChangeListener(filecl, file);
         }
         lastImportedFile = null;
     }//GEN-LAST:event_updateServiceItemStateChanged
+
+    private void jButton7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton7ActionPerformed
+
+        if (dataOwner != null && dataOwner.isExisting()) {
+            try {
+//                LOAPanel lp = new LOAPanel();
+//                File f = dataOwner.getFile();
+//                YabsViewProxy.instance().addOrShowTab(lp, dataOwner.__getCName());
+//                lp.loadODT(f);
+                updateService.setSelected(false);
+                updateService.setSelected(true);
+                if (Desktop.isDesktopSupported() && Desktop.getDesktop().isSupported(Desktop.Action.OPEN)) {
+                    Desktop.getDesktop().open(dataOwner.getFile());
+                } else if (LocalSettings.getBooleanProperty(LocalSettings.OFFICE_USE)) {
+                    FileExecutor.run(LocalSettings.getProperty(LocalSettings.OFFICE_HOME) + File.separator + dataOwner.getFile().getPath());
+                }
+            } catch (Exception e) {
+                Log.Debug(e);
+            }
+        }
+    }//GEN-LAST:event_jButton7ActionPerformed
 
     public void setValues(PropertyStore values) {
     }
@@ -615,6 +647,7 @@ public final class ControlPanel_Templates extends javax.swing.JPanel implements 
     private javax.swing.JButton jButton4;
     private javax.swing.JButton jButton5;
     private javax.swing.JButton jButton6;
+    private javax.swing.JButton jButton7;
     private javax.swing.JButton jButton8;
     private javax.swing.JButton jButton9;
     private javax.swing.JLabel jLabel1;
@@ -712,7 +745,8 @@ public final class ControlPanel_Templates extends javax.swing.JPanel implements 
             }
 
             jList1.setSelectedIndices(ix);
-            pathtofile.setText(pathtofile_);
+            pathtofile.setText(dataOwner.getFile().getPath());
+            lastImportedFile = null;
             lastmodified = lastmodified_;
             updateService.setSelected(isupdateenabled_);
 

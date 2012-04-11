@@ -308,7 +308,9 @@ public enum Messages {
     MASSPRINT_FILTER_ALL("All Contacts"), 
     SCRIPT_ERROR("A script did not run successfully:"), 
     SELECT_A_TYPE("Select a Type!"), 
-    NOTIFICATION("Notification");
+    NOTIFICATION("Notification"), 
+    OO_WAITING("Please wait while connecting to OO/LO"),
+    OO_NOT_CONFIGURED("Office is not configured yet.");
 
     private Messages(String message) {
         this.message = message;

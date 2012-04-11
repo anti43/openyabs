@@ -25,14 +25,13 @@ import mpv5.logging.Log;
 
 /**
  *
- *  
+ *
  */
 public class ODTFile extends Exportable {
-    private static final long serialVersionUID = 1L;
 
+    private static final long serialVersionUID = 1L;
     private NoaConnection nc;
-    private final DocumentHandler dh;
-    private IDocument df;
+    private DocumentHandler dh;
 
     public ODTFile(String pathToFile) {
         super(pathToFile);
@@ -43,9 +42,9 @@ public class ODTFile extends Exportable {
                 Log.Debug(ex);
             }
         }
-        nc = NoaConnection.getConnection();
-        dh = new DocumentHandler(nc);
         try {
+            nc = NoaConnection.getConnection();
+            dh = new DocumentHandler(nc);
             dh.loadDocument(this, false);
             Log.Debug(this, "Loaded odt file: " + this);
         } catch (Exception ex) {
@@ -77,7 +76,6 @@ public class ODTFile extends Exportable {
             Log.Debug(ex);
         } finally {
             mpv5.YabsViewProxy.instance().setWaiting(false);
-
         }
     }
 }

@@ -95,7 +95,8 @@ public class Main implements Runnable {
     public static int SINGLE_PORT = 65531;
 
     /**
-     * Use this method to (re) cache data from the database to avoid unnecessary db queries
+     * Use this method to (re) cache data from the database to avoid unnecessary
+     * db queries
      */
     public static void cache() {
         Runnable runnable = new Runnable() {
@@ -117,6 +118,7 @@ public class Main implements Runnable {
 
     /**
      * Add the processes to close on exit
+     *
      * @param officeApplication
      */
     public static void addProcessToClose(Process application) {
@@ -384,6 +386,7 @@ public class Main implements Runnable {
                 }
                 mpv5.db.objects.User.getCurrentUser().logout();
             }
+            NoaConnection.killConnection();
             for (int i = 0; i < oap.size(); i++) {
                 Process p = oap.get(i);
                 try {
@@ -412,8 +415,9 @@ public class Main implements Runnable {
 
     /**
      * Main method launching the application.
+     *
      * @param args
-     * @throws Exception 
+     * @throws Exception
      */
     public static void main(String[] args) throws Exception {
 
@@ -489,7 +493,9 @@ public class Main implements Runnable {
 
     /**
      * Set the dirs
-     * @param rootDir The root dir or null, defaults to: USER_HOME + File.separator + ".yabs"
+     *
+     * @param rootDir The root dir or null, defaults to: USER_HOME +
+     * File.separator + ".yabs"
      */
     public static void setEnv(String rootDir) {
 
@@ -719,8 +725,8 @@ public class Main implements Runnable {
     }
 
     /**
-     * 
-     * @param lafname 
+     *
+     * @param lafname
      */
     public static void setLaF(final String lafname) {
         if (!Main.nolf && !HEADLESS) {
@@ -776,8 +782,6 @@ public class Main implements Runnable {
             String propname = (String) propnames.nextElement();
             Log.Debug(Main.class, "System env: " + propname.toUpperCase() + " : " + System.getProperty(propname));
         }
-
-
     }
 
     /**
@@ -814,62 +818,16 @@ public class Main implements Runnable {
 //                ((YabsView)getApplication()).getIdentifierView().showServerStatus(false);
             }
         }
-        if (LocalSettings.getBooleanProperty(LocalSettings.OFFICE_USE)) {
-            final Thread startServerThread;
 
-            if (!LocalSettings.getBooleanProperty(LocalSettings.OFFICE_REMOTE)) {
-                Runnable runnable2 = new Runnable() {
+        Runnable runnable3 = new Runnable() {
 
-                    @Override
-                    public void run() {
-                        try {
-                            Log.Debug(Main.class, "Starting OpenOffice as background service..");
-                            NoaConnection.startOOServerIfNotRunning(LocalSettings.getProperty(LocalSettings.OFFICE_HOME), LocalSettings.getIntegerProperty(LocalSettings.OFFICE_PORT));
-                        } catch (Exception n) {
-                            Log.Debug(Main.class, n.getMessage());
-                        }
-                    }
-                };
-                startServerThread = new Thread(runnable2);
-                startServerThread.start();
-
-            } else {
-                startServerThread = null;
+            public void run() {
+                WSIManager.instanceOf().start();
             }
+        };
 
-            Runnable runnable3 = new Runnable() {
+        new Thread(runnable3).start();
 
-                public void run() {
-                    WSIManager.instanceOf().start();
-                }
-            };
-
-            new Thread(runnable3).start();
-            Runnable runnable1 = new Runnable() {
-
-                public void run() {
-                    boolean running = true;
-                    while (running) {
-                        if (startServerThread == null || !startServerThread.isAlive()) {
-                            try {
-                                Thread.sleep(GlobalSettings.getIntegerProperty("oo.wait.time", 3333));
-                            } catch (InterruptedException ex) {
-                            }
-                            //Needed to move this to here; otherwise the oo connection may not be initialised
-//                            TemplateHandler.cacheTemplates();
-                            running = false;
-                        } else {
-                            try {
-                                Thread.sleep(1000);
-                            } catch (InterruptedException ex) {
-                            }
-                        }
-                    }
-                }
-            };
-
-            new Thread(runnable1).start();
-        }
         if (!HEADLESS) {
             try {
                 (new Scheduler()).start();

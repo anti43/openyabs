@@ -10,6 +10,8 @@ import java.io.File;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.SwingUtilities;
+import mpv5.YabsViewProxy;
 import mpv5.data.PropertyStore;
 import mpv5.globals.LocalSettings;
 import mpv5.globals.Messages;
@@ -234,84 +236,77 @@ public class ControlPanel_External extends javax.swing.JPanel implements Control
 
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
         NoaConnection.clearConnection();
+        Runnable runnable2 = new Runnable() {
 
-        if (!jCheckBox3.isSelected()) {
-            Runnable runnable2 = new Runnable() {
+            @Override
+            public void run() {
+                //Caching the old values
+                String host = LocalSettings.getProperty(LocalSettings.OFFICE_HOST);
+                String Port = LocalSettings.getProperty(LocalSettings.OFFICE_PORT);
+                String Remote = LocalSettings.getProperty(LocalSettings.OFFICE_REMOTE);
+                String home = LocalSettings.getProperty(LocalSettings.OFFICE_HOME);
+                String use = LocalSettings.getProperty(LocalSettings.OFFICE_USE);
 
-                @Override
-                public void run() {
-                    mpv5.YabsViewProxy.instance().setWaiting(true);
+                //Setting Values to test ...
+                LocalSettings.setProperty(LocalSettings.OFFICE_HOST, labeledTextField1.getText());
+                LocalSettings.setProperty(LocalSettings.OFFICE_PORT, jCheckBox3.isSelected() ? labeledTextField2.getText() : "0");
+                LocalSettings.setProperty(LocalSettings.OFFICE_REMOTE, Boolean.toString(jCheckBox3.isSelected()));
+                LocalSettings.setProperty(LocalSettings.OFFICE_USE, "true");
+                LocalSettings.setProperty(LocalSettings.OFFICE_HOME, labeledTextChooser2.get_Text(false));
+
+                mpv5.YabsViewProxy.instance().setWaiting(true);
+                try {
+                    NoaConnection.getConnection().getDesktopService().getFramesCount();
+                    Popup.notice(Messages.OO_DONE_LOADING);
+
+                } catch (Exception e) {
+                    Popup.notice(Messages.ERROR_OCCURED);
+                } finally {
                     try {
-                        Log.Debug(this, "Starting OpenOffice as background service..");
-                        NoaConnection.startOOServer(labeledTextChooser2.get_Text(true), 8100);
-                        LocalSettings.setProperty(LocalSettings.OFFICE_PORT, "8100");
-                    } catch (Exception n) {
-                        Popup.error(n);
-                        Log.Debug(this, n.getMessage());
-                    } finally {
-                        try {
-                            Thread.sleep(5555);
-                        } catch (InterruptedException ex) {
-                        }
-                        mpv5.YabsViewProxy.instance().setWaiting(false);
-                        try {
-                            NoaConnection.getConnection().getDesktopService().getFramesCount();
-                            Popup.notice(Messages.OO_DONE_LOADING);
-                        } catch (Exception e) {
-                            Popup.notice(Messages.ERROR_OCCURED);
-                        }
+                        NoaConnection.getConnection().getDesktopService().terminate();
+                        setSettings();
+                        LocalSettings.save();
+                        Popup.notice(Messages.RESTART_REQUIRED);
+                    } catch (Exception ex) {
+                        Log.Debug(ex);
                     }
                 }
-            };
-            final Thread startServerThread = new Thread(runnable2);
-            startServerThread.start();
-        } else {
-            Runnable runnable2 = new Runnable() {
+                mpv5.YabsViewProxy.instance().setWaiting(false);
 
-                @Override
-                public void run() {
-                    //Caching the old values
-                    String host = LocalSettings.getProperty(LocalSettings.OFFICE_HOST);
-                    String Port = LocalSettings.getProperty(LocalSettings.OFFICE_PORT);
-                    String Remote = LocalSettings.getProperty(LocalSettings.OFFICE_REMOTE);
+                //Restore old Values ....
+                LocalSettings.setProperty(LocalSettings.OFFICE_HOST, host);
+                LocalSettings.setProperty(LocalSettings.OFFICE_PORT, Port);
+                LocalSettings.setProperty(LocalSettings.OFFICE_REMOTE, Remote);
+                LocalSettings.setProperty(LocalSettings.OFFICE_HOME, home);
+                LocalSettings.setProperty(LocalSettings.OFFICE_USE, use);
+            }
+        };
+        final Thread startServerThread = new Thread(runnable2);
+        startServerThread.start();
 
-                    //Setiing Values to test ...
-                    LocalSettings.setProperty(LocalSettings.OFFICE_HOST, labeledTextField1.getText());
-                    LocalSettings.setProperty(LocalSettings.OFFICE_PORT, labeledTextField2.getText());
-                    LocalSettings.setProperty(LocalSettings.OFFICE_REMOTE, Boolean.toString(jCheckBox3.isSelected()));
-
-
-                    mpv5.YabsViewProxy.instance().setWaiting(true);
-                    try {
-                        NoaConnection.getConnection().getDesktopService().getFramesCount();
-                        Popup.notice(Messages.OO_DONE_LOADING);
-                    } catch (Exception e) {
-                        Popup.notice(Messages.ERROR_OCCURED);
-                    }
-                    mpv5.YabsViewProxy.instance().setWaiting(false);
-
-                    //Restore old Values ....
-                    LocalSettings.setProperty(LocalSettings.OFFICE_HOST, host);
-                    LocalSettings.setProperty(LocalSettings.OFFICE_PORT, Port);
-                    LocalSettings.setProperty(LocalSettings.OFFICE_REMOTE, Remote);
-                }
-            };
-            final Thread startServerThread = new Thread(runnable2);
-            startServerThread.start();
-        }
     }//GEN-LAST:event_jButton4ActionPerformed
 
     private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
-        try {
-            IApplicationAssistant applicationAssistant = new ApplicationAssistant();
-            ILazyApplicationInfo appInfo = applicationAssistant.getLatestLocalLibreOfficeApplication();
-            if (appInfo == null) {
-                appInfo = applicationAssistant.getLatestLocalOpenOfficeOrgApplication();
+
+        Runnable runnable = new Runnable() {
+
+            public void run() {
+                try {
+                    NoaConnection.definePath();
+                    YabsViewProxy.instance().setWaiting(true);
+                    IApplicationAssistant applicationAssistant = new ApplicationAssistant();
+                    ILazyApplicationInfo appInfo = applicationAssistant.getLatestLocalLibreOfficeApplication();
+                    if (appInfo == null) {
+                        appInfo = applicationAssistant.getLatestLocalOpenOfficeOrgApplication();
+                    }
+                    labeledTextChooser2.setText(appInfo.getHome());
+                    YabsViewProxy.instance().setWaiting(false);
+                } catch (OfficeApplicationException ex) {
+                    Log.Debug(ex);
+                }
             }
-            labeledTextChooser2.setText(appInfo.getHome());
-        } catch (OfficeApplicationException ex) {
-            Log.Debug(ex);
-        }
+        };
+        SwingUtilities.invokeLater(runnable);
     }//GEN-LAST:event_jButton5ActionPerformed
 
     public void setValues(PropertyStore values) {

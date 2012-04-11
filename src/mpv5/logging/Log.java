@@ -94,7 +94,7 @@ public class Log {
             sourcen = source.getClass().getName();
         }
 
-        if (message instanceof Exception) {
+        if (message instanceof Throwable) {
             try {
                 ExceptionHandler.add((Exception) message);
             } catch (Exception e) {
@@ -105,20 +105,20 @@ public class Log {
         switch (loglevel) {
             case LOGLEVEL_DEBUG:
                 writeDirect(sourcen + ": " + message);
-                if (message != null && message instanceof Exception) {
-                    ((Exception) message).printStackTrace();
-                    writeDirect(getStackTrace(((Exception) message)));
+                if (message != null && message instanceof Throwable) {
+                    ((Throwable) message).printStackTrace();
+                    writeDirect(getStackTrace(((Throwable) message)));
                     writeDirect("\nCaused by:\n");
                     try {
                         ((Exception) message).getCause().printStackTrace();
-                        writeDirect(getStackTrace(((Exception) message).getCause()));
+                        writeDirect(getStackTrace(((Throwable) message).getCause()));
                         mpv5.YabsViewProxy.instance().addMessage(Messages.ERROR_OCCURED + ". " + Messages.SEE_LOG);
                     } catch (Exception e) {
                     }
                 }
                 break;
             case LOGLEVEL_NORMAL:
-                if (message != null && message.toString().contains("Exception")) {
+                if (message != null && (message.toString().contains("Exception") || message.toString().contains("Error"))) {
                     write(sourcen + ": " + message);
                     mpv5.YabsViewProxy.instance().addMessage(Messages.ERROR_OCCURED + ". " + Messages.SEE_LOG);
                 }

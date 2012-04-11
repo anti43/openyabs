@@ -35,8 +35,8 @@ import mpv5.utils.files.FileDirectoryHandler;
 import mpv5.utils.jobs.Waiter;
 
 /**
- *  This class is useful for selecting files and directories
- *  
+ * This class is useful for selecting files and directories
+ *
  */
 public class DialogForFile extends JFileChooser implements Waiter {
 
@@ -136,7 +136,8 @@ public class DialogForFile extends JFileChooser implements Waiter {
 
     /**
      * Create a new dialog for the given selection mode
-     * @param selectionMode  DialogForFile.MODE
+     *
+     * @param selectionMode DialogForFile.MODE
      */
     public DialogForFile(int selectionMode) {
         super();
@@ -146,6 +147,7 @@ public class DialogForFile extends JFileChooser implements Waiter {
 
     /**
      * Create a new dialog for files and dirs with the given file selected
+     *
      * @param file
      */
     public DialogForFile(File file) {
@@ -160,7 +162,9 @@ public class DialogForFile extends JFileChooser implements Waiter {
     }
 
     /**
-     * Create a new dialog for the given selection mode with the given file seleced
+     * Create a new dialog for the given selection mode with the given file
+     * seleced
+     *
      * @param mode
      * @param filename
      */
@@ -171,7 +175,9 @@ public class DialogForFile extends JFileChooser implements Waiter {
     }
 
     /**
-     * Create a new dialog for the given selection mode with the given file seleced
+     * Create a new dialog for the given selection mode with the given file
+     * seleced
+     *
      * @param mode
      * @param file
      */
@@ -183,6 +189,7 @@ public class DialogForFile extends JFileChooser implements Waiter {
 
     /**
      * Show a file selection dialog
+     *
      * @return true if a file/dir was selected
      */
     public boolean chooseFile() {
@@ -190,7 +197,7 @@ public class DialogForFile extends JFileChooser implements Waiter {
             if (this.showOpenDialog(mparent == null ? mpv5.YabsViewProxy.instance().getIdentifierFrame() : mparent) == JFileChooser.APPROVE_OPTION) {
                 try {
                     this.file = this.getSelectedFile();
-                    CURRENT_DIR = file;
+                    setCurrentDir(file);
                     return true;
                 } catch (Exception ex) {
                     Log.Debug(this, ex);
@@ -204,6 +211,7 @@ public class DialogForFile extends JFileChooser implements Waiter {
 
     /**
      * Show a file save dialog
+     *
      * @return true if a file/dir was selected
      */
     public boolean saveFile() {
@@ -212,7 +220,7 @@ public class DialogForFile extends JFileChooser implements Waiter {
                 try {
                     if (!this.getSelectedFile().exists()) {
                         this.file = this.getSelectedFile();
-                        CURRENT_DIR = file;
+                        setCurrentDir(file);
                         return true;
                     } else {
                         if (!Popup.Y_N_dialog(Messages.FILE_EXISTS + "\n" + getSelectedFile())) {
@@ -235,6 +243,7 @@ public class DialogForFile extends JFileChooser implements Waiter {
 
     /**
      * Show a file save dialog
+     *
      * @param fileToSave
      */
     public File saveFile(File fileToSave) {
@@ -275,6 +284,7 @@ public class DialogForFile extends JFileChooser implements Waiter {
 
     /**
      * Show a file selection dialog
+     *
      * @param field This gets the selected files' canonical path
      * @return True if a file was selected
      */
@@ -283,7 +293,7 @@ public class DialogForFile extends JFileChooser implements Waiter {
             try {
                 field.setText(this.getSelectedFile().getCanonicalPath());
                 this.file = this.getSelectedFile();
-                CURRENT_DIR = file;
+                setCurrentDir(file);
                 return true;
             } catch (IOException ex) {
                 Log.Debug(this, ex);
@@ -294,6 +304,7 @@ public class DialogForFile extends JFileChooser implements Waiter {
 
     /**
      * Calls saveFile((File) object)
+     *
      * @param object
      * @param e
      * @throws Exception
@@ -330,6 +341,7 @@ public class DialogForFile extends JFileChooser implements Waiter {
 
     /**
      * Shows a choose directory dialog and saves a files in the list to it.
+     *
      * @param <T>
      * @param list
      */
@@ -342,11 +354,11 @@ public class DialogForFile extends JFileChooser implements Waiter {
             if (this.showSaveDialog(mparent == null ? mpv5.YabsViewProxy.instance().getIdentifierFrame() : mparent) == JFileChooser.APPROVE_OPTION) {
                 if (!this.getSelectedFile().exists()) {
                     this.file = this.getSelectedFile();
-                    CURRENT_DIR = file;
+                    setCurrentDir(file);
                     file.mkdirs();
                 } else {
                     this.file = this.getSelectedFile();
-                    CURRENT_DIR = file;
+                    setCurrentDir(file);
                 }
 
                 for (int i = 0; i < list.size(); i++) {
@@ -363,6 +375,7 @@ public class DialogForFile extends JFileChooser implements Waiter {
 
     /**
      * Shows a choose directory dialog and saves a files in the list to it.
+     *
      * @param <T>
      * @param list
      */
@@ -374,11 +387,11 @@ public class DialogForFile extends JFileChooser implements Waiter {
             if (this.showSaveDialog(mparent == null ? mpv5.YabsViewProxy.instance().getIdentifierFrame() : mparent) == JFileChooser.APPROVE_OPTION) {
                 if (!this.getSelectedFile().exists()) {
                     this.file = this.getSelectedFile();
-                    CURRENT_DIR = file;
+                    setCurrentDir(file);
                     file.mkdirs();
                 } else {
                     this.file = this.getSelectedFile();
-                    CURRENT_DIR = file;
+                    setCurrentDir(file);
                 }
 
                 for (int i = 0; i
@@ -396,9 +409,20 @@ public class DialogForFile extends JFileChooser implements Waiter {
 
     /**
      * Set the modality parent
+     *
      * @param mparent
      */
     public void setModalityParent(JComponent mparent) {
         this.mparent = mparent;
+    }
+
+    private void setCurrentDir(File file) {
+        if (file != null) {
+            if (file.isDirectory()) {
+                CURRENT_DIR = file;
+            } else {
+                CURRENT_DIR = file.getParentFile();
+            }
+        }
     }
 }

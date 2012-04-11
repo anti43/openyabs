@@ -39,6 +39,13 @@
 <project name="yabs" default="default" basedir=".">
     <description>Builds, tests, and runs the project yabs.</description>
     <import file="nbproject/build-impl.xml"/>
+    
+    <target name="-post-compile">
+        <copy todir="${dist.dir}/lib">
+            <fileset dir="lib/jni/" />
+        </copy>
+    </target>
+
   <!-- Uncomment this section to build the rpm   
   <rpm
         specFile="yabs1.spec"
@@ -61,7 +68,7 @@ alien paketname.rpm
 dpkg -i paketname.deb
 
 -->
-<target name="package-for-store" depends="jar">
+    <target name="package-for-store" depends="jar">
 
         <!-- Change the value of this property to be the name of your JAR,
              minus the .jar extension. It should not have spaces.
@@ -91,7 +98,7 @@ dpkg -i paketname.deb
 
         <zip destfile="${store.jar}">
             <zipfileset src="${store.dir}/temp_final.jar"
-            excludes="META-INF/*.SF, META-INF/*.DSA, META-INF/*.RSA"/>
+                        excludes="META-INF/*.SF, META-INF/*.DSA, META-INF/*.RSA"/>
         </zip>
 
         <delete file="${store.dir}/temp_final.jar"/>

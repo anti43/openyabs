@@ -50,7 +50,7 @@ public class FileExecutor {
 
         Map<String, String> environment = builder.environment();
         environment.put("path", ";"); // Clearing the path variable;
-        environment.put("path", commandArrq[0].replace("\\", "\\\\") + File.pathSeparator);
+        environment.put("path", commandArrq[0] + File.pathSeparator);
 
         Log.Debug(FileExecutor.class, "runAlternate" + Arrays.asList(commandArrq));
         Runnable runnable = new Runnable() {

@@ -26,16 +26,18 @@ import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.jar.Attributes;
 import java.util.jar.Manifest;
+import mpv5.Main;
 import mpv5.logging.Log;
 
 /**
  * Useful classpath tools
- * 
+ *
  */
 public class ClasspathTools {
 
     /**
      * Adds a path temporary to the Classpath
+     *
      * @param file
      */
     public static void addPath(File file) {
@@ -44,6 +46,7 @@ public class ClasspathTools {
 
     /**
      * Adds a path temporary to the Classpath
+     *
      * @param s
      * @throws Exception
      */
@@ -53,6 +56,7 @@ public class ClasspathTools {
 
     /**
      * Adds a path temporary to the Classpath
+     *
      * @param s
      */
     public static void addPath(URI s) {
@@ -83,6 +87,7 @@ public class ClasspathTools {
 
     /**
      * findLibsFromManifest where the class comes from
+     *
      * @param fromClass
      * @return
      * @throws IOException
@@ -104,5 +109,20 @@ public class ClasspathTools {
         String value = attr.getValue("Class-Path");
 //        Log.Debug(ClasspathTools.class, value);
         return value.split(" ");
+    }
+
+    /**
+     * Tries to determine the dir we are running in
+     *
+     * @return
+     */
+    public static File findUserDir() {
+        String classPath = Main.class.getResource("Main.class").toString();
+        String app = "";
+        if (!classPath.startsWith("jar")) {
+            // Class not from JAR
+            app = File.separator + "dist";
+        }
+        return new File(System.getProperty("user.dir") + app);
     }
 }

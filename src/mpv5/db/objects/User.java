@@ -51,6 +51,8 @@ import dtaus.Konto;
 import javax.swing.UIManager;
 import mpv5.YabsViewProxy;
 import mpv5.pluginhandling.YabsPlugin;
+import mpv5.ui.dialogs.DialogForFile;
+import mpv5.utils.files.FileDirectoryHandler;
 import mpv5.utils.text.TypeConversion;
 
 /**
@@ -98,7 +100,7 @@ public class User extends DatabaseObject {
         if (s2 != null && !s2.equals("null")) {
             basedir = new File(s2);
         } else {
-            basedir = new File(Main.USER_HOME);
+            basedir = DialogForFile.CURRENT_DIR;
         }
 
         File subdirs = null;
