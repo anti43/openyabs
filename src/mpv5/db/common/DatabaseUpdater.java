@@ -183,6 +183,10 @@ public class DatabaseUpdater {
         UPDATES_DERBY.put(1.195, new String[]{
                     "update expenses set brutvalue = (netvalue * ((taxpercentvalue/100)+1)) where taxpercentvalue > 0"
                 });
+        UPDATES_DERBY.put(1.196, new String[]{
+                    "update products set inttype = 5 where inttype = 0",
+                    "update products set inttype = 6 where inttype = 1"
+                });
         ////////////////////////////////////////////////////////////////////////////////////////////
         // mysql updates
         UPDATES_MYSQL.put(1.11, new String[]{
@@ -371,6 +375,10 @@ public class DatabaseUpdater {
                 }); 
         UPDATES_MYSQL.put(1.195, new String[]{
                     "update expenses set brutvalue = (netvalue * ((taxpercentvalue/100)+1)) where taxpercentvalue > 0"
+                });
+        UPDATES_MYSQL.put(1.196, new String[]{
+                    "update products set inttype = 5 where inttype = 0",
+                    "update products set inttype = 6 where inttype = 1"
                 });
     }
 

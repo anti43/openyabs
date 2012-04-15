@@ -77,6 +77,24 @@ public class DatabaseConnection {
     public java.sql.Connection getConnection() {
         return conn;
     }
+    
+    
+    /**
+     * 
+     * @return
+     * @throws SQLException
+     */
+    public java.sql.Connection createNoCommitConnection() throws SQLException {
+         try {
+            return DriverManager.getConnection(getCtype().getConnectionString(false), user, password);
+        } catch (SQLException ex) {
+            System.out.println("Database Error: " + ex.getMessage());
+            Popup.notice(ex.getLocalizedMessage());
+            Log.Debug(this, ex);
+            Log.Debug(this, ex.getNextException());
+            throw ex;
+        }
+    }
 
     /**
      * Test-Verbindung zur Datenbank herstellen.
@@ -115,6 +133,7 @@ public class DatabaseConnection {
         try {
             Log.Debug(this, "RECONNECT::Datenbankverbindung: " + getCtype().getConnectionString(create));
             conn = DriverManager.getConnection(getCtype().getConnectionString(create), user, password);
+            conn.setAutoCommit(true);
             if (conn != null //&& conn.isValid(10)//does not work with MySQL Connector/J 5.0
                     ) {
                 connector = this;
@@ -247,4 +266,5 @@ public class DatabaseConnection {
     public Statement getStatement() {
         return statement;
     }
+
 }

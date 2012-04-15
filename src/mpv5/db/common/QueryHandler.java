@@ -31,6 +31,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JFrame;
 import javax.swing.JProgressBar;
 import javax.swing.JTextArea;
@@ -101,6 +103,7 @@ public class QueryHandler implements Cloneable {
     }
     private DatabaseConnection conn = null;
     private Connection sqlConn = null;
+    private Connection noCommitSqlConn = null;
     private String table = "NOTABLE";
     private static JFrame comp = new JFrame();
     private Context context;
@@ -2605,84 +2608,90 @@ public class QueryHandler implements Cloneable {
      * @return A list with temporary files
      * @throws IOException
      */
-    public synchronized ArrayList<File> retrieveFiles(String filename) throws IOException {
-        start();
-        String query = "SELECT data, filesize FROM " + table + " WHERE cname= '" + filename + "'";
-        String jobmessage = null;
-        ArrayList<File> list = null;
-        Statement stm = null;
-        ResultSet resultSet = null;
-        try {
-            stm = sqlConn.createStatement();
-            list = new ArrayList<File>();
+    public ArrayList<File> retrieveFiles(String filename) throws IOException {
+        synchronized (sqlConn) {
+            start();
+            String query = "SELECT data, filesize FROM " + table + " WHERE cname= '" + filename + "'";
+            String jobmessage = null;
+            ArrayList<File> list = null;
+            Statement stm = null;
+            ResultSet resultSet = null;
+            try {
+                if (noCommitSqlConn == null) {
+                    noCommitSqlConn = conn.createNoCommitConnection();
+                }
+                stm = noCommitSqlConn.createStatement();
+                list = new ArrayList<File>();
 
-            if (ROW_LIMIT != null && ROW_LIMIT.intValue() >= 0) {
-                stm.setMaxRows(ROW_LIMIT.intValue());
-            }
-            if (this.limit > 0) {
-                stm.setMaxRows(limit);
-            }
+                if (ROW_LIMIT != null && ROW_LIMIT.intValue() >= 0) {
+                    stm.setMaxRows(ROW_LIMIT.intValue());
+                }
+                if (this.limit > 0) {
+                    stm.setMaxRows(limit);
+                }
 
-            ResultSet rs = stm.executeQuery(query);
-            Log.Debug(this, query);
-            while (rs.next()) {
+                ResultSet rs = stm.executeQuery(query);
+                Log.Debug(this, query);
+                while (rs.next()) {
 
-                progressbar.setMaximum(rs.getInt(2));
-                byte[] buffer = new byte[1024];
-                File f = FileDirectoryHandler.getTempFile();
-                BufferedInputStream inputStream = new BufferedInputStream(rs.getBinaryStream(1), 1024);
-                FileOutputStream outputStream = new FileOutputStream(f);
-                int readBytes = 0;
-                int read = 0;
-                while (readBytes != -1) {
-                    readBytes = inputStream.read(buffer, 0, buffer.length);
-                    read += buffer.length;
-                    if (readBytes != -1) {
-                        outputStream.write(buffer, 0, readBytes);
+                    progressbar.setMaximum(rs.getInt(2));
+                    byte[] buffer = new byte[1024];
+                    File f = FileDirectoryHandler.getTempFile();
+                    BufferedInputStream inputStream = new BufferedInputStream(rs.getBinaryStream(1), 1024);
+                    FileOutputStream outputStream = new FileOutputStream(f);
+                    int readBytes = 0;
+                    int read = 0;
+                    while (readBytes != -1) {
+                        readBytes = inputStream.read(buffer, 0, buffer.length);
+                        read += buffer.length;
+                        if (readBytes != -1) {
+                            outputStream.write(buffer, 0, readBytes);
+                        }
+                        progressbar.setValue(read);
                     }
-                    progressbar.setValue(read);
+                    inputStream.close();
+                    outputStream.close();
+                    list.add(f);
+                    progressbar.setValue(0);
+                    progressbar.setIndeterminate(false);
                 }
-                inputStream.close();
-                outputStream.close();
-                list.add(f);
-                progressbar.setValue(0);
-                progressbar.setIndeterminate(false);
-            }
+                noCommitSqlConn.commit();
+            } catch (SQLException ex) {
+                Log.Debug(this, ex);
+                if (list == null || list.isEmpty()) {
+                    Popup.error(ex);
+                }
+                jobmessage = Messages.ERROR_OCCURED.toString();
+            } finally {
 
-        } catch (SQLException ex) {
-            Log.Debug(this, ex);
-            if (list == null || list.isEmpty()) {
-                Popup.error(ex);
-            }
-            jobmessage = Messages.ERROR_OCCURED.toString();
-        } finally {
-            // Alle Ressourcen wieder freigeben
-            stop();
-            if (resultSet != null) {
-                try {
-                    resultSet.close();
-                } catch (SQLException ex) {
-                    jobmessage = Messages.ERROR_OCCURED.toString();
-                    Log.Debug(this, ex.getMessage());
-                    Popup.error(ex);
+                // Alle Ressourcen wieder freigeben
+                stop();
+                if (resultSet != null) {
+                    try {
+                        resultSet.close();
+                    } catch (SQLException ex) {
+                        jobmessage = Messages.ERROR_OCCURED.toString();
+                        Log.Debug(this, ex.getMessage());
+                        Popup.error(ex);
+                    }
+                }
+                if (stm != null) {
+                    try {
+                        stm.close();
+                    } catch (SQLException ex) {
+                        Log.Debug(this, ex.getMessage());
+                        Popup.error(ex);
+                    }
                 }
             }
-            if (stm != null) {
-                try {
-                    stm.close();
-                } catch (SQLException ex) {
-                    Log.Debug(this, ex.getMessage());
-                    Popup.error(ex);
-                }
+            if (viewToBeNotified != null) {
+                viewToBeNotified.refresh();
             }
+            if (jobmessage != null) {
+                mpv5.YabsViewProxy.instance().addMessage(jobmessage);
+            }
+            return list;
         }
-        if (viewToBeNotified != null) {
-            viewToBeNotified.refresh();
-        }
-        if (jobmessage != null) {
-            mpv5.YabsViewProxy.instance().addMessage(jobmessage);
-        }
-        return list;
     }
 
     /**
@@ -2927,18 +2936,19 @@ public class QueryHandler implements Cloneable {
                 mpv5.YabsViewProxy.instance().addMessage(Messages.PROCESSING + file.getName());
 
                 try {
+                    if (noCommitSqlConn == null) {
+                        noCommitSqlConn = conn.createNoCommitConnection();
+                    }
                     int fileLength = (int) file.length();
                     name = new RandomText(23).getString();
                     java.io.InputStream fin = new java.io.FileInputStream(file);
-                    PreparedStatement ps = sqlConn.prepareStatement(query, PreparedStatement.RETURN_GENERATED_KEYS);
+                    PreparedStatement ps = noCommitSqlConn.prepareStatement(query, PreparedStatement.RETURN_GENERATED_KEYS);
                     ps.setString(1, name);
                     ps.setLong(4, file.length());
                     ps.setDate(3, new java.sql.Date(new Date().getTime()));
                     ps.setBinaryStream(2, fin, fileLength);
                     ps.execute();
-                    if (!sqlConn.getAutoCommit()) {
-                        sqlConn.commit();
-                    }
+                    noCommitSqlConn.commit();
                 } catch (Exception ex) {
                     progressbar.setValue(0);
                     progressbar.setIndeterminate(false);

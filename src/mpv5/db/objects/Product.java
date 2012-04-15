@@ -16,6 +16,7 @@
  */
 package mpv5.db.objects;
 
+import enoa.handler.TemplateHandler;
 import java.io.File;
 import java.math.BigDecimal;
 import java.util.Collections;
@@ -113,8 +114,8 @@ public class Product extends DatabaseObject implements Formattable, Templateable
     private BigDecimal stockvalue = BigDecimal.ZERO;
     private BigDecimal thresholdvalue = BigDecimal.ZERO;
     private int intinventorytype = 0;
-    public static final int TYPE_PRODUCT = 0;
-    public static final int TYPE_SERVICE = 1;
+    public static final int TYPE_PRODUCT = 5;//TemplateHandler.TYPE_PRODUCT;
+    public static final int TYPE_SERVICE = 6;
     private FormatHandler formatHandler;
 
     public Product() {

@@ -19,10 +19,10 @@ package mpv5.utils.print;
 import com.sun.pdfview.PDFFile;
 import com.sun.pdfview.PDFPage;
 import com.sun.pdfview.PDFRenderer;
-import java.awt.Component;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.Rectangle;
+import java.awt.*;
+import java.awt.geom.AffineTransform;
+import java.awt.image.AffineTransformOp;
+import java.awt.image.BufferedImage;
 import java.awt.print.*;
 import java.util.*;
 import java.io.*;
@@ -33,6 +33,9 @@ import java.util.logging.Logger;
 import javax.print.*;
 import javax.print.attribute.*;
 import javax.print.attribute.standard.*;
+import javax.swing.JFrame;
+import javax.swing.JScrollPane;
+import javax.swing.RepaintManager;
 import mpv5.globals.Messages;
 import mpv5.logging.Log;
 import mpv5.ui.dialogs.Notificator;
@@ -46,7 +49,23 @@ import mpv5.utils.files.FileDirectoryHandler;
 public class PrintJob2 {
 
     /**
+     * a paper fitting DIN-A4
+     */
+    public static Paper DINA4;
+
+    /**
+     * Creates a paper fitting DIN-A4
+     */
+    static {
+        Paper paper = new java.awt.print.Paper();
+        paper.setSize(595, 842);
+        paper.setImageableArea(0, 0, 595, 842);
+        DINA4 = paper;
+    }
+
+    /**
      * Send an File to a printer
+     *
      * @param resourceAsStream
      * @param fileType
      * @param printername (optional)
@@ -55,10 +74,13 @@ public class PrintJob2 {
     public static void print(File file, String printer) throws FileNotFoundException, Exception {
         new PrintJob2((file), file.getName().substring(file.getName().lastIndexOf(".") + 1, file.getName().length()), printer);
     }
-    /* PrintWithJ2SE14Document.java: Drucken eines Dokuments mit J2SE 1.4 */
+    /*
+     * PrintWithJ2SE14Document.java: Drucken eines Dokuments mit J2SE 1.4
+     */
 
     /**
      * Set up a new printjob and print
+     *
      * @param file
      * @param fileType
      * @throws Exception
@@ -73,6 +95,7 @@ public class PrintJob2 {
 
     /**
      * Set up a new printjob and print
+     *
      * @param file
      * @param fileType
      * @throws Exception
@@ -87,6 +110,7 @@ public class PrintJob2 {
 
     /**
      * Send an InputStream to a printer
+     *
      * @param resourceAsStream
      * @param fileType
      * @param printername (optional)
@@ -190,6 +214,7 @@ public class PrintJob2 {
 
     /**
      * Print a Component
+     *
      * @param c
      */
     public PrintJob2(Component c) {
@@ -200,7 +225,7 @@ public class PrintJob2 {
     }
 
     /**
-     * 
+     *
      * @param file
      * @param printername not used yet
      * @throws Exception
@@ -219,9 +244,8 @@ public class PrintJob2 {
         PrinterJob pjob = PrinterJob.getPrinterJob();
         PageFormat pf = PrinterJob.getPrinterJob().defaultPage();
 
-        Paper paper = new Paper();
-        paper.setSize(594.936, 841.536);
-        paper.setImageableArea(0, 0, 594.936, 841.536);
+        Paper paper = DINA4;
+        pf.setOrientation(PageFormat.PORTRAIT);
         pf.setPaper(paper);
 
         Book book = new Book();
@@ -269,30 +293,10 @@ public class PrintJob2 {
             }
         }, pf, pdfFile.getNumPages());
         pjob.setPageable(book);
-
-        // Set print attributes:
-        HashPrintRequestAttributeSet aset = new HashPrintRequestAttributeSet();
-        aset.add(MediaSizeName.ISO_A4);
-
-        AttributeSet aset2 = new HashAttributeSet();
-        aset2.add(MediaSizeName.ISO_A4);
-        if (printername != null && printername.length() > 0 && !printername.contains("undefined")) {
-            aset2.add(new PrinterName(printername, null));
-            PrintService[] services3 = PrintServiceLookup.lookupPrintServices(null, aset2);
-            if (services3.length > 0) {
-                pjob.setPrintService(services3[0]);
-            } else {
-                Notificator.raiseNotification(Messages.NO_PRINTER_FOUND + " [" + printername + "]", false);
-            }
-        }
-
         try {
-            // Send print job to printer
-            if (pjob.printDialog(aset)) {
-                pjob.print(aset);
-                Notificator.raiseNotification(Messages.PRINTED + " .pdf " + " [" + pjob.getPrintService().getName() + "]", false);
-                Log.Debug(PrintJob2.class, "Document '" + file + "' printed.");
-            }
+            print0(pjob, printername);
+            Notificator.raiseNotification(Messages.PRINTED + " .pdf " + " [" + pjob.getPrintService().getName() + "]", false);
+            Log.Debug(PrintJob2.class, "Document '" + file + "' printed.");
         } catch (Exception e) {
             throw e;
         } finally {
@@ -305,9 +309,14 @@ public class PrintJob2 {
 
         PageFormat pf = PrinterJob.getPrinterJob().defaultPage();
 
-        Paper paper = new Paper();
-        paper.setSize(594.936, 841.536);
-        paper.setImageableArea(0, 0, 594.936, 841.536);
+        Paper paper = DINA4;
+        double leftMargin = 0.78;
+        double rightMargin = 0.78;
+        double topMargin = 0.78;
+        double bottomMargin = 0.78;
+        paper.setImageableArea(leftMargin * 72.0, topMargin * 72.0,
+                (paper.getWidth() - leftMargin - rightMargin) * 72.0,
+                (paper.getHeight() - topMargin - bottomMargin) * 72.0);
         pf.setPaper(paper);
         pf.setOrientation(PageFormat.LANDSCAPE);
 
@@ -322,20 +331,93 @@ public class PrintJob2 {
                 Graphics2D g2d = (Graphics2D) g;
                 g2d.translate(pf.getImageableX(), pf.getImageableY());
                 componentToPrint.printAll(g);
-
                 return PAGE_EXISTS;
+//                return PrintJob2.print(componentToPrint, g, pf, page);
             }
         }, pf);
 
         job.setPageable(book);
-        boolean ok = job.printDialog();
-        if (ok) {
+        try {
+            print0(job, null);
+        } catch (PrinterException ex) {
+            Log.Debug(ex);
+        }
+
+//        if (job.printDialog()) {
+//            try {
+//                job.print();
+//            } catch (PrinterException ex) {
+//                Popup.error(ex);
+//                Log.Debug(ex);
+//            }
+//        }
+    }
+
+    /**
+     * From http://www.coderanch.com/t/340021/GUI/java/Printing-JPanel-printer
+     */
+    public static int print(Component componentToBePrinted, Graphics g, PageFormat pageFormat, int pageIndex) {
+
+        if (pageIndex > 0) {
+            return java.awt.print.Printable.NO_SUCH_PAGE;
+        } else {
             try {
-                job.print();
-            } catch (PrinterException ex) {
-                Popup.error(ex);
-                Log.Debug(ex);
+                Graphics2D g2d = (Graphics2D) g;
+                g2d.translate(pageFormat.getImageableX(), pageFormat.getImageableY());
+                RepaintManager.currentManager(componentToBePrinted).setDoubleBufferingEnabled(false);
+// scale to fill the page        
+                double dw = pageFormat.getImageableWidth();
+                double dh = pageFormat.getImageableHeight();
+                Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+
+                double xScale = dw / screenSize.width;
+                double yScale = dh / screenSize.height;
+                double scale = Math.min(xScale, yScale);
+
+// center the chart on the page
+                double tx = 0.0;
+                double ty = 0.0;
+                if (xScale > scale) {
+                    tx = 0.5 * (xScale - scale) * screenSize.width;
+                } else {
+                    ty = 0.5 * (yScale - scale) * screenSize.height;
+                }
+                g2d.translate(tx, ty);
+                g2d.scale(scale, scale);
+
+                componentToBePrinted.paint(g2d);
+            } catch (Exception exception) {
+                Log.Debug(exception);
+            } finally {
+                try {
+                    RepaintManager.currentManager(componentToBePrinted).setDoubleBufferingEnabled(true);
+                } catch (Exception e) {
+                    Log.Debug(e);
+                }
             }
+            return java.awt.print.Printable.PAGE_EXISTS;
+        }
+    }
+
+    private void print0(PrinterJob pjob, String printername) throws PrinterException {
+        // Set print attributes:
+        HashPrintRequestAttributeSet aset = new HashPrintRequestAttributeSet();
+        aset.add(MediaSizeName.ISO_A4);
+
+        HashPrintRequestAttributeSet aset2 = new HashPrintRequestAttributeSet();
+        aset2.add(MediaSizeName.ISO_A4);
+        if (printername != null && printername.length() > 0 && !printername.contains("undefined")) {
+            aset2.add(new PrinterName(printername, null));
+            PrintService[] services3 = PrintServiceLookup.lookupPrintServices(null, aset2);
+            if (services3.length > 0) {
+                pjob.setPrintService(services3[0]);
+            } else {
+                Notificator.raiseNotification(Messages.NO_PRINTER_FOUND + " [" + printername + "]", false);
+            }
+        }
+        // Send print job to printer
+        if (pjob.printDialog(aset2)) {
+            pjob.print(aset2);
         }
     }
 }
