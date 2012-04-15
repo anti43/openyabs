@@ -144,13 +144,6 @@ public class Log {
         }
     }
 
-    /**
-     * Print a list
-     * @param data
-     */
-    public static void PrintArray(ArrayList data) {
-        PrintArray(data.toArray());
-    }
 
     /**
      * Print an array
@@ -295,6 +288,14 @@ public class Log {
 
     public static void addLogger(LogConsole logConsole) {
         loggers.add(logConsole);
+    }
+
+    /**
+     * 
+     * @return 
+     */
+    public static boolean isDebugging() {
+        return loglevel == LOGLEVEL_DEBUG;
     }
 
     private Log() {

@@ -359,6 +359,10 @@ public class Main implements Runnable {
     }
 
     public void shutdown() {
+        if(Log.isDebugging()) {
+            Log.Print(Messages.getMissing());
+        }
+        
         if (!HEADLESS) {
             getApplication().getMainFrame().setCursor(new Cursor(Cursor.WAIT_CURSOR));
         }

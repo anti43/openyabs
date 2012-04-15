@@ -29,7 +29,6 @@ import javax.print.*;
 import javax.print.attribute.*;
 import javax.print.attribute.standard.MediaSizeName;
 import javax.print.attribute.standard.PrinterName;
-import javax.swing.RepaintManager;
 import mpv5.globals.GlobalSettings;
 import mpv5.globals.Messages;
 import mpv5.logging.Log;

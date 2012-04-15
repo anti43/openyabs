@@ -4,16 +4,27 @@
  */
 package mpv5.globals;
 
+import java.util.*;
 import mpv5.logging.Log;
 import mpv5.i18n.LanguageManager;
 
 /**
- * This enum holds all messages for the mp5 main application
- *Start with -license for details.\nStart with -help for command line options.
- *  :
- * YaBS (@version) (C) 2006-2009 Openyabs.org
+ * This enum holds all messages for the mp5 main application Start with -license
+ * for details.\nStart with -help for command line options. : YaBS (
  *
- * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version.\n\nThis program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details.\n\nYou should have received a copy of the GNU General Public License along with this program; if not, write to the Free Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA\n\nStart with -license for details.\nStart with -help for command line options.
+ * @version) (C) 2006-2009 Openyabs.org
+ *
+ * This program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation; either version 2 of the License, or (at your option) any later
+ * version.\n\nThis program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General
+ * Public License for more details.\n\nYou should have received a copy of the
+ * GNU General Public License along with this program; if not, write to the Free
+ * Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
+ * USA\n\nStart with -license for details.\nStart with -help for command line
+ * options.
  */
 public enum Messages {
 
@@ -303,32 +314,44 @@ public enum Messages {
     ActivityList_Existing("There's an Activity List Existing. Add this to the Invoice?"),
     ActivityList_toSubItem("See attached Acitivy Confirmation for Project: "),
     CHECK_TPLUPDATE("Checking Templates to update from Filechange ..."),
-    MASSPRINT_FILTER("Filter Entries by:"), 
-    MASSPRINT_ENTER_NAME("Enter a Name for the Filter-Rule:"), 
-    MASSPRINT_FILTER_ALL("All Contacts"), 
-    SCRIPT_ERROR("A script did not run successfully:"), 
-    SELECT_A_TYPE("Select a Type!"), 
-    NOTIFICATION("Notification"), 
+    MASSPRINT_FILTER("Filter Entries by:"),
+    MASSPRINT_ENTER_NAME("Enter a Name for the Filter-Rule:"),
+    MASSPRINT_FILTER_ALL("All Contacts"),
+    SCRIPT_ERROR("A script did not run successfully:"),
+    SELECT_A_TYPE("Select a Type!"),
+    NOTIFICATION("Notification"),
     OO_WAITING("Please wait while connecting to OO/LO"),
-    OO_NOT_CONFIGURED("Office is not configured yet.");
+    OO_NOT_CONFIGURED("Office is not configured yet."),
+    PRINTER_NAMES("Possible printer names:");
+
+    /**
+     * @return the missing
+     */
+    public static List<String> getMissing() {
+        return Collections.unmodifiableList(missing);
+    }
 
     private Messages(String message) {
         this.message = message;
     }
     private String message;
+    private static List<String> missing = new ArrayList<String>();
 
     public void addMessage(String message) {
+        missing.add(message);
     }
 
     @Override
     public String toString() {
 
+        if(missing.contains(name())) {
+            return message;
+        }
         try {
-            message = LanguageManager.getBundle().getString(this.name());
+            return LanguageManager.getBundle().getString(name());
         } catch (Exception e) {
             Log.Debug(this, e.getMessage());
-//            Log.PrintArray( LanguageManager.getBundle().getKeys());
-            this.addMessage(message);
+            addMessage(name());
         }
 
         if (message == null) {
@@ -340,6 +363,7 @@ public enum Messages {
 
     /**
      * Refers to toString()
+     *
      * @return The value for this enum
      */
     public String getValue() {
