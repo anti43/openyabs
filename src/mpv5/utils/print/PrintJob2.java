@@ -20,26 +20,20 @@ import com.sun.pdfview.PDFFile;
 import com.sun.pdfview.PDFPage;
 import com.sun.pdfview.PDFRenderer;
 import java.awt.*;
-import java.awt.geom.AffineTransform;
-import java.awt.image.AffineTransformOp;
-import java.awt.image.BufferedImage;
 import java.awt.print.*;
-import java.util.*;
 import java.io.*;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.Arrays;
 import javax.print.*;
 import javax.print.attribute.*;
-import javax.print.attribute.standard.*;
-import javax.swing.JFrame;
-import javax.swing.JScrollPane;
+import javax.print.attribute.standard.MediaSizeName;
+import javax.print.attribute.standard.PrinterName;
 import javax.swing.RepaintManager;
+import mpv5.globals.GlobalSettings;
 import mpv5.globals.Messages;
 import mpv5.logging.Log;
 import mpv5.ui.dialogs.Notificator;
-import mpv5.ui.dialogs.Popup;
 import mpv5.utils.files.FileDirectoryHandler;
 
 /**
@@ -66,9 +60,9 @@ public class PrintJob2 {
     /**
      * Send an File to a printer
      *
-     * @param resourceAsStream
-     * @param fileType
-     * @param printername (optional)
+     * @param file
+     * @param printer
+     * @throws FileNotFoundException
      * @throws Exception
      */
     public static void print(File file, String printer) throws FileNotFoundException, Exception {
@@ -83,6 +77,7 @@ public class PrintJob2 {
      *
      * @param file
      * @param fileType
+     * @param printer
      * @throws Exception
      */
     public PrintJob2(File file, String fileType, String printer) throws Exception {
@@ -306,8 +301,7 @@ public class PrintJob2 {
 
     private void printComponent(final Component componentToPrint) {
         PrinterJob job = PrinterJob.getPrinterJob();
-
-        PageFormat pf = PrinterJob.getPrinterJob().defaultPage();
+        PageFormat pf = job.defaultPage();
 
         Paper paper = DINA4;
         double leftMargin = 0.78;
@@ -328,11 +322,11 @@ public class PrintJob2 {
                     return NO_SUCH_PAGE;
                 }
 
-                Graphics2D g2d = (Graphics2D) g;
-                g2d.translate(pf.getImageableX(), pf.getImageableY());
-                componentToPrint.printAll(g);
-                return PAGE_EXISTS;
-//                return PrintJob2.print(componentToPrint, g, pf, page);
+//                Graphics2D g2d = (Graphics2D) g;
+//                g2d.translate(pf.getImageableX(), pf.getImageableY());
+//                componentToPrint.printAll(g);
+//                return PAGE_EXISTS;
+                return PrintJob2.print(componentToPrint, g, pf, page);
             }
         }, pf);
 
@@ -356,59 +350,60 @@ public class PrintJob2 {
     /**
      * From http://www.coderanch.com/t/340021/GUI/java/Printing-JPanel-printer
      */
-    public static int print(Component componentToBePrinted, Graphics g, PageFormat pageFormat, int pageIndex) {
-
-        if (pageIndex > 0) {
-            return java.awt.print.Printable.NO_SUCH_PAGE;
-        } else {
-            try {
-                Graphics2D g2d = (Graphics2D) g;
-                g2d.translate(pageFormat.getImageableX(), pageFormat.getImageableY());
-                RepaintManager.currentManager(componentToBePrinted).setDoubleBufferingEnabled(false);
+    private static int print(Component componentToBePrinted, Graphics g, PageFormat pageFormat, int pageIndex) {
+        synchronized (componentToBePrinted) {
+            if (pageIndex > 0) {
+                return java.awt.print.Printable.NO_SUCH_PAGE;
+            } else {
+                try {
+                    Graphics2D g2d = (Graphics2D) g;
+                    g2d.translate(pageFormat.getImageableX(), pageFormat.getImageableY());
 // scale to fill the page        
-                double dw = pageFormat.getImageableWidth();
-                double dh = pageFormat.getImageableHeight();
-                Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+                    double dw = pageFormat.getImageableWidth();
+                    double dh = pageFormat.getImageableHeight();
+                    Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 
-                double xScale = dw / screenSize.width;
-                double yScale = dh / screenSize.height;
-                double scale = Math.min(xScale, yScale);
+                    double xScale = dw / screenSize.width;
+                    double yScale = dh / screenSize.height;
+                    double scale = Math.min(xScale, yScale);
 
 // center the chart on the page
-                double tx = 0.0;
-                double ty = 0.0;
-                if (xScale > scale) {
-                    tx = 0.5 * (xScale - scale) * screenSize.width;
-                } else {
-                    ty = 0.5 * (yScale - scale) * screenSize.height;
-                }
-                g2d.translate(tx, ty);
-                g2d.scale(scale, scale);
+                    double tx = 0.0;
+                    double ty = 0.0;
+                    if (xScale > scale) {
+                        tx = 0.5 * (xScale - scale) * screenSize.width;
+                    } else {
+                        ty = 0.5 * (yScale - scale) * screenSize.height;
+                    }
+                    g2d.translate(tx, ty);
+                    g2d.scale(scale, scale);
 
-                componentToBePrinted.paint(g2d);
-            } catch (Exception exception) {
-                Log.Debug(exception);
-            } finally {
-                try {
-                    RepaintManager.currentManager(componentToBePrinted).setDoubleBufferingEnabled(true);
-                } catch (Exception e) {
-                    Log.Debug(e);
+                    componentToBePrinted.printAll(g2d);
+                } catch (Exception exception) {
+                    Log.Debug(exception);
                 }
+                return java.awt.print.Printable.PAGE_EXISTS;
             }
-            return java.awt.print.Printable.PAGE_EXISTS;
         }
     }
 
     private void print0(PrinterJob pjob, String printername) throws PrinterException {
         // Set print attributes:
-        HashPrintRequestAttributeSet aset = new HashPrintRequestAttributeSet();
+        PrintRequestAttributeSet aset = new HashPrintRequestAttributeSet();
         aset.add(MediaSizeName.ISO_A4);
 
-        HashPrintRequestAttributeSet aset2 = new HashPrintRequestAttributeSet();
+//        AttributeSet aset = new HashAttributeSet();
+//aset.add(new PrinterName("\\\\122.166.97.138//Canon iP1300", null));
+
+        HashAttributeSet aset2 = new HashAttributeSet();
         aset2.add(MediaSizeName.ISO_A4);
         if (printername != null && printername.length() > 0 && !printername.contains("undefined")) {
             aset2.add(new PrinterName(printername, null));
             PrintService[] services3 = PrintServiceLookup.lookupPrintServices(null, aset2);
+            for (int i = 0; i < services3.length; i++) {
+                PrintService printService = services3[i];
+                Log.Debug(this, printService.getName());
+            }
             if (services3.length > 0) {
                 pjob.setPrintService(services3[0]);
             } else {
@@ -416,8 +411,9 @@ public class PrintJob2 {
             }
         }
         // Send print job to printer
-        if (pjob.printDialog(aset2)) {
-            pjob.print(aset2);
+        if (GlobalSettings.getBooleanProperty("org.openyabs.printproperty.printdirect", false)
+                || pjob.printDialog(aset)) {
+            pjob.print(aset);
         }
     }
 }
