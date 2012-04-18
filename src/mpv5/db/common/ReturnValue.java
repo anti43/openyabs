@@ -11,7 +11,7 @@ import java.util.List;
 
 /**
  *
- *  
+ *
  */
 public class ReturnValue {
 
@@ -58,6 +58,7 @@ public class ReturnValue {
 
     /**
      * If an inserting query has generated an ID, it will be available here
+     *
      * @return the id
      */
     public int getId() {
@@ -66,6 +67,7 @@ public class ReturnValue {
 
     /**
      * First row of data retrieved by a select query
+     *
      * @return the data
      */
     public Object[] getFirstRow() {
@@ -78,6 +80,7 @@ public class ReturnValue {
 
     /**
      * First row of data retrieved by a select query
+     *
      * @return the data
      */
     public Object[] getFirstColumn() {
@@ -94,6 +97,7 @@ public class ReturnValue {
 
     /**
      * First field of data retrieved by a select query
+     *
      * @return the data
      */
     public Object getFirstEntry() {
@@ -106,6 +110,7 @@ public class ReturnValue {
 
     /**
      * All data retrieved by a select query
+     *
      * @return the data
      */
     public Object[][] getData() {
@@ -114,6 +119,7 @@ public class ReturnValue {
 
     /**
      * All data retrieved by a select query
+     *
      * @return the data
      */
     public List<Object[]> getDataAsList() {
@@ -122,6 +128,7 @@ public class ReturnValue {
 
     /**
      * All data retrieved by a select query
+     *
      * @return the data
      */
     public List<String> getDataAsStringList() {
@@ -131,7 +138,7 @@ public class ReturnValue {
             StringBuilder a = new StringBuilder("");
             for (int j = 0; j < objects.length; j++) {
                 a.append(objects[j]);
-                if (j != objects.length-1) {
+                if (j != objects.length - 1) {
                     a.append(", ");
                 }
             }
@@ -142,6 +149,7 @@ public class ReturnValue {
 
     /**
      * All data retrieved by a select query
+     *
      * @return the data
      */
     public Iterator<Object[]> getDataIterator() {
@@ -150,6 +158,7 @@ public class ReturnValue {
 
     /**
      * The column names used
+     *
      * @return the columnnames
      */
     public String[] getColumnnames() {
@@ -158,6 +167,7 @@ public class ReturnValue {
 
     /**
      * Add all the data of the given ReturnValue
+     *
      * @param returnValue
      */
     public void set(ReturnValue returnValue) {
@@ -169,6 +179,7 @@ public class ReturnValue {
 
     /**
      * If the query had a message, this will be non-NULL
+     *
      * @return the message
      */
     public String getMessage() {
@@ -205,6 +216,7 @@ public class ReturnValue {
 
     /**
      * Checks if the ReturnValue has any data at all
+     *
      * @return
      */
     public boolean hasData() {
@@ -213,7 +225,10 @@ public class ReturnValue {
 
     @Override
     public String toString() {
-        return "Rowcount: " + data.length;
+        if (data != null) {
+            return "Rowcount: " + data.length;
+        }
+        return "no rows";
     }
 
     public String[] getFullColumnNames() {

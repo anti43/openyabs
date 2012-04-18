@@ -58,6 +58,7 @@ import mpv5.ui.toolbars.DataPanelTB;
 import mpv5.utils.export.Export;
 import mpv5.utils.jobs.Job;
 import mpv5.db.objects.Conversation;
+import mpv5.globals.Constants;
 import mpv5.ui.dialogs.Search2;
 import mpv5.utils.models.MPComboBoxModelItem;
 import mpv5.utils.ui.TextFieldUtils;
@@ -86,7 +87,7 @@ public class ConversationPanel
         }
         return me;
     }
-    private int Type = TemplateHandler.TYPE_CONVERSATION;
+    private int Type = Constants.TYPE_CONVERSATION;
     private DataPanelTB tb;
     private SearchPanel sp;
     private Conversation dataOwner;

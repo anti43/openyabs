@@ -28,6 +28,8 @@ import mpv5.db.objects.MassprintRules;
 import mpv5.db.objects.Product;
 import mpv5.db.objects.ProductGroup;
 import mpv5.db.objects.ProductList;
+import mpv5.db.objects.ProductOrder;
+import mpv5.db.objects.ProductOrderSubItem;
 import mpv5.db.objects.ProductPrice;
 import mpv5.db.objects.ProductlistSubItem;
 import mpv5.db.objects.ProductsToSuppliers;
@@ -105,6 +107,8 @@ public class Context implements Serializable {
     public static String IDENTITY_ACTIVITYLISTITEMS = "activitylistitems";
     public static String IDENTITY_ACTIVITYLIST = "activitylists";
     public static String IDENTITY_MASSPRINT = "massprintrules";
+    public static String IDENTITY_PRODUCTORDER = "productorders";
+    public static String IDENTITY_PRODUCTORDERSUBITEM = "productordersubitems";
     //********** identity classes **********************************************
     private static Class<Contact> IDENTITY_CONTACTS_CLASS = Contact.class;
     private static Class<Address> IDENTITY_ADDRESS_CLASS = Address.class;
@@ -144,6 +148,9 @@ public class Context implements Serializable {
     private static Class<ActivityListSubItem> IDENTITY_ACTIVITYITEMSLIST_CLASS = ActivityListSubItem.class;
     private static Class<ActivityList> IDENTITY_ACTIVITYLIST_CLASS = ActivityList.class;
     private static Class<MassprintRules> IDENTITY_MASSPRINT_CLASS = MassprintRules.class;
+    private static Class<ProductOrder> IDENTITY_PRODUCTORDER_CLASS = ProductOrder.class;
+    private static Class<ProductOrderSubItem> IDENTITY_PRODUCTORDERSUBITEM_CLASS = ProductOrderSubItem.class;
+    
     //********** unique constraints *******************************************
     public static String UNIQUECOLUMNS_USER = "cname";
     public static String UNIQUECOLUMNS_ITEMS = "cname";
@@ -151,6 +158,7 @@ public class Context implements Serializable {
     public static String UNIQUECOLUMNS_DEFAULT = "cname";
     public static String DETAIL_CONTACT_SEARCH = "prename,cname,street,city,country,notes";
     private static final long serialVersionUID = 1L;
+
     //********** conditions ****************************************************
     private boolean isCompany = false;
     private boolean isCustomer = false;
@@ -1686,6 +1694,26 @@ public class Context implements Serializable {
         c.setDbIdentity(IDENTITY_MASSPRINT);
         c.setIdentityClass(IDENTITY_MASSPRINT_CLASS);
         c.setId(56);
+
+        return c;
+    }
+    
+    public static Context getProductOrder() {
+        Context c = new Context();
+        c.setSubID(DEFAULT_SUBID);
+        c.setDbIdentity(IDENTITY_PRODUCTORDER);
+        c.setIdentityClass(IDENTITY_PRODUCTORDER_CLASS);
+        c.setId(57);
+
+        return c;
+    }
+     
+    public static Context getProductOrderSubitem() {
+        Context c = new Context();
+        c.setSubID(DEFAULT_SUBID);
+        c.setDbIdentity(IDENTITY_PRODUCTORDERSUBITEM);
+        c.setIdentityClass(IDENTITY_PRODUCTORDERSUBITEM_CLASS);
+        c.setId(58);
 
         return c;
     }

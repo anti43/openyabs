@@ -42,6 +42,7 @@ import mpv5.db.objects.Item;
 import mpv5.db.objects.Reminder;
 import mpv5.db.objects.Stage;
 import mpv5.db.objects.Template;
+import mpv5.globals.Constants;
 import mpv5.globals.Messages;
 import mpv5.handler.FormFieldsHandler;
 import mpv5.logging.Log;
@@ -304,9 +305,9 @@ public class ControlPanel_Reminder extends javax.swing.JPanel implements DataPan
                 group = Integer.valueOf(labeledCombobox2.getSelectedItem().getId());
             }
 
-            Template t = TemplateHandler.loadTemplate(group, TemplateHandler.TYPE_REMINDER);
+            Template t = TemplateHandler.loadTemplate(group, Constants.TYPE_REMINDER);
             if (t != null) {
-                Exportable te = TemplateHandler.loadTemplate(group, TemplateHandler.TYPE_REMINDER).getExFile();
+                Exportable te = TemplateHandler.loadTemplate(group, Constants.TYPE_REMINDER).getExFile();
                 HashMap<String, Object> hm1 = new FormFieldsHandler(dataOwner).getFormattedFormFields(null);
                 File f2 = FileDirectoryHandler.getTempFile("pdf");
                 Export ex = new Export(t);
@@ -344,9 +345,9 @@ public class ControlPanel_Reminder extends javax.swing.JPanel implements DataPan
                 group = Integer.valueOf(labeledCombobox2.getSelectedItem().getId());
             }
 
-            Template t = TemplateHandler.loadTemplate(group, TemplateHandler.TYPE_REMINDER);
+            Template t = TemplateHandler.loadTemplate(group, Constants.TYPE_REMINDER);
             if (t != null) {
-                Exportable te = TemplateHandler.loadTemplate(group, TemplateHandler.TYPE_REMINDER).getExFile();
+                Exportable te = TemplateHandler.loadTemplate(group, Constants.TYPE_REMINDER).getExFile();
                 HashMap<String, Object> hm1 = new HashMap<String, Object>();
                 File f2 = FileDirectoryHandler.getTempFile("pdf");
 
@@ -381,9 +382,9 @@ public class ControlPanel_Reminder extends javax.swing.JPanel implements DataPan
                 group = Integer.valueOf(labeledCombobox2.getSelectedItem().getId());
             }
 
-            Template t = TemplateHandler.loadTemplate(group, TemplateHandler.TYPE_REMINDER);
+            Template t = TemplateHandler.loadTemplate(group, Constants.TYPE_REMINDER);
             if (t != null) {
-                Exportable te = TemplateHandler.loadTemplate(group, TemplateHandler.TYPE_REMINDER).getExFile();
+                Exportable te = TemplateHandler.loadTemplate(group, Constants.TYPE_REMINDER).getExFile();
                 HashMap<String, Object> hm1 = new HashMap<String, Object>();
                 File f2 = FileDirectoryHandler.getTempFile("odt");
 //

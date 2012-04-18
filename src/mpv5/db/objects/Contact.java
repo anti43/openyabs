@@ -10,6 +10,7 @@ import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
 import mpv5.db.common.Formattable;
 import mpv5.db.common.Templateable;
+import mpv5.globals.Constants;
 import mpv5.globals.Messages;
 import mpv5.handler.FormatHandler;
 import mpv5.i18n.LanguageManager;
@@ -616,7 +617,7 @@ public class Contact extends DatabaseObject implements Formattable, Templateable
 
     @Override
     public int templateType() {
-        return TemplateHandler.TYPE_CONTACT;
+        return Constants.TYPE_CONTACT;
     }
 
     /**

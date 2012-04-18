@@ -33,6 +33,7 @@ import mpv5.db.common.DatabaseObject;
 import mpv5.db.common.Formattable;
 import mpv5.db.common.NodataFoundException;
 import mpv5.db.common.Templateable;
+import mpv5.globals.Constants;
 import mpv5.globals.GlobalSettings;
 import mpv5.globals.Messages;
 import mpv5.handler.FormatHandler;
@@ -120,7 +121,7 @@ public class ActivityList extends DatabaseObject implements Formattable, Templat
     }
 
     public int templateType() {
-        return TemplateHandler.TYPE_ACTIVITY;
+        return Constants.TYPE_ACTIVITY;
     }
 
     public int templateGroupIds() {

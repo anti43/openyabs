@@ -622,9 +622,10 @@ public final class ControlPanel_Templates extends javax.swing.JPanel implements 
         }
     }//GEN-LAST:event_jButton7ActionPerformed
 
+
     private void jButton11ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton11ActionPerformed
         PrintService[] services3 = PrintServiceLookup.lookupPrintServices(null, null);
-        List l = new ArrayList();
+        List<String> l = new ArrayList<String>();
         for (int i = 0; i < services3.length; i++) {
             PrintService printService = services3[i];
             l.add(printService.getName());

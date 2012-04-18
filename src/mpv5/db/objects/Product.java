@@ -16,6 +16,7 @@
  */
 package mpv5.db.objects;
 
+ 
 import enoa.handler.TemplateHandler;
 import java.io.File;
 import java.math.BigDecimal;
@@ -32,6 +33,7 @@ import mpv5.db.common.Formattable;
 import mpv5.db.common.NodataFoundException;
 import mpv5.db.common.QueryHandler;
 import mpv5.db.common.Templateable;
+import mpv5.globals.Constants;
 import mpv5.globals.Messages;
 import mpv5.handler.FormatHandler;
 import mpv5.handler.MPEnum;
@@ -54,9 +56,9 @@ public class Product extends DatabaseObject implements Formattable, Templateable
      */
     public static String getTypeString(int type) {
         switch (type) {
-            case (TYPE_PRODUCT):
+            case (Constants.TYPE_PRODUCT):
                 return Messages.TYPE_PRODUCT.toString();
-            case (TYPE_SERVICE):
+            case (Constants.TYPE_SERVICE):
                 return Messages.TYPE_SERVICE.toString();
         }
         return null;
@@ -114,9 +116,14 @@ public class Product extends DatabaseObject implements Formattable, Templateable
     private BigDecimal stockvalue = BigDecimal.ZERO;
     private BigDecimal thresholdvalue = BigDecimal.ZERO;
     private int intinventorytype = 0;
-    public static final int TYPE_PRODUCT = 5;//TemplateHandler.TYPE_PRODUCT;
-    public static final int TYPE_SERVICE = 6;
+    public static int TYPE_PRODUCT ;//TemplateHandler.TYPE_PRODUCT;
+    public static int TYPE_SERVICE ;
     private FormatHandler formatHandler;
+    
+    static{
+       TYPE_PRODUCT = Constants.TYPE_PRODUCT;
+       TYPE_SERVICE = Constants.TYPE_SERVICE;
+    }
 
     public Product() {
         setContext(Context.getProduct());

@@ -21,25 +21,13 @@ import mpv5.usermanagement.MPSecurityManager;
 import mpv5.utils.export.ODTFile;
 import mpv5.utils.export.PDFFile;
 
+import static mpv5.globals.Constants.*;
+
 /**
  * This class provides {@link Template} loading and caching functionality, thread-safe
  */
 public class TemplateHandler {
-    public static final int TYPE_BILL = 0;
-    public static final int TYPE_ORDER = 1;
-    public static final int TYPE_OFFER = 2;
-    public static final int TYPE_DELIVERY_NOTE = 3;
-    public static final int TYPE_ORDER_CONFIRMATION = 4;
-    public static final int TYPE_PRODUCT = 5;
-    public static final int TYPE_SERVICE = 6;
-    public static final int TYPE_REMINDER = 7;
-    public static final int TYPE_CONTACT = 8;
-    public static final int TYPE_JOURNAL = 9;
-    public static final int TYPE_PRODUCT_ORDER = 10;
-    public static final int TYPE_CONTRACT = 11;
-    public static final int TYPE_CONVERSATION = 12;
-    public static final int TYPE_MASSPRINT = 13;
-    public static final int TYPE_ACTIVITY = 14;
+    
     /**
      * Return true if the Template for the currently logged in user, with the given type, and matching the targets group is loaded
      * @param group

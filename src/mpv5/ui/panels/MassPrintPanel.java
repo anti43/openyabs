@@ -46,6 +46,7 @@ import mpv5.db.objects.MailMessage;
 import mpv5.db.objects.MassprintRules;
 import mpv5.db.objects.Template;
 import mpv5.db.objects.User;
+import mpv5.globals.Constants;
 import mpv5.globals.LocalSettings;
 import mpv5.globals.Messages;
 import mpv5.logging.Log;
@@ -613,7 +614,7 @@ public class MassPrintPanel
             @Override
             public void run() {
                 DefaultComboBoxModel mdl = (DefaultComboBoxModel) templates.getModel();
-                Template[] tpl = TemplateHandler.getTemplatesForType(User.getCurrentUser().__getGroupsids(), TemplateHandler.TYPE_MASSPRINT);
+                Template[] tpl = TemplateHandler.getTemplatesForType(User.getCurrentUser().__getGroupsids(), Constants.TYPE_MASSPRINT);
                 mdl.removeAllElements();
                 for (int i = 0; i < tpl.length; i++) {
                     mdl.addElement(tpl[i]);

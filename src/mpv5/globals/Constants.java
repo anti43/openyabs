@@ -39,7 +39,7 @@ public interface Constants {
     /**
      * The minimal Database Version which is compatible with this release
      */
-    public static final Double DATABASE_VERSION = 1.196;
+    public static final Double DATABASE_VERSION = 1.197;
     /**
      * The max Database Version which is compatible with this release
      */
@@ -113,5 +113,27 @@ public interface Constants {
     public static String FALLBACK_CACHE_DIR = "Cache";//Go for a relative path
     public static String LIBS_DIR = "lib";
     public static BigDecimal BD100 = new BigDecimal("100");
+    
+    
+    public static final int TYPE_BILL = 0;
+    public static final int TYPE_ORDER = 1;
+    public static final int TYPE_OFFER = 2;
+    public static final int TYPE_DELIVERY_NOTE = 3;
+    public static final int TYPE_ORDER_CONFIRMATION = 4;
+    public static final int TYPE_PRODUCT = 5;
+    public static final int TYPE_SERVICE = 6;
+    public static final int TYPE_REMINDER = 7;
+    public static final int TYPE_CONTACT = 8;
+    public static final int TYPE_JOURNAL = 9;
+    public static final int TYPE_PRODUCT_ORDER = 10;
+    public static final int TYPE_CONTRACT = 11;
+    public static final int TYPE_CONVERSATION = 12;
+    public static final int TYPE_MASSPRINT = 13;
+    public static final int TYPE_ACTIVITY = 14;
+    public static final int TYPE_CUSTOMER = 15;
+    public static final int TYPE_MANUFACTURER = 16;
+    public static final int TYPE_SUPPLIER = 17;
+    public static final int TYPE_EXPENSE = 18;
+    public static final int TYPE_REVENUE = 19;
     
 }

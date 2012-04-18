@@ -22,6 +22,7 @@ import javax.swing.JComponent;
 import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
 import mpv5.db.common.Templateable;
+import mpv5.globals.Constants;
 import mpv5.ui.panels.ConversationPanel;
 import mpv5.utils.images.MPIcon;
 
@@ -101,7 +102,7 @@ public class Conversation
     }
 
     public int templateType() {
-       return TemplateHandler.TYPE_CONVERSATION;
+       return Constants.TYPE_CONVERSATION;
     }
 
     public int templateGroupIds() {

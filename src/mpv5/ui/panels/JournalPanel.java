@@ -54,6 +54,7 @@ import mpv5.db.objects.Item;
 import mpv5.db.objects.Revenue;
 import mpv5.db.objects.Template;
 import mpv5.db.objects.User;
+import mpv5.globals.Constants;
 import mpv5.globals.Messages;
 import mpv5.logging.Log;
 import mpv5.ui.beans.MPCombobox;
@@ -1116,11 +1117,11 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
 
             public void run() {
                 if (dataOwner != null) {
-                    preloadedTemplate = TemplateHandler.loadTemplate(Long.valueOf(dataOwner.templateGroupIds()), TemplateHandler.TYPE_JOURNAL);
-                    TemplateHandler.loadTemplateFor(jButton4, Long.valueOf(dataOwner.templateGroupIds()), TemplateHandler.TYPE_JOURNAL);
+                    preloadedTemplate = TemplateHandler.loadTemplate(Long.valueOf(dataOwner.templateGroupIds()), Constants.TYPE_JOURNAL);
+                    TemplateHandler.loadTemplateFor(jButton4, Long.valueOf(dataOwner.templateGroupIds()), Constants.TYPE_JOURNAL);
                 } else {
-                    preloadedTemplate = TemplateHandler.loadTemplate(Long.valueOf(User.getCurrentUser().__getGroupsids()), TemplateHandler.TYPE_CONTACT);
-                    TemplateHandler.loadTemplateFor(jButton4, Long.valueOf(User.getCurrentUser().__getGroupsids()), TemplateHandler.TYPE_CONTACT);
+                    preloadedTemplate = TemplateHandler.loadTemplate(Long.valueOf(User.getCurrentUser().__getGroupsids()), Constants.TYPE_CONTACT);
+                    TemplateHandler.loadTemplateFor(jButton4, Long.valueOf(User.getCurrentUser().__getGroupsids()), Constants.TYPE_CONTACT);
                 }
             }
         };
@@ -1188,8 +1189,8 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
             for (int i = 0; i < items.size(); i++) {
                 try {
                     final Item item = items.get(i);
-                    if (TemplateHandler.loadTemplate(Long.valueOf(item.templateGroupIds()), TemplateHandler.TYPE_BILL) == null) {
-                        Popup.warn(Messages.NO_TEMPLATE_DEFINDED + "\n" + TemplateHandler.getName(TemplateHandler.TYPE_BILL)
+                    if (TemplateHandler.loadTemplate(Long.valueOf(item.templateGroupIds()), Constants.TYPE_BILL) == null) {
+                        Popup.warn(Messages.NO_TEMPLATE_DEFINDED + "\n" + TemplateHandler.getName(Constants.TYPE_BILL)
                                 + "\n" + Messages.IN_GROUP + " " + DatabaseObject.getObject(Context.getGroup(), item.__getGroupsids()));
                     } else {
                         files.add(Export.createFile(item.getFormatHandler().toUserString(), TemplateHandler.loadTemplate(Long.valueOf(item.templateGroupIds()), item.__getInttype()), item));
@@ -1233,8 +1234,8 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
             for (int i = 0; i < items.size(); i++) {
                 try {
                     final Item item = items.get(i);
-                    if (TemplateHandler.loadTemplate(Long.valueOf(item.templateGroupIds()), TemplateHandler.TYPE_BILL) == null) {
-                        Popup.warn(Messages.NO_TEMPLATE_DEFINDED + "\n" + TemplateHandler.getName(TemplateHandler.TYPE_BILL)
+                    if (TemplateHandler.loadTemplate(Long.valueOf(item.templateGroupIds()), Constants.TYPE_BILL) == null) {
+                        Popup.warn(Messages.NO_TEMPLATE_DEFINDED + "\n" + TemplateHandler.getName(Constants.TYPE_BILL)
                                 + "\n" + Messages.IN_GROUP + " " + DatabaseObject.getObject(Context.getGroup(), item.__getGroupsids()));
                     } else {
                         files.add(Export.sourceFile(item.getFormatHandler().toUserString(), TemplateHandler.loadTemplate(Long.valueOf(item.templateGroupIds()), item.__getInttype()), item));

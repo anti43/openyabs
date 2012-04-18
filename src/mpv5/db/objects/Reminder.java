@@ -25,6 +25,7 @@ import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
 import mpv5.db.common.NodataFoundException;
 import mpv5.db.common.Templateable;
+import mpv5.globals.Constants;
 import mpv5.globals.Messages;
 import mpv5.logging.Log;
 import mpv5.utils.images.MPIcon;
@@ -176,7 +177,7 @@ public class Reminder extends DatabaseObject implements Templateable {
 
     @Override
     public int templateType() {
-        return TemplateHandler.TYPE_REMINDER;
+        return Constants.TYPE_REMINDER;
     }
 
     /**

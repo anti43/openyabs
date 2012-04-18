@@ -2196,10 +2196,10 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
     private void delivery() {
         PreviewPanel pr;
         if (dataOwner != null && dataOwner.isExisting()) {
-            if (TemplateHandler.isLoaded(Long.valueOf(dataOwner.templateGroupIds()), TemplateHandler.TYPE_DELIVERY_NOTE)) {
+            if (TemplateHandler.isLoaded(Long.valueOf(dataOwner.templateGroupIds()), Constants.TYPE_DELIVERY_NOTE)) {
                 pr = new PreviewPanel();
                 pr.setDataOwner(dataOwner);
-                new Job(Export.createFile(TemplateHandler.loadTemplate(dataOwner.templateGroupIds(), TemplateHandler.TYPE_DELIVERY_NOTE), dataOwner), pr).execute();
+                new Job(Export.createFile(TemplateHandler.loadTemplate(dataOwner.templateGroupIds(), Constants.TYPE_DELIVERY_NOTE), dataOwner), pr).execute();
             } else {
                 Popup.notice(Messages.NO_TEMPLATE_LOADED + " (" + mpv5.db.objects.User.getCurrentUser() + ")");
             }
@@ -2209,11 +2209,11 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
     private void confirmation() {
         PreviewPanel pr;
         if (dataOwner != null && dataOwner.isExisting()) {
-            if (TemplateHandler.isLoaded(Long.valueOf(dataOwner.templateGroupIds()), TemplateHandler.TYPE_ORDER_CONFIRMATION)) {
+            if (TemplateHandler.isLoaded(Long.valueOf(dataOwner.templateGroupIds()), Constants.TYPE_ORDER_CONFIRMATION)) {
 
                 pr = new PreviewPanel();
                 pr.setDataOwner(dataOwner);
-                new Job(Export.createFile(TemplateHandler.loadTemplate(dataOwner.templateGroupIds(), TemplateHandler.TYPE_ORDER_CONFIRMATION), dataOwner), pr).execute();
+                new Job(Export.createFile(TemplateHandler.loadTemplate(dataOwner.templateGroupIds(), Constants.TYPE_ORDER_CONFIRMATION), dataOwner), pr).execute();
             } else {
                 Popup.notice(Messages.NO_TEMPLATE_LOADED + " (" + mpv5.db.objects.User.getCurrentUser() + ")");
             }
@@ -2245,7 +2245,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
                 if (!checkb_pront_oc.isSelected()) {
                     Export.print(TemplateHandler.loadTemplate(dataOwner.templateGroupIds(), dataOwner.__getInttype()), dataOwner);
                 } else {
-                    Export.print(new Template[]{TemplateHandler.loadTemplate(dataOwner.templateGroupIds(), dataOwner.__getInttype()), TemplateHandler.loadTemplate(dataOwner.templateGroupIds(), TemplateHandler.TYPE_ORDER_CONFIRMATION)}, dataOwner);
+                    Export.print(new Template[]{TemplateHandler.loadTemplate(dataOwner.templateGroupIds(), dataOwner.__getInttype()), TemplateHandler.loadTemplate(dataOwner.templateGroupIds(), Constants.TYPE_ORDER_CONFIRMATION)}, dataOwner);
                 }
             } else {
                 Popup.notice(Messages.NO_TEMPLATE_LOADED + " (" + mpv5.db.objects.User.getCurrentUser() + ")");
@@ -2274,9 +2274,9 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
 
             public void run() {
                 TemplateHandler.loadTemplateFor(button_preview, dataOwner.templateGroupIds(), dataOwner.__getInttype());
-                TemplateHandler.loadTemplateFor(button_deliverynote, dataOwner.templateGroupIds(), TemplateHandler.TYPE_DELIVERY_NOTE);
-                TemplateHandler.loadTemplateFor(new JComponent[]{button_orderconf, checkb_pront_oc}, dataOwner.templateGroupIds(), TemplateHandler.TYPE_ORDER_CONFIRMATION);
-                TemplateHandler.loadTemplateFor(button_reminders, dataOwner.templateGroupIds(), TemplateHandler.TYPE_REMINDER);
+                TemplateHandler.loadTemplateFor(button_deliverynote, dataOwner.templateGroupIds(), Constants.TYPE_DELIVERY_NOTE);
+                TemplateHandler.loadTemplateFor(new JComponent[]{button_orderconf, checkb_pront_oc}, dataOwner.templateGroupIds(), Constants.TYPE_ORDER_CONFIRMATION);
+                TemplateHandler.loadTemplateFor(button_reminders, dataOwner.templateGroupIds(), Constants.TYPE_REMINDER);
 
                 if (TemplateHandler.isLoaded(Long.valueOf(dataOwner.templateGroupIds()), dataOwner.__getInttype())) {
                     button_preview.setText(Messages.ACTION_PREVIEW.getValue());

@@ -60,6 +60,7 @@ import mpv5.ui.frames.MPView;
 import mpv5.ui.popups.FileTablePopUp;
 import mpv5.ui.toolbars.DataPanelTB;
 import mpv5.db.objects.User;
+import mpv5.globals.Constants;
 import mpv5.handler.FormFieldsHandler;
 import mpv5.ui.beans.MPCBSelectionChangeReceiver;
 import mpv5.ui.dialogs.DialogForFile;
@@ -1444,32 +1445,12 @@ public class ProductPanel extends javax.swing.JPanel implements DataPanel, MPCBS
     private void preview() {
         PreviewPanel pr;
         if (dataOwner != null && dataOwner.isExisting()) {
-            if (TemplateHandler.isLoaded(Long.valueOf(dataOwner.templateGroupIds()), TemplateHandler.TYPE_PRODUCT)) {
-
-                HashMap<String, Object> hm1 = new FormFieldsHandler(dataOwner).getFormattedFormFields(null);
-                File f2 = FileDirectoryHandler.getTempFile(cname_, "pdf");
-                Export ex = new Export(TemplateHandler.loadTemplate(Long.valueOf(dataOwner.templateGroupIds()), TemplateHandler.TYPE_PRODUCT));
-                ex.putAll(hm1);
-
-                for (int i = 0; i < dataTable.getRowCount(); i++) {
-                    try {
-                        String fname = dataTable.getModel().getValueAt(i, 0).toString();
-                        File f = QueryHandler.instanceOf().clone(Context.getFiles()).retrieveFile(fname, new File(FileDirectoryHandler.getTempDir() + dataTable.getModel().getValueAt(dataTable.getSelectedRow(), 1).toString()));
-                        ex.put("image" + i, new MPIcon(f.toURI().toURL()));
-                    } catch (Exception mal) {
-                        Log.Debug(this, mal.getMessage());
-                    }
-                }
-
-                ex.setTemplate(TemplateHandler.loadTemplate(Long.valueOf(dataOwner.templateGroupIds()), TemplateHandler.TYPE_PRODUCT).getExFile());
-                ex.setTargetFile(f2);
-
+            if (TemplateHandler.isLoaded(Long.valueOf(dataOwner.templateGroupIds()), dataOwner.__getInttype())) {
                 pr = new PreviewPanel();
                 pr.setDataOwner(dataOwner);
-                new Job(ex, pr).execute();
-
+                new Job(Export.createFile(TemplateHandler.loadTemplate(dataOwner.templateGroupIds(), dataOwner.__getInttype()), dataOwner), pr).execute();
             } else {
-                Popup.notice(Messages.NO_TEMPLATE_LOADED + " (" + mpv5.db.objects.User.getCurrentUser() + ") : " + TemplateHandler.getName(TemplateHandler.TYPE_PRODUCT));
+                Popup.notice(Messages.NO_TEMPLATE_LOADED + " (" + mpv5.db.objects.User.getCurrentUser() + ")");
             }
         }
     }
@@ -1477,32 +1458,12 @@ public class ProductPanel extends javax.swing.JPanel implements DataPanel, MPCBS
     private void preview_order() {
         PreviewPanel pr;
         if (dataOwner != null && dataOwner.isExisting()) {
-            if (TemplateHandler.isLoaded(Long.valueOf(dataOwner.templateGroupIds()), TemplateHandler.TYPE_PRODUCT_ORDER)) {
-
-                HashMap<String, Object> hm1 = new FormFieldsHandler(dataOwner).getFormattedFormFields(null);
-                File f2 = FileDirectoryHandler.getTempFile(cname_, "pdf");
-                Export ex = new Export(TemplateHandler.loadTemplate(Long.valueOf(dataOwner.templateGroupIds()), TemplateHandler.TYPE_PRODUCT_ORDER));
-                ex.putAll(hm1);
-
-                for (int i = 0; i < dataTable.getRowCount(); i++) {
-                    try {
-                        String fname = dataTable.getModel().getValueAt(i, 0).toString();
-                        File f = QueryHandler.instanceOf().clone(Context.getFiles()).retrieveFile(fname, new File(FileDirectoryHandler.getTempDir() + dataTable.getModel().getValueAt(dataTable.getSelectedRow(), 1).toString()));
-                        ex.put("image" + i, new MPIcon(f.toURI().toURL()));
-                    } catch (Exception mal) {
-                        Log.Debug(this, mal.getMessage());
-                    }
-                }
-
-                ex.setTemplate(TemplateHandler.loadTemplate(Long.valueOf(dataOwner.templateGroupIds()), TemplateHandler.TYPE_PRODUCT_ORDER).getExFile());
-                ex.setTargetFile(f2);
-
+            if (TemplateHandler.isLoaded(Long.valueOf(dataOwner.templateGroupIds()), Constants.TYPE_PRODUCT_ORDER)) {
                 pr = new PreviewPanel();
                 pr.setDataOwner(dataOwner);
-                new Job(ex, pr).execute();
-
+                new Job(Export.createFile(TemplateHandler.loadTemplate(dataOwner.templateGroupIds(),Constants.TYPE_PRODUCT_ORDER), dataOwner), pr).execute();
             } else {
-                Popup.notice(Messages.NO_TEMPLATE_LOADED + " (" + mpv5.db.objects.User.getCurrentUser() + ") : " + TemplateHandler.getName(TemplateHandler.TYPE_PRODUCT_ORDER));
+                Popup.notice(Messages.NO_TEMPLATE_LOADED + " (" + mpv5.db.objects.User.getCurrentUser() + ")");
             }
         }
     }
@@ -1512,10 +1473,10 @@ public class ProductPanel extends javax.swing.JPanel implements DataPanel, MPCBS
 
             public void run() {
                 if (dataOwner.__getInttype() == Product.TYPE_PRODUCT) {
-                    TemplateHandler.loadTemplateFor(button_preview, Long.valueOf(dataOwner.templateGroupIds()), TemplateHandler.TYPE_PRODUCT);
-                    TemplateHandler.loadTemplateFor(button_order, Long.valueOf(dataOwner.templateGroupIds()), TemplateHandler.TYPE_PRODUCT_ORDER);
+                    TemplateHandler.loadTemplateFor(button_preview, Long.valueOf(dataOwner.templateGroupIds()), Constants.TYPE_PRODUCT);
+                    TemplateHandler.loadTemplateFor(button_order, Long.valueOf(dataOwner.templateGroupIds()), Constants.TYPE_PRODUCT_ORDER);
                 } else {
-                    TemplateHandler.loadTemplateFor(button_preview, Long.valueOf(dataOwner.templateGroupIds()), TemplateHandler.TYPE_SERVICE);
+                    TemplateHandler.loadTemplateFor(button_preview, Long.valueOf(dataOwner.templateGroupIds()), Constants.TYPE_SERVICE);
                 }
             }
         };
@@ -1542,26 +1503,26 @@ public class ProductPanel extends javax.swing.JPanel implements DataPanel, MPCBS
     public void mail() {
         MailMessage m = null;
         if (dataOwner != null && dataOwner.isExisting()) {
-            if (TemplateHandler.isLoaded(Long.valueOf(dataOwner.templateGroupIds()), TemplateHandler.TYPE_PRODUCT)) {
+            if (TemplateHandler.isLoaded(Long.valueOf(dataOwner.templateGroupIds()), dataOwner.__getInttype())) {
 
                 try {
                     Contact cont = (Contact) Popup.SelectValue(Context.getContact());
-                    Export.mail(TemplateHandler.loadTemplate(Long.valueOf(dataOwner.templateGroupIds()), TemplateHandler.TYPE_PRODUCT), dataOwner, cont);
+                    Export.mail(TemplateHandler.loadTemplate(Long.valueOf(dataOwner.templateGroupIds()), dataOwner.__getInttype()), dataOwner, cont);
                 } catch (Exception ex) {
                     Log.Debug(ex);
                 }
             } else {
-                Popup.notice(Messages.NO_TEMPLATE_LOADED + " (" + mpv5.db.objects.User.getCurrentUser() + ") : " + TemplateHandler.getName(TemplateHandler.TYPE_PRODUCT));
+                Popup.notice(Messages.NO_TEMPLATE_LOADED + " (" + mpv5.db.objects.User.getCurrentUser() + ") : " + TemplateHandler.getName(Constants.TYPE_PRODUCT));
             }
         }
     }
 
     public void print() {
         if (dataOwner != null && dataOwner.isExisting()) {
-            if (TemplateHandler.isLoaded(Long.valueOf(dataOwner.templateGroupIds()), TemplateHandler.TYPE_PRODUCT)) {
-                Export.print(TemplateHandler.loadTemplate(Long.valueOf(dataOwner.templateGroupIds()), TemplateHandler.TYPE_PRODUCT), dataOwner);
+            if (TemplateHandler.isLoaded(Long.valueOf(dataOwner.templateGroupIds()),dataOwner.__getInttype())) {
+                Export.print(TemplateHandler.loadTemplate(Long.valueOf(dataOwner.templateGroupIds()), dataOwner.__getInttype()), dataOwner);
             } else {
-                Notificator.raiseNotification(Messages.NO_TEMPLATE_LOADED + " (" + mpv5.db.objects.User.getCurrentUser() + ") : " + TemplateHandler.getName(TemplateHandler.TYPE_PRODUCT), false, false, dataOwner);
+                Notificator.raiseNotification(Messages.NO_TEMPLATE_LOADED + " (" + mpv5.db.objects.User.getCurrentUser() + ") : " + TemplateHandler.getName(Constants.TYPE_PRODUCT), false, false, dataOwner);
                 mpv5.utils.export.Export.print(this);
             }
         } else {

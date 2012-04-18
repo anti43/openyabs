@@ -29,54 +29,36 @@ import mpv5.db.common.DatabaseObject;
 import mpv5.db.common.Formattable;
 import mpv5.db.common.QueryHandler;
 import mpv5.db.common.ReturnValue;
-import mpv5.db.objects.ActivityList;
-import mpv5.db.objects.Contact;
-import mpv5.db.objects.Conversation;
-import mpv5.db.objects.Expense;
-import mpv5.db.objects.Item;
-import mpv5.db.objects.Product;
-import mpv5.db.objects.Revenue;
-import mpv5.db.objects.User;
+import mpv5.db.objects.*;
+import mpv5.globals.Constants;
 import mpv5.globals.GlobalSettings;
 import mpv5.globals.Messages;
 import mpv5.logging.Log;
 import mpv5.ui.dialogs.Popup;
 import mpv5.usermanagement.MPSecurityManager;
+import static mpv5.globals.Constants.*;
 
 /**
  *
  */
 public class FormatHandler {
 
-    public static final int TYPE_BILL = 0;
-    public static final int TYPE_OFFER = 1;
-    public static final int TYPE_ORDER = 2;
-    public static final int TYPE_CONTACT = 3;
-    public static final int TYPE_CUSTOMER = 4;
-    public static final int TYPE_MANUFACTURER = 5;
-    public static final int TYPE_SUPPLIER = 6;
-    public static final int TYPE_PRODUCT = 7;
-    public static final int TYPE_SERVICE = 8;
-    public static final int TYPE_EXPENSE = 9;
-    public static final int TYPE_REVENUE = 10;
-    public static final int TYPE_CONVERSATION = 12;
-    public static final int TYPE_ACTIVITY = 14;
-
     public static enum TYPES implements MPEnum {
 
-        TYPE_BILL(FormatHandler.TYPE_BILL, Messages.TYPE_BILL.getValue()),
-        TYPE_OFFER(FormatHandler.TYPE_OFFER, Messages.TYPE_OFFER.getValue()),
-        TYPE_ORDER(FormatHandler.TYPE_ORDER, Messages.TYPE_ORDER.getValue()),
-        TYPE_CONTACT(FormatHandler.TYPE_CONTACT, Messages.TYPE_CONTACT.getValue()),
-        TYPE_CUSTOMER(FormatHandler.TYPE_CUSTOMER, Messages.TYPE_CUSTOMER.getValue()),
-        TYPE_MANUFACTURER(FormatHandler.TYPE_MANUFACTURER, Messages.TYPE_MANUFACTURER.getValue()),
-        TYPE_SUPPLIER(FormatHandler.TYPE_SUPPLIER, Messages.TYPE_SUPPLIER.getValue()),
-        TYPE_PRODUCT(FormatHandler.TYPE_PRODUCT, Messages.TYPE_PRODUCT.getValue()),
-        TYPE_SERVICE(FormatHandler.TYPE_SERVICE, Messages.TYPE_SERVICE.getValue()),
-        TYPE_REVENUE(FormatHandler.TYPE_REVENUE, Messages.TYPE_REVENUE.getValue()),
-        TYPE_EXPENSE(FormatHandler.TYPE_EXPENSE, Messages.TYPE_EXPENSE.getValue()),
-        TYPE_CONVERSATION(FormatHandler.TYPE_CONVERSATION, Messages.TYPE_CONVERSATION.getValue()),
-        TYPE_ACTIVITY(FormatHandler.TYPE_ACTIVITY, Messages.TYPE_ACTIVITY.getValue());
+        TYPE_BILL(Constants.TYPE_BILL, Messages.TYPE_BILL.getValue()),
+        TYPE_OFFER(Constants.TYPE_OFFER, Messages.TYPE_OFFER.getValue()),
+        TYPE_ORDER(Constants.TYPE_ORDER, Messages.TYPE_ORDER.getValue()),
+        TYPE_CONTACT(Constants.TYPE_CONTACT, Messages.TYPE_CONTACT.getValue()),
+        TYPE_CUSTOMER(Constants.TYPE_CUSTOMER, Messages.TYPE_CUSTOMER.getValue()),
+        TYPE_MANUFACTURER(Constants.TYPE_MANUFACTURER, Messages.TYPE_MANUFACTURER.getValue()),
+        TYPE_SUPPLIER(Constants.TYPE_SUPPLIER, Messages.TYPE_SUPPLIER.getValue()),
+        TYPE_PRODUCT(Constants.TYPE_PRODUCT, Messages.TYPE_PRODUCT.getValue()),
+        TYPE_SERVICE(Constants.TYPE_SERVICE, Messages.TYPE_SERVICE.getValue()),
+        TYPE_REVENUE(Constants.TYPE_REVENUE, Messages.TYPE_REVENUE.getValue()),
+        TYPE_EXPENSE(Constants.TYPE_EXPENSE, Messages.TYPE_EXPENSE.getValue()),
+        TYPE_CONVERSATION(Constants.TYPE_CONVERSATION, Messages.TYPE_CONVERSATION.getValue()),
+        TYPE_ACTIVITY(Constants.TYPE_ACTIVITY, Messages.TYPE_ACTIVITY.getValue()),
+        TYPE_PRODUCTORDER(Constants.TYPE_PRODUCT_ORDER, Messages.TYPE_PRODUCT_ORDER.getValue());
         int ids;
         String names;
 
@@ -113,13 +95,7 @@ public class FormatHandler {
      */
     public synchronized static int determineType(DatabaseObject obj) {
         if (obj instanceof Item) {
-            if (((Item) obj).__getInttype() == Item.TYPE_BILL) {
-                return TYPE_BILL;
-            } else if (((Item) obj).__getInttype() == Item.TYPE_OFFER) {
-                return TYPE_OFFER;
-            } else if (((Item) obj).__getInttype() == Item.TYPE_ORDER) {
-                return TYPE_ORDER;
-            }
+            return ((Item) obj).__getInttype();
         } else if (obj instanceof Contact) {
             if (((Contact) obj).__getIscustomer()) {
                 return TYPE_CUSTOMER;
@@ -131,11 +107,7 @@ public class FormatHandler {
                 return TYPE_CONTACT;
             }
         } else if (obj instanceof Product) {
-            if (((Product) obj).__getInttype() == Product.TYPE_PRODUCT) {
-                return TYPE_PRODUCT;
-            } else {
-                return TYPE_SERVICE;
-            }
+            return ((Product) obj).__getInttype();
         } else if (obj instanceof Revenue) {
             return TYPE_REVENUE;
         } else if (obj instanceof Expense) {
@@ -144,6 +116,8 @@ public class FormatHandler {
             return TYPE_CONVERSATION;
         } else if (obj instanceof ActivityList) {
             return TYPE_ACTIVITY;
+        } else if (obj instanceof ProductOrder) {
+            return TYPE_PRODUCT_ORDER;
         }
         return -1;
     }
@@ -242,7 +216,8 @@ public class FormatHandler {
                 Context.getContact(), Context.getCustomer(), Context.getManufacturer(),
                 Context.getSupplier(), Context.getProduct(), Context.getItem(),
                 Context.getExpense(), Context.getRevenue(), Context.getOffer(),
-                Context.getOrder(), Context.getInvoice(), Context.getCompany(), Context.getActivityList()
+                Context.getOrder(), Context.getInvoice(), Context.getCompany(), 
+                Context.getActivityList(), Context.getProductOrder()
             }));
 
     /**
@@ -268,6 +243,9 @@ public class FormatHandler {
                 } else if (forThis.getContext().equals(Context.getProduct())) {
                     query = "SELECT cnumber FROM " + forThis.getDbIdentity() + " WHERE ids = (SELECT MAX(ids) from " + forThis.getDbIdentity() + " WHERE inttype ="
                             + ((Product) forThis).__getInttype() + " and invisible=0)";
+                } else if (forThis.getContext().equals(Context.getProductOrder())) {
+                    query = "SELECT cnumber FROM " + forThis.getDbIdentity() + " WHERE ids = (SELECT MAX(ids) from " + forThis.getDbIdentity() + " WHERE inttype ="
+                            + ((ProductOrder) forThis).getInttype() + " and invisible=0)";
                 } else if (forThis.getContext().equals(Context.getContact())
                         || forThis.getContext().equals(Context.getCompany())
                         || forThis.getContext().equals(Context.getContactsCompanies())
@@ -328,6 +306,9 @@ public class FormatHandler {
         } else if (forThis.getContext().equals(Context.getProduct())) {
             query = "SELECT cnumber FROM " + forThis.getDbIdentity() + " WHERE cnumber = '" + cnumber + "' AND inttype ="
                     + ((Product) forThis).__getInttype();
+        } else if (forThis.getContext().equals(Context.getProductOrder())) {
+            query = "SELECT cnumber FROM " + forThis.getDbIdentity() + " WHERE cnumber = '" + cnumber + "' AND inttype ="
+                    + ((ProductOrder) forThis).getInttype();
         } else if (forThis.getContext().equals(Context.getContact())
                 || forThis.getContext().equals(Context.getCompany())
                 || forThis.getContext().equals(Context.getContactsCompanies())
