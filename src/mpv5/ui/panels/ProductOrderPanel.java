@@ -112,30 +112,17 @@ public class ProductOrderPanel extends javax.swing.JPanel implements DataPanel, 
      * @param context
      * @param type
      */
-    public ProductOrderPanel(Context context, int type) {
+    public ProductOrderPanel() {
         initComponents();
         jButton1.setEnabled(MPSecurityManager.checkAdminAccess());
 
-        inttype_ = type;
-        sp = new SearchPanel(context, this);
+        sp = new SearchPanel(Context.getProductOrder(), this);
         sp.setVisible(true);
         tb = new mpv5.ui.toolbars.DataPanelTB(this);
         toolbarpane.add(tb, BorderLayout.CENTER);
-        dataOwner =  (ProductOrder) DatabaseObject.getObject(context);
-        if (type >= 0) {
-            dataOwner.setInttype(type);
-            this.type.setText(Item.getTypeString(type));
-        } else {
-            this.type.setText("");
-        }
-
+        dataOwner = (ProductOrder) DatabaseObject.getObject(Context.getProductOrder());
         refresh();
-//        shipping.set_ValueClass(Double.class);
 
-//        checkb_pront_oc.setSelected(
-//            mpv5.db.objects.User.getCurrentUser().getProperties().getProperty(
-//                "org.openyabs.uiproperty", 
-//                "orderconfirmationalways"));
         addedby.setText(mpv5.db.objects.User.getCurrentUser().getName());
         contactname.setSearchEnabled(true);
         contactname.setContext(Context.getCustomer());
@@ -176,48 +163,6 @@ public class ProductOrderPanel extends javax.swing.JPanel implements DataPanel, 
             date3.setDate(DateConverter.addDays(new Date(), 14));
             date2.setDate(new Date());
         }
-//        itemtable.getTableHeader().addMouseListener(new MouseListener() {
-//
-//            @Override
-//            public void mouseClicked(MouseEvent e) {
-//                if (e.getButton() == MouseEvent.BUTTON2) {
-//                    MPTableModel m = (MPTableModel) itemtable.getModel();
-//                    if (m.getRowCount() > 0) {
-//                        m.addRow(5);
-//                    } else {
-//                        itemtable.setModel(SubItem.toModel(new ProductOrderSubItem[]{
-//                                    ProductOrderSubItem.getDefaultItem(), ProductOrderSubItem.getDefaultItem(),
-//                                    ProductOrderSubItem.getDefaultItem(), ProductOrderSubItem.getDefaultItem(),
-//                                    ProductOrderSubItem.getDefaultItem(), ProductOrderSubItem.getDefaultItem()
-//                                }));
-//                        formatTable();
-//                    }
-//                } else if (e.getButton() == MouseEvent.BUTTON3) {
-//                    MPTableModel m = (MPTableModel) itemtable.getModel();
-//                    Product p = (Product) Popup.SelectValue(Context.getProduct());
-//                    if (p != null) {
-//                        int row = m.getLastValidRow(new int[]{4});
-//                        m.setRowAt(new ProductOrderSubItem(p).getRowData(row), row + 1, 1);
-//                    }
-//                }
-//            }
-//
-//            @Override
-//            public void mousePressed(MouseEvent e) {
-//            }
-//
-//            @Override
-//            public void mouseReleased(MouseEvent e) {
-//            }
-//
-//            @Override
-//            public void mouseEntered(MouseEvent e) {
-//            }
-//
-//            @Override
-//            public void mouseExited(MouseEvent e) {
-//            }
-//        });
 
         InputMap inputMap = itemtable.getInputMap(JTable.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
         KeyStroke tab = KeyStroke.getKeyStroke(KeyEvent.VK_TAB, 0);
@@ -227,13 +172,6 @@ public class ProductOrderPanel extends javax.swing.JPanel implements DataPanel, 
         oldAction = itemtable.getActionMap().get(inputMap.get(shifttab));
         itemtable.getActionMap().put(inputMap.get(shifttab), new TableTabAction(date3, oldAction, true));
 
-//        KeyStroke right = KeyStroke.getKeyStroke(KeyEvent.VK_RIGHT, 0);
-//        oldAction = itemtable.getActionMap().get(inputMap.get(right));
-//        itemtable.getActionMap().put(inputMap.get(right), new TableTabAction(notes, oldAction, false));
-//        KeyStroke left = KeyStroke.getKeyStroke(KeyEvent.VK_LEFT, 0);
-//        oldAction = itemtable.getActionMap().get(inputMap.get(left));
-//        itemtable.getActionMap().put(inputMap.get(left), new TableTabAction(date3, oldAction, true));
-
         number.setSearchOnEnterEnabled(true);
         number.setParent(this);
         number.setSearchField("cname");
@@ -242,10 +180,10 @@ public class ProductOrderPanel extends javax.swing.JPanel implements DataPanel, 
         final DataPanel p = this;
         status.getComboBox().addActionListener(new ActionListener() {
 
-            ProductOrder dato =  (ProductOrder) getDataOwner();
+            ProductOrder dato = (ProductOrder) getDataOwner();
 
             public void actionPerformed(ActionEvent e) {
-                if (dato.getInttype() == ProductOrder.TYPE_BILL && !loading && dataOwner.isExisting() && Integer.valueOf(status.getSelectedItem().getId()) == ProductOrder.STATUS_PAID && mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("org.openyabs.uiproperty", "autocreaterevenue")) {
+                if (!loading && dataOwner.isExisting() && Integer.valueOf(status.getSelectedItem().getId()) == ProductOrder.STATUS_PAID && mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("org.openyabs.uiproperty", "autocreaterevenue")) {
                     if (Popup.Y_N_dialog(Messages.BOOK_NOW)) {
 
                         if (dato.getPanelData(p) && dato.save()) {
@@ -261,9 +199,8 @@ public class ProductOrderPanel extends javax.swing.JPanel implements DataPanel, 
                     }
                 }
 
-                if (dato.getInttype() == ProductOrder.TYPE_BILL && !loading && dataOwner.isExisting()
+                if (!loading && dataOwner.isExisting()
                         && Integer.valueOf(status.getSelectedItem().getId()) == ProductOrder.STATUS_PAID) {
-
                     //set dateend
                     date3.setDate(new Date());
                 }
@@ -290,14 +227,6 @@ public class ProductOrderPanel extends javax.swing.JPanel implements DataPanel, 
 
     }
 
-    /**
-     *
-     * @param items
-     */
-    public ProductOrderPanel(Context items) {
-        this(items, -1);
-    }
-
     @Override
     public DatabaseObject getDataOwner() {
         return dataOwner;
@@ -308,13 +237,13 @@ public class ProductOrderPanel extends javax.swing.JPanel implements DataPanel, 
         loading = true;
 
         if (object instanceof ProductOrder) {
-            dataOwner =  (ProductOrder) object;
+            dataOwner = (ProductOrder) object;
             if (populate) {
                 dataOwner.setPanelData(this);
                 inttype_ = dataOwner.getInttype();
 
-                toorder.setEnabled(inttype_ != ProductOrder.TYPE_ORDER && inttype_ != ProductOrder.TYPE_BILL);
-                toinvoice.setEnabled(inttype_ != ProductOrder.TYPE_BILL);
+                toorder.setEnabled(true);
+                toinvoice.setEnabled(true);
                 type.setText(Item.getTypeString(inttype_));
                 //            typelabel.setIcon(dataOwner.getIcon());
                 this.exposeData();
@@ -325,7 +254,7 @@ public class ProductOrderPanel extends javax.swing.JPanel implements DataPanel, 
                 tb.setEditable(!object.isReadOnly());
 
 
-                itemtable.setModel( ProductOrderSubItem.toModel(( (ProductOrder) object).getProductOrderSubitems()));
+                itemtable.setModel(ProductOrderSubItem.toModel(((ProductOrder) object).getProductOrderSubitems()));
                 if (((MPTableModel) itemtable.getModel()).getEmptyRows(new int[]{4}) < 2) {
                     ((MPTableModel) itemtable.getModel()).addRow(1);
                 }
@@ -347,7 +276,7 @@ public class ProductOrderPanel extends javax.swing.JPanel implements DataPanel, 
         } else if (object instanceof ProductOrderSubItem) {
             ProductOrder i;
             try {
-                i =  ((ProductOrderSubItem)object).getProductorder();
+                i = ((ProductOrderSubItem) object).getProductorder();
                 setDataOwner(i, populate);
             } catch (Exception ex) {
                 Log.Debug(ex);
@@ -471,6 +400,7 @@ public class ProductOrderPanel extends javax.swing.JPanel implements DataPanel, 
         jButton1 = new javax.swing.JButton();
         jToolBar1 = new javax.swing.JToolBar();
         toorder = new javax.swing.JButton();
+        tooffer = new javax.swing.JButton();
         toinvoice = new javax.swing.JButton();
         jSeparator4 = new javax.swing.JToolBar.Separator();
         typelabel = new javax.swing.JLabel();
@@ -712,6 +642,19 @@ public class ProductOrderPanel extends javax.swing.JPanel implements DataPanel, 
             }
         });
         jToolBar1.add(toorder);
+
+        tooffer.setText(bundle.getString("ProductOrderPanel.tooffer.text")); // NOI18N
+        tooffer.setEnabled(false);
+        tooffer.setFocusable(false);
+        tooffer.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        tooffer.setName(bundle.getString("ProductOrderPanel.tooffer.name")); // NOI18N
+        tooffer.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        tooffer.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                toofferActionPerformed(evt);
+            }
+        });
+        jToolBar1.add(tooffer);
 
         toinvoice.setText(bundle.getString("ProductOrderPanel.toinvoice.text")); // NOI18N
         toinvoice.setEnabled(false);
@@ -1354,8 +1297,11 @@ public class ProductOrderPanel extends javax.swing.JPanel implements DataPanel, 
     }//GEN-LAST:event_toinvoiceActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-    
     }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void toofferActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_toofferActionPerformed
+        toOffer();
+    }//GEN-LAST:event_toofferActionPerformed
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private mpv5.ui.beans.LabeledCombobox accountselect;
     private javax.swing.JButton addItem;
@@ -1425,6 +1371,7 @@ public class ProductOrderPanel extends javax.swing.JPanel implements DataPanel, 
     private javax.swing.JLabel staus_icon;
     private javax.swing.JLabel taxvalue;
     private javax.swing.JButton toinvoice;
+    private javax.swing.JButton tooffer;
     private javax.swing.JPanel toolbarpane;
     private javax.swing.JButton toorder;
     private javax.swing.JLabel type;
@@ -1566,15 +1513,9 @@ public class ProductOrderPanel extends javax.swing.JPanel implements DataPanel, 
                     }
 
                     List<Integer> skip = new ArrayList<Integer>();
-                    if (inttype_ == ProductOrder.TYPE_BILL) {
-                        skip.add(new Integer(0));
-//                        skip.add(new Integer(1));
-                        skip.add(new Integer(2));
-//                        skip.add(new Integer(5));
-                    } else {
-                        skip.add(new Integer(3));
-                        skip.add(new Integer(4));
-                    }
+                    skip.add(new Integer(3));
+                    skip.add(new Integer(4));
+
                     status.setModel(Item.getStatusStrings(), MPComboBoxModelItem.COMPARE_BY_ID, skip);
                     try {
                         status.setSelectedIndex(mpv5.db.objects.User.getCurrentUser().__getIntdefaultstatus());
@@ -1685,16 +1626,16 @@ public class ProductOrderPanel extends javax.swing.JPanel implements DataPanel, 
                     || dbo.getContext().equals(Context.getInvoice())
                     || dbo.getContext().equals(Context.getOffer())
                     || dbo.getContext().equals(Context.getOrder())) {
-                ProductOrder o =  (ProductOrder) dbo.clone();
+                ProductOrder o = (ProductOrder) dbo.clone();
 
                 if (mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("org.openyabs.uiproperty", "pasten")) {
                     ProductOrderSubItem s = new ProductOrderSubItem();
                     s.setQuantityvalue(BigDecimal.ONE);
 //                    s.setItemsids(o.__getIDS());
-                    s.setInternalvalue(( (ProductOrder) dbo).getNetvalue());
-                    s.setExternalvalue(( (ProductOrder) dbo).getNetvalue());
-                    s.setTotalnetvalue(( (ProductOrder) dbo).getNetvalue());
-                    s.setTotalbrutvalue(( (ProductOrder) dbo).getNetvalue().add(( (ProductOrder) dbo).getTaxvalue()));
+                    s.setInternalvalue(((ProductOrder) dbo).getNetvalue());
+                    s.setExternalvalue(((ProductOrder) dbo).getNetvalue());
+                    s.setTotalnetvalue(((ProductOrder) dbo).getNetvalue());
+                    s.setTotalbrutvalue(((ProductOrder) dbo).getNetvalue().add(((ProductOrder) dbo).getTaxvalue()));
                     if (s.getTotalnetvalue().doubleValue() > 0d) {
                         BigDecimal tp = s.getTotalbrutvalue().subtract(s.getTotalnetvalue()).multiply(Constants.BD100).divide(s.getTotalnetvalue(), 9, RoundingMode.HALF_UP);
                         if (tpvs == null) {
@@ -1707,8 +1648,8 @@ public class ProductOrderPanel extends javax.swing.JPanel implements DataPanel, 
                             break;
                         }
                     }
-                    s.setCName(( (ProductOrder) dbo).__getCName());
-                    s.setDescription(Messages.GOOSE1 + " " + ( (ProductOrder) dbo).getCnumber() + " " + Messages.GOOSE2 + " " + DateConverter.getDefDateString(o.__getDateadded()));
+                    s.setCName(((ProductOrder) dbo).__getCName());
+                    s.setDescription(Messages.GOOSE1 + " " + ((ProductOrder) dbo).getCnumber() + " " + Messages.GOOSE2 + " " + DateConverter.getDefDateString(o.__getDateadded()));
 //                   if (mpv5.db.objects.User.getCurrentUser().getProperties().hasProperty("deftax")) {
 //                        int taxid = mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("deftax", new Integer(0));
 //                        BigDecimal deftax = Tax.getTaxValue(taxid);
@@ -1770,7 +1711,7 @@ public class ProductOrderPanel extends javax.swing.JPanel implements DataPanel, 
                 }
             } else if (dbo.getContext().equals(Context.getSubItem())) {
                 try {
-                    ProductOrderSubItem sub = ( ProductOrderSubItem) dbo;
+                    ProductOrderSubItem sub = (ProductOrderSubItem) dbo;
 
                     ((MPTableModel) itemtable.getModel()).addRow(
                             sub.getRowData(((MPTableModel) itemtable.getModel()).getRowCount() + 1));
@@ -1843,7 +1784,7 @@ public class ProductOrderPanel extends javax.swing.JPanel implements DataPanel, 
         }
 
         ProductOrderSubItem.saveModel(dataOwner, (MPTableModel) itemtable.getModel(), deleteRemovedSubitems);
-        
+
         for (int i = 0; i < usedOrders.size(); i++) {
             ProductOrder o = usedOrders.get(i);
             o.setIntstatus(Item.STATUS_FINISHED);
@@ -1975,7 +1916,7 @@ public class ProductOrderPanel extends javax.swing.JPanel implements DataPanel, 
                     ProductSelectDialog.instanceOf((MPTableModel) itemtable.getModel(), itemtable.getSelectedRow(), e, 0, null, null);
                 } else {
                     ProductOrderSubItem s = new ProductOrderSubItem();
-                    ProductOrder o =  (ProductOrder) Popup.SelectValue(Context.getOrder());
+                    ProductOrder o = (ProductOrder) Popup.SelectValue(Context.getOrder());
                     if (o != null) {
                         s.setQuantityvalue(BigDecimal.ONE);
                         s.setProductorder(o);
@@ -2115,9 +2056,9 @@ public class ProductOrderPanel extends javax.swing.JPanel implements DataPanel, 
     public void print() {
         if (dataOwner != null && dataOwner.isExisting()) {
             if (TemplateHandler.isLoaded(Long.valueOf(dataOwner.templateGroupIds()), dataOwner.getInttype())) {
-            
-                    Export.print(TemplateHandler.loadTemplate(dataOwner.templateGroupIds(), dataOwner.getInttype()), dataOwner);
-             
+
+                Export.print(TemplateHandler.loadTemplate(dataOwner.templateGroupIds(), dataOwner.getInttype()), dataOwner);
+
             } else {
                 Popup.notice(Messages.NO_TEMPLATE_LOADED + " (" + mpv5.db.objects.User.getCurrentUser() + ")");
                 Export.print(this);
@@ -2206,10 +2147,7 @@ public class ProductOrderPanel extends javax.swing.JPanel implements DataPanel, 
 
     private void toOrder() {
 
-        dataOwner.setIntstatus(Item.STATUS_FINISHED);
-        dataOwner.save();
-
-        ProductOrder i2 =  (ProductOrder) dataOwner.clone(Context.getOrder());
+        Item i2 = (Item) dataOwner.clone(Context.getOrder());
         i2.setInttype(Item.TYPE_ORDER);
         i2.setIDS(-1);
         i2.defineFormatHandler(new FormatHandler(i2));
@@ -2220,19 +2158,30 @@ public class ProductOrderPanel extends javax.swing.JPanel implements DataPanel, 
             } catch (Exception e) {
             }
         }
-        ProductOrderSubItem.saveModel(i2, (MPTableModel) itemtable.getModel(), true, true);
-        setDataOwner(i2, true);
-        Popup.notice(i2 + Messages.INSERTED.getValue());
+        ProductOrderSubItem.saveModel(i2, (MPTableModel) itemtable.getModel());
+        YabsViewProxy.instance().addTab(i2);
+    }
+
+    private void toOffer() {
+
+        Item i2 = (Item) dataOwner.clone(Context.getOffer());
+        i2.setInttype(Item.TYPE_OFFER);
+        i2.setIDS(-1);
+        i2.defineFormatHandler(new FormatHandler(i2));
+        i2.save();
+        if (itemtable.getCellEditor() != null) {
+            try {
+                itemtable.getCellEditor().stopCellEditing();
+            } catch (Exception e) {
+            }
+        }
+        ProductOrderSubItem.saveModel(i2, (MPTableModel) itemtable.getModel());
+        YabsViewProxy.instance().addTab(i2);
     }
 
     private void toInvoice() {
 
-        dataOwner.setIntstatus(Item.STATUS_FINISHED);
-        dataOwner.save();
-        ArrayList<ActivityList> data;
-        Object[] row;
-
-        ProductOrder i2 =  (ProductOrder) dataOwner.clone(Context.getItem());
+        Item i2 = (Item) dataOwner.clone(Context.getInvoice());
         i2.setInttype(Item.TYPE_BILL);
         i2.setIDS(-1);
         i2.defineFormatHandler(new FormatHandler(i2));
@@ -2243,23 +2192,8 @@ public class ProductOrderPanel extends javax.swing.JPanel implements DataPanel, 
             } catch (Exception e) {
             }
         }
-        try {
-            data = DatabaseObject.getObjects(Context.getActivityList(), new QueryCriteria("orderids", dataOwner.__getIDS()));
-            if (Popup.Y_N_dialog(Messages.ActivityList_Existing.toString())) {
-                MPTableModel model = (MPTableModel) itemtable.getModel();
-                Iterator<ActivityList> it = data.iterator();
-                while (it.hasNext()) {
-                    row = it.next().getDataForInvoice();
-                    row[1] = model.getRowCount();
-                    model.insertRow(model.getRowCount(), row);
-                }
-            }
-        } catch (NodataFoundException ex) {
-            Log.Debug(this, ex.getMessage());
-        }
-        ProductOrderSubItem.saveModel(i2, (MPTableModel) itemtable.getModel(), true, true);
-        setDataOwner(i2, true);
-        Popup.notice(i2 + Messages.INSERTED.getValue());
+        ProductOrderSubItem.saveModel(i2, (MPTableModel) itemtable.getModel());
+        YabsViewProxy.instance().addTab(i2);
     }
 
     private class alignRightToolbar extends JToolBar {

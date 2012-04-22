@@ -122,6 +122,55 @@ public final class ProductOrderSubItem extends DatabaseObject implements Trigger
 
     }
 
+    public static LinkedList< SubItem> saveModel(Item dataOwner, MPTableModel model) {
+        List<Object[]> rowsl = model.getValidRows(new int[]{4});
+        LinkedList< SubItem> items = new LinkedList< SubItem>();
+        Log.Debug(ProductOrderSubItem.class, "Rows found: " + rowsl.size());
+        for (int i = 0; i < rowsl.size(); i++) {
+            Object[] row = rowsl.get(i);
+            for (int j = 0; j < row.length; j++) {
+                if (row[j] == null) {
+                    row[j] = "";
+                }
+            }
+            SubItem it = new SubItem();
+            it.setOrdernr(i);
+            Log.Print(Arrays.asList(row));
+
+            it.setIDS(-1);
+
+            it.setCName(row[14].toString());
+            it.setItemsids(dataOwner.__getIDS());
+            it.setCountvalue(new BigDecimal(row[1].toString()));
+//            it.setDatedelivery(dataOwner.__getDatetodo());
+            it.setDescription(row[4].toString());
+            it.setExternalvalue(new BigDecimal(row[5].toString()));
+            it.setInternalvalue(new BigDecimal(row[5].toString()));//not supported yet
+            it.setMeasure(row[3].toString());
+
+            if (row[10] instanceof Product) {
+                try {
+                    it.setOriginalproductsids(((Product) row[10]).__getIDS());
+                } catch (Exception e) {
+                    Log.Debug(e);
+                }
+            } else {
+            }
+            it.setLinkurl((row[12 + 1].toString()));
+            it.setQuantityvalue(new BigDecimal(row[2].toString()));
+            it.setTaxpercentvalue(new BigDecimal(row[6].toString()));
+//            it.setDiscount(new BigDecimal(row[15].toString()));
+            SubItem.calculate(it);
+            it.setDateadded(new Date());
+            it.setGroupsids(dataOwner.__getGroupsids());
+
+            it.save(true);
+            items.add(it.getOrdernr(), it);
+        }
+
+        return items;
+    }
+
     /**
      * Save the model of SubItems
      *
@@ -253,7 +302,6 @@ public final class ProductOrderSubItem extends DatabaseObject implements Trigger
     private BigDecimal totalbrutvalue = BigDecimal.ZERO;
     private Date datedelivery;
     private BigDecimal totaltaxvalue = BigDecimal.ZERO;
-
 
     public ProductOrderSubItem() {
         setContext(Context.getSubItem());
@@ -424,7 +472,7 @@ public final class ProductOrderSubItem extends DatabaseObject implements Trigger
         List<String> l = Arrays.asList(possibleCols);
         all.addAll(l);
 
-        if (GlobalSettings.getBooleanProperty("org.openyabs.exportproperty.productsresolved", false) && getOriginalproduct()!=null) {
+        if (GlobalSettings.getBooleanProperty("org.openyabs.exportproperty.productsresolved", false) && getOriginalproduct() != null) {
             try {
                 Product p = getOriginalproduct();
                 List<String[]> vals = p.getValues3();
@@ -448,7 +496,6 @@ public final class ProductOrderSubItem extends DatabaseObject implements Trigger
 
         return all.toArray(new String[0]);
     }
-
 
     /**
      * @param originalproductsids the originalproductsids to set
@@ -554,8 +601,6 @@ public final class ProductOrderSubItem extends DatabaseObject implements Trigger
     public void setDatedelivery(Date datedelivery) {
         this.datedelivery = datedelivery;
     }
-
-
 
     @Override
     public JComponent getView() {

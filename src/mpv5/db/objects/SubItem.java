@@ -854,7 +854,7 @@ public final class SubItem extends DatabaseObject implements Triggerable {
         this.totalbrutvalue = totalbrutvalue;
     }
 
-    private static void calculate(SubItem s) {
+    static void calculate(SubItem s) {
         BigDecimal disc = s.__getDiscount().divide(BD100, 9, BigDecimal.ROUND_HALF_UP);
         s.setTotalbrutvalue(s.quantityvalue.multiply(s.externalvalue.multiply(((s.taxpercentvalue.divide(Constants.BD100, 9, BigDecimal.ROUND_HALF_UP)).add(BigDecimal.ONE)))));
         s.setTotalbrutvalue(s.totalbrutvalue.subtract(s.totalbrutvalue.multiply(disc)));
