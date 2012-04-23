@@ -289,6 +289,8 @@ public class Context implements Serializable {
         list.add(getTemplate());
         list.add(getReminder());
         list.add(getSubItem());
+        list.add(getProductOrderSubitem());
+        list.add(getProductOrder());
         list.add(getProductPrice());
 
         return list;
@@ -325,7 +327,9 @@ public class Context implements Serializable {
                 getTaxes(),
                 getProductGroup(),
                 getProductPrice(),
-                getActivityListItems()
+                getActivityListItems(),
+                getProductOrderSubitem(),
+                getProductOrder()
             }));
 
     /**
@@ -360,6 +364,8 @@ public class Context implements Serializable {
         list.add(getTaxes());
         list.add(getProductPrice());
         list.add(getActivityListItems());
+        list.add(getProductOrderSubitem());
+        list.add(getProductOrder());
         return list;
     }
 
@@ -384,6 +390,8 @@ public class Context implements Serializable {
         list.add(getExpense());
         list.add(getRevenue());
         list.add(getActivityList());
+        list.add(getProductOrderSubitem());
+        list.add(getProductOrder());
         return list;
     }
 
@@ -406,6 +414,8 @@ public class Context implements Serializable {
         list.add(getSchedule());
         list.add(getContact());
         list.add(getProduct());
+        list.add(getProductOrderSubitem());
+        list.add(getProductOrder());
 ////        list.add(getAccounts());
         return list;
     }
@@ -500,7 +510,9 @@ public class Context implements Serializable {
                 getProductsToSuppliers(),
                 getValueProperties(),
                 getProductPrice(),
-                getMassprint()
+                getMassprint(),
+                getProductOrderSubitem(),
+                getProductOrder()
             }));
 //    private String[] searchHeaders;
     private volatile ArrayList<String[]> references = new ArrayList<String[]>();

@@ -111,7 +111,7 @@ public final class ProductOrderSubItem extends DatabaseObject implements Trigger
         if (deleteRemovedSubitems) {
             for (int i = 0; i < deletionQueue.size(); i++) {
                 try {
-                    QueryHandler.delete(ProductOrderSubItem.getObject(Context.getSubItem(), deletionQueue.get(i)));
+                    QueryHandler.delete(ProductOrderSubItem.getObject(Context.getProductOrderSubitem(), deletionQueue.get(i)));
                 } catch (NodataFoundException ex) {
                     Log.Debug(ex);
                 }
@@ -304,7 +304,7 @@ public final class ProductOrderSubItem extends DatabaseObject implements Trigger
     private BigDecimal totaltaxvalue = BigDecimal.ZERO;
 
     public ProductOrderSubItem() {
-        setContext(Context.getSubItem());
+        setContext(Context.getProductOrderSubitem());
     }
 
     /**
@@ -673,7 +673,7 @@ public final class ProductOrderSubItem extends DatabaseObject implements Trigger
                 data,
                 Headers.SUBITEMS.getValue());
 
-        model.setContext(Context.getSubItem());
+        model.setContext(Context.getProductOrderSubitem());
         String defunit = null;
         if (mpv5.db.objects.User.getCurrentUser().getProperties().hasProperty("defunit")) {
             defunit = mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("defunit");

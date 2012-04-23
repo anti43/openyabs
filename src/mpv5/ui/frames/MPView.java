@@ -101,6 +101,7 @@ import mpv5.ui.panels.JournalPanel;
 import mpv5.ui.panels.MassPrintPanel;
 import mpv5.ui.panels.ProductList;
 import mpv5.ui.panels.ProductListsPanel;
+import mpv5.ui.panels.ProductOrderPanel;
 import mpv5.ui.panels.ProductPanel;
 import mpv5.ui.panels.ProductsOverview;
 import mpv5.ui.panels.QueryPanel;
@@ -808,6 +809,7 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
         jButton19 = new javax.swing.JButton();
         jButton20 = new javax.swing.JButton();
         jButton12 = new javax.swing.JButton();
+        jButton22 = new javax.swing.JButton();
         parent_nav_extras = new javax.swing.JPanel();
         nav_extras = new javax.swing.JPanel();
         jButton6 = new javax.swing.JButton();
@@ -920,6 +922,7 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
         parent_nav_contacts.setBackground(new java.awt.Color(153, 153, 153));
         parent_nav_contacts.setName("parent_nav_contacts"); // NOI18N
         parent_nav_contacts.setPreferredSize(new java.awt.Dimension(110, 400));
+        parent_nav_contacts.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.CENTER, 0, 0));
 
         nav_contacts.setBackground(new java.awt.Color(153, 153, 153));
         nav_contacts.setName("nav_contacts"); // NOI18N
@@ -927,11 +930,14 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
 
         jButton5.setFont(jButton5.getFont().deriveFont(jButton5.getFont().getSize()-1f));
         jButton5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/agt_family.png"))); // NOI18N
-        java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle(); // NOI18N
+        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("mpv5/resources/languages/Panels"); // NOI18N
         jButton5.setText(bundle.getString("MPView.jButton5.text_1")); // NOI18N
         jButton5.setToolTipText(bundle.getString("MPView.jButton5.toolTipText_1")); // NOI18N
         jButton5.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        jButton5.setMaximumSize(new java.awt.Dimension(250, 60));
+        jButton5.setMinimumSize(new java.awt.Dimension(80, 50));
         jButton5.setName("jButton5"); // NOI18N
+        jButton5.setPreferredSize(new java.awt.Dimension(110, 57));
         jButton5.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         jButton5.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -945,7 +951,10 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
         jButton1.setText(bundle.getString("MPView.jButton1.text_1")); // NOI18N
         jButton1.setToolTipText(bundle.getString("MPView.jButton1.toolTipText_1")); // NOI18N
         jButton1.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        jButton1.setMaximumSize(new java.awt.Dimension(250, 60));
+        jButton1.setMinimumSize(new java.awt.Dimension(80, 50));
         jButton1.setName("jButton1"); // NOI18N
+        jButton1.setPreferredSize(new java.awt.Dimension(110, 57));
         jButton1.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         jButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -959,7 +968,10 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
         jButton18.setText(bundle.getString("MPView.jButton18.text_1")); // NOI18N
         jButton18.setToolTipText(bundle.getString("MPView.jButton18.toolTipText_1")); // NOI18N
         jButton18.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        jButton18.setMaximumSize(new java.awt.Dimension(250, 60));
+        jButton18.setMinimumSize(new java.awt.Dimension(80, 50));
         jButton18.setName("jButton18"); // NOI18N
+        jButton18.setPreferredSize(new java.awt.Dimension(110, 57));
         jButton18.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         jButton18.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -968,24 +980,14 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
         });
         nav_contacts.add(jButton18);
 
-        javax.swing.GroupLayout parent_nav_contactsLayout = new javax.swing.GroupLayout(parent_nav_contacts);
-        parent_nav_contacts.setLayout(parent_nav_contactsLayout);
-        parent_nav_contactsLayout.setHorizontalGroup(
-            parent_nav_contactsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(nav_contacts, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-        );
-        parent_nav_contactsLayout.setVerticalGroup(
-            parent_nav_contactsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(parent_nav_contactsLayout.createSequentialGroup()
-                .addComponent(nav_contacts, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(219, Short.MAX_VALUE))
-        );
+        parent_nav_contacts.add(nav_contacts);
 
         nav_outlookbar.addTab(bundle.getString("MPView.parent_nav_contacts.TabConstraints.tabTitle_1"), parent_nav_contacts); // NOI18N
 
         parent_nav_accounting.setBackground(new java.awt.Color(153, 153, 153));
         parent_nav_accounting.setName("parent_nav_accounting"); // NOI18N
         parent_nav_accounting.setPreferredSize(new java.awt.Dimension(110, 400));
+        parent_nav_accounting.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.CENTER, 0, 0));
 
         nav_accounting.setBackground(new java.awt.Color(153, 153, 153));
         nav_accounting.setName("nav_accounting"); // NOI18N
@@ -996,7 +998,10 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
         jButton8.setText(bundle.getString("MPView.jButton8.text")); // NOI18N
         jButton8.setToolTipText(bundle.getString("MPView.jButton8.toolTipText")); // NOI18N
         jButton8.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        jButton8.setMaximumSize(new java.awt.Dimension(250, 60));
+        jButton8.setMinimumSize(new java.awt.Dimension(80, 50));
         jButton8.setName("jButton8"); // NOI18N
+        jButton8.setPreferredSize(new java.awt.Dimension(110, 57));
         jButton8.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         jButton8.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -1010,7 +1015,10 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
         jButton11.setText(bundle.getString("MPView.jButton11.text")); // NOI18N
         jButton11.setToolTipText(bundle.getString("MPView.jButton11.toolTipText")); // NOI18N
         jButton11.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        jButton11.setMaximumSize(new java.awt.Dimension(250, 60));
+        jButton11.setMinimumSize(new java.awt.Dimension(80, 50));
         jButton11.setName("jButton11"); // NOI18N
+        jButton11.setPreferredSize(new java.awt.Dimension(110, 57));
         jButton11.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         jButton11.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -1024,7 +1032,10 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
         jButton21.setText(bundle.getString("MPView.jButton21.text")); // NOI18N
         jButton21.setToolTipText(bundle.getString("MPView.jButton21.toolTipText")); // NOI18N
         jButton21.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        jButton21.setMaximumSize(new java.awt.Dimension(250, 60));
+        jButton21.setMinimumSize(new java.awt.Dimension(80, 50));
         jButton21.setName("jButton21"); // NOI18N
+        jButton21.setPreferredSize(new java.awt.Dimension(110, 57));
         jButton21.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         jButton21.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -1038,7 +1049,10 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
         jButton10.setText(bundle.getString("MPView.jButton10.text")); // NOI18N
         jButton10.setToolTipText(bundle.getString("MPView.jButton10.toolTipText")); // NOI18N
         jButton10.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        jButton10.setMaximumSize(new java.awt.Dimension(250, 60));
+        jButton10.setMinimumSize(new java.awt.Dimension(80, 50));
         jButton10.setName("jButton10"); // NOI18N
+        jButton10.setPreferredSize(new java.awt.Dimension(110, 57));
         jButton10.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         jButton10.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -1052,7 +1066,10 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
         jButton15.setText(bundle.getString("MPView.jButton15.text")); // NOI18N
         jButton15.setToolTipText(bundle.getString("MPView.jButton15.toolTipText")); // NOI18N
         jButton15.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        jButton15.setMaximumSize(new java.awt.Dimension(250, 60));
+        jButton15.setMinimumSize(new java.awt.Dimension(80, 50));
         jButton15.setName("jButton15"); // NOI18N
+        jButton15.setPreferredSize(new java.awt.Dimension(110, 57));
         jButton15.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         jButton15.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -1066,7 +1083,10 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
         jButton16.setText(bundle.getString("MPView.jButton16.text")); // NOI18N
         jButton16.setToolTipText(bundle.getString("MPView.jButton16.toolTipText")); // NOI18N
         jButton16.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        jButton16.setMaximumSize(new java.awt.Dimension(250, 60));
+        jButton16.setMinimumSize(new java.awt.Dimension(80, 50));
         jButton16.setName("jButton16"); // NOI18N
+        jButton16.setPreferredSize(new java.awt.Dimension(110, 57));
         jButton16.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         jButton16.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -1080,7 +1100,10 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
         jButton17.setText(bundle.getString("MPView.jButton17.text")); // NOI18N
         jButton17.setToolTipText(bundle.getString("MPView.jButton17.toolTipText")); // NOI18N
         jButton17.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        jButton17.setMaximumSize(new java.awt.Dimension(250, 60));
+        jButton17.setMinimumSize(new java.awt.Dimension(80, 50));
         jButton17.setName("jButton17"); // NOI18N
+        jButton17.setPreferredSize(new java.awt.Dimension(110, 57));
         jButton17.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         jButton17.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -1089,24 +1112,14 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
         });
         nav_accounting.add(jButton17);
 
-        javax.swing.GroupLayout parent_nav_accountingLayout = new javax.swing.GroupLayout(parent_nav_accounting);
-        parent_nav_accounting.setLayout(parent_nav_accountingLayout);
-        parent_nav_accountingLayout.setHorizontalGroup(
-            parent_nav_accountingLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(nav_accounting, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-        );
-        parent_nav_accountingLayout.setVerticalGroup(
-            parent_nav_accountingLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(parent_nav_accountingLayout.createSequentialGroup()
-                .addComponent(nav_accounting, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
+        parent_nav_accounting.add(nav_accounting);
 
         nav_outlookbar.addTab(bundle.getString("MPView.parent_nav_accounting.TabConstraints.tabTitle_1"), parent_nav_accounting); // NOI18N
 
         parent_nav_products.setBackground(new java.awt.Color(153, 153, 153));
         parent_nav_products.setName("parent_nav_products"); // NOI18N
         parent_nav_products.setPreferredSize(new java.awt.Dimension(110, 400));
+        parent_nav_products.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.CENTER, 0, 0));
 
         nav_products.setBackground(new java.awt.Color(153, 153, 153));
         nav_products.setName("nav_products"); // NOI18N
@@ -1117,10 +1130,10 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
         jButton13.setText(bundle.getString("MPView.jButton13.text")); // NOI18N
         jButton13.setToolTipText(bundle.getString("MPView.jButton13.toolTipText")); // NOI18N
         jButton13.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        jButton13.setMaximumSize(new java.awt.Dimension(67, 57));
-        jButton13.setMinimumSize(new java.awt.Dimension(67, 57));
+        jButton13.setMaximumSize(new java.awt.Dimension(250, 60));
+        jButton13.setMinimumSize(new java.awt.Dimension(80, 50));
         jButton13.setName("jButton13"); // NOI18N
-        jButton13.setPreferredSize(new java.awt.Dimension(67, 57));
+        jButton13.setPreferredSize(new java.awt.Dimension(110, 57));
         jButton13.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         jButton13.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -1134,10 +1147,10 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
         jButton14.setText(bundle.getString("MPView.jButton14.text")); // NOI18N
         jButton14.setToolTipText(bundle.getString("MPView.jButton14.toolTipText")); // NOI18N
         jButton14.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        jButton14.setMaximumSize(new java.awt.Dimension(67, 57));
-        jButton14.setMinimumSize(new java.awt.Dimension(67, 57));
+        jButton14.setMaximumSize(new java.awt.Dimension(250, 60));
+        jButton14.setMinimumSize(new java.awt.Dimension(80, 50));
         jButton14.setName("jButton14"); // NOI18N
-        jButton14.setPreferredSize(new java.awt.Dimension(67, 57));
+        jButton14.setPreferredSize(new java.awt.Dimension(110, 57));
         jButton14.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         jButton14.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -1151,10 +1164,10 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
         jButton19.setText(bundle.getString("MPView.jButton19.text")); // NOI18N
         jButton19.setToolTipText(bundle.getString("MPView.jButton19.toolTipText")); // NOI18N
         jButton19.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        jButton19.setMaximumSize(new java.awt.Dimension(67, 57));
-        jButton19.setMinimumSize(new java.awt.Dimension(67, 57));
+        jButton19.setMaximumSize(new java.awt.Dimension(250, 60));
+        jButton19.setMinimumSize(new java.awt.Dimension(80, 50));
         jButton19.setName("jButton19"); // NOI18N
-        jButton19.setPreferredSize(new java.awt.Dimension(67, 57));
+        jButton19.setPreferredSize(new java.awt.Dimension(110, 57));
         jButton19.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         jButton19.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -1168,7 +1181,10 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
         jButton20.setText(bundle.getString("MPView.jButton20.text")); // NOI18N
         jButton20.setToolTipText(bundle.getString("MPView.jButton20.toolTipText")); // NOI18N
         jButton20.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        jButton20.setMaximumSize(new java.awt.Dimension(250, 60));
+        jButton20.setMinimumSize(new java.awt.Dimension(80, 50));
         jButton20.setName("jButton20"); // NOI18N
+        jButton20.setPreferredSize(new java.awt.Dimension(110, 57));
         jButton20.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         jButton20.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -1182,10 +1198,10 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
         jButton12.setText(bundle.getString("MPView.jButton12.text")); // NOI18N
         jButton12.setToolTipText(bundle.getString("MPView.jButton12.toolTipText")); // NOI18N
         jButton12.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        jButton12.setMaximumSize(new java.awt.Dimension(67, 57));
-        jButton12.setMinimumSize(new java.awt.Dimension(67, 57));
+        jButton12.setMaximumSize(new java.awt.Dimension(250, 60));
+        jButton12.setMinimumSize(new java.awt.Dimension(80, 50));
         jButton12.setName("jButton12"); // NOI18N
-        jButton12.setPreferredSize(new java.awt.Dimension(67, 57));
+        jButton12.setPreferredSize(new java.awt.Dimension(110, 57));
         jButton12.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         jButton12.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -1194,24 +1210,31 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
         });
         nav_products.add(jButton12);
 
-        javax.swing.GroupLayout parent_nav_productsLayout = new javax.swing.GroupLayout(parent_nav_products);
-        parent_nav_products.setLayout(parent_nav_productsLayout);
-        parent_nav_productsLayout.setHorizontalGroup(
-            parent_nav_productsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(nav_products, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-        );
-        parent_nav_productsLayout.setVerticalGroup(
-            parent_nav_productsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(parent_nav_productsLayout.createSequentialGroup()
-                .addComponent(nav_products, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(95, Short.MAX_VALUE))
-        );
+        jButton22.setFont(jButton22.getFont().deriveFont(jButton22.getFont().getSize()-1f));
+        jButton22.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/readme.png"))); // NOI18N
+        jButton22.setText(bundle.getString("MPView.jButton22.text")); // NOI18N
+        jButton22.setToolTipText(bundle.getString("MPView.jButton22.toolTipText")); // NOI18N
+        jButton22.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        jButton22.setMaximumSize(new java.awt.Dimension(250, 60));
+        jButton22.setMinimumSize(new java.awt.Dimension(80, 50));
+        jButton22.setName("jButton22"); // NOI18N
+        jButton22.setPreferredSize(new java.awt.Dimension(110, 57));
+        jButton22.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        jButton22.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton22ActionPerformed(evt);
+            }
+        });
+        nav_products.add(jButton22);
+
+        parent_nav_products.add(nav_products);
 
         nav_outlookbar.addTab(bundle.getString("MPView.parent_nav_products.TabConstraints.tabTitle_1"), parent_nav_products); // NOI18N
 
         parent_nav_extras.setBackground(new java.awt.Color(153, 153, 153));
         parent_nav_extras.setName("parent_nav_extras"); // NOI18N
         parent_nav_extras.setPreferredSize(new java.awt.Dimension(110, 400));
+        parent_nav_extras.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.CENTER, 0, 0));
 
         nav_extras.setBackground(new java.awt.Color(153, 153, 153));
         nav_extras.setName("nav_extras"); // NOI18N
@@ -1222,7 +1245,10 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
         jButton6.setText(bundle.getString("MPView.jButton6.text")); // NOI18N
         jButton6.setToolTipText(bundle.getString("MPView.jButton6.toolTipText")); // NOI18N
         jButton6.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        jButton6.setMaximumSize(new java.awt.Dimension(250, 60));
+        jButton6.setMinimumSize(new java.awt.Dimension(80, 50));
         jButton6.setName("jButton6"); // NOI18N
+        jButton6.setPreferredSize(new java.awt.Dimension(110, 57));
         jButton6.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         jButton6.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -1236,7 +1262,10 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
         jButton7.setText(bundle.getString("MPView.jButton7.text")); // NOI18N
         jButton7.setToolTipText(bundle.getString("MPView.jButton7.toolTipText")); // NOI18N
         jButton7.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        jButton7.setMaximumSize(new java.awt.Dimension(250, 60));
+        jButton7.setMinimumSize(new java.awt.Dimension(80, 50));
         jButton7.setName("jButton7"); // NOI18N
+        jButton7.setPreferredSize(new java.awt.Dimension(110, 57));
         jButton7.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         jButton7.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -1250,7 +1279,10 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
         jButton9.setText(bundle.getString("MPView.jButton9.text")); // NOI18N
         jButton9.setToolTipText(bundle.getString("MPView.jButton9.toolTipText")); // NOI18N
         jButton9.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        jButton9.setMaximumSize(new java.awt.Dimension(250, 60));
+        jButton9.setMinimumSize(new java.awt.Dimension(80, 50));
         jButton9.setName("jButton9"); // NOI18N
+        jButton9.setPreferredSize(new java.awt.Dimension(110, 57));
         jButton9.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         jButton9.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -1260,18 +1292,7 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
         nav_extras.add(jButton9);
         jButton9.getAccessibleContext().setAccessibleDescription(bundle.getString("MPView.jButton9.AccessibleContext.accessibleDescription")); // NOI18N
 
-        javax.swing.GroupLayout parent_nav_extrasLayout = new javax.swing.GroupLayout(parent_nav_extras);
-        parent_nav_extras.setLayout(parent_nav_extrasLayout);
-        parent_nav_extrasLayout.setHorizontalGroup(
-            parent_nav_extrasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(nav_extras, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-        );
-        parent_nav_extrasLayout.setVerticalGroup(
-            parent_nav_extrasLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(parent_nav_extrasLayout.createSequentialGroup()
-                .addComponent(nav_extras, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(219, Short.MAX_VALUE))
-        );
+        parent_nav_extras.add(nav_extras);
 
         nav_outlookbar.addTab(bundle.getString("MPView.parent_nav_extras.TabConstraints.tabTitle"), parent_nav_extras); // NOI18N
 
@@ -2526,6 +2547,12 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
             Export.print(getTabPane().getSelectedComponent());
         }
     }//GEN-LAST:event_jButton2ActionPerformed
+
+    private void jButton22ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton22ActionPerformed
+        addTab(new ProductOrderPanel( ), Messages.NEW_ORDER);
+        
+    }//GEN-LAST:event_jButton22ActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton calculatorButton;
     public javax.swing.JMenu clipboardMenu;
@@ -2550,6 +2577,7 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton20;
     private javax.swing.JButton jButton21;
+    private javax.swing.JButton jButton22;
     private javax.swing.JButton jButton5;
     private javax.swing.JButton jButton6;
     private javax.swing.JButton jButton7;
