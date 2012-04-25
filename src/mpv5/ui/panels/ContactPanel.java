@@ -406,7 +406,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
         };
         toolbarpane = new javax.swing.JPanel();
 
-        java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle(); // NOI18N
+        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("mpv5/resources/languages/Panels"); // NOI18N
         setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("ContactPanel.border.title"))); // NOI18N
         setName("Form"); // NOI18N
         setLayout(new java.awt.BorderLayout());
@@ -691,7 +691,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
         button_offer.setFocusable(false);
         button_offer.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         button_offer.setIconTextGap(5);
-        button_offer.setMaximumSize(new java.awt.Dimension(95, 23));
+        button_offer.setMaximumSize(new java.awt.Dimension(333, 23));
         button_offer.setMinimumSize(new java.awt.Dimension(88, 23));
         button_offer.setName("button_offer"); // NOI18N
         button_offer.setPreferredSize(new java.awt.Dimension(100, 23));
@@ -709,7 +709,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
         button_order.setFocusable(false);
         button_order.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         button_order.setIconTextGap(5);
-        button_order.setMaximumSize(new java.awt.Dimension(95, 23));
+        button_order.setMaximumSize(new java.awt.Dimension(333, 23));
         button_order.setMinimumSize(new java.awt.Dimension(88, 23));
         button_order.setName("button_order"); // NOI18N
         button_order.setPreferredSize(new java.awt.Dimension(100, 23));
@@ -727,7 +727,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
         button_bill.setFocusable(false);
         button_bill.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         button_bill.setIconTextGap(5);
-        button_bill.setMaximumSize(new java.awt.Dimension(95, 23));
+        button_bill.setMaximumSize(new java.awt.Dimension(333, 23));
         button_bill.setMinimumSize(new java.awt.Dimension(88, 23));
         button_bill.setName("button_bill"); // NOI18N
         button_bill.setPreferredSize(new java.awt.Dimension(100, 23));
@@ -748,7 +748,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
         button_product.setFocusable(false);
         button_product.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         button_product.setIconTextGap(5);
-        button_product.setMaximumSize(new java.awt.Dimension(95, 23));
+        button_product.setMaximumSize(new java.awt.Dimension(333, 23));
         button_product.setMinimumSize(new java.awt.Dimension(88, 23));
         button_product.setName("button_product"); // NOI18N
         button_product.setPreferredSize(new java.awt.Dimension(100, 23));
@@ -769,7 +769,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
         jButton2.setFocusable(false);
         jButton2.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         jButton2.setIconTextGap(5);
-        jButton2.setMaximumSize(new java.awt.Dimension(95, 23));
+        jButton2.setMaximumSize(new java.awt.Dimension(333, 23));
         jButton2.setMinimumSize(new java.awt.Dimension(88, 23));
         jButton2.setName("jButton2"); // NOI18N
         jButton2.setPreferredSize(new java.awt.Dimension(100, 23));
@@ -787,7 +787,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
         jButton3.setFocusable(false);
         jButton3.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         jButton3.setIconTextGap(5);
-        jButton3.setMaximumSize(new java.awt.Dimension(95, 23));
+        jButton3.setMaximumSize(new java.awt.Dimension(333, 23));
         jButton3.setMinimumSize(new java.awt.Dimension(88, 23));
         jButton3.setName("jButton3"); // NOI18N
         jButton3.setPreferredSize(new java.awt.Dimension(100, 23));

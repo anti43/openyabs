@@ -95,6 +95,9 @@ public class HomeScreen
         labeledCombobox3.setContext(Context.getGroup());
         labeledCombobox4.setModel(Item.getItemEnum());
 
+        timeframeChooser1.setTime(new vTimeframe(DateConverter.getStartOfMonth(new Date()), DateConverter.getEndOfMonth(new Date())));
+        timeframeChooser2.setTime(new vTimeframe(DateConverter.getStartOfMonth(new Date()), DateConverter.getEndOfMonth(new Date())));
+
         SDEPanel = ScheduleDayEventsPanel.instanceOf();
         jSplitPane1.setBottomComponent(SDEPanel);
         sc = ScheduleCalendar.instanceOf();
@@ -159,12 +162,12 @@ public class HomeScreen
         labeledCombobox1.setSearchEnabled(true);
         labeledCombobox1.setContext(Context.getGroup());
         labeledCombobox1.triggerSearch();
-        timeframeChooser1.setTime(new vTimeframe(DateConverter.getStartOfMonth(new Date()), DateConverter.getEndOfMonth(new Date())));
+//        timeframeChooser1.setTime(new vTimeframe(DateConverter.getStartOfMonth(new Date()), DateConverter.getEndOfMonth(new Date())));
 
         labeledCombobox3.setSearchEnabled(true);
         labeledCombobox3.setContext(Context.getGroup());
         labeledCombobox3.triggerSearch();
-        timeframeChooser2.setTime(new vTimeframe(DateConverter.getStartOfMonth(new Date()), DateConverter.getEndOfMonth(new Date())));
+//        timeframeChooser2.setTime(new vTimeframe(DateConverter.getStartOfMonth(new Date()), DateConverter.getEndOfMonth(new Date())));
 
         if (table.equals(overdue)) {
             setData(ndata, table, false);
@@ -837,7 +840,7 @@ private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
                 break;
             }
         }
-        
+
         HashMap<Color, List<Item>> map2 = Scheduler.getOverdueEvents();
         Iterator<Color> it2 = map2.keySet().
                 iterator();
@@ -850,7 +853,6 @@ private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
             }
         }
     }//GEN-LAST:event_but6ActionPerformed
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private mpv5.ui.beans.LabeledTextField bills;
     private javax.swing.JButton but4;

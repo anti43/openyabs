@@ -112,7 +112,6 @@ public class LabeledTextField extends javax.swing.JPanel {
 
         jTextField1.setFont(jTextField1.getFont());
         jTextField1.setDisabledTextColor(new java.awt.Color(0, 51, 51));
-        jTextField1.setMargin(new java.awt.Insets(0, 0, 0, 0));
         jTextField1.setMinimumSize(new java.awt.Dimension(5, 20));
         jTextField1.setPreferredSize(new java.awt.Dimension(5, 20));
         jTextField1.addActionListener(new java.awt.event.ActionListener() {
@@ -126,14 +125,14 @@ public class LabeledTextField extends javax.swing.JPanel {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 84, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, 84, Short.MAX_VALUE)
                 .addGap(0, 0, 0)
                 .addComponent(jTextField1, javax.swing.GroupLayout.DEFAULT_SIZE, 169, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jLabel1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 22, Short.MAX_VALUE)
-            .addComponent(jTextField1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(jTextField1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 22, Short.MAX_VALUE)
         );
     }// </editor-fold>//GEN-END:initComponents
 

@@ -65,13 +65,13 @@
                       </Group>
                       <Group type="102" alignment="0" attributes="0">
                           <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                              <Component id="title" alignment="0" max="32767" attributes="1"/>
-                              <Component id="street" alignment="0" min="-2" pref="221" max="-2" attributes="1"/>
+                              <Component id="title" min="0" pref="0" max="32767" attributes="1"/>
+                              <Component id="street" alignment="0" pref="221" max="32767" attributes="1"/>
                           </Group>
                           <EmptySpace type="unrelated" max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="0" max="-2" attributes="0">
                               <Component id="prename" max="32767" attributes="1"/>
-                              <Component id="city" alignment="0" min="-2" pref="226" max="-2" attributes="1"/>
+                              <Component id="city" alignment="0" pref="285" max="32767" attributes="1"/>
                           </Group>
                       </Group>
                   </Group>
@@ -84,14 +84,14 @@
                           </Group>
                           <EmptySpace type="unrelated" max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="0" attributes="0">
-                              <Component id="badress" pref="124" max="32767" attributes="1"/>
-                              <Component id="dadress" alignment="0" pref="124" max="32767" attributes="1"/>
+                              <Component id="badress" pref="130" max="32767" attributes="1"/>
+                              <Component id="dadress" alignment="0" pref="130" max="32767" attributes="1"/>
                           </Group>
                       </Group>
                       <Group type="102" attributes="0">
-                          <Component id="male" min="-2" pref="63" max="-2" attributes="0"/>
+                          <Component id="male" min="-2" pref="76" max="-2" attributes="0"/>
                           <EmptySpace max="-2" attributes="0"/>
-                          <Component id="female" min="-2" pref="69" max="-2" attributes="0"/>
+                          <Component id="female" min="-2" pref="85" max="-2" attributes="0"/>
                           <EmptySpace max="-2" attributes="0"/>
                           <Component id="jButton2" min="-2" pref="90" max="-2" attributes="0"/>
                           <EmptySpace max="-2" attributes="0"/>
@@ -105,7 +105,7 @@
         <DimensionLayout dim="1">
           <Group type="103" groupAlignment="0" attributes="0">
               <Group type="102" attributes="0">
-                  <EmptySpace pref="11" max="32767" attributes="0"/>
+                  <EmptySpace max="32767" attributes="0"/>
                   <Group type="103" groupAlignment="2" attributes="0">
                       <Component id="department" alignment="2" min="-2" max="-2" attributes="0"/>
                       <Component id="jLabel5" alignment="2" min="-2" max="-2" attributes="0"/>
@@ -118,9 +118,9 @@
                   <EmptySpace max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="2" attributes="0">
                       <Component id="title" alignment="2" min="-2" max="-2" attributes="0"/>
-                      <Component id="prename" alignment="2" min="-2" max="-2" attributes="0"/>
                       <Component id="cname" alignment="2" min="-2" max="-2" attributes="0"/>
                       <Component id="badress" alignment="2" min="-2" max="-2" attributes="0"/>
+                      <Component id="prename" alignment="2" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="2" attributes="0">
@@ -195,7 +195,6 @@
               <ResourceString bundle="mpv5/resources/languages/Panels.properties" key="AddressPanel.male.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
             </Property>
             <Property name="name" type="java.lang.String" value="male" noResource="true"/>
-            <Property name="opaque" type="boolean" value="false"/>
           </Properties>
         </Component>
         <Component class="javax.swing.JRadioButton" name="female">
@@ -212,7 +211,6 @@
               <ResourceString bundle="mpv5/resources/languages/Panels.properties" key="AddressPanel.female.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
             </Property>
             <Property name="name" type="java.lang.String" value="female" noResource="true"/>
-            <Property name="opaque" type="boolean" value="false"/>
           </Properties>
         </Component>
         <Component class="mpv5.ui.beans.LabeledTextField" name="street">
@@ -266,7 +264,6 @@
               <ResourceString bundle="mpv5/resources/languages/Panels.properties" key="AddressPanel.dadress.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
             </Property>
             <Property name="name" type="java.lang.String" value="dadress" noResource="true"/>
-            <Property name="opaque" type="boolean" value="false"/>
           </Properties>
         </Component>
         <Component class="javax.swing.JCheckBox" name="badress">
@@ -280,7 +277,6 @@
               <ResourceString bundle="mpv5/resources/languages/Panels.properties" key="AddressPanel.badress.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
             </Property>
             <Property name="name" type="java.lang.String" value="badress" noResource="true"/>
-            <Property name="opaque" type="boolean" value="false"/>
           </Properties>
         </Component>
         <Component class="javax.swing.JButton" name="jButton2">
