@@ -205,28 +205,16 @@ public class LabeledCombobox extends javax.swing.JPanel {
         mPCombobox1 = new mpv5.ui.beans.MPCombobox();
 
         setOpaque(false);
+        setLayout(new javax.swing.BoxLayout(this, javax.swing.BoxLayout.LINE_AXIS));
 
         jLabel1.setText("text");
+        jLabel1.setMaximumSize(new java.awt.Dimension(333, 333));
+        jLabel1.setPreferredSize(new java.awt.Dimension(100, 18));
+        add(jLabel1);
 
         mPCombobox1.setBorder(null);
-      //  mPCombobox1.setFont(mPCombobox1.getFont());
-
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
-        this.setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(2, 2, 2)
-                .addComponent(mPCombobox1, javax.swing.GroupLayout.DEFAULT_SIZE, 120, Short.MAX_VALUE))
-        );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addComponent(mPCombobox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, 0))
-            .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, 22, Short.MAX_VALUE)
-        );
+        mPCombobox1.setMinimumSize(new java.awt.Dimension(33, 18));
+        add(mPCombobox1);
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel jLabel1;

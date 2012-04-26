@@ -54,32 +54,25 @@ public class LabeledDateChooser extends javax.swing.JPanel {
         dateChooser1 = new mpv5.ui.beans.DateChooser();
 
         setOpaque(false);
+        setLayout(new javax.swing.BoxLayout(this, javax.swing.BoxLayout.LINE_AXIS));
 
-       // jLabel1.setFont(jLabel1.getFont());
+        jLabel1.setFont(jLabel1.getFont());
         jLabel1.setText("text");
+        jLabel1.setMaximumSize(new java.awt.Dimension(333, 333));
+        jLabel1.setMinimumSize(new java.awt.Dimension(33, 18));
+        jLabel1.setPreferredSize(new java.awt.Dimension(100, 20));
+        add(jLabel1);
 
-       // dateChooser1.setFont(dateChooser1.getFont());
-        dateChooser1.setPreferredSize(new java.awt.Dimension(152, 20));
+        dateChooser1.setFont(dateChooser1.getFont());
+        dateChooser1.setMaximumSize(new java.awt.Dimension(333, 333));
+        dateChooser1.setMinimumSize(new java.awt.Dimension(33, 18));
+        dateChooser1.setPreferredSize(new java.awt.Dimension(100, 20));
         dateChooser1.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
             public void propertyChange(java.beans.PropertyChangeEvent evt) {
                 dateChooser1PropertyChange(evt);
             }
         });
-
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
-        this.setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 92, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(1, 1, 1)
-                .addComponent(dateChooser1, javax.swing.GroupLayout.DEFAULT_SIZE, 139, Short.MAX_VALUE))
-        );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(dateChooser1, javax.swing.GroupLayout.DEFAULT_SIZE, 22, Short.MAX_VALUE)
-            .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, 22, Short.MAX_VALUE)
-        );
+        add(dateChooser1);
     }// </editor-fold>//GEN-END:initComponents
 
     private void dateChooser1PropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_dateChooser1PropertyChange

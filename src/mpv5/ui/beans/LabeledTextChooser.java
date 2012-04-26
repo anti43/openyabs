@@ -66,42 +66,23 @@ public class LabeledTextChooser extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jLabel1 = new javax.swing.JLabel();
-        jTextField1 = new javax.swing.JTextField();
+        jTextField1 = new mpv5.ui.beans.LabeledTextField();
         jButton1 = new javax.swing.JButton();
 
         setOpaque(false);
-
-        jLabel1.setText("text");
-
-        jTextField1.setFont(jTextField1.getFont());
+        setLayout(new javax.swing.BoxLayout(this, javax.swing.BoxLayout.LINE_AXIS));
+        add(jTextField1);
 
         jButton1.setText("...");
         jButton1.setToolTipText("Choose");
         jButton1.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+        jButton1.setMaximumSize(new java.awt.Dimension(50, 100));
         jButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton1ActionPerformed(evt);
             }
         });
-
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
-        this.setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jTextField1, javax.swing.GroupLayout.DEFAULT_SIZE, 143, Short.MAX_VALUE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jButton1))
-        );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jLabel1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(jTextField1, javax.swing.GroupLayout.Alignment.TRAILING)
-            .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-        );
+        add(jButton1);
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
@@ -116,8 +97,7 @@ public class LabeledTextChooser extends javax.swing.JPanel {
     }//GEN-LAST:event_jButton1ActionPerformed
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JTextField jTextField1;
+    private mpv5.ui.beans.LabeledTextField jTextField1;
     // End of variables declaration//GEN-END:variables
 
     /**
@@ -161,7 +141,7 @@ public class LabeledTextChooser extends javax.swing.JPanel {
      * @return the _label
      */
     public String get_Label() {
-        return jLabel1.getText();
+        return jTextField1.get_Label();
     }
 
     /**
@@ -169,12 +149,11 @@ public class LabeledTextChooser extends javax.swing.JPanel {
      */
     public void set_Label(String label) {
         this._label = label;
-        jLabel1.setText(_label);
+        jTextField1.set_Label(label);
     }
 
     @Override
     public void setEnabled(boolean enabled) {
-        jLabel1.setEnabled(enabled);
         jTextField1.setEnabled(enabled);
     }
 

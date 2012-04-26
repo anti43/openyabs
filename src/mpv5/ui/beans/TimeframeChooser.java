@@ -55,36 +55,30 @@ public class TimeframeChooser extends javax.swing.JPanel {
         jLabel1 = new javax.swing.JLabel();
 
         setName("Form"); // NOI18N
+        setLayout(new javax.swing.BoxLayout(this, javax.swing.BoxLayout.LINE_AXIS));
 
+        dateChooser1.setMaximumSize(new java.awt.Dimension(32767, 333));
+        dateChooser1.setMinimumSize(new java.awt.Dimension(33, 18));
         dateChooser1.setName("dateChooser1"); // NOI18N
+        dateChooser1.setPreferredSize(new java.awt.Dimension(150, 20));
+        add(dateChooser1);
 
+        dateChooser2.setMaximumSize(new java.awt.Dimension(32767, 333));
+        dateChooser2.setMinimumSize(new java.awt.Dimension(33, 18));
         dateChooser2.setName("dateChooser2"); // NOI18N
+        dateChooser2.setPreferredSize(new java.awt.Dimension(150, 20));
+        add(dateChooser2);
 
         jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/2rightarrow.png"))); // NOI18N
-        java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle(); // NOI18N
+        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("mpv5/resources/languages/Panels"); // NOI18N
         jLabel1.setText(bundle.getString("TimeframeChooser.jLabel1.text")); // NOI18N
         jLabel1.setIconTextGap(0);
+        jLabel1.setMaximumSize(new java.awt.Dimension(33, 333));
+        jLabel1.setMinimumSize(new java.awt.Dimension(18, 18));
         jLabel1.setName("jLabel1"); // NOI18N
-
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
-        this.setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addComponent(dateChooser1, javax.swing.GroupLayout.PREFERRED_SIZE, 144, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(5, 5, 5)
-                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(5, 5, 5)
-                .addComponent(dateChooser2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-        );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
-                .addComponent(dateChooser2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addComponent(dateChooser1, javax.swing.GroupLayout.PREFERRED_SIZE, 21, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 17, javax.swing.GroupLayout.PREFERRED_SIZE))
-        );
+        jLabel1.setPreferredSize(new java.awt.Dimension(32, 20));
+        add(jLabel1);
     }// </editor-fold>//GEN-END:initComponents
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private mpv5.ui.beans.DateChooser dateChooser1;

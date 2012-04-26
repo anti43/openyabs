@@ -362,25 +362,18 @@ public class MPCombobox extends javax.swing.JPanel {
 
         setBorder(null);
         setOpaque(false);
+        setLayout(new java.awt.BorderLayout());
 
         jComboBox1.setAutoscrolls(true);
         jComboBox1.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(138, 138, 138), 1, true));
+        jComboBox1.setMinimumSize(new java.awt.Dimension(33, 18));
+        jComboBox1.setPreferredSize(new java.awt.Dimension(100, 20));
         jComboBox1.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 jComboBox1MouseClicked(evt);
             }
         });
-
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
-        this.setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jComboBox1, javax.swing.GroupLayout.Alignment.TRAILING, 0, 116, Short.MAX_VALUE)
-        );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
-        );
+        add(jComboBox1, java.awt.BorderLayout.CENTER);
     }// </editor-fold>//GEN-END:initComponents
 
     private void jComboBox1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jComboBox1MouseClicked
