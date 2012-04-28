@@ -297,8 +297,8 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
 
         ((MPTable) dataTable).setPersistanceHandler(new TableViewPersistenceHandler((MPTable) dataTable, this));
         ((MPTable) proptable).setPersistanceHandler(new TableViewPersistenceHandler((MPTable) proptable, this));
-        jSplitPane1.setDividerLocation((User.getCurrentUser().getProperties().getProperty("org.openyabs.uiproperty.itempanel.divier1.dividerLocation", 1)));
-        jSplitPane2.setDividerLocation((User.getCurrentUser().getProperties().getProperty("org.openyabs.uiproperty.itempanel.divier2.dividerLocation", 156)));
+        jSplitPane1.setDividerLocation((User.getCurrentUser().getProperties().getProperty("org.openyabs.uiproperty.itempanel.divider1.dividerLocation", 150)));
+        jSplitPane2.setDividerLocation((User.getCurrentUser().getProperties().getProperty("org.openyabs.uiproperty.itempanel.divider2.dividerLocation", 0)));
 
     }
 
