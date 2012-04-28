@@ -191,7 +191,7 @@ public class PropertyStore {
 
         if (desiredClass instanceof Double) {
             if (t == null || String.valueOf(t).length() == 0) {
-                return (T) new Double(0);
+                return (T) desiredClass;
             } else {
                 try {
                     return (T) Double.valueOf(t);
@@ -201,7 +201,7 @@ public class PropertyStore {
             }
         } else if (desiredClass instanceof Integer) {
             if (t == null || String.valueOf(t).length() == 0) {
-                return (T) new Integer(0);
+                return (T) desiredClass;
             } else {
                 try {
                     return (T) Integer.valueOf(t);
@@ -211,7 +211,7 @@ public class PropertyStore {
             }
         } else if (desiredClass instanceof Boolean) {
             if (t == null || String.valueOf(t).length() == 0) {
-                return (T) Boolean.FALSE;
+                return (T) desiredClass;
             } else {
                 try {
                     return (T) Boolean.valueOf(t);
@@ -221,7 +221,7 @@ public class PropertyStore {
             }
         } else if (desiredClass instanceof Date) {
             if (t == null || String.valueOf(t).length() == 0) {
-                return (T) new Date();
+                return (T) desiredClass;
             } else {
                 try {
                     return (T) DateConverter.getDate(t);

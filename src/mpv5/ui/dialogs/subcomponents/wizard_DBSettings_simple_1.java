@@ -9,6 +9,7 @@ import ag.ion.bion.officelayer.application.IApplicationAssistant;
 import ag.ion.bion.officelayer.application.ILazyApplicationInfo;
 import ag.ion.bion.officelayer.application.OfficeApplicationException;
 import ag.ion.bion.officelayer.internal.application.ApplicationAssistant;
+import enoa.connection.NoaConnection;
 import java.awt.Cursor;
 import java.awt.Desktop;
 import java.io.File;
@@ -564,6 +565,7 @@ public class wizard_DBSettings_simple_1 extends javax.swing.JPanel implements Wi
 
     private void checkOS() {
         try {
+            NoaConnection.definePath();
             IApplicationAssistant applicationAssistant = new ApplicationAssistant();
             ILazyApplicationInfo appInfo = applicationAssistant.getLatestLocalLibreOfficeApplication();
             if (appInfo == null) {

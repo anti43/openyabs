@@ -88,6 +88,7 @@ public class DateChooser extends javax.swing.JPanel {
         jSpinner1.setFont(jSpinner1.getFont());
         jSpinner1.setModel(new javax.swing.SpinnerDateModel());
         jSpinner1.setEditor(new javax.swing.JSpinner.DateEditor(jSpinner1, ""));
+        jSpinner1.setMinimumSize(new java.awt.Dimension(23, 18));
         jSpinner1.setName("jSpinner1"); // NOI18N
         jSpinner1.setPreferredSize(new java.awt.Dimension(100, 20));
         add(jSpinner1);
@@ -95,9 +96,10 @@ public class DateChooser extends javax.swing.JPanel {
         jButton1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/16/cal.png"))); // NOI18N
         java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("mpv5/resources/languages/Panels"); // NOI18N
         jButton1.setToolTipText(bundle.getString("DateChooser.jButton1.toolTipText")); // NOI18N
-        jButton1.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+        jButton1.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(204, 204, 204), 1, true));
         jButton1.setContentAreaFilled(false);
-        jButton1.setMaximumSize(new java.awt.Dimension(33, 333));
+        jButton1.setMaximumSize(new java.awt.Dimension(20, 333));
+        jButton1.setMinimumSize(new java.awt.Dimension(18, 18));
         jButton1.setName("jButton1"); // NOI18N
         jButton1.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
