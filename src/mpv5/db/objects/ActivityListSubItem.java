@@ -88,7 +88,7 @@ public final class ActivityListSubItem extends DatabaseObject {
             it.setTaxpercentvalue(new BigDecimal(row[7].toString()));
             it.setTotalbrutvalue(new BigDecimal(row[8].toString()));
             it.setProductsids(Integer.valueOf(row[9].toString()));
-            it.setCName(new RandomText(20).getString());
+            it.setCname(new RandomText(20).getString());
             calculate(it);
 
 
@@ -200,7 +200,7 @@ public final class ActivityListSubItem extends DatabaseObject {
      */
     public ActivityListSubItem(Product o) {
         this();
-        setCName(o.__getCName());
+        setCname(o.__getCname());
         setDateadded(new Date());
         setDatedoing(new Date());
         setMeasure(o.__getMeasure());
@@ -405,7 +405,7 @@ public final class ActivityListSubItem extends DatabaseObject {
         data[7] = __getTaxpercentvalue();
         data[8] = __getTotalbrutvalue();
         data[9] = Integer.valueOf(__getProductsids());
-        data[10] = __getCName();
+        data[10] = __getCname();
         if (!__getDescription().equals("")) {
             data[11] = this;
         }
@@ -490,7 +490,7 @@ public final class ActivityListSubItem extends DatabaseObject {
         this.setTaxpercentvalue(new BigDecimal(model.getValueAt(row, 7).toString()));
         this.setTotalbrutvalue(new BigDecimal(model.getValueAt(row, 8).toString()));
         this.setProductsids(Integer.valueOf(model.getValueAt(row, 9).toString()));
-        this.setCName(model.getValueAt(row, 10).toString());
+        this.setCname(model.getValueAt(row, 10).toString());
     }
 
     /**

@@ -83,7 +83,7 @@ public final class TableViewPersistenceHandler {
      * @param passive  
      */
     public TableViewPersistenceHandler(final MPTable target, final Component identifier, final boolean passive) {
-        if (User.getCurrentUser().__getCName() == null || User.getCurrentUser().__getCName().length() == 0) {
+        if (User.getCurrentUser().__getCname() == null || User.getCurrentUser().__getCname().length() == 0) {
             throw new IllegalStateException("The username is not set.");
         }
         if (target.getName() == null || target.getName().length() == 0) {
@@ -96,7 +96,7 @@ public final class TableViewPersistenceHandler {
             throw new IllegalStateException("The identifier name is not set: " + identifier);
         }
 
-        saveFile = User.getCurrentUser().__getCName() + "_" + target.getName() + "_" + identifier.getName() + ".xml";
+        saveFile = User.getCurrentUser().__getCname() + "_" + target.getName() + "_" + identifier.getName() + ".xml";
         storage = mpv5.YabsApplication.getApplication().getContext().getSessionStorage();
         mListener = new MouseAdapter() {
 

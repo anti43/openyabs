@@ -99,7 +99,7 @@ public class getContactJob implements WSDaemonJob {
                     m = new WSContactsMapping();
                     m.setContactsids(contact.__getIDS());
                     m.setWscontact(String.valueOf(id));
-                    m.setCName(String.valueOf(id) + "@" + daemon.getWebShopID());
+                    m.setCname(String.valueOf(id) + "@" + daemon.getWebShopID());
                     m.setWebshopsids(daemon.getWebShopID());
                     m.setGroupsids(mpv5.db.objects.User.getCurrentUser().__getGroupsids());
                     m.save();

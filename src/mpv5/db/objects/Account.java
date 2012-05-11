@@ -468,7 +468,7 @@ public class Account extends DatabaseObject {
         if (map.containsKey("intparentaccount")) {
             try {
                 try {
-                    map.put("parentaccount", DatabaseObject.getObject(Context.getAccounts(), Integer.valueOf(map.get("intparentaccount").toString())).__getCName());
+                    map.put("parentaccount", DatabaseObject.getObject(Context.getAccounts(), Integer.valueOf(map.get("intparentaccount").toString())).__getCname());
                     map.remove("intparentaccount");
                 } catch (NodataFoundException ex) {
                     map.put("parentaccount", null);

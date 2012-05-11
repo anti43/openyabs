@@ -167,7 +167,7 @@ public class ActivityTextAreaDialog extends javax.swing.JDialog implements KeyLi
         if (obj.getContext().equals(Context.getProduct())) {
             this.product = (Product) obj;
             if (textArea.getText().equals("")) {
-                textArea.setText(product.__getCName());
+                textArea.setText(product.__getCname());
             }
         }
     }

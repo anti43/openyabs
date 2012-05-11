@@ -77,7 +77,7 @@ public final class ProductOrderSubItem extends DatabaseObject implements Trigger
             } catch (Exception e) {
                 Log.Debug(ProductOrderSubItem.class, e.getMessage());
             }
-            it.setCName(row[14].toString());
+            it.setCname(row[14].toString());
             it.setProductorder(dataOwner);
             it.setCountvalue(new BigDecimal(row[1].toString()));
 //            it.setDatedelivery(dataOwner.__getDatetodo());
@@ -139,7 +139,7 @@ public final class ProductOrderSubItem extends DatabaseObject implements Trigger
 
             it.setIDS(-1);
 
-            it.setCName(row[14].toString());
+            it.setCname(row[14].toString());
             it.setItemsids(dataOwner.__getIDS());
             it.setCountvalue(new BigDecimal(row[1].toString()));
 //            it.setDatedelivery(dataOwner.__getDatetodo());
@@ -215,7 +215,7 @@ public final class ProductOrderSubItem extends DatabaseObject implements Trigger
             } catch (Exception e) {
                 Log.Debug(ProductOrderSubItem.class, e.getMessage());
             }
-            it.setCName(row[14].toString());
+            it.setCname(row[14].toString());
             it.setProductorder(dataOwner);
             it.setCountvalue(new BigDecimal(row[1].toString()));
             it.setDatedelivery(dataOwner.getDatetodo());
@@ -347,7 +347,7 @@ public final class ProductOrderSubItem extends DatabaseObject implements Trigger
      */
     public ProductOrderSubItem(Product product) {
         this();
-        setCName(product.__getCName());
+        setCname(product.__getCname());
         setDateadded(new Date());
         setDatedelivery(new Date());
 
@@ -398,11 +398,11 @@ public final class ProductOrderSubItem extends DatabaseObject implements Trigger
 
                 setDescription(VariablesHandler.parse(x, product));
             } catch (NodataFoundException nodataFoundException) {
-                setDescription(VariablesHandler.parse(product.__getCName(), product));
+                setDescription(VariablesHandler.parse(product.__getCname(), product));
             }
         } else {
             Log.Debug(ProductOrderSubItem.class, "No format defined..");
-            setDescription(VariablesHandler.parse(product.__getCName(), product));
+            setDescription(VariablesHandler.parse(product.__getCname(), product));
         }
 ///////////////end format////////////////////////////////////////////////////////
         setExternalvalue(product.findPriceFor(1d));
@@ -466,7 +466,7 @@ public final class ProductOrderSubItem extends DatabaseObject implements Trigger
             getInttype() != TYPE_TEXT ? String.valueOf(FormatNumber.formatLokalCurrency(this.getTotalTaxValue())) : "",
             getInttype() != TYPE_TEXT ? String.valueOf(FormatNumber.formatLokalCurrency(this.getTotalbrutvalue())) : "",
             getLinkurl(),
-            __getCName()
+            __getCname()
         ///////////////////////////////////////////////////////////////////////////////
         };
         List<String> l = Arrays.asList(possibleCols);
@@ -716,7 +716,7 @@ public final class ProductOrderSubItem extends DatabaseObject implements Trigger
             data[11] = "A";
             data[12] = "C";
             data[12 + 1] = getLinkurl();
-            data[14] = __getCName();
+            data[14] = __getCname();
 //            data[15] = getDiscount();
             data[16] = 0.0;
         }
@@ -764,7 +764,7 @@ public final class ProductOrderSubItem extends DatabaseObject implements Trigger
             t.setLinkurl(m.getValueAt(row, 13).toString());
         }
         if (m.getValueAt(row, 14) != null) {
-            t.setCName(m.getValueAt(row, 14).toString());
+            t.setCname(m.getValueAt(row, 14).toString());
         }
 //        if (m.getValueAt(row, 15) != null) {
 //            t.setDiscount(new BigDecimal(m.getValueAt(row, 15).toString()));

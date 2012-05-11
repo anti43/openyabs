@@ -350,7 +350,7 @@ public class ProductOrder extends DatabaseObject implements Formattable, Templat
     public synchronized void ensureUniqueness() {
         Log.Debug(this, "In ensureUniqueness for " + this.getClass());
         setCnumber(getFormatHandler().next());
-        setCName(getCnumber());
+        setCname(getCnumber());
         Log.Debug(this, "ensureUniqueness result: " + getCnumber());
     }
 
@@ -519,7 +519,7 @@ public class ProductOrder extends DatabaseObject implements Formattable, Templat
     @Override
     public String toString() {
         if (getContact() != null) {
-            return getContact().__getCName() + "-" + getCname();
+            return getContact().__getCname() + "-" + getCname();
         } else {
             return super.toString();
         }
@@ -553,7 +553,7 @@ public class ProductOrder extends DatabaseObject implements Formattable, Templat
             it[i].delete();
         }
         setCnumber(FormatHandler.DELETED_IDENTIFIER + getCnumber());
-        setCName(getCnumber());
+        setCname(getCnumber());
         save(true);
         return super.delete();
     }
@@ -572,7 +572,7 @@ public class ProductOrder extends DatabaseObject implements Formattable, Templat
         }
 
         setCnumber(getCnumber().replaceFirst(FormatHandler.DELETED_IDENTIFIER, ""));
-        setCName(getCnumber());
+        setCname(getCnumber());
 
         return super.undelete();
     }

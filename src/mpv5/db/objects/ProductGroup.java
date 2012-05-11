@@ -52,7 +52,7 @@ public class ProductGroup extends DatabaseObject {
 
     public ProductGroup(String name) {
         this();
-        setCName(name);
+        setCname(name);
     }
 
     /**
@@ -85,7 +85,7 @@ public class ProductGroup extends DatabaseObject {
 
     @Override
     public String toString() {
-        return __getCName();
+        return __getCname();
     }
 
     @Override
@@ -171,7 +171,7 @@ public class ProductGroup extends DatabaseObject {
         if (data.size() > 0) {
             DatabaseObject clone = rootNode.clone();
             clone.ReadOnly(true);
-            clone.setCName("/");
+            clone.setCname("/");
             node1 = new DefaultMutableTreeNode(clone);
 //            data.remove(rootNode);//remove root if in list
             try {

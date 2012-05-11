@@ -100,7 +100,7 @@ public class MPPLuginLoader {
                     String filename = QueryHandler.instanceOf().clone(Context.getFiles()).insertFile(file);
                     Plugin p = new Plugin();
                     p.setDescription(s);
-                    p.setCName("Plugin: " + pl.getName());
+                    p.setCname("Plugin: " + pl.getName());
                     p.setFilename(filename);
                     p.save();
                 }

@@ -42,7 +42,7 @@ public class Group extends DatabaseObject {
 
     public Group(String name) {
         setContext(Context.getGroup());
-        setCName(name);
+        setCname(name);
     }
 
     /**
@@ -75,7 +75,7 @@ public class Group extends DatabaseObject {
 
     @Override
     public String toString() {
-        return __getCName();
+        return __getCname();
     }
 
     @Override

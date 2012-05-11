@@ -678,14 +678,14 @@ public class ScheduleEvents extends javax.swing.JFrame {
             try {
                 Schedule schedule = data.get(i);
                 d[i][0] = schedule;
-                d[i][1] = schedule.__getCName();
+                d[i][1] = schedule.__getCname();
                 d[i][2] = schedule.__getStartdate();
                 qc = new QueryCriteria("USERSIDS", User.getCurrentUser().getID());
                 qc.addAndCondition("IDS", schedule.__getEventtype());
                 Log.Debug(this, "Eventtype: " + schedule.__getEventtype());
                 ArrayList<DatabaseObject> SType = DatabaseObject.getObjects(Context.getScheduleTypes(),
                         qc);
-                d[i][3] = SType.get(0).__getCName();
+                d[i][3] = SType.get(0).__getCname();
             } catch (NodataFoundException ex) {
                 Log.Debug(this, ex);
             }
@@ -703,7 +703,7 @@ public class ScheduleEvents extends javax.swing.JFrame {
 
                     Item i = (Item) DatabaseObject.getObject(Context.getItem(),
                             Integer.valueOf(labeledCombobox1.getSelectedItem().getId()));
-                    s.setCName("(" + Messages.SCHEDULE + ") " + i.toString());
+                    s.setCname("(" + Messages.SCHEDULE + ") " + i.toString());
                     s.setItemsids(i.__getIDS());
                     s.setContactsids(i.__getContactsids());
                     s.setEventtype(0);
@@ -743,7 +743,7 @@ public class ScheduleEvents extends javax.swing.JFrame {
                     }
                     Contact c = (Contact) DatabaseObject.getObject(Context.getContact(),
                             Integer.valueOf(labeledCombobox3.getSelectedItem().getId()));
-                    s.setCName("(" + Messages.SCHEDULE + ") " + c.toString());
+                    s.setCname("(" + Messages.SCHEDULE + ") " + c.toString());
                         s.setItemsids(Integer.parseInt(labeledCombobox4.getSelectedItem().getId()));
                     s.setContactsids(c.__getIDS());
                         s.setEventtype(Integer.valueOf(labeledCombobox2.getSelectedItem().getId()));
@@ -771,7 +771,7 @@ public class ScheduleEvents extends javax.swing.JFrame {
             for (int i = 0; i < STypes.size(); i++) {
                 ScheduleTypes st = (ScheduleTypes) STypes.get(i);
                 SchedTyps[i] = new MPComboBoxModelItem(st.__getIDS(),
-                        st.__getCName());
+                        st.__getCname());
             }
             labeledCombobox2.setModel(new MPComboboxModel(SchedTyps));
         } catch (NodataFoundException ex) {

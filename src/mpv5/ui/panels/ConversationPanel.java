@@ -167,7 +167,7 @@ public class ConversationPanel
                                 for (int o = 0; o < data.size(); o++) {
                                     adr = (Address) data.get(o);
                                     data1[o + 1][0] = adr.__getIDS();
-                                    data1[o + 1][1] = adr.__getCName();
+                                    data1[o + 1][1] = adr.__getCname();
                                 }
                                 adressList.setModel(data1);
                             } catch (NodataFoundException ex) {
@@ -877,7 +877,7 @@ public class ConversationPanel
             SwingUtilities.invokeLater(runnable);
 
             if (dataOwner.isExisting() && populate) {
-                setTitle(dataOwner.__getCName());
+                setTitle(dataOwner.__getCname());
             }
             tb.setFavourite(Favourite.isFavourite(object));
             tb.setEditable(!object.isReadOnly());

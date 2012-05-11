@@ -417,7 +417,7 @@ public class AddressPanel extends javax.swing.JPanel implements DataPanel {
             } else {
                 ((JTabbedPane) getParent()).setTitleAt(
                         ((JTabbedPane) getParent()).getSelectedIndex(),
-                        dataOwner.__getCName());
+                        dataOwner.__getCname());
             }
         }
     }

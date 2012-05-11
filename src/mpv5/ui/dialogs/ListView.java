@@ -282,7 +282,7 @@ public class ListView extends javax.swing.JPanel {
                             ArrayList<DatabaseObject> arrayList = objs.get(i);
                             for (int j = 0; j < arrayList.size(); j++) {
                                 DatabaseObject databaseObject = arrayList.get(j);
-                                Log.Debug(this, "Parsing " + databaseObject.getDbIdentity() + " : " + databaseObject.__getCName() + " from file: " + d.getFile());
+                                Log.Debug(this, "Parsing " + databaseObject.getDbIdentity() + " : " + databaseObject.__getCname() + " from file: " + d.getFile());
                                 addElement(databaseObject);
                             }
                         }

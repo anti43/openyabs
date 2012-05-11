@@ -775,7 +775,7 @@ public class HomeScreen
                     if (itm.__getInttype() == Item.TYPE_BILL) {
                         if (Popup.Y_N_dialog(Messages.CREATE_REMINDER.toString())) {
                             rem = new Reminder();
-                            rem.setCName(Messages.REMINDER.toString() + "@" + dbo.__getCName());
+                            rem.setCname(Messages.REMINDER.toString() + "@" + dbo.__getCname());
                             rem.setDateadded(new Date());
                             rem.setDescription("");
                             rem.setGroupsids(dbo.__getGroupsids());
@@ -907,7 +907,7 @@ private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
                             + "\n"
                             + Messages.SCHEDULE_GENERATED
                             + "\n"
-                            + item.__getCName());
+                            + item.__getCname());
                     Log.Debug(this, "Objekt wird gesichert ...");
                     item.save();
                     for (int j = 0; j < subs.length; j++) {

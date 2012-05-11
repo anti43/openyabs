@@ -56,7 +56,7 @@ public class SampleData {
 
         Group g = new Group();
         g.setDescription("This group hold sample data");
-        g.setCName("Sample Group" + new Random().nextInt(factor * 43) + 1);
+        g.setCname("Sample Group" + new Random().nextInt(factor * 43) + 1);
         g.save();
         final int group = g.__getIDS();
 
@@ -69,7 +69,7 @@ public class SampleData {
                     int seed = new Random().nextInt(factor * 43) + 1;
 
                     Contact c = new Contact();
-                    c.setCName("Contact " + seed);
+                    c.setCname("Contact " + seed);
                     c.setCNumber("SC" + seed);
                     c.setCity("Sample City");
                     c.setCompany("Sample Company");
@@ -105,7 +105,7 @@ public class SampleData {
                             Date date = new RandomDate(new vTimeframe(DateConverter.getDate("01.01.2007"), new Date()));
 
                             Item it = new Item();
-                            it.setCName("SI" + seed + "-19-" + k);
+                            it.setCname("SI" + seed + "-19-" + k);
                             it.setContactsids(c.__getIDS());
                             it.setDateend(date);
                             it.setDatetodo(date);
@@ -122,7 +122,7 @@ public class SampleData {
                             List<Item> lm= new Vector<Item>();
                             for (int j = 0; j < 10; j++) {
                                 SubItem p = new SubItem();
-                                p.setCName("SPI" + seed + "-19-" + j);
+                                p.setCname("SPI" + seed + "-19-" + j);
                                 p.setCountvalue(new BigDecimal(1));
                                 p.setDateadded(date);
                                 p.setDatedelivery(date);
@@ -164,7 +164,7 @@ public class SampleData {
                             Date date = new RandomDate(new vTimeframe(DateConverter.getDate("01.01.2009"), new Date()));
 
                             Product it = new Product();
-                            it.setCName("P" + seed + "-19-" + k);
+                            it.setCname("P" + seed + "-19-" + k);
                             it.setCnumber("P" + seed + "-19-" + k);
                             it.setDateadded(date);
                             it.setDescription("sample product");
@@ -190,7 +190,7 @@ public class SampleData {
                             date = new RandomDate(new vTimeframe(DateConverter.getDate("01.01.2007"), new Date()));
 
                             Product it1 = new Product();
-                            it1.setCName("PS" + seed + "-19-" + k);
+                            it1.setCname("PS" + seed + "-19-" + k);
                             it1.setCnumber("PS" + seed + "-19-" + k);
                             it1.setDateadded(date);
                             it1.setProductgroupsids(1);

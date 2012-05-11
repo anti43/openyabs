@@ -37,6 +37,8 @@ import javax.swing.tree.MutableTreeNode;
 import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
 import mpv5.db.common.NodataFoundException;
+import mpv5.db.common.QueryCriteria2;
+import mpv5.db.common.QueryParameter;
 import mpv5.db.objects.Contact;
 import mpv5.db.objects.FileToContact;
 import mpv5.db.objects.FileToItem;
@@ -76,24 +78,33 @@ public class MPTreeModel extends DefaultTreeModel {
      * Generates a tree view of the contact including related items and files
      * @param rootNode
      */
-    public MPTreeModel(Contact rootNode) {
-        super(buildTreeFor(rootNode));
+    public MPTreeModel(Contact rootNode, QueryCriteria2 itemfilter) {
+        super(buildTreeFor(rootNode, itemfilter));
     }
 
-    private static MutableTreeNode buildTreeFor(Contact obj) {
+    private static MutableTreeNode buildTreeFor(Contact obj, QueryCriteria2 itemfilter) {
         HashMap<Integer, DefaultMutableTreeNode> groups = new HashMap<Integer, DefaultMutableTreeNode>();
         DefaultMutableTreeNode rootNode = new DefaultMutableTreeNode(obj);
 
         //build group hierarchy
 
         // Add related items
-        List<DatabaseObject> items = null;
+        List<Item> items = null;
 
         try {
-            items = DatabaseObject.getReferencedObjects(obj, Context.getItem(), DatabaseObject.getObject(Context.getItem()));
+            if (itemfilter == null) {
+                items =DatabaseObject.toObjectList( DatabaseObject.getReferencedObjects(obj, Context.getItem(), DatabaseObject.getObject(Context.getItem())), new Item());
+            }else{
+                List<QueryParameter> p = new ArrayList<QueryParameter>();
+                p.add(new QueryParameter(Context.getItem(), "invisible", 0, QueryParameter.EQUALS));
+                p.add(new QueryParameter(Context.getItem(), "contactsids", obj.__getIDS(), QueryParameter.EQUALS));
+                itemfilter.setOrder("groupsids", true);
+                itemfilter.and(p);
+                items = DatabaseObject.getObjects(new Item(), itemfilter);
+            }
 
             for (int i = 0; i < items.size(); i++) {
-                Item item = (Item) items.get(i);
+                Item item = items.get(i);
                 DefaultMutableTreeNode itemnode = new DefaultMutableTreeNode(item);
 
                 if (!groups.containsKey(new Integer(item.__getGroupsids()))) {
@@ -223,7 +234,7 @@ public class MPTreeModel extends DefaultTreeModel {
         if (data.size() > 0) {
             DatabaseObject clone = rootNode.clone();
             clone.ReadOnly(true);
-            clone.setCName("/");
+            clone.setCname("/");
             node1 = new DefaultMutableTreeNode(clone);
             try {
                 mpv5.YabsViewProxy.instance().setWaiting(true);

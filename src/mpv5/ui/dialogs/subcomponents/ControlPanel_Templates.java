@@ -535,7 +535,7 @@ public final class ControlPanel_Templates extends javax.swing.JPanel implements 
     private void jButton10ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton10ActionPerformed
         if (dataOwner != null && dataOwner.isExisting()) {
             Template tpl = (Template) templates.getValueAt(templates.convertRowIndexToModel(templates.getSelectedRow()), 0);
-            if (Popup.Y_N_dialog(Messages.REALLY_CHANGE.toString(), tpl.__getCName())) {
+            if (Popup.Y_N_dialog(Messages.REALLY_CHANGE.toString(), tpl.__getCname())) {
                 DialogForFile di = new DialogForFile(DialogForFile.FILES_ONLY);
                 di.setFileFilter(DialogForFile.TEMPLATE_FILES);
                 if (di.chooseFile()) {
@@ -607,7 +607,7 @@ public final class ControlPanel_Templates extends javax.swing.JPanel implements 
             try {
 //                LOAPanel lp = new LOAPanel();
 //                File f = dataOwner.getFile();
-//                YabsViewProxy.instance().addOrShowTab(lp, dataOwner.__getCName());
+//                YabsViewProxy.instance().addOrShowTab(lp, dataOwner.__getCname());
 //                lp.loadODT(f);
                 updateService.setSelected(false);
                 updateService.setSelected(true);

@@ -288,7 +288,7 @@ public class ControlPanel_Plugins extends javax.swing.JPanel implements ControlA
             UserPlugin up = new UserPlugin();
             up.setUsersids(mpv5.db.objects.User.getCurrentUser().__getIDS());
             up.setPluginsids(gin.__getIDS());
-            up.setCName(gin.__getCName());
+            up.setCname(gin.__getCname());
             up.save();
         }
 }//GEN-LAST:event_jButton1ActionPerformed

@@ -439,7 +439,7 @@ public class ControlPanel_Accounts extends javax.swing.JPanel implements Control
             if (evt.getClickCount() == 1) {
                 if (node != null) {
                     Account g = (Account) node.getUserObject();
-                    parents.set_Text(g.__getCName());
+                    parents.set_Text(g.__getCname());
                 }
             } else {
                 if (node != null) {
@@ -570,13 +570,13 @@ public class ControlPanel_Accounts extends javax.swing.JPanel implements Control
                 g = (Account) DatabaseObject.getObject(Context.getAccounts(), 1);
             } catch (NodataFoundException ex) {
                 g = (Account) DatabaseObject.getObject(Context.getAccounts());
-                g.setCName(Messages.ACCOUNTNAMES.toString());
+                g.setCname(Messages.ACCOUNTNAMES.toString());
                 g.setIDS(1);
             }
         } else {
             if (data.size() == 0) {
                 g = new Account();
-                g.setCName(mpv5.db.objects.User.getCurrentUser().__getCName());
+                g.setCname(mpv5.db.objects.User.getCurrentUser().__getCname());
                 g.setIDS(-1);
                 g.setIntparentaccount(1);
             } else {
@@ -653,7 +653,7 @@ public class ControlPanel_Accounts extends javax.swing.JPanel implements Control
         cname.set_Text(cname_);
         desc.setText(description_);
         try {
-            parents.set_Text(DatabaseObject.getObject(Context.getAccounts(), intparentaccount_).__getCName());
+            parents.set_Text(DatabaseObject.getObject(Context.getAccounts(), intparentaccount_).__getCname());
         } catch (NodataFoundException ex) {
             Log.Debug(this, ex.getMessage());
         }

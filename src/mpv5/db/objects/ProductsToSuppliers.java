@@ -32,7 +32,7 @@ public class ProductsToSuppliers extends DatabaseObject {
 
     public ProductsToSuppliers() {
         setContext(Context.getProductsToSuppliers());
-        setCName("n/a");
+        setCname("n/a");
     }
 
     @Override

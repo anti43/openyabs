@@ -97,7 +97,7 @@ public class newOrdersJob implements WSDaemonJob {
 
                     c = obs2.get(0);
                     c.setNotes(c.__getNotes() + "\nAuto generated guest account for webshop: "
-                            + daemon.getWebShop().__getCName());
+                            + daemon.getWebShop().__getCname());
                     c.setMailaddress("NO-MAILS " + c.__getMailaddress());
                     c.setGroupsids(daemon.getWebShop().__getGroupsids());
                     c.saveImport();
@@ -126,7 +126,7 @@ public class newOrdersJob implements WSDaemonJob {
                         md = new WSContactsMapping();
                         md.setContactsids(c.__getIDS());
                         md.setWscontact(String.valueOf(id));
-                        md.setCName(String.valueOf(id) + "@" + daemon.getWebShopID());
+                        md.setCname(String.valueOf(id) + "@" + daemon.getWebShopID());
                         md.setWebshopsids(daemon.getWebShopID());
                         md.setGroupsids(mpv5.db.objects.User.getCurrentUser().__getGroupsids());
                         md.save();
@@ -145,7 +145,7 @@ public class newOrdersJob implements WSDaemonJob {
 
                 m.setItemsids(order.__getIDS());
                 m.setWsitem(String.valueOf(wsitemids));
-                m.setCName(String.valueOf(order.__getIDS() + "@" + daemon.getWebShopID()));
+                m.setCname(String.valueOf(order.__getIDS() + "@" + daemon.getWebShopID()));
                 m.setWebshopsids(daemon.getWebShopID());
                 m.setGroupsids(mpv5.db.objects.User.getCurrentUser().__getGroupsids());
                 m.saveImport();

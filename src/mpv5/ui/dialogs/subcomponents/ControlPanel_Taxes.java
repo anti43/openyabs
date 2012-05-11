@@ -177,7 +177,7 @@ public class ControlPanel_Taxes extends javax.swing.JPanel implements ControlApp
         } else {
             t.setIdentifier(cname_);
         }
-        t.setCName(cname_);
+        t.setCname(cname_);
         t.setCountry(country_);
         t.setTaxvalue(taxvalue_);
         t.save();
@@ -189,7 +189,7 @@ public class ControlPanel_Taxes extends javax.swing.JPanel implements ControlApp
         Tax t = new Tax();
         t.setCountry(country_);
         t.setIdentifier(cname_);
-        t.setCName(cname_);
+        t.setCname(cname_);
         t.setTaxvalue(taxvalue_);
         t.save();
         actionAfterCreate();

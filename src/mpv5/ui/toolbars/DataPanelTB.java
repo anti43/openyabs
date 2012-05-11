@@ -453,7 +453,7 @@ public class DataPanelTB extends javax.swing.JPanel implements ActionListener, I
         if (dato.isExisting()) {
             parents.print();
 
-            final String fmessage = Messages.PRINTED + dato.__getCName();
+            final String fmessage = Messages.PRINTED + dato.__getCname();
             final String fdbid = dato.getDbIdentity();
             final int fids = dato.__getIDS();
             final int fgids = dato.__getGroupsids();
@@ -461,7 +461,7 @@ public class DataPanelTB extends javax.swing.JPanel implements ActionListener, I
 
                 @Override
                 public void run() {
-                    QueryHandler.instanceOf().clone(Context.getHistory()).insertHistoryItem(fmessage, mpv5.db.objects.User.getCurrentUser().__getCName(), fdbid, fids, fgids);
+                    QueryHandler.instanceOf().clone(Context.getHistory()).insertHistoryItem(fmessage, mpv5.db.objects.User.getCurrentUser().__getCname(), fdbid, fids, fgids);
                 }
             };
             new Thread(runnable).start();
@@ -513,7 +513,7 @@ public class DataPanelTB extends javax.swing.JPanel implements ActionListener, I
         DatabaseObject dato = parents.getDataOwner();
         if (dato.isExisting() && parents instanceof ExportablePanel) {
             ((ExportablePanel) parents).pdf();
-            final String fmessage = Messages.PDF + dato.__getCName();
+            final String fmessage = Messages.PDF + dato.__getCname();
             final String fdbid = dato.getDbIdentity();
             final int fids = dato.__getIDS();
             final int fgids = dato.__getGroupsids();
@@ -521,7 +521,7 @@ public class DataPanelTB extends javax.swing.JPanel implements ActionListener, I
 
                 @Override
                 public void run() {
-                    QueryHandler.instanceOf().clone(Context.getHistory()).insertHistoryItem(fmessage, mpv5.db.objects.User.getCurrentUser().__getCName(), fdbid, fids, fgids);
+                    QueryHandler.instanceOf().clone(Context.getHistory()).insertHistoryItem(fmessage, mpv5.db.objects.User.getCurrentUser().__getCname(), fdbid, fids, fgids);
                 }
             };
             new Thread(runnable).start();
@@ -533,7 +533,7 @@ public class DataPanelTB extends javax.swing.JPanel implements ActionListener, I
         DatabaseObject dato = parents.getDataOwner();
         if (dato.isExisting()) {
             ((ExportablePanel) parents).odt();
-            final String fmessage = Messages.ODT + dato.__getCName();
+            final String fmessage = Messages.ODT + dato.__getCname();
             final String fdbid = dato.getDbIdentity();
             final int fids = dato.__getIDS();
             final int fgids = dato.__getGroupsids();
@@ -541,7 +541,7 @@ public class DataPanelTB extends javax.swing.JPanel implements ActionListener, I
 
                 @Override
                 public void run() {
-                    QueryHandler.instanceOf().clone(Context.getHistory()).insertHistoryItem(fmessage, mpv5.db.objects.User.getCurrentUser().__getCName(), fdbid, fids, fgids);
+                    QueryHandler.instanceOf().clone(Context.getHistory()).insertHistoryItem(fmessage, mpv5.db.objects.User.getCurrentUser().__getCname(), fdbid, fids, fgids);
                 }
             };
             new Thread(runnable).start();
@@ -593,7 +593,7 @@ public class DataPanelTB extends javax.swing.JPanel implements ActionListener, I
                     fav = new Favourite(dato);
                     fav.save();
                     mpv5.YabsViewProxy.instance().reloadFavorites();
-                    mpv5.YabsViewProxy.instance().addMessage(Messages.ADDED_TO_FAVOURITES + dato.__getCName());
+                    mpv5.YabsViewProxy.instance().addMessage(Messages.ADDED_TO_FAVOURITES + dato.__getCname());
                     parents.setDataOwner(dato, true);
                 } else {
                     parents.showRequiredFields();

@@ -51,7 +51,7 @@ public class FilePrintJob {
         if (dbobj != null) {
             dbobjarr = new ArrayList<DatabaseObject>();
             dbobjarr.add(dbobj);
-            name = dbobj.__getCName();
+            name = dbobj.__getCname();
         }
 
         if (dbobjarr != null) {
@@ -97,7 +97,7 @@ public class FilePrintJob {
         if (dbobj != null) {
             dbobjarr = new ArrayList<DatabaseObject>();
             dbobjarr.add(dbobj);
-            name = dbobj.__getCName();
+            name = dbobj.__getCname();
         }
         File f = FileDirectoryHandler.getTempFile(name, "vcf");
         FileReaderWriter rw = new FileReaderWriter(f);
@@ -133,7 +133,7 @@ public class FilePrintJob {
     public void toXML() {
         XMLWriter xmlw = new XMLWriter();
         xmlw.newDoc(true);
-        String name = dbobj.__getCName();
+        String name = dbobj.__getCname();
 
         if (dbobj != null) {
             dbobjarr = new ArrayList<DatabaseObject>();

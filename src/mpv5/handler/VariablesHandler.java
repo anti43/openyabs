@@ -122,7 +122,7 @@ public abstract class VariablesHandler {
                 } else if (varName.equals(GENERIC_VARS.CURRENT_USER.toString())) {
                     varValue = User.getUsername(mpv5.db.objects.User.getCurrentUser().__getIDS());
                 } else if (varName.equals(GENERIC_VARS.GROUP.toString())) {
-                    varValue = Group.getObject(Context.getGroup(), target.__getGroupsids()).__getCName();
+                    varValue = Group.getObject(Context.getGroup(), target.__getGroupsids()).__getCname();
                 } else if (varName.equals(GENERIC_VARS.MONTH.toString())) {
                     varValue = DateConverter.getMonth();
                 } else if (varName.equals(GENERIC_VARS.MONTH_NAME.toString())) {
@@ -165,7 +165,7 @@ public abstract class VariablesHandler {
             try {
                 Contact c = (Contact) DatabaseObject.getObject(Context.getContact(), ((Item) target).__getContactsids());
 
-                vars.add(new String[]{"[contact.cname]".toUpperCase(), c.__getCName()});
+                vars.add(new String[]{"[contact.cname]".toUpperCase(), c.__getCname()});
                 vars.add(new String[]{"[contact.cnumber]".toUpperCase(), c.__getCNumber()});
                 vars.add(new String[]{"[contact.company]".toUpperCase(), c.__getCompany()});
                 vars.add(new String[]{"[contact.prename]".toUpperCase(), c.__getPrename()});
@@ -195,7 +195,7 @@ public abstract class VariablesHandler {
             try {
                 Contact c = (Contact) DatabaseObject.getObject(Context.getContact(), ((ActivityList) target).__getContactsids());
 
-                vars.add(new String[]{"[contact.cname]".toUpperCase(), c.__getCName()});
+                vars.add(new String[]{"[contact.cname]".toUpperCase(), c.__getCname()});
                 vars.add(new String[]{"[contact.company]".toUpperCase(), c.__getCompany()});
                 vars.add(new String[]{"[contact.prename]".toUpperCase(), c.__getPrename()});
                 vars.add(new String[]{"[contact.title]".toUpperCase(), c.__getTitle()});

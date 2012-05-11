@@ -230,7 +230,7 @@ public class Popup {
             Object l = list.get(i);
             if (l instanceof DatabaseObject) {
                 DatabaseObject databaseObject = (DatabaseObject) l;
-                t += databaseObject.__getCName() + " [" + databaseObject.getDbIdentity() + "]" + "\n";
+                t += databaseObject.__getCname() + " [" + databaseObject.getDbIdentity() + "]" + "\n";
             } else {
                 t += list.get(i) + "\n";
             }

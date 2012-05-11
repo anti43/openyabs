@@ -67,7 +67,7 @@ public class Expense extends DatabaseObject implements Formattable {
 
     @Override
     public String toString() {
-        return __getCName();
+        return __getCname();
     }
 
     @Override
@@ -146,7 +146,7 @@ public class Expense extends DatabaseObject implements Formattable {
     @Override
     public void ensureUniqueness() {
         setCnumber(getFormatHandler().next());
-        setCName(__getCnumber());
+        setCname(__getCnumber());
     }
 
     /**

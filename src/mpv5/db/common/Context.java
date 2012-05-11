@@ -450,6 +450,7 @@ public class Context implements Serializable {
         list.add(getContact());
         list.add(getProduct());
         list.add(getAccounts());
+        list.add(getGroup());
         return list;
     }
 

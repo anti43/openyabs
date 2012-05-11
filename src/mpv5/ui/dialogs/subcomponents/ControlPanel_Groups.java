@@ -347,7 +347,7 @@ public class ControlPanel_Groups extends javax.swing.JPanel implements ControlAp
         if (evt.getButton() == MouseEvent.BUTTON2 || evt.getButton() == MouseEvent.BUTTON3) {
             if (node != null) {
                 Group g = (Group) node.getUserObject();
-                parents.set_Text(g.__getCName());
+                parents.set_Text(g.__getCname());
                 path.setText(getPath(node, 0));
             }
         } else {
@@ -468,7 +468,7 @@ public class ControlPanel_Groups extends javax.swing.JPanel implements ControlAp
         desc.setText(description_);
         path.setText(hierarchypath_);
         try {
-            parents.set_Text(DatabaseObject.getObject(Context.getGroup(), groupsids_).__getCName());
+            parents.set_Text(DatabaseObject.getObject(Context.getGroup(), groupsids_).__getCname());
         } catch (NodataFoundException ex) {
 //            Log.Debug(this, ex);
         }

@@ -92,7 +92,7 @@ public class GroupDialog extends javax.swing.JPanel {
         }
 
         Group g = new Group();
-        g.setCName(Messages.GROUPNAMES.toString());
+        g.setCname(Messages.GROUPNAMES.toString());
         g.setIDS(-1);
 
         tree.setModel(MPTreeModel.toTreeModel(data, g));

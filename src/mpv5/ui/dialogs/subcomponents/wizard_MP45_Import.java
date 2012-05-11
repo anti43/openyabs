@@ -306,7 +306,7 @@ public class wizard_MP45_Import extends javax.swing.JPanel implements Wizardable
                 c.setCompany(String.valueOf(data[i][1]));
                 c.setTitle(String.valueOf(data[i][2]));
                 c.setPrename(String.valueOf(data[i][3]));
-                c.setCName(String.valueOf(data[i][4]));
+                c.setCname(String.valueOf(data[i][4]));
                 c.setStreet(String.valueOf(data[i][5]));
                 c.setZip(String.valueOf(data[i][6]));
                 c.setCity(String.valueOf(data[i][7]));
@@ -345,7 +345,7 @@ public class wizard_MP45_Import extends javax.swing.JPanel implements Wizardable
                 c.setCompany(String.valueOf(data[i][1]));
                 c.setTitle(String.valueOf(data[i][2]));
                 c.setPrename(String.valueOf(data[i][3]));
-                c.setCName(String.valueOf(data[i][4]));
+                c.setCname(String.valueOf(data[i][4]));
                 c.setStreet(String.valueOf(data[i][5]));
                 c.setZip(String.valueOf(data[i][6]));
                 c.setCity(String.valueOf(data[i][7]));
@@ -386,7 +386,7 @@ public class wizard_MP45_Import extends javax.swing.JPanel implements Wizardable
                 c.setCompany(String.valueOf(data[i][1]));
                 c.setTitle(String.valueOf(data[i][2]));
                 c.setPrename(String.valueOf(data[i][3]));
-                c.setCName(String.valueOf(data[i][4]));
+                c.setCname(String.valueOf(data[i][4]));
                 c.setStreet(String.valueOf(data[i][5]));
                 c.setZip(String.valueOf(data[i][6]));
                 c.setCity(String.valueOf(data[i][7]));
@@ -423,7 +423,7 @@ public class wizard_MP45_Import extends javax.swing.JPanel implements Wizardable
             HashMap<Integer, Integer> taxes = new HashMap<Integer, Integer>();
             for (int i = 0; i < txes.length; i++) {
                 Tax t = new Tax();
-                t.setCName(txes[i][1].toString());
+                t.setCname(txes[i][1].toString());
                 t.setTaxvalue(new BigDecimal(txes[i][2].toString()));
                 t.save();
                 taxes.put(Integer.valueOf(txes[i][0].toString()), t.__getIDS());
@@ -445,7 +445,7 @@ public class wizard_MP45_Import extends javax.swing.JPanel implements Wizardable
             for (int i = 0; i < data.length; i++) {
                 Product c = new Product();
                 c.setCnumber(String.valueOf(data[i][0]));
-                c.setCName(String.valueOf(data[i][1]));
+                c.setCname(String.valueOf(data[i][1]));
                 c.setDescription(String.valueOf(data[i][2]));
                 c.setExternalnetvalue(new BigDecimal(data[i][3].toString()));
                 c.setInternalnetvalue(new BigDecimal(data[i][4].toString()));

@@ -71,7 +71,7 @@ public class VCFParser {
             try {
 //    private String prename = "";
 //    public String cname = "";
-                c.setCName(((N) card.getTypes("N").next()).getFamily());
+                c.setCname(((N) card.getTypes("N").next()).getFamily());
                 c.setPrename(((N) card.getTypes("N").next()).getGiven());
 //    private String cnumber = "";
 //    private String taxnumber = "";
@@ -191,9 +191,9 @@ public class VCFParser {
             String text =
                     "BEGIN:VCARD\n"
                     + "VERSION:3.0\n"
-                    + "N:" + c.__getCName() + ";" + c.__getPrename()
+                    + "N:" + c.__getCname() + ";" + c.__getPrename()
                     + "\n"
-                    + "FN:" + c.__getPrename() + " " + c.__getCName()
+                    + "FN:" + c.__getPrename() + " " + c.__getCname()
                     + "\n"
                     + "ORG:" + c.__getCompany() + ";" + c.__getDepartment()
                     + "\n"

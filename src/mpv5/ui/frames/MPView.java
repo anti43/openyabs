@@ -555,9 +555,9 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
                     if (item.equals(panel.getDataOwner())) {
                         getTabPane().setSelectedIndex(i);
                         if (tabTitle == null) {
-                            getTabPane().setTitleAt(i, item.__getCName());
+                            getTabPane().setTitleAt(i, item.__getCname());
                         } else {
-                            getTabPane().setTitleAt(i, tabTitle + ": " + item.__getCName());
+                            getTabPane().setTitleAt(i, tabTitle + ": " + item.__getCname());
                         }
                         proceed = false;
                         break;
@@ -570,7 +570,7 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
             if (item.getView() != null && mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("org.openyabs.uiproperty", "norecycletabs")) {
                 if (tabTitle == null) {
                     final DataPanel p = ((DataPanel) item.getView());
-                    addTab((JComponent) p, item.__getCName());
+                    addTab((JComponent) p, item.__getCname());
                     Runnable runnable = new Runnable() {
 
                         public void run() {
@@ -580,7 +580,7 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
                     SwingUtilities.invokeLater(runnable);
                 } else {
                     final DataPanel p = ((DataPanel) item.getView());
-                    addTab((JComponent) p, tabTitle + ": " + item.__getCName());
+                    addTab((JComponent) p, tabTitle + ": " + item.__getCname());
                     Runnable runnable = new Runnable() {
 
                         public void run() {
@@ -602,9 +602,9 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
                             getTabPane().setSelectedIndex(i);
                             panel.setDataOwner(item, true);
                             if (tabTitle == null) {
-                                getTabPane().setTitleAt(i, item.__getCName());
+                                getTabPane().setTitleAt(i, item.__getCname());
                             } else {
-                                getTabPane().setTitleAt(i, tabTitle + ": " + item.__getCName());
+                                getTabPane().setTitleAt(i, tabTitle + ": " + item.__getCname());
                             }
                             found = true;
                             break;
@@ -616,9 +616,9 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
                         final DataPanel p = (DataPanel) item.getView();
 
                         if (tabTitle == null) {
-                            addTab((JComponent) p, item.__getCName());
+                            addTab((JComponent) p, item.__getCname());
                         } else {
-                            addTab((JComponent) p, tabTitle + ": " + item.__getCName());
+                            addTab((JComponent) p, tabTitle + ": " + item.__getCname());
                         }
                         Runnable runnable = new Runnable() {
 
@@ -629,9 +629,9 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
                         SwingUtilities.invokeLater(runnable);
                     } catch (ClassCastException e) {
                         if (tabTitle == null) {
-                            addTab(item.getView(), item.__getCName());
+                            addTab(item.getView(), item.__getCname());
                         } else {
-                            addTab(item.getView(), tabTitle + ": " + item.__getCName());
+                            addTab(item.getView(), tabTitle + ": " + item.__getCname());
                         }
                     }
                 }
@@ -2389,7 +2389,7 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
                         contact.saveImport();
                     } catch (Exception ec) {
                         Popup.error(ec);
-                        contact.setCName("ERROR");
+                        contact.setCname("ERROR");
                     }
                 }
 

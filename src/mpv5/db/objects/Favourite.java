@@ -40,7 +40,7 @@ public class Favourite extends DatabaseObject {
     public Favourite(DatabaseObject dato) {
         setContext(Context.getFavourite());
         this.setUsersids(mpv5.db.objects.User.getCurrentUser().__getIDS());
-        setCName(dato.getDbIdentity());
+        setCname(dato.getDbIdentity());
         setItemsids(dato.__getIDS());
     }
 
@@ -113,7 +113,7 @@ public class Favourite extends DatabaseObject {
 
         for (int i = 0; i < favs.length; i++) {
             Favourite favi = new Favourite();
-            favi.setCName(String.valueOf(data[i][0]));
+            favi.setCname(String.valueOf(data[i][0]));
             favi.setUsersids(Integer.valueOf(data[i][1].toString()));
             favi.setItemsids(Integer.valueOf(data[i][2].toString()));
             favs[i] = favi;
@@ -128,7 +128,7 @@ public class Favourite extends DatabaseObject {
      * @return
      */
     public Context getFavContext() {
-       return Context.getMatchingContext(__getCName());
+       return Context.getMatchingContext(__getCname());
     }
 
 

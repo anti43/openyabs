@@ -506,7 +506,7 @@ public class ProductListsPanel extends javax.swing.JPanel implements DataPanel, 
             }
 
             Product p = new Product();
-            p.setCName(dataOwner.__getCName());
+            p.setCname(dataOwner.__getCname());
             p.setProductlistsids(dataOwner.__getIDS());
             p.setExternalnetvalue(value.getValue(BigDecimal.ONE));
             p.setInternalnetvalue(netvalue.getValue(BigDecimal.ONE));
@@ -706,7 +706,7 @@ public class ProductListsPanel extends javax.swing.JPanel implements DataPanel, 
             try {
                 QueryCriteria c = new QueryCriteria("productlistsids", dataOwner.__getIDS());
                 Product p = (Product) Product.getObjects(Context.getProduct(), c).get(0);
-                p.setCName(dataOwner.__getCName());
+                p.setCname(dataOwner.__getCname());
                 p.setProductlistsids(dataOwner.__getIDS());
                 p.setExternalnetvalue(value.getValue(BigDecimal.ONE));
                 p.setInternalnetvalue(netvalue.getValue(BigDecimal.ONE));

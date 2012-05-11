@@ -77,7 +77,7 @@ public class ImportTableModel extends MPTableModel {
                 }
             }
             data[i][2] = databaseObject.getDbIdentity();
-            data[i][3] = databaseObject.__getCName();
+            data[i][3] = databaseObject.__getCname();
             data[i][4] = sdata;
         }
 

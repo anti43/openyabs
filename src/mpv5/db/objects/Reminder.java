@@ -27,6 +27,7 @@ import mpv5.db.common.NodataFoundException;
 import mpv5.db.common.Templateable;
 import mpv5.globals.Constants;
 import mpv5.globals.Messages;
+import mpv5.handler.FormatHandler;
 import mpv5.logging.Log;
 import mpv5.utils.images.MPIcon;
 
@@ -50,18 +51,8 @@ public class Reminder extends DatabaseObject implements Templateable {
     }
 
     @Override
-    public String __getCName() {
-        return getCname();
-    }
-
-    @Override
     public JComponent getView() {
         return null;
-    }
-
-    @Override
-    public void setCName(String name) {
-        setCname(name);
     }
 
     /**
@@ -187,5 +178,9 @@ public class Reminder extends DatabaseObject implements Templateable {
     @Override
     public int templateGroupIds() {
         return __getGroupsids();
+    }
+
+    public FormatHandler getFormatHandler() {
+        throw new UnsupportedOperationException("Not supported yet.");
     }
 }

@@ -23,6 +23,7 @@ import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
 import mpv5.db.common.Templateable;
 import mpv5.globals.Constants;
+import mpv5.handler.FormatHandler;
 import mpv5.ui.panels.ConversationPanel;
 import mpv5.utils.images.MPIcon;
 
@@ -88,7 +89,7 @@ public class Conversation
 
     @Override
     public String toString() {
-        return __getCName();
+        return __getCname();
     }
 
     @Override
@@ -107,5 +108,9 @@ public class Conversation
 
     public int templateGroupIds() {
        return this.__getGroupsids();
+    }
+
+    public FormatHandler getFormatHandler() {
+        return null;
     }
 }

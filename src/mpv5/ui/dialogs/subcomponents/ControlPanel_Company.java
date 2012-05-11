@@ -257,7 +257,7 @@ public final class ControlPanel_Company extends javax.swing.JPanel implements Co
 
                     @Override
                     public void run() {
-                        QueryHandler.instanceOf().clone(Context.getHistory()).insertHistoryItem(fmessage, mpv5.db.objects.User.getCurrentUser().__getCName(), fdbid, fids, fgids);
+                        QueryHandler.instanceOf().clone(Context.getHistory()).insertHistoryItem(fmessage, mpv5.db.objects.User.getCurrentUser().__getCname(), fdbid, fids, fgids);
                     }
                 };
                 SwingUtilities.invokeLater(runnable);

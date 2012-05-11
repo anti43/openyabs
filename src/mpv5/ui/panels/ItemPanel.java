@@ -667,21 +667,21 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                    .addComponent(accountselect, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 325, Short.MAX_VALUE)
-                    .addComponent(type, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(accountselect, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 367, Short.MAX_VALUE)
+                    .addComponent(type, javax.swing.GroupLayout.DEFAULT_SIZE, 367, Short.MAX_VALUE)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(number, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(number, javax.swing.GroupLayout.DEFAULT_SIZE, 343, Short.MAX_VALUE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 18, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 26, Short.MAX_VALUE)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(status, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                        .addComponent(jLabel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGap(40, 40, 40)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(jLabel4, javax.swing.GroupLayout.DEFAULT_SIZE, 214, Short.MAX_VALUE)
                         .addGap(57, 57, 57)
                         .addComponent(button_order2))
-                    .addComponent(groupnameselect, javax.swing.GroupLayout.DEFAULT_SIZE, 280, Short.MAX_VALUE))
+                    .addComponent(groupnameselect, javax.swing.GroupLayout.DEFAULT_SIZE, 310, Short.MAX_VALUE)
+                    .addComponent(status, javax.swing.GroupLayout.DEFAULT_SIZE, 310, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(staus_icon, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(49, 49, 49)
@@ -699,17 +699,17 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(accountselect, javax.swing.GroupLayout.Alignment.CENTER, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel4, javax.swing.GroupLayout.Alignment.CENTER, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jLabel4, javax.swing.GroupLayout.Alignment.CENTER, javax.swing.GroupLayout.DEFAULT_SIZE, 20, Short.MAX_VALUE)
                     .addComponent(button_order2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 16, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
-                    .addComponent(number, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
-                    .addComponent(groupnameselect, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(groupnameselect, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(number, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(61, 61, 61))
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGap(11, 11, 11)
-                .addComponent(staus_icon, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(staus_icon, javax.swing.GroupLayout.DEFAULT_SIZE, 11, Short.MAX_VALUE)
                 .addGap(122, 122, 122))
         );
 
@@ -722,7 +722,10 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
         toorder.setEnabled(false);
         toorder.setFocusable(false);
         toorder.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        toorder.setMaximumSize(new java.awt.Dimension(333, 20));
+        toorder.setMinimumSize(new java.awt.Dimension(80, 20));
         toorder.setName(bundle.getString("ItemPanel.toorder.name")); // NOI18N
+        toorder.setPreferredSize(new java.awt.Dimension(100, 20));
         toorder.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         toorder.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -735,7 +738,10 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
         toinvoice.setEnabled(false);
         toinvoice.setFocusable(false);
         toinvoice.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        toinvoice.setMaximumSize(new java.awt.Dimension(333, 20));
+        toinvoice.setMinimumSize(new java.awt.Dimension(80, 20));
         toinvoice.setName(bundle.getString("ItemPanel.toinvoice.name")); // NOI18N
+        toinvoice.setPreferredSize(new java.awt.Dimension(100, 20));
         toinvoice.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         toinvoice.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -759,7 +765,10 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
         button_reminders.setEnabled(false);
         button_reminders.setFocusable(false);
         button_reminders.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        button_reminders.setMaximumSize(new java.awt.Dimension(333, 20));
+        button_reminders.setMinimumSize(new java.awt.Dimension(80, 20));
         button_reminders.setName("button_reminders"); // NOI18N
+        button_reminders.setPreferredSize(new java.awt.Dimension(100, 20));
         button_reminders.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         button_reminders.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -771,7 +780,10 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
         jButton2.setText(bundle.getString("ItemPanel.jButton2.text")); // NOI18N
         jButton2.setFocusable(false);
         jButton2.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        jButton2.setMaximumSize(new java.awt.Dimension(333, 20));
+        jButton2.setMinimumSize(new java.awt.Dimension(80, 20));
         jButton2.setName("jButton2"); // NOI18N
+        jButton2.setPreferredSize(new java.awt.Dimension(100, 20));
         jButton2.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         jButton2.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -786,7 +798,10 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
         button_schedule.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/16/kalarm.png"))); // NOI18N
         button_schedule.setText(bundle.getString("ItemPanel.button_schedule.text")); // NOI18N
         button_schedule.setEnabled(false);
+        button_schedule.setMaximumSize(new java.awt.Dimension(333, 20));
+        button_schedule.setMinimumSize(new java.awt.Dimension(80, 20));
         button_schedule.setName("button_schedule"); // NOI18N
+        button_schedule.setPreferredSize(new java.awt.Dimension(100, 20));
         button_schedule.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 button_scheduleMouseClicked(evt);
@@ -803,7 +818,10 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
         button_preview.setEnabled(false);
         button_preview.setFocusable(false);
         button_preview.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        button_preview.setMaximumSize(new java.awt.Dimension(333, 20));
+        button_preview.setMinimumSize(new java.awt.Dimension(80, 20));
         button_preview.setName("button_preview"); // NOI18N
+        button_preview.setPreferredSize(new java.awt.Dimension(100, 20));
         button_preview.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         button_preview.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -816,7 +834,10 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
         button_deliverynote.setEnabled(false);
         button_deliverynote.setFocusable(false);
         button_deliverynote.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        button_deliverynote.setMaximumSize(new java.awt.Dimension(333, 20));
+        button_deliverynote.setMinimumSize(new java.awt.Dimension(80, 20));
         button_deliverynote.setName("button_deliverynote"); // NOI18N
+        button_deliverynote.setPreferredSize(new java.awt.Dimension(100, 20));
         button_deliverynote.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         button_deliverynote.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -829,7 +850,10 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
         button_orderconf.setEnabled(false);
         button_orderconf.setFocusable(false);
         button_orderconf.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        button_orderconf.setMaximumSize(new java.awt.Dimension(333, 20));
+        button_orderconf.setMinimumSize(new java.awt.Dimension(80, 20));
         button_orderconf.setName("button_orderconf"); // NOI18N
+        button_orderconf.setPreferredSize(new java.awt.Dimension(100, 20));
         button_orderconf.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         button_orderconf.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -842,28 +866,40 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
         checkb_pront_oc.setEnabled(false);
         checkb_pront_oc.setFocusable(false);
         checkb_pront_oc.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
+        checkb_pront_oc.setMaximumSize(new java.awt.Dimension(333, 20));
+        checkb_pront_oc.setMinimumSize(new java.awt.Dimension(80, 20));
         checkb_pront_oc.setName("checkb_pront_oc"); // NOI18N
+        checkb_pront_oc.setPreferredSize(new java.awt.Dimension(100, 20));
         checkb_pront_oc.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         jToolBar1.add(checkb_pront_oc);
 
         jPanel2.setBackground(new java.awt.Color(255, 255, 255));
         jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("ItemPanel.jPanel2.border.title"))); // NOI18N
         jPanel2.setName("jPanel2"); // NOI18N
+        jPanel2.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
 
         contactname.set_Label(bundle.getString("ItemPanel.contactname._Label")); // NOI18N
         contactname.setName("contactname"); // NOI18N
+        contactname.setPreferredSize(new java.awt.Dimension(300, 20));
+        jPanel2.add(contactname);
 
         contactcity.setEditable(false);
         contactcity.setText(bundle.getString("ItemPanel.contactcity.text")); // NOI18N
         contactcity.setName("contactcity"); // NOI18N
+        contactcity.setPreferredSize(new java.awt.Dimension(150, 20));
+        jPanel2.add(contactcity);
 
         contactcompany.setEditable(false);
         contactcompany.setText(bundle.getString("ItemPanel.contactcompany.text")); // NOI18N
         contactcompany.setName("contactcompany"); // NOI18N
+        contactcompany.setPreferredSize(new java.awt.Dimension(150, 20));
+        jPanel2.add(contactcompany);
 
         contactid.setEditable(false);
         contactid.setText(bundle.getString("ItemPanel.contactid.text")); // NOI18N
         contactid.setName("contactid"); // NOI18N
+        contactid.setPreferredSize(new java.awt.Dimension(150, 20));
+        jPanel2.add(contactid);
 
         jButton3.setText(bundle.getString("ItemPanel.jButton3.text")); // NOI18N
         jButton3.setName("jButton3"); // NOI18N
@@ -872,6 +908,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
                 jButton3ActionPerformed(evt);
             }
         });
+        jPanel2.add(jButton3);
 
         jButton4.setText(bundle.getString("ItemPanel.jButton4.text")); // NOI18N
         jButton4.setName("jButton4"); // NOI18N
@@ -880,73 +917,27 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
                 jButton4ActionPerformed(evt);
             }
         });
-
-        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
-        jPanel2.setLayout(jPanel2Layout);
-        jPanel2Layout.setHorizontalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel2Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(contactname, javax.swing.GroupLayout.PREFERRED_SIZE, 239, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(contactcity, javax.swing.GroupLayout.PREFERRED_SIZE, 131, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(contactcompany, javax.swing.GroupLayout.PREFERRED_SIZE, 131, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(8, 8, 8)
-                .addComponent(contactid, javax.swing.GroupLayout.PREFERRED_SIZE, 131, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jButton3)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jButton4)
-                .addContainerGap(54, Short.MAX_VALUE))
-        );
-        jPanel2Layout.setVerticalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-            .addComponent(jButton4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addGroup(jPanel2Layout.createSequentialGroup()
-                .addGap(0, 0, Short.MAX_VALUE)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                        .addComponent(contactcity)
-                        .addComponent(contactcompany)
-                        .addComponent(contactid)
-                        .addComponent(contactname, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)))
-        );
+        jPanel2.add(jButton4);
 
         jPanel5.setBackground(new java.awt.Color(255, 255, 255));
         jPanel5.setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("ItemPanel.jPanel5.border.title"))); // NOI18N
         jPanel5.setName("jPanel5"); // NOI18N
+        jPanel5.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 10, 0));
 
         date1.set_Label(bundle.getString("ItemPanel.date1._Label")); // NOI18N
         date1.setName("date1"); // NOI18N
+        date1.setPreferredSize(new java.awt.Dimension(280, 20));
+        jPanel5.add(date1);
 
         date2.set_Label(bundle.getString("ItemPanel.date2._Label")); // NOI18N
         date2.setName("date2"); // NOI18N
+        date2.setPreferredSize(new java.awt.Dimension(280, 20));
+        jPanel5.add(date2);
 
         date3.set_Label(bundle.getString("ItemPanel.date3._Label")); // NOI18N
         date3.setName("date3"); // NOI18N
-
-        javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
-        jPanel5.setLayout(jPanel5Layout);
-        jPanel5Layout.setHorizontalGroup(
-            jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel5Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(date1, javax.swing.GroupLayout.PREFERRED_SIZE, 250, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(date2, javax.swing.GroupLayout.PREFERRED_SIZE, 250, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(date3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
-        jPanel5Layout.setVerticalGroup(
-            jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
-                .addComponent(date1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(date2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(date3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
+        date3.setPreferredSize(new java.awt.Dimension(280, 20));
+        jPanel5.add(date3);
 
         jSplitPane2.setOrientation(javax.swing.JSplitPane.VERTICAL_SPLIT);
         jSplitPane2.setResizeWeight(0.8);
@@ -977,7 +968,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
         jSeparator3.setSeparatorSize(new java.awt.Dimension(15, 10));
         jToolBar2.add(jSeparator3);
 
-        netvalue.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
+        netvalue.setFont(new java.awt.Font("Tahoma", 1, 11));
         netvalue.setText(bundle.getString("ItemPanel.netvalue.text")); // NOI18N
         netvalue.setName("netvalue"); // NOI18N
         jToolBar2.add(netvalue);
@@ -993,7 +984,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
         jSeparator6.setSeparatorSize(new java.awt.Dimension(15, 10));
         jToolBar2.add(jSeparator6);
 
-        taxvalue.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
+        taxvalue.setFont(new java.awt.Font("Tahoma", 1, 11));
         taxvalue.setText(bundle.getString("ItemPanel.taxvalue.text")); // NOI18N
         taxvalue.setName("taxvalue"); // NOI18N
         jToolBar2.add(taxvalue);
@@ -1009,7 +1000,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
         jSeparator5.setSeparatorSize(new java.awt.Dimension(15, 10));
         jToolBar2.add(jSeparator5);
 
-        value.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
+        value.setFont(new java.awt.Font("Tahoma", 1, 11));
         value.setText(bundle.getString("ItemPanel.value.text")); // NOI18N
         value.setName("value"); // NOI18N
         jToolBar2.add(value);
@@ -1025,7 +1016,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
         jSeparator8.setSeparatorSize(new java.awt.Dimension(15, 10));
         jToolBar2.add(jSeparator8);
 
-        discount.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
+        discount.setFont(new java.awt.Font("Tahoma", 1, 11));
         discount.setText(bundle.getString("ItemPanel.discount.text")); // NOI18N
         discount.setName("discount"); // NOI18N
         jToolBar2.add(discount);
@@ -1112,7 +1103,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
                 .addComponent(upItem)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(upItem1)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(15, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
@@ -1122,7 +1113,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
             .addGroup(jPanel4Layout.createSequentialGroup()
                 .addComponent(itemPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 830, Short.MAX_VALUE))
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 916, Short.MAX_VALUE))
         );
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1259,13 +1250,13 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
         jPanel8Layout.setHorizontalGroup(
             jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel8Layout.createSequentialGroup()
-                .addContainerGap(434, Short.MAX_VALUE)
+                .addContainerGap(520, Short.MAX_VALUE)
                 .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(addfile, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(removefile, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)))
             .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(jPanel8Layout.createSequentialGroup()
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 427, Short.MAX_VALUE)
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 513, Short.MAX_VALUE)
                     .addGap(31, 31, 31)))
         );
         jPanel8Layout.setVerticalGroup(
@@ -1274,9 +1265,9 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
                 .addComponent(addfile)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(removefile)
-                .addContainerGap(12, Short.MAX_VALUE))
+                .addContainerGap(15, Short.MAX_VALUE))
             .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 68, Short.MAX_VALUE))
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 71, Short.MAX_VALUE))
         );
 
         jSplitPane1.setRightComponent(jPanel8);
@@ -1289,17 +1280,16 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
         rightpane.setLayout(rightpaneLayout);
         rightpaneLayout.setHorizontalGroup(
             rightpaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jToolBar1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(jToolBar1, javax.swing.GroupLayout.DEFAULT_SIZE, 952, Short.MAX_VALUE)
             .addGroup(rightpaneLayout.createSequentialGroup()
                 .addGroup(rightpaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jSplitPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
                     .addGroup(rightpaneLayout.createSequentialGroup()
-                        .addGroup(rightpaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 866, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGroup(rightpaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                .addComponent(jPanel2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(jPanel5, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                        .addGap(0, 0, Short.MAX_VALUE)))
+                        .addGroup(rightpaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 952, Short.MAX_VALUE)
+                            .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jPanel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         rightpaneLayout.setVerticalGroup(
@@ -1312,8 +1302,8 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, 0)
                 .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jSplitPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 228, Short.MAX_VALUE))
+                .addGap(0, 0, 0)
+                .addComponent(jSplitPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 241, Short.MAX_VALUE))
         );
 
         add(rightpane, java.awt.BorderLayout.CENTER);
@@ -1850,14 +1840,14 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
                         if (tpvs == null) {
                             tpvs = tp;
                         }
-                        if (tpvs.equals(tpvs)) {
+//                        if (tpvs.equals(tpvs)) {
                             s.setTaxpercentvalue(tp);
-                        } else {
-                            Popup.warn(Messages.TAXES_NOT_EQUAL);
-                            break;
-                        }
+//                        } else {
+//                            Popup.warn(Messages.TAXES_NOT_EQUAL);
+//                            break;
+//                        }
                     }
-                    s.setCName(((Item) dbo).__getCName());
+                    s.setCname(((Item) dbo).__getCname());
                     s.setDescription(Messages.GOOSE1 + " " + ((Item) dbo).__getCnumber() + " " + Messages.GOOSE2 + " " + DateConverter.getDefDateString(o.__getDateadded()));
 //                   if (mpv5.db.objects.User.getCurrentUser().getProperties().hasProperty("deftax")) {
 //                        int taxid = mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("deftax", new Integer(0));
@@ -1866,14 +1856,15 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
 //                    }
 
 //                    Log.PrintArray(s.toStringArray());
-
+                    ((Item) dbo).setIntstatus(Item.STATUS_FINISHED);
+                    dbo.save();
                     ((MPTableModel) itemtable.getModel()).addRow(s.getRowData(((MPTableModel) itemtable.getModel()).getLastValidRow(new int[]{4}) + 1));
                     ((MPTableModel) itemtable.getModel()).fireTableCellUpdated(0, 0);
                 } else {
                     o.setIntstatus(Item.STATUS_IN_PROGRESS);
                     o.setInttype(inttype_);
                     o.setCnumber("");
-                    o.setCName("");
+                    o.setCname("");
                     o.setDateadded(new Date());
                     o.setDatetodo(new Date());
                     o.setDateend(new Date());
@@ -2135,7 +2126,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
                         s.setItemsids(o.__getIDS());
                         s.setExternalvalue(o.__getNetvalue().add(o.__getTaxvalue()));
                         s.setTotalnetvalue(o.__getNetvalue());
-                        s.setCName(o.__getCName());
+                        s.setCname(o.__getCname());
                         s.setDescription(Messages.TYPE_ORDER + " " + o.__getCnumber() + " " + DateConverter.getDefDateString(o.__getDateadded()));
 
                         ((MPTableModel) itemtable.getModel()).setRowAt(s.getRowData(itemtable.getSelectedRow()), itemtable.getSelectedRow(), 1);

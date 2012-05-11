@@ -37,19 +37,10 @@ public class Plugin extends DatabaseObject {
     }
 
     @Override
-    public String __getCName() {
-        return getCname();
-    }
-
-    @Override
     public JComponent getView() {
         return null;
     }
 
-    @Override
-    public void setCName(String name) {
-        setCname(name);
-    }
 
     /**
      * @return the description
@@ -92,7 +83,7 @@ public class Plugin extends DatabaseObject {
 
     @Override
     public String toString(){
-    return __getCName() + " (" +  __getDescription() + ")";
+    return __getCname() + " (" +  __getDescription() + ")";
     }
 
     @Override

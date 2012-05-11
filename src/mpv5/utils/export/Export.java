@@ -108,8 +108,8 @@ public final class Export extends HashMap<String, Object> implements Waitable {
                             }
                         }
 
-                        if (m != null && m.__getCName() != null) {
-                            pr.setSubject(VariablesHandler.parse(m.__getCName(), dataOwner));
+                        if (m != null && m.__getCname() != null) {
+                            pr.setSubject(VariablesHandler.parse(m.__getCname(), dataOwner));
                             pr.setText(VariablesHandler.parse(m.__getDescription(), dataOwner));
                         }
                         try {

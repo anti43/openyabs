@@ -69,7 +69,7 @@ public final class ValueProperty extends DatabaseObject {
         setContextids(owner.getContext().getId());
         setObjectids(owner.__getIDS());
         setGroupsids(owner.__getGroupsids());
-        setCName(key);
+        setCname(key);
     }
 
     /**
@@ -88,7 +88,7 @@ public final class ValueProperty extends DatabaseObject {
         setContextids(owner.getId());
         setObjectids(0);
         setGroupsids(group.__getIDS());
-        setCName(key == null ? RandomStringUtils.randomAlphabetic(8) : key);
+        setCname(key == null ? RandomStringUtils.randomAlphabetic(8) : key);
     }
 
     /**
@@ -554,7 +554,7 @@ public final class ValueProperty extends DatabaseObject {
      * @return A String, never null
      */
     public String getKey() {
-        return __getCName();
+        return __getCname();
     }
 
     /**
@@ -575,11 +575,11 @@ public final class ValueProperty extends DatabaseObject {
      * @param key
      */
     @Override
-    public void setCName(String key) {
+    public void setCname(String key) {
         if (key == null) {
             throw new NullPointerException();
         }
-        this.setCname(key);
+        super.setCname(key);
     }
 
     /**
@@ -588,7 +588,7 @@ public final class ValueProperty extends DatabaseObject {
      */
     @Persistable(false)
     public void setKey(String key) {
-        setCName(key);
+        setCname(key);
     }
 
     @Override

@@ -77,7 +77,7 @@ public final class SubItem extends DatabaseObject implements Triggerable {
             } catch (Exception e) {
                 Log.Debug(SubItem.class, e.getMessage());
             }
-            it.setCName(row[14].toString());
+            it.setCname(row[14].toString());
             it.setItemsids(dataOwner.__getIDS());
             it.setCountvalue(new BigDecimal(row[1].toString()));
             it.setDatedelivery(dataOwner.__getDatetodo());
@@ -164,7 +164,7 @@ public final class SubItem extends DatabaseObject implements Triggerable {
             } catch (Exception e) {
                 Log.Debug(SubItem.class, e.getMessage());
             }
-            it.setCName(row[14].toString());
+            it.setCname(row[14].toString());
             it.setItemsids(dataOwner.__getIDS());
             it.setCountvalue(new BigDecimal(row[1].toString()));
             it.setDatedelivery(dataOwner.__getDatetodo());
@@ -296,7 +296,7 @@ public final class SubItem extends DatabaseObject implements Triggerable {
      */
     public SubItem(Product product) {
         this();
-        setCName(product.__getCName());
+        setCname(product.__getCname());
         setDateadded(new Date());
         setDatedelivery(new Date());
 
@@ -347,11 +347,11 @@ public final class SubItem extends DatabaseObject implements Triggerable {
 
                 setDescription(VariablesHandler.parse(x, product));
             } catch (NodataFoundException nodataFoundException) {
-                setDescription(VariablesHandler.parse(product.__getCName(), product));
+                setDescription(VariablesHandler.parse(product.__getCname(), product));
             }
         } else {
             Log.Debug(SubItem.class, "No format defined..");
-            setDescription(VariablesHandler.parse(product.__getCName(), product));
+            setDescription(VariablesHandler.parse(product.__getCname(), product));
         }
 ///////////////end format////////////////////////////////////////////////////////
         setExternalvalue(product.findPriceFor(1d));
@@ -413,7 +413,7 @@ public final class SubItem extends DatabaseObject implements Triggerable {
             getInttype() != TYPE_TEXT ? String.valueOf(FormatNumber.formatLokalCurrency(this.getTotalTaxValue())) : "",
             getInttype() != TYPE_TEXT ? String.valueOf(FormatNumber.formatLokalCurrency(this.__getTotalbrutvalue())) : "",
             __getLinkurl(),
-            __getCName()
+            __getCname()
         ///////////////////////////////////////////////////////////////////////////////
         };
         List<String> l = Arrays.asList(possibleCols);
@@ -444,15 +444,6 @@ public final class SubItem extends DatabaseObject implements Triggerable {
         return all.toArray(new String[0]);
     }
 
-    @Override
-    public String __getCName() {
-        return getCname();
-    }
-
-    @Override
-    public void setCName(String name) {
-        this.setCname(name);
-    }
 
     /**
      * @return the itemsids
@@ -723,7 +714,7 @@ public final class SubItem extends DatabaseObject implements Triggerable {
             data[11] = "A";
             data[12] = "C";
             data[12 + 1] = __getLinkurl();
-            data[14] = __getCName();
+            data[14] = __getCname();
             data[15] = __getDiscount();
             data[16] = 0.0;
         }
@@ -770,7 +761,7 @@ public final class SubItem extends DatabaseObject implements Triggerable {
             t.setLinkurl(m.getValueAt(row, 13).toString());
         }
         if (m.getValueAt(row, 14) != null) {
-            t.setCName(m.getValueAt(row, 14).toString());
+            t.setCname(m.getValueAt(row, 14).toString());
         }
         if (m.getValueAt(row, 15) != null) {
             t.setDiscount(new BigDecimal(m.getValueAt(row, 15).toString()));

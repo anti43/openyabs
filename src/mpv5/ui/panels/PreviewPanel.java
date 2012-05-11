@@ -276,8 +276,8 @@ public class PreviewPanel extends javax.swing.JPanel implements Waiter {
                         SimpleMail pr = new SimpleMail();
                         pr.setMailConfiguration(mpv5.db.objects.User.getCurrentUser().getMailConfiguration());
                         pr.setRecipientsAddress(cont.__getMailaddress());
-                        if (m != null && m.__getCName() != null) {
-                            pr.setSubject(m.__getCName());
+                        if (m != null && m.__getCname() != null) {
+                            pr.setSubject(m.__getCname());
                             pr.setText(VariablesHandler.parse(m.__getDescription(), dataOwner));
                         }
                         try {

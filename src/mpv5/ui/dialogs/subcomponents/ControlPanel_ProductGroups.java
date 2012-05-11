@@ -370,7 +370,7 @@ public class ControlPanel_ProductGroups extends javax.swing.JPanel implements Co
         if (evt.getButton() == MouseEvent.BUTTON2 || evt.getButton() == MouseEvent.BUTTON3) {
             if (node != null) {
                 ProductGroup g = (ProductGroup) node.getUserObject();
-                parents.set_Text(g.__getCName());
+                parents.set_Text(g.__getCname());
                 path.setText(getPath(node, 0));
             }
         } else {
@@ -514,7 +514,7 @@ public class ControlPanel_ProductGroups extends javax.swing.JPanel implements Co
         desc.setText(description_);
         path.setText(hierarchypath_);
         try {
-            parents.set_Text(DatabaseObject.getObject(Context.getProductGroup(), productgroupsids_).__getCName());
+            parents.set_Text(DatabaseObject.getObject(Context.getProductGroup(), productgroupsids_).__getCname());
         } catch (NodataFoundException ex) {
             Log.Debug(this, ex.getMessage());
         }

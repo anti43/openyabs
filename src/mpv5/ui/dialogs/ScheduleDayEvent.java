@@ -349,7 +349,7 @@ public class ScheduleDayEvent extends javax.swing.JFrame {
             try {
                 Item i = (Item) DatabaseObject.getObject(Context.getItem(),
                         Integer.valueOf(labeledCombobox1.getSelectedItem().getId()));
-                s.setCName("(" + Messages.SCHEDULE + ") " + i.toString());
+                s.setCname("(" + Messages.SCHEDULE + ") " + i.toString());
                 s.setItemsids(i.__getIDS());
                 s.setGroupsids(i.__getGroupsids());
                 s.setIntervalmonth(Integer.valueOf(labeledSpinner1.getSpinner().getValue().toString()));

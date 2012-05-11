@@ -5,6 +5,8 @@
 
 package mpv5.db.common;
 
+import mpv5.handler.FormatHandler;
+
 /**
  *
  * @author Andreas
@@ -14,4 +16,6 @@ public interface Templateable {
     public int templateType();
 
     public int templateGroupIds();
+    
+    public FormatHandler getFormatHandler();
 }

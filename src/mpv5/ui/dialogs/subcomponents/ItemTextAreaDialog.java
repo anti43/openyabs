@@ -175,7 +175,7 @@ public class ItemTextAreaDialog extends javax.swing.JDialog implements KeyListen
     public void receive(DatabaseObject obj) {
         if (obj.getContext().equals(Context.getProduct())) {
             this.product = (Product) obj;
-            textArea.setText(product.__getCName());
+            textArea.setText(product.__getCname());
         }
     }
 

@@ -1648,7 +1648,7 @@ public class ProductOrderPanel extends javax.swing.JPanel implements DataPanel, 
                             break;
                         }
                     }
-                    s.setCName(((ProductOrder) dbo).__getCName());
+                    s.setCname(((ProductOrder) dbo).__getCname());
                     s.setDescription(Messages.GOOSE1 + " " + ((ProductOrder) dbo).getCnumber() + " " + Messages.GOOSE2 + " " + DateConverter.getDefDateString(o.__getDateadded()));
 //                   if (mpv5.db.objects.User.getCurrentUser().getProperties().hasProperty("deftax")) {
 //                        int taxid = mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("deftax", new Integer(0));
@@ -1664,7 +1664,7 @@ public class ProductOrderPanel extends javax.swing.JPanel implements DataPanel, 
                     o.setIntstatus(Item.STATUS_IN_PROGRESS);
                     o.setInttype(inttype_);
                     o.setCnumber("");
-                    o.setCName("");
+                    o.setCname("");
                     o.setDateadded(new Date());
                     o.setDatetodo(new Date());
                     o.setDateend(new Date());
@@ -1922,7 +1922,7 @@ public class ProductOrderPanel extends javax.swing.JPanel implements DataPanel, 
                         s.setProductorder(o);
                         s.setExternalvalue(o.getNetvalue().add(o.getTaxvalue()));
                         s.setTotalnetvalue(o.getNetvalue());
-                        s.setCName(o.__getCName());
+                        s.setCname(o.__getCname());
                         s.setDescription(Messages.TYPE_ORDER + " " + o.getCnumber() + " " + DateConverter.getDefDateString(o.__getDateadded()));
 
                         ((MPTableModel) itemtable.getModel()).setRowAt(s.getRowData(itemtable.getSelectedRow()), itemtable.getSelectedRow(), 1);

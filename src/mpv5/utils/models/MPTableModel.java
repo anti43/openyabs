@@ -346,7 +346,7 @@ public class MPTableModel extends DefaultTableModel implements Cloneable, TableC
         final Object[][] data = new Object[properties.size() + 10][2];
         for (int i = 0; i < properties.size(); i++) {
             ValueProperty valueProperty = properties.get(i);
-            data[i][0] = valueProperty.__getCName();
+            data[i][0] = valueProperty.__getCname();
             data[i][1] = valueProperty.getValueObj();
         }
 

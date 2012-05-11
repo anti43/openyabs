@@ -29,7 +29,7 @@ import mpv5.utils.ui.TextFieldUtils;
 
 /**
  *
- * 
+ *
  */
 public class wizard_CSVImport2_1 extends javax.swing.JPanel implements Wizardable {
 
@@ -38,7 +38,6 @@ public class wizard_CSVImport2_1 extends javax.swing.JPanel implements Wizardabl
 
     public wizard_CSVImport2_1(WizardMaster w) {
         this.master = w;
-        initComponents();
         initComponents();
         jTable1.setModel(new MPTableModel(new Object[0][0]));
         labeledTextChooser1.setFilter(new FileFilter() {
@@ -114,7 +113,7 @@ public class wizard_CSVImport2_1 extends javax.swing.JPanel implements Wizardabl
         jTable1.setName("jTable1"); // NOI18N
         jScrollPane1.setViewportView(jTable1);
 
-        java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle(); // NOI18N
+        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("mpv5/resources/languages/Panels"); // NOI18N
         labeledTextChooser1.set_Label(bundle.getString("wizard_CSVImport2_1.labeledTextChooser1._Label")); // NOI18N
         labeledTextChooser1.setName("labeledTextChooser1"); // NOI18N
 
@@ -166,7 +165,6 @@ public class wizard_CSVImport2_1 extends javax.swing.JPanel implements Wizardabl
         });
 
         buttonGroup1.add(jRadioButton1);
-        jRadioButton1.setSelected(true);
         jRadioButton1.setText(bundle.getString("wizard_CSVImport2_1.jRadioButton1.text")); // NOI18N
         jRadioButton1.setName("jRadioButton1"); // NOI18N
         jRadioButton1.addItemListener(new java.awt.event.ItemListener() {
@@ -181,6 +179,7 @@ public class wizard_CSVImport2_1 extends javax.swing.JPanel implements Wizardabl
         });
 
         buttonGroup1.add(jRadioButton2);
+        jRadioButton2.setSelected(true);
         jRadioButton2.setText(bundle.getString("wizard_CSVImport2_1.jRadioButton2.text")); // NOI18N
         jRadioButton2.setName("jRadioButton2"); // NOI18N
         jRadioButton2.addItemListener(new java.awt.event.ItemListener() {
@@ -216,15 +215,6 @@ public class wizard_CSVImport2_1 extends javax.swing.JPanel implements Wizardabl
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                .addComponent(labeledTextChooser1, javax.swing.GroupLayout.DEFAULT_SIZE, 328, Short.MAX_VALUE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(labeledTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jButton2)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jButton1)
-                .addContainerGap())
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 133, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -232,15 +222,25 @@ public class wizard_CSVImport2_1 extends javax.swing.JPanel implements Wizardabl
                     .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 21, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jButton4, javax.swing.GroupLayout.PREFERRED_SIZE, 21, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 451, Short.MAX_VALUE))
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 454, Short.MAX_VALUE))
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addComponent(jRadioButton1)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jRadioButton2)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jRadioButton3, javax.swing.GroupLayout.DEFAULT_SIZE, 182, Short.MAX_VALUE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(labeledCombobox1, javax.swing.GroupLayout.PREFERRED_SIZE, 221, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                        .addComponent(labeledTextChooser1, javax.swing.GroupLayout.DEFAULT_SIZE, 328, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(labeledTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jButton2)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jButton1))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(jRadioButton1)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jRadioButton2)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jRadioButton3, javax.swing.GroupLayout.DEFAULT_SIZE, 182, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(labeledCombobox1, javax.swing.GroupLayout.PREFERRED_SIZE, 221, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
@@ -252,7 +252,7 @@ public class wizard_CSVImport2_1 extends javax.swing.JPanel implements Wizardabl
                         .addComponent(jButton4)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jButton3))
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 248, Short.MAX_VALUE)
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 271, Short.MAX_VALUE)
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 248, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
@@ -275,12 +275,11 @@ public class wizard_CSVImport2_1 extends javax.swing.JPanel implements Wizardabl
     }// </editor-fold>//GEN-END:initComponents
 
     private void setContext() {
-         if (jRadioButton1.isSelected()) {
+        if (jRadioButton1.isSelected()) {
             setProductFields();
-        }
-        if (jRadioButton2.isSelected()) {
+        } else if (jRadioButton2.isSelected()) {
             setContactFields();
-        } else {
+        } else if (jRadioButton3.isSelected()) {
             setFields();
         }
     }
@@ -332,7 +331,6 @@ public class wizard_CSVImport2_1 extends javax.swing.JPanel implements Wizardabl
 }//GEN-LAST:event_jRadioButton1ItemStateChanged
 
     private void jRadioButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jRadioButton1ActionPerformed
-       
 }//GEN-LAST:event_jRadioButton1ActionPerformed
 
     private void jRadioButton2ItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_jRadioButton2ItemStateChanged
@@ -340,16 +338,14 @@ public class wizard_CSVImport2_1 extends javax.swing.JPanel implements Wizardabl
 }//GEN-LAST:event_jRadioButton2ItemStateChanged
 
     private void jRadioButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jRadioButton2ActionPerformed
-        
 }//GEN-LAST:event_jRadioButton2ActionPerformed
 
     private void jRadioButton3ItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_jRadioButton3ItemStateChanged
-         setContext();
-         labeledCombobox1.setEnabled(jRadioButton3.isSelected());
+        setContext();
+        labeledCombobox1.setEnabled(jRadioButton3.isSelected());
     }//GEN-LAST:event_jRadioButton3ItemStateChanged
 
     private void jRadioButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jRadioButton3ActionPerformed
-
     }//GEN-LAST:event_jRadioButton3ActionPerformed
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.ButtonGroup buttonGroup1;
@@ -453,7 +449,7 @@ public class wizard_CSVImport2_1 extends javax.swing.JPanel implements Wizardabl
                             Object key = keys[j];
                             if (j < line.length && line[j] != null && line[j].toString().length() > 0) {
                                 try {
-                                    line[j]=line[j].toString().replace("\"", "");
+                                    line[j] = line[j].toString().replace("\"", "");
 //                                Log.Debug(this, "Setting " + key + " to " + line[j]);
                                     if (key.toString().equals("TAX")) {
                                         int taxid = Tax.getTaxId(FormatNumber.parseDezimal(line[j].toString().trim()));
@@ -483,7 +479,7 @@ public class wizard_CSVImport2_1 extends javax.swing.JPanel implements Wizardabl
                                             ((Product) c).setSuppliersids(sup.__getIDS());
                                         } else {
                                             Contact con = new Contact();
-                                            con.setCName(line[j].toString());
+                                            con.setCname(line[j].toString());
                                             con.setisSupplier(true);
                                             con.saveImport();
                                             ((Product) c).setSuppliersids(con.__getIDS());
@@ -499,7 +495,7 @@ public class wizard_CSVImport2_1 extends javax.swing.JPanel implements Wizardabl
                                             ((Product) c).setManufacturersids(sup.__getIDS());
                                         } else {
                                             Contact con = new Contact();
-                                            con.setCName(line[j].toString());
+                                            con.setCname(line[j].toString());
                                             con.setisSupplier(true);
                                             con.saveImport();
                                             ((Product) c).setManufacturersids(con.__getIDS());
@@ -511,7 +507,7 @@ public class wizard_CSVImport2_1 extends javax.swing.JPanel implements Wizardabl
                                                 ((Product) c).setGroupsids(p.__getIDS());
                                             } else {
                                                 Group con = new Group();
-                                                con.setCName(line[j].toString());
+                                                con.setCname(line[j].toString());
                                                 con.setGroupsids(1);
                                                 con.saveImport();
                                                 ((Product) c).setGroupsids(con.__getIDS());

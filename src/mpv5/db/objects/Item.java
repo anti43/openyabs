@@ -501,7 +501,7 @@ public class Item extends DatabaseObject implements Formattable, Templateable {
     public synchronized void ensureUniqueness() {
         Log.Debug(this, "In ensureUniqueness for " + this.getClass());
         setCnumber(getFormatHandler().next());
-        setCName(__getCnumber());
+        setCname(__getCnumber());
         Log.Debug(this, "ensureUniqueness result: " + __getCnumber());
     }
 
@@ -721,7 +721,7 @@ public class Item extends DatabaseObject implements Formattable, Templateable {
     @Override
     public String toString() {
         try {
-            return ((Contact) getObject(Context.getContact(), contactsids)).__getCName() + "-" + getCname();
+            return ((Contact) getObject(Context.getContact(), contactsids)).__getCname() + "-" + getCname();
         } catch (NodataFoundException ex) {
             return super.toString();
         }
@@ -755,7 +755,7 @@ public class Item extends DatabaseObject implements Formattable, Templateable {
             it[i].delete();
         }
         setCnumber(FormatHandler.DELETED_IDENTIFIER + __getCnumber());
-        setCName(__getCnumber());
+        setCname(__getCnumber());
         save(true);
         return super.delete();
     }
@@ -774,7 +774,7 @@ public class Item extends DatabaseObject implements Formattable, Templateable {
         }
 
         setCnumber(__getCnumber().replaceFirst(FormatHandler.DELETED_IDENTIFIER, ""));
-        setCName(__getCnumber());
+        setCname(__getCnumber());
 
         return super.undelete();
     }

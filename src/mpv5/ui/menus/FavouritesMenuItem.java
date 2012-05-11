@@ -31,7 +31,7 @@ public class FavouritesMenuItem extends JMenuItem {
 
     public FavouritesMenuItem(final DatabaseObject dbo) {
         this.item = dbo;
-        this.setText(dbo.__getCName());
+        this.setText(dbo.__getCname());
         this.setIcon(dbo.getIcon());
 
         addActionListener(new java.awt.event.ActionListener() {

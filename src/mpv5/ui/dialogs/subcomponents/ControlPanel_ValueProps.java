@@ -226,7 +226,7 @@ public class ControlPanel_ValueProps extends javax.swing.JPanel implements Contr
             dataOwner = new ValueProperty(cname, val, (Context) jList1.getSelectedValue(), (Group) jList2.getSelectedValue());
         } else {
             dataOwner.setValueObj(val);
-            dataOwner.setCName(cname);
+            dataOwner.setCname(cname);
             dataOwner.setContextids(((Context) jList1.getSelectedValue()).getId());
             dataOwner.setGroup((Group) jList2.getSelectedValue());
         }

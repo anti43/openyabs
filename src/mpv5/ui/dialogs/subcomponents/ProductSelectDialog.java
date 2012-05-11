@@ -251,7 +251,7 @@ public class ProductSelectDialog extends javax.swing.JPanel {
         BigDecimal f = FormatNumber.parseDezimal(countt.getText());
         s.setQuantityvalue(f != null ? f : BigDecimal.ONE);
         s.setLinkurl(link.getText());
-        s.setCName(opt.getText());
+        s.setCname(opt.getText());
 
         s.setMeasure(measure.getText());
         try {

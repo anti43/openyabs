@@ -93,7 +93,7 @@ public class WebShop extends DatabaseObject {
 
         @Override
     public void ensureUniqueness() {
-         setCName("-" + RandomText.getNumberText()  + "- (" + __getUrl() +")");
+         setCname("-" + RandomText.getNumberText()  + "- (" + __getUrl() +")");
     }
 
     /**

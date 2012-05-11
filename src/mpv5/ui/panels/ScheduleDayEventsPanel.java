@@ -184,7 +184,7 @@ public class ScheduleDayEventsPanel extends JPanel {
             for (int i = 0; i < list.size(); i++) {
                 Schedule schedule = list.get(i);
                 data[i][0] = schedule;
-                data[i][1] = schedule.__getCName();
+                data[i][1] = schedule.__getCname();
                 QueryCriteria qc = new QueryCriteria("USERSIDS", User.getCurrentUser().getID());
                 qc.addAndCondition("IDS", schedule.__getEventtype());
                 Log.Debug(this, "EventID: " + schedule.__getEventtype());
@@ -192,7 +192,7 @@ public class ScheduleDayEventsPanel extends JPanel {
                 try {
                     SType = DatabaseObject.getObjects(Context.getScheduleTypes(),
                             qc);
-                    data[i][3] = SType.get(0).__getCName();
+                    data[i][3] = SType.get(0).__getCname();
                 } catch (NodataFoundException ex) {
                     Log.Debug(this, ex);
                 }

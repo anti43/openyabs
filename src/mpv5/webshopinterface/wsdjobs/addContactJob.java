@@ -78,7 +78,7 @@ public class addContactJob implements WSDaemonJob {
                 WSContactsMapping ws = new WSContactsMapping();
 
                 ws.setContactsids(c.__getIDS());
-                ws.setCName(String.valueOf(id) + "@" + daemon.getWebShopID());
+                ws.setCname(String.valueOf(id) + "@" + daemon.getWebShopID());
                 ws.setWebshopsids(daemon.getWebShopID());
                 ws.setWscontact(String.valueOf(id));
                 ws.setGroupsids(mpv5.db.objects.User.getCurrentUser().__getGroupsids());

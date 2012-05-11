@@ -149,12 +149,12 @@ public class User extends DatabaseObject {
      */
     public static void cacheUser() {
         userCache.clear();
-        userCache.put(Integer.toBinaryString(DEFAULT.__getIDS()), DEFAULT.__getCName());
+        userCache.put(Integer.toBinaryString(DEFAULT.__getIDS()), DEFAULT.__getCname());
         try {
             ArrayList<DatabaseObject> data = DatabaseObject.getObjects(Context.getUser());
             for (int i = 0; i < data.size(); i++) {
                 DatabaseObject databaseObject = data.get(i);
-                userCache.put(Integer.toBinaryString(databaseObject.__getIDS()), databaseObject.__getCName());
+                userCache.put(Integer.toBinaryString(databaseObject.__getIDS()), databaseObject.__getCname());
             }
         } catch (NodataFoundException ex) {
             Log.Debug(User.class, ex.getMessage());
@@ -227,7 +227,7 @@ public class User extends DatabaseObject {
     private User(String fullname, String userid, int highright, int IDS) {
         this();
         this.fullname = fullname;
-        setCName(userid);
+        setCname(userid);
         this.inthighestright = highright;
         this.setIDS(IDS);
 
@@ -238,11 +238,6 @@ public class User extends DatabaseObject {
     }
 
     public String getName() {
-        return getCname();
-    }
-
-    @Override
-    public String __getCName() {
         return getCname();
     }
 
@@ -259,7 +254,7 @@ public class User extends DatabaseObject {
      * @return True if this user IS User.DEFAULT
      */
     public boolean isDefault() {
-        if (getName().equals(DEFAULT.__getCName()) && __getIDS().intValue() == DEFAULT.__getIDS().intValue()) {
+        if (getName().equals(DEFAULT.__getCname()) && __getIDS().intValue() == DEFAULT.__getIDS().intValue()) {
             return true;
         } else {
             return false;
@@ -336,11 +331,6 @@ public class User extends DatabaseObject {
             setIsloggedin(false);
             save();
         }
-    }
-
-    @Override
-    public void setCName(String name) {
-        setCname(name);
     }
 
     @Override
@@ -514,7 +504,7 @@ public class User extends DatabaseObject {
      * @return
      */
     public boolean equalTo(User n) {
-        if ((n).__getCName().equals(this.__getCName()) && (n).__getIDS().intValue() == this.__getIDS().intValue()) {
+        if ((n).__getCname().equals(this.__getCname()) && (n).__getIDS().intValue() == this.__getIDS().intValue()) {
             return true;
         } else {
             return false;
@@ -552,7 +542,7 @@ public class User extends DatabaseObject {
             String[] d = l.get(i);
             UserProperty p = new UserProperty();
             p.setValue(d[1]);
-            p.setCName(d[0]);
+            p.setCname(d[0]);
             p.setUsersids(getID());
             p.setGroupsids(__getGroupsids());
             p.save();

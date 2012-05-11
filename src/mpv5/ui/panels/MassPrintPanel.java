@@ -470,7 +470,7 @@ public class MassPrintPanel
                                     cont, hm1);
                             files.add(f);
                             mpv5.YabsViewProxy.instance().getProgressbar().setValue((100 / sel.length) * (o + 1));
-                            mpv5.YabsViewProxy.instance().getProgressbar().setString(cont.__getCName());
+                            mpv5.YabsViewProxy.instance().getProgressbar().setString(cont.__getCname());
                             mpv5.YabsViewProxy.instance().getProgressbar().setStringPainted(true);
                         } catch (NodataFoundException e) {
                             Log.Debug(this, e);
@@ -504,12 +504,12 @@ public class MassPrintPanel
                     Contact cont = (Contact) (Contact.getObject(Context.getContact(), ((IdItem) sel[o]).getId()));
                     hm1 = new HashMap<String, Object>();
                     hm1 = this.ReplaceVariablesInContent(hm1, cont);
-                    files.add(Export.createFile(cont.__getCName(),
+                    files.add(Export.createFile(cont.__getCname(),
                             TemplateHandler.loadTemplate(tpl),
                             cont,
                             hm1));
                     mpv5.YabsViewProxy.instance().getProgressbar().setValue((100 / sel.length) * (o + 1));
-                    mpv5.YabsViewProxy.instance().getProgressbar().setString(cont.__getCName());
+                    mpv5.YabsViewProxy.instance().getProgressbar().setString(cont.__getCname());
                     mpv5.YabsViewProxy.instance().getProgressbar().setStringPainted(true);
                 } catch (NodataFoundException ex) {
                     Log.Debug(this, ex);

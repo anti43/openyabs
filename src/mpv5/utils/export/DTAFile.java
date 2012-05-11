@@ -120,7 +120,7 @@ public class DTAFile extends Exportable implements Waitable {
                     f.setDecimalFormatSymbols(sym);
                     t.setValue(f.format(value.doubleValue()));
                     dta.addEntry(t);
-                    control.add(c.__getCName() + "\t" + c.__getBankaccount() + "\t" + c.__getBankname() + "\t" + dbo.__getCnumber() + "\t" + value.toPlainString());
+                    control.add(c.__getCname() + "\t" + c.__getBankaccount() + "\t" + c.__getBankname() + "\t" + dbo.__getCnumber() + "\t" + value.toPlainString());
                 }
             }
 

@@ -42,10 +42,6 @@ public class FileToItem extends DatabaseObject {
         setContext(Context.getFilesToItems());
     }
 
-    @Override
-    public String __getCName() {
-        return getCname();
-    }
 
     @Override
     public JComponent getView() {
@@ -57,10 +53,6 @@ public class FileToItem extends DatabaseObject {
         return null;
     }
 
-    @Override
-    public void setCName(String name) {
-        setCname(name);
-    }
 
     /**
      * @return the description
@@ -96,8 +88,8 @@ public class FileToItem extends DatabaseObject {
     public mpv5.utils.images.MPIcon getIcon() {
         if (icon == null) {
             try {
-                Log.Debug(this, "Determining Icon for " + __getCName());
-                icon = new MPIcon(MPIcon.DIRECTORY_DEFAULT_ICONS + __getCName().substring(__getCName().lastIndexOf(".") +1, __getCName().length()) + ".png");
+                Log.Debug(this, "Determining Icon for " + __getCname());
+                icon = new MPIcon(MPIcon.DIRECTORY_DEFAULT_ICONS + __getCname().substring(__getCname().lastIndexOf(".") +1, __getCname().length()) + ".png");
                 return icon;
             } catch (Exception e) {
                 Log.Debug(this, "Icon file not existing in " + MPIcon.DIRECTORY_DEFAULT_ICONS);

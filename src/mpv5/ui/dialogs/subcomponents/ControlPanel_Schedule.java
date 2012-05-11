@@ -433,7 +433,7 @@ public class ControlPanel_Schedule extends javax.swing.JPanel implements Control
 
     private void addActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addActionPerformed
         ScheduleTypes s1 = new ScheduleTypes();
-        s1.setCName(labeledTextField2.getText());
+        s1.setCname(labeledTextField2.getText());
         s1.setUser(Integer.parseInt(labeledCombobox2.getSelectedItem().getId()));
         s1.save();
         setData();
@@ -441,7 +441,7 @@ public class ControlPanel_Schedule extends javax.swing.JPanel implements Control
 
     private void jTable1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable1MouseClicked
         s = (ScheduleTypes) ((MPTableModel) jTable1.getModel()).getValueAt(jTable1.convertRowIndexToModel(jTable1.getSelectedRow()), 0);
-        labeledTextField2.setText(s.__getCName());
+        labeledTextField2.setText(s.__getCname());
         labeledCombobox2.setSelectedItem(User.getUsername(s.__getUserSids()));
     }//GEN-LAST:event_jTable1MouseClicked
 
@@ -453,14 +453,14 @@ public class ControlPanel_Schedule extends javax.swing.JPanel implements Control
 
     private void copyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_copyActionPerformed
         ScheduleTypes s2 = new ScheduleTypes();
-        s2.setCName(labeledTextField2.getText());
+        s2.setCname(labeledTextField2.getText());
         s2.setUser(User.getCurrentUser().getID());
         s2.save();
         setData();
     }//GEN-LAST:event_copyActionPerformed
 
     private void copy1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_copy1ActionPerformed
-        s.setCName(labeledTextField2.getText());
+        s.setCname(labeledTextField2.getText());
         s.setUser(User.getCurrentUser().getID());
         s.save();
         setData();
@@ -545,7 +545,7 @@ public class ControlPanel_Schedule extends javax.swing.JPanel implements Control
                 ScheduleTypes st = (ScheduleTypes) STypes.get(i);
                 data[i][0] = (DatabaseObject) st;
                 data[i][1] = User.getUsername(st.__getUserSids());
-                data[i][2] = st.__getCName();
+                data[i][2] = st.__getCname();
             }
             MPTableModel m = new MPTableModel(data);
             m.setTypes(new Class[]{DatabaseObject.class,

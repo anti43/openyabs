@@ -434,7 +434,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
     private static final Map<String, List<Method>> getVars_cached = new HashMap<String, List<Method>>();
     private static final Map<String, List<String>> getStringVars_cached = new HashMap<String, List<String>>();
 
-    public String __getCName() {
+    public String __getCname() {
         return getCname();
     }
 
@@ -482,9 +482,6 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
     public void ensureUniqueness() {
     }
 
-    public void setCName(String name) {
-        setCname(name);
-    }
 
     /**
      *
@@ -757,12 +754,12 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
                         Notificator.raiseNotification(e, !silent, true, this);
                         return false;
                     }
-                    if (__getCName() != null && __getCName().length() > 0) {
+                    if (__getCname() != null && __getCname().length() > 0) {
                         Log.Debug(this, "Inserting new dataset into: " + this.getContext());
                         dateadded = new Date();
                         intaddedby = mpv5.db.objects.User.getCurrentUser().__getIDS();
                         if (!silent && !this.getType().equals(new HistoryItem().getType())) {
-                            message = this.__getCName() + Messages.INSERTED;
+                            message = this.__getCname() + Messages.INSERTED;
                         }
                         ids = QueryHandler.instanceOf().clone(getContext()).insert(collect(), message);
                         IDENTITY = new Entity<Context, Integer>(getContext(), ids);
@@ -790,7 +787,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
                 } else {
                     Log.Debug(this, "Updating dataset: " + ids + " within context '" + getContext() + "'");
                     if (!silent) {
-                        message = this.__getCName() + Messages.UPDATED;
+                        message = this.__getCname() + Messages.UPDATED;
                     }
                     QueryHandler.instanceOf().clone(getContext()).update(collect(), ids, message);
 
@@ -810,7 +807,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
 
                         @Override
                         public void run() {
-                            QueryHandler.instanceOf().clone(Context.getHistory()).insertHistoryItem(fmessage, mpv5.db.objects.User.getCurrentUser().__getCName(), fdbid, fids, fgids);
+                            QueryHandler.instanceOf().clone(Context.getHistory()).insertHistoryItem(fmessage, mpv5.db.objects.User.getCurrentUser().__getCname(), fdbid, fids, fgids);
                         }
                     };
                     new Thread(runnable).start();
@@ -846,8 +843,8 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
             groupsids = mpv5.db.objects.User.getCurrentUser().__getGroupsids();
         }
 
-        if (__getCName() == null || __getCName().length() == 0) {
-            setCName(RandomText.getText());
+        if (__getCname() == null || __getCname().length() == 0) {
+            setCname(RandomText.getText());
         }
 
         return save();
@@ -897,7 +894,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
         String message = null;
         uncacheObject(this);
         if (!this.getContext().equals(getHistory())) {
-            message = this.__getCName() + Messages.TRASHED;
+            message = this.__getCname() + Messages.TRASHED;
         }
         if (ids > 0) {
             if (Context.getTrashableContexts().contains(getContext())) {
@@ -910,7 +907,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
             } else {
                 Log.Debug(this, "Deleting dataset:");
                 if (!this.getType().equals(new HistoryItem().getType())) {
-                    message = this.__getCName() + Messages.DELETED;
+                    message = this.__getCname() + Messages.DELETED;
                 }
                 result = QueryHandler.instanceOf().clone(getContext()).delete(new String[][]{{"ids", ids.toString(), ""}}, message);
                 Log.Debug(this, "The deleted row had id: " + ids);
@@ -931,7 +928,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
 
                     @Override
                     public void run() {
-                        QueryHandler.instanceOf().clone(Context.getHistory()).insertHistoryItem(fmessage, mpv5.db.objects.User.getCurrentUser().__getCName(), fdbid, fids, fgids);
+                        QueryHandler.instanceOf().clone(Context.getHistory()).insertHistoryItem(fmessage, mpv5.db.objects.User.getCurrentUser().__getCname(), fdbid, fids, fgids);
                     }
                 };
                 SwingUtilities.invokeLater(runnable);
@@ -945,7 +942,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
 
         boolean result = false;
         String message = null;
-        message = this.__getCName() + " " + Messages.UNTRASHED;
+        message = this.__getCname() + " " + Messages.UNTRASHED;
 
         Log.Debug(this, "Removing from trash:");
         QueryData d = new QueryData();
@@ -968,7 +965,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
 
             @Override
             public void run() {
-                QueryHandler.instanceOf().clone(Context.getHistory()).insertHistoryItem(fmessage, mpv5.db.objects.User.getCurrentUser().__getCName(), fdbid, fids, fgids);
+                QueryHandler.instanceOf().clone(Context.getHistory()).insertHistoryItem(fmessage, mpv5.db.objects.User.getCurrentUser().__getCname(), fdbid, fids, fgids);
             }
         };
         SwingUtilities.invokeLater(runnable);
@@ -2302,7 +2299,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
             try {
                 try {
                     Group g = (Group) DatabaseObject.getObject(Context.getGroup(), Integer.valueOf(map.get("groupsids").toString()));
-                    map.put("group", g.__getCName());
+                    map.put("group", g.__getCname());
                     map.put("grouppath", g.__getHierarchypath());
                     map.put("groupdescription", g.__getDescription());
                 } catch (NodataFoundException ex) {

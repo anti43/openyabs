@@ -36,19 +36,10 @@ public class Stage extends DatabaseObject {
     }
 
     @Override
-    public String __getCName() {
-        return getCname();
-    }
-
-    @Override
     public JComponent getView() {
         return null;
     }
 
-    @Override
-    public void setCName(String name) {
-        setCname(name);
-    }
 
     /**
      * @return the description

@@ -283,7 +283,7 @@ public class ProductsOverview extends javax.swing.JPanel implements ListPanel {
                 try {
                     Product p = (Product) DatabaseObject.getObject(Context.getProduct(), Integer.valueOf(listtable.getModel().getValueAt(listtable.getSelectedRow(), 0).toString()));
                     ProductPanel pan = new ProductPanel(p);
-                    BigPopup.showPopup(this, pan, p.__getCName(), true);
+                    BigPopup.showPopup(this, pan, p.__getCname(), true);
                 } catch (NodataFoundException ex) {
                 }
             }

@@ -69,7 +69,7 @@ public class Notificator {
 
                 @Override
                 public void run() {
-                    QueryHandler.instanceOf().clone(Context.getHistory()).insertHistoryItem(message.toString(), mpv5.db.objects.User.getCurrentUser().__getCName(), fdbid, fids, fgids);
+                    QueryHandler.instanceOf().clone(Context.getHistory()).insertHistoryItem(message.toString(), mpv5.db.objects.User.getCurrentUser().__getCname(), fdbid, fids, fgids);
                 }
             };
             new Thread(runnable).start();

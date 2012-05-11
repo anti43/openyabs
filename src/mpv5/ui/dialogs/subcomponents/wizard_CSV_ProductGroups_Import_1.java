@@ -70,7 +70,7 @@ public class wizard_CSV_ProductGroups_Import_1 extends javax.swing.JPanel implem
 //                ArrayList<DatabaseObject> arrayList = objs.get(i);
 //                for (int j = 0; j < arrayList.size(); j++) {
 //                    DatabaseObject databaseObject = arrayList.get(j);
-//                    Log.Debug(this, "Parsing " + databaseObject.getDbIdentity() + " : " + databaseObject.__getCName() + " from file: " + master.getStore().getProperty("file"));
+//                    Log.Debug(this, "Parsing " + databaseObject.getDbIdentity() + " : " + databaseObject.__getCname() + " from file: " + master.getStore().getProperty("file"));
 //                    databaseObject.save();
 //                }
 //            }

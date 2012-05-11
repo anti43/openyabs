@@ -319,7 +319,7 @@ public class HistoryPanel extends javax.swing.JPanel implements ListPanel {
         if (forUser != null && !forUser.equals(User.DEFAULT)) {
             try {
                 dh.and(new QueryParameter(Context.getHistory(), forUser.getType() + "name", forUser.getName(), QueryParameter.EQUALS));
-                if (forGroup != null && !forGroup.__getCName().equals("")) {
+                if (forGroup != null && !forGroup.__getCname().equals("")) {
                     dh.and(new QueryParameter(Context.getHistory(), forGroup.getDbIdentity() + "ids", forGroup.__getIDS(), QueryParameter.EQUALS));
                 }
                 Context c = Context.getHistory();
@@ -329,7 +329,7 @@ public class HistoryPanel extends javax.swing.JPanel implements ListPanel {
             } catch (NodataFoundException ex) {
                 Log.Debug(this, ex.getMessage());
             }
-        } else if (forGroup != null && !forGroup.__getCName().equals("")) {
+        } else if (forGroup != null && !forGroup.__getCname().equals("")) {
             try {
                 dh.and(new QueryParameter(Context.getHistory(), forGroup.getDbIdentity() + "ids", forGroup.__getIDS(), QueryParameter.EQUALS));
                 Context c = Context.getHistory();

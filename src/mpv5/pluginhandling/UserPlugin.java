@@ -35,18 +35,8 @@ public class UserPlugin extends DatabaseObject {
     }
 
     @Override
-    public String __getCName() {
-        return getCname();
-    }
-
-    @Override
     public JComponent getView() {
         throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    @Override
-    public void setCName(String name) {
-        setCname(name);
     }
 
 

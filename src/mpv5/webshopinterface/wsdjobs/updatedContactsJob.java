@@ -97,7 +97,7 @@ public class updatedContactsJob implements WSDaemonJob {
 
                 for (Address address : aobs) {
                     try {
-                        QueryCriteria qs = new QueryCriteria("cname", address.__getCName());
+                        QueryCriteria qs = new QueryCriteria("cname", address.__getCname());
                         qs.addAndCondition("prename", address.__getPrename());
                         qs.addAndCondition("contactsids", address.__getContactsids());
 

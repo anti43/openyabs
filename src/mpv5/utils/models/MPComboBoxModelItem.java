@@ -277,7 +277,7 @@ public class MPComboBoxModelItem extends DefaultComboBoxModel implements Compara
     public static MPComboBoxModelItem[] toItems(List<DatabaseObject> items, int compareMode) {
         MPComboBoxModelItem[] array = new MPComboBoxModelItem[items.size()];
         for (int i = 0; i < array.length; i++) {
-            array[i] = new MPComboBoxModelItem(new Integer(items.get(i).__getIDS()), items.get(i).__getCName());
+            array[i] = new MPComboBoxModelItem(new Integer(items.get(i).__getIDS()), items.get(i).__getCname());
             array[i].setCompareMode(compareMode);
         }
         return array;

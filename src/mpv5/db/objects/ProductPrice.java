@@ -37,7 +37,7 @@ public class ProductPrice extends DatabaseObject {
 
     public ProductPrice() {
         setContext(Context.getProductPrice());
-        setCName("ProductPrice@" + IDENTITY);
+        setCname("ProductPrice@" + IDENTITY);
     }
 
     @Override
@@ -112,7 +112,7 @@ public class ProductPrice extends DatabaseObject {
 
     @Override
     public boolean save(boolean silent) {
-        setCName("Productprice for " + getProduct() + "@" + mincountvalue);
+        setCname("Productprice for " + getProduct() + "@" + mincountvalue);
         return super.save(silent);
     }
 }

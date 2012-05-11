@@ -221,7 +221,7 @@ public class ControlPanel_Massprint extends javax.swing.JPanel implements Contro
         String rulename = Popup.Enter_Value(Messages.MASSPRINT_ENTER_NAME.toString());
         if (!rulename.equals("")) {
             MassprintRules mpr = new MassprintRules();
-            mpr.setCName(rulename);
+            mpr.setCname(rulename);
             mpr.setGroupsids(1);
             mpr.setInttype(Integer.parseInt(objects.getSelectedItem().getId()));
             mpr.setDateadded(new Date());

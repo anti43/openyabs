@@ -66,7 +66,7 @@ public class ProductlistSubItem extends DatabaseObject {
             } catch (Exception e) {
                 Log.Debug(ProductlistSubItem.class, e.getMessage());
             }
-            it.setCName(row[14].toString());
+            it.setCname(row[14].toString());
             it.setProductlistsids(listid);
             it.setCountvalue(Double.valueOf(row[1].toString()));
             it.setDescription(row[4].toString());
@@ -118,7 +118,7 @@ public class ProductlistSubItem extends DatabaseObject {
             } catch (Exception e) {
                 Log.Debug(ProductlistSubItem.class, e.getMessage());
             }
-            it.setCName(row[14].toString());
+            it.setCname(row[14].toString());
             it.setProductlistsids(listid);
             it.setCountvalue(Double.valueOf(row[1].toString()));
             it.setDescription(row[4].toString());
@@ -169,7 +169,7 @@ public class ProductlistSubItem extends DatabaseObject {
             } catch (Exception e) {
                 Log.Debug(ProductlistSubItem.class, e.getMessage());
             }
-            it.setCName(row[14].toString());
+            it.setCname(row[14].toString());
             it.setCountvalue(Double.valueOf(row[1].toString()));
             it.setDescription(row[4].toString());
             it.setExternalvalue(Double.valueOf(row[5].toString()) * (((Double.valueOf(percentValue) / 100) + 1)));
@@ -247,7 +247,7 @@ public class ProductlistSubItem extends DatabaseObject {
      */
     public ProductlistSubItem(Product o) {
         this();
-        setCName(o.__getCName());
+        setCname(o.__getCname());
         setDateadded(new Date());
         setDescription(o.__getDescription());
         setExternalvalue(o.__getExternalnetvalue().doubleValue());
@@ -305,7 +305,7 @@ public class ProductlistSubItem extends DatabaseObject {
             String.valueOf(FormatNumber.formatLokalCurrency(this.getTotalTaxValue())),
             String.valueOf(FormatNumber.formatLokalCurrency(this.__getTotalbrutvalue())),
             __getLinkurl(),
-            __getCName()
+            __getCname()
         ///////////////////////////////////////////////////////////////////////////////
         };
 
@@ -331,17 +331,6 @@ public class ProductlistSubItem extends DatabaseObject {
         }
 
         return form;
-    }
-
-
-    @Override
-    public String __getCName() {
-        return getCname();
-    }
-
-    @Override
-    public void setCName(String name) {
-        this.setCname(name);
     }
 
     /**
@@ -496,7 +485,7 @@ public class ProductlistSubItem extends DatabaseObject {
             data[11] = "A";
             data[12] = "C";
             data[12 + 1] = __getLinkurl();
-            data[14] = __getCName();
+            data[14] = __getCname();
 
         }
         return data;

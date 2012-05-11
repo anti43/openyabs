@@ -128,7 +128,7 @@ public class PrintJob implements Waiter {
 
             rw.writeOnce("" + dbobjarr.get(0).getDbIdentity().toUpperCase());
             rw.write("");
-            rw.write(dbobjarr.get(0).__getCName());
+            rw.write(dbobjarr.get(0).__getCname());
             rw.write("");
 
             for (int i = 0; i < dbobjarr.size(); i++) {

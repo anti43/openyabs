@@ -133,21 +133,6 @@ public class Contact extends DatabaseObject implements Formattable, Templateable
         this.prename = prename;
     }
 
-    /**
-     * @return the name
-     */
-    @Override
-    public String __getCName() {
-        return getCname();
-    }
-
-    /**
-     * @param name the name to set
-     */
-    @Override
-    public void setCName(String name) {
-        this.setCname(name);
-    }
 
     /**
      * @return the street

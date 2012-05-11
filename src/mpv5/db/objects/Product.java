@@ -451,7 +451,7 @@ public class Product extends DatabaseObject implements Formattable, Templateable
                 try {
                     Product p = new Product();
                     p.setReference(i.__getDescription().substring(i.__getDescription().indexOf(TRACKID_START_IDENTIFIER) + TRACKID_START_IDENTIFIER.length(), i.__getDescription().indexOf(TRACKID_END_IDENTIFIER)));
-                    p.setCName(i.__getDescription().substring(i.__getDescription().indexOf(TRACKID_END_IDENTIFIER) + TRACKID_START_IDENTIFIER.length()));
+                    p.setCname(i.__getDescription().substring(i.__getDescription().indexOf(TRACKID_END_IDENTIFIER) + TRACKID_START_IDENTIFIER.length()));
                     p.setExternalnetvalue(i.__getExternalvalue());
                     p.setDescription(Messages.AUTO_GENERATED_VALUE.getValue());
                     p.setInttype(Product.TYPE_SERVICE);
@@ -464,8 +464,8 @@ public class Product extends DatabaseObject implements Formattable, Templateable
                     refs.add(p.__getReference());
                     i.setDescription(i.__getDescription().replace(TRACKID_END_IDENTIFIER, " "));
                     i.setDescription(i.__getDescription().replace(TRACKID_START_IDENTIFIER, ""));
-                    i.setCName(i.__getDescription().replace(TRACKID_END_IDENTIFIER, " "));
-                    i.setCName(i.__getDescription().replace(TRACKID_START_IDENTIFIER, ""));
+                    i.setCname(i.__getDescription().replace(TRACKID_END_IDENTIFIER, " "));
+                    i.setCname(i.__getDescription().replace(TRACKID_START_IDENTIFIER, ""));
                     i.save(true);
                 } catch (Exception e) {
                     Log.Debug(e);
