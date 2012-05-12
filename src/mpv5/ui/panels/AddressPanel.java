@@ -87,7 +87,7 @@ public class AddressPanel extends javax.swing.JPanel implements DataPanel {
         jPanel2.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
         jPanel2.setName("jPanel2"); // NOI18N
 
-        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("mpv5/resources/languages/Panels"); // NOI18N
+        java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle(); // NOI18N
         department.set_Label(bundle.getString("AddressPanel.department._Label")); // NOI18N
         department.setFont(department.getFont().deriveFont(department.getFont().getStyle() | java.awt.Font.BOLD));
         department.setName("department"); // NOI18N
@@ -111,11 +111,13 @@ public class AddressPanel extends javax.swing.JPanel implements DataPanel {
         male.setSelected(true);
         male.setText(bundle.getString("AddressPanel.male.text")); // NOI18N
         male.setName("male"); // NOI18N
+        male.setOpaque(false);
 
         buttonGroup1.add(female);
         female.setFont(female.getFont());
         female.setText(bundle.getString("AddressPanel.female.text")); // NOI18N
         female.setName("female"); // NOI18N
+        female.setOpaque(false);
 
         street.set_Label(bundle.getString("AddressPanel.street._Label")); // NOI18N
         street.setName("street"); // NOI18N
@@ -135,10 +137,12 @@ public class AddressPanel extends javax.swing.JPanel implements DataPanel {
         dadress.setFont(dadress.getFont());
         dadress.setText(bundle.getString("AddressPanel.dadress.text")); // NOI18N
         dadress.setName("dadress"); // NOI18N
+        dadress.setOpaque(false);
 
         badress.setFont(badress.getFont());
         badress.setText(bundle.getString("AddressPanel.badress.text")); // NOI18N
         badress.setName("badress"); // NOI18N
+        badress.setOpaque(false);
 
         jButton2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/16/filesave.png"))); // NOI18N
         jButton2.setText(bundle.getString("AddressPanel.jButton2.text")); // NOI18N
@@ -189,8 +193,8 @@ public class AddressPanel extends javax.swing.JPanel implements DataPanel {
                             .addComponent(zip, javax.swing.GroupLayout.PREFERRED_SIZE, 207, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(badress, javax.swing.GroupLayout.DEFAULT_SIZE, 130, Short.MAX_VALUE)
-                            .addComponent(dadress, javax.swing.GroupLayout.DEFAULT_SIZE, 130, Short.MAX_VALUE)))
+                            .addComponent(badress, javax.swing.GroupLayout.DEFAULT_SIZE, 133, Short.MAX_VALUE)
+                            .addComponent(dadress, javax.swing.GroupLayout.DEFAULT_SIZE, 133, Short.MAX_VALUE)))
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addComponent(male, javax.swing.GroupLayout.PREFERRED_SIZE, 76, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)

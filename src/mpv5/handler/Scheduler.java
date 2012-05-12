@@ -39,7 +39,9 @@ public class Scheduler extends Thread {
         checkForOverdueEvents();
         checkForCreateBillEvents(null);
         while (YabsApplication.getApplication().isReady() == false);
-        if (!User.getCurrentUser().getProperties().getProperty(homescreen, "disable", true)) {
+        if (User.getCurrentUser().getProperties().getProperty(homescreen, "disable", false)) {
+            Log.Debug(this, "Homescreen disabled by configuration");
+        } else {
             mpv5.YabsViewProxy.instance().getIdentifierView().addOrShowTab(homescreen, Messages.HOMESCREEN.toString());
         }
     }

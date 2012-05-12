@@ -73,6 +73,7 @@ public final class Export extends HashMap<String, Object> implements Waitable {
      * @param to
      */
     public static void mail(Template preloadedTemplate, DatabaseObject dataOwner, Contact to) {
+
         try {
             mpv5.YabsViewProxy.instance().setWaiting(true);
             QueryCriteria c = new QueryCriteria("usersids", mpv5.db.objects.User.getCurrentUser().__getIDS());
@@ -105,6 +106,12 @@ public final class Export extends HashMap<String, Object> implements Waitable {
                             String bcc = GlobalSettings.getProperty("org.openyabs.exportproperty.mailbcc");
                             if (mpv5.utils.text.TypeConversion.stringToMail(bcc) != null) {
                                 pr.setBccAddress(bcc);
+                            }
+                        }
+                        if (GlobalSettings.hasProperty("org.openyabs.exportproperty.mailcc")) {
+                            String cc = GlobalSettings.getProperty("org.openyabs.exportproperty.mailcc");
+                            if (mpv5.utils.text.TypeConversion.stringToMail(cc) != null) {
+                                pr.setCCAddress(cc);
                             }
                         }
 

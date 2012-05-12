@@ -179,7 +179,7 @@ public enum Messages {
     TYPE_REVENUE("Revenue"),
     TYPE_EXPENSE("Payables"),
     TYPE_JOURNAL("Journal"),
-    TYPE_CONFIRMATION("Order Confirmation"),
+    TYPE_CONFIRMATION("Order Confirmation"), 
     STATUS_PAID("Paid"),
     STATUS_UNPAID("Not Paid"),
     TRASHBIN("Trashbin"),
@@ -322,7 +322,8 @@ public enum Messages {
     NOTIFICATION("Notification"),
     OO_WAITING("Please wait while connecting to OO/LO"),
     OO_NOT_CONFIGURED("Office is not configured yet."),
-    PRINTER_NAMES("Possible printer names:");
+    PRINTER_NAMES("Possible printer names:"), 
+    VARIABLES("Resolved vars for:");
 
     /**
      * @return the missing

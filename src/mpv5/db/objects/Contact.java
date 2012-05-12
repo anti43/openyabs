@@ -23,8 +23,8 @@ import mpv5.utils.images.MPIcon;
  * 
  */
 public class Contact extends DatabaseObject implements Formattable, Templateable {
-    private static final long serialVersionUID = 1L;
 
+    private static final long serialVersionUID = 1L;
     private String cnumber = "";
     private String taxnumber = "";
     private String title = "";
@@ -132,7 +132,6 @@ public class Contact extends DatabaseObject implements Formattable, Templateable
     public void setPrename(String prename) {
         this.prename = prename;
     }
-
 
     /**
      * @return the street
@@ -442,12 +441,45 @@ public class Contact extends DatabaseObject implements Formattable, Templateable
             data = DatabaseObject.getReferencedObjects(this, Context.getAddress(), new Address());
             Collections.sort(data, new Comparator<Address>() {
 //[0 = billing adress, 1 = delivery adress, 2 = both, 3 = undefined]
+
                 public int compare(Address o1, Address o2) {
                     return Integer.valueOf(o1.__getInttype()).compareTo(Integer.valueOf(o2.__getInttype()));
                 }
             });
+            boolean hasInvAdd = false;
+            boolean hasDelAdd = false;
             for (int i = 0; i < data.size(); i++) {
                 map.put("address" + i, data.get(i));
+                if (!hasInvAdd && (data.get(i).__getInttype() == 0 || data.get(i).__getInttype() == 2)) {
+                    map.put("invoiceaddress", data.get(i));
+                    hasInvAdd = true;
+                }
+                if (!hasDelAdd && (data.get(i).__getInttype() == 1 || data.get(i).__getInttype() == 2)) {
+                    map.put("deliveryaddress", data.get(i));
+                    hasDelAdd = true;
+                }
+            }
+            if (!hasDelAdd || !hasInvAdd) {
+                Address def = new Address();
+                def.setCity(city);
+                def.setCountry(country);
+                def.setDepartment(department);
+                def.setCompany(company);
+                def.setCname(cnumber);
+                def.setIsmale(ismale);
+                def.setPrename(prename);
+                def.setStreet(street);
+                def.setTaxnumber(taxnumber);
+                def.setTitle(title);
+                def.setZip(zip);
+                if (!hasInvAdd) {
+                    map.put("invoiceaddress", def);
+                    hasInvAdd = true;
+                }
+                if (!hasDelAdd) {
+                    map.put("deliveryaddress", def);
+                    hasDelAdd = true;
+                }
             }
         } catch (Exception ex) {
             Log.Debug(this, ex.getMessage());
@@ -599,7 +631,6 @@ public class Contact extends DatabaseObject implements Formattable, Templateable
         return super.undelete();
     }
 
-
     @Override
     public int templateType() {
         return Constants.TYPE_CONTACT;
@@ -616,6 +647,6 @@ public class Contact extends DatabaseObject implements Formattable, Templateable
 
     @Persistable(false)
     public String getInfoString() {
-        return (__getStreet()==null?__getStreet():"") + ", " + (__getCity()==null?__getCity():"") ;
+        return (__getStreet() == null ? __getStreet() : "") + ", " + (__getCity() == null ? __getCity() : "");
     }
 }

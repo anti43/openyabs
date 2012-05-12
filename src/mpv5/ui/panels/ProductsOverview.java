@@ -154,7 +154,10 @@ public class ProductsOverview extends javax.swing.JPanel implements ListPanel {
         products.setText(bundle.getString("ProductsOverview.products.text")); // NOI18N
         products.setFocusable(false);
         products.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
+        products.setMaximumSize(new java.awt.Dimension(333, 20));
+        products.setMinimumSize(new java.awt.Dimension(100, 20));
         products.setName("products"); // NOI18N
+        products.setPreferredSize(new java.awt.Dimension(100, 20));
         products.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         jToolBar1.add(products);
 
@@ -162,15 +165,22 @@ public class ProductsOverview extends javax.swing.JPanel implements ListPanel {
         services.setText(bundle.getString("ProductsOverview.services.text")); // NOI18N
         services.setFocusable(false);
         services.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
+        services.setMaximumSize(new java.awt.Dimension(333, 20));
+        services.setMinimumSize(new java.awt.Dimension(100, 20));
         services.setName("services"); // NOI18N
+        services.setPreferredSize(new java.awt.Dimension(100, 20));
         services.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         jToolBar1.add(services);
 
         buttonGroup1.add(both);
+        both.setSelected(true);
         both.setText(bundle.getString("ProductsOverview.both.text")); // NOI18N
         both.setFocusable(false);
         both.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
+        both.setMaximumSize(new java.awt.Dimension(333, 20));
+        both.setMinimumSize(new java.awt.Dimension(100, 20));
         both.setName("both"); // NOI18N
+        both.setPreferredSize(new java.awt.Dimension(100, 20));
         both.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         jToolBar1.add(both);
 

@@ -226,6 +226,7 @@ public class Popup {
      */
     public static void notice(List list, Object message) {
         String t = message.toString() + "\n";
+
         for (int i = 0; i < list.size(); i++) {
             Object l = list.get(i);
             if (l instanceof DatabaseObject) {

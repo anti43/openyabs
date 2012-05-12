@@ -44,8 +44,10 @@ import mpv5.db.objects.User;
 import mpv5.globals.Constants;
 import mpv5.globals.LocalSettings;
 import mpv5.handler.FormFieldsHandler;
+import mpv5.handler.VariablesHandler;
 import mpv5.ui.dialogs.BigPopup;
 import mpv5.ui.dialogs.DialogForFile;
+import mpv5.ui.dialogs.Search2;
 import mpv5.ui.panels.LOAPanel;
 import mpv5.ui.panels.PreviewPanel;
 import mpv5.utils.export.Export;
@@ -480,13 +482,23 @@ public final class ControlPanel_Templates extends javax.swing.JPanel implements 
                 updateService.setEnabled(true);
             }
         } catch (Exception e) {
-//            Log.Debug(e);
+            Log.Debug(this, e.getMessage());
         }
     }//GEN-LAST:event_templatesMouseClicked
 
     private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
+
         try {
-            Desktop.getDesktop().browse(new URI(Constants.WEBSITE));
+            DatabaseObject t = Search2.showSearchFor(Context.getItem());
+            if (t != null) {
+                List<String[]> vars = VariablesHandler.resolveVarsFor(t);
+                List<List<String>> varsl = new ArrayList<List<String>>();
+                for (int i = 0; i < vars.size(); i++) {
+                    String[] strings = vars.get(i);
+                    varsl.add(Arrays.asList(strings));
+                }
+                Popup.notice(varsl, Messages.VARIABLES + "\n\n" + t.toString());
+            }
         } catch (Exception ex) {
             Log.Debug(ex);
         }
@@ -621,7 +633,6 @@ public final class ControlPanel_Templates extends javax.swing.JPanel implements 
             }
         }
     }//GEN-LAST:event_jButton7ActionPerformed
-
 
     private void jButton11ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton11ActionPerformed
         PrintService[] services3 = PrintServiceLookup.lookupPrintServices(null, null);
@@ -895,16 +906,19 @@ public final class ControlPanel_Templates extends javax.swing.JPanel implements 
     private void test() {
         DatabaseObject t;
         if (dataOwner != null) {
-            try {
-                t = DatabaseObject.getObject(Context.getItem(), 1);
-            } catch (NodataFoundException ex) {
-                t = new Item();
-                Contact k = new Contact();
-                k.avoidNulls();
-                k.fillSampleData();
-                t.avoidNulls();
-                t.fillSampleData();
-                ((Item) t).setContactsids(k.__getIDS());
+            t = Search2.showSearchFor(Context.getItem());
+            if (t == null) {
+                try {
+                    t = DatabaseObject.getObject(Context.getItem(), 1);
+                } catch (NodataFoundException ex) {
+                    t = new Item();
+                    Contact k = new Contact();
+                    k.avoidNulls();
+                    k.fillSampleData();
+                    t.avoidNulls();
+                    t.fillSampleData();
+                    ((Item) t).setContactsids(k.__getIDS());
+                }
             }
 
             try {

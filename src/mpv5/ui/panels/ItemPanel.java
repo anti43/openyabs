@@ -1,18 +1,18 @@
 /*
- This file is part of YaBS.
+This file is part of YaBS.
 
- YaBS is free software: you can redistribute it and/or modify
- it under the terms of the GNU General Public License as published by
- the Free Software Foundation, either version 3 of the License, or
- (at your option) any later version.
+YaBS is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
- YaBS is distributed in the hope that it will be useful,
- but WITHOUT ANY WARRANTY; without even the implied warranty of
- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- GNU General Public License for more details.
+YaBS is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
- You should have received a copy of the GNU General Public License
- along with YaBS.  If not, see <http://www.gnu.org/licenses/>.
+You should have received a copy of the GNU General Public License
+along with YaBS.  If not, see <http://www.gnu.org/licenses/>.
  */
 /*
  * ContactPanel.java
@@ -298,7 +298,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
         ((MPTable) dataTable).setPersistanceHandler(new TableViewPersistenceHandler((MPTable) dataTable, this));
         ((MPTable) proptable).setPersistanceHandler(new TableViewPersistenceHandler((MPTable) proptable, this));
         jSplitPane1.setDividerLocation((User.getCurrentUser().getProperties().getProperty("org.openyabs.uiproperty.itempanel.divider1.dividerLocation", 150)));
-        jSplitPane2.setDividerLocation((User.getCurrentUser().getProperties().getProperty("org.openyabs.uiproperty.itempanel.divider2.dividerLocation", 0)));
+        jSplitPane2.setDividerLocation((User.getCurrentUser().getProperties().getProperty("org.openyabs.uiproperty.itempanel.divider2.dividerLocation", -1)));
 
     }
 
@@ -472,16 +472,18 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
         leftpane = new javax.swing.JPanel();
         rightpane = new javax.swing.JPanel();
         jPanel1 = new javax.swing.JPanel();
-        number = new mpv5.ui.beans.LabeledTextField();
-        addedby = new javax.swing.JLabel();
-        jLabel4 = new javax.swing.JLabel();
-        button_order2 = new javax.swing.JButton();
-        status = new mpv5.ui.beans.LabeledCombobox();
-        accountselect = new mpv5.ui.beans.LabeledCombobox();
-        groupnameselect = new mpv5.ui.beans.MPCombobox();
-        staus_icon = new javax.swing.JLabel();
+        jPanel9 = new javax.swing.JPanel();
         type = new javax.swing.JLabel();
+        number = new mpv5.ui.beans.LabeledTextField();
         jButton1 = new javax.swing.JButton();
+        accountselect = new mpv5.ui.beans.LabeledCombobox();
+        staus_icon = new javax.swing.JLabel();
+        jPanel10 = new javax.swing.JPanel();
+        status = new mpv5.ui.beans.LabeledCombobox();
+        jLabel4 = new javax.swing.JLabel();
+        groupnameselect = new mpv5.ui.beans.MPCombobox();
+        button_order2 = new javax.swing.JButton();
+        addedby = new javax.swing.JLabel();
         jToolBar1 = new javax.swing.JToolBar();
         toorder = new javax.swing.JButton();
         toinvoice = new javax.swing.JButton();
@@ -588,7 +590,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
         addfile = new javax.swing.JButton();
         toolbarpane = new javax.swing.JPanel();
 
-        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("mpv5/resources/languages/Panels"); // NOI18N
+        java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle(); // NOI18N
         setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("ItemPanel.border.title_1"))); // NOI18N
         setName("ItemPanel"); // NOI18N
         setLayout(new java.awt.BorderLayout());
@@ -605,61 +607,102 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
         jPanel1.setName("jPanel1"); // NOI18N
         jPanel1.setPreferredSize(new java.awt.Dimension(843, 100));
 
-        number.set_Label(bundle.getString("ItemPanel.number._Label")); // NOI18N
-        number.setFocusable(false);
-        number.setFont(number.getFont());
-        number.setName("number"); // NOI18N
-
-        addedby.setFont(addedby.getFont());
-        addedby.setText(bundle.getString("ItemPanel.addedby.text")); // NOI18N
-        addedby.setToolTipText(bundle.getString("ItemPanel.addedby.toolTipText")); // NOI18N
-        addedby.setBorder(javax.swing.BorderFactory.createEtchedBorder());
-        addedby.setName("addedby"); // NOI18N
-
-        jLabel4.setFont(jLabel4.getFont());
-        jLabel4.setText(bundle.getString("ItemPanel.jLabel4.text")); // NOI18N
-        jLabel4.setName("jLabel4"); // NOI18N
-
-        button_order2.setFont(button_order2.getFont().deriveFont(button_order2.getFont().getStyle() & ~java.awt.Font.BOLD, button_order2.getFont().getSize()-2));
-        button_order2.setText(bundle.getString("ItemPanel.button_order2.text")); // NOI18N
-        button_order2.setFocusable(false);
-        button_order2.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        button_order2.setName("button_order2"); // NOI18N
-        button_order2.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        button_order2.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                button_order2ActionPerformed(evt);
-            }
-        });
-
-        status.set_Label(bundle.getString("ItemPanel.status._Label")); // NOI18N
-        status.setName("status"); // NOI18N
-
-        accountselect.set_Label(bundle.getString("ItemPanel.accountselect._Label")); // NOI18N
-        accountselect.setName("accountselect"); // NOI18N
-        accountselect.setSearchOnEnterEnabled(false);
-
-        groupnameselect.setName("groupnameselect"); // NOI18N
-
-        staus_icon.setText(bundle.getString("ItemPanel.staus_icon.text")); // NOI18N
-        staus_icon.setName("staus_icon"); // NOI18N
+        jPanel9.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(232, 227, 227), 1, true));
+        jPanel9.setName("jPanel9"); // NOI18N
+        jPanel9.setOpaque(false);
+        jPanel9.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 10, 5));
 
         type.setBackground(new java.awt.Color(255, 255, 255));
         type.setFont(type.getFont().deriveFont(type.getFont().getStyle() | java.awt.Font.BOLD, type.getFont().getSize()+4));
         type.setForeground(new java.awt.Color(26, 34, 70));
         type.setText(bundle.getString("ItemPanel.type.text")); // NOI18N
         type.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
-        type.setMaximumSize(new java.awt.Dimension(250, 23));
+        type.setMaximumSize(new java.awt.Dimension(250, 20));
+        type.setMinimumSize(new java.awt.Dimension(38, 20));
         type.setName("type"); // NOI18N
-        type.setPreferredSize(new java.awt.Dimension(200, 24));
+        type.setPreferredSize(new java.awt.Dimension(200, 20));
+        jPanel9.add(type);
+
+        number.set_Label(bundle.getString("ItemPanel.number._Label")); // NOI18N
+        number.setFocusable(false);
+        number.setFont(number.getFont());
+        number.setName("number"); // NOI18N
+        number.setPreferredSize(new java.awt.Dimension(250, 20));
+        jPanel9.add(number);
 
         jButton1.setText(bundle.getString("ItemPanel.jButton1.text")); // NOI18N
+        jButton1.setMaximumSize(new java.awt.Dimension(20, 20));
+        jButton1.setMinimumSize(new java.awt.Dimension(20, 20));
         jButton1.setName(bundle.getString("ItemPanel.jButton1.name")); // NOI18N
+        jButton1.setPreferredSize(new java.awt.Dimension(20, 20));
         jButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton1ActionPerformed(evt);
             }
         });
+        jPanel9.add(jButton1);
+
+        accountselect.set_Label(bundle.getString("ItemPanel.accountselect._Label")); // NOI18N
+        accountselect.setName("accountselect"); // NOI18N
+        accountselect.setPreferredSize(new java.awt.Dimension(250, 20));
+        accountselect.setSearchOnEnterEnabled(false);
+        jPanel9.add(accountselect);
+
+        staus_icon.setText(bundle.getString("ItemPanel.staus_icon.text")); // NOI18N
+        staus_icon.setMaximumSize(new java.awt.Dimension(50, 33));
+        staus_icon.setMinimumSize(new java.awt.Dimension(20, 20));
+        staus_icon.setName("staus_icon"); // NOI18N
+        staus_icon.setPreferredSize(new java.awt.Dimension(20, 20));
+        jPanel9.add(staus_icon);
+
+        jPanel10.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(232, 227, 227), 1, true));
+        jPanel10.setName("jPanel10"); // NOI18N
+        jPanel10.setOpaque(false);
+        jPanel10.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 10, 5));
+
+        status.set_Label(bundle.getString("ItemPanel.status._Label")); // NOI18N
+        status.setMaximumSize(new java.awt.Dimension(333, 20));
+        status.setMinimumSize(new java.awt.Dimension(100, 20));
+        status.setName("status"); // NOI18N
+        status.setPreferredSize(new java.awt.Dimension(250, 20));
+        jPanel10.add(status);
+
+        jLabel4.setFont(jLabel4.getFont());
+        jLabel4.setText(bundle.getString("ItemPanel.jLabel4.text")); // NOI18N
+        jLabel4.setName("jLabel4"); // NOI18N
+        jPanel10.add(jLabel4);
+
+        groupnameselect.setMaximumSize(new java.awt.Dimension(333, 20));
+        groupnameselect.setMinimumSize(new java.awt.Dimension(100, 20));
+        groupnameselect.setName("groupnameselect"); // NOI18N
+        groupnameselect.setPreferredSize(new java.awt.Dimension(200, 20));
+        jPanel10.add(groupnameselect);
+
+        button_order2.setFont(button_order2.getFont().deriveFont(button_order2.getFont().getStyle() & ~java.awt.Font.BOLD, button_order2.getFont().getSize()-2));
+        button_order2.setText(bundle.getString("ItemPanel.button_order2.text")); // NOI18N
+        button_order2.setFocusable(false);
+        button_order2.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        button_order2.setMaximumSize(new java.awt.Dimension(20, 20));
+        button_order2.setMinimumSize(new java.awt.Dimension(20, 20));
+        button_order2.setName("button_order2"); // NOI18N
+        button_order2.setPreferredSize(new java.awt.Dimension(20, 20));
+        button_order2.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        button_order2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                button_order2ActionPerformed(evt);
+            }
+        });
+        jPanel10.add(button_order2);
+
+        addedby.setFont(addedby.getFont());
+        addedby.setText(bundle.getString("ItemPanel.addedby.text")); // NOI18N
+        addedby.setToolTipText(bundle.getString("ItemPanel.addedby.toolTipText")); // NOI18N
+        addedby.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+        addedby.setMaximumSize(new java.awt.Dimension(333, 20));
+        addedby.setMinimumSize(new java.awt.Dimension(100, 20));
+        addedby.setName("addedby"); // NOI18N
+        addedby.setPreferredSize(new java.awt.Dimension(200, 20));
+        jPanel10.add(addedby);
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -667,50 +710,19 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(accountselect, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 367, Short.MAX_VALUE)
-                    .addComponent(type, javax.swing.GroupLayout.DEFAULT_SIZE, 367, Short.MAX_VALUE)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(number, javax.swing.GroupLayout.DEFAULT_SIZE, 343, Short.MAX_VALUE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 18, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addGap(40, 40, 40)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(jLabel4, javax.swing.GroupLayout.DEFAULT_SIZE, 214, Short.MAX_VALUE)
-                        .addGap(57, 57, 57)
-                        .addComponent(button_order2))
-                    .addComponent(groupnameselect, javax.swing.GroupLayout.DEFAULT_SIZE, 310, Short.MAX_VALUE)
-                    .addComponent(status, javax.swing.GroupLayout.DEFAULT_SIZE, 310, Short.MAX_VALUE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(staus_icon, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(49, 49, 49)
-                .addComponent(addedby, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jPanel10, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 877, Short.MAX_VALUE)
+                    .addComponent(jPanel9, javax.swing.GroupLayout.DEFAULT_SIZE, 877, Short.MAX_VALUE))
+                .addGap(32, 32, 32))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
-                    .addComponent(addedby, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(status, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(type, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
+                .addComponent(jPanel9, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(accountselect, javax.swing.GroupLayout.Alignment.CENTER, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel4, javax.swing.GroupLayout.Alignment.CENTER, javax.swing.GroupLayout.DEFAULT_SIZE, 20, Short.MAX_VALUE)
-                    .addComponent(button_order2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 16, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
-                    .addComponent(groupnameselect, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(number, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(61, 61, 61))
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(11, 11, 11)
-                .addComponent(staus_icon, javax.swing.GroupLayout.DEFAULT_SIZE, 11, Short.MAX_VALUE)
-                .addGap(122, 122, 122))
+                .addComponent(jPanel10, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
         );
 
         jToolBar1.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
@@ -718,7 +730,9 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
         jToolBar1.setRollover(true);
         jToolBar1.setName("jToolBar1"); // NOI18N
 
+        toorder.setBackground(new java.awt.Color(255, 255, 255));
         toorder.setText(bundle.getString("ItemPanel.toorder.text")); // NOI18N
+        toorder.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(153, 153, 153), 1, true));
         toorder.setEnabled(false);
         toorder.setFocusable(false);
         toorder.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
@@ -734,7 +748,9 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
         });
         jToolBar1.add(toorder);
 
+        toinvoice.setBackground(new java.awt.Color(255, 255, 255));
         toinvoice.setText(bundle.getString("ItemPanel.toinvoice.text")); // NOI18N
+        toinvoice.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(153, 153, 153), 1, true));
         toinvoice.setEnabled(false);
         toinvoice.setFocusable(false);
         toinvoice.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
@@ -761,7 +777,9 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
         jSeparator1.setName("jSeparator1"); // NOI18N
         jToolBar1.add(jSeparator1);
 
+        button_reminders.setBackground(new java.awt.Color(255, 255, 255));
         button_reminders.setText(bundle.getString("ItemPanel.button_reminders.text")); // NOI18N
+        button_reminders.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(153, 153, 153), 1, true));
         button_reminders.setEnabled(false);
         button_reminders.setFocusable(false);
         button_reminders.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
@@ -777,7 +795,9 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
         });
         jToolBar1.add(button_reminders);
 
+        jButton2.setBackground(new java.awt.Color(255, 255, 255));
         jButton2.setText(bundle.getString("ItemPanel.jButton2.text")); // NOI18N
+        jButton2.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(153, 153, 153), 1, true));
         jButton2.setFocusable(false);
         jButton2.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         jButton2.setMaximumSize(new java.awt.Dimension(333, 20));
@@ -795,8 +815,10 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
         jSeparator7.setName("jSeparator7"); // NOI18N
         jToolBar1.add(jSeparator7);
 
+        button_schedule.setBackground(new java.awt.Color(255, 255, 255));
         button_schedule.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/16/kalarm.png"))); // NOI18N
         button_schedule.setText(bundle.getString("ItemPanel.button_schedule.text")); // NOI18N
+        button_schedule.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(153, 153, 153), 1, true));
         button_schedule.setEnabled(false);
         button_schedule.setMaximumSize(new java.awt.Dimension(333, 20));
         button_schedule.setMinimumSize(new java.awt.Dimension(80, 20));
@@ -814,7 +836,9 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
         });
         jToolBar1.add(button_schedule);
 
+        button_preview.setBackground(new java.awt.Color(255, 255, 255));
         button_preview.setText(bundle.getString("ItemPanel.button_preview.text")); // NOI18N
+        button_preview.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(153, 153, 153), 1, true));
         button_preview.setEnabled(false);
         button_preview.setFocusable(false);
         button_preview.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
@@ -830,7 +854,9 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
         });
         jToolBar1.add(button_preview);
 
+        button_deliverynote.setBackground(new java.awt.Color(255, 255, 255));
         button_deliverynote.setText(bundle.getString("ItemPanel.button_deliverynote.text")); // NOI18N
+        button_deliverynote.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(153, 153, 153), 1, true));
         button_deliverynote.setEnabled(false);
         button_deliverynote.setFocusable(false);
         button_deliverynote.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
@@ -846,7 +872,9 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
         });
         jToolBar1.add(button_deliverynote);
 
+        button_orderconf.setBackground(new java.awt.Color(255, 255, 255));
         button_orderconf.setText(bundle.getString("ItemPanel.button_orderconf.text")); // NOI18N
+        button_orderconf.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(153, 153, 153), 1, true));
         button_orderconf.setEnabled(false);
         button_orderconf.setFocusable(false);
         button_orderconf.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
@@ -862,7 +890,9 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
         });
         jToolBar1.add(button_orderconf);
 
+        checkb_pront_oc.setBackground(new java.awt.Color(255, 255, 255));
         checkb_pront_oc.setText(bundle.getString("ItemPanel.checkb_pront_oc.text")); // NOI18N
+        checkb_pront_oc.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(153, 153, 153), 1, true));
         checkb_pront_oc.setEnabled(false);
         checkb_pront_oc.setFocusable(false);
         checkb_pront_oc.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
@@ -1103,7 +1133,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
                 .addComponent(upItem)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(upItem1)
-                .addContainerGap(15, Short.MAX_VALUE))
+                .addContainerGap(25, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
@@ -1265,9 +1295,9 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
                 .addComponent(addfile)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(removefile)
-                .addContainerGap(15, Short.MAX_VALUE))
+                .addContainerGap(18, Short.MAX_VALUE))
             .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 71, Short.MAX_VALUE))
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 74, Short.MAX_VALUE))
         );
 
         jSplitPane1.setRightComponent(jPanel8);
@@ -1280,16 +1310,14 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
         rightpane.setLayout(rightpaneLayout);
         rightpaneLayout.setHorizontalGroup(
             rightpaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jToolBar1, javax.swing.GroupLayout.DEFAULT_SIZE, 952, Short.MAX_VALUE)
+            .addComponent(jToolBar1, javax.swing.GroupLayout.DEFAULT_SIZE, 962, Short.MAX_VALUE)
             .addGroup(rightpaneLayout.createSequentialGroup()
                 .addGroup(rightpaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jSplitPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
-                    .addGroup(rightpaneLayout.createSequentialGroup()
-                        .addGroup(rightpaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 952, Short.MAX_VALUE)
-                            .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jPanel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                    .addGroup(rightpaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                        .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 923, Short.MAX_VALUE)
+                        .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jPanel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         rightpaneLayout.setVerticalGroup(
@@ -1297,13 +1325,13 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
             .addGroup(rightpaneLayout.createSequentialGroup()
                 .addComponent(jToolBar1, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 96, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, 0)
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, 0)
                 .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, 0)
-                .addComponent(jSplitPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 241, Short.MAX_VALUE))
+                .addComponent(jSplitPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 254, Short.MAX_VALUE))
         );
 
         add(rightpane, java.awt.BorderLayout.CENTER);
@@ -1479,13 +1507,13 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
 
     private void jSplitPane2PropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_jSplitPane2PropertyChange
         if (evt.getPropertyName().equals("dividerLocation")) {
-            User.getCurrentUser().setProperty("org.openyabs.uiproperty.itempanel.divier2.dividerLocation", evt.getNewValue().toString());
+            User.getCurrentUser().setProperty("org.openyabs.uiproperty.itempanel.divider2.dividerLocation", evt.getNewValue().toString());
         }
     }//GEN-LAST:event_jSplitPane2PropertyChange
 
     private void jSplitPane1PropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_jSplitPane1PropertyChange
         if (evt.getPropertyName().equals("dividerLocation")) {
-            User.getCurrentUser().setProperty("org.openyabs.uiproperty.itempanel.divier1.dividerLocation", evt.getNewValue().toString());
+            User.getCurrentUser().setProperty("org.openyabs.uiproperty.itempanel.divider1.dividerLocation", evt.getNewValue().toString());
         }
     }//GEN-LAST:event_jSplitPane1PropertyChange
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -1524,6 +1552,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel10;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
@@ -1531,6 +1560,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
     private javax.swing.JPanel jPanel6;
     private javax.swing.JPanel jPanel7;
     private javax.swing.JPanel jPanel8;
+    private javax.swing.JPanel jPanel9;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
@@ -1841,7 +1871,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
                             tpvs = tp;
                         }
 //                        if (tpvs.equals(tpvs)) {
-                            s.setTaxpercentvalue(tp);
+                        s.setTaxpercentvalue(tp);
 //                        } else {
 //                            Popup.warn(Messages.TAXES_NOT_EQUAL);
 //                            break;
@@ -2040,6 +2070,8 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
     }
 
     private void prepareTable() {
+        boolean calcoptionalcol = User.getCurrentUser().getProperty("org.openyabs.uiproperty", "itempanel.calculateoptionalcol");
+
         TableCellRendererForProducts tx = new TableCellRendererForProducts(itemtable);
         tx.setRendererTo(10);
 
@@ -2056,6 +2088,10 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
         t.setRendererTo(16);
         TableCellRendererForDezimal tc = new TableCellRendererForDezimal(itemtable, new java.awt.Color(161, 176, 190));
         tc.setRendererTo(7);
+        if (calcoptionalcol) {
+            tc.setRendererTo(14);
+        }
+
 
 //        CellEditorWithMPComboBox r = new CellEditorWithMPComboBox(Context.getProduct(), itemtable);
 //        r.setEditorTo(4, this);
@@ -2070,20 +2106,21 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
         r.setEditorTo(4);
 
         itemtable.getColumnModel().getColumn(3).setCellEditor(new LazyCellEditor(new JTextField()));
+        String quantXnet = "[2]*[5]" + (calcoptionalcol ? "*[14]" : "");
 
-        itemMultiplier = new DynamicTableCalculator(itemtable, "(([2]*[5])-([2]*[5]%[15]))+(([2]*[5])-([2]*[5]%[15]))%[6]", new int[]{7});
+        itemMultiplier = new DynamicTableCalculator(itemtable, "((" + quantXnet + ")-(" + quantXnet + "%[15]))+((" + quantXnet + ")-(" + quantXnet + "%[15]))%[6]", new int[]{7});
         ((MPTableModel) itemtable.getModel()).addCalculator(itemMultiplier);
         itemMultiplier.addLabel(value, 7);
 
-        netCalculator = new DynamicTableCalculator(itemtable, "[2]*[5]", new int[]{9});
+        netCalculator = new DynamicTableCalculator(itemtable, quantXnet, new int[]{9});
         ((MPTableModel) itemtable.getModel()).addCalculator(netCalculator);
         netCalculator.addLabel(netvalue, 9);
 
-        taxcalculator = new DynamicTableCalculator(itemtable, "((([2]*[5])-([2]*[5]%[15]))+(([2]*[5])-([2]*[5]%[15]))%[6])-(([2]*[5])-([2]*[5]%[15]))", new int[]{8});
+        taxcalculator = new DynamicTableCalculator(itemtable, "(((" + quantXnet + ")-(" + quantXnet + "%[15]))+((" + quantXnet + ")-(" + quantXnet + "%[15]))%[6])-((" + quantXnet + ")-(" + quantXnet + "%[15]))", new int[]{8});
         ((MPTableModel) itemtable.getModel()).addCalculator(taxcalculator);
         taxcalculator.addLabel(taxvalue, 8);
 
-        disccalculator = new DynamicTableCalculator(itemtable, "[2]*[5]%[15]", new int[]{16});
+        disccalculator = new DynamicTableCalculator(itemtable, quantXnet + "%[15]", new int[]{16});
         ((MPTableModel) itemtable.getModel()).addCalculator(disccalculator);
         disccalculator.addLabel(discount, 16);
 

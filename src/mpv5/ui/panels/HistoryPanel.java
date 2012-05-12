@@ -109,17 +109,12 @@ public class HistoryPanel extends javax.swing.JPanel implements ListPanel {
         jPanel1 = new javax.swing.JPanel();
         jToolBar1 = new javax.swing.JToolBar();
         jLabel1 = new javax.swing.JLabel();
-        jSeparator1 = new javax.swing.JToolBar.Separator();
         users = new javax.swing.JComboBox();
-        jSeparator2 = new javax.swing.JToolBar.Separator();
         jLabel2 = new javax.swing.JLabel();
-        jSeparator5 = new javax.swing.JToolBar.Separator();
         groups = new javax.swing.JComboBox();
         jSeparator6 = new javax.swing.JToolBar.Separator();
         jButton1 = new javax.swing.JButton();
-        jSeparator4 = new javax.swing.JToolBar.Separator();
         prinitingComboBox1 = new mpv5.ui.beans.PrinitingComboBox();
-        jSeparator3 = new javax.swing.JToolBar.Separator();
         jScrollPane1 = new javax.swing.JScrollPane();
         jTable1 = new  mpv5.ui.misc.MPTable(this) {
             public Component prepareRenderer(TableCellRenderer renderer,
@@ -133,13 +128,12 @@ public class HistoryPanel extends javax.swing.JPanel implements ListPanel {
             }
         };
         jToolBar2 = new javax.swing.JToolBar();
-        timeframeChooser1 = new mpv5.ui.beans.TimeframeChooser();
-        jSeparator7 = new javax.swing.JToolBar.Separator();
         jLabel3 = new javax.swing.JLabel();
+        timeframeChooser1 = new mpv5.ui.beans.TimeframeChooser();
 
         setName("Form"); // NOI18N
 
-        mpv5.i18n.LanguageManager.getBundle();
+        java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle(); // NOI18N
         jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("HistoryPanel.jPanel1.border.title"))); // NOI18N
         jPanel1.setName("jPanel1"); // NOI18N
 
@@ -148,14 +142,16 @@ public class HistoryPanel extends javax.swing.JPanel implements ListPanel {
         jToolBar1.setName("jToolBar1"); // NOI18N
 
         jLabel1.setText(bundle.getString("HistoryPanel.jLabel1.text")); // NOI18N
+        jLabel1.setMaximumSize(new java.awt.Dimension(333, 20));
+        jLabel1.setMinimumSize(new java.awt.Dimension(100, 20));
         jLabel1.setName("jLabel1"); // NOI18N
+        jLabel1.setPreferredSize(new java.awt.Dimension(120, 20));
         jToolBar1.add(jLabel1);
 
-        jSeparator1.setName("jSeparator1"); // NOI18N
-        jToolBar1.add(jSeparator1);
-
-        users.setMaximumSize(new java.awt.Dimension(224, 20));
+        users.setMaximumSize(new java.awt.Dimension(333, 20));
+        users.setMinimumSize(new java.awt.Dimension(100, 20));
         users.setName("users"); // NOI18N
+        users.setPreferredSize(new java.awt.Dimension(120, 20));
         users.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 usersActionPerformed(evt);
@@ -163,18 +159,18 @@ public class HistoryPanel extends javax.swing.JPanel implements ListPanel {
         });
         jToolBar1.add(users);
 
-        jSeparator2.setName("jSeparator2"); // NOI18N
-        jToolBar1.add(jSeparator2);
-
         jLabel2.setText(bundle.getString("HistoryPanel.jLabel2.text")); // NOI18N
+        jLabel2.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        jLabel2.setMaximumSize(new java.awt.Dimension(333, 20));
+        jLabel2.setMinimumSize(new java.awt.Dimension(100, 20));
         jLabel2.setName("jLabel2"); // NOI18N
+        jLabel2.setPreferredSize(new java.awt.Dimension(120, 20));
         jToolBar1.add(jLabel2);
 
-        jSeparator5.setName("jSeparator5"); // NOI18N
-        jToolBar1.add(jSeparator5);
-
-        groups.setMaximumSize(new java.awt.Dimension(224, 20));
+        groups.setMaximumSize(new java.awt.Dimension(333, 20));
+        groups.setMinimumSize(new java.awt.Dimension(100, 20));
         groups.setName("groups"); // NOI18N
+        groups.setPreferredSize(new java.awt.Dimension(120, 20));
         groups.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 groupsActionPerformed(evt);
@@ -188,7 +184,10 @@ public class HistoryPanel extends javax.swing.JPanel implements ListPanel {
         jButton1.setText(bundle.getString("HistoryPanel.jButton1.text")); // NOI18N
         jButton1.setFocusable(false);
         jButton1.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        jButton1.setMaximumSize(new java.awt.Dimension(333, 20));
+        jButton1.setMinimumSize(new java.awt.Dimension(100, 20));
         jButton1.setName("jButton1"); // NOI18N
+        jButton1.setPreferredSize(new java.awt.Dimension(120, 20));
         jButton1.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         jButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -197,14 +196,11 @@ public class HistoryPanel extends javax.swing.JPanel implements ListPanel {
         });
         jToolBar1.add(jButton1);
 
-        jSeparator4.setName("jSeparator4"); // NOI18N
-        jToolBar1.add(jSeparator4);
-
+        prinitingComboBox1.setMaximumSize(new java.awt.Dimension(333, 20));
+        prinitingComboBox1.setMinimumSize(new java.awt.Dimension(100, 20));
         prinitingComboBox1.setName("prinitingComboBox1"); // NOI18N
+        prinitingComboBox1.setPreferredSize(new java.awt.Dimension(120, 20));
         jToolBar1.add(prinitingComboBox1);
-
-        jSeparator3.setName("jSeparator3"); // NOI18N
-        jToolBar1.add(jSeparator3);
 
         jScrollPane1.setName("jScrollPane1"); // NOI18N
 
@@ -227,23 +223,22 @@ public class HistoryPanel extends javax.swing.JPanel implements ListPanel {
         jToolBar2.setRollover(true);
         jToolBar2.setName("jToolBar2"); // NOI18N
 
+        jLabel3.setText(bundle.getString("HistoryPanel.jLabel3.text")); // NOI18N
+        jLabel3.setMaximumSize(new java.awt.Dimension(333, 20));
+        jLabel3.setName("jLabel3"); // NOI18N
+        jLabel3.setPreferredSize(new java.awt.Dimension(100, 20));
+        jToolBar2.add(jLabel3);
+
         timeframeChooser1.setName("timeframeChooser1"); // NOI18N
         jToolBar2.add(timeframeChooser1);
-
-        jSeparator7.setName("jSeparator7"); // NOI18N
-        jToolBar2.add(jSeparator7);
-
-        jLabel3.setText(bundle.getString("HistoryPanel.jLabel3.text")); // NOI18N
-        jLabel3.setName("jLabel3"); // NOI18N
-        jToolBar2.add(jLabel3);
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jToolBar2, javax.swing.GroupLayout.DEFAULT_SIZE, 471, Short.MAX_VALUE)
-            .addComponent(jToolBar1, javax.swing.GroupLayout.DEFAULT_SIZE, 471, Short.MAX_VALUE)
-            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 471, Short.MAX_VALUE)
+            .addComponent(jToolBar2, javax.swing.GroupLayout.DEFAULT_SIZE, 606, Short.MAX_VALUE)
+            .addComponent(jToolBar1, javax.swing.GroupLayout.DEFAULT_SIZE, 606, Short.MAX_VALUE)
+            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 606, Short.MAX_VALUE)
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -297,13 +292,7 @@ public class HistoryPanel extends javax.swing.JPanel implements ListPanel {
     private javax.swing.JLabel jLabel3;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JToolBar.Separator jSeparator1;
-    private javax.swing.JToolBar.Separator jSeparator2;
-    private javax.swing.JToolBar.Separator jSeparator3;
-    private javax.swing.JToolBar.Separator jSeparator4;
-    private javax.swing.JToolBar.Separator jSeparator5;
     private javax.swing.JToolBar.Separator jSeparator6;
-    private javax.swing.JToolBar.Separator jSeparator7;
     private javax.swing.JTable jTable1;
     private javax.swing.JToolBar jToolBar1;
     private javax.swing.JToolBar jToolBar2;

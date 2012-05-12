@@ -18,6 +18,8 @@ package mpv5.mail;
 
 import com.sun.mail.smtp.SMTPSSLTransport;
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Properties;
 
 import javax.activation.DataHandler;
@@ -37,6 +39,7 @@ import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
 import mpv5.globals.Messages;
 import mpv5.logging.Log;
+import mpv5.ui.dialogs.Notificator;
 import mpv5.ui.dialogs.Popup;
 import mpv5.utils.export.Export;
 import mpv5.utils.jobs.Waiter;
@@ -56,9 +59,13 @@ public class SimpleMail implements Waiter {
     private String subject = "";
     private String text = "";
     private String bccAddress = null;
+    private List<String> cc = new ArrayList<String>();
+    private List<String> bcc = new ArrayList<String>();
+    private List<String> rec = new ArrayList<String>();
     private boolean useTls;
     private boolean useSmtps;
     private File attachment;
+    private String ccAddress;
 
     /**
      *
@@ -101,7 +108,7 @@ public class SimpleMail implements Waiter {
 
             @Override
             public void run() {
-                
+
                 if (!useSmtps) {
                     try {
                         sendSmptmail();
@@ -117,7 +124,7 @@ public class SimpleMail implements Waiter {
                         Log.Debug(ex);
                     }
                 }
-                
+
             }
         };
         new Thread(runnable).start();
@@ -229,6 +236,11 @@ public class SimpleMail implements Waiter {
      */
     public void setRecipientsAddress(String recipientsAddress) {
         this.recipientsAddress = recipientsAddress;
+        String[] ccs = recipientsAddress.split(";");
+        for (int i = 0; i < ccs.length; i++) {
+            String ccc = ccs[i];
+            addAddress(ccc);
+        }
     }
 
     /**
@@ -323,8 +335,9 @@ public class SimpleMail implements Waiter {
         MimeMessage message = new MimeMessage(session);
         message.setFrom(new InternetAddress(senderAddress));
         message.addRecipient(Message.RecipientType.TO, new InternetAddress(recipientsAddress));
-        if(getBccAddress()!=null)
+        if (getBccAddress() != null) {
             message.addRecipient(Message.RecipientType.BCC, new InternetAddress(bccAddress));
+        }
         message.setSubject(subject);
 
         // create the message part
@@ -391,9 +404,30 @@ public class SimpleMail implements Waiter {
         // Define message
         MimeMessage message = new MimeMessage(session);
         message.setFrom(new InternetAddress(senderAddress));
-        message.addRecipient(Message.RecipientType.TO, new InternetAddress(recipientsAddress));
-        if(getBccAddress()!=null)
-            message.addRecipient(Message.RecipientType.BCC, new InternetAddress(bccAddress));
+        for (int i = 0; i < rec.size(); i++) {
+            String recc = rec.get(i);
+            try {
+                message.addRecipient(Message.RecipientType.TO, new InternetAddress(recc));
+            } catch (MessagingException messagingException) {
+                Notificator.raiseNotification(messagingException);
+            }
+        }
+        for (int i = 0; i < bcc.size(); i++) {
+            String bbc = bcc.get(i);
+            try {
+                message.addRecipient(Message.RecipientType.BCC, new InternetAddress(bbc));
+            } catch (MessagingException messagingException) {
+                Notificator.raiseNotification(messagingException);
+            }
+        }
+        for (int i = 0; i < cc.size(); i++) {
+            String ccc = cc.get(i);
+            try {
+                message.addRecipient(Message.RecipientType.CC, new InternetAddress(ccc));
+            } catch (MessagingException messagingException) {
+                Notificator.raiseNotification(messagingException);
+            }
+        }
         message.setSubject(subject);
 
         // create the message part
@@ -438,7 +472,6 @@ public class SimpleMail implements Waiter {
         }
     }
 
-
     /**
      * @return the bccAddress
      */
@@ -451,6 +484,32 @@ public class SimpleMail implements Waiter {
      */
     public void setBccAddress(String bccAddress) {
         this.bccAddress = bccAddress;
+        String[] ccs = bccAddress.split(";");
+        for (int i = 0; i < ccs.length; i++) {
+            String ccc = ccs[i];
+            addBCCAddress(ccc);
+        }
+    }
+
+    public void addCCAddress(String ccc) {
+        cc.add(ccc);
+    }
+
+    public void setCCAddress(String cc) {
+        this.ccAddress = cc;
+        String[] ccs = cc.split(";");
+        for (int i = 0; i < ccs.length; i++) {
+            String ccc = ccs[i];
+            addCCAddress(ccc);
+        }
+    }
+
+    private void addAddress(String ccc) {
+        rec.add(ccc);
+    }
+
+    private void addBCCAddress(String ccc) {
+        bcc.add(ccc);
     }
 
     class MailAuthenticator extends Authenticator {

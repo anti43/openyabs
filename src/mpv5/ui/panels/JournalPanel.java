@@ -134,7 +134,7 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
             Log.Debug(this, nodataFoundException.getMessage());
         }
 
-        statusc.getComboBox().setModel(new DefaultComboBoxModel(new Object[]{Messages.ALL, Messages.STATUS_PAID, Messages.STATUS_UNPAID}));
+        statusc.getComboBox().setModel(new DefaultComboBoxModel(new Object[]{Messages.ALL, Messages.STATUS_PAID, Messages.STATUS_UNPAID, Messages.STATUS_CANCELLED}));
         prinitingComboBox1.init(jTable1);
         refresh(null, null);
         jButton4.setEnabled(false);
@@ -240,13 +240,15 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
         jPanel3 = new javax.swing.JPanel();
         jButton4 = new javax.swing.JButton();
         prinitingComboBox1 = new mpv5.ui.beans.PrinitingComboBox();
-        revenue = new mpv5.ui.beans.LabeledTextField();
-        volume = new mpv5.ui.beans.LabeledTextField();
+        revenueNetto = new mpv5.ui.beans.LabeledTextField();
+        volumeNetto = new mpv5.ui.beans.LabeledTextField();
+        volumeBrutto = new mpv5.ui.beans.LabeledTextField();
+        taxVolume = new mpv5.ui.beans.LabeledTextField();
         jPanel9 = new javax.swing.JPanel();
 
         setName("Form"); // NOI18N
 
-        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("mpv5/resources/languages/Panels"); // NOI18N
+        java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle(); // NOI18N
         jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("JournalPanel.jPanel1.border.title"))); // NOI18N
         jPanel1.setName("jPanel1"); // NOI18N
 
@@ -342,7 +344,6 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
         jPanel4.add(jScrollPane1, java.awt.BorderLayout.CENTER);
 
         jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("JournalPanel.jPanel2.border.title"))); // NOI18N
-        jPanel2.setMinimumSize(new java.awt.Dimension(220, 220));
         jPanel2.setName("jPanel2"); // NOI18N
         jPanel2.setPreferredSize(new java.awt.Dimension(734, 200));
         jPanel2.setRequestFocusEnabled(false);
@@ -531,30 +532,30 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
                     .addComponent(jPanel8, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addGap(10, 10, 10)
-                        .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 86, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGap(100, 100, 100)
                         .addComponent(count, javax.swing.GroupLayout.PREFERRED_SIZE, 67, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 86, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jPanel6, javax.swing.GroupLayout.PREFERRED_SIZE, 212, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addGap(35, 35, 35))
+                .addContainerGap())
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                     .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addComponent(jPanel8, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jPanel7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
                         .addComponent(jPanel6, 0, 0, Short.MAX_VALUE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
-                            .addComponent(count, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jButton1))))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addComponent(jButton1))
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel2Layout.createSequentialGroup()
+                        .addComponent(jPanel8, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jPanel7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(11, 11, 11)
+                .addComponent(count, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
         jPanel4.add(jPanel2, java.awt.BorderLayout.NORTH);
@@ -571,11 +572,17 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
 
         prinitingComboBox1.setName("prinitingComboBox1"); // NOI18N
 
-        revenue.set_Label(bundle.getString("JournalPanel.revenue._Label")); // NOI18N
-        revenue.setName("revenue"); // NOI18N
+        revenueNetto.set_Label(bundle.getString("JournalPanel.revenueNetto._Label")); // NOI18N
+        revenueNetto.setName("revenueNetto"); // NOI18N
 
-        volume.set_Label(bundle.getString("JournalPanel.volume._Label")); // NOI18N
-        volume.setName("volume"); // NOI18N
+        volumeNetto.set_Label(bundle.getString("JournalPanel.volumeNetto._Label")); // NOI18N
+        volumeNetto.setName("volumeNetto"); // NOI18N
+
+        volumeBrutto.set_Label(bundle.getString("JournalPanel.volumeBrutto._Label")); // NOI18N
+        volumeBrutto.setName("volumeBrutto"); // NOI18N
+
+        taxVolume.set_Label(bundle.getString("JournalPanel.taxVolume._Label")); // NOI18N
+        taxVolume.setName("taxVolume"); // NOI18N
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
@@ -583,13 +590,19 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(prinitingComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 196, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jButton4)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 145, Short.MAX_VALUE)
-                .addComponent(volume, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(revenue, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
+                        .addComponent(volumeNetto, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(revenueNetto, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
+                        .addComponent(prinitingComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 196, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jButton4)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 145, Short.MAX_VALUE)
+                        .addComponent(volumeBrutto, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(taxVolume, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
         jPanel3Layout.setVerticalGroup(
@@ -597,11 +610,15 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
-                    .addComponent(volume, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(prinitingComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 19, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(volumeNetto, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(revenueNetto, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
+                    .addComponent(taxVolume, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(volumeBrutto, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jButton4, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(revenue, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(16, Short.MAX_VALUE))
+                    .addComponent(prinitingComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 19, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap())
         );
 
         jPanel4.add(jPanel3, java.awt.BorderLayout.SOUTH);
@@ -728,17 +745,21 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
     private javax.swing.JTable jTable1;
     private javax.swing.JTree jTree1;
     private mpv5.ui.beans.PrinitingComboBox prinitingComboBox1;
-    private mpv5.ui.beans.LabeledTextField revenue;
+    private mpv5.ui.beans.LabeledTextField revenueNetto;
     private mpv5.ui.beans.MPCombobox statusc;
+    private mpv5.ui.beans.LabeledTextField taxVolume;
     private mpv5.ui.beans.TimeframeChooser timeframeChooser1;
     private mpv5.ui.beans.MPCombobox users;
-    private mpv5.ui.beans.LabeledTextField volume;
+    private mpv5.ui.beans.LabeledTextField volumeBrutto;
+    private mpv5.ui.beans.LabeledTextField volumeNetto;
     // End of variables declaration//GEN-END:variables
 
     private Object[][] parse(Object[][] data) {
         //#entity date group account number type status value
         double revenuenet = 0d;
         double volumenet = 0d;
+        double taxvolume = 0d;
+        double volumebrut = 0d;
         Object[][] d = new Object[data.length][16];
         try {
             for (int i = 0; i < d.length; i++) {
@@ -787,14 +808,18 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
                 d[i][13] = "<html><p align=center>" + mpv5.utils.numberformat.FormatNumber.formatDezimal(taxVal);
                 d[i][14] = "<html><p align=center>" + mpv5.utils.numberformat.FormatNumber.formatDezimal(brutVolume);
                 volumenet += netVolume;
+                volumebrut += brutVolume;
+                taxvolume += taxVal;
             }
         } catch (Exception numberFormatException) {
             Log.Debug(numberFormatException);
             Log.Debug(this, Arrays.asList(data[0]));
         }
 
-        volume.setText(mpv5.utils.numberformat.FormatNumber.formatDezimal(volumenet));
-        revenue.setText(mpv5.utils.numberformat.FormatNumber.formatDezimal(revenuenet));
+        volumeNetto.setText(mpv5.utils.numberformat.FormatNumber.formatDezimal(volumenet));
+        revenueNetto.setText(mpv5.utils.numberformat.FormatNumber.formatDezimal(revenuenet));
+        volumeBrutto.setText(mpv5.utils.numberformat.FormatNumber.formatDezimal(volumebrut));
+        taxVolume.setText(mpv5.utils.numberformat.FormatNumber.formatDezimal(taxvolume));
 
         return d;
     }
@@ -858,8 +883,14 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
                         itemsParams.and(new QueryParameter(Context.getItem(), "intstatus", Item.STATUS_PAID, QueryParameter.EQUALS));
                     } else if (statusc.getComboBox().getSelectedItem().equals(Messages.STATUS_UNPAID)) {
 //                        additional = false;
-                        itemsParams.or(new QueryParameter(Context.getItem(), "intstatus", Item.STATUS_PAID, QueryParameter.EQUALS),
+                        itemsParams.or(
+                                new QueryParameter(Context.getItem(), "intstatus", Item.STATUS_QUEUED, QueryParameter.EQUALS),
+                                new QueryParameter(Context.getItem(), "intstatus", Item.STATUS_PAUSED, QueryParameter.EQUALS),
+                                new QueryParameter(Context.getItem(), "intstatus", Item.STATUS_IN_PROGRESS, QueryParameter.EQUALS),
                                 new QueryParameter(Context.getItem(), "intstatus", Item.STATUS_FINISHED, QueryParameter.EQUALS));
+                    } else if (statusc.getComboBox().getSelectedItem().equals(Messages.STATUS_CANCELLED)) {
+//                        additional = false;
+                        itemsParams.and(new QueryParameter(Context.getItem(), "intstatus", Item.STATUS_CANCELLED, QueryParameter.EQUALS));
                     }
 
                     try {
@@ -1065,7 +1096,6 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
     private void setPopup() {
         TablePopUp tablePopUp = new TablePopUp(jTable1,
                 new String[]{Messages.DELETE.toString(),
-                    Messages.CHANGE_STATUS.toString(),
                     null, Messages.RELOAD.getValue(),
                     null, Messages.DTA_CREATE.getValue(),
                     Messages.PDF_CREATE.getValue(),
@@ -1091,59 +1121,12 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
                         setData();
                     }
                 }
-            }, new ActionListener() {
+            }, null, new ActionListener() {
 
                 public void actionPerformed(ActionEvent e) {
-                    int count = 0;
-                    int[] rows = jTable1.getSelectedRows();
-                    for (int i = 0; i < rows.length; i++) {
-                        try {
-                            int index = jTable1.convertRowIndexToModel(rows[i]);
-                            DatabaseObject obj = DatabaseObject.getObject((DatabaseObject.Entity<?, ?>) jTable1.getModel().getValueAt(index, 0));
-                            if (obj.getContext().equals(Context.getItem())) {
-                                Item item = (Item) obj;
-                                if (item.__getIntstatus() != Item.STATUS_PAID) {
-                                    count++;
-                                }
-                            }
-                        } catch (NodataFoundException ex) {
-                            Log.Debug(ex);
-                        }
-                    }
-                    if (Popup.Y_N_dialog(Messages.REALLY_CHANGE2 + " (" + count + ")")) {
-                        rows = jTable1.getSelectedRows();
-                        for (int i = 0; i < rows.length; i++) {
-                            try {
-                                int index = jTable1.convertRowIndexToModel(jTable1.getSelectedRow());
-                                DatabaseObject obj = DatabaseObject.getObject((DatabaseObject.Entity<?, ?>) jTable1.getModel().getValueAt(index, 0));
-                                if (obj.getContext().equals(Context.getItem())) {
-                                    Item item = (Item) obj;
-                                    if (item.__getIntstatus() == Item.STATUS_PAID) {
-//                                    item.setIntstatus(Item.STATUS_FINISHED);
-//                                    item.save();
-                                    } else {
-                                        item.setIntstatus(Item.STATUS_PAID);
-                                        item.save();
-                                        jTable1.getSelectionModel().removeSelectionInterval(rows[i] - 1, rows[i]);
-                                    }
-                                } else if (obj.getContext().equals(Context.getRevenue())) {
-                                } else if (obj.getContext().equals(Context.getExpense())) {
-                                }
-                            } catch (NodataFoundException ex) {
-                                Log.Debug(ex);
-                            }
-                        }
-                        setData();
-                    }
+                    setData();
                 }
             },
-                    null,
-                    new ActionListener() {
-
-                        public void actionPerformed(ActionEvent e) {
-                            setData();
-                        }
-                    },
                     null,
                     new ActionListener() {
 
@@ -1349,17 +1332,17 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
             p.and(new QueryParameter(Context.getItem(), "intstatus", Item.STATUS_PAID, QueryParameter.NOTEQUAL));
             p.and(new QueryParameter(Context.getItem(), "inttype", Item.TYPE_BILL, QueryParameter.EQUALS));
             jTree1.setModel(new MPTreeModel(dataOwner, p));
-        }else if (filteroffers.isSelected()) {
+        } else if (filteroffers.isSelected()) {
             QueryCriteria2 p = new QueryCriteria2();
             p.and(new QueryParameter(Context.getItem(), "intstatus", Item.STATUS_FINISHED, QueryParameter.NOTEQUAL));
             p.and(new QueryParameter(Context.getItem(), "inttype", Item.TYPE_OFFER, QueryParameter.EQUALS));
             jTree1.setModel(new MPTreeModel(dataOwner, p));
-        }else if (filterorders.isSelected()) {
+        } else if (filterorders.isSelected()) {
             QueryCriteria2 p = new QueryCriteria2();
             p.and(new QueryParameter(Context.getItem(), "intstatus", Item.STATUS_FINISHED, QueryParameter.NOTEQUAL));
             p.and(new QueryParameter(Context.getItem(), "inttype", Item.TYPE_ORDER, QueryParameter.EQUALS));
             jTree1.setModel(new MPTreeModel(dataOwner, p));
-        }else if (filternone.isSelected()) {
+        } else if (filternone.isSelected()) {
             jTree1.setModel(new MPTreeModel(dataOwner, null));
         }
     }

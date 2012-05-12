@@ -22,9 +22,15 @@
 package mpv5.ui.dialogs.subcomponents;
 
 import java.awt.Component;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JPanel;
+import javax.swing.JTable;
+import javax.swing.RowFilter;
+import javax.swing.table.TableModel;
+import javax.swing.table.TableRowSorter;
 import mpv5.data.PropertyStore;
 import mpv5.db.objects.User;
 import mpv5.globals.LocalSettings;
@@ -50,7 +56,7 @@ public class ControlPanel_AdvancedUserProperties extends javax.swing.JPanel impl
     public ControlPanel_AdvancedUserProperties() {
         initComponents();
         setData(User.getCurrentUser().getProperties());
-
+        setupFilter();
     }
 
     public void setData(PropertyStore vals) {
@@ -78,6 +84,8 @@ public class ControlPanel_AdvancedUserProperties extends javax.swing.JPanel impl
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jPanel2 = new javax.swing.JPanel();
+        filter = new mpv5.ui.beans.LabeledTextField();
         jScrollPane1 = new javax.swing.JScrollPane();
         jTable1 = new javax.swing.JTable();
         jPanel1 = new javax.swing.JPanel();
@@ -89,6 +97,16 @@ public class ControlPanel_AdvancedUserProperties extends javax.swing.JPanel impl
         setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("ControlPanel_AdvancedUserProperties.border.title"))); // NOI18N
         setName("Form"); // NOI18N
         setLayout(new javax.swing.BoxLayout(this, javax.swing.BoxLayout.PAGE_AXIS));
+
+        jPanel2.setMaximumSize(new java.awt.Dimension(2147483647, 20));
+        jPanel2.setName("jPanel2"); // NOI18N
+        jPanel2.setLayout(new java.awt.BorderLayout());
+
+        filter.set_Label(bundle.getString("ControlPanel_AdvancedUserProperties.filter._Label")); // NOI18N
+        filter.setName("filter"); // NOI18N
+        jPanel2.add(filter, java.awt.BorderLayout.CENTER);
+
+        add(jPanel2);
 
         jScrollPane1.setName("jScrollPane1"); // NOI18N
 
@@ -160,10 +178,12 @@ public class ControlPanel_AdvancedUserProperties extends javax.swing.JPanel impl
         reset();
 }//GEN-LAST:event_jButton3ActionPerformed
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private mpv5.ui.beans.LabeledTextField filter;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
     private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable jTable1;
     // End of variables declaration//GEN-END:variables
@@ -208,5 +228,24 @@ public class ControlPanel_AdvancedUserProperties extends javax.swing.JPanel impl
                 User.getCurrentUser().getProperties().changeProperty(key, value);
             }
         }
+    }
+
+    private void setupFilter() {
+        final JTable table = jTable1;
+        final TableRowSorter<TableModel> sorter = new TableRowSorter<TableModel>(table.getModel());
+        table.setRowSorter(sorter);
+
+        filter.getTextField().addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String text = filter.getText();
+                if (text.length() == 0) {
+                    sorter.setRowFilter(null);
+                } else {
+                    sorter.setRowFilter(RowFilter.regexFilter(text));
+                }
+            }
+        });
     }
 }

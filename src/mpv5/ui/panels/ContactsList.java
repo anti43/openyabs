@@ -98,10 +98,11 @@ public class ContactsList extends javax.swing.JPanel implements ListPanel {
         excButton = new javax.swing.JCheckBox();
         jButton6 = new javax.swing.JButton();
         prinitingComboBox1 = new mpv5.ui.beans.PrinitingComboBox();
-        jButton4 = new javax.swing.JButton();
+        jPanel3 = new javax.swing.JPanel();
+        jLabel4 = new javax.swing.JLabel();
         jButton5 = new javax.swing.JButton();
         jButton1 = new javax.swing.JButton();
-        jLabel4 = new javax.swing.JLabel();
+        jButton4 = new javax.swing.JButton();
 
         setName("Form"); // NOI18N
 
@@ -173,6 +174,7 @@ public class ContactsList extends javax.swing.JPanel implements ListPanel {
         });
 
         jToolBar2.setFloatable(false);
+        jToolBar2.setMaximumSize(new java.awt.Dimension(457, 33));
         jToolBar2.setName("jToolBar2"); // NOI18N
         jToolBar2.setPreferredSize(new java.awt.Dimension(670, 23));
 
@@ -187,7 +189,10 @@ public class ContactsList extends javax.swing.JPanel implements ListPanel {
         jCheckBox1.setFont(jCheckBox1.getFont());
         jCheckBox1.setText(bundle.getString("ContactsList.jCheckBox1.text")); // NOI18N
         jCheckBox1.setMargin(new java.awt.Insets(2, 6, 2, 6));
+        jCheckBox1.setMaximumSize(new java.awt.Dimension(333, 33));
+        jCheckBox1.setMinimumSize(new java.awt.Dimension(100, 20));
         jCheckBox1.setName("jCheckBox1"); // NOI18N
+        jCheckBox1.setPreferredSize(new java.awt.Dimension(100, 20));
         jCheckBox1.addItemListener(new java.awt.event.ItemListener() {
             public void itemStateChanged(java.awt.event.ItemEvent evt) {
                 ItemStateChanged(evt);
@@ -198,7 +203,10 @@ public class ContactsList extends javax.swing.JPanel implements ListPanel {
         jCheckBox2.setFont(jCheckBox2.getFont());
         jCheckBox2.setText(bundle.getString("ContactsList.jCheckBox2.text")); // NOI18N
         jCheckBox2.setMargin(new java.awt.Insets(2, 6, 2, 6));
+        jCheckBox2.setMaximumSize(new java.awt.Dimension(333, 33));
+        jCheckBox2.setMinimumSize(new java.awt.Dimension(100, 20));
         jCheckBox2.setName("jCheckBox2"); // NOI18N
+        jCheckBox2.setPreferredSize(new java.awt.Dimension(100, 20));
         jCheckBox2.addItemListener(new java.awt.event.ItemListener() {
             public void itemStateChanged(java.awt.event.ItemEvent evt) {
                 ItemStateChanged(evt);
@@ -209,7 +217,10 @@ public class ContactsList extends javax.swing.JPanel implements ListPanel {
         jCheckBox3.setFont(jCheckBox3.getFont());
         jCheckBox3.setText(bundle.getString("ContactsList.jCheckBox3.text")); // NOI18N
         jCheckBox3.setMargin(new java.awt.Insets(2, 6, 2, 6));
+        jCheckBox3.setMaximumSize(new java.awt.Dimension(333, 33));
+        jCheckBox3.setMinimumSize(new java.awt.Dimension(100, 20));
         jCheckBox3.setName("jCheckBox3"); // NOI18N
+        jCheckBox3.setPreferredSize(new java.awt.Dimension(100, 20));
         jCheckBox3.addItemListener(new java.awt.event.ItemListener() {
             public void itemStateChanged(java.awt.event.ItemEvent evt) {
                 ItemStateChanged(evt);
@@ -220,7 +231,10 @@ public class ContactsList extends javax.swing.JPanel implements ListPanel {
         jCheckBox4.setFont(jCheckBox4.getFont());
         jCheckBox4.setText(bundle.getString("ContactsList.jCheckBox4.text")); // NOI18N
         jCheckBox4.setMargin(new java.awt.Insets(2, 6, 2, 6));
+        jCheckBox4.setMaximumSize(new java.awt.Dimension(333, 33));
+        jCheckBox4.setMinimumSize(new java.awt.Dimension(100, 20));
         jCheckBox4.setName("jCheckBox4"); // NOI18N
+        jCheckBox4.setPreferredSize(new java.awt.Dimension(100, 20));
         jCheckBox4.addItemListener(new java.awt.event.ItemListener() {
             public void itemStateChanged(java.awt.event.ItemEvent evt) {
                 ItemStateChanged(evt);
@@ -232,7 +246,10 @@ public class ContactsList extends javax.swing.JPanel implements ListPanel {
         excButton.setText(bundle.getString("ContactsList.excButton.text")); // NOI18N
         excButton.setToolTipText(bundle.getString("ContactsList.excButton.toolTipText")); // NOI18N
         excButton.setMargin(new java.awt.Insets(2, 6, 2, 6));
+        excButton.setMaximumSize(new java.awt.Dimension(333, 33));
+        excButton.setMinimumSize(new java.awt.Dimension(100, 20));
         excButton.setName("excButton"); // NOI18N
+        excButton.setPreferredSize(new java.awt.Dimension(100, 20));
         excButton.addItemListener(new java.awt.event.ItemListener() {
             public void itemStateChanged(java.awt.event.ItemEvent evt) {
                 excButtonItemStateChanged(evt);
@@ -265,7 +282,7 @@ public class ContactsList extends javax.swing.JPanel implements ListPanel {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 67, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 123, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(jToolBar2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
@@ -278,7 +295,7 @@ public class ContactsList extends javax.swing.JPanel implements ListPanel {
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(jButton6, 0, 0, Short.MAX_VALUE)
-                    .addComponent(jToolBar2, javax.swing.GroupLayout.PREFERRED_SIZE, 25, Short.MAX_VALUE))
+                    .addComponent(jToolBar2, javax.swing.GroupLayout.DEFAULT_SIZE, 25, Short.MAX_VALUE))
                 .addGap(10, 10, 10)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
                     .addComponent(count, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -286,24 +303,28 @@ public class ContactsList extends javax.swing.JPanel implements ListPanel {
                     .addComponent(jButton2)
                     .addComponent(jButton3)
                     .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)))
         );
 
         prinitingComboBox1.setName("prinitingComboBox1"); // NOI18N
+        prinitingComboBox1.setPreferredSize(new java.awt.Dimension(200, 20));
 
-        jButton4.setFont(jButton4.getFont());
-        jButton4.setText(bundle.getString("ContactsList.jButton4.text")); // NOI18N
-        jButton4.setName("jButton4"); // NOI18N
-        jButton4.setPreferredSize(new java.awt.Dimension(120, 23));
-        jButton4.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton4ActionPerformed(evt);
-            }
-        });
+        jPanel3.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(232, 227, 227), 1, true));
+        jPanel3.setName("jPanel3"); // NOI18N
+        jPanel3.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT));
+
+        jLabel4.setFont(jLabel4.getFont().deriveFont(jLabel4.getFont().getStyle() | java.awt.Font.BOLD));
+        jLabel4.setText(bundle.getString("ContactsList.jLabel4.text")); // NOI18N
+        jLabel4.setMaximumSize(new java.awt.Dimension(200, 20));
+        jLabel4.setMinimumSize(new java.awt.Dimension(50, 20));
+        jLabel4.setName("jLabel4"); // NOI18N
+        jLabel4.setPreferredSize(new java.awt.Dimension(150, 20));
+        jPanel3.add(jLabel4);
 
         jButton5.setFont(jButton5.getFont());
         jButton5.setText(bundle.getString("ContactsList.jButton5.text")); // NOI18N
+        jButton5.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(153, 153, 153), 1, true));
+        jButton5.setContentAreaFilled(false);
         jButton5.setName("jButton5"); // NOI18N
         jButton5.setPreferredSize(new java.awt.Dimension(120, 23));
         jButton5.addActionListener(new java.awt.event.ActionListener() {
@@ -311,9 +332,12 @@ public class ContactsList extends javax.swing.JPanel implements ListPanel {
                 jButton5ActionPerformed(evt);
             }
         });
+        jPanel3.add(jButton5);
 
         jButton1.setFont(jButton1.getFont());
         jButton1.setText(bundle.getString("ContactsList.jButton1.text")); // NOI18N
+        jButton1.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(153, 153, 153), 1, true));
+        jButton1.setContentAreaFilled(false);
         jButton1.setName("jButton1"); // NOI18N
         jButton1.setPreferredSize(new java.awt.Dimension(120, 23));
         jButton1.addActionListener(new java.awt.event.ActionListener() {
@@ -321,49 +345,46 @@ public class ContactsList extends javax.swing.JPanel implements ListPanel {
                 jButton1ActionPerformed(evt);
             }
         });
+        jPanel3.add(jButton1);
 
-        jLabel4.setFont(jLabel4.getFont().deriveFont(jLabel4.getFont().getStyle() | java.awt.Font.BOLD));
-        jLabel4.setText(bundle.getString("ContactsList.jLabel4.text")); // NOI18N
-        jLabel4.setMaximumSize(new java.awt.Dimension(50, 15));
-        jLabel4.setName("jLabel4"); // NOI18N
-        jLabel4.setPreferredSize(new java.awt.Dimension(120, 23));
+        jButton4.setFont(jButton4.getFont());
+        jButton4.setText(bundle.getString("ContactsList.jButton4.text")); // NOI18N
+        jButton4.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(153, 153, 153), 1, true));
+        jButton4.setContentAreaFilled(false);
+        jButton4.setName("jButton4"); // NOI18N
+        jButton4.setPreferredSize(new java.awt.Dimension(120, 23));
+        jButton4.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton4ActionPerformed(evt);
+            }
+        });
+        jPanel3.add(jButton4);
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addComponent(prinitingComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 101, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jButton4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(1, 1, 1)
-                .addComponent(jButton5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(2, 2, 2)
-                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(380, Short.MAX_VALUE))
-            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 868, Short.MAX_VALUE)
+                .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, 773, Short.MAX_VALUE)
+                .addContainerGap(45, Short.MAX_VALUE))
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(52, Short.MAX_VALUE))
+                .addContainerGap())
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addComponent(prinitingComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
+            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 818, Short.MAX_VALUE)
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
-                    .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 103, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 48, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 27, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(prinitingComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addComponent(prinitingComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 17, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
@@ -461,6 +482,7 @@ public class ContactsList extends javax.swing.JPanel implements ListPanel {
     private javax.swing.JLabel jLabel4;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
+    private javax.swing.JPanel jPanel3;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTextField jTextField1;
     private javax.swing.JToolBar jToolBar2;

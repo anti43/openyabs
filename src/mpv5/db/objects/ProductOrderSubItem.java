@@ -876,7 +876,7 @@ public final class ProductOrderSubItem extends DatabaseObject implements Trigger
      *
      * @return
      */
-    @Persistable(true)
+    @Persistable(false)
     public BigDecimal getTotalTaxValue() {
         return totaltaxvalue;
     }

@@ -108,8 +108,8 @@
                   <Group type="102" alignment="0" attributes="0">
                       <Group type="103" groupAlignment="1" attributes="0">
                           <Group type="102" alignment="0" attributes="1">
-                              <EmptySpace min="12" pref="12" max="12" attributes="0"/>
-                              <Component id="jLabel1" min="-2" pref="67" max="-2" attributes="1"/>
+                              <EmptySpace min="-2" pref="12" max="-2" attributes="0"/>
+                              <Component id="jLabel1" min="-2" pref="98" max="-2" attributes="1"/>
                               <EmptySpace max="-2" attributes="0"/>
                               <Component id="jToolBar2" min="-2" max="-2" attributes="0"/>
                           </Group>
@@ -126,7 +126,7 @@
                               </Group>
                           </Group>
                       </Group>
-                      <EmptySpace pref="174" max="32767" attributes="0"/>
+                      <EmptySpace pref="143" max="32767" attributes="0"/>
                       <Group type="103" groupAlignment="1" max="-2" attributes="0">
                           <Component id="dateadded" max="32767" attributes="1"/>
                           <Component id="addedby" alignment="1" pref="120" max="32767" attributes="1"/>

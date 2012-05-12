@@ -58,7 +58,10 @@ public class FormatHandler {
         TYPE_EXPENSE(Constants.TYPE_EXPENSE, Messages.TYPE_EXPENSE.getValue()),
         TYPE_CONVERSATION(Constants.TYPE_CONVERSATION, Messages.TYPE_CONVERSATION.getValue()),
         TYPE_ACTIVITY(Constants.TYPE_ACTIVITY, Messages.TYPE_ACTIVITY.getValue()),
-        TYPE_PRODUCTORDER(Constants.TYPE_PRODUCT_ORDER, Messages.TYPE_PRODUCT_ORDER.getValue());
+        TYPE_PRODUCTORDER(Constants.TYPE_PRODUCT_ORDER, Messages.TYPE_PRODUCT_ORDER.getValue()),
+        TYPE_ORDER_CONFIRMATION(Constants.TYPE_ORDER_CONFIRMATION, Messages.TYPE_CONFIRMATION.getValue()),
+        TYPE_CONTRACT(Constants.TYPE_CONTRACT, Messages.TYPE_CONTRACT.getValue()),
+        TYPE_DELIVERY_NOTE(Constants.TYPE_DELIVERY_NOTE, Messages.TYPE_DELIVERY.getValue());
         int ids;
         String names;
 
@@ -216,7 +219,7 @@ public class FormatHandler {
                 Context.getContact(), Context.getCustomer(), Context.getManufacturer(),
                 Context.getSupplier(), Context.getProduct(), Context.getItem(),
                 Context.getExpense(), Context.getRevenue(), Context.getOffer(),
-                Context.getOrder(), Context.getInvoice(), Context.getCompany(), 
+                Context.getOrder(), Context.getInvoice(), Context.getCompany(),
                 Context.getActivityList(), Context.getProductOrder()
             }));
 
@@ -434,7 +437,13 @@ public class FormatHandler {
                 Log.Debug(this, "Original pattern: " + format.toPattern());
                 f = new YMessageFormat((VariablesHandler.parse(format.toPattern(), source)).substring(startindex), null);
                 Log.Debug(this, "Pattern: " + f.toPattern() + " for String: " + string + " Starting at " + startindex);
-                n = (Number) f.parse(string, new ParsePosition(startindex))[0];
+                Object[] result = f.parse(string, new ParsePosition(startindex));
+                if (result != null) {
+                    n = (Number) result[0];
+                } else {
+                    Log.Debug(this, "Parsing failed!");
+                    throw new IllegalArgumentException(f.toPattern());
+                }
             } catch (Exception e) {
                 Log.Debug(this, e);
                 Popup.error(YabsViewProxy.instance().getIdentifierFrame(), Messages.ERROR_OCCURED + "\n" + "Pattern: " + format.toPattern() + " for String: " + string + " Starting at " + startindex);

@@ -94,7 +94,7 @@ public class DateChooser extends javax.swing.JPanel {
         add(jSpinner1);
 
         jButton1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/16/cal.png"))); // NOI18N
-        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("mpv5/resources/languages/Panels"); // NOI18N
+        java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle(); // NOI18N
         jButton1.setToolTipText(bundle.getString("DateChooser.jButton1.toolTipText")); // NOI18N
         jButton1.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(204, 204, 204), 1, true));
         jButton1.setContentAreaFilled(false);

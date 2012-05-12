@@ -31,10 +31,19 @@ import ag.ion.noa.NOAException;
 import ag.ion.noa.filter.OpenDocumentFilter;
 import com.sun.star.awt.XTextComponent;
 import com.sun.star.beans.PropertyValue;
+import com.sun.star.beans.UnknownPropertyException;
 import com.sun.star.beans.XPropertySet;
+import com.sun.star.container.NoSuchElementException;
+import com.sun.star.container.XNameAccess;
 import com.sun.star.form.XFormComponent;
 import com.sun.star.frame.XStorable;
 import com.sun.star.io.IOException;
+import com.sun.star.lang.WrappedTargetException;
+import com.sun.star.lang.XMultiServiceFactory;
+import com.sun.star.lang.XServiceInfo;
+import com.sun.star.text.XTextContent;
+import com.sun.star.text.XTextGraphicObjectsSupplier;
+import com.sun.star.uno.Any;
 import com.sun.star.uno.UnoRuntime;
 import enoa.connection.NoaConnection;
 import enoa.connection.URLAdapter;
@@ -46,13 +55,17 @@ import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.UnknownHostException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.table.TableModel;
 import mpv5.db.objects.Template;
 import mpv5.db.objects.User;
+import mpv5.globals.GlobalSettings;
 import mpv5.logging.Log;
 import org.jopendocument.util.StringInputStream;
 
@@ -181,6 +194,7 @@ public class DocumentHandler {
      * @param data
      * @throws Exception
      * @throws NOAException
+     * @deprecated  slow :-/
      */
     public synchronized void fillFormFields(HashMap<String, Object> data) throws Exception, NOAException {
         Log.Debug(this, "Looking for form fields in: " + document);
@@ -196,7 +210,7 @@ public class DocumentHandler {
 
                 XFormComponent xFormComponent = formComponents[i].getXFormComponent();
                 XTextComponent xTextComponent = formComponents[i].getXTextComponent();
-                XPropertySet propertySet = (XPropertySet) UnoRuntime.queryInterface(XPropertySet.class,
+                XPropertySet propertySet = UnoRuntime.queryInterface(XPropertySet.class,
                         xFormComponent);
 
                 if (propertySet != null && propertySet.getPropertySetInfo().hasPropertyByName("Name")) {
@@ -223,17 +237,20 @@ public class DocumentHandler {
         Iterator<String> keys = data.keySet().iterator();
         String key = null;
         String[] placehrepr = new String[0];
+        List<ITextField> fields = new ArrayList<ITextField>();
         if (textFieldService == null || placeholders == null) {
             textFieldService = ((ITextDocument) document).getTextFieldService();
             placeholders = textFieldService.getPlaceholderFields();
             placehrepr = new String[placeholders.length];
             for (int i = 0; i < placeholders.length; i++) {
                 placehrepr[i] = placeholders[i].getDisplayText();
+                fields.add(placeholders[i]);
             }
             Log.Debug(this, "Got: " + Arrays.asList(placehrepr));
         }
         InputStream is = null;
         ITextCursor cursor;
+
 
         while (keys.hasNext()) {
             key = keys.next();
@@ -266,6 +283,15 @@ public class DocumentHandler {
                 Log.Debug(ex);
             }
         }
+        if (!GlobalSettings.getBooleanProperty("org.openyabs.exportproperty.blankunusedfields.disable")) {
+            for (int i = 0; i < fields.size(); i++) {
+                ITextField xTextComponent = fields.get(i);
+                if (Log.isDebugging()) {
+                    Log.Debug(this, "Filling unspecified field: " + xTextComponent.getDisplayText());
+                }
+                xTextComponent.getTextRange().setText("");
+            }
+        }
     }
 
     /**
@@ -273,6 +299,7 @@ public class DocumentHandler {
      * @param data
      * @throws Exception
      * @throws NOAException
+     * @deprecated  slow :_/
      */
     public synchronized void fillTextVariableFields(HashMap<String, Object> data) throws Exception, NOAException {
         Log.Debug(this, "Looking for variable fields in: " + document);
@@ -487,6 +514,46 @@ public class DocumentHandler {
      * @param data
      */
     public void setImages(HashMap<String, Object> data) {
+//        XTextGraphicObjectsSupplier graphicObjSupplier = (XTextGraphicObjectsSupplier) UnoRuntime.queryInterface(XTextGraphicObjectsSupplier.class,
+//      document.getXTextDocument());
+//  XNameAccess nameAccess = graphicObjSupplier.getGraphicObjects();
+//  String[] names = nameAccess.getElementNames();
+//  for (int i = 0; i < names.length; i++) {
+//            try {
+//                Any xImageAny = (Any) nameAccess.getByName(names[i]);
+//                Object xImageObject = xImageAny.getObject();
+//                XTextContent xImage = (XTextContent) xImageObject;
+//                XServiceInfo xInfo = (XServiceInfo) UnoRuntime.queryInterface(XServiceInfo.class, xImage);
+//                if (xInfo.supportsService("com.sun.star.text.TextGraphicObject")) {
+//                            try {
+//                                XPropertySet xPropSet = (XPropertySet) UnoRuntime.queryInterface(XPropertySet.class,
+//                                    xImage);
+//                                String name = xPropSet.getPropertyValue("LinkDisplayName").toString();
+//                                String graphicURL = xPropSet.getPropertyValue("GraphicURL").toString();
+//                                //only ones that are not embedded
+//                                if (graphicURL.indexOf("vnd.sun.") == -1) {
+//                                  XMultiServiceFactory multiServiceFactory = (XMultiServiceFactory) UnoRuntime.queryInterface(XMultiServiceFactory.class,
+//                                      textDocument.getXTextDocument());
+//                                  XNameContainer xBitmapContainer = (XNameContainer) UnoRuntime.queryInterface(XNameContainer.class,
+//                                      multiServiceFactory.createInstance("com.sun.star.drawing.BitmapTable"));
+//                                  if (!xBitmapContainer.hasByName(name)) {
+//                                    xBitmapContainer.insertByName(name, graphicURL);
+//                                    String newGraphicURL = xBitmapContainer.getByName(name).toString();
+//                                    xPropSet.setPropertyValue("GraphicURL", newGraphicURL);
+//                                  }
+//                                }
+//                            } catch (UnknownPropertyException ex) {
+//                                Logger.getLogger(DocumentHandler.class.getName()).log(Level.SEVERE, null, ex);
+//                            } catch (WrappedTargetException ex) {
+//                                Logger.getLogger(DocumentHandler.class.getName()).log(Level.SEVERE, null, ex);
+//                            }
+//                }
+//            } catch (NoSuchElementException ex) {
+//                Logger.getLogger(DocumentHandler.class.getName()).log(Level.SEVERE, null, ex);
+//            } catch (WrappedTargetException ex) {
+//                Logger.getLogger(DocumentHandler.class.getName()).log(Level.SEVERE, null, ex);
+//            }
+//  }
     }
 
     private String[] refactorRow(Template template, String[] possibleCols) {
