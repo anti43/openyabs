@@ -261,7 +261,7 @@ public class User extends DatabaseObject {
         }
     }
 
-    public boolean isAdmin() {
+    private boolean isAdmin() {
         if (__getIDS().intValue() == 1) {
             return true;
         } else {
