@@ -169,7 +169,7 @@ public class ScheduleEvents extends javax.swing.JFrame {
         labeledCombobox4 = new mpv5.ui.beans.LabeledCombobox();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-        java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle(); // NOI18N
+        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("mpv5/resources/languages/Panels"); // NOI18N
         setTitle(bundle.getString("ScheduleEvents.title")); // NOI18N
         setAlwaysOnTop(true);
         setName("Form"); // NOI18N
@@ -178,10 +178,8 @@ public class ScheduleEvents extends javax.swing.JFrame {
         jPanel1.setName("jPanel1"); // NOI18N
 
         jPanel2.setName("jPanel2"); // NOI18N
-        jPanel2.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         jSeparator1.setName("jSeparator1"); // NOI18N
-        jPanel2.add(jSeparator1, new org.netbeans.lib.awtextra.AbsoluteConstraints(63, 24, -1, -1));
 
         but4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/save_all.png"))); // NOI18N
         but4.setText(bundle.getString("ScheduleEvents.but4.text")); // NOI18N
@@ -198,13 +196,10 @@ public class ScheduleEvents extends javax.swing.JFrame {
                 but4ActionPerformed(evt);
             }
         });
-        jPanel2.add(but4, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 3, -1, 40));
 
         jSeparator3.setName("jSeparator3"); // NOI18N
-        jPanel2.add(jSeparator3, new org.netbeans.lib.awtextra.AbsoluteConstraints(138, 24, -1, -1));
 
         jSeparator2.setName("jSeparator2"); // NOI18N
-        jPanel2.add(jSeparator2, new org.netbeans.lib.awtextra.AbsoluteConstraints(143, 24, -1, -1));
 
         but6.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/kate.png"))); // NOI18N
         but6.setText(bundle.getString("ScheduleEvents.but6.text")); // NOI18N
@@ -221,7 +216,6 @@ public class ScheduleEvents extends javax.swing.JFrame {
                 but6ActionPerformed(evt);
             }
         });
-        jPanel2.add(but6, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 0, -1, 40));
 
         but5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/edittrash.png"))); // NOI18N
         but5.setText(bundle.getString("ScheduleEvents.but5.text")); // NOI18N
@@ -238,7 +232,6 @@ public class ScheduleEvents extends javax.swing.JFrame {
                 but5ActionPerformed(evt);
             }
         });
-        jPanel2.add(but5, new org.netbeans.lib.awtextra.AbsoluteConstraints(110, 0, -1, 40));
 
         but7.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/All software is current.png"))); // NOI18N
         but7.setText(bundle.getString("ScheduleEvents.but7.text")); // NOI18N
@@ -255,7 +248,6 @@ public class ScheduleEvents extends javax.swing.JFrame {
                 but7ActionPerformed(evt);
             }
         });
-        jPanel2.add(but7, new org.netbeans.lib.awtextra.AbsoluteConstraints(340, 0, -1, -1));
 
         but8.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/tab_remove.png"))); // NOI18N
         but8.setText(bundle.getString("ScheduleEvents.but8.text")); // NOI18N
@@ -272,7 +264,55 @@ public class ScheduleEvents extends javax.swing.JFrame {
                 but8ActionPerformed(evt);
             }
         });
-        jPanel2.add(but8, new org.netbeans.lib.awtextra.AbsoluteConstraints(280, 0, -1, 40));
+
+        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
+        jPanel2.setLayout(jPanel2Layout);
+        jPanel2Layout.setHorizontalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addGap(50, 50, 50)
+                        .addComponent(but6))
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addGap(143, 143, 143)
+                        .addComponent(jSeparator2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addGap(138, 138, 138)
+                        .addComponent(jSeparator3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addGap(110, 110, 110)
+                        .addComponent(but5))
+                    .addComponent(but4)
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addGap(63, 63, 63)
+                        .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(105, 105, 105)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(but8)
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addGap(60, 60, 60)
+                        .addComponent(but7))))
+        );
+        jPanel2Layout.setVerticalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(but6, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addGap(24, 24, 24)
+                .addComponent(jSeparator2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addGap(24, 24, 24)
+                .addComponent(jSeparator3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+            .addComponent(but5, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addGap(3, 3, 3)
+                .addComponent(but4, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE))
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addGap(24, 24, 24)
+                .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+            .addComponent(but8, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addComponent(but7)
+        );
 
         jTabbedPane1.setTabPlacement(javax.swing.JTabbedPane.BOTTOM);
         jTabbedPane1.setName("jTabbedPane1"); // NOI18N
@@ -341,7 +381,7 @@ public class ScheduleEvents extends javax.swing.JFrame {
                         .addComponent(labeledSpinner1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jLabel1)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 163, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 156, Short.MAX_VALUE)
                         .addComponent(jButton5))
                     .addComponent(labeledDateChooser1, javax.swing.GroupLayout.DEFAULT_SIZE, 449, Short.MAX_VALUE)
                     .addComponent(labeledDateChooser2, javax.swing.GroupLayout.DEFAULT_SIZE, 449, Short.MAX_VALUE))
@@ -354,7 +394,7 @@ public class ScheduleEvents extends javax.swing.JFrame {
                 .addComponent(labeledCombobox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(14, 14, 14)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(labeledSpinner1, javax.swing.GroupLayout.DEFAULT_SIZE, 28, Short.MAX_VALUE)
+                    .addComponent(labeledSpinner1, javax.swing.GroupLayout.DEFAULT_SIZE, 30, Short.MAX_VALUE)
                     .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(jButton5)
                         .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, 26, Short.MAX_VALUE)))
