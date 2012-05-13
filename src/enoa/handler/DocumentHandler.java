@@ -285,11 +285,21 @@ public class DocumentHandler {
         }
         if (!GlobalSettings.getBooleanProperty("org.openyabs.exportproperty.blankunusedfields.disable")) {
             for (int i = 0; i < fields.size(); i++) {
-                ITextField xTextComponent = fields.get(i);
-//                if (Log.isDebugging()) {
-////                    Log.Debug(this, "Filling unspecified field: " + xTextComponent.getDisplayText());
-//                }
-                xTextComponent.getTextRange().setText("");
+                try {
+                    ITextField xTextComponent = fields.get(i);
+                    if (Log.isDebugging()) {
+                        Log.Debug(this, "Filling unspecified field: " + xTextComponent.getDisplayText());
+                    }
+                    xTextComponent.getTextRange().setText("");
+                } catch (java.lang.IllegalArgumentException ex) {
+                    if (ex.getMessage().contains("Submitted OpenOffice.org XTextRange interface is not valid.")) {
+                        if (Log.isDebugging()) {
+                            Log.Debug(this, ex.getLocalizedMessage());
+                        }
+                    } else {
+                        throw ex;
+                    }
+                }
             }
         }
     }
