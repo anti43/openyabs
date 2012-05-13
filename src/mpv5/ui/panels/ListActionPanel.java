@@ -108,10 +108,10 @@ public class ListActionPanel extends javax.swing.JPanel {
         jToolBar2.setRollover(true);
         jToolBar2.setName("jToolBar2"); // NOI18N
 
+        jButton1.setText("OK");
         jButton1.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(204, 204, 204), 1, true));
         jButton1.setFocusable(false);
         jButton1.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        jButton1.setLabel("Ok");
         jButton1.setMaximumSize(new java.awt.Dimension(100, 20));
         jButton1.setMinimumSize(new java.awt.Dimension(15, 20));
         jButton1.setName("jButton1"); // NOI18N
