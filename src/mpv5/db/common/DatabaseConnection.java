@@ -86,7 +86,9 @@ public class DatabaseConnection {
      */
     public java.sql.Connection createNoCommitConnection() throws SQLException {
          try {
-            return DriverManager.getConnection(getCtype().getConnectionString(false), user, password);
+            Connection d = DriverManager.getConnection(getCtype().getConnectionString(false), user, password);
+            d.setAutoCommit(false);
+            return d;
         } catch (SQLException ex) {
             System.out.println("Database Error: " + ex.getMessage());
             Popup.notice(ex.getLocalizedMessage());
