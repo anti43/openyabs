@@ -4,19 +4,20 @@
  */
 package mpv5.db.common;
 
-import java.sql.Driver;
-import javax.swing.JProgressBar;
-import mpv5.logging.Log;
 import java.sql.Connection;
+import java.sql.Driver;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
+import javax.swing.JProgressBar;
 import mpv5.globals.LocalSettings;
+import mpv5.globals.Messages;
+import mpv5.logging.Log;
 import mpv5.ui.dialogs.Popup;
 
 /**
  *
- *  
+ *
  */
 public class DatabaseConnection {
 
@@ -56,9 +57,9 @@ public class DatabaseConnection {
     private static String prefix = "";
 
     /**
-     * 
+     *
      * @return Database connector
-     * @throws Exception 
+     * @throws Exception
      */
     public static synchronized DatabaseConnection instanceOf() throws Exception {
         if (getConnector() == null) {
@@ -132,16 +133,48 @@ public class DatabaseConnection {
     }
 
     public boolean reconnect(boolean create) throws SQLException {
+        Statement stmt;
+        String sql;
         try {
             Log.Debug(this, "RECONNECT::Datenbankverbindung: " + getCtype().getConnectionString(create));
             conn = DriverManager.getConnection(getCtype().getConnectionString(create), user, password);
             conn.setAutoCommit(true);
             if (conn != null //&& conn.isValid(10)//does not work with MySQL Connector/J 5.0
                     ) {
+                if (create && ConnectionTypeHandler.getDriverType() == ConnectionTypeHandler.MYSQL) {
+                    try {
+                        conn.setCatalog(ConnectionTypeHandler.getDBNAME());
+                        if (Popup.Y_N_dialog(Messages.DELETE_DATABASE.toString())) {
+                            stmt = conn.createStatement();
+                            sql = "DROP DATABASE "
+                                    + ConnectionTypeHandler.getDBNAME()
+                                    + ";";
+                            stmt.execute(sql);
+                            sql = "CREATE DATABASE "
+                                    + ConnectionTypeHandler.getDBNAME()
+                                    + " ;";
+                            stmt.execute(sql);
+                        }
+                    } catch (SQLException ex) {
+                        Popup.OK_dialog(Messages.CREATE_DATABASE_OWN.toString(), "Database Creation");
+                        return false;
+                    }
+                }
+                conn.setCatalog(ConnectionTypeHandler.getDBNAME());
                 connector = this;
                 return true;
             } else {
-                return false;
+                if (Popup.Y_N_dialog(Messages.CREATE_DATABASE.toString())) {
+                    sql = "CREATE DATABASE "
+                            + ConnectionTypeHandler.getDBNAME()
+                            + " ;";
+                    stmt = conn.createStatement();
+                    stmt.execute(sql);
+                    return true;
+                } else {
+                    Popup.OK_dialog(Messages.CREATE_DATABASE_OWN.toString(), "Database Creation");
+                    return false;
+                }
             }
 
         } catch (SQLException ex) {
@@ -177,8 +210,8 @@ public class DatabaseConnection {
             password = LocalSettings.getProperty("dbpassword");
             prefix = LocalSettings.getProperty("dbprefix");
 
-            reconnect(create);
-        } else {
+                        reconnect(create);
+            } else {
             throw new UnsupportedOperationException("Datenbanktreiber: undefined");
         }
         return conn;
@@ -187,9 +220,18 @@ public class DatabaseConnection {
     /**
      * Verbindung trennen
      */
+    @SuppressWarnings("CallToThreadDumpStack")
     public static void shutdown() {
         try {
             if (conn != null && !conn.isClosed()) {
+                if (ConnectionTypeHandler.getDriverType() == ConnectionTypeHandler.DERBY) {
+                    try {
+                        DriverManager.getConnection(
+                                DatabaseConnection.instanceOf().getCtype().getConnectionString(false) + "shutdown=true;", user, password);
+                    } catch (Exception ex) {
+                        Log.Debug(DatabaseConnection.class, ex.getLocalizedMessage());
+                    }
+                }
                 conn.close();
                 conn = null;
             }

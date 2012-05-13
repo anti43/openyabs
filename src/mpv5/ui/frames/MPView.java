@@ -4,14 +4,39 @@
 package mpv5.ui.frames;
 
 import com.l2fprod.common.swing.JOutlookBar;
-import java.awt.*;
-import java.awt.event.*;
+import java.awt.BorderLayout;
+import java.awt.Component;
+import java.awt.Cursor;
+import java.awt.Dimension;
+import java.awt.Image;
+import java.awt.Toolkit;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.io.File;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
-import javax.swing.*;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JComponent;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JMenu;
+import javax.swing.JMenuItem;
+import javax.swing.JPopupMenu;
+import javax.swing.JProgressBar;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.JViewport;
+import javax.swing.SwingUtilities;
+import javax.swing.UIManager;
 import mpv5.Main;
 import mpv5.YabsView;
 import mpv5.YabsViewProxy;
@@ -23,7 +48,13 @@ import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
 import mpv5.db.common.NodataFoundException;
 import mpv5.db.common.QueryHandler;
-import mpv5.db.objects.*;
+import mpv5.db.migration.MigrationWB;
+import mpv5.db.objects.Contact;
+import mpv5.db.objects.Favourite;
+import mpv5.db.objects.Item;
+import mpv5.db.objects.Product;
+import mpv5.db.objects.User;
+import mpv5.db.objects.ValueProperty;
 import mpv5.globals.Constants;
 import mpv5.globals.LocalSettings;
 import mpv5.globals.Messages;
@@ -31,16 +62,46 @@ import mpv5.handler.Scheduler;
 import mpv5.logging.Log;
 import mpv5.pluginhandling.YabsPluginLoader;
 import mpv5.server.MPServer;
+import mpv5.ui.dialogs.About;
+import mpv5.ui.dialogs.BigPopup;
+import mpv5.ui.dialogs.DialogForFile;
+import mpv5.ui.dialogs.ListView;
 import mpv5.ui.dialogs.Popup;
-import mpv5.ui.dialogs.*;
-import mpv5.ui.dialogs.subcomponents.*;
+import mpv5.ui.dialogs.Search;
+import mpv5.ui.dialogs.Search2;
+import mpv5.ui.dialogs.Wizard;
+import mpv5.ui.dialogs.subcomponents.ControlPanel_MailTemplates;
+import mpv5.ui.dialogs.subcomponents.wizard_CSVImport2_1;
+import mpv5.ui.dialogs.subcomponents.wizard_MP45_Import;
+import mpv5.ui.dialogs.subcomponents.wizard_XMLImport_1;
+import mpv5.ui.dialogs.subcomponents.wizard_XMLImport_2;
+import mpv5.ui.dialogs.subcomponents.wizard_Yabs1_Import;
 import mpv5.ui.menus.ClipboardMenuItem;
 import mpv5.ui.menus.FavouritesMenuItem;
 import mpv5.ui.misc.CloseableTabbedPane;
 import mpv5.ui.misc.MPTable;
 import mpv5.ui.misc.Position;
+import mpv5.ui.panels.ActivityConfirmationPanel;
+import mpv5.ui.panels.ChangeNotApprovedException;
+import mpv5.ui.panels.ContactsList;
+import mpv5.ui.panels.ConversationPanel;
+import mpv5.ui.panels.DataPanel;
+import mpv5.ui.panels.ExpensePanel;
+import mpv5.ui.panels.GeneralListPanel;
+import mpv5.ui.panels.HistoryPanel;
+import mpv5.ui.panels.ItemPanel;
+import mpv5.ui.panels.JournalPanel;
+import mpv5.ui.panels.MPControlPanel;
+import mpv5.ui.panels.MassPrintPanel;
 import mpv5.ui.panels.ProductList;
-import mpv5.ui.panels.*;
+import mpv5.ui.panels.ProductListsPanel;
+import mpv5.ui.panels.ProductOrderPanel;
+import mpv5.ui.panels.ProductPanel;
+import mpv5.ui.panels.ProductsOverview;
+import mpv5.ui.panels.QueryPanel;
+import mpv5.ui.panels.RevenuePanel;
+import mpv5.ui.panels.StartPage;
+import mpv5.ui.panels.TrashPanel;
 import mpv5.usermanagement.MPSecurityManager;
 import mpv5.utils.export.Export;
 import mpv5.utils.export.VCFParser;
@@ -426,7 +487,7 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
         }
     }
 
-    public void reloadFavorites() {
+    public final void reloadFavorites() {
         Favourite[] favs = Favourite.getUserFavourites();
         for (int i = 0; i < favs.length; i++) {
             Favourite fav = favs[i];
@@ -770,6 +831,7 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
         jMenu13 = new javax.swing.JMenu();
         jMenuItem32 = new javax.swing.JMenuItem();
         jMenuItem41 = new javax.swing.JMenuItem();
+        jSeparator8 = new javax.swing.JPopupMenu.Separator();
         jMenu8 = new javax.swing.JMenu();
         jMenuItem11 = new javax.swing.JMenuItem();
         jMenuItem38 = new javax.swing.JMenuItem();
@@ -778,6 +840,11 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
         jMenuItem28 = new javax.swing.JMenuItem();
         jMenuItem29 = new javax.swing.JMenuItem();
         jSeparator1 = new javax.swing.JSeparator();
+        jMenu3 = new javax.swing.JMenu();
+        jMenuItem18 = new javax.swing.JMenuItem();
+        jMenuItem37 = new javax.swing.JMenuItem();
+        jMenuItem46 = new javax.swing.JMenuItem();
+        jSeparator9 = new javax.swing.JPopupMenu.Separator();
         jMenuItem12 = new javax.swing.JMenuItem();
         editMenu = new javax.swing.JMenu();
         jMenuItem15 = new javax.swing.JMenuItem();
@@ -1412,6 +1479,9 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
 
         jMenu4.add(jMenu13);
 
+        jSeparator8.setName("jSeparator8"); // NOI18N
+        jMenu4.add(jSeparator8);
+
         fileMenu.add(jMenu4);
 
         jMenu8.setText(bundle.getString("MPView.jMenu8.text")); // NOI18N
@@ -1472,6 +1542,48 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
 
         jSeparator1.setName("jSeparator1"); // NOI18N
         fileMenu.add(jSeparator1);
+
+        jMenu3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/22/exec.png"))); // NOI18N
+        jMenu3.setText(bundle.getString("MPView.jMenu3.text")); // NOI18N
+        jMenu3.setName("jMenu3"); // NOI18N
+
+        jMenuItem18.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F9, java.awt.event.InputEvent.CTRL_MASK));
+        jMenuItem18.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/16/fileexport.png"))); // NOI18N
+        jMenuItem18.setText(bundle.getString("MPView.jMenuItem18.text")); // NOI18N
+        jMenuItem18.setName("jMenuItem18"); // NOI18N
+        jMenuItem18.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                actionExportToDerby(evt);
+            }
+        });
+        jMenu3.add(jMenuItem18);
+
+        jMenuItem37.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F10, java.awt.event.InputEvent.CTRL_MASK));
+        jMenuItem37.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/16/cal.png"))); // NOI18N
+        jMenuItem37.setText(bundle.getString("MPView.jMenuItem37.text")); // NOI18N
+        jMenuItem37.setName("jMenuItem37"); // NOI18N
+        jMenuItem37.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                actionMigrateToMySQL(evt);
+            }
+        });
+        jMenu3.add(jMenuItem37);
+
+        jMenuItem46.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F11, java.awt.event.InputEvent.CTRL_MASK));
+        jMenuItem46.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/16/editpaste.png"))); // NOI18N
+        jMenuItem46.setText(bundle.getString("MPView.jMenuItem46.text_1")); // NOI18N
+        jMenuItem46.setName("jMenuItem46"); // NOI18N
+        jMenuItem46.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                actionImport(evt);
+            }
+        });
+        jMenu3.add(jMenuItem46);
+
+        fileMenu.add(jMenu3);
+
+        jSeparator9.setName("jSeparator9"); // NOI18N
+        fileMenu.add(jSeparator9);
 
         jMenuItem12.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_X, java.awt.event.InputEvent.CTRL_MASK));
         jMenuItem12.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/16/remove.png"))); // NOI18N
@@ -2277,20 +2389,6 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
         addOrShowTab(JournalPanel.instanceOf(), Messages.OVERVIEW);
     }//GEN-LAST:event_jButton17ActionPerformed
 
-    private void jMenuItem28ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem28ActionPerformed
-
-        Wizard w = new Wizard(false);
-        w.addPanel(new wizard_Yabs1_Import(w));
-        w.showWiz();
-    }//GEN-LAST:event_jMenuItem28ActionPerformed
-
-    private void jMenuItem29ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem29ActionPerformed
-
-        Wizard w = new Wizard(false);
-        w.addPanel(new wizard_MP45_Import(w));
-        w.showWiz();
-    }//GEN-LAST:event_jMenuItem29ActionPerformed
-
     private void helpmenuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_helpmenuActionPerformed
 }//GEN-LAST:event_helpmenuActionPerformed
 
@@ -2483,10 +2581,33 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void jButton22ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton22ActionPerformed
-        addTab(new ProductOrderPanel( ), Messages.NEW_ORDER);
-        
+        addTab(new ProductOrderPanel(), Messages.NEW_ORDER);
+
     }//GEN-LAST:event_jButton22ActionPerformed
 
+    private void actionImport(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_actionImport
+        MigrationWB.instanceOf().doImport();
+    }//GEN-LAST:event_actionImport
+
+    private void actionMigrateToMySQL(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_actionMigrateToMySQL
+        MigrationWB.instanceOf().doExportToMySQL();
+    }//GEN-LAST:event_actionMigrateToMySQL
+
+    private void actionExportToDerby(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_actionExportToDerby
+        MigrationWB.instanceOf().doExportToDerby();
+    }//GEN-LAST:event_actionExportToDerby
+
+    private void jMenuItem28ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem28ActionPerformed
+        Wizard w = new Wizard(false);
+        w.addPanel(new wizard_Yabs1_Import(w));
+        w.showWiz();
+    }//GEN-LAST:event_jMenuItem28ActionPerformed
+
+    private void jMenuItem29ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem29ActionPerformed
+        Wizard w = new Wizard(false);
+        w.addPanel(new wizard_MP45_Import(w));
+        w.showWiz();
+    }//GEN-LAST:event_jMenuItem29ActionPerformed
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton calculatorButton;
     public javax.swing.JMenu clipboardMenu;
@@ -2525,6 +2646,7 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
     private javax.swing.JMenu jMenu14;
     private javax.swing.JMenu jMenu15;
     private javax.swing.JMenu jMenu2;
+    private javax.swing.JMenu jMenu3;
     private javax.swing.JMenu jMenu4;
     private javax.swing.JMenu jMenu5;
     private javax.swing.JMenu jMenu6;
@@ -2538,6 +2660,7 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
     private javax.swing.JMenuItem jMenuItem15;
     private javax.swing.JMenuItem jMenuItem16;
     private javax.swing.JMenuItem jMenuItem17;
+    private javax.swing.JMenuItem jMenuItem18;
     private javax.swing.JMenuItem jMenuItem19;
     private javax.swing.JMenuItem jMenuItem2;
     private javax.swing.JMenuItem jMenuItem20;
@@ -2558,6 +2681,7 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
     private javax.swing.JMenuItem jMenuItem34;
     private javax.swing.JMenuItem jMenuItem35;
     private javax.swing.JMenuItem jMenuItem36;
+    private javax.swing.JMenuItem jMenuItem37;
     private javax.swing.JMenuItem jMenuItem38;
     private javax.swing.JMenuItem jMenuItem39;
     private javax.swing.JMenuItem jMenuItem4;
@@ -2567,6 +2691,7 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
     private javax.swing.JMenuItem jMenuItem43;
     private javax.swing.JMenuItem jMenuItem44;
     private javax.swing.JMenuItem jMenuItem45;
+    private javax.swing.JMenuItem jMenuItem46;
     private javax.swing.JMenuItem jMenuItem5;
     private javax.swing.JMenuItem jMenuItem6;
     private javax.swing.JMenuItem jMenuItem7;
@@ -2579,6 +2704,8 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
     private javax.swing.JSeparator jSeparator5;
     private javax.swing.JSeparator jSeparator6;
     private javax.swing.JToolBar.Separator jSeparator7;
+    private javax.swing.JPopupMenu.Separator jSeparator8;
+    private javax.swing.JPopupMenu.Separator jSeparator9;
     private javax.swing.JButton lockButton;
     private javax.swing.JPanel mainPanel;
     private javax.swing.JToolBar mainToolbar;
@@ -2643,6 +2770,8 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
             final String title = getTabPane().getTitleAt(getTabPane().getSelectedIndex());
             getTabPane().remove(pane);
             JFrame fr = new JFrame(title) {
+
+                private static final long serialVersionUID = 1L;
 
                 @Override
                 public void dispose() {

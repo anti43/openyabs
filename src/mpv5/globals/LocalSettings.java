@@ -1,10 +1,8 @@
 package mpv5.globals;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.net.Authenticator;
 import java.net.PasswordAuthentication;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -16,11 +14,9 @@ import mpv5.db.common.DatabaseObject;
 import mpv5.db.common.QueryHandler;
 import mpv5.logging.Log;
 import mpv5.ui.dialogs.Popup;
-import mpv5.ui.frames.MPView;
 import mpv5.utils.text.TypeConversion;
 import mpv5.utils.xml.XMLReader;
 import mpv5.utils.xml.XMLWriter;
-import org.jdom.JDOMException;
 
 /**
  *
@@ -64,6 +60,7 @@ public class LocalSettings {
     public static final String CLIENT = "client";
     public static final String CALCULATOR = "calculator";
     public static final String BASE_DIR = "basedir";
+    public static final String BACKUP_DIR = "backupdir";
     public static final String SUPPRESS_UPDATE_CHECK = "noupdate";
     public static final String CMD_PASSWORD = "cmdpassword";
     public static final String CMD_USER = "cmduser";

@@ -30,7 +30,7 @@ public enum Messages {
 
     START_MESSAGE(
     "\n"
-    + "YaBS " + Constants.VERSION + " (C) 2006-2011 Openyabs.org\n\n"
+    + "YaBS " + Constants.VERSION + " (C) 2006-2012 Openyabs.org\n\n"
     + "******************************************************************************\n"
     + "* This program is free software; you can redistribute it and/or modify it \n"
     + "* under the terms of the GNU General Public License as published by the \n"
@@ -114,6 +114,8 @@ public enum Messages {
     DB_DRIVER_INVALID("The driver for the specified database type could not be loaded\n"),
     CREATING_DATABASE("Creating database structure.."),
     CREATING_DATABASE_FAILED("Creating database structure failed, see logs for details."),
+    RESTORING_DATABASE("Restoring database structure.."),
+    RESTORING_DATABASE_FAILED("Restoring database structure failed, see logs for details."),
     CONTACTS_LIST("List of contacts"),
     CONTROL_PANEL("Control Panel"),
     REALLY_CLOSE("Do you really want to close the entire application?\nUnsaved data will be lost!"),
@@ -323,7 +325,28 @@ public enum Messages {
     OO_WAITING("Please wait while connecting to OO/LO"),
     OO_NOT_CONFIGURED("Office is not configured yet."),
     PRINTER_NAMES("Possible printer names:"), 
-    VARIABLES("Resolved vars for:");
+    VARIABLES("Resolved vars for:"),
+    ACTION_RESTORE("In Order to do a Restore of your DB you need to restart YABS!\nYABS will ask you for the Backup-Path at the next restart!"),
+    ACTION_CALCULATING("Calculating ..."),
+    ACTION_CREATING("Creating ..."),
+    ACTION_CONVERTING("Converting ..."),
+    ACTION_RESTORING("Restoring ..."), 
+    ACTION_IMPORTING("Importing ..."), 
+    ACTION_SAVING("Saving ..."),
+    ACTION_SHUTINGDOWN("Shuting down ..."),
+    ACTION_UPDATING("Updating ..."),
+    ENTER_SCHEMA("Enter Value for MYSQL Databasename:"),
+    CREATE_DATABASE_OWN("You must create the database as specified on the previous screen yourself."), 
+    DELETE_DATABASE("Shall YABS delete the existing DB and create a new one?"),
+    CREATE_DATABASE("Shall YABS create the Database for you?"),
+    Alert("Alert"),
+    OPEN_BACKUP("Select File/Directory for Backup restore:"),
+    SAVE_BACKUP("Select Directory for Backup save:"),
+    INIT_TMP_DERBY("Creating temporary Derby-DB!"),
+    EXPORT_TO_DERBY("Exporting the active Database from current to DERBY."),
+    EXPORT_TO_MYSQL("Exporting the active Database from current to MySQL."),
+    FLUSHING_TMP_TABLE("Flush targettable for inserting"),
+    OVERRITE_DATABASE("This will override the actuall Database!\nIt's recommend to make a Backup befor you proceed.\nAre You sure?");
 
     /**
      * @return the missing

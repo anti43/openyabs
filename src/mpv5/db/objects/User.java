@@ -42,18 +42,16 @@ import mpv5.handler.VariablesHandler;
 import mpv5.i18n.LanguageManager;
 import mpv5.logging.Log;
 import mpv5.mail.MailConfiguration;
-import mpv5.pluginhandling.MP5Plugin;
 import mpv5.pluginhandling.YabsPluginLoader;
 import mpv5.ui.dialogs.Popup;
 import mpv5.ui.dialogs.subcomponents.ControlPanel_Fonts;
-import mpv5.ui.frames.MPView;
 import dtaus.Konto;
 import javax.swing.UIManager;
 import mpv5.YabsViewProxy;
 import mpv5.pluginhandling.YabsPlugin;
 import mpv5.ui.dialogs.DialogForFile;
-import mpv5.utils.files.FileDirectoryHandler;
 import mpv5.utils.text.TypeConversion;
+
 
 /**
  *
@@ -62,6 +60,7 @@ import mpv5.utils.text.TypeConversion;
 public class User extends DatabaseObject {
 
     private static User currentUser;
+    private static final long serialVersionUID = 1L;
 
     public static User getCurrentUser() {
         if (currentUser == null) {
@@ -136,6 +135,7 @@ public class User extends DatabaseObject {
     private Date datelastlog = new Date();
     public static User DEFAULT = new User("Default User", "nobody", MPSecurityManager.RIGHT_TO_VIEW, 4343);
     public static HashMap<String, String> userCache = new HashMap<String, String>();
+    public static HashMap<String, String> userCache2 = new HashMap<String, String>();
     private PropertyStore properties = new PropertyStore();
     /**
      * Properties added to this store will override the users properties stored in the database upon login
@@ -150,11 +150,14 @@ public class User extends DatabaseObject {
     public static void cacheUser() {
         userCache.clear();
         userCache.put(Integer.toBinaryString(DEFAULT.__getIDS()), DEFAULT.__getCname());
+        userCache2.clear();
+        userCache2.put(Integer.toBinaryString(DEFAULT.__getIDS()), DEFAULT.fullname);
         try {
             ArrayList<DatabaseObject> data = DatabaseObject.getObjects(Context.getUser());
             for (int i = 0; i < data.size(); i++) {
                 DatabaseObject databaseObject = data.get(i);
                 userCache.put(Integer.toBinaryString(databaseObject.__getIDS()), databaseObject.__getCname());
+                userCache2.put(Integer.toBinaryString(databaseObject.__getIDS()), ((User) databaseObject).__getFullname());
             }
         } catch (NodataFoundException ex) {
             Log.Debug(User.class, ex.getMessage());
@@ -175,6 +178,20 @@ public class User extends DatabaseObject {
         }
     }
 
+        /**
+     * Tries to find the given ID in the DB
+     * @param forId
+     * @return A Fullname if existing, else "unknown"
+     */
+    public static String getFullName(int forId) {
+        if (userCache2.containsKey(Integer.toBinaryString(forId))) {
+            return userCache2.get(Integer.toBinaryString(forId));
+        } else {
+            Log.Debug(User.class, "User not found in cache: " + Integer.toBinaryString(forId));
+            return "unknown";
+        }
+    }
+    
     /**
      * Tries to find an User with the given name
      * @param username
@@ -776,7 +793,6 @@ public class User extends DatabaseObject {
         getProperties().changeProperty(key, value);
     }
 }
-
 class DTAConfig {
 
     private Konto bankAccount;

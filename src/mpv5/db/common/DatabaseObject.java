@@ -16,11 +16,8 @@
  */
 package mpv5.db.common;
 
-import java.util.Collection;
 import groovy.lang.GroovyShell;
 import groovy.lang.Binding;
-import java.util.Arrays;
-import java.util.TreeMap;
 import java.awt.Color;
 import java.io.Serializable;
 import java.lang.annotation.ElementType;
@@ -61,7 +58,6 @@ import mpv5.utils.images.MPIcon;
 import mpv5.utils.numberformat.FormatNumber;
 import mpv5.utils.text.RandomText;
 import static mpv5.db.common.Context.*;
-import static mpv5.globals.Constants.*;
 import mpv5.utils.text.TypeConversion;
 import mpv5.globals.Constants;
 
@@ -2315,6 +2311,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
         try {
             if (map.containsKey("intaddedby")) {
                 map.put("addedby", User.getUsername(Integer.valueOf(map.get("intaddedby").toString())));
+                map.put("addedbyfull", User.getFullName(Integer.valueOf(map.get("intaddedby").toString())));
             }
         } catch (NumberFormatException numberFormatException) {
             //already resolved?

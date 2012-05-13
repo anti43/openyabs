@@ -16,14 +16,12 @@
  */
 package mpv5.db.common;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import mpv5.logging.Log;
 import java.io.File;
 import java.io.IOException;
 
 import mpv5.globals.LocalSettings;
-import mpv5.ui.dialogs.Popup;
+import mpv5.globals.Messages;
 
 /**
  * This class handles the different DB connection types (derby, mysql, custom)
@@ -66,6 +64,7 @@ public class ConnectionTypeHandler {
     private static String URL;
     private static String DBNAME;
     private static String DBPREFIX = "";
+    private static String CREATEDERBY = "create=true;";
 
     /**
      * Returns a database engine dependent version of CHAR() as a string
@@ -133,20 +132,21 @@ public class ConnectionTypeHandler {
             case DERBY:
                 String cstring = "jdbc:derby:" + getURL() + File.separator + DBNAME + ";";
                 if (withCreate) {
-                    cstring += "create=true;";
+                    cstring += ConnectionTypeHandler.CREATEDERBY;
                 }
                 setConnectionString(cstring);
                 break;
             case MYSQL:
-                setConnectionString("jdbc:mysql://" + getURL() + "/" + DBNAME);
                 if (withCreate) {
-                    Log.Debug(this, "Sie müssen die MYSQL Datenbank " + DBNAME + " manuell anlegen.");
+                    setConnectionString("jdbc:mysql://" + getURL());
+                } else {
+                    setConnectionString("jdbc:mysql://" + getURL() + "/" + DBNAME);
                 }
                 break;
             case CUSTOM:
                 setConnectionString(getURL() + "/" + DBNAME);
                 if (withCreate) {
-                    Log.Debug(this, "Sie müssen die SQL Datenbank " + DBNAME + " manuell anlegen.");
+                    Log.Debug(this, Messages.CREATE_DATABASE_OWN.toString());
                 }
                 break;
         }
@@ -239,7 +239,7 @@ public class ConnectionTypeHandler {
      *
      * @param predefinedDriver
      */
-    public void setDRIVER(String predefinedDriver) {
+    public final void setDRIVER(String predefinedDriver) {
 
         if (predefinedDriver != null && !predefinedDriver.equalsIgnoreCase("null")) {
             if (predefinedDriver.equalsIgnoreCase(DERBY_DRIVER)) {
@@ -262,6 +262,10 @@ public class ConnectionTypeHandler {
         Class.forName(driver);
     }
 
+    public static String getDBNAME() {
+        return DBNAME;
+    }
+    
     public void setDBName(String dbname) {
         ConnectionTypeHandler.DBNAME = dbname;
     }
@@ -272,5 +276,17 @@ public class ConnectionTypeHandler {
 
     public String getPrefix() {
         return DBPREFIX;
+    }
+
+    public static String getCREATEDERBY() {
+        return CREATEDERBY;
+    }
+
+   public static void setCREATEDERBY(String CREATEDERBY) {
+        ConnectionTypeHandler.CREATEDERBY = CREATEDERBY;
+    }
+    
+    public static void resetCREATEXXX() {
+       CREATEDERBY = "create=true;";
     }
 }

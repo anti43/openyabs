@@ -3090,4 +3090,15 @@ public class QueryHandler implements Cloneable {
             }
         }
     }
+
+    public boolean reset() {
+        try {
+            conn = DatabaseConnection.instanceOf();
+            sqlConn = conn.getConnection();
+            return true;
+        } catch (Exception ex) {
+            Log.Debug(QueryHandler.class, ex.getLocalizedMessage());
+            return false;
+        }
+    }
 }
