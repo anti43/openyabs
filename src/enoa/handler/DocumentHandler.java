@@ -286,9 +286,9 @@ public class DocumentHandler {
         if (!GlobalSettings.getBooleanProperty("org.openyabs.exportproperty.blankunusedfields.disable")) {
             for (int i = 0; i < fields.size(); i++) {
                 ITextField xTextComponent = fields.get(i);
-                if (Log.isDebugging()) {
-                    Log.Debug(this, "Filling unspecified field: " + xTextComponent.getDisplayText());
-                }
+//                if (Log.isDebugging()) {
+////                    Log.Debug(this, "Filling unspecified field: " + xTextComponent.getDisplayText());
+//                }
                 xTextComponent.getTextRange().setText("");
             }
         }
