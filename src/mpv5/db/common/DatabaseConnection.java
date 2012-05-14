@@ -79,25 +79,7 @@ public class DatabaseConnection {
         return conn;
     }
     
-    
-    /**
-     * 
-     * @return
-     * @throws SQLException
-     */
-    public java.sql.Connection createNoCommitConnection() throws SQLException {
-         try {
-            Connection d = DriverManager.getConnection(getCtype().getConnectionString(false), user, password);
-            d.setAutoCommit(false);
-            return d;
-        } catch (SQLException ex) {
-            System.out.println("Database Error: " + ex.getMessage());
-            Popup.notice(ex.getLocalizedMessage());
-            Log.Debug(this, ex);
-            Log.Debug(this, ex.getNextException());
-            throw ex;
-        }
-    }
+
 
     /**
      * Test-Verbindung zur Datenbank herstellen.

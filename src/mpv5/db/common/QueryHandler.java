@@ -103,7 +103,6 @@ public class QueryHandler implements Cloneable {
     }
     private DatabaseConnection conn = null;
     private Connection sqlConn = null;
-    private Connection noCommitSqlConn = null;
     private String table = "NOTABLE";
     private static JFrame comp = new JFrame();
     private Context context;
@@ -2617,10 +2616,8 @@ public class QueryHandler implements Cloneable {
             Statement stm = null;
             ResultSet resultSet = null;
             try {
-                if (noCommitSqlConn == null) {
-                    noCommitSqlConn = conn.createNoCommitConnection();
-                }
-                stm = noCommitSqlConn.createStatement();
+                sqlConn.setAutoCommit(false);
+                stm = sqlConn.createStatement();
                 list = new ArrayList<File>();
 
                 if (ROW_LIMIT != null && ROW_LIMIT.intValue() >= 0) {
@@ -2655,7 +2652,7 @@ public class QueryHandler implements Cloneable {
                     progressbar.setValue(0);
                     progressbar.setIndeterminate(false);
                 }
-                noCommitSqlConn.commit();
+                sqlConn.commit();
             } catch (SQLException ex) {
                 Log.Debug(this, ex);
                 if (list == null || list.isEmpty()) {
@@ -2663,7 +2660,11 @@ public class QueryHandler implements Cloneable {
                 }
                 jobmessage = Messages.ERROR_OCCURED.toString();
             } finally {
-
+                try {
+                    sqlConn.setAutoCommit(true);
+                } catch (SQLException ex) {
+                    Log.Debug(ex);
+                }
                 // Alle Ressourcen wieder freigeben
                 stop();
                 if (resultSet != null) {
@@ -2926,29 +2927,25 @@ public class QueryHandler implements Cloneable {
 
         @Override
         protected String doInBackground() {
+            synchronized (sqlConn) {
 
-            Object obj = new Object();
-            synchronized (obj) {
-//                setProgress(0);
                 String query = "INSERT INTO " + table + "(cname, data, dateadded, filesize) VALUES (?, ?, ?, ?)";
                 String jobmessage = null;
                 Log.Debug(this, "Adding file: " + file.getName());
                 mpv5.YabsViewProxy.instance().addMessage(Messages.PROCESSING + file.getName());
 
                 try {
-                    if (noCommitSqlConn == null) {
-                        noCommitSqlConn = conn.createNoCommitConnection();
-                    }
+                    sqlConn.setAutoCommit(false);
                     int fileLength = (int) file.length();
                     name = new RandomText(23).getString();
                     java.io.InputStream fin = new java.io.FileInputStream(file);
-                    PreparedStatement ps = noCommitSqlConn.prepareStatement(query, PreparedStatement.RETURN_GENERATED_KEYS);
+                    PreparedStatement ps = sqlConn.prepareStatement(query, PreparedStatement.RETURN_GENERATED_KEYS);
                     ps.setString(1, name);
                     ps.setLong(4, file.length());
                     ps.setDate(3, new java.sql.Date(new Date().getTime()));
                     ps.setBinaryStream(2, fin, fileLength);
                     ps.execute();
-                    noCommitSqlConn.commit();
+                    sqlConn.commit();
                 } catch (Exception ex) {
                     progressbar.setValue(0);
                     progressbar.setIndeterminate(false);
@@ -2956,6 +2953,12 @@ public class QueryHandler implements Cloneable {
                     Log.Debug(this, ex);
                     Popup.error(ex);
                     jobmessage = Messages.ERROR_OCCURED.toString();
+                } finally {
+                    try {
+                        sqlConn.setAutoCommit(true);
+                    } catch (SQLException ex) {
+                        Log.Debug(ex);
+                    }
                 }
 
                 if (jobmessage != null) {

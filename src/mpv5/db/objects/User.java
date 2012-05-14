@@ -48,10 +48,11 @@ import mpv5.ui.dialogs.subcomponents.ControlPanel_Fonts;
 import dtaus.Konto;
 import javax.swing.UIManager;
 import mpv5.YabsViewProxy;
+import mpv5.db.common.QueryCriteria2;
+import mpv5.db.common.QueryParameter;
 import mpv5.pluginhandling.YabsPlugin;
 import mpv5.ui.dialogs.DialogForFile;
 import mpv5.utils.text.TypeConversion;
-
 
 /**
  *
@@ -178,7 +179,7 @@ public class User extends DatabaseObject {
         }
     }
 
-        /**
+    /**
      * Tries to find the given ID in the DB
      * @param forId
      * @return A Fullname if existing, else "unknown"
@@ -191,7 +192,7 @@ public class User extends DatabaseObject {
             return "unknown";
         }
     }
-    
+
     /**
      * Tries to find an User with the given name
      * @param username
@@ -554,15 +555,18 @@ public class User extends DatabaseObject {
      * Saves the user properties
      */
     public void saveProperties() {
-        List<String[]> l = properties.getList();
-        for (int i = 0; i < l.size(); i++) {
-            String[] d = l.get(i);
-            UserProperty p = new UserProperty();
-            p.setValue(d[1]);
-            p.setCname(d[0]);
-            p.setUsersids(getID());
-            p.setGroupsids(__getGroupsids());
-            p.save();
+        synchronized (properties) {
+            List<String[]> l = properties.getList();
+
+            for (int i = 0; i < l.size(); i++) {
+                String[] d = l.get(i);
+                UserProperty p = new UserProperty();
+                p.setValue(d[1]);
+                p.setCname(d[0]);
+                p.setUsersids(getID());
+                p.setGroupsids(__getGroupsids());
+                p.save();
+            }
         }
     }
 
@@ -579,10 +583,12 @@ public class User extends DatabaseObject {
      */
     public void setProperties() {
 
-        QueryCriteria criteria = new QueryCriteria("usersids", ids);
+        QueryCriteria2 criteria = new QueryCriteria2();
+        criteria.and(new QueryParameter(Context.getUserProperties(), "usersids", ids, QueryParameter.EQUALS),
+                     new QueryParameter(Context.getUserProperties(), "groupsids", __getGroupsids(), QueryParameter.EQUALS));
         properties = new PropertyStore();
         try {
-            properties.addAll(QueryHandler.instanceOf().clone(Context.getUserProperties()).select("cname, value", criteria));
+            properties.addAll(QueryHandler.instanceOf().clone(Context.getUserProperties()).select("cname, value", criteria).getData());
             properties.addAll(PROPERTIES_OVERRIDE);
             properties.setChanged(false);
         } catch (NodataFoundException ex) {
@@ -793,6 +799,7 @@ public class User extends DatabaseObject {
         getProperties().changeProperty(key, value);
     }
 }
+
 class DTAConfig {
 
     private Konto bankAccount;
