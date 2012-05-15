@@ -62,7 +62,11 @@ class DynamicArithmetic {
                     //Log.Debug(this, "Value Closer found --> append Value String off");
                     pushValueString = false;
                     if (!columnString.equals("")) {
-                        vals.add(values.get(Integer.parseInt(columnString)));
+                        if (values.containsKey(Integer.parseInt(columnString))) {
+                            vals.add(values.get(Integer.parseInt(columnString)));
+                        } else {
+                            vals.add(null);
+                        }
                     } else {
                         throw new ParseFormatException("Parsing Error at Position [" + i + "]: No Value given:\n"
                                 + "Arithmetic Expression: " + toParse);
@@ -161,7 +165,7 @@ class DynamicArithmetic {
                     break;
                 case ':':
                     for (int k = 0; k < vals.size(); k++) {
-                        BigDecimal val = vals.get(k) == null ? BigDecimal.ZERO : vals.get(k);
+                        BigDecimal val = vals.get(k) == null ? BigDecimal.ONE : vals.get(k);
                         if (k == 0) {
                             tmp = val;
                         } else {
@@ -174,7 +178,7 @@ class DynamicArithmetic {
                     break;
                 case '/':
                     for (int k = 0; k < vals.size(); k++) {
-                        BigDecimal val = vals.get(k) == null ? BigDecimal.ZERO : vals.get(k);
+                        BigDecimal val = vals.get(k) == null ? BigDecimal.ONE : vals.get(k);
                         if (k == 0) {
                             tmp = val;
                         } else {
@@ -187,7 +191,7 @@ class DynamicArithmetic {
                     break;
                 case '*':
                     for (int k = 0; k < vals.size(); k++) {
-                        BigDecimal val = vals.get(k) == null ? BigDecimal.ZERO : vals.get(k);
+                        BigDecimal val = vals.get(k) == null ? BigDecimal.ONE : vals.get(k);
                         if (k == 0) {
                             tmp = val;
                         } else {
