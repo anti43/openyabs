@@ -49,7 +49,7 @@ public class wizard_XMLImport_2 extends javax.swing.JPanel implements Wizardable
             try {
                 x.newDoc(new File(master.getStore().getProperty("file")), false);
                 objs = x.getObjects();
-                jTable1.setModel(ImportTableModel.getModel(objs, !master.getStore().getProperty("overwrite", true)));
+                jTable1.setModel(ImportTableModel.getModel(objs, !master.getStore().getProperty("overwrite", false)));
                 jLabel2.setText(jLabel2.getText() + " " + master.getStore().getProperty("file") + " (" + jTable1.getRowCount() + ")");
                 TableFormat.format(jTable1, 0, 0);
                 TableFormat.format(jTable1, 1, 33);
@@ -200,7 +200,7 @@ public class wizard_XMLImport_2 extends javax.swing.JPanel implements Wizardable
     public void load() {
         master.enableBackButton(false);
         if (!isConsumed) {
-            Log.Debug(this, "Overwrite is set to " + master.getStore().getProperty("overwrite", true));
+            Log.Debug(this, "Overwrite is set to " + master.getStore().getProperty("overwrite", false));
             importXML();
         }
     }

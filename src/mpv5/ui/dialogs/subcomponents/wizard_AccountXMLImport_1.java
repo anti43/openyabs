@@ -240,7 +240,7 @@ public class wizard_AccountXMLImport_1 extends javax.swing.JPanel implements Wiz
      */
     public void load() {
         if (!isConsumed) {
-            Log.Debug(this, "Overwrite is set to " + master.getStore().getProperty("overwrite", true));
+            Log.Debug(this, "Overwrite is set to " + master.getStore().getProperty("overwrite", false));
             importXML();
         }
     }

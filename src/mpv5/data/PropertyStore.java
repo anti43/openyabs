@@ -182,16 +182,16 @@ public class PropertyStore {
      * Return a property
      * @param <T>
      * @param key
-     * @param desiredClass (one of Double, Integer, boolean, Date)
+     * @param desiredClassAndFallbackValue (one of Double, Integer, boolean, Date)
      * @return A value or a new instance of T
      */
     @SuppressWarnings("unchecked")
-    public synchronized <T extends Object> T getProperty(String key, T desiredClass) {
+    public synchronized <T extends Object> T getProperty(String key, T desiredClassAndFallbackValue) {
         String t = getProperty(key);
 
-        if (desiredClass instanceof Double) {
+        if (desiredClassAndFallbackValue instanceof Double) {
             if (t == null || String.valueOf(t).length() == 0) {
-                return (T) desiredClass;
+                return desiredClassAndFallbackValue;
             } else {
                 try {
                     return (T) Double.valueOf(t);
@@ -199,9 +199,9 @@ public class PropertyStore {
                     return (T) new Double(FormatNumber.parseDezimal(t).doubleValue());
                 }
             }
-        } else if (desiredClass instanceof Integer) {
+        } else if (desiredClassAndFallbackValue instanceof Integer) {
             if (t == null || String.valueOf(t).length() == 0) {
-                return (T) desiredClass;
+                return desiredClassAndFallbackValue;
             } else {
                 try {
                     return (T) Integer.valueOf(t);
@@ -209,9 +209,9 @@ public class PropertyStore {
                     return (T) new Double(FormatNumber.parseDezimal(t).intValue());
                 }
             }
-        } else if (desiredClass instanceof Boolean) {
+        } else if (desiredClassAndFallbackValue instanceof Boolean) {
             if (t == null || String.valueOf(t).length() == 0) {
-                return (T) desiredClass;
+                return desiredClassAndFallbackValue;
             } else {
                 try {
                     return (T) Boolean.valueOf(t);
@@ -219,9 +219,9 @@ public class PropertyStore {
                     return (T) Boolean.FALSE;
                 }
             }
-        } else if (desiredClass instanceof Date) {
+        } else if (desiredClassAndFallbackValue instanceof Date) {
             if (t == null || String.valueOf(t).length() == 0) {
-                return (T) desiredClass;
+                return desiredClassAndFallbackValue;
             } else {
                 try {
                     return (T) DateConverter.getDate(t);
@@ -242,7 +242,7 @@ public class PropertyStore {
      * @return
      */
     public synchronized boolean getProperty(JComponent comp, String source) {
-        return getProperty(comp.getClass().getName() + "$" + source, true);
+        return getProperty(comp.getClass().getName() + "$" + source, false);
     }
 
     /**
@@ -253,7 +253,7 @@ public class PropertyStore {
      * @return
      */
     public synchronized boolean getProperty(String comp, String source) {
-        return getProperty(comp + "$" + source, true);
+        return getProperty(comp + "$" + source, false);
     }
 
     /**
