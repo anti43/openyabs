@@ -363,7 +363,7 @@ public class LocalSettings {
         for (int i = 0; i < cookies.size(); i++) {
             PropertyStore propertyStore = cookies.get(i);
             try {
-                list.add(propertyStore.getProperty("nodeid", Integer.MIN_VALUE));
+                list.add(propertyStore.getProperty("nodeid", 0));
             } catch (Exception e) {
                 //possibly nodeid is not integer parseable, lets ignore them
                 Log.Debug(e);
@@ -387,7 +387,7 @@ public class LocalSettings {
         cookies = (Vector<PropertyStore>) read.readInto("localsettings", "connection");
         for (int i = 0; i < cookies.size(); i++) {
             PropertyStore propertyStore = cookies.get(i);
-            list.put(propertyStore.getProperty("nodeid", Integer.MIN_VALUE), propertyStore.getProperty("nodename"));
+            list.put(propertyStore.getProperty("nodeid", 0), propertyStore.getProperty("nodename"));
         }
 
         return list;
