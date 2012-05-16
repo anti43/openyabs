@@ -276,18 +276,14 @@ public class DocumentHandler {
             for (int i = 0; i < fields.size(); i++) {
                 try {
                     ITextField xTextComponent = fields.get(i);
-                    if (Log.isDebugging()) {
-                        Log.Debug(this, "Filling unspecified field: " + xTextComponent.getDisplayText());
-                    }
-                    xTextComponent.getTextRange().setText("");
-                } catch (java.lang.IllegalArgumentException ex) {
-                    if (ex.getMessage().contains("Submitted OpenOffice.org XTextRange interface is not valid.")) {
+                    if (xTextComponent.getXTextContent().getAnchor() != null) {
                         if (Log.isDebugging()) {
-                            Log.Debug(this, ex.getLocalizedMessage());
+                            Log.Debug(this, "Filling unspecified field: " + xTextComponent.getDisplayText());
                         }
-                    } else {
-                        throw ex;
+                        xTextComponent.getTextRange().setText("");
                     }
+                } catch (Throwable ex) {
+                    Log.Debug(this, ex.getLocalizedMessage());
                 }
             }
         }
