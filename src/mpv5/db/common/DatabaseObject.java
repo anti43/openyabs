@@ -2548,7 +2548,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
                     Object value = getGroovyShell().evaluate(strVal.replace("#", ""));
                     map.put("property." + p.getKey(), String.valueOf(value));
                 } catch (Exception e) {
-                    Log.Debug(this, e);
+                    Log.Debug(this, e.getMessage());
                     Notificator.raiseNotification(Messages.SCRIPT_ERROR + " " + p.getKey(), false);
                 }
             } else {
