@@ -1167,7 +1167,7 @@ public class ProductOrderPanel extends javax.swing.JPanel implements DataPanel, 
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
 
-        if (dataOwner.isExisting()) {
+        if (dataOwner.isExisting() && dataOwner.getContact()!=null) {
             try {
                 mpv5.YabsViewProxy.instance().getIdentifierView().addTab(dataOwner.getContact());
             } catch (Exception ex) {
