@@ -123,18 +123,23 @@ public class Scheduler extends Thread {
                     case 0:
                         ItemType = "bills";
                         prop = "hideunpaidbills";
+                        break;
                     case 1:
                         ItemType = "order";
                         prop = "hideunattentedorders";
+                        break;
                     case 2:
                         ItemType = "offer";
                         prop = "hideunacceptedoffers";
+                        break;
                     case 3:
                         ItemType = "delivery";
                         prop = "hideunattenteddeliverys";
+                        break;
                     case 4:
                         ItemType = "confirmation";
                         prop = "hideunattentedconfirmations";
+                        break;
                 }
                 if (!mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("org.openyabs.uiproperty", prop)) {
                     String sql = "SELECT ids FROM items WHERE (intstatus = " + Item.STATUS_IN_PROGRESS + " OR intstatus = "
@@ -176,18 +181,23 @@ public class Scheduler extends Thread {
                     case 0:
                         ItemType = "bills";
                         prop = "hideunpaidbills";
+                        break;
                     case 1:
                         ItemType = "order";
                         prop = "hideunattentedorders";
+                        break;
                     case 2:
                         ItemType = "offer";
                         prop = "hideunacceptedoffers";
+                        break;
                     case 3:
                         ItemType = "delivery";
                         prop = "hideunattenteddeliverys";
+                        break;
                     case 4:
                         ItemType = "confirmation";
                         prop = "hideunattentedconfirmations";
+                        break;
                 }
                 if (mpv5.db.objects.User.getCurrentUser().getProperties().hasProperty(ItemType + ".warn.days")
                         && !mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("org.openyabs.uiproperty", prop)) {
@@ -234,14 +244,19 @@ public class Scheduler extends Thread {
             switch (b) {
                 case 0:
                     ItemType = "bills";
+                    break;
                 case 1:
                     ItemType = "order";
+                    break;
                 case 2:
                     ItemType = "offer";
+                    break;
                 case 3:
                     ItemType = "delivery";
+                    break;
                 case 4:
                     ItemType = "confirmation";
+                    break;
             }
             if (mpv5.db.objects.User.getCurrentUser().getProperties().hasProperty(ItemType + ".alert.days")) {
                 Integer alert = Integer.valueOf(mpv5.db.objects.User.getCurrentUser().

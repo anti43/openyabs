@@ -222,15 +222,16 @@ public class HomeScreen
 
                     data[i][4] = Item.getTypeString(type);
                     data[i][5] = databaseObject.getIcon();
+                    ((ImageIcon) data[i][5]).setDescription(Item.getStatusString(((Item) databaseObject).__getIntstatus()));
                 } else {
                     Schedule sched = (Schedule) list.get(i);
                     data[i][0] = sched;
                     data[i][1] = User.getUsername(sched.__getIntaddedby());
                     data[i][2] = sched.__getNextdate();
                     data[i][3] = sched.__getStopdate();
-                    // TODO JAN: auch für andere Itemtypes anpassen ...
                     data[i][4] = Item.getTypeString(0);
                     data[i][5] = sched.getIcon();
+                    ((ImageIcon) data[i][5]).setDescription(Messages.NEW_BILL.toString());
                 }
             }
         } else {
@@ -242,7 +243,7 @@ public class HomeScreen
                     String.class,
                     Date.class,
                     DatabaseObject.class,
-                    String.class,
+                    String.class,           
                     ImageIcon.class
                 });
         table.setModel(m);
