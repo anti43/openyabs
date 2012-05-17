@@ -164,6 +164,7 @@ public class NoaConnection {
             configuration.put(IOfficeApplication.APPLICATION_TYPE_KEY, IOfficeApplication.REMOTE_APPLICATION);
             configuration.put(IOfficeApplication.APPLICATION_HOST_KEY, host.replace("http://", ""));
             configuration.put(IOfficeApplication.APPLICATION_PORT_KEY, String.valueOf(port));
+            configuration.put(IOfficeApplication.APPLICATION_ARGUMENTS_KEY, String.valueOf(port));
 
             officeAplication = OfficeApplicationRuntime.getApplication(configuration);
             officeAplication.setConfiguration(configuration);

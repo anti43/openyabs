@@ -57,6 +57,7 @@ import mpv5.utils.models.MPComboBoxModelItem;
 import mpv5.utils.models.MPTableModel;
 import mpv5.utils.numberformat.FormatNumber;
 import mpv5.ui.misc.TableViewPersistenceHandler;
+import mpv5.utils.tables.TableFormat;
 import mpv5.utils.ui.TextFieldUtils;
 
 /**
@@ -64,7 +65,7 @@ import mpv5.utils.ui.TextFieldUtils;
  * 
  */
 public class ExpensePanel extends javax.swing.JPanel implements DataPanel {
-
+    
     private static final long serialVersionUID = 1L;
     private static ExpensePanel me;
     private ArrayList<DatabaseObject> accmod;
@@ -96,31 +97,31 @@ public class ExpensePanel extends javax.swing.JPanel implements DataPanel {
         tb.disableButton(9);
         toolbarpane.add(tb, BorderLayout.CENTER);
         dataOwner = new Expense();
-
+        
         addedby.setText(mpv5.db.objects.User.getCurrentUser().getName());
-
+        
         groupnameselect.setSearchEnabled(true);
         groupnameselect.setContext(Context.getGroup());
         taxrate.setSearchEnabled(true);
         taxrate.setContext(Context.getTaxes());
-
+        
         value.getTextField().addKeyListener(new KeyListener() {
-
+            
             public void keyTyped(KeyEvent e) {
                 calculate();
             }
-
+            
             public void keyPressed(KeyEvent ek) {
                 calculate();
             }
-
+            
             public void keyReleased(KeyEvent e) {
                 calculate();
             }
         });
-
+        
         taxrate.getComboBox().addActionListener(new ActionListener() {
-
+            
             public void actionPerformed(ActionEvent e) {
                 getTaxRate();
             }
@@ -131,24 +132,10 @@ public class ExpensePanel extends javax.swing.JPanel implements DataPanel {
         itemtable.setFillsViewportHeight(true);
         ((MPTable) itemtable).setDefaultColumns(new Integer[]{100, 333, 100}, new Boolean[]{});
         ((MPTable) itemtable).setPersistanceHandler(new TableViewPersistenceHandler((MPTable) itemtable, this));
-
+        
     }
-
+    
     private void calculate() {
-//        BigDecimal tax2 = BigDecimal.ZERO;
-//        try {
-//            MPComboBoxModelItem t = taxrate.getValue();
-//            tax2 = Tax.getTaxValue(Integer.valueOf(t.getId()));
-//        } catch (Exception e) {
-//            Log.Debug(e);
-//            try {
-//                tax2 = new BigDecimal(taxrate.getText());
-//            } catch (Exception numberFormatException) {
-//                Log.Debug(e);
-//                tax2 = BigDecimal.ZERO;
-//            }
-//        }
-
         try {
             netvalue.setText(FormatNumber.formatLokalCurrency(FormatNumber.parseDezimal(value.getText()).divide((tax.divide(Constants.BD100, 9, RoundingMode.HALF_UP)).add(BigDecimal.ONE), 9, RoundingMode.HALF_UP)));
         } catch (Exception e) {
@@ -156,35 +143,35 @@ public class ExpensePanel extends javax.swing.JPanel implements DataPanel {
             netvalue.setText(FormatNumber.formatLokalCurrency(0d));
         }
     }
-
+    
     @Override
     public DatabaseObject getDataOwner() {
         return dataOwner;
     }
-
+    
     @Override
     public void setDataOwner(DatabaseObject object, boolean populate) {
         dataOwner = (Expense) object;
         if (populate) {
             dataOwner.setPanelData(this);
-
+            
             this.exposeData();
             setTitle();
-
+            
             tb.setFavourite(Favourite.isFavourite(object));
             tb.setEditable(!object.isReadOnly());
-
+            
             formatTable();
             if (object.isReadOnly()) {
                 Popup.notice(Messages.LOCKED_BY);
             }
-
+            
             validate();
         }
     }
     Exportable preloadedExportFile;
     Template preloadedTemplate;
-
+    
     private void setTitle() {
         if (this.getParent() instanceof JViewport || this.getParent() instanceof JTabbedPane) {
             JTabbedPane jTabbedPane = null;
@@ -205,7 +192,7 @@ public class ExpensePanel extends javax.swing.JPanel implements DataPanel {
             }
         }
     }
-
+    
     @Override
     public void showRequiredFields() {
         TextFieldUtils.blinkerRed(value);
@@ -256,7 +243,7 @@ public class ExpensePanel extends javax.swing.JPanel implements DataPanel {
         toolbarpane = new javax.swing.JPanel();
 
         setBackground(new java.awt.Color(176, 158, 158));
-        java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle(); // NOI18N
+        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("mpv5/resources/languages/Panels"); // NOI18N
         setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("ExpensePanel.border.title_1"))); // NOI18N
         setName("Form"); // NOI18N
         setOpaque(false);
@@ -336,7 +323,7 @@ public class ExpensePanel extends javax.swing.JPanel implements DataPanel {
                 .addContainerGap()
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(path, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(path, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 720, Short.MAX_VALUE)
                     .addComponent(jLabel1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 99, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel2Layout.createSequentialGroup()
                         .addComponent(value, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -440,6 +427,7 @@ public class ExpensePanel extends javax.swing.JPanel implements DataPanel {
 
             }
         ));
+        itemtable.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_ALL_COLUMNS);
         itemtable.setName("itemtable"); // NOI18N
         itemtable.setSurrendersFocusOnKeystroke(true);
         itemtable.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -453,11 +441,11 @@ public class ExpensePanel extends javax.swing.JPanel implements DataPanel {
         jPanel4.setLayout(jPanel4Layout);
         jPanel4Layout.setHorizontalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane3, javax.swing.GroupLayout.Alignment.TRAILING)
+            .addComponent(jScrollPane3, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 744, Short.MAX_VALUE)
         );
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane3, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 100, Short.MAX_VALUE)
+            .addComponent(jScrollPane3, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 108, Short.MAX_VALUE)
         );
 
         javax.swing.GroupLayout rightpaneLayout = new javax.swing.GroupLayout(rightpane);
@@ -490,17 +478,17 @@ public class ExpensePanel extends javax.swing.JPanel implements DataPanel {
             Log.Debug(this, e.getMessage());
         }
     }//GEN-LAST:event_itemtableMouseClicked
-
+    
     private void jCheckBox1ItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_jCheckBox1ItemStateChanged
         if (jCheckBox1.isSelected()) {
             paydate.setDate(new Date());
         }
     }//GEN-LAST:event_jCheckBox1ItemStateChanged
-
+    
     private void taxrateMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_taxrateMouseExited
         calculate();
     }//GEN-LAST:event_taxrateMouseExited
-
+    
     private void taxrateMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_taxrateMouseClicked
         calculate();
     }//GEN-LAST:event_taxrateMouseClicked
@@ -543,29 +531,29 @@ public class ExpensePanel extends javax.swing.JPanel implements DataPanel {
     public int accountsids_;
     public boolean ispaid_;
     public Date dateend_;
-
+    
     @Override
     public synchronized boolean collectData() {
         calculate();
-
+        
         try {
             accountsids_ = Integer.valueOf(accountselect.getSelectedItem().getId());
             mpv5.db.objects.User.getCurrentUser().getProperties().changeProperty(me, "accountselect", accountsids_);
         } catch (Exception e) {
             accountsids_ = 1;
         }
-
+        
         if (groupnameselect.getSelectedItem() != null) {
             groupsids_ = Integer.valueOf(groupnameselect.getSelectedItem().getId());
             Log.Debug(this, groupnameselect.getSelectedItem().getId());
         } else {
             groupsids_ = 1;
         }
-
+        
         dateadded_ = labeledDateChooser1.getDate();
         dateend_ = paydate.getDate();
         ispaid_ = jCheckBox1.isSelected();
-
+        
         intaddedby_ = User.getUserId(addedby.getText());
         description_ = notes.getText();
         try {
@@ -585,7 +573,7 @@ public class ExpensePanel extends javax.swing.JPanel implements DataPanel {
         }
         return true;
     }
-
+    
     @Override
     public void exposeData() {
         number.setText(cname_);
@@ -611,18 +599,20 @@ public class ExpensePanel extends javax.swing.JPanel implements DataPanel {
         jCheckBox1.setSelected(ispaid_);
         getTaxRate();
     }
-
+    
     @Override
     public void refresh() {
         Runnable runnable = new Runnable() {
-
+            
             @Override
             public void run() {
-
+                
                 groupnameselect.triggerSearch();
                 taxrate.triggerSearch();
                 try {
-                    itemtable.setModel(new MPTableModel(Expense.getExpenses(), Headers.EXPENSE));
+                    MPTableModel x = new MPTableModel(Expense.getExpenses(), Headers.EXPENSE);
+                    x.setTypes(String.class, String.class, String.class, String.class, String.class, Boolean.class);
+                    itemtable.setModel(x);
                 } catch (NodataFoundException e) {
                     Log.Debug(this, e.getMessage());
                 }
@@ -641,7 +631,7 @@ public class ExpensePanel extends javax.swing.JPanel implements DataPanel {
                 getTaxRate();
             }
         };
-
+        
         SwingUtilities.invokeLater(runnable);
     }
 
@@ -651,76 +641,76 @@ public class ExpensePanel extends javax.swing.JPanel implements DataPanel {
     public void formatTable() {
 //        TableFormat.resizeCols(itemtable, new Integer[]{100, 333, 100}, false);
     }
-
+    
     @Override
     public void paste(DatabaseObject... dbo) {
         mpv5.YabsViewProxy.instance().addMessage(Messages.NOT_POSSIBLE.toString() + Messages.ACTION_PASTE.toString());
     }
-
+    
     @Override
     public void showSearchBar(boolean show) {
     }
-
+    
     @Override
     public void actionAfterSave() {
         Runnable runnable = new Runnable() {
-
+            
             public void run() {
                 try {
-
+                    
                     itemtable.setModel(new MPTableModel(Expense.getExpenses(), Headers.EXPENSE));
                     formatTable();
-
+                    
                 } catch (NodataFoundException ex) {
                 }
             }
         };
         SwingUtilities.invokeLater(runnable);
     }
-
+    
     @Override
     public void actionAfterCreate() {
         Runnable runnable = new Runnable() {
-
+            
             public void run() {
                 try {
-
+                    
                     itemtable.setModel(new MPTableModel(Expense.getExpenses(), Headers.EXPENSE));
                     formatTable();
-
+                    
                 } catch (NodataFoundException ex) {
                 }
             }
         };
         SwingUtilities.invokeLater(runnable);
     }
-
+    
     public void actionBeforeCreate() {
     }
-
+    
     public void actionBeforeSave() {
     }
-
+    
     public void mail() {
     }
-
+    
     public void print() {
         mpv5.utils.export.Export.print(this);
     }
-
+    
     private void getTaxRate() {
         try {
             MPComboBoxModelItem t = taxrate.getValue();
-            tax = Tax.getTaxValue(Integer.valueOf(t.getId()));
+            if (t == null) {
+                tax = BigDecimal.ZERO;
+                taxrate.setSelectedIndex(-1);
+            } else {
+                tax = Tax.getTaxValue(Integer.valueOf(t.getId()));
+            }
             Log.Debug(this, "Selected Taxrate: " + tax);
         } catch (Exception ex) {
-            try {
-                Log.Debug(this, "Trying Decimal Taxrate: " + taxrate.getText());
-                tax = new BigDecimal(taxrate.getText());
-            } catch (NumberFormatException numberFormatException) {
-                Log.Debug(this, "Reading Taxrate failed: Assuming Zero");
-                tax = BigDecimal.ZERO;
-            }
+            Log.Debug(this, "Reading Taxrate failed: Assuming Zero");
+            tax = BigDecimal.ZERO;
         }
         calculate();
     }

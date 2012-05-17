@@ -170,7 +170,7 @@ public class Expense extends DatabaseObject implements Formattable {
      */
     @Override
     public Object[] toArray() {
-        Object[] o = new Object[5];
+        Object[] o = new Object[6];
         o[0] = this;
         o[1] = description;
         try {
@@ -180,6 +180,7 @@ public class Expense extends DatabaseObject implements Formattable {
         }
         o[3] = FormatNumber.formatDezimal(brutvalue);
         o[4] = FormatNumber.formatPercent(taxpercentvalue);
+        o[5] = ispaid;
         return o;
     }
 

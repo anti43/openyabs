@@ -59,6 +59,7 @@ import mpv5.utils.models.MPComboBoxModelItem;
 import mpv5.utils.models.MPTableModel;
 import mpv5.utils.numberformat.FormatNumber;
 import mpv5.ui.misc.TableViewPersistenceHandler;
+import mpv5.utils.tables.TableFormat;
 import mpv5.utils.ui.TextFieldUtils;
 
 /**
@@ -137,19 +138,6 @@ public class RevenuePanel extends javax.swing.JPanel implements DataPanel {
     }
 
     private void calculate() {
-        try {
-            MPComboBoxModelItem t = taxrate.getValue();
-            tax = Tax.getTaxValue(Integer.valueOf(t.getId()));
-        } catch (Exception e) {
-            Log.Debug(e);
-            try {
-                tax = new BigDecimal(taxrate.getText());
-            } catch (Exception numberFormatException) {
-                Log.Debug(e);
-                tax = BigDecimal.ZERO;
-            }
-        }
-
         try {
             netvalue.setText(FormatNumber.formatLokalCurrency(FormatNumber.parseDezimal(value.getText()).divide((tax.divide(Constants.BD100, 9, RoundingMode.HALF_UP)).add(BigDecimal.ONE), 9, RoundingMode.HALF_UP)));
         } catch (Exception e) {
@@ -478,7 +466,7 @@ public class RevenuePanel extends javax.swing.JPanel implements DataPanel {
     }//GEN-LAST:event_taxrateMouseClicked
 
     private void taxrateMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_taxrateMouseExited
-       calculate();
+        calculate();
     }//GEN-LAST:event_taxrateMouseExited
     MPTableModel omodel = null;
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -679,17 +667,16 @@ public class RevenuePanel extends javax.swing.JPanel implements DataPanel {
     private void getTaxRate() {
         try {
             MPComboBoxModelItem t = taxrate.getValue();
-            tax = Tax.getTaxValue(Integer.valueOf(t.getId()));
+            if (t == null) {
+                tax = BigDecimal.ZERO;
+                taxrate.setSelectedIndex(-1);
+            } else {
+                tax = Tax.getTaxValue(Integer.valueOf(t.getId()));
+            }
             Log.Debug(this, "Selected Taxrate: " + tax);
         } catch (Exception ex) {
-            try {
-                Log.Debug(this, "Trying Decimal Taxrate: " + taxrate.getText());
-                tax = new BigDecimal(taxrate.getText());
-            } catch (NumberFormatException numberFormatException) {
-                Log.Debug(this, "Reading Taxrate failed: Assuming Zero");
-                tax = new BigDecimal("0");
-
-            }
+            Log.Debug(this, "Reading Taxrate failed: Assuming Zero");
+            tax = BigDecimal.ZERO;
         }
         calculate();
     }

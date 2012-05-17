@@ -265,7 +265,7 @@ public class FormatHandler {
                         query = "SELECT cnumber FROM " + forThis.getDbIdentity() + " WHERE ids = (SELECT MAX(ids) from " + forThis.getDbIdentity() + " WHERE issupplier = 0  AND ismanufacturer = 0 AND iscustomer = 0 and invisible=0)";
                     }
                 } else {
-                    query = "SELECT cnumber FROM " + forThis.getDbIdentity() + " WHERE ids = (SELECT MAX(ids) from " + forThis.getDbIdentity() + " and invisible=0)";
+                    query = "SELECT cnumber FROM " + forThis.getDbIdentity() + " WHERE ids = (SELECT MAX(ids) from " + forThis.getDbIdentity() + ") and invisible=0";
                 }
 
                 ReturnValue val = QueryHandler.getConnection().freeQuery(
