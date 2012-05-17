@@ -276,9 +276,9 @@ public class Item extends DatabaseObject implements Formattable, Templateable {
     public static final int STATUS_FINISHED = 3;
     public static final int STATUS_PAID = 4;
     public static final int STATUS_CANCELLED = 5;
-    public static final int TYPE_BILL = 0;
-    public static final int TYPE_ORDER = 1;
-    public static final int TYPE_OFFER = 2;
+//    public static final int TYPE_BILL = 0;
+//    public static final int TYPE_ORDER = 1;
+//    public static final int TYPE_OFFER = 2;
 //    public static final int TYPE_DELIVERY_NOTE = 3;
 //    public static final int TYPE_ORDER_CONFIRMATION = 4;
     private FormatHandler formatHandler;

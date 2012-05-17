@@ -1737,13 +1737,9 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
 
                     List<Integer> skip = new ArrayList<Integer>();
                     if (inttype_ == Item.TYPE_BILL) {
-                        skip.add(new Integer(0));
-//                        skip.add(new Integer(1));
-                        skip.add(new Integer(2));
-//                        skip.add(new Integer(5));
+                        skip.add(new Integer(Item.STATUS_PAUSED));
                     } else {
-                        skip.add(new Integer(3));
-                        skip.add(new Integer(4));
+                        skip.add(new Integer(Item.STATUS_PAID));
                     }
                     status.setModel(Item.getStatusStrings(), MPComboBoxModelItem.COMPARE_BY_ID, skip);
                     try {
