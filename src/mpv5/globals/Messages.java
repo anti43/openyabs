@@ -308,7 +308,7 @@ public enum Messages {
     CNAME_EXISTS("Please adjust the Subject!\nActual Subject exists!"),
     CONTACT_COMPLETE("Please complete the Contact-Data!"),
     DATAOWNER_EMPTY("No Entry selected!\nPlease select an Tableentry."),
-    DBCONN_UPDATE_BEPATIENT("Checking database version und updating (may take a while)..."),
+    DBCONN_UPDATE_BEPATIENT("Updating database (may take a longer time)..."),
     ACTIVITYCONFIRMATION("Activity Confirmation"),
     ACTIVITY_EMPTY_DATE("Missing Product or Date for Activity-Entry!"),
     NOT_YET_IMPLEMENTED("This Function is actualy not implemented!"),

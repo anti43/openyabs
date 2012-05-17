@@ -248,7 +248,8 @@ public class Main implements Runnable {
      */
     public static void start() {
 
-        splash.nextStep(Messages.LAUNCH.toString());
+//        splash.nextStep(Messages.LAUNCH.toString());
+        splash.nextStep(Messages.DBCONN_UPDATE_BEPATIENT.toString());
         Log.Debug(Main.class, "Trying to launch application now..");
         Runnable runnable = new Runnable() {
 

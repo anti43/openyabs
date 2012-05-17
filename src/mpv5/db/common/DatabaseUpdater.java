@@ -180,7 +180,10 @@ public class DatabaseUpdater {
                     "ALTER TABLE subitems ALTER description SET DATA TYPE VARCHAR(3333)"
                 });
         UPDATES_DERBY.put(1.195, new String[]{
-                    "update expenses set brutvalue = (netvalue * ((taxpercentvalue/100)+1)) where taxpercentvalue > 0 and netvalue > 0"
+                    "update expenses set brutvalue = (netvalue * ((taxpercentvalue/100)+1)) where taxpercentvalue > 0 and netvalue > 0",
+                    "update revenues set brutvalue = (netvalue * ((taxpercentvalue/100)+1)) where taxpercentvalue > 0 and netvalue > 0",
+                    "update expenses set netvalue  = brutvalue * (100 / (100 + taxpercentvalue)) where taxpercentvalue > 0 and brutvalue > 0 and (netvalue is null or netvalue = 0)",
+                    "update revenues set netvalue  = brutvalue * (100 / (100 + taxpercentvalue)) where taxpercentvalue > 0 and brutvalue > 0 and (netvalue is null or netvalue = 0)"
                 });
         UPDATES_DERBY.put(1.196, new String[]{
                     "update products set inttype = 5 where inttype = 0",
