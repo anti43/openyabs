@@ -10,7 +10,9 @@ import mpv5.YabsApplication;
 
 import mpv5.db.common.Context;
 import mpv5.db.common.NodataFoundException;
+import mpv5.db.common.QueryCriteria2;
 import mpv5.db.common.QueryHandler;
+import mpv5.db.common.QueryParameter;
 import mpv5.db.common.ReturnValue;
 import mpv5.db.objects.Item;
 import mpv5.db.objects.Schedule;
@@ -18,7 +20,6 @@ import mpv5.db.objects.User;
 import mpv5.globals.Messages;
 import mpv5.logging.Log;
 import mpv5.ui.panels.HomeScreen;
-import mpv5.usermanagement.MPSecurityManager;
 import mpv5.utils.date.DateConverter;
 import mpv5.utils.date.vTimeframe;
 
@@ -46,7 +47,6 @@ public class Scheduler extends Thread {
         }
     }
 
-    @SuppressWarnings("static-access")
     public void checkForCreateBillEvents(vTimeframe DateFrame) {
         HashMap<Color, List<Schedule>> map = new HashMap<Color, List<Schedule>>();
         map = getScheduledBills(DateFrame);
@@ -62,7 +62,6 @@ public class Scheduler extends Thread {
         }
     }
 
-    @SuppressWarnings("fallthrough")
     public void checkForOverdueEvents() {
         HashMap<Color, List<Item>> map = new HashMap<Color, List<Item>>();
         map = getOverdueEvents();
@@ -115,59 +114,68 @@ public class Scheduler extends Thread {
         List<Item> alerts = new ArrayList<Item>();
         List<Item> waitings = new ArrayList<Item>();
         int b = 0;
+        Context c = Context.getItem();
         String ItemType = "bills";
         String prop = "";
         try {
             while (b < 5) {
+                QueryCriteria2 opens = new QueryCriteria2();
                 switch (b) {
                     case 0:
                         ItemType = "bills";
                         prop = "hideunpaidbills";
+                        opens.and(new QueryParameter(Context.getItem(), "intstatus", Item.STATUS_FINISHED, QueryParameter.EQUALS));
                         break;
                     case 1:
                         ItemType = "order";
                         prop = "hideunattentedorders";
+                        opens.and(new QueryParameter(Context.getItem(), "intstatus", Item.STATUS_QUEUED, QueryParameter.EQUALS));
                         break;
                     case 2:
                         ItemType = "offer";
                         prop = "hideunacceptedoffers";
+                        opens.and(new QueryParameter(Context.getItem(), "intstatus", Item.STATUS_QUEUED, QueryParameter.EQUALS));
                         break;
                     case 3:
                         ItemType = "delivery";
                         prop = "hideunattenteddeliverys";
+                        opens.or(
+                                new QueryParameter(Context.getItem(), "intstatus", Item.STATUS_QUEUED, QueryParameter.EQUALS),
+                                new QueryParameter(Context.getItem(), "intstatus", Item.STATUS_FINISHED, QueryParameter.EQUALS));
                         break;
                     case 4:
                         ItemType = "confirmation";
                         prop = "hideunattentedconfirmations";
+                        opens.and(new QueryParameter(Context.getItem(), "intstatus", Item.STATUS_QUEUED, QueryParameter.EQUALS));
                         break;
                 }
                 if (!mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("org.openyabs.uiproperty", prop)) {
-                    String sql = "SELECT ids FROM items WHERE (intstatus = " + Item.STATUS_IN_PROGRESS + " OR intstatus = "
-                            + Item.STATUS_FINISHED + ") AND inttype=" + b
-                            + " AND invisible = 0";
-                    ReturnValue data = QueryHandler.getConnection().
-                            freeSelectQuery(sql,
-                            MPSecurityManager.VIEW,
-                            null);
+                    opens.and(new QueryParameter(Context.getItem(), "inttype", b, QueryParameter.EQUALS));
+                    opens.setOrder("dateadded", true);
+                    try {
+                        ReturnValue data = QueryHandler.instanceOf().clone(c).select("IDS", opens);
 
-                    if (data.hasData()) {
-                        Object[][] d = data.getData();
-                        for (int i = 0; i < d.length; i++) {
-                            int id = Integer.valueOf(d[i][0].toString());
-                            try {
-                                Item it = (Item) Item.getObject(
-                                        Context.getItem(),
-                                        id);
-                                waitings.add(it);
-                            } catch (NodataFoundException ex) {
-                                Log.Debug(Scheduler.class,
-                                        ex.getMessage());
+                        if (data.hasData()) {
+                            Object[][] d = data.getData();
+                            for (int i = 0; i < d.length; i++) {
+                                int id = Integer.valueOf(d[i][0].toString());
+                                try {
+                                    Item it = (Item) Item.getObject(
+                                            Context.getItem(),
+                                            id);
+                                    waitings.add(it);
+                                } catch (NodataFoundException ex) {
+                                    Log.Debug(Scheduler.class,
+                                            ex.getMessage());
+                                }
                             }
                         }
+                    } catch (NodataFoundException ex) {
+                        Log.Debug(Scheduler.class, ex.getLocalizedMessage());
                     }
                 } else {
                     Log.Debug(Scheduler.class,
-                            "No warn treshold for " + ItemType + " defined.");
+                            "Don't show " + ItemType + " befor alert!");
                 }
                 b++;
             }
@@ -177,26 +185,34 @@ public class Scheduler extends Thread {
         b = 0;
         try {
             while (b < 5) {
+                QueryCriteria2 opens = new QueryCriteria2();
                 switch (b) {
                     case 0:
                         ItemType = "bills";
                         prop = "hideunpaidbills";
+                        opens.and(new QueryParameter(Context.getItem(), "intstatus", Item.STATUS_FINISHED, QueryParameter.EQUALS));
                         break;
                     case 1:
                         ItemType = "order";
                         prop = "hideunattentedorders";
+                        opens.and(new QueryParameter(Context.getItem(), "intstatus", Item.STATUS_QUEUED, QueryParameter.EQUALS));
                         break;
                     case 2:
                         ItemType = "offer";
                         prop = "hideunacceptedoffers";
+                        opens.and(new QueryParameter(Context.getItem(), "intstatus", Item.STATUS_QUEUED, QueryParameter.EQUALS));
                         break;
                     case 3:
                         ItemType = "delivery";
                         prop = "hideunattenteddeliverys";
+                        opens.or(
+                                new QueryParameter(Context.getItem(), "intstatus", Item.STATUS_QUEUED, QueryParameter.EQUALS),
+                                new QueryParameter(Context.getItem(), "intstatus", Item.STATUS_FINISHED, QueryParameter.EQUALS));
                         break;
                     case 4:
                         ItemType = "confirmation";
                         prop = "hideunattentedconfirmations";
+                        opens.and(new QueryParameter(Context.getItem(), "intstatus", Item.STATUS_QUEUED, QueryParameter.EQUALS));
                         break;
                 }
                 if (mpv5.db.objects.User.getCurrentUser().getProperties().hasProperty(ItemType + ".warn.days")
@@ -204,31 +220,29 @@ public class Scheduler extends Thread {
                     Integer warn = Integer.valueOf(mpv5.db.objects.User.getCurrentUser().
                             getProperties().
                             getProperty(ItemType + ".warn.days"));
-                    String sql = "SELECT ids FROM items WHERE dateadded <= '"
-                            + DateConverter.getSQLDateString(DateConverter.addDays(
-                            new Date(),
-                            warn * -1))
-                            + "' AND (intstatus = " + Item.STATUS_IN_PROGRESS + " OR intstatus = " + Item.STATUS_FINISHED + ") AND inttype=" + b
-                            + " AND invisible = 0";
-                    ReturnValue data = QueryHandler.getConnection().
-                            freeSelectQuery(sql,
-                            MPSecurityManager.VIEW,
-                            null);
+                    opens.and(new QueryParameter(Context.getItem(), "inttype", b, QueryParameter.EQUALS));
+                    opens.setOrder("dateadded", true);
+                    try {
+                        ReturnValue data = QueryHandler.instanceOf().clone(c).select("IDS", opens,
+                                new vTimeframe(new Date(0), DateConverter.addDays(new Date(), warn * -1)), "dateadded");
 
-                    if (data.hasData()) {
-                        Object[][] d = data.getData();
-                        for (int i = 0; i < d.length; i++) {
-                            int id = Integer.valueOf(d[i][0].toString());
-                            try {
-                                Item it = (Item) Item.getObject(
-                                        Context.getItem(),
-                                        id);
-                                warnings.add(it);
-                            } catch (NodataFoundException ex) {
-                                Log.Debug(Scheduler.class,
-                                        ex.getMessage());
+                        if (data.hasData()) {
+                            Object[][] d = data.getData();
+                            for (int i = 0; i < d.length; i++) {
+                                int id = Integer.valueOf(d[i][0].toString());
+                                try {
+                                    Item it = (Item) Item.getObject(
+                                            Context.getItem(),
+                                            id);
+                                    warnings.add(it);
+                                } catch (NodataFoundException ex) {
+                                    Log.Debug(Scheduler.class,
+                                            ex.getMessage());
+                                }
                             }
                         }
+                    } catch (NodataFoundException ex) {
+                        Log.Debug(Scheduler.class, ex.getLocalizedMessage());
                     }
                 } else {
                     Log.Debug(Scheduler.class,
@@ -240,57 +254,67 @@ public class Scheduler extends Thread {
             Log.Debug(numberFormatException);
         }
         b = 0;
-        while (b < 5) {
-            switch (b) {
-                case 0:
-                    ItemType = "bills";
-                    break;
-                case 1:
-                    ItemType = "order";
-                    break;
-                case 2:
-                    ItemType = "offer";
-                    break;
-                case 3:
-                    ItemType = "delivery";
-                    break;
-                case 4:
-                    ItemType = "confirmation";
-                    break;
-            }
-            if (mpv5.db.objects.User.getCurrentUser().getProperties().hasProperty(ItemType + ".alert.days")) {
-                Integer alert = Integer.valueOf(mpv5.db.objects.User.getCurrentUser().
-                        getProperties().
-                        getProperty(ItemType + ".alert.days"));
-                String sql = "SELECT ids FROM items WHERE dateadded <= '"
-                        + DateConverter.getSQLDateString(DateConverter.addDays(
-                        new Date(),
-                        alert * -1))
-                        + "' AND (intstatus = " + Item.STATUS_IN_PROGRESS + " OR intstatus = " + Item.STATUS_FINISHED + ") AND inttype=" + b
-                        + " AND invisible = 0";
-                ReturnValue data = QueryHandler.getConnection().
-                        freeSelectQuery(sql,
-                        MPSecurityManager.VIEW,
-                        null);
-
-                if (data.hasData()) {
-                    Object[][] d = data.getData();
-                    for (int i = 0; i < d.length; i++) {
-                        int id = Integer.valueOf(d[i][0].toString());
-                        try {
-                            Item it = (Item) Item.getObject(Context.getItem(),
-                                    id);
-                            alerts.add(it);
-                        } catch (NodataFoundException ex) {
-                            Log.Debug(ex);
-                        }
-                    }
+        try {
+            while (b < 5) {
+                QueryCriteria2 opens = new QueryCriteria2();
+                switch (b) {
+                    case 0:
+                        ItemType = "bills";
+                        opens.and(new QueryParameter(Context.getItem(), "intstatus", Item.STATUS_FINISHED, QueryParameter.EQUALS));
+                        break;
+                    case 1:
+                        ItemType = "order";
+                        opens.and(new QueryParameter(Context.getItem(), "intstatus", Item.STATUS_QUEUED, QueryParameter.EQUALS));
+                        break;
+                    case 2:
+                        ItemType = "offer";
+                        opens.and(new QueryParameter(Context.getItem(), "intstatus", Item.STATUS_QUEUED, QueryParameter.EQUALS));
+                        break;
+                    case 3:
+                        ItemType = "delivery";
+                        opens.or(
+                                new QueryParameter(Context.getItem(), "intstatus", Item.STATUS_QUEUED, QueryParameter.EQUALS),
+                                new QueryParameter(Context.getItem(), "intstatus", Item.STATUS_FINISHED, QueryParameter.EQUALS));
+                        break;
+                    case 4:
+                        ItemType = "confirmation";
+                        opens.and(new QueryParameter(Context.getItem(), "intstatus", Item.STATUS_QUEUED, QueryParameter.EQUALS));
+                        break;
                 }
-            } else {
-                Log.Debug(Scheduler.class,
-                        "No alert treshold for " + ItemType + " defined.");
+                if (mpv5.db.objects.User.getCurrentUser().getProperties().hasProperty(ItemType + ".alert.days")) {
+                    Integer alert = Integer.valueOf(mpv5.db.objects.User.getCurrentUser().
+                            getProperties().
+                            getProperty(ItemType + ".alert.days"));
+                    opens.and(new QueryParameter(Context.getItem(), "inttype", b, QueryParameter.EQUALS));
+                    opens.setOrder("dateadded", true);
+                    try {
+                        ReturnValue data = QueryHandler.instanceOf().clone(c).select("IDS", opens,
+                                new vTimeframe(new Date(0), DateConverter.addDays(new Date(), alert * -1)), "dateadded");
+
+                        if (data.hasData()) {
+                            Object[][] d = data.getData();
+                            for (int i = 0; i < d.length; i++) {
+                                int id = Integer.valueOf(d[i][0].toString());
+                                try {
+                                    Item it = (Item) Item.getObject(Context.getItem(),
+                                            id);
+                                    alerts.add(it);
+                                } catch (NodataFoundException ex) {
+                                    Log.Debug(ex);
+                                }
+                            }
+                        }
+                    } catch (NodataFoundException ex) {
+                        Log.Debug(Scheduler.class, ex.getLocalizedMessage());
+                    }
+                } else {
+                    Log.Debug(Scheduler.class,
+                            "No alert treshold for " + ItemType + " defined.");
+                }
+                b++;
             }
-            b++;
+        } catch (Exception numberFormatException) {
+            Log.Debug(numberFormatException);
         }
         for (Item i : alerts) {//Remove dupes
             if (warnings.contains(i)) {
