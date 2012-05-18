@@ -1194,7 +1194,7 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
         Runnable runnable = new Runnable() {
 
             public void run() {
-                if (dataOwner != null) {
+                if (dataOwner == null) {
                     journalOrContactTemplate = TemplateHandler.loadTemplate(Long.valueOf(dataOwner.templateGroupIds()), Constants.TYPE_JOURNAL);
                     TemplateHandler.loadTemplateFor(jButton4, Long.valueOf(dataOwner.templateGroupIds()), Constants.TYPE_JOURNAL);
                 } else {
