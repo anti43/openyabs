@@ -666,7 +666,11 @@ public class ControlPanel_Users extends javax.swing.JPanel implements ControlApp
             laf.setSelectedItem(laf_);
             language.setSelectedIndex(MPComboBoxModelItem.getItemID(language_, language.getModel()));
             locale.setSelectedIndex(MPComboBoxModelItem.getItemID(locale_, locale.getModel()));
-            countrylist.setSelectedIndex(MPComboBoxModelItem.getItemID(defcountry_, countrylist.getModel()));
+            try {
+                countrylist.setSelectedIndex(MPComboBoxModelItem.getItemID(defcountry_, countrylist.getModel()));
+            } catch (Exception e) {
+                Log.Debug(this, e);
+            }
             fullname.set_Text(fullname_);
 //        password.setText(password_);
             mail.set_Text(mail_);

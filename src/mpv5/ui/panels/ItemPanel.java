@@ -1745,6 +1745,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
                     try {
                         status.setSelectedIndex(mpv5.db.objects.User.getCurrentUser().__getIntdefaultstatus());
                     } catch (Exception e) {
+                        Log.Debug(this, e.getMessage());
                     }
                     itemtable.setModel(SubItem.toModel(new SubItem[]{
                                 SubItem.getDefaultItem(), SubItem.getDefaultItem(),

@@ -108,7 +108,7 @@ public class ProductOrderPanel extends javax.swing.JPanel implements DataPanel, 
      */
     public ProductOrderPanel() {
         initComponents();
-        jButton1.setEnabled(MPSecurityManager.checkAdminAccess());
+//        jButton1.setEnabled(MPSecurityManager.checkAdminAccess());
 
         sp = new SearchPanel(Context.getProductOrder(), this);
         sp.setVisible(true);
@@ -391,7 +391,6 @@ public class ProductOrderPanel extends javax.swing.JPanel implements DataPanel, 
         groupnameselect = new mpv5.ui.beans.MPCombobox();
         staus_icon = new javax.swing.JLabel();
         type = new javax.swing.JLabel();
-        jButton1 = new javax.swing.JButton();
         jToolBar1 = new javax.swing.JToolBar();
         toorder = new javax.swing.JButton();
         tooffer = new javax.swing.JButton();
@@ -559,14 +558,6 @@ public class ProductOrderPanel extends javax.swing.JPanel implements DataPanel, 
         type.setName("type"); // NOI18N
         type.setPreferredSize(new java.awt.Dimension(200, 24));
 
-        jButton1.setText(bundle.getString("ProductOrderPanel.jButton1.text")); // NOI18N
-        jButton1.setName(bundle.getString("ProductOrderPanel.jButton1.name")); // NOI18N
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
-            }
-        });
-
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -576,10 +567,7 @@ public class ProductOrderPanel extends javax.swing.JPanel implements DataPanel, 
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                     .addComponent(accountselect, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 325, Short.MAX_VALUE)
                     .addComponent(type, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(number, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 18, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addComponent(number, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 67, Short.MAX_VALUE)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(status, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -610,8 +598,7 @@ public class ProductOrderPanel extends javax.swing.JPanel implements DataPanel, 
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
                     .addComponent(groupnameselect, javax.swing.GroupLayout.DEFAULT_SIZE, 23, Short.MAX_VALUE)
-                    .addComponent(number, javax.swing.GroupLayout.DEFAULT_SIZE, 23, Short.MAX_VALUE)
-                    .addComponent(jButton1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(number, javax.swing.GroupLayout.DEFAULT_SIZE, 23, Short.MAX_VALUE))
                 .addGap(61, 61, 61))
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGap(11, 11, 11)
@@ -1290,9 +1277,6 @@ public class ProductOrderPanel extends javax.swing.JPanel implements DataPanel, 
         toInvoice();
     }//GEN-LAST:event_toinvoiceActionPerformed
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-    }//GEN-LAST:event_jButton1ActionPerformed
-
     private void toofferActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_toofferActionPerformed
         toOffer();
     }//GEN-LAST:event_toofferActionPerformed
@@ -1317,7 +1301,6 @@ public class ProductOrderPanel extends javax.swing.JPanel implements DataPanel, 
     private mpv5.ui.beans.MPCombobox groupnameselect;
     private javax.swing.JPanel itemPanel;
     private javax.swing.JTable itemtable;
-    private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
     private javax.swing.JButton jButton4;
