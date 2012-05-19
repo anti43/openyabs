@@ -25,7 +25,6 @@ import enoa.handler.TemplateHandler;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
-import java.awt.Dialog;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.InputEvent;
@@ -61,8 +60,6 @@ import mpv5.db.objects.Template;
 import mpv5.logging.Log;
 import mpv5.ui.dialogs.BigPopup;
 import mpv5.ui.dialogs.Popup;
-import mpv5.ui.dialogs.subcomponents.ControlPanel_Groups;
-import mpv5.ui.dialogs.subcomponents.ProductSelectDialog3;
 import mpv5.ui.popups.FileTablePopUp;
 import mpv5.ui.toolbars.DataPanelTB;
 import mpv5.db.objects.User;
@@ -1687,7 +1684,13 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
 //        shipping.setText(FormatNumber.formatDezimal(shippingvalue_));
         button_reminders.setToolTipText(Messages.REMINDERS + String.valueOf(intreminders_));
         //  discountpercent.setValue(discountvalue_);
-
+        List<Integer> skip = new ArrayList<Integer>();
+        if (inttype_ == Item.TYPE_BILL) {
+            skip.add(new Integer(Item.STATUS_PAUSED));
+        } else {
+            skip.add(new Integer(Item.STATUS_PAID));
+        }
+        status.setModel(Item.getStatusStrings(), MPComboBoxModelItem.COMPARE_BY_ID, skip);
         status.setSelectedItem(intstatus_);
         staus_icon.setIcon(dataOwner.getIcon());
         try {
