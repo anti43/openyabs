@@ -56,7 +56,7 @@ import mpv5.utils.tables.TableCalculator;
 
 /**
  *
- *  A custom table model which implements various convenience methods
+ * A custom table model which implements various convenience methods
  */
 public class MPTableModel extends DefaultTableModel implements Cloneable, TableColumnModelListener {
 
@@ -70,7 +70,7 @@ public class MPTableModel extends DefaultTableModel implements Cloneable, TableC
     private JTable owner;
 
     /**
-     * Creates an empty, uneditable model 
+     * Creates an empty, uneditable model
      */
     public MPTableModel() {
         super();
@@ -85,6 +85,7 @@ public class MPTableModel extends DefaultTableModel implements Cloneable, TableC
 
     /**
      * May get slow on lots of data within the given Context
+     *
      * @param c
      * @param target
      */
@@ -174,7 +175,7 @@ public class MPTableModel extends DefaultTableModel implements Cloneable, TableC
         try {
 //            Log.PrintArray(dat);
             Object[] h = getDefaultHeader(15);
-            setDataVector(dat, h );
+            setDataVector(dat, h);
         } catch (Exception ge) {
         }
         if (target != null) {
@@ -192,12 +193,13 @@ public class MPTableModel extends DefaultTableModel implements Cloneable, TableC
 
     /**
      * Creates an uneditable model out of the given data
+     *
      * @param data
      */
     public MPTableModel(Object[][] data) {
         super();
 
-        if (data!=null && data.length > 0) {
+        if (data != null && data.length > 0) {
             String[] header = new String[data[0].length];
             for (int i = 0; i < header.length; i++) {
                 header[i] = "" + i;
@@ -226,6 +228,7 @@ public class MPTableModel extends DefaultTableModel implements Cloneable, TableC
 //    }
     /**
      * Creates an uneditable model out of the given data
+     *
      * @param datstr
      * @param header
      */
@@ -243,6 +246,7 @@ public class MPTableModel extends DefaultTableModel implements Cloneable, TableC
 
     /**
      * Creates an uneditable model out of the given data
+     *
      * @param data
      * @param header
      */
@@ -259,6 +263,7 @@ public class MPTableModel extends DefaultTableModel implements Cloneable, TableC
 
     /**
      * Creates an uneditable model out of the given data
+     *
      * @param datstr
      * @param header
      * @param types
@@ -271,6 +276,7 @@ public class MPTableModel extends DefaultTableModel implements Cloneable, TableC
 
     /**
      * Creates an uneditable model out of the given data
+     *
      * @param types
      * @param canEdits
      * @param data
@@ -284,6 +290,7 @@ public class MPTableModel extends DefaultTableModel implements Cloneable, TableC
 
     /**
      * Creates a model out of the given data
+     *
      * @param types
      * @param canEdits
      * @param columnNames
@@ -296,6 +303,7 @@ public class MPTableModel extends DefaultTableModel implements Cloneable, TableC
 
     /**
      * Creates an uneditable model out of the given data
+     *
      * @param types
      * @param data
      * @param columnNames
@@ -308,6 +316,7 @@ public class MPTableModel extends DefaultTableModel implements Cloneable, TableC
 
     /**
      * Creates an uneditable model out of the given data
+     *
      * @param types
      * @param data
      * @param columnNames
@@ -354,9 +363,10 @@ public class MPTableModel extends DefaultTableModel implements Cloneable, TableC
         setEditable(true);
         setTypes(new Class<?>[]{String.class, Object.class});
     }
-    
+
     /**
      * Add a cell calculator for this model
+     *
      * @param cv
      */
     public void addCalculator(DynamicTableCalculator cv) {
@@ -390,7 +400,7 @@ public class MPTableModel extends DefaultTableModel implements Cloneable, TableC
     }
 
     /**
-     * 
+     *
      * @return
      */
     public Class[] getTypes() {
@@ -398,7 +408,7 @@ public class MPTableModel extends DefaultTableModel implements Cloneable, TableC
     }
 
     /**
-     * 
+     *
      * @param types
      */
     public final void setTypes(Class... types) {
@@ -406,7 +416,7 @@ public class MPTableModel extends DefaultTableModel implements Cloneable, TableC
     }
 
     /**
-     * 
+     *
      * @return
      */
     public boolean[] getCanEdits() {
@@ -421,7 +431,7 @@ public class MPTableModel extends DefaultTableModel implements Cloneable, TableC
 //        this.canEdits = canEdits;
 //    }
     /**
-     * 
+     *
      * @return
      */
     public Vector getColumnIdentifiers() {
@@ -430,6 +440,7 @@ public class MPTableModel extends DefaultTableModel implements Cloneable, TableC
 
     /**
      * Set the table editable
+     *
      * @param bool
      */
     public final void setEditable(boolean bool) {
@@ -454,6 +465,7 @@ public class MPTableModel extends DefaultTableModel implements Cloneable, TableC
 
     /**
      * Behaves like setValueAt(row, column)
+     *
      * @param aValue
      * @param row
      * @param column
@@ -481,14 +493,16 @@ public class MPTableModel extends DefaultTableModel implements Cloneable, TableC
                 calculator.calculateOnce();
             }
         }
-        
+
         fireTableChanged(new TableModelEvent(this, row, row, column));
     }
 
     /**
      * Checks if the model has empty rows
+     *
      * @param columnsToCheck The columns to be checked for emptyness
-     * @return TRUE if the last row of the model has a NULL value at the specified columns
+     * @return TRUE if the last row of the model has a NULL value at the
+     * specified columns
      */
     public boolean hasEmptyRows(int[] columnsToCheck) {
         boolean empty = true;
@@ -502,8 +516,10 @@ public class MPTableModel extends DefaultTableModel implements Cloneable, TableC
 
     /**
      * Checks if the model has empty rows
+     *
      * @param columnsToCheck The columns to be checked for emptyness
-     * @return the count of rows in the model with a NULL or empty "" value at the specified columns
+     * @return the count of rows in the model with a NULL or empty "" value at
+     * the specified columns
      */
     public int getEmptyRows(int[] columnsToCheck) {
         int count = 0;
@@ -523,6 +539,7 @@ public class MPTableModel extends DefaultTableModel implements Cloneable, TableC
 
     /**
      * Removes the invalid rows
+     *
      * @param columnsToCheck The columns to be checked for emptyness
      */
     public void removeEmptyRows(int[] columnsToCheck) {
@@ -536,8 +553,10 @@ public class MPTableModel extends DefaultTableModel implements Cloneable, TableC
     }
 
     /**
-     * Adds rows to the end of the model. The new rows will contain null values.<br/>
-     * If this.context is defined, Context specific values may be added.
+     * Adds rows to the end of the model. The new rows will contain null
+     * values.<br/> If this.context is defined, Context specific values may be
+     * added.
+     *
      * @param count
      */
     public void addRow(int count) {
@@ -602,6 +621,7 @@ public class MPTableModel extends DefaultTableModel implements Cloneable, TableC
 
     /**
      * Define a row which is used in addRow(int)
+     *
      * @param object
      */
     public void defineRow(Object[] object) {
@@ -610,7 +630,7 @@ public class MPTableModel extends DefaultTableModel implements Cloneable, TableC
 
     /**
      * Returns all rows where all of the specified columns are not NULL. <br/>
-     * 
+     *
      * @param columns
      * @return
      */
@@ -638,6 +658,7 @@ public class MPTableModel extends DefaultTableModel implements Cloneable, TableC
 
     /**
      * Set/replace the given rows data
+     *
      * @param rowData
      * @param row
      * @param columnToIgnore
@@ -661,6 +682,7 @@ public class MPTableModel extends DefaultTableModel implements Cloneable, TableC
 
     /**
      * Set the auto increment column for addRows(int)
+     *
      * @param column
      */
     public void setAutoCountColumn(int column) {
@@ -669,6 +691,7 @@ public class MPTableModel extends DefaultTableModel implements Cloneable, TableC
 
     /**
      * Returns the data as array
+     *
      * @return
      */
     @SuppressWarnings("unchecked")
@@ -683,8 +706,10 @@ public class MPTableModel extends DefaultTableModel implements Cloneable, TableC
     }
 
     /**
-     * Returns the last valid row in a table whereas "valid" is defined as "all columns in columns are not null"
-     * @param columns 
+     * Returns the last valid row in a table whereas "valid" is defined as "all
+     * columns in columns are not null"
+     *
+     * @param columns
      * @return
      */
     public int getLastValidRow(int[] columns) {
@@ -704,6 +729,7 @@ public class MPTableModel extends DefaultTableModel implements Cloneable, TableC
 
     /**
      * Add all rows
+     *
      * @param rowsl
      */
     public void addRows(List<Object[]> rowsl) {
@@ -714,6 +740,7 @@ public class MPTableModel extends DefaultTableModel implements Cloneable, TableC
 
     /**
      * Adds all rows using the toArray() method of {@link DatabaseObject}
+     *
      * @param l
      */
     public void addRows(ArrayList<DatabaseObject> l) {
@@ -723,8 +750,9 @@ public class MPTableModel extends DefaultTableModel implements Cloneable, TableC
     }
 
     /**
-     * Returns an Object where the objects ID is stored in the first column of the given row;
-     * <b>From database/cache, NOT from the model!</b>
+     * Returns an Object where the objects ID is stored in the first column of
+     * the given row; <b>From database/cache, NOT from the model!</b>
+     *
      * @param <T>
      * @param selectedRow
      * @param target
@@ -742,6 +770,7 @@ public class MPTableModel extends DefaultTableModel implements Cloneable, TableC
 
     /**
      * Set the editable columns
+     *
      * @param editable
      */
     public final void setCanEdits(boolean... editable) {
@@ -798,15 +827,26 @@ public class MPTableModel extends DefaultTableModel implements Cloneable, TableC
     private Object[] getDefaultHeader(int x) {
         Object[] obj = new Object[x];
         for (int i = 0; i < x; i++) {
-            obj[i]=i;
+            obj[i] = i;
         }
 
         return obj;
     }
 
+    public void removeColumn(int column) {
+        columnIdentifiers.remove(column);
+        for (Object row : dataVector) {
+            if (row instanceof Vector) {
+                ((Vector) row).remove(column);
+            }
+        }
+        fireTableStructureChanged();
+    }
+
     /**
      * Default renderers
-     **/
+     *
+     */
     public static class NumberRenderer extends DefaultTableCellRenderer.UIResource {
 
         public NumberRenderer() {
@@ -816,7 +856,7 @@ public class MPTableModel extends DefaultTableModel implements Cloneable, TableC
     }
 
     /**
-     * 
+     *
      */
     public static class DoubleRenderer extends NumberRenderer {
 
@@ -836,7 +876,7 @@ public class MPTableModel extends DefaultTableModel implements Cloneable, TableC
     }
 
     /**
-     * 
+     *
      */
     public static class DateRenderer extends DefaultTableCellRenderer.UIResource {
 
@@ -860,7 +900,7 @@ public class MPTableModel extends DefaultTableModel implements Cloneable, TableC
     }
 
     /**
-     * 
+     *
      */
     public static class IconRenderer extends DefaultTableCellRenderer.UIResource {
 

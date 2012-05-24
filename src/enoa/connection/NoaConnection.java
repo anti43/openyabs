@@ -113,7 +113,7 @@ public class NoaConnection {
             Notificator.raiseNotification(Messages.OOCONNERROR + " \n" + ex, true);
             throw ex;
         } finally {
-            YabsViewProxy.instance().setWaiting(true);
+            YabsViewProxy.instance().setWaiting(false);
             YabsViewProxy.instance().setProgressReset();
             return cachedConnection;
         }

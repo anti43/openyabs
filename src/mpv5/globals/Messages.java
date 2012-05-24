@@ -258,7 +258,7 @@ public enum Messages {
     VALUE("Value"),
     DTA_CREATE("Create DTAUS"),
     REALLY_DELETE2("Do you really want to delete all selected datasets?"),
-    REALLY_CHANGE2("Do you really want to set a selected, yet unpaid invoices to status 'Paid'?"),
+    REALLY_CHANGE2("Do you really want to change all selected datasets?"),
     PRINTED("Printed item: "),
     ODT("Created .odt file from item: "),
     PDF("Created .pdf file from item: "),
@@ -346,7 +346,8 @@ public enum Messages {
     EXPORT_TO_DERBY("Exporting the active Database from current to DERBY."),
     EXPORT_TO_MYSQL("Exporting the active Database from current to MySQL."),
     FLUSHING_TMP_TABLE("Flush targettable for inserting"),
-    OVERRITE_DATABASE("This will override the actuall Database!\nIt's recommend to make a Backup befor you proceed.\nAre You sure?");
+    OVERRITE_DATABASE("This will override the actuall Database!\nIt's recommend to make a Backup befor you proceed.\nAre You sure?"), 
+    SET_STATUS_PAID("Set to status: 'Paid'");
 
     /**
      * @return the missing

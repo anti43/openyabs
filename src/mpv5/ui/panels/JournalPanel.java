@@ -37,6 +37,7 @@ import javax.swing.JComponent;
 import javax.swing.SwingUtilities;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
+import javax.swing.table.TableModel;
 import mpv5.db.common.Context;
 
 import mpv5.db.common.DatabaseObject;
@@ -77,6 +78,7 @@ import mpv5.utils.tables.ExcelAdapter;
 import mpv5.utils.tables.TableFormat;
 import mpv5.utils.text.TypeConversion;
 import mpv5.ui.misc.TableViewPersistenceHandler;
+import mpv5.utils.numberformat.FormatNumber;
 
 /**
  *
@@ -1099,7 +1101,8 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
                     null, Messages.RELOAD.getValue(),
                     null, Messages.DTA_CREATE.getValue(),
                     Messages.PDF_CREATE.getValue(),
-                    Messages.ODT_CREATE.getValue(),},
+                    Messages.ODT_CREATE.getValue(),
+                    null, Messages.SET_STATUS_PAID.getValue(),},
                 new ActionListener[]{new ActionListener() {
 
                 public void actionPerformed(ActionEvent e) {
@@ -1145,6 +1148,41 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
                         public void actionPerformed(ActionEvent e) {
                             odt();
                         }
+                    },
+                    null,
+                    new ActionListener() {
+
+                        public void actionPerformed(ActionEvent e) {
+                            if (Popup.Y_N_dialog(Messages.REALLY_CHANGE2 + " (" + jTable1.getSelectedRowCount() + ")")) {
+                                int[] rows = jTable1.getSelectedRows();
+                                for (int i = 0; i < rows.length; i++) {
+                                    try {
+                                        int index = jTable1.convertRowIndexToModel(rows[i]);
+                                        DatabaseObject obj = DatabaseObject.getObject((DatabaseObject.Entity<?, ?>) jTable1.getModel().getValueAt(index, 0));
+                                        if (obj instanceof Item) {
+                                            Item dbi = (Item) obj;
+                                            if (dbi.__getIntstatus() != Item.STATUS_PAID) {
+                                                dbi.setIntstatus(Item.STATUS_PAID);
+                                                dbi.save();
+                                            }
+                                        } else if (obj instanceof Expense) {
+                                            Expense dbi = (Expense) obj;
+                                            if (!dbi.__getIspaid()) {
+                                                dbi.setIspaid(true);
+                                                dbi.save();
+                                            }
+                                        }
+                                        jTable1.getSelectionModel().removeSelectionInterval(rows[i] - 1, rows[i]);
+                                    } catch (NodataFoundException ex) {
+                                        Log.Debug(ex);
+                                    } catch (Exception exc) {
+                                        Log.Debug(exc);
+                                        Popup.error(exc);
+                                    }
+                                }
+                                setData();
+                            }
+                        }
                     }
                 });
 
@@ -1178,28 +1216,64 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
 
     private void preview() {
         PreviewPanel pr;
-//        if (dataowner != null && dataowner.isExisting()) {
         if (journalOrContactTemplate != null) {
             pr = new PreviewPanel();
             pr.setDataOwner(dataOwner);
-            journalOrContactTemplate.injectTable(TableHandler.KEY_TABLE + 1, jTable1.getModel());
+            HashMap<String, Object> map = new HashMap<String, Object>();
+            map.put("journal.netvalue", volumeNetto.getText());
+            map.put("journal.taxvalue", taxVolume.getText());
+            map.put("journal.grosvalue", volumeBrutto.getText());
+            map.put("journal.revenuevalue", revenueNetto.getText());
+            map.put("journal.datenow", DateConverter.getDefDateString(new Date()));
+            map.put("journal.datefrom", DateConverter.getDefDateString(timeframeChooser1.getTime().getStart()));
+            map.put("journal.dateto", DateConverter.getDefDateString(timeframeChooser1.getTime().getEnd()));
+            if (groups.getSelectedItem().isValid()) {
+                try {
+                    Group g = (Group) Group.getObject(Context.getGroup(), Integer.valueOf(groups.getSelectedItem().getId()));
+                    map.put("journal.group", g.__getCname());
+                    map.put("journal.childgroups", String.valueOf(g.getChildGroups()));
+                } catch (Exception nodataFoundException) {
+                }
+            }
+            try {
+                map.put("journal.user", users.getSelectedValue());
+                map.put("journal.accounts", Arrays.asList(jList1.getSelectedValues()).toString());
+            } catch (Exception e) {
+                Log.Debug(e);
+            }
+            Log.Debug(this, map.keySet());
+            Log.Debug(this, map.values());
+
+            journalOrContactTemplate.injectData(map);
+            MPTableModel xx = (MPTableModel) jTable1.getModel();
+            Object[][] xxd = xx.getData();
+            Object[][] d = new Object[xxd.length][];
+            for (int i = 0; i < xxd.length; i++) {
+                Object[] objects = xxd[i];
+                Object[] nd = new Object[objects.length];
+                for (int j = 1; j < objects.length; j++) {
+                    Object object = objects[j];
+                    nd[j] = object;
+                }
+                d[i] = nd;
+            }
+            journalOrContactTemplate.injectTable(TableHandler.KEY_TABLE + 1, new MPTableModel(d));
             new Job(Export.createFile(journalOrContactTemplate, dataOwner), pr).execute();
         } else {
             Popup.notice(Messages.NO_TEMPLATE_LOADED + " (" + mpv5.db.objects.User.getCurrentUser() + ")");
         }
-//        }
     }
 
     private void loadTemplate() {
         Runnable runnable = new Runnable() {
 
             public void run() {
-                if (dataOwner == null) {
-                    journalOrContactTemplate = TemplateHandler.loadTemplate(Long.valueOf(dataOwner.templateGroupIds()), Constants.TYPE_JOURNAL);
-                    TemplateHandler.loadTemplateFor(jButton4, Long.valueOf(dataOwner.templateGroupIds()), Constants.TYPE_JOURNAL);
+                if (dataOwner != null) {
+                    journalOrContactTemplate = TemplateHandler.loadTemplate(Long.valueOf(dataOwner.templateGroupIds()), Constants.TYPE_CONTACT);
+                    jButton4.setEnabled(true);
                 } else {
-                    journalOrContactTemplate = TemplateHandler.loadTemplate(Long.valueOf(User.getCurrentUser().__getGroupsids()), Constants.TYPE_CONTACT);
-                    TemplateHandler.loadTemplateFor(jButton4, Long.valueOf(User.getCurrentUser().__getGroupsids()), Constants.TYPE_CONTACT);
+                    journalOrContactTemplate = TemplateHandler.loadTemplate(Long.valueOf(User.getCurrentUser().__getGroupsids()), Constants.TYPE_JOURNAL);
+                    jButton4.setEnabled(true);
                 }
             }
         };

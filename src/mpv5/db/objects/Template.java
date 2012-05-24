@@ -34,7 +34,7 @@ import mpv5.utils.text.RandomText;
 
 /**
  * This class represents Yabs Templates
- *  
+ *
  */
 public class Template extends DatabaseObject {
 
@@ -62,7 +62,6 @@ public class Template extends DatabaseObject {
     public Template() {
         setContext(Context.getTemplate());
     }
-
 
     @Override
     public JComponent getView() {
@@ -110,8 +109,7 @@ public class Template extends DatabaseObject {
     public void setIntsize(int intsize) {
         this.intsize = intsize;
     }
-    
-    
+
     /**
      * @return the filename
      */
@@ -125,7 +123,7 @@ public class Template extends DatabaseObject {
     public void setFilename(String filename) {
         this.filename = filename;
     }
-    
+
     /**
      * @return the format
      */
@@ -139,7 +137,7 @@ public class Template extends DatabaseObject {
     public void setFormat(String format) {
         this.format = format;
     }
-    
+
     /**
      * @return the printer
      */
@@ -177,8 +175,6 @@ public class Template extends DatabaseObject {
     public void setPathtofile(String pathtofile) {
         this.pathtofile = pathtofile;
     }
-    
-    
     MPIcon icon;
 
     @Override
@@ -207,8 +203,9 @@ public class Template extends DatabaseObject {
 
     /**
      * Fetches the physical file from db
+     *
      * @return
-     * @throws Exception  
+     * @throws Exception
      */
     public synchronized File getFile() throws Exception {
         if (file == null) {
@@ -225,15 +222,13 @@ public class Template extends DatabaseObject {
         return file;
     }
 
-
-
     @Override
     public boolean delete() {
-         
+
         QueryCriteria2 c0 = new QueryCriteria2();
         c0.and(new QueryParameter(Context.getTemplatesToUsers(), "templatesids", ids, QueryParameter.EQUALS));
         QueryHandler.instanceOf().clone(Context.getTemplatesToUsers()).delete(c0);
-        
+
         QueryCriteria2 c = new QueryCriteria2();
         c.and(new QueryParameter(Context.getFiles(), "cname", filename, QueryParameter.EQUALS));
         if (QueryHandler.instanceOf().clone(Context.getFiles()).delete(c)) {
@@ -243,7 +238,7 @@ public class Template extends DatabaseObject {
             return super.delete();
         }
     }
-    
+
     /**
      * @return the exFile
      */
@@ -253,6 +248,7 @@ public class Template extends DatabaseObject {
 
     /**
      * Injects a table resource
+     *
      * @param key
      * @param model
      */
@@ -270,5 +266,16 @@ public class Template extends DatabaseObject {
 
     public void defineExFile(Exportable ex) {
         this.exFile = ex;
+    }
+    private HashMap<String, Object> data = new HashMap<String, Object>();
+
+    public void injectData(HashMap<String, Object> map) {
+        data.putAll(map);
+    }
+     /**
+     * @return the tables
+     */
+    public HashMap<String, Object> getData() {
+        return data;
     }
 }

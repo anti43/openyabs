@@ -676,14 +676,16 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
                     .addComponent(removefile, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(addfile, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 87, Short.MAX_VALUE)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 93, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
         jToolBar1.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
         jToolBar1.setFloatable(false);
         jToolBar1.setRollover(true);
+        jToolBar1.setMaximumSize(new java.awt.Dimension(2222, 28));
         jToolBar1.setName("jToolBar1"); // NOI18N
+        jToolBar1.setPreferredSize(new java.awt.Dimension(824, 28));
 
         button_offer.setBackground(new java.awt.Color(204, 204, 204));
         button_offer.setText(bundle.getString("ContactPanel.button_offer.text")); // NOI18N
@@ -692,7 +694,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
         button_offer.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         button_offer.setIconTextGap(5);
         button_offer.setMaximumSize(new java.awt.Dimension(333, 20));
-        button_offer.setMinimumSize(new java.awt.Dimension(88, 20));
+        button_offer.setMinimumSize(new java.awt.Dimension(80, 20));
         button_offer.setName("button_offer"); // NOI18N
         button_offer.setPreferredSize(new java.awt.Dimension(100, 20));
         button_offer.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
@@ -710,7 +712,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
         button_order.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         button_order.setIconTextGap(5);
         button_order.setMaximumSize(new java.awt.Dimension(333, 20));
-        button_order.setMinimumSize(new java.awt.Dimension(88, 20));
+        button_order.setMinimumSize(new java.awt.Dimension(80, 20));
         button_order.setName("button_order"); // NOI18N
         button_order.setPreferredSize(new java.awt.Dimension(100, 20));
         button_order.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
@@ -728,7 +730,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
         button_bill.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         button_bill.setIconTextGap(5);
         button_bill.setMaximumSize(new java.awt.Dimension(333, 20));
-        button_bill.setMinimumSize(new java.awt.Dimension(88, 20));
+        button_bill.setMinimumSize(new java.awt.Dimension(80, 20));
         button_bill.setName("button_bill"); // NOI18N
         button_bill.setPreferredSize(new java.awt.Dimension(100, 20));
         button_bill.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
@@ -749,7 +751,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
         button_product.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         button_product.setIconTextGap(5);
         button_product.setMaximumSize(new java.awt.Dimension(333, 20));
-        button_product.setMinimumSize(new java.awt.Dimension(88, 20));
+        button_product.setMinimumSize(new java.awt.Dimension(80, 20));
         button_product.setName("button_product"); // NOI18N
         button_product.setPreferredSize(new java.awt.Dimension(100, 20));
         button_product.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
@@ -770,7 +772,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
         jButton2.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         jButton2.setIconTextGap(5);
         jButton2.setMaximumSize(new java.awt.Dimension(333, 20));
-        jButton2.setMinimumSize(new java.awt.Dimension(88, 20));
+        jButton2.setMinimumSize(new java.awt.Dimension(80, 20));
         jButton2.setName("jButton2"); // NOI18N
         jButton2.setPreferredSize(new java.awt.Dimension(100, 20));
         jButton2.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
@@ -788,7 +790,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
         jButton3.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         jButton3.setIconTextGap(5);
         jButton3.setMaximumSize(new java.awt.Dimension(333, 20));
-        jButton3.setMinimumSize(new java.awt.Dimension(88, 20));
+        jButton3.setMinimumSize(new java.awt.Dimension(80, 20));
         jButton3.setName("jButton3"); // NOI18N
         jButton3.setPreferredSize(new java.awt.Dimension(100, 20));
         jButton3.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);

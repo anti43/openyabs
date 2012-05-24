@@ -524,14 +524,16 @@ public class ProductPanel extends javax.swing.JPanel implements DataPanel, MPCBS
         jToolBar1.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
         jToolBar1.setFloatable(false);
         jToolBar1.setRollover(true);
+        jToolBar1.setMaximumSize(new java.awt.Dimension(366, 28));
         jToolBar1.setName("jToolBar1"); // NOI18N
+        jToolBar1.setPreferredSize(new java.awt.Dimension(306, 28));
 
         button_preview.setText(bundle.getString("ProductPanel.button_preview.text")); // NOI18N
         button_preview.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(153, 153, 153), 1, true));
         button_preview.setFocusable(false);
         button_preview.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        button_preview.setMaximumSize(new java.awt.Dimension(100, 20));
-        button_preview.setMinimumSize(new java.awt.Dimension(150, 20));
+        button_preview.setMaximumSize(new java.awt.Dimension(120, 20));
+        button_preview.setMinimumSize(new java.awt.Dimension(80, 20));
         button_preview.setName("button_preview"); // NOI18N
         button_preview.setPreferredSize(new java.awt.Dimension(100, 20));
         button_preview.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
@@ -546,8 +548,8 @@ public class ProductPanel extends javax.swing.JPanel implements DataPanel, MPCBS
         button_order.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(153, 153, 153), 1, true));
         button_order.setFocusable(false);
         button_order.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        button_order.setMaximumSize(new java.awt.Dimension(100, 20));
-        button_order.setMinimumSize(new java.awt.Dimension(150, 20));
+        button_order.setMaximumSize(new java.awt.Dimension(120, 20));
+        button_order.setMinimumSize(new java.awt.Dimension(80, 20));
         button_order.setName("button_order"); // NOI18N
         button_order.setPreferredSize(new java.awt.Dimension(100, 20));
         button_order.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
@@ -563,8 +565,8 @@ public class ProductPanel extends javax.swing.JPanel implements DataPanel, MPCBS
         button_listedit.setEnabled(false);
         button_listedit.setFocusable(false);
         button_listedit.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        button_listedit.setMaximumSize(new java.awt.Dimension(100, 20));
-        button_listedit.setMinimumSize(new java.awt.Dimension(150, 20));
+        button_listedit.setMaximumSize(new java.awt.Dimension(120, 20));
+        button_listedit.setMinimumSize(new java.awt.Dimension(80, 20));
         button_listedit.setName("button_listedit"); // NOI18N
         button_listedit.setPreferredSize(new java.awt.Dimension(100, 20));
         button_listedit.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);

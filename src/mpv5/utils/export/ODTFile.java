@@ -20,6 +20,7 @@ import ag.ion.bion.officelayer.document.IDocument;
 import enoa.connection.NoaConnection;
 import enoa.handler.DocumentHandler;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.Iterator;
 import mpv5.logging.Log;
 
@@ -66,7 +67,9 @@ public class ODTFile extends Exportable {
 
         try {
             dh.clear();
-            dh.fillPlaceholderFields(getData());
+            HashMap<String, Object> d = getData();
+            d.putAll(getTemplate().getData());
+            dh.fillPlaceholderFields(d);
 //            dh.fillTextVariableFields((ITextDocument) df, getData());//Omitted for performance reasons
             dh.fillTables(getData(), getTemplate());
             dh.setImages(getData());

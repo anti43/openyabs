@@ -597,12 +597,12 @@ public class ProductOrderPanel extends javax.swing.JPanel implements DataPanel, 
                     .addComponent(jLabel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
-                    .addComponent(groupnameselect, javax.swing.GroupLayout.DEFAULT_SIZE, 23, Short.MAX_VALUE)
-                    .addComponent(number, javax.swing.GroupLayout.DEFAULT_SIZE, 23, Short.MAX_VALUE))
+                    .addComponent(groupnameselect, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(number, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addGap(61, 61, 61))
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGap(11, 11, 11)
-                .addComponent(staus_icon, javax.swing.GroupLayout.DEFAULT_SIZE, 18, Short.MAX_VALUE)
+                .addComponent(staus_icon, javax.swing.GroupLayout.DEFAULT_SIZE, 15, Short.MAX_VALUE)
                 .addGap(122, 122, 122))
         );
 
@@ -611,11 +611,16 @@ public class ProductOrderPanel extends javax.swing.JPanel implements DataPanel, 
         jToolBar1.setRollover(true);
         jToolBar1.setName("jToolBar1"); // NOI18N
 
+        toorder.setBackground(new java.awt.Color(255, 255, 255));
         toorder.setText(bundle.getString("ProductOrderPanel.toorder.text")); // NOI18N
+        toorder.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(153, 153, 153), 1, true));
         toorder.setEnabled(false);
         toorder.setFocusable(false);
         toorder.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        toorder.setMaximumSize(new java.awt.Dimension(333, 20));
+        toorder.setMinimumSize(new java.awt.Dimension(80, 20));
         toorder.setName(bundle.getString("ProductOrderPanel.toorder.name")); // NOI18N
+        toorder.setPreferredSize(new java.awt.Dimension(100, 20));
         toorder.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         toorder.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -624,11 +629,16 @@ public class ProductOrderPanel extends javax.swing.JPanel implements DataPanel, 
         });
         jToolBar1.add(toorder);
 
+        tooffer.setBackground(new java.awt.Color(255, 255, 255));
         tooffer.setText(bundle.getString("ProductOrderPanel.tooffer.text")); // NOI18N
+        tooffer.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(153, 153, 153), 1, true));
         tooffer.setEnabled(false);
         tooffer.setFocusable(false);
         tooffer.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        tooffer.setMaximumSize(new java.awt.Dimension(333, 20));
+        tooffer.setMinimumSize(new java.awt.Dimension(80, 20));
         tooffer.setName(bundle.getString("ProductOrderPanel.tooffer.name")); // NOI18N
+        tooffer.setPreferredSize(new java.awt.Dimension(100, 20));
         tooffer.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         tooffer.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -637,11 +647,16 @@ public class ProductOrderPanel extends javax.swing.JPanel implements DataPanel, 
         });
         jToolBar1.add(tooffer);
 
+        toinvoice.setBackground(new java.awt.Color(255, 255, 255));
         toinvoice.setText(bundle.getString("ProductOrderPanel.toinvoice.text")); // NOI18N
+        toinvoice.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(153, 153, 153), 1, true));
         toinvoice.setEnabled(false);
         toinvoice.setFocusable(false);
         toinvoice.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        toinvoice.setMaximumSize(new java.awt.Dimension(333, 20));
+        toinvoice.setMinimumSize(new java.awt.Dimension(80, 20));
         toinvoice.setName(bundle.getString("ProductOrderPanel.toinvoice.name")); // NOI18N
+        toinvoice.setPreferredSize(new java.awt.Dimension(100, 20));
         toinvoice.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         toinvoice.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -661,10 +676,15 @@ public class ProductOrderPanel extends javax.swing.JPanel implements DataPanel, 
         jSeparator1.setName("jSeparator1"); // NOI18N
         jToolBar1.add(jSeparator1);
 
+        jButton2.setBackground(new java.awt.Color(255, 255, 255));
         jButton2.setText(bundle.getString("ProductOrderPanel.jButton2.text")); // NOI18N
+        jButton2.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(153, 153, 153), 1, true));
         jButton2.setFocusable(false);
         jButton2.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        jButton2.setMaximumSize(new java.awt.Dimension(333, 20));
+        jButton2.setMinimumSize(new java.awt.Dimension(80, 20));
         jButton2.setName("jButton2"); // NOI18N
+        jButton2.setPreferredSize(new java.awt.Dimension(100, 20));
         jButton2.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         jButton2.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -676,11 +696,16 @@ public class ProductOrderPanel extends javax.swing.JPanel implements DataPanel, 
         jSeparator7.setName("jSeparator7"); // NOI18N
         jToolBar1.add(jSeparator7);
 
+        button_preview.setBackground(new java.awt.Color(255, 255, 255));
         button_preview.setText(bundle.getString("ProductOrderPanel.button_preview.text")); // NOI18N
+        button_preview.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(153, 153, 153), 1, true));
         button_preview.setEnabled(false);
         button_preview.setFocusable(false);
         button_preview.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        button_preview.setMaximumSize(new java.awt.Dimension(333, 20));
+        button_preview.setMinimumSize(new java.awt.Dimension(80, 20));
         button_preview.setName("button_preview"); // NOI18N
+        button_preview.setPreferredSize(new java.awt.Dimension(100, 20));
         button_preview.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         button_preview.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -1280,6 +1305,7 @@ public class ProductOrderPanel extends javax.swing.JPanel implements DataPanel, 
     private void toofferActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_toofferActionPerformed
         toOffer();
     }//GEN-LAST:event_toofferActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private mpv5.ui.beans.LabeledCombobox accountselect;
     private javax.swing.JButton addItem;
