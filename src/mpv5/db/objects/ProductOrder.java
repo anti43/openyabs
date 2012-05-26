@@ -64,17 +64,17 @@ public class ProductOrder extends DatabaseObject implements Formattable, Templat
      */
     public static String getStatusString(int status) {
         switch (status) {
-            case (STATUS_QUEUED):
+            case (Item.STATUS_QUEUED):
                 return Messages.STATUS_QUEUED.toString();
-            case (STATUS_IN_PROGRESS):
+            case (Item.STATUS_IN_PROGRESS):
                 return Messages.STATUS_IN_PROGRESS.toString();
-            case (STATUS_PAUSED):
+            case (Item.STATUS_PAUSED):
                 return Messages.STATUS_PAUSED.toString();
-            case (STATUS_FINISHED):
+            case (Item.STATUS_FINISHED):
                 return Messages.STATUS_FINISHED.toString();
-            case (STATUS_PAID):
+            case (Item.STATUS_PAID):
                 return Messages.STATUS_PAID.toString();
-            case (STATUS_CANCELLED):
+            case (Item.STATUS_CANCELLED):
                 return Messages.STATUS_CANCELLED.toString();
         }
         return Messages.NA.toString();
@@ -91,7 +91,7 @@ public class ProductOrder extends DatabaseObject implements Formattable, Templat
 
             @Override
             public Integer getId() {
-                return new Integer(STATUS_QUEUED);
+                return new Integer(Item.STATUS_QUEUED);
             }
 
             @Override
@@ -103,7 +103,7 @@ public class ProductOrder extends DatabaseObject implements Formattable, Templat
 
             @Override
             public Integer getId() {
-                return new Integer(STATUS_IN_PROGRESS);
+                return new Integer(Item.STATUS_IN_PROGRESS);
             }
 
             @Override
@@ -115,7 +115,7 @@ public class ProductOrder extends DatabaseObject implements Formattable, Templat
 
             @Override
             public Integer getId() {
-                return new Integer(STATUS_PAUSED);
+                return new Integer(Item.STATUS_PAUSED);
             }
 
             @Override
@@ -127,7 +127,7 @@ public class ProductOrder extends DatabaseObject implements Formattable, Templat
 
             @Override
             public Integer getId() {
-                return new Integer(STATUS_FINISHED);
+                return new Integer(Item.STATUS_FINISHED);
             }
 
             @Override
@@ -139,7 +139,7 @@ public class ProductOrder extends DatabaseObject implements Formattable, Templat
 
             @Override
             public Integer getId() {
-                return new Integer(STATUS_PAID);
+                return new Integer(Item.STATUS_PAID);
             }
 
             @Override
@@ -151,7 +151,7 @@ public class ProductOrder extends DatabaseObject implements Formattable, Templat
 
             @Override
             public Integer getId() {
-                return new Integer(STATUS_CANCELLED);
+                return new Integer(Item.STATUS_CANCELLED);
             }
 
             @Override
@@ -171,12 +171,7 @@ public class ProductOrder extends DatabaseObject implements Formattable, Templat
     private int inttype;
     private String description = "";
     private String cnumber = "";
-    public static final int STATUS_QUEUED = 0;
-    public static final int STATUS_IN_PROGRESS = 1;
-    public static final int STATUS_PAUSED = 2;
-    public static final int STATUS_FINISHED = 3;
-    public static final int STATUS_PAID = 4;
-    public static final int STATUS_CANCELLED = 5;
+
     private FormatHandler formatHandler;
 
     public ProductOrder() {
@@ -319,17 +314,17 @@ public class ProductOrder extends DatabaseObject implements Formattable, Templat
 
     @Override
     public mpv5.utils.images.MPIcon getIcon() {
-        if (getIntstatus() == STATUS_QUEUED) {
+        if (getIntstatus() == Item.STATUS_QUEUED) {
             return new MPIcon("/mpv5/resources/images/22/kontact_mail.png");
-        } else if (getIntstatus() == STATUS_IN_PROGRESS) {
+        } else if (getIntstatus() == Item.STATUS_IN_PROGRESS) {
             return new MPIcon("/mpv5/resources/images/22/run.png");
-        } else if (getIntstatus() == STATUS_PAUSED) {
+        } else if (getIntstatus() == Item.STATUS_PAUSED) {
             return new MPIcon("/mpv5/resources/images/22/kalarm.png");
-        } else if (getIntstatus() == STATUS_FINISHED) {
+        } else if (getIntstatus() == Item.STATUS_FINISHED) {
             return new MPIcon("/mpv5/resources/images/22/knewstuff.png");
-        } else if (getIntstatus() == STATUS_PAID) {
+        } else if (getIntstatus() == Item.STATUS_PAID) {
             return new MPIcon("/mpv5/resources/images/22/ok.png");
-        } else if (getIntstatus() == STATUS_CANCELLED) {
+        } else if (getIntstatus() == Item.STATUS_CANCELLED) {
             return new MPIcon("/mpv5/resources/images/22/file_temporary.png");
         } else {
             return new MPIcon("/mpv5/resources/images/22/kontact_mail.png");
@@ -615,6 +610,7 @@ public class ProductOrder extends DatabaseObject implements Formattable, Templat
     /**
      * @param contact the contact to set
      */
+    @Persistable(true)
     public void setContact(Contact contact) {
         this.contact = contact;
     }

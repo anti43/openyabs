@@ -1,18 +1,18 @@
 /*
- This file is part of YaBS.
+This file is part of YaBS.
 
- YaBS is free software: you can redistribute it and/or modify
- it under the terms of the GNU General Public License as published by
- the Free Software Foundation, either version 3 of the License, or
- (at your option) any later version.
+YaBS is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
- YaBS is distributed in the hope that it will be useful,
- but WITHOUT ANY WARRANTY; without even the implied warranty of
- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- GNU General Public License for more details.
+YaBS is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
- You should have received a copy of the GNU General Public License
- along with YaBS.  If not, see <http://www.gnu.org/licenses/>.
+You should have received a copy of the GNU General Public License
+along with YaBS.  If not, see <http://www.gnu.org/licenses/>.
  */
 /*
  * ContactPanel.java
@@ -177,7 +177,7 @@ public class ProductOrderPanel extends javax.swing.JPanel implements DataPanel, 
             ProductOrder dato = (ProductOrder) getDataOwner();
 
             public void actionPerformed(ActionEvent e) {
-                if (!loading && dataOwner.isExisting() && Integer.valueOf(status.getSelectedItem().getId()) == ProductOrder.STATUS_PAID && mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("org.openyabs.uiproperty", "autocreaterevenue")) {
+                if (!loading && dataOwner.isExisting() && Integer.valueOf(status.getSelectedItem().getId()) == Item.STATUS_PAID && mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("org.openyabs.uiproperty", "autocreaterevenue")) {
                     if (Popup.Y_N_dialog(Messages.BOOK_NOW)) {
 
                         if (dato.getPanelData(p) && dato.save()) {
@@ -194,7 +194,7 @@ public class ProductOrderPanel extends javax.swing.JPanel implements DataPanel, 
                 }
 
                 if (!loading && dataOwner.isExisting()
-                        && Integer.valueOf(status.getSelectedItem().getId()) == ProductOrder.STATUS_PAID) {
+                        && Integer.valueOf(status.getSelectedItem().getId()) == Item.STATUS_PAID) {
                     //set dateend
                     date3.setDate(new Date());
                 }
@@ -214,11 +214,7 @@ public class ProductOrderPanel extends javax.swing.JPanel implements DataPanel, 
             }
         });
         labeledCombobox1.setSearchOnEnterEnabled(true);
-
-        ((MPTable) dataTable).setPersistanceHandler(new TableViewPersistenceHandler((MPTable) dataTable, this));
         ((MPTable) proptable).setPersistanceHandler(new TableViewPersistenceHandler((MPTable) proptable, this));
-        jSplitPane1.setDividerLocation(1);
-
     }
 
     @Override
@@ -322,53 +318,6 @@ public class ProductOrderPanel extends javax.swing.JPanel implements DataPanel, 
         }
     }
 
-    private void deleteFile() {
-        if (dataOwner.isExisting()) {
-            try {
-                QueryHandler.instanceOf().clone(Context.getFiles()).removeFile(dataTable.getModel().getValueAt(dataTable.getSelectedRow(), 0).toString());
-            } catch (Exception e) {
-                Log.Debug(this, e.getMessage());
-            }
-            fillFiles();
-        }
-    }
-
-    private void fileTableClicked(MouseEvent evt) {
-        if (evt.getClickCount() > 1) {
-            FileDirectoryHandler.open(QueryHandler.instanceOf().clone(Context.getFiles()).
-                    retrieveFile(dataTable.getModel().getValueAt(dataTable.getSelectedRow(), 0).
-                    toString(), new File(FileDirectoryHandler.getTempDir() + dataTable.getModel().
-                    getValueAt(dataTable.getSelectedRow(), 1).toString())));
-        } else if (evt.getClickCount() == 1 && evt.getButton() == MouseEvent.BUTTON3) {
-
-            JTable source = (JTable) evt.getSource();
-            int row = source.rowAtPoint(evt.getPoint());
-            int column = source.columnAtPoint(evt.getPoint());
-
-            if (!source.isRowSelected(row)) {
-                source.changeSelection(row, column, false, false);
-            }
-
-            FileTablePopUp.instanceOf(dataTable).show(source, evt.getX(), evt.getY());
-        }
-    }
-
-    private void fillFiles() {
-
-        Runnable runnable = new Runnable() {
-
-            public void run() {
-                Context c = Context.getFilesToItems();
-                c.addReference(Context.getFiles().getDbIdentity(), "cname", "filename");
-                Object[][] data = new DatabaseSearch(c).getValuesFor(Context.DETAILS_FILES_TO_ITEMS, "itemsids", dataOwner.__getIDS());
-
-                dataTable.setModel(new MPTableModel(data, Headers.FILE_REFERENCES.getValue()));
-                TableFormat.stripFirstColumn(dataTable);
-            }
-        };
-        new Thread(runnable).start();
-    }
-
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -439,7 +388,6 @@ public class ProductOrderPanel extends javax.swing.JPanel implements DataPanel, 
         upItem = new javax.swing.JButton();
         upItem1 = new javax.swing.JButton();
         jPanel7 = new javax.swing.JPanel();
-        jSplitPane1 = new javax.swing.JSplitPane();
         jTabbedPane1 = new javax.swing.JTabbedPane();
         jPanel3 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
@@ -474,26 +422,9 @@ public class ProductOrderPanel extends javax.swing.JPanel implements DataPanel, 
                 return c;
             }
         };
-        jPanel8 = new javax.swing.JPanel();
-        jScrollPane2 = new javax.swing.JScrollPane();
-        dataTable = new  mpv5.ui.misc.MPTable(this) {
-            private static final long serialVersionUID = 1L;
-            public Component prepareRenderer(TableCellRenderer renderer,
-                int rowIndex, int vColIndex) {
-                Component c = super.prepareRenderer(renderer, rowIndex, vColIndex);
-                if (c instanceof JComponent) {
-                    JComponent jc = (JComponent)c;
-                    jc.setToolTipText(String.valueOf(getValueAt(rowIndex, vColIndex)));
-                }
-                return c;
-            }
-        }
-        ;
-        removefile = new javax.swing.JButton();
-        addfile = new javax.swing.JButton();
         toolbarpane = new javax.swing.JPanel();
 
-        java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle(); // NOI18N
+        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("mpv5/resources/languages/Panels"); // NOI18N
         setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("ProductOrderPanel.border.title_1"))); // NOI18N
         setName("ItemPanel"); // NOI18N
         setLayout(new java.awt.BorderLayout());
@@ -568,7 +499,7 @@ public class ProductOrderPanel extends javax.swing.JPanel implements DataPanel, 
                     .addComponent(accountselect, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 325, Short.MAX_VALUE)
                     .addComponent(type, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(number, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 67, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 57, Short.MAX_VALUE)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(status, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(jPanel1Layout.createSequentialGroup()
@@ -597,12 +528,12 @@ public class ProductOrderPanel extends javax.swing.JPanel implements DataPanel, 
                     .addComponent(jLabel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
-                    .addComponent(groupnameselect, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(number, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(groupnameselect, javax.swing.GroupLayout.DEFAULT_SIZE, 28, Short.MAX_VALUE)
+                    .addComponent(number, javax.swing.GroupLayout.DEFAULT_SIZE, 28, Short.MAX_VALUE))
                 .addGap(61, 61, 61))
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGap(11, 11, 11)
-                .addComponent(staus_icon, javax.swing.GroupLayout.DEFAULT_SIZE, 15, Short.MAX_VALUE)
+                .addComponent(staus_icon, javax.swing.GroupLayout.DEFAULT_SIZE, 24, Short.MAX_VALUE)
                 .addGap(122, 122, 122))
         );
 
@@ -766,11 +697,11 @@ public class ProductOrderPanel extends javax.swing.JPanel implements DataPanel, 
                 .addComponent(jButton3)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jButton4)
-                .addContainerGap(54, Short.MAX_VALUE))
+                .addContainerGap(65, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-            .addComponent(jButton4, javax.swing.GroupLayout.DEFAULT_SIZE, 24, Short.MAX_VALUE)
+            .addComponent(jButton4, javax.swing.GroupLayout.PREFERRED_SIZE, 28, Short.MAX_VALUE)
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addGap(0, 0, Short.MAX_VALUE)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
@@ -975,7 +906,7 @@ public class ProductOrderPanel extends javax.swing.JPanel implements DataPanel, 
                 .addComponent(upItem)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(upItem1)
-                .addContainerGap(55, Short.MAX_VALUE))
+                .addContainerGap(38, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
@@ -985,12 +916,12 @@ public class ProductOrderPanel extends javax.swing.JPanel implements DataPanel, 
             .addGroup(jPanel4Layout.createSequentialGroup()
                 .addComponent(itemPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 881, Short.MAX_VALUE))
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 887, Short.MAX_VALUE))
         );
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(itemPanel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(jScrollPane3, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 173, Short.MAX_VALUE)
+            .addComponent(jScrollPane3, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 168, Short.MAX_VALUE)
         );
 
         jPanel6.add(jPanel4, java.awt.BorderLayout.CENTER);
@@ -999,11 +930,6 @@ public class ProductOrderPanel extends javax.swing.JPanel implements DataPanel, 
 
         jPanel7.setName("jPanel7"); // NOI18N
         jPanel7.setLayout(new java.awt.BorderLayout());
-
-        jSplitPane1.setBorder(javax.swing.BorderFactory.createEmptyBorder(0, 0, 0, 1));
-        jSplitPane1.setLastDividerLocation(150);
-        jSplitPane1.setName("jSplitPane1"); // NOI18N
-        jSplitPane1.setOneTouchExpandable(true);
 
         jTabbedPane1.setMinimumSize(new java.awt.Dimension(400, 61));
         jTabbedPane1.setName("jTabbedPane1"); // NOI18N
@@ -1068,78 +994,7 @@ public class ProductOrderPanel extends javax.swing.JPanel implements DataPanel, 
 
         jTabbedPane1.addTab(bundle.getString("ProductOrderPanel.jScrollPane4.TabConstraints.tabTitle"), jScrollPane4); // NOI18N
 
-        jSplitPane1.setLeftComponent(jTabbedPane1);
-
-        jPanel8.setName("jPanel8"); // NOI18N
-
-        jScrollPane2.setToolTipText(bundle.getString("ProductOrderPanel.jScrollPane2.toolTipText")); // NOI18N
-        jScrollPane2.setName("jScrollPane2"); // NOI18N
-
-        dataTable.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-
-            },
-            new String [] {
-
-            }
-        ));
-        dataTable.setToolTipText(bundle.getString("ProductOrderPanel.dataTable.toolTipText")); // NOI18N
-        dataTable.setName("dataTable"); // NOI18N
-        dataTable.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                dataTableMouseClicked(evt);
-            }
-        });
-        jScrollPane2.setViewportView(dataTable);
-
-        removefile.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/16/remove.png"))); // NOI18N
-        removefile.setText(bundle.getString("ProductOrderPanel.removefile.text")); // NOI18N
-        removefile.setToolTipText(bundle.getString("ProductOrderPanel.removefile.toolTipText")); // NOI18N
-        removefile.setName("removefile"); // NOI18N
-        removefile.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                removefileActionPerformed(evt);
-            }
-        });
-
-        addfile.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/16/add.png"))); // NOI18N
-        addfile.setText(bundle.getString("ProductOrderPanel.addfile.text")); // NOI18N
-        addfile.setToolTipText(bundle.getString("ProductOrderPanel.addfile.toolTipText")); // NOI18N
-        addfile.setName("addfile"); // NOI18N
-        addfile.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                addfileActionPerformed(evt);
-            }
-        });
-
-        javax.swing.GroupLayout jPanel8Layout = new javax.swing.GroupLayout(jPanel8);
-        jPanel8.setLayout(jPanel8Layout);
-        jPanel8Layout.setHorizontalGroup(
-            jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel8Layout.createSequentialGroup()
-                .addContainerGap(485, Short.MAX_VALUE)
-                .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(addfile, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(removefile, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)))
-            .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(jPanel8Layout.createSequentialGroup()
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 478, Short.MAX_VALUE)
-                    .addGap(31, 31, 31)))
-        );
-        jPanel8Layout.setVerticalGroup(
-            jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel8Layout.createSequentialGroup()
-                .addComponent(addfile)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(removefile)
-                .addContainerGap(25, Short.MAX_VALUE))
-            .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 81, Short.MAX_VALUE))
-        );
-
-        jSplitPane1.setRightComponent(jPanel8);
-
-        jPanel7.add(jSplitPane1, java.awt.BorderLayout.CENTER);
+        jPanel7.add(jTabbedPane1, java.awt.BorderLayout.PAGE_START);
 
         jSplitPane2.setRightComponent(jPanel7);
 
@@ -1147,11 +1002,11 @@ public class ProductOrderPanel extends javax.swing.JPanel implements DataPanel, 
         rightpane.setLayout(rightpaneLayout);
         rightpaneLayout.setHorizontalGroup(
             rightpaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jToolBar1, javax.swing.GroupLayout.DEFAULT_SIZE, 917, Short.MAX_VALUE)
+            .addComponent(jToolBar1, javax.swing.GroupLayout.DEFAULT_SIZE, 921, Short.MAX_VALUE)
             .addGroup(rightpaneLayout.createSequentialGroup()
                 .addGroup(rightpaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                     .addComponent(jPanel2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jPanel1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 907, Short.MAX_VALUE)
+                    .addComponent(jPanel1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 909, Short.MAX_VALUE)
                     .addComponent(jPanel5, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
             .addComponent(jSplitPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
@@ -1167,7 +1022,7 @@ public class ProductOrderPanel extends javax.swing.JPanel implements DataPanel, 
                 .addGap(0, 0, 0)
                 .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, 0)
-                .addComponent(jSplitPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 291, Short.MAX_VALUE))
+                .addComponent(jSplitPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 287, Short.MAX_VALUE))
         );
 
         add(rightpane, java.awt.BorderLayout.CENTER);
@@ -1179,7 +1034,7 @@ public class ProductOrderPanel extends javax.swing.JPanel implements DataPanel, 
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
 
-        if (dataOwner.isExisting() && dataOwner.getContact()!=null) {
+        if (dataOwner.isExisting() && dataOwner.getContact() != null) {
             try {
                 mpv5.YabsViewProxy.instance().getIdentifierView().addTab(dataOwner.getContact());
             } catch (Exception ex) {
@@ -1191,20 +1046,6 @@ public class ProductOrderPanel extends javax.swing.JPanel implements DataPanel, 
     private void button_order2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button_order2ActionPerformed
         BigPopup.showPopup(this, new ControlPanel_Groups(), null);
 }//GEN-LAST:event_button_order2ActionPerformed
-
-    private void removefileActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_removefileActionPerformed
-        deleteFile();
-}//GEN-LAST:event_removefileActionPerformed
-
-    private void addfileActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addfileActionPerformed
-        if (dataOwner.isExisting()) {
-            addFile();
-        }
-}//GEN-LAST:event_addfileActionPerformed
-
-    private void dataTableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_dataTableMouseClicked
-        fileTableClicked(evt);
-    }//GEN-LAST:event_dataTableMouseClicked
 
     private void itemtableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_itemtableMouseClicked
         if (evt != null) {
@@ -1305,12 +1146,10 @@ public class ProductOrderPanel extends javax.swing.JPanel implements DataPanel, 
     private void toofferActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_toofferActionPerformed
         toOffer();
     }//GEN-LAST:event_toofferActionPerformed
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private mpv5.ui.beans.LabeledCombobox accountselect;
     private javax.swing.JButton addItem;
     private javax.swing.JLabel addedby;
-    private javax.swing.JButton addfile;
     private javax.swing.ButtonGroup buttonGroup1;
     private javax.swing.JButton button_order2;
     private javax.swing.JButton button_preview;
@@ -1318,7 +1157,6 @@ public class ProductOrderPanel extends javax.swing.JPanel implements DataPanel, 
     private javax.swing.JTextField contactcompany;
     private javax.swing.JTextField contactid;
     private mpv5.ui.beans.LabeledCombobox contactname;
-    private javax.swing.JTable dataTable;
     private mpv5.ui.beans.LabeledDateChooser date1;
     private mpv5.ui.beans.LabeledDateChooser date2;
     private mpv5.ui.beans.LabeledDateChooser date3;
@@ -1342,9 +1180,7 @@ public class ProductOrderPanel extends javax.swing.JPanel implements DataPanel, 
     private javax.swing.JPanel jPanel5;
     private javax.swing.JPanel jPanel6;
     private javax.swing.JPanel jPanel7;
-    private javax.swing.JPanel jPanel8;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JScrollPane jScrollPane4;
     private javax.swing.JToolBar.Separator jSeparator1;
@@ -1357,7 +1193,6 @@ public class ProductOrderPanel extends javax.swing.JPanel implements DataPanel, 
     private javax.swing.JToolBar.Separator jSeparator7;
     private javax.swing.JToolBar.Separator jSeparator8;
     private javax.swing.JToolBar.Separator jSeparator9;
-    private javax.swing.JSplitPane jSplitPane1;
     private javax.swing.JSplitPane jSplitPane2;
     private javax.swing.JTabbedPane jTabbedPane1;
     private javax.swing.JToolBar jToolBar1;
@@ -1368,7 +1203,6 @@ public class ProductOrderPanel extends javax.swing.JPanel implements DataPanel, 
     private javax.swing.JTextPane notes;
     private mpv5.ui.beans.LabeledTextField number;
     private javax.swing.JTable proptable;
-    private javax.swing.JButton removefile;
     private javax.swing.JPanel rightpane;
     private mpv5.ui.beans.LabeledCombobox status;
     private javax.swing.JLabel staus_icon;
@@ -1389,9 +1223,8 @@ public class ProductOrderPanel extends javax.swing.JPanel implements DataPanel, 
     public int intaddedby_;
     public int ids_;
     public Date dateadded_;
-    public int groupsids_ = 1;
-    public int contactsids_;
-    public int accountsids_;
+    public Group group_;
+    public Contact contact_;
     public BigDecimal netvalue_;
     public BigDecimal taxvalue_;
     public BigDecimal shippingvalue_;
@@ -1405,22 +1238,21 @@ public class ProductOrderPanel extends javax.swing.JPanel implements DataPanel, 
     @Override
     public boolean collectData() {
         try {
-            contactsids_ = Integer.valueOf(contactname.getSelectedItem().getId());
+            contact_ = (Contact) Contact.getObject(Context.getContact(), Integer.valueOf(contactname.getSelectedItem().getId()));
         } catch (Exception numberFormatException) {
             return false;
         }
-        if (contactsids_ > 0) {
-            try {
-                accountsids_ = Integer.valueOf(accountselect.getSelectedItem().getId());
-            } catch (Exception e) {
-                accountsids_ = 1;
-            }
+        if (contact_ != null) {
 
             if (groupnameselect.getSelectedItem() != null) {
-                groupsids_ = Integer.valueOf(groupnameselect.getSelectedItem().getId());
-                Log.Debug(this, groupnameselect.getSelectedItem().getId());
+                try {
+                    group_ = (Group) Group.getObject(Context.getGroup(), Integer.valueOf(groupnameselect.getSelectedItem().getId()), true);
+                    Log.Debug(this, groupnameselect.getSelectedItem().getId());
+                } catch (Exception numberFormatException) {
+                    group_ = Group.getDefault();
+                }
             } else {
-                groupsids_ = 1;
+                group_ = Group.getDefault();
             }
 
             if (dateadded_ == null) {
@@ -1470,30 +1302,19 @@ public class ProductOrderPanel extends javax.swing.JPanel implements DataPanel, 
 
         status.setSelectedItem(intstatus_);
         staus_icon.setIcon(dataOwner.getIcon());
-        try {
-            accountselect.setModel(DatabaseObject.getObject(Context.getAccounts(), accountsids_));
-        } catch (NodataFoundException ex) {
-            Log.Debug(this, ex.getMessage());
-        }
-        try {
-            groupnameselect.setModel(DatabaseObject.getObject(Context.getGroup(), groupsids_));
-        } catch (NodataFoundException ex) {
-            Log.Debug(this, ex.getMessage());
-        }
+        groupnameselect.setModel(group_);
 
         addedby.setText(User.getUsername(intaddedby_));
         try {
-            Contact owner = (Contact) DatabaseObject.getObject(Context.getContact(), contactsids_, true);
+            Contact owner = (Contact) DatabaseObject.getObject(Context.getContact(), contact_.__getIDS(), true);
             contactname.setModel(owner);
             contactcity.setText(owner.__getCity());
             contactcompany.setText(owner.__getCompany());
             contactid.setText(String.valueOf(owner.__getCNumber()));
-            contactsids_ = owner.__getIDS();
+            contact_ = owner;
         } catch (NodataFoundException ex) {
             Log.Debug(ex);
         }
-
-        fillFiles();
     }
 
     @Override
@@ -1824,7 +1645,7 @@ public class ProductOrderPanel extends javax.swing.JPanel implements DataPanel, 
 
     public void actionBeforeSave() throws ChangeNotApprovedException {
         if (dataOwner.isExisting()) {
-            if ((dataOwner.getIntstatus() != ProductOrder.STATUS_PAID && dataOwner.getIntstatus() != ProductOrder.STATUS_CANCELLED) || Popup.Y_N_dialog(Messages.REALLY_CHANGE_DONE_ITEM)) {
+            if ((dataOwner.getIntstatus() != Item.STATUS_PAID && dataOwner.getIntstatus() != Item.STATUS_CANCELLED) || Popup.Y_N_dialog(Messages.REALLY_CHANGE_DONE_ITEM)) {
 
                 if (!mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("org.openyabs.uiproperty", "nowarnings")) {
 

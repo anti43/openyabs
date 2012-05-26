@@ -18,6 +18,8 @@ package mpv5.db.objects;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JComponent;
 import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
@@ -30,7 +32,25 @@ import mpv5.ui.dialogs.subcomponents.ControlPanel_Groups;
  *  
  */
 public class Group extends DatabaseObject {
-
+    /**
+     * Returns 'All Group' or the first group found if 'All group' is gone, and if all are deleted, creates a default group
+     * @return A group, never NULL
+     */
+    public static Group getDefault() {
+        try {
+            return (Group) DatabaseObject.getObject(Context.getGroup(), 1);
+        } catch (NodataFoundException ex) {
+            Log.Debug(ex);
+            try {
+                return (Group) DatabaseObject.getObjects(Context.getGroup()).get(0);
+            } catch (NodataFoundException nodataFoundException) {
+                Group g = new Group();
+                g.setCname("All Group#");
+                g.save();
+                return g;
+            }
+        }
+    }
     private String description = "";
     private String defaults = "";
     private String hierarchypath = "";
