@@ -1253,7 +1253,7 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
                 Object[] nd = new Object[objects.length];
                 for (int j = 1; j < objects.length; j++) {
                     Object object = objects[j];
-                    nd[j] = object;
+                    nd[j-1] = object;
                 }
                 d[i] = nd;
             }
