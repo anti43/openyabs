@@ -25,6 +25,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import java.lang.ref.SoftReference;
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.math.BigDecimal;
@@ -60,7 +61,6 @@ import mpv5.utils.text.RandomText;
 import static mpv5.db.common.Context.*;
 import mpv5.utils.text.TypeConversion;
 import mpv5.globals.Constants;
-
 
 /**
  * Database Objects reflect a row in a table, and can parse graphical and
@@ -372,7 +372,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
                         method.invoke(dbo, new Object[]{Short.valueOf(String.valueOf(argument))});
                     } else if (method.getParameterTypes()[0].getCanonicalName().equals(new byte[0].getClass().getCanonicalName())) {//doitbetter
                         method.invoke(dbo, new Object[]{(byte[]) ((argument instanceof String) ? String.valueOf(argument).getBytes("UTF-8") : argument)});
-                    } else if (method.getParameterTypes()[0].isAssignableFrom(DatabaseObject.class)) {
+                    } else if (DatabaseObject.class.isAssignableFrom(method.getParameterTypes()[0])) {
                         Context c = ((DatabaseObject) method.getParameterTypes()[0].newInstance()).getContext();
                         DatabaseObject d = getObject(c, Integer.valueOf(String.valueOf(argument)));
                         method.invoke(dbo, new Object[]{d});
@@ -477,7 +477,6 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
      */
     public void ensureUniqueness() {
     }
-
 
     /**
      *
@@ -658,7 +657,8 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
                          */
                         || (methods[i].getName().startsWith("__get")
                         && !(methods[i].isAnnotationPresent(Persistable.class)
-                        && !methods[i].getAnnotation(Persistable.class).value()))) {
+                        && !methods[i].getAnnotation(Persistable.class).value()))
+                        || methods[i].getName().equals("getGroup")) {
                     getVars_cached.get(this.getClass().getCanonicalName()).add(methods[i]);
                 }
             }
@@ -1106,7 +1106,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
             String fieldname = vars.get(i).getName().toLowerCase().substring(3, vars.get(i).getName().length()) + "_";
             if (!fieldname.equals("ids_")) {
                 try {
-                    Log.Debug(this, "GetPanelData: " + fieldname + "_ : " + source.getClass().getField(fieldname).
+                    Log.Debug(this, "GetPanelData: " + fieldname + ": " + source.getClass().getField(fieldname).
                             getType().getName() + " [" + source.getClass().getField(fieldname).get(source) + "]");
                     vars.get(i).invoke(this, source.getClass().getField(fieldname).get(source));
                 } catch (java.lang.NoSuchFieldException nf) {
@@ -1136,14 +1136,19 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
 
         for (int i = 0; i < vars.size(); i++) {
             try {
-                Log.Debug(this, vars.get(i).getName() + " [" + vars.get(i).invoke(this, new Object[0]) + "]");
-                target.getClass().getField(vars.get(i).getName().toLowerCase().substring(5, vars.get(i).getName().length()) + "_").set(target, vars.get(i).invoke(this, new Object[0]));
-                Log.Debug(target, target.getClass().getField(vars.get(i).getName().toLowerCase().substring(5, vars.get(i).getName().length()) + "_").get(target));
-
+                String vname = vars.get(i).getName();
+                vname = vname.toLowerCase().replace("_", "");
+                if (vname.startsWith("get")) {
+                    vname = vname.substring(3);
+                }
+                Log.Debug(this, vname + " [" + vars.get(i).invoke(this, new Object[0]) + "]");
+                Field fi = target.getClass().getField(vname + "_");
+                fi.set(target, vars.get(i).invoke(this, new Object[0]));
+                Log.Debug(target, fi.get(target));
             } catch (java.lang.NoSuchFieldException nf) {
-                Log.Debug(this, "The view: " + target + " is missing a field: " + nf.getMessage());
+                Log.Debug(this, "The view: " + target.getClass() + " is missing a field: " + nf.getMessage());
             } catch (Exception n) {
-                Log.Debug(this, n.getMessage() + " in " + target);
+                Log.Debug(this, n.getMessage() + " in " + target.getClass());
                 Log.Debug(n);
             }
         }
@@ -1881,14 +1886,13 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
         for (int i = 0; i < dos.length; i++) {
 
             DatabaseObject dbo = null;
-            List<Method> methods = null;
             if (!singleExplode) {
                 dbo = DatabaseObject.getObject(target.getContext());
             } else {
                 dbo = target;
             }
 
-            methods = dbo.setVars();
+            List<Method> methods = dbo.setVars();
             dos[i] = dbo;
 
             if (select.hasData()) {
@@ -1896,10 +1900,11 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
                     String name = select.getColumnnames()[j].toLowerCase();
 
                     for (int k = 0; k < methods.size(); k++) {
+                        String mname = methods.get(k).getName().toLowerCase().substring(3);
+//                        Log.Debug(dbo, mname);
                         if (name.equals("ids") || !(methods.get(k).isAnnotationPresent(Persistable.class)
                                 && !methods.get(k).getAnnotation(Persistable.class).value())) {
-                            if (methods.get(k).getName().toLowerCase().substring(3).equals(name)) {
-
+                            if (mname.equals(name)) {
                                 //Debug section
                                 String valx = "";
                                 if (select.getData()[i][j] != null) {
@@ -1907,14 +1912,19 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
                                 } else {
                                     valx = "NULL VALUE!";
                                 }
-//                                Log.Debug(DatabaseObject.class, "Explode: " + methods.get(k).toGenericString() + " with " + select.getData()[i][j] + "[" + valx + "]");
+                                if (target.getContext().equals(Context.getProductOrder())) {
+                                    Log.Debug(DatabaseObject.class, "Explode: " + methods.get(k).toGenericString() + " with " + select.getData()[i][j] + "[" + valx + "]");
+                                }
 //                            //End Debug Section
 
                                 if (select.getData()[i][j] != null) {
                                     invoke(methods.get(k), select.getData()[i][j], dbo, valx);
                                 }
-                            } else if (methods.get(k).getName().toLowerCase().substring(3).equals(name.replace("ids", ""))) {
-                                Log.Debug(DatabaseObject.class, "Explode: " + methods.get(k).toGenericString() + " with " + select.getData()[i][j] + "[DBO]");
+                            } else if (name.endsWith("ids")
+                                    && (mname.equals(name.replace("ids", "")) || mname.equals(name.replace("sids", "")))) {
+                                if (Log.isDebugging()) {
+                                    Log.Debug(DatabaseObject.class, "Explode: " + methods.get(k).toGenericString() + " with " + select.getData()[i][j] + "[DBO]");
+                                }
                                 if (select.getData()[i][j] != null) {
                                     invoke(methods.get(k), select.getData()[i][j], dbo, "DatabaseObject");
                                 }
@@ -2316,7 +2326,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
         } catch (NumberFormatException numberFormatException) {
             //already resolved?
         }
-        
+
         Locale l = Locale.getDefault();
         if (mpv5.db.objects.User.getCurrentUser().getProperties().hasProperty("item.date.locale")) {
             try {
@@ -2560,10 +2570,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
     /**
      * @return the Group
      */
-    @Persistable(false)/*
-     * is persisting via contactsids
-     */
-
+    @Persistable(false)
     public Group getGroup() throws NodataFoundException {
         return (Group) getObject(Context.getGroup(), __getGroupsids());
     }
