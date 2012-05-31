@@ -400,11 +400,11 @@ public class DatabaseUpdater {
                     "update products set inttype = 6 where inttype = 1"
                 });
         UPDATES_MYSQL.put(1.197, new String[]{
-                    "CREATE TABLE productorders (ids BIGINT(20) UNSIGNED NOT NULL PRIMARY KEY auto_increment, "
+                    "CREATE TABLE productorders (ids BIGINT(20) UNSIGNED NOT NULL auto_increment, "
                     + "cname VARCHAR(250) NOT NULL, "
                     + "cnumber VARCHAR(250) NOT NULL, "
                     + "description VARCHAR(2500) DEFAULT NULL, "
-                    + "groupsids BIGINT  REFERENCES groups(ids) DEFAULT 1, "
+                    + "groupsids BIGINT DEFAULT 1 REFERENCES groups(ids), "
                     + "contactsids BIGINT REFERENCES contacts(ids) ON DELETE CASCADE, "
                     + "netvalue DOUBLE DEFAULT 0,"
                     + "taxvalue DOUBLE DEFAULT 0, "
@@ -419,12 +419,13 @@ public class DatabaseUpdater {
                     + "intstatus SMALLINT DEFAULT 0, "
                     + "hierarchypath VARCHAR(500) DEFAULT NULL, "
                     + "reserve1 VARCHAR(500) DEFAULT NULL, "
-                    + "reserve2 VARCHAR(500) DEFAULT NULL, PRIMARY KEY  (ids)"
+                    + "reserve2 VARCHAR(500) DEFAULT NULL, "
+                    + "PRIMARY KEY (ids)"
                     + ")ENGINE=MyISAM  DEFAULT CHARSET=utf8",
-                    "CREATE TABLE productordersubitems (ids BIGINT(20) UNSIGNED NOT NULL PRIMARY KEY auto_increment, "
+                    "CREATE TABLE productordersubitems (ids BIGINT(20) UNSIGNED NOT NULL auto_increment, "
                     + "cname VARCHAR(5000) DEFAULT NULL,"
                     + "productorderids BIGINT REFERENCES productorders(ids) ON DELETE CASCADE, "
-                    + "groupsids BIGINT  REFERENCES groups(ids) DEFAULT 1,"
+                    + "groupsids BIGINT DEFAULT 1 REFERENCES groups(ids),"
                     + "originalproductsids BIGINT DEFAULT NULL, "
                     + "countvalue DOUBLE DEFAULT 0 NOT NULL, "
                     + "quantityvalue DOUBLE DEFAULT 0 NOT NULL, "
@@ -441,7 +442,8 @@ public class DatabaseUpdater {
                     + "intaddedby BIGINT DEFAULT 0,"
                     + "invisible SMALLINT DEFAULT 0,"
                     + "reserve1 VARCHAR(500) DEFAULT NULL,"
-                    + "reserve2 VARCHAR(500) DEFAULT NULL,"
+                    + "reserve2 VARCHAR(500) DEFAULT NULL, "
+                    + "PRIMARY KEY (ids)"
                     + ")ENGINE=MyISAM  DEFAULT CHARSET=utf8"
                 });
         UPDATES_MYSQL.put(1.1971, new String[]{
@@ -451,13 +453,14 @@ public class DatabaseUpdater {
                     "update formatstousers set inttype = 2 where inttype = 200"
                 });
         UPDATES_MYSQL.put(1.1972, new String[]{
-                    "ALTER TABLE productordersubitems CHANGE productorderids productordersids BIGINT REFERENCES productorders(ids) ON DELETE CASCADE"
+                    "ALTER TABLE productordersubitems CHANGE productorderids productordersids BIGINT",
+                    "ALTER TABLE productordersubitems ADD CONSTRAINT SQL0915560843268711 FOREIGN KEY(productordersids) REFERENCES productorders(ids) ON DELETE CASCADE"
                 });
         UPDATES_MYSQL.put(1.1973, new String[]{
                     "ALTER TABLE productordersubitems ADD COLUMN ordernr SMALLINT DEFAULT 0 NOT NULL",
                     "ALTER TABLE productordersubitems MODIFY description VARCHAR(3333)",
                     "ALTER TABLE productordersubitems ADD COLUMN inttype SMALLINT DEFAULT 0 NOT NULL",
-                    "ALTER TABLE subiteproductordersubitemsms ADD COLUMN discount DOUBLE DEFAULT 0 NOT NULL"
+                    "ALTER TABLE productordersubitems ADD COLUMN discount DOUBLE DEFAULT 0 NOT NULL"
                 });
     }
 
@@ -481,11 +484,8 @@ public class DatabaseUpdater {
                             newVersion = vers;
                         }
                     } catch (Exception ex) {
-                        if (ex.getMessage().contains("does not exist")) {
-                            Log.Debug(this, ex.getMessage());
-                        } else {
-                            throw ex;
-                        }
+                        Log.Debug(ex);
+                        throw ex;
                     }
                 }
             }
@@ -500,11 +500,8 @@ public class DatabaseUpdater {
                             newVersion = vers;
                         }
                     } catch (Exception ex) {
-                        if (ex.getMessage().contains("does not exist")) {
-                            Log.Debug(this, ex.getMessage());
-                        } else {
-                            throw ex;
-                        }
+                        Log.Debug(ex);
+                        throw ex;
                     }
                 }
             }
