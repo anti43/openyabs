@@ -7,6 +7,7 @@ import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
 import mpv5.db.common.NodataFoundException;
 import mpv5.logging.Log;
+import mpv5.usermanagement.MPSecurityManager;
 
 /**
  *
@@ -22,8 +23,14 @@ public class XMLRPCHandler {
         }
         return s;
     }
+    
+    public boolean login(String user, String passw) throws Exception {
+        Log.Debug(this, "Login " + user);
+        return MPSecurityManager.checkAuth(user, passw) != null;
+    }
 
     public HashMap<String, Object> getObjects(String context, int startid, int endid) throws Exception {
+        Log.Debug(this, "Getting " + context + " ids: " + startid + " to " + endid);
         HashMap<String, Object> m = new HashMap<String, Object>();
         for (int i = startid; i <= endid; i++) {
             try {
@@ -42,6 +49,7 @@ public class XMLRPCHandler {
     }
 
     public HashMap<String, Object> getObject(String context, int id) throws Exception {
+        Log.Debug(this, "Getting " + context + " id: " + id);
         DatabaseObject d = DatabaseObject.getObject(Context.getMatchingContext(context), id);
         HashMap<String, Object> m = new HashMap<String, Object>();
         List<Object[]> l = d.getValues2();
@@ -52,6 +60,7 @@ public class XMLRPCHandler {
     }
 
     public HashMap<String, Object> getObject(String context, String cname) throws Exception {
+        Log.Debug(this, "Getting " + context + " cname: " + cname);
         DatabaseObject d = DatabaseObject.getObject(Context.getMatchingContext(context), cname);
         HashMap<String, Object> m = new HashMap<String, Object>();
         List<Object[]> l = d.getValues2();
@@ -62,22 +71,23 @@ public class XMLRPCHandler {
     }
 
     public boolean addObject(String context, HashMap<String, Object> data) throws Exception {
+        Log.Debug(this, "Adding " + context + " data: " + data);
         DatabaseObject d = DatabaseObject.getObject(Context.getMatchingContext(context));
         d.parse(data);
         d.setIDS(-1);
-        d.saveImport();
-        return true;
+        return d.saveImport();
     }
 
-     public boolean updateObject(String context, int id, HashMap<String, Object> data) throws Exception {
+    public boolean updateObject(String context, int id, HashMap<String, Object> data) throws Exception {
+        Log.Debug(this, "Updating " + context + " id: " + id + " data: " + data);
         DatabaseObject d = DatabaseObject.getObject(Context.getMatchingContext(context), id);
         d.parse(data);
         d.setIDS(id);
-        d.save(true);
-        return true;
+        return d.save();
     }
 
     public boolean deleteObject(String context, int id) throws Exception {
+        Log.Debug(this, "Deleting " + context + " id: " + id);
         return DatabaseObject.getObject(Context.getMatchingContext(context), id).delete();
     }
 }

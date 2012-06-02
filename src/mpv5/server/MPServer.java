@@ -16,11 +16,9 @@
  */
 package mpv5.server;
 
-import java.util.Vector;
 import mpv5.globals.Messages;
 import mpv5.logging.Log;
 import mpv5.ui.dialogs.Popup;
-import mpv5.ui.frames.MPView;
 
 /**
  *This is a listening server which starts a new {@link MPServerRunner} on each connection.

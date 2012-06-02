@@ -99,7 +99,6 @@ public class XMLRPCServer {
         XmlRpcServerConfigImpl serverConfig =
                 (XmlRpcServerConfigImpl) xmlRpcServer.getConfig();
         serverConfig.setEnabledForExtensions(true);
-        serverConfig.setEnabledForExceptions(true);
         serverConfig.setContentLengthOptional(false);
 
 
