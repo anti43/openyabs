@@ -36,6 +36,7 @@ public class LocalSettings {
     public static final String OFFICE_HOME = "ooohome";
     public static final String OFFICE_PORT = "oooport";
     public static final String OFFICE_HOST = "ooohost";
+    public static final String OFFICE_LOCALSERVER = "ooolocalserver";
     public static final String OFFICE_BINARY_FOLDER = "ooobinaryfolder";
     public static final String OFFICE_REMOTE = "oootremoteserver";
     public static final String OFFICE_USE = "ooouse";
@@ -78,6 +79,7 @@ public class LocalSettings {
                 {OFFICE_HOST, "127.0.0.1"},
                 {OFFICE_REMOTE, "false"},
                 {OFFICE_USE, "false"},
+                {OFFICE_LOCALSERVER, "false"},
                 {CACHE_DIR, "Cache"},
                 {DBESCAPE, "true"},
                 {CALCULATOR, ""},

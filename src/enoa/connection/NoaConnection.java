@@ -19,7 +19,6 @@ package enoa.connection;
 import ag.ion.bion.officelayer.application.*;
 import ag.ion.bion.officelayer.desktop.IDesktopService;
 import ag.ion.bion.officelayer.document.IDocumentService;
-import ag.ion.bion.officelayer.internal.application.ApplicationAssistant;
 import ag.ion.noa.NOAException;
 
 import com.sun.star.auth.InvalidArgumentException;
@@ -30,10 +29,6 @@ import java.net.Socket;
 import java.net.SocketAddress;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.swing.SwingUtilities;
-import javax.swing.SwingWorker;
 import mpv5.Main;
 import mpv5.YabsViewProxy;
 import mpv5.globals.LocalSettings;
@@ -93,6 +88,10 @@ public class NoaConnection {
      * @throws Exception
      */
     public synchronized static NoaConnection getConnection() throws Exception {
+        if (LocalSettings.getBooleanProperty(LocalSettings.OFFICE_LOCALSERVER)) {
+            return NoaConnectionLocalServer.getConnection();
+        }
+
         definePath();
         if (cachedConnection != null) {
             return cachedConnection;
@@ -146,6 +145,13 @@ public class NoaConnection {
         } else {
             throw new Exception("Connection not possible with the given parameters: [" + connectionString + ":" + port + "]");
         }
+    }
+
+    /**
+     * dummy
+     * @throws Exception 
+     */
+    public NoaConnection() throws Exception {
     }
 
     /**

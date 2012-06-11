@@ -25,6 +25,7 @@ import mpv5.logging.*;
 import org.jdesktop.application.SingleFrameApplication;
 import com.l2fprod.common.swing.plaf.LookAndFeelAddons;
 import enoa.connection.NoaConnection;
+import enoa.connection.NoaConnectionLocalServer;
 import enoa.handler.TemplateHandler;
 import java.awt.Cursor;
 import java.awt.Font;
@@ -343,6 +344,26 @@ public class Main implements Runnable {
                     YabsViewProxy.instance().register((YabsView) getApplication().getMainView());
                 }
                 go(false);
+                
+                if (LocalSettings.getBooleanProperty(LocalSettings.OFFICE_LOCALSERVER)) {
+                    final Thread startServerThread;
+
+                    Runnable runnable2 = new Runnable() {
+
+                        @Override
+                        public void run() {
+                            try {
+                                Log.Debug(Main.class, "Starting OpenOffice as background service..");
+                                NoaConnectionLocalServer.startOOServerIfNotRunning(LocalSettings.getProperty(LocalSettings.OFFICE_HOME), LocalSettings.getIntegerProperty(LocalSettings.OFFICE_PORT));
+                            } catch (Exception n) {
+                                Log.Debug(Main.class, n.getMessage());
+                            }
+                        }
+                    };
+                    startServerThread = new Thread(runnable2);
+                    startServerThread.start();
+                }
+                
             } else if (Popup.Y_N_dialog(splash, Messages.NO_DB_CONNECTION, Messages.FIRST_START.toString())) {
                 Log.Debug(this, "Loading database config wizard...");
                 if (!HEADLESS) {
