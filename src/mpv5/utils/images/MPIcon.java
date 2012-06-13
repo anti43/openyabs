@@ -226,7 +226,7 @@ public class MPIcon extends ImageIcon {
             g2.dispose();
 
             ret = tmp;
-        } while (w != targetWidth || h != targetHeight);
+        } while (w > targetWidth || h > targetHeight);
 
         return ret;
     }
