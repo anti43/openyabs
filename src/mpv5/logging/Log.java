@@ -16,6 +16,7 @@
  */
 package mpv5.logging;
 
+import de.frame4j.io.LogHandler;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -25,6 +26,11 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.List;
+import java.util.logging.Formatter;
+import java.util.logging.Handler;
+import java.util.logging.Level;
+import java.util.logging.LogManager;
+import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 import javax.swing.table.TableModel;
 import mpv5.Main;
@@ -38,6 +44,37 @@ import mpv5.utils.files.FileReaderWriter;
  */
 public class Log {
 
+    static {
+        
+        Logger globalLogger = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
+        globalLogger.addHandler(new LogHandler(new Formatter() {
+
+            @Override
+            public String format(LogRecord record) {
+                if (record != null) {
+                    return record.getMessage();
+                } else {
+                    return "null";
+                }
+            }
+        }) {
+
+            @Override
+            public void publish(LogRecord record) {
+                Log.Debug(this, record);
+            }
+
+            @Override
+            public void flush() {
+            }
+
+            @Override
+            public void close() throws SecurityException {
+            }
+        });
+        
+         Logger.getLogger(Log.class.getName()).log(Level.INFO,  "Yabs Logger set!");
+    }
     /**
      *
      * Set the logging to NONE
@@ -54,9 +91,7 @@ public class Log {
      */
     public static final int LOGLEVEL_DEBUG = 2;
     private static int loglevel = 1;
-    private static List<LogConsole> loggers =
-            new ArrayList<LogConsole>(Arrays.asList(new LogConsole[]{(LogConsole) new YConsole()}));
-    public static Logger LOGGER;
+    private static List<LogConsole> loggers = new ArrayList<LogConsole>(Arrays.asList(new LogConsole[]{(LogConsole) new YConsole()}));
 
     /**
      * Print out a text file
@@ -143,7 +178,6 @@ public class Log {
             }
         }
     }
-
 
     /**
      * Print an array

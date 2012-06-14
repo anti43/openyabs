@@ -27,6 +27,7 @@ import org.jdesktop.application.Application;
  */
 public class YabsViewProxy implements YabsView {
 
+
     public static interface SessionSaver {
 
         public void saveSession();
@@ -327,6 +328,20 @@ public class YabsViewProxy implements YabsView {
     public void reloadFavorites() {
         for (int i = 0; i < views.size(); i++) {
             views.get(i).reloadFavorites();
+        }
+    }
+    
+    @Override
+    public void showOfficeStatus(boolean b, String description) {
+        for (int i = 0; i < views.size(); i++) {
+            views.get(i).showOfficeStatus(b, description);
+        }
+    }
+    
+    @Override
+    public void showServerStatus(boolean b) {
+        for (int i = 0; i < views.size(); i++) {
+            views.get(i).showServerStatus(b);
         }
     }
 }

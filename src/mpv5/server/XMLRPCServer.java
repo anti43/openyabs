@@ -122,6 +122,7 @@ public class XMLRPCServer {
 class XPropertyHandlerMapping extends PropertyHandlerMapping {
 
     private boolean isAuthenticated(String pUserName, String pPassword) {
+        Log.Debug(this, "XML RPC Server isAuthenticated?: " + pUserName);
         return MPSecurityManager.checkAuth(pUserName, pPassword) != null;
     }
 
@@ -137,8 +138,6 @@ class XPropertyHandlerMapping extends PropertyHandlerMapping {
                         return isAuthenticated(config.getBasicUserName(),
                                 config.getBasicPassword());
                     }
-
-                    ;
                 };
         mapping.setAuthenticationHandler(handler);
         return mapping;

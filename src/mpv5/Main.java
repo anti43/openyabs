@@ -344,7 +344,7 @@ public class Main implements Runnable {
                     YabsViewProxy.instance().register((YabsView) getApplication().getMainView());
                 }
                 go(false);
-                
+
                 if (LocalSettings.getBooleanProperty(LocalSettings.OFFICE_LOCALSERVER)) {
                     final Thread startServerThread;
 
@@ -363,7 +363,7 @@ public class Main implements Runnable {
                     startServerThread = new Thread(runnable2);
                     startServerThread.start();
                 }
-                
+
             } else if (Popup.Y_N_dialog(splash, Messages.NO_DB_CONNECTION, Messages.FIRST_START.toString())) {
                 Log.Debug(this, "Loading database config wizard...");
                 if (!HEADLESS) {
@@ -381,10 +381,10 @@ public class Main implements Runnable {
     }
 
     public void shutdown() {
-        if(Log.isDebugging()) {
+        if (Log.isDebugging()) {
             Log.Print(Messages.getMissing());
         }
-        
+
         if (!HEADLESS) {
             getApplication().getMainFrame().setCursor(new Cursor(Cursor.WAIT_CURSOR));
         }
@@ -837,11 +837,7 @@ public class Main implements Runnable {
 
         if (!HEADLESS) {
             if (START_SERVER) {
-                MPServer serv = new MPServer();
-                serv.start();
-//                ((YabsView)getApplication()).getIdentifierView().showServerStatus(serv.isAlive());
-            } else {
-//                ((YabsView)getApplication()).getIdentifierView().showServerStatus(false);
+                MPServer.runServer();
             }
         }
 

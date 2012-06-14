@@ -70,5 +70,9 @@ public interface YabsView{
     public void setClipBoardVisible(boolean show);
 
     public void reloadFavorites();
+
+    public void showOfficeStatus(boolean b, String description);
+
+    public void showServerStatus(boolean b);
     
 }

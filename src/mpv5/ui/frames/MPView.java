@@ -4,6 +4,8 @@
 package mpv5.ui.frames;
 
 import com.l2fprod.common.swing.JOutlookBar;
+import enoa.connection.NoaConnection;
+import enoa.connection.NoaConnectionLocalServer;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Cursor;
@@ -22,6 +24,8 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -79,6 +83,7 @@ import mpv5.ui.dialogs.subcomponents.wizard_Yabs1_Import;
 import mpv5.ui.menus.ClipboardMenuItem;
 import mpv5.ui.menus.FavouritesMenuItem;
 import mpv5.ui.misc.CloseableTabbedPane;
+import mpv5.ui.misc.FadeOnChangeLabel;
 import mpv5.ui.misc.MPTable;
 import mpv5.ui.misc.Position;
 import mpv5.ui.panels.ActivityConfirmationPanel;
@@ -118,12 +123,12 @@ import org.jdesktop.application.SingleFrameApplication;
  * The application's main frame.
  */
 public class MPView extends FrameView implements YabsView, FlowProvider {
-
+    
     public static MPView identifierView;
     private static Dimension initialSize = new Dimension(1100, 900);
     public static JFrame identifierFrame;
     private static CloseableTabbedPane tabPane;
-    private static JLabel messagelabel = new JLabel();
+    private static JLabel messagelabel = new FadeOnChangeLabel();
     private static JComboBox history = new JComboBox();
     private static JProgressBar progressbar = new JProgressBar();
     private static JMenu favMenu;
@@ -153,7 +158,7 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
     public static synchronized void addMessage(final String message) {
         if (loaded) {//dont do anything if main frame is not constructed
             Runnable runnable = new Runnable() {
-
+                
                 public void run() {
                     getMessagelabel().setText(message);
                     getHistory().addItem(message);
@@ -381,7 +386,7 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
     public static ProductList getPlisttab() {
         return plisttab;
     }
-
+    
     public static void setPredefTitle(String string) {
         predefTitle = string;
     }
@@ -486,7 +491,7 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
             return null;
         }
     }
-
+    
     public final void reloadFavorites() {
         Favourite[] favs = Favourite.getUserFavourites();
         for (int i = 0; i < favs.length; i++) {
@@ -508,14 +513,14 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
         getCurrentList().add(obj);
         setClipBoardVisible(true);
     }
-
+    
     public MPView(SingleFrameApplication app) {
         super(app);
-
+        
         MPView.identifierApplication = app;
-
+        
         initComponents();
-
+        
         try {
             Image icon = Toolkit.getDefaultToolkit().getImage(this.getFrame().getClass().getResource(Constants.ICON));
             this.getFrame().setIconImage(icon);
@@ -523,13 +528,13 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
         } catch (Exception e) {
             Log.Debug(e);
         }
-
+        
         tabPane = new CloseableTabbedPane(this);
         identifierFrame = this.getFrame();
         Popup.identifier = identifierFrame;
         progressbar = this.progressBar;
         progressbar.setMinimum(0);
-        messagelabel = statusMessageLabel;
+//        messagelabel = statusMessageLabel;
         staterrorlabel = errorlabel;
         history = xhistory;
         history.setRenderer(new ComboBoxRendererForTooltip());
@@ -544,31 +549,31 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
         identifierView = this;
         filedialog = new DialogForFile(DialogForFile.FILES_ONLY);
         jMenuItem24.setEnabled(!LocalSettings.getBooleanProperty(LocalSettings.OFFICE_REMOTE));
-
+        
         nav_outlookbar.setAnimated(navBarAnimated);
         getFrame().addComponentListener(new ComponentAdapter() {
-
+            
             @Override
             public void componentResized(ComponentEvent event) {
                 setNaviPanelSize();
             }
         });
-
+        
         if (predefTitle != null) {
             identifierFrame.setTitle(identifierFrame.getTitle() + predefTitle);
         }
-
+        
         QueryHandler.setWaitCursorFor(identifierFrame);
-
+        
         pluginLoader = new YabsPluginLoader();
-
+        
         addTab(new StartPage(), Messages.WELCOME);
         LocalSettings.save();
-
+        
         if (Log.getLoglevel() == Log.LOGLEVEL_DEBUG) {
 //            jMenuItem45.setEnabled(true);
         }
-
+        
         identifierFrame.validate();
         loaded = true;
     }
@@ -580,10 +585,10 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
     public void enableToolBar(boolean enable) {
         getMainToolbar().setEnabled(enable);
     }
-
+    
     private void setNaviPanelSize() {
         Runnable runnable = new Runnable() {
-
+            
             public void run() {
                 getNav_outlookbar().setPreferredSize(new Dimension(getNav_outlookbar().getWidth(), getFrame().getHeight() - 200));
                 getNav_outlookbar().setMaximumSize(new Dimension(getNav_outlookbar().getWidth(), getFrame().getHeight() - 200));
@@ -593,7 +598,7 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
                 getNaviPanel().repaint();
             }
         };
-
+        
         SwingUtilities.invokeLater(runnable);
     }
 
@@ -626,14 +631,14 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
                 }
             }
         }
-
+        
         if (proceed) {
             if (item.getView() != null && mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("org.openyabs.uiproperty", "norecycletabs")) {
                 if (tabTitle == null) {
                     final DataPanel p = ((DataPanel) item.getView());
                     addTab((JComponent) p, item.__getCname());
                     Runnable runnable = new Runnable() {
-
+                        
                         public void run() {
                             p.setDataOwner(item, true);
                         }
@@ -643,7 +648,7 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
                     final DataPanel p = ((DataPanel) item.getView());
                     addTab((JComponent) p, tabTitle + ": " + item.__getCname());
                     Runnable runnable = new Runnable() {
-
+                        
                         public void run() {
                             p.setDataOwner(item, true);
                         }
@@ -675,14 +680,14 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
                 if (!found) {
                     try {
                         final DataPanel p = (DataPanel) item.getView();
-
+                        
                         if (tabTitle == null) {
                             addTab((JComponent) p, item.__getCname());
                         } else {
                             addTab((JComponent) p, tabTitle + ": " + item.__getCname());
                         }
                         Runnable runnable = new Runnable() {
-
+                            
                             public void run() {
                                 p.setDataOwner(item, true);
                             }
@@ -698,7 +703,7 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
                 }
             }
         }
-
+        
         setPointInFlow(addToFlow(item));
         setWaiting(false);
         return getCurrentTab();
@@ -741,7 +746,7 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
                 Log.Debug(this, e.getMessage());
             }
         }
-
+        
         if (!found) {
             addTab(instanceOf, label.toString());
         }
@@ -759,11 +764,11 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
         getTabPane().setSelectedComponent(spane);
         return getTabPane().getSelectedIndex();
     }
-
+    
     private void addTab(JComponent tab, Messages name) {
         addTab(tab, name.toString());
     }
-
+    
     private void importXML() {
         Wizard w = new Wizard(false);
         w.addPanel(new wizard_XMLImport_1(w));
@@ -869,6 +874,7 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
         jMenuItem23 = new javax.swing.JMenuItem();
         jMenuItem31 = new javax.swing.JMenuItem();
         jMenuItem24 = new javax.swing.JMenuItem();
+        jMenuItem47 = new javax.swing.JMenuItem();
         jSeparator6 = new javax.swing.JSeparator();
         jMenuItem43 = new javax.swing.JMenuItem();
         jMenuItem45 = new javax.swing.JMenuItem();
@@ -893,6 +899,7 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
         xhistory = new javax.swing.JComboBox();
         serverlabel = new javax.swing.JPanel();
         errorlabel = new javax.swing.JLabel();
+        officelabel = new javax.swing.JPanel();
         mainToolbar = new javax.swing.JToolBar();
         closeButton1 = new javax.swing.JButton();
         closeButton2 = new javax.swing.JButton();
@@ -1306,7 +1313,7 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
         naviPanelLayout.setVerticalGroup(
             naviPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(naviPanelLayout.createSequentialGroup()
-                .addComponent(nav_outlookbar, javax.swing.GroupLayout.DEFAULT_SIZE, 523, Short.MAX_VALUE)
+                .addComponent(nav_outlookbar, javax.swing.GroupLayout.DEFAULT_SIZE, 518, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -1322,7 +1329,7 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
         mainPanelLayout.setVerticalGroup(
             mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(naviPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(tabpanePanel, javax.swing.GroupLayout.DEFAULT_SIZE, 538, Short.MAX_VALUE)
+            .addComponent(tabpanePanel, javax.swing.GroupLayout.DEFAULT_SIZE, 534, Short.MAX_VALUE)
         );
 
         menuBar.setName("menuBar"); // NOI18N
@@ -1785,6 +1792,16 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
         });
         toolsMenu.add(jMenuItem24);
 
+        jMenuItem47.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/16/info.png"))); // NOI18N
+        jMenuItem47.setText(bundle.getString("MPView.jMenuItem47.text")); // NOI18N
+        jMenuItem47.setName("jMenuItem47"); // NOI18N
+        jMenuItem47.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem47ActionPerformed(evt);
+            }
+        });
+        toolsMenu.add(jMenuItem47);
+
         jSeparator6.setName("jSeparator6"); // NOI18N
         toolsMenu.add(jSeparator6);
 
@@ -2003,6 +2020,13 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
         });
         statusPanel.add(errorlabel);
 
+        officelabel.setMaximumSize(new java.awt.Dimension(20, 100));
+        officelabel.setMinimumSize(new java.awt.Dimension(20, 10));
+        officelabel.setName("officelabel"); // NOI18N
+        officelabel.setPreferredSize(new java.awt.Dimension(20, 18));
+        officelabel.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.CENTER, 5, 0));
+        statusPanel.add(officelabel);
+
         mainToolbar.setFloatable(false);
         mainToolbar.setRollover(true);
         mainToolbar.setName("mainToolbar"); // NOI18N
@@ -2099,24 +2123,24 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
-
+        
         DatabaseObject d = DatabaseObject.getObject(Context.getCustomer());
         ((mpv5.db.objects.Contact) d).setisCustomer(true);
-
+        
         ContactsList t = getClisttab(Context.getCustomer());
         t.showType((Contact) d);
         addOrShowTab(t, Messages.CONTACTS_LIST.toString());
     }//GEN-LAST:event_jButton5ActionPerformed
-
+    
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-
+        
         DatabaseObject d = DatabaseObject.getObject(Context.getSupplier());
         ((mpv5.db.objects.Contact) d).setisSupplier(true);
-
+        
         ContactsList t = getClisttab(Context.getSupplier());
         t.showType((Contact) d);
         addOrShowTab(t, Messages.CONTACTS_LIST.toString());
-
+        
 }//GEN-LAST:event_jButton1ActionPerformed
     private static ContactsList clisttabc;
     private static ContactsList clisttabs;
@@ -2124,32 +2148,32 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
     private static ProductList plisttab;
     private static ProductsOverview polisttab;
     private void jButton18ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton18ActionPerformed
-
+        
         DatabaseObject d = DatabaseObject.getObject(Context.getManufacturer());
         ((mpv5.db.objects.Contact) d).setisManufacturer(true);
-
+        
         ContactsList t = getClisttab(Context.getManufacturer());
         t.showType((Contact) d);
         addOrShowTab(t, Messages.CONTACTS_LIST.toString());
     }//GEN-LAST:event_jButton18ActionPerformed
-
+    
     private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
         Main.setLaF(null);
         User.getCurrentUser().setLaf(UIManager.getSystemLookAndFeelClassName());
         User.getCurrentUser().save();
     }//GEN-LAST:event_jMenuItem1ActionPerformed
-
+    
     private void jMenuItem2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem2ActionPerformed
         Main.setLaF("de.muntjak.tinylookandfeel.TinyLookAndFeel");
         User.getCurrentUser().setLaf("de.muntjak.tinylookandfeel.TinyLookAndFeel");
         User.getCurrentUser().save();
     }//GEN-LAST:event_jMenuItem2ActionPerformed
-
+    
     private void jMenuItem3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem3ActionPerformed
         addOrShowTab(MPControlPanel.instanceOf(), Messages.CONTROL_PANEL.toString());
-
+        
     }//GEN-LAST:event_jMenuItem3ActionPerformed
-
+    
     private void calculatorButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_calculatorButtonActionPerformed
         if (LocalSettings.hasProperty(LocalSettings.CALCULATOR) && LocalSettings.getProperty(LocalSettings.CALCULATOR).length() >= 1) {
             try {
@@ -2162,23 +2186,23 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
             MPCalculator2.instanceOf();
         }
     }//GEN-LAST:event_calculatorButtonActionPerformed
-
+    
     private void lockButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_lockButtonActionPerformed
-
+        
         mpv5.usermanagement.Lock.lock(this.getFrame());
         User.getCurrentUser().logout();
 }//GEN-LAST:event_lockButtonActionPerformed
-
+    
     private void closeButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_closeButtonActionPerformed
         if (Popup.Y_N_dialog(Messages.REALLY_CLOSE)) {
             Main.getApplication().exit();
         }
 }//GEN-LAST:event_closeButtonActionPerformed
-
+    
     private void jMenuItem4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem4ActionPerformed
         selectedTabInNewFrame();
     }//GEN-LAST:event_jMenuItem4ActionPerformed
-
+    
     private void jMenuItem6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem6ActionPerformed
         DataPanel pane = getCurrentTab();
         if (pane != null) {
@@ -2187,37 +2211,37 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
             Export.print(getTabPane().getSelectedComponent());
         }
     }//GEN-LAST:event_jMenuItem6ActionPerformed
-
+    
     private void jMenuItem7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem7ActionPerformed
-
+        
         getClipboardMenu().removeAll();
         getClipboardMenu().add(jMenu6);
-
+        
     }//GEN-LAST:event_jMenuItem7ActionPerformed
-
+    
     private void jMenuItem8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem8ActionPerformed
         XMLWriter.export(Context.getContact());
     }//GEN-LAST:event_jMenuItem8ActionPerformed
-
+    
     private void jMenuItem9ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem9ActionPerformed
-
+        
         getClipboardMenu().add(new ClipboardMenuItem(getCurrentTab().getDataOwner()));
-
+        
     }//GEN-LAST:event_jMenuItem9ActionPerformed
-
+    
     private void jMenuItem11ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem11ActionPerformed
         importXML();
     }//GEN-LAST:event_jMenuItem11ActionPerformed
-
+    
     private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
         addTab((JComponent) HistoryPanel.instanceOf(), Messages.HISTORY_PANEL.toString());
-
+        
     }//GEN-LAST:event_jButton6ActionPerformed
-
+    
     private void jMenuItem12ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem12ActionPerformed
         getIdentifierApplication().exit(evt);
     }//GEN-LAST:event_jMenuItem12ActionPerformed
-
+    
     private void jMenuItem13ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem13ActionPerformed
         try {
             DataPanel pane = getCurrentTab();
@@ -2240,9 +2264,9 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
             Log.Debug(this, changeNotApprovedException.getMessage());
         }
     }//GEN-LAST:event_jMenuItem13ActionPerformed
-
+    
     private void jMenuItem14ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem14ActionPerformed
-
+        
         DataPanel pane = getCurrentTab();
         if (pane != null) {
             try {
@@ -2261,16 +2285,16 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
             }
         }
     }//GEN-LAST:event_jMenuItem14ActionPerformed
-
+    
     private void jMenuItem16ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem16ActionPerformed
         getCurrentTab().paste(getClipboardItems());
     }//GEN-LAST:event_jMenuItem16ActionPerformed
-
+    
     private void jMenuItem15ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem15ActionPerformed
         try {
             DataPanel tab = getCurrentTab();
             DatabaseObject dato = tab.getDataOwner();
-
+            
             if (dato.isExisting()) {
                 dato.getPanelData((tab));
                 dato.reset();
@@ -2280,181 +2304,179 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
         } catch (Exception ignore) {
         }
     }//GEN-LAST:event_jMenuItem15ActionPerformed
-
+    
     private void jMenuItem17ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem17ActionPerformed
-
+        
         Search.instanceOf();
-
+        
     }//GEN-LAST:event_jMenuItem17ActionPerformed
-
+    
     private void jMenuItem19ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem19ActionPerformed
         try {
             getCurrentTab().refresh();
         } catch (Exception ignore) {
         }
     }//GEN-LAST:event_jMenuItem19ActionPerformed
-
+    
     private void jMenuItem20ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem20ActionPerformed
-
+        
         XMLWriter.export(Context.getAccounts());
     }//GEN-LAST:event_jMenuItem20ActionPerformed
-
+    
     private void jMenuItem21ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem21ActionPerformed
-
+        
         if (mpv5.usermanagement.MPSecurityManager.check(Context.getAccounts(), MPSecurityManager.EXPORT)) {
             try {
-
+                
                 String name = Context.getAccounts().getDbIdentity();
                 ArrayList<DatabaseObject> dbobjarr = DatabaseObject.getObjects(Context.getAccounts());
-
+                
                 TextDatFile t = new TextDatFile();
                 t.parse(dbobjarr);
-
+                
                 showFilesaveDialogFor(t.createFile(name));
             } catch (NodataFoundException ex) {
                 Log.Debug(this, ex);
             }
         }
     }//GEN-LAST:event_jMenuItem21ActionPerformed
-
+    
     private void jMenuItem23ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem23ActionPerformed
         addOrShowTab(TrashPanel.instanceOf(), Messages.TRASHBIN.getValue());
     }//GEN-LAST:event_jMenuItem23ActionPerformed
-
+    
     private void jButton7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton7ActionPerformed
         addOrShowTab(TrashPanel.instanceOf(), Messages.TRASHBIN.toString());
     }//GEN-LAST:event_jButton7ActionPerformed
-
+    
     private void jButton8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton8ActionPerformed
         addTab(new ItemPanel(Context.getInvoice(), Item.TYPE_BILL), Messages.NEW_BILL);
     }//GEN-LAST:event_jButton8ActionPerformed
     private MPServer mpserver;
     private void jMenuItem24ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem24ActionPerformed
-        mpserver = new MPServer();
-        getMpserver().start();
-        showServerStatus(getMpserver().isAlive());
-        jMenuItem24.setEnabled(!mpserver.isAlive());
+        MPServer.runServer();
+        jMenuItem24.setEnabled(false);
     }//GEN-LAST:event_jMenuItem24ActionPerformed
-
+    
     private void jMenuItem25ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem25ActionPerformed
         LocalSettings.setProperty(LocalSettings.SCROLL_ALWAYS, String.valueOf(!isTabPaneScrolled()));
         LocalSettings.save();
         Popup.notice(Messages.RESTART_REQUIRED);
     }//GEN-LAST:event_jMenuItem25ActionPerformed
-
+    
     private void jMenuItem26ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem26ActionPerformed
-
+        
         XMLWriter.export(Context.getItem());
     }//GEN-LAST:event_jMenuItem26ActionPerformed
-
+    
     private void jButton10ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton10ActionPerformed
-
+        
         addTab(new ItemPanel(Context.getOffer(), Item.TYPE_OFFER), Messages.NEW_OFFER);
     }//GEN-LAST:event_jButton10ActionPerformed
-
+    
     private void jButton11ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton11ActionPerformed
         addTab(new ItemPanel(Context.getOrder(), Item.TYPE_ORDER), Messages.NEW_ORDER);
     }//GEN-LAST:event_jButton11ActionPerformed
-
+    
     private void jButton12ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton12ActionPerformed
         addTab(new ProductPanel(Context.getProduct(), Product.TYPE_SERVICE), Messages.NEW_SERVICE);
     }//GEN-LAST:event_jButton12ActionPerformed
-
+    
     private void jButton13ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton13ActionPerformed
         addTab(new ProductPanel(Context.getProduct(), Product.TYPE_PRODUCT), Messages.NEW_PRODUCT);
     }//GEN-LAST:event_jButton13ActionPerformed
-
+    
     private void errorlabelMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_errorlabelMouseClicked
         SubmitForm submitForm = new SubmitForm(ExceptionHandler.getExceptions());
         BigPopup.showPopup(getFrame().getRootPane(), submitForm, "Bughunter");
         getErrorlabel().setIcon(null);
         getIdentifierFrame().validate();
     }//GEN-LAST:event_errorlabelMouseClicked
-
+    
     private void jButton14ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton14ActionPerformed
         addTab(new ProductListsPanel(), Messages.NEW_LIST);
-
+        
     }//GEN-LAST:event_jButton14ActionPerformed
-
+    
     private void jButton15ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton15ActionPerformed
         addOrShowTab(ExpensePanel.instanceOf(), Messages.EXPENSE);
     }//GEN-LAST:event_jButton15ActionPerformed
-
+    
     private void jButton16ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton16ActionPerformed
         addOrShowTab(RevenuePanel.instanceOf(), Messages.REVENUE);
-
+        
     }//GEN-LAST:event_jButton16ActionPerformed
-
+    
     private void jButton17ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton17ActionPerformed
         addOrShowTab(JournalPanel.instanceOf(), Messages.OVERVIEW);
     }//GEN-LAST:event_jButton17ActionPerformed
-
+    
     private void helpmenuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_helpmenuActionPerformed
 }//GEN-LAST:event_helpmenuActionPerformed
-
+    
     private void helpmenuMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_helpmenuMouseClicked
     }//GEN-LAST:event_helpmenuMouseClicked
-
+    
     private void jMenuItem27ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem27ActionPerformed
-
+        
         try {
             java.awt.Desktop.getDesktop().browse(new URI(Constants.WEBSITE));
         } catch (Exception ex) {
             Log.Debug(ex);
         }
 }//GEN-LAST:event_jMenuItem27ActionPerformed
-
+    
     private void jMenuItem10ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem10ActionPerformed
         addOrShowTab(Log.getLogger().get(0).open(), "Logs");
 }//GEN-LAST:event_jMenuItem10ActionPerformed
-
+    
     private void jMenuItem30ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem30ActionPerformed
         new About(new ImageIcon(About.class.getResource(mpv5.globals.Constants.ABOUT_IMAGE)));
     }//GEN-LAST:event_jMenuItem30ActionPerformed
-
+    
     private void jButton19ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton19ActionPerformed
-
+        
         if (getPlisttab() == null) {
             plisttab = new ProductList();
         }
         addOrShowTab(getPlisttab(), Messages.ALL_PRODUCTS.toString());
     }//GEN-LAST:event_jButton19ActionPerformed
-
+    
     private void jMenuItem31ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem31ActionPerformed
-
+        
         addTab(new QueryPanel(), Messages.QUERY_WINDOW);
     }//GEN-LAST:event_jMenuItem31ActionPerformed
-
+    
     private void jMenuItem32ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem32ActionPerformed
-
+        
         XMLWriter.export(Context.getProduct());
     }//GEN-LAST:event_jMenuItem32ActionPerformed
-
+    
     private void jMenuItem33ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem33ActionPerformed
         DatabaseObject d = Search2.showSearchFor(Context.getContact());
         if (d != null) {
             addTab(d);
         }
     }//GEN-LAST:event_jMenuItem33ActionPerformed
-
+    
     private void jMenuItem34ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem34ActionPerformed
-
+        
         DatabaseObject d = Search2.showSearchFor(Context.getItem());
         if (d != null) {
             addTab(d);
         }
     }//GEN-LAST:event_jMenuItem34ActionPerformed
-
+    
     private void jMenuItem35ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem35ActionPerformed
         tabPane.removeAll();
         tabPane.validate();
-
+        
     }//GEN-LAST:event_jMenuItem35ActionPerformed
-
+    
     private void jMenuItem36ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem36ActionPerformed
         tabPane.removeAllButSelected();
     }//GEN-LAST:event_jMenuItem36ActionPerformed
-
+    
     private void jMenuItem22ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem22ActionPerformed
         DialogForFile f = getFiledialog();
         if (f.saveFile()) {
@@ -2464,21 +2486,21 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
             }
         }
     }//GEN-LAST:event_jMenuItem22ActionPerformed
-
+    
     private void jMenuItem38ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem38ActionPerformed
-
+        
         DialogForFile f = getFiledialog();
         List<Contact> contacts = null;
         if (f.chooseFile()) {
             try {
                 List<VCard> l = VCFParser.parse(f.getFile());
                 contacts = VCFParser.toContacts(l);
-
+                
             } catch (Exception ex) {
 //                        Log.Debug(ex);
                 Popup.error(ex);
             }
-
+            
             if (contacts != null) {
                 for (int i = 0; i < contacts.size(); i++) {
                     Contact contact = null;
@@ -2490,13 +2512,13 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
                         contact.setCname("ERROR");
                     }
                 }
-
+                
                 GeneralListPanel pl = new GeneralListPanel(contacts);
                 MPView.identifierView.addTab(pl, "Imported contacts");
             }
         }
     }//GEN-LAST:event_jMenuItem38ActionPerformed
-
+    
     private void jMenuItem39ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem39ActionPerformed
         User.getCurrentUser().getLayoutProperties().clear();
         try {
@@ -2504,45 +2526,45 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
         } catch (Exception ex) {
             Log.Debug(ex);
         }
-
+        
         resettables(getTabpanePanel());
     }//GEN-LAST:event_jMenuItem39ActionPerformed
-
+    
     private void jButton20ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton20ActionPerformed
-
+        
         if (polisttab == null) {
             polisttab = new ProductsOverview();
         }
         addOrShowTab(polisttab, Messages.ALL_PRODUCTS.toString());
     }//GEN-LAST:event_jButton20ActionPerformed
-
+    
     private void jMenuItem41ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem41ActionPerformed
         //TODO product to html wiz
     }//GEN-LAST:event_jMenuItem41ActionPerformed
-
+    
     private void jMenuItem40ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem40ActionPerformed
-
+        
         Wizard w = new Wizard(false);
         w.addPanel(new wizard_CSVImport2_1(w));
         w.showWiz();
-
+        
     }//GEN-LAST:event_jMenuItem40ActionPerformed
-
+    
     private void jMenuItem42ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem42ActionPerformed
         addOrShowTab(MPControlPanel.instanceOf(), Messages.CONTROL_PANEL.toString());
         MPControlPanel.instanceOf().openDetails(new ControlPanel_MailTemplates());
     }//GEN-LAST:event_jMenuItem42ActionPerformed
-
+    
     private void jMenuItem44ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem44ActionPerformed
         mpv5.usermanagement.Lock.lock(this.getFrame());
         User.getCurrentUser().logout();
-
+        
     }//GEN-LAST:event_jMenuItem44ActionPerformed
-
+    
     private void jMenuItem5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem5ActionPerformed
         mpv5.YabsViewProxy.instance().setClipBoardVisible(true);
     }//GEN-LAST:event_jMenuItem5ActionPerformed
-
+    
     private void jMenuItem43ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem43ActionPerformed
         try {
             (new Scheduler()).start();
@@ -2550,27 +2572,27 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
             Log.Debug(e);
         }
     }//GEN-LAST:event_jMenuItem43ActionPerformed
-
+    
     private void closeButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_closeButton1ActionPerformed
         showPreviousDatabaseObject();
     }//GEN-LAST:event_closeButton1ActionPerformed
-
+    
     private void closeButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_closeButton2ActionPerformed
         showNextDatabaseObject();
     }//GEN-LAST:event_closeButton2ActionPerformed
-
+    
     private void jButton9ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton9ActionPerformed
         addOrShowTab(ConversationPanel.instanceOf(), Messages.CONVERSATION.toString());
     }//GEN-LAST:event_jButton9ActionPerformed
-
+    
     private void jMenuItem45ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem45ActionPerformed
         addOrShowTab(MassPrintPanel.instanceOf(), Messages.MASSPRINT.toString());
     }//GEN-LAST:event_jMenuItem45ActionPerformed
-
+    
     private void jButton21ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton21ActionPerformed
         addOrShowTab(ActivityConfirmationPanel.instanceOf(), Messages.ACTIVITYCONFIRMATION.toString());
     }//GEN-LAST:event_jButton21ActionPerformed
-
+    
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         DataPanel pane = getCurrentTab();
         if (pane != null) {
@@ -2579,35 +2601,52 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
             Export.print(getTabPane().getSelectedComponent());
         }
     }//GEN-LAST:event_jButton2ActionPerformed
-
+    
     private void jButton22ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton22ActionPerformed
         addTab(new ProductOrderPanel(), Messages.NEW_ORDER);
-
+        
     }//GEN-LAST:event_jButton22ActionPerformed
-
+    
     private void actionImport(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_actionImport
         MigrationWB.instanceOf().doImport();
     }//GEN-LAST:event_actionImport
-
+    
     private void actionMigrateToMySQL(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_actionMigrateToMySQL
         MigrationWB.instanceOf().doExportToMySQL();
     }//GEN-LAST:event_actionMigrateToMySQL
-
+    
     private void actionExportToDerby(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_actionExportToDerby
         MigrationWB.instanceOf().doExportToDerby();
     }//GEN-LAST:event_actionExportToDerby
-
+    
     private void jMenuItem28ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem28ActionPerformed
         Wizard w = new Wizard(false);
         w.addPanel(new wizard_Yabs1_Import(w));
         w.showWiz();
     }//GEN-LAST:event_jMenuItem28ActionPerformed
-
+    
     private void jMenuItem29ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem29ActionPerformed
         Wizard w = new Wizard(false);
         w.addPanel(new wizard_MP45_Import(w));
         w.showWiz();
     }//GEN-LAST:event_jMenuItem29ActionPerformed
+    
+    private void jMenuItem47ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem47ActionPerformed
+        try {
+            NoaConnection.killConnection();
+            try {
+                if (LocalSettings.getBooleanProperty(LocalSettings.OFFICE_LOCALSERVER)) {
+                    Log.Debug(Main.class, "Starting OpenOffice as background service..");
+                    NoaConnectionLocalServer.startOOServerIfNotRunning(LocalSettings.getProperty(LocalSettings.OFFICE_HOME), LocalSettings.getIntegerProperty(LocalSettings.OFFICE_PORT));                    
+                }
+            } catch (Exception e) {
+                Log.Debug(this, e.getMessage());
+            }
+            NoaConnection.getConnection();
+        } catch (Exception ex) {
+            Logger.getLogger(MPView.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_jMenuItem47ActionPerformed
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton calculatorButton;
     public javax.swing.JMenu clipboardMenu;
@@ -2692,6 +2731,7 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
     private javax.swing.JMenuItem jMenuItem44;
     private javax.swing.JMenuItem jMenuItem45;
     private javax.swing.JMenuItem jMenuItem46;
+    private javax.swing.JMenuItem jMenuItem47;
     private javax.swing.JMenuItem jMenuItem5;
     private javax.swing.JMenuItem jMenuItem6;
     private javax.swing.JMenuItem jMenuItem7;
@@ -2716,6 +2756,7 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
     private com.l2fprod.common.swing.JOutlookBar nav_outlookbar;
     private javax.swing.JPanel nav_products;
     private javax.swing.JPanel naviPanel;
+    private javax.swing.JPanel officelabel;
     private javax.swing.JPanel parent_nav_accounting;
     private javax.swing.JPanel parent_nav_contacts;
     private javax.swing.JPanel parent_nav_extras;
@@ -2770,9 +2811,9 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
             final String title = getTabPane().getTitleAt(getTabPane().getSelectedIndex());
             getTabPane().remove(pane);
             JFrame fr = new JFrame(title) {
-
+                
                 private static final long serialVersionUID = 1L;
-
+                
                 @Override
                 public void dispose() {
                     getTabPane().addTab(title, pane);
@@ -2803,7 +2844,7 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
             plab.setEnabled(true);
             plab.setToolTipText("<html><b>MP Server " + Messages.LOADED + "</b><br/>Port: " + LocalSettings.getProperty(LocalSettings.SERVER_PORT) + "</html>");
             plab.addMouseListener(new MouseAdapter() {
-
+                
                 @Override
                 public void mouseReleased(MouseEvent e) {
                     if (e.getButton() == MouseEvent.BUTTON2 || e.getButton() == MouseEvent.BUTTON3) {
@@ -2811,10 +2852,10 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
                         final JPopupMenu m = new JPopupMenu();
                         JMenuItem n = new JMenuItem(Messages.UNLOAD.getValue());
                         n.addActionListener(new ActionListener() {
-
+                            
                             @Override
                             public void actionPerformed(ActionEvent e) {
-                                MPServer.shutdown();
+                                MPServer.stopServer();
                                 showServerStatus(false);
                                 jMenuItem24.setEnabled(true);
                                 plab.setToolTipText("<html><b>MP Server</b>");
@@ -2836,7 +2877,60 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
             getServerlabel().setPreferredSize(new Dimension(0, 0));
             getServerlabel().setMinimumSize(new Dimension(0, 0));
             getServerlabel().setSize(0, 0);
+            
+        }
+        getFrame().validate();
+    }
 
+    /**
+     * Triggers the MP Server notification to the view
+     * @param running
+     */
+    public void showOfficeStatus(boolean running, final String description) {
+        if (running) {
+            officelabel.setMaximumSize(new Dimension(18, 18));
+            officelabel.setPreferredSize(new Dimension(18, 18));
+            officelabel.setMinimumSize(new Dimension(18, 18));
+            officelabel.setSize(18, 18);
+            final JLabel plab = new JLabel();
+            plab.setIcon(new MPIcon("/mpv5/resources/images/16/info.png"));
+            plab.setEnabled(true);
+            plab.setToolTipText("<html><b>" + Messages.OO_DONE_LOADING + "<br>" + description + "</html>");
+            plab.addMouseListener(new MouseAdapter() {
+                
+                @Override
+                public void mouseReleased(MouseEvent e) {
+                    if (e.getButton() == MouseEvent.BUTTON2 || e.getButton() == MouseEvent.BUTTON3) {
+                        JLabel source = (JLabel) e.getSource();
+                        final JPopupMenu m = new JPopupMenu();
+                        JMenuItem n = new JMenuItem(Messages.UNLOAD.getValue());
+                        n.addActionListener(new ActionListener() {
+                            
+                            @Override
+                            public void actionPerformed(ActionEvent e) {
+                                NoaConnection.killConnection();
+                                showOfficeStatus(false, description);
+                                
+                                plab.setToolTipText("<html><b>Office</b>");
+                                MouseListener[] ml = plab.getMouseListeners();
+                                for (int i = 0; i < ml.length; i++) {
+                                    MouseListener mouseListener = ml[i];
+                                    plab.removeMouseListener(mouseListener);
+                                }
+                            }
+                        });
+                        m.add(n);
+                        m.show(plab, e.getX(), e.getY());
+                    }
+                }
+            });
+            officelabel.add(plab);
+        } else {
+            officelabel.setMaximumSize(new Dimension(0, 0));
+            officelabel.setPreferredSize(new Dimension(0, 0));
+            officelabel.setMinimumSize(new Dimension(0, 0));
+            officelabel.setSize(0, 0);
+            
         }
         getFrame().validate();
     }
@@ -3050,36 +3144,36 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
      * @param button The button to add
      */
     public void addButton(int TARGET, JButton button) {
-
+        
         switch (TARGET) {
-
+            
             case NAV_CONTACTS:
                 getNav_contacts().add(button);
                 identifierFrame.validate();
                 break;
-
+            
             case NAV_ACCOUNTING:
                 getNav_accounting().add(button);
                 identifierFrame.validate();
                 break;
-
+            
             case NAV_PRODUCTS:
                 getNav_products().add(button);
                 identifierFrame.validate();
                 break;
-
+            
             case NAV_EXTRAS:
                 getNav_extras().add(button);
                 identifierFrame.validate();
                 break;
-
+            
             default:
                 throw new UnsupportedOperationException("Target not defined.");
         }
     }
-
+    
     private void resettables(JComponent component) {
-
+        
         try {
             if (component instanceof MPTable) {
                 ((MPTable) component).reset();
@@ -3096,7 +3190,7 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
             }
         } catch (Exception e) {
             Log.Debug(e);
-
+            
         }
     }
 
@@ -3111,9 +3205,9 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
      * Paste the current clipboard items (if any)
      */
     public DatabaseObject[] getClipboardItems() {
-
+        
         List<DatabaseObject> list = new ArrayList<DatabaseObject>();
-
+        
         for (int i = 1; i < getClipboardMenu().getItemCount(); i++) {
             try {
                 if (getClipboardMenu().getItemCount() > 1) {
@@ -3124,15 +3218,15 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
 //            Log.Debug(ignore);
             }
         }
-
+        
         return list.toArray(new DatabaseObject[]{});
     }
-
+    
     @Override
     public void addOrShowTab(DatabaseObject dbo) {
         addTab(dbo);
     }
-
+    
     @Override
     public synchronized void setClipBoardVisible(boolean show) {
         if (clipboard == null) {
@@ -3157,11 +3251,11 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
     }
     private static LinkedList<DatabaseObject> FLOW = new LinkedList<DatabaseObject>();
     private int pif = 0;
-
+    
     public int getPointInFlow() {
         return pif;
     }
-
+    
     public int addToFlow(DatabaseObject d) {
         if (!FLOW.contains(d)) {
             FLOW.addLast(d);
@@ -3170,31 +3264,31 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
         }
         return FLOW.lastIndexOf(d);
     }
-
+    
     public void showPreviousDatabaseObject() {
         if (hasPreviousDatabaseObject()) {
             addOrShowTab(FLOW.get(pif - 1));
         }
     }
-
+    
     public boolean hasPreviousDatabaseObject() {
         return !FLOW.isEmpty() && pif > 0;
     }
-
+    
     public void showNextDatabaseObject() {
         if (hasNextDatabaseObject()) {
             addOrShowTab(FLOW.get(pif + 1));
         }
     }
-
+    
     public boolean hasNextDatabaseObject() {
         return pif + 1 < FLOW.size();
     }
-
+    
     public DatabaseObject getCurrentDatabaseObject() {
         return FLOW.get(pif);
     }
-
+    
     private void setPointInFlow(int npif) {
         pif = npif;
     }

@@ -26,7 +26,7 @@
     <AuxValue name="FormSettings_listenerGenerationStyle" type="java.lang.Integer" value="0"/>
     <AuxValue name="FormSettings_variablesLocal" type="java.lang.Boolean" value="false"/>
     <AuxValue name="FormSettings_variablesModifier" type="java.lang.Integer" value="2"/>
-    <AuxValue name="designerSize" type="java.awt.Dimension" value="-84,-19,0,5,115,114,0,18,106,97,118,97,46,97,119,116,46,68,105,109,101,110,115,105,111,110,65,-114,-39,-41,-84,95,68,20,2,0,2,73,0,6,104,101,105,103,104,116,73,0,5,119,105,100,116,104,120,112,0,0,1,-2,0,0,4,7"/>
+    <AuxValue name="designerSize" type="java.awt.Dimension" value="-84,-19,0,5,115,114,0,18,106,97,118,97,46,97,119,116,46,68,105,109,101,110,115,105,111,110,65,-114,-39,-41,-84,95,68,20,2,0,2,73,0,6,104,101,105,103,104,116,73,0,5,119,105,100,116,104,120,112,0,0,2,1,0,0,4,43"/>
   </AuxValues>
 
   <Layout class="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout"/>
@@ -67,11 +67,11 @@
                   <Group type="103" groupAlignment="1" attributes="0">
                       <Group type="102" alignment="0" attributes="0">
                           <EmptySpace min="-2" pref="2" max="-2" attributes="0"/>
-                          <Component id="jScrollPane4" min="-2" pref="993" max="32767" attributes="0"/>
+                          <Component id="jScrollPane4" min="-2" pref="1029" max="32767" attributes="0"/>
                       </Group>
                       <Component id="jPanel1" alignment="0" max="32767" attributes="3"/>
                       <Component id="jPanel9" alignment="0" max="32767" attributes="3"/>
-                      <Component id="jToolBar1" alignment="1" pref="995" max="32767" attributes="3"/>
+                      <Component id="jToolBar1" alignment="1" pref="1031" max="32767" attributes="3"/>
                   </Group>
                   <EmptySpace max="-2" attributes="0"/>
               </Group>
@@ -84,7 +84,7 @@
                   <EmptySpace min="-2" pref="4" max="-2" attributes="0"/>
                   <Component id="jPanel1" min="-2" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
-                  <Component id="jScrollPane4" min="-2" pref="197" max="-2" attributes="0"/>
+                  <Component id="jScrollPane4" min="-2" pref="209" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
                   <Component id="jPanel9" max="32767" attributes="0"/>
               </Group>
@@ -119,25 +119,20 @@
                           <Group type="102" alignment="0" attributes="0">
                               <EmptySpace max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                                  <Component id="number" max="32767" attributes="1"/>
-                                  <Component id="taxnumber" alignment="0" pref="241" max="32767" attributes="1"/>
+                                  <Component id="taxnumber" max="32767" attributes="1"/>
+                                  <Component id="number" alignment="0" pref="286" max="32767" attributes="1"/>
                               </Group>
-                              <EmptySpace max="-2" attributes="0"/>
-                              <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                              <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                              <Group type="103" groupAlignment="1" max="-2" attributes="0">
                                   <Component id="companyselect" max="32767" attributes="1"/>
-                                  <Component id="groupnameselect" alignment="0" pref="299" max="32767" attributes="1"/>
+                                  <Component id="groupnameselect" alignment="1" pref="293" max="32767" attributes="1"/>
                               </Group>
                           </Group>
                       </Group>
-                      <Group type="103" groupAlignment="1" attributes="0">
-                          <Group type="102" attributes="0">
-                              <EmptySpace pref="115" max="32767" attributes="0"/>
-                              <Component id="addedby" pref="120" max="32767" attributes="1"/>
-                          </Group>
-                          <Group type="102" attributes="0">
-                              <EmptySpace max="-2" attributes="0"/>
-                              <Component id="dateadded" min="-2" max="-2" attributes="1"/>
-                          </Group>
+                      <EmptySpace min="-2" pref="133" max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="0" attributes="0">
+                          <Component id="dateadded" pref="138" max="32767" attributes="1"/>
+                          <Component id="addedby" alignment="1" pref="138" max="32767" attributes="1"/>
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
                   </Group>
@@ -166,7 +161,7 @@
                           </Group>
                           <Group type="102" alignment="0" attributes="0">
                               <Component id="addedby" min="-2" max="-2" attributes="0"/>
-                              <EmptySpace min="-2" pref="4" max="-2" attributes="0"/>
+                              <EmptySpace max="-2" attributes="0"/>
                               <Component id="dateadded" min="-2" max="-2" attributes="0"/>
                           </Group>
                       </Group>
@@ -225,6 +220,7 @@
                 <Property name="floatable" type="boolean" value="false"/>
                 <Property name="rollover" type="boolean" value="true"/>
                 <Property name="name" type="java.lang.String" value="jToolBar2" noResource="true"/>
+                <Property name="opaque" type="boolean" value="false"/>
               </Properties>
 
               <Layout class="org.netbeans.modules.form.compat2.layouts.DesignBoxLayout"/>
@@ -462,21 +458,21 @@
                   <Group type="102" alignment="0" attributes="0">
                       <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="jScrollPane2" alignment="1" pref="967" max="32767" attributes="0"/>
+                          <Component id="jScrollPane2" alignment="1" pref="1003" max="32767" attributes="0"/>
                           <Group type="102" alignment="0" attributes="0">
-                              <Component id="button_bills" min="-2" max="-2" attributes="0"/>
+                              <Component id="button_bills" max="32767" attributes="0"/>
                               <EmptySpace max="-2" attributes="0"/>
-                              <Component id="button_offers" min="-2" max="-2" attributes="0"/>
+                              <Component id="button_offers" max="32767" attributes="0"/>
                               <EmptySpace max="-2" attributes="0"/>
-                              <Component id="button_products" min="-2" max="-2" attributes="0"/>
+                              <Component id="button_products" max="32767" attributes="0"/>
                               <EmptySpace max="-2" attributes="0"/>
-                              <Component id="button_orders" min="-2" max="-2" attributes="0"/>
-                              <EmptySpace pref="599" max="32767" attributes="0"/>
-                              <Component id="jButton1" min="-2" pref="81" max="-2" attributes="0"/>
+                              <Component id="button_orders" max="32767" attributes="0"/>
+                              <EmptySpace pref="611" max="32767" attributes="0"/>
+                              <Component id="jButton1" pref="81" max="32767" attributes="0"/>
                               <EmptySpace max="-2" attributes="0"/>
-                              <Component id="addfile" min="-2" pref="24" max="-2" attributes="0"/>
+                              <Component id="addfile" pref="24" max="32767" attributes="0"/>
                               <EmptySpace max="-2" attributes="0"/>
-                              <Component id="removefile" min="-2" pref="24" max="-2" attributes="0"/>
+                              <Component id="removefile" pref="24" max="32767" attributes="0"/>
                           </Group>
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
@@ -492,12 +488,12 @@
                           <Component id="button_offers" alignment="2" min="-2" max="-2" attributes="0"/>
                           <Component id="button_products" alignment="2" min="-2" max="-2" attributes="0"/>
                           <Component id="button_orders" alignment="2" min="-2" max="-2" attributes="0"/>
-                          <Component id="jButton1" alignment="2" min="-2" pref="30" max="-2" attributes="0"/>
-                          <Component id="removefile" alignment="2" min="-2" pref="30" max="-2" attributes="1"/>
-                          <Component id="addfile" alignment="2" min="-2" pref="30" max="-2" attributes="1"/>
+                          <Component id="jButton1" alignment="2" min="-2" max="-2" attributes="0"/>
+                          <Component id="removefile" alignment="2" min="-2" max="-2" attributes="1"/>
+                          <Component id="addfile" alignment="2" min="-2" max="-2" attributes="1"/>
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
-                      <Component id="jScrollPane2" pref="41" max="32767" attributes="2"/>
+                      <Component id="jScrollPane2" pref="34" max="32767" attributes="2"/>
                       <EmptySpace max="-2" attributes="0"/>
                   </Group>
               </Group>
@@ -921,51 +917,57 @@
                   <Layout>
                     <DimensionLayout dim="0">
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <Group type="102" max="-2" attributes="0">
-                              <EmptySpace max="-2" attributes="0"/>
-                              <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                                  <Component id="mobilephone" max="32767" attributes="1"/>
-                                  <Component id="fax" alignment="0" max="32767" attributes="1"/>
-                                  <Component id="mainphone" alignment="0" pref="305" max="32767" attributes="1"/>
-                              </Group>
-                              <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                              <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                                  <Component id="workphone" max="32767" attributes="1"/>
-                                  <Component id="mailaddress" alignment="0" pref="319" max="32767" attributes="1"/>
-                                  <Component id="website" alignment="0" max="32767" attributes="1"/>
-                              </Group>
-                              <EmptySpace max="-2" attributes="0"/>
+                          <Group type="102" attributes="0">
+                              <EmptySpace min="-2" max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="0" attributes="0">
-                                  <Component id="jButton5" min="-2" pref="25" max="-2" attributes="0"/>
-                                  <Component id="jButton4" min="-2" pref="25" max="-2" attributes="0"/>
+                                  <Group type="102" max="-2" attributes="0">
+                                      <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                                          <Component id="fax" alignment="0" min="-2" pref="305" max="-2" attributes="1"/>
+                                          <Component id="mainphone" alignment="0" min="-2" pref="305" max="-2" attributes="1"/>
+                                          <Component id="mobilephone" alignment="0" min="-2" pref="305" max="-2" attributes="1"/>
+                                      </Group>
+                                      <EmptySpace type="unrelated" min="-2" max="-2" attributes="0"/>
+                                      <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                                          <Component id="website" min="-2" pref="319" max="-2" attributes="1"/>
+                                          <Component id="mailaddress" alignment="0" min="-2" pref="319" max="-2" attributes="1"/>
+                                          <Component id="workphone" alignment="0" min="-2" pref="319" max="-2" attributes="1"/>
+                                      </Group>
+                                      <EmptySpace min="-2" pref="363" max="-2" attributes="0"/>
+                                  </Group>
+                                  <Group type="102" alignment="0" attributes="0">
+                                      <Component id="jButton4" min="-2" pref="147" max="-2" attributes="1"/>
+                                      <EmptySpace max="-2" attributes="0"/>
+                                      <Component id="jButton5" min="-2" pref="131" max="-2" attributes="1"/>
+                                      <EmptySpace pref="715" max="32767" attributes="0"/>
+                                  </Group>
                               </Group>
-                              <EmptySpace min="-2" pref="296" max="-2" attributes="0"/>
                           </Group>
                       </Group>
                     </DimensionLayout>
                     <DimensionLayout dim="1">
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Group type="102" attributes="0">
-                              <EmptySpace max="-2" attributes="0"/>
+                              <EmptySpace min="-2" max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="0" attributes="0">
-                                  <Component id="mailaddress" pref="26" max="32767" attributes="1"/>
-                                  <Component id="mainphone" pref="26" max="32767" attributes="1"/>
-                                  <Component id="jButton5" alignment="0" min="-2" pref="0" max="-2" attributes="1"/>
+                                  <Component id="mainphone" alignment="2" min="-2" max="-2" attributes="1"/>
+                                  <Component id="mailaddress" alignment="2" min="-2" max="-2" attributes="1"/>
+                              </Group>
+                              <EmptySpace min="-2" max="-2" attributes="0"/>
+                              <Group type="103" groupAlignment="2" attributes="0">
+                                  <Component id="website" alignment="2" min="-2" max="-2" attributes="1"/>
+                                  <Component id="fax" alignment="2" min="-2" max="-2" attributes="1"/>
+                              </Group>
+                              <EmptySpace min="-2" max="-2" attributes="0"/>
+                              <Group type="103" groupAlignment="2" attributes="0">
+                                  <Component id="mobilephone" alignment="2" min="-2" max="-2" attributes="1"/>
+                                  <Component id="workphone" alignment="2" min="-2" max="-2" attributes="1"/>
                               </Group>
                               <EmptySpace max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="0" attributes="0">
-                                  <Component id="fax" alignment="0" pref="26" max="32767" attributes="1"/>
-                                  <Group type="103" alignment="0" groupAlignment="1" max="-2" attributes="0">
-                                      <Component id="jButton4" alignment="0" min="0" pref="0" max="32767" attributes="1"/>
-                                      <Component id="website" alignment="0" max="32767" attributes="1"/>
-                                  </Group>
+                                  <Component id="jButton4" alignment="0" min="-2" max="-2" attributes="2"/>
+                                  <Component id="jButton5" alignment="0" min="-2" max="-2" attributes="1"/>
                               </Group>
-                              <EmptySpace max="-2" attributes="0"/>
-                              <Group type="103" groupAlignment="0" attributes="0">
-                                  <Component id="workphone" pref="26" max="32767" attributes="1"/>
-                                  <Component id="mobilephone" alignment="0" pref="26" max="32767" attributes="1"/>
-                              </Group>
-                              <EmptySpace min="-2" pref="62" max="-2" attributes="0"/>
+                              <EmptySpace min="-2" pref="35" max="-2" attributes="0"/>
                           </Group>
                       </Group>
                     </DimensionLayout>
@@ -1059,7 +1061,7 @@
                           <Image iconType="3" name="/mpv5/resources/images/16/info.png"/>
                         </Property>
                         <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-                          <ResourceString bundle="mpv5/resources/languages/Panels.properties" key="ContactPanel.jButton4.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+                          <ResourceString bundle="mpv5/resources/languages/Panels.properties" key="ContactPanel.jButton5.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
                         </Property>
                         <Property name="name" type="java.lang.String" value="jButton4" noResource="true"/>
                       </Properties>
@@ -1105,6 +1107,7 @@
                     <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
                       <Color blue="ff" green="ff" red="ff" type="rgb"/>
                     </Property>
+                    <Property name="tabPlacement" type="int" value="4"/>
                     <Property name="autoscrolls" type="boolean" value="true"/>
                     <Property name="font" type="java.awt.Font" editor="org.netbeans.modules.form.editors2.FontEditor">
                       <FontInfo relative="true">
@@ -1125,7 +1128,7 @@
 
                   <Layout class="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout"/>
                   <SubComponents>
-                    <Container class="javax.swing.JPanel" name="jPanel2">
+                    <Container class="javax.swing.JPanel" name="mainaddress">
                       <Properties>
                         <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
                           <Color blue="cc" green="cc" red="cc" type="rgb"/>
@@ -1135,13 +1138,13 @@
                             <EmptyBorder/>
                           </Border>
                         </Property>
-                        <Property name="name" type="java.lang.String" value="jPanel2" noResource="true"/>
+                        <Property name="name" type="java.lang.String" value="mainaddress" noResource="true"/>
                       </Properties>
                       <Constraints>
                         <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout" value="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout$JTabbedPaneConstraintsDescription">
                           <JTabbedPaneConstraints tabName="Main Address">
                             <Property name="tabTitle" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-                              <ResourceString bundle="mpv5/resources/languages/Panels.properties" key="ContactPanel.jPanel2.TabConstraints.tabTitle" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+                              <ResourceString bundle="mpv5/resources/languages/Panels.properties" key="ContactPanel.mainaddress.TabConstraints.tabTitle" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
                             </Property>
                           </JTabbedPaneConstraints>
                         </Constraint>
@@ -1150,39 +1153,42 @@
                       <Layout>
                         <DimensionLayout dim="0">
                           <Group type="103" groupAlignment="0" attributes="0">
-                              <Group type="102" attributes="0">
+                              <Group type="102" alignment="0" attributes="0">
                                   <EmptySpace max="-2" attributes="0"/>
-                                  <Group type="103" groupAlignment="0" attributes="0">
-                                      <Component id="department" min="-2" pref="242" max="-2" attributes="1"/>
-                                      <Component id="street" min="-2" pref="242" max="-2" attributes="1"/>
-                                      <Component id="title" alignment="1" min="-2" pref="242" max="-2" attributes="1"/>
-                                  </Group>
-                                  <EmptySpace max="-2" attributes="0"/>
-                                  <Group type="103" groupAlignment="0" attributes="0">
-                                      <Group type="102" alignment="0" attributes="0">
+                                  <Group type="103" groupAlignment="1" attributes="0">
+                                      <Component id="button_order1" alignment="1" min="-2" pref="147" max="-2" attributes="0"/>
+                                      <Group type="102" alignment="1" attributes="0">
                                           <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                                              <Component id="zip" max="32767" attributes="1"/>
-                                              <Component id="prename" alignment="0" pref="262" max="32767" attributes="1"/>
+                                              <Component id="department" alignment="1" pref="288" max="32767" attributes="1"/>
+                                              <Component id="title" alignment="1" max="32767" attributes="1"/>
+                                              <Component id="street" alignment="0" max="32767" attributes="1"/>
                                           </Group>
                                           <EmptySpace max="-2" attributes="0"/>
-                                          <Group type="103" groupAlignment="0" attributes="0">
-                                              <Component id="city" min="-2" pref="312" max="-2" attributes="1"/>
-                                              <Component id="cname" alignment="0" min="-2" pref="312" max="-2" attributes="1"/>
+                                          <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                                              <Group type="102" alignment="0" attributes="0">
+                                                  <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                                                      <Component id="zip" max="32767" attributes="1"/>
+                                                      <Component id="prename" alignment="0" pref="262" max="32767" attributes="1"/>
+                                                  </Group>
+                                                  <EmptySpace max="-2" attributes="0"/>
+                                                  <Group type="103" groupAlignment="0" attributes="0">
+                                                      <Component id="city" min="-2" pref="312" max="-2" attributes="1"/>
+                                                      <Component id="cname" alignment="0" min="-2" pref="312" max="-2" attributes="1"/>
+                                                  </Group>
+                                              </Group>
+                                              <Group type="102" attributes="1">
+                                                  <Component id="jLabel5" min="-2" pref="73" max="-2" attributes="0"/>
+                                                  <EmptySpace max="-2" attributes="0"/>
+                                                  <Component id="countryselect" min="-2" pref="234" max="-2" attributes="0"/>
+                                                  <EmptySpace type="separate" max="-2" attributes="0"/>
+                                                  <Component id="male" max="32767" attributes="0"/>
+                                                  <EmptySpace max="-2" attributes="0"/>
+                                                  <Component id="female" min="-2" pref="141" max="-2" attributes="0"/>
+                                              </Group>
                                           </Group>
-                                      </Group>
-                                      <Group type="102" attributes="1">
-                                          <Component id="jLabel5" min="-2" pref="73" max="-2" attributes="0"/>
-                                          <EmptySpace max="-2" attributes="0"/>
-                                          <Component id="countryselect" min="-2" pref="176" max="-2" attributes="0"/>
-                                          <EmptySpace min="-2" pref="23" max="-2" attributes="0"/>
-                                          <Component id="male" min="-2" pref="61" max="-2" attributes="0"/>
-                                          <EmptySpace max="-2" attributes="0"/>
-                                          <Component id="female" min="-2" pref="86" max="-2" attributes="0"/>
-                                          <EmptySpace max="-2" attributes="0"/>
-                                          <Component id="button_order1" min="-2" pref="137" max="-2" attributes="0"/>
                                       </Group>
                                   </Group>
-                                  <EmptySpace min="-2" pref="119" max="-2" attributes="0"/>
+                                  <EmptySpace pref="13" max="32767" attributes="0"/>
                               </Group>
                           </Group>
                         </DimensionLayout>
@@ -1192,15 +1198,14 @@
                                   <EmptySpace min="-2" pref="12" max="-2" attributes="0"/>
                                   <Group type="103" groupAlignment="2" attributes="0">
                                       <Component id="department" alignment="2" min="-2" max="-2" attributes="0"/>
+                                      <Component id="countryselect" alignment="2" min="-2" max="-2" attributes="0"/>
+                                      <Component id="jLabel5" alignment="2" min="-2" max="-2" attributes="0"/>
                                       <Component id="male" alignment="2" min="-2" max="-2" attributes="0"/>
                                       <Component id="female" alignment="2" min="-2" max="-2" attributes="0"/>
-                                      <Component id="button_order1" alignment="2" min="-2" max="-2" attributes="0"/>
-                                      <Component id="countryselect" alignment="2" min="-2" pref="25" max="-2" attributes="0"/>
-                                      <Component id="jLabel5" alignment="2" min="-2" max="-2" attributes="0"/>
                                   </Group>
                                   <EmptySpace max="-2" attributes="0"/>
                                   <Group type="103" groupAlignment="2" attributes="0">
-                                      <Component id="title" alignment="2" min="-2" pref="21" max="-2" attributes="0"/>
+                                      <Component id="title" alignment="2" min="-2" max="-2" attributes="0"/>
                                       <Component id="prename" alignment="2" min="-2" max="-2" attributes="0"/>
                                       <Component id="cname" alignment="2" min="-2" max="-2" attributes="0"/>
                                   </Group>
@@ -1210,7 +1215,9 @@
                                       <Component id="zip" alignment="2" min="-2" max="-2" attributes="0"/>
                                       <Component id="city" alignment="2" min="-2" max="-2" attributes="0"/>
                                   </Group>
-                                  <EmptySpace pref="15" max="32767" attributes="0"/>
+                                  <EmptySpace max="-2" attributes="0"/>
+                                  <Component id="button_order1" min="-2" max="-2" attributes="0"/>
+                                  <EmptySpace pref="29" max="32767" attributes="0"/>
                               </Group>
                           </Group>
                         </DimensionLayout>
@@ -1222,10 +1229,10 @@
                               <ResourceString bundle="mpv5/resources/languages/Panels.properties" key="ContactPanel.title._Label" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
                             </Property>
                             <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                              <Dimension value="[150, 33]"/>
+                              <Dimension value="[120, 21]"/>
                             </Property>
                             <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                              <Dimension value="[33, 18]"/>
+                              <Dimension value="[120, 21]"/>
                             </Property>
                             <Property name="name" type="java.lang.String" value="title" noResource="true"/>
                             <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
@@ -1239,10 +1246,10 @@
                               <ResourceString bundle="mpv5/resources/languages/Panels.properties" key="ContactPanel.street._Label" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
                             </Property>
                             <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                              <Dimension value="[150, 33]"/>
+                              <Dimension value="[120, 21]"/>
                             </Property>
                             <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                              <Dimension value="[33, 18]"/>
+                              <Dimension value="[120, 21]"/>
                             </Property>
                             <Property name="name" type="java.lang.String" value="street" noResource="true"/>
                             <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
@@ -1256,10 +1263,10 @@
                               <ResourceString bundle="mpv5/resources/languages/Panels.properties" key="ContactPanel.cname._Label" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
                             </Property>
                             <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                              <Dimension value="[150, 33]"/>
+                              <Dimension value="[120, 21]"/>
                             </Property>
                             <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                              <Dimension value="[33, 18]"/>
+                              <Dimension value="[120, 21]"/>
                             </Property>
                             <Property name="name" type="java.lang.String" value="cname" noResource="true"/>
                             <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
@@ -1273,10 +1280,10 @@
                               <ResourceString bundle="mpv5/resources/languages/Panels.properties" key="ContactPanel.prename._Label" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
                             </Property>
                             <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                              <Dimension value="[150, 33]"/>
+                              <Dimension value="[120, 21]"/>
                             </Property>
                             <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                              <Dimension value="[33, 18]"/>
+                              <Dimension value="[120, 21]"/>
                             </Property>
                             <Property name="name" type="java.lang.String" value="prename" noResource="true"/>
                             <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
@@ -1290,10 +1297,10 @@
                               <ResourceString bundle="mpv5/resources/languages/Panels.properties" key="ContactPanel.zip._Label" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
                             </Property>
                             <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                              <Dimension value="[150, 33]"/>
+                              <Dimension value="[120, 21]"/>
                             </Property>
                             <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                              <Dimension value="[33, 18]"/>
+                              <Dimension value="[120, 21]"/>
                             </Property>
                             <Property name="name" type="java.lang.String" value="zip" noResource="true"/>
                             <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
@@ -1351,10 +1358,10 @@
                               </FontInfo>
                             </Property>
                             <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                              <Dimension value="[150, 33]"/>
+                              <Dimension value="[120, 21]"/>
                             </Property>
                             <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                              <Dimension value="[33, 18]"/>
+                              <Dimension value="[120, 21]"/>
                             </Property>
                             <Property name="name" type="java.lang.String" value="department" noResource="true"/>
                             <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
@@ -1381,10 +1388,10 @@
                               <StringArray count="0"/>
                             </Property>
                             <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                              <Dimension value="[150, 33]"/>
+                              <Dimension value="[120, 21]"/>
                             </Property>
                             <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                              <Dimension value="[33, 18]"/>
+                              <Dimension value="[120, 21]"/>
                             </Property>
                             <Property name="name" type="java.lang.String" value="countryselect" noResource="true"/>
                             <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
@@ -1401,10 +1408,10 @@
                               <ResourceString bundle="mpv5/resources/languages/Panels.properties" key="ContactPanel.city._Label" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
                             </Property>
                             <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                              <Dimension value="[150, 33]"/>
+                              <Dimension value="[120, 21]"/>
                             </Property>
                             <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                              <Dimension value="[33, 18]"/>
+                              <Dimension value="[120, 21]"/>
                             </Property>
                             <Property name="name" type="java.lang.String" value="city" noResource="true"/>
                             <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
@@ -1465,20 +1472,20 @@
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Group type="102" attributes="0">
                               <EmptySpace max="-2" attributes="0"/>
-                              <Group type="103" groupAlignment="0" attributes="0">
-                                  <Component id="bankid" alignment="0" min="-2" pref="236" max="-2" attributes="1"/>
-                                  <Component id="bankname" alignment="0" min="-2" pref="236" max="-2" attributes="1"/>
+                              <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                                  <Component id="bankid" max="32767" attributes="1"/>
+                                  <Component id="bankname" alignment="0" pref="319" max="32767" attributes="1"/>
                               </Group>
-                              <EmptySpace max="-2" attributes="0"/>
-                              <Group type="103" groupAlignment="0" attributes="0">
-                                  <Group type="102" alignment="1" attributes="0">
-                                      <Component id="bankcountry" min="-2" pref="223" max="-2" attributes="1"/>
+                              <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                              <Group type="103" groupAlignment="1" max="-2" attributes="0">
+                                  <Group type="102" attributes="1">
+                                      <Component id="bankcountry" max="32767" attributes="1"/>
                                       <EmptySpace max="-2" attributes="0"/>
                                       <Component id="bankcurrency" min="-2" pref="124" max="-2" attributes="0"/>
                                   </Group>
-                                  <Component id="bankaccount" min="-2" pref="353" max="-2" attributes="1"/>
+                                  <Component id="bankaccount" alignment="1" min="-2" pref="353" max="-2" attributes="1"/>
                               </Group>
-                              <EmptySpace min="257" pref="257" max="-2" attributes="0"/>
+                              <EmptySpace min="315" pref="315" max="-2" attributes="0"/>
                           </Group>
                       </Group>
                     </DimensionLayout>
@@ -1487,8 +1494,8 @@
                           <Group type="102" alignment="0" attributes="0">
                               <EmptySpace max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="0" attributes="0">
-                                  <Component id="bankid" alignment="0" min="-2" max="-2" attributes="1"/>
-                                  <Component id="bankaccount" alignment="0" min="-2" max="-2" attributes="1"/>
+                                  <Component id="bankid" min="-2" max="-2" attributes="1"/>
+                                  <Component id="bankaccount" min="-2" max="-2" attributes="1"/>
                               </Group>
                               <EmptySpace max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="2" attributes="0">
@@ -1496,7 +1503,7 @@
                                   <Component id="bankname" alignment="2" min="-2" max="-2" attributes="0"/>
                                   <Component id="bankcurrency" alignment="2" min="-2" max="-2" attributes="0"/>
                               </Group>
-                              <EmptySpace pref="91" max="32767" attributes="0"/>
+                              <EmptySpace pref="101" max="32767" attributes="0"/>
                           </Group>
                       </Group>
                     </DimensionLayout>
@@ -1507,7 +1514,16 @@
                         <Property name="_Label" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
                           <ResourceString bundle="mpv5/resources/languages/Panels.properties" key="ContactPanel.bankid._Label" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
                         </Property>
+                        <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                          <Dimension value="[120, 21]"/>
+                        </Property>
+                        <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                          <Dimension value="[120, 21]"/>
+                        </Property>
                         <Property name="name" type="java.lang.String" value="bankid" noResource="true"/>
+                        <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                          <Dimension value="[120, 21]"/>
+                        </Property>
                       </Properties>
                     </Component>
                     <Component class="mpv5.ui.beans.LabeledTextField" name="bankaccount">
@@ -1515,7 +1531,16 @@
                         <Property name="_Label" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
                           <ResourceString bundle="mpv5/resources/languages/Panels.properties" key="ContactPanel.bankaccount._Label" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
                         </Property>
+                        <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                          <Dimension value="[120, 21]"/>
+                        </Property>
+                        <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                          <Dimension value="[120, 21]"/>
+                        </Property>
                         <Property name="name" type="java.lang.String" value="bankaccount" noResource="true"/>
+                        <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                          <Dimension value="[120, 21]"/>
+                        </Property>
                       </Properties>
                     </Component>
                     <Component class="mpv5.ui.beans.LabeledTextField" name="bankcurrency">
@@ -1523,7 +1548,13 @@
                         <Property name="_Label" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
                           <ResourceString bundle="mpv5/resources/languages/Panels.properties" key="ContactPanel.bankcurrency._Label" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
                         </Property>
+                        <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                          <Dimension value="[120, 21]"/>
+                        </Property>
                         <Property name="name" type="java.lang.String" value="bankcurrency" noResource="true"/>
+                        <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                          <Dimension value="[120, 21]"/>
+                        </Property>
                       </Properties>
                     </Component>
                     <Component class="mpv5.ui.beans.LabeledTextField" name="bankname">
@@ -1531,7 +1562,16 @@
                         <Property name="_Label" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
                           <ResourceString bundle="mpv5/resources/languages/Panels.properties" key="ContactPanel.bankname._Label" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
                         </Property>
+                        <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                          <Dimension value="[120, 21]"/>
+                        </Property>
+                        <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                          <Dimension value="[120, 21]"/>
+                        </Property>
                         <Property name="name" type="java.lang.String" value="bankname" noResource="true"/>
+                        <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                          <Dimension value="[120, 21]"/>
+                        </Property>
                       </Properties>
                     </Component>
                     <Component class="mpv5.ui.beans.LabeledTextField" name="bankcountry">
@@ -1539,7 +1579,13 @@
                         <Property name="_Label" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
                           <ResourceString bundle="mpv5/resources/languages/Panels.properties" key="ContactPanel.bankcountry._Label" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
                         </Property>
+                        <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                          <Dimension value="[120, 21]"/>
+                        </Property>
                         <Property name="name" type="java.lang.String" value="bankcountry" noResource="true"/>
+                        <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                          <Dimension value="[120, 21]"/>
+                        </Property>
                       </Properties>
                     </Component>
                   </SubComponents>
@@ -1569,12 +1615,12 @@
                   <Layout>
                     <DimensionLayout dim="0">
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="jScrollPane1" alignment="1" pref="975" max="32767" attributes="0"/>
+                          <Component id="jScrollPane1" alignment="1" pref="1011" max="32767" attributes="0"/>
                       </Group>
                     </DimensionLayout>
                     <DimensionLayout dim="1">
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="jScrollPane1" alignment="0" pref="149" max="32767" attributes="0"/>
+                          <Component id="jScrollPane1" alignment="0" pref="161" max="32767" attributes="0"/>
                       </Group>
                     </DimensionLayout>
                   </Layout>
@@ -1633,13 +1679,13 @@
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Group type="102" alignment="0" attributes="0">
                               <Component id="jPanel6" min="-2" pref="539" max="-2" attributes="0"/>
-                              <EmptySpace pref="440" max="32767" attributes="0"/>
+                              <EmptySpace pref="476" max="32767" attributes="0"/>
                           </Group>
                       </Group>
                     </DimensionLayout>
                     <DimensionLayout dim="1">
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="jPanel6" alignment="0" pref="153" max="32767" attributes="0"/>
+                          <Component id="jPanel6" alignment="0" pref="165" max="32767" attributes="0"/>
                       </Group>
                     </DimensionLayout>
                   </Layout>

@@ -29,8 +29,12 @@ import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.SocketAddress;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import mpv5.Main;
 import mpv5.YabsViewProxy;
 import mpv5.globals.LocalSettings;
@@ -42,14 +46,9 @@ import mpv5.utils.files.FileExecutor;
 /**
  *This class handles connections to remote and local OpenOffice installations
  */
-public class NoaConnectionLocalServer extends NoaConnection{
+public class NoaConnectionLocalServer extends NoaConnection {
 
-
-    private IOfficeApplication officeAplication;
-    private int type = -1;
-    private IDocumentService documentService;
-    private IDesktopService desktopService;
-    private static NoaConnection Connection;
+    private static List<Process> ooProcesses = new ArrayList<Process>();
 
     /**
      * Creates a connection, depending on the current local config.
@@ -57,15 +56,16 @@ public class NoaConnectionLocalServer extends NoaConnection{
      */
     public synchronized static NoaConnection getConnection() {
         if (LocalSettings.hasProperty(LocalSettings.OFFICE_HOST)) {
-            if (Connection == null) {
+            if (cachedConnection == null) {
                 try {
-                    Connection = new NoaConnectionLocalServer(LocalSettings.getProperty(LocalSettings.OFFICE_HOST), Long.valueOf(LocalSettings.getProperty(LocalSettings.OFFICE_PORT)));
+                    cachedConnection = new NoaConnectionLocalServer(LocalSettings.getProperty(LocalSettings.OFFICE_HOST), Long.valueOf(LocalSettings.getProperty(LocalSettings.OFFICE_PORT)));
                 } catch (Exception ex) {
                     mpv5.logging.Log.Debug(ex);//Logger.getLogger(NoaConnection.class.getName()).log(Level.SEVERE, null, ex);
                     YabsViewProxy.instance().addMessage(Messages.OOCONNERROR + "\n" + ex);
                 }
+                YabsViewProxy.instance().showOfficeStatus(cachedConnection != null, "Local server");
             }
-            return Connection;
+            return cachedConnection;
         } else {
             throw new UnsupportedOperationException("OpenOffice is not configured yet.");
         }
@@ -75,7 +75,7 @@ public class NoaConnectionLocalServer extends NoaConnection{
      * clears the onnnetion for testing puproses
      */
     public static void clearConnection() {
-        Connection = null;
+        cachedConnection = null;
     }
 
     /**
@@ -139,6 +139,43 @@ public class NoaConnectionLocalServer extends NoaConnection{
         return true;
     }
 
+    public static void killConnection() {
+        try {
+            YabsViewProxy.instance().setWaiting(true);
+            YabsViewProxy.instance().setProgressRunning(true);
+            try {
+                if (cachedConnection != null) {
+                    cachedConnection.getDesktopService().terminate();
+                }
+                if (officeAplication != null) {
+                    officeAplication.deactivate();
+                }
+            } catch (Exception ex) {
+                Log.Debug(NoaConnectionLocalServer.class, ex.getMessage());
+            } finally {
+                cachedConnection = null;
+                officeAplication = null;
+            }
+        } catch (Exception ex) {
+            Logger.getLogger(NoaConnectionLocalServer.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            try {
+                for (int i = 0; i < ooProcesses.size(); i++) {
+                    Process officeProcess = (Process) ooProcesses.get(i);
+                    if (officeProcess != null) {
+                        officeProcess.destroy();
+                        officeProcess.waitFor();
+                    }
+                }
+            } catch (Exception e) {
+                Logger.getLogger(NoaConnectionLocalServer.class.getName()).log(Level.SEVERE, null, e);
+            }
+            YabsViewProxy.instance().setWaiting(false);
+            YabsViewProxy.instance().setProgressReset();
+            YabsViewProxy.instance().showOfficeStatus(false, "");
+        }
+    }
+
     /**
      *  -1 indicates no connection.
      * @return the type
@@ -176,15 +213,15 @@ public class NoaConnectionLocalServer extends NoaConnection{
      */
     public synchronized static void startOOServerIfNotRunning(final String path, final int port) {
 
-        final String command = path.replace("\\", "\\\\") + File.separator + LocalSettings.getProperty(LocalSettings.OFFICE_BINARY_FOLDER) + File.separator + "soffice" + " "
-                + "-headless" + " "
-                + "-nofirststartwizard" + " "
-                + "-norestore" + " "
-                + "-nolockcheck" + " "
-                + "-nocrashreport" + " "
-                + "-nodefault" + " "
-                + (Main.osIsWindows ? "-accept=socket,host=0.0.0.0,port=" + port + ";urp;StarOffice.Service"
-                : "-accept='socket,host=0.0.0.0,port=" + port + ";urp;StarOffice.Service'");
+//        final String command = path.replace("\\", "\\\\") + File.separator + LocalSettings.getProperty(LocalSettings.OFFICE_BINARY_FOLDER) + File.separator + "soffice" + " "
+//                + "-headless" + " "
+//                + "-nofirststartwizard" + " "
+//                + "-norestore" + " "
+//                + "-nolockcheck" + " "
+//                + "-nocrashreport" + " "
+//                + "-nodefault" + " "
+//                + (Main.osIsWindows ? "-accept=socket,host=0.0.0.0,port=" + port + ";urp;StarOffice.Service"
+//                : "-accept='socket,host=0.0.0.0,port=" + port + ";urp;StarOffice.Service'");
 
         try {
             SocketAddress addr = new InetSocketAddress("127.0.0.1", port);
@@ -219,7 +256,7 @@ public class NoaConnectionLocalServer extends NoaConnection{
      * @throws IOException
      */
     public synchronized static void startOOServer(String path, int port) throws IOException {
-        FileExecutor.run(getOOArgs(path, port));
+        FileExecutor.run(getOOArgs(path, port), ooProcesses);
     }
 
     private static String[] getOOArgs(String path, int port) {

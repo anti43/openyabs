@@ -9,6 +9,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import mpv5.Main;
@@ -34,20 +36,27 @@ public class FileExecutor {
             runUnixWPassword(command);
         }
     }
+
+    /**
+     * Runs a command,non- blocking, in the yabs home directory, with sudo if root password is available and os is unix
+     * @param command
+     */
+    public static synchronized void run(String[] commandArgs, List<Process> processHolder) {
+         runAlternate(commandArgs, processHolder);
+    }
     
-      /**
+    /**
      * Runs a command,non- blocking, in the yabs home directory, with sudo if root password is available and os is unix
      * @param command
      */
     public static synchronized void run(String[] commandArgs) {
-        runAlternate(commandArgs);
+         runAlternate(commandArgs, new ArrayList<Process>());
     }
 
-
-    private static void runAlternate(String[] commandArrq) {
+    private static void runAlternate(String[] commandArrq, final List<Process> processHolder) {
 
         final ProcessBuilder builder = new ProcessBuilder(commandArrq);
-
+   
         Map<String, String> environment = builder.environment();
         environment.put("path", ";"); // Clearing the path variable;
         environment.put("path", commandArrq[0] + File.pathSeparator);
@@ -59,8 +68,9 @@ public class FileExecutor {
             public void run() {
                 try {
                     Process oos = builder.start();
+                    processHolder.add(oos);
                     Main.addProcessToClose(oos);
-                    InputStream is = oos.getErrorStream() ;
+                    InputStream is = oos.getErrorStream();
                     InputStreamReader isr = new InputStreamReader(is);
                     BufferedReader br = new BufferedReader(isr);
                     String line;
@@ -74,7 +84,6 @@ public class FileExecutor {
             }
         };
         new Thread(runnable).start();
-
     }
 
     private static void runWin(String command) {

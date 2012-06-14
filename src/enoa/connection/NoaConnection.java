@@ -66,19 +66,40 @@ public class NoaConnection {
      * Terminates the cached connection (if any)
      */
     public static void killConnection() {
-        if (cachedConnection != null) {
-            try {
-                cachedConnection.getDesktopService().terminate();
-            } catch (NOAException ex) {
-                Log.Debug(NoaConnection.class, ex.getMessage());
+        try {
+            YabsViewProxy.instance().setWaiting(true);
+            YabsViewProxy.instance().setProgressRunning(true);
+            Notificator.raiseNotification(Messages.OO_WAITING, false);
+            if (LocalSettings.getBooleanProperty(LocalSettings.OFFICE_LOCALSERVER)) {
+                NoaConnectionLocalServer.killConnection();
+            } else {
+                if (cachedConnection != null) {
+                    try {
+                        cachedConnection.getDesktopService().terminate();
+                        officeAplication.deactivate();
+
+                    } catch (NOAException ex) {
+                        Log.Debug(NoaConnection.class, ex.getMessage());
+                    } finally {
+                        cachedConnection = null;
+                        officeAplication = null;
+                    }
+                }
             }
+        } catch (Exception e) {
+            Log.Debug(NoaConnection.class, e.getMessage());
+        } finally {
+            YabsViewProxy.instance().setWaiting(false);
+            YabsViewProxy.instance().setProgressReset();
+            YabsViewProxy.instance().showOfficeStatus(false, "");
+
         }
     }
-    private IOfficeApplication officeAplication;
-    private int type = -1;
-    private IDocumentService documentService;
-    private IDesktopService desktopService;
-    private static NoaConnection cachedConnection;
+    protected static IOfficeApplication officeAplication;
+    protected int type = -1;
+    protected IDocumentService documentService;
+    protected IDesktopService desktopService;
+    protected static NoaConnection cachedConnection;
 
     /**
      * Creates a connection, depending on the current local config. Should not
@@ -114,6 +135,7 @@ public class NoaConnection {
         } finally {
             YabsViewProxy.instance().setWaiting(false);
             YabsViewProxy.instance().setProgressReset();
+            YabsViewProxy.instance().showOfficeStatus(cachedConnection != null, cachedConnection.toString());
             return cachedConnection;
         }
     }

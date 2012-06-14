@@ -16,37 +16,70 @@
  */
 package mpv5.server;
 
+import mpv5.YabsViewProxy;
 import mpv5.globals.Messages;
 import mpv5.logging.Log;
-import mpv5.ui.dialogs.Popup;
+import mpv5.ui.dialogs.Notificator;
 
 /**
  *This is a listening server which starts a new {@link MPServerRunner} on each connection.
  */
 public class MPServer extends Thread {
 
+    private static MPServer serverInstance;
+    private static XMLRPCServer xmlrpcs;
+
     /**
      *
      */
     public static void shutdown() {
-        xmlrpcs.getWebServer().shutdown();
+        stopServer();
     }
-    private static XMLRPCServer xmlrpcs;
 
-    public MPServer() {
-        Log.Debug(this, "Initialising MP Server..");
+    public static void runServer() {
+        if (serverInstance == null) {
+            Log.Debug(MPServer.class, "Initialising MP Server..");
+
+            try {
+                mpv5.YabsViewProxy.instance().setWaiting(true);
+                mpv5.YabsViewProxy.instance().setProgressRunning(true);
+                serverInstance = new MPServer();
+                getServerInstance().start();
+            } catch (Exception ex) {
+                Log.Debug(ex);
+            } finally {
+                YabsViewProxy.instance().setWaiting(false);
+                YabsViewProxy.instance().setProgressReset();
+                YabsViewProxy.instance().showServerStatus(true);
+            }
+        }
+    }
+
+    /**
+     * same as shutDown
+     */
+    public static void stopServer() {
+        Log.Debug(MPServer.class, "Stopping MP Server..");
+        xmlrpcs.getWebServer().shutdown();
+        YabsViewProxy.instance().showServerStatus(false);
+    }
+
+    /**
+     * @return the serverInstance
+     */
+    public static synchronized MPServer getServerInstance() {
+        if (serverInstance == null) {
+            runServer();
+        }
+        return serverInstance;
     }
 
     @Override
     public void run() {
-        mpv5.YabsViewProxy.instance().setWaiting(true);
-        mpv5.YabsViewProxy.instance().setProgressRunning(true);
         if (xmlrpcs == null) {
             try {
                 xmlrpcs = new XMLRPCServer();
-                mpv5.YabsViewProxy.instance().setWaiting(false);
-                mpv5.YabsViewProxy.instance().setProgressRunning(false);
-                Popup.notice(Messages.DONE + "\n" + "Port: " + XMLRPCServer.getPort());
+                Notificator.raiseNotification(Messages.DONE + "\n" + "Port: " + XMLRPCServer.getPort(), false);
             } catch (Exception ex) {
                 Log.Debug(ex);
             }
