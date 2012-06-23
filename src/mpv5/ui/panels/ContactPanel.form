@@ -1,4 +1,4 @@
-<?xml version="1.1" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="UTF-8" ?>
 
 <Form version="1.6" maxVersion="1.7" type="org.netbeans.modules.form.forminfo.JPanelFormInfo">
   <NonVisualComponents>
@@ -920,27 +920,26 @@
                           <Group type="102" attributes="0">
                               <EmptySpace min="-2" max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="0" attributes="0">
-                                  <Group type="102" max="-2" attributes="0">
+                                  <Group type="102" attributes="0">
                                       <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                                          <Component id="fax" alignment="0" min="-2" pref="305" max="-2" attributes="1"/>
-                                          <Component id="mainphone" alignment="0" min="-2" pref="305" max="-2" attributes="1"/>
-                                          <Component id="mobilephone" alignment="0" min="-2" pref="305" max="-2" attributes="1"/>
+                                          <Component id="fax" alignment="0" min="-2" pref="333" max="-2" attributes="1"/>
+                                          <Component id="mainphone" alignment="0" min="-2" pref="333" max="-2" attributes="1"/>
+                                          <Component id="mobilephone" alignment="0" min="-2" pref="333" max="-2" attributes="1"/>
                                       </Group>
                                       <EmptySpace type="unrelated" min="-2" max="-2" attributes="0"/>
                                       <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                                          <Component id="website" min="-2" pref="319" max="-2" attributes="1"/>
-                                          <Component id="mailaddress" alignment="0" min="-2" pref="319" max="-2" attributes="1"/>
-                                          <Component id="workphone" alignment="0" min="-2" pref="319" max="-2" attributes="1"/>
+                                          <Component id="website" min="-2" pref="333" max="-2" attributes="1"/>
+                                          <Component id="mailaddress" alignment="0" min="-2" pref="333" max="-2" attributes="1"/>
+                                          <Component id="workphone" alignment="0" min="-2" pref="333" max="-2" attributes="1"/>
                                       </Group>
-                                      <EmptySpace min="-2" pref="363" max="-2" attributes="0"/>
                                   </Group>
                                   <Group type="102" alignment="0" attributes="0">
                                       <Component id="jButton4" min="-2" pref="147" max="-2" attributes="1"/>
                                       <EmptySpace max="-2" attributes="0"/>
                                       <Component id="jButton5" min="-2" pref="131" max="-2" attributes="1"/>
-                                      <EmptySpace pref="715" max="32767" attributes="0"/>
                                   </Group>
                               </Group>
+                              <EmptySpace min="363" pref="321" max="32767" attributes="0"/>
                           </Group>
                       </Group>
                     </DimensionLayout>
@@ -976,7 +975,7 @@
                     <Component class="mpv5.ui.beans.LabeledTextField" name="mainphone">
                       <Properties>
                         <Property name="_Label" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-                          <ResourceString bundle="mpv5/resources/languages/Panels.properties" key="ContactPanel.[120, 21]._Label" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+                          <ResourceString bundle="mpv5/resources/languages/Panels.properties" key="ContactPanel.phone._Label" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
                         </Property>
                         <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                           <Dimension value="[120, 21]"/>
@@ -984,7 +983,7 @@
                         <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                           <Dimension value="[120, 21]"/>
                         </Property>
-                        <Property name="name" type="java.lang.String" value="[120, 21]" noResource="true"/>
+                        <Property name="name" type="java.lang.String" value="phone" noResource="true"/>
                       </Properties>
                     </Component>
                     <Component class="mpv5.ui.beans.LabeledTextField" name="workphone">
@@ -1007,7 +1006,7 @@
                     <Component class="mpv5.ui.beans.LabeledTextField" name="mailaddress">
                       <Properties>
                         <Property name="_Label" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-                          <ResourceString bundle="mpv5/resources/languages/Panels.properties" key="ContactPanel.[120, 21]._Label" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+                          <ResourceString bundle="mpv5/resources/languages/Panels.properties" key="ContactPanel.mailer._Label" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
                         </Property>
                         <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                           <Dimension value="[120, 21]"/>
@@ -1015,7 +1014,7 @@
                         <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                           <Dimension value="[120, 21]"/>
                         </Property>
-                        <Property name="name" type="java.lang.String" value="[120, 21]" noResource="true"/>
+                        <Property name="name" type="java.lang.String" value="mailer" noResource="true"/>
                         <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                           <Dimension value="[180, 23]"/>
                         </Property>
@@ -1024,7 +1023,7 @@
                     <Component class="mpv5.ui.beans.LabeledTextField" name="website">
                       <Properties>
                         <Property name="_Label" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-                          <ResourceString bundle="mpv5/resources/languages/Panels.properties" key="ContactPanel.[120, 21]._Label" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+                          <ResourceString bundle="mpv5/resources/languages/Panels.properties" key="ContactPanel.web._Label" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
                         </Property>
                         <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                           <Dimension value="[120, 21]"/>
@@ -1032,7 +1031,7 @@
                         <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                           <Dimension value="[120, 21]"/>
                         </Property>
-                        <Property name="name" type="java.lang.String" value="[120, 21]" noResource="true"/>
+                        <Property name="name" type="java.lang.String" value="web" noResource="true"/>
                         <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                           <Dimension value="[180, 23]"/>
                         </Property>
@@ -1041,7 +1040,7 @@
                     <Component class="mpv5.ui.beans.LabeledTextField" name="fax">
                       <Properties>
                         <Property name="_Label" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-                          <ResourceString bundle="mpv5/resources/languages/Panels.properties" key="ContactPanel.[120, 21]._Label" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+                          <ResourceString bundle="mpv5/resources/languages/Panels.properties" key="ContactPanel.fax._Label" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
                         </Property>
                         <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                           <Dimension value="[120, 21]"/>
@@ -1049,7 +1048,7 @@
                         <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                           <Dimension value="[120, 21]"/>
                         </Property>
-                        <Property name="name" type="java.lang.String" value="[120, 21]" noResource="true"/>
+                        <Property name="name" type="java.lang.String" value="fax" noResource="true"/>
                         <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                           <Dimension value="[180, 23]"/>
                         </Property>
@@ -1063,7 +1062,7 @@
                         <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
                           <ResourceString bundle="mpv5/resources/languages/Panels.properties" key="ContactPanel.jButton5.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
                         </Property>
-                        <Property name="name" type="java.lang.String" value="jButton4" noResource="true"/>
+                        <Property name="name" type="java.lang.String" value="gotoweb" noResource="true"/>
                       </Properties>
                       <Events>
                         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButton4ActionPerformed"/>
@@ -1075,9 +1074,9 @@
                           <Image iconType="3" name="/mpv5/resources/images/16/info.png"/>
                         </Property>
                         <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-                          <ResourceString bundle="mpv5/resources/languages/Panels.properties" key="ContactPanel.jButton5.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+                          <ResourceString bundle="mpv5/resources/languages/Panels.properties" key="ContactPanel.sendamail.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
                         </Property>
-                        <Property name="name" type="java.lang.String" value="jButton5" noResource="true"/>
+                        <Property name="name" type="java.lang.String" value="sendamail" noResource="true"/>
                       </Properties>
                       <Events>
                         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButton5ActionPerformed"/>
@@ -1086,7 +1085,7 @@
                     <Component class="mpv5.ui.beans.LabeledTextField" name="mobilephone">
                       <Properties>
                         <Property name="_Label" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-                          <ResourceString bundle="mpv5/resources/languages/Panels.properties" key="ContactPanel.[120, 21]._Label" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+                          <ResourceString bundle="mpv5/resources/languages/Panels.properties" key="ContactPanel.mobile._Label" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
                         </Property>
                         <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                           <Dimension value="[120, 21]"/>
@@ -1094,7 +1093,7 @@
                         <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                           <Dimension value="[120, 21]"/>
                         </Property>
-                        <Property name="name" type="java.lang.String" value="[120, 21]" noResource="true"/>
+                        <Property name="name" type="java.lang.String" value="mobile" noResource="true"/>
                         <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                           <Dimension value="[180, 23]"/>
                         </Property>
@@ -1181,7 +1180,7 @@
                                                   <EmptySpace max="-2" attributes="0"/>
                                                   <Component id="countryselect" min="-2" pref="234" max="-2" attributes="0"/>
                                                   <EmptySpace type="separate" max="-2" attributes="0"/>
-                                                  <Component id="male" max="32767" attributes="0"/>
+                                                  <Component id="male" pref="96" max="32767" attributes="0"/>
                                                   <EmptySpace max="-2" attributes="0"/>
                                                   <Component id="female" min="-2" pref="141" max="-2" attributes="0"/>
                                               </Group>

@@ -1,4 +1,4 @@
-<?xml version="1.1" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="UTF-8" ?>
 
 <Form version="1.5" maxVersion="1.7" type="org.netbeans.modules.form.forminfo.JPanelFormInfo">
   <NonVisualComponents>
@@ -37,7 +37,7 @@
               <Component id="rightpane" max="32767" attributes="0"/>
           </Group>
           <Group type="102" attributes="0">
-              <Component id="toolbarpane" pref="820" max="32767" attributes="2"/>
+              <Component id="toolbarpane" pref="934" max="32767" attributes="2"/>
               <EmptySpace max="-2" attributes="0"/>
           </Group>
       </Group>
@@ -49,7 +49,7 @@
               <EmptySpace min="-2" pref="0" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
                   <Component id="rightpane" max="32767" attributes="2"/>
-                  <Component id="leftpane" alignment="0" pref="612" max="32767" attributes="1"/>
+                  <Component id="leftpane" alignment="0" pref="660" max="32767" attributes="1"/>
               </Group>
           </Group>
       </Group>
@@ -78,18 +78,18 @@
       <Layout>
         <DimensionLayout dim="0">
           <Group type="103" groupAlignment="0" attributes="0">
-              <Group type="102" alignment="1" attributes="0">
-                  <Group type="103" groupAlignment="1" attributes="0">
-                      <Group type="102" alignment="0" attributes="0">
-                          <EmptySpace min="-2" pref="2" max="-2" attributes="0"/>
-                          <Component id="jPanel7" max="32767" attributes="0"/>
-                      </Group>
-                      <Component id="jTabbedPane1" alignment="0" pref="808" max="32767" attributes="2"/>
-                      <Component id="jToolBar1" alignment="0" pref="808" max="32767" attributes="1"/>
-                      <Component id="jPanel1" alignment="0" max="32767" attributes="3"/>
+              <Group type="102" alignment="0" attributes="0">
+                  <EmptySpace min="-2" pref="2" max="-2" attributes="0"/>
+                  <Component id="jPanel7" max="32767" attributes="0"/>
+                  <EmptySpace max="-2" attributes="0"/>
+                  <Group type="103" groupAlignment="0" attributes="0">
+                      <Component id="removefile" alignment="1" min="-2" pref="24" max="-2" attributes="0"/>
+                      <Component id="addfile" alignment="1" min="-2" pref="24" max="-2" attributes="0"/>
                   </Group>
-                  <EmptySpace min="-2" max="-2" attributes="0"/>
               </Group>
+              <Component id="jTabbedPane1" pref="0" max="32767" attributes="2"/>
+              <Component id="jPanel1" alignment="0" max="32767" attributes="3"/>
+              <Component id="jToolBar1" max="32767" attributes="1"/>
           </Group>
         </DimensionLayout>
         <DimensionLayout dim="1">
@@ -101,7 +101,15 @@
                   <EmptySpace max="-2" attributes="0"/>
                   <Component id="jTabbedPane1" min="-2" pref="277" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
-                  <Component id="jPanel7" max="32767" attributes="0"/>
+                  <Group type="103" groupAlignment="0" attributes="0">
+                      <Group type="102" attributes="0">
+                          <Component id="addfile" min="-2" max="-2" attributes="1"/>
+                          <EmptySpace max="-2" attributes="0"/>
+                          <Component id="removefile" min="-2" max="-2" attributes="1"/>
+                          <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
+                      </Group>
+                      <Component id="jPanel7" pref="0" max="32767" attributes="0"/>
+                  </Group>
               </Group>
           </Group>
         </DimensionLayout>
@@ -123,14 +131,14 @@
                   <Group type="102" alignment="1" attributes="0">
                       <EmptySpace min="-2" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="1" attributes="0">
-                          <Component id="path" alignment="0" pref="780" max="32767" attributes="0"/>
+                          <Component id="path" alignment="0" max="32767" attributes="0"/>
                           <Group type="102" alignment="1" attributes="0">
                               <Group type="103" groupAlignment="0" max="-2" attributes="0">
                                   <Component id="stype" alignment="0" min="-2" pref="216" max="-2" attributes="0"/>
                                   <Component id="familyselect" alignment="0" pref="384" max="32767" attributes="1"/>
                                   <Component id="cnumber" alignment="0" max="32767" attributes="1"/>
                               </Group>
-                              <EmptySpace pref="110" max="32767" attributes="0"/>
+                              <EmptySpace max="32767" attributes="0"/>
                               <Group type="103" groupAlignment="1" max="-2" attributes="0">
                                   <Group type="102" alignment="1" attributes="1">
                                       <Component id="jLabel4" max="32767" attributes="0"/>
@@ -461,13 +469,13 @@
                                               <Component id="currencylabel1" alignment="0" min="-2" pref="36" max="-2" attributes="1"/>
                                           </Group>
                                       </Group>
-                                      <Component id="unit" pref="0" max="32767" attributes="0"/>
+                                      <Component id="unit" pref="202" max="32767" attributes="0"/>
                                       <Component id="selecttax" max="32767" attributes="0"/>
                                   </Group>
                               </Group>
                           </Group>
                           <EmptySpace max="-2" attributes="0"/>
-                          <Component id="jScrollPane3" pref="299" max="32767" attributes="0"/>
+                          <Component id="jScrollPane3" pref="425" max="32767" attributes="0"/>
                           <EmptySpace max="-2" attributes="0"/>
                       </Group>
                   </Group>
@@ -667,105 +675,10 @@
 
               <Layout class="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout"/>
               <SubComponents>
-                <Container class="javax.swing.JPanel" name="jPanel9">
+                <Container class="javax.swing.JScrollPane" name="jScrollPane1">
                   <Properties>
-                    <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-                      <Color blue="ff" green="ff" red="ff" type="rgb"/>
-                    </Property>
-                    <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
-                      <Border info="org.netbeans.modules.form.compat2.border.TitledBorderInfo">
-                        <TitledBorder title="Inventory">
-                          <ResourceString PropertyName="titleX" bundle="mpv5/resources/languages/Panels.properties" key="ProductPanel.jPanel9.border.title" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
-                        </TitledBorder>
-                      </Border>
-                    </Property>
-                    <Property name="name" type="java.lang.String" value="jPanel9" noResource="true"/>
-                  </Properties>
-                  <Constraints>
-                    <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout" value="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout$BorderConstraintsDescription">
-                      <BorderConstraints direction="North"/>
-                    </Constraint>
-                  </Constraints>
-
-                  <Layout>
-                    <DimensionLayout dim="0">
-                      <Group type="103" groupAlignment="0" attributes="0">
-                          <Group type="102" alignment="0" attributes="0">
-                              <EmptySpace max="-2" attributes="0"/>
-                              <Component id="stack" min="-2" pref="175" max="-2" attributes="0"/>
-                              <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                              <Component id="threshold" min="-2" pref="175" max="-2" attributes="0"/>
-                              <EmptySpace type="separate" max="-2" attributes="0"/>
-                              <Component id="inventoryDisabled" min="-2" max="-2" attributes="0"/>
-                              <EmptySpace pref="271" max="32767" attributes="0"/>
-                          </Group>
-                      </Group>
-                    </DimensionLayout>
-                    <DimensionLayout dim="1">
-                      <Group type="103" groupAlignment="0" attributes="0">
-                          <Group type="102" alignment="0" attributes="0">
-                              <Group type="103" groupAlignment="2" attributes="0">
-                                  <Component id="inventoryDisabled" alignment="2" pref="0" max="32767" attributes="0"/>
-                                  <Component id="stack" alignment="2" pref="20" max="32767" attributes="0"/>
-                                  <Component id="threshold" alignment="2" pref="0" max="32767" attributes="0"/>
-                              </Group>
-                              <EmptySpace max="32767" attributes="0"/>
-                          </Group>
-                      </Group>
-                    </DimensionLayout>
-                  </Layout>
-                  <SubComponents>
-                    <Component class="mpv5.ui.beans.LabeledTextField" name="stack">
-                      <Properties>
-                        <Property name="_Label" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-                          <ResourceString bundle="mpv5/resources/languages/Panels.properties" key="ProductPanel.stack._Label_1" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
-                        </Property>
-                        <Property name="_ValueClass" type="java.lang.Class" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
-                          <Connection code="java.math.BigDecimal.class" type="code"/>
-                        </Property>
-                        <Property name="name" type="java.lang.String" value="stack" noResource="true"/>
-                      </Properties>
-                    </Component>
-                    <Component class="mpv5.ui.beans.LabeledTextField" name="threshold">
-                      <Properties>
-                        <Property name="_Label" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-                          <ResourceString bundle="mpv5/resources/languages/Panels.properties" key="ProductPanel.threshold._Label_1" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
-                        </Property>
-                        <Property name="_ValueClass" type="java.lang.Class" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
-                          <Connection code="java.math.BigDecimal.class" type="code"/>
-                        </Property>
-                        <Property name="name" type="java.lang.String" value="threshold" noResource="true"/>
-                      </Properties>
-                    </Component>
-                    <Component class="javax.swing.JCheckBox" name="inventoryDisabled">
-                      <Properties>
-                        <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-                          <Color blue="ff" green="ff" red="ff" type="rgb"/>
-                        </Property>
-                        <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-                          <ResourceString bundle="mpv5/resources/languages/Panels.properties" key="ProductPanel.inventoryDisabled.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
-                        </Property>
-                        <Property name="name" type="java.lang.String" value="inventoryDisabled" noResource="true"/>
-                      </Properties>
-                      <Events>
-                        <EventHandler event="itemStateChanged" listener="java.awt.event.ItemListener" parameters="java.awt.event.ItemEvent" handler="inventoryDisabledItemStateChanged"/>
-                      </Events>
-                    </Component>
-                  </SubComponents>
-                </Container>
-                <Container class="javax.swing.JPanel" name="supplierpanel">
-                  <Properties>
-                    <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-                      <Color blue="ff" green="ff" red="ff" type="rgb"/>
-                    </Property>
-                    <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
-                      <Border info="org.netbeans.modules.form.compat2.border.TitledBorderInfo">
-                        <TitledBorder title="Suppliers">
-                          <ResourceString PropertyName="titleX" bundle="mpv5/resources/languages/Panels.properties" key="ProductPanel.supplierpanel.border.title" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
-                        </TitledBorder>
-                      </Border>
-                    </Property>
-                    <Property name="name" type="java.lang.String" value="supplierpanel" noResource="true"/>
+                    <Property name="horizontalScrollBarPolicy" type="int" value="31"/>
+                    <Property name="name" type="java.lang.String" value="jScrollPane1" noResource="true"/>
                   </Properties>
                   <Constraints>
                     <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout" value="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout$BorderConstraintsDescription">
@@ -773,9 +686,128 @@
                     </Constraint>
                   </Constraints>
 
-                  <Layout class="org.netbeans.modules.form.compat2.layouts.DesignBoxLayout">
-                    <Property name="axis" type="int" value="3"/>
-                  </Layout>
+                  <Layout class="org.netbeans.modules.form.compat2.layouts.support.JScrollPaneSupportLayout"/>
+                  <SubComponents>
+                    <Container class="javax.swing.JPanel" name="jPanel3">
+                      <Properties>
+                        <Property name="name" type="java.lang.String" value="jPanel3" noResource="true"/>
+                      </Properties>
+
+                      <Layout class="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout"/>
+                      <SubComponents>
+                        <Container class="javax.swing.JPanel" name="supplierpanel">
+                          <Properties>
+                            <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+                              <Color blue="ff" green="ff" red="ff" type="rgb"/>
+                            </Property>
+                            <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
+                              <Border info="org.netbeans.modules.form.compat2.border.TitledBorderInfo">
+                                <TitledBorder title="Suppliers">
+                                  <ResourceString PropertyName="titleX" bundle="mpv5/resources/languages/Panels.properties" key="ProductPanel.supplierpanel.border.title" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+                                </TitledBorder>
+                              </Border>
+                            </Property>
+                            <Property name="name" type="java.lang.String" value="supplierpanel" noResource="true"/>
+                          </Properties>
+                          <Constraints>
+                            <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout" value="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout$BorderConstraintsDescription">
+                              <BorderConstraints direction="Center"/>
+                            </Constraint>
+                          </Constraints>
+
+                          <Layout class="org.netbeans.modules.form.compat2.layouts.DesignBoxLayout">
+                            <Property name="axis" type="int" value="3"/>
+                          </Layout>
+                        </Container>
+                        <Container class="javax.swing.JPanel" name="jPanel9">
+                          <Properties>
+                            <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+                              <Color blue="ff" green="ff" red="ff" type="rgb"/>
+                            </Property>
+                            <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
+                              <Border info="org.netbeans.modules.form.compat2.border.TitledBorderInfo">
+                                <TitledBorder title="Inventory">
+                                  <ResourceString PropertyName="titleX" bundle="mpv5/resources/languages/Panels.properties" key="ProductPanel.jPanel9.border.title" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+                                </TitledBorder>
+                              </Border>
+                            </Property>
+                            <Property name="name" type="java.lang.String" value="jPanel9" noResource="true"/>
+                          </Properties>
+                          <Constraints>
+                            <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout" value="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout$BorderConstraintsDescription">
+                              <BorderConstraints direction="North"/>
+                            </Constraint>
+                          </Constraints>
+
+                          <Layout>
+                            <DimensionLayout dim="0">
+                              <Group type="103" groupAlignment="0" attributes="0">
+                                  <Group type="102" alignment="0" attributes="0">
+                                      <EmptySpace max="-2" attributes="0"/>
+                                      <Component id="stack" min="-2" pref="175" max="-2" attributes="0"/>
+                                      <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                                      <Component id="threshold" min="-2" pref="175" max="-2" attributes="0"/>
+                                      <EmptySpace type="separate" max="-2" attributes="0"/>
+                                      <Component id="inventoryDisabled" min="-2" max="-2" attributes="0"/>
+                                      <EmptySpace pref="395" max="32767" attributes="0"/>
+                                  </Group>
+                              </Group>
+                            </DimensionLayout>
+                            <DimensionLayout dim="1">
+                              <Group type="103" groupAlignment="0" attributes="0">
+                                  <Group type="102" alignment="0" attributes="0">
+                                      <Group type="103" groupAlignment="2" attributes="0">
+                                          <Component id="inventoryDisabled" alignment="2" pref="26" max="32767" attributes="0"/>
+                                          <Component id="stack" alignment="2" max="32767" attributes="0"/>
+                                          <Component id="threshold" alignment="2" pref="0" max="32767" attributes="0"/>
+                                      </Group>
+                                      <EmptySpace max="32767" attributes="0"/>
+                                  </Group>
+                              </Group>
+                            </DimensionLayout>
+                          </Layout>
+                          <SubComponents>
+                            <Component class="mpv5.ui.beans.LabeledTextField" name="stack">
+                              <Properties>
+                                <Property name="_Label" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
+                                  <ResourceString bundle="mpv5/resources/languages/Panels.properties" key="ProductPanel.stack._Label_1" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+                                </Property>
+                                <Property name="_ValueClass" type="java.lang.Class" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
+                                  <Connection code="java.math.BigDecimal.class" type="code"/>
+                                </Property>
+                                <Property name="name" type="java.lang.String" value="stack" noResource="true"/>
+                              </Properties>
+                            </Component>
+                            <Component class="mpv5.ui.beans.LabeledTextField" name="threshold">
+                              <Properties>
+                                <Property name="_Label" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
+                                  <ResourceString bundle="mpv5/resources/languages/Panels.properties" key="ProductPanel.threshold._Label_1" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+                                </Property>
+                                <Property name="_ValueClass" type="java.lang.Class" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
+                                  <Connection code="java.math.BigDecimal.class" type="code"/>
+                                </Property>
+                                <Property name="name" type="java.lang.String" value="threshold" noResource="true"/>
+                              </Properties>
+                            </Component>
+                            <Component class="javax.swing.JCheckBox" name="inventoryDisabled">
+                              <Properties>
+                                <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+                                  <Color blue="ff" green="ff" red="ff" type="rgb"/>
+                                </Property>
+                                <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
+                                  <ResourceString bundle="mpv5/resources/languages/Panels.properties" key="ProductPanel.inventoryDisabled.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+                                </Property>
+                                <Property name="name" type="java.lang.String" value="inventoryDisabled" noResource="true"/>
+                              </Properties>
+                              <Events>
+                                <EventHandler event="itemStateChanged" listener="java.awt.event.ItemListener" parameters="java.awt.event.ItemEvent" handler="inventoryDisabledItemStateChanged"/>
+                              </Events>
+                            </Component>
+                          </SubComponents>
+                        </Container>
+                      </SubComponents>
+                    </Container>
+                  </SubComponents>
                 </Container>
               </SubComponents>
             </Container>
@@ -804,7 +836,7 @@
                               <Component id="jButton1" min="-2" max="-2" attributes="0"/>
                               <Component id="jButton2" min="-2" max="-2" attributes="0"/>
                           </Group>
-                          <EmptySpace pref="193" max="32767" attributes="0"/>
+                          <EmptySpace pref="319" max="32767" attributes="0"/>
                       </Group>
                   </Group>
                 </DimensionLayout>
@@ -872,140 +904,135 @@
             </Property>
           </Properties>
 
-          <Layout>
-            <DimensionLayout dim="0">
-              <Group type="103" groupAlignment="0" attributes="0">
-                  <Group type="102" alignment="1" attributes="0">
-                      <EmptySpace min="0" pref="782" max="32767" attributes="0"/>
-                      <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="removefile" alignment="1" min="-2" pref="24" max="-2" attributes="0"/>
-                          <Component id="addfile" alignment="1" min="-2" pref="24" max="-2" attributes="0"/>
-                      </Group>
-                  </Group>
-                  <Group type="103" rootIndex="1" groupAlignment="0" attributes="0">
-                      <Group type="102" attributes="0">
-                          <Component id="imgpanel" min="-2" max="-2" attributes="0"/>
-                          <EmptySpace min="-2" max="-2" attributes="0"/>
-                          <Component id="jScrollPane2" pref="479" max="32767" attributes="0"/>
-                          <EmptySpace min="-2" pref="34" max="-2" attributes="0"/>
-                      </Group>
-                  </Group>
-              </Group>
-            </DimensionLayout>
-            <DimensionLayout dim="1">
-              <Group type="103" groupAlignment="0" attributes="0">
-                  <Group type="102" alignment="0" attributes="0">
-                      <Component id="addfile" min="-2" max="-2" attributes="1"/>
-                      <EmptySpace max="-2" attributes="0"/>
-                      <Component id="removefile" min="-2" max="-2" attributes="1"/>
-                      <EmptySpace min="0" pref="68" max="32767" attributes="0"/>
-                  </Group>
-                  <Group type="103" rootIndex="1" groupAlignment="0" attributes="0">
-                      <Component id="imgpanel" max="32767" attributes="1"/>
-                      <Component id="jScrollPane2" alignment="0" pref="130" max="32767" attributes="2"/>
-                  </Group>
-              </Group>
-            </DimensionLayout>
-          </Layout>
+          <Layout class="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout"/>
           <SubComponents>
-            <Container class="javax.swing.JPanel" name="imgpanel">
+            <Container class="javax.swing.JSplitPane" name="jSplitPane1">
               <Properties>
-                <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
-                  <Border info="org.netbeans.modules.form.compat2.border.EtchedBorderInfo">
-                    <EtchetBorder/>
-                  </Border>
+                <Property name="dividerLocation" type="int" value="500"/>
+                <Property name="cursor" type="java.awt.Cursor" editor="org.netbeans.modules.form.editors2.CursorEditor">
+                  <Color id="Handcursor"/>
                 </Property>
-                <Property name="name" type="java.lang.String" value="imgpanel" noResource="true"/>
+                <Property name="name" type="java.lang.String" value="jSplitPane1" noResource="true"/>
+                <Property name="oneTouchExpandable" type="boolean" value="true"/>
               </Properties>
+              <Constraints>
+                <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout" value="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout$BorderConstraintsDescription">
+                  <BorderConstraints direction="Center"/>
+                </Constraint>
+              </Constraints>
 
-              <Layout>
-                <DimensionLayout dim="0">
-                  <Group type="103" groupAlignment="0" attributes="0">
-                      <Component id="imageprev" min="-2" pref="283" max="-2" attributes="0"/>
-                  </Group>
-                </DimensionLayout>
-                <DimensionLayout dim="1">
-                  <Group type="103" groupAlignment="0" attributes="0">
-                      <Component id="imageprev" pref="126" max="32767" attributes="0"/>
-                  </Group>
-                </DimensionLayout>
-              </Layout>
+              <Layout class="org.netbeans.modules.form.compat2.layouts.support.JSplitPaneSupportLayout"/>
               <SubComponents>
-                <Component class="javax.swing.JLabel" name="imageprev">
+                <Container class="javax.swing.JPanel" name="imgpanel">
                   <Properties>
-                    <Property name="horizontalAlignment" type="int" value="0"/>
-                    <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                      <Image iconType="3" name="/mpv5/resources/images/32/xcf.png"/>
+                    <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
+                      <Border info="org.netbeans.modules.form.compat2.border.EtchedBorderInfo">
+                        <EtchetBorder/>
+                      </Border>
                     </Property>
-                    <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-                      <ResourceString bundle="mpv5/resources/languages/Panels.properties" key="ProductPanel.imageprev.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
-                    </Property>
-                    <Property name="name" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-                      <ResourceString bundle="mpv5/resources/languages/Panels.properties" key="ProductPanel.imageprev.name" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
-                    </Property>
+                    <Property name="name" type="java.lang.String" value="imgpanel" noResource="true"/>
                   </Properties>
-                  <Events>
-                    <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="imageprevMouseClicked"/>
-                  </Events>
-                </Component>
-              </SubComponents>
-            </Container>
-            <Component class="javax.swing.JButton" name="removefile">
-              <Properties>
-                <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                  <Image iconType="3" name="/mpv5/resources/images/16/remove.png"/>
-                </Property>
-                <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-                  <ResourceString bundle="mpv5/resources/languages/Panels.properties" key="ProductPanel.removefile.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
-                </Property>
-                <Property name="name" type="java.lang.String" value="removefile" noResource="true"/>
-              </Properties>
-              <Events>
-                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="removefileActionPerformed"/>
-              </Events>
-            </Component>
-            <Component class="javax.swing.JButton" name="addfile">
-              <Properties>
-                <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                  <Image iconType="3" name="/mpv5/resources/images/16/add.png"/>
-                </Property>
-                <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-                  <ResourceString bundle="mpv5/resources/languages/Panels.properties" key="ProductPanel.addfile.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
-                </Property>
-                <Property name="name" type="java.lang.String" value="addfile" noResource="true"/>
-              </Properties>
-              <Events>
-                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="addfileActionPerformed"/>
-              </Events>
-            </Component>
-            <Container class="javax.swing.JScrollPane" name="jScrollPane2">
-              <Properties>
-                <Property name="name" type="java.lang.String" value="jScrollPane2" noResource="true"/>
-              </Properties>
-              <AuxValues>
-                <AuxValue name="autoScrollPane" type="java.lang.Boolean" value="true"/>
-              </AuxValues>
+                  <Constraints>
+                    <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.support.JSplitPaneSupportLayout" value="org.netbeans.modules.form.compat2.layouts.support.JSplitPaneSupportLayout$JSplitPaneConstraintsDescription">
+                      <JSplitPaneConstraints position="left"/>
+                    </Constraint>
+                  </Constraints>
 
-              <Layout class="org.netbeans.modules.form.compat2.layouts.support.JScrollPaneSupportLayout"/>
-              <SubComponents>
-                <Component class="javax.swing.JTable" name="dataTable">
+                  <Layout class="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout"/>
+                  <SubComponents>
+                    <Component class="javax.swing.JLabel" name="imageprev">
+                      <Properties>
+                        <Property name="horizontalAlignment" type="int" value="0"/>
+                        <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+                          <Image iconType="3" name="/mpv5/resources/images/32/xcf.png"/>
+                        </Property>
+                        <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
+                          <ResourceString bundle="mpv5/resources/languages/Panels.properties" key="ProductPanel.imageprev.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+                        </Property>
+                        <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                          <Dimension value="[3200, 3200]"/>
+                        </Property>
+                        <Property name="name" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
+                          <ResourceString bundle="mpv5/resources/languages/Panels.properties" key="ProductPanel.imageprev.name" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+                        </Property>
+                        <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+                          <Dimension value="[333, 333]"/>
+                        </Property>
+                      </Properties>
+                      <Events>
+                        <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="imageprevMouseClicked"/>
+                      </Events>
+                      <Constraints>
+                        <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout" value="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout$BorderConstraintsDescription">
+                          <BorderConstraints direction="Center"/>
+                        </Constraint>
+                      </Constraints>
+                    </Component>
+                  </SubComponents>
+                </Container>
+                <Container class="javax.swing.JScrollPane" name="jScrollPane2">
                   <Properties>
-                    <Property name="model" type="javax.swing.table.TableModel" editor="org.netbeans.modules.form.editors2.TableModelEditor">
-                      <Table columnCount="0" rowCount="0"/>
-                    </Property>
-                    <Property name="name" type="java.lang.String" value="dataTable" noResource="true"/>
+                    <Property name="name" type="java.lang.String" value="jScrollPane2" noResource="true"/>
                   </Properties>
-                  <Events>
-                    <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="dataTableMouseClicked"/>
-                  </Events>
                   <AuxValues>
-                    <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new  mpv5.ui.misc.MPTable(this) {&#xa;            public Component prepareRenderer(TableCellRenderer renderer,&#xa;                int rowIndex, int vColIndex) {&#xa;                Component c = super.prepareRenderer(renderer, rowIndex, vColIndex);&#xa;                if (c instanceof JComponent) {&#xa;                    JComponent jc = (JComponent)c;&#xa;                    jc.setToolTipText(String.valueOf(getValueAt(rowIndex, vColIndex)));&#xa;                }&#xa;                return c;&#xa;            }&#xa;        }&#xa;"/>
+                    <AuxValue name="autoScrollPane" type="java.lang.Boolean" value="true"/>
                   </AuxValues>
-                </Component>
+                  <Constraints>
+                    <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.support.JSplitPaneSupportLayout" value="org.netbeans.modules.form.compat2.layouts.support.JSplitPaneSupportLayout$JSplitPaneConstraintsDescription">
+                      <JSplitPaneConstraints position="right"/>
+                    </Constraint>
+                  </Constraints>
+
+                  <Layout class="org.netbeans.modules.form.compat2.layouts.support.JScrollPaneSupportLayout"/>
+                  <SubComponents>
+                    <Component class="javax.swing.JTable" name="dataTable">
+                      <Properties>
+                        <Property name="model" type="javax.swing.table.TableModel" editor="org.netbeans.modules.form.editors2.TableModelEditor">
+                          <Table columnCount="0" rowCount="0"/>
+                        </Property>
+                        <Property name="name" type="java.lang.String" value="dataTable" noResource="true"/>
+                      </Properties>
+                      <Events>
+                        <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="dataTableMouseClicked"/>
+                      </Events>
+                      <AuxValues>
+                        <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new  mpv5.ui.misc.MPTable(this) {&#xa;            public Component prepareRenderer(TableCellRenderer renderer,&#xa;                int rowIndex, int vColIndex) {&#xa;                Component c = super.prepareRenderer(renderer, rowIndex, vColIndex);&#xa;                if (c instanceof JComponent) {&#xa;                    JComponent jc = (JComponent)c;&#xa;                    jc.setToolTipText(String.valueOf(getValueAt(rowIndex, vColIndex)));&#xa;                }&#xa;                return c;&#xa;            }&#xa;        }&#xa;"/>
+                      </AuxValues>
+                    </Component>
+                  </SubComponents>
+                </Container>
               </SubComponents>
             </Container>
           </SubComponents>
         </Container>
+        <Component class="javax.swing.JButton" name="removefile">
+          <Properties>
+            <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+              <Image iconType="3" name="/mpv5/resources/images/16/remove.png"/>
+            </Property>
+            <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
+              <ResourceString bundle="mpv5/resources/languages/Panels.properties" key="ProductPanel.removefile.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+            </Property>
+            <Property name="name" type="java.lang.String" value="removefile" noResource="true"/>
+          </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="removefileActionPerformed"/>
+          </Events>
+        </Component>
+        <Component class="javax.swing.JButton" name="addfile">
+          <Properties>
+            <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
+              <Image iconType="3" name="/mpv5/resources/images/16/add.png"/>
+            </Property>
+            <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
+              <ResourceString bundle="mpv5/resources/languages/Panels.properties" key="ProductPanel.addfile.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+            </Property>
+            <Property name="name" type="java.lang.String" value="addfile" noResource="true"/>
+          </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="addfileActionPerformed"/>
+          </Events>
+        </Component>
       </SubComponents>
     </Container>
     <Container class="javax.swing.JPanel" name="toolbarpane">

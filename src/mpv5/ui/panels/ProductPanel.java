@@ -1,18 +1,18 @@
 /*
-This file is part of YaBS.
+ This file is part of YaBS.
 
-YaBS is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
+ YaBS is free software: you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation, either version 3 of the License, or
+ (at your option) any later version.
 
-YaBS is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
+ YaBS is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
 
-You should have received a copy of the GNU General Public License
-along with YaBS.  If not, see <http://www.gnu.org/licenses/>.
+ You should have received a copy of the GNU General Public License
+ along with YaBS.  If not, see <http://www.gnu.org/licenses/>.
  */
 /*
  * ContactPanel.java
@@ -153,7 +153,6 @@ public class ProductPanel extends javax.swing.JPanel implements DataPanel, MPCBS
 
         JMenuItem x = new JMenuItem(Messages.SET_AS_DEFAULT.getValue());
         x.addActionListener(new ActionListener() {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 final String fname = dataTable.getModel().getValueAt(dataTable.getSelectedRow(), 0).toString();
@@ -186,7 +185,6 @@ public class ProductPanel extends javax.swing.JPanel implements DataPanel, MPCBS
         supplierpanel.add(new ProductPanelContactSub(null, true));
 
         selecttax.getComboBox().addActionListener(new ActionListener() {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 taxids_ = Integer.valueOf(selecttax.getSelectedItem().getIdObject().toString());
@@ -298,10 +296,7 @@ public class ProductPanel extends javax.swing.JPanel implements DataPanel, MPCBS
 
     private void fileTableClicked(MouseEvent evt) {
         if (evt.getClickCount() > 1) {
-            FileDirectoryHandler.open(QueryHandler.instanceOf().clone(Context.getFiles()).
-                    retrieveFile(dataTable.getModel().getValueAt(dataTable.getSelectedRow(), 0).
-                    toString(), new File(FileDirectoryHandler.getTempDir() + dataTable.getModel().
-                    getValueAt(dataTable.getSelectedRow(), 1).toString())));
+            FileDirectoryHandler.open(QueryHandler.instanceOf().clone(Context.getFiles()).retrieveFile(dataTable.getModel().getValueAt(dataTable.getSelectedRow(), 0).toString(), new File(FileDirectoryHandler.getTempDir() + dataTable.getModel().getValueAt(dataTable.getSelectedRow(), 1).toString())));
         } else if (evt.getClickCount() == 1 && evt.getButton() == MouseEvent.BUTTON3) {
 
             JTable source = (JTable) evt.getSource();
@@ -318,7 +313,6 @@ public class ProductPanel extends javax.swing.JPanel implements DataPanel, MPCBS
 
     private void fillFiles() {
         Runnable runnable = new Runnable() {
-
             public void run() {
                 Context c = Context.getFilesToProducts();
                 c.addReference(Context.getFiles().getDbIdentity(), "cname", "filename");
@@ -390,20 +384,21 @@ public class ProductPanel extends javax.swing.JPanel implements DataPanel, MPCBS
         ;
         contactname1 = new mpv5.ui.beans.LabeledCombobox();
         jPanel6 = new javax.swing.JPanel();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        jPanel3 = new javax.swing.JPanel();
+        supplierpanel = new javax.swing.JPanel();
         jPanel9 = new javax.swing.JPanel();
         stack = new mpv5.ui.beans.LabeledTextField();
         threshold = new mpv5.ui.beans.LabeledTextField();
         inventoryDisabled = new javax.swing.JCheckBox();
-        supplierpanel = new javax.swing.JPanel();
         jPanel2 = new javax.swing.JPanel();
         jButton1 = new javax.swing.JButton();
         prizes = new javax.swing.JPanel();
         jButton2 = new javax.swing.JButton();
         jPanel7 = new javax.swing.JPanel();
+        jSplitPane1 = new javax.swing.JSplitPane();
         imgpanel = new javax.swing.JPanel();
         imageprev = new javax.swing.JLabel();
-        removefile = new javax.swing.JButton();
-        addfile = new javax.swing.JButton();
         jScrollPane2 = new javax.swing.JScrollPane();
         dataTable = new  mpv5.ui.misc.MPTable(this) {
             public Component prepareRenderer(TableCellRenderer renderer,
@@ -417,9 +412,11 @@ public class ProductPanel extends javax.swing.JPanel implements DataPanel, MPCBS
             }
         }
         ;
+        removefile = new javax.swing.JButton();
+        addfile = new javax.swing.JButton();
         toolbarpane = new javax.swing.JPanel();
 
-        java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle(); // NOI18N
+        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("mpv5/resources/languages/Panels"); // NOI18N
         setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("ProductPanel.border.title_1"))); // NOI18N
         setName("Form"); // NOI18N
 
@@ -479,13 +476,13 @@ public class ProductPanel extends javax.swing.JPanel implements DataPanel, MPCBS
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(path, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 780, Short.MAX_VALUE)
+                    .addComponent(path, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(stype, javax.swing.GroupLayout.PREFERRED_SIZE, 216, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(familyselect, javax.swing.GroupLayout.DEFAULT_SIZE, 384, Short.MAX_VALUE)
                             .addComponent(cnumber, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 110, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                             .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addComponent(jLabel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -659,10 +656,10 @@ public class ProductPanel extends javax.swing.JPanel implements DataPanel, MPCBS
                                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                                     .addComponent(currencylabel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                     .addComponent(currencylabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                            .addComponent(unit, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                            .addComponent(unit, javax.swing.GroupLayout.DEFAULT_SIZE, 202, Short.MAX_VALUE)
                             .addComponent(selecttax, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 299, Short.MAX_VALUE)
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 425, Short.MAX_VALUE)
                 .addContainerGap())
         );
         jPanel4Layout.setVerticalGroup(
@@ -700,6 +697,18 @@ public class ProductPanel extends javax.swing.JPanel implements DataPanel, MPCBS
         jPanel6.setName(bundle.getString("ProductPanel.jPanel6.name")); // NOI18N
         jPanel6.setLayout(new java.awt.BorderLayout());
 
+        jScrollPane1.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+        jScrollPane1.setName("jScrollPane1"); // NOI18N
+
+        jPanel3.setName("jPanel3"); // NOI18N
+        jPanel3.setLayout(new java.awt.BorderLayout());
+
+        supplierpanel.setBackground(new java.awt.Color(255, 255, 255));
+        supplierpanel.setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("ProductPanel.supplierpanel.border.title"))); // NOI18N
+        supplierpanel.setName("supplierpanel"); // NOI18N
+        supplierpanel.setLayout(new javax.swing.BoxLayout(supplierpanel, javax.swing.BoxLayout.PAGE_AXIS));
+        jPanel3.add(supplierpanel, java.awt.BorderLayout.CENTER);
+
         jPanel9.setBackground(new java.awt.Color(255, 255, 255));
         jPanel9.setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("ProductPanel.jPanel9.border.title"))); // NOI18N
         jPanel9.setName("jPanel9"); // NOI18N
@@ -732,25 +741,23 @@ public class ProductPanel extends javax.swing.JPanel implements DataPanel, MPCBS
                 .addComponent(threshold, javax.swing.GroupLayout.PREFERRED_SIZE, 175, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(inventoryDisabled)
-                .addContainerGap(271, Short.MAX_VALUE))
+                .addContainerGap(395, Short.MAX_VALUE))
         );
         jPanel9Layout.setVerticalGroup(
             jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel9Layout.createSequentialGroup()
                 .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
-                    .addComponent(inventoryDisabled, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
-                    .addComponent(stack, javax.swing.GroupLayout.PREFERRED_SIZE, 20, Short.MAX_VALUE)
+                    .addComponent(inventoryDisabled, javax.swing.GroupLayout.DEFAULT_SIZE, 26, Short.MAX_VALUE)
+                    .addComponent(stack, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(threshold, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
-        jPanel6.add(jPanel9, java.awt.BorderLayout.NORTH);
+        jPanel3.add(jPanel9, java.awt.BorderLayout.NORTH);
 
-        supplierpanel.setBackground(new java.awt.Color(255, 255, 255));
-        supplierpanel.setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("ProductPanel.supplierpanel.border.title"))); // NOI18N
-        supplierpanel.setName("supplierpanel"); // NOI18N
-        supplierpanel.setLayout(new javax.swing.BoxLayout(supplierpanel, javax.swing.BoxLayout.PAGE_AXIS));
-        jPanel6.add(supplierpanel, java.awt.BorderLayout.CENTER);
+        jScrollPane1.setViewportView(jPanel3);
+
+        jPanel6.add(jScrollPane1, java.awt.BorderLayout.CENTER);
 
         jTabbedPane1.addTab(bundle.getString("ProductPanel.jPanel6.TabConstraints.tabTitle"), jPanel6); // NOI18N
 
@@ -788,7 +795,7 @@ public class ProductPanel extends javax.swing.JPanel implements DataPanel, MPCBS
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jButton1)
                     .addComponent(jButton2))
-                .addContainerGap(193, Short.MAX_VALUE))
+                .addContainerGap(319, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -803,48 +810,31 @@ public class ProductPanel extends javax.swing.JPanel implements DataPanel, MPCBS
         jTabbedPane1.addTab(bundle.getString("ProductPanel.jPanel2.TabConstraints.tabTitle"), jPanel2); // NOI18N
 
         jPanel7.setName(bundle.getString("ProductPanel.jPanel7.name")); // NOI18N
+        jPanel7.setLayout(new java.awt.BorderLayout());
+
+        jSplitPane1.setDividerLocation(500);
+        jSplitPane1.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        jSplitPane1.setName("jSplitPane1"); // NOI18N
+        jSplitPane1.setOneTouchExpandable(true);
 
         imgpanel.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         imgpanel.setName("imgpanel"); // NOI18N
+        imgpanel.setLayout(new java.awt.BorderLayout());
 
         imageprev.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         imageprev.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/xcf.png"))); // NOI18N
         imageprev.setText(bundle.getString("ProductPanel.imageprev.text")); // NOI18N
+        imageprev.setMaximumSize(new java.awt.Dimension(3200, 3200));
         imageprev.setName(bundle.getString("ProductPanel.imageprev.name")); // NOI18N
+        imageprev.setPreferredSize(new java.awt.Dimension(333, 333));
         imageprev.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 imageprevMouseClicked(evt);
             }
         });
+        imgpanel.add(imageprev, java.awt.BorderLayout.CENTER);
 
-        javax.swing.GroupLayout imgpanelLayout = new javax.swing.GroupLayout(imgpanel);
-        imgpanel.setLayout(imgpanelLayout);
-        imgpanelLayout.setHorizontalGroup(
-            imgpanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(imageprev, javax.swing.GroupLayout.PREFERRED_SIZE, 283, javax.swing.GroupLayout.PREFERRED_SIZE)
-        );
-        imgpanelLayout.setVerticalGroup(
-            imgpanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(imageprev, javax.swing.GroupLayout.DEFAULT_SIZE, 126, Short.MAX_VALUE)
-        );
-
-        removefile.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/16/remove.png"))); // NOI18N
-        removefile.setText(bundle.getString("ProductPanel.removefile.text")); // NOI18N
-        removefile.setName("removefile"); // NOI18N
-        removefile.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                removefileActionPerformed(evt);
-            }
-        });
-
-        addfile.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/16/add.png"))); // NOI18N
-        addfile.setText(bundle.getString("ProductPanel.addfile.text")); // NOI18N
-        addfile.setName("addfile"); // NOI18N
-        addfile.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                addfileActionPerformed(evt);
-            }
-        });
+        jSplitPane1.setLeftComponent(imgpanel);
 
         jScrollPane2.setName("jScrollPane2"); // NOI18N
 
@@ -864,47 +854,42 @@ public class ProductPanel extends javax.swing.JPanel implements DataPanel, MPCBS
         });
         jScrollPane2.setViewportView(dataTable);
 
-        javax.swing.GroupLayout jPanel7Layout = new javax.swing.GroupLayout(jPanel7);
-        jPanel7.setLayout(jPanel7Layout);
-        jPanel7Layout.setHorizontalGroup(
-            jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel7Layout.createSequentialGroup()
-                .addGap(0, 782, Short.MAX_VALUE)
-                .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(removefile, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(addfile, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)))
-            .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(jPanel7Layout.createSequentialGroup()
-                    .addComponent(imgpanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 479, Short.MAX_VALUE)
-                    .addGap(34, 34, 34)))
-        );
-        jPanel7Layout.setVerticalGroup(
-            jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel7Layout.createSequentialGroup()
-                .addComponent(addfile)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(removefile)
-                .addGap(0, 68, Short.MAX_VALUE))
-            .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addComponent(imgpanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 130, Short.MAX_VALUE))
-        );
+        jSplitPane1.setRightComponent(jScrollPane2);
+
+        jPanel7.add(jSplitPane1, java.awt.BorderLayout.CENTER);
+
+        removefile.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/16/remove.png"))); // NOI18N
+        removefile.setText(bundle.getString("ProductPanel.removefile.text")); // NOI18N
+        removefile.setName("removefile"); // NOI18N
+        removefile.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                removefileActionPerformed(evt);
+            }
+        });
+
+        addfile.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/16/add.png"))); // NOI18N
+        addfile.setText(bundle.getString("ProductPanel.addfile.text")); // NOI18N
+        addfile.setName("addfile"); // NOI18N
+        addfile.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                addfileActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout rightpaneLayout = new javax.swing.GroupLayout(rightpane);
         rightpane.setLayout(rightpaneLayout);
         rightpaneLayout.setHorizontalGroup(
             rightpaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, rightpaneLayout.createSequentialGroup()
-                .addGroup(rightpaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, rightpaneLayout.createSequentialGroup()
-                        .addGap(2, 2, 2)
-                        .addComponent(jPanel7, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addComponent(jTabbedPane1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 808, Short.MAX_VALUE)
-                    .addComponent(jToolBar1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 808, Short.MAX_VALUE)
-                    .addComponent(jPanel1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap())
+            .addGroup(rightpaneLayout.createSequentialGroup()
+                .addGap(2, 2, 2)
+                .addComponent(jPanel7, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(rightpaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(removefile, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(addfile, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)))
+            .addComponent(jTabbedPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(jToolBar1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         rightpaneLayout.setVerticalGroup(
             rightpaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -915,7 +900,13 @@ public class ProductPanel extends javax.swing.JPanel implements DataPanel, MPCBS
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jTabbedPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 277, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel7, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGroup(rightpaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(rightpaneLayout.createSequentialGroup()
+                        .addComponent(addfile)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(removefile)
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addComponent(jPanel7, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)))
         );
 
         toolbarpane.setName("toolbarpane"); // NOI18N
@@ -930,7 +921,7 @@ public class ProductPanel extends javax.swing.JPanel implements DataPanel, MPCBS
                 .addGap(0, 0, 0)
                 .addComponent(rightpane, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addGroup(layout.createSequentialGroup()
-                .addComponent(toolbarpane, javax.swing.GroupLayout.DEFAULT_SIZE, 820, Short.MAX_VALUE)
+                .addComponent(toolbarpane, javax.swing.GroupLayout.DEFAULT_SIZE, 934, Short.MAX_VALUE)
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -940,7 +931,7 @@ public class ProductPanel extends javax.swing.JPanel implements DataPanel, MPCBS
                 .addGap(0, 0, 0)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(rightpane, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(leftpane, javax.swing.GroupLayout.DEFAULT_SIZE, 612, Short.MAX_VALUE)))
+                    .addComponent(leftpane, javax.swing.GroupLayout.DEFAULT_SIZE, 660, Short.MAX_VALUE)))
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -998,7 +989,7 @@ public class ProductPanel extends javax.swing.JPanel implements DataPanel, MPCBS
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         prizes.add(new ProductPricePanel(BigDecimal.ZERO, BigDecimal.ZERO));
         prizes.validate();
-
+        prizes.repaint();
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
@@ -1010,8 +1001,9 @@ public class ProductPanel extends javax.swing.JPanel implements DataPanel, MPCBS
         }
 
         prizes.removeAll();
-        prizes.validate();
         setDataOwner(dataOwner, true);
+        prizes.validate();
+        prizes.repaint();
     }//GEN-LAST:event_jButton2ActionPerformed
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel addedby;
@@ -1040,13 +1032,16 @@ public class ProductPanel extends javax.swing.JPanel implements DataPanel, MPCBS
     private javax.swing.JLabel jLabel4;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
+    private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
     private javax.swing.JPanel jPanel6;
     private javax.swing.JPanel jPanel7;
     private javax.swing.JPanel jPanel9;
+    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JToolBar.Separator jSeparator1;
+    private javax.swing.JSplitPane jSplitPane1;
     private javax.swing.JTabbedPane jTabbedPane1;
     private javax.swing.JToolBar jToolBar1;
     private javax.swing.JPanel leftpane;
@@ -1228,7 +1223,6 @@ public class ProductPanel extends javax.swing.JPanel implements DataPanel, MPCBS
         }
 
         Runnable runnable = new Runnable() {
-
             public void run() {
                 try {
                     List<ProductsToSuppliers> supps = Contact.getReferencedObjects(dataOwner, Context.getProductsToSuppliers(), new ProductsToSuppliers());
@@ -1243,7 +1237,7 @@ public class ProductPanel extends javax.swing.JPanel implements DataPanel, MPCBS
                 }
             }
         };
-        new Thread(runnable).start();
+        SwingUtilities.invokeLater(runnable);
 
         if (manufacturersids_ > 0) {
             try {
@@ -1281,7 +1275,6 @@ public class ProductPanel extends javax.swing.JPanel implements DataPanel, MPCBS
         button_listedit.setEnabled(productlistsids_ > 0);
         final Product b = dataOwner;
         Runnable runnable2 = new Runnable() {
-
             public void run() {
                 try {
                     prizes.removeAll();
@@ -1290,20 +1283,19 @@ public class ProductPanel extends javax.swing.JPanel implements DataPanel, MPCBS
                         ProductPrice productPrice = pp.get(i);
                         prizes.add(new ProductPricePanel(productPrice.getExternalnetvalue(), productPrice.getMincountvalue()));
                     }
-
+                    prizes.validate();
+                    prizes.repaint();
                 } catch (Exception e) {
                     Log.Debug(this, e.getMessage());
                 }
             }
         };
-        new Thread(runnable2).start();
-        validate();
+        SwingUtilities.invokeLater(runnable2);
     }
 
     @Override
     public void refresh() {
         Runnable runnable = new Runnable() {
-
             @Override
             public void run() {
 
@@ -1451,7 +1443,6 @@ public class ProductPanel extends javax.swing.JPanel implements DataPanel, MPCBS
 
     private void preloadTemplate() {
         Runnable runnable = new Runnable() {
-
             public void run() {
                 if (dataOwner.__getInttype() == Product.TYPE_PRODUCT) {
                     TemplateHandler.loadTemplateFor(button_preview, Long.valueOf(dataOwner.templateGroupIds()), Constants.TYPE_PRODUCT);
@@ -1536,9 +1527,9 @@ public class ProductPanel extends javax.swing.JPanel implements DataPanel, MPCBS
         lastimage = defaultimage_;
         if (defaultimage_ != null && !defaultimage_.equals("")) {
             Runnable runnable = new Runnable() {
-
                 public void run() {
-                    currentImageFile = QueryHandler.instanceOf().clone(Context.getFiles()).retrieveFile(defaultimage_, FileDirectoryHandler.getTempFile("jpg"));
+                    QueryHandler q = QueryHandler.instanceOf().clone(Context.getFiles());
+                    currentImageFile = q.retrieveFile(defaultimage_, FileDirectoryHandler.getTempFile("image"));
                     if (currentImageFile != null) {
                         try {
                             MPIcon ic = new MPIcon(currentImageFile.toURI().toURL());
