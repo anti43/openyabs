@@ -332,7 +332,7 @@ public class TableFormat {
      */
     public static void hideHeader(JTable table) {
         table.getTableHeader().setPreferredSize(new Dimension(table.getColumnModel().getTotalColumnWidth(), 15));
-        table.getTableHeader().setFont(new Font(LocalSettings.getProperty(LocalSettings.DEFAULT_FONT), Font.PLAIN, 0));
+        table.getTableHeader().setFont(new Font(LocalSettings.getProperty(LocalSettings.DEFAULT_FONT), Font.PLAIN, 1));
         class ColumnListener implements TableColumnModelListener {
 
             private final JTable table;
