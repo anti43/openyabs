@@ -21,6 +21,7 @@
  */
 package mpv5.ui.toolbars;
 
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemListener;
@@ -593,7 +594,7 @@ public class DataPanelTB extends javax.swing.JPanel implements ActionListener, I
                     fav = new Favourite(dato);
                     fav.save();
                     mpv5.YabsViewProxy.instance().reloadFavorites();
-                    mpv5.YabsViewProxy.instance().addMessage(Messages.ADDED_TO_FAVOURITES + dato.__getCname());
+                    mpv5.YabsViewProxy.instance().addMessage(Messages.ADDED_TO_FAVOURITES + dato.__getCname(), Color.GREEN);
                     parents.setDataOwner(dato, true);
                 } else {
                     parents.showRequiredFields();

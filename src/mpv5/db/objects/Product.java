@@ -305,7 +305,7 @@ public class Product extends DatabaseObject implements Formattable, Templateable
 
     @Override
     public void ensureUniqueness() {
-        if (cnumber == null || cnumber.length() == 0) {
+        if ((cnumber == null || cnumber.length() == 0 ) || !QueryHandler.instanceOf().clone(Context.getProduct()).checkUniqueness("cnumber", cnumber)) {
             setCnumber(getFormatHandler().next());
         }
     }

@@ -21,6 +21,7 @@
  */
 package mpv5.ui.panels;
 
+import java.awt.Color;
 import javax.swing.JTabbedPane;
 import javax.swing.SwingUtilities;
 import mpv5.db.common.Context;
@@ -427,7 +428,7 @@ public class AddressPanel extends javax.swing.JPanel implements DataPanel {
             if (dbo.getDbIdentity().equals(Context.getAddress().getDbIdentity())) {
                 setDataOwner(dbo, true);
             } else {
-                mpv5.YabsViewProxy.instance().addMessage(Messages.NOT_POSSIBLE.toString() + Messages.ACTION_PASTE.toString());
+                mpv5.YabsViewProxy.instance().addMessage(Messages.NOT_POSSIBLE.toString() + Messages.ACTION_PASTE.toString(), Color.RED);
             }
         }
 

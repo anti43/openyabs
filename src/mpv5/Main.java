@@ -27,6 +27,7 @@ import com.l2fprod.common.swing.plaf.LookAndFeelAddons;
 import enoa.connection.NoaConnection;
 import enoa.connection.NoaConnectionLocalServer;
 import enoa.handler.TemplateHandler;
+import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.Font;
 import java.io.File;
@@ -64,6 +65,7 @@ import mpv5.i18n.LanguageManager;
 import mpv5.pluginhandling.UserPlugin;
 import mpv5.server.MPServer;
 import mpv5.ui.dialogs.LoginToInstanceScreen;
+import mpv5.ui.dialogs.Notificator;
 import mpv5.ui.dialogs.Search2;
 import mpv5.ui.dialogs.subcomponents.ControlPanel_Fonts;
 import mpv5.ui.dialogs.subcomponents.wizard_DBSettings_simple_1;
@@ -865,7 +867,7 @@ public class Main implements Runnable {
                     @Override
                     public void run() {
                         if (checkUpdates()) {
-                            ((YabsView) getApplication().getMainView()).addMessage(Messages.UPDATE_AVAILABLE);
+                            Notificator.raiseNotification(Messages.UPDATE_AVAILABLE, false);
                         }
                     }
                 };
@@ -1119,7 +1121,7 @@ public class Main implements Runnable {
                         }
                     } catch (NodataFoundException ex) {
                         Log.Debug(this, ex.getMessage());
-                        YabsViewProxy.instance().addMessage(Messages.NO_TEMPLATE_DEFINDED);
+                        YabsViewProxy.instance().addMessage(Messages.NO_TEMPLATE_DEFINDED, Color.YELLOW);
                     }
                 }
             };

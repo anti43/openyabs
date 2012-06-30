@@ -21,6 +21,7 @@ along with YaBS.  If not, see <http://www.gnu.org/licenses/>.
  */
 package mpv5.ui.dialogs.subcomponents;
 
+import java.awt.Color;
 import java.awt.Component;
 import java.util.ArrayList;
 import java.util.logging.Level;
@@ -674,7 +675,7 @@ public class ControlPanel_Accounts extends javax.swing.JPanel implements Control
             if (dbo.getDbIdentity().equals(Context.getAccounts().getDbIdentity())) {
                 setDataOwner(dbo, true);
             } else {
-                mpv5.YabsViewProxy.instance().addMessage(Messages.NOT_POSSIBLE.toString() + Messages.ACTION_PASTE);
+                mpv5.YabsViewProxy.instance().addMessage(Messages.NOT_POSSIBLE.toString() + Messages.ACTION_PASTE, Color.RED);
             }
         }
     }

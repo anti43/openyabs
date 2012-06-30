@@ -5,6 +5,7 @@
 
 package mpv5;
 
+import java.awt.Color;
 import java.io.File;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
@@ -25,6 +26,8 @@ public interface YabsView{
 
     public static String WINDOW_TITLE = Constants.VERSION;
 
+    public void addMessage(Object messages, Color color);
+    
     public void addMessage(Object messages);
 
     public void setWaiting(boolean b);

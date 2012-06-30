@@ -1,5 +1,6 @@
 package mpv5.db.common;
 
+import java.awt.Color;
 import java.awt.Cursor;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -1019,7 +1020,7 @@ public class QueryHandler implements Cloneable {
                 int j = uniquecols[i];
                 Object[][] val = select(values[j], new String[]{values[j], vals.getValue(values[j]).toString(), vals.getValue(values[j]).getWrapper()});
                 if (val != null && val.length > 0) {
-                    mpv5.YabsViewProxy.instance().addMessage(Messages.VALUE_ALREADY_EXISTS + vals.getValue(values[j]).toString());
+                    mpv5.YabsViewProxy.instance().addMessage(Messages.VALUE_ALREADY_EXISTS + vals.getValue(values[j]).toString(), Color.RED);
                     return false;
                 }
             }
@@ -2389,7 +2390,7 @@ public class QueryHandler implements Cloneable {
             resultSet = null;
         }
 
-        if (jobmessage != null) {
+        if (jobmessage != null && retval != null) {
             mpv5.YabsViewProxy.instance().addMessage(jobmessage);
             retval.setMessage(jobmessage);
         }

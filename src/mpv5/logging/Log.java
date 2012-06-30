@@ -17,6 +17,7 @@
 package mpv5.logging;
 
 import de.frame4j.io.LogHandler;
+import java.awt.Color;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -147,7 +148,7 @@ public class Log {
                     try {
                         ((Exception) message).getCause().printStackTrace();
                         writeDirect(getStackTrace(((Throwable) message).getCause()));
-                        mpv5.YabsViewProxy.instance().addMessage(Messages.ERROR_OCCURED + ". " + Messages.SEE_LOG);
+                        mpv5.YabsViewProxy.instance().addMessage(Messages.ERROR_OCCURED + ". " + Messages.SEE_LOG, Color.RED);
                     } catch (Exception e) {
                     }
                 }
@@ -155,7 +156,7 @@ public class Log {
             case LOGLEVEL_NORMAL:
                 if (message != null && (message.toString().contains("Exception") || message.toString().contains("Error"))) {
                     write(sourcen + ": " + message);
-                    mpv5.YabsViewProxy.instance().addMessage(Messages.ERROR_OCCURED + ". " + Messages.SEE_LOG);
+                    mpv5.YabsViewProxy.instance().addMessage(Messages.ERROR_OCCURED + ". " + Messages.SEE_LOG, Color.RED);
                 }
                 break;
             case LOGLEVEL_NONE:

@@ -905,7 +905,7 @@ public class ConversationPanel
      */
     public void paste(DatabaseObject... arg0) {
         mpv5.YabsViewProxy.instance().
-                addMessage(Messages.NOT_POSSIBLE.toString() + Messages.ACTION_PASTE.toString());
+                addMessage(Messages.NOT_POSSIBLE.toString() + Messages.ACTION_PASTE.toString(), Color.RED);
     }
 
     /**

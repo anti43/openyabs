@@ -1336,7 +1336,7 @@ public class ProductPanel extends javax.swing.JPanel implements DataPanel, MPCBS
             if (dbo.getDbIdentity().equals(Context.getProduct().getDbIdentity())) {
                 setDataOwner(dbo, true);
             } else {
-                mpv5.YabsViewProxy.instance().addMessage(Messages.NOT_POSSIBLE.toString() + Messages.ACTION_PASTE.toString());
+                mpv5.YabsViewProxy.instance().addMessage(Messages.NOT_POSSIBLE.toString() + Messages.ACTION_PASTE.toString(), Color.RED);
             }
         }
     }

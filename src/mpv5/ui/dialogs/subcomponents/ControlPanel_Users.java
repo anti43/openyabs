@@ -1,5 +1,6 @@
 package mpv5.ui.dialogs.subcomponents;
 
+import java.awt.Color;
 import java.awt.Component;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
@@ -745,7 +746,7 @@ public class ControlPanel_Users extends javax.swing.JPanel implements ControlApp
             if (dbo.getDbIdentity().equals(Context.getUser().getDbIdentity())) {
                 setDataOwner(dbo, true);
             } else {
-                mpv5.YabsViewProxy.instance().addMessage(Messages.NOT_POSSIBLE.toString() + Messages.ACTION_PASTE);
+                mpv5.YabsViewProxy.instance().addMessage(Messages.NOT_POSSIBLE.toString() + Messages.ACTION_PASTE, Color.RED);
             }
         }
     }

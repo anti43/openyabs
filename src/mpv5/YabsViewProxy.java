@@ -4,6 +4,7 @@
  */
 package mpv5;
 
+import java.awt.Color;
 import java.io.File;
 import java.util.Collections;
 import java.util.LinkedList;
@@ -77,9 +78,16 @@ public class YabsViewProxy implements YabsView {
     }
 
     @Override
-    public synchronized void addMessage(Object messages) {
+    public synchronized void addMessage(Object messages, Color c) {
         for (int i = 0; i < views.size(); i++) {
-            views.get(i).addMessage(messages);
+            views.get(i).addMessage(messages, c);
+        }
+    }
+    
+      @Override
+    public synchronized void addMessage(Object messages ) {
+        for (int i = 0; i < views.size(); i++) {
+            views.get(i).addMessage(messages );
         }
     }
 

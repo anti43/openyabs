@@ -1951,7 +1951,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
                     Log.Debug(this, ex.getMessage());
                 }
             } else {
-                mpv5.YabsViewProxy.instance().addMessage(Messages.NOT_POSSIBLE.toString() + Messages.ACTION_PASTE.toString());
+                mpv5.YabsViewProxy.instance().addMessage(Messages.NOT_POSSIBLE.toString() + Messages.ACTION_PASTE.toString(), Color.RED);
                 Log.Debug(this, dbo.getContext() + " to " + Context.getItem());
             }
         }

@@ -42,6 +42,8 @@ import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JPanel;
 import mpv5.YabsView;
+import mpv5.globals.Messages;
+import mpv5.ui.dialogs.Notificator;
 
 /**
  * This is the sample of a plugin compatible with the MP5 Plugin system.<br/>
@@ -61,7 +63,7 @@ public class Main extends JPanel implements YabsPlugin, Runnable {
         this.frame = (YabsView) frame;
         cmenu = new JMenu("what a crazy menu");
         mpv5.Main.getApplication().getMainView().getMenuBar().add(cmenu);
-        mpv5.YabsViewProxy.instance().addMessage("added a crazy menu");
+        Notificator.raiseNotification("added a crazy menu", false);
         setLayout(new BorderLayout());
         clock.setFont(new Font("Courier", Font.BOLD, 16));
         add(clock, BorderLayout.CENTER);

@@ -815,7 +815,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
                 return false;
             }
         } else {
-            mpv5.YabsViewProxy.instance().addMessage("You cannot alter the read only object: " + this);//TODO: l10n
+            mpv5.YabsViewProxy.instance().addMessage("You cannot alter the read only object: " + this, Color.RED);//TODO: l10n
             return true;//fake it for the ui
         }
     }

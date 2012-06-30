@@ -552,7 +552,7 @@ public final class ActivityConfirmationPanel extends javax.swing.JPanel implemen
             } else if (dbo.getContext().equals(Context.getProductlist())) {
                 setDataOwner(dbo, true);
             } else {
-                mpv5.YabsViewProxy.instance().addMessage(Messages.NOT_POSSIBLE.toString() + Messages.ACTION_PASTE.toString());
+                mpv5.YabsViewProxy.instance().addMessage(Messages.NOT_POSSIBLE.toString() + Messages.ACTION_PASTE.toString(), Color.RED);
             }
         }
     }

@@ -18,6 +18,7 @@ package mpv5.db.objects;
 
 import enoa.handler.TableHandler;
 import enoa.handler.TemplateHandler;
+import java.awt.Color;
 import java.math.BigDecimal;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -704,14 +705,14 @@ public class Item extends DatabaseObject implements Formattable, Templateable {
                 if (TemplateHandler.isLoaded(this)) {
                     new Job(Export.createFile(this.getFormatHandler().toUserString(), TemplateHandler.loadTemplate(this), this), Export.wait(User.getSaveDir(this))).execute();
                 } else {
-                    YabsViewProxy.instance().addMessage(Messages.NO_TEMPLATE_LOADED + " (" + mpv5.db.objects.User.getCurrentUser() + ")");
+                    YabsViewProxy.instance().addMessage(Messages.NO_TEMPLATE_LOADED + " (" + mpv5.db.objects.User.getCurrentUser() + ")", Color.YELLOW);
                 }
             }
             if (mpv5.db.objects.User.getCurrentUser().getProperty("org.openyabs.property", "autocreateodt")) {
                 if (TemplateHandler.isLoaded(this)) {
                     new Job(Export.sourceFile(this.getFormatHandler().toUserString(), TemplateHandler.loadTemplate(this), this), Export.wait(User.getSaveDir(this))).execute();
                 } else {
-                    YabsViewProxy.instance().addMessage(Messages.NO_TEMPLATE_LOADED + " (" + mpv5.db.objects.User.getCurrentUser() + ")");
+                    YabsViewProxy.instance().addMessage(Messages.NO_TEMPLATE_LOADED + " (" + mpv5.db.objects.User.getCurrentUser() + ")", Color.YELLOW);
                 }
             }
         }

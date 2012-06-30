@@ -24,6 +24,7 @@ import ag.ion.bion.officelayer.document.IDocumentService;
 import ag.ion.noa.NOAException;
 
 import com.sun.star.auth.InvalidArgumentException;
+import java.awt.Color;
 import java.io.File;
 import java.io.IOException;
 import java.net.InetSocketAddress;
@@ -61,7 +62,7 @@ public class NoaConnectionLocalServer extends NoaConnection {
                     cachedConnection = new NoaConnectionLocalServer(LocalSettings.getProperty(LocalSettings.OFFICE_HOST), Long.valueOf(LocalSettings.getProperty(LocalSettings.OFFICE_PORT)));
                 } catch (Exception ex) {
                     mpv5.logging.Log.Debug(ex);//Logger.getLogger(NoaConnection.class.getName()).log(Level.SEVERE, null, ex);
-                    YabsViewProxy.instance().addMessage(Messages.OOCONNERROR + "\n" + ex);
+                    YabsViewProxy.instance().addMessage(Messages.OOCONNERROR + "\n" + ex, Color.RED);
                 }
                 YabsViewProxy.instance().showOfficeStatus(cachedConnection != null, "Local server");
             }
