@@ -29,7 +29,7 @@ import mpv5.utils.images.MPIcon;
 
 /**
  *
- *  
+ *
  */
 public class FileToItem extends DatabaseObject {
 
@@ -42,7 +42,6 @@ public class FileToItem extends DatabaseObject {
         setContext(Context.getFilesToItems());
     }
 
-
     @Override
     public JComponent getView() {
         try {
@@ -52,7 +51,6 @@ public class FileToItem extends DatabaseObject {
         }
         return null;
     }
-
 
     /**
      * @return the description
@@ -68,7 +66,6 @@ public class FileToItem extends DatabaseObject {
         this.description = description;
     }
 
-
     /**
      * @return the filename
      */
@@ -82,14 +79,14 @@ public class FileToItem extends DatabaseObject {
     public void setFilename(String filename) {
         this.filename = filename;
     }
-
     MPIcon icon;
+
     @Override
     public mpv5.utils.images.MPIcon getIcon() {
         if (icon == null) {
             try {
                 Log.Debug(this, "Determining Icon for " + __getCname());
-                icon = new MPIcon(MPIcon.DIRECTORY_DEFAULT_ICONS + __getCname().substring(__getCname().lastIndexOf(".") +1, __getCname().length()) + ".png");
+                icon = new MPIcon(MPIcon.DIRECTORY_DEFAULT_ICONS + __getCname().substring(__getCname().lastIndexOf(".") + 1, __getCname().length()) + ".png");
                 return icon;
             } catch (Exception e) {
                 Log.Debug(this, "Icon file not existing in " + MPIcon.DIRECTORY_DEFAULT_ICONS);
@@ -110,13 +107,13 @@ public class FileToItem extends DatabaseObject {
 
     /**
      * Fetches the physical file from db
+     *
      * @return
      */
     public synchronized File getFile() {
         if (file == null) {
             try {
-                file = QueryHandler.instanceOf().clone(Context.getFiles()).
-                        retrieveFile(filename,
+                file = QueryHandler.instanceOf().clone(Context.getFiles()).retrieveFile(filename,
                         new File(FileDirectoryHandler.getTempDir() + getCname()));
             } catch (Exception e) {
                 Log.Debug(e);
@@ -137,5 +134,15 @@ public class FileToItem extends DatabaseObject {
      */
     public void setItemsids(int itemsids) {
         this.itemsids = itemsids;
+    }
+
+    @Override
+    public boolean delete() {
+        try {
+            QueryHandler.instanceOf().clone(Context.getFiles()).removeFile(filename);
+        } catch (Exception ex) {
+            Log.Debug(ex);
+        }
+        return super.delete();
     }
 }

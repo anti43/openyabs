@@ -17,6 +17,8 @@
 package mpv5.db.objects;
 
 import java.io.File;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.Icon;
 import javax.swing.JComponent;
 import javax.swing.JFileChooser;
@@ -29,7 +31,7 @@ import mpv5.utils.images.MPIcon;
 
 /**
  *
- *  
+ *
  */
 public class FileToProduct extends DatabaseObject {
 
@@ -52,6 +54,15 @@ public class FileToProduct extends DatabaseObject {
         return null;
     }
 
+    @Override
+    public boolean delete() {
+        try {
+            QueryHandler.instanceOf().clone(Context.getFiles()).removeFile(filename);
+        } catch (Exception ex) {
+            Log.Debug(ex);
+        }
+        return super.delete();
+    }
 
     /**
      * @return the description
@@ -67,7 +78,6 @@ public class FileToProduct extends DatabaseObject {
         this.description = description;
     }
 
-
     /**
      * @return the filename
      */
@@ -81,14 +91,14 @@ public class FileToProduct extends DatabaseObject {
     public void setFilename(String filename) {
         this.filename = filename;
     }
-
     MPIcon icon;
+
     @Override
     public mpv5.utils.images.MPIcon getIcon() {
         if (icon == null) {
             try {
                 Log.Debug(this, "Determining Icon for " + __getCname());
-                icon = new MPIcon(MPIcon.DIRECTORY_DEFAULT_ICONS + __getCname().substring(__getCname().lastIndexOf(".") +1, __getCname().length()) + ".png");
+                icon = new MPIcon(MPIcon.DIRECTORY_DEFAULT_ICONS + __getCname().substring(__getCname().lastIndexOf(".") + 1, __getCname().length()) + ".png");
                 return icon;
             } catch (Exception e) {
                 Log.Debug(this, "Icon file not existing in " + MPIcon.DIRECTORY_DEFAULT_ICONS);
@@ -109,13 +119,13 @@ public class FileToProduct extends DatabaseObject {
 
     /**
      * Fetches the physical file from db
+     *
      * @return
      */
     public synchronized File getFile() {
         if (file == null) {
             try {
-                file = QueryHandler.instanceOf().clone(Context.getFiles()).
-                        retrieveFile(filename,
+                file = QueryHandler.instanceOf().clone(Context.getFiles()).retrieveFile(filename,
                         new File(FileDirectoryHandler.getTempDir() + getCname()));
             } catch (Exception e) {
                 Log.Debug(e);

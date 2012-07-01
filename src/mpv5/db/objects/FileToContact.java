@@ -29,7 +29,7 @@ import mpv5.utils.images.MPIcon;
 
 /**
  *
- *  
+ *
  */
 public class FileToContact extends DatabaseObject {
 
@@ -43,7 +43,6 @@ public class FileToContact extends DatabaseObject {
     public FileToContact() {
         setContext(Context.getFilesToContacts());
     }
-
 
     @Override
     public JComponent getView() {
@@ -124,13 +123,13 @@ public class FileToContact extends DatabaseObject {
 
     /**
      * Fetches the physical file from db
+     *
      * @return
      */
     public synchronized File getFile() {
         if (file == null) {
             try {
-                file = QueryHandler.instanceOf().clone(Context.getFiles()).
-                        retrieveFile(filename,
+                file = QueryHandler.instanceOf().clone(Context.getFiles()).retrieveFile(filename,
                         new File(FileDirectoryHandler.getTempDir() + getCname()));
             } catch (Exception e) {
                 Log.Debug(e);
@@ -165,5 +164,15 @@ public class FileToContact extends DatabaseObject {
      */
     public void setIntsize(int intsize) {
         this.intsize = intsize;
+    }
+
+    @Override
+    public boolean delete() {
+        try {
+            QueryHandler.instanceOf().clone(Context.getFiles()).removeFile(filename);
+        } catch (Exception ex) {
+            Log.Debug(ex);
+        }
+        return super.delete();
     }
 }

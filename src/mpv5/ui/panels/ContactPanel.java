@@ -228,12 +228,15 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
     }
 
     private void deleteFile() {
-        try {
-            QueryHandler.instanceOf().clone(Context.getFiles()).removeFile(dataTable.getModel().getValueAt(dataTable.getSelectedRow(), 0).toString());
-        } catch (Exception e) {
-            Log.Debug(this, e.getMessage());
+         if (dataOwner.isExisting()) {
+            try {
+                DatabaseObject.getObject(Context.getFilesToContacts(), "filename", (dataTable.getModel().getValueAt(dataTable.getSelectedRow(), 0).toString())).delete();
+            } catch (Exception e) {
+                Log.Debug(this, e.getMessage());
+            }
+            fillFiles();
+         
         }
-        fillFiles();
     }
 
     private void fileTableClicked(MouseEvent evt) {

@@ -412,11 +412,12 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
     private void deleteFile() {
         if (dataOwner.isExisting()) {
             try {
-                QueryHandler.instanceOf().clone(Context.getFiles()).removeFile(dataTable.getModel().getValueAt(dataTable.getSelectedRow(), 0).toString());
+                DatabaseObject.getObject(Context.getFilesToItems(), "filename", (dataTable.getModel().getValueAt(dataTable.getSelectedRow(), 0).toString())).delete();
             } catch (Exception e) {
                 Log.Debug(this, e.getMessage());
             }
             fillFiles();
+          
         }
     }
 
