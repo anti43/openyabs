@@ -129,7 +129,7 @@ public class Main implements Runnable {
     }
     private static List<Process> oap = new ArrayList<Process>();
 
-    private static boolean readLocalSettings() {
+    private static boolean readLocalSettings() throws Exception {
         splash.nextStep(Messages.LOCAL_SETTINGS.toString());
         try {
             LocalSettings.read();
@@ -139,8 +139,8 @@ public class Main implements Runnable {
         } catch (Exception ex) {
             Log.Print(ex.getMessage());
             Log.Print("Local settings file not readable: " + LocalSettings.getLocalFile());
+            throw ex;
         }
-        return false;
     }
 
     private static void readGlobalSettings() {
@@ -474,7 +474,7 @@ public class Main implements Runnable {
             start();
         } catch (Exception e) {
             Popup.error(null, e);
-            throw e;
+            System.exit(1);
         }
     }
     /**

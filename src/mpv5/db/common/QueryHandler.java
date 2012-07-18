@@ -120,6 +120,15 @@ public class QueryHandler implements Cloneable {
         }
         return instance;
     }
+    /**
+     * Convenience method which calls clone and returns the cloned QH
+     * @param c
+     * @return 
+     */
+    public static synchronized QueryHandler instanceOf(Context c) {
+        return instanceOf().clone(c);
+    }
+    
     private DataPanel viewToBeNotified = null;
     private static Integer ROW_LIMIT = null;
     private volatile int limit = 0;
@@ -1982,7 +1991,7 @@ public class QueryHandler implements Cloneable {
      *
      * @return A QueryHandler object
      */
-    public static QueryHandler getConnection() {
+    public static synchronized QueryHandler getConnection() {
         QueryHandler qh = null;
         try {
             qh = (QueryHandler) QueryHandler.instanceOf().clone();
@@ -2000,7 +2009,7 @@ public class QueryHandler implements Cloneable {
      * @param context
      * @return clone of this ConnectionHandler (with database connection)
      */
-    public QueryHandler clone(Context context) {
+    public synchronized QueryHandler clone(Context context) {
         QueryHandler theClone = null;
         this.context = context;
         try {
@@ -2019,7 +2028,7 @@ public class QueryHandler implements Cloneable {
      * @param limit
      * @return
      */
-    public QueryHandler clone(Context context, int limit) {
+    public synchronized QueryHandler clone(Context context, int limit) {
         QueryHandler theClone = null;
         this.context = context;
         try {
@@ -2040,7 +2049,7 @@ public class QueryHandler implements Cloneable {
      * @param inBackground If true, the main view is NOT notified about the jobs
      * @return
      */
-    public QueryHandler clone(Context context, int limit, boolean inBackground) {
+    public synchronized QueryHandler clone(Context context, int limit, boolean inBackground) {
         QueryHandler theClone = null;
         this.context = context;
         try {
@@ -2060,7 +2069,7 @@ public class QueryHandler implements Cloneable {
      * @param viewToBeNotified
      * @return
      */
-    public QueryHandler clone(Context c, DataPanel viewToBeNotified) {
+    public synchronized QueryHandler clone(Context c, DataPanel viewToBeNotified) {
         this.viewToBeNotified = viewToBeNotified;
         QueryHandler theClone = null;
         this.context = c;

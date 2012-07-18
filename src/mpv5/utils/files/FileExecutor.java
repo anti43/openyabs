@@ -26,7 +26,9 @@ import mpv5.ui.dialogs.Notificator;
 public class FileExecutor {
 
     /**
-     * Runs a command,non- blocking, in the yabs home directory, with sudo if root password is available and os is unix
+     * Runs a command,non- blocking, in the yabs home directory, with sudo if
+     * root password is available and os is unix
+     *
      * @param command
      */
     public static synchronized void run(String command) {
@@ -38,35 +40,42 @@ public class FileExecutor {
     }
 
     /**
-     * Runs a command,non- blocking, in the yabs home directory, with sudo if root password is available and os is unix
+     * Runs a command,non- blocking, in the yabs home directory, with sudo if
+     * root password is available and os is unix
+     *
      * @param command
      */
     public static synchronized void run(String[] commandArgs, List<Process> processHolder) {
-         runAlternate(commandArgs, processHolder);
+        runAlternate(commandArgs, processHolder);
     }
-    
+
     /**
-     * Runs a command,non- blocking, in the yabs home directory, with sudo if root password is available and os is unix
+     * Runs a command,non- blocking, in the yabs home directory, with sudo if
+     * root password is available and os is unix
+     *
      * @param command
      */
     public static synchronized void run(String[] commandArgs) {
-         runAlternate(commandArgs, new ArrayList<Process>());
+        runAlternate(commandArgs, new ArrayList<Process>());
     }
 
     private static void runAlternate(String[] commandArrq, final List<Process> processHolder) {
 
         final ProcessBuilder builder = new ProcessBuilder(commandArrq);
-   
+
         Map<String, String> environment = builder.environment();
         environment.put("path", ";"); // Clearing the path variable;
         environment.put("path", commandArrq[0] + File.pathSeparator);
+        builder.directory(FileDirectoryHandler.getnewTemporaryDirectory());
 
         Log.Debug(FileExecutor.class, "runAlternate" + Arrays.asList(commandArrq));
         Runnable runnable = new Runnable() {
-
             @Override
             public void run() {
                 try {
+                    Log.Print(builder.command());
+                    Log.Print(builder.directory());
+                    Log.Print(builder.environment());
                     Process oos = builder.start();
                     processHolder.add(oos);
                     Main.addProcessToClose(oos);

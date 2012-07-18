@@ -275,7 +275,10 @@ public class LocalSettings {
         try {
             File ls = new File(Main.SETTINGS_FILE);
             if (!ls.canRead()) {
-                throw new RuntimeException(ls + "not readable.");
+                throw new RuntimeException(ls + " not readable, check permissions!");
+            }
+            if (!ls.canWrite()) {
+                throw new RuntimeException(ls + " not writeable, check permissions!");
             }
             Log.Debug(LocalSettings.class, "Reading in local settings where ID =" + connectionID);
             XMLReader read = new XMLReader();
