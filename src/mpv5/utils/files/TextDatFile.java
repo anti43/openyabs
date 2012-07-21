@@ -111,7 +111,7 @@ public class TextDatFile extends File implements Waitable {
         String[] headers;
         Method[] headerx;
            if (dbobjarr.size() > 0) {
-                    headerx = dbobjarr.get(0).getVars().toArray(new Method[]{});
+                    headerx = dbobjarr.get(0).getVars().values().toArray(new Method[]{});
                     headers = new String[headerx.length];
                     for (int i = 0; i < headerx.length; i++) {
                         Method method = headerx[i];

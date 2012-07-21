@@ -38,7 +38,7 @@ public abstract class SDBObjectGenerator {
      */
     public static SimpleDatabaseObject getObjectFrom(DatabaseObject dos, String packagename) {
 
-        List<Method> methods = dos.setVars();
+        ArrayList<Method> methods = new ArrayList<Method>(dos.setVars().values());
 
         String classTemplate =
                 "package " + packagename + ";\n" +

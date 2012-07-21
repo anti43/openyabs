@@ -6,6 +6,7 @@ import java.awt.event.ActionListener;
 import java.io.File;
 import java.lang.reflect.Method;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 import javax.swing.DefaultListModel;
 import javax.swing.filechooser.FileFilter;
@@ -549,7 +550,7 @@ public class wizard_CSVImport2_1 extends javax.swing.JPanel implements Wizardabl
 
     private void setContactFields() {
         DefaultListModel m = new DefaultListModel();
-        List<Method> p = new Contact().setVars();
+        List<Method> p = new ArrayList<Method> (new Contact().setVars().values());
 
         for (int i = 0; i < p.size(); i++) {
             Method method = p.get(i);
@@ -569,7 +570,7 @@ public class wizard_CSVImport2_1 extends javax.swing.JPanel implements Wizardabl
     private void setProductFields() {
 
         DefaultListModel m = new DefaultListModel();
-        List<Method> p = new Product().setVars();
+        List<Method> p = new ArrayList<Method> (new Product().setVars().values());
 
         for (int i = 0; i < p.size(); i++) {
             Method method = p.get(i);
@@ -597,7 +598,7 @@ public class wizard_CSVImport2_1 extends javax.swing.JPanel implements Wizardabl
         Context c = (Context) labeledCombobox1.getSelectedItem().getIdObject();
         if (c != null) {
             DefaultListModel m = new DefaultListModel();
-            List<Method> vars = DatabaseObject.getObject(c).setVars();
+            List<Method> vars = new ArrayList<Method>(DatabaseObject.getObject(c).setVars().values());
             for (int i = 0; i < vars.size(); i++) {
                 Method method = vars.get(i);
                 if (!method.getName().toLowerCase().startsWith("setint")

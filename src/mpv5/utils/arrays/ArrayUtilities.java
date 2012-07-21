@@ -36,6 +36,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.Vector;
 import javax.swing.JTable;
@@ -688,6 +689,14 @@ public class ArrayUtilities {
      * @return
      */
     public static Object[][] hashMapToArray(HashMap<String, Object> map) {
+        return mapToArray(map);
+    }
+     /**
+     * Converts a HashMap to a 2-column array {key, value}
+     * @param map
+     * @return
+     */
+    public static Object[][] mapToArray(Map<String, Object> map) {
         Object[][] data = new Object[map.size()][2];
         String[] arr = map.keySet().toArray(new String[]{});
 

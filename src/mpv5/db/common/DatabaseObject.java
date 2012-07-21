@@ -172,8 +172,9 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
 
     /**
      * Marks the value of the annotated getter to be persisted on {@link #save}
-     * / annotated setter to be evaluated with a value from the database on {@link #explode}.
-     * Default is true on methods with the signature start '__get'.
+     * / annotated setter to be evaluated with a value from the database on
+     * {@link #explode}. Default is true on methods with the signature start
+     * '__get'.
      */
     @Retention(RetentionPolicy.RUNTIME)
     @Target(ElementType.METHOD)
@@ -199,6 +200,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
     /**
      * If set, the auto-database-schema creator will create a ON DELETE CASCADE
      * reference to any {@link Context}s which have been annotated via the
+     *
      * @References annotation on this method To be one of {@link Context#getId()
      * }.
      *
@@ -239,7 +241,6 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
     public static void cacheObjects(final Context[] contextArray) {
 
         Runnable runnable = new Runnable() {
-
             @Override
             public void run() {
                 Log.Debug(DatabaseObject.class, "Start caching objects..");
@@ -310,7 +311,9 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
 
     /**
      * This method can be used to workaround the DatabaseObject#getObjects(...)
-     * casting issues introduced by @me :-)
+     * casting issues introduced by
+     *
+     * @me :-)
      *
      * @param <T>
      * @param objects
@@ -329,7 +332,9 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
 
     /**
      * This method can be used to workaround the DatabaseObject#getObjects(...)
-     * casting issues introduced by @me :-)
+     * casting issues introduced by
+     *
+     * @me :-)
      *
      * @param <T>
      * @param objects
@@ -426,8 +431,8 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
      *
      */
     public Entity<Context, Integer> IDENTITY;
-    private static final Map<String, List<Method>> setVars_cached = new HashMap<String, List<Method>>();
-    private static final Map<String, List<Method>> getVars_cached = new HashMap<String, List<Method>>();
+    private static final Map<String, Map<String, Method>> setVars_cached = new HashMap<String, Map<String, Method>>();
+    private static final Map<String, Map<String, Method>> getVars_cached = new HashMap<String, Map<String, Method>>();
     private static final Map<String, List<String>> getStringVars_cached = new HashMap<String, List<String>>();
 
     public String __getCname() {
@@ -438,7 +443,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
      * Fills all {@link DatabaseObject#setVars()} with non-NULL default values
      */
     public void avoidNulls() {
-        List<Method> vals = setVars();
+        ArrayList<Method> vals = new ArrayList<Method>(setVars().values());
         for (int i = 0; i < vals.size(); i++) {
             Method method = vals.get(i);
             try {
@@ -486,9 +491,10 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
 
     /**
      * This can be used to graphically represent a do.<br/> The programmer has
-     * to take care of the icon size! See {@link MPIcon#getIcon(int width, int height)}<br/>
-     * It is recommended to use 22*22 sized icons which do not need to get
-     * resized for performance reasons.
+     * to take care of the icon size! See
+     * {@link MPIcon#getIcon(int width, int height)}<br/> It is recommended to
+     * use 22*22 sized icons which do not need to get resized for performance
+     * reasons.
      *
      * @return An Icon representing the type of this do
      */
@@ -618,22 +624,25 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
      *
      * @return A list of all <b>SETTERS</b> in this do child, except the native
      * methods will not recognize newly added methods (eg with groovy or
-     * reflection)
+     * reflection) unless you clear {@code setVars_cached}
      */
-    public synchronized List<Method> setVars() {
+    public synchronized Map<String, Method> setVars() {
         if (!setVars_cached.containsKey(getClass().getCanonicalName())) {
-            Log.Debug(this, "Caching " + this.getClass().getCanonicalName());
-            setVars_cached.put(this.getClass().getCanonicalName(), new ArrayList<Method>());
+            Log.Debug(this, "Caching setVars of " + this.getClass().getCanonicalName());
+
+            setVars_cached.put(this.getClass().getCanonicalName(), new HashMap<String, Method>());
             for (int i = 0; i < this.getClass().getMethods().length; i++) {
-                if (this.getClass().getMethods()[i].getName().startsWith("set")
-                        && !this.getClass().getMethods()[i].getName().startsWith("setVars")
-                        && !this.getClass().getMethods()[i].getName().startsWith("setPanelData")
-                        && !this.getClass().getMethods()[i].getName().startsWith("setAutoLock")) {
-                    setVars_cached.get(this.getClass().getCanonicalName()).add(this.getClass().getMethods()[i]);
+                Method m = this.getClass().getMethods()[i];
+                if (m.getParameterTypes().length == 1
+                        && m.getName().startsWith("set")
+                        && !m.getName().startsWith("setVars")//annotation!!
+                        && !m.getName().startsWith("setPanelData")
+                        && !m.getName().startsWith("setAutoLock")) {
+                    setVars_cached.get(this.getClass().getCanonicalName()).put(m.getName().substring(3).toLowerCase(), m);
                 }
             }
         }
-        return setVars_cached.get(this.getClass().getCanonicalName());
+        return setVars_cached.get(getClass().getCanonicalName());
     }
 
     /**
@@ -643,10 +652,10 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
      * starts with 2 (two) underscores) OR use the new annotations for
      * persistable DO fields
      */
-    public List<Method> getVars() {
+    public Map<String, Method> getVars() {
         if (!getVars_cached.containsKey(getClass().getCanonicalName())) {
             Log.Debug(this, "Caching " + this.getClass().getCanonicalName());
-            getVars_cached.put(this.getClass().getCanonicalName(), new ArrayList<Method>());
+            getVars_cached.put(this.getClass().getCanonicalName(), new HashMap<String, Method>());
             Method[] methods = this.getClass().getMethods();
             for (int i = 0; i < this.getClass().getMethods().length; i++) {
                 if ((methods[i].isAnnotationPresent(Persistable.class)
@@ -657,9 +666,8 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
                          */
                         || (methods[i].getName().startsWith("__get")
                         && !(methods[i].isAnnotationPresent(Persistable.class)
-                        && !methods[i].getAnnotation(Persistable.class).value()))
-                        || methods[i].getName().equals("getGroup")) {
-                    getVars_cached.get(this.getClass().getCanonicalName()).add(methods[i]);
+                        && !methods[i].getAnnotation(Persistable.class).value()))) {
+                    getVars_cached.get(this.getClass().getCanonicalName()).put(methods[i].getName().substring(methods[i].getName().startsWith("__") ? 5 : 3).toLowerCase(), methods[i]);
                 }
             }
 
@@ -800,7 +808,6 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
 
                 if (!silent && Context.getArchivableContexts().contains(getContext())) {
                     Runnable runnable = new Runnable() {
-
                         @Override
                         public void run() {
                             QueryHandler.instanceOf().clone(Context.getHistory()).insertHistoryItem(fmessage, mpv5.db.objects.User.getCurrentUser().__getCname(), fdbid, fids, fgids);
@@ -921,7 +928,6 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
             final int fgids = this.groupsids;
             if (!this.getType().equals(new HistoryItem().getType())) {
                 Runnable runnable = new Runnable() {
-
                     @Override
                     public void run() {
                         QueryHandler.instanceOf().clone(Context.getHistory()).insertHistoryItem(fmessage, mpv5.db.objects.User.getCurrentUser().__getCname(), fdbid, fids, fgids);
@@ -958,7 +964,6 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
         final int fids = this.ids;
         final int fgids = this.groupsids;
         Runnable runnable = new Runnable() {
-
             @Override
             public void run() {
                 QueryHandler.instanceOf().clone(Context.getHistory()).insertHistoryItem(fmessage, mpv5.db.objects.User.getCurrentUser().__getCname(), fdbid, fids, fgids);
@@ -1009,79 +1014,64 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
     protected synchronized QueryData collect() {
 
         QueryData data = new QueryData();
-        String left = "";
+        Map<String, Method> vars = getVars();
 
-        Method[] methods = this.getClass().getMethods();
-        boolean annotated = false;
-
-        for (int i = 0; i < this.getClass().getMethods().length; i++) {
-            if ((methods[i].isAnnotationPresent(Persistable.class)
-                    && methods[i].getAnnotation(Persistable.class).value()
-                    && methods[i].getParameterTypes().length == 0)
-                    /*
-                     * for backwards compatibility
-                     */
-                    || (methods[i].getName().startsWith("__get")
-                    && !(methods[i].isAnnotationPresent(Persistable.class)
-                    && !methods[i].getAnnotation(Persistable.class).value()))) {
-                annotated = methods[i].isAnnotationPresent(Persistable.class);
-                Object tempval;
-                try {
-                    left = annotated
-                            ? methods[i].getName().toLowerCase().substring(3, methods[i].getName().length())
-                            : methods[i].getName().toLowerCase().replace("__get", "");
+        for (String key : vars.keySet()) {
+            Object tempval;
+            String left = key.toLowerCase();
+            try {
 //                    Log.Debug(this, "Calling: " + methods[i]);
-                    tempval = methods[i].invoke(this, (Object[]) null);
-                    // Log.Debug(this, "On " + methods[i].getName());
-                    if (tempval != null) {
-                        Log.Debug(this, "Collect: " + tempval.getClass().getName() + " : " + methods[i].getName() + " ? " + tempval);
-                        if (tempval.getClass().isInstance(new String())) {
-                            data.add(left, String.valueOf(tempval));
-                        } else if (tempval.getClass().isInstance(true)) {
-                            boolean c = (Boolean) tempval;
-                            data.add(left, c);
-                        } else if (tempval.getClass().isInstance(new Date())) {
-                            data.add(left, DateConverter.getSQLDateString((Date) tempval));
-                        } else if (tempval.getClass().isInstance(new RandomDate(null))) {
-                            data.add(left, DateConverter.getSQLDateString((Date) tempval));
-                        } else if (tempval.getClass().isInstance(new java.sql.Date(0))) {
-                            data.add(left, DateConverter.getSQLDateString((Date) tempval));
-                        } else if (tempval.getClass().isInstance(0)) {
-                            //if the field is an IDS field an below 0, set it to 0
-                            //as integer columns may not allow signed integers (eg. -1)
-                            if (left.toLowerCase().endsWith("ids")) {
-                                if (Integer.valueOf(tempval.toString()).intValue() < 0) {
-                                    Log.Debug(this, "Correcting below-zero integer ids in " + left);
-                                    data.add(left, 0);
-                                } else {
-                                    data.add(left, (Integer) tempval);
-                                }
+                tempval = vars.get(key).invoke(this, (Object[]) null);
+                // Log.Debug(this, "On " + methods[i].getName());
+                if (tempval != null) {
+                    Log.Debug(this, "Collect: " + tempval.getClass().getName() + " : " + vars.get(key).getName() + " ? " + tempval);
+                    if (tempval.getClass().isInstance(new String())) {
+                        data.add(left, String.valueOf(tempval));
+                    } else if (tempval.getClass().isInstance(true)) {
+                        boolean c = (Boolean) tempval;
+                        data.add(left, c);
+                    } else if (tempval.getClass().isInstance(new Date())) {
+                        data.add(left, DateConverter.getSQLDateString((Date) tempval));
+                    } else if (tempval.getClass().isInstance(new RandomDate(null))) {
+                        data.add(left, DateConverter.getSQLDateString((Date) tempval));
+                    } else if (tempval.getClass().isInstance(new java.sql.Date(0))) {
+                        data.add(left, DateConverter.getSQLDateString((Date) tempval));
+                    } else if (tempval.getClass().isInstance(0)) {
+                        //if the field is an IDS field an below 0, set it to 0
+                        //as integer columns may not allow signed integers (eg. -1)
+                        if (left.toLowerCase().endsWith("ids")) {
+                            if (Integer.valueOf(tempval.toString()).intValue() < 0) {
+                                Log.Debug(this, "Correcting below-zero integer ids in " + left);
+                                data.add(left, 0);
                             } else {
                                 data.add(left, (Integer) tempval);
                             }
-                        } else if (tempval.getClass().isInstance(0f)) {
-                            data.add(left, (Float) tempval);
-                        } else if (tempval.getClass().isInstance(0d)) {
-                            data.add(left, (Double) tempval);
-                        } else if (tempval.getClass().isInstance(01)) {
-                            data.add(left, (Short) tempval);
-                        } else if (tempval.getClass().isInstance(0l)) {
-                            data.add(left, (Long) tempval);
-                        } else if (tempval.getClass().isInstance(new BigDecimal(0))) {
-                            data.add(left, (BigDecimal) tempval);
-                        } else if (DatabaseObject.class.isAssignableFrom(tempval.getClass())) {
-                            data.add(left + "sids", ((DatabaseObject) tempval).__getIDS());
                         } else {
-                            throw new RuntimeException("Unsupported class found: " + tempval.getClass());
+                            data.add(left, (Integer) tempval);
                         }
+                    } else if (tempval.getClass().isInstance(0f)) {
+                        data.add(left, (Float) tempval);
+                    } else if (tempval.getClass().isInstance(0d)) {
+                        data.add(left, (Double) tempval);
+                    } else if (tempval.getClass().isInstance(01)) {
+                        data.add(left, (Short) tempval);
+                    } else if (tempval.getClass().isInstance(0l)) {
+                        data.add(left, (Long) tempval);
+                    } else if (tempval.getClass().isInstance(new BigDecimal(0))) {
+                        data.add(left, (BigDecimal) tempval);
+                    } else if (DatabaseObject.class.isAssignableFrom(tempval.getClass())) {
+                        data.add(left + "sids", ((DatabaseObject) tempval).__getIDS());
                     } else {
-                        Log.Debug(this, "NULL value on " + methods[i].getName());
+                        throw new RuntimeException("Unsupported class found: " + tempval.getClass());
                     }
-                } catch (Exception ex) {
-                    mpv5.logging.Log.Debug(this, methods[i].getName());
-                    mpv5.logging.Log.Debug(ex);//Logger.getLogger(DatabaseObject.class.getName()).log(Level.SEVERE, null, ex);
+                } else {
+                    Log.Debug(this, "NULL value on " + vars.get(key).getName());
                 }
+            } catch (Exception ex) {
+                mpv5.logging.Log.Debug(this, vars.get(key).getName());
+                mpv5.logging.Log.Debug(ex);//Logger.getLogger(DatabaseObject.class.getName()).log(Level.SEVERE, null, ex);
             }
+
         }
 
         return data;
@@ -1100,15 +1090,12 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
         if (!source.collectData()) {
             return false;
         }
-        List<Method> vars = setVars();
-        for (int i = 0; i < vars.size(); i++) {
-
-            String fieldname = vars.get(i).getName().toLowerCase().substring(3, vars.get(i).getName().length()) + "_";
+        for (String key : setVars().keySet()) {
+            String fieldname = key + "_";
             if (!fieldname.equals("ids_")) {
                 try {
-                    Log.Debug(this, "GetPanelData: " + fieldname + ": " + source.getClass().getField(fieldname).
-                            getType().getName() + " [" + source.getClass().getField(fieldname).get(source) + "]");
-                    vars.get(i).invoke(this, source.getClass().getField(fieldname).get(source));
+                    Log.Debug(this, "GetPanelData: " + fieldname + ": " + source.getClass().getField(fieldname).getType().getName() + " [" + source.getClass().getField(fieldname).get(source) + "]");
+                    setVars().get(key).invoke(this, source.getClass().getField(fieldname).get(source));
                 } catch (java.lang.NoSuchFieldException nf) {
                     Log.Debug(this, "The view: " + source.getClass()
                             + " is missing a field: " + nf.getMessage());
@@ -1117,7 +1104,6 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
                 }
             }
         }
-
         return true;
     }
 
@@ -1132,18 +1118,12 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
      */
     public void setPanelData(DataPanel target) {
 
-        List<Method> vars = getVars();
 
-        for (int i = 0; i < vars.size(); i++) {
+        for (String key : getVars().keySet()) {
             try {
-                String vname = vars.get(i).getName();
-                vname = vname.toLowerCase().replace("_", "");
-                if (vname.startsWith("get")) {
-                    vname = vname.substring(3);
-                }
-                Log.Debug(this, vname + " [" + vars.get(i).invoke(this, new Object[0]) + "]");
-                Field fi = target.getClass().getField(vname + "_");
-                fi.set(target, vars.get(i).invoke(this, new Object[0]));
+                Log.Debug(this, key + " [" + getVars().get(key).invoke(this, new Object[0]) + "]");
+                Field fi = target.getClass().getField(key + "_");
+                fi.set(target, getVars().get(key).invoke(this, new Object[0]));
                 Log.Debug(target, fi.get(target));
             } catch (java.lang.NoSuchFieldException nf) {
                 Log.Debug(this, "The view: " + target.getClass() + " is missing a field: " + nf.getMessage());
@@ -1162,23 +1142,22 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
      * String[]{"CName", "Michael"}
      */
     public List<String[]> getValues() {
-        List<Method> vars = getVars();
+        Map<String, Method> vars = getVars();
         List<String[]> vals = new ArrayList<String[]>();
 
-        for (int i = 0; i < vars.size(); i++) {
+        for (String key : vars.keySet()) {
             try {
-                if (!vars.get(i).getName().substring(5, vars.get(i).getName().length()).toUpperCase().startsWith("DATE")) {
-                    vals.add(new String[]{vars.get(i).getName().substring(5, vars.get(i).getName().length()),
-                                String.valueOf(vars.get(i).invoke(this, new Object[0]))});
+                if (!key.toUpperCase().startsWith("DATE")) {
+                    vals.add(new String[]{key,
+                                String.valueOf(vars.get(key).invoke(this, new Object[0]))});
                 } else {
                     String date = null;
                     try {
-                        date = DateConverter.getDefDateString((Date) vars.get(i).invoke(this, new Object[0]));
+                        date = DateConverter.getDefDateString((Date) vars.get(key).invoke(this, new Object[0]));
                     } catch (Exception n) {
                         date = DateConverter.getDefDateString(new Date());
                     }
-                    vals.add(new String[]{vars.get(i).getName().substring(5, vars.get(i).getName().length()),
-                                date});
+                    vals.add(new String[]{key, date});
                 }
             } catch (Exception n) {
                 Log.Debug(this, n);
@@ -1191,18 +1170,16 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
      *
      * @return A list containing pairs of <b>VARNAME</b> and their <b>VALUE (as
      * formatted String, and variables resolved)</b> of this Databaseobject,
-     * those which return in
-     * <code>getVars()</code>, as two-fields String-Array. Example: new
-     * String[]{"dateadded", "24.22.2980"}
+     * those which return in <code>getVars()</code>, as two-fields String-Array.
+     * Example: new String[]{"dateadded", "24.22.2980"}
      */
     public List<String[]> getValues3() {
-        List<Method> vars = getVars();
+        Map<String, Method> vars = getVars();
         List<String[]> vals = new ArrayList<String[]>();
 
-        for (int i = 0; i < vars.size(); i++) {
+        for (String name : vars.keySet()) {
             try {
-                String name = vars.get(i).getName().substring(5, vars.get(i).getName().length());
-                Object value = vars.get(i).invoke(this, new Object[0]);
+                Object value = vars.get(name).invoke(this, new Object[0]);
 
                 if (name.startsWith("is") || name.toUpperCase().startsWith("BOOL")) {
                     if (String.valueOf(value).equals("1") || String.valueOf(value).toUpperCase().equals("TRUE")) {
@@ -1229,20 +1206,21 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
     /**
      *
      * @return A list containing pairs of <b>VARNAME</b> and their <b>VALUE</b>
-     * of this Databaseobject, those which return in
-     * <code>getVars()</code>, as two-fields Object-Array. Example: new
-     * Object[]{"dateadded", java.util.Date }
+     * of this Databaseobject, those which return in <code>getVars()</code>, as
+     * two-fields Object-Array. Example: new Object[]{"dateadded",
+     * java.util.Date }
      */
     public List<Object[]> getValues2() {
-        List<Method> vars = getVars();
+        Map<String, Method> vars = getVars();
         List<Object[]> vals = new ArrayList<Object[]>();
 
-        for (int i = 0; i < vars.size(); i++) {
+        for (String name : vars.keySet()) {
             try {
-                vals.add(new Object[]{vars.get(i).getName().substring(5, vars.get(i).getName().length()).toLowerCase(),
-                            (vars.get(i).invoke(this, new Object[0]))});
+                vals.add(new Object[]{name.toLowerCase(),
+                            (vars.get(name).invoke(this, new Object[0]))});
             } catch (Exception n) {
-                Log.Debug(this, n);
+                Log.Debug(this, "Failed to invoke " + vars.get(name) + " ( " + this + " ) ");
+//                Log.Debug(this, n);
             }
         }
 
@@ -1252,23 +1230,24 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
     /**
      *
      * @return A list containing pairs of <b>VARNAME</b> and their <b>VALUE</b>
-     * of this Databaseobject, those which return in
-     * <code>getVars()</code>, as two-fields Object-Array. Referenced
-     * DatabaseObjects are resolved as well. Flagged @Displayable(false) ones
-     * are ignored. Example: new Object[]{"dateadded", java.util.Date }
+     * of this Databaseobject, those which return in <code>getVars()</code>, as
+     * two-fields Object-Array. Referenced DatabaseObjects are resolved as well.
+     * Flagged
+     * @Displayable(false) ones are ignored. Example: new Object[]{"dateadded",
+     * java.util.Date }
      */
     public HashMap<String, Object> getValues4() {
-        List<Method> vars = getVars();
+        Map<String, Method> vars = getVars();
         HashMap<String, Object> data = new HashMap<String, Object>();
         String left = "";
         Object tempval;
 
-        for (int i = 0; i < vars.size(); i++) {
+        for (String name : vars.keySet()) {
             try {
-                Method m = vars.get(i);
+                Method m = vars.get(name);
                 if (!(m.isAnnotationPresent(Displayable.class)
                         && !m.getAnnotation(Displayable.class).value())) {
-                    left = m.getName().toLowerCase().substring(5, m.getName().length());
+                    left = name.toLowerCase();
                     Log.Debug(this, "Calling: " + m);
                     tempval = m.invoke(this, (Object[]) null);
                     Log.Debug(this, "Collect: " + tempval.getClass().getName() + " : " + m.getName() + " ? " + tempval);
@@ -1648,7 +1627,8 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
      * @param <T>
      * @param dataOwner
      * @param inReference
-     * @param targetType The type you like to get back, most likely {@link DatabaseObject.getObject(Context)}
+     * @param targetType The type you like to get back, most likely
+     * {@link DatabaseObject.getObject(Context)}
      * @param withDeleted
      * @return
      * @throws mpv5.db.common.NodataFoundException
@@ -1892,43 +1872,41 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
                 dbo = target;
             }
 
-            List<Method> methods = dbo.setVars();
+            Map<String, Method> vars = dbo.setVars();
             dos[i] = dbo;
 
             if (select.hasData()) {
                 for (int j = 0; j < select.getData()[i].length; j++) {
                     String name = select.getColumnnames()[j].toLowerCase();
 
-                    for (int k = 0; k < methods.size(); k++) {
-                        String mname = methods.get(k).getName().toLowerCase().substring(3);
-//                        Log.Debug(dbo, mname);
-                        if (name.equals("ids") || !(methods.get(k).isAnnotationPresent(Persistable.class)
-                                && !methods.get(k).getAnnotation(Persistable.class).value())) {
-                            if (mname.equals(name)) {
-                                //Debug section
-                                String valx = "";
-                                if (select.getData()[i][j] != null) {
-                                    valx = select.getData()[i][j].getClass().getName();
-                                } else {
-                                    valx = "NULL VALUE!";
-                                }
-                                if (target.getContext().equals(Context.getProductOrder())) {
-                                    Log.Debug(DatabaseObject.class, "Explode: " + methods.get(k).toGenericString() + " with " + select.getData()[i][j] + "[" + valx + "]");
-                                }
+                    if (vars.containsKey(name)) {
+                        Method m = vars.get(name);
+                        //Debug section
+                        String valx = "";
+                        if (select.getData()[i][j] != null) {
+                            valx = select.getData()[i][j].getClass().getName();
+                        } else {
+                            valx = "NULL VALUE!";
+                        }
+                        if (target.getContext().equals(Context.getProductOrder())) {
+                            Log.Debug(DatabaseObject.class, "Explode: " + m.toGenericString() + " with " + select.getData()[i][j] + "[" + valx + "]");
+                        }
 //                            //End Debug Section
+                        if (select.getData()[i][j] != null) {
+                            invoke(m, select.getData()[i][j], dbo, valx);
+                        }
+                    } else if (name.endsWith("ids")
+                            && (vars.containsKey(name + "ids") || vars.containsKey(name + "sids"))) {
+                        Method m = vars.get(name + "ids");
+                        if (m == null) {
+                            m = vars.get(name + "sids");
+                        }
 
-                                if (select.getData()[i][j] != null) {
-                                    invoke(methods.get(k), select.getData()[i][j], dbo, valx);
-                                }
-                            } else if (name.endsWith("ids")
-                                    && (mname.equals(name.replace("ids", "")) || mname.equals(name.replace("sids", "")))) {
-                                if (Log.isDebugging()) {
-                                    Log.Debug(DatabaseObject.class, "Explode: " + methods.get(k).toGenericString() + " with " + select.getData()[i][j] + "[DBO]");
-                                }
-                                if (select.getData()[i][j] != null) {
-                                    invoke(methods.get(k), select.getData()[i][j], dbo, "DatabaseObject");
-                                }
-                            }
+                        if (Log.isDebugging()) {
+                            Log.Debug(DatabaseObject.class, "Explode: " + m.toGenericString() + " with " + select.getData()[i][j] + "[DBO]");
+                        }
+                        if (select.getData()[i][j] != null) {
+                            invoke(m, select.getData()[i][j], dbo, "DatabaseObject");
                         }
                     }
                 }
@@ -1969,45 +1947,21 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
      * @param values
      * @throws Exception
      */
-    public void parse(Hashtable<String, Object> values) throws Exception {
-        List<Method> vars = setVars();
+    public void parse(Map<String, Object> values) throws Exception {
+        Map<String, Method> vars = setVars();
 //        Log.Debug(this, " ?? : " +  toHashTable.size());
-        Object[][] data = ArrayUtilities.hashTableToArray(values);
+        Object[][] data = ArrayUtilities.mapToArray(values);
 //        Log.Debug(this, " ?? : " +  data[0]);
         for (int row = 0; row < data.length; row++) {
             String name = data[row][0].toString().toLowerCase();
+            Method m = vars.get(name);
+            if (m == null) {
+                Log.Debug(this, new Exception("Unknown field in " + this + ": " + name));
+            } else {
 // Log.Debug(this, name + " ?? : " + " = " + data[row][1]);
-            for (int k = 0; k < vars.size(); k++) {
 //                Log.Debug(this, name + " ?? : " + vars.get(k).getName() + " = " + data[row][1]);
-                if (vars.get(k).getName().toLowerCase().substring(3).equals(name)) {
 //                    Log.Debug(this, name + " ?? : " + vars.get(k).getName() + " = " + data[row][1]);
-
-                    if (name.startsWith("is") || name.toUpperCase().startsWith("BOOL")) {
-                        if (String.valueOf(data[row][1]).equals("1") || String.valueOf(data[row][1]).toUpperCase().equals("TRUE")) {
-                            vars.get(k).invoke(this, new Object[]{true});
-                        } else {
-                            vars.get(k).invoke(this, new Object[]{false});
-                        }
-
-                        //fix the int/internal confusion :-(
-                    } else if (!name.toUpperCase().startsWith("INTERNAL") && (name.toUpperCase().startsWith("INT") || name.endsWith("uid") || name.endsWith("ids") || name.equals("ids"))) {
-                        vars.get(k).invoke(this, new Object[]{Integer.valueOf(String.valueOf(data[row][1]))});
-                    } else if (name.toUpperCase().startsWith("DATE") || name.toUpperCase().endsWith("DATE")) {
-                        vars.get(k).invoke(this, new Object[]{DateConverter.getDate(data[row][1])});
-                    } else if (name.toUpperCase().startsWith("VALUE") || name.toUpperCase().endsWith("VALUE")) {
-                        try {
-                            vars.get(k).invoke(this, new Object[]{Double.valueOf(String.valueOf(data[row][1]))});
-                        } catch (Exception illegalAccessException) {
-                            try {
-                                vars.get(k).invoke(this, new Object[]{new BigDecimal(String.valueOf(data[row][1]))});
-                            } catch (NumberFormatException n) {
-                                Log.Debug(this, "Unable to parse number: " + String.valueOf(data[row][1]));
-                            }
-                        }
-                    } else {
-                        vars.get(k).invoke(this, new Object[]{String.valueOf(data[row][1])});
-                    }
-                }
+                invoke(m, data[row][1], this, data[row][1]);
             }
         }
     }
@@ -2020,13 +1974,12 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
      */
     public Set<Map.Entry<String, Class<?>>> getKeySet() {
         Set<Map.Entry<String, Class<?>>> s = new HashSet<Map.Entry<String, Class<?>>>();
-        List<Method> vars = getVars();
-        for (int i = 0; i < vars.size(); i++) {
-            final Method method = vars.get(i);
+        Map<String, Method> vars = getVars();
+        for (final String key : vars.keySet()) {
+            final Method method = vars.get(key);
             s.add(new Map.Entry<String, Class<?>>() {
-
                 public String getKey() {
-                    return method.getName().substring(5);
+                    return key;
                 }
 
                 public Class<?> getValue() {
@@ -2044,33 +1997,9 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
     }
 
     /**
-     * Tries to reflect the hash table into this do. The hashtable's keys must
-     * match the methods retrieved by do.setVars()
-     *
-     * @param values
-     * @throws Exception
-     */
-    public void parse(HashMap<String, Object> values) throws Exception {
-        List<Method> vars = setVars();
-//        Log.Debug(this, " ?? : " +  toHashTable.size());
-        Object[][] data = ArrayUtilities.hashMapToArray(values);
-//        Log.Debug(this, " ?? : " +  data[0]);
-        for (int row = 0; row < data.length; row++) {
-            String name = data[row][0].toString().toLowerCase();
-// Log.Debug(this, name + " ?? : " + " = " + data[row][1]);
-            for (int k = 0; k < vars.size(); k++) {
-//                Log.Debug(this, name + " ?? : " + vars.get(k).getName() + " = " + data[row][1]);
-                if (vars.get(k).getName().toLowerCase().substring(3).equals(name)) {
-//                    Log.Debug(this, name + " ?? : " + vars.get(k).getName() + " = " + data[row][1]);
-                    invoke(vars.get(k), data[row][1], this, name);
-                }
-            }
-        }
-    }
-
-    /**
      * Tries to reflect the {@link SimpleDatabaseObject} into a new do. The
-     * simple objects name must match the DatabaseObjects's {@link Context#getDbIdentity()}
+     * simple objects name must match the DatabaseObjects's
+     * {@link Context#getDbIdentity()}
      *
      * @param sdo
      * @return
@@ -2097,7 +2026,8 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
 
     /**
      * Tries to inject the dos data into the given {@link SimpleDatabaseObject}.
-     * The simple objects name must match the DatabaseObjects's {@link Context#getDbIdentity()}
+     * The simple objects name must match the DatabaseObjects's
+     * {@link Context#getDbIdentity()}
      *
      * @param sdo
      * @throws Exception
@@ -2118,6 +2048,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
     /**
      * @return the groupsids
      */
+    @Persistable(false)
     public int __getGroupsids() {
         return groupsids;
     }
@@ -2125,6 +2056,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
     /**
      * @param groupsids the groupsids to set
      */
+    @Persistable(false)
     public void setGroupsids(int groupsids) {
         this.groupsids = groupsids;
     }
@@ -2383,7 +2315,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
      */
 //    @Deprecated
     public void fillSampleData() {
-        List<Method> vars = setVars();
+        List<Method> vars = new ArrayList<Method>(setVars().values());
         for (int k = 0; k < vars.size(); k++) {
 
             try {
@@ -2480,7 +2412,6 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
         final List<String> ff = Arrays.asList(fields);
 
         Map<String, Object> copy = new TreeMap<String, Object>(new Comparator<String>() {
-
             @Override
             public int compare(String a, String b) {
                 if (a.equals(b)) {
@@ -2570,7 +2501,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
     /**
      * @return the Group
      */
-    @Persistable(false)
+    @Persistable(true)
     public Group getGroup() throws NodataFoundException {
         return (Group) getObject(Context.getGroup(), __getGroupsids());
     }
@@ -2578,7 +2509,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
     /**
      * @param Group the Group to set
      */
-    @Persistable(false)
+    @Persistable(true)
     public void setGroup(Group g) {
         setGroupsids(g.__getIDS());
     }
