@@ -215,6 +215,7 @@ public class Template extends DatabaseObject {
                         new File(FileDirectoryHandler.getTempDir() + "~" + RandomText.getText() + "_" + getCname()));
                 file.deleteOnExit();
             } catch (Exception e) {
+                delete();
                 Log.Debug(e);
                 throw e;
             }

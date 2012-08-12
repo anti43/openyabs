@@ -30,7 +30,10 @@ import java.awt.Graphics;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -38,8 +41,13 @@ import java.text.NumberFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.*;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import javax.swing.table.TableCellRenderer;
+import javax.swing.text.BadLocationException;
 import mpv5.db.common.*;
 import mpv5.db.objects.Product;
 import mpv5.db.objects.ProductList;
@@ -52,6 +60,7 @@ import mpv5.db.objects.MailMessage;
 import mpv5.db.objects.ProductGroup;
 import mpv5.db.objects.ProductPrice;
 import mpv5.db.objects.ProductsToSuppliers;
+import mpv5.db.objects.Tax;
 import mpv5.logging.Log;
 import mpv5.ui.dialogs.BigPopup;
 import mpv5.ui.dialogs.Popup;
@@ -191,7 +200,54 @@ public class ProductPanel extends javax.swing.JPanel implements DataPanel, MPCBS
 //                Popup.notice("Tax ID ist jetzt :" + taxids_);
             }
         });
+        
+        extvalue.getTextField().addKeyListener(new KeyListener() {
 
+            public void keyTyped(KeyEvent e) {
+                
+            }
+
+            public void keyPressed(KeyEvent e) {
+            }
+
+            public void keyReleased(KeyEvent e) {
+            }
+        });
+        
+        calcFactor.set_ValueClass(Double.class);
+        calcResult.set_ValueClass(Double.class);
+        
+        calcFactor.getTextField().addKeyListener(new KeyListener() {
+
+            public void keyTyped(KeyEvent e) {
+                double val = calcFactor.getValue(0d);
+                BigDecimal b = internalnetvalue_.multiply(BigDecimal.valueOf(1+(val/100)));
+                calcResult.setText(FormatNumber.formatDezimal(b.multiply(Tax.getTaxValue(taxids_))));
+                extvalue.setText(FormatNumber.formatDezimal(b));
+            }
+
+            public void keyPressed(KeyEvent e) {
+                 
+            }
+
+            public void keyReleased(KeyEvent e) {
+                
+            }
+        });
+        
+        calcResult.getTextField().addKeyListener(new KeyListener() {
+
+            public void keyTyped(KeyEvent e) {
+            }
+
+            public void keyPressed(KeyEvent e) {
+                 
+            }
+
+            public void keyReleased(KeyEvent e) {
+                
+            }
+        });
     }
 
     /**
@@ -390,6 +446,9 @@ public class ProductPanel extends javax.swing.JPanel implements DataPanel, MPCBS
         description = new NoTabTextArea()
         ;
         contactname1 = new mpv5.ui.beans.LabeledCombobox();
+        calcFactor = new mpv5.ui.beans.LabeledTextField();
+        calcResult = new mpv5.ui.beans.LabeledTextField();
+        jLabel1 = new javax.swing.JLabel();
         jPanel6 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         jPanel3 = new javax.swing.JPanel();
@@ -635,6 +694,17 @@ public class ProductPanel extends javax.swing.JPanel implements DataPanel, MPCBS
         contactname1.set_Label(bundle.getString("ProductPanel.contactname1._Label")); // NOI18N
         contactname1.setName("contactname1"); // NOI18N
 
+        calcFactor.set_Label(bundle.getString("ProductPanel.calcFactor._Label")); // NOI18N
+        calcFactor.setName("calcFactor"); // NOI18N
+        calcFactor.setNextFocusableComponent(ean);
+
+        calcResult.set_Label(bundle.getString("ProductPanel.calcResult._Label")); // NOI18N
+        calcResult.setName("calcResult"); // NOI18N
+        calcResult.setNextFocusableComponent(url);
+
+        jLabel1.setText(bundle.getString("ProductPanel.jLabel1.text")); // NOI18N
+        jLabel1.setName("jLabel1"); // NOI18N
+
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
         jPanel4Layout.setHorizontalGroup(
@@ -646,17 +716,22 @@ public class ProductPanel extends javax.swing.JPanel implements DataPanel, MPCBS
                     .addComponent(contactname1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(ean, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(jPanel4Layout.createSequentialGroup()
-                        .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(unit, javax.swing.GroupLayout.DEFAULT_SIZE, 237, Short.MAX_VALUE)
-                            .addComponent(netvalue, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addComponent(url, javax.swing.GroupLayout.PREFERRED_SIZE, 237, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(reference, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(jPanel4Layout.createSequentialGroup()
+                        .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                            .addGroup(jPanel4Layout.createSequentialGroup()
+                                .addComponent(calcFactor, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addGap(2, 2, 2)
+                                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 21, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(unit, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 237, Short.MAX_VALUE)
+                            .addComponent(netvalue, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(extvalue, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(selecttax, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                    .addGroup(jPanel4Layout.createSequentialGroup()
-                        .addComponent(url, javax.swing.GroupLayout.PREFERRED_SIZE, 237, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(reference, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                            .addComponent(selecttax, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(calcResult, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 425, Short.MAX_VALUE)
                 .addContainerGap())
@@ -685,6 +760,11 @@ public class ProductPanel extends javax.swing.JPanel implements DataPanel, MPCBS
                         .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addComponent(unit, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(selecttax, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(calcFactor, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(calcResult, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
@@ -1010,6 +1090,8 @@ public class ProductPanel extends javax.swing.JPanel implements DataPanel, MPCBS
     private javax.swing.JButton button_listedit;
     private javax.swing.JButton button_order;
     private javax.swing.JButton button_preview;
+    private mpv5.ui.beans.LabeledTextField calcFactor;
+    private mpv5.ui.beans.LabeledTextField calcResult;
     private mpv5.ui.beans.LabeledTextField cname;
     private mpv5.ui.beans.LabeledTextField cnumber;
     private mpv5.ui.beans.LabeledCombobox contactname1;
@@ -1024,6 +1106,7 @@ public class ProductPanel extends javax.swing.JPanel implements DataPanel, MPCBS
     private javax.swing.JCheckBox inventoryDisabled;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
+    private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
@@ -1259,6 +1342,8 @@ public class ProductPanel extends javax.swing.JPanel implements DataPanel, MPCBS
         netvalue.setText(FormatNumber.formatDezimal(internalnetvalue_));
         extvalue.setText(FormatNumber.formatDezimal(externalnetvalue_));
         selecttax.setSelectedItem(Integer.valueOf(taxids_));
+        calcResult.setText(FormatNumber.formatDezimal(externalnetvalue_.multiply(Tax.getTaxValue(taxids_))));
+        calcFactor.setText(0d);
 
         stack.setText(FormatNumber.formatDezimal(stockvalue_));
         threshold.setText(FormatNumber.formatDezimal(thresholdvalue_));

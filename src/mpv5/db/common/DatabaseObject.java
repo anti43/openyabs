@@ -379,8 +379,16 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
                         method.invoke(dbo, new Object[]{(byte[]) ((argument instanceof String) ? String.valueOf(argument).getBytes("UTF-8") : argument)});
                     } else if (DatabaseObject.class.isAssignableFrom(method.getParameterTypes()[0])) {
                         Context c = ((DatabaseObject) method.getParameterTypes()[0].newInstance()).getContext();
-                        DatabaseObject d = getObject(c, Integer.valueOf(String.valueOf(argument)));
-                        method.invoke(dbo, new Object[]{d});
+                        int myId = 0;
+                        try {
+                            myId = Integer.valueOf(String.valueOf(argument));
+                            if (myId > 0) {
+                                DatabaseObject d = getObject(c, myId);
+                                method.invoke(dbo, new Object[]{d});
+                            }
+                        } catch (NumberFormatException numberFormatException) {
+                            Log.Debug(dbo, "Cannot parse " + argument + " as Ids!" + numberFormatException.getMessage());
+                        }
                     } else {
                         //defaults to java.lang.String, Object args are not supported.. possibly later via XMLEncoder?
                         method.invoke(dbo, new Object[]{(argument instanceof byte[])
@@ -552,6 +560,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
                     obj.parse(valuespairs[0].toString(), valuespairs[1]);
                 }
             } catch (Exception ex) {
+                Log.Print(valuespairs[0].toString(), valuespairs[1]);
                 Log.Debug(ex);
             }
         }
@@ -1161,6 +1170,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
                 }
             } catch (Exception n) {
                 Log.Debug(this, n);
+                vals.add(new String[]{key, ""});
             }
         }
         return vals;
@@ -1932,6 +1942,8 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
             }
 
             dbo.IDENTITY = new Entity<Context, Integer>(target.getContext(), dbo.__getIDS());
+            if(dbo.__getGroupsids()==0)
+                dbo.setGroupsids(1);//default do all group
             if (Log.LOGLEVEL_DEBUG == Log.getLoglevel()) {
                 Log.Debug(dbo.getClass(), "Exploded " + dbo.IDENTITY);
             }

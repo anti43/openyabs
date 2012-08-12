@@ -180,27 +180,27 @@ public class QueryHandler implements Cloneable {
 
             //Issue #239////////////////////////////////////////////////////////
             runfixes.setMaxRows(1);
-            ResultSet firstgroup = runfixes.executeQuery("SELECT groupsids FROM groups ORDER BY ids ASC");
+            ResultSet firstgroup = runfixes.executeQuery("SELECT groupsids, ids FROM groups ORDER BY ids ASC LIMIT 1");
             if (firstgroup.next()) {
                 int gids = firstgroup.getInt(1);
                 if (gids != 0) {
-                    runfixes.execute("update groups set groupsids = 0 where ids = 1");
+                    runfixes.execute("update groups set groupsids = 0 where ids = " + firstgroup.getInt(2));
                     Log.Debug(this, "Corrected group 1 to fix Issue #239");
                 }
             }
-            ResultSet firstpgroup = runfixes.executeQuery("SELECT groupsids FROM groups ORDER BY ids ASC");
+            ResultSet firstpgroup = runfixes.executeQuery("SELECT productgroupsids, ids  FROM productgroups ORDER BY ids ASC LIMIT 1");
             if (firstpgroup.next()) {
                 int gids = firstpgroup.getInt(1);
                 if (gids != 0) {
-                    runfixes.execute("update productgroups set productgroupsids = 0 where ids = 1");
+                    runfixes.execute("update productgroups set productgroupsids = 0 where ids = " +firstpgroup.getInt(2));
                     Log.Debug(this, "Corrected productgroup 1 to fix Issue #239");
                 }
             }
-            ResultSet firstaccount = runfixes.executeQuery("SELECT intparentaccount FROM accounts ORDER BY ids ASC");
+            ResultSet firstaccount = runfixes.executeQuery("SELECT intparentaccount, ids  FROM accounts ORDER BY ids ASC LIMIT 1");
             if (firstaccount.next()) {
                 int gids = firstaccount.getInt(1);
                 if (gids != 0) {
-                    runfixes.execute("update accounts set intparentaccount = 0 where ids = 1");
+                    runfixes.execute("update accounts set intparentaccount = 0 where ids = " + firstaccount.getInt(2));
                     Log.Debug(this, "Corrected account 1 to fix Issue #239");
                 }
             }

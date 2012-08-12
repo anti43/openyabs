@@ -463,20 +463,26 @@
                               <Component id="contactname1" max="32767" attributes="0"/>
                               <Component id="ean" alignment="0" max="32767" attributes="0"/>
                               <Group type="102" alignment="0" attributes="0">
-                                  <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                                      <Component id="unit" pref="237" max="32767" attributes="0"/>
-                                      <Component id="netvalue" max="32767" attributes="0"/>
+                                  <Component id="url" min="-2" pref="237" max="-2" attributes="0"/>
+                                  <EmptySpace max="-2" attributes="0"/>
+                                  <Component id="reference" max="32767" attributes="0"/>
+                              </Group>
+                              <Group type="102" alignment="0" attributes="0">
+                                  <Group type="103" groupAlignment="1" max="-2" attributes="0">
+                                      <Group type="102" alignment="1" attributes="0">
+                                          <Component id="calcFactor" max="32767" attributes="0"/>
+                                          <EmptySpace min="-2" pref="2" max="-2" attributes="0"/>
+                                          <Component id="jLabel1" min="-2" pref="21" max="-2" attributes="0"/>
+                                      </Group>
+                                      <Component id="unit" alignment="0" pref="237" max="32767" attributes="0"/>
+                                      <Component id="netvalue" alignment="0" max="32767" attributes="0"/>
                                   </Group>
                                   <EmptySpace max="-2" attributes="0"/>
                                   <Group type="103" groupAlignment="0" attributes="0">
                                       <Component id="extvalue" max="32767" attributes="0"/>
                                       <Component id="selecttax" max="32767" attributes="0"/>
+                                      <Component id="calcResult" max="32767" attributes="0"/>
                                   </Group>
-                              </Group>
-                              <Group type="102" alignment="0" attributes="0">
-                                  <Component id="url" min="-2" pref="237" max="-2" attributes="0"/>
-                                  <EmptySpace max="-2" attributes="0"/>
-                                  <Component id="reference" max="32767" attributes="0"/>
                               </Group>
                           </Group>
                           <EmptySpace max="-2" attributes="0"/>
@@ -490,8 +496,8 @@
                       <Group type="102" attributes="0">
                           <EmptySpace max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="0" attributes="0">
-                              <Component id="jScrollPane3" alignment="0" pref="207" max="32767" attributes="0"/>
-                              <Group type="102" alignment="0" attributes="0">
+                              <Component id="jScrollPane3" pref="207" max="32767" attributes="0"/>
+                              <Group type="102" attributes="0">
                                   <Component id="cname" min="-2" max="-2" attributes="0"/>
                                   <EmptySpace min="-2" pref="8" max="-2" attributes="0"/>
                                   <Component id="ean" min="-2" max="-2" attributes="0"/>
@@ -511,6 +517,12 @@
                                   <Group type="103" groupAlignment="1" attributes="0">
                                       <Component id="unit" min="-2" max="-2" attributes="0"/>
                                       <Component id="selecttax" min="-2" max="-2" attributes="0"/>
+                                  </Group>
+                                  <EmptySpace max="-2" attributes="0"/>
+                                  <Group type="103" groupAlignment="0" attributes="0">
+                                      <Component id="calcFactor" min="-2" max="-2" attributes="0"/>
+                                      <Component id="jLabel1" min="-2" pref="20" max="-2" attributes="0"/>
+                                      <Component id="calcResult" min="-2" max="-2" attributes="0"/>
                                   </Group>
                                   <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
                               </Group>
@@ -629,6 +641,36 @@
                       <ResourceString bundle="mpv5/resources/languages/Panels.properties" key="ProductPanel.contactname1._Label" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
                     </Property>
                     <Property name="name" type="java.lang.String" value="contactname1" noResource="true"/>
+                  </Properties>
+                </Component>
+                <Component class="mpv5.ui.beans.LabeledTextField" name="calcFactor">
+                  <Properties>
+                    <Property name="_Label" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
+                      <ResourceString bundle="mpv5/resources/languages/Panels.properties" key="ProductPanel.calcFactor._Label" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+                    </Property>
+                    <Property name="name" type="java.lang.String" value="calcFactor" noResource="true"/>
+                    <Property name="nextFocusableComponent" type="java.awt.Component" editor="org.netbeans.modules.form.ComponentChooserEditor">
+                      <ComponentRef name="ean"/>
+                    </Property>
+                  </Properties>
+                </Component>
+                <Component class="mpv5.ui.beans.LabeledTextField" name="calcResult">
+                  <Properties>
+                    <Property name="_Label" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
+                      <ResourceString bundle="mpv5/resources/languages/Panels.properties" key="ProductPanel.calcResult._Label" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+                    </Property>
+                    <Property name="name" type="java.lang.String" value="calcResult" noResource="true"/>
+                    <Property name="nextFocusableComponent" type="java.awt.Component" editor="org.netbeans.modules.form.ComponentChooserEditor">
+                      <ComponentRef name="url"/>
+                    </Property>
+                  </Properties>
+                </Component>
+                <Component class="javax.swing.JLabel" name="jLabel1">
+                  <Properties>
+                    <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
+                      <ResourceString bundle="mpv5/resources/languages/Panels.properties" key="ProductPanel.jLabel1.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+                    </Property>
+                    <Property name="name" type="java.lang.String" value="jLabel1" noResource="true"/>
                   </Properties>
                 </Component>
               </SubComponents>

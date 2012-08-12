@@ -516,7 +516,7 @@ public final class ControlPanel_Templates extends javax.swing.JPanel implements 
         if (di.chooseFile()) {
             Template t = new Template();
             File fi = di.getFile();
-            if (QueryHandler.instanceOf().clone(Context.getFiles(), this).insertFile(fi, t, new SaveString(di.getFile().getName(), true))) {
+            if (QueryHandler.instanceOf().clone(Context.getFiles(), this).insertFile(fi, t, new SaveString(fi.getName(), true))) {
                 Popup.notice(Messages.ASSIGN_TEMPLATE);
                 configureUpdateService(fi);
             }
@@ -581,7 +581,6 @@ public final class ControlPanel_Templates extends javax.swing.JPanel implements 
         final DataPanel x = this;
         final Template tpl = dataOwner;
         FileMonitor.FileChangeListener filecl = new FileMonitor.FileChangeListener() {
-
             public void fileChanged(String fileName) {
                 QueryHandler.instanceOf().clone(Context.getFiles(), x).updateFile(new File(fileName), tpl.__getFilename());
                 tpl.setDescription(tpl.__getDescription() + "\n - Updated: " + new Date());
@@ -779,6 +778,9 @@ public final class ControlPanel_Templates extends javax.swing.JPanel implements 
 
         } catch (Exception e) {
             Log.Debug(this, e);
+            if (Popup.Y_N_dialog("There was a problem loading the template, delete?")) {
+                dataOwner.delete();
+            }
         }
     }
 

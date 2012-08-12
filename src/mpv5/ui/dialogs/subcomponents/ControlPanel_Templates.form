@@ -1,4 +1,4 @@
-<?xml version="1.1" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="UTF-8" ?>
 
 <Form version="1.6" maxVersion="1.7" type="org.netbeans.modules.form.forminfo.JPanelFormInfo">
   <Properties>
@@ -185,8 +185,8 @@
         </DimensionLayout>
         <DimensionLayout dim="1">
           <Group type="103" groupAlignment="0" attributes="0">
-              <Component id="jScrollPane4" alignment="0" pref="473" max="32767" attributes="0"/>
-              <Component id="jPanel2" alignment="1" pref="473" max="32767" attributes="2"/>
+              <Component id="jScrollPane4" alignment="0" pref="468" max="32767" attributes="0"/>
+              <Component id="jPanel2" alignment="1" pref="468" max="32767" attributes="2"/>
           </Group>
         </DimensionLayout>
       </Layout>
@@ -272,8 +272,8 @@
                               <Group type="102" attributes="0">
                                   <Group type="103" groupAlignment="0" attributes="0">
                                       <Component id="jLabel1" alignment="0" min="-2" pref="79" max="-2" attributes="1"/>
-                                      <Component id="jLabel3" pref="79" max="32767" attributes="1"/>
-                                      <Component id="jLabel6" pref="79" max="32767" attributes="1"/>
+                                      <Component id="jLabel3" max="32767" attributes="1"/>
+                                      <Component id="jLabel6" max="32767" attributes="1"/>
                                   </Group>
                                   <EmptySpace max="-2" attributes="0"/>
                                   <Group type="103" groupAlignment="0" attributes="0">
@@ -292,7 +292,7 @@
                           <Component id="fullname" min="-2" max="-2" attributes="0"/>
                           <EmptySpace min="-2" pref="7" max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                              <Component id="printern" max="32767" attributes="0"/>
+                              <Component id="printern" pref="26" max="32767" attributes="0"/>
                               <Component id="jButton11" pref="0" max="32767" attributes="0"/>
                           </Group>
                           <EmptySpace min="-2" max="-2" attributes="0"/>

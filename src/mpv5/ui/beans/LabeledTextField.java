@@ -344,7 +344,7 @@ public class LabeledTextField extends javax.swing.JPanel {
             } catch (Exception numberFormatException) {
                 Log.Debug(this, numberFormatException.getMessage());
                 TextFieldUtils.blinker(jTextField1, Color.gray);
-                jTextField1.setText("0");
+                jTextField1.setText(classtemplate.toString());
             }
         } else if (clazz == Double.class) {
             try {
@@ -354,7 +354,7 @@ public class LabeledTextField extends javax.swing.JPanel {
             } catch (Exception numberFormatException) {
                 Log.Debug(this, numberFormatException.getMessage());
                 TextFieldUtils.blinker(jTextField1, Color.gray);
-                jTextField1.setText("0.0");
+                jTextField1.setText(FormatNumber.formatDezimal((Double)classtemplate));
             }
         } else if (clazz == BigDecimal.class) {
             try {
@@ -366,7 +366,7 @@ public class LabeledTextField extends javax.swing.JPanel {
                 Log.Debug(this, numberFormatException.getMessage());
 
                 TextFieldUtils.blinker(jTextField1, Color.gray);
-                jTextField1.setText("0.0");
+                jTextField1.setText(FormatNumber.formatDezimal((BigDecimal)classtemplate));
             }
         }
         return classtemplate;
