@@ -33,6 +33,8 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.SwingUtilities;
 import mpv5.db.objects.ValueProperty;
 import mpv5.globals.Messages;
@@ -378,21 +380,23 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
                     } else if (method.getParameterTypes()[0].getCanonicalName().equals(new byte[0].getClass().getCanonicalName())) {//doitbetter
                         method.invoke(dbo, new Object[]{(byte[]) ((argument instanceof String) ? String.valueOf(argument).getBytes("UTF-8") : argument)});
                     } else if (DatabaseObject.class.isAssignableFrom(method.getParameterTypes()[0])) {
-                        Context c = ((DatabaseObject) method.getParameterTypes()[0].newInstance()).getContext();
-                        int myId = 0;
-                        try {
-                            myId = Integer.valueOf(String.valueOf(argument));
-                            if (myId > 0) {
-                                DatabaseObject d = getObject(c, myId);
-                                method.invoke(dbo, new Object[]{d});
-                            }
-                        } catch (NumberFormatException numberFormatException) {
+                        if (argument instanceof DatabaseObject) {
+                            DatabaseObject d = (DatabaseObject) argument;
+                            method.invoke(dbo, new Object[]{d});
+                        } else {
+                            Context c = ((DatabaseObject) method.getParameterTypes()[0].newInstance()).getContext();
+                            int myId = 0;
                             try {
-                                DatabaseObject d = (DatabaseObject) argument;
-                                method.invoke(dbo, new Object[]{d});
-                                
-                            } catch (Exception e) {
-                                Log.Debug(dbo, "Cannot parse " + argument + " as Ids!" + numberFormatException.getMessage());
+                                myId = Integer.valueOf(String.valueOf(argument));
+                                if (myId > 0) {
+                                    DatabaseObject d = getObject(c, myId);
+                                    method.invoke(dbo, new Object[]{d});
+                                }
+                            } catch (NumberFormatException numberFormatException) {
+                                try {
+                                } catch (Exception e) {
+                                    Log.Debug(dbo, "Cannot parse " + argument + " as Ids!" + numberFormatException.getMessage());
+                                }
                             }
                         }
                     } else {
@@ -1162,10 +1166,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
 
         for (String key : vars.keySet()) {
             try {
-                if (!key.toUpperCase().startsWith("DATE")) {
-                    vals.add(new String[]{key,
-                                String.valueOf(vars.get(key).invoke(this, new Object[0]))});
-                } else {
+                if (Date.class.isAssignableFrom(vars.get(key).getReturnType())) {
                     String date = null;
                     try {
                         date = DateConverter.getDefDateString((Date) vars.get(key).invoke(this, new Object[0]));
@@ -1173,6 +1174,16 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
                         date = DateConverter.getDefDateString(new Date());
                     }
                     vals.add(new String[]{key, date});
+                } else if (DatabaseObject.class.isAssignableFrom(vars.get(key).getReturnType())) {
+                    try {
+                        vals.add(new String[]{key,
+                                    String.valueOf(vars.get(key).invoke(this, new Object[0]))});
+                    } catch (Exception ex) {
+                        vals.add(new String[]{key, ""});
+                    }
+                } else {
+                    vals.add(new String[]{key,
+                                String.valueOf(vars.get(key).invoke(this, new Object[0]))});
                 }
             } catch (Exception n) {
                 Log.Debug(this, n);
@@ -1948,8 +1959,9 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
             }
 
             dbo.IDENTITY = new Entity<Context, Integer>(target.getContext(), dbo.__getIDS());
-            if(dbo.__getGroupsids()==0)
+            if (dbo.__getGroupsids() == 0) {
                 dbo.setGroupsids(1);//default do all group
+            }
             if (Log.LOGLEVEL_DEBUG == Log.getLoglevel()) {
                 Log.Debug(dbo.getClass(), "Exploded " + dbo.IDENTITY);
             }
@@ -2488,7 +2500,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
         List<ValueProperty> props = new ArrayList<ValueProperty>(ValueProperty.getProperties(this));
         try {
             props.addAll(ValueProperty.getProperties(getContext(), getGroup()));
-        } catch (NodataFoundException ex) {
+        } catch (Exception ex) {
             Log.Debug(this, ex.getMessage());
         }
 
@@ -2520,8 +2532,13 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
      * @return the Group
      */
     @Persistable(true)
-    public Group getGroup() throws NodataFoundException {
-        return (Group) getObject(Context.getGroup(), __getGroupsids());
+    public Group getGroup() {
+        try {
+            return (Group) getObject(Context.getGroup(), __getGroupsids());
+        } catch (NodataFoundException ex) {
+            Log.Debug(this, ex.getMessage());
+        }
+        return Group.getDefault();
     }
 
     /**

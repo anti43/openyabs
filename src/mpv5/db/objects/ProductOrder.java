@@ -584,12 +584,7 @@ public class ProductOrder extends DatabaseObject implements Formattable, Templat
      */
     @Override
     public int templateGroupIds() {
-        try {
-            return getGroup().__getGroupsids();
-        } catch (NodataFoundException ex) {
-            Log.Debug(ex);
-            return 1;
-        }
+        return getGroup().__getGroupsids();
     }
 
     /**

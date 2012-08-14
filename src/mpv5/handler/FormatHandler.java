@@ -435,6 +435,9 @@ public class FormatHandler {
                     startindex = string.length() + startindex;
                 }
                 Log.Debug(this, "Original pattern: " + format.toPattern());
+
+                
+                
                 f = new YMessageFormat((VariablesHandler.parse(format.toPattern(), source)).substring(startindex), null);
                 Log.Debug(this, "Pattern: " + f.toPattern() + " for String: " + string + " Starting at " + startindex);
                 Object[] result = f.parse(string, new ParsePosition(startindex));

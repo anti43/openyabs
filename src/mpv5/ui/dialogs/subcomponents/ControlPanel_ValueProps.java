@@ -344,7 +344,7 @@ public class ControlPanel_ValueProps extends javax.swing.JPanel implements Contr
                 jList1.setSelectedValue(Context.getByID(((ValueProperty) obj).__getContextids()), true);
                 try {
                     jList2.setSelectedValue(((ValueProperty) obj).getGroup(), true);
-                } catch (NodataFoundException ex) {
+                } catch ( Exception ex) {
                     Log.Debug(ex);
                 }
             }

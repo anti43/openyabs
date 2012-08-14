@@ -48,7 +48,7 @@ public class ControlPanel_Userproperties extends javax.swing.JPanel implements C
         loadSettings();
         try {
             groupl.setText(User.getCurrentUser().getGroup().__getCname());
-        } catch (NodataFoundException ex) {
+        } catch ( Exception ex) {
             Log.Debug(ex);
         }
     }
