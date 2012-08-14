@@ -387,7 +387,12 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
                                 method.invoke(dbo, new Object[]{d});
                             }
                         } catch (NumberFormatException numberFormatException) {
-                            Log.Debug(dbo, "Cannot parse " + argument + " as Ids!" + numberFormatException.getMessage());
+                            try {
+                                DatabaseObject d = (DatabaseObject) argument;
+                                method.invoke(dbo, new Object[]{d});
+                            } catch (Exception e) {
+                                Log.Debug(dbo, "Cannot parse " + argument + " as Ids!" + numberFormatException.getMessage());
+                            }
                         }
                     } else {
                         //defaults to java.lang.String, Object args are not supported.. possibly later via XMLEncoder?
