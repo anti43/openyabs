@@ -390,6 +390,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
                             try {
                                 DatabaseObject d = (DatabaseObject) argument;
                                 method.invoke(dbo, new Object[]{d});
+                                
                             } catch (Exception e) {
                                 Log.Debug(dbo, "Cannot parse " + argument + " as Ids!" + numberFormatException.getMessage());
                             }
