@@ -180,7 +180,7 @@ public class QueryHandler implements Cloneable {
 
             //Issue #239////////////////////////////////////////////////////////
             runfixes.setMaxRows(1);
-            ResultSet firstgroup = runfixes.executeQuery("SELECT groupsids, ids FROM groups ORDER BY ids ASC LIMIT 1");
+            ResultSet firstgroup = runfixes.executeQuery("SELECT groupsids, ids FROM groups ORDER BY ids ASC");
             if (firstgroup.next()) {
                 int gids = firstgroup.getInt(1);
                 if (gids != 0) {
@@ -188,7 +188,7 @@ public class QueryHandler implements Cloneable {
                     Log.Debug(this, "Corrected group 1 to fix Issue #239");
                 }
             }
-            ResultSet firstpgroup = runfixes.executeQuery("SELECT productgroupsids, ids  FROM productgroups ORDER BY ids ASC LIMIT 1");
+            ResultSet firstpgroup = runfixes.executeQuery("SELECT productgroupsids, ids  FROM productgroups ORDER BY ids ASC");
             if (firstpgroup.next()) {
                 int gids = firstpgroup.getInt(1);
                 if (gids != 0) {
@@ -196,7 +196,7 @@ public class QueryHandler implements Cloneable {
                     Log.Debug(this, "Corrected productgroup 1 to fix Issue #239");
                 }
             }
-            ResultSet firstaccount = runfixes.executeQuery("SELECT intparentaccount, ids  FROM accounts ORDER BY ids ASC LIMIT 1");
+            ResultSet firstaccount = runfixes.executeQuery("SELECT intparentaccount, ids  FROM accounts ORDER BY ids ASC");
             if (firstaccount.next()) {
                 int gids = firstaccount.getInt(1);
                 if (gids != 0) {
@@ -206,7 +206,7 @@ public class QueryHandler implements Cloneable {
             }
             ////////////////////////////////////////////////////////////////////
         } catch (Exception ex) {
-            Log.Debug(ex);
+            Log.Debug(this,ex.getMessage().toString());
             Popup.error(ex);
         }
     }
