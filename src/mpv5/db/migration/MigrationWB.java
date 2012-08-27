@@ -51,7 +51,9 @@ public class MigrationWB {
                 df.setDialogType(DialogForFile.SAVE_DIALOG);
                 if (df.getFilePath(tf)) {
                     txt = tf.getText();
+                    mpv5.YabsViewProxy.instance().setWaiting(true);
                     new DatabaseToSQL(txt, false).ExportToDump();
+                    mpv5.YabsViewProxy.instance().setWaiting(false);
                 }
             } catch (Exception ex) {
                 Log.Debug(this, ex.getLocalizedMessage());

@@ -78,8 +78,6 @@ public class DatabaseConnection {
     public java.sql.Connection getConnection() {
         return conn;
     }
-    
-
 
     /**
      * Test-Verbindung zur Datenbank herstellen.
@@ -124,22 +122,26 @@ public class DatabaseConnection {
             if (conn != null //&& conn.isValid(10)//does not work with MySQL Connector/J 5.0
                     ) {
                 if (create && ConnectionTypeHandler.getDriverType() == ConnectionTypeHandler.MYSQL) {
-                    try {
-                        conn.setCatalog(ConnectionTypeHandler.getDBNAME());
-                        if (Popup.Y_N_dialog(Messages.DELETE_DATABASE.toString())) {
-                            stmt = conn.createStatement();
+                    if (Popup.Y_N_dialog(Messages.DELETE_DATABASE.toString())) {
+                        stmt = conn.createStatement();
+                        try {
+                            conn.setCatalog(ConnectionTypeHandler.getDBNAME());
                             sql = "DROP DATABASE "
                                     + ConnectionTypeHandler.getDBNAME()
                                     + ";";
                             stmt.execute(sql);
+                        } catch (SQLException ex) {
+                            Log.Debug(this, "Database Error Cleaing of old DB failed!");
+                        }
+                        try {
                             sql = "CREATE DATABASE "
                                     + ConnectionTypeHandler.getDBNAME()
                                     + " ;";
                             stmt.execute(sql);
+                        } catch (SQLException ex) {
+                            Popup.OK_dialog(Messages.CREATE_DATABASE_OWN.toString(), "Database Creation");
+                            return false;
                         }
-                    } catch (SQLException ex) {
-                        Popup.OK_dialog(Messages.CREATE_DATABASE_OWN.toString(), "Database Creation");
-                        return false;
                     }
                 }
                 conn.setCatalog(ConnectionTypeHandler.getDBNAME());
@@ -192,8 +194,8 @@ public class DatabaseConnection {
             password = LocalSettings.getProperty("dbpassword");
             prefix = LocalSettings.getProperty("dbprefix");
 
-                        reconnect(create);
-            } else {
+            reconnect(create);
+        } else {
             throw new UnsupportedOperationException("Datenbanktreiber: undefined");
         }
         return conn;
@@ -292,5 +294,4 @@ public class DatabaseConnection {
     public Statement getStatement() {
         return statement;
     }
-
 }

@@ -35,11 +35,13 @@ public class DerbyToMySQL {
     private FileReaderWriter fw = null;
     private File file = null;
     private ProgressMonitor pm;
-    private int base;
     private String HEXES = "0123456789ABCDEF";
     private StringBuilder result = new StringBuilder();
     private DatabaseMetaData Meta = null;
     private int stms = 0;
+    private String[] Install_MySQL;
+    Map<Double, String[]> Updates_MySQL;
+    ResultSet tables;
 
     public DerbyToMySQL(String Url) throws ClassNotFoundException,
             InstantiationException,
@@ -56,7 +58,17 @@ public class DerbyToMySQL {
 
     public void writeDerbyToMySQLDump(File f, JFrame app, String Message) throws SQLException, IOException {
         file = f;
-        pm = new ProgressMonitor(app, Message, "", 0, 100);
+        stms = 0;
+        String[] types = {"TABLE"};
+        tables = Meta.getTables(null, "APP", "%", types);
+        int i = 0;
+        while (tables.next()) {
+            i++;
+        }
+        tables = Meta.getTables(null, "APP", "%", types);
+        Install_MySQL = DatabaseInstallation.getStructureForMigration(ConnectionTypeHandler.MYSQL);
+        Updates_MySQL = new DatabaseUpdater().getStructureForMigration(ConnectionTypeHandler.MYSQL);
+        pm = new ProgressMonitor(app, Message, "", 0, i + Install_MySQL.length + Updates_MySQL.size());
         if (!pm.isCanceled()) {
             explodeTables();
         }
@@ -65,21 +77,11 @@ public class DerbyToMySQL {
     }
 
     private void explodeTables() throws SQLException, IOException {
-        String[] types = {"TABLE"};
-        ResultSet tables = Meta.getTables(null, "APP", "%", types);
-        int i = 0;
-        while (tables.next()) {
-            i++;
-        }
-        stms = pm.getMaximum() + i;
-        pm.setMaximum(stms);
-        i = 0;
-        tables = Meta.getTables(null, "APP", "%", types);
         while (tables.next() && !pm.isCanceled()) {
             result = new StringBuilder();
             String tableName = tables.getString("TABLE_NAME");
             tableName = tableName.toLowerCase();
-            pm.setProgress(i++);
+            pm.setProgress(stms++);
             pm.setNote("Calculating " + tableName);
             result.append("\n\n#-- Table:").append(tableName);
             result.append("\nDROP TABLE IF EXISTS ").append(tableName).append(" ;");
@@ -96,7 +98,7 @@ public class DerbyToMySQL {
                 if (cols.getString("TYPE_NAME").equalsIgnoreCase("VARCHAR")) {
                     result.append("(").append(cols.getString("COLUMN_SIZE")).append(")").append(" ");
                 }
-                if (cols.getString("COLUMN_DEF") != null 
+                if (cols.getString("COLUMN_DEF") != null
                         && !cols.getString("COLUMN_DEF").contains("AUTOINCREMENT")
                         && !cols.getString("COLUMN_DEF").contains("GENERATED_BY_DEFAULT")) {
                     result.append(" DEFAULT ");
@@ -107,7 +109,7 @@ public class DerbyToMySQL {
                 } else {
                     if (cols.getString("COLUMN_DEF") == null) {
                         result.append(" DEFAULT ");
-                        result.append("'").append(cols.getString("COLUMN_DEF")).append("'");
+                        result.append(cols.getString("COLUMN_DEF"));
                     }
                 }
                 if (cols.getString("IS_AUTOINCREMENT").equalsIgnoreCase("YES")) {
@@ -231,29 +233,41 @@ public class DerbyToMySQL {
         this.engine = engine;
     }
 
-    private void buildAppend(StringBuilder result, String sql[]) {
+    private void buildAppend(StringBuilder result, String sql[], boolean withMsg) {
         if (!pm.isCanceled()) {
-            base += 1;
             for (int i = 0; i < sql.length; i++) {
                 if (!sql[i].startsWith("CREATE TABLE")
                         && !sql[i].startsWith("INSERT INTO")) {
                     result.append(sql[i]).append(";\n\n");
                 }
-                pm.setProgress(stms + base);
-                pm.setNote(Messages.ACTION_CALCULATING.toString() + " Update " + base);
+                if (withMsg) {
+                    try {
+                        pm.setProgress(stms + i);
+                        pm.setNote(Messages.ACTION_CALCULATING.toString() + " Install line " + i);
+                        Thread.sleep(50);
+                    } catch (InterruptedException ex) {
+                    }
+                }
+            }
+            if (withMsg) {
+                stms = stms + sql.length;
             }
         }
     }
 
     private void appendStandards() {
         result = new StringBuilder();
-        buildAppend(result, DatabaseInstallation.getStructureForMigration(ConnectionTypeHandler.MYSQL));
-        Map<Double, String[]> UPDATES_MYSQL = new DatabaseUpdater().getStructureForMigration(ConnectionTypeHandler.MYSQL);
-        pm.setMaximum(pm.getMaximum() + UPDATES_MYSQL.keySet().size());
-        for (Iterator<Double> keys = UPDATES_MYSQL.keySet().iterator(); keys.hasNext();) {
+        buildAppend(result, Install_MySQL, true);
+        for (Iterator<Double> keys = Updates_MySQL.keySet().iterator(); keys.hasNext();) {
             Double vers = keys.next();
-            String[] val = UPDATES_MYSQL.get(vers);
-            buildAppend(result, val);
+            String[] val = Updates_MySQL.get(vers);
+            pm.setProgress(stms++);
+            try {
+                pm.setNote(Messages.ACTION_CALCULATING.toString() + " Update to Version" + vers);
+                Thread.sleep(50);
+            } catch (InterruptedException ex) {
+            }
+            buildAppend(result, val, false);
         }
         WriteSQLDumpToFile(result.toString());
     }

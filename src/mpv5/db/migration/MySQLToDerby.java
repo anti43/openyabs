@@ -286,7 +286,9 @@ public class MySQLToDerby {
                 ArrayList<String> list = val1.get(tabname);
                 for (int i = 0; i < list.size(); i++) {
                     query = list.get(i);
-                    Log.Print(query);
+                    if (Log.getLoglevel() == Log.LOGLEVEL_DEBUG) {
+                        Log.Print(query);
+                    }
                     execStmt(query, stm, msg, lastProgress + i);
                     if (pm.isCanceled()) {
                         i = list.size();
@@ -301,7 +303,9 @@ public class MySQLToDerby {
                 ArrayList<String> list = val2.get(tabname);
                 for (int i = 0; i < list.size(); i++) {
                     query = list.get(i);
-                    Log.Print(query);
+                    if (Log.getLoglevel() == Log.LOGLEVEL_DEBUG) {
+                        Log.Print(query);
+                    }
                     execStmt(query, stm, msg, lastProgress + i);
                     if (pm.isCanceled()) {
                         i = list.size();
@@ -316,7 +320,9 @@ public class MySQLToDerby {
                 ArrayList<String> list = val3.get(String.valueOf(u));
                 for (int i = 0; i < list.size(); i++) {
                     query = list.get(i);
-                    Log.Print(query);
+                    if (Log.getLoglevel() == Log.LOGLEVEL_DEBUG) {
+                        Log.Print(query);
+                    }
                     execStmt(query, stm, msg, lastProgress + i);
                     if (pm.isCanceled()) {
                         i = list.size();
@@ -324,8 +330,6 @@ public class MySQLToDerby {
                 }
                 lastProgress += list.size();
             }
-        } catch (SQLException ex) {
-            Log.Debug(MySQLToDerby.class, ex.getLocalizedMessage());
         } catch (InstantiationException ex) {
             Log.Debug(MySQLToDerby.class, ex.getLocalizedMessage());
         } catch (IllegalAccessException ex) {
@@ -340,42 +344,46 @@ public class MySQLToDerby {
         }
     }
 
-    private void execStmt(String query, Statement stm, String msg, int i) throws SQLException {
+    private void execStmt(String query, Statement stm, String msg, int i) {
         String tabname;
         ResultSet rs;
         String tmp;
         if (pm != null) {
             pm.setProgress(i);
-            if (query.startsWith("DELETE")) {
-                pm.setNote(msg + Messages.FLUSHING_TMP_TABLE.toString());
-                stm.execute(query);
-            } else if (query.contains("0x#BLOB")) {
-                pm.setNote(msg + query);
-                tmp = query.substring(query.indexOf("(") + 1, query.indexOf(","));
-                PreparedStatement ps1;
-                ps1 = con.prepareStatement("Select data from files where ids = ?");
-                ps1.setInt(1, Integer.parseInt(tmp));
-                rs = ps1.executeQuery();
-                rs.next();
-                String sql = query.replace("0x#BLOB", "?");
-                PreparedStatement ps2;
-                ps2 = derby.prepareStatement(sql);
-                ps2.setBinaryStream(1, rs.getBinaryStream("data"));
-                ps2.execute();
-            } else if (query.startsWith("INSERT INTO")
-                    && !msg.equalsIgnoreCase(Messages.ACTION_SAVING.toString())) {
-                pm.setNote(msg + query);
-                Log.Print("Insert rejected because not necessary!");
-            } else if (query.startsWith("CREATE TABLE")) {
-                pm.setNote(msg + query);
-                stm.execute(query);
-                tabname = query.toUpperCase().replace("CREATE TABLE", "");
-                tabname = tabname.substring(0, tabname.indexOf("(")).trim();
-                tabnames.add(tabname);
-                Log.Print("Tablename for Ordering of inserts saved!" + tabname);
-            } else {
-                pm.setNote(msg + query);
-                stm.execute(query);
+            try {
+                if (query.startsWith("DELETE")) {
+                    pm.setNote(msg + Messages.FLUSHING_TMP_TABLE.toString());
+                    stm.execute(query);
+                } else if (query.contains("0x#BLOB")) {
+                    pm.setNote(msg + query);
+                    tmp = query.substring(query.indexOf("(") + 1, query.indexOf(","));
+                    PreparedStatement ps1;
+                    ps1 = con.prepareStatement("Select data from files where ids = ?");
+                    ps1.setInt(1, Integer.parseInt(tmp));
+                    rs = ps1.executeQuery();
+                    rs.next();
+                    String sql = query.replace("0x#BLOB", "?");
+                    PreparedStatement ps2;
+                    ps2 = derby.prepareStatement(sql);
+                    ps2.setBinaryStream(1, rs.getBinaryStream("data"));
+                    ps2.execute();
+                } else if (query.startsWith("INSERT INTO")
+                        && !msg.equalsIgnoreCase(Messages.ACTION_SAVING.toString())) {
+                    pm.setNote(msg + query);
+                    Log.Print("Insert rejected because not necessary!");
+                } else if (query.startsWith("CREATE TABLE")) {
+                    pm.setNote(msg + query);
+                    stm.execute(query);
+                    tabname = query.toUpperCase().replace("CREATE TABLE", "");
+                    tabname = tabname.substring(0, tabname.indexOf("(")).trim();
+                    tabnames.add(tabname);
+                    Log.Print("Tablename for Ordering of inserts saved!" + tabname);
+                } else {
+                    pm.setNote(msg + query);
+                    stm.execute(query);
+                }
+            } catch (SQLException ex) {
+                Log.Debug(this, ex.getLocalizedMessage());
             }
         }
     }
@@ -384,7 +392,6 @@ public class MySQLToDerby {
         try {
             Statement Stmt = derby.createStatement();
             Stmt.execute("UPDATE users SET password='5F4DCC3B5AA765D61D8327DEB882CF99' where IDS = 1");
-            Stmt.close();
             Stmt.execute("UPDATE users SET isloggedin=0 where isloggedin = 1");
             Stmt.close();
         } catch (SQLException ex) {
