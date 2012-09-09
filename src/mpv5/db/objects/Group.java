@@ -29,11 +29,14 @@ import mpv5.ui.dialogs.subcomponents.ControlPanel_Groups;
 
 /**
  *
- *  
+ *
  */
 public class Group extends DatabaseObject {
+
     /**
-     * Returns 'All Group' or the first group found if 'All group' is gone, and if all are deleted, creates a default group
+     * Returns 'All Group' or the first group found if 'All group' is gone, and
+     * if all are deleted, creates a default group
+     *
      * @return A group, never NULL
      */
     public static Group getDefault() {
@@ -136,15 +139,19 @@ public class Group extends DatabaseObject {
     public String __getHierarchypath() {
         if (hierarchypath == null || hierarchypath.equals("")) {
             int intp = __getIDS();
+            if (!isExisting()) {
+                return "/";
+            }
             do {
                 try {
                     Group p = (Group) getObject(Context.getGroup(), intp);
                     hierarchypath = Group.GROUPSEPARATOR + p + hierarchypath;
                     intp = p.__getGroupsids();
                 } catch (NodataFoundException ex) {
+//                    Log.Debug(ex);
                     break;
                 }
-            } while (intp >= 1);
+            } while (intp > 0);
             return hierarchypath.replaceFirst(Group.GROUPSEPARATOR, "");
         }
         return hierarchypath;
@@ -159,8 +166,9 @@ public class Group extends DatabaseObject {
 
     /**
      * Find the children and sub-children of this group
+     *
      * @return
-     * @throws NodataFoundException 
+     * @throws NodataFoundException
      */
     public List<Group> getChildGroups() throws NodataFoundException {
         List<Group> childs = DatabaseObject.getReferencedObjects(this, Context.getGroup());
@@ -175,7 +183,7 @@ public class Group extends DatabaseObject {
     }
 
     /**
-     * 
+     *
      * @return True if the group has no parent group
      */
     public boolean isRoot() {

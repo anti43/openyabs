@@ -26,6 +26,7 @@ import java.awt.Component;
 import java.awt.event.MouseEvent;
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JTextField;
@@ -40,6 +41,7 @@ import mpv5.db.common.NodataFoundException;
 import mpv5.db.common.QueryCriteria;
 import mpv5.db.common.QueryCriteria2;
 import mpv5.db.common.QueryHandler;
+import mpv5.db.common.QueryParameter;
 import mpv5.globals.Messages;
 import mpv5.db.objects.Group;
 import mpv5.logging.Log;
@@ -413,24 +415,25 @@ public class ControlPanel_Groups extends javax.swing.JPanel implements ControlAp
 
     public void refresh() {
 
-        ArrayList<Group> data = null;
+        ArrayList<Group> data = new ArrayList<Group>();
         try {
             QueryCriteria2 c = new QueryCriteria2();
+//            c.and(new QueryParameter(Context.getGroup(), "groupsids", 0, QueryParameter.NOTEQUAL));
             c.setOrder("hierarchypath", false);
             data = DatabaseObject.getObjects(Context.getGroup(), c);
         } catch (NodataFoundException ex) {
             Log.Debug(this, ex.getMessage());
         }
 
-        Group g;
+        Group root;
         try {
-            g = (Group) DatabaseObject.getObject(Context.getGroup(), 1);
+            root = (Group) DatabaseObject.getObject(Context.getGroup(), "groupsids", 0);
         } catch (NodataFoundException ex) {
-            g = new Group(Messages.GROUPNAMES.toString());
-            g.setIDS(-1);
+            root = new Group(Messages.GROUPNAMES.toString());
+            root.setIDS(-1);
         }
 
-        tree.setModel(MPTreeModel.toTreeModel(data, g));
+        tree.setModel(MPTreeModel.toTreeModel(data, root));
         TreeFormat.expandTree(tree);
     }
 

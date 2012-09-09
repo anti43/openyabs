@@ -295,6 +295,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
     }
 
     private synchronized static DatabaseObject getCachedObject(final Context context, final int id) {
+//        if(context.equals(Context.getGroup()))Thread.dumpStack();
         final String uid = context.getDbIdentity() + "@" + id;
         if (cache.containsKey(uid)) {
             DatabaseObject o = cache.get(uid).get();

@@ -62,6 +62,7 @@ public class MPTreeModel extends DefaultTreeModel {
             HashMap<Integer, DefaultMutableTreeNode> groups,
             DefaultMutableTreeNode rootNode) throws NodataFoundException {
         groups.put(childGroup.__getIDS(), childNode);
+//        System.err.println(childNode);
         if (childGroup.__getGroupsids() > 0) {
             Group parent = (Group) DatabaseObject.getObject(Context.getGroup(), childGroup.__getGroupsids());
             DefaultMutableTreeNode gnode = new DefaultMutableTreeNode(parent);
@@ -109,6 +110,7 @@ public class MPTreeModel extends DefaultTreeModel {
 
                 if (!groups.containsKey(new Integer(item.__getGroupsids()))) {
                     DatabaseObject g = DatabaseObject.getObject(Context.getGroup(), item.__getGroupsids());
+                    Log.Debug(MPTreeModel.class, g);
                     getGroupHierarchy((Group) g, new DefaultMutableTreeNode(g), groups, rootNode);
                 }
 
@@ -238,6 +240,7 @@ public class MPTreeModel extends DefaultTreeModel {
             node1 = new DefaultMutableTreeNode(clone);
             try {
                 mpv5.YabsViewProxy.instance().setWaiting(true);
+
                 node1 = addToParents(node1, data);
 
             } catch (Exception e) {
@@ -254,9 +257,11 @@ public class MPTreeModel extends DefaultTreeModel {
     private static <T extends DatabaseObject> DefaultMutableTreeNode addToParents(DefaultMutableTreeNode firstnode, List<T> dobjlist) {
         //        ((T) firstnode.getUserObject()).__getIDS().intValue()
         HashMap<Integer, DefaultMutableTreeNode> map = new HashMap<Integer, DefaultMutableTreeNode>();
+//        System.err.println(dobjlist);
 
         for (int i = 0; i < dobjlist.size(); i++) {//root run
             T t = dobjlist.get(i);
+//            System.err.println(t);
             if (((T) firstnode.getUserObject()).__getIDS().intValue() == t.__getGroupsids()) {
                 DefaultMutableTreeNode y = new DefaultMutableTreeNode(t);
                 firstnode.add(y);
@@ -266,6 +271,7 @@ public class MPTreeModel extends DefaultTreeModel {
         }
 
         while (!dobjlist.isEmpty()) {
+//            System.err.println(dobjlist);
             for (int i = 0; i < dobjlist.size(); i++) {
                 T t = dobjlist.get(i);
                 DefaultMutableTreeNode x = map.get(t.__getGroupsids());
@@ -276,8 +282,8 @@ public class MPTreeModel extends DefaultTreeModel {
                 }
                 if (x != null) {
                     x.add(y);
-                    dobjlist.remove(t);
                 }
+                dobjlist.remove(t);
             }
         }
 
