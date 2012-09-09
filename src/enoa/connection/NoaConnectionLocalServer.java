@@ -259,16 +259,5 @@ public class NoaConnectionLocalServer extends NoaConnection {
     public synchronized static void startOOServer(String path, int port) throws IOException {
         FileExecutor.run(getOOArgs(path, port), ooProcesses);
     }
-
-    private static String[] getOOArgs(String path, int port) {
-        return new String[]{path.replace("\\", "\\\\") + File.separator + LocalSettings.getProperty(LocalSettings.OFFICE_BINARY_FOLDER) + File.separator + "soffice",
-                    "-headless",
-                    "-nofirststartwizard",
-                    //                "-invisible",
-                    "-norestore",
-                    "-nolockcheck",
-                    "-nocrashreport",
-                    "-nodefault",
-                    "-accept=socket,host=0.0.0.0,port=" + port + ";urp;StarOffice.Service"};
-    }
+ 
 }

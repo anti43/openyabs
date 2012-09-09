@@ -23,12 +23,13 @@ import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
 import mpv5.db.common.NodataFoundException;
 import mpv5.db.common.QueryHandler;
+import mpv5.globals.Constants;
 import mpv5.logging.Log;
 import mpv5.utils.images.MPIcon;
 
 /**
  *
- *  
+ *
  */
 public class Tax extends DatabaseObject {
 
@@ -38,6 +39,7 @@ public class Tax extends DatabaseObject {
 
     /**
      * Tries to fetch the value for the given tax id
+     *
      * @param taxid
      * @return A value or 0d if not found
      */
@@ -51,7 +53,17 @@ public class Tax extends DatabaseObject {
     }
 
     /**
+     * Return the value for calculation, eg 1.19 for 19%
+     * @param taxid
+     * @return 
+     */
+    public static BigDecimal getCalculationValue(Integer taxid) {
+        return getTaxValue(taxid).divide(Constants.BD100, 9, BigDecimal.ROUND_HALF_UP).add(BigDecimal.ONE);
+    }
+
+    /**
      * Tries to fetch the id for the given tax value
+     *
      * @param value
      * @return A value or 0d if not found
      */

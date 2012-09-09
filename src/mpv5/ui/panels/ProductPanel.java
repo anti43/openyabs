@@ -192,19 +192,31 @@ public class ProductPanel extends javax.swing.JPanel implements DataPanel, MPCBS
 
         contactname1.setEditable(true);
         supplierpanel.add(new ProductPanelContactSub(null, true));
+        calcFactor.set_ValueClass(Double.class);
+        calcResult.set_ValueClass(Double.class);
+        extvalue.set_ValueClass(Double.class);
+        netvalue.set_ValueClass(Double.class);
 
         selecttax.getComboBox().addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 taxids_ = Integer.valueOf(selecttax.getSelectedItem().getIdObject().toString());
+                double val = extvalue.getValue(0d);
+                calcResult.setText(FormatNumber.formatDezimal(new BigDecimal(val).multiply(Tax.getCalculationValue(taxids_))));
 //                Popup.notice("Tax ID ist jetzt :" + taxids_);
             }
         });
-        
-        extvalue.getTextField().addKeyListener(new KeyListener() {
 
+        extvalue.getTextField().addKeyListener(new KeyListener() {
             public void keyTyped(KeyEvent e) {
-                
+                Runnable runnable = new Runnable() {
+                    public void run() {
+                        double val = extvalue.getValue(0d);
+                        calcResult.setText(FormatNumber.formatDezimal(new BigDecimal(val).multiply(Tax.getCalculationValue(taxids_))));
+                    }
+                };
+                SwingUtilities.invokeLater(runnable);
+
             }
 
             public void keyPressed(KeyEvent e) {
@@ -213,41 +225,43 @@ public class ProductPanel extends javax.swing.JPanel implements DataPanel, MPCBS
             public void keyReleased(KeyEvent e) {
             }
         });
-        
-        calcFactor.set_ValueClass(Double.class);
-        calcResult.set_ValueClass(Double.class);
-        
-        calcFactor.getTextField().addKeyListener(new KeyListener() {
 
+
+
+        calcFactor.getTextField().addKeyListener(new KeyListener() {
             public void keyTyped(KeyEvent e) {
+                recalc();
+            }
+
+            public void keyPressed(KeyEvent e) {
+            }
+
+            public void keyReleased(KeyEvent e) {
+            }
+        });
+
+        calcResult.getTextField().addKeyListener(new KeyListener() {
+            public void keyTyped(KeyEvent e) {
+            }
+
+            public void keyPressed(KeyEvent e) {
+            }
+
+            public void keyReleased(KeyEvent e) {
+            }
+        });
+    }
+
+    private void recalc() {
+        Runnable runnable = new Runnable() {
+            public void run() {
                 double val = calcFactor.getValue(0d);
-                BigDecimal b = internalnetvalue_.multiply(BigDecimal.valueOf(1+(val/100)));
-                calcResult.setText(FormatNumber.formatDezimal(b.multiply(Tax.getTaxValue(taxids_))));
+                BigDecimal b = BigDecimal.valueOf(netvalue.getValue(0d)).multiply(BigDecimal.valueOf(1 + (val / 100)));
+                calcResult.setText(FormatNumber.formatDezimal(b.multiply(Tax.getCalculationValue(taxids_))));
                 extvalue.setText(FormatNumber.formatDezimal(b));
             }
-
-            public void keyPressed(KeyEvent e) {
-                 
-            }
-
-            public void keyReleased(KeyEvent e) {
-                
-            }
-        });
-        
-        calcResult.getTextField().addKeyListener(new KeyListener() {
-
-            public void keyTyped(KeyEvent e) {
-            }
-
-            public void keyPressed(KeyEvent e) {
-                 
-            }
-
-            public void keyReleased(KeyEvent e) {
-                
-            }
-        });
+        };
+        SwingUtilities.invokeLater(runnable);
     }
 
     /**
@@ -448,7 +462,7 @@ public class ProductPanel extends javax.swing.JPanel implements DataPanel, MPCBS
         contactname1 = new mpv5.ui.beans.LabeledCombobox();
         calcFactor = new mpv5.ui.beans.LabeledTextField();
         calcResult = new mpv5.ui.beans.LabeledTextField();
-        jLabel1 = new javax.swing.JLabel();
+        jButton3 = new javax.swing.JButton();
         jPanel6 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         jPanel3 = new javax.swing.JPanel();
@@ -482,7 +496,7 @@ public class ProductPanel extends javax.swing.JPanel implements DataPanel, MPCBS
         addfile = new javax.swing.JButton();
         toolbarpane = new javax.swing.JPanel();
 
-        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("mpv5/resources/languages/Panels"); // NOI18N
+        java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle(); // NOI18N
         setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("ProductPanel.border.title_1"))); // NOI18N
         setName("Form"); // NOI18N
 
@@ -699,11 +713,17 @@ public class ProductPanel extends javax.swing.JPanel implements DataPanel, MPCBS
         calcFactor.setNextFocusableComponent(ean);
 
         calcResult.set_Label(bundle.getString("ProductPanel.calcResult._Label")); // NOI18N
+        calcResult.setEnabled(false);
         calcResult.setName("calcResult"); // NOI18N
         calcResult.setNextFocusableComponent(url);
 
-        jLabel1.setText(bundle.getString("ProductPanel.jLabel1.text")); // NOI18N
-        jLabel1.setName("jLabel1"); // NOI18N
+        jButton3.setText(bundle.getString("ProductPanel.jButton3.text")); // NOI18N
+        jButton3.setName("jButton3"); // NOI18N
+        jButton3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton3ActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
@@ -723,8 +743,8 @@ public class ProductPanel extends javax.swing.JPanel implements DataPanel, MPCBS
                         .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                             .addGroup(jPanel4Layout.createSequentialGroup()
                                 .addComponent(calcFactor, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addGap(2, 2, 2)
-                                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 21, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addComponent(unit, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 237, Short.MAX_VALUE)
                             .addComponent(netvalue, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -741,7 +761,6 @@ public class ProductPanel extends javax.swing.JPanel implements DataPanel, MPCBS
             .addGroup(jPanel4Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 207, Short.MAX_VALUE)
                     .addGroup(jPanel4Layout.createSequentialGroup()
                         .addComponent(cname, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(8, 8, 8)
@@ -761,11 +780,12 @@ public class ProductPanel extends javax.swing.JPanel implements DataPanel, MPCBS
                             .addComponent(unit, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(selecttax, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
+                            .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(calcFactor, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(calcResult, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(0, 0, Short.MAX_VALUE)))
+                        .addGap(0, 5, Short.MAX_VALUE))
+                    .addComponent(jScrollPane3))
                 .addContainerGap())
         );
 
@@ -1082,6 +1102,11 @@ public class ProductPanel extends javax.swing.JPanel implements DataPanel, MPCBS
         prizes.validate();
         prizes.repaint();
     }//GEN-LAST:event_jButton2ActionPerformed
+
+    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+        recalc();
+    }//GEN-LAST:event_jButton3ActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel addedby;
     private javax.swing.JButton addfile;
@@ -1106,7 +1131,7 @@ public class ProductPanel extends javax.swing.JPanel implements DataPanel, MPCBS
     private javax.swing.JCheckBox inventoryDisabled;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
-    private javax.swing.JLabel jLabel1;
+    private javax.swing.JButton jButton3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
@@ -1239,7 +1264,8 @@ public class ProductPanel extends javax.swing.JPanel implements DataPanel, MPCBS
 
             try {
                 taxids_ = Integer.valueOf(selecttax.getSelectedItem().getId());
-            } catch (NumberFormatException numberFormatException) {
+            } catch (Exception numberFormatException) {
+                Log.Debug(numberFormatException);
                 taxids_ = 1;
             }
             try {
@@ -1371,6 +1397,8 @@ public class ProductPanel extends javax.swing.JPanel implements DataPanel, MPCBS
             }
         };
         SwingUtilities.invokeLater(runnable2);
+        double val = extvalue.getValue(0d);
+        calcResult.setText(FormatNumber.formatDezimal(new BigDecimal(val).multiply(Tax.getCalculationValue(taxids_))));
     }
 
     @Override

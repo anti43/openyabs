@@ -31,6 +31,7 @@ import java.util.HashMap;
 import java.util.Map;
 import mpv5.Main;
 import mpv5.YabsViewProxy;
+import mpv5.globals.GlobalSettings;
 import mpv5.globals.LocalSettings;
 import mpv5.globals.Messages;
 import mpv5.logging.Log;
@@ -325,17 +326,17 @@ public class NoaConnection {
 
     }
 
-    private static String[] getOOArgs(String path, int port) {
+    protected static String[] getOOArgs(String path, int port) {
         return new String[]{path.replace("\\", "\\\\") + File.separator + LocalSettings.getProperty(LocalSettings.OFFICE_BINARY_FOLDER) + File.separator + "soffice",
-                    "-headless",
-                    "-nofirststartwizard",
-                    //                "-invisible",
-                    "-norestore",
-                    "-nolockcheck",
-                    "-nocrashreport",
-                    "-nodefault",
-                    (Main.osIsWindows ? "-accept=socket,host=0.0.0.0,port=" + port + ";urp;StarOffice.Service"
-                    : "-accept='socket,host=0.0.0.0,port=" + port + ";urp;StarOffice.Service'")};
+                    "--headless",
+                    "--nofirststartwizard",
+                    (GlobalSettings.getBooleanProperty("org.openyabs.exportproperty.invisibleofficeserver", true)?"--invisible":""),
+                    "--norestore",
+                    "--nolockcheck",
+                    "--nocrashreport",
+                    "--nodefault",
+                    (Main.osIsWindows ? "--accept=socket,host=0.0.0.0,port=" + port + ";urp;StarOffice.Service"
+                    : "--accept='socket,host=0.0.0.0,port=" + port + ";urp;StarOffice.Service'")};
     }
 
     /**

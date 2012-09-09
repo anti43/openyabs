@@ -424,6 +424,6 @@ public class DatabaseSearch {
         for (Integer id : data) {
             dboids = id + "," + dboids;
         }
-        return QueryHandler.instanceOf().clone(context).freeQuery("select " + sf + " from %%tablename%% where ids in (" + dboids + ") AND " + context.getNoTrashSQLString(), MPSecurityManager.VIEW, null).getData();
+        return QueryHandler.instanceOf().clone(context).freeQuery("select " + sf + " from %%tablename%% " + context.getConditions(false) + " AND ids in (" + dboids + ") AND " + context.getNoTrashSQLString() , MPSecurityManager.VIEW, null).getData();
     }
 }
