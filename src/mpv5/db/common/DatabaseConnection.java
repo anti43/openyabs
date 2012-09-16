@@ -9,7 +9,11 @@ import java.sql.Driver;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JProgressBar;
+import mpv5.Main;
+import mpv5.db.objects.User;
 import mpv5.globals.LocalSettings;
 import mpv5.globals.Messages;
 import mpv5.logging.Log;
@@ -65,6 +69,7 @@ public class DatabaseConnection {
         if (getConnector() == null) {
             connector = new DatabaseConnection();
             getConnector().connect(false);
+            new connectionPing(connector).start();
         }
         return getConnector();
     }
@@ -81,6 +86,7 @@ public class DatabaseConnection {
 
     /**
      * Test-Verbindung zur Datenbank herstellen.
+     *
      * @param predefinedDriver
      * @param user
      * @param password
@@ -109,7 +115,6 @@ public class DatabaseConnection {
         }
 
         return reconnect(create);
-
     }
 
     public boolean reconnect(boolean create) throws SQLException {
@@ -120,12 +125,12 @@ public class DatabaseConnection {
             conn = DriverManager.getConnection(getCtype().getConnectionString(create), user, password);
             conn.setAutoCommit(true);
             if (conn != null //&& conn.isValid(10)//does not work with MySQL Connector/J 5.0
-                    ) {
-                if (create && ConnectionTypeHandler.getDriverType() == ConnectionTypeHandler.MYSQL) {
-                    if (Popup.Y_N_dialog(Messages.DELETE_DATABASE.toString())) {
-                        stmt = conn.createStatement();
+                    ) {//mysql (and others) need explicit create database, derby does it by itself
+                if (create && ConnectionTypeHandler.getDriverType() != ConnectionTypeHandler.DERBY) {
+                    stmt = conn.createStatement();
+                    conn.setCatalog(ConnectionTypeHandler.getDBNAME());
+                    if (User.PROPERTIES_OVERRIDE.hasProperty("drop_database_on_create")) {
                         try {
-                            conn.setCatalog(ConnectionTypeHandler.getDBNAME());
                             sql = "DROP DATABASE "
                                     + ConnectionTypeHandler.getDBNAME()
                                     + ";";
@@ -133,34 +138,23 @@ public class DatabaseConnection {
                         } catch (SQLException ex) {
                             Log.Debug(this, "Database Error Cleaing of old DB failed!");
                         }
-                        try {
-                            sql = "CREATE DATABASE "
-                                    + ConnectionTypeHandler.getDBNAME()
-                                    + " ;";
-                            stmt.execute(sql);
-                        } catch (SQLException ex) {
-                            Popup.OK_dialog(Messages.CREATE_DATABASE_OWN.toString(), "Database Creation");
-                            return false;
-                        }
                     }
+                    try {
+                        sql = "CREATE DATABASE "
+                                + ConnectionTypeHandler.getDBNAME()
+                                + " ;";
+                        stmt.execute(sql);
+                    } catch (SQLException ex) {
+                        Popup.OK_dialog(Messages.CREATE_DATABASE_OWN.toString(), "Database Creation");
+                        return false;
+                    }
+
                 }
-                conn.setCatalog(ConnectionTypeHandler.getDBNAME());
                 connector = this;
                 return true;
             } else {
-                if (Popup.Y_N_dialog(Messages.CREATE_DATABASE.toString())) {
-                    sql = "CREATE DATABASE "
-                            + ConnectionTypeHandler.getDBNAME()
-                            + " ;";
-                    stmt = conn.createStatement();
-                    stmt.execute(sql);
-                    return true;
-                } else {
-                    Popup.OK_dialog(Messages.CREATE_DATABASE_OWN.toString(), "Database Creation");
-                    return false;
-                }
+                throw new RuntimeException("Could not create connection: " + getCtype().getConnectionString(create));
             }
-
         } catch (SQLException ex) {
             System.out.println("Database Error: " + ex.getMessage());
             Popup.notice(ex.getLocalizedMessage());
@@ -174,6 +168,7 @@ public class DatabaseConnection {
 
     /**
      * Verbindung zur Datenbank herstellen.
+     *
      * @return Connection
      */
     private Connection connect(boolean create) throws Exception {
@@ -275,6 +270,7 @@ public class DatabaseConnection {
 
     /**
      * Set a progressbar
+     *
      * @param progressbar
      */
     public void setProgressbar(JProgressBar progressbar) {
@@ -293,5 +289,36 @@ public class DatabaseConnection {
      */
     public Statement getStatement() {
         return statement;
+    }
+
+    static class connectionPing extends Thread {
+
+        private DatabaseConnection c;
+
+        public connectionPing(DatabaseConnection c) {
+            this.c = c;
+            setPriority(MIN_PRIORITY);
+        }
+
+        @Override
+        public void run() {
+            try {
+                while (!c.getConnection().isClosed()) {                
+                    try {
+                        sleep(180000);
+                    } catch (InterruptedException ex) {
+                        Log.Debug(ex);
+                    }
+                    try {
+                        Log.Debug(this, "ping to " + c.getCtype().getURL());
+                        c.runQueries(new String[]{"select count(ids) from groups"});
+                    } catch (SQLException ex) {
+                        Log.Debug(ex);
+                    }
+                }
+            } catch (SQLException ex) {
+                Log.Debug(ex);
+            }
+        }
     }
 }
