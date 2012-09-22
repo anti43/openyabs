@@ -84,18 +84,15 @@ public class GroupDialog extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     public void refresh() throws NodataFoundException {
-        ArrayList<Group> data = null;
+       
+        Group root;
         try {
-            data = DatabaseObject.getObjects(Context.getGroup());
+            root = (Group) DatabaseObject.getObject(Context.getGroup(), "groupsids", 0);
         } catch (NodataFoundException ex) {
-            Log.Debug(this, ex.getMessage());
+            root = new Group(Messages.GROUPNAMES.toString());
+            root.setIDS(-1);
         }
-
-        Group g = new Group();
-        g.setCname(Messages.GROUPNAMES.toString());
-        g.setIDS(-1);
-
-        tree.setModel(MPTreeModel.toTreeModel(data, g));
+        tree.setModel(MPTreeModel.toTreeModel( root));
 
         TreeFormat.expandTree(tree);
     }

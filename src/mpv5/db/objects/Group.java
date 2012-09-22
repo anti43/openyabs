@@ -136,9 +136,10 @@ public class Group extends DatabaseObject {
     /**
      * @return the hierarchypath
      */
-    public String __getHierarchypath() {
+    public synchronized String __getHierarchypath() {
         if (hierarchypath == null || hierarchypath.equals("")) {
             int intp = __getIDS();
+            int lastp = 0;
             if (!isExisting()) {
                 return "/";
             }
@@ -147,11 +148,13 @@ public class Group extends DatabaseObject {
                     Group p = (Group) getObject(Context.getGroup(), intp);
                     hierarchypath = Group.GROUPSEPARATOR + p + hierarchypath;
                     intp = p.__getGroupsids();
+                    lastp = p.__getIDS();
+                    System.err.println("intp = " + intp + " lastp =" + lastp);
                 } catch (NodataFoundException ex) {
 //                    Log.Debug(ex);
                     break;
                 }
-            } while (intp > 0);
+            } while (intp > 0 && intp != lastp);
             return hierarchypath.replaceFirst(Group.GROUPSEPARATOR, "");
         }
         return hierarchypath;

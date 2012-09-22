@@ -38,6 +38,7 @@ import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
 import mpv5.db.common.NodataFoundException;
 import mpv5.db.common.QueryCriteria2;
+import mpv5.db.common.QueryHandler;
 import mpv5.db.common.QueryParameter;
 import mpv5.db.objects.Contact;
 import mpv5.db.objects.FileToContact;
@@ -77,6 +78,7 @@ public class MPTreeModel extends DefaultTreeModel {
 
     /**
      * Generates a tree view of the contact including related items and files
+     *
      * @param rootNode
      */
     public MPTreeModel(Contact rootNode, QueryCriteria2 itemfilter) {
@@ -94,8 +96,8 @@ public class MPTreeModel extends DefaultTreeModel {
 
         try {
             if (itemfilter == null) {
-                items =DatabaseObject.toObjectList( DatabaseObject.getReferencedObjects(obj, Context.getItem(), DatabaseObject.getObject(Context.getItem())), new Item());
-            }else{
+                items = DatabaseObject.toObjectList(DatabaseObject.getReferencedObjects(obj, Context.getItem(), DatabaseObject.getObject(Context.getItem())), new Item());
+            } else {
                 List<QueryParameter> p = new ArrayList<QueryParameter>();
                 p.add(new QueryParameter(Context.getItem(), "invisible", 0, QueryParameter.EQUALS));
                 p.add(new QueryParameter(Context.getItem(), "contactsids", obj.__getIDS(), QueryParameter.EQUALS));
@@ -155,11 +157,11 @@ public class MPTreeModel extends DefaultTreeModel {
 
     /**
      * The default renderer for trees containing {@link DatabaseObject}s
+     *
      * @return
      */
     public static DefaultTreeCellRenderer getRenderer() {
         return new DefaultTreeCellRenderer() {
-
             @Override
             public Component getTreeCellRendererComponent(JTree tree, Object value, boolean sel, boolean expanded, boolean leaf, int row, boolean hasFocus) {
                 super.getTreeCellRendererComponent(tree, value, sel, expanded, leaf, row, hasFocus);
@@ -185,13 +187,14 @@ public class MPTreeModel extends DefaultTreeModel {
     }
 
     /**
-     * The default {@link MouseListener} for trees containing {@link DatabaseObject}s
-     * @param tree 
+     * The default {@link MouseListener} for trees containing
+     * {@link DatabaseObject}s
+     *
+     * @param tree
      * @return
      */
     public static MouseListener getDefaultTreeListener(final JTree tree) {
         return new MouseListener() {
-
             @Override
             public void mouseClicked(MouseEvent evt) {
                 evt.consume();
@@ -224,68 +227,48 @@ public class MPTreeModel extends DefaultTreeModel {
     }
 
     /**
-     * Reflects the given data in a tree model, builds grouping based on {@link DatabaseObject#__getGroupsids()}
+     * Reflects the given data in a tree model, builds grouping based on
+     * {@link DatabaseObject#__getGroupsids()}
+     *
      * @param <T>
      * @param data
      * @param rootNode
      * @return
      */
-    public static <T extends DatabaseObject> DefaultTreeModel toTreeModel(ArrayList<T> data, T rootNode) {
+    public static <T extends DatabaseObject> DefaultTreeModel toTreeModel(T rootNode) {
 
-        DefaultMutableTreeNode node1 = null;
-        if (data.size() > 0) {
-            DatabaseObject clone = rootNode.clone();
-            clone.ReadOnly(true);
-            clone.setCname("/");
-            node1 = new DefaultMutableTreeNode(clone);
-            try {
-                mpv5.YabsViewProxy.instance().setWaiting(true);
+        DefaultMutableTreeNode node1 = new DefaultMutableTreeNode(rootNode);
+        try {
+            mpv5.YabsViewProxy.instance().setWaiting(true);
 
-                node1 = addToParents(node1, data);
+            node1 = addChildren(node1);
 
-            } catch (Exception e) {
-                Log.Debug(e);
-            } finally {
-                mpv5.YabsViewProxy.instance().setWaiting(false);
-            }
+        } catch (Exception e) {
+            Log.Debug(e);
+        } finally {
+            mpv5.YabsViewProxy.instance().setWaiting(false);
         }
+
         DefaultTreeModel model = new DefaultTreeModel(node1);
         return model;
     }
 
     @SuppressWarnings("unchecked")
-    private static <T extends DatabaseObject> DefaultMutableTreeNode addToParents(DefaultMutableTreeNode firstnode, List<T> dobjlist) {
-        //        ((T) firstnode.getUserObject()).__getIDS().intValue()
-        HashMap<Integer, DefaultMutableTreeNode> map = new HashMap<Integer, DefaultMutableTreeNode>();
-//        System.err.println(dobjlist);
-
-        for (int i = 0; i < dobjlist.size(); i++) {//root run
-            T t = dobjlist.get(i);
-//            System.err.println(t);
-            if (((T) firstnode.getUserObject()).__getIDS().intValue() == t.__getGroupsids()) {
-                DefaultMutableTreeNode y = new DefaultMutableTreeNode(t);
-                firstnode.add(y);
-                map.put(t.__getIDS(), y);
-                dobjlist.remove(t);
+    private static <T extends DatabaseObject> DefaultMutableTreeNode addChildren(DefaultMutableTreeNode firstnode) {
+        DatabaseObject dbo = (DatabaseObject) firstnode.getUserObject();
+        QueryCriteria2 c = new QueryCriteria2();
+        c.and(new QueryParameter(dbo.getContext(), "groupsids", dbo.__getIDS(), QueryParameter.EQUALS));
+        try {
+            ArrayList<DatabaseObject> l = DatabaseObject.getObjects(dbo.getContext(), c);
+            for (DatabaseObject a : l) {
+                DefaultMutableTreeNode child = new DefaultMutableTreeNode(a);
+                firstnode.add(child);
+                addChildren(child);
             }
+        } catch (NodataFoundException ex) {
+            //Logger.getLogger(MPTreeModel.class.getName()).log(Level.SEVERE, null, ex);
         }
 
-        while (!dobjlist.isEmpty()) {
-//            System.err.println(dobjlist);
-            for (int i = 0; i < dobjlist.size(); i++) {
-                T t = dobjlist.get(i);
-                DefaultMutableTreeNode x = map.get(t.__getGroupsids());
-                DefaultMutableTreeNode y = map.get(t.__getIDS());
-                if (y == null) {
-                    y = new DefaultMutableTreeNode(t);
-                    map.put(t.__getIDS(), y);
-                }
-                if (x != null) {
-                    x.add(y);
-                }
-                dobjlist.remove(t);
-            }
-        }
 
         return firstnode;
     }
