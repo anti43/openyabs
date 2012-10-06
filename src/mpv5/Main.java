@@ -137,9 +137,9 @@ public class Main implements Runnable {
             Log.Print("Done with local settings file: " + LocalSettings.getLocalFile());
             return true;
         } catch (Exception ex) {
-            Log.Print(ex.getMessage());
+            Log.Print(ex );
             Log.Print("Local settings file not readable: " + LocalSettings.getLocalFile());
-            throw ex;
+            return true;
         }
     }
 
