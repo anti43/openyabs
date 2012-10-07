@@ -72,24 +72,23 @@ public class SplashScreen extends JDialog {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("MP Start..");
-        setResizable(false);
         setUndecorated(true);
+        setResizable(false);
 
         jPanel1.setBackground(javax.swing.UIManager.getDefaults().getColor("OptionPane.errorDialog.border.background"));
         jPanel1.setPreferredSize(new java.awt.Dimension(450, 300));
 
-        progress.setForeground(new java.awt.Color(255, 255, 255));
+        progress.setForeground(new java.awt.Color(23, 23, 23));
         progress.setText("Progress");
 
         info.setFont(new java.awt.Font("Dialog", 0, 12)); // NOI18N
-        info.setForeground(new java.awt.Color(0, 0, 0));
         info.setText("Version info");
 
         jProgressBar1.setBorderPainted(false);
         jProgressBar1.setStringPainted(true);
 
-        title.setFont(new java.awt.Font("Dialog", 0, 12));
-        title.setForeground(new java.awt.Color(255, 255, 255));
+        title.setFont(new java.awt.Font("Dialog", 0, 12)); // NOI18N
+        title.setForeground(new java.awt.Color(131, 1, 1));
         title.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         title.setText("Title");
 

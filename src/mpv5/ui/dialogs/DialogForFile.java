@@ -42,7 +42,6 @@ public class DialogForFile extends JFileChooser implements Waiter {
 
     private static final long serialVersionUID = 1L;
     public static FileFilter DIRECTORIES = new FileFilter() {
-
         public boolean accept(File f) {
             return f.isDirectory();
         }
@@ -52,7 +51,6 @@ public class DialogForFile extends JFileChooser implements Waiter {
         }
     };
     public static FileFilter TEMPLATE_FILES = new FileFilter() {
-
         public boolean accept(File f) {
             return f.getName().toLowerCase().endsWith(".odt") || f.getName().toLowerCase().endsWith(".pdf") || f.isDirectory();
         }
@@ -62,7 +60,6 @@ public class DialogForFile extends JFileChooser implements Waiter {
         }
     };
     public static FileFilter HTML_FILES = new FileFilter() {
-
         public boolean accept(File f) {
             return f.getName().toLowerCase().endsWith(".html") || f.getName().toLowerCase().endsWith(".htm") || f.isDirectory();
         }
@@ -72,7 +69,6 @@ public class DialogForFile extends JFileChooser implements Waiter {
         }
     };
     public static FileFilter XML_FILES = new FileFilter() {
-
         public boolean accept(File f) {
             return f.getName().toLowerCase().endsWith(".xml") || f.isDirectory();
         }
@@ -82,7 +78,6 @@ public class DialogForFile extends JFileChooser implements Waiter {
         }
     };
     public static FileFilter CSV_FILES = new FileFilter() {
-
         public boolean accept(File f) {
             return f.getName().toLowerCase().endsWith(".csv") || f.isDirectory();
         }
@@ -92,7 +87,6 @@ public class DialogForFile extends JFileChooser implements Waiter {
         }
     };
     public static FileFilter PDF_FILES = new FileFilter() {
-
         public boolean accept(File f) {
             return f.getName().toLowerCase().endsWith(".pdf") || f.isDirectory();
         }
@@ -101,8 +95,16 @@ public class DialogForFile extends JFileChooser implements Waiter {
             return "PDF Format(*.pdf)";
         }
     };
-    public static FileFilter SQL_FILES = new FileFilter() {
+    public static FileFilter ZIP_FILES = new FileFilter() {
+        public boolean accept(File f) {
+            return f.getName().toLowerCase().endsWith(".zip") || f.isDirectory();
+        }
 
+        public String getDescription() {
+            return "Zip Format(*.zip)";
+        }
+    };
+    public static FileFilter SQL_FILES = new FileFilter() {
         public boolean accept(File f) {
             return f.getName().toLowerCase().endsWith(".sql") || f.isDirectory();
         }
@@ -112,7 +114,6 @@ public class DialogForFile extends JFileChooser implements Waiter {
         }
     };
     public static FileFilter OOO_FILES = new FileFilter() {
-
         public boolean accept(File f) {
             return f.getName().toLowerCase().matches(".*sxw$|.*doc$|.*xls$|.*odt$|.*ods$|.*pps$|.*odt$|.*ppt$|.*odp$") || f.isDirectory();
         }

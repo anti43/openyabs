@@ -107,6 +107,7 @@ import mpv5.ui.panels.ProductsOverview;
 import mpv5.ui.panels.QueryPanel;
 import mpv5.ui.panels.RevenuePanel;
 import mpv5.ui.panels.StartPage;
+import mpv5.ui.panels.Stockmanager;
 import mpv5.ui.panels.TrashPanel;
 import mpv5.usermanagement.MPSecurityManager;
 import mpv5.utils.export.Export;
@@ -906,6 +907,7 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
         jSeparator6 = new javax.swing.JSeparator();
         jMenuItem43 = new javax.swing.JMenuItem();
         jMenuItem45 = new javax.swing.JMenuItem();
+        jMenuItem48 = new javax.swing.JMenuItem();
         jMenu1 = new javax.swing.JMenu();
         jMenuItem42 = new javax.swing.JMenuItem();
         jMenuItem44 = new javax.swing.JMenuItem();
@@ -966,7 +968,7 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
 
         jButton5.setFont(jButton5.getFont().deriveFont(jButton5.getFont().getSize()-1f));
         jButton5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/agt_family.png"))); // NOI18N
-        java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle(); // NOI18N
+        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("mpv5/resources/languages/Panels"); // NOI18N
         jButton5.setText(bundle.getString("MPView.jButton5.text_1")); // NOI18N
         jButton5.setToolTipText(bundle.getString("MPView.jButton5.toolTipText_1")); // NOI18N
         jButton5.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
@@ -1341,7 +1343,7 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
         naviPanelLayout.setVerticalGroup(
             naviPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(naviPanelLayout.createSequentialGroup()
-                .addComponent(nav_outlookbar, javax.swing.GroupLayout.DEFAULT_SIZE, 518, Short.MAX_VALUE)
+                .addComponent(nav_outlookbar, javax.swing.GroupLayout.DEFAULT_SIZE, 516, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -1357,7 +1359,7 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
         mainPanelLayout.setVerticalGroup(
             mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(naviPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(tabpanePanel, javax.swing.GroupLayout.DEFAULT_SIZE, 534, Short.MAX_VALUE)
+            .addComponent(tabpanePanel, javax.swing.GroupLayout.DEFAULT_SIZE, 532, Short.MAX_VALUE)
         );
 
         menuBar.setName("menuBar"); // NOI18N
@@ -1853,6 +1855,15 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
         });
         toolsMenu.add(jMenuItem45);
 
+        jMenuItem48.setText(bundle.getString("MPView.jMenuItem48.text_1")); // NOI18N
+        jMenuItem48.setName("jMenuItem48"); // NOI18N
+        jMenuItem48.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem48ActionPerformed(evt);
+            }
+        });
+        toolsMenu.add(jMenuItem48);
+
         menuBar.add(toolsMenu);
 
         jMenu1.setText(bundle.getString("MPView.jMenu1.text")); // NOI18N
@@ -1963,7 +1974,7 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
         statusPanel.setPreferredSize(new java.awt.Dimension(800, 20));
         statusPanel.setLayout(new javax.swing.BoxLayout(statusPanel, javax.swing.BoxLayout.LINE_AXIS));
 
-        statusMessageLabel.setFont(new java.awt.Font("Dialog", 0, 11)); // NOI18N
+        statusMessageLabel.setFont(new java.awt.Font("Dialog", 0, 11));
         statusMessageLabel.setText(bundle.getString("MPView.statusMessageLabel.text")); // NOI18N
         statusMessageLabel.setMaximumSize(new java.awt.Dimension(1000, 25));
         statusMessageLabel.setMinimumSize(new java.awt.Dimension(300, 14));
@@ -2675,6 +2686,13 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
             Logger.getLogger(MPView.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_jMenuItem47ActionPerformed
+
+    private void jMenuItem48ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem48ActionPerformed
+
+        addOrShowTab(Stockmanager.instanceOf(), Messages.STOCK_MANAGER);
+        Stockmanager.instanceOf().start();
+    }//GEN-LAST:event_jMenuItem48ActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton calculatorButton;
     public javax.swing.JMenu clipboardMenu;
@@ -2760,6 +2778,7 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
     private javax.swing.JMenuItem jMenuItem45;
     private javax.swing.JMenuItem jMenuItem46;
     private javax.swing.JMenuItem jMenuItem47;
+    private javax.swing.JMenuItem jMenuItem48;
     private javax.swing.JMenuItem jMenuItem5;
     private javax.swing.JMenuItem jMenuItem6;
     private javax.swing.JMenuItem jMenuItem7;

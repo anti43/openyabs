@@ -347,7 +347,8 @@ public enum Messages {
     EXPORT_TO_MYSQL("Exporting the active Database from current to MySQL."),
     FLUSHING_TMP_TABLE("Flush targettable for inserting"),
     OVERRITE_DATABASE("This will override the actuall Database!\nIt's recommend to make a Backup befor you proceed.\nAre You sure?"), 
-    SET_STATUS_PAID("Set to status: 'Paid'");
+    SET_STATUS_PAID("Set to status: 'Paid'"),
+    STOCK_MANAGER("Stock management");
 
     /**
      * @return the missing

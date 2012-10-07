@@ -144,6 +144,23 @@ public class TableFormat {
     }
 
     /**
+     * Stops the tables' cell editor
+     * @param jTable1
+     */
+    public static void startEditing(JTable table, int row, int col) {
+        // Enable the ability to select a single cell
+        table.setColumnSelectionAllowed(true);
+        table.setRowSelectionAllowed(true);
+        boolean success = table.editCellAt(row, col);
+        if (success) {
+            // Select cell
+            boolean toggle = false;
+            boolean extend = false;
+            table.changeSelection(row, col, toggle, extend);
+        }
+    }
+
+    /**
      * Resizes a tables cols
      * @param table
      * @param desiredColSizes
