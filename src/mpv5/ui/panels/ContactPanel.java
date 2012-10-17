@@ -242,9 +242,9 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
     private void fileTableClicked(MouseEvent evt) {
         if (evt.getClickCount() > 1) {
             FileDirectoryHandler.open(QueryHandler.instanceOf().clone(Context.getFiles()).
-                    retrieveFile(dataTable.getModel().getValueAt(dataTable.getSelectedRow(), 0).
+                    retrieveFile(dataTable.getModel().getValueAt(dataTable.convertRowIndexToModel(dataTable.convertRowIndexToModel(dataTable.getSelectedRow())), 0).
                     toString(), new File(FileDirectoryHandler.getTempDir() + dataTable.getModel().
-                    getValueAt(dataTable.getSelectedRow(), 1).toString())));
+                    getValueAt(dataTable.convertRowIndexToModel(dataTable.getSelectedRow()), 1).toString())));
         } else if (evt.getClickCount() == 1 && evt.getButton() == MouseEvent.BUTTON3) {
 
             JTable source = (JTable) evt.getSource();
@@ -262,7 +262,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
     private void itemTableClicked(MouseEvent evt) {
         if (evt.getButton() == MouseEvent.BUTTON1 && evt.getClickCount() > 1) {
             try {
-                mpv5.YabsViewProxy.instance().getIdentifierView().addTab(DatabaseObject.getObject(Context.getItem(), Integer.valueOf(dataTable.getModel().getValueAt(dataTable.getSelectedRow(), 0).toString())));
+                mpv5.YabsViewProxy.instance().getIdentifierView().addTab(DatabaseObject.getObject(Context.getItem(), Integer.valueOf(dataTable.getModel().getValueAt(dataTable.convertRowIndexToModel(dataTable.getSelectedRow()), 0).toString())));
             } catch (NodataFoundException ex) {
                 Log.Debug(ex);
             }
@@ -274,7 +274,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
     private void productTableClicked(MouseEvent evt) {
         if (evt.getClickCount() > 1) {
             try {
-                mpv5.YabsViewProxy.instance().getIdentifierView().addTab(DatabaseObject.getObject(Context.getProduct(), Integer.valueOf(dataTable.getModel().getValueAt(dataTable.getSelectedRow(), 0).toString())));
+                mpv5.YabsViewProxy.instance().getIdentifierView().addTab(DatabaseObject.getObject(Context.getProduct(), Integer.valueOf(dataTable.getModel().getValueAt(dataTable.convertRowIndexToModel(dataTable.getSelectedRow()), 0).toString())));
             } catch (NodataFoundException ex) {
                 Log.Debug(ex);
             }
@@ -411,7 +411,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
         };
         toolbarpane = new javax.swing.JPanel();
 
-        java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle();// NOI18N
+        java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle(); // NOI18N
         setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("ContactPanel.border.title"))); // NOI18N
         setName("Form"); // NOI18N
         setLayout(new java.awt.BorderLayout());
@@ -594,6 +594,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
         jScrollPane2.setVerticalScrollBarPolicy(javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
         jScrollPane2.setName("jScrollPane2"); // NOI18N
 
+        dataTable.setAutoCreateRowSorter(true);
         dataTable.setDragEnabled(true);
         dataTable.setName("dataTable"); // NOI18N
         dataTable.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -704,7 +705,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
                     .addComponent(removefile)
                     .addComponent(addfile))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 34, Short.MAX_VALUE)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 41, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -1070,7 +1071,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
                                 .addComponent(male, javax.swing.GroupLayout.DEFAULT_SIZE, 96, Short.MAX_VALUE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(female, javax.swing.GroupLayout.PREFERRED_SIZE, 141, javax.swing.GroupLayout.PREFERRED_SIZE)))))
-                .addContainerGap(13, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         mainaddressLayout.setVerticalGroup(
             mainaddressLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1094,7 +1095,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
                     .addComponent(city, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(button_order1)
-                .addContainerGap(29, Short.MAX_VALUE))
+                .addContainerGap(27, Short.MAX_VALUE))
         );
 
         addresspanel.addTab(bundle.getString("ContactPanel.mainaddress.TabConstraints.tabTitle"), mainaddress); // NOI18N
@@ -1163,7 +1164,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
                     .addComponent(bankcountry, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(bankname, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(bankcurrency, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(101, Short.MAX_VALUE))
+                .addContainerGap(100, Short.MAX_VALUE))
         );
 
         jTabbedPane1.addTab(bundle.getString("ContactPanel.jPanel5.TabConstraints.tabTitle"), jPanel5); // NOI18N
@@ -1189,7 +1190,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
         );
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 161, Short.MAX_VALUE)
+            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 160, Short.MAX_VALUE)
         );
 
         jTabbedPane1.addTab(bundle.getString("ContactPanel.jPanel4.TabConstraints.tabTitle"), jPanel4); // NOI18N
@@ -1250,7 +1251,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
         );
         propPanelLayout.setVerticalGroup(
             propPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel6, javax.swing.GroupLayout.DEFAULT_SIZE, 165, Short.MAX_VALUE)
+            .addComponent(jPanel6, javax.swing.GroupLayout.DEFAULT_SIZE, 164, Short.MAX_VALUE)
         );
 
         jTabbedPane1.addTab(bundle.getString("ContactPanel.propPanel.TabConstraints.tabTitle"), propPanel); // NOI18N
