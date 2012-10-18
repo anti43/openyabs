@@ -127,6 +127,11 @@
                                   <Component id="groupnameselect" max="32767" attributes="1"/>
                                   <Component id="companyselect" max="32767" attributes="1"/>
                               </Group>
+                              <EmptySpace max="-2" attributes="0"/>
+                              <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                                  <Component id="addedby" max="32767" attributes="1"/>
+                                  <Component id="dateadded" max="32767" attributes="1"/>
+                              </Group>
                           </Group>
                       </Group>
                       <EmptySpace max="32767" attributes="0"/>

@@ -305,9 +305,9 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
         supplier = new javax.swing.JCheckBox();
         manufacturer = new javax.swing.JCheckBox();
         company = new javax.swing.JCheckBox();
-        addedby = new javax.swing.JLabel();
-        dateadded = new javax.swing.JLabel();
         groupnameselect = new mpv5.ui.beans.LabeledCombobox();
+        dateadded = new javax.swing.JLabel();
+        addedby = new javax.swing.JLabel();
         taxnumber = new mpv5.ui.beans.LabeledTextField();
         companyselect = new mpv5.ui.beans.LabeledCombobox();
         jPanel9 = new javax.swing.JPanel();
