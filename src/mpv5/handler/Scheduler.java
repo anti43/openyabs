@@ -7,7 +7,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import mpv5.YabsApplication;
-
 import mpv5.db.common.Context;
 import mpv5.db.common.NodataFoundException;
 import mpv5.db.common.QueryCriteria2;
@@ -48,7 +47,7 @@ public class Scheduler extends Thread {
     }
 
     public void checkForCreateBillEvents(vTimeframe DateFrame) {
-        HashMap<Color, List<Schedule>> map = new HashMap<Color, List<Schedule>>();
+        HashMap<Color, List<Schedule>> map;
         map = getScheduledBills(DateFrame);
         Iterator<Color> it = map.keySet().
                 iterator();
@@ -63,7 +62,7 @@ public class Scheduler extends Thread {
     }
 
     public void checkForOverdueEvents() {
-        HashMap<Color, List<Item>> map = new HashMap<Color, List<Item>>();
+        HashMap<Color, List<Item>> map;
         map = getOverdueEvents();
         Iterator<Color> it = map.keySet().
                 iterator();

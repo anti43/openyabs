@@ -1,4 +1,4 @@
-<?xml version="1.1" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="UTF-8" ?>
 
 <Form version="1.4" maxVersion="1.7" type="org.netbeans.modules.form.forminfo.JPanelFormInfo">
   <Properties>
@@ -186,10 +186,10 @@
           <SubComponents>
             <Component class="javax.swing.JTable" name="overdue">
               <Properties>
-                <Property name="autoCreateRowSorter" type="boolean" value="true"/>
                 <Property name="model" type="javax.swing.table.TableModel" editor="org.netbeans.modules.form.editors2.TableModelEditor">
                   <Table columnCount="0" rowCount="4"/>
                 </Property>
+                <Property name="autoCreateRowSorter" type="boolean" value="true"/>
                 <Property name="name" type="java.lang.String" value="overdue" noResource="true"/>
                 <Property name="showVerticalLines" type="boolean" value="false"/>
               </Properties>
@@ -424,10 +424,10 @@
           <SubComponents>
             <Component class="javax.swing.JTable" name="nextEvents">
               <Properties>
-                <Property name="autoCreateRowSorter" type="boolean" value="true"/>
                 <Property name="model" type="javax.swing.table.TableModel" editor="org.netbeans.modules.form.editors2.TableModelEditor">
                   <Table columnCount="0" rowCount="4"/>
                 </Property>
+                <Property name="autoCreateRowSorter" type="boolean" value="true"/>
                 <Property name="name" type="java.lang.String" value="nextEvents" noResource="true"/>
                 <Property name="showVerticalLines" type="boolean" value="false"/>
               </Properties>

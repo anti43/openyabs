@@ -123,8 +123,10 @@ public class HomeScreen
                     100,
                     100,
                     100,
-                    100},
+                    15,
+                    15},
                 new Boolean[]{true,
+                    true,
                     true,
                     true,
                     true,
@@ -180,14 +182,14 @@ public class HomeScreen
     }
 
     public <T extends DatabaseObject> void setData(List<T> list, JTable table, Boolean isDBObj) {
-        Object[][] data = null;
+        Object[][] data;
         int type;
         orderSum = new BigDecimal(0);
         offerSum = new BigDecimal(0);
         billsSum = new BigDecimal(0);
         BigDecimal tax;
         if (list != null) {
-            data = new Object[list.size()][6];
+            data = new Object[list.size()][7];
 
             for (int i = 0; i < list.size(); i++) {
                 if (isDBObj == false) {
@@ -202,27 +204,27 @@ public class HomeScreen
                         data[i][3] = "N/A";
                     }
                     type = ((Item) databaseObject).__getInttype();
+                    tax = Constants.BD100.add(((Item) databaseObject).__getTaxvalue()).divide(Constants.BD100, 9, BigDecimal.ROUND_HALF_UP);
+                    BigDecimal value = ((Item) databaseObject).__getNetvalue().multiply(tax).subtract(((Item) databaseObject).__getDiscountvalue());
                     //  <li>TYPE_BILL = 0;
                     //  <li>TYPE_ORDER = 1;
                     //  <li>TYPE_OFFER = 2;
                     switch (type) {
                         case Item.TYPE_BILL:
-                            tax = Constants.BD100.add(((Item) databaseObject).__getTaxvalue()).divide(Constants.BD100, 9, BigDecimal.ROUND_HALF_UP);
-                            billsSum = billsSum.add(((Item) databaseObject).__getNetvalue().multiply(tax));
+                            billsSum = billsSum.add(value);
                             break;
                         case Item.TYPE_OFFER:
-                            tax = Constants.BD100.add(((Item) databaseObject).__getTaxvalue()).divide(Constants.BD100, 9, BigDecimal.ROUND_HALF_UP);
-                            offerSum = offerSum.add(((Item) databaseObject).__getNetvalue().multiply(tax));
+                            offerSum = offerSum.add(value);
                             break;
                         case Item.TYPE_ORDER:
-                            tax = Constants.BD100.add(((Item) databaseObject).__getTaxvalue()).divide(Constants.BD100, 9, BigDecimal.ROUND_HALF_UP);
-                            orderSum = orderSum.add(((Item) databaseObject).__getNetvalue().multiply(tax));
+                            orderSum = orderSum.add(value);
                             break;
                     }
 
                     data[i][4] = Item.getTypeString(type);
-                    data[i][5] = databaseObject.getIcon();
-                    ((ImageIcon) data[i][5]).setDescription(Item.getStatusString(((Item) databaseObject).__getIntstatus()));
+                    data[i][5] = FormatNumber.formatLokalCurrency(value);
+                    data[i][6] = databaseObject.getIcon();
+                    ((ImageIcon) data[i][6]).setDescription(Item.getStatusString(((Item) databaseObject).__getIntstatus()));
                 } else {
                     Schedule sched = (Schedule) list.get(i);
                     data[i][0] = sched;
@@ -230,7 +232,8 @@ public class HomeScreen
                     data[i][2] = sched.__getNextdate();
                     data[i][3] = sched.__getStopdate();
                     data[i][4] = Item.getTypeString(0);
-                    data[i][5] = sched.getIcon();
+                    data[i][5] = 0;
+                    data[i][6] = sched.getIcon();
                     ((ImageIcon) data[i][5]).setDescription(Messages.NEW_BILL.toString());
                 }
             }
@@ -243,7 +246,8 @@ public class HomeScreen
                     String.class,
                     Date.class,
                     DatabaseObject.class,
-                    String.class,           
+                    String.class,
+                    BigDecimal.class,
                     ImageIcon.class
                 });
         table.setModel(m);
