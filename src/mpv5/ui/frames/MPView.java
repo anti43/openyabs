@@ -602,6 +602,7 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
 //            jMenuItem45.setEnabled(true);
         }
 
+        jMenuItem41.setEnabled(false);//not yet implemented
         identifierFrame.validate();
         loaded = true;
     }
@@ -2579,6 +2580,7 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
 
     private void jMenuItem41ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem41ActionPerformed
         //TODO product to html wiz
+        
     }//GEN-LAST:event_jMenuItem41ActionPerformed
 
     private void jMenuItem40ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem40ActionPerformed

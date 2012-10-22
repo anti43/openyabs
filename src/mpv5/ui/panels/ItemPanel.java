@@ -1494,7 +1494,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
     }//GEN-LAST:event_toinvoiceActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        if (MPSecurityManager.checkAdminAccess()) {
+        if (MPSecurityManager.checkAdminAccess() ) {
             JDialog d = new JDialog(YabsViewProxy.instance().getIdentifierFrame(), true);
             d.add(new ItemNumberEditor(dataOwner, d, this));
             d.pack();
