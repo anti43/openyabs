@@ -864,7 +864,7 @@ public class Main implements Runnable {
         }
 
         if (!HEADLESS) {
-            if (!LocalSettings.getBooleanProperty(LocalSettings.SUPPRESS_UPDATE_CHECK)) {
+            if (GlobalSettings.getBooleanProperty("org.openyabs.updates.enable") &&!LocalSettings.getBooleanProperty(LocalSettings.SUPPRESS_UPDATE_CHECK)) {
                 Runnable runnable1 = new Runnable() {
 
                     @Override
@@ -980,12 +980,13 @@ public class Main implements Runnable {
 
         try {
             //Just a basic check
+            String url = GlobalSettings.getProperty("org.openyabs.updates.url");
             HttpURLConnection.setFollowRedirects(true);
             HttpURLConnection con =
-                    (HttpURLConnection) new URL(Constants.CURRENT_VERSION_URL).openConnection();
+                    (HttpURLConnection) new URL(url).openConnection();
             con.setRequestMethod("GET");
             // When the available version is not the current version, we assume there is an update available
-            Log.Debug(Main.class, Constants.CURRENT_VERSION_URL + " " + con.getResponseMessage());
+            Log.Debug(Main.class, url + " " + con.getResponseMessage());
 
             return (con.getResponseCode() != HttpURLConnection.HTTP_OK);
         } catch (Exception e) {

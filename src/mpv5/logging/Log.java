@@ -92,7 +92,7 @@ public class Log {
      */
     public static final int LOGLEVEL_DEBUG = 2;
     private static int loglevel = 1;
-    private static List<LogConsole> loggers = new ArrayList<LogConsole>(Arrays.asList(new LogConsole[]{(LogConsole) new YConsole()}));
+    private static List<LogConsole> loggers = Collections.synchronizedList(new ArrayList<LogConsole>(Arrays.asList(new LogConsole[]{(LogConsole) new YConsole()})));
 
     /**
      * Print out a text file
@@ -323,6 +323,10 @@ public class Log {
 
     public static void addLogger(LogConsole logConsole) {
         loggers.add(logConsole);
+    }
+    
+    public static void removeLogger(LogConsole logConsole) {
+        loggers.remove(logConsole);
     }
 
     /**
