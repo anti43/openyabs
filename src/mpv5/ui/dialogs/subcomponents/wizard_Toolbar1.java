@@ -2,19 +2,15 @@ package mpv5.ui.dialogs.subcomponents;
 
 import groovy.lang.Binding;
 import groovy.lang.GroovyShell;
-import groovy.util.GroovyScriptEngine;
 import java.util.List;
 import javax.swing.DefaultListModel;
 import javax.swing.JToolBar;
-import javax.swing.ListModel;
 import mpv5.Main;
 import mpv5.data.PropertyStore;
-import mpv5.db.objects.User;
-import mpv5.db.objects.ValueProperty;
 import mpv5.globals.GlobalSettings;
-import mpv5.ui.dialogs.DialogForFile;
+import mpv5.globals.Messages;
+import mpv5.logging.Log;
 import mpv5.ui.dialogs.Notificator;
-import mpv5.ui.dialogs.Popup;
 import mpv5.ui.dialogs.WizardMaster;
 import mpv5.ui.dialogs.Wizardable;
 import mpv5.ui.frames.MPView;
@@ -46,13 +42,11 @@ public class wizard_Toolbar1 extends javax.swing.JPanel implements Wizardable {
         jScrollPane2 = new javax.swing.JScrollPane();
         actions = new javax.swing.JList();
         jButton2 = new javax.swing.JButton();
-        jButton3 = new javax.swing.JButton();
         jScrollPane3 = new javax.swing.JScrollPane();
         script = new javax.swing.JTextArea();
         jScrollPane4 = new javax.swing.JScrollPane();
         bars = new javax.swing.JList();
         jLabel1 = new javax.swing.JLabel();
-        jButton4 = new javax.swing.JButton();
         name = new mpv5.ui.beans.LabeledTextField();
 
         setBackground(new java.awt.Color(255, 255, 255));
@@ -92,9 +86,11 @@ public class wizard_Toolbar1 extends javax.swing.JPanel implements Wizardable {
 
         jButton2.setText(bundle.getString("wizard_Toolbar1.jButton2.text")); // NOI18N
         jButton2.setName("jButton2"); // NOI18N
-
-        jButton3.setText(bundle.getString("wizard_Toolbar1.jButton3.text")); // NOI18N
-        jButton3.setName("jButton3"); // NOI18N
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
 
         jScrollPane3.setName("jScrollPane3"); // NOI18N
 
@@ -117,14 +113,6 @@ public class wizard_Toolbar1 extends javax.swing.JPanel implements Wizardable {
         jLabel1.setText(bundle.getString("wizard_Toolbar1.jLabel1.text")); // NOI18N
         jLabel1.setName("jLabel1"); // NOI18N
 
-        jButton4.setText(bundle.getString("wizard_Toolbar1.jButton4.text")); // NOI18N
-        jButton4.setName("jButton4"); // NOI18N
-        jButton4.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton4ActionPerformed(evt);
-            }
-        });
-
         name.set_Label(bundle.getString("wizard_Toolbar1.name._Label")); // NOI18N
         name.setName("name"); // NOI18N
 
@@ -136,21 +124,18 @@ public class wizard_Toolbar1 extends javax.swing.JPanel implements Wizardable {
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 23, Short.MAX_VALUE)
+                        .addGap(0, 0, Short.MAX_VALUE)
                         .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButton4, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jScrollPane2)
-                            .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, 133, Short.MAX_VALUE))
                         .addGap(12, 12, 12)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jScrollPane3)
+                            .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 290, Short.MAX_VALUE)
                             .addComponent(name, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
                 .addContainerGap())
@@ -172,19 +157,49 @@ public class wizard_Toolbar1 extends javax.swing.JPanel implements Wizardable {
                         .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 104, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(jScrollPane2))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 17, Short.MAX_VALUE)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(jButton1)
-                        .addComponent(jButton4)
-                        .addComponent(jButton2))
-                    .addComponent(jButton3))
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jButton1)
+                    .addComponent(jButton2))
                 .addContainerGap())
         );
 
         add(jPanel1, java.awt.BorderLayout.CENTER);
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        try {
+            String sc = script.getText();
+            Binding binding = new Binding(MPView.BINDING_VARS);
+            GroovyShell groovyShell = new GroovyShell(binding);
+            groovyShell.evaluate(sc);
+        } catch (Exception exception) {
+            Notificator.raiseNotification(exception, true);
+        }
+    }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void actionsValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_actionsValueChanged
+        try {
+            String tb = String.valueOf(actions.getSelectedValue());
+            if (tb == null) {
+                return;
+            }
+            String val = nactions.getProperty(tb);
+            
+            tb = tb.substring(1);
+            String[] x = tb.split("\\.");
+            String tbx = x[0];
+            String act = x[1];
+            
+            script.setText(val);
+            name.setText(act);
+            bars.setSelectedValue(tbx, true);
+        } catch (Exception e) {
+            Log.Debug(e);
+        }
+    }//GEN-LAST:event_actionsValueChanged
+
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+
         Object tb = bars.getSelectedValue();
         if (tb == null) {
             Notificator.raiseNotification("Select a toolbar!", true);
@@ -195,44 +210,16 @@ public class wizard_Toolbar1 extends javax.swing.JPanel implements Wizardable {
 
         GlobalSettings.setProperty("org.openyabs.uiproperty.toolbaraction." + tb + "." + n, sc);
         GlobalSettings.save();
-        Notificator.raiseNotification("OK!", true);
-    }//GEN-LAST:event_jButton4ActionPerformed
+        Notificator.raiseNotification(Messages.RESTART_REQUIRED, true);
+        setModels();
+ 
+    }//GEN-LAST:event_jButton2ActionPerformed
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        try {
-            String sc = script.getText();
-            Binding binding = new Binding();
-            binding.setVariable("view", MPView.identifierView);
-            GroovyShell groovyShell = new GroovyShell(binding);
-            groovyShell.evaluate(sc);
-        } catch (Exception exception) {
-            Notificator.raiseNotification(exception, true);
-        }
-    }//GEN-LAST:event_jButton1ActionPerformed
-
-    private void actionsValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_actionsValueChanged
-        String tb = String.valueOf(actions.getSelectedValue());
-        if (tb == null) {
-            return;
-        }
-        String val = nactions.getProperty(tb);
-
-        tb = tb.substring(1);
-        String[] x = tb.split("\\.");
-        String tbx = x[0];
-        String act = x[1];
-        
-        script.setText(val);
-        name.setText(act);
-        bars.setSelectedValue(tbx, true);
-    }//GEN-LAST:event_actionsValueChanged
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JList actions;
     private javax.swing.JList bars;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
-    private javax.swing.JButton jButton3;
-    private javax.swing.JButton jButton4;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JPanel jPanel1;
@@ -244,7 +231,7 @@ public class wizard_Toolbar1 extends javax.swing.JPanel implements Wizardable {
     // End of variables declaration//GEN-END:variables
 
     public boolean next() {
-
+        master.dispose();
         return true;
 
     }

@@ -27,6 +27,7 @@ import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -157,6 +158,7 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
     private static JFrame clipboard = null;
     private static boolean loaded = false;
     private GroovyShell groovyShell;
+    public static HashMap<String, Object> BINDING_VARS;
 
     /**
      * Display a message at the bottom of the MP frame
@@ -617,6 +619,13 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
 
         jMenuItem41.setEnabled(false);//not yet implemented
         identifierFrame.validate();
+        BINDING_VARS = new HashMap<String, Object>();
+        BINDING_VARS.put("MPView", this);
+        BINDING_VARS.put("Application", getApplication());
+        BINDING_VARS.put("QueryHandler", QueryHandler.instanceOf());
+        BINDING_VARS.put("tabPane", tabPane);
+        BINDING_VARS.put("dbo", DatabaseObject.getObject(Context.getContact()));//just a dummy to get a hold on the dbo class
+
         enhanceToolbars();
         loaded = true;
     }
@@ -624,8 +633,7 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
     private GroovyShell getGroovyShell() {
         synchronized (this) {
             if (groovyShell == null) {
-                Binding binding = new Binding();
-                binding.setVariable("dbo", this);
+                Binding binding = new Binding(BINDING_VARS);
                 groovyShell = new GroovyShell(binding);
             }
             return groovyShell;
@@ -3383,27 +3391,29 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
         pif = npif;
     }
 
-    private void enhanceToolbars() {//FIXME handle somewhere else
+    public void enhanceToolbars() {//FIXME handle more nicely, and somewhere else
         PropertyStore nactions = GlobalSettings.getProperties("org.openyabs.uiproperty.toolbaraction");
         Map<String, String> m = nactions.getMap();
         for (String f : m.keySet()) {
             try {
                 final String val = m.get(f);
-                f = f.substring(1);
-                String[] x = f.split("\\.");
-                String tb = x[0];
-                String act = x[1];
-                for (JToolBar t : getToolBars()) {
-                    if (t.getName() == null ? tb == null : t.getName().equals(tb)) {
-                        t.add(new AbstractAction(act) {
-                            public void actionPerformed(ActionEvent e) {
-                                try {
-                                    getGroovyShell().evaluate(val);
-                                } catch (Exception exception) {
-                                    Notificator.raiseNotification(exception, true);
+                if (val != null && val.length() > 0 && !val.equals("null")) {
+                    f = f.substring(1);
+                    String[] x = f.split("\\.");
+                    String tb = x[0];
+                    String act = x[1];
+                    for (JToolBar t : getToolBars()) {
+                        if (t.getName() == null ? tb == null : t.getName().equals(tb)) {
+                            t.add(new AbstractAction(act) {
+                                public void actionPerformed(ActionEvent e) {
+                                    try {
+                                        getGroovyShell().evaluate(val);
+                                    } catch (Exception exception) {
+                                        Notificator.raiseNotification(exception, true);
+                                    }
                                 }
-                            }
-                        });
+                            });
+                        }
                     }
                 }
             } catch (Exception e) {

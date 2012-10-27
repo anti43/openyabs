@@ -50,23 +50,20 @@
                   <EmptySpace max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="0" attributes="0">
                       <Group type="102" alignment="0" attributes="0">
-                          <Component id="jButton3" min="-2" pref="100" max="-2" attributes="0"/>
-                          <EmptySpace pref="23" max="32767" attributes="0"/>
+                          <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
                           <Component id="jButton1" min="-2" pref="100" max="-2" attributes="0"/>
                           <EmptySpace max="-2" attributes="0"/>
                           <Component id="jButton2" min="-2" pref="100" max="-2" attributes="0"/>
-                          <EmptySpace max="-2" attributes="0"/>
-                          <Component id="jButton4" min="-2" pref="100" max="-2" attributes="0"/>
                       </Group>
                       <Group type="102" alignment="0" attributes="0">
                           <Group type="103" groupAlignment="0" attributes="0">
                               <Component id="jScrollPane2" max="32767" attributes="0"/>
-                              <Component id="jLabel2" max="32767" attributes="0"/>
+                              <Component id="jLabel2" pref="133" max="32767" attributes="0"/>
                           </Group>
                           <EmptySpace min="-2" pref="12" max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="0" attributes="0">
                               <Component id="jScrollPane4" alignment="0" max="32767" attributes="0"/>
-                              <Component id="jScrollPane3" alignment="0" max="32767" attributes="0"/>
+                              <Component id="jScrollPane3" alignment="0" pref="290" max="32767" attributes="0"/>
                               <Component id="name" max="32767" attributes="0"/>
                               <Component id="jLabel1" alignment="0" max="32767" attributes="0"/>
                           </Group>
@@ -96,13 +93,9 @@
                       <Component id="jScrollPane2" max="32767" attributes="0"/>
                   </Group>
                   <EmptySpace pref="17" max="32767" attributes="0"/>
-                  <Group type="103" groupAlignment="0" attributes="0">
-                      <Group type="103" alignment="0" groupAlignment="3" attributes="0">
-                          <Component id="jButton1" alignment="3" min="-2" max="-2" attributes="0"/>
-                          <Component id="jButton4" alignment="3" min="-2" max="-2" attributes="0"/>
-                          <Component id="jButton2" alignment="3" min="-2" max="-2" attributes="0"/>
-                      </Group>
-                      <Component id="jButton3" alignment="0" min="-2" max="-2" attributes="0"/>
+                  <Group type="103" groupAlignment="3" attributes="0">
+                      <Component id="jButton1" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="jButton2" alignment="3" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace max="-2" attributes="0"/>
               </Group>
@@ -165,14 +158,9 @@
             </Property>
             <Property name="name" type="java.lang.String" value="jButton2" noResource="true"/>
           </Properties>
-        </Component>
-        <Component class="javax.swing.JButton" name="jButton3">
-          <Properties>
-            <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-              <ResourceString bundle="mpv5/resources/languages/Panels.properties" key="wizard_Toolbar1.jButton3.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
-            </Property>
-            <Property name="name" type="java.lang.String" value="jButton3" noResource="true"/>
-          </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButton2ActionPerformed"/>
+          </Events>
         </Component>
         <Container class="javax.swing.JScrollPane" name="jScrollPane3">
           <Properties>
@@ -229,17 +217,6 @@
             </Property>
             <Property name="name" type="java.lang.String" value="jLabel1" noResource="true"/>
           </Properties>
-        </Component>
-        <Component class="javax.swing.JButton" name="jButton4">
-          <Properties>
-            <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-              <ResourceString bundle="mpv5/resources/languages/Panels.properties" key="wizard_Toolbar1.jButton4.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
-            </Property>
-            <Property name="name" type="java.lang.String" value="jButton4" noResource="true"/>
-          </Properties>
-          <Events>
-            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButton4ActionPerformed"/>
-          </Events>
         </Component>
         <Component class="mpv5.ui.beans.LabeledTextField" name="name">
           <Properties>
