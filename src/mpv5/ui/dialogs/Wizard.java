@@ -74,6 +74,17 @@ public class Wizard extends javax.swing.JDialog implements WizardMaster {
         setVisible(true);
         requestFocus();
     }
+    
+    /**
+     * set modality and ontop by yourself
+     */
+    public void showWizAsChild() {
+        back.setEnabled(false);
+        content.add(contentlist.get(level), BorderLayout.CENTER);
+        pack();
+        setVisible(true);
+        requestFocus();
+    }
 
     /** This method is called from within the constructor to
      * initialize the form.

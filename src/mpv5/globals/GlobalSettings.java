@@ -1,4 +1,3 @@
-
 package mpv5.globals;
 
 import java.util.List;
@@ -15,24 +14,22 @@ import mpv5.utils.text.TypeConversion;
 
 /**
  *
- *  
+ *
  */
 public class GlobalSettings {
 
     private static PropertyStore cookie = new PropertyStore();
-    private static PropertyStore predefinedSettings = new PropertyStore(new String[][]{
-               
-            });
+    private static PropertyStore predefinedSettings = new PropertyStore(new String[][]{});
 
     /**
      * Applies the environmental settings
      */
     public static synchronized void apply() {
-     
     }
 
     /**
      * Get a properties value, or 0 if N/A
+     *
      * @param name
      * @return
      */
@@ -40,7 +37,6 @@ public class GlobalSettings {
     public synchronized static int getIntegerProperty(String name) {
         return getIntegerProperty(name, 0);
     }
-
 
     public static int getIntegerProperty(String name, int defaultVal) {
         if (cookie.getProperty(name) != null) {
@@ -56,6 +52,7 @@ public class GlobalSettings {
 
     /**
      * Get a properties value, or false if N/A
+     *
      * @param name
      * @return
      */
@@ -64,11 +61,12 @@ public class GlobalSettings {
         return getBooleanProperty(name, false);
     }
 
-       /**
+    /**
      * Get a properties value, or false if N/A
+     *
      * @param name
-        * @param defaultVal
-        * @return
+     * @param defaultVal
+     * @return
      */
     @SuppressWarnings("unchecked")
     public synchronized static boolean getBooleanProperty(String name, boolean defaultVal) {
@@ -86,6 +84,7 @@ public class GlobalSettings {
 
     /**
      * Get a properties value, or 0 if N/A
+     *
      * @param name
      * @return
      */
@@ -94,11 +93,12 @@ public class GlobalSettings {
         return getDoubleProperty(name, 0d);
     }
 
-      /**
+    /**
      * Get a properties value, or 0 if N/A
+     *
      * @param name
-       * @param defaultVal
-       * @return
+     * @param defaultVal
+     * @return
      */
     @SuppressWarnings("unchecked")
     public synchronized static double getDoubleProperty(String name, double defaultVal) {
@@ -116,6 +116,7 @@ public class GlobalSettings {
 
     /**
      * Get a properties value, or the String "null" if N/A
+     *
      * @param name
      * @return
      */
@@ -132,8 +133,9 @@ public class GlobalSettings {
 
     /**
      * Get a properties value, or the String "null" if N/A
+     *
      * @param name
-     * @param defaultVal 
+     * @param defaultVal
      * @return
      */
     public static synchronized String getProperty(String name, String defaultVal) {
@@ -150,6 +152,7 @@ public class GlobalSettings {
 
     /**
      * Specify the connection id to be used from the config table, default is 2
+     *
      * @param id
      */
     public static void setConnectionID(Integer id) {
@@ -159,6 +162,7 @@ public class GlobalSettings {
 
     /**
      * Get the connection id to be used from the config file
+     *
      * @return
      */
     public static int getConnectionID() {
@@ -177,7 +181,9 @@ public class GlobalSettings {
     }
 
     /**
-     * Returns True if the local property store does contain a value with the given key name
+     * Returns True if the local property store does contain a value with the
+     * given key name
+     *
      * @param propertyname
      * @return True if the key exists
      */
@@ -187,6 +193,7 @@ public class GlobalSettings {
 
     /**
      * Add or change a property
+     *
      * @param name
      * @param value
      */
@@ -198,9 +205,9 @@ public class GlobalSettings {
         cookie.changeProperty(name, value);
     }
 
-
     /**
      * Read the global settings from DB
+     *
      * @throws java.lang.Exception
      */
     public static synchronized void read() throws Exception {
@@ -217,14 +224,12 @@ public class GlobalSettings {
 
                 Log.Debug(GlobalSettings.class, "Finished global settings.");
             } catch (NodataFoundException nodataFoundException) {
-                 Log.Debug(GlobalSettings.class, "No global settings found..");
+                Log.Debug(GlobalSettings.class, "No global settings found..");
             }
         } catch (Exception e) {
             Log.Debug(GlobalSettings.class, e);
         }
     }
-
-
 
     /**
      * Save the global settings to DB
@@ -249,4 +254,12 @@ public class GlobalSettings {
         cookie.removeAll();
     }
 
+    /**
+     * Creates a new propertystore containing all data which has a key starting with prefix, prefix removed
+     * @param prefix
+     * @return 
+     */
+    public static PropertyStore getProperties(String prefix) {
+        return cookie.getProperties(prefix);
+    }
 }

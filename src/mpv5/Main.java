@@ -335,6 +335,8 @@ public class Main implements Runnable {
                     try {
                         @SuppressWarnings("unchecked")
                         FrameView view = (FrameView) VIEW_CLASS.getDeclaredConstructor(SingleFrameApplication.class).newInstance(getApplication());
+                        
+                        
                         getApplication().setMainView(view);
                         getApplication().show(view);
 
