@@ -504,7 +504,7 @@ public class DocumentHandler {
         try {
             Log.Debug(this, "Trying to load: " + URLAdapter.adaptURL(file.getPath()));
 //            document = connection.getDocumentService().loadDocument(file.getPath().replace("\\", "/"), descriptor);
-            if (GlobalSettings.getBooleanProperty("org.openyabs.exportproperty.loadoodocbystream")) {
+            if ((connection.getType() == NoaConnection.TYPE_REMOTE && !GlobalSettings.getBooleanProperty("org.openyabs.exportproperty.loadremoteoodocbyurl")) || GlobalSettings.getBooleanProperty("org.openyabs.exportproperty.loadoodocbystream")) {
                 document = connection.getDocumentService().loadDocument(Notificator.getOfficeMonitor(), new FileInputStream(file), descriptor);
             } else {
                 document = connection.getDocumentService().loadDocument(file.toURI().toURL().toString(), descriptor);
