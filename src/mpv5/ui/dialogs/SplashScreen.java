@@ -282,7 +282,7 @@ public class SplashScreen extends JDialog {
     @Override
     public void dispose() {
         Log.removeLogger(l);
-        Log.setLogLevel(level);
+//        Log.setLogLevel(level);always 1
         super.dispose();
     }
 }

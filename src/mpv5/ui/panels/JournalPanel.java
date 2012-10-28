@@ -246,11 +246,10 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
         volumeNetto = new mpv5.ui.beans.LabeledTextField();
         volumeBrutto = new mpv5.ui.beans.LabeledTextField();
         taxVolume = new mpv5.ui.beans.LabeledTextField();
-        jPanel9 = new javax.swing.JPanel();
 
         setName("Form"); // NOI18N
 
-        java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle(); // NOI18N
+        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("mpv5/resources/languages/Panels"); // NOI18N
         jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("JournalPanel.jPanel1.border.title"))); // NOI18N
         jPanel1.setName("jPanel1"); // NOI18N
 
@@ -601,7 +600,7 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
                         .addComponent(prinitingComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 196, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jButton4)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 145, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 173, Short.MAX_VALUE)
                         .addComponent(volumeBrutto, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(taxVolume, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
@@ -627,30 +626,15 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
 
         jTabbedPane1.addTab(bundle.getString("JournalPanel.jPanel4.TabConstraints.tabTitle"), jPanel4); // NOI18N
 
-        jPanel9.setName("jPanel9"); // NOI18N
-
-        javax.swing.GroupLayout jPanel9Layout = new javax.swing.GroupLayout(jPanel9);
-        jPanel9.setLayout(jPanel9Layout);
-        jPanel9Layout.setHorizontalGroup(
-            jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 874, Short.MAX_VALUE)
-        );
-        jPanel9Layout.setVerticalGroup(
-            jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 297, Short.MAX_VALUE)
-        );
-
-        jTabbedPane1.addTab(bundle.getString("JournalPanel.jPanel9.TabConstraints.tabTitle"), jPanel9); // NOI18N
-
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jTabbedPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 879, Short.MAX_VALUE)
+            .addComponent(jTabbedPane1)
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jTabbedPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 325, Short.MAX_VALUE)
+            .addComponent(jTabbedPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 325, Short.MAX_VALUE)
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
@@ -665,9 +649,22 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
         );
     }// </editor-fold>//GEN-END:initComponents
 
+    private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
+
+        preview();
+    }//GEN-LAST:event_jButton4ActionPerformed
+
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         setData();
     }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void expbydateendItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_expbydateendItemStateChanged
+        User.getCurrentUser().getProperties().changeProperty(this, expbydateend, expbydateend.isSelected());
+    }//GEN-LAST:event_expbydateendItemStateChanged
+
+    private void bydateendItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_bydateendItemStateChanged
+        User.getCurrentUser().getProperties().changeProperty(this, bydateend, bydateend.isSelected());
+    }//GEN-LAST:event_bydateendItemStateChanged
 
     private void jTable1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable1MouseClicked
         if (evt.getClickCount() > 1) {
@@ -681,34 +678,22 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
         }
     }//GEN-LAST:event_jTable1MouseClicked
 
-    private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
-
-        preview();
-    }//GEN-LAST:event_jButton4ActionPerformed
-
-    private void bydateendItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_bydateendItemStateChanged
-        User.getCurrentUser().getProperties().changeProperty(this, bydateend, bydateend.isSelected());
-    }//GEN-LAST:event_bydateendItemStateChanged
-
-    private void expbydateendItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_expbydateendItemStateChanged
-        User.getCurrentUser().getProperties().changeProperty(this, expbydateend, expbydateend.isSelected());
-    }//GEN-LAST:event_expbydateendItemStateChanged
-
-    private void filterinvoiceItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_filterinvoiceItemStateChanged
+    private void filteroffersItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_filteroffersItemStateChanged
         filter();
-    }//GEN-LAST:event_filterinvoiceItemStateChanged
+    }//GEN-LAST:event_filteroffersItemStateChanged
 
     private void filterordersItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_filterordersItemStateChanged
         filter();
     }//GEN-LAST:event_filterordersItemStateChanged
 
-    private void filteroffersItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_filteroffersItemStateChanged
+    private void filterinvoiceItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_filterinvoiceItemStateChanged
         filter();
-    }//GEN-LAST:event_filteroffersItemStateChanged
+    }//GEN-LAST:event_filterinvoiceItemStateChanged
 
     private void filternoneItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_filternoneItemStateChanged
         filter();
     }//GEN-LAST:event_filternoneItemStateChanged
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.ButtonGroup buttonGroup1;
     private javax.swing.ButtonGroup buttonGroup2;
@@ -739,7 +724,6 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
     private javax.swing.JPanel jPanel6;
     private javax.swing.JPanel jPanel7;
     private javax.swing.JPanel jPanel8;
-    private javax.swing.JPanel jPanel9;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;

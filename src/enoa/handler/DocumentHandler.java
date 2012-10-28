@@ -56,6 +56,7 @@ import mpv5.db.objects.Template;
 import mpv5.db.objects.User;
 import mpv5.globals.GlobalSettings;
 import mpv5.logging.Log;
+import mpv5.ui.dialogs.Notificator;
 import org.jopendocument.util.StringInputStream;
 
 /**
@@ -71,7 +72,6 @@ public class DocumentHandler {
      * A FileFilter looking for OO files
      */
     public static FileFilter OFFICE_FILE_FILTER = new FileFilter() {
-
         @Override
         public boolean accept(File pathname) {
             return pathname.getName().matches(EXTENSION);
@@ -87,6 +87,7 @@ public class DocumentHandler {
 
     /**
      * Creates a new (hidden) Document Handler on top of the given connection
+     *
      * @param connection The OO connection to use
      */
     public DocumentHandler(NoaConnection connection) {
@@ -100,6 +101,7 @@ public class DocumentHandler {
 
     /**
      * Load an existing document into the Document Handler
+     *
      * @param file The file to load
      * @param asTemplate If true, the file is treatened as template (.ott)
      * @throws Exception Any error thrown
@@ -118,6 +120,7 @@ public class DocumentHandler {
 
     /**
      * Creates a new, empty text document (.odt)
+     *
      * @throws Exception
      */
     public void newTextDocument() throws Exception {
@@ -127,6 +130,7 @@ public class DocumentHandler {
 
     /**
      * Save the given document to the physical location of the given file.
+     *
      * @param file
      * @throws DocumentException
      */
@@ -180,10 +184,11 @@ public class DocumentHandler {
 
     /**
      * Fill the Form Fields of the template with values
+     *
      * @param data
      * @throws Exception
      * @throws NOAException
-     * @deprecated  slow :-/
+     * @deprecated slow :-/
      */
     public synchronized void fillFormFields(HashMap<String, Object> data) throws Exception, NOAException {
         Log.Debug(this, "Looking for form fields in: " + document);
@@ -217,6 +222,7 @@ public class DocumentHandler {
 
     /**
      * Fill the Placeholder Fields of the template with values
+     *
      * @param data
      * @throws Exception
      * @throws NOAException
@@ -291,10 +297,11 @@ public class DocumentHandler {
 
     /**
      * Fill the Variable Text Fields of the template with values
+     *
      * @param data
      * @throws Exception
      * @throws NOAException
-     * @deprecated  slow :_/
+     * @deprecated slow :_/
      */
     public synchronized void fillTextVariableFields(HashMap<String, Object> data) throws Exception, NOAException {
         Log.Debug(this, "Looking for variable fields in: " + document);
@@ -324,10 +331,9 @@ public class DocumentHandler {
     }
 
     /**
-     * Export a file to another format/file. Supported target formats:
-     * <li>pdf (pdf/a)
-     * <li>odt
-     * <li>txt
+     * Export a file to another format/file. Supported target formats: <li>pdf
+     * (pdf/a) <li>odt <li>txt
+     *
      * @param source The file to export
      * @param target The target file
      * @return The target file
@@ -372,12 +378,12 @@ public class DocumentHandler {
 
     private File exportPDFA(File source, File target) throws DocumentException, MalformedURLException, FileNotFoundException, IOException, UnknownHostException {
 
-        IDocument doc = connection.getDocumentService().loadDocument(new FileInputStream(source), descriptor);
+        IDocument doc = connection.getDocumentService().loadDocument(Notificator.getOfficeMonitor(), new FileInputStream(source), descriptor);
 
         PDFFilter pdfFilter = (PDFFilter) PDFFilter.FILTER;
         /*PDFFilterProperties pdfFilterProperties = pdfFilter.getPDFFilterProperties();
-        pdfFilterProperties.setPdfVersion(1);
-        doc.getPersistenceService().export(url, pdfFilter);*/
+         pdfFilterProperties.setPdfVersion(1);
+         doc.getPersistenceService().export(url, pdfFilter);*/
 
         PropertyValue[] filterData = new PropertyValue[1];
         filterData[0] = new PropertyValue();
@@ -416,6 +422,7 @@ public class DocumentHandler {
 
     /**
      * Fill the tables in the document
+     *
      * @param data
      */
     public synchronized void fillTables(HashMap<String, Object> data) {
@@ -424,6 +431,7 @@ public class DocumentHandler {
 
     /**
      * Fills the tables in an .odt file
+     *
      * @param data
      * @param template
      */
@@ -489,13 +497,18 @@ public class DocumentHandler {
 
     /**
      * Reset the doc
+     *
      * @throws DocumentException
      */
     public void clear() throws DocumentException {
         try {
             Log.Debug(this, "Trying to load: " + URLAdapter.adaptURL(file.getPath()));
 //            document = connection.getDocumentService().loadDocument(file.getPath().replace("\\", "/"), descriptor);
-            document = connection.getDocumentService().loadDocument(new FileInputStream(file), descriptor);
+            if (GlobalSettings.getBooleanProperty("org.openyabs.exportproperty.loadoodocbystream")) {
+                document = connection.getDocumentService().loadDocument(Notificator.getOfficeMonitor(), new FileInputStream(file), descriptor);
+            } else {
+                document = connection.getDocumentService().loadDocument(file.toURI().toURL().toString(), descriptor);
+            }
         } catch (Exception ex) {
             Log.Debug(ex);
         }
@@ -506,6 +519,7 @@ public class DocumentHandler {
 
     /**
      * Set the images
+     *
      * @param data
      */
     public void setImages(HashMap<String, Object> data) {

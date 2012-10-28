@@ -41,11 +41,12 @@ import mpv5.YabsViewProxy;
 import mpv5.globals.LocalSettings;
 import mpv5.globals.Messages;
 import mpv5.logging.Log;
+import mpv5.ui.dialogs.Notificator;
 import mpv5.ui.dialogs.Popup;
 import mpv5.utils.files.FileExecutor;
 
 /**
- *This class handles connections to remote and local OpenOffice installations
+ * This class handles connections to remote and local OpenOffice installations
  */
 public class NoaConnectionLocalServer extends NoaConnection {
 
@@ -53,6 +54,7 @@ public class NoaConnectionLocalServer extends NoaConnection {
 
     /**
      * Creates a connection, depending on the current local config.
+     *
      * @return
      */
     public synchronized static NoaConnection getConnection() {
@@ -81,9 +83,13 @@ public class NoaConnectionLocalServer extends NoaConnection {
 
     /**
      * New NoaConnection instance, connects to OO using the given parameters.
-     * @param connectionString The connection String. Can be a <b>Path<b/> or an <b>IP<b/>
-     * @param port The port to connect to. A port value of zero (0) indicates a <b>local<b/> connection
-     * @throws Exception If any Exception is thrown during the connection attempt
+     *
+     * @param connectionString The connection String. Can be a <b>Path<b/> or an
+     * <b>IP<b/>
+     * @param port The port to connect to. A port value of zero (0) indicates a
+     * <b>local<b/> connection
+     * @throws Exception If any Exception is thrown during the connection
+     * attempt
      */
     public NoaConnectionLocalServer(String connectionString, Long port) throws Exception {
         Log.Debug(this, connectionString);
@@ -96,6 +102,7 @@ public class NoaConnectionLocalServer extends NoaConnection {
 
     /**
      * Creates a new connection
+     *
      * @param host
      * @param port
      * @return
@@ -115,23 +122,26 @@ public class NoaConnectionLocalServer extends NoaConnection {
                     OfficeApplicationRuntime.getApplication(configuration);
             officeAplication.setConfiguration(configuration);
             try {
-                officeAplication.activate();
-            } catch (Exception officeApplicationException) {
+                officeAplication.activate(Notificator.getOfficeMonitor());
+            } catch (Throwable officeApplicationException) {
                 try {
                     Thread.sleep(6666);
+                    Notificator.raiseNotification(Messages.OO_WAITING, false);
                 } catch (InterruptedException ex) {
                 }
                 try {
-                    officeAplication.activate();
-                } catch (OfficeApplicationException officeApplicationException1) {
-                    Log.Debug(officeApplicationException);
-                    Popup.error(officeApplicationException);
+                    officeAplication.activate(Notificator.getOfficeMonitor());
+                } catch (Throwable officeApplicationException1) {
+                    Log.Debug(officeApplicationException1);
+                    Notificator.raiseNotification(officeApplicationException1, true);
                 }
             }
-            documentService =
-                    officeAplication.getDocumentService();
-            desktopService =
-                    officeAplication.getDesktopService();
+            if (officeAplication.isActive()) {
+                documentService = officeAplication.getDocumentService();
+                desktopService = officeAplication.getDesktopService();
+            } else {
+                throw new RuntimeException("Office " + officeAplication + " cannot get activated .. " + new ArrayList(configuration.values()));
+            }
             setType(TYPE_REMOTE);
         } else {
             throw new InvalidArgumentException("Host cannot be null and port must be > 0: " + host + ":" + port);
@@ -178,7 +188,8 @@ public class NoaConnectionLocalServer extends NoaConnection {
     }
 
     /**
-     *  -1 indicates no connection.
+     * -1 indicates no connection.
+     *
      * @return the type
      */
     public synchronized int getType() {
@@ -207,7 +218,9 @@ public class NoaConnectionLocalServer extends NoaConnection {
     }
 
     /**
-     * Tries to start OO in headless server mode. <code>Give it at least 3-4 seconds before attempting to use the server.</code>
+     * Tries to start OO in headless server mode.
+     * <code>Give it at least 3-4 seconds before attempting to use the server.</code>
+     *
      * @param path The path where the OO installation resides
      * @param port The port the server shall listen to
      * @throws IOException
@@ -234,7 +247,6 @@ public class NoaConnectionLocalServer extends NoaConnection {
         }
 
         Runnable runnable = new Runnable() {
-
             public void run() {
                 if (LocalSettings.hasProperty(LocalSettings.OFFICE_COMMAND)) {
                     FileExecutor.run(LocalSettings.getProperty(LocalSettings.OFFICE_COMMAND));
@@ -251,7 +263,9 @@ public class NoaConnectionLocalServer extends NoaConnection {
     }
 
     /**
-     * Tries to start OO in headless server mode. <code>Give it at least 3-4 seconds before attempting to use the server.</code>
+     * Tries to start OO in headless server mode.
+     * <code>Give it at least 3-4 seconds before attempting to use the server.</code>
+     *
      * @param path The path where the OO installation resides
      * @param port The port the server shall listen to
      * @throws IOException
@@ -259,5 +273,4 @@ public class NoaConnectionLocalServer extends NoaConnection {
     public synchronized static void startOOServer(String path, int port) throws IOException {
         FileExecutor.run(getOOArgs(path, port), ooProcesses);
     }
- 
 }

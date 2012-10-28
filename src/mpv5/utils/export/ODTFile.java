@@ -34,7 +34,7 @@ public class ODTFile extends Exportable {
     private NoaConnection nc;
     private DocumentHandler dh;
 
-    public ODTFile(String pathToFile) {
+    public ODTFile(String pathToFile) throws Exception {
         super(pathToFile);
         if (!exists()) {
             try {
@@ -43,14 +43,14 @@ public class ODTFile extends Exportable {
                 Log.Debug(ex);
             }
         }
-        try {
+//        try {
             nc = NoaConnection.getConnection();
             dh = new DocumentHandler(nc);
             dh.loadDocument(this, false);
             Log.Debug(this, "Loaded odt file: " + this);
-        } catch (Exception ex) {
-            Log.Debug(ex);
-        }
+//        } catch (Exception ex) {
+//            Log.Debug(ex);
+//        }
     }
 
     @Override
