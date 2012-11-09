@@ -1235,7 +1235,7 @@ public class QueryHandler implements Cloneable {
      * @return id of inserted row
      */
     public int insert(QueryData what, String jobmessage) {
-        String query = query = "INSERT INTO " + table + " (" + what.getKeysString() + " ) VALUES (" + what.getValuesString() + ") ";
+        String query = "INSERT INTO " + table + " (" + what.getKeysString() + " ) VALUES (" + what.getValuesString() + ") ";
         return freeUpdateQuery(query, mpv5.usermanagement.MPSecurityManager.CREATE_OR_DELETE, jobmessage).getId();
     }
 
