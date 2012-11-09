@@ -6,10 +6,13 @@ package mpv5.ui.frames;
 import com.l2fprod.common.swing.JOutlookBar;
 import enoa.connection.NoaConnection;
 import enoa.connection.NoaConnectionLocalServer;
+import groovy.lang.Binding;
+import groovy.lang.GroovyShell;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Cursor;
+import java.awt.Dialog;
 import java.awt.Dimension;
 import java.awt.Image;
 import java.awt.Toolkit;
@@ -20,13 +23,18 @@ import java.awt.event.ComponentEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.AbstractAction;
+import javax.swing.Action;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -39,6 +47,7 @@ import javax.swing.JPopupMenu;
 import javax.swing.JProgressBar;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.JToolBar;
 import javax.swing.JViewport;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
@@ -49,6 +58,7 @@ import mpv5.YabsViewProxy.FlowProvider;
 import mpv5.bugtracker.ExceptionHandler;
 import mpv5.bugtracker.SubmitForm;
 import mpv5.data.MPList;
+import mpv5.data.PropertyStore;
 import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
 import mpv5.db.common.NodataFoundException;
@@ -61,6 +71,7 @@ import mpv5.db.objects.Product;
 import mpv5.db.objects.User;
 import mpv5.db.objects.ValueProperty;
 import mpv5.globals.Constants;
+import mpv5.globals.GlobalSettings;
 import mpv5.globals.LocalSettings;
 import mpv5.globals.Messages;
 import mpv5.handler.Scheduler;
@@ -71,6 +82,7 @@ import mpv5.ui.dialogs.About;
 import mpv5.ui.dialogs.BigPopup;
 import mpv5.ui.dialogs.DialogForFile;
 import mpv5.ui.dialogs.ListView;
+import mpv5.ui.dialogs.Notificator;
 import mpv5.ui.dialogs.Popup;
 import mpv5.ui.dialogs.Search;
 import mpv5.ui.dialogs.Search2;
@@ -78,6 +90,7 @@ import mpv5.ui.dialogs.Wizard;
 import mpv5.ui.dialogs.subcomponents.ControlPanel_MailTemplates;
 import mpv5.ui.dialogs.subcomponents.wizard_CSVImport2_1;
 import mpv5.ui.dialogs.subcomponents.wizard_MP45_Import;
+import mpv5.ui.dialogs.subcomponents.wizard_Toolbar1;
 import mpv5.ui.dialogs.subcomponents.wizard_XMLImport_1;
 import mpv5.ui.dialogs.subcomponents.wizard_XMLImport_2;
 import mpv5.ui.dialogs.subcomponents.wizard_Yabs1_Import;
@@ -144,6 +157,8 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
     private static ListView clistview = new ListView(currentList);
     private static JFrame clipboard = null;
     private static boolean loaded = false;
+    private GroovyShell groovyShell;
+    public static HashMap<String, Object> BINDING_VARS;
 
     /**
      * Display a message at the bottom of the MP frame
@@ -169,7 +184,7 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
      * @param message
      */
     public static synchronized void addMessage(final String message, final Color color) {
-        if (loaded && messagelabel !=null) {//dont do anything if main frame is not constructed
+        if (loaded && messagelabel != null) {//dont do anything if main frame is not constructed
             Runnable runnable = new Runnable() {
                 public void run() {
                     if (messagelabel instanceof FadeOnChangeLabel) {
@@ -602,8 +617,27 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
 //            jMenuItem45.setEnabled(true);
         }
 
+        jMenuItem41.setEnabled(false);//not yet implemented
         identifierFrame.validate();
+        BINDING_VARS = new HashMap<String, Object>();
+        BINDING_VARS.put("MPView", this);
+        BINDING_VARS.put("Application", getApplication());
+        BINDING_VARS.put("QueryHandler", QueryHandler.instanceOf());
+        BINDING_VARS.put("tabPane", tabPane);
+        BINDING_VARS.put("dbo", DatabaseObject.getObject(Context.getContact()));//just a dummy to get a hold on the dbo class
+
+        enhanceToolbars();
         loaded = true;
+    }
+
+    private GroovyShell getGroovyShell() {
+        synchronized (this) {
+            if (groovyShell == null) {
+                Binding binding = new Binding(BINDING_VARS);
+                groovyShell = new GroovyShell(binding);
+            }
+            return groovyShell;
+        }
     }
 
     /**
@@ -898,6 +932,7 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
         jMenu15 = new javax.swing.JMenu();
         jMenuItem35 = new javax.swing.JMenuItem();
         jMenuItem36 = new javax.swing.JMenuItem();
+        jMenuItem49 = new javax.swing.JMenuItem();
         toolsMenu = new javax.swing.JMenu();
         jMenuItem3 = new javax.swing.JMenuItem();
         jMenuItem23 = new javax.swing.JMenuItem();
@@ -968,7 +1003,7 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
 
         jButton5.setFont(jButton5.getFont().deriveFont(jButton5.getFont().getSize()-1f));
         jButton5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/agt_family.png"))); // NOI18N
-        java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle(); // NOI18N
+        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("mpv5/resources/languages/Panels"); // NOI18N
         jButton5.setText(bundle.getString("MPView.jButton5.text_1")); // NOI18N
         jButton5.setToolTipText(bundle.getString("MPView.jButton5.toolTipText_1")); // NOI18N
         jButton5.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
@@ -1343,7 +1378,7 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
         naviPanelLayout.setVerticalGroup(
             naviPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(naviPanelLayout.createSequentialGroup()
-                .addComponent(nav_outlookbar, javax.swing.GroupLayout.DEFAULT_SIZE, 516, Short.MAX_VALUE)
+                .addComponent(nav_outlookbar, javax.swing.GroupLayout.DEFAULT_SIZE, 526, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -1777,6 +1812,15 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
 
         viewMenu.add(jMenu15);
 
+        jMenuItem49.setText(bundle.getString("MPView.jMenuItem49.text")); // NOI18N
+        jMenuItem49.setName("jMenuItem49"); // NOI18N
+        jMenuItem49.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem49ActionPerformed(evt);
+            }
+        });
+        viewMenu.add(jMenuItem49);
+
         menuBar.add(viewMenu);
 
         toolsMenu.setText(bundle.getString("MPView.toolsMenu.text_1")); // NOI18N
@@ -1974,7 +2018,7 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
         statusPanel.setPreferredSize(new java.awt.Dimension(800, 20));
         statusPanel.setLayout(new javax.swing.BoxLayout(statusPanel, javax.swing.BoxLayout.LINE_AXIS));
 
-        statusMessageLabel.setFont(new java.awt.Font("Dialog", 0, 11));
+        statusMessageLabel.setFont(new java.awt.Font("Dialog", 0, 11)); // NOI18N
         statusMessageLabel.setText(bundle.getString("MPView.statusMessageLabel.text")); // NOI18N
         statusMessageLabel.setMaximumSize(new java.awt.Dimension(1000, 25));
         statusMessageLabel.setMinimumSize(new java.awt.Dimension(300, 14));
@@ -2030,7 +2074,7 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
 
         statusPanel.add(separator1);
 
-        xhistory.setFont(new java.awt.Font("Dialog", 0, 11));
+        xhistory.setFont(new java.awt.Font("Dialog", 0, 11)); // NOI18N
         xhistory.setMaximumRowCount(30);
         xhistory.setAutoscrolls(true);
         xhistory.setEditor(null);
@@ -2693,6 +2737,16 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
         Stockmanager.instanceOf().start();
     }//GEN-LAST:event_jMenuItem48ActionPerformed
 
+    private void jMenuItem49ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem49ActionPerformed
+        Wizard w = new Wizard(false);
+        w.setModalityType(Dialog.ModalityType.APPLICATION_MODAL);
+        w.setAlwaysOnTop(false);
+        w.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        w.setLocationRelativeTo(getIdentifierFrame());
+        w.addPanel(new wizard_Toolbar1(w));
+        w.showWizAsChild();
+
+    }//GEN-LAST:event_jMenuItem49ActionPerformed
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton calculatorButton;
     public javax.swing.JMenu clipboardMenu;
@@ -2779,6 +2833,7 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
     private javax.swing.JMenuItem jMenuItem46;
     private javax.swing.JMenuItem jMenuItem47;
     private javax.swing.JMenuItem jMenuItem48;
+    private javax.swing.JMenuItem jMenuItem49;
     private javax.swing.JMenuItem jMenuItem5;
     private javax.swing.JMenuItem jMenuItem6;
     private javax.swing.JMenuItem jMenuItem7;
@@ -3334,5 +3389,36 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
 
     private void setPointInFlow(int npif) {
         pif = npif;
+    }
+
+    public void enhanceToolbars() {//FIXME handle more nicely, and somewhere else
+        PropertyStore nactions = GlobalSettings.getProperties("org.openyabs.uiproperty.toolbaraction");
+        Map<String, String> m = nactions.getMap();
+        for (String f : m.keySet()) {
+            try {
+                final String val = m.get(f);
+                if (val != null && val.length() > 0 && !val.equals("null")) {
+                    f = f.substring(1);
+                    String[] x = f.split("\\.");
+                    String tb = x[0];
+                    String act = x[1];
+                    for (JToolBar t : getToolBars()) {
+                        if (t.getName() == null ? tb == null : t.getName().equals(tb)) {
+                            t.add(new AbstractAction(act) {
+                                public void actionPerformed(ActionEvent e) {
+                                    try {
+                                        getGroovyShell().evaluate(val);
+                                    } catch (Exception exception) {
+                                        Notificator.raiseNotification(exception, true);
+                                    }
+                                }
+                            });
+                        }
+                    }
+                }
+            } catch (Exception e) {
+                Log.Debug(e);
+            }
+        }
     }
 }

@@ -97,33 +97,33 @@ public class AddressPanel extends javax.swing.JPanel implements DataPanel {
         java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle(); // NOI18N
         title.set_Label(bundle.getString("AddressPanel.title._Label")); // NOI18N
         title.setMaximumSize(new java.awt.Dimension(120, 21));
-        title.setMinimumSize(new java.awt.Dimension(120, 21));
+        title.setMinimumSize(new java.awt.Dimension(120, 24));
         title.setName("title"); // NOI18N
-        title.setPreferredSize(new java.awt.Dimension(120, 21));
+        title.setPreferredSize(new java.awt.Dimension(120, 24));
 
         street.set_Label(bundle.getString("AddressPanel.street._Label")); // NOI18N
         street.setMaximumSize(new java.awt.Dimension(120, 21));
-        street.setMinimumSize(new java.awt.Dimension(120, 21));
+        street.setMinimumSize(new java.awt.Dimension(120, 24));
         street.setName("street"); // NOI18N
-        street.setPreferredSize(new java.awt.Dimension(120, 21));
+        street.setPreferredSize(new java.awt.Dimension(120, 24));
 
         cname.set_Label(bundle.getString("AddressPanel.cname._Label")); // NOI18N
         cname.setMaximumSize(new java.awt.Dimension(120, 21));
-        cname.setMinimumSize(new java.awt.Dimension(120, 21));
+        cname.setMinimumSize(new java.awt.Dimension(120, 24));
         cname.setName("cname"); // NOI18N
-        cname.setPreferredSize(new java.awt.Dimension(120, 21));
+        cname.setPreferredSize(new java.awt.Dimension(120, 24));
 
         prename.set_Label(bundle.getString("AddressPanel.prename._Label")); // NOI18N
         prename.setMaximumSize(new java.awt.Dimension(120, 21));
-        prename.setMinimumSize(new java.awt.Dimension(120, 21));
+        prename.setMinimumSize(new java.awt.Dimension(120, 24));
         prename.setName("prename"); // NOI18N
-        prename.setPreferredSize(new java.awt.Dimension(120, 21));
+        prename.setPreferredSize(new java.awt.Dimension(120, 24));
 
         zip.set_Label(bundle.getString("AddressPanel.zip._Label")); // NOI18N
         zip.setMaximumSize(new java.awt.Dimension(120, 21));
-        zip.setMinimumSize(new java.awt.Dimension(120, 21));
+        zip.setMinimumSize(new java.awt.Dimension(120, 24));
         zip.setName("zip"); // NOI18N
-        zip.setPreferredSize(new java.awt.Dimension(120, 21));
+        zip.setPreferredSize(new java.awt.Dimension(120, 24));
 
         male.setBackground(new java.awt.Color(204, 204, 204));
         male.setFont(male.getFont().deriveFont(male.getFont().getStyle() & ~java.awt.Font.BOLD));
@@ -139,18 +139,18 @@ public class AddressPanel extends javax.swing.JPanel implements DataPanel {
         department.set_Label(bundle.getString("AddressPanel.department._Label")); // NOI18N
         department.setFont(department.getFont().deriveFont(department.getFont().getStyle() | java.awt.Font.BOLD));
         department.setMaximumSize(new java.awt.Dimension(120, 21));
-        department.setMinimumSize(new java.awt.Dimension(120, 21));
+        department.setMinimumSize(new java.awt.Dimension(120, 24));
         department.setName("department"); // NOI18N
-        department.setPreferredSize(new java.awt.Dimension(120, 21));
+        department.setPreferredSize(new java.awt.Dimension(120, 24));
 
         jLabel5.setFont(jLabel5.getFont());
         jLabel5.setText(bundle.getString("AddressPanel.jLabel5.text")); // NOI18N
         jLabel5.setName("jLabel5"); // NOI18N
 
         countryselect.setMaximumSize(new java.awt.Dimension(120, 21));
-        countryselect.setMinimumSize(new java.awt.Dimension(120, 21));
+        countryselect.setMinimumSize(new java.awt.Dimension(120, 24));
         countryselect.setName("countryselect"); // NOI18N
-        countryselect.setPreferredSize(new java.awt.Dimension(120, 21));
+        countryselect.setPreferredSize(new java.awt.Dimension(120, 24));
         countryselect.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 countryselectActionPerformed(evt);
@@ -159,9 +159,9 @@ public class AddressPanel extends javax.swing.JPanel implements DataPanel {
 
         city.set_Label(bundle.getString("AddressPanel.city._Label")); // NOI18N
         city.setMaximumSize(new java.awt.Dimension(120, 21));
-        city.setMinimumSize(new java.awt.Dimension(120, 21));
+        city.setMinimumSize(new java.awt.Dimension(120, 24));
         city.setName("city"); // NOI18N
-        city.setPreferredSize(new java.awt.Dimension(120, 21));
+        city.setPreferredSize(new java.awt.Dimension(120, 24));
 
         jButton2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/16/filesave.png"))); // NOI18N
         jButton2.setText(bundle.getString("AddressPanel.jButton2.text")); // NOI18N
@@ -199,7 +199,15 @@ public class AddressPanel extends javax.swing.JPanel implements DataPanel {
             mainaddressLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(mainaddressLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(mainaddressLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(mainaddressLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addGroup(mainaddressLayout.createSequentialGroup()
+                        .addComponent(badress, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(dadress, javax.swing.GroupLayout.PREFERRED_SIZE, 227, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 107, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 107, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(mainaddressLayout.createSequentialGroup()
                         .addGroup(mainaddressLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(department, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 288, Short.MAX_VALUE)
@@ -207,30 +215,20 @@ public class AddressPanel extends javax.swing.JPanel implements DataPanel {
                             .addComponent(street, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(mainaddressLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addGroup(mainaddressLayout.createSequentialGroup()
-                                .addGroup(mainaddressLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                    .addComponent(zip, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addComponent(prename, javax.swing.GroupLayout.DEFAULT_SIZE, 262, Short.MAX_VALUE))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, mainaddressLayout.createSequentialGroup()
+                                .addComponent(jLabel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addGroup(mainaddressLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(city, javax.swing.GroupLayout.PREFERRED_SIZE, 312, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(cname, javax.swing.GroupLayout.PREFERRED_SIZE, 312, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                            .addGroup(mainaddressLayout.createSequentialGroup()
-                                .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 73, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(countryselect, javax.swing.GroupLayout.PREFERRED_SIZE, 234, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(18, 18, 18)
-                                .addComponent(male, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(female, javax.swing.GroupLayout.PREFERRED_SIZE, 141, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, mainaddressLayout.createSequentialGroup()
-                        .addComponent(badress, javax.swing.GroupLayout.PREFERRED_SIZE, 153, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(countryselect, javax.swing.GroupLayout.PREFERRED_SIZE, 161, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(zip, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(prename, javax.swing.GroupLayout.DEFAULT_SIZE, 262, Short.MAX_VALUE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(dadress, javax.swing.GroupLayout.PREFERRED_SIZE, 209, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 297, Short.MAX_VALUE)
-                        .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 103, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 107, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGroup(mainaddressLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(cname, javax.swing.GroupLayout.PREFERRED_SIZE, 306, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, mainaddressLayout.createSequentialGroup()
+                                .addComponent(male, javax.swing.GroupLayout.PREFERRED_SIZE, 165, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(female, javax.swing.GroupLayout.PREFERRED_SIZE, 135, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(city, javax.swing.GroupLayout.PREFERRED_SIZE, 306, javax.swing.GroupLayout.PREFERRED_SIZE))))
                 .addContainerGap())
         );
         mainaddressLayout.setVerticalGroup(
@@ -240,9 +238,9 @@ public class AddressPanel extends javax.swing.JPanel implements DataPanel {
                 .addGroup(mainaddressLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
                     .addComponent(department, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(countryselect, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel5)
                     .addComponent(male)
-                    .addComponent(female))
+                    .addComponent(female)
+                    .addComponent(jLabel5, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(mainaddressLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
                     .addComponent(title, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -255,11 +253,11 @@ public class AddressPanel extends javax.swing.JPanel implements DataPanel {
                     .addComponent(city, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(mainaddressLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
-                    .addComponent(jButton2)
                     .addComponent(jButton1)
-                    .addComponent(badress)
-                    .addComponent(dadress))
-                .addContainerGap(23, Short.MAX_VALUE))
+                    .addComponent(jButton2)
+                    .addComponent(dadress)
+                    .addComponent(badress))
+                .addGap(23, 23, 23))
         );
 
         jPanel2.add(mainaddress, java.awt.BorderLayout.CENTER);
@@ -268,9 +266,7 @@ public class AddressPanel extends javax.swing.JPanel implements DataPanel {
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(25, Short.MAX_VALUE))
+            .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)

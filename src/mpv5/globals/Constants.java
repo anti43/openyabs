@@ -30,7 +30,7 @@ public interface Constants {
      * 
      * Full Version number
      */
-    public static final String VERSION = "Yabs-1.2-RC1";
+    public static final String VERSION = "Yabs-1.2-SNEAK";
 
     /**
      * The original database version of this release
@@ -91,7 +91,6 @@ public interface Constants {
     public static String ABOUT_IMAGE = "/mpv5/resources/images/about1.png";
     public static String ICON = "/mpv5/resources/images/icon.png";
     public static String WEBSITE = "http://openyabs.org";
-    public static String CURRENT_VERSION_URL = "http://mp-rechnungs-und-kundenverwaltung.googlecode.com/files/" + VERSION + ".zip";
     public static final String[] CONTRIBUTORS = new String[]{
         "Andreas Weber",
         "Jan Hahnisch",

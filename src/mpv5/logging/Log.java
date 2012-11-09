@@ -41,15 +41,14 @@ import mpv5.utils.files.FileReaderWriter;
 
 /**
  *
- * 
+ *
  */
 public class Log {
 
     static {
-        
+
         Logger globalLogger = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
         globalLogger.addHandler(new LogHandler(new Formatter() {
-
             @Override
             public String format(LogRecord record) {
                 if (record != null) {
@@ -59,7 +58,6 @@ public class Log {
                 }
             }
         }) {
-
             @Override
             public void publish(LogRecord record) {
                 Log.Debug(this, record);
@@ -73,8 +71,8 @@ public class Log {
             public void close() throws SecurityException {
             }
         });
-        
-         Logger.getLogger(Log.class.getName()).log(Level.INFO,  "Yabs Logger set!");
+
+        Logger.getLogger(Log.class.getName()).log(Level.INFO, "Yabs Logger set!");
     }
     /**
      *
@@ -83,7 +81,7 @@ public class Log {
     public static final int LOGLEVEL_NONE = 0;
     /**
      *
-     * Gives basic messages 
+     * Gives basic messages
      */
     public static final int LOGLEVEL_NORMAL = 1;
     /**
@@ -92,10 +90,11 @@ public class Log {
      */
     public static final int LOGLEVEL_DEBUG = 2;
     private static int loglevel = 1;
-    private static List<LogConsole> loggers = new ArrayList<LogConsole>(Arrays.asList(new LogConsole[]{(LogConsole) new YConsole()}));
+    private static List<LogConsole> loggers = Collections.synchronizedList(new ArrayList<LogConsole>(Arrays.asList(new LogConsole[]{(LogConsole) new YConsole()})));
 
     /**
      * Print out a text file
+     *
      * @param file
      */
     public static void Debug(File file) {
@@ -103,22 +102,22 @@ public class Log {
     }
 
     /**
-     * 
+     *
      * @param source
      * @param message
      * @param alwaysToKonsole
-     * @deprecated Replaced with <code>Debug(Object source, Object message)</code>
+     * @deprecated Replaced      * with <code>Debug(Object source, Object message)</code>
      */
     public static void Debug(Object source, Object message, boolean alwaysToKonsole) {
         Debug(source, message);
     }
 
     /**
-     * The main debug method. Logs the given message depending on the current Log level.<br/><br/>
-     * <li>LOGLEVEL_NONE = no logging</li>
-     * <li>LOGLEVEL_HIGH  = basic logging</li>
-     * <li>LOGLEVEL_DEBUG = verbose logging</li>
-     * 
+     * The main debug method. Logs the given message depending on the current
+     * Log level.<br/><br/> <li>LOGLEVEL_NONE = no logging</li>
+     * <li>LOGLEVEL_HIGH = basic logging</li> <li>LOGLEVEL_DEBUG = verbose
+     * logging</li>
+     *
      * @param source
      * @param message
      */
@@ -168,6 +167,7 @@ public class Log {
 
     /**
      * Prints messages, regardless the log level
+     *
      * @param message
      */
     public static void Print(Object... message) {
@@ -182,6 +182,7 @@ public class Log {
 
     /**
      * Print an array
+     *
      * @param array
      */
     public static void PrintArray(Object[][][] array) {
@@ -202,6 +203,7 @@ public class Log {
 
     /**
      * Print an array
+     *
      * @param array
      */
     public static void PrintArray(Object[][] array) {
@@ -218,6 +220,7 @@ public class Log {
 
     /**
      * Print an array
+     *
      * @param string
      */
     public static void PrintArray(Object[] string) {
@@ -230,6 +233,7 @@ public class Log {
 
     /**
      * Print a list
+     *
      * @param lst
      */
     public static void PrintArray(List lst) {
@@ -240,7 +244,6 @@ public class Log {
 
     private static synchronized void write(final Object obj) {
         Runnable runnable = new Runnable() {
-
             public void run() {
                 for (int i = 0; i < loggers.size(); i++) {
                     loggers.get(i).log(obj);
@@ -260,6 +263,7 @@ public class Log {
 
     /**
      * Debug an Exception
+     *
      * @param ex
      */
     public static void Debug(Throwable ex) {
@@ -275,18 +279,19 @@ public class Log {
     }
 
     /**
-     * Set the log level<br/>
-     * <li>LOGLEVEL_NONE = no logging</li>
-     * <li>LOGLEVEL_HIGH  = basic logging</li>
-     * <li>LOGLEVEL_DEBUG = verbose logging</li>
+     * Set the log level<br/> <li>LOGLEVEL_NONE = no logging</li>
+     * <li>LOGLEVEL_HIGH = basic logging</li> <li>LOGLEVEL_DEBUG = verbose
+     * logging</li>
+     *
      * @param level
      */
-    public static void setLogLevel(int level) {
-        Log.setLoglevel(level);
+    public static synchronized void setLogLevel(int level) {
+        setLoglevel(level);
     }
 
     /**
      * Print a table model
+     *
      * @param model
      */
     public static void PrintArray(TableModel model) {
@@ -325,9 +330,13 @@ public class Log {
         loggers.add(logConsole);
     }
 
+    public static void removeLogger(LogConsole logConsole) {
+        loggers.remove(logConsole);
+    }
+
     /**
-     * 
-     * @return 
+     *
+     * @return
      */
     public static boolean isDebugging() {
         return loglevel == LOGLEVEL_DEBUG;
@@ -346,6 +355,7 @@ public class Log {
 
     /**
      * Writes the stacktrace to a String
+     *
      * @param t
      * @return
      */

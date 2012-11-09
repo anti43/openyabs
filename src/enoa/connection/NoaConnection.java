@@ -27,6 +27,7 @@ import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.SocketAddress;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import mpv5.Main;
@@ -195,24 +196,30 @@ public class NoaConnection {
             configuration.put(IOfficeApplication.APPLICATION_PORT_KEY, String.valueOf(port));
             configuration.put(IOfficeApplication.APPLICATION_ARGUMENTS_KEY, String.valueOf(port));
 
-            officeAplication = OfficeApplicationRuntime.getApplication(configuration);
+            officeAplication =
+                    OfficeApplicationRuntime.getApplication(configuration);
             officeAplication.setConfiguration(configuration);
             try {
-                officeAplication.activate();
-            } catch (Exception officeApplicationException) {
+                officeAplication.activate(Notificator.getOfficeMonitor());
+            } catch (Throwable officeApplicationException) {
                 try {
                     Thread.sleep(6666);
+                    Notificator.raiseNotification(Messages.OO_WAITING, false);
                 } catch (InterruptedException ex) {
                 }
                 try {
-                    officeAplication.activate();
-                } catch (OfficeApplicationException officeApplicationException1) {
-                    Log.Debug(officeApplicationException);
-                    Popup.error(officeApplicationException);
+                    officeAplication.activate(Notificator.getOfficeMonitor());
+                } catch (Throwable officeApplicationException1) {
+                    Log.Debug(officeApplicationException1);
+                    Notificator.raiseNotification(officeApplicationException1, true);
                 }
             }
-            documentService = officeAplication.getDocumentService();
-            desktopService = officeAplication.getDesktopService();
+            if (officeAplication.isActive()) {
+                documentService = officeAplication.getDocumentService();
+                desktopService = officeAplication.getDesktopService();
+            } else {
+                throw new RuntimeException("Office " + officeAplication + " cannot get activated .. " + new ArrayList(configuration.values()));
+            }
             setType(TYPE_REMOTE);
         } else {
             throw new InvalidArgumentException("Host cannot be null and port must be > 0: " + host + ":" + port);

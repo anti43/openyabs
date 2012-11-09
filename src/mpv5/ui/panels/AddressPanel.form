@@ -1,4 +1,4 @@
-<?xml version="1.1" encoding="UTF-8" ?>
+<?xml version="1.0" encoding="UTF-8" ?>
 
 <Form version="1.4" maxVersion="1.7" type="org.netbeans.modules.form.forminfo.JPanelFormInfo">
   <NonVisualComponents>
@@ -27,10 +27,7 @@
   <Layout>
     <DimensionLayout dim="0">
       <Group type="103" groupAlignment="0" attributes="0">
-          <Group type="102" attributes="0">
-              <Component id="jPanel2" min="-2" max="-2" attributes="0"/>
-              <EmptySpace pref="25" max="32767" attributes="0"/>
-          </Group>
+          <Component id="jPanel2" min="-2" max="-2" attributes="0"/>
       </Group>
     </DimensionLayout>
     <DimensionLayout dim="1">
@@ -76,8 +73,17 @@
               <Group type="103" groupAlignment="0" attributes="0">
                   <Group type="102" attributes="0">
                       <EmptySpace max="-2" attributes="0"/>
-                      <Group type="103" groupAlignment="0" attributes="0">
-                          <Group type="102" alignment="0" attributes="0">
+                      <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                          <Group type="102" attributes="0">
+                              <Component id="badress" min="-2" pref="200" max="-2" attributes="2"/>
+                              <EmptySpace max="-2" attributes="0"/>
+                              <Component id="dadress" min="-2" pref="227" max="-2" attributes="2"/>
+                              <EmptySpace max="32767" attributes="0"/>
+                              <Component id="jButton2" min="-2" pref="107" max="-2" attributes="0"/>
+                              <EmptySpace max="-2" attributes="0"/>
+                              <Component id="jButton1" min="-2" pref="107" max="-2" attributes="0"/>
+                          </Group>
+                          <Group type="102" attributes="0">
                               <Group type="103" groupAlignment="0" max="-2" attributes="0">
                                   <Component id="department" alignment="1" pref="288" max="32767" attributes="1"/>
                                   <Component id="title" alignment="1" max="32767" attributes="1"/>
@@ -85,36 +91,24 @@
                               </Group>
                               <EmptySpace max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                                  <Group type="102" alignment="0" attributes="0">
-                                      <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                                          <Component id="zip" alignment="0" max="32767" attributes="1"/>
-                                          <Component id="prename" alignment="0" pref="262" max="32767" attributes="1"/>
-                                      </Group>
+                                  <Group type="102" alignment="1" attributes="0">
+                                      <Component id="jLabel5" max="32767" attributes="0"/>
                                       <EmptySpace max="-2" attributes="0"/>
-                                      <Group type="103" groupAlignment="0" attributes="0">
-                                          <Component id="city" alignment="0" min="-2" pref="312" max="-2" attributes="1"/>
-                                          <Component id="cname" alignment="0" min="-2" pref="312" max="-2" attributes="1"/>
-                                      </Group>
+                                      <Component id="countryselect" min="-2" pref="161" max="-2" attributes="0"/>
                                   </Group>
-                                  <Group type="102" alignment="0" attributes="1">
-                                      <Component id="jLabel5" min="-2" pref="73" max="-2" attributes="0"/>
-                                      <EmptySpace max="-2" attributes="0"/>
-                                      <Component id="countryselect" min="-2" pref="234" max="-2" attributes="0"/>
-                                      <EmptySpace type="separate" max="-2" attributes="0"/>
-                                      <Component id="male" max="32767" attributes="0"/>
-                                      <EmptySpace max="-2" attributes="0"/>
-                                      <Component id="female" min="-2" pref="141" max="-2" attributes="0"/>
-                                  </Group>
+                                  <Component id="zip" alignment="0" max="32767" attributes="1"/>
+                                  <Component id="prename" alignment="0" pref="262" max="32767" attributes="1"/>
                               </Group>
-                          </Group>
-                          <Group type="102" alignment="1" max="-2" attributes="0">
-                              <Component id="badress" min="-2" pref="153" max="-2" attributes="2"/>
                               <EmptySpace max="-2" attributes="0"/>
-                              <Component id="dadress" min="-2" pref="209" max="-2" attributes="2"/>
-                              <EmptySpace pref="297" max="32767" attributes="0"/>
-                              <Component id="jButton2" min="-2" pref="103" max="-2" attributes="0"/>
-                              <EmptySpace max="-2" attributes="0"/>
-                              <Component id="jButton1" min="-2" pref="107" max="-2" attributes="0"/>
+                              <Group type="103" groupAlignment="0" attributes="0">
+                                  <Component id="cname" alignment="0" min="-2" pref="306" max="-2" attributes="1"/>
+                                  <Group type="102" alignment="1" attributes="0">
+                                      <Component id="male" min="-2" pref="165" max="-2" attributes="0"/>
+                                      <EmptySpace max="-2" attributes="0"/>
+                                      <Component id="female" min="-2" pref="135" max="-2" attributes="0"/>
+                                  </Group>
+                                  <Component id="city" min="-2" pref="306" max="-2" attributes="1"/>
+                              </Group>
                           </Group>
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
@@ -128,9 +122,9 @@
                       <Group type="103" groupAlignment="2" attributes="0">
                           <Component id="department" alignment="2" min="-2" max="-2" attributes="0"/>
                           <Component id="countryselect" alignment="2" min="-2" max="-2" attributes="0"/>
-                          <Component id="jLabel5" alignment="2" min="-2" max="-2" attributes="0"/>
                           <Component id="male" alignment="2" min="-2" max="-2" attributes="0"/>
                           <Component id="female" alignment="2" min="-2" max="-2" attributes="0"/>
+                          <Component id="jLabel5" alignment="0" max="32767" attributes="0"/>
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="2" attributes="0">
@@ -146,12 +140,12 @@
                       </Group>
                       <EmptySpace type="unrelated" max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="2" attributes="0">
-                          <Component id="jButton2" alignment="2" min="-2" max="-2" attributes="0"/>
                           <Component id="jButton1" alignment="2" min="-2" max="-2" attributes="0"/>
-                          <Component id="badress" alignment="2" min="-2" max="-2" attributes="0"/>
+                          <Component id="jButton2" alignment="2" min="-2" max="-2" attributes="0"/>
                           <Component id="dadress" alignment="2" min="-2" max="-2" attributes="0"/>
+                          <Component id="badress" alignment="2" min="-2" max="-2" attributes="0"/>
                       </Group>
-                      <EmptySpace pref="23" max="32767" attributes="0"/>
+                      <EmptySpace min="-2" pref="23" max="-2" attributes="0"/>
                   </Group>
               </Group>
             </DimensionLayout>
@@ -166,11 +160,11 @@
                   <Dimension value="[120, 21]"/>
                 </Property>
                 <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                  <Dimension value="[120, 21]"/>
+                  <Dimension value="[120, 24]"/>
                 </Property>
                 <Property name="name" type="java.lang.String" value="title" noResource="true"/>
                 <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                  <Dimension value="[120, 21]"/>
+                  <Dimension value="[120, 24]"/>
                 </Property>
               </Properties>
             </Component>
@@ -183,11 +177,11 @@
                   <Dimension value="[120, 21]"/>
                 </Property>
                 <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                  <Dimension value="[120, 21]"/>
+                  <Dimension value="[120, 24]"/>
                 </Property>
                 <Property name="name" type="java.lang.String" value="street" noResource="true"/>
                 <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                  <Dimension value="[120, 21]"/>
+                  <Dimension value="[120, 24]"/>
                 </Property>
               </Properties>
             </Component>
@@ -200,11 +194,11 @@
                   <Dimension value="[120, 21]"/>
                 </Property>
                 <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                  <Dimension value="[120, 21]"/>
+                  <Dimension value="[120, 24]"/>
                 </Property>
                 <Property name="name" type="java.lang.String" value="cname" noResource="true"/>
                 <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                  <Dimension value="[120, 21]"/>
+                  <Dimension value="[120, 24]"/>
                 </Property>
               </Properties>
             </Component>
@@ -217,11 +211,11 @@
                   <Dimension value="[120, 21]"/>
                 </Property>
                 <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                  <Dimension value="[120, 21]"/>
+                  <Dimension value="[120, 24]"/>
                 </Property>
                 <Property name="name" type="java.lang.String" value="prename" noResource="true"/>
                 <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                  <Dimension value="[120, 21]"/>
+                  <Dimension value="[120, 24]"/>
                 </Property>
               </Properties>
             </Component>
@@ -234,11 +228,11 @@
                   <Dimension value="[120, 21]"/>
                 </Property>
                 <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                  <Dimension value="[120, 21]"/>
+                  <Dimension value="[120, 24]"/>
                 </Property>
                 <Property name="name" type="java.lang.String" value="zip" noResource="true"/>
                 <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                  <Dimension value="[120, 21]"/>
+                  <Dimension value="[120, 24]"/>
                 </Property>
               </Properties>
             </Component>
@@ -289,11 +283,11 @@
                   <Dimension value="[120, 21]"/>
                 </Property>
                 <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                  <Dimension value="[120, 21]"/>
+                  <Dimension value="[120, 24]"/>
                 </Property>
                 <Property name="name" type="java.lang.String" value="department" noResource="true"/>
                 <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                  <Dimension value="[120, 21]"/>
+                  <Dimension value="[120, 24]"/>
                 </Property>
               </Properties>
             </Component>
@@ -319,11 +313,11 @@
                   <Dimension value="[120, 21]"/>
                 </Property>
                 <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                  <Dimension value="[120, 21]"/>
+                  <Dimension value="[120, 24]"/>
                 </Property>
                 <Property name="name" type="java.lang.String" value="countryselect" noResource="true"/>
                 <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                  <Dimension value="[120, 21]"/>
+                  <Dimension value="[120, 24]"/>
                 </Property>
               </Properties>
               <Events>
@@ -339,11 +333,11 @@
                   <Dimension value="[120, 21]"/>
                 </Property>
                 <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                  <Dimension value="[120, 21]"/>
+                  <Dimension value="[120, 24]"/>
                 </Property>
                 <Property name="name" type="java.lang.String" value="city" noResource="true"/>
                 <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-                  <Dimension value="[120, 21]"/>
+                  <Dimension value="[120, 24]"/>
                 </Property>
               </Properties>
             </Component>

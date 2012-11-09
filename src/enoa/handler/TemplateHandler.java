@@ -149,14 +149,9 @@ public class TemplateHandler {
                                 preloadedTemplate.defineExFile(new PDFFile(preloadedTemplate.getFile().getPath()));
                             }
                             TEMPLATE_CACHE.put(key, preloadedTemplate);
-                        } catch (Exception ex) {
-                            Log.Debug(Template.class, "Invalid template: " + data.getData()[data.getData().length - 1][0].toString());
-                            try {
-                                Log.Debug(TemplateHandler.class, "Not removing invalid template " + preloadedTemplate);
-                                //preloadedTemplate.delete();
-                            } catch (Exception e) {
-                                Log.Debug(e);
-                            }
+                        } catch (Throwable ex) {
+                            Log.Debug(ex);
+                            Log.Debug(Template.class, "Possibly invalid template: " + data.getData()[data.getData().length - 1][0].toString());
                             return null;
                         }
                     } else {

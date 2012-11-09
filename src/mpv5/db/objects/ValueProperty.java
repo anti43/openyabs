@@ -319,7 +319,7 @@ public final class ValueProperty extends DatabaseObject {
     }
 
     /**
-     * 
+     * Fetches all group-bound properties
      * @return 
      */
     @SuppressWarnings("unchecked")
