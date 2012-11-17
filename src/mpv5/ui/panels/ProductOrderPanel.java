@@ -1,18 +1,18 @@
 /*
-This file is part of YaBS.
+ This file is part of YaBS.
 
-YaBS is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
+ YaBS is free software: you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation, either version 3 of the License, or
+ (at your option) any later version.
 
-YaBS is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
+ YaBS is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
 
-You should have received a copy of the GNU General Public License
-along with YaBS.  If not, see <http://www.gnu.org/licenses/>.
+ You should have received a copy of the GNU General Public License
+ along with YaBS.  If not, see <http://www.gnu.org/licenses/>.
  */
 /*
  * ContactPanel.java
@@ -121,13 +121,11 @@ public class ProductOrderPanel extends javax.swing.JPanel implements DataPanel, 
         contactname.setSearchEnabled(true);
         contactname.setContext(Context.getSupplier());
         contactname.getComboBox().addActionListener(new ActionListener() {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 final MPComboBoxModelItem item = contactname.getSelectedItem();
                 if (item != null && item.isValid()) {
                     Runnable runnable = new Runnable() {
-
                         @Override
                         public void run() {
                             try {
@@ -173,7 +171,6 @@ public class ProductOrderPanel extends javax.swing.JPanel implements DataPanel, 
 
         final DataPanel p = this;
         status.getComboBox().addActionListener(new ActionListener() {
-
             ProductOrder dato = (ProductOrder) getDataOwner();
 
             public void actionPerformed(ActionEvent e) {
@@ -203,7 +200,6 @@ public class ProductOrderPanel extends javax.swing.JPanel implements DataPanel, 
 
         labeledCombobox1.setContext(Context.getMessage());
         labeledCombobox1.getComboBox().addActionListener(new ActionListener() {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
@@ -1312,8 +1308,8 @@ public class ProductOrderPanel extends javax.swing.JPanel implements DataPanel, 
             contactcompany.setText(owner.__getCompany());
             contactid.setText(String.valueOf(owner.__getCNumber()));
             contact_ = owner;
-        } catch (NodataFoundException ex) {
-            Log.Debug(ex);
+        } catch (Exception ex) {
+            Log.Debug(this, ex.getMessage());
         }
     }
 
@@ -1321,7 +1317,6 @@ public class ProductOrderPanel extends javax.swing.JPanel implements DataPanel, 
     public final void refresh() {
 
         Runnable runnable = new Runnable() {
-
             @Override
             public void run() {
                 try {
@@ -1450,16 +1445,14 @@ public class ProductOrderPanel extends javax.swing.JPanel implements DataPanel, 
                     || dbo.getContext().equals(Context.getInvoice())
                     || dbo.getContext().equals(Context.getOffer())
                     || dbo.getContext().equals(Context.getOrder())) {
-                ProductOrder o = (ProductOrder) dbo.clone();
 
                 if (mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("org.openyabs.uiproperty", "pasten")) {
                     ProductOrderSubItem s = new ProductOrderSubItem();
                     s.setQuantityvalue(BigDecimal.ONE);
-//                    s.setItemsids(o.__getIDS());
-                    s.setInternalvalue(((ProductOrder) dbo).getNetvalue());
-                    s.setExternalvalue(((ProductOrder) dbo).getNetvalue());
-                    s.setTotalnetvalue(((ProductOrder) dbo).getNetvalue());
-                    s.setTotalbrutvalue(((ProductOrder) dbo).getNetvalue().add(((ProductOrder) dbo).getTaxvalue()));
+                    s.setInternalvalue(((Item) dbo).__getNetvalue());
+                    s.setExternalvalue(((Item) dbo).__getNetvalue());
+                    s.setTotalnetvalue(((Item) dbo).__getNetvalue());
+                    s.setTotalbrutvalue(((Item) dbo).__getNetvalue().add(((Item) dbo).__getTaxvalue()));
                     if (s.getTotalnetvalue().doubleValue() > 0d) {
                         BigDecimal tp = s.getTotalbrutvalue().subtract(s.getTotalnetvalue()).multiply(Constants.BD100).divide(s.getTotalnetvalue(), 9, RoundingMode.HALF_UP);
                         if (tpvs == null) {
@@ -1472,33 +1465,43 @@ public class ProductOrderPanel extends javax.swing.JPanel implements DataPanel, 
                             break;
                         }
                     }
-                    s.setCname(((ProductOrder) dbo).__getCname());
-                    s.setDescription(Messages.GOOSE1 + " " + ((ProductOrder) dbo).getCnumber() + " " + Messages.GOOSE2 + " " + DateConverter.getDefDateString(o.__getDateadded()));
-//                   if (mpv5.db.objects.User.getCurrentUser().getProperties().hasProperty("deftax")) {
-//                        int taxid = mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("deftax", new Integer(0));
-//                        BigDecimal deftax = Tax.getTaxValue(taxid);
-//                        s.setTaxpercentvalue(deftax);
-//                    }
-
-//                    Log.PrintArray(s.toStringArray());
-
+                    s.setCname(dbo.__getCname());
+                    s.setDescription(Messages.GOOSE1 + " " + ((Item) dbo).__getCnumber() + " " + Messages.GOOSE2 + " " + DateConverter.getDefDateString(dbo.__getDateadded()));
                     ((MPTableModel) itemtable.getModel()).addRow(s.getRowData(((MPTableModel) itemtable.getModel()).getLastValidRow(new int[]{4}) + 1));
                     ((MPTableModel) itemtable.getModel()).fireTableCellUpdated(0, 0);
                 } else {
+                    ProductOrder o = new ProductOrder();
                     o.setIntstatus(Item.STATUS_IN_PROGRESS);
-                    o.setInttype(inttype_);
+                    o.setInttype(Constants.TYPE_PRODUCT_ORDER);
                     o.setCnumber("");
                     o.setCname("");
                     o.setDateadded(new Date());
                     o.setDatetodo(new Date());
                     o.setDateend(new Date());
 
-                    ProductOrderSubItem[] subs = new ProductOrderSubItem[0];
-                    subs = o.getProductOrderSubitems();
-                    o.setIDS(-1);
+                    SubItem[] sitems = ((Item) dbo).getSubitems();
+                    ProductOrderSubItem[] subs = new ProductOrderSubItem[sitems.length];
+                    for (int i = 0; i < sitems.length; i++) {
+                        SubItem si = sitems[i];
+                        ProductOrderSubItem psi = new ProductOrderSubItem();
+                        psi.setQuantityvalue(BigDecimal.ONE);
+                        psi.setInternalvalue(si.__getInternalvalue());
+                        psi.setExternalvalue(si.__getExternalvalue());
+                        psi.setTotalnetvalue(si.__getTotalnetvalue());
+                        psi.setTotalbrutvalue(((Item) dbo).__getNetvalue().add(((Item) dbo).__getTaxvalue()));
+                        if (psi.getTotalnetvalue().doubleValue() > 0d) {
+                            BigDecimal tp = psi.getTotalbrutvalue().subtract(psi.getTotalnetvalue()).multiply(Constants.BD100).divide(psi.getTotalnetvalue(), 9, RoundingMode.HALF_UP);
+                            psi.setTaxpercentvalue(tp);
+                        }
+                        psi.setCname(si.__getCname());
+                        psi.setDescription(si.__getDescription());
+                        psi.setCountvalue(si.__getCountvalue());
+                        psi.setOrdernr(si.__getCountvalue().intValue());
+                        subs[i]=psi;
+                    }
+                    
                     setDataOwner(o, true);
-
-                    MPTableModel t = ProductOrderSubItem.toModel(subs, true);
+                    MPTableModel t = ProductOrderSubItem.toModel(subs);
 
                     itemtable.setModel(t);
                     omodel = (MPTableModel) itemtable.getModel();
@@ -1533,7 +1536,7 @@ public class ProductOrderPanel extends javax.swing.JPanel implements DataPanel, 
                 } catch (Exception ex) {
                     Log.Debug(this, ex.getMessage());
                 }
-            } else if (dbo.getContext().equals(Context.getSubItem())) {
+            } else if (dbo.getContext().equals(Context.getProductOrderSubitem())) {
                 try {
                     ProductOrderSubItem sub = (ProductOrderSubItem) dbo;
 
@@ -1560,8 +1563,6 @@ public class ProductOrderPanel extends javax.swing.JPanel implements DataPanel, 
         netCalculator.calculateOnce();
         taxcalculator.calculateOnce();
         disccalculator.calculateOnce();
-
-
     }
 
     @Override
@@ -1728,7 +1729,6 @@ public class ProductOrderPanel extends javax.swing.JPanel implements DataPanel, 
 
         JButton b1 = new JButton();
         b1.addMouseListener(new MouseListener() {
-
             public void mouseClicked(MouseEvent e) {
             }
 
@@ -1769,7 +1769,6 @@ public class ProductOrderPanel extends javax.swing.JPanel implements DataPanel, 
 
         JButton b2 = new JButton();
         b2.addActionListener(new ActionListener() {
-
             public void actionPerformed(ActionEvent e) {
                 MPTableModel m = (MPTableModel) itemtable.getModel();
                 int row = itemtable.getSelectedRow();
@@ -1790,7 +1789,6 @@ public class ProductOrderPanel extends javax.swing.JPanel implements DataPanel, 
                     Messages.ACTION_ADD.getValue(),
                     Messages.ACTION_REMOVE.getValue()},
                 new ActionListener[]{new ActionListener() {
-
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     MPTableModel m = (MPTableModel) itemtable.getModel();
@@ -1802,7 +1800,6 @@ public class ProductOrderPanel extends javax.swing.JPanel implements DataPanel, 
                     }
                 }
             }, new ActionListener() {
-
                 @Override
                 public void actionPerformed(ActionEvent e) {
 //                    mpv5.YabsViewProxy.instance().pasteClipboardItems();
@@ -1810,13 +1807,11 @@ public class ProductOrderPanel extends javax.swing.JPanel implements DataPanel, 
             },
                     null,
                     new ActionListener() {
-
-                        @Override
-                        public void actionPerformed(ActionEvent e) {
-                            ((MPTableModel) itemtable.getModel()).addRow(1);
-                        }
-                    }, new ActionListener() {
-
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    ((MPTableModel) itemtable.getModel()).addRow(1);
+                }
+            }, new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     int index = itemtable.getSelectedRow();
@@ -1907,7 +1902,6 @@ public class ProductOrderPanel extends javax.swing.JPanel implements DataPanel, 
 
     private void preloadTemplates() {
         Runnable runnable = new Runnable() {
-
             public void run() {
                 TemplateHandler.loadTemplateFor(button_preview, dataOwner.templateGroupIds(), dataOwner.getInttype());
                 if (TemplateHandler.isLoaded(Long.valueOf(dataOwner.templateGroupIds()), dataOwner.getInttype())) {
@@ -1952,7 +1946,6 @@ public class ProductOrderPanel extends javax.swing.JPanel implements DataPanel, 
         }
 
         m.addTableModelListener(new TableModelListener() {
-
             public void tableChanged(TableModelEvent e) {
                 if (dataOwner.isExisting()) {
                     if (e.getColumn() == 0 && e.getType() == TableModelEvent.DELETE) {

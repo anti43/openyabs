@@ -1,18 +1,18 @@
 /*
-This file is part of YaBS.
+ This file is part of YaBS.
 
-YaBS is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
+ YaBS is free software: you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation, either version 3 of the License, or
+ (at your option) any later version.
 
-YaBS is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
+ YaBS is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
 
-You should have received a copy of the GNU General Public License
-along with YaBS.  If not, see <http://www.gnu.org/licenses/>.
+ You should have received a copy of the GNU General Public License
+ along with YaBS.  If not, see <http://www.gnu.org/licenses/>.
  */
 /*
  * ContactPanel.java
@@ -148,13 +148,11 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
         contactname.setSearchEnabled(true);
         contactname.setContext(Context.getCustomer());
         contactname.getComboBox().addActionListener(new ActionListener() {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 final MPComboBoxModelItem item = contactname.getSelectedItem();
                 if (item != null && item.isValid()) {
                     Runnable runnable = new Runnable() {
-
                         @Override
                         public void run() {
                             try {
@@ -249,7 +247,6 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
 
         final DataPanel p = this;
         status.getComboBox().addActionListener(new ActionListener() {
-
             Item dato = (Item) getDataOwner();
 
             public void actionPerformed(ActionEvent e) {
@@ -280,7 +277,6 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
 
         labeledCombobox1.setContext(Context.getMessage());
         labeledCombobox1.getComboBox().addActionListener(new ActionListener() {
-
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
@@ -417,7 +413,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
                 Log.Debug(this, e.getMessage());
             }
             fillFiles();
-          
+
         }
     }
 
@@ -444,7 +440,6 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
     private void fillFiles() {
 
         Runnable runnable = new Runnable() {
-
             public void run() {
                 Context c = Context.getFilesToItems();
                 c.addReference(Context.getFiles().getDbIdentity(), "cname", "filename");
@@ -1494,7 +1489,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
     }//GEN-LAST:event_toinvoiceActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        if (MPSecurityManager.checkAdminAccess() ) {
+        if (MPSecurityManager.checkAdminAccess()) {
             JDialog d = new JDialog(YabsViewProxy.instance().getIdentifierFrame(), true);
             d.add(new ItemNumberEditor(dataOwner, d, this));
             d.pack();
@@ -1726,7 +1721,6 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
     public final void refresh() {
 
         Runnable runnable = new Runnable() {
-
             @Override
             public void run() {
                 try {
@@ -1902,8 +1896,26 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
                     o.setDatetodo(new Date());
                     o.setDateend(new Date());
 
-                    SubItem[] subs = new SubItem[0];
-                    subs = o.getSubitems();
+                    SubItem[] sitems = ((Item) dbo).getSubitems();
+                    SubItem[] subs = new SubItem[sitems.length];
+                    for (int i = 0; i < sitems.length; i++) {
+                        SubItem si = sitems[i];
+                        SubItem psi = new SubItem();
+                        psi.setQuantityvalue(BigDecimal.ONE);
+                        psi.setInternalvalue(si.__getInternalvalue());
+                        psi.setExternalvalue(si.__getExternalvalue());
+                        psi.setTotalnetvalue(si.__getTotalnetvalue());
+                        psi.setTotalbrutvalue(((Item) dbo).__getNetvalue().add(((Item) dbo).__getTaxvalue()));
+                        if (psi.__getTotalnetvalue().doubleValue() > 0d) {
+                            BigDecimal tp = psi.__getTotalbrutvalue().subtract(psi.__getTotalnetvalue()).multiply(Constants.BD100).divide(psi.__getTotalnetvalue(), 9, RoundingMode.HALF_UP);
+                            psi.setTaxpercentvalue(tp);
+                        }
+                        psi.setCname(si.__getCname());
+                        psi.setDescription(si.__getDescription());
+                        psi.setCountvalue(si.__getCountvalue());
+                        psi.setOrdernr(si.__getCountvalue().intValue());
+                        subs[i]=psi;
+                    }
                     o.setIDS(-1);
                     setDataOwner(o, true);
 
@@ -2148,7 +2160,6 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
 
         JButton b1 = new JButton();
         b1.addMouseListener(new MouseListener() {
-
             public void mouseClicked(MouseEvent e) {
             }
 
@@ -2189,7 +2200,6 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
 
         JButton b2 = new JButton();
         b2.addActionListener(new ActionListener() {
-
             public void actionPerformed(ActionEvent e) {
                 MPTableModel m = (MPTableModel) itemtable.getModel();
                 int row = itemtable.getSelectedRow();
@@ -2210,7 +2220,6 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
                     Messages.ACTION_ADD.getValue(),
                     Messages.ACTION_REMOVE.getValue()},
                 new ActionListener[]{new ActionListener() {
-
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     MPTableModel m = (MPTableModel) itemtable.getModel();
@@ -2222,7 +2231,6 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
                     }
                 }
             }, new ActionListener() {
-
                 @Override
                 public void actionPerformed(ActionEvent e) {
 //                    mpv5.YabsViewProxy.instance().pasteClipboardItems();
@@ -2230,13 +2238,11 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
             },
                     null,
                     new ActionListener() {
-
-                        @Override
-                        public void actionPerformed(ActionEvent e) {
-                            ((MPTableModel) itemtable.getModel()).addRow(1);
-                        }
-                    }, new ActionListener() {
-
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    ((MPTableModel) itemtable.getModel()).addRow(1);
+                }
+            }, new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     int index = itemtable.getSelectedRow();
@@ -2329,7 +2335,6 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
 
     private void preloadTemplates() {
         Runnable runnable = new Runnable() {
-
             public void run() {
                 TemplateHandler.loadTemplateFor(button_preview, dataOwner.templateGroupIds(), dataOwner.__getInttype());
                 TemplateHandler.loadTemplateFor(button_deliverynote, dataOwner.templateGroupIds(), Constants.TYPE_DELIVERY_NOTE);
@@ -2378,7 +2383,6 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
         }
 
         m.addTableModelListener(new TableModelListener() {
-
             public void tableChanged(TableModelEvent e) {
                 if (dataOwner.isExisting()) {
                     if (e.getColumn() == 0 && e.getType() == TableModelEvent.DELETE) {
