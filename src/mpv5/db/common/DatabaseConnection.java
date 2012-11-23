@@ -25,300 +25,303 @@ import mpv5.ui.dialogs.Popup;
  */
 public class DatabaseConnection {
 
-    private static java.sql.Connection conn;
-    private static DatabaseConnection connector;
+   private static java.sql.Connection conn;
+   private static DatabaseConnection connector;
 
-    /**
-     * @return the connector
-     */
-    public static DatabaseConnection getConnector() {
-        return connector;
-    }
+   /**
+    * @return the connector
+    */
+   public static DatabaseConnection getConnector() {
+      return connector;
+   }
 
-    /**
-     * @return the user
-     */
-    public static String getUser() {
-        return user;
-    }
+   /**
+    * @return the user
+    */
+   public static String getUser() {
+      return user;
+   }
 
-    /**
-     * @return the password
-     */
-    public static String getPassword() {
-        return password;
-    }
+   /**
+    * @return the password
+    */
+   public static String getPassword() {
+      return password;
+   }
 
-    /**
-     * @return the prefix
-     */
-    public static String getPrefix() {
-        return prefix;
-    }
-    private ConnectionTypeHandler ctype;
-    private static String user;
-    private static String password;
-    private static String prefix = "";
+   /**
+    * @return the prefix
+    */
+   public static String getPrefix() {
+      return prefix;
+   }
+   private ConnectionTypeHandler ctype;
+   private static String user;
+   private static String password;
+   private static String prefix = "";
 
-    /**
-     *
-     * @return Database connector
-     * @throws Exception
-     */
-    public static synchronized DatabaseConnection instanceOf() throws Exception {
-        if (getConnector() == null) {
-            connector = new DatabaseConnection();
-            getConnector().connect(false);
-            new connectionPing(connector).start();
-        }
-        return getConnector();
-    }
-    private Statement statement;
-    private JProgressBar prog;
+   /**
+    *
+    * @return Database connector
+    * @throws Exception
+    */
+   public static synchronized DatabaseConnection instanceOf() throws Exception {
+      if (getConnector() == null || getConnector().getConnection() == null) {
+         connector = new DatabaseConnection();
+         getConnector().connect(false);
+         new connectionPing(connector).start();
+      }
+      return getConnector();
+   }
+   private Statement statement;
+   private JProgressBar prog;
 
-    /**
-     *
-     * @return
-     */
-    public java.sql.Connection getConnection() {
-        return conn;
-    }
+   /**
+    *
+    * @return
+    */
+   public java.sql.Connection getConnection() {
+      return conn;
+   }
 
-    /**
-     * Test-Verbindung zur Datenbank herstellen.
-     *
-     * @param predefinedDriver
-     * @param user
-     * @param password
-     * @param location
-     * @param dbname
-     * @param create
-     * @return Connection
-     * @throws Exception
-     */
-    public boolean connect(String predefinedDriver, String user, String password, String location, String dbname, String prefix, boolean create) throws Exception {
+   /**
+    * Test-Verbindung zur Datenbank herstellen.
+    *
+    * @param predefinedDriver
+    * @param user
+    * @param password
+    * @param location
+    * @param dbname
+    * @param create
+    * @return Connection
+    * @throws Exception
+    */
+   public boolean connect(String predefinedDriver, String user, String password, String location, String dbname, String prefix, boolean create) throws Exception {
 
-        try {
-            ctype = new ConnectionTypeHandler();
-            getCtype().setDRIVER(predefinedDriver);
-            getCtype().setURL(location);
-            getCtype().setDBName(dbname);
-            getCtype().setPrefix(prefix);
-            DatabaseConnection.user = user;
-            DatabaseConnection.password = password;
-            DatabaseConnection.prefix = prefix;
+      try {
+         ctype = new ConnectionTypeHandler();
+         getCtype().setDRIVER(predefinedDriver);
+         getCtype().setURL(location);
+         getCtype().setDBName(dbname);
+         getCtype().setPrefix(prefix);
+         DatabaseConnection.user = user;
+         DatabaseConnection.password = password;
+         DatabaseConnection.prefix = prefix;
 
-            DriverManager.registerDriver((Driver) Class.forName(getCtype().getDriver()).newInstance());
-            Log.Debug(this, "Driver: " + getCtype().getDriver());
-        } catch (Exception ex) {
-            Log.Debug(this, ex.getMessage());
-        }
+         DriverManager.registerDriver((Driver) Class.forName(getCtype().getDriver()).newInstance());
+         Log.Debug(this, "Driver: " + getCtype().getDriver());
+      } catch (Exception ex) {
+         Log.Debug(this, ex.getMessage());
+      }
 
-        return reconnect(create);
-    }
+      return reconnect(create);
+   }
 
-    public boolean reconnect(boolean create) throws SQLException {
-        Statement stmt;
-        String sql;
-        try {
-            Log.Debug(this, "RECONNECT::Datenbankverbindung: " + getCtype().getConnectionString(create));
-            conn = DriverManager.getConnection(getCtype().getConnectionString(create), user, password);
-            conn.setAutoCommit(true);
-            if (conn != null //&& conn.isValid(10)//does not work with MySQL Connector/J 5.0
-                    ) {//mysql (and others) need explicit create database, derby does it by itself
-                if (create && ConnectionTypeHandler.getDriverType() != ConnectionTypeHandler.DERBY) {
-                    stmt = conn.createStatement();
-                    conn.setCatalog(ConnectionTypeHandler.getDBNAME());
-                    if (User.PROPERTIES_OVERRIDE.hasProperty("drop_database_on_create")) {
-                        try {
-                            sql = "DROP DATABASE "
-                                    + ConnectionTypeHandler.getDBNAME()
-                                    + ";";
-                            stmt.execute(sql);
-                        } catch (SQLException ex) {
-                            Log.Debug(this, "Database Error Cleaing of old DB failed!");
-                        }
-                    }
-                    try {
-                        sql = "CREATE DATABASE "
-                                + ConnectionTypeHandler.getDBNAME()
-                                + " ;";
-                        stmt.execute(sql);
-                    } catch (SQLException ex) {
-                        Popup.OK_dialog(Messages.CREATE_DATABASE_OWN.toString(), "Database Creation");
-                        return false;
-                    }
+   public boolean reconnect(boolean create) throws SQLException {
+      Statement stmt;
+      String sql;
+      if (Log.isDebugging()) {
+//         Thread.dumpStack();
+      }
+      try {
+         Log.Debug(this, "RECONNECT::Datenbankverbindung: " + getCtype().getConnectionString(create));
+         conn = DriverManager.getConnection(getCtype().getConnectionString(create), user, password);
+         conn.setAutoCommit(true);
+         if (conn != null //&& conn.isValid(10)//does not work with MySQL Connector/J 5.0
+                 ) {//mysql (and others) need explicit create database, derby does it by itself
+            if (create && ConnectionTypeHandler.getDriverType() != ConnectionTypeHandler.DERBY) {
+               stmt = conn.createStatement();
+               conn.setCatalog(ConnectionTypeHandler.getDBNAME());
+               if (User.PROPERTIES_OVERRIDE.hasProperty("drop_database_on_create")) {
+                  try {
+                     sql = "DROP DATABASE "
+                             + ConnectionTypeHandler.getDBNAME()
+                             + ";";
+                     stmt.execute(sql);
+                  } catch (SQLException ex) {
+                     Log.Debug(this, "Database Error Cleaing of old DB failed!");
+                  }
+               }
+               try {
+                  sql = "CREATE DATABASE "
+                          + ConnectionTypeHandler.getDBNAME()
+                          + " ;";
+                  stmt.execute(sql);
+               } catch (SQLException ex) {
+                  Popup.OK_dialog(Messages.CREATE_DATABASE_OWN.toString(), "Database Creation");
+                  return false;
+               }
 
-                }
-                connector = this;
-                return true;
-            } else {
-                throw new RuntimeException("Could not create connection: " + getCtype().getConnectionString(create));
             }
-        } catch (SQLException ex) {
-            System.out.println("Database Error: " + ex.getMessage());
-            Popup.notice(ex.getLocalizedMessage());
-            Log.Debug(this, ex);
-            Log.Debug(this, ex.getNextException());
+            connector = this;
+            return true;
+         } else {
+            throw new RuntimeException("Could not create connection: " + getCtype().getConnectionString(create));
+         }
+      } catch (SQLException ex) {
+         System.out.println("Database Error: " + ex.getMessage());
+         Popup.notice(ex.getLocalizedMessage());
+         Log.Debug(this, ex);
+         Log.Debug(this, ex.getNextException());
 
-            DatabaseConnection.shutdown();
-            throw ex;
-        }
-    }
+         DatabaseConnection.shutdown();
+         throw ex;
+      }
+   }
 
-    /**
-     * Verbindung zur Datenbank herstellen.
-     *
-     * @return Connection
-     */
-    private Connection connect(boolean create) throws Exception {
+   /**
+    * Verbindung zur Datenbank herstellen.
+    *
+    * @return Connection
+    */
+   private Connection connect(boolean create) throws Exception {
 
-        ctype = new ConnectionTypeHandler();
+      ctype = new ConnectionTypeHandler();
 
-        if (getCtype().getDriver() != null) {
-            Log.Debug(this, "Datenbanktreiber: " + getCtype().getDriver());
+      if (getCtype().getDriver() != null) {
+         Log.Debug(this, "Datenbanktreiber: " + getCtype().getDriver());
 
-            try {
-                Class.forName(getCtype().getDriver()).newInstance();
-            } catch (ClassNotFoundException ex) {
+         try {
+            Class.forName(getCtype().getDriver()).newInstance();
+         } catch (ClassNotFoundException ex) {
 //                Popup.error(ex);
-                //possibly not fatal, driver can have a different class [org.apache.derby.jdbc.ClientDriver,org.apache.derby.jdbc.EmbeddedDriver]
-                Log.Debug(this, ex.getMessage());
+            //possibly not fatal, driver can have a different class [org.apache.derby.jdbc.ClientDriver,org.apache.derby.jdbc.EmbeddedDriver]
+            Log.Debug(this, ex.getMessage());
+         }
+         user = LocalSettings.getProperty("dbuser");
+         password = LocalSettings.getProperty("dbpassword");
+         prefix = LocalSettings.getProperty("dbprefix");
+
+         reconnect(create);
+      } else {
+         throw new UnsupportedOperationException("Datenbanktreiber: undefined");
+      }
+      return conn;
+   }
+
+   /**
+    * Verbindung trennen
+    */
+   @SuppressWarnings("CallToThreadDumpStack")
+   public static void shutdown() {
+      try {
+         if (conn != null && !conn.isClosed()) {
+            if (ConnectionTypeHandler.getDriverType() == ConnectionTypeHandler.DERBY) {
+               try {
+                  DriverManager.getConnection(
+                          DatabaseConnection.instanceOf().getCtype().getConnectionString(false) + "shutdown=true;", user, password);
+               } catch (Exception ex) {
+                  Log.Debug(DatabaseConnection.class, ex.getLocalizedMessage());
+               }
             }
-            user = LocalSettings.getProperty("dbuser");
-            password = LocalSettings.getProperty("dbpassword");
-            prefix = LocalSettings.getProperty("dbprefix");
+            conn.close();
+            conn = null;
+         }
 
-            reconnect(create);
-        } else {
-            throw new UnsupportedOperationException("Datenbanktreiber: undefined");
-        }
-        return conn;
-    }
+      } catch (SQLException ex) {
 
-    /**
-     * Verbindung trennen
-     */
-    @SuppressWarnings("CallToThreadDumpStack")
-    public static void shutdown() {
-        try {
-            if (conn != null && !conn.isClosed()) {
-                if (ConnectionTypeHandler.getDriverType() == ConnectionTypeHandler.DERBY) {
-                    try {
-                        DriverManager.getConnection(
-                                DatabaseConnection.instanceOf().getCtype().getConnectionString(false) + "shutdown=true;", user, password);
-                    } catch (Exception ex) {
-                        Log.Debug(DatabaseConnection.class, ex.getLocalizedMessage());
-                    }
-                }
-                conn.close();
-                conn = null;
-            }
+         ex.printStackTrace();
+         System.exit(1);
+      }
+   }
 
-        } catch (SQLException ex) {
-
-            ex.printStackTrace();
-            System.exit(1);
-        }
-    }
-
-    public boolean runQueries(String[] queries) throws SQLException {
-        if (prog != null) {
-            prog.setStringPainted(true);
-            prog.setMaximum(queries.length);
-            prog.setMinimum(0);
-            prog.setValue(0);
-        }
-        Statement stm = this.getConnection().createStatement();
+   public boolean runQueries(String[] queries) throws SQLException {
+      if (prog != null) {
+         prog.setStringPainted(true);
+         prog.setMaximum(queries.length);
+         prog.setMinimum(0);
+         prog.setValue(0);
+      }
+      Statement stm = this.getConnection().createStatement();
 //        for (int i = 0; i < queries.length; i++) {
 //            stm.addBatch(queries[i]);
 //        }
 //        Log.PrintArray(queries);
-        try {
+      try {
 //            stm.executeBatch();
-            for (int i = 0; i < queries.length; i++) {
-                try {
-                    String string = queries[i];
-                    if (prefix != null) {
-                        string = string.replace(" table ", " table " + prefix);
-                        string = string.replace(" TABLE ", " TABLE " + prefix);
-                        string = string.replace(" on ", " on " + prefix);
-                        string = string.replace(" ON ", " ON " + prefix);
-                        string = string.replace(" into ", " into " + prefix);
-                        string = string.replace(" INTO ", " INTO " + prefix);
-                    }
-                    Log.Print(string);
-                    stm.execute(string);
-                    if (prog != null) {
-                        prog.setValue(i);
-                    }
-                    Thread.sleep(100);
-                } catch (Exception ex) {
-                    throw ex;
-                }
-            }
-            return true;
-        } catch (Exception sQLException) {
-            Log.Debug(this, sQLException.getMessage());
-            return false;
-        } finally {
-            if (prog != null) {
-                prog.setValue(0);
-            }
-        }
-    }
-
-    /**
-     * Set a progressbar
-     *
-     * @param progressbar
-     */
-    public void setProgressbar(JProgressBar progressbar) {
-        prog = progressbar;
-    }
-
-    /**
-     * @return the ctype
-     */
-    public ConnectionTypeHandler getCtype() {
-        return ctype;
-    }
-
-    /**
-     * @return the statement
-     */
-    public Statement getStatement() {
-        return statement;
-    }
-
-    static class connectionPing extends Thread {
-
-        private DatabaseConnection c;
-
-        public connectionPing(DatabaseConnection c) {
-            this.c = c;
-            setPriority(MIN_PRIORITY);
-        }
-
-        @Override
-        public void run() {
+         for (int i = 0; i < queries.length; i++) {
             try {
-                while (!c.getConnection().isClosed()) {                
-                    try {
-                        sleep(180000);
-                    } catch (InterruptedException ex) {
-                        Log.Debug(ex);
-                    }
-                    try {
-                        Log.Debug(this, "ping to " + c.getCtype().getURL());
-                        c.runQueries(new String[]{"select count(ids) from groups"});
-                    } catch (SQLException ex) {
-                        Log.Debug(ex);
-                    }
-                }
-            } catch (SQLException ex) {
-                Log.Debug(ex);
+               String string = queries[i];
+               if (prefix != null) {
+                  string = string.replace(" table ", " table " + prefix);
+                  string = string.replace(" TABLE ", " TABLE " + prefix);
+                  string = string.replace(" on ", " on " + prefix);
+                  string = string.replace(" ON ", " ON " + prefix);
+                  string = string.replace(" into ", " into " + prefix);
+                  string = string.replace(" INTO ", " INTO " + prefix);
+               }
+               Log.Print(string);
+               stm.execute(string);
+               if (prog != null) {
+                  prog.setValue(i);
+               }
+               Thread.sleep(100);
+            } catch (Exception ex) {
+               throw ex;
             }
-        }
-    }
+         }
+         return true;
+      } catch (Exception sQLException) {
+         Log.Debug(this, sQLException.getMessage());
+         return false;
+      } finally {
+         if (prog != null) {
+            prog.setValue(0);
+         }
+      }
+   }
+
+   /**
+    * Set a progressbar
+    *
+    * @param progressbar
+    */
+   public void setProgressbar(JProgressBar progressbar) {
+      prog = progressbar;
+   }
+
+   /**
+    * @return the ctype
+    */
+   public ConnectionTypeHandler getCtype() {
+      return ctype;
+   }
+
+   /**
+    * @return the statement
+    */
+   public Statement getStatement() {
+      return statement;
+   }
+
+   static class connectionPing extends Thread {
+
+      private DatabaseConnection c;
+
+      public connectionPing(DatabaseConnection c) {
+         this.c = c;
+         setPriority(MIN_PRIORITY);
+      }
+
+      @Override
+      public void run() {
+         try {
+            while (c.getConnection() != null || !c.getConnection().isClosed()) {
+               try {
+                  sleep(180000);
+               } catch (InterruptedException ex) {
+                  Log.Debug(ex);
+               }
+               try {
+                  Log.Debug(this, "ping to " + c.getCtype().getURL());
+                  c.runQueries(new String[]{"select count(ids) from groups"});
+               } catch (SQLException ex) {
+                  Log.Debug(ex);
+               }
+            }
+         } catch (SQLException ex) {
+            Log.Debug(ex);
+         }
+      }
+   }
 }

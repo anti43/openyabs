@@ -19,6 +19,7 @@ package mpv5.usermanagement;
 import java.awt.Component;
 import mpv5.logging.Log;
 import mpv5.ui.dialogs.LoginScreen;
+import mpv5.ui.dialogs.LoginToInstanceScreen;
 
 /**
  *

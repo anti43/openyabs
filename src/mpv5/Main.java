@@ -927,14 +927,14 @@ public class Main implements Runnable {
                     if (user != null) {
                         user.login();
                     } else {
-                        LoginToInstanceScreen.load();
+                        doLoginToInstanceScreen();
                     }
                 }
             } catch (Exception nodataFoundException) {
-                LoginToInstanceScreen.load();
+                doLoginToInstanceScreen();
             }
         } else {
-            LoginToInstanceScreen.load();
+            doLoginToInstanceScreen();
         }
     }
 
@@ -1134,4 +1134,9 @@ public class Main implements Runnable {
             new Thread(runnable1).start();
         }
     }
+
+   private void doLoginToInstanceScreen() {
+      DatabaseConnection.shutdown();
+      LoginToInstanceScreen.load();
+   }
 }

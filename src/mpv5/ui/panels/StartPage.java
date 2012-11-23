@@ -287,7 +287,8 @@ public class StartPage extends javax.swing.JPanel {
 
         DefaultListModel m = new DefaultListModel();
         m.addElement("YaBS Version: " + Constants.VERSION + " " + Constants.TITLE);
-        m.addElement("Database: " + LocalSettings.getProperty(LocalSettings.DBPATH));
+        m.addElement("Database: " + LocalSettings.getProperty(LocalSettings.DBNAME));
+        m.addElement("Database path: " + LocalSettings.getProperty(LocalSettings.DBPATH));
         m.addElement("Database type: " + LocalSettings.getProperty(LocalSettings.DBTYPE));
         m.addElement("Database driver: " + LocalSettings.getProperty(LocalSettings.DBDRIVER));
         m.addElement("Database minimal version: " + Constants.DATABASE_VERSION);

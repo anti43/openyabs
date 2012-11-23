@@ -12,7 +12,9 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import mpv5.Main;
+import mpv5.db.common.DatabaseConnection;
 import mpv5.db.common.NodataFoundException;
+import mpv5.db.common.QueryHandler;
 import mpv5.globals.LocalSettings;
 import mpv5.globals.Messages;
 import mpv5.logging.Log;
@@ -42,6 +44,7 @@ public class LoginToInstanceScreen extends javax.swing.JDialog {
         super();
         initComponents();
         setModalityType(ModalityType.APPLICATION_MODAL);
+        setAlwaysOnTop(false);
 
         setList();
 
@@ -291,42 +294,47 @@ private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
         Object idobj = mPCombobox1.getSelectedItemId();
 
         if (idobj != null) {
+          try {
+             Integer id = Integer.valueOf(idobj.toString());
+             Log.Debug(Main.class, "Switching connection id to: " + id);
+             LocalSettings.setConnectionID(id);
+             try {
+                 LocalSettings.read();
+                 LocalSettings.apply();
+             } catch (Exception ex) {
+                 Log.Debug(Main.class, ex.getMessage());
+                 Popup.error(this, "Local settings file not readable: " + LocalSettings.getLocalFile() + "\n" + ex);
+             }
+             DatabaseConnection.instanceOf();//reconnect
+             QueryHandler.instanceOf().reset();
+             User user = mpv5.usermanagement.MPSecurityManager.checkAuth(jTextField1.getText(), new String(jPasswordField1.getPassword()));
+             if (user != null) {
+                 user.login();
+                 this.setVisible(false);
 
-            Integer id = Integer.valueOf(idobj.toString());
-            Log.Debug(Main.class, "Switching connection id to: " + id);
-            LocalSettings.setConnectionID(id);
-            try {
-                LocalSettings.read();
-                LocalSettings.apply();
-            } catch (Exception ex) {
-                Log.Debug(Main.class, ex.getMessage());
-                Popup.error(this, "Local settings file not readable: " + LocalSettings.getLocalFile() + "\n" + ex);
-            }
-            User user = mpv5.usermanagement.MPSecurityManager.checkAuth(jTextField1.getText(), new String(jPasswordField1.getPassword()));
-            if (user != null) {
-                user.login();
-                this.setVisible(false);
+                 if (jCheckBox1.isSelected()) {
+                     LocalSettings.setProperty("lastuser", mpv5.db.objects.User.getCurrentUser().__getIDS().toString());
+                 } else {
+                     LocalSettings.setProperty("lastuser", "INSTANCE");
+                 }
 
-                if (jCheckBox1.isSelected()) {
-                    LocalSettings.setProperty("lastuser", mpv5.db.objects.User.getCurrentUser().__getIDS().toString());
-                } else {
-                    LocalSettings.setProperty("lastuser", "INSTANCE");
-                }
-
-                if (jCheckBox2.isSelected()) {
-                    try {
-                        LocalSettings.setProperty("lastuserpw", MD5HashGenerator.getInstance().hashData(jPasswordField1.getPassword()));
-                    } catch (NoSuchAlgorithmException ex) {
-                        Log.Debug(ex);
-                    }
-                } else {
-                    LocalSettings.setProperty("lastuserpw", "fdgdfDDRDFGFGFCVGEDgefg45g");
-                }
-                LocalSettings.save();
-                this.dispose();
-            } else {
-                jLabel4.setText(Messages.ACCESS_DENIED.getValue());
-            }
+                 if (jCheckBox2.isSelected()) {
+                     try {
+                         LocalSettings.setProperty("lastuserpw", MD5HashGenerator.getInstance().hashData(jPasswordField1.getPassword()));
+                     } catch (NoSuchAlgorithmException ex) {
+                         Log.Debug(ex);
+                     }
+                 } else {
+                     LocalSettings.setProperty("lastuserpw", "fdgdfDDRDFGFGFCVGEDgefg45g");
+                 }
+                 LocalSettings.save();
+                 this.dispose();
+             } else {
+                 jLabel4.setText(Messages.ACCESS_DENIED.getValue());
+             }
+          } catch (Exception ex) {
+             Logger.getLogger(LoginToInstanceScreen.class.getName()).log(Level.SEVERE, null, ex);
+          }
         }
     }
 
