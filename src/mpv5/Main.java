@@ -128,17 +128,15 @@ public class Main implements Runnable {
    }
    private static List<Process> oap = new ArrayList<Process>();
 
-   private static boolean readLocalSettings() throws Exception {
+   private static void readLocalSettings() throws Exception {
       splash.nextStep(Messages.LOCAL_SETTINGS.toString());
       try {
          LocalSettings.read();
          LocalSettings.apply();
          Log.Print("Done with local settings file: " + LocalSettings.getLocalFile());
-         return true;
       } catch (Exception ex) {
          Log.Print(ex);
          Log.Print("Local settings file not readable: " + LocalSettings.getLocalFile());
-         return true;
       }
    }
 
