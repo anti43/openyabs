@@ -474,9 +474,9 @@ public class Main implements Runnable {
          setEnv(null);
          parseArgs(args);
          runStartScripts();
-         if (readLocalSettings()) {
-            LanguageManager.preLoadCachedLanguage();
-         }
+         readLocalSettings();
+         LanguageManager.preLoadCachedLanguage();
+         
          setDerbyLog();
          start();
       } catch (Exception e) {
