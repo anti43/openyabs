@@ -247,6 +247,7 @@ public enum Messages {
     INVENTORY_STOCK_TRESHOLD("The stock count of the following product has reached the alarm threshold: "),
     PRINT_NOT_POSSIBLE("Could not find a print service for the give file. Try 'print through default application' setting instead:"),
     UPDATE_AVAILABLE("There is an update available for Yabs, check openyabs.org"),
+    NO_UPDATE_AVAILABLE("There is no update available"),
     SEARCHABLE("This is a search-enabled field - type a phrase and hit 'Enter'"),
     TYPE_PRODUCT_ORDER("Product Order"),
     BOM_CREATED("A new product has been created out of this productlist and is now ready to be used: "),

@@ -175,7 +175,7 @@ public class Main implements Runnable {
                      Log.Debug(Main.class, "Importing: " + file.getPath());
                      String lang = LanguageManager.importLanguage(file.getName(), file);
                      if (lang != null) {
-                        if (onlyUser!=null) {
+                        if (onlyUser != null) {
                            User u = onlyUser;
                            u.setLanguage(lang);
                            u.save();
@@ -976,11 +976,14 @@ public class Main implements Runnable {
    /**
     * Checks if updates are available
     */
-   private boolean checkUpdates() {
+   public static boolean checkUpdates() {
 
       try {
          //Just a basic check
          String url = GlobalSettings.getProperty("org.openyabs.updates.url");
+         if ("null".equals(url)) {
+            return false;
+         }
          HttpURLConnection.setFollowRedirects(true);
          HttpURLConnection con =
                  (HttpURLConnection) new URL(url).openConnection();
