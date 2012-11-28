@@ -6,7 +6,7 @@ package mpv5.utils.files;
 
 /**
  *
- *  Galileo Computing
+ * Galileo Computing
  */
 import java.awt.Desktop;
 import java.io.BufferedOutputStream;
@@ -39,6 +39,7 @@ public abstract class FileDirectoryHandler {
 
     /**
      * Deletes a file now or later
+     *
      * @param localFile
      * @param now
      */
@@ -56,6 +57,7 @@ public abstract class FileDirectoryHandler {
 
     /**
      * Deletes a whole directory tree and files in it
+     *
      * @param path
      * @throws java.io.IOException
      */
@@ -68,6 +70,7 @@ public abstract class FileDirectoryHandler {
 
     /**
      * Deletes the content of a directory
+     *
      * @param path
      * @throws java.io.IOException
      */
@@ -85,10 +88,10 @@ public abstract class FileDirectoryHandler {
     }
 
     /**
-     * 
+     *
      * @param sourceLocation
      * @param targetLocation
-     * @return 
+     * @return
      * @throws java.io.IOException
      */
     public static URI copyDirectory(File sourceLocation, File targetLocation) throws IOException {
@@ -122,6 +125,7 @@ public abstract class FileDirectoryHandler {
 
     /**
      * Copies a file via stream
+     *
      * @param source
      * @param target
      * @return
@@ -136,6 +140,7 @@ public abstract class FileDirectoryHandler {
 
     /**
      * Copies a file via stream
+     *
      * @param source
      * @param target
      * @return
@@ -150,6 +155,7 @@ public abstract class FileDirectoryHandler {
 
     /**
      * Copies a file via stream
+     *
      * @param sourceFile
      * @param targetDirectory
      * @param targetFilename
@@ -165,11 +171,12 @@ public abstract class FileDirectoryHandler {
 
     /**
      * Copies a file via stream
+     *
      * @param sourceFile
      * @param targetDirectory
      * @param targetFilename
      * @param deleteOnExit Shall we delete the NEW file on exit
-     * @param silent 
+     * @param silent
      * @return
      * @throws java.io.IOException
      */
@@ -214,11 +221,15 @@ public abstract class FileDirectoryHandler {
     }
 
     /**
-     * Requests that the file or directory denoted by this abstract pathname be deleted when the virtual machine terminates.
-     * Files (or directories) are deleted in the reverse order that they are registered.
-     * Invoking this method to delete a file or directory that is already registered for deletion has no effect.
-     * Deletion will be attempted only for normal termination of the virtual machine, as defined by the Java Language Specification.
-     * Once deletion has been requested, it is not possible to cancel the request.
+     * Requests that the file or directory denoted by this abstract pathname be
+     * deleted when the virtual machine terminates. Files (or directories) are
+     * deleted in the reverse order that they are registered. Invoking this
+     * method to delete a file or directory that is already registered for
+     * deletion has no effect. Deletion will be attempted only for normal
+     * termination of the virtual machine, as defined by the Java Language
+     * Specification. Once deletion has been requested, it is not possible to
+     * cancel the request.
+     *
      * @param path
      * @throws IOException
      */
@@ -238,7 +249,8 @@ public abstract class FileDirectoryHandler {
      *
      * @param directory
      * @param identifier
-     * @return A File array with the files (not directories) within the given directory
+     * @return A File array with the files (not directories) within the given
+     * directory
      */
     @SuppressWarnings("unchecked")
     public static File[] getFilesOfDirectory(File directory) {
@@ -279,7 +291,8 @@ public abstract class FileDirectoryHandler {
      *
      * @param directory
      * @param identifier
-     * @return A File array with the files (not directories) within the given directory
+     * @return A File array with the files (not directories) within the given
+     * directory
      */
     @SuppressWarnings("unchecked")
     public static File[] getFilesOfDirectory(String directory, String identifier) {
@@ -316,7 +329,9 @@ public abstract class FileDirectoryHandler {
     }
 
     /**
-     * Open a file in default app or as "save as" dialog, depending on the platform
+     * Open a file in default app or as "save as" dialog, depending on the
+     * platform
+     *
      * @param file
      */
     public static void open(File file) {
@@ -333,7 +348,9 @@ public abstract class FileDirectoryHandler {
     }
 
     /**
-     * Edit a file in default app or as "save as" dialog, depending on the platform
+     * Edit a file in default app or as "save as" dialog, depending on the
+     * platform
+     *
      * @param file
      */
     public static void edit(File file) {
@@ -355,9 +372,10 @@ public abstract class FileDirectoryHandler {
     }
 
     /**
-     * Copies a file to a temporary file. The resulting file is NOT linked
-     * to the original one and even the original file is locked,
-     * the resulting file is not
+     * Copies a file to a temporary file. The resulting file is NOT linked to
+     * the original one and even the original file is locked, the resulting file
+     * is not
+     *
      * @param file
      * @return The file with a randomly generated suffix
      */
@@ -366,9 +384,10 @@ public abstract class FileDirectoryHandler {
     }
 
     /**
-     * Copies a file to a temporary file. The resulting file is NOT linked
-     * to the original one and even the original file is locked,
-     * the resulting file is not
+     * Copies a file to a temporary file. The resulting file is NOT linked to
+     * the original one and even the original file is locked, the resulting file
+     * is not
+     *
      * @param file
      * @param suffix
      * @return
@@ -388,6 +407,7 @@ public abstract class FileDirectoryHandler {
 
     /**
      * Returns a completely random named temporay file
+     *
      * @param suffix no '.' please
      * @return
      */
@@ -448,10 +468,10 @@ public abstract class FileDirectoryHandler {
 
     /**
      * Downloads a file
+     *
      * @param address
      * @param localFileName
-     * @return
-     *  Marco Schmidt
+     * @return Marco Schmidt
      */
     public static File download(String address, String localFileName) {
         localFileName = check(localFileName);
@@ -492,6 +512,7 @@ public abstract class FileDirectoryHandler {
 
     /**
      * Downloads a file
+     *
      * @param address
      * @return
      */
@@ -509,6 +530,7 @@ public abstract class FileDirectoryHandler {
 
     /**
      * Copies a file via streaming
+     *
      * @param sourceFile
      * @param outp
      * @param silent
@@ -539,6 +561,7 @@ public abstract class FileDirectoryHandler {
 
     /**
      * Copies a file via streaming
+     *
      * @param sourceFile
      * @param outp
      * @return
@@ -555,15 +578,15 @@ public abstract class FileDirectoryHandler {
             e = new File(LocalSettings.getProperty(LocalSettings.CACHE_DIR));
         } catch (Exception ex) {//avoid npe
             Log.Debug(ex);
-            LocalSettings.setProperty(LocalSettings.CACHE_DIR, Constants.FALLBACK_CACHE_DIR);
-            e = new File(Constants.FALLBACK_CACHE_DIR);
+            LocalSettings.setProperty(LocalSettings.CACHE_DIR, System.getProperty("java.io.tmpdir") + Constants.FALLBACK_CACHE_DIR);
+            e = new File(System.getProperty("java.io.tmpdir"), Constants.FALLBACK_CACHE_DIR);
         }
         if (!e.exists()) {
             e.mkdirs();
         }
         //Cannot access Cache dir?
         if (!e.isDirectory() || !e.canWrite() || e.listFiles() == null) {
-            LocalSettings.setProperty(LocalSettings.CACHE_DIR, Constants.FALLBACK_CACHE_DIR);
+            LocalSettings.setProperty(LocalSettings.CACHE_DIR, System.getProperty("java.io.tmpdir") + Constants.FALLBACK_CACHE_DIR);
             cacheCheck();
             try {
                 FileDirectoryHandler.deleteTreeOnExit(getTempDirAsFile());
@@ -578,8 +601,10 @@ public abstract class FileDirectoryHandler {
     }
 
     /**
-     * Unzips the file (if it is a zip file, returns the original file if it is not a zip file).
-     * If the given file is a zip file containing multiple files, returns a temporary directory containing the extracted files.
+     * Unzips the file (if it is a zip file, returns the original file if it is
+     * not a zip file). If the given file is a zip file containing multiple
+     * files, returns a temporary directory containing the extracted files.
+     *
      * @param file
      * @return
      */
@@ -604,6 +629,7 @@ public abstract class FileDirectoryHandler {
 
     /**
      * Creates a new, RW, temporary directory within the cache directory
+     *
      * @return
      */
     public static File getnewTemporaryDirectory() {
@@ -616,11 +642,12 @@ public abstract class FileDirectoryHandler {
     }
 
     /**
-     * Deletes the content of a directory, omitting files which contain $omit in their name
-     * No Subdirectories are deleted!
-     * @param path 
+     * Deletes the content of a directory, omitting files which contain $omit in
+     * their name No Subdirectories are deleted!
+     *
+     * @param path
      * @param omit
-     * @throws IOException 
+     * @throws IOException
      */
     public static void deleteDirectoryContent(File path, String... omit) throws IOException {
         for (File file : path.listFiles()) {
@@ -640,11 +667,12 @@ public abstract class FileDirectoryHandler {
     }
 
     /**
-     * Deletes the content of a directory, omitting files which contain $omit in their name
-     * ALL Subdirectories are deleted!
-     * @param path 
+     * Deletes the content of a directory, omitting files which contain $omit in
+     * their name ALL Subdirectories are deleted!
+     *
+     * @param path
      * @param omit
-     * @throws IOException 
+     * @throws IOException
      */
     public static void deleteDirectoryContent2(File path, String... omit) throws IOException {
         for (File file : path.listFiles()) {
