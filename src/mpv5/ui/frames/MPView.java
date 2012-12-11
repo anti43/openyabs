@@ -722,7 +722,7 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
                 for (int i = 0; i < count; i++) {
                     if (getTabAt(i) != null) {
                         DataPanel panel = getTabAt(i);
-                        if (!panel.getDataOwner().isExisting()
+                        if (panel.getDataOwner()!=null && !panel.getDataOwner().isExisting()
                                 && panel.getDataOwner().getContext().equals(item.getContext())
                                 && panel.getClass() == item.getView().getClass()) {
 //                        if (!panel.getDataOwner().isExisting() && panel.getDataOwner().getContext().equals(item.getContext())) {
@@ -1003,7 +1003,7 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
 
         jButton5.setFont(jButton5.getFont().deriveFont(jButton5.getFont().getSize()-1f));
         jButton5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/agt_family.png"))); // NOI18N
-        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("mpv5/resources/languages/Panels"); // NOI18N
+        java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle();// NOI18N
         jButton5.setText(bundle.getString("MPView.jButton5.text_1")); // NOI18N
         jButton5.setToolTipText(bundle.getString("MPView.jButton5.toolTipText_1")); // NOI18N
         jButton5.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
