@@ -30,54 +30,49 @@ import mpv5.logging.Log;
  */
 public class ODTFile extends Exportable {
 
-    private static final long serialVersionUID = 1L;
-    private NoaConnection nc;
-    private DocumentHandler dh;
+   private static final long serialVersionUID = 1L;
+   private NoaConnection nc;
+   private DocumentHandler dh;
 
-    public ODTFile(String pathToFile) throws Exception {
-        super(pathToFile);
-        if (!exists()) {
-            try {
-                createNewFile();
-            } catch (IOException ex) {
-                Log.Debug(ex);
-            }
-        }
-//        try {
-            nc = NoaConnection.getConnection();
-            dh = new DocumentHandler(nc);
-            dh.loadDocument(this, false);
-            Log.Debug(this, "Loaded odt file: " + this);
-//        } catch (Exception ex) {
-//            Log.Debug(ex);
-//        }
-    }
-
-    @Override
-    public void run() {
-
-        Log.Debug(this, "run: ");
-        mpv5.YabsViewProxy.instance().setWaiting(true);
-
-        Log.Debug(this, "All fields:");
-        for (Iterator<String> it = getData().keySet().iterator(); it.hasNext();) {
-            String k = it.next();
-            Log.Debug(this, "Key: " + k + " [" + getData().get(k) + "]");
-        }
-
-        try {
-            dh.clear();
-            HashMap<String, Object> d = getData();
-            d.putAll(getTemplate().getData());
-            dh.fillPlaceholderFields(d);
-//            dh.fillTextVariableFields((ITextDocument) df, getData());//Omitted for performance reasons
-            dh.fillTables(getData(), getTemplate());
-            dh.saveAs(getTarget());
-            dh.close();
-        } catch (Exception ex) {
+   public ODTFile(String pathToFile) throws Exception {
+      super(pathToFile);
+      if (!exists()) {
+         try {
+            createNewFile();
+         } catch (IOException ex) {
             Log.Debug(ex);
-        } finally {
-            mpv5.YabsViewProxy.instance().setWaiting(false);
-        }
-    }
+         }
+      }
+   }
+
+   @Override
+   public void run() {
+      try {
+         mpv5.YabsViewProxy.instance().setWaiting(true);
+         nc = NoaConnection.getConnection();
+         dh = new DocumentHandler(nc);
+         dh.loadDocument(this, false);
+         Log.Debug(this, "Loaded odt file: " + this);
+
+         if (Log.isDebugging()) {
+            Log.Debug(this, "All fields:");
+            for (Iterator<String> it = getData().keySet().iterator(); it.hasNext();) {
+               String k = it.next();
+               Log.Debug(this, "Key: " + k + " [" + getData().get(k) + "]");
+            }
+         }
+         dh.clear();
+         HashMap<String, Object> d = getData();
+         d.putAll(getTemplate().getData());
+         dh.fillPlaceholderFields(d);
+//            dh.fillTextVariableFields((ITextDocument) df, getData());//Omitted for performance reasons
+         dh.fillTables(getData(), getTemplate());
+         dh.saveAs(getTarget());
+         dh.close();
+      } catch (Exception ex) {
+         Log.Debug(ex);
+      } finally {
+         mpv5.YabsViewProxy.instance().setWaiting(false);
+      }
+   }
 }

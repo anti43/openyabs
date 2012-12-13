@@ -876,6 +876,21 @@ public class Main implements Runnable {
             new Thread(runnable1).start();
          }
       }
+      
+      if (LocalSettings.getBooleanProperty(LocalSettings.OFFICE_AUTOSTART)) {
+            Runnable runnable2 = new Runnable() {
+               @Override
+               public void run() {
+                  try {
+                     NoaConnection.getConnection();
+                  } catch (Exception ex) {
+                     Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+                  }
+               }
+            };
+
+            new Thread(runnable2).start();
+         }
 
       if (!HEADLESS) {
          checkTpls();

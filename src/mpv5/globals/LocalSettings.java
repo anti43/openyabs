@@ -66,6 +66,8 @@ public class LocalSettings {
     public static final String CMD_PASSWORD = "cmdpassword";
     public static final String CMD_USER = "cmduser";
     public static final String OFFICE_COMMAND = "ooocommand";
+    public static final String OFFICE_AUTOSTART = "oooautostart";
+
     private static PropertyStore predefinedSettings = new PropertyStore(new String[][]{
                 {CLIENT, "Default Client"},
                 {DEFAULT_FONT, "DejaVu Sans 11"},
@@ -80,6 +82,7 @@ public class LocalSettings {
                 {OFFICE_REMOTE, "false"},
                 {OFFICE_USE, "false"},
                 {OFFICE_LOCALSERVER, "false"},
+                {OFFICE_AUTOSTART, "true"},
                 {CACHE_DIR, "Cache"},
                 {DBESCAPE, "true"},
                 {CALCULATOR, ""},
@@ -93,7 +96,7 @@ public class LocalSettings {
             //                {OFFICE_HOME, ""},
             });
     private static Vector<PropertyStore> cookies;
-
+  
     /**
      * Applies the environmental settings
      */

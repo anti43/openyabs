@@ -119,7 +119,7 @@ public class NoaConnection {
       if (cachedConnection != null) {
          return cachedConnection;
       }
-      Log.Debug(NoaConnection.class, "Connection not established yet, trying..");
+      Log.Debug(NoaConnection.class, "Connection not established yet, trying to connect.. ");
       try {
          YabsViewProxy.instance().setWaiting(true);
          YabsViewProxy.instance().setProgressRunning(true);
@@ -161,7 +161,7 @@ public class NoaConnection {
    private NoaConnection(String connectionString, int port) throws Exception {
 
       Log.Debug(this, connectionString);
-      if (connectionString != null && connectionString.length() > 1 && port <= 0) {
+      if (port <= 0) {
          createLocalConnection(connectionString);
       } else if (connectionString != null && connectionString.length() > 1 && port > 0 && port < 9999) {
          createServerConnection(connectionString, port);
@@ -238,33 +238,35 @@ public class NoaConnection {
     */
    private synchronized boolean createLocalConnection(String OOOPath) throws OfficeApplicationException, NOAException, InvalidArgumentException {
 
-//        IApplicationAssistant applicationAssistant = new ApplicationAssistant();
-//        ILazyApplicationInfo[] appInfos = applicationAssistant.getLocalApplications();
-//        if (appInfos.length < 1) {
-////            throw new Exception("No LOOffice Application found.");
-//        } else {
-////            OOOPath = appInfos[0].getHome();
-//        }
-//        System.err.println(OOOPath);
-//        System.err.println(appInfos[0].getHome());
-
-      if (OOOPath != null) {
+      Log.Debug(this, "Office connection attempt with " + String.valueOf(OOOPath));
+      if (OOOPath != null && !OOOPath.equals("null")) {
          HashMap<String, String> configuration = new HashMap<String, String>();
          configuration.put(IOfficeApplication.APPLICATION_HOME_KEY, OOOPath);
          configuration.put(IOfficeApplication.APPLICATION_TYPE_KEY, IOfficeApplication.LOCAL_APPLICATION);
          officeAplication = OfficeApplicationRuntime.getApplication(configuration);
 
          officeAplication.setConfiguration(configuration);
+         Log.Debug(this, "Office activation attempt.. ");
          officeAplication.activate();
+         Log.Debug(this, "Office activation attempt.. SUCCESS!");
 
+         Log.Debug(this, "Getting Office services.. ");
          documentService = officeAplication.getDocumentService();
          desktopService = officeAplication.getDesktopService();
-
+         Log.Debug(this, "Getting Office services.. SUCCESS!");
          setType(TYPE_LOCAL);
       } else {
-         throw new InvalidArgumentException("Path to LOO cannot be null: " + OOOPath);
-      }
+         officeAplication = OfficeApplicationRuntime.getApplication();
+         Log.Debug(this, "Default Office activation attempt.. ");
+         officeAplication.activate();
+         Log.Debug(this, "Default Office activation attempt.. SUCCESS!");
 
+         Log.Debug(this, "Getting Office services.. ");
+         documentService = officeAplication.getDocumentService();
+         desktopService = officeAplication.getDesktopService();
+         Log.Debug(this, "Getting Office services.. SUCCESS!");
+         setType(TYPE_LOCAL);
+      }
       return true;
    }
 
