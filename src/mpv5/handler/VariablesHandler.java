@@ -60,6 +60,7 @@ public abstract class VariablesHandler {
         CREATE_USER("[CREATE_USER]"),
         CURRENT_USER("[CURRENT_USER]"),
         DATENUMERIC("[DATENUMERIC]"),
+        YEAR_SHORT(" [YEAR_SHORT]"),
         DAY("[DAY]");
         private String val;
 
@@ -131,6 +132,8 @@ public abstract class VariablesHandler {
                     varValue = String.valueOf(DateConverter.getQuarter());
                 } else if (varName.equals(GENERIC_VARS.YEAR.toString())) {
                     varValue = DateConverter.getYear();
+                } else if (varName.equals(GENERIC_VARS.YEAR_SHORT.toString())) {
+                    varValue = String.valueOf(DateConverter.getYear()).substring(2);
                 } else if (varName.equals(GENERIC_VARS.OBJECT_MONTH.toString())) {
                     varValue = DateConverter.getMonthName(target.__getDateadded());
                 } else if (varName.equals(GENERIC_VARS.OBJECT_YEAR.toString())) {
