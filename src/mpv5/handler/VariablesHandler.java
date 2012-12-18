@@ -60,7 +60,7 @@ public abstract class VariablesHandler {
         CREATE_USER("[CREATE_USER]"),
         CURRENT_USER("[CURRENT_USER]"),
         DATENUMERIC("[DATENUMERIC]"),
-        YEAR_SHORT(" [YEAR_SHORT]"),
+        YEAR_SHORT("[YEAR_SHORT]"),
         DAY("[DAY]");
         private String val;
 
