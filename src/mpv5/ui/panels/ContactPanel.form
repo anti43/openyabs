@@ -122,7 +122,7 @@
                               <Component id="jToolBar2" min="-2" max="-2" attributes="0"/>
                           </Group>
                       </Group>
-                      <EmptySpace pref="26" max="32767" attributes="0"/>
+                      <EmptySpace pref="36" max="32767" attributes="0"/>
                   </Group>
               </Group>
             </DimensionLayout>
@@ -224,7 +224,6 @@
                       <Dimension value="[100, 22]"/>
                     </Property>
                     <Property name="name" type="java.lang.String" value="customer" noResource="true"/>
-                    <Property name="opaque" type="boolean" value="true"/>
                     <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                       <Dimension value="[140, 22]"/>
                     </Property>
@@ -253,7 +252,6 @@
                       <Dimension value="[100, 22]"/>
                     </Property>
                     <Property name="name" type="java.lang.String" value="supplier" noResource="true"/>
-                    <Property name="opaque" type="boolean" value="true"/>
                     <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                       <Dimension value="[140, 22]"/>
                     </Property>
@@ -282,7 +280,6 @@
                       <Dimension value="[100, 22]"/>
                     </Property>
                     <Property name="name" type="java.lang.String" value="manufacturer" noResource="true"/>
-                    <Property name="opaque" type="boolean" value="true"/>
                     <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                       <Dimension value="[140, 22]"/>
                     </Property>
@@ -311,7 +308,6 @@
                       <Dimension value="[100, 22]"/>
                     </Property>
                     <Property name="name" type="java.lang.String" value="company" noResource="true"/>
-                    <Property name="opaque" type="boolean" value="true"/>
                     <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
                       <Dimension value="[190, 22]"/>
                     </Property>
@@ -467,7 +463,7 @@
                   <Group type="102" alignment="0" attributes="0">
                       <Component id="jToolBar3" min="-2" max="-2" attributes="0"/>
                       <EmptySpace min="0" pref="0" max="-2" attributes="0"/>
-                      <Component id="jScrollPane2" pref="63" max="32767" attributes="2"/>
+                      <Component id="jScrollPane2" pref="69" max="32767" attributes="2"/>
                   </Group>
               </Group>
             </DimensionLayout>
@@ -1197,7 +1193,7 @@
                                       </Group>
                                       <Component id="button_order1" min="-2" pref="167" max="-2" attributes="0"/>
                                   </Group>
-                                  <EmptySpace max="32767" attributes="0"/>
+                                  <EmptySpace pref="64" max="32767" attributes="0"/>
                               </Group>
                           </Group>
                         </DimensionLayout>
@@ -1512,7 +1508,7 @@
                                   <Component id="bankname" alignment="2" min="-2" max="-2" attributes="0"/>
                                   <Component id="bankcurrency" alignment="2" min="-2" max="-2" attributes="0"/>
                               </Group>
-                              <EmptySpace pref="82" max="32767" attributes="0"/>
+                              <EmptySpace pref="98" max="32767" attributes="0"/>
                           </Group>
                       </Group>
                     </DimensionLayout>
@@ -1624,12 +1620,12 @@
                   <Layout>
                     <DimensionLayout dim="0">
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="jScrollPane1" alignment="1" pref="974" max="32767" attributes="0"/>
+                          <Component id="jScrollPane1" alignment="1" pref="981" max="32767" attributes="0"/>
                       </Group>
                     </DimensionLayout>
                     <DimensionLayout dim="1">
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="jScrollPane1" alignment="0" pref="148" max="32767" attributes="0"/>
+                          <Component id="jScrollPane1" alignment="0" pref="163" max="32767" attributes="0"/>
                       </Group>
                     </DimensionLayout>
                   </Layout>
@@ -1688,13 +1684,13 @@
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Group type="102" alignment="0" attributes="0">
                               <Component id="jPanel6" min="-2" pref="539" max="-2" attributes="0"/>
-                              <EmptySpace pref="439" max="32767" attributes="0"/>
+                              <EmptySpace pref="446" max="32767" attributes="0"/>
                           </Group>
                       </Group>
                     </DimensionLayout>
                     <DimensionLayout dim="1">
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="jPanel6" alignment="0" pref="152" max="32767" attributes="0"/>
+                          <Component id="jPanel6" alignment="0" pref="167" max="32767" attributes="0"/>
                       </Group>
                     </DimensionLayout>
                   </Layout>
@@ -1760,15 +1756,15 @@
                     </Container>
                   </SubComponents>
                 </Container>
-                <Container class="javax.swing.JPanel" name="jPanel2">
+                <Container class="javax.swing.JPanel" name="filetab">
                   <Properties>
-                    <Property name="name" type="java.lang.String" value="jPanel2" noResource="true"/>
+                    <Property name="name" type="java.lang.String" value="filetab" noResource="true"/>
                   </Properties>
                   <Constraints>
                     <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout" value="org.netbeans.modules.form.compat2.layouts.support.JTabbedPaneSupportLayout$JTabbedPaneConstraintsDescription">
                       <JTabbedPaneConstraints tabName="Files">
                         <Property name="tabTitle" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
-                          <ResourceString bundle="mpv5/resources/languages/Panels.properties" key="ContactPanel.jPanel2.TabConstraints.tabTitle" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+                          <ResourceString bundle="mpv5/resources/languages/Panels.properties" key="ContactPanel.filetab.TabConstraints.tabTitle" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
                         </Property>
                       </JTabbedPaneConstraints>
                     </Constraint>
@@ -1785,7 +1781,7 @@
                               <Component id="removefile1" min="-2" pref="40" max="-2" attributes="0"/>
                               <EmptySpace pref="766" max="32767" attributes="0"/>
                           </Group>
-                          <Component id="jScrollPane5" alignment="0" pref="978" max="32767" attributes="0"/>
+                          <Component id="jScrollPane5" alignment="0" pref="985" max="32767" attributes="0"/>
                       </Group>
                     </DimensionLayout>
                     <DimensionLayout dim="1">
@@ -1797,7 +1793,7 @@
                                   <Component id="addfile1" alignment="2" min="-2" max="-2" attributes="1"/>
                               </Group>
                               <EmptySpace max="-2" attributes="0"/>
-                              <Component id="jScrollPane5" pref="117" max="32767" attributes="2"/>
+                              <Component id="jScrollPane5" pref="136" max="32767" attributes="2"/>
                           </Group>
                       </Group>
                     </DimensionLayout>
@@ -1843,7 +1839,6 @@
                         <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
                           <ResourceString bundle="mpv5/resources/languages/Panels.properties" key="ContactPanel.addfile1.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
                         </Property>
-                        <Property name="enabled" type="boolean" value="false"/>
                         <Property name="name" type="java.lang.String" value="addfile1" noResource="true"/>
                       </Properties>
                       <Events>
@@ -1858,7 +1853,6 @@
                         <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
                           <ResourceString bundle="mpv5/resources/languages/Panels.properties" key="ContactPanel.removefile1.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
                         </Property>
-                        <Property name="enabled" type="boolean" value="false"/>
                         <Property name="name" type="java.lang.String" value="removefile1" noResource="true"/>
                       </Properties>
                       <Events>
