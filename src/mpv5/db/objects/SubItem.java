@@ -421,7 +421,8 @@ public final class SubItem extends DatabaseObject implements Triggerable {
          getInttype() != TYPE_TEXT ? String.valueOf(FormatNumber.formatLokalCurrency(this.getTotalTaxValue())) : "",
          getInttype() != TYPE_TEXT ? String.valueOf(FormatNumber.formatLokalCurrency(this.__getTotalbrutvalue())) : "",
          __getLinkurl(),
-         __getCname()
+         __getCname(),
+         getInttype() != TYPE_TEXT ? String.valueOf(FormatNumber.formatLokalCurrency(this.__getDiscount())) : ""
       ///////////////////////////////////////////////////////////////////////////////
       };
       List<String> l = Arrays.asList(possibleCols);
