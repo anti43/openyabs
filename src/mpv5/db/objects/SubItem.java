@@ -113,7 +113,9 @@ public final class SubItem extends DatabaseObject implements Triggerable {
       if (deleteRemovedSubitems) {
          for (int i = 0; i < deletionQueue.size(); i++) {
             try {
-               QueryHandler.delete(SubItem.getObject(Context.getSubItem(), deletionQueue.get(i)));
+               int myid = deletionQueue.get(i);
+               if(myid>0)
+                  QueryHandler.delete(SubItem.getObject(Context.getSubItem(), myid));
             } catch (NodataFoundException ex) {
                Log.Debug(ex);
             }
