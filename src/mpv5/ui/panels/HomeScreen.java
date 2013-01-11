@@ -204,8 +204,8 @@ public class HomeScreen
                         data[i][3] = "N/A";
                     }
                     type = ((Item) databaseObject).__getInttype();
-                    tax = Constants.BD100.add(((Item) databaseObject).__getTaxvalue()).divide(Constants.BD100, 9, BigDecimal.ROUND_HALF_UP);
-                    BigDecimal value = ((Item) databaseObject).__getNetvalue().multiply(tax).subtract(((Item) databaseObject).__getDiscountvalue());
+                    //tax = Constants.BD100.add(((Item) databaseObject).__getTaxvalue()).divide(Constants.BD100, 9, BigDecimal.ROUND_HALF_UP);
+                    BigDecimal value = ((Item) databaseObject).__getNetvalue().add(((Item) databaseObject).__getTaxvalue()).subtract(((Item) databaseObject).__getDiscountvalue());
                     //  <li>TYPE_BILL = 0;
                     //  <li>TYPE_ORDER = 1;
                     //  <li>TYPE_OFFER = 2;

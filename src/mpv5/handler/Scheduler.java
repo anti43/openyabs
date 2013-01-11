@@ -116,6 +116,7 @@ public class Scheduler extends Thread {
         Context c = Context.getItem();
         String ItemType = "bills";
         String prop = "";
+        String use = "";
         try {
             while (b < 5) {
                 QueryCriteria2 opens = new QueryCriteria2();
@@ -124,16 +125,19 @@ public class Scheduler extends Thread {
                         ItemType = "bills";
                         prop = "hideunpaidbills";
                         opens.and(new QueryParameter(Context.getItem(), "intstatus", Item.STATUS_FINISHED, QueryParameter.EQUALS));
+                        use = "usebills";
                         break;
                     case 1:
                         ItemType = "order";
                         prop = "hideunattentedorders";
                         opens.and(new QueryParameter(Context.getItem(), "intstatus", Item.STATUS_QUEUED, QueryParameter.EQUALS));
+                        use = "useorders";
                         break;
                     case 2:
                         ItemType = "offer";
                         prop = "hideunacceptedoffers";
                         opens.and(new QueryParameter(Context.getItem(), "intstatus", Item.STATUS_QUEUED, QueryParameter.EQUALS));
+                        use = "useoffers";
                         break;
                     case 3:
                         ItemType = "delivery";
@@ -141,14 +145,17 @@ public class Scheduler extends Thread {
                         opens.or(
                                 new QueryParameter(Context.getItem(), "intstatus", Item.STATUS_QUEUED, QueryParameter.EQUALS),
                                 new QueryParameter(Context.getItem(), "intstatus", Item.STATUS_FINISHED, QueryParameter.EQUALS));
+                        use = "usedeliverys";
                         break;
                     case 4:
                         ItemType = "confirmation";
                         prop = "hideunattentedconfirmations";
                         opens.and(new QueryParameter(Context.getItem(), "intstatus", Item.STATUS_QUEUED, QueryParameter.EQUALS));
+                        use = "useconfirmations";
                         break;
                 }
-                if (!mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("org.openyabs.uiproperty", prop)) {
+                if (!mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("org.openyabs.uiproperty", prop)
+                        && mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("org.openyabs.uiproperty", use)) {
                     opens.and(new QueryParameter(Context.getItem(), "inttype", b, QueryParameter.EQUALS));
                     opens.setOrder("dateadded", true);
                     try {
@@ -190,16 +197,19 @@ public class Scheduler extends Thread {
                         ItemType = "bills";
                         prop = "hideunpaidbills";
                         opens.and(new QueryParameter(Context.getItem(), "intstatus", Item.STATUS_FINISHED, QueryParameter.EQUALS));
+                        use = "usebills";
                         break;
                     case 1:
                         ItemType = "order";
                         prop = "hideunattentedorders";
                         opens.and(new QueryParameter(Context.getItem(), "intstatus", Item.STATUS_QUEUED, QueryParameter.EQUALS));
+                        use = "useorders";
                         break;
                     case 2:
                         ItemType = "offer";
                         prop = "hideunacceptedoffers";
                         opens.and(new QueryParameter(Context.getItem(), "intstatus", Item.STATUS_QUEUED, QueryParameter.EQUALS));
+                        use = "useoffers";
                         break;
                     case 3:
                         ItemType = "delivery";
@@ -207,15 +217,18 @@ public class Scheduler extends Thread {
                         opens.or(
                                 new QueryParameter(Context.getItem(), "intstatus", Item.STATUS_QUEUED, QueryParameter.EQUALS),
                                 new QueryParameter(Context.getItem(), "intstatus", Item.STATUS_FINISHED, QueryParameter.EQUALS));
+                        use = "usedeliverys";
                         break;
                     case 4:
                         ItemType = "confirmation";
                         prop = "hideunattentedconfirmations";
                         opens.and(new QueryParameter(Context.getItem(), "intstatus", Item.STATUS_QUEUED, QueryParameter.EQUALS));
+                        use = "useconfirmations";
                         break;
                 }
                 if (mpv5.db.objects.User.getCurrentUser().getProperties().hasProperty(ItemType + ".warn.days")
-                        && !mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("org.openyabs.uiproperty", prop)) {
+                        && !mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("org.openyabs.uiproperty", prop)
+                        && mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("org.openyabs.uiproperty", use)) {
                     Integer warn = Integer.valueOf(mpv5.db.objects.User.getCurrentUser().
                             getProperties().
                             getProperty(ItemType + ".warn.days"));
@@ -260,27 +273,33 @@ public class Scheduler extends Thread {
                     case 0:
                         ItemType = "bills";
                         opens.and(new QueryParameter(Context.getItem(), "intstatus", Item.STATUS_FINISHED, QueryParameter.EQUALS));
+                        use = "usebills";
                         break;
                     case 1:
                         ItemType = "order";
                         opens.and(new QueryParameter(Context.getItem(), "intstatus", Item.STATUS_QUEUED, QueryParameter.EQUALS));
+                        use = "useorders";
                         break;
                     case 2:
                         ItemType = "offer";
                         opens.and(new QueryParameter(Context.getItem(), "intstatus", Item.STATUS_QUEUED, QueryParameter.EQUALS));
+                        use = "useoffers";
                         break;
                     case 3:
                         ItemType = "delivery";
                         opens.or(
                                 new QueryParameter(Context.getItem(), "intstatus", Item.STATUS_QUEUED, QueryParameter.EQUALS),
                                 new QueryParameter(Context.getItem(), "intstatus", Item.STATUS_FINISHED, QueryParameter.EQUALS));
+                        use = "usedeliverys";
                         break;
                     case 4:
                         ItemType = "confirmation";
                         opens.and(new QueryParameter(Context.getItem(), "intstatus", Item.STATUS_QUEUED, QueryParameter.EQUALS));
+                        use = "useconfirmations";
                         break;
                 }
-                if (mpv5.db.objects.User.getCurrentUser().getProperties().hasProperty(ItemType + ".alert.days")) {
+                if (mpv5.db.objects.User.getCurrentUser().getProperties().hasProperty(ItemType + ".alert.days") 
+                         && mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("org.openyabs.uiproperty", use)) {
                     Integer alert = Integer.valueOf(mpv5.db.objects.User.getCurrentUser().
                             getProperties().
                             getProperty(ItemType + ".alert.days"));
