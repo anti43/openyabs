@@ -56,7 +56,7 @@
         </DimensionLayout>
         <DimensionLayout dim="1">
           <Group type="103" groupAlignment="0" attributes="0">
-              <Component id="jTabbedPane1" alignment="0" pref="325" max="32767" attributes="0"/>
+              <Component id="jTabbedPane1" alignment="0" pref="394" max="32767" attributes="0"/>
           </Group>
         </DimensionLayout>
       </Layout>
@@ -724,18 +724,22 @@
                               <EmptySpace max="-2" attributes="0"/>
                               <Group type="103" groupAlignment="0" attributes="0">
                                   <Group type="102" alignment="1" attributes="0">
-                                      <Component id="volumeNetto" min="-2" max="-2" attributes="0"/>
-                                      <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                                      <Component id="revenueNetto" min="-2" max="-2" attributes="0"/>
-                                  </Group>
-                                  <Group type="102" alignment="1" attributes="0">
                                       <Component id="prinitingComboBox1" min="-2" pref="196" max="-2" attributes="0"/>
                                       <EmptySpace max="-2" attributes="0"/>
                                       <Component id="jButton4" min="-2" max="-2" attributes="0"/>
                                       <EmptySpace pref="173" max="32767" attributes="0"/>
                                       <Component id="volumeBrutto" min="-2" max="-2" attributes="0"/>
                                       <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                                      <Component id="taxVolume" min="-2" max="-2" attributes="0"/>
+                                      <Component id="volumeDiscount" min="-2" max="-2" attributes="0"/>
+                                  </Group>
+                                  <Group type="102" alignment="1" attributes="0">
+                                      <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
+                                      <Group type="103" groupAlignment="1" attributes="0">
+                                          <Component id="taxVolume" min="-2" max="-2" attributes="0"/>
+                                          <Component id="volumeNetto" min="-2" max="-2" attributes="0"/>
+                                      </Group>
+                                      <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                                      <Component id="revenueNetto" min="-2" max="-2" attributes="0"/>
                                   </Group>
                               </Group>
                               <EmptySpace max="-2" attributes="0"/>
@@ -744,20 +748,31 @@
                     </DimensionLayout>
                     <DimensionLayout dim="1">
                       <Group type="103" groupAlignment="0" attributes="0">
-                          <Group type="102" attributes="0">
+                          <Group type="102" alignment="1" attributes="0">
                               <EmptySpace max="-2" attributes="0"/>
-                              <Group type="103" groupAlignment="2" attributes="0">
-                                  <Component id="volumeNetto" alignment="2" min="-2" max="-2" attributes="0"/>
-                                  <Component id="revenueNetto" alignment="2" min="-2" max="-2" attributes="0"/>
+                              <Group type="103" groupAlignment="1" attributes="0">
+                                  <Group type="102" attributes="0">
+                                      <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
+                                      <Group type="103" groupAlignment="2" attributes="0">
+                                          <Component id="jButton4" alignment="2" min="-2" pref="23" max="-2" attributes="0"/>
+                                          <Component id="prinitingComboBox1" alignment="2" min="-2" pref="19" max="-2" attributes="1"/>
+                                      </Group>
+                                  </Group>
+                                  <Group type="102" attributes="0">
+                                      <Group type="103" groupAlignment="2" attributes="0">
+                                          <Component id="volumeNetto" alignment="2" min="-2" max="-2" attributes="0"/>
+                                          <Component id="revenueNetto" alignment="2" min="-2" max="-2" attributes="0"/>
+                                      </Group>
+                                      <EmptySpace pref="9" max="32767" attributes="0"/>
+                                      <Component id="taxVolume" min="-2" max="-2" attributes="0"/>
+                                      <EmptySpace max="-2" attributes="0"/>
+                                      <Group type="103" groupAlignment="1" attributes="0">
+                                          <Component id="volumeDiscount" min="-2" max="-2" attributes="0"/>
+                                          <Component id="volumeBrutto" min="-2" max="-2" attributes="0"/>
+                                      </Group>
+                                  </Group>
                               </Group>
-                              <EmptySpace max="32767" attributes="0"/>
-                              <Group type="103" groupAlignment="2" attributes="0">
-                                  <Component id="taxVolume" alignment="2" min="-2" max="-2" attributes="0"/>
-                                  <Component id="volumeBrutto" alignment="2" min="-2" max="-2" attributes="0"/>
-                                  <Component id="jButton4" alignment="2" min="-2" pref="23" max="-2" attributes="0"/>
-                                  <Component id="prinitingComboBox1" alignment="2" min="-2" pref="19" max="-2" attributes="1"/>
-                              </Group>
-                              <EmptySpace max="-2" attributes="0"/>
+                              <EmptySpace min="-2" pref="18" max="-2" attributes="0"/>
                           </Group>
                       </Group>
                     </DimensionLayout>
@@ -809,6 +824,14 @@
                           <ResourceString bundle="mpv5/resources/languages/Panels.properties" key="JournalPanel.taxVolume._Label" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
                         </Property>
                         <Property name="name" type="java.lang.String" value="taxVolume" noResource="true"/>
+                      </Properties>
+                    </Component>
+                    <Component class="mpv5.ui.beans.LabeledTextField" name="volumeDiscount">
+                      <Properties>
+                        <Property name="_Label" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
+                          <ResourceString bundle="mpv5/resources/languages/Panels.properties" key="JournalPanel.volumeDiscount._Label" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+                        </Property>
+                        <Property name="name" type="java.lang.String" value="volumeDiscount" noResource="true"/>
                       </Properties>
                     </Component>
                   </SubComponents>

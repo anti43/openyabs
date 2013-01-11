@@ -84,213 +84,213 @@ import mpv5.utils.ui.TextFieldUtils;
  */
 public class ContactPanel extends javax.swing.JPanel implements DataPanel {
 
-    private static final long serialVersionUID = 1L;
-    public static final int COMPANY = 4;
-    private Contact dataOwner;
-    private DataPanelTB tb;
-    private SearchPanel sp;
-    private Integer dataTableContent = null;
-    private final JPopupMenu itemTablePopup;
-    private java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle();
+   private static final long serialVersionUID = 1L;
+   public static final int COMPANY = 4;
+   private Contact dataOwner;
+   private DataPanelTB tb;
+   private SearchPanel sp;
+   private Integer dataTableContent = null;
+   private final JPopupMenu itemTablePopup;
+   private java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle();
 //    private String old_cnumber = "";
 
-    /**
-     * Creates new form ContactPanel
-     *
-     * @param context
-     */
-    public ContactPanel(Context context) {
-        initComponents();
-        setName("contactpanel");
-        sp = new SearchPanel(context, this);
-        tb = new mpv5.ui.toolbars.DataPanelTB(this);
-        toolbarpane.add(tb, BorderLayout.CENTER);
-        dataOwner = new Contact();
-        dataOwner.setCountry(mpv5.db.objects.User.getCurrentUser().__getDefcountry());
+   /**
+    * Creates new form ContactPanel
+    *
+    * @param context
+    */
+   public ContactPanel(Context context) {
+      initComponents();
+      setName("contactpanel");
+      sp = new SearchPanel(context, this);
+      tb = new mpv5.ui.toolbars.DataPanelTB(this);
+      toolbarpane.add(tb, BorderLayout.CENTER);
+      dataOwner = new Contact();
+      dataOwner.setCountry(mpv5.db.objects.User.getCurrentUser().__getDefcountry());
 
-        dateadded.setText(DateConverter.getTodayDefDate());
-        addedby.setText(mpv5.db.objects.User.getCurrentUser().getName());
-        groupnameselect.setSearchEnabled(true);
-        groupnameselect.setContext(Context.getGroup());
-        companyselect.setSearchEnabled(true);
-        companyselect.setContext(Context.getContactsCompanies());
-        companyselect.getComboBox().setEditable(true);
+      dateadded.setText(DateConverter.getTodayDefDate());
+      addedby.setText(mpv5.db.objects.User.getCurrentUser().getName());
+      groupnameselect.setSearchEnabled(true);
+      groupnameselect.setContext(Context.getGroup());
+      companyselect.setSearchEnabled(true);
+      companyselect.setContext(Context.getContactsCompanies());
+      companyselect.getComboBox().setEditable(true);
 
-        number.setSearchOnEnterEnabled(true);
-        number.setParent(this);
-        number.setSearchField("cnumber");
-        number.setContext(Context.getContact());
+      number.setSearchOnEnterEnabled(true);
+      number.setParent(this);
+      number.setSearchField("cnumber");
+      number.setContext(Context.getContact());
 
-        cname.setSearchOnEnterEnabled(true);
-        cname.setParent(this);
-        cname.setSearchField("cname");
-        cname.setContext(Context.getContact());
-        countryselect.setModel(LanguageManager.getCountriesAsComboBoxModel());
-        refresh();
+      cname.setSearchOnEnterEnabled(true);
+      cname.setParent(this);
+      cname.setSearchField("cname");
+      cname.setContext(Context.getContact());
+      countryselect.setModel(LanguageManager.getCountriesAsComboBoxModel());
+      refresh();
 
-        itemTablePopup = DOTablePopUp.addDefaultPopupMenu(dataTable, Context.getItem(), false);
+      itemTablePopup = DOTablePopUp.addDefaultPopupMenu(dataTable, Context.getItem(), false);
 
-        if (context.equals(Context.getSupplier()) || context.equals(Context.getManufacturer())) {
-            company.setSelected(true);
-        }
-        ((MPTable) dataTable).setPersistanceHandler(new TableViewPersistenceHandler((MPTable) dataTable, this));
-        ((MPTable) proptable).setPersistanceHandler(new TableViewPersistenceHandler((MPTable) proptable, this));
-        setupFilter();
-    }
+      if (context.equals(Context.getSupplier()) || context.equals(Context.getManufacturer())) {
+         company.setSelected(true);
+      }
+      ((MPTable) dataTable).setPersistanceHandler(new TableViewPersistenceHandler((MPTable) dataTable, this));
+      ((MPTable) proptable).setPersistanceHandler(new TableViewPersistenceHandler((MPTable) proptable, this));
+      setupFilter();
+   }
 
-    @Override
-    public DatabaseObject getDataOwner() {
-        return dataOwner;
-    }
+   @Override
+   public DatabaseObject getDataOwner() {
+      return dataOwner;
+   }
 
-    @Override
-    public void setDataOwner(DatabaseObject object, boolean populate) {
-        dataOwner = (Contact) object;
-        if (populate) {
-            dataOwner.setPanelData(this);
-            this.exposeData();
+   @Override
+   public void setDataOwner(DatabaseObject object, boolean populate) {
+      dataOwner = (Contact) object;
+      if (populate) {
+         dataOwner.setPanelData(this);
+         this.exposeData();
 
-            if (object.isExisting() && populate) {
-                setTitle(object.__getCname());
+         if (object.isExisting() && populate) {
+            setTitle(object.__getCname());
+         }
+
+         prinitingComboBox1.init(rightpane);
+
+         tb.setFavourite(Favourite.isFavourite(object));
+         tb.setEditable(!object.isReadOnly());
+         tb.setExportButtonsEnabled(Context.getTemplateableContexts().contains(dataOwner.getContext()));
+
+         addAddresses();
+         dataTable.setModel(new MPTableModel());
+
+         if (object.isReadOnly()) {
+            Popup.notice(Messages.LOCKED_BY);
+         }
+
+         if (dataOwner.isExisting()) {
+            if (dataOwner.__getIscustomer()) {
+               button_billsActionPerformed(null);
+            } else if (dataOwner.__getIsmanufacturer() || dataOwner.__getIssupplier()) {
+               button_productsActionPerformed(null);
             }
+         }
 
-            prinitingComboBox1.init(rightpane);
+         isCustomer(dataOwner.__getIscustomer());
+         isManufacturer(dataOwner.__getIsmanufacturer());
+         isSupplier(dataOwner.__getIssupplier());
 
-            tb.setFavourite(Favourite.isFavourite(object));
-            tb.setEditable(!object.isReadOnly());
-            tb.setExportButtonsEnabled(Context.getTemplateableContexts().contains(dataOwner.getContext()));
+         properties();
+      }
+   }
 
-            addAddresses();
-            dataTable.setModel(new MPTableModel());
+   @Override
+   public void showRequiredFields() {
+      jTabbedPane1.setSelectedIndex(1);
+      TextFieldUtils.blinkerRed(cname);
+      cname.requestFocus();
+   }
 
-            if (object.isReadOnly()) {
-                Popup.notice(Messages.LOCKED_BY);
-            }
+   private void addAddresses() {
+      String str = addresspanel.getTitleAt(0);
+      Component n = addresspanel.getComponent(0);
+      addresspanel.removeAll();
+      addresspanel.add(n);
+      addresspanel.setTitleAt(0, str);
+      try {
+         List data = DatabaseObject.getReferencedObjects(dataOwner, Context.getAddress());
 
-            if (dataOwner.isExisting()) {
-                if (dataOwner.__getIscustomer()) {
-                    button_billsActionPerformed(null);
-                } else if (dataOwner.__getIsmanufacturer() || dataOwner.__getIssupplier()) {
-                    button_productsActionPerformed(null);
-                }
-            }
+         for (int i = 0; i < data.size(); i++) {
+            Address databaseObject = (Address) data.get(i);
+            AddressPanel p = new AddressPanel();
+            p.setName(databaseObject.__getDepartment() + " - " + databaseObject.__getCname());
+            p.setDataOwner(databaseObject, true);
+            p.setDataParent(dataOwner);
+            addresspanel.add(p);
+         }
+      } catch (NodataFoundException ex) {
+         Log.Debug(this, ex);
+      }
+   }
 
-            isCustomer(dataOwner.__getIscustomer());
-            isManufacturer(dataOwner.__getIsmanufacturer());
-            isSupplier(dataOwner.__getIssupplier());
+   private void addFile() {
+      DialogForFile d = new DialogForFile(DialogForFile.FILES_ONLY);
+      if (d.chooseFile()) {
+         String s = Popup.Enter_Value(Messages.ENTER_A_DESCRIPTION);
+         if (s != null) {
+            QueryHandler.instanceOf().clone(Context.getFiles(), this).insertFile(d.getFile(), dataOwner, QueryCriteria.getSaveStringFor(s));
+         }
+      }
+   }
 
-            properties();
-        }
-    }
+   private void deleteFile() {
+      if (dataOwner.isExisting()) {
+         try {
+            DatabaseObject.getObject(Context.getFilesToContacts(), "filename", (filetableN.getModel().getValueAt(filetableN.convertRowIndexToModel(filetableN.getSelectedRow()), 0).toString())).delete();
+         } catch (Exception e) {
+            Log.Debug(this, e.getMessage());
+         }
+         fillFiles();
 
-    @Override
-    public void showRequiredFields() {
-        jTabbedPane1.setSelectedIndex(1);
-        TextFieldUtils.blinkerRed(cname);
-        cname.requestFocus();
-    }
+      }
+   }
 
-    private void addAddresses() {
-        String str = addresspanel.getTitleAt(0);
-        Component n = addresspanel.getComponent(0);
-        addresspanel.removeAll();
-        addresspanel.add(n);
-        addresspanel.setTitleAt(0, str);
-        try {
-            List data = DatabaseObject.getReferencedObjects(dataOwner, Context.getAddress());
+   private void fileTableClicked(MouseEvent evt) {
+      if (evt.getClickCount() > 1) {
+         FileDirectoryHandler.open(QueryHandler.instanceOf().clone(Context.getFiles()).
+                 retrieveFile(filetableN.getModel().getValueAt(filetableN.convertRowIndexToModel(filetableN.convertRowIndexToModel(filetableN.getSelectedRow())), 0).
+                 toString(), new File(FileDirectoryHandler.getTempDir() + filetableN.getModel().
+                 getValueAt(filetableN.convertRowIndexToModel(filetableN.getSelectedRow()), 1).toString())));
+      } else if (evt.getClickCount() == 1 && evt.getButton() == MouseEvent.BUTTON3) {
 
-            for (int i = 0; i < data.size(); i++) {
-                Address databaseObject = (Address) data.get(i);
-                AddressPanel p = new AddressPanel();
-                p.setName(databaseObject.__getDepartment() + " - " + databaseObject.__getCname());
-                p.setDataOwner(databaseObject, true);
-                p.setDataParent(dataOwner);
-                addresspanel.add(p);
-            }
-        } catch (NodataFoundException ex) {
-            Log.Debug(this, ex);
-        }
-    }
+         JTable source = (JTable) evt.getSource();
+         int row = source.rowAtPoint(evt.getPoint());
+         int column = source.columnAtPoint(evt.getPoint());
 
-    private void addFile() {
-        DialogForFile d = new DialogForFile(DialogForFile.FILES_ONLY);
-        if (d.chooseFile()) {
-            String s = Popup.Enter_Value(Messages.ENTER_A_DESCRIPTION);
-            if (s != null) {
-                QueryHandler.instanceOf().clone(Context.getFiles(), this).insertFile(d.getFile(), dataOwner, QueryCriteria.getSaveStringFor(s));
-            }
-        }
-    }
+         if (!source.isRowSelected(row)) {
+            source.changeSelection(row, column, false, false);
+         }
 
-    private void deleteFile() {
-        if (dataOwner.isExisting()) {
-            try {
-                DatabaseObject.getObject(Context.getFilesToContacts(), "filename", (filetableN.getModel().getValueAt(filetableN.convertRowIndexToModel(filetableN.getSelectedRow()), 0).toString())).delete();
-            } catch (Exception e) {
-                Log.Debug(this, e.getMessage());
-            }
-            fillFiles();
+         FileTablePopUp.instanceOf(filetableN).show(source, evt.getX(), evt.getY());
+      }
+   }
 
-        }
-    }
+   private void itemTableClicked(MouseEvent evt) {
+      if (evt.getButton() == MouseEvent.BUTTON1 && evt.getClickCount() > 1) {
+         try {
+            mpv5.YabsViewProxy.instance().getIdentifierView().addTab(DatabaseObject.getObject(Context.getItem(), Integer.valueOf(dataTable.getModel().getValueAt(dataTable.convertRowIndexToModel(dataTable.getSelectedRow()), 0).toString())));
+         } catch (NodataFoundException ex) {
+            Log.Debug(ex);
+         }
+      } else if (evt.getButton() == MouseEvent.BUTTON3) {
+         itemTablePopup.show(dataTable, evt.getX(), evt.getY());
+      }
+   }
 
-    private void fileTableClicked(MouseEvent evt) {
-        if (evt.getClickCount() > 1) {
-            FileDirectoryHandler.open(QueryHandler.instanceOf().clone(Context.getFiles()).
-                    retrieveFile(filetableN.getModel().getValueAt(filetableN.convertRowIndexToModel(filetableN.convertRowIndexToModel(filetableN.getSelectedRow())), 0).
-                    toString(), new File(FileDirectoryHandler.getTempDir() + filetableN.getModel().
-                    getValueAt(filetableN.convertRowIndexToModel(filetableN.getSelectedRow()), 1).toString())));
-        } else if (evt.getClickCount() == 1 && evt.getButton() == MouseEvent.BUTTON3) {
+   private void productTableClicked(MouseEvent evt) {
+      if (evt.getClickCount() > 1) {
+         try {
+            mpv5.YabsViewProxy.instance().getIdentifierView().addTab(DatabaseObject.getObject(Context.getProduct(), Integer.valueOf(dataTable.getModel().getValueAt(dataTable.convertRowIndexToModel(dataTable.getSelectedRow()), 0).toString())));
+         } catch (NodataFoundException ex) {
+            Log.Debug(ex);
+         }
+      }
+   }
 
-            JTable source = (JTable) evt.getSource();
-            int row = source.rowAtPoint(evt.getPoint());
-            int column = source.columnAtPoint(evt.getPoint());
+   private void fillFiles() {
+      Context c = Context.getFilesToContacts();
+      c.addReference(Context.getFiles().getDbIdentity(), "cname", "filename");
+      Object[][] data = new DatabaseSearch(c).getValuesFor(Context.DETAILS_FILES_TO_CONTACTS, "contactsids", dataOwner.__getIDS());
 
-            if (!source.isRowSelected(row)) {
-                source.changeSelection(row, column, false, false);
-            }
+      dataTable.setModel(new MPTableModel(data, Headers.FILE_REFERENCES.getValue()));
+      TableFormat.stripFirstColumn(dataTable);
+   }
 
-            FileTablePopUp.instanceOf(filetableN).show(source, evt.getX(), evt.getY());
-        }
-    }
-
-    private void itemTableClicked(MouseEvent evt) {
-        if (evt.getButton() == MouseEvent.BUTTON1 && evt.getClickCount() > 1) {
-            try {
-                mpv5.YabsViewProxy.instance().getIdentifierView().addTab(DatabaseObject.getObject(Context.getItem(), Integer.valueOf(dataTable.getModel().getValueAt(dataTable.convertRowIndexToModel(dataTable.getSelectedRow()), 0).toString())));
-            } catch (NodataFoundException ex) {
-                Log.Debug(ex);
-            }
-        } else if (evt.getButton() == MouseEvent.BUTTON3) {
-            itemTablePopup.show(dataTable, evt.getX(), evt.getY());
-        }
-    }
-
-    private void productTableClicked(MouseEvent evt) {
-        if (evt.getClickCount() > 1) {
-            try {
-                mpv5.YabsViewProxy.instance().getIdentifierView().addTab(DatabaseObject.getObject(Context.getProduct(), Integer.valueOf(dataTable.getModel().getValueAt(dataTable.convertRowIndexToModel(dataTable.getSelectedRow()), 0).toString())));
-            } catch (NodataFoundException ex) {
-                Log.Debug(ex);
-            }
-        }
-    }
-
-    private void fillFiles() {
-        Context c = Context.getFilesToContacts();
-        c.addReference(Context.getFiles().getDbIdentity(), "cname", "filename");
-        Object[][] data = new DatabaseSearch(c).getValuesFor(Context.DETAILS_FILES_TO_CONTACTS, "contactsids", dataOwner.__getIDS());
-
-        dataTable.setModel(new MPTableModel(data, Headers.FILE_REFERENCES.getValue()));
-        TableFormat.stripFirstColumn(dataTable);
-    }
-
-    /**
-     * This method is called from within the constructor to initialize the form.
-     * WARNING: Do NOT modify this code. The content of this method is always
-     * regenerated by the Form Editor.
-     */
-    @SuppressWarnings("unchecked")
+   /**
+    * This method is called from within the constructor to initialize the form.
+    * WARNING: Do NOT modify this code. The content of this method is always
+    * regenerated by the Form Editor.
+    */
+   @SuppressWarnings("unchecked")
    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
    private void initComponents() {
 
@@ -1351,48 +1351,48 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
 }//GEN-LAST:event_companyItemStateChanged
 
     private void manufacturerItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_manufacturerItemStateChanged
-        if (!supplier.isSelected()) {
-            isManufacturer(manufacturer.isSelected());
-        }
+       if (!supplier.isSelected()) {
+          isManufacturer(manufacturer.isSelected());
+       }
 }//GEN-LAST:event_manufacturerItemStateChanged
 
     private void supplierItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_supplierItemStateChanged
-        isSupplier(supplier.isSelected());
+       isSupplier(supplier.isSelected());
 }//GEN-LAST:event_supplierItemStateChanged
 
     private void customerItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_customerItemStateChanged
-        if (!manufacturer.isSelected()) {
-            isCustomer(customer.isSelected());
-        }
+       if (!manufacturer.isSelected()) {
+          isCustomer(customer.isSelected());
+       }
 }//GEN-LAST:event_customerItemStateChanged
 
     private void button_order1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button_order1ActionPerformed
-        AddressPanel p = new AddressPanel();
-        p.setName(Messages.NEW_VALUE.toString());
-        ((Address) p.getDataOwner()).setCompany(dataOwner.__getCompany());
-        ((Address) p.getDataOwner()).setTaxnumber(dataOwner.__getTaxnumber());
-        p.setDataParent(dataOwner);
-        p.setDataOwner(p.getDataOwner(), true);
-        addresspanel.add(p);
-        addresspanel.setSelectedComponent(p);
+       AddressPanel p = new AddressPanel();
+       p.setName(Messages.NEW_VALUE.toString());
+       ((Address) p.getDataOwner()).setCompany(dataOwner.__getCompany());
+       ((Address) p.getDataOwner()).setTaxnumber(dataOwner.__getTaxnumber());
+       p.setDataParent(dataOwner);
+       p.setDataOwner(p.getDataOwner(), true);
+       addresspanel.add(p);
+       addresspanel.setSelectedComponent(p);
 }//GEN-LAST:event_button_order1ActionPerformed
-    private static int FILES = 0;
-    private static int PRODUCTS = 1;
-    private static int ITEM = 2;
+   private static int FILES = 0;
+   private static int PRODUCTS = 1;
+   private static int ITEM = 2;
 
     private void dataTableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_dataTableMouseClicked
-        if (dataTableContent != null) {
-            if (dataTableContent == FILES) {
-                fileTableClicked(evt);
+       if (dataTableContent != null) {
+          if (dataTableContent == FILES) {
+             fileTableClicked(evt);
 
-            } else if (dataTableContent == PRODUCTS) {
-                productTableClicked(evt);
+          } else if (dataTableContent == PRODUCTS) {
+             productTableClicked(evt);
 
-            } else if (dataTableContent == ITEM) {
-                itemTableClicked(evt);
+          } else if (dataTableContent == ITEM) {
+             itemTableClicked(evt);
 
-            }
-        }
+          }
+       }
     }//GEN-LAST:event_dataTableMouseClicked
 
     private void countryselectActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_countryselectActionPerformed
@@ -1400,149 +1400,153 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
 
-        if (dataOwner.isExisting()) {
-            mpv5.YabsViewProxy.instance().getIdentifierView().addTab(new JournalPanel(dataOwner), Messages.HISTORY_OF + getDataOwner().__getCname());
-        }
+       if (dataOwner.isExisting()) {
+          mpv5.YabsViewProxy.instance().getIdentifierView().addTab(new JournalPanel(dataOwner), Messages.HISTORY_OF + getDataOwner().__getCname());
+       }
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void button_billsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button_billsActionPerformed
 
-        Context c = Context.getItem(Item.TYPE_BILL, null);
+       Context c = Context.getItem(Item.TYPE_BILL, null);
 //        c.addReference(Context.getContact().getDbIdentity(), "cname", "filename");
-        Object[][] data = new DatabaseSearch(c).getValuesFor(Context.DEFAULT_ITEM_SEARCH, "contactsids", dataOwner.__getIDS());
+       Object[][] data = new DatabaseSearch(c).getValuesFor(Context.DEFAULT_ITEM_SEARCH, "contactsids", dataOwner.__getIDS());
 
-        MPTableModel mod = new MPTableModel(data, Headers.ITEM_DEFAULT);
-        mod.setTypes(new Class[]{Integer.class, Object.class, Date.class, Double.class});
-        dataTable.setModel(mod);
-        TableFormat.stripFirstColumn(dataTable);
-        dataTableContent = ITEM;
-        setupFilter();
-
+       MPTableModel mod = new MPTableModel(data, Headers.ITEM_DEFAULT);
+       mod.setTypes(new Class[]{Integer.class, Object.class, Date.class, Double.class});
+       dataTable.setModel(mod);
+       TableFormat.stripFirstColumn(dataTable);
+       dataTableContent = ITEM;
+       setupFilter();
+       dataTable.getRowSorter().toggleSortOrder(2);//fixme doit better
+       dataTable.getRowSorter().toggleSortOrder(2);
     }//GEN-LAST:event_button_billsActionPerformed
 
     private void button_offersActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button_offersActionPerformed
-        Context c = Context.getItem(Item.TYPE_OFFER, null);
+       Context c = Context.getItem(Item.TYPE_OFFER, null);
 
-        Object[][] data = new DatabaseSearch(c).getValuesFor(Context.DEFAULT_ITEM_SEARCH, "contactsids", dataOwner.__getIDS());
-        MPTableModel mod = new MPTableModel(data, Headers.ITEM_DEFAULT);
-        mod.setTypes(new Class[]{Integer.class, Object.class, Date.class, Double.class});
-        dataTable.setModel(mod);
-        TableFormat.stripFirstColumn(dataTable);
-        dataTableContent = ITEM;
+       Object[][] data = new DatabaseSearch(c).getValuesFor(Context.DEFAULT_ITEM_SEARCH, "contactsids", dataOwner.__getIDS());
+       MPTableModel mod = new MPTableModel(data, Headers.ITEM_DEFAULT);
+       mod.setTypes(new Class[]{Integer.class, Object.class, Date.class, Double.class});
+       dataTable.setModel(mod);
+       TableFormat.stripFirstColumn(dataTable);
+       dataTableContent = ITEM;
 
-        setupFilter();
+       setupFilter();
+       dataTable.getRowSorter().toggleSortOrder(2);//fixme doit better
+       dataTable.getRowSorter().toggleSortOrder(2);
     }//GEN-LAST:event_button_offersActionPerformed
 
     private void button_ordersActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button_ordersActionPerformed
-        Context c = Context.getItem(Item.TYPE_ORDER, null);
+       Context c = Context.getItem(Item.TYPE_ORDER, null);
 
-        Object[][] data = new DatabaseSearch(c).getValuesFor(Context.DEFAULT_ITEM_SEARCH, "contactsids", dataOwner.__getIDS());
-        MPTableModel mod = new MPTableModel(data, Headers.ITEM_DEFAULT);
-        mod.setTypes(new Class[]{Integer.class, Object.class, Date.class, Double.class});
-        dataTable.setModel(mod);
-        TableFormat.stripFirstColumn(dataTable);
-        dataTableContent = ITEM;
-        setupFilter();
-
+       Object[][] data = new DatabaseSearch(c).getValuesFor(Context.DEFAULT_ITEM_SEARCH, "contactsids", dataOwner.__getIDS());
+       MPTableModel mod = new MPTableModel(data, Headers.ITEM_DEFAULT);
+       mod.setTypes(new Class[]{Integer.class, Object.class, Date.class, Double.class});
+       dataTable.setModel(mod);
+       TableFormat.stripFirstColumn(dataTable);
+       dataTableContent = ITEM;
+       setupFilter();
+       dataTable.getRowSorter().toggleSortOrder(2);//fixme doit better
+       dataTable.getRowSorter().toggleSortOrder(2);
     }//GEN-LAST:event_button_ordersActionPerformed
 
     private void button_productsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button_productsActionPerformed
-        Context c = Context.getProduct();
-        Object[][] data = new DatabaseSearch(c, 1000).getValuesFor(Context.DEFAULT_PRODUCT_SEARCH, new String[]{"manufacturersids", "suppliersids"}, dataOwner.__getIDS());
-        dataTable.setModel(new MPTableModel(data, Headers.PRODUCT_DEFAULT));
-        dataTableContent = PRODUCTS;
+       Context c = Context.getProduct();
+       Object[][] data = new DatabaseSearch(c, 1000).getValuesFor(Context.DEFAULT_PRODUCT_SEARCH, new String[]{"manufacturersids", "suppliersids"}, dataOwner.__getIDS());
+       dataTable.setModel(new MPTableModel(data, Headers.PRODUCT_DEFAULT));
+       dataTableContent = PRODUCTS;
 
-        TableFormat.stripFirstColumn(dataTable);
-        setupFilter();
+       TableFormat.stripFirstColumn(dataTable);
+       setupFilter();
     }//GEN-LAST:event_button_productsActionPerformed
 
     private void button_billActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button_billActionPerformed
-        if (dataOwner.isExisting()) {
-            Item i = (Item) DatabaseObject.getObject(Context.getInvoice());
-            i.setContactsids(dataOwner.__getIDS());
-            i.setCname(Messages.NEW_BILL.getValue());
-            i.setInttype(Item.TYPE_BILL);
-            i.setDateadded(new Date());
-            i.setGroupsids(dataOwner.__getGroupsids());
-            mpv5.YabsViewProxy.instance().getIdentifierView().addTab(i);
-            
-        }
+       if (dataOwner.isExisting()) {
+          Item i = (Item) DatabaseObject.getObject(Context.getInvoice());
+          i.setContactsids(dataOwner.__getIDS());
+          i.setCname(Messages.NEW_BILL.getValue());
+          i.setInttype(Item.TYPE_BILL);
+          i.setDateadded(new Date());
+          i.setGroupsids(dataOwner.__getGroupsids());
+          mpv5.YabsViewProxy.instance().getIdentifierView().addTab(i);
+
+       }
     }//GEN-LAST:event_button_billActionPerformed
 
     private void button_orderActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button_orderActionPerformed
-        if (dataOwner.isExisting()) {
-            Item i = (Item) DatabaseObject.getObject(Context.getOrder());
-            i.setContactsids(dataOwner.__getIDS());
-            i.setCname(Messages.NEW_ORDER.getValue());
-            i.setInttype(Item.TYPE_ORDER);
-            i.setDateadded(new Date());
-            i.setGroupsids(dataOwner.__getGroupsids());
-            mpv5.YabsViewProxy.instance().getIdentifierView().addTab(i);
-        }
+       if (dataOwner.isExisting()) {
+          Item i = (Item) DatabaseObject.getObject(Context.getOrder());
+          i.setContactsids(dataOwner.__getIDS());
+          i.setCname(Messages.NEW_ORDER.getValue());
+          i.setInttype(Item.TYPE_ORDER);
+          i.setDateadded(new Date());
+          i.setGroupsids(dataOwner.__getGroupsids());
+          mpv5.YabsViewProxy.instance().getIdentifierView().addTab(i);
+       }
     }//GEN-LAST:event_button_orderActionPerformed
 
     private void button_offerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button_offerActionPerformed
-        if (dataOwner.isExisting()) {
-            Item i = (Item) DatabaseObject.getObject(Context.getOffer());
-            i.setContactsids(dataOwner.__getIDS());
-            i.setCname(Messages.NEW_OFFER.getValue());
-            i.setInttype(Item.TYPE_OFFER);
-            i.setGroupsids(dataOwner.__getGroupsids());
-            i.setDateadded(new Date());
-            mpv5.YabsViewProxy.instance().getIdentifierView().addTab(i);
-        }
+       if (dataOwner.isExisting()) {
+          Item i = (Item) DatabaseObject.getObject(Context.getOffer());
+          i.setContactsids(dataOwner.__getIDS());
+          i.setCname(Messages.NEW_OFFER.getValue());
+          i.setInttype(Item.TYPE_OFFER);
+          i.setGroupsids(dataOwner.__getGroupsids());
+          i.setDateadded(new Date());
+          mpv5.YabsViewProxy.instance().getIdentifierView().addTab(i);
+       }
     }//GEN-LAST:event_button_offerActionPerformed
 
     private void button_productActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button_productActionPerformed
-        if (dataOwner.isExisting()) {
-            Product i = (Product) DatabaseObject.getObject(Context.getProduct());
-            i.setSuppliersids(dataOwner.__getIDS());
-            i.setManufacturersids(dataOwner.__getIDS());
-            i.setCname(Messages.NEW_PRODUCT.getValue());
-            i.setInttype(Product.TYPE_PRODUCT);
-            i.setGroupsids(dataOwner.__getGroupsids());
-            mpv5.YabsViewProxy.instance().getIdentifierView().addTab(i);
-        }
+       if (dataOwner.isExisting()) {
+          Product i = (Product) DatabaseObject.getObject(Context.getProduct());
+          i.setSuppliersids(dataOwner.__getIDS());
+          i.setManufacturersids(dataOwner.__getIDS());
+          i.setCname(Messages.NEW_PRODUCT.getValue());
+          i.setInttype(Product.TYPE_PRODUCT);
+          i.setGroupsids(dataOwner.__getGroupsids());
+          mpv5.YabsViewProxy.instance().getIdentifierView().addTab(i);
+       }
     }//GEN-LAST:event_button_productActionPerformed
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
-        if (dataOwner != null && dataOwner.isExisting()) {
-            ScheduleDayEvents p = new ScheduleDayEvents(Schedule.getEvents(dataOwner));
-        }
+       if (dataOwner != null && dataOwner.isExisting()) {
+          ScheduleDayEvents p = new ScheduleDayEvents(Schedule.getEvents(dataOwner));
+       }
     }//GEN-LAST:event_jButton3ActionPerformed
 
     private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
-        if (mailaddress.hasText()) {
-            try {
-                Desktop.getDesktop().mail(new URI("mailto:" + mailaddress.getText()));
-            } catch (Exception ex) {
-                Log.Debug(ex);
-                Popup.error(ex);
-            }
-        }
+       if (mailaddress.hasText()) {
+          try {
+             Desktop.getDesktop().mail(new URI("mailto:" + mailaddress.getText()));
+          } catch (Exception ex) {
+             Log.Debug(ex);
+             Popup.error(ex);
+          }
+       }
     }//GEN-LAST:event_jButton5ActionPerformed
 
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
     }//GEN-LAST:event_jButton4ActionPerformed
 
     private void filetableNMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_filetableNMouseClicked
-        fileTableClicked(evt);
+       fileTableClicked(evt);
     }//GEN-LAST:event_filetableNMouseClicked
 
     private void addfile1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addfile1ActionPerformed
-        if (dataOwner.isExisting()) {
-            addFile();
-        }
+       if (dataOwner.isExisting()) {
+          addFile();
+       }
 
     }//GEN-LAST:event_addfile1ActionPerformed
 
     private void removefile1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_removefile1ActionPerformed
-        deleteFile();
+       deleteFile();
 
     }//GEN-LAST:event_removefile1ActionPerformed
 
     private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
-        // TODO add your handling code here:
+       // TODO add your handling code here:
     }//GEN-LAST:event_jButton6ActionPerformed
    // Variables declaration - do not modify//GEN-BEGIN:variables
    private javax.swing.JLabel addedby;
@@ -1627,213 +1631,213 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
    private mpv5.ui.beans.LabeledTextField workphone;
    private mpv5.ui.beans.LabeledTextField zip;
    // End of variables declaration//GEN-END:variables
-    private javax.swing.table.DefaultTableModel tableModel = null;
-    public String city_;
-    public String cname_;
-    public String taxnumber_;
-    public String department_;
-    public boolean iscompany_;
-    public boolean iscustomer_;
-    public boolean isenabled_;
-    public String fax_;
-    public String mailaddress_;
-    public boolean ismale_;
-    public boolean ismanufacturer_;
-    public String mobilephone_;
-    public String notes_;
-    public String cnumber_;
-    public String mainphone_;
-    public String prename_;
-    public String street_;
-    public boolean issupplier_;
-    public String title_;
-    public String website_;
-    public String workphone_;
-    public String zip_;
-    public int intaddedby_;
-    public String company_;
-    public int ids_;
-    public Date dateadded_;
-    public int groupsids_ = 1;
-    public String country_;
-    public String bankaccount_;
-    public String bankid_;
-    public String bankname_;
-    public String bankcurrency_;
-    public String bankcountry_;
+   private javax.swing.table.DefaultTableModel tableModel = null;
+   public String city_;
+   public String cname_;
+   public String taxnumber_;
+   public String department_;
+   public boolean iscompany_;
+   public boolean iscustomer_;
+   public boolean isenabled_;
+   public String fax_;
+   public String mailaddress_;
+   public boolean ismale_;
+   public boolean ismanufacturer_;
+   public String mobilephone_;
+   public String notes_;
+   public String cnumber_;
+   public String mainphone_;
+   public String prename_;
+   public String street_;
+   public boolean issupplier_;
+   public String title_;
+   public String website_;
+   public String workphone_;
+   public String zip_;
+   public int intaddedby_;
+   public String company_;
+   public int ids_;
+   public Date dateadded_;
+   public int groupsids_ = 1;
+   public String country_;
+   public String bankaccount_;
+   public String bankid_;
+   public String bankname_;
+   public String bankcurrency_;
+   public String bankcountry_;
 
-    @Override
-    public boolean collectData() {
+   @Override
+   public boolean collectData() {
 
-        city_ = city.get_Text();
-        cname_ = cname.get_Text();
-        taxnumber_ = taxnumber.get_Text();
-        iscompany_ = company.isSelected();
+      city_ = city.get_Text();
+      cname_ = cname.get_Text();
+      taxnumber_ = taxnumber.get_Text();
+      iscompany_ = company.isSelected();
 
-        if (companyselect.getText() != null) {
-            company_ = companyselect.getText();
-        } else {
-            company_ = "";
-        }
+      if (companyselect.getText() != null) {
+         company_ = companyselect.getText();
+      } else {
+         company_ = "";
+      }
 
-        if (iscompany_ && company_.length() == 0) {
-            company_ = cname_;
-        } else if (iscompany_ && cname_.length() == 0) {
-            cname_ = company_;
-        }
+      if (iscompany_ && company_.length() == 0) {
+         company_ = cname_;
+      } else if (iscompany_ && cname_.length() == 0) {
+         cname_ = company_;
+      }
 
-        if (company_.length() == 0 && cname_.length() == 0) {
-            return false;
-        }
+      if (company_.length() == 0 && cname_.length() == 0) {
+         return false;
+      }
 
 
-        if (groupnameselect.getSelectedItem() != null) {
-            groupsids_ = Integer.valueOf((groupnameselect.getSelectedItem()).getId());
-        } else {
-            groupsids_ = 1;
-        }
+      if (groupnameselect.getSelectedItem() != null) {
+         groupsids_ = Integer.valueOf((groupnameselect.getSelectedItem()).getId());
+      } else {
+         groupsids_ = 1;
+      }
 
-        if (countryselect.getSelectedItem() != null) {
-            country_ = String.valueOf(((MPComboBoxModelItem) countryselect.getSelectedItem()).getId());
-        } else {
-            country_ = "";
-        }
-        issupplier_ = supplier.isSelected();
-        ismanufacturer_ = manufacturer.isSelected();
-        iscustomer_ = customer.isSelected();
-        isenabled_ = true;
-        fax_ = fax.get_Text();
-        mailaddress_ = mailaddress.get_Text();
-        ismale_ = male.isSelected();
+      if (countryselect.getSelectedItem() != null) {
+         country_ = String.valueOf(((MPComboBoxModelItem) countryselect.getSelectedItem()).getId());
+      } else {
+         country_ = "";
+      }
+      issupplier_ = supplier.isSelected();
+      ismanufacturer_ = manufacturer.isSelected();
+      iscustomer_ = customer.isSelected();
+      isenabled_ = true;
+      fax_ = fax.get_Text();
+      mailaddress_ = mailaddress.get_Text();
+      ismale_ = male.isSelected();
 
-        mobilephone_ = mobilephone.get_Text();
-        notes_ = notes.getText();
-        cnumber_ = number.get_Text();
+      mobilephone_ = mobilephone.get_Text();
+      notes_ = notes.getText();
+      cnumber_ = number.get_Text();
 
-        mainphone_ = mainphone.get_Text();
-        prename_ = prename.get_Text();
-        street_ = street.get_Text();
+      mainphone_ = mainphone.get_Text();
+      prename_ = prename.get_Text();
+      street_ = street.get_Text();
 
-        title_ = title.get_Text();
-        website_ = website.get_Text();
-        workphone_ = workphone.get_Text();
-        zip_ = zip.get_Text();
+      title_ = title.get_Text();
+      website_ = website.get_Text();
+      workphone_ = workphone.get_Text();
+      zip_ = zip.get_Text();
 
-        bankaccount_ = bankaccount.getText();
-        bankcountry_ = bankcountry.getText();
-        bankcurrency_ = bankcurrency.getText();
-        bankid_ = bankid.getText();
-        bankname_ = bankname.getText();
+      bankaccount_ = bankaccount.getText();
+      bankcountry_ = bankcountry.getText();
+      bankcurrency_ = bankcurrency.getText();
+      bankid_ = bankid.getText();
+      bankname_ = bankname.getText();
 
-        if (dateadded_ == null) {
-            dateadded_ = new Date();
-        }
-        intaddedby_ = User.getUserId(addedby.getText());
-        department_ = department.get_Text();
+      if (dateadded_ == null) {
+         dateadded_ = new Date();
+      }
+      intaddedby_ = User.getUserId(addedby.getText());
+      department_ = department.get_Text();
 
-        dataOwner.setisCustomer(iscustomer_);
-        dataOwner.setisManufacturer(ismanufacturer_);
-        dataOwner.setisSupplier(issupplier_);
+      dataOwner.setisCustomer(iscustomer_);
+      dataOwner.setisManufacturer(ismanufacturer_);
+      dataOwner.setisSupplier(issupplier_);
 
-        return true;
-    }
+      return true;
+   }
 
-    @Override
-    public void exposeData() {
-        city.set_Text(city_);
-        cname.set_Text(cname_);
-        taxnumber.set_Text(taxnumber_);
-        company.setSelected(iscompany_);
+   @Override
+   public void exposeData() {
+      city.set_Text(city_);
+      cname.set_Text(cname_);
+      taxnumber.set_Text(taxnumber_);
+      company.setSelected(iscompany_);
 
-        try {
-            companyselect.setModel(new String[][]{{company_, company_}});
-        } catch (Exception e) {
-            Log.Debug(e);
-        }
-        try {
-            groupnameselect.setModel(DatabaseObject.getObject(Context.getGroup(), groupsids_));
-        } catch (NodataFoundException e) {
-            Log.Debug(e);
-        }
-        try {
-            if (country_.length() == 0) {
-                country_ = mpv5.db.objects.User.getCurrentUser().__getDefcountry();
-            }
-            countryselect.setSelectedIndex(MPComboBoxModelItem.getItemID(country_, countryselect.getModel()));
-        } catch (Exception e) {
-            Log.Debug(e);
-        }
-        customer.setSelected(iscustomer_);
+      try {
+         companyselect.setModel(new String[][]{{company_, company_}});
+      } catch (Exception e) {
+         Log.Debug(e);
+      }
+      try {
+         groupnameselect.setModel(DatabaseObject.getObject(Context.getGroup(), groupsids_));
+      } catch (NodataFoundException e) {
+         Log.Debug(e);
+      }
+      try {
+         if (country_.length() == 0) {
+            country_ = mpv5.db.objects.User.getCurrentUser().__getDefcountry();
+         }
+         countryselect.setSelectedIndex(MPComboBoxModelItem.getItemID(country_, countryselect.getModel()));
+      } catch (Exception e) {
+         Log.Debug(e);
+      }
+      customer.setSelected(iscustomer_);
 //        enabled.setSelected(isenabled_);
-        fax.set_Text(fax_);
-        mailaddress.set_Text(mailaddress_);
-        male.setSelected(ismale_);
-        female.setSelected(!ismale_);
-        manufacturer.setSelected(ismanufacturer_);
-        mobilephone.set_Text(mobilephone_);
-        notes.setText(notes_);
-        number.set_Text(cnumber_);
+      fax.set_Text(fax_);
+      mailaddress.set_Text(mailaddress_);
+      male.setSelected(ismale_);
+      female.setSelected(!ismale_);
+      manufacturer.setSelected(ismanufacturer_);
+      mobilephone.set_Text(mobilephone_);
+      notes.setText(notes_);
+      number.set_Text(cnumber_);
 //        old_cnumber = cnumber_;
-        mainphone.set_Text(mainphone_);
-        prename.set_Text(prename_);
-        street.set_Text(street_);
-        supplier.setSelected(issupplier_);
-        title.set_Text(title_);
-        website.set_Text(website_);
-        workphone.set_Text(workphone_);
-        zip.set_Text(zip_);
-        dateadded.setText(DateConverter.getDefDateString(dateadded_));
-        addedby.setText(User.getUsername(intaddedby_));
-        department.set_Text(department_);
+      mainphone.set_Text(mainphone_);
+      prename.set_Text(prename_);
+      street.set_Text(street_);
+      supplier.setSelected(issupplier_);
+      title.set_Text(title_);
+      website.set_Text(website_);
+      workphone.set_Text(workphone_);
+      zip.set_Text(zip_);
+      dateadded.setText(DateConverter.getDefDateString(dateadded_));
+      addedby.setText(User.getUsername(intaddedby_));
+      department.set_Text(department_);
 
-        bankaccount.setText(bankaccount_);
-        bankcountry.setText(bankcountry_);
-        bankcurrency.setText(bankcurrency_);
-        bankid.setText(bankid_);
-        bankname.setText(bankname_);
-        fillFiles();
+      bankaccount.setText(bankaccount_);
+      bankcountry.setText(bankcountry_);
+      bankcurrency.setText(bankcurrency_);
+      bankid.setText(bankid_);
+      bankname.setText(bankname_);
+      fillFiles();
 
-    }
+   }
 
-    @Override
-    public void refresh() {
-        Runnable runnable = new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    groupnameselect.setModel(DatabaseObject.getObject(Context.getGroup(), mpv5.db.objects.User.getCurrentUser().__getGroupsids()));
-                    sp.refresh();
-                    fillFiles();
-                } catch (Exception e) {
-                    Log.Debug(this, e);
-                }
+   @Override
+   public void refresh() {
+      Runnable runnable = new Runnable() {
+         @Override
+         public void run() {
+            try {
+               groupnameselect.setModel(DatabaseObject.getObject(Context.getGroup(), mpv5.db.objects.User.getCurrentUser().__getGroupsids()));
+               sp.refresh();
+               fillFiles();
+            } catch (Exception e) {
+               Log.Debug(this, e);
             }
-        };
+         }
+      };
 
-        SwingUtilities.invokeLater(runnable);
-    }
+      SwingUtilities.invokeLater(runnable);
+   }
 
-    public void isCustomer(boolean b) {
-        customer.setSelected(b);
-        button_offers.setEnabled(b);
-        button_offer.setEnabled(b);
-        button_bill.setEnabled(b);
-        button_bills.setEnabled(b);
-        button_order.setEnabled(b);
-        button_orders.setEnabled(b);
-    }
+   public void isCustomer(boolean b) {
+      customer.setSelected(b);
+      button_offers.setEnabled(b);
+      button_offer.setEnabled(b);
+      button_bill.setEnabled(b);
+      button_bills.setEnabled(b);
+      button_order.setEnabled(b);
+      button_orders.setEnabled(b);
+   }
 
-    public void isManufacturer(boolean b) {
-        manufacturer.setSelected(b);
-        button_product.setEnabled(b);
-        button_products.setEnabled(b);
-    }
+   public void isManufacturer(boolean b) {
+      manufacturer.setSelected(b);
+      button_product.setEnabled(b);
+      button_products.setEnabled(b);
+   }
 
-    public void isSupplier(boolean b) {
-        supplier.setSelected(b);
-        button_product.setEnabled(b);
-        button_products.setEnabled(b);
-    }
+   public void isSupplier(boolean b) {
+      supplier.setSelected(b);
+      button_product.setEnabled(b);
+      button_products.setEnabled(b);
+   }
 
 //    public void isCompany(boolean selected) {
 //        try {
@@ -1851,134 +1855,134 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
 //        department.setEnabled(!selected);
 //
 //    }
-    @Override
-    public void paste(DatabaseObject... dbos) {
-        for (DatabaseObject dbo : dbos) {
-            if (dbo.getDbIdentity().equals(Context.getContact().getDbIdentity())) {
-                setDataOwner(dbo, true);
-            } else {
-                mpv5.YabsViewProxy.instance().addMessage(Messages.NOT_POSSIBLE.toString() + Messages.ACTION_PASTE.toString(), Color.RED);
+   @Override
+   public void paste(DatabaseObject... dbos) {
+      for (DatabaseObject dbo : dbos) {
+         if (dbo.getDbIdentity().equals(Context.getContact().getDbIdentity())) {
+            setDataOwner(dbo, true);
+         } else {
+            mpv5.YabsViewProxy.instance().addMessage(Messages.NOT_POSSIBLE.toString() + Messages.ACTION_PASTE.toString(), Color.RED);
+         }
+      }
+   }
+
+   @Override
+   public void showSearchBar(boolean show) {
+      leftpane.removeAll();
+      if (show) {
+         leftpane.add(sp, BorderLayout.CENTER);
+         sp.search();
+      }
+
+      validate();
+   }
+
+   private void setTitle(String title) {
+      if (this.getParent() instanceof JViewport || this.getParent() instanceof JTabbedPane) {
+         JTabbedPane jTabbedPane = null;
+         String title1 = title;
+         //this->viewport->scrollpane->tabbedpane
+         if (this.getParent().getParent().getParent() instanceof JTabbedPane) {
+            jTabbedPane = (JTabbedPane) this.getParent().getParent().getParent();
+         } else {
+            try {
+               jTabbedPane = (JTabbedPane) this.getParent();
+            } catch (Exception e) {
+               //Free floating window
+               ((JFrame) this.getRootPane().getParent()).setTitle(title1);
             }
-        }
-    }
+         }
+         if (jTabbedPane != null) {
+            jTabbedPane.setTitleAt(jTabbedPane.getSelectedIndex(), title1);
+         }
+      }
+   }
 
-    @Override
-    public void showSearchBar(boolean show) {
-        leftpane.removeAll();
-        if (show) {
-            leftpane.add(sp, BorderLayout.CENTER);
-            sp.search();
-        }
+   @Override
+   public void actionAfterSave() {
+   }
 
-        validate();
-    }
+   @Override
+   public void actionAfterCreate() {
+      sp.refresh();
+   }
 
-    private void setTitle(String title) {
-        if (this.getParent() instanceof JViewport || this.getParent() instanceof JTabbedPane) {
-            JTabbedPane jTabbedPane = null;
-            String title1 = title;
-            //this->viewport->scrollpane->tabbedpane
-            if (this.getParent().getParent().getParent() instanceof JTabbedPane) {
-                jTabbedPane = (JTabbedPane) this.getParent().getParent().getParent();
-            } else {
-                try {
-                    jTabbedPane = (JTabbedPane) this.getParent();
-                } catch (Exception e) {
-                    //Free floating window
-                    ((JFrame) this.getRootPane().getParent()).setTitle(title1);
-                }
-            }
-            if (jTabbedPane != null) {
-                jTabbedPane.setTitleAt(jTabbedPane.getSelectedIndex(), title1);
-            }
-        }
-    }
-
-    @Override
-    public void actionAfterSave() {
-    }
-
-    @Override
-    public void actionAfterCreate() {
-        sp.refresh();
-    }
-
-    public void actionBeforeCreate() {
+   public void actionBeforeCreate() {
 //        if (old_cnumber.equals(cnumber_)) {
 //                cnumber_ = null;
 //            }
-    }
+   }
 
-    public void actionBeforeSave() throws ChangeNotApprovedException {
-        if (dataOwner.isExisting()) {
-            if (!mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("org.openyabs.uiproperty", "nowarnings")) {
+   public void actionBeforeSave() throws ChangeNotApprovedException {
+      if (dataOwner.isExisting()) {
+         if (!mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("org.openyabs.uiproperty", "nowarnings")) {
 
-                if (!Popup.Y_N_dialog(Messages.REALLY_CHANGE)) {
-                    throw new ChangeNotApprovedException(dataOwner);
-                }
+            if (!Popup.Y_N_dialog(Messages.REALLY_CHANGE)) {
+               throw new ChangeNotApprovedException(dataOwner);
             }
-        }
-    }
+         }
+      }
+   }
 
-    public void mail() {
-        try {
-            Desktop.getDesktop().mail(new URI("mailto:" + dataOwner.__getMailaddress()));
-        } catch (Exception uRISyntaxException) {
-            Log.Debug(this, uRISyntaxException.getMessage());
-            Popup.error(uRISyntaxException);
-        }
-    }
+   public void mail() {
+      try {
+         Desktop.getDesktop().mail(new URI("mailto:" + dataOwner.__getMailaddress()));
+      } catch (Exception uRISyntaxException) {
+         Log.Debug(this, uRISyntaxException.getMessage());
+         Popup.error(uRISyntaxException);
+      }
+   }
 
-    public void print() {
-        Export.print(this);
-    }
+   public void print() {
+      Export.print(this);
+   }
 
-    private void properties() {
-        final MPTableModel m = new MPTableModel(ValueProperty.getProperties(dataOwner));
+   private void properties() {
+      final MPTableModel m = new MPTableModel(ValueProperty.getProperties(dataOwner));
 
-        if (m.getDataVector().isEmpty()) {
-            proptable.setModel(new MPTableModel(
-                    Arrays.asList(new ValueProperty[]{new ValueProperty("", "", dataOwner)})));
-        } else {
-            proptable.setModel(m);
-        }
+      if (m.getDataVector().isEmpty()) {
+         proptable.setModel(new MPTableModel(
+                 Arrays.asList(new ValueProperty[]{new ValueProperty("", "", dataOwner)})));
+      } else {
+         proptable.setModel(m);
+      }
 
-        m.addTableModelListener(new TableModelListener() {
-            @Override
-            public void tableChanged(TableModelEvent e) {
+      m.addTableModelListener(new TableModelListener() {
+         @Override
+         public void tableChanged(TableModelEvent e) {
 //                Log.Print(String.valueOf(m.getValueAt(e.getLastRow(), 1)).length());
-                if (dataOwner.isExisting()) {
-                    if (String.valueOf(m.getValueAt(e.getLastRow(), 1)).length() == 0) {
-                        ValueProperty.deleteProperty(dataOwner, String.valueOf(m.getData()[e.getLastRow()][0]));
-                        m.removeTableModelListener(this);
-                        properties();
-                    } else if (e.getColumn() == 1 && m.getValueAt(e.getLastRow(), 0) != null && String.valueOf(m.getValueAt(e.getLastRow(), 0)).length() > 0) {
-                        ValueProperty.addOrUpdateProperty(String.valueOf(m.getData()[e.getLastRow()][0]).replaceAll("[^\\w]", ""), String.valueOf(m.getData()[e.getLastRow()][1]), dataOwner);
-                        m.removeTableModelListener(this);
-                        properties();
-                    }
-                }
+            if (dataOwner.isExisting()) {
+               if (String.valueOf(m.getValueAt(e.getLastRow(), 1)).length() == 0) {
+                  ValueProperty.deleteProperty(dataOwner, String.valueOf(m.getData()[e.getLastRow()][0]));
+                  m.removeTableModelListener(this);
+                  properties();
+               } else if (e.getColumn() == 1 && m.getValueAt(e.getLastRow(), 0) != null && String.valueOf(m.getValueAt(e.getLastRow(), 0)).length() > 0) {
+                  ValueProperty.addOrUpdateProperty(String.valueOf(m.getData()[e.getLastRow()][0]).replaceAll("[^\\w]", ""), String.valueOf(m.getData()[e.getLastRow()][1]), dataOwner);
+                  m.removeTableModelListener(this);
+                  properties();
+               }
             }
-        });
-    }
+         }
+      });
+   }
 
-    private void setupFilter() {
-        final JTable table = dataTable;
-        final TableRowSorter<TableModel> sorter = new TableRowSorter<TableModel>(table.getModel());
-        table.setRowSorter(sorter);
-        for (ActionListener a : filterme.getTextField().getActionListeners()) {
-            filterme.getTextField().removeActionListener(tb);
-        }
-        filterme.getTextField().addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                String text = filterme.getTextField().getText();
-                if (text.length() == 0) {
-                    sorter.setRowFilter(null);
-                } else {
-                    sorter.setRowFilter(RowFilter.regexFilter(text));
-                }
+   private void setupFilter() {
+      final JTable table = dataTable;
+      final TableRowSorter<TableModel> sorter = new TableRowSorter<TableModel>(table.getModel());
+      table.setRowSorter(sorter);
+      for (ActionListener a : filterme.getTextField().getActionListeners()) {
+         filterme.getTextField().removeActionListener(tb);
+      }
+      filterme.getTextField().addActionListener(new ActionListener() {
+         @Override
+         public void actionPerformed(ActionEvent e) {
+            String text = filterme.getTextField().getText();
+            if (text.length() == 0) {
+               sorter.setRowFilter(null);
+            } else {
+               sorter.setRowFilter(RowFilter.regexFilter(text));
             }
-        });
-    }
+         }
+      });
+   }
 }

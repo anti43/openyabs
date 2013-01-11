@@ -54,6 +54,7 @@ public class NoaConnection {
     * Indicates a remote OO installation.
     */
    public static final int TYPE_REMOTE = 1;
+   public static volatile boolean officeAvailable = false;
 
    /*
     * Define the native dll /so path
@@ -88,13 +89,14 @@ public class NoaConnection {
                }
             }
          }
+
       } catch (Exception e) {
          Log.Debug(NoaConnection.class, e.getMessage());
       } finally {
          YabsViewProxy.instance().setWaiting(false);
          YabsViewProxy.instance().setProgressReset();
          YabsViewProxy.instance().showOfficeStatus(false, "");
-
+         officeAvailable = false;
       }
    }
    protected static IOfficeApplication officeAplication;
@@ -124,12 +126,9 @@ public class NoaConnection {
          YabsViewProxy.instance().setWaiting(true);
          YabsViewProxy.instance().setProgressRunning(true);
          Notificator.raiseNotification(Messages.OO_WAITING, false);
-         if (LocalSettings.getBooleanProperty(LocalSettings.OFFICE_USE) && (LocalSettings.hasProperty(LocalSettings.OFFICE_HOST) || LocalSettings.hasProperty(LocalSettings.OFFICE_HOME))) {
-            cachedConnection = new NoaConnection(LocalSettings.getBooleanProperty(LocalSettings.OFFICE_REMOTE) ? LocalSettings.getProperty(LocalSettings.OFFICE_HOST) : LocalSettings.getProperty(LocalSettings.OFFICE_HOME), LocalSettings.getBooleanProperty(LocalSettings.OFFICE_REMOTE) ? Integer.valueOf(LocalSettings.getProperty(LocalSettings.OFFICE_PORT)) : 0);
-            Notificator.raiseNotification(Messages.OO_DONE_LOADING, false);
-         } else {
-            throw new UnsupportedOperationException(Messages.OO_NOT_CONFIGURED.getValue());
-         }
+         cachedConnection = new NoaConnection(LocalSettings.getBooleanProperty(LocalSettings.OFFICE_REMOTE) ? LocalSettings.getProperty(LocalSettings.OFFICE_HOST) : LocalSettings.getProperty(LocalSettings.OFFICE_HOME), LocalSettings.getBooleanProperty(LocalSettings.OFFICE_REMOTE) ? Integer.valueOf(LocalSettings.getProperty(LocalSettings.OFFICE_PORT)) : 0);
+         officeAvailable = true;
+         Notificator.raiseNotification(Messages.OO_DONE_LOADING, false);
       } catch (Exception ex) {
          mpv5.logging.Log.Debug(ex);
          Notificator.raiseNotification(Messages.OOCONNERROR + " \n" + ex, true);
@@ -197,7 +196,7 @@ public class NoaConnection {
          configuration.put(IOfficeApplication.APPLICATION_ARGUMENTS_KEY, String.valueOf(port));
 
          officeAplication =
-               OfficeApplicationRuntime.getApplication(configuration);
+                 OfficeApplicationRuntime.getApplication(configuration);
          officeAplication.setConfiguration(configuration);
          try {
             officeAplication.activate(Notificator.getOfficeMonitor());
@@ -337,15 +336,15 @@ public class NoaConnection {
    protected static String[] getOOArgs(String path, int port) {
       String b = LocalSettings.getProperty(LocalSettings.OFFICE_BINARY_FOLDER);
       return new String[]{path.replace("\\", "\\\\") + File.separator + (b == null || b.equals("null") ? "program" : b) + File.separator + "soffice",
-               "--headless",
-               "--nofirststartwizard",
-               (GlobalSettings.getBooleanProperty("org.openyabs.exportproperty.invisibleofficeserver", true) ? "--invisible" : ""),
-               "--norestore",
-               "--nolockcheck",
-               "--nocrashreport",
-               "--nodefault",
-               (Main.osIsWindows ? "--accept=socket,host=0.0.0.0,port=" + port + ";urp;StarOffice.Service"
-               : "--accept='socket,host=0.0.0.0,port=" + port + ";urp;StarOffice.Service'")};
+                 "--headless",
+                 "--nofirststartwizard",
+                 (GlobalSettings.getBooleanProperty("org.openyabs.exportproperty.invisibleofficeserver", true) ? "--invisible" : ""),
+                 "--norestore",
+                 "--nolockcheck",
+                 "--nocrashreport",
+                 "--nodefault",
+                 (Main.osIsWindows ? "--accept=socket,host=0.0.0.0,port=" + port + ";urp;StarOffice.Service"
+                 : "--accept='socket,host=0.0.0.0,port=" + port + ";urp;StarOffice.Service'")};
    }
 
    /**

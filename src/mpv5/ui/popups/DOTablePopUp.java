@@ -83,7 +83,7 @@ public class DOTablePopUp extends JPopupMenu {
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
-                    DatabaseObject.getObject(c, Integer.valueOf(to.getModel().getValueAt(to.getSelectedRow(), 0).toString())).delete();
+                    DatabaseObject.getObject(c, Integer.valueOf(to.getModel().getValueAt(to.convertRowIndexToModel(to.getSelectedRow()), 0).toString())).delete();
                 } catch (NodataFoundException ex) {
                     Log.Debug(DOTablePopUp.class, ex);
                 }
@@ -95,7 +95,7 @@ public class DOTablePopUp extends JPopupMenu {
 
             public void actionPerformed(ActionEvent e) {
                 try {
-                    mpv5.YabsViewProxy.instance().getIdentifierView().addTab(DatabaseObject.getObject(c, Integer.valueOf(to.getModel().getValueAt(to.getSelectedRow(), 0).toString())));
+                    mpv5.YabsViewProxy.instance().getIdentifierView().addTab(DatabaseObject.getObject(c, Integer.valueOf(to.getModel().getValueAt(to.convertRowIndexToModel(to.getSelectedRow()), 0).toString())));
                 } catch (NodataFoundException ex) {
                     Log.Debug(DOTablePopUp.class, ex);
                 }
@@ -107,7 +107,7 @@ public class DOTablePopUp extends JPopupMenu {
 
             public void actionPerformed(ActionEvent e) {
                 try {
-                    mpv5.YabsViewProxy.instance().addToClipBoard(DatabaseObject.getObject(c, Integer.valueOf(to.getModel().getValueAt(to.getSelectedRow(), 0).toString())));
+                    mpv5.YabsViewProxy.instance().addToClipBoard(DatabaseObject.getObject(c, Integer.valueOf(to.getModel().getValueAt(to.convertRowIndexToModel(to.getSelectedRow()), 0).toString())));
                 } catch (NodataFoundException ex) {
                     Log.Debug(DOTablePopUp.class, ex);
                 }

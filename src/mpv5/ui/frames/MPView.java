@@ -2725,20 +2725,24 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
     }//GEN-LAST:event_jMenuItem29ActionPerformed
 
     private void jMenuItem47ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem47ActionPerformed
-       try {
-          NoaConnection.killConnection();
-          try {
-             if (LocalSettings.getBooleanProperty(LocalSettings.OFFICE_LOCALSERVER)) {
-                Log.Debug(Main.class, "Starting OpenOffice as background service..");
-                NoaConnectionLocalServer.startOOServerIfNotRunning(LocalSettings.getProperty(LocalSettings.OFFICE_HOME), LocalSettings.getIntegerProperty(LocalSettings.OFFICE_PORT));
+       Runnable runnable = new Runnable() {
+          public void run() {
+             try {
+                NoaConnection.killConnection();
+                try {
+                   if (LocalSettings.getBooleanProperty(LocalSettings.OFFICE_LOCALSERVER)) {
+                      Log.Debug(Main.class, "Starting OpenOffice as background service..");
+                      NoaConnectionLocalServer.startOOServerIfNotRunning(LocalSettings.getProperty(LocalSettings.OFFICE_HOME), LocalSettings.getIntegerProperty(LocalSettings.OFFICE_PORT));
+                   }
+                } catch (Exception e) {
+                   Log.Debug(this, e.getMessage());
+                }
+                NoaConnection.getConnection();
+             } catch (Exception ex) {
+                Logger.getLogger(MPView.class.getName()).log(Level.SEVERE, null, ex);
              }
-          } catch (Exception e) {
-             Log.Debug(this, e.getMessage());
           }
-          NoaConnection.getConnection();
-       } catch (Exception ex) {
-          Logger.getLogger(MPView.class.getName()).log(Level.SEVERE, null, ex);
-       }
+       };new Thread(runnable).start();
     }//GEN-LAST:event_jMenuItem47ActionPerformed
 
     private void jMenuItem48ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem48ActionPerformed

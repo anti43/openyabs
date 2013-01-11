@@ -62,6 +62,7 @@ public class NoaConnectionLocalServer extends NoaConnection {
          if (cachedConnection == null) {
             try {
                cachedConnection = new NoaConnectionLocalServer(LocalSettings.getProperty(LocalSettings.OFFICE_HOST), Integer.valueOf(LocalSettings.getProperty(LocalSettings.OFFICE_PORT)));
+               NoaConnection.officeAvailable=true;
             } catch (Exception ex) {
                mpv5.logging.Log.Debug(ex);//Logger.getLogger(NoaConnection.class.getName()).log(Level.SEVERE, null, ex);
                YabsViewProxy.instance().addMessage(Messages.OOCONNERROR + "\n" + ex, Color.RED);

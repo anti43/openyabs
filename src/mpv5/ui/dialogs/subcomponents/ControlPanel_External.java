@@ -53,7 +53,7 @@ public class ControlPanel_External extends javax.swing.JPanel implements Control
       jButton5 = new javax.swing.JButton();
       jCheckBox2 = new javax.swing.JCheckBox();
       jButton6 = new javax.swing.JButton();
-      jCheckBox4 = new javax.swing.JCheckBox();
+      auto = new javax.swing.JCheckBox();
       jPanel3 = new javax.swing.JPanel();
       labeledTextField3 = new mpv5.ui.beans.LabeledTextField();
       jPanel1 = new javax.swing.JPanel();
@@ -66,7 +66,7 @@ public class ControlPanel_External extends javax.swing.JPanel implements Control
       setName("Form"); // NOI18N
       setLayout(new javax.swing.BoxLayout(this, javax.swing.BoxLayout.Y_AXIS));
 
-      java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle();// NOI18N
+      java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle();; // NOI18N
       jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("ControlPanel_External.jPanel2.border.title"))); // NOI18N
       jPanel2.setName("jPanel2"); // NOI18N
 
@@ -115,11 +115,11 @@ public class ControlPanel_External extends javax.swing.JPanel implements Control
          }
       });
 
-      jCheckBox4.setText(bundle.getString("ControlPanel_External.jCheckBox4.text")); // NOI18N
-      jCheckBox4.setName("jCheckBox4"); // NOI18N
-      jCheckBox4.addItemListener(new java.awt.event.ItemListener() {
+      auto.setText(bundle.getString("ControlPanel_External.auto.text")); // NOI18N
+      auto.setName("auto"); // NOI18N
+      auto.addItemListener(new java.awt.event.ItemListener() {
          public void itemStateChanged(java.awt.event.ItemEvent evt) {
-            jCheckBox4ItemStateChanged(evt);
+            autoItemStateChanged(evt);
          }
       });
 
@@ -142,7 +142,7 @@ public class ControlPanel_External extends javax.swing.JPanel implements Control
                   .addComponent(jButton5))
                .addComponent(jCheckBox1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 497, Short.MAX_VALUE)
                .addComponent(jCheckBox2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 497, Short.MAX_VALUE)
-               .addComponent(jCheckBox4, javax.swing.GroupLayout.DEFAULT_SIZE, 501, Short.MAX_VALUE)
+               .addComponent(auto, javax.swing.GroupLayout.DEFAULT_SIZE, 501, Short.MAX_VALUE)
                .addGroup(jPanel2Layout.createSequentialGroup()
                   .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                      .addComponent(jLabel3)
@@ -168,7 +168,7 @@ public class ControlPanel_External extends javax.swing.JPanel implements Control
             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
             .addComponent(jCheckBox2)
             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-            .addComponent(jCheckBox4)
+            .addComponent(auto)
             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
             .addComponent(jButton6)
             .addContainerGap(14, Short.MAX_VALUE))
@@ -290,27 +290,25 @@ public class ControlPanel_External extends javax.swing.JPanel implements Control
              try {
                 NoaConnection.getConnection().getDesktopService().getFramesCount();
                 Popup.notice(Messages.OO_DONE_LOADING);
-
-             } catch (Exception e) {
-                Popup.notice(Messages.ERROR_OCCURED);
-             } finally {
                 try {
-                   NoaConnection.getConnection().getDesktopService().terminate();
+//                   NoaConnection.getConnection().getDesktopService().terminate();
                    setSettings();
                    LocalSettings.save();
-                   Popup.notice(Messages.RESTART_REQUIRED);
+//                   Popup.notice(Messages.RESTART_REQUIRED);
                 } catch (Exception ex) {
                    Log.Debug(ex);
                 }
+             } catch (Exception e) {
+                Popup.notice(Messages.ERROR_OCCURED);
+                //Restore old Values ....
+                LocalSettings.setProperty(LocalSettings.OFFICE_HOST, host);
+                LocalSettings.setProperty(LocalSettings.OFFICE_PORT, Port);
+                LocalSettings.setProperty(LocalSettings.OFFICE_REMOTE, Remote);
+                LocalSettings.setProperty(LocalSettings.OFFICE_HOME, home);
+                LocalSettings.setProperty(LocalSettings.OFFICE_USE, use);
+             } finally {
+                mpv5.YabsViewProxy.instance().setWaiting(false);
              }
-             mpv5.YabsViewProxy.instance().setWaiting(false);
-
-             //Restore old Values ....
-             LocalSettings.setProperty(LocalSettings.OFFICE_HOST, host);
-             LocalSettings.setProperty(LocalSettings.OFFICE_PORT, Port);
-             LocalSettings.setProperty(LocalSettings.OFFICE_REMOTE, Remote);
-             LocalSettings.setProperty(LocalSettings.OFFICE_HOME, home);
-             LocalSettings.setProperty(LocalSettings.OFFICE_USE, use);
           }
        };
        final Thread startServerThread = new Thread(runnable2);
@@ -347,13 +345,14 @@ public class ControlPanel_External extends javax.swing.JPanel implements Control
       jCheckBox2.setSelected(false);
       labeledTextField1.setText("");
       labeledTextField2.setText("0");
-      jCheckBox4.setSelected(true);
+      auto.setSelected(true);
+      jButton1ActionPerformed(evt);
    }//GEN-LAST:event_jButton6ActionPerformed
 
-   private void jCheckBox4ItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_jCheckBox4ItemStateChanged
-      LocalSettings.setProperty(LocalSettings.OFFICE_AUTOSTART, String.valueOf(jCheckBox4.isSelected()));
+   private void autoItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_autoItemStateChanged
+      LocalSettings.setProperty(LocalSettings.OFFICE_AUTOSTART, String.valueOf(auto.isSelected()));
       LocalSettings.save();
-   }//GEN-LAST:event_jCheckBox4ItemStateChanged
+   }//GEN-LAST:event_autoItemStateChanged
 
    public void setValues(PropertyStore values) {
       oldvalues = values;
@@ -378,6 +377,7 @@ public class ControlPanel_External extends javax.swing.JPanel implements Control
       setValues(oldvalues);
    }
    // Variables declaration - do not modify//GEN-BEGIN:variables
+   private javax.swing.JCheckBox auto;
    private javax.swing.JButton jButton1;
    private javax.swing.JButton jButton2;
    private javax.swing.JButton jButton3;
@@ -387,7 +387,6 @@ public class ControlPanel_External extends javax.swing.JPanel implements Control
    private javax.swing.JCheckBox jCheckBox1;
    private javax.swing.JCheckBox jCheckBox2;
    private javax.swing.JCheckBox jCheckBox3;
-   private javax.swing.JCheckBox jCheckBox4;
    private javax.swing.JLabel jLabel3;
    private javax.swing.JPanel jPanel1;
    private javax.swing.JPanel jPanel2;

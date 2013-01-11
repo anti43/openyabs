@@ -877,7 +877,7 @@ public class Main implements Runnable {
          }
       }
       
-      if (LocalSettings.getBooleanProperty(LocalSettings.OFFICE_AUTOSTART)) {
+      if (LocalSettings.getBooleanProperty(LocalSettings.OFFICE_AUTOSTART)&& LocalSettings.getBooleanProperty(LocalSettings.OFFICE_USE)) {
             Runnable runnable2 = new Runnable() {
                @Override
                public void run() {

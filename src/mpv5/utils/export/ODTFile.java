@@ -22,7 +22,10 @@ import enoa.handler.DocumentHandler;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Iterator;
+import mpv5.globals.LocalSettings;
+import mpv5.globals.Messages;
 import mpv5.logging.Log;
+import mpv5.ui.dialogs.Notificator;
 
 /**
  *
@@ -48,6 +51,11 @@ public class ODTFile extends Exportable {
    @Override
    public void run() {
       try {
+         if(LocalSettings.getBooleanProperty(LocalSettings.OFFICE_AUTOSTART)&& !NoaConnection.officeAvailable){
+            Notificator.raiseNotification(Messages.OO_WAITING, true);
+            return;
+         }
+         Log.Debug(this, "run odt run: " + this);
          mpv5.YabsViewProxy.instance().setWaiting(true);
          nc = NoaConnection.getConnection();
          dh = new DocumentHandler(nc);
