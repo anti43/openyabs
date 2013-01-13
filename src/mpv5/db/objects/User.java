@@ -100,20 +100,20 @@ public class User extends DatabaseObject {
         if (s2 != null && !s2.equals("null")) {
             basedir = new File(s2);
         } else {
-            basedir = DialogForFile.CURRENT_DIR;
+            basedir = new File(System.getProperty("user.home"));
         }
 
         File subdirs = null;
         if (s != null) {
-            if (s.contains("/")) {
-                subdirs = new File(s.substring(0, s.lastIndexOf("/")));
-            }
+            subdirs = new File(s); 
         }
 
         File savedir = basedir;
         if (subdirs != null) {
             savedir = new File(VariablesHandler.parse(basedir.getPath() + File.separator + subdirs.getPath(), ford));
         }
+        
+        Log.Debug(User.class, savedir);
 
         savedir.mkdirs();
         return savedir;
