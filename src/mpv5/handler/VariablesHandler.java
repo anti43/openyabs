@@ -73,6 +73,28 @@ public abstract class VariablesHandler {
             return val;
         }
     }
+    
+    public static enum GENERIC_VARS_FORMAT{
+
+        YEAR("[YEAR]"),
+        MONTH("[MONTH]"),
+        QUARTER("[QUARTER]"),
+        OBJECT_YEAR("[OBJECT_YEAR]"),
+        GROUP("[GROUP_NAME]"),
+        CREATE_USER("[CREATE_USER]"),
+        CURRENT_USER("[CURRENT_USER]"),
+        YEAR_SHORT("[YEAR_SHORT]");
+        private String val;
+
+        GENERIC_VARS_FORMAT(String value) {
+            val = value;
+        }
+
+        @Override
+        public String toString() {
+            return val;
+        }
+    }
 
     //special
     /**

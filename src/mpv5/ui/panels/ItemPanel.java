@@ -265,7 +265,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
             }
 
             if (dato.__getInttype() == Item.TYPE_BILL && !loading && dataOwner.isExisting()
-                  && Integer.valueOf(status.getSelectedItem().getId()) == Item.STATUS_PAID) {
+                    && Integer.valueOf(status.getSelectedItem().getId()) == Item.STATUS_PAID) {
 
                //set dateend
                date3.setDate(new Date());
@@ -422,9 +422,9 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
    private void fileTableClicked(MouseEvent evt) {
       if (evt.getClickCount() > 1) {
          FileDirectoryHandler.open(QueryHandler.instanceOf().clone(Context.getFiles()).
-               retrieveFile(dataTable.getModel().getValueAt(dataTable.getSelectedRow(), 0).
-               toString(), new File(FileDirectoryHandler.getTempDir() + dataTable.getModel().
-               getValueAt(dataTable.getSelectedRow(), 1).toString())));
+                 retrieveFile(dataTable.getModel().getValueAt(dataTable.getSelectedRow(), 0).
+                 toString(), new File(FileDirectoryHandler.getTempDir() + dataTable.getModel().
+                 getValueAt(dataTable.getSelectedRow(), 1).toString())));
       } else if (evt.getClickCount() == 1 && evt.getButton() == MouseEvent.BUTTON3) {
 
          JTable source = (JTable) evt.getSource();
@@ -1711,10 +1711,10 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
                   Log.Debug(this, e.getMessage());
                }
                itemtable.setModel(SubItem.toModel(new SubItem[]{
-                        SubItem.getDefaultItem(), SubItem.getDefaultItem(),
-                        SubItem.getDefaultItem(), SubItem.getDefaultItem(),
-                        SubItem.getDefaultItem(), SubItem.getDefaultItem()
-                     }));
+                          SubItem.getDefaultItem(), SubItem.getDefaultItem(),
+                          SubItem.getDefaultItem(), SubItem.getDefaultItem(),
+                          SubItem.getDefaultItem(), SubItem.getDefaultItem()
+                       }));
                formatTable();
 //                    shipping.setText(FormatNumber.formatDezimal(0d));
 
@@ -1741,7 +1741,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
 
       //"Internal ID", Position, "Count", "Measure", "Text", "Netto Price", "Tax Rate", "Total Price", "Tax value", "Net 2", "Product ID", "", "", "Link", "Optional"
       TableFormat.resizeCols(itemtable, new Integer[]{0, 23, 53, 63, 100, 63, 63, 63, 0, 0, 63, 20, 0, 0, 100, 63, 0},
-            new Boolean[]{true, true, true, true, false, true, true, true, true, true, true, true, true, true, false, true, true});
+              new Boolean[]{true, true, true, true, false, true, true, true, true, true, true, true, true, true, false, true, true});
       MPTableModel model = (MPTableModel) itemtable.getModel();
       model.setCanEdits(new boolean[]{false, false, true, true, true, true, true, true, false, false, true, true, false, false, true, true, false});
       TableFormat.changeBackground(itemtable, 1, Color.LIGHT_GRAY);
@@ -1812,9 +1812,9 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
       BigDecimal tpvs = null;
       for (DatabaseObject dbo : dbos) {
          if (dbo.getContext().equals(Context.getItem())
-               || dbo.getContext().equals(Context.getInvoice())
-               || dbo.getContext().equals(Context.getOffer())
-               || dbo.getContext().equals(Context.getOrder())) {
+                 || dbo.getContext().equals(Context.getInvoice())
+                 || dbo.getContext().equals(Context.getOffer())
+                 || dbo.getContext().equals(Context.getOrder())) {
             Item o = (Item) dbo.clone();
 
             if (mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("org.openyabs.uiproperty", "pasten")) {
@@ -1894,7 +1894,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
             setDataOwner(dataOwner, true);
          } else if (dbo.getContext().equals(Context.getProduct())) {
             ((MPTableModel) itemtable.getModel()).addRow(
-                  new SubItem((Product) dbo).getRowData(((MPTableModel) itemtable.getModel()).getRowCount() + 1));
+                    new SubItem((Product) dbo).getRowData(((MPTableModel) itemtable.getModel()).getRowCount() + 1));
             ((MPTableModel) itemtable.getModel()).fireTableCellUpdated(0, 0);
          } else if (dbo.getContext().equals(Context.getProductlist())) {
             try {
@@ -1922,7 +1922,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
                SubItem sub = (SubItem) dbo;
 
                ((MPTableModel) itemtable.getModel()).addRow(
-                     sub.getRowData(((MPTableModel) itemtable.getModel()).getRowCount() + 1));
+                       sub.getRowData(((MPTableModel) itemtable.getModel()).getRowCount() + 1));
 
                ((MPTableModel) itemtable.getModel()).fireTableCellUpdated(0, 0);
             } catch (Exception ex) {
@@ -2177,12 +2177,12 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
       itemtable.getColumnModel().getColumn(SubItem.COLUMNINDEX_REMOVE).setCellEditor(new ButtonEditor(b2));
 
       TablePopUp tpu = new TablePopUp(itemtable, new String[]{
-               Messages.ACTION_COPY.getValue(),
-               Messages.ACTION_PASTE.getValue(),
-               null,
-               Messages.ACTION_ADD.getValue(),
-               Messages.ACTION_REMOVE.getValue()},
-            new ActionListener[]{new ActionListener() {
+                 Messages.ACTION_COPY.getValue(),
+                 Messages.ACTION_PASTE.getValue(),
+                 null,
+                 Messages.ACTION_ADD.getValue(),
+                 Messages.ACTION_REMOVE.getValue()},
+              new ActionListener[]{new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                MPTableModel m = (MPTableModel) itemtable.getModel();
@@ -2199,13 +2199,13 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
 //                    mpv5.YabsViewProxy.instance().pasteClipboardItems();
             }
          },
-               null,
-               new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-               ((MPTableModel) itemtable.getModel()).addRow(1);
-            }
-         }, new ActionListener() {
+                 null,
+                 new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                       ((MPTableModel) itemtable.getModel()).addRow(1);
+                    }
+                 }, new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                int index = itemtable.getSelectedRow();
@@ -2317,7 +2317,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
    public void pdf() {
       if (dataOwner != null && dataOwner.isExisting()) {
          if (TemplateHandler.isLoaded(Long.valueOf(dataOwner.templateGroupIds()), dataOwner.__getInttype())) {
-            new Job(Export.createFile(dataOwner.getFormatHandler().toUserString(), TemplateHandler.loadTemplate(dataOwner.templateGroupIds(), dataOwner.__getInttype()), dataOwner), new DialogForFile(User.getSaveDir(dataOwner))).execute();
+            new Job(Export.createFile(dataOwner.getFormatHandler().toUserString(), TemplateHandler.loadTemplate(dataOwner.templateGroupIds(), dataOwner.__getInttype()), dataOwner), new DialogForFile(User.getSaveDir(dataOwner), dataOwner.__getCnumber() + ".pdf")).execute();
          } else {
             Popup.notice(Messages.NO_TEMPLATE_LOADED + " (" + mpv5.db.objects.User.getCurrentUser() + ")");
          }
@@ -2327,7 +2327,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
    public void odt() {
       if (dataOwner != null && dataOwner.isExisting()) {
          if (TemplateHandler.isLoaded(Long.valueOf(dataOwner.templateGroupIds()), dataOwner.__getInttype())) {
-            new Job(Export.sourceFile(dataOwner.getFormatHandler().toUserString(), TemplateHandler.loadTemplate(dataOwner.templateGroupIds(), dataOwner.__getInttype()), dataOwner), new DialogForFile(User.getSaveDir(dataOwner))).execute();
+            new Job(Export.sourceFile(dataOwner.getFormatHandler().toUserString(), TemplateHandler.loadTemplate(dataOwner.templateGroupIds(), dataOwner.__getInttype()), dataOwner), new DialogForFile(User.getSaveDir(dataOwner), dataOwner.__getCnumber() + ".odt")).execute();
          } else {
             Popup.notice(Messages.NO_TEMPLATE_LOADED + " (" + mpv5.db.objects.User.getCurrentUser() + ")");
          }
@@ -2340,7 +2340,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
 
       if (m.getDataVector().isEmpty()) {
          proptable.setModel(new MPTableModel(
-               Arrays.asList(new ValueProperty[]{new ValueProperty("", "", dataOwner)})));
+                 Arrays.asList(new ValueProperty[]{new ValueProperty("", "", dataOwner)})));
       } else {
          proptable.setModel(m);
       }

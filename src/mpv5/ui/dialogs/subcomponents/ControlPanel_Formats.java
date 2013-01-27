@@ -9,6 +9,7 @@ import javax.swing.JSpinner;
 import javax.swing.SpinnerNumberModel;
 import mpv5.data.PropertyStore;
 import mpv5.db.common.*;
+import mpv5.db.objects.Group;
 import mpv5.db.objects.Item;
 import mpv5.globals.Messages;
 import mpv5.logging.Log;
@@ -359,10 +360,7 @@ public class ControlPanel_Formats extends javax.swing.JPanel implements ControlA
             labeledCombobox1.setModel(QueryHandler.instanceOf().clone(Context.getFormats()).select("inttype,cname", (String[]) null));
         } catch (Exception e) {
         }
-        try {
-            labeledCombobox2.setModel(VariablesHandler.GENERIC_VARS.values());
-        } catch (Exception e) {
-        }
+        labeledCombobox2.setModel(VariablesHandler.GENERIC_VARS_FORMAT.values());
         try {
             labeledCombobox3.setModel(MPComboBoxModelItem.toModel((MPEnum[]) FormatHandler.TYPES.values()));
         } catch (Exception e) {
@@ -510,11 +508,13 @@ public class ControlPanel_Formats extends javax.swing.JPanel implements ControlA
         Item b = (Item) DatabaseObject.getObject(Context.getItem());
         b.setIDS(1);
         b.avoidNulls();
+        b.setGroup(Group.getDefault());
 
         try {
             FormatHandler fh = new FormatHandler(b);
-            str = fh.toString(new FormatHandler.YMessageFormat((VariablesHandler.parse(labeledTextField1.getText(), b)).substring(Integer.valueOf(positionstart.get_Value().toString())), null), Integer.valueOf(minstart.get_Value().toString()));
-            str = Messages.THE_RESULT + str;
+            String xx = VariablesHandler.parse(labeledTextField1.getText(), b);
+            str = fh.toString(new FormatHandler.YMessageFormat((xx).substring(Integer.valueOf(positionstart.get_Value().toString())), null), Integer.valueOf(minstart.get_Value().toString()));
+            str = Messages.THE_RESULT + xx.substring(0, Integer.valueOf(positionstart.get_Value().toString())) + str;
 
             return Popup.OK_dialog(str, Messages.NOTICE.getValue());
         } catch (Exception exception) {

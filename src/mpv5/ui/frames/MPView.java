@@ -924,7 +924,6 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
       viewMenu = new javax.swing.JMenu();
       jMenu2 = new javax.swing.JMenu();
       jMenuItem1 = new javax.swing.JMenuItem();
-      jMenuItem2 = new javax.swing.JMenuItem();
       jMenuItem39 = new javax.swing.JMenuItem();
       jMenuItem25 = new javax.swing.JMenuItem();
       jMenuItem19 = new javax.swing.JMenuItem();
@@ -1004,7 +1003,7 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
 
       jButton5.setFont(jButton5.getFont().deriveFont(jButton5.getFont().getSize()-1f));
       jButton5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/agt_family.png"))); // NOI18N
-      java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle();// NOI18N
+      java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("mpv5/resources/languages/Panels"); // NOI18N
       jButton5.setText(bundle.getString("MPView.jButton5.text_1")); // NOI18N
       jButton5.setToolTipText(bundle.getString("MPView.jButton5.toolTipText_1")); // NOI18N
       jButton5.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
@@ -1738,15 +1737,6 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
       });
       jMenu2.add(jMenuItem1);
 
-      jMenuItem2.setText(bundle.getString("MPView.jMenuItem2.text_1")); // NOI18N
-      jMenuItem2.setName("jMenuItem2"); // NOI18N
-      jMenuItem2.addActionListener(new java.awt.event.ActionListener() {
-         public void actionPerformed(java.awt.event.ActionEvent evt) {
-            jMenuItem2ActionPerformed(evt);
-         }
-      });
-      jMenu2.add(jMenuItem2);
-
       jMenuItem39.setText(bundle.getString("MPView.jMenuItem39.text")); // NOI18N
       jMenuItem39.setName("jMenuItem39"); // NOI18N
       jMenuItem39.addActionListener(new java.awt.event.ActionListener() {
@@ -2255,12 +2245,6 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
        User.getCurrentUser().setLaf(UIManager.getSystemLookAndFeelClassName());
        User.getCurrentUser().save();
     }//GEN-LAST:event_jMenuItem1ActionPerformed
-
-    private void jMenuItem2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem2ActionPerformed
-       Main.setLaF("de.muntjak.tinylookandfeel.TinyLookAndFeel");
-       User.getCurrentUser().setLaf("de.muntjak.tinylookandfeel.TinyLookAndFeel");
-       User.getCurrentUser().save();
-    }//GEN-LAST:event_jMenuItem2ActionPerformed
 
     private void jMenuItem3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem3ActionPerformed
        addOrShowTab(MPControlPanel.instanceOf(), Messages.CONTROL_PANEL.toString());
@@ -2833,7 +2817,6 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
    private javax.swing.JMenuItem jMenuItem17;
    private javax.swing.JMenuItem jMenuItem18;
    private javax.swing.JMenuItem jMenuItem19;
-   private javax.swing.JMenuItem jMenuItem2;
    private javax.swing.JMenuItem jMenuItem20;
    private javax.swing.JMenuItem jMenuItem21;
    private javax.swing.JMenuItem jMenuItem22;

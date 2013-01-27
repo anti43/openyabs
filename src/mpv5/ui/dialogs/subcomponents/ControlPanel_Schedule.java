@@ -127,7 +127,7 @@ public class ControlPanel_Schedule extends javax.swing.JPanel implements Control
         jButton1 = new javax.swing.JButton();
         jButton5 = new javax.swing.JButton();
 
-        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("mpv5/resources/languages/Panels"); // NOI18N
+        java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle();; // NOI18N
         setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("RemindPanel.border.title"))); // NOI18N
 
         jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("ControlPanel_Schedule.jPanel1.border.title"))); // NOI18N

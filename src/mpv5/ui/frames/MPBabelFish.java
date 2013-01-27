@@ -21,6 +21,8 @@
  */
 package mpv5.ui.frames;
 
+import com.memetix.mst.language.Language;
+import com.memetix.mst.translate.Translate;
 import javax.swing.DefaultComboBoxModel;
 import mpv5.db.common.NodataFoundException;
 import mpv5.globals.Headers;
@@ -30,6 +32,7 @@ import mpv5.ui.dialogs.DialogForFile;
 
 import java.awt.Cursor;
 import java.io.File;
+import javax.swing.ComboBoxModel;
 import javax.swing.JTextField;
 import javax.swing.SwingWorker;
 import javax.swing.table.DefaultTableModel;
@@ -71,7 +74,14 @@ public class MPBabelFish extends javax.swing.JFrame {
         setLanguageSelection();
 
 //        Translate.setHttpReferrer(Constants.VERSION);
-
+        final ComboBoxModel lModel = new DefaultComboBoxModel(Language.values());
+            to.setModel(lModel);
+//            to.setRenderer(new LanguageRenderer());
+            // Remove AUTO_DETECT. We don't need or want it here
+            to.removeItem(Language.AUTO_DETECT);
+            final ComboBoxModel dModel = new DefaultComboBoxModel(Language.values());
+            from.setModel(dModel);
+            from.removeItem(Language.AUTO_DETECT);
     }
 
     private void setLanguage() {
@@ -111,6 +121,11 @@ public class MPBabelFish extends javax.swing.JFrame {
       langName = new mpv5.ui.beans.LabeledTextField();
       jLabel7 = new javax.swing.JLabel();
       progress = new javax.swing.JProgressBar();
+      transid = new javax.swing.JTextField();
+      transsecre = new javax.swing.JTextField();
+      from = new javax.swing.JComboBox();
+      to = new javax.swing.JComboBox();
+      jButton1 = new javax.swing.JButton();
       jMenuBar1 = new javax.swing.JMenuBar();
       jMenu1 = new javax.swing.JMenu();
       jMenuItem4 = new javax.swing.JMenuItem();
@@ -119,7 +134,7 @@ public class MPBabelFish extends javax.swing.JFrame {
       jMenuItem3 = new javax.swing.JMenuItem();
 
       setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-      java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle();// NOI18N
+      java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("mpv5/resources/languages/Panels"); // NOI18N
       setTitle(bundle.getString("MPBabelFish.title_1")); // NOI18N
       setAlwaysOnTop(true);
       setName("Form"); // NOI18N
@@ -178,6 +193,36 @@ public class MPBabelFish extends javax.swing.JFrame {
 
       progress.setName("progress"); // NOI18N
 
+      transid.setText(bundle.getString("MPBabelFish.transid.text")); // NOI18N
+      transid.setName("transid"); // NOI18N
+      transid.addActionListener(new java.awt.event.ActionListener() {
+         public void actionPerformed(java.awt.event.ActionEvent evt) {
+            transidActionPerformed(evt);
+         }
+      });
+
+      transsecre.setText(bundle.getString("MPBabelFish.transsecre.text")); // NOI18N
+      transsecre.setName("transsecre"); // NOI18N
+      transsecre.addActionListener(new java.awt.event.ActionListener() {
+         public void actionPerformed(java.awt.event.ActionEvent evt) {
+            transsecreActionPerformed(evt);
+         }
+      });
+
+      from.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+      from.setName("from"); // NOI18N
+
+      to.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+      to.setName("to"); // NOI18N
+
+      jButton1.setText(bundle.getString("MPBabelFish.jButton1.text")); // NOI18N
+      jButton1.setName("jButton1"); // NOI18N
+      jButton1.addActionListener(new java.awt.event.ActionListener() {
+         public void actionPerformed(java.awt.event.ActionEvent evt) {
+            jButton1ActionPerformed(evt);
+         }
+      });
+
       javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
       jPanel1.setLayout(jPanel1Layout);
       jPanel1Layout.setHorizontalGroup(
@@ -197,6 +242,17 @@ public class MPBabelFish extends javax.swing.JFrame {
             .addComponent(jLabel1)
             .addContainerGap())
          .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 725, Short.MAX_VALUE)
+         .addGroup(jPanel1Layout.createSequentialGroup()
+            .addComponent(transid, javax.swing.GroupLayout.PREFERRED_SIZE, 184, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+            .addComponent(transsecre, javax.swing.GroupLayout.PREFERRED_SIZE, 184, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+            .addComponent(from, javax.swing.GroupLayout.PREFERRED_SIZE, 117, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+            .addComponent(to, javax.swing.GroupLayout.PREFERRED_SIZE, 117, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+            .addComponent(jButton1)
+            .addGap(0, 0, Short.MAX_VALUE))
       );
       jPanel1Layout.setVerticalGroup(
          jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -214,7 +270,14 @@ public class MPBabelFish extends javax.swing.JFrame {
                      .addComponent(langName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                      .addComponent(progress, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE))))
             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 89, Short.MAX_VALUE))
+            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 107, Short.MAX_VALUE)
+            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+               .addComponent(transid, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+               .addComponent(transsecre, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+               .addComponent(from, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+               .addComponent(to, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+               .addComponent(jButton1)))
       );
 
       jMenuBar1.setName("jMenuBar1"); // NOI18N
@@ -343,8 +406,22 @@ public class MPBabelFish extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_jMenuItem4ActionPerformed
 
+   private void transidActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_transidActionPerformed
+     
+   }//GEN-LAST:event_transidActionPerformed
+
+   private void transsecreActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_transsecreActionPerformed
+      // TODO add your handling code here:
+   }//GEN-LAST:event_transsecreActionPerformed
+
+   private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+       new Job(this).execute();
+   }//GEN-LAST:event_jButton1ActionPerformed
+
    // Variables declaration - do not modify//GEN-BEGIN:variables
    private javax.swing.JTable data;
+   private javax.swing.JComboBox from;
+   private javax.swing.JButton jButton1;
    private javax.swing.JLabel jLabel1;
    private javax.swing.JLabel jLabel2;
    private javax.swing.JLabel jLabel7;
@@ -359,6 +436,9 @@ public class MPBabelFish extends javax.swing.JFrame {
    private mpv5.ui.beans.LabeledTextField langName;
    private javax.swing.JComboBox languages;
    private javax.swing.JProgressBar progress;
+   private javax.swing.JComboBox to;
+   private javax.swing.JTextField transid;
+   private javax.swing.JTextField transsecre;
    // End of variables declaration//GEN-END:variables
 
     private void setToolBar() {
@@ -372,6 +452,8 @@ public class MPBabelFish extends javax.swing.JFrame {
 
         private Job(MPBabelFish aThis) {
             this.parent = aThis;
+            Translate.setClientId(transid.getText());
+            Translate.setClientSecret(transsecre.getText());
         }
 
         @Override
@@ -388,7 +470,7 @@ public class MPBabelFish extends javax.swing.JFrame {
                 try {
                     if (string != null && string.length() > 0) {
                         Log.Debug(this, "Translating: " + string);
-//                        translated[i] = Translate.execute(string, (Language) from.getSelectedItem(), (Language) to.getSelectedItem());
+                        translated[i] = Translate.execute(string, (Language) from.getSelectedItem(), (Language) to.getSelectedItem());
                         mpv5.YabsViewProxy.instance().setProgressValue(i + 1);
                         progress.setValue(i + 1);
                     } else {
