@@ -79,9 +79,7 @@ public abstract class VariablesHandler {
         YEAR("[YEAR]"),
         MONTH("[MONTH]"),
         QUARTER("[QUARTER]"),
-        OBJECT_YEAR("[OBJECT_YEAR]"),
         GROUP("[GROUP_NAME]"),
-        CREATE_USER("[CREATE_USER]"),
         CURRENT_USER("[CURRENT_USER]"),
         YEAR_SHORT("[YEAR_SHORT]");
         private String val;
