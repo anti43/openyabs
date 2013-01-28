@@ -701,14 +701,14 @@ public class Item extends DatabaseObject implements Formattable, Templateable {
     public boolean save(boolean silent) {
         boolean saved = super.save(silent);
         if (saved) {
-            if (mpv5.db.objects.User.getCurrentUser().getProperty("org.openyabs.property", "autocreatepdf")) {
+            if (mpv5.db.objects.User.getCurrentUser().getProperty("org.openyabs.property", "autocreatepdf")|| GlobalSettings.getBooleanProperty("org.openyabs.exportproperty.autocreatepdf")) {
                 if (TemplateHandler.isLoaded(this)) {
                     new Job(Export.createFile(this.getFormatHandler().toUserString(), TemplateHandler.loadTemplate(this), this), Export.wait(User.getSaveDir(this))).execute();
                 } else {
                     YabsViewProxy.instance().addMessage(Messages.NO_TEMPLATE_LOADED + " (" + mpv5.db.objects.User.getCurrentUser() + ")", Color.YELLOW);
                 }
             }
-            if (mpv5.db.objects.User.getCurrentUser().getProperty("org.openyabs.property", "autocreateodt")) {
+            if (mpv5.db.objects.User.getCurrentUser().getProperty("org.openyabs.property", "autocreateodt")|| GlobalSettings.getBooleanProperty("org.openyabs.exportproperty.autocreateodt")) {
                 if (TemplateHandler.isLoaded(this)) {
                     new Job(Export.sourceFile(this.getFormatHandler().toUserString(), TemplateHandler.loadTemplate(this), this), Export.wait(User.getSaveDir(this))).execute();
                 } else {
