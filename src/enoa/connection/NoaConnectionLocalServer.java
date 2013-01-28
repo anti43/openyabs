@@ -254,7 +254,11 @@ public class NoaConnectionLocalServer extends NoaConnection {
             if (LocalSettings.hasProperty(LocalSettings.OFFICE_COMMAND)) {
                FileExecutor.run(LocalSettings.getProperty(LocalSettings.OFFICE_COMMAND));
             } else {
-               FileExecutor.run(getOOArgs(path, port));
+               try {
+                  startOOServer(path, port);
+               } catch (IOException iOException) {
+                  Log.Debug(iOException);
+               }
             }
          }
       };

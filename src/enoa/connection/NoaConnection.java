@@ -322,7 +322,7 @@ public class NoaConnection {
             if (LocalSettings.hasProperty(LocalSettings.OFFICE_COMMAND)) {
                FileExecutor.run(LocalSettings.getProperty(LocalSettings.OFFICE_COMMAND));
             } else {
-               FileExecutor.run(getOOArgs(path, port));
+              NoaConnectionLocalServer.startOOServerIfNotRunning(path, port);
             }
          }
       };
@@ -343,8 +343,9 @@ public class NoaConnection {
                  "--nolockcheck",
                  "--nocrashreport",
                  "--nodefault",
-                 (Main.osIsWindows ? "--accept=socket,host=0.0.0.0,port=" + port + ";urp;StarOffice.Service"
-                 : "--accept='socket,host=0.0.0.0,port=" + port + ";urp;StarOffice.Service'")};
+                 (Main.osIsWindows ? "--accept=socket,host=0.0.0.0,port=8100;urp;StarOffice.Service;"
+                 : "--accept='socket,host=0.0.0.0,port=8100;urp;StarOffice.Service'")
+      };
    }
 
    /**
