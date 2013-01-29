@@ -219,10 +219,15 @@ public class Wizard extends javax.swing.JDialog implements WizardMaster {
                 try {
                     lastpanel = content.getComponent(0);
                     if (!isEnded && ((Wizardable) lastpanel).next()) {
-                        content.remove(lastpanel);
+                        content.removeAll();
+                        
                         back.setEnabled(true);
                         content.add(contentlist.get(level + 1), BorderLayout.CENTER);
                         ((Wizardable) contentlist.get(level + 1)).load();
+                        content.invalidate();
+                        content.repaint();
+                        invalidate();
+                        repaint();
                     }
 
                     level++;
