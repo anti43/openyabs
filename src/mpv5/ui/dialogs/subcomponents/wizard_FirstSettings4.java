@@ -16,8 +16,10 @@ import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
 import mpv5.db.common.NodataFoundException;
 import mpv5.db.common.QueryCriteria;
+import mpv5.db.common.QueryCriteria2;
 import mpv5.db.common.QueryData;
 import mpv5.db.common.QueryHandler;
+import mpv5.db.common.QueryParameter;
 import mpv5.db.common.SaveString;
 import mpv5.db.objects.Template;
 import mpv5.db.objects.User;
@@ -44,7 +46,6 @@ public class wizard_FirstSettings4 extends javax.swing.JPanel implements Wizarda
    private WizardMaster master;
    private PropertyStore nactions;
    private List<JToolBar> nbars;
-   
 
    public wizard_FirstSettings4(WizardMaster w) {
       this.master = w;
@@ -139,14 +140,13 @@ public class wizard_FirstSettings4 extends javax.swing.JPanel implements Wizarda
             setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
             YabsViewProxy.instance().setWaiting(false);
          }
-      }else{
-         
+      } else {
       }
       try {
          File template = new File(Main.class.getResource("/mpv5/resources/extra/invoice_de.odt").toURI());
          if (template != null) {
             String m = String.valueOf(new Date().getTime());
-            
+
             Template t = new Template();
             File fi = template;
             if (QueryHandler.instanceOf().clone(Context.getFiles(), this).insertFile(fi, t, new SaveString(fi.getName() + m, true))) {
@@ -157,7 +157,7 @@ public class wizard_FirstSettings4 extends javax.swing.JPanel implements Wizarda
          Logger.getLogger(wizard_FirstSettings4.class.getName()).log(Level.SEVERE, null, ex);
       }
 
-     
+
       return true;
    }
 
@@ -167,45 +167,22 @@ public class wizard_FirstSettings4 extends javax.swing.JPanel implements Wizarda
          int id = Integer.valueOf(xx.freeQuery(
                "select ids from templates order by dateadded desc ", MPSecurityManager.VIEW, null).getFirstEntry().toString());
          Template t = (Template) DatabaseObject.getObject(Context.getTemplate(), id);
-         
+
          t.setGroupsids(1);
-         t.setCname("Invoice_DE_from_wizard.odt" );
+         t.setCname("Invoice_DE_from_wizard.odt");
          t.setMimetype(String.valueOf(Constants.TYPE_BILL));
          t.setFormat("1,2,4,5,6");
          t.setDescription("Wizard insert");
          t.save(true);
-         Object[][] UtT = new Object[0][0];
-         QueryCriteria d = new QueryCriteria("templatesids", t.__getIDS());
-         try {
-            UtT = QueryHandler.instanceOf().clone(Context.getTemplatesToUsers()).select(d).getData();
-         } catch (NodataFoundException ex) {
-            Log.Debug(this, ex.getMessage());
-         }
 
          User object = User.getCurrentUser();
-         boolean found = false;
-         for (int j = 0; j < UtT.length; j++) {
-            if (Integer.parseInt(UtT[j][2].toString()) == object.__getIDS()) {
-               found = true;
-               UtT[j][1] = "found";
-               break;
-            }
-         }
+         QueryData c = new QueryData();
+         c.add("usersids", object.__getIDS());
+         c.add("templatesids", t.__getIDS());
+         c.add("groupsids", 1);
+         c.add("cname", t.__getIDS() + "@" + object.__getIDS() + "@" + 1);
+         QueryHandler.instanceOf().clone(Context.getTemplatesToUsers()).insert(c, null);
 
-         if (!found) {
-            QueryData c = new QueryData();
-            c.add("usersids", object.__getIDS());
-            c.add("templatesids", t.__getIDS());
-            c.add("groupsids", 1);
-            c.add("cname", t.__getIDS() + "@" + object.__getIDS() + "@" + 1);
-            QueryHandler.instanceOf().clone(Context.getTemplatesToUsers()).insert(c, null);
-         }
-         for (int j = 0; j < UtT.length; j++) {
-            if (!UtT[j][1].equals("found")) {
-               QueryCriteria d2 = new QueryCriteria("cname", UtT[j][1].toString());
-               QueryHandler.instanceOf().clone(Context.getTemplatesToUsers()).delete(d2);
-            }
-         }
          TemplateHandler.clearCache();
       } catch (Exception ex) {
          Logger.getLogger(wizard_FirstSettings4.class.getName()).log(Level.SEVERE, null, ex);
