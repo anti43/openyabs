@@ -66,7 +66,7 @@ public class ControlPanel_External extends javax.swing.JPanel implements Control
       setName("Form"); // NOI18N
       setLayout(new javax.swing.BoxLayout(this, javax.swing.BoxLayout.Y_AXIS));
 
-      java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle();; // NOI18N
+      java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle();// NOI18N
       jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("ControlPanel_External.jPanel2.border.title"))); // NOI18N
       jPanel2.setName("jPanel2"); // NOI18N
 
@@ -120,6 +120,11 @@ public class ControlPanel_External extends javax.swing.JPanel implements Control
       auto.addItemListener(new java.awt.event.ItemListener() {
          public void itemStateChanged(java.awt.event.ItemEvent evt) {
             autoItemStateChanged(evt);
+         }
+      });
+      auto.addActionListener(new java.awt.event.ActionListener() {
+         public void actionPerformed(java.awt.event.ActionEvent evt) {
+            autoActionPerformed(evt);
          }
       });
 
@@ -354,6 +359,10 @@ public class ControlPanel_External extends javax.swing.JPanel implements Control
       LocalSettings.save();
    }//GEN-LAST:event_autoItemStateChanged
 
+   private void autoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_autoActionPerformed
+      // TODO add your handling code here:
+   }//GEN-LAST:event_autoActionPerformed
+
    public void setValues(PropertyStore values) {
       oldvalues = values;
       try {
@@ -364,6 +373,7 @@ public class ControlPanel_External extends javax.swing.JPanel implements Control
          labeledTextField1.setText(LocalSettings.getProperty(LocalSettings.OFFICE_HOST));
          labeledTextField2.setText(LocalSettings.getProperty(LocalSettings.OFFICE_PORT));
          labeledTextField3.setText(LocalSettings.getProperty(LocalSettings.CALCULATOR));
+         auto.setSelected(LocalSettings.getBooleanProperty(LocalSettings.OFFICE_AUTOSTART));
       } catch (Exception e) {
          Log.Debug(this, e);
       }
@@ -415,7 +425,16 @@ public class ControlPanel_External extends javax.swing.JPanel implements Control
       LocalSettings.setProperty(LocalSettings.OFFICE_HOST, labeledTextField1.getText());
       LocalSettings.setProperty(LocalSettings.OFFICE_PORT, labeledTextField2.getText());
       LocalSettings.setProperty(LocalSettings.CALCULATOR, labeledTextField3.getText());
+      LocalSettings.setProperty(LocalSettings.OFFICE_AUTOSTART, String.valueOf(auto.isSelected()));
       checkOS();
+      
+      if(jCheckBox2.isSelected()){
+         //turn off autostart if local server
+         LocalSettings.setProperty(LocalSettings.OFFICE_AUTOSTART, "false");
+         LocalSettings.setProperty(LocalSettings.OFFICE_HOST, "127.0.0.1");
+         LocalSettings.setProperty(LocalSettings.OFFICE_PORT, "8100");
+      }
+      
       LocalSettings.apply();
    }
 

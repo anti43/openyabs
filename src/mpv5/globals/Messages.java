@@ -349,7 +349,8 @@ public enum Messages {
     FLUSHING_TMP_TABLE("Flush targettable for inserting"),
     OVERRITE_DATABASE("This will override the actuall Database!\nIt's recommend to make a Backup befor you proceed.\nAre You sure?"), 
     SET_STATUS_PAID("Set to status: 'Paid'"),
-    STOCK_MANAGER("Stock management");
+    STOCK_MANAGER("Stock management"), 
+    PLEASE_WAIT("Please wait..");
 
     /**
      * @return the missing

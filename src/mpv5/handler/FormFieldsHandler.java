@@ -111,7 +111,7 @@ public class FormFieldsHandler {
         for (int i = 0; i < mapi.size(); i++) {
             String[] strings = mapi.get(i);
             if (strings[1] != null) {
-                maps.put("company." + strings[0], strings[1].contains("[") ? VariablesHandler.parse(strings[1], obj) : strings[1]);
+                maps.put("companyinfo." + strings[0], strings[1].contains("[") ? VariablesHandler.parse(strings[1], obj) : strings[1]);
             }
         }
 

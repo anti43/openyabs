@@ -90,6 +90,11 @@ import mpv5.ui.dialogs.Search2;
 import mpv5.ui.dialogs.Wizard;
 import mpv5.ui.dialogs.subcomponents.ControlPanel_MailTemplates;
 import mpv5.ui.dialogs.subcomponents.wizard_CSVImport2_1;
+import mpv5.ui.dialogs.subcomponents.wizard_FirstSettings1;
+import mpv5.ui.dialogs.subcomponents.wizard_FirstSettings2;
+import mpv5.ui.dialogs.subcomponents.wizard_FirstSettings3;
+import mpv5.ui.dialogs.subcomponents.wizard_FirstSettings4;
+import mpv5.ui.dialogs.subcomponents.wizard_FirstSettings5;
 import mpv5.ui.dialogs.subcomponents.wizard_MP45_Import;
 import mpv5.ui.dialogs.subcomponents.wizard_Toolbar1;
 import mpv5.ui.dialogs.subcomponents.wizard_XMLImport_1;
@@ -1003,7 +1008,7 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
 
       jButton5.setFont(jButton5.getFont().deriveFont(jButton5.getFont().getSize()-1f));
       jButton5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/agt_family.png"))); // NOI18N
-      java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("mpv5/resources/languages/Panels"); // NOI18N
+      java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle();// NOI18N
       jButton5.setText(bundle.getString("MPView.jButton5.text_1")); // NOI18N
       jButton5.setToolTipText(bundle.getString("MPView.jButton5.toolTipText_1")); // NOI18N
       jButton5.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
@@ -2726,7 +2731,8 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
                 Logger.getLogger(MPView.class.getName()).log(Level.SEVERE, null, ex);
              }
           }
-       };new Thread(runnable).start();
+       };
+       new Thread(runnable).start();
     }//GEN-LAST:event_jMenuItem47ActionPerformed
 
     private void jMenuItem48ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem48ActionPerformed
@@ -2747,21 +2753,17 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
     }//GEN-LAST:event_jMenuItem49ActionPerformed
 
    private void jMenuItem50ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem50ActionPerformed
-      if (getFiledialog().chooseFile()) {
-         File f = getFiledialog().getSelectedFile();
-         try {
-            setWaiting(true);
-            String lang = LanguageManager.importLanguage(f.getName(), f, true);
-            User.getCurrentUser().setLanguage(lang);
-            User.getCurrentUser().save();
-            Popup.notice(Messages.RESTART_REQUIRED);
-         } catch (Exception ex) {
-            Logger.getLogger(MPView.class.getName()).log(Level.SEVERE, null, ex);
-            Popup.error(ex);
-         } finally {
-            setWaiting(false);
-         }
-      }
+      Wizard w = new Wizard(false);
+      w.setModalityType(Dialog.ModalityType.APPLICATION_MODAL);
+      w.setAlwaysOnTop(false);
+      w.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+      w.setLocationRelativeTo(getIdentifierFrame());
+      w.addPanel(new wizard_FirstSettings1(w));
+      w.addPanel(new wizard_FirstSettings2(w));
+      w.addPanel(new wizard_FirstSettings3(w));
+      w.addPanel(new wizard_FirstSettings4(w));
+      w.addPanel(new wizard_FirstSettings5(w));
+      w.showWizAsChild();
    }//GEN-LAST:event_jMenuItem50ActionPerformed
    // Variables declaration - do not modify//GEN-BEGIN:variables
    private javax.swing.JButton calculatorButton;

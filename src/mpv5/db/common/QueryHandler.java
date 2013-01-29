@@ -2083,13 +2083,14 @@ public class QueryHandler implements Cloneable {
     * @return
     */
    public synchronized QueryHandler clone(Context c, DataPanel viewToBeNotified) {
-      this.viewToBeNotified = viewToBeNotified;
+      
       QueryHandler theClone = null;
       this.context = c;
       try {
          theClone = (QueryHandler) this.clone();
          theClone.setTable(context.getDbIdentity());
          theClone.runInBackground = false;
+         theClone.viewToBeNotified = viewToBeNotified;
       } catch (CloneNotSupportedException ex) {
          mpv5.logging.Log.Debug(ex);//Logger.getLogger(QueryHandler.class.getName()).log(Level.SEVERE, null, ex);
       }
