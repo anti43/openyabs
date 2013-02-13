@@ -197,9 +197,10 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
                   ((FadeOnChangeLabel) getMessagelabel()).setFadeColor(color);
                }
                messagelabel.setText(message);
+               messagelabel.invalidate();
                getHistory().addItem(message);
                getHistory().setSelectedItem(message);
-               identifierFrame.validate();
+               messagelabel.repaint();
             }
          };
          SwingUtilities.invokeLater(runnable);
