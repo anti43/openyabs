@@ -16,9 +16,11 @@
  */
 package mpv5.db.common;
 
+import enoa.handler.TemplateHandler;
 import groovy.lang.GroovyShell;
 import groovy.lang.Binding;
 import java.awt.Color;
+import java.io.File;
 import java.io.Serializable;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -45,6 +47,7 @@ import mpv5.ui.dialogs.Popup;
 import mpv5.utils.arrays.ArrayUtilities;
 import mpv5.utils.date.DateConverter;
 import javax.swing.JComponent;
+import mpv5.YabsViewProxy;
 import mpv5.compiler.LazyInvocable;
 import mpv5.db.objects.Group;
 import mpv5.db.objects.User;
@@ -63,6 +66,10 @@ import mpv5.utils.text.RandomText;
 import static mpv5.db.common.Context.*;
 import mpv5.utils.text.TypeConversion;
 import mpv5.globals.Constants;
+import mpv5.ui.dialogs.DialogForFile;
+import mpv5.utils.export.Export;
+import mpv5.utils.jobs.Job;
+import mpv5.utils.jobs.Waiter;
 
 /**
  * Database Objects reflect a row in a table, and can parse graphical and
@@ -403,8 +410,8 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
                } else {
                   //defaults to java.lang.String, Object args are not supported.. possibly later via XMLEncoder?
                   method.invoke(dbo, new Object[]{(argument instanceof byte[])
-                             ? new String((byte[]) argument)
-                             : String.valueOf(argument)});
+                           ? new String((byte[]) argument)
+                           : String.valueOf(argument)});
                }
             } else {
                if (int.class.isAssignableFrom(method.getParameterTypes()[0])) {
@@ -560,7 +567,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
     * @param newContext
     * @return
     */
-    public DatabaseObject clone(Context newContext) {
+   public DatabaseObject clone(Context newContext) {
       DatabaseObject obj = getObject(newContext);
       obj.avoidNulls();
       List<Object[]> vals = this.getValues2();
@@ -654,10 +661,10 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
          for (int i = 0; i < this.getClass().getMethods().length; i++) {
             Method m = this.getClass().getMethods()[i];
             if (m.getParameterTypes().length == 1
-                    && m.getName().startsWith("set")
-                    && !m.getName().startsWith("setVars")//annotation!!
-                    && !m.getName().startsWith("setPanelData")
-                    && !m.getName().startsWith("setAutoLock")) {
+                  && m.getName().startsWith("set")
+                  && !m.getName().startsWith("setVars")//annotation!!
+                  && !m.getName().startsWith("setPanelData")
+                  && !m.getName().startsWith("setAutoLock")) {
                setVars_cached.get(this.getClass().getCanonicalName()).put(m.getName().substring(3).toLowerCase(), m);
             }
          }
@@ -679,14 +686,14 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
          Method[] methods = this.getClass().getMethods();
          for (int i = 0; i < this.getClass().getMethods().length; i++) {
             if ((methods[i].isAnnotationPresent(Persistable.class)
-                    && methods[i].getAnnotation(Persistable.class).value()
-                    && methods[i].getParameterTypes().length == 0)
-                    /*
-                     * for backwards compatibility
-                     */
-                    || (methods[i].getName().startsWith("__get")
-                    && !(methods[i].isAnnotationPresent(Persistable.class)
-                    && !methods[i].getAnnotation(Persistable.class).value()))) {
+                  && methods[i].getAnnotation(Persistable.class).value()
+                  && methods[i].getParameterTypes().length == 0)
+                  /*
+                   * for backwards compatibility
+                   */
+                  || (methods[i].getName().startsWith("__get")
+                  && !(methods[i].isAnnotationPresent(Persistable.class)
+                  && !methods[i].getAnnotation(Persistable.class).value()))) {
                getVars_cached.get(this.getClass().getCanonicalName()).put(methods[i].getName().substring(methods[i].getName().startsWith("__") ? 5 : 3).toLowerCase(), methods[i]);
             }
          }
@@ -711,19 +718,19 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
          boolean annotated = false;
          for (int i = 0; i < this.getClass().getMethods().length; i++) {
             if ((methods[i].isAnnotationPresent(Persistable.class)
-                    && methods[i].getAnnotation(Persistable.class).value()
-                    && methods[i].getParameterTypes().length == 0)
-                    /*
-                     * for backwards compatibility
-                     */
-                    || (methods[i].getName().startsWith("__get")
-                    && !(methods[i].isAnnotationPresent(Persistable.class)
-                    && !methods[i].getAnnotation(Persistable.class).value()))) {
+                  && methods[i].getAnnotation(Persistable.class).value()
+                  && methods[i].getParameterTypes().length == 0)
+                  /*
+                   * for backwards compatibility
+                   */
+                  || (methods[i].getName().startsWith("__get")
+                  && !(methods[i].isAnnotationPresent(Persistable.class)
+                  && !methods[i].getAnnotation(Persistable.class).value()))) {
                annotated = methods[i].isAnnotationPresent(Persistable.class);
 
                left = annotated
-                       ? methods[i].getName().toLowerCase().substring(3, methods[i].getName().length())
-                       : methods[i].getName().toLowerCase().replace("__get", "");
+                     ? methods[i].getName().toLowerCase().substring(3, methods[i].getName().length())
+                     : methods[i].getName().toLowerCase().replace("__get", "");
                if (methods[i].getReturnType().getName().equals(String.class.getName())) {
                   getStringVars_cached.get(this.getClass().getCanonicalName()).add(left);
                }
@@ -1118,7 +1125,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
                setVars().get(key).invoke(this, source.getClass().getField(fieldname).get(source));
             } catch (java.lang.NoSuchFieldException nf) {
                Log.Debug(this, "The view: " + source.getClass()
-                       + " is missing a field: " + nf.getMessage());
+                     + " is missing a field: " + nf.getMessage());
             } catch (Exception n) {
                Log.Debug(this, n);
             }
@@ -1178,13 +1185,13 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
             } else if (DatabaseObject.class.isAssignableFrom(vars.get(key).getReturnType())) {
                try {
                   vals.add(new String[]{key,
-                             String.valueOf(vars.get(key).invoke(this, new Object[0]))});
+                           String.valueOf(vars.get(key).invoke(this, new Object[0]))});
                } catch (Exception ex) {
                   vals.add(new String[]{key, ""});
                }
             } else {
                vals.add(new String[]{key,
-                          String.valueOf(vars.get(key).invoke(this, new Object[0]))});
+                        String.valueOf(vars.get(key).invoke(this, new Object[0]))});
             }
          } catch (Exception n) {
             Log.Debug(this, n);
@@ -1244,7 +1251,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
       for (String name : vars.keySet()) {
          try {
             vals.add(new Object[]{name.toLowerCase(),
-                       (vars.get(name).invoke(this, new Object[0]))});
+                     (vars.get(name).invoke(this, new Object[0]))});
          } catch (Exception n) {
             Log.Debug(this, "Failed to invoke " + vars.get(name) + " ( " + this + " ) ");
 //                Log.Debug(this, n);
@@ -1273,7 +1280,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
          try {
             Method m = vars.get(name);
             if (!(m.isAnnotationPresent(Displayable.class)
-                    && !m.getAnnotation(Displayable.class).value())) {
+                  && !m.getAnnotation(Displayable.class).value())) {
                left = name.toLowerCase();
                Log.Debug(this, "Calling: " + m);
                tempval = m.invoke(this, (Object[]) null);
@@ -1916,7 +1923,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
                      invoke(m, select.getData()[i][j], dbo, valx);
                   }
                } else if (name.endsWith("ids")
-                       && (vars.containsKey(name + "ids") || vars.containsKey(name + "sids"))) {
+                     && (vars.containsKey(name + "ids") || vars.containsKey(name + "sids"))) {
                   Method m = vars.get(name + "ids");
                   if (m == null) {
                      m = vars.get(name + "sids");
@@ -1928,10 +1935,10 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
                      invoke(m, select.getData()[i][j], dbo, "DatabaseObject");
                   }
                } else if (name.endsWith("ids")
-                       && (vars.containsKey(name.substring(0, name.length()-3)) || vars.containsKey(name.substring(0, name.length()-4)))) {
-                  Method m = vars.get(name.substring(0, name.length()-3));
+                     && (vars.containsKey(name.substring(0, name.length() - 3)) || vars.containsKey(name.substring(0, name.length() - 4)))) {
+                  Method m = vars.get(name.substring(0, name.length() - 3));
                   if (m == null) {
-                     m = vars.get(name.substring(0, name.length()-4));
+                     m = vars.get(name.substring(0, name.length() - 4));
                   }
                   if (Log.isDebugging()) {
                      Log.Debug(DatabaseObject.class, "Explode: " + m.toGenericString() + " with " + select.getData()[i][j] + "[DBO]");
@@ -1939,7 +1946,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
                   if (select.getData()[i][j] != null) {
                      invoke(m, select.getData()[i][j], dbo, "DatabaseObject");
                   }
-               } else{
+               } else {
                   Log.Debug(DatabaseObject.class, "Not found: " + name);
                }
             }
@@ -2050,7 +2057,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
          Method method = m[i];
          if (method.getName().startsWith("set")) {
             Object o = method.invoke(sdo, new Object[]{this.getClass().getMethod(method.getName().replace("set", "get"),
-                       (Class[]) null).invoke(this, new Object[0])});
+                     (Class[]) null).invoke(this, new Object[0])});
          }
       }
    }
@@ -2321,7 +2328,6 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
       }
    }
 
-
    /**
     * Tries to reflect the hash table into this do. The hashtable's keys must
     * match the methods retrieved by do.setVars()
@@ -2551,5 +2557,35 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
    @Persistable(true)
    public void setGroup(Group g) {
       setGroupsids(g.__getIDS());
+   }
+
+   public void toPdf(boolean showDialog) {
+      export(true, showDialog);
+   }
+
+   public void toOdt(boolean showDialog) {
+      export(false, showDialog);
+   }
+
+   private void export(boolean convertToPdf, boolean showDialog) {
+      if (this instanceof Templateable) {
+         Templateable me = (Templateable) this;
+         if (TemplateHandler.isLoaded(me)) {
+            File xf = new File(User.getSaveDir(this), me.getFormatHandler().toUserString() + ".pdf");
+            Waiter x;
+            if (showDialog) {
+               x = new DialogForFile(DialogForFile.FILES_ONLY, xf);
+            } else {
+               x = Export.wait(xf);
+            }
+            if (convertToPdf) {
+               new Job(Export.createFile(null, TemplateHandler.loadTemplate(me), this), x).execute();
+            }else{
+               new Job(Export.sourceFile(null, TemplateHandler.loadTemplate(me), this), x).execute();
+            }
+         } else {
+            YabsViewProxy.instance().addMessage(Messages.NO_TEMPLATE_LOADED + ": " + getClass().getSimpleName() + " (" + mpv5.db.objects.User.getCurrentUser() + ")", Color.YELLOW);
+         }
+      }
    }
 }
