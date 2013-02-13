@@ -147,12 +147,9 @@ public class Group extends DatabaseObject {
                     Group p = (Group) getObject(Context.getGroup(), intp);
                     hierarchypath = Group.GROUPSEPARATOR + p + hierarchypath;
                     intp = p.__getGroupsids();
-                } catch (NodataFoundException ex) {
-//                    Log.Debug(ex);
-                    break;
-                }
-            } while (intp > 0 );
-            return hierarchypath.replaceFirst(Group.GROUPSEPARATOR, "");
+                } catch (NodataFoundException ex) {intp = 0;}
+            } while (intp != 0 && intp!=Group.getDefault().__getIDS().intValue());
+            hierarchypath = hierarchypath.replaceFirst(Group.GROUPSEPARATOR, "");
         }
         return hierarchypath;
     }
