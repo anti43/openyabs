@@ -16,18 +16,12 @@
  */
 package mpv5.ui.misc;
 
-import java.awt.AlphaComposite;
 import java.awt.Color;
 import java.awt.Container;
 import java.awt.Graphics;
-
 import java.awt.Graphics2D;
 import java.awt.Insets;
-
-
-
 import javax.swing.JLabel;
-import mpv5.utils.ui.PanelUtils;
 
 /**
  * <p>Title: FadeOnChangeLabel </p>
@@ -58,12 +52,12 @@ public class FadeOnChangeLabel
     /**
      * Initial fade value.
      */
-    private float initFade = .2f;
+    private float initFade = .5f;
     /**
      * This variable controls how match we
      * will fade in each animation loop.
      */
-    private float fadeStep = -0.1f;
+    private float fadeStep = -0.05f;
     /**
      * Red component of the fade color.
      */
@@ -99,21 +93,6 @@ public class FadeOnChangeLabel
         setOpaque(true);
     }
 
-
-//
-//    class Fader implements Runnable {
-//
-//        public void run() {
-//            while (!Thread.interrupted() && alpha > 0.0f) {
-//                repaint();
-//                alpha = Math.max(0.0f, alpha - 0.01f);
-//                try {
-//                    Thread.sleep(100);
-//                } catch (InterruptedException ignored) {
-//                }
-//            }
-//        }
-//    }
     /**
      * Sets animation parameters. Will only accept values in the
      * range [0,1] for color components and initial fade,
@@ -167,7 +146,6 @@ public class FadeOnChangeLabel
     public void setText(String text) {
         super.setText(text);
         animate();
-
     }
 
     /**
@@ -178,7 +156,7 @@ public class FadeOnChangeLabel
         // Let the Label perform its normal painting.
 
         Graphics2D g2 = (Graphics2D) g;
-        g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, alpha));
+//        g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1f));
         super.paintComponent(g);
         // Now make the fade effect.
         if (fade != 0) {
@@ -260,24 +238,26 @@ public class FadeOnChangeLabel
 
 
                 while (!paintCalled && fade != 0) {
-                    Thread.sleep(512);
+                    Thread.sleep(500);
                 }
 
             }
-            Thread.sleep(1111);
-            while (!Thread.interrupted() && alpha > 0f) {
-
-                alpha = Math.max(0f, alpha - 0.02f);
-                repaint();
-                try {
-                    Thread.sleep(33);
-                } catch (InterruptedException ignored) {
-                }
-            }
+//            Thread.sleep(1111);
+//            while (!Thread.interrupted() && alpha > 0f) {
+//
+//                alpha = Math.max(0f, alpha - 0.02f);
+//                repaint();
+//                try {
+//                    Thread.sleep(33);
+//                } catch (InterruptedException ignored) {
+//                }
+//            }
             animating = false;
         } catch (Exception e) {
             animating = false;
             System.out.println("FadeOnChangeLabel encountered an error: " + e.getMessage());
+        }finally{
+            super.setText("");
         }
     }
 }
