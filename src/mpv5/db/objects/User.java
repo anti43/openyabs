@@ -95,6 +95,12 @@ public class User extends DatabaseObject {
     public static File getSaveDir(DatabaseObject ford) {
 
         String s = mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("saveformat");
+        if (s != null && s.length() > 0) {
+            if (s.contains("/")) {
+                s = s.substring(0, s.lastIndexOf("/"));
+            }
+        }
+
         String s2 = LocalSettings.getProperty(LocalSettings.BASE_DIR);
         File basedir = null;
         if (s2 != null && !s2.equals("null")) {
