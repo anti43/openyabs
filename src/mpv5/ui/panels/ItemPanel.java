@@ -2316,21 +2316,13 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
 
    public void pdf() {
       if (dataOwner != null && dataOwner.isExisting()) {
-         if (TemplateHandler.isLoaded(Long.valueOf(dataOwner.templateGroupIds()), dataOwner.__getInttype())) {
-            new Job(Export.createFile(dataOwner.getFormatHandler().toUserString(), TemplateHandler.loadTemplate(dataOwner.templateGroupIds(), dataOwner.__getInttype()), dataOwner), new DialogForFile(User.getSaveDir(dataOwner), dataOwner.__getCnumber() + ".pdf")).execute();
-         } else {
-            Popup.notice(Messages.NO_TEMPLATE_LOADED + " (" + mpv5.db.objects.User.getCurrentUser() + ")");
-         }
+         dataOwner.toPdf(true);
       }
    }
 
    public void odt() {
       if (dataOwner != null && dataOwner.isExisting()) {
-         if (TemplateHandler.isLoaded(Long.valueOf(dataOwner.templateGroupIds()), dataOwner.__getInttype())) {
-            new Job(Export.sourceFile(dataOwner.getFormatHandler().toUserString(), TemplateHandler.loadTemplate(dataOwner.templateGroupIds(), dataOwner.__getInttype()), dataOwner), new DialogForFile(User.getSaveDir(dataOwner), dataOwner.__getCnumber() + ".odt")).execute();
-         } else {
-            Popup.notice(Messages.NO_TEMPLATE_LOADED + " (" + mpv5.db.objects.User.getCurrentUser() + ")");
-         }
+         dataOwner.toOdt(true);
       }
    }
 

@@ -672,26 +672,13 @@ public final class ActivityConfirmationPanel extends javax.swing.JPanel implemen
 
     public void pdf() {
         if (dataOwner != null && dataOwner.isExisting()) {
-            if (TemplateHandler.isLoaded(Long.valueOf(dataOwner.templateGroupIds()), dataOwner.templateType())) {
-                new Job(Export.createFile(dataOwner.getFormatHandler().toUserString(),
-                        TemplateHandler.loadTemplate(
-                        dataOwner.templateGroupIds(), dataOwner.templateType()),
-                        dataOwner), new DialogForFile(User.getSaveDir(dataOwner))).execute();
-            } else {
-                Popup.notice(Messages.NO_TEMPLATE_LOADED + " (" + mpv5.db.objects.User.getCurrentUser() + ")");
-            }
+            dataOwner.toPdf(true);
         }
     }
 
     public void odt() {
         if (dataOwner != null && dataOwner.isExisting()) {
-            if (TemplateHandler.isLoaded(Long.valueOf(dataOwner.templateGroupIds()), dataOwner.templateType())) {
-                new Job(Export.sourceFile(
-                        dataOwner.getFormatHandler().toUserString(),
-                        TemplateHandler.loadTemplate(dataOwner.templateGroupIds(), dataOwner.templateType()), dataOwner), new DialogForFile(User.getSaveDir(dataOwner))).execute();
-            } else {
-                Popup.notice(Messages.NO_TEMPLATE_LOADED + " (" + mpv5.db.objects.User.getCurrentUser() + ")");
-            }
+            dataOwner.toOdt(true);
         }
     }
 

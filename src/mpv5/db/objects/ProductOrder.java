@@ -19,6 +19,7 @@ package mpv5.db.objects;
 import enoa.handler.TableHandler;
 import enoa.handler.TemplateHandler;
 import java.awt.Color;
+import java.io.File;
 import java.math.BigDecimal;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -495,18 +496,10 @@ public class ProductOrder extends DatabaseObject implements Formattable, Templat
         boolean saved = super.save(silent);
         if (saved) {
             if (mpv5.db.objects.User.getCurrentUser().getProperty("org.openyabs.property", "autocreatepdf")) {
-                if (TemplateHandler.isLoaded(this)) {
-                    new Job(Export.createFile(this.getFormatHandler().toUserString(), TemplateHandler.loadTemplate(this), this), Export.wait(User.getSaveDir(this))).execute();
-                } else {
-                    YabsViewProxy.instance().addMessage(Messages.NO_TEMPLATE_LOADED + " (" + mpv5.db.objects.User.getCurrentUser() + ")", Color.YELLOW);
-                }
+               toPdf(false);
             }
             if (mpv5.db.objects.User.getCurrentUser().getProperty("org.openyabs.property", "autocreateodt")) {
-                if (TemplateHandler.isLoaded(this)) {
-                    new Job(Export.sourceFile(this.getFormatHandler().toUserString(), TemplateHandler.loadTemplate(this), this), Export.wait(User.getSaveDir(this))).execute();
-                } else {
-                    YabsViewProxy.instance().addMessage(Messages.NO_TEMPLATE_LOADED + " (" + mpv5.db.objects.User.getCurrentUser() + ")", Color.YELLOW);
-                }
+                toOdt(false);
             }
         }
         return saved;

@@ -1847,21 +1847,13 @@ public class ProductOrderPanel extends javax.swing.JPanel implements DataPanel, 
 
     public void pdf() {
         if (dataOwner != null && dataOwner.isExisting()) {
-            if (TemplateHandler.isLoaded(Long.valueOf(dataOwner.templateGroupIds()), dataOwner.getInttype())) {
-                new Job(Export.createFile(dataOwner.getFormatHandler().toUserString(), TemplateHandler.loadTemplate(dataOwner.templateGroupIds(), dataOwner.getInttype()), dataOwner), new DialogForFile(User.getSaveDir(dataOwner))).execute();
-            } else {
-                Popup.notice(Messages.NO_TEMPLATE_LOADED + " (" + mpv5.db.objects.User.getCurrentUser() + ")");
-            }
+            dataOwner.toPdf(true);
         }
     }
 
     public void odt() {
         if (dataOwner != null && dataOwner.isExisting()) {
-            if (TemplateHandler.isLoaded(Long.valueOf(dataOwner.templateGroupIds()), dataOwner.getInttype())) {
-                new Job(Export.sourceFile(dataOwner.getFormatHandler().toUserString(), TemplateHandler.loadTemplate(dataOwner.templateGroupIds(), dataOwner.getInttype()), dataOwner), new DialogForFile(User.getSaveDir(dataOwner))).execute();
-            } else {
-                Popup.notice(Messages.NO_TEMPLATE_LOADED + " (" + mpv5.db.objects.User.getCurrentUser() + ")");
-            }
+           dataOwner.toOdt(true);
         }
     }
 

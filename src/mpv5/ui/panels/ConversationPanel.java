@@ -1026,17 +1026,7 @@ public class ConversationPanel
      */
     public void pdf() {
         if (dataOwner != null && dataOwner.isExisting()) {
-            if (TemplateHandler.isLoaded(Long.valueOf(dataOwner.templateGroupIds()),
-                    Type)) {
-                new Job(Export.createFile(cname_,
-                        TemplateHandler.loadTemplate(dataOwner.templateGroupIds(),
-                        Type),
-                        dataOwner,
-                        getAddData()),
-                        new DialogForFile(User.getSaveDir(dataOwner))).execute();
-            } else {
-                Popup.notice(Messages.NO_TEMPLATE_LOADED + " (" + mpv5.db.objects.User.getCurrentUser() + ")");
-            }
+            dataOwner.toPdf(true);
         } else {
             Popup.notice(Messages.FILE_NOT_SAVED);
         }
@@ -1047,16 +1037,7 @@ public class ConversationPanel
      */
     public void odt() {
         if (dataOwner != null && dataOwner.isExisting()) {
-            if (TemplateHandler.isLoaded(Long.valueOf(dataOwner.templateGroupIds()),
-                    Type)) {
-                new Job(Export.sourceFile(cname_,
-                        TemplateHandler.loadTemplate(dataOwner.templateGroupIds(),
-                        Type),
-                        dataOwner),
-                        new DialogForFile(User.getSaveDir(dataOwner))).execute();
-            } else {
-                Popup.notice(Messages.NO_TEMPLATE_LOADED + " (" + mpv5.db.objects.User.getCurrentUser() + ")");
-            }
+            dataOwner.toOdt(true);
         } else {
             Popup.notice(Messages.FILE_NOT_SAVED);
         }
