@@ -463,17 +463,17 @@ public final class Export extends HashMap<String, Object> implements Waitable {
     /**
      * Generates a waiter for export
      *
-     * @param saveDir
+     * @param targetFile
      * @return
      */
-    public static Waiter wait(final File saveDir) {
+    public static Waiter wait(final File targetFile) {
         return new Waiter() {
 
             @Override
             public void set(Object object, Exception exceptions) throws Exception {
                 if (exceptions == null) {
                     if (object instanceof File) {
-                        FileDirectoryHandler.copyFile2((File) object, saveDir);
+                        FileDirectoryHandler.copyFile2((File) object, targetFile);
                     }
                 } else {
                     Notificator.raiseNotification(exceptions, false);
