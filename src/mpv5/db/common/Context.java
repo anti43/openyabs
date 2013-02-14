@@ -260,6 +260,7 @@ public class Context implements Serializable {
         list.add(getProduct());
         list.add(getReminder());
         list.add(getActivityList());
+        list.add(getConversation());
         return list;
     }
 
@@ -292,6 +293,7 @@ public class Context implements Serializable {
         list.add(getProductOrderSubitem());
         list.add(getProductOrder());
         list.add(getProductPrice());
+        list.add(getConversation());
 
         return list;
     }
@@ -329,7 +331,8 @@ public class Context implements Serializable {
                 getProductPrice(),
                 getActivityListItems(),
                 getProductOrderSubitem(),
-                getProductOrder()
+                getProductOrder(),
+                getConversation()
             }));
 
     /**
@@ -366,6 +369,7 @@ public class Context implements Serializable {
         list.add(getActivityListItems());
         list.add(getProductOrderSubitem());
         list.add(getProductOrder());
+        list.add(getConversation());
         return list;
     }
 
@@ -392,6 +396,7 @@ public class Context implements Serializable {
         list.add(getActivityList());
         list.add(getProductOrderSubitem());
         list.add(getProductOrder());
+        list.add(getConversation());
         return list;
     }
 
@@ -416,6 +421,7 @@ public class Context implements Serializable {
         list.add(getProduct());
         list.add(getProductOrderSubitem());
         list.add(getProductOrder());
+        list.add(getConversation());
 ////        list.add(getAccounts());
         return list;
     }
@@ -436,6 +442,7 @@ public class Context implements Serializable {
         list.add(getSupplier());
         list.add(getManufacturer());
         list.add(getWebShop());
+        list.add(getConversation());
         return list;
     }
 
@@ -513,7 +520,8 @@ public class Context implements Serializable {
                 getProductPrice(),
                 getMassprint(),
                 getProductOrderSubitem(),
-                getProductOrder()
+                getProductOrder(),
+                getConversation()
             }));
 //    private String[] searchHeaders;
     private volatile ArrayList<String[]> references = new ArrayList<String[]>();
@@ -831,7 +839,7 @@ public class Context implements Serializable {
         if (getTrashableContexts().contains(this)) {
             return " " + dbIdentity + ".invisible = 0 ";
         } else {
-            return null;
+            return "";
         }
     }
 
