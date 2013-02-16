@@ -1300,7 +1300,7 @@ public class ProductPanel extends javax.swing.JPanel implements DataPanel, MPCBS
         stype.setSelectedItem(Integer.valueOf(inttype_));
         try {
             ProductGroup g = (ProductGroup) DatabaseObject.getObject(Context.getProductGroup(), productgroupsids_);
-//            Log.Print(g);
+            Log.Print(g);
             familyselect.setModel(g);
             path.setText(g.__getHierarchypath());
         } catch (NodataFoundException ex) {
