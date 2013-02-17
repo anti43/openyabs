@@ -912,7 +912,7 @@ public final class SubItem extends DatabaseObject implements Triggerable {
 
    @Override
    public void triggerOnCreate() {
-      if (__getOriginalproductsids() > 0) {
+      if (__getOriginalproductsids() > 0 && getContext().equals(Context.getInvoice())) {
          try {
             Product p = (Product) DatabaseObject.getObject(Context.getProduct(), originalproductsids);
             if (p.__getIntinventorytype() == 1) {
