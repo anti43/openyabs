@@ -26,6 +26,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import mpv5.db.common.Context;
@@ -114,8 +116,9 @@ public final class SubItem extends DatabaseObject implements Triggerable {
          for (int i = 0; i < deletionQueue.size(); i++) {
             try {
                int myid = deletionQueue.get(i);
-               if(myid>0)
+               if (myid > 0) {
                   QueryHandler.delete(SubItem.getObject(Context.getSubItem(), myid));
+               }
             } catch (NodataFoundException ex) {
                Log.Debug(ex);
             }
@@ -313,7 +316,7 @@ public final class SubItem extends DatabaseObject implements Triggerable {
       String params = "cname";
       String vars = null;
       if (mpv5.db.objects.User.getCurrentUser().getProperties().hasProperty(contextl + mpv5.ui.beans.LightMPComboBox.VALUE_SEARCHFIELDS)
-              && mpv5.db.objects.User.getCurrentUser().getProperties().getProperty(contextl + mpv5.ui.beans.LightMPComboBox.VALUE_SEARCHFIELDS).contains("_$")) {
+            && mpv5.db.objects.User.getCurrentUser().getProperties().getProperty(contextl + mpv5.ui.beans.LightMPComboBox.VALUE_SEARCHFIELDS).contains("_$")) {
          try {
             params = "ids";
             vars = mpv5.db.objects.User.getCurrentUser().getProperties().getProperty(contextl + mpv5.ui.beans.LightMPComboBox.VALUE_SEARCHFIELDS);
@@ -669,12 +672,12 @@ public final class SubItem extends DatabaseObject implements Triggerable {
 
 
       MPTableModel model = new MPTableModel(
-              new Class[]{
-                 Integer.class, Integer.class, BigDecimal.class, String.class, Object.class, BigDecimal.class, BigDecimal.class, BigDecimal.class,
-                 BigDecimal.class, BigDecimal.class, Product.class, JButton.class, JButton.class, String.class, String.class, BigDecimal.class, BigDecimal.class},
-              new boolean[]{false, false, true, true, true, true, true, false, false, false, false, true, true, true, true, true, true, true},
-              data,
-              Headers.SUBITEMS.getValue());
+            new Class[]{
+               Integer.class, Integer.class, BigDecimal.class, String.class, Object.class, BigDecimal.class, BigDecimal.class, BigDecimal.class,
+               BigDecimal.class, BigDecimal.class, Product.class, JButton.class, JButton.class, String.class, String.class, BigDecimal.class, BigDecimal.class},
+            new boolean[]{false, false, true, true, true, true, true, false, false, false, false, true, true, true, true, true, true, true},
+            data,
+            Headers.SUBITEMS.getValue());
 
       model.setContext(Context.getSubItem());
       String defunit = null;
@@ -970,5 +973,17 @@ public final class SubItem extends DatabaseObject implements Triggerable {
     */
    public void setInttype(int inttype) {
       this.inttype = inttype;
+   }
+
+   @Persistable(false)
+   public Product getProduct(){
+      if (originalproductsids > 0) {
+         try {
+            return (Product) Product.getObject(Context.getProduct(), originalproductsids);
+         } catch (NodataFoundException ex) {
+            Logger.getLogger(SubItem.class.getName()).log(Level.SEVERE, null, ex);
+         }
+      }
+      return null;
    }
 }

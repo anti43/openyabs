@@ -282,4 +282,5 @@ public class ProductGroup extends DatabaseObject {
          throw new UnsupportedOperationException(Messages.VALUE_ALREADY_EXISTS + " " + getCname());
       }
    }
+   
 }

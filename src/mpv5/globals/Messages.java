@@ -350,7 +350,8 @@ public enum Messages {
     OVERRITE_DATABASE("This will override the actuall Database!\nIt's recommend to make a Backup befor you proceed.\nAre You sure?"), 
     SET_STATUS_PAID("Set to status: 'Paid'"),
     STOCK_MANAGER("Stock management"), 
-    PLEASE_WAIT("Please wait..");
+    PLEASE_WAIT("Please wait.."), 
+    TYPE_SUBITEM("Subitem");
 
     /**
      * @return the missing
@@ -360,7 +361,7 @@ public enum Messages {
     }
 
     private Messages(String message) {
-        this.message = message;
+      this.message = message;
     }
     private String message;
     private static List<String> missing = new ArrayList<String>();

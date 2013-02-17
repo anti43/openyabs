@@ -258,7 +258,11 @@ public class Log {
 
    private static synchronized void writeDirect(final Object obj) {
       for (int i = 0; i < loggers.size(); i++) {
-         loggers.get(i).log(obj);
+         try {
+            loggers.get(i).log(obj);
+         } catch (Exception e) {
+            e.printStackTrace();
+         }
       }
    }
 

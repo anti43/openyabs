@@ -11,15 +11,12 @@
 package mpv5.ui.dialogs;
 
 import java.awt.Component;
-import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComponent;
 import javax.swing.table.TableCellRenderer;
 import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
 import mpv5.db.common.DatabaseSearch;
 import mpv5.db.common.NodataFoundException;
-import mpv5.ui.frames.MPView;
-import mpv5.utils.html.HtmlParser;
 import mpv5.utils.models.MPTableModel;
 import mpv5.utils.tables.TableFormat;
 

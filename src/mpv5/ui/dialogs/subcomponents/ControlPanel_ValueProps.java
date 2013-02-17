@@ -11,6 +11,7 @@ import mpv5.db.common.NodataFoundException;
 import mpv5.db.objects.Group;
 import mpv5.db.objects.ValueProperty;
 import mpv5.globals.LocalSettings;
+import mpv5.globals.Messages;
 import mpv5.logging.Log;
 import mpv5.ui.dialogs.ControlApplet;
 import mpv5.ui.dialogs.Popup;
@@ -18,352 +19,377 @@ import mpv5.ui.dialogs.Search2;
 
 /**
  *
- * 
+ *
  */
 public class ControlPanel_ValueProps extends javax.swing.JPanel implements ControlApplet, DatabaseObejctReceiver {
 
-    private static final long serialVersionUID = 1L;
-    /**
-     * This unique name identifies this control applet
-     */
-    public final String UNAME = "valueproperties";
-    private PropertyStore oldvalues;
-    private ValueProperty dataOwner;
+   private static final long serialVersionUID = 1L;
+   /**
+    * This unique name identifies this control applet
+    */
+   public final String UNAME = "valueproperties";
+   private PropertyStore oldvalues;
+   private ValueProperty dataOwner;
 
-    public ControlPanel_ValueProps() {
-        initComponents();
-        setVisible(true);
-        labeledCombobox1.setEditable(false);
-        labeledCombobox1.setContext(Context.getValueProperties());
-        labeledCombobox1.setReceiver(this);
-        refresh();
-    }
+   public ControlPanel_ValueProps() {
+      initComponents();
+      setVisible(true);
+      labeledCombobox1.setEditable(false);
+      labeledCombobox1.setContext(Context.getValueProperties());
+      labeledCombobox1.setReceiver(this);
+      refresh();
+   }
 
-    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
-    private void initComponents() {
+   // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
+   private void initComponents() {
 
-        jScrollPane6 = new javax.swing.JScrollPane();
-        jPanel3 = new javax.swing.JPanel();
-        jScrollPane4 = new javax.swing.JScrollPane();
-        jList1 = new javax.swing.JList();
-        jLabel1 = new javax.swing.JLabel();
-        jLabel2 = new javax.swing.JLabel();
-        jScrollPane5 = new javax.swing.JScrollPane();
-        jList2 = new javax.swing.JList();
-        labeledCombobox1 = new mpv5.ui.beans.LabeledCombobox();
-        jPanel6 = new javax.swing.JPanel();
-        jButton6 = new javax.swing.JButton();
-        jScrollPane2 = new javax.swing.JScrollPane();
-        jTextPane2 = new javax.swing.JTextPane();
-        labeledTextField1 = new mpv5.ui.beans.LabeledTextField();
-        jPanel1 = new javax.swing.JPanel();
-        jButton1 = new javax.swing.JButton();
-        jButton4 = new javax.swing.JButton();
-        jButton5 = new javax.swing.JButton();
+      jScrollPane6 = new javax.swing.JScrollPane();
+      jPanel3 = new javax.swing.JPanel();
+      jScrollPane4 = new javax.swing.JScrollPane();
+      jList1 = new javax.swing.JList();
+      jLabel1 = new javax.swing.JLabel();
+      jLabel2 = new javax.swing.JLabel();
+      jScrollPane5 = new javax.swing.JScrollPane();
+      jList2 = new javax.swing.JList();
+      labeledCombobox1 = new mpv5.ui.beans.LabeledCombobox();
+      jPanel6 = new javax.swing.JPanel();
+      jButton6 = new javax.swing.JButton();
+      jScrollPane2 = new javax.swing.JScrollPane();
+      jTextPane2 = new javax.swing.JTextPane();
+      labeledTextField1 = new mpv5.ui.beans.LabeledTextField();
+      jPanel1 = new javax.swing.JPanel();
+      jButton1 = new javax.swing.JButton();
+      jButton4 = new javax.swing.JButton();
+      jButton5 = new javax.swing.JButton();
 
-        setName("Form"); // NOI18N
-        setLayout(new javax.swing.BoxLayout(this, javax.swing.BoxLayout.PAGE_AXIS));
+      setName("Form"); // NOI18N
+      setLayout(new javax.swing.BoxLayout(this, javax.swing.BoxLayout.PAGE_AXIS));
 
-        jScrollPane6.setName("jScrollPane6"); // NOI18N
+      jScrollPane6.setName("jScrollPane6"); // NOI18N
 
-        java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle(); // NOI18N
-        jPanel3.setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("ControlPanel_ValueProps.jPanel3.border.title"))); // NOI18N
-        jPanel3.setName("jPanel3"); // NOI18N
+      java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("mpv5/resources/languages/Panels"); // NOI18N
+      jPanel3.setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("ControlPanel_ValueProps.jPanel3.border.title"))); // NOI18N
+      jPanel3.setName("jPanel3"); // NOI18N
 
-        jScrollPane4.setName("jScrollPane4"); // NOI18N
+      jScrollPane4.setName("jScrollPane4"); // NOI18N
 
-        jList1.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
-        jList1.setName("jList1"); // NOI18N
-        jScrollPane4.setViewportView(jList1);
+      jList1.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
+      jList1.setName("jList1"); // NOI18N
+      jScrollPane4.setViewportView(jList1);
 
-        jLabel1.setText(bundle.getString("ControlPanel_ValueProps.jLabel1.text")); // NOI18N
-        jLabel1.setName("jLabel1"); // NOI18N
+      jLabel1.setText(bundle.getString("ControlPanel_ValueProps.jLabel1.text")); // NOI18N
+      jLabel1.setName("jLabel1"); // NOI18N
 
-        jLabel2.setText(bundle.getString("ControlPanel_ValueProps.jLabel2.text")); // NOI18N
-        jLabel2.setName("jLabel2"); // NOI18N
+      jLabel2.setText(bundle.getString("ControlPanel_ValueProps.jLabel2.text")); // NOI18N
+      jLabel2.setName("jLabel2"); // NOI18N
 
-        jScrollPane5.setName("jScrollPane5"); // NOI18N
+      jScrollPane5.setName("jScrollPane5"); // NOI18N
 
-        jList2.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
-        jList2.setName("jList2"); // NOI18N
-        jScrollPane5.setViewportView(jList2);
+      jList2.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
+      jList2.setName("jList2"); // NOI18N
+      jScrollPane5.setViewportView(jList2);
 
-        labeledCombobox1.set_Label(bundle.getString("ControlPanel_ValueProps.labeledCombobox1._Label")); // NOI18N
-        labeledCombobox1.setName("labeledCombobox1"); // NOI18N
+      labeledCombobox1.set_Label(bundle.getString("ControlPanel_ValueProps.labeledCombobox1._Label")); // NOI18N
+      labeledCombobox1.setName("labeledCombobox1"); // NOI18N
 
-        jPanel6.setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("ControlPanel_ValueProps.jPanel6.border.title"))); // NOI18N
-        jPanel6.setName("jPanel6"); // NOI18N
-        jPanel6.setPreferredSize(new java.awt.Dimension(200, 100));
+      jPanel6.setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("ControlPanel_ValueProps.jPanel6.border.title"))); // NOI18N
+      jPanel6.setName("jPanel6"); // NOI18N
+      jPanel6.setPreferredSize(new java.awt.Dimension(200, 100));
 
-        jButton6.setText(bundle.getString("ControlPanel_ValueProps.jButton6.text")); // NOI18N
-        jButton6.setName("jButton6"); // NOI18N
-        jButton6.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton6ActionPerformed(evt);
-            }
-        });
+      jButton6.setText(bundle.getString("ControlPanel_ValueProps.jButton6.text")); // NOI18N
+      jButton6.setName("jButton6"); // NOI18N
+      jButton6.addActionListener(new java.awt.event.ActionListener() {
+         public void actionPerformed(java.awt.event.ActionEvent evt) {
+            jButton6ActionPerformed(evt);
+         }
+      });
 
-        jScrollPane2.setName("jScrollPane2"); // NOI18N
+      jScrollPane2.setName("jScrollPane2"); // NOI18N
 
-        jTextPane2.setText(bundle.getString("ControlPanel_ValueProps.jTextPane2.text")); // NOI18N
-        jTextPane2.setName("jTextPane2"); // NOI18N
-        jScrollPane2.setViewportView(jTextPane2);
+      jTextPane2.setText(bundle.getString("ControlPanel_ValueProps.jTextPane2.text")); // NOI18N
+      jTextPane2.setName("jTextPane2"); // NOI18N
+      jScrollPane2.setViewportView(jTextPane2);
 
-        javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
-        jPanel6.setLayout(jPanel6Layout);
-        jPanel6Layout.setHorizontalGroup(
-            jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel6Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel6Layout.createSequentialGroup()
-                        .addComponent(jButton6)
-                        .addGap(417, 417, 417))
-                    .addGroup(jPanel6Layout.createSequentialGroup()
-                        .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 542, Short.MAX_VALUE)
-                        .addContainerGap())))
-        );
-        jPanel6Layout.setVerticalGroup(
-            jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel6Layout.createSequentialGroup()
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 139, Short.MAX_VALUE)
-                .addGap(13, 13, 13)
-                .addComponent(jButton6))
-        );
+      javax.swing.GroupLayout jPanel6Layout = new javax.swing.GroupLayout(jPanel6);
+      jPanel6.setLayout(jPanel6Layout);
+      jPanel6Layout.setHorizontalGroup(
+         jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+         .addGroup(jPanel6Layout.createSequentialGroup()
+            .addContainerGap()
+            .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+               .addGroup(jPanel6Layout.createSequentialGroup()
+                  .addComponent(jButton6)
+                  .addGap(417, 417, 417))
+               .addGroup(jPanel6Layout.createSequentialGroup()
+                  .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 597, Short.MAX_VALUE)
+                  .addContainerGap())))
+      );
+      jPanel6Layout.setVerticalGroup(
+         jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+         .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel6Layout.createSequentialGroup()
+            .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 151, Short.MAX_VALUE)
+            .addGap(13, 13, 13)
+            .addComponent(jButton6))
+      );
 
-        labeledTextField1.set_Label(bundle.getString("ControlPanel_ValueProps.labeledTextField1._Label")); // NOI18N
-        labeledTextField1.setName("labeledTextField1"); // NOI18N
+      labeledTextField1.set_Label(bundle.getString("ControlPanel_ValueProps.labeledTextField1._Label")); // NOI18N
+      labeledTextField1.setName("labeledTextField1"); // NOI18N
 
-        javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
-        jPanel3.setLayout(jPanel3Layout);
-        jPanel3Layout.setHorizontalGroup(
-            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                .addComponent(labeledCombobox1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(labeledTextField1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel3Layout.createSequentialGroup()
-                    .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 169, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                        .addGroup(jPanel3Layout.createSequentialGroup()
-                            .addGap(95, 95, 95)
-                            .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 169, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel3Layout.createSequentialGroup()
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                            .addComponent(jScrollPane5)))))
-            .addComponent(jPanel6, javax.swing.GroupLayout.DEFAULT_SIZE, 578, Short.MAX_VALUE)
-        );
-        jPanel3Layout.setVerticalGroup(
-            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel3Layout.createSequentialGroup()
-                .addComponent(labeledCombobox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel1)
-                    .addComponent(jLabel2))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane5, javax.swing.GroupLayout.DEFAULT_SIZE, 181, Short.MAX_VALUE)
-                    .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 181, Short.MAX_VALUE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(labeledTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel6, javax.swing.GroupLayout.DEFAULT_SIZE, 207, Short.MAX_VALUE))
-        );
+      javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
+      jPanel3.setLayout(jPanel3Layout);
+      jPanel3Layout.setHorizontalGroup(
+         jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+         .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+            .addComponent(labeledCombobox1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(labeledTextField1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel3Layout.createSequentialGroup()
+               .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                  .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 169, javax.swing.GroupLayout.PREFERRED_SIZE)
+                  .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 277, javax.swing.GroupLayout.PREFERRED_SIZE))
+               .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                  .addGroup(jPanel3Layout.createSequentialGroup()
+                     .addGap(89, 89, 89)
+                     .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 169, javax.swing.GroupLayout.PREFERRED_SIZE))
+                  .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel3Layout.createSequentialGroup()
+                     .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                     .addComponent(jScrollPane5)))))
+         .addComponent(jPanel6, javax.swing.GroupLayout.DEFAULT_SIZE, 629, Short.MAX_VALUE)
+      );
+      jPanel3Layout.setVerticalGroup(
+         jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+         .addGroup(jPanel3Layout.createSequentialGroup()
+            .addComponent(labeledCombobox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+            .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+               .addComponent(jLabel1)
+               .addComponent(jLabel2))
+            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+            .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+               .addComponent(jScrollPane5, javax.swing.GroupLayout.DEFAULT_SIZE, 186, Short.MAX_VALUE)
+               .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 186, Short.MAX_VALUE))
+            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+            .addComponent(labeledTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+            .addComponent(jPanel6, javax.swing.GroupLayout.DEFAULT_SIZE, 210, Short.MAX_VALUE))
+      );
 
-        jScrollPane6.setViewportView(jPanel3);
+      jScrollPane6.setViewportView(jPanel3);
 
-        add(jScrollPane6);
+      add(jScrollPane6);
 
-        jPanel1.setBackground(new java.awt.Color(255, 255, 255));
-        jPanel1.setName("jPanel1"); // NOI18N
-        jPanel1.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT));
+      jPanel1.setBackground(new java.awt.Color(255, 255, 255));
+      jPanel1.setName("jPanel1"); // NOI18N
+      jPanel1.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT));
 
-        jButton1.setText(bundle.getString("ControlPanel_ValueProps.jButton1.text")); // NOI18N
-        jButton1.setName("jButton1"); // NOI18N
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
-            }
-        });
-        jPanel1.add(jButton1);
+      jButton1.setText(bundle.getString("ControlPanel_ValueProps.jButton1.text")); // NOI18N
+      jButton1.setName("jButton1"); // NOI18N
+      jButton1.addActionListener(new java.awt.event.ActionListener() {
+         public void actionPerformed(java.awt.event.ActionEvent evt) {
+            jButton1ActionPerformed(evt);
+         }
+      });
+      jPanel1.add(jButton1);
 
-        jButton4.setText(bundle.getString("ControlPanel_ValueProps.jButton4.text")); // NOI18N
-        jButton4.setName("jButton4"); // NOI18N
-        jButton4.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton4ActionPerformed(evt);
-            }
-        });
-        jPanel1.add(jButton4);
+      jButton4.setText(bundle.getString("ControlPanel_ValueProps.jButton4.text")); // NOI18N
+      jButton4.setName("jButton4"); // NOI18N
+      jButton4.addActionListener(new java.awt.event.ActionListener() {
+         public void actionPerformed(java.awt.event.ActionEvent evt) {
+            jButton4ActionPerformed(evt);
+         }
+      });
+      jPanel1.add(jButton4);
 
-        jButton5.setText(bundle.getString("ControlPanel_ValueProps.jButton5.text")); // NOI18N
-        jButton5.setName("jButton5"); // NOI18N
-        jButton5.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton5ActionPerformed(evt);
-            }
-        });
-        jPanel1.add(jButton5);
+      jButton5.setText(bundle.getString("ControlPanel_ValueProps.jButton5.text")); // NOI18N
+      jButton5.setName("jButton5"); // NOI18N
+      jButton5.addActionListener(new java.awt.event.ActionListener() {
+         public void actionPerformed(java.awt.event.ActionEvent evt) {
+            jButton5ActionPerformed(evt);
+         }
+      });
+      jPanel1.add(jButton5);
 
-        add(jPanel1);
-    }// </editor-fold>//GEN-END:initComponents
+      add(jPanel1);
+   }// </editor-fold>//GEN-END:initComponents
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
 
-        if (dataOwner != null) {
-            dataOwner.delete();
-            refresh();
-            dataOwner = null;
-        }
+       if (dataOwner != null) {
+          dataOwner.delete();
+          refresh();
+          dataOwner = null;
+       }
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
-        prepare();
-        String cname = labeledTextField1.getText(true, "key");
-        String val = "#" + jTextPane2.getText() + "#";
+       prepare();
+       String cname = labeledTextField1.getText(true, "key");
+       String val = "#" + jTextPane2.getText() + "#";
 
-        if (dataOwner == null) {
-            dataOwner = new ValueProperty(cname, val, (Context) jList1.getSelectedValue(), (Group) jList2.getSelectedValue());
-        } else {
-            dataOwner.setValueObj(val);
-            dataOwner.setCname(cname);
-            dataOwner.setContextids(((Context) jList1.getSelectedValue()).getId());
-            dataOwner.setGroup((Group) jList2.getSelectedValue());
-        }
+       if (dataOwner == null) {
+          dataOwner = new ValueProperty(cname, val, ((ContextWrap) jList1.getSelectedValue()).c, (Group) jList2.getSelectedValue());
+       } else {
+          dataOwner.setValueObj(val);
+          dataOwner.setCname(cname);
+          dataOwner.setContextids((((ContextWrap) jList1.getSelectedValue()).c.getId()));
+          dataOwner.setGroup((Group) jList2.getSelectedValue());
+       }
 
-        dataOwner.save();
-        refresh();
+       dataOwner.save();
+       refresh();
     }//GEN-LAST:event_jButton4ActionPerformed
 
     private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
-        prepare();
-        String cname = labeledTextField1.getText(true, "key");
-        String val = "#" + jTextPane2.getText() + "#";
-        ValueProperty xx = new ValueProperty(cname, val, (Context) jList1.getSelectedValue(), (Group) jList2.getSelectedValue());
-        if (xx.save()) {
-            dataOwner = xx;
-        }
-        refresh();
+       prepare();
+       String cname = labeledTextField1.getText(true, "key");
+       String val = "#" + jTextPane2.getText() + "#";
+       ValueProperty xx = new ValueProperty(cname, val, ((ContextWrap) jList1.getSelectedValue()).c, (Group) jList2.getSelectedValue());
+       if (xx.save()) {
+          dataOwner = xx;
+       }
+       refresh();
     }//GEN-LAST:event_jButton5ActionPerformed
 
     private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
-        DatabaseObject s = Search2.showSearchFor(Context.getItem());
-        if (s != null) {
-            try {
-                Popup.notice(s.evaluate(jTextPane2.getText()));
-            } catch (Exception e) {
-                Popup.error(e);
-            }
-        }
+       DatabaseObject s = Search2.showSearchFor(Context.getItem());
+       if (s != null) {
+          try {
+             Popup.notice(s.evaluate(jTextPane2.getText()));
+          } catch (Exception e) {
+             Popup.error(e);
+          }
+       }
     }//GEN-LAST:event_jButton6ActionPerformed
 
-    @Override
-    public void setValues(PropertyStore values) {
-        oldvalues = values;
+   @Override
+   public void setValues(PropertyStore values) {
+      oldvalues = values;
 
-    }
+   }
 
-    @Override
-    public String getUname() {
-        return UNAME;
-    }
+   @Override
+   public String getUname() {
+      return UNAME;
+   }
 
-    @Override
-    public void reset() {
-        setValues(oldvalues);
-    }
-    // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton4;
-    private javax.swing.JButton jButton5;
-    private javax.swing.JButton jButton6;
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
-    private javax.swing.JList jList1;
-    private javax.swing.JList jList2;
-    private javax.swing.JPanel jPanel1;
-    private javax.swing.JPanel jPanel3;
-    private javax.swing.JPanel jPanel6;
-    private javax.swing.JScrollPane jScrollPane2;
-    private javax.swing.JScrollPane jScrollPane4;
-    private javax.swing.JScrollPane jScrollPane5;
-    private javax.swing.JScrollPane jScrollPane6;
-    private javax.swing.JTextPane jTextPane2;
-    private mpv5.ui.beans.LabeledCombobox labeledCombobox1;
-    private mpv5.ui.beans.LabeledTextField labeledTextField1;
-    // End of variables declaration//GEN-END:variables
+   @Override
+   public void reset() {
+      setValues(oldvalues);
+   }
+   // Variables declaration - do not modify//GEN-BEGIN:variables
+   private javax.swing.JButton jButton1;
+   private javax.swing.JButton jButton4;
+   private javax.swing.JButton jButton5;
+   private javax.swing.JButton jButton6;
+   private javax.swing.JLabel jLabel1;
+   private javax.swing.JLabel jLabel2;
+   private javax.swing.JList jList1;
+   private javax.swing.JList jList2;
+   private javax.swing.JPanel jPanel1;
+   private javax.swing.JPanel jPanel3;
+   private javax.swing.JPanel jPanel6;
+   private javax.swing.JScrollPane jScrollPane2;
+   private javax.swing.JScrollPane jScrollPane4;
+   private javax.swing.JScrollPane jScrollPane5;
+   private javax.swing.JScrollPane jScrollPane6;
+   private javax.swing.JTextPane jTextPane2;
+   private mpv5.ui.beans.LabeledCombobox labeledCombobox1;
+   private mpv5.ui.beans.LabeledTextField labeledTextField1;
+   // End of variables declaration//GEN-END:variables
 
-    private void setSettings() {
-    }
+   private void setSettings() {
+   }
 
-    @Override
-    public Component getAndRemoveActionPanel() {
-        this.remove(jPanel1);
-        validate();
-        return jPanel1;
-    }
+   @Override
+   public Component getAndRemoveActionPanel() {
+      this.remove(jPanel1);
+      validate();
+      return jPanel1;
+   }
 
-    private void refresh() {
+   private void refresh() {
 
-        Runnable runnable = new Runnable() {
+      Runnable runnable = new Runnable() {
+         public void run() {
+            DefaultListModel def = new DefaultListModel();
+            def.addElement(new ContextWrap(Messages.TYPE_BILL.getValue(), Context.getInvoice()));
+            def.addElement(new ContextWrap(Messages.TYPE_ORDER.getValue(), Context.getOrder()));
+            def.addElement(new ContextWrap(Messages.TYPE_OFFER.getValue(), Context.getOffer()));
+//            def.addElement(new ContextWrap(Messages.TYPE_SUBITEM.getValue(), Context.getSubItem()));
+            def.addElement(new ContextWrap(Messages.TYPE_PRODUCT.getValue(), Context.getProduct())); 
+            def.addElement(new ContextWrap(Messages.TYPE_PRODUCT_ORDER.getValue(), Context.getProductOrder()));
+            def.addElement(new ContextWrap(Messages.TYPE_SUPPLIER.getValue(), Context.getSupplier()));
+            def.addElement(new ContextWrap(Messages.TYPE_MANUFACTURER.getValue(), Context.getManufacturer()));
+            def.addElement(new ContextWrap(Messages.TYPE_CUSTOMER.getValue(), Context.getCustomer()));
+            def.addElement(new ContextWrap(Messages.TYPE_REMINDER.getValue(), Context.getReminder()));
+            def.addElement(new ContextWrap(Messages.TYPE_CONVERSATION.getValue(), Context.getInvoice()));
+            def.addElement(new ContextWrap(Messages.TYPE_MASSPRINT.getValue(), Context.getInvoice()));
+            
 
-            public void run() {
-                DefaultListModel def = new DefaultListModel();
-                for (Context c : Context.getCacheableContexts()) {
-                    def.addElement(c);
-                }
-                jList1.setModel(def);
+            jList1.setModel(def);
 
-                DefaultListModel def1 = new DefaultListModel();
-                try {
-                    for (DatabaseObject c : Group.getObjects(Context.getGroup())) {
-                        def1.addElement((Group) c);
-                    }
-                } catch (NodataFoundException ex) {
-                    Log.Debug(ex);
-                }
-                jList2.setModel(def1);
-
-                labeledCombobox1.setModel(DatabaseObject.toObjectList(ValueProperty.getGroupProperties()));
-
+            DefaultListModel def1 = new DefaultListModel();
+            try {
+               for (DatabaseObject c : Group.getObjects(Context.getGroup())) {
+                  def1.addElement((Group) c);
+               }
+            } catch (NodataFoundException ex) {
+               Log.Debug(ex);
             }
-        };
-        SwingUtilities.invokeLater(runnable);
-    }
+            jList2.setModel(def1);
 
-    public void receive(final DatabaseObject obj) {
+            labeledCombobox1.setModel(DatabaseObject.toObjectList(ValueProperty.getGroupProperties()));
 
-        Runnable runnable = new Runnable() {
+         }
+      };
+      SwingUtilities.invokeLater(runnable);
+   }
 
-            public void run() {
-                dataOwner = (ValueProperty) obj;
-                jTextPane2.setText(dataOwner.getValue().toString().replace("#", ""));
-                labeledTextField1.setText(dataOwner.getKey());
-                jList1.setSelectedValue(Context.getByID(((ValueProperty) obj).__getContextids()), true);
-                try {
-                    jList2.setSelectedValue(((ValueProperty) obj).getGroup(), true);
-                } catch ( Exception ex) {
-                    Log.Debug(ex);
-                }
+   public void receive(final DatabaseObject obj) {
+
+      Runnable runnable = new Runnable() {
+         public void run() {
+            dataOwner = (ValueProperty) obj;
+            jTextPane2.setText(dataOwner.getValue().toString().replace("#", ""));
+            labeledTextField1.setText(dataOwner.getKey());
+            jList1.setSelectedValue(Context.getByID(((ValueProperty) obj).__getContextids()), true);
+            try {
+               jList2.setSelectedValue(((ValueProperty) obj).getGroup(), true);
+            } catch (Exception ex) {
+               Log.Debug(ex);
             }
-        };
-        SwingUtilities.invokeLater(runnable);
-    }
+         }
+      };
+      SwingUtilities.invokeLater(runnable);
+   }
 
-    private void prepare() {
+   private void prepare() {
 
-        if (jList1.getSelectedValue() == null) {
-            jList1.setSelectedIndex(0);
-        }
-        if (jList2.getSelectedValue() == null) {
-            jList2.setSelectedIndex(0);
-        }
-        if (jTextPane2.getText().length() == 0) {
-            jTextPane2.setText("return \"\"");
-        }
+      if (jList1.getSelectedValue() == null) {
+         jList1.setSelectedIndex(0);
+      }
+      if (jList2.getSelectedValue() == null) {
+         jList2.setSelectedIndex(0);
+      }
+      if (jTextPane2.getText().length() == 0) {
+         jTextPane2.setText("return \"\"");
+      }
 
 
-    }
+   }
+
+   class ContextWrap {
+
+      private String s;
+      Context c;
+
+      ContextWrap(String s, Context c) {
+         this.s = s;
+         this.c = c;
+      }
+
+      @Override
+      public String toString() {
+         return s;
+      }
+   }
 }
