@@ -111,7 +111,7 @@ public class DatabaseConnection {
          DriverManager.registerDriver((Driver) Class.forName(getCtype().getDriver()).newInstance());
          Log.Debug(this, "Driver: " + getCtype().getDriver());
       } catch (Exception ex) {
-         Log.Debug(this, ex.getMessage());
+         Log.Debug(this, ex);
       }
 
       return reconnect(create);
@@ -126,35 +126,35 @@ public class DatabaseConnection {
       try {
          Log.Debug(this, "RECONNECT::Datenbankverbindung: " + getCtype().getConnectionString(create));
          conn = DriverManager.getConnection(getCtype().getConnectionString(create), user, password);
-         conn.setAutoCommit(true);
+         boolean result = true;
          if (conn != null //&& conn.isValid(10)//does not work with MySQL Connector/J 5.0
-                 ) {//mysql (and others) need explicit create database, derby does it by itself
+               ) {//mysql (and others) need explicit create database, derby does it by itself
+            conn.setAutoCommit(true);
             if (create && ConnectionTypeHandler.getDriverType() != ConnectionTypeHandler.DERBY) {
                stmt = conn.createStatement();
-               conn.setCatalog(ConnectionTypeHandler.getDBNAME());
                if (User.PROPERTIES_OVERRIDE.hasProperty("drop_database_on_create")) {
                   try {
                      sql = "DROP DATABASE "
-                             + ConnectionTypeHandler.getDBNAME()
-                             + ";";
+                           + ConnectionTypeHandler.getDBNAME()
+                           + ";";
                      stmt.execute(sql);
                   } catch (SQLException ex) {
-                     Log.Debug(this, "Database Error Cleaing of old DB failed!");
+                     Log.Debug(this, "Database Error cleaning of old DB failed!");
                   }
                }
                try {
                   sql = "CREATE DATABASE "
-                          + ConnectionTypeHandler.getDBNAME()
-                          + " ;";
+                        + ConnectionTypeHandler.getDBNAME()
+                        + " ;";
                   stmt.execute(sql);
                } catch (SQLException ex) {
-                  Popup.OK_dialog(Messages.CREATE_DATABASE_OWN.toString(), "Database Creation");
-                  return false;
+                  Log.Debug(ex);
+                  result = Popup.OK_dialog("Could not create database " + ConnectionTypeHandler.getDBNAME() + ", did you already create it?", "Database Creation");
                }
-
             }
+            conn.setCatalog(ConnectionTypeHandler.getDBNAME());
             connector = this;
-            return true;
+            return result;
          } else {
             throw new RuntimeException("Could not create connection: " + getCtype().getConnectionString(create));
          }
@@ -209,7 +209,7 @@ public class DatabaseConnection {
             if (ConnectionTypeHandler.getDriverType() == ConnectionTypeHandler.DERBY) {
                try {
                   DriverManager.getConnection(
-                          DatabaseConnection.instanceOf().getCtype().getConnectionString(false) + "shutdown=true;", user, password);
+                        DatabaseConnection.instanceOf().getCtype().getConnectionString(false) + "shutdown=true;", user, password);
                } catch (Exception ex) {
                   Log.Debug(DatabaseConnection.class, ex.getLocalizedMessage());
                }
@@ -262,7 +262,7 @@ public class DatabaseConnection {
          }
          return true;
       } catch (Exception sQLException) {
-         Log.Debug(this, sQLException.getMessage());
+         Log.Debug(this, "-----------> "+sQLException.getMessage());
          return false;
       } finally {
          if (prog != null) {
