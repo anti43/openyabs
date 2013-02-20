@@ -34,8 +34,8 @@ public class SplashScreen extends JDialog {
     private Image image;
     private Image grayImage;
     private int progressSteps;
-    private final LogConsole l;
-    private final int level;
+    private  LogConsole l;
+    private  int level;
 
     /**
      * Creates new form SplashScreen
@@ -57,28 +57,28 @@ public class SplashScreen extends JDialog {
         setModalityType(ModalityType.MODELESS);
         jPanel1.setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
         jScrollPane1.getViewport().setOpaque(false);
-        l = new LogConsole() {
-            public void log() {
-                jTextArea1.setText(jTextArea1.getText().concat("\n"));
-                jTextArea1.setCaretPosition(jTextArea1.getText().length());
-            }
-
-            public void log(Object object) {
-                jTextArea1.setText(jTextArea1.getText().concat("\n" + String.valueOf(object)));
-                jTextArea1.setCaretPosition(jTextArea1.getText().length());
-            }
-
-            public void flush() {
-                jTextArea1.setText(null);
-            }
-
-            public JComponent open() {
-                return jTextArea1;
-            }
-        };
-        Log.addLogger(l);
-        level = Log.getLoglevel();
-        Log.setLogLevel(Log.LOGLEVEL_DEBUG);
+//        l = new LogConsole() {
+//            public void log() {
+//                jTextArea1.setText(jTextArea1.getText().concat("\n"));
+//                jTextArea1.setCaretPosition(jTextArea1.getText().length());
+//            }
+//
+//            public void log(Object object) {
+//                jTextArea1.setText(jTextArea1.getText().concat("\n" + String.valueOf(object)));
+//                jTextArea1.setCaretPosition(jTextArea1.getText().length());
+//            }
+//
+//            public void flush() {
+//                jTextArea1.setText(null);
+//            }
+//
+//            public JComponent open() {
+//                return jTextArea1;
+//            }
+//        };
+//        Log.addLogger(l);
+//        level = Log.getLoglevel();
+//        Log.setLogLevel(Log.LOGLEVEL_DEBUG);
     }
 
     /**
