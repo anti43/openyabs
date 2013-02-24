@@ -149,7 +149,7 @@ public class DatabaseConnection {
                   stmt.execute(sql);
                } catch (SQLException ex) {
                   Log.Debug(ex);
-                  result = Popup.OK_dialog("Could not create database " + ConnectionTypeHandler.getDBNAME() + ", did you already create it?", "Database Creation");
+                  result = Popup.Y_N_dialog("Could not create database " + ConnectionTypeHandler.getDBNAME() + ", did you already create it?", "Database Creation");
                }
             }
             conn.setCatalog(ConnectionTypeHandler.getDBNAME());

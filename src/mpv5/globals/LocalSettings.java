@@ -410,10 +410,13 @@ public class LocalSettings {
         if (cookies == null) {
             cookies = new Vector<PropertyStore>();
         }
+        if(forConnId==null){
+           forConnId = 0;
+        }
 
         for (int i = 0; i < cookies.size(); i++) {
             PropertyStore propertyStore = cookies.get(i);
-            if (propertyStore.getProperty("nodeid").equals(forConnId.toString())) {
+            if (String.valueOf(propertyStore.getProperty("nodeid")).equals(String.valueOf(forConnId))) {
                 cookies.remove(propertyStore);
             }
         }
