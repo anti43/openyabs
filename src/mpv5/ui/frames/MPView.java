@@ -83,6 +83,7 @@ import mpv5.ui.dialogs.About;
 import mpv5.ui.dialogs.BigPopup;
 import mpv5.ui.dialogs.DialogForFile;
 import mpv5.ui.dialogs.ListView;
+import mpv5.ui.dialogs.LoginToInstanceScreen;
 import mpv5.ui.dialogs.Notificator;
 import mpv5.ui.dialogs.Popup;
 import mpv5.ui.dialogs.Search;
@@ -918,6 +919,7 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
       jMenuItem18 = new javax.swing.JMenuItem();
       jMenuItem37 = new javax.swing.JMenuItem();
       jMenuItem46 = new javax.swing.JMenuItem();
+      jMenuItem2 = new javax.swing.JMenuItem();
       jSeparator9 = new javax.swing.JPopupMenu.Separator();
       jMenuItem12 = new javax.swing.JMenuItem();
       editMenu = new javax.swing.JMenu();
@@ -1009,7 +1011,7 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
 
       jButton5.setFont(jButton5.getFont().deriveFont(jButton5.getFont().getSize()-1f));
       jButton5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/agt_family.png"))); // NOI18N
-      java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle();// NOI18N
+      java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle(); // NOI18N
       jButton5.setText(bundle.getString("MPView.jButton5.text_1")); // NOI18N
       jButton5.setToolTipText(bundle.getString("MPView.jButton5.toolTipText_1")); // NOI18N
       jButton5.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
@@ -1659,6 +1661,15 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
       jMenu3.add(jMenuItem46);
 
       fileMenu.add(jMenu3);
+
+      jMenuItem2.setText(bundle.getString("MPView.jMenuItem2.text")); // NOI18N
+      jMenuItem2.setName("jMenuItem2"); // NOI18N
+      jMenuItem2.addActionListener(new java.awt.event.ActionListener() {
+         public void actionPerformed(java.awt.event.ActionEvent evt) {
+            jMenuItem2ActionPerformed(evt);
+         }
+      });
+      fileMenu.add(jMenuItem2);
 
       jSeparator9.setName("jSeparator9"); // NOI18N
       fileMenu.add(jSeparator9);
@@ -2766,6 +2777,11 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
       w.addPanel(new wizard_FirstSettings5(w));
       w.showWizAsChild();
    }//GEN-LAST:event_jMenuItem50ActionPerformed
+
+   private void jMenuItem2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem2ActionPerformed
+      LoginToInstanceScreen.load();
+   }//GEN-LAST:event_jMenuItem2ActionPerformed
+
    // Variables declaration - do not modify//GEN-BEGIN:variables
    private javax.swing.JButton calculatorButton;
    public javax.swing.JMenu clipboardMenu;
@@ -2820,6 +2836,7 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
    private javax.swing.JMenuItem jMenuItem17;
    private javax.swing.JMenuItem jMenuItem18;
    private javax.swing.JMenuItem jMenuItem19;
+   private javax.swing.JMenuItem jMenuItem2;
    private javax.swing.JMenuItem jMenuItem20;
    private javax.swing.JMenuItem jMenuItem21;
    private javax.swing.JMenuItem jMenuItem22;
