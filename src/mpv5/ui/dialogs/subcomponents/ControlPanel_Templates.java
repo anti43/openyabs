@@ -13,6 +13,7 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.print.PrintService;
@@ -925,7 +926,7 @@ public final class ControlPanel_Templates extends javax.swing.JPanel implements 
          }
 
          try {
-            HashMap<String, Object> hm1 = new FormFieldsHandler(t).getFormattedFormFields(null);
+            Map<String, Object> hm1 = new FormFieldsHandler(t).getFormattedFormFields(null);
 //                Log.Print(hm1.entrySet().toArray());
             File f = dataOwner.getFile();
             File f2 = FileDirectoryHandler.getTempFile("pdf");

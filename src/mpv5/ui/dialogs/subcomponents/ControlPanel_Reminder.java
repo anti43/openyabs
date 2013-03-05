@@ -31,6 +31,7 @@ import java.io.File;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -308,7 +309,7 @@ public class ControlPanel_Reminder extends javax.swing.JPanel implements DataPan
             Template t = TemplateHandler.loadTemplate(group, Constants.TYPE_REMINDER);
             if (t != null) {
                 Exportable te = TemplateHandler.loadTemplate(group, Constants.TYPE_REMINDER).getExFile();
-                HashMap<String, Object> hm1 = new FormFieldsHandler(dataOwner).getFormattedFormFields(null);
+                Map<String, Object> hm1 = new FormFieldsHandler(dataOwner).getFormattedFormFields(null);
                 File f2 = FileDirectoryHandler.getTempFile("pdf");
                 Export ex = new Export(t);
                 ex.putAll(hm1);

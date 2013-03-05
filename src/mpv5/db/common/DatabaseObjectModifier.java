@@ -17,6 +17,7 @@
 package mpv5.db.common;
 
 import java.util.HashMap;
+import java.util.Map;
 import mpv5.ui.panels.ChangeNotApprovedException;
 
 /**
@@ -57,7 +58,7 @@ public interface DatabaseObjectModifier {
      * @param map
      * @return
      */
-    HashMap<String, Object> modifyOnResolve(HashMap<String, Object> map);
+    Map<String, Object> modifyOnResolve(Map<String, Object> map);
 
     /**
      * This method will be called during saving of any {@link DatabaseObject} if this <br/>

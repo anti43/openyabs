@@ -520,7 +520,7 @@ public class ProductlistSubItem extends DatabaseObject {
     }
 
     @Override
-    public HashMap<String, Object> resolveReferences(HashMap<String, Object> map) {
+    public java.util.Map<String, Object> resolveReferences(java.util.Map<String, Object> map) {
         super.resolveReferences(map);
 
         if (map.containsKey("originalproductsids")) {

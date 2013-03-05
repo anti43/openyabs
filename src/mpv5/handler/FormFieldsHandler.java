@@ -22,6 +22,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 import java.util.Vector;
 import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
@@ -51,13 +52,13 @@ public class FormFieldsHandler {
      * Creates a hash map view to all the object's form fields and their values (which may be other {@link DatabaseObject}s)
      * @return A HashMap<key,value/>
      */
-    public synchronized HashMap<String, Object> getFormFields() {
-        HashMap<String, Object> map = new HashMap<String, Object>();
+    public synchronized Map<String, Object> getFormFields() {
+        TreeMap<String, Object> map = new TreeMap<String, Object>();
         
         if (obj != null) {
             obj.resolveValueProperties(map);
             List<Object[]> m = obj.getValues2();
-            map = new HashMap<String, Object>();
+            map = new TreeMap<String, Object>();
             for (int i = 0; i < m.size(); i++) {
                 Object[] vals = m.get(i);
                 if (vals[1] == null) {
@@ -78,9 +79,9 @@ public class FormFieldsHandler {
      * @param identifier or NULL
      * @return A HashMap<key,value/>
      */
-    public synchronized HashMap<String, Object> getFormattedFormFields(final String identifier) {
-        HashMap<String, Object> map = getFormFields();
-        HashMap<String, Object> maps = new HashMap<String, Object>();
+    public synchronized Map<String, Object> getFormattedFormFields(final String identifier) {
+        Map<String, Object> map = getFormFields();
+        TreeMap<String, Object> maps = new TreeMap<String, Object>();
 
         for (Iterator<String> it = map.keySet().iterator(); it.hasNext();) {
             String key = it.next();

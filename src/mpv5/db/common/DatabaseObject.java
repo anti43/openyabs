@@ -2247,7 +2247,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
     * @param map
     * @return
     */
-   public HashMap<String, Object> resolveReferences(HashMap<String, Object> map) {
+   public Map<String, Object> resolveReferences(Map<String, Object> map) {
       resolveValueProperties(map);
 
       if (map.containsKey("groupsids")) {

@@ -814,7 +814,7 @@ public final class SubItem extends DatabaseObject implements Triggerable {
    }
 
    @Override
-   public HashMap<String, Object> resolveReferences(HashMap<String, Object> map) {
+   public java.util.Map<String, Object> resolveReferences(java.util.Map<String, Object> map) {
 
       if (map.containsKey("originalproductsids")) {
          try {

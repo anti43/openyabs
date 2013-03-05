@@ -452,8 +452,8 @@ public class Account extends DatabaseObject {
     }
 
     @Override
-    public HashMap<String, Object> resolveReferences(HashMap<String, Object> map) {
-        super.resolveReferences(map);
+    public java.util.Map<String, Object> resolveReferences(java.util.Map<String, Object> map) {
+        
 
         try {
             if (map.containsKey("intaccounttype")) {
@@ -479,7 +479,7 @@ public class Account extends DatabaseObject {
             }
         }
 
-        return map;
+        return super.resolveReferences(map);
     }
 
     /**

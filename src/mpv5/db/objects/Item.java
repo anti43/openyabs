@@ -29,6 +29,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import javax.swing.JComponent;
 import mpv5.YabsViewProxy;
 import mpv5.db.common.Context;
@@ -544,7 +545,7 @@ public class Item extends DatabaseObject implements Formattable, Templateable {
     }
 
     @Override
-    public HashMap<String, Object> resolveReferences(HashMap<String, Object> map) {
+    public Map<String, Object> resolveReferences(Map<String, Object> map) {
         resolveValueProperties(map);
 
         try {

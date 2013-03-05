@@ -18,6 +18,7 @@ package mpv5.db.objects;
 
 import java.io.File;
 import java.util.HashMap;
+import java.util.Map;
 import javax.swing.JComponent;
 import javax.swing.JFileChooser;
 import javax.swing.table.TableModel;
@@ -255,6 +256,7 @@ public class Template extends DatabaseObject {
      */
     public void injectTable(String key, TableModel model) {
         getTables().put(key, model);
+
     }
     private HashMap<String, TableModel> tables = new HashMap<String, TableModel>();
 
@@ -270,7 +272,7 @@ public class Template extends DatabaseObject {
     }
     private HashMap<String, Object> data = new HashMap<String, Object>();
 
-    public void injectData(HashMap<String, Object> map) {
+    public void injectData( Map<String, Object> map) {
         data.putAll(map);
     }
      /**

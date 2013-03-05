@@ -5,6 +5,8 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 import javax.swing.JComponent;
 import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
@@ -434,8 +436,8 @@ public class Contact extends DatabaseObject implements Formattable, Templateable
    }
 
    @Override
-   public HashMap<String, Object> resolveReferences(HashMap<String, Object> map) {
-      super.resolveReferences(map);
+   public Map<String, Object> resolveReferences(Map<String, Object> map) {
+      
       List<Address> data;
       boolean hasInvAdd = false;
       boolean hasDelAdd = false;
@@ -520,8 +522,8 @@ public class Contact extends DatabaseObject implements Formattable, Templateable
             //already resolved?
          }
       }
-
-      return map;
+      Log.Print(map);
+      return super.resolveReferences(map);
    }
 
    public void defineFormatHandler(FormatHandler handler) {

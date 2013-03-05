@@ -603,8 +603,8 @@ public class User extends DatabaseObject {
     }
 
     @Override
-    public HashMap<String, Object> resolveReferences(HashMap<String, Object> map) {
-        super.resolveReferences(map);
+    public java.util.Map<String, Object> resolveReferences(java.util.Map<String, Object> map) {
+        
         List<Company> data;
         try {
             data = DatabaseObject.getReferencedObjects(this, Context.getCompany(), new Company());
@@ -616,7 +616,7 @@ public class User extends DatabaseObject {
             Log.Debug(this, ex.getMessage());
         }
 //TODO  check for usage
-        return map;
+        return super.resolveReferences(map);
     }
 
     /**

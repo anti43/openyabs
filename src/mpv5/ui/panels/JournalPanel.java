@@ -31,6 +31,7 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.TreeMap;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListModel;
 import javax.swing.JComponent;
@@ -57,6 +58,7 @@ import mpv5.db.objects.Revenue;
 import mpv5.db.objects.Template;
 import mpv5.db.objects.User;
 import mpv5.globals.Constants;
+import mpv5.globals.GlobalSettings;
 import mpv5.globals.Messages;
 import mpv5.logging.Log;
 import mpv5.ui.beans.MPCombobox;
@@ -86,109 +88,109 @@ import mpv5.utils.numberformat.FormatNumber;
  */
 public class JournalPanel extends javax.swing.JPanel implements ListPanel {
 
-    private static JournalPanel t;
-    private static final long serialVersionUID = 1L;
-    private java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle();
+   private static JournalPanel t;
+   private static final long serialVersionUID = 1L;
+   private java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle();
 
-    public static JComponent instanceOf() {
-        if (t == null) {
-            t = new JournalPanel();
-        }
-        return t;
-    }
-    private Contact dataOwner;
-    private Template journalOrContactTemplate;
+   public static JComponent instanceOf() {
+      if (t == null) {
+         t = new JournalPanel();
+      }
+      return t;
+   }
+   private Contact dataOwner;
+   private Template journalOrContactTemplate;
 
-    /**
-     * Creates new form HistoryPanel
-     */
-    public JournalPanel() {
-        initComponents();
-        setName("journalpanel");
-        new ExcelAdapter(jTable1);
-        setPopup();
-        jPanel5.setEnabled(false);
-        jTabbedPane1.removeTabAt(0);
-        jLabel3.setEnabled(false);
-        jLabel4.setEnabled(false);
-        jLabel4.setText("");
-        jTabbedPane1.setSelectedComponent(jPanel4);
-        validate();
-        timeframeChooser1.setTime(new vTimeframe(DateConverter.getDate(DateConverter.getYear()), new Date()));
-        bydateend.setSelected(User.getCurrentUser().getProperties().getProperty(this, bydateend, Boolean.FALSE));
-        expbydateend.setSelected(User.getCurrentUser().getProperties().getProperty(this, expbydateend, Boolean.FALSE));
-        groups.setSearchEnabled(true);
-        groups.setContext(Context.getGroup());
-        groups.triggerSearch();
-        users.setSearchEnabled(true);
-        users.setContext(Context.getUser());
-        users.setModel();
+   /**
+    * Creates new form HistoryPanel
+    */
+   public JournalPanel() {
+      initComponents();
+      setName("journalpanel");
+      new ExcelAdapter(jTable1);
+      setPopup();
+      jPanel5.setEnabled(false);
+      jTabbedPane1.removeTabAt(0);
+      jLabel3.setEnabled(false);
+      jLabel4.setEnabled(false);
+      jLabel4.setText("");
+      jTabbedPane1.setSelectedComponent(jPanel4);
+      validate();
+      timeframeChooser1.setTime(new vTimeframe(DateConverter.getDate(DateConverter.getYear()), new Date()));
+      bydateend.setSelected(User.getCurrentUser().getProperties().getProperty(this, bydateend, Boolean.FALSE));
+      expbydateend.setSelected(User.getCurrentUser().getProperties().getProperty(this, expbydateend, Boolean.FALSE));
+      groups.setSearchEnabled(true);
+      groups.setContext(Context.getGroup());
+      groups.triggerSearch();
+      users.setSearchEnabled(true);
+      users.setContext(Context.getUser());
+      users.setModel();
 
-        try {
-            DefaultListModel al = new DefaultListModel();
-            ArrayList<DatabaseObject> accounts = DatabaseObject.getObjects(Context.getAccounts());
-            for (int i = 0; i < accounts.size(); i++) {
-                DatabaseObject databaseObject = accounts.get(i);
-                al.addElement((Account) databaseObject);
-            }
-            jList1.setModel(al);
-        } catch (NodataFoundException nodataFoundException) {
-            Log.Debug(this, nodataFoundException.getMessage());
-        }
+      try {
+         DefaultListModel al = new DefaultListModel();
+         ArrayList<DatabaseObject> accounts = DatabaseObject.getObjects(Context.getAccounts());
+         for (int i = 0; i < accounts.size(); i++) {
+            DatabaseObject databaseObject = accounts.get(i);
+            al.addElement((Account) databaseObject);
+         }
+         jList1.setModel(al);
+      } catch (NodataFoundException nodataFoundException) {
+         Log.Debug(this, nodataFoundException.getMessage());
+      }
 
-        statusc.getComboBox().setModel(new DefaultComboBoxModel(new Object[]{Messages.ALL, Messages.STATUS_PAID, Messages.STATUS_UNPAID, Messages.STATUS_CANCELLED}));
-        prinitingComboBox1.init(jTable1);
-        refresh(null, null);
-        jButton4.setEnabled(false);
-        loadTemplate();
-        ((MPTable) jTable1).setPersistanceHandler(new TableViewPersistenceHandler((MPTable) jTable1, this));
+      statusc.getComboBox().setModel(new DefaultComboBoxModel(new Object[]{Messages.ALL, Messages.STATUS_PAID, Messages.STATUS_UNPAID, Messages.STATUS_CANCELLED}));
+      prinitingComboBox1.init(jTable1);
+      refresh(null, null);
+      jButton4.setEnabled(false);
+      loadTemplate();
+      ((MPTable) jTable1).setPersistanceHandler(new TableViewPersistenceHandler((MPTable) jTable1, this));
 
-    }
+   }
 
-    public JournalPanel(Contact dataOwner) {
-        initComponents();
-        setPopup();
-        jLabel4.setText(dataOwner.__getCname());
-        timeframeChooser1.setTime(new vTimeframe(DateConverter.getDate(DateConverter.getYear()), new Date()));
-        prinitingComboBox1.init(jTable1);
+   public JournalPanel(Contact dataOwner) {
+      initComponents();
+      setPopup();
+      jLabel4.setText(dataOwner.__getCname());
+      timeframeChooser1.setTime(new vTimeframe(DateConverter.getDate(DateConverter.getYear()), new Date()));
+      prinitingComboBox1.init(jTable1);
 
-        this.dataOwner = dataOwner;
-        groups.setSearchEnabled(true);
-        groups.setContext(Context.getGroup());
-        groups.triggerSearch();
+      this.dataOwner = dataOwner;
+      groups.setSearchEnabled(true);
+      groups.setContext(Context.getGroup());
+      groups.triggerSearch();
 
-        try {
-            DefaultListModel al = new DefaultListModel();
-            ArrayList<DatabaseObject> accounts = DatabaseObject.getObjects(Context.getAccounts());
-            for (int i = 0; i < accounts.size(); i++) {
-                DatabaseObject databaseObject = accounts.get(i);
-                al.addElement((Account) databaseObject);
-            }
-            jList1.setModel(al);
-        } catch (NodataFoundException nodataFoundException) {
-            Log.Debug(this, nodataFoundException.getMessage());
-        }
+      try {
+         DefaultListModel al = new DefaultListModel();
+         ArrayList<DatabaseObject> accounts = DatabaseObject.getObjects(Context.getAccounts());
+         for (int i = 0; i < accounts.size(); i++) {
+            DatabaseObject databaseObject = accounts.get(i);
+            al.addElement((Account) databaseObject);
+         }
+         jList1.setModel(al);
+      } catch (NodataFoundException nodataFoundException) {
+         Log.Debug(this, nodataFoundException.getMessage());
+      }
 
-        statusc.getComboBox().setModel(new DefaultComboBoxModel(new Object[]{Messages.ALL, Messages.STATUS_PAID, Messages.STATUS_UNPAID}));
+      statusc.getComboBox().setModel(new DefaultComboBoxModel(new Object[]{Messages.ALL, Messages.STATUS_PAID, Messages.STATUS_UNPAID}));
 
-        refresh(null, null);
+      refresh(null, null);
 
-        jTree1.setCellRenderer(MPTreeModel.getRenderer());
-        jTree1.setModel(new MPTreeModel(dataOwner, null));
-        jTree1.addMouseListener(MPTreeModel.getDefaultTreeListener(jTree1));
-        prinitingComboBox1.init(jTable1);
+      jTree1.setCellRenderer(MPTreeModel.getRenderer());
+      jTree1.setModel(new MPTreeModel(dataOwner, null));
+      jTree1.addMouseListener(MPTreeModel.getDefaultTreeListener(jTree1));
+      prinitingComboBox1.init(jTable1);
 //        TreeFormat.expandTree(jTree1);
-        loadTemplate();
-        ((MPTable) jTable1).setPersistanceHandler(new TableViewPersistenceHandler((MPTable) jTable1, this));
+      loadTemplate();
+      ((MPTable) jTable1).setPersistanceHandler(new TableViewPersistenceHandler((MPTable) jTable1, this));
 
-    }
+   }
 
-    /**
-     * This method is called from within the constructor to initialize the form.
-     * WARNING: Do NOT modify this code. The content of this method is always
-     * regenerated by the Form Editor.
-     */
-    @SuppressWarnings("unchecked")
+   /**
+    * This method is called from within the constructor to initialize the form.
+    * WARNING: Do NOT modify this code. The content of this method is always
+    * regenerated by the Form Editor.
+    */
+   @SuppressWarnings("unchecked")
    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
    private void initComponents() {
 
@@ -665,49 +667,48 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
 
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
 
-        preview();
+       preview();
     }//GEN-LAST:event_jButton4ActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        setData();
+       setData();
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void expbydateendItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_expbydateendItemStateChanged
-        User.getCurrentUser().getProperties().changeProperty(this, expbydateend, expbydateend.isSelected());
+       User.getCurrentUser().getProperties().changeProperty(this, expbydateend, expbydateend.isSelected());
     }//GEN-LAST:event_expbydateendItemStateChanged
 
     private void bydateendItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_bydateendItemStateChanged
-        User.getCurrentUser().getProperties().changeProperty(this, bydateend, bydateend.isSelected());
+       User.getCurrentUser().getProperties().changeProperty(this, bydateend, bydateend.isSelected());
     }//GEN-LAST:event_bydateendItemStateChanged
 
     private void jTable1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable1MouseClicked
-        if (evt.getClickCount() > 1) {
-            try {
-                int index = jTable1.convertRowIndexToModel(jTable1.getSelectedRow());
-                DatabaseObject obj = DatabaseObject.getObject((DatabaseObject.Entity<?, ?>) jTable1.getModel().getValueAt(index, 0));
-                mpv5.YabsViewProxy.instance().addTab(obj);
-            } catch (NodataFoundException ex) {
-                Log.Debug(ex);
-            }
-        }
+       if (evt.getClickCount() > 1) {
+          try {
+             int index = jTable1.convertRowIndexToModel(jTable1.getSelectedRow());
+             DatabaseObject obj = DatabaseObject.getObject((DatabaseObject.Entity<?, ?>) jTable1.getModel().getValueAt(index, 0));
+             mpv5.YabsViewProxy.instance().addTab(obj);
+          } catch (NodataFoundException ex) {
+             Log.Debug(ex);
+          }
+       }
     }//GEN-LAST:event_jTable1MouseClicked
 
     private void filteroffersItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_filteroffersItemStateChanged
-        filter();
+       filter();
     }//GEN-LAST:event_filteroffersItemStateChanged
 
     private void filterordersItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_filterordersItemStateChanged
-        filter();
+       filter();
     }//GEN-LAST:event_filterordersItemStateChanged
 
     private void filterinvoiceItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_filterinvoiceItemStateChanged
-        filter();
+       filter();
     }//GEN-LAST:event_filterinvoiceItemStateChanged
 
     private void filternoneItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_filternoneItemStateChanged
-        filter();
+       filter();
     }//GEN-LAST:event_filternoneItemStateChanged
-
    // Variables declaration - do not modify//GEN-BEGIN:variables
    private javax.swing.ButtonGroup buttonGroup1;
    private javax.swing.ButtonGroup buttonGroup2;
@@ -755,298 +756,297 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
    private mpv5.ui.beans.LabeledTextField volumeNetto;
    // End of variables declaration//GEN-END:variables
 
-    private Object[][] parse(Object[][] data) {
-        //#entity date group account number type status value
-        double revenuenet = 0d;
-        double volumenet = 0d;
-        double taxvolume = 0d;
-        double volumebrut = 0d;
-        double discountvolume = 0d;
-        Object[][] d = new Object[data.length][17];
-        try {
-            for (int i = 0; i < d.length; i++) {
-                d[i][1] = data[i][1];
-                d[i][2] = data[i][2];
-                d[i][3] = data[i][3];
-                d[i][4] = data[i][4];
-                d[i][5] = data[i][5];
-                //d[i][14] = data[i][14];
-                d[i][8] = data[i][8];
-                d[i][9] = data[i][9];
-                d[i][7] = data[i][7];
-                d[i][6] = DateConverter.getDefDateString(DateConverter.getDate(data[i][6].toString()));
+   private Object[][] parse(Object[][] data) {
+      //#entity date group account number type status value
+      double revenuenet = 0d;
+      double volumenet = 0d;
+      double taxvolume = 0d;
+      double volumebrut = 0d;
+      double discountvolume = 0d;
+      Object[][] d = new Object[data.length][17];
+      try {
+         for (int i = 0; i < d.length; i++) {
+            d[i][1] = data[i][1];
+            d[i][2] = data[i][2];
+            d[i][3] = data[i][3];
+            d[i][4] = data[i][4];
+            d[i][5] = data[i][5];
+            //d[i][14] = data[i][14];
+            d[i][8] = data[i][8];
+            d[i][9] = data[i][9];
+            d[i][7] = data[i][7];
+            d[i][6] = DateConverter.getDefDateString(DateConverter.getDate(data[i][6].toString()));
 
-                d[i][0] = data[i][0];
+            d[i][0] = data[i][0];
 
-                int type = Integer.valueOf(data[i][10].toString());
-                if (type == Revenue.TYPE_REVENUE) {
-                    d[i][10] = Messages.TYPE_REVENUE.toString();
-                } else if (type == Expense.TYPE_EXPENSE) {
-                    d[i][10] = Messages.TYPE_EXPENSE.toString();
-                } else {
-                    d[i][10] = Item.getTypeString(type);
-                }
-
-                double netVolume = Double.valueOf(data[i][12].toString());
-                double taxVal = Double.valueOf(data[i][13].toString());
-                double brutVolume = Double.valueOf(data[i][14].toString());
-                double discountVolume = Double.valueOf(data[i][15].toString());
-                d[i][11] = Item.getStatusString(Integer.valueOf(data[i][11].toString()));
-
-                if (Integer.valueOf(data[i][11].toString()).intValue() == Item.STATUS_PAID) {
-                    revenuenet += netVolume;
-                    d[i][15] = "<html><p align=center>" + mpv5.utils.numberformat.FormatNumber.formatDezimal(netVolume);
-                } else if (Integer.valueOf(data[i][11].toString()).intValue() == 1000) {
-                    d[i][15] = "<html><p align=center>" + mpv5.utils.numberformat.FormatNumber.formatDezimal(-1 * netVolume);
-                    revenuenet -= netVolume;
-                    d[i][11] = Item.getStatusString(Item.STATUS_PAID);
-                } else if (Integer.valueOf(data[i][11].toString()).intValue() == 2000) {
-                    d[i][15] = "<html><p align=center>" + mpv5.utils.numberformat.FormatNumber.formatDezimal(-1 * netVolume);
-                    revenuenet -= netVolume;
-                    d[i][11] = Item.getStatusString(Item.STATUS_IN_PROGRESS);
-                } else {
-                    d[i][15] = "<html><p align=center>" + mpv5.utils.numberformat.FormatNumber.formatDezimal(0d);
-                }
-                d[i][12] = "<html><p align=center>" + mpv5.utils.numberformat.FormatNumber.formatDezimal(netVolume);
-                d[i][13] = "<html><p align=center>" + mpv5.utils.numberformat.FormatNumber.formatDezimal(taxVal);
-                d[i][14] = "<html><p align=center>" + mpv5.utils.numberformat.FormatNumber.formatDezimal(brutVolume);
-                d[i][16] = "<html><p align=center>" + mpv5.utils.numberformat.FormatNumber.formatDezimal(discountVolume);
-                volumenet += netVolume;
-                volumebrut += brutVolume;
-                taxvolume += taxVal;
-                discountvolume += discountVolume;
+            int type = Integer.valueOf(data[i][10].toString());
+            if (type == Revenue.TYPE_REVENUE) {
+               d[i][10] = Messages.TYPE_REVENUE.toString();
+            } else if (type == Expense.TYPE_EXPENSE) {
+               d[i][10] = Messages.TYPE_EXPENSE.toString();
+            } else {
+               d[i][10] = Item.getTypeString(type);
             }
-        } catch (Exception numberFormatException) {
-            Log.Debug(numberFormatException);
-            Log.Debug(this, Arrays.asList(data[0]));
-        }
 
-        volumeNetto.setText(mpv5.utils.numberformat.FormatNumber.formatDezimal(volumenet));
-        revenueNetto.setText(mpv5.utils.numberformat.FormatNumber.formatDezimal(revenuenet));
-        volumeBrutto.setText(mpv5.utils.numberformat.FormatNumber.formatDezimal(volumebrut));
-        taxVolume.setText(mpv5.utils.numberformat.FormatNumber.formatDezimal(taxvolume));
-        volumeDiscount.setText(mpv5.utils.numberformat.FormatNumber.formatDezimal(discountvolume));
+            double netVolume = Double.valueOf(data[i][12].toString());
+            double taxVal = Double.valueOf(data[i][13].toString());
+            double brutVolume = Double.valueOf(data[i][14].toString());
+            double discountVolume = Double.valueOf(data[i][15].toString());
+            d[i][11] = Item.getStatusString(Integer.valueOf(data[i][11].toString()));
 
-        return d;
-    }
+            if (Integer.valueOf(data[i][11].toString()).intValue() == Item.STATUS_PAID) {
+               revenuenet += netVolume;
+               d[i][15] = "<html><p align=center>" + mpv5.utils.numberformat.FormatNumber.formatDezimal(netVolume);
+            } else if (Integer.valueOf(data[i][11].toString()).intValue() == 1000) {
+               d[i][15] = "<html><p align=center>" + mpv5.utils.numberformat.FormatNumber.formatDezimal(-1 * netVolume);
+               revenuenet -= netVolume;
+               d[i][11] = Item.getStatusString(Item.STATUS_PAID);
+            } else if (Integer.valueOf(data[i][11].toString()).intValue() == 2000) {
+               d[i][15] = "<html><p align=center>" + mpv5.utils.numberformat.FormatNumber.formatDezimal(-1 * netVolume);
+               revenuenet -= netVolume;
+               d[i][11] = Item.getStatusString(Item.STATUS_IN_PROGRESS);
+            } else {
+               d[i][15] = "<html><p align=center>" + mpv5.utils.numberformat.FormatNumber.formatDezimal(0d);
+            }
+            d[i][12] = "<html><p align=center>" + mpv5.utils.numberformat.FormatNumber.formatDezimal(netVolume);
+            d[i][13] = "<html><p align=center>" + mpv5.utils.numberformat.FormatNumber.formatDezimal(taxVal);
+            d[i][14] = "<html><p align=center>" + mpv5.utils.numberformat.FormatNumber.formatDezimal(brutVolume);
+            d[i][16] = "<html><p align=center>" + mpv5.utils.numberformat.FormatNumber.formatDezimal(discountVolume);
+            volumenet += netVolume;
+            volumebrut += brutVolume;
+            taxvolume += taxVal;
+            discountvolume += discountVolume;
+         }
+      } catch (Exception numberFormatException) {
+         Log.Debug(numberFormatException);
+         Log.Debug(this, Arrays.asList(data[0]));
+      }
 
-    private void refresh(final Group forGroup, final User forUser) {
-        Runnable runnable = new Runnable() {
+      volumeNetto.setText(mpv5.utils.numberformat.FormatNumber.formatDezimal(volumenet));
+      revenueNetto.setText(mpv5.utils.numberformat.FormatNumber.formatDezimal(revenuenet));
+      volumeBrutto.setText(mpv5.utils.numberformat.FormatNumber.formatDezimal(volumebrut));
+      taxVolume.setText(mpv5.utils.numberformat.FormatNumber.formatDezimal(taxvolume));
+      volumeDiscount.setText(mpv5.utils.numberformat.FormatNumber.formatDezimal(discountvolume));
 
-            @Override
-            public void run() {
+      return d;
+   }
 
-                try {
-                    QueryCriteria2 itemsParams = new QueryCriteria2();
-                    Object[][] d = new Object[0][0];
-                    Object[][] d1 = new Object[0][0];
-                    Object[][] d2 = new Object[0][0];
+   private void refresh(final Group forGroup, final User forUser) {
+      Runnable runnable = new Runnable() {
+         @Override
+         public void run() {
 
-                    if (!includechildgroups.isSelected()) {
-                        if (forGroup != null && !forGroup.__getCname().equals("")) {
-                            itemsParams.and(new QueryParameter(Context.getItem(), forGroup.getDbIdentity() + "ids", forGroup.__getIDS(), QueryParameter.EQUALS));
+            try {
+               QueryCriteria2 itemsParams = new QueryCriteria2();
+               Object[][] d = new Object[0][0];
+               Object[][] d1 = new Object[0][0];
+               Object[][] d2 = new Object[0][0];
+
+               if (!includechildgroups.isSelected()) {
+                  if (forGroup != null && !forGroup.__getCname().equals("")) {
+                     itemsParams.and(new QueryParameter(Context.getItem(), forGroup.getDbIdentity() + "ids", forGroup.__getIDS(), QueryParameter.EQUALS));
+                  }
+               } else {
+                  if (forGroup != null && !forGroup.__getCname().equals("")) {
+                     List<Group> gs = forGroup.getChildGroups();
+                     QueryParameter[] params = new QueryParameter[gs.size()];
+                     QueryParameter param1 = (new QueryParameter(Context.getItem(), forGroup.getDbIdentity() + "ids", forGroup.__getIDS(), QueryParameter.EQUALS));
+                     if (gs.size() >= 1) {
+                        for (int i = 0; i < gs.size(); i++) {
+                           Group group = gs.get(i);
+                           params[i] = (new QueryParameter(Context.getItem(), group.getDbIdentity() + "ids", group.__getIDS(), QueryParameter.EQUALS));
                         }
-                    } else {
-                        if (forGroup != null && !forGroup.__getCname().equals("")) {
-                            List<Group> gs = forGroup.getChildGroups();
-                            QueryParameter[] params = new QueryParameter[gs.size()];
-                            QueryParameter param1 = (new QueryParameter(Context.getItem(), forGroup.getDbIdentity() + "ids", forGroup.__getIDS(), QueryParameter.EQUALS));
-                            if (gs.size() >= 1) {
-                                for (int i = 0; i < gs.size(); i++) {
-                                    Group group = gs.get(i);
-                                    params[i] = (new QueryParameter(Context.getItem(), group.getDbIdentity() + "ids", group.__getIDS(), QueryParameter.EQUALS));
-                                }
-                                //System.err.println(params);
-                                itemsParams.or(param1, params);
-                            } else {
-                                itemsParams.and(param1);
-                            }
-                        }
-                    }
+                        //System.err.println(params);
+                        itemsParams.or(param1, params);
+                     } else {
+                        itemsParams.and(param1);
+                     }
+                  }
+               }
 
-                    if (forUser != null && !forUser.__getCname().equals("")) {
-                        itemsParams.and(new QueryParameter(Context.getItem(), "intaddedby", forUser.__getIDS(), QueryParameter.EQUALS));
-                    }
+               if (forUser != null && !forUser.__getCname().equals("")) {
+                  itemsParams.and(new QueryParameter(Context.getItem(), "intaddedby", forUser.__getIDS(), QueryParameter.EQUALS));
+               }
 
 
-                    ArrayList<QueryParameter> l = new ArrayList<QueryParameter>();
+               ArrayList<QueryParameter> l = new ArrayList<QueryParameter>();
 
-                    for (int i = 0; i < jList1.getSelectedValues().length; i++) {
-                        l.add(new QueryParameter(Context.getItem(), "accountsids", ((Account) jList1.getSelectedValues()[i]).__getIDS(), QueryParameter.EQUALS));
-                    }
-                    if (l.size() > 1) {
-                        itemsParams.or(l);
-                    } else {
-                        itemsParams.and(l.toArray(new QueryParameter[0]));
-                    }
+               for (int i = 0; i < jList1.getSelectedValues().length; i++) {
+                  l.add(new QueryParameter(Context.getItem(), "accountsids", ((Account) jList1.getSelectedValues()[i]).__getIDS(), QueryParameter.EQUALS));
+               }
+               if (l.size() > 1) {
+                  itemsParams.or(l);
+               } else {
+                  itemsParams.and(l.toArray(new QueryParameter[0]));
+               }
 
-                    if (dataOwner != null) {
-                        itemsParams.and(new QueryParameter(dataOwner.getContext(), "ids", dataOwner.__getIDS(), QueryParameter.EQUALS));
-                    }
+               if (dataOwner != null) {
+                  itemsParams.and(new QueryParameter(dataOwner.getContext(), "ids", dataOwner.__getIDS(), QueryParameter.EQUALS));
+               }
 
-                    boolean additional = true;
-                    if (statusc.getComboBox().getSelectedItem().equals(Messages.STATUS_PAID)) {
-                        itemsParams.and(new QueryParameter(Context.getItem(), "intstatus", Item.STATUS_PAID, QueryParameter.EQUALS));
-                    } else if (statusc.getComboBox().getSelectedItem().equals(Messages.STATUS_UNPAID)) {
+               boolean additional = true;
+               if (statusc.getComboBox().getSelectedItem().equals(Messages.STATUS_PAID)) {
+                  itemsParams.and(new QueryParameter(Context.getItem(), "intstatus", Item.STATUS_PAID, QueryParameter.EQUALS));
+               } else if (statusc.getComboBox().getSelectedItem().equals(Messages.STATUS_UNPAID)) {
 //                        additional = false;
-                        itemsParams.or(
-                                new QueryParameter(Context.getItem(), "intstatus", Item.STATUS_QUEUED, QueryParameter.EQUALS),
-                                new QueryParameter(Context.getItem(), "intstatus", Item.STATUS_PAUSED, QueryParameter.EQUALS),
-                                new QueryParameter(Context.getItem(), "intstatus", Item.STATUS_IN_PROGRESS, QueryParameter.EQUALS),
-                                new QueryParameter(Context.getItem(), "intstatus", Item.STATUS_FINISHED, QueryParameter.EQUALS));
-                    } else if (statusc.getComboBox().getSelectedItem().equals(Messages.STATUS_CANCELLED)) {
+                  itemsParams.or(
+                        new QueryParameter(Context.getItem(), "intstatus", Item.STATUS_QUEUED, QueryParameter.EQUALS),
+                        new QueryParameter(Context.getItem(), "intstatus", Item.STATUS_PAUSED, QueryParameter.EQUALS),
+                        new QueryParameter(Context.getItem(), "intstatus", Item.STATUS_IN_PROGRESS, QueryParameter.EQUALS),
+                        new QueryParameter(Context.getItem(), "intstatus", Item.STATUS_FINISHED, QueryParameter.EQUALS));
+               } else if (statusc.getComboBox().getSelectedItem().equals(Messages.STATUS_CANCELLED)) {
 //                        additional = false;
-                        itemsParams.and(new QueryParameter(Context.getItem(), "intstatus", Item.STATUS_CANCELLED, QueryParameter.EQUALS));
-                    }
+                  itemsParams.and(new QueryParameter(Context.getItem(), "intstatus", Item.STATUS_CANCELLED, QueryParameter.EQUALS));
+               }
 
-                    try {
-                        Context c = Context.getItem();
-                        itemsParams.setOrder("accountsids", true);
-                        c.addReference(Context.getGroup());
-                        c.addReference(Context.getAccounts());
-                        c.addReference(Context.getContact());
+               try {
+                  Context c = Context.getItem();
+                  itemsParams.setOrder("accountsids", true);
+                  c.addReference(Context.getGroup());
+                  c.addReference(Context.getAccounts());
+                  c.addReference(Context.getContact());
 
-                        try {
-                            String datecriterium = "dateadded";
-                            if (bydateend.isSelected()) {
-                                datecriterium = "dateend";
-                            }
-                            d = QueryHandler.instanceOf().clone(c).select(Context.DETAILS_JOURNAL.replace("{date}", datecriterium), itemsParams, timeframeChooser1.getTime(), datecriterium).getData();
-                        } catch (NodataFoundException nodataFoundException) {
-                            d = new Object[0][16];
+                  try {
+                     String datecriterium = "dateadded";
+                     if (bydateend.isSelected()) {
+                        datecriterium = "dateend";
+                     }
+                     d = QueryHandler.instanceOf().clone(c).select(Context.DETAILS_JOURNAL.replace("{date}", datecriterium), itemsParams, timeframeChooser1.getTime(), datecriterium).getData();
+                  } catch (NodataFoundException nodataFoundException) {
+                     d = new Object[0][16];
+                  }
+
+                  DatabaseObject.Entity<?, ?>[] es = new DatabaseObject.Entity<?, ?>[d.length];
+                  for (int i = 0; i < d.length; i++) {
+                     es[i] = new DatabaseObject.Entity<Context, Integer>(Context.getItem(), Integer.valueOf(d[i][0].toString()));
+                  }
+
+                  d = ArrayUtilities.replaceColumn(d, 0, es);
+                  if (!additional) {
+                     d = ArrayUtilities.removeRows(d, 11, Item.STATUS_PAID);
+                  }
+               } catch (Exception ex) {
+                  Log.Debug(ex);
+               }
+               if (dataOwner == null && additional) {
+                  try {
+                     Context c = Context.getExpense();
+                     itemsParams.setOrder("dateadded", true);
+                     c.addReference(Context.getGroup());
+                     c.addReference(Context.getAccounts());
+                     QueryCriteria2 expensesParams = new QueryCriteria2();
+                     ArrayList<QueryParameter> l1 = new ArrayList<QueryParameter>();
+                     for (int i = 0; i < jList1.getSelectedValues().length; i++) {
+                        l1.add(new QueryParameter(Context.getExpense(), "accountsids", ((Account) jList1.getSelectedValues()[i]).__getIDS(), QueryParameter.EQUALS));
+                     }
+                     if (l1.size() > 1) {
+                        expensesParams.or(l1);
+                     } else {
+                        expensesParams.and(l1.toArray(new QueryParameter[0]));
+                     }
+                     if (forUser != null && !forUser.__getCname().equals("")) {
+                        expensesParams.and(new QueryParameter(c, "intaddedby", forUser.__getIDS(), QueryParameter.EQUALS));
+                     }
+                     if (!includechildgroups.isSelected()) {
+                        if (forGroup != null && !forGroup.__getCname().equals("")) {
+                           expensesParams.and(new QueryParameter(c, forGroup.getDbIdentity() + "ids", forGroup.__getIDS(), QueryParameter.EQUALS));
                         }
 
-                        DatabaseObject.Entity<?, ?>[] es = new DatabaseObject.Entity<?, ?>[d.length];
-                        for (int i = 0; i < d.length; i++) {
-                            es[i] = new DatabaseObject.Entity<Context, Integer>(Context.getItem(), Integer.valueOf(d[i][0].toString()));
+                     } else {
+                        if (forGroup != null) {
+                           List<Group> gs = forGroup.getChildGroups();
+                           QueryParameter[] params = new QueryParameter[gs.size()];
+                           QueryParameter params1 = (new QueryParameter(c, forGroup.getDbIdentity() + "ids", forGroup.__getIDS(), QueryParameter.EQUALS));
+                           if (gs.size() >= 1) {
+                              for (int i = 0; i < gs.size(); i++) {
+                                 Group group = gs.get(i);
+                                 params[i] = (new QueryParameter(c, group.getDbIdentity() + "ids", group.__getIDS(), QueryParameter.EQUALS));
+                              }
+                              itemsParams.or(params1, params);
+                           } else {
+                              expensesParams.and(params1);
+                           }
                         }
+                     }
+                     if (statusc.getComboBox().getSelectedItem().equals(Messages.STATUS_PAID)) {
+                        expensesParams.and(new QueryParameter(c, "ispaid", true, QueryParameter.EQUALS));
+                     } else if (statusc.getComboBox().getSelectedItem().equals(Messages.STATUS_UNPAID)) {
+                        expensesParams.and(new QueryParameter(c, "ispaid", false, QueryParameter.EQUALS));
+                     }
 
-                        d = ArrayUtilities.replaceColumn(d, 0, es);
-                        if (!additional) {
-                            d = ArrayUtilities.removeRows(d, 11, Item.STATUS_PAID);
+                     try {
+                        String datecriterium = "dateadded";
+                        if (expbydateend.isSelected()) {
+                           datecriterium = "dateend";
                         }
-                    } catch (Exception ex) {
-                        Log.Debug(ex);
-                    }
-                    if (dataOwner == null && additional) {
-                        try {
-                            Context c = Context.getExpense();
-                            itemsParams.setOrder("dateadded", true);
-                            c.addReference(Context.getGroup());
-                            c.addReference(Context.getAccounts());
-                            QueryCriteria2 expensesParams = new QueryCriteria2();
-                            ArrayList<QueryParameter> l1 = new ArrayList<QueryParameter>();
-                            for (int i = 0; i < jList1.getSelectedValues().length; i++) {
-                                l1.add(new QueryParameter(Context.getExpense(), "accountsids", ((Account) jList1.getSelectedValues()[i]).__getIDS(), QueryParameter.EQUALS));
-                            }
-                            if (l1.size() > 1) {
-                                expensesParams.or(l1);
-                            } else {
-                                expensesParams.and(l1.toArray(new QueryParameter[0]));
-                            }
-                            if (forUser != null && !forUser.__getCname().equals("")) {
-                                expensesParams.and(new QueryParameter(c, "intaddedby", forUser.__getIDS(), QueryParameter.EQUALS));
-                            }
-                            if (!includechildgroups.isSelected()) {
-                                if (forGroup != null && !forGroup.__getCname().equals("")) {
-                                    expensesParams.and(new QueryParameter(c, forGroup.getDbIdentity() + "ids", forGroup.__getIDS(), QueryParameter.EQUALS));
-                                }
-
-                            } else {
-                                if (forGroup != null) {
-                                    List<Group> gs = forGroup.getChildGroups();
-                                    QueryParameter[] params = new QueryParameter[gs.size()];
-                                    QueryParameter params1 = (new QueryParameter(c, forGroup.getDbIdentity() + "ids", forGroup.__getIDS(), QueryParameter.EQUALS));
-                                    if (gs.size() >= 1) {
-                                        for (int i = 0; i < gs.size(); i++) {
-                                            Group group = gs.get(i);
-                                            params[i] = (new QueryParameter(c, group.getDbIdentity() + "ids", group.__getIDS(), QueryParameter.EQUALS));
-                                        }
-                                        itemsParams.or(params1, params);
-                                    } else {
-                                        expensesParams.and(params1);
-                                    }
-                                }
-                            }
-                            if (statusc.getComboBox().getSelectedItem().equals(Messages.STATUS_PAID)) {
-                                expensesParams.and(new QueryParameter(c, "ispaid", true, QueryParameter.EQUALS));
-                            } else if (statusc.getComboBox().getSelectedItem().equals(Messages.STATUS_UNPAID)) {
-                                expensesParams.and(new QueryParameter(c, "ispaid", false, QueryParameter.EQUALS));
-                            }
-
-                            try {
-                                String datecriterium = "dateadded";
-                                if (expbydateend.isSelected()) {
-                                    datecriterium = "dateend";
-                                }
-                                d1 = QueryHandler.instanceOf().clone(c).select(Context.DETAILS_JOURNAL3.replace("{date}", datecriterium), expensesParams, timeframeChooser1.getTime(), datecriterium).getData();
-                            } catch (NodataFoundException nodataFoundException) {
-                                d1 = new Object[0][16];
-                            }
+                        d1 = QueryHandler.instanceOf().clone(c).select(Context.DETAILS_JOURNAL3.replace("{date}", datecriterium), expensesParams, timeframeChooser1.getTime(), datecriterium).getData();
+                     } catch (NodataFoundException nodataFoundException) {
+                        d1 = new Object[0][16];
+                     }
 
 //                            try {
 //                                d1 = QueryHandler.instanceOf().clone(c).select(Context.DETAILS_JOURNAL3, expensesParams, timeframeChooser1.getTime()).getData();
 //                            } catch (NodataFoundException nodataFoundException) {
 //                                d1 = new Object[0][14];
 //                            }
-                            for (int i = 0; i < d1.length; i++) {
-                                d1[i][10] = Expense.TYPE_EXPENSE;
+                     for (int i = 0; i < d1.length; i++) {
+                        d1[i][10] = Expense.TYPE_EXPENSE;
 
-                                if (TypeConversion.stringToBoolean(String.valueOf(d1[i][11]))) {
-                                    d1[i][11] = 1000;
-                                } else {
-                                    d1[i][11] = 2000;
-                                }
-                            }
-
-                            DatabaseObject.Entity<?, ?>[] es = new DatabaseObject.Entity<?, ?>[d1.length];
-                            for (int i = 0; i < d1.length; i++) {
-                                es[i] = new DatabaseObject.Entity<Context, Integer>(Context.getExpense(), Integer.valueOf(d1[i][0].toString()));
-                            }
-                            d1 = ArrayUtilities.replaceColumn(d1, 0, es);
-
-                        } catch (Exception ex) {
-                            Log.Debug(this, ex);
+                        if (TypeConversion.stringToBoolean(String.valueOf(d1[i][11]))) {
+                           d1[i][11] = 1000;
+                        } else {
+                           d1[i][11] = 2000;
                         }
+                     }
 
-                        try {
-                            Context c = Context.getRevenue();
-                            itemsParams.setOrder("dateadded", true);
-                            c.addReference(Context.getGroup());
-                            c.addReference(Context.getAccounts());
-                            QueryCriteria2 revenuesParams = new QueryCriteria2();
-                            ArrayList<QueryParameter> l2 = new ArrayList<QueryParameter>();
-                            for (int i = 0; i < jList1.getSelectedValues().length; i++) {
-                                l2.add(new QueryParameter(Context.getRevenue(), "accountsids", ((Account) jList1.getSelectedValues()[i]).__getIDS(), QueryParameter.EQUALS));
-                            }
-                            if (l2.size() > 1) {
-                                revenuesParams.or(l2);
-                            } else {
-                                revenuesParams.and(l2.toArray(new QueryParameter[0]));
-                            }
-                            if (forUser != null && !forUser.__getCname().equals("")) {
-                                revenuesParams.and(new QueryParameter(c, "intaddedby", forUser.__getIDS(), QueryParameter.EQUALS));
-                            }
-                            if (!includechildgroups.isSelected()) {
-                                if (forGroup != null && !forGroup.__getCname().equals("")) {
-                                    revenuesParams.and(new QueryParameter(c, forGroup.getDbIdentity() + "ids", forGroup.__getIDS(), QueryParameter.EQUALS));
-                                }
-                            } else {
-                                if (forGroup != null) {
-                                    List<Group> gs = forGroup.getChildGroups();
-                                    QueryParameter[] params = new QueryParameter[gs.size()];
-                                    QueryParameter params1 = (new QueryParameter(c, forGroup.getDbIdentity() + "ids", forGroup.__getIDS(), QueryParameter.EQUALS));
-                                    if (gs.size() >= 1) {
-                                        for (int i = 0; i < gs.size(); i++) {
-                                            Group group = gs.get(i);
-                                            params[i] = (new QueryParameter(c, group.getDbIdentity() + "ids", group.__getIDS(), QueryParameter.EQUALS));
-                                        }
-                                        revenuesParams.or(params1, params);
-                                    } else {
-                                        revenuesParams.and(params1);
-                                    }
-                                }
-                            }
+                     DatabaseObject.Entity<?, ?>[] es = new DatabaseObject.Entity<?, ?>[d1.length];
+                     for (int i = 0; i < d1.length; i++) {
+                        es[i] = new DatabaseObject.Entity<Context, Integer>(Context.getExpense(), Integer.valueOf(d1[i][0].toString()));
+                     }
+                     d1 = ArrayUtilities.replaceColumn(d1, 0, es);
+
+                  } catch (Exception ex) {
+                     Log.Debug(this, ex);
+                  }
+
+                  try {
+                     Context c = Context.getRevenue();
+                     itemsParams.setOrder("dateadded", true);
+                     c.addReference(Context.getGroup());
+                     c.addReference(Context.getAccounts());
+                     QueryCriteria2 revenuesParams = new QueryCriteria2();
+                     ArrayList<QueryParameter> l2 = new ArrayList<QueryParameter>();
+                     for (int i = 0; i < jList1.getSelectedValues().length; i++) {
+                        l2.add(new QueryParameter(Context.getRevenue(), "accountsids", ((Account) jList1.getSelectedValues()[i]).__getIDS(), QueryParameter.EQUALS));
+                     }
+                     if (l2.size() > 1) {
+                        revenuesParams.or(l2);
+                     } else {
+                        revenuesParams.and(l2.toArray(new QueryParameter[0]));
+                     }
+                     if (forUser != null && !forUser.__getCname().equals("")) {
+                        revenuesParams.and(new QueryParameter(c, "intaddedby", forUser.__getIDS(), QueryParameter.EQUALS));
+                     }
+                     if (!includechildgroups.isSelected()) {
+                        if (forGroup != null && !forGroup.__getCname().equals("")) {
+                           revenuesParams.and(new QueryParameter(c, forGroup.getDbIdentity() + "ids", forGroup.__getIDS(), QueryParameter.EQUALS));
+                        }
+                     } else {
+                        if (forGroup != null) {
+                           List<Group> gs = forGroup.getChildGroups();
+                           QueryParameter[] params = new QueryParameter[gs.size()];
+                           QueryParameter params1 = (new QueryParameter(c, forGroup.getDbIdentity() + "ids", forGroup.__getIDS(), QueryParameter.EQUALS));
+                           if (gs.size() >= 1) {
+                              for (int i = 0; i < gs.size(); i++) {
+                                 Group group = gs.get(i);
+                                 params[i] = (new QueryParameter(c, group.getDbIdentity() + "ids", group.__getIDS(), QueryParameter.EQUALS));
+                              }
+                              revenuesParams.or(params1, params);
+                           } else {
+                              revenuesParams.and(params1);
+                           }
+                        }
+                     }
 //                            if (statusc.getComboBox().getSelectedItem().equals(Messages.STATUS_PAID)) {
 //                                revenuesParams.and(new QueryParameter(c, "intstatus", Item.STATUS_PAID, QueryParameter.EQUALS));
 //                            } else if (statusc.getComboBox().getSelectedItem().equals(Messages.STATUS_UNPAID)) {
@@ -1054,375 +1054,373 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
 //                                revenuesParams.or(new QueryParameter(Context.getExpense(), "intstatus", Item.STATUS_PAID, QueryParameter.EQUALS),
 //                                        new QueryParameter(c, "intstatus", Item.STATUS_FINISHED, QueryParameter.EQUALS));
 //                            }
-                            try {
-                                d2 = QueryHandler.instanceOf().clone(c).select(Context.DETAILS_JOURNAL2, revenuesParams, timeframeChooser1.getTime()).getData();
-                            } catch (NodataFoundException nodataFoundException) {
-                                d2 = new Object[0][16];
-                            }
-                            for (int i = 0; i < d2.length; i++) {
-                                d2[i][10] = Revenue.TYPE_REVENUE;
-                                d2[i][11] = Item.STATUS_PAID;//revenues are currently always paid :-/
-                            }
+                     try {
+                        d2 = QueryHandler.instanceOf().clone(c).select(Context.DETAILS_JOURNAL2, revenuesParams, timeframeChooser1.getTime()).getData();
+                     } catch (NodataFoundException nodataFoundException) {
+                        d2 = new Object[0][16];
+                     }
+                     for (int i = 0; i < d2.length; i++) {
+                        d2[i][10] = Revenue.TYPE_REVENUE;
+                        d2[i][11] = Item.STATUS_PAID;//revenues are currently always paid :-/
+                     }
 
-                            DatabaseObject.Entity<?, ?>[] es = new DatabaseObject.Entity<?, ?>[d2.length];
-                            for (int i = 0; i < d2.length; i++) {
-                                es[i] = new DatabaseObject.Entity<Context, Integer>(Context.getRevenue(), Integer.valueOf(d2[i][0].toString()));
-                            }
-                            d2 = ArrayUtilities.replaceColumn(d2, 0, es);
+                     DatabaseObject.Entity<?, ?>[] es = new DatabaseObject.Entity<?, ?>[d2.length];
+                     for (int i = 0; i < d2.length; i++) {
+                        es[i] = new DatabaseObject.Entity<Context, Integer>(Context.getRevenue(), Integer.valueOf(d2[i][0].toString()));
+                     }
+                     d2 = ArrayUtilities.replaceColumn(d2, 0, es);
 
-                        } catch (Exception ex) {
-                            Log.Debug(this, ex);
-                        }
+                  } catch (Exception ex) {
+                     Log.Debug(this, ex);
+                  }
 
-                        d = ArrayUtilities.merge(ArrayUtilities.merge(d, d1), d2);
-                    }
-                    d = parse(d);
-                    jTable1.setModel(new MPTableModel(d, Headers.JOURNAL.getValue(),
-                            new Class[]{Entity.class, String.class, String.class, String.class, String.class, String.class, String.class, String.class, String.class, String.class, String.class, String.class, String.class, String.class, String.class, String.class, String.class}));
-                    TableFormat.stripColumn(jTable1, DatabaseObject.Entity.class);
-                    count.setText("" + d.length);
-                } catch (Exception e) {
-                    Log.Debug(this, e);
-                }
-            }
-        };
-        SwingUtilities.invokeLater(runnable);
-    }
-
-    @Override
-    public void refresh() {
-        refresh(null, null);
-    }
-
-    @Override
-    public void flush() {
-        jTable1.setModel(new DefaultTableModel());
-    }
-
-    private void setPopup() {
-        TablePopUp tablePopUp = new TablePopUp(jTable1,
-                new String[]{Messages.DELETE.toString(),
-                    null, Messages.RELOAD.getValue(),
-                    null, Messages.DTA_CREATE.getValue(),
-                    Messages.PDF_CREATE.getValue(),
-                    Messages.ODT_CREATE.getValue(),
-                    null, Messages.SET_STATUS_PAID.getValue(),},
-                new ActionListener[]{new ActionListener() {
-
-                public void actionPerformed(ActionEvent e) {
-                    if (Popup.Y_N_dialog(Messages.REALLY_DELETE2 + " (" + jTable1.getSelectedRowCount() + ")")) {
-                        int[] rows = jTable1.getSelectedRows();
-                        for (int i = 0; i < rows.length; i++) {
-                            try {
-                                int index = jTable1.convertRowIndexToModel(rows[i]);
-                                DatabaseObject obj = DatabaseObject.getObject((DatabaseObject.Entity<?, ?>) jTable1.getModel().getValueAt(index, 0));
-                                obj.delete();
-                                jTable1.getSelectionModel().removeSelectionInterval(rows[i] - 1, rows[i]);
-                            } catch (NodataFoundException ex) {
-                                Log.Debug(ex);
-                            } catch (Exception exc) {
-                                Log.Debug(exc);
-                                Popup.error(exc);
-                            }
-                        }
-                        setData();
-                    }
-                }
-            }, null, new ActionListener() {
-
-                public void actionPerformed(ActionEvent e) {
-                    setData();
-                }
-            },
-                    null,
-                    new ActionListener() {
-
-                        public void actionPerformed(ActionEvent e) {
-                            dta();
-                        }
-                    },
-                    new ActionListener() {
-
-                        public void actionPerformed(ActionEvent e) {
-                            pdf();
-                        }
-                    },
-                    new ActionListener() {
-
-                        public void actionPerformed(ActionEvent e) {
-                            odt();
-                        }
-                    },
-                    null,
-                    new ActionListener() {
-
-                        public void actionPerformed(ActionEvent e) {
-                            if (Popup.Y_N_dialog(Messages.REALLY_CHANGE2 + " (" + jTable1.getSelectedRowCount() + ")")) {
-                                int[] rows = jTable1.getSelectedRows();
-                                for (int i = 0; i < rows.length; i++) {
-                                    try {
-                                        int index = jTable1.convertRowIndexToModel(rows[i]);
-                                        DatabaseObject obj = DatabaseObject.getObject((DatabaseObject.Entity<?, ?>) jTable1.getModel().getValueAt(index, 0));
-                                        if (obj instanceof Item) {
-                                            Item dbi = (Item) obj;
-                                            if (dbi.__getIntstatus() != Item.STATUS_PAID) {
-                                                dbi.setIntstatus(Item.STATUS_PAID);
-                                                dbi.save();
-                                            }
-                                        } else if (obj instanceof Expense) {
-                                            Expense dbi = (Expense) obj;
-                                            if (!dbi.__getIspaid()) {
-                                                dbi.setIspaid(true);
-                                                dbi.save();
-                                            }
-                                        }
-                                        jTable1.getSelectionModel().removeSelectionInterval(rows[i] - 1, rows[i]);
-                                    } catch (NodataFoundException ex) {
-                                        Log.Debug(ex);
-                                    } catch (Exception exc) {
-                                        Log.Debug(exc);
-                                        Popup.error(exc);
-                                    }
-                                }
-                                setData();
-                            }
-                        }
-                    }
-                });
-
-
-    }
-
-    private void setData() {
-        try {
-            Group g = null;
-            User u = null;
-
-            if (groups.getSelectedItem().isValid()) {
-                try {
-                    g = ((Group) Group.getObject(Context.getGroup(), Integer.valueOf(groups.getSelectedItem().getId())));
-                } catch (Exception nodataFoundException) {
-                    g = null;
-                }
-            }
-            try {
-                if (users.getSelectedItem().isValid()) {
-                    u = ((User) User.getObject(Context.getUser(), Integer.valueOf(users.getSelectedItem().getId())));
-                }
-            } catch (Exception nodataFoundException) {
-                u = null;
-            }
-            refresh(g, u);
-        } catch (Exception ignore) {
-            refresh(null, null);
-        }
-    }
-
-    private void preview() {
-        PreviewPanel pr;
-        if (journalOrContactTemplate != null) {
-            pr = new PreviewPanel();
-            pr.setDataOwner(dataOwner);
-            HashMap<String, Object> map = new HashMap<String, Object>();
-            map.put("journal.netvalue", volumeNetto.getText());
-            map.put("journal.taxvalue", taxVolume.getText());
-            map.put("journal.grosvalue", volumeBrutto.getText());
-            map.put("journal.revenuevalue", revenueNetto.getText());
-            map.put("journal.discountvalue", volumeDiscount.getText());
-            map.put("journal.datenow", DateConverter.getDefDateString(new Date()));
-            map.put("journal.datefrom", DateConverter.getDefDateString(timeframeChooser1.getTime().getStart()));
-            map.put("journal.dateto", DateConverter.getDefDateString(timeframeChooser1.getTime().getEnd()));
-            if (groups.getSelectedItem().isValid()) {
-                try {
-                    Group g = (Group) Group.getObject(Context.getGroup(), Integer.valueOf(groups.getSelectedItem().getId()));
-                    map.put("journal.group", g.__getCname());
-                    map.put("journal.childgroups", String.valueOf(g.getChildGroups()));
-                } catch (Exception nodataFoundException) {
-                }
-            }
-            try {
-                map.put("journal.user", users.getSelectedValue());
-                map.put("journal.accounts", Arrays.asList(jList1.getSelectedValues()).toString());
+                  d = ArrayUtilities.merge(ArrayUtilities.merge(d, d1), d2);
+               }
+               d = parse(d);
+               jTable1.setModel(new MPTableModel(d, Headers.JOURNAL.getValue(),
+                     new Class[]{Entity.class, String.class, String.class, String.class, String.class, String.class, String.class, String.class, String.class, String.class, String.class, String.class, String.class, String.class, String.class, String.class, String.class}));
+               TableFormat.stripColumn(jTable1, DatabaseObject.Entity.class);
+               count.setText("" + d.length);
             } catch (Exception e) {
-                Log.Debug(e);
+               Log.Debug(this, e);
             }
-            Log.Debug(this, map.keySet());
-            Log.Debug(this, map.values());
+         }
+      };
+      SwingUtilities.invokeLater(runnable);
+   }
 
-            journalOrContactTemplate.injectData(map);
-            MPTableModel xx = (MPTableModel) jTable1.getModel();
-            Object[][] xxd = xx.getData();
-            Object[][] d = new Object[xxd.length][];
-            for (int i = 0; i < xxd.length; i++) {
-                Object[] objects = xxd[i];
-                Object[] nd = new Object[objects.length];
-                for (int j = 1; j < objects.length; j++) {
-                    Object object = objects[j];
-                    nd[j-1] = object;
-                }
-                d[i] = nd;
+   @Override
+   public void refresh() {
+      refresh(null, null);
+   }
+
+   @Override
+   public void flush() {
+      jTable1.setModel(new DefaultTableModel());
+   }
+
+   private void setPopup() {
+      TablePopUp tablePopUp = new TablePopUp(jTable1,
+            new String[]{Messages.DELETE.toString(),
+               null, Messages.RELOAD.getValue(),
+               null, Messages.DTA_CREATE.getValue(),
+               Messages.PDF_CREATE.getValue(),
+               Messages.ODT_CREATE.getValue(),
+               null, Messages.SET_STATUS_PAID.getValue(),},
+            new ActionListener[]{new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+               if (Popup.Y_N_dialog(Messages.REALLY_DELETE2 + " (" + jTable1.getSelectedRowCount() + ")")) {
+                  int[] rows = jTable1.getSelectedRows();
+                  for (int i = 0; i < rows.length; i++) {
+                     try {
+                        int index = jTable1.convertRowIndexToModel(rows[i]);
+                        DatabaseObject obj = DatabaseObject.getObject((DatabaseObject.Entity<?, ?>) jTable1.getModel().getValueAt(index, 0));
+                        obj.delete();
+                        jTable1.getSelectionModel().removeSelectionInterval(rows[i] - 1, rows[i]);
+                     } catch (NodataFoundException ex) {
+                        Log.Debug(ex);
+                     } catch (Exception exc) {
+                        Log.Debug(exc);
+                        Popup.error(exc);
+                     }
+                  }
+                  setData();
+               }
             }
-            journalOrContactTemplate.injectTable(TableHandler.KEY_TABLE + 1, new MPTableModel(d));
-            new Job(Export.createFile(journalOrContactTemplate, dataOwner), pr).execute();
-        } else {
-            Popup.notice(Messages.NO_TEMPLATE_LOADED + " (" + mpv5.db.objects.User.getCurrentUser() + ")");
-        }
-    }
-
-    private void loadTemplate() {
-        Runnable runnable = new Runnable() {
-
-            public void run() {
-                if (dataOwner != null) {
-                    journalOrContactTemplate = TemplateHandler.loadTemplate(Long.valueOf(dataOwner.templateGroupIds()), Constants.TYPE_CONTACT);
-                    jButton4.setEnabled(true);
-                } else {
-                    journalOrContactTemplate = TemplateHandler.loadTemplate(Long.valueOf(User.getCurrentUser().__getGroupsids()), Constants.TYPE_JOURNAL);
-                    jButton4.setEnabled(true);
-                }
+         }, null, new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+               setData();
             }
-        };
-        new Thread(runnable).start();
-    }
-
-    private void dta() {
-        if (jTable1.getSelectedRowCount() < 1) {
-            Popup.notice(Messages.SELECT_AN_INVOICE);
-
-        } else {
-            ArrayList<Item> items = new ArrayList<Item>();
-            for (int i = 0; i < jTable1.getSelectedRows().length; i++) {
-                try {
-                    int index = jTable1.convertRowIndexToModel(jTable1.getSelectedRows()[i]);
-                    DatabaseObject obj = DatabaseObject.getObject((DatabaseObject.Entity<?, ?>) jTable1.getModel().getValueAt(index, 0));
-                    if (obj.getContext().equals(Context.getItem())) {
-                        Item item = (Item) obj;
-                        if (item.__getIntstatus() != Item.STATUS_PAID) {
-                            items.add(item);
+         },
+               null,
+               new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+               dta();
+            }
+         },
+               new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+               pdf();
+            }
+         },
+               new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+               odt();
+            }
+         },
+               null,
+               new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+               if (Popup.Y_N_dialog(Messages.REALLY_CHANGE2 + " (" + jTable1.getSelectedRowCount() + ")")) {
+                  int[] rows = jTable1.getSelectedRows();
+                  for (int i = 0; i < rows.length; i++) {
+                     try {
+                        int index = jTable1.convertRowIndexToModel(rows[i]);
+                        DatabaseObject obj = DatabaseObject.getObject((DatabaseObject.Entity<?, ?>) jTable1.getModel().getValueAt(index, 0));
+                        if (obj instanceof Item) {
+                           Item dbi = (Item) obj;
+                           if (dbi.__getIntstatus() != Item.STATUS_PAID) {
+                              dbi.setIntstatus(Item.STATUS_PAID);
+                              dbi.save();
+                           }
+                        } else if (obj instanceof Expense) {
+                           Expense dbi = (Expense) obj;
+                           if (!dbi.__getIspaid()) {
+                              dbi.setIspaid(true);
+                              dbi.save();
+                           }
                         }
-                    }
-                } catch (NodataFoundException ex) {
-                    Log.Debug(ex);
-                }
+                        jTable1.getSelectionModel().removeSelectionInterval(rows[i] - 1, rows[i]);
+                     } catch (NodataFoundException ex) {
+                        Log.Debug(ex);
+                     } catch (Exception exc) {
+                        Log.Debug(exc);
+                        Popup.error(exc);
+                     }
+                  }
+                  setData();
+               }
             }
+         }
+            });
 
-            HashMap<String, Object> map = new HashMap<String, Object>();
-            for (int i = 0; i < items.size(); i++) {
-                Item item = items.get(i);
-                map.put(item.__getCnumber(), item);
+
+   }
+
+   private void setData() {
+      try {
+         Group g = null;
+         User u = null;
+
+         if (groups.getSelectedItem().isValid()) {
+            try {
+               g = ((Group) Group.getObject(Context.getGroup(), Integer.valueOf(groups.getSelectedItem().getId())));
+            } catch (Exception nodataFoundException) {
+               g = null;
             }
+         }
+         try {
+            if (users.getSelectedItem().isValid()) {
+               u = ((User) User.getObject(Context.getUser(), Integer.valueOf(users.getSelectedItem().getId())));
+            }
+         } catch (Exception nodataFoundException) {
+            u = null;
+         }
+         refresh(g, u);
+      } catch (Exception ignore) {
+         refresh(null, null);
+      }
+   }
 
-            DialogForFile d = new DialogForFile(DialogForFile.FILES_ONLY);
-            DTAFile dta = new DTAFile(map);
-            Job job = new Job(dta, d, "DTAUS " + Messages.SAVED);
+   private void preview() {
+      PreviewPanel pr;
+      if (journalOrContactTemplate != null) {
+         pr = new PreviewPanel();
+         pr.setDataOwner(dataOwner);
+         TreeMap<String, Object> map = new TreeMap<String, Object>();
+         map.put("journal.netvalue", volumeNetto.getText());
+         map.put("journal.taxvalue", taxVolume.getText());
+         map.put("journal.grosvalue", volumeBrutto.getText());
+         map.put("journal.revenuevalue", revenueNetto.getText());
+         map.put("journal.discountvalue", volumeDiscount.getText());
+         map.put("journal.datenow", DateConverter.getDefDateString(new Date()));
+         map.put("journal.datefrom", DateConverter.getDefDateString(timeframeChooser1.getTime().getStart()));
+         map.put("journal.dateto", DateConverter.getDefDateString(timeframeChooser1.getTime().getEnd()));
+         if (groups.getSelectedItem().isValid()) {
+            try {
+               Group g = (Group) Group.getObject(Context.getGroup(), Integer.valueOf(groups.getSelectedItem().getId()));
+               map.put("journal.group", g.__getCname());
+               map.put("journal.childgroups", String.valueOf(g.getChildGroups()));
+            } catch (Exception nodataFoundException) {
+            }
+         }
+         try {
+            map.put("journal.user", users.getSelectedValue());
+            map.put("journal.accounts", Arrays.asList(jList1.getSelectedValues()).toString());
+         } catch (Exception e) {
+            Log.Debug(e);
+         }
+         Log.Debug(this, map.keySet());
+         Log.Debug(this, map.values());
+
+         journalOrContactTemplate.injectData(map);
+         MPTableModel xx = (MPTableModel) jTable1.getModel();
+         Object[][] xxd = xx.getData();
+         Object[][] d = new Object[xxd.length][];
+         for (int i = 0; i < xxd.length; i++) {
+            Object[] objects = xxd[i];
+            Object[] nd = new Object[objects.length];
+            for (int j = 1; j < objects.length; j++) {
+               Object object = objects[j];
+               nd[j - 1] = object;
+            }
+            d[i] = nd;
+         }
+         Log.Debug(this, xx.getColumnIdentifiers());
+         journalOrContactTemplate.injectTable(TableHandler.KEY_TABLE + 1, new MPTableModel(d));
+         if (GlobalSettings.getBooleanProperty("org.openyabs.exportproperty.journalasodt")) {
+            new Job(Export.createFile(journalOrContactTemplate, dataOwner), pr).execute();
+         } else {
+            new Job(Export.sourceFile(journalOrContactTemplate, dataOwner), pr).execute();
+         }
+      } else {
+         Popup.notice(Messages.NO_TEMPLATE_LOADED + " (" + mpv5.db.objects.User.getCurrentUser() + ")");
+      }
+   }
+
+   private void loadTemplate() {
+      Runnable runnable = new Runnable() {
+         public void run() {
+            if (dataOwner != null) {
+               journalOrContactTemplate = TemplateHandler.loadTemplate(Long.valueOf(dataOwner.templateGroupIds()), Constants.TYPE_CONTACT);
+               jButton4.setEnabled(true);
+            } else {
+               journalOrContactTemplate = TemplateHandler.loadTemplate(Long.valueOf(User.getCurrentUser().__getGroupsids()), Constants.TYPE_JOURNAL);
+               jButton4.setEnabled(true);
+            }
+         }
+      };
+      new Thread(runnable).start();
+   }
+
+   private void dta() {
+      if (jTable1.getSelectedRowCount() < 1) {
+         Popup.notice(Messages.SELECT_AN_INVOICE);
+
+      } else {
+         ArrayList<Item> items = new ArrayList<Item>();
+         for (int i = 0; i < jTable1.getSelectedRows().length; i++) {
+            try {
+               int index = jTable1.convertRowIndexToModel(jTable1.getSelectedRows()[i]);
+               DatabaseObject obj = DatabaseObject.getObject((DatabaseObject.Entity<?, ?>) jTable1.getModel().getValueAt(index, 0));
+               if (obj.getContext().equals(Context.getItem())) {
+                  Item item = (Item) obj;
+                  if (item.__getIntstatus() != Item.STATUS_PAID) {
+                     items.add(item);
+                  }
+               }
+            } catch (NodataFoundException ex) {
+               Log.Debug(ex);
+            }
+         }
+
+         HashMap<String, Object> map = new HashMap<String, Object>();
+         for (int i = 0; i < items.size(); i++) {
+            Item item = items.get(i);
+            map.put(item.__getCnumber(), item);
+         }
+
+         DialogForFile d = new DialogForFile(DialogForFile.FILES_ONLY);
+         DTAFile dta = new DTAFile(map);
+         Job job = new Job(dta, d, "DTAUS " + Messages.SAVED);
+         job.execute();
+
+      }
+   }
+
+   private void pdf() {
+      if (jTable1.getSelectedRowCount() < 1) {
+         Popup.notice(Messages.SELECT_AN_INVOICE);
+
+      } else {
+         ArrayList<Templateable> items = new ArrayList<Templateable>();
+         for (int i = 0; i < jTable1.getSelectedRows().length; i++) {
+            try {
+               int index = jTable1.convertRowIndexToModel(jTable1.getSelectedRows()[i]);
+               DatabaseObject obj = DatabaseObject.getObject((DatabaseObject.Entity<?, ?>) jTable1.getModel().getValueAt(index, 0));
+               if (obj instanceof Templateable) {
+                  Templateable item = (Templateable) obj;
+                  items.add(item);
+               }
+            } catch (NodataFoundException ex) {
+               Log.Debug(ex);
+            }
+         }
+
+         List<Waitable> files = new ArrayList<Waitable>();
+         for (int i = 0; i < items.size(); i++) {
+            try {
+               final Templateable item = items.get(i);
+               if (TemplateHandler.loadTemplate(item) == null) {
+                  Popup.warn(Messages.NO_TEMPLATE_DEFINDED + "\n" + TemplateHandler.getName(item.templateType())
+                        + "\n" + Messages.IN_GROUP + " " + DatabaseObject.getObject(Context.getGroup(), ((DatabaseObject) item).__getGroupsids()));
+               } else {
+                  files.add(Export.createFile(item.getFormatHandler().toUserString(), TemplateHandler.loadTemplate(item), ((DatabaseObject) item)));
+               }
+            } catch (Exception nodataFoundException) {
+               Log.Debug(nodataFoundException);
+            }
+         }
+
+         if (!files.isEmpty()) {
+            DialogForFile d = new DialogForFile(DialogForFile.DIRECTORIES_ONLY);
+            Job job = new Job(files, d, files.size() + " PDF " + Messages.SAVED);
             job.execute();
+         }
+      }
+   }
 
-        }
-    }
+   private void odt() {
+      if (jTable1.getSelectedRowCount() < 1) {
+         Popup.notice(Messages.SELECT_AN_INVOICE);
 
-    private void pdf() {
-        if (jTable1.getSelectedRowCount() < 1) {
-            Popup.notice(Messages.SELECT_AN_INVOICE);
-
-        } else {
-            ArrayList<Templateable> items = new ArrayList<Templateable>();
-            for (int i = 0; i < jTable1.getSelectedRows().length; i++) {
-                try {
-                    int index = jTable1.convertRowIndexToModel(jTable1.getSelectedRows()[i]);
-                    DatabaseObject obj = DatabaseObject.getObject((DatabaseObject.Entity<?, ?>) jTable1.getModel().getValueAt(index, 0));
-                    if (obj instanceof Templateable) {
-                        Templateable item = (Templateable) obj;
-                        items.add(item);
-                    }
-                } catch (NodataFoundException ex) {
-                    Log.Debug(ex);
-                }
+      } else {
+         ArrayList<Templateable> items = new ArrayList<Templateable>();
+         for (int i = 0; i < jTable1.getSelectedRows().length; i++) {
+            try {
+               int index = jTable1.convertRowIndexToModel(jTable1.getSelectedRows()[i]);
+               DatabaseObject obj = DatabaseObject.getObject((DatabaseObject.Entity<?, ?>) jTable1.getModel().getValueAt(index, 0));
+               if (obj instanceof Templateable) {
+                  Templateable item = (Templateable) obj;
+                  items.add(item);
+               }
+            } catch (Exception ex) {
+               Log.Debug(ex);
             }
+         }
 
-            List<Waitable> files = new ArrayList<Waitable>();
-            for (int i = 0; i < items.size(); i++) {
-                try {
-                    final Templateable item = items.get(i);
-                    if (TemplateHandler.loadTemplate(item) == null) {
-                        Popup.warn(Messages.NO_TEMPLATE_DEFINDED + "\n" + TemplateHandler.getName(item.templateType())
-                                + "\n" + Messages.IN_GROUP + " " + DatabaseObject.getObject(Context.getGroup(), ((DatabaseObject) item).__getGroupsids()));
-                    } else {
-                        files.add(Export.createFile(item.getFormatHandler().toUserString(), TemplateHandler.loadTemplate(item), ((DatabaseObject) item)));
-                    }
-                } catch (Exception nodataFoundException) {
-                    Log.Debug(nodataFoundException);
-                }
+         List<Waitable> files = new ArrayList<Waitable>();
+         for (int i = 0; i < items.size(); i++) {
+            try {
+               final Templateable item = items.get(i);
+               if (TemplateHandler.loadTemplate(item) == null) {
+                  Popup.warn(Messages.NO_TEMPLATE_DEFINDED + "\n" + TemplateHandler.getName(item.templateType())
+                        + "\n" + Messages.IN_GROUP + " " + DatabaseObject.getObject(Context.getGroup(), ((DatabaseObject) item).__getGroupsids()));
+               } else {
+                  files.add(Export.sourceFile(item.getFormatHandler().toUserString(), TemplateHandler.loadTemplate(item), ((DatabaseObject) item)));
+               }
+            } catch (Exception nodataFoundException) {
+               Log.Debug(nodataFoundException);
             }
+         }
 
-            if (!files.isEmpty()) {
-                DialogForFile d = new DialogForFile(DialogForFile.DIRECTORIES_ONLY);
-                Job job = new Job(files, d, files.size() + " PDF " + Messages.SAVED);
-                job.execute();
-            }
-        }
-    }
+         if (!files.isEmpty()) {
+            DialogForFile d = new DialogForFile(DialogForFile.DIRECTORIES_ONLY);
 
-    private void odt() {
-        if (jTable1.getSelectedRowCount() < 1) {
-            Popup.notice(Messages.SELECT_AN_INVOICE);
+            Job job = new Job(files, d, files.size() + " ODT " + Messages.SAVED);
+            job.execute();
+         }
+      }
+   }
 
-        } else {
-            ArrayList<Templateable> items = new ArrayList<Templateable>();
-            for (int i = 0; i < jTable1.getSelectedRows().length; i++) {
-                try {
-                    int index = jTable1.convertRowIndexToModel(jTable1.getSelectedRows()[i]);
-                    DatabaseObject obj = DatabaseObject.getObject((DatabaseObject.Entity<?, ?>) jTable1.getModel().getValueAt(index, 0));
-                    if (obj instanceof Templateable) {
-                        Templateable item = (Templateable) obj;
-                        items.add(item);
-                    }
-                } catch (Exception ex) {
-                    Log.Debug(ex);
-                }
-            }
-
-            List<Waitable> files = new ArrayList<Waitable>();
-            for (int i = 0; i < items.size(); i++) {
-                try {
-                    final Templateable item = items.get(i);
-                    if (TemplateHandler.loadTemplate(item) == null) {
-                        Popup.warn(Messages.NO_TEMPLATE_DEFINDED + "\n" + TemplateHandler.getName(item.templateType())
-                                + "\n" + Messages.IN_GROUP + " " + DatabaseObject.getObject(Context.getGroup(), ((DatabaseObject) item).__getGroupsids()));
-                    } else {
-                        files.add(Export.sourceFile(item.getFormatHandler().toUserString(), TemplateHandler.loadTemplate(item), ((DatabaseObject) item)));
-                    }
-                } catch (Exception nodataFoundException) {
-                    Log.Debug(nodataFoundException);
-                }
-            }
-
-            if (!files.isEmpty()) {
-                DialogForFile d = new DialogForFile(DialogForFile.DIRECTORIES_ONLY);
-
-                Job job = new Job(files, d, files.size() + " ODT " + Messages.SAVED);
-                job.execute();
-            }
-        }
-    }
-
-    private void filter() {
-        if (filterinvoice.isSelected()) {
-            QueryCriteria2 p = new QueryCriteria2();
-            p.and(new QueryParameter(Context.getItem(), "intstatus", Item.STATUS_PAID, QueryParameter.NOTEQUAL));
-            p.and(new QueryParameter(Context.getItem(), "inttype", Item.TYPE_BILL, QueryParameter.EQUALS));
-            jTree1.setModel(new MPTreeModel(dataOwner, p));
-        } else if (filteroffers.isSelected()) {
-            QueryCriteria2 p = new QueryCriteria2();
-            p.and(new QueryParameter(Context.getItem(), "intstatus", Item.STATUS_FINISHED, QueryParameter.NOTEQUAL));
-            p.and(new QueryParameter(Context.getItem(), "inttype", Item.TYPE_OFFER, QueryParameter.EQUALS));
-            jTree1.setModel(new MPTreeModel(dataOwner, p));
-        } else if (filterorders.isSelected()) {
-            QueryCriteria2 p = new QueryCriteria2();
-            p.and(new QueryParameter(Context.getItem(), "intstatus", Item.STATUS_FINISHED, QueryParameter.NOTEQUAL));
-            p.and(new QueryParameter(Context.getItem(), "inttype", Item.TYPE_ORDER, QueryParameter.EQUALS));
-            jTree1.setModel(new MPTreeModel(dataOwner, p));
-        } else if (filternone.isSelected()) {
-            jTree1.setModel(new MPTreeModel(dataOwner, null));
-        }
-    }
+   private void filter() {
+      if (filterinvoice.isSelected()) {
+         QueryCriteria2 p = new QueryCriteria2();
+         p.and(new QueryParameter(Context.getItem(), "intstatus", Item.STATUS_PAID, QueryParameter.NOTEQUAL));
+         p.and(new QueryParameter(Context.getItem(), "inttype", Item.TYPE_BILL, QueryParameter.EQUALS));
+         jTree1.setModel(new MPTreeModel(dataOwner, p));
+      } else if (filteroffers.isSelected()) {
+         QueryCriteria2 p = new QueryCriteria2();
+         p.and(new QueryParameter(Context.getItem(), "intstatus", Item.STATUS_FINISHED, QueryParameter.NOTEQUAL));
+         p.and(new QueryParameter(Context.getItem(), "inttype", Item.TYPE_OFFER, QueryParameter.EQUALS));
+         jTree1.setModel(new MPTreeModel(dataOwner, p));
+      } else if (filterorders.isSelected()) {
+         QueryCriteria2 p = new QueryCriteria2();
+         p.and(new QueryParameter(Context.getItem(), "intstatus", Item.STATUS_FINISHED, QueryParameter.NOTEQUAL));
+         p.and(new QueryParameter(Context.getItem(), "inttype", Item.TYPE_ORDER, QueryParameter.EQUALS));
+         jTree1.setModel(new MPTreeModel(dataOwner, p));
+      } else if (filternone.isSelected()) {
+         jTree1.setModel(new MPTreeModel(dataOwner, null));
+      }
+   }
 }

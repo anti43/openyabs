@@ -33,6 +33,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import javax.swing.SwingUtilities;
 import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
@@ -87,7 +88,7 @@ public final class Export extends HashMap<String, Object> implements Waitable {
             }
 
             if (send) {
-                HashMap<String, Object> hm1 = new FormFieldsHandler(dataOwner).getFormattedFormFields(null);
+                Map<String, Object> hm1 = new FormFieldsHandler(dataOwner).getFormattedFormFields(null);
                 File f2 = FileDirectoryHandler.getTempFile(((Formattable) dataOwner).getFormatHandler().toUserString(), "pdf");
                 Export ex = new Export(preloadedTemplate);
                 ex.putAll(hm1);
@@ -151,7 +152,7 @@ public final class Export extends HashMap<String, Object> implements Waitable {
 
             @Override
             public void run() {
-                HashMap<String, Object> hm1 = new FormFieldsHandler(dataOwner).getFormattedFormFields(null);
+                Map<String, Object> hm1 = new FormFieldsHandler(dataOwner).getFormattedFormFields(null);
                 File f2 = FileDirectoryHandler.getTempFile("pdf");
                 final Export ex = new Export(preloadedTemplate);
                 ex.putAll(hm1);
@@ -172,7 +173,7 @@ public final class Export extends HashMap<String, Object> implements Waitable {
 
     public static File print2(Template preloadedTemplate, DatabaseObject dataOwner, HashMap<String, Object> hm) {
 
-        HashMap<String, Object> hm1 = new FormFieldsHandler(dataOwner).getFormattedFormFields(null);
+        Map<String, Object> hm1 = new FormFieldsHandler(dataOwner).getFormattedFormFields(null);
         File f2 = FileDirectoryHandler.getTempFile("pdf");
         final Export ex = new Export(preloadedTemplate);
         ex.putAll(hm1);
@@ -220,7 +221,7 @@ public final class Export extends HashMap<String, Object> implements Waitable {
                 if (preloadedTemplate != null && preloadedTemplate.length > 0) {
                     for (int i = 0; i < preloadedTemplate.length; i++) {
                         Template template = preloadedTemplate[i];
-                        HashMap<String, Object> hm1 = new FormFieldsHandler(dataOwner).getFormattedFormFields(null);
+                        Map<String, Object> hm1 = new FormFieldsHandler(dataOwner).getFormattedFormFields(null);
                         File f2 = FileDirectoryHandler.getTempFile("pdf");
                         Export ex = new Export(template);
                         ex.putAll(hm1);
@@ -342,7 +343,7 @@ public final class Export extends HashMap<String, Object> implements Waitable {
      * @return
      */
     public static Waitable createFile(String aname, Template preloadedTemplate, DatabaseObject dataOwner) {
-        HashMap<String, Object> hm1 = new FormFieldsHandler(dataOwner).getFormattedFormFields(null);
+        Map<String, Object> hm1 = new FormFieldsHandler(dataOwner).getFormattedFormFields(null);
         File f2;
         if (aname == null) {
             f2 = FileDirectoryHandler.getTempFile("pdf");
@@ -365,7 +366,7 @@ public final class Export extends HashMap<String, Object> implements Waitable {
      * @return
      */
     public static Waitable sourceFile(String aname, Template preloadedTemplate, DatabaseObject dataOwner) {
-        HashMap<String, Object> hm1 = new FormFieldsHandler(dataOwner).getFormattedFormFields(null);
+        Map<String, Object> hm1 = new FormFieldsHandler(dataOwner).getFormattedFormFields(null);
         File f2;
         if (aname == null) {
             f2 = FileDirectoryHandler.getTempFile("odt");
@@ -390,7 +391,7 @@ public final class Export extends HashMap<String, Object> implements Waitable {
      * @return
      */
     public static Waitable createFile(String aname, Template preloadedTemplate, DatabaseObject dataOwner, HashMap<String, Object> adddata) {
-        HashMap<String, Object> hm1 = new FormFieldsHandler(dataOwner).getFormattedFormFields(null);
+        Map<String, Object> hm1 = new FormFieldsHandler(dataOwner).getFormattedFormFields(null);
         File f2;
         if (aname == null) {
             f2 = FileDirectoryHandler.getTempFile("pdf");
@@ -415,7 +416,7 @@ public final class Export extends HashMap<String, Object> implements Waitable {
      * @return
      */
     public static Waitable sourceFile(String aname, Template preloadedTemplate, DatabaseObject dataOwner, HashMap<String, Object> adddata) {
-        HashMap<String, Object> hm1 = new FormFieldsHandler(dataOwner).getFormattedFormFields(null);
+        Map<String, Object> hm1 = new FormFieldsHandler(dataOwner).getFormattedFormFields(null);
         File f2;
         if (aname == null) {
             f2 = FileDirectoryHandler.getTempFile("odt");

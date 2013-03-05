@@ -119,8 +119,8 @@ public class Reminder extends DatabaseObject implements Templateable {
     }
 
     @Override
-    public HashMap<String, Object> resolveReferences(HashMap<String, Object> map) {
-        super.resolveReferences(map);
+    public java.util.Map<String, Object> resolveReferences(java.util.Map<String, Object> map) {
+        
         if (map.containsKey("itemsids")) {
             try {
                 try {
@@ -148,7 +148,7 @@ public class Reminder extends DatabaseObject implements Templateable {
             }
         }
 
-        return map;
+        return super.resolveReferences(map);
     }
 
     /**

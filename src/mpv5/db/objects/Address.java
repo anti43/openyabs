@@ -231,8 +231,8 @@ public class Address extends DatabaseObject {
     }
 
     @Override
-    public HashMap<String, Object> resolveReferences(HashMap<String, Object> map) {
-        super.resolveReferences(map);
+    public java.util.Map<String, Object> resolveReferences(java.util.Map<String, Object> map) {
+        
 
         try {
             if (map.containsKey("inttype")) {
@@ -251,6 +251,6 @@ public class Address extends DatabaseObject {
             //already resolved?
             Log.Debug(n);
         }
-        return map;
+        return super.resolveReferences(map);
     }
 }
