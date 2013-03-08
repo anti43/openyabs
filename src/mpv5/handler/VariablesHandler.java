@@ -211,7 +211,18 @@ public abstract class VariablesHandler {
         }
 
         if (target instanceof Conversation) {
-            vars.add(new String[]{"[type]".toUpperCase(), Messages.TYPE_CONVERSATION.toString()});
+            try {
+                Contact c = (Contact) DatabaseObject.getObject(Context.getContact(), ((Conversation) target).__getContactsids());
+                vars.add(new String[]{"[contact.cname]".toUpperCase(), c.__getCname()});
+                vars.add(new String[]{"[contact.company]".toUpperCase(), c.__getCompany()});
+                vars.add(new String[]{"[contact.prename]".toUpperCase(), c.__getPrename()});
+                vars.add(new String[]{"[contact.title]".toUpperCase(), c.__getTitle()});
+                vars.add(new String[]{"[contact.country]".toUpperCase(), c.__getCountry()});
+                vars.add(new String[]{"[type]".toUpperCase(), Messages.TYPE_CONVERSATION.toString()});
+
+            } catch (NodataFoundException ex) {
+                Log.Debug(VariablesHandler.class, ex.getMessage());
+            }
         }
 
         if (target instanceof ActivityList) {

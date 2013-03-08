@@ -16,14 +16,16 @@
  */
 package mpv5.db.objects;
 
-import enoa.handler.TemplateHandler;
 import java.util.Date;
+import java.util.Map;
 import javax.swing.JComponent;
 import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
+import mpv5.db.common.NodataFoundException;
 import mpv5.db.common.Templateable;
 import mpv5.globals.Constants;
 import mpv5.handler.FormatHandler;
+import mpv5.logging.Log;
 import mpv5.ui.panels.ConversationPanel;
 import mpv5.utils.images.MPIcon;
 
@@ -41,6 +43,7 @@ public class Conversation
     private String adress = "";
     private Date date = null;
     private String content = "";
+    private FormatHandler formatHandler;
 
     public int __getContactsids() {
         return contactsids;
@@ -111,6 +114,28 @@ public class Conversation
     }
 
     public FormatHandler getFormatHandler() {
-        return null;
+        if (formatHandler == null) {
+            formatHandler = new FormatHandler(this);
+        }
+        return formatHandler;
+    }
+
+    @Override
+    public Map<String, Object> resolveReferences(Map<String, Object> map) {
+        resolveValueProperties(map);
+        if (map.containsKey("contactsids")) {
+            try {
+                try {
+                    map.put("contact", DatabaseObject.getObject(Context.getContact(), Integer.valueOf(map.get("contactsids").toString())));
+                    map.remove("contactsids");
+                } catch (NodataFoundException ex) {
+                    map.put("contact", null);
+                    Log.Debug(this, ex.getMessage());
+                }
+            } catch (NumberFormatException numberFormatException) {
+                //already resolved?
+            }
+        }
+        return super.resolveReferences(map);
     }
 }

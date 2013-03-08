@@ -24,6 +24,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import javax.swing.JComboBox;
+import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextPane;
@@ -45,21 +46,16 @@ import mpv5.db.common.DatabaseSearch;
 import mpv5.db.common.NodataFoundException;
 import mpv5.db.objects.Address;
 import mpv5.db.objects.Contact;
+import mpv5.db.objects.Conversation;
 import mpv5.db.objects.Favourite;
 import mpv5.db.objects.User;
+import mpv5.globals.Constants;
 import mpv5.globals.Messages;
 import mpv5.logging.Log;
-import mpv5.ui.dialogs.DialogForFile;
 import mpv5.ui.dialogs.Popup;
-import mpv5.ui.panels.ChangeNotApprovedException;
-import mpv5.ui.panels.DataPanel;
-import mpv5.ui.panels.ExportablePanel;
+import mpv5.ui.dialogs.Search2;
 import mpv5.ui.toolbars.DataPanelTB;
 import mpv5.utils.export.Export;
-import mpv5.utils.jobs.Job;
-import mpv5.db.objects.Conversation;
-import mpv5.globals.Constants;
-import mpv5.ui.dialogs.Search2;
 import mpv5.utils.models.MPComboBoxModelItem;
 import mpv5.utils.ui.TextFieldUtils;
 
@@ -109,7 +105,7 @@ public class ConversationPanel
         initComponents();
         Log.Debug(ConversationPanel.class,
                 "Erstellung gestartet ...");
-
+        preloadTemplates();
         sp = new SearchPanel(Context.getConversation(), this);
         sp.setVisible(true);
         tb = new DataPanelTB(this);
@@ -842,6 +838,7 @@ public class ConversationPanel
             boolean populate) {
         dataOwner = (Conversation) object;
         if (populate) {
+            this.preloadTemplates();
             dataOwner.setPanelData(this);
             Runnable runnable = new Runnable() {
 
@@ -1204,5 +1201,14 @@ public class ConversationPanel
             Log.Debug(this,
                     ex);
         }
+    }
+    
+    private void preloadTemplates() {
+        Runnable runnable = new Runnable() {
+            public void run() {
+                TemplateHandler.loadTemplate(dataOwner.templateGroupIds(), dataOwner.templateType());
+            }
+        };
+        new Thread(runnable).start();
     }
 }
