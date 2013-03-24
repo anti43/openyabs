@@ -167,7 +167,7 @@ public class ProductOrderPanel extends javax.swing.JPanel implements DataPanel, 
         number.setSearchOnEnterEnabled(true);
         number.setParent(this);
         number.setSearchField("cname");
-        number.setContext(Context.getItem());
+        number.setContext(Context.getProductOrder());
 
         final DataPanel p = this;
         status.getComboBox().addActionListener(new ActionListener() {
@@ -231,7 +231,7 @@ public class ProductOrderPanel extends javax.swing.JPanel implements DataPanel, 
                 toorder.setEnabled(true);
                 toinvoice.setEnabled(true);
                 tooffer.setEnabled(true);
-                type.setText(Item.getTypeString(inttype_));
+                type.setText(Messages.TYPE_PRODUCT_ORDER.getValue());
                 //            typelabel.setIcon(dataOwner.getIcon());
                 this.exposeData();
 
@@ -1209,6 +1209,7 @@ public class ProductOrderPanel extends javax.swing.JPanel implements DataPanel, 
             datetodo_ = date2.getDate();
             dateend_ = date3.getDate();
             intstatus_ = Integer.valueOf(status.getSelectedItem().getId());
+            inttype_ = Constants.TYPE_PRODUCT_ORDER;
 
         } else {
             showRequiredFields();
@@ -1480,7 +1481,7 @@ public class ProductOrderPanel extends javax.swing.JPanel implements DataPanel, 
                 }
             } else {
                 mpv5.YabsViewProxy.instance().addMessage(Messages.NOT_POSSIBLE.toString() + Messages.ACTION_PASTE.toString(), Color.RED);
-                Log.Debug(this, dbo.getContext() + " to " + Context.getItem());
+                Log.Debug(this, dbo.getContext() + " to " + Context.getProductOrder());
             }
         }
 
@@ -1704,7 +1705,7 @@ public class ProductOrderPanel extends javax.swing.JPanel implements DataPanel, 
                 MPTableModel m = (MPTableModel) itemtable.getModel();
                 int row = itemtable.getSelectedRow();
                 ProductOrderSubItem.addToDeletionQueue(m.getValueAt(row, 0));
-                m.setRowAt(SubItem.getDefaultItem().getRowData(row), row, 1);
+                m.setRowAt(ProductOrderSubItem.getDefaultItem().getRowData(row), row, 1);
             }
         });
 
@@ -1888,7 +1889,7 @@ public class ProductOrderPanel extends javax.swing.JPanel implements DataPanel, 
     private void toOrder() {
 
         Item i2 = (Item) dataOwner.clone(Context.getOrder());
-        i2.setInttype(Item.TYPE_ORDER);
+        i2.setInttype(Constants.TYPE_ORDER);
         i2.setIDS(-1);
         i2.setCname(null);
         i2.setCnumber(null);

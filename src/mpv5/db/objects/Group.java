@@ -137,7 +137,7 @@ public class Group extends DatabaseObject {
     * @return the hierarchypath
     */
    public synchronized String __getHierarchypath() {
-      if (hierarchypath.contains(Group.GROUPSEPARATOR + Group.GROUPSEPARATOR)) {
+      if (hierarchypath != null && hierarchypath.contains(Group.GROUPSEPARATOR + Group.GROUPSEPARATOR)) {
          hierarchypath = null;
       }
       if (hierarchypath == null || hierarchypath.equals("")) {
