@@ -35,6 +35,7 @@ import mpv5.ui.dialogs.ControlApplet;
 import mpv5.ui.dialogs.Popup;
 import mpv5.ui.panels.DataPanel;
 import mpv5.usermanagement.MPSecurityManager;
+import mpv5.utils.numberformat.FormatNumber;
 import mpv5.utils.ui.TextFieldUtils;
 
 /**
@@ -260,7 +261,7 @@ public class ControlPanel_Taxes extends javax.swing.JPanel implements ControlApp
     public boolean collectData() {
         try {
             cname_ = cname.getText();
-            taxvalue_ = new BigDecimal(value.getValue(0d).toString());
+            taxvalue_ = FormatNumber.parseDezimal(value.getText(true, "0"));
             country_ = countries.getComboBox().getSelectedItem().toString();
             return true;
         } catch (Exception e) {
