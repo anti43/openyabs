@@ -392,6 +392,7 @@ public class RemindPanel extends javax.swing.JPanel {
             s.setCname(msg);
             s.setGroupsids(mpv5.db.objects.User.getCurrentUser().__getGroupsids());
             s.setDescription(jTextPane1.getText());
+            s.setTemplategroup(mpv5.db.objects.User.getCurrentUser().__getGroupsids());
             try {
                 s.setExtravalue(Double.valueOf(labeledTextField1.getText()));
             } catch (NumberFormatException e) {
@@ -586,6 +587,9 @@ public class RemindPanel extends javax.swing.JPanel {
                 s.save();
                 labeledCombobox3.triggerSearch();
 
+            }
+            if(dataOwner==null){
+                dataOwner = new Reminder();
             }
             dataOwner.setDescription(jTextPane1.getText());
             try {
