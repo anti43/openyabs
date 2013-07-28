@@ -47,6 +47,7 @@ import mpv5.ui.dialogs.subcomponents.ControlPanel_ValueProps;
 import mpv5.ui.dialogs.subcomponents.ControlPanel_WebShopManager;
 import mpv5.ui.frames.MPBabelFish;
 import mpv5.ui.frames.MPView;
+import mpv5.usermanagement.MPSecurityManager;
 import mpv5.utils.files.FileDirectoryHandler;
 
 /**
@@ -775,17 +776,19 @@ public class MPControlPanel extends javax.swing.JPanel {
     }//GEN-LAST:event_jButton25ActionPerformed
 
     private void jButton26ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton26ActionPerformed
-        Log.setLogLevel(Log.LOGLEVEL_DEBUG);
-        Console console = new Console();
-        console.setVariable("yabs", YabsViewProxy.instance());
-        console.setVariable("db", QueryHandler.instanceOf());//
-        console.setVariable("QueryHandler", QueryHandler.instanceOf());//dbo.getObjects(Context.getContacts())
-        console.setVariable("dbo", DatabaseObject.getObject(Context.getItem()));
-        console.setVariable("DatabaseObject", DatabaseObject.getObject(Context.getItem()));
-        console.setVariable("Context", Context.getItem());
-        console.setVariable("User", User.getCurrentUser());
-        console.setFrame(YabsViewProxy.instance().getIdentifierFrame());
-        console.run();
+        if (MPSecurityManager.checkAdminAccess()) {
+            Log.setLogLevel(Log.LOGLEVEL_DEBUG);
+            Console console = new Console();
+            console.setVariable("yabs", YabsViewProxy.instance());
+            console.setVariable("db", QueryHandler.instanceOf());//
+            console.setVariable("QueryHandler", QueryHandler.instanceOf());//dbo.getObjects(Context.getContacts())
+            console.setVariable("dbo", DatabaseObject.getObject(Context.getItem()));
+            console.setVariable("DatabaseObject", DatabaseObject.getObject(Context.getItem()));
+            console.setVariable("Context", Context.getItem());
+            console.setVariable("User", User.getCurrentUser());
+            console.setFrame(YabsViewProxy.instance().getIdentifierFrame());
+            console.run();
+        }
     }//GEN-LAST:event_jButton26ActionPerformed
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel actions;
@@ -843,7 +846,6 @@ public class MPControlPanel extends javax.swing.JPanel {
         button.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
 
         button.addActionListener(new java.awt.event.ActionListener() {
-
             @Override
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 try {
@@ -880,7 +882,6 @@ public class MPControlPanel extends javax.swing.JPanel {
         button.setPreferredSize(new java.awt.Dimension(90, 80));
         button.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         button.addActionListener(new java.awt.event.ActionListener() {
-
             @Override
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 try {

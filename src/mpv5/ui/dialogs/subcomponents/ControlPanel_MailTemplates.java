@@ -322,15 +322,19 @@ public class ControlPanel_MailTemplates extends javax.swing.JPanel implements Co
     public String format_;
     public int ids_;
     public int intaddedby_;
-    public int groupsids_;
+    public Group group_;
     public int usersids_;
     public java.util.Date dateadded_ = new java.util.Date();
 
     public boolean collectData() {
-        if (groupname.getSelectedItem() != null) {
-            groupsids_ = Integer.valueOf((groupname.getSelectedItem()).getId());
-        } else {
-            groupsids_ = 1;
+         if (groupname.getSelectedItem() != null) {
+            int groupsids_ = Integer.valueOf(((MPComboBoxModelItem) groupname.getSelectedItem()).getId());
+            try {
+                group_ = (Group) DatabaseObject.getObject(Context.getGroup(), groupsids_);
+            } catch (NodataFoundException ex) {
+                Log.Debug(this, ex);
+                group_ = Group.getDefault();
+            }
         }
 
         description_ = descr.getText();
@@ -343,7 +347,9 @@ public class ControlPanel_MailTemplates extends javax.swing.JPanel implements Co
     public void exposeData() {
 
         try {
-            groupname.setSelectedIndex(MPComboBoxModelItem.getItemID(String.valueOf(groupsids_), groupname.getModel()));
+            if(group_!=null)
+                groupname.setSelectedIndex(MPComboBoxModelItem.getItemID(String.valueOf(group_.__getIDS()), groupname.getModel()));
+            
             fullname.setText(cname_);
             descr.setText(description_);
         } catch (Exception e) {

@@ -19,6 +19,7 @@ import mpv5.db.common.DatabaseObject;
 import mpv5.db.common.DatabaseSearch;
 import mpv5.db.common.NodataFoundException;
 import mpv5.db.common.QueryHandler;
+import mpv5.db.objects.Group;
 import mpv5.db.objects.Item;
 import mpv5.globals.Headers;
 import mpv5.globals.Messages;
@@ -594,7 +595,7 @@ public class ControlPanel_Users extends javax.swing.JPanel implements ControlApp
     public int intaddedby_ = 4343;
     public Date datelastlog_ = new Date();
     public int ids_;
-    public int groupsids_;
+    public Group group_;
     public int compsids_;
     public java.util.Date dateadded_ = new java.util.Date();
 
@@ -638,10 +639,14 @@ public class ControlPanel_Users extends javax.swing.JPanel implements ControlApp
             inthighestright_ = Integer.valueOf(((MPComboBoxModelItem) inthighestright.getSelectedItem()).getId());
         }
 
-        if (groupname.getSelectedItem() != null) {
-            groupsids_ = Integer.valueOf(((MPComboBoxModelItem) groupname.getSelectedItem()).getId());
-        } else {
-            groupsids_ = 1;
+         if (groupname.getSelectedItem() != null) {
+            int groupsids_ = Integer.valueOf(((MPComboBoxModelItem) groupname.getSelectedItem()).getId());
+            try {
+                group_ = (Group) DatabaseObject.getObject(Context.getGroup(), groupsids_);
+            } catch (NodataFoundException ex) {
+                Log.Debug(this, ex);
+                group_ = Group.getDefault();
+            }
         }
 
         if (accountlist.getSelectedItem() != null) {
@@ -681,7 +686,8 @@ public class ControlPanel_Users extends javax.swing.JPanel implements ControlApp
             inthighestright.setSelectedIndex(MPComboBoxModelItem.getItemID(String.valueOf(inthighestright_), inthighestright.getModel()));
             loggedin.setSelected(isloggedin_);
             datelastlog.setText(DateConverter.getDefDateString(datelastlog_));
-            groupname.setSelectedIndex(MPComboBoxModelItem.getItemID(String.valueOf(groupsids_), groupname.getModel()));
+            if(group_!=null)
+                groupname.setSelectedIndex(MPComboBoxModelItem.getItemID(String.valueOf(group_.__getIDS()), groupname.getModel()));
             accountlist.setSelectedIndex(MPComboBoxModelItem.getItemID(String.valueOf(intdefaultaccount_), accountlist.getModel()));
             statuslist.setSelectedIndex(MPComboBoxModelItem.getItemIDfromValue(Item.getStatusString(intdefaultstatus_), statuslist.getModel()));
             try {

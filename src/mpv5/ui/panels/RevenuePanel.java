@@ -44,6 +44,7 @@ import mpv5.db.objects.Account;
 import mpv5.db.objects.Revenue;
 import mpv5.globals.Messages;
 import mpv5.db.objects.Favourite;
+import mpv5.db.objects.Group;
 import mpv5.db.objects.Item;
 import mpv5.db.objects.Tax;
 import mpv5.db.objects.Template;
@@ -499,7 +500,7 @@ public class RevenuePanel extends javax.swing.JPanel implements DataPanel {
     public int intaddedby_;
     public int ids_;
     public Date dateadded_;
-    public int groupsids_ = 1;
+    public Group group_;
     public BigDecimal netvalue_;
     public BigDecimal taxpercentvalue_;
     public BigDecimal brutvalue_;
@@ -517,11 +518,14 @@ public class RevenuePanel extends javax.swing.JPanel implements DataPanel {
         }
 
         if (groupnameselect.getSelectedItem() != null) {
-            groupsids_ = Integer.valueOf(groupnameselect.getSelectedItem().getId());
-            Log.Debug(this, groupnameselect.getSelectedItem().getId());
-        } else {
-            groupsids_ = 1;
-        }
+              try {
+                  int group = Integer.valueOf(groupnameselect.getSelectedItem().getId());
+                  group_ = (Group) DatabaseObject.getObject(Context.getGroup(), group);
+                  Log.Debug(this, groupnameselect.getSelectedItem().getId());
+              } catch (NodataFoundException ex) {
+                  Log.Debug(this, ex);
+              }
+          }
 
         dateadded_ = labeledDateChooser1.getDate();
 
@@ -559,8 +563,8 @@ public class RevenuePanel extends javax.swing.JPanel implements DataPanel {
             Log.Debug(this, ex.getMessage());
         }
         try {
-            groupnameselect.setModel(DatabaseObject.getObject(Context.getGroup(), groupsids_));
-        } catch (NodataFoundException ex) {
+            groupnameselect.setModel( group_);
+        } catch ( Exception ex) {
             Log.Debug(this, ex.getMessage());
         }
         addedby.setText(User.getUsername(intaddedby_));

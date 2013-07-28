@@ -290,6 +290,7 @@ public class MPCombobox extends javax.swing.JPanel {
      * @param obj
      */
     public void setModel(DatabaseObject obj) {
+        Log.Print(this, "setting to model " + String.valueOf(obj));
         setModel(new Vector<DatabaseObject>(Arrays.asList(new DatabaseObject[]{
                     obj
                 })));

@@ -48,6 +48,7 @@ import mpv5.db.objects.Address;
 import mpv5.db.objects.Contact;
 import mpv5.db.objects.Conversation;
 import mpv5.db.objects.Favourite;
+import mpv5.db.objects.Group;
 import mpv5.db.objects.User;
 import mpv5.globals.Constants;
 import mpv5.globals.Messages;
@@ -87,7 +88,7 @@ public class ConversationPanel
     private DataPanelTB tb;
     private SearchPanel sp;
     private Conversation dataOwner;
-    public Integer groupsids_ = 1;
+    public Group group_;
     public String cnumber_ = "";
     public String content_ = "";
     public String cname_ = "";
@@ -1048,7 +1049,7 @@ public class ConversationPanel
             showRequiredFields();
             return false;
         } else {
-            groupsids_ = 1;
+            group_ = Group.getDefault();
             cname_ = cname.getText();
             cnumber_ = contactid.getText();
             contactsids_ = Integer.parseInt(contactname.getSelectedItem().getId());

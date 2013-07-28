@@ -42,6 +42,7 @@ import mpv5.db.common.*;
 import mpv5.db.objects.Product;
 import mpv5.globals.Messages;
 import mpv5.db.objects.Favourite;
+import mpv5.db.objects.Group;
 import mpv5.db.objects.Item;
 import mpv5.db.objects.ProductList;
 import mpv5.db.objects.ProductlistSubItem;
@@ -589,7 +590,7 @@ public class ProductListsPanel extends javax.swing.JPanel implements DataPanel, 
     public int intaddedby_;
     public int ids_;
     public Date dateadded_;
-    public int groupsids_ = 1;
+    public Group group_;
     public boolean asproduct_;
 
     @Override
@@ -597,12 +598,15 @@ public class ProductListsPanel extends javax.swing.JPanel implements DataPanel, 
         cname_ = listname.getText();
         if (cname_.length() > 0) {
             description_ = notes.getText();
-            if (groupnameselect.getSelectedItem() != null) {
-                groupsids_ = Integer.valueOf(groupnameselect.getSelectedItem().getId());
-                Log.Debug(this, groupnameselect.getSelectedItem().getId());
-            } else {
-                groupsids_ = 1;
-            }
+             if (groupnameselect.getSelectedItem() != null) {
+              try {
+                  int group = Integer.valueOf(groupnameselect.getSelectedItem().getId());
+                  group_ = (Group) DatabaseObject.getObject(Context.getGroup(), group);
+                  Log.Debug(this, groupnameselect.getSelectedItem().getId());
+              } catch (NodataFoundException ex) {
+                  Log.Debug(this, ex);
+              }
+          }
             return true;
         } else {
             showRequiredFields();
@@ -615,8 +619,8 @@ public class ProductListsPanel extends javax.swing.JPanel implements DataPanel, 
         listname.setText(cname_);
         notes.setText(description_);
         try {
-            groupnameselect.setModel(DatabaseObject.getObject(Context.getGroup(), groupsids_));
-        } catch (NodataFoundException ex) {
+            groupnameselect.setModel( group_);
+        } catch ( Exception ex) {
             Log.Debug(this, ex.getMessage());
         }
 

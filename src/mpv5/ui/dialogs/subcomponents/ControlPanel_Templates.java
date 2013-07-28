@@ -70,29 +70,29 @@ import mpv5.utils.ui.TextFieldUtils;
  */
 public final class ControlPanel_Templates extends javax.swing.JPanel implements ControlApplet, DataPanel {
 
-   private static final long serialVersionUID = 1L;
-   /**
-    * This unique name identifies this control applet
-    */
-   public final String UNAME = "templates";
-   private Template dataOwner;
-   private File lastImportedFile;
-   private long lastmodified;
+    private static final long serialVersionUID = 1L;
+    /**
+     * This unique name identifies this control applet
+     */
+    public final String UNAME = "templates";
+    private Template dataOwner;
+    private File lastImportedFile;
+    private long lastmodified;
 
-   public ControlPanel_Templates() {
-      if (MPSecurityManager.checkAdminAccess()) {
-         initComponents();
-         type.getComboBox().setModel(new MPComboboxModel(MPComboBoxModelItem.toItems(TemplateHandler.getTypes())));
-         refresh();
-         groupname.setModel(new DefaultComboBoxModel(
-               MPComboBoxModelItem.toItems(new DatabaseSearch(Context.getGroup()).getValuesFor(Context.getGroup().getSubID()))));
-         java.util.ResourceBundle bundle1 = mpv5.i18n.LanguageManager.getBundle();
-         format.setText(Template.DEFAULT_FORMAT);
-         format.getTextField().setEditable(true);
-         format.getTextField().setToolTipText(bundle1.getString("ControlPanel_Templates.format.toolTipText_1")); // NOI18N
-         setVisible(true);
-      }
-   }
+    public ControlPanel_Templates() {
+        if (MPSecurityManager.checkAdminAccess()) {
+            initComponents();
+            type.getComboBox().setModel(new MPComboboxModel(MPComboBoxModelItem.toItems(TemplateHandler.getTypes())));
+            refresh();
+            groupname.setModel(new DefaultComboBoxModel(
+                    MPComboBoxModelItem.toItems(new DatabaseSearch(Context.getGroup()).getValuesFor(Context.getGroup().getSubID()))));
+            java.util.ResourceBundle bundle1 = mpv5.i18n.LanguageManager.getBundle();
+            format.setText(Template.DEFAULT_FORMAT);
+            format.getTextField().setEditable(true);
+            format.getTextField().setToolTipText(bundle1.getString("ControlPanel_Templates.format.toolTipText_1")); // NOI18N
+            setVisible(true);
+        }
+    }
 
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -441,226 +441,226 @@ public final class ControlPanel_Templates extends javax.swing.JPanel implements 
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
-       reset();
+        reset();
 }//GEN-LAST:event_jButton3ActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
 
-       if (dataOwner != null) {
-          DatabaseObject dato = dataOwner;
-          dato.getPanelData(this);
-          if (dato.save()) {
-             actionAfterSave();
-             refresh();
+        if (dataOwner != null) {
+            DatabaseObject dato = dataOwner;
+            dato.getPanelData(this);
+            if (dato.save()) {
+                actionAfterSave();
+                refresh();
 //                TemplateHandler.cacheTemplates();
-          } else {
-             showRequiredFields();
-          }
-       }
+            } else {
+                showRequiredFields();
+            }
+        }
 }//GEN-LAST:event_jButton2ActionPerformed
 
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
-       if (dataOwner != null && dataOwner.isExisting()) {
-          if (Popup.Y_N_dialog(Messages.REALLY_DELETE)) {
+        if (dataOwner != null && dataOwner.isExisting()) {
+            if (Popup.Y_N_dialog(Messages.REALLY_DELETE)) {
 
-             TemplateHandler.clearCache();
-             DatabaseObject dato = dataOwner;
-             dato.getPanelData(this);
-             dato.delete();
+                TemplateHandler.clearCache();
+                DatabaseObject dato = dataOwner;
+                dato.getPanelData(this);
+                dato.delete();
 
-             try {
-                Thread.sleep(333);
-             } catch (InterruptedException ex) {
-             }
-             refresh();
-          }
-       }
+                try {
+                    Thread.sleep(333);
+                } catch (InterruptedException ex) {
+                }
+                refresh();
+            }
+        }
     }//GEN-LAST:event_jButton4ActionPerformed
 
     private void templatesMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_templatesMouseClicked
-       try {
-          setDataOwner((DatabaseObject) templates.getValueAt(templates.convertRowIndexToModel(templates.getSelectedRow()), 0), true);
-          if (!pathtofile_.equals("")) {
-             updateService.setEnabled(true);
-          }
-       } catch (Exception e) {
-          Log.Debug(this, e.getMessage());
-       }
+        try {
+            setDataOwner((DatabaseObject) templates.getValueAt(templates.convertRowIndexToModel(templates.getSelectedRow()), 0), true);
+            if (!pathtofile_.equals("")) {
+                updateService.setEnabled(true);
+            }
+        } catch (Exception e) {
+            Log.Debug(this, e.getMessage());
+        }
     }//GEN-LAST:event_templatesMouseClicked
 
     private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
 
-       try {
-          DatabaseObject t = Search2.showSearchFor(Context.getItem());
-          if (t != null) {
-             List<String[]> vars = VariablesHandler.resolveVarsFor(t);
-             List<List<String>> varsl = new ArrayList<List<String>>();
-             for (int i = 0; i < vars.size(); i++) {
-                String[] strings = vars.get(i);
-                varsl.add(Arrays.asList(strings));
-             }
-             Popup.notice(varsl, Messages.VARIABLES + "\n\n" + t.toString());
-          }
-       } catch (Exception ex) {
-          Log.Debug(ex);
-       }
+        try {
+            DatabaseObject t = Search2.showSearchFor(Context.getItem());
+            if (t != null) {
+                List<String[]> vars = VariablesHandler.resolveVarsFor(t);
+                List<List<String>> varsl = new ArrayList<List<String>>();
+                for (int i = 0; i < vars.size(); i++) {
+                    String[] strings = vars.get(i);
+                    varsl.add(Arrays.asList(strings));
+                }
+                Popup.notice(varsl, Messages.VARIABLES + "\n\n" + t.toString());
+            }
+        } catch (Exception ex) {
+            Log.Debug(ex);
+        }
 }//GEN-LAST:event_jButton6ActionPerformed
 
     private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
-       test();
+        test();
 }//GEN-LAST:event_jButton5ActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-       DialogForFile di = new DialogForFile(DialogForFile.FILES_ONLY);
-       di.setFileFilter(DialogForFile.TEMPLATE_FILES);
+        DialogForFile di = new DialogForFile(DialogForFile.FILES_ONLY);
+        di.setFileFilter(DialogForFile.TEMPLATE_FILES);
 
-       if (di.chooseFile()) {
-          Template t = new Template();
-          File fi = di.getFile();
-          if (QueryHandler.instanceOf().clone(Context.getFiles(), this).insertFile(fi, t, new SaveString(fi.getName(), true))) {
-             Popup.notice(Messages.ASSIGN_TEMPLATE);
-             configureUpdateService(fi);
-          }
-       }
+        if (di.chooseFile()) {
+            Template t = new Template();
+            File fi = di.getFile();
+            if (QueryHandler.instanceOf().clone(Context.getFiles(), this).insertFile(fi, t, new SaveString(fi.getName(), true))) {
+                Popup.notice(Messages.ASSIGN_TEMPLATE);
+                configureUpdateService(fi);
+            }
+        }
 }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton8ActionPerformed
-       BigPopup.showPopup(this, TemplateFormatEditor.instanceOf(format.getTextField()), "", true);
+        BigPopup.showPopup(this, TemplateFormatEditor.instanceOf(format.getTextField()), "", true);
     }//GEN-LAST:event_jButton8ActionPerformed
 
     private void jButton9ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton9ActionPerformed
 
-       if (dataOwner != null && dataOwner.isExisting()) {
-          try {
-             mpv5.YabsViewProxy.instance().showFilesaveDialogFor(dataOwner.getFile());
+        if (dataOwner != null && dataOwner.isExisting()) {
+            try {
+                mpv5.YabsViewProxy.instance().showFilesaveDialogFor(dataOwner.getFile());
 
-             DialogForFile d = mpv5.YabsViewProxy.instance().getFiledialog();
-             File nFile = d.saveFile(dataOwner.getFile());
-             if (nFile != null) {
-                configureUpdateService(nFile);
-                updateService.setSelected(true);
-             }
-          } catch (Exception e) {
-             Log.Debug(e);
-          }
-       }
+                DialogForFile d = mpv5.YabsViewProxy.instance().getFiledialog();
+                File nFile = d.saveFile(dataOwner.getFile());
+                if (nFile != null) {
+                    configureUpdateService(nFile);
+                    updateService.setSelected(true);
+                }
+            } catch (Exception e) {
+                Log.Debug(e);
+            }
+        }
     }//GEN-LAST:event_jButton9ActionPerformed
 
     private void jButton10ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton10ActionPerformed
-       if (dataOwner != null && dataOwner.isExisting()) {
-          Template tpl = (Template) templates.getValueAt(templates.convertRowIndexToModel(templates.getSelectedRow()), 0);
-          if (Popup.Y_N_dialog(Messages.REALLY_CHANGE.toString(), tpl.__getCname())) {
-             DialogForFile di = new DialogForFile(DialogForFile.FILES_ONLY);
-             di.setFileFilter(DialogForFile.TEMPLATE_FILES);
-             if (di.chooseFile()) {
-                File fi = di.getFile();
-                QueryHandler.instanceOf().clone(Context.getFiles(), this).updateFile(fi, tpl.__getFilename());
+        if (dataOwner != null && dataOwner.isExisting()) {
+            Template tpl = (Template) templates.getValueAt(templates.convertRowIndexToModel(templates.getSelectedRow()), 0);
+            if (Popup.Y_N_dialog(Messages.REALLY_CHANGE.toString(), tpl.__getCname())) {
+                DialogForFile di = new DialogForFile(DialogForFile.FILES_ONLY);
+                di.setFileFilter(DialogForFile.TEMPLATE_FILES);
+                if (di.chooseFile()) {
+                    File fi = di.getFile();
+                    QueryHandler.instanceOf().clone(Context.getFiles(), this).updateFile(fi, tpl.__getFilename());
+                    tpl.setDescription(tpl.__getDescription() + "\n - Updated: " + new Date());
+                    tpl.save(true);
+                    TemplateHandler.clearCache();
+
+                    try {
+                        Thread.sleep(333);
+                    } catch (InterruptedException ex) {
+                    }
+                    refresh();
+                    lastImportedFile = fi;
+                    updateService.setEnabled(true);
+                    try {
+                        pathtofile.setText(fi.getCanonicalPath().toString());
+                    } catch (IOException ex) {
+                        Log.Debug(this, ex);
+                    }
+                    lastmodified = fi.lastModified();
+                }
+            }
+        }
+    }//GEN-LAST:event_jButton10ActionPerformed
+
+    private void updateServiceItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_updateServiceItemStateChanged
+
+        final DataPanel x = this;
+        final Template tpl = dataOwner;
+        FileMonitor.FileChangeListener filecl = new FileMonitor.FileChangeListener() {
+            public void fileChanged(String fileName) {
+                QueryHandler.instanceOf().clone(Context.getFiles(), x).updateFile(new File(fileName), tpl.__getFilename());
                 tpl.setDescription(tpl.__getDescription() + "\n - Updated: " + new Date());
                 tpl.save(true);
                 TemplateHandler.clearCache();
 
                 try {
-                   Thread.sleep(333);
+                    Thread.sleep(333);
                 } catch (InterruptedException ex) {
                 }
                 refresh();
-                lastImportedFile = fi;
-                updateService.setEnabled(true);
-                try {
-                   pathtofile.setText(fi.getCanonicalPath().toString());
-                } catch (IOException ex) {
-                   Log.Debug(this, ex);
-                }
-                lastmodified = fi.lastModified();
-             }
-          }
-       }
-    }//GEN-LAST:event_jButton10ActionPerformed
+            }
+        };
 
-    private void updateServiceItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_updateServiceItemStateChanged
-
-       final DataPanel x = this;
-       final Template tpl = dataOwner;
-       FileMonitor.FileChangeListener filecl = new FileMonitor.FileChangeListener() {
-          public void fileChanged(String fileName) {
-             QueryHandler.instanceOf().clone(Context.getFiles(), x).updateFile(new File(fileName), tpl.__getFilename());
-             tpl.setDescription(tpl.__getDescription() + "\n - Updated: " + new Date());
-             tpl.save(true);
-             TemplateHandler.clearCache();
-
-             try {
-                Thread.sleep(333);
-             } catch (InterruptedException ex) {
-             }
-             refresh();
-          }
-       };
-
-       String file = null;
-       if (lastImportedFile != null) {
-          try {
-             file = lastImportedFile.getCanonicalPath();
-          } catch (IOException ex) {
-             Log.Debug(ex);
-          }
-       } else if (!pathtofile.getText().equals("") && new File(pathtofile.getText()).canRead()) {
-          file = pathtofile.getText();
-       }
-       if (updateService.isSelected() && file != null) {
-          FileMonitor.getInstance().addFileChangeListener(filecl, file, 1000l);
-       } else {
-          FileMonitor.getInstance().removeFileChangeListener(filecl, file);
-       }
-       lastImportedFile = null;
+        String file = null;
+        if (lastImportedFile != null) {
+            try {
+                file = lastImportedFile.getCanonicalPath();
+            } catch (IOException ex) {
+                Log.Debug(ex);
+            }
+        } else if (!pathtofile.getText().equals("") && new File(pathtofile.getText()).canRead()) {
+            file = pathtofile.getText();
+        }
+        if (updateService.isSelected() && file != null) {
+            FileMonitor.getInstance().addFileChangeListener(filecl, file, 1000l);
+        } else {
+            FileMonitor.getInstance().removeFileChangeListener(filecl, file);
+        }
+        lastImportedFile = null;
     }//GEN-LAST:event_updateServiceItemStateChanged
 
     private void jButton7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton7ActionPerformed
 
-       if (dataOwner != null && dataOwner.isExisting()) {
-          try {
+        if (dataOwner != null && dataOwner.isExisting()) {
+            try {
 //                LOAPanel lp = new LOAPanel();
 //                File f = dataOwner.getFile();
 //                YabsViewProxy.instance().addOrShowTab(lp, dataOwner.__getCname());
 //                lp.loadODT(f);
-             updateService.setSelected(false);
-             updateService.setSelected(true);
-             if (Desktop.isDesktopSupported() && Desktop.getDesktop().isSupported(Desktop.Action.OPEN)) {
-                Desktop.getDesktop().open(dataOwner.getFile());
-             } else if (LocalSettings.getBooleanProperty(LocalSettings.OFFICE_USE)) {
-                FileExecutor.run(LocalSettings.getProperty(LocalSettings.OFFICE_HOME) + File.separator + dataOwner.getFile().getPath());
-             }
-          } catch (Exception e) {
-             Log.Debug(e);
-          }
-       }
+                updateService.setSelected(false);
+                updateService.setSelected(true);
+                if (Desktop.isDesktopSupported() && Desktop.getDesktop().isSupported(Desktop.Action.OPEN)) {
+                    Desktop.getDesktop().open(dataOwner.getFile());
+                } else if (LocalSettings.getBooleanProperty(LocalSettings.OFFICE_USE)) {
+                    FileExecutor.run(LocalSettings.getProperty(LocalSettings.OFFICE_HOME) + File.separator + dataOwner.getFile().getPath());
+                }
+            } catch (Exception e) {
+                Log.Debug(e);
+            }
+        }
     }//GEN-LAST:event_jButton7ActionPerformed
 
     private void jButton11ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton11ActionPerformed
-       PrintService[] services3 = PrintServiceLookup.lookupPrintServices(null, null);
-       List<String> l = new ArrayList<String>();
-       for (int i = 0; i < services3.length; i++) {
-          PrintService printService = services3[i];
-          l.add(printService.getName());
-       }
-       Popup.notice(l, Messages.PRINTER_NAMES);
+        PrintService[] services3 = PrintServiceLookup.lookupPrintServices(null, null);
+        List<String> l = new ArrayList<String>();
+        for (int i = 0; i < services3.length; i++) {
+            PrintService printService = services3[i];
+            l.add(printService.getName());
+        }
+        Popup.notice(l, Messages.PRINTER_NAMES);
     }//GEN-LAST:event_jButton11ActionPerformed
 
-   public void setValues(PropertyStore values) {
-   }
+    public void setValues(PropertyStore values) {
+    }
 
-   public String getUname() {
-      return UNAME;
-   }
+    public String getUname() {
+        return UNAME;
+    }
 
-   public void reset() {
-      if (dataOwner != null) {
-         DatabaseObject dato = dataOwner;
+    public void reset() {
+        if (dataOwner != null) {
+            DatabaseObject dato = dataOwner;
 
-         dato.getPanelData(this);
-         dato.reset();
-         setDataOwner(dato, true);
-      }
-   }
+            dato.getPanelData(this);
+            dato.reset();
+            setDataOwner(dato, true);
+        }
+    }
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTextArea descr;
     private mpv5.ui.beans.LabeledTextField format;
@@ -696,125 +696,130 @@ public final class ControlPanel_Templates extends javax.swing.JPanel implements 
     private mpv5.ui.beans.LabeledCombobox type;
     private javax.swing.JCheckBox updateService;
     // End of variables declaration//GEN-END:variables
-   public String description_ = "";
-   public String filename_ = "";
-   public String cname_;
-   public String format_;
-   public int intsize_;
-   public String mimetype_;
-   public int intaddedby_ = 4343;
-   public int ids_;
-   public int groupsids_;
-   public int compsids_;
-   public String printer_;
-   public java.util.Date dateadded_ = new java.util.Date();
-   public boolean isupdateenabled_ = false;
-   public String pathtofile_ = "";
-   public long lastmodified_;
+    public String description_ = "";
+    public String filename_ = "";
+    public String cname_;
+    public String format_;
+    public int intsize_;
+    public String mimetype_;
+    public int intaddedby_ = 4343;
+    public int ids_;
+    public Group group_;
+    public int compsids_;
+    public String printer_;
+    public java.util.Date dateadded_ = new java.util.Date();
+    public boolean isupdateenabled_ = false;
+    public String pathtofile_ = "";
+    public long lastmodified_;
 
-   public boolean collectData() {
-      if (groupname.getSelectedItem() != null) {
-         groupsids_ = Integer.valueOf(((MPComboBoxModelItem) groupname.getSelectedItem()).getId());
-      } else {
-         groupsids_ = 1;
-      }
-
-      description_ = descr.getText();
-      cname_ = fullname.getText();
-      mimetype_ = String.valueOf(type.getSelectedItem().getId());
-      format_ = format.getText();
-      printer_ = printern.getText();
-      pathtofile_ = pathtofile.getText();
-      lastmodified_ = lastmodified;
-      isupdateenabled_ = updateService.isSelected();
-
-      return true;
-   }
-
-   public void exposeData() {
-
-      try {
-         groupname.setSelectedIndex(MPComboBoxModelItem.getItemID(String.valueOf(groupsids_), groupname.getModel()));
-         fullname.setText(cname_);
-         descr.setText(description_);
-         try {
-            type.setSelectedItem(Integer.valueOf(mimetype_));
-         } catch (NumberFormatException numberFormatException) {
-         }
-         format.setText(format_);
-         printern.setText(printer_);
-
-         DefaultListModel m = new DefaultListModel();
-         ArrayList<DatabaseObject> li = DatabaseObject.getObjects(Context.getUser());
-
-         QueryCriteria c = new QueryCriteria("templatesids", dataOwner.__getIDS());
-         Object[][] data = QueryHandler.instanceOf().clone(Context.getTemplatesToUsers()).select("usersids", c);
-
-         List<Integer> l = new ArrayList<Integer>();
-         for (int i = 0; i < li.size(); i++) {
-            User databaseObject = (User) li.get(i);
-
-            for (int j = 0; j < data.length; j++) {
-               int id = Integer.valueOf(data[j][0].toString());
-               if (id == databaseObject.__getIDS().intValue()) {
-                  l.add(Integer.valueOf(i));
-               }
+    public boolean collectData() {
+        if (groupname.getSelectedItem() != null) {
+            int groupsids_ = Integer.valueOf(((MPComboBoxModelItem) groupname.getSelectedItem()).getId());
+            try {
+                group_ = (Group) DatabaseObject.getObject(Context.getGroup(), groupsids_);
+            } catch (NodataFoundException ex) {
+                Log.Debug(this, ex);
+                group_ = Group.getDefault();
             }
-            m.addElement(databaseObject);
-         }
+        }
 
-         jList1.setModel(m);
+        description_ = descr.getText();
+        cname_ = fullname.getText();
+        mimetype_ = String.valueOf(type.getSelectedItem().getId());
+        format_ = format.getText();
+        printer_ = printern.getText();
+        pathtofile_ = pathtofile.getText();
+        lastmodified_ = lastmodified;
+        isupdateenabled_ = updateService.isSelected();
 
-         int[] ix = new int[l.size()];
-         for (int i = 0; i < l.size(); i++) {
-            Integer integer = l.get(i);
-            ix[i] = integer.intValue();
-         }
+        return true;
+    }
 
-         jList1.setSelectedIndices(ix);
-         pathtofile.setText(dataOwner.getFile().getPath());
-         lastImportedFile = null;
-         lastmodified = lastmodified_;
-         updateService.setSelected(isupdateenabled_);
+    public void exposeData() {
 
-      } catch (Exception e) {
-         Log.Debug(this, e);
-         if (Popup.Y_N_dialog("There was a problem loading the template, delete?")) {
-            dataOwner.delete();
-         }
-      }
-   }
+        try {
+            if(group_!=null)
+                groupname.setSelectedIndex(MPComboBoxModelItem.getItemID(String.valueOf(group_.__getIDS()), groupname.getModel()));
+            fullname.setText(cname_);
+            descr.setText(description_);
+            try {
+                type.setSelectedItem(Integer.valueOf(mimetype_));
+            } catch (NumberFormatException numberFormatException) {
+            }
+            format.setText(format_);
+            printern.setText(printer_);
 
-   public DatabaseObject getDataOwner() {
-      return dataOwner;
-   }
+            DefaultListModel m = new DefaultListModel();
+            ArrayList<DatabaseObject> li = DatabaseObject.getObjects(Context.getUser());
 
-   public void setDataOwner(DatabaseObject object, boolean p) {
-      dataOwner = (Template) object;
-      if (p) {
-         dataOwner.setPanelData(this);
-         this.exposeData();
-      }
-   }
+            QueryCriteria c = new QueryCriteria("templatesids", dataOwner.__getIDS());
+            Object[][] data = QueryHandler.instanceOf().clone(Context.getTemplatesToUsers()).select("usersids", c);
 
-   public void refresh() {
+            List<Integer> l = new ArrayList<Integer>();
+            for (int i = 0; i < li.size(); i++) {
+                User databaseObject = (User) li.get(i);
 
-      ArrayList<DatabaseObject> temps;
-      try {
-         temps = DatabaseObject.getObjects(Context.getTemplate());
-         Object[][] data = new Object[temps.size()][3];
+                for (int j = 0; j < data.length; j++) {
+                    int id = Integer.valueOf(data[j][0].toString());
+                    if (id == databaseObject.__getIDS().intValue()) {
+                        l.add(Integer.valueOf(i));
+                    }
+                }
+                m.addElement(databaseObject);
+            }
 
-         for (int i = 0; i < temps.size(); i++) {
-            Template t = (Template) temps.get(i);
-            data[i][0] = t;
-            data[i][1] = t.__getMimetype();
-            data[i][2] = Group.getObject(Context.getGroup(), t.__getGroupsids());
-         }
+            jList1.setModel(m);
 
-         templates.setModel(new MPTableModel(data, Headers.TEMPLATES.getValue()));
-      } catch (NodataFoundException ex) {
-         Log.Debug(this, ex.getMessage());
-      }
+            int[] ix = new int[l.size()];
+            for (int i = 0; i < l.size(); i++) {
+                Integer integer = l.get(i);
+                ix[i] = integer.intValue();
+            }
+
+            jList1.setSelectedIndices(ix);
+            pathtofile.setText(dataOwner.getFile().getPath());
+            lastImportedFile = null;
+            lastmodified = lastmodified_;
+            updateService.setSelected(isupdateenabled_);
+
+        } catch (Exception e) {
+            Log.Debug(this, e);
+            if (Popup.Y_N_dialog("There was a problem loading the template, delete?")) {
+                dataOwner.delete();
+            }
+        }
+    }
+
+    public DatabaseObject getDataOwner() {
+        return dataOwner;
+    }
+
+    public void setDataOwner(DatabaseObject object, boolean p) {
+        dataOwner = (Template) object;
+        if (p) {
+            dataOwner.setPanelData(this);
+            this.exposeData();
+        }
+    }
+
+    public void refresh() {
+
+        ArrayList<DatabaseObject> temps;
+        try {
+            temps = DatabaseObject.getObjects(Context.getTemplate());
+            Object[][] data = new Object[temps.size()][3];
+
+            for (int i = 0; i < temps.size(); i++) {
+                Template t = (Template) temps.get(i);
+                data[i][0] = t;
+                data[i][1] = t.__getMimetype();
+                data[i][2] = Group.getObject(Context.getGroup(), t.__getGroupsids());
+            }
+
+            templates.setModel(new MPTableModel(data, Headers.TEMPLATES.getValue()));
+        } catch (NodataFoundException ex) {
+            Log.Debug(this, ex.getMessage());
+        }
 //        Context c1 = Context.getTemplatesToUsers();
 //        c1.addReference(Context.getGroup());
 //        c1.addReference(Context.getTemplate());
@@ -828,155 +833,155 @@ public final class ControlPanel_Templates extends javax.swing.JPanel implements 
 //        TableFormat.format(jTable1, 5, 80);
 //        TableFormat.format(jTable1, 6, 150);
 
-   }
+    }
 
-   public void paste(DatabaseObject... dbos) {
-      for (DatabaseObject dbo : dbos) {
-         if (dbo.getContext().equals(Context.getTemplate())) {
-            setDataOwner(dbo, true);
-         } else {
-            mpv5.YabsViewProxy.instance().addMessage(Messages.NOT_POSSIBLE.toString() + Messages.ACTION_PASTE, Color.RED);
-         }
-      }
-   }
-
-   public void showRequiredFields() {
-      TextFieldUtils.blinkerRed(fullname);
-   }
-
-   public void showSearchBar(boolean show) {
-      throw new UnsupportedOperationException("Not supported yet.");
-   }
-
-   public Component getAndRemoveActionPanel() {
-      this.remove(jPanel6);
-      validate();
-      return jPanel6;
-   }
-
-   @Override
-   public void actionAfterSave() {
-      Object[] selectedValues = jList1.getSelectedValues();
-      Integer groups;
-      if (groupname.getSelectedItem() != null) {
-         groups = Integer.valueOf(((MPComboBoxModelItem) groupname.getSelectedItem()).getId());
-      } else {
-         groups = 1;
-      }
-
-      Object[][] UtT = new Object[0][0];
-      QueryCriteria d = new QueryCriteria("templatesids", dataOwner.__getIDS());
-      try {
-         UtT = QueryHandler.instanceOf().clone(Context.getTemplatesToUsers()).select(d).getData();
-      } catch (NodataFoundException ex) {
-         Log.Debug(this, ex.getMessage());
-      }
-      for (int i = 0; i < selectedValues.length; i++) {
-         User object = (User) selectedValues[i];
-         boolean found = false;
-
-         for (int j = 0; j < UtT.length; j++) {
-            if (Integer.parseInt(UtT[j][2].toString()) == object.__getIDS()) {
-               found = true;
-               UtT[j][1] = "found";
-               break;
-            }
-         }
-
-         if (!found) {
-            QueryData c = new QueryData();
-            c.add("usersids", object.__getIDS());
-            c.add("templatesids", dataOwner.__getIDS());
-            c.add("groupsids", groups.intValue());
-            c.add("cname", dataOwner.__getIDS() + "@" + object.__getIDS() + "@" + groups);
-            QueryHandler.instanceOf().clone(Context.getTemplatesToUsers()).insert(c, null);
-         }
-      }
-
-      for (int j = 0; j < UtT.length; j++) {
-         if (!UtT[j][1].equals("found")) {
-            QueryCriteria d2 = new QueryCriteria("cname", UtT[j][1].toString());
-            QueryHandler.instanceOf().clone(Context.getTemplatesToUsers()).delete(d2);
-         }
-      }
-
-      TemplateHandler.clearCache();
-   }
-
-   @Override
-   public void actionAfterCreate() {
-   }
-
-   private void test() {
-      DatabaseObject t;
-      if (dataOwner != null) {
-         t = Search2.showSearchFor(Context.getItem());
-         if (t == null) {
-            try {
-               t = DatabaseObject.getObject(Context.getItem(), 1);
-            } catch (NodataFoundException ex) {
-               t = new Item();
-               Contact k = new Contact();
-               k.avoidNulls();
-               k.fillSampleData();
-               t.avoidNulls();
-               t.fillSampleData();
-               ((Item) t).setContactsids(k.__getIDS());
-            }
-         }
-
-         try {
-            Map<String, Object> hm1 = new FormFieldsHandler(t).getFormattedFormFields(null);
-//                Log.Print(hm1.entrySet().toArray());
-            File f = dataOwner.getFile();
-            File f2 = FileDirectoryHandler.getTempFile("pdf");
-            Export ex = new Export(dataOwner);
-            ex.putAll(hm1);
-
-            ArrayList<String[]> l = new ArrayList<String[]>();
-
-            for (int i = 0; i < 20; i++) {
-               l.add(SubItem.getRandomItem().toStringArray());
-            }
-
-            ex.put(TableHandler.KEY_TABLE + "1", l);
-
-            if (f.getName().endsWith("pdf")) {
-               ex.setTemplate(new PDFFile(f.getPath()));
+    public void paste(DatabaseObject... dbos) {
+        for (DatabaseObject dbo : dbos) {
+            if (dbo.getContext().equals(Context.getTemplate())) {
+                setDataOwner(dbo, true);
             } else {
-               ex.setTemplate(new ODTFile(f.getPath()));
+                mpv5.YabsViewProxy.instance().addMessage(Messages.NOT_POSSIBLE.toString() + Messages.ACTION_PASTE, Color.RED);
+            }
+        }
+    }
+
+    public void showRequiredFields() {
+        TextFieldUtils.blinkerRed(fullname);
+    }
+
+    public void showSearchBar(boolean show) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+
+    public Component getAndRemoveActionPanel() {
+        this.remove(jPanel6);
+        validate();
+        return jPanel6;
+    }
+
+    @Override
+    public void actionAfterSave() {
+        Object[] selectedValues = jList1.getSelectedValues();
+        Integer groups;
+        if (groupname.getSelectedItem() != null) {
+            groups = Integer.valueOf(((MPComboBoxModelItem) groupname.getSelectedItem()).getId());
+        } else {
+            groups = 1;
+        }
+
+        Object[][] UtT = new Object[0][0];
+        QueryCriteria d = new QueryCriteria("templatesids", dataOwner.__getIDS());
+        try {
+            UtT = QueryHandler.instanceOf().clone(Context.getTemplatesToUsers()).select(d).getData();
+        } catch (NodataFoundException ex) {
+            Log.Debug(this, ex.getMessage());
+        }
+        for (int i = 0; i < selectedValues.length; i++) {
+            User object = (User) selectedValues[i];
+            boolean found = false;
+
+            for (int j = 0; j < UtT.length; j++) {
+                if (Integer.parseInt(UtT[j][2].toString()) == object.__getIDS()) {
+                    found = true;
+                    UtT[j][1] = "found";
+                    break;
+                }
             }
 
-            ex.setTargetFile(f2);
+            if (!found) {
+                QueryData c = new QueryData();
+                c.add("usersids", object.__getIDS());
+                c.add("templatesids", dataOwner.__getIDS());
+                c.add("groupsids", groups.intValue());
+                c.add("cname", dataOwner.__getIDS() + "@" + object.__getIDS() + "@" + groups);
+                QueryHandler.instanceOf().clone(Context.getTemplatesToUsers()).insert(c, null);
+            }
+        }
 
-            new Job(ex, new PreviewPanel()).execute();
-         } catch (Exception ex1) {
-            Log.Debug(ex1);
-            Popup.error(ex1);
-         }
-      }
-   }
+        for (int j = 0; j < UtT.length; j++) {
+            if (!UtT[j][1].equals("found")) {
+                QueryCriteria d2 = new QueryCriteria("cname", UtT[j][1].toString());
+                QueryHandler.instanceOf().clone(Context.getTemplatesToUsers()).delete(d2);
+            }
+        }
 
-   public void actionBeforeCreate() {
-   }
+        TemplateHandler.clearCache();
+    }
 
-   public void actionBeforeSave() {
-   }
+    @Override
+    public void actionAfterCreate() {
+    }
 
-   public void mail() {
-   }
+    private void test() {
+        DatabaseObject t;
+        if (dataOwner != null) {
+            t = Search2.showSearchFor(Context.getItem());
+            if (t == null) {
+                try {
+                    t = DatabaseObject.getObject(Context.getItem(), 1);
+                } catch (NodataFoundException ex) {
+                    t = new Item();
+                    Contact k = new Contact();
+                    k.avoidNulls();
+                    k.fillSampleData();
+                    t.avoidNulls();
+                    t.fillSampleData();
+                    ((Item) t).setContactsids(k.__getIDS());
+                }
+            }
 
-   public void print() {
-   }
+            try {
+                Map<String, Object> hm1 = new FormFieldsHandler(t).getFormattedFormFields(null);
+//                Log.Print(hm1.entrySet().toArray());
+                File f = dataOwner.getFile();
+                File f2 = FileDirectoryHandler.getTempFile("pdf");
+                Export ex = new Export(dataOwner);
+                ex.putAll(hm1);
 
-   private void configureUpdateService(File fi) {
-      lastImportedFile = fi;
-      updateService.setEnabled(true);
-      try {
-         pathtofile.setText(fi.getCanonicalPath().toString());
-      } catch (IOException ex) {
-         Log.Debug(this, ex);
-      }
-      lastmodified = fi.lastModified();
-   }
+                ArrayList<String[]> l = new ArrayList<String[]>();
+
+                for (int i = 0; i < 20; i++) {
+                    l.add(SubItem.getRandomItem().toStringArray());
+                }
+
+                ex.put(TableHandler.KEY_TABLE + "1", l);
+
+                if (f.getName().endsWith("pdf")) {
+                    ex.setTemplate(new PDFFile(f.getPath()));
+                } else {
+                    ex.setTemplate(new ODTFile(f.getPath()));
+                }
+
+                ex.setTargetFile(f2);
+
+                new Job(ex, new PreviewPanel()).execute();
+            } catch (Exception ex1) {
+                Log.Debug(ex1);
+                Popup.error(ex1);
+            }
+        }
+    }
+
+    public void actionBeforeCreate() {
+    }
+
+    public void actionBeforeSave() {
+    }
+
+    public void mail() {
+    }
+
+    public void print() {
+    }
+
+    private void configureUpdateService(File fi) {
+        lastImportedFile = fi;
+        updateService.setEnabled(true);
+        try {
+            pathtofile.setText(fi.getCanonicalPath().toString());
+        } catch (IOException ex) {
+            Log.Debug(this, ex);
+        }
+        lastmodified = fi.lastModified();
+    }
 }

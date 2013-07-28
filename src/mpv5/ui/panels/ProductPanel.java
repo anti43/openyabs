@@ -1184,7 +1184,7 @@ public class ProductPanel extends javax.swing.JPanel implements DataPanel, MPCBS
     public int intaddedby_;
     public int ids_;
     public Date dateadded_;
-    public int groupsids_ = 1;
+    public Group group_;
     public int productgroupsids_ = 1;
     public int productlistsids_ = 0;
     public int taxids_;
@@ -1241,11 +1241,15 @@ public class ProductPanel extends javax.swing.JPanel implements DataPanel, MPCBS
                 productgroupsids_ = 1;
             }
 
-            if (groupnameselect.getSelectedItem() != null) {
-                groupsids_ = Integer.valueOf(groupnameselect.getSelectedItem().getId());
-            } else {
-                groupsids_ = 1;
-            }
+             if (groupnameselect.getSelectedItem() != null) {
+              try {
+                  int group = Integer.valueOf(groupnameselect.getSelectedItem().getId());
+                  group_ = (Group) DatabaseObject.getObject(Context.getGroup(), group);
+                  Log.Debug(this, groupnameselect.getSelectedItem().getId());
+              } catch (NodataFoundException ex) {
+                  Log.Debug(this, ex);
+              }
+          }
 
             if (dateadded_ == null) {
                 dateadded_ = new Date();
@@ -1318,10 +1322,9 @@ public class ProductPanel extends javax.swing.JPanel implements DataPanel, MPCBS
             Log.Debug(this, ex.getMessage());
         }
         try {
-            Group g = (Group) DatabaseObject.getObject(Context.getGroup(), groupsids_);
+            Group g = group_;
             groupnameselect.setModel(g);
-
-        } catch (NodataFoundException ex) {
+        } catch (Exception ex) {
             Log.Debug(this, ex.getMessage());
         }
 

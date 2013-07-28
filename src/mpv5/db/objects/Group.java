@@ -23,6 +23,7 @@ import java.util.logging.Logger;
 import javax.swing.JComponent;
 import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
+import static mpv5.db.common.DatabaseObject.getObject;
 import mpv5.db.common.NodataFoundException;
 import mpv5.logging.Log;
 import mpv5.ui.dialogs.subcomponents.ControlPanel_Groups;
@@ -33,6 +34,23 @@ import mpv5.ui.dialogs.subcomponents.ControlPanel_Groups;
  */
 public class Group extends DatabaseObject {
 
+    
+    /**
+     * Returns an empty "sample" Object of the specified
+     * <code>Context</code> type
+     *
+     * @param context
+     * @return
+     */
+    public static Group getGroupOrDefault(int id) {
+        Context c = Context.getGroup(); 
+        try {
+            return (Group) getObject(c, id);
+        } catch (NodataFoundException ex) {
+            Logger.getLogger(Group.class.getName()).log(Level.SEVERE, null, ex);
+            return getDefault();
+        }
+    }
    /**
     * Returns 'All Group' or the first group found if 'All group' is gone, and
     * if all are deleted, creates a default group

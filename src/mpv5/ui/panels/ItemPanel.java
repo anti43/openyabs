@@ -51,6 +51,7 @@ import mpv5.globals.Headers;
 import mpv5.globals.Messages;
 import mpv5.db.objects.Contact;
 import mpv5.db.objects.Favourite;
+import mpv5.db.objects.Group;
 import mpv5.db.objects.Item;
 import mpv5.db.objects.MailMessage;
 import mpv5.db.objects.ProductList;
@@ -103,83 +104,83 @@ import mpv5.utils.ui.TextFieldUtils;
  */
 public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSelectionChangeReceiver, ExportablePanel {
 
-   private static final long serialVersionUID = 1L;
-   private Item dataOwner;
-   private DataPanelTB tb;
-   private SearchPanel sp;
-   private DynamicTableCalculator itemMultiplier;
-   private DynamicTableCalculator taxcalculator;
-   private DynamicTableCalculator netCalculator;
-   private DynamicTableCalculator disccalculator;
-   private boolean loading = true;
-   private java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle();
+    private static final long serialVersionUID = 1L;
+    private Item dataOwner;
+    private DataPanelTB tb;
+    private SearchPanel sp;
+    private DynamicTableCalculator itemMultiplier;
+    private DynamicTableCalculator taxcalculator;
+    private DynamicTableCalculator netCalculator;
+    private DynamicTableCalculator disccalculator;
+    private boolean loading = true;
+    private java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle();
 
-   /**
-    * Creates new form ContactPanel
-    *
-    * @param context
-    * @param type
-    */
-   public ItemPanel(Context context, int type) {
-      initComponents();
-      jButton1.setEnabled(MPSecurityManager.checkAdminAccess());
+    /**
+     * Creates new form ContactPanel
+     *
+     * @param context
+     * @param type
+     */
+    public ItemPanel(Context context, int type) {
+        initComponents();
+        jButton1.setEnabled(MPSecurityManager.checkAdminAccess());
 
-      inttype_ = type;
-      sp = new SearchPanel(context, this);
-      sp.setVisible(true);
-      tb = new mpv5.ui.toolbars.DataPanelTB(this);
-      toolbarpane.add(tb, BorderLayout.CENTER);
-      dataOwner = (Item) DatabaseObject.getObject(context);
-      if (type >= 0) {
-         dataOwner.setInttype(type);
-         this.type.setText(Item.getTypeString(type));
-      } else {
-         this.type.setText("");
-      }
+        inttype_ = type;
+        sp = new SearchPanel(context, this);
+        sp.setVisible(true);
+        tb = new mpv5.ui.toolbars.DataPanelTB(this);
+        toolbarpane.add(tb, BorderLayout.CENTER);
+        dataOwner = (Item) DatabaseObject.getObject(context);
+        if (type >= 0) {
+            dataOwner.setInttype(type);
+            this.type.setText(Item.getTypeString(type));
+        } else {
+            this.type.setText("");
+        }
 
-      refresh();
+        refresh();
 //        shipping.set_ValueClass(Double.class);
 
 //        checkb_pront_oc.setSelected(
 //            mpv5.db.objects.User.getCurrentUser().getProperties().getProperty(
 //                "org.openyabs.uiproperty", 
 //                "orderconfirmationalways"));
-      addedby.setText(mpv5.db.objects.User.getCurrentUser().getName());
-      contactname.setSearchEnabled(true);
-      contactname.setContext(Context.getCustomer());
-      contactname.getComboBox().addActionListener(new ActionListener() {
-         @Override
-         public void actionPerformed(ActionEvent e) {
-            final MPComboBoxModelItem item = contactname.getSelectedItem();
-            if (item != null && item.isValid()) {
-               Runnable runnable = new Runnable() {
-                  @Override
-                  public void run() {
-                     try {
-                        Contact dbo = (Contact) DatabaseObject.getObject(Context.getContact(), Integer.valueOf(item.getId()));
-                        setContactData(dbo);
-                     } catch (NodataFoundException ex) {
-                     }
-                  }
-               };
-               SwingUtilities.invokeLater(runnable);
+        addedby.setText(mpv5.db.objects.User.getCurrentUser().getName());
+        contactname.setSearchEnabled(true);
+        contactname.setContext(Context.getCustomer());
+        contactname.getComboBox().addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                final MPComboBoxModelItem item = contactname.getSelectedItem();
+                if (item != null && item.isValid()) {
+                    Runnable runnable = new Runnable() {
+                        @Override
+                        public void run() {
+                            try {
+                                Contact dbo = (Contact) DatabaseObject.getObject(Context.getContact(), Integer.valueOf(item.getId()));
+                                setContactData(dbo);
+                            } catch (NodataFoundException ex) {
+                            }
+                        }
+                    };
+                    SwingUtilities.invokeLater(runnable);
+                }
             }
-         }
-      });
+        });
 
-      accountselect.setContext(Context.getAccounts());
-      accountselect.setSearchEnabled(true);
-      groupnameselect.setContext(Context.getGroup());
-      groupnameselect.setSearchEnabled(true);
+        accountselect.setContext(Context.getAccounts());
+        accountselect.setSearchEnabled(true);
+        groupnameselect.setContext(Context.getGroup());
+        groupnameselect.setSearchEnabled(true);
 
-      date1.setDate(new Date());
-      try {
-         date3.setDate(DateConverter.addDays(new Date(), Integer.valueOf(mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("bills.warn.days"))));
-         date2.setDate(new Date());
-      } catch (Exception e) {
-         date3.setDate(DateConverter.addDays(new Date(), 14));
-         date2.setDate(new Date());
-      }
+        date1.setDate(new Date());
+        try {
+            date3.setDate(DateConverter.addDays(new Date(), Integer.valueOf(mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("bills.warn.days"))));
+            date2.setDate(new Date());
+        } catch (Exception e) {
+            date3.setDate(DateConverter.addDays(new Date(), 14));
+            date2.setDate(new Date());
+        }
 //        itemtable.getTableHeader().addMouseListener(new MouseListener() {
 //
 //            @Override
@@ -223,13 +224,13 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
 //            }
 //        });
 
-      InputMap inputMap = itemtable.getInputMap(JTable.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
-      KeyStroke tab = KeyStroke.getKeyStroke(KeyEvent.VK_TAB, 0);
-      Action oldAction = itemtable.getActionMap().get(inputMap.get(tab));
-      itemtable.getActionMap().put(inputMap.get(tab), new TableTabAction(notes, oldAction, false));
-      KeyStroke shifttab = KeyStroke.getKeyStroke(KeyEvent.VK_TAB, InputEvent.SHIFT_MASK);
-      oldAction = itemtable.getActionMap().get(inputMap.get(shifttab));
-      itemtable.getActionMap().put(inputMap.get(shifttab), new TableTabAction(date3, oldAction, true));
+        InputMap inputMap = itemtable.getInputMap(JTable.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
+        KeyStroke tab = KeyStroke.getKeyStroke(KeyEvent.VK_TAB, 0);
+        Action oldAction = itemtable.getActionMap().get(inputMap.get(tab));
+        itemtable.getActionMap().put(inputMap.get(tab), new TableTabAction(notes, oldAction, false));
+        KeyStroke shifttab = KeyStroke.getKeyStroke(KeyEvent.VK_TAB, InputEvent.SHIFT_MASK);
+        oldAction = itemtable.getActionMap().get(inputMap.get(shifttab));
+        itemtable.getActionMap().put(inputMap.get(shifttab), new TableTabAction(date3, oldAction, true));
 
 //        KeyStroke right = KeyStroke.getKeyStroke(KeyEvent.VK_RIGHT, 0);
 //        oldAction = itemtable.getActionMap().get(inputMap.get(right));
@@ -238,228 +239,228 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
 //        oldAction = itemtable.getActionMap().get(inputMap.get(left));
 //        itemtable.getActionMap().put(inputMap.get(left), new TableTabAction(date3, oldAction, true));
 
-      number.setSearchOnEnterEnabled(true);
-      number.setParent(this);
-      number.setSearchField("cname");
-      number.setContext(Context.getItem());
+        number.setSearchOnEnterEnabled(true);
+        number.setParent(this);
+        number.setSearchField("cname");
+        number.setContext(Context.getItem());
 
-      final DataPanel p = this;
-      status.getComboBox().addActionListener(new ActionListener() {
-         Item dato = (Item) getDataOwner();
+        final DataPanel p = this;
+        status.getComboBox().addActionListener(new ActionListener() {
+            Item dato = (Item) getDataOwner();
 
-         public void actionPerformed(ActionEvent e) {
-            if (dato.__getInttype() == Item.TYPE_BILL && !loading && dataOwner.isExisting() && Integer.valueOf(status.getSelectedItem().getId()) == Item.STATUS_PAID && mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("org.openyabs.uiproperty", "autocreaterevenue")) {
-               if (Popup.Y_N_dialog(Messages.BOOK_NOW)) {
+            public void actionPerformed(ActionEvent e) {
+                if (dato.__getInttype() == Item.TYPE_BILL && !loading && dataOwner.isExisting() && Integer.valueOf(status.getSelectedItem().getId()) == Item.STATUS_PAID && mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("org.openyabs.uiproperty", "autocreaterevenue")) {
+                    if (Popup.Y_N_dialog(Messages.BOOK_NOW)) {
 
-                  if (dato.getPanelData(p) && dato.save()) {
-                     try {
-                        actionAfterSave();
-                        dato.createRevenue();
-                     } catch (Exception ef) {
-                        Log.Debug(this, ef);
-                     }
-                  } else {
-                     showRequiredFields();
-                  }
-               }
+                        if (dato.getPanelData(p) && dato.save()) {
+                            try {
+                                actionAfterSave();
+                                dato.createRevenue();
+                            } catch (Exception ef) {
+                                Log.Debug(this, ef);
+                            }
+                        } else {
+                            showRequiredFields();
+                        }
+                    }
+                }
+
+                if (dato.__getInttype() == Item.TYPE_BILL && !loading && dataOwner.isExisting()
+                        && Integer.valueOf(status.getSelectedItem().getId()) == Item.STATUS_PAID) {
+
+                    //set dateend
+                    date3.setDate(new Date());
+                }
             }
+        });
 
-            if (dato.__getInttype() == Item.TYPE_BILL && !loading && dataOwner.isExisting()
-                    && Integer.valueOf(status.getSelectedItem().getId()) == Item.STATUS_PAID) {
-
-               //set dateend
-               date3.setDate(new Date());
+        labeledCombobox1.setContext(Context.getMessage());
+        labeledCombobox1.getComboBox().addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    MailMessage d = (MailMessage) DatabaseObject.getObject(Context.getMessage(), Integer.valueOf(labeledCombobox1.getSelectedItem().getId()));
+                    notes.setText(d.__getDescription());
+                } catch (Exception ex) {
+                }
             }
-         }
-      });
+        });
+        labeledCombobox1.setSearchOnEnterEnabled(true);
 
-      labeledCombobox1.setContext(Context.getMessage());
-      labeledCombobox1.getComboBox().addActionListener(new ActionListener() {
-         @Override
-         public void actionPerformed(ActionEvent e) {
+        ((MPTable) dataTable).setPersistanceHandler(new TableViewPersistenceHandler((MPTable) dataTable, this));
+        ((MPTable) proptable).setPersistanceHandler(new TableViewPersistenceHandler((MPTable) proptable, this));
+        jSplitPane1.setDividerLocation((User.getCurrentUser().getProperties().getProperty("org.openyabs.uiproperty.itempanel.divider1.dividerLocation", 150)));
+        jSplitPane2.setDividerLocation((User.getCurrentUser().getProperties().getProperty("org.openyabs.uiproperty.itempanel.divider2.dividerLocation", -1)));
+
+    }
+
+    private void setContactData(Contact dbo) {
+        contactcity.setText(dbo.__getStreet() + ", " + dbo.__getCity() + ", " + dbo.__getCountry() + " (" + dbo.__getCNumber() + ")");
+    }
+
+    /**
+     *
+     * @param items
+     */
+    public ItemPanel(Context items) {
+        this(items, -1);
+    }
+
+    @Override
+    public DatabaseObject getDataOwner() {
+        return dataOwner;
+    }
+
+    @Override
+    public void setDataOwner(DatabaseObject object, boolean populate) {
+        loading = true;
+
+        if (object instanceof Item) {
+            dataOwner = (Item) object;
+            if (populate) {
+                dataOwner.setPanelData(this);
+                inttype_ = dataOwner.__getInttype();
+                button_reminders.setEnabled(inttype_ == Item.TYPE_BILL);
+                button_schedule.setEnabled(inttype_ == Item.TYPE_BILL);
+                toorder.setEnabled(inttype_ != Item.TYPE_ORDER && inttype_ != Item.TYPE_BILL);
+                toinvoice.setEnabled(inttype_ != Item.TYPE_BILL);
+                type.setText(Item.getTypeString(inttype_));
+                //            typelabel.setIcon(dataOwner.getIcon());
+                this.exposeData();
+
+                setTitle();
+
+                tb.setFavourite(Favourite.isFavourite(object));
+                tb.setEditable(!object.isReadOnly());
+
+
+                itemtable.setModel(SubItem.toModel(((Item) object).getSubitems()));
+                if (((MPTableModel) itemtable.getModel()).getEmptyRows(new int[]{4}) < 2) {
+                    ((MPTableModel) itemtable.getModel()).addRow(1);
+                }
+
+                omodel = (MPTableModel) itemtable.getModel();
+
+                formatTable();
+                try {
+                    ((MPTableModel) itemtable.getModel()).fireTableCellUpdated(0, 0);
+                } catch (Exception e) {
+                }
+                if (object.isReadOnly()) {
+                    Popup.notice(Messages.LOCKED_BY);
+                }
+                button_preview.setEnabled(false);
+                preloadTemplates();
+                validate();
+            }
+        } else if (object instanceof SubItem) {
+            Item i;
             try {
-               MailMessage d = (MailMessage) DatabaseObject.getObject(Context.getMessage(), Integer.valueOf(labeledCombobox1.getSelectedItem().getId()));
-               notes.setText(d.__getDescription());
-            } catch (Exception ex) {
+                i = (Item) DatabaseObject.getObject(Context.getItem(), ((SubItem) object).__getItemsids());
+                setDataOwner(i, populate);
+            } catch (NodataFoundException ex) {
+                Log.Debug(ex);
             }
-         }
-      });
-      labeledCombobox1.setSearchOnEnterEnabled(true);
+        }
 
-      ((MPTable) dataTable).setPersistanceHandler(new TableViewPersistenceHandler((MPTable) dataTable, this));
-      ((MPTable) proptable).setPersistanceHandler(new TableViewPersistenceHandler((MPTable) proptable, this));
-      jSplitPane1.setDividerLocation((User.getCurrentUser().getProperties().getProperty("org.openyabs.uiproperty.itempanel.divider1.dividerLocation", 150)));
-      jSplitPane2.setDividerLocation((User.getCurrentUser().getProperties().getProperty("org.openyabs.uiproperty.itempanel.divider2.dividerLocation", -1)));
+        properties();
+        loading = false;
 
-   }
+    }
 
-   private void setContactData(Contact dbo) {
-      contactcity.setText(dbo.__getStreet() + ", " + dbo.__getCity() + ", " + dbo.__getCountry() + " (" + dbo.__getCNumber() + ")");
-   }
-
-   /**
-    *
-    * @param items
-    */
-   public ItemPanel(Context items) {
-      this(items, -1);
-   }
-
-   @Override
-   public DatabaseObject getDataOwner() {
-      return dataOwner;
-   }
-
-   @Override
-   public void setDataOwner(DatabaseObject object, boolean populate) {
-      loading = true;
-
-      if (object instanceof Item) {
-         dataOwner = (Item) object;
-         if (populate) {
-            dataOwner.setPanelData(this);
-            inttype_ = dataOwner.__getInttype();
-            button_reminders.setEnabled(inttype_ == Item.TYPE_BILL);
-            button_schedule.setEnabled(inttype_ == Item.TYPE_BILL);
-            toorder.setEnabled(inttype_ != Item.TYPE_ORDER && inttype_ != Item.TYPE_BILL);
-            toinvoice.setEnabled(inttype_ != Item.TYPE_BILL);
-            type.setText(Item.getTypeString(inttype_));
-            //            typelabel.setIcon(dataOwner.getIcon());
-            this.exposeData();
-
-            setTitle();
-
-            tb.setFavourite(Favourite.isFavourite(object));
-            tb.setEditable(!object.isReadOnly());
-
-
-            itemtable.setModel(SubItem.toModel(((Item) object).getSubitems()));
-            if (((MPTableModel) itemtable.getModel()).getEmptyRows(new int[]{4}) < 2) {
-               ((MPTableModel) itemtable.getModel()).addRow(1);
+    private void setTitle() {
+        if (this.getParent() instanceof JViewport || this.getParent() instanceof JTabbedPane) {
+            JTabbedPane jTabbedPane = null;
+            String title1 = cname_;
+            //this->viewport->scrollpane->tabbedpane
+            if (this.getParent().getParent().getParent() instanceof JTabbedPane) {
+                jTabbedPane = (JTabbedPane) this.getParent().getParent().getParent();
+            } else {
+                try {
+                    jTabbedPane = (JTabbedPane) this.getParent();
+                } catch (Exception e) {
+                    //Free floating window
+                    ((JFrame) this.getRootPane().getParent()).setTitle(title1);
+                }
             }
-
-            omodel = (MPTableModel) itemtable.getModel();
-
-            formatTable();
-            try {
-               ((MPTableModel) itemtable.getModel()).fireTableCellUpdated(0, 0);
-            } catch (Exception e) {
+            if (jTabbedPane != null) {
+                jTabbedPane.setTitleAt(jTabbedPane.getSelectedIndex(), title1);
             }
-            if (object.isReadOnly()) {
-               Popup.notice(Messages.LOCKED_BY);
-            }
-            button_preview.setEnabled(false);
-            preloadTemplates();
-            validate();
-         }
-      } else if (object instanceof SubItem) {
-         Item i;
-         try {
-            i = (Item) DatabaseObject.getObject(Context.getItem(), ((SubItem) object).__getItemsids());
-            setDataOwner(i, populate);
-         } catch (NodataFoundException ex) {
-            Log.Debug(ex);
-         }
-      }
+        }
+    }
 
-      properties();
-      loading = false;
-
-   }
-
-   private void setTitle() {
-      if (this.getParent() instanceof JViewport || this.getParent() instanceof JTabbedPane) {
-         JTabbedPane jTabbedPane = null;
-         String title1 = cname_;
-         //this->viewport->scrollpane->tabbedpane
-         if (this.getParent().getParent().getParent() instanceof JTabbedPane) {
-            jTabbedPane = (JTabbedPane) this.getParent().getParent().getParent();
-         } else {
-            try {
-               jTabbedPane = (JTabbedPane) this.getParent();
-            } catch (Exception e) {
-               //Free floating window
-               ((JFrame) this.getRootPane().getParent()).setTitle(title1);
-            }
-         }
-         if (jTabbedPane != null) {
-            jTabbedPane.setTitleAt(jTabbedPane.getSelectedIndex(), title1);
-         }
-      }
-   }
-
-   @Override
-   public void showRequiredFields() {
-      TextFieldUtils.blink(contactname.getComboBox(), Color.RED);
-      contactname.requestFocus();
+    @Override
+    public void showRequiredFields() {
+        TextFieldUtils.blink(contactname.getComboBox(), Color.RED);
+        contactname.requestFocus();
 //        Popup.notice(Messages.SELECT_A_CONTACT);
-   }
+    }
 
-   private void addFile() {
-      if (dataOwner.isExisting()) {
-         DialogForFile d = new DialogForFile(DialogForFile.FILES_ONLY);
-         if (d.chooseFile()) {
-            String s = Popup.Enter_Value(Messages.ENTER_A_DESCRIPTION);
-            if (s != null) {
-               QueryHandler.instanceOf().clone(Context.getFiles(), this).insertFile(d.getFile(), dataOwner, QueryCriteria.getSaveStringFor(s));
+    private void addFile() {
+        if (dataOwner.isExisting()) {
+            DialogForFile d = new DialogForFile(DialogForFile.FILES_ONLY);
+            if (d.chooseFile()) {
+                String s = Popup.Enter_Value(Messages.ENTER_A_DESCRIPTION);
+                if (s != null) {
+                    QueryHandler.instanceOf().clone(Context.getFiles(), this).insertFile(d.getFile(), dataOwner, QueryCriteria.getSaveStringFor(s));
+                }
             }
-         }
-      }
-   }
+        }
+    }
 
-   private void deleteFile() {
-      if (dataOwner.isExisting()) {
-         try {
-            DatabaseObject.getObject(Context.getFilesToItems(), "filename", (dataTable.getModel().getValueAt(dataTable.getSelectedRow(), 0).toString())).delete();
-         } catch (Exception e) {
-            Log.Debug(this, e.getMessage());
-         }
-         fillFiles();
+    private void deleteFile() {
+        if (dataOwner.isExisting()) {
+            try {
+                DatabaseObject.getObject(Context.getFilesToItems(), "filename", (dataTable.getModel().getValueAt(dataTable.getSelectedRow(), 0).toString())).delete();
+            } catch (Exception e) {
+                Log.Debug(this, e.getMessage());
+            }
+            fillFiles();
 
-      }
-   }
+        }
+    }
 
-   private void fileTableClicked(MouseEvent evt) {
-      if (evt.getClickCount() > 1) {
-         FileDirectoryHandler.open(QueryHandler.instanceOf().clone(Context.getFiles()).
-                 retrieveFile(dataTable.getModel().getValueAt(dataTable.getSelectedRow(), 0).
-                 toString(), new File(FileDirectoryHandler.getTempDir() + dataTable.getModel().
-                 getValueAt(dataTable.getSelectedRow(), 1).toString())));
-      } else if (evt.getClickCount() == 1 && evt.getButton() == MouseEvent.BUTTON3) {
+    private void fileTableClicked(MouseEvent evt) {
+        if (evt.getClickCount() > 1) {
+            FileDirectoryHandler.open(QueryHandler.instanceOf().clone(Context.getFiles()).
+                    retrieveFile(dataTable.getModel().getValueAt(dataTable.getSelectedRow(), 0).
+                    toString(), new File(FileDirectoryHandler.getTempDir() + dataTable.getModel().
+                    getValueAt(dataTable.getSelectedRow(), 1).toString())));
+        } else if (evt.getClickCount() == 1 && evt.getButton() == MouseEvent.BUTTON3) {
 
-         JTable source = (JTable) evt.getSource();
-         int row = source.rowAtPoint(evt.getPoint());
-         int column = source.columnAtPoint(evt.getPoint());
+            JTable source = (JTable) evt.getSource();
+            int row = source.rowAtPoint(evt.getPoint());
+            int column = source.columnAtPoint(evt.getPoint());
 
-         if (!source.isRowSelected(row)) {
-            source.changeSelection(row, column, false, false);
-         }
+            if (!source.isRowSelected(row)) {
+                source.changeSelection(row, column, false, false);
+            }
 
-         FileTablePopUp.instanceOf(dataTable).show(source, evt.getX(), evt.getY());
-      }
-   }
+            FileTablePopUp.instanceOf(dataTable).show(source, evt.getX(), evt.getY());
+        }
+    }
 
-   private void fillFiles() {
+    private void fillFiles() {
 
-      Runnable runnable = new Runnable() {
-         public void run() {
-            Context c = Context.getFilesToItems();
-            c.addReference(Context.getFiles().getDbIdentity(), "cname", "filename");
-            Object[][] data = new DatabaseSearch(c).getValuesFor(Context.DETAILS_FILES_TO_ITEMS, "itemsids", dataOwner.__getIDS());
+        Runnable runnable = new Runnable() {
+            public void run() {
+                Context c = Context.getFilesToItems();
+                c.addReference(Context.getFiles().getDbIdentity(), "cname", "filename");
+                Object[][] data = new DatabaseSearch(c).getValuesFor(Context.DETAILS_FILES_TO_ITEMS, "itemsids", dataOwner.__getIDS());
 
-            dataTable.setModel(new MPTableModel(data, Headers.FILE_REFERENCES.getValue()));
-            TableFormat.stripFirstColumn(dataTable);
-         }
-      };
-      new Thread(runnable).start();
-   }
+                dataTable.setModel(new MPTableModel(data, Headers.FILE_REFERENCES.getValue()));
+                TableFormat.stripFirstColumn(dataTable);
+            }
+        };
+        new Thread(runnable).start();
+    }
 
-   /**
-    * This method is called from within the constructor to initialize the form.
-    * WARNING: Do NOT modify this code. The content of this method is always
-    * regenerated by the Form Editor.
-    */
-   @SuppressWarnings("unchecked")
+    /**
+     * This method is called from within the constructor to initialize the form.
+     * WARNING: Do NOT modify this code. The content of this method is always
+     * regenerated by the Form Editor.
+     */
+    @SuppressWarnings("unchecked")
    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
    private void initComponents() {
 
@@ -1317,51 +1318,51 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
 
-       if (dataOwner.isExisting()) {
-          try {
-             mpv5.YabsViewProxy.instance().getIdentifierView().addTab(DatabaseObject.getObject(Context.getContact(), dataOwner.__getContactsids()));
-          } catch (NodataFoundException ex) {
-             Log.Debug(ex);
-          }
-       }
+        if (dataOwner.isExisting()) {
+            try {
+                mpv5.YabsViewProxy.instance().getIdentifierView().addTab(DatabaseObject.getObject(Context.getContact(), dataOwner.__getContactsids()));
+            } catch (NodataFoundException ex) {
+                Log.Debug(ex);
+            }
+        }
 }//GEN-LAST:event_jButton2ActionPerformed
 
     private void button_order2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button_order2ActionPerformed
-       BigPopup.showPopup(this, new ControlPanel_Groups(), null);
+        BigPopup.showPopup(this, new ControlPanel_Groups(), null);
 }//GEN-LAST:event_button_order2ActionPerformed
 
     private void removefileActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_removefileActionPerformed
-       deleteFile();
+        deleteFile();
 }//GEN-LAST:event_removefileActionPerformed
 
     private void addfileActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addfileActionPerformed
-       if (dataOwner.isExisting()) {
-          addFile();
-       }
+        if (dataOwner.isExisting()) {
+            addFile();
+        }
 }//GEN-LAST:event_addfileActionPerformed
 
     private void dataTableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_dataTableMouseClicked
-       fileTableClicked(evt);
+        fileTableClicked(evt);
     }//GEN-LAST:event_dataTableMouseClicked
 
     private void itemtableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_itemtableMouseClicked
-       if (evt != null) {
-          MPTableModel m = (MPTableModel) itemtable.getModel();
-          if (evt.getButton() != MouseEvent.BUTTON1) {
-             SubItem it = m.getRowAt(itemtable.getSelectedRow(), SubItem.getDefaultItem());
+        if (evt != null) {
+            MPTableModel m = (MPTableModel) itemtable.getModel();
+            if (evt.getButton() != MouseEvent.BUTTON1) {
+                SubItem it = m.getRowAt(itemtable.getSelectedRow(), SubItem.getDefaultItem());
 
-             if (it != null) {
-                mpv5.YabsViewProxy.instance().addToClipBoard(it);
+                if (it != null) {
+                    mpv5.YabsViewProxy.instance().addToClipBoard(it);
 
-             } else if (!m.hasEmptyRows(new int[]{4})) {
-                m.addRow(2);
-             }
-          }
-       }
+                } else if (!m.hasEmptyRows(new int[]{4})) {
+                    m.addRow(2);
+                }
+            }
+        }
     }//GEN-LAST:event_itemtableMouseClicked
 
     private void button_previewActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button_previewActionPerformed
-       preview();
+        preview();
     }//GEN-LAST:event_button_previewActionPerformed
 
     private void button_scheduleActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button_scheduleActionPerformed
@@ -1370,114 +1371,114 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
     private void button_scheduleMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_button_scheduleMouseClicked
 
 //        JCalendar.instanceOf(300, evt.getLocationOnScreen());
-       if (dataOwner != null && dataOwner.isExisting()) {
-          ScheduleDayEvent.instanceOf().setItem(dataOwner);
-       }
+        if (dataOwner != null && dataOwner.isExisting()) {
+            ScheduleDayEvent.instanceOf().setItem(dataOwner);
+        }
     }//GEN-LAST:event_button_scheduleMouseClicked
 
     private void button_remindersActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button_remindersActionPerformed
-       if (dataOwner != null && dataOwner.isExisting()) {
-          BigPopup.showPopup(mpv5.YabsViewProxy.instance().getIdentifierFrame().getRootPane(), new RemindPanel(dataOwner), Messages.REMINDER.toString(), false);
-       }
+        if (dataOwner != null && dataOwner.isExisting()) {
+            BigPopup.showPopup(mpv5.YabsViewProxy.instance().getIdentifierFrame().getRootPane(), new RemindPanel(dataOwner), Messages.REMINDER.toString(), false);
+        }
     }//GEN-LAST:event_button_remindersActionPerformed
-   MPTableModel omodel = null;
+    MPTableModel omodel = null;
     private void button_deliverynoteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button_deliverynoteActionPerformed
 
-       delivery();
+        delivery();
     }//GEN-LAST:event_button_deliverynoteActionPerformed
 
     private void addItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addItemActionPerformed
-       ((MPTableModel) itemtable.getModel()).addRow(1);
+        ((MPTableModel) itemtable.getModel()).addRow(1);
     }//GEN-LAST:event_addItemActionPerformed
 
     private void delItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_delItemActionPerformed
-       try {
-          int index = itemtable.getSelectedRow();
-          if (index < 0) {
-             return;
-          }
+        try {
+            int index = itemtable.getSelectedRow();
+            if (index < 0) {
+                return;
+            }
 
-          MPTableModel m = (MPTableModel) itemtable.getModel();
-          SubItem.addToDeletionQueue(m.getValueAt(index, 0));
-          ((MPTableModel) itemtable.getModel()).removeRow(index);
-       } catch (Exception e) {
-          Log.Debug(e);
-       }
+            MPTableModel m = (MPTableModel) itemtable.getModel();
+            SubItem.addToDeletionQueue(m.getValueAt(index, 0));
+            ((MPTableModel) itemtable.getModel()).removeRow(index);
+        } catch (Exception e) {
+            Log.Debug(e);
+        }
     }//GEN-LAST:event_delItemActionPerformed
 
     private void upItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_upItemActionPerformed
-       try {
-          int index = itemtable.getSelectedRow();
-          if (index <= 0) {
-             return;
-          }
-          ((MPTableModel) itemtable.getModel()).moveRow(index, index, index - 1);
-          itemtable.changeSelection(index - 1, itemtable.getSelectedColumn(), false, false);
-       } catch (Exception e) {
-          Log.Debug(e);
-       }
+        try {
+            int index = itemtable.getSelectedRow();
+            if (index <= 0) {
+                return;
+            }
+            ((MPTableModel) itemtable.getModel()).moveRow(index, index, index - 1);
+            itemtable.changeSelection(index - 1, itemtable.getSelectedColumn(), false, false);
+        } catch (Exception e) {
+            Log.Debug(e);
+        }
     }//GEN-LAST:event_upItemActionPerformed
 
     private void upItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_upItem1ActionPerformed
-       try {
-          int index = itemtable.getSelectedRow();
-          if (index < 0 || index >= itemtable.getRowCount() - 1) {
-             return;
-          }
-          ((MPTableModel) itemtable.getModel()).moveRow(index, index, index + 1);
-          itemtable.changeSelection(index + 1, itemtable.getSelectedColumn(), false, false);
-       } catch (Exception e) {
-          Log.Debug(e);
-       }
+        try {
+            int index = itemtable.getSelectedRow();
+            if (index < 0 || index >= itemtable.getRowCount() - 1) {
+                return;
+            }
+            ((MPTableModel) itemtable.getModel()).moveRow(index, index, index + 1);
+            itemtable.changeSelection(index + 1, itemtable.getSelectedColumn(), false, false);
+        } catch (Exception e) {
+            Log.Debug(e);
+        }
     }//GEN-LAST:event_upItem1ActionPerformed
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
 
 
-       try {
-          int cid = Integer.valueOf(contactname.getSelectedItem().getId());
-          Contact c = (Contact) DatabaseObject.getObject(Context.getContact(), cid);
-          mpv5.YabsViewProxy.instance().getIdentifierView().addTab(c);
-       } catch (Exception e) {
-          //Nothing to show
-       }
+        try {
+            int cid = Integer.valueOf(contactname.getSelectedItem().getId());
+            Contact c = (Contact) DatabaseObject.getObject(Context.getContact(), cid);
+            mpv5.YabsViewProxy.instance().getIdentifierView().addTab(c);
+        } catch (Exception e) {
+            //Nothing to show
+        }
     }//GEN-LAST:event_jButton3ActionPerformed
 
     private void button_orderconfActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button_orderconfActionPerformed
 
-       confirmation();
+        confirmation();
     }//GEN-LAST:event_button_orderconfActionPerformed
 
     private void toorderActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_toorderActionPerformed
-       toOrder();
+        toOrder();
     }//GEN-LAST:event_toorderActionPerformed
 
     private void toinvoiceActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_toinvoiceActionPerformed
-       toInvoice();
+        toInvoice();
     }//GEN-LAST:event_toinvoiceActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-       if (MPSecurityManager.checkAdminAccess()) {
-          JDialog d = new JDialog(YabsViewProxy.instance().getIdentifierFrame(), true);
-          d.add(new ItemNumberEditor(dataOwner, d, this));
-          d.pack();
-          d.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-          Position p = new Position(d);
-          p.center();
-          d.setVisible(true);
-       }
+        if (MPSecurityManager.checkAdminAccess()) {
+            JDialog d = new JDialog(YabsViewProxy.instance().getIdentifierFrame(), true);
+            d.add(new ItemNumberEditor(dataOwner, d, this));
+            d.pack();
+            d.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+            Position p = new Position(d);
+            p.center();
+            d.setVisible(true);
+        }
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jSplitPane2PropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_jSplitPane2PropertyChange
-       if (evt.getPropertyName().equals("dividerLocation")) {
-          User.getCurrentUser().setProperty("org.openyabs.uiproperty.itempanel.divider2.dividerLocation", evt.getNewValue().toString());
-       }
+        if (evt.getPropertyName().equals("dividerLocation")) {
+            User.getCurrentUser().setProperty("org.openyabs.uiproperty.itempanel.divider2.dividerLocation", evt.getNewValue().toString());
+        }
     }//GEN-LAST:event_jSplitPane2PropertyChange
 
     private void jSplitPane1PropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_jSplitPane1PropertyChange
-       if (evt.getPropertyName().equals("dividerLocation")) {
-          User.getCurrentUser().setProperty("org.openyabs.uiproperty.itempanel.divider1.dividerLocation", evt.getNewValue().toString());
-       }
+        if (evt.getPropertyName().equals("dividerLocation")) {
+            User.getCurrentUser().setProperty("org.openyabs.uiproperty.itempanel.divider1.dividerLocation", evt.getNewValue().toString());
+        }
     }//GEN-LAST:event_jSplitPane1PropertyChange
    // Variables declaration - do not modify//GEN-BEGIN:variables
    private mpv5.ui.beans.LabeledCombobox accountselect;
@@ -1560,285 +1561,288 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
    private javax.swing.JButton upItem1;
    private javax.swing.JLabel value;
    // End of variables declaration//GEN-END:variables
-   public String cname_;
-   public String cnumber_;
-   public String description_;
-   public int intaddedby_;
-   public int ids_;
-   public Date dateadded_;
-   public int groupsids_ = 1;
-   public int contactsids_;
-   public int accountsids_;
-   public BigDecimal netvalue_;
-   public BigDecimal taxvalue_;
-   public BigDecimal shippingvalue_;
-   public BigDecimal discountvalue_;
-   public Date datetodo_;
-   public Date dateend_;
-   public int intreminders_;
-   public int intstatus_;
-   public int inttype_;
+    public String cname_;
+    public String cnumber_;
+    public String description_;
+    public int intaddedby_;
+    public int ids_;
+    public Date dateadded_;
+    public Group group_;
+    public int contactsids_;
+    public int accountsids_;
+    public BigDecimal netvalue_;
+    public BigDecimal taxvalue_;
+    public BigDecimal shippingvalue_;
+    public BigDecimal discountvalue_;
+    public Date datetodo_;
+    public Date dateend_;
+    public int intreminders_;
+    public int intstatus_;
+    public int inttype_;
 
-   @Override
-   public boolean collectData() {
-      try {
-         contactsids_ = Integer.valueOf(contactname.getSelectedItem().getId());
-      } catch (Exception numberFormatException) {
-         return false;
-      }
-      if (contactsids_ > 0) {
-         try {
-            accountsids_ = Integer.valueOf(accountselect.getSelectedItem().getId());
-         } catch (Exception e) {
-            accountsids_ = 1;
-         }
+    @Override
+    public boolean collectData() {
+        try {
+            contactsids_ = Integer.valueOf(contactname.getSelectedItem().getId());
+        } catch (Exception numberFormatException) {
+            return false;
+        }
+        if (contactsids_ > 0) {
+            try {
+                accountsids_ = Integer.valueOf(accountselect.getSelectedItem().getId());
+            } catch (Exception e) {
+                accountsids_ = 1;
+            }
 
-         if (groupnameselect.getSelectedItem() != null) {
-            groupsids_ = Integer.valueOf(groupnameselect.getSelectedItem().getId());
-            Log.Debug(this, groupnameselect.getSelectedItem().getId());
-         } else {
-            groupsids_ = 1;
-         }
+            if (groupnameselect.getSelectedItem() != null) {
+                try {
+                    int group = Integer.valueOf(groupnameselect.getSelectedItem().getId());
+                    group_ = (Group) DatabaseObject.getObject(Context.getGroup(), group);
+                    Log.Debug(this, groupnameselect.getSelectedItem().getId());
+                } catch (NodataFoundException ex) {
+                    Log.Debug(this, ex);
+                }
+            }
 
-         if (dateadded_ == null) {
-            dateadded_ = new Date();
-         }
-         intaddedby_ = User.getUserId(addedby.getText());
-         description_ = notes.getText();
-         dateadded_ = date1.getDate();
+            if (dateadded_ == null) {
+                dateadded_ = new Date();
+            }
+            intaddedby_ = User.getUserId(addedby.getText());
+            description_ = notes.getText();
+            dateadded_ = date1.getDate();
 
-         if (cnumber_ == null) {
-            cname_ = "<not set>";
-         } else {
-            cname_ = cnumber_;
-         }
+            if (cnumber_ == null) {
+                cname_ = "<not set>";
+            } else {
+                cname_ = cnumber_;
+            }
 
-         netvalue_ = FormatNumber.parseDezimal(netvalue.getText());
-         taxvalue_ = FormatNumber.parseDezimal(taxvalue.getText());
-         discountvalue_ = FormatNumber.parseDezimal(discount.getText());
+            netvalue_ = FormatNumber.parseDezimal(netvalue.getText());
+            taxvalue_ = FormatNumber.parseDezimal(taxvalue.getText());
+            discountvalue_ = FormatNumber.parseDezimal(discount.getText());
 
 //            try {
 //                shippingvalue_ = FormatNumber.parseDezimal(shipping.getText());
 //            } catch (Exception e) {
-         shippingvalue_ = BigDecimal.ZERO;
+            shippingvalue_ = BigDecimal.ZERO;
 //            }
 
-         datetodo_ = date2.getDate();
-         dateend_ = date3.getDate();
-         intstatus_ = Integer.valueOf(status.getSelectedItem().getId());
+            datetodo_ = date2.getDate();
+            dateend_ = date3.getDate();
+            intstatus_ = Integer.valueOf(status.getSelectedItem().getId());
 
-      } else {
-         showRequiredFields();
-         return false;
-      }
+        } else {
+            showRequiredFields();
+            return false;
+        }
 
-      return true;
-   }
+        return true;
+    }
 
-   @Override
-   public void exposeData() {
+    @Override
+    public void exposeData() {
 
-      number.setText(cname_);
-      date1.setDate(dateadded_);
-      date2.setDate(datetodo_);
-      date3.setDate(dateend_);
-      notes.setText(description_);
+        number.setText(cname_);
+        date1.setDate(dateadded_);
+        date2.setDate(datetodo_);
+        date3.setDate(dateend_);
+        notes.setText(description_);
 
 //        shipping.setText(FormatNumber.formatDezimal(shippingvalue_));
-      button_reminders.setToolTipText(Messages.REMINDERS + String.valueOf(intreminders_));
-      //  discountpercent.setValue(discountvalue_);
-      List<Integer> skip = new ArrayList<Integer>();
-      if (inttype_ == Item.TYPE_BILL) {
-         skip.add(new Integer(Item.STATUS_PAUSED));
-      } else {
-         skip.add(new Integer(Item.STATUS_PAID));
-      }
-      status.setModel(Item.getStatusStrings(), MPComboBoxModelItem.COMPARE_BY_ID, skip);
-      status.setSelectedItem(intstatus_);
-      staus_icon.setIcon(dataOwner.getIcon());
-      try {
-         accountselect.setModel(DatabaseObject.getObject(Context.getAccounts(), accountsids_));
-      } catch (NodataFoundException ex) {
-         Log.Debug(this, ex.getMessage());
-      }
-      try {
-         groupnameselect.setModel(DatabaseObject.getObject(Context.getGroup(), groupsids_));
-      } catch (NodataFoundException ex) {
-         Log.Debug(this, ex.getMessage());
-      }
+        button_reminders.setToolTipText(Messages.REMINDERS + String.valueOf(intreminders_));
+        //  discountpercent.setValue(discountvalue_);
+        List<Integer> skip = new ArrayList<Integer>();
+        if (inttype_ == Item.TYPE_BILL) {
+            skip.add(new Integer(Item.STATUS_PAUSED));
+        } else {
+            skip.add(new Integer(Item.STATUS_PAID));
+        }
+        status.setModel(Item.getStatusStrings(), MPComboBoxModelItem.COMPARE_BY_ID, skip);
+        status.setSelectedItem(intstatus_);
+        staus_icon.setIcon(dataOwner.getIcon());
+        try {
+            accountselect.setModel(DatabaseObject.getObject(Context.getAccounts(), accountsids_));
+        } catch (NodataFoundException ex) {
+            Log.Debug(this, ex.getMessage());
+        }
+        try {
+            groupnameselect.setModel(group_);
+        } catch (Exception ex) {
+            Log.Debug(this, ex);
+        }
 
-      addedby.setText(User.getUsername(intaddedby_));
-      try {
-         Contact owner = (Contact) DatabaseObject.getObject(Context.getContact(), contactsids_, true);
-         contactname.setModel(owner);
-         setContactData(owner);
-         contactsids_ = owner.__getIDS();
-      } catch (NodataFoundException ex) {
-         Log.Debug(ex);
-      }
+        addedby.setText(User.getUsername(intaddedby_));
+        try {
+            Contact owner = (Contact) DatabaseObject.getObject(Context.getContact(), contactsids_, true);
+            contactname.setModel(owner);
+            setContactData(owner);
+            contactsids_ = owner.__getIDS();
+        } catch (NodataFoundException ex) {
+            Log.Debug(ex);
+        }
 
-      fillFiles();
-   }
+        fillFiles();
+    }
 
-   @Override
-   public final void refresh() {
+    @Override
+    public final void refresh() {
 
-      Runnable runnable = new Runnable() {
-         @Override
-         public void run() {
-            try {
+        Runnable runnable = new Runnable() {
+            @Override
+            public void run() {
+                try {
 
-               groupnameselect.setModel(MPComboBoxModelItem.toModel(DatabaseObject.getObject(Context.getGroup(), mpv5.db.objects.User.getCurrentUser().__getGroupsids())));
-               groupnameselect.setSelectedIndex(0);
-               sp.refresh();
+                    groupnameselect.setModel(MPComboBoxModelItem.toModel(DatabaseObject.getObject(Context.getGroup(), mpv5.db.objects.User.getCurrentUser().__getGroupsids())));
+                    groupnameselect.setSelectedIndex(0);
+                    sp.refresh();
 
-               try {
-                  accountselect.setModel(DatabaseObject.getObject(Context.getAccounts(), mpv5.db.objects.User.getCurrentUser().__getIntdefaultaccount()));
-               } catch (NodataFoundException nodataFoundException) {
-                  Log.Debug(this, nodataFoundException.getMessage());
-               }
+                    try {
+                        accountselect.setModel(DatabaseObject.getObject(Context.getAccounts(), mpv5.db.objects.User.getCurrentUser().__getIntdefaultaccount()));
+                    } catch (NodataFoundException nodataFoundException) {
+                        Log.Debug(this, nodataFoundException.getMessage());
+                    }
 
-               List<Integer> skip = new ArrayList<Integer>();
-               if (inttype_ == Item.TYPE_BILL) {
-                  skip.add(new Integer(Item.STATUS_PAUSED));
-               } else {
-                  skip.add(new Integer(Item.STATUS_PAID));
-               }
-               status.setModel(Item.getStatusStrings(), MPComboBoxModelItem.COMPARE_BY_ID, skip);
-               try {
-                  status.setSelectedIndex(mpv5.db.objects.User.getCurrentUser().__getIntdefaultstatus());
-               } catch (Exception e) {
-                  Log.Debug(this, e.getMessage());
-               }
-               itemtable.setModel(SubItem.toModel(new SubItem[]{
-                          SubItem.getDefaultItem(), SubItem.getDefaultItem(),
-                          SubItem.getDefaultItem(), SubItem.getDefaultItem(),
-                          SubItem.getDefaultItem(), SubItem.getDefaultItem()
-                       }));
-               formatTable();
+                    List<Integer> skip = new ArrayList<Integer>();
+                    if (inttype_ == Item.TYPE_BILL) {
+                        skip.add(new Integer(Item.STATUS_PAUSED));
+                    } else {
+                        skip.add(new Integer(Item.STATUS_PAID));
+                    }
+                    status.setModel(Item.getStatusStrings(), MPComboBoxModelItem.COMPARE_BY_ID, skip);
+                    try {
+                        status.setSelectedIndex(mpv5.db.objects.User.getCurrentUser().__getIntdefaultstatus());
+                    } catch (Exception e) {
+                        Log.Debug(this, e.getMessage());
+                    }
+                    itemtable.setModel(SubItem.toModel(new SubItem[]{
+                        SubItem.getDefaultItem(), SubItem.getDefaultItem(),
+                        SubItem.getDefaultItem(), SubItem.getDefaultItem(),
+                        SubItem.getDefaultItem(), SubItem.getDefaultItem()
+                    }));
+                    formatTable();
 //                    shipping.setText(FormatNumber.formatDezimal(0d));
 
+                } catch (Exception e) {
+                    Log.Debug(this, e);
+                }
+
+                if (dataOwner.isExisting()) {
+                    setDataOwner(dataOwner, true);
+                }
+            }
+        };
+
+        SwingUtilities.invokeLater(runnable);
+
+    }
+
+    /**
+     *
+     */
+    public void formatTable() {
+
+        prepareTable();
+
+        //"Internal ID", Position, "Count", "Measure", "Text", "Netto Price", "Tax Rate", "Total Price", "Tax value", "Net 2", "Product ID", "", "", "Link", "Optional"
+        TableFormat.resizeCols(itemtable, new Integer[]{0, 23, 53, 63, 100, 63, 63, 63, 0, 0, 63, 20, 0, 0, 100, 63, 0},
+                new Boolean[]{true, true, true, true, false, true, true, true, true, true, true, true, true, true, false, true, true});
+        MPTableModel model = (MPTableModel) itemtable.getModel();
+        model.setCanEdits(new boolean[]{false, false, true, true, true, true, true, true, false, false, true, true, false, false, true, true, false});
+        TableFormat.changeBackground(itemtable, 1, Color.LIGHT_GRAY);
+        if (mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("org.openyabs.uiproperty", "hidecolumnquantity")) {
+            TableFormat.stripColumn(itemtable, 2);
+            model.setCellEditable(0, 2, false);
+        }
+        if (mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("org.openyabs.uiproperty", "hidecolumnmeasure")) {
+            TableFormat.stripColumn(itemtable, 3);
+            model.setCellEditable(0, 3, false);
+        }
+
+        if (mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("org.openyabs.uiproperty", "hideproductscolumn")) {
+            TableFormat.stripColumn(itemtable, 10);
+            model.setCellEditable(0, 10, false);
+        }
+
+        if (mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("org.openyabs.uiproperty", "hidetaxcolumn")) {
+            TableFormat.stripColumn(itemtable, 6);
+            model.setCellEditable(0, 6, false);
+        }
+
+        if (mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("org.openyabs.uiproperty", "hidediscountcolumn")) {
+            TableFormat.stripColumn(itemtable, 15);
+            model.setCellEditable(0, 15, false);
+        }
+
+        TextAreaCellEditor r = new TextAreaCellEditor(itemtable);
+        ProductSelectDialog3 productSelectDialog = new ProductSelectDialog3(mpv5.YabsViewProxy.instance().getIdentifierFrame(), true, itemtable);
+        productSelectDialog.okButton.addActionListener(r);
+        productSelectDialog.cancelButton.addActionListener(r);
+        r.setDialog(productSelectDialog, productSelectDialog.getIDTextField());
+        r.setEditorTo(10);
+
+        if (!mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("org.openyabs.uiproperty", "showoptionalcolumn")) {
+            TableFormat.stripColumn(itemtable, 14);
+            model.setCellEditable(0, 14, false);
+        } else {
+            int widthc = mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("org.openyabs.uiproperty.optionalcolumn.width", 0);
+            if (widthc <= 0) {
+                widthc = 121;
+            }
+            TableFormat.resizeCol(itemtable, 14, widthc, widthc != 121);
+        }
+
+        //column move is the very last thing to do, in newcol.asc order
+        itemtable.moveColumn(10, 3);
+        itemtable.moveColumn(14, 5);
+        itemtable.moveColumn(15, 7);
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public void paste(DatabaseObject... dbos) {
+
+        if (itemtable.getCellEditor() != null) {
+            try {
+                itemtable.getCellEditor().stopCellEditing();
             } catch (Exception e) {
-               Log.Debug(this, e);
             }
+        }
 
-            if (dataOwner.isExisting()) {
-               setDataOwner(dataOwner, true);
-            }
-         }
-      };
+        try {
+            ((MPTableModel) itemtable.getModel()).removeEmptyRows(new int[]{4});
+        } catch (Exception e) {
+        }
 
-      SwingUtilities.invokeLater(runnable);
+        BigDecimal tpvs = null;
+        for (DatabaseObject dbo : dbos) {
+            if (dbo.getContext().equals(Context.getItem())
+                    || dbo.getContext().equals(Context.getInvoice())
+                    || dbo.getContext().equals(Context.getOffer())
+                    || dbo.getContext().equals(Context.getOrder())) {
+                Item o = (Item) dbo.clone();
 
-   }
-
-   /**
-    *
-    */
-   public void formatTable() {
-
-      prepareTable();
-
-      //"Internal ID", Position, "Count", "Measure", "Text", "Netto Price", "Tax Rate", "Total Price", "Tax value", "Net 2", "Product ID", "", "", "Link", "Optional"
-      TableFormat.resizeCols(itemtable, new Integer[]{0, 23, 53, 63, 100, 63, 63, 63, 0, 0, 63, 20, 0, 0, 100, 63, 0},
-              new Boolean[]{true, true, true, true, false, true, true, true, true, true, true, true, true, true, false, true, true});
-      MPTableModel model = (MPTableModel) itemtable.getModel();
-      model.setCanEdits(new boolean[]{false, false, true, true, true, true, true, true, false, false, true, true, false, false, true, true, false});
-      TableFormat.changeBackground(itemtable, 1, Color.LIGHT_GRAY);
-      if (mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("org.openyabs.uiproperty", "hidecolumnquantity")) {
-         TableFormat.stripColumn(itemtable, 2);
-         model.setCellEditable(0, 2, false);
-      }
-      if (mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("org.openyabs.uiproperty", "hidecolumnmeasure")) {
-         TableFormat.stripColumn(itemtable, 3);
-         model.setCellEditable(0, 3, false);
-      }
-
-      if (mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("org.openyabs.uiproperty", "hideproductscolumn")) {
-         TableFormat.stripColumn(itemtable, 10);
-         model.setCellEditable(0, 10, false);
-      }
-
-      if (mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("org.openyabs.uiproperty", "hidetaxcolumn")) {
-         TableFormat.stripColumn(itemtable, 6);
-         model.setCellEditable(0, 6, false);
-      }
-
-      if (mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("org.openyabs.uiproperty", "hidediscountcolumn")) {
-         TableFormat.stripColumn(itemtable, 15);
-         model.setCellEditable(0, 15, false);
-      }
-
-      TextAreaCellEditor r = new TextAreaCellEditor(itemtable);
-      ProductSelectDialog3 productSelectDialog = new ProductSelectDialog3(mpv5.YabsViewProxy.instance().getIdentifierFrame(), true, itemtable);
-      productSelectDialog.okButton.addActionListener(r);
-      productSelectDialog.cancelButton.addActionListener(r);
-      r.setDialog(productSelectDialog, productSelectDialog.getIDTextField());
-      r.setEditorTo(10);
-
-      if (!mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("org.openyabs.uiproperty", "showoptionalcolumn")) {
-         TableFormat.stripColumn(itemtable, 14);
-         model.setCellEditable(0, 14, false);
-      } else {
-         int widthc = mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("org.openyabs.uiproperty.optionalcolumn.width", 0);
-         if (widthc <= 0) {
-            widthc = 121;
-         }
-         TableFormat.resizeCol(itemtable, 14, widthc, widthc != 121);
-      }
-
-      //column move is the very last thing to do, in newcol.asc order
-      itemtable.moveColumn(10, 3);
-      itemtable.moveColumn(14, 5);
-      itemtable.moveColumn(15, 7);
-   }
-
-   @Override
-   @SuppressWarnings("unchecked")
-   public void paste(DatabaseObject... dbos) {
-
-      if (itemtable.getCellEditor() != null) {
-         try {
-            itemtable.getCellEditor().stopCellEditing();
-         } catch (Exception e) {
-         }
-      }
-
-      try {
-         ((MPTableModel) itemtable.getModel()).removeEmptyRows(new int[]{4});
-      } catch (Exception e) {
-      }
-
-      BigDecimal tpvs = null;
-      for (DatabaseObject dbo : dbos) {
-         if (dbo.getContext().equals(Context.getItem())
-                 || dbo.getContext().equals(Context.getInvoice())
-                 || dbo.getContext().equals(Context.getOffer())
-                 || dbo.getContext().equals(Context.getOrder())) {
-            Item o = (Item) dbo.clone();
-
-            if (mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("org.openyabs.uiproperty", "pasten")) {
-               SubItem s = new SubItem();
-               s.setQuantityvalue(BigDecimal.ONE);
+                if (mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("org.openyabs.uiproperty", "pasten")) {
+                    SubItem s = new SubItem();
+                    s.setQuantityvalue(BigDecimal.ONE);
 //                    s.setItemsids(o.__getIDS());
-               s.setInternalvalue(((Item) dbo).__getNetvalue());
-               s.setExternalvalue(((Item) dbo).__getNetvalue());
-               s.setTotalnetvalue(((Item) dbo).__getNetvalue());
-               s.setTotalbrutvalue(((Item) dbo).__getNetvalue().add(((Item) dbo).__getTaxvalue()));
-               if (s.__getTotalnetvalue().doubleValue() > 0d) {
-                  BigDecimal tp = s.__getTotalbrutvalue().subtract(s.__getTotalnetvalue()).multiply(Constants.BD100).divide(s.__getTotalnetvalue(), 9, RoundingMode.HALF_UP);
-                  if (tpvs == null) {
-                     tpvs = tp;
-                  }
+                    s.setInternalvalue(((Item) dbo).__getNetvalue());
+                    s.setExternalvalue(((Item) dbo).__getNetvalue());
+                    s.setTotalnetvalue(((Item) dbo).__getNetvalue());
+                    s.setTotalbrutvalue(((Item) dbo).__getNetvalue().add(((Item) dbo).__getTaxvalue()));
+                    if (s.__getTotalnetvalue().doubleValue() > 0d) {
+                        BigDecimal tp = s.__getTotalbrutvalue().subtract(s.__getTotalnetvalue()).multiply(Constants.BD100).divide(s.__getTotalnetvalue(), 9, RoundingMode.HALF_UP);
+                        if (tpvs == null) {
+                            tpvs = tp;
+                        }
 //                        if (tpvs.equals(tpvs)) {
-                  s.setTaxpercentvalue(tp);
+                        s.setTaxpercentvalue(tp);
 //                        } else {
 //                            Popup.warn(Messages.TAXES_NOT_EQUAL);
 //                            break;
 //                        }
-               }
-               s.setCname(((Item) dbo).__getCname());
-               s.setDescription(Messages.GOOSE1 + " " + ((Item) dbo).__getCnumber() + " " + Messages.GOOSE2 + " " + DateConverter.getDefDateString(o.__getDateadded()));
+                    }
+                    s.setCname(((Item) dbo).__getCname());
+                    s.setDescription(Messages.GOOSE1 + " " + ((Item) dbo).__getCnumber() + " " + Messages.GOOSE2 + " " + DateConverter.getDefDateString(o.__getDateadded()));
 //                   if (mpv5.db.objects.User.getCurrentUser().getProperties().hasProperty("deftax")) {
 //                        int taxid = mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("deftax", new Integer(0));
 //                        BigDecimal deftax = Tax.getTaxValue(taxid);
@@ -1846,261 +1850,261 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
 //                    }
 
 //                    Log.PrintArray(s.toStringArray());
-               ((Item) dbo).setIntstatus(Item.STATUS_FINISHED);
-               dbo.save();
-               ((MPTableModel) itemtable.getModel()).addRow(s.getRowData(((MPTableModel) itemtable.getModel()).getLastValidRow(new int[]{4}) + 1));
-               ((MPTableModel) itemtable.getModel()).fireTableCellUpdated(0, 0);
+                    ((Item) dbo).setIntstatus(Item.STATUS_FINISHED);
+                    dbo.save();
+                    ((MPTableModel) itemtable.getModel()).addRow(s.getRowData(((MPTableModel) itemtable.getModel()).getLastValidRow(new int[]{4}) + 1));
+                    ((MPTableModel) itemtable.getModel()).fireTableCellUpdated(0, 0);
+                } else {
+                    o.setIntstatus(Item.STATUS_IN_PROGRESS);
+                    o.setInttype(inttype_);
+                    o.setCnumber("");
+                    o.setCname("");
+                    o.setDateadded(new Date());
+                    o.setDatetodo(new Date());
+                    o.setDateend(new Date());
+
+                    SubItem[] sitems = ((Item) dbo).getSubitems();
+                    SubItem[] subs = new SubItem[sitems.length];
+                    for (int i = 0; i < sitems.length; i++) {
+                        SubItem si = sitems[i];
+                        SubItem psi = new SubItem();
+                        psi.setQuantityvalue(BigDecimal.ONE);
+                        psi.setInternalvalue(si.__getInternalvalue());
+                        psi.setExternalvalue(si.__getExternalvalue());
+                        psi.setTotalnetvalue(si.__getTotalnetvalue());
+                        psi.setTotalbrutvalue(((Item) dbo).__getNetvalue().add(((Item) dbo).__getTaxvalue()));
+                        if (psi.__getTotalnetvalue().doubleValue() > 0d) {
+                            BigDecimal tp = psi.__getTotalbrutvalue().subtract(psi.__getTotalnetvalue()).multiply(Constants.BD100).divide(psi.__getTotalnetvalue(), 9, RoundingMode.HALF_UP);
+                            psi.setTaxpercentvalue(tp);
+                        }
+                        psi.setCname(si.__getCname());
+                        psi.setDescription(si.__getDescription());
+                        psi.setCountvalue(si.__getCountvalue());
+                        psi.setOrdernr(si.__getCountvalue().intValue());
+                        subs[i] = psi;
+                    }
+                    o.setIDS(-1);
+                    setDataOwner(o, true);
+
+                    MPTableModel t = SubItem.toModel(subs, true);
+
+                    itemtable.setModel(t);
+                    omodel = (MPTableModel) itemtable.getModel();
+                    formatTable();
+                    ((MPTableModel) itemtable.getModel()).fireTableCellUpdated(0, 0);
+                }
+            } else if (dbo.getContext().equals(Context.getContact())) {
+                dataOwner.setContactsids(((Contact) dbo).__getIDS());
+                setDataOwner(dataOwner, true);
+            } else if (dbo.getContext().equals(Context.getProduct())) {
+                ((MPTableModel) itemtable.getModel()).addRow(
+                        new SubItem((Product) dbo).getRowData(((MPTableModel) itemtable.getModel()).getRowCount() + 1));
+                ((MPTableModel) itemtable.getModel()).fireTableCellUpdated(0, 0);
+            } else if (dbo.getContext().equals(Context.getProductlist())) {
+                try {
+                    SubItem[] subs = new SubItem[0];
+                    if (dataOwner != null) {
+                        subs = dataOwner.getSubitems();
+                    }
+                    List<ProductlistSubItem> l = ProductList.getReferencedObjects(dbo, Context.getProductListItems(), new ProductlistSubItem());
+                    MPTableModel t = SubItem.toModel(subs);
+                    int count = t.getRowCount();
+                    for (int i = 0; i < l.size(); i++) {
+                        ProductlistSubItem productlistSubItem = l.get(i);
+                        productlistSubItem.setIDS(-1);
+                        t.addRow(productlistSubItem.getRowData(i + count + 1));
+                    }
+                    itemtable.setModel(t);
+                    omodel = (MPTableModel) itemtable.getModel();
+                    formatTable();
+                    ((MPTableModel) itemtable.getModel()).fireTableCellUpdated(0, 0);
+                } catch (NodataFoundException ex) {
+                    Log.Debug(this, ex.getMessage());
+                }
+            } else if (dbo.getContext().equals(Context.getSubItem())) {
+                try {
+                    SubItem sub = (SubItem) dbo;
+
+                    ((MPTableModel) itemtable.getModel()).addRow(
+                            sub.getRowData(((MPTableModel) itemtable.getModel()).getRowCount() + 1));
+
+                    ((MPTableModel) itemtable.getModel()).fireTableCellUpdated(0, 0);
+                } catch (Exception ex) {
+                    Log.Debug(this, ex.getMessage());
+                }
             } else {
-               o.setIntstatus(Item.STATUS_IN_PROGRESS);
-               o.setInttype(inttype_);
-               o.setCnumber("");
-               o.setCname("");
-               o.setDateadded(new Date());
-               o.setDatetodo(new Date());
-               o.setDateend(new Date());
-
-               SubItem[] sitems = ((Item) dbo).getSubitems();
-               SubItem[] subs = new SubItem[sitems.length];
-               for (int i = 0; i < sitems.length; i++) {
-                  SubItem si = sitems[i];
-                  SubItem psi = new SubItem();
-                  psi.setQuantityvalue(BigDecimal.ONE);
-                  psi.setInternalvalue(si.__getInternalvalue());
-                  psi.setExternalvalue(si.__getExternalvalue());
-                  psi.setTotalnetvalue(si.__getTotalnetvalue());
-                  psi.setTotalbrutvalue(((Item) dbo).__getNetvalue().add(((Item) dbo).__getTaxvalue()));
-                  if (psi.__getTotalnetvalue().doubleValue() > 0d) {
-                     BigDecimal tp = psi.__getTotalbrutvalue().subtract(psi.__getTotalnetvalue()).multiply(Constants.BD100).divide(psi.__getTotalnetvalue(), 9, RoundingMode.HALF_UP);
-                     psi.setTaxpercentvalue(tp);
-                  }
-                  psi.setCname(si.__getCname());
-                  psi.setDescription(si.__getDescription());
-                  psi.setCountvalue(si.__getCountvalue());
-                  psi.setOrdernr(si.__getCountvalue().intValue());
-                  subs[i] = psi;
-               }
-               o.setIDS(-1);
-               setDataOwner(o, true);
-
-               MPTableModel t = SubItem.toModel(subs, true);
-
-               itemtable.setModel(t);
-               omodel = (MPTableModel) itemtable.getModel();
-               formatTable();
-               ((MPTableModel) itemtable.getModel()).fireTableCellUpdated(0, 0);
+                mpv5.YabsViewProxy.instance().addMessage(Messages.NOT_POSSIBLE.toString() + Messages.ACTION_PASTE.toString(), Color.RED);
+                Log.Debug(this, dbo.getContext() + " to " + Context.getItem());
             }
-         } else if (dbo.getContext().equals(Context.getContact())) {
-            dataOwner.setContactsids(((Contact) dbo).__getIDS());
-            setDataOwner(dataOwner, true);
-         } else if (dbo.getContext().equals(Context.getProduct())) {
-            ((MPTableModel) itemtable.getModel()).addRow(
-                    new SubItem((Product) dbo).getRowData(((MPTableModel) itemtable.getModel()).getRowCount() + 1));
-            ((MPTableModel) itemtable.getModel()).fireTableCellUpdated(0, 0);
-         } else if (dbo.getContext().equals(Context.getProductlist())) {
+        }
+
+        try {
+            itemtable.changeSelection(0, 0, true, false);
+        } catch (Exception e) {
+            Log.Debug(e);
+        }
+
+        itemMultiplier.calculateOnce();
+        netCalculator.calculateOnce();
+        taxcalculator.calculateOnce();
+        disccalculator.calculateOnce();
+
+
+    }
+
+    @Override
+    public void showSearchBar(boolean show) {
+        leftpane.removeAll();
+        if (show) {
+            leftpane.add(sp, BorderLayout.CENTER);
+            sp.search();
+        }
+
+        validate();
+    }
+
+    @Override
+    public void actionAfterSave() {
+        saveSubItems(true);
+        omodel = (MPTableModel) itemtable.getModel();
+        setTitle();
+    }
+
+    @Override
+    public void actionAfterCreate() {
+
+        sp.refresh();
+        ArrayUtilities.replaceColumn(itemtable, 0, null);
+        saveSubItems(false);
+        omodel = (MPTableModel) itemtable.getModel();
+        setTitle();
+
+    }
+
+    private void saveSubItems(boolean deleteRemovedSubitems) {
+        if (itemtable.getCellEditor() != null) {
             try {
-               SubItem[] subs = new SubItem[0];
-               if (dataOwner != null) {
-                  subs = dataOwner.getSubitems();
-               }
-               List<ProductlistSubItem> l = ProductList.getReferencedObjects(dbo, Context.getProductListItems(), new ProductlistSubItem());
-               MPTableModel t = SubItem.toModel(subs);
-               int count = t.getRowCount();
-               for (int i = 0; i < l.size(); i++) {
-                  ProductlistSubItem productlistSubItem = l.get(i);
-                  productlistSubItem.setIDS(-1);
-                  t.addRow(productlistSubItem.getRowData(i + count + 1));
-               }
-               itemtable.setModel(t);
-               omodel = (MPTableModel) itemtable.getModel();
-               formatTable();
-               ((MPTableModel) itemtable.getModel()).fireTableCellUpdated(0, 0);
-            } catch (NodataFoundException ex) {
-               Log.Debug(this, ex.getMessage());
+                itemtable.getCellEditor().stopCellEditing();
+            } catch (Exception e) {
             }
-         } else if (dbo.getContext().equals(Context.getSubItem())) {
-            try {
-               SubItem sub = (SubItem) dbo;
+        }
 
-               ((MPTableModel) itemtable.getModel()).addRow(
-                       sub.getRowData(((MPTableModel) itemtable.getModel()).getRowCount() + 1));
+        try {
+            itemtable.changeSelection(0, 0, true, false);
+        } catch (Exception e) {
+            Log.Debug(e);
+        }
 
-               ((MPTableModel) itemtable.getModel()).fireTableCellUpdated(0, 0);
-            } catch (Exception ex) {
-               Log.Debug(this, ex.getMessage());
+        if (dataOwner.__getInttype() != Item.TYPE_BILL) {
+            Product.createProducts(SubItem.saveModel(dataOwner, (MPTableModel) itemtable.getModel(), deleteRemovedSubitems), dataOwner);
+        } else {
+            SubItem.saveModel(dataOwner, (MPTableModel) itemtable.getModel(), deleteRemovedSubitems);
+        }
+
+        for (int i = 0; i < usedOrders.size(); i++) {
+            Item o = usedOrders.get(i);
+            o.setIntstatus(Item.STATUS_FINISHED);
+            o.save(true);
+        }
+    }
+    List<Item> usedOrders = new ArrayList<Item>();
+
+    @Override
+    public void changeSelection(MPComboBoxModelItem to, Context c) {
+        try {
+            DatabaseObject o = DatabaseObject.getObject(c, Integer.valueOf(to.getId()));
+            int i = itemtable.getSelectedRow();
+            if (i >= 0) {
+                Object opt = itemtable.getModel().getValueAt(i, 14);
+                ((MPTableModel) itemtable.getModel()).setRowAt(new SubItem((Product) o).getRowData(i), i, 4);
+                itemtable.setValueAt(opt, i, 14);
             }
-         } else {
-            mpv5.YabsViewProxy.instance().addMessage(Messages.NOT_POSSIBLE.toString() + Messages.ACTION_PASTE.toString(), Color.RED);
-            Log.Debug(this, dbo.getContext() + " to " + Context.getItem());
-         }
-      }
+        } catch (Exception ex) {
+        }
+    }
 
-      try {
-         itemtable.changeSelection(0, 0, true, false);
-      } catch (Exception e) {
-         Log.Debug(e);
-      }
+    public void actionBeforeCreate() {
+        status.setSelectedIndex(Item.STATUS_IN_PROGRESS);
+        date1.setDate(new Date());
+        try {
+            date3.setDate(DateConverter.addDays(new Date(), Integer.valueOf(mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("bills.warn.days"))));
+            date2.setDate(new Date());
+        } catch (Exception e) {
+            date3.setDate(DateConverter.addDays(new Date(), 14));
+            date2.setDate(new Date());
+        }
+    }
 
-      itemMultiplier.calculateOnce();
-      netCalculator.calculateOnce();
-      taxcalculator.calculateOnce();
-      disccalculator.calculateOnce();
+    public void actionBeforeSave() throws ChangeNotApprovedException {
+        if (dataOwner.isExisting()) {
+            if ((dataOwner.__getIntstatus() != Item.STATUS_PAID && dataOwner.__getIntstatus() != Item.STATUS_CANCELLED) || Popup.Y_N_dialog(Messages.REALLY_CHANGE_DONE_ITEM)) {
 
+                if (!mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("org.openyabs.uiproperty", "nowarnings")) {
 
-   }
-
-   @Override
-   public void showSearchBar(boolean show) {
-      leftpane.removeAll();
-      if (show) {
-         leftpane.add(sp, BorderLayout.CENTER);
-         sp.search();
-      }
-
-      validate();
-   }
-
-   @Override
-   public void actionAfterSave() {
-      saveSubItems(true);
-      omodel = (MPTableModel) itemtable.getModel();
-      setTitle();
-   }
-
-   @Override
-   public void actionAfterCreate() {
-
-      sp.refresh();
-      ArrayUtilities.replaceColumn(itemtable, 0, null);
-      saveSubItems(false);
-      omodel = (MPTableModel) itemtable.getModel();
-      setTitle();
-
-   }
-
-   private void saveSubItems(boolean deleteRemovedSubitems) {
-      if (itemtable.getCellEditor() != null) {
-         try {
-            itemtable.getCellEditor().stopCellEditing();
-         } catch (Exception e) {
-         }
-      }
-
-      try {
-         itemtable.changeSelection(0, 0, true, false);
-      } catch (Exception e) {
-         Log.Debug(e);
-      }
-
-      if (dataOwner.__getInttype() != Item.TYPE_BILL) {
-         Product.createProducts(SubItem.saveModel(dataOwner, (MPTableModel) itemtable.getModel(), deleteRemovedSubitems), dataOwner);
-      } else {
-         SubItem.saveModel(dataOwner, (MPTableModel) itemtable.getModel(), deleteRemovedSubitems);
-      }
-
-      for (int i = 0; i < usedOrders.size(); i++) {
-         Item o = usedOrders.get(i);
-         o.setIntstatus(Item.STATUS_FINISHED);
-         o.save(true);
-      }
-   }
-   List<Item> usedOrders = new ArrayList<Item>();
-
-   @Override
-   public void changeSelection(MPComboBoxModelItem to, Context c) {
-      try {
-         DatabaseObject o = DatabaseObject.getObject(c, Integer.valueOf(to.getId()));
-         int i = itemtable.getSelectedRow();
-         if (i >= 0) {
-            Object opt = itemtable.getModel().getValueAt(i, 14);
-            ((MPTableModel) itemtable.getModel()).setRowAt(new SubItem((Product) o).getRowData(i), i, 4);
-            itemtable.setValueAt(opt, i, 14);
-         }
-      } catch (Exception ex) {
-      }
-   }
-
-   public void actionBeforeCreate() {
-      status.setSelectedIndex(Item.STATUS_IN_PROGRESS);
-      date1.setDate(new Date());
-      try {
-         date3.setDate(DateConverter.addDays(new Date(), Integer.valueOf(mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("bills.warn.days"))));
-         date2.setDate(new Date());
-      } catch (Exception e) {
-         date3.setDate(DateConverter.addDays(new Date(), 14));
-         date2.setDate(new Date());
-      }
-   }
-
-   public void actionBeforeSave() throws ChangeNotApprovedException {
-      if (dataOwner.isExisting()) {
-         if ((dataOwner.__getIntstatus() != Item.STATUS_PAID && dataOwner.__getIntstatus() != Item.STATUS_CANCELLED) || Popup.Y_N_dialog(Messages.REALLY_CHANGE_DONE_ITEM)) {
-
-            if (!mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("org.openyabs.uiproperty", "nowarnings")) {
-
-               if (!Popup.Y_N_dialog(Messages.REALLY_CHANGE)) {
-                  throw new ChangeNotApprovedException(dataOwner);
-               }
+                    if (!Popup.Y_N_dialog(Messages.REALLY_CHANGE)) {
+                        throw new ChangeNotApprovedException(dataOwner);
+                    }
+                }
+            } else {
+                throw new ChangeNotApprovedException(dataOwner);
             }
-         } else {
-            throw new ChangeNotApprovedException(dataOwner);
-         }
-      }
-   }
+        }
+    }
 
-   private void prepareTable() {
-      boolean calcoptionalcol = User.getCurrentUser().getProperty("org.openyabs.uiproperty", "itempanel.calculateoptionalcol");
+    private void prepareTable() {
+        boolean calcoptionalcol = User.getCurrentUser().getProperty("org.openyabs.uiproperty", "itempanel.calculateoptionalcol");
 
-      TableCellRendererForProducts tx = new TableCellRendererForProducts(itemtable);
-      tx.setRendererTo(10);
+        TableCellRendererForProducts tx = new TableCellRendererForProducts(itemtable);
+        tx.setRendererTo(10);
 
-      TableCellRendererForDezimal ti = new TableCellRendererForDezimal(itemtable, User.getCurrentUser().getProperty("org.openyabs.uiproperty$defquantityformat"));
-      ti.setRendererTo(2);
+        TableCellRendererForDezimal ti = new TableCellRendererForDezimal(itemtable, User.getCurrentUser().getProperty("org.openyabs.uiproperty$defquantityformat"));
+        ti.setRendererTo(2);
 
-      LazyCellRenderer lcr = new LazyCellRenderer(itemtable);
-      lcr.setRendererTo(3);
+        LazyCellRenderer lcr = new LazyCellRenderer(itemtable);
+        lcr.setRendererTo(3);
 
-      TableCellRendererForDezimal t = new TableCellRendererForDezimal(itemtable);
-      t.setRendererTo(6);
-      t.setRendererTo(5);
-      t.setRendererTo(15);
-      t.setRendererTo(16);
-      TableCellRendererForDezimal tc = new TableCellRendererForDezimal(itemtable, new java.awt.Color(161, 176, 190));
-      tc.setRendererTo(7);
-      if (calcoptionalcol) {
-         tc.setRendererTo(14);
-      }
+        TableCellRendererForDezimal t = new TableCellRendererForDezimal(itemtable);
+        t.setRendererTo(6);
+        t.setRendererTo(5);
+        t.setRendererTo(15);
+        t.setRendererTo(16);
+        TableCellRendererForDezimal tc = new TableCellRendererForDezimal(itemtable, new java.awt.Color(161, 176, 190));
+        tc.setRendererTo(7);
+        if (calcoptionalcol) {
+            tc.setRendererTo(14);
+        }
 
 
 //        CellEditorWithMPComboBox r = new CellEditorWithMPComboBox(Context.getProduct(), itemtable);
 //        r.setEditorTo(4, this);
-      TextAreaCellRenderer textAreaCellRenderer = new TextAreaCellRenderer(itemtable);
-      textAreaCellRenderer.setRendererTo(4);
-      TextAreaCellEditor r = new TextAreaCellEditor(itemtable);
-      ItemTextAreaDialog itemTextAreaDialog = new ItemTextAreaDialog(mpv5.YabsViewProxy.instance().getIdentifierFrame(), true);
-      itemTextAreaDialog.setParentTable(itemtable);
-      itemTextAreaDialog.okButton.addActionListener(r);
-      itemTextAreaDialog.cancelButton.addActionListener(r);
-      r.setDialog(itemTextAreaDialog, itemTextAreaDialog.textArea);
-      r.setEditorTo(4);
+        TextAreaCellRenderer textAreaCellRenderer = new TextAreaCellRenderer(itemtable);
+        textAreaCellRenderer.setRendererTo(4);
+        TextAreaCellEditor r = new TextAreaCellEditor(itemtable);
+        ItemTextAreaDialog itemTextAreaDialog = new ItemTextAreaDialog(mpv5.YabsViewProxy.instance().getIdentifierFrame(), true);
+        itemTextAreaDialog.setParentTable(itemtable);
+        itemTextAreaDialog.okButton.addActionListener(r);
+        itemTextAreaDialog.cancelButton.addActionListener(r);
+        r.setDialog(itemTextAreaDialog, itemTextAreaDialog.textArea);
+        r.setEditorTo(4);
 
-      itemtable.getColumnModel().getColumn(3).setCellEditor(new LazyCellEditor(new JTextField()));
-      String quantXnet = "[2]*[5]" + (calcoptionalcol ? "*[14]" : "");
+        itemtable.getColumnModel().getColumn(3).setCellEditor(new LazyCellEditor(new JTextField()));
+        String quantXnet = "[2]*[5]" + (calcoptionalcol ? "*[14]" : "");
 
-      itemMultiplier = new DynamicTableCalculator(itemtable, "((" + quantXnet + ")-(" + quantXnet + "%[15]))+((" + quantXnet + ")-(" + quantXnet + "%[15]))%[6]", new int[]{7});
-      ((MPTableModel) itemtable.getModel()).addCalculator(itemMultiplier);
-      itemMultiplier.addLabel(value, 7);
+        itemMultiplier = new DynamicTableCalculator(itemtable, "((" + quantXnet + ")-(" + quantXnet + "%[15]))+((" + quantXnet + ")-(" + quantXnet + "%[15]))%[6]", new int[]{7});
+        ((MPTableModel) itemtable.getModel()).addCalculator(itemMultiplier);
+        itemMultiplier.addLabel(value, 7);
 
-      netCalculator = new DynamicTableCalculator(itemtable, quantXnet, new int[]{9});
-      ((MPTableModel) itemtable.getModel()).addCalculator(netCalculator);
-      netCalculator.addLabel(netvalue, 9);
+        netCalculator = new DynamicTableCalculator(itemtable, quantXnet, new int[]{9});
+        ((MPTableModel) itemtable.getModel()).addCalculator(netCalculator);
+        netCalculator.addLabel(netvalue, 9);
 
-      taxcalculator = new DynamicTableCalculator(itemtable, "(((" + quantXnet + ")-(" + quantXnet + "%[15]))+((" + quantXnet + ")-(" + quantXnet + "%[15]))%[6])-((" + quantXnet + ")-(" + quantXnet + "%[15]))", new int[]{8});
-      ((MPTableModel) itemtable.getModel()).addCalculator(taxcalculator);
-      taxcalculator.addLabel(taxvalue, 8);
+        taxcalculator = new DynamicTableCalculator(itemtable, "(((" + quantXnet + ")-(" + quantXnet + "%[15]))+((" + quantXnet + ")-(" + quantXnet + "%[15]))%[6])-((" + quantXnet + ")-(" + quantXnet + "%[15]))", new int[]{8});
+        ((MPTableModel) itemtable.getModel()).addCalculator(taxcalculator);
+        taxcalculator.addLabel(taxvalue, 8);
 
-      disccalculator = new DynamicTableCalculator(itemtable, quantXnet + "%[15]", new int[]{16});
-      ((MPTableModel) itemtable.getModel()).addCalculator(disccalculator);
-      disccalculator.addLabel(discount, 16);
+        disccalculator = new DynamicTableCalculator(itemtable, quantXnet + "%[15]", new int[]{16});
+        ((MPTableModel) itemtable.getModel()).addCalculator(disccalculator);
+        disccalculator.addLabel(discount, 16);
 
 //        if (mpv5.db.objects.User.getCurrentUser().getProperties().hasProperty("shiptax")) {
 //            int taxid = mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("shiptax", new Integer(0));
@@ -2121,303 +2125,303 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
 //            netCalculator.addToSum(shipping);
 //        }
 
-      JButton b1 = new JButton();
-      b1.addMouseListener(new MouseListener() {
-         public void mouseClicked(MouseEvent e) {
-         }
-
-         public void mousePressed(MouseEvent e) {
-         }
-
-         public void mouseReleased(MouseEvent e) {
-            if (!mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("org.openyabs.uiproperty", "ordersoverproducts")) {
-               ProductSelectDialog.instanceOf((MPTableModel) itemtable.getModel(), itemtable.getSelectedRow(), e, 0, null, null);
-            } else {
-               SubItem s = new SubItem();
-               Item o = (Item) Popup.SelectValue(Context.getOrder());
-               if (o != null) {
-                  s.setQuantityvalue(BigDecimal.ONE);
-                  s.setItemsids(o.__getIDS());
-                  s.setExternalvalue(o.__getNetvalue().add(o.__getTaxvalue()));
-                  s.setTotalnetvalue(o.__getNetvalue());
-                  s.setCname(o.__getCname());
-                  s.setDescription(Messages.TYPE_ORDER + " " + o.__getCnumber() + " " + DateConverter.getDefDateString(o.__getDateadded()));
-
-                  ((MPTableModel) itemtable.getModel()).setRowAt(s.getRowData(itemtable.getSelectedRow()), itemtable.getSelectedRow(), 1);
-
-                  usedOrders.add(o);
-               }
+        JButton b1 = new JButton();
+        b1.addMouseListener(new MouseListener() {
+            public void mouseClicked(MouseEvent e) {
             }
 
-            if (((MPTableModel) itemtable.getModel()).getEmptyRows(new int[]{4}) < 2) {
-               ((MPTableModel) itemtable.getModel()).addRow(1);
+            public void mousePressed(MouseEvent e) {
             }
-         }
 
-         public void mouseEntered(MouseEvent e) {
-         }
+            public void mouseReleased(MouseEvent e) {
+                if (!mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("org.openyabs.uiproperty", "ordersoverproducts")) {
+                    ProductSelectDialog.instanceOf((MPTableModel) itemtable.getModel(), itemtable.getSelectedRow(), e, 0, null, null);
+                } else {
+                    SubItem s = new SubItem();
+                    Item o = (Item) Popup.SelectValue(Context.getOrder());
+                    if (o != null) {
+                        s.setQuantityvalue(BigDecimal.ONE);
+                        s.setItemsids(o.__getIDS());
+                        s.setExternalvalue(o.__getNetvalue().add(o.__getTaxvalue()));
+                        s.setTotalnetvalue(o.__getNetvalue());
+                        s.setCname(o.__getCname());
+                        s.setDescription(Messages.TYPE_ORDER + " " + o.__getCnumber() + " " + DateConverter.getDefDateString(o.__getDateadded()));
 
-         public void mouseExited(MouseEvent e) {
-         }
-      });
+                        ((MPTableModel) itemtable.getModel()).setRowAt(s.getRowData(itemtable.getSelectedRow()), itemtable.getSelectedRow(), 1);
 
-      JButton b2 = new JButton();
-      b2.addActionListener(new ActionListener() {
-         public void actionPerformed(ActionEvent e) {
-            MPTableModel m = (MPTableModel) itemtable.getModel();
-            int row = itemtable.getSelectedRow();
-            SubItem.addToDeletionQueue(m.getValueAt(row, 0));
-            m.setRowAt(SubItem.getDefaultItem().getRowData(row), row, 1);
-         }
-      });
-
-      itemtable.getColumnModel().getColumn(SubItem.COLUMNINDEX_ADD).setCellRenderer(new ButtonRenderer());
-      itemtable.getColumnModel().getColumn(SubItem.COLUMNINDEX_ADD).setCellEditor(new ButtonEditor(b1));
-      itemtable.getColumnModel().getColumn(SubItem.COLUMNINDEX_REMOVE).setCellRenderer(new ButtonRenderer());
-      itemtable.getColumnModel().getColumn(SubItem.COLUMNINDEX_REMOVE).setCellEditor(new ButtonEditor(b2));
-
-      TablePopUp tpu = new TablePopUp(itemtable, new String[]{
-                 Messages.ACTION_COPY.getValue(),
-                 Messages.ACTION_PASTE.getValue(),
-                 null,
-                 Messages.ACTION_ADD.getValue(),
-                 Messages.ACTION_REMOVE.getValue()},
-              new ActionListener[]{new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-               MPTableModel m = (MPTableModel) itemtable.getModel();
-               SubItem it = m.getRowAt(itemtable.getSelectedRow(), SubItem.getDefaultItem());
-
-               if (it != null) {
-                  mpv5.YabsViewProxy.instance().addToClipBoard(it);
-
-               }
-            }
-         }, new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-//                    mpv5.YabsViewProxy.instance().pasteClipboardItems();
-            }
-         },
-                 null,
-                 new ActionListener() {
-                    @Override
-                    public void actionPerformed(ActionEvent e) {
-                       ((MPTableModel) itemtable.getModel()).addRow(1);
+                        usedOrders.add(o);
                     }
-                 }, new ActionListener() {
-            @Override
+                }
+
+                if (((MPTableModel) itemtable.getModel()).getEmptyRows(new int[]{4}) < 2) {
+                    ((MPTableModel) itemtable.getModel()).addRow(1);
+                }
+            }
+
+            public void mouseEntered(MouseEvent e) {
+            }
+
+            public void mouseExited(MouseEvent e) {
+            }
+        });
+
+        JButton b2 = new JButton();
+        b2.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-               int index = itemtable.getSelectedRow();
-               if (index < 0) {
-                  return;
-               }
-
-               MPTableModel m = (MPTableModel) itemtable.getModel();
-               SubItem.addToDeletionQueue(m.getValueAt(index, 0));
-               ((MPTableModel) itemtable.getModel()).removeRow(index);
+                MPTableModel m = (MPTableModel) itemtable.getModel();
+                int row = itemtable.getSelectedRow();
+                SubItem.addToDeletionQueue(m.getValueAt(row, 0));
+                m.setRowAt(SubItem.getDefaultItem().getRowData(row), row, 1);
             }
-         }});
-   }
+        });
 
-   private void delivery() {
-      PreviewPanel pr;
-      if (dataOwner != null && dataOwner.isExisting()) {
-         if (TemplateHandler.isLoaded(Long.valueOf(dataOwner.templateGroupIds()), Constants.TYPE_DELIVERY_NOTE)) {
-            pr = new PreviewPanel();
-            pr.setDataOwner(dataOwner);
-            new Job(Export.createFile(TemplateHandler.loadTemplate(dataOwner.templateGroupIds(), Constants.TYPE_DELIVERY_NOTE), dataOwner), pr).execute();
-         } else {
-            Popup.notice(Messages.NO_TEMPLATE_LOADED + " (" + mpv5.db.objects.User.getCurrentUser() + ")");
-         }
-      }
-   }
+        itemtable.getColumnModel().getColumn(SubItem.COLUMNINDEX_ADD).setCellRenderer(new ButtonRenderer());
+        itemtable.getColumnModel().getColumn(SubItem.COLUMNINDEX_ADD).setCellEditor(new ButtonEditor(b1));
+        itemtable.getColumnModel().getColumn(SubItem.COLUMNINDEX_REMOVE).setCellRenderer(new ButtonRenderer());
+        itemtable.getColumnModel().getColumn(SubItem.COLUMNINDEX_REMOVE).setCellEditor(new ButtonEditor(b2));
 
-   private void confirmation() {
-      PreviewPanel pr;
-      if (dataOwner != null && dataOwner.isExisting()) {
-         if (TemplateHandler.isLoaded(Long.valueOf(dataOwner.templateGroupIds()), Constants.TYPE_ORDER_CONFIRMATION)) {
+        TablePopUp tpu = new TablePopUp(itemtable, new String[]{
+            Messages.ACTION_COPY.getValue(),
+            Messages.ACTION_PASTE.getValue(),
+            null,
+            Messages.ACTION_ADD.getValue(),
+            Messages.ACTION_REMOVE.getValue()},
+                new ActionListener[]{new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    MPTableModel m = (MPTableModel) itemtable.getModel();
+                    SubItem it = m.getRowAt(itemtable.getSelectedRow(), SubItem.getDefaultItem());
 
-            pr = new PreviewPanel();
-            pr.setDataOwner(dataOwner);
-            new Job(Export.createFile(TemplateHandler.loadTemplate(dataOwner.templateGroupIds(), Constants.TYPE_ORDER_CONFIRMATION), dataOwner), pr).execute();
-         } else {
-            Popup.notice(Messages.NO_TEMPLATE_LOADED + " (" + mpv5.db.objects.User.getCurrentUser() + ")");
-         }
-      }
-   }
+                    if (it != null) {
+                        mpv5.YabsViewProxy.instance().addToClipBoard(it);
 
-   public void mail() {
+                    }
+                }
+            }, new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+//                    mpv5.YabsViewProxy.instance().pasteClipboardItems();
+                }
+            },
+            null,
+            new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    ((MPTableModel) itemtable.getModel()).addRow(1);
+                }
+            }, new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    int index = itemtable.getSelectedRow();
+                    if (index < 0) {
+                        return;
+                    }
 
-      if (dataOwner != null && dataOwner.isExisting()) {
-         if (TemplateHandler.isLoaded(Long.valueOf(dataOwner.templateGroupIds()), dataOwner.__getInttype())) {
+                    MPTableModel m = (MPTableModel) itemtable.getModel();
+                    SubItem.addToDeletionQueue(m.getValueAt(index, 0));
+                    ((MPTableModel) itemtable.getModel()).removeRow(index);
+                }
+            }});
+    }
 
-            try {
-               Contact cont = (Contact) (Contact.getObject(Context.getContact(), dataOwner.__getContactsids()));
-               Export.mail(TemplateHandler.loadTemplate(dataOwner.templateGroupIds(), dataOwner.__getInttype()), dataOwner, cont);
-            } catch (NodataFoundException ex) {
-               Log.Debug(ex);
-            }
-         } else {
-            Popup.notice(Messages.NO_TEMPLATE_LOADED + " (" + mpv5.db.objects.User.getCurrentUser() + ")");
-         }
-      } else {
-         Popup.notice(Messages.NOT_POSSIBLE + "\n" + Messages.NOT_SAVED_YET);
-      }
-   }
-
-   public void print() {
-      if (dataOwner != null && dataOwner.isExisting()) {
-         if (TemplateHandler.isLoaded(Long.valueOf(dataOwner.templateGroupIds()), dataOwner.__getInttype())) {
-            if (!checkb_pront_oc.isSelected()) {
-               Export.print(TemplateHandler.loadTemplate(dataOwner.templateGroupIds(), dataOwner.__getInttype()), dataOwner);
+    private void delivery() {
+        PreviewPanel pr;
+        if (dataOwner != null && dataOwner.isExisting()) {
+            if (TemplateHandler.isLoaded(Long.valueOf(dataOwner.templateGroupIds()), Constants.TYPE_DELIVERY_NOTE)) {
+                pr = new PreviewPanel();
+                pr.setDataOwner(dataOwner);
+                new Job(Export.createFile(TemplateHandler.loadTemplate(dataOwner.templateGroupIds(), Constants.TYPE_DELIVERY_NOTE), dataOwner), pr).execute();
             } else {
-               Export.print(new Template[]{TemplateHandler.loadTemplate(dataOwner.templateGroupIds(), dataOwner.__getInttype()), TemplateHandler.loadTemplate(dataOwner.templateGroupIds(), Constants.TYPE_ORDER_CONFIRMATION)}, dataOwner);
+                Popup.notice(Messages.NO_TEMPLATE_LOADED + " (" + mpv5.db.objects.User.getCurrentUser() + ")");
             }
-         } else {
-            Popup.notice(Messages.NO_TEMPLATE_LOADED + " (" + mpv5.db.objects.User.getCurrentUser() + ")");
-            Export.print(this);
-         }
-      } else {
-         Export.print(this);
-      }
-   }
+        }
+    }
 
-   private void preview() {
-      PreviewPanel pr;
-      if (dataOwner != null && dataOwner.isExisting()) {
-         if (TemplateHandler.isLoaded(Long.valueOf(dataOwner.templateGroupIds()), dataOwner.__getInttype())) {
-            pr = new PreviewPanel();
-            pr.setDataOwner(dataOwner);
-            new Job(Export.createFile(TemplateHandler.loadTemplate(dataOwner.templateGroupIds(), dataOwner.__getInttype()), dataOwner), pr).execute();
-         } else {
-            Popup.notice(Messages.NO_TEMPLATE_LOADED + " (" + mpv5.db.objects.User.getCurrentUser() + ")");
-         }
-      }
-   }
+    private void confirmation() {
+        PreviewPanel pr;
+        if (dataOwner != null && dataOwner.isExisting()) {
+            if (TemplateHandler.isLoaded(Long.valueOf(dataOwner.templateGroupIds()), Constants.TYPE_ORDER_CONFIRMATION)) {
 
-   private void preloadTemplates() {
-      Runnable runnable = new Runnable() {
-         public void run() {
-            TemplateHandler.loadTemplateFor(button_preview, dataOwner.templateGroupIds(), dataOwner.__getInttype());
-            TemplateHandler.loadTemplateFor(button_deliverynote, dataOwner.templateGroupIds(), Constants.TYPE_DELIVERY_NOTE);
-            TemplateHandler.loadTemplateFor(new JComponent[]{button_orderconf, checkb_pront_oc}, dataOwner.templateGroupIds(), Constants.TYPE_ORDER_CONFIRMATION);
-            TemplateHandler.loadTemplateFor(button_reminders, dataOwner.templateGroupIds(), Constants.TYPE_REMINDER);
+                pr = new PreviewPanel();
+                pr.setDataOwner(dataOwner);
+                new Job(Export.createFile(TemplateHandler.loadTemplate(dataOwner.templateGroupIds(), Constants.TYPE_ORDER_CONFIRMATION), dataOwner), pr).execute();
+            } else {
+                Popup.notice(Messages.NO_TEMPLATE_LOADED + " (" + mpv5.db.objects.User.getCurrentUser() + ")");
+            }
+        }
+    }
 
+    public void mail() {
+
+        if (dataOwner != null && dataOwner.isExisting()) {
             if (TemplateHandler.isLoaded(Long.valueOf(dataOwner.templateGroupIds()), dataOwner.__getInttype())) {
-               button_preview.setText(Messages.ACTION_PREVIEW.getValue());
+
+                try {
+                    Contact cont = (Contact) (Contact.getObject(Context.getContact(), dataOwner.__getContactsids()));
+                    Export.mail(TemplateHandler.loadTemplate(dataOwner.templateGroupIds(), dataOwner.__getInttype()), dataOwner, cont);
+                } catch (NodataFoundException ex) {
+                    Log.Debug(ex);
+                }
             } else {
-               button_preview.setText(Messages.OO_NO_TEMPLATE.getValue());
+                Popup.notice(Messages.NO_TEMPLATE_LOADED + " (" + mpv5.db.objects.User.getCurrentUser() + ")");
             }
-         }
-      };
-      new Thread(runnable).start();
-   }
+        } else {
+            Popup.notice(Messages.NOT_POSSIBLE + "\n" + Messages.NOT_SAVED_YET);
+        }
+    }
 
-   public void pdf() {
-      if (dataOwner != null && dataOwner.isExisting()) {
-         dataOwner.toPdf(true);
-      }
-   }
-
-   public void odt() {
-      if (dataOwner != null && dataOwner.isExisting()) {
-         dataOwner.toOdt(true);
-      }
-   }
-
-   private void properties() {
-      final MPTableModel m = new MPTableModel(ValueProperty.getProperties(dataOwner));
-      final MPTableModel mold = m.clone();
-
-      if (m.getDataVector().isEmpty()) {
-         proptable.setModel(new MPTableModel(
-                 Arrays.asList(new ValueProperty[]{new ValueProperty("", "", dataOwner)})));
-      } else {
-         proptable.setModel(m);
-      }
-
-      m.addTableModelListener(new TableModelListener() {
-         public void tableChanged(TableModelEvent e) {
-            if (dataOwner.isExisting()) {
-               if (e.getColumn() == 0 && e.getType() == TableModelEvent.DELETE) {
-                  ValueProperty.deleteProperty(dataOwner, String.valueOf(mold.getData()[e.getLastRow()][0]));
-                  m.removeTableModelListener(this);
-                  properties();
-               } else if (e.getColumn() == 1 && m.getValueAt(e.getLastRow(), 0) != null && String.valueOf(m.getValueAt(e.getLastRow(), 0)).length() > 0) {
-                  ValueProperty.addOrUpdateProperty(String.valueOf(m.getData()[e.getLastRow()][0]).replaceAll("[^\\w]", ""), String.valueOf(m.getData()[e.getLastRow()][1]), dataOwner);
-                  m.removeTableModelListener(this);
-                  properties();
-               }
+    public void print() {
+        if (dataOwner != null && dataOwner.isExisting()) {
+            if (TemplateHandler.isLoaded(Long.valueOf(dataOwner.templateGroupIds()), dataOwner.__getInttype())) {
+                if (!checkb_pront_oc.isSelected()) {
+                    Export.print(TemplateHandler.loadTemplate(dataOwner.templateGroupIds(), dataOwner.__getInttype()), dataOwner);
+                } else {
+                    Export.print(new Template[]{TemplateHandler.loadTemplate(dataOwner.templateGroupIds(), dataOwner.__getInttype()), TemplateHandler.loadTemplate(dataOwner.templateGroupIds(), Constants.TYPE_ORDER_CONFIRMATION)}, dataOwner);
+                }
+            } else {
+                Popup.notice(Messages.NO_TEMPLATE_LOADED + " (" + mpv5.db.objects.User.getCurrentUser() + ")");
+                Export.print(this);
             }
-         }
-      });
-   }
+        } else {
+            Export.print(this);
+        }
+    }
 
-   private void toOrder() {
-
-      dataOwner.setIntstatus(Item.STATUS_FINISHED);
-      dataOwner.save();
-
-      Item i2 = (Item) dataOwner.clone(Context.getOrder());
-      i2.setInttype(Item.TYPE_ORDER);
-      i2.setIDS(-1);
-      i2.defineFormatHandler(new FormatHandler(i2));
-      i2.save();
-      if (itemtable.getCellEditor() != null) {
-         try {
-            itemtable.getCellEditor().stopCellEditing();
-         } catch (Exception e) {
-         }
-      }
-      SubItem.saveModel(i2, (MPTableModel) itemtable.getModel(), true, true);
-      setDataOwner(i2, true);
-      Popup.notice(i2 + Messages.INSERTED.getValue());
-   }
-
-   private void toInvoice() {
-
-      dataOwner.setIntstatus(Item.STATUS_FINISHED);
-      dataOwner.save();
-      ArrayList<ActivityList> data;
-      Object[] row;
-
-      Item i2 = (Item) dataOwner.clone(Context.getItem());
-      i2.setInttype(Item.TYPE_BILL);
-      i2.setIDS(-1);
-      i2.defineFormatHandler(new FormatHandler(i2));
-      i2.save();
-      if (itemtable.getCellEditor() != null) {
-         try {
-            itemtable.getCellEditor().stopCellEditing();
-         } catch (Exception e) {
-         }
-      }
-      try {
-         data = DatabaseObject.getObjects(Context.getActivityList(), new QueryCriteria("orderids", dataOwner.__getIDS()));
-         if (Popup.Y_N_dialog(Messages.ActivityList_Existing.toString())) {
-            MPTableModel model = (MPTableModel) itemtable.getModel();
-            Iterator<ActivityList> it = data.iterator();
-            while (it.hasNext()) {
-               row = it.next().getDataForInvoice();
-               row[1] = model.getRowCount();
-               model.insertRow(model.getRowCount(), row);
+    private void preview() {
+        PreviewPanel pr;
+        if (dataOwner != null && dataOwner.isExisting()) {
+            if (TemplateHandler.isLoaded(Long.valueOf(dataOwner.templateGroupIds()), dataOwner.__getInttype())) {
+                pr = new PreviewPanel();
+                pr.setDataOwner(dataOwner);
+                new Job(Export.createFile(TemplateHandler.loadTemplate(dataOwner.templateGroupIds(), dataOwner.__getInttype()), dataOwner), pr).execute();
+            } else {
+                Popup.notice(Messages.NO_TEMPLATE_LOADED + " (" + mpv5.db.objects.User.getCurrentUser() + ")");
             }
-         }
-      } catch (NodataFoundException ex) {
-         Log.Debug(this, ex.getMessage());
-      }
-      SubItem.saveModel(i2, (MPTableModel) itemtable.getModel(), true, true);
-      setDataOwner(i2, true);
-      Popup.notice(i2 + Messages.INSERTED.getValue());
-   }
+        }
+    }
 
-   private class alignRightToolbar extends JToolBar {
+    private void preloadTemplates() {
+        Runnable runnable = new Runnable() {
+            public void run() {
+                TemplateHandler.loadTemplateFor(button_preview, dataOwner.templateGroupIds(), dataOwner.__getInttype());
+                TemplateHandler.loadTemplateFor(button_deliverynote, dataOwner.templateGroupIds(), Constants.TYPE_DELIVERY_NOTE);
+                TemplateHandler.loadTemplateFor(new JComponent[]{button_orderconf, checkb_pront_oc}, dataOwner.templateGroupIds(), Constants.TYPE_ORDER_CONFIRMATION);
+                TemplateHandler.loadTemplateFor(button_reminders, dataOwner.templateGroupIds(), Constants.TYPE_REMINDER);
 
-      private static final long serialVersionUID = 1L;
+                if (TemplateHandler.isLoaded(Long.valueOf(dataOwner.templateGroupIds()), dataOwner.__getInttype())) {
+                    button_preview.setText(Messages.ACTION_PREVIEW.getValue());
+                } else {
+                    button_preview.setText(Messages.OO_NO_TEMPLATE.getValue());
+                }
+            }
+        };
+        new Thread(runnable).start();
+    }
 
-      public alignRightToolbar() {
-         add(Box.createHorizontalGlue());
-      }
-   }
+    public void pdf() {
+        if (dataOwner != null && dataOwner.isExisting()) {
+            dataOwner.toPdf(true);
+        }
+    }
+
+    public void odt() {
+        if (dataOwner != null && dataOwner.isExisting()) {
+            dataOwner.toOdt(true);
+        }
+    }
+
+    private void properties() {
+        final MPTableModel m = new MPTableModel(ValueProperty.getProperties(dataOwner));
+        final MPTableModel mold = m.clone();
+
+        if (m.getDataVector().isEmpty()) {
+            proptable.setModel(new MPTableModel(
+                    Arrays.asList(new ValueProperty[]{new ValueProperty("", "", dataOwner)})));
+        } else {
+            proptable.setModel(m);
+        }
+
+        m.addTableModelListener(new TableModelListener() {
+            public void tableChanged(TableModelEvent e) {
+                if (dataOwner.isExisting()) {
+                    if (e.getColumn() == 0 && e.getType() == TableModelEvent.DELETE) {
+                        ValueProperty.deleteProperty(dataOwner, String.valueOf(mold.getData()[e.getLastRow()][0]));
+                        m.removeTableModelListener(this);
+                        properties();
+                    } else if (e.getColumn() == 1 && m.getValueAt(e.getLastRow(), 0) != null && String.valueOf(m.getValueAt(e.getLastRow(), 0)).length() > 0) {
+                        ValueProperty.addOrUpdateProperty(String.valueOf(m.getData()[e.getLastRow()][0]).replaceAll("[^\\w]", ""), String.valueOf(m.getData()[e.getLastRow()][1]), dataOwner);
+                        m.removeTableModelListener(this);
+                        properties();
+                    }
+                }
+            }
+        });
+    }
+
+    private void toOrder() {
+
+        dataOwner.setIntstatus(Item.STATUS_FINISHED);
+        dataOwner.save();
+
+        Item i2 = (Item) dataOwner.clone(Context.getOrder());
+        i2.setInttype(Item.TYPE_ORDER);
+        i2.setIDS(-1);
+        i2.defineFormatHandler(new FormatHandler(i2));
+        i2.save();
+        if (itemtable.getCellEditor() != null) {
+            try {
+                itemtable.getCellEditor().stopCellEditing();
+            } catch (Exception e) {
+            }
+        }
+        SubItem.saveModel(i2, (MPTableModel) itemtable.getModel(), true, true);
+        setDataOwner(i2, true);
+        Popup.notice(i2 + Messages.INSERTED.getValue());
+    }
+
+    private void toInvoice() {
+
+        dataOwner.setIntstatus(Item.STATUS_FINISHED);
+        dataOwner.save();
+        ArrayList<ActivityList> data;
+        Object[] row;
+
+        Item i2 = (Item) dataOwner.clone(Context.getItem());
+        i2.setInttype(Item.TYPE_BILL);
+        i2.setIDS(-1);
+        i2.defineFormatHandler(new FormatHandler(i2));
+        i2.save();
+        if (itemtable.getCellEditor() != null) {
+            try {
+                itemtable.getCellEditor().stopCellEditing();
+            } catch (Exception e) {
+            }
+        }
+        try {
+            data = DatabaseObject.getObjects(Context.getActivityList(), new QueryCriteria("orderids", dataOwner.__getIDS()));
+            if (Popup.Y_N_dialog(Messages.ActivityList_Existing.toString())) {
+                MPTableModel model = (MPTableModel) itemtable.getModel();
+                Iterator<ActivityList> it = data.iterator();
+                while (it.hasNext()) {
+                    row = it.next().getDataForInvoice();
+                    row[1] = model.getRowCount();
+                    model.insertRow(model.getRowCount(), row);
+                }
+            }
+        } catch (NodataFoundException ex) {
+            Log.Debug(this, ex.getMessage());
+        }
+        SubItem.saveModel(i2, (MPTableModel) itemtable.getModel(), true, true);
+        setDataOwner(i2, true);
+        Popup.notice(i2 + Messages.INSERTED.getValue());
+    }
+
+    private class alignRightToolbar extends JToolBar {
+
+        private static final long serialVersionUID = 1L;
+
+        public alignRightToolbar() {
+            add(Box.createHorizontalGlue());
+        }
+    }
 }

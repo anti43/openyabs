@@ -396,7 +396,7 @@ public class ControlPanel_Groups extends javax.swing.JPanel implements ControlAp
     public String defaults_ = "";
     public String cname_ = "";
     public int ids_;
-    public int groupsids_ = 1;
+    public Group group_ ;
     public int intaddedby_ = 1;
     public java.util.Date dateadded_ = new java.util.Date();
     public String hierarchypath_ = "";
@@ -445,15 +445,15 @@ public class ControlPanel_Groups extends javax.swing.JPanel implements ControlAp
         hierarchypath_ = path.getText();
         if (!root) {
             try {
-                groupsids_ = DatabaseObject.getObject(Context.getGroup(), parents.get_Text()).__getIDS();
+                group_ = (Group)DatabaseObject.getObject(Context.getGroup(), parents.get_Text());
             } catch (NodataFoundException ex) {
-                groupsids_ = 1;
+                group_ = Group.getDefault();
             }
-            if (ids_ == groupsids_) {
-                groupsids_ = 1;
+            if (ids_ == group_.__getIDS()) {
+                group_ = Group.getDefault();
             }
         } else {
-            groupsids_ = 0;
+            group_ = Group.getDefault();
         }
         return true;
     }
@@ -475,9 +475,9 @@ public class ControlPanel_Groups extends javax.swing.JPanel implements ControlAp
         desc.setText(description_);
         path.setText(hierarchypath_);
         try {
-            parents.set_Text(DatabaseObject.getObject(Context.getGroup(), groupsids_).__getCname());
-        } catch (NodataFoundException ex) {
-//            Log.Debug(this, ex);
+            parents.set_Text(group_.__getCname());
+        } catch ( Exception ex) {
+            Log.Debug(this, ex);
         }
 //        defaults.set_Text(defaults_);
     }

@@ -54,6 +54,7 @@ import mpv5.globals.Messages;
 import mpv5.db.objects.Address;
 import mpv5.db.objects.Contact;
 import mpv5.db.objects.Favourite;
+import mpv5.db.objects.Group;
 import mpv5.db.objects.Item;
 import mpv5.db.objects.Product;
 import mpv5.db.objects.Schedule;
@@ -1658,7 +1659,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
    public String company_;
    public int ids_;
    public Date dateadded_;
-   public int groupsids_ = 1;
+   public Group group_;
    public String country_;
    public String bankaccount_;
    public String bankid_;
@@ -1692,10 +1693,14 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
 
 
       if (groupnameselect.getSelectedItem() != null) {
-         groupsids_ = Integer.valueOf((groupnameselect.getSelectedItem()).getId());
-      } else {
-         groupsids_ = 1;
-      }
+              try {
+                  int group = Integer.valueOf(groupnameselect.getSelectedItem().getId());
+                  group_ = (Group) DatabaseObject.getObject(Context.getGroup(), group);
+                  Log.Debug(this, groupnameselect.getSelectedItem().getId());
+              } catch (NodataFoundException ex) {
+                  Log.Debug(this, ex);
+              }
+          }
 
       if (countryselect.getSelectedItem() != null) {
          country_ = String.valueOf(((MPComboBoxModelItem) countryselect.getSelectedItem()).getId());
@@ -1755,8 +1760,8 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
          Log.Debug(e);
       }
       try {
-         groupnameselect.setModel(DatabaseObject.getObject(Context.getGroup(), groupsids_));
-      } catch (NodataFoundException e) {
+         groupnameselect.setModel( group_);
+      } catch (Exception e) {
          Log.Debug(e);
       }
       try {

@@ -20,6 +20,7 @@ import mpv5.db.objects.ActivityList;
 import mpv5.db.objects.ActivityListSubItem;
 import mpv5.db.objects.Contact;
 import mpv5.db.objects.Favourite;
+import mpv5.db.objects.Group;
 import mpv5.db.objects.Item;
 import mpv5.db.objects.Product;
 import mpv5.db.objects.User;
@@ -74,7 +75,7 @@ public final class ActivityConfirmationPanel extends javax.swing.JPanel implemen
     public int intaddedby_;
     public int ids_;
     public Date dateadded_;
-    public int groupsids_ = 1;
+    public Group group_;
     public boolean asproduct_;
     private DynamicTableCalculator itemMultiplier;
     private LightMPComboBox cb = new LightMPComboBox();
@@ -465,7 +466,7 @@ public final class ActivityConfirmationPanel extends javax.swing.JPanel implemen
         cname_ = Project.getText();
         if (cname_.length() > 0) {
             try {
-                groupsids_ = User.getCurrentUser().__getGroupsids();
+                group_ = User.getCurrentUser().getGroup();
                 contactsids_ = Integer.parseInt(contact.getSelectedItem().getId());
                 orderids_ = Integer.parseInt(order.getSelectedItem().getId());
                 totalamount_ = new BigDecimal(total.getText().replace(",", "."));
