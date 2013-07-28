@@ -63,11 +63,14 @@ public class LoginToInstanceScreen extends javax.swing.JDialog {
 
             @Override
             public void windowClosing(WindowEvent e) {
-                close();
+                close(); 
             }
 
             private void close() {
-                dispose();
+                LocalSettings.setProperty(LocalSettings.LAST_USER, null);
+                LocalSettings.setProperty(LocalSettings.LAST_USER_PW, null);
+                LocalSettings.save();
+                Main.getApplication().exit();
             }
         });
         Position position = new Position(this);
