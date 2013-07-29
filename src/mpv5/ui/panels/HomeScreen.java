@@ -43,7 +43,6 @@ import mpv5.db.objects.Reminder;
 import mpv5.db.objects.Schedule;
 import mpv5.db.objects.SubItem;
 import mpv5.db.objects.User;
-import mpv5.globals.Constants;
 import mpv5.globals.Messages;
 import mpv5.handler.Scheduler;
 import mpv5.logging.Log;
@@ -234,7 +233,7 @@ public class HomeScreen
                     data[i][4] = Item.getTypeString(0);
                     data[i][5] = 0;
                     data[i][6] = sched.getIcon();
-                    ((ImageIcon) data[i][5]).setDescription(Messages.NEW_BILL.toString());
+                    ((ImageIcon) data[i][6]).setDescription(Messages.NEW_BILL.toString());
                 }
             }
         } else {

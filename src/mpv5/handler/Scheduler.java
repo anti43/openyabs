@@ -124,7 +124,9 @@ public class Scheduler extends Thread {
                     case 0:
                         ItemType = "bills";
                         prop = "hideunpaidbills";
-                        opens.and(new QueryParameter(Context.getItem(), "intstatus", Item.STATUS_FINISHED, QueryParameter.EQUALS));
+                        opens.or(
+                                new QueryParameter(Context.getItem(), "intstatus", Item.STATUS_QUEUED, QueryParameter.EQUALS),
+                                new QueryParameter(Context.getItem(), "intstatus", Item.STATUS_FINISHED, QueryParameter.EQUALS));
                         use = "usebills";
                         break;
                     case 1:
@@ -196,7 +198,9 @@ public class Scheduler extends Thread {
                     case 0:
                         ItemType = "bills";
                         prop = "hideunpaidbills";
-                        opens.and(new QueryParameter(Context.getItem(), "intstatus", Item.STATUS_FINISHED, QueryParameter.EQUALS));
+                        opens.or(
+                                new QueryParameter(Context.getItem(), "intstatus", Item.STATUS_QUEUED, QueryParameter.EQUALS),
+                                new QueryParameter(Context.getItem(), "intstatus", Item.STATUS_FINISHED, QueryParameter.EQUALS));
                         use = "usebills";
                         break;
                     case 1:
@@ -272,7 +276,9 @@ public class Scheduler extends Thread {
                 switch (b) {
                     case 0:
                         ItemType = "bills";
-                        opens.and(new QueryParameter(Context.getItem(), "intstatus", Item.STATUS_FINISHED, QueryParameter.EQUALS));
+                        opens.or(
+                                new QueryParameter(Context.getItem(), "intstatus", Item.STATUS_QUEUED, QueryParameter.EQUALS),
+                                new QueryParameter(Context.getItem(), "intstatus", Item.STATUS_FINISHED, QueryParameter.EQUALS));
                         use = "usebills";
                         break;
                     case 1:
