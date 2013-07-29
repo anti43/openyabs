@@ -70,7 +70,6 @@ import mpv5.handler.FormatHandler;
 import mpv5.ui.beans.MPCBSelectionChangeReceiver;
 import mpv5.ui.dialogs.DialogForFile;
 import mpv5.ui.dialogs.ScheduleDayEvent;
-import mpv5.ui.dialogs.Search2;
 import mpv5.ui.dialogs.subcomponents.*;
 import mpv5.ui.misc.MPTable;
 import mpv5.ui.misc.Position;
