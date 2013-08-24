@@ -252,7 +252,10 @@ public class MPTable extends JTable {
     public synchronized void reset() {
         if (desiredColSizes != null) {
             createDefaultColumnsFromModel();
-            TableFormat.resizeCols(this, desiredColSizes, fixedCols);
+            try {
+                TableFormat.resizeCols(this, desiredColSizes, fixedCols);
+            } catch (Exception e) {
+            }
         } else {
             createDefaultColumnsFromModel();
         }

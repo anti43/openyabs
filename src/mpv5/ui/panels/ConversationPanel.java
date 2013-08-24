@@ -1207,7 +1207,10 @@ public class ConversationPanel
     private void preloadTemplates() {
         Runnable runnable = new Runnable() {
             public void run() {
-                TemplateHandler.loadTemplate(dataOwner.templateGroupIds(), dataOwner.templateType());
+                try {
+                    TemplateHandler.loadTemplate(dataOwner.templateGroupIds(), dataOwner.templateType());
+                } catch (Exception e) {
+                }
             }
         };
         new Thread(runnable).start();

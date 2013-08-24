@@ -1580,7 +1580,7 @@ public class ProductOrderPanel extends javax.swing.JPanel implements DataPanel, 
         if (dataOwner.isExisting()) {
             if ((dataOwner.getIntstatus() != Item.STATUS_PAID && dataOwner.getIntstatus() != Item.STATUS_CANCELLED) || Popup.Y_N_dialog(Messages.REALLY_CHANGE_DONE_ITEM)) {
 
-                if (!mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("org.openyabs.uiproperty", "nowarnings")) {
+                if (mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("org.openyabs.uiproperty", "dowarnings")) {
 
                     if (!Popup.Y_N_dialog(Messages.REALLY_CHANGE)) {
                         throw new ChangeNotApprovedException(dataOwner);

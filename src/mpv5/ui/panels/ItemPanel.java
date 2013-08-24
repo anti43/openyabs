@@ -2039,7 +2039,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
         if (dataOwner.isExisting()) {
             if ((dataOwner.__getIntstatus() != Item.STATUS_PAID && dataOwner.__getIntstatus() != Item.STATUS_CANCELLED) || Popup.Y_N_dialog(Messages.REALLY_CHANGE_DONE_ITEM)) {
 
-                if (!mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("org.openyabs.uiproperty", "nowarnings")) {
+                if (mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("org.openyabs.uiproperty", "dowarnings")) {
 
                     if (!Popup.Y_N_dialog(Messages.REALLY_CHANGE)) {
                         throw new ChangeNotApprovedException(dataOwner);

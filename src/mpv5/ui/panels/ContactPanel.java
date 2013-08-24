@@ -282,8 +282,8 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
       c.addReference(Context.getFiles().getDbIdentity(), "cname", "filename");
       Object[][] data = new DatabaseSearch(c).getValuesFor(Context.DETAILS_FILES_TO_CONTACTS, "contactsids", dataOwner.__getIDS());
 
-      dataTable.setModel(new MPTableModel(data, Headers.FILE_REFERENCES.getValue()));
-      TableFormat.stripFirstColumn(dataTable);
+      filetableN.setModel(new MPTableModel(data, Headers.FILE_REFERENCES.getValue()));
+      TableFormat.stripFirstColumn(filetableN);
    }
 
    /**

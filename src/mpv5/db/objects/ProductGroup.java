@@ -138,7 +138,7 @@ public class ProductGroup extends DatabaseObject {
 //    }
    public synchronized String __getHierarchypath() {
 
-      if (hierarchypath.contains(Group.GROUPSEPARATOR + Group.GROUPSEPARATOR)) {
+      if (hierarchypath!=null&&hierarchypath.contains(Group.GROUPSEPARATOR + Group.GROUPSEPARATOR)) {
          hierarchypath = "";
       }
       if (hierarchypath == null || hierarchypath.equals("")) {

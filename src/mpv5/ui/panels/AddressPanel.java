@@ -64,6 +64,7 @@ public class AddressPanel extends javax.swing.JPanel implements DataPanel {
     private void initComponents() {
 
         buttonGroup1 = new javax.swing.ButtonGroup();
+        buttonGroup2 = new javax.swing.ButtonGroup();
         jPanel2 = new javax.swing.JPanel();
         mainaddress = new javax.swing.JPanel();
         title = new mpv5.ui.beans.LabeledTextField();
@@ -94,7 +95,7 @@ public class AddressPanel extends javax.swing.JPanel implements DataPanel {
         mainaddress.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
         mainaddress.setName("mainaddress"); // NOI18N
 
-        java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle(); // NOI18N
+        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("mpv5/resources/languages/Panels"); // NOI18N
         title.set_Label(bundle.getString("AddressPanel.title._Label")); // NOI18N
         title.setMaximumSize(new java.awt.Dimension(120, 21));
         title.setMinimumSize(new java.awt.Dimension(120, 24));
@@ -126,12 +127,14 @@ public class AddressPanel extends javax.swing.JPanel implements DataPanel {
         zip.setPreferredSize(new java.awt.Dimension(120, 24));
 
         male.setBackground(new java.awt.Color(204, 204, 204));
+        buttonGroup2.add(male);
         male.setFont(male.getFont().deriveFont(male.getFont().getStyle() & ~java.awt.Font.BOLD));
         male.setSelected(true);
         male.setText(bundle.getString("AddressPanel.male.text")); // NOI18N
         male.setName("male"); // NOI18N
 
         female.setBackground(new java.awt.Color(204, 204, 204));
+        buttonGroup2.add(female);
         female.setFont(female.getFont().deriveFont(female.getFont().getStyle() & ~java.awt.Font.BOLD));
         female.setText(bundle.getString("AddressPanel.female.text")); // NOI18N
         female.setName("female"); // NOI18N
@@ -251,13 +254,13 @@ public class AddressPanel extends javax.swing.JPanel implements DataPanel {
                     .addComponent(street, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(zip, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(city, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(mainaddressLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
                     .addComponent(jButton1)
                     .addComponent(jButton2)
                     .addComponent(dadress)
                     .addComponent(badress))
-                .addGap(23, 23, 23))
+                .addGap(29, 29, 29))
         );
 
         jPanel2.add(mainaddress, java.awt.BorderLayout.CENTER);
@@ -291,6 +294,7 @@ public class AddressPanel extends javax.swing.JPanel implements DataPanel {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JCheckBox badress;
     private javax.swing.ButtonGroup buttonGroup1;
+    private javax.swing.ButtonGroup buttonGroup2;
     private mpv5.ui.beans.LabeledTextField city;
     private mpv5.ui.beans.LabeledTextField cname;
     private javax.swing.JComboBox countryselect;
