@@ -91,7 +91,7 @@
                   <EmptySpace min="-2" pref="0" max="-2" attributes="0"/>
                   <Component id="jPanel5" min="-2" max="-2" attributes="0"/>
                   <EmptySpace min="-2" pref="0" max="-2" attributes="0"/>
-                  <Component id="jSplitPane2" pref="266" max="32767" attributes="0"/>
+                  <Component id="jSplitPane2" pref="246" max="32767" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
@@ -1057,7 +1057,7 @@
                           <Group type="102" alignment="0" attributes="0">
                               <Component id="itemPanel" min="-2" max="-2" attributes="0"/>
                               <EmptySpace min="-2" max="-2" attributes="0"/>
-                              <Component id="jScrollPane3" pref="926" max="32767" attributes="0"/>
+                              <Component id="jScrollPane3" pref="928" max="32767" attributes="0"/>
                           </Group>
                       </Group>
                     </DimensionLayout>
@@ -1130,7 +1130,7 @@
                                   <Component id="upItem" min="-2" max="-2" attributes="1"/>
                                   <EmptySpace max="-2" attributes="0"/>
                                   <Component id="upItem1" min="-2" max="-2" attributes="1"/>
-                                  <EmptySpace pref="21" max="32767" attributes="0"/>
+                                  <EmptySpace max="32767" attributes="0"/>
                               </Group>
                           </Group>
                         </DimensionLayout>
@@ -1337,13 +1337,13 @@
                           <SubComponents>
                             <Component class="javax.swing.JTable" name="proptable">
                               <Properties>
-                                <Property name="autoCreateRowSorter" type="boolean" value="true"/>
                                 <Property name="model" type="javax.swing.table.TableModel" editor="org.netbeans.modules.form.editors2.TableModelEditor">
                                   <Table columnCount="2" rowCount="20">
                                     <Column editable="true" title="" type="java.lang.Object"/>
                                     <Column editable="true" title="" type="java.lang.Object"/>
                                   </Table>
                                 </Property>
+                                <Property name="autoCreateRowSorter" type="boolean" value="true"/>
                                 <Property name="name" type="java.lang.String" value="proptable" noResource="true"/>
                                 <Property name="selectionModel" type="javax.swing.ListSelectionModel" editor="org.netbeans.modules.form.editors2.JTableSelectionModelEditor">
                                   <JTableSelectionModel selectionMode="0"/>
@@ -1371,7 +1371,7 @@
                         <DimensionLayout dim="0">
                           <Group type="103" groupAlignment="0" attributes="0">
                               <Group type="102" alignment="1" attributes="0">
-                                  <EmptySpace pref="529" max="32767" attributes="0"/>
+                                  <EmptySpace pref="528" max="32767" attributes="0"/>
                                   <Group type="103" groupAlignment="0" attributes="0">
                                       <Component id="addfile" alignment="0" min="-2" pref="24" max="-2" attributes="0"/>
                                       <Component id="removefile" alignment="0" min="-2" pref="24" max="-2" attributes="0"/>
@@ -1379,7 +1379,7 @@
                               </Group>
                               <Group type="103" rootIndex="1" groupAlignment="0" attributes="0">
                                   <Group type="102" alignment="0" attributes="0">
-                                      <Component id="jScrollPane2" pref="522" max="32767" attributes="0"/>
+                                      <Component id="jScrollPane2" pref="521" max="32767" attributes="0"/>
                                       <EmptySpace min="-2" pref="31" max="-2" attributes="0"/>
                                   </Group>
                               </Group>
@@ -1391,10 +1391,10 @@
                                   <Component id="addfile" min="-2" max="-2" attributes="1"/>
                                   <EmptySpace min="-2" max="-2" attributes="0"/>
                                   <Component id="removefile" min="-2" max="-2" attributes="1"/>
-                                  <EmptySpace pref="17" max="32767" attributes="0"/>
+                                  <EmptySpace pref="8" max="32767" attributes="0"/>
                               </Group>
                               <Group type="103" rootIndex="1" groupAlignment="0" attributes="0">
-                                  <Component id="jScrollPane2" alignment="1" pref="79" max="32767" attributes="0"/>
+                                  <Component id="jScrollPane2" alignment="1" pref="70" max="32767" attributes="0"/>
                               </Group>
                           </Group>
                         </DimensionLayout>

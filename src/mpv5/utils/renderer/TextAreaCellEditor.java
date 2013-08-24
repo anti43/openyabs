@@ -36,6 +36,7 @@ import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
+import java.math.BigDecimal;
 
 import javax.swing.DefaultCellEditor;
 import javax.swing.JDialog;
@@ -49,8 +50,10 @@ import javax.swing.text.JTextComponent;
 import mpv5.db.objects.Product;
 import mpv5.db.objects.SubItem;
 import mpv5.ui.dialogs.subcomponents.ActivityTextAreaDialog;
+import mpv5.ui.dialogs.subcomponents.ItemTextAreaDialog;
 import mpv5.ui.dialogs.subcomponents.ProductSelectDialog3;
 import mpv5.utils.models.MPTableModel;
+import mpv5.utils.numberformat.FormatNumber;
 
 public class TextAreaCellEditor extends DefaultCellEditor implements ActionListener {
     protected final static String CANCEL = "CANCEL";
@@ -149,6 +152,11 @@ public class TextAreaCellEditor extends DefaultCellEditor implements ActionListe
                     Log.Debug(this, "ActivityDialog");
                     ((ActivityTextAreaDialog) dialog).setSelectedProduct(
                             Integer.valueOf(table.getValueAt(row, 9).toString()), table.getValueAt(row, column).toString());
+                }
+                if (dialog instanceof ItemTextAreaDialog && !table.getValueAt(row, 2).equals(0)) {
+                    Log.Debug(this, "ItemTextDialog");
+                    ((ItemTextAreaDialog) dialog).setQuantity(
+                            Double.parseDouble(table.getValueAt(row, 2).toString()));
                 }
                 dialog.setVisible(true);
             }

@@ -211,4 +211,8 @@ public class ItemTextAreaDialog extends javax.swing.JDialog implements KeyListen
     public void setParentTable(JTable parentTable) {
         this.parentTable = parentTable;
     }
+
+    public void setQuantity(Double valueOf) {
+        labeledSpinner1.setValue(valueOf);
+    }
 }
