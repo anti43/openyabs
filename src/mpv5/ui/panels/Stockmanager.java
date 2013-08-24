@@ -88,15 +88,15 @@ public class Stockmanager extends javax.swing.JPanel {
 
         setName("Form"); // NOI18N
 
-        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("mpv5/ui/panels/Bundle"); // NOI18N
-        jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("Stockmanager.jPanel1.border.title"))); // NOI18N
+        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("mpv5/resources/languages/Panels"); // NOI18N
+        jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("Stockmanager.jPanel1.border.title_1"))); // NOI18N
         jPanel1.setName("jPanel1"); // NOI18N
 
         jToolBar1.setFloatable(false);
         jToolBar1.setRollover(true);
         jToolBar1.setName("jToolBar1"); // NOI18N
 
-        auto.setText(bundle.getString("Stockmanager.auto.text")); // NOI18N
+        auto.setText(bundle.getString("Stockmanager.auto.text_1")); // NOI18N
         auto.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
         auto.setFocusable(false);
         auto.setName("auto"); // NOI18N
@@ -106,7 +106,7 @@ public class Stockmanager extends javax.swing.JPanel {
         jSeparator1.setName("jSeparator1"); // NOI18N
         jToolBar1.add(jSeparator1);
 
-        jButton1.setText(bundle.getString("Stockmanager.jButton1.text")); // NOI18N
+        jButton1.setText(bundle.getString("Stockmanager.jButton1.text_1")); // NOI18N
         jButton1.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
         jButton1.setFocusable(false);
         jButton1.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
@@ -149,7 +149,7 @@ public class Stockmanager extends javax.swing.JPanel {
         });
         jScrollPane2.setViewportView(jTextArea1);
 
-        jButton2.setText(bundle.getString("Stockmanager.jButton2.text")); // NOI18N
+        jButton2.setText(bundle.getString("Stockmanager.jButton2.text_1")); // NOI18N
         jButton2.setName("jButton2"); // NOI18N
         jButton2.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -157,10 +157,10 @@ public class Stockmanager extends javax.swing.JPanel {
             }
         });
 
-        labeledTextField1.set_Label(bundle.getString("Stockmanager.labeledTextField1._Label")); // NOI18N
+        labeledTextField1.set_Label(bundle.getString("Stockmanager.labeledTextField1._Label_1")); // NOI18N
         labeledTextField1.setName("labeledTextField1"); // NOI18N
 
-        jLabel1.setText(bundle.getString("Stockmanager.jLabel1.text")); // NOI18N
+        jLabel1.setText(bundle.getString("Stockmanager.jLabel1.text_1")); // NOI18N
         jLabel1.setName("jLabel1"); // NOI18N
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
