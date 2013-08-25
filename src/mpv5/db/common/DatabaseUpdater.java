@@ -214,6 +214,12 @@ public class DatabaseUpdater {
                     "ALTER TABLE schedule DROP COLUMN eventtype",
                     "RENAME COLUMN schedule.eventtype2 TO eventtype"
                 });
+         UPDATES_DERBY.put(1.1975, new String[]{
+                    "ALTER TABLE schedule ADD COLUMN eventtype2 BIGINT",
+                    "UPDATE schedule SET eventtype2=eventtype",
+                    "ALTER TABLE schedule DROP COLUMN eventtype",
+                    "RENAME COLUMN schedule.eventtype2 TO eventtype"
+                });
         ////////////////////////////////////////////////////////////////////////////////////////////
         // mysql updates
         UPDATES_MYSQL.put(1.11, new String[]{
@@ -470,6 +476,12 @@ public class DatabaseUpdater {
                 });
          UPDATES_MYSQL.put(1.1974, new String[]{
                     "ALTER TABLE schedule ADD COLUMN eventtype2",
+                    "UPDATE schedule SET eventtype2=eventtype",
+                    "ALTER TABLE schedule DROP COLUMN eventtype",
+                    "RENAME COLUMN schedule.eventtype2 TO eventtype"
+                });
+         UPDATES_MYSQL.put(1.1975, new String[]{
+                    "ALTER TABLE schedule ADD COLUMN eventtype2 BIGINT",
                     "UPDATE schedule SET eventtype2=eventtype",
                     "ALTER TABLE schedule DROP COLUMN eventtype",
                     "RENAME COLUMN schedule.eventtype2 TO eventtype"
