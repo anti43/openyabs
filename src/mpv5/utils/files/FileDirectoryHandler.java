@@ -571,9 +571,9 @@ public abstract class FileDirectoryHandler {
     public static URI copyFile(File sourceFile, File outp) throws FileNotFoundException, IOException {
         return copyFile(sourceFile, outp, true);
     }
-    
-    private static void cacheCheck(){
-        return cacheCheck(true);
+
+    private static void cacheCheck() {
+        cacheCheck(true);
     }
 
     private static void cacheCheck(boolean tryagain) {
@@ -597,8 +597,8 @@ public abstract class FileDirectoryHandler {
             } catch (IOException ex) {
                 Log.Debug(ex);
             }
-        }else{
-            throw new IllegalStateException("Cache dir not writeable: " + String.valueOf(e));
+        } else if ((!e.isDirectory() || !e.canWrite() || e.listFiles() == null)) {
+            throw new IllegalStateException("Cache directory not writeable: " + String.valueOf(e));
         }
     }
 

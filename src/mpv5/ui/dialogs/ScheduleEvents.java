@@ -39,6 +39,7 @@ import mpv5.utils.models.MPComboBoxModelItem;
 import mpv5.utils.models.MPComboboxModel;
 import mpv5.utils.models.MPTableModel;
 import mpv5.utils.tables.TableFormat;
+import sun.org.mozilla.javascript.internal.ConstProperties;
 
 /**
  *
@@ -114,7 +115,6 @@ public class ScheduleEvents extends javax.swing.JFrame {
             }
         });
         labeledCombobox4.setSearchEnabled(false);
-        setAlwaysOnTop(true);
         new Position(this);
     }
 
@@ -744,17 +744,20 @@ public class ScheduleEvents extends javax.swing.JFrame {
                     s.setUsersids(mpv5.db.objects.User.getCurrentUser().__getIDS());
                     s.setNextdate(DateConverter.addMonths(labeledDateChooser1.getDate(),
                             s.__getIntervalmonth()));
+                    s.setEventtype(1);
                     s.save();
                     dataOwner = s;
                     /*
                      * Hack um das POPUP ganz nach oben zu bringen ...
                      */
+                    setAlwaysOnTop(false);
                     tmp = Popup.identifier;
                     Popup.identifier = this;
                     Popup.notice(Messages.SCHEDULE_NEXT
                             + DateConverter.getDefDateString(DateConverter.addMonths(labeledDateChooser1.getDate(),
                             s.__getIntervalmonth())));
                     Popup.identifier = tmp;
+                    setAlwaysOnTop(true);
                 } else if (jTabbedPane1.getSelectedIndex() == 1) {
                     if (labeledCombobox3.getSelectedItem() == null) {
                         Popup.error(this, Messages.SELECT_A_CONTACT.toString());
@@ -786,7 +789,7 @@ public class ScheduleEvents extends javax.swing.JFrame {
                     s.save();
                     dataOwner = s;
                 }
-            } catch (NodataFoundException ex) {
+            } catch (Exception ex) {
                 Log.Debug(this, ex.getMessage());
             }
         }
