@@ -571,28 +571,34 @@ public abstract class FileDirectoryHandler {
     public static URI copyFile(File sourceFile, File outp) throws FileNotFoundException, IOException {
         return copyFile(sourceFile, outp, true);
     }
+    
+    private static void cacheCheck(){
+        return cacheCheck(true);
+    }
 
-    private static void cacheCheck() {
+    private static void cacheCheck(boolean tryagain) {
         File e = null;
         try {
             e = new File(LocalSettings.getProperty(LocalSettings.CACHE_DIR));
         } catch (Exception ex) {//avoid npe
             Log.Debug(ex);
-            LocalSettings.setProperty(LocalSettings.CACHE_DIR, System.getProperty("java.io.tmpdir") + Constants.FALLBACK_CACHE_DIR);
+            LocalSettings.setProperty(LocalSettings.CACHE_DIR, System.getProperty("java.io.tmpdir") + File.separator + Constants.FALLBACK_CACHE_DIR);
             e = new File(System.getProperty("java.io.tmpdir"), Constants.FALLBACK_CACHE_DIR);
         }
         if (!e.exists()) {
             e.mkdirs();
         }
         //Cannot access Cache dir?
-        if (!e.isDirectory() || !e.canWrite() || e.listFiles() == null) {
-            LocalSettings.setProperty(LocalSettings.CACHE_DIR, System.getProperty("java.io.tmpdir") + Constants.FALLBACK_CACHE_DIR);
-            cacheCheck();
+        if (tryagain && (!e.isDirectory() || !e.canWrite() || e.listFiles() == null)) {
+            LocalSettings.setProperty(LocalSettings.CACHE_DIR, System.getProperty("java.io.tmpdir") + File.separator + Constants.FALLBACK_CACHE_DIR);
+            cacheCheck(false);
             try {
                 FileDirectoryHandler.deleteTreeOnExit(getTempDirAsFile());
             } catch (IOException ex) {
                 Log.Debug(ex);
             }
+        }else{
+            throw new IllegalStateException("Cache dir not writeable: " + String.valueOf(e));
         }
     }
 
