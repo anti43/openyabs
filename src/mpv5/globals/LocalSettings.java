@@ -67,6 +67,7 @@ public class LocalSettings {
     public static final String CMD_USER = "cmduser";
     public static final String OFFICE_COMMAND = "ooocommand";
     public static final String OFFICE_AUTOSTART = "oooautostart";
+    public static final String OFFICE_KEEPSERVER = "oookeepserver";
 
     private static PropertyStore predefinedSettings = new PropertyStore(new String[][]{
                 {CLIENT, "Default Client"},
