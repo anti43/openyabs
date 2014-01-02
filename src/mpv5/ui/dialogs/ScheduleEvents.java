@@ -39,7 +39,6 @@ import mpv5.utils.models.MPComboBoxModelItem;
 import mpv5.utils.models.MPComboboxModel;
 import mpv5.utils.models.MPTableModel;
 import mpv5.utils.tables.TableFormat;
-import sun.org.mozilla.javascript.internal.ConstProperties;
 
 /**
  *

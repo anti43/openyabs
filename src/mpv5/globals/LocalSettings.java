@@ -40,6 +40,7 @@ public class LocalSettings {
     public static final String OFFICE_BINARY_FOLDER = "ooobinaryfolder";
     public static final String OFFICE_REMOTE = "oootremoteserver";
     public static final String OFFICE_USE = "ooouse";
+    public static final String OFFICE_ALT = "oooalt";
     public static final String CACHE_DIR = "cachedir";
     public static final String DEFAULT_FONT = "defaultfont";
     public static final String PRINT_DEVAPP = "devappprint";
@@ -82,6 +83,7 @@ public class LocalSettings {
                 {OFFICE_HOST, "127.0.0.1"},
                 {OFFICE_REMOTE, "false"},
                 {OFFICE_USE, "false"},
+                {OFFICE_ALT, "false"},
                 {OFFICE_LOCALSERVER, "false"},
                 {OFFICE_AUTOSTART, "true"},
                 {CACHE_DIR, "Cache"},
