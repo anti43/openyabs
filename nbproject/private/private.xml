@@ -2,4 +2,11 @@
 <project-private xmlns="http://www.netbeans.org/ns/project-private/1">
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/1"/>
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
+    <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
+        <group name="Yabs">
+            <file>file:/Users/dev/NetBeansProjects/Standalone/openyabs_newest/src/mpv5/utils/export/ODTFile2.java</file>
+            <file>file:/Users/dev/NetBeansProjects/Standalone/openyabs_newest/src/mpv5/utils/xdocreport/YabsODTContentHandler.java</file>
+            <file>file:/Users/dev/NetBeansProjects/Standalone/openyabs_newest/src/mpv5/utils/xdocreport/YabsODTPreprocessor.java</file>
+        </group>
+    </open-files>
 </project-private>

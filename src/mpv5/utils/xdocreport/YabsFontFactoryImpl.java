@@ -27,8 +27,9 @@ import mpv5.db.common.QueryHandler;
 public class YabsFontFactoryImpl extends ExtendedFontFactoryImp {
 
     private final HashMap<String, String> paths;
+    public static YabsFontFactoryImpl instance = new YabsFontFactoryImpl();
 
-    public YabsFontFactoryImpl() {
+    private YabsFontFactoryImpl() {
         super();
         this.paths = new HashMap<String, String>();
         readUsed();
@@ -72,7 +73,7 @@ public class YabsFontFactoryImpl extends ExtendedFontFactoryImp {
                         .update(qd, id, fontname + " succesfully cached!");
                  paths.put(fontname.toLowerCase(), null);
             } catch (NodataFoundException ex) {
-                
+                paths.put(fontname.toLowerCase(), null);
             }
         }
         return super.getFont(fontname, encoding, embedded, size, style, color, cached);

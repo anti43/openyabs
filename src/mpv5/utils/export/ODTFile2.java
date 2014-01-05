@@ -19,6 +19,7 @@ package mpv5.utils.export;
 import mpv5.utils.xdocreport.YabsFontFactoryImpl;
 import mpv5.utils.xdocreport.YabsODTPreprocessor;
 import com.lowagie.text.FontFactory;
+import enoa.handler.TableHandler;
 import fr.opensagres.xdocreport.core.XDocReportException;
 import fr.opensagres.xdocreport.document.IXDocReport;
 import fr.opensagres.xdocreport.document.odt.ODTConstants;
@@ -26,15 +27,19 @@ import fr.opensagres.xdocreport.document.registry.XDocReportRegistry;
 import fr.opensagres.xdocreport.itext.extension.font.ITextFontRegistry;
 import fr.opensagres.xdocreport.template.IContext;
 import fr.opensagres.xdocreport.template.TemplateEngineKind;
+import fr.opensagres.xdocreport.template.formatter.FieldsMetadata;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import mpv5.logging.Log;
 import mpv5.utils.files.FileDirectoryHandler;
+import org.odftoolkit.odfdom.converter.core.ODFConverterException;
 import org.odftoolkit.odfdom.converter.pdf.PdfConverter;
 import org.odftoolkit.odfdom.converter.pdf.PdfOptions;
 import org.odftoolkit.odfdom.doc.OdfTextDocument;
@@ -46,16 +51,29 @@ import org.odftoolkit.odfdom.doc.OdfTextDocument;
 public class ODTFile2 extends Exportable {
 
     private static final long serialVersionUID = 1L;
+    private File f = null;
+    private FileOutputStream outtmp;
+    private OdfTextDocument document;
+    private final PdfOptions options;
+    private final IXDocReport report;
 
     public ODTFile2(String pathToFile) throws Exception {
         super(pathToFile);
         if (!exists()) {
             try {
                 createNewFile();
+
             } catch (IOException ex) {
                 Log.Debug(ex);
             }
         }
+        FontFactory.setFontImp(YabsFontFactoryImpl.instance);
+        ITextFontRegistry reg = ITextFontRegistry.getRegistry();
+        options = PdfOptions.create();
+        options.fontProvider(reg);
+        report = XDocReportRegistry.getRegistry().loadReport(new FileInputStream(this), TemplateEngineKind.Velocity);
+        report.addPreprocessor(ODTConstants.CONTENT_XML_ENTRY, YabsODTPreprocessor.INSTANCE);
+        report.addPreprocessor(ODTConstants.STYLES_XML_ENTRY, YabsODTPreprocessor.INSTANCE);
     }
 
     @Override
@@ -63,28 +81,25 @@ public class ODTFile2 extends Exportable {
         try {
             Log.Debug(this, "run odt run: " + this);
             mpv5.YabsViewProxy.instance().setWaiting(true);
-            File f;
-            FileOutputStream outtmp = new FileOutputStream(f = FileDirectoryHandler.getTempFile("odt"));
             if (getTarget().getAbsolutePath().endsWith(".pdf")) {
-                fillFields(new FileInputStream(this), outtmp);
+                outtmp = new FileOutputStream(f = FileDirectoryHandler.getTempFile("odt"));
+                fillFields(outtmp);
                 Log.Debug(this, "Replaced Fields of odt file: " + this + " to " + f);
-                OdfTextDocument document
-                        = OdfTextDocument.loadDocument(f);
+                document = OdfTextDocument.loadDocument(f);
                 Log.Debug(this, "Loaded odt file: " + f);
-                YabsFontFactoryImpl yffi = new YabsFontFactoryImpl();
-                FontFactory.setFontImp(yffi);
-                PdfOptions options = PdfOptions.create();
-                ITextFontRegistry reg = ITextFontRegistry.getRegistry();
-                options.fontProvider(reg);
                 PdfConverter.getInstance().convert(document, new FileOutputStream(getTarget()), options);
                 Log.Debug(this, "Completed pdf file: " + getTarget());
-                f.deleteOnExit();
-                this.deleteOnExit();
+                //f.deleteOnExit();
+                //this.deleteOnExit();
             } else {
-                fillFields(new FileInputStream(this), new FileOutputStream(getTarget()));
+                fillFields(new FileOutputStream(getTarget()));
                 Log.Debug(this, "Replaced Fields of odt file: " + this + " to " + getTarget());
             }
 
+        } catch (IOException ex) {
+            Log.Debug(ex);
+        } catch (ODFConverterException ex) {
+            Log.Debug(ex);
         } catch (Exception ex) {
             Log.Debug(ex);
         } finally {
@@ -92,22 +107,62 @@ public class ODTFile2 extends Exportable {
         }
     }
 
-    private void fillFields(InputStream in, OutputStream out) throws IOException, XDocReportException {
-        IXDocReport report = XDocReportRegistry.getRegistry().loadReport(in, TemplateEngineKind.Velocity);
-        report.addPreprocessor(ODTConstants.CONTENT_XML_ENTRY, YabsODTPreprocessor.INSTANCE);
-        report.addPreprocessor(ODTConstants.STYLES_XML_ENTRY, YabsODTPreprocessor.INSTANCE);
-
-        IContext context = report.createContext();
-        if (Log.isDebugging()) {
-            Log.Debug(this, "All fields:");
-            for (String k : getData().keySet()) {
-                Log.Debug(this, "Key: " + k + " [" + getData().get(k) + "]");
+    private void fillFields(OutputStream out) throws IOException {
+        try {
+            FieldsMetadata metadata = new FieldsMetadata();
+            boolean addMeta = true;
+            
+            IContext context = report.createContext();
+            if (Log.isDebugging()) {
+                Log.Debug(this, "All fields:");
+                for (String k : getData().keySet()) {
+                    Log.Debug(this, "Key: " + k + " [" + getData().get(k) + "]");
+                }
             }
-        }
-        HashMap<String, Object> d = getData();
-        d.putAll(getTemplate().getData());
-        context.putMap(d);
 
-        report.process(context, out);
+            context.putMap(getData());
+            Object table = null;
+            for (String k : getData().keySet()) {
+                if (k.contains(TableHandler.KEY_TABLE + "1")) {
+                    table = k;
+                    break;
+                }
+            }
+            if (table != null) {
+                String fmt = this.getTemplate().__getFormat();
+                String[] cols = fmt.split(",");
+                ArrayList<String[]> list = (ArrayList<String[]>) getData().get(table);
+                List<Map<String, String>> positions = new ArrayList<Map<String, String>>();
+                for (String[] s : list) {
+                    int i = 0;
+                    Map<String, String> xtable = new HashMap<String, String>();
+                    for (String s1 : cols) {
+                        int col = Integer.parseInt(s1) - 1;
+                        String colname = "C" + i++;
+                        xtable.put(colname, s[col]);
+                        if (addMeta) {
+                            metadata.addFieldAsList(TableHandler.KEY_TABLE + "1." + colname);
+                        }
+                    }
+//                    for (String s2 : s) {
+//                        String colname = "C" + i++;
+//                        xtable.put(colname, s2);
+//                        if (addMeta)
+//                            metadata.addFieldAsList(TableHandler.KEY_TABLE + "1." + colname);
+//                    }
+                    positions.add(xtable);
+                    addMeta = false;
+                }
+                context.put(TableHandler.KEY_TABLE + "1", positions);
+            }
+            report.setFieldsMetadata(metadata);
+
+            report.process(context, out);
+
+        } catch (XDocReportException ex) {
+            Log.Debug(ex);
+        } catch (NoClassDefFoundError ex2) {
+            Log.Debug(ex2);
+        }
     }
 }
