@@ -113,6 +113,15 @@ public class YabsViewProxy implements YabsView {
             return views.getFirst().getApplication();
         }
     }
+    
+    @Override
+    public YabsApplication getYabsApplication() {
+        if (views.isEmpty()) {
+            return null;
+        } else {
+            return views.getFirst().getYabsApplication();
+        }
+    }
 
     @Override
     public synchronized JFrame getIdentifierFrame() {
@@ -352,4 +361,6 @@ public class YabsViewProxy implements YabsView {
             views.get(i).showServerStatus(b);
         }
     }
+    
+    
 }

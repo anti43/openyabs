@@ -2496,6 +2496,9 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
      * @return
      */
     public synchronized String evaluate(String script) {
+        if(script.startsWith("#") && script.endsWith("#")){
+           script = script.substring(1, script.length()-1);
+        }
         return String.valueOf(getGroovyShell().evaluate(script));
     }
 
@@ -2528,7 +2531,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
                 }
             } else if (strVal.startsWith("#") && strVal.endsWith("#")) {
                 try {
-                    Object value = getGroovyShell().evaluate(strVal.replace("#", ""));
+                    Object value = evaluate(strVal);
                     map.put("property." + p.getKey(), String.valueOf(value));
                 } catch (Exception e) {
                     Log.Debug(this, e.getMessage());
@@ -2573,7 +2576,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
         if (this instanceof Templateable) {
             Templateable me = (Templateable) this;
             if (TemplateHandler.isLoaded(me)) {
-                File xf = new File(User.getSaveDir(this), me.getFormatHandler().toUserString() + ".pdf");
+                File xf = new File(User.getSaveDir(this), me.getFormatHandler().toUserString() + (convertToPdf?".pdf":".odt"));
                 Waiter x;
                 if (showDialog) {
                     x = new DialogForFile(DialogForFile.FILES_ONLY, xf);

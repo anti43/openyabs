@@ -39,6 +39,8 @@ public interface YabsView{
     public YabsView getIdentifierView();
     
     public Application getApplication();
+    
+    public YabsApplication getYabsApplication();
 
     public YabsPluginLoader getPluginLoader();
 

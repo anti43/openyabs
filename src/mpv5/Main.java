@@ -41,6 +41,7 @@ import java.util.Enumeration;
 import java.util.List;
 import java.util.Properties;
 import javax.swing.ImageIcon;
+import javax.swing.JMenu;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import mpv5.db.common.Context;
@@ -1149,4 +1150,5 @@ public class Main implements Runnable {
       DatabaseConnection.shutdown();
       LoginToInstanceScreen.load();
    }
+  
 }

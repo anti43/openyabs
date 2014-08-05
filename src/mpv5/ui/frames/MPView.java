@@ -52,6 +52,7 @@ import javax.swing.JViewport;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import mpv5.Main;
+import mpv5.YabsApplication;
 import mpv5.YabsView;
 import mpv5.YabsViewProxy;
 import mpv5.YabsViewProxy.FlowProvider;
@@ -137,7 +138,7 @@ import mpv5.utils.images.MPIcon;
 import mpv5.utils.renderer.ComboBoxRendererForTooltip;
 import mpv5.utils.xml.XMLWriter;
 import net.sf.vcard4j.java.VCard;
-import org.jdesktop.application.Application;
+ 
 import org.jdesktop.application.FrameView;
 import org.jdesktop.application.SingleFrameApplication;
 
@@ -358,8 +359,8 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
    /**
     * @return the identifierApplication
     */
-   public Application getIdentifierApplication() {
-      return identifierApplication;
+   public YabsApplication getIdentifierApplication() {
+      return (YabsApplication)identifierApplication;
    }
 
    /**
@@ -3456,5 +3457,11 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
             Log.Debug(e);
          }
       }
+   }
+
+   public YabsApplication getYabsApplication() {
+      if(getApplication() instanceof YabsApplication)
+         return (YabsApplication)getApplication();
+      throw new RuntimeException("Not a YabsApplication: "+getApplication());
    }
 }

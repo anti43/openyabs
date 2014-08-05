@@ -5,6 +5,7 @@ package mpv5;
 
 import mpv5.db.objects.User;
 import org.jdesktop.application.Application;
+import org.jdesktop.application.FrameView;
 import org.jdesktop.application.SingleFrameApplication;
 
 /**
@@ -23,6 +24,10 @@ public class YabsApplication extends SingleFrameApplication {
     @Override
     protected void startup() {
         main.startup();
+    }
+    
+    public FrameView getView(){
+       return getMainView();
     }
 
     /**

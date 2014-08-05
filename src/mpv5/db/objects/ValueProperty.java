@@ -177,6 +177,39 @@ public final class ValueProperty extends DatabaseObject {
         ArrayList<DatabaseObject> objects = DatabaseObject.getObjects(Context.getValueProperties(), c);
         return (ValueProperty) objects.get(0);
     }
+    
+    /**
+     * Search for a specific property
+     * @param owner
+     * @param key
+     * @return 
+     */
+    public static synchronized boolean hasProperty(final DatabaseObject owner, final String key) {
+        if (key == null) {
+            throw new NullPointerException();
+        }
+        QueryCriteria2 c = new QueryCriteria2();
+        c.and(new QueryParameter(Context.getValueProperties(), "cname", key, QueryParameter.EQUALS));
+        c.and(new QueryParameter(Context.getValueProperties(), "objectids", owner.__getIDS(), QueryParameter.EQUALS));
+        return QueryHandler.instanceOf(Context.getValueProperties()).checkExistance(c);
+    }
+    
+     /**
+     * Search for a specific property
+     * @param owner
+     * @param key
+     * @return 
+     */
+    public static synchronized boolean hasProperty(final Context owner, final String key) {
+        if (key == null) {
+            throw new NullPointerException();
+        }
+        QueryCriteria2 c = new QueryCriteria2();
+        c.and(new QueryParameter(Context.getValueProperties(), "cname", key, QueryParameter.EQUALS));
+        c.and(new QueryParameter(Context.getValueProperties(), "objectids", 0, QueryParameter.EQUALS));
+        c.and(new QueryParameter(Context.getValueProperties(), "contextids", owner.getId(), QueryParameter.EQUALS));
+        return QueryHandler.instanceOf(Context.getValueProperties()).checkExistance(c);
+    }
 
     /**
      * Search for a specific property
