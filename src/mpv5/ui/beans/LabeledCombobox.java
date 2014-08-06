@@ -357,4 +357,8 @@ public class LabeledCombobox extends javax.swing.JPanel {
             }
         });
     }
+
+    public void setNullSelection() {
+       mPCombobox1.setSelectedIndex(-1);
+    }
 }

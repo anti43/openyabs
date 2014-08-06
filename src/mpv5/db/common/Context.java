@@ -56,7 +56,7 @@ import mpv5.utils.xml.XMLReader;
  *
  * Context controls Database Queries for all native MP {@link DatabaseObject}s
  */
-public class Context implements Serializable {
+public class Context implements Serializable, Comparable<Context> {
 
     //********** tablenames ****************************************************
     public static String IDENTITY_CONTACTS = "contacts";
@@ -150,7 +150,7 @@ public class Context implements Serializable {
     private static Class<MassprintRules> IDENTITY_MASSPRINT_CLASS = MassprintRules.class;
     private static Class<ProductOrder> IDENTITY_PRODUCTORDER_CLASS = ProductOrder.class;
     private static Class<ProductOrderSubItem> IDENTITY_PRODUCTORDERSUBITEM_CLASS = ProductOrderSubItem.class;
-    
+
     //********** unique constraints *******************************************
     public static String UNIQUECOLUMNS_USER = "cname";
     public static String UNIQUECOLUMNS_ITEMS = "cname";
@@ -193,8 +193,8 @@ public class Context implements Serializable {
             + IDENTITY_CONTACTS + "." + "WORKPHONE," + IDENTITY_CONTACTS + "." + "COMPANY," + IDENTITY_CONTACTS + "." + "MAILADDRESS,"
             + IDENTITY_CONTACTS + "." + "WEBSITE," + IDENTITY_CONTACTS + "." + "NOTES,"
             + IDENTITY_CONTACTS + "." + "TAXNUMBER";
-    public static String DETAILS_PRODUCTS =
-            IDENTITY_PRODUCTS + "." + "ids,"
+    public static String DETAILS_PRODUCTS
+            = IDENTITY_PRODUCTS + "." + "ids,"
             + IDENTITY_PRODUCTS + "." + "cnumber,"
             + IDENTITY_PRODUCTS + "." + "cname,"
             + IDENTITY_PRODUCTS + "." + "ean,"
@@ -209,22 +209,22 @@ public class Context implements Serializable {
             + IDENTITY_USERS + "." + "mail,"
             + IDENTITY_USERS + "." + "isenabled,"
             + IDENTITY_USERS + "." + "isloggedin";
-    public static String DETAILS_ITEMS =
-            IDENTITY_ITEMS + "." + "IDS,"
+    public static String DETAILS_ITEMS
+            = IDENTITY_ITEMS + "." + "IDS,"
             + IDENTITY_ITEMS + "." + "CNAME,"
             + IDENTITY_ITEMS + "." + "dateadded,"
             + IDENTITY_ITEMS + "." + "netvalue,"
             + IDENTITY_ITEMS + "." + "taxvalue, "
             + IDENTITY_ITEMS + "." + "datetodo";
-    public static String DETAILS_JOURNAL =  Context.IDENTITY_ITEMS   + "." + "IDS," + Context.IDENTITY_CONTACTS + "." + "cname," +    Context.IDENTITY_CONTACTS + "." + "prename,"  + Context.IDENTITY_CONTACTS + "." + "street,"   + Context.IDENTITY_CONTACTS + "." + "city,"     + Context.IDENTITY_CONTACTS + "." + "country,"  + Context.IDENTITY_ITEMS   + "." + "{date},"    + Context.IDENTITY_GROUPS + "." + "CNAME," + Context.IDENTITY_ACCOUNTS + "." + "cname," + Context.IDENTITY_ITEMS   + "." + "CNAME," + Context.IDENTITY_ITEMS   + "." + "inttype," + Context.IDENTITY_ITEMS   + "." + "intstatus,(" + Context.IDENTITY_ITEMS   + "." + "netvalue-" + Context.IDENTITY_ITEMS   + "." + "discountvalue),"   + Context.IDENTITY_ITEMS   + "." + "taxvalue, ("      + Context.IDENTITY_ITEMS   + "." + "netvalue +" + Context.IDENTITY_ITEMS   + "." + "taxvalue -" + Context.IDENTITY_ITEMS   + "." + "discountvalue),"+ Context.IDENTITY_ITEMS   + "." + "discountvalue";
-    public static String DETAILS_JOURNAL2 = Context.IDENTITY_REVENUE + "." + "IDS," + Context.IDENTITY_GROUPS +   "." + "reserve2," + Context.IDENTITY_GROUPS + "."   + "reserve2," + Context.IDENTITY_GROUPS + "."   + "reserve2," + Context.IDENTITY_GROUPS   + "." + "reserve2," + Context.IDENTITY_GROUPS   + "." + "reserve2," + Context.IDENTITY_REVENUE + "." + "dateadded," + Context.IDENTITY_GROUPS + "." + "CNAME," + Context.IDENTITY_ACCOUNTS + "." + "cname," + Context.IDENTITY_REVENUE + "." + "CNAME," + Context.IDENTITY_REVENUE + "." + "ids,"     + Context.IDENTITY_REVENUE + "." + "ispaid,"    + Context.IDENTITY_REVENUE + "." + "netvalue, (" + Context.IDENTITY_REVENUE + "." + "brutvalue-" + Context.IDENTITY_REVENUE + "." + "netvalue)," + Context.IDENTITY_REVENUE + "." + "brutvalue, 0";
-    public static String DETAILS_JOURNAL3 = Context.IDENTITY_EXPENSE + "." + "IDS," + Context.IDENTITY_GROUPS +   "." + "reserve2," + Context.IDENTITY_GROUPS + "."   + "reserve2," + Context.IDENTITY_GROUPS + "."   + "reserve2," + Context.IDENTITY_GROUPS   + "." + "reserve2," + Context.IDENTITY_GROUPS   + "." + "reserve2," + Context.IDENTITY_EXPENSE + "." + "{date},"    + Context.IDENTITY_GROUPS + "." + "CNAME," + Context.IDENTITY_ACCOUNTS + "." + "cname," + Context.IDENTITY_EXPENSE + "." + "CNAME," + Context.IDENTITY_EXPENSE + "." + "ids,"     + Context.IDENTITY_EXPENSE + "." + "ispaid,"    + Context.IDENTITY_EXPENSE + "." + "netvalue, (" + Context.IDENTITY_EXPENSE + "." + "brutvalue-" + Context.IDENTITY_EXPENSE + "." + "netvalue)," + Context.IDENTITY_EXPENSE + "." + "brutvalue, 0";
+    public static String DETAILS_JOURNAL = Context.IDENTITY_ITEMS + "." + "IDS," + Context.IDENTITY_CONTACTS + "." + "cname," + Context.IDENTITY_CONTACTS + "." + "prename," + Context.IDENTITY_CONTACTS + "." + "street," + Context.IDENTITY_CONTACTS + "." + "city," + Context.IDENTITY_CONTACTS + "." + "country," + Context.IDENTITY_ITEMS + "." + "{date}," + Context.IDENTITY_GROUPS + "." + "CNAME," + Context.IDENTITY_ACCOUNTS + "." + "cname," + Context.IDENTITY_ITEMS + "." + "CNAME," + Context.IDENTITY_ITEMS + "." + "inttype," + Context.IDENTITY_ITEMS + "." + "intstatus,(" + Context.IDENTITY_ITEMS + "." + "netvalue-" + Context.IDENTITY_ITEMS + "." + "discountvalue)," + Context.IDENTITY_ITEMS + "." + "taxvalue, (" + Context.IDENTITY_ITEMS + "." + "netvalue +" + Context.IDENTITY_ITEMS + "." + "taxvalue -" + Context.IDENTITY_ITEMS + "." + "discountvalue)," + Context.IDENTITY_ITEMS + "." + "discountvalue";
+    public static String DETAILS_JOURNAL2 = Context.IDENTITY_REVENUE + "." + "IDS," + Context.IDENTITY_GROUPS + "." + "reserve2," + Context.IDENTITY_GROUPS + "." + "reserve2," + Context.IDENTITY_GROUPS + "." + "reserve2," + Context.IDENTITY_GROUPS + "." + "reserve2," + Context.IDENTITY_GROUPS + "." + "reserve2," + Context.IDENTITY_REVENUE + "." + "dateadded," + Context.IDENTITY_GROUPS + "." + "CNAME," + Context.IDENTITY_ACCOUNTS + "." + "cname," + Context.IDENTITY_REVENUE + "." + "CNAME," + Context.IDENTITY_REVENUE + "." + "ids," + Context.IDENTITY_REVENUE + "." + "ispaid," + Context.IDENTITY_REVENUE + "." + "netvalue, (" + Context.IDENTITY_REVENUE + "." + "brutvalue-" + Context.IDENTITY_REVENUE + "." + "netvalue)," + Context.IDENTITY_REVENUE + "." + "brutvalue, 0";
+    public static String DETAILS_JOURNAL3 = Context.IDENTITY_EXPENSE + "." + "IDS," + Context.IDENTITY_GROUPS + "." + "reserve2," + Context.IDENTITY_GROUPS + "." + "reserve2," + Context.IDENTITY_GROUPS + "." + "reserve2," + Context.IDENTITY_GROUPS + "." + "reserve2," + Context.IDENTITY_GROUPS + "." + "reserve2," + Context.IDENTITY_EXPENSE + "." + "{date}," + Context.IDENTITY_GROUPS + "." + "CNAME," + Context.IDENTITY_ACCOUNTS + "." + "cname," + Context.IDENTITY_EXPENSE + "." + "CNAME," + Context.IDENTITY_EXPENSE + "." + "ids," + Context.IDENTITY_EXPENSE + "." + "ispaid," + Context.IDENTITY_EXPENSE + "." + "netvalue, (" + Context.IDENTITY_EXPENSE + "." + "brutvalue-" + Context.IDENTITY_EXPENSE + "." + "netvalue)," + Context.IDENTITY_EXPENSE + "." + "brutvalue, 0";
     public static String DETAILS_HISTORY = getHistory().getDbIdentity() + ".ids, " + getHistory().getDbIdentity() + ".cname, " + getHistory().getDbIdentity() + ".username, " + Context.getGroup().getDbIdentity() + ".cname," + Context.getHistory().getDbIdentity() + ".dateadded";
     public static String DETAILS_FILES_TO_CONTACTS = Context.getFiles().getDbIdentity() + ".cname," + getFilesToContacts().getDbIdentity() + ".cname, " + Context.getFiles().getDbIdentity() + ".dateadded," + Context.getFilesToContacts().getDbIdentity() + ".description," + Context.getFilesToContacts().getDbIdentity() + ".intsize," + Context.getFilesToContacts().getDbIdentity() + ".mimetype";
     public static String DETAILS_FILES_TO_ITEMS = Context.getFiles().getDbIdentity() + ".cname," + getFilesToItems().getDbIdentity() + ".cname, " + Context.getFiles().getDbIdentity() + ".dateadded," + Context.getFilesToItems().getDbIdentity() + ".description," + Context.getFilesToItems().getDbIdentity() + ".intsize," + Context.getFilesToItems().getDbIdentity() + ".mimetype";
     public static String DETAILS_FILES_TO_PRODUCTS = Context.getFiles().getDbIdentity() + ".cname," + getFilesToProducts().getDbIdentity() + ".cname, " + Context.getFiles().getDbIdentity() + ".dateadded," + Context.getFilesToProducts().getDbIdentity() + ".description," + Context.getFilesToProducts().getDbIdentity() + ".intsize," + Context.getFilesToProducts().getDbIdentity() + ".mimetype";
-    public static String DETAILS_MASSPRINT =
-            Context.IDENTITY_MASSPRINT + "." + "IDS,"
+    public static String DETAILS_MASSPRINT
+            = Context.IDENTITY_MASSPRINT + "." + "IDS,"
             + Context.IDENTITY_MASSPRINT + "." + "cname,"
             + Context.IDENTITY_MASSPRINT + "." + "inttype,"
             + Context.IDENTITY_MASSPRINT + "." + "dateadded";
@@ -233,10 +233,12 @@ public class Context implements Serializable {
     private static final Map<String, String> FOREIGN_KEY_ALIASES = new HashMap<String, String>();
 
     /**
-     * Find an alias (eg originalproducstids is an alias for productsids in table subitems)
+     * Find an alias (eg originalproducstids is an alias for productsids in
+     * table subitems)
+     *
      * @param context
      * @param exct
-     * @return 
+     * @return
      */
     public static String getAliasFor(Context context, Context exct) {
         if (FOREIGN_KEY_ALIASES.containsKey(context + "@" + exct)) {
@@ -249,6 +251,7 @@ public class Context implements Serializable {
 
     /**
      * Contexts which can have an export template
+     *
      * @return
      */
     public static ArrayList<Context> getTemplateableContexts() {
@@ -266,6 +269,7 @@ public class Context implements Serializable {
 
     /**
      * Contexts which are protected by the Securitymanager
+     *
      * @return
      */
     public static ArrayList<Context> getSecuredContexts() {
@@ -300,43 +304,45 @@ public class Context implements Serializable {
 
     /**
      * Contexts which can get cached
+     *
      * @return
      */
     public static ArrayList<Context> getCacheableContexts() {
         return cacheableContexts;
     }
     private static ArrayList<Context> cacheableContexts = new ArrayList<Context>(Arrays.asList(new Context[]{
-                getContact(),
-                getFavourite(),
-                getUser(),
-                getAddress(),
-                getItem(null, null),
-                getSubItem(),
-                getGroup(),
-                getSchedule(),
-                getFilesToContacts(),
-                getFilesToItems(),
-                getFilesToProducts(),
-                getProduct(),
-                getAccounts(),
-                getMessage(),
-                getProductListItems(),
-                getCompany(),
-                getWebShop(),
-                getTemplate(),
-                getReminder(),
-                getStage(),
-                getTaxes(),
-                getProductGroup(),
-                getProductPrice(),
-                getActivityListItems(),
-                getProductOrderSubitem(),
-                getProductOrder(),
-                getConversation()
-            }));
+        getContact(),
+        getFavourite(),
+        getUser(),
+        getAddress(),
+        getItem(null, null),
+        getSubItem(),
+        getGroup(),
+        getSchedule(),
+        getFilesToContacts(),
+        getFilesToItems(),
+        getFilesToProducts(),
+        getProduct(),
+        getAccounts(),
+        getMessage(),
+        getProductListItems(),
+        getCompany(),
+        getWebShop(),
+        getTemplate(),
+        getReminder(),
+        getStage(),
+        getTaxes(),
+        getProductGroup(),
+        getProductPrice(),
+        getActivityListItems(),
+        getProductOrderSubitem(),
+        getProductOrder(),
+        getConversation()
+    }));
 
     /**
      * Contexts which are groupable
+     *
      * @return
      */
     public static ArrayList<Context> getGroupableContexts() {
@@ -375,6 +381,7 @@ public class Context implements Serializable {
 
     /**
      * Contexts which can be moved to trash rather than delete
+     *
      * @return
      */
     public static ArrayList<Context> getTrashableContexts() {
@@ -402,6 +409,7 @@ public class Context implements Serializable {
 
     /**
      * Contexts which are monitored by the History
+     *
      * @return
      */
     public static ArrayList<Context> getArchivableContexts() {
@@ -410,6 +418,7 @@ public class Context implements Serializable {
 
     /**
      * Contexts which can be used in a user's Search
+     *
      * @return
      */
     public static ArrayList<Context> getSearchableContexts() {
@@ -428,6 +437,7 @@ public class Context implements Serializable {
 
     /**
      * LOckable Contexts
+     *
      * @return
      */
     public static ArrayList<Context> getLockableContexts() {
@@ -448,6 +458,7 @@ public class Context implements Serializable {
 
     /**
      * Importable Contexts
+     *
      * @return
      */
     public static ArrayList<Context> getImportableContexts() {
@@ -472,57 +483,57 @@ public class Context implements Serializable {
      * A list of all available contexts
      */
     private static ArrayList<Context> allContexts = new ArrayList<Context>(Arrays.asList(new Context[]{
-                getContactsCompanies(),
-                getContact(),
-                getCustomer(),
-                getFavourite(),
-                getFiles(),
-                getLanguage(),
-                getLock(),
-                getManufacturer(),
-                getSupplier(),
-                getUser(),
-                getAddress(),
-                getItem(null, null),
-                getInvoice(),
-                getOrder(),
-                getOffer(),
-                getSubItem(),
-                getGroup(),
-                getSchedule(),
-                getFilesToContacts(),
-                getHistory(),
-                getCountries(),
-                getProduct(),
-                getPlugins(),
-                getPluginsToUsers(),
-                getTemplatesToUsers(),
-                getUserProperties(),
-                getAccounts(),
-                getItemsToAccounts(),
-                getMessage(),
-                getProductListItems(),
-                getFormats(),
-                getTaxes(),
-                getGlobalSettings(),
-                getCompany(),
-                getWebShop(),
-                getWebShopItemMapping(),
-                getWebShopContactMapping(),
-                getTemplate(),
-                getReminder(),
-                getStage(),
-                getProductlist(),
-                getExpense(),
-                getRevenue(),
-                getProductsToSuppliers(),
-                getValueProperties(),
-                getProductPrice(),
-                getMassprint(),
-                getProductOrderSubitem(),
-                getProductOrder(),
-                getConversation()
-            }));
+        getContactsCompanies(),
+        getContact(),
+        getCustomer(),
+        getFavourite(),
+        getFiles(),
+        getLanguage(),
+        getLock(),
+        getManufacturer(),
+        getSupplier(),
+        getUser(),
+        getAddress(),
+        getItem(null, null),
+        getInvoice(),
+        getOrder(),
+        getOffer(),
+        getSubItem(),
+        getGroup(),
+        getSchedule(),
+        getFilesToContacts(),
+        getHistory(),
+        getCountries(),
+        getProduct(),
+        getPlugins(),
+        getPluginsToUsers(),
+        getTemplatesToUsers(),
+        getUserProperties(),
+        getAccounts(),
+        getItemsToAccounts(),
+        getMessage(),
+        getProductListItems(),
+        getFormats(),
+        getTaxes(),
+        getGlobalSettings(),
+        getCompany(),
+        getWebShop(),
+        getWebShopItemMapping(),
+        getWebShopContactMapping(),
+        getTemplate(),
+        getReminder(),
+        getStage(),
+        getProductlist(),
+        getExpense(),
+        getRevenue(),
+        getProductsToSuppliers(),
+        getValueProperties(),
+        getProductPrice(),
+        getMassprint(),
+        getProductOrderSubitem(),
+        getProductOrder(),
+        getConversation()
+    }));
 //    private String[] searchHeaders;
     private volatile ArrayList<String[]> references = new ArrayList<String[]>();
     private boolean exclusiveConditionsAvailable = false;
@@ -538,20 +549,29 @@ public class Context implements Serializable {
 
     /**
      * Constructs a new Context and adds it to allcontexts-collection.
+     *
      * @param tablename The name of the table to use
-     * @param targetObjectClass The class of the {@link DatabaseObject} child to be used with this Context
-     * @param cacheable If true, the {@link DatabaseObject}s related to this context will be cached
-     * @param secured If true, the {@link DatabaseObject}s related to this context will be protected by the {@link MPSecurityManager}
-     * @param importable If true, the {@link DatabaseObject}s related to this context will be importable by the {@link XMLReader}
-     * @param lockable If true, the {@link DatabaseObject}s related to this context will be loackable to avoid concurrent access
-     * @param groupable If true, the {@link DatabaseObject}s related to this context will apply to a users group restriction
-     * @param trashable If true, the {@link DatabaseObject}s related to this context will be moved to the trashbin on delete
-     * @param archivable If true, actions on the {@link DatabaseObject}s related to this context will be monitored
+     * @param targetObjectClass The class of the {@link DatabaseObject} child to
+     * be used with this Context
+     * @param cacheable If true, the {@link DatabaseObject}s related to this
+     * context will be cached
+     * @param secured If true, the {@link DatabaseObject}s related to this
+     * context will be protected by the {@link MPSecurityManager}
+     * @param importable If true, the {@link DatabaseObject}s related to this
+     * context will be importable by the {@link XMLReader}
+     * @param lockable If true, the {@link DatabaseObject}s related to this
+     * context will be loackable to avoid concurrent access
+     * @param groupable If true, the {@link DatabaseObject}s related to this
+     * context will apply to a users group restriction
+     * @param trashable If true, the {@link DatabaseObject}s related to this
+     * context will be moved to the trashbin on delete
+     * @param archivable If true, actions on the {@link DatabaseObject}s related
+     * to this context will be monitored
      */
     public Context(String tablename, Class targetObjectClass, boolean cacheable,
             boolean secured, boolean importable, boolean lockable, boolean groupable,
             boolean trashable, boolean archivable) {
-        setId(allContexts.size()+1);
+        setId(allContexts.size() + 1);
         this.setSubID(DEFAULT_SUBID);
         this.setDbIdentity(tablename);
         this.setIdentityClass(targetObjectClass);
@@ -579,14 +599,16 @@ public class Context implements Serializable {
         if (archivable) {
             getArchivableContexts().add(this);
         }
-        
+
         allContexts.add(this);
     }
 
     /**
      * Constructs a new Context with a random ID
+     *
      * @param tablename The name of the table to use
-     * @param targetObjectClass The class of the {@link DatabaseObject} child to be used with this Context
+     * @param targetObjectClass The class of the {@link DatabaseObject} child to
+     * be used with this Context
      */
     public Context(String tablename, Class targetObjectClass) {
         setId(Integer.valueOf(RandomText.getNumberText()));
@@ -597,15 +619,18 @@ public class Context implements Serializable {
 
     /**
      * Constructs a new Context with a random ID
-     * @param targetObjectClass The tablename will be assumed from the Class' simple name
+     *
+     * @param targetObjectClass The tablename will be assumed from the Class'
+     * simple name
      */
     public Context(Class targetObjectClass) {
         this(targetObjectClass.getSimpleName(), targetObjectClass);
     }
 
     /**
-     * Constructs a new Context with a random ID.
-     * The tablename will be assumed from the targetObject's Class simple name
+     * Constructs a new Context with a random ID. The tablename will be assumed
+     * from the targetObject's Class simple name
+     *
      * @param targetObject
      */
     public Context(DatabaseObject targetObject) {
@@ -657,7 +682,9 @@ public class Context implements Serializable {
     }
 
     /**
-     * Set conditions to get exclusive data (e.g. customer = false results in all data without any customer)
+     * Set conditions to get exclusive data (e.g. customer = false results in
+     * all data without any customer)
+     *
      * @param customer
      * @param supplier
      * @param manufacturer
@@ -819,9 +846,12 @@ public class Context implements Serializable {
     }
 
     /**
-     * Generates a SQL String (WHERE clause) which can be used to implement multi-client capability.<br/>
+     * Generates a SQL String (WHERE clause) which can be used to implement
+     * multi-client capability.<br/>
      * <br/>
-     * <b>If the current Context does not support grouping, or the current user is not Group restricted, this will return NULL.</b>
+     * <b>If the current Context does not support grouping, or the current user
+     * is not Group restricted, this will return NULL.</b>
+     *
      * @return
      */
     public synchronized String getGroupRestrictionSQLString() {
@@ -833,9 +863,10 @@ public class Context implements Serializable {
     }
 
     /**
-     * Generates a SQL String (WHERE clause) which can be used to avoid having already trashed elements in the resulting data.
+     * Generates a SQL String (WHERE clause) which can be used to avoid having
+     * already trashed elements in the resulting data.
      *
-     * @return  " invisible = 0 " or NULL if Context is not trashable
+     * @return " invisible = 0 " or NULL if Context is not trashable
      */
     public synchronized String getNoTrashSQLString() {
         if (getTrashableContexts().contains(this)) {
@@ -846,9 +877,12 @@ public class Context implements Serializable {
     }
 
     /**
-     * Generates a SQL String (WHERE clause) which can be used to implement multi-client capability.<br/>
+     * Generates a SQL String (WHERE clause) which can be used to implement
+     * multi-client capability.<br/>
      * <br/>
-     * <b>If the current Context does not support grouping, or the current user is not Group restricted, this will return NULL.</b>
+     * <b>If the current Context does not support grouping, or the current user
+     * is not Group restricted, this will return NULL.</b>
+     *
      * @param tableName
      * @return
      */
@@ -861,10 +895,11 @@ public class Context implements Serializable {
     }
 
     /**
-     * Generates a SQL String (WHERE clause) which can be used to avoid having already trashed elements in the resulting data.
+     * Generates a SQL String (WHERE clause) which can be used to avoid having
+     * already trashed elements in the resulting data.
      *
      * @param tableName
-     * @return  " invisible = 0 " or NULL if Context is not trashable
+     * @return " invisible = 0 " or NULL if Context is not trashable
      */
     public synchronized String getNoTrashSQLString(String tableName) {
         if (getTrashableContexts().contains(this)) {
@@ -876,6 +911,7 @@ public class Context implements Serializable {
 
     /**
      * Add MP specific conditions to a sql query
+     *
      * @param query
      * @return The query
      */
@@ -900,6 +936,7 @@ public class Context implements Serializable {
 
     /**
      * Add MP specific conditions to a sql query
+     *
      * @param query
      * @param tableName
      * @return The query
@@ -932,6 +969,7 @@ public class Context implements Serializable {
 //    }
     /**
      * Remove all exclusive conditions or reuse them
+     *
      * @param bool
      */
     public void useExclusiveConditions(boolean bool) {
@@ -949,6 +987,7 @@ public class Context implements Serializable {
 //    }
     /**
      * Add a foreign table reference to this context
+     *
      * @param c
      */
     public void addReference(Context c) {
@@ -962,8 +1001,10 @@ public class Context implements Serializable {
 
     /**
      * Add a foreign table reference to this context<br/><br/>
-     *  Context c= Context.getFilesToContacts();<br/>
-     *  c.addReference(Context.getFiles().getDbIdentity(), "cname", "filename");<br/>
+     * Context c= Context.getFilesToContacts();<br/>
+     * c.addReference(Context.getFiles().getDbIdentity(), "cname",
+     * "filename");<br/>
+     *
      * @param referencetable The table which will be joined
      * @param referencekey The key column of the joined table
      * @param referenceidkey They key column in the original table
@@ -1126,7 +1167,8 @@ public class Context implements Serializable {
 
     /**
      * Returns an empty "sample" Object of the context type
-     * @param <T> 
+     *
+     * @param <T>
      * @return An empty {@link DatabaseObject}
      */
     @SuppressWarnings("unchecked")
@@ -1150,8 +1192,8 @@ public class Context implements Serializable {
     }
 
     /**
-     * 
-     * @param type 
+     *
+     * @param type
      * @param status
      * @return
      */
@@ -1711,7 +1753,7 @@ public class Context implements Serializable {
         return c;
     }
 
-    public static final  Context getMassprint() {
+    public static final Context getMassprint() {
         Context c = new Context();
         c.setSubID(DEFAULT_SUBID);
         c.setDbIdentity(IDENTITY_MASSPRINT);
@@ -1720,8 +1762,8 @@ public class Context implements Serializable {
 
         return c;
     }
-    
-    public static final  Context getProductOrder() {
+
+    public static final Context getProductOrder() {
         Context c = new Context();
         c.setSubID(DEFAULT_SUBID);
         c.setDbIdentity(IDENTITY_PRODUCTORDER);
@@ -1730,8 +1772,8 @@ public class Context implements Serializable {
 
         return c;
     }
-     
-    public static final  Context getProductOrderSubitem() {
+
+    public static final Context getProductOrderSubitem() {
         Context c = new Context();
         c.setSubID(DEFAULT_SUBID);
         c.setDbIdentity(IDENTITY_PRODUCTORDERSUBITEM);
@@ -1793,23 +1835,26 @@ public class Context implements Serializable {
         if (true/*getIdentityClass() == null*/) {
             return String.valueOf(dbIdentity).toUpperCase() + " [" + id + "]";
         } else {
-            return "<html>"+String.valueOf(dbIdentity).toUpperCase() + " [" + id + "] (<b>" + getIdentityClass().getSimpleName() + "</b>)</html>";
+            return "<html>" + String.valueOf(dbIdentity).toUpperCase() + " [" + id + "] (<b>" + getIdentityClass().getSimpleName() + "</b>)</html>";
         }
     }
 
     /**
      * Looks for a Context with the specified id
+     *
      * @param value
      * @return A Context or null if no matching Context was found
      */
     public static synchronized Context getByID(int value) {
+        Log.Debug(Context.class, "getByID: "+value);
         for (int i = 0; i < allContexts.size(); i++) {
             Context context = allContexts.get(i);
             if (context.getId() == value) {
+                Log.Debug(Context.class, "getByID-> "+context);
                 return context;
             }
         }
-        return null;
+        throw new IllegalArgumentException("Not a known Context id:"+value);
     }
 
     /**
@@ -1824,7 +1869,7 @@ public class Context implements Serializable {
         if (!(o instanceof Context) || o == null) {
             return false;
         }
-        return Integer.valueOf(getId()).equals(Integer.valueOf(((Context)o).getId()));
+        return Integer.valueOf(getId()).equals(Integer.valueOf(((Context) o).getId()));
     }
 
     @Override
@@ -1833,5 +1878,9 @@ public class Context implements Serializable {
         hash = 47 * hash + this.id;
         hash = 47 * hash + (this.dbIdentity != null ? this.dbIdentity.hashCode() : 0);
         return hash;
+    }
+
+    public int compareTo(Context t) {
+        return Integer.compare(this.hashCode(), t.hashCode());
     }
 }

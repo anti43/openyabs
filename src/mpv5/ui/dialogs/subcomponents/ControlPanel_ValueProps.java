@@ -5,9 +5,7 @@ import javax.swing.DefaultListModel;
 import javax.swing.ListModel;
 import javax.swing.SwingUtilities;
 import mpv5.data.PropertyStore;
-import mpv5.db.common.Context;
-import mpv5.db.common.DatabaseObject;
-import mpv5.db.common.NodataFoundException;
+import mpv5.db.common.*;
 import mpv5.db.objects.Group;
 import mpv5.db.objects.ValueProperty;
 import mpv5.globals.LocalSettings;
@@ -23,22 +21,23 @@ import mpv5.ui.dialogs.Search2;
  */
 public class ControlPanel_ValueProps extends javax.swing.JPanel implements ControlApplet, DatabaseObejctReceiver {
 
-   private static final long serialVersionUID = 1L;
-   /**
-    * This unique name identifies this control applet
-    */
-   public final String UNAME = "valueproperties";
-   private PropertyStore oldvalues;
-   private ValueProperty dataOwner;
+    private static final long serialVersionUID = 1L;
+    /**
+     * This unique name identifies this control applet
+     */
+    public final String UNAME = "valueproperties";
+    private PropertyStore oldvalues;
+    private ValueProperty dataOwner;
 
-   public ControlPanel_ValueProps() {
-      initComponents();
-      setVisible(true);
-      labeledCombobox1.setEditable(false);
-      labeledCombobox1.setContext(Context.getValueProperties());
-      labeledCombobox1.setReceiver(this);
-      refresh();
-   }
+    public ControlPanel_ValueProps() {
+        initComponents();
+        setVisible(true);
+        labeledCombobox1.setEditable(false);
+        labeledCombobox1.setContext(Context.getValueProperties());
+        labeledCombobox1.setNullSelection();
+        labeledCombobox1.setReceiver(this);
+        refresh();
+    }
 
    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
    private void initComponents() {
@@ -213,68 +212,68 @@ public class ControlPanel_ValueProps extends javax.swing.JPanel implements Contr
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
 
-       if (dataOwner != null) {
-          dataOwner.delete();
-          refresh();
-          dataOwner = null;
-       }
+        if (dataOwner != null) {
+            dataOwner.delete();
+            refresh();
+            dataOwner = null;
+        }
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
-       prepare();
-       String cname = labeledTextField1.getText(true, "key");
-       String val = "#" + jTextPane2.getText() + "#";
+        prepare();
+        String cname = labeledTextField1.getText(true, "key");
+        String val = "#" + jTextPane2.getText() + "#";
 
-       if (dataOwner == null) {
-          dataOwner = new ValueProperty(cname, val, ((ContextWrap) jList1.getSelectedValue()).c, (Group) jList2.getSelectedValue());
-       } else {
-          dataOwner.setValueObj(val);
-          dataOwner.setCname(cname);
-          dataOwner.setContextids((((ContextWrap) jList1.getSelectedValue()).c.getId()));
-          dataOwner.setGroup((Group) jList2.getSelectedValue());
-       }
+        if (dataOwner == null) {
+            dataOwner = new ValueProperty(cname, val, ((ContextWrap) jList1.getSelectedValue()).c, (Group) jList2.getSelectedValue());
+        } else {
+            dataOwner.setValueObj(val);
+            dataOwner.setCname(cname);
+            dataOwner.setContextids((((ContextWrap) jList1.getSelectedValue()).c.getId()));
+            dataOwner.setGroup((Group) jList2.getSelectedValue());
+        }
 
-       dataOwner.save();
-       refresh();
+        dataOwner.save();
+        refresh();
     }//GEN-LAST:event_jButton4ActionPerformed
 
     private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
-       prepare();
-       String cname = labeledTextField1.getText(true, "key");
-       String val = "#" + jTextPane2.getText() + "#";
-       ValueProperty xx = new ValueProperty(cname, val, ((ContextWrap) jList1.getSelectedValue()).c, (Group) jList2.getSelectedValue());
-       if (xx.save()) {
-          dataOwner = xx;
-       }
-       refresh();
+        prepare();
+        String cname = labeledTextField1.getText(true, "key");
+        String val = "#" + jTextPane2.getText() + "#";
+        ValueProperty xx = new ValueProperty(cname, val, ((ContextWrap) jList1.getSelectedValue()).c, (Group) jList2.getSelectedValue());
+        if (xx.save()) {
+            dataOwner = xx;
+        }
+        refresh();
     }//GEN-LAST:event_jButton5ActionPerformed
 
     private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
-       DatabaseObject s = Search2.showSearchFor(Context.getItem());
-       if (s != null) {
-          try {
-             Popup.notice(s.evaluate(jTextPane2.getText()));
-          } catch (Exception e) {
-             Popup.error(e);
-          }
-       }
+        DatabaseObject s = Search2.showSearchFor(Context.getItem());
+        if (s != null) {
+            try {
+                Popup.notice(s.evaluate(jTextPane2.getText()));
+            } catch (Exception e) {
+                Popup.error(e);
+            }
+        }
     }//GEN-LAST:event_jButton6ActionPerformed
 
-   @Override
-   public void setValues(PropertyStore values) {
-      oldvalues = values;
+    @Override
+    public void setValues(PropertyStore values) {
+        oldvalues = values;
 
-   }
+    }
 
-   @Override
-   public String getUname() {
-      return UNAME;
-   }
+    @Override
+    public String getUname() {
+        return UNAME;
+    }
 
-   @Override
-   public void reset() {
-      setValues(oldvalues);
-   }
+    @Override
+    public void reset() {
+        setValues(oldvalues);
+    }
    // Variables declaration - do not modify//GEN-BEGIN:variables
    private javax.swing.JButton jButton1;
    private javax.swing.JButton jButton4;
@@ -296,100 +295,85 @@ public class ControlPanel_ValueProps extends javax.swing.JPanel implements Contr
    private mpv5.ui.beans.LabeledTextField labeledTextField1;
    // End of variables declaration//GEN-END:variables
 
-   private void setSettings() {
-   }
+    private void setSettings() {
+    }
 
-   @Override
-   public Component getAndRemoveActionPanel() {
-      this.remove(jPanel1);
-      validate();
-      return jPanel1;
-   }
+    @Override
+    public Component getAndRemoveActionPanel() {
+        this.remove(jPanel1);
+        validate();
+        return jPanel1;
+    }
 
-   private void refresh() {
+    private void refresh() {
 
-      Runnable runnable = new Runnable() {
-         public void run() {
-            DefaultListModel def = new DefaultListModel();
-            def.addElement(new ContextWrap(Messages.TYPE_BILL.getValue(), Context.getInvoice()));
-            def.addElement(new ContextWrap(Messages.TYPE_ORDER.getValue(), Context.getOrder()));
-            def.addElement(new ContextWrap(Messages.TYPE_OFFER.getValue(), Context.getOffer()));
+        Runnable runnable = new Runnable() {
+            public void run() {
+                DefaultListModel def = new DefaultListModel();
+                def.addElement(new ContextWrap(Messages.TYPE_BILL.getValue(), Context.getInvoice()));
+                def.addElement(new ContextWrap(Messages.TYPE_ORDER.getValue(), Context.getOrder()));
+                def.addElement(new ContextWrap(Messages.TYPE_OFFER.getValue(), Context.getOffer()));
 //            def.addElement(new ContextWrap(Messages.TYPE_SUBITEM.getValue(), Context.getSubItem()));
-            def.addElement(new ContextWrap(Messages.TYPE_PRODUCT.getValue(), Context.getProduct())); 
-            def.addElement(new ContextWrap(Messages.TYPE_PRODUCT_ORDER.getValue(), Context.getProductOrder()));
-            def.addElement(new ContextWrap(Messages.TYPE_SUPPLIER.getValue(), Context.getSupplier()));
-            def.addElement(new ContextWrap(Messages.TYPE_MANUFACTURER.getValue(), Context.getManufacturer()));
-            def.addElement(new ContextWrap(Messages.TYPE_CUSTOMER.getValue(), Context.getCustomer()));
-            def.addElement(new ContextWrap(Messages.TYPE_REMINDER.getValue(), Context.getReminder()));
-            def.addElement(new ContextWrap(Messages.TYPE_CONVERSATION.getValue(), Context.getInvoice()));
-            def.addElement(new ContextWrap(Messages.TYPE_MASSPRINT.getValue(), Context.getInvoice()));
-            
+                def.addElement(new ContextWrap(Messages.TYPE_PRODUCT.getValue(), Context.getProduct()));
+                def.addElement(new ContextWrap(Messages.TYPE_PRODUCT_ORDER.getValue(), Context.getProductOrder()));
+                def.addElement(new ContextWrap(Messages.TYPE_SUPPLIER.getValue(), Context.getSupplier()));
+                def.addElement(new ContextWrap(Messages.TYPE_MANUFACTURER.getValue(), Context.getManufacturer()));
+                def.addElement(new ContextWrap(Messages.TYPE_CUSTOMER.getValue(), Context.getCustomer()));
+                def.addElement(new ContextWrap(Messages.TYPE_REMINDER.getValue(), Context.getReminder()));
+                def.addElement(new ContextWrap(Messages.TYPE_CONVERSATION.getValue(), Context.getInvoice()));
+                def.addElement(new ContextWrap(Messages.TYPE_MASSPRINT.getValue(), Context.getInvoice()));
 
-            jList1.setModel(def);
+                jList1.setModel(def);
 
-            DefaultListModel def1 = new DefaultListModel();
-            try {
-               for (DatabaseObject c : Group.getObjects(Context.getGroup())) {
-                  def1.addElement((Group) c);
-               }
-            } catch (NodataFoundException ex) {
-               Log.Debug(ex);
+                DefaultListModel def1 = new DefaultListModel();
+                try {
+                    for (DatabaseObject c : Group.getObjects(Context.getGroup())) {
+                        def1.addElement((Group) c);
+                    }
+                } catch (NodataFoundException ex) {
+                    Log.Debug(ex);
+                }
+                jList2.setModel(def1);
+
+                labeledCombobox1.setModel(DatabaseObject.toObjectList(ValueProperty.getGroupProperties()));
+
             }
-            jList2.setModel(def1);
+        };
+        SwingUtilities.invokeLater(runnable);
+    }
 
-            labeledCombobox1.setModel(DatabaseObject.toObjectList(ValueProperty.getGroupProperties()));
+    public void receive(final DatabaseObject obj) {
 
-         }
-      };
-      SwingUtilities.invokeLater(runnable);
-   }
-
-   public void receive(final DatabaseObject obj) {
-
-      Runnable runnable = new Runnable() {
-         public void run() {
-            dataOwner = (ValueProperty) obj;
-            jTextPane2.setText(dataOwner.getValue().toString().replace("#", ""));
-            labeledTextField1.setText(dataOwner.getKey());
-            jList1.setSelectedValue(Context.getByID(((ValueProperty) obj).__getContextids()), true);
-            try {
-               jList2.setSelectedValue(((ValueProperty) obj).getGroup(), true);
-            } catch (Exception ex) {
-               Log.Debug(ex);
+        Runnable runnable = new Runnable() {
+            public void run() {
+                dataOwner = (ValueProperty) obj;
+                jTextPane2.setText(dataOwner.getValue().toString().replace("#", ""));
+                labeledTextField1.setText(dataOwner.getKey());
+                jList1.setSelectedValue(new ContextWrap(null, Context.getByID(((ValueProperty) obj).__getContextids())), true);
+                //jList1.setSelectedValue(new ContextWrap(null, Context.getByID(((ValueProperty) obj).__getContextids())), true);
+                try {
+                    jList2.setSelectedValue(((ValueProperty) obj).getGroup(), true);
+                } catch (Exception ex) {
+                    Log.Debug(ex);
+                }
             }
-         }
-      };
-      SwingUtilities.invokeLater(runnable);
-   }
+        };
+        SwingUtilities.invokeLater(runnable);
+    }
 
-   private void prepare() {
+    private void prepare() {
 
-      if (jList1.getSelectedValue() == null) {
-         jList1.setSelectedIndex(0);
-      }
-      if (jList2.getSelectedValue() == null) {
-         jList2.setSelectedIndex(0);
-      }
-      if (jTextPane2.getText().length() == 0) {
-         jTextPane2.setText("return \"\"");
-      }
+        if (jList1.getSelectedValue() == null) {
+            jList1.setSelectedIndex(0);
+        }
+        if (jList2.getSelectedValue() == null) {
+            jList2.setSelectedIndex(0);
+        }
+        if (jTextPane2.getText().length() == 0) {
+            jTextPane2.setText("return \"\"");
+        }
 
+    }
 
-   }
-
-   class ContextWrap {
-
-      private String s;
-      Context c;
-
-      ContextWrap(String s, Context c) {
-         this.s = s;
-         this.c = c;
-      }
-
-      @Override
-      public String toString() {
-         return s;
-      }
-   }
+    
 }

@@ -9,19 +9,12 @@ import mpv5.pluginhandling.YabsPlugin;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
 
-import java.io.File;
 
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import javax.imageio.ImageIO;
 
-import javax.swing.JLabel;
-import javax.swing.JMenu;
 import javax.swing.JPanel;
-import mpv5.YabsView;
-import mpv5.YabsViewProxy;
 import mpv5.db.common.DatabaseObject;
 import mpv5.db.common.DatabaseObjectModifier;
 import mpv5.db.objects.ValueProperty;
@@ -59,7 +52,7 @@ public class Main extends JPanel implements YabsPlugin, Runnable, DatabaseObject
 
    @Override
    public String getVendor() {
-      return "";
+      return "Andreas";
    }
 
    @Override
@@ -96,7 +89,7 @@ public class Main extends JPanel implements YabsPlugin, Runnable, DatabaseObject
       BufferedImage img = null;
 
       try {
-         img = ImageIO.read(new File("/mpv5/resources/images/48/blockdevice.png"));
+         img = ImageIO.read(getClass().getResource("/mpv5/resources/images/16/kwikdisk.png"));
       } catch (Exception e) {
          Log.Debug(e);
       }
