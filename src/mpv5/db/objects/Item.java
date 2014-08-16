@@ -43,6 +43,7 @@ import mpv5.handler.FormatHandler;
 import mpv5.handler.MPEnum;
 import mpv5.logging.Log;
 import mpv5.ui.panels.ItemPanel;
+import mpv5.ui.panels.ItemPanel2;
 import mpv5.utils.export.Export;
 import mpv5.utils.images.MPIcon;
 import mpv5.utils.jobs.Job;
@@ -389,7 +390,7 @@ public class Item extends DatabaseObject implements Formattable, Templateable {
 
     @Override
     public JComponent getView() {
-        ItemPanel p = new ItemPanel(Context.getItem(), __getInttype());
+        ItemPanel2 p = new ItemPanel2(Context.getItem(), __getInttype());
         return p;
     }
 

@@ -14,17 +14,13 @@
  */
 package mpv5.ui.dialogs.subcomponents;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JDialog;
-import mpv5.db.common.Context;
 import mpv5.db.common.NodataFoundException;
 import mpv5.db.common.QueryHandler;
 import mpv5.db.objects.Item;
 import mpv5.globals.Messages;
 import mpv5.logging.Log;
-import mpv5.ui.dialogs.Popup;
-import mpv5.ui.panels.ItemPanel;
+import mpv5.ui.panels.DataPanel;
 
 /**
  *
@@ -35,7 +31,7 @@ public class ItemNumberEditor extends javax.swing.JPanel {
     private static final long serialVersionUID = 1L;
     private final Item item;
     private final JDialog dialog;
-    private final ItemPanel parent;
+    private final DataPanel parent;
 
     /**
      * Creates new form ItemNumberEditor
@@ -44,7 +40,7 @@ public class ItemNumberEditor extends javax.swing.JPanel {
      * @param dialog
      * @param parent
      */
-    public ItemNumberEditor(Item item, JDialog dialog, ItemPanel parent) {
+    public ItemNumberEditor(Item item, JDialog dialog, DataPanel parent) {
         initComponents();
         this.item = item;
         try {
