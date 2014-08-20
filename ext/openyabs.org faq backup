@@ -1,0 +1,2669 @@
+ 
+   <item>
+            <title>How to: Erstellung von Templates mit OpenOffice/LibreOffice</title>
+      <link>http://openyabs.org/how-to-erstellung-von-templates-mit-openofficelibreoffice/</link>
+      <pubDate>Fri, 14 Sep 2012 17:13:07 +0000</pubDate>
+      <dc:creator><![CDATA[admin]]></dc:creator>
+      <guid isPermaLink="false">http://openyabs.org/?p=31</guid>
+      <description></description>
+      <content:encoded><![CDATA[In dieser Anleitung befassen wir uns jedoch erst einmal mit der individuellen Neuerstellung eines Templates.
+
+Die Templates werden mit Apache/Libre/ Op<a href="http://de.openoffice.org/" target="_blank">enOffice</a> im Dateiformat *.odt erstellt.
+
+<span style="font-size: 14pt,;"><strong>Einleitung
+</strong></span>Bevor wir anfangen, möchte ich erst einmal die grundsätzliche Funktionsweise der Templates und ihrer Befehle, den sogenannten items, erklären. Hierbei sollte vorweg gesagt werden, dass ein Template im Grunde aus zwei Bauelementen besteht.
+<ul>
+   <li>Items, welche alle statischen Daten wie Namen, Adresse, Kundennummern usw. darstellen.</li>
+</ul>
+<ul>
+   <li>Eine Tabelle die von YaBS eigenständig ausgefüllt wird. Die Konfiguration, was genau in welcher Reihenfolge angezeigt werden soll, wird später im <a href="index.php?option=com_content&amp;amp,view=article&amp;amp,id=57:verwendung-des-template-managers-&amp;amp,catid=31&amp;amp,Itemid=46">Template-Manager</a> festgelegt.</li>
+</ul>
+&nbsp;
+
+<strong><span style="font-size: 14pt,;">Layout der Templates</span>
+</strong>Ein weiterer Vorteil von dem neuen Templatesystem ist die äußerst einfache, optische Anpassbarkeit.
+
+Grundsätzlich empfiehlt es sich mit Tabellen zur Arbeiten. Sprich wir würden erstmal eine große Tabelle erstellen, in einer der Zellen wir eine weitere Tabelle eingefügt für Dinge wie Empfängerzeilen, die eigenen Firmeninformationen oder der gleichen. Dies erleichtert die Gestaltung und sorgt für Übersichtlichkeit. Um die Schrifttypen, Größen und dergleichen festzulegen, muss einfach nur die entsprechende Tabelle oder Platzhalter markiert werden und ganz normal wie alle Schriften angepasst werden. Somit kann jeder ganz einfach sein eigenes Layout erstellen oder vorhandene Unterlagen optisch anpassen.
+
+<span style="font-size: 14pt,;"><strong>Items erstellen und definieren
+</strong></span>Im Gegensatz zu MP4.xx, wird mit Platzhaltern zum Einfügen von Daten gearbeitet. Bei diesen Platzhaltern handelt es sich um Feldbefehle, in welche die item.Befehle als synonym für die Felder in YaBS fungieren. Später bei der Verwendung des Templates, werden die Daten aus YaBS statt der Itemnamen angezeigt.
+
+&nbsp;
+
+Nun legen wir erst einmal einen solchen Feldbefehl an. Hierzu öffnen wir den Writer von OpenOffice und erstellen ein neues, leeres Dokument.
+
+Nun klicken wir auf Einfügen&amp;gt,Feldbefehle&amp;gt,Andere.. (oder Strg+F2)
+
+Es öffnet sich ein Popup mit zwei Spalten. Hier wählen wir in der linken Spalte „Platzhalter“ und in der rechten Spalte „Text“ an. In das äußerst rechte Feld names „Platzhalter“ wird nun der gewünschte item.Befehl eingegeben.
+
+<span style="font-size: 14pt,;"><strong>Einrichten der Datentabelle
+</strong></span>Wie bereits in der Einleitung gesagt, bestehen die Templates aus zwei Bauelementen. 1. Items, 2. Datentabelle. Diese Datentabelle für YaBS ist eigentlich nur eine Tabelle. Jedoch muss YaBS kenntlich gemacht werden, das die Daten hier eingetragen werden müssen. Dies erkennt YaBS an dem Namen der Tabelle. Dieser muss lauten <strong>xtable1</strong>.
+
+&nbsp;
+
+Hierzu wird eine erst einmal eine normale Tabelle erstellt. Dies geschieht durch klicken wir auf Einfügen&amp;gt,Tabelle. Wählen 1 Zeile und so viele Spalten, wie Sie benötigen aus. Jedoch müssen wir den vordefinierten Namen der Tabelle von zB Tabelle1 auf <strong>xtable1</strong> ändern. Bestätigen und fertig. Somit erkennt YaBS, das die Daten aus den Eingabemasken in diese Tabelle eingefügt werden.
+
+Die Texte die YaBS in diese Tabelle einfügt, können im Bezug auf die Zelleneigenschaften wie jeder Text behandelt werden. Somit kann man also sehr genau festlegen, ob Zeilenumbrüche in den einzelnen Zellen stattfinden sollen oder nicht
+
+Für Templates der Kategorie Angebote (Offers), Bestellungen (Orders) und Rechnungen (Bills) gelten folgende item.Befehle
+
+<span style="font-size: 14pt,;"><strong>Accountspezifische Platzhalter
+</strong></span>item.account.addedby – Account erstellt durch
+item.account.cname – Account Vorname
+item.account.dateadded – Account angelegt am (Datum)
+item.account.description - Accountbeschreibung
+item.account.frame - Accountrahmen
+item.account.group - Accountgruppe
+item.account.groupdescription - Accountgruppenbeschreibung
+item.account.grouppath - Accountgruppenpath
+item.account.groupsids
+item.account.hierarchypath
+
+item.account.ids – Account ID
+item.account.intaccountclass
+item.account.intaddedby
+
+item.account.intparentaccount
+item.account.intprofitfid
+item.account.inttaxfid
+item.account.inttaxuid
+item.account.parentaccount
+item.account.taxvalue – Accountspezifischer Steuersatz
+item.account.type – Accounttyp
+
+<strong>Allgemeine Platzhalter</strong>
+
+item.addedby – Hinzugefüg von
+item.cnumber – Rechnungsnummer
+
+<strong> <span style="font-size: 14pt,;">Kundeninformationen</span>
+</strong>item. contact.gender – Herr/Frau
+item.contact.addedby – Kontakt hinzugefügt von
+item.contact.city - Stadt
+item.contact.cname - Nachname
+item.contact.cnumber - Kundenummer
+item.contact.company - Unternehmen
+item.contact.country - Land
+item.contact.dateadded – Hinzugefügt am
+item.contact.department - Abteilung
+item.contact.fax - Faxnummer
+item.contact.group - Gruppe
+item.contact.groupdescription - Gruppenbeschreibung
+item.contact.grouppath - Gruppenpath
+item.contact.groupsids – Gruppen-ID
+item.contact.ids – Kontakt-ID (intern)
+item.contact.intaddedby – Kontakt hinzugefügt (intern)
+item.contact.iscompany – Ist eine Firma 1/0
+item.contact.iscustomer – Ist eine Kunde 1/0
+item.contact.isenabled – Ist aktiviert 1/0
+item.contact.ismale - Männlich
+item.contact.ismanufacturer – Ist ein Hersteller 1/0
+item.contact.issupplier – Ist ein Lieferant 1/0
+item.contact.mailaddress - Mailadresse
+item.contact.mainphone - Haupttelefonnummer
+item.contact.mobilephone - Mobilnummer
+item.contact.notes – Notzi (gut geeignet für Bankdaten)
+item.contact.prename - Vornamen
+item.contact.street - Straße
+item.contact.taxnumber - Steuernummer
+item.contact.title – Anrede (Dr., Prof., Meister)
+item.contact.website – URL der Webseite
+item.contact.workphone – Telefon, Arbeit
+item.contact.zip - Postleitzahl
+
+<strong>Auftragsbeschreibungen/daten</strong>
+
+item.dateadded – Auftrag hinzugefügt am
+item.dateend – Auftrag beendet am
+item.datetodo – Auftrag bis zum
+item.description - Beschreibung
+item.group - Gruppe
+item.groupdescription - Gruppenbeschreibung
+item.grouppath - Gruppenpath
+item.groupsids – Gruppen-ID
+item.ids - ID
+item.intaddedby – Hinzugefügt am (intern)
+item.intreminders – Interne Erinnerung am
+item.type - Type
+item.netvalue - Nettopreis
+item.taxvalue - Steuersatz
+item.grosvalue -
+item.discountgrosvalue
+item.discounttaxvalue – Rabatt %
+
+Formatted values (currency sign):
+item.netvaluef
+item.taxvaluef
+item.grosvaluef
+item.discountgrosvaluef
+item.discounttaxvaluef
+
+&nbsp;
+
+Für Templates der Kategorie Produkte (Products), Dienstleitungen (Service) gelten folgende item.Befehle. Hierbei verhalten sich die Platzhalter genau so wie die Kontakt-Platzhalter, jedoch werden sie nochmals unterteilt in Produkte (product), Lieferant (supplier) und Hersteller (manufacturer). Eine Übersicht ohne nochmalige Beschreibung folgt.
+
+<span style="font-size: 14pt,;"><strong>Produkte
+</strong></span>image[1-n] – Bild einfügen (Bilde1 bis n (unendlich))
+product.measure
+product.productgroupsids
+product.grouppath
+product.groupdescription
+product.type
+product.description
+product.groupsids
+product.productgroup.productgroupsids
+product.productgroup.grouppath
+product.productgroup.ids
+product.productgroup.hierarchypath
+product.productgroup.groupdescription
+product.productgroup.intaddedby
+product.productgroup.defaults
+product.productgroup.dateadded
+product.productgroup.addedby
+product.productgroup.description
+product.productgroup.groupsids
+product.productgroup.group
+product.productgroup.cname
+product.productgroup
+
+product.internalnetvalue
+product.group
+product.defaultimage
+product.cname
+
+<span style="font-size: 14pt,;"><strong>Lieferanten
+</strong></span>product.supplier.grouppath
+product.supplier.prename
+product.supplier.department
+product.supplier.street
+product.supplier.groupdescription
+product.supplier.ismanufacturer
+product.supplier.city
+product.supplier.mobilephone
+product.supplier.title
+product.supplier.iscustomer
+product.supplier.groupsids
+product.supplier.workphone
+product.supplier.zip
+product.supplier.issupplier
+product.supplier.fax
+product.supplier.taxnumber
+product.supplier.mainphone
+product.supplier.website
+product.supplier.cnumber
+product.supplier.ids
+product.supplier.mailaddress
+product.supplier.country
+product.supplier.intaddedby
+product.supplier.isenabled
+product.supplier.dateadded
+product.supplier.addedby
+product.supplier.company
+product.supplier.ismale
+product.supplier.iscompany
+product.supplier.group
+product.supplier.notes
+product.supplier.cname
+
+&nbsp;
+
+<strong><span style="font-size: 14pt,;">Produktbeschreibungen</span>
+</strong>product.supplier
+product.suppliersids
+product.cnumber
+product.ids
+product.externalnetvalue
+product.reference
+product.url
+product.inttype
+product.ean
+product.intaddedby
+product.manufacturersids
+product.taxids
+product.dateadded
+product.tax
+product.addedby
+
+&nbsp;
+
+<span style="font-size: 14pt,;"><strong>Hersteller
+</strong></span>product.manufacturer.grouppath
+product.manufacturer.prename
+product.manufacturer.department
+product.manufacturer.street
+product.manufacturer.groupdescription
+product.manufacturer.ismanufacturer
+product.manufacturer.city
+product.manufacturer.mobilephone
+product.manufacturer.title
+product.manufacturer.iscustomer
+product.manufacturer.groupsids
+product.manufacturer.workphone
+product.manufacturer.zip
+product.manufacturer.issupplier
+product.manufacturer.fax
+product.manufacturer.taxnumber
+product.manufacturer.mainphone
+product.manufacturer.website
+product.manufacturer.cnumber
+product.manufacturer.ids
+product.manufacturer.mailaddress
+product.manufacturer.country
+product.manufacturer.intaddedby
+product.manufacturer.isenabled
+product.manufacturer.dateadded
+product.manufacturer.addedby
+product.manufacturer.company
+product.manufacturer.ismale
+product.manufacturer.iscompany
+product.manufacturer.group
+product.manufacturer.notes
+product.manufacturer.cname
+product.manufacturer
+
+&nbsp;
+
+<strong>Spalten in xtable1:</strong>
+
+<span style="background-color: #ffffff,;"><span style="font-size: 12px, line-height: 16px,;">damit die neuen Spalten funktionieren, muss man die Funktion erstmal einschalten:</span></span><br style="font-size: 12px, line-height: 16px, background-color: #ffffff,;" /><span style="font-size: 12px, line-height: 16px, background-color: #ffffff,;">control panel-&amp;gt,globale einstellungen</span><br style="font-size: 12px, line-height: 16px, background-color: #ffffff,;" /><br style="font-size: 12px, line-height: 16px, background-color: #ffffff,;" /><span style="font-size: 12px, line-height: 16px, background-color: #ffffff,;">bestehenden key "org.openyabs.exportproperty.productsresolved" auf true setzen oder falls er nicht existiert, neuen key anlegen.</span><br style="font-size: 12px, line-height: 16px, background-color: #ffffff,;" /><span style="font-size: 12px, line-height: 16px, background-color: #ffffff,;">vom format her ändert sich nichts, man muss nur im templatemanager die zusätzliche spalte angeben:</
+span><br style="font-size: 12px, line-height: 16px, background-color: #ffffff,;" /><br style="font-size: 12px, line-height: 16px, background-color: #ffffff,;" /><span style="font-size: 12px, line-height: 16px, background-color: #ffffff,;">Alt:</span><br style="font-size: 12px, line-height: 16px, background-color: #ffffff,;" /><br style="font-size: 12px, line-height: 16px, background-color: #ffffff,;" /><span style="font-size: 12px, line-height: 16px, background-color: #ffffff,;">1: Count (Automatische Nummerierung der Positionen eines Templates für jede Zeile)</span><br style="font-size: 12px, line-height: 16px, background-color: #ffffff,;" /><span style="font-size: 12px, line-height: 16px, background-color: #ffffff,;">2: Quantity (Anzahl)</span><br style="font-size: 12px, line-height: 16px, background-color: #ffffff,;" /><span style="font-size: 12px, line-height: 16px, background-color: #ffffff,;">3: Measure (Einheit zB Kg, Liter, Stück – Definierbar in den Benutzereinstellungen)</span><br style="font-size: 
+12px, line-height: 16px, background-color: #ffffff,;" /><span style="font-size: 12px, line-height: 16px, background-color: #ffffff,;">4: Text (Die Beschreibung, welche man in der Eingabemaske eingibt)</span><br style="font-size: 12px, line-height: 16px, background-color: #ffffff,;" /><span style="font-size: 12px, line-height: 16px, background-color: #ffffff,;">5: Net (Nettoeinzelpreis)</span><br style="font-size: 12px, line-height: 16px, background-color: #ffffff,;" /><span style="font-size: 12px, line-height: 16px, background-color: #ffffff,;">6: Totalnet (Nettogesamt, wenn man zB mehr wie ein Stück liefert)</span><br style="font-size: 12px, line-height: 16px, background-color: #ffffff,;" /><span style="font-size: 12px, line-height: 16px, background-color: #ffffff,;">7: Taxrate (Steuersatz in Zahlen)</span><br style="font-size: 12px, line-height: 16px, background-color: #ffffff,;" /><span style="font-size: 12px, line-height: 16px, background-color: #ffffff,;">8: Tax (Steuerbezeichnung zB MwSt, USt)</
+span><br style="font-size: 12px, line-height: 16px, background-color: #ffffff,;" /><span style="font-size: 12px, line-height: 16px, background-color: #ffffff,;">9: Total (Gesamtwert, errechnet aus Anzahl, Netto/Nettogesamt, Steuer)</span><br style="font-size: 12px, line-height: 16px, background-color: #ffffff,;" /><span style="font-size: 12px, line-height: 16px, background-color: #ffffff,;">10:Link (Einbindung von URL’s)</span><br style="font-size: 12px, line-height: 16px, background-color: #ffffff,;" /><span style="font-size: 12px, line-height: 16px, background-color: #ffffff,;">11:Optional (Ein Feld zu individuellen Verwendung)
+12:Discount</span>
+
+<strong>Neu:</strong> <em>product.</em>
+
+13: CName
+14: Cnumber
+15: Dateadded
+16: Defaultimage
+17: Description
+18: Ean
+19: Externalnetvalue
+20: Groupsids
+21: Intaddedby
+22: Internalnetvalue
+23: Intinventorytype
+24: Inttype
+25: Manufacturersids
+26: Measure
+27: Productgroupsids
+28: Productlistsids
+29: Reference
+30: Stockvalue
+31: Suppliersids
+32: Taxids
+33: Thresholdvalue
+34: Url]]></content:encoded>
+      <excerpt:encoded><![CDATA[]]></excerpt:encoded>
+      <wp:post_id>31</wp:post_id>
+      <wp:post_date>2012-09-14 17:13:07</wp:post_date>
+      <wp:post_date_gmt>2012-09-14 17:13:07</wp:post_date_gmt>
+      <wp:comment_status>open</wp:comment_status>
+      <wp:ping_status>open</wp:ping_status>
+      <wp:post_name>how-to-erstellung-von-templates-mit-openofficelibreoffice</wp:post_name>
+      <wp:status>publish</wp:status>
+      <wp:post_parent>0</wp:post_parent>
+      <wp:menu_order>0</wp:menu_order>
+      <wp:post_type>post</wp:post_type>
+      <wp:post_password></wp:post_password>
+      <wp:is_sticky>0</wp:is_sticky>
+      <category domain="category" nicename="faq"><![CDATA[FAQ]]></category>
+      <wp:postmeta>
+         <wp:meta_key>_edit_last</wp:meta_key>
+         <wp:meta_value><![CDATA[2]]></wp:meta_value>
+      </wp:postmeta>
+      <wp:postmeta>
+         <wp:meta_key>_pingme</wp:meta_key>
+         <wp:meta_value><![CDATA[1]]></wp:meta_value>
+      </wp:postmeta>
+      <wp:postmeta>
+         <wp:meta_key>_encloseme</wp:meta_key>
+         <wp:meta_value><![CDATA[1]]></wp:meta_value>
+      </wp:postmeta>
+      <wp:postmeta>
+         <wp:meta_key>_pingme</wp:meta_key>
+         <wp:meta_value><![CDATA[1]]></wp:meta_value>
+      </wp:postmeta>
+      <wp:postmeta>
+         <wp:meta_key>_encloseme</wp:meta_key>
+         <wp:meta_value><![CDATA[1]]></wp:meta_value>
+      </wp:postmeta>
+      <wp:postmeta>
+         <wp:meta_key>_pingme</wp:meta_key>
+         <wp:meta_value><![CDATA[1]]></wp:meta_value>
+      </wp:postmeta>
+      <wp:postmeta>
+         <wp:meta_key>_encloseme</wp:meta_key>
+         <wp:meta_value><![CDATA[1]]></wp:meta_value>
+      </wp:postmeta>
+      <wp:postmeta>
+         <wp:meta_key>_pingme</wp:meta_key>
+         <wp:meta_value><![CDATA[1]]></wp:meta_value>
+      </wp:postmeta>
+      <wp:postmeta>
+         <wp:meta_key>_encloseme</wp:meta_key>
+         <wp:meta_value><![CDATA[1]]></wp:meta_value>
+      </wp:postmeta>
+      <wp:postmeta>
+         <wp:meta_key>_encloseme</wp:meta_key>
+         <wp:meta_value><![CDATA[1]]></wp:meta_value>
+      </wp:postmeta>
+      <wp:postmeta>
+         <wp:meta_key>_pingme</wp:meta_key>
+         <wp:meta_value><![CDATA[1]]></wp:meta_value>
+      </wp:postmeta>
+      <wp:postmeta>
+         <wp:meta_key>_pingme</wp:meta_key>
+         <wp:meta_value><![CDATA[1]]></wp:meta_value>
+      </wp:postmeta>
+      <wp:postmeta>
+         <wp:meta_key>_encloseme</wp:meta_key>
+         <wp:meta_value><![CDATA[1]]></wp:meta_value>
+      </wp:postmeta>
+      <wp:postmeta>
+         <wp:meta_key>_pingme</wp:meta_key>
+         <wp:meta_value><![CDATA[1]]></wp:meta_value>
+      </wp:postmeta>
+      <wp:postmeta>
+         <wp:meta_key>_encloseme</wp:meta_key>
+         <wp:meta_value><![CDATA[1]]></wp:meta_value>
+      </wp:postmeta>
+   </item>
+ 
+   <item>
+            <title>Wie kann ich ein Backup meiner Yabs Datenbank erstellen?</title>
+      <link>http://openyabs.org/wie-kann-ich-ein-backup-meiner-yabs-datenbank-erstellen/</link>
+      <pubDate>Fri, 23 Nov 2012 11:19:47 +0000</pubDate>
+      <dc:creator><![CDATA[admin]]></dc:creator>
+      <guid isPermaLink="false">http://openyabs.org/?p=133</guid>
+      <description></description>
+      <content:encoded><![CDATA[<h2>Ein Export der existierenden Daten in eine Derbydatenbank eignet sich hervorragend für ein jederzeit zugreifbares Backup</h2>
+"Datei -&gt; Migration-&gt;To Derby" wählen.
+
+Einen Ordner auswählen (zB auf dem neuen Stick). -&gt; OK
+
+Fertig!
+<h3>Bei Problemen mit der original Datenbank kann man nun Yabs ganz einfach mit dem Backup starten</h3>
+Yabs dazu bringen den Datenbank Wizard zu starten (zB die Datei settings0.yabs umbenennen).
+
+Da dann auf "Advanced" klicken. Haken "Do upgrade existing database" wählen.
+
+Pfad angeben (der Stick/Datum)
+
+Datenbankname: migration
+
+&nbsp;
+
+&nbsp;]]></content:encoded>
+      <excerpt:encoded><![CDATA[]]></excerpt:encoded>
+      <wp:post_id>133</wp:post_id>
+      <wp:post_date>2012-11-23 11:19:47</wp:post_date>
+      <wp:post_date_gmt>2012-11-23 11:19:47</wp:post_date_gmt>
+      <wp:comment_status>open</wp:comment_status>
+      <wp:ping_status>open</wp:ping_status>
+      <wp:post_name>wie-kann-ich-ein-backup-meiner-yabs-datenbank-erstellen</wp:post_name>
+      <wp:status>private</wp:status>
+      <wp:post_parent>0</wp:post_parent>
+      <wp:menu_order>0</wp:menu_order>
+      <wp:post_type>post</wp:post_type>
+      <wp:post_password></wp:post_password>
+      <wp:is_sticky>0</wp:is_sticky>
+      <category domain="post_tag" nicename="export-backup"><![CDATA[export backup]]></category>
+      <category domain="category" nicename="faq"><![CDATA[FAQ]]></category>
+      <wp:postmeta>
+         <wp:meta_key>_edit_last</wp:meta_key>
+         <wp:meta_value><![CDATA[1]]></wp:meta_value>
+      </wp:postmeta>
+      <wp:postmeta>
+         <wp:meta_key>_encloseme</wp:meta_key>
+         <wp:meta_value><![CDATA[1]]></wp:meta_value>
+      </wp:postmeta>
+      <wp:postmeta>
+         <wp:meta_key>_pingme</wp:meta_key>
+         <wp:meta_value><![CDATA[1]]></wp:meta_value>
+      </wp:postmeta>
+      <wp:postmeta>
+         <wp:meta_key>_encloseme</wp:meta_key>
+         <wp:meta_value><![CDATA[1]]></wp:meta_value>
+      </wp:postmeta>
+      <wp:postmeta>
+         <wp:meta_key>_pingme</wp:meta_key>
+         <wp:meta_value><![CDATA[1]]></wp:meta_value>
+      </wp:postmeta>
+   </item>
+ 
+   <item>
+            <title>Wie verwendet man das Nummerformat</title>
+      <link>http://openyabs.org/172/</link>
+      <pubDate>Sun, 16 Dec 2012 08:23:29 +0000</pubDate>
+      <dc:creator><![CDATA[anti43]]></dc:creator>
+      <guid isPermaLink="false">http://openyabs.org/?p=172</guid>
+      <description></description>
+      <content:encoded><![CDATA[<h1>Nummernformat</h1>
+&nbsp;
+<table>
+<tbody>
+<tr>
+<td>F:</td>
+<td>Wie funktioniert das Nummernformat?</td>
+</tr>
+</tbody>
+</table>
+&nbsp;
+<pre>Ich habe mit der Kundennummer KU-101 anfangen wollen.
+In den Einstellungen (Format Editor): KU-&amp;!100 und Autowert. 
+Beim nächsten Speichern erhöht das Programm die Kundennummer von KU-101 auf KU-1102.
+Warum?</pre>
+&nbsp;
+<table>
+<tbody>
+<tr>
+<td>A:</td>
+<td>Das Nummernformat ist eine reine Formatangabe.</td>
+</tr>
+</tbody>
+</table>
+&nbsp;
+<pre>Sie geben oben im Feld nur das FORMAT an. Ein Format in der Form "KU-&amp;!100" weist
+das Programm an, eine Nummer in der Form "KU-1" +  &lt;numerischer wert&gt; anzulegen, mit
+3 Stellen und einer 1 am Anfang. Also folgerichtig KU-1102, KU-1103 usw.
+
+Hier wäre ein Format KU-&amp;!000, Autowert und ein Startwert von KU-101 richtig.</pre>]]></content:encoded>
+      <excerpt:encoded><![CDATA[]]></excerpt:encoded>
+      <wp:post_id>172</wp:post_id>
+      <wp:post_date>2012-12-16 08:23:29</wp:post_date>
+      <wp:post_date_gmt>2012-12-16 08:23:29</wp:post_date_gmt>
+      <wp:comment_status>open</wp:comment_status>
+      <wp:ping_status>open</wp:ping_status>
+      <wp:post_name>172</wp:post_name>
+      <wp:status>private</wp:status>
+      <wp:post_parent>0</wp:post_parent>
+      <wp:menu_order>0</wp:menu_order>
+      <wp:post_type>post</wp:post_type>
+      <wp:post_password></wp:post_password>
+      <wp:is_sticky>0</wp:is_sticky>
+      <category domain="category" nicename="faq"><![CDATA[FAQ]]></category>
+      <wp:postmeta>
+         <wp:meta_key>_pingme</wp:meta_key>
+         <wp:meta_value><![CDATA[1]]></wp:meta_value>
+      </wp:postmeta>
+      <wp:postmeta>
+         <wp:meta_key>_encloseme</wp:meta_key>
+         <wp:meta_value><![CDATA[1]]></wp:meta_value>
+      </wp:postmeta>
+      <wp:postmeta>
+         <wp:meta_key>_pingme</wp:meta_key>
+         <wp:meta_value><![CDATA[1]]></wp:meta_value>
+      </wp:postmeta>
+      <wp:postmeta>
+         <wp:meta_key>_encloseme</wp:meta_key>
+         <wp:meta_value><![CDATA[1]]></wp:meta_value>
+      </wp:postmeta>
+      <wp:postmeta>
+         <wp:meta_key>_edit_last</wp:meta_key>
+         <wp:meta_value><![CDATA[2]]></wp:meta_value>
+      </wp:postmeta>
+   </item>
+   <item>
+            <title>Wie kann ich meine Rechnungsnummern anpassen?</title>
+      <link>http://openyabs.org/?p=194</link>
+      <pubDate>Wed, 30 Nov -0001 00:00:00 +0000</pubDate>
+      <dc:creator><![CDATA[anti43]]></dc:creator>
+      <guid isPermaLink="false">http://openyabs.org/?p=194</guid>
+      <description></description>
+      <content:encoded><![CDATA[Formatstring:
+R[YEAR][MONTH]-{0,number,000000}
+
+Ergibt z.B.
+R201202-123456
+
+Als Startposition muss 8 angegeben werden nach folgender Zählweise:
+
+STRING: R 2 0 1 2 0 2 - 1 2 3 4 5 6
+Posit.: 0 1 2 3 4 5 6 7 8 ....]]></content:encoded>
+      <excerpt:encoded><![CDATA[]]></excerpt:encoded>
+      <wp:post_id>194</wp:post_id>
+      <wp:post_date>2012-12-16 11:06:10</wp:post_date>
+      <wp:post_date_gmt>0000-00-00 00:00:00</wp:post_date_gmt>
+      <wp:comment_status>open</wp:comment_status>
+      <wp:ping_status>open</wp:ping_status>
+      <wp:post_name></wp:post_name>
+      <wp:status>draft</wp:status>
+      <wp:post_parent>0</wp:post_parent>
+      <wp:menu_order>0</wp:menu_order>
+      <wp:post_type>post</wp:post_type>
+      <wp:post_password></wp:post_password>
+      <wp:is_sticky>0</wp:is_sticky>
+      <category domain="category" nicename="de-faq"><![CDATA[de]]></category>
+      <category domain="category" nicename="faq"><![CDATA[FAQ]]></category>
+      <wp:postmeta>
+         <wp:meta_key>_edit_last</wp:meta_key>
+         <wp:meta_value><![CDATA[2]]></wp:meta_value>
+      </wp:postmeta>
+   </item>
+   <item>
+            <title>Support Forum</title>
+      <link>http://openyabs.org/support-forum/</link>
+      <pubDate>Fri, 11 Jan 2013 08:26:35 +0000</pubDate>
+      <dc:creator><![CDATA[anti43]]></dc:creator>
+      <guid isPermaLink="false">http://openyabs.org/?page_id=233</guid>
+      <description></description>
+      <content:encoded><![CDATA[[mingleforum]]]></content:encoded>
+      <excerpt:encoded><![CDATA[]]></excerpt:encoded>
+      <wp:post_id>233</wp:post_id>
+      <wp:post_date>2013-01-11 08:26:35</wp:post_date>
+      <wp:post_date_gmt>2013-01-11 08:26:35</wp:post_date_gmt>
+      <wp:comment_status>closed</wp:comment_status>
+      <wp:ping_status>open</wp:ping_status>
+      <wp:post_name>support-forum</wp:post_name>
+      <wp:status>publish</wp:status>
+      <wp:post_parent>0</wp:post_parent>
+      <wp:menu_order>0</wp:menu_order>
+      <wp:post_type>page</wp:post_type>
+      <wp:post_password></wp:post_password>
+      <wp:is_sticky>0</wp:is_sticky>
+      <wp:postmeta>
+         <wp:meta_key>_oembed_8cd205123da987b7013012d3fcb7750c</wp:meta_key>
+         <wp:meta_value><![CDATA[{{unknown}}]]></wp:meta_value>
+      </wp:postmeta>
+      <wp:postmeta>
+         <wp:meta_key>_edit_last</wp:meta_key>
+         <wp:meta_value><![CDATA[1]]></wp:meta_value>
+      </wp:postmeta>
+      <wp:postmeta>
+         <wp:meta_key>_wp_page_template</wp:meta_key>
+         <wp:meta_value><![CDATA[page-full.php]]></wp:meta_value>
+      </wp:postmeta>
+      <wp:postmeta>
+         <wp:meta_key>_oembed_4a999190e93ac477ea6c5145b73fd71b</wp:meta_key>
+         <wp:meta_value><![CDATA[{{unknown}}]]></wp:meta_value>
+      </wp:postmeta>
+      <wp:postmeta>
+         <wp:meta_key>_oembed_fa9f2029574cf96495503d54c620039f</wp:meta_key>
+         <wp:meta_value><![CDATA[{{unknown}}]]></wp:meta_value>
+      </wp:postmeta>
+      <wp:postmeta>
+         <wp:meta_key>_oembed_71450737dafc73a58a187afffdb03009</wp:meta_key>
+         <wp:meta_value><![CDATA[{{unknown}}]]></wp:meta_value>
+      </wp:postmeta>
+      <wp:postmeta>
+         <wp:meta_key>_oembed_5127488b5aff0d3f09b66ea244451eb5</wp:meta_key>
+         <wp:meta_value><![CDATA[{{unknown}}]]></wp:meta_value>
+      </wp:postmeta>
+   </item>
+ 
+ 
+   <item>
+            <title>Unter welchen Lizenz steht Yabs</title>
+      <link>http://openyabs.org/unter-welchen-lizenz-steht-yabs/</link>
+      <pubDate>Mon, 21 Jan 2013 13:24:56 +0000</pubDate>
+      <dc:creator><![CDATA[admin]]></dc:creator>
+      <guid isPermaLink="false">http://openyabs.org/?page_id=270</guid>
+      <description></description>
+      <content:encoded><![CDATA[<h3>GNU GENERAL PUBLIC LICENSE</h3>
+Version 3, 29 June 2007
+
+Copyright © 2007 Free Software Foundation, Inc. &lt;<a href="http://fsf.org/">http://fsf.org/</a>&gt;
+
+Everyone is permitted to copy and distribute verbatim copies of this license document, but changing it is not allowed.
+<h3><a name="preamble"></a>Preamble</h3>
+The GNU General Public License is a free, copyleft license for software and other kinds of works.
+
+The licenses for most software and other practical works are designed to take away your freedom to share and change the works. By contrast, the GNU General Public License is intended to guarantee your freedom to share and change all versions of a program--to make sure it remains free software for all its users. We, the Free Software Foundation, use the GNU General Public License for most of our software; it applies also to any other work released this way by its authors. You can apply it to your programs, too.
+
+When we speak of free software, we are referring to freedom, not price. Our General Public Licenses are designed to make sure that you have the freedom to distribute copies of free software (and charge for them if you wish), that you receive source code or can get it if you want it, that you can change the software or use pieces of it in new free programs, and that you know you can do these things.
+
+To protect your rights, we need to prevent others from denying you these rights or asking you to surrender the rights. Therefore, you have certain responsibilities if you distribute copies of the software, or if you modify it: responsibilities to respect the freedom of others.
+
+For example, if you distribute copies of such a program, whether gratis or for a fee, you must pass on to the recipients the same freedoms that you received. You must make sure that they, too, receive or can get the source code. And you must show them these terms so they know their rights.
+
+Developers that use the GNU GPL protect your rights with two steps: (1) assert copyright on the software, and (2) offer you this License giving you legal permission to copy, distribute and/or modify it.
+
+For the developers' and authors' protection, the GPL clearly explains that there is no warranty for this free software. For both users' and authors' sake, the GPL requires that modified versions be marked as changed, so that their problems will not be attributed erroneously to authors of previous versions.
+
+Some devices are designed to deny users access to install or run modified versions of the software inside them, although the manufacturer can do so. This is fundamentally incompatible with the aim of protecting users' freedom to change the software. The systematic pattern of such abuse occurs in the area of products for individuals to use, which is precisely where it is most unacceptable. Therefore, we have designed this version of the GPL to prohibit the practice for those products. If such problems arise substantially in other domains, we stand ready to extend this provision to those domains in future versions of the GPL, as needed to protect the freedom of users.
+
+Finally, every program is threatened constantly by software patents. States should not allow patents to restrict development and use of software on general-purpose computers, but in those that do, we wish to avoid the special danger that patents applied to a free program could make it effectively proprietary. To prevent this, the GPL assures that patents cannot be used to render the program non-free.
+
+The precise terms and conditions for copying, distribution and modification follow.
+<h3><a name="terms"></a>TERMS AND CONDITIONS</h3>
+<h4><a name="section0"></a>0. Definitions.</h4>
+“This License” refers to version 3 of the GNU General Public License.
+
+“Copyright” also means copyright-like laws that apply to other kinds of works, such as semiconductor masks.
+
+“The Program” refers to any copyrightable work licensed under this License. Each licensee is addressed as “you”. “Licensees” and “recipients” may be individuals or organizations.
+
+To “modify” a work means to copy from or adapt all or part of the work in a fashion requiring copyright permission, other than the making of an exact copy. The resulting work is called a “modified version” of the earlier work or a work “based on” the earlier work.
+
+A “covered work” means either the unmodified Program or a work based on the Program.
+
+To “propagate” a work means to do anything with it that, without permission, would make you directly or secondarily liable for infringement under applicable copyright law, except executing it on a computer or modifying a private copy. Propagation includes copying, distribution (with or without modification), making available to the public, and in some countries other activities as well.
+
+To “convey” a work means any kind of propagation that enables other parties to make or receive copies. Mere interaction with a user through a computer network, with no transfer of a copy, is not conveying.
+
+An interactive user interface displays “Appropriate Legal Notices” to the extent that it includes a convenient and prominently visible feature that (1) displays an appropriate copyright notice, and (2) tells the user that there is no warranty for the work (except to the extent that warranties are provided), that licensees may convey the work under this License, and how to view a copy of this License. If the interface presents a list of user commands or options, such as a menu, a prominent item in the list meets this criterion.
+<h4><a name="section1"></a>1. Source Code.</h4>
+The “source code” for a work means the preferred form of the work for making modifications to it. “Object code” means any non-source form of a work.
+
+A “Standard Interface” means an interface that either is an official standard defined by a recognized standards body, or, in the case of interfaces specified for a particular programming language, one that is widely used among developers working in that language.
+
+The “System Libraries” of an executable work include anything, other than the work as a whole, that (a) is included in the normal form of packaging a Major Component, but which is not part of that Major Component, and (b) serves only to enable use of the work with that Major Component, or to implement a Standard Interface for which an implementation is available to the public in source code form. A “Major Component”, in this context, means a major essential component (kernel, window system, and so on) of the specific operating system (if any) on which the executable work runs, or a compiler used to produce the work, or an object code interpreter used to run it.
+
+The “Corresponding Source” for a work in object code form means all the source code needed to generate, install, and (for an executable work) run the object code and to modify the work, including scripts to control those activities. However, it does not include the work's System Libraries, or general-purpose tools or generally available free programs which are used unmodified in performing those activities but which are not part of the work. For example, Corresponding Source includes interface definition files associated with source files for the work, and the source code for shared libraries and dynamically linked subprograms that the work is specifically designed to require, such as by intimate data communication or control flow between those subprograms and other parts of the work.
+
+The Corresponding Source need not include anything that users can regenerate automatically from other parts of the Corresponding Source.
+
+The Corresponding Source for a work in source code form is that same work.
+<h4><a name="section2"></a>2. Basic Permissions.</h4>
+All rights granted under this License are granted for the term of copyright on the Program, and are irrevocable provided the stated conditions are met. This License explicitly affirms your unlimited permission to run the unmodified Program. The output from running a covered work is covered by this License only if the output, given its content, constitutes a covered work. This License acknowledges your rights of fair use or other equivalent, as provided by copyright law.
+
+You may make, run and propagate covered works that you do not convey, without conditions so long as your license otherwise remains in force. You may convey covered works to others for the sole purpose of having them make modifications exclusively for you, or provide you with facilities for running those works, provided that you comply with the terms of this License in conveying all material for which you do not control copyright. Those thus making or running the covered works for you must do so exclusively on your behalf, under your direction and control, on terms that prohibit them from making any copies of your copyrighted material outside their relationship with you.
+
+Conveying under any other circumstances is permitted solely under the conditions stated below. Sublicensing is not allowed; section 10 makes it unnecessary.
+<h4><a name="section3"></a>3. Protecting Users' Legal Rights From Anti-Circumvention Law.</h4>
+No covered work shall be deemed part of an effective technological measure under any applicable law fulfilling obligations under article 11 of the WIPO copyright treaty adopted on 20 December 1996, or similar laws prohibiting or restricting circumvention of such measures.
+
+When you convey a covered work, you waive any legal power to forbid circumvention of technological measures to the extent such circumvention is effected by exercising rights under this License with respect to the covered work, and you disclaim any intention to limit operation or modification of the work as a means of enforcing, against the work's users, your or third parties' legal rights to forbid circumvention of technological measures.
+<h4><a name="section4"></a>4. Conveying Verbatim Copies.</h4>
+You may convey verbatim copies of the Program's source code as you receive it, in any medium, provided that you conspicuously and appropriately publish on each copy an appropriate copyright notice; keep intact all notices stating that this License and any non-permissive terms added in accord with section 7 apply to the code; keep intact all notices of the absence of any warranty; and give all recipients a copy of this License along with the Program.
+
+You may charge any price or no price for each copy that you convey, and you may offer support or warranty protection for a fee.
+<h4><a name="section5"></a>5. Conveying Modified Source Versions.</h4>
+You may convey a work based on the Program, or the modifications to produce it from the Program, in the form of source code under the terms of section 4, provided that you also meet all of these conditions:
+<ul>
+   <li>a) The work must carry prominent notices stating that you modified it, and giving a relevant date.</li>
+   <li>b) The work must carry prominent notices stating that it is released under this License and any conditions added under section 7. This requirement modifies the requirement in section 4 to “keep intact all notices”.</li>
+   <li>c) You must license the entire work, as a whole, under this License to anyone who comes into possession of a copy. This License will therefore apply, along with any applicable section 7 additional terms, to the whole of the work, and all its parts, regardless of how they are packaged. This License gives no permission to license the work in any other way, but it does not invalidate such permission if you have separately received it.</li>
+   <li>d) If the work has interactive user interfaces, each must display Appropriate Legal Notices; however, if the Program has interactive interfaces that do not display Appropriate Legal Notices, your work need not make them do so.</li>
+</ul>
+A compilation of a covered work with other separate and independent works, which are not by their nature extensions of the covered work, and which are not combined with it such as to form a larger program, in or on a volume of a storage or distribution medium, is called an “aggregate” if the compilation and its resulting copyright are not used to limit the access or legal rights of the compilation's users beyond what the individual works permit. Inclusion of a covered work in an aggregate does not cause this License to apply to the other parts of the aggregate.
+<h4><a name="section6"></a>6. Conveying Non-Source Forms.</h4>
+You may convey a covered work in object code form under the terms of sections 4 and 5, provided that you also convey the machine-readable Corresponding Source under the terms of this License, in one of these ways:
+<ul>
+   <li>a) Convey the object code in, or embodied in, a physical product (including a physical distribution medium), accompanied by the Corresponding Source fixed on a durable physical medium customarily used for software interchange.</li>
+   <li>b) Convey the object code in, or embodied in, a physical product (including a physical distribution medium), accompanied by a written offer, valid for at least three years and valid for as long as you offer spare parts or customer support for that product model, to give anyone who possesses the object code either (1) a copy of the Corresponding Source for all the software in the product that is covered by this License, on a durable physical medium customarily used for software interchange, for a price no more than your reasonable cost of physically performing this conveying of source, or (2) access to copy the Corresponding Source from a network server at no charge.</li>
+   <li>c) Convey individual copies of the object code with a copy of the written offer to provide the Corresponding Source. This alternative is allowed only occasionally and noncommercially, and only if you received the object code with such an offer, in accord with subsection 6b.</li>
+   <li>d) Convey the object code by offering access from a designated place (gratis or for a charge), and offer equivalent access to the Corresponding Source in the same way through the same place at no further charge. You need not require recipients to copy the Corresponding Source along with the object code. If the place to copy the object code is a network server, the Corresponding Source may be on a different server (operated by you or a third party) that supports equivalent copying facilities, provided you maintain clear directions next to the object code saying where to find the Corresponding Source. Regardless of what server hosts the Corresponding Source, you remain obligated to ensure that it is available for as long as needed to satisfy these requirements.</li>
+   <li>e) Convey the object code using peer-to-peer transmission, provided you inform other peers where the object code and Corresponding Source of the work are being offered to the general public at no charge under subsection 6d.</li>
+</ul>
+A separable portion of the object code, whose source code is excluded from the Corresponding Source as a System Library, need not be included in conveying the object code work.
+
+A “User Product” is either (1) a “consumer product”, which means any tangible personal property which is normally used for personal, family, or household purposes, or (2) anything designed or sold for incorporation into a dwelling. In determining whether a product is a consumer product, doubtful cases shall be resolved in favor of coverage. For a particular product received by a particular user, “normally used” refers to a typical or common use of that class of product, regardless of the status of the particular user or of the way in which the particular user actually uses, or expects or is expected to use, the product. A product is a consumer product regardless of whether the product has substantial commercial, industrial or non-consumer uses, unless such uses represent the only significant mode of use of the product.
+
+“Installation Information” for a User Product means any methods, procedures, authorization keys, or other information required to install and execute modified versions of a covered work in that User Product from a modified version of its Corresponding Source. The information must suffice to ensure that the continued functioning of the modified object code is in no case prevented or interfered with solely because modification has been made.
+
+If you convey an object code work under this section in, or with, or specifically for use in, a User Product, and the conveying occurs as part of a transaction in which the right of possession and use of the User Product is transferred to the recipient in perpetuity or for a fixed term (regardless of how the transaction is characterized), the Corresponding Source conveyed under this section must be accompanied by the Installation Information. But this requirement does not apply if neither you nor any third party retains the ability to install modified object code on the User Product (for example, the work has been installed in ROM).
+
+The requirement to provide Installation Information does not include a requirement to continue to provide support service, warranty, or updates for a work that has been modified or installed by the recipient, or for the User Product in which it has been modified or installed. Access to a network may be denied when the modification itself materially and adversely affects the operation of the network or violates the rules and protocols for communication across the network.
+
+Corresponding Source conveyed, and Installation Information provided, in accord with this section must be in a format that is publicly documented (and with an implementation available to the public in source code form), and must require no special password or key for unpacking, reading or copying.
+<h4><a name="section7"></a>7. Additional Terms.</h4>
+“Additional permissions” are terms that supplement the terms of this License by making exceptions from one or more of its conditions. Additional permissions that are applicable to the entire Program shall be treated as though they were included in this License, to the extent that they are valid under applicable law. If additional permissions apply only to part of the Program, that part may be used separately under those permissions, but the entire Program remains governed by this License without regard to the additional permissions.
+
+When you convey a copy of a covered work, you may at your option remove any additional permissions from that copy, or from any part of it. (Additional permissions may be written to require their own removal in certain cases when you modify the work.) You may place additional permissions on material, added by you to a covered work, for which you have or can give appropriate copyright permission.
+
+Notwithstanding any other provision of this License, for material you add to a covered work, you may (if authorized by the copyright holders of that material) supplement the terms of this License with terms:
+<ul>
+   <li>a) Disclaiming warranty or limiting liability differently from the terms of sections 15 and 16 of this License; or</li>
+   <li>b) Requiring preservation of specified reasonable legal notices or author attributions in that material or in the Appropriate Legal Notices displayed by works containing it; or</li>
+   <li>c) Prohibiting misrepresentation of the origin of that material, or requiring that modified versions of such material be marked in reasonable ways as different from the original version; or</li>
+   <li>d) Limiting the use for publicity purposes of names of licensors or authors of the material; or</li>
+   <li>e) Declining to grant rights under trademark law for use of some trade names, trademarks, or service marks; or</li>
+   <li>f) Requiring indemnification of licensors and authors of that material by anyone who conveys the material (or modified versions of it) with contractual assumptions of liability to the recipient, for any liability that these contractual assumptions directly impose on those licensors and authors.</li>
+</ul>
+All other non-permissive additional terms are considered “further restrictions” within the meaning of section 10. If the Program as you received it, or any part of it, contains a notice stating that it is governed by this License along with a term that is a further restriction, you may remove that term. If a license document contains a further restriction but permits relicensing or conveying under this License, you may add to a covered work material governed by the terms of that license document, provided that the further restriction does not survive such relicensing or conveying.
+
+If you add terms to a covered work in accord with this section, you must place, in the relevant source files, a statement of the additional terms that apply to those files, or a notice indicating where to find the applicable terms.
+
+Additional terms, permissive or non-permissive, may be stated in the form of a separately written license, or stated as exceptions; the above requirements apply either way.
+<h4><a name="section8"></a>8. Termination.</h4>
+You may not propagate or modify a covered work except as expressly provided under this License. Any attempt otherwise to propagate or modify it is void, and will automatically terminate your rights under this License (including any patent licenses granted under the third paragraph of section 11).
+
+However, if you cease all violation of this License, then your license from a particular copyright holder is reinstated (a) provisionally, unless and until the copyright holder explicitly and finally terminates your license, and (b) permanently, if the copyright holder fails to notify you of the violation by some reasonable means prior to 60 days after the cessation.
+
+Moreover, your license from a particular copyright holder is reinstated permanently if the copyright holder notifies you of the violation by some reasonable means, this is the first time you have received notice of violation of this License (for any work) from that copyright holder, and you cure the violation prior to 30 days after your receipt of the notice.
+
+Termination of your rights under this section does not terminate the licenses of parties who have received copies or rights from you under this License. If your rights have been terminated and not permanently reinstated, you do not qualify to receive new licenses for the same material under section 10.
+<h4><a name="section9"></a>9. Acceptance Not Required for Having Copies.</h4>
+You are not required to accept this License in order to receive or run a copy of the Program. Ancillary propagation of a covered work occurring solely as a consequence of using peer-to-peer transmission to receive a copy likewise does not require acceptance. However, nothing other than this License grants you permission to propagate or modify any covered work. These actions infringe copyright if you do not accept this License. Therefore, by modifying or propagating a covered work, you indicate your acceptance of this License to do so.
+<h4><a name="section10"></a>10. Automatic Licensing of Downstream Recipients.</h4>
+Each time you convey a covered work, the recipient automatically receives a license from the original licensors, to run, modify and propagate that work, subject to this License. You are not responsible for enforcing compliance by third parties with this License.
+
+An “entity transaction” is a transaction transferring control of an organization, or substantially all assets of one, or subdividing an organization, or merging organizations. If propagation of a covered work results from an entity transaction, each party to that transaction who receives a copy of the work also receives whatever licenses to the work the party's predecessor in interest had or could give under the previous paragraph, plus a right to possession of the Corresponding Source of the work from the predecessor in interest, if the predecessor has it or can get it with reasonable efforts.
+
+You may not impose any further restrictions on the exercise of the rights granted or affirmed under this License. For example, you may not impose a license fee, royalty, or other charge for exercise of rights granted under this License, and you may not initiate litigation (including a cross-claim or counterclaim in a lawsuit) alleging that any patent claim is infringed by making, using, selling, offering for sale, or importing the Program or any portion of it.
+<h4><a name="section11"></a>11. Patents.</h4>
+A “contributor” is a copyright holder who authorizes use under this License of the Program or a work on which the Program is based. The work thus licensed is called the contributor's “contributor version”.
+
+A contributor's “essential patent claims” are all patent claims owned or controlled by the contributor, whether already acquired or hereafter acquired, that would be infringed by some manner, permitted by this License, of making, using, or selling its contributor version, but do not include claims that would be infringed only as a consequence of further modification of the contributor version. For purposes of this definition, “control” includes the right to grant patent sublicenses in a manner consistent with the requirements of this License.
+
+Each contributor grants you a non-exclusive, worldwide, royalty-free patent license under the contributor's essential patent claims, to make, use, sell, offer for sale, import and otherwise run, modify and propagate the contents of its contributor version.
+
+In the following three paragraphs, a “patent license” is any express agreement or commitment, however denominated, not to enforce a patent (such as an express permission to practice a patent or covenant not to sue for patent infringement). To “grant” such a patent license to a party means to make such an agreement or commitment not to enforce a patent against the party.
+
+If you convey a covered work, knowingly relying on a patent license, and the Corresponding Source of the work is not available for anyone to copy, free of charge and under the terms of this License, through a publicly available network server or other readily accessible means, then you must either (1) cause the Corresponding Source to be so available, or (2) arrange to deprive yourself of the benefit of the patent license for this particular work, or (3) arrange, in a manner consistent with the requirements of this License, to extend the patent license to downstream recipients. “Knowingly relying” means you have actual knowledge that, but for the patent license, your conveying the covered work in a country, or your recipient's use of the covered work in a country, would infringe one or more identifiable patents in that country that you have reason to believe are valid.
+
+If, pursuant to or in connection with a single transaction or arrangement, you convey, or propagate by procuring conveyance of, a covered work, and grant a patent license to some of the parties receiving the covered work authorizing them to use, propagate, modify or convey a specific copy of the covered work, then the patent license you grant is automatically extended to all recipients of the covered work and works based on it.
+
+A patent license is “discriminatory” if it does not include within the scope of its coverage, prohibits the exercise of, or is conditioned on the non-exercise of one or more of the rights that are specifically granted under this License. You may not convey a covered work if you are a party to an arrangement with a third party that is in the business of distributing software, under which you make payment to the third party based on the extent of your activity of conveying the work, and under which the third party grants, to any of the parties who would receive the covered work from you, a discriminatory patent license (a) in connection with copies of the covered work conveyed by you (or copies made from those copies), or (b) primarily for and in connection with specific products or compilations that contain the covered work, unless you entered into that arrangement, or that patent license was granted, prior to 28 March 2007.
+
+Nothing in this License shall be construed as excluding or limiting any implied license or other defenses to infringement that may otherwise be available to you under applicable patent law.
+<h4><a name="section12"></a>12. No Surrender of Others' Freedom.</h4>
+If conditions are imposed on you (whether by court order, agreement or otherwise) that contradict the conditions of this License, they do not excuse you from the conditions of this License. If you cannot convey a covered work so as to satisfy simultaneously your obligations under this License and any other pertinent obligations, then as a consequence you may not convey it at all. For example, if you agree to terms that obligate you to collect a royalty for further conveying from those to whom you convey the Program, the only way you could satisfy both those terms and this License would be to refrain entirely from conveying the Program.
+<h4><a name="section13"></a>13. Use with the GNU Affero General Public License.</h4>
+Notwithstanding any other provision of this License, you have permission to link or combine any covered work with a work licensed under version 3 of the GNU Affero General Public License into a single combined work, and to convey the resulting work. The terms of this License will continue to apply to the part which is the covered work, but the special requirements of the GNU Affero General Public License, section 13, concerning interaction through a network will apply to the combination as such.
+<h4><a name="section14"></a>14. Revised Versions of this License.</h4>
+The Free Software Foundation may publish revised and/or new versions of the GNU General Public License from time to time. Such new versions will be similar in spirit to the present version, but may differ in detail to address new problems or concerns.
+
+Each version is given a distinguishing version number. If the Program specifies that a certain numbered version of the GNU General Public License “or any later version” applies to it, you have the option of following the terms and conditions either of that numbered version or of any later version published by the Free Software Foundation. If the Program does not specify a version number of the GNU General Public License, you may choose any version ever published by the Free Software Foundation.
+
+If the Program specifies that a proxy can decide which future versions of the GNU General Public License can be used, that proxy's public statement of acceptance of a version permanently authorizes you to choose that version for the Program.
+
+Later license versions may give you additional or different permissions. However, no additional obligations are imposed on any author or copyright holder as a result of your choosing to follow a later version.
+<h4><a name="section15"></a>15. Disclaimer of Warranty.</h4>
+THERE IS NO WARRANTY FOR THE PROGRAM, TO THE EXTENT PERMITTED BY APPLICABLE LAW. EXCEPT WHEN OTHERWISE STATED IN WRITING THE COPYRIGHT HOLDERS AND/OR OTHER PARTIES PROVIDE THE PROGRAM “AS IS” WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESSED OR IMPLIED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE. THE ENTIRE RISK AS TO THE QUALITY AND PERFORMANCE OF THE PROGRAM IS WITH YOU. SHOULD THE PROGRAM PROVE DEFECTIVE, YOU ASSUME THE COST OF ALL NECESSARY SERVICING, REPAIR OR CORRECTION.
+<h4><a name="section16"></a>16. Limitation of Liability.</h4>
+IN NO EVENT UNLESS REQUIRED BY APPLICABLE LAW OR AGREED TO IN WRITING WILL ANY COPYRIGHT HOLDER, OR ANY OTHER PARTY WHO MODIFIES AND/OR CONVEYS THE PROGRAM AS PERMITTED ABOVE, BE LIABLE TO YOU FOR DAMAGES, INCLUDING ANY GENERAL, SPECIAL, INCIDENTAL OR CONSEQUENTIAL DAMAGES ARISING OUT OF THE USE OR INABILITY TO USE THE PROGRAM (INCLUDING BUT NOT LIMITED TO LOSS OF DATA OR DATA BEING RENDERED INACCURATE OR LOSSES SUSTAINED BY YOU OR THIRD PARTIES OR A FAILURE OF THE PROGRAM TO OPERATE WITH ANY OTHER PROGRAMS), EVEN IF SUCH HOLDER OR OTHER PARTY HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.
+<h4><a name="section17"></a>17. Interpretation of Sections 15 and 16.</h4>
+If the disclaimer of warranty and limitation of liability provided above cannot be given local legal effect according to their terms, reviewing courts shall apply local law that most closely approximates an absolute waiver of all civil liability in connection with the Program, unless a warranty or assumption of liability accompanies a copy of the Program in return for a fee.
+
+END OF TERMS AND CONDITIONS]]></content:encoded>
+      <excerpt:encoded><![CDATA[]]></excerpt:encoded>
+      <wp:post_id>270</wp:post_id>
+      <wp:post_date>2013-01-21 13:24:56</wp:post_date>
+      <wp:post_date_gmt>2013-01-21 13:24:56</wp:post_date_gmt>
+      <wp:comment_status>open</wp:comment_status>
+      <wp:ping_status>open</wp:ping_status>
+      <wp:post_name>unter-welchen-lizenz-steht-yabs</wp:post_name>
+      <wp:status>publish</wp:status>
+      <wp:post_parent>0</wp:post_parent>
+      <wp:menu_order>0</wp:menu_order>
+      <wp:post_type>page</wp:post_type>
+      <wp:post_password></wp:post_password>
+      <wp:is_sticky>0</wp:is_sticky>
+      <wp:postmeta>
+         <wp:meta_key>_wp_page_template</wp:meta_key>
+         <wp:meta_value><![CDATA[default]]></wp:meta_value>
+      </wp:postmeta>
+      <wp:postmeta>
+         <wp:meta_key>_edit_last</wp:meta_key>
+         <wp:meta_value><![CDATA[1]]></wp:meta_value>
+      </wp:postmeta>
+   </item>
+   <item>
+            <title>Impressum</title>
+      <link>http://openyabs.org/impressum/</link>
+      <pubDate>Tue, 19 Feb 2013 19:54:53 +0000</pubDate>
+      <dc:creator><![CDATA[anti43]]></dc:creator>
+      <guid isPermaLink="false">http://openyabs.org/?page_id=317</guid>
+      <description></description>
+      <content:encoded><![CDATA[<h2>Kontakt:</h2>
+<table>
+<tbody>
+<tr>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>E-Mail:</td>
+<td>info@openyabs.org</td>
+</tr>
+</tbody>
+</table>
+<h2>Inhaltlich verantwortlich:</h2>
+Andreas Weber
+
+Kontaktmöglichkeiten:
+E-Mail: senior.weber @ gmail .com
+
+&nbsp;
+<table>
+<tbody>
+<tr>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<h2>Haftungsausschluss:</h2>
+<strong>Haftung für Inhalte</strong>
+
+Die Inhalte unserer Seiten wurden mit größter Sorgfalt erstellt. Für die Richtigkeit, Vollständigkeit und Aktualität der Inhalte können wir jedoch keine Gewähr übernehmen.
+
+<strong>Haftung für Links</strong>
+
+Unser Angebot enthält Links zu externen Webseiten Dritter, auf deren Inhalte wir keinen Einfluss haben. Deshalb können wir für diese fremden Inhalte auch keine Gewähr übernehmen. Für die Inhalte der verlinkten Seiten ist stets der jeweilige Anbieter oder Betreiber der Seiten verantwortlich. Die verlinkten Seiten wurden zum Zeitpunkt der Verlinkung auf mögliche Rechtsverstöße überprüft. Rechtswidrige Inhalte waren zum Zeitpunkt der Verlinkung nicht erkennbar. Eine permanente inhaltliche Kontrolle der verlinkten Seiten ist jedoch ohne konkrete Anhaltspunkte einer Rechtsverletzung nicht zumutbar. Bei Bekanntwerden von Rechtsverletzungen werden wir derartige Links umgehend entfernen.
+
+<strong>Urheberrecht</strong>
+
+Die durch die Seitenbetreiber erstellten Inhalte und Werke auf diesen Seiten unterliegen dem Urheberrecht. Die Vervielfältigung, Bearbeitung, Verbreitung und jede Art der Verwertung außerhalb der Grenzen des Urheberrechtes bedürfen der schriftlichen Zustimmung des jeweiligen Autors bzw. Erstellers. Downloads und Kopien dieser Seite sind nur für den privaten, nicht kommerziellen Gebrauch gestattet. Soweit die Inhalte auf dieser Seite nicht vom Betreiber erstellt wurden, werden die Urheberrechte Dritter beachtet. Insbesondere werden Inhalte Dritter als solche gekennzeichnet. Sollten Sie trotzdem auf eine Urheberrechtsverletzung aufmerksam werden, bitten wir um einen entsprechenden Hinweis. Bei Bekanntwerden von Rechtsverletzungen werden wir derartige Inhalte umgehend entfernen.
+
+<strong>Datenschutz</strong>
+
+Die Nutzung unserer Webseite ist in der Regel ohne Angabe personenbezogener Daten möglich. Soweit auf unseren Seiten personenbezogene Daten (beispielsweise Name, Anschrift oder eMail-Adressen) erhoben werden, erfolgt dies, soweit möglich, stets auf freiwilliger Basis. Diese Daten werden ohne Ihre ausdrückliche Zustimmung nicht an Dritte weitergegeben.
+
+Wir weisen darauf hin, dass die Datenübertragung im Internet (z.B. bei der Kommunikation per E-Mail) Sicherheitslücken aufweisen kann. Ein lückenloser Schutz der Daten vor dem Zugriff durch Dritte ist nicht möglich.
+
+Der Nutzung von auf dieser Seite veröffentlichten Kontaktdaten durch Dritte zur Übersendung von nicht ausdrücklich angeforderter Werbung und Informationsmaterialien wird hiermit ausdrücklich widersprochen. Die Betreiber der Seiten behalten sich ausdrücklich rechtliche Schritte im Falle der unverlangten Zusendung von Werbeinformationen, etwa durch Spam-Mails, vor.
+
+<strong>Datenschutzerklärung für die Nutzung von Google Analytics</strong>
+
+Diese Website benutzt Google Analytics, einen Webanalysedienst der Google Inc. ("Google"). Google Analytics verwendet sog. "Cookies", Textdateien, die auf Ihrem Computer gespeichert werden und die eine Analyse der Benutzung der Website durch Sie ermöglichen. Die durch den Cookie erzeugten Informationen über Ihre Benutzung dieser Website werden in der Regel an einen Server von Google in den USA übertragen und dort gespeichert. Im Falle der Aktivierung der IP-Anonymisierung auf dieser Webseite wird Ihre IP-Adresse von Google jedoch innerhalb von Mitgliedstaaten der Europäischen Union oder in anderen Vertragsstaaten des Abkommens über den Europäischen Wirtschaftsraum zuvor gekürzt.
+
+Sie können die Speicherung der Cookies durch eine entsprechende Einstellung Ihrer Browser-Software verhindern; wir weisen Sie jedoch darauf hin, dass Sie in diesem Fall gegebenenfalls nicht sämtliche Funktionen dieser Website vollumfänglich werden nutzen können. Sie können darüber hinaus die Erfassung der durch das Cookie erzeugten und auf Ihre Nutzung der Website bezogenen Daten (inkl. Ihrer IP-Adresse) an Google sowie die Verarbeitung dieser Daten durch Google verhindern, indem sie das unter dem folgenden Link verfügbare Browser-Plugin herunterladen und installieren: <a href="http://tools.google.com/dlpage/gaoptout?hl=de">http://tools.google.com/dlpage/gaoptout?hl=de</a>.
+
+Quelle: <i><a href="http://www.e-recht24.de">e-Recht24.de</a></i>
+
+<span style="color: #000000; font-family: Verdana, Arial, Helvetica, sans-serif; font-size: 11px; line-height: normal;"> </span>]]></content:encoded>
+      <excerpt:encoded><![CDATA[]]></excerpt:encoded>
+      <wp:post_id>317</wp:post_id>
+      <wp:post_date>2013-02-19 19:54:53</wp:post_date>
+      <wp:post_date_gmt>2013-02-19 19:54:53</wp:post_date_gmt>
+      <wp:comment_status>open</wp:comment_status>
+      <wp:ping_status>open</wp:ping_status>
+      <wp:post_name>impressum</wp:post_name>
+      <wp:status>publish</wp:status>
+      <wp:post_parent>0</wp:post_parent>
+      <wp:menu_order>0</wp:menu_order>
+      <wp:post_type>page</wp:post_type>
+      <wp:post_password></wp:post_password>
+      <wp:is_sticky>0</wp:is_sticky>
+      <wp:postmeta>
+         <wp:meta_key>_edit_last</wp:meta_key>
+         <wp:meta_value><![CDATA[1]]></wp:meta_value>
+      </wp:postmeta>
+      <wp:postmeta>
+         <wp:meta_key>_wp_page_template</wp:meta_key>
+         <wp:meta_value><![CDATA[default]]></wp:meta_value>
+      </wp:postmeta>
+   </item>
+ 
+   <item>
+            <title>Scriptmanager verwenden</title>
+      <link>http://openyabs.org/scriptmanager-verwenden/</link>
+      <pubDate>Fri, 14 Sep 2012 17:14:05 +0000</pubDate>
+      <dc:creator><![CDATA[admin]]></dc:creator>
+      <guid isPermaLink="false">http://openyabs.org/?p=34</guid>
+      <description></description>
+      <content:encoded><![CDATA[<samp>Der Tools-&gt;Control Panel-&gt;Scriptmanager ist ganz einfach zu bedienen :-)</samp>
+
+- die Scriptsprache ist Groovy<br style="font-size: 12px, line-height: 16px,;" />- es kann immer auf das aktuelle Datenbankobjekt zugegriffen werden<br style="font-size: 12px, line-height: 16px,;" />- wenn Sie ein Script einem Context (zB Kontakte) und einer Gruppe zuweisen, wird beim Erstellen eines PDFs (Export eines Templates) dieses Script evaluiert und der entsprechende Schlüssel (key) des Scripts mit dem Rückgabewert ersetzt.<br style="font-size: 12px, line-height: 16px,;" />- der Schlüssel im Template hat folgenden Aufbau: [Scriptname ist "test", an einer Rechnung] item.property.test<br style="font-size: 12px, line-height: 16px,;" />- Es können auch Scripte an einzelne Kontakte/Produkte angehangen werden (über die Properties dort), müssen aber da in der Form #return "hallo"# eingetragen werden (im Scriptmanager ohne #)
+
+&nbsp;
+
+<strong><code><span style="font-family: arial, helvetica, sans-serif,;">nehmen wir an, man möchte beim Export der Rechnung einer Gruppe "Gewerblich" einen Rabatt von 2% bei Zahlung innerhalb 2 Tagen geben, und den anderen Gruppen nicht (oder was anderes), dann kann man nun folgendes tun:</span></code></strong>
+<h3>Im Scriptmanager:</h3>
+&nbsp;
+
+- selektiere Context "Item" und ALLE Gruppen<br style="font-size: 12px, line-height: 16px,;" />- trage als Key ein "skonto"<br style="font-size: 12px, line-height: 16px,;" />- trage als Script ein ("dbo" IST die Rechnung)<br style="font-size: 12px, line-height: 16px,;" /><br style="font-size: 12px, line-height: 16px,;" />
+<div class="highlight" style="font-size: 12px, width: 1064px, line-height: 16px,;">
+<pre class="php" style="padding-top: 10px, padding-right: 15px, padding-bottom: 10px, padding-left: 15px, border-top-color: #bfc3c6, border-right-color: #bfc3c6, border-bottom-color: #bfc3c6, border-left-color: #f4a94f, border-top-width: 1px, border-right-width: 1px, border-bottom-width: 1px, border-left-width: 5px, font-family: Courier News', Courier, monospace, line-height: 1.5, margin-top: 3px, margin-right: 0px, margin-bottom: 10px, margin-left: 0px, max-height: 25em, width: auto, word-wrap: normal, border-style: solid,;">if(dbo.group.cname.equals("Gewerblich"))
+   return "Sie erhalten 2% Skonto bei Zahlung innerhalb 2 Tagen."
+else
+   return "Die Zahlung ist innerhalb 3 Tagen ohne Abzug zu leisten, sonst besucht sie Moskau-Inkasso."</pre>
+&nbsp;
+
+</div>
+&nbsp;
+
+(Script ohne Gewähr, dafür hat man den Testbutton) -&gt;
+
+&nbsp;
+
+- im Template einen Schlüssel eintragen item.property.skonto
+
+']]></content:encoded>
+      <excerpt:encoded><![CDATA[]]></excerpt:encoded>
+      <wp:post_id>34</wp:post_id>
+      <wp:post_date>2012-09-14 17:14:05</wp:post_date>
+      <wp:post_date_gmt>2012-09-14 17:14:05</wp:post_date_gmt>
+      <wp:comment_status>open</wp:comment_status>
+      <wp:ping_status>open</wp:ping_status>
+      <wp:post_name>scriptmanager-verwenden</wp:post_name>
+      <wp:status>publish</wp:status>
+      <wp:post_parent>0</wp:post_parent>
+      <wp:menu_order>0</wp:menu_order>
+      <wp:post_type>post</wp:post_type>
+      <wp:post_password></wp:post_password>
+      <wp:is_sticky>0</wp:is_sticky>
+      <category domain="category" nicename="faq"><![CDATA[FAQ]]></category>
+      <wp:postmeta>
+         <wp:meta_key>_edit_last</wp:meta_key>
+         <wp:meta_value><![CDATA[1]]></wp:meta_value>
+      </wp:postmeta>
+      <wp:postmeta>
+         <wp:meta_key>_pingme</wp:meta_key>
+         <wp:meta_value><![CDATA[1]]></wp:meta_value>
+      </wp:postmeta>
+      <wp:postmeta>
+         <wp:meta_key>_encloseme</wp:meta_key>
+         <wp:meta_value><![CDATA[1]]></wp:meta_value>
+      </wp:postmeta>
+      <wp:postmeta>
+         <wp:meta_key>_pingme</wp:meta_key>
+         <wp:meta_value><![CDATA[1]]></wp:meta_value>
+      </wp:postmeta>
+      <wp:postmeta>
+         <wp:meta_key>_encloseme</wp:meta_key>
+         <wp:meta_value><![CDATA[1]]></wp:meta_value>
+      </wp:postmeta>
+      <wp:postmeta>
+         <wp:meta_key>_encloseme</wp:meta_key>
+         <wp:meta_value><![CDATA[1]]></wp:meta_value>
+      </wp:postmeta>
+      <wp:postmeta>
+         <wp:meta_key>_pingme</wp:meta_key>
+         <wp:meta_value><![CDATA[1]]></wp:meta_value>
+      </wp:postmeta>
+      <wp:postmeta>
+         <wp:meta_key>_pingme</wp:meta_key>
+         <wp:meta_value><![CDATA[1]]></wp:meta_value>
+      </wp:postmeta>
+      <wp:postmeta>
+         <wp:meta_key>_encloseme</wp:meta_key>
+         <wp:meta_value><![CDATA[1]]></wp:meta_value>
+      </wp:postmeta>
+   </item>
+   <item>
+            <title>How to: Verwendung des Template-Managers </title>
+      <link>http://openyabs.org/how-to-verwendung-des-template-managers/</link>
+      <pubDate>Fri, 14 Sep 2012 17:23:40 +0000</pubDate>
+      <dc:creator><![CDATA[admin]]></dc:creator>
+      <guid isPermaLink="false">http://openyabs.org/?p=39</guid>
+      <description></description>
+      <content:encoded><![CDATA[<hr />
+
+<span style="font-size: 14pt;"><strong>Vorwort
+</strong></span>Egal ob Sie nun eines der Beispiel-Templates oder ein selbst erstelltes Template verwenden – muss dieses zunächst in YaBS eingebunden werden. Erst dann können Funktionen, wie das Ausdrucken und die Vorschau verwendet werden.
+
+Sollte keines der von uns bereits erstellen Beispiel-Templates zusagen, möchte ich Sie auf unsere <em><a href="index.php?option=com_content&amp;view=article&amp;id=58:how-to-erstellung-von-openoffice-templates-fuer-yabs&amp;catid=31&amp;Itemid=46">Anleitung zur Erstellung von Templates </a></em>hinweisen.
+
+<span style="font-size: 14pt;"><strong>Allgemeines
+</strong></span>Wie bereits gesagt, verwerden wir Templates, welche zuvor mit dem OpenScouce-Programm <em><a href="http://de.openoffice.org/" target="_blank">OpenOffice</a></em> erstellt wurden. Der Ordnung halber, empfiehlt es sich, im Basisverzeichnis von YaBS ein Unterverzeichnis names „Templates“ zu erstellen. So findet man diese zu einem späteren Zeitpunkt beim Einbinden in YaBS schnell wieder. In dieser Anleitung nenne ich ausschließlich die deutschen Begriffe für die einzelnen Knöpfe. Die deutsche Sprachdatei findet sich ebenfalls im <em><a href="http://openyabs.org/?p=45">Downloadbereich</a>. </em>
+
+Templates werden in YaBS sehr differenziert behandelt. Es ist nicht nur Möglich ein bestimmtes Template für Rechnungen, Angebote, Bestellungen und Kontaktdaten zu erstellen, sondern zusätzlich jedem User für die verschiedenen Anwendungsbereiche, verschiedene Template zuzuweisen. Sprich, jeder User könnte ein eigenes Template bekommen. Oder auch vorstellbar wäre, das YaBS nicht nur für ein Unternehmen genutzt wird, sondern auch von mehreren gleichzeitig, ohne das YaBS zwei oder drei mal auf dem selben PC installiert werden müsste.
+
+<span style="font-size: 14pt;"><strong>Template einbinden
+</strong></span>Zunächst starten wir wie gewohnt YaBS.
+
+Klicken in der Toolleiste auf <strong>Werkzeuge. </strong>Im sich darauf öffnenden Fenster, suchen Sie sich den Schaltfläche <strong>Vorlagen-Manager</strong> (Template-Manager) und klicken auf diese.
+
+Nach diesem Klick finden wir uns auf diesem Bildschirm wieder:
+<a href="http://openyabs.org/wp-content/uploads/2012/09/template_manager_1.jpg"><img class="alignnone size-medium wp-image-40" title="template_manager_1" alt="" src="http://openyabs.org/wp-content/uploads/2012/09/template_manager_1-300x225.jpg" width="300" height="225" /></a>
+
+Wie wir sehen können, ist dieser Template-Manager erst einmal recht übersichtlich gestaltet.
+
+Auf der linken Seite des Bildschirmes sehen wir (noch leer) eine Übersicht der bereits eingebundenen Templates und dessen Verwendung.
+
+<span style="font-size: 14pt;"><strong>Optionserklärung
+</strong></span>Auf der rechten Seite befinden sich die Optionen für die einzelnen Templates. Aufgeteilt in:
+<ul>
+   <li><strong>Name</strong> des Templates (Dateiname)</li>
+   <li><strong>Typ</strong> des Templates (für welchen Bereich soll das Template zur Verfügung gestellt werden – Angebot, Bestellung, Rechung usw.)</li>
+   <li><strong>Formatierung</strong> (Anzahl, Inhalt und Reihenfolge der Daten die in dem Template angezeigt werden sollen.</li>
+   <li><strong>Gruppe </strong>(Für welche Gruppe soll das Template zugänglich sein)</li>
+   <li><strong>Verwendet von </strong>(User der das Template verwenden soll. Wenn keine User angelegt wurden, ist die Voreilstellung immer <strong>admin</strong>)</li>
+   <li><strong>Beschreibung </strong>des Templates (dient zur Übersicht und Erklärung, muss aber nicht ausgefüllt werden)</li>
+</ul>
+<table style="background-color: #f6f1b5; border: #ffffff 0px solid;" border="0">
+<tbody>
+<tr>
+<td><img style="margin: 5px; float: left;" alt="info" src="images/stories/wiki/info.png" width="31" height="31" border="0" />Achtung! Genau hier geschehen 90% aller Userprobleme. Sollte man vergessen den User (hier admin) auszuwählen, wird später immer die Fehlermeldung kommen „Kein Template verfügbar/geladen“. Vergewissern Sie sich vor dem Speichern, das das Template und der gewünschte User farblich unterlegt und somit ausgewählt ist!</td>
+</tr>
+</tbody>
+</table>
+Und zu guter letzt in der untersten Reihe die Knöpfe:
+<ul>
+   <li><strong>Hilfe </strong>(führt auf die Hilfeseite dieser Homepage)</li>
+   <li><strong>Test </strong>(wenn das Template eingebunden wurde, kann die grundsätzliche Funktion mit dieser Taste getestet werden. Hierbei werden die einzelnen Felder mit Dummy-Informationen gefüllt)</li>
+   <li><strong>Datei importieren </strong>(wie der Name schon sagt)</li>
+   <li><strong>Löschen </strong>(löscht eine bereits importiertes Template. Zum löschen muss das betreffende Template ausgewählt sein (per klick))</li>
+   <li><strong>Reset </strong>(zurück setzen der Einstellungen eines bereits importierten Templates. Zum Zurücksetzen muss das betreffende Template ausgewählt sein (per klick))</li>
+   <li><strong>Speichern </strong>(Speichern der vorgenommenen Einstellungen. Hierzu muss das betreffende Template auch markiert sein)</li>
+   <li><strong>Speichern als Neu </strong>(Dubliziert das ausgewählte Template mit allen Einstellungen, damit kleine Einstellungen mit leichten Veränderungen nicht nochmals erstellt werden müssen)</li>
+</ul>
+Nun, um ein Template einzubinden, klicken wir als erstes auf <strong>Vorlage importieren. </strong>Daraufhin öffnet sich ein Popup, mit der gewohnten Optik des jeweiligen Betriebssystems. Hier navigieren wir zu dem Ort, wo das besagte Template auf der Festplatte gespeichert ist und klicken anschließend <strong>Öffnen</strong>
+
+Wir sehen danach folgenden Bildschirm:
+
+<a href="http://openyabs.org/wp-content/uploads/2012/09/template_manager_3.jpg"><img class="alignnone size-medium wp-image-41" title="template_manager_3" alt="" src="http://openyabs.org/wp-content/uploads/2012/09/template_manager_3-300x225.jpg" width="300" height="225" /></a>
+
+Wie wir sehen können, befindet sich nun die ausgewählte Template-Datei links aufgeführt in der Liste. Ich nahm in unserem Beispiel hier das Beispiel-Template names <strong>angebot_muster.odt</strong>.
+<table style="background-color: #f6f1b5; border-width: 0px; border-color: #ffffff;" border="0">
+<tbody>
+<tr>
+<td><img style="margin: 5px; float: left;" alt="info" src="images/stories/wiki/info.png" width="31" height="31" border="0" />Nun müssen wir festlegen, wofür YaBS dieses Template verwenden wollen. <em>In dieser Anleitung gehen wir davon aus, dass es nur einen User gibt (admin) und wir keine Gruppen verwenden. Sprich, es wurde keine weiteren User (admin) in YaBS angelegt und jeder Benutzer verwenden für Rechnungen, Bestellungen oder Angebote jeweils nur ein Template</em>.</td>
+</tr>
+</tbody>
+</table>
+Nun müssen wir festlegen, wofür YaBS dieses Template verwenden wollen. <em>In dieser Anleitung gehen wir davon aus, dass es nur einen User gibt (admin) und wir keine Gruppen verwenden. Sprich, es wurde keine weiteren User (admin) in YaBS angelegt und jeder Benutzer verwenden für Rechnungen, Bestellungen oder Angebote jeweils nur ein Template</em>.
+
+Dazu klicken wir als erstes das <strong>Template in der linken Liste an</strong>, wählen rechts im <strong>Dropdown-Feld</strong> den <strong>Typ</strong> aus, klicken darunter bei <strong>Format</strong> auf <strong>ändern</strong>.
+
+Hier öffnet sich nun wieder ein kleines Popup-Fenster. In diesem Fenster befinden sich kleine Felder, mit jeweils einer Möglichkeit des aktivieren / deaktivieren (Häkchen). Wenn Sie auf ein vorhandenes  Häkchen klicken, verschwindet dieses. Somit ist das besagte Feld deaktiviert und wird später nicht mehr im Template angezeigt. Jedoch können Sie auch die Reihenfolge der angezeigten Felder beeinflussen. Hierzu klinken Sie mit der linken Maustaste auf das besagte Feld und halten die Taste gedrückt. Nun können Sie das Feld in dem Fenster bewegen und somit die Reihenfolge ändern. Dadurch kann auch zB das Feld <strong>Optional</strong>, von der letzten Position auf die erste oder zweite Position verschieben. YaBS wird später genau diese Reihenfolge einhalten.
+
+Nach der Auswahl und dem Klick auf <strong>Anwenden, </strong>kann dieses Fenster geschlossen werden. Vielleicht ist Ihnen aufgefallen, dass vor der Änderung der Reihenfolge und gewünschter Anzeige, neben dem <strong>Ändern-Knopf eine Zahlenfolge 1,2,3,4,5,6,7,8,9,10,11 zu sehen war</strong>. Diese hat sich nach Ihrer Auswahl geändert.
+
+Jede Zahl stand für eines der Felder in dem Popupfenster: <a href="http://openyabs.org/wp-content/uploads/2012/09/template_manager_2.jpg"><img class="alignnone size-medium wp-image-42" title="template_manager_2" alt="" src="http://openyabs.org/wp-content/uploads/2012/09/template_manager_2-300x226.jpg" width="300" height="226" /></a>
+<ul>
+   <li><strong>Count </strong>(Automatische Nummerierung der Positionen eines Templates für jede Zeile)</li>
+   <li><strong>Quantity </strong>(Anzahl)</li>
+   <li><strong>Measure </strong>(Einheit zB Kg, Liter, Stück – Definierbar in den Benutzereinstellungen)</li>
+   <li><strong>Text </strong>(Die Beschreibung, welche man in der Eingabemaske eingibt)</li>
+   <li><strong>Net </strong>(Nettoeinzelpreis)</li>
+   <li><strong>Totalnet </strong>(Nettogesamt, wenn man zB mehr wie ein Stück liefert)</li>
+   <li><strong>Taxrate </strong>(Steuersatz in Zahlen)</li>
+   <li><strong>Tax </strong>(Steuerbezeichnung zB MwSt, USt)</li>
+   <li><strong>Total </strong>(Gesamtwert, errechnet aus Anzahl, Netto/Nettogesamt, Steuer)</li>
+   <li><strong>Link </strong>(Einbindung von URL’s)</li>
+   <li><strong>Optional </strong>(Ein Feld zu individuellen Verwendung)</li>
+   <li>Discount (Feld 12)</li>
+</ul>
+Wenn Sie schon im Vorfeld wissen, welche Felder Sie in dem Template benötigen und auch dessen Reihenfolge, können Sie auch den Schritt des Auswählens überspringen und gleich per Hand die entsprechenden Zahlen in der gewünschten Reihenfolge eingeben zB 1,11,4,5,6
+
+Danach kann noch die Gruppe ausgewählt werden, für welche dieses Template mit den bisherigen Einstellungen gelten soll und letztendlich noch in dem <strong>Verwendet von</strong> Bereich, der User zu dem das Template gehört. Ein Klick aus Speichern schließt den gesamten Vorgang ab. Späteren Änderungen sind durchaus möglich, ohne alles nochmals einzugeben.]]></content:encoded>
+      <excerpt:encoded><![CDATA[]]></excerpt:encoded>
+      <wp:post_id>39</wp:post_id>
+      <wp:post_date>2012-09-14 17:23:40</wp:post_date>
+      <wp:post_date_gmt>2012-09-14 17:23:40</wp:post_date_gmt>
+      <wp:comment_status>open</wp:comment_status>
+      <wp:ping_status>open</wp:ping_status>
+      <wp:post_name>how-to-verwendung-des-template-managers</wp:post_name>
+      <wp:status>publish</wp:status>
+      <wp:post_parent>0</wp:post_parent>
+      <wp:menu_order>0</wp:menu_order>
+      <wp:post_type>post</wp:post_type>
+      <wp:post_password></wp:post_password>
+      <wp:is_sticky>0</wp:is_sticky>
+      <category domain="category" nicename="faq"><![CDATA[FAQ]]></category>
+      <wp:postmeta>
+         <wp:meta_key>_edit_last</wp:meta_key>
+         <wp:meta_value><![CDATA[2]]></wp:meta_value>
+      </wp:postmeta>
+      <wp:postmeta>
+         <wp:meta_key>_pingme</wp:meta_key>
+         <wp:meta_value><![CDATA[1]]></wp:meta_value>
+      </wp:postmeta>
+      <wp:postmeta>
+         <wp:meta_key>_encloseme</wp:meta_key>
+         <wp:meta_value><![CDATA[1]]></wp:meta_value>
+      </wp:postmeta>
+      <wp:postmeta>
+         <wp:meta_key>_pingme</wp:meta_key>
+         <wp:meta_value><![CDATA[1]]></wp:meta_value>
+      </wp:postmeta>
+      <wp:postmeta>
+         <wp:meta_key>_encloseme</wp:meta_key>
+         <wp:meta_value><![CDATA[1]]></wp:meta_value>
+      </wp:postmeta>
+      <wp:postmeta>
+         <wp:meta_key>_encloseme</wp:meta_key>
+         <wp:meta_value><![CDATA[1]]></wp:meta_value>
+      </wp:postmeta>
+      <wp:postmeta>
+         <wp:meta_key>_pingme</wp:meta_key>
+         <wp:meta_value><![CDATA[1]]></wp:meta_value>
+      </wp:postmeta>
+      <wp:postmeta>
+         <wp:meta_key>_pingme</wp:meta_key>
+         <wp:meta_value><![CDATA[1]]></wp:meta_value>
+      </wp:postmeta>
+      <wp:postmeta>
+         <wp:meta_key>_encloseme</wp:meta_key>
+         <wp:meta_value><![CDATA[1]]></wp:meta_value>
+      </wp:postmeta>
+   </item>
+   <item>
+            <title>Einfache Beispieltemplates und eine Sprachdatei</title>
+      <link>http://openyabs.org/einfache-beispieltemplates/</link>
+      <pubDate>Fri, 14 Sep 2012 17:31:21 +0000</pubDate>
+      <dc:creator><![CDATA[admin]]></dc:creator>
+      <guid isPermaLink="false">http://openyabs.org/?p=45</guid>
+      <description></description>
+      <content:encoded><![CDATA[<h2>Templates:</h2>
+<h3>Datei entpacken, und die beinhaltenden Beispiele mit  LibreOffice öffnen und bearbeiten:</h3>
+&nbsp;
+
+Verschiedenes:
+
+<a title="Templatepack" href="http://openyabs.org/wp-content/uploads/2012/09/templates.zip" target="_blank">http://openyabs.org/wp-content/uploads/2012/09/templates.zip</a>
+
+Serienbrief:
+
+<a href="http://openyabs.org/wp-content/uploads/2012/09/Briefvorlage.odt">Briefvorlage</a>
+
+&nbsp;
+<h2>Sprache:</h2>
+<h3>Datei entpacken und in yabs importieren:</h3>
+<a href="http://openyabs.org/einfache-beispieltemplates/deutsch-beta_yabs-1-18-beta5-utf8/" rel="attachment wp-att-196">deutsch-beta_Yabs-1.18-beta5-utf8</a>]]></content:encoded>
+      <excerpt:encoded><![CDATA[]]></excerpt:encoded>
+      <wp:post_id>45</wp:post_id>
+      <wp:post_date>2012-09-14 17:31:21</wp:post_date>
+      <wp:post_date_gmt>2012-09-14 17:31:21</wp:post_date_gmt>
+      <wp:comment_status>closed</wp:comment_status>
+      <wp:ping_status>closed</wp:ping_status>
+      <wp:post_name>einfache-beispieltemplates</wp:post_name>
+      <wp:status>publish</wp:status>
+      <wp:post_parent>0</wp:post_parent>
+      <wp:menu_order>0</wp:menu_order>
+      <wp:post_type>post</wp:post_type>
+      <wp:post_password></wp:post_password>
+      <wp:is_sticky>0</wp:is_sticky>
+      <category domain="category" nicename="faq"><![CDATA[FAQ]]></category>
+      <wp:postmeta>
+         <wp:meta_key>_edit_last</wp:meta_key>
+         <wp:meta_value><![CDATA[1]]></wp:meta_value>
+      </wp:postmeta>
+      <wp:postmeta>
+         <wp:meta_key>_pingme</wp:meta_key>
+         <wp:meta_value><![CDATA[1]]></wp:meta_value>
+      </wp:postmeta>
+      <wp:postmeta>
+         <wp:meta_key>_encloseme</wp:meta_key>
+         <wp:meta_value><![CDATA[1]]></wp:meta_value>
+      </wp:postmeta>
+      <wp:postmeta>
+         <wp:meta_key>_pingme</wp:meta_key>
+         <wp:meta_value><![CDATA[1]]></wp:meta_value>
+      </wp:postmeta>
+      <wp:postmeta>
+         <wp:meta_key>_encloseme</wp:meta_key>
+         <wp:meta_value><![CDATA[1]]></wp:meta_value>
+      </wp:postmeta>
+      <wp:postmeta>
+         <wp:meta_key>_encloseme</wp:meta_key>
+         <wp:meta_value><![CDATA[1]]></wp:meta_value>
+      </wp:postmeta>
+      <wp:postmeta>
+         <wp:meta_key>_pingme</wp:meta_key>
+         <wp:meta_value><![CDATA[1]]></wp:meta_value>
+      </wp:postmeta>
+      <wp:postmeta>
+         <wp:meta_key>_pingme</wp:meta_key>
+         <wp:meta_value><![CDATA[1]]></wp:meta_value>
+      </wp:postmeta>
+      <wp:postmeta>
+         <wp:meta_key>_encloseme</wp:meta_key>
+         <wp:meta_value><![CDATA[1]]></wp:meta_value>
+      </wp:postmeta>
+      <wp:postmeta>
+         <wp:meta_key>_pingme</wp:meta_key>
+         <wp:meta_value><![CDATA[1]]></wp:meta_value>
+      </wp:postmeta>
+      <wp:postmeta>
+         <wp:meta_key>_encloseme</wp:meta_key>
+         <wp:meta_value><![CDATA[1]]></wp:meta_value>
+      </wp:postmeta>
+      <wp:postmeta>
+         <wp:meta_key>_pingme</wp:meta_key>
+         <wp:meta_value><![CDATA[1]]></wp:meta_value>
+      </wp:postmeta>
+      <wp:postmeta>
+         <wp:meta_key>_encloseme</wp:meta_key>
+         <wp:meta_value><![CDATA[1]]></wp:meta_value>
+      </wp:postmeta>
+      <wp:postmeta>
+         <wp:meta_key>_pingme</wp:meta_key>
+         <wp:meta_value><![CDATA[1]]></wp:meta_value>
+      </wp:postmeta>
+      <wp:postmeta>
+         <wp:meta_key>_encloseme</wp:meta_key>
+         <wp:meta_value><![CDATA[1]]></wp:meta_value>
+      </wp:postmeta>
+      <wp:postmeta>
+         <wp:meta_key>_pingme</wp:meta_key>
+         <wp:meta_value><![CDATA[1]]></wp:meta_value>
+      </wp:postmeta>
+      <wp:postmeta>
+         <wp:meta_key>_encloseme</wp:meta_key>
+         <wp:meta_value><![CDATA[1]]></wp:meta_value>
+      </wp:postmeta>
+      <wp:postmeta>
+         <wp:meta_key>_encloseme</wp:meta_key>
+         <wp:meta_value><![CDATA[1]]></wp:meta_value>
+      </wp:postmeta>
+      <wp:postmeta>
+         <wp:meta_key>_pingme</wp:meta_key>
+         <wp:meta_value><![CDATA[1]]></wp:meta_value>
+      </wp:postmeta>
+      <wp:postmeta>
+         <wp:meta_key>_pingme</wp:meta_key>
+         <wp:meta_value><![CDATA[1]]></wp:meta_value>
+      </wp:postmeta>
+      <wp:postmeta>
+         <wp:meta_key>_encloseme</wp:meta_key>
+         <wp:meta_value><![CDATA[1]]></wp:meta_value>
+      </wp:postmeta>
+      <wp:comment>
+         <wp:comment_id>30</wp:comment_id>
+         <wp:comment_author><![CDATA[Petra]]></wp:comment_author>
+         <wp:comment_author_email>emotions-berlin@gmx.de</wp:comment_author_email>
+         <wp:comment_author_url></wp:comment_author_url>
+         <wp:comment_author_IP>91.65.91.51</wp:comment_author_IP>
+         <wp:comment_date>2012-09-19 11:09:55</wp:comment_date>
+         <wp:comment_date_gmt>2012-09-19 11:09:55</wp:comment_date_gmt>
+         <wp:comment_content><![CDATA[Wie kann ich denn diese Datei einbinden?]]></wp:comment_content>
+         <wp:comment_approved>1</wp:comment_approved>
+         <wp:comment_type></wp:comment_type>
+         <wp:comment_parent>0</wp:comment_parent>
+         <wp:comment_user_id>0</wp:comment_user_id>
+         <wp:commentmeta>
+            <wp:meta_key>akismet_result</wp:meta_key>
+            <wp:meta_value><![CDATA[false]]></wp:meta_value>
+         </wp:commentmeta>
+         <wp:commentmeta>
+            <wp:meta_key>akismet_history</wp:meta_key>
+            <wp:meta_value><![CDATA[a:4:{s:4:"time";s:15:"1348052995.5612";s:7:"message";s:28:"Akismet cleared this comment";s:5:"event";s:9:"check-ham";s:4:"user";s:0:"";}]]></wp:meta_value>
+         </wp:commentmeta>
+         <wp:commentmeta>
+            <wp:meta_key>akismet_as_submitted</wp:meta_key>
+            <wp:meta_value><![CDATA[a:60:{s:15:"comment_post_ID";s:2:"45";s:14:"comment_author";s:5:"Petra";s:20:"comment_author_email";s:22:"emotions-berlin@gmx.de";s:18:"comment_author_url";s:0:"";s:15:"comment_content";s:40:"Wie kann ich denn diese Datei einbinden?";s:12:"comment_type";s:0:"";s:14:"comment_parent";s:1:"0";s:7:"user_ID";s:1:"0";s:7:"user_ip";s:11:"91.65.91.51";s:10:"user_agent";s:67:"Mozilla/5.0 (Windows NT 5.1; rv:15.0) Gecko/20100101 Firefox/15.0.1";s:8:"referrer";s:47:"http://openyabs.org/einfache-beispieltemplates/";s:4:"blog";s:19:"http://openyabs.org";s:9:"blog_lang";s:5:"en_US";s:12:"blog_charset";s:5:"UTF-8";s:9:"permalink";s:47:"http://openyabs.org/einfache-beispieltemplates/";s:21:"akismet_comment_nonce";s:6:"passed";s:11:"POST_author";s:5:"Petra";s:10:"POST_email";s:22:"emotions-berlin@gmx.de";s:8:"POST_url";s:0:"";s:12:"POST_comment";s:40:"Wie kann ich denn diese Datei einbinden?";s:11:"POST_submit";s:14:"Submit Comment";s:20:"POST_comment_post_ID";s:2:"45";s:19:"POST_comment_parent";s:
+1:"0";s:26:"POST_akismet_comment_nonce";s:10:"c49d08ce0e";s:15:"SERVER_SOFTWARE";s:21:"Apache/2.2.3 (CentOS)";s:11:"REQUEST_URI";s:21:"/wp-comments-post.php";s:4:"PATH";s:29:"/sbin:/usr/sbin:/bin:/usr/bin";s:3:"PWD";s:28:"/var/www/cgi-bin/cgi_wrapper";s:5:"SHLVL";s:1:"0";s:9:"FCGI_ROLE";s:9:"RESPONDER";s:9:"HTTP_HOST";s:12:"openyabs.org";s:15:"HTTP_USER_AGENT";s:67:"Mozilla/5.0 (Windows NT 5.1; rv:15.0) Gecko/20100101 Firefox/15.0.1";s:11:"HTTP_ACCEPT";s:63:"text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8";s:20:"HTTP_ACCEPT_LANGUAGE";s:35:"de,de-de;q=0.8,en-us;q=0.5,en;q=0.3";s:20:"HTTP_ACCEPT_ENCODING";s:13:"gzip, deflate";s:8:"HTTP_DNT";s:1:"1";s:15:"HTTP_CONNECTION";s:10:"keep-alive";s:12:"HTTP_REFERER";s:47:"http://openyabs.org/einfache-beispieltemplates/";s:11:"HTTP_COOKIE";s:0:"";s:12:"CONTENT_TYPE";s:33:"application/x-www-form-urlencoded";s:14:"CONTENT_LENGTH";s:3:"190";s:16:"SERVER_SIGNATURE";s:72:"<address>Apache/2.2.3 (CentOS) Server at openyabs.org Port 80</address>
+";s:11:"SERVER_NAME";s:12:"openyabs.org";s:11:"SERVER_ADDR";s:12:"80.74.158.25";s:11:"SERVER_PORT";s:2:"80";s:11:"REMOTE_ADDR";s:11:"91.65.91.51";s:13:"DOCUMENT_ROOT";s:40:"/home/httpd/vhosts/openyabs.org/httpdocs";s:12:"SERVER_ADMIN";s:22:"senior.weber@gmail.com";s:15:"SCRIPT_FILENAME";s:61:"/home/httpd/vhosts/openyabs.org/httpdocs/wp-comments-post.php";s:11:"REMOTE_PORT";s:4:"3042";s:17:"GATEWAY_INTERFACE";s:7:"CGI/1.1";s:15:"SERVER_PROTOCOL";s:8:"HTTP/1.1";s:14:"REQUEST_METHOD";s:4:"POST";s:12:"QUERY_STRING";s:0:"";s:11:"SCRIPT_NAME";s:21:"/wp-comments-post.php";s:8:"PHP_SELF";s:21:"/wp-comments-post.php";s:12:"REQUEST_TIME";s:10:"1348052994";s:4:"argv";s:0:"";s:4:"argc";s:1:"0";s:25:"comment_post_modified_gmt";s:19:"2012-09-16 07:11:29";}]]></wp:meta_value>
+         </wp:commentmeta>
+         <wp:commentmeta>
+            <wp:meta_key>akismet_history</wp:meta_key>
+            <wp:meta_value><![CDATA[a:4:{s:4:"time";s:15:"1348054264.0529";s:7:"message";s:45:"anti43 changed the comment status to approved";s:5:"event";s:15:"status-approved";s:4:"user";s:6:"anti43";}]]></wp:meta_value>
+         </wp:commentmeta>
+      </wp:comment>
+      <wp:comment>
+         <wp:comment_id>31</wp:comment_id>
+         <wp:comment_author><![CDATA[anti43]]></wp:comment_author>
+         <wp:comment_author_email>seniorweber@gmail.com</wp:comment_author_email>
+         <wp:comment_author_url></wp:comment_author_url>
+         <wp:comment_author_IP>85.93.217.248</wp:comment_author_IP>
+         <wp:comment_date>2012-09-19 11:33:55</wp:comment_date>
+         <wp:comment_date_gmt>2012-09-19 11:33:55</wp:comment_date_gmt>
+         <wp:comment_content><![CDATA[Beides unter Extras->Control Panel- >]]></wp:comment_content>
+         <wp:comment_approved>1</wp:comment_approved>
+         <wp:comment_type></wp:comment_type>
+         <wp:comment_parent>30</wp:comment_parent>
+         <wp:comment_user_id>2</wp:comment_user_id>
+         <wp:commentmeta>
+            <wp:meta_key>akismet_result</wp:meta_key>
+            <wp:meta_value><![CDATA[false]]></wp:meta_value>
+         </wp:commentmeta>
+         <wp:commentmeta>
+            <wp:meta_key>akismet_history</wp:meta_key>
+            <wp:meta_value><![CDATA[a:4:{s:4:"time";s:15:"1348054435.1641";s:7:"message";s:28:"Akismet cleared this comment";s:5:"event";s:9:"check-ham";s:4:"user";s:6:"anti43";}]]></wp:meta_value>
+         </wp:commentmeta>
+         <wp:commentmeta>
+            <wp:meta_key>akismet_as_submitted</wp:meta_key>
+            <wp:meta_value><![CDATA[a:61:{s:15:"comment_post_ID";s:2:"45";s:14:"comment_author";s:6:"anti43";s:20:"comment_author_email";s:21:"seniorweber@gmail.com";s:18:"comment_author_url";s:0:"";s:15:"comment_content";s:37:"Beides unter Extras->Control Panel- >";s:12:"comment_type";s:0:"";s:14:"comment_parent";s:2:"30";s:7:"user_ID";s:1:"2";s:7:"user_ip";s:13:"85.93.217.248";s:10:"user_agent";s:141:"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/535.19 (KHTML, like Gecko) Ubuntu/11.10 Chromium/18.0.1025.151 Chrome/18.0.1025.151 Safari/535.19";s:8:"referrer";s:47:"http://openyabs.org/einfache-beispieltemplates/";s:4:"blog";s:19:"http://openyabs.org";s:9:"blog_lang";s:5:"en_US";s:12:"blog_charset";s:5:"UTF-8";s:9:"permalink";s:47:"http://openyabs.org/einfache-beispieltemplates/";s:9:"user_role";s:13:"administrator";s:21:"akismet_comment_nonce";s:6:"passed";s:12:"POST_comment";s:42:"Beides unter Extras->Control Panel- > 
+
+";s:11:"POST_submit";s:14:"Submit Comment";s:20:"POST_comment_post_ID";s:2:"45";s:19:"POST_comment_parent";s:2:"30";s:32:"POST__wp_unfiltered_html_comment";s:10:"ad096ad21b";s:26:"POST_akismet_comment_nonce";s:10:"241a38e53c";s:15:"SERVER_SOFTWARE";s:21:"Apache/2.2.3 (CentOS)";s:11:"REQUEST_URI";s:21:"/wp-comments-post.php";s:4:"PATH";s:29:"/sbin:/usr/sbin:/bin:/usr/bin";s:3:"PWD";s:28:"/var/www/cgi-bin/cgi_wrapper";s:5:"SHLVL";s:1:"0";s:9:"FCGI_ROLE";s:9:"RESPONDER";s:9:"HTTP_HOST";s:12:"openyabs.org";s:15:"HTTP_CONNECTION";s:10:"keep-alive";s:14:"CONTENT_LENGTH";s:3:"193";s:18:"HTTP_CACHE_CONTROL";s:9:"max-age=0";s:11:"HTTP_ORIGIN";s:19:"http://openyabs.org";s:15:"HTTP_USER_AGENT";s:141:"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/535.19 (KHTML, like Gecko) Ubuntu/11.10 Chromium/18.0.1025.151 Chrome/18.0.1025.151 Safari/535.19";s:12:"CONTENT_TYPE";s:33:"application/x-www-form-urlencoded";s:11:"HTTP_ACCEPT";s:63:"text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8";s:12:"HTTP_REFERER";s:47:"http:
+//openyabs.org/einfache-beispieltemplates/";s:20:"HTTP_ACCEPT_ENCODING";s:17:"gzip,deflate,sdch";s:20:"HTTP_ACCEPT_LANGUAGE";s:35:"de-DE,de;q=0.8,en-US;q=0.6,en;q=0.4";s:19:"HTTP_ACCEPT_CHARSET";s:30:"ISO-8859-1,utf-8;q=0.7,*;q=0.3";s:11:"HTTP_COOKIE";s:0:"";s:16:"SERVER_SIGNATURE";s:72:"<address>Apache/2.2.3 (CentOS) Server at openyabs.org Port 80</address>
+";s:11:"SERVER_NAME";s:12:"openyabs.org";s:11:"SERVER_ADDR";s:12:"80.74.158.25";s:11:"SERVER_PORT";s:2:"80";s:11:"REMOTE_ADDR";s:13:"85.93.217.248";s:13:"DOCUMENT_ROOT";s:40:"/home/httpd/vhosts/openyabs.org/httpdocs";s:12:"SERVER_ADMIN";s:22:"senior.weber@gmail.com";s:15:"SCRIPT_FILENAME";s:61:"/home/httpd/vhosts/openyabs.org/httpdocs/wp-comments-post.php";s:11:"REMOTE_PORT";s:5:"35350";s:17:"GATEWAY_INTERFACE";s:7:"CGI/1.1";s:15:"SERVER_PROTOCOL";s:8:"HTTP/1.1";s:14:"REQUEST_METHOD";s:4:"POST";s:12:"QUERY_STRING";s:0:"";s:11:"SCRIPT_NAME";s:21:"/wp-comments-post.php";s:8:"PHP_SELF";s:21:"/wp-comments-post.php";s:12:"REQUEST_TIME";s:10:"1348054434";s:4:"argv";s:0:"";s:4:"argc";s:1:"0";s:25:"comment_post_modified_gmt";s:19:"2012-09-19 11:33:05";}]]></wp:meta_value>
+         </wp:commentmeta>
+      </wp:comment>
+      <wp:comment>
+         <wp:comment_id>32</wp:comment_id>
+         <wp:comment_author><![CDATA[Dietmar Schütz]]></wp:comment_author>
+         <wp:comment_author_email>schuetz@zollagentur.net</wp:comment_author_email>
+         <wp:comment_author_url></wp:comment_author_url>
+         <wp:comment_author_IP>164.139.7.12</wp:comment_author_IP>
+         <wp:comment_date>2012-09-20 07:15:01</wp:comment_date>
+         <wp:comment_date_gmt>2012-09-20 07:15:01</wp:comment_date_gmt>
+         <wp:comment_content><![CDATA[Guten Morgen,
+hab unter "Control Panel" - Regional an Language settings versucht die Sprachdatei aus einem temp. Verzeichnis heraus zu importieren, 
+Das schlug fehl mit der Meldung "missing keys in ~/deutsch+beta _Yabs-1.18-beta5.yabs"
+Danach eine Auflistung wie zum Beispiel:
+"controlpanel_userproperties.group|text = group" .... und einige mehr
+Was muss ich tun?..
+Gruß
+Dietmar]]></wp:comment_content>
+         <wp:comment_approved>1</wp:comment_approved>
+         <wp:comment_type></wp:comment_type>
+         <wp:comment_parent>31</wp:comment_parent>
+         <wp:comment_user_id>0</wp:comment_user_id>
+         <wp:commentmeta>
+            <wp:meta_key>akismet_result</wp:meta_key>
+            <wp:meta_value><![CDATA[false]]></wp:meta_value>
+         </wp:commentmeta>
+         <wp:commentmeta>
+            <wp:meta_key>akismet_history</wp:meta_key>
+            <wp:meta_value><![CDATA[a:4:{s:4:"time";s:15:"1348125301.7598";s:7:"message";s:28:"Akismet cleared this comment";s:5:"event";s:9:"check-ham";s:4:"user";s:0:"";}]]></wp:meta_value>
+         </wp:commentmeta>
+         <wp:commentmeta>
+            <wp:meta_key>akismet_as_submitted</wp:meta_key>
+            <wp:meta_value><![CDATA[a:62:{s:15:"comment_post_ID";s:2:"45";s:14:"comment_author";s:15:"Dietmar Schütz";s:20:"comment_author_email";s:23:"schuetz@zollagentur.net";s:18:"comment_author_url";s:0:"";s:15:"comment_content";s:387:"Guten Morgen,
+hab unter "Control Panel" - Regional an Language settings versucht die Sprachdatei aus einem temp. Verzeichnis heraus zu importieren, 
+Das schlug fehl mit der Meldung "missing keys in ~/deutsch+beta _Yabs-1.18-beta5.yabs"
+Danach eine Auflistung wie zum Beispiel:
+"controlpanel_userproperties.group|text = group" .... und einige mehr
+Was muss ich tun?..
+Gruß
+Dietmar";s:12:"comment_type";s:0:"";s:14:"comment_parent";s:2:"31";s:7:"user_ID";s:1:"0";s:7:"user_ip";s:12:"164.139.7.12";s:10:"user_agent";s:146:"Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 5.1; Trident/4.0; .NET CLR 1.1.4322; .NET CLR 2.0.50727; .NET CLR 3.0.4506.2152; .NET CLR 3.5.30729)";s:8:"referrer";s:47:"http://openyabs.org/einfache-beispieltemplates/";s:4:"blog";s:19:"http://openyabs.org";s:9:"blog_lang";s:5:"en_US";s:12:"blog_charset";s:5:"UTF-8";s:9:"permalink";s:47:"http://openyabs.org/einfache-beispieltemplates/";s:21:"akismet_comment_nonce";s:6:"passed";s:11:"POST_author";s:15:"Dietmar Schütz";s:10:"POST_email";s:23:"schuetz@zollagentur.net";s:8:"POST_url";s:0:"";s:12:"POST_comment";s:387:"Guten Morgen,
+hab unter "Control Panel" - Regional an Language settings versucht die Sprachdatei aus einem temp. Verzeichnis heraus zu importieren, 
+Das schlug fehl mit der Meldung "missing keys in ~/deutsch+beta _Yabs-1.18-beta5.yabs"
+Danach eine Auflistung wie zum Beispiel:
+"controlpanel_userproperties.group|text = group" .... und einige mehr
+Was muss ich tun?..
+Gruß
+Dietmar";s:11:"POST_submit";s:14:"Submit Comment";s:20:"POST_comment_post_ID";s:2:"45";s:19:"POST_comment_parent";s:2:"31";s:26:"POST_akismet_comment_nonce";s:10:"67c8a6a24c";s:15:"SERVER_SOFTWARE";s:21:"Apache/2.2.3 (CentOS)";s:11:"REQUEST_URI";s:21:"/wp-comments-post.php";s:4:"PATH";s:29:"/sbin:/usr/sbin:/bin:/usr/bin";s:3:"PWD";s:28:"/var/www/cgi-bin/cgi_wrapper";s:5:"SHLVL";s:1:"0";s:9:"FCGI_ROLE";s:9:"RESPONDER";s:11:"HTTP_ACCEPT";s:267:"image/gif, image/jpeg, image/pjpeg, image/pjpeg, application/x-shockwave-flash, application/x-ms-application, application/x-ms-xbap, application/vnd.ms-xpsdocument, application/xaml+xml, application/vnd.ms-excel, application/vnd.ms-powerpoint, application/msword, */*";s:12:"HTTP_REFERER";s:47:"http://openyabs.org/einfache-beispieltemplates/";s:20:"HTTP_ACCEPT_LANGUAGE";s:2:"de";s:15:"HTTP_USER_AGENT";s:146:"Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 5.1; Trident/4.0; .NET CLR 1.1.4322; .NET CLR 2.0.50727; .NET CLR 3.0.4506.2152; .NET CLR 3.5.30729)";s:12:"CONTENT_
+TYPE";s:33:"application/x-www-form-urlencoded";s:20:"HTTP_ACCEPT_ENCODING";s:13:"gzip, deflate";s:11:"HTTP_COOKIE";s:0:"";s:14:"CONTENT_LENGTH";s:3:"611";s:11:"HTTP_PRAGMA";s:8:"no-cache";s:9:"HTTP_HOST";s:12:"openyabs.org";s:20:"HTTP_X_FORWARDED_FOR";s:13:"10.243.141.16";s:15:"HTTP_CONNECTION";s:10:"Keep-Alive";s:19:"HTTP_X_BLUECOAT_VIA";s:16:"837181600559de21";s:16:"SERVER_SIGNATURE";s:72:"<address>Apache/2.2.3 (CentOS) Server at openyabs.org Port 80</address>
+";s:11:"SERVER_NAME";s:12:"openyabs.org";s:11:"SERVER_ADDR";s:12:"80.74.158.25";s:11:"SERVER_PORT";s:2:"80";s:11:"REMOTE_ADDR";s:12:"164.139.7.12";s:13:"DOCUMENT_ROOT";s:40:"/home/httpd/vhosts/openyabs.org/httpdocs";s:12:"SERVER_ADMIN";s:22:"senior.weber@gmail.com";s:15:"SCRIPT_FILENAME";s:61:"/home/httpd/vhosts/openyabs.org/httpdocs/wp-comments-post.php";s:11:"REMOTE_PORT";s:5:"34170";s:17:"GATEWAY_INTERFACE";s:7:"CGI/1.1";s:15:"SERVER_PROTOCOL";s:8:"HTTP/1.1";s:14:"REQUEST_METHOD";s:4:"POST";s:12:"QUERY_STRING";s:0:"";s:11:"SCRIPT_NAME";s:21:"/wp-comments-post.php";s:8:"PHP_SELF";s:21:"/wp-comments-post.php";s:12:"REQUEST_TIME";s:10:"1348125300";s:4:"argv";s:0:"";s:4:"argc";s:1:"0";s:25:"comment_post_modified_gmt";s:19:"2012-09-19 11:33:05";}]]></wp:meta_value>
+         </wp:commentmeta>
+         <wp:commentmeta>
+            <wp:meta_key>akismet_history</wp:meta_key>
+            <wp:meta_value><![CDATA[a:4:{s:4:"time";s:15:"1348127626.2134";s:7:"message";s:45:"anti43 changed the comment status to approved";s:5:"event";s:15:"status-approved";s:4:"user";s:6:"anti43";}]]></wp:meta_value>
+         </wp:commentmeta>
+      </wp:comment>
+      <wp:comment>
+         <wp:comment_id>33</wp:comment_id>
+         <wp:comment_author><![CDATA[anti43]]></wp:comment_author>
+         <wp:comment_author_email>seniorweber@gmail.com</wp:comment_author_email>
+         <wp:comment_author_url></wp:comment_author_url>
+         <wp:comment_author_IP>85.93.217.248</wp:comment_author_IP>
+         <wp:comment_date>2012-09-20 07:55:52</wp:comment_date>
+         <wp:comment_date_gmt>2012-09-20 07:55:52</wp:comment_date_gmt>
+         <wp:comment_content><![CDATA[kopieren sie einfach die Auflistung in die Datei und importieren erneut. Es gibt anscheinend aktuell keine fertige Sprachdatei, Sie können die Schlüssel aus der Auflistung selbst übersetzen oder mit den englischen Begriffen leben, sind ja nur ein paar.]]></wp:comment_content>
+         <wp:comment_approved>1</wp:comment_approved>
+         <wp:comment_type></wp:comment_type>
+         <wp:comment_parent>32</wp:comment_parent>
+         <wp:comment_user_id>2</wp:comment_user_id>
+         <wp:commentmeta>
+            <wp:meta_key>akismet_result</wp:meta_key>
+            <wp:meta_value><![CDATA[false]]></wp:meta_value>
+         </wp:commentmeta>
+         <wp:commentmeta>
+            <wp:meta_key>akismet_history</wp:meta_key>
+            <wp:meta_value><![CDATA[a:4:{s:4:"time";s:15:"1348127752.4017";s:7:"message";s:28:"Akismet cleared this comment";s:5:"event";s:9:"check-ham";s:4:"user";s:6:"anti43";}]]></wp:meta_value>
+         </wp:commentmeta>
+         <wp:commentmeta>
+            <wp:meta_key>akismet_as_submitted</wp:meta_key>
+            <wp:meta_value><![CDATA[a:61:{s:15:"comment_post_ID";s:2:"45";s:14:"comment_author";s:6:"anti43";s:20:"comment_author_email";s:21:"seniorweber@gmail.com";s:18:"comment_author_url";s:0:"";s:15:"comment_content";s:255:"kopieren sie einfach die Auflistung in die Datei und importieren erneut. Es gibt anscheinend aktuell keine fertige Sprachdatei, Sie können die Schlüssel aus der Auflistung selbst übersetzen oder mit den englischen Begriffen leben, sind ja nur ein paar.";s:12:"comment_type";s:0:"";s:14:"comment_parent";s:2:"32";s:7:"user_ID";s:1:"2";s:7:"user_ip";s:13:"85.93.217.248";s:10:"user_agent";s:141:"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/535.19 (KHTML, like Gecko) Ubuntu/11.10 Chromium/18.0.1025.151 Chrome/18.0.1025.151 Safari/535.19";s:8:"referrer";s:47:"http://openyabs.org/einfache-beispieltemplates/";s:4:"blog";s:19:"http://openyabs.org";s:9:"blog_lang";s:5:"en_US";s:12:"blog_charset";s:5:"UTF-8";s:9:"permalink";s:47:"http://openyabs.org/einfache-beispieltemplates/";s:9:"user_role";s:13:"
+administrator";s:21:"akismet_comment_nonce";s:6:"passed";s:12:"POST_comment";s:255:"kopieren sie einfach die Auflistung in die Datei und importieren erneut. Es gibt anscheinend aktuell keine fertige Sprachdatei, Sie können die Schlüssel aus der Auflistung selbst übersetzen oder mit den englischen Begriffen leben, sind ja nur ein paar.";s:11:"POST_submit";s:14:"Submit Comment";s:20:"POST_comment_post_ID";s:2:"45";s:19:"POST_comment_parent";s:2:"32";s:32:"POST__wp_unfiltered_html_comment";s:10:"8762d840e9";s:26:"POST_akismet_comment_nonce";s:10:"d1fb77afa4";s:15:"SERVER_SOFTWARE";s:21:"Apache/2.2.3 (CentOS)";s:11:"REQUEST_URI";s:21:"/wp-comments-post.php";s:4:"PATH";s:29:"/sbin:/usr/sbin:/bin:/usr/bin";s:3:"PWD";s:28:"/var/www/cgi-bin/cgi_wrapper";s:5:"SHLVL";s:1:"0";s:9:"FCGI_ROLE";s:9:"RESPONDER";s:9:"HTTP_HOST";s:12:"openyabs.org";s:15:"HTTP_CONNECTION";s:10:"keep-alive";s:14:"CONTENT_LENGTH";s:3:"410";s:18:"HTTP_CACHE_CONTROL";s:9:"max-age=0";s:11:"HTTP_ORIGIN";s:19:"http://openyabs.org";s:15:"HTTP_USER_
+AGENT";s:141:"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/535.19 (KHTML, like Gecko) Ubuntu/11.10 Chromium/18.0.1025.151 Chrome/18.0.1025.151 Safari/535.19";s:12:"CONTENT_TYPE";s:33:"application/x-www-form-urlencoded";s:11:"HTTP_ACCEPT";s:63:"text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8";s:12:"HTTP_REFERER";s:47:"http://openyabs.org/einfache-beispieltemplates/";s:20:"HTTP_ACCEPT_ENCODING";s:17:"gzip,deflate,sdch";s:20:"HTTP_ACCEPT_LANGUAGE";s:35:"de-DE,de;q=0.8,en-US;q=0.6,en;q=0.4";s:19:"HTTP_ACCEPT_CHARSET";s:30:"ISO-8859-1,utf-8;q=0.7,*;q=0.3";s:11:"HTTP_COOKIE";s:0:"";s:16:"SERVER_SIGNATURE";s:72:"<address>Apache/2.2.3 (CentOS) Server at openyabs.org Port 80</address>
+";s:11:"SERVER_NAME";s:12:"openyabs.org";s:11:"SERVER_ADDR";s:12:"80.74.158.25";s:11:"SERVER_PORT";s:2:"80";s:11:"REMOTE_ADDR";s:13:"85.93.217.248";s:13:"DOCUMENT_ROOT";s:40:"/home/httpd/vhosts/openyabs.org/httpdocs";s:12:"SERVER_ADMIN";s:22:"senior.weber@gmail.com";s:15:"SCRIPT_FILENAME";s:61:"/home/httpd/vhosts/openyabs.org/httpdocs/wp-comments-post.php";s:11:"REMOTE_PORT";s:4:"1168";s:17:"GATEWAY_INTERFACE";s:7:"CGI/1.1";s:15:"SERVER_PROTOCOL";s:8:"HTTP/1.1";s:14:"REQUEST_METHOD";s:4:"POST";s:12:"QUERY_STRING";s:0:"";s:11:"SCRIPT_NAME";s:21:"/wp-comments-post.php";s:8:"PHP_SELF";s:21:"/wp-comments-post.php";s:12:"REQUEST_TIME";s:10:"1348127751";s:4:"argv";s:0:"";s:4:"argc";s:1:"0";s:25:"comment_post_modified_gmt";s:19:"2012-09-19 11:33:05";}]]></wp:meta_value>
+         </wp:commentmeta>
+      </wp:comment>
+      <wp:comment>
+         <wp:comment_id>62</wp:comment_id>
+         <wp:comment_author><![CDATA[NicoT]]></wp:comment_author>
+         <wp:comment_author_email>unnerisch@web.de</wp:comment_author_email>
+         <wp:comment_author_url></wp:comment_author_url>
+         <wp:comment_author_IP>88.68.235.3</wp:comment_author_IP>
+         <wp:comment_date>2012-10-24 09:19:59</wp:comment_date>
+         <wp:comment_date_gmt>2012-10-24 09:19:59</wp:comment_date_gmt>
+         <wp:comment_content><![CDATA[Ich will auch ne deutsche Sprachdatei - Fehler identisch ...]]></wp:comment_content>
+         <wp:comment_approved>1</wp:comment_approved>
+         <wp:comment_type></wp:comment_type>
+         <wp:comment_parent>33</wp:comment_parent>
+         <wp:comment_user_id>0</wp:comment_user_id>
+         <wp:commentmeta>
+            <wp:meta_key>akismet_result</wp:meta_key>
+            <wp:meta_value><![CDATA[false]]></wp:meta_value>
+         </wp:commentmeta>
+         <wp:commentmeta>
+            <wp:meta_key>akismet_history</wp:meta_key>
+            <wp:meta_value><![CDATA[a:4:{s:4:"time";s:15:"1351070399.0859";s:7:"message";s:28:"Akismet cleared this comment";s:5:"event";s:9:"check-ham";s:4:"user";s:0:"";}]]></wp:meta_value>
+         </wp:commentmeta>
+         <wp:commentmeta>
+            <wp:meta_key>akismet_as_submitted</wp:meta_key>
+            <wp:meta_value><![CDATA[a:59:{s:15:"comment_post_ID";s:2:"45";s:14:"comment_author";s:5:"NicoT";s:20:"comment_author_email";s:16:"unnerisch@web.de";s:18:"comment_author_url";s:0:"";s:15:"comment_content";s:60:"Ich will auch ne deutsche Sprachdatei - Fehler identisch ...";s:12:"comment_type";s:0:"";s:14:"comment_parent";s:2:"33";s:7:"user_ID";s:1:"0";s:7:"user_ip";s:11:"88.68.235.3";s:10:"user_agent";s:72:"Mozilla/5.0 (Windows NT 6.1; WOW64; rv:16.0) Gecko/20100101 Firefox/16.0";s:8:"referrer";s:47:"http://openyabs.org/einfache-beispieltemplates/";s:4:"blog";s:19:"http://openyabs.org";s:9:"blog_lang";s:5:"en_US";s:12:"blog_charset";s:5:"UTF-8";s:9:"permalink";s:47:"http://openyabs.org/einfache-beispieltemplates/";s:21:"akismet_comment_nonce";s:6:"passed";s:11:"POST_author";s:5:"NicoT";s:10:"POST_email";s:16:"unnerisch@web.de";s:8:"POST_url";s:0:"";s:12:"POST_comment";s:60:"Ich will auch ne deutsche Sprachdatei - Fehler identisch ...";s:11:"POST_submit";s:14:"Submit Comment";s:20:"POST_comment_post_ID";s:2:
+"45";s:19:"POST_comment_parent";s:2:"33";s:26:"POST_akismet_comment_nonce";s:10:"6c3e718709";s:15:"SERVER_SOFTWARE";s:21:"Apache/2.2.3 (CentOS)";s:11:"REQUEST_URI";s:21:"/wp-comments-post.php";s:4:"PATH";s:29:"/sbin:/usr/sbin:/bin:/usr/bin";s:3:"PWD";s:28:"/var/www/cgi-bin/cgi_wrapper";s:5:"SHLVL";s:1:"0";s:9:"FCGI_ROLE";s:9:"RESPONDER";s:9:"HTTP_HOST";s:12:"openyabs.org";s:15:"HTTP_USER_AGENT";s:72:"Mozilla/5.0 (Windows NT 6.1; WOW64; rv:16.0) Gecko/20100101 Firefox/16.0";s:11:"HTTP_ACCEPT";s:63:"text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8";s:20:"HTTP_ACCEPT_LANGUAGE";s:35:"de-de,de;q=0.8,en-us;q=0.5,en;q=0.3";s:20:"HTTP_ACCEPT_ENCODING";s:13:"gzip, deflate";s:15:"HTTP_CONNECTION";s:10:"keep-alive";s:12:"HTTP_REFERER";s:47:"http://openyabs.org/einfache-beispieltemplates/";s:11:"HTTP_COOKIE";s:0:"";s:12:"CONTENT_TYPE";s:33:"application/x-www-form-urlencoded";s:14:"CONTENT_LENGTH";s:3:"203";s:16:"SERVER_SIGNATURE";s:72:"<address>Apache/2.2.3 (CentOS) Server at openyabs.org Port 80</address>
+";s:11:"SERVER_NAME";s:12:"openyabs.org";s:11:"SERVER_ADDR";s:12:"80.74.158.25";s:11:"SERVER_PORT";s:2:"80";s:11:"REMOTE_ADDR";s:11:"88.68.235.3";s:13:"DOCUMENT_ROOT";s:40:"/home/httpd/vhosts/openyabs.org/httpdocs";s:12:"SERVER_ADMIN";s:22:"senior.weber@gmail.com";s:15:"SCRIPT_FILENAME";s:61:"/home/httpd/vhosts/openyabs.org/httpdocs/wp-comments-post.php";s:11:"REMOTE_PORT";s:5:"51002";s:17:"GATEWAY_INTERFACE";s:7:"CGI/1.1";s:15:"SERVER_PROTOCOL";s:8:"HTTP/1.1";s:14:"REQUEST_METHOD";s:4:"POST";s:12:"QUERY_STRING";s:0:"";s:11:"SCRIPT_NAME";s:21:"/wp-comments-post.php";s:8:"PHP_SELF";s:21:"/wp-comments-post.php";s:12:"REQUEST_TIME";s:10:"1351070398";s:4:"argv";s:0:"";s:4:"argc";s:1:"0";s:25:"comment_post_modified_gmt";s:19:"2012-10-21 20:05:29";}]]></wp:meta_value>
+         </wp:commentmeta>
+         <wp:commentmeta>
+            <wp:meta_key>akismet_history</wp:meta_key>
+            <wp:meta_value><![CDATA[a:4:{s:4:"time";s:15:"1351072995.5381";s:7:"message";s:45:"anti43 changed the comment status to approved";s:5:"event";s:15:"status-approved";s:4:"user";s:6:"anti43";}]]></wp:meta_value>
+         </wp:commentmeta>
+      </wp:comment>
+      <wp:comment>
+         <wp:comment_id>89</wp:comment_id>
+         <wp:comment_author><![CDATA[Steffen Ehrhardt]]></wp:comment_author>
+         <wp:comment_author_email>steffen@ehrhardt-consulting.org</wp:comment_author_email>
+         <wp:comment_author_url></wp:comment_author_url>
+         <wp:comment_author_IP>91.19.145.1</wp:comment_author_IP>
+         <wp:comment_date>2013-01-02 11:45:58</wp:comment_date>
+         <wp:comment_date_gmt>2013-01-02 11:45:58</wp:comment_date_gmt>
+         <wp:comment_content><![CDATA[Hallo,
+auch ich finde das Programm klasse, habe mich die letzten Tage erfolgreich eingearbeitet, komme an einem Punkt aber nicht weiter: Ich habe eine Vorlage für Rechungen importiert, kann auch sie erfolgreich testen, OpenOffice eingebunden, aber wenn ich eine eingegeben habe, bleibt das Feld "Rechnung erstellen" immer noch grau unterlegt. Das Feld "Vorschau" kann ich anklicken, dann erscheint meine Rechnung korrekt als Vorschau, aber ich kann immer noch nicht entgültig eine Rechnung erstellen. Was habe ich falschgemacht, fehlt da etwas? Danke für Hilfe!]]></wp:comment_content>
+         <wp:comment_approved>trash</wp:comment_approved>
+         <wp:comment_type></wp:comment_type>
+         <wp:comment_parent>0</wp:comment_parent>
+         <wp:comment_user_id>0</wp:comment_user_id>
+         <wp:commentmeta>
+            <wp:meta_key>akismet_history</wp:meta_key>
+            <wp:meta_value><![CDATA[a:4:{s:4:"time";d:1357814748.165988922119140625;s:7:"message";s:41:"admin changed the comment status to trash";s:5:"event";s:12:"status-trash";s:4:"user";s:5:"admin";}]]></wp:meta_value>
+         </wp:commentmeta>
+         <wp:commentmeta>
+            <wp:meta_key>_wp_trash_meta_status</wp:meta_key>
+            <wp:meta_value><![CDATA[1]]></wp:meta_value>
+         </wp:commentmeta>
+         <wp:commentmeta>
+            <wp:meta_key>_wp_trash_meta_time</wp:meta_key>
+            <wp:meta_value><![CDATA[1357814748]]></wp:meta_value>
+         </wp:commentmeta>
+         <wp:commentmeta>
+            <wp:meta_key>akismet_history</wp:meta_key>
+            <wp:meta_value><![CDATA[a:4:{s:4:"time";d:1357213918.3861610889434814453125;s:7:"message";s:44:"admin changed the comment status to approved";s:5:"event";s:15:"status-approved";s:4:"user";s:5:"admin";}]]></wp:meta_value>
+         </wp:commentmeta>
+         <wp:commentmeta>
+            <wp:meta_key>akismet_result</wp:meta_key>
+            <wp:meta_value><![CDATA[false]]></wp:meta_value>
+         </wp:commentmeta>
+         <wp:commentmeta>
+            <wp:meta_key>akismet_history</wp:meta_key>
+            <wp:meta_value><![CDATA[a:4:{s:4:"time";d:1357127158.428958892822265625;s:7:"message";s:28:"Akismet cleared this comment";s:5:"event";s:9:"check-ham";s:4:"user";s:0:"";}]]></wp:meta_value>
+         </wp:commentmeta>
+         <wp:commentmeta>
+            <wp:meta_key>akismet_as_submitted</wp:meta_key>
+            <wp:meta_value><![CDATA[a:59:{s:15:"comment_post_ID";i:45;s:14:"comment_author";s:16:"Steffen Ehrhardt";s:20:"comment_author_email";s:31:"steffen@ehrhardt-consulting.org";s:18:"comment_author_url";s:0:"";s:15:"comment_content";s:565:"Hallo,
+auch ich finde das Programm klasse, habe mich die letzten Tage erfolgreich eingearbeitet, komme an einem Punkt aber nicht weiter: Ich habe eine Vorlage für Rechungen importiert, kann auch sie erfolgreich testen, OpenOffice eingebunden, aber wenn ich eine eingegeben habe, bleibt das Feld "Rechnung erstellen" immer noch grau unterlegt. Das Feld "Vorschau" kann ich anklicken, dann erscheint meine Rechnung korrekt als Vorschau, aber ich kann immer noch nicht entgültig eine Rechnung erstellen. Was habe ich falschgemacht, fehlt da etwas? Danke für Hilfe!";s:12:"comment_type";s:0:"";s:14:"comment_parent";i:0;s:7:"user_ID";i:0;s:7:"user_ip";s:11:"91.19.145.1";s:10:"user_agent";s:64:"Opera/9.80 (Windows NT 6.1; WOW64) Presto/2.12.388 Version/12.12";s:8:"referrer";s:47:"http://openyabs.org/einfache-beispieltemplates/";s:4:"blog";s:19:"http://openyabs.org";s:9:"blog_lang";s:5:"en_US";s:12:"blog_charset";s:5:"UTF-8";s:9:"permalink";s:47:"http://openyabs.org/einfache-beispieltemplates/";s:21:"akismet_comment_nonce";s:6:"
+passed";s:11:"POST_author";s:16:"Steffen Ehrhardt";s:10:"POST_email";s:31:"steffen@ehrhardt-consulting.org";s:8:"POST_url";s:0:"";s:12:"POST_comment";s:565:"Hallo,
+auch ich finde das Programm klasse, habe mich die letzten Tage erfolgreich eingearbeitet, komme an einem Punkt aber nicht weiter: Ich habe eine Vorlage für Rechungen importiert, kann auch sie erfolgreich testen, OpenOffice eingebunden, aber wenn ich eine eingegeben habe, bleibt das Feld "Rechnung erstellen" immer noch grau unterlegt. Das Feld "Vorschau" kann ich anklicken, dann erscheint meine Rechnung korrekt als Vorschau, aber ich kann immer noch nicht entgültig eine Rechnung erstellen. Was habe ich falschgemacht, fehlt da etwas? Danke für Hilfe!";s:11:"POST_submit";s:14:"Submit Comment";s:20:"POST_comment_post_ID";s:2:"45";s:19:"POST_comment_parent";s:1:"0";s:26:"POST_akismet_comment_nonce";s:10:"78babd8901";s:15:"SERVER_SOFTWARE";s:21:"Apache/2.2.3 (CentOS)";s:11:"REQUEST_URI";s:21:"/wp-comments-post.php";s:4:"PATH";s:29:"/sbin:/usr/sbin:/bin:/usr/bin";s:3:"PWD";s:28:"/var/www/cgi-bin/cgi_wrapper";s:5:"SHLVL";s:1:"0";s:9:"FCGI_ROLE";s:9:"RESPONDER";s:15:"HTTP_USER_AGENT";s:64:"Opera/9.80 (Windows NT 6.1; 
+WOW64) Presto/2.12.388 Version/12.12";s:9:"HTTP_HOST";s:12:"openyabs.org";s:11:"HTTP_ACCEPT";s:129:"text/html, application/xml;q=0.9, application/xhtml+xml, image/png, image/webp, image/jpeg, image/gif, image/x-xbitmap, */*;q=0.1";s:20:"HTTP_ACCEPT_LANGUAGE";s:23:"de-DE,de;q=0.9,en;q=0.8";s:20:"HTTP_ACCEPT_ENCODING";s:13:"gzip, deflate";s:12:"HTTP_REFERER";s:47:"http://openyabs.org/einfache-beispieltemplates/";s:11:"HTTP_COOKIE";s:0:"";s:15:"HTTP_CONNECTION";s:10:"Keep-Alive";s:14:"CONTENT_LENGTH";s:3:"783";s:12:"CONTENT_TYPE";s:33:"application/x-www-form-urlencoded";s:16:"SERVER_SIGNATURE";s:72:"<address>Apache/2.2.3 (CentOS) Server at openyabs.org Port 80</address>
+";s:11:"SERVER_NAME";s:12:"openyabs.org";s:11:"SERVER_ADDR";s:12:"80.74.158.25";s:11:"SERVER_PORT";s:2:"80";s:11:"REMOTE_ADDR";s:11:"91.19.145.1";s:13:"DOCUMENT_ROOT";s:40:"/home/httpd/vhosts/openyabs.org/httpdocs";s:12:"SERVER_ADMIN";s:22:"senior.weber@gmail.com";s:15:"SCRIPT_FILENAME";s:61:"/home/httpd/vhosts/openyabs.org/httpdocs/wp-comments-post.php";s:11:"REMOTE_PORT";s:5:"50910";s:17:"GATEWAY_INTERFACE";s:7:"CGI/1.1";s:15:"SERVER_PROTOCOL";s:8:"HTTP/1.1";s:14:"REQUEST_METHOD";s:4:"POST";s:12:"QUERY_STRING";s:0:"";s:11:"SCRIPT_NAME";s:21:"/wp-comments-post.php";s:8:"PHP_SELF";s:21:"/wp-comments-post.php";s:12:"REQUEST_TIME";s:10:"1357127157";s:4:"argv";s:0:"";s:4:"argc";s:1:"0";s:25:"comment_post_modified_gmt";s:19:"2012-12-16 16:55:38";}]]></wp:meta_value>
+         </wp:commentmeta>
+      </wp:comment>
+      <wp:comment>
+         <wp:comment_id>79</wp:comment_id>
+         <wp:comment_author><![CDATA[Stefan G]]></wp:comment_author>
+         <wp:comment_author_email>yabs@sgrewe.de</wp:comment_author_email>
+         <wp:comment_author_url></wp:comment_author_url>
+         <wp:comment_author_IP>91.56.34.189</wp:comment_author_IP>
+         <wp:comment_date>2012-11-18 21:58:01</wp:comment_date>
+         <wp:comment_date_gmt>2012-11-18 21:58:01</wp:comment_date_gmt>
+         <wp:comment_content><![CDATA[Es ist wirklich so einfach wie Dietmar geschrieben hat.
+Einfach die Aufstellung mit Copy und Paste an die Datei anhängen und nochmal importieren.]]></wp:comment_content>
+         <wp:comment_approved>1</wp:comment_approved>
+         <wp:comment_type></wp:comment_type>
+         <wp:comment_parent>33</wp:comment_parent>
+         <wp:comment_user_id>0</wp:comment_user_id>
+         <wp:commentmeta>
+            <wp:meta_key>akismet_result</wp:meta_key>
+            <wp:meta_value><![CDATA[false]]></wp:meta_value>
+         </wp:commentmeta>
+         <wp:commentmeta>
+            <wp:meta_key>akismet_history</wp:meta_key>
+            <wp:meta_value><![CDATA[a:4:{s:4:"time";s:15:"1353275881.8017";s:7:"message";s:28:"Akismet cleared this comment";s:5:"event";s:9:"check-ham";s:4:"user";s:0:"";}]]></wp:meta_value>
+         </wp:commentmeta>
+         <wp:commentmeta>
+            <wp:meta_key>akismet_as_submitted</wp:meta_key>
+            <wp:meta_value><![CDATA[a:62:{s:15:"comment_post_ID";s:2:"45";s:14:"comment_author";s:8:"Stefan G";s:20:"comment_author_email";s:14:"yabs@sgrewe.de";s:18:"comment_author_url";s:0:"";s:15:"comment_content";s:147:"Es ist wirklich so einfach wie Dietmar geschrieben hat.
+Einfach die Aufstellung mit Copy und Paste an die Datei anhängen und nochmal importieren.";s:12:"comment_type";s:0:"";s:14:"comment_parent";s:2:"33";s:7:"user_ID";s:1:"0";s:7:"user_ip";s:12:"91.56.34.189";s:10:"user_agent";s:102:"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.4 (KHTML, like Gecko) Chrome/22.0.1229.94 Safari/537.4";s:8:"referrer";s:47:"http://openyabs.org/einfache-beispieltemplates/";s:4:"blog";s:19:"http://openyabs.org";s:9:"blog_lang";s:5:"en_US";s:12:"blog_charset";s:5:"UTF-8";s:9:"permalink";s:47:"http://openyabs.org/einfache-beispieltemplates/";s:21:"akismet_comment_nonce";s:6:"passed";s:11:"POST_author";s:8:"Stefan G";s:10:"POST_email";s:14:"yabs@sgrewe.de";s:8:"POST_url";s:0:"";s:12:"POST_comment";s:147:"Es ist wirklich so einfach wie Dietmar geschrieben hat.
+Einfach die Aufstellung mit Copy und Paste an die Datei anhängen und nochmal importieren.";s:11:"POST_submit";s:14:"Submit Comment";s:20:"POST_comment_post_ID";s:2:"45";s:19:"POST_comment_parent";s:2:"33";s:26:"POST_akismet_comment_nonce";s:10:"bb1c5641b7";s:15:"SERVER_SOFTWARE";s:21:"Apache/2.2.3 (CentOS)";s:11:"REQUEST_URI";s:21:"/wp-comments-post.php";s:4:"PATH";s:29:"/sbin:/usr/sbin:/bin:/usr/bin";s:3:"PWD";s:28:"/var/www/cgi-bin/cgi_wrapper";s:5:"SHLVL";s:1:"0";s:9:"FCGI_ROLE";s:9:"RESPONDER";s:9:"HTTP_HOST";s:12:"openyabs.org";s:15:"HTTP_CONNECTION";s:10:"keep-alive";s:14:"CONTENT_LENGTH";s:3:"299";s:18:"HTTP_CACHE_CONTROL";s:9:"max-age=0";s:11:"HTTP_ORIGIN";s:19:"http://openyabs.org";s:15:"HTTP_USER_AGENT";s:102:"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.4 (KHTML, like Gecko) Chrome/22.0.1229.94 Safari/537.4";s:12:"CONTENT_TYPE";s:33:"application/x-www-form-urlencoded";s:11:"HTTP_ACCEPT";s:63:"text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8";s:12:"HTTP_REFERER";s:47:"http://
+openyabs.org/einfache-beispieltemplates/";s:20:"HTTP_ACCEPT_ENCODING";s:17:"gzip,deflate,sdch";s:20:"HTTP_ACCEPT_LANGUAGE";s:14:"en-US,en;q=0.8";s:19:"HTTP_ACCEPT_CHARSET";s:13:"UTF-8,*;q=0.5";s:11:"HTTP_COOKIE";s:0:"";s:16:"SERVER_SIGNATURE";s:72:"<address>Apache/2.2.3 (CentOS) Server at openyabs.org Port 80</address>
+";s:11:"SERVER_NAME";s:12:"openyabs.org";s:11:"SERVER_ADDR";s:12:"80.74.158.25";s:11:"SERVER_PORT";s:2:"80";s:11:"REMOTE_ADDR";s:12:"91.56.34.189";s:13:"DOCUMENT_ROOT";s:40:"/home/httpd/vhosts/openyabs.org/httpdocs";s:12:"SERVER_ADMIN";s:22:"senior.weber@gmail.com";s:15:"SCRIPT_FILENAME";s:61:"/home/httpd/vhosts/openyabs.org/httpdocs/wp-comments-post.php";s:11:"REMOTE_PORT";s:5:"42575";s:17:"GATEWAY_INTERFACE";s:7:"CGI/1.1";s:15:"SERVER_PROTOCOL";s:8:"HTTP/1.1";s:14:"REQUEST_METHOD";s:4:"POST";s:12:"QUERY_STRING";s:0:"";s:11:"SCRIPT_NAME";s:21:"/wp-comments-post.php";s:8:"PHP_SELF";s:21:"/wp-comments-post.php";s:12:"REQUEST_TIME";s:10:"1353275881";s:4:"argv";s:0:"";s:4:"argc";s:1:"0";s:25:"comment_post_modified_gmt";s:19:"2012-10-21 20:05:29";}]]></wp:meta_value>
+         </wp:commentmeta>
+         <wp:commentmeta>
+            <wp:meta_key>akismet_history</wp:meta_key>
+            <wp:meta_value><![CDATA[a:4:{s:4:"time";s:15:"1353306578.2019";s:7:"message";s:45:"anti43 changed the comment status to approved";s:5:"event";s:15:"status-approved";s:4:"user";s:6:"anti43";}]]></wp:meta_value>
+         </wp:commentmeta>
+      </wp:comment>
+      <wp:comment>
+         <wp:comment_id>87</wp:comment_id>
+         <wp:comment_author><![CDATA[Andreas]]></wp:comment_author>
+         <wp:comment_author_email>andreas@eevol.lu</wp:comment_author_email>
+         <wp:comment_author_url></wp:comment_author_url>
+         <wp:comment_author_IP>91.10.250.241</wp:comment_author_IP>
+         <wp:comment_date>2012-12-15 09:35:04</wp:comment_date>
+         <wp:comment_date_gmt>2012-12-15 09:35:04</wp:comment_date_gmt>
+         <wp:comment_content><![CDATA[Fehlende Begriffe können zur Zeit nicht übersetzt werden, die sind dann in der nächsten Ausgabe übersetzbar]]></wp:comment_content>
+         <wp:comment_approved>1</wp:comment_approved>
+         <wp:comment_type></wp:comment_type>
+         <wp:comment_parent>0</wp:comment_parent>
+         <wp:comment_user_id>0</wp:comment_user_id>
+         <wp:commentmeta>
+            <wp:meta_key>akismet_history</wp:meta_key>
+            <wp:meta_value><![CDATA[a:4:{s:4:"time";d:1355564167.1788189411163330078125;s:7:"message";s:44:"admin changed the comment status to approved";s:5:"event";s:15:"status-approved";s:4:"user";s:5:"admin";}]]></wp:meta_value>
+         </wp:commentmeta>
+         <wp:commentmeta>
+            <wp:meta_key>akismet_result</wp:meta_key>
+            <wp:meta_value><![CDATA[false]]></wp:meta_value>
+         </wp:commentmeta>
+         <wp:commentmeta>
+            <wp:meta_key>akismet_history</wp:meta_key>
+            <wp:meta_value><![CDATA[a:4:{s:4:"time";d:1355564104.7708380222320556640625;s:7:"message";s:28:"Akismet cleared this comment";s:5:"event";s:9:"check-ham";s:4:"user";s:0:"";}]]></wp:meta_value>
+         </wp:commentmeta>
+         <wp:commentmeta>
+            <wp:meta_key>akismet_as_submitted</wp:meta_key>
+            <wp:meta_value><![CDATA[a:60:{s:15:"comment_post_ID";i:45;s:14:"comment_author";s:7:"Andreas";s:20:"comment_author_email";s:16:"andreas@eevol.lu";s:18:"comment_author_url";s:0:"";s:15:"comment_content";s:111:"Fehlende Begriffe können zur Zeit nicht übersetzt werden, die sind dann in der nächsten Ausgabe übersetzbar";s:12:"comment_type";s:0:"";s:14:"comment_parent";i:0;s:7:"user_ID";i:0;s:7:"user_ip";s:13:"91.10.250.241";s:10:"user_agent";s:70:"Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; WOW64; Trident/5.0)";s:8:"referrer";s:47:"http://openyabs.org/einfache-beispieltemplates/";s:4:"blog";s:19:"http://openyabs.org";s:9:"blog_lang";s:5:"en_US";s:12:"blog_charset";s:5:"UTF-8";s:9:"permalink";s:47:"http://openyabs.org/einfache-beispieltemplates/";s:21:"akismet_comment_nonce";s:6:"passed";s:11:"POST_author";s:7:"Andreas";s:10:"POST_email";s:16:"andreas@eevol.lu";s:8:"POST_url";s:0:"";s:12:"POST_comment";s:111:"Fehlende Begriffe können zur Zeit nicht übersetzt werden, die sind dann in der nächsten 
+Ausgabe übersetzbar";s:11:"POST_submit";s:14:"Submit Comment";s:20:"POST_comment_post_ID";s:2:"45";s:19:"POST_comment_parent";s:1:"0";s:26:"POST_akismet_comment_nonce";s:10:"85d82575f0";s:15:"SERVER_SOFTWARE";s:21:"Apache/2.2.3 (CentOS)";s:11:"REQUEST_URI";s:21:"/wp-comments-post.php";s:4:"PATH";s:29:"/sbin:/usr/sbin:/bin:/usr/bin";s:3:"PWD";s:28:"/var/www/cgi-bin/cgi_wrapper";s:5:"SHLVL";s:1:"0";s:9:"FCGI_ROLE";s:9:"RESPONDER";s:11:"HTTP_ACCEPT";s:37:"text/html, application/xhtml+xml, */*";s:12:"HTTP_REFERER";s:47:"http://openyabs.org/einfache-beispieltemplates/";s:20:"HTTP_ACCEPT_LANGUAGE";s:5:"de-DE";s:15:"HTTP_USER_AGENT";s:70:"Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; WOW64; Trident/5.0)";s:12:"CONTENT_TYPE";s:33:"application/x-www-form-urlencoded";s:20:"HTTP_ACCEPT_ENCODING";s:13:"gzip, deflate";s:9:"HTTP_HOST";s:12:"openyabs.org";s:14:"CONTENT_LENGTH";s:3:"271";s:15:"HTTP_CONNECTION";s:10:"Keep-Alive";s:18:"HTTP_CACHE_CONTROL";s:8:"no-cache";s:11:"HTTP_COOKIE";s:0:"";s:16:"SERVER_SIGNATURE";s:
+72:"<address>Apache/2.2.3 (CentOS) Server at openyabs.org Port 80</address>
+";s:11:"SERVER_NAME";s:12:"openyabs.org";s:11:"SERVER_ADDR";s:12:"80.74.158.25";s:11:"SERVER_PORT";s:2:"80";s:11:"REMOTE_ADDR";s:13:"91.10.250.241";s:13:"DOCUMENT_ROOT";s:40:"/home/httpd/vhosts/openyabs.org/httpdocs";s:12:"SERVER_ADMIN";s:22:"senior.weber@gmail.com";s:15:"SCRIPT_FILENAME";s:61:"/home/httpd/vhosts/openyabs.org/httpdocs/wp-comments-post.php";s:11:"REMOTE_PORT";s:5:"51037";s:17:"GATEWAY_INTERFACE";s:7:"CGI/1.1";s:15:"SERVER_PROTOCOL";s:8:"HTTP/1.1";s:14:"REQUEST_METHOD";s:4:"POST";s:12:"QUERY_STRING";s:0:"";s:11:"SCRIPT_NAME";s:21:"/wp-comments-post.php";s:8:"PHP_SELF";s:21:"/wp-comments-post.php";s:12:"REQUEST_TIME";s:10:"1355564103";s:4:"argv";s:0:"";s:4:"argc";s:1:"0";s:25:"comment_post_modified_gmt";s:19:"2012-10-21 20:05:29";}]]></wp:meta_value>
+         </wp:commentmeta>
+      </wp:comment>
+      <wp:comment>
+         <wp:comment_id>86</wp:comment_id>
+         <wp:comment_author><![CDATA[Asterix]]></wp:comment_author>
+         <wp:comment_author_email>hans@hunger.de</wp:comment_author_email>
+         <wp:comment_author_url></wp:comment_author_url>
+         <wp:comment_author_IP>79.233.147.171</wp:comment_author_IP>
+         <wp:comment_date>2012-12-14 11:24:34</wp:comment_date>
+         <wp:comment_date_gmt>2012-12-14 11:24:34</wp:comment_date_gmt>
+         <wp:comment_content><![CDATA[Was ist mit den englischen Begriffen, die noch nicht bei "neuer Kunde" übersetzt sind?
+Die finde ich nicht in der Sprachdatei -&gt; damit kann ich sie auch nicht übersetzen.
+
+Desweiteren möchte ich hier mal anmerken, dass mir das Programm sehr gut gefällt.
+Doch leider ist es nicht gut dokumentiert - oder ich habe sie nocht nicht gefunden ;)
+Damit meine ich die Grundfunktionen - Erweiterte Funktionen, wie Templates, sind mehr als ausreichend dokumentiert.
+Als Laie sucht man sehr lange für einzelne Funktionen -&gt; ansonsten sehr gutes Programm :)
+
+Asterix]]></wp:comment_content>
+         <wp:comment_approved>1</wp:comment_approved>
+         <wp:comment_type></wp:comment_type>
+         <wp:comment_parent>0</wp:comment_parent>
+         <wp:comment_user_id>0</wp:comment_user_id>
+         <wp:commentmeta>
+            <wp:meta_key>akismet_result</wp:meta_key>
+            <wp:meta_value><![CDATA[false]]></wp:meta_value>
+         </wp:commentmeta>
+         <wp:commentmeta>
+            <wp:meta_key>akismet_history</wp:meta_key>
+            <wp:meta_value><![CDATA[a:4:{s:4:"time";d:1355484274.5816380977630615234375;s:7:"message";s:28:"Akismet cleared this comment";s:5:"event";s:9:"check-ham";s:4:"user";s:0:"";}]]></wp:meta_value>
+         </wp:commentmeta>
+         <wp:commentmeta>
+            <wp:meta_key>akismet_as_submitted</wp:meta_key>
+            <wp:meta_value><![CDATA[a:60:{s:15:"comment_post_ID";i:45;s:14:"comment_author";s:7:"Asterix";s:20:"comment_author_email";s:14:"hans@hunger.de";s:18:"comment_author_url";s:0:"";s:15:"comment_content";s:567:"Was ist mit den englischen Begriffen, die noch nicht bei "neuer Kunde" übersetzt sind?
+Die finde ich nicht in der Sprachdatei -> damit kann ich sie auch nicht übersetzen.
+
+Desweiteren möchte ich hier mal anmerken, dass mir das Programm sehr gut gefällt.
+Doch leider ist es nicht gut dokumentiert - oder ich habe sie nocht nicht gefunden ;)
+Damit meine ich die Grundfunktionen - Erweiterte Funktionen, wie Templates, sind mehr als ausreichend dokumentiert.
+Als Laie sucht man sehr lange für einzelne Funktionen -> ansonsten sehr gutes Programm :)
+
+Asterix";s:12:"comment_type";s:0:"";s:14:"comment_parent";i:0;s:7:"user_ID";i:0;s:7:"user_ip";s:14:"79.233.147.171";s:10:"user_agent";s:65:"Mozilla/5.0 (Windows NT 5.1; rv:17.0) Gecko/20100101 Firefox/17.0";s:8:"referrer";s:47:"http://openyabs.org/einfache-beispieltemplates/";s:4:"blog";s:19:"http://openyabs.org";s:9:"blog_lang";s:5:"en_US";s:12:"blog_charset";s:5:"UTF-8";s:9:"permalink";s:47:"http://openyabs.org/einfache-beispieltemplates/";s:21:"akismet_comment_nonce";s:6:"passed";s:11:"POST_author";s:7:"Asterix";s:10:"POST_email";s:14:"hans@hunger.de";s:8:"POST_url";s:0:"";s:12:"POST_comment";s:567:"Was ist mit den englischen Begriffen, die noch nicht bei "neuer Kunde" übersetzt sind?
+Die finde ich nicht in der Sprachdatei -> damit kann ich sie auch nicht übersetzen.
+
+Desweiteren möchte ich hier mal anmerken, dass mir das Programm sehr gut gefällt.
+Doch leider ist es nicht gut dokumentiert - oder ich habe sie nocht nicht gefunden ;)
+Damit meine ich die Grundfunktionen - Erweiterte Funktionen, wie Templates, sind mehr als ausreichend dokumentiert.
+Als Laie sucht man sehr lange für einzelne Funktionen -> ansonsten sehr gutes Programm :)
+
+Asterix";s:11:"POST_submit";s:14:"Submit Comment";s:20:"POST_comment_post_ID";s:2:"45";s:19:"POST_comment_parent";s:1:"0";s:26:"POST_akismet_comment_nonce";s:10:"8c4f1e77f9";s:15:"SERVER_SOFTWARE";s:21:"Apache/2.2.3 (CentOS)";s:11:"REQUEST_URI";s:21:"/wp-comments-post.php";s:4:"PATH";s:29:"/sbin:/usr/sbin:/bin:/usr/bin";s:3:"PWD";s:28:"/var/www/cgi-bin/cgi_wrapper";s:5:"SHLVL";s:1:"0";s:9:"FCGI_ROLE";s:9:"RESPONDER";s:9:"HTTP_HOST";s:12:"openyabs.org";s:15:"HTTP_USER_AGENT";s:65:"Mozilla/5.0 (Windows NT 5.1; rv:17.0) Gecko/20100101 Firefox/17.0";s:11:"HTTP_ACCEPT";s:63:"text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8";s:20:"HTTP_ACCEPT_LANGUAGE";s:35:"de-de,de;q=0.8,en-us;q=0.5,en;q=0.3";s:20:"HTTP_ACCEPT_ENCODING";s:13:"gzip, deflate";s:8:"HTTP_DNT";s:1:"1";s:15:"HTTP_CONNECTION";s:10:"keep-alive";s:12:"HTTP_REFERER";s:47:"http://openyabs.org/einfache-beispieltemplates/";s:11:"HTTP_COOKIE";s:0:"";s:12:"CONTENT_TYPE";s:33:"application/x-www-form-urlencoded";s:14:"CONTENT_LENGTH";s:3:"787";s:
+16:"SERVER_SIGNATURE";s:72:"<address>Apache/2.2.3 (CentOS) Server at openyabs.org Port 80</address>
+";s:11:"SERVER_NAME";s:12:"openyabs.org";s:11:"SERVER_ADDR";s:12:"80.74.158.25";s:11:"SERVER_PORT";s:2:"80";s:11:"REMOTE_ADDR";s:14:"79.233.147.171";s:13:"DOCUMENT_ROOT";s:40:"/home/httpd/vhosts/openyabs.org/httpdocs";s:12:"SERVER_ADMIN";s:22:"senior.weber@gmail.com";s:15:"SCRIPT_FILENAME";s:61:"/home/httpd/vhosts/openyabs.org/httpdocs/wp-comments-post.php";s:11:"REMOTE_PORT";s:4:"1529";s:17:"GATEWAY_INTERFACE";s:7:"CGI/1.1";s:15:"SERVER_PROTOCOL";s:8:"HTTP/1.1";s:14:"REQUEST_METHOD";s:4:"POST";s:12:"QUERY_STRING";s:0:"";s:11:"SCRIPT_NAME";s:21:"/wp-comments-post.php";s:8:"PHP_SELF";s:21:"/wp-comments-post.php";s:12:"REQUEST_TIME";s:10:"1355484273";s:4:"argv";s:0:"";s:4:"argc";s:1:"0";s:25:"comment_post_modified_gmt";s:19:"2012-10-21 20:05:29";}]]></wp:meta_value>
+         </wp:commentmeta>
+      </wp:comment>
+      <wp:comment>
+         <wp:comment_id>85</wp:comment_id>
+         <wp:comment_author><![CDATA[Asterix]]></wp:comment_author>
+         <wp:comment_author_email>hans@hunger.de</wp:comment_author_email>
+         <wp:comment_author_url></wp:comment_author_url>
+         <wp:comment_author_IP>79.233.184.91</wp:comment_author_IP>
+         <wp:comment_date>2012-12-13 15:54:52</wp:comment_date>
+         <wp:comment_date_gmt>2012-12-13 15:54:52</wp:comment_date_gmt>
+         <wp:comment_content><![CDATA[Hallo,
+
+die Umlaute erhält man, in dem man ein neues Editor-Fenster öffnet (z.B. KWrite) und unter Extras-&gt;Kodierung-&gt;Unicode-&gt;UTF8 wählt. Danach kopiert man den kompletten Text in das neue Editor-Fenster und speichert es unter einem neuen Namen.
+Erneut importieren, Sprache auswählen und neustarten.
+Fertig :)
+
+Asterix]]></wp:comment_content>
+         <wp:comment_approved>1</wp:comment_approved>
+         <wp:comment_type></wp:comment_type>
+         <wp:comment_parent>0</wp:comment_parent>
+         <wp:comment_user_id>0</wp:comment_user_id>
+         <wp:commentmeta>
+            <wp:meta_key>akismet_history</wp:meta_key>
+            <wp:meta_value><![CDATA[a:4:{s:4:"time";d:1355414882.6776840686798095703125;s:7:"message";s:45:"anti43 changed the comment status to approved";s:5:"event";s:15:"status-approved";s:4:"user";s:6:"anti43";}]]></wp:meta_value>
+         </wp:commentmeta>
+         <wp:commentmeta>
+            <wp:meta_key>akismet_result</wp:meta_key>
+            <wp:meta_value><![CDATA[false]]></wp:meta_value>
+         </wp:commentmeta>
+         <wp:commentmeta>
+            <wp:meta_key>akismet_history</wp:meta_key>
+            <wp:meta_value><![CDATA[a:4:{s:4:"time";d:1355414092.3995020389556884765625;s:7:"message";s:28:"Akismet cleared this comment";s:5:"event";s:9:"check-ham";s:4:"user";s:0:"";}]]></wp:meta_value>
+         </wp:commentmeta>
+         <wp:commentmeta>
+            <wp:meta_key>akismet_as_submitted</wp:meta_key>
+            <wp:meta_value><![CDATA[a:60:{s:15:"comment_post_ID";i:45;s:14:"comment_author";s:7:"Asterix";s:20:"comment_author_email";s:14:"hans@hunger.de";s:18:"comment_author_url";s:0:"";s:15:"comment_content";s:329:"Hallo,
+
+die Umlaute erhält man, in dem man ein neues Editor-Fenster öffnet (z.B. KWrite) und unter Extras->Kodierung->Unicode->UTF8 wählt. Danach kopiert man den kompletten Text in das neue Editor-Fenster und speichert es unter einem neuen Namen.
+Erneut importieren, Sprache auswählen und neustarten.
+Fertig :)
+
+Asterix";s:12:"comment_type";s:0:"";s:14:"comment_parent";i:0;s:7:"user_ID";i:0;s:7:"user_ip";s:13:"79.233.184.91";s:10:"user_agent";s:65:"Mozilla/5.0 (Windows NT 5.1; rv:17.0) Gecko/20100101 Firefox/17.0";s:8:"referrer";s:47:"http://openyabs.org/einfache-beispieltemplates/";s:4:"blog";s:19:"http://openyabs.org";s:9:"blog_lang";s:5:"en_US";s:12:"blog_charset";s:5:"UTF-8";s:9:"permalink";s:47:"http://openyabs.org/einfache-beispieltemplates/";s:21:"akismet_comment_nonce";s:6:"passed";s:11:"POST_author";s:7:"Asterix";s:10:"POST_email";s:14:"hans@hunger.de";s:8:"POST_url";s:0:"";s:12:"POST_comment";s:329:"Hallo,
+
+die Umlaute erhält man, in dem man ein neues Editor-Fenster öffnet (z.B. KWrite) und unter Extras->Kodierung->Unicode->UTF8 wählt. Danach kopiert man den kompletten Text in das neue Editor-Fenster und speichert es unter einem neuen Namen.
+Erneut importieren, Sprache auswählen und neustarten.
+Fertig :)
+
+Asterix";s:11:"POST_submit";s:14:"Submit Comment";s:20:"POST_comment_post_ID";s:2:"45";s:19:"POST_comment_parent";s:1:"0";s:26:"POST_akismet_comment_nonce";s:10:"083cc9bf0d";s:15:"SERVER_SOFTWARE";s:21:"Apache/2.2.3 (CentOS)";s:11:"REQUEST_URI";s:21:"/wp-comments-post.php";s:4:"PATH";s:29:"/sbin:/usr/sbin:/bin:/usr/bin";s:3:"PWD";s:28:"/var/www/cgi-bin/cgi_wrapper";s:5:"SHLVL";s:1:"0";s:9:"FCGI_ROLE";s:9:"RESPONDER";s:9:"HTTP_HOST";s:12:"openyabs.org";s:15:"HTTP_USER_AGENT";s:65:"Mozilla/5.0 (Windows NT 5.1; rv:17.0) Gecko/20100101 Firefox/17.0";s:11:"HTTP_ACCEPT";s:63:"text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8";s:20:"HTTP_ACCEPT_LANGUAGE";s:35:"de-de,de;q=0.8,en-us;q=0.5,en;q=0.3";s:20:"HTTP_ACCEPT_ENCODING";s:13:"gzip, deflate";s:8:"HTTP_DNT";s:1:"1";s:15:"HTTP_CONNECTION";s:10:"keep-alive";s:12:"HTTP_REFERER";s:47:"http://openyabs.org/einfache-beispieltemplates/";s:11:"HTTP_COOKIE";s:0:"";s:12:"CONTENT_TYPE";s:33:"application/x-www-form-urlencoded";s:14:"CONTENT_LENGTH";s:3:"531";s:
+16:"SERVER_SIGNATURE";s:72:"<address>Apache/2.2.3 (CentOS) Server at openyabs.org Port 80</address>
+";s:11:"SERVER_NAME";s:12:"openyabs.org";s:11:"SERVER_ADDR";s:12:"80.74.158.25";s:11:"SERVER_PORT";s:2:"80";s:11:"REMOTE_ADDR";s:13:"79.233.184.91";s:13:"DOCUMENT_ROOT";s:40:"/home/httpd/vhosts/openyabs.org/httpdocs";s:12:"SERVER_ADMIN";s:22:"senior.weber@gmail.com";s:15:"SCRIPT_FILENAME";s:61:"/home/httpd/vhosts/openyabs.org/httpdocs/wp-comments-post.php";s:11:"REMOTE_PORT";s:4:"1333";s:17:"GATEWAY_INTERFACE";s:7:"CGI/1.1";s:15:"SERVER_PROTOCOL";s:8:"HTTP/1.1";s:14:"REQUEST_METHOD";s:4:"POST";s:12:"QUERY_STRING";s:0:"";s:11:"SCRIPT_NAME";s:21:"/wp-comments-post.php";s:8:"PHP_SELF";s:21:"/wp-comments-post.php";s:12:"REQUEST_TIME";s:10:"1355414091";s:4:"argv";s:0:"";s:4:"argc";s:1:"0";s:25:"comment_post_modified_gmt";s:19:"2012-10-21 20:05:29";}]]></wp:meta_value>
+         </wp:commentmeta>
+      </wp:comment>
+      <wp:comment>
+         <wp:comment_id>84</wp:comment_id>
+         <wp:comment_author><![CDATA[LuiG]]></wp:comment_author>
+         <wp:comment_author_email>lui.g@gmx.net</wp:comment_author_email>
+         <wp:comment_author_url></wp:comment_author_url>
+         <wp:comment_author_IP>77.183.7.8</wp:comment_author_IP>
+         <wp:comment_date>2012-12-06 11:42:21</wp:comment_date>
+         <wp:comment_date_gmt>2012-12-06 11:42:21</wp:comment_date_gmt>
+         <wp:comment_content><![CDATA[Moin Moin, das Importieren hat soweit geklappt. Leider werden Umlaute und Sonderzeichen falsch angezeigt. Mache ich etwas beim Speichern nach dem Copy und Paste falsch?
+LG
+
+Luis]]></wp:comment_content>
+         <wp:comment_approved>1</wp:comment_approved>
+         <wp:comment_type></wp:comment_type>
+         <wp:comment_parent>0</wp:comment_parent>
+         <wp:comment_user_id>0</wp:comment_user_id>
+         <wp:commentmeta>
+            <wp:meta_key>akismet_history</wp:meta_key>
+            <wp:meta_value><![CDATA[a:4:{s:4:"time";s:15:"1355212564.0033";s:7:"message";s:45:"anti43 changed the comment status to approved";s:5:"event";s:15:"status-approved";s:4:"user";s:6:"anti43";}]]></wp:meta_value>
+         </wp:commentmeta>
+         <wp:commentmeta>
+            <wp:meta_key>akismet_result</wp:meta_key>
+            <wp:meta_value><![CDATA[false]]></wp:meta_value>
+         </wp:commentmeta>
+         <wp:commentmeta>
+            <wp:meta_key>akismet_history</wp:meta_key>
+            <wp:meta_value><![CDATA[a:4:{s:4:"time";s:15:"1354794141.3526";s:7:"message";s:28:"Akismet cleared this comment";s:5:"event";s:9:"check-ham";s:4:"user";s:0:"";}]]></wp:meta_value>
+         </wp:commentmeta>
+         <wp:commentmeta>
+            <wp:meta_key>akismet_as_submitted</wp:meta_key>
+            <wp:meta_value><![CDATA[a:62:{s:15:"comment_post_ID";s:2:"45";s:14:"comment_author";s:4:"LuiG";s:20:"comment_author_email";s:13:"lui.g@gmx.net";s:18:"comment_author_url";s:0:"";s:15:"comment_content";s:180:"Moin Moin, das Importieren hat soweit geklappt. Leider werden Umlaute und Sonderzeichen falsch angezeigt. Mache ich etwas beim Speichern nach dem Copy und Paste falsch?
+LG
+
+Luis";s:12:"comment_type";s:0:"";s:14:"comment_parent";s:1:"0";s:7:"user_ID";s:1:"0";s:7:"user_ip";s:10:"77.183.7.8";s:10:"user_agent";s:101:"Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.11 (KHTML, like Gecko) Chrome/23.0.1271.95 Safari/537.11";s:8:"referrer";s:47:"http://openyabs.org/einfache-beispieltemplates/";s:4:"blog";s:19:"http://openyabs.org";s:9:"blog_lang";s:5:"en_US";s:12:"blog_charset";s:5:"UTF-8";s:9:"permalink";s:47:"http://openyabs.org/einfache-beispieltemplates/";s:21:"akismet_comment_nonce";s:6:"passed";s:11:"POST_author";s:4:"LuiG";s:10:"POST_email";s:13:"lui.g@gmx.net";s:8:"POST_url";s:0:"";s:12:"POST_comment";s:180:"Moin Moin, das Importieren hat soweit geklappt. Leider werden Umlaute und Sonderzeichen falsch angezeigt. Mache ich etwas beim Speichern nach dem Copy und Paste falsch?
+LG
+
+Luis";s:11:"POST_submit";s:14:"Submit Comment";s:20:"POST_comment_post_ID";s:2:"45";s:19:"POST_comment_parent";s:1:"0";s:26:"POST_akismet_comment_nonce";s:10:"27c64a375b";s:15:"SERVER_SOFTWARE";s:21:"Apache/2.2.3 (CentOS)";s:11:"REQUEST_URI";s:21:"/wp-comments-post.php";s:4:"PATH";s:29:"/sbin:/usr/sbin:/bin:/usr/bin";s:3:"PWD";s:28:"/var/www/cgi-bin/cgi_wrapper";s:5:"SHLVL";s:1:"0";s:9:"FCGI_ROLE";s:9:"RESPONDER";s:9:"HTTP_HOST";s:12:"openyabs.org";s:15:"HTTP_CONNECTION";s:10:"keep-alive";s:14:"CONTENT_LENGTH";s:3:"334";s:18:"HTTP_CACHE_CONTROL";s:9:"max-age=0";s:11:"HTTP_ORIGIN";s:19:"http://openyabs.org";s:15:"HTTP_USER_AGENT";s:101:"Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.11 (KHTML, like Gecko) Chrome/23.0.1271.95 Safari/537.11";s:12:"CONTENT_TYPE";s:33:"application/x-www-form-urlencoded";s:11:"HTTP_ACCEPT";s:63:"text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8";s:12:"HTTP_REFERER";s:47:"http://openyabs.org/einfache-beispieltemplates/";s:20:"HTTP_ACCEPT_ENCODING";s:17:"gzip,deflate,
+sdch";s:20:"HTTP_ACCEPT_LANGUAGE";s:35:"de-DE,de;q=0.8,en-US;q=0.6,en;q=0.4";s:19:"HTTP_ACCEPT_CHARSET";s:30:"ISO-8859-1,utf-8;q=0.7,*;q=0.3";s:11:"HTTP_COOKIE";s:0:"";s:16:"SERVER_SIGNATURE";s:72:"<address>Apache/2.2.3 (CentOS) Server at openyabs.org Port 80</address>
+";s:11:"SERVER_NAME";s:12:"openyabs.org";s:11:"SERVER_ADDR";s:12:"80.74.158.25";s:11:"SERVER_PORT";s:2:"80";s:11:"REMOTE_ADDR";s:10:"77.183.7.8";s:13:"DOCUMENT_ROOT";s:40:"/home/httpd/vhosts/openyabs.org/httpdocs";s:12:"SERVER_ADMIN";s:22:"senior.weber@gmail.com";s:15:"SCRIPT_FILENAME";s:61:"/home/httpd/vhosts/openyabs.org/httpdocs/wp-comments-post.php";s:11:"REMOTE_PORT";s:5:"51834";s:17:"GATEWAY_INTERFACE";s:7:"CGI/1.1";s:15:"SERVER_PROTOCOL";s:8:"HTTP/1.1";s:14:"REQUEST_METHOD";s:4:"POST";s:12:"QUERY_STRING";s:0:"";s:11:"SCRIPT_NAME";s:21:"/wp-comments-post.php";s:8:"PHP_SELF";s:21:"/wp-comments-post.php";s:12:"REQUEST_TIME";s:10:"1354794138";s:4:"argv";s:0:"";s:4:"argc";s:1:"0";s:25:"comment_post_modified_gmt";s:19:"2012-10-21 20:05:29";}]]></wp:meta_value>
+         </wp:commentmeta>
+      </wp:comment>
+   </item>
+   <item>
+            <title>How to: Verwendung der Kundenmerkmale</title>
+      <link>http://openyabs.org/how-to-verwendung-der-kundenmerkmale/</link>
+      <pubDate>Sun, 16 Sep 2012 06:39:51 +0000</pubDate>
+      <dc:creator><![CDATA[admin]]></dc:creator>
+      <guid isPermaLink="false">http://openyabs.org/?p=56</guid>
+      <description></description>
+      <content:encoded><![CDATA[<strong>Mit YaBS 1.175 ist auch ein brandneues und sehr leistungsstarke Feature vorgestellt wurden, welches die individuellen Einstellmöglichkeiten von YaBS enorm erweitert. </strong><strong>Kurz beschrieben ermöglicht dieses Feature, dass jedem Kunden bestimmten Texte in einem Template zugeordnet werden können, ohne jeweils ein eigenes Template erstellen und anpassen zu müssen.</strong>
+
+Die Einsatzmöglichkeiten möchte ich Ihnen versuchen zu verdeutlichen an einem praktische Fallbeispiel:
+Seit vielen Jahren wehren Sie sich erfolgreich Ihren Kunden einen Skontorabatt einzuräumen.
+Jedoch machte Ihnen ein wichtiger Kunde deutlich, dass die weitere Zusammenarbeit ohne ein solches Entgegenkommen gefährdet wäre. Somit sind Sie leider gezwungen, diesen einen Kunden einen Rabatt bzw. ein Entgegenkommen einzuräumen.
+
+Da YaBS nicht über ein individuelles Rabattsystem für jeden einzelnen Kunden verfügt, wären Sie nun gezwungen, für den einen Kunden ein neues Template anzupassen.
+Dank des neuen Features, ist dies nicht mehr notwendig, da Ihre bereits erstellen Templates durch eine kleine Anpassung langfristig für solche und andere Begebenheiten ausgelegt wurde.
+
+Wie wie vielleicht bereits bemerkt haben, ist ein neuer Reiter in die Kontaktdaten des jeweiligen Kunden mit der Version 1.175 hingekommen. Ein Reiter Namens Einstellungen (In der englischen Sprachversion Properties)
+
+Beim öffnen diese Reiters, erwarten Sie zwei Spalten. Links Einstellungen und rechts Wert (property und value in der englischen Sprachversion).
+
+In das linke Feld, können Sie sich einen Sammelbegriff ausdenken und in die erste Spalte eintragen. Fall bezogen, nennen wir es mal <strong>zahlungsbedingung</strong>. Rechts müssen Sie nun den Wert eintragen. Wobei Wert vielleicht der falsche Ausdruck ist. Vielmehr kommt hier Ihr Text hinein. Wieder Fall bezogen: <strong>„Bei Zahlung innerhalb von 10 Tagen 3% Skonto. 30 Tage Brutto ohne Abzüge</strong>“ und Klicken anschließend auf Speichern in der Kontaktübersicht.
+
+<a href="http://openyabs.org/wp-content/uploads/2012/09/kundeneinstellunegn_1175_1.jpg"><img class="alignnone size-medium wp-image-58" title="kundeneinstellunegn_1175_1" src="http://openyabs.org/wp-content/uploads/2012/09/kundeneinstellunegn_1175_1-300x194.jpg" alt="" width="300" height="194" /></a>
+
+Was haben wir getan?
+
+Wir haben uns selbst eine Funktion für unser Template definiert! <strong>Jedoch hat diese Funktion nur Auswirkung für den Kontakt, in welchem Sie diese Funktion eingetragen haben. Für keinen anderen!</strong><em> TIP: gruppenweise Zuordnungen kann man im Control Panel vornehmen.<strong>
+</strong></em>Nun öffnen wir unser Template und legen uns an der gewünschten Stelle, wie gewohnt ein Funktionsfeld an. Der Name des Felde muss nun lauten:
+
+<strong>item.contact.property.zahlungsbedingung</strong>
+
+Anschließend müssen selbstverständlich noch die üblichen Textformatierungen durchgeführt werden, damit das Textliche Erscheinungsbild des Textes zum Rest des Templates passt.
+
+Wenn Sie nun das Template ausdrucken, wird an der Stelle wo die das Funktionsfeld mit dem Namen <strong>item.contact.property.zahlungsbedingung</strong> eingefügt haben, der Text:
+
+<strong>Bei Zahlung innerhalb von 10 Tagen 3% Skonto. 30 Tage Brutto ohne Abzüge</strong>
+
+angezeigt.
+
+Diese Vorgehensweise lässt sich mit jeglicher denkbarer Funktion ausbauen.<em> TIP: verwenden Sie anstatt statischem Text Groovy Code: <a href="http://openyabs.org/scriptmanager-verwenden/">Anleitung</a> Bitte beachten: verwenden Sie hier die Form #&lt;code&gt;#, Beispiel: #return “hallo”#<a href="http://openyabs.org/scriptmanager-verwenden/">
+</a></em>
+
+Wenn Sie also Ihre Templates zukunftssicher gestalten wollen und individuell auf alle Belange reagieren wollen, empfiehlt es sich, bei der Erstellung der Templates 2-3 Funktionsfelder anzulegen, auch wenn Sie diese zur Zeit noch nicht benötigen.
+
+Sollten Sie solche Felder im Ihren Template einfügen und nicht benutzen, bleiben diese auch unsichtbar und unbemerkt.]]></content:encoded>
+      <excerpt:encoded><![CDATA[]]></excerpt:encoded>
+      <wp:post_id>56</wp:post_id>
+      <wp:post_date>2012-09-16 06:39:51</wp:post_date>
+      <wp:post_date_gmt>2012-09-16 06:39:51</wp:post_date_gmt>
+      <wp:comment_status>open</wp:comment_status>
+      <wp:ping_status>open</wp:ping_status>
+      <wp:post_name>how-to-verwendung-der-kundenmerkmale</wp:post_name>
+      <wp:status>publish</wp:status>
+      <wp:post_parent>0</wp:post_parent>
+      <wp:menu_order>0</wp:menu_order>
+      <wp:post_type>post</wp:post_type>
+      <wp:post_password></wp:post_password>
+      <wp:is_sticky>0</wp:is_sticky>
+      <category domain="category" nicename="faq"><![CDATA[FAQ]]></category>
+      <wp:postmeta>
+         <wp:meta_key>_encloseme</wp:meta_key>
+         <wp:meta_value><![CDATA[1]]></wp:meta_value>
+      </wp:postmeta>
+      <wp:postmeta>
+         <wp:meta_key>_pingme</wp:meta_key>
+         <wp:meta_value><![CDATA[1]]></wp:meta_value>
+      </wp:postmeta>
+      <wp:postmeta>
+         <wp:meta_key>_edit_last</wp:meta_key>
+         <wp:meta_value><![CDATA[1]]></wp:meta_value>
+      </wp:postmeta>
+      <wp:postmeta>
+         <wp:meta_key>_pingme</wp:meta_key>
+         <wp:meta_value><![CDATA[1]]></wp:meta_value>
+      </wp:postmeta>
+      <wp:postmeta>
+         <wp:meta_key>_encloseme</wp:meta_key>
+         <wp:meta_value><![CDATA[1]]></wp:meta_value>
+      </wp:postmeta>
+      <wp:postmeta>
+         <wp:meta_key>_pingme</wp:meta_key>
+         <wp:meta_value><![CDATA[1]]></wp:meta_value>
+      </wp:postmeta>
+      <wp:postmeta>
+         <wp:meta_key>_encloseme</wp:meta_key>
+         <wp:meta_value><![CDATA[1]]></wp:meta_value>
+      </wp:postmeta>
+      <wp:postmeta>
+         <wp:meta_key>_pingme</wp:meta_key>
+         <wp:meta_value><![CDATA[1]]></wp:meta_value>
+      </wp:postmeta>
+      <wp:postmeta>
+         <wp:meta_key>_encloseme</wp:meta_key>
+         <wp:meta_value><![CDATA[1]]></wp:meta_value>
+      </wp:postmeta>
+      <wp:postmeta>
+         <wp:meta_key>_pingme</wp:meta_key>
+         <wp:meta_value><![CDATA[1]]></wp:meta_value>
+      </wp:postmeta>
+      <wp:postmeta>
+         <wp:meta_key>_encloseme</wp:meta_key>
+         <wp:meta_value><![CDATA[1]]></wp:meta_value>
+      </wp:postmeta>
+      <wp:postmeta>
+         <wp:meta_key>_pingme</wp:meta_key>
+         <wp:meta_value><![CDATA[1]]></wp:meta_value>
+      </wp:postmeta>
+      <wp:postmeta>
+         <wp:meta_key>_encloseme</wp:meta_key>
+         <wp:meta_value><![CDATA[1]]></wp:meta_value>
+      </wp:postmeta>
+   </item>
+   <item>
+            <title>Ich habe ein Problem mit Yabs, wie kann ich Hilfe bekommen?</title>
+      <link>http://openyabs.org/ich-habe-ein-problem-mit-yabs-wie-kann-ich-hilfe-bekommen/</link>
+      <pubDate>Sun, 16 Sep 2012 08:37:39 +0000</pubDate>
+      <dc:creator><![CDATA[admin]]></dc:creator>
+      <guid isPermaLink="false">http://openyabs.org/?p=74</guid>
+      <description></description>
+      <content:encoded><![CDATA[Schreiben Sie in unser neues Support Forum!
+
+Alternativ können Sie eine Email an die Yabs-Mailingliste openyabs@googlegroups.com senden.
+
+&nbsp;
+<h2>Bugs können Sie auch hier melden:</h2>
+<a href="https://github.com/anti43/openyabs/issues">https://github.com/anti43/openyabs/issues</a>]]></content:encoded>
+      <excerpt:encoded><![CDATA[]]></excerpt:encoded>
+      <wp:post_id>74</wp:post_id>
+      <wp:post_date>2012-09-16 08:37:39</wp:post_date>
+      <wp:post_date_gmt>2012-09-16 08:37:39</wp:post_date_gmt>
+      <wp:comment_status>open</wp:comment_status>
+      <wp:ping_status>open</wp:ping_status>
+      <wp:post_name>ich-habe-ein-problem-mit-yabs-wie-kann-ich-hilfe-bekommen</wp:post_name>
+      <wp:status>publish</wp:status>
+      <wp:post_parent>0</wp:post_parent>
+      <wp:menu_order>0</wp:menu_order>
+      <wp:post_type>post</wp:post_type>
+      <wp:post_password></wp:post_password>
+      <wp:is_sticky>1</wp:is_sticky>
+      <category domain="category" nicename="faq"><![CDATA[FAQ]]></category>
+      <wp:postmeta>
+         <wp:meta_key>_edit_last</wp:meta_key>
+         <wp:meta_value><![CDATA[1]]></wp:meta_value>
+      </wp:postmeta>
+      <wp:postmeta>
+         <wp:meta_key>_pingme</wp:meta_key>
+         <wp:meta_value><![CDATA[1]]></wp:meta_value>
+      </wp:postmeta>
+      <wp:postmeta>
+         <wp:meta_key>_encloseme</wp:meta_key>
+         <wp:meta_value><![CDATA[1]]></wp:meta_value>
+      </wp:postmeta>
+      <wp:postmeta>
+         <wp:meta_key>_pingme</wp:meta_key>
+         <wp:meta_value><![CDATA[1]]></wp:meta_value>
+      </wp:postmeta>
+      <wp:postmeta>
+         <wp:meta_key>_encloseme</wp:meta_key>
+         <wp:meta_value><![CDATA[1]]></wp:meta_value>
+      </wp:postmeta>
+      <wp:postmeta>
+         <wp:meta_key>_pingme</wp:meta_key>
+         <wp:meta_value><![CDATA[1]]></wp:meta_value>
+      </wp:postmeta>
+      <wp:postmeta>
+         <wp:meta_key>_encloseme</wp:meta_key>
+         <wp:meta_value><![CDATA[1]]></wp:meta_value>
+      </wp:postmeta>
+      <wp:postmeta>
+         <wp:meta_key>_pingme</wp:meta_key>
+         <wp:meta_value><![CDATA[1]]></wp:meta_value>
+      </wp:postmeta>
+      <wp:postmeta>
+         <wp:meta_key>_encloseme</wp:meta_key>
+         <wp:meta_value><![CDATA[1]]></wp:meta_value>
+      </wp:postmeta>
+      <wp:postmeta>
+         <wp:meta_key>_pingme</wp:meta_key>
+         <wp:meta_value><![CDATA[1]]></wp:meta_value>
+      </wp:postmeta>
+      <wp:postmeta>
+         <wp:meta_key>_encloseme</wp:meta_key>
+         <wp:meta_value><![CDATA[1]]></wp:meta_value>
+      </wp:postmeta>
+      <wp:postmeta>
+         <wp:meta_key>_encloseme</wp:meta_key>
+         <wp:meta_value><![CDATA[1]]></wp:meta_value>
+      </wp:postmeta>
+      <wp:postmeta>
+         <wp:meta_key>_pingme</wp:meta_key>
+         <wp:meta_value><![CDATA[1]]></wp:meta_value>
+      </wp:postmeta>
+   </item>
+   
+   <item>
+            <title>Wie kann ich den Pfad für automatisches Speichern anpassen?</title>
+      <link>http://openyabs.org/wie-kann-ich-den-pfad-fur-automatisches-speichern-anpassen/</link>
+      <pubDate>Sun, 16 Dec 2012 08:29:06 +0000</pubDate>
+      <dc:creator><![CDATA[anti43]]></dc:creator>
+      <guid isPermaLink="false">http://openyabs.org/?p=176</guid>
+      <description></description>
+      <content:encoded><![CDATA[<h2>How to: Dateinamenformatierung</h2>
+<div>Donnerstag, den 21. Oktober 2010 um 10:34 Uhr | Geschrieben von: Günther Gänsefreund</div>
+<div>
+<div>
+
+Unter:
+
+<strong>Werkzeuge&gt;Einstellungen&gt;Benutzereinstellungen</strong>
+
+finden wir die Möglichkeit die Formatierung der Dateinamen zu beeinflussen.
+Dies dient dazu, individuelle Einstellung des Speicherortes und der Dateinamen von zB Pdf's vorzunehmen.
+
+Von dem Basisverzeichniss ausgehend kann das gewünschte Verzeichnis angegeben werden. Schrägstriche (/), welche in die Formatierung eingebracht werden, erstellen wenn benötigt Verzeichnise.
+
+Eine mögliche Formatierung könnte aussehen:
+/PDF/[YEAR]/[TYPE]/[CNAME]
+
+Die bewirkt, dass ein Verzeichnis names PDF angelegt wird. In diesem Verzeichnis wird einer weiterer Ordner angelegt, welcher den Namen es Erstellungsdatums der Pdf trägt. Hier zB [YEAR] für 2010. In diesem Verzeichnis werden wiederum Verzeichnise erstellt, welche den Guppennamen tragen, zu welches der Dokument zugeordnet wurde. zB [TYPE] Bestellungen. Jenachdem welche Formatierung der Rechnungs.- Auftrags.- oder Bestellnummern eingestellt wurde, wird in dieses verzeichnis nun die eigentlich Datei abgelegt.
+
+Das Ergebnis würde wie folgt aussehen:
+/PDF/2010/Bestellungen/B0017813.pdf
+
+Wenn die gewünschten Einstellungen vorgenommen wurden und Sie in der Bestellungsansicht auf den PDF Button drücken, öffnet sich ein Popup-Fenster mit dem entsprechenden Fenster, in welchen zur Kontrolle die Speicherung nochmals bestätigt wird.
+
+<strong>Mögliche Varialben:</strong>
+<div>[CURRENT_USER]
+[CREATE_USER]
+[GROUP_NAME]
+[DESCRIPTION]
+[OBJECT_YEAR]
+[OBJECT_MONTH]
+[CONTACTSIDS]
+[MONTH_NAME]
+[QUARTER]
+[MONTH]
+[YEAR]
+[INTTYPE]
+[TAXVALUE]
+[DATETODO]
+[INTREMINDERS]
+[DATEEND]
+[ACCOUNTSIDS]
+[CNAME]
+[DISCOUNTVALUE]
+[SHIPPINGVALUE]
+[GROUPSIDS]
+[CNUMBER]
+[NETVALUE]
+[DATEADDED]
+[INTSTATUS]
+[INTADDEDBY]
+[CONTACT.CNAME]
+[CONTACT.COMPANY]
+[CONTACT.PRENAME]
+[CONTACT.TITLE]
+[CONTACT.COUNTRY]
+[IDS]</div>
+<div>[TYPE]</div>
+</div>
+</div>]]></content:encoded>
+      <excerpt:encoded><![CDATA[]]></excerpt:encoded>
+      <wp:post_id>176</wp:post_id>
+      <wp:post_date>2012-12-16 08:29:06</wp:post_date>
+      <wp:post_date_gmt>2012-12-16 08:29:06</wp:post_date_gmt>
+      <wp:comment_status>open</wp:comment_status>
+      <wp:ping_status>open</wp:ping_status>
+      <wp:post_name>wie-kann-ich-den-pfad-fur-automatisches-speichern-anpassen</wp:post_name>
+      <wp:status>publish</wp:status>
+      <wp:post_parent>0</wp:post_parent>
+      <wp:menu_order>0</wp:menu_order>
+      <wp:post_type>post</wp:post_type>
+      <wp:post_password></wp:post_password>
+      <wp:is_sticky>0</wp:is_sticky>
+      <category domain="category" nicename="faq"><![CDATA[FAQ]]></category>
+      <wp:postmeta>
+         <wp:meta_key>_edit_last</wp:meta_key>
+         <wp:meta_value><![CDATA[2]]></wp:meta_value>
+      </wp:postmeta>
+      <wp:postmeta>
+         <wp:meta_key>_pingme</wp:meta_key>
+         <wp:meta_value><![CDATA[1]]></wp:meta_value>
+      </wp:postmeta>
+      <wp:postmeta>
+         <wp:meta_key>_encloseme</wp:meta_key>
+         <wp:meta_value><![CDATA[1]]></wp:meta_value>
+      </wp:postmeta>
+   </item>
+   <item>
+            <title>How to: Create a new MacOSX &quot;Application&quot; using Jar Bundler</title>
+      <link>http://openyabs.org/how-to-create-a-new-macosx-application-using-jar-bundler/</link>
+      <pubDate>Sun, 16 Dec 2012 10:31:46 +0000</pubDate>
+      <dc:creator><![CDATA[anti43]]></dc:creator>
+      <guid isPermaLink="false">http://openyabs.org/?p=178</guid>
+      <description></description>
+      <content:encoded><![CDATA[<h2>How to: Create a new MacOSX "Application" using Jar Bundler</h2>
+<div>Donnerstag, den 21. Oktober 2010 um 11:45 Uhr</div>
+<div>
+<div>
+<div>Well its pretty easy - I explain how I got a Yabs-1.174 for myself:0. Lesen <a href="http://web.archive.org/web/20101104040228/http://developer.apple.com/mac/library/documentation/Java/Conceptual/Jar_Bundler/About/About.html#//apple_ref/doc/uid/TP40000884-CH202-BAJCICAA">http://developer.apple.com/mac/library/ ... 2-BAJCICAA</a>
+
+1. wget<a href="http://web.archive.org/web/20101104040228/http://mp-rechnungs-und-kundenverwaltung.googlecode.com/files/Yabs-1.174-package.zip"> </a>&lt;yabs package&gt;
+
+2. Jar Bundler öffnen unter /Developer/Applications/Utilities/
+
+3. pinch the Icon from the good old Yabs-1.x by using "open as package"
+
+4. drag jabs.jar in to the "Main Class"-Well
+
+5. Ziehe alle anderen jar-Dateien in "Additional Files and Resources"
+
+6. Drücke "Create Application"
+
+7. Genießen :-)
+
+</div>
+</div>
+</div>]]></content:encoded>
+      <excerpt:encoded><![CDATA[]]></excerpt:encoded>
+      <wp:post_id>178</wp:post_id>
+      <wp:post_date>2012-12-16 10:31:46</wp:post_date>
+      <wp:post_date_gmt>2012-12-16 10:31:46</wp:post_date_gmt>
+      <wp:comment_status>open</wp:comment_status>
+      <wp:ping_status>open</wp:ping_status>
+      <wp:post_name>how-to-create-a-new-macosx-application-using-jar-bundler</wp:post_name>
+      <wp:status>publish</wp:status>
+      <wp:post_parent>0</wp:post_parent>
+      <wp:menu_order>0</wp:menu_order>
+      <wp:post_type>post</wp:post_type>
+      <wp:post_password></wp:post_password>
+      <wp:is_sticky>0</wp:is_sticky>
+      <category domain="category" nicename="faq"><![CDATA[FAQ]]></category>
+      <category domain="category" nicename="uncategorized"><![CDATA[Uncategorized]]></category>
+      <wp:postmeta>
+         <wp:meta_key>_edit_last</wp:meta_key>
+         <wp:meta_value><![CDATA[2]]></wp:meta_value>
+      </wp:postmeta>
+      <wp:postmeta>
+         <wp:meta_key>_pingme</wp:meta_key>
+         <wp:meta_value><![CDATA[1]]></wp:meta_value>
+      </wp:postmeta>
+      <wp:postmeta>
+         <wp:meta_key>_encloseme</wp:meta_key>
+         <wp:meta_value><![CDATA[1]]></wp:meta_value>
+      </wp:postmeta>
+   </item>
+   <item>
+            <title> Using Google mail to send invoices from Yabs</title>
+      <link>http://openyabs.org/sending-mails/</link>
+      <pubDate>Sun, 16 Dec 2012 10:39:52 +0000</pubDate>
+      <dc:creator><![CDATA[anti43]]></dc:creator>
+      <guid isPermaLink="false">http://openyabs.org/?p=181</guid>
+      <description></description>
+      <content:encoded><![CDATA[You can use the smtp functionality to send your bills to customers from yabs directly. To configure this, go to
+
+Tools-&gt; Control Panel -&gt; User Properties
+
+There you will find "Mail settings" where you enter the following:
+
+SMTP Host: smtp.gmail.com
+Use TLS: Yes
+User: Your Gmail user
+Password: Your Gmail Password
+
+Make sure your yabs user ("admin" unless configured otherwise) has your Gmail Mailaddress as "Mail" entry (will be used as "mail from" sender address).
+
+Now you can send bills/offers/orders directly to your customers (if their contact information within yabs has a valid mail entry ). The text used in mails can be configured separately via mail templates (optional). You will find them when you click "Manage mail templates" on the same page. :shock:]]></content:encoded>
+      <excerpt:encoded><![CDATA[]]></excerpt:encoded>
+      <wp:post_id>181</wp:post_id>
+      <wp:post_date>2012-12-16 10:39:52</wp:post_date>
+      <wp:post_date_gmt>2012-12-16 10:39:52</wp:post_date_gmt>
+      <wp:comment_status>open</wp:comment_status>
+      <wp:ping_status>open</wp:ping_status>
+      <wp:post_name>sending-mails</wp:post_name>
+      <wp:status>publish</wp:status>
+      <wp:post_parent>0</wp:post_parent>
+      <wp:menu_order>0</wp:menu_order>
+      <wp:post_type>post</wp:post_type>
+      <wp:post_password></wp:post_password>
+      <wp:is_sticky>0</wp:is_sticky>
+      <category domain="category" nicename="faq"><![CDATA[FAQ]]></category>
+      <wp:postmeta>
+         <wp:meta_key>_pingme</wp:meta_key>
+         <wp:meta_value><![CDATA[1]]></wp:meta_value>
+      </wp:postmeta>
+      <wp:postmeta>
+         <wp:meta_key>_encloseme</wp:meta_key>
+         <wp:meta_value><![CDATA[1]]></wp:meta_value>
+      </wp:postmeta>
+      <wp:postmeta>
+         <wp:meta_key>_edit_last</wp:meta_key>
+         <wp:meta_value><![CDATA[2]]></wp:meta_value>
+      </wp:postmeta>
+      <wp:postmeta>
+         <wp:meta_key>_pingme</wp:meta_key>
+         <wp:meta_value><![CDATA[1]]></wp:meta_value>
+      </wp:postmeta>
+      <wp:postmeta>
+         <wp:meta_key>_encloseme</wp:meta_key>
+         <wp:meta_value><![CDATA[1]]></wp:meta_value>
+      </wp:postmeta>
+   </item>
+   <item>
+            <title>Derby database in server mode</title>
+      <link>http://openyabs.org/derby-database-in-server-mode/</link>
+      <pubDate>Sun, 16 Dec 2012 10:41:49 +0000</pubDate>
+      <dc:creator><![CDATA[anti43]]></dc:creator>
+      <guid isPermaLink="false">http://openyabs.org/?p=183</guid>
+      <description></description>
+      <content:encoded><![CDATA[To run OpenOffice and Yabs at the same time against a yabs database, it might be handy to have the Derby Database Instance running in server mode, allowing multiple connections.
+
+From <a href="http://web.archive.org/web/20101104014756/http://db.apache.org/derby/papers/DerbyTut/ns_intro.html" target="_blank" rel="nofollow">http://db.apache.org/derby/papers/DerbyTut/ns_intro.html</a>
+
+An application can also access a Derby database using the more familiar client/server mode. This is achieved via a framework that embeds Derby and handles database requests from applications, including applications running in different JVMs on the same machine or on remote machines. The Derby Network Server is such a framework. It embeds Derby and manages requests from network clients.
+<div>Windows: C:\Apache\db-derby-10.4.1.3-bin\lib&gt; java -jar derbyrun.jar server start
+
+Security manager installed using the Basic server security policy. Apache Derby Network Server - 10.4.1.3 - (648739) started and ready to accept connections on port 1527 at 2008-04-28 17:13:13.921 GMT</div>
+<div>UNIX: $ java -jar derbyrun.jar server start
+
+Security manager installed using the Basic server security policy. Apache Derby Network Server - 10.4.1.3 - (648739) started and ready to accept connections on port 1527 at 2008-04-30 09:35:55.871 GMT</div>]]></content:encoded>
+      <excerpt:encoded><![CDATA[]]></excerpt:encoded>
+      <wp:post_id>183</wp:post_id>
+      <wp:post_date>2012-12-16 10:41:49</wp:post_date>
+      <wp:post_date_gmt>2012-12-16 10:41:49</wp:post_date_gmt>
+      <wp:comment_status>open</wp:comment_status>
+      <wp:ping_status>open</wp:ping_status>
+      <wp:post_name>derby-database-in-server-mode</wp:post_name>
+      <wp:status>publish</wp:status>
+      <wp:post_parent>0</wp:post_parent>
+      <wp:menu_order>0</wp:menu_order>
+      <wp:post_type>post</wp:post_type>
+      <wp:post_password></wp:post_password>
+      <wp:is_sticky>0</wp:is_sticky>
+      <category domain="category" nicename="en-faq"><![CDATA[en]]></category>
+      <category domain="category" nicename="faq"><![CDATA[FAQ]]></category>
+      <wp:postmeta>
+         <wp:meta_key>_edit_last</wp:meta_key>
+         <wp:meta_value><![CDATA[2]]></wp:meta_value>
+      </wp:postmeta>
+      <wp:postmeta>
+         <wp:meta_key>_pingme</wp:meta_key>
+         <wp:meta_value><![CDATA[1]]></wp:meta_value>
+      </wp:postmeta>
+      <wp:postmeta>
+         <wp:meta_key>_encloseme</wp:meta_key>
+         <wp:meta_value><![CDATA[1]]></wp:meta_value>
+      </wp:postmeta>
+   </item>
+   <item>
+            <title>Using Yabs data in OpenOffice</title>
+      <link>http://openyabs.org/using-yabs-data-in-openoffice/</link>
+      <pubDate>Sun, 16 Dec 2012 10:42:27 +0000</pubDate>
+      <dc:creator><![CDATA[anti43]]></dc:creator>
+      <guid isPermaLink="false">http://openyabs.org/?p=185</guid>
+      <description></description>
+      <content:encoded><![CDATA[You can easily use any of the data in the Yabs database in OpenOffice to generate spreadsheets, reports and form letters.
+
+First, connect your OpenOffice to Yabs by using JDBC:
+<div>Start OpenOffice.org and go to the menu Tools - Options - OpenOffice.org General Java. Click on the button Class Path..., then choose Add Archive... and navigate to where the derby.jar (for a derby database) and/or mysql-connector-x.x.x-java-bin.jar (for MySQL) file is located (in the yabs/lib folder). Click on Open, and the file should then appear in the list of Assigned folders and Archives. You can then click on OK and close OpenOffice.org completely.</div>
+Now, after restarting OpenOffice, go to OpenOffice Base and go to
+<div>
+1) File &gt; New &gt; Database
+2) Click on the radio button Connect to an existing database and choose JDBC from the dropdown menu. Click on Next.
+3) In the next dialog, enter the database url:
+
+for MySQL assuming the database is named 'yabsdb' and the server is local: <b>jdbc:mysql://localhost:3306/yabsdb</b>
+
+for Derby assuming the database is named 'yabsdb' and the database is local <b>jdbc:derby:/&lt;path to yabs&gt;/.yabs/yabs0db</b>
+
+and the database driver class:
+
+for MySQL: <b>com.mysql.jdbc.Driver</b>
+
+for Derby Server: <b>org.apache.derby.jdbc.ClientDriver</b>
+
+Je nach Treiberversion:
+for Derby Embedded: <b>org.apache.derby.jdbc.EmbeddedDriver</b>
+
+and the username/password (not required for the default local Derby installation).</div>
+Then try to connect. After the connection was successful, the database is available through all OpenOffice applications as a data source.
+
+To import Yabs data into an excel sheet as an example, you open up Calc, hit F4 and select the Yabs database.]]></content:encoded>
+      <excerpt:encoded><![CDATA[]]></excerpt:encoded>
+      <wp:post_id>185</wp:post_id>
+      <wp:post_date>2012-12-16 10:42:27</wp:post_date>
+      <wp:post_date_gmt>2012-12-16 10:42:27</wp:post_date_gmt>
+      <wp:comment_status>open</wp:comment_status>
+      <wp:ping_status>open</wp:ping_status>
+      <wp:post_name>using-yabs-data-in-openoffice</wp:post_name>
+      <wp:status>publish</wp:status>
+      <wp:post_parent>0</wp:post_parent>
+      <wp:menu_order>0</wp:menu_order>
+      <wp:post_type>post</wp:post_type>
+      <wp:post_password></wp:post_password>
+      <wp:is_sticky>0</wp:is_sticky>
+      <category domain="category" nicename="en-faq"><![CDATA[en]]></category>
+      <category domain="category" nicename="faq"><![CDATA[FAQ]]></category>
+      <wp:postmeta>
+         <wp:meta_key>_edit_last</wp:meta_key>
+         <wp:meta_value><![CDATA[2]]></wp:meta_value>
+      </wp:postmeta>
+      <wp:postmeta>
+         <wp:meta_key>_pingme</wp:meta_key>
+         <wp:meta_value><![CDATA[1]]></wp:meta_value>
+      </wp:postmeta>
+      <wp:postmeta>
+         <wp:meta_key>_encloseme</wp:meta_key>
+         <wp:meta_value><![CDATA[1]]></wp:meta_value>
+      </wp:postmeta>
+   </item>
+   <item>
+            <title>Install a OO in server mode</title>
+      <link>http://openyabs.org/install-a-oo-in-server-mode/</link>
+      <pubDate>Sun, 16 Dec 2012 10:43:14 +0000</pubDate>
+      <dc:creator><![CDATA[anti43]]></dc:creator>
+      <guid isPermaLink="false">http://openyabs.org/?p=187</guid>
+      <description></description>
+      <content:encoded><![CDATA[<b>OpenOffice.org server installation</b>
+
+See <a href="http://web.archive.org/web/20101104014735/http://www.openoffice.org/" target="_blank" rel="nofollow">www.openoffice.org/</a> for installation procedure if not provided by your OS.
+
+Since version 2.3, OpenOffice can be started in headless mode.
+
+
+for Linux:
+/path/to/openoffice/program/soffice
+-headless -nofirststartwizard -accept="socket,host=0.0.0.0,port=4343;urp;StarOffice.Service"
+
+
+for Mac OS X:
+/path/to/openoffice.app/Contents/MacOS/soffice.bin
+headless -nofirststartwizard -accept="socket,host=0.0.0.0,port=4343;urp;StarOffice.Service"
+
+
+for Windows:
+soffice.exe
+-headless -nofirststartwizard -accept="socket,host=0.0.0.0,port=4343;urp;StarOffice.Service"
+<div><b>Parameters</b>
+-headless
+
+The -headless switch lets OOo manage to answer every question that may occur with a default response avoiding dead-locks. It also hides the OOo windows if a display is available by default (eg. Ms Windows). Note that the -invisible switch is not used as it is redundant and errors on PDF exports may occur.
+
+-nofirststartwizard
+
+The -nofirststartwizard skips any post-install wizard, allowing to use OOo directly after the installation without any user parameters.
+
+-accept
+
+The UNO protocol implies that OOo is opened in listening mode on a network interface. This parameter let OOo listen on the right interface and port.</div>]]></content:encoded>
+      <excerpt:encoded><![CDATA[]]></excerpt:encoded>
+      <wp:post_id>187</wp:post_id>
+      <wp:post_date>2012-12-16 10:43:14</wp:post_date>
+      <wp:post_date_gmt>2012-12-16 10:43:14</wp:post_date_gmt>
+      <wp:comment_status>open</wp:comment_status>
+      <wp:ping_status>open</wp:ping_status>
+      <wp:post_name>install-a-oo-in-server-mode</wp:post_name>
+      <wp:status>publish</wp:status>
+      <wp:post_parent>0</wp:post_parent>
+      <wp:menu_order>0</wp:menu_order>
+      <wp:post_type>post</wp:post_type>
+      <wp:post_password></wp:post_password>
+      <wp:is_sticky>0</wp:is_sticky>
+      <category domain="category" nicename="en-faq"><![CDATA[en]]></category>
+      <category domain="category" nicename="faq"><![CDATA[FAQ]]></category>
+      <wp:postmeta>
+         <wp:meta_key>_edit_last</wp:meta_key>
+         <wp:meta_value><![CDATA[2]]></wp:meta_value>
+      </wp:postmeta>
+      <wp:postmeta>
+         <wp:meta_key>_pingme</wp:meta_key>
+         <wp:meta_value><![CDATA[1]]></wp:meta_value>
+      </wp:postmeta>
+      <wp:postmeta>
+         <wp:meta_key>_encloseme</wp:meta_key>
+         <wp:meta_value><![CDATA[1]]></wp:meta_value>
+      </wp:postmeta>
+   </item>
+   <item>
+            <title> How to use multiple currencies</title>
+      <link>http://openyabs.org/how-to-use-multiple-currencies/</link>
+      <pubDate>Sun, 16 Dec 2012 10:44:15 +0000</pubDate>
+      <dc:creator><![CDATA[anti43]]></dc:creator>
+      <guid isPermaLink="false">http://openyabs.org/?p=189</guid>
+      <description></description>
+      <content:encoded><![CDATA[If you need to have two different currencies, you can take this way to do it:
+
+You need (at least) 2 users, and two groups.
+For example, you create the users "Germany" and "Australia" and the groups "EURO Bills" and "AUD Bills".
+Optional, you can define the group "AUD Bills" as default for the user "Australia" and set the "restricted group usage" flag. With that flag set, the user "Australia" will not be able to see and do anything within any other group <b>(except "All groups")</b>.
+
+Assign one currency to each USER. Then you assign a bill-template to each GROUP.
+Now you can log in as user "Germany" and create bills in €, while each bill you create must be assigned to the group "Germany", and the same with user "Australia" and the Group "AUD Bills".
+
+In the overview of bills, you can select the group "AUD Bills" and let Yabs show you the report for Australia, and the same for Germany.]]></content:encoded>
+      <excerpt:encoded><![CDATA[]]></excerpt:encoded>
+      <wp:post_id>189</wp:post_id>
+      <wp:post_date>2012-12-16 10:44:15</wp:post_date>
+      <wp:post_date_gmt>2012-12-16 10:44:15</wp:post_date_gmt>
+      <wp:comment_status>open</wp:comment_status>
+      <wp:ping_status>open</wp:ping_status>
+      <wp:post_name>how-to-use-multiple-currencies</wp:post_name>
+      <wp:status>publish</wp:status>
+      <wp:post_parent>0</wp:post_parent>
+      <wp:menu_order>0</wp:menu_order>
+      <wp:post_type>post</wp:post_type>
+      <wp:post_password></wp:post_password>
+      <wp:is_sticky>0</wp:is_sticky>
+      <category domain="category" nicename="en-faq"><![CDATA[en]]></category>
+      <category domain="category" nicename="faq"><![CDATA[FAQ]]></category>
+      <wp:postmeta>
+         <wp:meta_key>_edit_last</wp:meta_key>
+         <wp:meta_value><![CDATA[2]]></wp:meta_value>
+      </wp:postmeta>
+      <wp:postmeta>
+         <wp:meta_key>_pingme</wp:meta_key>
+         <wp:meta_value><![CDATA[1]]></wp:meta_value>
+      </wp:postmeta>
+      <wp:postmeta>
+         <wp:meta_key>_encloseme</wp:meta_key>
+         <wp:meta_value><![CDATA[1]]></wp:meta_value>
+      </wp:postmeta>
+   </item>
+   <item>
+            <title> Fehlermeldung beim Importieren von Daten</title>
+      <link>http://openyabs.org/fehlermeldung-beim-importieren-von-daten/</link>
+      <pubDate>Sun, 16 Dec 2012 10:45:43 +0000</pubDate>
+      <dc:creator><![CDATA[anti43]]></dc:creator>
+      <guid isPermaLink="false">http://openyabs.org/?p=192</guid>
+      <description></description>
+      <content:encoded><![CDATA[<table>
+<tbody>
+<tr>
+<td>
+<div>
+<div>Wenn aus einer anderen YaBS Installation Daten wie zB Produkte importiert werden sollen,
+kann eszu einer Fehlermeldung kommen:
+<div>
+<pre>Invalid byte 2 of 2-byte UTF-8 sequence</pre>
+</div>
+Zur Behebung des Fehlers muss die xml Datei mit einem Editur geöffnet werden und die Koodierung
+auf iso-8859-1 zu stellen. Sollte der Editor dies nicht können, reicht es auch, die erste Zeile durch:
+<div>
+<pre>&lt;?xml version="1.0" encoding="iso-8859-1"?&gt;</pre>
+</div>
+zu ersetzen und speichern.
+
+Nun sollte der Import problemlos funktionieren.</div>
+</div></td>
+</tr>
+<tr>
+<td>
+<div></div>
+<div>Letzte Änderung: 1 Woche her von goOse.</div>
+<div>
+<div>Dieses Thema wurde gesperrt.</div>
+</div></td>
+</tr>
+</tbody>
+</table>]]></content:encoded>
+      <excerpt:encoded><![CDATA[]]></excerpt:encoded>
+      <wp:post_id>192</wp:post_id>
+      <wp:post_date>2012-12-16 10:45:43</wp:post_date>
+      <wp:post_date_gmt>2012-12-16 10:45:43</wp:post_date_gmt>
+      <wp:comment_status>open</wp:comment_status>
+      <wp:ping_status>open</wp:ping_status>
+      <wp:post_name>fehlermeldung-beim-importieren-von-daten</wp:post_name>
+      <wp:status>publish</wp:status>
+      <wp:post_parent>0</wp:post_parent>
+      <wp:menu_order>0</wp:menu_order>
+      <wp:post_type>post</wp:post_type>
+      <wp:post_password></wp:post_password>
+      <wp:is_sticky>0</wp:is_sticky>
+      <category domain="category" nicename="de-faq"><![CDATA[de]]></category>
+      <category domain="category" nicename="faq"><![CDATA[FAQ]]></category>
+      <wp:postmeta>
+         <wp:meta_key>_edit_last</wp:meta_key>
+         <wp:meta_value><![CDATA[2]]></wp:meta_value>
+      </wp:postmeta>
+      <wp:postmeta>
+         <wp:meta_key>_pingme</wp:meta_key>
+         <wp:meta_value><![CDATA[1]]></wp:meta_value>
+      </wp:postmeta>
+      <wp:postmeta>
+         <wp:meta_key>_encloseme</wp:meta_key>
+         <wp:meta_value><![CDATA[1]]></wp:meta_value>
+      </wp:postmeta>
+   </item>
+   <item>
+            <title>Welche Version von Openoffice/ApacheOffice/LibreOffice?</title>
+      <link>http://openyabs.org/welche-version-von-openofficeapacheofficelibreoffice-funktioniert-mit-yabs-am-besten/</link>
+      <pubDate>Wed, 26 Dec 2012 16:41:31 +0000</pubDate>
+      <dc:creator><![CDATA[anti43]]></dc:creator>
+      <guid isPermaLink="false">http://openyabs.org/?p=199</guid>
+      <description></description>
+      <content:encoded><![CDATA[<h3>Aktuell empfehlen wir Apache Office 3.4.1 als am besten funktionierend getestet:</h3>
+<a href="http://www.openoffice.org/download/index.html" target="_blank">http://www.openoffice.org/download/index.html</a>
+
+LibreOffice ist wegen andauernder Probleme zur Zeit leider nicht zu Empfehlen zurVerwendung mit Yabs :/]]></content:encoded>
+      <excerpt:encoded><![CDATA[]]></excerpt:encoded>
+      <wp:post_id>199</wp:post_id>
+      <wp:post_date>2012-12-26 16:41:31</wp:post_date>
+      <wp:post_date_gmt>2012-12-26 16:41:31</wp:post_date_gmt>
+      <wp:comment_status>open</wp:comment_status>
+      <wp:ping_status>open</wp:ping_status>
+      <wp:post_name>welche-version-von-openofficeapacheofficelibreoffice-funktioniert-mit-yabs-am-besten</wp:post_name>
+      <wp:status>publish</wp:status>
+      <wp:post_parent>0</wp:post_parent>
+      <wp:menu_order>0</wp:menu_order>
+      <wp:post_type>post</wp:post_type>
+      <wp:post_password></wp:post_password>
+      <wp:is_sticky>0</wp:is_sticky>
+      <category domain="category" nicename="de-faq"><![CDATA[de]]></category>
+      <category domain="category" nicename="faq"><![CDATA[FAQ]]></category>
+      <wp:postmeta>
+         <wp:meta_key>_edit_last</wp:meta_key>
+         <wp:meta_value><![CDATA[2]]></wp:meta_value>
+      </wp:postmeta>
+      <wp:postmeta>
+         <wp:meta_key>_pingme</wp:meta_key>
+         <wp:meta_value><![CDATA[1]]></wp:meta_value>
+      </wp:postmeta>
+      <wp:postmeta>
+         <wp:meta_key>_encloseme</wp:meta_key>
+         <wp:meta_value><![CDATA[1]]></wp:meta_value>
+      </wp:postmeta>
+      <wp:postmeta>
+         <wp:meta_key>_pingme</wp:meta_key>
+         <wp:meta_value><![CDATA[1]]></wp:meta_value>
+      </wp:postmeta>
+      <wp:postmeta>
+         <wp:meta_key>_encloseme</wp:meta_key>
+         <wp:meta_value><![CDATA[1]]></wp:meta_value>
+      </wp:postmeta>
+      <wp:postmeta>
+         <wp:meta_key>_pingme</wp:meta_key>
+         <wp:meta_value><![CDATA[1]]></wp:meta_value>
+      </wp:postmeta>
+      <wp:postmeta>
+         <wp:meta_key>_encloseme</wp:meta_key>
+         <wp:meta_value><![CDATA[1]]></wp:meta_value>
+      </wp:postmeta>
+   </item>
+   <item>
+            <title>Verwendung des Formatmanagers</title>
+      <link>http://openyabs.org/verwendung-des-formatmanagers/</link>
+      <pubDate>Thu, 10 Jan 2013 12:06:32 +0000</pubDate>
+      <dc:creator><![CDATA[admin]]></dc:creator>
+      <guid isPermaLink="false">http://openyabs.org/?p=226</guid>
+      <description></description>
+      <content:encoded><![CDATA[Man kann in yabs alle möglichen Nummernformat abbilden, jedoch muss der dynamische Teil immer hinten an stehen.
+
+Formatstring:
+R[YEAR][MONTH]-{0,number,000000}
+
+Ergibt z.B.
+R201202-123456
+
+Als <strong>Startposition</strong> muss 8 angegeben werden nach folgender Zählweise:
+
+STRING: R 2 0 1 2 0 2 - 1 2 3 4 5 6
+Posit.: 0 1 2 3 4 5 6 7 8 ....]]></content:encoded>
+      <excerpt:encoded><![CDATA[]]></excerpt:encoded>
+      <wp:post_id>226</wp:post_id>
+      <wp:post_date>2013-01-10 12:06:32</wp:post_date>
+      <wp:post_date_gmt>2013-01-10 12:06:32</wp:post_date_gmt>
+      <wp:comment_status>open</wp:comment_status>
+      <wp:ping_status>open</wp:ping_status>
+      <wp:post_name>verwendung-des-formatmanagers</wp:post_name>
+      <wp:status>publish</wp:status>
+      <wp:post_parent>0</wp:post_parent>
+      <wp:menu_order>0</wp:menu_order>
+      <wp:post_type>post</wp:post_type>
+      <wp:post_password></wp:post_password>
+      <wp:is_sticky>0</wp:is_sticky>
+      <category domain="category" nicename="de-faq"><![CDATA[de]]></category>
+      <category domain="category" nicename="faq"><![CDATA[FAQ]]></category>
+      <category domain="category" nicename="uncategorized"><![CDATA[Uncategorized]]></category>
+      <wp:postmeta>
+         <wp:meta_key>_pingme</wp:meta_key>
+         <wp:meta_value><![CDATA[1]]></wp:meta_value>
+      </wp:postmeta>
+      <wp:postmeta>
+         <wp:meta_key>_encloseme</wp:meta_key>
+         <wp:meta_value><![CDATA[1]]></wp:meta_value>
+      </wp:postmeta>
+      <wp:postmeta>
+         <wp:meta_key>_edit_last</wp:meta_key>
+         <wp:meta_value><![CDATA[1]]></wp:meta_value>
+      </wp:postmeta>
+      <wp:postmeta>
+         <wp:meta_key>_pingme</wp:meta_key>
+         <wp:meta_value><![CDATA[1]]></wp:meta_value>
+      </wp:postmeta>
+      <wp:postmeta>
+         <wp:meta_key>_encloseme</wp:meta_key>
+         <wp:meta_value><![CDATA[1]]></wp:meta_value>
+      </wp:postmeta>
+   </item>
+   <item>
+            <title>Company-Info Feldnamen in Templates</title>
+      <link>http://openyabs.org/company-info-feldnamen-in-templates/</link>
+      <pubDate>Tue, 29 Jan 2013 13:38:32 +0000</pubDate>
+      <dc:creator><![CDATA[anti43]]></dc:creator>
+      <guid isPermaLink="false">http://openyabs.org/?p=274</guid>
+      <description></description>
+      <content:encoded><![CDATA[Welche companyinfo.xxx kann ich in meinem Template verwenden?
+
+&nbsp;
+
+Es gibt folgende Felder:
+
+&nbsp;
+
+companyinfo.account
+companyinfo.bankname
+companyinfo.banknumber
+companyinfo.business
+companyinfo.city
+companyinfo.country
+companyinfo.email
+companyinfo.fax
+companyinfo.firstname
+companyinfo.name
+companyinfo.phone
+companyinfo.phoneprefix
+companyinfo.street
+companyinfo.taxadvjob
+companyinfo.taxadvsior
+companyinfo.taxauthority
+companyinfo.taxmandant
+companyinfo.taxnumber]]></content:encoded>
+      <excerpt:encoded><![CDATA[]]></excerpt:encoded>
+      <wp:post_id>274</wp:post_id>
+      <wp:post_date>2013-01-29 13:38:32</wp:post_date>
+      <wp:post_date_gmt>2013-01-29 13:38:32</wp:post_date_gmt>
+      <wp:comment_status>open</wp:comment_status>
+      <wp:ping_status>open</wp:ping_status>
+      <wp:post_name>company-info-feldnamen-in-templates</wp:post_name>
+      <wp:status>publish</wp:status>
+      <wp:post_parent>0</wp:post_parent>
+      <wp:menu_order>0</wp:menu_order>
+      <wp:post_type>post</wp:post_type>
+      <wp:post_password></wp:post_password>
+      <wp:is_sticky>0</wp:is_sticky>
+      <category domain="category" nicename="de-faq"><![CDATA[de]]></category>
+      <category domain="category" nicename="faq"><![CDATA[FAQ]]></category>
+      <wp:postmeta>
+         <wp:meta_key>_edit_last</wp:meta_key>
+         <wp:meta_value><![CDATA[2]]></wp:meta_value>
+      </wp:postmeta>
+      <wp:postmeta>
+         <wp:meta_key>_pingme</wp:meta_key>
+         <wp:meta_value><![CDATA[1]]></wp:meta_value>
+      </wp:postmeta>
+      <wp:postmeta>
+         <wp:meta_key>_encloseme</wp:meta_key>
+         <wp:meta_value><![CDATA[1]]></wp:meta_value>
+      </wp:postmeta>
+   </item>
+   <item>
+            <title>Mailing Liste</title>
+      <link>http://openyabs.org/mailing-list/</link>
+      <pubDate>Wed, 20 Feb 2013 13:19:41 +0000</pubDate>
+      <dc:creator><![CDATA[anti43]]></dc:creator>
+      <guid isPermaLink="false">http://openyabs.org/?p=329</guid>
+      <description></description>
+      <content:encoded><![CDATA[<pre>[google_groups name="openyabs"  width = '100%'  height = '800px'  showsearch = 'true' ]</pre>]]></content:encoded>
+      <excerpt:encoded><![CDATA[]]></excerpt:encoded>
+      <wp:post_id>329</wp:post_id>
+      <wp:post_date>2013-02-20 13:19:41</wp:post_date>
+      <wp:post_date_gmt>2013-02-20 13:19:41</wp:post_date_gmt>
+      <wp:comment_status>open</wp:comment_status>
+      <wp:ping_status>open</wp:ping_status>
+      <wp:post_name>mailing-list</wp:post_name>
+      <wp:status>publish</wp:status>
+      <wp:post_parent>0</wp:post_parent>
+      <wp:menu_order>0</wp:menu_order>
+      <wp:post_type>post</wp:post_type>
+      <wp:post_password></wp:post_password>
+      <wp:is_sticky>0</wp:is_sticky>
+      <category domain="category" nicename="de-faq"><![CDATA[de]]></category>
+      <category domain="category" nicename="deutsch"><![CDATA[deutsch]]></category>
+      <category domain="category" nicename="en-faq"><![CDATA[en]]></category>
+      <category domain="category" nicename="faq"><![CDATA[FAQ]]></category>
+      <category domain="category" nicename="uncategorized"><![CDATA[Uncategorized]]></category>
+      <wp:postmeta>
+         <wp:meta_key>_edit_last</wp:meta_key>
+         <wp:meta_value><![CDATA[2]]></wp:meta_value>
+      </wp:postmeta>
+      <wp:postmeta>
+         <wp:meta_key>_pingme</wp:meta_key>
+         <wp:meta_value><![CDATA[1]]></wp:meta_value>
+      </wp:postmeta>
+      <wp:postmeta>
+         <wp:meta_key>_encloseme</wp:meta_key>
+         <wp:meta_value><![CDATA[1]]></wp:meta_value>
+      </wp:postmeta>
+      <wp:postmeta>
+         <wp:meta_key>_pingme</wp:meta_key>
+         <wp:meta_value><![CDATA[1]]></wp:meta_value>
+      </wp:postmeta>
+      <wp:postmeta>
+         <wp:meta_key>_encloseme</wp:meta_key>
+         <wp:meta_value><![CDATA[1]]></wp:meta_value>
+      </wp:postmeta>
+      <wp:postmeta>
+         <wp:meta_key>_pingme</wp:meta_key>
+         <wp:meta_value><![CDATA[1]]></wp:meta_value>
+      </wp:postmeta>
+      <wp:postmeta>
+         <wp:meta_key>_encloseme</wp:meta_key>
+         <wp:meta_value><![CDATA[1]]></wp:meta_value>
+      </wp:postmeta>
+   </item>
+   <item>
+            <title>Plugin: Script ausführen beim Speichern, z.b. zum automatischen Zuweisen einer Gruppe &#039;Bezahlt&#039;</title>
+      <link>http://openyabs.org/plugin-script-ausfuhren-beim-speichern-z-b-zum-automatischen-zuweisen-einer-gruppe-bezahlt/</link>
+      <pubDate>Wed, 06 Aug 2014 12:34:42 +0000</pubDate>
+      <dc:creator><![CDATA[admin]]></dc:creator>
+      <guid isPermaLink="false">http://openyabs.org/?p=401</guid>
+      <description></description>
+      <content:encoded><![CDATA[<h1>Anleitung zum Plugin: Script ausführen beim Speichern, z.b. zum automatischen Zuweisen einer Gruppe 'Bezahlt'</h1>
+&nbsp;
+
+Plugin entpacken.
+
+Control Panel-&gt; Plugins &gt; Plugin Importieren, dann anklicken (markieren), dann unten Rechts "Speichern"
+
+Yabs neu Starten
+
+Oben im Menu rechts müsste ein Icon stehen.
+
+Dann Control Panel-&gt; Scriptmanager-&gt;
+
+Context "Invoice"
+Gruppe "Alle"
+Schlüssel(Key): modifyOnSave
+Script:
+
+(Dies ist nur ein Beispielscript, andere gehen natürlich auch):
+
+&nbsp;
+
+////////////////////////////////
+<code><pre>def zielGruppe = "Bezahlt"
+ def zielKonto = "Eingegangene Zahlungen"</pre>
+<pre>if(dbo.__getIntstatus() == dbo.STATUS_PAID &amp;&amp; dbo.getGroup()?.getCname()!=zielGruppe){
+ dbo.setGroup(dbo.getObject(mpv5.db.common.Context.getGroup(), zielGruppe))
+ }</pre>
+<pre>if(dbo.__getIntstatus() == dbo.STATUS_PAID &amp;&amp; dbo.getAccount()?.getCname()!=zielKonto){
+ dbo.setAccount(dbo.getObject(mpv5.db.common.Context.getAccounts(), zielKonto))
+ }</pre>
+<pre>//nur für den Test "Run with.."
+ return dbo.getGroup().toString() + " - " + dbo.getAccount().toString()</pre></code>]]></content:encoded>
+      <excerpt:encoded><![CDATA[]]></excerpt:encoded>
+      <wp:post_id>401</wp:post_id>
+      <wp:post_date>2014-08-06 12:34:42</wp:post_date>
+      <wp:post_date_gmt>2014-08-06 12:34:42</wp:post_date_gmt>
+      <wp:comment_status>open</wp:comment_status>
+      <wp:ping_status>open</wp:ping_status>
+      <wp:post_name>plugin-script-ausfuhren-beim-speichern-z-b-zum-automatischen-zuweisen-einer-gruppe-bezahlt</wp:post_name>
+      <wp:status>publish</wp:status>
+      <wp:post_parent>0</wp:post_parent>
+      <wp:menu_order>0</wp:menu_order>
+      <wp:post_type>post</wp:post_type>
+      <wp:post_password></wp:post_password>
+      <wp:is_sticky>0</wp:is_sticky>
+      <category domain="category" nicename="de-faq"><![CDATA[de]]></category>
+      <category domain="category" nicename="faq"><![CDATA[FAQ]]></category>
+      <wp:postmeta>
+         <wp:meta_key>_encloseme</wp:meta_key>
+         <wp:meta_value><![CDATA[1]]></wp:meta_value>
+      </wp:postmeta>
+      <wp:postmeta>
+         <wp:meta_key>_pingme</wp:meta_key>
+         <wp:meta_value><![CDATA[1]]></wp:meta_value>
+      </wp:postmeta>
+      <wp:postmeta>
+         <wp:meta_key>_encloseme</wp:meta_key>
+         <wp:meta_value><![CDATA[1]]></wp:meta_value>
+      </wp:postmeta>
+      <wp:postmeta>
+         <wp:meta_key>_pingme</wp:meta_key>
+         <wp:meta_value><![CDATA[1]]></wp:meta_value>
+      </wp:postmeta>
+      <wp:postmeta>
+         <wp:meta_key>_edit_last</wp:meta_key>
+         <wp:meta_value><![CDATA[1]]></wp:meta_value>
+      </wp:postmeta>
+   </item>
+ 
