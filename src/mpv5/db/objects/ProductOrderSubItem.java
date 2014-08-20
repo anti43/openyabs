@@ -16,10 +16,9 @@
  */
 package mpv5.db.objects;
 
-import java.util.Arrays;
-import mpv5.db.common.Triggerable;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
@@ -33,12 +32,14 @@ import mpv5.db.common.DatabaseObject;
 import mpv5.db.common.NodataFoundException;
 import mpv5.db.common.QueryCriteria;
 import mpv5.db.common.QueryHandler;
+import mpv5.db.common.Triggerable;
 import mpv5.globals.Constants;
 import mpv5.globals.GlobalSettings;
 import mpv5.globals.Headers;
 import mpv5.handler.VariablesHandler;
 import mpv5.logging.Log;
 import mpv5.ui.panels.ItemPanel;
+import mpv5.ui.panels.ItemPanel2;
 import mpv5.utils.models.MPComboBoxModelItem;
 import mpv5.utils.models.MPTableModel;
 import mpv5.utils.numberformat.FormatNumber;
@@ -608,7 +609,7 @@ public final class ProductOrderSubItem extends DatabaseObject implements Trigger
             return null;
         }
         ProductOrder dos = getProductorder();
-        ItemPanel ip = new ItemPanel(Context.getItem(), dos.getInttype());
+        ItemPanel2 ip = new ItemPanel2(Context.getItem(), dos.getInttype());
         return ip;
 
     }

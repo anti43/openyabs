@@ -44,6 +44,7 @@ import mpv5.handler.FormatHandler;
 import mpv5.handler.MPEnum;
 import mpv5.logging.Log;
 import mpv5.ui.panels.ItemPanel;
+import mpv5.ui.panels.ItemPanel2;
 import mpv5.utils.export.Export;
 import mpv5.utils.images.MPIcon;
 import mpv5.utils.jobs.Job;
@@ -242,7 +243,7 @@ public class ProductOrder extends DatabaseObject implements Formattable, Templat
 
     @Override
     public JComponent getView() {
-        ItemPanel p = new ItemPanel(Context.getItem(), getInttype());
+        ItemPanel2 p = new ItemPanel2(Context.getItem(), getInttype());
         return p;
     }
 

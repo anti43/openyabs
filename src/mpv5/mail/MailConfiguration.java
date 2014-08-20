@@ -7,6 +7,7 @@ package mpv5.mail;
 public class MailConfiguration {
 
     private String smtpHost;
+    private String smtpPort;
     private String username;
     private String password;
     private String senderAddress;
@@ -95,5 +96,19 @@ public class MailConfiguration {
      */
     public void setUseSmtps(boolean useSmtps) {
         this.useSmtps = useSmtps;
+    }
+
+    /**
+     * @return the smtpPort
+     */
+    public String getSmtpPort() {
+        return smtpPort;
+    }
+
+    /**
+     * @param smtpPort the smtpPort to set
+     */
+    public void setSmtpPort(String smtpPort) {
+        this.smtpPort = smtpPort;
     }
 }

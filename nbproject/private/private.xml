@@ -9,13 +9,26 @@
             <file>file:/Users/dev/NetBeansProjects/Standalone/openyabs_newest/src/mpv5/utils/xdocreport/YabsODTPreprocessor.java</file>
         </group>
         <group>
-            <file>file:/C:/Users/klara/Documents/NetBeansProjects/openyabs/src/plugins/sample2/Main.java</file>
+            <file>file:/C:/Users/klara/Documents/NetBeansProjects/openyabs/src/mpv5/db/common/QueryCriteria.java</file>
+            <file>file:/C:/Users/klara/Documents/NetBeansProjects/openyabs/src/mpv5/db/objects/ProductOrder.java</file>
             <file>file:/C:/Users/klara/Documents/NetBeansProjects/openyabs/src/mpv5/db/common/ContextWrap.java</file>
+            <file>file:/C:/Users/klara/Documents/NetBeansProjects/openyabs/src/mpv5/ui/panels/ItemPanel2.java</file>
             <file>file:/C:/Users/klara/Documents/NetBeansProjects/openyabs/src/mpv5/ui/dialogs/subcomponents/ControlPanel_ValueProps.java</file>
-            <file>file:/C:/Users/klara/Documents/NetBeansProjects/openyabs/src/mpv5/resources/images/16/filesaveas.png</file>
-            <file>file:/C:/Users/klara/Documents/NetBeansProjects/openyabs/src/mpv5/db/common/Context.java</file>
+            <file>file:/C:/Users/klara/Documents/NetBeansProjects/openyabs/src/mpv5/db/common/DatabaseUpdater.java</file>
+            <file>file:/C:/Users/klara/Documents/NetBeansProjects/openyabs/src/mpv5/ui/frames/MPView.java</file>
             <file>file:/C:/Users/klara/Documents/NetBeansProjects/openyabs/src/mpv5/ui/dialogs/subcomponents/ControlPanel_Users.java</file>
             <file>file:/C:/Users/klara/Documents/NetBeansProjects/openyabs/src/mpv5/globals/Constants.java</file>
+            <file>file:/C:/Users/klara/Documents/NetBeansProjects/openyabs/src/mpv5/ui/panels/ItemPanel.java</file>
+            <file>file:/C:/Users/klara/Documents/NetBeansProjects/openyabs/src/mpv5/utils/xdocreport/YabsFontFactoryImpl.java</file>
+            <file>file:/C:/Users/klara/Documents/NetBeansProjects/openyabs/src/mpv5/db/objects/Item.java</file>
+            <file>file:/C:/Users/klara/Documents/NetBeansProjects/openyabs/src/enoa/handler/TemplateHandler.java</file>
+            <file>file:/C:/Users/klara/Documents/NetBeansProjects/openyabs/src/mpv5/db/common/QueryHandler.java</file>
+            <file>file:/C:/Users/klara/Documents/NetBeansProjects/openyabs/src/plugins/sample2/Main.java</file>
+            <file>file:/C:/Users/klara/Documents/NetBeansProjects/openyabs/src/mpv5/db/objects/ProductOrderSubItem.java</file>
+            <file>file:/C:/Users/klara/Documents/NetBeansProjects/openyabs/src/mpv5/ui/dialogs/subcomponents/ItemNumberEditor.java</file>
+            <file>file:/C:/Users/klara/Documents/NetBeansProjects/openyabs/src/mpv5/db/common/Context.java</file>
+            <file>file:/C:/Users/klara/Documents/NetBeansProjects/openyabs/src/mpv5/db/objects/SubItem.java</file>
+            <file>file:/C:/Users/klara/Documents/NetBeansProjects/openyabs/src/mpv5/utils/renderer/TextAreaCellEditor.java</file>
         </group>
     </open-files>
 </project-private>

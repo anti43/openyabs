@@ -711,6 +711,7 @@ public class User extends DatabaseObject {
         if (getProperties().hasProperty("smtp.host")) {
             defineMailConfiguration(new MailConfiguration());
             mailConfiguration.setSmtpHost(getProperties().getProperty("smtp.host"));
+            mailConfiguration.setSmtpPort(getProperties().getProperty("smtp.port"));
             mailConfiguration.setSenderAddress(mail);
             mailConfiguration.setUsername(getProperties().getProperty("smtp.host.user"));
             mailConfiguration.setPassword(getProperties().getProperty("smtp.host.password"));

@@ -117,6 +117,7 @@ import mpv5.ui.panels.ExpensePanel;
 import mpv5.ui.panels.GeneralListPanel;
 import mpv5.ui.panels.HistoryPanel;
 import mpv5.ui.panels.ItemPanel;
+import mpv5.ui.panels.ItemPanel2;
 import mpv5.ui.panels.JournalPanel;
 import mpv5.ui.panels.MPControlPanel;
 import mpv5.ui.panels.MassPrintPanel;
@@ -138,7 +139,6 @@ import mpv5.utils.images.MPIcon;
 import mpv5.utils.renderer.ComboBoxRendererForTooltip;
 import mpv5.utils.xml.XMLWriter;
 import net.sf.vcard4j.java.VCard;
- 
 import org.jdesktop.application.FrameView;
 import org.jdesktop.application.SingleFrameApplication;
 
@@ -2445,7 +2445,7 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
     }//GEN-LAST:event_jButton7ActionPerformed
 
     private void jButton8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton8ActionPerformed
-       addTab(new ItemPanel(Context.getInvoice(), Item.TYPE_BILL), Messages.NEW_BILL);
+       addTab(new ItemPanel2(Context.getInvoice(), Item.TYPE_BILL), Messages.NEW_BILL);
     }//GEN-LAST:event_jButton8ActionPerformed
    private MPServer mpserver;
     private void jMenuItem24ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem24ActionPerformed
@@ -2466,11 +2466,11 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
 
     private void jButton10ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton10ActionPerformed
 
-       addTab(new ItemPanel(Context.getOffer(), Item.TYPE_OFFER), Messages.NEW_OFFER);
+       addTab(new ItemPanel2(Context.getOffer(), Item.TYPE_OFFER), Messages.NEW_OFFER);
     }//GEN-LAST:event_jButton10ActionPerformed
 
     private void jButton11ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton11ActionPerformed
-       addTab(new ItemPanel(Context.getOrder(), Item.TYPE_ORDER), Messages.NEW_ORDER);
+       addTab(new ItemPanel2(Context.getOrder(), Item.TYPE_ORDER), Messages.NEW_ORDER);
     }//GEN-LAST:event_jButton11ActionPerformed
 
     private void jButton12ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton12ActionPerformed

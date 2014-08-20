@@ -52,6 +52,7 @@ import mpv5.utils.jobs.Waiter;
 public class SimpleMail implements Waiter {
 
     private String smtpHost = "";
+    private String smtpPort = "";
     private String username = "";
     private String password = "";
     private String senderAddress = "";
@@ -78,8 +79,9 @@ public class SimpleMail implements Waiter {
      * @param text
      * @throws MessagingException
      */
-    public SimpleMail(String smtpHost, String username, String password, String senderAddress, String recipientsAddress, String subject, String text) throws MessagingException {
+    public SimpleMail(String smtpHost, String smtpPort, String username, String password, String senderAddress, String recipientsAddress, String subject, String text) throws MessagingException {
         this.smtpHost = smtpHost;
+        this.smtpPort = smtpPort;
         this.username = username;
         this.password = password;
         this.senderAddress = senderAddress;
@@ -160,6 +162,7 @@ public class SimpleMail implements Waiter {
             setPassword(c.getPassword());
             setSenderAddress(c.getSenderAddress());
             setSmtpHost(c.getSmtpHost());
+            setSmtpPort(c.getSmtpPort());
             setUsername(c.getUsername());
             setUseTls(c.isUseTls());
             setUseSmtps(c.isUseSmtps());
@@ -182,6 +185,19 @@ public class SimpleMail implements Waiter {
         this.smtpHost = smtpHost;
     }
 
+        /**
+     * @return the smtpHost
+     */
+    public String getSmtpPort() {
+        return smtpPort;
+    }
+
+    /**
+     * @param smtpPort
+     */
+    public void setSmtpPort(String smtpPort) {
+        this.smtpPort = smtpPort;
+    }
     /**
      * @return the username
      */
@@ -322,6 +338,7 @@ public class SimpleMail implements Waiter {
         Session session = null;
         properties = new Properties();
         properties.put("mail.smtp.host", smtpHost);
+        properties.put("mail.smtp.port", (smtpPort!=null&&smtpPort.length()>1?smtpPort:"25"));
         if (username != null) {
             properties.put("mail.smtp.auth", "true");
         }
@@ -388,7 +405,7 @@ public class SimpleMail implements Waiter {
         props.put("mail.smtps.auth", Boolean.toString(username != null));
         props.put("mail.smtps.starttls.enable", Boolean.toString(useTls));
 // < -- it is important you use the correct port. smtp uses 25, smtps 465 -->
-        props.put("mail.smtps.port", "465");
+        props.put("mail.smtps.port", (smtpPort!=null&&smtpPort.length()>1?smtpPort:"465"));
 // < -- put the smtps server host address here -->
         props.put("mail.smtps.host", smtpHost);
 
