@@ -1739,7 +1739,7 @@ public class ItemPanel2 extends javax.swing.JPanel implements DataPanel, MPCBSel
 
         prepareTable();
 
-        //"Internal ID", Position, "Count", "Measure", "Text", "Netto Price", "Tax Rate", "Total Price", "Tax value", "Net 2", "Product ID", "", "", "Link", "Optional"
+        //"Internal ID", Position, "Count", "Measure", "Text", "Netto Price", "Tax Rate", "Total Price", "Tax value", "Net 2", "Product ID", "", "", "Link", "Optional", "Discount"
         TableFormat.resizeCols(itemtable, new Integer[]{0, 23, 53, 63, 100, 63, 63, 63, 0, 0, 63, 20, 0, 0, 100, 63, 0},
                 new Boolean[]{true, true, true, true, false, true, true, true, true, true, true, true, true, true, false, true, true});
         MPTableModel model = (MPTableModel) itemtable.getModel();
@@ -2062,6 +2062,7 @@ public class ItemPanel2 extends javax.swing.JPanel implements DataPanel, MPCBSel
         TableCellRendererForDezimal t = new TableCellRendererForDezimal(itemtable);
         t.setRendererTo(6);
         t.setRendererTo(5);
+        
         t.setRendererTo(15);
         t.setRendererTo(16);
         TableCellRendererForDezimal tc = new TableCellRendererForDezimal(itemtable, new java.awt.Color(161, 176, 190));

@@ -71,7 +71,7 @@ public class TableCellRendererForDezimal extends DefaultTableCellRenderer {
      */
     public void setRendererTo(int column) {
 
-        TableColumn col = t.getColumnModel().getColumn(t.getColumnModel().getColumnIndex(t.getModel().getColumnName(column)));
+        TableColumn col = t.getColumnModel().getColumn(column);
         col.setCellEditor(new TableCellEditorForDezimal(new JFormattedTextField(), format));
         col.setCellRenderer(this);
     }

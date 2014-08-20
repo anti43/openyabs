@@ -102,7 +102,7 @@ public class TableCellEditorForDezimal extends LazyCellEditor {
                         return new Double(0.0);
                     }
                 } catch (Exception e) {
-                    Log.Debug(this, e.getMessage());
+                    Log.Debug(this, e);
 //                    tf.setBackground(Color.red);
                     return new Double(0.0);
                 }
