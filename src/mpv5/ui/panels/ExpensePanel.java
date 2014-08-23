@@ -475,7 +475,7 @@ public class ExpensePanel extends javax.swing.JPanel implements DataPanel {
 
     private void itemtableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_itemtableMouseClicked
         try {
-            setDataOwner((DatabaseObject) itemtable.getModel().getValueAt(itemtable.getSelectedRow(), 0), true);
+            setDataOwner((DatabaseObject) itemtable.getModel().getValueAt(itemtable.convertRowIndexToModel(itemtable.getSelectedRow()), 0), true);
         } catch (Exception e) {
             Log.Debug(this, e.getMessage());
         }
