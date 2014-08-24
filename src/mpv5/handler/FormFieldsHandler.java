@@ -109,13 +109,18 @@ public class FormFieldsHandler {
             }
         }
         List<String[]> mapi = User.getCurrentUser().getProperties().getProperties("companyinfo.").getList();
-        for (int i = 0; i < mapi.size(); i++) {
-            String[] strings = mapi.get(i);
+        for (String[] strings : mapi) {
             if (strings[1] != null) {
                 maps.put("companyinfo." + strings[0], strings[1].contains("[") ? VariablesHandler.parse(strings[1], obj) : strings[1]);
             }
         }
-
+        
+        mapi = User.getCurrentUser().getProperties().getProperties("template.").getList();
+        for (String[] strings : mapi) {
+            if (strings[1] != null) {
+                maps.put("template." + strings[0], strings[1].contains("[") ? VariablesHandler.parse(strings[1], obj) : strings[1]);
+            }
+        }
         return maps;
     }
 }

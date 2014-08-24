@@ -251,7 +251,7 @@ public class DocumentHandler {
     * @throws Exception
     * @throws NOAException
     */
-   public synchronized void fillPlaceholderFields(HashMap<String, Object> data) throws Exception, NOAException {
+   public synchronized void fillPlaceholderFields(HashMap<String, Object> data) throws Exception, NOAException { 
       Log.Debug(this, "Looking for placeholder fields in: " + document);
       Iterator<String> keys = data.keySet().iterator();
       String key = null;
