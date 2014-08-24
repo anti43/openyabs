@@ -37,6 +37,7 @@ import mpv5.utils.numberformat.FormatNumber;
 public class Expense extends DatabaseObject implements Formattable {
 
     public static int TYPE_EXPENSE = 43;
+    private static final long serialVersionUID = 8281304380840607334L;
     private String description = "";
     private BigDecimal netvalue;
     private BigDecimal taxpercentvalue;
@@ -170,7 +171,7 @@ public class Expense extends DatabaseObject implements Formattable {
      */
     @Override
     public Object[] toArray() {
-        Object[] o = new Object[6];
+        Object[] o = new Object[8];
         o[0] = this;
         o[1] = description;
         try {
@@ -181,6 +182,8 @@ public class Expense extends DatabaseObject implements Formattable {
         o[3] = FormatNumber.formatDezimal(brutvalue);
         o[4] = FormatNumber.formatPercent(taxpercentvalue);
         o[5] = ispaid;
+        o[6] = this.__getDateadded();
+        o[7] = dateend;
         return o;
     }
 

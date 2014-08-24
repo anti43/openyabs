@@ -59,7 +59,6 @@ import mpv5.utils.models.MPComboBoxModelItem;
 import mpv5.utils.models.MPTableModel;
 import mpv5.utils.numberformat.FormatNumber;
 import mpv5.ui.misc.TableViewPersistenceHandler;
-import mpv5.utils.tables.TableFormat;
 import mpv5.utils.ui.TextFieldUtils;
 
 /**
@@ -72,7 +71,7 @@ public class ExpensePanel extends javax.swing.JPanel implements DataPanel {
     private static ExpensePanel me;
     private ArrayList<DatabaseObject> accmod;
     private BigDecimal tax = BigDecimal.ZERO;
-    private java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle();
+    private final java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle();
 
     /**
      * Singleton
@@ -86,7 +85,7 @@ public class ExpensePanel extends javax.swing.JPanel implements DataPanel {
         return me;
     }
     private Expense dataOwner;
-    private DataPanelTB tb;
+    private final DataPanelTB tb;
 
     /** Creates new form ContactPanel
      */
@@ -475,7 +474,7 @@ public class ExpensePanel extends javax.swing.JPanel implements DataPanel {
 
     private void itemtableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_itemtableMouseClicked
         try {
-            setDataOwner((DatabaseObject) itemtable.getModel().getValueAt(itemtable.getSelectedRow(), 0), true);
+            setDataOwner((DatabaseObject) itemtable.getModel().getValueAt(itemtable.convertRowIndexToModel(itemtable.getSelectedRow()), 0), true);
         } catch (Exception e) {
             Log.Debug(this, e.getMessage());
         }
@@ -541,7 +540,7 @@ public class ExpensePanel extends javax.swing.JPanel implements DataPanel {
         try {
             accountsids_ = Integer.valueOf(accountselect.getSelectedItem().getId());
             mpv5.db.objects.User.getCurrentUser().getProperties().changeProperty(me, "accountselect", accountsids_);
-        } catch (Exception e) {
+        } catch (NumberFormatException e) {
             accountsids_ = 1;
         }
         
@@ -573,7 +572,7 @@ public class ExpensePanel extends javax.swing.JPanel implements DataPanel {
         }
         try {
             taxpercentvalue_ = Tax.getTaxValue(Integer.valueOf(taxrate.getSelectedItem().getId()));
-        } catch (Exception numberFormatException) {
+        } catch (NumberFormatException numberFormatException) {
             taxpercentvalue_ = BigDecimal.ZERO;
         }
         return true;
@@ -616,7 +615,7 @@ public class ExpensePanel extends javax.swing.JPanel implements DataPanel {
                 taxrate.triggerSearch();
                 try {
                     MPTableModel x = new MPTableModel(Expense.getExpenses(), Headers.EXPENSE);
-                    x.setTypes(String.class, String.class, String.class, String.class, String.class, Boolean.class);
+                    x.setTypes(Expense.class, String.class, Account.class, String.class, String.class, Boolean.class, Date.class, Date.class);
                     itemtable.setModel(x);
                 } catch (NodataFoundException e) {
                     Log.Debug(this, e.getMessage());
@@ -713,7 +712,7 @@ public class ExpensePanel extends javax.swing.JPanel implements DataPanel {
                 tax = Tax.getTaxValue(Integer.valueOf(t.getId()));
             }
             Log.Debug(this, "Selected Taxrate: " + tax);
-        } catch (Exception ex) {
+        } catch (NumberFormatException ex) {
             Log.Debug(this, "Reading Taxrate failed: Assuming Zero");
             tax = BigDecimal.ZERO;
         }
