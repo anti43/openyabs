@@ -42,6 +42,7 @@ public class DynamicTableCalculator implements Runnable {
     private final JTable table;
     private final int[] targetColumns;
     private final String term;
+    private final Double dZero = new Double("0");
 
     /**
      *
@@ -65,12 +66,15 @@ public class DynamicTableCalculator implements Runnable {
         BigDecimal val = BigDecimal.ZERO;
         HashMap<Integer, BigDecimal> values = new HashMap<Integer, BigDecimal>();
         for (int i=0; i < table.getModel().getColumnCount(); i++) {
-            if (table.getModel().getValueAt(row, i) != null && 
-                    table.getModel().getValueAt(row, i).getClass().isInstance(BigDecimal.ZERO)) {
-                values.put(i, (BigDecimal) table.getModel().getValueAt(row, i));
-            } else if (table.getModel().getValueAt(row, i) != null && 
-                    table.getModel().getValueAt(row, i).getClass().isInstance(new Double("0"))) {
-                values.put(i, BigDecimal.valueOf( (Double) table.getModel().getValueAt(row, i)));
+            Object rowVal=table.getModel().getValueAt(row, i);
+            if (rowVal != null ){
+                if (rowVal.getClass().isInstance(BigDecimal.ZERO)) {
+                   values.put(i, (BigDecimal) rowVal);
+                } else if (rowVal.getClass().isInstance(dZero)) {
+                   values.put(i, BigDecimal.valueOf( (Double) rowVal));
+                } else {
+                    Log.Debug(this,"Unsupported class: "+rowVal.getClass());
+                }
             }
         }
         try {
@@ -176,11 +180,19 @@ public class DynamicTableCalculator implements Runnable {
             int k = targetColumns[i];
 
             if (sumcols.containsKey(new Integer(k))) {
-                Double ovalue = 0d;
+                BigDecimal ovalue = BigDecimal.ZERO;
 
                 for (int j = 0; j < table.getRowCount(); j++) {
-                    if (table.getModel().getValueAt(j, k) != null) {
-                        ovalue += Double.valueOf(table.getModel().getValueAt(j, k).toString());
+                    Object rowVal=table.getModel().getValueAt(j, k);
+                    if (rowVal != null) {
+                        //ovalue += Double.valueOf(table.getModel().getValueAt(j, k).toString());
+                        if (rowVal.getClass().isInstance(BigDecimal.ZERO)) {
+                           ovalue.add((BigDecimal) rowVal);
+                        } else if (rowVal.getClass().isInstance(dZero)) {
+                           ovalue.add(BigDecimal.valueOf( (Double) rowVal));
+                        } else {
+                           Log.Debug(this,"Unsupported class: "+rowVal.getClass());
+                        }
                     }
                 }
 
