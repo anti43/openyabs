@@ -67,14 +67,8 @@ public class DynamicTableCalculator implements Runnable {
         HashMap<Integer, BigDecimal> values = new HashMap<Integer, BigDecimal>();
         for (int i=0; i < table.getModel().getColumnCount(); i++) {
             Object rowVal=table.getModel().getValueAt(row, i);
-            if (rowVal != null ){
-                if (rowVal.getClass().isInstance(BigDecimal.ZERO)) {
-                   values.put(i, (BigDecimal) rowVal);
-                } else if (rowVal.getClass().isInstance(dZero)) {
-                   values.put(i, BigDecimal.valueOf( (Double) rowVal));
-                } else {
-                    Log.Debug(this,"Unsupported class: "+rowVal.getClass());
-                }
+            if (rowVal instanceof Number){
+                values.put(i, FormatNumber.getBigDecimal(rowVal));
             }
         }
         try {
@@ -148,7 +142,7 @@ public class DynamicTableCalculator implements Runnable {
      * @param sumColumn
      */
     public void addLabel(LabeledTextField value, int sumColumn) {
-        sumcols.put(new Integer(sumColumn), value.getTextField());
+        sumcols.put(sumColumn, value.getTextField());
     }
 
     /**
@@ -157,7 +151,7 @@ public class DynamicTableCalculator implements Runnable {
      * @param sumColumn
      */
     public void addLabel(JTextField value, int sumColumn) {
-        sumcols.put(new Integer(sumColumn), value);
+        sumcols.put(sumColumn, value);
     }
 
     /**
@@ -166,7 +160,7 @@ public class DynamicTableCalculator implements Runnable {
      * @param sumColumn
      */
     public void addLabel(JLabel value, int sumColumn) {
-        sumcols.put(new Integer(sumColumn), value);
+        sumcols.put(sumColumn, value);
     }
 
     private void sumUp() {
@@ -179,25 +173,20 @@ public class DynamicTableCalculator implements Runnable {
         for (int i = 0; i < targetColumns.length; i++) {
             int k = targetColumns[i];
 
-            if (sumcols.containsKey(new Integer(k))) {
+            if (sumcols.containsKey(k)) {
                 BigDecimal ovalue = BigDecimal.ZERO;
-
                 for (int j = 0; j < table.getRowCount(); j++) {
                     Object rowVal=table.getModel().getValueAt(j, k);
                     if (rowVal != null) {
                         //ovalue += Double.valueOf(table.getModel().getValueAt(j, k).toString());
-                        if (rowVal.getClass().isInstance(BigDecimal.ZERO)) {
-                           ovalue.add((BigDecimal) rowVal);
-                        } else if (rowVal.getClass().isInstance(dZero)) {
-                           ovalue.add(BigDecimal.valueOf( (Double) rowVal));
-                        } else {
-                           Log.Debug(this,"Unsupported class: "+rowVal.getClass());
-                        }
+                        //ovalue.add((BigDecimal) rowVal);
+                        //Log.Print(ovalue+"+"+FormatNumber.getBigDecimal(rowVal));
+                        ovalue=ovalue.add(FormatNumber.getBigDecimal(rowVal));
+                        //Log.Print("="+ovalue);
                     }
                 }
-
-                JComponent t = sumcols.get(new Integer(k));
-
+                JComponent t = sumcols.get(Integer.valueOf(k));
+                //Log.Print(ovalue);
                 if (t instanceof JLabel) {
                     ((JLabel) t).setText(FormatNumber.formatDezimal(ovalue));
                 } else if (t instanceof JTextField) {
