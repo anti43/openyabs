@@ -26,8 +26,8 @@ import mpv5.logging.Log;
 class DynamicArithmetic {
 
     private String toParse;
-    private char[] operators = "+-:/*%".toCharArray();
-    private ArrayList<BigDecimal> vals = new ArrayList<BigDecimal>();
+    private final char[] operators = "+-:/*%".toCharArray();
+    private final ArrayList<BigDecimal> vals = new ArrayList<BigDecimal>();
     private char operator = 0;
     public BigDecimal result = BigDecimal.ZERO;
     private final BigDecimal hundert = Constants.BD100;
@@ -62,8 +62,9 @@ class DynamicArithmetic {
                     //Log.Debug(this, "Value Closer found --> append Value String off");
                     pushValueString = false;
                     if (!columnString.equals("")) {
-                        if (values.containsKey(Integer.parseInt(columnString))) {
-                            vals.add(values.get(Integer.parseInt(columnString)));
+                        Integer col=Integer.parseInt(columnString);
+                        if (values.containsKey(col)) {
+                            vals.add(values.get(col));
                         } else {
                             vals.add(null);
                         }
@@ -208,7 +209,9 @@ class DynamicArithmetic {
                         if (k == 0) {
                             tmp = val;
                         } else {
+                            BigDecimal a=tmp;
                             tmp = tmp.multiply(val).divide(hundert, 9, BigDecimal.ROUND_HALF_UP);
+                            Log.Print(tmp+" = "+a+".multiply("+val+").divide(hundert, 9, BigDecimal.ROUND_HALF_UP);");
                         }
                     }
                     if (openTerms == 0) {

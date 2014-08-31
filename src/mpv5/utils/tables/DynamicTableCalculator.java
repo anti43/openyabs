@@ -42,6 +42,7 @@ public class DynamicTableCalculator implements Runnable {
     private final JTable table;
     private final int[] targetColumns;
     private final String term;
+    private final Double dZero = new Double("0");
 
     /**
      *
@@ -65,12 +66,9 @@ public class DynamicTableCalculator implements Runnable {
         BigDecimal val = BigDecimal.ZERO;
         HashMap<Integer, BigDecimal> values = new HashMap<Integer, BigDecimal>();
         for (int i=0; i < table.getModel().getColumnCount(); i++) {
-            if (table.getModel().getValueAt(row, i) != null && 
-                    table.getModel().getValueAt(row, i).getClass().isInstance(BigDecimal.ZERO)) {
-                values.put(i, (BigDecimal) table.getModel().getValueAt(row, i));
-            } else if (table.getModel().getValueAt(row, i) != null && 
-                    table.getModel().getValueAt(row, i).getClass().isInstance(new Double("0"))) {
-                values.put(i, BigDecimal.valueOf( (Double) table.getModel().getValueAt(row, i)));
+            Object rowVal=table.getModel().getValueAt(row, i);
+            if (rowVal instanceof Number){
+                values.put(i, FormatNumber.getBigDecimal(rowVal));
             }
         }
         try {
@@ -144,7 +142,7 @@ public class DynamicTableCalculator implements Runnable {
      * @param sumColumn
      */
     public void addLabel(LabeledTextField value, int sumColumn) {
-        sumcols.put(new Integer(sumColumn), value.getTextField());
+        sumcols.put(sumColumn, value.getTextField());
     }
 
     /**
@@ -153,7 +151,7 @@ public class DynamicTableCalculator implements Runnable {
      * @param sumColumn
      */
     public void addLabel(JTextField value, int sumColumn) {
-        sumcols.put(new Integer(sumColumn), value);
+        sumcols.put(sumColumn, value);
     }
 
     /**
@@ -162,7 +160,7 @@ public class DynamicTableCalculator implements Runnable {
      * @param sumColumn
      */
     public void addLabel(JLabel value, int sumColumn) {
-        sumcols.put(new Integer(sumColumn), value);
+        sumcols.put(sumColumn, value);
     }
 
     private void sumUp() {
@@ -175,17 +173,20 @@ public class DynamicTableCalculator implements Runnable {
         for (int i = 0; i < targetColumns.length; i++) {
             int k = targetColumns[i];
 
-            if (sumcols.containsKey(new Integer(k))) {
-                Double ovalue = 0d;
-
+            if (sumcols.containsKey(k)) {
+                BigDecimal ovalue = BigDecimal.ZERO;
                 for (int j = 0; j < table.getRowCount(); j++) {
-                    if (table.getModel().getValueAt(j, k) != null) {
-                        ovalue += Double.valueOf(table.getModel().getValueAt(j, k).toString());
+                    Object rowVal=table.getModel().getValueAt(j, k);
+                    if (rowVal != null) {
+                        //ovalue += Double.valueOf(table.getModel().getValueAt(j, k).toString());
+                        //ovalue.add((BigDecimal) rowVal);
+                        //Log.Print(ovalue+"+"+FormatNumber.getBigDecimal(rowVal));
+                        ovalue=ovalue.add(FormatNumber.getBigDecimal(rowVal));
+                        //Log.Print("="+ovalue);
                     }
                 }
-
-                JComponent t = sumcols.get(new Integer(k));
-
+                JComponent t = sumcols.get(Integer.valueOf(k));
+                //Log.Print(ovalue);
                 if (t instanceof JLabel) {
                     ((JLabel) t).setText(FormatNumber.formatDezimal(ovalue));
                 } else if (t instanceof JTextField) {

@@ -22,6 +22,7 @@ package mpv5.utils.renderer;
 import java.awt.event.MouseEvent;
 import java.math.BigDecimal;
 import java.text.NumberFormat;
+import java.text.ParseException;
 import java.util.EventObject;
 import javax.swing.JFormattedTextField;
 import javax.swing.SwingConstants;
@@ -91,20 +92,19 @@ public class TableCellEditorForDezimal extends LazyCellEditor {
                 try {
                     String _field = tf.getText();
                     Number _number = (format == null ? FormatNumber.parseDezimal(_field) : format.parse(_field));
-
                     if (_number != null) {
                         double _parsed = _number.doubleValue();
-                        Double d = new Double(_parsed);
+                        BigDecimal d = BigDecimal.valueOf(_parsed);
 //                        tf.setBackground(Color.white);
                         return d;
                     } else {
 //                        tf.setBackground(Color.white);
-                        return new Double(0.0);
+                        return BigDecimal.ZERO;
                     }
-                } catch (Exception e) {
+                } catch (ParseException e) {
                     Log.Debug(this, e);
 //                    tf.setBackground(Color.red);
-                    return new Double(0.0);
+                    return BigDecimal.ZERO;
                 }
             }
 

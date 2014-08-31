@@ -29,6 +29,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JButton;
 import javax.swing.JComponent;
+import javax.swing.table.TableModel;
 import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
 import mpv5.db.common.NodataFoundException;
@@ -45,6 +46,8 @@ import mpv5.ui.panels.ItemPanel2;
 import mpv5.utils.models.MPComboBoxModelItem;
 import mpv5.utils.models.MPTableModel;
 import mpv5.utils.numberformat.FormatNumber;
+import mpv5.utils.numberformat.FormatNumber;
+   
 
 /**
  *
@@ -82,12 +85,12 @@ public final class SubItem extends DatabaseObject implements Triggerable {
          }
          it.setCname(row[14].toString());
          it.setItemsids(dataOwner.__getIDS());
-         it.setCountvalue(new BigDecimal(row[1].toString()));
+         it.setCountvalue(FormatNumber.getBigDecimal(row[1]));
          it.setDatedelivery(dataOwner.__getDatetodo());
          it.setDescription(row[4].toString());
-         it.setExternalvalue(new BigDecimal(row[5].toString()));
-         it.setInternalvalue(new BigDecimal(row[5].toString()));//not supported yet
-         it.setMeasure(row[3].toString());
+         it.setExternalvalue(FormatNumber.getBigDecimal(row[5]));
+         it.setInternalvalue(FormatNumber.getBigDecimal(row[5]));//not supported yet
+         it.setMeasure(String.valueOf(row[3]));
 
          if (row[10] instanceof Product) {
             try {
@@ -97,11 +100,11 @@ public final class SubItem extends DatabaseObject implements Triggerable {
             }
          } else {
          }
-         it.setLinkurl((row[12 + 1].toString()));
-         it.setQuantityvalue(new BigDecimal(row[2].toString()));
-         it.setTaxpercentvalue(new BigDecimal(row[6].toString()));
+         it.setLinkurl(String.valueOf(row[12 + 1]));
+         it.setQuantityvalue(FormatNumber.getBigDecimal(row[2]));
+         it.setTaxpercentvalue(FormatNumber.getBigDecimal(row[6]));
          if (row[15].toString().trim().length() > 0) {//maybe not set at all from prodctorders
-            it.setDiscount(new BigDecimal(row[15].toString()));
+            it.setDiscount(FormatNumber.getBigDecimal(row[15]));
          }
          calculate(it);
 
@@ -166,8 +169,8 @@ public final class SubItem extends DatabaseObject implements Triggerable {
          final SubItem it = new SubItem();
          it.setOrdernr(i);
          try {
-            if (row[0] != null && Integer.valueOf(row[0].toString()).intValue() > 0) {
-               it.setIDS(Integer.valueOf(row[0].toString()).intValue());
+            if (row[0] != null && Integer.parseInt(row[0].toString()) > 0) {
+               it.setIDS(Integer.parseInt(row[0].toString()));
             } else {
                it.setIDS(-1);
             }
@@ -176,13 +179,13 @@ public final class SubItem extends DatabaseObject implements Triggerable {
          }
          it.setCname(row[14].toString());
          it.setItemsids(dataOwner.__getIDS());
-         it.setCountvalue(new BigDecimal(row[1].toString()));
+         it.setCountvalue(FormatNumber.getBigDecimal(row[1]));
          it.setDatedelivery(dataOwner.__getDatetodo());
          it.setDescription(row[4].toString());
-         it.setExternalvalue(new BigDecimal(row[5].toString()));
-         it.setInternalvalue(new BigDecimal(row[5].toString()));//not supported yet
+         it.setExternalvalue(FormatNumber.getBigDecimal(row[5]));
+         it.setInternalvalue(FormatNumber.getBigDecimal(row[5]));//not supported yet
          it.setMeasure(row[3].toString());
-         it.setOriginalproductsids(Integer.valueOf(row[10].toString()));
+         it.setOriginalproductsids(FormatNumber.getInteger(row[10]));
          if (row[10] instanceof Product) {
             try {
                it.setOriginalproductsids(((Product) row[10]).__getIDS());
@@ -190,10 +193,10 @@ public final class SubItem extends DatabaseObject implements Triggerable {
                Log.Debug(e);
             }
          }
-         it.setQuantityvalue(new BigDecimal(row[2].toString()));
-         it.setTaxpercentvalue(new BigDecimal(row[6].toString()));
-         it.setLinkurl((row[12 + 1].toString()));
-         it.setDiscount(new BigDecimal(row[15].toString()));
+         it.setQuantityvalue(FormatNumber.getBigDecimal(row[2]));
+         it.setTaxpercentvalue(FormatNumber.getBigDecimal(row[6]));
+         it.setLinkurl(String.valueOf(row[12 + 1]));
+         it.setDiscount(FormatNumber.getBigDecimal(row[15]));
 
          calculate(it);
 
@@ -294,7 +297,7 @@ public final class SubItem extends DatabaseObject implements Triggerable {
 
       if (mpv5.db.objects.User.getCurrentUser().getProperties().hasProperty("defcount")) {
          Double defcount = mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("defcount", 0d);
-         i.setQuantityvalue(new BigDecimal(defcount.toString()));
+         i.setQuantityvalue(new BigDecimal(defcount));
       } else {
          i.setQuantityvalue(BigDecimal.ONE);
       }
@@ -400,7 +403,7 @@ public final class SubItem extends DatabaseObject implements Triggerable {
       Double defcount = 1d;
       if (mpv5.db.objects.User.getCurrentUser().getProperties().hasProperty("defcount")) {
          defcount = mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("defcount", 0d);
-         i.setQuantityvalue(new BigDecimal(defcount.toString()));
+         i.setQuantityvalue(new BigDecimal(defcount));
       }
       return i;
    }
@@ -653,7 +656,6 @@ public final class SubItem extends DatabaseObject implements Triggerable {
     * @return
     */
    public static MPTableModel toModel(SubItem[] items, boolean removeSubitemIds) {
-      //"Internal ID", "ID", "Count", "Measure", "Description", "Netto Price", "Tax Value", "Total Price"
       Object[][] data = new Object[items.length][];
       List<SubItem> tlist = new LinkedList<SubItem>();
       tlist.addAll(Arrays.asList(items));
@@ -674,8 +676,10 @@ public final class SubItem extends DatabaseObject implements Triggerable {
 
       MPTableModel model = new MPTableModel(
             new Class[]{
+             /*"Internal ID", Position,      "Count",          "Measure",    "Text",      "Netto Price",     "Tax Rate",       "Total Price",*/
                Integer.class, Integer.class, BigDecimal.class, String.class, Object.class, BigDecimal.class, BigDecimal.class, BigDecimal.class,
-               BigDecimal.class, BigDecimal.class, Product.class, JButton.class, JButton.class, String.class, String.class, BigDecimal.class, BigDecimal.class},
+             /*"Tax value",       "Net 2",         "Product ID",   "",            "",           "Link",        "Optional",   "Discount",       Discount Value*/
+                BigDecimal.class, BigDecimal.class, Product.class, JButton.class, JButton.class, String.class, String.class, BigDecimal.class, BigDecimal.class},
             new boolean[]{false, false, true, true, true, true, true, false, false, false, false, true, true, true, true, true, true, true},
             data,
             Headers.SUBITEMS.getValue());
@@ -710,7 +714,7 @@ public final class SubItem extends DatabaseObject implements Triggerable {
       Object[] data = new Object[17];
       for (int i = 0; i < data.length; i++) {
          data[0] = __getIDS();
-         data[1] = Integer.valueOf(row);
+         data[1] = row;
          data[2] = __getQuantityvalue();
          data[3] = __getMeasure();
          data[4] = __getDescription();
@@ -749,10 +753,10 @@ public final class SubItem extends DatabaseObject implements Triggerable {
          t.setIDS(Integer.valueOf(m.getValueAt(row, 0).toString()));
       }
       if (m.getValueAt(row, 1) != null) {
-         t.setCountvalue(new BigDecimal(m.getValueAt(row, 1).toString()));
+         t.setCountvalue(FormatNumber.getBigDecimal(m,row, 1));
       }
       if (m.getValueAt(row, 2) != null) {
-         t.setQuantityvalue(new BigDecimal(m.getValueAt(row, 2).toString()));
+         t.setQuantityvalue(FormatNumber.getBigDecimal(m,row, 2));
       }
       if (m.getValueAt(row, 3) != null) {
          t.setMeasure(m.getValueAt(row, 3).toString());
@@ -761,10 +765,10 @@ public final class SubItem extends DatabaseObject implements Triggerable {
          t.setDescription(m.getValueAt(row, 4).toString());
       }
       if (m.getValueAt(row, 5) != null) {
-         t.setExternalvalue(new BigDecimal(m.getValueAt(row, 5).toString()));
+         t.setExternalvalue(FormatNumber.getBigDecimal(m,row, 5));
       }
       if (m.getValueAt(row, 6) != null) {
-         t.setTaxpercentvalue(new BigDecimal(m.getValueAt(row, 6).toString()));
+         t.setTaxpercentvalue(FormatNumber.getBigDecimal(m,row, 6));
       }
       if (m.getValueAt(row, 10) != null) {
          try {
@@ -780,11 +784,13 @@ public final class SubItem extends DatabaseObject implements Triggerable {
          t.setCname(m.getValueAt(row, 14).toString());
       }
       if (m.getValueAt(row, 15) != null) {
-         t.setDiscount(new BigDecimal(m.getValueAt(row, 15).toString()));
+         t.setDiscount(FormatNumber.getBigDecimal(m,row, 15));
       }
 
       return t;
    }
+   
+
 
    /**
     * @return the internalvalue
