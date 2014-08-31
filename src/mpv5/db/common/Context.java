@@ -1,3 +1,19 @@
+/*
+ *  This file is part of YaBS.
+ *
+ *      YaBS is free software: you can redistribute it and/or modify
+ *      it under the terms of the GNU General Public License as published by
+ *      the Free Software Foundation, either version 3 of the License, or
+ *      (at your option) any later version.
+ *
+ *      YaBS is distributed in the hope that it will be useful,
+ *      but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *      GNU General Public License for more details.
+ *
+ *      You should have received a copy of the GNU General Public License
+ *      along with YaBS.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package mpv5.db.common;
 
 import java.io.Serializable;
@@ -16,12 +32,11 @@ import mpv5.db.objects.Conversation;
 import mpv5.db.objects.Expense;
 import mpv5.db.objects.Favourite;
 import mpv5.db.objects.FileToContact;
-import mpv5.db.objects.Group;
-import mpv5.db.objects.HistoryItem;
-import mpv5.db.objects.UserProperty;
-import mpv5.db.objects.Schedule;
 import mpv5.db.objects.FileToItem;
 import mpv5.db.objects.FileToProduct;
+import mpv5.db.objects.Fonts;
+import mpv5.db.objects.Group;
+import mpv5.db.objects.HistoryItem;
 import mpv5.db.objects.Item;
 import mpv5.db.objects.MailMessage;
 import mpv5.db.objects.MassprintRules;
@@ -35,18 +50,20 @@ import mpv5.db.objects.ProductlistSubItem;
 import mpv5.db.objects.ProductsToSuppliers;
 import mpv5.db.objects.Reminder;
 import mpv5.db.objects.Revenue;
+import mpv5.db.objects.Schedule;
 import mpv5.db.objects.ScheduleTypes;
 import mpv5.db.objects.Stage;
 import mpv5.db.objects.SubItem;
 import mpv5.db.objects.Tax;
 import mpv5.db.objects.Template;
-import mpv5.pluginhandling.Plugin;
 import mpv5.db.objects.User;
+import mpv5.db.objects.UserProperty;
 import mpv5.db.objects.ValueProperty;
 import mpv5.db.objects.WSContactsMapping;
 import mpv5.db.objects.WSItemsMapping;
 import mpv5.db.objects.WebShop;
 import mpv5.logging.Log;
+import mpv5.pluginhandling.Plugin;
 import mpv5.pluginhandling.UserPlugin;
 import mpv5.usermanagement.MPSecurityManager;
 import mpv5.utils.text.RandomText;
@@ -54,7 +71,8 @@ import mpv5.utils.xml.XMLReader;
 
 /**
  *
- * Context controls Database Queries for all native MP {@link DatabaseObject}s
+ * Context controls Database Queries for all native MP
+ * {@link DatabaseObject}s
  */
 public class Context implements Serializable, Comparable<Context> {
 
@@ -109,6 +127,7 @@ public class Context implements Serializable, Comparable<Context> {
     public static String IDENTITY_MASSPRINT = "massprintrules";
     public static String IDENTITY_PRODUCTORDER = "productorders";
     public static String IDENTITY_PRODUCTORDERSUBITEM = "productordersubitems";
+    public static String IDENTITY_FONTS = "fontsforitext";
     //********** identity classes **********************************************
     private static Class<Contact> IDENTITY_CONTACTS_CLASS = Contact.class;
     private static Class<Address> IDENTITY_ADDRESS_CLASS = Address.class;
@@ -150,6 +169,7 @@ public class Context implements Serializable, Comparable<Context> {
     private static Class<MassprintRules> IDENTITY_MASSPRINT_CLASS = MassprintRules.class;
     private static Class<ProductOrder> IDENTITY_PRODUCTORDER_CLASS = ProductOrder.class;
     private static Class<ProductOrderSubItem> IDENTITY_PRODUCTORDERSUBITEM_CLASS = ProductOrderSubItem.class;
+    private static Class<Fonts> IDENTITY_FONTS_CLASS = Fonts.class;
 
     //********** unique constraints *******************************************
     public static String UNIQUECOLUMNS_USER = "cname";
@@ -233,8 +253,8 @@ public class Context implements Serializable, Comparable<Context> {
     private static final Map<String, String> FOREIGN_KEY_ALIASES = new HashMap<String, String>();
 
     /**
-     * Find an alias (eg originalproducstids is an alias for productsids in
-     * table subitems)
+     * Find an alias (eg originalproducstids is an alias for
+     * productsids in table subitems)
      *
      * @param context
      * @param exct
@@ -298,7 +318,7 @@ public class Context implements Serializable, Comparable<Context> {
         list.add(getProductOrder());
         list.add(getProductPrice());
         list.add(getConversation());
-
+        list.add(getFonts());
         return list;
     }
 
@@ -376,11 +396,13 @@ public class Context implements Serializable, Comparable<Context> {
         list.add(getProductOrderSubitem());
         list.add(getProductOrder());
         list.add(getConversation());
+        list.add(getFonts());
         return list;
     }
 
     /**
-     * Contexts which can be moved to trash rather than delete
+     * Contexts which can be moved to trash rather than
+     * delete
      *
      * @return
      */
@@ -532,7 +554,8 @@ public class Context implements Serializable, Comparable<Context> {
         getMassprint(),
         getProductOrderSubitem(),
         getProductOrder(),
-        getConversation()
+        getConversation(),
+        getFonts()
     }));
 //    private String[] searchHeaders;
     private volatile ArrayList<String[]> references = new ArrayList<String[]>();
@@ -548,25 +571,33 @@ public class Context implements Serializable, Comparable<Context> {
     }
 
     /**
-     * Constructs a new Context and adds it to allcontexts-collection.
+     * Constructs a new Context and adds it to
+     * allcontexts-collection.
      *
      * @param tablename The name of the table to use
-     * @param targetObjectClass The class of the {@link DatabaseObject} child to
-     * be used with this Context
-     * @param cacheable If true, the {@link DatabaseObject}s related to this
-     * context will be cached
-     * @param secured If true, the {@link DatabaseObject}s related to this
-     * context will be protected by the {@link MPSecurityManager}
-     * @param importable If true, the {@link DatabaseObject}s related to this
-     * context will be importable by the {@link XMLReader}
-     * @param lockable If true, the {@link DatabaseObject}s related to this
-     * context will be loackable to avoid concurrent access
-     * @param groupable If true, the {@link DatabaseObject}s related to this
-     * context will apply to a users group restriction
-     * @param trashable If true, the {@link DatabaseObject}s related to this
-     * context will be moved to the trashbin on delete
-     * @param archivable If true, actions on the {@link DatabaseObject}s related
-     * to this context will be monitored
+     * @param targetObjectClass The class of the
+     * {@link DatabaseObject} child to be used with this
+     * Context
+     * @param cacheable If true, the {@link DatabaseObject}s
+     * related to this context will be cached
+     * @param secured If true, the {@link DatabaseObject}s
+     * related to this context will be protected by the
+     * {@link MPSecurityManager}
+     * @param importable If true, the
+     * {@link DatabaseObject}s related to this context will
+     * be importable by the {@link XMLReader}
+     * @param lockable If true, the {@link DatabaseObject}s
+     * related to this context will be loackable to avoid
+     * concurrent access
+     * @param groupable If true, the {@link DatabaseObject}s
+     * related to this context will apply to a users group
+     * restriction
+     * @param trashable If true, the {@link DatabaseObject}s
+     * related to this context will be moved to the trashbin
+     * on delete
+     * @param archivable If true, actions on the
+     * {@link DatabaseObject}s related to this context will
+     * be monitored
      */
     public Context(String tablename, Class targetObjectClass, boolean cacheable,
             boolean secured, boolean importable, boolean lockable, boolean groupable,
@@ -607,8 +638,9 @@ public class Context implements Serializable, Comparable<Context> {
      * Constructs a new Context with a random ID
      *
      * @param tablename The name of the table to use
-     * @param targetObjectClass The class of the {@link DatabaseObject} child to
-     * be used with this Context
+     * @param targetObjectClass The class of the
+     * {@link DatabaseObject} child to be used with this
+     * Context
      */
     public Context(String tablename, Class targetObjectClass) {
         setId(Integer.valueOf(RandomText.getNumberText()));
@@ -620,16 +652,17 @@ public class Context implements Serializable, Comparable<Context> {
     /**
      * Constructs a new Context with a random ID
      *
-     * @param targetObjectClass The tablename will be assumed from the Class'
-     * simple name
+     * @param targetObjectClass The tablename will be
+     * assumed from the Class' simple name
      */
     public Context(Class targetObjectClass) {
         this(targetObjectClass.getSimpleName(), targetObjectClass);
     }
 
     /**
-     * Constructs a new Context with a random ID. The tablename will be assumed
-     * from the targetObject's Class simple name
+     * Constructs a new Context with a random ID. The
+     * tablename will be assumed from the targetObject's
+     * Class simple name
      *
      * @param targetObject
      */
@@ -682,8 +715,8 @@ public class Context implements Serializable, Comparable<Context> {
     }
 
     /**
-     * Set conditions to get exclusive data (e.g. customer = false results in
-     * all data without any customer)
+     * Set conditions to get exclusive data (e.g. customer =
+     * false results in all data without any customer)
      *
      * @param customer
      * @param supplier
@@ -771,6 +804,7 @@ public class Context implements Serializable, Comparable<Context> {
 
     /**
      *
+     * @param withInvisible
      * @return DB condition string
      */
     public String getConditions(boolean withInvisible) {
@@ -841,16 +875,17 @@ public class Context implements Serializable, Comparable<Context> {
 //            }
             return cond;
         } else {
-            return exclusiveCondition.toString();
+            return exclusiveCondition;
         }
     }
 
     /**
-     * Generates a SQL String (WHERE clause) which can be used to implement
-     * multi-client capability.<br/>
+     * Generates a SQL String (WHERE clause) which can be
+     * used to implement multi-client capability.<br/>
      * <br/>
-     * <b>If the current Context does not support grouping, or the current user
-     * is not Group restricted, this will return NULL.</b>
+     * <b>If the current Context does not support grouping,
+     * or the current user is not Group restricted, this
+     * will return NULL.</b>
      *
      * @return
      */
@@ -863,10 +898,12 @@ public class Context implements Serializable, Comparable<Context> {
     }
 
     /**
-     * Generates a SQL String (WHERE clause) which can be used to avoid having
-     * already trashed elements in the resulting data.
+     * Generates a SQL String (WHERE clause) which can be
+     * used to avoid having already trashed elements in the
+     * resulting data.
      *
-     * @return " invisible = 0 " or NULL if Context is not trashable
+     * @return " invisible = 0 " or NULL if Context is not
+     * trashable
      */
     public synchronized String getNoTrashSQLString() {
         if (getTrashableContexts().contains(this)) {
@@ -877,11 +914,12 @@ public class Context implements Serializable, Comparable<Context> {
     }
 
     /**
-     * Generates a SQL String (WHERE clause) which can be used to implement
-     * multi-client capability.<br/>
+     * Generates a SQL String (WHERE clause) which can be
+     * used to implement multi-client capability.<br/>
      * <br/>
-     * <b>If the current Context does not support grouping, or the current user
-     * is not Group restricted, this will return NULL.</b>
+     * <b>If the current Context does not support grouping,
+     * or the current user is not Group restricted, this
+     * will return NULL.</b>
      *
      * @param tableName
      * @return
@@ -895,11 +933,13 @@ public class Context implements Serializable, Comparable<Context> {
     }
 
     /**
-     * Generates a SQL String (WHERE clause) which can be used to avoid having
-     * already trashed elements in the resulting data.
+     * Generates a SQL String (WHERE clause) which can be
+     * used to avoid having already trashed elements in the
+     * resulting data.
      *
      * @param tableName
-     * @return " invisible = 0 " or NULL if Context is not trashable
+     * @return " invisible = 0 " or NULL if Context is not
+     * trashable
      */
     public synchronized String getNoTrashSQLString(String tableName) {
         if (getTrashableContexts().contains(this)) {
@@ -1000,14 +1040,17 @@ public class Context implements Serializable, Comparable<Context> {
     List<Context> refs = new ArrayList<Context>();
 
     /**
-     * Add a foreign table reference to this context<br/><br/>
+     * Add a foreign table reference to this
+     * context<br/><br/>
      * Context c= Context.getFilesToContacts();<br/>
-     * c.addReference(Context.getFiles().getDbIdentity(), "cname",
-     * "filename");<br/>
+     * c.addReference(Context.getFiles().getDbIdentity(),
+     * "cname", "filename");<br/>
      *
      * @param referencetable The table which will be joined
-     * @param referencekey The key column of the joined table
-     * @param referenceidkey They key column in the original table
+     * @param referencekey The key column of the joined
+     * table
+     * @param referenceidkey They key column in the original
+     * table
      */
     public void addReference(String referencetable, String referencekey, String referenceidkey) {
         synchronized (this) {
@@ -1783,6 +1826,16 @@ public class Context implements Serializable, Comparable<Context> {
         return c;
     }
 
+    public static final Context getFonts() {
+        Context c = new Context();
+        c.setSubID(DEFAULT_SUBID);
+        c.setDbIdentity(IDENTITY_FONTS);
+        c.setIdentityClass(IDENTITY_FONTS_CLASS);
+        c.setId(59);
+
+        return c;
+    }
+
     /////////////////////////////////////////////////////////////////////////////////////////////////
     /**
      *
@@ -1843,18 +1896,19 @@ public class Context implements Serializable, Comparable<Context> {
      * Looks for a Context with the specified id
      *
      * @param value
-     * @return A Context or null if no matching Context was found
+     * @return A Context or null if no matching Context was
+     * found
      */
     public static synchronized Context getByID(int value) {
-        Log.Debug(Context.class, "getByID: "+value);
+        Log.Debug(Context.class, "getByID: " + value);
         for (int i = 0; i < allContexts.size(); i++) {
             Context context = allContexts.get(i);
             if (context.getId() == value) {
-                Log.Debug(Context.class, "getByID-> "+context);
+                Log.Debug(Context.class, "getByID-> " + context);
                 return context;
             }
         }
-        throw new IllegalArgumentException("Not a known Context id:"+value);
+        throw new IllegalArgumentException("Not a known Context id:" + value);
     }
 
     /**
@@ -1866,10 +1920,10 @@ public class Context implements Serializable, Comparable<Context> {
 
     @Override
     public boolean equals(Object o) {
-        if (!(o instanceof Context) || o == null) {
+        if (o == null || !(o instanceof Context)) {
             return false;
         }
-        return Integer.valueOf(getId()).equals(Integer.valueOf(((Context) o).getId()));
+        return Integer.valueOf(getId()).equals(((Context) o).getId());
     }
 
     @Override

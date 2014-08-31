@@ -1,3 +1,19 @@
+/*
+ *  This file is part of YaBS.
+ *
+ *      YaBS is free software: you can redistribute it and/or modify
+ *      it under the terms of the GNU General Public License as published by
+ *      the Free Software Foundation, either version 3 of the License, or
+ *      (at your option) any later version.
+ *
+ *      YaBS is distributed in the hope that it will be useful,
+ *      but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *      GNU General Public License for more details.
+ *
+ *      You should have received a copy of the GNU General Public License
+ *      along with YaBS.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package mpv5.db.common;
 
 import java.util.Iterator;
@@ -228,6 +244,18 @@ public class DatabaseUpdater {
                     + " terminal VARCHAR(250) NOT NULL," 
                     + " used SMALLINT DEFAULT 0,"
                     + " PRIMARY KEY (ids))"});
+         UPDATES_DERBY.put(1.1977, new String[]{
+                    "ALTER TABLE fontsforitext DROP COLUMN path",
+                    "ALTER TABLE fontsforitext DROP COLUMN terminal",
+                    "ALTER TABLE fontsforitext DROP COLUMN used",
+                    "ALTER TABLE fontsforitext ADD COLUMN encoding VARCHAR(10) DEFAULT NULL",
+                    "ALTER TABLE fontsforitext ADD COLUMN embedded SMALLINT DEFAULT 0",
+                    "ALTER TABLE fontsforitext ADD COLUMN size DOUBLE DEFAULT 0",
+                    "ALTER TABLE fontsforitext ADD COLUMN style SMALLINT DEFAULT 0",
+                    "ALTER TABLE fontsforitext ADD COLUMN color BIGINT DEFAULT 0",
+                    "ALTER TABLE fontsforitext ADD COLUMN filename VARCHAR(50) DEFAULT NULL",
+                    "ALTER TABLE fontsforitext ADD COLUMN font BLOB(2G) DEFAULT NULL"
+                });
         ////////////////////////////////////////////////////////////////////////////////////////////
         // mysql updates
         UPDATES_MYSQL.put(1.11, new String[]{
@@ -502,6 +530,18 @@ public class DatabaseUpdater {
                     + " terminal VARCHAR(250) NOT NULL," 
                     + " used SMALLINT DEFAULT 0,"
                     + " PRIMARY KEY (ids))"});
+         UPDATES_DERBY.put(1.1977, new String[]{
+                    "ALTER TABLE fontsforitext DROP COLUMN path",
+                    "ALTER TABLE fontsforitext DROP COLUMN terminal",
+                    "ALTER TABLE fontsforitext DROP COLUMN used",
+                    "ALTER TABLE fontsforitext ADD COLUMN encoding VARCHAR(10) DEFAULT NULL",
+                    "ALTER TABLE fontsforitext ADD COLUMN embedded SMALLINT DEFAULT 0",
+                    "ALTER TABLE fontsforitext ADD COLUMN size DOUBLE DEFAULT 0",
+                    "ALTER TABLE fontsforitext ADD COLUMN style SMALLINT DEFAULT 0",
+                    "ALTER TABLE fontsforitext ADD COLUMN color BIGINT DEFAULT 0",
+                    "ALTER TABLE fontsforitext ADD COLUMN filename VARCHAR(50) DEFAULT NULL",
+                    "ALTER TABLE fontsforitext ADD COLUMN font BLOB(2G) DEFAULT NULL"
+                });
     }
 
     /**

@@ -1,24 +1,33 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ *  This file is part of YaBS.
+ *
+ *      YaBS is free software: you can redistribute it and/or modify
+ *      it under the terms of the GNU General Public License as published by
+ *      the Free Software Foundation, either version 3 of the License, or
+ *      (at your option) any later version.
+ *
+ *      YaBS is distributed in the hope that it will be useful,
+ *      but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *      GNU General Public License for more details.
+ *
+ *      You should have received a copy of the GNU General Public License
+ *      along with YaBS.  If not, see <http://www.gnu.org/licenses/>.
  */
 package mpv5.utils.xdocreport;
 
 import com.lowagie.text.DocumentException;
-import com.lowagie.text.ExceptionConverter;
 import com.lowagie.text.Font;
 import com.lowagie.text.pdf.BaseFont;
 import fr.opensagres.xdocreport.itext.extension.font.ExtendedFontFactoryImp;
 import java.awt.Color;
+import java.awt.FontFormatException;
+import java.io.File;
 import java.io.IOException;
-import java.net.NetworkInterface;
-import java.net.SocketException;
+import java.util.ArrayList;
 import java.util.HashMap;
-import mpv5.db.common.NodataFoundException;
-import mpv5.db.common.QueryCriteria;
-import mpv5.db.common.QueryData;
-import mpv5.db.common.QueryHandler;
+import mpv5.db.objects.Fonts;
+import mpv5.logging.Log;
 
 /**
  *
@@ -27,171 +36,131 @@ import mpv5.db.common.QueryHandler;
 public class YabsFontFactoryImpl extends ExtendedFontFactoryImp {
 
     private final HashMap<String, String> paths;
+    private final HashMap<String, Font> used;
     public static YabsFontFactoryImpl instance = new YabsFontFactoryImpl();
 
     private YabsFontFactoryImpl() {
         super();
         this.paths = new HashMap<String, String>();
+        this.used = new HashMap<String, Font>();
         readUsed();
     }
 
     @Override
     public void register(String path, String alias) {
-        super.register(path, alias);
-        save(path, alias);
+        try {
+            java.awt.Font cf = java.awt.Font.createFont(java.awt.Font.TRUETYPE_FONT, new File(path));
+            paths.put(cf.getFamily(), path);
+        } catch (FontFormatException ex) {
+            try {
+                java.awt.Font cf = java.awt.Font.createFont(java.awt.Font.TYPE1_FONT, new File(path));
+                paths.put(cf.getFontName(), path);
+                Log.Debug(this, ex.getLocalizedMessage());
+            } catch (FontFormatException ex1) {
+                Log.Debug(this, ex1.getLocalizedMessage());
+            } catch (IOException ex1) {
+                Log.Debug(this, ex1.getLocalizedMessage());
+            }
+        } catch (IOException ex) {
+            Log.Debug(this, ex.getLocalizedMessage());
+        } catch (Exception e) {
+            Log.Debug(this, e.getLocalizedMessage());
+        }
     }
 
     @Override
     public int registerDirectories() {
-        if (!checkCache()) {
-            return super.registerDirectories();
-        } else {
-            for (String s : paths.values()) {
-                super.register(s, null);
-            }
+        if (used.isEmpty()) {
+            super.registerDirectories();
         }
-
-        return paths.size();
+        return 0;
     }
 
     @Override
     public Font getFont(String fontname, String encoding, boolean embedded, float size, int style, Color color, boolean cached) {
-        if (!paths.containsKey(fontname.toLowerCase())) {
-            try {
-                QueryData qd = new QueryData();
-                qd.add("used", 1);
-                QueryCriteria qc = new QueryCriteria("cname", fontname.toLowerCase());
-                qc.addAndCondition("terminal", getMac());
-                
-                Object[][] data = QueryHandler.instanceOf()
-                        .clone("fontsforitext")
-                        .select(qc)
-                        .getData();
-                Integer id = Integer.parseInt(data[0][0].toString());
-                QueryHandler.instanceOf()
-                        .clone("fontsforitext")
-                        .update(qd, id, fontname + " succesfully cached!");
-                 paths.put(fontname.toLowerCase(), null);
-            } catch (NodataFoundException ex) {
-                paths.put(fontname.toLowerCase(), null);
+        Font font;
+        String key = fontname + "#" + encoding + "#";
+        if (embedded) {
+            key += "1" + "#" + size + "#" + style + "#";
+        } else {
+            key += "0" + "#" + size + "#" + style + "#";
+        }
+        if (color != null) {
+            key += color.getRGB();
+        } else {
+            key += "0";
+        }
+        if (used.containsKey(key)) {
+            font = used.get(key);
+        } else {
+            Fonts fonts = new Fonts();
+            fonts.setCname(fontname);
+            fonts.setEncoding(encoding);
+            fonts.setIsEmbedded(embedded);
+            fonts.setSize(size);
+            fonts.setStyle(style);
+            if (color != null) {
+                fonts.setColor(color.getRGB());
+            } else {
+                fonts.setColor(0);
             }
-        }
-        return super.getFont(fontname, encoding, embedded, size, style, color, cached);
-    }
+            if (paths.containsKey(fontname)) {
+                String get = paths.get(fontname);
+                if (get != null) {
+                    String filename = get.substring(get.lastIndexOf(File.separator));
+                    fonts.setFilename(filename);
+                    File f = new File(get);
+                    fonts.setFont(f);
+                } else {
+                    fonts.setFilename("empty");
+                    fonts.setFont(null);
+                }
 
-    /*
-     * This is a Copy from FontFactoryImp (as of itext which is an super-class)
-     */
-    private void save(String path, String alias) {
-        try {
-            if (path.toLowerCase().endsWith(".ttf") || path.toLowerCase().endsWith(".otf") || path.toLowerCase().indexOf(".ttc,") > 0) {
-                Object allNames[] = BaseFont.getAllFontNames(path, BaseFont.WINANSI, null);
-                saveIfNeeded(((String) allNames[0]).toLowerCase(), path);
-                if (alias != null) {
-                    saveIfNeeded(alias.toLowerCase(), path);
-                }
-                // register all the font names with all the locales
-                String[][] names = (String[][]) allNames[2]; //full name
-                for (String[] name : names) {
-                    saveIfNeeded(name[3].toLowerCase(), path);
-                }
-            } else if (path.toLowerCase().endsWith(".ttc")) {
-                if (alias != null) {
-                    System.err.println("class FontFactory: You can't define an alias for a true type collection.");
-                }
-                String[] names = BaseFont.enumerateTTCNames(path);
-                for (int i = 0; i < names.length; i++) {
-                    register(path + "," + i);
-                }
-            } else if (path.toLowerCase().endsWith(".afm") || path.toLowerCase().endsWith(".pfm")) {
-                BaseFont bf = BaseFont.createFont(path, BaseFont.CP1252, false);
-                String fullName = bf.getFullFontName()[0][3].toLowerCase();
-                String psName = bf.getPostscriptFontName().toLowerCase();
-                saveIfNeeded(psName, path);
-                saveIfNeeded(fullName, path);
+            } else {
+                fonts.setFilename("empty");
+                fonts.setFont(null);
             }
-        } catch (DocumentException de) {
-            // this shouldn't happen
-            throw new ExceptionConverter(de);
-        } catch (IOException ioe) {
-            throw new ExceptionConverter(ioe);
+            fonts.save();
+            font = buildFont(fonts);
         }
-    }
-
-    private void saveIfNeeded(String name, String path) {
-        try {
-            QueryCriteria qc = new QueryCriteria("cname", name);
-            qc.addAndCondition("terminal", getMac());
-            QueryHandler.instanceOf()
-                    .clone("fontsforitext")
-                    .select(qc)
-                    .getData();
-        } catch (NodataFoundException ex) {
-            QueryData q = new QueryData();
-            q.add("cname", name);
-            q.add("path", path);
-            q.add("terminal", getMac());
-            q.add("used", 0);
-            QueryHandler.instanceOf()
-                    .clone("fontsforitext")
-                    .insert(q, name + " succesfully cached!");
-        }
+        return font;
     }
 
     private void readUsed() {
-        try {
-            String mac = getMac();
-            QueryCriteria qc = new QueryCriteria("used", 1);
-            qc.addAndCondition("terminal", mac);
-            Object[][] data = QueryHandler.instanceOf()
-                    .clone("fontsforitext")
-                    .select(qc)
-                    .getData();
-            for (Object[] o : data) {
-                paths.put((String) o[1], (String) o[2]);
-            }
-        } catch (NodataFoundException ex) {
-            //  Log.Debug(ex);
+        ArrayList<Fonts> list = Fonts.get();
+        for (Fonts f : list) {
+            buildFont(f);
         }
     }
 
-    private boolean checkCache() {
-        if (paths.isEmpty()) {
-            try {
-                QueryCriteria qc = new QueryCriteria("terminal", getMac());
-
-                QueryHandler.instanceOf()
-                        .clone("fontsforitext")
-                        .select(qc)
-                        .getData();
-                return true;
-            } catch (NodataFoundException ex) {
-                return false;
-            }
+    private Font buildFont(Fonts f) {
+        File tmp = f.__getFont();
+        if (!"empty".equals(f.__getFilename()) && (tmp == null || !tmp.exists())) {
+            f.delete();
+            return null;
+        }
+        String key = f.__getCname() + "#" + f.__getEncoding() + "#";
+        if (f.__isEmbedded()) {
+            key += "1" + "#" + f.__getSize() + "#" + f.__getStyle() + "#";
         } else {
-            return true;
+            key += "0" + "#" + +f.__getSize() + "#" + f.__getStyle() + "#";
         }
-    }
-
-    private String getMac() {
+        key += f.__getColor();
+        BaseFont basefont;
+        Font font = null;
         try {
-            NetworkInterface ni = NetworkInterface.getNetworkInterfaces().nextElement();
-            if (ni == null)
-                return "unknown";
-            
-            byte[] mac = ni.getHardwareAddress();
-            if (mac == null)
-                return "unknown";
-            
-            StringBuilder sb = new StringBuilder(18);
-            for (byte b : mac) {
-                if (sb.length() > 0)
-                    sb.append(':');
-                sb.append(String.format("%02x", b));
+            if (!"empty".equals(f.__getFilename())) {
+                basefont = BaseFont.createFont(f.__getFont().getAbsolutePath(), f.__getEncoding(), f.__isEmbedded(), true, null, null, true);
+                font = new Font(basefont, f.__getSize(), f.__getStyle(), new Color(f.__getColor()));
+            } else {
+                font = new Font(Font.UNDEFINED, f.__getSize(), f.__getStyle(), new Color(f.__getColor()));
             }
-            return sb.toString();
-        } catch (SocketException ex) {
-            return "unknown";
+            used.put(key, font);
+        } catch (DocumentException ex) {
+            Log.Debug(this, ex.getLocalizedMessage());
+        } catch (IOException ex) {
+            Log.Debug(this, ex.getLocalizedMessage());
         }
+        return font;
     }
 }

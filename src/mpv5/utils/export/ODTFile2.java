@@ -16,8 +16,6 @@
  */
 package mpv5.utils.export;
 
-import mpv5.utils.xdocreport.YabsFontFactoryImpl;
-import mpv5.utils.xdocreport.YabsODTPreprocessor;
 import com.lowagie.text.FontFactory;
 import enoa.handler.TableHandler;
 import fr.opensagres.xdocreport.core.XDocReportException;
@@ -39,6 +37,8 @@ import java.util.List;
 import java.util.Map;
 import mpv5.logging.Log;
 import mpv5.utils.files.FileDirectoryHandler;
+import mpv5.utils.xdocreport.YabsFontFactoryImpl;
+import mpv5.utils.xdocreport.YabsODTPreprocessor;
 import org.odftoolkit.odfdom.converter.core.ODFConverterException;
 import org.odftoolkit.odfdom.converter.pdf.PdfConverter;
 import org.odftoolkit.odfdom.converter.pdf.PdfOptions;
@@ -89,8 +89,6 @@ public class ODTFile2 extends Exportable {
                 Log.Debug(this, "Loaded odt file: " + f);
                 PdfConverter.getInstance().convert(document, new FileOutputStream(getTarget()), options);
                 Log.Debug(this, "Completed pdf file: " + getTarget());
-                //f.deleteOnExit();
-                //this.deleteOnExit();
             } else {
                 fillFields(new FileOutputStream(getTarget()));
                 Log.Debug(this, "Replaced Fields of odt file: " + this + " to " + getTarget());
