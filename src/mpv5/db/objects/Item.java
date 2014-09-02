@@ -267,6 +267,7 @@ public class Item extends DatabaseObject implements Formattable, Templateable {
     private BigDecimal netvalue = BigDecimal.ZERO;
     private BigDecimal taxvalue = BigDecimal.ZERO;
     private BigDecimal discountvalue = BigDecimal.ZERO;
+    private BigDecimal discountgrosvalue = BigDecimal.ZERO;
     private Date datetodo;
     private Date dateend;
     private int intreminders;
@@ -333,6 +334,20 @@ public class Item extends DatabaseObject implements Formattable, Templateable {
         this.discountvalue = discountvalue;
     }
 
+    /**
+     * @return the Discountbrutvalue
+     */
+    public BigDecimal __getDiscountGrosvalue() {
+        return discountgrosvalue;
+    }
+
+    /**
+     * @param discountbrutvalue
+     */
+    public void setDiscountGrosvalue(BigDecimal discountgrosvalue) {
+        this.discountgrosvalue = discountgrosvalue;
+    }
+    
     /**
      * @return the datetodo
      */
@@ -643,16 +658,24 @@ public class Item extends DatabaseObject implements Formattable, Templateable {
         map.put(TableHandler.KEY_TABLE + "1", list);
 
         //values
-        map.put("netvalue", FormatNumber.formatDezimal(__getNetvalue()));
+        map.put("netnodiscvalue", FormatNumber.formatDezimal(__getNetvalue())); //Netto Listenpreis
+        map.put("netvalue", FormatNumber.formatDezimal(__getNetvalue().subtract(__getDiscountvalue()))); //Netto Listenpreis mit Rabatt
         map.put("taxvalue", FormatNumber.formatDezimal(__getTaxvalue()));
-        map.put("grosvalue", FormatNumber.formatDezimal(__getTaxvalue().add(__getNetvalue())));
+        map.put("grosnodiscvalue", FormatNumber.formatDezimal(__getTaxvalue().add(__getNetvalue()))); //Brutto Listenpreis
+        map.put("grosvalue", FormatNumber.formatDezimal(__getTaxvalue().add(__getNetvalue().subtract(__getNetvalue())))); //Brutto Listenpreis mit Rabatt
         map.put("discountvalue", FormatNumber.formatDezimal(__getDiscountvalue()));
+        map.put("discounttax", FormatNumber.formatDezimal(__getDiscountGrosvalue().subtract(__getDiscountvalue())));
 
-        map.put("netvaluef", FormatNumber.formatLokalCurrency(__getNetvalue()));
+        map.put("netnodiscvaluef", FormatNumber.formatLokalCurrency(__getNetvalue()));
+        map.put("netvaluef", FormatNumber.formatLokalCurrency(__getNetvalue().subtract(__getDiscountvalue())));
         map.put("taxvaluef", FormatNumber.formatLokalCurrency(__getTaxvalue()));
-        map.put("grosvaluef", FormatNumber.formatLokalCurrency(__getTaxvalue().add(__getNetvalue())));
-        map.put("discountvaluef", FormatNumber.formatPercent(__getDiscountvalue()));
+        map.put("grosnodiscvaluef", FormatNumber.formatLokalCurrency(__getTaxvalue().add(__getNetvalue()).add(__getDiscountGrosvalue()).subtract(__getDiscountvalue())));
+        map.put("grosvaluef", FormatNumber.formatLokalCurrency(__getTaxvalue().add(__getNetvalue().subtract(__getDiscountvalue()))));
+        map.put("discountvaluef", FormatNumber.formatLokalCurrency(__getDiscountvalue()));
+        map.put("discounttaxf", FormatNumber.formatLokalCurrency(__getDiscountGrosvalue().subtract(__getDiscountvalue())));
 
+        map.put("discountgrosvaluef", FormatNumber.formatLokalCurrency(__getDiscountGrosvalue()));
+        
         Locale l = Locale.getDefault();
         if (mpv5.db.objects.User.getCurrentUser().getProperties().hasProperty("item.date.locale")) {
             try {

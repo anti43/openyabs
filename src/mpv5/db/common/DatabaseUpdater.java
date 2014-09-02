@@ -256,6 +256,9 @@ public class DatabaseUpdater {
                     "ALTER TABLE fontsforitext ADD COLUMN filename VARCHAR(50) DEFAULT NULL",
                     "ALTER TABLE fontsforitext ADD COLUMN font BLOB(2G) DEFAULT NULL"
                 });
+        UPDATES_DERBY.put(1.1978, new String[]{
+                    "ALTER TABLE items ADD COLUMN discountgrosvalue DOUBLE DEFAULT 0"
+                });
         ////////////////////////////////////////////////////////////////////////////////////////////
         // mysql updates
         UPDATES_MYSQL.put(1.11, new String[]{

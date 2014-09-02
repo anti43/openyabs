@@ -678,9 +678,11 @@ public final class SubItem extends DatabaseObject implements Triggerable {
             new Class[]{
              /*"Internal ID", Position,      "Count",          "Measure",    "Text",      "Netto Price",     "Tax Rate",       "Total Price",*/
                Integer.class, Integer.class, BigDecimal.class, String.class, Object.class, BigDecimal.class, BigDecimal.class, BigDecimal.class,
-             /*"Tax value",       "Net 2",         "Product ID",   "",            "",           "Link",        "Optional",   "Discount",       Discount Value*/
-                BigDecimal.class, BigDecimal.class, Product.class, JButton.class, JButton.class, String.class, String.class, BigDecimal.class, BigDecimal.class},
-            new boolean[]{false, false, true, true, true, true, true, false, false, false, false, true, true, true, true, true, true, true},
+             /*"Tax value",       "Net 2",         "Product ID",   "",            "",           "Link",        "Optional",   "Discount",       "Discount Value"*/
+                BigDecimal.class, BigDecimal.class, Product.class, JButton.class, JButton.class, String.class, String.class, BigDecimal.class, BigDecimal.class, 
+            /*Discount with tax*/
+                BigDecimal.class},
+            new boolean[]{false, false, true, true, true, true, true, false, false, false, false, true, true, true, true, true, true, true, true},
             data,
             Headers.SUBITEMS.getValue());
 
