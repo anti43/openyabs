@@ -256,6 +256,9 @@ public class DatabaseUpdater {
                     "ALTER TABLE fontsforitext ADD COLUMN filename VARCHAR(50) DEFAULT NULL",
                     "ALTER TABLE fontsforitext ADD COLUMN font BLOB(2G) DEFAULT NULL"
                 });
+        UPDATES_DERBY.put(1.1978, new String[]{
+                    "ALTER TABLE items ADD COLUMN discountgrosvalue DOUBLE DEFAULT 0"
+                });
         ////////////////////////////////////////////////////////////////////////////////////////////
         // mysql updates
         UPDATES_MYSQL.put(1.11, new String[]{
@@ -530,7 +533,7 @@ public class DatabaseUpdater {
                     + " terminal VARCHAR(250) NOT NULL," 
                     + " used SMALLINT DEFAULT 0,"
                     + " PRIMARY KEY (ids))"});
-         UPDATES_DERBY.put(1.1977, new String[]{
+         UPDATES_MYSQL.put(1.1977, new String[]{
                     "ALTER TABLE fontsforitext DROP COLUMN path",
                     "ALTER TABLE fontsforitext DROP COLUMN terminal",
                     "ALTER TABLE fontsforitext DROP COLUMN used",
@@ -541,6 +544,9 @@ public class DatabaseUpdater {
                     "ALTER TABLE fontsforitext ADD COLUMN color BIGINT DEFAULT 0",
                     "ALTER TABLE fontsforitext ADD COLUMN filename VARCHAR(50) DEFAULT NULL",
                     "ALTER TABLE fontsforitext ADD COLUMN font BLOB(2G) DEFAULT NULL"
+                });
+        UPDATES_MYSQL.put(1.1978, new String[]{
+                    "ALTER TABLE items ADD COLUMN discountgrosvalue DOUBLE DEFAULT 0"
                 });
     }
 

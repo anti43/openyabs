@@ -110,7 +110,9 @@ public class ItemPanel2 extends javax.swing.JPanel implements DataPanel, MPCBSel
     private DynamicTableCalculator itemMultiplier;
     private DynamicTableCalculator taxcalculator;
     private DynamicTableCalculator netCalculator;
-    private DynamicTableCalculator disccalculator;
+    private DynamicTableCalculator discnetcalculator;
+    private DynamicTableCalculator discbrutcalculator;
+    private JLabel hidden = new JLabel();
     private boolean loading = true;
     private java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle();
 
@@ -505,17 +507,20 @@ public class ItemPanel2 extends javax.swing.JPanel implements DataPanel, MPCBSel
         jSeparator3 = new javax.swing.JToolBar.Separator();
         netvalue = new javax.swing.JLabel();
         jSeparator9 = new javax.swing.JToolBar.Separator();
+        jLabel7 = new javax.swing.JLabel();
+        jLabel5 = new javax.swing.JLabel();
+        jSeparator8 = new javax.swing.JToolBar.Separator();
+        discount = new javax.swing.JLabel();
+        jSeparator13 = new javax.swing.JToolBar.Separator();
+        jLabel8 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
         jSeparator6 = new javax.swing.JToolBar.Separator();
         taxvalue = new javax.swing.JLabel();
         jSeparator10 = new javax.swing.JToolBar.Separator();
+        jLabel9 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
         jSeparator5 = new javax.swing.JToolBar.Separator();
         value = new javax.swing.JLabel();
-        jSeparator11 = new javax.swing.JToolBar.Separator();
-        jLabel5 = new javax.swing.JLabel();
-        jSeparator8 = new javax.swing.JToolBar.Separator();
-        discount = new javax.swing.JLabel();
         jPanel4 = new javax.swing.JPanel();
         jScrollPane3 = new javax.swing.JScrollPane();
         itemtable = new javax.swing.JTable();
@@ -747,7 +752,7 @@ public class ItemPanel2 extends javax.swing.JPanel implements DataPanel, MPCBSel
                 .addComponent(jPanel10, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(13, Short.MAX_VALUE))
+                .addContainerGap(18, Short.MAX_VALUE))
         );
 
         jToolBar1.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
@@ -960,6 +965,30 @@ public class ItemPanel2 extends javax.swing.JPanel implements DataPanel, MPCBSel
         jSeparator9.setName("jSeparator9"); // NOI18N
         jToolBar2.add(jSeparator9);
 
+        jLabel7.setText(bundle.getString("ItemPanel2.jLabel7.text")); // NOI18N
+        jLabel7.setName("jLabel7"); // NOI18N
+        jToolBar2.add(jLabel7);
+
+        jLabel5.setText(bundle.getString("ItemPanel2.jLabel5.text_1")); // NOI18N
+        jLabel5.setName("jLabel5"); // NOI18N
+        jToolBar2.add(jLabel5);
+
+        jSeparator8.setName("jSeparator8"); // NOI18N
+        jSeparator8.setSeparatorSize(new java.awt.Dimension(15, 10));
+        jToolBar2.add(jSeparator8);
+
+        discount.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
+        discount.setText(bundle.getString("ItemPanel2.discount.text")); // NOI18N
+        discount.setName("discount"); // NOI18N
+        jToolBar2.add(discount);
+
+        jSeparator13.setName("jSeparator13"); // NOI18N
+        jToolBar2.add(jSeparator13);
+
+        jLabel8.setText(bundle.getString("ItemPanel2.jLabel8.text")); // NOI18N
+        jLabel8.setName("jLabel8"); // NOI18N
+        jToolBar2.add(jLabel8);
+
         jLabel2.setText(bundle.getString("ItemPanel2.jLabel2.text")); // NOI18N
         jLabel2.setName("jLabel2"); // NOI18N
         jToolBar2.add(jLabel2);
@@ -976,6 +1005,10 @@ public class ItemPanel2 extends javax.swing.JPanel implements DataPanel, MPCBSel
         jSeparator10.setName("jSeparator10"); // NOI18N
         jToolBar2.add(jSeparator10);
 
+        jLabel9.setText(bundle.getString("ItemPanel2.jLabel9.text")); // NOI18N
+        jLabel9.setName("jLabel9"); // NOI18N
+        jToolBar2.add(jLabel9);
+
         jLabel3.setText(bundle.getString("ItemPanel2.jLabel3.text")); // NOI18N
         jLabel3.setName("jLabel3"); // NOI18N
         jToolBar2.add(jLabel3);
@@ -988,22 +1021,6 @@ public class ItemPanel2 extends javax.swing.JPanel implements DataPanel, MPCBSel
         value.setText(bundle.getString("ItemPanel2.value.text")); // NOI18N
         value.setName("value"); // NOI18N
         jToolBar2.add(value);
-
-        jSeparator11.setName("jSeparator11"); // NOI18N
-        jToolBar2.add(jSeparator11);
-
-        jLabel5.setText(bundle.getString("ItemPanel2.jLabel5.text_1")); // NOI18N
-        jLabel5.setName("jLabel5"); // NOI18N
-        jToolBar2.add(jLabel5);
-
-        jSeparator8.setName("jSeparator8"); // NOI18N
-        jSeparator8.setSeparatorSize(new java.awt.Dimension(15, 10));
-        jToolBar2.add(jSeparator8);
-
-        discount.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
-        discount.setText(bundle.getString("ItemPanel2.discount.text")); // NOI18N
-        discount.setName("discount"); // NOI18N
-        jToolBar2.add(discount);
 
         jPanel6.add(jToolBar2, java.awt.BorderLayout.PAGE_END);
 
@@ -1114,7 +1131,7 @@ public class ItemPanel2 extends javax.swing.JPanel implements DataPanel, MPCBSel
         rightpaneLayout.setHorizontalGroup(
             rightpaneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jToolBar1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
-            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 975, Short.MAX_VALUE)
+            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, 959, Short.MAX_VALUE)
             .addComponent(jPanel11, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         rightpaneLayout.setVerticalGroup(
@@ -1124,7 +1141,7 @@ public class ItemPanel2 extends javax.swing.JPanel implements DataPanel, MPCBSel
                 .addGap(3, 3, 3)
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 137, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel11, javax.swing.GroupLayout.DEFAULT_SIZE, 188, Short.MAX_VALUE))
+                .addComponent(jPanel11, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         jTabbedPane2.addTab(bundle.getString("ItemPanel2.rightpane.TabConstraints.tabTitle"), rightpane); // NOI18N
@@ -1506,6 +1523,9 @@ public class ItemPanel2 extends javax.swing.JPanel implements DataPanel, MPCBSel
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel7;
+    private javax.swing.JLabel jLabel8;
+    private javax.swing.JLabel jLabel9;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel10;
     private javax.swing.JPanel jPanel11;
@@ -1523,7 +1543,7 @@ public class ItemPanel2 extends javax.swing.JPanel implements DataPanel, MPCBSel
     private javax.swing.JScrollPane jScrollPane4;
     private javax.swing.JToolBar.Separator jSeparator1;
     private javax.swing.JToolBar.Separator jSeparator10;
-    private javax.swing.JToolBar.Separator jSeparator11;
+    private javax.swing.JToolBar.Separator jSeparator13;
     private javax.swing.JToolBar.Separator jSeparator3;
     private javax.swing.JToolBar.Separator jSeparator4;
     private javax.swing.JToolBar.Separator jSeparator5;
@@ -1570,6 +1590,7 @@ public class ItemPanel2 extends javax.swing.JPanel implements DataPanel, MPCBSel
     public BigDecimal taxvalue_;
     public BigDecimal shippingvalue_;
     public BigDecimal discountvalue_;
+    public BigDecimal discountgrosvalue_;
     public Date datetodo_;
     public Date dateend_;
     public int intreminders_;
@@ -1616,7 +1637,7 @@ public class ItemPanel2 extends javax.swing.JPanel implements DataPanel, MPCBSel
             netvalue_ = FormatNumber.parseDezimal(netvalue.getText());
             taxvalue_ = FormatNumber.parseDezimal(taxvalue.getText());
             discountvalue_ = FormatNumber.parseDezimal(discount.getText());
-
+            discountgrosvalue_ = FormatNumber.parseDezimal(hidden.getText());
 //            try {
 //                shippingvalue_ = FormatNumber.parseDezimal(shipping.getText());
 //            } catch (Exception e) {
@@ -1739,11 +1760,11 @@ public class ItemPanel2 extends javax.swing.JPanel implements DataPanel, MPCBSel
 
         prepareTable();
 
-        //"Internal ID", Position, "Count", "Measure", "Text", "Netto Price", "Tax Rate", "Total Price", "Tax value", "Net 2", "Product ID", "", "", "Link", "Optional", "Discount"
-        TableFormat.resizeCols(itemtable, new Integer[]{0, 23, 53, 63, 100, 63, 63, 63, 0, 0, 63, 20, 0, 0, 100, 63, 0},
-                new Boolean[]{true, true, true, true, false, true, true, true, true, true, true, true, true, true, false, true, true});
+        //"Internal ID", Position, "Count", "Measure", "Text", "Netto Price", "Tax Rate", "Total Price", "Tax value", "Net 2", "Product ID", "", "", "Link", "Optional", "Discount", ??, Discount w. Tax
+        TableFormat.resizeCols(itemtable, new Integer[]{0, 23, 53, 63, 100, 63, 63, 63, 0, 0, 63, 20, 0, 0, 100, 63, 0, 0},
+                new Boolean[]{true, true, true, true, false, true, true, true, true, true, true, true, true, true, false, true, true, true});
         MPTableModel model = (MPTableModel) itemtable.getModel();
-        model.setCanEdits(new boolean[]{false, false, true, true, true, true, true, true, false, false, true, true, false, false, true, true, false});
+        model.setCanEdits(new boolean[]{false, false, true, true, true, true, true, true, false, false, true, true, false, false, true, true, false, false});
         TableFormat.changeBackground(itemtable, 1, Color.LIGHT_GRAY);
         if (mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("org.openyabs.uiproperty", "hidecolumnquantity")) {
             TableFormat.stripColumn(itemtable, 2);
@@ -1943,9 +1964,8 @@ public class ItemPanel2 extends javax.swing.JPanel implements DataPanel, MPCBSel
         itemMultiplier.calculateOnce();
         netCalculator.calculateOnce();
         taxcalculator.calculateOnce();
-        disccalculator.calculateOnce();
-
-
+        discnetcalculator.calculateOnce();
+        discbrutcalculator.calculateOnce();
     }
 
     @Override
@@ -2101,10 +2121,14 @@ public class ItemPanel2 extends javax.swing.JPanel implements DataPanel, MPCBSel
         ((MPTableModel) itemtable.getModel()).addCalculator(taxcalculator);
         taxcalculator.addLabel(taxvalue, 8);
 
-        disccalculator = new DynamicTableCalculator(itemtable, quantXnet + "%[15]", new int[]{16});
-        ((MPTableModel) itemtable.getModel()).addCalculator(disccalculator);
-        disccalculator.addLabel(discount, 16);
+        discnetcalculator = new DynamicTableCalculator(itemtable, quantXnet + "%[15]", new int[]{16});
+        ((MPTableModel) itemtable.getModel()).addCalculator(discnetcalculator);
+        discnetcalculator.addLabel(discount, 16);
 
+        discbrutcalculator = new DynamicTableCalculator(itemtable, "(("+ quantXnet + "%[15])+("+ quantXnet + "%[15]" + "%[6]))", new int[]{17});
+        ((MPTableModel) itemtable.getModel()).addCalculator(discbrutcalculator);
+        discbrutcalculator.addLabel(hidden, 17);
+        
 //        if (mpv5.db.objects.User.getCurrentUser().getProperties().hasProperty("shiptax")) {
 //            int taxid = mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("shiptax", new Integer(0));
 //            Double shiptax = Tax.getTaxValue(taxid).doubleValue();
