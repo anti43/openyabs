@@ -204,7 +204,7 @@ public class FormatNumber {
         if (val == null||String.valueOf(val).length()==0) {
             return null;
         } 
-        //Log.Debug(val.getClass(), val);
+        Log.Debug(val.getClass(), val);
         if (val instanceof BigDecimal) {
             return (BigDecimal) val;
         }else if (val instanceof Integer ) {
@@ -216,7 +216,7 @@ public class FormatNumber {
         }else if ( val instanceof Double) {
             return BigDecimal.valueOf((Double)val);
         }else{
-            Log.Debug(FormatNumber.class, "Consider using BigDecimal as value, to prevent using preciscion");
+            Log.Debug(FormatNumber.class, "Consider using BigDecimal as value, to prevent preciscion loss");
         }
         
         return new BigDecimal(val.toString());

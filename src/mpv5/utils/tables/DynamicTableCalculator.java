@@ -180,13 +180,13 @@ public class DynamicTableCalculator implements Runnable {
                     if (rowVal != null) {
                         //ovalue += Double.valueOf(table.getModel().getValueAt(j, k).toString());
                         //ovalue.add((BigDecimal) rowVal);
-                        //Log.Print(ovalue+"+"+FormatNumber.getBigDecimal(rowVal));
+                        Log.Debug(this,ovalue+"+"+FormatNumber.getBigDecimal(rowVal));
                         ovalue=ovalue.add(FormatNumber.getBigDecimal(rowVal));
-                        //Log.Print("="+ovalue);
+                        Log.Debug(this,"="+ovalue);
                     }
                 }
                 JComponent t = sumcols.get(Integer.valueOf(k));
-                //Log.Print(ovalue);
+                Log.Debug(this,ovalue);
                 if (t instanceof JLabel) {
                     ((JLabel) t).setText(FormatNumber.formatDezimal(ovalue));
                 } else if (t instanceof JTextField) {
