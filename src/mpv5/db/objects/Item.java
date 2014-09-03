@@ -17,21 +17,16 @@
 package mpv5.db.objects;
 
 import enoa.handler.TableHandler;
-import enoa.handler.TemplateHandler;
-import java.awt.Color;
-import java.io.File;
 import java.math.BigDecimal;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import javax.swing.JComponent;
-import mpv5.YabsViewProxy;
 import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
 import mpv5.db.common.Formattable;
@@ -42,11 +37,8 @@ import mpv5.globals.Messages;
 import mpv5.handler.FormatHandler;
 import mpv5.handler.MPEnum;
 import mpv5.logging.Log;
-import mpv5.ui.panels.ItemPanel;
 import mpv5.ui.panels.ItemPanel2;
-import mpv5.utils.export.Export;
 import mpv5.utils.images.MPIcon;
-import mpv5.utils.jobs.Job;
 import mpv5.utils.numberformat.FormatNumber;
 import mpv5.utils.text.TypeConversion;
 
@@ -93,7 +85,7 @@ public class Item extends DatabaseObject implements Formattable, Templateable {
 
             @Override
             public Integer getId() {
-                return new Integer(STATUS_QUEUED);
+                return STATUS_QUEUED;
             }
 
             @Override
@@ -105,7 +97,7 @@ public class Item extends DatabaseObject implements Formattable, Templateable {
 
             @Override
             public Integer getId() {
-                return new Integer(STATUS_IN_PROGRESS);
+                return STATUS_IN_PROGRESS;
             }
 
             @Override
@@ -117,7 +109,7 @@ public class Item extends DatabaseObject implements Formattable, Templateable {
 
             @Override
             public Integer getId() {
-                return new Integer(STATUS_PAUSED);
+                return STATUS_PAUSED;
             }
 
             @Override
@@ -129,7 +121,7 @@ public class Item extends DatabaseObject implements Formattable, Templateable {
 
             @Override
             public Integer getId() {
-                return new Integer(STATUS_FINISHED);
+                return STATUS_FINISHED;
             }
 
             @Override
@@ -141,7 +133,7 @@ public class Item extends DatabaseObject implements Formattable, Templateable {
 
             @Override
             public Integer getId() {
-                return new Integer(STATUS_PAID);
+                return STATUS_PAID;
             }
 
             @Override
@@ -153,7 +145,7 @@ public class Item extends DatabaseObject implements Formattable, Templateable {
 
             @Override
             public Integer getId() {
-                return new Integer(STATUS_CANCELLED);
+                return STATUS_CANCELLED;
             }
 
             @Override
@@ -192,7 +184,7 @@ public class Item extends DatabaseObject implements Formattable, Templateable {
 
             @Override
             public Integer getId() {
-                return new Integer(-1);
+                return -1;
             }
 
             @Override
@@ -204,7 +196,7 @@ public class Item extends DatabaseObject implements Formattable, Templateable {
 
             @Override
             public Integer getId() {
-                return new Integer(TYPE_BILL);
+                return TYPE_BILL;
             }
 
             @Override
@@ -216,7 +208,7 @@ public class Item extends DatabaseObject implements Formattable, Templateable {
 
             @Override
             public Integer getId() {
-                return new Integer(TYPE_OFFER);
+                return TYPE_OFFER;
             }
 
             @Override
@@ -228,7 +220,7 @@ public class Item extends DatabaseObject implements Formattable, Templateable {
 
             @Override
             public Integer getId() {
-                return new Integer(TYPE_ORDER);
+                return TYPE_ORDER;
             }
 
             @Override
@@ -328,7 +320,7 @@ public class Item extends DatabaseObject implements Formattable, Templateable {
     }
 
     /**
-     * @param the discountvalue to set
+     * @param discountvalue
      */
     public void setDiscountvalue(BigDecimal discountvalue) {
         this.discountvalue = discountvalue;
@@ -342,7 +334,7 @@ public class Item extends DatabaseObject implements Formattable, Templateable {
     }
 
     /**
-     * @param discountbrutvalue
+     * @param discountgrosvalue
      */
     public void setDiscountGrosvalue(BigDecimal discountgrosvalue) {
         this.discountgrosvalue = discountgrosvalue;
@@ -577,7 +569,7 @@ public class Item extends DatabaseObject implements Formattable, Templateable {
                 map.put("type", getTypeString(Integer.valueOf(map.get("inttype").toString())));
                 map.remove("inttype");
             }
-        } catch (Exception numberFormatException) {
+        } catch (NumberFormatException numberFormatException) {
             //already resolved?
         }
 
@@ -632,8 +624,7 @@ public class Item extends DatabaseObject implements Formattable, Templateable {
 
                 if (GlobalSettings.getBooleanProperty("org.openyabs.exportproperty.pdftable", false)) {
                     data2 = t.getValues3();
-                    for (int j = 0; j < data2.size(); j++) {
-                        String[] strings = data2.get(j);
+                    for (String[] strings : data2) {
                         map.put("subitem" + i + "." + strings[0].toLowerCase(), strings[1]);
                     }
                 }
@@ -750,8 +741,7 @@ public class Item extends DatabaseObject implements Formattable, Templateable {
     public boolean reset() {
         if (ids > 0) {
             SubItem[] data = getSubitems();
-            for (int i = 0; i < data.length; i++) {
-                SubItem subItem = data[i];
+            for (SubItem subItem : data) {
                 SubItem.removeFromDeletionQueue(subItem.__getIDS());
             }
         }
@@ -770,8 +760,8 @@ public class Item extends DatabaseObject implements Formattable, Templateable {
     @Override
     public boolean delete() {
         SubItem[] it = getSubitems();
-        for (int i = 0; i < it.length; i++) {
-            it[i].delete();
+        for (SubItem it1 : it) {
+            it1.delete();
         }
         setCnumber(FormatHandler.DELETED_IDENTIFIER + __getCnumber());
         setCname(__getCnumber());
@@ -785,8 +775,8 @@ public class Item extends DatabaseObject implements Formattable, Templateable {
         List<DatabaseObject> data = new ArrayList<DatabaseObject>();
         try {
             data = DatabaseObject.getReferencedObjects(this, Context.getSubItem(), DatabaseObject.getObject(Context.getSubItem()), true);
-            for (int i = 0; i < data.size(); i++) {
-                data.get(i).undelete();
+            for (DatabaseObject data1 : data) {
+                data1.undelete();
             }
         } catch (NodataFoundException ex) {
             Log.Debug(this, ex.getMessage());
@@ -814,11 +804,10 @@ public class Item extends DatabaseObject implements Formattable, Templateable {
 
     /**
      * @return the contact
-     */
-    @Persistable(false)/*
+     * @throws mpv5.db.common.NodataFoundException
      * is persisting via contactsids
      */
-
+    @Persistable(false)
     public Contact getContact() throws NodataFoundException {
         return (Contact) getObject(Context.getContact(), contactsids);
     }
@@ -833,6 +822,7 @@ public class Item extends DatabaseObject implements Formattable, Templateable {
 
     /**
      * @return the account
+     * @throws mpv5.db.common.NodataFoundException
      */
     @Persistable(false)
     public Account getAccount() throws NodataFoundException {
