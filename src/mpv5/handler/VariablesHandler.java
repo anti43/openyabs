@@ -18,7 +18,11 @@ package mpv5.handler;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import mpv5.db.common.Context;
@@ -33,7 +37,6 @@ import mpv5.db.objects.SubItem;
 import mpv5.db.objects.User;
 import mpv5.globals.Messages;
 import mpv5.logging.Log;
-import mpv5.ui.dialogs.Notificator;
 import mpv5.utils.date.DateConverter;
 import mpv5.utils.numberformat.FormatNumber;
 
@@ -42,7 +45,7 @@ import mpv5.utils.numberformat.FormatNumber;
  */
 public abstract class VariablesHandler {
 
-    private static Pattern SCRIPTPATTERN = Pattern.compile("\\#(.*?)\\#");
+    private static final Pattern SCRIPTPATTERN = Pattern.compile("\\#(.*?)\\#");
     //generic
 
     /**
@@ -73,8 +76,8 @@ public abstract class VariablesHandler {
             return val;
         }
     }
-    
-    public static enum GENERIC_VARS_FORMAT{
+
+    public static enum GENERIC_VARS_FORMAT {
 
         YEAR("[YEAR]"),
         MONTH("[MONTH]"),
@@ -97,8 +100,10 @@ public abstract class VariablesHandler {
     //special
     /**
      * Determines the specific variables for the given {@link DatabaseObject}
+     *
      * @param target
      * @return
+     * @deprecated
      */
     public static String[] getSpecialVarsOf(DatabaseObject target) {
         List<String[]> vars = target.getValues();
@@ -106,7 +111,7 @@ public abstract class VariablesHandler {
         if (!(target instanceof SubItem)) {//No subitems, takes ages
             for (int i = 0; i < vars.size(); i++) {
                 String[] method = vars.get(i);
-                svars[i] = "[" + method[0].toUpperCase() + "]";
+                svars[i] = "[" + method[0] + "]";
             }
         } else {
             return new String[0];
@@ -115,20 +120,27 @@ public abstract class VariablesHandler {
     }
 
     /**
-     * Generates an array containing all available variables and values for the specific {@link DatabaseObject}
+     * Generates an array containing all available variables and values for the
+     * specific {@link DatabaseObject}
+     *
      * @param target
      * @return
      */
-//    private static DatabaseObject old;
     public static synchronized List<String[]> resolveVarsFor(final DatabaseObject target) {
-//
-//        if (target.equals(old)) {
-//            return null;
-//        }
-//        old = target;
+        return resolveVarsFor(target, Collections.EMPTY_MAP);
+    }
 
+    /**
+     * Generates an array containing all available variables and values for the
+     * specific {@link DatabaseObject}
+     *
+     * @param target
+     * @param preResolvedVars
+     * @return
+     */
+    public static synchronized List<String[]> resolveVarsFor(final DatabaseObject target, Map preResolvedVars) {
+        Log.Debug(VariablesHandler.class, "..................>\n\n" + preResolvedVars);
         Log.Debug(VariablesHandler.class, "Resolving vars for " + target.getContext() + "#" + target.__getIDS() + ".." + target.getClass());
-        Log.Debug(target, (target instanceof Item));
 
         List<String[]> vars = new ArrayList<String[]>();
         GENERIC_VARS[] gens = GENERIC_VARS.values();
@@ -163,46 +175,53 @@ public abstract class VariablesHandler {
                 } else if (varName.equals(GENERIC_VARS.DAY.toString())) {
                     varValue = DateConverter.getDayOfMonth();
                 }
-            } catch (Exception nodataFoundException) {
+            } catch (Exception ex) {
+                Log.Debug(VariablesHandler.class, ex.getMessage());
             }
             vars.add(new String[]{varName, varValue});
         }
-        String[] specs = getSpecialVarsOf(target);
-        int j;
+        //String[] specs = getSpecialVarsOf(target);//fixme evt remove
+        //Log.Debug(VariablesHandler.class, "..xxxx>\n\n" + Arrays.asList(specs));
+
+        Iterator iterator = preResolvedVars.entrySet().iterator();
+	while (iterator.hasNext()) {
+		Map.Entry mapEntry = (Map.Entry) iterator.next();
+                vars.add(new String[]{"["+String.valueOf(mapEntry.getKey())+"]", String.valueOf(mapEntry.getValue())});
+	}
+        /*int j;
         for (j = 0; j < specs.length; j++) {
             String varName = specs[j];
             String varValue = "";
 
             List<String[]> vals;
             vals = target.getValues();
-            for (int k = 0; k < vals.size(); k++) {
-                String[] value = vals.get(k);
+            for (String[] value : vals) {
                 if (value[0].equalsIgnoreCase(varName.substring(1, varName.length() - 1))) {
                     varValue = value[1];
                 }
             }
             vars.add(new String[]{varName, varValue});
-        }
+        }*/
 
-        if (target instanceof Item) {
+        /*if (target instanceof Item) {
             try {
                 Contact c = (Contact) DatabaseObject.getObject(Context.getContact(), ((Item) target).__getContactsids());
 
-                vars.add(new String[]{"[contact.cname]".toUpperCase(), c.__getCname()});
-                vars.add(new String[]{"[contact.cnumber]".toUpperCase(), c.__getCNumber()});
-                vars.add(new String[]{"[contact.company]".toUpperCase(), c.__getCompany()});
-                vars.add(new String[]{"[contact.prename]".toUpperCase(), c.__getPrename()});
-                vars.add(new String[]{"[contact.title]".toUpperCase(), c.__getTitle()});
-                vars.add(new String[]{"[contact.country]".toUpperCase(), c.__getCountry()});
-                vars.add(new String[]{"[grosvaluef]".toUpperCase(), FormatNumber.formatLokalCurrency(((Item) target).__getTaxvalue().doubleValue() + ((Item) target).__getNetvalue().doubleValue())});
-                vars.add(new String[]{"[type]".toUpperCase(), Item.getTypeString(((Item) target).__getInttype())});
+                vars.add(new String[]{"[contact.cname]", c.__getCname()});
+                vars.add(new String[]{"[contact.cnumber]", c.__getCNumber()});
+                vars.add(new String[]{"[contact.company]", c.__getCompany()});
+                vars.add(new String[]{"[contact.prename]", c.__getPrename()});
+                vars.add(new String[]{"[contact.title]", c.__getTitle()});
+                vars.add(new String[]{"[contact.country]", c.__getCountry()});
+                vars.add(new String[]{"[grosvaluef]", FormatNumber.formatLokalCurrency(((Item) target).__getTaxvalue().doubleValue() + ((Item) target).__getNetvalue().doubleValue())});
+                vars.add(new String[]{"[type]", Item.getTypeString(((Item) target).__getInttype())});
 
                 if (c.__getisMale()) {
-                    vars.add(new String[]{"[contact.gender]".toUpperCase(), Messages.CONTACT_TYPE_MALE.getValue()});
-                    vars.add(new String[]{"[contact.intro]".toUpperCase(), Messages.CONTACT_INTRO_MALE.getValue()});
+                    vars.add(new String[]{"[contact.gender]", Messages.CONTACT_TYPE_MALE.getValue()});
+                    vars.add(new String[]{"[contact.intro]", Messages.CONTACT_INTRO_MALE.getValue()});
                 } else {
-                    vars.add(new String[]{"[contact.gender]".toUpperCase(), Messages.CONTACT_TYPE_FEMALE.getValue()});
-                    vars.add(new String[]{"[contact.intro]".toUpperCase(), Messages.CONTACT_INTRO_FEMALE.getValue()});
+                    vars.add(new String[]{"[contact.gender]", Messages.CONTACT_TYPE_FEMALE.getValue()});
+                    vars.add(new String[]{"[contact.intro]", Messages.CONTACT_INTRO_FEMALE.getValue()});
                 }
 
             } catch (NodataFoundException ex) {
@@ -213,12 +232,12 @@ public abstract class VariablesHandler {
         if (target instanceof Conversation) {
             try {
                 Contact c = (Contact) DatabaseObject.getObject(Context.getContact(), ((Conversation) target).__getContactsids());
-                vars.add(new String[]{"[contact.cname]".toUpperCase(), c.__getCname()});
-                vars.add(new String[]{"[contact.company]".toUpperCase(), c.__getCompany()});
-                vars.add(new String[]{"[contact.prename]".toUpperCase(), c.__getPrename()});
-                vars.add(new String[]{"[contact.title]".toUpperCase(), c.__getTitle()});
-                vars.add(new String[]{"[contact.country]".toUpperCase(), c.__getCountry()});
-                vars.add(new String[]{"[type]".toUpperCase(), Messages.TYPE_CONVERSATION.toString()});
+                vars.add(new String[]{"[contact.cname]", c.__getCname()});
+                vars.add(new String[]{"[contact.company]", c.__getCompany()});
+                vars.add(new String[]{"[contact.prename]", c.__getPrename()});
+                vars.add(new String[]{"[contact.title]", c.__getTitle()});
+                vars.add(new String[]{"[contact.country]", c.__getCountry()});
+                vars.add(new String[]{"[type]", Messages.TYPE_CONVERSATION.toString()});
 
             } catch (NodataFoundException ex) {
                 Log.Debug(VariablesHandler.class, ex.getMessage());
@@ -229,44 +248,59 @@ public abstract class VariablesHandler {
             try {
                 Contact c = (Contact) DatabaseObject.getObject(Context.getContact(), ((ActivityList) target).__getContactsids());
 
-                vars.add(new String[]{"[contact.cname]".toUpperCase(), c.__getCname()});
-                vars.add(new String[]{"[contact.company]".toUpperCase(), c.__getCompany()});
-                vars.add(new String[]{"[contact.prename]".toUpperCase(), c.__getPrename()});
-                vars.add(new String[]{"[contact.title]".toUpperCase(), c.__getTitle()});
-                vars.add(new String[]{"[contact.country]".toUpperCase(), c.__getCountry()});
-                vars.add(new String[]{"[type]".toUpperCase(), Messages.TYPE_ACTIVITY.toString()});
+                vars.add(new String[]{"[contact.cname]", c.__getCname()});
+                vars.add(new String[]{"[contact.company]", c.__getCompany()});
+                vars.add(new String[]{"[contact.prename]", c.__getPrename()});
+                vars.add(new String[]{"[contact.title]", c.__getTitle()});
+                vars.add(new String[]{"[contact.country]", c.__getCountry()});
+                vars.add(new String[]{"[type]", Messages.TYPE_ACTIVITY.toString()});
 
             } catch (NodataFoundException ex) {
                 Log.Debug(VariablesHandler.class, ex.getMessage());
             }
-        }
+        }*/
 
-        for (int k = 0; k < vars.size(); k++) {
-            String[] strings = vars.get(k);
-            Log.Debug(target, Arrays.asList(strings));
+        if (Log.isDebugging()) {
+            for (String[] strings : vars) {
+                Log.Debug(target, Arrays.asList(strings));
+            }
         }
 
         return vars;
     }
 
     /**
-     * Replaces each variable in the text with the according values from the {@link DatabaseObject}
-     * and evaluates scripts
+     * Replaces each variable in the text with the according values from the
+     * {@link DatabaseObject} and evaluates scripts
+     *
      * @param text
      * @param source
      * @return
      */
     public static synchronized String parse(String text, final DatabaseObject source) {
-        List<String[]> c = resolveVarsFor(source);
+        return parse(text, source, Collections.EMPTY_MAP);
+    }
+
+    /**
+     * Replaces each variable in the text with the according values from the
+     * {@link DatabaseObject} and evaluates scripts
+     *
+     * @param text
+     * @param source
+     * @param preResolvedVars
+     * @return
+     */
+    public static synchronized String parse(String text, final DatabaseObject source, Map preResolvedVars) {
+        List<String[]> c = resolveVarsFor(source, preResolvedVars);
         if (c != null) {
-            for (int i = 0; i < c.size(); i++) {
-                String[] data = c.get(i);
+            for (String[] data : c) {
                 if (data != null) {
-                    if (Log.getLoglevel() == Log.LOGLEVEL_DEBUG) {
-                        Log.Debug(VariablesHandler.class, source + ": replacing key: " + data[0] + " with value: " + data[1]);
-                    }
                     if (data[1] != null) {
-                        text = text.replace(data[0], data[1]);
+                        if (Log.isDebugging()) {
+                            Log.Debug(VariablesHandler.class, source + ": replacing key: " + data[0] + " with value: " + data[1]);
+                        }
+                        //text = text.replace(data[0], data[1]);
+                        text = text.replaceAll("(?i)" + data[0].replace("[", "\\[").replace("]", "\\]"), data[1]);//.replace(".","\\.") regex escape..
                     }
                 }
             }

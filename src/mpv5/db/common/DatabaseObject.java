@@ -2513,7 +2513,6 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
         map.put("vpresolved@" + this, Boolean.TRUE);
         List<ValueProperty> props = new ArrayList<ValueProperty>(ValueProperty.getProperties(this));
         try {
-            System.err.println(getContext());
             props.addAll(ValueProperty.getProperties(getContext(), getGroup()));
         } catch (Exception ex) {
             Log.Debug(this, ex.getMessage());

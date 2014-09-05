@@ -53,14 +53,13 @@ public class FormFieldsHandler {
      * @return A HashMap<key,value/>
      */
     public synchronized Map<String, Object> getFormFields() {
-        TreeMap<String, Object> map = new TreeMap<String, Object>();
+        HashMap<String, Object> map = new HashMap<String, Object>();
         
         if (obj != null) {
             obj.resolveValueProperties(map);
             List<Object[]> m = obj.getValues2();
-            map = new TreeMap<String, Object>();
-            for (int i = 0; i < m.size(); i++) {
-                Object[] vals = m.get(i);
+            map = new HashMap<String, Object>();
+            for (Object[] vals : m) {
                 if (vals[1] == null) {
                     vals[1] = "";
                 }

@@ -34,6 +34,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import javax.swing.SwingUtilities;
 import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
@@ -65,6 +67,7 @@ import mpv5.utils.print.PrintJob2;
 public final class Export extends HashMap<String, Object> implements Waitable {
 
     private static final long serialVersionUID = 1L;
+    private static final String EMAIL_PATTERN = "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";
 
     /**
      * Mail a template
@@ -98,7 +101,10 @@ public final class Export extends HashMap<String, Object> implements Waitable {
 
                 try {
                     Contact cont = to;
-                    if (mpv5.db.objects.User.getCurrentUser().__getMail().contains("@") && mpv5.db.objects.User.getCurrentUser().__getMail().contains(".") && cont.__getMailaddress().contains("@") && cont.__getMailaddress().contains(".")) {
+                    if (mpv5.db.objects.User.getCurrentUser().__getMail() != null
+                            && cont.__getMailaddress() != null
+                            && Pattern.matches(EMAIL_PATTERN, mpv5.db.objects.User.getCurrentUser().__getMail())
+                            && Pattern.matches(EMAIL_PATTERN, cont.__getMailaddress())) {
                         SimpleMail pr = new SimpleMail();
                         pr.setMailConfiguration(mpv5.db.objects.User.getCurrentUser().getMailConfiguration());
                         pr.setRecipientsAddress(cont.__getMailaddress());
@@ -117,8 +123,8 @@ public final class Export extends HashMap<String, Object> implements Waitable {
                         }
 
                         if (m != null && m.__getCname() != null) {
-                            pr.setSubject(VariablesHandler.parse(m.__getCname(), dataOwner));
-                            pr.setText(VariablesHandler.parse(m.__getDescription(), dataOwner));
+                            pr.setSubject(VariablesHandler.parse(m.__getCname(), dataOwner, hm1));
+                            pr.setText(VariablesHandler.parse(m.__getDescription(), dataOwner, hm1));
                         }
                         try {
                             new Job(ex, (Waiter) pr).execute();
@@ -259,7 +265,6 @@ public final class Export extends HashMap<String, Object> implements Waitable {
             List<PdfReader> readers = new ArrayList<PdfReader>();
             int totalPages = 0;
             Iterator<InputStream> iteratorPDFs = pdfs.iterator();
-
 
             while (iteratorPDFs.hasNext()) {
                 InputStream pdf = iteratorPDFs.next();
@@ -582,4 +587,5 @@ public final class Export extends HashMap<String, Object> implements Waitable {
     public File getTargetFile() {
         return toFile;
     }
+
 }
