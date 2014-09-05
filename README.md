@@ -1,7 +1,11 @@
 openyabs - Yet another Business Software 
 ===
 
-**[Download installation packages here!](https://github.com/anti43/openyabs/releases)**
+Normal users:
+**[Download installation packages here!](https://github.com/anti43/openyabs/releases/tag/release)**
+
+Expert users:
+**[Download development releases here!](https://github.com/anti43/openyabs/releases/tag/development)**
 
 **[Documentation starts here!](https://github.com/anti43/openyabs/wiki)**
 
