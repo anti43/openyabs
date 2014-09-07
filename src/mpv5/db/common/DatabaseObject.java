@@ -2370,7 +2370,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
                 } else if (name.toUpperCase().startsWith("VALUE") || name.toUpperCase().endsWith("VALUE")) {
                     vars.get(k).invoke(this, new Object[]{new Random().nextDouble()});
                 } else {
-                    vars.get(k).invoke(this, new Object[]{new RandomText().getString()});
+                    vars.get(k).invoke(this, new Object[]{RandomText.getString()});
                 }
             } catch (IllegalAccessException illegalAccessException) {
             } catch (IllegalArgumentException illegalArgumentException) {

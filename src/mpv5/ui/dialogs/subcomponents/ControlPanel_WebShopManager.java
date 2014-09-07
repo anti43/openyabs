@@ -31,8 +31,7 @@ import mpv5.utils.files.FileDirectoryHandler;
 import mpv5.utils.files.FileReaderWriter;
 import mpv5.utils.files.Zip;
 import mpv5.utils.models.MPComboBoxModelItem;
-import mpv5.utils.text.Base64Encoder;
-import mpv5.utils.text.RandomStringUtils;
+import mpv5.utils.text.Base64Encoder; 
 import mpv5.utils.text.RandomText;
 import mpv5.webshopinterface.NoCompatibleHostFoundException;
 import mpv5.webshopinterface.WSConnectionClient;
@@ -540,9 +539,9 @@ public class ControlPanel_WebShopManager extends javax.swing.JPanel implements C
     @SuppressWarnings("Deprecated")
     private void generate() throws NoSuchAlgorithmException, IOException {
         try {
-            String pwdir = new RandomText(8).getString();
-            String user = new RandomText(8).getString();
-            String password = new RandomText(8).getString();
+            String pwdir = RandomText.getText();
+            String user = RandomText.getText();
+            String password = RandomText.getString();
             Log.Debug(this, "The SUPER SECRET password for the generated .htaccess file is: " + password);
             //apache codec base64encoder produces wrong values here
             String crypt = "{SHA}" + Base64.encode(java.security.MessageDigest.getInstance("SHA1").digest(password.getBytes()));

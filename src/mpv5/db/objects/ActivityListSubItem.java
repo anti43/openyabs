@@ -88,7 +88,7 @@ public final class ActivityListSubItem extends DatabaseObject {
             it.setTaxpercentvalue(new BigDecimal(row[7].toString()));
             it.setTotalbrutvalue(new BigDecimal(row[8].toString()));
             it.setProductsids(Integer.valueOf(row[9].toString()));
-            it.setCname(new RandomText(20).getString());
+            it.setCname(RandomText.getString());
             calculate(it);
 
 

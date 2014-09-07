@@ -364,11 +364,14 @@ public class LanguageManager {
     *
     * @param langname
     * @param file If it is a .zip, will get extracted and then processed
+     * @param ignoreErrors
+     * @return 
+     * @throws java.lang.Exception
     * @throws UnsupportedOperationException
     */
    public static String importLanguage(String langname, File file, Boolean ignoreErrors) throws Exception {
       try {
-         String langid = new RandomText(10).getString();
+         String langid = RandomText.getText();
 
          file = FileDirectoryHandler.unzipFile(file);
          Log.Debug(LanguageManager.class, "Importing: " + file);

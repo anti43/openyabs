@@ -380,7 +380,7 @@ public abstract class FileDirectoryHandler {
      * @return The file with a randomly generated suffix
      */
     public static File tempFileClone(File file) {
-        return tempFileClone(file, new RandomText(3).getString());
+        return tempFileClone(file, RandomText.getText(3));
     }
 
     /**
@@ -396,7 +396,7 @@ public abstract class FileDirectoryHandler {
         try {
             suffix = check(suffix);
             cacheCheck();
-            File fil = new File(copyFile(file, new File(LocalSettings.getProperty(LocalSettings.CACHE_DIR)), new RandomText().getString() + "." + suffix, true));
+            File fil = new File(copyFile(file, new File(LocalSettings.getProperty(LocalSettings.CACHE_DIR)), RandomText.getString()+ "." + suffix, true));
             fil.deleteOnExit();
             return fil;
         } catch (IOException ex) {
@@ -413,7 +413,7 @@ public abstract class FileDirectoryHandler {
      */
     public static File getTempFile(String suffix) {
         suffix = check(suffix);
-        return getTempFile(new RandomText(18).getString(), suffix);
+        return getTempFile(RandomText.getString(), suffix);
     }
 
     /**

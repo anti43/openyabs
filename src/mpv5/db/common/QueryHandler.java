@@ -2591,7 +2591,7 @@ public class QueryHandler implements Cloneable {
       try {
          start();
          int fileLength = (int) file.length();
-         name = new RandomText(23).getString();
+         name = RandomText.getText(23);
          java.io.InputStream fin = new java.io.FileInputStream(file);
          PreparedStatement ps = sqlConn.prepareStatement(query, PreparedStatement.RETURN_GENERATED_KEYS);
          ps.setString(1, name);
@@ -2959,7 +2959,7 @@ public class QueryHandler implements Cloneable {
             try {
                sqlConn.setAutoCommit(false);
                int fileLength = (int) file.length();
-               name = new RandomText(23).getString();
+               name = RandomText.getText(23);
                java.io.InputStream fin = new java.io.FileInputStream(file);
                PreparedStatement ps = sqlConn.prepareStatement(query, PreparedStatement.RETURN_GENERATED_KEYS);
                ps.setString(1, name);
@@ -3062,7 +3062,7 @@ public class QueryHandler implements Cloneable {
 
             try {
                int fileLength = (int) file.length();
-               name = new RandomText(23).getString();
+               name = RandomText.getText(23);
                java.io.InputStream fin = new java.io.FileInputStream(file);
                PreparedStatement ps = sqlConn.prepareStatement(query, PreparedStatement.RETURN_GENERATED_KEYS);
                ps.setBinaryStream(1, fin, fileLength);

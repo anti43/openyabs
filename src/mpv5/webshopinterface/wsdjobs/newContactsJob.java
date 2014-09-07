@@ -19,7 +19,6 @@ package mpv5.webshopinterface.wsdjobs;
 
 //~--- non-JDK imports --------------------------------------------------------
 import mpv5.db.common.Context;
-import mpv5.db.common.DatabaseObject;
 import mpv5.db.common.NodataFoundException;
 import mpv5.db.objects.Address;
 import mpv5.db.objects.Contact;
@@ -27,9 +26,7 @@ import mpv5.db.objects.WSContactsMapping;
 
 import mpv5.logging.Log;
 
-import mpv5.ui.frames.MPView;
-
-import mpv5.utils.text.RandomStringUtils;
+ 
 
 import mpv5.webshopinterface.WSConnectionClient;
 import mpv5.webshopinterface.WSDaemon;
@@ -40,10 +37,7 @@ import org.apache.xmlrpc.XmlRpcException;
 
 //~--- JDK imports ------------------------------------------------------------
 
-import java.util.Date;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import mpv5.ui.dialogs.Popup;
 
 /**

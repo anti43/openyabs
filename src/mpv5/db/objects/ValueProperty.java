@@ -39,8 +39,8 @@ import mpv5.db.common.QueryCriteria;
 import mpv5.db.common.QueryCriteria2;
 import mpv5.db.common.QueryHandler;
 import mpv5.db.common.QueryParameter;
-import mpv5.logging.Log;
-import mpv5.utils.text.RandomStringUtils;
+import mpv5.logging.Log; 
+import mpv5.utils.text.RandomText;
 
 /**
  *
@@ -88,7 +88,7 @@ public final class ValueProperty extends DatabaseObject {
         setContextids(owner.getId());
         setObjectids(0);
         setGroupsids(group.__getIDS());
-        setCname(key == null ? RandomStringUtils.randomAlphabetic(8) : key);
+        setCname(key == null ? RandomText.getString() : key);
     }
 
     /**

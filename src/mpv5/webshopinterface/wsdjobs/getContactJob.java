@@ -27,10 +27,7 @@ import mpv5.db.objects.WSContactsMapping;
 
 import mpv5.logging.Log;
 
-import mpv5.ui.frames.MPView;
-
-import mpv5.utils.text.RandomStringUtils;
-
+import mpv5.ui.frames.MPView; 
 import mpv5.webshopinterface.WSConnectionClient;
 import mpv5.webshopinterface.WSDaemon;
 import mpv5.webshopinterface.WSDaemonJob;

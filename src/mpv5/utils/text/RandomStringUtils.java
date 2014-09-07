@@ -31,7 +31,7 @@ import java.util.Random;
  * @since 1.0
  * @version $Id: RandomStringUtils.java,v 1.27 2004/02/18 22:59:49 ggregory Exp $
  */
-public class RandomStringUtils {
+class RandomStringUtils {
 
     /**
      * <p>Random object used by random method. This has to be not local

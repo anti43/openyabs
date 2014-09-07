@@ -1,204 +1,90 @@
 
 /*
-*  This file is part of YaBS.
-*
-*      YaBS is free software: you can redistribute it and/or modify
-*      it under the terms of the GNU General Public License as published by
-*      the Free Software Foundation, either version 3 of the License, or
-*      (at your option) any later version.
-*
-*      YaBS is distributed in the hope that it will be useful,
-*      but WITHOUT ANY WARRANTY; without even the implied warranty of
-*      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-*      GNU General Public License for more details.
-*
-*      You should have received a copy of the GNU General Public License
-*      along with YaBS.  If not, see <http://www.gnu.org/licenses/>.
+ *  This file is part of YaBS.
+ *
+ *      YaBS is free software: you can redistribute it and/or modify
+ *      it under the terms of the GNU General Public License as published by
+ *      the Free Software Foundation, either version 3 of the License, or
+ *      (at your option) any later version.
+ *
+ *      YaBS is distributed in the hope that it will be useful,
+ *      but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *      GNU General Public License for more details.
+ *
+ *      You should have received a copy of the GNU General Public License
+ *      along with YaBS.  If not, see <http://www.gnu.org/licenses/>.
  */
 package mpv5.utils.text;
 
 //~--- JDK imports ------------------------------------------------------------
-
-import java.util.List;
-import java.util.Vector;
+import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
+import java.util.UUID;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * A random text generator
  *
  */
 public class RandomText {
-    private static String source =
-        new String(
-            "43Atowelitsaysisaboutthemostmassivelyusefu"
-            + "lthinganinterstellarhitchhikercanhavePartlyithasgreatpracticalvalue"
-            + "youcanwrapitaroundyouforwarmthasyouboundacrossthecoldmoonsofJaglanBet"
-            + "ayoucanlieonitonthebrilliantmarblesandedbeachesofSantraginusVinhalingt"
-            + "394060333188397074520172340739371965868498876592311755875219798318317206994017"
-            + "heheadyseavapoursyoucansleepunderitbeneaththestarswhichshinesoredlyont"
-            + "hedesertworldofKakrafoonuseittosailaminiraftdowntheslowheavyriverMothw"
-            + "etitforuseinhandtohandcombatwrapitroundyourheadtowardoffnoxiousfumesora"
-            + "voidthegazeoftheRavenousBugblatterBeastofTraalamindbogginglystupidanimali"
-            + "eckonedwith308399816614085306859704892269592775111711855313343669299238236306"
-            + "tassumesthatifyoucantseeititcantseeyoudaftasabrushbutveryveryravenousyouc"
-            + "anwaveyourtowelinemergenciesasadistresssignalandofcoursedryyourselfoffwithit"
-            + "ifitstillseemstobecleanenoughMoreimportantlyatowelhasimmensepsychologicalval"
-            + "ueForsomereasonifastragstragnonhitchhikerdiscoversthatahitchhikerhashistowel"
-            + "withhimhewillautomaticallyassumethatheisalsoinpossessionofatoothbrushfacefl"
-            + "386832922784929950232869659529615917138847v64003519483258392515302176217868694"
-            + "annelsoaptinofbiscuitsflaskcompassmapballofstringgnatspraywetweathergearspa"
-            + "cesuitetcetcFurthermorethestragwillthenhappilylendthehitchhikeranyoftheseor"
-            + "adozenotheritemsthatthehitchhikermightaccidentallyhavelostWhatthestragwillt"
-            + "hinkisthatanymanwhocanhitchthelengthandbreadthofthegalaxyroughitslumitstrugg"
-            + "leagainstterribleoddswinthroughandstillknowswherehistowelisisclearlyamantober"
-            + "2324989105969625913643ThehistoryoftheGalaxyhasgotalittlemuddledforanumber"
-            + "ofreasonspartlybecausethosewhoaretryingtokeeptrackofithavegotalittlemuddledbut"
-            + "alsobecausesomeverymuddlingthingshavebeenhappeninganywayOneoftheproblemshas"
-            + "todowiththespeedoflightandthedifficultiesinvolvedintryingtoexceeditYoucantNothingtravels"
-            + "fasterthanthespeedoflightwiththepossibleexceptionofbadnewswhichobeysitsownspeciallawsT"
-            + "heHingefreelpeopleofArkintoofleMinordidtrytobuildspaceshipsthatwerepoweredbybadnewsb"
-            + "uttheydidntworkparticularlywellandweresoextremelyunwelcomewhenevertheyarrivedanywh"
-            + "erethattherewasntreallyanypointinbeingthereSobyandlargethepeoplesoftheGalaxytended"
-            + "tolanguishintheirownlocalmuddlesandthehistoryoftheGalaxyitselfwasforalongtimelargelycosm"
-            + "ologicalWhichisnottosaythatpeoplewerenttryingTheytriedsendingofffleetsofspaceshipstodoba"
-            + "ttleorbusinessindistantpartsbuttheseusuallytookthousandsofyearstogetanywhereBythetimethe"
-            + "yeventuallyarrivedotherformsoftravelhadbeendiscoveredwhichmadeuseofhyperspacetocircumven"
-            + "tthespeedoflightsothatwhateverbattlesitwasthattheslowerthanlightfleetshadbeensenttofighthadal"
-            + "readybeentakencareofcenturiesearlierbythetimetheyactuallygotthereThisdidntofcoursedetertheirc"
-            + "rewsfromwantingtofightthebattlesanywayTheyweretrainedtheywerereadytheydhadacoupleofthousand"
-            + "yearssleeptheydcomealongwaytodoatoughjobandbyZarquontheyweregoingtodoitThiswaswhent"
-            + "hefirstmajormuddlesofGalactichistorysetinwithbattlescontinuallyreeruptingcenturiesaftertheissu"
-            + "estheyhadbeenfoughtoverhadsupposedlybeensettledHoweverthesemuddleswereasnothingtothe"
-            + "oneswhichhistorianshadtotryandunraveloncetimetravelwasdiscoveredandbattlesstartedpreerupt"
-            + "inghundredsofyearsbeforetheissuesevenaroseWhentheInfiniteImprobabilityDrivearrivedandwholep"
-            + "lanetsstartedturningunexpectedlyintobananafruitcakethegreathistoryfacultyoftheUniversityofMaxiM"
-            + "egalonfinallygaveupcloseditselfdownandsurrendereditsbuildingstotherapidlygrowingjointfacultyofDiv"
-            + "inityandWaterPolowhichhadbeenafterthemforyearsWhichisallverywellofcoursebutitalmostcertainlym"
-            + "eansthatnoonewilleverknowforsurewhereforinstancetheGrebulonscamefromorexactlywhatitwasthey"
-            + "wantedAndthisisapitybecauseifanybodyhadknownanythingaboutthemitisjustpossiblethatamostterrib"
-            + "lecatastrophewouldhavebeenavertedoratleastwouldhavehadtofindadifferentwaytohappenClickhum"
-            + "OnboardtheshipeverythingwasasithadbeenformillenniadeeplydarkandSilentClickhumAtleastalmostev"
-            + "erythingClickclickhumClickhumclickhumclickhumClickclickclickclickclickhumHmmmAlowlevelsupervisin"
-            + "gprogramwokeupaslightlyhigherlevelsupervisingprogramdeepintheshipssemisomnolentcyberbrainandre"
-            + "portedtoitthatwheneveritwentclickallitgotwasahumThehigherlevelsupervisingprogramaskeditwhatitwass"
-            + "upposedtogetandthelowlevelsupervisingprogramsaidthatitcouldntrememberexactlybutthoughtitwasprob"
-            + "ablymoreofasortofdistantsatisfiedsighwasntitItdidntknowwhatthishumwasClickhumclickhumThatwasallitwa"
-            + "sgettingThehigherlevelsupervisingprogramconsideredthisanddidntlikeitItaskedthelowlevelsupervisingprog"
-            + "ramwhatexactlyitwassupervisingandthelowlevelsupervisingprogramsaiditcouldntrememberthateitherjusttha"
-            + "titwassomethingthatwasmeanttogoclicksigheverytenyearsorsowhichusuallyhappenedwithoutfailIthadtriedto"
-            + "consultitserrorlookuptablebutcouldntfinditwhichwaswhyithadalertedthehigherlevelsupervisingprogramtotheproblem"
-            + "Thehigherlevelsupervisingprogramwenttoconsultoneofitsownlookuptablestofindoutwhatthelowlevelsupervisingprogr"
-            + "amwasmeanttobesupervisingItcouldntfindthelookuptableOddItlookedagainAllitgotwasanerrormessageIttriedtolooku"
-            + "ptheerrormessageinitserrormessagelookuptableandcouldntfindthateitherItallowedacoupleofnanosecondstogobywhile"
-            + "itwentthroughallthisagainThenitwokeupitssectorfunctionsupervisorThesectorfunctionsupervisorhitimmediateproblemsI"
-            + "tcalleditssupervisingagentwhichhitproblemstooWithinafewmillionthsofasecondvirtualcircuitsthathadlaindormantsomefo"
-            + "ryearssomeforcenturieswereflaringintolifethroughouttheshipSomethingsomewherehadgoneterriblywrongbutnoneofthe"
-            + "supervisingprogramscouldtellwhatitwasAteverylevelvitalinstructionsweremissingandtheinstructionsaboutwhattodointhe"
-            + "eventofdiscoveringthatvitalinstructionsweremissingwerealsomissingSmallmodulesofsoftwareagentssurgedthroughthel"
-            + "ogicalpathwaysgroupingconsultingregroupingTheyquicklyestablishedthattheshipsmemoryallthewaybacktoitscentralmis"
-            + "sionmodulewasintattersNoamountofinterrogationcoulddeterminewhatitwasthathadhappenedEventhecentralmissionmo"
-            + "duleitselfseemedtobedamagedThismadethewholeproblemverysimpletodealwithReplacethecentralmissionmoduleThere"
-            + "wasanotheroneabackupanexactduplicateoftheoriginalIthadtobephysicallyreplacedbecauseforsafetyreasonstherewasn"
-            + "olinkwhatsoeverbetweentheoriginalanditsbackupOncethecentralmissionmodulewasreplaceditcoulditselfsupervisethere"
-            + "constructionoftherestofthesystemineverydetailandallwouldbewellRobotswereinstructedtobringthebackupcentralmissio"
-            + "nmodulefromtheshieldedstrongroomwheretheyguardedittotheshipslogicchamberforinstallationThisinvolvedthelengthy"
-            + "exchangeofemergencycodesandprotocolsastherobotsinterrogatedtheagentsastotheauthenticityoftheinstructionsAtlas"
-            + "ttherobotsweresatisfiedthatallprocedureswerecorrectTheyunpackedthebackupcentralmissionmodulefromitsstorageho"
-            + "usingcarrieditoutofthestoragechamberfelloutoftheshipandwentspinningoffintothevoidThisprovidedthefirstmajorclueast"
-            + "owhatitwasthatwaswrongFurtherinvestigationquicklyestablishedwhatitwasthathadhappenedAmeteoritehadknockedala"
-            + "rgeholeintheshipTheshiphadnotpreviouslydetectedthisbecausethemeteoritehadneatlyknockedoutthatpartoftheshipsp"
-            + "rocessingequipmentwhichwassupposedtodetectiftheshiphadbeenhitbyameteoriteThefirstthingtodowastotrytosealupth"
-            + "eholeThisturnedouttobeimpossiblebecausetheshipssensorscouldntseethattherewasaholeandthesupervisorswhichsho"
-            + "uldhavesaidthatthesensorswerentworkingproperlywerentworkingproperlyandkeptsayingthatthesensorswerefineTheshi"
-            + "pcouldonlydeducetheexistenceoftheholefromthefactthattherobotshadclearlyfallenoutofittakingitssparebrainwhichwoul"
-            + "dhaveenabledittoseetheholewiththemTheshiptriedtothinkintelligentlyaboutthisfailedandthenblankedoutcompletelyfora"
-            + "bitItdidntrealiseithadblankedoutofcoursebecauseithadblankedoutItwasmerelysurprisedtoseethestarsjumpAfterthethird"
-            + "timethestarsjumpedtheshipfinallyrealisedthatitmustbeblankingoutandthatitwastimetotakesomeseriousdecisionsItrelax"
-            + "edThenitrealisedithadntactuallytakentheseriousdecisionsyetandpanickedItblankedoutagainf"
-            + "orabitWhenitawokeagainitsealedallthebulkheadsaroundwhereitknewtheunseenholemustbeItclearlyh"
-            + "adntgottoitsdestinationyetitthoughtfitfullybutsinceitnolongerhadthefaintestideawhereitsdestinationwasorh"
-            + "owtoreachitthereseemedtobelittlepointincontinuingItconsultedwhattinyscrapsofinstructionsitcouldreconstr"
-            + "uctfromthetattersofitscentralmissionmoduleYouryearmissionistolandasafedistancelandmonitoritAlloftherestw"
-            + "ascompletegarbageBeforeitblankedoutforgoodtheshipwouldhavetopassonthoseinstructionssuchastheyweretoitsm"
-            + "oreprimitivesubsidiarysystemsItmustalsoreviveallofitscrewTherewasanotherproblemWhilethecrewwasinhibernationthe"
-            + "mindsofallofitsmemberstheirmemoriestheiridentitiesandtheirunderstandingofwhattheyhadcometodohadallbeentransferre"
-            + "dintotheshipscentralmissionmoduleforsafekeepingThecrewwouldnothavethefaintestideaofwhotheywereorwhattheyweredoin"
-            + "gthereOhwellJustbeforeitblankedoutforthefinaltimetheshiprealisedthatitsengineswerebeginningtogiveouttooTheshipandits"
-            + "revivedandconfusedcrewcoastedonunderthecontrolofitssubsidiaryautomaticsystemswhichsimplylookedtolandwherevertheyc"
-            + "ouldfindtolandandmonitorwhatevertheycouldfindtomonitorAsfarasfindingsomethingtolandonwasconcernedtheydidntdove"
-            + "rywellTheplanettheyfoundwasdesolatelycoldandlonelysoachinglyfarfromthesunthatshouldwarmitthatittookalloftheEnvir"
-            + "OFormmachineryandLifeSupportOSystemstheycarriedwiththemtorenderitoratleastenoughpartsofithabitableTherew"
-            + "erebetterplanetsnearerinbuttheshipsStrateejOMatwasobviouslylockedintoLurkmodeandchosethemostdistanta"
-            + "ndunobtrusiveplanetandfurthermorewouldnotbegainsaidbyanybodyotherthantheshipsChiefStrategicOfficerSi"
-            + "nceeverybodyontheshiphadlosttheirmindsnooneknewwhotheChiefStrategicOfficerwasorevenifhecouldhave"
-            + "beenidentifiedhowhewassupposedtogoaboutgainsayingtheshipsStrateejOMatAsfarasfindingsomethingt"
-            + "omonitorwasconcernedthoughtheyhitsolidgold");
-    static List<String> usedStrings = new Vector<String>();
-    private int         length      = 5;
-    private String      string;
-
-    /**
-     * Constructs a random text generator with the default length (5)
-     */
-    public RandomText() {}
-
-    /**
-     * Constructs a random text generator with the given length
-     * @param length
-     */
-    public RandomText(int length) {
-        this.length = length;
+    private static SecureRandom r;
+    static {
+        r = new SecureRandom();
+        r.setSeed(System.currentTimeMillis());
     }
 
-    /**
-     * Constructs a random text generator
-     * with the given length and source text
-     *
-     * @param source
-     * @param length
-     */
-    public RandomText(String source, int length) {
-        this.length       = length;
-        RandomText.source = source;
+    private RandomText(){
+    }
+    
+    private RandomText(int lenght){
     }
 
     /**
      * Generates a 8 digit integer value
+     *
      * @return
      */
     public synchronized static Integer getInteger() {
-        return Integer.valueOf(getNumberText());
+        return r.nextInt();
     }
 
     /**
-     * @return The random text
+     * @return A random text like '2d7428a6-b58c-4008-8575-f05549f16316'
      */
-    public synchronized String getString() {
-        string = RandomStringUtils.random(length, source);
-
-        if (!usedStrings.contains(string)) {
-            usedStrings.add(string);
-
-            return string;
-        } else {
-            return getString();
-        }
+    public static String getString() {
+        return UUID.randomUUID().toString();
+    }
+    
+    /**
+     * Creates a random string whose length is the number of characters specified.
+     * Characters will be chosen from the set of alphabetic characters.
+     * @param length
+     * @return 
+     */
+     public static String getText(int length) {
+        return RandomStringUtils.randomAlphabetic(length);
     }
 
-    /**
-     * Equal to new RandomText(8).getString()
-     * @return A random 8- char text
+   /**
+     * Creates a random string whose length 8.
+     * Characters will be chosen from the set of alphabetic characters.
+     * @return 
      */
     public static String getText() {
-        return new RandomText(8).getString();
+        return getText(8);
     }
 
     /**
      * Generates a random text containing only numbers
+     *
      * @return A random 8- char text
      */
     public synchronized static String getNumberText() {
-        return RandomStringUtils.randomNumeric(8);
+        return String.valueOf(r.nextLong());
     }
+
 }
 
 
