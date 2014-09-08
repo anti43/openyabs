@@ -12,7 +12,7 @@ import mpv5.utils.ui.PanelUtils;
 
 /**
  *
- * 
+ *
  */
 public class ControlPanel_Local extends javax.swing.JPanel implements ControlApplet {
 
@@ -47,7 +47,6 @@ public class ControlPanel_Local extends javax.swing.JPanel implements ControlApp
         jPanel3 = new javax.swing.JPanel();
         printdev = new javax.swing.JCheckBox();
         jPanel4 = new javax.swing.JPanel();
-        rowlimit = new mpv5.ui.beans.LabeledTextField();
         autolock = new javax.swing.JCheckBox();
         escape = new javax.swing.JCheckBox();
         jPanel5 = new javax.swing.JPanel();
@@ -63,11 +62,11 @@ public class ControlPanel_Local extends javax.swing.JPanel implements ControlApp
         setName("Form"); // NOI18N
         setLayout(new javax.swing.BoxLayout(this, javax.swing.BoxLayout.PAGE_AXIS));
 
-        java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle(); // NOI18N // NOI18N
+        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("mpv5/resources/languages/Panels"); // NOI18N
         jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("ControlPanel_Local.jPanel2.border.title"))); // NOI18N
         jPanel2.setName("jPanel2"); // NOI18N
 
-        jLabel1.setFont(new java.awt.Font("Tahoma", 1, 11));
+        jLabel1.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
         jLabel1.setText(bundle.getString("ControlPanel_Local.jLabel1.text")); // NOI18N
         jLabel1.setName("jLabel1"); // NOI18N
 
@@ -205,10 +204,6 @@ public class ControlPanel_Local extends javax.swing.JPanel implements ControlApp
         jPanel4.setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("ControlPanel_Local.jPanel4.border.title"))); // NOI18N
         jPanel4.setName("jPanel4"); // NOI18N
 
-        rowlimit.set_Label(bundle.getString("ControlPanel_Local.rowlimit._Label")); // NOI18N
-        rowlimit.setEnabled(false);
-        rowlimit.setName("rowlimit"); // NOI18N
-
         autolock.setText(bundle.getString("ControlPanel_Local.autolock.text")); // NOI18N
         autolock.setName("autolock"); // NOI18N
 
@@ -221,9 +216,6 @@ public class ControlPanel_Local extends javax.swing.JPanel implements ControlApp
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel4Layout.createSequentialGroup()
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel4Layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(rowlimit, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(autolock, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 315, Short.MAX_VALUE)
                     .addComponent(escape, javax.swing.GroupLayout.DEFAULT_SIZE, 315, Short.MAX_VALUE))
                 .addContainerGap())
@@ -231,9 +223,7 @@ public class ControlPanel_Local extends javax.swing.JPanel implements ControlApp
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel4Layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(rowlimit, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addContainerGap(38, Short.MAX_VALUE)
                 .addComponent(autolock)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(escape)
@@ -333,7 +323,6 @@ public class ControlPanel_Local extends javax.swing.JPanel implements ControlApp
         user.setText(values.getProperty("username"));
         password.setText(values.getProperty("password"));
         printdev.setSelected(TypeConversion.stringToBoolean(values.getProperty("devappprint")));
-        rowlimit.set_Text(values.getProperty(LocalSettings.DBROW_LIMIT));
         autolock.setSelected(TypeConversion.stringToBoolean(values.getProperty(LocalSettings.DBAUTOLOCK)));
         escape.setSelected(TypeConversion.stringToBoolean(values.getProperty(LocalSettings.DBESCAPE)));
 
@@ -374,7 +363,6 @@ public class ControlPanel_Local extends javax.swing.JPanel implements ControlApp
     private javax.swing.JTextField port;
     private javax.swing.JCheckBox printdev;
     private javax.swing.JTextField proxy;
-    private mpv5.ui.beans.LabeledTextField rowlimit;
     private mpv5.ui.beans.LabeledTextChooser savebasedir;
     private javax.swing.JTextField user;
     // End of variables declaration//GEN-END:variables
@@ -391,20 +379,9 @@ public class ControlPanel_Local extends javax.swing.JPanel implements ControlApp
         }
 
         LocalSettings.setProperty(LocalSettings.PRINT_DEVAPP, TypeConversion.booleanToString(printdev.isSelected()));
-
-        try {
-            if (Integer.valueOf(rowlimit.get_Text()).intValue() >= 0) {
-                LocalSettings.setProperty(LocalSettings.DBROW_LIMIT, Integer.valueOf(rowlimit.get_Text()).toString());
-                QueryHandler.setRowLimit(Integer.valueOf(rowlimit.get_Text()).intValue());
-            }
-        } catch (NumberFormatException numberFormatException) {
-            Log.Debug(numberFormatException);
-        }
-
         LocalSettings.setProperty(LocalSettings.DBAUTOLOCK, TypeConversion.booleanToString(autolock.isSelected()));
-
         LocalSettings.setProperty(LocalSettings.BASE_DIR, savebasedir.get_Text(true));
-         LocalSettings.setProperty(LocalSettings.BACKUP_DIR, backupbasedir.get_Text(true));
+        LocalSettings.setProperty(LocalSettings.BACKUP_DIR, backupbasedir.get_Text(true));
 
         LocalSettings.apply();
     }

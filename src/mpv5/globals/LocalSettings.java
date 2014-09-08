@@ -47,7 +47,6 @@ public class LocalSettings {
     public static final String PROXYUSE = "useproxy";
     public static final String DBNAME = "dbname";
     public static final String DBPREFIX = "dbprefix";
-    public static final String DBROW_LIMIT = "dbrowlimit";
     public static final String DBAUTOLOCK = "dbautolock";
     /**
      * single, multi
@@ -73,7 +72,6 @@ public class LocalSettings {
     private static PropertyStore predefinedSettings = new PropertyStore(new String[][]{
                 {CLIENT, "Default Client"},
                 {DEFAULT_FONT, "DejaVu Sans 11"},
-                {DBROW_LIMIT, "0"},
                 {DBAUTOLOCK, "false"},
                 {SERVER_PORT, "4343"},
                 {CACHE_SIZE, "500"},
@@ -121,11 +119,11 @@ public class LocalSettings {
             }
         }//End proxy settings
 
-        if (hasProperty(DBROW_LIMIT)) {
-            QueryHandler.setRowLimit(Integer.valueOf(getProperty(DBROW_LIMIT)));
-        } else {
-            setProperty(DBROW_LIMIT, "0");
-        }
+//        if (hasProperty(DBROW_LIMIT)) {
+//            QueryHandler.setRowLimit(Integer.valueOf(getProperty(DBROW_LIMIT)));
+//        } else {
+//            setProperty(DBROW_LIMIT, "0");
+//        }
 
         if (hasProperty(DBAUTOLOCK)) {
             DatabaseObject.setAutoLockEnabled(TypeConversion.stringToBoolean(getProperty(DBAUTOLOCK)));
