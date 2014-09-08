@@ -250,7 +250,11 @@ public class ItemPanel2 extends javax.swing.JPanel implements DataPanel, MPCBSel
             Item dato = (Item) getDataOwner();
 
             public void actionPerformed(ActionEvent e) {
-                if (dato.__getInttype() == Item.TYPE_BILL && !loading && dataOwner.isExisting() && Integer.valueOf(status.getSelectedItem().getId()) == Item.STATUS_PAID && mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("org.openyabs.uiproperty", "autocreaterevenue")) {
+                if (dato.__getInttype() == Item.TYPE_BILL 
+                        && !loading 
+                        && dataOwner.isExisting() 
+                        && Integer.valueOf(status.getSelectedItem().getId()) == Item.STATUS_PAID 
+                        && mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("org.openyabs.uiproperty", "autocreaterevenue")) {
                     if (Popup.Y_N_dialog(Messages.BOOK_NOW)) {
 
                         if (dato.getPanelData(p) && dato.save()) {
@@ -266,11 +270,16 @@ public class ItemPanel2 extends javax.swing.JPanel implements DataPanel, MPCBSel
                     }
                 }
 
-                if (dato.__getInttype() == Item.TYPE_BILL && !loading && dataOwner.isExisting()
+                if (!loading && dataOwner.isExisting()
                         && Integer.valueOf(status.getSelectedItem().getId()) == Item.STATUS_PAID) {
-
                     //set dateend
                     date3.setDate(new Date());
+                }
+                
+                if (!loading && dataOwner.isExisting()
+                        && Integer.valueOf(status.getSelectedItem().getId()) == Item.STATUS_IN_PROGRESS) {
+                    //set date edited
+                    date2.setDate(new Date());
                 }
             }
         });
@@ -283,6 +292,7 @@ public class ItemPanel2 extends javax.swing.JPanel implements DataPanel, MPCBSel
                     MailMessage d = (MailMessage) DatabaseObject.getObject(Context.getMessage(), Integer.valueOf(labeledCombobox1.getSelectedItem().getId()));
                     notes.setText(d.__getDescription());
                 } catch (Exception ex) {
+                    Log.Debug(ex);
                 }
             }
         });

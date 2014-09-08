@@ -29,7 +29,7 @@ import mpv5.utils.ui.TextFieldUtils;
  *
  *  
  */
-public class LabeledTextField extends javax.swing.JPanel {
+public final class LabeledTextField extends javax.swing.JPanel {
 
     private static final long serialVersionUID = 1L;
     private String _text;
@@ -40,11 +40,19 @@ public class LabeledTextField extends javax.swing.JPanel {
     private String searchField;
     private boolean searchOnEnterEnabled;
     private Object displayingObject;
+    private int labelWidth=100;
 
     /** Creates new form LabeledTextField */
     public LabeledTextField() {
         initComponents();
-
+    }
+    
+     /** Creates new form LabeledTextField
+     * @param initComps */
+    public LabeledTextField(boolean initComps) {
+        if (initComps) {
+            initComponents();
+        }
     }
 
     /**
@@ -73,17 +81,21 @@ public class LabeledTextField extends javax.swing.JPanel {
     public JLabel getLabelField() {
         return jLabel1;
     }
+    
+    /**
+     *
+     * @param w
+     */
+    public void setLabelWidth(int w){
+        labelWidth=w;
+    }
 
     /**
      * Determines if the field has some text
      * @return
      */
     public boolean hasText() {
-        if (jTextField1.getText() != null && jTextField1.getText().length() > 0) {
-            return true;
-        } else {
-            return false;
-        }
+        return jTextField1.getText() != null && jTextField1.getText().length() > 0;
     }
 
     public void setText(String text) {
@@ -94,6 +106,9 @@ public class LabeledTextField extends javax.swing.JPanel {
 //        setFont(font);
 //
 //    }
+    public void doInitComponents(){
+        initComponents();
+    }
     /** This method is called from within the constructor to
      * initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is
@@ -111,7 +126,7 @@ public class LabeledTextField extends javax.swing.JPanel {
 
         jLabel1.setText("text");
         jLabel1.setMaximumSize(new java.awt.Dimension(300, 50));
-        jLabel1.setPreferredSize(new java.awt.Dimension(100, 20));
+        jLabel1.setPreferredSize(new java.awt.Dimension(labelWidth, 20));
         add(jLabel1);
 
         jTextField1.setDisabledTextColor(new java.awt.Color(0, 51, 51));
@@ -387,5 +402,12 @@ public class LabeledTextField extends javax.swing.JPanel {
             text = value;
         }
         return text;
+    }
+
+    /**
+     * @return the labelWidth
+     */
+    public int getLabelWidth() {
+        return labelWidth;
     }
 }
