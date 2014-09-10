@@ -143,10 +143,10 @@ public class ItemPanel2 extends javax.swing.JPanel implements DataPanel, MPCBSel
         refresh();
 //        shipping.set_ValueClass(Double.class);
 
-//        checkb_pront_oc.setSelected(
-//            mpv5.db.objects.User.getCurrentUser().getProperties().getProperty(
-//                "org.openyabs.uiproperty", 
-//                "orderconfirmationalways"));
+        checkb_pront_oc.setSelected(
+            mpv5.db.objects.User.getCurrentUser().getProperties().getProperty(
+                "org.openyabs.uiproperty", 
+                "orderconfirmationalways"));
         addedby.setText(mpv5.db.objects.User.getCurrentUser().getName());
         contactname.setSearchEnabled(true);
         contactname.setContext(Context.getCustomer());
@@ -508,7 +508,6 @@ public class ItemPanel2 extends javax.swing.JPanel implements DataPanel, MPCBSel
         button_preview = new javax.swing.JButton();
         button_deliverynote = new javax.swing.JButton();
         button_orderconf = new javax.swing.JButton();
-        checkb_pront_oc = new javax.swing.JCheckBox();
         jPanel11 = new javax.swing.JPanel();
         jPanel6 = new javax.swing.JPanel();
         jToolBar2 = new alignRightToolbar();
@@ -543,6 +542,7 @@ public class ItemPanel2 extends javax.swing.JPanel implements DataPanel, MPCBSel
         date1 = new mpv5.ui.beans.LabeledDateChooser();
         date2 = new mpv5.ui.beans.LabeledDateChooser();
         date3 = new mpv5.ui.beans.LabeledDateChooser();
+        checkb_pront_oc = new javax.swing.JCheckBox();
         jPanel7 = new javax.swing.JPanel();
         jSplitPane1 = new javax.swing.JSplitPane();
         jTabbedPane1 = new javax.swing.JTabbedPane();
@@ -930,19 +930,6 @@ public class ItemPanel2 extends javax.swing.JPanel implements DataPanel, MPCBSel
         });
         jToolBar1.add(button_orderconf);
 
-        checkb_pront_oc.setBackground(new java.awt.Color(255, 255, 255));
-        checkb_pront_oc.setText(bundle.getString("ItemPanel2.checkb_pront_oc.text")); // NOI18N
-        checkb_pront_oc.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(153, 153, 153), 1, true));
-        checkb_pront_oc.setEnabled(false);
-        checkb_pront_oc.setFocusable(false);
-        checkb_pront_oc.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
-        checkb_pront_oc.setMaximumSize(new java.awt.Dimension(333, 20));
-        checkb_pront_oc.setMinimumSize(new java.awt.Dimension(80, 20));
-        checkb_pront_oc.setName("checkb_pront_oc"); // NOI18N
-        checkb_pront_oc.setPreferredSize(new java.awt.Dimension(120, 20));
-        checkb_pront_oc.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        jToolBar1.add(checkb_pront_oc);
-
         jPanel11.setName("jPanel11"); // NOI18N
         jPanel11.setLayout(new java.awt.BorderLayout());
 
@@ -1180,6 +1167,19 @@ public class ItemPanel2 extends javax.swing.JPanel implements DataPanel, MPCBSel
         date3.setName("date3"); // NOI18N
         date3.setPreferredSize(new java.awt.Dimension(280, 20));
         jPanel5.add(date3);
+
+        checkb_pront_oc.setBackground(new java.awt.Color(255, 255, 255));
+        checkb_pront_oc.setText(bundle.getString("ItemPanel2.checkb_pront_oc.text")); // NOI18N
+        checkb_pront_oc.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(153, 153, 153), 1, true));
+        checkb_pront_oc.setEnabled(false);
+        checkb_pront_oc.setFocusable(false);
+        checkb_pront_oc.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
+        checkb_pront_oc.setMaximumSize(new java.awt.Dimension(333, 20));
+        checkb_pront_oc.setMinimumSize(new java.awt.Dimension(80, 20));
+        checkb_pront_oc.setName("checkb_pront_oc"); // NOI18N
+        checkb_pront_oc.setPreferredSize(new java.awt.Dimension(120, 20));
+        checkb_pront_oc.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        jPanel5.add(checkb_pront_oc);
 
         panel2.add(jPanel5, java.awt.BorderLayout.PAGE_START);
 
