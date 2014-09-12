@@ -32,9 +32,9 @@ import mpv5.utils.numberformat.FormatNumber;
  * PropertyStores is used to store key-value pairs
  * 
  */
-public class PropertyStore {
+public final class PropertyStore {
 
-    private final ArrayList<String[]> list = new ArrayList<String[]>();
+    private final List<String[]> list = new ArrayList<String[]>();
     private boolean changed = false;
 
     /**
@@ -56,8 +56,8 @@ public class PropertyStore {
      * @param data {key, value}
      */
     public synchronized void addAll(Object[][] data) {
-        for (int i = 0; i < data.length; i++) {
-            changeProperty(data[i][0].toString(), String.valueOf(data[i][1]));
+        for (Object[] data1 : data) {
+            changeProperty(data1[0].toString(), String.valueOf(data1[1]));
         }
         setChanged(true);
     }
@@ -89,7 +89,7 @@ public class PropertyStore {
      * @param name
      * @return the value
      */
-    public synchronized String getProperty(String name) {
+    public String getProperty(String name) {
         String prop;
         if (list.size() > 0) {
             for (int i = list.size(); i > 0; i--) {
@@ -186,7 +186,7 @@ public class PropertyStore {
      * @return A value or a new instance of T
      */
     @SuppressWarnings("unchecked")
-    public synchronized <T extends Object> T getProperty(String key, T desiredClassAndFallbackValue) {
+    public <T extends Object> T getProperty(String key, T desiredClassAndFallbackValue) {
         String t = getProperty(key);
 
         if (desiredClassAndFallbackValue instanceof Double) {
@@ -241,7 +241,7 @@ public class PropertyStore {
      * @param source
      * @return
      */
-    public synchronized boolean getProperty(JComponent comp, String source) {
+    public boolean getProperty(JComponent comp, String source) {
         return getProperty(comp.getClass().getName() + "$" + source, false);
     }
 
@@ -252,7 +252,7 @@ public class PropertyStore {
      * @param source
      * @return
      */
-    public synchronized boolean getProperty(String comp, String source) {
+    public boolean getProperty(String comp, String source) {
         return getProperty(comp + "$" + source, false);
     }
 
@@ -265,7 +265,7 @@ public class PropertyStore {
      * @param type
      * @return
      */
-    public synchronized <T extends Object> T getProperty(Component comp, String source, T type) {
+    public <T extends Object> T getProperty(Component comp, String source, T type) {
         return getProperty(comp.getClass().getName() + "$" + source, type);
     }
 
@@ -278,7 +278,7 @@ public class PropertyStore {
      * @param type
      * @return
      */
-    public synchronized <T extends Object> T getProperty(Component comp, Component target, T type) {
+    public <T extends Object> T getProperty(Component comp, Component target, T type) {
         return getProperty(comp.getClass().getName() + "$" + target.getName(), type);
     }
 
@@ -384,7 +384,7 @@ public class PropertyStore {
      * @param propertyname
      * @return True if the key exists
      */
-    public synchronized boolean hasProperty(String propertyname) {
+    public boolean hasProperty(String propertyname) {
         if (getProperty(propertyname) == null) {
             return false;
         } else {
@@ -403,14 +403,14 @@ public class PropertyStore {
         return str;
     }
 
-    public synchronized void setChanged(boolean b) {
+    public void setChanged(boolean b) {
         this.changed = b;
     }
 
     /**
      * @return the changed
      */
-    public synchronized boolean isChanged() {
+    public boolean isChanged() {
         return changed;
     }
 

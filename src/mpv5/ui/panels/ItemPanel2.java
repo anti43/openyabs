@@ -40,41 +40,44 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import javax.swing.*;
-import javax.swing.table.TableCellRenderer;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
+import javax.swing.table.TableCellRenderer;
 import mpv5.YabsViewProxy;
 import mpv5.db.common.*;
 import mpv5.db.objects.ActivityList;
-import mpv5.db.objects.Product;
-import mpv5.globals.Headers;
-import mpv5.globals.Messages;
 import mpv5.db.objects.Contact;
 import mpv5.db.objects.Favourite;
 import mpv5.db.objects.Group;
 import mpv5.db.objects.Item;
 import mpv5.db.objects.MailMessage;
+import mpv5.db.objects.Product;
 import mpv5.db.objects.ProductList;
 import mpv5.db.objects.ProductlistSubItem;
 import mpv5.db.objects.SubItem;
 import mpv5.db.objects.Template;
-import mpv5.logging.Log;
-import mpv5.ui.dialogs.BigPopup;
-import mpv5.ui.dialogs.Popup;
-import mpv5.ui.popups.FileTablePopUp;
-import mpv5.ui.toolbars.DataPanelTB;
 import mpv5.db.objects.User;
 import mpv5.db.objects.ValueProperty;
 import mpv5.globals.Constants;
 import mpv5.globals.GlobalSettings;
+import mpv5.globals.Headers;
+import mpv5.globals.Messages;
 import mpv5.handler.FormatHandler;
+import mpv5.logging.Log;
 import mpv5.ui.beans.MPCBSelectionChangeReceiver;
+import mpv5.ui.beans.UserCheckbox;
+import mpv5.ui.dialogs.BigPopup;
 import mpv5.ui.dialogs.DialogForFile;
+import mpv5.ui.dialogs.Popup;
 import mpv5.ui.dialogs.ScheduleDayEvent;
 import mpv5.ui.dialogs.subcomponents.*;
 import mpv5.ui.misc.MPTable;
 import mpv5.ui.misc.Position;
+import mpv5.ui.misc.TableViewPersistenceHandler;
+import mpv5.ui.popups.FileTablePopUp;
 import mpv5.ui.popups.TablePopUp;
+import mpv5.ui.toolbars.DataPanelTB;
+import mpv5.usermanagement.MPSecurityManager;
 import mpv5.utils.arrays.ArrayUtilities;
 import mpv5.utils.date.DateConverter;
 import mpv5.utils.export.Export;
@@ -85,17 +88,15 @@ import mpv5.utils.models.MPTableModel;
 import mpv5.utils.numberformat.FormatNumber;
 import mpv5.utils.renderer.ButtonEditor;
 import mpv5.utils.renderer.ButtonRenderer;
+import mpv5.utils.renderer.LazyCellEditor;
+import mpv5.utils.renderer.LazyCellRenderer;
 import mpv5.utils.renderer.TableCellRendererForDezimal;
+import mpv5.utils.renderer.TableCellRendererForProducts;
 import mpv5.utils.renderer.TableTabAction;
 import mpv5.utils.renderer.TextAreaCellEditor;
 import mpv5.utils.renderer.TextAreaCellRenderer;
-import mpv5.utils.tables.TableFormat;
-import mpv5.ui.misc.TableViewPersistenceHandler;
-import mpv5.usermanagement.MPSecurityManager;
-import mpv5.utils.renderer.LazyCellEditor;
-import mpv5.utils.renderer.LazyCellRenderer;
-import mpv5.utils.renderer.TableCellRendererForProducts;
 import mpv5.utils.tables.DynamicTableCalculator;
+import mpv5.utils.tables.TableFormat;
 import mpv5.utils.ui.TextFieldUtils;
 
 /**
@@ -141,12 +142,7 @@ public class ItemPanel2 extends javax.swing.JPanel implements DataPanel, MPCBSel
         }
 
         refresh();
-//        shipping.set_ValueClass(Double.class);
 
-        checkb_pront_oc.setSelected(
-            mpv5.db.objects.User.getCurrentUser().getProperties().getProperty(
-                "org.openyabs.uiproperty", 
-                "orderconfirmationalways"));
         addedby.setText(mpv5.db.objects.User.getCurrentUser().getName());
         contactname.setSearchEnabled(true);
         contactname.setContext(Context.getCustomer());
@@ -542,7 +538,7 @@ public class ItemPanel2 extends javax.swing.JPanel implements DataPanel, MPCBSel
         date1 = new mpv5.ui.beans.LabeledDateChooser();
         date2 = new mpv5.ui.beans.LabeledDateChooser();
         date3 = new mpv5.ui.beans.LabeledDateChooser();
-        checkb_pront_oc = new javax.swing.JCheckBox();
+        checkb_pront_oc = new UserCheckbox("orderconfirmationalways");
         jPanel7 = new javax.swing.JPanel();
         jSplitPane1 = new javax.swing.JSplitPane();
         jTabbedPane1 = new javax.swing.JTabbedPane();
@@ -1138,7 +1134,7 @@ public class ItemPanel2 extends javax.swing.JPanel implements DataPanel, MPCBSel
                 .addGap(3, 3, 3)
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 137, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel11, javax.swing.GroupLayout.DEFAULT_SIZE, 154, Short.MAX_VALUE))
+                .addComponent(jPanel11, javax.swing.GroupLayout.DEFAULT_SIZE, 158, Short.MAX_VALUE))
         );
 
         jTabbedPane2.addTab(bundle.getString("ItemPanel2.rightpane.TabConstraints.tabTitle"), rightpane); // NOI18N
@@ -1150,7 +1146,7 @@ public class ItemPanel2 extends javax.swing.JPanel implements DataPanel, MPCBSel
         jPanel5.setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("ItemPanel2.jPanel5.border.title"))); // NOI18N
         jPanel5.setMinimumSize(new java.awt.Dimension(250, 60));
         jPanel5.setName("jPanel5"); // NOI18N
-        jPanel5.setPreferredSize(new java.awt.Dimension(892, 90));
+        jPanel5.setPreferredSize(new java.awt.Dimension(892, 75));
         jPanel5.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 10, 0));
 
         date1.set_Label(bundle.getString("ItemPanel2.date1._Label")); // NOI18N
@@ -1171,7 +1167,6 @@ public class ItemPanel2 extends javax.swing.JPanel implements DataPanel, MPCBSel
         checkb_pront_oc.setBackground(new java.awt.Color(255, 255, 255));
         checkb_pront_oc.setText(bundle.getString("ItemPanel2.checkb_pront_oc.text")); // NOI18N
         checkb_pront_oc.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(153, 153, 153), 1, true));
-        checkb_pront_oc.setEnabled(false);
         checkb_pront_oc.setFocusable(false);
         checkb_pront_oc.setHorizontalTextPosition(javax.swing.SwingConstants.RIGHT);
         checkb_pront_oc.setMaximumSize(new java.awt.Dimension(333, 20));
@@ -1323,9 +1318,9 @@ public class ItemPanel2 extends javax.swing.JPanel implements DataPanel, MPCBSel
                 .addComponent(addfile)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(removefile)
-                .addContainerGap(205, Short.MAX_VALUE))
+                .addContainerGap(224, Short.MAX_VALUE))
             .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 261, Short.MAX_VALUE))
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 280, Short.MAX_VALUE))
         );
 
         jSplitPane1.setRightComponent(jPanel8);
@@ -2307,10 +2302,10 @@ public class ItemPanel2 extends javax.swing.JPanel implements DataPanel, MPCBSel
     public void print() {
         if (dataOwner != null && dataOwner.isExisting()) {
             if (TemplateHandler.isLoaded(Long.valueOf(dataOwner.templateGroupIds()), dataOwner.__getInttype())) {
-                if (!checkb_pront_oc.isSelected()) {
-                    Export.print(TemplateHandler.loadTemplate(dataOwner.templateGroupIds(), dataOwner.__getInttype()), dataOwner);
-                } else {
+                if (checkb_pront_oc.isSelected()&&checkb_pront_oc.isEnabled()) {
                     Export.print(new Template[]{TemplateHandler.loadTemplate(dataOwner.templateGroupIds(), dataOwner.__getInttype()), TemplateHandler.loadTemplate(dataOwner.templateGroupIds(), Constants.TYPE_ORDER_CONFIRMATION)}, dataOwner);
+                } else {
+                    Export.print(TemplateHandler.loadTemplate(dataOwner.templateGroupIds(), dataOwner.__getInttype()), dataOwner);
                 }
             } else {
                 Popup.notice(Messages.NO_TEMPLATE_LOADED + " (" + mpv5.db.objects.User.getCurrentUser() + ")");

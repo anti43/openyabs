@@ -564,8 +564,7 @@ public class User extends DatabaseObject {
         synchronized (properties) {
             List<String[]> l = properties.getList();
 
-            for (int i = 0; i < l.size(); i++) {
-                String[] d = l.get(i);
+            for (String[] d : l) {
                 UserProperty p = new UserProperty();
                 p.setValue(d[1]);
                 p.setCname(d[0]);
