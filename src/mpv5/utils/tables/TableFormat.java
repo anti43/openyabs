@@ -378,6 +378,8 @@ public class TableFormat {
 
             if (row == nrow && col == ncol) {
                this.setBackground(color);
+            }else{
+               this.setBackground(Color.white);
             }
 
             return this;

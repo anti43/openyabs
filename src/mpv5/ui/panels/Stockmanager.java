@@ -15,16 +15,10 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Vector;
-import javax.swing.AbstractAction;
 import javax.swing.DefaultComboBoxModel;
-import javax.swing.JComponent;
 import javax.swing.JTable;
-import javax.swing.KeyStroke;
 import javax.swing.RowFilter;
 import javax.swing.SwingUtilities;
 import javax.swing.table.DefaultTableModel;
@@ -32,7 +26,6 @@ import javax.swing.table.TableModel;
 import javax.swing.table.TableRowSorter;
 import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
-import mpv5.db.common.NodataFoundException;
 import mpv5.db.objects.Product;
 import mpv5.logging.Log;
 import mpv5.ui.beans.UserCheckbox;
@@ -47,6 +40,7 @@ import mpv5.utils.tables.TableFormat;
 public class Stockmanager extends javax.swing.JPanel {
 
    private static Stockmanager me;
+   private static final long serialVersionUID = 1L;
 
    public static Stockmanager instanceOf() {
       if (me == null) {
@@ -61,17 +55,21 @@ public class Stockmanager extends javax.swing.JPanel {
     */
    public Stockmanager() {
       initComponents();
-      model = new MPTableModel(new Class[]{String.class, Integer.class, DatabaseObject.class}, new boolean[]{true, true, false}, new Object[]{"1", "2", "3"});
+      model = new MPTableModel(new Class[]{String.class, Integer.class, String.class, String.class}, 
+              new boolean[]{true, true, false, false}, 
+              new Object[]{"Scan", "Amount", "Product", "New Stockvalue"});
+      model.removeRow(0);
       mainTable.setModel(model);
-      TableFormat.hideHeader(mainTable);
-      TableFormat.resizeCol(mainTable, 1, 100, true);
+//      TableFormat.hideHeader(mainTable);
+      TableFormat.resizeCol(mainTable, 1, 50, true);
       setupFilter();
       Object[] mo = new Object[4];
-      mo[0]="ean";
-      mo[1]="cnumber";
-      mo[2]="cname";
-      mo[3]="description";
+      mo[0]="EAN";
+      mo[1]="CNumber";
+      mo[2]="CName";
+      mo[3]="Description";
       labeledCombobox1.getComboBox().setModel(new DefaultComboBoxModel(mo));
+      
    }
 
    /**
@@ -86,7 +84,6 @@ public class Stockmanager extends javax.swing.JPanel {
       jPanel1 = new javax.swing.JPanel();
       jToolBar1 = new javax.swing.JToolBar();
       labeledCombobox1 = new mpv5.ui.beans.LabeledCombobox();
-      auto = new UserCheckbox("sendscanonenter");
       jSeparator1 = new javax.swing.JToolBar.Separator();
       jButton1 = new javax.swing.JButton();
       jScrollPane1 = new javax.swing.JScrollPane();
@@ -96,6 +93,7 @@ public class Stockmanager extends javax.swing.JPanel {
       jButton2 = new javax.swing.JButton();
       labeledTextField1 = new mpv5.ui.beans.LabeledTextField();
       jLabel1 = new javax.swing.JLabel();
+      auto = new UserCheckbox("sendscanonenter");
 
       setName("Form"); // NOI18N
       setLayout(new java.awt.BorderLayout());
@@ -111,18 +109,6 @@ public class Stockmanager extends javax.swing.JPanel {
       labeledCombobox1.set_Label(bundle.getString("Stockmanager.labeledCombobox1._Label")); // NOI18N
       labeledCombobox1.setName("labeledCombobox1"); // NOI18N
       jToolBar1.add(labeledCombobox1);
-
-      auto.setText(bundle.getString("Stockmanager.auto.text_1")); // NOI18N
-      auto.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
-      auto.setFocusable(false);
-      auto.setName("auto"); // NOI18N
-      auto.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-      auto.addActionListener(new java.awt.event.ActionListener() {
-         public void actionPerformed(java.awt.event.ActionEvent evt) {
-            autoActionPerformed(evt);
-         }
-      });
-      jToolBar1.add(auto);
 
       jSeparator1.setName("jSeparator1"); // NOI18N
       jToolBar1.add(jSeparator1);
@@ -184,6 +170,17 @@ public class Stockmanager extends javax.swing.JPanel {
       jLabel1.setText(bundle.getString("Stockmanager.jLabel1.text_1")); // NOI18N
       jLabel1.setName("jLabel1"); // NOI18N
 
+      auto.setText(bundle.getString("Stockmanager.auto.text_1")); // NOI18N
+      auto.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
+      auto.setFocusable(false);
+      auto.setName("auto"); // NOI18N
+      auto.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+      auto.addActionListener(new java.awt.event.ActionListener() {
+         public void actionPerformed(java.awt.event.ActionEvent evt) {
+            autoActionPerformed(evt);
+         }
+      });
+
       javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
       jPanel1.setLayout(jPanel1Layout);
       jPanel1Layout.setHorizontalGroup(
@@ -191,7 +188,9 @@ public class Stockmanager extends javax.swing.JPanel {
          .addGroup(jPanel1Layout.createSequentialGroup()
             .addComponent(jScrollPane2)
             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-            .addComponent(jButton2))
+            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+               .addComponent(auto, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+               .addComponent(jButton2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
          .addComponent(labeledTextField1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
          .addComponent(jScrollPane1)
          .addGroup(jPanel1Layout.createSequentialGroup()
@@ -207,7 +206,11 @@ public class Stockmanager extends javax.swing.JPanel {
             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
             .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 97, javax.swing.GroupLayout.PREFERRED_SIZE)
-               .addComponent(jButton2))
+               .addGroup(jPanel1Layout.createSequentialGroup()
+                  .addGap(2, 2, 2)
+                  .addComponent(jButton2)
+                  .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                  .addComponent(auto)))
             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
             .addComponent(labeledTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -225,21 +228,25 @@ public class Stockmanager extends javax.swing.JPanel {
        Object k = labeledCombobox1.getComboBox().getSelectedItem();
        
        for (int x = 0; x < rows; x++) {
-
           String key = String.valueOf(mainTable.getValueAt(x, 0));
           try {
              if (key.length() > 0 && !key.equals("null")) {
                 BigDecimal val = new BigDecimal(String.valueOf(mainTable.getValueAt(x, 1)));
-                Product dbo = (Product) DatabaseObject.getObject(Context.getProduct(), k==null?"ean":k.toString(), key);
+                Product dbo = (Product) DatabaseObject.getObject(Context.getProduct(), k==null?"ean":k.toString().toLowerCase(), key);
                 dbo.setStockvalue(dbo.__getStockvalue() == null ? val : dbo.__getStockvalue().add(val));
                 dbo.save();
-                mainTable.setValueAt(dbo, x, 2);
+                mainTable.setValueAt(dbo.__getCname()+" ("+dbo.__getIDS()+")", x, 2);
+                mainTable.setValueAt(dbo.__getStockvalue().toPlainString(), x, 3);
+                mainTable.setValueAt("0", x, 1);
                 TableFormat.changeBackground(mainTable, 2, x, Color.green);
              }
           } catch (Exception exception) {
-             Notificator.raiseNotification(exception, true);
+             Notificator.raiseNotification(exception, false);
              TableFormat.changeBackground(mainTable, 2, x, Color.red);
+             mainTable.setValueAt(exception.getMessage(), x, 2);
           }
+          
+          mainTable.invalidate();
 
        }
 //       for (Object[] d : model.getData()) {
@@ -297,7 +304,7 @@ public class Stockmanager extends javax.swing.JPanel {
    }
 
    private void doIt() {
-      String x = jTextArea1.getText().replace("\n", "");
+      String x = jTextArea1.getText().replace("\n", "").trim();
       Runnable runnable = new Runnable() {
          @Override
          public void run() {
@@ -312,7 +319,6 @@ public class Stockmanager extends javax.swing.JPanel {
       for (Iterator it = v.iterator(); it.hasNext();) {
          Vector a = (Vector) it.next();
          if (String.valueOf(a.elementAt(0)).equals(x)) {
-
             try {
                ((DefaultTableModel) mainTable.getModel()).setValueAt(Integer.valueOf(String.valueOf(a.elementAt(1))) + 1, row, 1);
             } catch (NumberFormatException numberFormatException) {
