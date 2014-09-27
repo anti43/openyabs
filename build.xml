@@ -17,6 +17,7 @@
     <property name="java-build.debug" 			value="on"/>
     <property name="java-build.jar-main-class" 		value="mpv5.Main"/>
 
+
      <target name="copy-resources"
             description="Copies resources in preparation to be packaged in jar">
         <copy todir="${java-build.classes-dir}">
@@ -46,19 +47,81 @@
         </copy>
     </target>
 
-  <!-- Uncomment this section to build the rpm   
+  <!-- Uncomment this section to build the rpm  
   <rpm
         specFile="yabs1.spec"
         topDir="install/rpm"
         cleanBuildDir="true"
         failOnError="true"/>
- -->
-  <!-- Uncomment this section to sign the jars
+  -->
+  <!-- Uncomment this section to sign the jars -->
     <target name="-post-jar">
         <exec dir="${dist.dir}/../security" executable="./generate_key.sh" os="Linux" failonerror="false"/>
         <exec dir="${dist.dir}/../security" executable="./signjars.sh" os="Linux" failonerror="false" />
     </target>
+<!---->
+
+  <target name="MacPack" depends="jar" description="Build Yabs for Mac">
+
+    <taskdef name="jarbundler"
+             classpath="ant/jarbundler-2.3.1-JDK5.jar" 
+             classname="net.sourceforge.jarbundler.JarBundler"/>
+
+    <jarbundler dir="${basedir}/mac" verbose="true" showPlist="false"
+                name="${ant.project.name}"
+                copyright=""
+                developmentregion="German"
+                shortname="Yabs - Applepie"
+                stubfile="JavaApplicationStub"
+                mainclass="mpv5.Main"
+                icon="ant/${ant.project.name}.icns"
+                allowMixedLocalizations="true"
+                jvmversion="1.5+"
+                version="${version}"
+                infostring="${ant.project.name}, ${copyright}"
+                build="${buildnumber}"
+                bundleid="mpv5.Main"> 
+
+      <!-- Adjust the look, feel and behavior -->
+      <javaproperty name="apple.laf.useScreenMenuBar" value="true"/>
+
+
+      <!-- Just proving we can included these files.  Might use them in About boxes -->                
+      <resourcefilelist dir="dist" files="README.TXT"/>
+ 
+      <jarfilelist dir="${basedir}/dist" files="${ant.project.name}.jar"/>
+      <jarfileset dir="${basedir}/dist/lib" includes="*.jar">
+          <exclude name="**/*source*"/>
+          <exclude name="**/*javadoc*"/>
+      </jarfileset>
+      
+
+
+      <!-- Copy the HelpBooks to the language specific folders            -->
+      <!--  English will use the foldername and book name from the Bundle -->
+      <!--  German or 'de' will use the custom folder name and book name  -->
+     
+      <!--<HelpBook locale="English">
+      	<fileset dir="HelpBook/English" />
+      	<fileset dir="HelpBook/common" />
+      </HelpBook>
+   
+      <helpbook foldername="Hilfebuch" name="Hallo Welt Hilfe" locale="German">
+      	<fileset dir="HelpBook/German" />
+      	<fileset dir="HelpBook/common" />
+      </helpbook>
+      
+      <helpbook name="Hjälp" locale="sv">
+      	<fileset dir="HelpBook/Swedish" />
+      	<fileset dir="HelpBook/common" />
+      </helpbook>
 -->
+
+      
+    </jarbundler>
+    
+  </target>
+
 
 <!--
 Build a .deb:
@@ -67,7 +130,7 @@ apt-get install alien
 alien paketname.rpm
 dpkg -i paketname.deb
 
--->
+    -->
     <target name="package-for-store" depends="jar">
 
         <!-- Change the value of this property to be the name of your JAR,

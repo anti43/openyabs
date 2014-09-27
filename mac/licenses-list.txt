@@ -1,0 +1,47 @@
+swing-layout-1.0.3.jar;The Swing Layout extensions;GNU General Public License Version 2;Sun Microsystems Inc.
+swing-worker-1.1.jar;Sun SwingWorker;GNU General Public License Version 2;Sun Microsystems Inc.
+derby.jar;The Apache Derby Database;Apache License Version 2.0;The Apache Software Foundation
+l2fprod-common-all.jar;L2FProd Common Components;Apache License Version 2.0;L2FProd.com
+jdom.jar;Java-based "document object model" for XML files;JDOM license;The JDOMTM Project
+mail.jar;JavaMail API;JAVAMAIL license;Sun Microsystems Inc.
+dtdparser121.jar;A Java DTD Parser;GNU Lesser General Public License;Wutka Consulting, Inc.
+resolver.jar;Java XSL processor;Apache License Version 2.0;The Apache Software Foundation
+serializer.jar;Apache Xalan Project;Apache License Version 2.0;The Apache Software Foundation
+xercesImpl.jar;Apache Xerxes;Apache License Version 2.0;The Apache Software Foundation
+xmlrpc-client-3.1.2.jar;Apache XML-RPC Client;Apache License Version 2.0;The Apache Software Foundation
+xmlrpc-common-3.1.2.jar;Apache XML-RPC Commons;Apache License Version 2.0;The Apache Software Foundation
+xmlrpc-server-3.1.2.jar;Apache XML-RPC Server;Apache License Version 2.0;The Apache Software Foundation
+xml-apis.jar;Apache Xerxes;Apache License Version 2.0;The Apache Software Foundation
+appframework-1.0.3.jar;Java Application Framework;GNU Lesser General Public License;JDesktop Network Components
+org.json.jar;JSON (JavaScript Object Notation);JSON license;json.org
+microba-0.4.4.2.jar;Microba Calendar Components;Microba license;Michael Baranov
+pdf-renderer.jar;PDF Renderer:Advanced PDF renderer based on the original PDFRenderer by Sun;GNU Lesser General Public License;Sun Microsystems Inc.
+iText-2.1.7.jar;A Free Java-PDF library;GNU Lesser General Public License;Bruno Lowagie and Paulo Soares
+mysql-connector-java-5.0.8-bin.jar;Java MYSQL Connector;GNU General Public License Version 2;MySQL.com/ Sun Microsystems Inc.
+core-renderer.jar;Apache CoreRenderer;Apache License Version 2.0;The Apache Software Foundation
+bootstrapconnector.jar;OpenOffice UNO;GNU Lesser General Public License;OpenOffice.org
+java_uno.jar;OpenOffice UNO;GNU Lesser General Public License;OpenOffice.org
+java_uno_accessbridge.jar;OpenOffice UNO;GNU Lesser General Public License;OpenOffice.org
+juh.jar;OpenOffice UNO;GNU Lesser General Public License;OpenOffice.org
+junit-3.8.1.jar;OpenOffice UNO;GNU Lesser General Public License;OpenOffice.org
+jurt.jar;OpenOffice UNO;GNU Lesser General Public License;OpenOffice.org
+jut.jar;OpenOffice UNO;GNU Lesser General Public License;OpenOffice.org
+noa-mp.jar;NOA (Nice Office Access);GNU Lesser General Public License;IOn AG
+officebean.jar;OpenOffice UNO;GNU Lesser General Public License;OpenOffice.org
+registry-3.1.3.jar;OpenOffice UNO;GNU Lesser General Public License;OpenOffice.org
+ridl.jar;OpenOffice UNO;GNU Lesser General Public License;OpenOffice.org
+sandbox.jar;OpenOffice UNO;GNU Lesser General Public License;OpenOffice.org
+unoil.jar;OpenOffice UNO;GNU Lesser General Public License;OpenOffice.org
+unoloader.jar;OpenOffice UNO;GNU Lesser General Public License;OpenOffice.org
+jOpenDocument-1.1-jdk5.jar;A pure Java library for OASIS Open Document files manipulation;GNU General Public License Version 2;ILM Informatique
+jodconverter-2.2.2.jar;Java OpenDocument Converter;GNU Lesser General Public License;Art of Solving Ltd
+jodconverter-cli-2.2.2.jar;Java OpenDocument Converter;Apache License Version 2.0;Art of Solving Ltd
+ws-commons-util-1.0.2.jar;Apache Webservices Common Utilities;Apache License Version 2.0;The Apache Software Foundation
+commons-logging-1.1.jar;Apache Logging Utilities;Apache License Version 2.0;The Apache Software Foundation
+httpcore-4.0.1.jar;Apache HttpCore;Apache License Version 2.0;The Apache Software Foundation
+httpcore-nio-4.0.1.jar;Apache HttpCore;Apache License Version 2.0;The Apache Software Foundation
+commons-codec-1.3.jar;Apache Commons Codec;Apache License Version 2.0;The Apache Software Foundation
+tinylaf-1_4;A (mostly painted) Look and Feel;GNU Lesser General Public License;Hans Bickel
+vcard4j-1_1_3.jar;vCard4J is a Java toolkit to manipulate vCards;GNU Lesser General Public License;http://vcard4j.sourceforge.net/
+groovy-all-1.8.4.jar;Groovy!;Apache Software License 2 (Open Source);http://groovy.codehaus.org/
+bcprov-jdk16-145;bcprov;bcprov License;The Legion Of The Bouncy Castle (http://www.bouncycastle.org)
