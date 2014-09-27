@@ -17,14 +17,16 @@
 package mpv5.db.objects;
 
 import java.math.BigDecimal;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Locale;
 import javax.swing.JComponent;
 import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
@@ -49,8 +51,8 @@ public final class ActivityListSubItem extends DatabaseObject {
 
     /**
      * Save the model of SubItems
-     * @param dataOwner
      * @param model
+     * @param listid
      */
     public static void saveModel(MPTableModel model, int listid) {
         //"Internal ID", "ID", "Date", "Count", "Description", "Netto Price", "Tax Value", "Total Price", "Product", "cname"     
@@ -63,24 +65,30 @@ public final class ActivityListSubItem extends DatabaseObject {
                     row[j] = "";
                 }
             }
-            ActivityListSubItem it = null;
+            ActivityListSubItem it;
             if (row[10] instanceof ActivityListSubItem) {
                 it = (ActivityListSubItem) row[10];
             } else {
                 it = new ActivityListSubItem();
             }
             try {
-                if (row[0] != null && Integer.valueOf(row[0].toString()).intValue() > 0) {
-                    it.setIDS(Integer.valueOf(row[0].toString()).intValue());
+                if (row[0] != null && Integer.parseInt(row[0].toString()) > 0) {
+                    it.setIDS(Integer.parseInt(row[0].toString()));
                 } else {
                     it.setIDS(-1);
                 }
-            } catch (Exception e) {
+            } catch (NumberFormatException e) {
                 Log.Debug(ActivityListSubItem.class, e.getMessage());
             }
 
             it.setActivitylistsids(listid);
-            it.setDatedoing((Date) row[2]);
+            Date date = null;
+            try {
+                date = new SimpleDateFormat("MMMM d, yyyy", Locale.ENGLISH).parse((String) row[2]);
+            } catch (ParseException ex) {
+                Log.Debug(ActivityListSubItem.class, ex.getLocalizedMessage());
+            }
+            it.setDatedoing(date);
             it.setQuantityvalue(new BigDecimal(row[3].toString()));
             it.setMeasure(row[4].toString());
             it.setDescription(row[5].toString());
@@ -548,6 +556,8 @@ public final class ActivityListSubItem extends DatabaseObject {
     public static Comparator<ActivityListSubItem> ORDER_COMPARATOR = new Comparator<ActivityListSubItem>() {
 
         public int compare(ActivityListSubItem o1, ActivityListSubItem o2) {
+            if (o1.__getDatedoing() == null || o2.__getDatedoing() == null)
+                return -1;
             return (o1.__getDatedoing().after(o2.__getDatedoing()) ? 1 : -1);
         }
     };

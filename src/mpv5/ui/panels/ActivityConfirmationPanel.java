@@ -7,7 +7,9 @@ import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 import javax.swing.JComponent;
 import javax.swing.JTable;
@@ -16,6 +18,7 @@ import javax.swing.table.TableCellRenderer;
 import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
 import mpv5.db.common.NodataFoundException;
+import mpv5.db.common.QueryCriteria;
 import mpv5.db.objects.ActivityList;
 import mpv5.db.objects.ActivityListSubItem;
 import mpv5.db.objects.Contact;
@@ -23,18 +26,17 @@ import mpv5.db.objects.Favourite;
 import mpv5.db.objects.Group;
 import mpv5.db.objects.Item;
 import mpv5.db.objects.Product;
+import mpv5.db.objects.SubItem;
 import mpv5.db.objects.User;
 import mpv5.globals.Messages;
+import mpv5.handler.FormatHandler;
 import mpv5.logging.Log;
-import mpv5.ui.beans.LightMPComboBox;
-import mpv5.ui.dialogs.DialogForFile;
 import mpv5.ui.dialogs.Popup;
 import mpv5.ui.dialogs.subcomponents.ActivityTextAreaDialog;
 import mpv5.ui.misc.TextFieldUtils;
 import mpv5.ui.toolbars.DataPanelTB;
 import mpv5.utils.arrays.ArrayUtilities;
 import mpv5.utils.export.Export;
-import mpv5.utils.jobs.Job;
 import mpv5.utils.models.MPComboBoxModelItem;
 import mpv5.utils.models.MPTableModel;
 import mpv5.utils.renderer.TableCellEditorForDate;
@@ -47,16 +49,17 @@ import mpv5.utils.tables.TableFormat;
 public final class ActivityConfirmationPanel extends javax.swing.JPanel implements DataPanel, ExportablePanel {
 
     private static final long serialVersionUID = 1L;
-    private java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle();
+    private final java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle();
     private static ActivityConfirmationPanel me;
     private ActivityList dataOwner;
-    private DataPanelTB tb;
+    private final DataPanelTB tb;
     private final SearchPanel sp;
     private MPTableModel omodel = null;
     Thread t = null;
 
     /**
      * Singleton
+     *
      * @return
      */
     public static ActivityConfirmationPanel instanceOf() {
@@ -65,6 +68,7 @@ public final class ActivityConfirmationPanel extends javax.swing.JPanel implemen
         }
         return me;
     }
+
     // Variablen ...
     public int contactsids_;
     public int orderids_;
@@ -76,12 +80,14 @@ public final class ActivityConfirmationPanel extends javax.swing.JPanel implemen
     public int ids_;
     public Date dateadded_;
     public Group group_;
-    public boolean asproduct_;
+    public boolean isbilled_;
     private DynamicTableCalculator itemMultiplier;
-    private LightMPComboBox cb = new LightMPComboBox();
     private boolean HEADER_FAILD = false;
+    public int groupsids_;
 
-    /** Creates new form ListPanel */
+    /**
+     * Creates new form ListPanel
+     */
     private ActivityConfirmationPanel() {
         initComponents();
         setName("ActivityConfirmation");
@@ -98,26 +104,39 @@ public final class ActivityConfirmationPanel extends javax.swing.JPanel implemen
             @Override
             @SuppressWarnings("unchecked")
             public void actionPerformed(ActionEvent e) {
-                if (e.getModifiers() == 16) {
-                    final MPComboBoxModelItem item = contact.getSelectedItem();
-                    if (item != null && item.isValid()) {
-                        t = new Thread() {
-
-                            @Override
-                            public void run() {
-                                try {
-                                    Log.Debug(this, "Kontakt Zeile :" + item.getId() + " ausgewählt.");
+                final MPComboBoxModelItem item = contact.getSelectedItem();
+                if (item != null && item.isValid()) {
+                    t = new Thread() {
+                        @Override
+                        public void run() {
+                            try {
+                                Log.Debug(this, "Kontakt Zeile :" + item.getId() + " ausgewählt.");
+                                if (!dataOwner.isExisting()) {
                                     Contact ct = (Contact) DatabaseObject.getObject(Context.getContact(), Integer.valueOf(item.getId()));
                                     List data = DatabaseObject.getReferencedObjects(ct,
                                             Context.getOrder());
                                     order.setModel(data);
-                                } catch (NodataFoundException ex) {
-                                    Log.Debug(this, ex);
+                                    order.getModel().addElement(new MPComboBoxModelItem(0, Messages.NO_ENTRY.getValue()));
+                                    jLabel2.setText(ct.__getCompany());
+                                    String name_txt;
+                                    if (ct.__getisMale()) {
+                                        name_txt = "Herr "
+                                                + ct.__getTitle()
+                                                + ct.__getCname();
+                                    } else {
+                                        name_txt = "Frau "
+                                                + ct.__getTitle()
+                                                + ct.__getCname();
+                                    }
+                                    jLabel3.setText(name_txt);
+                                    jLabel4.setText(ct.__getMainphone());
                                 }
+                            } catch (NodataFoundException ex) {
+                                Log.Debug(this, ex);
                             }
-                        };
-                        t.start();
-                    }
+                        }
+                    };
+                    t.start();
                 }
             }
         });
@@ -126,10 +145,11 @@ public final class ActivityConfirmationPanel extends javax.swing.JPanel implemen
         number.set_ValueClass(Integer.class);
     }
 
-    /** This me4thod is called from within the constructor to
-     * initialize the form.
-     * WARNING: Do NOT modify this code. The content of this method is
-     * always regenerated by the Form Editor.
+    /**
+     * This method is called from within the constructor to
+     * initialize the form. WARNING: Do NOT modify this
+     * code. The content of this method is always
+     * regenerated by the Form Editor.
      */
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
@@ -143,6 +163,9 @@ public final class ActivityConfirmationPanel extends javax.swing.JPanel implemen
         jButton3 = new javax.swing.JButton();
         Project = new mpv5.ui.beans.LabeledTextField();
         number = new mpv5.ui.beans.LabeledTextField();
+        jLabel2 = new javax.swing.JLabel();
+        jLabel3 = new javax.swing.JLabel();
+        jLabel4 = new javax.swing.JLabel();
         jScrollPane4 = new javax.swing.JScrollPane();
         itemtable = new JTable() {
             private static final long serialVersionUID = 1L;
@@ -164,13 +187,15 @@ public final class ActivityConfirmationPanel extends javax.swing.JPanel implemen
         upItem1 = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
         total = new javax.swing.JTextField();
+        jButton4 = new javax.swing.JButton();
+        jLabel5 = new javax.swing.JLabel();
         toolbarpanetbp = new javax.swing.JPanel();
         SearchBarPane = new javax.swing.JPanel();
 
         setName("Form"); // NOI18N
         setLayout(new java.awt.BorderLayout());
 
-        java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle(); // NOI18N
+        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("mpv5/resources/languages/Panels"); // NOI18N
         jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("ActivityConfirmationPanel.jPanel1.border.title"))); // NOI18N
         jPanel1.setName("jPanel1"); // NOI18N
 
@@ -207,39 +232,60 @@ public final class ActivityConfirmationPanel extends javax.swing.JPanel implemen
         number.setFont(number.getFont());
         number.setName("number"); // NOI18N
 
+        jLabel2.setName("jLabel2"); // NOI18N
+        jLabel2.setPreferredSize(new java.awt.Dimension(0, 16));
+
+        jLabel3.setName("jLabel3"); // NOI18N
+
+        jLabel4.setName("jLabel4"); // NOI18N
+        jLabel4.setPreferredSize(new java.awt.Dimension(45, 20));
+
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(number, javax.swing.GroupLayout.DEFAULT_SIZE, 292, Short.MAX_VALUE)
+                    .addComponent(contact, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(12, 12, 12)
+                .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(order, javax.swing.GroupLayout.DEFAULT_SIZE, 366, Short.MAX_VALUE)
+                    .addComponent(Project, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(29, 29, 29)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(contact, javax.swing.GroupLayout.DEFAULT_SIZE, 360, Short.MAX_VALUE)
-                    .addComponent(number, javax.swing.GroupLayout.DEFAULT_SIZE, 360, Short.MAX_VALUE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 76, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(order, javax.swing.GroupLayout.PREFERRED_SIZE, 292, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 77, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(Project, javax.swing.GroupLayout.PREFERRED_SIZE, 457, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(jLabel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(jLabel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(Project, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(number, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                        .addComponent(number, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(Project, javax.swing.GroupLayout.DEFAULT_SIZE, 28, Short.MAX_VALUE))
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jLabel3, javax.swing.GroupLayout.DEFAULT_SIZE, 16, Short.MAX_VALUE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(contact, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton3)
-                    .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                        .addComponent(order, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(jButton2))))
+                    .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                        .addComponent(jLabel4, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(order, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jButton2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                        .addComponent(jButton3, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(contact, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                .addContainerGap())
         );
 
         jScrollPane4.setName("jScrollPane4"); // NOI18N
@@ -314,7 +360,7 @@ public final class ActivityConfirmationPanel extends javax.swing.JPanel implemen
                 .addComponent(upItem)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(upItem1)
-                .addContainerGap(31, Short.MAX_VALUE))
+                .addContainerGap(12, Short.MAX_VALUE))
         );
 
         jLabel1.setText(bundle.getString("ActivityConfirmationPanel.jLabel1.text")); // NOI18N
@@ -323,6 +369,17 @@ public final class ActivityConfirmationPanel extends javax.swing.JPanel implemen
         total.setText(bundle.getString("ActivityConfirmationPanel.total.text")); // NOI18N
         total.setName("total"); // NOI18N
 
+        jButton4.setText(bundle.getString("ActivityConfirmationPanel.jButton4.text")); // NOI18N
+        jButton4.setName("jButton4"); // NOI18N
+        jButton4.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton4ActionPerformed(evt);
+            }
+        });
+
+        jLabel5.setText(bundle.getString("ActivityConfirmationPanel.jLabel5.text")); // NOI18N
+        jLabel5.setName("jLabel5"); // NOI18N
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -330,28 +387,33 @@ public final class ActivityConfirmationPanel extends javax.swing.JPanel implemen
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addComponent(itemPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 851, Short.MAX_VALUE))
+                .addComponent(jScrollPane4))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                .addContainerGap(639, Short.MAX_VALUE)
+                .addComponent(jButton4, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 189, Short.MAX_VALUE)
+                .addComponent(jLabel5)
+                .addGap(192, 192, 192)
                 .addComponent(jLabel1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(total, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE))
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(18, Short.MAX_VALUE))
+                .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(itemPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 149, Short.MAX_VALUE))
-                .addGap(11, 11, 11)
+                    .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel1)
-                    .addComponent(total, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addComponent(total, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jButton4, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel5)))
         );
 
         add(jPanel1, java.awt.BorderLayout.CENTER);
@@ -373,7 +435,9 @@ public final class ActivityConfirmationPanel extends javax.swing.JPanel implemen
             ItemPanel2 ip = new ItemPanel2(Context.getItem());
             mpv5.YabsViewProxy.instance().getIdentifierView().addOrShowTab(ip, Messages.TYPE_ORDER.toString());
             ip.setDataOwner(i, true);
-        } catch (Exception e) {
+        } catch (NumberFormatException e) {
+            Log.Debug(this, e);
+        } catch (NodataFoundException e) {
             Log.Debug(this, e);
         }
     }//GEN-LAST:event_jButton2ActionPerformed
@@ -385,7 +449,9 @@ public final class ActivityConfirmationPanel extends javax.swing.JPanel implemen
             ContactPanel cp = new ContactPanel(Context.getContact());
             mpv5.YabsViewProxy.instance().getIdentifierView().addOrShowTab(cp, Messages.TYPE_CONTACT.toString());
             cp.setDataOwner(c, true);
-        } catch (Exception e) {
+        } catch (NumberFormatException e) {
+            Log.Debug(this, e);
+        } catch (NodataFoundException e) {
             Log.Debug(this, e);
         }
     }//GEN-LAST:event_jButton3ActionPerformed
@@ -421,6 +487,11 @@ public final class ActivityConfirmationPanel extends javax.swing.JPanel implemen
         ((MPTableModel) itemtable.getModel()).moveRow(index, index, index + 1);
         itemtable.changeSelection(index + 1, itemtable.getSelectedColumn(), false, false);
     }//GEN-LAST:event_upItem1ActionPerformed
+
+    private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
+        toInvoice();
+    }//GEN-LAST:event_jButton4ActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private mpv5.ui.beans.LabeledTextField Project;
     private javax.swing.JPanel SearchBarPane;
@@ -431,7 +502,12 @@ public final class ActivityConfirmationPanel extends javax.swing.JPanel implemen
     private javax.swing.JTable itemtable;
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
+    private javax.swing.JButton jButton4;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane4;
@@ -467,12 +543,13 @@ public final class ActivityConfirmationPanel extends javax.swing.JPanel implemen
         if (cname_.length() > 0) {
             try {
                 group_ = User.getCurrentUser().getGroup();
+                groupsids_ = group_.__getGroupsids();
                 contactsids_ = Integer.parseInt(contact.getSelectedItem().getId());
                 orderids_ = Integer.parseInt(order.getSelectedItem().getId());
                 totalamount_ = new BigDecimal(total.getText().replace(",", "."));
                 cnumber_ = number.getText();
                 HEADER_FAILD = false;
-            } catch (Exception exception) {
+            } catch (NumberFormatException exception) {
                 Log.Debug(exception);
                 HEADER_FAILD = true;
                 return false;
@@ -483,14 +560,14 @@ public final class ActivityConfirmationPanel extends javax.swing.JPanel implemen
             return false;
         }
 
-        List<Object[]> rowsl = ((MPTableModel) itemtable.getModel()).getValidRows(new int[]{5});
-        for (int i = 0; i < rowsl.size(); i++) {
-            Object[] row = rowsl.get(i);
-            if (row[2] == null || row[9].equals(0)) {
-                Popup.error(this, Messages.ACTIVITY_EMPTY_DATE.toString());
-                return false;
-            }
-        }
+//        List<Object[]> rowsl = ((MPTableModel) itemtable.getModel()).getValidRows(new int[]{5});
+//        for (int i = 0; i < rowsl.size(); i++) {
+//            Object[] row = rowsl.get(i);
+//            if (row[2] == null) {
+//                Popup.error(this, Messages.ACTIVITY_EMPTY_DATE.toString());
+//                return false;
+//            }
+//        }
         return true;
     }
 
@@ -532,10 +609,45 @@ public final class ActivityConfirmationPanel extends javax.swing.JPanel implemen
         Project.setText(cname_);
 
         try {
-            contact.setModel(DatabaseObject.getObject(Context.getContact(), contactsids_));
-            order.setModel(DatabaseObject.getObject(Context.getOrder(), orderids_));
+            Contact ct = (Contact) DatabaseObject.getObject(Context.getContact(), contactsids_);
+            contact.setModel(ct);
+            List data = DatabaseObject.getReferencedObjects(ct,
+                    Context.getOrder());
+            order.setModel(data);
+            if (orderids_ > 0) {
+                DatabaseObject orderObj = DatabaseObject.getObject(Context.getOrder(), orderids_);
+                order.setModel(orderObj);
+            } else {
+                MPComboBoxModelItem mi = new MPComboBoxModelItem(0, Messages.NO_ENTRY.getValue());
+                int indexOf = order.getModel().getIndexOf(mi);
+                if (indexOf <= 0) {
+                    order.getModel().addElement(mi);
+                }
+                order.setSelectedItem(mi.getIdObject());
+            }
             total.setText(totalamount_.toString());
             number.setText(cnumber_);
+            itemtable.setEnabled(!isbilled_);
+            jLabel5.setVisible(isbilled_);
+            jButton4.setEnabled(!isbilled_);
+            if (isbilled_) {
+                this.itemtable.setBackground(Color.lightGray);
+            } else {
+                this.itemtable.setBackground(Color.white);
+            }
+            jLabel2.setText(ct.__getCompany());
+            String name_txt;
+            if (ct.__getisMale()) {
+                name_txt = "Herr "
+                        + ct.__getTitle()
+                        + ct.__getCname();
+            } else {
+                name_txt = "Frau "
+                        + ct.__getTitle()
+                        + ct.__getCname();
+            }
+            jLabel3.setText(name_txt);
+            jLabel4.setText(ct.__getMainphone());
         } catch (NodataFoundException ex) {
             Log.Debug(this, ex.getMessage());
         }
@@ -563,8 +675,6 @@ public final class ActivityConfirmationPanel extends javax.swing.JPanel implemen
             TextFieldUtils.blink(Project,
                     Color.RED);
             TextFieldUtils.blink(contact,
-                    Color.RED);
-            TextFieldUtils.blink(order,
                     Color.RED);
             Project.requestFocus();
         }
@@ -595,6 +705,7 @@ public final class ActivityConfirmationPanel extends javax.swing.JPanel implemen
         ArrayUtilities.replaceColumn(itemtable, 0, null);
         saveActivityListSubItems();
         omodel = (MPTableModel) itemtable.getModel();
+        this.dataOwner.setIsBilled(false);
     }
 
     public void actionBeforeCreate() {
@@ -632,7 +743,7 @@ public final class ActivityConfirmationPanel extends javax.swing.JPanel implemen
     }
 
     /**
-     * 
+     *
      */
     public void formatTable() {
         //"Internal ID", "ID", "Date", "Count", "Description", "Netto Price", "Tax Value", "Total Price", "Product", "cname"     
@@ -683,11 +794,52 @@ public final class ActivityConfirmationPanel extends javax.swing.JPanel implemen
         }
     }
 
+    private void toInvoice() {
+        this.isbilled_ = true;
+        itemtable.setEnabled(!isbilled_);
+        jLabel5.setVisible(isbilled_);
+        jButton4.setEnabled(!isbilled_);
+        itemtable.setBackground(Color.lightGray);
+        dataOwner.setIsBilled(true);
+        dataOwner.save();
+        ArrayList<ActivityList> data;
+        Object[] row;
+
+        Item i2 = (Item) dataOwner.clone(Context.getItem());
+        i2.setInttype(Item.TYPE_BILL);
+        i2.setIDS(-1);
+        i2.defineFormatHandler(new FormatHandler(i2));
+        i2.save();
+        if (itemtable.getCellEditor() != null) {
+            try {
+                itemtable.getCellEditor().stopCellEditing();
+            } catch (Exception e) {
+            }
+        }
+        try {
+            data = DatabaseObject.getObjects(Context.getActivityList(), new QueryCriteria("orderids", dataOwner.__getIDS()));
+            if (Popup.Y_N_dialog(Messages.ActivityList_Existing.toString())) {
+                MPTableModel model = (MPTableModel) itemtable.getModel();
+                Iterator<ActivityList> it = data.iterator();
+                while (it.hasNext()) {
+                    row = it.next().getDataForInvoice();
+                    row[1] = model.getRowCount();
+                    model.insertRow(model.getRowCount(), row);
+                }
+            }
+        } catch (NodataFoundException ex) {
+            Log.Debug(this, ex.getMessage());
+        }
+        SubItem.saveModel(i2, (MPTableModel) itemtable.getModel(), true, true);
+        setDataOwner(i2, true);
+        Popup.notice(i2 + Messages.INSERTED.getValue());
+    }
+
     private void addModel() {
         itemtable.setModel(ActivityListSubItem.toModel(new ActivityListSubItem[]{
-                    ActivityListSubItem.getDefaultItem(), ActivityListSubItem.getDefaultItem(),
-                    ActivityListSubItem.getDefaultItem(), ActivityListSubItem.getDefaultItem()
-                }));
+            ActivityListSubItem.getDefaultItem(), ActivityListSubItem.getDefaultItem(),
+            ActivityListSubItem.getDefaultItem(), ActivityListSubItem.getDefaultItem()
+        }));
 
         formatTable();
     }

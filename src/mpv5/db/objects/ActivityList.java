@@ -22,10 +22,8 @@ import java.math.BigDecimal;
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
-import java.util.Vector;
 import javax.swing.JComponent;
 
 import mpv5.db.common.Context;
@@ -45,7 +43,7 @@ import mpv5.utils.text.TypeConversion;
 
 /**
  *
- * 
+ *
  */
 public class ActivityList extends DatabaseObject implements Formattable, Templateable {
 
@@ -54,6 +52,7 @@ public class ActivityList extends DatabaseObject implements Formattable, Templat
     private int contactsids;
     private int orderids;
     private BigDecimal totalamount = BigDecimal.ZERO;
+    private boolean isbilled;
     private FormatHandler formatHandler;
 
     public ActivityList() {
@@ -108,6 +107,14 @@ public class ActivityList extends DatabaseObject implements Formattable, Templat
 
     public void setCNumber(String cnumber) {
         this.cnumber = cnumber;
+    }
+
+    public boolean __getIsBilled() {
+        return isbilled;
+    }
+
+    public void setIsBilled(boolean billed) {
+        this.isbilled = billed;
     }
 
     /**

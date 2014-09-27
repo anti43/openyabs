@@ -380,7 +380,10 @@ public class DateConverter {
      * @return Default date
      */
     public static synchronized String getDefDateString(Date date) {
-        return DEF_DATE_FORMAT.format(date);
+        if (date == null)
+            return "";
+        else
+            return DEF_DATE_FORMAT.format(date);
     }
 
     /**

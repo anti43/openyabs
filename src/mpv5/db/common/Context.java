@@ -203,7 +203,7 @@ public class Context implements Serializable, Comparable<Context> {
     public static String DEFAULT_USER_SEARCH = "ids, cname, mail, lastlogdate";
     public static String DEFAULT_ITEM_SEARCH = "ids, cname, dateadded, netvalue";
     public static String DEFAULT_PRODUCT_SEARCH = "ids, cnumber, cname, description";
-    public static String DEFAULT_ACTIVITYLIST_SEARCH = "DISTINCT ids,cname";
+    public static String DEFAULT_ACTIVITYLIST_SEARCH = "DISTINCT ids,cname, totalamount";
     public static String DEFAULT_PRODUCTSLIST_SEARCH = "DISTINCT ids,cname,description";
     //********** table fields ********************************************************
     public static String DETAILS_CONTACTS = IDENTITY_CONTACTS + "." + "IDS," + IDENTITY_CONTACTS + "." + "CNUMBER,"

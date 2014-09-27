@@ -30,7 +30,7 @@ public enum Messages {
 
     START_MESSAGE(
     "\n"
-    + "YaBS " + Constants.VERSION + " (C) 2006-2012 Openyabs.org\n\n"
+    + "YaBS " + Constants.VERSION + " (C) 2006-2014 Openyabs.org\n\n"
     + "******************************************************************************\n"
     + "* This program is free software; you can redistribute it and/or modify it \n"
     + "* under the terms of the GNU General Public License as published by the \n"
@@ -351,7 +351,8 @@ public enum Messages {
     SET_STATUS_PAID("Set to status: 'Paid'"),
     STOCK_MANAGER("Stock management"), 
     PLEASE_WAIT("Please wait.."), 
-    TYPE_SUBITEM("Subitem");
+    TYPE_SUBITEM("Subitem"),
+    NO_ENTRY("No Entry");
 
     /**
      * @return the missing

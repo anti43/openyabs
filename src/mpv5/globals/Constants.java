@@ -22,12 +22,12 @@ import java.math.BigDecimal;
 
 /**
  *
- * 
+ *
  */
 public interface Constants {
 
     /**
-     * 
+     *
      * Full Version number
      */
     public static final String VERSION = "Yabs-1.2.5-alpha1";
@@ -37,11 +37,13 @@ public interface Constants {
      */
     public static final Double DATABASE_ORIGINAL_VERSION = 1.0;
     /**
-     * The minimal Database Version which is compatible with this release
+     * The minimal Database Version which is compatible with
+     * this release
      */
-    public static final Double DATABASE_VERSION = 1.1978;
+    public static final Double DATABASE_VERSION = 1.1979;
     /**
-     * The max Database Version which is compatible with this release
+     * The max Database Version which is compatible with
+     * this release
      */
     public static final Double DATABASE_MAX_VERSION = 2.0;
     /**
@@ -79,7 +81,7 @@ public interface Constants {
      */
     public static String PLUGIN_LOAD_CLASS = "plugin.Main";
     /**
-     * Name of databasedir 
+     * Name of databasedir
      */
     public static final String DATABASENAME = "yabs" + Constants.RELEASE_VERSION + "db";
     public static String ICON_NAME_LIN = "yabs.desktop";
@@ -112,8 +114,7 @@ public interface Constants {
     public static String FALLBACK_CACHE_DIR = "Cache";//Go for a relative path
     public static String LIBS_DIR = "lib";
     public static BigDecimal BD100 = new BigDecimal("100");
-    
-    
+
     public static final int TYPE_BILL = 0;
     public static final int TYPE_ORDER = 1;
     public static final int TYPE_OFFER = 2;
@@ -134,5 +135,5 @@ public interface Constants {
     public static final int TYPE_SUPPLIER = 17;
     public static final int TYPE_EXPENSE = 18;
     public static final int TYPE_REVENUE = 19;
-    
+
 }
