@@ -87,7 +87,7 @@ public class MySQLToMySQL {
             result.append("\nCREATE TABLE ").append(tableName);
             result.append(" (\n");
             StringBuilder primaryKeyColumns = new StringBuilder();
-            tableName = tableName.toUpperCase();
+//            tableName = tableName.toUpperCase();
             ResultSet cols = Meta.getColumns(null, null, tableName, "%");
             while (cols.next()) {
                 result.append("    ");
