@@ -87,7 +87,7 @@ public class MySQLToMySQL {
             result.append("\nCREATE TABLE ").append(tableName);
             result.append(" (\n");
             StringBuilder primaryKeyColumns = new StringBuilder();
-//            tableName = tableName.toUpperCase();
+            tableName = tableName.toUpperCase();
             ResultSet cols = Meta.getColumns(null, null, tableName, "%");
             while (cols.next()) {
                 result.append("    ");
@@ -156,7 +156,7 @@ public class MySQLToMySQL {
         ResultSet rs = stmt.executeQuery();
         ResultSetMetaData metaData = rs.getMetaData();
         int columnCount = metaData.getColumnCount();
-
+        tableName = tableName.toLowerCase();
         result.append("\n\n#-- Tabledata ").append(tableName).append("\n");
         result.append("LOCK TABLES ").append(tableName).append(" WRITE;\n");
         Blob blob;
