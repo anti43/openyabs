@@ -54,12 +54,12 @@
         cleanBuildDir="true"
         failOnError="true"/>
   -->
-  <!-- Uncomment this section to sign the jars -->
+  <!-- Uncomment this section to sign the jars 
     <target name="-post-jar">
         <exec dir="${dist.dir}/../security" executable="./generate_key.sh" os="Linux" failonerror="false"/>
         <exec dir="${dist.dir}/../security" executable="./signjars.sh" os="Linux" failonerror="false" />
     </target>
-<!---->
+-->
 
   <target name="MacPack" depends="jar" description="Build Yabs for Mac">
 
