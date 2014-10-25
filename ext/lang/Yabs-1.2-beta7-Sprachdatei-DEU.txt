@@ -1,4 +1,4 @@
-FILE_VERSION=1.2_050914
+FILE_VERSION=1.3_251014
 ACCESS_DENIED=Zugriff verweigert.
 ACCOUNTNAMES=Alle Konten
 ACTION_ADD=Hinzufügen
@@ -2142,3 +2142,13 @@ ItemPanel2.button_reminders.text=erinnern
 ItemPanel2.addfile.text=
 ItemPanel2.value.text=0
 
+ActivityConfirmationPanel.jButton4.text=erzeuge Rechnung
+ContactPanel.button_activitylists.text=Activitylists
+ItemPanel2.jLabel9.text= = 
+ActivityConfirmationPanel.jLabel5.text=Activitys are alreadey accounted!
+ItemPanel.jLabel6.text= - 
+ItemPanel.jLabel7.text= + 
+ItemPanel.jLabel8.text= = 
+NO_ENTRY=No Entry
+ItemPanel2.jLabel7.text= - 
+ItemPanel2.jLabel8.text= + 
