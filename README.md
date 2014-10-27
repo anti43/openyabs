@@ -7,7 +7,7 @@ Normal users:
 Expert users:
 **[Download development releases here!](https://github.com/anti43/openyabs/releases/tag/development)**
 
-**[Documentation starts here!](https://github.com/anti43/openyabs/wiki)**
+**[Die deutsche Dokumentation zu Yabs befindet sich hier!](https://docs.google.com/document/d/1VhUi0wS-EJgfV-o89Hl-2wux810mJnqUV1wPxpgVIs4/pub)**
 
 ===
 
