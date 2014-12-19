@@ -66,6 +66,7 @@ import mpv5.utils.text.RandomText;
 import static mpv5.db.common.Context.*;
 import mpv5.utils.text.TypeConversion;
 import mpv5.globals.Constants;
+import mpv5.globals.GlobalSettings;
 import mpv5.ui.dialogs.DialogForFile;
 import mpv5.utils.export.Export;
 import mpv5.utils.jobs.Job;
@@ -2496,7 +2497,8 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
      * @return
      */
     public synchronized String evaluate(String script) {
-        if(script.startsWith("#") && script.endsWith("#")){
+        String sm = GlobalSettings.getProperty("org.openyabs.config.scriptsymbol", "#");
+        if(script.startsWith(sm) && script.endsWith(sm)){
            script = script.substring(1, script.length()-1);
         }
         return String.valueOf(getGroovyShell().evaluate(script));
@@ -2517,7 +2519,8 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
         } catch (Exception ex) {
             Log.Debug(this, ex.getMessage());
         }
-
+        
+        String sm = GlobalSettings.getProperty("org.openyabs.config.scriptsymbol", "#");
         for (ValueProperty p : props) {
             String strVal = String.valueOf(p.getValue());
             if (p.getValue() instanceof LazyInvocable) {
@@ -2528,7 +2531,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
                 } catch (Exception e) {
                     Log.Debug(this, e.getMessage());
                 }
-            } else if (strVal.startsWith("#") && strVal.endsWith("#")) {
+            } else if (strVal.startsWith(sm) && strVal.endsWith(sm)) {
                 try {
                     Object value = evaluate(strVal);
                     map.put("property." + p.getKey(), String.valueOf(value));
