@@ -1,4 +1,4 @@
-FILE_VERSION=1.3_251014
+FILE_VERSION=1.3.1_211214
 ACCESS_DENIED=Zugriff verweigert.
 ACCOUNTNAMES=Alle Konten
 ACTION_ADD=Hinzufügen
@@ -1686,7 +1686,7 @@ ScheduleDayEvent.labeledDateChooser1._Label=Start
 ScheduleDayEvent.labeledDateChooser1.toolTipText=Start
 ScheduleDayEvent.labeledDateChooser2._Label=Ende
 ScheduleDayEvent.labeledSpinner1._Label=Intervall
-ScheduleDayEvent.title=Tagestermine
+ScheduleDayEvent.title=Terminplaner
 ScheduleDayEvents.jButton1.text=Hinzufügen
 ScheduleDayEvents.jButton1.text_1=speichern
 ScheduleDayEvents.jButton2.text=Schließen
