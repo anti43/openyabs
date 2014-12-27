@@ -221,6 +221,7 @@ public enum Messages {
     WELCOME("Welcome"),
     SELECT_A_TEMPLATE("Select a template:"),
     SELECT_A_CONTACT("You must select a contact."),
+    SELECT_A_USER("You must select a user."),
     UNPAID_BILLS("Open invoices"),
     UNPAID_BILLS_OVERDUE("Overdues"),
     NO_MAIL_CONFIG("SMTP host configuration not set."),

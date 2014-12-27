@@ -49,6 +49,7 @@ import mpv5.handler.FormFieldsHandler;
 import mpv5.handler.VariablesHandler;
 import mpv5.ui.dialogs.BigPopup;
 import mpv5.ui.dialogs.DialogForFile;
+import mpv5.ui.dialogs.Notificator;
 import mpv5.ui.dialogs.Search2;
 import mpv5.ui.panels.LOAPanel;
 import mpv5.ui.panels.PreviewPanel;
@@ -446,6 +447,10 @@ public final class ControlPanel_Templates extends javax.swing.JPanel implements 
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
 
+        if (jList1.getSelectedIndex() < 0) {
+            Notificator.raiseNotification(Messages.SELECT_A_USER, true);
+            return;
+        }
         if (dataOwner != null) {
             DatabaseObject dato = dataOwner;
             dato.getPanelData(this);
@@ -738,8 +743,9 @@ public final class ControlPanel_Templates extends javax.swing.JPanel implements 
     public void exposeData() {
 
         try {
-            if(group_!=null)
+            if (group_ != null) {
                 groupname.setSelectedIndex(MPComboBoxModelItem.getItemID(String.valueOf(group_.__getIDS()), groupname.getModel()));
+            }
             fullname.setText(cname_);
             descr.setText(description_);
             try {
