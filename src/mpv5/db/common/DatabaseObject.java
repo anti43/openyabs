@@ -71,6 +71,7 @@ import mpv5.ui.dialogs.DialogForFile;
 import mpv5.utils.export.Export;
 import mpv5.utils.jobs.Job;
 import mpv5.utils.jobs.Waiter;
+import org.codehaus.groovy.control.CompilationFailedException;
 
 /**
  * Database Objects reflect a row in a table, and can parse graphical and
@@ -2497,11 +2498,16 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
      * @return
      */
     public synchronized String evaluate(String script) {
-        String sm = GlobalSettings.getProperty("org.openyabs.config.scriptsymbol", "#");
-        if(script.startsWith(sm) && script.endsWith(sm)){
-           script = script.substring(1, script.length()-1);
+        try {
+            String sm = GlobalSettings.getProperty("org.openyabs.config.scriptsymbol", "#");
+            if (script.startsWith(sm) && script.endsWith(sm)) {
+                script = script.substring(1, script.length() - 1);
+            }
+            return String.valueOf(getGroovyShell().evaluate(script));
+        } catch (CompilationFailedException compilationFailedException) {
+            Log.Debug(compilationFailedException);
         }
-        return String.valueOf(getGroovyShell().evaluate(script));
+        return script;
     }
 
     /**
