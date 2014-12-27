@@ -931,7 +931,7 @@ public final class ControlPanel_Templates extends javax.swing.JPanel implements 
             }
 
             try {
-                Map<String, Object> hm1 = new FormFieldsHandler(t).getFormattedFormFields(null);
+                Map<String, Object> hm1 = t.getFormFields();//new FormFieldsHandler(t).getFormattedFormFields(null);
 //                Log.Print(hm1.entrySet().toArray());
                 File f = dataOwner.getFile();
                 File f2 = FileDirectoryHandler.getTempFile("pdf");

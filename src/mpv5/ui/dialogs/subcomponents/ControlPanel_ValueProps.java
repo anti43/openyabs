@@ -8,6 +8,7 @@ import mpv5.data.PropertyStore;
 import mpv5.db.common.*;
 import mpv5.db.objects.Group;
 import mpv5.db.objects.ValueProperty;
+import mpv5.globals.GlobalSettings;
 import mpv5.globals.LocalSettings;
 import mpv5.globals.Messages;
 import mpv5.logging.Log;
@@ -250,9 +251,14 @@ public class ControlPanel_ValueProps extends javax.swing.JPanel implements Contr
 
     private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
         DatabaseObject s = Search2.showSearchFor(Context.getItem());
+        String sm = GlobalSettings.getProperty("org.openyabs.config.scriptsymbol", "#");
         if (s != null) {
             try {
-                Popup.notice(s.evaluate(jTextPane2.getText()));
+                String t = jTextPane2.getText();
+                if (!t.contains(sm)) {
+                    t = sm + t + sm;
+                }
+                Popup.notice(s.evaluateAll(t, true));
             } catch (Exception e) {
                 Popup.error(e);
             }
@@ -375,5 +381,4 @@ public class ControlPanel_ValueProps extends javax.swing.JPanel implements Contr
 
     }
 
-    
 }

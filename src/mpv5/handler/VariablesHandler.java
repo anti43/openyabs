@@ -35,6 +35,7 @@ import mpv5.db.objects.Group;
 import mpv5.db.objects.Item;
 import mpv5.db.objects.SubItem;
 import mpv5.db.objects.User;
+import mpv5.globals.GlobalSettings;
 import mpv5.globals.Messages;
 import mpv5.logging.Log;
 import mpv5.utils.date.DateConverter;
@@ -45,9 +46,7 @@ import mpv5.utils.numberformat.FormatNumber;
  */
 public abstract class VariablesHandler {
 
-    private static final Pattern SCRIPTPATTERN = Pattern.compile("\\#(.*?)\\#");
     //generic
-
     /**
      * Contains generic variables for any {@link DatabaseObject}
      */
@@ -184,82 +183,81 @@ public abstract class VariablesHandler {
         //Log.Debug(VariablesHandler.class, "..xxxx>\n\n" + Arrays.asList(specs));
 
         Iterator iterator = preResolvedVars.entrySet().iterator();
-	while (iterator.hasNext()) {
-		Map.Entry mapEntry = (Map.Entry) iterator.next();
-                vars.add(new String[]{"["+String.valueOf(mapEntry.getKey())+"]", String.valueOf(mapEntry.getValue())});
-	}
+        while (iterator.hasNext()) {
+            Map.Entry mapEntry = (Map.Entry) iterator.next();
+            vars.add(new String[]{"[" + String.valueOf(mapEntry.getKey()) + "]", String.valueOf(mapEntry.getValue())});
+        }
         /*int j;
-        for (j = 0; j < specs.length; j++) {
-            String varName = specs[j];
-            String varValue = "";
+         for (j = 0; j < specs.length; j++) {
+         String varName = specs[j];
+         String varValue = "";
 
-            List<String[]> vals;
-            vals = target.getValues();
-            for (String[] value : vals) {
-                if (value[0].equalsIgnoreCase(varName.substring(1, varName.length() - 1))) {
-                    varValue = value[1];
-                }
-            }
-            vars.add(new String[]{varName, varValue});
-        }*/
+         List<String[]> vals;
+         vals = target.getValues();
+         for (String[] value : vals) {
+         if (value[0].equalsIgnoreCase(varName.substring(1, varName.length() - 1))) {
+         varValue = value[1];
+         }
+         }
+         vars.add(new String[]{varName, varValue});
+         }*/
 
         /*if (target instanceof Item) {
-            try {
-                Contact c = (Contact) DatabaseObject.getObject(Context.getContact(), ((Item) target).__getContactsids());
+         try {
+         Contact c = (Contact) DatabaseObject.getObject(Context.getContact(), ((Item) target).__getContactsids());
 
-                vars.add(new String[]{"[contact.cname]", c.__getCname()});
-                vars.add(new String[]{"[contact.cnumber]", c.__getCNumber()});
-                vars.add(new String[]{"[contact.company]", c.__getCompany()});
-                vars.add(new String[]{"[contact.prename]", c.__getPrename()});
-                vars.add(new String[]{"[contact.title]", c.__getTitle()});
-                vars.add(new String[]{"[contact.country]", c.__getCountry()});
-                vars.add(new String[]{"[grosvaluef]", FormatNumber.formatLokalCurrency(((Item) target).__getTaxvalue().doubleValue() + ((Item) target).__getNetvalue().doubleValue())});
-                vars.add(new String[]{"[type]", Item.getTypeString(((Item) target).__getInttype())});
+         vars.add(new String[]{"[contact.cname]", c.__getCname()});
+         vars.add(new String[]{"[contact.cnumber]", c.__getCNumber()});
+         vars.add(new String[]{"[contact.company]", c.__getCompany()});
+         vars.add(new String[]{"[contact.prename]", c.__getPrename()});
+         vars.add(new String[]{"[contact.title]", c.__getTitle()});
+         vars.add(new String[]{"[contact.country]", c.__getCountry()});
+         vars.add(new String[]{"[grosvaluef]", FormatNumber.formatLokalCurrency(((Item) target).__getTaxvalue().doubleValue() + ((Item) target).__getNetvalue().doubleValue())});
+         vars.add(new String[]{"[type]", Item.getTypeString(((Item) target).__getInttype())});
 
-                if (c.__getisMale()) {
-                    vars.add(new String[]{"[contact.gender]", Messages.CONTACT_TYPE_MALE.getValue()});
-                    vars.add(new String[]{"[contact.intro]", Messages.CONTACT_INTRO_MALE.getValue()});
-                } else {
-                    vars.add(new String[]{"[contact.gender]", Messages.CONTACT_TYPE_FEMALE.getValue()});
-                    vars.add(new String[]{"[contact.intro]", Messages.CONTACT_INTRO_FEMALE.getValue()});
-                }
+         if (c.__getisMale()) {
+         vars.add(new String[]{"[contact.gender]", Messages.CONTACT_TYPE_MALE.getValue()});
+         vars.add(new String[]{"[contact.intro]", Messages.CONTACT_INTRO_MALE.getValue()});
+         } else {
+         vars.add(new String[]{"[contact.gender]", Messages.CONTACT_TYPE_FEMALE.getValue()});
+         vars.add(new String[]{"[contact.intro]", Messages.CONTACT_INTRO_FEMALE.getValue()});
+         }
 
-            } catch (NodataFoundException ex) {
-                Log.Debug(VariablesHandler.class, ex.getMessage());
-            }
-        }
+         } catch (NodataFoundException ex) {
+         Log.Debug(VariablesHandler.class, ex.getMessage());
+         }
+         }
 
-        if (target instanceof Conversation) {
-            try {
-                Contact c = (Contact) DatabaseObject.getObject(Context.getContact(), ((Conversation) target).__getContactsids());
-                vars.add(new String[]{"[contact.cname]", c.__getCname()});
-                vars.add(new String[]{"[contact.company]", c.__getCompany()});
-                vars.add(new String[]{"[contact.prename]", c.__getPrename()});
-                vars.add(new String[]{"[contact.title]", c.__getTitle()});
-                vars.add(new String[]{"[contact.country]", c.__getCountry()});
-                vars.add(new String[]{"[type]", Messages.TYPE_CONVERSATION.toString()});
+         if (target instanceof Conversation) {
+         try {
+         Contact c = (Contact) DatabaseObject.getObject(Context.getContact(), ((Conversation) target).__getContactsids());
+         vars.add(new String[]{"[contact.cname]", c.__getCname()});
+         vars.add(new String[]{"[contact.company]", c.__getCompany()});
+         vars.add(new String[]{"[contact.prename]", c.__getPrename()});
+         vars.add(new String[]{"[contact.title]", c.__getTitle()});
+         vars.add(new String[]{"[contact.country]", c.__getCountry()});
+         vars.add(new String[]{"[type]", Messages.TYPE_CONVERSATION.toString()});
 
-            } catch (NodataFoundException ex) {
-                Log.Debug(VariablesHandler.class, ex.getMessage());
-            }
-        }
+         } catch (NodataFoundException ex) {
+         Log.Debug(VariablesHandler.class, ex.getMessage());
+         }
+         }
 
-        if (target instanceof ActivityList) {
-            try {
-                Contact c = (Contact) DatabaseObject.getObject(Context.getContact(), ((ActivityList) target).__getContactsids());
+         if (target instanceof ActivityList) {
+         try {
+         Contact c = (Contact) DatabaseObject.getObject(Context.getContact(), ((ActivityList) target).__getContactsids());
 
-                vars.add(new String[]{"[contact.cname]", c.__getCname()});
-                vars.add(new String[]{"[contact.company]", c.__getCompany()});
-                vars.add(new String[]{"[contact.prename]", c.__getPrename()});
-                vars.add(new String[]{"[contact.title]", c.__getTitle()});
-                vars.add(new String[]{"[contact.country]", c.__getCountry()});
-                vars.add(new String[]{"[type]", Messages.TYPE_ACTIVITY.toString()});
+         vars.add(new String[]{"[contact.cname]", c.__getCname()});
+         vars.add(new String[]{"[contact.company]", c.__getCompany()});
+         vars.add(new String[]{"[contact.prename]", c.__getPrename()});
+         vars.add(new String[]{"[contact.title]", c.__getTitle()});
+         vars.add(new String[]{"[contact.country]", c.__getCountry()});
+         vars.add(new String[]{"[type]", Messages.TYPE_ACTIVITY.toString()});
 
-            } catch (NodataFoundException ex) {
-                Log.Debug(VariablesHandler.class, ex.getMessage());
-            }
-        }*/
-
+         } catch (NodataFoundException ex) {
+         Log.Debug(VariablesHandler.class, ex.getMessage());
+         }
+         }*/
         if (Log.isDebugging()) {
             for (String[] strings : vars) {
                 Log.Debug(target, Arrays.asList(strings));
@@ -305,17 +303,7 @@ public abstract class VariablesHandler {
                 }
             }
         }
-        Matcher scriptmatcher = SCRIPTPATTERN.matcher(text);
-        while (scriptmatcher.find()) {
-            try {
-                String script = scriptmatcher.group(1);
-                String orig = scriptmatcher.group(0);
-                text = text.replace(orig, source.evaluate(script));
-            } catch (Exception e) {
-                Log.Debug(source, e);
-//              Notificator.raiseNotification(Messages.SCRIPT_ERROR + " " + text, false);
-            }
-        }
+        text = source.evaluateAll(text);
 
         return text;
     }

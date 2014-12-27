@@ -96,7 +96,7 @@ public class FormFieldsHandler {
             if (o == null || String.valueOf(o).equals("null")) {
                 maps.put(skey, "");
             } else if (o instanceof DatabaseObject && !(o instanceof Group)) {
-                maps.putAll(new FormFieldsHandler((DatabaseObject) o).getFormattedFormFields(obj.getType() + "." + key));
+                maps.putAll(((DatabaseObject) o).getFormFields(obj.getType() + "." + key));//new FormFieldsHandler((DatabaseObject) o).getFormattedFormFields(obj.getType() + "." + key));
             } else if (o instanceof Boolean) {
                 maps.put(skey, TypeConversion.booleanToString((Boolean) o));
             } else if (o instanceof Double || o.getClass() == double.class) {

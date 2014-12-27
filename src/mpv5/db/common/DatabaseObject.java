@@ -19,6 +19,7 @@ package mpv5.db.common;
 import enoa.handler.TemplateHandler;
 import groovy.lang.GroovyShell;
 import groovy.lang.Binding;
+import groovy.lang.Closure;
 import java.awt.Color;
 import java.io.File;
 import java.io.Serializable;
@@ -37,6 +38,8 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import javax.swing.SwingUtilities;
 import mpv5.db.objects.ValueProperty;
 import mpv5.globals.Messages;
@@ -67,11 +70,13 @@ import static mpv5.db.common.Context.*;
 import mpv5.utils.text.TypeConversion;
 import mpv5.globals.Constants;
 import mpv5.globals.GlobalSettings;
+import mpv5.handler.FormFieldsHandler;
 import mpv5.ui.dialogs.DialogForFile;
 import mpv5.utils.export.Export;
 import mpv5.utils.jobs.Job;
 import mpv5.utils.jobs.Waiter;
 import org.codehaus.groovy.control.CompilationFailedException;
+import org.codehaus.groovy.runtime.MethodClosure;
 
 /**
  * Database Objects reflect a row in a table, and can parse graphical and
@@ -80,6 +85,8 @@ import org.codehaus.groovy.control.CompilationFailedException;
  * @author
  */
 public abstract class DatabaseObject implements Comparable<DatabaseObject>, Serializable, Cloneable, Constants {
+
+    private Map<String, Map<String, Object>> cachedFormFieldsByKey = new HashMap<String, Map<String, Object>>();
 
     /**
      * @return the cname
@@ -759,6 +766,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
      * @return true if the save did not throw any errors
      */
     public boolean save(boolean silent) {
+        cachedFormFieldsByKey.clear();
         if (!this.isReadOnly()) {
             String message = null;
             uncacheObject(this);
@@ -1147,7 +1155,6 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
      */
     public void setPanelData(DataPanel target) {
 
-
         for (String key : getVars().keySet()) {
             try {
                 Log.Debug(this, key + " [" + getVars().get(key).invoke(this, new Object[0]) + "]");
@@ -1458,10 +1465,9 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
         return null;
     }
 
-
     /**
-     * Returns an empty "sample" Object of the specified
-     * <code>Context</code> type
+     * Returns an empty "sample" Object of the specified <code>Context</code>
+     * type
      *
      * @param context
      * @return
@@ -2485,10 +2491,43 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
             if (groovyShell == null) {
                 Binding binding = new Binding();
                 binding.setVariable("dbo", this);
+                MethodClosure cl = new MethodClosure(this, "getObject");
+                binding.setVariable("getObject", cl);
+                MethodClosure ff = new MethodClosure(this, "getFormFields");
+                binding.setVariable("getFormFields", ff);
+                MethodClosure ff1 = new MethodClosure(this, "getFormField");
+                binding.setVariable("getFormField", ff1);
                 groovyShell = new GroovyShell(binding);
             }
             return groovyShell;
         }
+    }
+
+    public DatabaseObject getObject(String contextname, String cname) throws NodataFoundException {
+        return getObject(Context.getMatchingContext(contextname), cname);
+    }
+
+    public DatabaseObject getObject(String contextname, int id) throws NodataFoundException {
+        return getObject(Context.getMatchingContext(contextname), id);
+    }
+
+    public DatabaseObject getObject(String contextname, String field, Object value) throws NodataFoundException {
+        return getObject(Context.getMatchingContext(contextname), field, value);
+    }
+
+    public synchronized  Map<String, Object> getFormFields() {
+        return getFormFields(null);
+    }
+
+    public Map<String, Object> getFormFields(String key) {
+        if (!cachedFormFieldsByKey.containsKey(key)) {
+            cachedFormFieldsByKey.put(key, new FormFieldsHandler(this).getFormattedFormFields(key));
+        }
+        return cachedFormFieldsByKey.get(key);
+    }
+
+    public Object getFormField(String name) {
+        return getFormFields().get(name);
     }
 
     /**
@@ -2497,17 +2536,46 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
      * @param script
      * @return
      */
-    public synchronized String evaluate(String script) {
+    private String evaluate(String script) {
         try {
-            String sm = GlobalSettings.getProperty("org.openyabs.config.scriptsymbol", "#");
-            if (script.startsWith(sm) && script.endsWith(sm)) {
-                script = script.substring(1, script.length() - 1);
-            }
             return String.valueOf(getGroovyShell().evaluate(script));
         } catch (CompilationFailedException compilationFailedException) {
             Log.Debug(compilationFailedException);
         }
         return script;
+    }
+
+    public String evaluateAll(String t) {
+        String sm = GlobalSettings.getProperty("org.openyabs.config.scriptsymbol", "#");
+        if (!t.contains(sm)) {
+            t = sm + t + sm;
+        }
+        return evaluateAll(t, false);
+    }
+
+    public String evaluateAll(String text, boolean showError) {
+        String sm = GlobalSettings.getProperty("org.openyabs.config.scriptsymbol", "#");
+        Pattern SCRIPTPATTERN = Pattern.compile("\\" + sm + "(.*?)\\" + sm + "");
+        Matcher scriptmatcher = SCRIPTPATTERN.matcher(text);
+        Log.Debug("script", text);
+        while (scriptmatcher.find()) {
+            try {
+                String script = scriptmatcher.group(1);
+                String orig = scriptmatcher.group(0);
+                if (script.startsWith(sm) && script.endsWith(sm)) {
+                    script = script.substring(1, script.length() - 1);
+                }
+                Log.Debug("inner script", text);
+                text = text.replace(orig, evaluate(script));
+            } catch (Exception e) {
+                Log.Debug(this, e);
+                if (showError) {
+                    throw new RuntimeException(e.getMessage(), e);
+                }
+            }
+        }
+
+        return text;
     }
 
     /**
@@ -2525,7 +2593,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
         } catch (Exception ex) {
             Log.Debug(this, ex.getMessage());
         }
-        
+
         String sm = GlobalSettings.getProperty("org.openyabs.config.scriptsymbol", "#");
         for (ValueProperty p : props) {
             String strVal = String.valueOf(p.getValue());
@@ -2539,7 +2607,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
                 }
             } else if (strVal.startsWith(sm) && strVal.endsWith(sm)) {
                 try {
-                    Object value = evaluate(strVal);
+                    Object value = evaluateAll(strVal);
                     map.put("property." + p.getKey(), String.valueOf(value));
                 } catch (Exception e) {
                     Log.Debug(this, e.getMessage());
@@ -2584,7 +2652,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
         if (this instanceof Templateable) {
             Templateable me = (Templateable) this;
             if (TemplateHandler.isLoaded(me)) {
-                File xf = new File(User.getSaveDir(this), me.getFormatHandler().toUserString() + (convertToPdf?".pdf":".odt"));
+                File xf = new File(User.getSaveDir(this), me.getFormatHandler().toUserString() + (convertToPdf ? ".pdf" : ".odt"));
                 Waiter x;
                 if (showDialog) {
                     x = new DialogForFile(DialogForFile.FILES_ONLY, xf);

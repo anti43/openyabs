@@ -107,14 +107,14 @@ public class Main extends JPanel implements YabsPlugin, Runnable, DatabaseObject
             ValueProperty script = ValueProperty.getProperty(object.getContext(), "modifyOnSave");
             Object s = script.getValue();
             if (s != null) {
-               object.evaluate(String.valueOf(s));
+               object.evaluateAll(String.valueOf(s));
             }
          }
          if (ValueProperty.hasProperty(object, "modifyOnSave")) {
             ValueProperty script = ValueProperty.getProperty(object, "modifyOnSave");
             Object s = script.getValue();
             if (s != null) {
-               object.evaluate(String.valueOf(s));
+               object.evaluateAll(String.valueOf(s));
             }
          }
       } catch (Exception ex) {
