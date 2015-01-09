@@ -87,7 +87,8 @@
         <string>$JAVAROOT/vcard4j-1_1_3.jar</string>
         <string>$JAVAROOT/velocity-1.7.jar</string>
         <string>$JAVAROOT/ws-commons-util-1.0.2.jar</string>
-        <string>$JAVAROOT/xdocreport-1.0.4-MOD-JH.jar</string>
+        <string>$JAVAROOT/xdocreport-1.0.5-Mod-JH.jar</string>
+        <string>$JAVAROOT/xercesImpl-2.9.1.jar</string>
         <string>$JAVAROOT/xercesImpl.jar</string>
         <string>$JAVAROOT/xml-apis.jar</string>
         <string>$JAVAROOT/xmlrpc-client-3.1.2.jar</string>
