@@ -23,6 +23,8 @@ import fr.opensagres.xdocreport.document.IXDocReport;
 import fr.opensagres.xdocreport.document.odt.ODTConstants;
 import fr.opensagres.xdocreport.document.registry.XDocReportRegistry;
 import fr.opensagres.xdocreport.itext.extension.font.ITextFontRegistry;
+import fr.opensagres.xdocreport.template.FieldExtractor;
+import fr.opensagres.xdocreport.template.FieldsExtractor;
 import fr.opensagres.xdocreport.template.IContext;
 import fr.opensagres.xdocreport.template.TemplateEngineKind;
 import fr.opensagres.xdocreport.template.formatter.FieldsMetadata;
@@ -33,8 +35,10 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import mpv5.globals.GlobalSettings;
 import mpv5.logging.Log;
 import mpv5.utils.files.FileDirectoryHandler;
 import mpv5.utils.xdocreport.YabsFontFactoryImpl;
@@ -56,6 +60,7 @@ public class ODTFile2 extends Exportable {
     private OdfTextDocument document;
     private final PdfOptions options;
     private final IXDocReport report;
+    private final FieldsExtractor<FieldExtractor> extractor;
 
     public ODTFile2(String pathToFile) throws Exception {
         super(pathToFile);
@@ -72,8 +77,9 @@ public class ODTFile2 extends Exportable {
         options = PdfOptions.create();
         options.fontProvider(reg);
         report = XDocReportRegistry.getRegistry().loadReport(new FileInputStream(this), TemplateEngineKind.Velocity);
+        extractor = FieldsExtractor.create();
         report.addPreprocessor(ODTConstants.CONTENT_XML_ENTRY, YabsODTPreprocessor.INSTANCE);
-        report.addPreprocessor(ODTConstants.STYLES_XML_ENTRY, YabsODTPreprocessor.INSTANCE);
+        report.addPreprocessor(ODTConstants.STYLES_XML_ENTRY, YabsODTPreprocessor.INSTANCE);    
     }
 
     @Override
@@ -109,18 +115,20 @@ public class ODTFile2 extends Exportable {
         try {
             FieldsMetadata metadata = new FieldsMetadata();
             boolean addMeta = true;
-            
+
+            HashMap<String, Object> d = getData();
+            d.putAll(getTemplate().getData());
+          
             IContext context = report.createContext();
             if (Log.isDebugging()) {
                 Log.Debug(this, "All fields:");
-                for (String k : getData().keySet()) {
-                    Log.Debug(this, "Key: " + k + " [" + getData().get(k) + "]");
+                for (String k : d.keySet()) {
+                    Log.Debug(this, "Key: " + k + " [" + d.get(k) + "]");
                 }
             }
 
-            context.putMap(getData());
             Object table = null;
-            for (String k : getData().keySet()) {
+            for (String k : d.keySet()) {
                 if (k.contains(TableHandler.KEY_TABLE + "1")) {
                     table = k;
                     break;
@@ -129,7 +137,7 @@ public class ODTFile2 extends Exportable {
             if (table != null) {
                 String fmt = this.getTemplate().__getFormat();
                 String[] cols = fmt.split(",");
-                ArrayList<String[]> list = (ArrayList<String[]>) getData().get(table);
+                ArrayList<String[]> list = (ArrayList<String[]>) d.get(table);
                 List<Map<String, String>> positions = new ArrayList<Map<String, String>>();
                 for (String[] s : list) {
                     int i = 0;
@@ -154,7 +162,24 @@ public class ODTFile2 extends Exportable {
                 context.put(TableHandler.KEY_TABLE + "1", positions);
             }
             report.setFieldsMetadata(metadata);
+            
+            report.extractFields(extractor);
+            
+            if (!GlobalSettings.getBooleanProperty("org.openyabs.exportproperty.blankunusedfields.disable")) {
 
+                Iterator<FieldExtractor> it = extractor.getFields().iterator();
+                while (it.hasNext()) {
+                    FieldExtractor val = it.next();
+                    if (!val.getName().startsWith("{")
+                            && !d.containsKey(val.getName())) {
+                        if (!val.getName().startsWith(TableHandler.KEY_TABLE + "1")) {
+                            d.put(val.getName(), "");
+                        }
+                    }
+                }
+            }
+            context.putMap(d);
+                  
             report.process(context, out);
 
         } catch (XDocReportException ex) {

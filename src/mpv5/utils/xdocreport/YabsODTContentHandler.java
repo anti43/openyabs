@@ -29,6 +29,7 @@ public class YabsODTContentHandler extends ODTBufferedDocumentContentHandler {
     private final String TABLE_NS = "urn:oasis:names:tc:opendocument:xmlns:table:1.0";
     private final String tab = "table";
     private final String col = "table-cell";
+    private final String row = "table-row";
     private final String para = "p";
     private int i;
 
@@ -72,13 +73,13 @@ public class YabsODTContentHandler extends ODTBufferedDocumentContentHandler {
             this.textFieldParsing = false;
             return;
         }
-        if (isTable(uri, localName)) {
+        if (isTable(uri, localName) || isRow(uri,localName)) {
             this.inTargetTable = false;
             i = 0;
         } else if (isColumn(uri, localName)) {
             this.getCurrentElement();
             this.inTargetCol = false;
-        }
+        } 
         super.doEndElement(uri, localName, name);
     }
 
@@ -88,6 +89,7 @@ public class YabsODTContentHandler extends ODTBufferedDocumentContentHandler {
             characters = StringUtils.xmlUnescape(characters);
             characters = characters.replace("<", "$");
             characters = characters.replace(">", "");
+            //characters = characters.replace(".", "#");
         }
         super.flushCharacters(characters);
     }
@@ -108,4 +110,7 @@ public class YabsODTContentHandler extends ODTBufferedDocumentContentHandler {
         return TEXT_NS.equals(uri) && para.equals(localName);
     }
 
+    private boolean isRow(String uri, String localName) {
+        return TABLE_NS.equals(uri) && row.equals(localName);
+    }
 }
