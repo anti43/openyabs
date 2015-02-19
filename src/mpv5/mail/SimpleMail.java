@@ -19,6 +19,7 @@ package mpv5.mail;
 import com.sun.mail.smtp.SMTPSSLTransport;
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Properties;
 
@@ -356,6 +357,7 @@ public class SimpleMail implements Waiter {
             message.addRecipient(Message.RecipientType.BCC, new InternetAddress(bccAddress));
         }
         message.setSubject(subject);
+        message.setSentDate(new Date());
 
         // create the message part
         MimeBodyPart messageBodyPart = new MimeBodyPart();
@@ -421,6 +423,8 @@ public class SimpleMail implements Waiter {
         // Define message
         MimeMessage message = new MimeMessage(session);
         message.setFrom(new InternetAddress(senderAddress));
+        message.setSentDate(new Date());
+        
         for (int i = 0; i < rec.size(); i++) {
             String recc = rec.get(i);
             try {
