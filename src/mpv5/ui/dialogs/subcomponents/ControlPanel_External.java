@@ -26,19 +26,19 @@ import mpv5.ui.dialogs.Popup;
  */
 public class ControlPanel_External extends javax.swing.JPanel implements ControlApplet {
 
-   private static final long serialVersionUID = 1L;
-   /**
-    * This unique name identifies this control applet
-    */
-   public final String UNAME = "ooo";
-   private PropertyStore oldvalues;
-   private static ControlPanel_External ident;
+    private static final long serialVersionUID = 1L;
+    /**
+     * This unique name identifies this control applet
+     */
+    public final String UNAME = "ooo";
+    private PropertyStore oldvalues;
+    private static ControlPanel_External ident;
 
-   public ControlPanel_External() {
-      initComponents();
-      setValues(null);
-      setVisible(true);
-   }
+    public ControlPanel_External() {
+        initComponents();
+        setValues(null);
+        setVisible(true);
+    }
 
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -131,6 +131,11 @@ public class ControlPanel_External extends javax.swing.JPanel implements Control
 
         alternate.setText(bundle.getString("ControlPanel_External.alternate.text")); // NOI18N
         alternate.setName("alternate"); // NOI18N
+        alternate.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                alternateItemStateChanged(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -259,143 +264,151 @@ public class ControlPanel_External extends javax.swing.JPanel implements Control
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
 
-       setSettings();
-       LocalSettings.save();
-       Popup.notice(Messages.RESTART_REQUIRED);
+        setSettings();
+        LocalSettings.save();
+        Popup.notice(Messages.RESTART_REQUIRED);
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
-       reset();
+        reset();
     }//GEN-LAST:event_jButton3ActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
 
-       setSettings();
-       Popup.notice(Messages.RESTART_REQUIRED);
+        setSettings();
+        Popup.notice(Messages.RESTART_REQUIRED);
 }//GEN-LAST:event_jButton2ActionPerformed
 
     private void jCheckBox3ItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_jCheckBox3ItemStateChanged
-       labeledTextField1.setEnabled(jCheckBox3.isSelected());
-       labeledTextField2.setEnabled(jCheckBox3.isSelected());
-       labeledTextChooser2.setEnabled(!jCheckBox3.isSelected());
+        labeledTextField1.setEnabled(jCheckBox3.isSelected());
+        labeledTextField2.setEnabled(jCheckBox3.isSelected());
+        labeledTextChooser2.setEnabled(!jCheckBox3.isSelected());
 }//GEN-LAST:event_jCheckBox3ItemStateChanged
 
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
-       NoaConnection.clearConnection();
-       Runnable runnable2 = new Runnable() {
-          @Override
-          public void run() {
-             //Caching the old values
-             String host = LocalSettings.getProperty(LocalSettings.OFFICE_HOST);
-             String Port = LocalSettings.getProperty(LocalSettings.OFFICE_PORT);
-             String Remote = LocalSettings.getProperty(LocalSettings.OFFICE_REMOTE);
-             String home = LocalSettings.getProperty(LocalSettings.OFFICE_HOME);
-             String use = LocalSettings.getProperty(LocalSettings.OFFICE_USE);
+        NoaConnection.clearConnection();
+        Runnable runnable2 = new Runnable() {
+            @Override
+            public void run() {
+                //Caching the old values
+                String host = LocalSettings.getProperty(LocalSettings.OFFICE_HOST);
+                String Port = LocalSettings.getProperty(LocalSettings.OFFICE_PORT);
+                String Remote = LocalSettings.getProperty(LocalSettings.OFFICE_REMOTE);
+                String home = LocalSettings.getProperty(LocalSettings.OFFICE_HOME);
+                String use = LocalSettings.getProperty(LocalSettings.OFFICE_USE);
 
-             //Setting Values to test ...
-             LocalSettings.setProperty(LocalSettings.OFFICE_HOST, labeledTextField1.getText());
-             LocalSettings.setProperty(LocalSettings.OFFICE_PORT, jCheckBox3.isSelected() ? labeledTextField2.getText() : "0");
-             LocalSettings.setProperty(LocalSettings.OFFICE_REMOTE, Boolean.toString(jCheckBox3.isSelected()));
-             LocalSettings.setProperty(LocalSettings.OFFICE_USE, "true");
-             LocalSettings.setProperty(LocalSettings.OFFICE_HOME, labeledTextChooser2.get_Text(false));
-             checkOS();
-             mpv5.YabsViewProxy.instance().setWaiting(true);
-             try {
-                NoaConnection.getConnection().getDesktopService().getFramesCount();
-                Popup.notice(Messages.OO_DONE_LOADING);
+                //Setting Values to test ...
+                LocalSettings.setProperty(LocalSettings.OFFICE_HOST, labeledTextField1.getText());
+                LocalSettings.setProperty(LocalSettings.OFFICE_PORT, jCheckBox3.isSelected() ? labeledTextField2.getText() : "0");
+                LocalSettings.setProperty(LocalSettings.OFFICE_REMOTE, Boolean.toString(jCheckBox3.isSelected()));
+                LocalSettings.setProperty(LocalSettings.OFFICE_USE, "true");
+                LocalSettings.setProperty(LocalSettings.OFFICE_HOME, labeledTextChooser2.get_Text(false));
+                checkOS();
+                mpv5.YabsViewProxy.instance().setWaiting(true);
                 try {
+                    NoaConnection.getConnection().getDesktopService().getFramesCount();
+                    Popup.notice(Messages.OO_DONE_LOADING);
+                    try {
 //                   NoaConnection.getConnection().getDesktopService().terminate();
-                   setSettings();
-                   LocalSettings.save();
+                        setSettings();
+                        LocalSettings.save();
 //                   Popup.notice(Messages.RESTART_REQUIRED);
-                } catch (Exception ex) {
-                   Log.Debug(ex);
+                    } catch (Exception ex) {
+                        Log.Debug(ex);
+                    }
+                } catch (Exception e) {
+                    Popup.notice(Messages.ERROR_OCCURED);
+                    //Restore old Values ....
+                    LocalSettings.setProperty(LocalSettings.OFFICE_HOST, host);
+                    LocalSettings.setProperty(LocalSettings.OFFICE_PORT, Port);
+                    LocalSettings.setProperty(LocalSettings.OFFICE_REMOTE, Remote);
+                    LocalSettings.setProperty(LocalSettings.OFFICE_HOME, home);
+                    LocalSettings.setProperty(LocalSettings.OFFICE_USE, use);
+                } finally {
+                    mpv5.YabsViewProxy.instance().setWaiting(false);
                 }
-             } catch (Exception e) {
-                Popup.notice(Messages.ERROR_OCCURED);
-                //Restore old Values ....
-                LocalSettings.setProperty(LocalSettings.OFFICE_HOST, host);
-                LocalSettings.setProperty(LocalSettings.OFFICE_PORT, Port);
-                LocalSettings.setProperty(LocalSettings.OFFICE_REMOTE, Remote);
-                LocalSettings.setProperty(LocalSettings.OFFICE_HOME, home);
-                LocalSettings.setProperty(LocalSettings.OFFICE_USE, use);
-             } finally {
-                mpv5.YabsViewProxy.instance().setWaiting(false);
-             }
-          }
-       };
-       final Thread startServerThread = new Thread(runnable2);
-       startServerThread.start();
+            }
+        };
+        final Thread startServerThread = new Thread(runnable2);
+        startServerThread.start();
 
     }//GEN-LAST:event_jButton4ActionPerformed
 
     private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
 
-       Runnable runnable = new Runnable() {
-          public void run() {
-             try {
-                NoaConnection.definePath();
-                YabsViewProxy.instance().setWaiting(true);
-                IApplicationAssistant applicationAssistant = new ApplicationAssistant();
-                ILazyApplicationInfo appInfo = applicationAssistant.getLatestLocalLibreOfficeApplication();
-                if (appInfo == null) {
-                   appInfo = applicationAssistant.getLatestLocalOpenOfficeOrgApplication();
+        Runnable runnable = new Runnable() {
+            public void run() {
+                try {
+                    NoaConnection.definePath();
+                    YabsViewProxy.instance().setWaiting(true);
+                    IApplicationAssistant applicationAssistant = new ApplicationAssistant();
+                    ILazyApplicationInfo appInfo = applicationAssistant.getLatestLocalLibreOfficeApplication();
+                    if (appInfo == null) {
+                        appInfo = applicationAssistant.getLatestLocalOpenOfficeOrgApplication();
+                    }
+                    labeledTextChooser2.setText(appInfo.getHome());
+                    YabsViewProxy.instance().setWaiting(false);
+                } catch (OfficeApplicationException ex) {
+                    Log.Debug(ex);
                 }
-                labeledTextChooser2.setText(appInfo.getHome());
-                YabsViewProxy.instance().setWaiting(false);
-             } catch (OfficeApplicationException ex) {
-                Log.Debug(ex);
-             }
-          }
-       };
-       SwingUtilities.invokeLater(runnable);
+            }
+        };
+        SwingUtilities.invokeLater(runnable);
     }//GEN-LAST:event_jButton5ActionPerformed
 
    private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
-      labeledTextChooser2.set_Text("");
-      jCheckBox3.setSelected(false);
-      alternate.setSelected(false);
-      jCheckBox1.setSelected(false);
-      jCheckBox2.setSelected(false);
-      labeledTextField1.setText("");
-      labeledTextField2.setText("0");
-      auto.setSelected(true);
-      jButton1ActionPerformed(evt);
+       labeledTextChooser2.set_Text("");
+       jCheckBox3.setSelected(false);
+       alternate.setSelected(false);
+       jCheckBox1.setSelected(false);
+       jCheckBox2.setSelected(false);
+       labeledTextField1.setText("");
+       labeledTextField2.setText("0");
+       auto.setSelected(true);
+       jButton1ActionPerformed(evt);
    }//GEN-LAST:event_jButton6ActionPerformed
 
    private void autoItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_autoItemStateChanged
-      LocalSettings.setProperty(LocalSettings.OFFICE_AUTOSTART, String.valueOf(auto.isSelected()));
-      LocalSettings.save();
+       LocalSettings.setProperty(LocalSettings.OFFICE_AUTOSTART, String.valueOf(auto.isSelected()));
+       LocalSettings.save();
    }//GEN-LAST:event_autoItemStateChanged
 
    private void autoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_autoActionPerformed
-      // TODO add your handling code here:
+       // TODO add your handling code here:
    }//GEN-LAST:event_autoActionPerformed
 
-   public void setValues(PropertyStore values) {
-      oldvalues = values;
-      try {
-         labeledTextChooser2.set_Text(LocalSettings.getProperty(LocalSettings.OFFICE_HOME));
-         jCheckBox3.setSelected(LocalSettings.getBooleanProperty(LocalSettings.OFFICE_REMOTE));
-         jCheckBox1.setSelected(!LocalSettings.getBooleanProperty(LocalSettings.OFFICE_USE));
-         alternate.setSelected(LocalSettings.getBooleanProperty(LocalSettings.OFFICE_ALT));
-         jCheckBox2.setSelected(LocalSettings.getBooleanProperty(LocalSettings.OFFICE_LOCALSERVER));
-         labeledTextField1.setText(LocalSettings.getProperty(LocalSettings.OFFICE_HOST));
-         labeledTextField2.setText(LocalSettings.getProperty(LocalSettings.OFFICE_PORT));
-         labeledTextField3.setText(LocalSettings.getProperty(LocalSettings.CALCULATOR));
-         auto.setSelected(LocalSettings.getBooleanProperty(LocalSettings.OFFICE_AUTOSTART));
-      } catch (Exception e) {
-         Log.Debug(this, e);
-      }
-   }
+    private void alternateItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_alternateItemStateChanged
+        if (alternate.isSelected()) {
+            jCheckBox1.setSelected(true);
+            jCheckBox2.setSelected(false);
+            auto.setSelected(false);
+        }
+    }//GEN-LAST:event_alternateItemStateChanged
 
-   public String getUname() {
-      return UNAME;
-   }
+    public void setValues(PropertyStore values) {
+        oldvalues = values;
+        try {
+            labeledTextChooser2.set_Text(LocalSettings.getProperty(LocalSettings.OFFICE_HOME));
+            jCheckBox3.setSelected(LocalSettings.getBooleanProperty(LocalSettings.OFFICE_REMOTE));
+            jCheckBox1.setSelected(!LocalSettings.getBooleanProperty(LocalSettings.OFFICE_USE));
+            alternate.setSelected(LocalSettings.getBooleanProperty(LocalSettings.OFFICE_ALT));
+            jCheckBox2.setSelected(LocalSettings.getBooleanProperty(LocalSettings.OFFICE_LOCALSERVER));
+            labeledTextField1.setText(LocalSettings.getProperty(LocalSettings.OFFICE_HOST));
+            labeledTextField2.setText(LocalSettings.getProperty(LocalSettings.OFFICE_PORT));
+            labeledTextField3.setText(LocalSettings.getProperty(LocalSettings.CALCULATOR));
+            auto.setSelected(LocalSettings.getBooleanProperty(LocalSettings.OFFICE_AUTOSTART));
+        } catch (Exception e) {
+            Log.Debug(this, e);
+        }
+    }
 
-   public void reset() {
-      setValues(oldvalues);
-   }
+    public String getUname() {
+        return UNAME;
+    }
+
+    public void reset() {
+        setValues(oldvalues);
+    }
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JCheckBox alternate;
     private javax.swing.JCheckBox auto;
@@ -418,52 +431,52 @@ public class ControlPanel_External extends javax.swing.JPanel implements Control
     private mpv5.ui.beans.LabeledTextField labeledTextField3;
     // End of variables declaration//GEN-END:variables
 
-   private void setSettings() {
-      File f = new File(labeledTextChooser2.get_Text(false));
-      if (!jCheckBox3.isSelected() && !f.isDirectory()) {
-         try {
-            labeledTextChooser2.setText(f.getParentFile().getCanonicalPath());
-         } catch (Exception ex) {
-            Log.Debug(this, ex.getMessage());
-            labeledTextChooser2.setText("");
-         }
-      }
+    private void setSettings() {
+        File f = new File(labeledTextChooser2.get_Text(false));
+        if (!jCheckBox3.isSelected() && !f.isDirectory()) {
+            try {
+                labeledTextChooser2.setText(f.getParentFile().getCanonicalPath());
+            } catch (Exception ex) {
+                Log.Debug(this, ex.getMessage());
+                labeledTextChooser2.setText("");
+            }
+        }
 
-      LocalSettings.setProperty(LocalSettings.OFFICE_HOME, labeledTextChooser2.get_Text(false));
-      LocalSettings.setProperty(LocalSettings.OFFICE_LOCALSERVER, Boolean.toString(jCheckBox2.isSelected()));
-      LocalSettings.setProperty(LocalSettings.OFFICE_USE, Boolean.toString(!jCheckBox1.isSelected()));
-      LocalSettings.setProperty(LocalSettings.OFFICE_ALT, Boolean.toString(alternate.isSelected()));
-      LocalSettings.setProperty(LocalSettings.OFFICE_REMOTE, Boolean.toString(jCheckBox3.isSelected()));
-      LocalSettings.setProperty(LocalSettings.OFFICE_HOST, labeledTextField1.getText());
-      LocalSettings.setProperty(LocalSettings.OFFICE_PORT, labeledTextField2.getText());
-      LocalSettings.setProperty(LocalSettings.CALCULATOR, labeledTextField3.getText());
-      LocalSettings.setProperty(LocalSettings.OFFICE_AUTOSTART, String.valueOf(auto.isSelected()));
-      checkOS();
-      
-      if(jCheckBox2.isSelected()){
-         //turn off autostart if local server
-         LocalSettings.setProperty(LocalSettings.OFFICE_AUTOSTART, "false");
-         LocalSettings.setProperty(LocalSettings.OFFICE_HOST, "127.0.0.1");
-         LocalSettings.setProperty(LocalSettings.OFFICE_PORT, "8100");
-      }
-      
-      LocalSettings.apply();
-   }
+        LocalSettings.setProperty(LocalSettings.OFFICE_HOME, labeledTextChooser2.get_Text(false));
+        LocalSettings.setProperty(LocalSettings.OFFICE_LOCALSERVER, Boolean.toString(jCheckBox2.isSelected()));
+        LocalSettings.setProperty(LocalSettings.OFFICE_USE, Boolean.toString(!jCheckBox1.isSelected()));
+        LocalSettings.setProperty(LocalSettings.OFFICE_ALT, Boolean.toString(alternate.isSelected()));
+        LocalSettings.setProperty(LocalSettings.OFFICE_REMOTE, Boolean.toString(jCheckBox3.isSelected()));
+        LocalSettings.setProperty(LocalSettings.OFFICE_HOST, labeledTextField1.getText());
+        LocalSettings.setProperty(LocalSettings.OFFICE_PORT, labeledTextField2.getText());
+        LocalSettings.setProperty(LocalSettings.CALCULATOR, labeledTextField3.getText());
+        LocalSettings.setProperty(LocalSettings.OFFICE_AUTOSTART, String.valueOf(auto.isSelected()));
+        checkOS();
 
-   private void checkOS() {
-      if (Main.osIsMacOsX) {
-         LocalSettings.setProperty(LocalSettings.OFFICE_BINARY_FOLDER, "MacOS");
-      } else if (Main.osIsWindows) {
-         LocalSettings.setProperty(LocalSettings.OFFICE_BINARY_FOLDER, "program");
-      } else if (Main.osIsLinux) {
-         LocalSettings.setProperty(LocalSettings.OFFICE_BINARY_FOLDER, "program");
-      }
-   }
+        if (jCheckBox2.isSelected()) {
+            //turn off autostart if local server
+            LocalSettings.setProperty(LocalSettings.OFFICE_AUTOSTART, "false");
+            LocalSettings.setProperty(LocalSettings.OFFICE_HOST, "127.0.0.1");
+            LocalSettings.setProperty(LocalSettings.OFFICE_PORT, "8100");
+        }
 
-   @Override
-   public Component getAndRemoveActionPanel() {
-      this.remove(jPanel1);
-      validate();
-      return jPanel1;
-   }
+        LocalSettings.apply();
+    }
+
+    private void checkOS() {
+        if (Main.osIsMacOsX) {
+            LocalSettings.setProperty(LocalSettings.OFFICE_BINARY_FOLDER, "MacOS");
+        } else if (Main.osIsWindows) {
+            LocalSettings.setProperty(LocalSettings.OFFICE_BINARY_FOLDER, "program");
+        } else if (Main.osIsLinux) {
+            LocalSettings.setProperty(LocalSettings.OFFICE_BINARY_FOLDER, "program");
+        }
+    }
+
+    @Override
+    public Component getAndRemoveActionPanel() {
+        this.remove(jPanel1);
+        validate();
+        return jPanel1;
+    }
 }
