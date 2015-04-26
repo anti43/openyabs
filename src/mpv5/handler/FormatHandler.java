@@ -356,7 +356,7 @@ public class FormatHandler {
     public synchronized String toString(final MessageFormat format, final int number) {
         String fs = format.format(new Object[]{number});
         Log.Debug(FormatHandler.class, format.toPattern() + " ? " + number + " : " + fs);
-        String x = VariablesHandler.parse(fs, source);
+        String x = VariablesHandler.parseNoScript(fs, source);
         if (x.length() == 0) {
             x = "0000" + number;
         }
@@ -438,7 +438,7 @@ public class FormatHandler {
 
                 
                 
-                f = new YMessageFormat((VariablesHandler.parse(format.toPattern(), source)).substring(startindex), null);
+                f = new YMessageFormat((VariablesHandler.parseNoScript(format.toPattern(), source)).substring(startindex), null);
                 Log.Debug(this, "Pattern: " + f.toPattern() + " for String: " + string + " Starting at " + startindex);
                 Object[] result = f.parse(string, new ParsePosition(startindex));
                 if (result != null) {

@@ -307,4 +307,22 @@ public abstract class VariablesHandler {
 
         return text;
     }
+
+    public static synchronized String parseNoScript(String text, DatabaseObject source) {
+        List<String[]> c = resolveVarsFor(source, Collections.EMPTY_MAP);
+        if (c != null) {
+            for (String[] data : c) {
+                if (data != null) {
+                    if (data[1] != null) {
+                        if (Log.isDebugging()) {
+                            Log.Debug(VariablesHandler.class, source + ": replacing key: " + data[0] + " with value: " + data[1]);
+                        }
+                        //text = text.replace(data[0], data[1]);
+                        text = text.replaceAll("(?i)" + data[0].replace("[", "\\[").replace("]", "\\]"), data[1]);//.replace(".","\\.") regex escape..
+                    }
+                }
+            }
+        }
+        return text;
+    }
 }

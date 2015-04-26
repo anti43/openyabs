@@ -1237,6 +1237,8 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
                     vals.add(new String[]{name, DateConverter.getDefDateString(DateConverter.getDate(value))});
                 } else if (name.toUpperCase().startsWith("VALUE") || name.toUpperCase().endsWith("VALUE")) {
                     vals.add(new String[]{name, FormatNumber.formatDezimal(FormatNumber.parseDezimal(value.toString()))});
+                } else if (name.toUpperCase().startsWith("CNUMBER") ) {
+                    vals.add(new String[]{name, String.valueOf(value)});
                 } else {
                     vals.add(new String[]{name, VariablesHandler.parse(String.valueOf(value), this)});
                 }
