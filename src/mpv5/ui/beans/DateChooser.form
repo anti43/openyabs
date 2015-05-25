@@ -62,9 +62,6 @@
         <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
           <Dimension value="[20, 333]"/>
         </Property>
-        <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-          <Dimension value="[18, 18]"/>
-        </Property>
         <Property name="name" type="java.lang.String" value="jButton1" noResource="true"/>
       </Properties>
       <Events>

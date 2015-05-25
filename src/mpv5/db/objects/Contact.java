@@ -1,12 +1,9 @@
 package mpv5.db.objects;
 
-import enoa.handler.TemplateHandler;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.TreeMap;
 import javax.swing.JComponent;
 import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
@@ -48,6 +45,7 @@ public class Contact extends DatabaseObject implements Formattable, Templateable
    private String bankname = "";
    private String bankcurrency = "";
    private String bankcountry = "";
+   private int payterm = 0;
    private boolean ismale = true;
    private boolean isenabled = true;
    private boolean iscompany = false;
@@ -400,6 +398,20 @@ public class Contact extends DatabaseObject implements Formattable, Templateable
    public void setCountry(String country) {
       this.country = country;
    }
+
+   /**
+    * @return the payterm
+    */
+    public int __getPayterm() {
+        return payterm;
+    }
+
+    /**
+     * @param payterm the payterm to set
+     */
+    public void setPayterm(int payterm) {
+        this.payterm = payterm;
+    }
 
    @Override
    public JComponent getView() {

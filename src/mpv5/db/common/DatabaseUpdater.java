@@ -265,6 +265,9 @@ public class DatabaseUpdater {
             "ALTER TABLE activitylistitems DROP CONSTRAINT SQL120925102345822",
             "ALTER TABLE activitylists DROP CONSTRAINT SQL120925102345612"
         });
+        UPDATES_DERBY.put(1.1980, new String[]{
+            "ALTER TABLE contacts ADD COLUMN payterm SMALLINT DEFAULT 0"
+        });
         ////////////////////////////////////////////////////////////////////////////////////////////
         // mysql updates
         UPDATES_MYSQL.put(1.11, new String[]{
@@ -558,6 +561,9 @@ public class DatabaseUpdater {
             "ALTER TABLE activitylists ADD COLUMN isbilled SMALLINT DEFAULT 0",
             "ALTER TABLE activitylistitems DROP KEY SQL120925102345822",
             "ALTER TABLE activitylists DROP KEY SQL120925102345612"
+        });
+        UPDATES_MYSQL.put(1.1980, new String[]{
+            "ALTER TABLE contacts ADD COLUMN payterm SMALLINT DEFAULT 0"
         });
     }
 
