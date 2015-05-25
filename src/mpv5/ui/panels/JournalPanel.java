@@ -763,7 +763,7 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
       double taxvolume = 0d;
       double volumebrut = 0d;
       double discountvolume = 0d;
-      Object[][] d = new Object[data.length][17];
+      Object[][] d = new Object[data.length][18];
       try {
          for (int i = 0; i < d.length; i++) {
             d[i][1] = data[i][1];
@@ -812,6 +812,7 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
             d[i][13] = "<html><p align=center>" + mpv5.utils.numberformat.FormatNumber.formatDezimal(taxVal);
             d[i][14] = "<html><p align=center>" + mpv5.utils.numberformat.FormatNumber.formatDezimal(brutVolume);
             d[i][16] = "<html><p align=center>" + mpv5.utils.numberformat.FormatNumber.formatDezimal(discountVolume);
+            d[i][17] = "<html><p align=center>" + data[i][16];
             volumenet += netVolume;
             volumebrut += brutVolume;
             taxvolume += taxVal;
@@ -913,7 +914,7 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
                      }
                      d = QueryHandler.instanceOf().clone(c).select(Context.DETAILS_JOURNAL.replace("{date}", datecriterium), itemsParams, timeframeChooser1.getTime(), datecriterium).getData();
                   } catch (NodataFoundException nodataFoundException) {
-                     d = new Object[0][16];
+                     d = new Object[0][17];
                   }
 
                   DatabaseObject.Entity<?, ?>[] es = new DatabaseObject.Entity<?, ?>[d.length];
@@ -981,7 +982,7 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
                         }
                         d1 = QueryHandler.instanceOf().clone(c).select(Context.DETAILS_JOURNAL3.replace("{date}", datecriterium), expensesParams, timeframeChooser1.getTime(), datecriterium).getData();
                      } catch (NodataFoundException nodataFoundException) {
-                        d1 = new Object[0][16];
+                        d1 = new Object[0][17];
                      }
 
 //                            try {
@@ -1057,7 +1058,7 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
                      try {
                         d2 = QueryHandler.instanceOf().clone(c).select(Context.DETAILS_JOURNAL2, revenuesParams, timeframeChooser1.getTime()).getData();
                      } catch (NodataFoundException nodataFoundException) {
-                        d2 = new Object[0][16];
+                        d2 = new Object[0][17];
                      }
                      for (int i = 0; i < d2.length; i++) {
                         d2[i][10] = Revenue.TYPE_REVENUE;
@@ -1078,7 +1079,7 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
                }
                d = parse(d);
                jTable1.setModel(new MPTableModel(d, Headers.JOURNAL.getValue(),
-                     new Class[]{Entity.class, String.class, String.class, String.class, String.class, String.class, String.class, String.class, String.class, String.class, String.class, String.class, String.class, String.class, String.class, String.class, String.class}));
+                     new Class[]{Entity.class, String.class, String.class, String.class, String.class, String.class, String.class, String.class, String.class, String.class, String.class, String.class, String.class, String.class, String.class, String.class, String.class, String.class}));
                TableFormat.stripColumn(jTable1, DatabaseObject.Entity.class);
                count.setText("" + d.length);
             } catch (Exception e) {

@@ -1,11 +1,15 @@
 package mpv5.ui.beans;
 
 
+import java.text.ParseException;
 import java.util.Date;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.JFormattedTextField;
 import javax.swing.JSpinner;
 import javax.swing.JSpinner.DateEditor;
+import javax.swing.text.DefaultFormatter;
 import mpv5.ui.dialogs.MiniCalendarDialog;
-import mpv5.ui.dialogs.MiniCalendarFrame;
 import mpv5.utils.date.DateConverter;
 
 /**
@@ -63,10 +67,14 @@ public class DateChooser extends javax.swing.JPanel {
 
     public Date getDate() {
         if (hasDate()) {
-            return DateConverter.getDate(jSpinner1.getValue());
-        } else {
-            return new Date();
+            try {
+                jSpinner1.commitEdit();
+                return DateConverter.getDate(jSpinner1.getValue());
+            } catch (ParseException ex) {
+                Logger.getLogger(DateChooser.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
+        return new Date();
     }
 
     /** This method is called from within the constructor to
