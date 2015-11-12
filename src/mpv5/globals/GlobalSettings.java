@@ -204,6 +204,12 @@ public class GlobalSettings {
         Log.Debug(GlobalSettings.class, "Changing property '" + name + "' to: " + value);
         cookie.changeProperty(name, value);
     }
+    
+    
+    public static void removeProperty(String name) {
+        Log.Debug(GlobalSettings.class, "Removing property '" + name);
+        cookie.removeProperty(name);
+    }
 
     /**
      * Read the global settings from DB
@@ -262,4 +268,5 @@ public class GlobalSettings {
     public static PropertyStore getProperties(String prefix) {
         return cookie.getProperties(prefix);
     }
+
 }

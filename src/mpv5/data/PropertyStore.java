@@ -34,76 +34,75 @@ import mpv5.utils.numberformat.FormatNumber;
  */
 public final class PropertyStore {
 
-    private final List<String[]> list = new ArrayList<String[]>();
-    private boolean changed = false;
+  private final Map<String, String> list = new HashMap<String, String>();
+  private boolean changed = false;
 
-    /**
-     * Creates a new empty property store
-     */
-    public PropertyStore() {
-    }
+  /**
+   * Creates a new empty property store
+   */
+  public PropertyStore() {
+  }
 
-    /**
-     * Creates a new property store and initially adds the given values
-     * @param data
-     */
-    public PropertyStore(Object[][] data) {
-        addAll(data);
-    }
+  /**
+   * Creates a new property store and initially adds the given values
+   * @param data
+   */
+  public PropertyStore(Object[][] data) {
+    addAll(data);
+  }
 
-    /**
-     * Adds/changes all
-     * @param data {key, value}
-     */
-    public synchronized void addAll(Object[][] data) {
-        for (Object[] data1 : data) {
-            changeProperty(data1[0].toString(), String.valueOf(data1[1]));
-        }
-        setChanged(true);
+  /**
+   * Adds/changes all
+   * @param data {key, value}
+   */
+  public synchronized void addAll(Object[][] data) {
+    for (Object[] data1 : data) {
+      changeProperty(data1[0].toString(), String.valueOf(data1[1]));
     }
+    setChanged(true);
+  }
 
-    /**
-     * Adds a new Property, regardless if a property with that name already exists
-     * @param name
-     * @param value
-     */
-    public synchronized void addProperty(String name, String value) {
-        if (value == null) {
-            value = "";
-        }
-        Log.Debug(this, "Adding or replacing property: " + name + " = " + value);
-        list.add(new String[]{name, value});
-        setChanged(true);
+  /**
+   * Adds a new Property, regardless if a property with that name already exists
+   * @param name
+   * @param value
+   */
+  public synchronized void addProperty(String name, String value) {
+    if (value == null) {
+      value = "";
     }
+    Log.Debug(this, "Adding or replacing property: " + name + " = " + value);
+    list.put(name, value);
+    setChanged(true);
+  }
 
-    /**
-     *  Generate a List of String(key-value.toString()) pairs
-     * @return The complete list of properties and values
-     */
-    public List<String[]> getList() {
-        return Collections.unmodifiableList(list);
+  /**
+   *  Generate a List of String(key-value.toString()) pairs
+   * @return The complete list of properties and values
+   */
+  public List<String[]> getList() {
+    List<String[]> l = new ArrayList<String[]>();
+    for (Map.Entry<String, String> entrySet : list.entrySet()) {
+      String key = entrySet.getKey();
+      String value = entrySet.getValue();
+      l.add(new String[]{key, value});
     }
+    return Collections.unmodifiableList(l);
+  }
 
-    /**
-     * Returns the value of the LAST property with that name or NULL
-     * @param name
-     * @return the value
-     */
-    public String getProperty(String name) {
-        String prop;
-        if (list.size() > 0) {
-            for (int i = list.size(); i > 0; i--) {
-                if (list.get(i - 1)[0].equalsIgnoreCase(name)) {
-                    prop = list.get(i - 1)[1];
-                    if (prop != null && !prop.equals("null") && prop.length() != 0) {
-                        return prop;
-                    }
-                }
-            }
-        }
-        changeProperty(name, null);
-        return null;
+  /**
+   * Returns the value of the LAST property with that name or NULL
+   * @param name
+   * @return the value
+   */
+  public String getProperty(String name) {
+    String prop = list.get(name);
+    if (prop != null && !prop.equals("null") && prop.length() != 0) {
+      return prop;
     }
+    changeProperty(name, null);
+    return null;
+  }
 
 //    /**
 //     * Return a double property. Will return NULL if the property is not parseable as double
@@ -178,297 +177,223 @@ public final class PropertyStore {
 //            return Boolean.parseBoolean(t);
 //        }
 //    }
-    /**
-     * Return a property
-     * @param <T>
-     * @param key
-     * @param desiredClassAndFallbackValue (one of Double, Integer, boolean, Date)
-     * @return A value or a new instance of T
-     */
-    @SuppressWarnings("unchecked")
-    public <T extends Object> T getProperty(String key, T desiredClassAndFallbackValue) {
-        String t = getProperty(key);
+  /**
+   * Return a property
+   * @param <T>
+   * @param key
+   * @param desiredClassAndFallbackValue (one of Double, Integer, boolean, Date)
+   * @return A value or a new instance of T
+   */
+  @SuppressWarnings("unchecked")
+  public <T extends Object> T getProperty(String key, T desiredClassAndFallbackValue) {
+    String t = getProperty(key);
 
-        if (desiredClassAndFallbackValue instanceof Double) {
-            if (t == null || String.valueOf(t).length() == 0) {
-                return desiredClassAndFallbackValue;
-            } else {
-                try {
-                    return (T) Double.valueOf(t);
-                } catch (NumberFormatException numberFormatException) {
-                    return (T) new Double(FormatNumber.parseDezimal(t).doubleValue());
-                }
-            }
-        } else if (desiredClassAndFallbackValue instanceof Integer) {
-            if (t == null || String.valueOf(t).length() == 0) {
-                return desiredClassAndFallbackValue;
-            } else {
-                try {
-                    return (T) Integer.valueOf(t);
-                } catch (NumberFormatException numberFormatException) {
-                    return (T) new Double(FormatNumber.parseDezimal(t).intValue());
-                }
-            }
-        } else if (desiredClassAndFallbackValue instanceof Boolean) {
-            if (t == null || String.valueOf(t).length() == 0) {
-                return desiredClassAndFallbackValue;
-            } else {
-                try {
-                    return (T) Boolean.valueOf(t);
-                } catch (Exception e) {
-                    return (T) Boolean.FALSE;
-                }
-            }
-        } else if (desiredClassAndFallbackValue instanceof Date) {
-            if (t == null || String.valueOf(t).length() == 0) {
-                return desiredClassAndFallbackValue;
-            } else {
-                try {
-                    return (T) DateConverter.getDate(t);
-                } catch (Exception e) {
-                    return (T) new Date();
-                }
-            }
-        } else {
-            return (T) t;
+    if (desiredClassAndFallbackValue instanceof Double) {
+      if (t == null || String.valueOf(t).length() == 0) {
+        return desiredClassAndFallbackValue;
+      } else {
+        try {
+          return (T) Double.valueOf(t);
+        } catch (NumberFormatException numberFormatException) {
+          return (T) new Double(FormatNumber.parseDezimal(t).doubleValue());
         }
-    }
-
-    /**
-     * Convenience method to retrieve (boolean) visual component properties stored as
-     * <br/>comp.getClass().getName() + "$" + source
-     * @param comp
-     * @param source
-     * @return
-     */
-    public boolean getProperty(JComponent comp, String source) {
-        return getProperty(comp.getClass().getName() + "$" + source, false);
-    }
-
-    /**
-     * Convenience method to retrieve (boolean) visual component properties stored as
-     * <br/>comp.getClass().getName() + "$" + source
-     * @param comp
-     * @param source
-     * @return
-     */
-    public boolean getProperty(String comp, String source) {
-        return getProperty(comp + "$" + source, false);
-    }
-
-    /**
-     * Convenience method to retrieve (boolean) visual component properties stored as
-     * <br/>comp.getClass().getName() + "$" + source
-     * @param <T>
-     * @param comp
-     * @param source
-     * @param type
-     * @return
-     */
-    public <T extends Object> T getProperty(Component comp, String source, T type) {
-        return getProperty(comp.getClass().getName() + "$" + source, type);
-    }
-
-    /**
-     * Convenience method to retrieve visual component properties stored as
-     * <br/>comp.getClass().getName() + "$" + source
-     * @param <T>
-     * @param comp
-     * @param target
-     * @param type
-     * @return
-     */
-    public <T extends Object> T getProperty(Component comp, Component target, T type) {
-        return getProperty(comp.getClass().getName() + "$" + target.getName(), type);
-    }
-
-    /**
-     * Changes the given property, if exists and
-     * creates a new, if not.
-     * @param name
-     * @param newvalue
-     */
-    public synchronized void changeProperty(String name, String newvalue) {
-        boolean found = false;
-        if (list.size() > 0) {
-            for (int i = list.size(); i > 0; i--) {
-                if (list.get(i - 1)[0].equalsIgnoreCase(name)) {
-                    list.set(i - 1, new String[]{name, newvalue});
-                    found = true;
-                    setChanged(true);
-                    if (list.get(i - 1)[1] != null && !list.get(i - 1)[1].equals("null")) {
-                        Log.Debug(this, "Change property: " + list.get(i - 1)[1] + " for " + name);
-                    }
-                }
-            }
+      }
+    } else if (desiredClassAndFallbackValue instanceof Integer) {
+      if (t == null || String.valueOf(t).length() == 0) {
+        return desiredClassAndFallbackValue;
+      } else {
+        try {
+          return (T) Integer.valueOf(t);
+        } catch (NumberFormatException numberFormatException) {
+          return (T) new Double(FormatNumber.parseDezimal(t).intValue());
         }
-        if (!found) {
-            addProperty(name, newvalue);
+      }
+    } else if (desiredClassAndFallbackValue instanceof Boolean) {
+      if (t == null || String.valueOf(t).length() == 0) {
+        return desiredClassAndFallbackValue;
+      } else {
+        try {
+          return (T) Boolean.valueOf(t);
+        } catch (Exception e) {
+          return (T) Boolean.FALSE;
         }
-    }
-
-    /**
-     * Changes the given property, if exists and
-     * creates a new, if not. Stored as comp.getClass().getName() + "$" + source
-     * @param comp
-     * @param source
-     * @param newvalue
-     */
-    public synchronized void changeProperty(String comp, String source, Object newvalue) {
-        boolean found = false;
-        if (list.size() > 0) {
-            for (int i = list.size(); i > 0; i--) {
-                if (list.get(i - 1)[0].equalsIgnoreCase(comp + "$" + source)) {
-                    list.set(i - 1, new String[]{comp + "$" + source, String.valueOf(newvalue)});
-                    found = true;
-                    setChanged(true);
-                    Log.Debug(this, "Change property: " + list.get(i - 1)[1] + " for " + comp + "$" + source);
-                }
-            }
+      }
+    } else if (desiredClassAndFallbackValue instanceof Date) {
+      if (t == null || String.valueOf(t).length() == 0) {
+        return desiredClassAndFallbackValue;
+      } else {
+        try {
+          return (T) DateConverter.getDate(t);
+        } catch (Exception e) {
+          return (T) new Date();
         }
-        if (!found) {
-            addProperty(comp + "$" + source, String.valueOf(newvalue));
+      }
+    } else {
+      return (T) t;
+    }
+  }
+
+  /**
+   * Convenience method to retrieve (boolean) visual component properties stored as
+   * <br/>comp.getClass().getName() + "$" + source
+   * @param comp
+   * @param source
+   * @return
+   */
+  public boolean getProperty(JComponent comp, String source) {
+    return getProperty(comp.getClass().getName() + "$" + source, false);
+  }
+
+  /**
+   * Convenience method to retrieve (boolean) visual component properties stored as
+   * <br/>comp.getClass().getName() + "$" + source
+   * @param comp
+   * @param source
+   * @return
+   */
+  public boolean getProperty(String comp, String source) {
+    return getProperty(comp + "$" + source, false);
+  }
+
+  /**
+   * Convenience method to retrieve (boolean) visual component properties stored as
+   * <br/>comp.getClass().getName() + "$" + source
+   * @param <T>
+   * @param comp
+   * @param source
+   * @param type
+   * @return
+   */
+  public <T extends Object> T getProperty(Component comp, String source, T type) {
+    return getProperty(comp.getClass().getName() + "$" + source, type);
+  }
+
+  /**
+   * Convenience method to retrieve visual component properties stored as
+   * <br/>comp.getClass().getName() + "$" + source
+   * @param <T>
+   * @param comp
+   * @param target
+   * @param type
+   * @return
+   */
+  public <T extends Object> T getProperty(Component comp, Component target, T type) {
+    return getProperty(comp.getClass().getName() + "$" + target.getName(), type);
+  }
+
+  /**
+   * Changes the given property, if exists and
+   * creates a new, if not.
+   * @param name
+   * @param newvalue
+   */
+  public synchronized void changeProperty(String name, String newvalue) {
+    addProperty(name, newvalue);
+  }
+
+  /**
+   * Changes the given property, if exists and
+   * creates a new, if not. Stored as comp.getClass().getName() + "$" + source
+   * @param comp
+   * @param source
+   * @param newvalue
+   */
+  public synchronized void changeProperty(String comp, String source, Object newvalue) {
+    addProperty(comp + "$" + source, String.valueOf(newvalue));
+  }
+
+  /**
+   * Changes the given property, if exists and
+   * creates a new, if not. Stored as comp.getClass().getName() + "$" + source
+   * @param comp
+   * @param source
+   * @param newvalue
+   */
+  public synchronized void changeProperty(JComponent comp, String source, Object newvalue) {
+    addProperty(comp.getClass().getName() + "$" + source, String.valueOf(newvalue));
+  }
+
+  /**
+   * Changes the given property, if exists and
+   * creates a new, if not. Stored as comp.getClass().getName() + "$" + source
+   * @param comp
+   * @param source
+   * @param newvalue
+   */
+  public synchronized void changeProperty(Component comp, Component source, Object newvalue) {
+    addProperty(comp.getClass().getName() + "$" + source.getName(), String.valueOf(newvalue));
+  }
+
+  /**
+   * Returns True if the local property store does contain a value with the given key name
+   * @param propertyname
+   * @return True if the key exists
+   */
+  public boolean hasProperty(String propertyname) {
+    if (getProperty(propertyname) == null) {
+      return false;
+    } else {
+      return true;
+    }
+  }
+
+  public void setChanged(boolean b) {
+    this.changed = b;
+  }
+
+  /**
+   * @return the changed
+   */
+  public boolean isChanged() {
+    return changed;
+  }
+
+  /**
+   * Adds/changes all
+   * @param store
+   */
+  public void addAll(PropertyStore store) {
+    List<String[]> po = store.getList();
+    for (int i = 0; i < po.size(); i++) {
+      String[] strings = po.get(i);
+      changeProperty(String.valueOf(strings[0]), String.valueOf(strings[1]));
+    }
+    setChanged(true);
+  }
+
+  /**
+   * Clear all properties
+   */
+  public void removeAll() {
+    list.clear();
+    setChanged(true);
+  }
+
+  /**
+   * Creates a new propertystore containing all data which has a key starting with prefix, prefix removed
+   * @param prefix
+   * @return A new PropertyStore
+   */
+  public PropertyStore getProperties(String prefix) {
+    PropertyStore p = new PropertyStore();
+    for (Map.Entry<String, String> entrySet : list.entrySet()) {
+      String name = entrySet.getKey();
+      String value = entrySet.getValue();
+      if (name.startsWith(prefix)) {
+        String prop = value;
+        if (prop != null && !prop.equals("null")) {
+          p.addProperty(name.replace(prefix, ""), prop);
         }
+      }
     }
+    return p;
+  }
 
-    /**
-     * Changes the given property, if exists and
-     * creates a new, if not. Stored as comp.getClass().getName() + "$" + source
-     * @param comp
-     * @param source
-     * @param newvalue
-     */
-    public synchronized void changeProperty(JComponent comp, String source, Object newvalue) {
-        boolean found = false;
-        if (list.size() > 0) {
-            for (int i = list.size(); i > 0; i--) {
-                if (list.get(i - 1)[0].equalsIgnoreCase(comp.getClass().getName() + "$" + source)) {
-                    list.set(i - 1, new String[]{comp.getClass().getName() + "$" + source, String.valueOf(newvalue)});
-                    found = true;
-                    setChanged(true);
-                    Log.Debug(this, "Change property: " + list.get(i - 1)[1] + " for " + comp.getClass().getName() + "$" + source);
-                }
-            }
-        }
-        if (!found) {
-            addProperty(comp.getClass().getName() + "$" + source, String.valueOf(newvalue));
-        }
-    }
+  public Map<String, String> getMap() {
+    return Collections.unmodifiableMap(list);
+  }
 
-    /**
-     * Changes the given property, if exists and
-     * creates a new, if not. Stored as comp.getClass().getName() + "$" + source
-     * @param comp
-     * @param source
-     * @param newvalue
-     */
-    public synchronized void changeProperty(Component comp, Component source, Object newvalue) {
-        boolean found = false;
-        if (list.size() > 0) {
-            for (int i = list.size(); i > 0; i--) {
-                if (list.get(i - 1)[0].equalsIgnoreCase(comp.getClass().getName() + "$" + source.getName())) {
-                    list.set(i - 1, new String[]{comp.getClass().getName() + "$" + source.getName(), String.valueOf(newvalue)});
-                    found = true;
-                    setChanged(true);
-                    Log.Debug(this, "Change property: " + list.get(i - 1)[1] + " for " + comp.getClass().getName() + "$" + source.getName());
-                }
-            }
-        }
-        if (!found) {
-            addProperty(comp.getClass().getName() + "$" + source.getName(), String.valueOf(newvalue));
-        }
-    }
-
-    /**
-     * Returns True if the local property store does contain a value with the given key name
-     * @param propertyname
-     * @return True if the key exists
-     */
-    public boolean hasProperty(String propertyname) {
-        if (getProperty(propertyname) == null) {
-            return false;
-        } else {
-            return true;
-        }
-    }
-
-    public String print() {
-        String str = "";
-        if (list.size() > 0) {
-            for (int i = list.size(); i > 0; i--) {
-                str += "Print property: " + list.get(i - 1)[0] + " = " + list.get(i - 1)[1] + "\n";
-            }
-        }
-        Log.Debug(this, str);
-        return str;
-    }
-
-    public void setChanged(boolean b) {
-        this.changed = b;
-    }
-
-    /**
-     * @return the changed
-     */
-    public boolean isChanged() {
-        return changed;
-    }
-
-    /**
-     * Adds/changes all
-     * @param store
-     */
-    public void addAll(PropertyStore store) {
-        List<String[]> po = store.getList();
-        for (int i = 0; i < po.size(); i++) {
-            String[] strings = po.get(i);
-            changeProperty(String.valueOf(strings[0]), String.valueOf(strings[1]));
-        }
-        setChanged(true);
-    }
-
-    /**
-     * Clear all properties
-     */
-    public void removeAll() {
-        list.clear();
-        setChanged(true);
-    }
-
-    /**
-     * Creates a new propertystore containing all data which has a key starting with prefix, prefix removed
-     * @param prefix
-     * @return A new PropertyStore
-     */
-    public PropertyStore getProperties(String prefix) {
-        PropertyStore p = new PropertyStore();
-        if (list.size() > 0) {
-            for (int i = list.size(); i > 0; i--) {
-                String name = list.get(i - 1)[0];
-                if (name.startsWith(prefix)) {
-                    String prop = list.get(i - 1)[1];
-                    if (prop != null && !prop.equals("null")) {
-                        p.addProperty(name.replace(prefix, ""), prop);
-                    }
-                }
-            }
-        }
-
-        return p;
-    }
-
-    public Map<String, String> getMap() {
-        Map<String, String> p = new HashMap<String, String>();
-        if (list.size() > 0) {
-            for (int i = list.size(); i > 0; i--) {
-                String name = list.get(i - 1)[0];
-                String prop = list.get(i - 1)[1];
-                if (prop != null && !prop.equals("null")) {
-                    p.put(name, prop);
-                }
-            }
-        }
-
-        return Collections.unmodifiableMap(p);
-    }
+  public void removeProperty(String name) {
+    list.remove(name);
+  }
 }
