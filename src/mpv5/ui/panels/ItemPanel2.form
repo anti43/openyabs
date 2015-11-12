@@ -83,7 +83,7 @@
             <DimensionLayout dim="0">
               <Group type="103" groupAlignment="0" attributes="0">
                   <Component id="jToolBar1" alignment="0" pref="0" max="32767" attributes="1"/>
-                  <Component id="jPanel1" pref="827" max="32767" attributes="1"/>
+                  <Component id="jPanel1" pref="835" max="32767" attributes="1"/>
                   <Component id="jPanel11" alignment="0" max="32767" attributes="0"/>
               </Group>
             </DimensionLayout>
@@ -139,7 +139,7 @@
                           <Component id="jPanel10" min="-2" pref="30" max="-2" attributes="0"/>
                           <EmptySpace max="-2" attributes="0"/>
                           <Component id="jPanel2" min="-2" max="-2" attributes="0"/>
-                          <EmptySpace pref="18" max="32767" attributes="0"/>
+                          <EmptySpace pref="13" max="32767" attributes="0"/>
                       </Group>
                   </Group>
                 </DimensionLayout>

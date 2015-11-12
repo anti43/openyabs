@@ -42,7 +42,9 @@ import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
+import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JProgressBar;
 import javax.swing.JScrollPane;
@@ -139,720 +141,721 @@ import mpv5.utils.images.MPIcon;
 import mpv5.utils.renderer.ComboBoxRendererForTooltip;
 import mpv5.utils.xml.XMLWriter;
 import net.sf.vcard4j.java.VCard;
+import org.jdesktop.application.Application;
 import org.jdesktop.application.FrameView;
 import org.jdesktop.application.SingleFrameApplication;
 
 /**
  * The application's main frame.
  */
-public class MPView extends FrameView implements YabsView, FlowProvider {
+public class MPView extends JFrame implements YabsView, FlowProvider {
 
-   public static MPView identifierView;
-   private static Dimension initialSize = new Dimension(1100, 900);
-   public static JFrame identifierFrame;
-   private static CloseableTabbedPane tabPane;
-   private static JLabel messagelabel = new JLabel();
-   private static JComboBox history = new JComboBox();
-   private static JProgressBar progressbar = new JProgressBar();
-   private static JMenu favMenu;
-   private static String predefTitle;
-   private static DialogForFile filedialog;
-   public static SingleFrameApplication identifierApplication;
-   private static boolean navBarAnimated = true;
-   private static boolean tabPaneScrolled = false;
-   private static JLabel staterrorlabel = new JLabel();
-   private static MPList currentList = new MPList();
-   private static ListView clistview = new ListView(currentList);
-   private static JFrame clipboard = null;
-   private static boolean loaded = false;
-   private GroovyShell groovyShell;
-   public static HashMap<String, Object> BINDING_VARS;
+  public static MPView identifierView;
+  private static Dimension initialSize = new Dimension(1100, 900);
+  public static JFrame identifierFrame;
+  private static CloseableTabbedPane tabPane;
+  private static JLabel messagelabel = new JLabel();
+  private static JComboBox history = new JComboBox();
+  private static JProgressBar progressbar = new JProgressBar();
+  private static JMenu favMenu;
+  private static String predefTitle;
+  private static DialogForFile filedialog;
+  public static SingleFrameApplication identifierApplication;
+  private static boolean navBarAnimated = true;
+  private static boolean tabPaneScrolled = false;
+  private static JLabel staterrorlabel = new JLabel();
+  private static MPList currentList = new MPList();
+  private static ListView clistview = new ListView(currentList);
+  private static JFrame clipboard = null;
+  private static boolean loaded = false;
+  private GroovyShell groovyShell;
+  public static HashMap<String, Object> BINDING_VARS;
+  private ArrayList<JToolBar> toolbars = new ArrayList<JToolBar>();
 
-   /**
-    * Display a message at the bottom of the MP frame
-    *
-    * @param message
-    */
-   public void addMessage(Object message, Color color) {
-      addMessage(String.valueOf(message));
-   }
+  /**
+   * Display a message at the bottom of the MP frame
+   *
+   * @param message
+   */
+  public void addMessage(Object message, Color color) {
+    addMessage(String.valueOf(message));
+  }
 
-   /**
-    * Display a message at the bottom of the MP frame
-    *
-    * @param message
-    */
-   public void addMessage(Object message) {
-      MPView.addMessage(String.valueOf(message), Color.GREEN);
-   }
+  /**
+   * Display a message at the bottom of the MP frame
+   *
+   * @param message
+   */
+  public void addMessage(Object message) {
+    MPView.addMessage(String.valueOf(message), Color.GREEN);
+  }
 
-   /**
-    * Display a message at the bottom of the MP frame
-    *
-    * @param message
-    */
-   public static synchronized void addMessage(final String message, final Color color) {
-      if (loaded && messagelabel != null) {//dont do anything if main frame is not constructed
-         Runnable runnable = new Runnable() {
-            public void run() {
-               if (messagelabel instanceof FadeOnChangeLabel) {
-                  ((FadeOnChangeLabel) getMessagelabel()).setFadeColor(color);
-               }
-               messagelabel.setText(message);
-               messagelabel.invalidate();
-               getHistory().addItem(message);
-               getHistory().setSelectedItem(message);
-               messagelabel.repaint();
-            }
-         };
-         SwingUtilities.invokeLater(runnable);
-      }
-   }
-
-   /**
-    * Returns the currently selected tab on the main tab pane
-    *
-    * @return
-    */
-   public static Object getShowingTab() {
-      return getTabPane().getSelectedComponent();
-   }
-
-   /**
-    * Change the navigation bar behavior
-    *
-    * @param animated
-    */
-   public static void setNavBarAnimated(boolean animated) {
-      navBarAnimated = animated;
-   }
-
-   /**
-    * Change the main tabPane behavior
-    *
-    * @param scroll
-    */
-   public static void setTabPaneScrolled(boolean scroll) {
-      tabPaneScrolled = scroll;
-   }
-
-   /**
-    * Shows a file save dialog with the selcted file f. If the file's parent
-    * directory is not the current directory, changes the current directory to
-    * be the file's parent directory.
-    *
-    * @param f
-    */
-   public void showFilesaveDialogFor(File f) {
-      getFiledialog().setSelectedFile(new File(f.getName()));
-      getFiledialog().saveFile(f);
-   }
-
-   /**
-    * Initialize and show the secondary JFrame. This method is intended for
-    * showing "secondary" windows, like message dialogs, about boxes, and so on.
-    *
-    * Unlike the mainFrame, dismissing a secondary window will not exit the
-    * application. Session state is only automatically saved if the specified
-    * JFrame has a name, and then only for component descendants that are named.
-    * Throws an IllegalArgumentException if c is null
-    *
-    * @param c
-    */
-   public static void show(JFrame c) {
-      Main.getApplication().show(c);
-   }
-   /**
-    * The handler for all plugins
-    */
-   private static YabsPluginLoader pluginLoader;
-
-   /**
-    * Let the view notify the user about an unexpected error
-    */
-   public static void showError() {
-      if (Main.INSTANTIATED) {
-         try {
-            getStaterrorlabel().setIcon(new javax.swing.ImageIcon(MPView.class.getResource("/mpv5/resources/images/16/remove.png"))); // NOI18N
-         } catch (Exception e) {
-         }
-      }
-   }
-
-   /**
-    * @return the tabPane
-    */
-   public static CloseableTabbedPane getTabPane() {
-      return tabPane;
-   }
-
-   /**
-    * @return the messagelabel
-    */
-   public static JLabel getMessagelabel() {
-      return messagelabel;
-   }
-
-   /**
-    * @return the progressbar
-    */
-   public JProgressBar getProgressbar() {
-      return progressbar;
-   }
-
-   /**
-    * @return the tabpanePanel
-    */
-   public static javax.swing.JPanel getTabpanePanel() {
-      return tabpanePanel;
-   }
-
-   /**
-    * @return the identifierView
-    */
-   public MPView getIdentifierView() {
-      return identifierView;
-   }
-
-   /**
-    * @return the initialSize
-    */
-   public static Dimension getInitialSize() {
-      return initialSize;
-   }
-
-   /**
-    * @return the identifierFrame
-    */
-   public JFrame getIdentifierFrame() {
-      return identifierFrame;
-   }
-
-   /**
-    * @return the history
-    */
-   public static JComboBox getHistory() {
-      return history;
-   }
-
-   /**
-    * @return the favMenu
-    */
-   public static JMenu getFavMenu() {
-      return favMenu;
-   }
-
-   /**
-    * @return the predefTitle
-    */
-   public static String getPredefTitle() {
-      return predefTitle;
-   }
-
-   /**
-    * @return the filedialog
-    */
-   public DialogForFile getFiledialog() {
-      return filedialog;
-   }
-
-   /**
-    * @return the identifierApplication
-    */
-   public YabsApplication getIdentifierApplication() {
-      return (YabsApplication)identifierApplication;
-   }
-
-   /**
-    * @return the navBarAnimated
-    */
-   public static boolean isNavBarAnimated() {
-      return navBarAnimated;
-   }
-
-   /**
-    * @return the tabPaneScrolled
-    */
-   public static boolean isTabPaneScrolled() {
-      return tabPaneScrolled;
-   }
-
-   /**
-    * @return the staterrorlabel
-    */
-   public static JLabel getStaterrorlabel() {
-      return staterrorlabel;
-   }
-
-   /**
-    * @return the currentList
-    */
-   public static MPList getCurrentList() {
-      return currentList;
-   }
-
-   /**
-    * @return the pluginLoader
-    */
-   public YabsPluginLoader getPluginLoader() {
-      return pluginLoader;
-   }
-
-   /**
-    * @param c
-    * @return the clisttab
-    */
-   public static synchronized ContactsList getClisttab(Context c) {
-      if (c.equals(Context.getCustomer())) {
-         if (clisttabc == null) {
-            clisttabc = new ContactsList(c);
-         }
-         return clisttabc;
-      } else if (c.equals(Context.getSupplier())) {
-         if (clisttabs == null) {
-            clisttabs = new ContactsList(c);
-         }
-         return clisttabs;
-      } else if (c.equals(Context.getManufacturer())) {
-         if (clisttabm == null) {
-            clisttabm = new ContactsList(c);
-         }
-         return clisttabm;
-      } else {
-         return new ContactsList();
-      }
-   }
-
-   /**
-    * @return the plisttab
-    */
-   public static ProductList getPlisttab() {
-      return plisttab;
-   }
-
-   public static void setPredefTitle(String string) {
-      predefTitle = string;
-   }
-
-   /**
-    * Sets the max value for the progressbar
-    *
-    * @param max
-    */
-   public synchronized void setProgressMaximumValue(int max) {
-      getProgressbar().setMaximum(max);
-   }
-
-   /**
-    * Sets the current value for the progressbar
-    *
-    * @param val
-    */
-   public synchronized void setProgressValue(int val) {
-      getProgressbar().setValue(val);
-   }
-
-   /**
-    * Reset the progress bar
-    */
-   public synchronized void setProgressReset() {
-      getProgressbar().setValue(0);
-      getProgressbar().setIndeterminate(false);
-   }
-
-   /**
-    * Sets the indeterminate property of the progress bar.
-    *
-    * @param b
-    */
-   public synchronized void setProgressRunning(boolean b) {
-      getProgressbar().setIndeterminate(b);
-   }
-
-   /**
-    *
-    * @return The currently logged in user
-    * @deprecated Use User.getCurrentUser instead
-    */
-   @Deprecated
-   public static User getUser() {
-      return mpv5.db.objects.User.getCurrentUser();
-   }
-
-   /**
-    * Sets the cursor to waiting state if true
-    *
-    * @param truee
-    */
-   public void setWaiting(boolean truee) {
-      if (Main.INSTANTIATED && getIdentifierFrame() != null) {
-         if (truee) {
-            getIdentifierFrame().setCursor(new Cursor(Cursor.WAIT_CURSOR));
-         } else {
-            getIdentifierFrame().setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
-         }
-      }
-   }
-
-   /**
-    * Returns the curently selected tab or null if this is not a
-    * {@link DataPanel}
-    *
-    * @return
-    */
-   public DataPanel getCurrentTab() {
-      if (getTabPane().getSelectedComponent() instanceof DataPanel) {
-         return (DataPanel) getTabPane().getSelectedComponent();
-      } else if (getTabPane().getSelectedComponent() instanceof JScrollPane) {
-         try {
-            return (DataPanel) ((JScrollPane) getTabPane().getSelectedComponent()).getComponent(0);
-         } catch (ClassCastException e) {
-            try {
-               return (DataPanel) ((JViewport) ((JScrollPane) getTabPane().getSelectedComponent()).getComponent(0)).getComponent(0);
-            } catch (Exception ek) {
-               return null;
-            }
-         }
-      } else {
-         return null;
-      }
-   }
-
-   /**
-    * Returns the tab at the specified position, or NULL if the tab is not
-    * existing OR not a {@link DataPanel}
-    *
-    * @param position
-    * @return
-    */
-   public DataPanel getTabAt(int position) {
-      if (getTabPane().getComponent(position) instanceof DataPanel) {
-         return (DataPanel) getTabPane().getComponent(position);
-      } else if (getTabPane().getComponent(position) instanceof JScrollPane) {
-         try {
-            return (DataPanel) ((JScrollPane) getTabPane().getComponent(position)).getComponent(0);
-         } catch (ClassCastException e) {
-            try {
-               return (DataPanel) ((JViewport) ((JScrollPane) getTabPane().getComponent(position)).getComponent(0)).getComponent(0);
-            } catch (Exception et) {
-               return null;
-            }
-         }
-      } else {
-         return null;
-      }
-   }
-
-   public final void reloadFavorites() {
-      Favourite[] favs = Favourite.getUserFavourites();
-      for (int i = 0; i < favs.length; i++) {
-         Favourite fav = favs[i];
-         try {
-            getFavMenu().add(new FavouritesMenuItem(Favourite.getObject(fav.getFavContext(), fav.__getItemsids())));
-         } catch (NodataFoundException ex) {
-//                Log.Debug(this, ex.getMessage());
-         }
-      }
-   }
-
-   /**
-    * Add something to the clipboard menu
-    *
-    * @param obj
-    */
-   public void addToClipBoard(DatabaseObject obj) {
-      getClipboardMenu().add(new ClipboardMenuItem(obj));
-      getCurrentList().add(obj);
-      setClipBoardVisible(true);
-   }
-
-   public MPView(SingleFrameApplication app) {
-      super(app);
-
-      MPView.identifierApplication = app;
-
-      initComponents();
-
-      try {
-         Image icon = Toolkit.getDefaultToolkit().getImage(this.getFrame().getClass().getResource(Constants.ICON));
-         this.getFrame().setIconImage(icon);
-         this.getFrame().setTitle(Constants.TITLE);
-      } catch (Exception e) {
-         Log.Debug(e);
-      }
-
-      tabPane = new CloseableTabbedPane(this);
-      identifierFrame = this.getFrame();
-      Popup.identifier = identifierFrame;
-      progressbar = this.progressBar;
-      progressbar.setMinimum(0);
-      messagelabel = statusMessageLabel;
-      staterrorlabel = errorlabel;
-      history = xhistory;
-      history.setRenderer(new ComboBoxRendererForTooltip());
-      if (tabPaneScrolled) {
-         tabpanePanel.add(new JScrollPane(getTabPane()), BorderLayout.CENTER);
-         jMenuItem25.setIcon(MPIcon.ICON_ENABLED);
-      } else {
-         tabpanePanel.add(tabPane, BorderLayout.CENTER);
-      }
-      favMenu = favouritesMenu;
-      reloadFavorites();
-      identifierView = this;
-      filedialog = new DialogForFile(DialogForFile.FILES_ONLY);
-      jMenuItem24.setEnabled(!LocalSettings.getBooleanProperty(LocalSettings.OFFICE_REMOTE));
-
-      nav_outlookbar.setAnimated(navBarAnimated);
-      getFrame().addComponentListener(new ComponentAdapter() {
-         @Override
-         public void componentResized(ComponentEvent event) {
-            setNaviPanelSize();
-         }
-      });
-
-      if (predefTitle != null) {
-         identifierFrame.setTitle(identifierFrame.getTitle() + predefTitle);
-      }
-
-      QueryHandler.setWaitCursorFor(identifierFrame);
-
-      pluginLoader = new YabsPluginLoader();
-
-      addTab(new StartPage(), Messages.WELCOME);
-      LocalSettings.save();
-
-      if (Log.getLoglevel() == Log.LOGLEVEL_DEBUG) {
-//            jMenuItem45.setEnabled(true);
-      }
-
-      jMenuItem41.setEnabled(false);//not yet implemented
-      identifierFrame.validate();
-      BINDING_VARS = new HashMap<String, Object>();
-      BINDING_VARS.put("MPView", this);
-      BINDING_VARS.put("Application", getApplication());
-      BINDING_VARS.put("QueryHandler", QueryHandler.instanceOf());
-      BINDING_VARS.put("tabPane", tabPane);
-      BINDING_VARS.put("dbo", DatabaseObject.getObject(Context.getContact()));//just a dummy to get a hold on the dbo class
-
-      enhanceToolbars();
-      loaded = true;
-   }
-
-   private GroovyShell getGroovyShell() {
-      synchronized (this) {
-         if (groovyShell == null) {
-            Binding binding = new Binding(BINDING_VARS);
-            groovyShell = new GroovyShell(binding);
-         }
-         return groovyShell;
-      }
-   }
-
-   /**
-    * Set the state of the main toolbar
-    *
-    * @param enable
-    */
-   public void enableToolBar(boolean enable) {
-      getMainToolbar().setEnabled(enable);
-   }
-
-   private void setNaviPanelSize() {
+  /**
+   * Display a message at the bottom of the MP frame
+   *
+   * @param message
+   */
+  public static synchronized void addMessage(final String message, final Color color) {
+    if (loaded && messagelabel != null) {//dont do anything if main frame is not constructed
       Runnable runnable = new Runnable() {
-         public void run() {
-            getNav_outlookbar().setPreferredSize(new Dimension(getNav_outlookbar().getWidth(), getFrame().getHeight() - 200));
-            getNav_outlookbar().setMaximumSize(new Dimension(getNav_outlookbar().getWidth(), getFrame().getHeight() - 200));
-            getNav_outlookbar().setMinimumSize(new Dimension(getNav_outlookbar().getWidth(), getFrame().getHeight() - 200));
-            getNav_outlookbar().setSize(new Dimension(getNav_outlookbar().getWidth(), getFrame().getHeight() - 200));
-            getNaviPanel().revalidate();
-            getNaviPanel().repaint();
-         }
+        public void run() {
+          if (messagelabel instanceof FadeOnChangeLabel) {
+            ((FadeOnChangeLabel) getMessagelabel()).setFadeColor(color);
+          }
+          messagelabel.setText(message);
+          messagelabel.invalidate();
+          getHistory().addItem(message);
+          getHistory().setSelectedItem(message);
+          messagelabel.repaint();
+        }
       };
-
       SwingUtilities.invokeLater(runnable);
-   }
+    }
+  }
 
-   /**
-    * Add a tab to the main tab pane, automatically determines the needed View
-    *
-    * @param item
-    * @param tabTitle
-    * @return The added tab
-    */
-   public DataPanel addTab(final DatabaseObject item, Object tabTitle) {
-      setWaiting(true);
-      boolean found = false;
-      boolean proceed = true;
-      if (mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("org.openyabs.uiproperty", "avoidmultipleviews")) {
-         Log.Debug(this, "Looking for an existing view for: " + item);
-         int count = getTabPane().getTabCount();
-         for (int i = 0; i < count; i++) {
-            if (getTabAt(i) != null) {
-               DataPanel panel = getTabAt(i);
-               if (item.equals(panel.getDataOwner())) {
-                  getTabPane().setSelectedIndex(i);
-                  if (tabTitle == null) {
-                     getTabPane().setTitleAt(i, item.__getCname());
-                  } else {
-                     getTabPane().setTitleAt(i, tabTitle + ": " + item.__getCname());
-                  }
-                  proceed = false;
-                  break;
-               }
-            }
-         }
+  /**
+   * Returns the currently selected tab on the main tab pane
+   *
+   * @return
+   */
+  public static Object getShowingTab() {
+    return getTabPane().getSelectedComponent();
+  }
+
+  /**
+   * Change the navigation bar behavior
+   *
+   * @param animated
+   */
+  public static void setNavBarAnimated(boolean animated) {
+    navBarAnimated = animated;
+  }
+
+  /**
+   * Change the main tabPane behavior
+   *
+   * @param scroll
+   */
+  public static void setTabPaneScrolled(boolean scroll) {
+    tabPaneScrolled = scroll;
+  }
+
+  /**
+   * Shows a file save dialog with the selcted file f. If the file's parent
+   * directory is not the current directory, changes the current directory to
+   * be the file's parent directory.
+   *
+   * @param f
+   */
+  public void showFilesaveDialogFor(File f) {
+    getFiledialog().setSelectedFile(new File(f.getName()));
+    getFiledialog().saveFile(f);
+  }
+
+  /**
+   * Initialize and show the secondary JFrame. This method is intended for
+   * showing "secondary" windows, like message dialogs, about boxes, and so on.
+   *
+   * Unlike the mainFrame, dismissing a secondary window will not exit the
+   * application. Session state is only automatically saved if the specified
+   * JFrame has a name, and then only for component descendants that are named.
+   * Throws an IllegalArgumentException if c is null
+   *
+   * @param c
+   */
+  public static void show(JFrame c) {
+    Main.getApplication().show(c);
+  }
+  /**
+   * The handler for all plugins
+   */
+  private static YabsPluginLoader pluginLoader;
+
+  /**
+   * Let the view notify the user about an unexpected error
+   */
+  public static void showError() {
+    if (Main.INSTANTIATED) {
+      try {
+        getStaterrorlabel().setIcon(new javax.swing.ImageIcon(MPView.class.getResource("/mpv5/resources/images/16/remove.png"))); // NOI18N
+      } catch (Exception e) {
       }
+    }
+  }
 
-      if (proceed) {
-         if (item.getView() != null && mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("org.openyabs.uiproperty", "norecycletabs")) {
+  /**
+   * @return the tabPane
+   */
+  public static CloseableTabbedPane getTabPane() {
+    return tabPane;
+  }
+
+  /**
+   * @return the messagelabel
+   */
+  public static JLabel getMessagelabel() {
+    return messagelabel;
+  }
+
+  /**
+   * @return the progressbar
+   */
+  public JProgressBar getProgressbar() {
+    return progressbar;
+  }
+
+  /**
+   * @return the tabpanePanel
+   */
+  public static javax.swing.JPanel getTabpanePanel() {
+    return tabpanePanel;
+  }
+
+  /**
+   * @return the identifierView
+   */
+  public MPView getIdentifierView() {
+    return identifierView;
+  }
+
+  /**
+   * @return the initialSize
+   */
+  public static Dimension getInitialSize() {
+    return initialSize;
+  }
+
+  /**
+   * @return the identifierFrame
+   */
+  public JFrame getIdentifierFrame() {
+    return identifierFrame;
+  }
+
+  /**
+   * @return the history
+   */
+  public static JComboBox getHistory() {
+    return history;
+  }
+
+  /**
+   * @return the favMenu
+   */
+  public static JMenu getFavMenu() {
+    return favMenu;
+  }
+
+  /**
+   * @return the predefTitle
+   */
+  public static String getPredefTitle() {
+    return predefTitle;
+  }
+
+  /**
+   * @return the filedialog
+   */
+  public DialogForFile getFiledialog() {
+    return filedialog;
+  }
+
+  /**
+   * @return the identifierApplication
+   */
+  public YabsApplication getIdentifierApplication() {
+    return (YabsApplication) identifierApplication;
+  }
+
+  /**
+   * @return the navBarAnimated
+   */
+  public static boolean isNavBarAnimated() {
+    return navBarAnimated;
+  }
+
+  /**
+   * @return the tabPaneScrolled
+   */
+  public static boolean isTabPaneScrolled() {
+    return tabPaneScrolled;
+  }
+
+  /**
+   * @return the staterrorlabel
+   */
+  public static JLabel getStaterrorlabel() {
+    return staterrorlabel;
+  }
+
+  /**
+   * @return the currentList
+   */
+  public static MPList getCurrentList() {
+    return currentList;
+  }
+
+  /**
+   * @return the pluginLoader
+   */
+  public YabsPluginLoader getPluginLoader() {
+    return pluginLoader;
+  }
+
+  /**
+   * @param c
+   * @return the clisttab
+   */
+  public static synchronized ContactsList getClisttab(Context c) {
+    if (c.equals(Context.getCustomer())) {
+      if (clisttabc == null) {
+        clisttabc = new ContactsList(c);
+      }
+      return clisttabc;
+    } else if (c.equals(Context.getSupplier())) {
+      if (clisttabs == null) {
+        clisttabs = new ContactsList(c);
+      }
+      return clisttabs;
+    } else if (c.equals(Context.getManufacturer())) {
+      if (clisttabm == null) {
+        clisttabm = new ContactsList(c);
+      }
+      return clisttabm;
+    } else {
+      return new ContactsList();
+    }
+  }
+
+  /**
+   * @return the plisttab
+   */
+  public static ProductList getPlisttab() {
+    return plisttab;
+  }
+
+  public static void setPredefTitle(String string) {
+    predefTitle = string;
+  }
+
+  /**
+   * Sets the max value for the progressbar
+   *
+   * @param max
+   */
+  public synchronized void setProgressMaximumValue(int max) {
+    getProgressbar().setMaximum(max);
+  }
+
+  /**
+   * Sets the current value for the progressbar
+   *
+   * @param val
+   */
+  public synchronized void setProgressValue(int val) {
+    getProgressbar().setValue(val);
+  }
+
+  /**
+   * Reset the progress bar
+   */
+  public synchronized void setProgressReset() {
+    getProgressbar().setValue(0);
+    getProgressbar().setIndeterminate(false);
+  }
+
+  /**
+   * Sets the indeterminate property of the progress bar.
+   *
+   * @param b
+   */
+  public synchronized void setProgressRunning(boolean b) {
+    getProgressbar().setIndeterminate(b);
+  }
+
+  /**
+   *
+   * @return The currently logged in user
+   * @deprecated Use User.getCurrentUser instead
+   */
+  @Deprecated
+  public static User getUser() {
+    return mpv5.db.objects.User.getCurrentUser();
+  }
+
+  /**
+   * Sets the cursor to waiting state if true
+   *
+   * @param truee
+   */
+  public void setWaiting(boolean truee) {
+    if (Main.INSTANTIATED && getIdentifierFrame() != null) {
+      if (truee) {
+        getIdentifierFrame().setCursor(new Cursor(Cursor.WAIT_CURSOR));
+      } else {
+        getIdentifierFrame().setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+      }
+    }
+  }
+
+  /**
+   * Returns the curently selected tab or null if this is not a
+   * {@link DataPanel}
+   *
+   * @return
+   */
+  public DataPanel getCurrentTab() {
+    if (getTabPane().getSelectedComponent() instanceof DataPanel) {
+      return (DataPanel) getTabPane().getSelectedComponent();
+    } else if (getTabPane().getSelectedComponent() instanceof JScrollPane) {
+      try {
+        return (DataPanel) ((JScrollPane) getTabPane().getSelectedComponent()).getComponent(0);
+      } catch (ClassCastException e) {
+        try {
+          return (DataPanel) ((JViewport) ((JScrollPane) getTabPane().getSelectedComponent()).getComponent(0)).getComponent(0);
+        } catch (Exception ek) {
+          return null;
+        }
+      }
+    } else {
+      return null;
+    }
+  }
+
+  /**
+   * Returns the tab at the specified position, or NULL if the tab is not
+   * existing OR not a {@link DataPanel}
+   *
+   * @param position
+   * @return
+   */
+  public DataPanel getTabAt(int position) {
+    if (getTabPane().getComponent(position) instanceof DataPanel) {
+      return (DataPanel) getTabPane().getComponent(position);
+    } else if (getTabPane().getComponent(position) instanceof JScrollPane) {
+      try {
+        return (DataPanel) ((JScrollPane) getTabPane().getComponent(position)).getComponent(0);
+      } catch (ClassCastException e) {
+        try {
+          return (DataPanel) ((JViewport) ((JScrollPane) getTabPane().getComponent(position)).getComponent(0)).getComponent(0);
+        } catch (Exception et) {
+          return null;
+        }
+      }
+    } else {
+      return null;
+    }
+  }
+
+  public final void reloadFavorites() {
+    Favourite[] favs = Favourite.getUserFavourites();
+    for (int i = 0; i < favs.length; i++) {
+      Favourite fav = favs[i];
+      try {
+        getFavMenu().add(new FavouritesMenuItem(Favourite.getObject(fav.getFavContext(), fav.__getItemsids())));
+      } catch (NodataFoundException ex) {
+//                Log.Debug(this, ex.getMessage());
+      }
+    }
+  }
+
+  /**
+   * Add something to the clipboard menu
+   *
+   * @param obj
+   */
+  public void addToClipBoard(DatabaseObject obj) {
+    getClipboardMenu().add(new ClipboardMenuItem(obj));
+    getCurrentList().add(obj);
+    setClipBoardVisible(true);
+  }
+
+  public MPView(SingleFrameApplication app) {
+
+    MPView.identifierApplication = app;
+
+    initComponents();
+
+    try {
+      Image icon = Toolkit.getDefaultToolkit().getImage(this.getClass().getResource(Constants.ICON));
+      setIconImage(icon);
+      setTitle(Constants.TITLE);
+    } catch (Exception e) {
+      Log.Debug(e);
+    }
+
+    tabPane = new CloseableTabbedPane(this);
+    identifierFrame = this;
+    Popup.identifier = identifierFrame;
+    progressbar = this.progressBar;
+    progressbar.setMinimum(0);
+    messagelabel = statusMessageLabel;
+    staterrorlabel = errorlabel;
+    history = xhistory;
+    history.setRenderer(new ComboBoxRendererForTooltip());
+    if (tabPaneScrolled) {
+      tabpanePanel.add(new JScrollPane(getTabPane()), BorderLayout.CENTER);
+      jMenuItem25.setIcon(MPIcon.ICON_ENABLED);
+    } else {
+      tabpanePanel.add(tabPane, BorderLayout.CENTER);
+    }
+    favMenu = favouritesMenu;
+    reloadFavorites();
+    identifierView = this;
+    filedialog = new DialogForFile(DialogForFile.FILES_ONLY);
+    jMenuItem24.setEnabled(!LocalSettings.getBooleanProperty(LocalSettings.OFFICE_REMOTE));
+
+    nav_outlookbar.setAnimated(navBarAnimated);
+    addComponentListener(new ComponentAdapter() {
+      @Override
+      public void componentResized(ComponentEvent event) {
+        setNaviPanelSize();
+      }
+    });
+
+    if (predefTitle != null) {
+      identifierFrame.setTitle(identifierFrame.getTitle() + predefTitle);
+    }
+
+    QueryHandler.setWaitCursorFor(identifierFrame);
+
+    pluginLoader = new YabsPluginLoader();
+
+    addTab(new StartPage(), Messages.WELCOME);
+    LocalSettings.save();
+
+    if (Log.getLoglevel() == Log.LOGLEVEL_DEBUG) {
+//            jMenuItem45.setEnabled(true);
+    }
+
+    jMenuItem41.setEnabled(false);//not yet implemented
+    identifierFrame.validate();
+    BINDING_VARS = new HashMap<String, Object>();
+    BINDING_VARS.put("MPView", this);
+    BINDING_VARS.put("Application", getApplication());
+    BINDING_VARS.put("QueryHandler", QueryHandler.instanceOf());
+    BINDING_VARS.put("tabPane", tabPane);
+    BINDING_VARS.put("dbo", DatabaseObject.getObject(Context.getContact()));//just a dummy to get a hold on the dbo class
+
+    enhanceToolbars();
+    loaded = true;
+  }
+
+  private GroovyShell getGroovyShell() {
+    synchronized (this) {
+      if (groovyShell == null) {
+        Binding binding = new Binding(BINDING_VARS);
+        groovyShell = new GroovyShell(binding);
+      }
+      return groovyShell;
+    }
+  }
+
+  /**
+   * Set the state of the main toolbar
+   *
+   * @param enable
+   */
+  public void enableToolBar(boolean enable) {
+    getMainToolbar().setEnabled(enable);
+  }
+
+  private void setNaviPanelSize() {
+    Runnable runnable = new Runnable() {
+      public void run() {
+        getNav_outlookbar().setPreferredSize(new Dimension(getNav_outlookbar().getWidth(), getHeight() - 200));
+        getNav_outlookbar().setMaximumSize(new Dimension(getNav_outlookbar().getWidth(), getHeight() - 200));
+        getNav_outlookbar().setMinimumSize(new Dimension(getNav_outlookbar().getWidth(), getHeight() - 200));
+        getNav_outlookbar().setSize(new Dimension(getNav_outlookbar().getWidth(), getHeight() - 200));
+        getNaviPanel().revalidate();
+        getNaviPanel().repaint();
+      }
+    };
+
+    SwingUtilities.invokeLater(runnable);
+  }
+
+  /**
+   * Add a tab to the main tab pane, automatically determines the needed View
+   *
+   * @param item
+   * @param tabTitle
+   * @return The added tab
+   */
+  public DataPanel addTab(final DatabaseObject item, Object tabTitle) {
+    setWaiting(true);
+    boolean found = false;
+    boolean proceed = true;
+    if (mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("org.openyabs.uiproperty", "avoidmultipleviews")) {
+      Log.Debug(this, "Looking for an existing view for: " + item);
+      int count = getTabPane().getTabCount();
+      for (int i = 0; i < count; i++) {
+        if (getTabAt(i) != null) {
+          DataPanel panel = getTabAt(i);
+          if (item.equals(panel.getDataOwner())) {
+            getTabPane().setSelectedIndex(i);
             if (tabTitle == null) {
-               final DataPanel p = ((DataPanel) item.getView());
-               addTab((JComponent) p, item.__getCname());
-               Runnable runnable = new Runnable() {
-                  public void run() {
-                     p.setDataOwner(item, true);
-                  }
-               };
-               SwingUtilities.invokeLater(runnable);
+              getTabPane().setTitleAt(i, item.__getCname());
             } else {
-               final DataPanel p = ((DataPanel) item.getView());
-               addTab((JComponent) p, tabTitle + ": " + item.__getCname());
-               Runnable runnable = new Runnable() {
-                  public void run() {
-                     p.setDataOwner(item, true);
-                  }
-               };
-               SwingUtilities.invokeLater(runnable);
+              getTabPane().setTitleAt(i, tabTitle + ": " + item.__getCname());
             }
-            getCurrentTab().setDataOwner(item, true);
-         } else if (item.getView() != null) {
-            int count = getTabPane().getTabCount();
-            for (int i = 0; i < count; i++) {
-               if (getTabAt(i) != null) {
-                  DataPanel panel = getTabAt(i);
-                  if (panel.getDataOwner() != null && !panel.getDataOwner().isExisting()
-                        && panel.getDataOwner().getContext().equals(item.getContext())
-                        && panel.getClass() == item.getView().getClass()) {
+            proceed = false;
+            break;
+          }
+        }
+      }
+    }
+
+    if (proceed) {
+      if (item.getView() != null && mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("org.openyabs.uiproperty", "norecycletabs")) {
+        if (tabTitle == null) {
+          final DataPanel p = ((DataPanel) item.getView());
+          addTab((JComponent) p, item.__getCname());
+          Runnable runnable = new Runnable() {
+            public void run() {
+              p.setDataOwner(item, true);
+            }
+          };
+          SwingUtilities.invokeLater(runnable);
+        } else {
+          final DataPanel p = ((DataPanel) item.getView());
+          addTab((JComponent) p, tabTitle + ": " + item.__getCname());
+          Runnable runnable = new Runnable() {
+            public void run() {
+              p.setDataOwner(item, true);
+            }
+          };
+          SwingUtilities.invokeLater(runnable);
+        }
+        getCurrentTab().setDataOwner(item, true);
+      } else if (item.getView() != null) {
+        int count = getTabPane().getTabCount();
+        for (int i = 0; i < count; i++) {
+          if (getTabAt(i) != null) {
+            DataPanel panel = getTabAt(i);
+            if (panel.getDataOwner() != null && !panel.getDataOwner().isExisting()
+                && panel.getDataOwner().getContext().equals(item.getContext())
+                && panel.getClass() == item.getView().getClass()) {
 //                        if (!panel.getDataOwner().isExisting() && panel.getDataOwner().getContext().equals(item.getContext())) {
-                     getTabPane().setSelectedIndex(i);
-                     panel.setDataOwner(item, true);
-                     if (tabTitle == null) {
-                        getTabPane().setTitleAt(i, item.__getCname());
-                     } else {
-                        getTabPane().setTitleAt(i, tabTitle + ": " + item.__getCname());
-                     }
-                     found = true;
-                     break;
-                  }
-               }
+              getTabPane().setSelectedIndex(i);
+              panel.setDataOwner(item, true);
+              if (tabTitle == null) {
+                getTabPane().setTitleAt(i, item.__getCname());
+              } else {
+                getTabPane().setTitleAt(i, tabTitle + ": " + item.__getCname());
+              }
+              found = true;
+              break;
             }
-            if (!found) {
-               try {
-                  final DataPanel p = (DataPanel) item.getView();
+          }
+        }
+        if (!found) {
+          try {
+            final DataPanel p = (DataPanel) item.getView();
 
-                  if (tabTitle == null) {
-                     addTab((JComponent) p, item.__getCname());
-                  } else {
-                     addTab((JComponent) p, tabTitle + ": " + item.__getCname());
-                  }
-                  Runnable runnable = new Runnable() {
-                     public void run() {
-                        p.setDataOwner(item, true);
-                     }
-                  };
-                  SwingUtilities.invokeLater(runnable);
-               } catch (ClassCastException e) {
-                  if (tabTitle == null) {
-                     addTab(item.getView(), item.__getCname());
-                  } else {
-                     addTab(item.getView(), tabTitle + ": " + item.__getCname());
-                  }
-               }
+            if (tabTitle == null) {
+              addTab((JComponent) p, item.__getCname());
+            } else {
+              addTab((JComponent) p, tabTitle + ": " + item.__getCname());
             }
-         }
-      }
-
-      setPointInFlow(addToFlow(item));
-      setWaiting(false);
-      return getCurrentTab();
-   }
-
-   /**
-    * Add a tab to the main tab pane, automatically determines the needed View
-    *
-    * @param item
-    * @return
-    */
-   public DataPanel addTab(DatabaseObject item) {
-      return addTab(item, null);
-   }
-
-   /**
-    * Shows a tab or adds it if needed
-    *
-    * @param instanceOf
-    * @param label
-    */
-   public void addOrShowTab(JComponent instanceOf, Object label) {
-      Component[] tabs = getTabPane().getComponents();
-      boolean found = false;
-      JScrollPane scroll = null;
-      for (int i = 0; i < tabs.length; i++) {
-         JComponent component = (JComponent) tabs[i];
-         if (component instanceof JScrollPane) {
-            scroll = (JScrollPane) component;
-            component = (JComponent) ((JScrollPane) component).getComponent(0);
-         }
-         try {
-            if (component.getComponent(0).equals(instanceOf)) {
-               if (scroll == null) {
-                  getTabPane().setSelectedComponent(instanceOf);
-               } else {
-                  getTabPane().setSelectedComponent(scroll);
-               }
-               found = true;
+            Runnable runnable = new Runnable() {
+              public void run() {
+                p.setDataOwner(item, true);
+              }
+            };
+            SwingUtilities.invokeLater(runnable);
+          } catch (ClassCastException e) {
+            if (tabTitle == null) {
+              addTab(item.getView(), item.__getCname());
+            } else {
+              addTab(item.getView(), tabTitle + ": " + item.__getCname());
             }
-         } catch (Exception e) {
-            Log.Debug(this, e.getMessage());
-         }
+          }
+        }
       }
+    }
 
-      if (!found) {
-         addTab(instanceOf, label.toString());
+    setPointInFlow(addToFlow(item));
+    setWaiting(false);
+    return getCurrentTab();
+  }
+
+  /**
+   * Add a tab to the main tab pane, automatically determines the needed View
+   *
+   * @param item
+   * @return
+   */
+  public DataPanel addTab(DatabaseObject item) {
+    return addTab(item, null);
+  }
+
+  /**
+   * Shows a tab or adds it if needed
+   *
+   * @param instanceOf
+   * @param label
+   */
+  public void addOrShowTab(JComponent instanceOf, Object label) {
+    Component[] tabs = getTabPane().getComponents();
+    boolean found = false;
+    JScrollPane scroll = null;
+    for (int i = 0; i < tabs.length; i++) {
+      JComponent component = (JComponent) tabs[i];
+      if (component instanceof JScrollPane) {
+        scroll = (JScrollPane) component;
+        component = (JComponent) ((JScrollPane) component).getComponent(0);
       }
-   }
+      try {
+        if (component.getComponent(0).equals(instanceOf)) {
+          if (scroll == null) {
+            getTabPane().setSelectedComponent(instanceOf);
+          } else {
+            getTabPane().setSelectedComponent(scroll);
+          }
+          found = true;
+        }
+      } catch (Exception e) {
+        Log.Debug(this, e.getMessage());
+      }
+    }
 
-   /**
-    * Add a tab to the main tab pane, with new JScrollPane
-    *
-    * @param tab
-    * @param name
-    * @return The now selected index
-    */
-   public int addTab(JComponent tab, String name) {
-      JScrollPane spane = new JScrollPane(tab);
-      getTabPane().addTab(name, spane);
-      getTabPane().setSelectedComponent(spane);
-      return getTabPane().getSelectedIndex();
-   }
+    if (!found) {
+      addTab(instanceOf, label.toString());
+    }
+  }
 
-   private void addTab(JComponent tab, Messages name) {
-      addTab(tab, name.toString());
-   }
+  /**
+   * Add a tab to the main tab pane, with new JScrollPane
+   *
+   * @param tab
+   * @param name
+   * @return The now selected index
+   */
+  public int addTab(JComponent tab, String name) {
+    JScrollPane spane = new JScrollPane(tab);
+    getTabPane().addTab(name, spane);
+    getTabPane().setSelectedComponent(spane);
+    return getTabPane().getSelectedIndex();
+  }
 
-   private void importXML() {
-      Wizard w = new Wizard(false);
-      w.addPanel(new wizard_XMLImport_1(w));
-      w.addPanel(new wizard_XMLImport_2(w));
-      w.showWiz();
-   }
+  private void addTab(JComponent tab, Messages name) {
+    addTab(tab, name.toString());
+  }
 
-   /**
-    * This method is called from within the constructor to initialize the form.
-    * WARNING: Do NOT modify this code. The content of this method is always
-    * regenerated by the Form Editor.
-    */
-   @SuppressWarnings("unchecked")
+  private void importXML() {
+    Wizard w = new Wizard(false);
+    w.addPanel(new wizard_XMLImport_1(w));
+    w.addPanel(new wizard_XMLImport_2(w));
+    w.showWiz();
+  }
+
+  /**
+   * This method is called from within the constructor to initialize the form.
+   * WARNING: Do NOT modify this code. The content of this method is always
+   * regenerated by the Form Editor.
+   */
+  @SuppressWarnings("unchecked")
    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
    private void initComponents() {
 
@@ -2225,285 +2228,285 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
 
     private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
 
-       DatabaseObject d = DatabaseObject.getObject(Context.getCustomer());
-       ((mpv5.db.objects.Contact) d).setisCustomer(true);
+      DatabaseObject d = DatabaseObject.getObject(Context.getCustomer());
+      ((mpv5.db.objects.Contact) d).setisCustomer(true);
 
-       ContactsList t = getClisttab(Context.getCustomer());
-       t.showType((Contact) d);
-       addOrShowTab(t, Messages.CONTACTS_LIST.toString());
+      ContactsList t = getClisttab(Context.getCustomer());
+      t.showType((Contact) d);
+      addOrShowTab(t, Messages.CONTACTS_LIST.toString());
     }//GEN-LAST:event_jButton5ActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
 
-       DatabaseObject d = DatabaseObject.getObject(Context.getSupplier());
-       ((mpv5.db.objects.Contact) d).setisSupplier(true);
+      DatabaseObject d = DatabaseObject.getObject(Context.getSupplier());
+      ((mpv5.db.objects.Contact) d).setisSupplier(true);
 
-       ContactsList t = getClisttab(Context.getSupplier());
-       t.showType((Contact) d);
-       addOrShowTab(t, Messages.CONTACTS_LIST.toString());
+      ContactsList t = getClisttab(Context.getSupplier());
+      t.showType((Contact) d);
+      addOrShowTab(t, Messages.CONTACTS_LIST.toString());
 
 }//GEN-LAST:event_jButton1ActionPerformed
-   private static ContactsList clisttabc;
-   private static ContactsList clisttabs;
-   private static ContactsList clisttabm;
-   private static ProductList plisttab;
-   private static ProductsOverview polisttab;
+  private static ContactsList clisttabc;
+  private static ContactsList clisttabs;
+  private static ContactsList clisttabm;
+  private static ProductList plisttab;
+  private static ProductsOverview polisttab;
     private void jButton18ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton18ActionPerformed
 
-       DatabaseObject d = DatabaseObject.getObject(Context.getManufacturer());
-       ((mpv5.db.objects.Contact) d).setisManufacturer(true);
+      DatabaseObject d = DatabaseObject.getObject(Context.getManufacturer());
+      ((mpv5.db.objects.Contact) d).setisManufacturer(true);
 
-       ContactsList t = getClisttab(Context.getManufacturer());
-       t.showType((Contact) d);
-       addOrShowTab(t, Messages.CONTACTS_LIST.toString());
+      ContactsList t = getClisttab(Context.getManufacturer());
+      t.showType((Contact) d);
+      addOrShowTab(t, Messages.CONTACTS_LIST.toString());
     }//GEN-LAST:event_jButton18ActionPerformed
 
     private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
-       Main.setLaF(null);
-       User.getCurrentUser().setLaf(UIManager.getSystemLookAndFeelClassName());
-       User.getCurrentUser().save();
+      Main.setLaF(null);
+      User.getCurrentUser().setLaf(UIManager.getSystemLookAndFeelClassName());
+      User.getCurrentUser().save();
     }//GEN-LAST:event_jMenuItem1ActionPerformed
 
     private void jMenuItem3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem3ActionPerformed
-       addOrShowTab(MPControlPanel.instanceOf(), Messages.CONTROL_PANEL.toString());
+      addOrShowTab(MPControlPanel.instanceOf(), Messages.CONTROL_PANEL.toString());
 
     }//GEN-LAST:event_jMenuItem3ActionPerformed
 
     private void calculatorButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_calculatorButtonActionPerformed
-       if (LocalSettings.hasProperty(LocalSettings.CALCULATOR) && LocalSettings.getProperty(LocalSettings.CALCULATOR).length() >= 1) {
-          try {
-             Runtime.getRuntime().exec(LocalSettings.getProperty(LocalSettings.CALCULATOR));
-          } catch (Exception e) {
-             Popup.error(e);
-             Log.Debug(e);
-          }
-       } else {
-          MPCalculator2.instanceOf();
-       }
+      if (LocalSettings.hasProperty(LocalSettings.CALCULATOR) && LocalSettings.getProperty(LocalSettings.CALCULATOR).length() >= 1) {
+        try {
+          Runtime.getRuntime().exec(LocalSettings.getProperty(LocalSettings.CALCULATOR));
+        } catch (Exception e) {
+          Popup.error(e);
+          Log.Debug(e);
+        }
+      } else {
+        MPCalculator2.instanceOf();
+      }
     }//GEN-LAST:event_calculatorButtonActionPerformed
 
     private void lockButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_lockButtonActionPerformed
 
-       mpv5.usermanagement.Lock.lock(this.getFrame());
-       User.getCurrentUser().logout();
+      mpv5.usermanagement.Lock.lock(this);
+      User.getCurrentUser().logout();
 }//GEN-LAST:event_lockButtonActionPerformed
 
     private void closeButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_closeButtonActionPerformed
-       if (Popup.Y_N_dialog(Messages.REALLY_CLOSE)) {
-          Main.getApplication().exit();
-       }
+      if (Popup.Y_N_dialog(Messages.REALLY_CLOSE)) {
+        Main.getApplication().exit();
+      }
 }//GEN-LAST:event_closeButtonActionPerformed
 
     private void jMenuItem4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem4ActionPerformed
-       selectedTabInNewFrame();
+      selectedTabInNewFrame();
     }//GEN-LAST:event_jMenuItem4ActionPerformed
 
     private void jMenuItem6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem6ActionPerformed
-       DataPanel pane = getCurrentTab();
-       if (pane != null) {
-          pane.print();
-       } else {
-          Export.print(getTabPane().getSelectedComponent());
-       }
+      DataPanel pane = getCurrentTab();
+      if (pane != null) {
+        pane.print();
+      } else {
+        Export.print(getTabPane().getSelectedComponent());
+      }
     }//GEN-LAST:event_jMenuItem6ActionPerformed
 
     private void jMenuItem7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem7ActionPerformed
 
-       getClipboardMenu().removeAll();
-       getClipboardMenu().add(jMenu6);
+      getClipboardMenu().removeAll();
+      getClipboardMenu().add(jMenu6);
 
     }//GEN-LAST:event_jMenuItem7ActionPerformed
 
     private void jMenuItem8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem8ActionPerformed
-       XMLWriter.export(Context.getContact());
+      XMLWriter.export(Context.getContact());
     }//GEN-LAST:event_jMenuItem8ActionPerformed
 
     private void jMenuItem9ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem9ActionPerformed
 
-       getClipboardMenu().add(new ClipboardMenuItem(getCurrentTab().getDataOwner()));
+      getClipboardMenu().add(new ClipboardMenuItem(getCurrentTab().getDataOwner()));
 
     }//GEN-LAST:event_jMenuItem9ActionPerformed
 
     private void jMenuItem11ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem11ActionPerformed
-       importXML();
+      importXML();
     }//GEN-LAST:event_jMenuItem11ActionPerformed
 
     private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
-       addTab((JComponent) HistoryPanel.instanceOf(), Messages.HISTORY_PANEL.toString());
+      addTab((JComponent) HistoryPanel.instanceOf(), Messages.HISTORY_PANEL.toString());
 
     }//GEN-LAST:event_jButton6ActionPerformed
 
     private void jMenuItem12ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem12ActionPerformed
-       getIdentifierApplication().exit(evt);
+      getIdentifierApplication().exit(evt);
     }//GEN-LAST:event_jMenuItem12ActionPerformed
 
     private void jMenuItem13ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem13ActionPerformed
-       try {
-          DataPanel pane = getCurrentTab();
-          if (pane != null) {
-             pane.actionBeforeSave();
-             try {
-                DatabaseObject dato = (pane).getDataOwner();
-                dato.getPanelData((pane));
-                if (dato.save()) {
-                   (pane).actionAfterSave();
-                   (pane).setDataOwner(dato, true);
-                } else {
-                   (pane).showRequiredFields();
-                }
-             } catch (Exception e) {
-                Log.Debug(this, e);
-             }
+      try {
+        DataPanel pane = getCurrentTab();
+        if (pane != null) {
+          pane.actionBeforeSave();
+          try {
+            DatabaseObject dato = (pane).getDataOwner();
+            dato.getPanelData((pane));
+            if (dato.save()) {
+              (pane).actionAfterSave();
+              (pane).setDataOwner(dato, true);
+            } else {
+              (pane).showRequiredFields();
+            }
+          } catch (Exception e) {
+            Log.Debug(this, e);
           }
-       } catch (ChangeNotApprovedException changeNotApprovedException) {
-          Log.Debug(this, changeNotApprovedException.getMessage());
-       }
+        }
+      } catch (ChangeNotApprovedException changeNotApprovedException) {
+        Log.Debug(this, changeNotApprovedException.getMessage());
+      }
     }//GEN-LAST:event_jMenuItem13ActionPerformed
 
     private void jMenuItem14ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem14ActionPerformed
 
-       DataPanel pane = getCurrentTab();
-       if (pane != null) {
-          try {
-             pane.actionBeforeCreate();
-             DatabaseObject dato = (pane).getDataOwner();
-             dato.getPanelData((pane));
-             dato.setIDS(-1);
-             if (dato.save()) {
-                pane.actionAfterSave();
-                (pane).setDataOwner(dato, true);
-             } else {
-                (pane).showRequiredFields();
-             }
-          } catch (Exception e) {
-             Log.Debug(this, e);
+      DataPanel pane = getCurrentTab();
+      if (pane != null) {
+        try {
+          pane.actionBeforeCreate();
+          DatabaseObject dato = (pane).getDataOwner();
+          dato.getPanelData((pane));
+          dato.setIDS(-1);
+          if (dato.save()) {
+            pane.actionAfterSave();
+            (pane).setDataOwner(dato, true);
+          } else {
+            (pane).showRequiredFields();
           }
-       }
+        } catch (Exception e) {
+          Log.Debug(this, e);
+        }
+      }
     }//GEN-LAST:event_jMenuItem14ActionPerformed
 
     private void jMenuItem16ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem16ActionPerformed
-       getCurrentTab().paste(getClipboardItems());
+      getCurrentTab().paste(getClipboardItems());
     }//GEN-LAST:event_jMenuItem16ActionPerformed
 
     private void jMenuItem15ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem15ActionPerformed
-       try {
-          DataPanel tab = getCurrentTab();
-          DatabaseObject dato = tab.getDataOwner();
+      try {
+        DataPanel tab = getCurrentTab();
+        DatabaseObject dato = tab.getDataOwner();
 
-          if (dato.isExisting()) {
-             dato.getPanelData((tab));
-             dato.reset();
-             tab.refresh();
-             tab.setDataOwner(dato, true);
-          }
-       } catch (Exception ignore) {
-       }
+        if (dato.isExisting()) {
+          dato.getPanelData((tab));
+          dato.reset();
+          tab.refresh();
+          tab.setDataOwner(dato, true);
+        }
+      } catch (Exception ignore) {
+      }
     }//GEN-LAST:event_jMenuItem15ActionPerformed
 
     private void jMenuItem17ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem17ActionPerformed
 
-       Search.instanceOf();
+      Search.instanceOf();
 
     }//GEN-LAST:event_jMenuItem17ActionPerformed
 
     private void jMenuItem19ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem19ActionPerformed
-       try {
-          getCurrentTab().refresh();
-       } catch (Exception ignore) {
-       }
+      try {
+        getCurrentTab().refresh();
+      } catch (Exception ignore) {
+      }
     }//GEN-LAST:event_jMenuItem19ActionPerformed
 
     private void jMenuItem20ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem20ActionPerformed
 
-       XMLWriter.export(Context.getAccounts());
+      XMLWriter.export(Context.getAccounts());
     }//GEN-LAST:event_jMenuItem20ActionPerformed
 
     private void jMenuItem21ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem21ActionPerformed
 
-       if (mpv5.usermanagement.MPSecurityManager.check(Context.getAccounts(), MPSecurityManager.EXPORT)) {
-          try {
+      if (mpv5.usermanagement.MPSecurityManager.check(Context.getAccounts(), MPSecurityManager.EXPORT)) {
+        try {
 
-             String name = Context.getAccounts().getDbIdentity();
-             ArrayList<DatabaseObject> dbobjarr = DatabaseObject.getObjects(Context.getAccounts());
+          String name = Context.getAccounts().getDbIdentity();
+          ArrayList<DatabaseObject> dbobjarr = DatabaseObject.getObjects(Context.getAccounts());
 
-             TextDatFile t = new TextDatFile();
-             t.parse(dbobjarr);
+          TextDatFile t = new TextDatFile();
+          t.parse(dbobjarr);
 
-             showFilesaveDialogFor(t.createFile(name));
-          } catch (NodataFoundException ex) {
-             Log.Debug(this, ex);
-          }
-       }
+          showFilesaveDialogFor(t.createFile(name));
+        } catch (NodataFoundException ex) {
+          Log.Debug(this, ex);
+        }
+      }
     }//GEN-LAST:event_jMenuItem21ActionPerformed
 
     private void jMenuItem23ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem23ActionPerformed
-       addOrShowTab(TrashPanel.instanceOf(), Messages.TRASHBIN.getValue());
+      addOrShowTab(TrashPanel.instanceOf(), Messages.TRASHBIN.getValue());
     }//GEN-LAST:event_jMenuItem23ActionPerformed
 
     private void jButton7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton7ActionPerformed
-       addOrShowTab(TrashPanel.instanceOf(), Messages.TRASHBIN.toString());
+      addOrShowTab(TrashPanel.instanceOf(), Messages.TRASHBIN.toString());
     }//GEN-LAST:event_jButton7ActionPerformed
 
     private void jButton8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton8ActionPerformed
-       addTab(new ItemPanel2(Context.getInvoice(), Item.TYPE_BILL), Messages.NEW_BILL);
+      addTab(new ItemPanel2(Context.getInvoice(), Item.TYPE_BILL), Messages.NEW_BILL);
     }//GEN-LAST:event_jButton8ActionPerformed
-   private MPServer mpserver;
+  private MPServer mpserver;
     private void jMenuItem24ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem24ActionPerformed
-       MPServer.runServer();
-       jMenuItem24.setEnabled(false);
+      MPServer.runServer();
+      jMenuItem24.setEnabled(false);
     }//GEN-LAST:event_jMenuItem24ActionPerformed
 
     private void jMenuItem25ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem25ActionPerformed
-       LocalSettings.setProperty(LocalSettings.SCROLL_ALWAYS, String.valueOf(!isTabPaneScrolled()));
-       LocalSettings.save();
-       Popup.notice(Messages.RESTART_REQUIRED);
+      LocalSettings.setProperty(LocalSettings.SCROLL_ALWAYS, String.valueOf(!isTabPaneScrolled()));
+      LocalSettings.save();
+      Popup.notice(Messages.RESTART_REQUIRED);
     }//GEN-LAST:event_jMenuItem25ActionPerformed
 
     private void jMenuItem26ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem26ActionPerformed
 
-       XMLWriter.export(Context.getItem());
+      XMLWriter.export(Context.getItem());
     }//GEN-LAST:event_jMenuItem26ActionPerformed
 
     private void jButton10ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton10ActionPerformed
 
-       addTab(new ItemPanel2(Context.getOffer(), Item.TYPE_OFFER), Messages.NEW_OFFER);
+      addTab(new ItemPanel2(Context.getOffer(), Item.TYPE_OFFER), Messages.NEW_OFFER);
     }//GEN-LAST:event_jButton10ActionPerformed
 
     private void jButton11ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton11ActionPerformed
-       addTab(new ItemPanel2(Context.getOrder(), Item.TYPE_ORDER), Messages.NEW_ORDER);
+      addTab(new ItemPanel2(Context.getOrder(), Item.TYPE_ORDER), Messages.NEW_ORDER);
     }//GEN-LAST:event_jButton11ActionPerformed
 
     private void jButton12ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton12ActionPerformed
-       addTab(new ProductPanel(Context.getProduct(), Product.TYPE_SERVICE), Messages.NEW_SERVICE);
+      addTab(new ProductPanel(Context.getProduct(), Product.TYPE_SERVICE), Messages.NEW_SERVICE);
     }//GEN-LAST:event_jButton12ActionPerformed
 
     private void jButton13ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton13ActionPerformed
-       addTab(new ProductPanel(Context.getProduct(), Product.TYPE_PRODUCT), Messages.NEW_PRODUCT);
+      addTab(new ProductPanel(Context.getProduct(), Product.TYPE_PRODUCT), Messages.NEW_PRODUCT);
     }//GEN-LAST:event_jButton13ActionPerformed
 
     private void errorlabelMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_errorlabelMouseClicked
-       SubmitForm submitForm = new SubmitForm(ExceptionHandler.getExceptions());
-       BigPopup.showPopup(getFrame().getRootPane(), submitForm, "Bughunter");
-       getErrorlabel().setIcon(null);
-       getIdentifierFrame().validate();
+      SubmitForm submitForm = new SubmitForm(ExceptionHandler.getExceptions());
+      BigPopup.showPopup(getRootPane(), submitForm, "Bughunter");
+      getErrorlabel().setIcon(null);
+      getIdentifierFrame().validate();
     }//GEN-LAST:event_errorlabelMouseClicked
 
     private void jButton14ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton14ActionPerformed
-       addTab(new ProductListsPanel(), Messages.NEW_LIST);
+      addTab(new ProductListsPanel(), Messages.NEW_LIST);
 
     }//GEN-LAST:event_jButton14ActionPerformed
 
     private void jButton15ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton15ActionPerformed
-       addOrShowTab(ExpensePanel.instanceOf(), Messages.EXPENSE);
+      addOrShowTab(ExpensePanel.instanceOf(), Messages.EXPENSE);
     }//GEN-LAST:event_jButton15ActionPerformed
 
     private void jButton16ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton16ActionPerformed
-       addOrShowTab(RevenuePanel.instanceOf(), Messages.REVENUE);
+      addOrShowTab(RevenuePanel.instanceOf(), Messages.REVENUE);
 
     }//GEN-LAST:event_jButton16ActionPerformed
 
     private void jButton17ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton17ActionPerformed
-       addOrShowTab(JournalPanel.instanceOf(), Messages.OVERVIEW);
+      addOrShowTab(JournalPanel.instanceOf(), Messages.OVERVIEW);
     }//GEN-LAST:event_jButton17ActionPerformed
 
     private void helpmenuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_helpmenuActionPerformed
@@ -2514,273 +2517,273 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
 
     private void jMenuItem27ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem27ActionPerformed
 
-       try {
-          java.awt.Desktop.getDesktop().browse(new URI(Constants.WEBSITE));
-       } catch (Exception ex) {
-          Log.Debug(ex);
-       }
+      try {
+        java.awt.Desktop.getDesktop().browse(new URI(Constants.WEBSITE));
+      } catch (Exception ex) {
+        Log.Debug(ex);
+      }
 }//GEN-LAST:event_jMenuItem27ActionPerformed
 
     private void jMenuItem10ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem10ActionPerformed
-       addOrShowTab(Log.getLogger().get(0).open(), "Logs");
+      addOrShowTab(Log.getLogger().get(0).open(), "Logs");
 }//GEN-LAST:event_jMenuItem10ActionPerformed
 
     private void jMenuItem30ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem30ActionPerformed
-       new About(new ImageIcon(About.class.getResource(mpv5.globals.Constants.ABOUT_IMAGE)));
+      new About(new ImageIcon(About.class.getResource(mpv5.globals.Constants.ABOUT_IMAGE)));
     }//GEN-LAST:event_jMenuItem30ActionPerformed
 
     private void jButton19ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton19ActionPerformed
 
-       if (getPlisttab() == null) {
-          plisttab = new ProductList();
-       }
-       addOrShowTab(getPlisttab(), Messages.ALL_PRODUCTS.toString());
+      if (getPlisttab() == null) {
+        plisttab = new ProductList();
+      }
+      addOrShowTab(getPlisttab(), Messages.ALL_PRODUCTS.toString());
     }//GEN-LAST:event_jButton19ActionPerformed
 
     private void jMenuItem31ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem31ActionPerformed
 
-       addTab(new QueryPanel(), Messages.QUERY_WINDOW);
+      addTab(new QueryPanel(), Messages.QUERY_WINDOW);
     }//GEN-LAST:event_jMenuItem31ActionPerformed
 
     private void jMenuItem32ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem32ActionPerformed
 
-       XMLWriter.export(Context.getProduct());
+      XMLWriter.export(Context.getProduct());
     }//GEN-LAST:event_jMenuItem32ActionPerformed
 
     private void jMenuItem33ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem33ActionPerformed
-       DatabaseObject d = Search2.showSearchFor(Context.getContact());
-       if (d != null) {
-          addTab(d);
-       }
+      DatabaseObject d = Search2.showSearchFor(Context.getContact());
+      if (d != null) {
+        addTab(d);
+      }
     }//GEN-LAST:event_jMenuItem33ActionPerformed
 
     private void jMenuItem34ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem34ActionPerformed
 
-       DatabaseObject d = Search2.showSearchFor(Context.getItem());
-       if (d != null) {
-          addTab(d);
-       }
+      DatabaseObject d = Search2.showSearchFor(Context.getItem());
+      if (d != null) {
+        addTab(d);
+      }
     }//GEN-LAST:event_jMenuItem34ActionPerformed
 
     private void jMenuItem35ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem35ActionPerformed
-       tabPane.removeAll();
-       tabPane.validate();
+      tabPane.removeAll();
+      tabPane.validate();
 
     }//GEN-LAST:event_jMenuItem35ActionPerformed
 
     private void jMenuItem36ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem36ActionPerformed
-       tabPane.removeAllButSelected();
+      tabPane.removeAllButSelected();
     }//GEN-LAST:event_jMenuItem36ActionPerformed
 
     private void jMenuItem22ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem22ActionPerformed
-       DialogForFile f = getFiledialog();
-       if (f.saveFile()) {
-          try {
-             VCFParser.toVCard(DatabaseObject.getObjects(Context.getContact(), true), f.getFile());
-          } catch (NodataFoundException ex) {
-          }
-       }
+      DialogForFile f = getFiledialog();
+      if (f.saveFile()) {
+        try {
+          VCFParser.toVCard(DatabaseObject.getObjects(Context.getContact(), true), f.getFile());
+        } catch (NodataFoundException ex) {
+        }
+      }
     }//GEN-LAST:event_jMenuItem22ActionPerformed
 
     private void jMenuItem38ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem38ActionPerformed
 
-       DialogForFile f = getFiledialog();
-       List<Contact> contacts = null;
-       if (f.chooseFile()) {
-          try {
-             List<VCard> l = VCFParser.parse(f.getFile());
-             contacts = VCFParser.toContacts(l);
+      DialogForFile f = getFiledialog();
+      List<Contact> contacts = null;
+      if (f.chooseFile()) {
+        try {
+          List<VCard> l = VCFParser.parse(f.getFile());
+          contacts = VCFParser.toContacts(l);
 
-          } catch (Exception ex) {
+        } catch (Exception ex) {
 //                        Log.Debug(ex);
-             Popup.error(ex);
+          Popup.error(ex);
+        }
+
+        if (contacts != null) {
+          for (int i = 0; i < contacts.size(); i++) {
+            Contact contact = null;
+            try {
+              contact = contacts.get(i);
+              contact.saveImport();
+            } catch (Exception ec) {
+              Popup.error(ec);
+              contact.setCname("ERROR");
+            }
           }
 
-          if (contacts != null) {
-             for (int i = 0; i < contacts.size(); i++) {
-                Contact contact = null;
-                try {
-                   contact = contacts.get(i);
-                   contact.saveImport();
-                } catch (Exception ec) {
-                   Popup.error(ec);
-                   contact.setCname("ERROR");
-                }
-             }
-
-             GeneralListPanel pl = new GeneralListPanel(contacts);
-             MPView.identifierView.addTab(pl, "Imported contacts");
-          }
-       }
+          GeneralListPanel pl = new GeneralListPanel(contacts);
+          MPView.identifierView.addTab(pl, "Imported contacts");
+        }
+      }
     }//GEN-LAST:event_jMenuItem38ActionPerformed
 
     private void jMenuItem39ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem39ActionPerformed
-       User.getCurrentUser().getLayoutProperties().clear();
-       try {
-          ValueProperty.deleteProperty(User.getCurrentUser(), "layoutinfo");
-       } catch (Exception ex) {
-          Log.Debug(ex);
-       }
+      User.getCurrentUser().getLayoutProperties().clear();
+      try {
+        ValueProperty.deleteProperty(User.getCurrentUser(), "layoutinfo");
+      } catch (Exception ex) {
+        Log.Debug(ex);
+      }
 
-       resettables(getTabpanePanel());
+      resettables(getTabpanePanel());
     }//GEN-LAST:event_jMenuItem39ActionPerformed
 
     private void jButton20ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton20ActionPerformed
 
-       if (polisttab == null) {
-          polisttab = new ProductsOverview();
-       }
-       addOrShowTab(polisttab, Messages.ALL_PRODUCTS.toString());
+      if (polisttab == null) {
+        polisttab = new ProductsOverview();
+      }
+      addOrShowTab(polisttab, Messages.ALL_PRODUCTS.toString());
     }//GEN-LAST:event_jButton20ActionPerformed
 
     private void jMenuItem41ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem41ActionPerformed
-       //TODO product to html wiz
+      //TODO product to html wiz
     }//GEN-LAST:event_jMenuItem41ActionPerformed
 
     private void jMenuItem40ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem40ActionPerformed
 
-       Wizard w = new Wizard(false);
-       w.addPanel(new wizard_CSVImport2_1(w));
-       w.showWiz();
+      Wizard w = new Wizard(false);
+      w.addPanel(new wizard_CSVImport2_1(w));
+      w.showWiz();
 
     }//GEN-LAST:event_jMenuItem40ActionPerformed
 
     private void jMenuItem42ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem42ActionPerformed
-       addOrShowTab(MPControlPanel.instanceOf(), Messages.CONTROL_PANEL.toString());
-       MPControlPanel.instanceOf().openDetails(new ControlPanel_MailTemplates());
+      addOrShowTab(MPControlPanel.instanceOf(), Messages.CONTROL_PANEL.toString());
+      MPControlPanel.instanceOf().openDetails(new ControlPanel_MailTemplates());
     }//GEN-LAST:event_jMenuItem42ActionPerformed
 
     private void jMenuItem44ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem44ActionPerformed
-       mpv5.usermanagement.Lock.lock(this.getFrame());
-       User.getCurrentUser().logout();
+      mpv5.usermanagement.Lock.lock(this);
+      User.getCurrentUser().logout();
 
     }//GEN-LAST:event_jMenuItem44ActionPerformed
 
     private void jMenuItem5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem5ActionPerformed
-       mpv5.YabsViewProxy.instance().setClipBoardVisible(true);
+      mpv5.YabsViewProxy.instance().setClipBoardVisible(true);
     }//GEN-LAST:event_jMenuItem5ActionPerformed
 
     private void jMenuItem43ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem43ActionPerformed
-       try {
-          (new Scheduler()).start();
-       } catch (Exception e) {
-          Log.Debug(e);
-       }
+      try {
+        (new Scheduler()).start();
+      } catch (Exception e) {
+        Log.Debug(e);
+      }
     }//GEN-LAST:event_jMenuItem43ActionPerformed
 
     private void closeButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_closeButton1ActionPerformed
-       showPreviousDatabaseObject();
+      showPreviousDatabaseObject();
     }//GEN-LAST:event_closeButton1ActionPerformed
 
     private void closeButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_closeButton2ActionPerformed
-       showNextDatabaseObject();
+      showNextDatabaseObject();
     }//GEN-LAST:event_closeButton2ActionPerformed
 
     private void jButton9ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton9ActionPerformed
-       addOrShowTab(ConversationPanel.instanceOf(), Messages.CONVERSATION.toString());
+      addOrShowTab(ConversationPanel.instanceOf(), Messages.CONVERSATION.toString());
     }//GEN-LAST:event_jButton9ActionPerformed
 
     private void jMenuItem45ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem45ActionPerformed
-       addOrShowTab(MassPrintPanel.instanceOf(), Messages.MASSPRINT.toString());
+      addOrShowTab(MassPrintPanel.instanceOf(), Messages.MASSPRINT.toString());
     }//GEN-LAST:event_jMenuItem45ActionPerformed
 
     private void jButton21ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton21ActionPerformed
-       addOrShowTab(ActivityConfirmationPanel.instanceOf(), Messages.ACTIVITYCONFIRMATION.toString());
+      addOrShowTab(ActivityConfirmationPanel.instanceOf(), Messages.ACTIVITYCONFIRMATION.toString());
     }//GEN-LAST:event_jButton21ActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-       DataPanel pane = getCurrentTab();
-       if (pane != null) {
-          pane.print();
-       } else {
-          Export.print(getTabPane().getSelectedComponent());
-       }
+      DataPanel pane = getCurrentTab();
+      if (pane != null) {
+        pane.print();
+      } else {
+        Export.print(getTabPane().getSelectedComponent());
+      }
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void jButton22ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton22ActionPerformed
-       addTab(new ProductOrderPanel(), Messages.NEW_ORDER);
+      addTab(new ProductOrderPanel(), Messages.NEW_ORDER);
 
     }//GEN-LAST:event_jButton22ActionPerformed
 
     private void actionImport(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_actionImport
-       MigrationWB.instanceOf().doImport();
+      MigrationWB.instanceOf().doImport();
     }//GEN-LAST:event_actionImport
 
     private void actionMigrateToMySQL(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_actionMigrateToMySQL
-       MigrationWB.instanceOf().doExportToMySQL();
+      MigrationWB.instanceOf().doExportToMySQL();
     }//GEN-LAST:event_actionMigrateToMySQL
 
     private void actionExportToDerby(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_actionExportToDerby
-       MigrationWB.instanceOf().doExportToDerby();
+      MigrationWB.instanceOf().doExportToDerby();
     }//GEN-LAST:event_actionExportToDerby
 
     private void jMenuItem28ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem28ActionPerformed
-       Wizard w = new Wizard(false);
-       w.addPanel(new wizard_Yabs1_Import(w));
-       w.showWiz();
+      Wizard w = new Wizard(false);
+      w.addPanel(new wizard_Yabs1_Import(w));
+      w.showWiz();
     }//GEN-LAST:event_jMenuItem28ActionPerformed
 
     private void jMenuItem29ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem29ActionPerformed
-       Wizard w = new Wizard(false);
-       w.addPanel(new wizard_MP45_Import(w));
-       w.showWiz();
+      Wizard w = new Wizard(false);
+      w.addPanel(new wizard_MP45_Import(w));
+      w.showWiz();
     }//GEN-LAST:event_jMenuItem29ActionPerformed
 
     private void jMenuItem47ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem47ActionPerformed
-       Runnable runnable = new Runnable() {
-          public void run() {
-             try {
-                NoaConnection.killConnection();
-                try {
-                   if (LocalSettings.getBooleanProperty(LocalSettings.OFFICE_LOCALSERVER)) {
-                      Log.Debug(Main.class, "Starting OpenOffice as background service..");
-                      NoaConnectionLocalServer.startOOServerIfNotRunning(LocalSettings.getProperty(LocalSettings.OFFICE_HOME), LocalSettings.getIntegerProperty(LocalSettings.OFFICE_PORT));
-                   }
-                } catch (Exception e) {
-                   Log.Debug(this, e.getMessage());
-                }
-                NoaConnection.getConnection();
-             } catch (Exception ex) {
-                Logger.getLogger(MPView.class.getName()).log(Level.SEVERE, null, ex);
-             }
+      Runnable runnable = new Runnable() {
+        public void run() {
+          try {
+            NoaConnection.killConnection();
+            try {
+              if (LocalSettings.getBooleanProperty(LocalSettings.OFFICE_LOCALSERVER)) {
+                Log.Debug(Main.class, "Starting OpenOffice as background service..");
+                NoaConnectionLocalServer.startOOServerIfNotRunning(LocalSettings.getProperty(LocalSettings.OFFICE_HOME), LocalSettings.getIntegerProperty(LocalSettings.OFFICE_PORT));
+              }
+            } catch (Exception e) {
+              Log.Debug(this, e.getMessage());
+            }
+            NoaConnection.getConnection();
+          } catch (Exception ex) {
+            Logger.getLogger(MPView.class.getName()).log(Level.SEVERE, null, ex);
           }
-       };
-       new Thread(runnable).start();
+        }
+      };
+      new Thread(runnable).start();
     }//GEN-LAST:event_jMenuItem47ActionPerformed
 
     private void jMenuItem48ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem48ActionPerformed
 
-       addOrShowTab(Stockmanager.instanceOf(), Messages.STOCK_MANAGER);
-       Stockmanager.instanceOf().start();
+      addOrShowTab(Stockmanager.instanceOf(), Messages.STOCK_MANAGER);
+      Stockmanager.instanceOf().start();
     }//GEN-LAST:event_jMenuItem48ActionPerformed
 
     private void jMenuItem49ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem49ActionPerformed
-       Wizard w = new Wizard(false);
-       w.setModalityType(Dialog.ModalityType.APPLICATION_MODAL);
-       w.setAlwaysOnTop(false);
-       w.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-       w.setLocationRelativeTo(getIdentifierFrame());
-       w.addPanel(new wizard_Toolbar1(w));
-       w.showWizAsChild();
-
-    }//GEN-LAST:event_jMenuItem49ActionPerformed
-
-   private void jMenuItem50ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem50ActionPerformed
       Wizard w = new Wizard(false);
       w.setModalityType(Dialog.ModalityType.APPLICATION_MODAL);
       w.setAlwaysOnTop(false);
       w.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
       w.setLocationRelativeTo(getIdentifierFrame());
-      w.addPanel(new wizard_FirstSettings1(w));
-      w.addPanel(new wizard_FirstSettings2(w));
-      w.addPanel(new wizard_FirstSettings3(w));
-      w.addPanel(new wizard_FirstSettings4(w));
-      w.addPanel(new wizard_FirstSettings5(w));
+      w.addPanel(new wizard_Toolbar1(w));
       w.showWizAsChild();
+
+    }//GEN-LAST:event_jMenuItem49ActionPerformed
+
+   private void jMenuItem50ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem50ActionPerformed
+     Wizard w = new Wizard(false);
+     w.setModalityType(Dialog.ModalityType.APPLICATION_MODAL);
+     w.setAlwaysOnTop(false);
+     w.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+     w.setLocationRelativeTo(getIdentifierFrame());
+     w.addPanel(new wizard_FirstSettings1(w));
+     w.addPanel(new wizard_FirstSettings2(w));
+     w.addPanel(new wizard_FirstSettings3(w));
+     w.addPanel(new wizard_FirstSettings4(w));
+     w.addPanel(new wizard_FirstSettings5(w));
+     w.showWizAsChild();
    }//GEN-LAST:event_jMenuItem50ActionPerformed
 
    private void jMenuItem2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem2ActionPerformed
-      LoginToInstanceScreen.load();
+     LoginToInstanceScreen.load();
    }//GEN-LAST:event_jMenuItem2ActionPerformed
 
    // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -2913,555 +2916,581 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
    private javax.swing.JComboBox xhistory;
    // End of variables declaration//GEN-END:variables
 
-   /**
-    * @return the mainPanel
-    */
-   public javax.swing.JPanel getMainPanel() {
-      return mainPanel;
-   }
+  /**
+   * @return the mainPanel
+   */
+  public javax.swing.JPanel getMainPanel() {
+    return mainPanel;
+  }
 
-   /**
-    * @return the progressBar
-    */
-   public javax.swing.JProgressBar getProgressBar() {
-      return progressBar;
-   }
+  /**
+   * @return the progressBar
+   */
+  public javax.swing.JProgressBar getProgressBar() {
+    return progressBar;
+  }
 
-   /**
-    * @return the statusMessageLabel
-    */
-   public javax.swing.JLabel getStatusMessageLabel() {
-      return statusMessageLabel;
-   }
+  /**
+   * @return the statusMessageLabel
+   */
+  public javax.swing.JLabel getStatusMessageLabel() {
+    return statusMessageLabel;
+  }
 
-   /**
-    * @return the statusPanel
-    */
-   public javax.swing.JPanel getStatusPanel() {
-      return statusPanel;
-   }
+  /**
+   * @return the statusPanel
+   */
+  public javax.swing.JPanel getStatusPanel() {
+    return statusPanel;
+  }
 
-   /**
-    * Open the currently selected tab in a new frame
-    */
-   public void selectedTabInNewFrame() {
-      final Component pane = getTabPane().getSelectedComponent();
-      if (pane != null) {
-         final String title = getTabPane().getTitleAt(getTabPane().getSelectedIndex());
-         getTabPane().remove(pane);
-         JFrame fr = new JFrame(title) {
-            private static final long serialVersionUID = 1L;
+  /**
+   * Open the currently selected tab in a new frame
+   */
+  public void selectedTabInNewFrame() {
+    final Component pane = getTabPane().getSelectedComponent();
+    if (pane != null) {
+      final String title = getTabPane().getTitleAt(getTabPane().getSelectedIndex());
+      getTabPane().remove(pane);
+      JFrame fr = new JFrame(title) {
+        private static final long serialVersionUID = 1L;
 
-            @Override
-            public void dispose() {
-               getTabPane().addTab(title, pane);
-               getTabPane().setSelectedComponent(pane);
-               super.dispose();
-            }
-         };
-         fr.add(pane, BorderLayout.CENTER);
-         fr.setSize(pane.getSize());
-         new Position(fr);
-         fr.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-         fr.setVisible(true);
-      }
-   }
+        @Override
+        public void dispose() {
+          getTabPane().addTab(title, pane);
+          getTabPane().setSelectedComponent(pane);
+          super.dispose();
+        }
+      };
+      fr.add(pane, BorderLayout.CENTER);
+      fr.setSize(pane.getSize());
+      new Position(fr);
+      fr.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+      fr.setVisible(true);
+    }
+  }
 
-   /**
-    * Triggers the MP Server notification to the view
-    *
-    * @param running
-    */
-   public void showServerStatus(boolean running) {
-      if (running) {
-         getServerlabel().setMaximumSize(new Dimension(18, 18));
-         getServerlabel().setPreferredSize(new Dimension(18, 18));
-         getServerlabel().setMinimumSize(new Dimension(18, 18));
-         getServerlabel().setSize(18, 18);
-         final JLabel plab = new JLabel();
-         plab.setIcon(new MPIcon("/mpv5/resources/images/16/kwikdisk.png"));
-         plab.setEnabled(true);
-         plab.setToolTipText("<html><b>MP Server " + Messages.LOADED + "</b><br/>Port: " + LocalSettings.getProperty(LocalSettings.SERVER_PORT) + "</html>");
-         plab.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseReleased(MouseEvent e) {
-               if (e.getButton() == MouseEvent.BUTTON2 || e.getButton() == MouseEvent.BUTTON3) {
-                  JLabel source = (JLabel) e.getSource();
-                  final JPopupMenu m = new JPopupMenu();
-                  JMenuItem n = new JMenuItem(Messages.UNLOAD.getValue());
-                  n.addActionListener(new ActionListener() {
-                     @Override
-                     public void actionPerformed(ActionEvent e) {
-                        MPServer.stopServer();
-                        showServerStatus(false);
-                        jMenuItem24.setEnabled(true);
-                        plab.setToolTipText("<html><b>MP Server</b>");
-                        MouseListener[] ml = plab.getMouseListeners();
-                        for (int i = 0; i < ml.length; i++) {
-                           MouseListener mouseListener = ml[i];
-                           plab.removeMouseListener(mouseListener);
-                        }
-                     }
-                  });
-                  m.add(n);
-                  m.show(plab, e.getX(), e.getY());
-               }
-            }
-         });
-         getServerlabel().add(plab);
-      } else {
-         getServerlabel().setMaximumSize(new Dimension(0, 0));
-         getServerlabel().setPreferredSize(new Dimension(0, 0));
-         getServerlabel().setMinimumSize(new Dimension(0, 0));
-         getServerlabel().setSize(0, 0);
+  /**
+   * Triggers the MP Server notification to the view
+   *
+   * @param running
+   */
+  public void showServerStatus(boolean running) {
+    if (running) {
+      getServerlabel().setMaximumSize(new Dimension(18, 18));
+      getServerlabel().setPreferredSize(new Dimension(18, 18));
+      getServerlabel().setMinimumSize(new Dimension(18, 18));
+      getServerlabel().setSize(18, 18);
+      final JLabel plab = new JLabel();
+      plab.setIcon(new MPIcon("/mpv5/resources/images/16/kwikdisk.png"));
+      plab.setEnabled(true);
+      plab.setToolTipText("<html><b>MP Server " + Messages.LOADED + "</b><br/>Port: " + LocalSettings.getProperty(LocalSettings.SERVER_PORT) + "</html>");
+      plab.addMouseListener(new MouseAdapter() {
+        @Override
+        public void mouseReleased(MouseEvent e) {
+          if (e.getButton() == MouseEvent.BUTTON2 || e.getButton() == MouseEvent.BUTTON3) {
+            JLabel source = (JLabel) e.getSource();
+            final JPopupMenu m = new JPopupMenu();
+            JMenuItem n = new JMenuItem(Messages.UNLOAD.getValue());
+            n.addActionListener(new ActionListener() {
+              @Override
+              public void actionPerformed(ActionEvent e) {
+                MPServer.stopServer();
+                showServerStatus(false);
+                jMenuItem24.setEnabled(true);
+                plab.setToolTipText("<html><b>MP Server</b>");
+                MouseListener[] ml = plab.getMouseListeners();
+                for (int i = 0; i < ml.length; i++) {
+                  MouseListener mouseListener = ml[i];
+                  plab.removeMouseListener(mouseListener);
+                }
+              }
+            });
+            m.add(n);
+            m.show(plab, e.getX(), e.getY());
+          }
+        }
+      });
+      getServerlabel().add(plab);
+    } else {
+      getServerlabel().setMaximumSize(new Dimension(0, 0));
+      getServerlabel().setPreferredSize(new Dimension(0, 0));
+      getServerlabel().setMinimumSize(new Dimension(0, 0));
+      getServerlabel().setSize(0, 0);
 
-      }
-      getFrame().validate();
-   }
+    }
+    validate();
+  }
 
-   /**
-    * Triggers the MP Server notification to the view
-    *
-    * @param running
-    */
-   public void showOfficeStatus(boolean running, final String description) {
-      if (running) {
-         officelabel.setMaximumSize(new Dimension(18, 18));
-         officelabel.setPreferredSize(new Dimension(18, 18));
-         officelabel.setMinimumSize(new Dimension(18, 18));
-         officelabel.setSize(18, 18);
-         final JLabel plab = new JLabel();
-         plab.setIcon(new MPIcon("/mpv5/resources/images/16/info.png"));
-         plab.setEnabled(true);
-         plab.setToolTipText("<html><b>" + Messages.OO_DONE_LOADING + "<br>" + description + "</html>");
-         plab.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseReleased(MouseEvent e) {
-               if (e.getButton() == MouseEvent.BUTTON2 || e.getButton() == MouseEvent.BUTTON3) {
-                  JLabel source = (JLabel) e.getSource();
-                  final JPopupMenu m = new JPopupMenu();
-                  JMenuItem n = new JMenuItem(Messages.UNLOAD.getValue());
-                  n.addActionListener(new ActionListener() {
-                     @Override
-                     public void actionPerformed(ActionEvent e) {
-                        NoaConnection.killConnection();
-                        showOfficeStatus(false, description);
+  /**
+   * Triggers the MP Server notification to the view
+   *
+   * @param running
+   */
+  public void showOfficeStatus(boolean running, final String description) {
+    if (running) {
+      officelabel.setMaximumSize(new Dimension(18, 18));
+      officelabel.setPreferredSize(new Dimension(18, 18));
+      officelabel.setMinimumSize(new Dimension(18, 18));
+      officelabel.setSize(18, 18);
+      final JLabel plab = new JLabel();
+      plab.setIcon(new MPIcon("/mpv5/resources/images/16/info.png"));
+      plab.setEnabled(true);
+      plab.setToolTipText("<html><b>" + Messages.OO_DONE_LOADING + "<br>" + description + "</html>");
+      plab.addMouseListener(new MouseAdapter() {
+        @Override
+        public void mouseReleased(MouseEvent e) {
+          if (e.getButton() == MouseEvent.BUTTON2 || e.getButton() == MouseEvent.BUTTON3) {
+            JLabel source = (JLabel) e.getSource();
+            final JPopupMenu m = new JPopupMenu();
+            JMenuItem n = new JMenuItem(Messages.UNLOAD.getValue());
+            n.addActionListener(new ActionListener() {
+              @Override
+              public void actionPerformed(ActionEvent e) {
+                NoaConnection.killConnection();
+                showOfficeStatus(false, description);
 
-                        plab.setToolTipText("<html><b>Office</b>");
-                        MouseListener[] ml = plab.getMouseListeners();
-                        for (int i = 0; i < ml.length; i++) {
-                           MouseListener mouseListener = ml[i];
-                           plab.removeMouseListener(mouseListener);
-                        }
-                     }
-                  });
-                  m.add(n);
-                  m.show(plab, e.getX(), e.getY());
-               }
-            }
-         });
-         officelabel.add(plab);
-      } else {
-         officelabel.setMaximumSize(new Dimension(0, 0));
-         officelabel.setPreferredSize(new Dimension(0, 0));
-         officelabel.setMinimumSize(new Dimension(0, 0));
-         officelabel.setSize(0, 0);
+                plab.setToolTipText("<html><b>Office</b>");
+                MouseListener[] ml = plab.getMouseListeners();
+                for (int i = 0; i < ml.length; i++) {
+                  MouseListener mouseListener = ml[i];
+                  plab.removeMouseListener(mouseListener);
+                }
+              }
+            });
+            m.add(n);
+            m.show(plab, e.getX(), e.getY());
+          }
+        }
+      });
+      officelabel.add(plab);
+    } else {
+      officelabel.setMaximumSize(new Dimension(0, 0));
+      officelabel.setPreferredSize(new Dimension(0, 0));
+      officelabel.setMinimumSize(new Dimension(0, 0));
+      officelabel.setSize(0, 0);
 
-      }
-      getFrame().validate();
-   }
+    }
+    validate();
+  }
 
-   /**
-    * @return the mainToolbar
-    */
-   public javax.swing.JToolBar getMainToolbar() {
-      return mainToolbar;
-   }
+  /**
+   * @return the mainToolbar
+   */
+  public javax.swing.JToolBar getMainToolbar() {
+    return mainToolbar;
+  }
 
-   /**
-    * @return the naviPanel
-    */
-   public javax.swing.JPanel getNaviPanel() {
-      return naviPanel;
-   }
+  /**
+   * @return the naviPanel
+   */
+  public javax.swing.JPanel getNaviPanel() {
+    return naviPanel;
+  }
 
-   /**
-    * @return the outlookbar
-    */
-   public JOutlookBar getOutlookBar() {
-      return getNav_outlookbar();
-   }
+  /**
+   * @return the outlookbar
+   */
+  public JOutlookBar getOutlookBar() {
+    return getNav_outlookbar();
+  }
 
-   /**
-    * @return the pluginIcons
-    */
-   public javax.swing.JPanel getPluginIcons() {
-      return pluginIcons;
-   }
+  /**
+   * @return the pluginIcons
+   */
+  public javax.swing.JPanel getPluginIcons() {
+    return pluginIcons;
+  }
 
-   /**
-    * @return the separator
-    */
-   public javax.swing.JPanel getSeparator() {
-      return separator;
-   }
+  /**
+   * @return the separator
+   */
+  public javax.swing.JPanel getSeparator() {
+    return separator;
+  }
 
-   /**
-    * @return the serverlabel
-    */
-   public javax.swing.JPanel getServerlabel() {
-      return serverlabel;
-   }
+  /**
+   * @return the serverlabel
+   */
+  public javax.swing.JPanel getServerlabel() {
+    return serverlabel;
+  }
 
-   /**
-    * @return the xhistory
-    */
-   public javax.swing.JComboBox getXhistory() {
-      return xhistory;
-   }
+  /**
+   * @return the xhistory
+   */
+  public javax.swing.JComboBox getXhistory() {
+    return xhistory;
+  }
 
-   /**
-    * @return the mpserver
-    */
-   public MPServer getMpserver() {
-      return mpserver;
-   }
+  /**
+   * @return the mpserver
+   */
+  public MPServer getMpserver() {
+    return mpserver;
+  }
 
-   /**
-    * @return the calculatorButton
-    */
-   public javax.swing.JButton getCalculatorButton() {
-      return calculatorButton;
-   }
+  /**
+   * @return the calculatorButton
+   */
+  public javax.swing.JButton getCalculatorButton() {
+    return calculatorButton;
+  }
 
-   /**
-    * @return the clipboardMenu
-    */
-   public javax.swing.JMenu getClipboardMenu() {
-      return clipboardMenu;
-   }
+  /**
+   * @return the clipboardMenu
+   */
+  public javax.swing.JMenu getClipboardMenu() {
+    return clipboardMenu;
+  }
 
-   /**
-    * @return the closeButton
-    */
-   public javax.swing.JButton getCloseButton() {
-      return closeButton;
-   }
+  /**
+   * @return the closeButton
+   */
+  public javax.swing.JButton getCloseButton() {
+    return closeButton;
+  }
 
-   /**
-    * @return the editMenu
-    */
-   public javax.swing.JMenu getEditMenu() {
-      return editMenu;
-   }
+  /**
+   * @return the editMenu
+   */
+  public javax.swing.JMenu getEditMenu() {
+    return editMenu;
+  }
 
-   /**
-    * @return the errorlabel
-    */
-   public javax.swing.JLabel getErrorlabel() {
-      return errorlabel;
-   }
+  /**
+   * @return the errorlabel
+   */
+  public javax.swing.JLabel getErrorlabel() {
+    return errorlabel;
+  }
 
-   /**
-    * @return the helpmenu
-    */
-   public javax.swing.JMenu getHelpmenu() {
-      return helpmenu;
-   }
+  /**
+   * @return the helpmenu
+   */
+  public javax.swing.JMenu getHelpmenu() {
+    return helpmenu;
+  }
 
-   /**
-    * @return the lockButton
-    */
-   public javax.swing.JButton getLockButton() {
-      return lockButton;
-   }
+  /**
+   * @return the lockButton
+   */
+  public javax.swing.JButton getLockButton() {
+    return lockButton;
+  }
 
-   /**
-    * @return the nav_accounting
-    */
-   public javax.swing.JPanel getNav_accounting() {
-      return nav_accounting;
-   }
+  /**
+   * @return the nav_accounting
+   */
+  public javax.swing.JPanel getNav_accounting() {
+    return nav_accounting;
+  }
 
-   /**
-    * @return the nav_contacts
-    */
-   public javax.swing.JPanel getNav_contacts() {
-      return nav_contacts;
-   }
+  /**
+   * @return the nav_contacts
+   */
+  public javax.swing.JPanel getNav_contacts() {
+    return nav_contacts;
+  }
 
-   /**
-    * @return the nav_extras
-    */
-   public javax.swing.JPanel getNav_extras() {
-      return nav_extras;
-   }
+  /**
+   * @return the nav_extras
+   */
+  public javax.swing.JPanel getNav_extras() {
+    return nav_extras;
+  }
 
-   /**
-    * @return the nav_outlookbar
-    */
-   public com.l2fprod.common.swing.JOutlookBar getNav_outlookbar() {
-      return nav_outlookbar;
-   }
+  /**
+   * @return the nav_outlookbar
+   */
+  public com.l2fprod.common.swing.JOutlookBar getNav_outlookbar() {
+    return nav_outlookbar;
+  }
 
-   /**
-    * @return the nav_products
-    */
-   public javax.swing.JPanel getNav_products() {
-      return nav_products;
-   }
+  /**
+   * @return the nav_products
+   */
+  public javax.swing.JPanel getNav_products() {
+    return nav_products;
+  }
 
-   /**
-    * @return the parent_nav_accounting
-    */
-   public javax.swing.JPanel getParent_nav_accounting() {
-      return parent_nav_accounting;
-   }
+  /**
+   * @return the parent_nav_accounting
+   */
+  public javax.swing.JPanel getParent_nav_accounting() {
+    return parent_nav_accounting;
+  }
 
-   /**
-    * @return the parent_nav_contacts
-    */
-   public javax.swing.JPanel getParent_nav_contacts() {
-      return parent_nav_contacts;
-   }
+  /**
+   * @return the parent_nav_contacts
+   */
+  public javax.swing.JPanel getParent_nav_contacts() {
+    return parent_nav_contacts;
+  }
 
-   /**
-    * @return the parent_nav_extras
-    */
-   public javax.swing.JPanel getParent_nav_extras() {
-      return parent_nav_extras;
-   }
+  /**
+   * @return the parent_nav_extras
+   */
+  public javax.swing.JPanel getParent_nav_extras() {
+    return parent_nav_extras;
+  }
 
-   /**
-    * @return the parent_nav_products
-    */
-   public javax.swing.JPanel getParent_nav_products() {
-      return parent_nav_products;
-   }
+  /**
+   * @return the parent_nav_products
+   */
+  public javax.swing.JPanel getParent_nav_products() {
+    return parent_nav_products;
+  }
 
-   /**
-    * @return the toolsMenu
-    */
-   public javax.swing.JMenu getToolsMenu() {
-      return toolsMenu;
-   }
+  /**
+   * @return the toolsMenu
+   */
+  public javax.swing.JMenu getToolsMenu() {
+    return toolsMenu;
+  }
 
-   /**
-    * @return the viewMenu
-    */
-   public javax.swing.JMenu getViewMenu() {
-      return viewMenu;
-   }
-   /**
-    * Indicates the contact navigation section
-    */
-   public static final int NAV_CONTACTS = 0;
-   /**
-    * Indicates the product navigation section
-    */
-   public static final int NAV_PRODUCTS = 1;
-   /**
-    * Indicates the accounting navigation section
-    */
-   public static final int NAV_ACCOUNTING = 2;
-   /**
-    * Indicates the extras navigation section
-    */
-   public static final int NAV_EXTRAS = 3;
+  /**
+   * @return the viewMenu
+   */
+  public javax.swing.JMenu getViewMenu() {
+    return viewMenu;
+  }
+  /**
+   * Indicates the contact navigation section
+   */
+  public static final int NAV_CONTACTS = 0;
+  /**
+   * Indicates the product navigation section
+   */
+  public static final int NAV_PRODUCTS = 1;
+  /**
+   * Indicates the accounting navigation section
+   */
+  public static final int NAV_ACCOUNTING = 2;
+  /**
+   * Indicates the extras navigation section
+   */
+  public static final int NAV_EXTRAS = 3;
 
-   /**
-    * Add a Button to the navigation panel
-    *
-    * @param TARGET The target navigation section, which can be one of the
-    * following:<br/> <li>NAV_CONTACTS <li>NAV_PRODUCTS <li>NAV_ACCOUNTING
-    * <li>NAV_EXTRAS
-    *
-    * @param button The button to add
-    */
-   public void addButton(int TARGET, JButton button) {
+  /**
+   * Add a Button to the navigation panel
+   *
+   * @param TARGET The target navigation section, which can be one of the
+   * following:<br/> <li>NAV_CONTACTS <li>NAV_PRODUCTS <li>NAV_ACCOUNTING
+   * <li>NAV_EXTRAS
+   *
+   * @param button The button to add
+   */
+  public void addButton(int TARGET, JButton button) {
 
-      switch (TARGET) {
+    switch (TARGET) {
 
-         case NAV_CONTACTS:
-            getNav_contacts().add(button);
-            identifierFrame.validate();
-            break;
+      case NAV_CONTACTS:
+        getNav_contacts().add(button);
+        identifierFrame.validate();
+        break;
 
-         case NAV_ACCOUNTING:
-            getNav_accounting().add(button);
-            identifierFrame.validate();
-            break;
+      case NAV_ACCOUNTING:
+        getNav_accounting().add(button);
+        identifierFrame.validate();
+        break;
 
-         case NAV_PRODUCTS:
-            getNav_products().add(button);
-            identifierFrame.validate();
-            break;
+      case NAV_PRODUCTS:
+        getNav_products().add(button);
+        identifierFrame.validate();
+        break;
 
-         case NAV_EXTRAS:
-            getNav_extras().add(button);
-            identifierFrame.validate();
-            break;
+      case NAV_EXTRAS:
+        getNav_extras().add(button);
+        identifierFrame.validate();
+        break;
 
-         default:
-            throw new UnsupportedOperationException("Target not defined.");
-      }
-   }
+      default:
+        throw new UnsupportedOperationException("Target not defined.");
+    }
+  }
 
-   private void resettables(JComponent component) {
+  private void resettables(JComponent component) {
 
-      try {
-         if (component instanceof MPTable) {
-            ((MPTable) component).reset();
-         } else if (component instanceof JTable) {
+    try {
+      if (component instanceof MPTable) {
+        ((MPTable) component).reset();
+      } else if (component instanceof JTable) {
 //                ((JTable) component).createDefaultColumnsFromModel();
-         } else {
-            Component[] comps = component.getComponents();
-            for (int i = 0; i < comps.length; i++) {
-               Component component1 = comps[i];
-               if (component1 instanceof JComponent) {
-                  resettables((JComponent) component1);
-               }
-            }
-         }
-      } catch (Exception e) {
-         Log.Debug(e);
-
-      }
-   }
-
-   /*
-    * Reset all table layouts
-    */
-   public void resetTables() {
-      resettables(getTabpanePanel());
-   }
-
-   /**
-    * Paste the current clipboard items (if any)
-    */
-   public DatabaseObject[] getClipboardItems() {
-
-      List<DatabaseObject> list = new ArrayList<DatabaseObject>();
-
-      for (int i = 1; i < getClipboardMenu().getItemCount(); i++) {
-         try {
-            if (getClipboardMenu().getItemCount() > 1) {
-               ClipboardMenuItem item = (ClipboardMenuItem) getClipboardMenu().getItem(i);
-               list.add(item.getItem());
-            }
-         } catch (Exception ignore) {
-//            Log.Debug(ignore);
-         }
-      }
-
-      return list.toArray(new DatabaseObject[]{});
-   }
-
-   @Override
-   public void addOrShowTab(DatabaseObject dbo) {
-      addTab(dbo);
-   }
-
-   @Override
-   public synchronized void setClipBoardVisible(boolean show) {
-      if (clipboard == null) {
-         clipboard = new JFrame(Messages.YABS.getValue());
-         clipboard.setLayout(new BorderLayout());
-         clipboard.add(clistview, BorderLayout.CENTER);
-         clipboard.pack();
-         clipboard.setLocationRelativeTo(YabsViewProxy.instance().getIdentifierFrame());
-         clipboard.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
-         clipboard.setAlwaysOnTop(User.getCurrentUser().getProperty("org.openyabs.uiproperty", "clipboardontop"));
-      }
-      try {
-         clistview.validate();
-         if (User.getCurrentUser().getProperty("org.openyabs.uiproperty", "clipboardtab")) {
-            addOrShowTab(clistview, "Clipboard");
-         } else {
-            clipboard.setVisible(show);
-         }
-      } catch (Exception ex) {
-         Log.Debug(ex);
-      }
-   }
-   private static LinkedList<DatabaseObject> FLOW = new LinkedList<DatabaseObject>();
-   private int pif = 0;
-
-   public int getPointInFlow() {
-      return pif;
-   }
-
-   public int addToFlow(DatabaseObject d) {
-      if (!FLOW.contains(d)) {
-         FLOW.addLast(d);
       } else {
-         FLOW.set(FLOW.lastIndexOf(d), d);
+        Component[] comps = component.getComponents();
+        for (int i = 0; i < comps.length; i++) {
+          Component component1 = comps[i];
+          if (component1 instanceof JComponent) {
+            resettables((JComponent) component1);
+          }
+        }
       }
-      return FLOW.lastIndexOf(d);
-   }
+    } catch (Exception e) {
+      Log.Debug(e);
 
-   public void showPreviousDatabaseObject() {
-      if (hasPreviousDatabaseObject()) {
-         addOrShowTab(FLOW.get(pif - 1));
+    }
+  }
+
+  /*
+    * Reset all table layouts
+   */
+  public void resetTables() {
+    resettables(getTabpanePanel());
+  }
+
+  /**
+   * Paste the current clipboard items (if any)
+   */
+  public DatabaseObject[] getClipboardItems() {
+
+    List<DatabaseObject> list = new ArrayList<DatabaseObject>();
+
+    for (int i = 1; i < getClipboardMenu().getItemCount(); i++) {
+      try {
+        if (getClipboardMenu().getItemCount() > 1) {
+          ClipboardMenuItem item = (ClipboardMenuItem) getClipboardMenu().getItem(i);
+          list.add(item.getItem());
+        }
+      } catch (Exception ignore) {
+//            Log.Debug(ignore);
       }
-   }
+    }
 
-   public boolean hasPreviousDatabaseObject() {
-      return !FLOW.isEmpty() && pif > 0;
-   }
+    return list.toArray(new DatabaseObject[]{});
+  }
 
-   public void showNextDatabaseObject() {
-      if (hasNextDatabaseObject()) {
-         addOrShowTab(FLOW.get(pif + 1));
+  @Override
+  public void addOrShowTab(DatabaseObject dbo) {
+    addTab(dbo);
+  }
+
+  @Override
+  public synchronized void setClipBoardVisible(boolean show) {
+    if (clipboard == null) {
+      clipboard = new JFrame(Messages.YABS.getValue());
+      clipboard.setLayout(new BorderLayout());
+      clipboard.add(clistview, BorderLayout.CENTER);
+      clipboard.pack();
+      clipboard.setLocationRelativeTo(YabsViewProxy.instance().getIdentifierFrame());
+      clipboard.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+      clipboard.setAlwaysOnTop(User.getCurrentUser().getProperty("org.openyabs.uiproperty", "clipboardontop"));
+    }
+    try {
+      clistview.validate();
+      if (User.getCurrentUser().getProperty("org.openyabs.uiproperty", "clipboardtab")) {
+        addOrShowTab(clistview, "Clipboard");
+      } else {
+        clipboard.setVisible(show);
       }
-   }
+    } catch (Exception ex) {
+      Log.Debug(ex);
+    }
+  }
+  private static LinkedList<DatabaseObject> FLOW = new LinkedList<DatabaseObject>();
+  private int pif = 0;
 
-   public boolean hasNextDatabaseObject() {
-      return pif + 1 < FLOW.size();
-   }
+  public int getPointInFlow() {
+    return pif;
+  }
 
-   public DatabaseObject getCurrentDatabaseObject() {
-      return FLOW.get(pif);
-   }
+  public int addToFlow(DatabaseObject d) {
+    if (!FLOW.contains(d)) {
+      FLOW.addLast(d);
+    } else {
+      FLOW.set(FLOW.lastIndexOf(d), d);
+    }
+    return FLOW.lastIndexOf(d);
+  }
 
-   private void setPointInFlow(int npif) {
-      pif = npif;
-   }
+  public void showPreviousDatabaseObject() {
+    if (hasPreviousDatabaseObject()) {
+      addOrShowTab(FLOW.get(pif - 1));
+    }
+  }
 
-   public void enhanceToolbars() {//FIXME handle more nicely, and somewhere else
-      PropertyStore nactions = GlobalSettings.getProperties("org.openyabs.uiproperty.toolbaraction");
-      Map<String, String> m = nactions.getMap();
-      for (String f : m.keySet()) {
-         try {
-            final String val = m.get(f);
-            if (val != null && val.length() > 0 && !val.equals("null")) {
-               f = f.substring(1);
-               String[] x = f.split("\\.");
-               String tb = x[0];
-               String act = x[1];
-               for (JToolBar t : getToolBars()) {
-                  if (t.getName() == null ? tb == null : t.getName().equals(tb)) {
-                     t.add(new AbstractAction(act) {
-                        public void actionPerformed(ActionEvent e) {
-                           try {
-                              getGroovyShell().evaluate(val);
-                           } catch (Exception exception) {
-                              Notificator.raiseNotification(exception, true);
-                           }
-                        }
-                     });
+  public boolean hasPreviousDatabaseObject() {
+    return !FLOW.isEmpty() && pif > 0;
+  }
+
+  public void showNextDatabaseObject() {
+    if (hasNextDatabaseObject()) {
+      addOrShowTab(FLOW.get(pif + 1));
+    }
+  }
+
+  public boolean hasNextDatabaseObject() {
+    return pif + 1 < FLOW.size();
+  }
+
+  public DatabaseObject getCurrentDatabaseObject() {
+    return FLOW.get(pif);
+  }
+
+  private void setPointInFlow(int npif) {
+    pif = npif;
+  }
+
+  public void enhanceToolbars() {//FIXME handle more nicely, and somewhere else
+    PropertyStore nactions = GlobalSettings.getProperties("org.openyabs.uiproperty.toolbaraction");
+    Map<String, String> m = nactions.getMap();
+    for (String f : m.keySet()) {
+      try {
+        final String val = m.get(f);
+        if (val != null && val.length() > 0 && !val.equals("null")) {
+          f = f.substring(1);
+          String[] x = f.split("\\.");
+          String tb = x[0];
+          String act = x[1];
+          for (JToolBar t : getToolBars()) {
+            if (t.getName() == null ? tb == null : t.getName().equals(tb)) {
+              t.add(new AbstractAction(act) {
+                public void actionPerformed(ActionEvent e) {
+                  try {
+                    getGroovyShell().evaluate(val);
+                  } catch (Exception exception) {
+                    Notificator.raiseNotification(exception, true);
                   }
-               }
+                }
+              });
             }
-         } catch (Exception e) {
-            Log.Debug(e);
-         }
+          }
+        }
+      } catch (Exception e) {
+        Log.Debug(e);
       }
-   }
+    }
+  }
 
-   public YabsApplication getYabsApplication() {
-      if(getApplication() instanceof YabsApplication)
-         return (YabsApplication)getApplication();
-      throw new RuntimeException("Not a YabsApplication: "+getApplication());
-   }
+  public YabsApplication getYabsApplication() {
+    if (getApplication() instanceof YabsApplication) {
+      return (YabsApplication) getApplication();
+    }
+    throw new RuntimeException("Not a YabsApplication: " + getApplication());
+  }
+
+  public Application getApplication() {
+    return identifierApplication;
+  }
+
+  private Iterable<JToolBar> getToolBars() {
+    return toolbars;
+  }
+
+  private void setToolBar(JToolBar mainToolbar) {
+    toolbars.add(mainToolbar);
+    this.mainToolbar = mainToolbar;
+  }
+
+  private void setStatusBar(JPanel statusPanel) {
+    this.statusPanel = statusPanel;
+  }
+
+  private void setMenuBar(JMenuBar menuBar) {
+    this.menuBar = menuBar;
+  }
+
+  private void setComponent(JPanel mainPanel) {
+    this.mainPanel = mainPanel;
+  }
 }

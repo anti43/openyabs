@@ -26,21 +26,21 @@ import mpv5.ui.dialogs.Wizardable;
  */
 public class wizard_FirstSettings3 extends javax.swing.JPanel implements Wizardable {
 
-   private static final long serialVersionUID = -8347532498124147821L;
-   private WizardMaster master;
-   private PropertyStore nactions;
-   private List<JToolBar> nbars;
+  private static final long serialVersionUID = -8347532498124147821L;
+  private WizardMaster master;
+  private PropertyStore nactions;
+  private List<JToolBar> nbars;
 
-   public wizard_FirstSettings3(WizardMaster w) {
-      this.master = w;
-      initComponents();
-      setModels();
-      labeledTextChooser2.set_Text("");
-      jCheckBox3.setSelected(false);
+  public wizard_FirstSettings3(WizardMaster w) {
+    this.master = w;
+    initComponents();
+    setModels();
+    labeledTextChooser2.set_Text("");
+    jCheckBox3.setSelected(false);
 
-      labeledTextField1.setText("127.0.0.1");
-      labeledTextField2.setText("8100");
-   }
+    labeledTextField1.setText("127.0.0.1");
+    labeledTextField2.setText("8100");
+  }
 
    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
    private void initComponents() {
@@ -180,43 +180,42 @@ public class wizard_FirstSettings3 extends javax.swing.JPanel implements Wizarda
    }// </editor-fold>//GEN-END:initComponents
 
    private void jCheckBox3ItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_jCheckBox3ItemStateChanged
-      labeledTextField1.setEnabled(jCheckBox3.isSelected());
-      labeledTextField2.setEnabled(jCheckBox3.isSelected());
-      labeledTextChooser2.setEnabled(!jCheckBox3.isSelected());
+     labeledTextField1.setEnabled(jCheckBox3.isSelected());
+     labeledTextField2.setEnabled(jCheckBox3.isSelected());
+     labeledTextChooser2.setEnabled(!jCheckBox3.isSelected());
    }//GEN-LAST:event_jCheckBox3ItemStateChanged
 
    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
-      NoaConnection.clearConnection();
-      Runnable runnable2 = new Runnable() {
-         @Override
-         public void run() {
-            setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
+     NoaConnection.clearConnection();
+     Runnable runnable2 = new Runnable() {
+       @Override
+       public void run() {
+         setCursor(Cursor.getPredefinedCursor(Cursor.WAIT_CURSOR));
 
-            LocalSettings.setProperty(LocalSettings.OFFICE_HOST, labeledTextField1.getText());
-            LocalSettings.setProperty(LocalSettings.OFFICE_PORT, jCheckBox3.isSelected() ? labeledTextField2.getText() : "0");
-            LocalSettings.setProperty(LocalSettings.OFFICE_REMOTE, Boolean.toString(jCheckBox3.isSelected()));
-            LocalSettings.setProperty(LocalSettings.OFFICE_USE, "true");
-            LocalSettings.setProperty(LocalSettings.OFFICE_LOCALSERVER, "false");
-            LocalSettings.setProperty(LocalSettings.OFFICE_HOME, labeledTextChooser2.get_Text(false));
-            checkOS();
-            LocalSettings.save();
-            mpv5.YabsViewProxy.instance().setWaiting(true);
-            try {
-               NoaConnection.killConnection();
-               NoaConnection.getConnection().getDesktopService().getFramesCount();
-               Popup.notice(Messages.OO_DONE_LOADING);
-            } catch (Exception e) {
-               Popup.notice(Messages.ERROR_OCCURED);
+         LocalSettings.setProperty(LocalSettings.OFFICE_HOST, labeledTextField1.getText());
+         LocalSettings.setProperty(LocalSettings.OFFICE_PORT, jCheckBox3.isSelected() ? labeledTextField2.getText() : "0");
+         LocalSettings.setProperty(LocalSettings.OFFICE_REMOTE, Boolean.toString(jCheckBox3.isSelected()));
+         LocalSettings.setProperty(LocalSettings.OFFICE_USE, "true");
+         LocalSettings.setProperty(LocalSettings.OFFICE_LOCALSERVER, "false");
+         LocalSettings.setProperty(LocalSettings.OFFICE_HOME, labeledTextChooser2.get_Text(false));
+         checkOS();
+         LocalSettings.save();
+         mpv5.YabsViewProxy.instance().setWaiting(true);
+         try {
+           NoaConnection.killConnection();
+           NoaConnection.getConnection().getDesktopService().getFramesCount();
+           Popup.notice(Messages.OO_DONE_LOADING);
+         } catch (Exception e) {
+           Popup.notice(Messages.ERROR_OCCURED);
 
-
-            } finally {
-               mpv5.YabsViewProxy.instance().setWaiting(false);
-               setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
-            }
+         } finally {
+           mpv5.YabsViewProxy.instance().setWaiting(false);
+           setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
          }
-      };
-      final Thread startServerThread = new Thread(runnable2);
-      startServerThread.start();
+       }
+     };
+     final Thread startServerThread = new Thread(runnable2);
+     startServerThread.start();
    }//GEN-LAST:event_jButton3ActionPerformed
    // Variables declaration - do not modify//GEN-BEGIN:variables
    private javax.swing.JButton jButton3;
@@ -232,88 +231,90 @@ public class wizard_FirstSettings3 extends javax.swing.JPanel implements Wizarda
    private mpv5.ui.beans.LabeledTextField labeledTextField2;
    // End of variables declaration//GEN-END:variables
 
-   public boolean next() {
-      LocalSettings.setProperty(LocalSettings.OFFICE_HOST, labeledTextField1.getText());
-      LocalSettings.setProperty(LocalSettings.OFFICE_PORT, jCheckBox3.isSelected() ? labeledTextField2.getText() : "0");
-      LocalSettings.setProperty(LocalSettings.OFFICE_REMOTE, Boolean.toString(jCheckBox3.isSelected()));
-      LocalSettings.setProperty(LocalSettings.OFFICE_USE, "true");
-      LocalSettings.setProperty(LocalSettings.OFFICE_AUTOSTART, Boolean.toString(!jCheckBox3.isSelected()));
-      LocalSettings.setProperty(LocalSettings.OFFICE_HOME, labeledTextChooser2.get_Text(false));
-      LocalSettings.setProperty(LocalSettings.OFFICE_LOCALSERVER, "false");
-      LocalSettings.save();
-      return true;
+  public boolean next() {
+    LocalSettings.setProperty(LocalSettings.OFFICE_HOST, labeledTextField1.getText());
+    LocalSettings.setProperty(LocalSettings.OFFICE_PORT, jCheckBox3.isSelected() ? labeledTextField2.getText() : "0");
+    LocalSettings.setProperty(LocalSettings.OFFICE_REMOTE, Boolean.toString(jCheckBox3.isSelected()));
+    LocalSettings.setProperty(LocalSettings.OFFICE_USE, "true");
+    LocalSettings.setProperty(LocalSettings.OFFICE_AUTOSTART, Boolean.toString(!jCheckBox3.isSelected()));
+    LocalSettings.setProperty(LocalSettings.OFFICE_HOME, labeledTextChooser2.get_Text(false));
+    LocalSettings.setProperty(LocalSettings.OFFICE_LOCALSERVER, "false");
+    LocalSettings.save();
+    return true;
 
-   }
+  }
 
-   public boolean back() {
-      return true;
-   }
+  public boolean back() {
+    return true;
+  }
 
-   public void load() {
-   }
+  public void load() {
+  }
 
-   private void setModels() {
-      Runnable runnable = new Runnable() {
-         public void run() {
-            try {
-               NoaConnection.definePath();
-               YabsViewProxy.instance().setWaiting(true);
-               IApplicationAssistant applicationAssistant = new ApplicationAssistant();
-               ILazyApplicationInfo appInfo = applicationAssistant.getLatestLocalLibreOfficeApplication();
-               if (appInfo == null) {
-                  appInfo = applicationAssistant.getLatestLocalOpenOfficeOrgApplication();
-               }
-               labeledTextChooser2.setText(appInfo.getHome());
-               YabsViewProxy.instance().setWaiting(false);
-            } catch (OfficeApplicationException ex) {
-               Log.Debug(ex);
-            }
-         }
-      };
-      SwingUtilities.invokeLater(runnable);
-   }
-
-   private void setSettings() {
-      File f = new File(labeledTextChooser2.get_Text(false));
-      if (!jCheckBox3.isSelected() && !f.isDirectory()) {
-         try {
-            labeledTextChooser2.setText(f.getParentFile().getCanonicalPath());
-         } catch (Exception ex) {
-            Log.Debug(this, ex.getMessage());
-            labeledTextChooser2.setText("");
-         }
+  private void setModels() {
+    Runnable runnable = new Runnable() {
+      public void run() {
+        try {
+          NoaConnection.definePath();
+          YabsViewProxy.instance().setWaiting(true);
+          IApplicationAssistant applicationAssistant = new ApplicationAssistant();
+          ILazyApplicationInfo appInfo = applicationAssistant.getLatestLocalLibreOfficeApplication();
+          if (appInfo == null) {
+            appInfo = applicationAssistant.getLatestLocalOpenOfficeOrgApplication();
+          }
+          if (appInfo != null) {
+            labeledTextChooser2.setText(appInfo.getHome());
+          }
+          YabsViewProxy.instance().setWaiting(false);
+        } catch (OfficeApplicationException ex) {
+          Log.Debug(ex);
+        }
       }
+    };
+    SwingUtilities.invokeLater(runnable);
+  }
 
-      LocalSettings.setProperty(LocalSettings.OFFICE_HOME, labeledTextChooser2.get_Text(false));
-      LocalSettings.setProperty(LocalSettings.OFFICE_LOCALSERVER, "false");
-      LocalSettings.setProperty(LocalSettings.OFFICE_USE, "true");
-      LocalSettings.setProperty(LocalSettings.OFFICE_REMOTE, Boolean.toString(jCheckBox3.isSelected()));
-      LocalSettings.setProperty(LocalSettings.OFFICE_HOST, labeledTextField1.getText());
-      LocalSettings.setProperty(LocalSettings.OFFICE_PORT, labeledTextField2.getText());
-      LocalSettings.setProperty(LocalSettings.OFFICE_AUTOSTART, "true");
-      checkOS();
-
-      LocalSettings.apply();
-   }
-
-   private void checkOS() {
-      if (Main.osIsMacOsX) {
-         LocalSettings.setProperty(LocalSettings.OFFICE_BINARY_FOLDER, "MacOS");
-      } else if (Main.osIsWindows) {
-         LocalSettings.setProperty(LocalSettings.OFFICE_BINARY_FOLDER, "program");
-      } else if (Main.osIsLinux) {
-         LocalSettings.setProperty(LocalSettings.OFFICE_BINARY_FOLDER, "program");
-      }
-   }
-
-   public void setValues(PropertyStore values) {
+  private void setSettings() {
+    File f = new File(labeledTextChooser2.get_Text(false));
+    if (!jCheckBox3.isSelected() && !f.isDirectory()) {
       try {
-         labeledTextChooser2.set_Text(LocalSettings.getProperty(LocalSettings.OFFICE_HOME));
-         jCheckBox3.setSelected(LocalSettings.getBooleanProperty(LocalSettings.OFFICE_REMOTE));
-         labeledTextField1.setText(LocalSettings.getProperty(LocalSettings.OFFICE_HOST));
-         labeledTextField2.setText(LocalSettings.getProperty(LocalSettings.OFFICE_PORT));
-      } catch (Exception e) {
-         Log.Debug(this, e);
+        labeledTextChooser2.setText(f.getParentFile().getCanonicalPath());
+      } catch (Exception ex) {
+        Log.Debug(this, ex.getMessage());
+        labeledTextChooser2.setText("");
       }
-   }
+    }
+
+    LocalSettings.setProperty(LocalSettings.OFFICE_HOME, labeledTextChooser2.get_Text(false));
+    LocalSettings.setProperty(LocalSettings.OFFICE_LOCALSERVER, "false");
+    LocalSettings.setProperty(LocalSettings.OFFICE_USE, "true");
+    LocalSettings.setProperty(LocalSettings.OFFICE_REMOTE, Boolean.toString(jCheckBox3.isSelected()));
+    LocalSettings.setProperty(LocalSettings.OFFICE_HOST, labeledTextField1.getText());
+    LocalSettings.setProperty(LocalSettings.OFFICE_PORT, labeledTextField2.getText());
+    LocalSettings.setProperty(LocalSettings.OFFICE_AUTOSTART, "true");
+    checkOS();
+
+    LocalSettings.apply();
+  }
+
+  private void checkOS() {
+    if (Main.osIsMacOsX) {
+      LocalSettings.setProperty(LocalSettings.OFFICE_BINARY_FOLDER, "MacOS");
+    } else if (Main.osIsWindows) {
+      LocalSettings.setProperty(LocalSettings.OFFICE_BINARY_FOLDER, "program");
+    } else if (Main.osIsLinux) {
+      LocalSettings.setProperty(LocalSettings.OFFICE_BINARY_FOLDER, "program");
+    }
+  }
+
+  public void setValues(PropertyStore values) {
+    try {
+      labeledTextChooser2.set_Text(LocalSettings.getProperty(LocalSettings.OFFICE_HOME));
+      jCheckBox3.setSelected(LocalSettings.getBooleanProperty(LocalSettings.OFFICE_REMOTE));
+      labeledTextField1.setText(LocalSettings.getProperty(LocalSettings.OFFICE_HOST));
+      labeledTextField2.setText(LocalSettings.getProperty(LocalSettings.OFFICE_PORT));
+    } catch (Exception e) {
+      Log.Debug(this, e);
+    }
+  }
 }

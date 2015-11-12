@@ -1474,6 +1474,8 @@ public class ItemPanel2 extends javax.swing.JPanel implements DataPanel, MPCBSel
             //Nothing to show
         } catch (NodataFoundException e) {
             //Nothing to show
+        }catch (NullPointerException e) {
+            //Nothing to show
         }
     }//GEN-LAST:event_jButton3ActionPerformed
 

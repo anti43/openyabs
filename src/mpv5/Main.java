@@ -339,9 +339,8 @@ public class Main implements Runnable {
             if (!HEADLESS) {
                try {
                   @SuppressWarnings("unchecked")
-                  FrameView view = (FrameView) VIEW_CLASS.getDeclaredConstructor(SingleFrameApplication.class).newInstance(getApplication());
-
-
+                  FrameView view = new FrameView(getApplication());// VIEW_CLASS.getDeclaredConstructor(SingleFrameApplication.class).newInstance(getApplication());
+                  view.setFrame(VIEW_CLASS.getDeclaredConstructor(SingleFrameApplication.class).newInstance(getApplication()));
                   getApplication().setMainView(view);
                   getApplication().show(view);
 
@@ -350,7 +349,7 @@ public class Main implements Runnable {
                   Log.Debug(ex);
                   System.exit(1);
                }
-               YabsViewProxy.instance().register((YabsView) getApplication().getMainView());
+               YabsViewProxy.instance().register((YabsView) getApplication().getMainView().getFrame());
             }
             go(false);
 
@@ -793,7 +792,7 @@ public class Main implements Runnable {
                try {
                   if (getApplication().isReady() && getApplication().getMainView().getFrame() != null && (getApplication().getMainView()).getFrame().isShowing()) {
                      SwingUtilities.updateComponentTreeUI((getApplication().getMainView()).getFrame());
-                     ((YabsView) getApplication().getMainView()).getIdentifierFrame().validate();
+                     ((YabsView) getApplication().getMainView().getFrame()).getIdentifierFrame().validate();
                   }
                } catch (Exception e) {
                   Log.Debug(Main.class, e.getMessage());
