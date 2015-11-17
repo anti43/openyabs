@@ -93,7 +93,7 @@ public class ControlPanel_Taxes extends javax.swing.JPanel implements ControlApp
         setName("Form"); // NOI18N
         setLayout(new java.awt.BorderLayout());
 
-        jPanel6.setBackground(new java.awt.Color(255, 255, 255));
+//$2java.awt.Color(255, 255, 255));
         jPanel6.setName("jPanel6"); // NOI18N
         jPanel6.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.RIGHT));
 

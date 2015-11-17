@@ -72,7 +72,7 @@ public final class ControlPanel_Company extends javax.swing.JPanel implements Co
         jButton1 = new javax.swing.JButton();
         jButton3 = new javax.swing.JButton();
 
-        setBackground(new java.awt.Color(255, 255, 255));
+        //\$2java.awt.Color(255, 255, 255));
         setName("Form"); // NOI18N
         setLayout(new java.awt.BorderLayout());
 
@@ -167,7 +167,7 @@ public final class ControlPanel_Company extends javax.swing.JPanel implements Co
         jScrollPane1.setVerticalScrollBarPolicy(javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER);
         jScrollPane1.setName("jScrollPane1"); // NOI18N
 
-        jTextArea1.setBackground(new java.awt.Color(240, 240, 240));
+//$2java.awt.Color(240, 240, 240));
         jTextArea1.setColumns(20);
         jTextArea1.setFont(new java.awt.Font("Dialog", 0, 12)); // NOI18N
         jTextArea1.setLineWrap(true);
@@ -199,11 +199,11 @@ public final class ControlPanel_Company extends javax.swing.JPanel implements Co
 
         add(jPanel2, java.awt.BorderLayout.CENTER);
 
-        jPanel1.setBackground(new java.awt.Color(255, 255, 255));
+//$2java.awt.Color(255, 255, 255));
         jPanel1.setName("jPanel1"); // NOI18N
         jPanel1.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.RIGHT));
 
-        jButton2.setBackground(new java.awt.Color(255, 153, 153));
+//$2java.awt.Color(255, 153, 153));
         jButton2.setText(bundle.getString("ControlPanel_Company.jButton2.text")); // NOI18N
         jButton2.setName("jButton2"); // NOI18N
         jButton2.addActionListener(new java.awt.event.ActionListener() {

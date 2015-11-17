@@ -69,14 +69,14 @@ public class ControlPanel_MailTemplates extends javax.swing.JPanel implements Co
         jScrollPane4 = new javax.swing.JScrollPane();
         templates = new javax.swing.JTable();
 
-        setBackground(new java.awt.Color(255, 255, 255));
+        //\$2java.awt.Color(255, 255, 255));
         java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle();
         setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("ControlPanel_MailTemplates.border.title_1"))); // NOI18N
         setName("Form"); // NOI18N
         setPreferredSize(new java.awt.Dimension(495, 183));
         setLayout(new java.awt.BorderLayout());
 
-        jPanel6.setBackground(new java.awt.Color(255, 255, 255));
+//$2java.awt.Color(255, 255, 255));
         jPanel6.setName("jPanel6"); // NOI18N
         jPanel6.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.RIGHT));
 
@@ -124,7 +124,7 @@ public class ControlPanel_MailTemplates extends javax.swing.JPanel implements Co
         jPanel2.setName("jPanel2"); // NOI18N
         jPanel2.setPreferredSize(new java.awt.Dimension(425, 100));
 
-        jPanel4.setBackground(new java.awt.Color(255, 255, 255));
+//$2java.awt.Color(255, 255, 255));
         jPanel4.setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("ControlPanel_MailTemplates.jPanel4.border.title_1"))); // NOI18N
         jPanel4.setName("jPanel4"); // NOI18N
 

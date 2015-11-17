@@ -192,7 +192,7 @@ public class wizard_DBSettings_manage_1 extends javax.swing.JPanel implements Wi
         jScrollPane1 = new javax.swing.JScrollPane();
         jTextArea1 = new javax.swing.JTextArea();
 
-        setBackground(new java.awt.Color(255, 255, 255));
+        //\$2java.awt.Color(255, 255, 255));
         mpv5.i18n.LanguageManager.getBundle();
         setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("wizard_DBSettings_manage_1.border.title"))); // NOI18N
         setName("Form"); // NOI18N
@@ -408,7 +408,7 @@ public class wizard_DBSettings_manage_1 extends javax.swing.JPanel implements Wi
         jScrollPane1.setVerticalScrollBarPolicy(javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER);
         jScrollPane1.setName("jScrollPane1"); // NOI18N
 
-        jTextArea1.setBackground(new java.awt.Color(236, 233, 216));
+//$2java.awt.Color(236, 233, 216));
         jTextArea1.setColumns(20);
         jTextArea1.setEditable(false);
         jTextArea1.setFont(new java.awt.Font("Tahoma", 0, 12));

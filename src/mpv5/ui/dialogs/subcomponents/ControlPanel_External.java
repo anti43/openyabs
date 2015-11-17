@@ -63,7 +63,7 @@ public class ControlPanel_External extends javax.swing.JPanel implements Control
         jButton2 = new javax.swing.JButton();
         jButton3 = new javax.swing.JButton();
 
-        setBackground(new java.awt.Color(255, 255, 255));
+        //\$2java.awt.Color(255, 255, 255));
         setName("Form"); // NOI18N
         setLayout(new javax.swing.BoxLayout(this, javax.swing.BoxLayout.Y_AXIS));
 
@@ -219,7 +219,7 @@ public class ControlPanel_External extends javax.swing.JPanel implements Control
 
         add(jPanel3);
 
-        jPanel1.setBackground(new java.awt.Color(255, 255, 255));
+//$2java.awt.Color(255, 255, 255));
         jPanel1.setName("jPanel1"); // NOI18N
         jPanel1.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.RIGHT));
 

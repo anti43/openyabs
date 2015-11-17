@@ -92,7 +92,7 @@ public class SubmitForm extends javax.swing.JPanel {
         jScrollPane1.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
         jScrollPane1.setName("jScrollPane1"); // NOI18N
 
-        description.setBackground(new java.awt.Color(238, 238, 238));
+//$2java.awt.Color(238, 238, 238));
         description.setColumns(20);
         description.setEditable(false);
         description.setLineWrap(true);
@@ -139,7 +139,7 @@ public class SubmitForm extends javax.swing.JPanel {
         jScrollPane4.setVerticalScrollBarPolicy(javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER);
         jScrollPane4.setName("jScrollPane4"); // NOI18N
 
-        optional.setBackground(new java.awt.Color(238, 238, 238));
+//$2java.awt.Color(238, 238, 238));
         optional.setColumns(20);
         optional.setEditable(false);
         optional.setLineWrap(true);

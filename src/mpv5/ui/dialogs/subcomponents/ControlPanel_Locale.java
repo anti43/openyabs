@@ -97,7 +97,7 @@ public class ControlPanel_Locale extends javax.swing.JPanel implements ControlAp
         jButton2 = new javax.swing.JButton();
         jButton1 = new javax.swing.JButton();
 
-        setBackground(new java.awt.Color(255, 255, 255));
+        //\$2java.awt.Color(255, 255, 255));
         java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle(); // NOI18N
         setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("ControlPanel_Locale.border.title"))); // NOI18N
         setName("Form"); // NOI18N
@@ -410,7 +410,7 @@ public class ControlPanel_Locale extends javax.swing.JPanel implements ControlAp
 
         add(jPanel2);
 
-        jPanel6.setBackground(new java.awt.Color(255, 255, 255));
+//$2java.awt.Color(255, 255, 255));
         jPanel6.setName("jPanel6"); // NOI18N
         jPanel6.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.RIGHT));
 

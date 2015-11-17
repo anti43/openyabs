@@ -445,7 +445,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
         rightpane.setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("ContactPanel.rightpane.border.title"))); // NOI18N
         rightpane.setName("rightpane"); // NOI18N
 
-        jPanel1.setBackground(new java.awt.Color(204, 204, 204));
+//$2java.awt.Color(204, 204, 204));
         jPanel1.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         jPanel1.setName("jPanel1"); // NOI18N
 
@@ -461,14 +461,14 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
         number.setName("number"); // NOI18N
         number.setPreferredSize(new java.awt.Dimension(300, 23));
 
-        jToolBar2.setBackground(new java.awt.Color(204, 204, 204));
+//$2java.awt.Color(204, 204, 204));
         jToolBar2.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
         jToolBar2.setFloatable(false);
         jToolBar2.setRollover(true);
         jToolBar2.setName("jToolBar2"); // NOI18N
         jToolBar2.setOpaque(false);
 
-        customer.setBackground(new java.awt.Color(204, 204, 204));
+//$2java.awt.Color(204, 204, 204));
         customer.setText(bundle.getString("ContactPanel.customer.text")); // NOI18N
         customer.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
         customer.setMaximumSize(new java.awt.Dimension(150, 22));
@@ -482,7 +482,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
         });
         jToolBar2.add(customer);
 
-        supplier.setBackground(new java.awt.Color(204, 204, 204));
+//$2java.awt.Color(204, 204, 204));
         supplier.setText(bundle.getString("ContactPanel.supplier.text")); // NOI18N
         supplier.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
         supplier.setMaximumSize(new java.awt.Dimension(150, 22));
@@ -496,7 +496,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
         });
         jToolBar2.add(supplier);
 
-        manufacturer.setBackground(new java.awt.Color(204, 204, 204));
+//$2java.awt.Color(204, 204, 204));
         manufacturer.setText(bundle.getString("ContactPanel.manufacturer.text")); // NOI18N
         manufacturer.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
         manufacturer.setMaximumSize(new java.awt.Dimension(150, 22));
@@ -510,7 +510,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
         });
         jToolBar2.add(manufacturer);
 
-        company.setBackground(new java.awt.Color(204, 204, 204));
+//$2java.awt.Color(204, 204, 204));
         company.setText(bundle.getString("ContactPanel.company.text")); // NOI18N
         company.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
         company.setMaximumSize(new java.awt.Dimension(250, 22));
@@ -622,7 +622,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
                         .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
         );
 
-        jPanel9.setBackground(new java.awt.Color(204, 204, 204));
+//$2java.awt.Color(204, 204, 204));
         jPanel9.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         jPanel9.setName("jPanel9"); // NOI18N
 
@@ -639,7 +639,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
         });
         jScrollPane2.setViewportView(dataTable);
 
-        jToolBar3.setBackground(new java.awt.Color(204, 204, 204));
+//$2java.awt.Color(204, 204, 204));
         jToolBar3.setFloatable(false);
         jToolBar3.setRollover(true);
         jToolBar3.setName("jToolBar3"); // NOI18N
@@ -754,7 +754,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
         jToolBar1.setName("jToolBar1"); // NOI18N
         jToolBar1.setPreferredSize(new java.awt.Dimension(824, 28));
 
-        button_offer.setBackground(new java.awt.Color(204, 204, 204));
+//$2java.awt.Color(204, 204, 204));
         button_offer.setText(bundle.getString("ContactPanel.button_offer.text")); // NOI18N
         button_offer.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(153, 153, 153), 1, true));
         button_offer.setFocusable(false);
@@ -772,7 +772,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
         });
         jToolBar1.add(button_offer);
 
-        button_order.setBackground(new java.awt.Color(204, 204, 204));
+//$2java.awt.Color(204, 204, 204));
         button_order.setText(bundle.getString("ContactPanel.button_order.text")); // NOI18N
         button_order.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(153, 153, 153), 1, true));
         button_order.setFocusable(false);
@@ -790,7 +790,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
         });
         jToolBar1.add(button_order);
 
-        button_bill.setBackground(new java.awt.Color(204, 204, 204));
+//$2java.awt.Color(204, 204, 204));
         button_bill.setText(bundle.getString("ContactPanel.button_bill.text")); // NOI18N
         button_bill.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(153, 153, 153), 1, true));
         button_bill.setFocusable(false);
@@ -811,7 +811,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
         jSeparator1.setName("jSeparator1"); // NOI18N
         jToolBar1.add(jSeparator1);
 
-        button_product.setBackground(new java.awt.Color(228, 228, 252));
+//$2java.awt.Color(228, 228, 252));
         button_product.setText(bundle.getString("ContactPanel.button_product.text")); // NOI18N
         button_product.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(153, 153, 153), 1, true));
         button_product.setFocusable(false);
@@ -832,7 +832,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
         jSeparator2.setName("jSeparator2"); // NOI18N
         jToolBar1.add(jSeparator2);
 
-        jButton2.setBackground(new java.awt.Color(238, 238, 255));
+//$2java.awt.Color(238, 238, 255));
         jButton2.setText(bundle.getString("ContactPanel.jButton2.text")); // NOI18N
         jButton2.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(153, 153, 153), 1, true));
         jButton2.setFocusable(false);
@@ -850,7 +850,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
         });
         jToolBar1.add(jButton2);
 
-        jButton3.setBackground(new java.awt.Color(238, 238, 255));
+//$2java.awt.Color(238, 238, 255));
         jButton3.setText(bundle.getString("ContactPanel.jButton3.text")); // NOI18N
         jButton3.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(153, 153, 153), 1, true));
         jButton3.setFocusable(false);
@@ -877,11 +877,11 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
 
         jScrollPane4.setName("jScrollPane4"); // NOI18N
 
-        jTabbedPane1.setBackground(new java.awt.Color(182, 187, 187));
+//$2java.awt.Color(182, 187, 187));
         jTabbedPane1.setName("jTabbedPane1"); // NOI18N
         jTabbedPane1.setPreferredSize(new java.awt.Dimension(888, 150));
 
-        jPanel3.setBackground(new java.awt.Color(204, 204, 204));
+//$2java.awt.Color(204, 204, 204));
         jPanel3.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         jPanel3.setName("jPanel3"); // NOI18N
 
@@ -985,13 +985,13 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
 
         jTabbedPane1.addTab(bundle.getString("ContactPanel.jPanel3.TabConstraints.tabTitle"), jPanel3); // NOI18N
 
-        addresspanel.setBackground(new java.awt.Color(255, 255, 255));
+//$2java.awt.Color(255, 255, 255));
         addresspanel.setTabPlacement(javax.swing.JTabbedPane.RIGHT);
         addresspanel.setAutoscrolls(true);
         addresspanel.setFont(addresspanel.getFont());
         addresspanel.setName("addresspanel"); // NOI18N
 
-        mainaddress.setBackground(new java.awt.Color(204, 204, 204));
+//$2java.awt.Color(204, 204, 204));
         mainaddress.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
         mainaddress.setName("mainaddress"); // NOI18N
 
@@ -1025,14 +1025,14 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
         zip.setName("zip"); // NOI18N
         zip.setPreferredSize(new java.awt.Dimension(120, 24));
 
-        male.setBackground(new java.awt.Color(204, 204, 204));
+//$2java.awt.Color(204, 204, 204));
         buttonGroup1.add(male);
         male.setFont(male.getFont().deriveFont(male.getFont().getStyle() & ~java.awt.Font.BOLD));
         male.setSelected(true);
         male.setText(bundle.getString("ContactPanel.male.text")); // NOI18N
         male.setName("male"); // NOI18N
 
-        female.setBackground(new java.awt.Color(204, 204, 204));
+//$2java.awt.Color(204, 204, 204));
         buttonGroup1.add(female);
         female.setFont(female.getFont().deriveFont(female.getFont().getStyle() & ~java.awt.Font.BOLD));
         female.setText(bundle.getString("ContactPanel.female.text")); // NOI18N
@@ -1136,7 +1136,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
 
         jTabbedPane1.addTab(bundle.getString("ContactPanel.addresspanel.TabConstraints.tabTitle"), addresspanel); // NOI18N
 
-        jPanel5.setBackground(new java.awt.Color(204, 204, 204));
+//$2java.awt.Color(204, 204, 204));
         jPanel5.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         jPanel5.setName("jPanel5"); // NOI18N
 
@@ -1203,7 +1203,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
 
         jTabbedPane1.addTab(bundle.getString("ContactPanel.jPanel5.TabConstraints.tabTitle"), jPanel5); // NOI18N
 
-        jPanel4.setBackground(new java.awt.Color(204, 204, 204));
+//$2java.awt.Color(204, 204, 204));
         jPanel4.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         jPanel4.setName("jPanel4"); // NOI18N
 
@@ -1211,7 +1211,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
         jScrollPane1.setVerticalScrollBarPolicy(javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
         jScrollPane1.setName("jScrollPane1"); // NOI18N
 
-        notes.setBackground(new java.awt.Color(254, 254, 254));
+//$2java.awt.Color(254, 254, 254));
         notes.setText(bundle.getString("ContactPanel.notes.text")); // NOI18N
         notes.setName("notes"); // NOI18N
         jScrollPane1.setViewportView(notes);

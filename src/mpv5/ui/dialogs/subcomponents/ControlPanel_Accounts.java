@@ -141,7 +141,7 @@ public class ControlPanel_Accounts extends javax.swing.JPanel implements Control
         setName("Form"); // NOI18N
         setLayout(new java.awt.BorderLayout());
 
-        jPanel1.setBackground(new java.awt.Color(227, 219, 202));
+//$2java.awt.Color(227, 219, 202));
         jPanel1.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         jPanel1.setName("jPanel1"); // NOI18N
 
@@ -199,7 +199,7 @@ public class ControlPanel_Accounts extends javax.swing.JPanel implements Control
         jScrollPane3.setVerticalScrollBarPolicy(javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER);
         jScrollPane3.setName("jScrollPane3"); // NOI18N
 
-        jTextArea2.setBackground(new java.awt.Color(238, 238, 238));
+//$2java.awt.Color(238, 238, 238));
         jTextArea2.setColumns(20);
         jTextArea2.setEditable(false);
         jTextArea2.setFont(new java.awt.Font("Monospaced", 0, 11));
@@ -309,7 +309,7 @@ public class ControlPanel_Accounts extends javax.swing.JPanel implements Control
 
         add(rightpane, java.awt.BorderLayout.EAST);
 
-        jPanel6.setBackground(new java.awt.Color(255, 255, 255));
+//$2java.awt.Color(255, 255, 255));
         jPanel6.setName("jPanel6"); // NOI18N
         jPanel6.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.RIGHT));
 

@@ -177,7 +177,7 @@ public class ControlPanel_ValueProps extends javax.swing.JPanel implements Contr
 
       add(jScrollPane6);
 
-      jPanel1.setBackground(new java.awt.Color(255, 255, 255));
+//$2java.awt.Color(255, 255, 255));
       jPanel1.setName("jPanel1"); // NOI18N
       jPanel1.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT));
 

@@ -210,7 +210,7 @@ public class wizard_DBSettings_1 extends javax.swing.JPanel implements Wizardabl
       labeledTextField2 = new mpv5.ui.beans.LabeledTextField();
       jLabel3 = new javax.swing.JLabel();
 
-      setBackground(new java.awt.Color(255, 255, 255));
+      //\$2java.awt.Color(255, 255, 255));
       java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle(); // NOI18N
       setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("wizard_DBSettings_1.border.title"))); // NOI18N
       setName("Form"); // NOI18N

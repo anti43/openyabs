@@ -631,9 +631,9 @@ public final class ActivityConfirmationPanel extends javax.swing.JPanel implemen
             jLabel5.setVisible(isbilled_);
             jButton4.setEnabled(!isbilled_);
             if (isbilled_) {
-                this.itemtable.setBackground(Color.lightGray);
+//$2lightGray);
             } else {
-                this.itemtable.setBackground(Color.white);
+//$2white);
             }
             jLabel2.setText(ct.__getCompany());
             String name_txt;
@@ -799,7 +799,7 @@ public final class ActivityConfirmationPanel extends javax.swing.JPanel implemen
         itemtable.setEnabled(!isbilled_);
         jLabel5.setVisible(isbilled_);
         jButton4.setEnabled(!isbilled_);
-        itemtable.setBackground(Color.lightGray);
+//$2lightGray);
         dataOwner.setIsBilled(true);
         dataOwner.save();
         ArrayList<ActivityList> data;

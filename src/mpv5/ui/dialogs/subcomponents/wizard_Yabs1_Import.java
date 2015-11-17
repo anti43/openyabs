@@ -58,11 +58,11 @@ public class wizard_Yabs1_Import extends javax.swing.JPanel implements Wizardabl
         dbpassword = new mpv5.ui.beans.LabeledTextField();
         dbprefix = new mpv5.ui.beans.LabeledTextField();
 
-        setBackground(new java.awt.Color(255, 255, 255));
+        //\$2java.awt.Color(255, 255, 255));
         setName("Form"); // NOI18N
         setLayout(new java.awt.BorderLayout());
 
-        jPanel1.setBackground(new java.awt.Color(255, 255, 255));
+//$2java.awt.Color(255, 255, 255));
          java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle(); // NOI18N
         jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("wizard_Yabs1_Import.jPanel1.border.title"))); // NOI18N
         jPanel1.setName("jPanel1"); // NOI18N
@@ -74,37 +74,37 @@ public class wizard_Yabs1_Import extends javax.swing.JPanel implements Wizardabl
         jLabel1.setText(bundle.getString("wizard_Yabs1_Import.jLabel1.text")); // NOI18N
         jLabel1.setName("jLabel1"); // NOI18N
 
-        contacts.setBackground(new java.awt.Color(255, 255, 255));
+//$2java.awt.Color(255, 255, 255));
         contacts.setSelected(true);
         contacts.setText(bundle.getString("wizard_Yabs1_Import.contacts.text")); // NOI18N
         contacts.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         contacts.setName("contacts"); // NOI18N
 
-        products.setBackground(new java.awt.Color(255, 255, 255));
+//$2java.awt.Color(255, 255, 255));
         products.setSelected(true);
         products.setText(bundle.getString("wizard_Yabs1_Import.products.text")); // NOI18N
         products.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         products.setName("products"); // NOI18N
 
-        accounts.setBackground(new java.awt.Color(255, 255, 255));
+//$2java.awt.Color(255, 255, 255));
         accounts.setSelected(true);
         accounts.setText(bundle.getString("wizard_Yabs1_Import.accounts.text")); // NOI18N
         accounts.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         accounts.setName("accounts"); // NOI18N
 
-        groups.setBackground(new java.awt.Color(255, 255, 255));
+//$2java.awt.Color(255, 255, 255));
         groups.setSelected(true);
         groups.setText(bundle.getString("wizard_Yabs1_Import.groups.text")); // NOI18N
         groups.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         groups.setName("groups"); // NOI18N
 
-        adresses.setBackground(new java.awt.Color(255, 255, 255));
+//$2java.awt.Color(255, 255, 255));
         adresses.setSelected(true);
         adresses.setText(bundle.getString("wizard_Yabs1_Import.adresses.text")); // NOI18N
         adresses.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         adresses.setName("adresses"); // NOI18N
 
-        users.setBackground(new java.awt.Color(255, 255, 255));
+//$2java.awt.Color(255, 255, 255));
         users.setSelected(true);
         users.setText(bundle.getString("wizard_Yabs1_Import.users.text")); // NOI18N
         users.setBorder(javax.swing.BorderFactory.createEtchedBorder());

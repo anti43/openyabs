@@ -275,7 +275,7 @@ public class RemindPanel extends javax.swing.JPanel {
         });
         jToolBar1.add(jButton8);
 
-        jPanel1.setBackground(new java.awt.Color(255, 255, 255));
+//$2java.awt.Color(255, 255, 255));
         jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("RemindPanel.jPanel1.border.title"))); // NOI18N
         jPanel1.setName("jPanel1"); // NOI18N
 

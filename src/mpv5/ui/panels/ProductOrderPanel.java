@@ -429,7 +429,7 @@ public class ProductOrderPanel extends javax.swing.JPanel implements DataPanel, 
       rightpane.setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("ProductOrderPanel.rightpane.border.title"))); // NOI18N
       rightpane.setName("rightpane"); // NOI18N
 
-      jPanel1.setBackground(new java.awt.Color(204, 204, 204));
+//$2java.awt.Color(204, 204, 204));
       jPanel1.setBorder(javax.swing.BorderFactory.createEtchedBorder());
       jPanel1.setName("jPanel1"); // NOI18N
       jPanel1.setPreferredSize(new java.awt.Dimension(843, 100));
@@ -451,7 +451,7 @@ public class ProductOrderPanel extends javax.swing.JPanel implements DataPanel, 
       staus_icon.setText(bundle.getString("ProductOrderPanel.staus_icon.text")); // NOI18N
       staus_icon.setName("staus_icon"); // NOI18N
 
-      type.setBackground(new java.awt.Color(255, 255, 255));
+//$2java.awt.Color(255, 255, 255));
       type.setFont(type.getFont().deriveFont(type.getFont().getStyle() | java.awt.Font.BOLD, type.getFont().getSize()+4));
       type.setForeground(new java.awt.Color(26, 34, 70));
       type.setText(bundle.getString("ProductOrderPanel.type.text")); // NOI18N
@@ -506,7 +506,7 @@ public class ProductOrderPanel extends javax.swing.JPanel implements DataPanel, 
       jToolBar1.setRollover(true);
       jToolBar1.setName("jToolBar1"); // NOI18N
 
-      toorder.setBackground(new java.awt.Color(255, 255, 255));
+//$2java.awt.Color(255, 255, 255));
       toorder.setText(bundle.getString("ProductOrderPanel.toorder.text")); // NOI18N
       toorder.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(153, 153, 153), 1, true));
       toorder.setEnabled(false);
@@ -524,7 +524,7 @@ public class ProductOrderPanel extends javax.swing.JPanel implements DataPanel, 
       });
       jToolBar1.add(toorder);
 
-      tooffer.setBackground(new java.awt.Color(255, 255, 255));
+//$2java.awt.Color(255, 255, 255));
       tooffer.setText(bundle.getString("ProductOrderPanel.tooffer.text")); // NOI18N
       tooffer.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(153, 153, 153), 1, true));
       tooffer.setEnabled(false);
@@ -542,7 +542,7 @@ public class ProductOrderPanel extends javax.swing.JPanel implements DataPanel, 
       });
       jToolBar1.add(tooffer);
 
-      toinvoice.setBackground(new java.awt.Color(255, 255, 255));
+//$2java.awt.Color(255, 255, 255));
       toinvoice.setText(bundle.getString("ProductOrderPanel.toinvoice.text")); // NOI18N
       toinvoice.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(153, 153, 153), 1, true));
       toinvoice.setEnabled(false);
@@ -574,7 +574,7 @@ public class ProductOrderPanel extends javax.swing.JPanel implements DataPanel, 
       jSeparator7.setName("jSeparator7"); // NOI18N
       jToolBar1.add(jSeparator7);
 
-      button_preview.setBackground(new java.awt.Color(255, 255, 255));
+//$2java.awt.Color(255, 255, 255));
       button_preview.setText(bundle.getString("ProductOrderPanel.button_preview.text")); // NOI18N
       button_preview.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(153, 153, 153), 1, true));
       button_preview.setEnabled(false);
@@ -592,7 +592,7 @@ public class ProductOrderPanel extends javax.swing.JPanel implements DataPanel, 
       });
       jToolBar1.add(button_preview);
 
-      jPanel2.setBackground(new java.awt.Color(255, 255, 255));
+//$2java.awt.Color(255, 255, 255));
       jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("ProductOrderPanel.jPanel2.border.title"))); // NOI18N
       jPanel2.setName("jPanel2"); // NOI18N
 
@@ -659,7 +659,7 @@ public class ProductOrderPanel extends javax.swing.JPanel implements DataPanel, 
                .addComponent(contactid)))
       );
 
-      jPanel5.setBackground(new java.awt.Color(255, 255, 255));
+//$2java.awt.Color(255, 255, 255));
       jPanel5.setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("ProductOrderPanel.jPanel5.border.title"))); // NOI18N
       jPanel5.setName("jPanel5"); // NOI18N
 
@@ -702,7 +702,7 @@ public class ProductOrderPanel extends javax.swing.JPanel implements DataPanel, 
       jPanel6.setPreferredSize(new java.awt.Dimension(869, 250));
       jPanel6.setLayout(new java.awt.BorderLayout());
 
-      jToolBar2.setBackground(new java.awt.Color(255, 255, 255));
+//$2java.awt.Color(255, 255, 255));
       jToolBar2.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(0, 102, 102), 1, true));
       jToolBar2.setFloatable(false);
       jToolBar2.setRollover(true);
@@ -772,7 +772,7 @@ public class ProductOrderPanel extends javax.swing.JPanel implements DataPanel, 
 
       jPanel6.add(jToolBar2, java.awt.BorderLayout.PAGE_END);
 
-      jPanel4.setBackground(new java.awt.Color(204, 204, 204));
+//$2java.awt.Color(204, 204, 204));
       jPanel4.setBorder(javax.swing.BorderFactory.createEtchedBorder());
       jPanel4.setName("jPanel4"); // NOI18N
 
@@ -886,7 +886,7 @@ public class ProductOrderPanel extends javax.swing.JPanel implements DataPanel, 
       jScrollPane1.setBorder(null);
       jScrollPane1.setName("jScrollPane1"); // NOI18N
 
-      notes.setBackground(new java.awt.Color(254, 254, 254));
+//$2java.awt.Color(254, 254, 254));
       notes.setBorder(javax.swing.BorderFactory.createEtchedBorder());
       notes.setText(bundle.getString("ProductOrderPanel.notes.text")); // NOI18N
       notes.setToolTipText(bundle.getString("ProductOrderPanel.notes.toolTipText")); // NOI18N

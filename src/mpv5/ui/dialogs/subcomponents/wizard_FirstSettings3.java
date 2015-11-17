@@ -57,11 +57,11 @@ public class wizard_FirstSettings3 extends javax.swing.JPanel implements Wizarda
       jLabel3 = new javax.swing.JLabel();
       jButton3 = new javax.swing.JButton();
 
-      setBackground(new java.awt.Color(255, 255, 255));
+      //\$2java.awt.Color(255, 255, 255));
       setName("Form"); // NOI18N
       setLayout(new java.awt.BorderLayout());
 
-      jPanel1.setBackground(new java.awt.Color(255, 255, 255));
+//$2java.awt.Color(255, 255, 255));
       java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle();// NOI18N
       jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("wizard_FirstSettings3.jPanel1.border.title"))); // NOI18N
       jPanel1.setName("jPanel1"); // NOI18N

@@ -90,7 +90,7 @@ public class About extends javax.swing.JFrame {
         setTitle(bundle.getString("About.title")); // NOI18N
         setResizable(false);
 
-        jPanel1.setBackground(javax.swing.UIManager.getDefaults().getColor("OptionPane.errorDialog.border.background"));
+//$2"OptionPane.errorDialog.border.background"));
 
         info.setFont(new java.awt.Font("DejaVu Sans", 0, 11)); // NOI18N
         info.setText(bundle.getString("About.info.text")); // NOI18N

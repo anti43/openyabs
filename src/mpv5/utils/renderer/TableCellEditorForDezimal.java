@@ -95,15 +95,15 @@ public class TableCellEditorForDezimal extends LazyCellEditor {
                     if (_number != null) {
                         double _parsed = _number.doubleValue();
                         BigDecimal d = BigDecimal.valueOf(_parsed);
-//                        tf.setBackground(Color.white);
+//$2white);
                         return d;
                     } else {
-//                        tf.setBackground(Color.white);
+//$2white);
                         return BigDecimal.ZERO;
                     }
                 } catch (ParseException e) {
                     Log.Debug(this, e);
-//                    tf.setBackground(Color.red);
+//$2red);
                     return BigDecimal.ZERO;
                 }
             }

@@ -109,7 +109,7 @@ public class ProductPanelContactSub extends javax.swing.JPanel {
 
         setName("Form"); // NOI18N
 
-        jPanel6.setBackground(new java.awt.Color(230, 223, 223));
+//$2java.awt.Color(230, 223, 223));
         jPanel6.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(204, 204, 204), 1, true));
         jPanel6.setForeground(new java.awt.Color(204, 204, 204));
         jPanel6.setName("jPanel6"); // NOI18N

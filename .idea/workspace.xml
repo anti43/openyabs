@@ -1,0 +1,352 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="163a546a-59c0-4262-b5ac-49d19ebd2515" name="Default" comment="">
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/mpv5/ui/dialogs/About.java" afterPath="$PROJECT_DIR$/src/mpv5/ui/dialogs/About.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/mpv5/ui/panels/ActivityConfirmationPanel.java" afterPath="$PROJECT_DIR$/src/mpv5/ui/panels/ActivityConfirmationPanel.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/mpv5/ui/panels/AddressPanel.java" afterPath="$PROJECT_DIR$/src/mpv5/ui/panels/AddressPanel.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/mpv5/ui/misc/Calc.java" afterPath="$PROJECT_DIR$/src/mpv5/ui/misc/Calc.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/mpv5/ui/panels/ContactPanel.java" afterPath="$PROJECT_DIR$/src/mpv5/ui/panels/ContactPanel.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/mpv5/ui/panels/ContactsList.form" afterPath="$PROJECT_DIR$/src/mpv5/ui/panels/ContactsList.form" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/mpv5/ui/panels/ContactsList.java" afterPath="$PROJECT_DIR$/src/mpv5/ui/panels/ContactsList.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/mpv5/ui/dialogs/subcomponents/ControlPanel_Accounts.java" afterPath="$PROJECT_DIR$/src/mpv5/ui/dialogs/subcomponents/ControlPanel_Accounts.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/mpv5/ui/dialogs/subcomponents/ControlPanel_AdvancedGlobalProperties.java" afterPath="$PROJECT_DIR$/src/mpv5/ui/dialogs/subcomponents/ControlPanel_AdvancedGlobalProperties.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/mpv5/ui/dialogs/subcomponents/ControlPanel_AdvancedLocalProperties.java" afterPath="$PROJECT_DIR$/src/mpv5/ui/dialogs/subcomponents/ControlPanel_AdvancedLocalProperties.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/mpv5/ui/dialogs/subcomponents/ControlPanel_AdvancedUserProperties.java" afterPath="$PROJECT_DIR$/src/mpv5/ui/dialogs/subcomponents/ControlPanel_AdvancedUserProperties.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/mpv5/ui/dialogs/subcomponents/ControlPanel_Company.java" afterPath="$PROJECT_DIR$/src/mpv5/ui/dialogs/subcomponents/ControlPanel_Company.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/mpv5/ui/dialogs/subcomponents/ControlPanel_External.java" afterPath="$PROJECT_DIR$/src/mpv5/ui/dialogs/subcomponents/ControlPanel_External.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/mpv5/ui/dialogs/subcomponents/ControlPanel_Fonts.java" afterPath="$PROJECT_DIR$/src/mpv5/ui/dialogs/subcomponents/ControlPanel_Fonts.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/mpv5/ui/dialogs/subcomponents/ControlPanel_Formats.java" afterPath="$PROJECT_DIR$/src/mpv5/ui/dialogs/subcomponents/ControlPanel_Formats.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/mpv5/ui/dialogs/subcomponents/ControlPanel_Groups.java" afterPath="$PROJECT_DIR$/src/mpv5/ui/dialogs/subcomponents/ControlPanel_Groups.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/mpv5/ui/dialogs/subcomponents/ControlPanel_Konsole.java" afterPath="$PROJECT_DIR$/src/mpv5/ui/dialogs/subcomponents/ControlPanel_Konsole.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/mpv5/ui/dialogs/subcomponents/ControlPanel_Local.java" afterPath="$PROJECT_DIR$/src/mpv5/ui/dialogs/subcomponents/ControlPanel_Local.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/mpv5/ui/dialogs/subcomponents/ControlPanel_Locale.java" afterPath="$PROJECT_DIR$/src/mpv5/ui/dialogs/subcomponents/ControlPanel_Locale.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/mpv5/ui/dialogs/subcomponents/ControlPanel_Localization.java" afterPath="$PROJECT_DIR$/src/mpv5/ui/dialogs/subcomponents/ControlPanel_Localization.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/mpv5/ui/dialogs/subcomponents/ControlPanel_MailTemplates.java" afterPath="$PROJECT_DIR$/src/mpv5/ui/dialogs/subcomponents/ControlPanel_MailTemplates.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/mpv5/ui/dialogs/subcomponents/ControlPanel_Massprint.java" afterPath="$PROJECT_DIR$/src/mpv5/ui/dialogs/subcomponents/ControlPanel_Massprint.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/mpv5/ui/dialogs/subcomponents/ControlPanel_Plugins.java" afterPath="$PROJECT_DIR$/src/mpv5/ui/dialogs/subcomponents/ControlPanel_Plugins.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/mpv5/ui/dialogs/subcomponents/ControlPanel_ProductGroups.java" afterPath="$PROJECT_DIR$/src/mpv5/ui/dialogs/subcomponents/ControlPanel_ProductGroups.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/mpv5/ui/dialogs/subcomponents/ControlPanel_Reminder.java" afterPath="$PROJECT_DIR$/src/mpv5/ui/dialogs/subcomponents/ControlPanel_Reminder.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/mpv5/ui/dialogs/subcomponents/ControlPanel_Schedule.java" afterPath="$PROJECT_DIR$/src/mpv5/ui/dialogs/subcomponents/ControlPanel_Schedule.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/mpv5/ui/dialogs/subcomponents/ControlPanel_Taxes.java" afterPath="$PROJECT_DIR$/src/mpv5/ui/dialogs/subcomponents/ControlPanel_Taxes.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/mpv5/ui/dialogs/subcomponents/ControlPanel_Templates.java" afterPath="$PROJECT_DIR$/src/mpv5/ui/dialogs/subcomponents/ControlPanel_Templates.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/mpv5/ui/dialogs/subcomponents/ControlPanel_Userproperties.java" afterPath="$PROJECT_DIR$/src/mpv5/ui/dialogs/subcomponents/ControlPanel_Userproperties.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/mpv5/ui/dialogs/subcomponents/ControlPanel_Users.java" afterPath="$PROJECT_DIR$/src/mpv5/ui/dialogs/subcomponents/ControlPanel_Users.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/mpv5/ui/dialogs/subcomponents/ControlPanel_ValueProps.java" afterPath="$PROJECT_DIR$/src/mpv5/ui/dialogs/subcomponents/ControlPanel_ValueProps.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/mpv5/ui/dialogs/subcomponents/ControlPanel_WebShopManager.java" afterPath="$PROJECT_DIR$/src/mpv5/ui/dialogs/subcomponents/ControlPanel_WebShopManager.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/mpv5/ui/panels/ConversationPanel.java" afterPath="$PROJECT_DIR$/src/mpv5/ui/panels/ConversationPanel.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/mpv5/ui/beans/ExpandablePanel.java" afterPath="$PROJECT_DIR$/src/mpv5/ui/beans/ExpandablePanel.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/mpv5/ui/panels/ExpensePanel.java" afterPath="$PROJECT_DIR$/src/mpv5/ui/panels/ExpensePanel.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/mpv5/ui/panels/ItemPanel.java" afterPath="$PROJECT_DIR$/src/mpv5/ui/panels/ItemPanel.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/mpv5/ui/panels/ItemPanel2.java" afterPath="$PROJECT_DIR$/src/mpv5/ui/panels/ItemPanel2.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/mpv5/ui/panels/JournalPanel.java" afterPath="$PROJECT_DIR$/src/mpv5/ui/panels/JournalPanel.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/mpv5/ui/beans/LabeledTextField.java" afterPath="$PROJECT_DIR$/src/mpv5/ui/beans/LabeledTextField.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/mpv5/ui/frames/MPCalculator.java" afterPath="$PROJECT_DIR$/src/mpv5/ui/frames/MPCalculator.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/mpv5/ui/panels/MPControlPanel.java" afterPath="$PROJECT_DIR$/src/mpv5/ui/panels/MPControlPanel.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/mpv5/ui/frames/MPView.form" afterPath="$PROJECT_DIR$/src/mpv5/ui/frames/MPView.form" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/mpv5/ui/frames/MPView.java" afterPath="$PROJECT_DIR$/src/mpv5/ui/frames/MPView.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/mpv5/Main.java" afterPath="$PROJECT_DIR$/src/mpv5/Main.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/mpv5/ui/dialogs/MiniCalendarDialog.java" afterPath="$PROJECT_DIR$/src/mpv5/ui/dialogs/MiniCalendarDialog.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/mpv5/ui/dialogs/MiniCalendarFrame.java" afterPath="$PROJECT_DIR$/src/mpv5/ui/dialogs/MiniCalendarFrame.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/mpv5/resources/languages/Panels.properties" afterPath="$PROJECT_DIR$/src/mpv5/resources/languages/Panels.properties" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/mpv5/ui/panels/ProductListsPanel.java" afterPath="$PROJECT_DIR$/src/mpv5/ui/panels/ProductListsPanel.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/mpv5/ui/panels/ProductOrderPanel.java" afterPath="$PROJECT_DIR$/src/mpv5/ui/panels/ProductOrderPanel.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/mpv5/ui/panels/ProductPanel.java" afterPath="$PROJECT_DIR$/src/mpv5/ui/panels/ProductPanel.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/mpv5/ui/panels/ProductPanelContactSub.java" afterPath="$PROJECT_DIR$/src/mpv5/ui/panels/ProductPanelContactSub.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/mpv5/ui/dialogs/subcomponents/ProductSelectDialog.java" afterPath="$PROJECT_DIR$/src/mpv5/ui/dialogs/subcomponents/ProductSelectDialog.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/mpv5/ui/panels/RemindPanel.java" afterPath="$PROJECT_DIR$/src/mpv5/ui/panels/RemindPanel.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/mpv5/ui/panels/RevenuePanel.java" afterPath="$PROJECT_DIR$/src/mpv5/ui/panels/RevenuePanel.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/mpv5/ui/panels/calendar/ScheduleCalendarButton.java" afterPath="$PROJECT_DIR$/src/mpv5/ui/panels/calendar/ScheduleCalendarButton.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/mpv5/ui/panels/calendar/ScheduleCalendarDayChooser.java" afterPath="$PROJECT_DIR$/src/mpv5/ui/panels/calendar/ScheduleCalendarDayChooser.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/mpv5/ui/dialogs/SplashScreen.java" afterPath="$PROJECT_DIR$/src/mpv5/ui/dialogs/SplashScreen.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/mpv5/bugtracker/SubmitForm.java" afterPath="$PROJECT_DIR$/src/mpv5/bugtracker/SubmitForm.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/mpv5/utils/renderer/TableCellEditorForDezimal.java" afterPath="$PROJECT_DIR$/src/mpv5/utils/renderer/TableCellEditorForDezimal.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/mpv5/ui/dialogs/Wizard.java" afterPath="$PROJECT_DIR$/src/mpv5/ui/dialogs/Wizard.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/nbproject/build-impl.xml" afterPath="$PROJECT_DIR$/nbproject/build-impl.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/nbproject/genfiles.properties" afterPath="$PROJECT_DIR$/nbproject/genfiles.properties" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/nbproject/project.properties" afterPath="$PROJECT_DIR$/nbproject/project.properties" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/nbproject/project.xml" afterPath="$PROJECT_DIR$/nbproject/project.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/mpv5/ui/dialogs/subcomponents/wizard_AccountXMLImport_1.java" afterPath="$PROJECT_DIR$/src/mpv5/ui/dialogs/subcomponents/wizard_AccountXMLImport_1.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/mpv5/ui/dialogs/subcomponents/wizard_CSVImport2_1.java" afterPath="$PROJECT_DIR$/src/mpv5/ui/dialogs/subcomponents/wizard_CSVImport2_1.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/mpv5/ui/dialogs/subcomponents/wizard_CSVImport_1.java" afterPath="$PROJECT_DIR$/src/mpv5/ui/dialogs/subcomponents/wizard_CSVImport_1.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/mpv5/ui/dialogs/subcomponents/wizard_CSV_ProductGroups_Import_1.java" afterPath="$PROJECT_DIR$/src/mpv5/ui/dialogs/subcomponents/wizard_CSV_ProductGroups_Import_1.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/mpv5/ui/dialogs/subcomponents/wizard_DBSettings_1.java" afterPath="$PROJECT_DIR$/src/mpv5/ui/dialogs/subcomponents/wizard_DBSettings_1.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/mpv5/ui/dialogs/subcomponents/wizard_DBSettings_manage_1.java" afterPath="$PROJECT_DIR$/src/mpv5/ui/dialogs/subcomponents/wizard_DBSettings_manage_1.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/mpv5/ui/dialogs/subcomponents/wizard_DBSettings_simple_1.java" afterPath="$PROJECT_DIR$/src/mpv5/ui/dialogs/subcomponents/wizard_DBSettings_simple_1.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/mpv5/ui/dialogs/subcomponents/wizard_FirstSettings1.java" afterPath="$PROJECT_DIR$/src/mpv5/ui/dialogs/subcomponents/wizard_FirstSettings1.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/mpv5/ui/dialogs/subcomponents/wizard_FirstSettings2.java" afterPath="$PROJECT_DIR$/src/mpv5/ui/dialogs/subcomponents/wizard_FirstSettings2.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/mpv5/ui/dialogs/subcomponents/wizard_FirstSettings3.java" afterPath="$PROJECT_DIR$/src/mpv5/ui/dialogs/subcomponents/wizard_FirstSettings3.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/mpv5/ui/dialogs/subcomponents/wizard_FirstSettings4.java" afterPath="$PROJECT_DIR$/src/mpv5/ui/dialogs/subcomponents/wizard_FirstSettings4.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/mpv5/ui/dialogs/subcomponents/wizard_FirstSettings5.java" afterPath="$PROJECT_DIR$/src/mpv5/ui/dialogs/subcomponents/wizard_FirstSettings5.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/mpv5/ui/dialogs/subcomponents/wizard_MP45_Import.java" afterPath="$PROJECT_DIR$/src/mpv5/ui/dialogs/subcomponents/wizard_MP45_Import.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/mpv5/ui/dialogs/subcomponents/wizard_Toolbar1.java" afterPath="$PROJECT_DIR$/src/mpv5/ui/dialogs/subcomponents/wizard_Toolbar1.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/mpv5/ui/dialogs/subcomponents/wizard_XMLImport_1.java" afterPath="$PROJECT_DIR$/src/mpv5/ui/dialogs/subcomponents/wizard_XMLImport_1.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/mpv5/ui/dialogs/subcomponents/wizard_XMLImport_2.java" afterPath="$PROJECT_DIR$/src/mpv5/ui/dialogs/subcomponents/wizard_XMLImport_2.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/mpv5/ui/dialogs/subcomponents/wizard_Yabs1_Import.java" afterPath="$PROJECT_DIR$/src/mpv5/ui/dialogs/subcomponents/wizard_Yabs1_Import.java" />
+    </list>
+    <ignored path="openyabs.iws" />
+    <ignored path=".idea/workspace.xml" />
+    <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
+    <option name="TRACKING_ENABLED" value="true" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="ChangesViewManager" flattened_view="true" show_ignored="false" />
+  <component name="CreatePatchCommitExecutor">
+    <option name="PATCH_PATH" value="" />
+  </component>
+  <component name="ExecutionTargetManager" SELECTED_TARGET="default_target" />
+  <component name="FavoritesManager">
+    <favorites_list name="openyabs" />
+  </component>
+  <component name="FileEditorManager">
+    <leaf>
+      <file leaf-file-name="MPView.java" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/src/mpv5/ui/frames/MPView.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.3329298">
+              <caret line="1206" column="8" selection-start-line="1206" selection-start-column="8" selection-end-line="1206" selection-end-column="70" />
+              <folding>
+                <element signature="e#0#145649#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+    </leaf>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="GradleLocalSettings">
+    <option name="externalProjectsViewState">
+      <projects_view />
+    </option>
+  </component>
+  <component name="IdeDocumentHistory">
+    <option name="CHANGED_PATHS">
+      <list>
+        <option value="$PROJECT_DIR$/src/mpv5/ui/frames/MPView.java" />
+      </list>
+    </option>
+  </component>
+  <component name="JsBuildToolGruntFileManager" detection-done="true" />
+  <component name="JsGulpfileManager">
+    <detection-done>true</detection-done>
+  </component>
+  <component name="NamedScopeManager">
+    <order />
+  </component>
+  <component name="ProjectFrameBounds">
+    <option name="x" value="-8" />
+    <option name="y" value="-8" />
+    <option name="width" value="1936" />
+    <option name="height" value="1066" />
+  </component>
+  <component name="ProjectLevelVcsManager" settingsEditedManually="false">
+    <OptionsSetting value="true" id="Add" />
+    <OptionsSetting value="true" id="Remove" />
+    <OptionsSetting value="true" id="Checkout" />
+    <OptionsSetting value="true" id="Update" />
+    <OptionsSetting value="true" id="Status" />
+    <OptionsSetting value="true" id="Edit" />
+    <ConfirmationsSetting value="0" id="Add" />
+    <ConfirmationsSetting value="0" id="Remove" />
+  </component>
+  <component name="ProjectView">
+    <navigator currentView="ProjectPane" proportions="" version="1">
+      <flattenPackages />
+      <showMembers />
+      <showModules />
+      <showLibraryContents />
+      <hideEmptyPackages />
+      <abbreviatePackageNames />
+      <autoscrollToSource />
+      <autoscrollFromSource />
+      <sortByType />
+    </navigator>
+    <panes>
+      <pane id="Scope" />
+      <pane id="Scratches" />
+      <pane id="ProjectPane">
+        <subPane>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="openyabs" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+          </PATH>
+        </subPane>
+      </pane>
+      <pane id="PackagesPane" />
+    </panes>
+  </component>
+  <component name="PropertiesComponent">
+    <property name="aspect.path.notification.shown" value="true" />
+    <property name="WebServerToolWindowFactoryState" value="false" />
+  </component>
+  <component name="RunManager">
+    <configuration default="true" type="#org.jetbrains.idea.devkit.run.PluginConfigurationType" factoryName="Plugin">
+      <module name="" />
+      <option name="VM_PARAMETERS" value="-Xmx512m -Xms256m -XX:MaxPermSize=250m -ea" />
+      <option name="PROGRAM_PARAMETERS" />
+      <method />
+    </configuration>
+    <configuration default="true" type="Applet" factoryName="Applet">
+      <option name="HTML_USED" value="false" />
+      <option name="WIDTH" value="400" />
+      <option name="HEIGHT" value="300" />
+      <option name="POLICY_FILE" value="$APPLICATION_HOME_DIR$/bin/appletviewer.policy" />
+      <module />
+      <method />
+    </configuration>
+    <configuration default="true" type="Application" factoryName="Application">
+      <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea" />
+      <option name="MAIN_CLASS_NAME" />
+      <option name="VM_PARAMETERS" />
+      <option name="PROGRAM_PARAMETERS" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
+      <option name="ALTERNATIVE_JRE_PATH" />
+      <option name="ENABLE_SWING_INSPECTOR" value="false" />
+      <option name="ENV_VARIABLES" />
+      <option name="PASS_PARENT_ENVS" value="true" />
+      <module name="" />
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="true" type="JUnit" factoryName="JUnit">
+      <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea" />
+      <module name="" />
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
+      <option name="ALTERNATIVE_JRE_PATH" />
+      <option name="PACKAGE_NAME" />
+      <option name="MAIN_CLASS_NAME" />
+      <option name="METHOD_NAME" />
+      <option name="TEST_OBJECT" value="class" />
+      <option name="VM_PARAMETERS" value="-ea" />
+      <option name="PARAMETERS" />
+      <option name="WORKING_DIRECTORY" value="$MODULE_DIR$" />
+      <option name="ENV_VARIABLES" />
+      <option name="PASS_PARENT_ENVS" value="true" />
+      <option name="TEST_SEARCH_SCOPE">
+        <value defaultName="singleModule" />
+      </option>
+      <envs />
+      <patterns />
+      <method />
+    </configuration>
+    <configuration default="true" type="Remote" factoryName="Remote">
+      <option name="USE_SOCKET_TRANSPORT" value="true" />
+      <option name="SERVER_MODE" value="false" />
+      <option name="SHMEM_ADDRESS" value="javadebug" />
+      <option name="HOST" value="localhost" />
+      <option name="PORT" value="5005" />
+      <method />
+    </configuration>
+    <configuration default="true" type="TestNG" factoryName="TestNG">
+      <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea" />
+      <module name="" />
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
+      <option name="ALTERNATIVE_JRE_PATH" />
+      <option name="SUITE_NAME" />
+      <option name="PACKAGE_NAME" />
+      <option name="MAIN_CLASS_NAME" />
+      <option name="METHOD_NAME" />
+      <option name="GROUP_NAME" />
+      <option name="TEST_OBJECT" value="CLASS" />
+      <option name="VM_PARAMETERS" value="-ea" />
+      <option name="PARAMETERS" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="OUTPUT_DIRECTORY" />
+      <option name="ANNOTATION_TYPE" />
+      <option name="ENV_VARIABLES" />
+      <option name="PASS_PARENT_ENVS" value="true" />
+      <option name="TEST_SEARCH_SCOPE">
+        <value defaultName="singleModule" />
+      </option>
+      <option name="USE_DEFAULT_REPORTERS" value="false" />
+      <option name="PROPERTIES_FILE" />
+      <envs />
+      <properties />
+      <listeners />
+      <method />
+    </configuration>
+  </component>
+  <component name="ShelveChangesManager" show_recycled="false" />
+  <component name="SvnConfiguration">
+    <configuration />
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="163a546a-59c0-4262-b5ac-49d19ebd2515" name="Default" comment="" />
+      <created>1447753507354</created>
+      <option name="number" value="Default" />
+      <updated>1447753507354</updated>
+      <workItem from="1447753508967" duration="45000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TimeTrackingManager">
+    <option name="totallyTimeSpent" value="45000" />
+  </component>
+  <component name="ToolWindowManager">
+    <frame x="-8" y="-8" width="1936" height="1066" extended-state="6" />
+    <editor active="true" />
+    <layout>
+      <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
+      <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
+      <window_info id="Palette&#9;" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
+      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="-1" side_tool="true" content_ui="tabs" />
+      <window_info id="Application Servers" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
+      <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
+      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
+      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
+      <window_info id="Designer" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.25" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
+      <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Fabric" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
+      <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="UI Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
+      <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="-1" side_tool="true" content_ui="tabs" />
+      <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
+      <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
+      <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
+      <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="SLIDING" type="SLIDING" visible="false" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+    </layout>
+  </component>
+  <component name="Vcs.Log.UiProperties">
+    <option name="RECENTLY_FILTERED_USER_GROUPS">
+      <collection />
+    </option>
+    <option name="RECENTLY_FILTERED_BRANCH_GROUPS">
+      <collection />
+    </option>
+  </component>
+  <component name="VcsContentAnnotationSettings">
+    <option name="myLimit" value="2678400000" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager />
+    <watches-manager />
+  </component>
+  <component name="editorHistoryManager">
+    <entry file="file://$PROJECT_DIR$/src/mpv5/ui/frames/MPView.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.3329298">
+          <caret line="1206" column="8" selection-start-line="1206" selection-start-column="8" selection-end-line="1206" selection-end-column="70" />
+          <folding>
+            <element signature="e#0#145649#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+  </component>
+</project>

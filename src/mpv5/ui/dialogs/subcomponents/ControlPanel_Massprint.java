@@ -81,7 +81,7 @@ public class ControlPanel_Massprint extends javax.swing.JPanel implements Contro
         jButton2 = new javax.swing.JButton();
         jButton4 = new javax.swing.JButton();
 
-        setBackground(new java.awt.Color(255, 255, 255));
+        //\$2java.awt.Color(255, 255, 255));
         setName("Form"); // NOI18N
         setLayout(new javax.swing.BoxLayout(this, javax.swing.BoxLayout.PAGE_AXIS));
 
@@ -174,7 +174,7 @@ public class ControlPanel_Massprint extends javax.swing.JPanel implements Contro
 
         add(jPanel5);
 
-        jPanel1.setBackground(new java.awt.Color(255, 255, 255));
+//$2java.awt.Color(255, 255, 255));
         jPanel1.setName("jPanel1"); // NOI18N
         jPanel1.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.RIGHT));
 

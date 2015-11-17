@@ -117,7 +117,7 @@ public class ProductSelectDialog extends javax.swing.JPanel {
         countt = new mpv5.ui.beans.LabeledTextField();
         opt = new mpv5.ui.beans.LabeledTextField();
 
-        setBackground(new java.awt.Color(255, 255, 255));
+        //\$2java.awt.Color(255, 255, 255));
         setName("Form"); // NOI18N
         setLayout(new java.awt.BorderLayout());
 

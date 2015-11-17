@@ -250,7 +250,7 @@ public class ControlPanel_Groups extends javax.swing.JPanel implements ControlAp
 
         add(rightpane, java.awt.BorderLayout.EAST);
 
-        jPanel2.setBackground(new java.awt.Color(255, 255, 255));
+//$2java.awt.Color(255, 255, 255));
         jPanel2.setName("jPanel2"); // NOI18N
         jPanel2.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.RIGHT));
 

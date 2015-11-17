@@ -67,11 +67,11 @@ public class wizard_MP45_Import extends javax.swing.JPanel implements Wizardable
         dbpassword = new mpv5.ui.beans.LabeledTextField();
         dbprefix = new mpv5.ui.beans.LabeledTextField();
 
-        setBackground(new java.awt.Color(255, 255, 255));
+        //\$2java.awt.Color(255, 255, 255));
         setName("Form"); // NOI18N
         setLayout(new java.awt.BorderLayout());
 
-        jPanel1.setBackground(new java.awt.Color(255, 255, 255));
+//$2java.awt.Color(255, 255, 255));
          java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle(); // NOI18N
         jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("wizard_MP45_Import.jPanel1.border.title"))); // NOI18N
         jPanel1.setName("jPanel1"); // NOI18N
@@ -83,25 +83,25 @@ public class wizard_MP45_Import extends javax.swing.JPanel implements Wizardable
         jLabel1.setText(bundle.getString("wizard_MP45_Import.jLabel1.text")); // NOI18N
         jLabel1.setName("jLabel1"); // NOI18N
 
-        products.setBackground(new java.awt.Color(255, 255, 255));
+//$2java.awt.Color(255, 255, 255));
         products.setSelected(true);
         products.setText(bundle.getString("wizard_MP45_Import.products.text")); // NOI18N
         products.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         products.setName("products"); // NOI18N
 
-        customers.setBackground(new java.awt.Color(255, 255, 255));
+//$2java.awt.Color(255, 255, 255));
         customers.setSelected(true);
         customers.setText(bundle.getString("wizard_MP45_Import.customers.text")); // NOI18N
         customers.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         customers.setName("customers"); // NOI18N
 
-        suppliers.setBackground(new java.awt.Color(255, 255, 255));
+//$2java.awt.Color(255, 255, 255));
         suppliers.setSelected(true);
         suppliers.setText(bundle.getString("wizard_MP45_Import.suppliers.text")); // NOI18N
         suppliers.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         suppliers.setName("suppliers"); // NOI18N
 
-        manufacturers.setBackground(new java.awt.Color(255, 255, 255));
+//$2java.awt.Color(255, 255, 255));
         manufacturers.setSelected(true);
         manufacturers.setText(bundle.getString("wizard_MP45_Import.manufacturers.text")); // NOI18N
         manufacturers.setBorder(javax.swing.BorderFactory.createEtchedBorder());

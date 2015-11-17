@@ -182,7 +182,7 @@ public class ControlPanel_ProductGroups extends javax.swing.JPanel implements Co
         cname.set_Label(bundle.getString("ControlPanel_ProductGroups.cname._Label")); // NOI18N
         cname.setName("cname"); // NOI18N
 
-        jScrollPane3.setBackground(new java.awt.Color(254, 254, 254));
+//$2java.awt.Color(254, 254, 254));
         jScrollPane3.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
         jScrollPane3.setVerticalScrollBarPolicy(javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER);
         jScrollPane3.setName("jScrollPane3"); // NOI18N
@@ -262,7 +262,7 @@ public class ControlPanel_ProductGroups extends javax.swing.JPanel implements Co
 
         add(rightpane, java.awt.BorderLayout.EAST);
 
-        jPanel2.setBackground(new java.awt.Color(255, 255, 255));
+//$2java.awt.Color(255, 255, 255));
         jPanel2.setName("jPanel2"); // NOI18N
         jPanel2.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.RIGHT));
 

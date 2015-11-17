@@ -74,7 +74,7 @@ public class MiniCalendarDialog extends javax.swing.JDialog {
         setName("Form"); // NOI18N
         setUndecorated(true);
 
-        jPanel2.setBackground(new java.awt.Color(227, 219, 202));
+//$2java.awt.Color(227, 219, 202));
         jPanel2.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(0, 0, 0), 1, true));
         jPanel2.setName("jPanel2"); // NOI18N
 
@@ -96,7 +96,7 @@ public class MiniCalendarDialog extends javax.swing.JDialog {
             }
         });
 
-        jPanel1.setBackground(new java.awt.Color(255, 255, 255));
+//$2java.awt.Color(255, 255, 255));
         jPanel1.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         jPanel1.setName("jPanel1"); // NOI18N
         jPanel1.addKeyListener(new java.awt.event.KeyAdapter() {

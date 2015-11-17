@@ -55,11 +55,11 @@ public class ControlPanel_Localization extends javax.swing.JPanel implements Con
         labeledTextChooser2 = new mpv5.ui.beans.LabeledTextChooser();
         jButton4 = new javax.swing.JButton();
 
-        setBackground(new java.awt.Color(255, 255, 255));
+        //\$2java.awt.Color(255, 255, 255));
         setName("Form"); // NOI18N
         setLayout(new java.awt.BorderLayout());
 
-        jPanel1.setBackground(new java.awt.Color(255, 255, 255));
+//$2java.awt.Color(255, 255, 255));
         java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle(); // NOI18N
         jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("ControlPanel_Localization.jPanel1.border.title"))); // NOI18N
         jPanel1.setName("jPanel1"); // NOI18N
@@ -210,7 +210,7 @@ public class ControlPanel_Localization extends javax.swing.JPanel implements Con
 
     public Component getAndRemoveActionPanel() {
         JPanel jPanel2 = new JPanel();
-        jPanel2.setBackground(new java.awt.Color(255, 255, 255));
+//$2java.awt.Color(255, 255, 255));
         jPanel2.setName("jPanel2"); // NOI18N
         jPanel2.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.RIGHT));
 

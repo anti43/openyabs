@@ -153,7 +153,7 @@ public class Calc extends JLabel implements ActionListener,KeyListener {
         lcdDisplay.setBounds(2, 15, 308, 30);
         lcdDisplay.setFont(new Font("Helvetica", Font.PLAIN, 20));
         lcdDisplay.setForeground(Color.black);
-        lcdDisplay.setBackground(Color.WHITE);
+//$2WHITE);
         lcdDisplay.setBorder(new EtchedBorder());
         add(lcdDisplay);
 
@@ -165,7 +165,7 @@ public class Calc extends JLabel implements ActionListener,KeyListener {
         LabelMem.setBounds(310, 15, 20, 30);
         LabelMem.setFont(new Font("Helvetica", Font.PLAIN, 16));
         LabelMem.setForeground(new Color(65280));
-        LabelMem.setBackground(Color.LIGHT_GRAY);
+//$2LIGHT_GRAY);
         LabelMem.setBorder(new EtchedBorder());
         add(LabelMem);
 
@@ -306,7 +306,7 @@ public class Calc extends JLabel implements ActionListener,KeyListener {
         buttonClear.setBounds(269, 65, 60, 34);
         buttonClear.addKeyListener(this);
         buttonClear.setForeground(new Color(16711680));
-        buttonClear.setBackground(new Color(12632256));
+//$2Color(12632256));
         add(buttonClear);
 
         buttonMPlus.addActionListener(this);
@@ -335,7 +335,7 @@ public class Calc extends JLabel implements ActionListener,KeyListener {
         DisplError.setBounds(2, 278, 329, 15);
         DisplError.setFont(new Font("Dialog", Font.BOLD, 12));
         DisplError.setForeground(new Color(16711680));
-        DisplError.setBackground(new Color(0));
+//$2Color(0));
         add(DisplError);
 
 

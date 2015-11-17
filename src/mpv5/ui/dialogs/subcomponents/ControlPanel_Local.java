@@ -58,7 +58,7 @@ public class ControlPanel_Local extends javax.swing.JPanel implements ControlApp
         jButton3 = new javax.swing.JButton();
         jButton4 = new javax.swing.JButton();
 
-        setBackground(new java.awt.Color(255, 255, 255));
+        //\$2java.awt.Color(255, 255, 255));
         setMaximumSize(new java.awt.Dimension(891, 889));
         setName("Form"); // NOI18N
         setLayout(new javax.swing.BoxLayout(this, javax.swing.BoxLayout.PAGE_AXIS));
@@ -90,7 +90,7 @@ public class ControlPanel_Local extends javax.swing.JPanel implements ControlApp
             }
         });
 
-        authpanel.setBackground(new java.awt.Color(255, 255, 255));
+//$2java.awt.Color(255, 255, 255));
         authpanel.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         authpanel.setName("authpanel"); // NOI18N
 
@@ -267,7 +267,7 @@ public class ControlPanel_Local extends javax.swing.JPanel implements ControlApp
 
         add(jPanel5);
 
-        jPanel1.setBackground(new java.awt.Color(255, 255, 255));
+//$2java.awt.Color(255, 255, 255));
         jPanel1.setName("jPanel1"); // NOI18N
         jPanel1.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.RIGHT));
 

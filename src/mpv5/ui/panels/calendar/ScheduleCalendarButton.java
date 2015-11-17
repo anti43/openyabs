@@ -55,7 +55,7 @@ public class ScheduleCalendarButton extends JButton implements ActionListener {
     protected void addScheduledEvent(Schedule schedule) {
         scheduledEvents.add(schedule);
         this.setFont(this.getFont().deriveFont(Font.BOLD));
-        this.setBackground(Color.GREEN);
+//$2GREEN);
 
         if (scheduledEvents.isEmpty() == false) {
             this.setToolTipText(Messages.DAY_EVENTS.toString());
@@ -66,7 +66,7 @@ public class ScheduleCalendarButton extends JButton implements ActionListener {
         scheduledEvents.remove(schedule);
         if (scheduledEvents.isEmpty() == true) {
             this.setFont(this.getFont().deriveFont(Font.PLAIN));
-            this.setBackground(Color.LIGHT_GRAY);
+//$2LIGHT_GRAY);
             this.setToolTipText(Messages.DAY_EVENTS.toString());
         }
     }
@@ -74,7 +74,7 @@ public class ScheduleCalendarButton extends JButton implements ActionListener {
     protected void clearScheduledEvents() {
         scheduledEvents.clear();
         this.setFont(this.getFont().deriveFont(Font.PLAIN));
-        this.setBackground(Color.LIGHT_GRAY);
+//$2LIGHT_GRAY);
     }
 
     public void actionPerformed(ActionEvent e) {

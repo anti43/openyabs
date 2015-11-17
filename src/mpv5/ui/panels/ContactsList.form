@@ -127,9 +127,9 @@
                       <EmptySpace max="-2" attributes="0"/>
                       <Component id="jTextField1" min="-2" pref="287" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
-                      <Component id="jButton3" min="-2" pref="67" max="-2" attributes="0"/>
+                      <Component id="jButton3" min="-2" pref="100" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
-                      <Component id="jButton2" min="-2" pref="67" max="-2" attributes="0"/>
+                      <Component id="jButton2" min="-2" pref="100" max="-2" attributes="0"/>
                   </Group>
                   <Component id="jToolBar2" min="-2" max="-2" attributes="1"/>
               </Group>

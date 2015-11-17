@@ -120,7 +120,7 @@ public class ControlPanel_Plugins extends javax.swing.JPanel implements ControlA
         jButton2 = new javax.swing.JButton();
         jButton1 = new javax.swing.JButton();
 
-        setBackground(new java.awt.Color(255, 255, 255));
+        //\$2java.awt.Color(255, 255, 255));
         java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle(); // NOI18N
         setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("ControlPanel_Plugins.border.title"))); // NOI18N
         setName("Form"); // NOI18N
@@ -244,7 +244,7 @@ public class ControlPanel_Plugins extends javax.swing.JPanel implements ControlA
 
         add(jPanel5);
 
-        jPanel2.setBackground(new java.awt.Color(255, 255, 255));
+//$2java.awt.Color(255, 255, 255));
         jPanel2.setName("jPanel2"); // NOI18N
         jPanel2.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.RIGHT));
 

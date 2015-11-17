@@ -116,7 +116,7 @@ public class ControlPanel_Users extends javax.swing.JPanel implements ControlApp
         jButton2 = new javax.swing.JButton();
         jButton1 = new javax.swing.JButton();
 
-        setBackground(new java.awt.Color(255, 255, 255));
+        //\$2java.awt.Color(255, 255, 255));
         java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle();
         setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("ControlPanel_Users.border.title"))); // NOI18N
         setName("Form"); // NOI18N
@@ -153,7 +153,7 @@ public class ControlPanel_Users extends javax.swing.JPanel implements ControlApp
         jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("ControlPanel_Users.jPanel2.border.title"))); // NOI18N
         jPanel2.setName("jPanel2"); // NOI18N
 
-        jPanel3.setBackground(new java.awt.Color(255, 255, 255));
+//$2java.awt.Color(255, 255, 255));
         jPanel3.setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("ControlPanel_Users.jPanel3.border.title"))); // NOI18N
         jPanel3.setName("jPanel3"); // NOI18N
 
@@ -252,7 +252,7 @@ public class ControlPanel_Users extends javax.swing.JPanel implements ControlApp
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
-        jPanel4.setBackground(new java.awt.Color(255, 255, 255));
+//$2java.awt.Color(255, 255, 255));
         jPanel4.setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("ControlPanel_Users.jPanel4.border.title"))); // NOI18N
         jPanel4.setName("jPanel4"); // NOI18N
 
@@ -272,7 +272,7 @@ public class ControlPanel_Users extends javax.swing.JPanel implements ControlApp
         jLabel2.setText(bundle.getString("ControlPanel_Users.jLabel2.text")); // NOI18N
         jLabel2.setName("jLabel2"); // NOI18N
 
-        enabled.setBackground(new java.awt.Color(255, 255, 255));
+//$2java.awt.Color(255, 255, 255));
         enabled.setText(bundle.getString("ControlPanel_Users.enabled.text")); // NOI18N
         enabled.setName("enabled"); // NOI18N
 
@@ -288,7 +288,7 @@ public class ControlPanel_Users extends javax.swing.JPanel implements ControlApp
         jLabel6.setText(bundle.getString("ControlPanel_Users.jLabel6.text")); // NOI18N
         jLabel6.setName("jLabel6"); // NOI18N
 
-        rgroups.setBackground(new java.awt.Color(255, 255, 255));
+//$2java.awt.Color(255, 255, 255));
         rgroups.setText(bundle.getString("ControlPanel_Users.rgroups.text")); // NOI18N
         rgroups.setName("rgroups"); // NOI18N
 
@@ -359,7 +359,7 @@ public class ControlPanel_Users extends javax.swing.JPanel implements ControlApp
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
-        jPanel5.setBackground(new java.awt.Color(255, 255, 255));
+//$2java.awt.Color(255, 255, 255));
         jPanel5.setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("ControlPanel_Users.jPanel5.border.title"))); // NOI18N
         jPanel5.setName("jPanel5"); // NOI18N
 
@@ -370,7 +370,7 @@ public class ControlPanel_Users extends javax.swing.JPanel implements ControlApp
         datelastlog.setText(bundle.getString("ControlPanel_Users.datelastlog.text")); // NOI18N
         datelastlog.setName("datelastlog"); // NOI18N
 
-        loggedin.setBackground(new java.awt.Color(255, 255, 255));
+//$2java.awt.Color(255, 255, 255));
         loggedin.setText(bundle.getString("ControlPanel_Users.loggedin.text")); // NOI18N
         loggedin.setEnabled(false);
         loggedin.setName("loggedin"); // NOI18N
@@ -418,7 +418,7 @@ public class ControlPanel_Users extends javax.swing.JPanel implements ControlApp
 
         add(jPanel2, java.awt.BorderLayout.EAST);
 
-        jPanel6.setBackground(new java.awt.Color(255, 255, 255));
+//$2java.awt.Color(255, 255, 255));
         jPanel6.setName("jPanel6"); // NOI18N
         jPanel6.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.RIGHT));
 

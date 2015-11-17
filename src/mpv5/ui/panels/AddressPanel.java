@@ -83,15 +83,15 @@ public class AddressPanel extends javax.swing.JPanel implements DataPanel {
         badress = new javax.swing.JCheckBox();
         dadress = new javax.swing.JCheckBox();
 
-        setBackground(new java.awt.Color(204, 204, 204));
+        //\$2java.awt.Color(204, 204, 204));
         setName("Address#"); // NOI18N
 
-        jPanel2.setBackground(new java.awt.Color(204, 204, 204));
+//$2java.awt.Color(204, 204, 204));
         jPanel2.setBorder(null);
         jPanel2.setName("jPanel2"); // NOI18N
         jPanel2.setLayout(new java.awt.BorderLayout());
 
-        mainaddress.setBackground(new java.awt.Color(204, 204, 204));
+//$2java.awt.Color(204, 204, 204));
         mainaddress.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
         mainaddress.setName("mainaddress"); // NOI18N
 
@@ -126,14 +126,14 @@ public class AddressPanel extends javax.swing.JPanel implements DataPanel {
         zip.setName("zip"); // NOI18N
         zip.setPreferredSize(new java.awt.Dimension(120, 24));
 
-        male.setBackground(new java.awt.Color(204, 204, 204));
+//$2java.awt.Color(204, 204, 204));
         buttonGroup2.add(male);
         male.setFont(male.getFont().deriveFont(male.getFont().getStyle() & ~java.awt.Font.BOLD));
         male.setSelected(true);
         male.setText(bundle.getString("AddressPanel.male.text")); // NOI18N
         male.setName("male"); // NOI18N
 
-        female.setBackground(new java.awt.Color(204, 204, 204));
+//$2java.awt.Color(204, 204, 204));
         buttonGroup2.add(female);
         female.setFont(female.getFont().deriveFont(female.getFont().getStyle() & ~java.awt.Font.BOLD));
         female.setText(bundle.getString("AddressPanel.female.text")); // NOI18N
@@ -186,12 +186,12 @@ public class AddressPanel extends javax.swing.JPanel implements DataPanel {
             }
         });
 
-        badress.setBackground(new java.awt.Color(204, 204, 204));
+//$2java.awt.Color(204, 204, 204));
         badress.setFont(badress.getFont());
         badress.setText(bundle.getString("AddressPanel.badress.text")); // NOI18N
         badress.setName("badress"); // NOI18N
 
-        dadress.setBackground(new java.awt.Color(204, 204, 204));
+//$2java.awt.Color(204, 204, 204));
         dadress.setFont(dadress.getFont());
         dadress.setText(bundle.getString("AddressPanel.dadress.text")); // NOI18N
         dadress.setName("dadress"); // NOI18N

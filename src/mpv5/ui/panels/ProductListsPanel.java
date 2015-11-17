@@ -346,7 +346,7 @@ public class ProductListsPanel extends javax.swing.JPanel implements DataPanel, 
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
-        jPanel4.setBackground(new java.awt.Color(204, 204, 204));
+//$2java.awt.Color(204, 204, 204));
         jPanel4.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         jPanel4.setName("jPanel4"); // NOI18N
 
@@ -389,7 +389,7 @@ public class ProductListsPanel extends javax.swing.JPanel implements DataPanel, 
         notes.setName("notes"); // NOI18N
         jScrollPane1.setViewportView(notes);
 
-        jToolBar2.setBackground(new java.awt.Color(255, 255, 255));
+//$2java.awt.Color(255, 255, 255));
         jToolBar2.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(0, 102, 102), 1, true));
         jToolBar2.setFloatable(false);
         jToolBar2.setRollover(true);

@@ -243,7 +243,7 @@ public class ExpensePanel extends javax.swing.JPanel implements DataPanel {
         };
         toolbarpane = new javax.swing.JPanel();
 
-        setBackground(new java.awt.Color(176, 158, 158));
+        //\$2java.awt.Color(176, 158, 158));
         java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle(); // NOI18N
         setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("ExpensePanel.border.title_1"))); // NOI18N
         setName("Form"); // NOI18N
@@ -253,7 +253,7 @@ public class ExpensePanel extends javax.swing.JPanel implements DataPanel {
         rightpane.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         rightpane.setName("rightpane"); // NOI18N
 
-        jPanel1.setBackground(new java.awt.Color(254, 254, 254));
+//$2java.awt.Color(254, 254, 254));
         jPanel1.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         jPanel1.setName("jPanel1"); // NOI18N
 
@@ -298,7 +298,7 @@ public class ExpensePanel extends javax.swing.JPanel implements DataPanel {
         jScrollPane1.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
         jScrollPane1.setName("jScrollPane1"); // NOI18N
 
-        notes.setBackground(new java.awt.Color(254, 254, 254));
+//$2java.awt.Color(254, 254, 254));
         notes.setName("notes"); // NOI18N
         jScrollPane1.setViewportView(notes);
 
@@ -413,7 +413,7 @@ public class ExpensePanel extends javax.swing.JPanel implements DataPanel {
                 .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
-        jPanel4.setBackground(new java.awt.Color(204, 204, 204));
+//$2java.awt.Color(204, 204, 204));
         jPanel4.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         jPanel4.setName("jPanel4"); // NOI18N
 

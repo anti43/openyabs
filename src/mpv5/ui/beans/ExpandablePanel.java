@@ -133,7 +133,7 @@ public class ExpandablePanel extends javax.swing.JPanel {
         selected = false;
         headerPanel_ = new HeaderPanel(text);
 
-        setBackground(new Color(200, 200, 220));
+        //\$2Color(200, 200, 220));
         contentPanel_ = content;
 
         add(headerPanel_, gbc);

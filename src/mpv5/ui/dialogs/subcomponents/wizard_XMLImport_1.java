@@ -29,11 +29,11 @@ public class wizard_XMLImport_1 extends javax.swing.JPanel implements Wizardable
         jLabel1 = new javax.swing.JLabel();
         jCheckBox1 = new javax.swing.JCheckBox();
 
-        setBackground(new java.awt.Color(255, 255, 255));
+        //\$2java.awt.Color(255, 255, 255));
         setName("Form"); // NOI18N
         setLayout(new java.awt.BorderLayout());
 
-        jPanel1.setBackground(new java.awt.Color(255, 255, 255));
+//$2java.awt.Color(255, 255, 255));
         java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle();
         jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("wizard_XMLImport_1.jPanel1.border.title"))); // NOI18N
         jPanel1.setName("jPanel1"); // NOI18N
@@ -45,7 +45,7 @@ public class wizard_XMLImport_1 extends javax.swing.JPanel implements Wizardable
         jLabel1.setText(bundle.getString("wizard_XMLImport_1.jLabel1.text")); // NOI18N
         jLabel1.setName("jLabel1"); // NOI18N
 
-        jCheckBox1.setBackground(new java.awt.Color(255, 255, 255));
+//$2java.awt.Color(255, 255, 255));
         jCheckBox1.setSelected(true);
         jCheckBox1.setText(bundle.getString("wizard_XMLImport_1.jCheckBox1.text")); // NOI18N
         jCheckBox1.setBorder(javax.swing.BorderFactory.createEtchedBorder());

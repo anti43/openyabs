@@ -109,7 +109,7 @@ public class SplashScreen extends JDialog {
         setUndecorated(true);
         setResizable(false);
 
-        jPanel1.setBackground(javax.swing.UIManager.getDefaults().getColor("OptionPane.errorDialog.border.background"));
+//$2"OptionPane.errorDialog.border.background"));
         jPanel1.setPreferredSize(new java.awt.Dimension(450, 300));
 
         progress.setForeground(new java.awt.Color(23, 23, 23));
@@ -134,7 +134,7 @@ public class SplashScreen extends JDialog {
         jScrollPane1.setVerticalScrollBarPolicy(javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER);
         jScrollPane1.setOpaque(false);
 
-        jTextArea1.setBackground(new java.awt.Color(1, 1, 1));
+//$2java.awt.Color(1, 1, 1));
         jTextArea1.setColumns(20);
         jTextArea1.setFont(jTextArea1.getFont().deriveFont(jTextArea1.getFont().getSize()-1f));
         jTextArea1.setForeground(new java.awt.Color(254, 254, 254));

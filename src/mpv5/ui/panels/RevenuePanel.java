@@ -246,7 +246,7 @@ public class RevenuePanel extends javax.swing.JPanel implements DataPanel {
         labeledDateChooser1 = new mpv5.ui.beans.LabeledDateChooser();
         toolbarpane = new javax.swing.JPanel();
 
-        setBackground(new java.awt.Color(155, 175, 155));
+        //\$2java.awt.Color(155, 175, 155));
         java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle(); // NOI18N
         setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("RevenuePanel.border.title_1"))); // NOI18N
         setName("Form"); // NOI18N
@@ -256,7 +256,7 @@ public class RevenuePanel extends javax.swing.JPanel implements DataPanel {
         rightpane.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         rightpane.setName("rightpane"); // NOI18N
 
-        jPanel4.setBackground(new java.awt.Color(204, 204, 204));
+//$2java.awt.Color(204, 204, 204));
         jPanel4.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         jPanel4.setName("jPanel4"); // NOI18N
 
@@ -292,7 +292,7 @@ public class RevenuePanel extends javax.swing.JPanel implements DataPanel {
             .addComponent(jScrollPane3, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 35, Short.MAX_VALUE)
         );
 
-        jPanel1.setBackground(new java.awt.Color(254, 254, 254));
+//$2java.awt.Color(254, 254, 254));
         jPanel1.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         jPanel1.setName("jPanel1"); // NOI18N
 
@@ -337,7 +337,7 @@ public class RevenuePanel extends javax.swing.JPanel implements DataPanel {
         jScrollPane1.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
         jScrollPane1.setName("jScrollPane1"); // NOI18N
 
-        notes.setBackground(new java.awt.Color(254, 254, 254));
+//$2java.awt.Color(254, 254, 254));
         notes.setName("notes"); // NOI18N
         jScrollPane1.setViewportView(notes);
 

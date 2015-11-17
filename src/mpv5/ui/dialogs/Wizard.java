@@ -108,12 +108,12 @@ public class Wizard extends javax.swing.JDialog implements WizardMaster {
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle(); // NOI18N
         setTitle(bundle.getString("Wizard.title")); // NOI18N
-        setBackground(new java.awt.Color(255, 255, 255));
+        //\$2java.awt.Color(255, 255, 255));
         setName("Form"); // NOI18N
 
         jScrollPane1.setName("jScrollPane1"); // NOI18N
 
-        content.setBackground(new java.awt.Color(255, 255, 255));
+//$2java.awt.Color(255, 255, 255));
         content.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         content.setName("content"); // NOI18N
         content.setLayout(new java.awt.BorderLayout());
@@ -121,7 +121,7 @@ public class Wizard extends javax.swing.JDialog implements WizardMaster {
 
         getContentPane().add(jScrollPane1, java.awt.BorderLayout.CENTER);
 
-        control.setBackground(new java.awt.Color(255, 255, 255));
+//$2java.awt.Color(255, 255, 255));
         control.setMaximumSize(new java.awt.Dimension(32767, 100));
         control.setName("control"); // NOI18N
         control.setPreferredSize(new java.awt.Dimension(375, 60));
@@ -153,7 +153,7 @@ public class Wizard extends javax.swing.JDialog implements WizardMaster {
         jScrollPane2.setBorder(null);
         jScrollPane2.setName("jScrollPane2"); // NOI18N
 
-        message.setBackground(new java.awt.Color(254, 254, 254));
+//$2java.awt.Color(254, 254, 254));
         message.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
         message.setEditable(false);
         message.setFont(new java.awt.Font("Tahoma", 0, 10)); // NOI18N

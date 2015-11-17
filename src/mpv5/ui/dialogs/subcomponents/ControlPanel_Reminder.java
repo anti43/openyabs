@@ -123,7 +123,7 @@ public class ControlPanel_Reminder extends javax.swing.JPanel implements DataPan
 
         jScrollPane1.setName("jScrollPane1"); // NOI18N
 
-        jTextPane1.setBackground(new java.awt.Color(254, 254, 254));
+//$2java.awt.Color(254, 254, 254));
         jTextPane1.setName("jTextPane1"); // NOI18N
         jScrollPane1.setViewportView(jTextPane1);
 
@@ -172,7 +172,7 @@ public class ControlPanel_Reminder extends javax.swing.JPanel implements DataPan
 
         add(jPanel1, java.awt.BorderLayout.EAST);
 
-        jPanel2.setBackground(new java.awt.Color(255, 255, 255));
+//$2java.awt.Color(255, 255, 255));
         jPanel2.setName("jPanel2"); // NOI18N
         jPanel2.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.RIGHT));
 

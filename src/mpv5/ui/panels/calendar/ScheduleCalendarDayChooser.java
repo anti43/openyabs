@@ -456,7 +456,7 @@ public final class ScheduleCalendarDayChooser extends JPanel implements KeyListe
                 selectedDay = days[i];
                 selectedDay.setBackground(selectedColor);
             } else if (days[i].hasEvents()) {
-                days[i].setBackground(Color.GREEN);
+//$2GREEN);
             }
         }
 
@@ -606,7 +606,7 @@ public final class ScheduleCalendarDayChooser extends JPanel implements KeyListe
                 days[x].setContentAreaFilled(false);
                 days[x].setBorder(new LineBorder(Color.white, 1, false));
                 days[x].setBorderPainted(true);
-                days[x].setBackground(Color.LIGHT_GRAY);
+//$2LIGHT_GRAY);
             }
 
             for (int x = 7; x < 49; x++) {

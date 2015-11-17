@@ -599,7 +599,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
         rightpane.setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("ItemPanel.rightpane.border.title"))); // NOI18N
         rightpane.setName("rightpane"); // NOI18N
 
-        jPanel1.setBackground(new java.awt.Color(204, 204, 204));
+//$2java.awt.Color(204, 204, 204));
         jPanel1.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         jPanel1.setName("jPanel1"); // NOI18N
         jPanel1.setPreferredSize(new java.awt.Dimension(843, 100));
@@ -609,7 +609,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
         jPanel9.setOpaque(false);
         jPanel9.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 10, 5));
 
-        type.setBackground(new java.awt.Color(255, 255, 255));
+//$2java.awt.Color(255, 255, 255));
         type.setFont(type.getFont().deriveFont(type.getFont().getStyle() | java.awt.Font.BOLD, type.getFont().getSize()+4));
         type.setForeground(new java.awt.Color(26, 34, 70));
         type.setText(bundle.getString("ItemPanel.type.text")); // NOI18N
@@ -727,7 +727,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
         jToolBar1.setRollover(true);
         jToolBar1.setName("jToolBar1"); // NOI18N
 
-        toorder.setBackground(new java.awt.Color(255, 255, 255));
+//$2java.awt.Color(255, 255, 255));
         toorder.setText(bundle.getString("ItemPanel.toorder.text")); // NOI18N
         toorder.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(153, 153, 153), 1, true));
         toorder.setEnabled(false);
@@ -745,7 +745,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
         });
         jToolBar1.add(toorder);
 
-        toinvoice.setBackground(new java.awt.Color(255, 255, 255));
+//$2java.awt.Color(255, 255, 255));
         toinvoice.setText(bundle.getString("ItemPanel.toinvoice.text")); // NOI18N
         toinvoice.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(153, 153, 153), 1, true));
         toinvoice.setEnabled(false);
@@ -774,7 +774,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
         jSeparator1.setName("jSeparator1"); // NOI18N
         jToolBar1.add(jSeparator1);
 
-        button_reminders.setBackground(new java.awt.Color(255, 255, 255));
+//$2java.awt.Color(255, 255, 255));
         button_reminders.setText(bundle.getString("ItemPanel.button_reminders.text")); // NOI18N
         button_reminders.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(153, 153, 153), 1, true));
         button_reminders.setEnabled(false);
@@ -792,7 +792,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
         });
         jToolBar1.add(button_reminders);
 
-        jButton2.setBackground(new java.awt.Color(255, 255, 255));
+//$2java.awt.Color(255, 255, 255));
         jButton2.setText(bundle.getString("ItemPanel.jButton2.text")); // NOI18N
         jButton2.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(153, 153, 153), 1, true));
         jButton2.setFocusable(false);
@@ -812,7 +812,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
         jSeparator7.setName("jSeparator7"); // NOI18N
         jToolBar1.add(jSeparator7);
 
-        button_schedule.setBackground(new java.awt.Color(255, 255, 255));
+//$2java.awt.Color(255, 255, 255));
         button_schedule.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/16/kalarm.png"))); // NOI18N
         button_schedule.setText(bundle.getString("ItemPanel.button_schedule.text")); // NOI18N
         button_schedule.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(153, 153, 153), 1, true));
@@ -833,7 +833,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
         });
         jToolBar1.add(button_schedule);
 
-        button_preview.setBackground(new java.awt.Color(255, 255, 255));
+//$2java.awt.Color(255, 255, 255));
         button_preview.setText(bundle.getString("ItemPanel.button_preview.text")); // NOI18N
         button_preview.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(153, 153, 153), 1, true));
         button_preview.setEnabled(false);
@@ -851,7 +851,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
         });
         jToolBar1.add(button_preview);
 
-        button_deliverynote.setBackground(new java.awt.Color(255, 255, 255));
+//$2java.awt.Color(255, 255, 255));
         button_deliverynote.setText(bundle.getString("ItemPanel.button_deliverynote.text")); // NOI18N
         button_deliverynote.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(153, 153, 153), 1, true));
         button_deliverynote.setEnabled(false);
@@ -869,7 +869,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
         });
         jToolBar1.add(button_deliverynote);
 
-        button_orderconf.setBackground(new java.awt.Color(255, 255, 255));
+//$2java.awt.Color(255, 255, 255));
         button_orderconf.setText(bundle.getString("ItemPanel.button_orderconf.text")); // NOI18N
         button_orderconf.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(153, 153, 153), 1, true));
         button_orderconf.setEnabled(false);
@@ -887,7 +887,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
         });
         jToolBar1.add(button_orderconf);
 
-        checkb_pront_oc.setBackground(new java.awt.Color(255, 255, 255));
+//$2java.awt.Color(255, 255, 255));
         checkb_pront_oc.setText(bundle.getString("ItemPanel.checkb_pront_oc.text")); // NOI18N
         checkb_pront_oc.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(153, 153, 153), 1, true));
         checkb_pront_oc.setEnabled(false);
@@ -900,7 +900,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
         checkb_pront_oc.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         jToolBar1.add(checkb_pront_oc);
 
-        jPanel2.setBackground(new java.awt.Color(255, 255, 255));
+//$2java.awt.Color(255, 255, 255));
         jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("ItemPanel.jPanel2.border.title"))); // NOI18N
         jPanel2.setName("jPanel2"); // NOI18N
         jPanel2.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 5, 0));
@@ -926,7 +926,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
         });
         jPanel2.add(jButton3);
 
-        jPanel5.setBackground(new java.awt.Color(255, 255, 255));
+//$2java.awt.Color(255, 255, 255));
         jPanel5.setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("ItemPanel.jPanel5.border.title"))); // NOI18N
         jPanel5.setName("jPanel5"); // NOI18N
         jPanel5.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.LEFT, 10, 0));
@@ -960,7 +960,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
         jPanel6.setPreferredSize(new java.awt.Dimension(869, 250));
         jPanel6.setLayout(new java.awt.BorderLayout());
 
-        jToolBar2.setBackground(new java.awt.Color(255, 255, 255));
+//$2java.awt.Color(255, 255, 255));
         jToolBar2.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(0, 102, 102), 1, true));
         jToolBar2.setFloatable(false);
         jToolBar2.setRollover(true);
@@ -1042,7 +1042,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
 
         jPanel6.add(jToolBar2, java.awt.BorderLayout.PAGE_END);
 
-        jPanel4.setBackground(new java.awt.Color(204, 204, 204));
+//$2java.awt.Color(204, 204, 204));
         jPanel4.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         jPanel4.setName("jPanel4"); // NOI18N
 
@@ -1166,7 +1166,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
         jScrollPane1.setBorder(null);
         jScrollPane1.setName("jScrollPane1"); // NOI18N
 
-        notes.setBackground(new java.awt.Color(254, 254, 254));
+//$2java.awt.Color(254, 254, 254));
         notes.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         notes.setText(bundle.getString("ItemPanel.notes.text")); // NOI18N
         notes.setToolTipText(bundle.getString("ItemPanel.notes.toolTipText")); // NOI18N

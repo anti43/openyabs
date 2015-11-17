@@ -92,7 +92,7 @@ public class wizard_CSVImport2_1 extends javax.swing.JPanel implements Wizardabl
         jRadioButton3 = new javax.swing.JRadioButton();
         labeledCombobox1 = new mpv5.ui.beans.LabeledCombobox();
 
-        setBackground(new java.awt.Color(255, 255, 255));
+        //\$2java.awt.Color(255, 255, 255));
         setName("Form"); // NOI18N
         setLayout(new java.awt.BorderLayout());
 
