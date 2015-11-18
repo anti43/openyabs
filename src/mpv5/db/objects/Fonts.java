@@ -27,10 +27,13 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JComponent;
 import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseConnection;
 import mpv5.db.common.DatabaseObject;
+import mpv5.db.common.NodataFoundException;
 import mpv5.logging.Log;
 import mpv5.ui.dialogs.Popup;
 import mpv5.utils.files.FileDirectoryHandler;
@@ -42,7 +45,7 @@ import mpv5.utils.images.MPIcon;
  *
  */
 public class Fonts extends DatabaseObject {
-    
+
     private static final long serialVersionUID = -5432724230929989412L;
     private String encoding = "";
     private boolean embedded = false;
@@ -51,12 +54,12 @@ public class Fonts extends DatabaseObject {
     private int color;
     private String filename;
     private File font;
-    
+
     public Fonts() {
         this.font = null;
         setContext(Context.getFonts());
     }
-    
+
     @Override
     public JComponent getView() {
         return null;
@@ -159,58 +162,66 @@ public class Fonts extends DatabaseObject {
     public void setFont(File font) {
         this.font = font;
     }
-    
+
     @Override
     public MPIcon getIcon() {
         return null;
     }
-    
+
     @Override
     public boolean save(boolean silent) {
         try {
-            String query = "INSERT INTO " + this.getDbIdentity() + " (cname, encoding, embedded, size, style, color, filename, font) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
-            Log.Debug(this, "Adding file: " + this.__getCname());
-            Connection sqlConn = DatabaseConnection.instanceOf().getConnection();
+            getObject(getContext(), __getCname());
+            return false;
+        } catch (NodataFoundException ndf) {
+
             try {
-                sqlConn.setAutoCommit(false);
-                PreparedStatement ps = sqlConn.prepareStatement(query, PreparedStatement.RETURN_GENERATED_KEYS);
-                ps.setString(1, this.__getCname());
-                ps.setString(2, this.__getEncoding());
-                ps.setBoolean(3, this.__isEmbedded());
-                ps.setDouble(4, this.__getSize());
-                ps.setInt(5, this.__getStyle());
-                ps.setInt(6, this.__getColor());
-                ps.setString(7, this.__getFilename());
-                if (font != null) {
-                    int fileLength = (int) font.length();
-                    if (font != null) {
-                        java.io.InputStream fin = new java.io.FileInputStream(font);
-                        ps.setBinaryStream(8, fin, fileLength);
-                    }
-                } else {
-                    ps.setBinaryStream(8, null, 0);
-                }
-                ps.execute();
-                sqlConn.commit();
-            } catch (FileNotFoundException ex) {
-                Log.Debug(this, "Datenbankfehler: " + query);
-                Log.Debug(this, ex.getLocalizedMessage());
-            } catch (SQLException ex) {
-                Log.Debug(this, "Datenbankfehler: " + query);
-                Log.Debug(this, ex.getLocalizedMessage());
-            } finally {
+                String query = "INSERT INTO " + this.getDbIdentity() + " (cname, encoding, embedded, size, style, color, filename, font) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+                Log.Debug(this, "Adding file: " + this.__getCname());
+                Connection sqlConn = DatabaseConnection.instanceOf().getConnection();
                 try {
-                    sqlConn.setAutoCommit(true);
-                } catch (SQLException ex) {
+                    sqlConn.setAutoCommit(false);
+                    PreparedStatement ps = sqlConn.prepareStatement(query, PreparedStatement.RETURN_GENERATED_KEYS);
+                    ps.setString(1, this.__getCname());
+                    ps.setString(2, this.__getEncoding());
+                    ps.setBoolean(3, this.__isEmbedded());
+                    ps.setDouble(4, this.__getSize());
+                    ps.setInt(5, this.__getStyle());
+                    ps.setInt(6, this.__getColor());
+                    ps.setString(7, this.__getFilename());
+                    if (font != null) {
+                        int fileLength = (int) font.length();
+                        if (font != null) {
+                            java.io.InputStream fin = new java.io.FileInputStream(font);
+                            ps.setBinaryStream(8, fin, fileLength);
+                        }
+                    } else {
+                        ps.setBinaryStream(8, null, 0);
+                    }
+                    ps.execute();
+                    sqlConn.commit();
+                } catch (FileNotFoundException ex) {
+                    Log.Debug(this, "Datenbankfehler: " + query);
                     Log.Debug(this, ex.getLocalizedMessage());
+                } catch (SQLException ex) {
+                    Log.Debug(this, "Datenbankfehler: " + query);
+                    Log.Debug(this, ex.getLocalizedMessage());
+                } finally {
+                    try {
+                        sqlConn.setAutoCommit(true);
+                    } catch (SQLException ex) {
+                        Log.Debug(this, ex.getLocalizedMessage());
+                    }
                 }
+            } catch (Exception ex) {
+                Log.Debug(this, ex.getLocalizedMessage());
             }
-        } catch (Exception ex) {
-            Log.Debug(this, ex.getLocalizedMessage());
+
+            return true;
         }
-        return true;
+
     }
-    
+
     @Override
     public boolean delete() {
         try {
@@ -221,7 +232,7 @@ public class Fonts extends DatabaseObject {
             try {
                 sqlConn.setAutoCommit(false);
                 int fileLength = (int) font.length();
-                
+
                 java.io.InputStream fin = new java.io.FileInputStream(font);
                 PreparedStatement ps = sqlConn.prepareStatement(query, PreparedStatement.RETURN_GENERATED_KEYS);
                 ps.setString(1, this.__getCname());
@@ -252,7 +263,7 @@ public class Fonts extends DatabaseObject {
         }
         return true;
     }
-    
+
     public static ArrayList<Fonts> get() {
         ArrayList<Fonts> list = new ArrayList<Fonts>();
         try {
@@ -277,7 +288,7 @@ public class Fonts extends DatabaseObject {
                     if (!f.__getFilename().equalsIgnoreCase("empty")) {
                         String sufix = f.__getFilename().substring(f.__getFilename().lastIndexOf("."));
                         byte[] buffer = new byte[1024];
-                        
+
                         InputStream binaryStream = rs.getBinaryStream("font");
                         File tmp = FileDirectoryHandler.getTempFile(sufix);
                         tmp.deleteOnExit();

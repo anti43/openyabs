@@ -55,16 +55,12 @@ public class YabsFontFactoryImpl extends ExtendedFontFactoryImp {
             try {
                 java.awt.Font cf = java.awt.Font.createFont(java.awt.Font.TYPE1_FONT, new File(path));
                 paths.put(cf.getFontName(), path);
-                Log.Debug(this, ex.getLocalizedMessage());
-            } catch (FontFormatException ex1) {
-                Log.Debug(this, ex1.getLocalizedMessage());
-            } catch (IOException ex1) {
-                Log.Debug(this, ex1.getLocalizedMessage());
+                Log.Debug(this, ex);
+            } catch (Exception ex1) {
+                Log.Debug(this,ex1);
             }
-        } catch (IOException ex) {
-            Log.Debug(this, ex.getLocalizedMessage());
         } catch (Exception e) {
-            Log.Debug(this, e.getLocalizedMessage());
+            Log.Debug(this, e);
         }
     }
 
@@ -157,9 +153,9 @@ public class YabsFontFactoryImpl extends ExtendedFontFactoryImp {
             }
             used.put(key, font);
         } catch (DocumentException ex) {
-            Log.Debug(this, ex.getLocalizedMessage());
+            Log.Debug(this, ex);
         } catch (IOException ex) {
-            Log.Debug(this, ex.getLocalizedMessage());
+            Log.Debug(this, ex);
         }
         return font;
     }
