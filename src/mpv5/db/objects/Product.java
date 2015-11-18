@@ -430,6 +430,9 @@ public class Product extends DatabaseObject implements Formattable, Templateable
          //already resolved?
          Log.Debug(numberFormatException);
       }
+      map.put("externalnetvalue", FormatNumber.formatDezimal(__getExternalnetvalue()));
+      map.put("externalbrutvalue", FormatNumber.formatDezimal(__getExternalnetvalue().multiply(Tax.getTaxValue(__getTaxids()))));
+      map.put("taxpercentvalue", Tax.getTaxValue(__getTaxids()));
 
       return super.resolveReferences(map);
    }
