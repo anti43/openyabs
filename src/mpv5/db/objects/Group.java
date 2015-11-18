@@ -17,7 +17,9 @@
 package mpv5.db.objects;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JComponent;
@@ -34,7 +36,6 @@ import mpv5.ui.dialogs.subcomponents.ControlPanel_Groups;
  */
 public class Group extends DatabaseObject {
 
-    
     /**
      * Returns an empty "sample" Object of the specified
      * <code>Context</code> type
@@ -43,7 +44,7 @@ public class Group extends DatabaseObject {
      * @return
      */
     public static Group getGroupOrDefault(int id) {
-        Context c = Context.getGroup(); 
+        Context c = Context.getGroup();
         try {
             return (Group) getObject(c, id);
         } catch (NodataFoundException ex) {
@@ -51,178 +52,163 @@ public class Group extends DatabaseObject {
             return getDefault();
         }
     }
-   /**
-    * Returns 'All Group' or the first group found if 'All group' is gone, and
-    * if all are deleted, creates a default group
-    *
-    * @return A group, never NULL
-    */
-   public static Group getDefault() {
-      try {
-         return (Group) DatabaseObject.getObject(Context.getGroup(), 1);
-      } catch (NodataFoundException ex) {
-         Log.Debug(ex);
-         try {
-            return (Group) DatabaseObject.getObjects(Context.getGroup()).get(0);
-         } catch (NodataFoundException nodataFoundException) {
-            Group g = new Group();
-            g.setCname("All Group#");
-            g.save();
-            return g;
-         }
-      }
-   }
-   private String description = "";
-   private String defaults = "";
-   private String hierarchypath = "";
-   public static String GROUPSEPARATOR = "/";
 
-   public Group() {
-      setContext(Context.getGroup());
-   }
-
-   public Group(String name) {
-      setContext(Context.getGroup());
-      setCname(name);
-   }
-
-   /**
-    * @return the description
-    */
-   public String __getDescription() {
-      return description;
-   }
-
-   /**
-    * @param description the description to set
-    */
-   public void setDescription(String description) {
-      this.description = description;
-   }
-
-   /**
-    * @return the defaultvalue
-    */
-   public String __getDefaults() {
-      return defaults;
-   }
-
-   /**
-    * @param defaultvalue the defaultvalue to set
-    */
-   public void setDefaults(String defaultvalue) {
-      this.defaults = defaultvalue;
-   }
-
-   @Override
-   public String toString() {
-      return __getCname();
-   }
-
-   @Override
-   public boolean delete() {
-      try {
-         List<Group> childs = DatabaseObject.getReferencedObjects(this, Context.getGroup());
-         for (int i = 0; i < childs.size(); i++) {
-            DatabaseObject databaseObject = childs.get(i);
-            if (!databaseObject.delete()) {
-               return false;
+    /**
+     * Returns 'All Group' or the first group found if 'All group' is gone, and
+     * if all are deleted, creates a default group
+     *
+     * @return A group, never NULL
+     */
+    public static Group getDefault() {
+        try {
+            return (Group) DatabaseObject.getObject(Context.getGroup(), 1);
+        } catch (NodataFoundException ex) {
+            Log.Debug(ex);
+            try {
+                return (Group) DatabaseObject.getObjects(Context.getGroup()).get(0);
+            } catch (NodataFoundException nodataFoundException) {
+                Group g = new Group();
+                g.setCname("All Group#");
+                g.save();
+                return g;
             }
-         }
-      } catch (NodataFoundException ex) {
-         mpv5.logging.Log.Debug(ex);//Logger.getLogger(Group.class.getName()).log(Level.SEVERE, null, ex);
-      }
-      try {
-         return super.delete();
-      } catch (Exception e) {
-         return false;
-      }
-   }
+        }
+    }
+    private String description = "";
+    private String defaults = "";
+    private String hierarchypath = "";
+    public static String GROUPSEPARATOR = "/";
 
-   @Override
-   public JComponent getView() {
+    public Group() {
+        setContext(Context.getGroup());
+    }
+
+    public Group(String name) {
+        setContext(Context.getGroup());
+        setCname(name);
+    }
+
+    /**
+     * @return the description
+     */
+    public String __getDescription() {
+        return description;
+    }
+
+    /**
+     * @param description the description to set
+     */
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    /**
+     * @return the defaultvalue
+     */
+    public String __getDefaults() {
+        return defaults;
+    }
+
+    /**
+     * @param defaultvalue the defaultvalue to set
+     */
+    public void setDefaults(String defaultvalue) {
+        this.defaults = defaultvalue;
+    }
+
+    @Override
+    public String toString() {
+        return __getCname();
+    }
+
+    @Override
+    public boolean delete() {
+        try {
+            List<Group> childs = DatabaseObject.getReferencedObjects(this, Context.getGroup());
+            for (int i = 0; i < childs.size(); i++) {
+                DatabaseObject databaseObject = childs.get(i);
+                if (!databaseObject.delete()) {
+                    return false;
+                }
+            }
+        } catch (NodataFoundException ex) {
+            mpv5.logging.Log.Debug(ex);//Logger.getLogger(Group.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        try {
+            return super.delete();
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    @Override
+    public JComponent getView() {
 //       MPControlPanel p = (MPControlPanel) MPControlPanel.instanceOf();
 //       p.openDetails(new ControlPanel_Groups(this));
-      return new ControlPanel_Groups(this);
-   }
+        return new ControlPanel_Groups(this);
+    }
 
-   @Override
-   public mpv5.utils.images.MPIcon getIcon() {
-      return null;
-   }
+    @Override
+    public mpv5.utils.images.MPIcon getIcon() {
+        return null;
+    }
 
-   /**
-    * @return the hierarchypath
-    */
-   public synchronized String __getHierarchypath() {
-      if (hierarchypath != null && hierarchypath.contains(Group.GROUPSEPARATOR + Group.GROUPSEPARATOR)) {
-         hierarchypath = null;
-      }
-      if (hierarchypath == null || hierarchypath.equals("")) {
-         int intp = __getIDS();
-         boolean done = false;
-         if (!isExisting()) {
-            return Group.GROUPSEPARATOR;
-         }
-         do {
+    /**
+     * @return the hierarchypath
+     */
+    public String __getHierarchypath() {
+        Set<Integer> used = new HashSet<Integer>();
+        hierarchypath = "";
+        int intp = __getIDS();
+        boolean notUsed = used.add(intp);
+        while (intp > 0 && notUsed) {
             try {
-               if (intp == Group.getDefault().__getIDS().intValue()) {
-                  done = true;
-               }
-               Group p = (Group) getObject(Context.getGroup(), intp);
-               hierarchypath = Group.GROUPSEPARATOR + p.__getCname() + hierarchypath;
-               int n = p.__getGroupsids();
-               if (n == intp) {
-                  Log.Debug(new Exception("Recursion detected"));
-                  intp = 0;
-               } else {
-                  intp = n;
-               }
+                ProductGroup p = (ProductGroup) getObject(Context.getProductGroup(), intp);
+                hierarchypath = p + Group.GROUPSEPARATOR + hierarchypath;
+                intp = p.__getProductgroupsids();
             } catch (NodataFoundException ex) {
-               intp = 0;
+                break;
             }
-         } while (!done && intp != 0);
-         //hierarchypath = hierarchypath.replaceFirst(Group.GROUPSEPARATOR, "");
-      }
-      return hierarchypath;
-   }
+        }
+        return hierarchypath;
+    }
 
-   /**
-    * @param hierarchypath the hierarchypath to set
-    */
-   public void setHierarchypath(String hierarchypath) {
-      this.hierarchypath = hierarchypath;
-   }
+    /**
+     * @param hierarchypath the hierarchypath to set
+     */
+    public void setHierarchypath(String hierarchypath) {
+        this.hierarchypath = hierarchypath;
+    }
 
-   @Override
-   public void setGroupsids(int a) {
-      super.setGroupsids(a);
-      hierarchypath = null;
-   }
+    @Override
+    public void setGroupsids(int a) {
+        super.setGroupsids(a);
+        hierarchypath = null;
+    }
 
-   /**
-    * Find the children and sub-children of this group
-    *
-    * @return
-    * @throws NodataFoundException
-    */
-   public List<Group> getChildGroups() throws NodataFoundException {
-      List<Group> childs = DatabaseObject.getReferencedObjects(this, Context.getGroup());
-      for (int i = 0; i < childs.size(); i++) {
-         Group databaseObject = childs.get(i);
-         childs.addAll(databaseObject.getChildGroups());
-      }
-      if (Log.LOGLEVEL_DEBUG == Log.getLoglevel()) {
-         Log.Debug(this, childs);
-      }
-      return childs;
-   }
+    /**
+     * Find the children and sub-children of this group
+     *
+     * @return
+     * @throws NodataFoundException
+     */
+    public List<Group> getChildGroups() throws NodataFoundException {
+        List<Group> childs = DatabaseObject.getReferencedObjects(this, Context.getGroup());
+        for (int i = 0; i < childs.size(); i++) {
+            Group databaseObject = childs.get(i);
+            childs.addAll(databaseObject.getChildGroups());
+        }
+        if (Log.LOGLEVEL_DEBUG == Log.getLoglevel()) {
+            Log.Debug(this, childs);
+        }
+        return childs;
+    }
 
-   /**
-    *
-    * @return True if the group has no parent group
-    */
-   public boolean isRoot() {
-      return __getGroupsids() == 0;
-   }
+    /**
+     *
+     * @return True if the group has no parent group
+     */
+    public boolean isRoot() {
+        return __getGroupsids() == 0;
+    }
 }

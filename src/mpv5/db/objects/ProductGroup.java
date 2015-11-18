@@ -18,7 +18,9 @@ package mpv5.db.objects;
 
 import java.util.ArrayList;
 import java.util.Enumeration;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JComponent;
@@ -41,246 +43,212 @@ import mpv5.ui.panels.MPControlPanel;
  */
 public class ProductGroup extends DatabaseObject {
 
-   private String description = "";
-   private String defaults = "";
-   private String hierarchypath = "";
-   private int productgroupsids;
+    private String description = "";
+    private String defaults = "";
+    private String hierarchypath = "";
+    private int productgroupsids;
 
-   public ProductGroup() {
-      setContext(Context.getProductGroup());
-   }
+    public ProductGroup() {
+        setContext(Context.getProductGroup());
+    }
 
-   public ProductGroup(String name) {
-      this();
-      setCname(name);
-   }
+    public ProductGroup(String name) {
+        this();
+        setCname(name);
+    }
 
-   /**
-    * @return the description
-    */
-   public String __getDescription() {
-      return description;
-   }
+    /**
+     * @return the description
+     */
+    public String __getDescription() {
+        return description;
+    }
 
-   /**
-    * @param description the description to set
-    */
-   public void setDescription(String description) {
-      this.description = description;
-   }
+    /**
+     * @param description the description to set
+     */
+    public void setDescription(String description) {
+        this.description = description;
+    }
 
-   /**
-    * @return the defaultvalue
-    */
-   public String __getDefaults() {
-      return defaults;
-   }
+    /**
+     * @return the defaultvalue
+     */
+    public String __getDefaults() {
+        return defaults;
+    }
 
-   /**
-    * @param defaultvalue the defaultvalue to set
-    */
-   public void setDefaults(String defaultvalue) {
-      this.defaults = defaultvalue;
-   }
+    /**
+     * @param defaultvalue the defaultvalue to set
+     */
+    public void setDefaults(String defaultvalue) {
+        this.defaults = defaultvalue;
+    }
 
-   @Override
-   public String toString() {
-      return __getCname();
-   }
+    @Override
+    public String toString() {
+        return __getCname();
+    }
 
-   @Override
-   public boolean delete() {
-      try {
-         List<ProductGroup> childs = DatabaseObject.getReferencedObjects(this, Context.getProductGroup());
-         for (int i = 0; i < childs.size(); i++) {
-            DatabaseObject databaseObject = childs.get(i);
-            if (!databaseObject.delete()) {
-               return false;
+    @Override
+    public boolean delete() {
+        try {
+            List<ProductGroup> childs = DatabaseObject.getReferencedObjects(this, Context.getProductGroup());
+            for (int i = 0; i < childs.size(); i++) {
+                DatabaseObject databaseObject = childs.get(i);
+                if (!databaseObject.delete()) {
+                    return false;
+                }
             }
-         }
-      } catch (NodataFoundException ex) {
-         mpv5.logging.Log.Debug(ex);//Logger.getLogger(ProductGroup.class.getName()).log(Level.SEVERE, null, ex);
-      }
-      try {
-         return super.delete();
-      } catch (Exception e) {
-         return false;
-      }
-   }
+        } catch (NodataFoundException ex) {
+            mpv5.logging.Log.Debug(ex);//Logger.getLogger(ProductGroup.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        try {
+            return super.delete();
+        } catch (Exception e) {
+            return false;
+        }
+    }
 
-   @Override
-   public JComponent getView() {
-      return new ControlPanel_ProductGroups(this);
-   }
+    @Override
+    public JComponent getView() {
+        return new ControlPanel_ProductGroups(this);
+    }
 
-   @Override
-   public mpv5.utils.images.MPIcon getIcon() {
-      return null;
-   }
+    @Override
+    public mpv5.utils.images.MPIcon getIcon() {
+        return null;
+    }
 
-   /**
-    * @return the hierarchypath
-    */
-//    public String __getHierarchypath() {
-//        if (hierarchypath == null || hierarchypath.equals("")) {
-//            int intp = __getIDS();
-//            do {
-//                try {
-//                    ProductGroup p = (ProductGroup) getObject(Context.getProductGroup(), intp);
-//                    hierarchypath =  p + Group.GROUPSEPARATOR + hierarchypath;
-//                    intp = p.__getProductgroupsids();
-//                } catch (NodataFoundException ex) {
-//                    break;
-//                }
-//            } while (intp >= 1);
-//        }
-//        return hierarchypath + this;
-//    }
-   public synchronized String __getHierarchypath() {
-
-      if (hierarchypath!=null&&hierarchypath.contains(Group.GROUPSEPARATOR + Group.GROUPSEPARATOR)) {
-         hierarchypath = "";
-      }
-      if (hierarchypath == null || hierarchypath.equals("")) {
-         int intp = __getIDS();
-         boolean done = false;
-         if (!isExisting()) {
-            return Group.GROUPSEPARATOR;
-         }
-         do {
+    /**
+     * @return the hierarchypath
+     */
+    public String __getHierarchypath() {
+        Set<Integer> used = new HashSet<Integer>();
+        hierarchypath = "";
+        int intp = __getIDS();
+        boolean notUsed = used.add(intp);
+        while (intp > 0 && notUsed) {
             try {
-               if (intp == Group.getDefault().__getIDS().intValue()) {
-                  done = true;
-               }
-               ProductGroup p = (ProductGroup) getObject(Context.getProductGroup(), intp);
-               hierarchypath = Group.GROUPSEPARATOR + p.__getCname() + hierarchypath;
-
-               int n = p.__getProductgroupsids();
-               if (n == intp) {
-                  Log.Debug(new Exception("Recursion detected"));
-                  done = true;
-               } else {
-                  intp = n;
-               }
+                ProductGroup p = (ProductGroup) getObject(Context.getProductGroup(), intp);
+                hierarchypath = p + Group.GROUPSEPARATOR + hierarchypath;
+                intp = p.__getProductgroupsids();
             } catch (NodataFoundException ex) {
-               done = true;
+                break;
             }
-         } while (!done && intp != 0);
-         hierarchypath = hierarchypath.replaceFirst(Group.GROUPSEPARATOR, "");
-      }
-      return hierarchypath;
-   }
+        };
+        return hierarchypath;
+    }
 
-   /**
-    * @param hierarchypath the hierarchypath to set
-    */
-   public void setHierarchypath(String hierarchypath) {
-      this.hierarchypath = hierarchypath;
-   }
+    /**
+     * @param hierarchypath the hierarchypath to set
+     */
+    public void setHierarchypath(String hierarchypath) {
+        this.hierarchypath = hierarchypath;
+    }
 
-   /**
-    * @return the productgroupsids
-    */
-   public int __getProductgroupsids() {
-      return productgroupsids;
-   }
+    /**
+     * @return the productgroupsids
+     */
+    public int __getProductgroupsids() {
+        return productgroupsids;
+    }
 
-   /**
-    * Returns 'All Group' or the first group found if 'All group' is gone, and
-    * if all are deleted, creates a default group
-    *
-    * @return A group, never NULL
-    */
-   public static ProductGroup getDefault() {
-      try {
-         return (ProductGroup) DatabaseObject.getObject(Context.getProductGroup(), 1);
-      } catch (NodataFoundException ex) {
-         Log.Debug(ex);
-         try {
-            return (ProductGroup) DatabaseObject.getObjects(Context.getProductGroup()).get(0);
-         } catch (NodataFoundException nodataFoundException) {
-            ProductGroup g = new ProductGroup();
-            g.setCname("All Group#");
-            g.save();
-            return g;
-         }
-      }
-   }
+    /**
+     * Returns 'All Group' or the first group found if 'All group' is gone, and
+     * if all are deleted, creates a default group
+     *
+     * @return A group, never NULL
+     */
+    public static ProductGroup getDefault() {
+        try {
+            return (ProductGroup) DatabaseObject.getObject(Context.getProductGroup(), 1);
+        } catch (NodataFoundException ex) {
+            Log.Debug(ex);
+            try {
+                return (ProductGroup) DatabaseObject.getObjects(Context.getProductGroup()).get(0);
+            } catch (NodataFoundException nodataFoundException) {
+                ProductGroup g = new ProductGroup();
+                g.setCname("All Group#");
+                g.save();
+                return g;
+            }
+        }
+    }
 
-   /**
-    * @param productgroupsids the productgroupsids to set
-    */
-   public void setProductgroupsids(int productgroupsids) {
-      this.productgroupsids = productgroupsids;
-      hierarchypath = null;
-   }
+    /**
+     * @param productgroupsids the productgroupsids to set
+     */
+    public void setProductgroupsids(int productgroupsids) {
+        this.productgroupsids = productgroupsids;
 
-   /**
-    * Create a tree model
-    *
-    * @param data
-    * @param rootNode
-    * @return
-    */
-   public static DefaultTreeModel toTreeModel(ArrayList<ProductGroup> data, ProductGroup rootNode) {
+    }
 
-      DefaultMutableTreeNode node1 = null;
-      if (data.size() > 0) {
-         DatabaseObject clone = rootNode.clone();
-         clone.ReadOnly(true);
-         clone.setCname("/");
-         node1 = new DefaultMutableTreeNode(clone);
+    /**
+     * Create a tree model
+     *
+     * @param data
+     * @param rootNode
+     * @return
+     */
+    public static DefaultTreeModel toTreeModel(ArrayList<ProductGroup> data, ProductGroup rootNode) {
+
+        DefaultMutableTreeNode node1 = null;
+        if (data.size() > 0) {
+            DatabaseObject clone = rootNode.clone();
+            clone.ReadOnly(true);
+            clone.setCname("/");
+            node1 = new DefaultMutableTreeNode(clone);
 //            data.remove(rootNode);//remove root if in list
-         try {
-            mpv5.YabsViewProxy.instance().setWaiting(true);
-            node1 = addToParents(node1, data);
+            try {
+                mpv5.YabsViewProxy.instance().setWaiting(true);
+                node1 = addToParents(node1, data);
 
-         } catch (Exception e) {
-            Log.Debug(e);
-         } finally {
-            mpv5.YabsViewProxy.instance().setWaiting(false);
-         }
-      }
-      DefaultTreeModel model = new DefaultTreeModel(node1);
-      return model;
-   }
-
-   @SuppressWarnings("unchecked")
-   private static DefaultMutableTreeNode addToParents(DefaultMutableTreeNode firstnode, ArrayList<ProductGroup> dobjlist) {
-
-      for (int i = 0; i < dobjlist.size(); i++) {
-         ProductGroup dobj = dobjlist.get(i);
-
-         if (dobj.__getProductgroupsids() <= 0 && firstnode.isRoot()) {
-//                Log.Debug(ArrayUtilities.class, "Node is root child, adding it to root and removing it from the list.");
-            firstnode.add(new DefaultMutableTreeNode(dobj));
-            dobjlist.remove(dobj);//First level groups
-            i--;
-         } else {
-            int parentid = dobj.__getProductgroupsids();
-            if (((ProductGroup) firstnode.getUserObject()).__getIDS().intValue() == parentid) {
-//                    Log.Debug(ArrayUtilities.class, "Node is child of parentnode, adding and removing it from the list.");
-               firstnode.add(new DefaultMutableTreeNode(dobj));
-               dobjlist.remove(dobj);
-               i--;
-            } else {
-//                    Log.Debug(ArrayUtilities.class, "Node is no child of parentnode, iterating over the parent node..");
-               @SuppressWarnings("unchecked")
-               Enumeration<DefaultMutableTreeNode> nodes = firstnode.children();
-               while (nodes.hasMoreElements()) {
-                  addToParents(nodes.nextElement(), dobjlist);
-               }
+            } catch (Exception e) {
+                Log.Debug(e);
+            } finally {
+                mpv5.YabsViewProxy.instance().setWaiting(false);
             }
-         }
-      }
-      return firstnode;
-   }
+        }
+        DefaultTreeModel model = new DefaultTreeModel(node1);
+        return model;
+    }
 
-   @Override
-   public void ensureUniqueness() {
-      if (!QueryHandler.instanceOf().clone(Context.getProductGroup()).checkUniqueness("cname", getCname())) {
-         throw new UnsupportedOperationException(Messages.VALUE_ALREADY_EXISTS + " " + getCname());
-      }
-   }
-   
+    @SuppressWarnings("unchecked")
+    private static DefaultMutableTreeNode addToParents(DefaultMutableTreeNode firstnode, ArrayList<ProductGroup> dobjlist) {
+
+        for (int i = 0; i < dobjlist.size(); i++) {
+            ProductGroup dobj = dobjlist.get(i);
+
+            if (dobj.__getProductgroupsids() <= 0 && firstnode.isRoot()) {
+//                Log.Debug(ArrayUtilities.class, "Node is root child, adding it to root and removing it from the list.");
+                firstnode.add(new DefaultMutableTreeNode(dobj));
+                dobjlist.remove(dobj);//First level groups
+                i--;
+            } else {
+                int parentid = dobj.__getProductgroupsids();
+                if (((ProductGroup) firstnode.getUserObject()).__getIDS().intValue() == parentid) {
+//                    Log.Debug(ArrayUtilities.class, "Node is child of parentnode, adding and removing it from the list.");
+                    firstnode.add(new DefaultMutableTreeNode(dobj));
+                    dobjlist.remove(dobj);
+                    i--;
+                } else {
+//                    Log.Debug(ArrayUtilities.class, "Node is no child of parentnode, iterating over the parent node..");
+                    @SuppressWarnings("unchecked")
+                    Enumeration<DefaultMutableTreeNode> nodes = firstnode.children();
+                    while (nodes.hasMoreElements()) {
+                        addToParents(nodes.nextElement(), dobjlist);
+                    }
+                }
+            }
+        }
+        return firstnode;
+    }
+
+    @Override
+    public void ensureUniqueness() {
+        if (!QueryHandler.instanceOf().clone(Context.getProductGroup()).checkUniqueness("cname", getCname())) {
+            throw new UnsupportedOperationException(Messages.VALUE_ALREADY_EXISTS + " " + getCname());
+        }
+    }
 }
