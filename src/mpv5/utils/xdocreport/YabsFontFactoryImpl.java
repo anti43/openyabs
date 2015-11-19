@@ -76,29 +76,21 @@ public class YabsFontFactoryImpl extends ExtendedFontFactoryImp {
         Font font;
         Fonts fonts;
         String key = createKey(fontname, encoding, embedded, size, style, color);
-        String cachekey = createCacheKey(fontname, encoding, embedded, style);
+        String cachekey = createCacheKey(fontname, encoding, embedded);
         if (used.containsKey(key)) {
-            Log.Debug(this, "Font is cached: " + key);
             font = used.get(key);
         } else {
             Log.Debug(this, "Font is NOT cached: " + key);
             if (YabsFontFactoryImpl.cached.containsKey(cachekey)) {
                 fonts = YabsFontFactoryImpl.cached.get(cachekey);
-                font = buildFont(fonts, size, color);
+                font = buildFont(fonts, size, color, style);
                 used.put(key, font);
-                return font;
             } else {
                 fonts = new Fonts();
                 fonts.setCname(fontname);
                 fonts.setEncoding(encoding);
                 fonts.setIsEmbedded(embedded);
-                fonts.setSize(size);
-                fonts.setStyle(style);
-                if (color != null) {
-                    fonts.setColor(color.getRGB());
-                } else {
-                    fonts.setColor(0);
-                }
+                
                 if (paths.containsKey(fontname)) {
                     String get = paths.get(fontname);
                     if (get != null) {
@@ -116,7 +108,7 @@ public class YabsFontFactoryImpl extends ExtendedFontFactoryImp {
                     fonts.setFont(null);
                 }
                 fonts.save();
-                font = buildFont(fonts, size, color);
+                font = buildFont(fonts, size, color, style);
                 YabsFontFactoryImpl.cached.put(cachekey, fonts);
                 used.put(key, font);
                 Log.Debug(this, "Font is saved: " + key);
@@ -125,7 +117,7 @@ public class YabsFontFactoryImpl extends ExtendedFontFactoryImp {
         return font;
     }
 
-    private static Font buildFont(Fonts f, float size, Color color) {
+    private static Font buildFont(Fonts f, float size, Color color, int style) {
         File tmp = f.__getFont();
         if (!"empty".equals(f.__getFilename()) && (tmp == null || !tmp.exists())) {
             f.delete();
@@ -136,9 +128,9 @@ public class YabsFontFactoryImpl extends ExtendedFontFactoryImp {
         try {
             if (!"empty".equals(f.__getFilename()) && f.__getFilename().endsWith("ttf")) {
                 basefont = BaseFont.createFont(f.__getFont().getAbsolutePath(), f.__getEncoding(), f.__isEmbedded(), true, null, null, true);
-                font = new Font(basefont, size, f.__getStyle(), color);
+                font = new Font(basefont, size, style, color);
             } else {
-                font = new Font(Font.UNDEFINED, size, f.__getStyle(), color);
+                font = new Font(Font.UNDEFINED, size, style, color);
             }
         } catch (DocumentException ex) {
             Log.Debug(YabsFontFactoryImpl.class, ex);
@@ -151,7 +143,7 @@ public class YabsFontFactoryImpl extends ExtendedFontFactoryImp {
     public static void cacheFonts() {
         ArrayList<Fonts> list = Fonts.get();
         for (Fonts f : list) {
-            String key = createCacheKey(f.__getCname(), f.__getEncoding(), f.__isEmbedded(), f.__getStyle());
+            String key = createCacheKey(f.__getCname(), f.__getEncoding(), f.__isEmbedded());
             cached.put(key, f);
             Log.Debug(YabsFontFactoryImpl.class, "cached Font: " + key);
         }
@@ -174,12 +166,12 @@ public class YabsFontFactoryImpl extends ExtendedFontFactoryImp {
         return key;
     }
 
-    private static String createCacheKey(String fontname, String encoding, boolean embedded, int style) {
+    private static String createCacheKey(String fontname, String encoding, boolean embedded) {
         String key = fontname + "#" + encoding + "#";
         if (embedded) {
-            key += "1" + "#" + style + "#";
+            key += "1";
         } else {
-            key += "0" + "#" + style + "#";
+            key += "0";
         }
 
         return key;

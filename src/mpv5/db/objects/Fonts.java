@@ -27,13 +27,10 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JComponent;
 import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseConnection;
 import mpv5.db.common.DatabaseObject;
-import mpv5.db.common.NodataFoundException;
 import mpv5.db.common.QueryCriteria2;
 import mpv5.db.common.QueryParameter;
 import mpv5.logging.Log;
@@ -51,9 +48,6 @@ public class Fonts extends DatabaseObject {
     private static final long serialVersionUID = -5432724230929989412L;
     private String encoding = "";
     private boolean embedded = false;
-    private float size;
-    private int style;
-    private int color;//fixme color can (imo) be removed
     private String filename;
     private File font;
 
@@ -95,48 +89,6 @@ public class Fonts extends DatabaseObject {
     }
 
     /**
-     * @return the size
-     */
-    public float __getSize() {
-        return size;
-    }
-
-    /**
-     * @param size the size to set
-     */
-    public void setSize(float size) {
-        this.size = size;
-    }
-
-    /**
-     * @return the style
-     */
-    public int __getStyle() {
-        return style;
-    }
-
-    /**
-     * @param style the style to set
-     */
-    public void setStyle(int style) {
-        this.style = style;
-    }
-
-    /**
-     * @return the color
-     */
-    public int __getColor() {
-        return color;
-    }
-
-    /**
-     * @param color the color to set
-     */
-    public void setColor(int color) {
-        this.color = color;
-    }
-
-    /**
      * @return the color
      */
     public String __getFilename() {
@@ -175,16 +127,13 @@ public class Fonts extends DatabaseObject {
     
         c2.and(new QueryParameter(getContext(), "cname", __getCname(), QueryParameter.EQUALS));
         c2.and(new QueryParameter(getContext(), "encoding", __getEncoding(), QueryParameter.EQUALS));
-        c2.and(new QueryParameter(getContext(), "style", __getStyle(), QueryParameter.EQUALS));
         c2.and(new QueryParameter(getContext(), "embedded", __isEmbedded(), QueryParameter.EQUALS));
-        //c2.and(new QueryParameter(getContext(), "color", __getColor(), QueryParameter.EQUALS));
-        //c2.and(new QueryParameter(getContext(), "size", __getSize(), QueryParameter.EQUALS));
         if (exists(getContext(), c2)) {
             return false;
         }
 
         try {
-            String query = "INSERT INTO " + this.getDbIdentity() + " (cname, encoding, embedded, size, style, color, filename, font) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+            String query = "INSERT INTO " + this.getDbIdentity() + " (cname, encoding, embedded, filename, font) VALUES (?, ?, ?, ?, ?)";
             Log.Debug(this, "Adding file: " + this.__getCname());
             Connection sqlConn = DatabaseConnection.instanceOf().getConnection();
             try {
@@ -193,18 +142,15 @@ public class Fonts extends DatabaseObject {
                 ps.setString(1, this.__getCname());
                 ps.setString(2, this.__getEncoding());
                 ps.setBoolean(3, this.__isEmbedded());
-                ps.setDouble(4, this.__getSize());
-                ps.setInt(5, this.__getStyle());
-                ps.setInt(6, this.__getColor());
-                ps.setString(7, this.__getFilename());
+                ps.setString(4, this.__getFilename());
                 if (font != null) {
                     int fileLength = (int) font.length();
                     if (fileLength>0) {
                         java.io.InputStream fin = new java.io.FileInputStream(font);
-                        ps.setBinaryStream(8, fin, fileLength);
+                        ps.setBinaryStream(5, fin, fileLength);
                     }
                 } else {
-                    ps.setBinaryStream(8, null, 0);
+                    ps.setBinaryStream(5, null, 0);
                 }
                 ps.execute();
                 sqlConn.commit();
@@ -231,8 +177,7 @@ public class Fonts extends DatabaseObject {
     @Override
     public boolean delete() {
         try {
-            String query = "DELETE FROM " + this.getDbIdentity() + " WHERE cname = ? AND encoding = ? AND embedded = ?"
-                    + "                                                AND size = ? AND style = ? AND color = ? AND filename = ?";
+            String query = "DELETE FROM " + this.getDbIdentity() + " WHERE cname = ? AND encoding = ? AND embedded = ? AND filename = ?";
             Log.Debug(this, "Deleting file: " + this.__getCname());
             Connection sqlConn = DatabaseConnection.instanceOf().getConnection();
             try {
@@ -244,10 +189,7 @@ public class Fonts extends DatabaseObject {
                 ps.setString(1, this.__getCname());
                 ps.setString(2, this.__getEncoding());
                 ps.setBoolean(3, this.__isEmbedded());
-                ps.setDouble(4, this.__getSize());
-                ps.setInt(5, this.__getStyle());
-                ps.setInt(6, this.__getColor());
-                ps.setString(7, this.__getFilename());
+                ps.setString(4, this.__getFilename());
                 ps.execute();
                 sqlConn.commit();
             } catch (FileNotFoundException ex) {
@@ -273,7 +215,7 @@ public class Fonts extends DatabaseObject {
     public static ArrayList<Fonts> get() {
         ArrayList<Fonts> list = new ArrayList<Fonts>();
         try {
-            String query = "SELECT ids, cname, encoding, embedded, size, style, color, font, filename FROM "
+            String query = "SELECT ids, cname, encoding, embedded, font, filename FROM "
                     + Context.getFonts().getDbIdentity();
             Connection sqlConn = DatabaseConnection.instanceOf().getConnection();
            
@@ -291,9 +233,6 @@ public class Fonts extends DatabaseObject {
                     f.setCname(rs.getString("cname"));
                     f.setEncoding(rs.getString("encoding"));
                     f.setIsEmbedded(rs.getBoolean("embedded"));
-                    f.setSize((float) rs.getDouble("size"));
-                    f.setStyle(rs.getInt("style"));
-                    f.setColor(rs.getInt("color"));
                     f.setFilename(rs.getString("filename"));
                     if (!f.__getFilename().equalsIgnoreCase("empty")) {
                         String sufix = f.__getFilename().substring(f.__getFilename().lastIndexOf("."));
