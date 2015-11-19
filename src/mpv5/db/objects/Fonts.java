@@ -199,7 +199,7 @@ public class Fonts extends DatabaseObject {
                 ps.setString(7, this.__getFilename());
                 if (font != null) {
                     int fileLength = (int) font.length();
-                    if (font != null) {
+                    if (fileLength>0) {
                         java.io.InputStream fin = new java.io.FileInputStream(font);
                         ps.setBinaryStream(8, fin, fileLength);
                     }
