@@ -53,7 +53,7 @@ public class Fonts extends DatabaseObject {
     private boolean embedded = false;
     private float size;
     private int style;
-    private int color;
+    private int color;//fixme color can (imo) be removed
     private String filename;
     private File font;
 
@@ -177,8 +177,8 @@ public class Fonts extends DatabaseObject {
         c2.and(new QueryParameter(getContext(), "encoding", __getEncoding(), QueryParameter.EQUALS));
         c2.and(new QueryParameter(getContext(), "style", __getStyle(), QueryParameter.EQUALS));
         c2.and(new QueryParameter(getContext(), "embedded", __isEmbedded(), QueryParameter.EQUALS));
-        c2.and(new QueryParameter(getContext(), "color", __getColor(), QueryParameter.EQUALS));
-        c2.and(new QueryParameter(getContext(), "size", __getSize(), QueryParameter.EQUALS));
+        //c2.and(new QueryParameter(getContext(), "color", __getColor(), QueryParameter.EQUALS));
+        //c2.and(new QueryParameter(getContext(), "size", __getSize(), QueryParameter.EQUALS));
         if (exists(getContext(), c2)) {
             return false;
         }
@@ -273,7 +273,7 @@ public class Fonts extends DatabaseObject {
     public static ArrayList<Fonts> get() {
         ArrayList<Fonts> list = new ArrayList<Fonts>();
         try {
-            String query = "SELECT cname, encoding, embedded, size, style, color, font, filename FROM "
+            String query = "SELECT ids, cname, encoding, embedded, size, style, color, font, filename FROM "
                     + Context.getFonts().getDbIdentity();
             Connection sqlConn = DatabaseConnection.instanceOf().getConnection();
            
@@ -287,6 +287,7 @@ public class Fonts extends DatabaseObject {
                 Log.Debug(Fonts.class, query);
                 while (rs.next()) {
                     Fonts f = new Fonts();
+                    f.setIDS(rs.getInt("ids"));
                     f.setCname(rs.getString("cname"));
                     f.setEncoding(rs.getString("encoding"));
                     f.setIsEmbedded(rs.getBoolean("embedded"));

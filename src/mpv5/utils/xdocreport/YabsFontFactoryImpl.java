@@ -37,6 +37,7 @@ public class YabsFontFactoryImpl extends ExtendedFontFactoryImp {
 
     private final HashMap<String, String> paths = new HashMap<String, String>();
     private static final HashMap<String, Font> used = new HashMap<String, Font>();
+    private static final HashMap<String, Fonts> cached = new HashMap<String, Fonts>();
     public static YabsFontFactoryImpl instance = new YabsFontFactoryImpl();
 
     private YabsFontFactoryImpl() {
@@ -73,47 +74,58 @@ public class YabsFontFactoryImpl extends ExtendedFontFactoryImp {
     @Override
     public Font getFont(String fontname, String encoding, boolean embedded, float size, int style, Color color, boolean cached) {
         Font font;
+        Fonts fonts;
         String key = createKey(fontname, encoding, embedded, size, style, color);
+        String cachekey = createCacheKey(fontname, encoding, embedded, style);
         if (used.containsKey(key)) {
-            Log.Debug(this, "Font is cached: "+ key);
+            Log.Debug(this, "Font is cached: " + key);
             font = used.get(key);
         } else {
-            Log.Debug(this, "Font is NOT cached: "+ key);
-            Fonts fonts = new Fonts();
-            fonts.setCname(fontname);
-            fonts.setEncoding(encoding);
-            fonts.setIsEmbedded(embedded);
-            fonts.setSize(size);
-            fonts.setStyle(style);
-            if (color != null) {
-                fonts.setColor(color.getRGB());
+            Log.Debug(this, "Font is NOT cached: " + key);
+            if (YabsFontFactoryImpl.cached.containsKey(cachekey)) {
+                fonts = YabsFontFactoryImpl.cached.get(cachekey);
+                font = buildFont(fonts, size, color);
+                used.put(key, font);
+                return font;
             } else {
-                fonts.setColor(0);
-            }
-            if (paths.containsKey(fontname)) {
-                String get = paths.get(fontname);
-                if (get != null) {
-                    String filename = get.substring(get.lastIndexOf(File.separator));
-                    fonts.setFilename(filename);
-                    File f = new File(get);
-                    fonts.setFont(f);
+                fonts = new Fonts();
+                fonts.setCname(fontname);
+                fonts.setEncoding(encoding);
+                fonts.setIsEmbedded(embedded);
+                fonts.setSize(size);
+                fonts.setStyle(style);
+                if (color != null) {
+                    fonts.setColor(color.getRGB());
+                } else {
+                    fonts.setColor(0);
+                }
+                if (paths.containsKey(fontname)) {
+                    String get = paths.get(fontname);
+                    if (get != null) {
+                        String filename = get.substring(get.lastIndexOf(File.separator));
+                        fonts.setFilename(filename);
+                        File f = new File(get);
+                        fonts.setFont(f);
+                    } else {
+                        fonts.setFilename("empty");
+                        fonts.setFont(null);
+                    }
+
                 } else {
                     fonts.setFilename("empty");
                     fonts.setFont(null);
                 }
-
-            } else {
-                fonts.setFilename("empty");
-                fonts.setFont(null);
+                fonts.save();
+                font = buildFont(fonts, size, color);
+                YabsFontFactoryImpl.cached.put(cachekey, fonts);
+                used.put(key, font);
+                Log.Debug(this, "Font is saved: " + key);
             }
-            fonts.save();
-            font = buildFont(fonts);
-            used.put(key, font);
         }
         return font;
     }
 
-    private static Font buildFont(Fonts f) {
+    private static Font buildFont(Fonts f, float size, Color color) {
         File tmp = f.__getFont();
         if (!"empty".equals(f.__getFilename()) && (tmp == null || !tmp.exists())) {
             f.delete();
@@ -124,9 +136,9 @@ public class YabsFontFactoryImpl extends ExtendedFontFactoryImp {
         try {
             if (!"empty".equals(f.__getFilename()) && f.__getFilename().endsWith("ttf")) {
                 basefont = BaseFont.createFont(f.__getFont().getAbsolutePath(), f.__getEncoding(), f.__isEmbedded(), true, null, null, true);
-                font = new Font(basefont, f.__getSize(), f.__getStyle(), new Color(f.__getColor()));
+                font = new Font(basefont, size, f.__getStyle(), color);
             } else {
-                font = new Font(Font.UNDEFINED, f.__getSize(), f.__getStyle(), new Color(f.__getColor()));
+                font = new Font(Font.UNDEFINED, size, f.__getStyle(), color);
             }
         } catch (DocumentException ex) {
             Log.Debug(YabsFontFactoryImpl.class, ex);
@@ -137,16 +149,13 @@ public class YabsFontFactoryImpl extends ExtendedFontFactoryImp {
     }
 
     public static void cacheFonts() {
-        if (!used.isEmpty()) {
-            return;
-        }
         ArrayList<Fonts> list = Fonts.get();
         for (Fonts f : list) {
-            used.put(createKey(f.__getCname(), f.__getEncoding(), f.__isEmbedded(),
-                    f.__getSize(), f.__getStyle(), new Color(f.__getColor())),
-                    buildFont(f));
+            String key = createCacheKey(f.__getCname(), f.__getEncoding(), f.__isEmbedded(), f.__getStyle());
+            cached.put(key, f);
+            Log.Debug(YabsFontFactoryImpl.class, "cached Font: " + key);
         }
-        Log.Debug(YabsFontFactoryImpl.class, "cacheFonts: " + used.size());
+        Log.Debug(YabsFontFactoryImpl.class, "cacheFonts: " + cached.size());
     }
 
     private static String createKey(String fontname, String encoding, boolean embedded,
@@ -162,6 +171,17 @@ public class YabsFontFactoryImpl extends ExtendedFontFactoryImp {
         } else {
             key += "0";
         }
+        return key;
+    }
+
+    private static String createCacheKey(String fontname, String encoding, boolean embedded, int style) {
+        String key = fontname + "#" + encoding + "#";
+        if (embedded) {
+            key += "1" + "#" + style + "#";
+        } else {
+            key += "0" + "#" + style + "#";
+        }
+
         return key;
     }
 }

@@ -300,7 +300,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
         t.start();
     }
 
-    private static synchronized void cacheObject(final DatabaseObject databaseObject) {
+    public static synchronized void cacheObject(final DatabaseObject databaseObject) {
         if (databaseObject != null && databaseObject.__getIDS().intValue() > 0) {
             cache.put(databaseObject.getDbIdentity() + "@" + databaseObject.__getIDS(), new SoftReference<DatabaseObject>(databaseObject));
         }
