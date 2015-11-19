@@ -34,6 +34,8 @@ import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseConnection;
 import mpv5.db.common.DatabaseObject;
 import mpv5.db.common.NodataFoundException;
+import mpv5.db.common.QueryCriteria2;
+import mpv5.db.common.QueryParameter;
 import mpv5.logging.Log;
 import mpv5.ui.dialogs.Popup;
 import mpv5.utils.files.FileDirectoryHandler;
@@ -56,7 +58,6 @@ public class Fonts extends DatabaseObject {
     private File font;
 
     public Fonts() {
-        this.font = null;
         setContext(Context.getFonts());
     }
 
@@ -170,56 +171,61 @@ public class Fonts extends DatabaseObject {
 
     @Override
     public boolean save(boolean silent) {
-        try {
-            getObject(getContext(), __getCname());
+        QueryCriteria2 c2 = new QueryCriteria2();
+    
+        c2.and(new QueryParameter(getContext(), "cname", __getCname(), QueryParameter.EQUALS));
+        c2.and(new QueryParameter(getContext(), "encoding", __getEncoding(), QueryParameter.EQUALS));
+        c2.and(new QueryParameter(getContext(), "style", __getStyle(), QueryParameter.EQUALS));
+        c2.and(new QueryParameter(getContext(), "embedded", __isEmbedded(), QueryParameter.EQUALS));
+        c2.and(new QueryParameter(getContext(), "color", __getColor(), QueryParameter.EQUALS));
+        c2.and(new QueryParameter(getContext(), "size", __getSize(), QueryParameter.EQUALS));
+        if (exists(getContext(), c2)) {
             return false;
-        } catch (NodataFoundException ndf) {
-
-            try {
-                String query = "INSERT INTO " + this.getDbIdentity() + " (cname, encoding, embedded, size, style, color, filename, font) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
-                Log.Debug(this, "Adding file: " + this.__getCname());
-                Connection sqlConn = DatabaseConnection.instanceOf().getConnection();
-                try {
-                    sqlConn.setAutoCommit(false);
-                    PreparedStatement ps = sqlConn.prepareStatement(query, PreparedStatement.RETURN_GENERATED_KEYS);
-                    ps.setString(1, this.__getCname());
-                    ps.setString(2, this.__getEncoding());
-                    ps.setBoolean(3, this.__isEmbedded());
-                    ps.setDouble(4, this.__getSize());
-                    ps.setInt(5, this.__getStyle());
-                    ps.setInt(6, this.__getColor());
-                    ps.setString(7, this.__getFilename());
-                    if (font != null) {
-                        int fileLength = (int) font.length();
-                        if (font != null) {
-                            java.io.InputStream fin = new java.io.FileInputStream(font);
-                            ps.setBinaryStream(8, fin, fileLength);
-                        }
-                    } else {
-                        ps.setBinaryStream(8, null, 0);
-                    }
-                    ps.execute();
-                    sqlConn.commit();
-                } catch (FileNotFoundException ex) {
-                    Log.Debug(this, "Datenbankfehler: " + query);
-                    Log.Debug(this, ex.getLocalizedMessage());
-                } catch (SQLException ex) {
-                    Log.Debug(this, "Datenbankfehler: " + query);
-                    Log.Debug(this, ex.getLocalizedMessage());
-                } finally {
-                    try {
-                        sqlConn.setAutoCommit(true);
-                    } catch (SQLException ex) {
-                        Log.Debug(this, ex.getLocalizedMessage());
-                    }
-                }
-            } catch (Exception ex) {
-                Log.Debug(this, ex.getLocalizedMessage());
-            }
-
-            return true;
         }
 
+        try {
+            String query = "INSERT INTO " + this.getDbIdentity() + " (cname, encoding, embedded, size, style, color, filename, font) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+            Log.Debug(this, "Adding file: " + this.__getCname());
+            Connection sqlConn = DatabaseConnection.instanceOf().getConnection();
+            try {
+                sqlConn.setAutoCommit(false);
+                PreparedStatement ps = sqlConn.prepareStatement(query, PreparedStatement.RETURN_GENERATED_KEYS);
+                ps.setString(1, this.__getCname());
+                ps.setString(2, this.__getEncoding());
+                ps.setBoolean(3, this.__isEmbedded());
+                ps.setDouble(4, this.__getSize());
+                ps.setInt(5, this.__getStyle());
+                ps.setInt(6, this.__getColor());
+                ps.setString(7, this.__getFilename());
+                if (font != null) {
+                    int fileLength = (int) font.length();
+                    if (font != null) {
+                        java.io.InputStream fin = new java.io.FileInputStream(font);
+                        ps.setBinaryStream(8, fin, fileLength);
+                    }
+                } else {
+                    ps.setBinaryStream(8, null, 0);
+                }
+                ps.execute();
+                sqlConn.commit();
+            } catch (FileNotFoundException ex) {
+                Log.Debug(this, "Datenbankfehler: " + query);
+                Log.Debug(this, ex);
+            } catch (SQLException ex) {
+                Log.Debug(this, "Datenbankfehler: " + query);
+                Log.Debug(this, ex);
+            } finally {
+                try {
+                    sqlConn.setAutoCommit(true);
+                } catch (SQLException ex) {
+                    Log.Debug(this, ex);
+                }
+            }
+        } catch (Exception ex) {
+            Log.Debug(this, ex);
+        }
+
+        return true;
     }
 
     @Override
@@ -246,20 +252,20 @@ public class Fonts extends DatabaseObject {
                 sqlConn.commit();
             } catch (FileNotFoundException ex) {
                 Log.Debug(this, "Datenbankfehler: " + query);
-                Log.Debug(this, ex.getLocalizedMessage());
+                Log.Debug(this, ex);
                 Popup.error(ex);
             } catch (SQLException ex) {
                 Log.Debug(this, "Datenbankfehler: " + query);
-                Log.Debug(this, ex.getLocalizedMessage());
+                Log.Debug(this, ex);
             } finally {
                 try {
                     sqlConn.setAutoCommit(true);
                 } catch (SQLException ex) {
-                    Log.Debug(this, ex.getLocalizedMessage());
+                    Log.Debug(this, ex);
                 }
             }
         } catch (Exception ex) {
-            Log.Debug(this, ex.getLocalizedMessage());
+            Log.Debug(this, ex);
         }
         return true;
     }
@@ -270,11 +276,14 @@ public class Fonts extends DatabaseObject {
             String query = "SELECT cname, encoding, embedded, size, style, color, font, filename FROM "
                     + Context.getFonts().getDbIdentity();
             Connection sqlConn = DatabaseConnection.instanceOf().getConnection();
+           
             Statement stm = null;
             ResultSet resultSet = null;
-            try {
+            try { 
+                sqlConn.setAutoCommit(false);
                 stm = sqlConn.createStatement();
                 ResultSet rs = stm.executeQuery(query);
+
                 Log.Debug(Fonts.class, query);
                 while (rs.next()) {
                     Fonts f = new Fonts();
@@ -310,25 +319,31 @@ public class Fonts extends DatabaseObject {
                     list.add(f);
                 }
             } catch (SQLException ex) {
-                Log.Debug(Fonts.class, ex.getLocalizedMessage());
+                Log.Debug(Fonts.class, ex);
             } finally {
+                try {
+                    sqlConn.commit();
+                    sqlConn.setAutoCommit(true);
+                } catch (SQLException ex) {
+                    Log.Debug(ex);
+                }
                 if (resultSet != null) {
                     try {
                         resultSet.close();
                     } catch (SQLException ex) {
-                        Log.Debug(Fonts.class, ex.getLocalizedMessage());
+                        Log.Debug(Fonts.class, ex);
                     }
                 }
                 if (stm != null) {
                     try {
                         stm.close();
                     } catch (SQLException ex) {
-                        Log.Debug(Fonts.class, ex.getLocalizedMessage());
+                        Log.Debug(Fonts.class, ex);
                     }
                 }
             }
         } catch (Exception ex) {
-            Log.Debug(Fonts.class, ex.getLocalizedMessage());
+            Log.Debug(Fonts.class, ex);
         }
         return list;
     }
