@@ -35,15 +35,13 @@ import mpv5.logging.Log;
  */
 public class YabsFontFactoryImpl extends ExtendedFontFactoryImp {
 
-    private final HashMap<String, String> paths;
-    private final HashMap<String, Font> used;
+    private final HashMap<String, String> paths = new HashMap<String, String>();
+    private static final HashMap<String, Font> used = new HashMap<String, Font>();
     public static YabsFontFactoryImpl instance = new YabsFontFactoryImpl();
 
     private YabsFontFactoryImpl() {
         super();
-        this.paths = new HashMap<String, String>();
-        this.used = new HashMap<String, Font>();
-        readUsed();
+        cacheFonts();
     }
 
     @Override
@@ -57,7 +55,7 @@ public class YabsFontFactoryImpl extends ExtendedFontFactoryImp {
                 paths.put(cf.getFontName(), path);
                 Log.Debug(this, ex);
             } catch (Exception ex1) {
-                Log.Debug(this,ex1);
+                Log.Debug(this, ex1);
             }
         } catch (Exception e) {
             Log.Debug(this, e);
@@ -75,20 +73,12 @@ public class YabsFontFactoryImpl extends ExtendedFontFactoryImp {
     @Override
     public Font getFont(String fontname, String encoding, boolean embedded, float size, int style, Color color, boolean cached) {
         Font font;
-        String key = fontname + "#" + encoding + "#";
-        if (embedded) {
-            key += "1" + "#" + size + "#" + style + "#";
-        } else {
-            key += "0" + "#" + size + "#" + style + "#";
-        }
-        if (color != null) {
-            key += color.getRGB();
-        } else {
-            key += "0";
-        }
+        String key = createKey(fontname, encoding, embedded, size, style, color);
         if (used.containsKey(key)) {
+            Log.Debug(this, "Font is cached: "+ key);
             font = used.get(key);
         } else {
+            Log.Debug(this, "Font is NOT cached: "+ key);
             Fonts fonts = new Fonts();
             fonts.setCname(fontname);
             fonts.setEncoding(encoding);
@@ -118,45 +108,60 @@ public class YabsFontFactoryImpl extends ExtendedFontFactoryImp {
             }
             fonts.save();
             font = buildFont(fonts);
+            used.put(key, font);
         }
         return font;
     }
 
-    private void readUsed() {
-        ArrayList<Fonts> list = Fonts.get();
-        for (Fonts f : list) {
-            buildFont(f);
-        }
-    }
-
-    private Font buildFont(Fonts f) {
+    private static Font buildFont(Fonts f) {
         File tmp = f.__getFont();
         if (!"empty".equals(f.__getFilename()) && (tmp == null || !tmp.exists())) {
             f.delete();
             return null;
         }
-        String key = f.__getCname() + "#" + f.__getEncoding() + "#";
-        if (f.__isEmbedded()) {
-            key += "1" + "#" + f.__getSize() + "#" + f.__getStyle() + "#";
-        } else {
-            key += "0" + "#" + +f.__getSize() + "#" + f.__getStyle() + "#";
-        }
-        key += f.__getColor();
         BaseFont basefont;
         Font font = null;
         try {
-            if (!"empty".equals(f.__getFilename())) {
+            if (!"empty".equals(f.__getFilename()) && f.__getFilename().endsWith("ttf")) {
                 basefont = BaseFont.createFont(f.__getFont().getAbsolutePath(), f.__getEncoding(), f.__isEmbedded(), true, null, null, true);
                 font = new Font(basefont, f.__getSize(), f.__getStyle(), new Color(f.__getColor()));
             } else {
                 font = new Font(Font.UNDEFINED, f.__getSize(), f.__getStyle(), new Color(f.__getColor()));
             }
-            used.put(key, font);
         } catch (DocumentException ex) {
-            Log.Debug(this, ex);
+            Log.Debug(YabsFontFactoryImpl.class, ex);
         } catch (IOException ex) {
-            Log.Debug(this, ex);
+            Log.Debug(YabsFontFactoryImpl.class, ex);
         }
         return font;
+    }
+
+    public static void cacheFonts() {
+        if (!used.isEmpty()) {
+            return;
+        }
+        ArrayList<Fonts> list = Fonts.get();
+        for (Fonts f : list) {
+            used.put(createKey(f.__getCname(), f.__getEncoding(), f.__isEmbedded(),
+                    f.__getSize(), f.__getStyle(), new Color(f.__getColor())),
+                    buildFont(f));
+        }
+        Log.Debug(YabsFontFactoryImpl.class, "cacheFonts: " + used.size());
+    }
+
+    private static String createKey(String fontname, String encoding, boolean embedded,
+            float size, int style, Color color) {
+        String key = fontname + "#" + encoding + "#";
+        if (embedded) {
+            key += "1" + "#" + size + "#" + style + "#";
+        } else {
+            key += "0" + "#" + size + "#" + style + "#";
+        }
+        if (color != null) {
+            key += color.getRGB();
+        } else {
+            key += "0";
+        }
+        return key;
     }
 }
