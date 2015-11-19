@@ -248,7 +248,7 @@ public class QueryHandler implements Cloneable {
 
     protected void setLimit(int limit) {
         if (limit > this.limit || limit < this.limit) {
-            Log.Debug(QueryHandler.class, "Setting row limit for this connection to: " + limit);
+            Log.Debug(QueryHandler.class, "Setting row limit for this connection ('" + table + "') to: " + limit);
             this.limit = limit;
         }
     }
@@ -1063,6 +1063,7 @@ public class QueryHandler implements Cloneable {
     protected void stop() {
         if (!runInBackground) {
             Runnable runnable = new Runnable() {
+
                 @Override
                 public void run() {
                     try {//Avoid Cursor flickering
@@ -1165,16 +1166,16 @@ public class QueryHandler implements Cloneable {
     }
 
     /*private byte[] blobToByteArray(final Reader characterStream) throws SQLException, IOException {
-     //byte[] is for BLOB data (or char[]?)
-     ByteArrayOutputStream baos = new ByteArrayOutputStream();
-     Writer writer = new OutputStreamWriter(baos, "utf-8");
-     char[] buffer = new char[4096];
-     for (int count = 0; (count = characterStream.read(buffer)) != -1;) {
-     writer.write(buffer, 0, count);
-     }
-     writer.close();
-     return baos.toByteArray();
-     }*/
+    //byte[] is for BLOB data (or char[]?)
+    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+    Writer writer = new OutputStreamWriter(baos, "utf-8");
+    char[] buffer = new char[4096];
+    for (int count = 0; (count = characterStream.read(buffer)) != -1;) {
+    writer.write(buffer, 0, count);
+    }
+    writer.close();
+    return baos.toByteArray();
+    }*/
     private static String ivpquery = "INSERT INTO " + Context.getValueProperties().getDbIdentity()
             + "(value, cname, classname, objectids, contextids, intaddedby, dateadded, groupsids )"
             + " VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
@@ -1242,7 +1243,6 @@ public class QueryHandler implements Cloneable {
         String query = "INSERT INTO " + table + " (" + what.getKeysString() + " ) VALUES (" + what.getValuesString() + ") ";
         return freeUpdateQuery(query, mpv5.usermanagement.MPSecurityManager.CREATE_OR_DELETE, jobmessage).getId();
     }
-
     private final Object uvppsLock = new Object();
     private final Object psHistoryLock = new Object();
     private final Object psLockLock = new Object();
@@ -2126,8 +2126,10 @@ public class QueryHandler implements Cloneable {
         String wher = "";
         start();
 
-        if (condition != null) {
+        if (what != null && condition != null) {
             wher = " WHERE " + what + " " + condition;
+        } else if (what == null && condition != null) {
+            wher = " WHERE " + condition;
         }
         String query = "SELECT COUNT(1) AS rowcount FROM " + table + " " + wher;
         String message = "Database Error (SelectCount:COUNT):";
@@ -2858,6 +2860,7 @@ public class QueryHandler implements Cloneable {
         synchronized (stats) {
             List keys = new LinkedList(stats.keySet());
             Collections.sort(keys, new Comparator() {
+
                 @Override
                 @SuppressWarnings("element-type-mismatch")
                 public int compare(Object o1, Object o2) {
@@ -2913,6 +2916,7 @@ public class QueryHandler implements Cloneable {
             setProgress(100);
             if (viewToBeNotified != null) {
                 Runnable runnable = new Runnable() {
+
                     @Override
                     public void run() {
                         viewToBeNotified.refresh();
