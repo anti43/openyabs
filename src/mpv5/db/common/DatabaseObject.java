@@ -2231,7 +2231,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
         }
     }
 
-      /**
+    /**
      * Return true if the given data exist in the given Context
      *
      * @param cont
@@ -2249,7 +2249,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
             return false;
         }
     }
-    
+
     /**
      * Return true if the given cname exist in the given Context
      *
@@ -2590,6 +2590,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
         if (!cachedFormFieldsByKey.containsKey(key)) {
             cachedFormFieldsByKey.put(key, new FormFieldsHandler(this).getFormattedFormFields(key));
         }
+        Log.Debug(this, ".........." + key + ":>\n\n" + cachedFormFieldsByKey);
         return cachedFormFieldsByKey.get(key);
     }
 

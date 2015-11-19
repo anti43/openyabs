@@ -303,7 +303,9 @@ public abstract class VariablesHandler {
                 }
             }
         }
-        text = source.evaluateAll(text);
+        String sm = GlobalSettings.getProperty("org.openyabs.config.scriptsymbol", "#");
+        if(text.contains(sm))
+           text = source.evaluateAll(text);
 
         return text;
     }
