@@ -126,7 +126,7 @@ public abstract class VariablesHandler {
      * @return
      */
     public static synchronized List<String[]> resolveVarsFor(final DatabaseObject target) {
-        return resolveVarsFor(target, Collections.EMPTY_MAP);
+        return resolveVarsFor(target, target.getFormFields());
     }
 
     /**
@@ -185,7 +185,7 @@ public abstract class VariablesHandler {
         Iterator iterator = preResolvedVars.entrySet().iterator();
         while (iterator.hasNext()) {
             Map.Entry mapEntry = (Map.Entry) iterator.next();
-            vars.add(new String[]{"[" + String.valueOf(mapEntry.getKey()) + "]", String.valueOf(mapEntry.getValue())});
+            vars.add(new String[]{"[" + String.valueOf(mapEntry.getKey()).toUpperCase() + "]", String.valueOf(mapEntry.getValue())});
         }
         /*int j;
          for (j = 0; j < specs.length; j++) {
@@ -276,7 +276,7 @@ public abstract class VariablesHandler {
      * @return
      */
     public static synchronized String parse(String text, final DatabaseObject source) {
-        return parse(text, source, Collections.EMPTY_MAP);
+        return parse(text, source, source.getFormFields());
     }
 
     /**
