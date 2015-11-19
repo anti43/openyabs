@@ -79,6 +79,7 @@ import mpv5.utils.files.FileReaderWriter;
 import mpv5.utils.print.PrintJob2;
 import mpv5.utils.reflection.ClasspathTools;
 import mpv5.utils.text.RandomText;
+import mpv5.utils.xdocreport.YabsFontFactoryImpl;
 import mpv5.webshopinterface.WSIManager;
 import org.jdesktop.application.FrameView;
 
@@ -111,6 +112,8 @@ public class Main implements Runnable {
                 Log.Debug(Main.class, Messages.CACHED_OBJECTS + ": " + Context.getUser());
                 LanguageManager.getCountriesAsComboBoxModel();
                 Log.Debug(Main.class, Messages.CACHED_OBJECTS + ": " + Context.getCountries());
+                YabsFontFactoryImpl.cacheFonts();
+                Log.Debug(Main.class, Messages.CACHED_OBJECTS + ": " + Context.getFonts());
             }
         };
         new Thread(runnable).start();
