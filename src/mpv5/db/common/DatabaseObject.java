@@ -22,6 +22,8 @@ import groovy.lang.Binding;
 import groovy.lang.Closure;
 import java.awt.Color;
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.Serializable;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -73,6 +75,7 @@ import mpv5.globals.GlobalSettings;
 import mpv5.handler.FormFieldsHandler;
 import mpv5.ui.dialogs.DialogForFile;
 import mpv5.utils.export.Export;
+import mpv5.utils.files.FileDirectoryHandler;
 import mpv5.utils.jobs.Job;
 import mpv5.utils.jobs.Waiter;
 import org.codehaus.groovy.control.CompilationFailedException;
@@ -259,6 +262,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
     public static void cacheObjects(final Context[] contextArray) {
 
         Runnable runnable = new Runnable() {
+
             @Override
             public void run() {
                 Log.Debug(DatabaseObject.class, "Start caching objects..");
@@ -416,11 +420,26 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
                                 }
                             }
                         }
+                    } else if (File.class.isAssignableFrom(method.getParameterTypes()[0])) {
+                        //a blob
+                        File f = FileDirectoryHandler.getTempFile();
+                        FileOutputStream stream = new FileOutputStream(f);
+                        try {
+                            stream.write((byte[]) argument);
+                            stream.close();
+                            method.invoke(dbo, new Object[]{f});
+                        } finally {
+                            stream.close();
+                        }
                     } else {
-                        //defaults to java.lang.String, Object args are not supported.. possibly later via XMLEncoder?
-                        method.invoke(dbo, new Object[]{(argument instanceof byte[])
-                            ? new String((byte[]) argument)
-                            : String.valueOf(argument)});
+                        try {
+                            //defaults to java.lang.String, Object args are not supported.. possibly later via XMLEncoder?
+                            method.invoke(dbo, new Object[]{(argument instanceof byte[])
+                                        ? new String((byte[]) argument)
+                                        : String.valueOf(argument)});
+                        } catch (Exception uie) {
+                            Log.Debug(dbo, new IllegalArgumentException(method + ": " + argument.getClass(), uie));
+                        }
                     }
                 } else {
                     if (int.class.isAssignableFrom(method.getParameterTypes()[0])) {
@@ -845,6 +864,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
 
                 if (!silent && Context.getArchivableContexts().contains(getContext())) {
                     Runnable runnable = new Runnable() {
+
                         @Override
                         public void run() {
                             QueryHandler.instanceOf().clone(Context.getHistory()).insertHistoryItem(fmessage, mpv5.db.objects.User.getCurrentUser().__getCname(), fdbid, fids, fgids);
@@ -965,6 +985,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
             final int fgids = this.groupsids;
             if (!this.getType().equals(new HistoryItem().getType())) {
                 Runnable runnable = new Runnable() {
+
                     @Override
                     public void run() {
                         QueryHandler.instanceOf().clone(Context.getHistory()).insertHistoryItem(fmessage, mpv5.db.objects.User.getCurrentUser().__getCname(), fdbid, fids, fgids);
@@ -1001,6 +1022,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
         final int fids = this.ids;
         final int fgids = this.groupsids;
         Runnable runnable = new Runnable() {
+
             @Override
             public void run() {
                 QueryHandler.instanceOf().clone(Context.getHistory()).insertHistoryItem(fmessage, mpv5.db.objects.User.getCurrentUser().__getCname(), fdbid, fids, fgids);
@@ -1096,6 +1118,9 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
                         data.add(left, (Long) tempval);
                     } else if (tempval.getClass().isInstance(new BigDecimal(0))) {
                         data.add(left, (BigDecimal) tempval);
+                    } else if (File.class.isAssignableFrom(tempval.getClass())) {
+                        /*NOT supported by following INSERT! insert yourself..data.add(left, (File) tempval);*/
+                        throw new IllegalArgumentException("File NOT supported by current INSERT implementation. Override save() method and insert blobs yourself.");
                     } else if (DatabaseObject.class.isAssignableFrom(tempval.getClass())) {
                         data.add(left + "sids", ((DatabaseObject) tempval).__getIDS());
                     } else {
@@ -1194,13 +1219,13 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
                 } else if (DatabaseObject.class.isAssignableFrom(vars.get(key).getReturnType())) {
                     try {
                         vals.add(new String[]{key,
-                            String.valueOf(vars.get(key).invoke(this, new Object[0]))});
+                                    String.valueOf(vars.get(key).invoke(this, new Object[0]))});
                     } catch (Exception ex) {
                         vals.add(new String[]{key, ""});
                     }
                 } else {
                     vals.add(new String[]{key,
-                        String.valueOf(vars.get(key).invoke(this, new Object[0]))});
+                                String.valueOf(vars.get(key).invoke(this, new Object[0]))});
                 }
             } catch (Exception n) {
                 Log.Debug(this, n);
@@ -1237,7 +1262,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
                     vals.add(new String[]{name, DateConverter.getDefDateString(DateConverter.getDate(value))});
                 } else if (name.toUpperCase().startsWith("VALUE") || name.toUpperCase().endsWith("VALUE")) {
                     vals.add(new String[]{name, FormatNumber.formatDezimal(FormatNumber.parseDezimal(value.toString()))});
-                } else if (name.toUpperCase().startsWith("CNUMBER") ) {
+                } else if (name.toUpperCase().startsWith("CNUMBER")) {
                     vals.add(new String[]{name, String.valueOf(value)});
                 } else {
                     vals.add(new String[]{name, VariablesHandler.parse(String.valueOf(value), this)});
@@ -1262,7 +1287,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
         for (String name : vars.keySet()) {
             try {
                 vals.add(new Object[]{name.toLowerCase(),
-                    (vars.get(name).invoke(this, new Object[0]))});
+                            (vars.get(name).invoke(this, new Object[0]))});
             } catch (Exception n) {
                 Log.Debug(this, "Failed to invoke " + vars.get(name) + " ( " + this + " ) ");
 //                Log.Debug(this, n);
@@ -2006,6 +2031,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
         for (final String key : vars.keySet()) {
             final Method method = vars.get(key);
             s.add(new Map.Entry<String, Class<?>>() {
+
                 public String getKey() {
                     return key;
                 }
@@ -2068,7 +2094,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
             Method method = m[i];
             if (method.getName().startsWith("set")) {
                 Object o = method.invoke(sdo, new Object[]{this.getClass().getMethod(method.getName().replace("set", "get"),
-                    (Class[]) null).invoke(this, new Object[0])});
+                            (Class[]) null).invoke(this, new Object[0])});
             }
         }
     }
@@ -2195,12 +2221,50 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
      */
     public static boolean exists(Context cont, Integer ids) {
         try {
-            if (QueryHandler.instanceOf().clone(cont).select(ids).getData().length > 0) {
+            if (QueryHandler.instanceOf().clone(cont).selectCount("ids", ids.toString()) > 0) {
                 return true;
             } else {
                 return false;
             }
-        } catch (NodataFoundException ex) {
+        } catch (Exception ex) {
+            return false;
+        }
+    }
+
+      /**
+     * Return true if the given data exist in the given Context
+     *
+     * @param cont
+     * @param ids
+     * @return
+     */
+    public static boolean exists(Context cont, QueryCriteria2 c2) {
+        try {
+            if (QueryHandler.instanceOf().clone(cont).selectCount(null, c2.getQuery()) > 0) {
+                return true;
+            } else {
+                return false;
+            }
+        } catch (Exception ex) {
+            return false;
+        }
+    }
+    
+    /**
+     * Return true if the given cname exist in the given Context
+     *
+     * @param cont
+     * @param ids
+     * @return
+     */
+    public static boolean exists(Context cont, String cname) {
+        try {
+            if (QueryHandler.instanceOf().clone(cont).selectCount("cname", "=" + cname) > 0) {
+                return true;
+            } else {
+                return false;
+            }
+        } catch (Exception ex) {
             return false;
         }
     }
@@ -2463,6 +2527,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
         final List<String> ff = Arrays.asList(fields);
 
         Map<String, Object> copy = new TreeMap<String, Object>(new Comparator<String>() {
+
             @Override
             public int compare(String a, String b) {
                 if (a.equals(b)) {
@@ -2517,7 +2582,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
         return getObject(Context.getMatchingContext(contextname), field, value);
     }
 
-    public synchronized  Map<String, Object> getFormFields() {
+    public synchronized Map<String, Object> getFormFields() {
         return getFormFields(null);
     }
 
