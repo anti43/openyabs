@@ -2128,7 +2128,7 @@ ItemPanel2.button_schedule.text=Zeitplan
 ItemPanel2.checkb_pront_oc.text=Print with OC
 ItemPanel2.discount.text=0
 ItemPanel2.notes.toolTipText=freier Text/Beschreibung
-ItemPanel2.toinvoice.text=erzeuge Rechnung
+ItemPanel2.toinvoice.text=Rechnung erstellen
 ItemPanel2.jLabel5.text_1=Rabatt
 ItemPanel2.date3._Label=End Date
 ItemPanel2.panel2.TabConstraints.tabTitle=Zusatzinfo
@@ -2141,7 +2141,7 @@ ItemPanel2.removefile.toolTipText=lösche Datei
 ItemPanel2.button_reminders.text=erinnern
 ItemPanel2.addfile.text=
 ItemPanel2.value.text=0
-ActivityConfirmationPanel.jButton4.text=erzeuge Rechnung
+ActivityConfirmationPanel.jButton4.text=Rechnung erstellen
 ContactPanel.button_activitylists.text=Aktivitäten
 ItemPanel2.jLabel9.text= = 
 ActivityConfirmationPanel.jLabel5.text=Aktivitäten wurden bereits gebucht!
