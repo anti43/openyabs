@@ -56,8 +56,7 @@ import java.util.List;
 public class XMLWriter {
 
     public static final String rootElementName = Constants.XML_ROOT;
-    public static DocType DEFAULT_DOCTYPE = new DocType(rootElementName, Constants.XML_DOCTYPE_ID,
-            Constants.XML_DOCTYPE_URL);
+    public static DocType DEFAULT_DOCTYPE = new DocType(rootElementName);
     private Element rootElement = new Element(rootElementName);
     private Document myDocument = new Document();
     private Element defaultSubRoot;

@@ -87,8 +87,6 @@ public interface Constants {
     public static String ICON_NAME_LIN = "yabs.desktop";
     public static String ICON_NAME_WIN = "YaBS.url";
     public static String XML_ROOT = "mpv5";
-    public static String XML_DOCTYPE_ID = "-//http://openyabs.org//DTD mpv5 V 1.0//EN";
-    public static String XML_DOCTYPE_URL = "http://openyabs.org/files/yabs_import_1.0.dtd";
     public static String SPLASH_IMAGE = "/mpv5/resources/images/background_l.png";
     public static String ABOUT_IMAGE = "/mpv5/resources/images/about1.png";
     public static String ICON = "/mpv5/resources/images/icon.png";
@@ -110,7 +108,6 @@ public interface Constants {
     public static String LANGUAGES_DIR = "languages";
     public static String PLUGINS_DIR = "plugins";
     public static String TEMPLATES_DIR = "templates";
-    public static String BABELFISH_URL = "http://ajax.googleapis.com/ajax/services/language/translate?v=1.0&langpair=";
     public static String FALLBACK_CACHE_DIR = "Cache";//Go for a relative path
     public static String LIBS_DIR = "lib";
     public static BigDecimal BD100 = new BigDecimal("100");
