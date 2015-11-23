@@ -48,11 +48,9 @@ public class wizard_DBSettings_simple_1 extends javax.swing.JPanel implements Wi
 
     public wizard_DBSettings_simple_1(Wizard w, Integer forConnId) {
         this.master = w;
-        initComponents();
-        labeledTextChooser2.setMode(JFileChooser.DIRECTORIES_ONLY);
+        initComponents(); 
         jComboBox1.setModel(new DefaultComboBoxModel(ConnectionTypeHandler.DRIVERS));
         this.forConnId = forConnId;
-        checkOS();
         load();
     }
 
@@ -76,18 +74,10 @@ public class wizard_DBSettings_simple_1 extends javax.swing.JPanel implements Wi
                 LocalSettings.setProperty(LocalSettings.DBPASSWORD, master.getStore().getProperty("password"));
                 LocalSettings.setProperty(LocalSettings.DBNAME, master.getStore().getProperty("dbname"));
                 LocalSettings.setProperty(LocalSettings.DBPREFIX, master.getStore().getProperty("dbprefix"));
-                if (!jCheckBox3.isSelected() && labeledTextChooser2.hasText()) {
-                    LocalSettings.setProperty(LocalSettings.OFFICE_HOME, labeledTextChooser2.get_Text(true));
-                    LocalSettings.setProperty(LocalSettings.OFFICE_USE, "true");
-                    LocalSettings.setProperty(LocalSettings.OFFICE_REMOTE, "false");
-                } else if (labeledTextField1.getText().length() > 0 && labeledTextField2.getText().length() > 0) {
-                    LocalSettings.setProperty(LocalSettings.OFFICE_HOST, labeledTextField1.getText());
-                    LocalSettings.setProperty(LocalSettings.OFFICE_PORT, labeledTextField2.getText());
-                    LocalSettings.setProperty(LocalSettings.OFFICE_USE, "true");
-                    LocalSettings.setProperty(LocalSettings.OFFICE_REMOTE, "true");
-                } else {
-                    LocalSettings.setProperty(LocalSettings.OFFICE_USE, "false");
-                }
+
+                LocalSettings.setProperty(LocalSettings.OFFICE_USE, "false");
+                LocalSettings.setProperty(LocalSettings.OFFICE_ALT, "true");
+
                 if (jCheckBox2.isSelected()) {
                     LocalSettings.setProperty(LocalSettings.DBTYPE, "network");
                 } else {
@@ -181,12 +171,6 @@ public class wizard_DBSettings_simple_1 extends javax.swing.JPanel implements Wi
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jPanel1 = new javax.swing.JPanel();
-        labeledTextChooser2 = new mpv5.ui.beans.LabeledTextChooser();
-        jCheckBox3 = new javax.swing.JCheckBox();
-        labeledTextField1 = new mpv5.ui.beans.LabeledTextField();
-        labeledTextField2 = new mpv5.ui.beans.LabeledTextField();
-        jLabel3 = new javax.swing.JLabel();
         jPanel2 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         jComboBox1 = new javax.swing.JComboBox();
@@ -208,67 +192,10 @@ public class wizard_DBSettings_simple_1 extends javax.swing.JPanel implements Wi
         jButton1 = new javax.swing.JButton();
         jCheckBox4 = new javax.swing.JCheckBox();
 
-        //\$2java.awt.Color(255, 255, 255));
-        java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle(); // NOI18N
+        setBackground(new java.awt.Color(255, 255, 255));
+        java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle();  // NOI18N
         setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("wizard_DBSettings_simple_1.border.title"))); // NOI18N
         setName("Form"); // NOI18N
-
-        jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("wizard_DBSettings_simple_1.jPanel1.border.title"))); // NOI18N
-        jPanel1.setName("jPanel1"); // NOI18N
-
-        labeledTextChooser2.set_Label(bundle.getString("wizard_DBSettings_simple_1.labeledTextChooser2._Label")); // NOI18N
-        labeledTextChooser2.setName("labeledTextChooser2"); // NOI18N
-
-        jCheckBox3.setText(bundle.getString("wizard_DBSettings_simple_1.jCheckBox3.text")); // NOI18N
-        jCheckBox3.setName("jCheckBox3"); // NOI18N
-        jCheckBox3.addItemListener(new java.awt.event.ItemListener() {
-            public void itemStateChanged(java.awt.event.ItemEvent evt) {
-                jCheckBox3ItemStateChanged(evt);
-            }
-        });
-
-        labeledTextField1.set_Label(bundle.getString("wizard_DBSettings_simple_1.labeledTextField1._Label")); // NOI18N
-        labeledTextField1.set_Text(bundle.getString("wizard_DBSettings_simple_1.labeledTextField1._Text")); // NOI18N
-        labeledTextField1.setEnabled(false);
-        labeledTextField1.setName("labeledTextField1"); // NOI18N
-
-        labeledTextField2.set_Label(bundle.getString("wizard_DBSettings_simple_1.labeledTextField2._Label")); // NOI18N
-        labeledTextField2.setEnabled(false);
-        labeledTextField2.setName("labeledTextField2"); // NOI18N
-
-        jLabel3.setText(bundle.getString("wizard_DBSettings_simple_1.jLabel3.text")); // NOI18N
-        jLabel3.setName("jLabel3"); // NOI18N
-
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(labeledTextChooser2, javax.swing.GroupLayout.DEFAULT_SIZE, 556, Short.MAX_VALUE)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(jCheckBox3, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(labeledTextField1, javax.swing.GroupLayout.DEFAULT_SIZE, 257, Short.MAX_VALUE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(labeledTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, 157, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(jLabel3))
-                .addContainerGap())
-        );
-        jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addComponent(labeledTextChooser2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jLabel3)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 6, Short.MAX_VALUE)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
-                    .addComponent(labeledTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jCheckBox3)
-                    .addComponent(labeledTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap())
-        );
 
         jPanel2.setEnabled(false);
         jPanel2.setName("jPanel2"); // NOI18N
@@ -277,7 +204,7 @@ public class wizard_DBSettings_simple_1 extends javax.swing.JPanel implements Wi
         jLabel1.setName("jLabel1"); // NOI18N
 
         jComboBox1.setEditable(true);
-        jComboBox1.setFont(new java.awt.Font("Dialog", 0, 11)); // NOI18N
+        jComboBox1.setFont(new java.awt.Font("Dialog", 0, 11));
         jComboBox1.setName("jComboBox1"); // NOI18N
         jComboBox1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -350,12 +277,12 @@ public class wizard_DBSettings_simple_1 extends javax.swing.JPanel implements Wi
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(labeledTextChooser1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 528, Short.MAX_VALUE)
+                    .addComponent(labeledTextChooser1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 533, Short.MAX_VALUE)
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addComponent(labeledTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jCheckBox1, javax.swing.GroupLayout.DEFAULT_SIZE, 333, Short.MAX_VALUE))
-                    .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, 528, Short.MAX_VALUE)
+                        .addComponent(jCheckBox1, javax.swing.GroupLayout.DEFAULT_SIZE, 331, Short.MAX_VALUE))
+                    .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, 533, Short.MAX_VALUE)
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addComponent(prefix, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -368,7 +295,7 @@ public class wizard_DBSettings_simple_1 extends javax.swing.JPanel implements Wi
                             .addComponent(jLabel1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 183, Short.MAX_VALUE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(jCheckBox2, javax.swing.GroupLayout.DEFAULT_SIZE, 345, Short.MAX_VALUE)
+                            .addComponent(jCheckBox2, javax.swing.GroupLayout.DEFAULT_SIZE, 350, Short.MAX_VALUE)
                             .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
                 .addContainerGap())
         );
@@ -407,10 +334,10 @@ public class wizard_DBSettings_simple_1 extends javax.swing.JPanel implements Wi
         jScrollPane1.setVerticalScrollBarPolicy(javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER);
         jScrollPane1.setName("jScrollPane1"); // NOI18N
 
-//$2java.awt.Color(236, 233, 216));
+        jTextArea1.setBackground(new java.awt.Color(-986896,true));
         jTextArea1.setColumns(20);
         jTextArea1.setEditable(false);
-        jTextArea1.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
+        jTextArea1.setFont(new java.awt.Font("Tahoma", 0, 12));
         jTextArea1.setLineWrap(true);
         jTextArea1.setRows(5);
         jTextArea1.setText(bundle.getString("wizard_DBSettings_simple_1.jTextArea1.text")); // NOI18N
@@ -422,11 +349,11 @@ public class wizard_DBSettings_simple_1 extends javax.swing.JPanel implements Wi
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 576, Short.MAX_VALUE)
+            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 591, Short.MAX_VALUE)
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 143, Short.MAX_VALUE)
+            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 117, Short.MAX_VALUE)
         );
 
         jButton1.setText(bundle.getString("wizard_DBSettings_simple_1.jButton1.text")); // NOI18N
@@ -437,36 +364,33 @@ public class wizard_DBSettings_simple_1 extends javax.swing.JPanel implements Wi
             }
         });
 
+        jCheckBox4.setBackground(new java.awt.Color(-1,true));
         jCheckBox4.setFont(jCheckBox4.getFont().deriveFont(jCheckBox4.getFont().getStyle() | java.awt.Font.BOLD));
         jCheckBox4.setText(bundle.getString("wizard_DBSettings_simple_1.jCheckBox4.text")); // NOI18N
         jCheckBox4.setName("jCheckBox4"); // NOI18N
-        jCheckBox4.setOpaque(false);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addComponent(jCheckBox4, javax.swing.GroupLayout.DEFAULT_SIZE, 487, Short.MAX_VALUE)
+                .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 0, javax.swing.GroupLayout.PREFERRED_SIZE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addGap(4, 4, 4)
+                .addComponent(jCheckBox4, javax.swing.GroupLayout.DEFAULT_SIZE, 500, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jButton1)
                 .addContainerGap())
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jPanel3, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 0, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 13, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                    .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 17, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButton1)
                     .addComponent(jCheckBox4)))
@@ -491,12 +415,6 @@ public class wizard_DBSettings_simple_1 extends javax.swing.JPanel implements Wi
 
     }//GEN-LAST:event_jButton2ActionPerformed
 
-    private void jCheckBox3ItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_jCheckBox3ItemStateChanged
-        labeledTextField1.setEnabled(jCheckBox3.isSelected());
-        labeledTextField2.setEnabled(jCheckBox3.isSelected());
-        labeledTextChooser2.setEnabled(!jCheckBox3.isSelected());
-    }//GEN-LAST:event_jCheckBox3ItemStateChanged
-
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
 
         prefix.setEnabled(true);
@@ -515,23 +433,17 @@ public class wizard_DBSettings_simple_1 extends javax.swing.JPanel implements Wi
     private javax.swing.JButton jButton3;
     private javax.swing.JCheckBox jCheckBox1;
     private javax.swing.JCheckBox jCheckBox2;
-    private javax.swing.JCheckBox jCheckBox3;
     private javax.swing.JCheckBox jCheckBox4;
     private javax.swing.JComboBox jComboBox1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
-    private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTextArea jTextArea1;
     private mpv5.ui.beans.LabeledTextChooser labeledTextChooser1;
-    private mpv5.ui.beans.LabeledTextChooser labeledTextChooser2;
-    private mpv5.ui.beans.LabeledTextField labeledTextField1;
-    private mpv5.ui.beans.LabeledTextField labeledTextField2;
     private mpv5.ui.beans.LabeledTextField labeledTextField3;
     private mpv5.ui.beans.LabeledTextField labeledTextField4;
     private mpv5.ui.beans.LabeledTextField labeledTextField5;
@@ -559,42 +471,7 @@ public class wizard_DBSettings_simple_1 extends javax.swing.JPanel implements Wi
             dbn += forConnId;
         }
         labeledTextChooser1.set_Text(Main.MPPATH);
-        labeledTextField3.set_Text(dbn);
-        labeledTextField1.requestFocusInWindow();
+        labeledTextField3.set_Text(dbn); 
     }
 
-    private void checkOS() {
-        try {
-            NoaConnection.definePath();
-            IApplicationAssistant applicationAssistant = new ApplicationAssistant();
-            ILazyApplicationInfo appInfo = applicationAssistant.getLatestLocalLibreOfficeApplication();
-            if (appInfo == null) {
-                appInfo = applicationAssistant.getLatestLocalOpenOfficeOrgApplication();
-            }
-            if (appInfo == null) {
-                if (Main.osIsMacOsX) {
-                    labeledTextChooser2.set_Text("/Applications/OpenOffice.org.app/Contents/");
-                    LocalSettings.setProperty(LocalSettings.OFFICE_BINARY_FOLDER, "MacOS");
-                    jCheckBox2.setSelected(true);
-                } else if (Main.osIsWindows) {
-                    labeledTextChooser2.set_Text("C:\\\\Program Files\\LibreOffice 3.4\\");
-                    LocalSettings.setProperty(LocalSettings.OFFICE_BINARY_FOLDER, "program");
-                } else if (Main.osIsLinux) {
-                    labeledTextChooser2.set_Text("/opt/openoffice.org3");
-                    if (!new File(labeledTextChooser2.get_Text(false)).exists()) {
-                        labeledTextChooser2.set_Text("/usr/lib64/ooo3/");
-                    }
-                    LocalSettings.setProperty(LocalSettings.OFFICE_BINARY_FOLDER, "program");
-                }
-
-                if (!new File(labeledTextChooser2.get_Text(false)).exists()) {
-                    labeledTextChooser2.setText("");
-                }
-            } else {
-                labeledTextChooser2.setText(appInfo.getHome());
-            }
-        } catch (OfficeApplicationException ex) {
-            Logger.getLogger(wizard_DBSettings_simple_1.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }
 }

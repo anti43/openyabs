@@ -1013,7 +1013,7 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
 
         jButton5.setFont(jButton5.getFont().deriveFont(jButton5.getFont().getSize()-1f));
         jButton5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/agt_family.png"))); // NOI18N
-        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("mpv5/resources/languages/Panels"); // NOI18N
+        java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle();  // NOI18N
         jButton5.setText(bundle.getString("MPView.jButton5.text_1")); // NOI18N
         jButton5.setToolTipText(bundle.getString("MPView.jButton5.toolTipText_1")); // NOI18N
         jButton5.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
@@ -2782,7 +2782,7 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
       w.setLocationRelativeTo(getIdentifierFrame());
       w.addPanel(new wizard_FirstSettings1(w));
       w.addPanel(new wizard_FirstSettings2(w));
-      w.addPanel(new wizard_FirstSettings3(w));
+      //w.addPanel(new wizard_FirstSettings3(w));
       w.addPanel(new wizard_FirstSettings4(w));
       w.addPanel(new wizard_FirstSettings5(w));
       w.showWizAsChild();

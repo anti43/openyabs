@@ -51,7 +51,6 @@ import mpv5.ui.dialogs.BigPopup;
 import mpv5.ui.dialogs.DialogForFile;
 import mpv5.ui.dialogs.Notificator;
 import mpv5.ui.dialogs.Search2;
-import mpv5.ui.panels.LOAPanel;
 import mpv5.ui.panels.PreviewPanel;
 import mpv5.utils.export.Export;
 import mpv5.utils.export.ODTFile;

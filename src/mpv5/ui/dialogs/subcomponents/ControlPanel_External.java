@@ -359,12 +359,12 @@ public class ControlPanel_External extends javax.swing.JPanel implements Control
    private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
        labeledTextChooser2.set_Text("");
        jCheckBox3.setSelected(false);
-       alternate.setSelected(false);
+       alternate.setSelected(true);
        jCheckBox1.setSelected(false);
        jCheckBox2.setSelected(false);
        labeledTextField1.setText("");
        labeledTextField2.setText("0");
-       auto.setSelected(true);
+       auto.setSelected(false);
        jButton1ActionPerformed(evt);
    }//GEN-LAST:event_jButton6ActionPerformed
 

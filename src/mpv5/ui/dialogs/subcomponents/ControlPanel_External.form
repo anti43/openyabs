@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+<?xml version="1.1" encoding="UTF-8" ?>
 
 <Form version="1.6" maxVersion="1.7" type="org.netbeans.modules.form.forminfo.JPanelFormInfo">
   <Properties>
@@ -46,27 +46,27 @@
                       <Group type="102" alignment="0" attributes="0">
                           <Component id="jCheckBox3" min="-2" pref="130" max="-2" attributes="1"/>
                           <EmptySpace max="-2" attributes="0"/>
-                          <Component id="labeledTextField1" pref="271" max="32767" attributes="1"/>
+                          <Component id="labeledTextField1" pref="267" max="32767" attributes="1"/>
                           <EmptySpace max="-2" attributes="0"/>
                           <Component id="labeledTextField2" min="-2" pref="119" max="-2" attributes="1"/>
                       </Group>
                       <Group type="102" alignment="0" attributes="0">
-                          <Component id="labeledTextChooser2" pref="404" max="32767" attributes="0"/>
+                          <Component id="labeledTextChooser2" pref="429" max="32767" attributes="0"/>
                           <EmptySpace max="-2" attributes="0"/>
                           <Component id="jButton5" min="-2" max="-2" attributes="0"/>
                       </Group>
-                      <Component id="jCheckBox1" alignment="1" pref="532" max="32767" attributes="0"/>
-                      <Component id="jCheckBox2" alignment="1" pref="532" max="32767" attributes="0"/>
+                      <Component id="jCheckBox1" alignment="1" pref="524" max="32767" attributes="0"/>
+                      <Component id="jCheckBox2" alignment="1" pref="524" max="32767" attributes="0"/>
                       <Group type="102" alignment="0" attributes="0">
-                          <Component id="auto" pref="348" max="32767" attributes="0"/>
+                          <Component id="auto" pref="344" max="32767" attributes="0"/>
                           <EmptySpace max="-2" attributes="0"/>
                           <Component id="jButton6" min="-2" pref="178" max="-2" attributes="0"/>
                       </Group>
                       <Group type="102" attributes="0">
                           <Component id="jLabel3" min="-2" max="-2" attributes="0"/>
-                          <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
+                          <EmptySpace min="0" pref="506" max="32767" attributes="0"/>
                       </Group>
-                      <Component id="alternate" alignment="0" pref="532" max="32767" attributes="0"/>
+                      <Component id="alternate" alignment="0" pref="524" max="32767" attributes="0"/>
                   </Group>
                   <EmptySpace max="-2" attributes="0"/>
               </Group>
@@ -98,7 +98,7 @@
                   </Group>
                   <EmptySpace max="-2" attributes="0"/>
                   <Component id="alternate" min="-2" max="-2" attributes="0"/>
-                  <EmptySpace pref="12" max="32767" attributes="0"/>
+                  <EmptySpace pref="22" max="32767" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
@@ -235,7 +235,7 @@
               <Group type="102" attributes="0">
                   <EmptySpace max="-2" attributes="0"/>
                   <Component id="labeledTextField3" min="-2" pref="293" max="-2" attributes="0"/>
-                  <EmptySpace pref="245" max="32767" attributes="0"/>
+                  <EmptySpace pref="241" max="32767" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
@@ -244,7 +244,7 @@
               <Group type="102" alignment="0" attributes="0">
                   <EmptySpace min="-2" max="-2" attributes="0"/>
                   <Component id="labeledTextField3" min="-2" max="-2" attributes="0"/>
-                  <EmptySpace max="32767" attributes="0"/>
+                  <EmptySpace pref="22" max="32767" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
