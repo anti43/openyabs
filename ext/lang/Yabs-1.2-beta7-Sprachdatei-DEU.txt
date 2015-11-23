@@ -2141,14 +2141,22 @@ ItemPanel2.removefile.toolTipText=lösche Datei
 ItemPanel2.button_reminders.text=erinnern
 ItemPanel2.addfile.text=
 ItemPanel2.value.text=0
-
 ActivityConfirmationPanel.jButton4.text=erzeuge Rechnung
-ContactPanel.button_activitylists.text=Activitylists
+ContactPanel.button_activitylists.text=Aktivitäten
 ItemPanel2.jLabel9.text= = 
-ActivityConfirmationPanel.jLabel5.text=Activitys are alreadey accounted!
+ActivityConfirmationPanel.jLabel5.text=Aktivitäten wurden bereits gebucht!
 ItemPanel.jLabel6.text= - 
 ItemPanel.jLabel7.text= + 
 ItemPanel.jLabel8.text= = 
 NO_ENTRY=No Entry
 ItemPanel2.jLabel7.text= - 
 ItemPanel2.jLabel8.text= + 
+ControlPanel_Userproperties.enddateX.text=End-Datum nicht bei Statusänderung anpassen
+MPView.jMenuItem51.text=Darcula Look&Feel
+ControlPanel_Formats.jButton1.text=Speichern
+wizard_Toolbar1.jButton3.text=Löschen
+ControlPanel_Userproperties.jPanel11.border.title=Buchungs-Datum default
+ItemPanel2.toorder.text_1=Bestellung erzeugen
+ContactPanel.payterm._Label=Zahlungsbedingung
+ControlPanel_Userproperties.transdateX.text=Übergangsdatum nicht aktualisieren
+ControlPanel_Userproperties.calcEnddateX.text=Enddatum nach Kunden-Bedingung ermitteln
