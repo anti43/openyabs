@@ -249,4 +249,8 @@ public class ReturnValue {
     public int getUpdateCount() {
         return updateCount;
     }
+
+    public int size() {
+        return data.length;
+    }
 }

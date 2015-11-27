@@ -637,6 +637,10 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
 
       enhanceToolbars();
       loaded = true;
+      String fs = System.getProperty("yabs_firststart");
+      if (fs != null) {
+          wizard_FirstSettings1.build(getIdentifierFrame());
+      }
    }
 
    private GroovyShell getGroovyShell() {
@@ -2775,17 +2779,7 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
     }//GEN-LAST:event_jMenuItem49ActionPerformed
 
    private void jMenuItem50ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem50ActionPerformed
-      Wizard w = new Wizard(false);
-      w.setModalityType(Dialog.ModalityType.APPLICATION_MODAL);
-      w.setAlwaysOnTop(false);
-      w.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-      w.setLocationRelativeTo(getIdentifierFrame());
-      w.addPanel(new wizard_FirstSettings1(w));
-      w.addPanel(new wizard_FirstSettings2(w));
-      //w.addPanel(new wizard_FirstSettings3(w));
-      w.addPanel(new wizard_FirstSettings4(w));
-      w.addPanel(new wizard_FirstSettings5(w));
-      w.showWizAsChild();
+      wizard_FirstSettings1.build(getIdentifierFrame());
    }//GEN-LAST:event_jMenuItem50ActionPerformed
 
    private void jMenuItem2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem2ActionPerformed

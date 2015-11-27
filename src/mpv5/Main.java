@@ -963,7 +963,7 @@ public class Main implements Runnable {
             Log.setLogLevel(Log.LOGLEVEL_DEBUG);
             YConsole.setLogFile("install.log");
             Log.Debug(this, new Date());
-
+            System.setProperty("yabs_firststart", "true");
         } catch (Exception ex) {
             mpv5.logging.Log.Debug(ex);//Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
         }

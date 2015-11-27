@@ -2,8 +2,10 @@ package mpv5.ui.dialogs.subcomponents;
 
 import groovy.lang.Binding;
 import groovy.lang.GroovyShell;
+import java.awt.Dialog;
 import java.util.List;
 import javax.swing.DefaultListModel;
+import javax.swing.JFrame;
 import javax.swing.JToolBar;
 import mpv5.Main;
 import mpv5.data.PropertyStore;
@@ -11,6 +13,7 @@ import mpv5.globals.GlobalSettings;
 import mpv5.globals.Messages;
 import mpv5.logging.Log;
 import mpv5.ui.dialogs.Notificator;
+import mpv5.ui.dialogs.Wizard;
 import mpv5.ui.dialogs.WizardMaster;
 import mpv5.ui.dialogs.Wizardable;
 import mpv5.ui.frames.MPView;
@@ -22,6 +25,20 @@ import mpv5.ui.frames.MPView;
 public class wizard_FirstSettings1 extends javax.swing.JPanel implements Wizardable {
 
     private static final long serialVersionUID = -8347532498124147821L;
+
+    public static void build(JFrame f) {
+        Wizard w = new Wizard(false);
+        w.setModalityType(Dialog.ModalityType.APPLICATION_MODAL);
+        w.setAlwaysOnTop(false);
+        w.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        w.setLocationRelativeTo(f);
+        w.addPanel(new wizard_FirstSettings1(w));
+        w.addPanel(new wizard_FirstSettings2(w));
+        //w.addPanel(new wizard_FirstSettings3(w));
+        w.addPanel(new wizard_FirstSettings4(w));
+        w.addPanel(new wizard_FirstSettings5(w));
+        w.showWizAsChild();
+    }
     private WizardMaster master;
     private PropertyStore nactions;
     private List<JToolBar> nbars;
@@ -84,7 +101,6 @@ public class wizard_FirstSettings1 extends javax.swing.JPanel implements Wizarda
 
       add(jPanel1, java.awt.BorderLayout.CENTER);
    }// </editor-fold>//GEN-END:initComponents
-
    // Variables declaration - do not modify//GEN-BEGIN:variables
    private javax.swing.JPanel jPanel1;
    private javax.swing.JPanel jPanel2;
