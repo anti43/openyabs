@@ -30,6 +30,8 @@ import mpv5.ui.frames.MPView;
 import mpv5.usermanagement.MPSecurityManager;
 import mpv5.pluginhandling.UserPlugin;
 import mpv5.pluginhandling.YabsPlugin;
+import mpv5.utils.files.FileDirectoryHandler;
+import mpv5.utils.files.UnZip;
 
 /**
  *
@@ -59,9 +61,9 @@ public class ControlPanel_Plugins extends javax.swing.JPanel implements ControlA
      * @throws FileNotFoundException
      */
     public void importf(File file) throws FileNotFoundException {
-        String s = Popup.Enter_Value(Messages.ENTER_A_DESCRIPTION);
-        if (s == null) {
-            s = file.getName();
+        String s = file.getName();
+        if(s.endsWith(".zip")){
+            file = FileDirectoryHandler.unzipFile(file);
         }
         YabsPluginLoader.importPlugin(s, file);
         refresh();

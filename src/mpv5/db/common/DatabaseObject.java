@@ -2604,7 +2604,16 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
      * @param script
      * @return
      */
-    private String evaluate(String script) {
+    public String evaluate(String script) {
+        try {
+            return evaluateAll(script);
+        } catch (Exception compilationFailedException) {
+            Log.Debug(compilationFailedException);
+        }
+        return script;
+    }
+    
+    private String doEvaluate(String script) {
         try {
             return String.valueOf(getGroovyShell().evaluate(script));
         } catch (CompilationFailedException compilationFailedException) {
@@ -2634,7 +2643,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
                     script = script.substring(1, script.length() - 1);
                 }
                 Log.Debug("inner script", text);
-                text = text.replace(orig, evaluate(script));
+                text = text.replace(orig, doEvaluate(script));
             } catch (Exception e) {
                 Log.Debug(this, e);
                 if (showError) {
