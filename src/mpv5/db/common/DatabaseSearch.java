@@ -117,7 +117,7 @@ public class DatabaseSearch {
         List<Integer> l = new ArrayList<Integer>();
         try {
             Context contx = context;
-            ReturnValue rdata = QueryHandler.instanceOf().freeQuery(QueryHandler.instanceOf().clone(contx, ROWLIMIT).buildIdQuery(val, DatabaseObject.getObject(contx).getStringVars().toArray(new String[]{})), MPSecurityManager.VIEW, null);
+            ReturnValue rdata = QueryHandler.instanceOf().clone(contx, ROWLIMIT).freeQuery(QueryHandler.instanceOf().clone(contx, ROWLIMIT).buildIdQuery(val, DatabaseObject.getObject(contx).getStringVars().toArray(new String[]{})), MPSecurityManager.VIEW, null);
             Object[] ndata = rdata.getFirstColumn();
 
             if (ndata != null) {
@@ -277,7 +277,7 @@ public class DatabaseSearch {
         }
         qc.or(ps);
         try {
-            return QueryHandler.instanceOf().clone(context).select(resultingFieldNames, qc).getData();
+            return QueryHandler.instanceOf().clone(context, ROWLIMIT).select(resultingFieldNames, qc).getData();
         } catch (NodataFoundException ex) {
             Log.Debug(search, ex.getMessage());
             return new Object[0][0];
@@ -367,19 +367,19 @@ public class DatabaseSearch {
         Log.Debug(this, "Search parameter: " + value);
         Set<Integer> data = new TreeSet<Integer>();
 
-        for (Integer s : new DatabaseSearch(context, 50).searchObjectIdsFor(value)) {
+        for (Integer s : new DatabaseSearch(context, ROWLIMIT).searchObjectIdsFor(value)) {
             data.add(s);
         }
 
         for (Context exct : ext) {
 
             String subitemids = "0";
-            for (Integer s : new DatabaseSearch(exct, 50).searchObjectIdsFor(value)) {
+            for (Integer s : new DatabaseSearch(exct, ROWLIMIT).searchObjectIdsFor(value)) {
                 subitemids = s + "," + subitemids;
             }
 
             final String x = Context.getAliasFor(context, exct);
-            Object[] sdata = QueryHandler.instanceOf().clone(context).freeQuery("select " + x + "ids from " + exct.getDbIdentity() + " where ids in(" + subitemids + ")", MPSecurityManager.VIEW, null).getFirstColumn();
+            Object[] sdata = QueryHandler.instanceOf().clone(context, ROWLIMIT).freeQuery("select " + x + "ids from " + exct.getDbIdentity() + " where ids in(" + subitemids + ")", MPSecurityManager.VIEW, null).getFirstColumn();
             if (sdata != null) {
                 for (int i = 0; i < sdata.length; i++) {
                     try {
@@ -392,10 +392,10 @@ public class DatabaseSearch {
         }
         for (Context selfc : self) {
             String contactsids = "0";
-            for (Integer s : new DatabaseSearch(selfc, 50).searchObjectIdsFor(value)) {
+            for (Integer s : new DatabaseSearch(selfc, ROWLIMIT).searchObjectIdsFor(value)) {
                 contactsids = s + "," + contactsids;
             }
-            Object[] sdata = QueryHandler.instanceOf().clone(context).freeQuery("select ids from items where " + selfc.getDbIdentity() + "ids in(" + contactsids + ")", MPSecurityManager.VIEW, null).getFirstColumn();
+            Object[] sdata = QueryHandler.instanceOf().clone(context, ROWLIMIT).freeQuery("select ids from items where " + selfc.getDbIdentity() + "ids in(" + contactsids + ")", MPSecurityManager.VIEW, null).getFirstColumn();
             if (sdata != null) {
                 for (int i = 0; i < sdata.length; i++) {
                     try {
@@ -424,6 +424,6 @@ public class DatabaseSearch {
         for (Integer id : data) {
             dboids = id + "," + dboids;
         }
-        return QueryHandler.instanceOf().clone(context).freeQuery("select " + String.valueOf(sf) + " from %%tablename%% " +  String.valueOf(context.getConditions(false)) + " AND ids in (" + dboids + ") AND " +  String.valueOf(context.getNoTrashSQLString()) , MPSecurityManager.VIEW, null).getData();
+        return QueryHandler.instanceOf().clone(context, ROWLIMIT).freeQuery("select " + String.valueOf(sf) + " from %%tablename%% " +  String.valueOf(context.getConditions(false)) + " AND ids in (" + dboids + ") AND " +  String.valueOf(context.getNoTrashSQLString()) , MPSecurityManager.VIEW, null).getData();
     }
 }

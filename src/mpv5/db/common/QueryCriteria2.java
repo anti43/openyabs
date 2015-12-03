@@ -41,7 +41,7 @@ public class QueryCriteria2 {
     public void and(QueryParameter... params) {
         for (QueryParameter p : params) {
             fields.add(p);
-            Log.Debug(this, "Adding AND param " + p);
+            //Log.Debug(this, "Adding AND param " + p);
             if ((p.getValue() instanceof Number || p.getValue() instanceof Boolean) && (p.getCondition() == QueryParameter.LIKE || p.getCondition() == QueryParameter.NOTLIKE)) {
                 throw new IllegalArgumentException("You cannot mix LIKE and boolean/number values!");
             }
@@ -84,7 +84,7 @@ public class QueryCriteria2 {
         if (params.isEmpty()) {
             return;
         } else if (params.size() == 1) {
-            Log.Debug(this, "Converting 1-sized OR list to AND!!");
+            //Log.Debug(this, "Converting 1-sized OR list to AND!!");
             and(params.get(0));
             return;
         } /*else if (params.size() < 2) {
@@ -116,7 +116,7 @@ public class QueryCriteria2 {
         boolean firstrun = true;
         for (Object px : paramsx) {
             QueryParameter p = (QueryParameter) px;
-            Log.Debug(this, "Adding OR param " + p);
+            //Log.Debug(this, "Adding OR param " + p);
             fields.add(p);
 
             if ((p.getValue() instanceof Number || p.getValue() instanceof Boolean) && (p.getCondition() == QueryParameter.LIKE || p.getCondition() == QueryParameter.NOTLIKE)) {

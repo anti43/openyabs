@@ -2221,6 +2221,9 @@ public class QueryHandler implements Cloneable {
         try {
             // Select-Anweisung ausführen
             stm = sqlConn.createStatement();
+            if (0 < this.limit) {
+                stm.setMaxRows(limit);
+            }
             Log.Debug(this, query);
             if (log != null) {
                 log.append("\n " + query + "\n\n_________________________________________________________________________________\n");

@@ -22,6 +22,7 @@ import mpv5.db.common.DatabaseSearch;
 import mpv5.db.common.NodataFoundException;
 import mpv5.db.objects.User;
 import mpv5.db.objects.ValueProperty;
+import mpv5.globals.GlobalSettings;
 import mpv5.logging.Log;
 import mpv5.ui.misc.MPTable;
 import mpv5.utils.models.MPTableModel;
@@ -180,7 +181,7 @@ public class SearchPanel extends javax.swing.JPanel {
             sf = "%%tablename%%.ids, %%tablename%%.cname";
         }
         if (d == null) {
-            d = new DatabaseSearch(context, 500);
+            d = new DatabaseSearch(context, GlobalSettings.getIntegerProperty("org.openyabs.search.limit", 5000));
         }
 
         if (this.isShowing()) {
@@ -192,7 +193,7 @@ public class SearchPanel extends javax.swing.JPanel {
                     YabsViewProxy.instance().setProgressRunning(true);
                     setCursor(new Cursor(Cursor.WAIT_CURSOR));
                     try {
-                        DatabaseSearch s = new DatabaseSearch(context);
+                        DatabaseSearch s = d;
                         Object[][] res = null;
                         if (context.getDbIdentity().equals(Context.getItem().getDbIdentity())) {
                             try {
