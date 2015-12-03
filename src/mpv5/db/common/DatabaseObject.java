@@ -2623,10 +2623,10 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
     }
 
     public String evaluateAll(String t) {
-        String sm = GlobalSettings.getProperty("org.openyabs.config.scriptsymbol", "#");
-        if (!t.contains(sm)) {
+        //String sm = GlobalSettings.getProperty("org.openyabs.config.scriptsymbol", "#");
+        /*if (!t.contains(sm)) {
             t = sm + t + sm;
-        }
+        }*/
         return evaluateAll(t, false);
     }
 
@@ -2634,15 +2634,15 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
         String sm = GlobalSettings.getProperty("org.openyabs.config.scriptsymbol", "#");
         Pattern SCRIPTPATTERN = Pattern.compile("\\" + sm + "(.*?)\\" + sm + "");
         Matcher scriptmatcher = SCRIPTPATTERN.matcher(text);
-        Log.Debug("script", text);
+        Log.Debug(this, "script text:" + text);
         while (scriptmatcher.find()) {
             try {
                 String script = scriptmatcher.group(1);
                 String orig = scriptmatcher.group(0);
+                Log.Debug(this, "script:" + script);
                 if (script.startsWith(sm) && script.endsWith(sm)) {
                     script = script.substring(1, script.length() - 1);
                 }
-                Log.Debug("inner script", text);
                 text = text.replace(orig, doEvaluate(script));
             } catch (Exception e) {
                 Log.Debug(this, e);
