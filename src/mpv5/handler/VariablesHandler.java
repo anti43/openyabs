@@ -19,12 +19,9 @@ package mpv5.handler;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
 import mpv5.db.common.NodataFoundException;
@@ -48,7 +45,8 @@ public abstract class VariablesHandler {
 
     //generic
     /**
-     * Contains generic variables for any {@link DatabaseObject}
+     * Contains generic variables for any
+     * {@link DatabaseObject}
      */
     public static enum GENERIC_VARS {
 
@@ -98,7 +96,8 @@ public abstract class VariablesHandler {
 
     //special
     /**
-     * Determines the specific variables for the given {@link DatabaseObject}
+     * Determines the specific variables for the given
+     * {@link DatabaseObject}
      *
      * @param target
      * @return
@@ -119,8 +118,8 @@ public abstract class VariablesHandler {
     }
 
     /**
-     * Generates an array containing all available variables and values for the
-     * specific {@link DatabaseObject}
+     * Generates an array containing all available variables
+     * and values for the specific {@link DatabaseObject}
      *
      * @param target
      * @return
@@ -130,8 +129,8 @@ public abstract class VariablesHandler {
     }
 
     /**
-     * Generates an array containing all available variables and values for the
-     * specific {@link DatabaseObject}
+     * Generates an array containing all available variables
+     * and values for the specific {@link DatabaseObject}
      *
      * @param target
      * @param preResolvedVars
@@ -179,85 +178,85 @@ public abstract class VariablesHandler {
             }
             vars.add(new String[]{varName, varValue});
         }
-        //String[] specs = getSpecialVarsOf(target);//fixme evt remove
-        //Log.Debug(VariablesHandler.class, "..xxxx>\n\n" + Arrays.asList(specs));
+        String[] specs = getSpecialVarsOf(target);//fixme evt remove
+        Log.Debug(VariablesHandler.class, "..xxxx>\n\n" + Arrays.asList(specs));
 
         Iterator iterator = preResolvedVars.entrySet().iterator();
         while (iterator.hasNext()) {
             Map.Entry mapEntry = (Map.Entry) iterator.next();
             vars.add(new String[]{"[" + String.valueOf(mapEntry.getKey()).toUpperCase() + "]", String.valueOf(mapEntry.getValue())});
         }
-        /*int j;
-         for (j = 0; j < specs.length; j++) {
-         String varName = specs[j];
-         String varValue = "";
+        int j;
+        for (j = 0; j < specs.length; j++) {
+            String varName = specs[j];
+            String varValue = "";
 
-         List<String[]> vals;
-         vals = target.getValues();
-         for (String[] value : vals) {
-         if (value[0].equalsIgnoreCase(varName.substring(1, varName.length() - 1))) {
-         varValue = value[1];
-         }
-         }
-         vars.add(new String[]{varName, varValue});
-         }*/
+            List<String[]> vals;
+            vals = target.getValues();
+            for (String[] value : vals) {
+                if (value[0].equalsIgnoreCase(varName.substring(1, varName.length() - 1))) {
+                    varValue = value[1];
+                }
+            }
+            vars.add(new String[]{varName, varValue});
+        }
 
-        /*if (target instanceof Item) {
-         try {
-         Contact c = (Contact) DatabaseObject.getObject(Context.getContact(), ((Item) target).__getContactsids());
+        if (target instanceof Item) {
+            try {
+                Contact c = (Contact) DatabaseObject.getObject(Context.getContact(), ((Item) target).__getContactsids());
 
-         vars.add(new String[]{"[contact.cname]", c.__getCname()});
-         vars.add(new String[]{"[contact.cnumber]", c.__getCNumber()});
-         vars.add(new String[]{"[contact.company]", c.__getCompany()});
-         vars.add(new String[]{"[contact.prename]", c.__getPrename()});
-         vars.add(new String[]{"[contact.title]", c.__getTitle()});
-         vars.add(new String[]{"[contact.country]", c.__getCountry()});
-         vars.add(new String[]{"[grosvaluef]", FormatNumber.formatLokalCurrency(((Item) target).__getTaxvalue().doubleValue() + ((Item) target).__getNetvalue().doubleValue())});
-         vars.add(new String[]{"[type]", Item.getTypeString(((Item) target).__getInttype())});
+                vars.add(new String[]{"[contact.cname]", c.__getCname()});
+                vars.add(new String[]{"[contact.cnumber]", c.__getCNumber()});
+                vars.add(new String[]{"[contact.company]", c.__getCompany()});
+                vars.add(new String[]{"[contact.prename]", c.__getPrename()});
+                vars.add(new String[]{"[contact.title]", c.__getTitle()});
+                vars.add(new String[]{"[contact.country]", c.__getCountry()});
+                vars.add(new String[]{"[grosvaluef]", FormatNumber.formatLokalCurrency(((Item) target).__getTaxvalue().doubleValue() + ((Item) target).__getNetvalue().doubleValue())});
+                vars.add(new String[]{"[type]", Item.getTypeString(((Item) target).__getInttype())});
 
-         if (c.__getisMale()) {
-         vars.add(new String[]{"[contact.gender]", Messages.CONTACT_TYPE_MALE.getValue()});
-         vars.add(new String[]{"[contact.intro]", Messages.CONTACT_INTRO_MALE.getValue()});
-         } else {
-         vars.add(new String[]{"[contact.gender]", Messages.CONTACT_TYPE_FEMALE.getValue()});
-         vars.add(new String[]{"[contact.intro]", Messages.CONTACT_INTRO_FEMALE.getValue()});
-         }
+                if (c.__getisMale()) {
+                    vars.add(new String[]{"[contact.gender]", Messages.CONTACT_TYPE_MALE.getValue()});
+                    vars.add(new String[]{"[contact.intro]", Messages.CONTACT_INTRO_MALE.getValue()});
+                } else {
+                    vars.add(new String[]{"[contact.gender]", Messages.CONTACT_TYPE_FEMALE.getValue()});
+                    vars.add(new String[]{"[contact.intro]", Messages.CONTACT_INTRO_FEMALE.getValue()});
+                }
 
-         } catch (NodataFoundException ex) {
-         Log.Debug(VariablesHandler.class, ex.getMessage());
-         }
-         }
+            } catch (NodataFoundException ex) {
+                Log.Debug(VariablesHandler.class, ex.getMessage());
+            }
+        }
 
-         if (target instanceof Conversation) {
-         try {
-         Contact c = (Contact) DatabaseObject.getObject(Context.getContact(), ((Conversation) target).__getContactsids());
-         vars.add(new String[]{"[contact.cname]", c.__getCname()});
-         vars.add(new String[]{"[contact.company]", c.__getCompany()});
-         vars.add(new String[]{"[contact.prename]", c.__getPrename()});
-         vars.add(new String[]{"[contact.title]", c.__getTitle()});
-         vars.add(new String[]{"[contact.country]", c.__getCountry()});
-         vars.add(new String[]{"[type]", Messages.TYPE_CONVERSATION.toString()});
+        if (target instanceof Conversation) {
+            try {
+                Contact c = (Contact) DatabaseObject.getObject(Context.getContact(), ((Conversation) target).__getContactsids());
+                vars.add(new String[]{"[contact.cname]", c.__getCname()});
+                vars.add(new String[]{"[contact.company]", c.__getCompany()});
+                vars.add(new String[]{"[contact.prename]", c.__getPrename()});
+                vars.add(new String[]{"[contact.title]", c.__getTitle()});
+                vars.add(new String[]{"[contact.country]", c.__getCountry()});
+                vars.add(new String[]{"[type]", Messages.TYPE_CONVERSATION.toString()});
 
-         } catch (NodataFoundException ex) {
-         Log.Debug(VariablesHandler.class, ex.getMessage());
-         }
-         }
+            } catch (NodataFoundException ex) {
+                Log.Debug(VariablesHandler.class, ex.getMessage());
+            }
+        }
 
-         if (target instanceof ActivityList) {
-         try {
-         Contact c = (Contact) DatabaseObject.getObject(Context.getContact(), ((ActivityList) target).__getContactsids());
+        if (target instanceof ActivityList) {
+            try {
+                Contact c = (Contact) DatabaseObject.getObject(Context.getContact(), ((ActivityList) target).__getContactsids());
 
-         vars.add(new String[]{"[contact.cname]", c.__getCname()});
-         vars.add(new String[]{"[contact.company]", c.__getCompany()});
-         vars.add(new String[]{"[contact.prename]", c.__getPrename()});
-         vars.add(new String[]{"[contact.title]", c.__getTitle()});
-         vars.add(new String[]{"[contact.country]", c.__getCountry()});
-         vars.add(new String[]{"[type]", Messages.TYPE_ACTIVITY.toString()});
+                vars.add(new String[]{"[contact.cname]", c.__getCname()});
+                vars.add(new String[]{"[contact.company]", c.__getCompany()});
+                vars.add(new String[]{"[contact.prename]", c.__getPrename()});
+                vars.add(new String[]{"[contact.title]", c.__getTitle()});
+                vars.add(new String[]{"[contact.country]", c.__getCountry()});
+                vars.add(new String[]{"[type]", Messages.TYPE_ACTIVITY.toString()});
 
-         } catch (NodataFoundException ex) {
-         Log.Debug(VariablesHandler.class, ex.getMessage());
-         }
-         }*/
+            } catch (NodataFoundException ex) {
+                Log.Debug(VariablesHandler.class, ex.getMessage());
+            }
+        }
         if (Log.isDebugging()) {
             for (String[] strings : vars) {
                 Log.Debug(target, Arrays.asList(strings));
@@ -268,8 +267,9 @@ public abstract class VariablesHandler {
     }
 
     /**
-     * Replaces each variable in the text with the according values from the
-     * {@link DatabaseObject} and evaluates scripts
+     * Replaces each variable in the text with the according
+     * values from the {@link DatabaseObject} and evaluates
+     * scripts
      *
      * @param text
      * @param source
@@ -280,8 +280,9 @@ public abstract class VariablesHandler {
     }
 
     /**
-     * Replaces each variable in the text with the according values from the
-     * {@link DatabaseObject} and evaluates scripts
+     * Replaces each variable in the text with the according
+     * values from the {@link DatabaseObject} and evaluates
+     * scripts
      *
      * @param text
      * @param source
@@ -304,8 +305,9 @@ public abstract class VariablesHandler {
             }
         }
         String sm = GlobalSettings.getProperty("org.openyabs.config.scriptsymbol", "#");
-        if(text.contains(sm))
-           text = source.evaluateAll(text);
+        if (text.contains(sm)) {
+            text = source.evaluateAll(text);
+        }
 
         return text;
     }
