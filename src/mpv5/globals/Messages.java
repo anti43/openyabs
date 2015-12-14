@@ -30,7 +30,7 @@ public enum Messages {
 
     START_MESSAGE(
     "\n"
-    + "YaBS " + Constants.VERSION + " (C) 2006-2014 Openyabs.org\n\n"
+    + "YaBS " + Constants.VERSION + " (C) 2006-" +  Calendar.getInstance().get(Calendar.YEAR) + " Openyabs.org\n\n"
     + "******************************************************************************\n"
     + "* This program is free software; you can redistribute it and/or modify it \n"
     + "* under the terms of the GNU General Public License as published by the \n"

@@ -1,0 +1,14 @@
+<component name="ArtifactManager">
+  <artifact type="jar" build-on-make="true" name="yabs">
+    <output-path>$PROJECT_DIR$/dist</output-path>
+    <properties id="ant-postprocessing">
+      <options enabled="true" />
+    </properties>
+    <root id="archive" name="yabs.jar">
+      <element id="module-output" name="openyabs" />
+      <element id="directory" name="META-INF">
+        <element id="file-copy" path="$PROJECT_DIR$/dist/META-INF/MANIFEST.MF" />
+      </element>
+    </root>
+  </artifact>
+</component>
