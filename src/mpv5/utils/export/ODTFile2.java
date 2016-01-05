@@ -72,7 +72,9 @@ public class ODTFile2 extends Exportable {
                 Log.Debug(ex);
             }
         }
-        FontFactory.setFontImp(YabsFontFactoryImpl.instance);
+        if(GlobalSettings.getBooleanProperty("org.openyabs.exportproperty.cachefonts", false)){
+             FontFactory.setFontImp(YabsFontFactoryImpl.instance);
+        }
         ITextFontRegistry reg = ITextFontRegistry.getRegistry();
         options = PdfOptions.create();
         options.fontProvider(reg);

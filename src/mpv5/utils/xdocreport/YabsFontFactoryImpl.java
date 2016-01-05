@@ -42,7 +42,6 @@ public class YabsFontFactoryImpl extends ExtendedFontFactoryImp {
 
     private YabsFontFactoryImpl() {
         super();
-        cacheFonts();
     }
 
     @Override

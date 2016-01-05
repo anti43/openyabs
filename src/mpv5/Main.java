@@ -105,6 +105,7 @@ public class Main implements Runnable {
      */
     public static void cache() {
         Runnable runnable = new Runnable() {
+
             @Override
             public void run() {
                 Log.Debug(Main.class, Messages.CACHE);
@@ -112,8 +113,10 @@ public class Main implements Runnable {
                 Log.Debug(Main.class, Messages.CACHED_OBJECTS + ": " + Context.getUser());
                 LanguageManager.getCountriesAsComboBoxModel();
                 Log.Debug(Main.class, Messages.CACHED_OBJECTS + ": " + Context.getCountries());
-                YabsFontFactoryImpl.cacheFonts();
-                Log.Debug(Main.class, Messages.CACHED_OBJECTS + ": " + Context.getFonts());
+                if (GlobalSettings.getBooleanProperty("org.openyabs.exportproperty.cachefonts", false)) {
+                    YabsFontFactoryImpl.cacheFonts();
+                    Log.Debug(Main.class, Messages.CACHED_OBJECTS + ": " + Context.getFonts());
+                }
             }
         };
         new Thread(runnable).start();
@@ -264,6 +267,7 @@ public class Main implements Runnable {
         splash.nextStep(Messages.DBCONN_UPDATE_BEPATIENT.toString());
         Log.Debug(Main.class, "Trying to launch application now..");
         Runnable runnable = new Runnable() {
+
             @Override
             @SuppressWarnings("unchecked")
             public void run() {
@@ -360,6 +364,7 @@ public class Main implements Runnable {
                     final Thread startServerThread;
 
                     Runnable runnable2 = new Runnable() {
+
                         @Override
                         public void run() {
                             try {
@@ -822,6 +827,7 @@ public class Main implements Runnable {
         Main.splash.nextStep(Messages.INIT_PLUGINS.toString());
 
         Runnable runnable = new Runnable() {
+
             @Override
             public void run() {
                 try {
@@ -841,6 +847,7 @@ public class Main implements Runnable {
         }
 
         Runnable runnable3 = new Runnable() {
+
             public void run() {
                 WSIManager.instanceOf().start();
             }
@@ -859,6 +866,7 @@ public class Main implements Runnable {
         if (!HEADLESS) {
             if (GlobalSettings.getBooleanProperty("org.openyabs.updates.enable") && !LocalSettings.getBooleanProperty(LocalSettings.SUPPRESS_UPDATE_CHECK)) {
                 Runnable runnable1 = new Runnable() {
+
                     @Override
                     public void run() {
                         if (checkUpdates()) {
@@ -873,6 +881,7 @@ public class Main implements Runnable {
 
         if (LocalSettings.getBooleanProperty(LocalSettings.OFFICE_AUTOSTART) && LocalSettings.getBooleanProperty(LocalSettings.OFFICE_USE)) {
             Runnable runnable2 = new Runnable() {
+
                 @Override
                 public void run() {
                     try {
@@ -992,8 +1001,7 @@ public class Main implements Runnable {
                 return false;
             }
             HttpURLConnection.setFollowRedirects(true);
-            HttpURLConnection con
-                    = (HttpURLConnection) new URL(url).openConnection();
+            HttpURLConnection con = (HttpURLConnection) new URL(url).openConnection();
             con.setRequestMethod("GET");
             // When the available version is not the current version, we assume there is an update available
             Log.Debug(Main.class, url + " " + con.getResponseMessage());
@@ -1035,6 +1043,7 @@ public class Main implements Runnable {
                 // Wait for a connection
                 clientSocket = serverSocket.accept();
                 java.awt.EventQueue.invokeLater(new Runnable() {
+
                     @Override
                     public void run() {
                         getApplication().getMainFrame().setVisible(true);
@@ -1058,6 +1067,7 @@ public class Main implements Runnable {
                 libs = ClasspathTools.findLibsFromManifest(Main.class);
                 if (libs != null) {
                     Runnable runnable1 = new Runnable() {
+
                         @Override
                         public void run() {
                             File libdir = new File(Constants.LIBS_DIR);
@@ -1093,6 +1103,7 @@ public class Main implements Runnable {
         splash.nextStep(Messages.CHECK_TPLUPDATE.toString());
         if (!SKIP_TPLCHECK) {
             Runnable runnable1 = new Runnable() {
+
                 Object[][] data = null;
 
                 @Override
@@ -1103,6 +1114,7 @@ public class Main implements Runnable {
                         for (int i = 0; i < data.length; i++) {
                             final Template tpl = (Template) Template.getObject(Context.getTemplate(), Integer.parseInt(data[i][0].toString()));
                             FileMonitor.FileChangeListener filecl = new FileMonitor.FileChangeListener() {
+
                                 public void fileChanged(String fileName) {
                                     QueryHandler.instanceOf().clone(Context.getFiles()).updateFile(new File(fileName), tpl.__getFilename());
                                     tpl.setDescription(tpl.__getDescription() + "\n - Updated: " + new Date());
@@ -1143,5 +1155,4 @@ public class Main implements Runnable {
         DatabaseConnection.shutdown();
         LoginToInstanceScreen.load();
     }
-
 }
