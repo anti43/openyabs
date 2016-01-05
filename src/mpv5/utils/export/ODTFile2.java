@@ -72,8 +72,8 @@ public class ODTFile2 extends Exportable {
                 Log.Debug(ex);
             }
         }
-        if(GlobalSettings.getBooleanProperty("org.openyabs.exportproperty.cachefonts", false)){
-             FontFactory.setFontImp(YabsFontFactoryImpl.instance);
+        if (GlobalSettings.getBooleanProperty("org.openyabs.exportproperty.cachefonts", false)) {
+            FontFactory.setFontImp(YabsFontFactoryImpl.instance);
         }
         ITextFontRegistry reg = ITextFontRegistry.getRegistry();
         options = PdfOptions.create();
@@ -81,7 +81,7 @@ public class ODTFile2 extends Exportable {
         report = XDocReportRegistry.getRegistry().loadReport(new FileInputStream(this), TemplateEngineKind.Velocity);
         extractor = FieldsExtractor.create();
         report.addPreprocessor(ODTConstants.CONTENT_XML_ENTRY, YabsODTPreprocessor.INSTANCE);
-        report.addPreprocessor(ODTConstants.STYLES_XML_ENTRY, YabsODTPreprocessor.INSTANCE);    
+        report.addPreprocessor(ODTConstants.STYLES_XML_ENTRY, YabsODTPreprocessor.INSTANCE);
     }
 
     @Override
@@ -120,7 +120,7 @@ public class ODTFile2 extends Exportable {
 
             HashMap<String, Object> d = getData();
             d.putAll(getTemplate().getData());
-          
+
             IContext context = report.createContext();
             if (Log.isDebugging()) {
                 Log.Debug(this, "All fields:");
@@ -129,7 +129,7 @@ public class ODTFile2 extends Exportable {
                 }
             }
 
-            Object table = null;
+            String table = null;
             for (String k : d.keySet()) {
                 if (k.contains(TableHandler.KEY_TABLE + "1")) {
                     table = k;
@@ -139,34 +139,37 @@ public class ODTFile2 extends Exportable {
             if (table != null) {
                 String fmt = this.getTemplate().__getFormat();
                 String[] cols = fmt.split(",");
-                ArrayList<String[]> list = (ArrayList<String[]>) d.get(table);
-                List<Map<String, String>> positions = new ArrayList<Map<String, String>>();
-                for (String[] s : list) {
-                    int i = 0;
-                    Map<String, String> xtable = new HashMap<String, String>();
-                    for (String s1 : cols) {
-                        int col = Integer.parseInt(s1) - 1;
-                        String colname = "C" + i++;
-                        xtable.put(colname, s[col]);
-                        if (addMeta) {
-                            metadata.addFieldAsList(TableHandler.KEY_TABLE + "1." + colname);
+                Object tablel = d.get(table);
+                if (tablel instanceof List) {
+                    List list = (List) tablel;
+                    List<Map<String, String>> positions = new ArrayList<Map<String, String>>();
+                    for (Object s : list) {
+                        int i = 0;
+                        Map<String, String> xtable = new HashMap<String, String>();
+                        for (String s1 : cols) {
+                            int col = Integer.parseInt(s1) - 1;
+                            String colname = "C" + i++;
+                            xtable.put(colname, ((String[])s)[col]);
+                            if (addMeta) {
+                                metadata.addFieldAsList(TableHandler.KEY_TABLE + "1." + colname);
+                            }
                         }
-                    }
 //                    for (String s2 : s) {
 //                        String colname = "C" + i++;
 //                        xtable.put(colname, s2);
 //                        if (addMeta)
 //                            metadata.addFieldAsList(TableHandler.KEY_TABLE + "1." + colname);
 //                    }
-                    positions.add(xtable);
-                    addMeta = false;
+                        positions.add(xtable);
+                        addMeta = false;
+                    }
+                    context.put(TableHandler.KEY_TABLE + "1", positions);
                 }
-                context.put(TableHandler.KEY_TABLE + "1", positions);
             }
             report.setFieldsMetadata(metadata);
-            
+
             report.extractFields(extractor);
-            
+
             if (!GlobalSettings.getBooleanProperty("org.openyabs.exportproperty.blankunusedfields.disable")) {
 
                 Iterator<FieldExtractor> it = extractor.getFields().iterator();
@@ -181,7 +184,7 @@ public class ODTFile2 extends Exportable {
                 }
             }
             context.putMap(d);
-                  
+
             report.process(context, out);
 
         } catch (XDocReportException ex) {
