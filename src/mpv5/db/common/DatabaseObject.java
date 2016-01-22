@@ -90,6 +90,7 @@ import org.codehaus.groovy.runtime.MethodClosure;
 public abstract class DatabaseObject implements Comparable<DatabaseObject>, Serializable, Cloneable, Constants {
 
     private Map<String, Map<String, Object>> cachedFormFieldsByKey = new HashMap<String, Map<String, Object>>();
+    private static InlineObjectModifier inlineObjectModifier = new InlineObjectModifier();
 
     /**
      * @return the cname
@@ -790,22 +791,25 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
             String message = null;
             uncacheObject(this);
 
-            List<DatabaseObjectModifier> mods = YabsPluginLoader.registeredModifiers;
-            for (int ik = 0; ik < mods.size(); ik++) {
-                DatabaseObjectModifier databaseObjectModifier = mods.get(ik);
-                try {
-                    Log.Debug(this, "Passing to plugin: " + databaseObjectModifier);
-                    databaseObjectModifier.modifyOnSave(this);
-                } catch (ChangeNotApprovedException e) {
-                    Log.Debug(DatabaseObject.class, "Error while on-save modifying Object " + this + " within Modifier " + databaseObjectModifier);
-                    Log.Debug(DatabaseObject.class, e.getMessage());
-                    return false;
-                } catch (Throwable e) {
-                    Log.Debug(DatabaseObject.class, "Error while on-save modifying Object " + this + " within Modifier " + databaseObjectModifier);
-                    Log.Debug(e);
+            List<DatabaseObjectModifier> mods = null;
+            if (Context.getModifiableContexts().contains(getContext())) {
+                mods = new ArrayList<DatabaseObjectModifier>(YabsPluginLoader.registeredModifiers);
+                mods.add(inlineObjectModifier);
+                for (int ik = 0; ik < mods.size(); ik++) {
+                    DatabaseObjectModifier databaseObjectModifier = mods.get(ik);
+                    try {
+                        Log.Debug(this, "Passing to plugin: " + databaseObjectModifier);
+                        databaseObjectModifier.modifyOnSave(this);
+                    } catch (ChangeNotApprovedException e) {
+                        Log.Debug(DatabaseObject.class, "Error while on-save modifying Object " + this + " within Modifier " + databaseObjectModifier);
+                        Log.Debug(DatabaseObject.class, e.getMessage());
+                        return false;
+                    } catch (Throwable e) {
+                        Log.Debug(DatabaseObject.class, "Error while on-save modifying Object " + this + " within Modifier " + databaseObjectModifier);
+                        Log.Debug(e);
+                    }
                 }
             }
-
             try {
                 if (ids <= 0) {
                     try {
@@ -834,14 +838,16 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
                         ((Triggerable) this).triggerOnCreate();
                     }
 
-                    for (int ik = 0; ik < mods.size(); ik++) {
-                        DatabaseObjectModifier databaseObjectModifier = mods.get(ik);
-                        try {
-                            Log.Debug(this, "Passing to plugin: " + databaseObjectModifier);
-                            databaseObjectModifier.executeAfterCreate(this);
-                        } catch (Throwable e) {
-                            Log.Debug(DatabaseObject.class, "Error while after-create executing Object " + this + " within Modifier " + databaseObjectModifier);
-                            Log.Debug(e);
+                    if (mods != null) {
+                        for (int ik = 0; ik < mods.size(); ik++) {
+                            DatabaseObjectModifier databaseObjectModifier = mods.get(ik);
+                            try {
+                                Log.Debug(this, "Passing to plugin: " + databaseObjectModifier);
+                                databaseObjectModifier.executeAfterCreate(this);
+                            } catch (Throwable e) {
+                                Log.Debug(DatabaseObject.class, "Error while after-create executing Object " + this + " within Modifier " + databaseObjectModifier);
+                                Log.Debug(e);
+                            }
                         }
                     }
                 } else {
@@ -873,15 +879,16 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
                     };
                     new Thread(runnable).start();
                 }
-
-                for (int ik = 0; ik < mods.size(); ik++) {
-                    DatabaseObjectModifier databaseObjectModifier = mods.get(ik);
-                    try {
-                        Log.Debug(this, "Passing to plugin: " + databaseObjectModifier);
-                        databaseObjectModifier.executeAfterSave(this);
-                    } catch (Throwable e) {
-                        Log.Debug(DatabaseObject.class, "Error while after-save executing Object " + this + " within Modifier " + databaseObjectModifier);
-                        Log.Debug(e);
+                if (mods != null) {
+                    for (int ik = 0; ik < mods.size(); ik++) {
+                        DatabaseObjectModifier databaseObjectModifier = mods.get(ik);
+                        try {
+                            Log.Debug(this, "Passing to plugin: " + databaseObjectModifier);
+                            databaseObjectModifier.executeAfterSave(this);
+                        } catch (Throwable e) {
+                            Log.Debug(DatabaseObject.class, "Error while after-save executing Object " + this + " within Modifier " + databaseObjectModifier);
+                            Log.Debug(e);
+                        }
                     }
                 }
 
@@ -946,22 +953,23 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
      * @return
      */
     public boolean delete() {
-
-        List<DatabaseObjectModifier> mods = YabsPluginLoader.registeredModifiers;
-        for (int ik = 0; ik < mods.size(); ik++) {
-            DatabaseObjectModifier databaseObjectModifier = mods.get(ik);
-            try {
-                databaseObjectModifier.modifyOnDelete(this);
-            } catch (ChangeNotApprovedException e) {
-                Log.Debug(DatabaseObject.class, "Error while on-save modifying Object " + this + " within Modifier " + databaseObjectModifier);
-                Log.Debug(e);
-                return false;
-            } catch (Exception e) {
-                Log.Debug(DatabaseObject.class, "Error while on-delete modifying Object " + this + " within Modifier " + databaseObjectModifier);
-                Log.Debug(e);
+        if (Context.getModifiableContexts().contains(getContext())) {
+            List<DatabaseObjectModifier> mods = new ArrayList<DatabaseObjectModifier>(YabsPluginLoader.registeredModifiers);
+            mods.add(inlineObjectModifier);
+            for (int ik = 0; ik < mods.size(); ik++) {
+                DatabaseObjectModifier databaseObjectModifier = mods.get(ik);
+                try {
+                    databaseObjectModifier.modifyOnDelete(this);
+                } catch (ChangeNotApprovedException e) {
+                    Log.Debug(DatabaseObject.class, "Error while on-save modifying Object " + this + " within Modifier " + databaseObjectModifier);
+                    Log.Debug(e);
+                    return false;
+                } catch (Exception e) {
+                    Log.Debug(DatabaseObject.class, "Error while on-delete modifying Object " + this + " within Modifier " + databaseObjectModifier);
+                    Log.Debug(e);
+                }
             }
         }
-
         boolean result = false;
         String message = null;
         uncacheObject(this);
@@ -2007,18 +2015,19 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
                     Log.Debug(DatabaseObject.class, "Locking was: " + lck);
                 }
             }
-
-            List<DatabaseObjectModifier> mods = YabsPluginLoader.registeredModifiers;
-            for (int ik = 0; ik < mods.size(); ik++) {
-                DatabaseObjectModifier databaseObjectModifier = mods.get(ik);
-                try {
-                    dbo = databaseObjectModifier.modifyOnExplode(dbo);
-                } catch (Exception e) {
-                    Log.Debug(DatabaseObject.class, "Error while on-explode modifying Object " + dbo + " within Modifier " + databaseObjectModifier);
-                    Log.Debug(e);
+            if (Context.getModifiableContexts().contains(target.getContext())) {
+                List<DatabaseObjectModifier> mods = new ArrayList<DatabaseObjectModifier>(YabsPluginLoader.registeredModifiers);
+                //mods.add(inlineObjectModifier);
+                for (int ik = 0; ik < mods.size(); ik++) {
+                    DatabaseObjectModifier databaseObjectModifier = mods.get(ik);
+                    try {
+                        dbo = databaseObjectModifier.modifyOnExplode(dbo);
+                    } catch (Exception e) {
+                        Log.Debug(DatabaseObject.class, "Error while on-explode modifying Object " + dbo + " within Modifier " + databaseObjectModifier);
+                        Log.Debug(e);
+                    }
                 }
             }
-
             dbo.IDENTITY = new Entity<Context, Integer>(target.getContext(), dbo.__getIDS());
             if (dbo.__getGroupsids() == 0) {
                 dbo.setGroupsids(1);//default do all group
@@ -2385,14 +2394,16 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
         }
 
         map.put("dateadded", df.format(__getDateadded()));
-
-        List<DatabaseObjectModifier> mods = YabsPluginLoader.registeredModifiers;
-        for (int ik = 0; ik < mods.size(); ik++) {
-            DatabaseObjectModifier databaseObjectModifier = mods.get(ik);
-            try {
-                map = databaseObjectModifier.modifyOnResolve(map);
-            } catch (Exception e) {
-                Log.Debug(DatabaseObject.class, "Error while modificationg object map if " + this + " within Modifier " + databaseObjectModifier);
+        if (Context.getModifiableContexts().contains(getContext())) {
+            List<DatabaseObjectModifier> mods = new ArrayList<DatabaseObjectModifier>(YabsPluginLoader.registeredModifiers);
+            //not implemented here mods.add(inlineObjectModifier);
+            for (int ik = 0; ik < mods.size(); ik++) {
+                DatabaseObjectModifier databaseObjectModifier = mods.get(ik);
+                try {
+                    map = databaseObjectModifier.modifyOnResolve(map);
+                } catch (Exception e) {
+                    Log.Debug(DatabaseObject.class, "Error while modificationg object map if " + this + " within Modifier " + databaseObjectModifier);
+                }
             }
         }
 
@@ -2706,7 +2717,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
                 } else {
                     map.put("property." + p.getKey(), strVal);
                 }
-            }else{
+            } else {
                 Log.Debug(this, "Skipping DatabaseObjectModifier key: " + p.getKey());
             }
         }
@@ -2760,6 +2771,56 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
             } else {
                 YabsViewProxy.instance().addMessage(Messages.NO_TEMPLATE_LOADED + ": " + getClass().getSimpleName() + " (" + mpv5.db.objects.User.getCurrentUser() + ")", Color.YELLOW);
             }
+        }
+    }
+
+    static class InlineObjectModifier implements DatabaseObjectModifier {
+
+        public DatabaseObject modifyOnExplode(DatabaseObject object) {
+            return object;
+        }
+
+        public DatabaseObject executeAfterSave(DatabaseObject object) {
+            return modify(object, "executeAfterSave");
+        }
+
+        public DatabaseObject modifyOnSave(DatabaseObject object) throws ChangeNotApprovedException {
+            return modify(object, "modifyOnSave");
+        }
+
+        public DatabaseObject executeAfterCreate(DatabaseObject object) {
+            return modify(object, "executeAfterCreate");
+        }
+
+        public Map<String, Object> modifyOnResolve(Map<String, Object> map) {
+            return map;
+        }
+
+        public DatabaseObject modifyOnDelete(DatabaseObject object) throws ChangeNotApprovedException {
+            return modify(object, "modifyOnDelete");
+        }
+
+        private DatabaseObject modify(DatabaseObject object, final String key) {
+            try {
+                if (ValueProperty.hasProperty(object.getContext(), key)) {
+                    ValueProperty script = ValueProperty.getProperty(object.getContext(), key);
+                    Object s = script.getValue();
+                    if (s != null) {
+                        object.evaluateAll(String.valueOf(s));
+                    }
+                }
+                if (ValueProperty.hasProperty(object, key)) {
+                    ValueProperty script = ValueProperty.getProperty(object, key);
+                    Object s = script.getValue();
+                    if (s != null) {
+                        object.evaluateAll(String.valueOf(s));
+                    }
+                }
+            } catch (Throwable ex) {
+                Notificator.raiseNotification(ex, true, true, object);
+            }
+
+            return object;
         }
     }
 }

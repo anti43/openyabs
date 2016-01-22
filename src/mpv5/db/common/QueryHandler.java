@@ -1158,11 +1158,7 @@ public class QueryHandler implements Cloneable {
      * @return true if matching data was found
      */
     public boolean checkExistance(QueryCriteria2 qc) {
-        try {
-            return select("ids", qc, new vTimeframe(new Date(0), new Date())).hasData();
-        } catch (NodataFoundException ex) {
-            return false;
-        }
+        return selectCount(qc) > 0;
     }
 
     /*private byte[] blobToByteArray(final Reader characterStream) throws SQLException, IOException {
@@ -2111,6 +2107,50 @@ public class QueryHandler implements Cloneable {
             mpv5.logging.Log.Debug(ex);//Logger.getLogger(QueryHandler.class.getName()).log(Level.SEVERE, null, ex);
         }
         return theClone;
+    }
+
+    public int selectCount(QueryCriteria2 qc) {
+        String query = "SELECT COUNT(*) as rowcount FROM " + table + " WHERE " + qc.getQuery();
+        String message = "Database Error (SelectCount:COUNT):";
+        Statement stm = null;
+        ResultSet resultSet = null;
+
+        Log.Debug(this, query);
+        try {
+            // Select-Anweisung ausführen
+            stm = sqlConn.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+            resultSet = stm.executeQuery(query);
+
+            if (resultSet.first()) {
+                Log.Debug(this, "Count " + resultSet.getInt("rowcount"));
+                stop();
+                return resultSet.getInt("rowcount");
+            } else {
+                stop();
+                return 0;
+            }
+        } catch (SQLException ex) {
+            throw new RuntimeException(ex);
+        } finally {
+            stop();
+            // Alle Ressourcen wieder freigeben
+            if (resultSet != null) {
+                try {
+                    resultSet.close();
+                } catch (SQLException ex) {
+                    Log.Debug(this, message + ex.getMessage());
+                    Popup.error(ex);
+                }
+            }
+            if (stm != null) {
+                try {
+                    stm.close();
+                } catch (SQLException ex) {
+                    Log.Debug(this, message + ex.getMessage());
+                    Popup.error(ex);
+                }
+            }
+        }
     }
 
     /**

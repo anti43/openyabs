@@ -286,13 +286,8 @@ public class Context implements Serializable, Comparable<Context> {
         list.add(getConversation());
         return list;
     }
-
-    /**
-     * Contexts which are protected by the Securitymanager
-     *
-     * @return
-     */
-    public static ArrayList<Context> getSecuredContexts() {
+    
+     public static ArrayList<Context> getSecuredContexts() {
         ArrayList<Context> list = new ArrayList<Context>();
         list.add(getContactsCompanies());
 //        list.add(getUser()); Needs to be non-secure, to update user details on close
@@ -319,6 +314,36 @@ public class Context implements Serializable, Comparable<Context> {
         list.add(getProductPrice());
         list.add(getConversation());
         list.add(getFonts());
+        return list;
+    }
+
+
+    /**
+     * Contexts which are protected by the Securitymanager
+     *
+     * @return
+     */
+    public static ArrayList<Context> getModifiableContexts() {
+        ArrayList<Context> list = new ArrayList<Context>();
+        list.add(getContactsCompanies()); 
+        list.add(getCustomer());
+        list.add(getManufacturer());
+        list.add(getSupplier());
+        list.add(getAddress());
+        list.add(getItem(null, null));
+        list.add(getInvoice());
+        list.add(getOrder());
+        list.add(getOffer()); 
+        list.add(getCountries());
+        list.add(getContact());
+        list.add(getProduct());
+        list.add(getAccounts());
+        list.add(getCompany());   
+        list.add(getSubItem());
+        list.add(getProductOrderSubitem());
+        list.add(getProductOrder());
+        list.add(getProductPrice());
+        list.add(getConversation()); 
         return list;
     }
 
