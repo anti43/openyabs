@@ -2,8 +2,7 @@
  * MPView.java
  */
 package mpv5.ui.frames;
-
-import com.bulenkov.darcula.DarculaLaf;
+ 
 import com.l2fprod.common.swing.JOutlookBar;
 import enoa.connection.NoaConnection;
 import enoa.connection.NoaConnectionLocalServer;
@@ -2798,9 +2797,7 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
    }//GEN-LAST:event_jMenuItem2ActionPerformed
 
 private void jMenuItem51ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem51ActionPerformed
-    Main.setLaF(DarculaLaf.class.getName());
-    User.getCurrentUser().setLaf(DarculaLaf.class.getName());
-    User.getCurrentUser().save();
+ 
 }//GEN-LAST:event_jMenuItem51ActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
