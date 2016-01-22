@@ -800,7 +800,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
                     Log.Debug(DatabaseObject.class, "Error while on-save modifying Object " + this + " within Modifier " + databaseObjectModifier);
                     Log.Debug(DatabaseObject.class, e.getMessage());
                     return false;
-                } catch (Exception e) {
+                } catch (Throwable e) {
                     Log.Debug(DatabaseObject.class, "Error while on-save modifying Object " + this + " within Modifier " + databaseObjectModifier);
                     Log.Debug(e);
                 }
@@ -839,7 +839,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
                         try {
                             Log.Debug(this, "Passing to plugin: " + databaseObjectModifier);
                             databaseObjectModifier.executeAfterCreate(this);
-                        } catch (Exception e) {
+                        } catch (Throwable e) {
                             Log.Debug(DatabaseObject.class, "Error while after-create executing Object " + this + " within Modifier " + databaseObjectModifier);
                             Log.Debug(e);
                         }
@@ -879,7 +879,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
                     try {
                         Log.Debug(this, "Passing to plugin: " + databaseObjectModifier);
                         databaseObjectModifier.executeAfterSave(this);
-                    } catch (Exception e) {
+                    } catch (Throwable e) {
                         Log.Debug(DatabaseObject.class, "Error while after-save executing Object " + this + " within Modifier " + databaseObjectModifier);
                         Log.Debug(e);
                     }
