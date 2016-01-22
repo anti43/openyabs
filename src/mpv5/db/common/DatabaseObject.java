@@ -838,9 +838,9 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
                         DatabaseObjectModifier databaseObjectModifier = mods.get(ik);
                         try {
                             Log.Debug(this, "Passing to plugin: " + databaseObjectModifier);
-                            databaseObjectModifier.modifyAfterCreate(this);
+                            databaseObjectModifier.executeAfterCreate(this);
                         } catch (Exception e) {
-                            Log.Debug(DatabaseObject.class, "Error while after-create modifying Object " + this + " within Modifier " + databaseObjectModifier);
+                            Log.Debug(DatabaseObject.class, "Error while after-create executing Object " + this + " within Modifier " + databaseObjectModifier);
                             Log.Debug(e);
                         }
                     }
@@ -855,6 +855,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
                         ((Triggerable) this).triggerOnUpdate();
                     }
                 }
+
 
                 final String fmessage = message;
                 final String fdbid = this.getDbIdentity();
@@ -871,6 +872,17 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
                         }
                     };
                     new Thread(runnable).start();
+                }
+
+                for (int ik = 0; ik < mods.size(); ik++) {
+                    DatabaseObjectModifier databaseObjectModifier = mods.get(ik);
+                    try {
+                        Log.Debug(this, "Passing to plugin: " + databaseObjectModifier);
+                        databaseObjectModifier.executeAfterSave(this);
+                    } catch (Exception e) {
+                        Log.Debug(DatabaseObject.class, "Error while after-save executing Object " + this + " within Modifier " + databaseObjectModifier);
+                        Log.Debug(e);
+                    }
                 }
 
                 return true;
@@ -2612,7 +2624,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
         }
         return script;
     }
-    
+
     private String doEvaluate(String script) {
         try {
             return String.valueOf(getGroovyShell().evaluate(script));
@@ -2625,7 +2637,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
     public String evaluateAll(String t) {
         //String sm = GlobalSettings.getProperty("org.openyabs.config.scriptsymbol", "#");
         /*if (!t.contains(sm)) {
-            t = sm + t + sm;
+        t = sm + t + sm;
         }*/
         return evaluateAll(t, false);
     }

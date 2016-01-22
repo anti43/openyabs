@@ -44,14 +44,22 @@ public interface DatabaseObjectModifier {
      */
     DatabaseObject modifyOnSave(DatabaseObject object) throws ChangeNotApprovedException;
 
-     /**
+    
+    /**
      * This method will be called after creation of any {@link DatabaseObject} if this <br/>
      * {@link DatabaseObjectModifier} is registered with a loaded  {@link mpv5.pluginhandling.MP5Plugin}
-     * @param object
+     * @param object 
      * @return
      */
-    DatabaseObject modifyAfterCreate(DatabaseObject object);
-
+    DatabaseObject executeAfterCreate(DatabaseObject object);
+    
+    /**
+     * This method will be called after creation of any {@link DatabaseObject} if this <br/>
+     * {@link DatabaseObjectModifier} is registered with a loaded  {@link mpv5.pluginhandling.MP5Plugin}
+     * @param object 
+     * @return
+     */
+    DatabaseObject executeAfterSave(DatabaseObject object);
     /**
      * This method will be called during reference-resolving any {@link DatabaseObject} if this <br/>
      * {@link DatabaseObjectModifier} is registered with a loaded  {@link mpv5.pluginhandling.MP5Plugin}

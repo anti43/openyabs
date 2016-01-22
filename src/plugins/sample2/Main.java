@@ -123,7 +123,7 @@ public class Main extends JPanel implements YabsPlugin, Runnable, DatabaseObject
       return object;
    }
 
-   public DatabaseObject modifyAfterCreate(DatabaseObject object) {
+   public DatabaseObject executeAfterCreate(DatabaseObject object) {
       return object;
    }
 
@@ -134,4 +134,10 @@ public class Main extends JPanel implements YabsPlugin, Runnable, DatabaseObject
    public DatabaseObject modifyOnDelete(DatabaseObject object) throws ChangeNotApprovedException {
       return object;
    }
+
+    @Override
+    public DatabaseObject executeAfterSave(DatabaseObject object) {
+        return object;
+    }
+
 }
