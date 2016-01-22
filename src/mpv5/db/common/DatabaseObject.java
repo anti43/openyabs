@@ -2685,25 +2685,29 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
 
         String sm = GlobalSettings.getProperty("org.openyabs.config.scriptsymbol", "#");
         for (ValueProperty p : props) {
-            String strVal = String.valueOf(p.getValue());
-            if (p.getValue() instanceof LazyInvocable) {
-                try {
-                    LazyInvocable lazy = (LazyInvocable) p.getValue();
-                    lazy.doIt(this);
-                    map.put("property." + p.getKey(), String.valueOf(lazy));
-                } catch (Exception e) {
-                    Log.Debug(this, e.getMessage());
+            if (!p.getKey().startsWith("modify") && !p.getKey().startsWith("execute")) {
+                String strVal = String.valueOf(p.getValue());
+                if (p.getValue() instanceof LazyInvocable) {
+                    try {
+                        LazyInvocable lazy = (LazyInvocable) p.getValue();
+                        lazy.doIt(this);
+                        map.put("property." + p.getKey(), String.valueOf(lazy));
+                    } catch (Exception e) {
+                        Log.Debug(this, e.getMessage());
+                    }
+                } else if (strVal.startsWith(sm) && strVal.endsWith(sm)) {
+                    try {
+                        Object value = evaluateAll(strVal);
+                        map.put("property." + p.getKey(), String.valueOf(value));
+                    } catch (Exception e) {
+                        Log.Debug(this, e.getMessage());
+                        Notificator.raiseNotification(Messages.SCRIPT_ERROR + " " + p.getKey(), false);
+                    }
+                } else {
+                    map.put("property." + p.getKey(), strVal);
                 }
-            } else if (strVal.startsWith(sm) && strVal.endsWith(sm)) {
-                try {
-                    Object value = evaluateAll(strVal);
-                    map.put("property." + p.getKey(), String.valueOf(value));
-                } catch (Exception e) {
-                    Log.Debug(this, e.getMessage());
-                    Notificator.raiseNotification(Messages.SCRIPT_ERROR + " " + p.getKey(), false);
-                }
-            } else {
-                map.put("property." + p.getKey(), strVal);
+            }else{
+                Log.Debug(this, "Skipping DatabaseObjectModifier key: " + p.getKey());
             }
         }
     }
