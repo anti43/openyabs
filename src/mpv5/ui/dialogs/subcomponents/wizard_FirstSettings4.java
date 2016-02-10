@@ -141,57 +141,12 @@ public class wizard_FirstSettings4 extends javax.swing.JPanel implements Wizarda
                 setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
                 YabsViewProxy.instance().setWaiting(false);
             }
-        } 
-        try {
-
-            File f = new File(this.getClass().getResource("/mpv5/resources/extra/").toURI());
-            Log.Debug(this, "Importing coutries from: " + f.getCanonicalPath());
-            File[] langfiles = f.listFiles();
-            for (int i = 0; i < langfiles.length; i++) {
-                File file = langfiles[i];
-                if (file.getName().endsWith(".odt")) {
-                    String m = String.valueOf(System.nanoTime());
-                    File fi = file;
-                    QueryHandler.instanceOf().clone(Context.getFiles(), this).insertFile(fi,
-                            DatabaseObject.getObject(Context.getTemplate()),
-                            new SaveString(fi.getName() + "_" + m, true));
-                }
-            }
-        } catch (Exception ex) {
-            Logger.getLogger(wizard_FirstSettings4.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        }  
 
         return true;
     }
 
-    public void refresh() {
-        try {
-            QueryHandler xx = QueryHandler.instanceOf().clone(Context.getTemplate(), 1);
-            ReturnValue data = xx.freeQuery("select ids,cname from templates order by dateadded desc ", MPSecurityManager.VIEW, null);
-            for (int i = 0; i < data.size(); i++) {
-                int id = Integer.valueOf(data.getData()[i][0].toString());
-                Template t = (Template) DatabaseObject.getObject(Context.getTemplate(), id);
-
-                t.setGroupsids(1);
-                t.setCname(data.getData()[i][1].toString());
-                t.setMimetype(String.valueOf(Constants.TYPE_BILL));
-                t.setFormat("1,2,4,5,6");
-                t.setDescription("Wizard insert");
-                t.save(true);
-
-                User object = User.getCurrentUser();
-                QueryData c = new QueryData();
-                c.add("usersids", object.__getIDS());
-                c.add("templatesids", t.__getIDS());
-                c.add("groupsids", 1);
-                c.add("cname", t.__getIDS() + "@" + object.__getIDS() + "@" + 1);
-                QueryHandler.instanceOf().clone(Context.getTemplatesToUsers()).insert(c, null);
-            }
-            TemplateHandler.clearCache();
-        } catch (Exception ex) {
-            Logger.getLogger(wizard_FirstSettings4.class.getName()).log(Level.SEVERE, null, ex);
-            Popup.error(ex);
-        }
+    public void refresh() { 
     }
 
     public boolean back() {

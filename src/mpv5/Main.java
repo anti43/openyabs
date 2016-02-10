@@ -48,7 +48,9 @@ import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseConnection;
 import mpv5.db.common.DatabaseObject;
 import mpv5.db.common.DatabaseObjectLock;
+import mpv5.db.common.QueryData;
 import mpv5.db.common.QueryHandler;
+import mpv5.db.objects.Item;
 import mpv5.db.objects.Template;
 import mpv5.globals.Constants;
 import mpv5.globals.LocalSettings;
@@ -160,7 +162,7 @@ public class Main implements Runnable {
         User onlyUser = null;
         try {
             users = User.getObjects(Context.getUser());
-            if (users.size() == 1) {
+            if (users.size() > 0) {
                 onlyUser = (User) users.get(0);
             }
         } catch (NodataFoundException ex) {
@@ -200,26 +202,63 @@ public class Main implements Runnable {
 
         splash.nextStep(Messages.IMPORT_TEMPLATES.toString());
         File itemp = new File(Constants.TEMPLATES_DIR);
+        boolean templateImported = false;
         try {
             Log.Debug(Main.class, "Checking: " + itemp.getPath());
-            boolean imp = false;
+
             if (itemp.isDirectory() && itemp.canRead()) {
                 File[] templates = FileDirectoryHandler.getFilesOfDirectory(itemp);
                 for (int i = 0; i < templates.length; i++) {
                     File file = templates[i];
                     Log.Debug(Main.class, "Importing: " + file.getPath());
                     if (TemplateHandler.importTemplate(file)) {
-                        imp = true;
+                        templateImported = true;
                     }
                     file.deleteOnExit();
                 }
-                if (imp) {
+                if (templateImported) {
                     Notificator.raiseNotification(Messages.IMPORT_TEMPLATES_DONE, false);
                 }
             }
         } catch (Exception e) {
             Log.Debug(e);
             Popup.error(e);
+        }
+
+        try {
+            if (templateImported) {
+                QueryHandler xx = QueryHandler.instanceOf().clone(Context.getTemplate(), 1);
+                ReturnValue data = xx.freeQuery("select ids,cname from templates order by dateadded desc ", MPSecurityManager.VIEW, null);
+                int tries = 0;
+                while (tries < 10 && !data.hasData()) {
+                    tries++;
+                    Thread.sleep(333);
+                    data = xx.freeQuery("select ids,cname from templates order by dateadded desc ", MPSecurityManager.VIEW, null);
+                }
+                if (data.hasData()) {
+                    int id = Integer.valueOf(data.getData()[0][0].toString());
+                    Template t = (Template) DatabaseObject.getObject(Context.getTemplate(), id);
+
+                    t.setGroupsids(1);
+                    t.setCname(data.getData()[0][1].toString());
+                    t.setMimetype(String.valueOf(Constants.TYPE_BILL));
+                    t.setFormat("1,2,4,5,6");
+                    t.setDescription("Wizard insert");
+                    t.save(true);
+
+                    User object = onlyUser;
+                    QueryData c = new QueryData();
+                    c.add("usersids", object.__getIDS());
+                    c.add("templatesids", t.__getIDS());
+                    c.add("groupsids", 1);
+                    c.add("cname", t.__getIDS() + "@" + object.__getIDS() + "@" + 1);
+                    QueryHandler.instanceOf().clone(Context.getTemplatesToUsers()).insert(c, null);
+                }
+                TemplateHandler.clearCache();
+            }
+        } catch (Exception ex) {
+            Log.Debug(ex);
+            Popup.error(ex);
         }
 
         splash.nextStep(Messages.IMPORT_PLUGINS.toString());
@@ -309,6 +348,22 @@ public class Main implements Runnable {
      * The Yabs View (JSAF FrameView)
      */
     public static Class<MPView> VIEW_CLASS;
+
+    public static void importCountries() {
+        try {
+            File f = new File(Main.class.getResource("/mpv5/resources/extra/").toURI());
+            Log.Debug(Main.class, "Importing coutries from: " + f.getCanonicalPath());
+            File[] langfiles = f.listFiles();
+            for (int i = 0; i < langfiles.length; i++) {
+                File file = langfiles[i];
+                if (file.getName().endsWith("countries.xml")) {
+                    LanguageManager.importCountries(file);
+                }
+            }
+        } catch (Exception uRISyntaxException) {
+            Log.Debug(Main.class, uRISyntaxException.getMessage());
+        }
+    }
 
     /**
      * At startup create and show the main frame of the application.

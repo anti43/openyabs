@@ -640,10 +640,10 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
 
         enhanceToolbars();
         loaded = true;
-        String fs = System.getProperty("yabs_firststart");
-        if (fs != null) {
-            wizard_FirstSettings1.build(getIdentifierFrame());
-        }
+//        String fs = System.getProperty("yabs_firststart");
+//        if (fs != null) {
+//            wizard_FirstSettings1.build(getIdentifierFrame());
+//        }
     }
 
     private GroovyShell getGroovyShell() {

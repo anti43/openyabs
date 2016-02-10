@@ -111,21 +111,7 @@ public class wizard_DBSettings_simple_1 extends javax.swing.JPanel implements Wi
                         if (conn.runQueries(new DatabaseInstallation().getStructure())
                                 && conn.runQueries(new DatabaseInstallation().getInitialData())) {
 
-//                            Main.readImports();
-
-                            try {
-                                File f = new File(this.getClass().getResource("/mpv5/resources/extra/").toURI());
-                                Log.Debug(this, "Importing coutries from: " + f.getCanonicalPath());
-                                File[] langfiles = f.listFiles();
-                                for (int i = 0; i < langfiles.length; i++) {
-                                    File file = langfiles[i];
-                                    if(file.getName().endsWith(".yabs"))
-                                       LanguageManager.importCountries(file);
-                                }
-                            } catch (Exception uRISyntaxException) {
-                                Log.Debug(this, uRISyntaxException.getMessage());
-                            }
-
+                            Main.importCountries(); 
                             master.setMessage(Messages.CONNECTION_VERIFIED.toString());
                         } else {
                             master.setMessage(Messages.CREATING_DATABASE_FAILED.toString());
@@ -454,6 +440,7 @@ public class wizard_DBSettings_simple_1 extends javax.swing.JPanel implements Wi
     public boolean next() {
         if (DBVerification() & DirectoryCreate()) {
             this.master.dispose();
+            Popup.notice("It will take up to one minute until the initial data is created. You can safely close this window.");
             Main.start();
             return true;
         } else {

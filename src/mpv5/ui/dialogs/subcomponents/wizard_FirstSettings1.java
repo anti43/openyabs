@@ -1,22 +1,13 @@
 package mpv5.ui.dialogs.subcomponents;
 
-import groovy.lang.Binding;
-import groovy.lang.GroovyShell;
 import java.awt.Dialog;
 import java.util.List;
-import javax.swing.DefaultListModel;
 import javax.swing.JFrame;
 import javax.swing.JToolBar;
-import mpv5.Main;
 import mpv5.data.PropertyStore;
-import mpv5.globals.GlobalSettings;
-import mpv5.globals.Messages;
-import mpv5.logging.Log;
-import mpv5.ui.dialogs.Notificator;
 import mpv5.ui.dialogs.Wizard;
 import mpv5.ui.dialogs.WizardMaster;
 import mpv5.ui.dialogs.Wizardable;
-import mpv5.ui.frames.MPView;
 
 /**
  *

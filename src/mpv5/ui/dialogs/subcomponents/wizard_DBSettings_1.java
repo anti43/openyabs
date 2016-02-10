@@ -98,30 +98,8 @@ public class wizard_DBSettings_1 extends javax.swing.JPanel implements Wizardabl
                   Log.Debug(this, "Running DB install queries...");
                   if (conn.runQueries(new DatabaseInstallation().getStructure())
                         & conn.runQueries(new DatabaseInstallation().getInitialData())) {
-                     try {
-                        File f = new File(this.getClass().getResource("languages").toURI());
-                        Log.Debug(this, "Importing languages from: " + f.getCanonicalPath());
-                        File[] langfiles = f.listFiles();
-                        for (int i = 0; i < langfiles.length; i++) {
-                           File file = langfiles[i];
-                           LanguageManager.importLanguage(file.getName(), file);
-                        }
-                     } catch (Exception uRISyntaxException) {
-                        Log.Debug(this, uRISyntaxException.getMessage());
-                     }
-
-                     try {
-                        File f = new File(this.getClass().getResource("/mpv5/resources/extra/").toURI());
-                        Log.Debug(this, "Importing coutries from: " + f.getCanonicalPath());
-                        File[] langfiles = f.listFiles();
-                        for (int i = 0; i < langfiles.length; i++) {
-                           File file = langfiles[i];
-                           if(file.getName().endsWith("countries.xml"))
-                              LanguageManager.importCountries(file);
-                        }
-                     } catch (Exception uRISyntaxException) {
-                        Log.Debug(this, uRISyntaxException.getMessage());
-                     }
+                  
+                     Main.importCountries();
                      master.setMessage(Messages.CONNECTION_VERIFIED.toString());
                   } else {
                      LocalSettings.removeInstance(forConnId);
