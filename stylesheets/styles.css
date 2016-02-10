@@ -19,7 +19,7 @@ body {
 }
 
 .wrapper {
-  width: 1024px;
+  width: 640px;
   margin: 0 auto;
   background: #DEDEDE;
   -webkit-border-radius: 8px;
@@ -208,7 +208,7 @@ h1, h2, h3 {
 }
 
 h1 {
-  font-size: 23px;
+  font-size: 28px;
 }
 
 h2 {
@@ -351,6 +351,6 @@ footer p + p {
 }
 @media print {
   header p.view a small:before {
-    content: 'at http://github.com/';
+    content: 'at https://github.com/';
   }
 }
