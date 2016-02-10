@@ -644,6 +644,13 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
 //        if (fs != null) {
 //            wizard_FirstSettings1.build(getIdentifierFrame());
 //        }
+        
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                Main.assignOneTemplate();
+            }
+        }).start();
     }
 
     private GroovyShell getGroovyShell() {

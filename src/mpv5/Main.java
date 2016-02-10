@@ -225,44 +225,6 @@ public class Main implements Runnable {
             Popup.error(e);
         }
 
-        try {
-            if (templateImported) {
-                QueryHandler xx = QueryHandler.instanceOf().clone(Context.getTemplate(), 1);
-                ReturnValue data = xx.freeQuery("select ids,cname from templates order by dateadded desc ", MPSecurityManager.VIEW, null);
-                int tries = 0;
-                while (tries < 100 && !data.hasData()) {
-                    tries++;
-                    Thread.sleep(333);
-                    data = xx.freeQuery("select ids,cname from templates order by dateadded desc ", MPSecurityManager.VIEW, null);
-                }
-                if (data.hasData()) {
-                    int id = Integer.valueOf(data.getData()[0][0].toString());
-                    Template t = (Template) DatabaseObject.getObject(Context.getTemplate(), id);
-
-                    t.setGroupsids(1);
-                    t.setCname(data.getData()[0][1].toString());
-                    t.setMimetype(String.valueOf(Constants.TYPE_BILL));
-                    t.setFormat("1,2,4,5,6");
-                    t.setDescription("Wizard insert");
-                    t.save(true);
-
-                    User object = onlyUser;
-                    QueryData c = new QueryData();
-                    c.add("usersids", object.__getIDS());
-                    c.add("templatesids", t.__getIDS());
-                    c.add("groupsids", 1);
-                    c.add("cname", t.__getIDS() + "@" + object.__getIDS() + "@" + 1);
-                    QueryHandler.instanceOf().clone(Context.getTemplatesToUsers()).insert(c, null);
-                }else{
-                    Popup.notice("Please assign a template manually in the Templatemanager");
-                }
-                TemplateHandler.clearCache();
-            }
-        } catch (Exception ex) {
-            Log.Debug(ex);
-            Popup.error(ex);
-        }
-
         splash.nextStep(Messages.IMPORT_PLUGINS.toString());
         File iplug = new File(Constants.PLUGINS_DIR);
         try {
@@ -281,6 +243,43 @@ public class Main implements Runnable {
             Popup.error(e);
         }
 
+    }
+
+    public static void assignOneTemplate() {
+        try {
+            QueryHandler xc = QueryHandler.instanceOf().clone(Context.getTemplatesToUsers(), 1);
+            if (xc.getCount() > 0) {
+                return;
+            }
+            QueryHandler xx = QueryHandler.instanceOf().clone(Context.getTemplate(), 1);
+            ReturnValue data = xx.freeSelect("ids,cname");
+            if (data.hasData()) {
+                int id = Integer.valueOf(data.getData()[0][0].toString());
+                Template t = (Template) DatabaseObject.getObject(Context.getTemplate(), id);
+
+                t.setGroupsids(1);
+                t.setCname(data.getData()[0][1].toString());
+                t.setMimetype(String.valueOf(Constants.TYPE_BILL));
+                t.setFormat("1,2,4,5,6");
+                t.setDescription("Wizard insert");
+                t.save(true);
+
+                User object = User.getCurrentUser();
+                QueryData c = new QueryData();
+                c.add("usersids", object.__getIDS());
+                c.add("templatesids", t.__getIDS());
+                c.add("groupsids", 1);
+                c.add("cname", t.__getIDS() + "@" + object.__getIDS() + "@" + 1);
+                QueryHandler.instanceOf().clone(Context.getTemplatesToUsers()).insert(c, null);
+            } else {
+                Popup.notice("Please restart the aplication or assign a template manually in the Templatemanager");
+            }
+            TemplateHandler.clearCache();
+
+        } catch (Exception ex) {
+            Log.Debug(ex);
+            Popup.error(ex);
+        }
     }
 
     private static void runStartScripts() {
