@@ -230,7 +230,7 @@ public class Main implements Runnable {
                 QueryHandler xx = QueryHandler.instanceOf().clone(Context.getTemplate(), 1);
                 ReturnValue data = xx.freeQuery("select ids,cname from templates order by dateadded desc ", MPSecurityManager.VIEW, null);
                 int tries = 0;
-                while (tries < 10 && !data.hasData()) {
+                while (tries < 100 && !data.hasData()) {
                     tries++;
                     Thread.sleep(333);
                     data = xx.freeQuery("select ids,cname from templates order by dateadded desc ", MPSecurityManager.VIEW, null);
@@ -253,6 +253,8 @@ public class Main implements Runnable {
                     c.add("groupsids", 1);
                     c.add("cname", t.__getIDS() + "@" + object.__getIDS() + "@" + 1);
                     QueryHandler.instanceOf().clone(Context.getTemplatesToUsers()).insert(c, null);
+                }else{
+                    Popup.notice("Please assign a template manually in the Templatemanager");
                 }
                 TemplateHandler.clearCache();
             }
