@@ -2413,6 +2413,7 @@ public class ItemPanel2 extends javax.swing.JPanel implements DataPanel, MPCBSel
 
     private void toOrder() {
 
+        dataOwner.getPanelData(this);
         dataOwner.setIntstatus(Item.STATUS_FINISHED);
         dataOwner.save();
 
@@ -2433,7 +2434,7 @@ public class ItemPanel2 extends javax.swing.JPanel implements DataPanel, MPCBSel
     }
 
     private void toInvoice() {
-
+        dataOwner.getPanelData(this);
         dataOwner.setIntstatus(Item.STATUS_FINISHED);
         dataOwner.save();
         ArrayList<ActivityList> data;

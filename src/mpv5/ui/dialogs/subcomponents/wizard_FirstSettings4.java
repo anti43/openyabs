@@ -141,8 +141,7 @@ public class wizard_FirstSettings4 extends javax.swing.JPanel implements Wizarda
                 setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
                 YabsViewProxy.instance().setWaiting(false);
             }
-        } else {
-        }
+        } 
         try {
 
             File f = new File(this.getClass().getResource("/mpv5/resources/extra/").toURI());
@@ -196,7 +195,7 @@ public class wizard_FirstSettings4 extends javax.swing.JPanel implements Wizarda
     }
 
     public boolean back() {
-        return false;
+        return true;
     }
 
     public void load() {
