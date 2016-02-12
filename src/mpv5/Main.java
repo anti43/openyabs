@@ -26,6 +26,7 @@ import org.jdesktop.application.SingleFrameApplication;
 import com.l2fprod.common.swing.plaf.LookAndFeelAddons;
 import enoa.connection.NoaConnection;
 import enoa.connection.NoaConnectionLocalServer;
+import enoa.handler.FutureCallback;
 import enoa.handler.TemplateHandler;
 import java.awt.Color;
 import java.awt.Cursor;
@@ -209,9 +210,28 @@ public class Main implements Runnable {
             if (itemp.isDirectory() && itemp.canRead()) {
                 File[] templates = FileDirectoryHandler.getFilesOfDirectory(itemp);
                 for (int i = 0; i < templates.length; i++) {
-                    File file = templates[i];
+                    final File file = templates[i];
                     Log.Debug(Main.class, "Importing: " + file.getPath());
-                    if (TemplateHandler.importTemplate(file)) {
+                    if (TemplateHandler.importTemplateAndAssign(file, new FutureCallback<Template>() {
+
+                        @Override
+                        public void call(Template t) {
+                            t.setGroupsids(1);
+                            t.setCname(file.getName());
+                            t.setMimetype(String.valueOf(Constants.TYPE_BILL));
+                            t.setFormat("1,2,4,5,6");
+                            t.setDescription("Wizard insert");
+                            t.save(true);
+
+                            User object = User.getCurrentUser();
+                            QueryData c = new QueryData();
+                            c.add("usersids", object.__getIDS());
+                            c.add("templatesids", t.__getIDS());
+                            c.add("groupsids", 1);
+                            c.add("cname", t.__getIDS() + "@" + object.__getIDS() + "@" + 1);
+                            QueryHandler.instanceOf().clone(Context.getTemplatesToUsers()).insert(c, null);
+                        }
+                    })) {
                         templateImported = true;
                     }
                     file.deleteOnExit();

@@ -586,4 +586,10 @@ public class TemplateHandler {
     public static void clearCache() {
         TEMPLATE_CACHE.clear();
     }
+
+    public static boolean importTemplateAndAssign(File file, FutureCallback<Template> f) {
+        Template t = new Template();
+        return QueryHandler.instanceOf().clone(Context.getFiles(), (DataPanel) null).insertFile(file, t, new SaveString(file.getName(), true), f); 
+    }
+
 }

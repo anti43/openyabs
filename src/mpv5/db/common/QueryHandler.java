@@ -1,5 +1,6 @@
 package mpv5.db.common;
 
+import enoa.handler.FutureCallback;
 import java.awt.Color;
 import java.awt.Cursor;
 import java.beans.PropertyChangeEvent;
@@ -2845,6 +2846,18 @@ public class QueryHandler implements Cloneable {
      * @return True if the insert was a success
      */
     public boolean insertFile(File file, DatabaseObject dataOwner, SaveString descriptiveText) {
+        return insertFile(file, dataOwner, descriptiveText, null);
+    }
+
+    /**
+     * This is a convenience method to insert files
+     *
+     * @param file The file
+     * @param dataOwner The owner
+     * @param descriptiveText Describe the file
+     * @return True if the insert was a success
+     */
+    public boolean insertFile(File file, DatabaseObject dataOwner, SaveString descriptiveText, FutureCallback t) {
         try {
             Context tc = null;
             if (dataOwner.getContext().equals(Context.getContact())) {
@@ -2861,7 +2874,7 @@ public class QueryHandler implements Cloneable {
             } else {
                 throw new UnsupportedOperationException("Not yet implemented for " + dataOwner.getContext());
             }
-            new backgroundFileInsert(file, dataOwner, descriptiveText, tc).execute();
+            new backgroundFileInsert(file, dataOwner, descriptiveText, tc, t).execute();
             return true;
         } catch (Exception e) {
             Log.Debug(e);
@@ -2996,13 +3009,19 @@ public class QueryHandler implements Cloneable {
         private DatabaseObject dataOwner;
         private String descriptiveText;
         private final Context tcontext;
+        private final FutureCallback callback;
 
         public backgroundFileInsert(File file, DatabaseObject owner, SaveString description, Context tcontext) {
+            this(file, owner, description, tcontext, null);
+        }
+
+        private backgroundFileInsert(File file, DatabaseObject owner, SaveString description, Context tcontext, FutureCallback t) {
             this.addPropertyChangeListener(new changeListener());
             this.file = file;
             this.dataOwner = owner;
             this.descriptiveText = description.toString();
             this.tcontext = tcontext;
+            this.callback = t;
         }
 
         @Override
@@ -3072,6 +3091,9 @@ public class QueryHandler implements Cloneable {
                 mpv5.logging.Log.Debug(ex);//Logger.getLogger(QueryHandler.class.getName()).log(Level.SEVERE, null, ex);
             } catch (ExecutionException ex) {
                 mpv5.logging.Log.Debug(ex);//Logger.getLogger(QueryHandler.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            if(callback!=null){
+                callback.call(dataOwner);
             }
         }
 
