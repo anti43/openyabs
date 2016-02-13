@@ -216,6 +216,7 @@ public class Main implements Runnable {
 
                         @Override
                         public void call(Template t) {
+                            Log.Debug(this, "Template callback");
                             t.setGroupsids(1);
                             t.setCname(file.getName());
                             t.setMimetype(String.valueOf(Constants.TYPE_BILL));

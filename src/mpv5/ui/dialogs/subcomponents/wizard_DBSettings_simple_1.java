@@ -440,7 +440,6 @@ public class wizard_DBSettings_simple_1 extends javax.swing.JPanel implements Wi
     public boolean next() {
         if (DBVerification() & DirectoryCreate()) {
             this.master.dispose();
-            Popup.notice("It will take up to one minute until the initial data is created and the application starts. You can safely close this window.");
             Main.start();
             return true;
         } else {

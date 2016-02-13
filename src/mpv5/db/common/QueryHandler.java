@@ -3009,13 +3009,13 @@ public class QueryHandler implements Cloneable {
         private DatabaseObject dataOwner;
         private String descriptiveText;
         private final Context tcontext;
-        private final FutureCallback callback;
+        private final FutureCallback<DatabaseObject> callback;
 
         public backgroundFileInsert(File file, DatabaseObject owner, SaveString description, Context tcontext) {
             this(file, owner, description, tcontext, null);
         }
 
-        private backgroundFileInsert(File file, DatabaseObject owner, SaveString description, Context tcontext, FutureCallback t) {
+        private backgroundFileInsert(File file, DatabaseObject owner, SaveString description, Context tcontext, FutureCallback<DatabaseObject> t) {
             this.addPropertyChangeListener(new changeListener());
             this.file = file;
             this.dataOwner = owner;
@@ -3071,6 +3071,7 @@ public class QueryHandler implements Cloneable {
         @Override
         public void done() {
             QueryData x;
+            DatabaseObject newObject = null;
             try {
                 String filename = file.getName();
                 String fileextension = (filename.lastIndexOf(".") == -1) ? "" : filename.substring(filename.lastIndexOf(".") + 1, filename.length());
@@ -3082,18 +3083,17 @@ public class QueryHandler implements Cloneable {
                 x.add("intaddedby", mpv5.db.objects.User.getCurrentUser().__getIDS());
                 x.add("intsize", file.length());
                 x.add("mimetype", fileextension);
-                QueryHandler.instanceOf().clone(tcontext).insert(x, Messages.FILE_SAVED + file.getName());
+                int newid = QueryHandler.instanceOf().clone(tcontext).insert(x, Messages.FILE_SAVED + file.getName());
+                newObject = DatabaseObject.getObject(tcontext, newid);
                 mpv5.YabsViewProxy.instance().addMessage(Messages.FILE_SAVED + file.getName());
                 if (viewToBeNotified != null) {
                     viewToBeNotified.refresh();
                 }
-            } catch (InterruptedException ex) {
-                mpv5.logging.Log.Debug(ex);//Logger.getLogger(QueryHandler.class.getName()).log(Level.SEVERE, null, ex);
-            } catch (ExecutionException ex) {
+            } catch (Exception ex) {
                 mpv5.logging.Log.Debug(ex);//Logger.getLogger(QueryHandler.class.getName()).log(Level.SEVERE, null, ex);
             }
-            if(callback!=null){
-                callback.call(dataOwner);
+            if (callback != null) {
+                callback.call(newObject);
             }
         }
 
