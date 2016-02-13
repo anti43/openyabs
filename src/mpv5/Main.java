@@ -220,7 +220,7 @@ public class Main implements Runnable {
                             t.setGroupsids(1);
                             t.setCname(file.getName());
                             t.setMimetype(String.valueOf(Constants.TYPE_BILL));
-                            t.setFormat("1,2,4,5,6");
+                            t.setFormat("1,2,4,5,7,9");
                             t.setDescription("Wizard insert");
                             t.save(true);
 
