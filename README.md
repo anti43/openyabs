@@ -1,7 +1,6 @@
 openyabs - Yet another Business Software 
 ===
 
-Normal users:
 **[Download installation packages here!](https://github.com/anti43/openyabs/releases/)**
  
 
