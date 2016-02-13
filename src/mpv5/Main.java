@@ -323,7 +323,7 @@ public class Main implements Runnable {
      * Launch the application
      */
     public static void start() {
-
+        splash.setVisible(true);
 //        splash.nextStep(Messages.LAUNCH.toString());
         splash.nextStep(Messages.DBCONN_UPDATE_BEPATIENT.toString());
         Log.Debug(Main.class, "Trying to launch application now..");
@@ -458,9 +458,8 @@ public class Main implements Runnable {
 
             } else if (Popup.Y_N_dialog(splash, Messages.NO_DB_CONNECTION, Messages.FIRST_START.toString())) {
                 Log.Debug(this, "Loading database config wizard...");
-                if (!HEADLESS) {
-                    splash.dispose();
-                }
+                splash.setVisible(false);
+                
                 showDbWiz(null);
             } else {
                 Log.Debug(this, "Cancelled by user.");

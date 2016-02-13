@@ -2166,3 +2166,4 @@ wizard_FirstSettings2.bankname._Label=Bank
 wizard_Toolbar1.jLabel3.text=Toolbar
 wizard_FirstSettings2.bic._Label=BIC
 wizard_FirstSettings2.iban._Label=IBAN
+DBCONN_UPDATE_BEPATIENT=Die Datenbank wird überprüft, dies kann einige Zeit dauern..
