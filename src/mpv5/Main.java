@@ -1045,7 +1045,6 @@ public class Main implements Runnable {
 
     private void showDbWiz(Integer forConnId) {
         try {
-            Log.setLogLevel(Log.LOGLEVEL_DEBUG);
             YConsole.setLogFile("install.log");
             Log.Debug(this, new Date());
             System.setProperty("yabs_firststart", "true");
