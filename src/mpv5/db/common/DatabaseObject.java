@@ -2655,7 +2655,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
 
     public String evaluateAll(String text, boolean showError) {
         String sm = GlobalSettings.getProperty("org.openyabs.config.scriptsymbol", "#");
-        Pattern SCRIPTPATTERN = Pattern.compile("\\" + sm + "(.*?)\\" + sm + "");
+        Pattern SCRIPTPATTERN = Pattern.compile("\\" + sm + "(.*?)\\" + sm + "", Pattern.DOTALL);
         Matcher scriptmatcher = SCRIPTPATTERN.matcher(text);
         Log.Debug(this, "script text:" + text);
         while (scriptmatcher.find()) {
