@@ -7,7 +7,10 @@
 package mpv5.ui.beans;
 
 import java.awt.Font;
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import javax.swing.JSpinner;
+import mpv5.logging.Log;
 
 /**
  *
@@ -90,9 +93,13 @@ public class LabeledSpinner extends javax.swing.JPanel {
      * @param text the _text to set
      */
     public void set_Value(Object text) {
+        
         this._text = String.valueOf(text);
-        jSpinner1.setValue(text);
-
+        try {
+            jSpinner1.setValue(new BigDecimal(String.valueOf(text)).intValue());
+        } catch (Exception e) {
+            Log.Debug(e);
+        }
     }
 
     /**
