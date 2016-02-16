@@ -503,6 +503,7 @@ public class wizard_DBSettings_1 extends javax.swing.JPanel implements Wizardabl
    public boolean next() {
       if (DBVerification() & DirectoryCreate()) {
          this.master.dispose();
+         Log.setLogLevel(Log.LOGLEVEL_NONE);
          Main.start();
          return true;
       } else {
