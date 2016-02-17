@@ -687,7 +687,7 @@ public class Contact extends DatabaseObject implements Formattable, Templateable
         def.setCountry(country);
         def.setDepartment(department);
         def.setCompany(company);
-        def.setCname(cnumber);
+        def.setCname(getCname());
         def.setIsmale(ismale);
         def.setPrename(prename);
         def.setStreet(street);
