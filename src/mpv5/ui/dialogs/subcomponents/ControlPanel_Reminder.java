@@ -315,19 +315,7 @@ public class ControlPanel_Reminder extends javax.swing.JPanel implements DataPan
                 ex.putAll(hm1);
                 ex.setTemplate(te);
                 ex.setTargetFile(f2);
-//                try {
-//                    Stage g = (Stage) DatabaseObject.getObject(Context.getStage(), dataOwner.__getStagesids());
-//                    ex.put("reminder.stage", g.__getCname());
-//                } catch (NodataFoundException ex1) {
-//                    Log.Debug(ex1);
-//                }
-//                try {
-//                    Item i = (Item) DatabaseObject.getObject(Context.getItem(), dataOwner.__getItemsids());
-//                    ex.put("reminder.count", Reminder.getRemindersOf(i).size());
-//                } catch (NodataFoundException nodataFoundException) {
-//                    Log.Debug(nodataFoundException);
-//                }
-
+                
                 pr = new PreviewPanel();
                 pr.setDataOwner(dataOwner);
                 new Job(ex, pr).execute();
@@ -349,21 +337,8 @@ public class ControlPanel_Reminder extends javax.swing.JPanel implements DataPan
             Template t = TemplateHandler.loadTemplate(group, Constants.TYPE_REMINDER);
             if (t != null) {
                 Exportable te = TemplateHandler.loadTemplate(group, Constants.TYPE_REMINDER).getExFile();
-                HashMap<String, Object> hm1 = new HashMap<String, Object>();
+                HashMap<String, Object> hm1 = new HashMap<>();
                 File f2 = FileDirectoryHandler.getTempFile("pdf");
-
-//                try {
-//                    Stage g = (Stage) DatabaseObject.getObject(Context.getStage(), dataOwner.__getStagesids());
-//                    hm1.put("reminder.stage", g.__getCname());
-//                } catch (NodataFoundException ex1) {
-//                    Log.Debug(ex1);
-//                }
-//                try {
-//                    Item i = (Item) DatabaseObject.getObject(Context.getItem(), dataOwner.__getItemsids());
-//                    hm1.put("reminder.count", Reminder.getRemindersOf(i).size());
-//                } catch (NodataFoundException nodataFoundException) {
-//                    Log.Debug(nodataFoundException);
-//                }
 
                 new Job(Export.createFile(dataOwner.__getCname(), t, dataOwner, hm1), new DialogForFile(DialogForFile.FILES_ONLY, dataOwner.__getCname())).execute();
             } else {
@@ -386,22 +361,8 @@ public class ControlPanel_Reminder extends javax.swing.JPanel implements DataPan
             Template t = TemplateHandler.loadTemplate(group, Constants.TYPE_REMINDER);
             if (t != null) {
                 Exportable te = TemplateHandler.loadTemplate(group, Constants.TYPE_REMINDER).getExFile();
-                HashMap<String, Object> hm1 = new HashMap<String, Object>();
+                HashMap<String, Object> hm1 = new HashMap<>();
                 File f2 = FileDirectoryHandler.getTempFile("odt");
-//
-//                try {
-//                    Stage g = (Stage) DatabaseObject.getObject(Context.getStage(), dataOwner.__getStagesids());
-//                    hm1.put("reminder.stage", g.__getCname());
-//                } catch (NodataFoundException ex1) {
-//                    Log.Debug(ex1);
-//                }
-//                try {
-//                    Item i = (Item) DatabaseObject.getObject(Context.getItem(), dataOwner.__getItemsids());
-//                    hm1.put("reminder.count", Reminder.getRemindersOf(i).size());
-//                } catch (NodataFoundException nodataFoundException) {
-//                    Log.Debug(nodataFoundException);
-//                }
-
                 new Job(Export.sourceFile(dataOwner.__getCname(), t, dataOwner, hm1), new DialogForFile(DialogForFile.FILES_ONLY, dataOwner.__getCname())).execute();
             } else {
                 Popup.notice(Messages.NO_TEMPLATE_DEFINDED);
@@ -465,7 +426,7 @@ public class ControlPanel_Reminder extends javax.swing.JPanel implements DataPan
         if (sel.checkID()) {
             try {
 
-                Stage s = null;
+                Stage s;
                 try {
                     s = (Stage) DatabaseObject.getObject(Context.getStage(), sel.getId());
                 } catch (Exception nodataFoundException) {

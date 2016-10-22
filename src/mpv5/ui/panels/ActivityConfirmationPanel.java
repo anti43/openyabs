@@ -432,7 +432,7 @@ public final class ActivityConfirmationPanel extends javax.swing.JPanel implemen
         try {
             int cid = Integer.valueOf(order.getSelectedItem().getId());
             Item i = (Item) DatabaseObject.getObject(Context.getOrder(), cid);
-            ItemPanel2 ip = new ItemPanel2(Context.getItem());
+            ItemPanel2 ip = new ItemPanel2(Context.getOrder());
             mpv5.YabsViewProxy.instance().getIdentifierView().addOrShowTab(ip, Messages.TYPE_ORDER.toString());
             ip.setDataOwner(i, true);
         } catch (NumberFormatException e) {
@@ -662,7 +662,7 @@ public final class ActivityConfirmationPanel extends javax.swing.JPanel implemen
                 itemtable.setModel(m);
                 omodel = m;
 
-            } else if (dbo.getContext().equals(Context.getProductlist())) {
+            } else if (dbo.getContext().equals(Context.getProductList())) {
                 setDataOwner(dbo, true);
             } else {
                 mpv5.YabsViewProxy.instance().addMessage(Messages.NOT_POSSIBLE.toString() + Messages.ACTION_PASTE.toString(), Color.RED);
@@ -805,8 +805,8 @@ public final class ActivityConfirmationPanel extends javax.swing.JPanel implemen
         ArrayList<ActivityList> data;
         Object[] row;
 
-        Item i2 = (Item) dataOwner.clone(Context.getItem());
-        i2.setInttype(Item.TYPE_BILL);
+        Item i2 = (Item) dataOwner.clone(Context.getInvoice());
+        i2.setInttype(Item.TYPE_INVOICE);
         i2.setIDS(-1);
         i2.defineFormatHandler(new FormatHandler(i2));
         i2.save();

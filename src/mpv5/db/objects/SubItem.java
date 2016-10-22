@@ -22,14 +22,12 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JButton;
 import javax.swing.JComponent;
-import javax.swing.table.TableModel;
 import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
 import mpv5.db.common.NodataFoundException;
@@ -41,11 +39,9 @@ import mpv5.globals.GlobalSettings;
 import mpv5.globals.Headers;
 import mpv5.handler.VariablesHandler;
 import mpv5.logging.Log;
-import mpv5.ui.panels.ItemPanel;
 import mpv5.ui.panels.ItemPanel2;
 import mpv5.utils.models.MPComboBoxModelItem;
 import mpv5.utils.models.MPTableModel;
-import mpv5.utils.numberformat.FormatNumber;
 import mpv5.utils.numberformat.FormatNumber;
    
 
@@ -75,8 +71,8 @@ public final class SubItem extends DatabaseObject implements Triggerable {
          it.setOrdernr(i);
          Log.Print(Arrays.asList(row));
          try {
-            if (!cloneSubitems && row[0] != null && Integer.valueOf(row[0].toString()).intValue() > 0) {
-               it.setIDS(Integer.valueOf(row[0].toString()).intValue());
+            if (!cloneSubitems && row[0] != null && Integer.valueOf(row[0].toString()) > 0) {
+               it.setIDS(Integer.valueOf(row[0].toString()));
             } else {
                it.setIDS(-1);
             }
@@ -284,7 +280,7 @@ public final class SubItem extends DatabaseObject implements Triggerable {
       }
       BigDecimal deftax = BigDecimal.ZERO;
       if (mpv5.db.objects.User.getCurrentUser().getProperties().hasProperty("deftax")) {
-         int taxid = mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("deftax", new Integer(0));
+         int taxid = mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("deftax", 0);
          deftax = Tax.getTaxValue(taxid);
       }
       i.setTaxpercentvalue(deftax);
@@ -317,8 +313,8 @@ public final class SubItem extends DatabaseObject implements Triggerable {
 
 ////////////////format///////////////////////////////////////////////////////////
       Context contextl = product.getContext();
-      String params = "cname";
-      String vars = null;
+      String params;
+      String vars;
       if (mpv5.db.objects.User.getCurrentUser().getProperties().hasProperty(contextl + mpv5.ui.beans.LightMPComboBox.VALUE_SEARCHFIELDS)
             && mpv5.db.objects.User.getCurrentUser().getProperties().getProperty(contextl + mpv5.ui.beans.LightMPComboBox.VALUE_SEARCHFIELDS).contains("_$")) {
          try {
@@ -431,7 +427,8 @@ public final class SubItem extends DatabaseObject implements Triggerable {
          getInttype() != TYPE_TEXT ? String.valueOf(FormatNumber.formatLokalCurrency(this.__getTotalbrutvalue())) : "",
          __getLinkurl(),
          __getCname(),
-         getInttype() != TYPE_TEXT ? String.valueOf(FormatNumber.formatLokalCurrency(this.__getDiscount())) : ""
+         getInttype() != TYPE_TEXT ? String.valueOf(FormatNumber.formatPercent(this.__getDiscount())) : "",
+         getInttype() != TYPE_TEXT ? String.valueOf(FormatNumber.formatLokalCurrency(this.totalnetvalue.subtract(this.discvalue))) : ""
       ///////////////////////////////////////////////////////////////////////////////
       };
       List<String> l = Arrays.asList(possibleCols);
@@ -442,6 +439,7 @@ public final class SubItem extends DatabaseObject implements Triggerable {
             Product p = (Product) DatabaseObject.getObject(Context.getProduct(), __getOriginalproductsids());
             List<String[]> vals = p.getValues3();
             Collections.sort(vals, new Comparator<String[]>() {
+               @Override
                public int compare(String[] o1, String[] o2) {
                   return o1[0].compareTo(o2[0]);
                }
@@ -608,9 +606,20 @@ public final class SubItem extends DatabaseObject implements Triggerable {
    @Override
    public JComponent getView() {
       try {
-         Item dos = (Item) DatabaseObject.getObject(Context.getItem(), __getItemsids());
-         ItemPanel2 ip = new ItemPanel2(Context.getItem(), dos.__getInttype());
-         return ip;
+         Item dos = (Item) DatabaseObject.getObject(Context.getInvoice(), __getItemsids());
+          ItemPanel2 ip = null;
+          switch (dos.__getInttype()) {
+              case Constants.TYPE_OFFER:
+                  ip = new ItemPanel2(Context.getOffer(), dos.__getInttype());
+                  break;
+              case Constants.TYPE_ORDER:
+                  ip = new ItemPanel2(Context.getOrder(), dos.__getInttype());
+                  break;
+              case Constants.TYPE_INVOICE:
+                  ip = new ItemPanel2(Context.getInvoice(), dos.__getInttype());
+                  break;
+          }
+          return ip;
       } catch (NodataFoundException ex) {
          throw new RuntimeException(ex);
       }
@@ -745,6 +754,7 @@ public final class SubItem extends DatabaseObject implements Triggerable {
    /**
     * Turn this SubItem into table row data
     *
+    * @param m
     * @param row
     * @return
     */

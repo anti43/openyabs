@@ -17,37 +17,28 @@
 package mpv5.db.objects;
 
 import enoa.handler.TableHandler;
-import enoa.handler.TemplateHandler;
-import java.awt.Color;
-import java.io.File;
 import java.math.BigDecimal;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JComponent;
-import mpv5.YabsViewProxy;
 import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
 import mpv5.db.common.Formattable;
 import mpv5.db.common.NodataFoundException;
 import mpv5.db.common.Templateable;
+import mpv5.globals.Constants;
 import mpv5.globals.GlobalSettings;
 import mpv5.globals.Messages;
 import mpv5.handler.FormatHandler;
 import mpv5.handler.MPEnum;
 import mpv5.logging.Log;
-import mpv5.ui.panels.ItemPanel;
 import mpv5.ui.panels.ItemPanel2;
-import mpv5.utils.export.Export;
 import mpv5.utils.images.MPIcon;
-import mpv5.utils.jobs.Job;
 import mpv5.utils.numberformat.FormatNumber;
 import mpv5.utils.text.TypeConversion;
 
@@ -94,7 +85,7 @@ public class ProductOrder extends DatabaseObject implements Formattable, Templat
 
             @Override
             public Integer getId() {
-                return new Integer(Item.STATUS_QUEUED);
+                return Item.STATUS_QUEUED;
             }
 
             @Override
@@ -106,7 +97,7 @@ public class ProductOrder extends DatabaseObject implements Formattable, Templat
 
             @Override
             public Integer getId() {
-                return new Integer(Item.STATUS_IN_PROGRESS);
+                return Item.STATUS_IN_PROGRESS;
             }
 
             @Override
@@ -118,7 +109,7 @@ public class ProductOrder extends DatabaseObject implements Formattable, Templat
 
             @Override
             public Integer getId() {
-                return new Integer(Item.STATUS_PAUSED);
+                return Item.STATUS_PAUSED;
             }
 
             @Override
@@ -130,7 +121,7 @@ public class ProductOrder extends DatabaseObject implements Formattable, Templat
 
             @Override
             public Integer getId() {
-                return new Integer(Item.STATUS_FINISHED);
+                return Item.STATUS_FINISHED;
             }
 
             @Override
@@ -142,7 +133,7 @@ public class ProductOrder extends DatabaseObject implements Formattable, Templat
 
             @Override
             public Integer getId() {
-                return new Integer(Item.STATUS_PAID);
+                return Item.STATUS_PAID;
             }
 
             @Override
@@ -154,7 +145,7 @@ public class ProductOrder extends DatabaseObject implements Formattable, Templat
 
             @Override
             public Integer getId() {
-                return new Integer(Item.STATUS_CANCELLED);
+                return Item.STATUS_CANCELLED;
             }
 
             @Override
@@ -205,7 +196,7 @@ public class ProductOrder extends DatabaseObject implements Formattable, Templat
     }
 
     /**
-     * @param the discountvalue to set
+     * @param discountvalue the discountvalue to set
      */
     public void setDiscountvalue(BigDecimal discountvalue) {
         this.discountvalue = discountvalue;
@@ -243,7 +234,18 @@ public class ProductOrder extends DatabaseObject implements Formattable, Templat
 
     @Override
     public JComponent getView() {
-        ItemPanel2 p = new ItemPanel2(Context.getItem(), getInttype());
+        ItemPanel2 p = null;
+        switch (getInttype()) {
+            case Constants.TYPE_OFFER:
+                p = new ItemPanel2(Context.getOffer(), getInttype());
+                break;
+            case Constants.TYPE_ORDER:
+                p = new ItemPanel2(Context.getOrder(), getInttype());
+                break;
+            case Constants.TYPE_INVOICE:
+                p = new ItemPanel2(Context.getInvoice(), getInttype());
+                break;
+        }
         return p;
     }
 
@@ -282,7 +284,7 @@ public class ProductOrder extends DatabaseObject implements Formattable, Templat
     }
 
     /**
-     * <li>TYPE_BILL = 0; <li>TYPE_ORDER = 1; <li>TYPE_OFFER = 2;
+     * <li>TYPE_INVOICE = 0; <li>TYPE_ORDER = 1; <li>TYPE_OFFER = 2;
      *
      * @return the inttype
      */
@@ -292,7 +294,7 @@ public class ProductOrder extends DatabaseObject implements Formattable, Templat
     }
 
     /**
-     * <li>TYPE_BILL = 0; <li>TYPE_ORDER = 1; <li>TYPE_OFFER = 2;
+     * <li>TYPE_INVOICE = 0; <li>TYPE_ORDER = 1; <li>TYPE_OFFER = 2;
      *
      * @param inttype the inttype to set
      */
@@ -317,26 +319,28 @@ public class ProductOrder extends DatabaseObject implements Formattable, Templat
 
     @Override
     public mpv5.utils.images.MPIcon getIcon() {
-        if (getIntstatus() == Item.STATUS_QUEUED) {
-            return new MPIcon("/mpv5/resources/images/22/kontact_mail.png");
-        } else if (getIntstatus() == Item.STATUS_IN_PROGRESS) {
-            return new MPIcon("/mpv5/resources/images/22/run.png");
-        } else if (getIntstatus() == Item.STATUS_PAUSED) {
-            return new MPIcon("/mpv5/resources/images/22/kalarm.png");
-        } else if (getIntstatus() == Item.STATUS_FINISHED) {
-            return new MPIcon("/mpv5/resources/images/22/knewstuff.png");
-        } else if (getIntstatus() == Item.STATUS_PAID) {
-            return new MPIcon("/mpv5/resources/images/22/ok.png");
-        } else if (getIntstatus() == Item.STATUS_CANCELLED) {
-            return new MPIcon("/mpv5/resources/images/22/file_temporary.png");
-        } else {
-            return new MPIcon("/mpv5/resources/images/22/kontact_mail.png");
+        switch (getIntstatus()) {
+            case Item.STATUS_QUEUED:
+                return new MPIcon("/mpv5/resources/images/22/kontact_mail.png");
+            case Item.STATUS_IN_PROGRESS:
+                return new MPIcon("/mpv5/resources/images/22/run.png");
+            case Item.STATUS_PAUSED:
+                return new MPIcon("/mpv5/resources/images/22/kalarm.png");
+            case Item.STATUS_FINISHED:
+                return new MPIcon("/mpv5/resources/images/22/knewstuff.png");
+            case Item.STATUS_PAID:
+                return new MPIcon("/mpv5/resources/images/22/ok.png");
+            case Item.STATUS_CANCELLED:
+                return new MPIcon("/mpv5/resources/images/22/file_temporary.png");
+            default:
+                return new MPIcon("/mpv5/resources/images/22/kontact_mail.png");
         }
     }
 
     /**
      * @return the formatHandler
      */
+    @Override
     public synchronized FormatHandler getFormatHandler() {
         if (formatHandler == null) {
             formatHandler = new FormatHandler(this);
@@ -353,14 +357,14 @@ public class ProductOrder extends DatabaseObject implements Formattable, Templat
     }
 
     /**
-     * Fetches all related {@link ProductOrderSubItem}s to this {@link Item}<br/>
+     * Fetches all related {@link ProductOrderSubItem}s to this {@link Item}
      * If no ProductOrderSubItems are assigned, returns an empty default list of
      * default ProductOrderSubItems
      *
      * @return
      */
     public ProductOrderSubItem[] getProductOrderSubitems() {
-        List<DatabaseObject> data = new ArrayList<DatabaseObject>();
+        List<DatabaseObject> data = new ArrayList<>();
         try {
             data = DatabaseObject.getReferencedObjects(this, Context.getProductOrderSubitem(), DatabaseObject.getObject(Context.getProductOrderSubitem()), false);
         } catch (NodataFoundException ex) {
@@ -414,7 +418,7 @@ public class ProductOrder extends DatabaseObject implements Formattable, Templat
 
         List<ProductOrderSubItem> data;
         List<String[]> data2;
-        ArrayList<String[]> list = new ArrayList<String[]>();
+        ArrayList<String[]> list = new ArrayList<>();
 
         try {
             data = DatabaseObject.getReferencedObjects(this, Context.getProductOrderSubitem(), new ProductOrderSubItem(), false);
@@ -488,6 +492,7 @@ public class ProductOrder extends DatabaseObject implements Formattable, Templat
         return super.resolveReferences(map);
     }
 
+    @Override
     public void defineFormatHandler(FormatHandler handler) {
         formatHandler = handler;
     }
@@ -551,7 +556,7 @@ public class ProductOrder extends DatabaseObject implements Formattable, Templat
     @Override
     public boolean undelete() {
 
-        List<DatabaseObject> data = new ArrayList<DatabaseObject>();
+        List<DatabaseObject> data;
         try {
             data = DatabaseObject.getReferencedObjects(this, Context.getProductOrderSubitem(), DatabaseObject.getObject(Context.getProductOrderSubitem()), true);
             for (int i = 0; i < data.size(); i++) {

@@ -167,7 +167,7 @@ public enum Messages {
     STATUS_PAUSED("Paused"),
     STATUS_FINISHED("Finished"),
     STATUS_CANCELLED("Cancelled"),
-    TYPE_BILL("Invoice"),
+    TYPE_INVOICE("Invoice"),
     TYPE_OFFER("Offer"),
     TYPE_CONTACT("Contact"),
     TYPE_CUSTOMER("Customer"),

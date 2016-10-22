@@ -1,7 +1,5 @@
 package mpv5.db.common;
 
-import mpv5.logging.Log;
-
 public class ContextWrap implements Comparable<Context> {
 
     private String display;
@@ -37,6 +35,7 @@ public class ContextWrap implements Comparable<Context> {
         return hash;
     }
 
+    @Override
     public int compareTo(Context t) {
         return c.compareTo(t);
     }

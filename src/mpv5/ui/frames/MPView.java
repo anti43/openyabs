@@ -24,7 +24,6 @@ import java.awt.event.ComponentEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.lang.reflect.Method;
 import java.net.URI;
@@ -36,7 +35,6 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.AbstractAction;
-import javax.swing.Action;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -78,7 +76,6 @@ import mpv5.globals.GlobalSettings;
 import mpv5.globals.LocalSettings;
 import mpv5.globals.Messages;
 import mpv5.handler.Scheduler;
-import mpv5.i18n.LanguageManager;
 import mpv5.logging.Log;
 import mpv5.pluginhandling.YabsPluginLoader;
 import mpv5.server.MPServer;
@@ -114,7 +111,6 @@ import mpv5.ui.panels.DataPanel;
 import mpv5.ui.panels.ExpensePanel;
 import mpv5.ui.panels.GeneralListPanel;
 import mpv5.ui.panels.HistoryPanel;
-import mpv5.ui.panels.ItemPanel;
 import mpv5.ui.panels.ItemPanel2;
 import mpv5.ui.panels.JournalPanel;
 import mpv5.ui.panels.MPControlPanel;
@@ -170,7 +166,9 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
      * Display a message at the bottom of the MP frame
      *
      * @param message
+     * @param color
      */
+    @Override
     public void addMessage(Object message, Color color) {
         addMessage(String.valueOf(message));
     }
@@ -180,6 +178,7 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
      *
      * @param message
      */
+    @Override
     public void addMessage(Object message) {
         MPView.addMessage(String.valueOf(message), Color.GREEN);
     }
@@ -188,10 +187,12 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
      * Display a message at the bottom of the MP frame
      *
      * @param message
+     * @param color
      */
     public static synchronized void addMessage(final String message, final Color color) {
         if (loaded && messagelabel != null) {//dont do anything if main frame is not constructed
             Runnable runnable = new Runnable() {
+                @Override
                 public void run() {
                     if (messagelabel instanceof FadeOnChangeLabel) {
                         ((FadeOnChangeLabel) getMessagelabel()).setFadeColor(color);
@@ -243,6 +244,7 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
      *
      * @param f
      */
+    @Override
     public void showFilesaveDialogFor(File f) {
         getFiledialog().setSelectedFile(new File(f.getName()));
         getFiledialog().saveFile(f);
@@ -300,6 +302,7 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
     /**
      * @return the progressbar
      */
+    @Override
     public JProgressBar getProgressbar() {
         return progressbar;
     }
@@ -314,6 +317,7 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
     /**
      * @return the identifierView
      */
+    @Override
     public MPView getIdentifierView() {
         return identifierView;
     }
@@ -328,6 +332,7 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
     /**
      * @return the identifierFrame
      */
+    @Override
     public JFrame getIdentifierFrame() {
         return identifierFrame;
     }
@@ -356,6 +361,7 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
     /**
      * @return the filedialog
      */
+    @Override
     public DialogForFile getFiledialog() {
         return filedialog;
     }
@@ -398,6 +404,7 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
     /**
      * @return the pluginLoader
      */
+    @Override
     public YabsPluginLoader getPluginLoader() {
         return pluginLoader;
     }
@@ -443,6 +450,7 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
      *
      * @param max
      */
+    @Override
     public synchronized void setProgressMaximumValue(int max) {
         getProgressbar().setMaximum(max);
     }
@@ -452,6 +460,7 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
      *
      * @param val
      */
+    @Override
     public synchronized void setProgressValue(int val) {
         getProgressbar().setValue(val);
     }
@@ -459,6 +468,7 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
     /**
      * Reset the progress bar
      */
+    @Override
     public synchronized void setProgressReset() {
         getProgressbar().setValue(0);
         getProgressbar().setIndeterminate(false);
@@ -469,6 +479,7 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
      *
      * @param b
      */
+    @Override
     public synchronized void setProgressRunning(boolean b) {
         getProgressbar().setIndeterminate(b);
     }
@@ -488,6 +499,7 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
      *
      * @param truee
      */
+    @Override
     public void setWaiting(boolean truee) {
         if (Main.INSTANTIATED && getIdentifierFrame() != null) {
             if (truee) {
@@ -504,6 +516,7 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
      *
      * @return
      */
+    @Override
     public DataPanel getCurrentTab() {
         if (getTabPane().getSelectedComponent() instanceof DataPanel) {
             return (DataPanel) getTabPane().getSelectedComponent();
@@ -547,6 +560,7 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
         }
     }
 
+    @Override
     public final void reloadFavorites() {
         Favourite[] favs = Favourite.getUserFavourites();
         for (int i = 0; i < favs.length; i++) {
@@ -564,6 +578,7 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
      *
      * @param obj
      */
+    @Override
     public void addToClipBoard(DatabaseObject obj) {
         getClipboardMenu().add(new ClipboardMenuItem(obj));
         getCurrentList().add(obj);
@@ -669,6 +684,7 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
 
     private void setNaviPanelSize() {
         Runnable runnable = new Runnable() {
+            @Override
             public void run() {
                 getNav_outlookbar().setPreferredSize(new Dimension(getNav_outlookbar().getWidth(), getFrame().getHeight() - 200));
                 getNav_outlookbar().setMaximumSize(new Dimension(getNav_outlookbar().getWidth(), getFrame().getHeight() - 200));
@@ -690,6 +706,7 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
      * @param tabTitle
      * @return The added tab
      */
+    @Override
     public DataPanel addTab(final DatabaseObject item, Object tabTitle) {
         setWaiting(true);
         boolean found = false;
@@ -715,11 +732,12 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
         }
 
         if (proceed) {
-            if (item.getView() != null && mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("org.openyabs.uiproperty", "norecycletabs")) {
+            if (item.hasView() && mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("org.openyabs.uiproperty", "norecycletabs")) {
                 if (tabTitle == null) {
                     final DataPanel p = ((DataPanel) item.getView());
                     addTab((JComponent) p, item.__getCname());
                     Runnable runnable = new Runnable() {
+                        @Override
                         public void run() {
                             p.setDataOwner(item, true);
                         }
@@ -729,6 +747,7 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
                     final DataPanel p = ((DataPanel) item.getView());
                     addTab((JComponent) p, tabTitle + ": " + item.__getCname());
                     Runnable runnable = new Runnable() {
+                        @Override
                         public void run() {
                             p.setDataOwner(item, true);
                         }
@@ -736,7 +755,7 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
                     SwingUtilities.invokeLater(runnable);
                 }
                 getCurrentTab().setDataOwner(item, true);
-            } else if (item.getView() != null) {
+            } else if (item.hasView()) {
                 int count = getTabPane().getTabCount();
                 for (int i = 0; i < count; i++) {
                     if (getTabAt(i) != null) {
@@ -767,6 +786,7 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
                             addTab((JComponent) p, tabTitle + ": " + item.__getCname());
                         }
                         Runnable runnable = new Runnable() {
+                            @Override
                             public void run() {
                                 p.setDataOwner(item, true);
                             }
@@ -795,6 +815,7 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
      * @param item
      * @return
      */
+    @Override
     public DataPanel addTab(DatabaseObject item) {
         return addTab(item, null);
     }
@@ -805,6 +826,7 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
      * @param instanceOf
      * @param label
      */
+    @Override
     public void addOrShowTab(JComponent instanceOf, Object label) {
         Component[] tabs = getTabPane().getComponents();
         boolean found = false;
@@ -841,6 +863,7 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
      * @param name
      * @return The now selected index
      */
+    @Override
     public int addTab(JComponent tab, String name) {
         JScrollPane spane = new JScrollPane(tab);
         getTabPane().addTab(name, spane);
@@ -2466,7 +2489,7 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
     }//GEN-LAST:event_jButton7ActionPerformed
 
     private void jButton8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton8ActionPerformed
-        addTab(new ItemPanel2(Context.getInvoice(), Item.TYPE_BILL), Messages.NEW_BILL);
+        addTab(new ItemPanel2(Context.getInvoice(), Item.TYPE_INVOICE), Messages.NEW_BILL);
     }//GEN-LAST:event_jButton8ActionPerformed
     private MPServer mpserver;
     private void jMenuItem24ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem24ActionPerformed
@@ -2481,8 +2504,7 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
     }//GEN-LAST:event_jMenuItem25ActionPerformed
 
     private void jMenuItem26ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem26ActionPerformed
-
-        XMLWriter.export(Context.getItem());
+        XMLWriter.export(Context.getInvoice());
     }//GEN-LAST:event_jMenuItem26ActionPerformed
 
     private void jButton10ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton10ActionPerformed
@@ -2577,7 +2599,7 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
 
     private void jMenuItem34ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem34ActionPerformed
 
-        DatabaseObject d = Search2.showSearchFor(Context.getItem());
+        DatabaseObject d = Search2.showSearchFor(Context.getInvoice());
         if (d != null) {
             addTab(d);
         }
@@ -2749,6 +2771,7 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
 
     private void jMenuItem47ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem47ActionPerformed
         Runnable runnable = new Runnable() {
+            @Override
             public void run() {
                 try {
                     NoaConnection.killConnection();
@@ -2988,6 +3011,7 @@ private void jMenuItem51ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-F
      *
      * @param running
      */
+    @Override
     public void showServerStatus(boolean running) {
         if (running) {
             getServerlabel().setMaximumSize(new Dimension(18, 18));
@@ -3039,7 +3063,9 @@ private void jMenuItem51ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-F
      * Triggers the MP Server notification to the view
      *
      * @param running
+     * @param description
      */
+    @Override
     public void showOfficeStatus(boolean running, final String description) {
         if (running) {
             officelabel.setMaximumSize(new Dimension(18, 18));
@@ -3289,7 +3315,7 @@ private void jMenuItem51ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-F
      * Add a Button to the navigation panel
      *
      * @param TARGET The target navigation section, which
-     * can be one of the following:<br/> <li>NAV_CONTACTS
+     * can be one of the following:<li>NAV_CONTACTS
      * <li>NAV_PRODUCTS <li>NAV_ACCOUNTING
      * <li>NAV_EXTRAS
      *
@@ -3355,7 +3381,9 @@ private void jMenuItem51ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-F
 
     /**
      * Paste the current clipboard items (if any)
+     * @return 
      */
+    @Override
     public DatabaseObject[] getClipboardItems() {
 
         List<DatabaseObject> list = new ArrayList<DatabaseObject>();
@@ -3417,26 +3445,31 @@ private void jMenuItem51ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-F
         return FLOW.lastIndexOf(d);
     }
 
+    @Override
     public void showPreviousDatabaseObject() {
         if (hasPreviousDatabaseObject()) {
             addOrShowTab(FLOW.get(pif - 1));
         }
     }
 
+    @Override
     public boolean hasPreviousDatabaseObject() {
         return !FLOW.isEmpty() && pif > 0;
     }
 
+    @Override
     public void showNextDatabaseObject() {
         if (hasNextDatabaseObject()) {
             addOrShowTab(FLOW.get(pif + 1));
         }
     }
 
+    @Override
     public boolean hasNextDatabaseObject() {
         return pif + 1 < FLOW.size();
     }
 
+    @Override
     public DatabaseObject getCurrentDatabaseObject() {
         return FLOW.get(pif);
     }
@@ -3459,6 +3492,7 @@ private void jMenuItem51ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-F
                     for (JToolBar t : getToolBars()) {
                         if (t.getName() == null ? tb == null : t.getName().equals(tb)) {
                             t.add(new AbstractAction(act) {
+                                @Override
                                 public void actionPerformed(ActionEvent e) {
                                     try {
                                         getGroovyShell().evaluate(val);
@@ -3487,6 +3521,7 @@ private void jMenuItem51ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-F
    //     }
     }
 
+    @Override
     public YabsApplication getYabsApplication() {
         if (getApplication() instanceof YabsApplication) {
             return (YabsApplication) getApplication();

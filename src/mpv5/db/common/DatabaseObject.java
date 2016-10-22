@@ -19,11 +19,9 @@ package mpv5.db.common;
 import enoa.handler.TemplateHandler;
 import groovy.lang.GroovyShell;
 import groovy.lang.Binding;
-import groovy.lang.Closure;
 import java.awt.Color;
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.Serializable;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -38,8 +36,6 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.swing.SwingUtilities;
@@ -543,6 +539,14 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
      * @return The preferred view for this do's data
      */
     public abstract JComponent getView();
+    
+    /**
+     *
+     * @return returns true if the do has a view
+     */
+    public boolean hasView() {
+        return true;
+    }
 
     /**
      * This can be used to graphically represent a do.<br/> The programmer has
@@ -1438,7 +1442,10 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
      */
     public static DatabaseObject getObject(final Context context, final int id, boolean includeInvisible) throws NodataFoundException {
         if (id > 0) {
-            DatabaseObject cdo = DatabaseObject.getCachedObject(context, id);
+            DatabaseObject cdo = null;
+            if (context != null) {
+                cdo = DatabaseObject.getCachedObject(context, id);
+            }
             if (cdo == null) {
                 try {
                     Object obj = context.getIdentityClass().newInstance();
@@ -1524,7 +1531,8 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
         if (context.getIdentityClass() != null) {
             try {
                 Object obj = context.getIdentityClass().newInstance();
-                ((DatabaseObject) obj).IDENTITY = new Entity<Context, Integer>(context, -1);
+                ((DatabaseObject) obj).IDENTITY = new Entity<>(context, -1);
+                ((DatabaseObject) obj).setIDS(context.getId());
                 return (DatabaseObject) obj;
             } catch (InstantiationException ex) {
                 mpv5.logging.Log.Debug(ex);
@@ -1555,6 +1563,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
      *
      * @param <T>
      * @param context
+     * @param withCached
      * @return A list of DBOs
      * @throws NodataFoundException
      */
@@ -1568,6 +1577,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
      *
      * @param <T>
      * @param context
+     * @param criterias
      * @param withCached IGNORED
      * @return A list of DBOs
      * @throws NodataFoundException
@@ -1709,8 +1719,13 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
         return getObjects(template.getContext(), criterias, true);
     }
 
+    @SuppressWarnings("unchecked")
+    public static <T extends DatabaseObject> List< T> getReferencedObjects(DatabaseObject dataOwner, Context inReference, T targetType) throws NodataFoundException {
+        return getReferencedObjects(dataOwner, inReference, targetType, false);
+    }
+
     /**
-     * Return objects which are referenced in the given Context@table <br/>As
+     * Return objects which are referenced in the given Context@table As
      * list of getObject(inReference, (SELECT ids FROM Context@table WHERE
      * dataOwnerIDS = dataowner.ids))
      *
@@ -1719,22 +1734,17 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
      * @param inReference
      * @param targetType The type you like to get back, most likely
      * {@link DatabaseObject.getObject(Context)}
-     * @param withDeleted
+     * @param includeInvisible
      * @return
      * @throws mpv5.db.common.NodataFoundException
      */
     @SuppressWarnings("unchecked")
-    public static <T extends DatabaseObject> List< T> getReferencedObjects(DatabaseObject dataOwner, Context inReference, T targetType) throws NodataFoundException {
-        return getReferencedObjects(dataOwner, inReference, targetType, false);
-    }
-
-    @SuppressWarnings("unchecked")
     public static <T extends DatabaseObject> List< T> getReferencedObjects(DatabaseObject dataOwner, Context inReference, T targetType, boolean includeInvisible) throws NodataFoundException {
 
-        String query = "select " + inReference.getDbIdentity() + ".ids from " + inReference.getDbIdentity() + " where " + dataOwner.getDbIdentity() + "ids = " + dataOwner.__getIDS();
-        if (!includeInvisible && Context.getTrashableContexts().contains(inReference)) {
-            query += " and invisible = 0";
-        }
+        String query = "select " + inReference.getDbIdentity() + ".ids from " + inReference.getDbIdentity();
+        query += " " + inReference.getConditions(includeInvisible);
+        query += " AND " + dataOwner.getDbIdentity() + "ids = " + dataOwner.__getIDS();
+
         Object[][] allIds = QueryHandler.instanceOf().clone(inReference).freeSelectQuery(query, MPSecurityManager.VIEW, null).getData();
         if (allIds.length == 0) {
             throw new NodataFoundException(inReference);
@@ -1764,8 +1774,8 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
 //        return cvals;
 //    }
     /**
-     * Return objects which are referenced in the given Context@table <br/>As
-     * list of getObject(inReference, (SELECT ids FROM Context@table WHERE
+     * Return objects which are referenced in the given Context@table 
+     * As list of getObject(inReference, (SELECT ids FROM Context@table WHERE
      * dataOwnerIDS = dataowner.ids))
      *
      * @param <T>
@@ -1778,7 +1788,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
     public static <T extends DatabaseObject> List< T> getReferencedObjects(T dataOwner, Context inReference) throws NodataFoundException {
 
         Object[][] allIds = QueryHandler.instanceOf().clone(inReference).select("ids", new String[]{dataOwner.getDbIdentity() + "ids", dataOwner.__getIDS().toString(), ""});
-        LinkedList<T> list = new LinkedList<T>();
+        LinkedList<T> list = new LinkedList<>();
 
         for (int i = 0; i < allIds.length; i++) {
             int id = Integer.valueOf(allIds[i][0].toString());

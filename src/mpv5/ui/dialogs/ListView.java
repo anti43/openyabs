@@ -23,16 +23,13 @@ package mpv5.ui.dialogs;
 
 import java.awt.Cursor;
 import java.util.ArrayList;
-import java.util.Vector;
 import javax.swing.ListModel;
 import javax.swing.SwingUtilities;
 import mpv5.data.MPList;
 import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
-import mpv5.db.common.NodataFoundException;
 import mpv5.globals.Messages;
 import mpv5.logging.Log;
-import mpv5.ui.frames.MPView;
 import mpv5.ui.panels.DataPanel;
 import mpv5.usermanagement.MPSecurityManager;
 import mpv5.utils.date.DateConverter;
@@ -232,7 +229,7 @@ public class ListView extends javax.swing.JPanel {
         ListModel data;
 
         if (mpv5.usermanagement.MPSecurityManager.check(Context.getContact(), MPSecurityManager.EXPORT)
-                && mpv5.usermanagement.MPSecurityManager.check(Context.getItem(), MPSecurityManager.EXPORT)
+                && mpv5.usermanagement.MPSecurityManager.check(Context.getInvoice(), MPSecurityManager.EXPORT)
                 && mpv5.usermanagement.MPSecurityManager.check(Context.getProduct(), MPSecurityManager.EXPORT)) {
 
             XMLWriter xmlw = new XMLWriter();
@@ -259,6 +256,7 @@ public class ListView extends javax.swing.JPanel {
         final ListView v = this;
         Runnable runnable = new Runnable() {
 
+            @Override
             public void run() {
                 try {
                     v.setCursor(new Cursor(Cursor.WAIT_CURSOR));

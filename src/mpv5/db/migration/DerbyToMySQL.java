@@ -88,8 +88,8 @@ public class DerbyToMySQL {
             result.append("\nCREATE TABLE ").append(tableName);
             result.append(" (\n");
             StringBuilder primaryKeyColumns = new StringBuilder();
-            tableName = tableName.toUpperCase();
-            ResultSet cols = Meta.getColumns(null, null, tableName, "%");
+//            tableName = tableName.toUpperCase();
+            ResultSet cols = Meta.getColumns(null, null, tableName.toUpperCase(), "%");
             while (cols.next()) {
                 result.append("    ");
                 result.append(cols.getString("COLUMN_NAME").toLowerCase());
@@ -99,15 +99,18 @@ public class DerbyToMySQL {
                     result.append("(").append(cols.getString("COLUMN_SIZE")).append(")").append(" ");
                 }
                 if (cols.getString("COLUMN_DEF") != null
+                        && !cols.getString("COLUMN_DEF").equalsIgnoreCase("null")
                         && !cols.getString("COLUMN_DEF").contains("AUTOINCREMENT")
                         && !cols.getString("COLUMN_DEF").contains("GENERATED_BY_DEFAULT")) {
-                    result.append(" DEFAULT ");
-                    result.append("'").append(cols.getString("COLUMN_DEF")).append("'");
+                    result.append(" DEFAULT ");  
+                    //result.append("'").append(cols.getString("COLUMN_DEF")).append("'");
+                    result.append(cols.getString("COLUMN_DEF"));
                 }
                 if (cols.getString("IS_NULLABLE").equalsIgnoreCase("NO")) {
                     result.append(" NOT NULL");
                 } else {
-                    if (cols.getString("COLUMN_DEF") == null) {
+                    if (cols.getString("COLUMN_DEF") != null
+                             && cols.getString("COLUMN_DEF").equalsIgnoreCase("null")) {
                         result.append(" DEFAULT ");
                         result.append(cols.getString("COLUMN_DEF"));
                     }

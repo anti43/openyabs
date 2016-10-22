@@ -89,7 +89,7 @@ public class ProductListsPanel extends javax.swing.JPanel implements DataPanel, 
         setName("productlistpanel");
         itemtable.getTableHeader().setReorderingAllowed(false);
 
-        sp = new SearchPanel(Context.getProductlist(), this);
+        sp = new SearchPanel(Context.getProductList(), this);
         sp.setVisible(true);
         tb = new mpv5.ui.toolbars.DataPanelTB(this);
 //        tb.disableButton(1);
@@ -153,7 +153,7 @@ public class ProductListsPanel extends javax.swing.JPanel implements DataPanel, 
         listname.setSearchOnEnterEnabled(true);
         listname.setParent(this);
         listname.setSearchField("cname");
-        listname.setContext(Context.getItem());
+        listname.setContext(Context.getProductList());
 
         ((SpinnerNumberModel) calculator.getSpinner().getModel()).setMinimum(-1000);
         ((SpinnerNumberModel) calculator.getSpinner().getModel()).setMaximum(1000);
@@ -684,7 +684,7 @@ public class ProductListsPanel extends javax.swing.JPanel implements DataPanel, 
                 itemtable.setModel(m);
                 omodel = m;
 
-            } else if (dbo.getContext().equals(Context.getProductlist())) {
+            } else if (dbo.getContext().equals(Context.getProductList())) {
                 setDataOwner(dbo, true);
             } else {
                 mpv5.YabsViewProxy.instance().addMessage(Messages.NOT_POSSIBLE.toString() + Messages.ACTION_PASTE.toString(), Color.YELLOW);
@@ -755,15 +755,19 @@ public class ProductListsPanel extends javax.swing.JPanel implements DataPanel, 
         }
     }
 
+    @Override
     public void actionBeforeCreate() {
     }
 
+    @Override
     public void actionBeforeSave() {
     }
 
+    @Override
     public void mail() {
     }
 
+    @Override
     public void print() {
         Export.print(this);
     }
@@ -793,12 +797,15 @@ public class ProductListsPanel extends javax.swing.JPanel implements DataPanel, 
         JButton b1 = new JButton();
         b1.addMouseListener(new MouseListener() {
 
+            @Override
             public void mouseClicked(MouseEvent e) {
             }
 
+            @Override
             public void mousePressed(MouseEvent e) {
             }
 
+            @Override
             public void mouseReleased(MouseEvent e) {
                 ProductSelectDialog.instanceOf((MPTableModel) itemtable.getModel(), itemtable.getSelectedRow(), e, 0, null, null);
                 if (((MPTableModel) itemtable.getModel()).getEmptyRows(new int[]{4}) < 2) {
@@ -806,9 +813,11 @@ public class ProductListsPanel extends javax.swing.JPanel implements DataPanel, 
                 }
             }
 
+            @Override
             public void mouseEntered(MouseEvent e) {
             }
 
+            @Override
             public void mouseExited(MouseEvent e) {
             }
         });
@@ -816,6 +825,7 @@ public class ProductListsPanel extends javax.swing.JPanel implements DataPanel, 
         JButton b2 = new JButton();
         b2.addActionListener(new ActionListener() {
 
+            @Override
             public void actionPerformed(ActionEvent e) {
                 MPTableModel m = (MPTableModel) itemtable.getModel();
                 int row = itemtable.getSelectedRow();

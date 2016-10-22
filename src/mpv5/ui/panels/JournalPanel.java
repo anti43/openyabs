@@ -38,7 +38,6 @@ import javax.swing.JComponent;
 import javax.swing.SwingUtilities;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
-import javax.swing.table.TableModel;
 import mpv5.db.common.Context;
 
 import mpv5.db.common.DatabaseObject;
@@ -61,7 +60,6 @@ import mpv5.globals.Constants;
 import mpv5.globals.GlobalSettings;
 import mpv5.globals.Messages;
 import mpv5.logging.Log;
-import mpv5.ui.beans.MPCombobox;
 import mpv5.ui.dialogs.DialogForFile;
 import mpv5.ui.dialogs.Popup;
 import mpv5.ui.misc.MPTable;
@@ -73,14 +71,12 @@ import mpv5.utils.export.DTAFile;
 import mpv5.utils.export.Export;
 import mpv5.utils.jobs.Job;
 import mpv5.utils.jobs.Waitable;
-import mpv5.utils.models.MPComboBoxModelItem;
 import mpv5.utils.models.MPTableModel;
 import mpv5.utils.models.MPTreeModel;
 import mpv5.utils.tables.ExcelAdapter;
 import mpv5.utils.tables.TableFormat;
 import mpv5.utils.text.TypeConversion;
 import mpv5.ui.misc.TableViewPersistenceHandler;
-import mpv5.utils.numberformat.FormatNumber;
 
 /**
  *
@@ -794,14 +790,14 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
             double discountVolume = Double.valueOf(data[i][15].toString());
             d[i][11] = Item.getStatusString(Integer.valueOf(data[i][11].toString()));
 
-            if (Integer.valueOf(data[i][11].toString()).intValue() == Item.STATUS_PAID) {
+            if (Integer.valueOf(data[i][11].toString()) == Item.STATUS_PAID) {
                revenuenet += netVolume;
                d[i][15] = "<html><p align=center>" + mpv5.utils.numberformat.FormatNumber.formatDezimal(netVolume);
-            } else if (Integer.valueOf(data[i][11].toString()).intValue() == 1000) {
+            } else if (Integer.valueOf(data[i][11].toString()) == 1000) {
                d[i][15] = "<html><p align=center>" + mpv5.utils.numberformat.FormatNumber.formatDezimal(-1 * netVolume);
                revenuenet -= netVolume;
                d[i][11] = Item.getStatusString(Item.STATUS_PAID);
-            } else if (Integer.valueOf(data[i][11].toString()).intValue() == 2000) {
+            } else if (Integer.valueOf(data[i][11].toString()) == 2000) {
                d[i][15] = "<html><p align=center>" + mpv5.utils.numberformat.FormatNumber.formatDezimal(-1 * netVolume);
                revenuenet -= netVolume;
                d[i][11] = Item.getStatusString(Item.STATUS_IN_PROGRESS);
@@ -845,17 +841,17 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
 
                if (!includechildgroups.isSelected()) {
                   if (forGroup != null && !forGroup.__getCname().equals("")) {
-                     itemsParams.and(new QueryParameter(Context.getItem(), forGroup.getDbIdentity() + "ids", forGroup.__getIDS(), QueryParameter.EQUALS));
+                     itemsParams.and(new QueryParameter(Context.getInvoice(), forGroup.getDbIdentity() + "ids", forGroup.__getIDS(), QueryParameter.EQUALS));
                   }
                } else {
                   if (forGroup != null && !forGroup.__getCname().equals("")) {
                      List<Group> gs = forGroup.getChildGroups();
                      QueryParameter[] params = new QueryParameter[gs.size()];
-                     QueryParameter param1 = (new QueryParameter(Context.getItem(), forGroup.getDbIdentity() + "ids", forGroup.__getIDS(), QueryParameter.EQUALS));
+                     QueryParameter param1 = (new QueryParameter(Context.getInvoice(), forGroup.getDbIdentity() + "ids", forGroup.__getIDS(), QueryParameter.EQUALS));
                      if (gs.size() >= 1) {
                         for (int i = 0; i < gs.size(); i++) {
                            Group group = gs.get(i);
-                           params[i] = (new QueryParameter(Context.getItem(), group.getDbIdentity() + "ids", group.__getIDS(), QueryParameter.EQUALS));
+                           params[i] = (new QueryParameter(Context.getInvoice(), group.getDbIdentity() + "ids", group.__getIDS(), QueryParameter.EQUALS));
                         }
                         //System.err.println(params);
                         itemsParams.or(param1, params);
@@ -866,14 +862,14 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
                }
 
                if (forUser != null && !forUser.__getCname().equals("")) {
-                  itemsParams.and(new QueryParameter(Context.getItem(), "intaddedby", forUser.__getIDS(), QueryParameter.EQUALS));
+                  itemsParams.and(new QueryParameter(Context.getInvoice(), "intaddedby", forUser.__getIDS(), QueryParameter.EQUALS));
                }
 
 
                ArrayList<QueryParameter> l = new ArrayList<QueryParameter>();
 
                for (int i = 0; i < jList1.getSelectedValues().length; i++) {
-                  l.add(new QueryParameter(Context.getItem(), "accountsids", ((Account) jList1.getSelectedValues()[i]).__getIDS(), QueryParameter.EQUALS));
+                  l.add(new QueryParameter(Context.getInvoice(), "accountsids", ((Account) jList1.getSelectedValues()[i]).__getIDS(), QueryParameter.EQUALS));
                }
                if (l.size() > 1) {
                   itemsParams.or(l);
@@ -887,21 +883,21 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
 
                boolean additional = true;
                if (statusc.getComboBox().getSelectedItem().equals(Messages.STATUS_PAID)) {
-                  itemsParams.and(new QueryParameter(Context.getItem(), "intstatus", Item.STATUS_PAID, QueryParameter.EQUALS));
+                  itemsParams.and(new QueryParameter(Context.getInvoice(), "intstatus", Item.STATUS_PAID, QueryParameter.EQUALS));
                } else if (statusc.getComboBox().getSelectedItem().equals(Messages.STATUS_UNPAID)) {
 //                        additional = false;
                   itemsParams.or(
-                        new QueryParameter(Context.getItem(), "intstatus", Item.STATUS_QUEUED, QueryParameter.EQUALS),
-                        new QueryParameter(Context.getItem(), "intstatus", Item.STATUS_PAUSED, QueryParameter.EQUALS),
-                        new QueryParameter(Context.getItem(), "intstatus", Item.STATUS_IN_PROGRESS, QueryParameter.EQUALS),
-                        new QueryParameter(Context.getItem(), "intstatus", Item.STATUS_FINISHED, QueryParameter.EQUALS));
+                        new QueryParameter(Context.getInvoice(), "intstatus", Item.STATUS_QUEUED, QueryParameter.EQUALS),
+                        new QueryParameter(Context.getInvoice(), "intstatus", Item.STATUS_PAUSED, QueryParameter.EQUALS),
+                        new QueryParameter(Context.getInvoice(), "intstatus", Item.STATUS_IN_PROGRESS, QueryParameter.EQUALS),
+                        new QueryParameter(Context.getInvoice(), "intstatus", Item.STATUS_FINISHED, QueryParameter.EQUALS));
                } else if (statusc.getComboBox().getSelectedItem().equals(Messages.STATUS_CANCELLED)) {
 //                        additional = false;
-                  itemsParams.and(new QueryParameter(Context.getItem(), "intstatus", Item.STATUS_CANCELLED, QueryParameter.EQUALS));
+                  itemsParams.and(new QueryParameter(Context.getInvoice(), "intstatus", Item.STATUS_CANCELLED, QueryParameter.EQUALS));
                }
 
                try {
-                  Context c = Context.getItem();
+                  Context c = Context.getInvoice();
                   itemsParams.setOrder("accountsids", true);
                   c.addReference(Context.getGroup());
                   c.addReference(Context.getAccounts());
@@ -919,7 +915,7 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
 
                   DatabaseObject.Entity<?, ?>[] es = new DatabaseObject.Entity<?, ?>[d.length];
                   for (int i = 0; i < d.length; i++) {
-                     es[i] = new DatabaseObject.Entity<Context, Integer>(Context.getItem(), Integer.valueOf(d[i][0].toString()));
+                     es[i] = new DatabaseObject.Entity<Context, Integer>(Context.getInvoice(), Integer.valueOf(d[i][0].toString()));
                   }
 
                   d = ArrayUtilities.replaceColumn(d, 0, es);
@@ -1109,6 +1105,7 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
                Messages.ODT_CREATE.getValue(),
                null, Messages.SET_STATUS_PAID.getValue(),},
             new ActionListener[]{new ActionListener() {
+            @Override
             public void actionPerformed(ActionEvent e) {
                if (Popup.Y_N_dialog(Messages.REALLY_DELETE2 + " (" + jTable1.getSelectedRowCount() + ")")) {
                   int[] rows = jTable1.getSelectedRows();
@@ -1129,28 +1126,33 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
                }
             }
          }, null, new ActionListener() {
+            @Override
             public void actionPerformed(ActionEvent e) {
                setData();
             }
          },
                null,
                new ActionListener() {
+            @Override
             public void actionPerformed(ActionEvent e) {
                dta();
             }
          },
                new ActionListener() {
+            @Override
             public void actionPerformed(ActionEvent e) {
                pdf();
             }
          },
                new ActionListener() {
+            @Override
             public void actionPerformed(ActionEvent e) {
                odt();
             }
          },
                null,
                new ActionListener() {
+            @Override
             public void actionPerformed(ActionEvent e) {
                if (Popup.Y_N_dialog(Messages.REALLY_CHANGE2 + " (" + jTable1.getSelectedRowCount() + ")")) {
                   int[] rows = jTable1.getSelectedRows();
@@ -1271,6 +1273,7 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
 
    private void loadTemplate() {
       Runnable runnable = new Runnable() {
+         @Override
          public void run() {
             if (dataOwner != null) {
                journalOrContactTemplate = TemplateHandler.loadTemplate(Long.valueOf(dataOwner.templateGroupIds()), Constants.TYPE_CONTACT);
@@ -1294,7 +1297,7 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
             try {
                int index = jTable1.convertRowIndexToModel(jTable1.getSelectedRows()[i]);
                DatabaseObject obj = DatabaseObject.getObject((DatabaseObject.Entity<?, ?>) jTable1.getModel().getValueAt(index, 0));
-               if (obj.getContext().equals(Context.getItem())) {
+               if (obj.getContext().equals(Context.getInvoice())) {
                   Item item = (Item) obj;
                   if (item.__getIntstatus() != Item.STATUS_PAID) {
                      items.add(item);
@@ -1407,18 +1410,18 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
    private void filter() {
       if (filterinvoice.isSelected()) {
          QueryCriteria2 p = new QueryCriteria2();
-         p.and(new QueryParameter(Context.getItem(), "intstatus", Item.STATUS_PAID, QueryParameter.NOTEQUAL));
-         p.and(new QueryParameter(Context.getItem(), "inttype", Item.TYPE_BILL, QueryParameter.EQUALS));
+         p.and(new QueryParameter(Context.getInvoice(), "intstatus", Item.STATUS_PAID, QueryParameter.NOTEQUAL));
+         p.and(new QueryParameter(Context.getInvoice(), "inttype", Item.TYPE_INVOICE, QueryParameter.EQUALS));
          jTree1.setModel(new MPTreeModel(dataOwner, p));
       } else if (filteroffers.isSelected()) {
          QueryCriteria2 p = new QueryCriteria2();
-         p.and(new QueryParameter(Context.getItem(), "intstatus", Item.STATUS_FINISHED, QueryParameter.NOTEQUAL));
-         p.and(new QueryParameter(Context.getItem(), "inttype", Item.TYPE_OFFER, QueryParameter.EQUALS));
+         p.and(new QueryParameter(Context.getOffer(), "intstatus", Item.STATUS_FINISHED, QueryParameter.NOTEQUAL));
+         p.and(new QueryParameter(Context.getOffer(), "inttype", Item.TYPE_OFFER, QueryParameter.EQUALS));
          jTree1.setModel(new MPTreeModel(dataOwner, p));
       } else if (filterorders.isSelected()) {
          QueryCriteria2 p = new QueryCriteria2();
-         p.and(new QueryParameter(Context.getItem(), "intstatus", Item.STATUS_FINISHED, QueryParameter.NOTEQUAL));
-         p.and(new QueryParameter(Context.getItem(), "inttype", Item.TYPE_ORDER, QueryParameter.EQUALS));
+         p.and(new QueryParameter(Context.getOrder(), "intstatus", Item.STATUS_FINISHED, QueryParameter.NOTEQUAL));
+         p.and(new QueryParameter(Context.getOrder(), "inttype", Item.TYPE_ORDER, QueryParameter.EQUALS));
          jTree1.setModel(new MPTreeModel(dataOwner, p));
       } else if (filternone.isSelected()) {
          jTree1.setModel(new MPTreeModel(dataOwner, null));

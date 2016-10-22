@@ -22,7 +22,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import javax.swing.JButton;
@@ -38,7 +37,6 @@ import mpv5.globals.GlobalSettings;
 import mpv5.globals.Headers;
 import mpv5.handler.VariablesHandler;
 import mpv5.logging.Log;
-import mpv5.ui.panels.ItemPanel;
 import mpv5.ui.panels.ItemPanel2;
 import mpv5.utils.models.MPComboBoxModelItem;
 import mpv5.utils.models.MPTableModel;
@@ -70,8 +68,8 @@ public final class ProductOrderSubItem extends DatabaseObject implements Trigger
             it.setOrdernr(i);
             Log.Print(Arrays.asList(row));
             try {
-                if (!cloneSubitems && row[0] != null && Integer.valueOf(row[0].toString()).intValue() > 0) {
-                    it.setIDS(Integer.valueOf(row[0].toString()).intValue());
+                if (!cloneSubitems && row[0] != null && Integer.valueOf(row[0].toString()) > 0) {
+                    it.setIDS(Integer.valueOf(row[0].toString()));
                 } else {
                     it.setIDS(-1);
                 }
@@ -208,8 +206,8 @@ public final class ProductOrderSubItem extends DatabaseObject implements Trigger
             final ProductOrderSubItem it = new ProductOrderSubItem();
             it.setOrdernr(i);
             try {
-                if (row[0] != null && Integer.valueOf(row[0].toString()).intValue() > 0) {
-                    it.setIDS(Integer.valueOf(row[0].toString()).intValue());
+                if (row[0] != null && Integer.valueOf(row[0].toString()) > 0) {
+                    it.setIDS(Integer.valueOf(row[0].toString()));
                 } else {
                     it.setIDS(-1);
                 }
@@ -321,7 +319,7 @@ public final class ProductOrderSubItem extends DatabaseObject implements Trigger
         }
         BigDecimal deftax = BigDecimal.ZERO;
         if (mpv5.db.objects.User.getCurrentUser().getProperties().hasProperty("deftax")) {
-            int taxid = mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("deftax", new Integer(0));
+            int taxid = mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("deftax", 0);
             deftax = Tax.getTaxValue(taxid);
         }
         i.setTaxpercentvalue(deftax);
@@ -354,8 +352,8 @@ public final class ProductOrderSubItem extends DatabaseObject implements Trigger
 
 ////////////////format///////////////////////////////////////////////////////////
         Context contextl = product.getContext();
-        String params = "cname";
-        String vars = null;
+        String params;
+        String vars;
         if (mpv5.db.objects.User.getCurrentUser().getProperties().hasProperty(contextl + mpv5.ui.beans.LightMPComboBox.VALUE_SEARCHFIELDS)
                 && mpv5.db.objects.User.getCurrentUser().getProperties().getProperty(contextl + mpv5.ui.beans.LightMPComboBox.VALUE_SEARCHFIELDS).contains("_$")) {
             try {
@@ -479,6 +477,7 @@ public final class ProductOrderSubItem extends DatabaseObject implements Trigger
                 List<String[]> vals = p.getValues3();
                 Collections.sort(vals, new Comparator<String[]>() {
 
+                    @Override
                     public int compare(String[] o1, String[] o2) {
                         return o1[0].compareTo(o2[0]);
                     }
@@ -499,7 +498,8 @@ public final class ProductOrderSubItem extends DatabaseObject implements Trigger
     }
 
     /**
-     * @param originalproductsids the originalproductsids to set
+     * @param originalproduct the originalproductsids to
+     * set
      */
     public void setOriginalproduct(Product originalproduct) {
         this.originalproduct = originalproduct;
@@ -609,9 +609,19 @@ public final class ProductOrderSubItem extends DatabaseObject implements Trigger
             return null;
         }
         ProductOrder dos = getProductorder();
-        ItemPanel2 ip = new ItemPanel2(Context.getItem(), dos.getInttype());
+        ItemPanel2 ip = null;
+        switch (dos.getInttype()) {
+            case Constants.TYPE_OFFER:
+                ip = new ItemPanel2(Context.getOffer(), dos.getInttype());
+                break;
+            case Constants.TYPE_ORDER:
+                ip = new ItemPanel2(Context.getOrder(), dos.getInttype());
+                break;
+            case Constants.TYPE_INVOICE:
+                ip = new ItemPanel2(Context.getInvoice(), dos.getInttype());
+                break;
+        }
         return ip;
-
     }
 
     @Override
@@ -665,7 +675,6 @@ public final class ProductOrderSubItem extends DatabaseObject implements Trigger
             }
         }
 
-
         MPTableModel model = new MPTableModel(
                 new Class[]{
                     Integer.class, Integer.class, BigDecimal.class, String.class, Object.class, BigDecimal.class, BigDecimal.class, BigDecimal.class,
@@ -704,7 +713,7 @@ public final class ProductOrderSubItem extends DatabaseObject implements Trigger
         Object[] data = new Object[17];
         for (int i = 0; i < data.length; i++) {
             data[0] = __getIDS();
-            data[1] = Integer.valueOf(row);
+            data[1] = row;
             data[2] = getQuantityvalue();
             data[3] = getMeasure();
             data[4] = getDescription();
@@ -727,6 +736,7 @@ public final class ProductOrderSubItem extends DatabaseObject implements Trigger
     /**
      * Turn this SubItem into table row data
      *
+     * @param m
      * @param row
      * @return
      */

@@ -16,9 +16,7 @@
  */
 package mpv5.db.objects;
 
-import enoa.handler.TemplateHandler;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import javax.swing.JComponent;
 import mpv5.db.common.Context;
@@ -37,7 +35,6 @@ import mpv5.utils.images.MPIcon;
  */
 public class Reminder extends DatabaseObject implements Templateable {
 
-    public static int TYPE_REMINDER = 0;
     static String getTypeString(int typ) {
         return Messages.TYPE_REMINDER.toString();
     }
@@ -124,7 +121,7 @@ public class Reminder extends DatabaseObject implements Templateable {
         if (map.containsKey("itemsids")) {
             try {
                 try {
-                    map.put("item", DatabaseObject.getObject(Context.getItem(), Integer.valueOf(map.get("itemsids").toString())));
+                    map.put("item", DatabaseObject.getObject(Context.getInvoice(), Integer.valueOf(map.get("itemsids").toString())));
                     map.remove("itemsids");
                 } catch (NodataFoundException ex) {
                     map.put("item", null);
@@ -180,6 +177,7 @@ public class Reminder extends DatabaseObject implements Templateable {
         return __getGroupsids();
     }
 
+    @Override
     public FormatHandler getFormatHandler() {
         throw new UnsupportedOperationException("Not supported yet.");
     }

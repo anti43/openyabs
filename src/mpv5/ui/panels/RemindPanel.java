@@ -28,9 +28,6 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Vector;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.DefaultListModel;
 import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
@@ -41,11 +38,9 @@ import mpv5.db.objects.Stage;
 import mpv5.db.objects.Template;
 import mpv5.globals.Constants;
 import mpv5.globals.Messages;
-import mpv5.handler.FormFieldsHandler;
 import mpv5.logging.Log;
 import mpv5.ui.dialogs.DialogForFile;
 import mpv5.ui.dialogs.Popup;
-import mpv5.ui.frames.MPView;
 import mpv5.utils.export.Export;
 import mpv5.utils.export.Exportable;
 import mpv5.utils.files.FileDirectoryHandler;
@@ -67,16 +62,17 @@ public class RemindPanel extends javax.swing.JPanel {
         labeledTextField1.set_ValueClass(Double.class);
 
         labeledCombobox1.setSearchEnabled(true);
-        labeledCombobox1.setContext(Context.getItem());
+        labeledCombobox1.setContext(Context.getInvoice());
 
         labeledCombobox3.setSearchEnabled(true);
         labeledCombobox3.setContext(Context.getStage());
 
         labeledCombobox1.getComboBox().addActionListener(new ActionListener() {
 
+            @Override
             public void actionPerformed(ActionEvent e) {
                 try {
-                    refresh((Item) DatabaseObject.getObject(Context.getItem(), Integer.valueOf(labeledCombobox1.getSelectedItem().getId())));
+                    refresh((Item) DatabaseObject.getObject(Context.getInvoice(), Integer.valueOf(labeledCombobox1.getSelectedItem().getId())));
                 } catch (Exception ex) {
                     Log.Debug(this, ex.getMessage());
                 }
@@ -85,6 +81,7 @@ public class RemindPanel extends javax.swing.JPanel {
 
         labeledCombobox3.getComboBox().addActionListener(new ActionListener() {
 
+            @Override
             public void actionPerformed(ActionEvent e) {
                 try {
                     Stage s = (Stage) DatabaseObject.getObject(Context.getStage(), Integer.valueOf(labeledCombobox3.getSelectedItem().getId()));
@@ -107,9 +104,10 @@ public class RemindPanel extends javax.swing.JPanel {
         initComponents();
         labeledCombobox1.getComboBox().addActionListener(new ActionListener() {
 
+            @Override
             public void actionPerformed(ActionEvent e) {
                 try {
-                    refresh((Item) DatabaseObject.getObject(Context.getItem(), Integer.valueOf(labeledCombobox1.getSelectedItem().getId())));
+                    refresh((Item) DatabaseObject.getObject(Context.getInvoice(), Integer.valueOf(labeledCombobox1.getSelectedItem().getId())));
                 } catch (Exception ex) {
                     Log.Debug(this, ex.getMessage());
                 }
@@ -118,6 +116,7 @@ public class RemindPanel extends javax.swing.JPanel {
 
         labeledCombobox3.getComboBox().addActionListener(new ActionListener() {
 
+            @Override
             public void actionPerformed(ActionEvent e) {
                 try {
                     Stage s = (Stage) DatabaseObject.getObject(Context.getStage(), Integer.valueOf(labeledCombobox3.getSelectedItem().getId()));
@@ -379,7 +378,7 @@ public class RemindPanel extends javax.swing.JPanel {
     private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
         dataOwner.delete();
         try {
-            refresh((Item) Item.getObject(Context.getItem(), dataOwner.__getItemsids()));
+            refresh((Item) Item.getObject(Context.getInvoice(), dataOwner.__getItemsids()));
         } catch (NodataFoundException ex) {
             refresh(null);
         }
@@ -441,7 +440,7 @@ public class RemindPanel extends javax.swing.JPanel {
                     Log.Debug(ex1);
                 }
                 try {
-                    Item i = (Item) DatabaseObject.getObject(Context.getItem(), dataOwner.__getItemsids());
+                    Item i = (Item) DatabaseObject.getObject(Context.getInvoice(), dataOwner.__getItemsids());
                     ex.put("reminder.count", Reminder.getRemindersOf(i).size());
                 } catch (NodataFoundException nodataFoundException) {
                     Log.Debug(nodataFoundException);
@@ -490,7 +489,7 @@ public class RemindPanel extends javax.swing.JPanel {
                     Log.Debug(ex1);
                 }
                 try {
-                    Item i = (Item) DatabaseObject.getObject(Context.getItem(), dataOwner.__getItemsids());
+                    Item i = (Item) DatabaseObject.getObject(Context.getInvoice(), dataOwner.__getItemsids());
                     hm1.put("reminder.count", Reminder.getRemindersOf(i).size());
                 } catch (NodataFoundException nodataFoundException) {
                     Log.Debug(nodataFoundException);
@@ -527,7 +526,7 @@ public class RemindPanel extends javax.swing.JPanel {
                     Log.Debug(ex1);
                 }
                 try {
-                    Item i = (Item) DatabaseObject.getObject(Context.getItem(), dataOwner.__getItemsids());
+                    Item i = (Item) DatabaseObject.getObject(Context.getInvoice(), dataOwner.__getItemsids());
                     hm1.put("reminder.count", Reminder.getRemindersOf(i).size());
                 } catch (NodataFoundException nodataFoundException) {
                     Log.Debug(nodataFoundException);
@@ -565,8 +564,8 @@ public class RemindPanel extends javax.swing.JPanel {
 
     private void save() {
         try {
-            Item i = (Item) DatabaseObject.getObject(Context.getItem(), Integer.valueOf(labeledCombobox1.getSelectedItem().getId()));
-            Stage s = null;
+            Item i = (Item) DatabaseObject.getObject(Context.getInvoice(), Integer.valueOf(labeledCombobox1.getSelectedItem().getId()));
+            Stage s;
             try {
                 s = (Stage) DatabaseObject.getObject(Context.getStage(), Integer.valueOf(labeledCombobox3.getSelectedItem().getId()));
             } catch (Exception nodataFoundException) {
@@ -624,8 +623,7 @@ public class RemindPanel extends javax.swing.JPanel {
     private void expose(Reminder r) {
         dataOwner = r;
         try {
-            labeledCombobox1.setModel(Item.getObject(Context.getItem(), r.__getItemsids()));
-
+            labeledCombobox1.setModel(Item.getObject(Context.getInvoice(), r.__getItemsids()));
         } catch (NodataFoundException ex) {
         }
         try {

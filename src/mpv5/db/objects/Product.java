@@ -16,11 +16,9 @@
  */
 package mpv5.db.objects;
 
-import enoa.handler.TemplateHandler;
 import java.io.File;
 import java.math.BigDecimal;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Vector;
 import java.util.logging.Level;
@@ -32,7 +30,6 @@ import mpv5.db.common.Formattable;
 import mpv5.db.common.NodataFoundException;
 import mpv5.db.common.QueryHandler;
 import mpv5.db.common.Templateable;
-import mpv5.globals.Constants;
 import mpv5.globals.Messages;
 import mpv5.handler.FormatHandler;
 import mpv5.handler.MPEnum;
@@ -56,9 +53,9 @@ public class Product extends DatabaseObject implements Formattable, Templateable
     */
    public static String getTypeString(int type) {
       switch (type) {
-         case (Constants.TYPE_PRODUCT):
+         case (TYPE_PRODUCT):
             return Messages.TYPE_PRODUCT.toString();
-         case (Constants.TYPE_SERVICE):
+         case (TYPE_SERVICE):
             return Messages.TYPE_SERVICE.toString();
       }
       return null;
@@ -74,7 +71,7 @@ public class Product extends DatabaseObject implements Formattable, Templateable
       en[0] = new MPEnum() {
          @Override
          public Integer getId() {
-            return new Integer(TYPE_PRODUCT);
+            return TYPE_PRODUCT;
          }
 
          @Override
@@ -85,7 +82,7 @@ public class Product extends DatabaseObject implements Formattable, Templateable
       en[1] = new MPEnum() {
          @Override
          public Integer getId() {
-            return new Integer(TYPE_SERVICE);
+            return TYPE_SERVICE;
          }
 
          @Override
@@ -115,14 +112,7 @@ public class Product extends DatabaseObject implements Formattable, Templateable
    private BigDecimal stockvalue = BigDecimal.ZERO;
    private BigDecimal thresholdvalue = BigDecimal.ZERO;
    private int intinventorytype = 0;
-   public static int TYPE_PRODUCT;//TemplateHandler.TYPE_PRODUCT;
-   public static int TYPE_SERVICE;
    private FormatHandler formatHandler;
-
-   static {
-      TYPE_PRODUCT = Constants.TYPE_PRODUCT;
-      TYPE_SERVICE = Constants.TYPE_SERVICE;
-   }
 
    public Product() {
       setContext(Context.getProduct());
@@ -437,6 +427,7 @@ public class Product extends DatabaseObject implements Formattable, Templateable
       return super.resolveReferences(map);
    }
 
+   @Override
    public void defineFormatHandler(FormatHandler handler) {
       formatHandler = handler;
    }
@@ -449,7 +440,7 @@ public class Product extends DatabaseObject implements Formattable, Templateable
     * @param dataowner
     */
    public static void createProducts(List<SubItem> saveModel, Item dataowner) {
-      List<String> refs = new Vector<String>();
+      Vector<String> refs = new Vector<String>();
       for (SubItem i : saveModel) {
          if (i.__getDescription().contains(TRACKID_END_IDENTIFIER) && i.__getDescription().contains(TRACKID_START_IDENTIFIER)) {
             try {
@@ -638,7 +629,7 @@ public class Product extends DatabaseObject implements Formattable, Templateable
    public ProductList getProductlist() {
       if (productgroupsids > 0) {
          try {
-            return (ProductList) Product.getObject(Context.getProductlist(), productlistsids);
+            return (ProductList) Product.getObject(Context.getProductList(), productlistsids);
          } catch (NodataFoundException ex) {
             Logger.getLogger(SubItem.class.getName()).log(Level.SEVERE, null, ex);
          }

@@ -17,6 +17,7 @@ import mpv5.ui.dialogs.ControlApplet;
 import mpv5.ui.dialogs.Popup;
 import mpv5.usermanagement.MPSecurityManager;
 import mpv5.db.objects.User;
+import mpv5.globals.Constants;
 import mpv5.globals.GlobalSettings;
 import mpv5.handler.FormatHandler;
 import mpv5.handler.MPEnum;
@@ -86,12 +87,12 @@ public final class ControlPanel_Formats extends javax.swing.JPanel implements Co
         jButton1 = new javax.swing.JButton();
         jButton3 = new javax.swing.JButton();
 
-        //\$2java.awt.Color(255, 255, 255));
+        setBackground(new java.awt.Color(255, 255, 255));
         setName("Form"); // NOI18N
         setLayout(new java.awt.BorderLayout());
 
-//$2java.awt.Color(255, 255, 255));
-        java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle(); // NOI18N
+        jPanel1.setBackground(new java.awt.Color(255, 255, 255));
+        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("mpv5/resources/languages/Panels"); // NOI18N
         jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("ControlPanel_Formats.jPanel1.border.title"))); // NOI18N
         jPanel1.setName("jPanel1"); // NOI18N
         jPanel1.setLayout(new java.awt.BorderLayout());
@@ -249,6 +250,11 @@ public final class ControlPanel_Formats extends javax.swing.JPanel implements Co
             }
         ));
         jTable1.setName("jTable1"); // NOI18N
+        jTable1.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jTable1MouseClicked(evt);
+            }
+        });
         jScrollPane1.setViewportView(jTable1);
 
         jPanel4.add(jScrollPane1, java.awt.BorderLayout.CENTER);
@@ -257,7 +263,7 @@ public final class ControlPanel_Formats extends javax.swing.JPanel implements Co
 
         add(jPanel1, java.awt.BorderLayout.CENTER);
 
-//$2java.awt.Color(255, 255, 255));
+        jPanel6.setBackground(new java.awt.Color(255, 255, 255));
         jPanel6.setName("jPanel6"); // NOI18N
         jPanel6.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.RIGHT));
 
@@ -312,14 +318,22 @@ public final class ControlPanel_Formats extends javax.swing.JPanel implements Co
         }
     }//GEN-LAST:event_jButton1ActionPerformed
 
+    private void jTable1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable1MouseClicked
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jTable1MouseClicked
+
+    @Override
     public void setValues(PropertyStore values) {
     }
 
+    @Override
     public String getUname() {
         return UNAME;
     }
 
+    @Override
     public void reset() {
+        
     }
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
@@ -514,9 +528,24 @@ public final class ControlPanel_Formats extends javax.swing.JPanel implements Co
             Log.Debug(ex);
         }
 
-        String str = "";
-        Item b = (Item) DatabaseObject.getObject(Context.getItem());
-        b.setIDS(1);
+        String str;
+        Item b;
+        switch (Integer.parseInt(this.labeledCombobox3.getSelectedItem().getId())) {
+            case Constants.TYPE_ORDER:
+                b = (Item) DatabaseObject.getObject(Context.getOrder());
+                break;
+            case Constants.TYPE_OFFER:
+                b = (Item) DatabaseObject.getObject(Context.getOffer());
+                break;
+            case Constants.TYPE_INVOICE:
+                b = (Item) DatabaseObject.getObject(Context.getInvoice());
+                break;
+
+            default:
+                b = (Item) DatabaseObject.getObject(Context.getInvoice());
+                break;
+        }
+        
         b.avoidNulls();
         b.setGroup(Group.getDefault());
 

@@ -113,7 +113,7 @@ public class Scheduler extends Thread {
         List<Item> alerts = new ArrayList<Item>();
         List<Item> waitings = new ArrayList<Item>();
         int b = 0;
-        Context c = Context.getItem();
+        Context c = Context.getInvoice();
         String ItemType = "bills";
         String prop = "";
         String use = "";
@@ -125,40 +125,40 @@ public class Scheduler extends Thread {
                         ItemType = "bills";
                         prop = "hideunpaidbills";
                         opens.or(
-                                new QueryParameter(Context.getItem(), "intstatus", Item.STATUS_QUEUED, QueryParameter.EQUALS),
-                                new QueryParameter(Context.getItem(), "intstatus", Item.STATUS_FINISHED, QueryParameter.EQUALS));
+                                new QueryParameter(Context.getInvoice(), "intstatus", Item.STATUS_QUEUED, QueryParameter.EQUALS),
+                                new QueryParameter(Context.getInvoice(), "intstatus", Item.STATUS_FINISHED, QueryParameter.EQUALS));
                         use = "usebills";
                         break;
                     case 1:
                         ItemType = "order";
                         prop = "hideunattentedorders";
-                        opens.and(new QueryParameter(Context.getItem(), "intstatus", Item.STATUS_QUEUED, QueryParameter.EQUALS));
+                        opens.and(new QueryParameter(Context.getOrder(), "intstatus", Item.STATUS_QUEUED, QueryParameter.EQUALS));
                         use = "useorders";
                         break;
                     case 2:
                         ItemType = "offer";
                         prop = "hideunacceptedoffers";
-                        opens.and(new QueryParameter(Context.getItem(), "intstatus", Item.STATUS_QUEUED, QueryParameter.EQUALS));
+                        opens.and(new QueryParameter(Context.getOffer(), "intstatus", Item.STATUS_QUEUED, QueryParameter.EQUALS));
                         use = "useoffers";
                         break;
                     case 3:
                         ItemType = "delivery";
                         prop = "hideunattenteddeliverys";
                         opens.or(
-                                new QueryParameter(Context.getItem(), "intstatus", Item.STATUS_QUEUED, QueryParameter.EQUALS),
-                                new QueryParameter(Context.getItem(), "intstatus", Item.STATUS_FINISHED, QueryParameter.EQUALS));
+                                new QueryParameter(Context.getDelivery(), "intstatus", Item.STATUS_QUEUED, QueryParameter.EQUALS),
+                                new QueryParameter(Context.getDelivery(), "intstatus", Item.STATUS_FINISHED, QueryParameter.EQUALS));
                         use = "usedeliverys";
                         break;
                     case 4:
                         ItemType = "confirmation";
                         prop = "hideunattentedconfirmations";
-                        opens.and(new QueryParameter(Context.getItem(), "intstatus", Item.STATUS_QUEUED, QueryParameter.EQUALS));
+                        opens.and(new QueryParameter(Context.getConfirmation(), "intstatus", Item.STATUS_QUEUED, QueryParameter.EQUALS));
                         use = "useconfirmations";
                         break;
                 }
                 if (!mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("org.openyabs.uiproperty", prop)
                         && mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("org.openyabs.uiproperty", use)) {
-                    opens.and(new QueryParameter(Context.getItem(), "inttype", b, QueryParameter.EQUALS));
+                    opens.and(new QueryParameter(Context.getInvoice(), "inttype", b, QueryParameter.EQUALS));
                     opens.setOrder("dateadded", true);
                     try {
                         ReturnValue data = QueryHandler.instanceOf().clone(c).select("IDS", opens);
@@ -169,7 +169,7 @@ public class Scheduler extends Thread {
                                 int id = Integer.valueOf(d[i][0].toString());
                                 try {
                                     Item it = (Item) Item.getObject(
-                                            Context.getItem(),
+                                            Context.getInvoice(),
                                             id);
                                     waitings.add(it);
                                 } catch (NodataFoundException ex) {
@@ -199,34 +199,34 @@ public class Scheduler extends Thread {
                         ItemType = "bills";
                         prop = "hideunpaidbills";
                         opens.or(
-                                new QueryParameter(Context.getItem(), "intstatus", Item.STATUS_QUEUED, QueryParameter.EQUALS),
-                                new QueryParameter(Context.getItem(), "intstatus", Item.STATUS_FINISHED, QueryParameter.EQUALS));
+                                new QueryParameter(Context.getInvoice(), "intstatus", Item.STATUS_QUEUED, QueryParameter.EQUALS),
+                                new QueryParameter(Context.getInvoice(), "intstatus", Item.STATUS_FINISHED, QueryParameter.EQUALS));
                         use = "usebills";
                         break;
                     case 1:
                         ItemType = "order";
                         prop = "hideunattentedorders";
-                        opens.and(new QueryParameter(Context.getItem(), "intstatus", Item.STATUS_QUEUED, QueryParameter.EQUALS));
+                        opens.and(new QueryParameter(Context.getOrder(), "intstatus", Item.STATUS_QUEUED, QueryParameter.EQUALS));
                         use = "useorders";
                         break;
                     case 2:
                         ItemType = "offer";
                         prop = "hideunacceptedoffers";
-                        opens.and(new QueryParameter(Context.getItem(), "intstatus", Item.STATUS_QUEUED, QueryParameter.EQUALS));
+                        opens.and(new QueryParameter(Context.getOffer(), "intstatus", Item.STATUS_QUEUED, QueryParameter.EQUALS));
                         use = "useoffers";
                         break;
                     case 3:
                         ItemType = "delivery";
                         prop = "hideunattenteddeliverys";
                         opens.or(
-                                new QueryParameter(Context.getItem(), "intstatus", Item.STATUS_QUEUED, QueryParameter.EQUALS),
-                                new QueryParameter(Context.getItem(), "intstatus", Item.STATUS_FINISHED, QueryParameter.EQUALS));
+                                new QueryParameter(Context.getDelivery(), "intstatus", Item.STATUS_QUEUED, QueryParameter.EQUALS),
+                                new QueryParameter(Context.getDelivery(), "intstatus", Item.STATUS_FINISHED, QueryParameter.EQUALS));
                         use = "usedeliverys";
                         break;
                     case 4:
                         ItemType = "confirmation";
                         prop = "hideunattentedconfirmations";
-                        opens.and(new QueryParameter(Context.getItem(), "intstatus", Item.STATUS_QUEUED, QueryParameter.EQUALS));
+                        opens.and(new QueryParameter(Context.getConfirmation(), "intstatus", Item.STATUS_QUEUED, QueryParameter.EQUALS));
                         use = "useconfirmations";
                         break;
                 }
@@ -236,7 +236,7 @@ public class Scheduler extends Thread {
                     Integer warn = Integer.valueOf(mpv5.db.objects.User.getCurrentUser().
                             getProperties().
                             getProperty(ItemType + ".warn.days"));
-                    opens.and(new QueryParameter(Context.getItem(), "inttype", b, QueryParameter.EQUALS));
+                    opens.and(new QueryParameter(Context.getInvoice(), "inttype", b, QueryParameter.EQUALS));
                     opens.setOrder("dateadded", true);
                     try {
                         ReturnValue data = QueryHandler.instanceOf().clone(c).select("IDS", opens,
@@ -248,7 +248,7 @@ public class Scheduler extends Thread {
                                 int id = Integer.valueOf(d[i][0].toString());
                                 try {
                                     Item it = (Item) Item.getObject(
-                                            Context.getItem(),
+                                            Context.getInvoice(),
                                             id);
                                     warnings.add(it);
                                 } catch (NodataFoundException ex) {
@@ -277,30 +277,30 @@ public class Scheduler extends Thread {
                     case 0:
                         ItemType = "bills";
                         opens.or(
-                                new QueryParameter(Context.getItem(), "intstatus", Item.STATUS_QUEUED, QueryParameter.EQUALS),
-                                new QueryParameter(Context.getItem(), "intstatus", Item.STATUS_FINISHED, QueryParameter.EQUALS));
+                                new QueryParameter(Context.getInvoice(), "intstatus", Item.STATUS_QUEUED, QueryParameter.EQUALS),
+                                new QueryParameter(Context.getInvoice(), "intstatus", Item.STATUS_FINISHED, QueryParameter.EQUALS));
                         use = "usebills";
                         break;
                     case 1:
                         ItemType = "order";
-                        opens.and(new QueryParameter(Context.getItem(), "intstatus", Item.STATUS_QUEUED, QueryParameter.EQUALS));
+                        opens.and(new QueryParameter(Context.getOrder(), "intstatus", Item.STATUS_QUEUED, QueryParameter.EQUALS));
                         use = "useorders";
                         break;
                     case 2:
                         ItemType = "offer";
-                        opens.and(new QueryParameter(Context.getItem(), "intstatus", Item.STATUS_QUEUED, QueryParameter.EQUALS));
+                        opens.and(new QueryParameter(Context.getOffer(), "intstatus", Item.STATUS_QUEUED, QueryParameter.EQUALS));
                         use = "useoffers";
                         break;
                     case 3:
                         ItemType = "delivery";
                         opens.or(
-                                new QueryParameter(Context.getItem(), "intstatus", Item.STATUS_QUEUED, QueryParameter.EQUALS),
-                                new QueryParameter(Context.getItem(), "intstatus", Item.STATUS_FINISHED, QueryParameter.EQUALS));
+                                new QueryParameter(Context.getDelivery(), "intstatus", Item.STATUS_QUEUED, QueryParameter.EQUALS),
+                                new QueryParameter(Context.getDelivery(), "intstatus", Item.STATUS_FINISHED, QueryParameter.EQUALS));
                         use = "usedeliverys";
                         break;
                     case 4:
                         ItemType = "confirmation";
-                        opens.and(new QueryParameter(Context.getItem(), "intstatus", Item.STATUS_QUEUED, QueryParameter.EQUALS));
+                        opens.and(new QueryParameter(Context.getConfirmation(), "intstatus", Item.STATUS_QUEUED, QueryParameter.EQUALS));
                         use = "useconfirmations";
                         break;
                 }
@@ -309,7 +309,7 @@ public class Scheduler extends Thread {
                     Integer alert = Integer.valueOf(mpv5.db.objects.User.getCurrentUser().
                             getProperties().
                             getProperty(ItemType + ".alert.days"));
-                    opens.and(new QueryParameter(Context.getItem(), "inttype", b, QueryParameter.EQUALS));
+                    opens.and(new QueryParameter(Context.getInvoice(), "inttype", b, QueryParameter.EQUALS));
                     opens.setOrder("dateadded", true);
                     try {
                         ReturnValue data = QueryHandler.instanceOf().clone(c).select("IDS", opens,
@@ -320,7 +320,7 @@ public class Scheduler extends Thread {
                             for (int i = 0; i < d.length; i++) {
                                 int id = Integer.valueOf(d[i][0].toString());
                                 try {
-                                    Item it = (Item) Item.getObject(Context.getItem(),
+                                    Item it = (Item) Item.getObject(Context.getInvoice(),
                                             id);
                                     alerts.add(it);
                                 } catch (NodataFoundException ex) {

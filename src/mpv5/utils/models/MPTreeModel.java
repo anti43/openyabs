@@ -17,18 +17,12 @@
 package mpv5.utils.models;
 
 import java.awt.Component;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.ArrayList;
-import java.util.Enumeration;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.Objects;
 import javax.swing.JTree;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeCellRenderer;
@@ -38,7 +32,6 @@ import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
 import mpv5.db.common.NodataFoundException;
 import mpv5.db.common.QueryCriteria2;
-import mpv5.db.common.QueryHandler;
 import mpv5.db.common.QueryParameter;
 import mpv5.db.objects.Contact;
 import mpv5.db.objects.FileToContact;
@@ -48,7 +41,6 @@ import mpv5.db.objects.Item;
 
 import mpv5.globals.Messages;
 import mpv5.logging.Log;
-import mpv5.ui.frames.MPView;
 import mpv5.utils.images.MPIcon;
 
 /**
@@ -64,7 +56,7 @@ public class MPTreeModel extends DefaultTreeModel {
          DefaultMutableTreeNode rootNode) throws NodataFoundException {
       groups.put(childGroup.__getIDS(), childNode);
 //        System.err.println(childNode);
-      if (childGroup.__getGroupsids() > 0 && childGroup.__getIDS()!= Group.getDefault().__getIDS() ) {
+      if (childGroup.__getGroupsids() > 0 && !Objects.equals(childGroup.__getIDS(), Group.getDefault().__getIDS()) ) {
          Group parent = (Group) DatabaseObject.getObject(Context.getGroup(), childGroup.__getGroupsids());
          DefaultMutableTreeNode gnode = new DefaultMutableTreeNode(parent);
          gnode.add(childNode);
@@ -79,6 +71,7 @@ public class MPTreeModel extends DefaultTreeModel {
     * Generates a tree view of the contact including related items and files
     *
     * @param rootNode
+    * @param itemfilter
     */
    public MPTreeModel(Contact rootNode, QueryCriteria2 itemfilter) {
       super(buildTreeFor(rootNode, itemfilter));
@@ -91,15 +84,15 @@ public class MPTreeModel extends DefaultTreeModel {
       //build group hierarchy
 
       // Add related items
-      List<Item> items = null;
+      List<Item> items;
 
       try {
          if (itemfilter == null) {
-            items = DatabaseObject.toObjectList(DatabaseObject.getReferencedObjects(obj, Context.getItem(), DatabaseObject.getObject(Context.getItem())), new Item());
+            items = DatabaseObject.toObjectList(DatabaseObject.getReferencedObjects(obj, Context.getInvoice(), DatabaseObject.getObject(Context.getInvoice())), new Item());
          } else {
             List<QueryParameter> p = new ArrayList<QueryParameter>();
-            p.add(new QueryParameter(Context.getItem(), "invisible", 0, QueryParameter.EQUALS));
-            p.add(new QueryParameter(Context.getItem(), "contactsids", obj.__getIDS(), QueryParameter.EQUALS));
+            p.add(new QueryParameter(Context.getInvoice(), "invisible", 0, QueryParameter.EQUALS));
+            p.add(new QueryParameter(Context.getInvoice(), "contactsids", obj.__getIDS(), QueryParameter.EQUALS));
             itemfilter.setOrder("groupsids", true);
             itemfilter.and(p);
             items = DatabaseObject.getObjects(new Item(), itemfilter);
@@ -109,14 +102,14 @@ public class MPTreeModel extends DefaultTreeModel {
             Item item = items.get(i);
             DefaultMutableTreeNode itemnode = new DefaultMutableTreeNode(item);
 
-            if (!groups.containsKey(new Integer(item.__getGroupsids()))) {
+            if (!groups.containsKey(item.__getGroupsids())) {
                DatabaseObject g = DatabaseObject.getObject(Context.getGroup(), item.__getGroupsids());
                Log.Debug(MPTreeModel.class, g);
                getGroupHierarchy((Group) g, new DefaultMutableTreeNode(g), groups, rootNode);
             }
 
             // Add files to the items
-            List<DatabaseObject> itemfiles = null;
+            List<DatabaseObject> itemfiles;
             try {
                itemfiles = DatabaseObject.getReferencedObjects(item, Context.getFilesToItems(), DatabaseObject.getObject(Context.getFilesToItems()));
                for (int j = 0; j < itemfiles.size(); j++) {
@@ -129,13 +122,13 @@ public class MPTreeModel extends DefaultTreeModel {
 
             (groups.get(item.__getGroupsids())).add(itemnode);
          }
-         if (groups.get(new Integer(1)) != null) {
-            rootNode.add(groups.get(new Integer(1)));
+         if (groups.get(1) != null) {
+            rootNode.add(groups.get(1));
          } else {
             Log.Debug(MPTreeModel.class, "No root group node found.");
          }
          // Add files to the contact
-         List<DatabaseObject> contactFiles = null;
+         List<DatabaseObject> contactFiles;
          try {
             contactFiles = DatabaseObject.getReferencedObjects(obj, Context.getFilesToContacts(), DatabaseObject.getObject(Context.getFilesToContacts()));
 
@@ -230,7 +223,6 @@ public class MPTreeModel extends DefaultTreeModel {
     * {@link DatabaseObject#__getGroupsids()}
     *
     * @param <T>
-    * @param data
     * @param rootNode
     * @return
     */

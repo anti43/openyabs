@@ -112,7 +112,7 @@ public class SampleData {
                             it.setAccountsids(defAccountID);
                             it.setGroupsids(group);
                             it.setIntreminders(0);
-                            it.setInttype(Item.TYPE_BILL);
+                            it.setInttype(Item.TYPE_INVOICE);
                             it.setIntstatus(Item.STATUS_PAID);
                       
 

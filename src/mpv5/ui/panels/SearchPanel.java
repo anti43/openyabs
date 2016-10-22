@@ -195,7 +195,9 @@ public class SearchPanel extends javax.swing.JPanel {
                     try {
                         DatabaseSearch s = d;
                         Object[][] res = null;
-                        if (context.getDbIdentity().equals(Context.getItem().getDbIdentity())) {
+                        if (context.equals(Context.getOffer()) ||
+                            context.equals(Context.getOrder()) ||
+                            context.equals(Context.getInvoice())) {
                             try {
                                 res = s.searchDataFor(sf, new Context[]{Context.getSubItem()}, new Context[]{Context.getCustomer()}, value);
                             } catch (Exception ex) {

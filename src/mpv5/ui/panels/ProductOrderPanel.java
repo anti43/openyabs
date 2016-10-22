@@ -31,7 +31,6 @@ import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.io.File;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
@@ -45,12 +44,9 @@ import javax.swing.event.TableModelListener;
 import mpv5.YabsViewProxy;
 import mpv5.db.common.*;
 import mpv5.db.objects.*;
-import mpv5.globals.Headers;
 import mpv5.globals.Messages;
 import mpv5.logging.Log;
-import mpv5.ui.dialogs.BigPopup;
 import mpv5.ui.dialogs.Popup;
-import mpv5.ui.popups.FileTablePopUp;
 import mpv5.ui.toolbars.DataPanelTB;
 import mpv5.globals.Constants;
 import mpv5.handler.FormatHandler;
@@ -63,7 +59,6 @@ import mpv5.ui.popups.TablePopUp;
 import mpv5.utils.arrays.ArrayUtilities;
 import mpv5.utils.date.DateConverter;
 import mpv5.utils.export.Export;
-import mpv5.utils.files.FileDirectoryHandler;
 import mpv5.utils.jobs.Job;
 import mpv5.utils.models.MPComboBoxModelItem;
 import mpv5.utils.models.MPTableModel;
@@ -76,7 +71,6 @@ import mpv5.utils.renderer.TextAreaCellEditor;
 import mpv5.utils.renderer.TextAreaCellRenderer;
 import mpv5.utils.tables.TableFormat;
 import mpv5.ui.misc.TableViewPersistenceHandler;
-import mpv5.usermanagement.MPSecurityManager;
 import mpv5.utils.renderer.LazyCellEditor;
 import mpv5.utils.renderer.LazyCellRenderer;
 import mpv5.utils.renderer.TableCellRendererForProducts;
@@ -103,7 +97,6 @@ public class ProductOrderPanel extends javax.swing.JPanel implements DataPanel, 
     /**
      * Creates new form ContactPanel
      *
-     * @param context
      * @param type
      */
     public ProductOrderPanel() {
@@ -173,6 +166,7 @@ public class ProductOrderPanel extends javax.swing.JPanel implements DataPanel, 
         status.getComboBox().addActionListener(new ActionListener() {
             ProductOrder dato = (ProductOrder) getDataOwner();
 
+            @Override
             public void actionPerformed(ActionEvent e) {
                 if (!loading && dataOwner.isExisting() && Integer.valueOf(status.getSelectedItem().getId()) == Item.STATUS_PAID && mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("org.openyabs.uiproperty", "autocreaterevenue")) {
                     if (Popup.Y_N_dialog(Messages.BOOK_NOW)) {
@@ -1264,8 +1258,8 @@ public class ProductOrderPanel extends javax.swing.JPanel implements DataPanel, 
 //                    }
 
                     List<Integer> skip = new ArrayList<Integer>();
-                    skip.add(new Integer(3));
-                    skip.add(new Integer(4));
+                    skip.add(3);
+                    skip.add(4);
 
                     status.setModel(Item.getStatusStrings(), MPComboBoxModelItem.COMPARE_BY_ID, skip);
                     try {
@@ -1373,8 +1367,7 @@ public class ProductOrderPanel extends javax.swing.JPanel implements DataPanel, 
 
         BigDecimal tpvs = null;
         for (DatabaseObject dbo : dbos) {
-            if (dbo.getContext().equals(Context.getItem())
-                    || dbo.getContext().equals(Context.getInvoice())
+            if (dbo.getContext().equals(Context.getInvoice())
                     || dbo.getContext().equals(Context.getOffer())
                     || dbo.getContext().equals(Context.getOrder())) {
 
@@ -1447,7 +1440,7 @@ public class ProductOrderPanel extends javax.swing.JPanel implements DataPanel, 
                 ((MPTableModel) itemtable.getModel()).addRow(
                         new ProductOrderSubItem((Product) dbo).getRowData(((MPTableModel) itemtable.getModel()).getRowCount() + 1));
                 ((MPTableModel) itemtable.getModel()).fireTableCellUpdated(0, 0);
-            } else if (dbo.getContext().equals(Context.getProductlist())) {
+            } else if (dbo.getContext().equals(Context.getProductList())) {
                 try {
                     ProductOrderSubItem[] subs = new ProductOrderSubItem[0];
                     if (dataOwner != null) {
@@ -1564,6 +1557,7 @@ public class ProductOrderPanel extends javax.swing.JPanel implements DataPanel, 
         }
     }
 
+    @Override
     public void actionBeforeCreate() {
         status.setSelectedIndex(Item.STATUS_IN_PROGRESS);
         date1.setDate(new Date());
@@ -1576,6 +1570,7 @@ public class ProductOrderPanel extends javax.swing.JPanel implements DataPanel, 
         }
     }
 
+    @Override
     public void actionBeforeSave() throws ChangeNotApprovedException {
         if (dataOwner.isExisting()) {
             if ((dataOwner.getIntstatus() != Item.STATUS_PAID && dataOwner.getIntstatus() != Item.STATUS_CANCELLED) || Popup.Y_N_dialog(Messages.REALLY_CHANGE_DONE_ITEM)) {
@@ -1661,12 +1656,15 @@ public class ProductOrderPanel extends javax.swing.JPanel implements DataPanel, 
 
         JButton b1 = new JButton();
         b1.addMouseListener(new MouseListener() {
+            @Override
             public void mouseClicked(MouseEvent e) {
             }
 
+            @Override
             public void mousePressed(MouseEvent e) {
             }
 
+            @Override
             public void mouseReleased(MouseEvent e) {
                 if (!mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("org.openyabs.uiproperty", "ordersoverproducts")) {
                     ProductSelectDialog.instanceOf((MPTableModel) itemtable.getModel(), itemtable.getSelectedRow(), e, 0, null, null);
@@ -1692,15 +1690,18 @@ public class ProductOrderPanel extends javax.swing.JPanel implements DataPanel, 
                 }
             }
 
+            @Override
             public void mouseEntered(MouseEvent e) {
             }
 
+            @Override
             public void mouseExited(MouseEvent e) {
             }
         });
 
         JButton b2 = new JButton();
         b2.addActionListener(new ActionListener() {
+            @Override
             public void actionPerformed(ActionEvent e) {
                 MPTableModel m = (MPTableModel) itemtable.getModel();
                 int row = itemtable.getSelectedRow();
@@ -1785,6 +1786,7 @@ public class ProductOrderPanel extends javax.swing.JPanel implements DataPanel, 
         }
     }
 
+    @Override
     public void mail() {
 
         if (dataOwner != null && dataOwner.isExisting()) {
@@ -1804,6 +1806,7 @@ public class ProductOrderPanel extends javax.swing.JPanel implements DataPanel, 
         }
     }
 
+    @Override
     public void print() {
         if (dataOwner != null && dataOwner.isExisting()) {
             if (TemplateHandler.isLoaded(Long.valueOf(dataOwner.templateGroupIds()), dataOwner.getInttype())) {
@@ -1834,6 +1837,7 @@ public class ProductOrderPanel extends javax.swing.JPanel implements DataPanel, 
 
     private void preloadTemplates() {
         Runnable runnable = new Runnable() {
+            @Override
             public void run() {
                 TemplateHandler.loadTemplateFor(button_preview, dataOwner.templateGroupIds(), dataOwner.getInttype());
                 if (TemplateHandler.isLoaded(Long.valueOf(dataOwner.templateGroupIds()), dataOwner.getInttype())) {
@@ -1846,12 +1850,14 @@ public class ProductOrderPanel extends javax.swing.JPanel implements DataPanel, 
         new Thread(runnable).start();
     }
 
+    @Override
     public void pdf() {
         if (dataOwner != null && dataOwner.isExisting()) {
             dataOwner.toPdf(true);
         }
     }
 
+    @Override
     public void odt() {
         if (dataOwner != null && dataOwner.isExisting()) {
            dataOwner.toOdt(true);
@@ -1870,6 +1876,7 @@ public class ProductOrderPanel extends javax.swing.JPanel implements DataPanel, 
         }
 
         m.addTableModelListener(new TableModelListener() {
+            @Override
             public void tableChanged(TableModelEvent e) {
                 if (dataOwner.isExisting()) {
                     if (e.getColumn() == 0 && e.getType() == TableModelEvent.DELETE) {
@@ -1930,7 +1937,7 @@ public class ProductOrderPanel extends javax.swing.JPanel implements DataPanel, 
     private void toInvoice() {
 
         Item i2 = (Item) dataOwner.clone(Context.getInvoice());
-        i2.setInttype(Item.TYPE_BILL);
+        i2.setInttype(Item.TYPE_INVOICE);
         i2.setIDS(-1);
         i2.setCname(null);
         i2.setCnumber(null);

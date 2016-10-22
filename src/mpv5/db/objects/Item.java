@@ -164,16 +164,12 @@ public class Item extends DatabaseObject implements Formattable, Templateable {
      */
     public static String getTypeString(int type) {
         switch (type) {
-            case (TYPE_BILL):
-                return Messages.TYPE_BILL.toString();
+            case (TYPE_INVOICE):
+                return Messages.TYPE_INVOICE.toString();
             case (TYPE_OFFER):
                 return Messages.TYPE_OFFER.toString();
             case (TYPE_ORDER):
                 return Messages.TYPE_ORDER.toString();
-//            case (TYPE_DELIVERY_NOTE):
-//                return Messages.TYPE_DELIVERY.toString();
-//            case (TYPE_ORDER_CONFIRMATION):
-//                return Messages.TYPE_CONFIRMATION.toString();
         }
         return "";
     }
@@ -196,12 +192,12 @@ public class Item extends DatabaseObject implements Formattable, Templateable {
 
             @Override
             public Integer getId() {
-                return TYPE_BILL;
+                return TYPE_INVOICE;
             }
 
             @Override
             public String getName() {
-                return getTypeString(TYPE_BILL);
+                return getTypeString(TYPE_INVOICE);
             }
         };
         en[2] = new MPEnum() {
@@ -227,31 +223,7 @@ public class Item extends DatabaseObject implements Formattable, Templateable {
             public String getName() {
                 return getTypeString(TYPE_ORDER);
             }
-        };
-//        en[4] = new MPEnum() {
-//
-//            @Override
-//            public Integer getId() {
-//                return new Integer(3);
-//            }
-//
-//            @Override
-//            public String getName() {
-//                return getTypeString(3);
-//            }
-//        };
-//        en[5] = new MPEnum() {
-//
-//            @Override
-//            public Integer getId() {
-//                return new Integer(4);
-//            }
-//
-//            @Override
-//            public String getName() {
-//                return getTypeString(4);
-//            }
-//        };        
+        };      
         return en;
     }
     private int contactsids;
@@ -273,16 +245,7 @@ public class Item extends DatabaseObject implements Formattable, Templateable {
     public static final int STATUS_FINISHED = 3;
     public static final int STATUS_PAID = 4;
     public static final int STATUS_CANCELLED = 5;
-//    public static final int TYPE_BILL = 0;
-//    public static final int TYPE_ORDER = 1;
-//    public static final int TYPE_OFFER = 2;
-//    public static final int TYPE_DELIVERY_NOTE = 3;
-//    public static final int TYPE_ORDER_CONFIRMATION = 4;
     private FormatHandler formatHandler;
-
-    public Item() {
-        setContext(Context.getItem());
-    }
 
     /**
      * @return the contactsids
@@ -397,7 +360,15 @@ public class Item extends DatabaseObject implements Formattable, Templateable {
 
     @Override
     public JComponent getView() {
-        ItemPanel2 p = new ItemPanel2(Context.getItem(), __getInttype());
+        ItemPanel2 p = null;
+        switch (__getInttype()) {
+            case Item.TYPE_INVOICE:
+                return new ItemPanel2(Context.getInvoice(), __getInttype());
+            case Item.TYPE_ORDER:
+                return new ItemPanel2(Context.getOrder(), __getInttype());
+            case Item.TYPE_OFFER:
+                return new ItemPanel2(Context.getOffer(), __getInttype());
+        }
         return p;
     }
 
@@ -448,7 +419,7 @@ public class Item extends DatabaseObject implements Formattable, Templateable {
     }
 
     /**
-     * <li>TYPE_BILL = 0; <li>TYPE_ORDER = 1; <li>TYPE_OFFER = 2;
+     * <li>TYPE_INVOICE = 0; <li>TYPE_ORDER = 1; <li>TYPE_OFFER = 2;
      *
      * @return the inttype
      */
@@ -457,7 +428,7 @@ public class Item extends DatabaseObject implements Formattable, Templateable {
     }
 
     /**
-     * <li>TYPE_BILL = 0; <li>TYPE_ORDER = 1; <li>TYPE_OFFER = 2;
+     * <li>TYPE_INVOICE = 0; <li>TYPE_ORDER = 1; <li>TYPE_OFFER = 2;
      *
      * @param inttype the inttype to set
      */
@@ -845,5 +816,17 @@ public class Item extends DatabaseObject implements Formattable, Templateable {
     @Persistable(false)
     public String getStatus() {
         return getStatusString(intstatus);
+    }
+
+    @Override
+    public boolean hasView() {
+        switch (__getInttype()) {
+            case Item.TYPE_INVOICE:
+            case Item.TYPE_ORDER:
+            case Item.TYPE_OFFER:
+                return true;
+            default:
+                return false;
+        }
     }
 }

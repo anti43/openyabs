@@ -20,10 +20,6 @@ import mpv5.db.common.DataNotCachedException;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashMap;
-import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.swing.Icon;
 import javax.swing.JComponent;
 
 import javax.swing.tree.DefaultMutableTreeNode;
@@ -35,8 +31,6 @@ import mpv5.db.common.QueryCriteria;
 import mpv5.db.common.QueryHandler;
 import mpv5.globals.Messages;
 import mpv5.logging.Log;
-import mpv5.ui.frames.MPView;
-import mpv5.utils.arrays.ArrayUtilities;
 import mpv5.utils.images.MPIcon;
 
 /**
@@ -146,21 +140,22 @@ public class Account extends DatabaseObject {
         }
     }
 
-    /**
-     * Get all Items which are assigned to this account
-     * @return
-     * @throws mpv5.db.common.NodataFoundException
-     */
-    public List<Item> getItemsInAccount() throws NodataFoundException {
-        List<Item> tmp = DatabaseObject.getReferencedObjects((Item) DatabaseObject.getObject(Context.getItem()), Context.getItemsToAccounts());
-
-        QueryCriteria c = new QueryCriteria("defaultaccountsids", this.__getIDS());
-        ArrayList<Item> tmp2 = DatabaseObject.getObjects(new Item(), c);
-
-        tmp.addAll(tmp2);
-
-        return tmp;
-    }
+//    /**
+//     * Get all Items which are assigned to this account
+//     * @return
+//     * @throws mpv5.db.common.NodataFoundException
+//     */
+//    public List<Item> getItemsInAccount() throws NodataFoundException {
+//        List<Item> tmp = DatabaseObject.getReferencedObjects(
+//                (Item) DatabaseObject.getObject(Context.getItem()), Context.getItemsToAccounts());
+//
+//        QueryCriteria c = new QueryCriteria("defaultaccountsids", this.__getIDS());
+//        ArrayList<Item> tmp2 = DatabaseObject.getObjects(new Item(), c);
+//
+//        tmp.addAll(tmp2);
+//
+//        return tmp;
+//    }
 
     /**
      * Get all additional accounts where the given item is currently assigned to
@@ -501,5 +496,10 @@ public class Account extends DatabaseObject {
         }
 
         return save();
+    }
+
+    @Override
+    public boolean hasView() {
+        return true;
     }
 }

@@ -25,29 +25,18 @@ import enoa.handler.TemplateHandler;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
-import java.awt.Graphics;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.math.BigDecimal;
-import java.math.BigInteger;
-import java.text.NumberFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.*;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
 import javax.swing.table.TableCellRenderer;
-import javax.swing.text.BadLocationException;
 import mpv5.db.common.*;
 import mpv5.db.objects.Product;
 import mpv5.db.objects.ProductList;
@@ -65,12 +54,10 @@ import mpv5.logging.Log;
 import mpv5.ui.dialogs.BigPopup;
 import mpv5.ui.dialogs.Popup;
 import mpv5.ui.dialogs.subcomponents.ControlPanel_Groups;
-import mpv5.ui.frames.MPView;
 import mpv5.ui.popups.FileTablePopUp;
 import mpv5.ui.toolbars.DataPanelTB;
 import mpv5.db.objects.User;
 import mpv5.globals.Constants;
-import mpv5.handler.FormFieldsHandler;
 import mpv5.ui.beans.MPCBSelectionChangeReceiver;
 import mpv5.ui.dialogs.DialogForFile;
 import mpv5.ui.dialogs.Notificator;
@@ -212,6 +199,7 @@ public class ProductPanel extends javax.swing.JPanel implements DataPanel, MPCBS
 
     private void recalc() {
         Runnable runnable = new Runnable() {
+            @Override
             public void run() {
                 double val = calcFactor.getValue(0d);
                 BigDecimal b = BigDecimal.valueOf(netvalue.getValue(0d)).multiply(BigDecimal.valueOf(1 + (val / 100)));
@@ -344,6 +332,7 @@ public class ProductPanel extends javax.swing.JPanel implements DataPanel, MPCBS
 
     private void fillFiles() {
         Runnable runnable = new Runnable() {
+            @Override
             public void run() {
                 Context c = Context.getFilesToProducts();
                 c.addReference(Context.getFiles().getDbIdentity(), "cname", "filename");
@@ -1028,7 +1017,7 @@ public class ProductPanel extends javax.swing.JPanel implements DataPanel, MPCBS
     private void button_listeditActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button_listeditActionPerformed
 
         try {
-            mpv5.db.objects.ProductList l = (ProductList) DatabaseObject.getObject(Context.getProductlist(), productlistsids_);
+            mpv5.db.objects.ProductList l = (ProductList) DatabaseObject.getObject(Context.getProductList(), productlistsids_);
             mpv5.YabsViewProxy.instance().addTab(l);
         } catch (NodataFoundException nodataFoundException) {
             Popup.error(nodataFoundException);
@@ -1258,7 +1247,7 @@ public class ProductPanel extends javax.swing.JPanel implements DataPanel, MPCBS
         cnumber.setText(cnumber_);
         old_cnumber = cnumber_;
         description.setText(description_);
-        stype.setSelectedItem(Integer.valueOf(inttype_));
+        stype.setSelectedItem(inttype_);
         try {
             ProductGroup g = (ProductGroup) DatabaseObject.getObject(Context.getProductGroup(), productgroupsids_);
             Log.Print(g);
@@ -1289,6 +1278,7 @@ public class ProductPanel extends javax.swing.JPanel implements DataPanel, MPCBS
         }
 
         Runnable runnable = new Runnable() {
+            @Override
             public void run() {
                 try {
                     List<ProductsToSuppliers> supps = Contact.getReferencedObjects(dataOwner, Context.getProductsToSuppliers(), new ProductsToSuppliers());
@@ -1329,7 +1319,7 @@ public class ProductPanel extends javax.swing.JPanel implements DataPanel, MPCBS
 
         netvalue.setText(FormatNumber.formatDezimal(internalnetvalue_));
         extvalue.setText(FormatNumber.formatDezimal(externalnetvalue_));
-        selecttax.setSelectedItem(Integer.valueOf(taxids_));
+        selecttax.setSelectedItem(taxids_);
         calcResult.setText(FormatNumber.formatDezimal(externalnetvalue_.multiply(Tax.getTaxValue(taxids_))));
         calcFactor.setText(0d);
 
@@ -1343,6 +1333,7 @@ public class ProductPanel extends javax.swing.JPanel implements DataPanel, MPCBS
         button_listedit.setEnabled(productlistsids_ > 0);
         final Product b = dataOwner;
         Runnable runnable2 = new Runnable() {
+            @Override
             public void run() {
                 try {
                     prizes.removeAll();
@@ -1384,9 +1375,9 @@ public class ProductPanel extends javax.swing.JPanel implements DataPanel, MPCBS
                     fillFiles();
 
                     stype.setModel(Product.getTypes(), MPComboBoxModelItem.COMPARE_BY_ID, new java.util.Vector<Integer>());
-                    stype.setSelectedItem(Integer.valueOf(type));
+                    stype.setSelectedItem(type);
                     selecttax.triggerSearch();
-                    selecttax.setSelectedItem(Integer.valueOf(taxids_));
+                    selecttax.setSelectedItem(taxids_);
 
                     if (dataOwner != null) {
                         setDataOwner(dataOwner, true);
@@ -1513,6 +1504,7 @@ public class ProductPanel extends javax.swing.JPanel implements DataPanel, MPCBS
 
     private void preloadTemplate() {
         Runnable runnable = new Runnable() {
+            @Override
             public void run() {
                 if (dataOwner.__getInttype() == Product.TYPE_PRODUCT) {
                     TemplateHandler.loadTemplateFor(button_preview, Long.valueOf(dataOwner.templateGroupIds()), Constants.TYPE_PRODUCT);
@@ -1525,12 +1517,14 @@ public class ProductPanel extends javax.swing.JPanel implements DataPanel, MPCBS
         new Thread(runnable).start();
     }
 
+    @Override
     public void actionBeforeCreate() {
         if (old_cnumber.equals(cnumber_)) {
             cnumber_ = null;
         }
     }
 
+    @Override
     public void actionBeforeSave() throws ChangeNotApprovedException {
         if (dataOwner.isExisting()) {
             if (mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("org.openyabs.uiproperty", "dowarnings")) {
@@ -1542,6 +1536,7 @@ public class ProductPanel extends javax.swing.JPanel implements DataPanel, MPCBS
         }
     }
 
+    @Override
     public void mail() {
         MailMessage m = null;
         if (dataOwner != null && dataOwner.isExisting()) {
@@ -1559,6 +1554,7 @@ public class ProductPanel extends javax.swing.JPanel implements DataPanel, MPCBS
         }
     }
 
+    @Override
     public void print() {
         if (dataOwner != null && dataOwner.isExisting()) {
             if (TemplateHandler.isLoaded(Long.valueOf(dataOwner.templateGroupIds()), dataOwner.__getInttype())) {
@@ -1597,6 +1593,7 @@ public class ProductPanel extends javax.swing.JPanel implements DataPanel, MPCBS
         lastimage = defaultimage_;
         if (defaultimage_ != null && !defaultimage_.equals("")) {
             Runnable runnable = new Runnable() {
+                @Override
                 public void run() {
                     QueryHandler q = QueryHandler.instanceOf().clone(Context.getFiles());
                     currentImageFile = q.retrieveFile(defaultimage_, FileDirectoryHandler.getTempFile("image"));
@@ -1627,12 +1624,14 @@ public class ProductPanel extends javax.swing.JPanel implements DataPanel, MPCBS
         }
     }
 
+    @Override
     public void pdf() {
         if (dataOwner != null && dataOwner.isExisting()) {
             dataOwner.toPdf(true);
         }
     }
 
+    @Override
     public void odt() {
         if (dataOwner != null && dataOwner.isExisting()) {
             dataOwner.toOdt(true);

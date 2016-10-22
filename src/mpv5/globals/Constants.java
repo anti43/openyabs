@@ -112,7 +112,7 @@ public interface Constants {
     public static String LIBS_DIR = "lib";
     public static BigDecimal BD100 = new BigDecimal("100");
 
-    public static final int TYPE_BILL = 0;
+    public static final int TYPE_INVOICE = 0;
     public static final int TYPE_ORDER = 1;
     public static final int TYPE_OFFER = 2;
     public static final int TYPE_DELIVERY_NOTE = 3;

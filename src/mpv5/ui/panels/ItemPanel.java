@@ -243,14 +243,29 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
         number.setSearchOnEnterEnabled(true);
         number.setParent(this);
         number.setSearchField("cname");
-        number.setContext(Context.getItem());
+        switch (inttype_) {
+            case Item.TYPE_OFFER:
+                number.setContext(Context.getOffer());
+                break;
+            case Item.TYPE_ORDER:
+                number.setContext(Context.getOrder());
+                break;
+            case Item.TYPE_INVOICE:
+                number.setContext(Context.getInvoice());
+                break;
+            default:
+                number.setContext(Context.getInvoice());
+                break;
+        }
+        
 
         final DataPanel p = this;
         status.getComboBox().addActionListener(new ActionListener() {
             Item dato = (Item) getDataOwner();
 
+            @Override
             public void actionPerformed(ActionEvent e) {
-                if (dato.__getInttype() == Item.TYPE_BILL && !loading && dataOwner.isExisting() && Integer.valueOf(status.getSelectedItem().getId()) == Item.STATUS_PAID && mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("org.openyabs.uiproperty", "autocreaterevenue")) {
+                if (dato.__getInttype() == Item.TYPE_INVOICE && !loading && dataOwner.isExisting() && Integer.valueOf(status.getSelectedItem().getId()) == Item.STATUS_PAID && mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("org.openyabs.uiproperty", "autocreaterevenue")) {
                     if (Popup.Y_N_dialog(Messages.BOOK_NOW)) {
 
                         if (dato.getPanelData(p) && dato.save()) {
@@ -266,7 +281,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
                     }
                 }
 
-                if (dato.__getInttype() == Item.TYPE_BILL && !loading && dataOwner.isExisting()
+                if (dato.__getInttype() == Item.TYPE_INVOICE && !loading && dataOwner.isExisting()
                         && Integer.valueOf(status.getSelectedItem().getId()) == Item.STATUS_PAID) {
 
                     //set dateend
@@ -321,12 +336,11 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
             if (populate) {
                 dataOwner.setPanelData(this);
                 inttype_ = dataOwner.__getInttype();
-                button_reminders.setEnabled(inttype_ == Item.TYPE_BILL);
-                button_schedule.setEnabled(inttype_ == Item.TYPE_BILL);
-                toorder.setEnabled(inttype_ != Item.TYPE_ORDER && inttype_ != Item.TYPE_BILL);
-                toinvoice.setEnabled(inttype_ != Item.TYPE_BILL);
+                button_reminders.setEnabled(inttype_ == Item.TYPE_INVOICE);
+                button_schedule.setEnabled(inttype_ == Item.TYPE_INVOICE);
+                toorder.setEnabled(inttype_ != Item.TYPE_ORDER && inttype_ != Item.TYPE_INVOICE);
+                toinvoice.setEnabled(inttype_ != Item.TYPE_INVOICE);
                 type.setText(Item.getTypeString(inttype_));
-                //            typelabel.setIcon(dataOwner.getIcon());
                 this.exposeData();
 
                 setTitle();
@@ -357,7 +371,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
         } else if (object instanceof SubItem) {
             Item i;
             try {
-                i = (Item) DatabaseObject.getObject(Context.getItem(), ((SubItem) object).__getItemsids());
+                i = (Item) DatabaseObject.getObject(Context.getInvoice(), ((SubItem) object).__getItemsids());
                 setDataOwner(i, populate);
             } catch (NodataFoundException ex) {
                 Log.Debug(ex);
@@ -444,6 +458,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
     private void fillFiles() {
 
         Runnable runnable = new Runnable() {
+            @Override
             public void run() {
                 Context c = Context.getFilesToItems();
                 c.addReference(Context.getFiles().getDbIdentity(), "cname", "filename");
@@ -1671,11 +1686,11 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
 //        shipping.setText(FormatNumber.formatDezimal(shippingvalue_));
         button_reminders.setToolTipText(Messages.REMINDERS + String.valueOf(intreminders_));
         //  discountpercent.setValue(discountvalue_);
-        List<Integer> skip = new ArrayList<Integer>();
-        if (inttype_ == Item.TYPE_BILL) {
-            skip.add(new Integer(Item.STATUS_PAUSED));
+        List<Integer> skip = new ArrayList<>();
+        if (inttype_ == Item.TYPE_INVOICE) {
+            skip.add(Item.STATUS_PAUSED);
         } else {
-            skip.add(new Integer(Item.STATUS_PAID));
+            skip.add(Item.STATUS_PAID);
         }
         status.setModel(Item.getStatusStrings(), MPComboBoxModelItem.COMPARE_BY_ID, skip);
         status.setSelectedItem(intstatus_);
@@ -1722,11 +1737,11 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
                         Log.Debug(this, nodataFoundException.getMessage());
                     }
 
-                    List<Integer> skip = new ArrayList<Integer>();
-                    if (inttype_ == Item.TYPE_BILL) {
-                        skip.add(new Integer(Item.STATUS_PAUSED));
+                    List<Integer> skip = new ArrayList<>();
+                    if (inttype_ == Item.TYPE_INVOICE) {
+                        skip.add(Item.STATUS_PAUSED);
                     } else {
-                        skip.add(new Integer(Item.STATUS_PAID));
+                        skip.add(Item.STATUS_PAID);
                     }
                     status.setModel(Item.getStatusStrings(), MPComboBoxModelItem.COMPARE_BY_ID, skip);
                     try {
@@ -1835,8 +1850,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
 
         BigDecimal tpvs = null;
         for (DatabaseObject dbo : dbos) {
-            if (dbo.getContext().equals(Context.getItem())
-                    || dbo.getContext().equals(Context.getInvoice())
+            if (dbo.getContext().equals(Context.getInvoice())
                     || dbo.getContext().equals(Context.getOffer())
                     || dbo.getContext().equals(Context.getOrder())) {
                 Item o = (Item) dbo.clone();
@@ -1920,7 +1934,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
                 ((MPTableModel) itemtable.getModel()).addRow(
                         new SubItem((Product) dbo).getRowData(((MPTableModel) itemtable.getModel()).getRowCount() + 1));
                 ((MPTableModel) itemtable.getModel()).fireTableCellUpdated(0, 0);
-            } else if (dbo.getContext().equals(Context.getProductlist())) {
+            } else if (dbo.getContext().equals(Context.getProductList())) {
                 try {
                     SubItem[] subs = new SubItem[0];
                     if (dataOwner != null) {
@@ -1954,7 +1968,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
                 }
             } else {
                 mpv5.YabsViewProxy.instance().addMessage(Messages.NOT_POSSIBLE.toString() + Messages.ACTION_PASTE.toString(), Color.RED);
-                Log.Debug(this, dbo.getContext() + " to " + Context.getItem());
+                Log.Debug(this, dbo.getContext() + " to " + Context.getInvoice());
             }
         }
 
@@ -2014,7 +2028,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
             Log.Debug(e);
         }
 
-        if (dataOwner.__getInttype() != Item.TYPE_BILL) {
+        if (dataOwner.__getInttype() != Item.TYPE_INVOICE) {
             Product.createProducts(SubItem.saveModel(dataOwner, (MPTableModel) itemtable.getModel(), deleteRemovedSubitems), dataOwner);
         } else {
             SubItem.saveModel(dataOwner, (MPTableModel) itemtable.getModel(), deleteRemovedSubitems);
@@ -2026,7 +2040,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
             o.save(true);
         }
     }
-    List<Item> usedOrders = new ArrayList<Item>();
+    List<Item> usedOrders = new ArrayList<>();
 
     @Override
     public void changeSelection(MPComboBoxModelItem to, Context c) {
@@ -2042,6 +2056,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
         }
     }
 
+    @Override
     public void actionBeforeCreate() {
         status.setSelectedIndex(Item.STATUS_IN_PROGRESS);
         date1.setDate(new Date());
@@ -2054,6 +2069,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
         }
     }
 
+    @Override
     public void actionBeforeSave() throws ChangeNotApprovedException {
         if (dataOwner.isExisting()) {
             if ((dataOwner.__getIntstatus() != Item.STATUS_PAID && dataOwner.__getIntstatus() != Item.STATUS_CANCELLED) || Popup.Y_N_dialog(Messages.REALLY_CHANGE_DONE_ITEM)) {
@@ -2150,12 +2166,15 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
 
         JButton b1 = new JButton();
         b1.addMouseListener(new MouseListener() {
+            @Override
             public void mouseClicked(MouseEvent e) {
             }
 
+            @Override
             public void mousePressed(MouseEvent e) {
             }
 
+            @Override
             public void mouseReleased(MouseEvent e) {
                 if (!mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("org.openyabs.uiproperty", "ordersoverproducts")) {
                     ProductSelectDialog.instanceOf((MPTableModel) itemtable.getModel(), itemtable.getSelectedRow(), e, 0, null, null);
@@ -2181,15 +2200,18 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
                 }
             }
 
+            @Override
             public void mouseEntered(MouseEvent e) {
             }
 
+            @Override
             public void mouseExited(MouseEvent e) {
             }
         });
 
         JButton b2 = new JButton();
         b2.addActionListener(new ActionListener() {
+            @Override
             public void actionPerformed(ActionEvent e) {
                 MPTableModel m = (MPTableModel) itemtable.getModel();
                 int row = itemtable.getSelectedRow();
@@ -2274,6 +2296,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
         }
     }
 
+    @Override
     public void mail() {
 
         if (dataOwner != null && dataOwner.isExisting()) {
@@ -2293,6 +2316,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
         }
     }
 
+    @Override
     public void print() {
         if (dataOwner != null && dataOwner.isExisting()) {
             if (TemplateHandler.isLoaded(Long.valueOf(dataOwner.templateGroupIds()), dataOwner.__getInttype())) {
@@ -2325,6 +2349,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
 
     private void preloadTemplates() {
         Runnable runnable = new Runnable() {
+            @Override
             public void run() {
                 TemplateHandler.loadTemplateFor(button_preview, dataOwner.templateGroupIds(), dataOwner.__getInttype());
                 TemplateHandler.loadTemplateFor(button_deliverynote, dataOwner.templateGroupIds(), Constants.TYPE_DELIVERY_NOTE);
@@ -2341,12 +2366,14 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
         new Thread(runnable).start();
     }
 
+    @Override
     public void pdf() {
         if (dataOwner != null && dataOwner.isExisting()) {
             dataOwner.toPdf(true);
         }
     }
 
+    @Override
     public void odt() {
         if (dataOwner != null && dataOwner.isExisting()) {
             dataOwner.toOdt(true);
@@ -2365,6 +2392,7 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
         }
 
         m.addTableModelListener(new TableModelListener() {
+            @Override
             public void tableChanged(TableModelEvent e) {
                 if (dataOwner.isExisting()) {
                     if (e.getColumn() == 0 && e.getType() == TableModelEvent.DELETE) {
@@ -2409,8 +2437,8 @@ public class ItemPanel extends javax.swing.JPanel implements DataPanel, MPCBSele
         ArrayList<ActivityList> data;
         Object[] row;
 
-        Item i2 = (Item) dataOwner.clone(Context.getItem());
-        i2.setInttype(Item.TYPE_BILL);
+        Item i2 = (Item) dataOwner.clone(Context.getInvoice());
+        i2.setInttype(Item.TYPE_INVOICE);
         i2.setIDS(-1);
         i2.defineFormatHandler(new FormatHandler(i2));
         i2.save();

@@ -1,18 +1,13 @@
 package mpv5.ui.panels;
 
-import com.sun.star.logging.LogLevel;
-import de.muntjak.tinylookandfeel.TinyLookAndFeel;
 import groovy.ui.Console;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.io.File;
 import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.Icon;
 import javax.swing.JButton;
 import javax.swing.JPanel;
-import mpv5.Main;
 import mpv5.YabsViewProxy;
 import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
@@ -25,7 +20,6 @@ import mpv5.ui.dialogs.ControlApplet;
 import mpv5.ui.dialogs.Popup;
 import mpv5.ui.dialogs.subcomponents.ControlPanel_Accounts;
 import mpv5.ui.dialogs.subcomponents.ControlPanel_AdvancedGlobalProperties;
-import mpv5.ui.dialogs.subcomponents.ControlPanel_AdvancedLocalProperties;
 import mpv5.ui.dialogs.subcomponents.ControlPanel_Company;
 import mpv5.ui.dialogs.subcomponents.ControlPanel_Fonts;
 import mpv5.ui.dialogs.subcomponents.ControlPanel_Userproperties;
@@ -46,7 +40,6 @@ import mpv5.ui.dialogs.subcomponents.ControlPanel_Users;
 import mpv5.ui.dialogs.subcomponents.ControlPanel_ValueProps;
 import mpv5.ui.dialogs.subcomponents.ControlPanel_WebShopManager;
 import mpv5.ui.frames.MPBabelFish;
-import mpv5.ui.frames.MPView;
 import mpv5.usermanagement.MPSecurityManager;
 import mpv5.utils.files.FileDirectoryHandler;
 
@@ -780,11 +773,11 @@ public class MPControlPanel extends javax.swing.JPanel {
             Log.setLogLevel(Log.LOGLEVEL_DEBUG);
             Console console = new Console();
             console.setVariable("yabs", YabsViewProxy.instance());
-            console.setVariable("db", QueryHandler.instanceOf());//
-            console.setVariable("QueryHandler", QueryHandler.instanceOf());//dbo.getObjects(Context.getContacts())
-            console.setVariable("dbo", DatabaseObject.getObject(Context.getItem()));
-            console.setVariable("DatabaseObject", DatabaseObject.getObject(Context.getItem()));
-            console.setVariable("Context", Context.getItem());
+            console.setVariable("db", QueryHandler.instanceOf());
+            console.setVariable("QueryHandler", QueryHandler.instanceOf());
+            console.setVariable("dbo", DatabaseObject.getObject(Context.getInvoice()));
+            console.setVariable("DatabaseObject", DatabaseObject.getObject(Context.getInvoice()));
+            console.setVariable("Context", Context.getInvoice());
             console.setVariable("User", User.getCurrentUser());
             console.setFrame(YabsViewProxy.instance().getIdentifierFrame());
             console.run();
@@ -864,7 +857,8 @@ public class MPControlPanel extends javax.swing.JPanel {
     /**
      * This method adds a button to the Properties panel, with given Icon and
      * Text. A click on the generated button places the JPanel on the details
-     * pane. // * <b>Bring your own scrollpane!<b>
+     * pane. 
+     * Bring your own scrollpane!
      *
      * @param icon
      * @param text

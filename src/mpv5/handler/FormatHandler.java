@@ -45,7 +45,7 @@ public class FormatHandler {
 
     public static enum TYPES implements MPEnum {
 
-        TYPE_BILL(Constants.TYPE_BILL, Messages.TYPE_BILL.getValue()),
+        TYPE_INVOICE(Constants.TYPE_INVOICE, Messages.TYPE_INVOICE.getValue()),
         TYPE_OFFER(Constants.TYPE_OFFER, Messages.TYPE_OFFER.getValue()),
         TYPE_ORDER(Constants.TYPE_ORDER, Messages.TYPE_ORDER.getValue()),
         TYPE_CONTACT(Constants.TYPE_CONTACT, Messages.TYPE_CONTACT.getValue()),
@@ -180,7 +180,7 @@ public class FormatHandler {
                     try {
                         int formatId = Integer.valueOf(formats[i][1].toString());
 
-                        if (value.startsWith(START_VALUE_IDENTIFIER) && Integer.valueOf(formats[i][2].toString()).intValue() == typ) {
+                        if (value.startsWith(START_VALUE_IDENTIFIER) && Integer.valueOf(formats[i][2].toString()) == typ) {
                             startCount = Integer.valueOf(value.split(START_VALUE_IDENTIFIER)[1]);
                             value = value.split(START_VALUE_IDENTIFIER)[2];
                             QueryHandler.instanceOf().clone(Context.getFormats()).update("cname", formatId, value);
@@ -217,7 +217,7 @@ public class FormatHandler {
      */
     public static List<Context> FORMATTABLE_CONTEXTS = new ArrayList<Context>(Arrays.asList(new Context[]{
                 Context.getContact(), Context.getCustomer(), Context.getManufacturer(),
-                Context.getSupplier(), Context.getProduct(), Context.getItem(),
+                Context.getSupplier(), Context.getProduct(),
                 Context.getExpense(), Context.getRevenue(), Context.getOffer(),
                 Context.getOrder(), Context.getInvoice(), Context.getCompany(),
                 Context.getActivityList(), Context.getProductOrder()
@@ -236,9 +236,8 @@ public class FormatHandler {
             DatabaseObject forThis = source;
             if (FORMATTABLE_CONTEXTS.contains(forThis.getContext())) {
 
-                String query = "";
-                if (forThis.getContext().equals(Context.getItem())
-                        || forThis.getContext().equals(Context.getInvoice())
+                String query;
+                if (forThis.getContext().equals(Context.getInvoice())
                         || forThis.getContext().equals(Context.getOffer())
                         || forThis.getContext().equals(Context.getOrder())) {
                     query = "SELECT cnumber FROM " + forThis.getDbIdentity() + " WHERE ids = (SELECT MAX(ids) from " + forThis.getDbIdentity() + " WHERE inttype ="
@@ -288,7 +287,7 @@ public class FormatHandler {
                 throw new UnsupportedOperationException("FormatHandler#getNextNumber is not defined for " + forThis.getContext());
             }
         } else {
-            int tmp = format.startValue().intValue();
+            int tmp = format.startValue();
             Log.Debug(FormatHandler.class, "Found Startcount: " + tmp + " for " + format.toPattern());
             format.setStartValue(null);
             return tmp;
@@ -298,10 +297,9 @@ public class FormatHandler {
     private synchronized int getNextNumber(final YMessageFormat format, final int lastNumber) {
         DatabaseObject forThis = source;
 
-        String query = "";
+        String query;
         String cnumber = toString(format, lastNumber + 1);
-        if (forThis.getContext().equals(Context.getItem())
-                || forThis.getContext().equals(Context.getInvoice())
+        if (forThis.getContext().equals(Context.getInvoice())
                 || forThis.getContext().equals(Context.getOffer())
                 || forThis.getContext().equals(Context.getOrder())) {
             query = "SELECT cnumber FROM " + forThis.getDbIdentity() + " WHERE cnumber = '" + cnumber + "' AND inttype ="
@@ -346,7 +344,8 @@ public class FormatHandler {
     }
 
     /**
-     * Formats a given number by the determined number format, <br/>if the {@link setStartCount(Integer)
+     * Formats a given number by the determined number format, 
+     * if the {@link setStartCount(Integer)
      * } has not been set. Returns the defined start value then.
      *
      * @param format

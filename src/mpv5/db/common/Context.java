@@ -250,7 +250,7 @@ public class Context implements Serializable, Comparable<Context> {
             + Context.IDENTITY_MASSPRINT + "." + "dateadded";
 //    public static String DETAILS_FILES_TO_TEMPLATES = Context.getTemplate().getDbIdentity() + ".ids," + getTemplate().getDbIdentity() + ".cname, " + Context.getTemplate().getDbIdentity() + ".dateadded," + Context.getTemplate().getDbIdentity() + ".intsize," + Context.getTemplate().getDbIdentity() + ".mimetype";
 //    public static String DETAILS_TEMPLATES = Context.getTemplate().getDbIdentity() + ".ids," + getTemplate().getDbIdentity() + ".cname, " + Context.getTemplate().getDbIdentity() + ".mimetype," + " groups0.cname";
-    private static final Map<String, String> FOREIGN_KEY_ALIASES = new HashMap<String, String>();
+    private static final Map<String, String> FOREIGN_KEY_ALIASES = new HashMap<>();
 
     /**
      * Find an alias (eg originalproducstids is an alias for
@@ -275,8 +275,7 @@ public class Context implements Serializable, Comparable<Context> {
      * @return
      */
     public static ArrayList<Context> getTemplateableContexts() {
-        ArrayList<Context> list = new ArrayList<Context>();
-        list.add(getItem(null, null));
+        ArrayList<Context> list = new ArrayList<>();
         list.add(getInvoice());
         list.add(getOrder());
         list.add(getOffer());
@@ -288,14 +287,13 @@ public class Context implements Serializable, Comparable<Context> {
     }
     
      public static ArrayList<Context> getSecuredContexts() {
-        ArrayList<Context> list = new ArrayList<Context>();
+        ArrayList<Context> list = new ArrayList<>();
         list.add(getContactsCompanies());
 //        list.add(getUser()); Needs to be non-secure, to update user details on close
         list.add(getCustomer());
         list.add(getManufacturer());
         list.add(getSupplier());
         list.add(getAddress());
-        list.add(getItem(null, null));
         list.add(getInvoice());
         list.add(getOrder());
         list.add(getOffer());
@@ -324,13 +322,12 @@ public class Context implements Serializable, Comparable<Context> {
      * @return
      */
     public static ArrayList<Context> getModifiableContexts() {
-        ArrayList<Context> list = new ArrayList<Context>();
+        ArrayList<Context> list = new ArrayList<>();
         list.add(getContactsCompanies()); 
         list.add(getCustomer());
         list.add(getManufacturer());
         list.add(getSupplier());
         list.add(getAddress());
-        list.add(getItem(null, null));
         list.add(getInvoice());
         list.add(getOrder());
         list.add(getOffer()); 
@@ -355,12 +352,14 @@ public class Context implements Serializable, Comparable<Context> {
     public static ArrayList<Context> getCacheableContexts() {
         return cacheableContexts;
     }
-    private static ArrayList<Context> cacheableContexts = new ArrayList<Context>(Arrays.asList(new Context[]{
+    private static ArrayList<Context> cacheableContexts = new ArrayList<>(Arrays.asList(new Context[]{
         getContact(),
         getFavourite(),
         getUser(),
         getAddress(),
-        getItem(null, null),
+        getOffer(),
+        getOrder(),
+        getInvoice(),
         getSubItem(),
         getGroup(),
         getSchedule(),
@@ -391,12 +390,11 @@ public class Context implements Serializable, Comparable<Context> {
      * @return
      */
     public static ArrayList<Context> getGroupableContexts() {
-        ArrayList<Context> list = new ArrayList<Context>();
+        ArrayList<Context> list = new ArrayList<>();
         list.add(getContactsCompanies());
         list.add(getCustomer());
         list.add(getManufacturer());
         list.add(getSupplier());
-        list.add(getItem(null, null));
         list.add(getInvoice());
         list.add(getOrder());
         list.add(getOffer());
@@ -432,12 +430,11 @@ public class Context implements Serializable, Comparable<Context> {
      * @return
      */
     public static ArrayList<Context> getTrashableContexts() {
-        ArrayList<Context> list = new ArrayList<Context>();
+        ArrayList<Context> list = new ArrayList<>();
         list.add(getContactsCompanies());
         list.add(getCustomer());
         list.add(getManufacturer());
         list.add(getSupplier());
-        list.add(getItem(null, null));
         list.add(getInvoice());
         list.add(getOrder());
         list.add(getOffer());
@@ -469,9 +466,11 @@ public class Context implements Serializable, Comparable<Context> {
      * @return
      */
     public static ArrayList<Context> getSearchableContexts() {
-        ArrayList<Context> list = new ArrayList<Context>();
+        ArrayList<Context> list = new ArrayList<>();
         list.add(getSubItem());
-        list.add(getItem());
+        list.add(getInvoice());
+        list.add(getOrder());
+        list.add(getOffer());
         list.add(getSchedule());
         list.add(getContact());
         list.add(getProduct());
@@ -488,9 +487,11 @@ public class Context implements Serializable, Comparable<Context> {
      * @return
      */
     public static ArrayList<Context> getLockableContexts() {
-        ArrayList<Context> list = new ArrayList<Context>();
+        ArrayList<Context> list = new ArrayList<>();
 //        list.add(getUser());
-        list.add(getItem(null, null));
+        list.add(getInvoice());
+        list.add(getOrder());
+        list.add(getOffer());
         list.add(getSchedule());
         list.add(getContact());
         list.add(getProduct());
@@ -509,8 +510,10 @@ public class Context implements Serializable, Comparable<Context> {
      * @return
      */
     public static ArrayList<Context> getImportableContexts() {
-        ArrayList<Context> list = new ArrayList<Context>();
-        list.add(getItem(null, null));
+        ArrayList<Context> list = new ArrayList<>();
+        list.add(getInvoice());
+        list.add(getOrder());
+        list.add(getOffer());
         list.add(getMessage());
         list.add(getContact());
         list.add(getProduct());
@@ -529,7 +532,7 @@ public class Context implements Serializable, Comparable<Context> {
     /**
      * A list of all available contexts
      */
-    private static ArrayList<Context> allContexts = new ArrayList<Context>(Arrays.asList(new Context[]{
+    private static ArrayList<Context> allContexts = new ArrayList<>(Arrays.asList(new Context[]{
         getContactsCompanies(),
         getContact(),
         getCustomer(),
@@ -541,7 +544,6 @@ public class Context implements Serializable, Comparable<Context> {
         getSupplier(),
         getUser(),
         getAddress(),
-        getItem(null, null),
         getInvoice(),
         getOrder(),
         getOffer(),
@@ -570,7 +572,7 @@ public class Context implements Serializable, Comparable<Context> {
         getTemplate(),
         getReminder(),
         getStage(),
-        getProductlist(),
+        getProductList(),
         getExpense(),
         getRevenue(),
         getProductsToSuppliers(),
@@ -583,7 +585,7 @@ public class Context implements Serializable, Comparable<Context> {
         getFonts()
     }));
 //    private String[] searchHeaders;
-    private volatile ArrayList<String[]> references = new ArrayList<String[]>();
+    private volatile ArrayList<String[]> references = new ArrayList<>();
     private boolean exclusiveConditionsAvailable = false;
     private volatile String exclusiveCondition;
     private volatile String uniqueColumns;
@@ -906,8 +908,8 @@ public class Context implements Serializable, Comparable<Context> {
 
     /**
      * Generates a SQL String (WHERE clause) which can be
-     * used to implement multi-client capability.<br/>
-     * <br/>
+     * used to implement multi-client capability.
+     * 
      * <b>If the current Context does not support grouping,
      * or the current user is not Group restricted, this
      * will return NULL.</b>
@@ -940,8 +942,8 @@ public class Context implements Serializable, Comparable<Context> {
 
     /**
      * Generates a SQL String (WHERE clause) which can be
-     * used to implement multi-client capability.<br/>
-     * <br/>
+     * used to implement multi-client capability.
+     * 
      * <b>If the current Context does not support grouping,
      * or the current user is not Group restricted, this
      * will return NULL.</b>
@@ -1062,14 +1064,14 @@ public class Context implements Serializable, Comparable<Context> {
             references.add(new String[]{alias, "ids", alias + "ids", alias, this.getDbIdentity()});
         }
     }
-    List<Context> refs = new ArrayList<Context>();
+    List<Context> refs = new ArrayList<>();
 
     /**
      * Add a foreign table reference to this
-     * context<br/><br/>
-     * Context c= Context.getFilesToContacts();<br/>
+     * context
+     * Context c= Context.getFilesToContacts();
      * c.addReference(Context.getFiles().getDbIdentity(),
-     * "cname", "filename");<br/>
+     * "cname", "filename");
      *
      * @param referencetable The table which will be joined
      * @param referencekey The key column of the joined
@@ -1259,34 +1261,6 @@ public class Context implements Serializable, Comparable<Context> {
         return c;
     }
 
-    /**
-     *
-     * @param type
-     * @param status
-     * @return
-     */
-    public static final Context getItem(Integer type, Integer status) {
-        Context c = new Context();
-        c.setSubID(DEFAULT_SUBID);
-        c.setDbIdentity(IDENTITY_ITEMS);
-        c.setSearchFields(DEFAULT_ITEM_SEARCH);
-//        c.setSearchHeaders(Headers.ITEM_DEFAULT.getValue());
-        c.setIdentityClass(IDENTITY_ITEMS_CLASS);
-        if (status != null) {
-            c.setItemStatus(status);
-        }
-        if (type != null) {
-            c.setItemType(type);
-        }
-        c.setId(1);
-
-        return c;
-    }
-
-    public static final Context getItem() {
-        return getItem(null, null);
-    }
-
     public static final Context getSubItem() {
         Context subitem = new Context();
         subitem.setSubID(DEFAULT_SUBID);
@@ -1430,7 +1404,15 @@ public class Context implements Serializable, Comparable<Context> {
     }
 
     public static final Context getInvoice() {
-        return getItem(Item.TYPE_BILL, Item.STATUS_IN_PROGRESS);
+        Context c = new Context();
+        c.setSubID(DEFAULT_SUBID);
+        c.setDbIdentity(IDENTITY_ITEMS);
+        c.setSearchFields(DEFAULT_ITEM_SEARCH);
+        c.setIdentityClass(IDENTITY_ITEMS_CLASS);
+        c.setItemType(Item.TYPE_INVOICE);
+        c.setId(1);
+
+        return c;
     }
 
     public static final Context getOrder() {
@@ -1438,7 +1420,6 @@ public class Context implements Serializable, Comparable<Context> {
         c.setSubID(DEFAULT_SUBID);
         c.setDbIdentity(IDENTITY_ITEMS);
         c.setSearchFields(DEFAULT_ITEM_SEARCH);
-//        c.setSearchHeaders(Headers.ITEM_DEFAULT.getValue());
         c.setIdentityClass(IDENTITY_ITEMS_CLASS);
         c.setItemType(Item.TYPE_ORDER);
         c.setId(18);
@@ -1446,12 +1427,23 @@ public class Context implements Serializable, Comparable<Context> {
         return c;
     }
 
+    public static final Context getConfirmation() {
+        Context c = new Context();
+        c.setSubID(DEFAULT_SUBID);
+        c.setDbIdentity(IDENTITY_ITEMS);
+        c.setSearchFields(DEFAULT_ITEM_SEARCH);
+        c.setIdentityClass(IDENTITY_ITEMS_CLASS);
+        c.setItemType(Item.TYPE_ORDER_CONFIRMATION);
+        c.setId(1);
+
+        return c;
+    }
+        
     public static final Context getOffer() {
         Context c = new Context();
         c.setSubID(DEFAULT_SUBID);
         c.setDbIdentity(IDENTITY_ITEMS);
         c.setSearchFields(DEFAULT_ITEM_SEARCH);
-//        c.setSearchHeaders(Headers.ITEM_DEFAULT.getValue());
         c.setIdentityClass(IDENTITY_ITEMS_CLASS);
         c.setItemType(Item.TYPE_OFFER);
         c.setId(19);
@@ -1459,6 +1451,18 @@ public class Context implements Serializable, Comparable<Context> {
         return c;
     }
 
+    public static final Context getDelivery() {
+        Context c = new Context();
+        c.setSubID(DEFAULT_SUBID);
+        c.setDbIdentity(IDENTITY_ITEMS);
+        c.setSearchFields(DEFAULT_ITEM_SEARCH);
+        c.setIdentityClass(IDENTITY_ITEMS_CLASS);
+        c.setItemType(Item.TYPE_DELIVERY_NOTE);
+        c.setId(1);
+
+        return c;
+    }
+    
     public static final Context getFilesToContacts() {
         Context c = new Context();
         c.setSubID(DEFAULT_SUBID);
@@ -1738,7 +1742,7 @@ public class Context implements Serializable, Comparable<Context> {
         return c;
     }
 
-    public static final Context getProductlist() {
+    public static final Context getProductList() {
         Context c = new Context();
         c.setSubID(DEFAULT_SUBID);
         c.setDbIdentity(IDENTITY_PRODUCTSLIST);
@@ -1959,6 +1963,7 @@ public class Context implements Serializable, Comparable<Context> {
         return hash;
     }
 
+    @Override
     public int compareTo(Context t) {
         return Integer.compare(this.hashCode(), t.hashCode());
     }

@@ -2,14 +2,12 @@ package mpv5.ui.dialogs.subcomponents;
 
 import java.awt.Component;
 import javax.swing.DefaultListModel;
-import javax.swing.ListModel;
 import javax.swing.SwingUtilities;
 import mpv5.data.PropertyStore;
 import mpv5.db.common.*;
 import mpv5.db.objects.Group;
 import mpv5.db.objects.ValueProperty;
 import mpv5.globals.GlobalSettings;
-import mpv5.globals.LocalSettings;
 import mpv5.globals.Messages;
 import mpv5.logging.Log;
 import mpv5.ui.dialogs.ControlApplet;
@@ -272,7 +270,7 @@ public class ControlPanel_ValueProps extends javax.swing.JPanel implements Contr
     }//GEN-LAST:event_jButton5ActionPerformed
 
     private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
-        DatabaseObject s = Search2.showSearchFor(Context.getItem());
+        DatabaseObject s = Search2.showSearchFor(((ContextWrap) jList1.getSelectedValue()).c);
         String sm = GlobalSettings.getProperty("org.openyabs.config.scriptsymbol", "#");
         if (s != null) {
             try {
@@ -338,9 +336,10 @@ public class ControlPanel_ValueProps extends javax.swing.JPanel implements Contr
     private void refresh() {
 
         Runnable runnable = new Runnable() {
+            @Override
             public void run() {
                 DefaultListModel def = new DefaultListModel();
-                def.addElement(new ContextWrap(Messages.TYPE_BILL.getValue(), Context.getInvoice()));
+                def.addElement(new ContextWrap(Messages.TYPE_INVOICE.getValue(), Context.getInvoice()));
                 def.addElement(new ContextWrap(Messages.TYPE_ORDER.getValue(), Context.getOrder()));
                 def.addElement(new ContextWrap(Messages.TYPE_OFFER.getValue(), Context.getOffer()));
 //            def.addElement(new ContextWrap(Messages.TYPE_SUBITEM.getValue(), Context.getSubItem()));
@@ -372,9 +371,11 @@ public class ControlPanel_ValueProps extends javax.swing.JPanel implements Contr
         SwingUtilities.invokeLater(runnable);
     }
 
+    @Override
     public void receive(final DatabaseObject obj) {
 
         Runnable runnable = new Runnable() {
+            @Override
             public void run() {
                 dataOwner = (ValueProperty) obj;
                 jTextPane2.setText(dataOwner.getValue().toString().replace("#", ""));

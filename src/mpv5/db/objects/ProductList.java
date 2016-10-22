@@ -16,10 +16,6 @@
  */
 package mpv5.db.objects;
 
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JComponent;
 
 import mpv5.db.common.Context;
@@ -40,7 +36,7 @@ public class ProductList extends DatabaseObject {
     private boolean asproduct = false;
 
     public ProductList() {
-        setContext(Context.getProductlist());
+        setContext(Context.getProductList());
     }
 
     @Override

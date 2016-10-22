@@ -1,7 +1,6 @@
 package mpv5.ui.panels;
 
 import com.sun.pdfview.PDFFile;
-import com.sun.pdfview.PDFPage;
 import com.sun.pdfview.PagePanel;
 import java.awt.BorderLayout;
 import java.awt.Cursor;
@@ -11,11 +10,7 @@ import java.io.RandomAccessFile;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JEditorPane;
-import javax.swing.JFrame;
-import javax.swing.JScrollPane;
 import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
 import mpv5.db.common.Formattable;
@@ -25,7 +20,6 @@ import mpv5.db.common.QueryHandler;
 import mpv5.db.objects.Contact;
 import mpv5.db.objects.Item;
 import mpv5.db.objects.MailMessage;
-import mpv5.db.objects.User;
 import mpv5.globals.Messages;
 import mpv5.handler.VariablesHandler;
 import mpv5.logging.Log;
@@ -33,11 +27,9 @@ import mpv5.mail.SimpleMail;
 import mpv5.ui.dialogs.BigPopup;
 import mpv5.ui.dialogs.DialogForFile;
 import mpv5.ui.dialogs.Popup;
-import mpv5.ui.frames.MPView;
 import mpv5.utils.export.Export;
 import mpv5.utils.files.FileDirectoryHandler;
 import mpv5.utils.files.FileReaderWriter;
-import mpv5.utils.jobs.Job;
 import mpv5.utils.jobs.Waiter;
 import mpv5.utils.print.PrintJob;
 
@@ -418,6 +410,7 @@ public class PreviewPanel extends javax.swing.JPanel implements Waiter {
         this.dataOwner = dataOwner;
     }
 
+    @Override
     public void set(Object object, Exception exception) throws Exception {
         if (exception == null) {
             try {
@@ -491,6 +484,7 @@ public class PreviewPanel extends javax.swing.JPanel implements Waiter {
         validate();
         try {
             BigPopup.pack(this);
+            BigPopup.show(this);
             BigPopup.setOnTop(this);
         } catch (Exception exception) {
         }

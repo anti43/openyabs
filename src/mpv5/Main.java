@@ -219,7 +219,7 @@ public class Main implements Runnable {
                             Log.Debug(this, "Template callback");
                             t.setGroupsids(1);
                             t.setCname(file.getName());
-                            t.setMimetype(String.valueOf(Constants.TYPE_BILL));
+                            t.setMimetype(String.valueOf(Constants.TYPE_INVOICE));
                             t.setFormat("1,2,4,5,7,9");
                             t.setDescription("Wizard insert");
                             t.save(true);
@@ -280,7 +280,7 @@ public class Main implements Runnable {
 
                 t.setGroupsids(1);
                 t.setCname(data.getData()[0][1].toString());
-                t.setMimetype(String.valueOf(Constants.TYPE_BILL));
+                t.setMimetype(String.valueOf(Constants.TYPE_INVOICE));
                 t.setFormat("1,2,4,5,6");
                 t.setDescription("Wizard insert");
                 t.save(true);

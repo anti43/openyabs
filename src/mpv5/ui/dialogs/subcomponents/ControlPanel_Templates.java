@@ -7,20 +7,15 @@ import java.awt.Component;
 import java.awt.Desktop;
 import java.io.File;
 import java.io.IOException;
-import java.net.URI;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.print.PrintService;
 import javax.print.PrintServiceLookup;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListModel;
-import mpv5.YabsViewProxy;
 import mpv5.data.PropertyStore;
 import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
@@ -45,7 +40,6 @@ import mpv5.db.objects.User;
 
 import mpv5.globals.Constants;
 import mpv5.globals.LocalSettings;
-import mpv5.handler.FormFieldsHandler;
 import mpv5.handler.VariablesHandler;
 import mpv5.ui.dialogs.BigPopup;
 import mpv5.ui.dialogs.DialogForFile;
@@ -131,19 +125,19 @@ public final class ControlPanel_Templates extends javax.swing.JPanel implements 
         jScrollPane4 = new javax.swing.JScrollPane();
         templates = new javax.swing.JTable();
 
-        //\$2java.awt.Color(255, 255, 255));
-        java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle(); // NOI18N
+        setBackground(new java.awt.Color(255, 255, 255));
+        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("mpv5/resources/languages/Panels"); // NOI18N
         setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("ControlPanel_Templates.border.title"))); // NOI18N
         setName("Form"); // NOI18N
         setPreferredSize(new java.awt.Dimension(495, 183));
         setLayout(new java.awt.BorderLayout());
 
-//$2java.awt.Color(255, 255, 255));
+        jPanel6.setBackground(new java.awt.Color(255, 255, 255));
         jPanel6.setName("jPanel6"); // NOI18N
         jPanel6.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.RIGHT));
 
-        jButton6.setText(bundle.getString("ControlPanel_Templates.jButton6.text")); // NOI18N
-        jButton6.setName("jButton6"); // NOI18N
+        jButton6.setText(bundle.getString("ControlPanel_Templates.JButton6.text")); // NOI18N
+        jButton6.setName("JButton6"); // NOI18N
         jButton6.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton6ActionPerformed(evt);
@@ -237,7 +231,7 @@ public final class ControlPanel_Templates extends javax.swing.JPanel implements 
         jPanel2.setName("jPanel2"); // NOI18N
         jPanel2.setPreferredSize(new java.awt.Dimension(425, 100));
 
-//$2java.awt.Color(255, 255, 255));
+        jPanel4.setBackground(new java.awt.Color(255, 255, 255));
         jPanel4.setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("ControlPanel_Templates.jPanel4.border.title"))); // NOI18N
         jPanel4.setName("jPanel4"); // NOI18N
 
@@ -306,16 +300,16 @@ public final class ControlPanel_Templates extends javax.swing.JPanel implements 
             .addGroup(jPanel4Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(type, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(type, javax.swing.GroupLayout.DEFAULT_SIZE, 383, Short.MAX_VALUE)
                     .addGroup(jPanel4Layout.createSequentialGroup()
                         .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(printern, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(format, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addComponent(printern, javax.swing.GroupLayout.DEFAULT_SIZE, 254, Short.MAX_VALUE)
+                            .addComponent(format, javax.swing.GroupLayout.DEFAULT_SIZE, 254, Short.MAX_VALUE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jButton8, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jButton11, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                    .addComponent(fullname, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jButton8, javax.swing.GroupLayout.DEFAULT_SIZE, 123, Short.MAX_VALUE)
+                            .addComponent(jButton11, javax.swing.GroupLayout.DEFAULT_SIZE, 123, Short.MAX_VALUE)))
+                    .addComponent(fullname, javax.swing.GroupLayout.DEFAULT_SIZE, 383, Short.MAX_VALUE)
                     .addGroup(jPanel4Layout.createSequentialGroup()
                         .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 79, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -323,9 +317,9 @@ public final class ControlPanel_Templates extends javax.swing.JPanel implements 
                             .addComponent(jLabel6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(groupname, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(groupname, 0, 300, Short.MAX_VALUE)
                             .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 300, Short.MAX_VALUE)
-                            .addComponent(jScrollPane2)))))
+                            .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 300, Short.MAX_VALUE)))))
         );
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -333,7 +327,7 @@ public final class ControlPanel_Templates extends javax.swing.JPanel implements 
                 .addComponent(fullname, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(7, 7, 7)
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(printern, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(printern, javax.swing.GroupLayout.DEFAULT_SIZE, 26, Short.MAX_VALUE)
                     .addComponent(jButton11, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -349,7 +343,7 @@ public final class ControlPanel_Templates extends javax.swing.JPanel implements 
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel4Layout.createSequentialGroup()
                         .addComponent(jLabel3)
-                        .addGap(0, 0, Short.MAX_VALUE))
+                        .addGap(0, 47, Short.MAX_VALUE))
                     .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -379,11 +373,11 @@ public final class ControlPanel_Templates extends javax.swing.JPanel implements 
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addGap(6, 6, 6)
                 .addComponent(updateService, javax.swing.GroupLayout.PREFERRED_SIZE, 337, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
+                .addContainerGap(62, Short.MAX_VALUE))
             .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(pathtofile, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(pathtofile, javax.swing.GroupLayout.DEFAULT_SIZE, 395, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -427,14 +421,14 @@ public final class ControlPanel_Templates extends javax.swing.JPanel implements 
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 383, Short.MAX_VALUE)
+                .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 391, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 417, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 473, Short.MAX_VALUE)
-            .addComponent(jPanel2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 473, Short.MAX_VALUE)
+            .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 477, Short.MAX_VALUE)
+            .addComponent(jPanel2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 478, Short.MAX_VALUE)
         );
 
         add(jPanel1, java.awt.BorderLayout.CENTER);
@@ -495,7 +489,18 @@ public final class ControlPanel_Templates extends javax.swing.JPanel implements 
     private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
 
         try {
-            DatabaseObject t = Search2.showSearchFor(Context.getItem());
+            DatabaseObject t = null;
+            switch (Integer.parseInt(type.getSelectedItem().getId())) {
+                case Constants.TYPE_OFFER:
+                    t = Search2.showSearchFor(Context.getOffer());
+                    break;
+                case Constants.TYPE_ORDER:
+                    t = Search2.showSearchFor(Context.getOrder());
+                    break;
+                case Constants.TYPE_INVOICE:
+                    t = Search2.showSearchFor(Context.getInvoice());
+                    break;
+            }
             if (t != null) {
                 List<String[]> vars = VariablesHandler.resolveVarsFor(t);
                 List<List<String>> varsl = new ArrayList<List<String>>();
@@ -571,7 +576,7 @@ public final class ControlPanel_Templates extends javax.swing.JPanel implements 
                     lastImportedFile = fi;
                     updateService.setEnabled(true);
                     try {
-                        pathtofile.setText(fi.getCanonicalPath().toString());
+                        pathtofile.setText(fi.getCanonicalPath());
                     } catch (IOException ex) {
                         Log.Debug(this, ex);
                     }
@@ -586,6 +591,7 @@ public final class ControlPanel_Templates extends javax.swing.JPanel implements 
         final DataPanel x = this;
         final Template tpl = dataOwner;
         FileMonitor.FileChangeListener filecl = new FileMonitor.FileChangeListener() {
+            @Override
             public void fileChanged(String fileName) {
                 QueryHandler.instanceOf().clone(Context.getFiles(), x).updateFile(new File(fileName), tpl.__getFilename());
                 tpl.setDescription(tpl.__getDescription() + "\n - Updated: " + new Date());
@@ -649,13 +655,16 @@ public final class ControlPanel_Templates extends javax.swing.JPanel implements 
         Popup.notice(l, Messages.PRINTER_NAMES);
     }//GEN-LAST:event_jButton11ActionPerformed
 
+    @Override
     public void setValues(PropertyStore values) {
     }
 
+    @Override
     public String getUname() {
         return UNAME;
     }
 
+    @Override
     public void reset() {
         if (dataOwner != null) {
             DatabaseObject dato = dataOwner;
@@ -716,6 +725,7 @@ public final class ControlPanel_Templates extends javax.swing.JPanel implements 
     public String pathtofile_ = "";
     public long lastmodified_;
 
+    @Override
     public boolean collectData() {
         if (groupname.getSelectedItem() != null) {
             int groupsids_ = Integer.valueOf(((MPComboBoxModelItem) groupname.getSelectedItem()).getId());
@@ -739,6 +749,7 @@ public final class ControlPanel_Templates extends javax.swing.JPanel implements 
         return true;
     }
 
+    @Override
     public void exposeData() {
 
         try {
@@ -766,8 +777,8 @@ public final class ControlPanel_Templates extends javax.swing.JPanel implements 
 
                 for (int j = 0; j < data.length; j++) {
                     int id = Integer.valueOf(data[j][0].toString());
-                    if (id == databaseObject.__getIDS().intValue()) {
-                        l.add(Integer.valueOf(i));
+                    if (id == databaseObject.__getIDS()) {
+                        l.add(i);
                     }
                 }
                 m.addElement(databaseObject);
@@ -778,7 +789,7 @@ public final class ControlPanel_Templates extends javax.swing.JPanel implements 
             int[] ix = new int[l.size()];
             for (int i = 0; i < l.size(); i++) {
                 Integer integer = l.get(i);
-                ix[i] = integer.intValue();
+                ix[i] = integer;
             }
 
             jList1.setSelectedIndices(ix);
@@ -795,10 +806,12 @@ public final class ControlPanel_Templates extends javax.swing.JPanel implements 
         }
     }
 
+    @Override
     public DatabaseObject getDataOwner() {
         return dataOwner;
     }
 
+    @Override
     public void setDataOwner(DatabaseObject object, boolean p) {
         dataOwner = (Template) object;
         if (p) {
@@ -807,6 +820,7 @@ public final class ControlPanel_Templates extends javax.swing.JPanel implements 
         }
     }
 
+    @Override
     public void refresh() {
 
         ArrayList<DatabaseObject> temps;
@@ -840,6 +854,7 @@ public final class ControlPanel_Templates extends javax.swing.JPanel implements 
 
     }
 
+    @Override
     public void paste(DatabaseObject... dbos) {
         for (DatabaseObject dbo : dbos) {
             if (dbo.getContext().equals(Context.getTemplate())) {
@@ -850,14 +865,17 @@ public final class ControlPanel_Templates extends javax.swing.JPanel implements 
         }
     }
 
+    @Override
     public void showRequiredFields() {
         TextFieldUtils.blinkerRed(fullname);
     }
 
+    @Override
     public void showSearchBar(boolean show) {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
+    @Override
     public Component getAndRemoveActionPanel() {
         this.remove(jPanel6);
         validate();
@@ -897,7 +915,7 @@ public final class ControlPanel_Templates extends javax.swing.JPanel implements 
                 QueryData c = new QueryData();
                 c.add("usersids", object.__getIDS());
                 c.add("templatesids", dataOwner.__getIDS());
-                c.add("groupsids", groups.intValue());
+                c.add("groupsids", groups);
                 c.add("cname", dataOwner.__getIDS() + "@" + object.__getIDS() + "@" + groups);
                 QueryHandler.instanceOf().clone(Context.getTemplatesToUsers()).insert(c, null);
             }
@@ -918,12 +936,23 @@ public final class ControlPanel_Templates extends javax.swing.JPanel implements 
     }
 
     private void test() {
-        DatabaseObject t;
+        DatabaseObject t = null;
         if (dataOwner != null) {
-            t = Search2.showSearchFor(Context.getItem());
+            switch (Integer.parseInt(type.getSelectedItem().getId())) {
+                case Constants.TYPE_OFFER:
+                    t = Search2.showSearchFor(Context.getOffer());
+                    break;
+                case Constants.TYPE_ORDER:
+                    t = Search2.showSearchFor(Context.getOrder());
+                    break;
+                case Constants.TYPE_INVOICE:
+                     t = Search2.showSearchFor(Context.getInvoice());
+                     break;
+            }
+
             if (t == null) {
                 try {
-                    t = DatabaseObject.getObject(Context.getItem(), 1);
+                    t = DatabaseObject.getObject(Context.getInvoice(), 1);
                 } catch (NodataFoundException ex) {
                     t = new Item();
                     Contact k = new Contact();
@@ -936,8 +965,7 @@ public final class ControlPanel_Templates extends javax.swing.JPanel implements 
             }
 
             try {
-                Map<String, Object> hm1 = t.getFormFields();//new FormFieldsHandler(t).getFormattedFormFields(null);
-//                Log.Print(hm1.entrySet().toArray());
+                Map<String, Object> hm1 = t.getFormFields();
                 File f = dataOwner.getFile();
                 File f2 = FileDirectoryHandler.getTempFile("pdf");
                 Export ex = new Export(dataOwner);
@@ -967,15 +995,19 @@ public final class ControlPanel_Templates extends javax.swing.JPanel implements 
         }
     }
 
+    @Override
     public void actionBeforeCreate() {
     }
 
+    @Override
     public void actionBeforeSave() {
     }
 
+    @Override
     public void mail() {
     }
 
+    @Override
     public void print() {
     }
 
@@ -983,7 +1015,7 @@ public final class ControlPanel_Templates extends javax.swing.JPanel implements 
         lastImportedFile = fi;
         updateService.setEnabled(true);
         try {
-            pathtofile.setText(fi.getCanonicalPath().toString());
+            pathtofile.setText(fi.getCanonicalPath());
         } catch (IOException ex) {
             Log.Debug(this, ex);
         }

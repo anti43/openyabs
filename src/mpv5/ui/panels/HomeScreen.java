@@ -205,11 +205,11 @@ public class HomeScreen
                     type = ((Item) databaseObject).__getInttype();
                     //tax = Constants.BD100.add(((Item) databaseObject).__getTaxvalue()).divide(Constants.BD100, 9, BigDecimal.ROUND_HALF_UP);
                     BigDecimal value = ((Item) databaseObject).__getNetvalue().add(((Item) databaseObject).__getTaxvalue()).subtract(((Item) databaseObject).__getDiscountvalue());
-                    //  <li>TYPE_BILL = 0;
+                    //  <li>TYPE_INVOICE = 0;
                     //  <li>TYPE_ORDER = 1;
                     //  <li>TYPE_OFFER = 2;
                     switch (type) {
-                        case Item.TYPE_BILL:
+                        case Item.TYPE_INVOICE:
                             billsSum = billsSum.add(value);
                             break;
                         case Item.TYPE_OFFER:
@@ -776,7 +776,7 @@ public class HomeScreen
                 if (dbo.getColor().equals(Color.RED)
                         && (dbo instanceof Item)) {
                     itm = (Item) dbo;
-                    if (itm.__getInttype() == Item.TYPE_BILL) {
+                    if (itm.__getInttype() == Item.TYPE_INVOICE) {
                         if (Popup.Y_N_dialog(Messages.CREATE_REMINDER.toString())) {
                             rem = new Reminder();
                             rem.setCname(Messages.REMINDER.toString() + "@" + dbo.__getCname());

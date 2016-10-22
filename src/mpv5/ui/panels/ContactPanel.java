@@ -94,6 +94,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
    private final JPopupMenu itemTablePopup;
    private final java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle();
 //    private String old_cnumber = "";
+   private Context c;
 
    /**
     * Creates new form ContactPanel
@@ -129,7 +130,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
       countryselect.setModel(LanguageManager.getCountriesAsComboBoxModel());
       refresh();
 
-      itemTablePopup = DOTablePopUp.addDefaultPopupMenu(dataTable, Context.getItem(), false);
+      itemTablePopup = DOTablePopUp.addDefaultPopupMenu(dataTable, Context.getInvoice(), false);
 
       if (context.equals(Context.getSupplier()) || context.equals(Context.getManufacturer())) {
          company.setSelected(true);
@@ -258,7 +259,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
    private void itemTableClicked(MouseEvent evt) {
       if (evt.getButton() == MouseEvent.BUTTON1 && evt.getClickCount() > 1) {
          try {
-            mpv5.YabsViewProxy.instance().getIdentifierView().addTab(DatabaseObject.getObject(Context.getItem(), Integer.valueOf(dataTable.getModel().getValueAt(dataTable.convertRowIndexToModel(dataTable.getSelectedRow()), 0).toString())));
+            mpv5.YabsViewProxy.instance().getIdentifierView().addTab(DatabaseObject.getObject(c, Integer.valueOf(dataTable.getModel().getValueAt(dataTable.convertRowIndexToModel(dataTable.getSelectedRow()), 0).toString())));
          } catch (NodataFoundException ex) {
             Log.Debug(ex);
          }
@@ -287,9 +288,9 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
    }
 
    private void fillFiles() {
-      Context c = Context.getFilesToContacts();
-      c.addReference(Context.getFiles().getDbIdentity(), "cname", "filename");
-      Object[][] data = new DatabaseSearch(c).getValuesFor(Context.DETAILS_FILES_TO_CONTACTS, "contactsids", dataOwner.__getIDS());
+      Context cf = Context.getFilesToContacts();
+      cf.addReference(Context.getFiles().getDbIdentity(), "cname", "filename");
+      Object[][] data = new DatabaseSearch(cf).getValuesFor(Context.DETAILS_FILES_TO_CONTACTS, "contactsids", dataOwner.__getIDS());
 
       filetableN.setModel(new MPTableModel(data, Headers.FILE_REFERENCES.getValue()));
       TableFormat.stripFirstColumn(filetableN);
@@ -1414,26 +1415,29 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
        addresspanel.add(p);
        addresspanel.setSelectedComponent(p);
 }//GEN-LAST:event_button_order1ActionPerformed
-   private static int FILES = 0;
-   private static int PRODUCTS = 1;
-   private static int ITEM = 2;
-   private static int ACTIVITYS = 3;
+   private static final int FILES = 0;
+   private static final int PRODUCTS = 1;
+   private static final int ITEM = 2;
+   private static final int ACTIVITYS = 3;
 
     private void dataTableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_dataTableMouseClicked
        if (dataTableContent != null) {
-          if (dataTableContent == FILES) {
-             fileTableClicked(evt);
-
-          } else if (dataTableContent == PRODUCTS) {
-             productTableClicked(evt);
-
-          } else if (dataTableContent == ITEM) {
-             itemTableClicked(evt);
-
-          } else if (dataTableContent == ACTIVITYS) {
-             activityTableClicked(evt);
-
-          }
+          if (null != dataTableContent) switch (dataTableContent) {
+               case FILES:
+                   fileTableClicked(evt);
+                   break;
+               case PRODUCTS:
+                   productTableClicked(evt);
+                   break;
+               case ITEM:
+                   itemTableClicked(evt);
+                   break;
+               case ACTIVITYS:
+                   activityTableClicked(evt);
+                   break;
+               default:
+                   break;
+           }
        }
     }//GEN-LAST:event_dataTableMouseClicked
 
@@ -1449,7 +1453,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
 
     private void button_billsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button_billsActionPerformed
 
-       Context c = Context.getItem(Item.TYPE_BILL, null);
+       c = Context.getInvoice();
 //        c.addReference(Context.getContact().getDbIdentity(), "cname", "filename");
        Object[][] data = new DatabaseSearch(c).getValuesFor(Context.DEFAULT_ITEM_SEARCH, "contactsids", dataOwner.__getIDS());
 
@@ -1464,7 +1468,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
     }//GEN-LAST:event_button_billsActionPerformed
 
     private void button_offersActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button_offersActionPerformed
-       Context c = Context.getItem(Item.TYPE_OFFER, null);
+       c = Context.getOffer();
 
        Object[][] data = new DatabaseSearch(c).getValuesFor(Context.DEFAULT_ITEM_SEARCH, "contactsids", dataOwner.__getIDS());
        MPTableModel mod = new MPTableModel(data, Headers.ITEM_DEFAULT);
@@ -1479,7 +1483,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
     }//GEN-LAST:event_button_offersActionPerformed
 
     private void button_ordersActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button_ordersActionPerformed
-       Context c = Context.getItem(Item.TYPE_ORDER, null);
+       c = Context.getOrder();
 
        Object[][] data = new DatabaseSearch(c).getValuesFor(Context.DEFAULT_ITEM_SEARCH, "contactsids", dataOwner.__getIDS());
        MPTableModel mod = new MPTableModel(data, Headers.ITEM_DEFAULT);
@@ -1493,8 +1497,8 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
     }//GEN-LAST:event_button_ordersActionPerformed
 
     private void button_productsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button_productsActionPerformed
-       Context c = Context.getProduct();
-       Object[][] data = new DatabaseSearch(c, 1000).getValuesFor(Context.DEFAULT_PRODUCT_SEARCH, new String[]{"manufacturersids", "suppliersids"}, dataOwner.__getIDS());
+       Context cp = Context.getProduct();
+       Object[][] data = new DatabaseSearch(cp, 1000).getValuesFor(Context.DEFAULT_PRODUCT_SEARCH, new String[]{"manufacturersids", "suppliersids"}, dataOwner.__getIDS());
        dataTable.setModel(new MPTableModel(data, Headers.PRODUCT_DEFAULT));
        dataTableContent = PRODUCTS;
 
@@ -1507,7 +1511,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
           Item i = (Item) DatabaseObject.getObject(Context.getInvoice());
           i.setContactsids(dataOwner.__getIDS());
           i.setCname(Messages.NEW_BILL.getValue());
-          i.setInttype(Item.TYPE_BILL);
+          i.setInttype(Item.TYPE_INVOICE);
           i.setDateadded(new Date());
           i.setGroupsids(dataOwner.__getGroupsids());
           mpv5.YabsViewProxy.instance().getIdentifierView().addTab(i);
@@ -1592,8 +1596,8 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
     }//GEN-LAST:event_jButton6ActionPerformed
 
     private void button_activitylistsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button_activitylistsActionPerformed
-       Context c = Context.getActivityList();
-       Object[][] data = new DatabaseSearch(c, 1000).getValuesFor(Context.DEFAULT_ACTIVITYLIST_SEARCH, new String[]{"contactsids"}, dataOwner.__getIDS());
+       Context ca = Context.getActivityList();
+       Object[][] data = new DatabaseSearch(ca, 1000).getValuesFor(Context.DEFAULT_ACTIVITYLIST_SEARCH, new String[]{"contactsids"}, dataOwner.__getIDS());
        dataTable.setModel(new MPTableModel(data, Headers.ACTIVITY_DEFAULT));
        dataTableContent = ACTIVITYS;
 
@@ -1686,7 +1690,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
     private mpv5.ui.beans.LabeledTextField workphone;
     private mpv5.ui.beans.LabeledTextField zip;
     // End of variables declaration//GEN-END:variables
-   private javax.swing.table.DefaultTableModel tableModel = null;
+   private final javax.swing.table.DefaultTableModel tableModel = null;
    public String city_;
    public String cname_;
    public String taxnumber_;
@@ -1972,12 +1976,14 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
       sp.refresh();
    }
 
+   @Override
    public void actionBeforeCreate() {
 //        if (old_cnumber.equals(cnumber_)) {
 //                cnumber_ = null;
 //            }
    }
 
+   @Override
    public void actionBeforeSave() throws ChangeNotApprovedException {
       if (dataOwner.isExisting()) {
          if (mpv5.db.objects.User.getCurrentUser().getProperties().getProperty("org.openyabs.uiproperty", "dowarnings")) {
@@ -1989,6 +1995,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
       }
    }
 
+   @Override
    public void mail() {
       try {
          Desktop.getDesktop().mail(new URI("mailto:" + dataOwner.__getMailaddress()));
@@ -1998,6 +2005,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
       }
    }
 
+   @Override
    public void print() {
       Export.print(this);
    }
@@ -2033,7 +2041,7 @@ public class ContactPanel extends javax.swing.JPanel implements DataPanel {
 
    private void setupFilter() {
       final JTable table = dataTable;
-      final TableRowSorter<TableModel> sorter = new TableRowSorter<TableModel>(table.getModel());
+      final TableRowSorter<TableModel> sorter = new TableRowSorter<>(table.getModel());
       table.setRowSorter(sorter);
       for (ActionListener a : filterme.getTextField().getActionListeners()) {
          filterme.getTextField().removeActionListener(tb);

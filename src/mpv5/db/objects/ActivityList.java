@@ -120,6 +120,7 @@ public class ActivityList extends DatabaseObject implements Formattable, Templat
     /**
      * @return the formatHandler
      */
+    @Override
     public synchronized FormatHandler getFormatHandler() {
         if (formatHandler == null) {
             formatHandler = new FormatHandler(this);
@@ -127,14 +128,17 @@ public class ActivityList extends DatabaseObject implements Formattable, Templat
         return formatHandler;
     }
 
+    @Override
     public int templateType() {
         return Constants.TYPE_ACTIVITY;
     }
 
+    @Override
     public int templateGroupIds() {
         return __getGroupsids();
     }
 
+    @Override
     public void defineFormatHandler(FormatHandler handler) {
         formatHandler = handler;
     }
@@ -165,7 +169,7 @@ public class ActivityList extends DatabaseObject implements Formattable, Templat
 
         List<ActivityListSubItem> data;
         List<String[]> data2;
-        ArrayList<String[]> list = new ArrayList<String[]>();
+        ArrayList<String[]> list = new ArrayList<>();
 
         try {
             data = DatabaseObject.getReferencedObjects(this, Context.getActivityListItems(), new ActivityListSubItem());

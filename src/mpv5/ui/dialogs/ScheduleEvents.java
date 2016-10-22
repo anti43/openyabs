@@ -66,13 +66,14 @@ public class ScheduleEvents extends javax.swing.JFrame {
         labeledCombobox1.setContext(Context.getInvoice());
         labeledCombobox1.getComboBox().addActionListener(new ActionListener() {
 
+            @Override
             public void actionPerformed(ActionEvent e) {
                 JComboBox cb = (JComboBox) e.getSource();
                 Integer id;
                 try {
-                    if (Integer.valueOf(cb.getSelectedIndex()) >= 0) {
+                    if (cb.getSelectedIndex() >= 0) {
                         Log.Debug(this, "Item-ID: " + Integer.valueOf(labeledCombobox1.getSelectedItem().getId()));
-                        Item i = (Item) DatabaseObject.getObject(Context.getItem(),
+                        Item i = (Item) DatabaseObject.getObject(Context.getInvoice(),
                                 Integer.valueOf(labeledCombobox1.getSelectedItem().getId()));
                         icke.refreshFromItem(i);
                     }
@@ -86,18 +87,19 @@ public class ScheduleEvents extends javax.swing.JFrame {
         labeledCombobox3.setContext(Context.getContact());
         labeledCombobox3.getComboBox().addActionListener(new ActionListener() {
 
+            @Override
             public void actionPerformed(ActionEvent e) {
                 JComboBox cb = (JComboBox) e.getSource();
                 String s;
                 Integer id;
                 try {
-                    if (Integer.valueOf(cb.getSelectedIndex()) >= 0) {
+                    if (cb.getSelectedIndex() >= 0) {
                         id = Integer.valueOf(labeledCombobox3.getSelectedItem().getId());
                         Log.Debug(this, "Contact-ID: " + id);
                         Contact c = (Contact) DatabaseObject.getObject(Context.getContact(),
                                 id);
                         icke.refreshFromContact(c);
-                        Context i = Context.getItem();
+                        Context i = Context.getInvoice();
                         s = Context.DEFAULT_ITEM_SEARCH + ", inttype";
                         Object[][] data = new DatabaseSearch(i).getValuesFor(s, "contactsids", c.__getIDS());
                         Log.Debug(this, "gefundene Items: " + data.length);
@@ -502,7 +504,7 @@ public class ScheduleEvents extends javax.swing.JFrame {
 
     private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
         try {
-            mpv5.YabsViewProxy.instance().getIdentifierView().addTab(DatabaseObject.getObject(Context.getItem(), Integer.valueOf(labeledCombobox1.getSelectedItem().getId())));
+            mpv5.YabsViewProxy.instance().getIdentifierView().addTab(DatabaseObject.getObject(Context.getInvoice(), Integer.valueOf(labeledCombobox1.getSelectedItem().getId())));
         } catch (Exception ex) {
             Log.Debug(this, ex.getMessage());
         }
@@ -730,19 +732,18 @@ public class ScheduleEvents extends javax.swing.JFrame {
             try {
                 if (jTabbedPane1.getSelectedIndex() == 0) {
 
-                    Item i = (Item) DatabaseObject.getObject(Context.getItem(),
+                    Item i = (Item) DatabaseObject.getObject(Context.getInvoice(),
                             Integer.valueOf(labeledCombobox1.getSelectedItem().getId()));
                     s.setCname("(" + Messages.SCHEDULE + ") " + i.toString());
                     s.setItemsids(i.__getIDS());
                     s.setContactsids(i.__getContactsids());
-                    //s.setEventtype(1);
                     s.setGroupsids(i.__getGroupsids());
                     s.setIntervalmonth(Integer.valueOf(labeledSpinner1.getSpinner().getValue().toString()));
                     s.setStartdate(labeledDateChooser1.getDate());
                     s.setStopdate(labeledDateChooser2.getDate());
                     s.setUsersids(mpv5.db.objects.User.getCurrentUser().__getIDS());
                     s.setNextdate(DateConverter.addMonths(labeledDateChooser1.getDate(),
-                            s.__getIntervalmonth()));
+                        s.__getIntervalmonth()));
                     s.setEventtype(1);
                     s.save();
                     dataOwner = s;

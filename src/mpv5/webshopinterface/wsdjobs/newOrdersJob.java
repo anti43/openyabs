@@ -176,7 +176,7 @@ public class newOrdersJob implements WSDaemonJob {
                         + Messages.LOAD_NOW)) {
                     for (Item s : savedOrders) {
                         try {
-                            mpv5.YabsViewProxy.instance().getIdentifierView().addTab(DatabaseObject.getObject(Context.getItem(),
+                            mpv5.YabsViewProxy.instance().getIdentifierView().addTab(DatabaseObject.getObject(Context.getOrder(),
                                     s.__getIDS()));
                         } catch (NodataFoundException ex) {
                             Log.Debug(ex);    // Something must have failed during the import process

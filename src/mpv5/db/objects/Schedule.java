@@ -25,7 +25,6 @@ import mpv5.db.common.DatabaseObject;
 import mpv5.db.common.NodataFoundException;
 import mpv5.db.common.QueryCriteria;
 import mpv5.db.common.QueryHandler;
-import mpv5.db.objects.Item;
 import mpv5.logging.Log;
 import mpv5.usermanagement.MPSecurityManager;
 import mpv5.utils.date.DateConverter;
@@ -74,7 +73,7 @@ public class Schedule extends DatabaseObject {
      */
     public Item getItem() throws NodataFoundException {
         if (item == null && __getItemsids() >= 0) {
-            item = (Item) DatabaseObject.getObject(Context.getItem(), __getItemsids());
+            item = (Item) DatabaseObject.getObject(Context.getInvoice(), __getItemsids());
         }
         return item;
     }
@@ -144,7 +143,7 @@ public class Schedule extends DatabaseObject {
             String query =
                     "SELECT ids FROM " + Context.getSchedule().getDbIdentity() +
                     " WHERE itemsids IN (SELECT ids FROM " +
-                    Context.getItem().getDbIdentity() +
+                    Context.getInvoice().getDbIdentity() +
                     " WHERE contactsids = " + dataOwner.__getIDS() + ")";
             Object[][] data = QueryHandler.instanceOf().clone(Context.getSchedule()).freeSelectQuery(query, MPSecurityManager.VIEW, null).getData();
 
@@ -347,7 +346,6 @@ public class Schedule extends DatabaseObject {
         
     /**
      * Array representation of this event.
-     * <br/>{getItem(), intervalmonth, stopdate, user}
      * @return
      */
     @Override

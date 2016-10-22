@@ -269,7 +269,7 @@ public class BigPopup {
     public static void setOnTop(JPanel panel) throws Exception {
 
         if (contents.containsKey(panel)) {
-            show(panel);
+            //show(panel);
             contents.get(panel).setAlwaysOnTop(true);
             contents.get(panel).validate();
         } else {

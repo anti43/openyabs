@@ -115,7 +115,7 @@ public class TemplateHandler {
         ReturnValue data;
         if (LocalSettings.getBooleanProperty(LocalSettings.OFFICE_USE)
                 || LocalSettings.getBooleanProperty(LocalSettings.OFFICE_ALT)) {
-            Integer type = new Integer(typ);
+            Integer type = typ;
 
             if (groupsids < 0) {
                 groupsids = 1;
@@ -206,150 +206,180 @@ public class TemplateHandler {
     public static MPEnum[] getTypes() {
         MPEnum[] types = new MPEnum[15];
         types[0] = new MPEnum() {
+            @Override
             public Integer getId() {
-                return TYPE_BILL;
+                return TYPE_INVOICE;
             }
 
+            @Override
             public String getName() {
-                return Messages.TYPE_BILL.toString();
+                return Messages.TYPE_INVOICE.toString();
             }
         };
 
         types[1] = new MPEnum() {
+            @Override
             public Integer getId() {
                 return TYPE_OFFER;
             }
 
+            @Override
             public String getName() {
                 return Messages.TYPE_OFFER.toString();
             }
         };
 
         types[2] = new MPEnum() {
+            @Override
             public Integer getId() {
                 return TYPE_ORDER;
             }
 
+            @Override
             public String getName() {
                 return Messages.TYPE_ORDER.toString();
             }
         };
 
         types[3] = new MPEnum() {
+            @Override
             public Integer getId() {
                 return TYPE_CONTACT;
             }
 
+            @Override
             public String getName() {
                 return Messages.TYPE_CONTACT.toString();
             }
         };
 
         types[4] = new MPEnum() {
+            @Override
             public Integer getId() {
                 return TYPE_DELIVERY_NOTE;
             }
 
+            @Override
             public String getName() {
                 return Messages.TYPE_DELIVERY.toString();
             }
         };
 
         types[5] = new MPEnum() {
+            @Override
             public Integer getId() {
                 return TYPE_ORDER_CONFIRMATION;
             }
 
+            @Override
             public String getName() {
                 return Messages.TYPE_CONFIRMATION.toString();
             }
         };
 
         types[6] = new MPEnum() {
+            @Override
             public Integer getId() {
                 return TYPE_PRODUCT;
             }
 
+            @Override
             public String getName() {
                 return Messages.TYPE_PRODUCT.toString();
             }
         };
 
         types[7] = new MPEnum() {
+            @Override
             public Integer getId() {
                 return TYPE_SERVICE;
             }
 
+            @Override
             public String getName() {
                 return Messages.TYPE_SERVICE.toString();
             }
         };
 
         types[8] = new MPEnum() {
+            @Override
             public Integer getId() {
                 return TYPE_REMINDER;
             }
 
+            @Override
             public String getName() {
                 return Messages.TYPE_REMINDER.toString();
             }
         };
 
         types[9] = new MPEnum() {
+            @Override
             public Integer getId() {
                 return TYPE_JOURNAL;
             }
 
+            @Override
             public String getName() {
                 return Messages.TYPE_JOURNAL.toString();
             }
         };
 
         types[10] = new MPEnum() {
+            @Override
             public Integer getId() {
                 return TYPE_PRODUCT_ORDER;
             }
 
+            @Override
             public String getName() {
                 return Messages.TYPE_PRODUCT_ORDER.toString();
             }
         };
 
         types[11] = new MPEnum() {
+            @Override
             public Integer getId() {
                 return TYPE_CONTACT;
             }
 
+            @Override
             public String getName() {
                 return Messages.TYPE_CONTRACT.toString();
             }
         };
 
         types[12] = new MPEnum() {
+            @Override
             public Integer getId() {
                 return TYPE_CONVERSATION;
             }
 
+            @Override
             public String getName() {
                 return Messages.TYPE_CONVERSATION.toString();
             }
         };
 
         types[13] = new MPEnum() {
+            @Override
             public Integer getId() {
                 return TYPE_MASSPRINT;
             }
 
+            @Override
             public String getName() {
                 return Messages.TYPE_MASSPRINT.toString();
             }
         };
 
         types[14] = new MPEnum() {
+            @Override
             public Integer getId() {
                 return TYPE_ACTIVITY;
             }
 
+            @Override
             public String getName() {
                 return Messages.TYPE_ACTIVITY.toString();
             }
@@ -375,9 +405,9 @@ public class TemplateHandler {
 //        List<Templateable> targets = new ArrayList<Templateable>();
 //        List<Integer> typs = new ArrayList<Integer>();
 //        Item it1 = new Item();
-//        it1.setInttype(Item.TYPE_BILL);
+//        it1.setInttype(Item.TYPE_INVOICE);
 //        targets.add(it1);
-//        typs.add(TYPE_BILL);
+//        typs.add(TYPE_INVOICE);
 //
 //        Item it2 = new Item();
 //        it2.setInttype(Item.TYPE_OFFER);
@@ -478,7 +508,7 @@ public class TemplateHandler {
     public static String getName(int type) {
         MPEnum[] e = getTypes();
         for (MPEnum mPEnum : e) {
-            if (mPEnum.getId().intValue() == type) {
+            if (mPEnum.getId() == type) {
                 return mPEnum.getName();
             }
         }
@@ -496,6 +526,7 @@ public class TemplateHandler {
             jComponent1.setEnabled(false);
         }
         Runnable runnable = new Runnable() {
+            @Override
             public void run() {
                 loadTemplate(dataOwner);
                 for (JComponent jComponent1 : jComponent) {
@@ -562,8 +593,8 @@ public class TemplateHandler {
      * @return template[] - the template assoziated to the give templatetype
      */
     public static Template[] getTemplatesForType(long groupsids, int typ) {
-        String key = mpv5.db.objects.User.getCurrentUser() + "@" + new Integer(typ) + "@" + groupsids;
-        ReturnValue data = TemplateHandler.getDefinedTemplatesFor(groupsids, new Integer(typ));
+        String key = mpv5.db.objects.User.getCurrentUser() + "@" + typ + "@" + groupsids;
+        ReturnValue data = TemplateHandler.getDefinedTemplatesFor(groupsids, typ);
         Iterator<Object[]> it = data.getDataIterator();
         Template[] templates = new Template[data.getData().length];
         int i = 0;

@@ -232,14 +232,6 @@ public class ControlPanel_Massprint extends javax.swing.JPanel implements Contro
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
-//        DatabaseObject s = Search2.showSearchFor(Context.getItem());
-//        if (s != null) {
-//            try {
-//                Popup.notice(s.evaluate(rule.getText()));
-//            } catch (Exception e) {
-//                Popup.error(e);
-//            }
-//        }
         try {
             ReturnValue data = QueryHandler.instanceOf().freeSelectQuery(rule.getText(), MPSecurityManager.RIGHT_TO_VIEW, null);
             Popup.notice(data.getDataAsStringList(), Messages.DONE);

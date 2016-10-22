@@ -54,24 +54,24 @@ public class Contact extends DatabaseObject implements Formattable, Templateable
    private boolean issupplier = false;
    private String country = "";
    private FormatHandler formatHandler;
-   public final static int TYPE_CONTACT = 0;
-   public final static int TYPE_CUSTOMER = 1;
-   public final static int TYPE_SUPPLIER = 2;
-   public final static int TYPE_MANUFACTURER = 3;
+//   public final static int TYPE_CONTACT = 0;
+//   public final static int TYPE_CUSTOMER = 1;
+//   public final static int TYPE_SUPPLIER = 2;
+//   public final static int TYPE_MANUFACTURER = 3;
 
-    public static String getTypeString(int typ) {
-        switch (typ) {
-            case TYPE_CONTACT:
-                return Messages.TYPE_CONTACT.getValue();
-            case TYPE_CUSTOMER:
-                return Messages.TYPE_CUSTOMER.getValue();
-            case TYPE_SUPPLIER:
-                return Messages.TYPE_SUPPLIER.getValue();
-            case TYPE_MANUFACTURER:
-                return Messages.TYPE_MANUFACTURER.getValue();
-        }
-        return Messages.TYPE_CONTACT.getValue();
-    }
+//    public static String getTypeString(int typ) {
+//        switch (typ) {
+//            case TYPE_CONTACT:
+//                return Messages.TYPE_CONTACT.getValue();
+//            case TYPE_CUSTOMER:
+//                return Messages.TYPE_CUSTOMER.getValue();
+//            case TYPE_SUPPLIER:
+//                return Messages.TYPE_SUPPLIER.getValue();
+//            case TYPE_MANUFACTURER:
+//                return Messages.TYPE_MANUFACTURER.getValue();
+//        }
+//        return Messages.TYPE_CONTACT.getValue();
+//    }
 
     public Contact() {
         setContext(Context.getContact());
@@ -498,6 +498,7 @@ public class Contact extends DatabaseObject implements Formattable, Templateable
         return super.resolveReferences(map);
     }
 
+   @Override
     public void defineFormatHandler(FormatHandler handler) {
         formatHandler = handler;
     }
@@ -584,7 +585,17 @@ public class Contact extends DatabaseObject implements Formattable, Templateable
     @Override
     public boolean delete() {
         try {
-            List<DatabaseObject> it = getReferencedObjects(this, Context.getItem(), getObject(Context.getItem()));
+            List<DatabaseObject> it = getReferencedObjects(this, Context.getOffer(), getObject(Context.getOffer()));
+            for (int i = 0; i < it.size(); i++) {
+                it.get(i).delete();
+            }
+            it.clear();
+            it = getReferencedObjects(this, Context.getOrder(), getObject(Context.getOrder()));
+            for (int i = 0; i < it.size(); i++) {
+                it.get(i).delete();
+            }
+            it.clear();
+            it = getReferencedObjects(this, Context.getInvoice(), getObject(Context.getInvoice()));
             for (int i = 0; i < it.size(); i++) {
                 it.get(i).delete();
             }
@@ -597,7 +608,17 @@ public class Contact extends DatabaseObject implements Formattable, Templateable
     @Override
     public boolean undelete() {
         try {
-            List<DatabaseObject> it = getReferencedObjects(this, Context.getItem(), getObject(Context.getItem()), true);
+            List<DatabaseObject> it = getReferencedObjects(this, Context.getOffer(), getObject(Context.getOffer()), true);
+            for (int i = 0; i < it.size(); i++) {
+                it.get(i).undelete();
+            }
+            it.clear();
+            it = getReferencedObjects(this, Context.getOrder(), getObject(Context.getOrder()), true);
+            for (int i = 0; i < it.size(); i++) {
+                it.get(i).undelete();
+            }
+            it.clear();
+            it = getReferencedObjects(this, Context.getInvoice(), getObject(Context.getInvoice()), true);
             for (int i = 0; i < it.size(); i++) {
                 it.get(i).undelete();
             }
@@ -668,8 +689,9 @@ public class Contact extends DatabaseObject implements Formattable, Templateable
             data = DatabaseObject.getReferencedObjects(this, Context.getAddress(), new Address());
             Collections.sort(data, new Comparator<Address>() {
 //[0 = billing adress, 1 = delivery adress, 2 = both, 3 = undefined]
+                @Override
                 public int compare(Address o1, Address o2) {
-                    return Integer.valueOf(o1.__getInttype()).compareTo(Integer.valueOf(o2.__getInttype()));
+                    return Integer.valueOf(o1.__getInttype()).compareTo(o2.__getInttype());
                 }
             });
 
