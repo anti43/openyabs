@@ -31,7 +31,9 @@ import enoa.handler.TemplateHandler;
 import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.Font;
+import java.awt.Window;
 import java.io.File;
+import java.lang.reflect.Method;
 import java.net.HttpURLConnection;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -42,7 +44,6 @@ import java.util.Enumeration;
 import java.util.List;
 import java.util.Properties;
 import javax.swing.ImageIcon;
-import javax.swing.JMenu;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import mpv5.db.common.Context;
@@ -51,7 +52,6 @@ import mpv5.db.common.DatabaseObject;
 import mpv5.db.common.DatabaseObjectLock;
 import mpv5.db.common.QueryData;
 import mpv5.db.common.QueryHandler;
-import mpv5.db.objects.Item;
 import mpv5.db.objects.Template;
 import mpv5.globals.Constants;
 import mpv5.globals.LocalSettings;
@@ -70,7 +70,6 @@ import mpv5.pluginhandling.UserPlugin;
 import mpv5.server.MPServer;
 import mpv5.ui.dialogs.LoginToInstanceScreen;
 import mpv5.ui.dialogs.Notificator;
-import mpv5.ui.dialogs.Search2;
 import mpv5.ui.dialogs.subcomponents.ControlPanel_Fonts;
 import mpv5.ui.dialogs.subcomponents.wizard_DBSettings_simple_1;
 import mpv5.ui.frames.MPView;
@@ -94,7 +93,8 @@ public class Main implements Runnable {
     public static SplashScreen splash;
     private static boolean removeplugs = false;
     /**
-     * Is true if the application is running, false if in editor
+     * Is true if the application is running, false if in
+     * editor
      */
     public static boolean INSTANTIATED = false;
     private static Integer FORCE_INSTALLER;
@@ -103,8 +103,8 @@ public class Main implements Runnable {
     public static int SINGLE_PORT = 65531;
 
     /**
-     * Use this method to (re) cache data from the database to avoid unnecessary
-     * db queries
+     * Use this method to (re) cache data from the database
+     * to avoid unnecessary db queries
      */
     public static void cache() {
         Runnable runnable = new Runnable() {
@@ -131,7 +131,7 @@ public class Main implements Runnable {
     /**
      * Add the processes to close on exit
      *
-     * @param officeApplication
+     * @param application
      */
     public static void addProcessToClose(Process application) {
         oap.add(application);
@@ -342,11 +342,15 @@ public class Main implements Runnable {
         SwingUtilities.invokeLater(runnable);
     }
     /**
-     * Indicates whether this is the first start of the application
+     * Indicates whether this is the first start of the
+     * application
      */
     public static boolean firstStart;
     /**
-     * Sometimes it is nice to have a good goodbye message at hand ;-)<br/><br/>
+     * Sometimes it is nice to have a good goodbye message
+     * at hand ;-)
+     *
+     *
      * <b>"So Long, and Thanks for All the Fish."</b>
      */
     public static final String GOODBYE_MESSAGE = "So Long, and Thanks for All the Fish.";
@@ -388,7 +392,8 @@ public class Main implements Runnable {
     }
 
     /**
-     * At startup create and show the main frame of the application.
+     * At startup create and show the main frame of the
+     * application.
      */
     public void startup() {
 
@@ -425,8 +430,12 @@ public class Main implements Runnable {
                         @SuppressWarnings("unchecked")
                         FrameView view = (FrameView) VIEW_CLASS.getDeclaredConstructor(SingleFrameApplication.class).newInstance(getApplication());
 
+                        enableOSXFullscreen(view.getFrame());
+
                         getApplication().setMainView(view);
                         getApplication().show(view);
+
+                        requestToggleFullScreen(view.getFrame());
 
 //                        Log.Print(Arrays.asList(getApplication().getMainView().getClass().getInterfaces()));
                     } catch (Exception ex) {
@@ -459,7 +468,7 @@ public class Main implements Runnable {
             } else if (Popup.Y_N_dialog(splash, Messages.NO_DB_CONNECTION, Messages.FIRST_START.toString())) {
                 Log.Debug(this, "Loading database config wizard...");
                 splash.setVisible(false);
-                
+
                 showDbWiz(null);
             } else {
                 Log.Debug(this, "Cancelled by user.");
@@ -603,19 +612,23 @@ public class Main implements Runnable {
     private static void getOS() {
         String os = System.getProperty("os.name").toLowerCase();
         osIsMacOsX = "mac os x".equals(os);
-        osIsWindows = os != null && os.indexOf("windows") != -1;
-        osIsLinux = os != null && os.indexOf("linux") != -1;
-        osIsSolaris = os != null && os.indexOf("solaris") != -1;
+        osIsWindows = os != null && os.contains("windows");
+        osIsLinux = os != null && os.contains("linux");
+        osIsSolaris = os != null && os.contains("solaris");
     }
 
     /**
      * Set the dirs
      *
-     * @param rootDir The root dir or null, defaults to: USER_HOME +
-     * File.separator + ".yabs"
+     * @param rootDir The root dir or null, defaults to:
+     * USER_HOME + File.separator + ".yabs"
      */
     public static void setEnv(String rootDir) {
-
+        
+        if (osIsMacOsX) {
+            System.setProperty("apple.laf.useScreenMenuBar", "true");
+        }
+        
         if (osIsWindows) {
             USER_HOME = System.getenv("USERPROFILE");
         } else {
@@ -924,6 +937,7 @@ public class Main implements Runnable {
 
         Runnable runnable3 = new Runnable() {
 
+            @Override
             public void run() {
                 WSIManager.instanceOf().start();
             }
@@ -1067,6 +1081,8 @@ public class Main implements Runnable {
 
     /**
      * Checks if updates are available
+     *
+     * @return
      */
     public static boolean checkUpdates() {
 
@@ -1191,6 +1207,7 @@ public class Main implements Runnable {
                             final Template tpl = (Template) Template.getObject(Context.getTemplate(), Integer.parseInt(data[i][0].toString()));
                             FileMonitor.FileChangeListener filecl = new FileMonitor.FileChangeListener() {
 
+                                @Override
                                 public void fileChanged(String fileName) {
                                     QueryHandler.instanceOf().clone(Context.getFiles()).updateFile(new File(fileName), tpl.__getFilename());
                                     tpl.setDescription(tpl.__getDescription() + "\n - Updated: " + new Date());
@@ -1230,5 +1247,39 @@ public class Main implements Runnable {
     private void doLoginToInstanceScreen() {
         DatabaseConnection.shutdown();
         LoginToInstanceScreen.load();
+    }
+
+    @SuppressWarnings({"unchecked", "rawtypes"})
+    private void enableOSXFullscreen(Window window) {
+        if (!Main.osIsMacOsX) {
+            return;
+        }
+        try {
+            Class util = Class.forName("com.apple.eawt.FullScreenUtilities");
+            Class params[] = new Class[]{Window.class, Boolean.TYPE};
+            Method method = util.getMethod("setWindowCanFullScreen", params);
+            method.invoke(util, window, true);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+    @SuppressWarnings({"unchecked", "rawtypes"})
+    private void requestToggleFullScreen(Window window) {
+        if (!Main.osIsMacOsX || !User.getCurrentUser().getProperties().getProperty("org.openyabs.macproperty","fullscreen")){
+            return;
+        }
+        try {
+            Class appClass = Class.forName("com.apple.eawt.Application");
+            Class params[] = new Class[]{};
+
+            Method getApplication = appClass.getMethod("getApplication", params);
+            Object application = getApplication.invoke(appClass);
+            Method requestToggleFulLScreen = application.getClass().getMethod("requestToggleFullScreen", Window.class);
+
+            requestToggleFulLScreen.invoke(application, window);
+        } catch (Exception e) {
+            System.out.println("An exception occurred while trying to toggle full screen mode");
+        }
     }
 }

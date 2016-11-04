@@ -472,6 +472,7 @@ public class Item extends DatabaseObject implements Formattable, Templateable {
     /**
      * @return the formatHandler
      */
+    @Override
     public synchronized FormatHandler getFormatHandler() {
         if (formatHandler == null) {
             formatHandler = new FormatHandler(this);
@@ -488,8 +489,9 @@ public class Item extends DatabaseObject implements Formattable, Templateable {
     }
 
     /**
-     * Fetches all related {@link Subitem}s to this {@link Item}<br/> If no
-     * subitems are assigned, returns an empty default list of default subitems
+     * Fetches all related {@link Subitem}s to this {@link Item}
+     * If no subitems are assigned, 
+     * returns an empty default list of default subitems
      *
      * @return
      */
@@ -666,6 +668,7 @@ public class Item extends DatabaseObject implements Formattable, Templateable {
         return super.resolveReferences(map);
     }
 
+    @Override
     public void defineFormatHandler(FormatHandler handler) {
         formatHandler = handler;
     }

@@ -105,14 +105,17 @@ public class Conversation
         return null;
     }
 
+    @Override
     public int templateType() {
        return Constants.TYPE_CONVERSATION;
     }
 
+    @Override
     public int templateGroupIds() {
        return this.__getGroupsids();
     }
 
+    @Override
     public FormatHandler getFormatHandler() {
         if (formatHandler == null) {
             formatHandler = new FormatHandler(this);
@@ -137,5 +140,23 @@ public class Conversation
             }
         }
         return super.resolveReferences(map);
+    }
+    
+    /**
+     * @return the contact
+     * @throws mpv5.db.common.NodataFoundException
+     * is persisting via contactsids
+     */
+    @Persistable(false)
+    public Contact getContact() throws NodataFoundException {
+        return (Contact) getObject(Context.getContact(), contactsids);
+    }
+
+    /**
+     * @param contact the contact to set
+     */
+    @Persistable(false)
+    public void setContact(Contact contact) {
+        setContactsids(contact.__getIDS());
     }
 }

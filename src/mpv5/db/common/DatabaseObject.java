@@ -527,7 +527,8 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
 
     /**
      * Some DatabaseObjects have unique fields, and calling this method shall
-     * ensure they are unique before saving.<br/> The native implementation
+     * ensure they are unique before saving.
+     * The native implementation
      * actually does nothing, you need to override the method if you define
      * unique columns for a DO.
      */
@@ -549,9 +550,11 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
     }
 
     /**
-     * This can be used to graphically represent a do.<br/> The programmer has
+     * This can be used to graphically represent a do.
+     * The programmer has
      * to take care of the icon size! See
-     * {@link MPIcon#getIcon(int width, int height)}<br/> It is recommended to
+     * {@link MPIcon#getIcon(int width, int height)}
+     * It is recommended to
      * use 22*22 sized icons which do not need to get resized for performance
      * reasons.
      *
@@ -2747,7 +2750,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
     }
 
     /**
-     * @param Group the Group to set
+     * @param g the Group to set
      */
     @Persistable(true)
     public void setGroup(Group g) {

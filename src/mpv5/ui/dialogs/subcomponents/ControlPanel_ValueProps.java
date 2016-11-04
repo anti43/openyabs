@@ -349,7 +349,7 @@ public class ControlPanel_ValueProps extends javax.swing.JPanel implements Contr
                 def.addElement(new ContextWrap(Messages.TYPE_MANUFACTURER.getValue(), Context.getManufacturer()));
                 def.addElement(new ContextWrap(Messages.TYPE_CUSTOMER.getValue(), Context.getCustomer()));
                 def.addElement(new ContextWrap(Messages.TYPE_REMINDER.getValue(), Context.getReminder()));
-                def.addElement(new ContextWrap(Messages.TYPE_CONVERSATION.getValue(), Context.getInvoice()));
+                def.addElement(new ContextWrap(Messages.TYPE_CONVERSATION.getValue(), Context.getConversation()));
                 def.addElement(new ContextWrap(Messages.TYPE_MASSPRINT.getValue(), Context.getInvoice()));
 
                 jList1.setModel(def);

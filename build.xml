@@ -40,7 +40,8 @@
 <project name="yabs" default="default" basedir="." xmlns:fx="javafx:com.sun.javafx.tools.ant">
     <description>Builds, tests, and runs the project yabs.</description>
     <import file="nbproject/build-impl.xml"/>
-    
+   <loadproperties srcFile="src/mpv5/resources/Yabs.properties"/>
+
     <target name="-post-compile">
         <copy todir="${dist.dir}/lib">
             <fileset dir="lib/jni/" />
@@ -242,20 +243,18 @@ dpkg -i paketname.deb
                 var app = deploy.createApplication();
                 app.setProject(project);
                 var title = new String(project.getProperty("application.title"));
-                var mainclass;
-                mainclass = new String(project.getProperty("main.class"));
+                var mainclass = new String(project.getProperty("main.class"));
                 if(isTrue(fx_ant_api_1_2)) {
                     app.setToolkit("swing");
                 }
                 
-                var appversion = new String(project.getProperty("application.implementation.version"));
+                var appversion = new String(project.getProperty("application.version"));
                 if(defined(appversion)) {
                     app.setVersion(appversion);
                 } else {
                     app.setVersion("1.0");
                 }
-                var appname = new String(project.getProperty("application.implementation.name"));
-                app.setName(title + " - " + appname + " (incl. JRE)");
+                app.setName(title + " (incl. JRE)");
                 app.setMainClass(mainclass);
 
                 // fx:resources
@@ -353,11 +352,11 @@ dpkg -i paketname.deb
                         }
                     }
                 }   
-                
+
                 deploy.perform();
                 
-                app.setName(title + " - " + appname);
-                                
+                app.setName(title);
+                                                     
                 //fx:platform
                 var plf = deploy.createPlatform();
                 plf.setBasedir("");
@@ -513,14 +512,14 @@ dpkg -i paketname.deb
                     app.setToolkit("swing");
                 }
                 
-                var appversion = new String(project.getProperty("application.implementation.version"));
+                var appversion = new String(project.getProperty("application.version"));
                 if(defined(appversion)) {
                     app.setVersion(appversion);
                 } else {
                     app.setVersion("1.0");
                 }
-                var appname = new String(project.getProperty("application.implementation.name"));
-                app.setName(title + " - " + appname);
+                //var appname = new String(project.getProperty("application.name"));
+                app.setName(title);
                 app.setMainClass(mainclass);
 
                 // fx:resources
