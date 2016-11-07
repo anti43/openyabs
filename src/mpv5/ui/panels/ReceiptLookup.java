@@ -38,7 +38,7 @@ public class ReceiptLookup extends javax.swing.JPanel {
         type.getComboBox().addActionListener(new ActionListener() {
 
             public void actionPerformed(ActionEvent e) {
-                search.setText(null);
+                search.setText("");
                 generalListPanel1.setData((Context) type.getSelectedItem().getIdObject());
             }
         });

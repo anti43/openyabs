@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Random;
 import java.util.Vector;
 import javax.swing.SwingUtilities;
+import mpv5.db.common.Context;
 import mpv5.db.objects.Contact;
 import mpv5.db.objects.Group;
 import mpv5.db.objects.Item;
@@ -104,7 +105,7 @@ public class SampleData {
 
                             Date date = new RandomDate(new vTimeframe(DateConverter.getDate("01.01.2007"), new Date()));
 
-                            Item it = new Item();
+                            Item it = (Item) Context.getInvoice().getSampleObject();
                             it.setCname("SI" + seed + "-19-" + k);
                             it.setContactsids(c.__getIDS());
                             it.setDateend(date);

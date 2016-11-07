@@ -40,6 +40,7 @@ import mpv5.db.common.NodataFoundException;
 import mpv5.db.objects.Group;
 import mpv5.db.objects.User;
 import mpv5.globals.GlobalSettings;
+import mpv5.globals.Messages;
 import mpv5.logging.Log;
 import mpv5.ui.frames.MPView;
 import mpv5.ui.misc.MPTable;
@@ -67,14 +68,7 @@ public final class GeneralListPanel extends javax.swing.JPanel {
      */
     public <T extends DatabaseObject> GeneralListPanel(List<T> list) {
         this();
-
-        labeledCombobox1.setSearchEnabled(true);
-        labeledCombobox1.setContext(Context.getGroup());
-        labeledCombobox1.triggerSearch();
         setData(list);
-
-        ((MPTable) listtable).setDefaultColumns(new Integer[]{100, 100, 100, 100, 100}, new Boolean[]{true, true, true, true, true});
-        TableFormat.hideHeader(listtable);
     }
 
     /**
@@ -83,11 +77,17 @@ public final class GeneralListPanel extends javax.swing.JPanel {
     public GeneralListPanel() {
         initComponents();
         setName("generallistpanel");
+        rend.setDbColumn(1);
+        
         listtable.setDefaultRenderer(String.class, rend);
         listtable.setDefaultRenderer(Date.class, rend);
         listtable.setDefaultRenderer(DatabaseObject.class, rend);
+        
+        labeledCombobox1.setSearchEnabled(true);
+        labeledCombobox1.setContext(Context.getGroup());
+        labeledCombobox1.triggerSearch();
 
-        ((MPTable) listtable).setDefaultColumns(new Integer[]{100, 100, 100, 100, 100}, new Boolean[]{true, true, true, true, true});
+        ((MPTable) listtable).setDefaultColumns(new Integer[]{20, 100, 100, 100, 100, 100, 100}, new Boolean[]{true, true, true, true, true, true, true});
         ((MPTable) listtable).setPersistanceHandler(new TableViewPersistenceHandler((MPTable) listtable, this));
         TableFormat.hideHeader(listtable);
     }
@@ -134,25 +134,27 @@ public final class GeneralListPanel extends javax.swing.JPanel {
     public <T extends DatabaseObject> void setData(List<T> list) {
         odata = list;
 
-        Object[][] data = new Object[list.size()][5];
+        Object[][] data = new Object[list.size()][7];
 
         for (int i = 0; i < list.size(); i++) {
             DatabaseObject databaseObject = list.get(i);
-            data[i][0] = databaseObject;
-            data[i][1] = User.getUsername(databaseObject.__getIntaddedby());
-            data[i][2] = databaseObject.__getDateadded();
+            data[i][0] = i+1;
+            data[i][1] = databaseObject;
+            data[i][2] = User.getUsername(databaseObject.__getIntaddedby());
+            data[i][3] = databaseObject.__getDateadded();
             try {
-                data[i][3] = DatabaseObject.getObject(Context.getGroup(), databaseObject.__getGroupsids());
+                data[i][4] = DatabaseObject.getObject(Context.getGroup(), databaseObject.__getGroupsids());
             } catch (NodataFoundException ex) {
-                data[i][3] = "N/A";
+                data[i][4] = "N/A";
             }
 
 //            data[i][4] = databaseObject.getColor();
-            data[i][4] = databaseObject.getIcon();
+            data[i][5] = databaseObject.getIcon();
+            data[i][6] = databaseObject.getContext();
         }
 
         MPTableModel m = new MPTableModel(data);
-        m.setTypes(new Class[]{DatabaseObject.class, String.class, Date.class, DatabaseObject.class, ImageIcon.class, Object.class, Object.class});
+        m.setTypes(new Class[]{Integer.class, DatabaseObject.class, String.class, Date.class, DatabaseObject.class, ImageIcon.class, Object.class, Object.class, Context.class});
         listtable.setModel(m);
 
 //        TableFormat.hideHeader(listtable);

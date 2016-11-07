@@ -17,6 +17,7 @@ import mpv5.db.common.DatabaseObject;
 public class TableCellRendererForDatabaseObjects extends DefaultTableCellRenderer {
 
     private DefaultTableCellRenderer adaptee = new DefaultTableCellRenderer();
+    private int dbColumn = 0;
 
     @Override
     public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected,
@@ -32,8 +33,22 @@ public class TableCellRendererForDatabaseObjects extends DefaultTableCellRendere
             setForeground(Color.WHITE);
         }
         if (!isSelected) {
-            setBackground(((DatabaseObject) table.getModel().getValueAt(table.convertRowIndexToModel(row), 0)).getColor());
+            setBackground(((DatabaseObject) table.getModel().getValueAt(table.convertRowIndexToModel(row), getDbColumn())).getColor());
         }
         return this;
+    }
+
+    /**
+     * @return the dbColumn
+     */
+    public int getDbColumn() {
+        return dbColumn;
+    }
+
+    /**
+     * @param dbColumn the dbColumn to set
+     */
+    public void setDbColumn(int dbColumn) {
+        this.dbColumn = dbColumn;
     }
 }

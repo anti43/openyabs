@@ -71,7 +71,7 @@ public class updatedOrdersJob implements WSDaemonJob {
         try {
             Object d = client.getClient().invokeGetCommand(WSConnectionClient.COMMANDS.GET_CHANGED_ORDERS.toString(),
                     new Object[]{}, new Object());
-            List<Item> obs = WSIManager.createObjects(d, new Item());
+            List<Item> obs = WSIManager.createObjects(d, (Item) Context.getInvoice().getSampleObject());
 
             for (int i = 0; i < obs.size(); i++) {
                 Item contact = obs.get(i);

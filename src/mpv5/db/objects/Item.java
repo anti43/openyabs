@@ -50,6 +50,7 @@ public class Item extends DatabaseObject implements Formattable, Templateable {
 
     private static final long serialVersionUID = 1L;
 
+    
     /**
      * Returns a localized string representation of the given item status
      *
@@ -247,6 +248,11 @@ public class Item extends DatabaseObject implements Formattable, Templateable {
     public static final int STATUS_CANCELLED = 5;
     private FormatHandler formatHandler;
 
+    
+    public Item(){
+        //context not known
+    }
+    
     /**
      * @return the contactsids
      */
