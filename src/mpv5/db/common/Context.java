@@ -1242,7 +1242,7 @@ public class Context implements Serializable, Comparable<Context> {
      * @return An empty {@link DatabaseObject}
      */
     @SuppressWarnings("unchecked")
-    public <T extends DatabaseObject> T getSampleObject() {
+    public <T extends DatabaseObject> T getNewObject() {
         return (T) DatabaseObject.getObject(this);
     }
 ////////////////////////////////////////////////////////////////////////////////

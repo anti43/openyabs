@@ -954,7 +954,7 @@ public final class ControlPanel_Templates extends javax.swing.JPanel implements 
                 try {
                     t = DatabaseObject.getObject(Context.getInvoice(), 1);
                 } catch (NodataFoundException ex) {
-                    t = (Item) Context.getInvoice().getSampleObject();
+                    t = (Item) Context.getInvoice().getNewObject();
                     Contact k = new Contact();
                     k.avoidNulls();
                     k.fillSampleData();

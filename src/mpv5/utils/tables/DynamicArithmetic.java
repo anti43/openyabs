@@ -211,7 +211,7 @@ class DynamicArithmetic {
                         } else {
                             BigDecimal a=tmp;
                             tmp = tmp.multiply(val).divide(hundert, 9, BigDecimal.ROUND_HALF_UP);
-                            Log.Debug(this, tmp+" = "+a+".multiply("+val+").divide(hundert, 9, BigDecimal.ROUND_HALF_UP);");
+                            //Log.Debug(this, tmp+" = "+a+".multiply("+val+").divide(hundert, 9, BigDecimal.ROUND_HALF_UP);");
                         }
                     }
                     if (openTerms == 0) {

@@ -543,13 +543,32 @@ public class MPTableModel extends DefaultTableModel implements Cloneable, TableC
      * @param columnsToCheck The columns to be checked for emptyness
      */
     public void removeEmptyRows(int[] columnsToCheck) {
-        for (int j = 0; j < getRowCount(); j++) {
-            for (int i = 0; i < columnsToCheck.length; i++) {
-                if (getValueAt(j, columnsToCheck[i]) == null || String.valueOf(getValueAt(j, columnsToCheck[i])).length() == 0) {
-                    removeRow(j);
+        synchronized (this) {
+            List<Integer> remove = new ArrayList<>();
+            int rc = getRowCount();
+            Log.Debug(this, "removeEmptyRows rows from " + rc);
+            for (int row = 0; row < rc; row++) {
+                Log.Debug(this, "removeEmptyRows row " + row);
+                for (int col = 0; col < columnsToCheck.length; col++) {
+                    Object v = getValueAt(row, columnsToCheck[col]);
+                    if (v == null || String.valueOf(v).length() == 0) {
+                        Log.Debug(this, "removeEmptyRows Column " + columnsToCheck[col] + " in row " + row + " IS empty: " + String.valueOf(v));
+                        remove.add(row); 
+                    } else {
+                        Log.Debug(this, "removeEmptyRows Column " + columnsToCheck[col] + " in row " + row + " is not empty: " + String.valueOf(v));
+                    }
                 }
             }
+            removeRows(remove.toArray(new Integer[remove.size()]));
         }
+    }
+
+    public void removeRows(Integer[] indices) {
+        Arrays.sort(indices);
+        for (int i = indices.length - 1; i >= 0; i--) {
+            super.removeRow(indices[i]); 
+        }
+        rearrangeAutocountColumn();
     }
 
     /**
@@ -560,37 +579,46 @@ public class MPTableModel extends DefaultTableModel implements Cloneable, TableC
      * @param count
      */
     public void addRow(int count) {
-        for (int i = 0; i < count; i++) {
-            if (predefinedRow == null) {
-                addRow((Object[]) null);
-            } else {
-                if (autoCountColumn != null) {
-                    predefinedRow[autoCountColumn] = getRowCount() + 1;
+        synchronized (this) {
+            for (int i = 0; i < count; i++) {
+                if (predefinedRow == null) {
+                    addRow((Object[]) null);
+                } else {
+                    if (autoCountColumn != null) {
+                        predefinedRow[autoCountColumn] = getRowCount() + 1;
+                    }
+                    addRow(predefinedRow);
                 }
-                addRow(predefinedRow);
             }
         }
     }
 
     @Override
     public void removeRow(int row) {
-        super.removeRow(row);
-        rearrangeAutocountColumn();
+        synchronized (this) {
+            super.removeRow(row);
+            rearrangeAutocountColumn();
+            Log.Debug(this, "removeRow " + row);
+        }
     }
 
     public void insertRow(int row) {
-        if (predefinedRow == null) {
-            super.insertRow(row, (Object[]) null);
-        } else {
-            super.insertRow(row, predefinedRow);
+        synchronized (this) {
+            if (predefinedRow == null) {
+                super.insertRow(row, (Object[]) null);
+            } else {
+                super.insertRow(row, predefinedRow);
+            }
+            rearrangeAutocountColumn();
         }
-        rearrangeAutocountColumn();
     }
 
     @Override
     public void moveRow(int start, int end, int to) {
-        super.moveRow(start, end, to);
-        rearrangeAutocountColumn();
+        synchronized (this) {
+            super.moveRow(start, end, to);
+            rearrangeAutocountColumn();
+        }
     }
 
     @SuppressWarnings("unchecked")

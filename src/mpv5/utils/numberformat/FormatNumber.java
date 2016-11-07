@@ -204,7 +204,7 @@ public class FormatNumber {
         if (val == null||String.valueOf(val).length()==0) {
             return null;
         } 
-        Log.Debug(val.getClass(), val);
+        //Log.Debug(val.getClass(), val);
         if (val instanceof BigDecimal) {
             return (BigDecimal) val;
         }else if (val instanceof Integer ) {

@@ -22,12 +22,14 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 import javax.swing.JTree;
+import javax.swing.SwingUtilities;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.DefaultTreeModel;
@@ -73,7 +75,6 @@ public class MPTreeModel extends DefaultTreeModel {
         }
     }
 
-   
     /**
      * Generates a tree view of the contact including related items and files
      *
@@ -96,27 +97,27 @@ public class MPTreeModel extends DefaultTreeModel {
             if (itemfilter == null) {
                 if (ref == null) {
                     try {
-                        items.addAll(DatabaseObject.toObjectList(DatabaseObject.getReferencedObjects(obj, Context.getInvoice(), DatabaseObject.getObject(Context.getInvoice())), Context.getInvoice().getSampleObject()));
+                        items.addAll(DatabaseObject.toObjectList(DatabaseObject.getReferencedObjects(obj, Context.getInvoice(), DatabaseObject.getObject(Context.getInvoice())), Context.getInvoice().getNewObject()));
                     } catch (NodataFoundException nodataFoundException) {
                     }
                     try {
-                        items.addAll(DatabaseObject.toObjectList(DatabaseObject.getReferencedObjects(obj, Context.getOrder(), DatabaseObject.getObject(Context.getOrder())), Context.getOrder().getSampleObject()));
+                        items.addAll(DatabaseObject.toObjectList(DatabaseObject.getReferencedObjects(obj, Context.getOrder(), DatabaseObject.getObject(Context.getOrder())), Context.getOrder().getNewObject()));
                     } catch (NodataFoundException nodataFoundException) {
                     }
                     try {
-                        items.addAll(DatabaseObject.toObjectList(DatabaseObject.getReferencedObjects(obj, Context.getOffer(), DatabaseObject.getObject(Context.getOffer())), Context.getOffer().getSampleObject()));
+                        items.addAll(DatabaseObject.toObjectList(DatabaseObject.getReferencedObjects(obj, Context.getOffer(), DatabaseObject.getObject(Context.getOffer())), Context.getOffer().getNewObject()));
                     } catch (NodataFoundException nodataFoundException) {
                     }
                     try {
-                        items.addAll(DatabaseObject.toObjectList(DatabaseObject.getReferencedObjects(obj, Context.getDelivery(), DatabaseObject.getObject(Context.getDelivery())), Context.getDelivery().getSampleObject()));
+                        items.addAll(DatabaseObject.toObjectList(DatabaseObject.getReferencedObjects(obj, Context.getDelivery(), DatabaseObject.getObject(Context.getDelivery())), Context.getDelivery().getNewObject()));
                     } catch (NodataFoundException nodataFoundException) {
                     }
                     try {
-                        items.addAll(DatabaseObject.toObjectList(DatabaseObject.getReferencedObjects(obj, Context.getConfirmation(), DatabaseObject.getObject(Context.getConfirmation())), Context.getConfirmation().getSampleObject()));
+                        items.addAll(DatabaseObject.toObjectList(DatabaseObject.getReferencedObjects(obj, Context.getConfirmation(), DatabaseObject.getObject(Context.getConfirmation())), Context.getConfirmation().getNewObject()));
                     } catch (NodataFoundException nodataFoundException) {
                     }
                 } else {
-                    items.addAll(DatabaseObject.toObjectList(DatabaseObject.getReferencedObjects(obj, ref, DatabaseObject.getObject(ref)), ref.getSampleObject()));
+                    items.addAll(DatabaseObject.toObjectList(DatabaseObject.getReferencedObjects(obj, ref, DatabaseObject.getObject(ref)), ref.getNewObject()));
                 }
             } else {
                 List<QueryParameter> p = new ArrayList<QueryParameter>();
@@ -258,7 +259,8 @@ public class MPTreeModel extends DefaultTreeModel {
                     @Override
                     public void actionPerformed(ActionEvent e) {
 
-                        List<DatabaseObject> list = new ArrayList<>();
+                        final List<DatabaseObject> list = new ArrayList<>();
+                        if(tree.getSelectionPaths()==null)return;
                         for (TreePath p : tree.getSelectionPaths()) {
                             DefaultMutableTreeNode node = (DefaultMutableTreeNode) p.getLastPathComponent();
                             if (node != null && node.getUserObject() instanceof DatabaseObject) {
@@ -267,10 +269,17 @@ public class MPTreeModel extends DefaultTreeModel {
                             }
                         }
                         if (list.size() > 0) {
-                            Item item = Context.getInvoice().getSampleObject();
-                            item.setContact(dataOwner);
-                            DataPanel tab = mpv5.YabsViewProxy.instance().getIdentifierView().addTab(item);
-                            tab.paste(list.toArray(new DatabaseObject[0]));
+                            Item i = Item.createFor(dataOwner);
+                            final DataPanel tab = mpv5.YabsViewProxy.instance().getIdentifierView().addTab(i);
+
+                            SwingUtilities.invokeLater(new Runnable() {
+
+                                @Override
+                                public void run() {
+                                    tab.paste(list.toArray(new DatabaseObject[0]));
+                                }
+                            });
+
                         }
                     }
                 });

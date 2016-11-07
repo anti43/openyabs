@@ -50,7 +50,6 @@ public class Item extends DatabaseObject implements Formattable, Templateable {
 
     private static final long serialVersionUID = 1L;
 
-    
     /**
      * Returns a localized string representation of the given item status
      *
@@ -224,8 +223,18 @@ public class Item extends DatabaseObject implements Formattable, Templateable {
             public String getName() {
                 return getTypeString(TYPE_ORDER);
             }
-        };      
+        };
         return en;
+    }
+
+    public static Item createFor(Contact dataOwner) {
+        Item i = (Item) DatabaseObject.getObject(Context.getInvoice());
+        i.setContactsids(dataOwner.__getIDS());
+        i.setCname(Messages.NEW_BILL.getValue());
+        i.setInttype(Item.TYPE_INVOICE);
+        i.setDateadded(new Date());
+        i.setGroupsids(dataOwner.__getGroupsids());
+        return i;
     }
     private int contactsids;
     private int accountsids;
@@ -248,11 +257,10 @@ public class Item extends DatabaseObject implements Formattable, Templateable {
     public static final int STATUS_CANCELLED = 5;
     private FormatHandler formatHandler;
 
-    
-    public Item(){
+    public Item() {
         //context not known
     }
-    
+
     /**
      * @return the contactsids
      */
@@ -308,7 +316,7 @@ public class Item extends DatabaseObject implements Formattable, Templateable {
     public void setDiscountGrosvalue(BigDecimal discountgrosvalue) {
         this.discountgrosvalue = discountgrosvalue;
     }
-    
+
     /**
      * @return the datetodo
      */
@@ -645,7 +653,7 @@ public class Item extends DatabaseObject implements Formattable, Templateable {
         map.put("discounttaxf", FormatNumber.formatLokalCurrency(__getDiscountGrosvalue().subtract(__getDiscountvalue())));
 
         map.put("discountgrosvaluef", FormatNumber.formatLokalCurrency(__getDiscountGrosvalue()));
-        
+
         Locale l = Locale.getDefault();
         if (mpv5.db.objects.User.getCurrentUser().getProperties().hasProperty("item.date.locale")) {
             try {
@@ -669,7 +677,7 @@ public class Item extends DatabaseObject implements Formattable, Templateable {
         map.put("dateend", df.format(__getDateend()));
         map.put("datetodo", df.format(__getDatetodo()));
         map.put("description", evaluateAll(__getDescription()));
-        
+
 
         return super.resolveReferences(map);
     }
@@ -700,11 +708,11 @@ public class Item extends DatabaseObject implements Formattable, Templateable {
     public boolean save(boolean silent) {
         boolean saved = super.save(silent);
         if (saved) {
-            if (mpv5.db.objects.User.getCurrentUser().getProperty("org.openyabs.property", "autocreatepdf")|| GlobalSettings.getBooleanProperty("org.openyabs.exportproperty.autocreatepdf")) {
-               toPdf(false);
+            if (mpv5.db.objects.User.getCurrentUser().getProperty("org.openyabs.property", "autocreatepdf") || GlobalSettings.getBooleanProperty("org.openyabs.exportproperty.autocreatepdf")) {
+                toPdf(false);
             }
-            if (mpv5.db.objects.User.getCurrentUser().getProperty("org.openyabs.property", "autocreateodt")|| GlobalSettings.getBooleanProperty("org.openyabs.exportproperty.autocreateodt")) {
-               toOdt(false);
+            if (mpv5.db.objects.User.getCurrentUser().getProperty("org.openyabs.property", "autocreateodt") || GlobalSettings.getBooleanProperty("org.openyabs.exportproperty.autocreateodt")) {
+                toOdt(false);
             }
         }
         return saved;

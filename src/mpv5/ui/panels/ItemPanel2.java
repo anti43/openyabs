@@ -1,18 +1,18 @@
 /*
- This file is part of YaBS.
+This file is part of YaBS.
 
- YaBS is free software: you can redistribute it and/or modify
- it under the terms of the GNU General Public License as published by
- the Free Software Foundation, either version 3 of the License, or
- (at your option) any later version.
+YaBS is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
- YaBS is distributed in the hope that it will be useful,
- but WITHOUT ANY WARRANTY; without even the implied warranty of
- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- GNU General Public License for more details.
+YaBS is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
- You should have received a copy of the GNU General Public License
- along with YaBS.  If not, see <http://www.gnu.org/licenses/>.
+You should have received a copy of the GNU General Public License
+along with YaBS.  If not, see <http://www.gnu.org/licenses/>.
  */
 /*
  * ContactPanel.java
@@ -36,6 +36,8 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
@@ -142,17 +144,19 @@ public class ItemPanel2 extends javax.swing.JPanel implements DataPanel, MPCBSel
             this.type.setText("");
         }
 
-        refresh();
+        refreshSync();
 
         addedby.setText(mpv5.db.objects.User.getCurrentUser().getName());
         contactname.setSearchEnabled(true);
         contactname.setContext(Context.getCustomer());
         contactname.getComboBox().addActionListener(new ActionListener() {
+
             @Override
             public void actionPerformed(ActionEvent e) {
                 final MPComboBoxModelItem item = contactname.getSelectedItem();
                 if (item != null && item.isValid()) {
                     Runnable runnable = new Runnable() {
+
                         @Override
                         public void run() {
                             try {
@@ -252,6 +256,7 @@ public class ItemPanel2 extends javax.swing.JPanel implements DataPanel, MPCBSel
 
         final DataPanel p = this;
         status.getComboBox().addActionListener(new ActionListener() {
+
             Item dato = (Item) getDataOwner();
 
             @Override
@@ -294,6 +299,7 @@ public class ItemPanel2 extends javax.swing.JPanel implements DataPanel, MPCBSel
 
         labeledCombobox1.setContext(Context.getMessage());
         labeledCombobox1.getComboBox().addActionListener(new ActionListener() {
+
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
@@ -318,9 +324,9 @@ public class ItemPanel2 extends javax.swing.JPanel implements DataPanel, MPCBSel
     }
 
     private void setEnddate(Contact dbo) {
-        if (User.getCurrentUser().getProperties().getProperty("org.openyabs.itemproperty", "calcenddate") &&
-                (! User.getCurrentUser().getProperties().getProperty("org.openyabs.itemproperty", "keepmodifiedenddate") ||
-                   !dataOwner.isExisting()))  {
+        if (User.getCurrentUser().getProperties().getProperty("org.openyabs.itemproperty", "calcenddate")
+                && (!User.getCurrentUser().getProperties().getProperty("org.openyabs.itemproperty", "keepmodifiedenddate")
+                || !dataOwner.isExisting())) {
             if (dbo != null) {
                 int payterm = dbo.__getPayterm() == 0 ? 14 : dbo.__getPayterm();
                 date3.setDate(DateConverter.addDays(new Date(), payterm));
@@ -331,7 +337,7 @@ public class ItemPanel2 extends javax.swing.JPanel implements DataPanel, MPCBSel
                     date3.setDate(DateConverter.addDays(new Date(), 14));
                 }
             }
-        } 
+        }
     }
 
     /**
@@ -459,8 +465,8 @@ public class ItemPanel2 extends javax.swing.JPanel implements DataPanel, MPCBSel
         if (evt.getClickCount() > 1) {
             FileDirectoryHandler.open(QueryHandler.instanceOf().clone(Context.getFiles()).
                     retrieveFile(dataTable.getModel().getValueAt(dataTable.getSelectedRow(), 0).
-                            toString(), new File(FileDirectoryHandler.getTempDir() + dataTable.getModel().
-                                    getValueAt(dataTable.getSelectedRow(), 1).toString())));
+                    toString(), new File(FileDirectoryHandler.getTempDir() + dataTable.getModel().
+                    getValueAt(dataTable.getSelectedRow(), 1).toString())));
         } else if (evt.getClickCount() == 1 && evt.getButton() == MouseEvent.BUTTON3) {
 
             JTable source = (JTable) evt.getSource();
@@ -478,6 +484,7 @@ public class ItemPanel2 extends javax.swing.JPanel implements DataPanel, MPCBSel
     private void fillFiles() {
 
         Runnable runnable = new Runnable() {
+
             @Override
             public void run() {
                 Context c = Context.getFilesToItems();
@@ -1740,51 +1747,56 @@ public class ItemPanel2 extends javax.swing.JPanel implements DataPanel, MPCBSel
         fillFiles();
     }
 
-    @Override
-    public final void refresh() {
+    private void refreshSync() {
+        try {
 
-        Runnable runnable = new Runnable() {
-            @Override
-            public void run() {
-                try {
+            groupnameselect.setModel(MPComboBoxModelItem.toModel(DatabaseObject.getObject(Context.getGroup(), mpv5.db.objects.User.getCurrentUser().__getGroupsids())));
+            groupnameselect.setSelectedIndex(0);
+            sp.refresh();
 
-                    groupnameselect.setModel(MPComboBoxModelItem.toModel(DatabaseObject.getObject(Context.getGroup(), mpv5.db.objects.User.getCurrentUser().__getGroupsids())));
-                    groupnameselect.setSelectedIndex(0);
-                    sp.refresh();
+            try {
+                accountselect.setModel(DatabaseObject.getObject(Context.getAccounts(), mpv5.db.objects.User.getCurrentUser().__getIntdefaultaccount()));
+            } catch (NodataFoundException nodataFoundException) {
+                Log.Debug(this, nodataFoundException.getMessage());
+            }
 
-                    try {
-                        accountselect.setModel(DatabaseObject.getObject(Context.getAccounts(), mpv5.db.objects.User.getCurrentUser().__getIntdefaultaccount()));
-                    } catch (NodataFoundException nodataFoundException) {
-                        Log.Debug(this, nodataFoundException.getMessage());
-                    }
-
-                    List<Integer> skip = new ArrayList<>();
-                    if (inttype_ == Item.TYPE_INVOICE) {
-                        skip.add(Item.STATUS_PAUSED);
-                    } else {
-                        skip.add(Item.STATUS_PAID);
-                    }
-                    status.setModel(Item.getStatusStrings(), MPComboBoxModelItem.COMPARE_BY_ID, skip);
-                    try {
-                        status.setSelectedIndex(mpv5.db.objects.User.getCurrentUser().__getIntdefaultstatus());
-                    } catch (Exception e) {
-                        Log.Debug(this, e.getMessage());
-                    }
-                    itemtable.setModel(SubItem.toModel(new SubItem[]{
+            List<Integer> skip = new ArrayList<>();
+            if (inttype_ == Item.TYPE_INVOICE) {
+                skip.add(Item.STATUS_PAUSED);
+            } else {
+                skip.add(Item.STATUS_PAID);
+            }
+            status.setModel(Item.getStatusStrings(), MPComboBoxModelItem.COMPARE_BY_ID, skip);
+            try {
+                status.setSelectedIndex(mpv5.db.objects.User.getCurrentUser().__getIntdefaultstatus());
+            } catch (Exception e) {
+                Log.Debug(this, e.getMessage());
+            }
+            itemtable.setModel(SubItem.toModel(new SubItem[]{
                         SubItem.getDefaultItem(), SubItem.getDefaultItem(),
                         SubItem.getDefaultItem(), SubItem.getDefaultItem(),
                         SubItem.getDefaultItem(), SubItem.getDefaultItem()
                     }));
-                    formatTable();
+            formatTable();
 //                    shipping.setText(FormatNumber.formatDezimal(0d));
 
-                } catch (Exception e) {
-                    Log.Debug(this, e);
-                }
+        } catch (Exception e) {
+            Log.Debug(this, e);
+        }
 
-                if (dataOwner.isExisting()) {
-                    setDataOwner(dataOwner, true);
-                }
+        if (dataOwner.isExisting()) {
+            setDataOwner(dataOwner, true);
+        }
+    }
+
+    @Override
+    public final void refresh() {
+
+        Runnable runnable = new Runnable() {
+
+            @Override
+            public void run() {
+                refreshSync();
             }
         };
 
@@ -1867,10 +1879,19 @@ public class ItemPanel2 extends javax.swing.JPanel implements DataPanel, MPCBSel
         try {
             ((MPTableModel) itemtable.getModel()).removeEmptyRows(new int[]{4});
         } catch (Exception e) {
+            Log.Debug(e);
         }
 
         BigDecimal tpvs = null;
-        for (DatabaseObject dbo : dbos) {
+        List<DatabaseObject> dbolist = Arrays.asList(dbos);
+        Collections.sort(dbolist, new Comparator<DatabaseObject>() {
+
+            @Override
+            public int compare(DatabaseObject o1, DatabaseObject o2) {
+                return o1.__getDateadded().compareTo(o2.__getDateadded());
+            }
+        });
+        for (DatabaseObject dbo : dbolist) {
             if (dbo.getContext().equals(Context.getInvoice())
                     || dbo.getContext().equals(Context.getOffer())
                     || dbo.getContext().equals(Context.getOrder())) {
@@ -1907,8 +1928,10 @@ public class ItemPanel2 extends javax.swing.JPanel implements DataPanel, MPCBSel
 //                    Log.PrintArray(s.toStringArray());
                     ((Item) dbo).setIntstatus(Item.STATUS_FINISHED);
                     dbo.save();
-                    ((MPTableModel) itemtable.getModel()).addRow(s.getRowData(((MPTableModel) itemtable.getModel()).getLastValidRow(new int[]{4}) + 1));
+                    omodel = (MPTableModel) itemtable.getModel();
+                    omodel.addRow(s.getRowData(omodel.getRowCount() + 1));
                     ((MPTableModel) itemtable.getModel()).fireTableCellUpdated(0, 0);
+
                 } else {
                     o.setIntstatus(Item.STATUS_IN_PROGRESS);
                     o.setInttype(inttype_);
@@ -1945,7 +1968,6 @@ public class ItemPanel2 extends javax.swing.JPanel implements DataPanel, MPCBSel
 
                     itemtable.setModel(t);
                     omodel = (MPTableModel) itemtable.getModel();
-                    formatTable();
                     ((MPTableModel) itemtable.getModel()).fireTableCellUpdated(0, 0);
                 }
             } else if (dbo.getContext().equals(Context.getContact())) {
@@ -1971,7 +1993,6 @@ public class ItemPanel2 extends javax.swing.JPanel implements DataPanel, MPCBSel
                     }
                     itemtable.setModel(t);
                     omodel = (MPTableModel) itemtable.getModel();
-                    formatTable();
                     ((MPTableModel) itemtable.getModel()).fireTableCellUpdated(0, 0);
                 } catch (NodataFoundException ex) {
                     Log.Debug(this, ex.getMessage());
@@ -2196,6 +2217,7 @@ public class ItemPanel2 extends javax.swing.JPanel implements DataPanel, MPCBSel
 //        }
         JButton b1 = new JButton();
         b1.addMouseListener(new MouseListener() {
+
             @Override
             public void mouseClicked(MouseEvent e) {
             }
@@ -2241,6 +2263,7 @@ public class ItemPanel2 extends javax.swing.JPanel implements DataPanel, MPCBSel
 
         JButton b2 = new JButton();
         b2.addActionListener(new ActionListener() {
+
             @Override
             public void actionPerformed(ActionEvent e) {
                 MPTableModel m = (MPTableModel) itemtable.getModel();
@@ -2256,47 +2279,51 @@ public class ItemPanel2 extends javax.swing.JPanel implements DataPanel, MPCBSel
         itemtable.getColumnModel().getColumn(SubItem.COLUMNINDEX_REMOVE).setCellEditor(new ButtonEditor(b2));
 
         TablePopUp tpu = new TablePopUp(itemtable, new String[]{
-            Messages.ACTION_COPY.getValue(),
-            Messages.ACTION_PASTE.getValue(),
-            null,
-            Messages.ACTION_ADD.getValue(),
-            Messages.ACTION_REMOVE.getValue()},
+                    Messages.ACTION_COPY.getValue(),
+                    Messages.ACTION_PASTE.getValue(),
+                    null,
+                    Messages.ACTION_ADD.getValue(),
+                    Messages.ACTION_REMOVE.getValue()},
                 new ActionListener[]{new ActionListener() {
-                    @Override
-                    public void actionPerformed(ActionEvent e) {
-                        MPTableModel m = (MPTableModel) itemtable.getModel();
-                        SubItem it = m.getRowAt(itemtable.getSelectedRow(), SubItem.getDefaultItem());
 
-                        if (it != null) {
-                            mpv5.YabsViewProxy.instance().addToClipBoard(it);
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    MPTableModel m = (MPTableModel) itemtable.getModel();
+                    SubItem it = m.getRowAt(itemtable.getSelectedRow(), SubItem.getDefaultItem());
 
-                        }
+                    if (it != null) {
+                        mpv5.YabsViewProxy.instance().addToClipBoard(it);
+
                     }
-                }, new ActionListener() {
-                    @Override
-                    public void actionPerformed(ActionEvent e) {
+                }
+            }, new ActionListener() {
+
+                @Override
+                public void actionPerformed(ActionEvent e) {
 //                    mpv5.YabsViewProxy.instance().pasteClipboardItems();
-                    }
-                },
-                null,
-                new ActionListener() {
-                    @Override
-                    public void actionPerformed(ActionEvent e) {
-                        ((MPTableModel) itemtable.getModel()).addRow(1);
-                    }
-                }, new ActionListener() {
-                    @Override
-                    public void actionPerformed(ActionEvent e) {
-                        int index = itemtable.getSelectedRow();
-                        if (index < 0) {
-                            return;
-                        }
+                }
+            },
+                    null,
+                    new ActionListener() {
 
-                        MPTableModel m = (MPTableModel) itemtable.getModel();
-                        SubItem.addToDeletionQueue(m.getValueAt(index, 0));
-                        ((MPTableModel) itemtable.getModel()).removeRow(index);
+                        @Override
+                        public void actionPerformed(ActionEvent e) {
+                            ((MPTableModel) itemtable.getModel()).addRow(1);
+                        }
+                    }, new ActionListener() {
+
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    int index = itemtable.getSelectedRow();
+                    if (index < 0) {
+                        return;
                     }
-                }});
+
+                    MPTableModel m = (MPTableModel) itemtable.getModel();
+                    SubItem.addToDeletionQueue(m.getValueAt(index, 0));
+                    ((MPTableModel) itemtable.getModel()).removeRow(index);
+                }
+            }});
     }
 
     private void delivery() {
@@ -2379,6 +2406,7 @@ public class ItemPanel2 extends javax.swing.JPanel implements DataPanel, MPCBSel
 
     private void preloadTemplates() {
         Runnable runnable = new Runnable() {
+
             @Override
             public void run() {
                 TemplateHandler.loadTemplateFor(button_preview, dataOwner.templateGroupIds(), dataOwner.__getInttype());
@@ -2422,6 +2450,7 @@ public class ItemPanel2 extends javax.swing.JPanel implements DataPanel, MPCBSel
         }
 
         m.addTableModelListener(new TableModelListener() {
+
             @Override
             public void tableChanged(TableModelEvent e) {
                 if (dataOwner.isExisting()) {

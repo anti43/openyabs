@@ -105,7 +105,7 @@ public class SampleData {
 
                             Date date = new RandomDate(new vTimeframe(DateConverter.getDate("01.01.2007"), new Date()));
 
-                            Item it = (Item) Context.getInvoice().getSampleObject();
+                            Item it = (Item) Context.getInvoice().getNewObject();
                             it.setCname("SI" + seed + "-19-" + k);
                             it.setContactsids(c.__getIDS());
                             it.setDateend(date);

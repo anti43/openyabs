@@ -1535,7 +1535,7 @@ public abstract class DatabaseObject implements Comparable<DatabaseObject>, Seri
             try {
                 Object obj = context.getIdentityClass().newInstance();
                 ((DatabaseObject) obj).IDENTITY = new Entity<>(context, -1);
-                ((DatabaseObject) obj).setIDS(context.getId());
+                ((DatabaseObject) obj).setIDS(0);
                 return (DatabaseObject) obj;
             } catch (InstantiationException ex) {
                 mpv5.logging.Log.Debug(ex);

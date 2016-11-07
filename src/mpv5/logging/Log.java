@@ -123,6 +123,7 @@ public class Log {
     * @param message
     */
    public static synchronized void Debug(Object source, Object message) {
+     
       String sourcen;
       if (source instanceof Class) {
          sourcen = ((Class) source).getName();
@@ -136,8 +137,7 @@ public class Log {
          } catch (Exception e) {
             Print(e);
          }
-      }
-
+      }   
       switch (loglevel) {
          case LOGLEVEL_DEBUG:
             writeDirect(sourcen + ": " + message);
