@@ -17,17 +17,22 @@
 package mpv5.utils.models;
 
 import java.awt.Component;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
+import javax.swing.JMenuItem;
+import javax.swing.JPopupMenu;
 import javax.swing.JTree;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.MutableTreeNode;
+import javax.swing.tree.TreePath;
 import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
 import mpv5.db.common.NodataFoundException;
@@ -41,6 +46,7 @@ import mpv5.db.objects.Item;
 
 import mpv5.globals.Messages;
 import mpv5.logging.Log;
+import mpv5.ui.panels.DataPanel;
 import mpv5.utils.images.MPIcon;
 
 /**
@@ -67,6 +73,7 @@ public class MPTreeModel extends DefaultTreeModel {
         }
     }
 
+   
     /**
      * Generates a tree view of the contact including related items and files
      *
@@ -208,7 +215,7 @@ public class MPTreeModel extends DefaultTreeModel {
      * @param tree
      * @return
      */
-    public static MouseListener getDefaultTreeListener(final JTree tree) {
+    public static MouseListener getDefaultTreeListener(final JTree tree, final Contact dataOwner) {
         return new MouseListener() {
 
             @Override
@@ -230,6 +237,9 @@ public class MPTreeModel extends DefaultTreeModel {
 
             @Override
             public void mouseReleased(MouseEvent e) {
+                if (e.isPopupTrigger()) {
+                    popup(e);
+                }
             }
 
             @Override
@@ -238,6 +248,34 @@ public class MPTreeModel extends DefaultTreeModel {
 
             @Override
             public void mouseExited(MouseEvent e) {
+            }
+
+            private void popup(MouseEvent e) {
+                JPopupMenu menu = new JPopupMenu();
+                JMenuItem x = new JMenuItem("Add to new invoice");
+                x.addActionListener(new ActionListener() {
+
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+
+                        List<DatabaseObject> list = new ArrayList<>();
+                        for (TreePath p : tree.getSelectionPaths()) {
+                            DefaultMutableTreeNode node = (DefaultMutableTreeNode) p.getLastPathComponent();
+                            if (node != null && node.getUserObject() instanceof DatabaseObject) {
+                                DatabaseObject dbo = (DatabaseObject) node.getUserObject();
+                                list.add(dbo);
+                            }
+                        }
+                        if (list.size() > 0) {
+                            Item item = Context.getInvoice().getSampleObject();
+                            item.setContact(dataOwner);
+                            DataPanel tab = mpv5.YabsViewProxy.instance().getIdentifierView().addTab(item);
+                            tab.paste(list.toArray(new DatabaseObject[0]));
+                        }
+                    }
+                });
+                menu.add(x);
+                menu.show(e.getComponent(), e.getX(), e.getY());
             }
         };
     }

@@ -173,7 +173,7 @@ public class JournalPanel extends javax.swing.JPanel implements ListPanel {
 
         jTree1.setCellRenderer(MPTreeModel.getRenderer());
         jTree1.setModel(new MPTreeModel(dataOwner, null, null));
-        jTree1.addMouseListener(MPTreeModel.getDefaultTreeListener(jTree1));
+        jTree1.addMouseListener(MPTreeModel.getDefaultTreeListener(jTree1, dataOwner));
         prinitingComboBox1.init(jTable1);
 //        TreeFormat.expandTree(jTree1);
         loadTemplate();
