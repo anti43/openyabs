@@ -61,7 +61,7 @@ public final class TableViewPersistenceHandler {
     private List<TableColumnModelListener> listeners = new ArrayList<TableColumnModelListener>();
     private final Component identifier;
     private final JTable target;
-    private final SessionStorage storage;
+    private SessionStorage storage;
     private final TableColumnModelListener cListener;
     private final String saveFile;
     private final PropertyChangeListener wListener;
@@ -97,7 +97,6 @@ public final class TableViewPersistenceHandler {
         }
 
         saveFile = User.getCurrentUser().__getCname() + "_" + target.getName() + "_" + identifier.getName() + ".xml";
-        storage = mpv5.YabsApplication.getApplication().getContext().getSessionStorage();
         mListener = new MouseAdapter() {
 
             @Override
@@ -181,7 +180,7 @@ public final class TableViewPersistenceHandler {
         if (hasData()) {
             Log.Debug(this, "Trying to restore table: " + target.getName());
             try {
-                storage.restoreSingle(target, saveFile);
+                getStorage().restoreSingle(target, saveFile);
             } catch (IOException ex) {
                 Log.Debug(ex);
                 return false;
@@ -195,7 +194,7 @@ public final class TableViewPersistenceHandler {
 
     private void persist() {
         try {
-            storage.saveSingle(target, saveFile);
+            getStorage().saveSingle(target, saveFile);
             Log.Debug(this, "Persisting table state: " + target);
         } catch (IOException ex) {
             Log.Debug(ex);
@@ -205,5 +204,15 @@ public final class TableViewPersistenceHandler {
     protected boolean hasData() {
         File x = new File(FileDirectoryHandler.getTempDir() + saveFile);
         return x.exists() && x.canWrite() && x.canRead();
+    }
+
+    /**
+     * @return the storage
+     */
+    public SessionStorage getStorage() {
+        if(storage==null){
+            storage = mpv5.YabsApplication.getApplication().getContext().getSessionStorage();
+        }
+        return storage;
     }
 }

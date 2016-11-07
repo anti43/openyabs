@@ -23,6 +23,7 @@ package mpv5.ui.panels;
 
 import java.awt.Color;
 import java.awt.Component;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -34,9 +35,11 @@ import javax.swing.JTable;
 import javax.swing.table.TableCellRenderer;
 import mpv5.db.common.Context;
 import mpv5.db.common.DatabaseObject;
+import mpv5.db.common.DatabaseSearch;
 import mpv5.db.common.NodataFoundException;
 import mpv5.db.objects.Group;
 import mpv5.db.objects.User;
+import mpv5.globals.GlobalSettings;
 import mpv5.logging.Log;
 import mpv5.ui.frames.MPView;
 import mpv5.ui.misc.MPTable;
@@ -50,12 +53,13 @@ import mpv5.ui.misc.TableViewPersistenceHandler;
  *
  *  
  */
-public class GeneralListPanel extends javax.swing.JPanel {
+public final class GeneralListPanel extends javax.swing.JPanel {
 
     private static final long serialVersionUID = 1L;
     private List odata;
     TableCellRendererForDatabaseObjects rend = new TableCellRendererForDatabaseObjects();
     private java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle();
+    private DatabaseSearch d;
 
     /** Creates new form GeneralListPanel
      * @param <T>
@@ -68,7 +72,6 @@ public class GeneralListPanel extends javax.swing.JPanel {
         labeledCombobox1.setContext(Context.getGroup());
         labeledCombobox1.triggerSearch();
         setData(list);
-        odata = list;
 
         ((MPTable) listtable).setDefaultColumns(new Integer[]{100, 100, 100, 100, 100}, new Boolean[]{true, true, true, true, true});
         TableFormat.hideHeader(listtable);
@@ -85,7 +88,7 @@ public class GeneralListPanel extends javax.swing.JPanel {
         listtable.setDefaultRenderer(DatabaseObject.class, rend);
 
         ((MPTable) listtable).setDefaultColumns(new Integer[]{100, 100, 100, 100, 100}, new Boolean[]{true, true, true, true, true});
-        ((MPTable) listtable).setPersistanceHandler(new TableViewPersistenceHandler((MPTable)listtable, this));
+        ((MPTable) listtable).setPersistanceHandler(new TableViewPersistenceHandler((MPTable) listtable, this));
         TableFormat.hideHeader(listtable);
     }
 
@@ -118,7 +121,6 @@ public class GeneralListPanel extends javax.swing.JPanel {
         }
 
         setData(ndata);
-        odata = ndata;
         labeledCombobox1.setSearchEnabled(true);
         labeledCombobox1.setContext(Context.getGroup());
         labeledCombobox1.triggerSearch();
@@ -130,7 +132,7 @@ public class GeneralListPanel extends javax.swing.JPanel {
      * @param list
      */
     public <T extends DatabaseObject> void setData(List<T> list) {
-
+        odata = list;
 
         Object[][] data = new Object[list.size()][5];
 
@@ -324,7 +326,7 @@ public class GeneralListPanel extends javax.swing.JPanel {
     private void listtableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_listtableMouseClicked
         if (evt.getClickCount() > 1) {
             try {
-                System.err.println(mpv5.YabsViewProxy.instance().getIdentifierView());
+                //System.err.println(mpv5.YabsViewProxy.instance().getIdentifierView());
                 mpv5.YabsViewProxy.instance().getIdentifierView().addTab(((DatabaseObject) listtable.getModel().getValueAt(listtable.getSelectedRow(), 0)));
             } catch (Exception e) {
                 Log.Debug(e);
@@ -339,4 +341,17 @@ public class GeneralListPanel extends javax.swing.JPanel {
     private javax.swing.JTable listtable;
     private mpv5.ui.beans.TimeframeChooser timeframeChooser1;
     // End of variables declaration//GEN-END:variables
+
+    void setData(Context context) {
+        try {
+            setData(DatabaseObject.getObjects(context));
+        } catch (NodataFoundException ex) {
+            Log.Debug(ex);
+        }
+    }
+
+    void setData(Context context, String needle) {
+        d = new DatabaseSearch(context, GlobalSettings.getIntegerProperty("org.openyabs.search.limit", 5000));
+        setData(d.searchDataFor(new Context[]{Context.getSubItem()}, new Context[]{Context.getCustomer()}, needle));
+    }
 }

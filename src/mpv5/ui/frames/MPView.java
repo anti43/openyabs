@@ -121,6 +121,7 @@ import mpv5.ui.panels.ProductOrderPanel;
 import mpv5.ui.panels.ProductPanel;
 import mpv5.ui.panels.ProductsOverview;
 import mpv5.ui.panels.QueryPanel;
+import mpv5.ui.panels.ReceiptLookup;
 import mpv5.ui.panels.RevenuePanel;
 import mpv5.ui.panels.StartPage;
 import mpv5.ui.panels.Stockmanager;
@@ -909,6 +910,7 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
         jButton15 = new javax.swing.JButton();
         jButton16 = new javax.swing.JButton();
         jButton17 = new javax.swing.JButton();
+        jButton23 = new javax.swing.JButton();
         parent_nav_products = new javax.swing.JPanel();
         nav_products = new javax.swing.JPanel();
         jButton13 = new javax.swing.JButton();
@@ -969,7 +971,6 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
         viewMenu = new javax.swing.JMenu();
         jMenu2 = new javax.swing.JMenu();
         jMenuItem1 = new javax.swing.JMenuItem();
-        jMenuItem51 = new javax.swing.JMenuItem();
         jMenuItem39 = new javax.swing.JMenuItem();
         jMenuItem25 = new javax.swing.JMenuItem();
         jMenuItem19 = new javax.swing.JMenuItem();
@@ -1037,18 +1038,16 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
         nav_outlookbar.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
         nav_outlookbar.setName("nav_outlookbar"); // NOI18N
 
-//$2java.awt.Color(153, 153, 153));
         parent_nav_contacts.setName("parent_nav_contacts"); // NOI18N
         parent_nav_contacts.setPreferredSize(new java.awt.Dimension(110, 400));
         parent_nav_contacts.setLayout(new java.awt.FlowLayout(1, 0, 0));
 
-//$2java.awt.Color(153, 153, 153));
         nav_contacts.setName("nav_contacts"); // NOI18N
         nav_contacts.setLayout(new java.awt.GridLayout(0, 1, 2, 5));
 
         jButton5.setFont(jButton5.getFont().deriveFont(jButton5.getFont().getSize()-1f));
         jButton5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/agt_family.png"))); // NOI18N
-        java.util.ResourceBundle bundle = mpv5.i18n.LanguageManager.getBundle();  // NOI18N
+        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("mpv5/resources/languages/Panels"); // NOI18N
         jButton5.setText(bundle.getString("MPView.jButton5.text_1")); // NOI18N
         jButton5.setToolTipText(bundle.getString("MPView.jButton5.toolTipText_1")); // NOI18N
         jButton5.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
@@ -1102,12 +1101,10 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
 
         nav_outlookbar.addTab(bundle.getString("MPView.parent_nav_contacts.TabConstraints.tabTitle_1"), parent_nav_contacts); // NOI18N
 
-//$2java.awt.Color(153, 153, 153));
         parent_nav_accounting.setName("parent_nav_accounting"); // NOI18N
         parent_nav_accounting.setPreferredSize(new java.awt.Dimension(110, 400));
         parent_nav_accounting.setLayout(new java.awt.FlowLayout(1, 0, 0));
 
-//$2java.awt.Color(153, 153, 153));
         nav_accounting.setName("nav_accounting"); // NOI18N
         nav_accounting.setLayout(new java.awt.GridLayout(0, 1, 2, 5));
 
@@ -1230,16 +1227,31 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
         });
         nav_accounting.add(jButton17);
 
+        jButton23.setFont(jButton23.getFont().deriveFont(jButton23.getFont().getSize()-1f));
+        jButton23.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mpv5/resources/images/32/reload.png"))); // NOI18N
+        jButton23.setText(bundle.getString("MPView.jButton23.text")); // NOI18N
+        jButton23.setToolTipText(bundle.getString("MPView.jButton23.toolTipText")); // NOI18N
+        jButton23.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        jButton23.setMaximumSize(new java.awt.Dimension(250, 60));
+        jButton23.setMinimumSize(new java.awt.Dimension(80, 50));
+        jButton23.setName("jButton23"); // NOI18N
+        jButton23.setPreferredSize(new java.awt.Dimension(110, 57));
+        jButton23.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        jButton23.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton23ActionPerformed(evt);
+            }
+        });
+        nav_accounting.add(jButton23);
+
         parent_nav_accounting.add(nav_accounting);
 
         nav_outlookbar.addTab(bundle.getString("MPView.parent_nav_accounting.TabConstraints.tabTitle_1"), parent_nav_accounting); // NOI18N
 
-//$2java.awt.Color(153, 153, 153));
         parent_nav_products.setName("parent_nav_products"); // NOI18N
         parent_nav_products.setPreferredSize(new java.awt.Dimension(110, 400));
         parent_nav_products.setLayout(new java.awt.FlowLayout(1, 0, 0));
 
-//$2java.awt.Color(153, 153, 153));
         nav_products.setName("nav_products"); // NOI18N
         nav_products.setLayout(new java.awt.GridLayout(0, 1, 2, 5));
 
@@ -1349,12 +1361,10 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
 
         nav_outlookbar.addTab(bundle.getString("MPView.parent_nav_products.TabConstraints.tabTitle_1"), parent_nav_products); // NOI18N
 
-//$2java.awt.Color(153, 153, 153));
         parent_nav_extras.setName("parent_nav_extras"); // NOI18N
         parent_nav_extras.setPreferredSize(new java.awt.Dimension(110, 400));
         parent_nav_extras.setLayout(new java.awt.FlowLayout(1, 0, 0));
 
-//$2java.awt.Color(153, 153, 153));
         nav_extras.setName("nav_extras"); // NOI18N
         nav_extras.setLayout(new java.awt.GridLayout(0, 1, 2, 5));
 
@@ -1790,15 +1800,6 @@ public class MPView extends FrameView implements YabsView, FlowProvider {
             }
         });
         jMenu2.add(jMenuItem1);
-
-        jMenuItem51.setText(bundle.getString("MPView.jMenuItem51.text")); // NOI18N
-        jMenuItem51.setName("jMenuItem51"); // NOI18N
-        jMenuItem51.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenuItem51ActionPerformed(evt);
-            }
-        });
-        jMenu2.add(jMenuItem51);
 
         jMenuItem39.setText(bundle.getString("MPView.jMenuItem39.text")); // NOI18N
         jMenuItem39.setName("jMenuItem39"); // NOI18N
@@ -2821,6 +2822,11 @@ private void jMenuItem51ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-F
  
 }//GEN-LAST:event_jMenuItem51ActionPerformed
 
+private void jButton23ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton23ActionPerformed
+
+     addOrShowTab(new ReceiptLookup(), Messages.OVERVIEW);
+}//GEN-LAST:event_jButton23ActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton calculatorButton;
     public javax.swing.JMenu clipboardMenu;
@@ -2846,6 +2852,7 @@ private void jMenuItem51ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-F
     private javax.swing.JButton jButton20;
     private javax.swing.JButton jButton21;
     private javax.swing.JButton jButton22;
+    private javax.swing.JButton jButton23;
     private javax.swing.JButton jButton5;
     private javax.swing.JButton jButton6;
     private javax.swing.JButton jButton7;
@@ -2910,7 +2917,6 @@ private void jMenuItem51ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-F
     private javax.swing.JMenuItem jMenuItem49;
     private javax.swing.JMenuItem jMenuItem5;
     private javax.swing.JMenuItem jMenuItem50;
-    private javax.swing.JMenuItem jMenuItem51;
     private javax.swing.JMenuItem jMenuItem6;
     private javax.swing.JMenuItem jMenuItem7;
     private javax.swing.JMenuItem jMenuItem8;

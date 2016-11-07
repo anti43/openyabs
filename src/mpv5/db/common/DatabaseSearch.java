@@ -426,4 +426,13 @@ public class DatabaseSearch {
         }
         return QueryHandler.instanceOf().clone(context, ROWLIMIT).freeQuery("select " + String.valueOf(sf) + " from %%tablename%% " +  String.valueOf(context.getConditions(false)) + " AND ids in (" + dboids + ") AND " +  String.valueOf(context.getNoTrashSQLString()) , MPSecurityManager.VIEW, null).getData();
     }
+    
+     public List<DatabaseObject> searchDataFor(Context[] ext, Context[] self, String value) {
+        try {
+            List<Integer> data = searchObjectIdsFor(ext, self, value);
+            return DatabaseObject.getObjects(context, data);
+        } catch (NodataFoundException ex) {
+            return Collections.EMPTY_LIST;
+        }
+     }
 }
